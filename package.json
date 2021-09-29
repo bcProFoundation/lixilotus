@@ -4,6 +4,9 @@
   "devDependencies": {
     "lerna": "^4.0.0"
   },
+  "scripts": {
+    "start": "lerna exec --scope @abcpros/app-givegift -- yarn start"
+  },
   "workspaces": {
     "packages": [
       "packages/*"

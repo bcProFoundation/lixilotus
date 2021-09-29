@@ -11,10 +11,12 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/styled-components": "^5.1.14",
+    "bignumber.js": "^9.0.1",
     "qrcode.react": "^1.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
+    "styled-components": "^5.3.1",
     "typescript": "^4.1.2",
     "web-vitals": "^1.0.1"
   },
@@ -56,6 +58,7 @@
   },
   "devDependencies": {
     "@storybook/addon-actions": "^6.3.8",
+    "@storybook/addon-controls": "^6.3.8",
     "@storybook/addon-essentials": "^6.3.8",
     "@storybook/addon-knobs": "^6.3.1",
     "@storybook/addon-links": "^6.3.8",
@@ -64,6 +67,7 @@
     "@storybook/preset-create-react-app": "^3.2.0",
     "@storybook/react": "^6.3.8",
     "@types/lodash": "^4.14.175",
-    "@types/qrcode.react": "^1.0.2"
+    "@types/qrcode.react": "^1.0.2",
+    "@types/styled-components": "^5.1.14"
   }
 }

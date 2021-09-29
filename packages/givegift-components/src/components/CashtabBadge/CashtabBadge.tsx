@@ -26,7 +26,7 @@ const Outer = styled.div`
     grid-template-columns: max-content;
 `;
 
-const Main = styled('div')<{ showBorder?: boolean }>`
+const Main = styled('div') <{ showBorder?: boolean }>`
     font-family: sans-serif;
     display: grid;
     grid-gap: 12px;

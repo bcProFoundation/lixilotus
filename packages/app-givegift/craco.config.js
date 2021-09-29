@@ -2,7 +2,7 @@ const path = require("path");
 const { getLoader, loaderByName } = require("@craco/craco");
 
 const packages = [];
-packages.push(path.join(__dirname, "../components"));
+packages.push(path.join(__dirname, "../give-gift-components"));
 
 module.exports = {
   webpack: {
