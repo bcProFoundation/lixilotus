@@ -9,6 +9,10 @@
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
+    "typeRoots": [
+      "./src/@types",
+      "./node_modules/@types"
+    ],
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
@@ -17,8 +21,10 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx"
+    "noEmit": false,
+    "jsx": "react-jsx",
+    "sourceMap": true,
+    "outDir": "dist"
   },
   "include": [
     "src"
