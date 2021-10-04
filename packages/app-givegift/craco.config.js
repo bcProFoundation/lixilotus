@@ -20,5 +20,11 @@ module.exports = {
       }
       return webpackConfig;
     },
+    alias: {
+      '@assets': path.resolve(__dirname, 'src/assets/'),
+      '@images': path.resolve(__dirname, 'src/assets/images/'),
+      '@icons': path.resolve(__dirname, 'src/assets/icons/'),
+      '@utils': path.resolve(__dirname, 'src/utils/'),
+    }
   },
 };
