@@ -6,4 +6,10 @@ export const parameters = {
       date: /Date$/,
     },
   },
+  babel: async (options) => ({
+    ...options,
+    plugins: [
+      "babel-plugin-styled-components"
+    ]
+  })
 }

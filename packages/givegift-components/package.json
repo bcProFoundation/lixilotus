@@ -82,6 +82,7 @@
     "@types/qrcode.react": "^1.0.2",
     "@types/styled-components": "^5.1.14",
     "babel-jest": "^27.2.4",
+    "babel-plugin-styled-components": "^1.13.2",
     "craco": "^0.0.3",
     "jest-environment-jsdom-fifteen": "^1.0.2",
     "ts-loader": "^9.2.6",
