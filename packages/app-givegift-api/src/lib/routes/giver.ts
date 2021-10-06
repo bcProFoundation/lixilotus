@@ -4,18 +4,18 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 let router = express.Router();
 
-router.get('/gifts/:id/', async (req: express.Request, res: express.Response) => {
+router.get('/givers/:id/', async (req: express.Request, res: express.Response) => {
   const { id } = req.params;
   try {
-    const gift = await prisma.gift.findUnique({
+    const giver = await prisma.giver.findUnique({
       where: {
         id: id
       }
     });
-    res.json(gift);
+    res.json(giver);
   } catch (error) {
     res.json({
-      error: `Gift with Id ${id} does not exist in the database.`
+      error: `Giver with Id ${id} does not exist in the database.`
     })
   }
 });

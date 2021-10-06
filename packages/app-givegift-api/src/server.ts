@@ -14,12 +14,12 @@ async function startInstance() {
   const server = isHttps
     ? https.createServer(serverOpts, expressApp.app)
     : http.createServer(expressApp.app);
-  const port = config.get('port') || 4343;
+  const port: number = config.get('port') || 4343;
 
   await expressApp.start();
-  server.listen(port);
-  logger.info('Server givegift-api is running ');
-
+  server.listen(port, () => {
+    logger.info(`Server givegift-api is running at port ${port}`);
+  });
 }
 
 startInstance();
