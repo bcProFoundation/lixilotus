@@ -13,6 +13,7 @@
       "./src/@types",
       "./node_modules/@types"
     ],
+    "noImplicitAny": false,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,

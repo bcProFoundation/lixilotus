@@ -1,7 +1,9 @@
 import { DefaultTheme } from "styled-components";
 
 const theme: DefaultTheme = {
+  name: 'Default',
   primary: '#00ABE7',
+  secondary: '#6212f5',
   brandSecondary: '#CD0BC3',
   contrast: '#fff',
   app: {
@@ -30,6 +32,14 @@ const theme: DefaultTheme = {
     },
     borders: { color: '#e2e2e2' },
     shadow: 'rgba(0, 0, 0, 1)',
+  },
+  listItem: {
+    background: '#ffffff',
+    color: '',
+    boxShadow:
+      'rgba(0, 0, 0, 0.01) 0px 0px 1px, rgba(0, 0, 0, 0.04) 0px 4px 8px,rgba(0, 0, 0, 0.04) 0px 16px 24px, rgba(0, 0, 0, 0.01) 0px 24px 32px',
+    border: '#e9eaed',
+    hoverBorder: '#231F20',
   },
   footer: {
     background: '#fff',

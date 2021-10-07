@@ -1,3 +1,5 @@
+import { GlobalStyle } from '../src/styles/GlobalStyle';
+
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
   controls: {
@@ -11,5 +13,24 @@ export const parameters = {
     plugins: [
       "babel-plugin-styled-components"
     ]
-  })
+  }),
+  // styledComponentsThemes: {
+  //   /**
+  //    * Themes
+  //    */
+  //   themes: [theme, theme],
+  //   /**
+  //    *  Key for show name of theme - optional
+  //    */
+  //   label: 'name', // optional
+  // },
 }
+
+export const decorator = [
+  (Story) => (
+    <>
+      <GlobalStyle />
+      <Story />
+    </>
+  ),
+];

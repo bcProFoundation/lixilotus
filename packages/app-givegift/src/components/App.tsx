@@ -53,7 +53,6 @@ const GlobalStyle = createGlobalStyle`
 function App(): JSX.Element {
 
   const ContextValue = React.useContext(AppContext);
-  const { loading } = ContextValue;
   const location = useLocation();
   const history = useHistory();
   return (

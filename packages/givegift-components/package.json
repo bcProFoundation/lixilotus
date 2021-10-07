@@ -5,6 +5,7 @@
   "main": "dist/index.ts",
   "main:src": "src/index.ts",
   "dependencies": {
+    "@ant-design/icons": "^4.7.0",
     "@babel/preset-typescript": "^7.15.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",

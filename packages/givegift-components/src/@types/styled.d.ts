@@ -4,7 +4,9 @@ import 'styled-components';
 // and extend them!
 declare module 'styled-components' {
   export interface DefaultTheme {
+    name: string;
     primary: string;
+    secondary: string;
     brandSecondary: string;
     contrast: string;
     app: {
@@ -33,6 +35,13 @@ declare module 'styled-components' {
         color: string;
       };
       shadow: string;
+    };
+    listItem: {
+      background: string;
+      color: string;
+      boxShadow: string;
+      border: string;
+      hoverBorder: string;
     };
     footer: {
       background: string;
