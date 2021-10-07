@@ -5,7 +5,7 @@ type INavButtonProps = {
   theme?: DefaultTheme;
 }
 
-export const NavButton: React.FC<INavButtonProps> = styled.button`
+export const NavButton: React.FC<INavButtonProps> = styled.button<INavButtonProps>`
     :focus,
     :active {
       outline: none;

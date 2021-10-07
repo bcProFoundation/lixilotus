@@ -6,8 +6,7 @@ module.exports = {
   addons: [
     "@storybook/addon-links",
     "@storybook/addon-essentials",
-    "@storybook/preset-create-react-app",
-    "storybook-addon-styled-components-themes/register"
+    "@storybook/preset-create-react-app"
   ],
   babel: async (options) => ({
     ...options,

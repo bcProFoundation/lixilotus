@@ -1,7 +1,7 @@
 
 import { storiesOf } from '@storybook/react';
 import { ThemeProvider } from 'styled-components';
-import GlobalStyle from '../../styles/GlobalStyle';
+import { GlobalStyle } from '../../styles/GlobalStyle';
 import { theme } from '../../styles/theme';
 
 import GivingAwayItem from './GivingAwayItem';
@@ -18,7 +18,7 @@ storiesOf('GivingAway Item', module)
     </ThemeProvider>
   ))
   .add(
-    'Default Item',
+    'default',
     () => {
       const description = 'Lucky money for abcpros team';
       const givingDate = new Date();

@@ -23,15 +23,23 @@
       "@hooks/*": [
         "src/hooks/*"
       ],
-      "@constants/*": [
-        "src/constants/*"
-      ],
-      "@layout/*": [
-        "src/layout/*"
-      ],
-      "@services/*": [
-        "src/services/*"
+      // "@constants/*": [
+      //   "src/constants/*"
+      // ],
+      // "@layout/*": [
+      //   "src/layout/*"
+      // ],
+      // "@services/*": [
+      //   "src/services/*"
+      // ],
+      "@abcpros/givegift-components/*": [
+        "../givegift-components/src/*"
       ]
     }
-  }
+  },
+  "references": [
+    {
+      "path": "../givegift-components"
+    }
+  ]
 }

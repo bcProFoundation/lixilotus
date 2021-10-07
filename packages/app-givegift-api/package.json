@@ -7,9 +7,9 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "node ./dist/server.js",
-    "debug": "node --inspect ./dist/server.js",
-    "dev": "nodemon ./dist/server.js",
+    "start": "ts-node ./src/server.ts",
+    "debug": "node --inspect -r ts-node/register ./src/server.ts",
+    "dev": "nodemon ./src/server.ts",
     "build": "rm -r dist/ && tsc"
   },
   "dependencies": {

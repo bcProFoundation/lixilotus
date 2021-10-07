@@ -41,6 +41,14 @@ const theme: DefaultTheme = {
     border: '#e9eaed',
     hoverBorder: '#231F20',
   },
+  forms: {
+    error: '#FF21D0',
+    border: '#e7edf3',
+    text: '#6f2dbd',
+    addonBackground: '#f4f4f4',
+    addonForeground: '#6f2dbd',
+    selectionBackground: '#fff',
+  },
   footer: {
     background: '#fff',
     navIconInactive: '#949494',

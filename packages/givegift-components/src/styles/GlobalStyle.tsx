@@ -1,6 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 
-const GlobalStyle = createGlobalStyle`    
+export const GlobalStyle = createGlobalStyle`    
     .ant-modal-wrap > div > div.ant-modal-content > div > div > div.ant-modal-confirm-btns > button, .ant-modal > button, .ant-modal-confirm-btns > button, .ant-modal-footer > button {
         border-radius: 8px;
         background-color: ${props => props.theme.modals.buttons.background};
@@ -33,8 +33,6 @@ const GlobalStyle = createGlobalStyle`
     }
     #addrSwitch.ant-switch-checked {
         background-image: ${props =>
-    props.theme.buttons.primary.backgroundImage} !important;
+        props.theme.buttons.primary.backgroundImage} !important;
     }
 `;
-
-export default GlobalStyle;

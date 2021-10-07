@@ -47,6 +47,14 @@ declare module 'styled-components' {
       background: string;
       navIconInactive: string;
     };
+    forms: {
+      error: string;
+      border: string;
+      text: string;
+      addonBackground: string;
+      addonForeground: string;
+      selectionBackground: string;
+    },
     icons: {
       outlined: string;
     };
