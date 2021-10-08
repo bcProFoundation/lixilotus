@@ -6,7 +6,7 @@ const GiftIcon = styled(GiftOutlined)`
   color: ${props => props.theme.secondary}
 `;
 
-const GivingAwayItemIcon = styled.div`
+const GivingItemIcon = styled.div`
   svg {
     width: 32px;
     height: 32px;
@@ -58,7 +58,7 @@ const GiftNumber = styled.div`
   text-overflow: ellipsis;
 `;
 
-const GivingAwayItemWrapper = styled.div`
+const GivingItemWrapper = styled.div`
   display: grid;
   grid-template-columns: 36px 30% 50%;
   justify-content: space-between;
@@ -77,7 +77,7 @@ const GivingAwayItemWrapper = styled.div`
   }
 `;
 
-type IGivingAwayItemProps = {
+type IGivingItemProps = {
   description: string;
   givingDate: Date;
   givingAmount: string;
@@ -86,17 +86,17 @@ type IGivingAwayItemProps = {
   theme?: DefaultTheme;
 }
 
-const GivingAwayItem: React.FC<IGivingAwayItemProps> = (
+const GivingItem: React.FC<IGivingItemProps> = (
   {
     description, givingDate, givingAmount, ticker, giftNumber
   }) => {
   const givingDateLocalTime = givingDate.toLocaleDateString();
   return (
     <>
-      <GivingAwayItemWrapper>
-        <GivingAwayItemIcon>
+      <GivingItemWrapper>
+        <GivingItemIcon>
           <GiftIcon />
-        </GivingAwayItemIcon>
+        </GivingItemIcon>
         <GivingAwayDescription>
           <GivingAwayDescriptionLabel>{description}</GivingAwayDescriptionLabel>
           <br />
@@ -110,9 +110,9 @@ const GivingAwayItem: React.FC<IGivingAwayItemProps> = (
             {giftNumber} gift
           </GiftNumber>
         </GivingAwayInfo>
-      </GivingAwayItemWrapper>
+      </GivingItemWrapper>
     </>
   );
 }
 
-export default GivingAwayItem;
+export default GivingItem;

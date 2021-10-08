@@ -4,13 +4,13 @@ import { ThemeProvider } from 'styled-components';
 import { GlobalStyle } from '../../styles/GlobalStyle';
 import { theme } from '../../styles/theme';
 
-import GivingAwayItem from './GivingAwayItem';
+import GivingItem from './GivingItem';
 
-GivingAwayItem.defaultProps = {
+GivingItem.defaultProps = {
   theme: theme
 };
 
-storiesOf('GivingAway Item', module)
+storiesOf('GivingItem', module)
   .addDecorator(story => (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
@@ -27,7 +27,7 @@ storiesOf('GivingAway Item', module)
       const giftNumber = 5;
 
       return (
-        <GivingAwayItem
+        <GivingItem
           description={description}
           givingDate={givingDate}
           givingAmount={givingAmount}
@@ -37,6 +37,6 @@ storiesOf('GivingAway Item', module)
       );
     },
     {
-      notes: 'Displaying a Giving Away Item',
+      notes: 'Displaying a Giving Item',
     },
   );
