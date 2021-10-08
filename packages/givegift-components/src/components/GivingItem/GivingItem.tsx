@@ -60,10 +60,11 @@ const GiftNumber = styled.div`
 
 const GivingItemWrapper = styled.div`
   display: grid;
-  grid-template-columns: 36px 30% 50%;
+  grid-template-columns: 36px 50% 30%;
   justify-content: space-between;
   align-items: center;
   padding: 15px 25px;
+  margin-bottom: 3px;
   border-radius: 3px;
   background: ${props => props.theme.listItem.background};
   box-shadow: ${props => props.theme.listItem.boxShadow};
@@ -72,7 +73,7 @@ const GivingItemWrapper = styled.div`
     border-color: ${props => props.theme.primary};
   }
   @media screen and (max-width: 500px) {
-    grid-template-columns: 24px 30% 50%;
+    grid-template-columns: 24px 50% 30%;
     padding: 12px 12px;
   }
 `;

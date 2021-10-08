@@ -1,6 +1,6 @@
 import styled, { DefaultTheme } from 'styled-components';
 
-export const Footer = styled.div`
+const Footer = styled.div`
   z-index: 2;
   background-color: ${props => props.theme.footer.background};
   border-radius: 20px;
@@ -12,3 +12,5 @@ export const Footer = styled.div`
   }
   border-top: 1px solid ${props => props.theme.wallet.borders.color};
 `;
+
+export default Footer;

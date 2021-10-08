@@ -2,9 +2,6 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "src/*"
-      ],
       "@assets/*": [
         "src/assets/*"
       ],
@@ -33,13 +30,13 @@
       //   "src/services/*"
       // ],
       "@abcpros/givegift-components/*": [
-        "../givegift-components/src/*"
+        "../../packages/givegift-components/src/*"
       ]
     }
   },
-  "references": [
-    {
-      "path": "../givegift-components"
-    }
-  ]
+  // "references": [
+  //   {
+  //     "path": "../../packages/givegift-components"
+  //   }
+  // ]
 }

@@ -4,7 +4,7 @@ import { storiesOf } from '@storybook/react';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '../../styles/theme';
 import { NavButton } from '../NavButton/NavButton';
-import { Footer } from './Footer';
+import Footer from './Footer';
 
 storiesOf('Footer', module)
   .addDecorator(story => (

@@ -12,9 +12,20 @@ import styled, { ThemeProvider } from 'styled-components';
 import { theme, GlobalStyle } from '@abcpros/givegift-components/styles';
 import LogoLotusPink from '@assets/images/lotus-pink-logo.png';
 import {
-  LoadingOutlined
+  LoadingOutlined,
+  HomeOutlined,
+  GiftOutlined,
+  WalletOutlined,
+  UserOutlined
 } from '@ant-design/icons';
 // import { LoadingIcon } from '@abcpros/givegift-components/atoms/CustomIcons/CustomIcons';
+import Home from '@components/Home/Home';
+import MyGiving from '@components/MyGiving/MyGiving';
+import Redeem from '@components/Redeem/Redeem';
+import Profile from '@components/Profile/Profile';
+import { Footer, NavButton } from '@abcpros/givegift-components/components';
+
+type ThemeType = typeof theme;
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
 
@@ -92,6 +103,7 @@ function App(): JSX.Element {
   const location = useLocation();
   const history = useHistory();
   const [loading, setLoading] = useState(false);
+  const selectedKey = location && location.pathname ? location.pathname.substr(1) : '';
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
@@ -107,12 +119,59 @@ function App(): JSX.Element {
               <HeaderContainer>
                 <LotusLogo src={LogoLotusPink} alt="givelotus" />
               </HeaderContainer>
+              <Switch>
+                <Route path="/home">
+                  <Home />
+                </Route>
+                <Route path="/mygiving">
+                  <MyGiving />
+                </Route>
+                <Route path="/redeem/:givingId">
+                  <Redeem />
+                </Route>
+                <Route>
+                  <Profile />
+                </Route>
+              </Switch>
             </AppContainer>
+            <Footer>
+              <NavButton
+                active={selectedKey === 'home'}
+                onClick={() => history.push('/home')}
+              >
+                <HomeOutlined />
+                Home
+              </NavButton>
+
+              <NavButton
+                active={selectedKey === 'mygiving'}
+                onClick={() => history.push('/mygiving')}
+              >
+                <GiftOutlined />
+                My Giving
+              </NavButton>
+
+              <NavButton
+                active={selectedKey === 'redeem'}
+                onClick={() => history.push('/redeem')}
+              >
+                <WalletOutlined />
+                Redeem
+              </NavButton>
+              <NavButton
+                active={selectedKey === 'profile'}
+                onClick={() => history.push('/profile')}
+              >
+                <UserOutlined />
+                Profile
+              </NavButton>
+            </Footer>
           </AppBody>
         </GiveGiftApp>
       </Spin>
     </ThemeProvider>
   );
 }
+export type { ThemeType };
 
 export default App;

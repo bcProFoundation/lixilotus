@@ -4,13 +4,13 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './components/App';
 import { AppProvider } from '@utils/context';
-import GA from '@utils/GoogleAnalytics';
+// import GA from '@utils/GoogleAnalytics';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <AppProvider>
     <Router>
-      {GA.init() && <GA.RouteTracker />}
+      {/* {GA.init() && <GA.RouteTracker />} */}
       <App />
     </Router>
   </AppProvider>,

@@ -1,9 +1,9 @@
 import { DefaultTheme } from "styled-components";
 
-const theme: DefaultTheme = {
+const theme = {
   name: 'Default',
-  primary: '#00ABE7',
-  secondary: '#6212f5',
+  primary: '#6f2dbd',
+  secondary: '#CD0BC3',
   brandSecondary: '#CD0BC3',
   contrast: '#fff',
   app: {
@@ -86,4 +86,7 @@ const theme: DefaultTheme = {
   },
 };
 
-export { theme }
+type ThemeType = typeof theme;
+
+export type { ThemeType };
+export { theme };

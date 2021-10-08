@@ -1,19 +1,12 @@
 
 import { storiesOf } from '@storybook/react';
 import { ThemeProvider } from 'styled-components';
-import { GlobalStyle } from '../../styles/GlobalStyle';
 import { theme } from '../../styles/theme';
-
 import GivingItem from './GivingItem';
-
-GivingItem.defaultProps = {
-  theme: theme
-};
 
 storiesOf('GivingItem', module)
   .addDecorator(story => (
     <ThemeProvider theme={theme}>
-      <GlobalStyle />
       {story()}
     </ThemeProvider>
   ))
@@ -37,6 +30,6 @@ storiesOf('GivingItem', module)
       );
     },
     {
-      notes: 'Displaying a Giving Item',
+      notes: 'Displaying a GivingItem',
     },
   );

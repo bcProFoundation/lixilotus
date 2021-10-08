@@ -7,7 +7,7 @@ let router = express.Router();
 router.get('/giving/:id/', async (req: express.Request, res: express.Response) => {
   const { id } = req.params;
   try {
-    const giving = await prisma.givingAway.findUnique({
+    const giving = await prisma.giving.findUnique({
       where: {
         id: id
       }
