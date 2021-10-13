@@ -1,5 +1,5 @@
 {
-  "name": "app-givegift-api",
+  "name": "@abcpros/app-givegift-api",
   "version": "0.1.0",
   "description": "Api for gift giving application",
   "main": "server.js",

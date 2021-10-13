@@ -1,6 +1,6 @@
 import SlpWallet from '@abcpros/minimal-xpi-slp-wallet';
 
-export default function useBCH() {
+export default function useXPI() {
   const SEND_XPI_ERRORS = {
     INSUFFICIENT_FUNDS: 0,
     NETWORK_ERROR: 1,

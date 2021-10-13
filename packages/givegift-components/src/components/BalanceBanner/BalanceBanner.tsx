@@ -34,7 +34,7 @@ const BalanceBannerAction = styled.button`
   background-image: ${props => props.theme.buttons.primary.backgroundImage};
   font-size: 16px;
   padding: 10px 10px 10px 10px;
-  border-radius: 10px;
+  border-radius: 4px;
   min-width: 108px;
   display: flex;
   justify-content: center;
@@ -56,12 +56,12 @@ const BalanceBannerWrapper = styled.div`
   border: 1px solid ${props => props.theme.listItem.border};
 `;
 
-type IBalanceBannerProps = {
+type BalanceBannerProps = {
   title: string;
   theme?: DefaultTheme;
 }
 
-const BalanceBanner: React.FC<IBalanceBannerProps> = (
+const BalanceBanner: React.FC<BalanceBannerProps> = (
   {
     title
   }) => {

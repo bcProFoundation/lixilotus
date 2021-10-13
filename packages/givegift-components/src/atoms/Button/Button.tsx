@@ -14,7 +14,7 @@ const A = styled.a`
     text-decoration: none;
 `;
 
-const ButtonElement = styled('button')<{ isFresh?: boolean }>`
+const ButtonElement = styled('button') <{ isFresh?: boolean }>`
     border: none;
     border-radius: 4px;
     padding: 12px 20px;

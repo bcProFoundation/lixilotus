@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { CashLoader } from '../';
-import { AlertMsg } from '../';
+import { CashLoader } from './CustomIcons';
+import { AlertMsg } from './Atoms';
 
 const ApiError = () => {
   return (

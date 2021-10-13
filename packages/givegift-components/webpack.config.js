@@ -55,7 +55,7 @@ const config = {
       '.gif',
       '.jpg',
       '.svg',
-    ],
+    ]
   },
   output: {
     path: path.resolve(__dirname, 'dist/'),

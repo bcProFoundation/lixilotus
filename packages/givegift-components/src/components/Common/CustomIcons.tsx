@@ -7,15 +7,20 @@ import {
   QrcodeOutlined,
 } from '@ant-design/icons';
 import { Image } from 'antd';
+import { currency } from './Ticker';
 
-type ReceivedNotificationIconProps = {
-  currencyLogo: string
-}
+export const CashLoadingIcon = <LoadingOutlined className="cashLoadingIcon" />;
 
-export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
-
-export const ReceivedNotificationIcon: React.FC<ReceivedNotificationIconProps> = ({ currencyLogo }) => (
-  <Image height={'33px'} width={'30px'} src={currencyLogo} preview={false} />
+export const CashReceivedNotificationIcon = () => (
+  <Image height={'33px'} width={'30px'} src={currency.logo} preview={false} />
+);
+export const TokenReceivedNotificationIcon = () => (
+  <Image
+    src={currency.tokenLogo}
+    height={'33px'}
+    width={'30px'}
+    preview={false}
+  />
 );
 
 export const ThemedCopyOutlined = styled(CopyOutlined)`

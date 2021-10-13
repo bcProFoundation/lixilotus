@@ -1,5 +1,6 @@
 // import original module declarations
 import 'styled-components';
+import { CSSProp } from 'styled-components';
 
 // and extend them!
 declare module 'styled-components' {
@@ -90,5 +91,11 @@ declare module 'styled-components' {
       border: string;
       color: string;
     };
+  }
+};
+
+declare module 'react' {
+  interface Attributes {
+    css?: CSSProp | CSSObject;
   }
 }

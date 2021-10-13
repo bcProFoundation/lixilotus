@@ -6,6 +6,9 @@ import {
   useLocation,
   useHistory,
 } from 'react-router-dom';
+import 'antd/dist/antd.less';
+import '../index.css';
+import './App.less';
 import { Spin } from 'antd';
 import { AppContext } from '@utils/context';
 import styled, { ThemeProvider } from 'styled-components';
@@ -126,7 +129,7 @@ function App(): JSX.Element {
                 <Route path="/mygiving">
                   <MyGiving />
                 </Route>
-                <Route path="/redeem/:givingId">
+                <Route path="/redeem">
                   <Redeem />
                 </Route>
                 <Route>
