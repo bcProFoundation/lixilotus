@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Collapse } from 'antd';
+import { Collapse, CollapseProps } from 'antd';
 
 export const StyledCollapse = styled(Collapse)`
   background: ${props => props.theme.collapses.background} !important;
@@ -19,10 +19,10 @@ export const StyledCollapse = styled(Collapse)`
   }
 `;
 
-type RedeemCollapsePrpos = {
-} & React.HTMLProps<HTMLElement>
+type VaultCollapseProps = {
+} & React.HTMLProps<HTMLElement> & CollapseProps
 
-export const RedeemCollapse: React.FC<RedeemCollapsePrpos> = styled(Collapse) <RedeemCollapsePrpos>`
+export const VaultCollapse = styled(Collapse) <VaultCollapseProps>`
     ${({ disabled = false, ...props }) =>
     disabled === true
       ? `

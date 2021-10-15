@@ -31,6 +31,9 @@
       // ],
       "@abcpros/givegift-components/*": [
         "../../packages/givegift-components/src/*"
+      ],
+      "@abcpros/givegift-models/*": [
+        "../../packages/givegift-models/src/*"
       ]
     }
   },

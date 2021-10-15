@@ -1,4 +1,5 @@
 import SlpWallet from '@abcpros/minimal-xpi-slp-wallet';
+import BCHJS from '@abcpros/xpi-js';
 
 export default function useXPI() {
   const SEND_XPI_ERRORS = {
@@ -18,17 +19,18 @@ export default function useXPI() {
     return apiArray[apiIndex];
   };
 
-  const getXPI = (apiIndex = 0) => {
+  const getXPI = (apiIndex = 0): BCHJS => {
     let ConstructedSlpWallet;
 
     ConstructedSlpWallet = new SlpWallet('', {
       restURL: getRestUrl(apiIndex),
       hdPath: "m/44'/10605'/0'/0/0"
     });
-    return ConstructedSlpWallet.bchjs;
+    return ConstructedSlpWallet.bchjs as BCHJS;
   }
 
   return {
-    getXPI
+    getXPI,
+    getRestUrl
   };
 }

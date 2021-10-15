@@ -9,12 +9,12 @@
   dependencies:
     safe-buffer "^5.1.1"
 
-"@abcpros/minimal-xpi-slp-wallet@3.0.6":
-  version "3.0.6"
-  resolved "https://registry.yarnpkg.com/@abcpros/minimal-xpi-slp-wallet/-/minimal-xpi-slp-wallet-3.0.6.tgz#a6c83e364347adf992a9a6b71ce236a00e1625a5"
-  integrity sha512-PVohAbaYO9TBtU3Qa0/gj8G9NNeU/Q2PF1H8Z33MtQnB4D7B+4U5xzE/brT23VGz2KP+cCcVCG6Drd+b2kijvQ==
+"@abcpros/minimal-xpi-slp-wallet@3.0.8":
+  version "3.0.8"
+  resolved "https://registry.yarnpkg.com/@abcpros/minimal-xpi-slp-wallet/-/minimal-xpi-slp-wallet-3.0.8.tgz#b8519bf0c9869c6b466491fb241b712e1dc60b0e"
+  integrity sha512-61Lin+2r+TxCBYcsLPE8AITL7f/fmQZQElYlZaw5wvt5ttYnUiAQ0suBt7kPFXlmDCahPuUy/UaTI7wAbJz6Mw==
   dependencies:
-    "@abcpros/xpi-js" "^4.0.3"
+    "@abcpros/xpi-js" "^4.0.5"
     apidoc "^0.25.0"
     bch-donation "^1.1.1"
     crypto-js "^4.0.0"
@@ -26,10 +26,10 @@
   dependencies:
     bs58 "^4.0.1"
 
-"@abcpros/xpi-js@^4.0.3":
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/@abcpros/xpi-js/-/xpi-js-4.0.3.tgz#518d5de49c5062dc261ac91a13d2df8cfcae2281"
-  integrity sha512-XOsVxG8P4TDdnHcjhfrt2O5TOwxbusQgdyTYY2d5vefcGvMkDiF//RRWZYq/EVTOgQ132tPqM2Nzx7WXxycK8A==
+"@abcpros/xpi-js@^4.0.5":
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/@abcpros/xpi-js/-/xpi-js-4.0.5.tgz#deae8a430746ded3e0bf061678ae56284163e4cf"
+  integrity sha512-EbSQ2oWm6JCWbBf5x4VmmC+Too0oUzI/Lx3E2s+Cj6ky+L8/2aHLvyWNH2aZnEXBvhLTG96eu7KCqAqLi6JvhA==
   dependencies:
     "@abcpros/coininfo" "^5.2.0"
     "@abcpros/xaddress" "^0.0.9"
@@ -12155,6 +12155,11 @@ image-size@~0.5.0:
   resolved "https://registry.yarnpkg.com/image-size/-/image-size-0.5.5.tgz#09dfd4ab9d20e29eb1c3e80b8990378df9e3cb9c"
   integrity sha1-Cd/Uq50g4p6xw+gLiZA3jfnjy5w=
 
+immediate@~3.0.5:
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/immediate/-/immediate-3.0.6.tgz#9db1dbd0faf8de6fbe0f5dd5e56bb606280de69b"
+  integrity sha1-nbHb0Pr43m++D13V5Wu2BigN5ps=
+
 immer@8.0.1:
   version "8.0.1"
   resolved "https://registry.yarnpkg.com/immer/-/immer-8.0.1.tgz#9c73db683e2b3975c424fb0572af5889877ae656"
@@ -14474,6 +14479,13 @@ libnpmpublish@^4.0.0:
     semver "^7.1.3"
     ssri "^8.0.1"
 
+lie@3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/lie/-/lie-3.1.1.tgz#9a436b2cc7746ca59de7a41fa469b3efb76bd87e"
+  integrity sha1-mkNrLMd0bKWd56QfpGmz77dr2H4=
+  dependencies:
+    immediate "~3.0.5"
+
 lines-and-columns@^1.1.6:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/lines-and-columns/-/lines-and-columns-1.1.6.tgz#1c00c743b433cd0a4e80758f7b64a57440d9ff00"
@@ -14563,6 +14575,13 @@ loader-utils@^1.1.0, loader-utils@^1.2.3, loader-utils@^1.4.0:
     big.js "^5.2.2"
     emojis-list "^3.0.0"
     json5 "^1.0.1"
+
+localforage@^1.10.0:
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/localforage/-/localforage-1.10.0.tgz#5c465dc5f62b2807c3a84c0c6a1b1b3212781dd4"
+  integrity sha512-14/H1aX7hzBBmmh7sGPd+AOMkkIrHM3Z1PAyGgZigA1H1p5O5ANnMyWzvpAETtG68/dC4pC0ncy3+PPGzXZHPg==
+  dependencies:
+    lie "3.1.1"
 
 locate-path@^2.0.0:
   version "2.0.0"
@@ -14655,6 +14674,11 @@ lodash.get@^4:
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
   integrity sha1-LRd/ZS+jHpObRDjVNBSZ36OCXpk=
+
+lodash.isempty@^4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/lodash.isempty/-/lodash.isempty-4.4.0.tgz#6f86cbedd8be4ec987be9aaf33c9684db1b31e7e"
+  integrity sha1-b4bL7di+TsmHvpqvM8loTbGzHn4=
 
 lodash.ismatch@^4.4.0:
   version "4.4.0"

@@ -11,7 +11,7 @@ import {
 import useWindowDimensions from '@hooks/useWindowDimensions';
 import useXPI from '@hooks/useXPI';
 import { parseAddress } from '@utils/addressMethods';
-import { currency } from '@abcpros/givegift-components/src/components/Common/Ticker';
+import { currency } from '@abcpros/givegift-components/components/Common/Ticker';
 
 type RedeemFormData = {
   dirty: boolean;

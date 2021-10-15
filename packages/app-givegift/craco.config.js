@@ -142,10 +142,10 @@ module.exports = {
       tsRule.include = undefined;
       tsRule.exclude = /node_modules/;
 
-      const { isFound, match } = getLoader(
-        config,
-        loaderByName("babel-loader")
-      );
+      // const { isFound, match } = getLoader(
+      //   config,
+      //   loaderByName("babel-loader")
+      // );
       // if (isFound) {
       //   const include = Array.isArray(match.loader.include)
       //     ? match.loader.include

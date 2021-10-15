@@ -10,6 +10,7 @@ import 'antd/dist/antd.less';
 import '../index.css';
 import './App.less';
 import { Spin } from 'antd';
+import Icon from '@ant-design/icons';
 import { AppContext } from '@utils/context';
 import styled, { ThemeProvider } from 'styled-components';
 import { theme, GlobalStyle } from '@abcpros/givegift-components/styles';
@@ -21,12 +22,13 @@ import {
   WalletOutlined,
   UserOutlined
 } from '@ant-design/icons';
+import VaultOutlineSvg from '@assets/icons/VaultOutline.svg';
 // import { LoadingIcon } from '@abcpros/givegift-components/atoms/CustomIcons/CustomIcons';
 import Home from '@components/Home/Home';
-import MyGiving from '@components/MyGiving/MyGiving';
-import Redeem from '@components/Redeem/Redeem';
+import Redeem from '@components/Redeem';
 import Profile from '@components/Profile/Profile';
 import { Footer, NavButton } from '@abcpros/givegift-components/components';
+import Vault from '@components/Vault';
 
 type ThemeType = typeof theme;
 
@@ -126,8 +128,8 @@ function App(): JSX.Element {
                 <Route path="/home">
                   <Home />
                 </Route>
-                <Route path="/mygiving">
-                  <MyGiving />
+                <Route path="/Vault">
+                  <Vault />
                 </Route>
                 <Route path="/redeem">
                   <Redeem />
@@ -147,11 +149,12 @@ function App(): JSX.Element {
               </NavButton>
 
               <NavButton
-                active={selectedKey === 'mygiving'}
-                onClick={() => history.push('/mygiving')}
+                active={selectedKey === 'vault'}
+                onClick={() => history.push('/vault')}
               >
-                <GiftOutlined />
-                My Giving
+                <Icon component={() => <img src={VaultOutlineSvg} />} />
+                {/* <GiftOutlined /> */}
+                Vault
               </NavButton>
 
               <NavButton

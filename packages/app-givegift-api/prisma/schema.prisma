@@ -12,33 +12,43 @@ generator client {
 }
 
 model Giver {
+  id        String   @id @default(dbgenerated()) @map("_id") @db.ObjectId
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  vaults    Vault[]
+}
+
+model Vault {
   id          String   @id @default(dbgenerated()) @map("_id") @db.ObjectId
   coin        String
   name        String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now())
-  givingAways Giving[]
-}
-
-model Giving {
-  id          String   @id @default(dbgenerated()) @map("_id") @db.ObjectId
-  coin        String
   description String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now())
   Giver       Giver    @relation(fields: [giverId], references: [id])
   giverId     String   @db.ObjectId
-  gifts       Gift[]
-
 }
 
-model Gift {
-  id           String   @id @default(dbgenerated()) @map("_id") @db.ObjectId
-  numReceivers Int
-  numnReceived Int
-  value        Int
-  returnTime   DateTime
-  title        String
-  Giving       Giving?  @relation(fields: [givingAwayId], references: [id])
-  givingAwayId String?  @db.ObjectId
-}
+// model Giving {
+//   id          String   @id @default(dbgenerated()) @map("_id") @db.ObjectId
+//   coin        String
+//   description String
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @default(now())
+//   Giver       Giver    @relation(fields: [giverId], references: [id])
+//   giverId     String   @db.ObjectId
+//   gifts       Gift[]
+
+// }
+
+// model Gift {
+//   id           String   @id @default(dbgenerated()) @map("_id") @db.ObjectId
+//   numReceivers Int
+//   numnReceived Int
+//   value        Int
+//   returnTime   DateTime
+//   title        String
+//   Giving       Giving?  @relation(fields: [givingAwayId], references: [id])
+//   givingAwayId String?  @db.ObjectId
+// }
