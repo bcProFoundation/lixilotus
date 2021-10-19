@@ -76,7 +76,6 @@ const ImportVaultForm = ({
           </AntdFormWrapper>
           <SmartButton
             onClick={() => setShowConfirmImportVault(true)}
-            disabled={!newVaultNameIsValid}
           >
             <ImportOutlined />
             &nbsp;Import Vault

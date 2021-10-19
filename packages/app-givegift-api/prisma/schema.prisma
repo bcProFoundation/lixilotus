@@ -2,32 +2,31 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider = "mongodb"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["mongoDb"]
+  provider = "prisma-client-js"
 }
 
-model Giver {
-  id        String   @id @default(dbgenerated()) @map("_id") @db.ObjectId
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-  vaults    Vault[]
-}
+// model Giver {
+//   id        String   @id @default(dbgenerated()) @map("_id") @db.ObjectId
+//   name      String
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @default(now())
+//   vaults    Vault[]
+// }
 
 model Vault {
-  id          String   @id @default(dbgenerated()) @map("_id") @db.ObjectId
-  coin        String
-  name        String
-  description String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @default(now())
-  Giver       Giver    @relation(fields: [giverId], references: [id])
-  giverId     String   @db.ObjectId
+  id           Int      @id @default(autoincrement())
+  name         String
+  isRandom     Boolean
+  minValue     BigInt
+  maxValue     BigInt
+  defaultValue BigInt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now())
 }
 
 // model Giving {

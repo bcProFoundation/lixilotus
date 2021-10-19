@@ -11,7 +11,7 @@ import '../index.css';
 import './App.less';
 import { Spin } from 'antd';
 import Icon from '@ant-design/icons';
-import { AppContext } from '@utils/context';
+import { StoreContext } from 'src/store/context';
 import styled, { ThemeProvider } from 'styled-components';
 import { theme, GlobalStyle } from '@abcpros/givegift-components/styles';
 import LogoLotusPink from '@assets/images/lotus-pink-logo.png';
@@ -104,10 +104,11 @@ export const LotusLogo = styled.img`
 
 function App(): JSX.Element {
 
-  const ContextValue = React.useContext(AppContext);
+  const ContextValue = React.useContext(StoreContext);
   const location = useLocation();
   const history = useHistory();
   const [loading, setLoading] = useState(false);
+  const [loadingUtxosAfterSend, setLoadingUtxosAfterSend] = useState(false);
   const selectedKey = location && location.pathname ? location.pathname.substr(1) : '';
   return (
     <ThemeProvider theme={theme}>

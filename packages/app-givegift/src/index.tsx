@@ -3,17 +3,17 @@ import { HashRouter as Router } from 'react-router-dom';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './components/App';
-import { AppProvider } from '@utils/context';
+import { StoreProvider } from 'src/store/context';
 // import GA from '@utils/GoogleAnalytics';
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
-  <AppProvider>
+  <StoreProvider>
     <Router>
       {/* {GA.init() && <GA.RouteTracker />} */}
       <App />
     </Router>
-  </AppProvider>,
+  </StoreProvider>,
   document.getElementById('root')
 );
 

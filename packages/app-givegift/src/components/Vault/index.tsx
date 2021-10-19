@@ -16,10 +16,11 @@ import { currency } from '@abcpros/givegift-components/components/Common/Ticker'
 import CreateVaultForm from './CreateVaultForm';
 import ImportVaultForm from './ImportVaultForm';
 import MyGivingInfo from '@components/Home/MyGivingInfo';
+import { StoreContext } from 'src/store/context';
 
 const Vault: React.FC = () => {
-  // const ContextValue = React.useContext(WalletContext);
-  // const { wallet, previousWallet, loading } = ContextValue;
+  const ContextValue = React.useContext(StoreContext);
+  const { createVault } = ContextValue;
 
   const { getXPI, getRestUrl } = useXPI();
 
@@ -32,7 +33,8 @@ const Vault: React.FC = () => {
       <CreateVaultForm
         XPI={XPI}
         getRestUrl={getRestUrl}
-        createVault={() => { }}
+        createVault={createVault}
+      // passLoadingStatus={passLoadingStatus}
       />
       <ImportVaultForm
         XPI={XPI}

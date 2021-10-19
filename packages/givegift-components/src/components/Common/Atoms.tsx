@@ -43,7 +43,7 @@ export const ZeroBalanceHeader = styled.div`
   margin-bottom: 5px;
 `;
 
-export const TokenParamLabel = styled.span`
+export const VaultParamLabel = styled.span`
   font-weight: bold;
 `;
 
