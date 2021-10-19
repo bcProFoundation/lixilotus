@@ -9,7 +9,7 @@ router.get('/vaults/:id/', async (req: express.Request, res: express.Response) =
   try {
     const gift = await prisma.vault.findUnique({
       where: {
-        id: id
+        id: parseInt(id)
       }
     });
     res.json(gift);
