@@ -15,14 +15,14 @@ import { parseAddress } from '@utils/addressMethods';
 import { currency } from '@abcpros/givegift-components/components/Common/Ticker';
 import CreateVaultForm from './CreateVaultForm';
 import ImportVaultForm from './ImportVaultForm';
-import MyGivingInfo from '@components/Home/MyGivingInfo';
-import { StoreContext } from 'src/store/context';
+import VaultList from './VaultList';
+import { useAppSelector } from 'src/store/hooks';
+import { getAllVaults } from 'src/store/vault/selectors';
 
 const Vault: React.FC = () => {
-  const ContextValue = React.useContext(StoreContext);
-  const { createVault } = ContextValue;
 
   const { getXPI, getRestUrl } = useXPI();
+  const vaults = useAppSelector(getAllVaults);
 
   // jestBCH is only ever specified for unit tests, otherwise app will use getBCH();
   // const BCH = jestBCH ? jestBCH : getBCH();
@@ -33,15 +33,13 @@ const Vault: React.FC = () => {
       <CreateVaultForm
         XPI={XPI}
         getRestUrl={getRestUrl}
-        createVault={createVault}
-      // passLoadingStatus={passLoadingStatus}
       />
       <ImportVaultForm
         XPI={XPI}
         getRestUrl={getRestUrl}
         createVault={() => { }}
       />
-      <MyGivingInfo />
+      <VaultList vaults={vaults} />
     </>
   )
 };

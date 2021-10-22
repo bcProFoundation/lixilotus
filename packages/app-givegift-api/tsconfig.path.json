@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "baseUrl": "."
+  },
+  "paths": {
+    "@abcpros/givegift-models/*": [
+      "../../packages/givegift-models/src/*"
+    ]
+  }
+}

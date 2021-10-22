@@ -104,7 +104,6 @@ export const LotusLogo = styled.img`
 
 function App(): JSX.Element {
 
-  const ContextValue = React.useContext(StoreContext);
   const location = useLocation();
   const history = useHistory();
   const [loading, setLoading] = useState(false);
@@ -153,7 +152,7 @@ function App(): JSX.Element {
                 active={selectedKey === 'vault'}
                 onClick={() => history.push('/vault')}
               >
-                <Icon component={() => <img src={VaultOutlineSvg} />} />
+                <Icon style={{ marginBottom: '0' }} component={() => <img style={{ position: 'relative', bottom: '6px' }} src={VaultOutlineSvg} />} />
                 {/* <GiftOutlined /> */}
                 Vault
               </NavButton>

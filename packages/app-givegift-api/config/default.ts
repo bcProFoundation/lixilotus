@@ -1,3 +1,4 @@
 export = {
-  port: 4800
+  port: 4800,
+  https: false
 };

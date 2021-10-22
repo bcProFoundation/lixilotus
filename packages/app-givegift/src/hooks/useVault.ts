@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import localforage from 'localforage';
 import BCHJS from '@abcpros/xpi-js';
 import useXPI from '@hooks/useXPI';
-import { CreateVaultData, Vault } from '@abcpros/givegift-models/lib/vault';
+import { Vault } from '@abcpros/givegift-models/lib/vault';
 import { aesGcmEncrypt, aesGcmDecrypt, generateRandomBase62Str } from '@utils/encryptionMethods';
 
 
@@ -73,29 +73,7 @@ const useVault = () => {
 
   }
 
-  const createVault = async (createVaultData: CreateVaultData) => {
-    const lang = 'english';
-    const Bip39128BitMnemonic = XPI.Mnemonic.generate(128, XPI.Mnemonic.wordLists()[lang]);
-    const password = generateRandomBase62Str(8);
-    const encryptedMnemonic = await aesGcmEncrypt(Bip39128BitMnemonic, password);
-    const decryptedMnemonic = await aesGcmDecrypt(encryptedMnemonic, password);
-    const vault = await getVaultDetails({
-      mnemonic: Bip39128BitMnemonic.toString(),
-      name: createVaultData.name
-    } as Vault);
-
-    try {
-      await localforage.setItem('vault', vault);
-    } catch (err) {
-      console.log(
-        `Error setting wallet to wallet indexedDb in createWallet()`,
-      );
-      console.log(err);
-    }
-  }
-
   return {
-    createVault
   } as const;
 }
 

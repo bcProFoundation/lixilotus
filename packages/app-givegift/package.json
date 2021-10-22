@@ -17,6 +17,7 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "antd": "^4.16.13",
+    "axios": "^0.23.0",
     "jest": "^27.2.4",
     "localforage": "^1.10.0",
     "lodash.isempty": "^4.4.0",

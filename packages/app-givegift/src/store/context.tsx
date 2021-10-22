@@ -10,12 +10,9 @@ export interface StoreCotextProps {
 export const StoreContext = createContext({} as StoreCotextProps);
 
 export const StoreProvider = ({ children }: { children: React.ReactNode }) => {
-  const vault = useVault();
   return (
-    <StoreContext.Provider value={vault}>
-      <Provider store={store}>
-        {children}
-      </Provider>
-    </StoreContext.Provider>
+    <Provider store={store}>
+      {children}
+    </Provider>
   );
 };

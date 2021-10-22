@@ -1,14 +1,22 @@
-import { configureStore, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 
 
 import createSagaMiddleware from "@redux-saga/core";
 import rootReducer from "./rootReducer";
 import rootSaga from "./rootSaga";
+import useXPI from "@hooks/useXPI";
 
+const { getXPI } = useXPI();
+const XPI = getXPI();
 
-const sagaMiddleware = createSagaMiddleware();
-// const middleware = [...getDefaultMiddleware({ thunk: false }), sagaMiddleware];
-
+const sagaMiddleware = createSagaMiddleware({
+  context: {
+    XPI
+  },
+  onError: (error: Error, { sagaStack: string }) => {
+    console.log(error);
+  }
+});
 
 export const store = configureStore({
   reducer: rootReducer,
@@ -18,7 +26,12 @@ export const store = configureStore({
 
 sagaMiddleware.run(rootSaga);
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
+// Define utilities types for redux toolkit
 export type RootState = ReturnType<typeof store.getState>;
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch;
+export type AppThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
+  RootState,
+  unknown,
+  Action<string>
+>;

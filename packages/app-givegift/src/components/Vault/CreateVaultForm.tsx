@@ -8,24 +8,24 @@ import { SmartButton } from '@abcpros/givegift-components/components/Common/Prim
 import { currency } from '@abcpros/givegift-components/components/Common/Ticker';
 import { isValidAmountInput } from '@utils/validation';
 import { VaultParamLabel } from '@abcpros/givegift-components/components/Common/Atoms';
-import { Vault } from '@abcpros/givegift-models/lib/vault';
+import { GenerateVaultDto, Vault } from '@abcpros/givegift-models/lib/vault';
+import { useAppDispatch } from 'src/store/hooks';
+import { generateVault } from 'src/store/vault/actions';
 const { Panel } = Collapse;
 
 type CreateVaultFormProps = {
   XPI: any;
   getRestUrl: Function;
   disabled?: boolean | undefined;
-  createVault: Function;
-  // passLoadingStatus: Function;
 };
 
 const CreateVaultForm = ({
   XPI,
   getRestUrl,
   disabled,
-  createVault,
-  // passLoadingStatus
 }: CreateVaultFormProps) => {
+
+  const dispatch = useAppDispatch();
 
   // New Vault name
   const [newVaultName, setNewVaultName] = useState('');
@@ -43,6 +43,8 @@ const CreateVaultForm = ({
   // New Vault Default Value
   const [newVaultDefaultValue, setNewVaultDefaultValue] = useState('');
   const [newVaultDefaultValueIsValid, setNewVaultDefaultValueIsValid] = useState(true);
+
+
 
 
   const handleNewVaultNameInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,7 +96,7 @@ const CreateVaultForm = ({
 
     // Create vault
     try {
-      const vaultData: Vault = {
+      const generateVaultDto: GenerateVaultDto = {
         name: newVaultName,
         minValue: newVaultMinValue,
         maxValue: newVaultMaxValue,
@@ -102,7 +104,8 @@ const CreateVaultForm = ({
         isRandomGive: isRandomGive
       };
 
-      const vault = await createVault(vaultData);
+      dispatch(generateVault(generateVaultDto));
+
     } catch (e: any) {
       // Set loading to false here as well, as balance may not change depending on where error occured in try loop
       // passLoadingStatus(false);

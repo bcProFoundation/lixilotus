@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 
 const bodyParser = require('body-parser');
 const compression = require('compression');
@@ -13,6 +14,7 @@ export class ExpressApp {
 
   async start() {
 
+    this.app.use(cors());
     this.app.use(compression());
 
     const POST_LIMIT = 1024 * 100 /* Max POST 100 kb */;
