@@ -25,22 +25,13 @@ router.post('/vaults', async (req: express.Request, res: express.Response) => {
   const vaultApi: VaultApi = req.body;
   if (vaultApi) {
     try {
-      const minValue = Number(vaultApi.minValue);
-      const maxValue = Number(vaultApi.maxValue);
-      const defaultValue = Number(vaultApi.defaultValue);
       const vaultToInsert = {
         ...vaultApi,
-        minValue: minValue,
-        maxValue: maxValue,
-        defaultValue: defaultValue
       };
       const createdVault = await prisma.vault.create({ data: vaultToInsert });
 
       const resultApi: VaultApi = {
         ...createdVault,
-        minValue: createdVault.minValue.toString(),
-        maxValue: createdVault.maxValue.toString(),
-        defaultValue: createdVault.defaultValue.toString()
       };
 
       res.json(resultApi);

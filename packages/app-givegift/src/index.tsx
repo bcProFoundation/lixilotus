@@ -1,19 +1,21 @@
 import React from 'react';
-import { HashRouter as Router } from 'react-router-dom';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './components/App';
-import { StoreProvider } from 'src/store/context';
 // import GA from '@utils/GoogleAnalytics';
 import reportWebVitals from './reportWebVitals';
+import { ConnectedRouter } from 'connected-react-router';
+import { history } from '@utils/history';
+import { Provider } from 'react-redux';
+import { store } from './store/store';
 
 ReactDOM.render(
-  <StoreProvider>
-    <Router>
+  <Provider store={store}>
+    <ConnectedRouter history={history}>
       {/* {GA.init() && <GA.RouteTracker />} */}
       <App />
-    </Router>
-  </StoreProvider>,
+    </ConnectedRouter>
+  </Provider>,
   document.getElementById('root')
 );
 

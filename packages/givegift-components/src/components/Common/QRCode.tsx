@@ -151,8 +151,8 @@ const CustomInput = styled.div<CustomInputProps>`
 
 type QRCodeProps = {
   address: string;
-  size: number;
-  onClick: Function;
+  size?: number;
+  onClick?: Function;
 }
 
 export const QRCode = ({

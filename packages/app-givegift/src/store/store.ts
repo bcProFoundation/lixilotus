@@ -1,17 +1,21 @@
-import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
-
-
+import { configureStore, ThunkAction, Action, combineReducers } from "@reduxjs/toolkit";
 import createSagaMiddleware from "@redux-saga/core";
-import rootReducer from "./rootReducer";
 import rootSaga from "./rootSaga";
 import useXPI from "@hooks/useXPI";
+import useWallet from "@hooks/useWallet";
+import { routerMiddleware } from "connected-react-router";
+import { history } from "@utils/history";
+import rootReducer from "./rootReducer";
+
 
 const { getXPI } = useXPI();
 const XPI = getXPI();
+const Wallet = useWallet(XPI);
 
 const sagaMiddleware = createSagaMiddleware({
   context: {
-    XPI
+    XPI,
+    Wallet
   },
   onError: (error: Error, { sagaStack: string }) => {
     console.log(error);
@@ -20,7 +24,9 @@ const sagaMiddleware = createSagaMiddleware({
 
 export const store = configureStore({
   reducer: rootReducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware),
+  middleware: (getDefaultMiddleware) => {
+    return getDefaultMiddleware().concat(sagaMiddleware, routerMiddleware(history))
+  },
   devTools: process.env.NODE_ENV === 'production' ? false : true,
 });
 

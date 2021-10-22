@@ -1,6 +1,6 @@
 import { createEntityAdapter, createReducer } from "@reduxjs/toolkit"
 import { Vault } from "@abcpros/givegift-models/lib/vault";
-import { postVault, postVaultFailure, postVaultSuccess, setVault } from "./actions";
+import { postVault, postVaultFailure, postVaultSuccess, selectVault, setVault } from "./actions";
 import { VaultsState } from "./state"
 
 export const vaultsAdapter = createEntityAdapter<Vault>({
@@ -18,8 +18,8 @@ export const vaultReducer = createReducer(initialState, (builder) => {
       vaultsAdapter.addOne(state, vault);
       state.selectedId = vault.id;
     })
-    .addCase(postVaultFailure, (state, action) => {
-      const message = action.payload;
-
+    .addCase(selectVault, (state, action) => {
+      const id = action.payload;
+      state.selectedId = id;
     })
 })

@@ -1,23 +1,22 @@
-import { GivingItem } from "@abcpros/givegift-components/components";
+
 import { Vault } from "@abcpros/givegift-models/lib/vault";
+import VaultListItem from "./VaultListItem";
 
 type VaultListProps = {
-  vaults: Vault[]
+  vaults: Vault[];
 };
 
 const VaultList = ({ vaults }: VaultListProps) => {
+
+
 
   return (
     <div style={{ paddingTop: '20px' }}>
       {vaults && vaults.length > 0 &&
         vaults.map(item => (
-          <GivingItem
+          <VaultListItem
             key={item.id}
-            description={item.name}
-            givingDate={new Date()}
-            givingAmount={'0'}
-            ticker={'XPI'}
-            giftNumber={0}
+            vault={item}
           />
         ))
       }

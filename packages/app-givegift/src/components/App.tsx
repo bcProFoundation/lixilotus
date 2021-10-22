@@ -11,7 +11,6 @@ import '../index.css';
 import './App.less';
 import { Spin } from 'antd';
 import Icon from '@ant-design/icons';
-import { StoreContext } from 'src/store/context';
 import styled, { ThemeProvider } from 'styled-components';
 import { theme, GlobalStyle } from '@abcpros/givegift-components/styles';
 import LogoLotusPink from '@assets/images/lotus-pink-logo.png';
@@ -125,18 +124,20 @@ function App(): JSX.Element {
                 <LotusLogo src={LogoLotusPink} alt="givelotus" />
               </HeaderContainer>
               <Switch>
-                <Route path="/home">
-                  <Home />
-                </Route>
-                <Route path="/Vault">
-                  <Vault />
-                </Route>
-                <Route path="/redeem">
-                  <Redeem />
-                </Route>
-                <Route>
-                  <Profile />
-                </Route>
+                <>
+                  <Route path="/home">
+                    <Home />
+                  </Route>
+                  <Route path="/Vault">
+                    <Vault />
+                  </Route>
+                  <Route path="/redeem">
+                    <Redeem />
+                  </Route>
+                  <Route path="/profile">
+                    <Profile />
+                  </Route>
+                </>
               </Switch>
             </AppContainer>
             <Footer>

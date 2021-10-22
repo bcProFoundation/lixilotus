@@ -10,46 +10,26 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// model Giver {
-//   id        String   @id @default(dbgenerated()) @map("_id") @db.ObjectId
-//   name      String
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @default(now())
-//   vaults    Vault[]
-// }
-
 model Vault {
   id                Int      @id @default(autoincrement())
   name              String
   isRandomGive      Boolean
-  minValue          Int
-  maxValue          Int
-  defaultValue      Int
+  minValue          Float
+  maxValue          Float
+  defaultValue      Float
   encryptedMnemonic String
-  redeemCode        String
   createdAt         DateTime @default(now())
   updatedAt         DateTime @default(now())
+  redeems           Redeem[]
 }
 
-// model Giving {
-//   id          String   @id @default(dbgenerated()) @map("_id") @db.ObjectId
-//   coin        String
-//   description String
-//   createdAt   DateTime @default(now())
-//   updatedAt   DateTime @default(now())
-//   Giver       Giver    @relation(fields: [giverId], references: [id])
-//   giverId     String   @db.ObjectId
-//   gifts       Gift[]
-
-// }
-
-// model Gift {
-//   id           String   @id @default(dbgenerated()) @map("_id") @db.ObjectId
-//   numReceivers Int
-//   numnReceived Int
-//   value        Int
-//   returnTime   DateTime
-//   title        String
-//   Giving       Giving?  @relation(fields: [givingAwayId], references: [id])
-//   givingAwayId String?  @db.ObjectId
-// }
+model Redeem {
+  id            Int      @id @default(autoincrement())
+  ipaddress     String
+  transactionId String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now())
+  redeemAddress String
+  vault         Vault    @relation(fields: [vaultId], references: [id])
+  vaultId       Int
+}

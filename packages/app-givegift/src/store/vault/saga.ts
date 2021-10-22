@@ -1,5 +1,6 @@
 import { PayloadAction } from "@reduxjs/toolkit";
 import { notification } from "antd";
+import { push } from 'connected-react-router';
 import { GenerateVaultDto, Vault, VaultApi } from "@abcpros/givegift-models/lib/vault";
 import { all, call, fork, getContext, put, takeLatest } from "@redux-saga/core/effects";
 import { generateVault, getVault, getVaultFailure, getVaultSuccess, postVault, postVaultFailure, postVaultSuccess, setVault } from "./actions";
@@ -12,23 +13,25 @@ import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase62Str } from "@utils/en
  */
 function* generateVaultSaga(action: PayloadAction<GenerateVaultDto>) {
   const XPI = yield getContext('XPI');
-  const vault = action.payload;
+  const vaultDto = action.payload;
   const lang = 'english';
   const Bip39128BitMnemonic = XPI.Mnemonic.generate(128, XPI.Mnemonic.wordLists()[lang]);
   const password = generateRandomBase62Str(8);
   const encryptedMnemonic: string = yield call(aesGcmEncrypt, Bip39128BitMnemonic, password);
 
-  const vaultApi: VaultApi = {
-    name: vault.name,
-    isRandomGive: vault.isRandomGive,
+  const vault: Vault = {
+    id: 0,
+    name: vaultDto.name,
+    isRandomGive: vaultDto.isRandomGive,
     encryptedMnemonic: encryptedMnemonic,
+    minValue: Number(vaultDto.minValue),
+    maxValue: Number(vaultDto.maxValue),
+    defaultValue: Number(vaultDto.defaultValue),
     redeemCode: password,
-    minValue: vault.minValue,
-    maxValue: vault.maxValue,
-    defaultValue: vault.defaultValue
+    mnemonic: Bip39128BitMnemonic
   };
 
-  yield put(postVault(vaultApi));
+  yield put(postVault(vault));
 
 }
 
@@ -47,11 +50,24 @@ function* getVaultSaga(action: PayloadAction<number>) {
   }
 }
 
-function* postVaultSaga(action: PayloadAction<VaultApi>) {
+function* postVaultSaga(action: PayloadAction<Vault>) {
   try {
-    const data = action.payload;
-    const response = yield call(vaultApi.post, data);
-    yield put(postVaultSuccess(response.data));
+    const vault = action.payload;
+
+    const dataApi: VaultApi = {
+      name: vault.name,
+      isRandomGive: vault.isRandomGive,
+      encryptedMnemonic: vault.encryptedMnemonic,
+      minValue: vault.minValue,
+      maxValue: vault.maxValue,
+      defaultValue: vault.defaultValue
+    }
+
+    const response: { data: VaultApi } = yield call(vaultApi.post, dataApi);
+
+    // Merge back to action payload
+    const result = { ...vault, ...response.data } as Vault;
+    yield put(postVaultSuccess(result));
 
   } catch (err) {
     const message = `Could not post the vault to the api.`;
@@ -68,19 +84,21 @@ function* getVaultFailureSaga(action: PayloadAction<string>) {
   });
 }
 
-function* postVaultSuccessSaga(action: PayloadAction<VaultApi>) {
-  const vaultApi = action.payload;
-  const decryptedMnemonic = yield call(aesGcmDecrypt, vaultApi.encryptedMnemonic, vaultApi.redeemCode);
-  console.log(decryptedMnemonic);
-  const vault = {
-    ...vaultApi,
-    id: vaultApi.id,
-    mnemonic: decryptedMnemonic,
-    minValue: parseFloat(vaultApi.minValue),
-    maxValue: parseFloat(vaultApi.maxValue),
-    defaultValue: parseFloat(vaultApi.defaultValue)
-  } as Vault;
-  yield put(setVault(vault));
+function* postVaultSuccessSaga(action: PayloadAction<Vault>) {
+  const vault = action.payload;
+  // Recalculate and valate the redeem code
+  const decryptedMnemonic = yield call(aesGcmDecrypt, vault.encryptedMnemonic, vault.redeemCode);
+  if (decryptedMnemonic !== vault.mnemonic) {
+    console.log('error');
+    // @todo: need dispatch error action here
+  } else {
+    // calculate vault details
+    const Wallet = yield getContext('Wallet');
+    const Path10605 = yield call(Wallet.getWalletDetails, vault.mnemonic);
+    vault.Path10605 = Path10605;
+    yield put(setVault(vault));
+    // yield put(push('/home'));
+  }
 }
 
 function* postVaultFailureSaga(action: PayloadAction<string>) {
@@ -90,6 +108,10 @@ function* postVaultFailureSaga(action: PayloadAction<string>) {
     description: message,
     duration: 5
   });
+}
+
+function* setVaultSaga(action: PayloadAction<number>) {
+  yield put(push('/home'));
 }
 
 
@@ -117,6 +139,10 @@ function* watchPostVaultFailure() {
   yield takeLatest(getVaultFailure.type, postVaultFailureSaga);
 }
 
+function* watchSetVault() {
+  yield takeLatest(setVault.type, setVaultSaga);
+}
+
 export default function* vaultSaga() {
   yield all([
     fork(watchGenerateVault),
@@ -124,6 +150,7 @@ export default function* vaultSaga() {
     fork(watchGetVaultFailure),
     fork(watchPostVault),
     fork(watchPostVaultFailure),
-    fork(watchPostVaultSuccess)
+    fork(watchPostVaultSuccess),
+    fork(watchSetVault)
   ]);
 }
