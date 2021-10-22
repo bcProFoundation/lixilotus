@@ -3,7 +3,7 @@ import { notification } from "antd";
 import { push } from 'connected-react-router';
 import { GenerateVaultDto, Vault, VaultApi } from "@abcpros/givegift-models/lib/vault";
 import { all, call, fork, getContext, put, takeLatest } from "@redux-saga/core/effects";
-import { generateVault, getVault, getVaultFailure, getVaultSuccess, postVault, postVaultFailure, postVaultSuccess, setVault } from "./actions";
+import { generateVault, getVault, getVaultFailure, getVaultSuccess, postVault, postVaultFailure, postVaultSuccess, selectVault, setVault } from "./actions";
 import vaultApi from "./api";
 import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase62Str } from "@utils/encryptionMethods";
 
@@ -110,7 +110,11 @@ function* postVaultFailureSaga(action: PayloadAction<string>) {
   });
 }
 
-function* setVaultSaga(action: PayloadAction<number>) {
+function* setVaultSaga(action: PayloadAction<Vault>) {
+  yield put(push('/home'));
+}
+
+function* selectVaultSaga(action: PayloadAction<number>) {
   yield put(push('/home'));
 }
 
@@ -143,6 +147,10 @@ function* watchSetVault() {
   yield takeLatest(setVault.type, setVaultSaga);
 }
 
+function* watchSelectVault() {
+  yield takeLatest(selectVault.type, selectVaultSaga);
+}
+
 export default function* vaultSaga() {
   yield all([
     fork(watchGenerateVault),
@@ -151,6 +159,7 @@ export default function* vaultSaga() {
     fork(watchPostVault),
     fork(watchPostVaultFailure),
     fork(watchPostVaultSuccess),
-    fork(watchSetVault)
+    fork(watchSetVault),
+    fork(watchSelectVault)
   ]);
 }
