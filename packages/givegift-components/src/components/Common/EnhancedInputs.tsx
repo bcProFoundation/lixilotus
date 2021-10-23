@@ -277,11 +277,12 @@ export const FormItemWithQRCodeAddon = (props: FormItemWithQRCodeAddonProps) => 
 };
 
 type FormItemRedeemCodeXpiInputProps = {
+  inputProps: InputProps;
 } & FormItemProps;
 
 export const FormItemRedeemCodeXpiInput = (props: FormItemRedeemCodeXpiInputProps) => {
 
-  const { ...otherProps } = props;
+  const { inputProps, ...otherProps } = props;
   return (
     <AntdFormWrapper {...otherProps}>
       <Form style={{ width: 'auto' }}>
@@ -293,9 +294,13 @@ export const FormItemRedeemCodeXpiInput = (props: FormItemRedeemCodeXpiInputProp
             name="redeemCode"
             autoComplete="off"
             required
+            {...inputProps}
           />
         </Form.Item>
       </Form>
     </AntdFormWrapper>
   );
 }
+
+type FormItemAddressXpiInputProps = {
+} & FormItemProps;

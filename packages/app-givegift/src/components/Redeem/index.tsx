@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Form, notification, message, Modal, Alert } from 'antd';
+import { Row, Col, Form, notification, message, Modal, Alert, Input } from 'antd';
 import { isMobile, isIOS, isSafari } from 'react-device-detect';
 import PrimaryButton, {
   SecondaryButton,
@@ -15,7 +15,7 @@ import { currency } from '@abcpros/givegift-components/components/Common/Ticker'
 
 type RedeemFormData = {
   dirty: boolean;
-  value: string;
+  redeemCode: string;
   address: string;
 }
 
@@ -29,7 +29,7 @@ const Redeem: React.FC = () => {
 
   const [redeemFormData, setRedeemFormData] = useState({
     dirty: true,
-    value: '',
+    redeemCode: '',
     address: ''
   } as RedeemFormData);
 
@@ -44,6 +44,7 @@ const Redeem: React.FC = () => {
 
   // jestBCH is only ever specified for unit tests, otherwise app will use getBCH();
   // const BCH = jestBCH ? jestBCH : getBCH();
+  // @todo: put into context or util methods
   const XPI = getXPI();
 
   const showModal = () => {
@@ -68,13 +69,12 @@ const Redeem: React.FC = () => {
 
     if (
       !redeemFormData.address ||
-      !redeemFormData.value ||
-      Number(redeemFormData.value) <= 0
+      !redeemFormData.redeemCode
     ) {
       return;
     }
 
-    const { address, value } = redeemFormData;
+    const { address, redeemCode } = redeemFormData;
 
     // Get the param-free address
     let cleanAddress = address.split('?')[0];
@@ -93,7 +93,6 @@ const Redeem: React.FC = () => {
     let error: boolean | string = false;
     let addressString: string = value;
 
-
     // parse address
     const addressInfo = parseAddress(XPI, addressString);
     const { address, isValid } = addressInfo;
@@ -103,6 +102,21 @@ const Redeem: React.FC = () => {
       error = `Invalid ${currency.ticker} address`;
       setRedeemXpiAddressError(error);
     }
+
+    // Set address field to user input
+    setRedeemFormData(p => ({
+      ...p,
+      [name]: value,
+    }));
+  }
+
+  const handleRedeemCodeChange = e => {
+    const { value, name } = e.target;
+    let redeemCode = value;
+    setRedeemFormData(p => ({
+      ...p,
+      [name]: redeemCode,
+    }));
   }
 
   return (
@@ -139,13 +153,18 @@ const Redeem: React.FC = () => {
               }}
             ></FormItemWithQRCodeAddon>
             <FormItemRedeemCodeXpiInput
+              inputProps={{
+                onChange: e => handleRedeemCodeChange(e),
+              }}
             ></FormItemRedeemCodeXpiInput>
             <div
               style={{
                 paddingTop: '12px',
               }}
             >
-              <PrimaryButton>Redeem</PrimaryButton>
+              <PrimaryButton
+                onClick={() => submit()}
+              >Redeem</PrimaryButton>
             </div>
           </Form>
         </Col>

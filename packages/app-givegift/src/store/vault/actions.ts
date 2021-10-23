@@ -10,3 +10,4 @@ export const postVaultSuccess = createAction<Vault>('vault/postVaultSuccess');
 export const postVaultFailure = createAction<string>('vault/postVaultFailure');
 export const setVault = createAction<Vault>('vault/setVault');
 export const selectVault = createAction<number>('vault/selectVault');
+
