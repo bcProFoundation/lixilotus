@@ -2,6 +2,7 @@ import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import { RedeemApi } from '@abcpros/givegift-models/src/lib/redeem'
 import { aesGcmDecrypt } from '../utils/encryptionMethods';
+import Container from 'typedi';
 
 const prisma = new PrismaClient();
 let router = express.Router();
@@ -13,7 +14,8 @@ router.post('/redeems', async (req: express.Request, res: express.Response) => {
       const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress) as string;
       const redeemCode = redeemApi.redeemCode;
       const password = redeemCode.slice(0, 8);
-      const vaultId = parseInt(redeemCode.slice(8));
+      const encodedVaultId = redeemCode.slice(8);
+      const vaultId = parseInt(encodedVaultId);
 
       const existedRedeems = await prisma.redeem.findMany({
         where: {
@@ -47,8 +49,19 @@ router.post('/redeems', async (req: express.Request, res: express.Response) => {
 
       const seed = await aesGcmDecrypt(vault.encryptedMnemonic, password);
 
-      console.log(seed);
+      const createdReem = await prisma.redeem.create({
+        data: {
+          ...redeemApi,
+          ipaddress: ip,
+          vaultId: vault.id,
+          transactionId: ''
+        }
+      });
 
+      // const walletService = Container.get('wallet.service');
+      // console.log(walletService);
+
+      res.json({});
 
     } catch (error) {
       console.log(error);

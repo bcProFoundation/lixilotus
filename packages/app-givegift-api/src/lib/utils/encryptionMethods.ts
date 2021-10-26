@@ -13,18 +13,20 @@ import crypto from 'crypto';
  *   aesGcmDecrypt(ciphertext, 'pw').then(function(plaintext) { console.log(plaintext); });
  */
 export async function aesGcmDecrypt(ciphertext: string, password: string) {
-  const pwUtf8 = new TextEncoder().encode(password);                                 // encode password as UTF-8
-  const pwHash = await crypto.createHash('sha256').update(pwUtf8).digest();                      // hash the password
+  const pwUtf8 = new TextEncoder().encode(password);                         // encode password as UTF-8
+  const pwHash = await crypto.createHash('sha256').update(pwUtf8).digest();  // hash the password
 
-  const iv = Buffer.from((ciphertext).slice(0, 12), 'base64');                                        // decode base64 iv
+  const cipherBuffer = Buffer.from(ciphertext, 'base64');
+  const iv = cipherBuffer.slice(0, 12);          // decode base64 iv
 
   const key = pwHash;
   const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
 
+  const ct = cipherBuffer.slice(12, -16);
+  const authTag = Buffer.from(cipherBuffer.slice(-16));
 
-  const enc = (ciphertext).slice(12);
-
-  let str = decipher.update(enc, 'base64', 'utf8');
-  str = str + decipher.final('utf8');
-  return str;
+  const decryptedBuffer = decipher.update(ct);
+  decipher.setAuthTag(authTag);
+  decipher.final();
+  return decryptedBuffer.toString();
 }

@@ -24,7 +24,7 @@ import {
 import VaultOutlineSvg from '@assets/icons/VaultOutline.svg';
 // import { LoadingIcon } from '@abcpros/givegift-components/atoms/CustomIcons/CustomIcons';
 import Home from '@components/Home/Home';
-import Redeem from '@components/Redeem';
+import RedeemComponent from '@components/Redeem';
 import Profile from '@components/Profile/Profile';
 import { Footer, NavButton } from '@abcpros/givegift-components/components';
 import Vault from '@components/Vault';
@@ -132,7 +132,7 @@ function App(): JSX.Element {
                     <Vault />
                   </Route>
                   <Route path="/redeem">
-                    <Redeem />
+                    <RedeemComponent />
                   </Route>
                   <Route path="/profile">
                     <Profile />

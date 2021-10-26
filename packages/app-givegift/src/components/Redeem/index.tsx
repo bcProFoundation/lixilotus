@@ -12,6 +12,9 @@ import useWindowDimensions from '@hooks/useWindowDimensions';
 import useXPI from '@hooks/useXPI';
 import { parseAddress } from '@utils/addressMethods';
 import { currency } from '@abcpros/givegift-components/components/Common/Ticker';
+import { useAppDispatch } from 'src/store/hooks';
+import { postRedeem } from 'src/store/redeem/actions';
+import { Redeem } from '@abcpros/givegift-models';
 
 type RedeemFormData = {
   dirty: boolean;
@@ -19,9 +22,11 @@ type RedeemFormData = {
   address: string;
 }
 
-const Redeem: React.FC = () => {
+const RedeemComponent: React.FC = () => {
   // const ContextValue = React.useContext(WalletContext);
   // const { wallet, previousWallet, loading } = ContextValue;
+
+  const dispatch = useAppDispatch();
 
   const { width } = useWindowDimensions();
   // Load with QR code open if device is mobile and NOT iOS + anything but safari
@@ -85,6 +90,11 @@ const Redeem: React.FC = () => {
       const error = `Destination is not a valid ${currency.ticker} address`;
       setRedeemXpiAddressError(error);
     }
+
+    dispatch(postRedeem({
+      redeemAddress: address,
+      redeemCode: redeemCode
+    } as Redeem));
 
   }
 
@@ -173,4 +183,4 @@ const Redeem: React.FC = () => {
   )
 };
 
-export default Redeem;
+export default RedeemComponent;

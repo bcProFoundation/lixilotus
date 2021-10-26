@@ -5,7 +5,7 @@ import { GenerateVaultDto, Vault, VaultApi } from "@abcpros/givegift-models/lib/
 import { all, call, fork, getContext, put, takeLatest } from "@redux-saga/core/effects";
 import { generateVault, getVault, getVaultFailure, getVaultSuccess, postVault, postVaultFailure, postVaultSuccess, selectVault, setVault } from "./actions";
 import vaultApi from "./api";
-import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase62Str } from "@utils/encryptionMethods";
+import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase62Str, numberToBase62 } from "@utils/encryptionMethods";
 
 /**
  * Generate a vault with random encryption password
@@ -88,16 +88,17 @@ function* postVaultSuccessSaga(action: PayloadAction<Vault>) {
   const vault = action.payload;
   // Recalculate and valate the redeem code
   const decryptedMnemonic = yield call(aesGcmDecrypt, vault.encryptedMnemonic, vault.redeemCode);
+  const encodedId = numberToBase62(vault.id);
+  vault.redeemCode = vault.redeemCode + encodedId;
   if (decryptedMnemonic !== vault.mnemonic) {
-    console.log('error');
-    // @todo: need dispatch error action here
+    const message = `The vault created is invalid.`;
+    yield put(postVaultFailure(message));
   } else {
     // calculate vault details
     const Wallet = yield getContext('Wallet');
     const Path10605 = yield call(Wallet.getWalletDetails, vault.mnemonic);
     vault.Path10605 = Path10605;
     yield put(setVault(vault));
-    // yield put(push('/home'));
   }
 }
 
