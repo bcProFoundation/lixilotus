@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { ExpressApp } from "./lib/expressapp";
 import config from 'config';
 import http from 'http';

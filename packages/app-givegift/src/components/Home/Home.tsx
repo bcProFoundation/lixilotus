@@ -48,7 +48,7 @@ const Home = () => {
                 </>
               )}
             <Descriptions.Item label="Redeem Code">
-              {selectedVault.redeemCode + selectedVault.id}
+              {selectedVault.redeemCode}
             </Descriptions.Item>
             <Descriptions.Item label="Seed">
               {selectedVault.mnemonic}

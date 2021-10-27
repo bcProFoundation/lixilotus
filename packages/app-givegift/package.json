@@ -5,7 +5,7 @@
   "dependencies": {
     "@abcpros/givegift-components": "^0.1.0",
     "@abcpros/givegift-models": "^1.0.0",
-    "@abcpros/minimal-xpi-slp-wallet": "3.0.8",
+    "@abcpros/minimal-xpi-slp-wallet": "^3.0.10",
     "@abcpros/xpi-js": "^4.0.5",
     "@ant-design/icons": "^4.7.0",
     "@fortawesome/fontawesome-free": "^5.15.4",

@@ -1,15 +1,35 @@
 import express from 'express';
 import cors from 'cors';
+import config from 'config';
+import Container from 'typedi';
+import SlpWallet from '@abcpros/minimal-xpi-slp-wallet';
+import * as Vault from './routes/vault';
+import * as Redeem from './routes/redeem';
 
 const bodyParser = require('body-parser');
 const compression = require('compression');
-import * as Vault from './routes/vault';
+const xpiRestUrl = config.has('xpiRestUrl') ? config.get('xpiRestUrl') : 'https://api.sendlotus.com/v4/'
+
 
 export class ExpressApp {
   app: express.Express;
 
   constructor() {
     this.app = express();
+  }
+
+  public routes() {
+    this.app.use('/api', Vault.router);
+    this.app.use('/api', Redeem.router);
+  }
+
+  public DIProviders() {
+    const ConstructedSlpWallet = new SlpWallet('', {
+      restURL: xpiRestUrl,
+      hdPath: "m/44'/10605'/0'/0/0"
+    });
+    Container.set('xpiWallet', ConstructedSlpWallet);
+    Container.set('xpijs', ConstructedSlpWallet.bchjs);
   }
 
   async start() {
@@ -25,6 +45,7 @@ export class ExpressApp {
       })
     );
 
-    this.app.use('/api', Vault.router);
+    this.DIProviders();
+    this.routes();
   }
 }

@@ -30,3 +30,16 @@ export async function aesGcmDecrypt(ciphertext: string, password: string) {
   decipher.final();
   return decryptedBuffer.toString();
 }
+
+export function base62ToNumber(text: string): number {
+  const base = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  let result = 0;
+  for (let i = 0; i < text.length; i++) {
+    const p = base.indexOf(text[i]);
+    if (p < 0) {
+      return NaN;
+    }
+    result += p * Math.pow(base.length, text.length - i - 1);
+  }
+  return result;
+}

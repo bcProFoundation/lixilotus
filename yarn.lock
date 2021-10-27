@@ -9,10 +9,20 @@
   dependencies:
     safe-buffer "^5.1.1"
 
-"@abcpros/minimal-xpi-slp-wallet@3.0.8":
-  version "3.0.8"
-  resolved "https://registry.yarnpkg.com/@abcpros/minimal-xpi-slp-wallet/-/minimal-xpi-slp-wallet-3.0.8.tgz#b8519bf0c9869c6b466491fb241b712e1dc60b0e"
-  integrity sha512-61Lin+2r+TxCBYcsLPE8AITL7f/fmQZQElYlZaw5wvt5ttYnUiAQ0suBt7kPFXlmDCahPuUy/UaTI7wAbJz6Mw==
+"@abcpros/minimal-xpi-slp-wallet@^3.0.10":
+  version "3.0.10"
+  resolved "https://registry.yarnpkg.com/@abcpros/minimal-xpi-slp-wallet/-/minimal-xpi-slp-wallet-3.0.10.tgz#61675d66b8ddb08d85eb90029a2bfc7ebfc19888"
+  integrity sha512-qsKKTGUWfPi+LcxpEQ4tpGoa4qKwI9GgafJPfEGRY9dbd1JnM0lkd6MfhsBxRVPI0gXkn5KRoi7LCGQZLip/mg==
+  dependencies:
+    "@abcpros/xpi-js" "^4.0.5"
+    apidoc "^0.25.0"
+    bch-donation "^1.1.1"
+    crypto-js "^4.0.0"
+
+"@abcpros/minimal-xpi-slp-wallet@^3.0.9":
+  version "3.0.9"
+  resolved "https://registry.yarnpkg.com/@abcpros/minimal-xpi-slp-wallet/-/minimal-xpi-slp-wallet-3.0.9.tgz#87504522abf3753a2c27b7b34925b67346de8abd"
+  integrity sha512-CwhKAjz0ifr0xktJ5K+xaXL4wtsQyES/hh6yI1zyr8ZVbWdAuH8lEQxEg3DxnGxeS8k1ZxOxYMbsNb3GsYYCCw==
   dependencies:
     "@abcpros/xpi-js" "^4.0.5"
     apidoc "^0.25.0"
@@ -14589,9 +14599,9 @@ lines-and-columns@^1.1.6:
   integrity sha1-HADHQ7QzzQpOgHWPe2SldEDZ/wA=
 
 linkify-it@^3.0.1:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/linkify-it/-/linkify-it-3.0.2.tgz#f55eeb8bc1d3ae754049e124ab3bb56d97797fb8"
-  integrity sha512-gDBO4aHNZS6coiZCKVhSNh43F9ioIL4JwRjLZPkoLIY4yZFwg264Y5lu2x6rb1Js42Gh6Yqm2f6L2AJcnkzinQ==
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/linkify-it/-/linkify-it-3.0.3.tgz#a98baf44ce45a550efb4d49c769d07524cc2fa2e"
+  integrity sha512-ynTsyrFSdE5oZ/O9GEf00kPngmOfVwazR5GKDq6EYfhlpFug3J2zybX56a2PRRpc9P+FuSoGNAwjlbDs9jJBPQ==
   dependencies:
     uc.micro "^1.0.1"
 
@@ -15856,9 +15866,9 @@ node-releases@^1.1.61, node-releases@^1.1.76:
   integrity sha512-9/IECtNr8dXNmPWmFXepT0/7o5eolGesHUa3mtr0KlgnCvnZxwh2qensKL42JJY2vQKC3nIBXetFAqR+PW1CmA==
 
 nodemon@^2.0.4:
-  version "2.0.13"
-  resolved "https://registry.yarnpkg.com/nodemon/-/nodemon-2.0.13.tgz#67d40d3a4d5bd840aa785c56587269cfcf5d24aa"
-  integrity sha512-UMXMpsZsv1UXUttCn6gv8eQPhn6DR4BW+txnL3IN5IHqrCwcrT/yWHfL35UsClGXknTH79r5xbu+6J1zNHuSyA==
+  version "2.0.14"
+  resolved "https://registry.yarnpkg.com/nodemon/-/nodemon-2.0.14.tgz#287c7a2f6cd8a18b07e94cd776ecb6a82e4ba439"
+  integrity sha512-frcpDx+PviKEQRSYzwhckuO2zoHcBYLHI754RE9z5h1RGtrngerc04mLpQQCPWBkH/2ObrX7We9YiwVSYZpFJQ==
   dependencies:
     chokidar "^3.2.2"
     debug "^3.2.6"
@@ -19140,6 +19150,11 @@ redux@^4.0.0, redux@^4.0.4, redux@^4.1.0:
   dependencies:
     "@babel/runtime" "^7.9.2"
 
+reflect-metadata@^0.1.13:
+  version "0.1.13"
+  resolved "https://registry.yarnpkg.com/reflect-metadata/-/reflect-metadata-0.1.13.tgz#67ae3ca57c972a2aa1642b10fe363fe32d49dc08"
+  integrity sha512-Ts1Y/anZELhSsjMcU605fU9RE4Oi3p5ORujwbIKXfWa+0Zxs510Qrmrce5/Jowq3cHSZSJqBjypxmHarc+vEWg==
+
 refractor@^3.1.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/refractor/-/refractor-3.4.0.tgz#62bd274b06c942041f390c371b676eb67cb0a678"
@@ -21726,6 +21741,11 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
+typedi@^0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/typedi/-/typedi-0.10.0.tgz#e8f9a5ee100b84addbdfb57fe90d8d9ed2a21dea"
+  integrity sha512-v3UJF8xm68BBj6AF4oQML3ikrfK2c9EmZUyLOfShpJuItAqVBHWP/KtpGinkSsIiP6EZyyb6Z3NXyW9dgS9X1w==
+
 typedoc-default-themes@^0.11.4:
   version "0.11.4"
   resolved "https://registry.yarnpkg.com/typedoc-default-themes/-/typedoc-default-themes-0.11.4.tgz#1bc55b7c8d1132844616ff6f570e1e2cd0eb7343"
@@ -21813,11 +21833,9 @@ unbox-primitive@^1.0.1:
     which-boxed-primitive "^1.0.2"
 
 undefsafe@^2.0.3:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/undefsafe/-/undefsafe-2.0.3.tgz#6b166e7094ad46313b2202da7ecc2cd7cc6e7aae"
-  integrity sha512-nrXZwwXrD/T/JXeygJqdCO6NZZ1L66HrxM/Z7mIq2oPanoN0F1nLx3lwJMu6AwJY69hdixaFQOuoYsMjE5/C2A==
-  dependencies:
-    debug "^2.2.0"
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/undefsafe/-/undefsafe-2.0.5.tgz#38733b9327bdcd226db889fb723a6efd162e6e2c"
+  integrity sha512-WxONCrssBM8TSPRqN5EmsjVrsv4A8X12J4ArBiiayv3DyyG3ZlIg6yysuuSYdZsVz3TKcTg2fd//Ujd4CHV1iA==
 
 unfetch@^4.2.0:
   version "4.2.0"

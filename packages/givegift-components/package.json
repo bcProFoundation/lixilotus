@@ -1,7 +1,6 @@
 {
   "name": "@abcpros/givegift-components",
   "version": "0.1.0",
-  "private": true,
   "main": "dist/index.ts",
   "main:src": "src/index.ts",
   "dependencies": {
