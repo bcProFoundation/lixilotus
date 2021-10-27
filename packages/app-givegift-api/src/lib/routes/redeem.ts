@@ -6,7 +6,7 @@ import { RedeemApi } from '@abcpros/givegift-models/src/lib/redeem'
 import { toSmallestDenomination } from '@abcpros/givegift-models/src/utils/cashMethods';
 import { aesGcmDecrypt, base62ToNumber } from '../utils/encryptionMethods';
 
-import { WalletService } from '../services/walletService';
+import { WalletService } from '../services/wallet';
 import BigNumber from 'bignumber.js';
 import logger from '../logger';
 

@@ -2,19 +2,22 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './components/App';
+import { PersistGate } from 'redux-persist/integration/react'
 // import GA from '@utils/GoogleAnalytics';
 import reportWebVitals from './reportWebVitals';
 import { ConnectedRouter } from 'connected-react-router';
 import { history } from '@utils/history';
 import { Provider } from 'react-redux';
-import { store } from './store/store';
+import { store, persistor } from './store/store';
 
 ReactDOM.render(
   <Provider store={store}>
-    <ConnectedRouter history={history}>
-      {/* {GA.init() && <GA.RouteTracker />} */}
-      <App />
-    </ConnectedRouter>
+    <PersistGate persistor={persistor}>
+      <ConnectedRouter history={history}>
+        {/* {GA.init() && <GA.RouteTracker />} */}
+        <App />
+      </ConnectedRouter>
+    </PersistGate>
   </Provider>,
   document.getElementById('root')
 );

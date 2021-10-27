@@ -19,16 +19,6 @@
     bch-donation "^1.1.1"
     crypto-js "^4.0.0"
 
-"@abcpros/minimal-xpi-slp-wallet@^3.0.9":
-  version "3.0.9"
-  resolved "https://registry.yarnpkg.com/@abcpros/minimal-xpi-slp-wallet/-/minimal-xpi-slp-wallet-3.0.9.tgz#87504522abf3753a2c27b7b34925b67346de8abd"
-  integrity sha512-CwhKAjz0ifr0xktJ5K+xaXL4wtsQyES/hh6yI1zyr8ZVbWdAuH8lEQxEg3DxnGxeS8k1ZxOxYMbsNb3GsYYCCw==
-  dependencies:
-    "@abcpros/xpi-js" "^4.0.5"
-    apidoc "^0.25.0"
-    bch-donation "^1.1.1"
-    crypto-js "^4.0.0"
-
 "@abcpros/xaddress@^0.0.9":
   version "0.0.9"
   resolved "https://registry.yarnpkg.com/@abcpros/xaddress/-/xaddress-0.0.9.tgz#675135d01861ccc5bd9b05172f7723e40368c7b0"
@@ -19130,6 +19120,11 @@ redent@^3.0.0:
   dependencies:
     indent-string "^4.0.0"
     strip-indent "^3.0.0"
+
+redux-persist@^6.0.0:
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/redux-persist/-/redux-persist-6.0.0.tgz#b4d2972f9859597c130d40d4b146fecdab51b3a8"
+  integrity sha512-71LLMbUq2r02ng2We9S215LtPu3fY0KgaGE0k8WRgl6RkqxtGfl7HUozz1Dftwsb0D/5mZ8dwAaPbtnzfvbEwQ==
 
 redux-saga@^1.1.3:
   version "1.1.3"
