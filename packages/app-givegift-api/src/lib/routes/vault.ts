@@ -1,6 +1,7 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
-import { VaultApi } from '@abcpros/givegift-models/src/lib/vault'
+import { ImportVaultDto, VaultApi } from '@abcpros/givegift-models/src/lib/vault'
+import { aesGcmDecrypt, aesGcmEncrypt, base62ToNumber } from '../utils/encryptionMethods';
 
 const prisma = new PrismaClient();
 let router = express.Router();
@@ -36,14 +37,49 @@ router.post('/vaults', async (req: express.Request, res: express.Response) => {
 
       res.json(resultApi);
     } catch (error) {
-      console.log(error);
       return res.status(400).json({
         error: `Could not insert vault to the database.`
       });
     }
-
   }
 
-})
+});
+
+router.use('/vaults', express.Router().post('/import', async (req: express.Request, res: express.Response) => {
+  const importVaultDto: ImportVaultDto = req.body;
+
+  try {
+    const redeemCode = importVaultDto.redeemCode;
+    const password = redeemCode.slice(0, 8);
+    const encodedVaultId = redeemCode.slice(8);
+    const vaultId = base62ToNumber(encodedVaultId);
+    const vault = await prisma.vault.findUnique({
+      where: {
+        id: vaultId
+      }
+    });
+
+    if (!vault) {
+      throw Error('Could not found a vault match your import.');
+    }
+
+    const mnemonic = await aesGcmDecrypt(vault.encryptedMnemonic, password);
+
+    if (mnemonic !== importVaultDto.mnemonic) {
+      throw Error('Invalid redeem code. Please try again.');
+    }
+
+    const resultApi: VaultApi = {
+      ...vault,
+    };
+
+    res.json(resultApi);
+
+  } catch (error) {
+    return res.status(400).json({
+      error: `Could not import the vault.`
+    });
+  }
+}))
 
 export { router };

@@ -4,7 +4,6 @@ type INavButtonProps = {
   active?: boolean;
   theme?: DefaultTheme;
   onClick?: Function;
-
 }
 
 export const NavButton: React.FC<INavButtonProps> = styled.button<INavButtonProps>`

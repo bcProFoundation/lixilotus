@@ -14,14 +14,9 @@ import { generateVault } from 'src/store/vault/actions';
 const { Panel } = Collapse;
 
 type CreateVaultFormProps = {
-  XPI: any;
-  getRestUrl: Function;
-  disabled?: boolean | undefined;
-};
+} & React.HTMLProps<HTMLElement>;
 
 const CreateVaultForm = ({
-  XPI,
-  getRestUrl,
   disabled,
 }: CreateVaultFormProps) => {
 
@@ -41,10 +36,8 @@ const CreateVaultForm = ({
   const [newVaultMaxValueIsValid, setNewVaultMaxValueIsValid] = useState(true);
 
   // New Vault Default Value
-  const [newVaultDefaultValue, setNewVaultDefaultValue] = useState('');
-  const [newVaultDefaultValueIsValid, setNewVaultDefaultValueIsValid] = useState(true);
-
-
+  const [newVaultFixedValue, setNewVaultFixedValue] = useState('');
+  const [newVaultFixedValueIsValid, setNewVaultFixedValueIsValid] = useState(true);
 
 
   const handleNewVaultNameInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,7 +52,7 @@ const CreateVaultForm = ({
   let createVaultFormDataIsValid =
     newVaultNameIsValid &&
     ((isRandomGive && newVaultMinValueIsValid && newVaultMaxValueIsValid) ||
-      (!isRandomGive && newVaultDefaultValueIsValid));
+      (!isRandomGive && newVaultFixedValueIsValid));
 
   // Modal settings
   const [showConfirmCreateVault, setShowConfirmCreateVault] = useState(false);
@@ -79,10 +72,10 @@ const CreateVaultForm = ({
     setNewVaultMaxValue(value);
   }
 
-  const handleChangeDefaultValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeFixedValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    setNewVaultDefaultValueIsValid(isValidAmountInput(value));
-    setNewVaultDefaultValue(value);
+    setNewVaultFixedValueIsValid(isValidAmountInput(value));
+    setNewVaultFixedValue(value);
   }
 
   const createPreviewedVault = async () => {
@@ -100,7 +93,7 @@ const CreateVaultForm = ({
         name: newVaultName,
         minValue: newVaultMinValue,
         maxValue: newVaultMaxValue,
-        defaultValue: newVaultDefaultValue,
+        fixedValue: newVaultFixedValue,
         isRandomGive: isRandomGive
       };
 
@@ -112,7 +105,7 @@ const CreateVaultForm = ({
       let message;
 
       if (!e.error && !e.message) {
-        message = `Transaction failed: no response from ${getRestUrl()}.`;
+        message = `Transaction failed: no response from server.`;
       } else if (
         /Could not communicate with full node or other external service/.test(
           e.error,
@@ -166,13 +159,14 @@ const CreateVaultForm = ({
           ) :
           (
             <>
-              <VaultParamLabel>The default fund:</VaultParamLabel> {newVaultDefaultValue}
+              <VaultParamLabel>The fixed fund:</VaultParamLabel> {newVaultFixedValue}
             </>
           )}
         <br />
       </Modal>
       <>
         <VaultCollapse
+          accordion
           collapsible={disabled ? 'disabled' : 'header'}
           disabled={disabled}
           style={{
@@ -241,13 +235,13 @@ const CreateVaultForm = ({
                     <Form.Item>
                       <Input.Group compact>
                         <Input
-                          addonBefore="Default"
+                          addonBefore="Fixed"
                           type="number"
                           step={1 / 10 ** currency.cashDecimals}
-                          value={newVaultDefaultValue}
+                          value={newVaultFxiedValue}
                           placeholder="Default value to give"
-                          name="defaultValue"
-                          onChange={e => handleChangeDefaultValue(e)}
+                          name="fixedValue"
+                          onChange={e => handleChangeFixedValue(e)}
                         >
                         </Input>
                       </Input.Group>

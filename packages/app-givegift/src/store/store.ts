@@ -1,5 +1,6 @@
 import { configureStore, ThunkAction, Action, combineReducers } from "@reduxjs/toolkit";
 import createSagaMiddleware from "@redux-saga/core";
+import { createContext } from "react";
 import {
   persistStore,
   FLUSH,
@@ -15,11 +16,15 @@ import useWallet from "@hooks/useWallet";
 import { routerMiddleware } from "connected-react-router";
 import { history } from "@utils/history";
 import rootReducer from "./rootReducer";
+import BCHJS from "@abcpros/xpi-js";
+
 
 
 const { getXPI } = useXPI();
-const XPI = getXPI();
-const Wallet = useWallet(XPI);
+export const XPI = getXPI();
+export const Wallet = useWallet(XPI);
+
+export const AppContext = createContext({ XPI, Wallet });
 
 const sagaMiddleware = createSagaMiddleware({
   context: {

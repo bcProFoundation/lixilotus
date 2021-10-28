@@ -40,9 +40,30 @@ const useWallet = (XPI: BCHJS) => {
     };
   };
 
+  const validateMnemonic = (
+    mnemonic: string,
+    wordlist = XPI.Mnemonic.wordLists().english,
+  ) => {
+    let mnemonicTestOutput;
+
+    try {
+      mnemonicTestOutput = XPI.Mnemonic.validate(mnemonic, wordlist);
+
+      if (mnemonicTestOutput === 'Valid mnemonic') {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+  };
+
   return {
-    getWalletDetails
-  }
+    getWalletDetails,
+    validateMnemonic
+  } as const;
 };
 
 export default useWallet;

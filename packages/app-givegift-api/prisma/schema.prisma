@@ -16,7 +16,7 @@ model Vault {
   isRandomGive      Boolean
   minValue          Float
   maxValue          Float
-  defaultValue      Float
+  fixedValue        Float
   encryptedMnemonic String
   createdAt         DateTime @default(now())
   updatedAt         DateTime @default(now())

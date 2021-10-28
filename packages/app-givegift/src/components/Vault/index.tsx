@@ -1,45 +1,60 @@
-import React, { useState, useEffect } from 'react';
-import { Row, Col, Form, notification, message, Modal, Alert } from 'antd';
-import { isMobile, isIOS, isSafari } from 'react-device-detect';
-import PrimaryButton, {
-  SecondaryButton,
-} from '@abcpros/givegift-components/components/Common/PrimaryButton';
-import { VaultCollapse } from '@abcpros/givegift-components/components/Common/StyledCollapse';
-import {
-  FormItemRedeemCodeXpiInput,
-  FormItemWithQRCodeAddon,
-} from '@abcpros/givegift-components/components/Common/EnhancedInputs';
-import useWindowDimensions from '@hooks/useWindowDimensions';
-import useXPI from '@hooks/useXPI';
-import { parseAddress } from '@utils/addressMethods';
-import { currency } from '@abcpros/givegift-components/components/Common/Ticker';
-import CreateVaultForm from './CreateVaultForm';
-import ImportVaultForm from './ImportVaultForm';
-import VaultList from './VaultList';
+import React from 'react';
+import { Descriptions } from 'antd';
 import { useAppSelector } from 'src/store/hooks';
-import { getAllVaults } from 'src/store/vault/selectors';
+import { getAllVaultsEntities, getSelectedVaultId } from 'src/store/vault/selectors';
+import { QRCode } from "@abcpros/givegift-components/components/Common/QRCode";
 
 const Vault: React.FC = () => {
 
-  const { getXPI, getRestUrl } = useXPI();
-  const vaults = useAppSelector(getAllVaults);
-
-  // jestBCH is only ever specified for unit tests, otherwise app will use getBCH();
-  // const BCH = jestBCH ? jestBCH : getBCH();
-  const XPI = getXPI();
+  const allVaults = useAppSelector(getAllVaultsEntities);
+  const selectedVaultId = useAppSelector(getSelectedVaultId);
+  const selectedVault = allVaults[selectedVaultId];
 
   return (
     <>
-      <CreateVaultForm
-        XPI={XPI}
-        getRestUrl={getRestUrl}
-      />
-      <ImportVaultForm
-        XPI={XPI}
-        getRestUrl={getRestUrl}
-        createVault={() => { }}
-      />
-      <VaultList vaults={vaults} />
+      {selectedVault && selectedVault.Path10605 && (
+        <>
+          <QRCode
+            address={selectedVault.Path10605.xAddress}
+          />
+          <Descriptions
+            column={1}
+            bordered
+            title={`Vault info for "${selectedVault.name}"`}
+          >
+            <Descriptions.Item label="Name">
+              {selectedVault.name}
+            </Descriptions.Item>
+            <Descriptions.Item label="Type">
+              {selectedVault.isRandomGive ? 'Random' : 'Default'}
+            </Descriptions.Item>
+            {selectedVault.isRandomGive ?
+              (
+                <>
+                  <Descriptions.Item label="Min">
+                    {selectedVault.minValue}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Max">
+                    {selectedVault.maxValue}
+                  </Descriptions.Item>
+                </>
+              ) :
+              (
+                <>
+                  <Descriptions.Item label="Default">
+                    {selectedVault.fixedValue}
+                  </Descriptions.Item>
+                </>
+              )}
+            <Descriptions.Item label="Redeem Code">
+              {selectedVault.redeemCode}
+            </Descriptions.Item>
+            <Descriptions.Item label="Seed">
+              {selectedVault.mnemonic}
+            </Descriptions.Item>
+          </Descriptions>
+        </>
+      )}
     </>
   )
 };

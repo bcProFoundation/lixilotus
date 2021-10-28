@@ -9,12 +9,12 @@ import {
   FormItemWithQRCodeAddon,
 } from '@abcpros/givegift-components/components/Common/EnhancedInputs';
 import useWindowDimensions from '@hooks/useWindowDimensions';
-import useXPI from '@hooks/useXPI';
 import { parseAddress } from '@utils/addressMethods';
 import { currency } from '@abcpros/givegift-components/components/Common/Ticker';
 import { useAppDispatch } from 'src/store/hooks';
 import { postRedeem } from 'src/store/redeem/actions';
 import { Redeem } from '@abcpros/givegift-models';
+import { AppContext } from 'src/store/store';
 
 type RedeemFormData = {
   dirty: boolean;
@@ -23,8 +23,7 @@ type RedeemFormData = {
 }
 
 const RedeemComponent: React.FC = () => {
-  // const ContextValue = React.useContext(WalletContext);
-  // const { wallet, previousWallet, loading } = ContextValue;
+  const { XPI, Wallet } = React.useContext(AppContext);
 
   const dispatch = useAppDispatch();
 
@@ -44,13 +43,6 @@ const RedeemComponent: React.FC = () => {
   // Show a confirmation modal on transactions created by populating redeem form from web page button
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-
-  const { getXPI } = useXPI();
-
-  // jestBCH is only ever specified for unit tests, otherwise app will use getBCH();
-  // const BCH = jestBCH ? jestBCH : getBCH();
-  // @todo: put into context or util methods
-  const XPI = getXPI();
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -131,8 +123,9 @@ const RedeemComponent: React.FC = () => {
 
   return (
     <>
-      {/*@ts-ignore */}
-      <Row type="flex">
+      <Row style={{
+        display: 'flex'
+      }}>
         <Col span={24}>
           <Form
             style={{

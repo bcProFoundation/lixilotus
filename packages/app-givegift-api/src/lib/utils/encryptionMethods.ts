@@ -12,7 +12,7 @@ import crypto from 'crypto';
  *   const plaintext = await aesGcmDecrypt(ciphertext, 'pw');
  *   aesGcmDecrypt(ciphertext, 'pw').then(function(plaintext) { console.log(plaintext); });
  */
-export async function aesGcmDecrypt(ciphertext: string, password: string) {
+export async function aesGcmDecrypt(ciphertext: string, password: string): Promise<string> {
   const pwUtf8 = new TextEncoder().encode(password);                         // encode password as UTF-8
   const pwHash = await crypto.createHash('sha256').update(pwUtf8).digest();  // hash the password
 
@@ -29,6 +29,23 @@ export async function aesGcmDecrypt(ciphertext: string, password: string) {
   decipher.setAuthTag(authTag);
   decipher.final();
   return decryptedBuffer.toString();
+}
+
+export async function aesGcmEncrypt(plaintext: string, password: string): Promise<string> {
+  const pwUtf8 = new TextEncoder().encode(password);                         // encode password as UTF-8
+  const pwHash = await crypto.createHash('sha256').update(pwUtf8).digest();  // hash the password
+
+  const iv = crypto.randomBytes(12);
+  const key = pwHash;
+
+  const ptUint8 = new TextEncoder().encode(plaintext);
+  const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
+
+  const encryptedBuffer = cipher.update(ptUint8);
+  cipher.final();
+
+  const encryptedResult = Buffer.concat([iv, encryptedBuffer, cipher.getAuthTag()]);
+  return encryptedResult.toString('base64');
 }
 
 export function base62ToNumber(text: string): number {

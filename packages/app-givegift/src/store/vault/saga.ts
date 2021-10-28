@@ -1,9 +1,9 @@
 import { PayloadAction } from "@reduxjs/toolkit";
 import { notification } from "antd";
 import { push } from 'connected-react-router';
-import { GenerateVaultDto, Vault, VaultApi } from "@abcpros/givegift-models/lib/vault";
+import { GenerateVaultDto, ImportVaultDto, Vault, VaultApi } from "@abcpros/givegift-models/lib/vault";
 import { all, call, fork, getContext, put, takeLatest } from "@redux-saga/core/effects";
-import { generateVault, getVault, getVaultFailure, getVaultSuccess, postVault, postVaultFailure, postVaultSuccess, selectVault, setVault } from "./actions";
+import { generateVault, getVault, getVaultFailure, getVaultSuccess, importVault, importVaultFailure, importVaultSuccess, postVault, postVaultFailure, postVaultSuccess, selectVault, setVault } from "./actions";
 import vaultApi from "./api";
 import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase62Str, numberToBase62 } from "@utils/encryptionMethods";
 
@@ -26,7 +26,7 @@ function* generateVaultSaga(action: PayloadAction<GenerateVaultDto>) {
     encryptedMnemonic: encryptedMnemonic,
     minValue: Number(vaultDto.minValue),
     maxValue: Number(vaultDto.maxValue),
-    defaultValue: Number(vaultDto.defaultValue),
+    fixedValue: Number(vaultDto.fixedValue),
     redeemCode: password,
     mnemonic: Bip39128BitMnemonic
   };
@@ -60,7 +60,7 @@ function* postVaultSaga(action: PayloadAction<Vault>) {
       encryptedMnemonic: vault.encryptedMnemonic,
       minValue: vault.minValue,
       maxValue: vault.maxValue,
-      defaultValue: vault.defaultValue
+      fixedValue: vault.fixedValue
     }
 
     const response: { data: VaultApi } = yield call(vaultApi.post, dataApi);
@@ -87,19 +87,25 @@ function* getVaultFailureSaga(action: PayloadAction<string>) {
 function* postVaultSuccessSaga(action: PayloadAction<Vault>) {
   const vault = action.payload;
   // Recalculate and valate the redeem code
-  const decryptedMnemonic = yield call(aesGcmDecrypt, vault.encryptedMnemonic, vault.redeemCode);
-  const encodedId = numberToBase62(vault.id);
-  vault.redeemCode = vault.redeemCode + encodedId;
-  if (decryptedMnemonic !== vault.mnemonic) {
-    const message = `The vault created is invalid.`;
+  try {
+    const decryptedMnemonic = yield call(aesGcmDecrypt, vault.encryptedMnemonic, vault.redeemCode);
+    const encodedId = numberToBase62(vault.id);
+    vault.redeemCode = vault.redeemCode + encodedId;
+    if (decryptedMnemonic !== vault.mnemonic) {
+      const message = `The vault created is invalid.`;
+      yield put(postVaultFailure(message));
+    } else {
+      // calculate vault details
+      const Wallet = yield getContext('Wallet');
+      const Path10605 = yield call(Wallet.getWalletDetails, vault.mnemonic);
+      vault.Path10605 = Path10605;
+      yield put(setVault(vault));
+    }
+  } catch (error) {
+    const message = `There's an error happens when create new vault.`;
     yield put(postVaultFailure(message));
-  } else {
-    // calculate vault details
-    const Wallet = yield getContext('Wallet');
-    const Path10605 = yield call(Wallet.getWalletDetails, vault.mnemonic);
-    vault.Path10605 = Path10605;
-    yield put(setVault(vault));
   }
+
 }
 
 function* postVaultFailureSaga(action: PayloadAction<string>) {
@@ -111,12 +117,64 @@ function* postVaultFailureSaga(action: PayloadAction<string>) {
   });
 }
 
+function* importVaultSaga(action: PayloadAction<ImportVaultDto>) {
+  try {
+    const importVaultDto = action.payload;
+
+    const response: { data: VaultApi } = yield call(vaultApi.import, importVaultDto);
+
+    // Merge back to action payload
+    const result = {
+      ...response.data,
+      mnemonic: importVaultDto.mnemonic,
+      redeemCode: importVaultDto.redeemCode
+    } as Vault;
+    yield put(importVaultSuccess(result));
+
+  } catch (err) {
+    const message = `Unable to import the vault.`;
+    yield put(importVaultFailure(message));
+  }
+}
+
+function* importVaultSuccessSaga(action: PayloadAction<Vault>) {
+  const vault = action.payload;
+  try {
+    // Recalculate and valate the redeem code
+    const password = vault.redeemCode.slice(0, 8);
+    const decryptedMnemonic = yield call(aesGcmDecrypt, vault.encryptedMnemonic, password);
+    if (decryptedMnemonic !== vault.mnemonic) {
+      const message = `The vault created is invalid.`;
+      yield put(postVaultFailure(message));
+    } else {
+      // calculate vault details
+      const Wallet = yield getContext('Wallet');
+      const Path10605 = yield call(Wallet.getWalletDetails, vault.mnemonic);
+      vault.Path10605 = Path10605;
+      yield put(setVault(vault));
+    }
+  } catch (error) {
+    const message = `There's an error happens importing the vault.`;
+    yield put(postVaultFailure(message));
+  }
+
+}
+
+function* importVaultFailureSaga(action: PayloadAction<string>) {
+  const message = action.payload ?? 'Unable to import the vault.';
+  notification.error({
+    message: 'Error',
+    description: message,
+    duration: 5
+  });
+}
+
 function* setVaultSaga(action: PayloadAction<Vault>) {
-  yield put(push('/home'));
+  yield put(push('/vault'));
 }
 
 function* selectVaultSaga(action: PayloadAction<number>) {
-  yield put(push('/home'));
+  yield put(push('/vault'));
 }
 
 
@@ -152,6 +210,18 @@ function* watchSelectVault() {
   yield takeLatest(selectVault.type, selectVaultSaga);
 }
 
+function* watchImportVault() {
+  yield takeLatest(importVault.type, importVaultSaga);
+}
+
+function* watchImportVaultSuccess() {
+  yield takeLatest(importVaultSuccess.type, importVaultSuccessSaga);
+}
+
+function* watchImportVaultFailure() {
+  yield takeLatest(importVaultFailure.type, importVaultFailureSaga);
+}
+
 export default function* vaultSaga() {
   yield all([
     fork(watchGenerateVault),
@@ -161,6 +231,9 @@ export default function* vaultSaga() {
     fork(watchPostVaultFailure),
     fork(watchPostVaultSuccess),
     fork(watchSetVault),
-    fork(watchSelectVault)
+    fork(watchSelectVault),
+    fork(watchImportVault),
+    fork(watchImportVaultSuccess),
+    fork(watchImportVaultFailure)
   ]);
 }

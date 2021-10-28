@@ -8,17 +8,19 @@ import reportWebVitals from './reportWebVitals';
 import { ConnectedRouter } from 'connected-react-router';
 import { history } from '@utils/history';
 import { Provider } from 'react-redux';
-import { store, persistor } from './store/store';
+import { store, persistor, XPI, Wallet, AppContext } from './store/store';
 
 ReactDOM.render(
-  <Provider store={store}>
-    <PersistGate persistor={persistor}>
-      <ConnectedRouter history={history}>
-        {/* {GA.init() && <GA.RouteTracker />} */}
-        <App />
-      </ConnectedRouter>
-    </PersistGate>
-  </Provider>,
+  <AppContext.Provider value={{ XPI, Wallet }}>
+    <Provider store={store}>
+      <PersistGate persistor={persistor}>
+        <ConnectedRouter history={history}>
+          {/* {GA.init() && <GA.RouteTracker />} */}
+          <App />
+        </ConnectedRouter>
+      </PersistGate>
+    </Provider>
+  </AppContext.Provider>,
   document.getElementById('root')
 );
 

@@ -74,7 +74,7 @@ router.post('/redeems', async (req: express.Request, res: express.Response) => {
         const minSatoshis = toSmallestDenomination(new BigNumber(vault.minValue));
         satoshisToSend = maxSatoshis.minus(minSatoshis).times(new BigNumber(Math.random())).plus(minSatoshis);
       } else {
-        satoshisToSend = toSmallestDenomination(new BigNumber(vault.defaultValue));
+        satoshisToSend = toSmallestDenomination(new BigNumber(vault.fixedValue));
       }
 
       const satoshisBalance = new BigNumber(balance);
@@ -102,7 +102,6 @@ router.post('/redeems', async (req: express.Request, res: express.Response) => {
 
         return res.json(createdReem);
       } catch (err) {
-        logger.error((err as any).toString());
         throw new Error('Unable to send transaction')
       }
     } catch (error) {
