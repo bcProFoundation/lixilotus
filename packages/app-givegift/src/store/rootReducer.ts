@@ -15,9 +15,12 @@ const vaultPersistConfig: PersistConfig<VaultsState> = {
 };
 
 const rootReducer = combineReducers({
-  action: actionReducer,
   router: connectRouter(history),
-  vaults: persistReducer(vaultPersistConfig, vaultReducer)
+  vaults: persistReducer(vaultPersistConfig, vaultReducer),
+
+  // This is use for useReduxEffect
+  // Should be always at the end
+  action: actionReducer,
 });
 
 export default rootReducer;

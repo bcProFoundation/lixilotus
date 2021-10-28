@@ -285,19 +285,17 @@ export const FormItemRedeemCodeXpiInput = (props: FormItemRedeemCodeXpiInputProp
   const { inputProps, ...otherProps } = props;
   return (
     <AntdFormWrapper {...otherProps}>
-      <Form style={{ width: 'auto' }}>
-        <Form.Item {...otherProps}>
-          <Input
-            prefix={<LockOutlined />}
-            type="email"
-            placeholder="Redeem Code"
-            name="redeemCode"
-            autoComplete="off"
-            required
-            {...inputProps}
-          />
-        </Form.Item>
-      </Form>
+      <Form.Item {...otherProps}>
+        <Input
+          prefix={<LockOutlined />}
+          type="email"
+          placeholder="Redeem Code"
+          name="redeemCode"
+          autoComplete="off"
+          required
+          {...inputProps}
+        />
+      </Form.Item>
     </AntdFormWrapper>
   );
 }

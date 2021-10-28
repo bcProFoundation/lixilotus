@@ -200,7 +200,7 @@ const CreateVaultForm = ({
                 <Form.Item>
                   <Radio.Group value={isRandomGive} onChange={handleChangeIsRandomGive}>
                     <Radio value={true}>Random</Radio>
-                    <Radio value={false}>Default</Radio>
+                    <Radio value={false}>Fixed</Radio>
                   </Radio.Group>
                 </Form.Item>
                 {isRandomGive ?
@@ -238,7 +238,7 @@ const CreateVaultForm = ({
                           addonBefore="Fixed"
                           type="number"
                           step={1 / 10 ** currency.cashDecimals}
-                          value={newVaultFxiedValue}
+                          value={newVaultFixedValue}
                           placeholder="Default value to give"
                           name="fixedValue"
                           onChange={e => handleChangeFixedValue(e)}

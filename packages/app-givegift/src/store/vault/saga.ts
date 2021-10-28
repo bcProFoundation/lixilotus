@@ -199,7 +199,7 @@ function* watchPostVaultSuccess() {
 }
 
 function* watchPostVaultFailure() {
-  yield takeLatest(getVaultFailure.type, postVaultFailureSaga);
+  yield takeLatest(postVaultFailure.type, postVaultFailureSaga);
 }
 
 function* watchSetVault() {

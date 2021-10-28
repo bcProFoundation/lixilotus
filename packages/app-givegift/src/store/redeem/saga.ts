@@ -36,7 +36,7 @@ function* postRedeemSaga(action: PayloadAction<Redeem>) {
     yield put(postRedeemSuccess(result));
 
   } catch (err) {
-    const message = `Could not redeem to the api.`;
+    const message = `Unable to redeem.`;
     yield put(postRedeemFailure(message));
   }
 }
@@ -50,7 +50,7 @@ function* watchPostRedeemSuccess() {
 }
 
 function* watchPostRedeemFailure() {
-  yield takeLatest(postRedeemSuccess.type, postRedeemFailureSaga);
+  yield takeLatest(postRedeemFailure.type, postRedeemFailureSaga);
 }
 
 
