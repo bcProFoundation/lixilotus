@@ -6,6 +6,9 @@ import { InitialState } from './state'
  */
 const initialState: InitialState = {
   type: null,
+  payload: null,
+  meta: null,
+  error: false,
   count: 0,
 }
 
@@ -16,6 +19,9 @@ export const actionReducer = (
   return {
     ...state,
     type: action.type,
-    count: state.count
+    payload: action.payload,
+    meta: action.meta,
+    error: action.error,
+    count: state.count + 1
   }
 }

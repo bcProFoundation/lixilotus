@@ -288,7 +288,6 @@ export const FormItemRedeemCodeXpiInput = (props: FormItemRedeemCodeXpiInputProp
       <Form.Item {...otherProps}>
         <Input
           prefix={<LockOutlined />}
-          type="email"
           placeholder="Redeem Code"
           name="redeemCode"
           autoComplete="off"
@@ -299,6 +298,3 @@ export const FormItemRedeemCodeXpiInput = (props: FormItemRedeemCodeXpiInputProp
     </AntdFormWrapper>
   );
 }
-
-type FormItemAddressXpiInputProps = {
-} & FormItemProps;

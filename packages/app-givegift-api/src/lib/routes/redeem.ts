@@ -2,7 +2,7 @@ import express from 'express';
 import Container from 'typedi';
 import { PrismaClient } from '@prisma/client';
 import MinimalBCHWallet from '@abcpros/minimal-xpi-slp-wallet';
-import { RedeemApi } from '@abcpros/givegift-models/src/lib/redeem'
+import { CreateRedeemDto, RedeemDto } from '@abcpros/givegift-models/src/lib/redeem'
 import { toSmallestDenomination } from '@abcpros/givegift-models/src/utils/cashMethods';
 import { aesGcmDecrypt, base62ToNumber } from '../utils/encryptionMethods';
 
@@ -14,7 +14,7 @@ const prisma = new PrismaClient();
 let router = express.Router();
 
 router.post('/redeems', async (req: express.Request, res: express.Response) => {
-  const redeemApi: RedeemApi = req.body;
+  const redeemApi: CreateRedeemDto = req.body;
   if (redeemApi) {
     try {
       const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress) as string;
@@ -110,7 +110,12 @@ router.post('/redeems', async (req: express.Request, res: express.Response) => {
 
         const result = await prisma.$transaction([createRedeemOperation, updateVaultOperation]);
 
-        return res.json(result);
+        const redeemResult = {
+          ...result[0],
+          redeemCode: redeemApi.redeemCode,
+          amount: Number(result[0].amount)
+        } as RedeemDto;
+        res.json(redeemResult);
       } catch (err) {
         throw new Error('Unable to send transaction')
       }

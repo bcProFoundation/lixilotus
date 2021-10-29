@@ -1,12 +1,12 @@
-import { RedeemApi } from "@abcpros/givegift-models/lib/redeem";
+import { CreateRedeemDto, RedeemDto } from "@abcpros/givegift-models/lib/redeem";
 import axiosClient from "@utils/axiosClient";
 
 const redeemApi = {
-  post(data: RedeemApi): Promise<RedeemApi> {
+  post(data: CreateRedeemDto): Promise<RedeemDto> {
     const url = '/api/redeems';
     return axiosClient.post(url, data);
   },
-  getByVaultId(id: number): Promise<RedeemApi[]> {
+  getByVaultId(id: number): Promise<RedeemDto[]> {
     const url = `/api/vaults/${id}/redeems`;
     return axiosClient.get(url);
   }

@@ -13,8 +13,8 @@ import { parseAddress } from '@utils/addressMethods';
 import { currency } from '@abcpros/givegift-components/components/Common/Ticker';
 import { useAppDispatch } from 'src/store/hooks';
 import { postRedeem } from 'src/store/redeem/actions';
-import { Redeem } from '@abcpros/givegift-models';
 import { AppContext } from 'src/store/store';
+import { CreateRedeemDto } from '@abcpros/givegift-models/lib/redeem';
 
 type RedeemFormData = {
   dirty: boolean;
@@ -38,25 +38,6 @@ const RedeemComponent: React.FC = () => {
   } as RedeemFormData);
 
   const [redeemXpiAddressError, setRedeemXpiAddressError] = useState<string | boolean>(false);
-
-
-  // Show a confirmation modal on transactions created by populating redeem form from web page button
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
-
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
-
-
-  const handleOk = () => {
-    setIsModalVisible(false);
-    submit();
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
 
   async function submit() {
     setRedeemFormData({
@@ -86,7 +67,7 @@ const RedeemComponent: React.FC = () => {
     dispatch(postRedeem({
       redeemAddress: address,
       redeemCode: redeemCode
-    } as Redeem));
+    } as CreateRedeemDto));
 
   }
 

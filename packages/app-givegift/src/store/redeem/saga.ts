@@ -1,7 +1,7 @@
 import { notification } from "antd";
 import { all, call, fork, getContext, put, takeLatest } from "@redux-saga/core/effects";
 import { PayloadAction } from "@reduxjs/toolkit";
-import { Redeem, RedeemApi } from "@abcpros/givegift-models/lib/redeem";
+import { CreateRedeemDto, Redeem, RedeemDto } from "@abcpros/givegift-models/lib/redeem";
 import redeemApi from "./api";
 import { postRedeem, postRedeemFailure, postRedeemSuccess } from "./actions";
 
@@ -27,9 +27,9 @@ function* postRedeemSaga(action: PayloadAction<Redeem>) {
   try {
     const redeem = action.payload;
 
-    const dataApi = redeem as RedeemApi;
+    const dataApi = redeem as CreateRedeemDto;
 
-    const response: { data: RedeemApi } = yield call(redeemApi.post, dataApi);
+    const response: { data: RedeemDto } = yield call(redeemApi.post, dataApi);
 
     // Merge back to action payload
     const result = { ...redeem, ...response.data } as Redeem;
