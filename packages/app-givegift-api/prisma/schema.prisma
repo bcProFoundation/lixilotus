@@ -18,6 +18,7 @@ model Vault {
   maxValue          Float
   fixedValue        Float
   encryptedMnemonic String
+  totalRedeem       BigInt   @default(0)
   createdAt         DateTime @default(now())
   updatedAt         DateTime @default(now())
   redeems           Redeem[]
@@ -30,6 +31,7 @@ model Redeem {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @default(now())
   redeemAddress String
+  amount        BigInt
   vault         Vault    @relation(fields: [vaultId], references: [id])
   vaultId       Int
 }

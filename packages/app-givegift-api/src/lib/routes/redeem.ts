@@ -82,24 +82,35 @@ router.post('/redeems', async (req: express.Request, res: express.Response) => {
         throw new Error('Insufficient fund.');
       }
 
+      const amountSats = Math.floor(satoshisToSend.toNumber());
       const outputs = [{
         address: redeemApi.redeemAddress,
-        amountSat: Math.floor(satoshisToSend.toNumber())
+        amountSat: amountSats
       }];
 
       try {
         const txid = await xpiWallet.send(outputs);
 
-        const createdReem = await prisma.redeem.create({
+        const createRedeemOperation = prisma.redeem.create({
           data: {
             ipaddress: ip,
             vaultId: vault.id,
             transactionId: txid,
-            redeemAddress: redeemApi.redeemAddress
+            redeemAddress: redeemApi.redeemAddress,
+            amount: amountSats
           }
         });
 
-        return res.json(createdReem);
+        const updateVaultOperation = prisma.vault.update({
+          where: { id: vault.id },
+          data: {
+            totalRedeem: vault.totalRedeem + BigInt(amountSats)
+          }
+        });
+
+        const result = await prisma.$transaction([createRedeemOperation, updateVaultOperation]);
+
+        return res.json(result);
       } catch (err) {
         throw new Error('Unable to send transaction')
       }

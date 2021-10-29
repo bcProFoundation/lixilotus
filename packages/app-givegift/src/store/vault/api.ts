@@ -1,16 +1,16 @@
-import { ImportVaultDto, VaultApi } from "@abcpros/givegift-models/lib/vault";
+import { CreateVaultDto, ImportVaultDto, VaultDto } from "@abcpros/givegift-models/lib/vault";
 import axiosClient from "@utils/axiosClient";
 
 const vaultApi = {
-  getById(id: number): Promise<VaultApi> {
+  getById(id: number): Promise<VaultDto> {
     const url = `/api/vaults/${id}`;
     return axiosClient.get(url);
   },
-  post(data: VaultApi): Promise<VaultApi> {
+  post(data: CreateVaultDto): Promise<VaultDto> {
     const url = '/api/vaults';
     return axiosClient.post(url, data);
   },
-  import(data: ImportVaultDto): Promise<VaultApi> {
+  import(data: ImportVaultDto): Promise<VaultDto> {
     const url = '/api/vaults/import';
     return axiosClient.post(url, data);
   }

@@ -1,6 +1,6 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
-import { ImportVaultDto, VaultApi } from '@abcpros/givegift-models/src/lib/vault'
+import { ImportVaultDto, VaultDto } from '@abcpros/givegift-models/src/lib/vault'
 import { aesGcmDecrypt, aesGcmEncrypt, base62ToNumber } from '../utils/encryptionMethods';
 
 const prisma = new PrismaClient();
@@ -23,7 +23,7 @@ router.get('/vaults/:id/', async (req: express.Request, res: express.Response) =
 });
 
 router.post('/vaults', async (req: express.Request, res: express.Response) => {
-  const vaultApi: VaultApi = req.body;
+  const vaultApi: VaultDto = req.body;
   if (vaultApi) {
     try {
       const vaultToInsert = {
@@ -31,8 +31,9 @@ router.post('/vaults', async (req: express.Request, res: express.Response) => {
       };
       const createdVault = await prisma.vault.create({ data: vaultToInsert });
 
-      const resultApi: VaultApi = {
+      const resultApi: VaultDto = {
         ...createdVault,
+        totalRedeem: Number(createdVault.totalRedeem)
       };
 
       res.json(resultApi);
@@ -69,8 +70,9 @@ router.use('/vaults', express.Router().post('/import', async (req: express.Reque
       throw Error('Invalid redeem code. Please try again.');
     }
 
-    const resultApi: VaultApi = {
+    const resultApi: VaultDto = {
       ...vault,
+      totalRedeem: Number(vault.totalRedeem)
     };
 
     res.json(resultApi);

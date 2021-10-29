@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit';
-import { GenerateVaultDto, VaultApi, Vault, ImportVaultDto } from '@abcpros/givegift-models/lib/vault';
+import { GenerateVaultDto, VaultDto, Vault, ImportVaultDto } from '@abcpros/givegift-models/lib/vault';
 
 export const generateVault = createAction<GenerateVaultDto>('vault/generateVault');
 export const getVault = createAction<Vault>('vault/getVault');

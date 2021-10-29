@@ -1,7 +1,7 @@
 import { PayloadAction } from "@reduxjs/toolkit";
 import { notification } from "antd";
 import { push } from 'connected-react-router';
-import { GenerateVaultDto, ImportVaultDto, Vault, VaultApi } from "@abcpros/givegift-models/lib/vault";
+import { CreateVaultDto, GenerateVaultDto, ImportVaultDto, Vault, VaultDto } from "@abcpros/givegift-models/lib/vault";
 import { all, call, fork, getContext, put, takeLatest } from "@redux-saga/core/effects";
 import { generateVault, getVault, getVaultFailure, getVaultSuccess, importVault, importVaultFailure, importVaultSuccess, postVault, postVaultFailure, postVaultSuccess, selectVault, setVault } from "./actions";
 import vaultApi from "./api";
@@ -54,7 +54,7 @@ function* postVaultSaga(action: PayloadAction<Vault>) {
   try {
     const vault = action.payload;
 
-    const dataApi: VaultApi = {
+    const dataApi: CreateVaultDto = {
       name: vault.name,
       isRandomGive: vault.isRandomGive,
       encryptedMnemonic: vault.encryptedMnemonic,
@@ -63,7 +63,7 @@ function* postVaultSaga(action: PayloadAction<Vault>) {
       fixedValue: vault.fixedValue
     }
 
-    const response: { data: VaultApi } = yield call(vaultApi.post, dataApi);
+    const response: { data: VaultDto } = yield call(vaultApi.post, dataApi);
 
     // Merge back to action payload
     const result = { ...vault, ...response.data } as Vault;
@@ -121,7 +121,7 @@ function* importVaultSaga(action: PayloadAction<ImportVaultDto>) {
   try {
     const importVaultDto = action.payload;
 
-    const response: { data: VaultApi } = yield call(vaultApi.import, importVaultDto);
+    const response: { data: VaultDto } = yield call(vaultApi.import, importVaultDto);
 
     // Merge back to action payload
     const result = {
