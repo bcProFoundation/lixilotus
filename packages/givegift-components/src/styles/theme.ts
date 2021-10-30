@@ -53,7 +53,7 @@ const theme = {
     background: '#fff',
     navIconInactive: '#949494',
   },
-  icons: { outlined: '#273498' },
+  icons: { outlined: '#6f2dbd' },
   modals: {
     buttons: { background: '#fff' },
   },
@@ -69,7 +69,7 @@ const theme = {
   buttons: {
     primary: {
       backgroundImage:
-        'linear-gradient(270deg, #0074C2 0%, #273498 100%)',
+        'linear-gradient(270deg,#6f2dbd 0%, #CD0BC3 100%)',
       color: '#fff',
       hoverShadow: '0px 3px 10px -5px rgba(0, 0, 0, 0.75)',
     },

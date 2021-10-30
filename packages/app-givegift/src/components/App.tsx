@@ -13,7 +13,8 @@ import { Spin } from 'antd';
 import Icon from '@ant-design/icons';
 import styled, { ThemeProvider } from 'styled-components';
 import { theme, GlobalStyle } from '@abcpros/givegift-components/styles';
-import LogoLotusPink from '@assets/images/lotus-pink-logo.png';
+import LogoLixi from '@assets/images/lixi_logo.svg';
+import LixiText from '@assets/images/lixi_text.png';
 import {
   LoadingOutlined,
   HomeOutlined,
@@ -100,6 +101,13 @@ export const LotusLogo = styled.img`
   }
 `;
 
+export const LixiTextLogo = styled.img`
+width: 200px;
+  @media (max-width: 768px) {
+    width: 150px;
+  }
+`;
+
 
 function App(): JSX.Element {
 
@@ -121,7 +129,8 @@ function App(): JSX.Element {
           <AppBody>
             <AppContainer>
               <HeaderContainer>
-                <LotusLogo src={LogoLotusPink} alt="givelotus" />
+                <LotusLogo src={LogoLixi} alt="lixi" />
+                <LixiTextLogo src={LixiText} alt="lixi" />
               </HeaderContainer>
               <Switch>
                 <>
@@ -153,7 +162,7 @@ function App(): JSX.Element {
                 active={selectedKey === 'vault'}
                 onClick={() => history.push('/vault')}
               >
-                <Icon style={{ marginBottom: '0' }} component={() => <img style={{ position: 'relative', bottom: '6px' }} src={VaultOutlineSvg} />} />
+                <Icon style={{ marginBottom: '0' }} component={() => <img style={{ position: 'relative', bottom: '7px' }} src={VaultOutlineSvg} />} />
                 {/* <GiftOutlined /> */}
                 Vault
               </NavButton>

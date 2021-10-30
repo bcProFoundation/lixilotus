@@ -84,7 +84,7 @@ type RedeemListItemProps = {
 const RedeemListItem: React.FC<RedeemListItemProps> = (props: RedeemListItemProps) => {
 
   const handleClickRedeem = (redeem: Redeem,) => {
-    const url = `https://explorer.givelotus.org/tx/${redeem.id}`;
+    const url = `https://explorer.givelotus.org/tx/${redeem.transactionId}`;
     window.open(url, '_blank');
   }
 
