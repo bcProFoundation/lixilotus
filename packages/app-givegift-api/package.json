@@ -13,7 +13,7 @@
     "build": "rm -r dist/ && tsc"
   },
   "dependencies": {
-    "@abcpros/givegift-models": "^1.0.0",
+    "@abcpros/givegift-models": "^1.0.1",
     "@abcpros/minimal-xpi-slp-wallet": "^3.0.10",
     "@abcpros/xpi-js": "^4.0.5",
     "@prisma/client": "^3.2.0",
