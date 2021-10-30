@@ -94,7 +94,7 @@ function* postVaultSuccessSaga(action: PayloadAction<Vault>) {
   try {
     const decryptedMnemonic = yield call(aesGcmDecrypt, vault.encryptedMnemonic, vault.redeemCode);
     const encodedId = numberToBase62(vault.id);
-    vault.redeemCode = vault.redeemCode + encodedId;
+    const redeemCode = vault.redeemCode + encodedId;
     if (decryptedMnemonic !== vault.mnemonic) {
       const message = `The vault created is invalid.`;
       yield put(postVaultFailure(message));
@@ -104,6 +104,7 @@ function* postVaultSuccessSaga(action: PayloadAction<Vault>) {
       const Path10605 = yield call(Wallet.getWalletDetails, vault.mnemonic);
       yield put(setVault({
         ...vault,
+        redeemCode: redeemCode,
         Path10605: { ...Path10605 }
       }));
       notification.success({

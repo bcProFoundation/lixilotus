@@ -5,7 +5,10 @@ import { getAllVaultsEntities, getSelectedVaultId } from 'src/store/vault/select
 import { QRCode } from "@abcpros/givegift-components/components/Common/QRCode";
 import { StyledCollapse } from "@abcpros/givegift-components/components/Common/StyledCollapse";
 import { SmartButton } from '@abcpros/givegift-components/components/Common/PrimaryButton';
+import RedeemList from '@components/Redeem/RedeemList';
 import { refreshVault } from 'src/store/vault/actions';
+import { getAllRedeems } from 'src/store/redeem/selectors';
+
 const { Panel } = Collapse;
 
 const Vault: React.FC = () => {
@@ -15,6 +18,7 @@ const Vault: React.FC = () => {
   const allVaults = useAppSelector(getAllVaultsEntities);
   const selectedVaultId = useAppSelector(getSelectedVaultId);
   const selectedVault = allVaults[selectedVaultId];
+  const allReddemsCurrentVault = useAppSelector(getAllRedeems);
 
   const handleRefeshVault = () => {
     if (!(selectedVault && selectedVaultId)) {
@@ -80,6 +84,7 @@ const Vault: React.FC = () => {
           >
             Refresh Vault
           </SmartButton>
+          <RedeemList redeems={allReddemsCurrentVault} />
         </>
       )}
     </>

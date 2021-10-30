@@ -7,6 +7,8 @@ import { connectRouter } from 'connected-react-router';
 import { actionReducer } from './action/reducer';
 import { vaultReducer } from './vault/reducer';
 import { VaultsState } from './vault/state';
+import { RedeemsState } from './redeem/state';
+import { redeemReducer } from './redeem/reducer';
 
 
 const vaultPersistConfig: PersistConfig<VaultsState> = {
@@ -14,10 +16,15 @@ const vaultPersistConfig: PersistConfig<VaultsState> = {
   storage: storage
 };
 
+const redeemsPersistConfig: PersistConfig<RedeemsState> = {
+  key: 'redeems',
+  storage: storage
+};
+
 const rootReducer = combineReducers({
   router: connectRouter(history),
   vaults: persistReducer(vaultPersistConfig, vaultReducer),
-
+  redeems: persistReducer(redeemsPersistConfig, redeemReducer),
   // This is use for useReduxEffect
   // Should be always at the end
   action: actionReducer,
