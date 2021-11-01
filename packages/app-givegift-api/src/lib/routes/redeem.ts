@@ -1,6 +1,7 @@
 import express from 'express';
 import Container from 'typedi';
 import { PrismaClient } from '@prisma/client';
+import VError from 'verror';
 import MinimalBCHWallet from '@abcpros/minimal-xpi-slp-wallet';
 import { CreateRedeemDto, RedeemDto } from '@abcpros/givegift-models/src/lib/redeem'
 import { toSmallestDenomination } from '@abcpros/givegift-models/src/utils/cashMethods';
@@ -36,9 +37,8 @@ router.post('/redeems', async (req: express.Request, res: express.Response) => {
       });
 
       if (existedRedeems.length > 0) {
-        return res.status(500).json({
-          error: 'You have already redeemed this offer'
-        });
+        const error = new VError('You have already redeemed this offer');
+        return res.status(500).json(error.message);
       }
 
       const vault = await prisma.vault.findUnique({
@@ -58,13 +58,13 @@ router.post('/redeems', async (req: express.Request, res: express.Response) => {
       const xpiWallet: MinimalBCHWallet = Container.get('xpiWallet');
       await xpiWallet.create(mnemonic);
       if (!xpiWallet.walletInfoCreated) {
-        throw new Error('Could not create the vault wallet');
+        throw new VError('Could not create the vault wallet');
       }
       const vaultAddress: string = (xpiWallet as any).walletInfo.address;
       const balance = await xpiWallet.getBalance(vaultAddress);
 
       if (balance === 0) {
-        throw new Error('insufficient fund.');
+        throw new VError('insufficient fund.');
       }
 
       let satoshisToSend;
@@ -79,7 +79,7 @@ router.post('/redeems', async (req: express.Request, res: express.Response) => {
       const satoshisBalance = new BigNumber(balance);
 
       if (satoshisToSend.lt(546) && satoshisToSend.gte(satoshisBalance)) {
-        throw new Error('Insufficient fund.');
+        throw new VError('Insufficient fund.');
       }
 
       const amountSats = Math.floor(satoshisToSend.toNumber());
@@ -117,10 +117,17 @@ router.post('/redeems', async (req: express.Request, res: express.Response) => {
         } as RedeemDto;
         res.json(redeemResult);
       } catch (err) {
-        throw new Error('Unable to send transaction')
+        throw new VError(err as Error, 'Unable to send transaction');
       }
-    } catch (error) {
-      return res.status(400).json(new Error('Unable to redeem.'));
+    } catch (err) {
+      let error: VError;
+      if (err instanceof VError) {
+        error = err;
+      } else {
+        error = new VError.WError(err as Error, 'Unable to redeem.');
+      }
+      logger.error(error.message);
+      return res.status(400).json(error);
     }
   }
 })
