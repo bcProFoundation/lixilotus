@@ -6,6 +6,7 @@ import Container from 'typedi';
 import SlpWallet from '@abcpros/minimal-xpi-slp-wallet';
 import * as Vault from './routes/vault';
 import * as Redeem from './routes/redeem';
+import { handleError } from './middlewares/handleError';
 
 const bodyParser = require('body-parser');
 const compression = require('compression');
@@ -53,5 +54,7 @@ export class ExpressApp {
 
     this.DIProviders();
     this.routes();
+
+    this.app.use(handleError);
   }
 }

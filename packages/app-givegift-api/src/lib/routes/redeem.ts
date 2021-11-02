@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { NextFunction } from 'express';
 import Container from 'typedi';
 import { PrismaClient } from '@prisma/client';
 import VError from 'verror';
@@ -14,7 +14,7 @@ import logger from '../logger';
 const prisma = new PrismaClient();
 let router = express.Router();
 
-router.post('/redeems', async (req: express.Request, res: express.Response) => {
+router.post('/redeems', async (req: express.Request, res: express.Response, next: NextFunction) => {
   const redeemApi: CreateRedeemDto = req.body;
   if (redeemApi) {
     try {
@@ -119,9 +119,12 @@ router.post('/redeems', async (req: express.Request, res: express.Response) => {
         throw new VError(err as Error, 'Unable to send transaction');
       }
     } catch (err) {
-      const error = new VError.WError(err as Error, 'Unable to redeem.');
-      logger.error(error);
-      return res.status(400).json(error);
+      if (err instanceof VError) {
+        return next(err);
+      } else {
+        const error = new VError.WError(err as Error, 'Unable to redeem.');
+        return next(error);
+      }
     }
   }
 })
