@@ -4,14 +4,15 @@ import { PayloadAction } from "@reduxjs/toolkit";
 import { CreateRedeemDto, Redeem, RedeemDto } from "@abcpros/givegift-models/lib/redeem";
 import redeemApi from "./api";
 import { postRedeem, postRedeemFailure, postRedeemSuccess } from "./actions";
+import { showToast } from "../toast/actions";
 
 function* postRedeemSuccessSaga(action: PayloadAction<Redeem>) {
   const message = 'Redeem successfully'
-  notification.success({
+  yield put(showToast('success', {
     message: 'Redeem Success',
     description: message,
     duration: 5
-  });
+  }));
 }
 
 function* postRedeemFailureSaga(action: PayloadAction<string>) {
@@ -36,7 +37,7 @@ function* postRedeemSaga(action: PayloadAction<Redeem>) {
     yield put(postRedeemSuccess(result));
 
   } catch (err) {
-    const message = `Unable to redeem.`;
+    const message = (err as any).message ?? `Unable to redeem.`;
     yield put(postRedeemFailure(message));
   }
 }

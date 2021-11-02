@@ -23,6 +23,7 @@
     "config": "^3.3.6",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "helmet": "^4.6.0",
     "reflect-metadata": "^0.1.13",
     "typedi": "^0.10.0",
     "verror": "^1.10.0",

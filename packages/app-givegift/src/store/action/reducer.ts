@@ -1,5 +1,5 @@
-import { AnyAction } from 'redux'
-import { InitialState } from './state'
+import { AnyAction } from 'redux';
+import { InitialState } from './state';
 
 /**
  * Initial data.

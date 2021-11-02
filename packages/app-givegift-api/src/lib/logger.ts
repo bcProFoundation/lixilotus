@@ -1,5 +1,6 @@
-import winston from 'winston';
+import winston, { format, createLogger } from 'winston';
 import 'winston-daily-rotate-file';
+const { combine, label, timestamp, printf } = format;
 
 export const transport = new winston.transports.DailyRotateFile({
   filename: 'givegift-api-%DATE%.log',
@@ -10,15 +11,8 @@ export const transport = new winston.transports.DailyRotateFile({
   level: 'debug' // TODO
 });
 
-export const logger = winston.createLogger({
-  transports: [transport],
-  exceptionHandlers: [new winston.transports.File({ filename: 'exceptions.log', dirname: './logs' })],
-  exitOnError: false
-});
 
-logger.on('error', function (err) {
-  console.log(err);
-});
+
 
 const timezone = new Date()
   .toLocaleString('en-US', { timeZoneName: 'short' })
@@ -44,6 +38,23 @@ export const formatTimestamp = (date: Date): string =>
             // .padEnd(3, '0')} ${timezone}`;
             .padEnd(3, '0')}`;
 
-export const timestamp = () => formatTimestamp(new Date());
+// export const timestamp = () => formatTimestamp(new Date());
+
+export const logger = createLogger({
+  transports: [transport],
+  exceptionHandlers: [new winston.transports.File({ filename: 'exceptions.log', dirname: './logs' })],
+  exitOnError: false,
+  format: combine(
+    format.errors({ stack: true }), // log the full stack
+    timestamp(), // get the time stamp part of the full log message
+    printf(({ level, message, timestamp, stack }) => { // formating the log outcome to show/store 
+      return `${timestamp} ${level}: ${message} - ${stack}`;
+    })
+  ),
+});
+
+logger.on('error', function (err) {
+  console.log(err);
+});
 
 export default logger;

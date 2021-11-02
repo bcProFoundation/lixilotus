@@ -37,8 +37,7 @@ router.post('/redeems', async (req: express.Request, res: express.Response) => {
       });
 
       if (existedRedeems.length > 0) {
-        const error = new VError('You have already redeemed this offer');
-        return res.status(500).json(error.message);
+        throw new VError('You have already redeemed this offer');
       }
 
       const vault = await prisma.vault.findUnique({
@@ -120,13 +119,8 @@ router.post('/redeems', async (req: express.Request, res: express.Response) => {
         throw new VError(err as Error, 'Unable to send transaction');
       }
     } catch (err) {
-      let error: VError;
-      if (err instanceof VError) {
-        error = err;
-      } else {
-        error = new VError.WError(err as Error, 'Unable to redeem.');
-      }
-      logger.error(error.message);
+      const error = new VError.WError(err as Error, 'Unable to redeem.');
+      logger.error(error);
       return res.status(400).json(error);
     }
   }

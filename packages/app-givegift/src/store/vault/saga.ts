@@ -9,6 +9,7 @@ import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase62Str, numberToBase62 }
 import { RedeemDto, Redeem } from "@abcpros/givegift-models/lib/redeem";
 import vaultApi from "./api";
 import redeemApi from "../redeem/api";
+import { showToast } from "../toast/actions";
 
 /**
  * Generate a vault with random encryption password
@@ -107,11 +108,11 @@ function* postVaultSuccessSaga(action: PayloadAction<Vault>) {
         redeemCode: redeemCode,
         Path10605: { ...Path10605 }
       }));
-      notification.success({
+      yield put(showToast('success', {
         message: 'Success',
         description: 'Create vault successfully.',
         duration: 5
-      });
+      }));
     }
   } catch (error) {
     const message = `There's an error happens when create new vault.`;
@@ -166,17 +167,16 @@ function* importVaultSuccessSaga(action: PayloadAction<Vault>) {
         ...vault,
         Path10605: { ...Path10605 }
       }));
-      notification.success({
+      yield put(showToast('success', {
         message: 'Success',
         description: 'Import vault successfully.',
         duration: 5
-      });
+      }));
     }
   } catch (error) {
     const message = `There's an error happens importing the vault.`;
     yield put(importVaultFailure(message));
   }
-
 }
 
 function* importVaultFailureSaga(action: PayloadAction<string>) {
@@ -204,11 +204,11 @@ function* refreshVaultSaga(action: PayloadAction<number>) {
 
 function* refreshVaultSuccessSaga(action: PayloadAction<{ vault: Vault, redeems: Redeem[] }>) {
 
-  notification.success({
+  yield put(showToast('success', {
     message: 'Success',
     description: 'Refresh the vault successfully.',
     duration: 5
-  });
+  }));
 }
 
 function* refreshVaultFailureSaga(action: PayloadAction<string>) {
@@ -221,11 +221,15 @@ function* refreshVaultFailureSaga(action: PayloadAction<string>) {
 }
 
 function* setVaultSaga(action: PayloadAction<Vault>) {
+  const { id } = action.payload;
   yield put(push('/vault'));
+  yield put(refreshVault(id));
 }
 
 function* selectVaultSaga(action: PayloadAction<number>) {
+  const id = action.payload;
   yield put(push('/vault'));
+  yield put(refreshVault(id));
 }
 
 

@@ -9,6 +9,8 @@ import { vaultReducer } from './vault/reducer';
 import { VaultsState } from './vault/state';
 import { RedeemsState } from './redeem/state';
 import { redeemReducer } from './redeem/reducer';
+import { errorReducer } from './error/reducer';
+import { toastReducer } from './toast/reducer';
 
 
 const vaultPersistConfig: PersistConfig<VaultsState> = {
@@ -25,6 +27,8 @@ const rootReducer = combineReducers({
   router: connectRouter(history),
   vaults: persistReducer(vaultPersistConfig, vaultReducer),
   redeems: persistReducer(redeemsPersistConfig, redeemReducer),
+  toast: toastReducer,
+  error: errorReducer,
   // This is use for useReduxEffect
   // Should be always at the end
   action: actionReducer,
