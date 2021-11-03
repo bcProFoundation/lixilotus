@@ -143,8 +143,8 @@ function App(): JSX.Element {
                   <Route path="/redeem">
                     <RedeemComponent />
                   </Route>
-                  <Route path="/profile">
-                    <Profile />
+                  <Route path="/">
+                    <Home />
                   </Route>
                 </>
               </Switch>
@@ -173,13 +173,13 @@ function App(): JSX.Element {
                 <WalletOutlined />
                 Redeem
               </NavButton>
-              <NavButton
+              {/* <NavButton
                 active={selectedKey === 'profile'}
                 onClick={() => history.push('/profile')}
               >
                 <UserOutlined />
                 Profile
-              </NavButton>
+              </NavButton> */}
             </Footer>
           </AppBody>
         </GiveGiftApp>
