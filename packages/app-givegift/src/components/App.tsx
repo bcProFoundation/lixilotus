@@ -133,26 +133,22 @@ function App(): JSX.Element {
                 <LixiTextLogo src={LixiText} alt="lixi" />
               </HeaderContainer>
               <Switch>
-                <>
-                  <Route path="/home">
-                    <Home />
-                  </Route>
-                  <Route path="/Vault">
-                    <Vault />
-                  </Route>
-                  <Route path="/redeem">
-                    <RedeemComponent />
-                  </Route>
-                  <Route path="/">
-                    <Home />
-                  </Route>
-                </>
+                <Route path="/Vault">
+                  <Vault />
+                </Route>
+                <Route path="/redeem">
+                  <RedeemComponent />
+                </Route>
+                {/* The default route */}
+                <Route path="/">
+                  <Home />
+                </Route>
               </Switch>
             </AppContainer>
             <Footer>
               <NavButton
                 active={selectedKey === 'home'}
-                onClick={() => history.push('/home')}
+                onClick={() => history.push('/')}
               >
                 <HomeOutlined />
                 Home
