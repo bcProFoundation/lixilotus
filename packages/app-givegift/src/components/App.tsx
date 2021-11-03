@@ -22,7 +22,7 @@ import {
   WalletOutlined,
   UserOutlined
 } from '@ant-design/icons';
-import VaultOutlineSvg from '@assets/icons/VaultOutline.svg';
+import { ReactComponent as VaultOutlineSvg } from '@assets/icons/VaultOutline.svg';
 // import { LoadingIcon } from '@abcpros/givegift-components/atoms/CustomIcons/CustomIcons';
 import Home from '@components/Home/Home';
 import RedeemComponent from '@components/Redeem';
@@ -162,8 +162,7 @@ function App(): JSX.Element {
                 active={selectedKey === 'vault'}
                 onClick={() => history.push('/vault')}
               >
-                <Icon style={{ marginBottom: '0' }} component={() => <img style={{ position: 'relative', bottom: '7px' }} src={VaultOutlineSvg} />} />
-                {/* <GiftOutlined /> */}
+                <Icon component={VaultOutlineSvg} />
                 Vault
               </NavButton>
 

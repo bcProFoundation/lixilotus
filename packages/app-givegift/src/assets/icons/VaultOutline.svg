@@ -1,81 +1,15 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg
-   xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://creativecommons.org/ns#"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   viewBox="0 0 196.7 196.7"
-   version="1.1"
-   id="svg102"
-   sodipodi:docname="VaultOutline.svg"
-   inkscape:version="1.0.2 (e86c870879, 2021-01-15, custom)">
-  <metadata
-     id="metadata106">
-    <rdf:RDF>
-      <cc:Work
-         rdf:about="">
-        <dc:format>image/svg+xml</dc:format>
-        <dc:type
-           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
-      </cc:Work>
-    </rdf:RDF>
-  </metadata>
-  <sodipodi:namedview
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1"
-     objecttolerance="10"
-     gridtolerance="10"
-     guidetolerance="10"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:window-width="3440"
-     inkscape:window-height="1361"
-     id="namedview104"
-     showgrid="false"
-     inkscape:zoom="5.1245552"
-     inkscape:cx="98.349998"
-     inkscape:cy="98.349998"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg102" />
-  <defs
-     id="defs88">
-    <style
-       id="style86">.cls-1{fill:#949494;}</style>
-  </defs>
-  <g
-     id="Layer_2"
-     data-name="Layer 2"
-     transform="translate(0.58541666,33.563888)">
-    <g
-       id="Layer_2-2"
-       data-name="Layer 2">
-      <path
-         class="cls-1"
-         d="M 193,163.08 H 3.7 A 3.7,3.7 0 0 1 0,159.38 V 23.6 A 23.62,23.62 0 0 1 23.6,0 h 149.49 a 23.63,23.63 0 0 1 23.61,23.6 v 135.78 a 3.7,3.7 0 0 1 -3.7,3.7 z M 7.39,155.69 H 189.3 V 23.6 A 16.23,16.23 0 0 0 173.09,7.39 H 23.6 A 16.23,16.23 0 0 0 7.39,23.6 Z"
-         id="path90" />
-      <path
-         class="cls-1"
-         d="M 98.35,92.76 A 28.47,28.47 0 1 1 126.81,64.29 28.49,28.49 0 0 1 98.35,92.76 Z m 0,-49.54 A 21.07,21.07 0 1 0 119.42,64.29 21.09,21.09 0 0 0 98.35,43.22 Z"
-         id="path92" />
-      <path
-         class="cls-1"
-         d="M 75.61,58.17 H 20.06 a 3.69,3.69 0 0 1 -3.69,-3.7 V 4.05 a 3.7,3.7 0 0 1 7.39,0 v 46.73 h 51.85 a 3.7,3.7 0 1 1 0,7.39 z"
-         id="path94" />
-      <path
-         class="cls-1"
-         d="m 176.63,58.17 h -55.55 a 3.7,3.7 0 0 1 0,-7.39 h 51.85 V 4.05 a 3.7,3.7 0 0 1 7.4,0 v 50.42 a 3.7,3.7 0 0 1 -3.7,3.7 z"
-         id="path96" />
-      <path
-         class="cls-1"
-         d="M 176.63,147.6 H 20.06 a 3.7,3.7 0 0 1 -3.69,-3.7 V 74.12 a 3.7,3.7 0 0 1 3.69,-3.7 h 55.55 a 3.7,3.7 0 1 1 0,7.39 H 23.76 v 62.4 h 149.17 v -62.4 h -51.85 a 3.7,3.7 0 0 1 0,-7.39 h 55.55 a 3.7,3.7 0 0 1 3.7,3.7 v 69.78 a 3.7,3.7 0 0 1 -3.7,3.7 z"
-         id="path98" />
-    </g>
-  </g>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg version="1.1" viewBox="0 0 196.7 196.7" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<style>.cls-1{fill:#949494;}</style>
+</defs>
+<g transform="translate(.58542 33.564)" data-name="Layer 2">
+<g data-name="Layer 2">
+<path class="cls-1" d="m193 163.08h-189.3a3.7 3.7 0 0 1-3.7-3.7v-135.78a23.62 23.62 0 0 1 23.6-23.6h149.49a23.63 23.63 0 0 1 23.61 23.6v135.78a3.7 3.7 0 0 1-3.7 3.7zm-185.61-7.39h181.91v-132.09a16.23 16.23 0 0 0-16.21-16.21h-149.49a16.23 16.23 0 0 0-16.21 16.21z"/>
+<path class="cls-1" d="m98.35 92.76a28.47 28.47 0 1 1 28.46-28.47 28.49 28.49 0 0 1-28.46 28.47zm0-49.54a21.07 21.07 0 1 0 21.07 21.07 21.09 21.09 0 0 0-21.07-21.07z"/>
+<path class="cls-1" d="m75.61 58.17h-55.55a3.69 3.69 0 0 1-3.69-3.7v-50.42a3.7 3.7 0 0 1 7.39 0v46.73h51.85a3.7 3.7 0 1 1 0 7.39z"/>
+<path class="cls-1" d="m176.63 58.17h-55.55a3.7 3.7 0 0 1 0-7.39h51.85v-46.73a3.7 3.7 0 0 1 7.4 0v50.42a3.7 3.7 0 0 1-3.7 3.7z"/>
+<path class="cls-1" d="m176.63 147.6h-156.57a3.7 3.7 0 0 1-3.69-3.7v-69.78a3.7 3.7 0 0 1 3.69-3.7h55.55a3.7 3.7 0 1 1 0 7.39h-51.85v62.4h149.17v-62.4h-51.85a3.7 3.7 0 0 1 0-7.39h55.55a3.7 3.7 0 0 1 3.7 3.7v69.78a3.7 3.7 0 0 1-3.7 3.7z"/>
+</g>
+</g>
 </svg>
