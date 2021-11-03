@@ -1,14 +1,12 @@
 import express, { NextFunction } from 'express';
 import Container from 'typedi';
 import { PrismaClient } from '@prisma/client';
+import BigNumber from 'bignumber.js';
 import VError from 'verror';
 import MinimalBCHWallet from '@abcpros/minimal-xpi-slp-wallet';
 import { CreateRedeemDto, RedeemDto } from '@abcpros/givegift-models/src/lib/redeem'
 import { toSmallestDenomination } from '@abcpros/givegift-models/src/utils/cashMethods';
 import { aesGcmDecrypt, base62ToNumber } from '../utils/encryptionMethods';
-
-import BigNumber from 'bignumber.js';
-import logger from '../logger';
 
 
 const prisma = new PrismaClient();
@@ -47,9 +45,7 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
       });
 
       if (!vault) {
-        return res.status(500).json({
-          error: 'Invalid vault.'
-        });
+        throw new VError('Unable to redeem because the vault is invalid');
       }
 
       const mnemonic = await aesGcmDecrypt(vault.encryptedMnemonic, password);
@@ -63,7 +59,7 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
       const balance = await xpiWallet.getBalance(vaultAddress);
 
       if (balance === 0) {
-        throw new VError('insufficient fund.');
+        throw new VError('Insufficient fund.');
       }
 
       let satoshisToSend;

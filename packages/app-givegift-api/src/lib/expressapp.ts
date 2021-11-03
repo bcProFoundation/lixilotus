@@ -6,6 +6,7 @@ import Container from 'typedi';
 import SlpWallet from '@abcpros/minimal-xpi-slp-wallet';
 import * as Vault from './routes/vault';
 import * as Redeem from './routes/redeem';
+import * as Healthcheck from './routes/healthcheck';
 import { handleError } from './middlewares/handleError';
 
 const bodyParser = require('body-parser');
@@ -23,10 +24,7 @@ export class ExpressApp {
   public routes() {
     this.app.use('/api', Vault.router);
     this.app.use('/api', Redeem.router);
-
-    this.app.get('/', (req: express.Request, res: express.Response, next: express.NextFunction) => {
-      throw new Error("Hello error!");
-    });
+    this.app.use('/api', Healthcheck.router);
   }
 
   public DIProviders() {

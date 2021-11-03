@@ -47,10 +47,10 @@ function* generateVaultSaga(action: PayloadAction<GenerateVaultDto>) {
 function* getVaultSaga(action: PayloadAction<number>) {
   try {
     const id = action.payload;
-    const response = yield call(vaultApi.getById, id);
-    yield put(getVaultSuccess(response.data));
+    const data = yield call(vaultApi.getById, id);
+    yield put(getVaultSuccess(data));
   } catch (err) {
-    const message = `Could not fetch the vault from api.`;
+    const message = (err as Error).message ?? `Could not fetch the vault from api.`;
     yield put(getVaultFailure(message))
   }
 }
@@ -68,14 +68,14 @@ function* postVaultSaga(action: PayloadAction<Vault>) {
       fixedValue: vault.fixedValue
     }
 
-    const response: { data: VaultDto } = yield call(vaultApi.post, dataApi);
+    const data: VaultDto = yield call(vaultApi.post, dataApi);
 
     // Merge back to action payload
-    const result = { ...vault, ...response.data } as Vault;
+    const result = { ...vault, ...data } as Vault;
     yield put(postVaultSuccess(result));
 
   } catch (err) {
-    const message = `Could not post the vault to the api.`;
+    const message = (err as Error).message ?? `Could not post the vault to the api.`;
     yield put(postVaultFailure(message));
   }
 }
@@ -145,7 +145,7 @@ function* importVaultSaga(action: PayloadAction<ImportVaultDto>) {
     yield put(importVaultSuccess(result));
 
   } catch (err) {
-    const message = `Unable to import the vault.`;
+    const message = (err as Error).message ?? `Unable to import the vault.`;
     yield put(importVaultFailure(message));
   }
 }
@@ -196,8 +196,8 @@ function* refreshVaultSaga(action: PayloadAction<number>) {
     const redeemResponse: { data: RedeemDto[] } = yield call(redeemApi.getByVaultId, vaultId);
     const redeems = redeemResponse.data as Redeem[];
     yield put(refreshVaultSuccess({ vault: vault, redeems: redeems }))
-  } catch (error) {
-    const message = 'Unable to refresh the vault.';
+  } catch (err) {
+    const message = (err as Error).message ?? `Unable to refresh the vault.`;
     yield put(refreshVaultFailure(message));
   }
 }

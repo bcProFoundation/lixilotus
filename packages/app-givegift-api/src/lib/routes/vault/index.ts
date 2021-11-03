@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { NextFunction } from 'express';
 import VError from 'verror';
 import { PrismaClient } from '@prisma/client';
 import { VaultDto } from '@abcpros/givegift-models/src/lib/vault'
@@ -8,7 +8,7 @@ import logger from '../../logger';
 const prisma = new PrismaClient();
 let router = express.Router();
 
-router.get('/vaults/:id/', async (req: express.Request, res: express.Response) => {
+router.get('/vaults/:id/', async (req: express.Request, res: express.Response, next: NextFunction) => {
   const { id } = req.params;
   try {
     const vault = await prisma.vault.findUnique({
@@ -23,18 +23,16 @@ router.get('/vaults/:id/', async (req: express.Request, res: express.Response) =
     } as VaultDto;
     return res.json(result);
   } catch (err: unknown) {
-    let error: VError;
     if (err instanceof VError) {
-      error = err;
+      return next(err);
     } else {
-      error = new VError.WError(err as Error, 'The vault does not exist.');
+      const error = new VError.WError(err as Error, 'Unable to get vault.');
+      return next(error);
     }
-    logger.error(error.message);
-    return res.status(400).json(error);
   }
 });
 
-router.post('/vaults', async (req: express.Request, res: express.Response) => {
+router.post('/vaults', async (req: express.Request, res: express.Response, next: NextFunction) => {
   const vaultApi: VaultDto = req.body;
   if (vaultApi) {
     try {
@@ -50,9 +48,12 @@ router.post('/vaults', async (req: express.Request, res: express.Response) => {
 
       res.json(resultApi);
     } catch (err) {
-      const error = new VError.WError(err as Error, 'Could not create the vault.');
-      logger.error(error.message);
-      return res.status(400).json(error);
+      if (err instanceof VError) {
+        return next(err);
+      } else {
+        const error = new VError.WError(err as Error, 'Unable to create new vault.');
+        return next(error);
+      }
     }
   }
 

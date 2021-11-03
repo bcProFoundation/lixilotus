@@ -1,13 +1,14 @@
-import express from 'express';
+import express, { NextFunction } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { ImportVaultDto, VaultDto } from '@abcpros/givegift-models/src/lib/vault'
 import { aesGcmDecrypt, base62ToNumber } from '../../utils/encryptionMethods';
 import { Redeem } from '@abcpros/givegift-models/src/lib/redeem';
+import { VError } from 'verror';
 
 const prisma = new PrismaClient();
 let router = express.Router();
 
-router.post('/import', async (req: express.Request, res: express.Response) => {
+router.post('/import', async (req: express.Request, res: express.Response, next: NextFunction) => {
   const importVaultDto: ImportVaultDto = req.body;
 
   try {
@@ -45,7 +46,7 @@ router.post('/import', async (req: express.Request, res: express.Response) => {
   }
 });
 
-router.get('/:id/redeems', async (req: express.Request, res: express.Response) => {
+router.get('/:id/redeems', async (req: express.Request, res: express.Response, next: NextFunction) => {
   const { id } = req.params;
   const vaultId = parseInt(id);
 
@@ -65,10 +66,13 @@ router.get('/:id/redeems', async (req: express.Request, res: express.Response) =
 
     res.json(results);
 
-  } catch (error) {
-    return res.status(400).json({
-      error: `Could not import the vault.`
-    });
+  } catch (err) {
+    if (err instanceof VError) {
+      return next(err);
+    } else {
+      const error = new VError.WError(err as Error, 'Unable to get redeem list of the vault.');
+      return next(error);
+    }
   }
 });
 

@@ -30,14 +30,14 @@ function* postRedeemSaga(action: PayloadAction<Redeem>) {
 
     const dataApi = redeem as CreateRedeemDto;
 
-    const response: { data: RedeemDto } = yield call(redeemApi.post, dataApi);
+    const data: RedeemDto = yield call(redeemApi.post, dataApi);
 
     // Merge back to action payload
-    const result = { ...redeem, ...response.data } as Redeem;
+    const result = { ...redeem, ...data } as Redeem;
     yield put(postRedeemSuccess(result));
 
   } catch (err) {
-    const message = (err as any).message ?? `Unable to redeem.`;
+    const message = (err as Error).message ?? `Unable to redeem.`;
     yield put(postRedeemFailure(message));
   }
 }
