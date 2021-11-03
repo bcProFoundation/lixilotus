@@ -3,8 +3,9 @@ import { all, call, fork, getContext, put, takeLatest } from "@redux-saga/core/e
 import { PayloadAction } from "@reduxjs/toolkit";
 import { CreateRedeemDto, Redeem, RedeemDto } from "@abcpros/givegift-models/lib/redeem";
 import redeemApi from "./api";
-import { postRedeem, postRedeemFailure, postRedeemSuccess } from "./actions";
+import { postRedeem, postRedeemActionType, postRedeemFailure, postRedeemSuccess } from "./actions";
 import { showToast } from "../toast/actions";
+import { hideLoading, showLoading } from "../loading/actions";
 
 function* postRedeemSuccessSaga(action: PayloadAction<Redeem>) {
   const message = 'Redeem successfully'
@@ -13,19 +14,24 @@ function* postRedeemSuccessSaga(action: PayloadAction<Redeem>) {
     description: message,
     duration: 5
   }));
+  yield put(hideLoading(postRedeemActionType));
 }
 
 function* postRedeemFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? 'Unable to redeem';
-  notification.error({
+  yield put(showToast('error', {
     message: 'Error',
     description: message,
     duration: 5
-  });
+  }));
+  yield put(hideLoading(postRedeemActionType));
 }
 
 function* postRedeemSaga(action: PayloadAction<Redeem>) {
   try {
+
+    yield put(showLoading(postRedeemActionType));
+
     const redeem = action.payload;
 
     const dataApi = redeem as CreateRedeemDto;

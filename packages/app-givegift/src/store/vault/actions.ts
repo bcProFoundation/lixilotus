@@ -2,6 +2,11 @@ import { createAction } from '@reduxjs/toolkit';
 import { GenerateVaultDto, Vault, ImportVaultDto } from '@abcpros/givegift-models/lib/vault';
 import { Redeem } from '@abcpros/givegift-models/lib/redeem';
 
+export const getVaultActionType = 'vault/getVault';
+export const postVaultActionType = 'vault/postVault';
+export const importVaultActionType = 'vault/importVault';
+export const refreshVaultActionType = 'vault/refreshVault';
+
 export const generateVault = createAction<GenerateVaultDto>('vault/generateVault');
 export const getVault = createAction<Vault>('vault/getVault');
 export const getVaultSuccess = createAction<Vault>('vault/getVaultSuccess');

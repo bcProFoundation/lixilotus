@@ -4,13 +4,16 @@ import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { PersistConfig } from 'redux-persist';
 import { connectRouter } from 'connected-react-router';
+import { loadingReducer } from './loading/reducer';
+import { errorReducer } from './error/reducer';
+import { toastReducer } from './toast/reducer';
 import { actionReducer } from './action/reducer';
 import { vaultReducer } from './vault/reducer';
 import { VaultsState } from './vault/state';
 import { RedeemsState } from './redeem/state';
 import { redeemReducer } from './redeem/reducer';
-import { errorReducer } from './error/reducer';
-import { toastReducer } from './toast/reducer';
+
+
 
 
 const vaultPersistConfig: PersistConfig<VaultsState> = {
@@ -27,6 +30,7 @@ const rootReducer = combineReducers({
   router: connectRouter(history),
   vaults: persistReducer(vaultPersistConfig, vaultReducer),
   redeems: persistReducer(redeemsPersistConfig, redeemReducer),
+  loading: loadingReducer,
   toast: toastReducer,
   error: errorReducer,
   // This is use for useReduxEffect

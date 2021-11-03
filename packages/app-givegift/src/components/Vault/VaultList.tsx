@@ -1,5 +1,8 @@
-
+import { Spin } from "antd";
 import { Vault } from "@abcpros/givegift-models/lib/vault";
+import { useAppSelector } from "src/store/hooks";
+import { getIsGlobalLoading } from "src/store/loading/selectors";
+import { CashLoadingIcon } from "@abcpros/givegift-components/components/Common/CustomIcons";
 import VaultListItem from "./VaultListItem";
 
 type VaultListProps = {
@@ -8,19 +11,23 @@ type VaultListProps = {
 
 const VaultList = ({ vaults }: VaultListProps) => {
 
-
+  const isLoading = useAppSelector(getIsGlobalLoading);
 
   return (
-    <div style={{ paddingTop: '20px' }}>
-      {vaults && vaults.length > 0 &&
-        vaults.map(item => (
-          <VaultListItem
-            key={item.id}
-            vault={item}
-          />
-        ))
-      }
-    </div>
+    <>
+      <Spin spinning={isLoading} indicator={CashLoadingIcon}>
+        <div style={{ paddingTop: '20px' }}>
+          {vaults && vaults.length > 0 &&
+            vaults.map(item => (
+              <VaultListItem
+                key={item.id}
+                vault={item}
+              />
+            ))
+          }
+        </div>
+      </Spin>
+    </>
   );
 };
 

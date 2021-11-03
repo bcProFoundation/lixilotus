@@ -6,8 +6,7 @@ const redeemApi = {
     const url = '/api/redeems';
     return axiosClient.post(url, dto)
       .then(response => {
-        const data = response.data as RedeemDto;
-        return data;
+        return response.data as RedeemDto;
       })
       .catch((err) => {
         const { response } = err;
@@ -18,7 +17,7 @@ const redeemApi = {
     const url = `/api/vaults/${id}/redeems`;
     return axiosClient.get(url)
       .then(response => {
-        const data = response.data as RedeemDto[];
+        return response.data as RedeemDto[];
       })
       .catch(err => {
         const { response } = err;

@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Row, Col, Form, notification, message, Modal, Alert, Input } from 'antd';
+import React, { useState } from 'react';
+import { Row, Col, Form, Spin } from 'antd';
 import { isMobile, isIOS, isSafari } from 'react-device-detect';
-import PrimaryButton, {
-  SecondaryButton,
-} from '@abcpros/givegift-components/components/Common/PrimaryButton';
+import PrimaryButton from '@abcpros/givegift-components/components/Common/PrimaryButton';
+import { CashLoadingIcon } from "@abcpros/givegift-components/components/Common/CustomIcons";
 import {
   FormItemRedeemCodeXpiInput,
   FormItemWithQRCodeAddon,
@@ -11,10 +10,11 @@ import {
 import useWindowDimensions from '@hooks/useWindowDimensions';
 import { parseAddress } from '@utils/addressMethods';
 import { currency } from '@abcpros/givegift-components/components/Common/Ticker';
-import { useAppDispatch } from 'src/store/hooks';
+import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { postRedeem } from 'src/store/redeem/actions';
 import { AppContext } from 'src/store/store';
 import { CreateRedeemDto } from '@abcpros/givegift-models/lib/redeem';
+import { getIsGlobalLoading } from 'src/store/loading/selectors';
 
 type RedeemFormData = {
   dirty: boolean;
@@ -23,7 +23,10 @@ type RedeemFormData = {
 }
 
 const RedeemComponent: React.FC = () => {
-  const { XPI, Wallet } = React.useContext(AppContext);
+
+  const isLoading = useAppSelector(getIsGlobalLoading);
+
+  const { XPI } = React.useContext(AppContext);
 
   const dispatch = useAppDispatch();
 
@@ -108,49 +111,51 @@ const RedeemComponent: React.FC = () => {
         display: 'flex'
       }}>
         <Col span={24}>
-          <Form
-            style={{
-              width: 'auto',
-            }}
-          >
-            <FormItemWithQRCodeAddon
+          <Spin spinning={isLoading} indicator={CashLoadingIcon}>
+            <Form
               style={{
-                margin: '0 0 20px 0'
-              }}
-              loadWithCameraOpen={scannerSupported}
-              validateStatus={redeemXpiAddressError ? 'error' : ''}
-              help={redeemXpiAddressError ? redeemXpiAddressError : ''}
-              onScan={result =>
-                handleAddressChange({
-                  target: {
-                    name: 'address',
-                    value: result,
-                  },
-                })
-              }
-              inputProps={{
-                placeholder: `${currency.ticker} Address`,
-                name: 'address',
-                onChange: e => handleAddressChange(e),
-                required: true,
-                value: redeemFormData.address,
-              }}
-            ></FormItemWithQRCodeAddon>
-            <FormItemRedeemCodeXpiInput
-              inputProps={{
-                onChange: e => handleRedeemCodeChange(e),
-              }}
-            ></FormItemRedeemCodeXpiInput>
-            <div
-              style={{
-                paddingTop: '12px',
+                width: 'auto',
               }}
             >
-              <PrimaryButton
-                onClick={() => submit()}
-              >Redeem</PrimaryButton>
-            </div>
-          </Form>
+              <FormItemWithQRCodeAddon
+                style={{
+                  margin: '0 0 20px 0'
+                }}
+                loadWithCameraOpen={scannerSupported}
+                validateStatus={redeemXpiAddressError ? 'error' : ''}
+                help={redeemXpiAddressError ? redeemXpiAddressError : ''}
+                onScan={result =>
+                  handleAddressChange({
+                    target: {
+                      name: 'address',
+                      value: result,
+                    },
+                  })
+                }
+                inputProps={{
+                  placeholder: `${currency.ticker} Address`,
+                  name: 'address',
+                  onChange: e => handleAddressChange(e),
+                  required: true,
+                  value: redeemFormData.address,
+                }}
+              ></FormItemWithQRCodeAddon>
+              <FormItemRedeemCodeXpiInput
+                inputProps={{
+                  onChange: e => handleRedeemCodeChange(e),
+                }}
+              ></FormItemRedeemCodeXpiInput>
+              <div
+                style={{
+                  paddingTop: '12px',
+                }}
+              >
+                <PrimaryButton
+                  onClick={() => submit()}
+                >Redeem</PrimaryButton>
+              </div>
+            </Form>
+          </Spin>
         </Col>
       </Row>
     </>

@@ -3,13 +3,14 @@ import { notification } from "antd";
 import { push } from 'connected-react-router';
 import { CreateVaultDto, GenerateVaultDto, ImportVaultDto, Vault, VaultDto } from "@abcpros/givegift-models/lib/vault";
 import { all, call, fork, getContext, put, takeLatest } from "@redux-saga/core/effects";
-import { generateVault, getVault, getVaultFailure, getVaultSuccess, importVault, importVaultFailure, importVaultSuccess, postVault, postVaultFailure, postVaultSuccess, refreshVault, refreshVaultFailure, refreshVaultSuccess, selectVault, setVault } from "./actions";
+import { generateVault, getVault, getVaultActionType, getVaultFailure, getVaultSuccess, importVault, importVaultActionType, importVaultFailure, importVaultSuccess, postVault, postVaultActionType, postVaultFailure, postVaultSuccess, refreshVault, refreshVaultActionType, refreshVaultFailure, refreshVaultSuccess, selectVault, setVault } from "./actions";
 
 import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase62Str, numberToBase62 } from "@utils/encryptionMethods";
 import { RedeemDto, Redeem } from "@abcpros/givegift-models/lib/redeem";
 import vaultApi from "./api";
 import redeemApi from "../redeem/api";
 import { showToast } from "../toast/actions";
+import { hideLoading, showLoading } from "../loading/actions";
 
 /**
  * Generate a vault with random encryption password
@@ -46,6 +47,7 @@ function* generateVaultSaga(action: PayloadAction<GenerateVaultDto>) {
  */
 function* getVaultSaga(action: PayloadAction<number>) {
   try {
+    yield put(showLoading(getVaultActionType));
     const id = action.payload;
     const data = yield call(vaultApi.getById, id);
     yield put(getVaultSuccess(data));
@@ -82,17 +84,22 @@ function* postVaultSaga(action: PayloadAction<Vault>) {
 
 function* getVaultFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? 'Unable to get the vault from server';
-  notification.error({
+  yield put(showToast('error', {
     message: 'Error',
     description: message,
     duration: 5
-  });
+  }));
+  yield put(hideLoading(getVaultActionType));
 }
 
 function* postVaultSuccessSaga(action: PayloadAction<Vault>) {
-  const vault = action.payload;
+
   // Recalculate and valate the redeem code
   try {
+
+    yield put(showLoading(postVaultActionType));
+
+    const vault = action.payload;
     const decryptedMnemonic = yield call(aesGcmDecrypt, vault.encryptedMnemonic, vault.redeemCode);
     const encodedId = numberToBase62(vault.id);
     const redeemCode = vault.redeemCode + encodedId;
@@ -123,15 +130,19 @@ function* postVaultSuccessSaga(action: PayloadAction<Vault>) {
 
 function* postVaultFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? 'Unable to create vault on server';
-  notification.error({
+  yield put(showToast('error', {
     message: 'Error',
     description: message,
     duration: 5
-  });
+  }));
+  yield put(hideLoading(postVaultActionType));
 }
 
 function* importVaultSaga(action: PayloadAction<ImportVaultDto>) {
   try {
+
+    yield put(showLoading(importVaultActionType));
+
     const importVaultDto = action.payload;
 
     const response: { data: VaultDto } = yield call(vaultApi.import, importVaultDto);
@@ -142,6 +153,7 @@ function* importVaultSaga(action: PayloadAction<ImportVaultDto>) {
       mnemonic: importVaultDto.mnemonic,
       redeemCode: importVaultDto.redeemCode
     } as Vault;
+
     yield put(importVaultSuccess(result));
 
   } catch (err) {
@@ -173,6 +185,7 @@ function* importVaultSuccessSaga(action: PayloadAction<Vault>) {
         duration: 5
       }));
     }
+    yield put(hideLoading(importVaultActionType));
   } catch (error) {
     const message = `There's an error happens importing the vault.`;
     yield put(importVaultFailure(message));
@@ -181,20 +194,22 @@ function* importVaultSuccessSaga(action: PayloadAction<Vault>) {
 
 function* importVaultFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? 'Unable to import the vault.';
-  notification.error({
+  yield put(showToast('error', {
     message: 'Error',
     description: message,
     duration: 5
-  });
+  }));
+  yield put(hideLoading(importVaultActionType));
 }
 
 function* refreshVaultSaga(action: PayloadAction<number>) {
   try {
+    yield put(showLoading(refreshVaultActionType));
     const vaultId = action.payload;
-    const response: { data: VaultDto } = yield call(vaultApi.getById, vaultId);
-    const vault = response.data as Vault;
-    const redeemResponse: { data: RedeemDto[] } = yield call(redeemApi.getByVaultId, vaultId);
-    const redeems = redeemResponse.data as Redeem[];
+    const data: VaultDto = yield call(vaultApi.getById, vaultId);
+    const vault = data as Vault;
+    const redeemDtos: RedeemDto[] = yield call(redeemApi.getByVaultId, vaultId);
+    const redeems = (redeemDtos ?? []) as Redeem[];
     yield put(refreshVaultSuccess({ vault: vault, redeems: redeems }))
   } catch (err) {
     const message = (err as Error).message ?? `Unable to refresh the vault.`;
@@ -209,15 +224,17 @@ function* refreshVaultSuccessSaga(action: PayloadAction<{ vault: Vault, redeems:
     description: 'Refresh the vault successfully.',
     duration: 5
   }));
+  yield put(hideLoading(refreshVaultActionType));
 }
 
 function* refreshVaultFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? 'Unable to resfresh the vault.';
-  notification.error({
+  yield put(showToast('error', {
     message: 'Error',
     description: message,
     duration: 5
-  });
+  }));
+  yield put(hideLoading(refreshVaultActionType));
 }
 
 function* setVaultSaga(action: PayloadAction<Vault>) {

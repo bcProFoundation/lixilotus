@@ -62,9 +62,9 @@ router.get('/:id/redeems', async (req: express.Request, res: express.Response, n
         ...item,
         amount: Number(item.amount)
       } as Redeem;
-    })
+    });
 
-    res.json(results);
+    res.json(results ?? []);
 
   } catch (err) {
     if (err instanceof VError) {
