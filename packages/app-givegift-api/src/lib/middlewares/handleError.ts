@@ -12,10 +12,12 @@ import logger from '../logger';
  * @param next The next function to pass to next middleware
  */
 export function handleError(error: VError, req: Request, res: Response, next: NextFunction) {
-  const { info } = VError.info(error);
+  const info = VError.info(error);
   const status = info && info.status ? info.status : 500;
   // Logging
+
   logger.error(error);
+  logger.error(JSON.stringify(info));
   let err = error.cause();
   while (err && (err as any).cause) {
     logger.error(err);
