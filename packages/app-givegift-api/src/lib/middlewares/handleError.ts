@@ -18,10 +18,10 @@ export function handleError(error: VError, req: Request, res: Response, next: Ne
 
   logger.error(error);
   logger.error(JSON.stringify(info));
-  let err = error.cause();
+  let err = error;
   while (err && (err as any).cause) {
-    logger.error(err);
     err = (err as any).cause();
+    logger.error(err);
   }
   res.status(status).json(error);
 }
