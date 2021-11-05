@@ -54,11 +54,11 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
 
       const mnemonic = await aesGcmDecrypt(vault.encryptedMnemonic, password);
 
-      const xpiWallet: MinimalBCHWallet = new SlpWallet('', {
+      const xpiWallet: MinimalBCHWallet = new SlpWallet(mnemonic, {
         restURL: xpiRestUrl,
         hdPath: "m/44'/10605'/0'/0/0"
       });
-      await xpiWallet.create(mnemonic);
+      await xpiWallet.walletInfoPromise;
       if (!xpiWallet.walletInfoCreated) {
         throw new VError('Could not create the vault wallet');
       }
