@@ -1,5 +1,6 @@
 import express, { NextFunction } from 'express';
 import Container from 'typedi';
+import config from 'config';
 import { PrismaClient } from '@prisma/client';
 import BigNumber from 'bignumber.js';
 import VError from 'verror';
@@ -7,6 +8,8 @@ import MinimalBCHWallet from '@abcpros/minimal-xpi-slp-wallet';
 import { CreateRedeemDto, RedeemDto } from '@abcpros/givegift-models/src/lib/redeem'
 import { toSmallestDenomination } from '@abcpros/givegift-models/src/utils/cashMethods';
 import { aesGcmDecrypt, base62ToNumber } from '../utils/encryptionMethods';
+const xpiRestUrl = config.has('xpiRestUrl') ? config.get('xpiRestUrl') : 'https://api.sendlotus.com/v4/';
+import SlpWallet from '@abcpros/minimal-xpi-slp-wallet';
 
 
 const prisma = new PrismaClient();
@@ -50,7 +53,10 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
 
       const mnemonic = await aesGcmDecrypt(vault.encryptedMnemonic, password);
 
-      const xpiWallet: MinimalBCHWallet = Container.get('xpiWallet');
+      const xpiWallet: MinimalBCHWallet = new SlpWallet('', {
+        restURL: xpiRestUrl,
+        hdPath: "m/44'/10605'/0'/0/0"
+      });
       await xpiWallet.create(mnemonic);
       if (!xpiWallet.walletInfoCreated) {
         throw new VError('Could not create the vault wallet');
