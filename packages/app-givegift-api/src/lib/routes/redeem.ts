@@ -10,6 +10,7 @@ import { toSmallestDenomination } from '@abcpros/givegift-models/src/utils/cashM
 import { aesGcmDecrypt, base62ToNumber } from '../utils/encryptionMethods';
 const xpiRestUrl = config.has('xpiRestUrl') ? config.get('xpiRestUrl') : 'https://api.sendlotus.com/v4/';
 import SlpWallet from '@abcpros/minimal-xpi-slp-wallet';
+import logger from '../logger';
 
 
 const prisma = new PrismaClient();
@@ -124,6 +125,7 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
       if (err instanceof VError) {
         return next(err);
       } else {
+        logger.error(err);
         const error = new VError.WError(err as Error, 'Unable to redeem.');
         return next(error);
       }
