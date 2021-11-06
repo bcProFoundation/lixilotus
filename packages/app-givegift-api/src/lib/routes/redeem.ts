@@ -11,6 +11,7 @@ import { aesGcmDecrypt, base62ToNumber } from '../utils/encryptionMethods';
 const xpiRestUrl = config.has('xpiRestUrl') ? config.get('xpiRestUrl') : 'https://api.sendlotus.com/v4/';
 import SlpWallet from '@abcpros/minimal-xpi-slp-wallet';
 import logger from '../logger';
+import BCHJS from '@abcpros/xpi-js';
 
 
 const prisma = new PrismaClient();
@@ -54,15 +55,19 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
 
       const mnemonic = await aesGcmDecrypt(vault.encryptedMnemonic, password);
 
+      const hdPath = "m/44'/10605'/0'/0/0";
       const xpiWallet: MinimalBCHWallet = new SlpWallet(mnemonic, {
         restURL: xpiRestUrl,
-        hdPath: "m/44'/10605'/0'/0/0"
+        hdPath
       });
-      await xpiWallet.walletInfoPromise;
-      if (!xpiWallet.walletInfoCreated) {
-        throw new VError('Could not create the vault wallet');
-      }
-      const vaultAddress: string = (xpiWallet as any).walletInfo.address;
+      const XPI: BCHJS = xpiWallet.bchjs;
+
+      // Generate the HD wallet.
+      const rootSeedBuffer = await XPI.Mnemonic.toSeed(mnemonic);
+      const masterHDNode = XPI.HDNode.fromSeed(rootSeedBuffer);
+      const childNode = masterHDNode.derivePath(hdPath);
+      const vaultAddress: string = XPI.HDNode.toXAddress(childNode);
+      const keyPair = XPI.HDNode.toKeyPair(childNode);
       const balance = await xpiWallet.getBalance(vaultAddress);
 
       if (balance === 0) {
@@ -90,8 +95,59 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
         amountSat: amountSats
       }];
 
+      const utxos = await XPI.Utxo.get(vaultAddress);
+      const utxoStore = utxos[0];
+
+      if (!utxoStore || !(utxoStore as any).bchUtxos || !(utxoStore as any).bchUtxos) {
+        throw new VError('UTXO list is empty');
+      }
+
+      // Determine the UTXOs needed to be spent for this TX, and the change
+      // that will be returned to the wallet.
+      const { necessaryUtxos, change } = xpiWallet.sendBch.getNecessaryUtxosAndChange(
+        outputs,
+        (utxoStore as any).bchUtxos,
+        1.0
+      );
+
+      // Create an instance of the Transaction Builder.
+      const transactionBuilder: any = new XPI.TransactionBuilder();
+
+      // Add inputs
+      necessaryUtxos.forEach((utxo: any) => {
+        transactionBuilder.addInput(utxo.tx_hash, utxo.tx_pos)
+      });
+
+      // Add outputs
+      outputs.forEach(receiver => {
+        transactionBuilder.addOutput(receiver.address, receiver.amountSat);
+      });
+
+      if (change && change > 546) {
+        transactionBuilder.addOutput(vaultAddress, change);
+      }
+
+      // Sign each UTXO that is about to be spent.
+      necessaryUtxos.forEach((utxo, i) => {
+        let redeemScript
+
+        transactionBuilder.sign(
+          i,
+          keyPair,
+          redeemScript,
+          transactionBuilder.hashTypes.SIGHASH_ALL,
+          utxo.value
+        )
+      });
+
+      const tx = transactionBuilder.build();
+      const hex = tx.toHex();
+
       try {
-        const txid = await xpiWallet.send(outputs);
+
+        // Broadcast the transaction to the network.
+        const txid = await XPI.RawTransactions.sendRawTransaction(hex);
+        // const txid = await xpiWallet.send(outputs);
 
         const createRedeemOperation = prisma.redeem.create({
           data: {
