@@ -13,8 +13,7 @@ import { Spin } from 'antd';
 import Icon from '@ant-design/icons';
 import styled, { ThemeProvider } from 'styled-components';
 import { theme, GlobalStyle } from '@abcpros/givegift-components/styles';
-import LogoLixi from '@assets/images/lixi_logo.svg';
-import LixiText from '@assets/images/lixi_text.png';
+import LixiLogoText from '@assets/images/lixi_logo_with_text.png';
 import {
   LoadingOutlined,
   HomeOutlined,
@@ -94,17 +93,10 @@ export const HeaderContainer = styled.div`
   }
 `;
 
-export const LotusLogo = styled.img`
-  width: 50px;
-  @media (max-width: 768px) {
-    width: 50px;
-  }
-`;
-
 export const LixiTextLogo = styled.img`
-width: 200px;
+width: 250px;
   @media (max-width: 768px) {
-    width: 150px;
+    width: 200px;
   }
 `;
 
@@ -129,8 +121,7 @@ function App(): JSX.Element {
           <AppBody>
             <AppContainer>
               <HeaderContainer>
-                <LotusLogo src={LogoLixi} alt="lixi" />
-                <LixiTextLogo src={LixiText} alt="lixi" />
+                <LixiTextLogo src={LixiLogoText} alt="lixi" />
               </HeaderContainer>
               <Switch>
                 <Route path="/Vault">
