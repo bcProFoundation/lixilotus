@@ -28,6 +28,7 @@ import RedeemComponent from '@components/Redeem';
 import Profile from '@components/Profile/Profile';
 import { Footer, NavButton } from '@abcpros/givegift-components/components';
 import Vault from '@components/Vault';
+import ModalManager from '@components/Common/ModalManager';
 
 type ThemeType = typeof theme;
 
@@ -120,6 +121,7 @@ function App(): JSX.Element {
         <GiveGiftApp>
           <AppBody>
             <AppContainer>
+
               <HeaderContainer>
                 <LixiTextLogo src={LixiLogoText} alt="lixi" />
               </HeaderContainer>

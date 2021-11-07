@@ -11,6 +11,8 @@ import { VaultParamLabel } from '@abcpros/givegift-components/components/Common/
 import { GenerateVaultDto, Vault } from '@abcpros/givegift-models/lib/vault';
 import { useAppDispatch } from 'src/store/hooks';
 import { generateVault } from 'src/store/vault/actions';
+import { openModal } from 'src/store/modal/actions';
+import { CreateVaultConfirmationModalProps } from './CreateVaultConfirmationModal';
 const { Panel } = Collapse;
 
 type CreateVaultFormProps = {
@@ -54,9 +56,6 @@ const CreateVaultForm = ({
     ((isRandomGive && newVaultMinValueIsValid && newVaultMaxValueIsValid) ||
       (!isRandomGive && newVaultFixedValueIsValid));
 
-  // Modal settings
-  const [showConfirmCreateVault, setShowConfirmCreateVault] = useState(false);
-
   const handleChangeIsRandomGive = (e: RadioChangeEvent) => {
     const { value } = e.target;
     setIsRandomGive(value);
@@ -78,160 +77,124 @@ const CreateVaultForm = ({
     setNewVaultFixedValue(value);
   }
 
-  const createPreviewedVault = async () => {
-    // Start the spinner
-    // passLoadingStatus(true);
+  const handleSubmitCreateVault = () => {
 
-    if (!createVaultFormDataIsValid) {
-      // If for some reason, the data is invalid then cancel
-      return;
-    }
+    const generateVaultDto: GenerateVaultDto = {
+      name: newVaultName,
+      minValue: newVaultMinValue,
+      maxValue: newVaultMaxValue,
+      fixedValue: newVaultFixedValue,
+      isRandomGive: isRandomGive
+    };
 
-    // Create vault
-    try {
-      const generateVaultDto: GenerateVaultDto = {
-        name: newVaultName,
-        minValue: newVaultMinValue,
-        maxValue: newVaultMaxValue,
-        fixedValue: newVaultFixedValue,
-        isRandomGive: isRandomGive
-      };
-
-      dispatch(generateVault(generateVaultDto));
-
-    } catch (e: any) {
-
-    }
-    // Hide the modal
-    setShowConfirmCreateVault(false);
-    // Stop spinner
-    // passLoadingStatus(false);
+    const createVaultModalProps: CreateVaultConfirmationModalProps = {
+      isRandomGive,
+      newVaultName,
+      newVaultMinValue,
+      newVaultMaxValue,
+      newVaultFixedValue,
+      onOkAction: generateVault(generateVaultDto)
+    };
+    dispatch(openModal('CreateVaultConfirmationModal', createVaultModalProps));
   }
 
 
   return (
     <>
-      <Modal
-        title={`Please confirm your vault settings.`}
-        visible={showConfirmCreateVault}
-        onOk={createPreviewedVault}
-        onCancel={() => setShowConfirmCreateVault(false)}
+      <VaultCollapse
+        accordion
+        collapsible={disabled ? 'disabled' : 'header'}
+        disabled={disabled}
+        style={{
+          marginBottom: '24px'
+        }}
       >
-        <VaultParamLabel>Name:</VaultParamLabel> {newVaultName}
-        <br />
-        {isRandomGive ?
-          (
-            <>
-              <VaultParamLabel>The fund giving is randomized</VaultParamLabel>
-              <br />
-              <VaultParamLabel>Min:</VaultParamLabel> {newVaultMinValue}
-              <br />
-              <VaultParamLabel>Max:</VaultParamLabel> {newVaultMaxValue}
-            </>
-          ) :
-          (
-            <>
-              <VaultParamLabel>The fixed fund:</VaultParamLabel> {newVaultFixedValue}
-            </>
-          )}
-        <br />
-      </Modal>
-      <>
-        <VaultCollapse
-          accordion
-          collapsible={disabled ? 'disabled' : 'header'}
-          disabled={disabled}
-          style={{
-            marginBottom: '24px'
-          }}
-        >
-          <Panel header="Create Vault" key="1">
-            <AntdFormWrapper>
-              <Form
-                size="small"
-                style={{
-                  width: 'auto',
-                }}
-              >
-                <Form.Item
-                  validateStatus={
-                    newVaultNameIsValid === null ||
-                      newVaultNameIsValid
-                      ? ''
-                      : 'error'
-                  }
-                >
-                  <Input
-                    addonBefore="Name"
-                    placeholder="Enter a name for your vault"
-                    name="vaultName"
-                    value={newVaultName}
-                    onChange={e => handleNewVaultNameInput(e)}
-                  />
-                </Form.Item>
-                <Form.Item>
-                  <Radio.Group value={isRandomGive} onChange={handleChangeIsRandomGive}>
-                    <Radio value={true}>Random</Radio>
-                    <Radio value={false}>Fixed</Radio>
-                  </Radio.Group>
-                </Form.Item>
-                {isRandomGive ?
-                  (
-                    <>
-                      <Form.Item>
-                        <Input
-                          addonBefore="Min"
-                          type="number"
-                          step={1 / 10 ** currency.cashDecimals}
-                          placeholder="Min value to give"
-                          name="minValue"
-                          value={newVaultMinValue}
-                          onChange={e => handleChangeMinValue(e)}
-                        >
-                        </Input>
-                      </Form.Item>
-                      <Form.Item>
-                        <Input
-                          addonBefore="Max"
-                          type="number"
-                          step={1 / 10 ** currency.cashDecimals}
-                          placeholder="Min value to give"
-                          name="maxValue"
-                          value={newVaultMaxValue}
-                          onChange={e => handleChangeMaxValue(e)}
-                        >
-                        </Input>
-                      </Form.Item>
-                    </>
-                  ) : (
-                    <Form.Item>
-                      <Input.Group compact>
-                        <Input
-                          addonBefore="Fixed"
-                          type="number"
-                          step={1 / 10 ** currency.cashDecimals}
-                          value={newVaultFixedValue}
-                          placeholder="Default value to give"
-                          name="fixedValue"
-                          onChange={e => handleChangeFixedValue(e)}
-                        >
-                        </Input>
-                      </Input.Group>
-                    </Form.Item>
-                  )
-                }
-              </Form>
-            </AntdFormWrapper>
-            <SmartButton
-              onClick={() => setShowConfirmCreateVault(true)}
-              disabled={!createVaultFormDataIsValid}
+        <Panel header="Create Vault" key="1">
+          <AntdFormWrapper>
+            <Form
+              size="small"
+              style={{
+                width: 'auto',
+              }}
             >
-              <PlusSquareOutlined />
-              &nbsp;Create Vault
-            </SmartButton>
-          </Panel>
-        </VaultCollapse>
-      </>
+              <Form.Item
+                validateStatus={
+                  newVaultNameIsValid === null ||
+                    newVaultNameIsValid
+                    ? ''
+                    : 'error'
+                }
+              >
+                <Input
+                  addonBefore="Name"
+                  placeholder="Enter a name for your vault"
+                  name="vaultName"
+                  value={newVaultName}
+                  onChange={e => handleNewVaultNameInput(e)}
+                />
+              </Form.Item>
+              <Form.Item>
+                <Radio.Group value={isRandomGive} onChange={handleChangeIsRandomGive}>
+                  <Radio value={true}>Random</Radio>
+                  <Radio value={false}>Fixed</Radio>
+                </Radio.Group>
+              </Form.Item>
+              {isRandomGive ?
+                (
+                  <>
+                    <Form.Item>
+                      <Input
+                        addonBefore="Min"
+                        type="number"
+                        step={1 / 10 ** currency.cashDecimals}
+                        placeholder="Min value to give"
+                        name="minValue"
+                        value={newVaultMinValue}
+                        onChange={e => handleChangeMinValue(e)}
+                      >
+                      </Input>
+                    </Form.Item>
+                    <Form.Item>
+                      <Input
+                        addonBefore="Max"
+                        type="number"
+                        step={1 / 10 ** currency.cashDecimals}
+                        placeholder="Min value to give"
+                        name="maxValue"
+                        value={newVaultMaxValue}
+                        onChange={e => handleChangeMaxValue(e)}
+                      >
+                      </Input>
+                    </Form.Item>
+                  </>
+                ) : (
+                  <Form.Item>
+                    <Input.Group compact>
+                      <Input
+                        addonBefore="Fixed"
+                        type="number"
+                        step={1 / 10 ** currency.cashDecimals}
+                        value={newVaultFixedValue}
+                        placeholder="Default value to give"
+                        name="fixedValue"
+                        onChange={e => handleChangeFixedValue(e)}
+                      >
+                      </Input>
+                    </Input.Group>
+                  </Form.Item>
+                )
+              }
+            </Form>
+          </AntdFormWrapper>
+          <SmartButton
+            onClick={() => handleSubmitCreateVault()}
+            disabled={!createVaultFormDataIsValid}
+          >
+            <PlusSquareOutlined />
+            &nbsp;Create Vault
+          </SmartButton>
+        </Panel>
+      </VaultCollapse>
     </>
   );
 }

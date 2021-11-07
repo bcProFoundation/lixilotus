@@ -12,6 +12,7 @@ import { vaultReducer } from './vault/reducer';
 import { VaultsState } from './vault/state';
 import { RedeemsState } from './redeem/state';
 import { redeemReducer } from './redeem/reducer';
+import { modalReducer } from './modal/reducer';
 
 
 
@@ -31,6 +32,7 @@ const rootReducer = combineReducers({
   vaults: persistReducer(vaultPersistConfig, vaultReducer),
   redeems: persistReducer(redeemsPersistConfig, redeemReducer),
   loading: loadingReducer,
+  modal: modalReducer,
   toast: toastReducer,
   error: errorReducer,
   // This is use for useReduxEffect
