@@ -13,7 +13,8 @@ import { Spin } from 'antd';
 import Icon from '@ant-design/icons';
 import styled, { ThemeProvider } from 'styled-components';
 import { theme, GlobalStyle } from '@abcpros/givegift-components/styles';
-import LixiLogoText from '@assets/images/lixi_logo_with_text.png';
+import LixiLogo from '@assets/images/lixi_logo.svg';
+import LixiText from '@assets/images/lixi_logo_text.svg';
 import {
   LoadingOutlined,
   HomeOutlined,
@@ -89,14 +90,23 @@ export const HeaderContainer = styled.div`
     a {
       font-size: 12px;
     }
-    padding: 10px 0 20px;
+    padding: 20px 0 20px;
+  }
+`;
+
+export const LotusLogo = styled.img`
+  width: 70px;
+  @media (max-width: 768px) {
+    width: 50px;
   }
 `;
 
 export const LixiTextLogo = styled.img`
-width: 250px;
+  width: 250px;
+  margin-left: 40px;
   @media (max-width: 768px) {
-    width: 200px;
+    width: 190px;
+    margin-left: 20px;
   }
 `;
 
@@ -121,7 +131,8 @@ function App(): JSX.Element {
           <AppBody>
             <AppContainer>
               <HeaderContainer>
-                <LixiTextLogo src={LixiLogoText} alt="lixi" />
+                <LotusLogo src={LixiLogo} alt="lixi" />
+                <LixiTextLogo src={LixiText} alt="lixi" />
               </HeaderContainer>
               <Switch>
                 <Route path="/Vault">
@@ -138,7 +149,7 @@ function App(): JSX.Element {
             </AppContainer>
             <Footer>
               <NavButton
-                active={selectedKey === 'home'}
+                active={selectedKey === 'home' || selectedKey === ''}
                 onClick={() => history.push('/')}
               >
                 <HomeOutlined />
