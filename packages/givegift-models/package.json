@@ -3,6 +3,7 @@
   "version": "1.0.1",
   "description": "Models library for givegift application",
   "main": "build/main/index.js",
+  "types": "build/main/index.d.ts",
   "typings": "build/main/index.d.ts",
   "module": "build/module/index.js",
   "repository": "https://github.com/ngocviet/givegift-models",
