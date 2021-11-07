@@ -10,7 +10,6 @@ import 'antd/dist/antd.less';
 import '../index.css';
 import './App.less';
 import { Spin } from 'antd';
-import Icon from '@ant-design/icons';
 import styled, { ThemeProvider } from 'styled-components';
 import { theme, GlobalStyle } from '@abcpros/givegift-components/styles';
 import LixiLogo from '@assets/images/lixi_logo.svg';
@@ -162,7 +161,7 @@ function App(): JSX.Element {
                 active={selectedKey === 'vault'}
                 onClick={() => history.push('/vault')}
               >
-                <Icon component={VaultOutlineSvg} />
+                <WalletOutlined />
                 Vault
               </NavButton>
 
@@ -170,7 +169,7 @@ function App(): JSX.Element {
                 active={selectedKey === 'redeem'}
                 onClick={() => history.push('/redeem')}
               >
-                <WalletOutlined />
+                <GiftOutlined />
                 Redeem
               </NavButton>
               {/* <NavButton
