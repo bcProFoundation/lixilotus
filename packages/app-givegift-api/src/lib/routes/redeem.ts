@@ -5,8 +5,8 @@ import { PrismaClient } from '@prisma/client';
 import BigNumber from 'bignumber.js';
 import VError from 'verror';
 import MinimalBCHWallet from '@abcpros/minimal-xpi-slp-wallet';
-import { CreateRedeemDto, RedeemDto } from '@abcpros/givegift-models/src/lib/redeem'
-import { toSmallestDenomination } from '@abcpros/givegift-models/src/utils/cashMethods';
+import { CreateRedeemDto, RedeemDto } from '@abcpros/givegift-models'
+import { toSmallestDenomination } from '@abcpros/givegift-models';
 import { aesGcmDecrypt, base62ToNumber } from '../utils/encryptionMethods';
 const xpiRestUrl = config.has('xpiRestUrl') ? config.get('xpiRestUrl') : 'https://api.sendlotus.com/v4/';
 import SlpWallet from '@abcpros/minimal-xpi-slp-wallet';

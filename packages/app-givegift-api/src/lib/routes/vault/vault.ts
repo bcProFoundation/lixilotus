@@ -1,8 +1,8 @@
 import express, { NextFunction } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { ImportVaultDto, VaultDto } from '@abcpros/givegift-models/src/lib/vault'
+import { ImportVaultDto, VaultDto } from '@abcpros/givegift-models'
 import { aesGcmDecrypt, base62ToNumber } from '../../utils/encryptionMethods';
-import { Redeem } from '@abcpros/givegift-models/src/lib/redeem';
+import { Redeem } from '@abcpros/givegift-models';
 import { VError } from 'verror';
 
 const prisma = new PrismaClient();

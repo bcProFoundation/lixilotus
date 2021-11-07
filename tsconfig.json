@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "baseUrl": "./packages",
+    "paths": {
+      "@abcpros/givegift-models": [
+        "@abcpros/givegift-models"
+      ],
+      "@abcpros/givegift-components": [
+        "abcpros/giveegift-components"
+      ]
+    }
+  }
+}
