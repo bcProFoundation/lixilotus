@@ -21,7 +21,6 @@ import {
   WalletOutlined,
   UserOutlined
 } from '@ant-design/icons';
-import { ReactComponent as VaultOutlineSvg } from '@assets/icons/VaultOutline.svg';
 // import { LoadingIcon } from '@abcpros/givegift-components/atoms/CustomIcons/CustomIcons';
 import Home from '@components/Home/Home';
 import RedeemComponent from '@components/Redeem';
