@@ -47,7 +47,7 @@ const Vault: React.FC = () => {
                   {selectedVault.name}
                 </Descriptions.Item>
                 <Descriptions.Item label="Type">
-                  {selectedVault.isRandomGive ? 'Random' : 'Default'}
+                  {selectedVault.isRandomGive ? 'Random' : 'Fixed'}
                 </Descriptions.Item>
                 {selectedVault.isRandomGive ?
                   (

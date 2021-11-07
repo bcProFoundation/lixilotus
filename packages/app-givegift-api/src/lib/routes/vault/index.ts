@@ -1,9 +1,8 @@
 import express, { NextFunction } from 'express';
 import VError from 'verror';
 import { PrismaClient } from '@prisma/client';
-import { VaultDto } from '@abcpros/givegift-models/src/lib/vault'
+import { VaultDto } from '@abcpros/givegift-models';
 import { router as vaultChildRouter } from './vault';
-import logger from '../../logger';
 
 const prisma = new PrismaClient();
 let router = express.Router();

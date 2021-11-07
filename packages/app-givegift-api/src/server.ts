@@ -3,6 +3,7 @@ import { ExpressApp } from "./lib/expressapp";
 import config from 'config';
 import http from 'http';
 import https, { ServerOptions } from 'https';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import logger from "./lib/logger";
 import fs from 'fs';
 import path from 'path';
@@ -19,6 +20,8 @@ try {
 
 const expressApp = new ExpressApp();
 const isHttps = config.has('https') && config.get('https') && serverOpts.key !== undefined;
+
+axios.defaults.httpsAgent = new https.Agent({ keepAlive: true });
 
 async function startInstance() {
 
