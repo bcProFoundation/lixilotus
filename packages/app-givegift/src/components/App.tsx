@@ -10,10 +10,10 @@ import 'antd/dist/antd.less';
 import '../index.css';
 import './App.less';
 import { Spin } from 'antd';
-import Icon from '@ant-design/icons';
 import styled, { ThemeProvider } from 'styled-components';
 import { theme, GlobalStyle } from '@abcpros/givegift-components/styles';
-import LixiLogoText from '@assets/images/lixi_logo_with_text.png';
+import LixiLogo from '@assets/images/lixi_logo.svg';
+import LixiText from '@assets/images/lixi_logo_text.svg';
 import {
   LoadingOutlined,
   HomeOutlined,
@@ -21,7 +21,6 @@ import {
   WalletOutlined,
   UserOutlined
 } from '@ant-design/icons';
-import { ReactComponent as VaultOutlineSvg } from '@assets/icons/VaultOutline.svg';
 // import { LoadingIcon } from '@abcpros/givegift-components/atoms/CustomIcons/CustomIcons';
 import Home from '@components/Home/Home';
 import RedeemComponent from '@components/Redeem';
@@ -90,14 +89,23 @@ export const HeaderContainer = styled.div`
     a {
       font-size: 12px;
     }
-    padding: 10px 0 20px;
+    padding: 20px 0 20px;
+  }
+`;
+
+export const LotusLogo = styled.img`
+  width: 70px;
+  @media (max-width: 768px) {
+    width: 50px;
   }
 `;
 
 export const LixiTextLogo = styled.img`
-width: 250px;
+  width: 250px;
+  margin-left: 40px;
   @media (max-width: 768px) {
-    width: 200px;
+    width: 190px;
+    margin-left: 20px;
   }
 `;
 
@@ -123,7 +131,8 @@ function App(): JSX.Element {
             <AppContainer>
 
               <HeaderContainer>
-                <LixiTextLogo src={LixiLogoText} alt="lixi" />
+                <LotusLogo src={LixiLogo} alt="lixi" />
+                <LixiTextLogo src={LixiText} alt="lixi" />
               </HeaderContainer>
               <Switch>
                 <Route path="/Vault">
@@ -140,7 +149,7 @@ function App(): JSX.Element {
             </AppContainer>
             <Footer>
               <NavButton
-                active={selectedKey === 'home'}
+                active={selectedKey === 'home' || selectedKey === ''}
                 onClick={() => history.push('/')}
               >
                 <HomeOutlined />
@@ -151,7 +160,7 @@ function App(): JSX.Element {
                 active={selectedKey === 'vault'}
                 onClick={() => history.push('/vault')}
               >
-                <Icon component={VaultOutlineSvg} />
+                <WalletOutlined />
                 Vault
               </NavButton>
 
@@ -159,7 +168,7 @@ function App(): JSX.Element {
                 active={selectedKey === 'redeem'}
                 onClick={() => history.push('/redeem')}
               >
-                <WalletOutlined />
+                <GiftOutlined />
                 Redeem
               </NavButton>
               {/* <NavButton
