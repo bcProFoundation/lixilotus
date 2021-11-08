@@ -1,9 +1,10 @@
 import express, { NextFunction } from 'express';
-import Container from 'typedi';
 import config from 'config';
 import { PrismaClient } from '@prisma/client';
 import BigNumber from 'bignumber.js';
 import VError from 'verror';
+import _ from 'lodash';
+import BCHJS from '@abcpros/xpi-js';
 import MinimalBCHWallet from '@abcpros/minimal-xpi-slp-wallet';
 import { CreateRedeemDto, RedeemDto } from '@abcpros/givegift-models'
 import { toSmallestDenomination } from '@abcpros/givegift-models';
@@ -11,7 +12,7 @@ import { aesGcmDecrypt, base62ToNumber } from '../utils/encryptionMethods';
 const xpiRestUrl = config.has('xpiRestUrl') ? config.get('xpiRestUrl') : 'https://api.sendlotus.com/v4/';
 import SlpWallet from '@abcpros/minimal-xpi-slp-wallet';
 import logger from '../logger';
-import BCHJS from '@abcpros/xpi-js';
+
 
 
 const prisma = new PrismaClient();
@@ -22,16 +23,17 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
   if (redeemApi) {
     try {
       const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress) as string;
-      const redeemCode = redeemApi.redeemCode;
+      const redeemCode = _.trim(redeemApi.redeemCode);
       const password = redeemCode.slice(0, 8);
       const encodedVaultId = redeemCode.slice(8);
       const vaultId = base62ToNumber(encodedVaultId);
+      const address = _.trim(redeemApi.redeemAddress);
 
       const existedRedeems = await prisma.redeem.findMany({
         where: {
           OR: [
             { ipaddress: ip },
-            { redeemAddress: redeemApi.redeemAddress }
+            { redeemAddress: address }
           ],
           AND: {
             vaultId: vaultId

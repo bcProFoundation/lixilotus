@@ -1,6 +1,6 @@
 import { AnyAction } from 'redux';
 import { Modal } from 'antd';
-import _ from "lodash";
+import _ from 'lodash';
 import { VaultParamLabel } from '@abcpros/givegift-components/components/Common/Atoms';
 import { useAppDispatch } from 'src/store/hooks';
 import { closeModal } from 'src/store/modal/actions';
