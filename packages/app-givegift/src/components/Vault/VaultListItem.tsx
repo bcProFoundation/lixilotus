@@ -1,17 +1,24 @@
 import styled, { DefaultTheme } from 'styled-components';
-import Icon, { GiftOutlined } from '@ant-design/icons';
+import { GiftOutlined, WalletOutlined } from '@ant-design/icons';
 import { Vault } from '@abcpros/givegift-models/lib/vault';
-import { ReactComponent as VaultOutlineSvg } from '@assets/icons/VaultOutline.svg';
 import { selectVault } from 'src/store/vault/actions';
 import { useAppDispatch } from 'src/store/hooks';
 
 const VaultIcon = styled.div`
   height: 32px;
   width: 32px;
+  position: relative;
 `;
 
 const GiftIcon = styled(GiftOutlined)`
   color: ${props => props.theme.secondary}
+`;
+
+const WalletIcon = styled(WalletOutlined)`
+  position: absolute;
+  left: 0px;
+  top: 50%;
+  transform: translateY(-50%);
 `;
 
 const BalanceAndTicker = styled.div`
@@ -50,7 +57,7 @@ const VaultListItem: React.FC<VaultListItemProps> = (props: VaultListItemProps) 
   return (
     <Wrapper onClick={(e) => handleSelectVault(vault.id)}>
       <VaultIcon>
-        <Icon component={VaultOutlineSvg} />
+        <WalletIcon />
       </VaultIcon>
       <BalanceAndTicker>
         <strong>{vault.name}</strong>
