@@ -13,25 +13,29 @@ generator client {
 model Vault {
   id                Int      @id @default(autoincrement())
   name              String
-  isRandomGive      Boolean
-  minValue          Float
-  maxValue          Float
-  fixedValue        Float
-  encryptedMnemonic String
-  totalRedeem       BigInt   @default(0)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @default(now())
+  isRandomGive      Boolean                                 @map("is_random_give")
+  minValue          Float                                   @map("min_value")
+  maxValue          Float                                   @map("max_value")
+  fixedValue        Float                                   @map("fixed_value")
+  encryptedMnemonic String                                  @map("encrypted_mnemonic")
+  totalRedeem       BigInt   @default(0)                    @map("total_redeem")
+  createdAt         DateTime @default(now())                @map("created_at")
+  updatedAt         DateTime @default(now())                @map("updated_at")
   redeems           Redeem[]
+
+  @@map("vault")
 }
 
 model Redeem {
   id            Int      @id @default(autoincrement())
-  ipaddress     String
-  transactionId String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @default(now())
-  redeemAddress String
-  amount        BigInt
+  ipaddress     String                                 @map("ip_address")
+  transactionId String                                 @map("transaction_id")
+  createdAt     DateTime @default(now())               @map("created_at")
+  updatedAt     DateTime @default(now())               @map("updated_at")
+  redeemAddress String                                 @map("redeem_address")
+  amount        BigInt                                 @map("amount")
   vault         Vault    @relation(fields: [vaultId], references: [id])
-  vaultId       Int
+  vaultId       Int                                    @map("vault_id")
+
+  @@map("redeem")
 }
