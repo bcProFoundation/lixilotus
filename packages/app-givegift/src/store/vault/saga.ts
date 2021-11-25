@@ -145,11 +145,11 @@ function* importVaultSaga(action: PayloadAction<ImportVaultDto>) {
 
     const importVaultDto = action.payload;
 
-    const response: { data: VaultDto } = yield call(vaultApi.import, importVaultDto);
+    const data: VaultDto = yield call(vaultApi.import, importVaultDto);
 
     // Merge back to action payload
     const result = {
-      ...response.data,
+      ...data,
       mnemonic: importVaultDto.mnemonic,
       redeemCode: importVaultDto.redeemCode
     } as Vault;
