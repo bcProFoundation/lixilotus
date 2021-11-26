@@ -49,7 +49,6 @@ export class ExpressApp {
         }
         return callback(null, true);
       }
-
     }));
     this.app.use(helmet());
     this.app.use(compression());
