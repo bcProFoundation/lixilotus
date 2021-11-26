@@ -10,7 +10,7 @@ const vaultApi = {
       })
       .catch(err => {
         const { response } = err;
-        throw response.data;
+        throw response?.data ?? err ?? 'Network Error';
       })
   },
   post(data: CreateVaultDto): Promise<VaultDto> {
@@ -21,7 +21,7 @@ const vaultApi = {
       })
       .catch(err => {
         const { response } = err;
-        throw response.data;
+        throw response?.data ?? err ?? 'Network Error';
       })
   },
   import(data: ImportVaultDto): Promise<VaultDto> {
@@ -32,7 +32,7 @@ const vaultApi = {
       })
       .catch(err => {
         const { response } = err;
-        throw response.data;
+        throw response?.data ?? err ?? 'Network Error';
       })
   }
 };
