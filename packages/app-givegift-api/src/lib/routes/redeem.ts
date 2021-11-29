@@ -12,14 +12,27 @@ import { aesGcmDecrypt, base62ToNumber } from '../utils/encryptionMethods';
 const xpiRestUrl = config.has('xpiRestUrl') ? config.get('xpiRestUrl') : 'https://api.sendlotus.com/v4/';
 import SlpWallet from '@abcpros/minimal-xpi-slp-wallet';
 import logger from '../logger';
+import axios from 'axios';
 
 
 
 const prisma = new PrismaClient();
 let router = express.Router();
+let PRIVATE_KEY = '6LcgGWUdAAAAAKGEtdaU-His1lzdhHXvFBebFUqI';
 
 router.post('/redeems', async (req: express.Request, res: express.Response, next: NextFunction) => {
   const redeemApi: CreateRedeemDto = req.body;
+
+  const response = await axios.post<any>(
+    `https://www.google.com/recaptcha/api/siteverify?secret=${PRIVATE_KEY}&response=${redeemApi.captchaToken}`
+  );
+  
+  // Extract result from the API response
+  if(!response.data.success) {
+    const error = new VError.WError('You have already redeemed this offer.');
+    return next(error);
+  }
+
   if (redeemApi) {
     try {
       const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress) as string;
