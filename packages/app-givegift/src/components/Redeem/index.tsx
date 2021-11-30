@@ -15,6 +15,7 @@ import { postRedeem } from 'src/store/redeem/actions';
 import { AppContext } from 'src/store/store';
 import { CreateRedeemDto } from '@abcpros/givegift-models/lib/redeem';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
+import _ from 'lodash';
 
 type RedeemFormData = {
   dirty: boolean;
@@ -77,17 +78,18 @@ const RedeemComponent: React.FC = () => {
   const handleAddressChange = e => {
     const { value, name } = e.target;
     let error: boolean | string = false;
-    let addressString: string = value;
+    let addressString: string = _.trim(value);
 
     // parse address
     const addressInfo = parseAddress(XPI, addressString);
     const { address, isValid } = addressInfo;
 
     // Is this valid address?
-    if (!isValid) {
-      error = `Invalid ${currency.ticker} address`;
-      setRedeemXpiAddressError(error);
-    }
+    if (!isValid) { error = `Invalid ${currency.ticker} address`; }
+    else { error = ``; }
+    setRedeemXpiAddressError(error);
+
+
 
     // Set address field to user input
     setRedeemFormData(p => ({
