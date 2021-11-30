@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { useState } from 'react';
 import { Row, Col, Form, Spin } from 'antd';
 import { isMobile, isIOS, isSafari } from 'react-device-detect';
@@ -15,7 +16,6 @@ import { postRedeem } from 'src/store/redeem/actions';
 import { AppContext } from 'src/store/store';
 import { CreateRedeemDto } from '@abcpros/givegift-models/lib/redeem';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
-import _ from 'lodash';
 
 type RedeemFormData = {
   dirty: boolean;
@@ -85,8 +85,12 @@ const RedeemComponent: React.FC = () => {
     const { address, isValid } = addressInfo;
 
     // Is this valid address?
-    if (!isValid) { error = `Invalid ${currency.ticker} address`; }
-    else { error = ``; }
+    if (!isValid) { 
+      error = `Invalid ${currency.ticker} address`; 
+    }
+    else { 
+      error=false; 
+    }
     setRedeemXpiAddressError(error);
 
 
