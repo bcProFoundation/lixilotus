@@ -1,12 +1,14 @@
 export interface CreateRedeemDto {
   redeemAddress: string;
   redeemCode: string;
+  captchaToken: string;
 }
 
 export interface RedeemDto {
   id?: number;
   redeemAddress: string;
   redeemCode?: string;
+  captchaToken?: string;
   transactionId: string;
   amount: number;
   vaultId: number;

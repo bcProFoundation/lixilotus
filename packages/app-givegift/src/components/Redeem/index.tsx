@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row, Col, Form, Spin } from 'antd';
 import { isMobile, isIOS, isSafari } from 'react-device-detect';
 import PrimaryButton from '@abcpros/givegift-components/components/Common/PrimaryButton';
@@ -16,6 +16,8 @@ import { postRedeem } from 'src/store/redeem/actions';
 import { AppContext } from 'src/store/store';
 import { CreateRedeemDto } from '@abcpros/givegift-models/lib/redeem';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
+
+const SITE_KEY = "6LdLk2odAAAAAGeveKLLu5ATP907kNbbltnz5QiQ";
 
 type RedeemFormData = {
   dirty: boolean;
@@ -43,7 +45,43 @@ const RedeemComponent: React.FC = () => {
 
   const [redeemXpiAddressError, setRedeemXpiAddressError] = useState<string | boolean>(false);
 
-  async function submit() {
+  useEffect(() => {
+    const loadScriptByURL = (id: string, url: string, callback: { (): void; (): void; }) => {
+      const isScriptExist = document.getElementById(id);
+
+      if (!isScriptExist) {
+        let script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = url;
+        script.id = id;
+        script.onload = function () {
+          if (callback) callback();
+        };
+        document.body.appendChild(script);
+      }
+
+      if (isScriptExist && callback) callback();
+    }
+
+    // load the script by passing the URL
+    loadScriptByURL("recaptcha-key", `https://www.google.com/recaptcha/api.js?render=${SITE_KEY}`, function () {
+      console.info("Script loaded!");
+    });
+  }, []);
+
+  const handleOnClick = e => {
+    e.preventDefault();
+    var grecaptcha = (window as any).grecaptcha
+    if (grecaptcha) {
+      grecaptcha.ready(() => {
+        grecaptcha.execute(SITE_KEY, { action: 'submit' }).then((token: any) => {
+          submit(token);
+        });
+      });
+    }
+  }
+
+  async function submit(token) {
     setRedeemFormData({
       ...redeemFormData,
       dirty: false
@@ -70,7 +108,8 @@ const RedeemComponent: React.FC = () => {
 
     dispatch(postRedeem({
       redeemAddress: address,
-      redeemCode: redeemCode
+      redeemCode: redeemCode,
+      captchaToken: token,
     } as CreateRedeemDto));
 
   }
@@ -85,11 +124,11 @@ const RedeemComponent: React.FC = () => {
     const { address, isValid } = addressInfo;
 
     // Is this valid address?
-    if (!isValid) { 
-      error = `Invalid ${currency.ticker} address`; 
+    if (!isValid) {
+      error = `Invalid ${currency.ticker} address`;
     }
-    else { 
-      error=false; 
+    else {
+      error = false;
     }
     setRedeemXpiAddressError(error);
 
@@ -157,7 +196,7 @@ const RedeemComponent: React.FC = () => {
                 }}
               >
                 <PrimaryButton
-                  onClick={() => submit()}
+                  onClick={handleOnClick}
                 >Redeem</PrimaryButton>
               </div>
             </Form>
