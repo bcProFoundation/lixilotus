@@ -18,7 +18,7 @@ import axios from 'axios';
 
 const prisma = new PrismaClient();
 let router = express.Router();
-let PRIVATE_KEY = '6LcgGWUdAAAAAKGEtdaU-His1lzdhHXvFBebFUqI';
+let PRIVATE_KEY = '6LdLk2odAAAAAOkH6S0iSoC6d_Zr0WvHEQ-kkYqa';
 
 router.post('/redeems', async (req: express.Request, res: express.Response, next: NextFunction) => {
   const redeemApi: CreateRedeemDto = req.body;
@@ -29,7 +29,7 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
   
   // Extract result from the API response
   if(!response.data.success) {
-    const error = new VError.WError('You have already redeemed this offer.');
+    const error = new VError.WError('Incorrect capcha? Please redeem again!');
     return next(error);
   }
 

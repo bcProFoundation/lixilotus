@@ -16,7 +16,7 @@ import { AppContext } from 'src/store/store';
 import { CreateRedeemDto } from '@abcpros/givegift-models/lib/redeem';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
 
-const SITE_KEY = "6LcgGWUdAAAAABQAnwzYfIp5a5IJwr-d8Y58fBLj";
+const SITE_KEY = "6LdLk2odAAAAAGeveKLLu5ATP907kNbbltnz5QiQ";
 
 type RedeemFormData = {
   dirty: boolean;
@@ -49,7 +49,7 @@ const RedeemComponent: React.FC = () => {
       const isScriptExist = document.getElementById(id);
 
       if (!isScriptExist) {
-        var script = document.createElement("script");
+        let script = document.createElement("script");
         script.type = "text/javascript";
         script.src = url;
         script.id = id;
@@ -64,7 +64,7 @@ const RedeemComponent: React.FC = () => {
 
     // load the script by passing the URL
     loadScriptByURL("recaptcha-key", `https://www.google.com/recaptcha/api.js?render=${SITE_KEY}`, function () {
-      console.log("Script loaded!");
+      console.info("Script loaded!");
     });
   }, []);
 
