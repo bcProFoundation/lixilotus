@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Form, Spin } from 'antd';
 import { isMobile, isIOS, isSafari } from 'react-device-detect';
@@ -116,7 +117,7 @@ const RedeemComponent: React.FC = () => {
   const handleAddressChange = e => {
     const { value, name } = e.target;
     let error: boolean | string = false;
-    let addressString: string = value;
+    let addressString: string = _.trim(value);
 
     // parse address
     const addressInfo = parseAddress(XPI, addressString);
@@ -125,8 +126,13 @@ const RedeemComponent: React.FC = () => {
     // Is this valid address?
     if (!isValid) {
       error = `Invalid ${currency.ticker} address`;
-      setRedeemXpiAddressError(error);
     }
+    else {
+      error = false;
+    }
+    setRedeemXpiAddressError(error);
+
+
 
     // Set address field to user input
     setRedeemFormData(p => ({
