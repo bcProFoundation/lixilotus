@@ -28,7 +28,7 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
   );
   
   // Extract result from the API response
-  if(!response.data.success) {
+  if(!response.data.success || response.data.score <= 0.5) {
     const error = new VError.WError('Incorrect capcha? Please redeem again!');
     return next(error);
   }
