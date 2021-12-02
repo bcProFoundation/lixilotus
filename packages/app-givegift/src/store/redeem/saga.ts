@@ -6,7 +6,6 @@ import redeemApi from "./api";
 import { postRedeem, postRedeemActionType, postRedeemFailure, postRedeemSuccess } from "./actions";
 import { showToast } from "../toast/actions";
 import { hideLoading, showLoading } from "../loading/actions";
-import { getPath } from '../router/selectors';
 
 
 function* postRedeemSuccessSaga(action: PayloadAction<Redeem>) {
