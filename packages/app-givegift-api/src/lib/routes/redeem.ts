@@ -23,14 +23,16 @@ let PRIVATE_KEY = '6LdLk2odAAAAAOkH6S0iSoC6d_Zr0WvHEQ-kkYqa';
 router.post('/redeems', async (req: express.Request, res: express.Response, next: NextFunction) => {
   const redeemApi: CreateRedeemDto = req.body;
 
-  const response = await axios.post<any>(
-    `https://www.google.com/recaptcha/api/siteverify?secret=${PRIVATE_KEY}&response=${redeemApi.captchaToken}`
-  );
-  
-  // Extract result from the API response
-  if(!response.data.success || response.data.score <= 0.5) {
-    const error = new VError.WError('Incorrect capcha? Please redeem again!');
-    return next(error);
+  if (process.env.NODE_ENV !== 'development') {
+    const response = await axios.post<any>(
+      `https://www.google.com/recaptcha/api/siteverify?secret=${PRIVATE_KEY}&response=${redeemApi.captchaToken}`
+    );
+
+    // Extract result from the API response
+    if (!response.data.success || response.data.score <= 0.5) {
+      const error = new VError.WError('Incorrect capcha? Please redeem again!');
+      return next(error);
+    }
   }
 
   if (redeemApi) {
