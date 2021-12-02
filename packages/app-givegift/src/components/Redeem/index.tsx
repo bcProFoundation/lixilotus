@@ -12,10 +12,13 @@ import useWindowDimensions from '@hooks/useWindowDimensions';
 import { parseAddress } from '@utils/addressMethods';
 import { currency } from '@abcpros/givegift-components/components/Common/Ticker';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { postRedeem } from 'src/store/redeem/actions';
+import { postRedeem, saveRedeemAddress, saveRedeemCode } from 'src/store/redeem/actions';
 import { AppContext } from 'src/store/store';
 import { CreateRedeemDto } from '@abcpros/givegift-models/lib/redeem';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
+import { RedeemsState } from 'src/store/redeem/state';
+import { getCurrentAddress, getCurrentRedeemCode } from 'src/store/redeem/selectors';
+import { useSelector } from 'react-redux';
 
 const SITE_KEY = "6LdLk2odAAAAAGeveKLLu5ATP907kNbbltnz5QiQ";
 
@@ -37,12 +40,9 @@ const RedeemComponent: React.FC = () => {
   // Load with QR code open if device is mobile and NOT iOS + anything but safari
   const scannerSupported = width < 769 && isMobile && !(isIOS && !isSafari);
 
-  const [redeemFormData, setRedeemFormData] = useState({
-    dirty: true,
-    redeemCode: '',
-    address: ''
-  } as RedeemFormData);
-
+  const currentAddress = useAppSelector(getCurrentAddress);
+  const currentRedeemCode = useSelector(getCurrentRedeemCode)
+  
   const [redeemXpiAddressError, setRedeemXpiAddressError] = useState<string | boolean>(false);
 
   useEffect(() => {
@@ -82,19 +82,15 @@ const RedeemComponent: React.FC = () => {
   }
 
   async function submit(token) {
-    setRedeemFormData({
-      ...redeemFormData,
-      dirty: false
-    });
-
     if (
-      !redeemFormData.address ||
-      !redeemFormData.redeemCode
+      !currentAddress ||
+      !currentRedeemCode
     ) {
       return;
     }
 
-    const { address, redeemCode } = redeemFormData;
+    const address = currentAddress;
+    const redeemCode = currentRedeemCode;
 
     // Get the param-free address
     let cleanAddress = address.split('?')[0];
@@ -134,20 +130,13 @@ const RedeemComponent: React.FC = () => {
 
 
 
-    // Set address field to user input
-    setRedeemFormData(p => ({
-      ...p,
-      [name]: value,
-    }));
+    dispatch(saveRedeemAddress(address));
   }
 
   const handleRedeemCodeChange = e => {
     const { value, name } = e.target;
     let redeemCode = value;
-    setRedeemFormData(p => ({
-      ...p,
-      [name]: redeemCode,
-    }));
+    dispatch(saveRedeemCode(redeemCode));
   }
 
   return (
@@ -182,12 +171,13 @@ const RedeemComponent: React.FC = () => {
                   name: 'address',
                   onChange: e => handleAddressChange(e),
                   required: true,
-                  value: redeemFormData.address,
+                  value: currentAddress,
                 }}
               ></FormItemWithQRCodeAddon>
               <FormItemRedeemCodeXpiInput
                 inputProps={{
                   onChange: e => handleRedeemCodeChange(e),
+                  value: currentRedeemCode
                 }}
               ></FormItemRedeemCodeXpiInput>
               <div

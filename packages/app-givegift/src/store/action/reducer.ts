@@ -1,10 +1,10 @@
 import { AnyAction } from 'redux';
-import { InitialState } from './state';
+import { ActionState } from './state';
 
 /**
  * Initial data.
  */
-const initialState: InitialState = {
+const initialState: ActionState = {
   type: null,
   payload: null,
   meta: null,
@@ -15,7 +15,7 @@ const initialState: InitialState = {
 export const actionReducer = (
   state = initialState,
   action: AnyAction
-): InitialState => {
+): ActionState => {
   return {
     ...state,
     type: action.type,

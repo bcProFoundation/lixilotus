@@ -1,11 +1,13 @@
-import { notification } from "antd";
-import { all, call, fork, getContext, put, takeLatest } from "@redux-saga/core/effects";
+import { LOCATION_CHANGE, RouterState } from 'connected-react-router';
+import { all, call, fork, put, select, takeLatest } from "@redux-saga/core/effects";
 import { PayloadAction } from "@reduxjs/toolkit";
 import { CreateRedeemDto, Redeem, RedeemDto } from "@abcpros/givegift-models/lib/redeem";
 import redeemApi from "./api";
 import { postRedeem, postRedeemActionType, postRedeemFailure, postRedeemSuccess } from "./actions";
 import { showToast } from "../toast/actions";
 import { hideLoading, showLoading } from "../loading/actions";
+import { getPath } from '../router/selectors';
+
 
 function* postRedeemSuccessSaga(action: PayloadAction<Redeem>) {
   const message = 'Redeem successfully'
@@ -60,11 +62,10 @@ function* watchPostRedeemFailure() {
   yield takeLatest(postRedeemFailure.type, postRedeemFailureSaga);
 }
 
-
-export default function* vaultSaga() {
+export default function* redeemSaga() {
   yield all([
     fork(watchPostRedeem),
     fork(watchPostRedeemSuccess),
-    fork(watchPostRedeemFailure)
+    fork(watchPostRedeemFailure),
   ]);
 }
