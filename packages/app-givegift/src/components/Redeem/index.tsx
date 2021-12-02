@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row, Col, Form, Spin } from 'antd';
 import { isMobile, isIOS, isSafari } from 'react-device-detect';
 import PrimaryButton from '@abcpros/givegift-components/components/Common/PrimaryButton';
@@ -11,10 +11,13 @@ import useWindowDimensions from '@hooks/useWindowDimensions';
 import { parseAddress } from '@utils/addressMethods';
 import { currency } from '@abcpros/givegift-components/components/Common/Ticker';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { postRedeem } from 'src/store/redeem/actions';
+import { postRedeem, saveRedeemAddress, saveRedeemCode } from 'src/store/redeem/actions';
 import { AppContext } from 'src/store/store';
 import { CreateRedeemDto } from '@abcpros/givegift-models/lib/redeem';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
+import { RedeemsState } from 'src/store/redeem/state';
+import { getCurrentAddress, getCurrentInput, getCurrentRedeemCode } from 'src/store/redeem/selectors';
+import { useSelector } from 'react-redux';
 
 type RedeemFormData = {
   dirty: boolean;
@@ -39,6 +42,12 @@ const RedeemComponent: React.FC = () => {
     redeemCode: '',
     address: ''
   } as RedeemFormData);
+
+  const input = useAppSelector(getCurrentInput);
+  const redeemInput = useSelector(getCurrentRedeemCode)
+  
+  redeemFormData.address = input.currentAddress;
+  redeemFormData.redeemCode = input.currentRedeemCode;
 
   const [redeemXpiAddressError, setRedeemXpiAddressError] = useState<string | boolean>(false);
 
@@ -70,8 +79,7 @@ const RedeemComponent: React.FC = () => {
     dispatch(postRedeem({
       redeemAddress: address,
       redeemCode: redeemCode
-    } as CreateRedeemDto));
-
+    } as CreateRedeemDto));      
   }
 
   const handleAddressChange = e => {
@@ -94,6 +102,10 @@ const RedeemComponent: React.FC = () => {
       ...p,
       [name]: value,
     }));
+
+    dispatch(saveRedeemAddress({
+      currentAddress: address
+    } as RedeemsState))
   }
 
   const handleRedeemCodeChange = e => {
@@ -103,6 +115,10 @@ const RedeemComponent: React.FC = () => {
       ...p,
       [name]: redeemCode,
     }));
+
+    dispatch(saveRedeemCode({
+      currentRedeemCode: redeemCode
+    } as RedeemsState))
   }
 
   return (
@@ -143,6 +159,7 @@ const RedeemComponent: React.FC = () => {
               <FormItemRedeemCodeXpiInput
                 inputProps={{
                   onChange: e => handleRedeemCodeChange(e),
+                  value: input.currentRedeemCode
                 }}
               ></FormItemRedeemCodeXpiInput>
               <div

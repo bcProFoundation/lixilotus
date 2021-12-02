@@ -1,4 +1,4 @@
-export interface InitialState {
+export interface ActionState {
   type: string | null;
   payload: any;
   meta: any;
