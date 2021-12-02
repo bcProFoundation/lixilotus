@@ -21,11 +21,6 @@ export const getAllRedeemsEntities = createSelector(
   selectEntities
 );
 
-export const getCurrentInput = createSelector(
-  (state: RootState) => state.redeems,
-  (state: RedeemsState) => state
-);
-
 export const getCurrentAddress = createSelector(
   (state: RootState) => state.redeems,
   (state: RedeemsState) => state.currentAddress

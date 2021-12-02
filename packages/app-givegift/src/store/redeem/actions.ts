@@ -11,5 +11,5 @@ export const postRedeemFailure = createAction('redeem/postRedeemFailure', (messa
     error: true
   };
 });
-export const saveRedeemAddress = createAction<RedeemsState>('redeem/saveRedeemAddress');
-export const saveRedeemCode = createAction<RedeemsState>('redeem/saveRedeemCode');
+export const saveRedeemAddress = createAction<string>('redeem/saveRedeemAddress');
+export const saveRedeemCode = createAction<string>('redeem/saveRedeemCode');
