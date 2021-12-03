@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import styled from 'styled-components';
 import { Descriptions, Collapse } from 'antd';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getAllVaultsEntities, getSelectedVaultId } from 'src/store/vault/selectors';
@@ -8,6 +10,37 @@ import { SmartButton } from '@abcpros/givegift-components/components/Common/Prim
 import RedeemList from '@components/Redeem/RedeemList';
 import { refreshVault } from 'src/store/vault/actions';
 import { getAllRedeems } from 'src/store/redeem/selectors';
+import { currency } from '../../../../givegift-components/src/components/Common/Ticker';
+import { fromSmallestDenomination } from '@utils/cashMethods';
+import { CopyOutlined } from '@ant-design/icons';
+import { showToast } from 'src/store/toast/actions';
+
+type CopiedProps = {
+  xpi: number;
+  style?: React.CSSProperties
+};
+
+const Copied = styled.div<CopiedProps>`
+  font-size: 18px;
+  font-weight: bold;
+  width: 100%;
+  text-align: center;
+  background-color: ${({ xpi = 0, ...props }) =>
+    xpi === 1 ? props.theme.primary : props.theme.qr.token};
+  border: 1px solid;
+  border-color: ${({ xpi = 0, ...props }) =>
+    xpi === 1
+      ? props.theme.qr.copyBorderCash
+      : props.theme.qr.copyBorderToken};
+  color: ${props => props.theme.contrast};
+  position: absolute;
+  top: 65px;
+  padding: 30px 0;
+  @media (max-width: 768px) {
+    top: 52px;
+    padding: 20px 0;
+  }
+`;
 
 const { Panel } = Collapse;
 
@@ -19,6 +52,13 @@ const Vault: React.FC = () => {
   const selectedVaultId = useAppSelector(getSelectedVaultId);
   const selectedVault = allVaults[selectedVaultId];
   const allReddemsCurrentVault = useAppSelector(getAllRedeems);
+  const redeemCode = selectedVault?.redeemCode;
+  const Seed = selectedVault?.mnemonic;
+  
+
+  const [redeemCodeVisible, setRedeemCodeVisible] = useState(false);
+  const [seedVisible, setSeedVisible] = useState(false);
+
 
   const handleRefeshVault = () => {
     if (!(selectedVault && selectedVaultId)) {
@@ -29,6 +69,33 @@ const Vault: React.FC = () => {
     dispatch(refreshVault(vaultId));
   }
 
+  const handleOnClickRedeemCode = evt => {
+    setRedeemCodeVisible(true);
+    setTimeout(() => {
+      setRedeemCodeVisible(false);
+    }, 1500);
+  }
+  
+  const handleOnCopyRedeemCode = () => {
+    setRedeemCodeVisible(true);
+  };
+
+  const handleOnClickSeed = evt => {
+    setSeedVisible(true);
+    setTimeout(() => {
+      setSeedVisible(false);
+    }, 500);
+    dispatch(showToast('success', {
+      message: 'Copy Success',
+      description: 'Copy Seed Successfully',
+      duration: 5
+    }));
+  }
+  
+  const handleOnCopySeed = () => {
+    setSeedVisible(true);
+  };
+
   return (
     <>
       {selectedVault && selectedVault.Path10605 && (
@@ -36,49 +103,82 @@ const Vault: React.FC = () => {
           <QRCode
             address={selectedVault.Path10605.xAddress}
           />
+
+          <Descriptions
+            column={1}
+            bordered
+            title={`Vault info for "${selectedVault.name}"`}
+            style={{
+              padding: '0px 20px',
+              color: 'rgb(23,23,31)'
+            }}
+          >
+            <Descriptions.Item label="Name">
+              {selectedVault.name}
+            </Descriptions.Item>
+            <Descriptions.Item label="Type">
+              {selectedVault.isRandomGive ? 'Random:  ' : 'Fixed:  '}
+              {selectedVault.isRandomGive ? <>{selectedVault.minValue}-{selectedVault.maxValue} {currency.ticker}</> : <>{selectedVault.fixedValue} {currency.ticker}</> }
+            </Descriptions.Item>
+            <Descriptions.Item label="Total Redeemed">
+              {fromSmallestDenomination(selectedVault?.totalRedeem) ?? 0}
+            </Descriptions.Item>
+          </Descriptions>
+          
+          {/* Detail Vault */}
           <StyledCollapse>
             <Panel header="Click to reveal vault detail" key="1">
               <Descriptions
                 column={1}
                 bordered
-                title={`Vault info for "${selectedVault.name}"`}
               >
-                <Descriptions.Item label="Name">
-                  {selectedVault.name}
-                </Descriptions.Item>
-                <Descriptions.Item label="Type">
-                  {selectedVault.isRandomGive ? 'Random' : 'Fixed'}
-                </Descriptions.Item>
-                {selectedVault.isRandomGive ?
-                  (
-                    <>
-                      <Descriptions.Item label="Min">
-                        {selectedVault.minValue}
-                      </Descriptions.Item>
-                      <Descriptions.Item label="Max">
-                        {selectedVault.maxValue}
-                      </Descriptions.Item>
-                    </>
-                  ) :
-                  (
-                    <>
-                      <Descriptions.Item label="Fixed">
-                        {selectedVault.fixedValue}
-                      </Descriptions.Item>
-                    </>
-                  )}
                 <Descriptions.Item label="Redeem Code">
                   {selectedVault.redeemCode}
                 </Descriptions.Item>
-                <Descriptions.Item label="Total Redeemed">
-                  {selectedVault.totalRedeem ?? 0}
-                </Descriptions.Item>
                 <Descriptions.Item label="Seed">
-                  {selectedVault.mnemonic}
+                  <CopyToClipboard 
+                    tyle={{
+                      display: 'inline-block',
+                      width: '100%',
+                      position: 'relative',
+                    }}
+                    text={selectedVault.mnemonic}
+                    onCopy={handleOnCopySeed}
+                  >
+                    <div style={{ position: 'relative' }} onClick={handleOnClickSeed}>
+                      {selectedVault.mnemonic} <CopyOutlined/>
+                    </div>
+                  </CopyToClipboard>
                 </Descriptions.Item>
               </Descriptions>
             </Panel>
           </StyledCollapse>
+
+          {/* Copy RedeemCode */}
+          <CopyToClipboard 
+            tyle={{
+              display: 'inline-block',
+              width: '100%',
+              position: 'relative',
+            }}
+            text={redeemCode}
+            onCopy={handleOnCopyRedeemCode}
+          >
+            <div style={{ position: 'relative' }} onClick={handleOnClickRedeemCode}>
+              <Copied
+                xpi={redeemCode ? 1 : 0}
+                style={{ display: redeemCodeVisible ? undefined : 'none' }}
+              >
+                Copied <br />
+                <span style={{ fontSize: '12px' }}>{selectedVault.redeemCode}</span>
+              </Copied>
+              <SmartButton> 
+                Copy Redeem Code 
+              </SmartButton>
+            </div>
+          </CopyToClipboard>
+
+          {/* refreshVault */}
           <SmartButton
             onClick={() => handleRefeshVault()}
           >
