@@ -13,7 +13,6 @@ const bodyParser = require('body-parser');
 const compression = require('compression');
 const xpiRestUrl = config.has('xpiRestUrl') ? config.get('xpiRestUrl') : 'https://api.sendlotus.com/v4/'
 const allowedOrigins = [
-  // 'https://localhost:3001',
   'https://lixilotus.com',
   'https://www.sendlotus.com',
   'https://staging.sendlotus.com'
@@ -42,16 +41,19 @@ export class ExpressApp {
   }
 
   async start() {
-    this.app.use(cors({
-      origin: function (origin, callback) {
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) === -1) {
-          const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-          return callback(new Error(msg), false);
-        }
-        return callback(null, true);
-      }
-    }));
+    this.app.use(
+      process.env.NODE_ENV === 'development' ?
+        cors() :
+        cors({
+          origin: function (origin, callback) {
+            if (!origin) return callback(null, true);
+            if (allowedOrigins.indexOf(origin) === -1) {
+              const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+              return callback(new Error(msg), false);
+            }
+            return callback(null, true);
+          }
+        }));
     this.app.use(helmet());
     this.app.use(compression());
 
