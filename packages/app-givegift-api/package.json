@@ -25,6 +25,7 @@
     "config": "^3.3.6",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "geoip-lite": "^1.4.2",
     "helmet": "^4.6.0",
     "lodash": "^4.17.21",
     "reflect-metadata": "^0.1.13",
