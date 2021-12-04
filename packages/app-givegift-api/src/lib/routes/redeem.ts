@@ -9,12 +9,12 @@ import MinimalBCHWallet from '@abcpros/minimal-xpi-slp-wallet';
 import { CreateRedeemDto, RedeemDto } from '@abcpros/givegift-models'
 import { toSmallestDenomination } from '@abcpros/givegift-models';
 import { aesGcmDecrypt, base62ToNumber } from '../utils/encryptionMethods';
-const xpiRestUrl = config.has('xpiRestUrl') ? config.get('xpiRestUrl') : 'https://api.sendlotus.com/v4/';
 import SlpWallet from '@abcpros/minimal-xpi-slp-wallet';
 import logger from '../logger';
 import axios from 'axios';
+import geoip from 'geoip-lite';
 
-
+const xpiRestUrl = config.has('xpiRestUrl') ? config.get('xpiRestUrl') : 'https://api.sendlotus.com/v4/';
 
 const prisma = new PrismaClient();
 let router = express.Router();
@@ -23,21 +23,28 @@ let PRIVATE_KEY = '6LdLk2odAAAAAOkH6S0iSoC6d_Zr0WvHEQ-kkYqa';
 router.post('/redeems', async (req: express.Request, res: express.Response, next: NextFunction) => {
   const redeemApi: CreateRedeemDto = req.body;
 
-  if (process.env.NODE_ENV !== 'development') {
-    const response = await axios.post<any>(
-      `https://www.google.com/recaptcha/api/siteverify?secret=${PRIVATE_KEY}&response=${redeemApi.captchaToken}`
-    );
-
-    // Extract result from the API response
-    if (!response.data.success || response.data.score <= 0.5) {
-      const error = new VError.WError('Incorrect capcha? Please redeem again!');
-      return next(error);
-    }
-  }
-
   if (redeemApi) {
     try {
       const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress) as string;
+
+      if (process.env.NODE_ENV !== 'development') {
+        const response = await axios.post<any>(
+          `https://www.google.com/recaptcha/api/siteverify?secret=${PRIVATE_KEY}&response=${redeemApi.captchaToken}`
+        );
+    
+        // Extract result from the API response
+        if (!response.data.success || response.data.score <= 0.5) {
+          const error = new VError.WError('Incorrect capcha? Please redeem again!');
+          return next(error);
+        }
+        
+        const geolocation = geoip.lookup(ip);
+  
+        if (!geolocation || geolocation.country != 'VN') {
+          throw new VError('You cannot redeem from outside the Vietnam zone.');
+        }
+      }
+
       const redeemCode = _.trim(redeemApi.redeemCode);
       const password = redeemCode.slice(0, 8);
       const encodedVaultId = redeemCode.slice(8);
