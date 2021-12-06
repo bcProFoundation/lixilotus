@@ -42,10 +42,10 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
         captchaResBody
       );
 
-      logger.info(`Recaptcha: Score: ${response.data.reasons}`);
+      logger.info(`Recaptcha: Score: ${response.data.score} | Reasons: ${response.data.reasons}`);
 
       // Extract result from the API response
-      if (response.status !== 200 || response.data.score <= 1) {
+      if (response.status !== 200 || response.data.score <= 0.5) {
         throw new VError('Incorrect capcha? Please redeem again!');
       }
     } catch (err) {
