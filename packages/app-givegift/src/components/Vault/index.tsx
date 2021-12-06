@@ -16,7 +16,6 @@ import { CopyOutlined } from '@ant-design/icons';
 import { showToast } from 'src/store/toast/actions';
 
 type CopiedProps = {
-  xpi: number;
   style?: React.CSSProperties
 };
 
@@ -25,13 +24,9 @@ const Copied = styled.div<CopiedProps>`
   font-weight: bold;
   width: 100%;
   text-align: center;
-  background-color: ${({ xpi = 0, ...props }) =>
-    xpi === 1 ? props.theme.primary : props.theme.qr.token};
   border: 1px solid;
-  border-color: ${({ xpi = 0, ...props }) =>
-    xpi === 1
-      ? props.theme.qr.copyBorderCash
-      : props.theme.qr.copyBorderToken};
+  background-color: ${({ ...props }) => props.theme.primary};
+  border-color: ${({ ...props }) => props.theme.qr.copyBorderCash};
   color: ${props => props.theme.contrast};
   position: absolute;
   top: 65px;
@@ -52,13 +47,8 @@ const Vault: React.FC = () => {
   const selectedVaultId = useAppSelector(getSelectedVaultId);
   const selectedVault = allVaults[selectedVaultId];
   const allReddemsCurrentVault = useAppSelector(getAllRedeems);
-  const redeemCode = selectedVault?.redeemCode;
-  const Seed = selectedVault?.mnemonic;
-  
 
   const [redeemCodeVisible, setRedeemCodeVisible] = useState(false);
-  const [seedVisible, setSeedVisible] = useState(false);
-
 
   const handleRefeshVault = () => {
     if (!(selectedVault && selectedVaultId)) {
@@ -81,20 +71,12 @@ const Vault: React.FC = () => {
   };
 
   const handleOnClickSeed = evt => {
-    setSeedVisible(true);
-    setTimeout(() => {
-      setSeedVisible(false);
-    }, 500);
     dispatch(showToast('success', {
       message: 'Copy Success',
       description: 'Copy Seed Successfully',
       duration: 5
     }));
   }
-  
-  const handleOnCopySeed = () => {
-    setSeedVisible(true);
-  };
 
   return (
     <>
@@ -143,7 +125,6 @@ const Vault: React.FC = () => {
                       position: 'relative',
                     }}
                     text={selectedVault.mnemonic}
-                    onCopy={handleOnCopySeed}
                   >
                     <div style={{ position: 'relative' }} onClick={handleOnClickSeed}>
                       {selectedVault.mnemonic} <CopyOutlined/>
@@ -161,12 +142,11 @@ const Vault: React.FC = () => {
               width: '100%',
               position: 'relative',
             }}
-            text={redeemCode}
+            text={selectedVault.redeemCode}
             onCopy={handleOnCopyRedeemCode}
           >
             <div style={{ position: 'relative' }} onClick={handleOnClickRedeemCode}>
               <Copied
-                xpi={redeemCode ? 1 : 0}
                 style={{ display: redeemCodeVisible ? undefined : 'none' }}
               >
                 Copied <br />
