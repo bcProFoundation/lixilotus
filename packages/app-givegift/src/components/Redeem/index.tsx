@@ -19,7 +19,7 @@ import { getIsGlobalLoading } from 'src/store/loading/selectors';
 import { getCurrentAddress, getCurrentRedeemCode } from 'src/store/redeem/selectors';
 import { useSelector } from 'react-redux';
 
-const SITE_KEY = "6LdLk2odAAAAAGeveKLLu5ATP907kNbbltnz5QiQ";
+const SITE_KEY = "6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb";
 
 type RedeemFormData = {
   dirty: boolean;

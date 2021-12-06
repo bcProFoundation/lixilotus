@@ -16,8 +16,8 @@ import geoip from 'geoip-lite';
 
 const xpiRestUrl = config.has('xpiRestUrl') ? config.get('xpiRestUrl') : 'https://api.sendlotus.com/v4/';
 
-const PRIVATE_KEY = '6LdLk2odAAAAAOkH6S0iSoC6d_Zr0WvHEQ-kkYqa';
-const SITE_KEY = "6LdLk2odAAAAAGeveKLLu5ATP907kNbbltnz5QiQ";
+const PRIVATE_KEY = 'AIzaSyCFY2D4NRLjDTpJfk0jjJNADalSceqC4qs';
+const SITE_KEY = "6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb";
 const PROJECT_ID = 'lixilotus';
 
 const prisma = new PrismaClient();
@@ -38,7 +38,7 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
   const checkingCaptcha = async () => {
     try {
       const response = await axios.post<any>(
-        `https://recaptchaenterprise.googleapis.com1/v1beta1/projects/${PROJECT_ID}/assessments?key=${PRIVATE_KEY}`,
+        `https://recaptchaenterprise.googleapis.com/v1beta1/projects/${PROJECT_ID}/assessments?key=${PRIVATE_KEY}`,
         captchaResBody
       );
 
