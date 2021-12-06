@@ -16,31 +16,52 @@ import geoip from 'geoip-lite';
 
 const xpiRestUrl = config.has('xpiRestUrl') ? config.get('xpiRestUrl') : 'https://api.sendlotus.com/v4/';
 
+const PRIVATE_KEY = '6LdLk2odAAAAAOkH6S0iSoC6d_Zr0WvHEQ-kkYqa';
+const SITE_KEY = "6LdLk2odAAAAAGeveKLLu5ATP907kNbbltnz5QiQ";
+const PROJECT_ID = 'lixilotus';
+
 const prisma = new PrismaClient();
 let router = express.Router();
-let PRIVATE_KEY = '6LdLk2odAAAAAOkH6S0iSoC6d_Zr0WvHEQ-kkYqa';
 
 router.post('/redeems', async (req: express.Request, res: express.Response, next: NextFunction) => {
   const redeemApi: CreateRedeemDto = req.body;
+
+
+  const captchaResBody = {
+    event: {
+      token: redeemApi.captchaToken,
+      siteKey: SITE_KEY,
+      expectedAction: "Redeem"
+    }
+  };
+
+  const checkingCaptcha = async () => {
+    try {
+      const response = await axios.post<any>(
+        `https://recaptchaenterprise.googleapis.com1/v1beta1/projects/${PROJECT_ID}/assessments?key=${PRIVATE_KEY}`,
+        captchaResBody
+      );
+
+      logger.info(`Recaptcha: Score: ${response.data.reasons}`);
+
+      // Extract result from the API response
+      if (response.status !== 200 || response.data.score <= 1) {
+        throw new VError('Incorrect capcha? Please redeem again!');
+      }
+    } catch (err) {
+      next(err);
+    }
+  };
 
   if (redeemApi) {
     try {
       const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress) as string;
 
       if (process.env.NODE_ENV !== 'development') {
-        const response = await axios.post<any>(
-          `https://www.google.com/recaptcha/api/siteverify?secret=${PRIVATE_KEY}&response=${redeemApi.captchaToken}`
-        );
-    
-        // Extract result from the API response
-        if (!response.data.success || response.data.score <= 0.5) {
-          const error = new VError.WError('Incorrect capcha? Please redeem again!');
-          return next(error);
-        }
-        
+        await checkingCaptcha();
         const geolocation = geoip.lookup(ip);
-  
-        if (!geolocation || geolocation.country != 'VN') {
+
+        if (geolocation?.country != 'VN') {
           throw new VError('You cannot redeem from outside the Vietnam zone.');
         }
       }
@@ -50,6 +71,12 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
       const encodedVaultId = redeemCode.slice(8);
       const vaultId = base62ToNumber(encodedVaultId);
       const address = _.trim(redeemApi.redeemAddress);
+
+      var geo = geoip.lookup(ip);
+
+      if (!geo || geo.country != 'VN') {
+        throw new VError('You cannot redeem from outside the Vietnam zone.');
+      }
 
       const existedRedeems = await prisma.redeem.findMany({
         where: {
