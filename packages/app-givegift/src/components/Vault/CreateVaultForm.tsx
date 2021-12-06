@@ -159,7 +159,7 @@ const CreateVaultForm = ({
                         addonBefore="Max"
                         type="number"
                         step={1 / 10 ** currency.cashDecimals}
-                        placeholder="Min value to give"
+                        placeholder="Max value to give"
                         name="maxValue"
                         value={newVaultMaxValue}
                         onChange={e => handleChangeMaxValue(e)}
