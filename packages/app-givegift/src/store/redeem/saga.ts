@@ -6,14 +6,19 @@ import redeemApi from "./api";
 import { postRedeem, postRedeemActionType, postRedeemFailure, postRedeemSuccess } from "./actions";
 import { showToast } from "../toast/actions";
 import { hideLoading, showLoading } from "../loading/actions";
+import { fromSmallestDenomination } from "../../utils/cashMethods";
 
 
 function* postRedeemSuccessSaga(action: PayloadAction<Redeem>) {
-  const message = 'Redeem successfully'
+  const redeem = action.payload;
+  const xpiAmount = redeem && redeem.amount ? fromSmallestDenomination(redeem.amount) : 0;
+  const message = `Redeem successfully ${xpiAmount} XPI`;
+  
+  
   yield put(showToast('success', {
     message: 'Redeem Success',
     description: message,
-    duration: 5
+    duration: 8
   }));
   yield put(hideLoading(postRedeemActionType));
 }
