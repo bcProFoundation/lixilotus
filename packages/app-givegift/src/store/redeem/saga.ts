@@ -11,8 +11,8 @@ import { fromSmallestDenomination } from "../../utils/cashMethods";
 
 function* postRedeemSuccessSaga(action: PayloadAction<Redeem>) {
   const redeem = action.payload;
-  const lotus_amount = fromSmallestDenomination(redeem.amount)
-  const message = `Redeem successfully ${lotus_amount} XPI`
+  const xpiAmount = redeem && redeem.amount ? fromSmallestDenomination(redeem.amount) : 0;
+  const message = `Redeem successfully ${xpiAmount} XPI`
   
   
   yield put(showToast('success', {
