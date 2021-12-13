@@ -25,6 +25,7 @@ export interface VaultDto {
   maxValue: number;
   fixedValue: number;
   totalRedeem: number;
+  balance: number;
   createdAt?: Date;
   updatedAt?: Date;
 };
