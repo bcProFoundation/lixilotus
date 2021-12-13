@@ -102,6 +102,9 @@ const Vault: React.FC = () => {
               {selectedVault.isRandomGive ? 'Random:  ' : 'Fixed:  '}
               {selectedVault.isRandomGive ? <>{selectedVault.minValue}-{selectedVault.maxValue} {currency.ticker}</> : <>{selectedVault.fixedValue} {currency.ticker}</> }
             </Descriptions.Item>
+            <Descriptions.Item label="Balance">
+              {fromSmallestDenomination(selectedVault.balance) ?? 0} {currency.ticker}
+            </Descriptions.Item>
             <Descriptions.Item label="Total Redeemed">
               {fromSmallestDenomination(selectedVault?.totalRedeem) ?? 0}
             </Descriptions.Item>

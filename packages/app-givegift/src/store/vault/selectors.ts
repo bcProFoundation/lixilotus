@@ -25,3 +25,13 @@ export const getSelectedVaultId = createSelector(
   (state: RootState) => state.vaults,
   (vaults: VaultsState) => vaults.selectedId
 );
+
+export const getSelectedVault = createSelector(
+  (state: RootState) => state.vaults,
+  (vaults: VaultsState) => vaults.entities[vaults.selectedId]
+)
+
+export const getVaultById = (id: number) => createSelector(
+  selectEntities,
+  (vaults) => vaults[id]
+)

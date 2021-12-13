@@ -1,16 +1,16 @@
 import { PayloadAction } from "@reduxjs/toolkit";
-import { notification } from "antd";
 import { push } from 'connected-react-router';
 import { CreateVaultDto, GenerateVaultDto, ImportVaultDto, Vault, VaultDto } from "@abcpros/givegift-models/lib/vault";
-import { all, call, fork, getContext, put, takeLatest } from "@redux-saga/core/effects";
+import { all, call, fork, getContext, put, select, takeLatest } from "@redux-saga/core/effects";
 import { generateVault, getVault, getVaultActionType, getVaultFailure, getVaultSuccess, importVault, importVaultActionType, importVaultFailure, importVaultSuccess, postVault, postVaultActionType, postVaultFailure, postVaultSuccess, refreshVault, refreshVaultActionType, refreshVaultFailure, refreshVaultSuccess, selectVault, setVault } from "./actions";
-
 import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase62Str, numberToBase62 } from "@utils/encryptionMethods";
 import { RedeemDto, Redeem } from "@abcpros/givegift-models/lib/redeem";
 import vaultApi from "./api";
 import redeemApi from "../redeem/api";
 import { showToast } from "../toast/actions";
 import { hideLoading, showLoading } from "../loading/actions";
+import { getSelectedVault } from 'src/store/vault/selectors';
+import BCHJS from "@abcpros/xpi-js";
 
 /**
  * Generate a vault with random encryption password
@@ -34,7 +34,8 @@ function* generateVaultSaga(action: PayloadAction<GenerateVaultDto>) {
     fixedValue: Number(vaultDto.fixedValue),
     totalRedeem: 0,
     redeemCode: password,
-    mnemonic: Bip39128BitMnemonic
+    mnemonic: Bip39128BitMnemonic,
+    balance: 0
   };
 
   yield put(postVault(vault));
@@ -210,6 +211,19 @@ function* refreshVaultSaga(action: PayloadAction<number>) {
     const vault = data as Vault;
     const redeemDtos: RedeemDto[] = yield call(redeemApi.getByVaultId, vaultId);
     const redeems = (redeemDtos ?? []) as Redeem[];
+
+    // calculate vault details
+    const selectedVault = yield select(getSelectedVault);
+    const mnemonic = (selectedVault as any).mnemonic;
+
+    const Wallet = yield getContext('Wallet');
+    const XPI: BCHJS = yield getContext('XPI');
+    const Path10605 = yield call(Wallet.getWalletDetails, mnemonic);
+    const address = Path10605.xAddress;
+    const balance = yield call([XPI, XPI.Electrumx.balance], address);
+    console.log(balance);
+    vault.balance = balance.balance.confirmed;
+
     yield put(refreshVaultSuccess({ vault: vault, redeems: redeems }))
   } catch (err) {
     const message = (err as Error).message ?? `Unable to refresh the vault.`;
