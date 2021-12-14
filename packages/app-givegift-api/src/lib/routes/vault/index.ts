@@ -19,7 +19,6 @@ router.get('/vaults/:id/', async (req: express.Request, res: express.Response, n
     const result = {
       ...vault,
       totalRedeem: Number(vault?.totalRedeem),
-      balance: Number(vault?.balance),
     } as VaultDto;
     return res.json(result);
   } catch (err: unknown) {
@@ -44,7 +43,6 @@ router.post('/vaults', async (req: express.Request, res: express.Response, next:
       const resultApi: VaultDto = {
         ...createdVault,
         totalRedeem: Number(createdVault.totalRedeem),
-        balance: Number(createdVault.balance),
       };
 
       res.json(resultApi);
