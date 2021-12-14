@@ -18,7 +18,7 @@ router.get('/vaults/:id/', async (req: express.Request, res: express.Response, n
     if (!vault) throw new VError('The vault does not exist in the database.');
     const result = {
       ...vault,
-      totalRedeem: Number(vault?.totalRedeem)
+      totalRedeem: Number(vault?.totalRedeem),
     } as VaultDto;
     return res.json(result);
   } catch (err: unknown) {
@@ -42,7 +42,7 @@ router.post('/vaults', async (req: express.Request, res: express.Response, next:
 
       const resultApi: VaultDto = {
         ...createdVault,
-        totalRedeem: Number(createdVault.totalRedeem)
+        totalRedeem: Number(createdVault.totalRedeem),
       };
 
       res.json(resultApi);

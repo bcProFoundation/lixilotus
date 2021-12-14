@@ -42,6 +42,7 @@ export interface Vault {
   totalRedeem: number;
   createdAt?: Date;
   updatedAt?: Date;
+  balance: number;
   Path10605?: {
     cashAddress: string;
     xAddress: string;

@@ -16,10 +16,11 @@ import useWallet from "@hooks/useWallet";
 import { routerMiddleware } from "connected-react-router";
 import { history } from "@utils/history";
 import rootReducer from "./rootReducer";
+import BCHJS from "@abcpros/xpi-js";
 
 
 const { getXPI } = useXPI();
-export const XPI = getXPI();
+export const XPI: BCHJS = getXPI();
 export const Wallet = useWallet(XPI);
 
 export const AppContext = createContext({ XPI, Wallet });

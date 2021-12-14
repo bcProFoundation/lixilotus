@@ -34,7 +34,7 @@ router.post('/import', async (req: express.Request, res: express.Response, next:
 
     const resultApi: VaultDto = {
       ...vault,
-      totalRedeem: Number(vault.totalRedeem)
+      totalRedeem: Number(vault.totalRedeem),
     };
 
     res.json(resultApi);
