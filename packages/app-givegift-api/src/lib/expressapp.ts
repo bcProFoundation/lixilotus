@@ -15,7 +15,9 @@ const xpiRestUrl = config.has('xpiRestUrl') ? config.get('xpiRestUrl') : 'https:
 const allowedOrigins = [
   'https://lixilotus.com',
   'https://www.sendlotus.com',
-  'https://staging.sendlotus.com'
+  'https://staging.sendlotus.com',
+  'https://staging.lixilotus.com/',
+  'https://dev.lixilotus.com'
 ];
 
 export class ExpressApp {

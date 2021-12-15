@@ -72,12 +72,6 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
       const vaultId = base62ToNumber(encodedVaultId);
       const address = _.trim(redeemApi.redeemAddress);
 
-      var geo = geoip.lookup(ip);
-
-      if (!geo || geo.country != 'VN') {
-        throw new VError('You cannot redeem from outside the Vietnam zone.');
-      }
-
       const existedRedeems = await prisma.redeem.findMany({
         where: {
           OR: [
