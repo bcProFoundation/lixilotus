@@ -14,6 +14,7 @@ import { currency } from '../../../../givegift-components/src/components/Common/
 import { fromSmallestDenomination } from '@utils/cashMethods';
 import { CopyOutlined } from '@ant-design/icons';
 import { showToast } from 'src/store/toast/actions';
+import vaultSaga from 'src/store/vault/saga';
 
 type CopiedProps = {
   style?: React.CSSProperties
@@ -78,6 +79,23 @@ const Vault: React.FC = () => {
     }));
   }
 
+  const VaultType = () => {
+    switch (selectedVault?.vaultType) {
+      case 1:
+        return (
+          <>Fixed {selectedVault.fixedValue} {currency.ticker}</>
+        );
+      case 2:
+        return (
+          <>Divided by {selectedVault.dividedValue} </>
+        );
+      default:
+        return (
+          <>Random {selectedVault?.minValue}-{selectedVault?.maxValue} {currency.ticker}</>
+        );
+    }
+  }
+
   return (
     <>
       {selectedVault && selectedVault.Path10605 && (
@@ -99,8 +117,7 @@ const Vault: React.FC = () => {
               {selectedVault.name}
             </Descriptions.Item>
             <Descriptions.Item label="Type">
-              {selectedVault.isRandomGive ? 'Random:  ' : 'Fixed:  '}
-              {selectedVault.isRandomGive ? <>{selectedVault.minValue}-{selectedVault.maxValue} {currency.ticker}</> : <>{selectedVault.fixedValue} {currency.ticker}</> }
+            {VaultType()}
             </Descriptions.Item>
             <Descriptions.Item label="Balance">
               {fromSmallestDenomination(selectedVault.balance) ?? 0} {currency.ticker}
