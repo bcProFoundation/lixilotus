@@ -6,7 +6,7 @@ import VError from 'verror';
 import _ from 'lodash';
 import BCHJS from '@abcpros/xpi-js';
 import MinimalBCHWallet from '@abcpros/minimal-xpi-slp-wallet';
-import { CreateRedeemDto, RedeemDto } from '@abcpros/givegift-models'
+import { CreateRedeemDto, RedeemDto, VaultType } from '@abcpros/givegift-models'
 import { toSmallestDenomination } from '@abcpros/givegift-models';
 import { aesGcmDecrypt, base62ToNumber } from '../utils/encryptionMethods';
 import SlpWallet from '@abcpros/minimal-xpi-slp-wallet';
@@ -72,12 +72,6 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
       const vaultId = base62ToNumber(encodedVaultId);
       const address = _.trim(redeemApi.redeemAddress);
 
-      var geo = geoip.lookup(ip);
-
-      if (!geo || geo.country != 'VN') {
-        throw new VError('You cannot redeem from outside the Vietnam zone.');
-      }
-
       const existedRedeems = await prisma.redeem.findMany({
         where: {
           OR: [
@@ -126,14 +120,17 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
       }
 
       let satoshisToSend;
-      if (vault.isRandomGive) {
-        const maxSatoshis = (balance < vault.maxValue) ?
-          toSmallestDenomination(new BigNumber(balance)) : 
-          toSmallestDenomination(new BigNumber(vault.maxValue));
+      if (vault.vaultType == VaultType.Random) {
+        const maxValue = balance < vault.maxValue ? balance : vault.maxValue; 
+        const maxSatoshis = toSmallestDenomination(new BigNumber(maxValue));
         const minSatoshis = toSmallestDenomination(new BigNumber(vault.minValue));
         satoshisToSend = maxSatoshis.minus(minSatoshis).times(new BigNumber(Math.random())).plus(minSatoshis);
-      } else {
+      } else if (vault.vaultType == VaultType.Fixed) {
         satoshisToSend = toSmallestDenomination(new BigNumber(vault.fixedValue));
+      } else {
+        // The payout unit is satoshi
+        const payout = balance/vault.dividedValue;
+        satoshisToSend = new BigNumber(payout);
       }
 
       const satoshisBalance = new BigNumber(balance);
