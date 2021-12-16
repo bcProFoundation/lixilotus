@@ -76,7 +76,7 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
             </>
         );
     }
-}
+  }
 
   return (
     <>

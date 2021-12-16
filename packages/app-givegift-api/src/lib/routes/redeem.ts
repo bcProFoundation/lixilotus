@@ -124,7 +124,7 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
         const maxSatoshis = toSmallestDenomination(new BigNumber(vault.maxValue));
         const minSatoshis = toSmallestDenomination(new BigNumber(vault.minValue));
         satoshisToSend = maxSatoshis.minus(minSatoshis).times(new BigNumber(Math.random())).plus(minSatoshis);
-      } else if (vault.vaultType == 1) {
+      } else if (vault.vaultType == VaultType.Fixed) {
         satoshisToSend = toSmallestDenomination(new BigNumber(vault.fixedValue));
       } else {
         // The payout unit is satoshi
