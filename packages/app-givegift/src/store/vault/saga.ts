@@ -67,12 +67,12 @@ function* postVaultSaga(action: PayloadAction<Vault>) {
     const dataApi: CreateVaultDto = {
       name: vault.name,
       isRandomGive: vault.isRandomGive,
+      vaultType: vault.vaultType,
       encryptedMnemonic: vault.encryptedMnemonic,
       minValue: vault.minValue,
       maxValue: vault.maxValue,
       fixedValue: vault.fixedValue,
       dividedValue: vault.dividedValue,
-      vaultType: vault.vaultType
     }
 
     const data: VaultDto = yield call(vaultApi.post, dataApi);

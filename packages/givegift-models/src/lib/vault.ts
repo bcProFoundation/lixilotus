@@ -62,3 +62,9 @@ export interface ImportVaultDto {
   mnemonic: string;
   redeemCode: string;
 }
+
+export enum VaultType {
+  Random = 0,
+  Fixed = 1,
+  Divided = 2
+};

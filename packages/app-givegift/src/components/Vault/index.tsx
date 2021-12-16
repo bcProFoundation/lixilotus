@@ -5,6 +5,7 @@ import { Descriptions, Collapse } from 'antd';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getAllVaultsEntities, getSelectedVaultId } from 'src/store/vault/selectors';
 import { QRCode } from "@abcpros/givegift-components/components/Common/QRCode";
+import { VaultType } from '@abcpros/givegift-models/src/lib/vault';
 import { StyledCollapse } from "@abcpros/givegift-components/components/Common/StyledCollapse";
 import { SmartButton } from '@abcpros/givegift-components/components/Common/PrimaryButton';
 import RedeemList from '@components/Redeem/RedeemList';
@@ -79,13 +80,13 @@ const Vault: React.FC = () => {
     }));
   }
 
-  const VaultType = () => {
+  const typeVault = () => {
     switch (selectedVault?.vaultType) {
-      case 1:
+      case VaultType.Fixed:
         return (
           <>Fixed {selectedVault.fixedValue} {currency.ticker}</>
         );
-      case 2:
+      case VaultType.Divided:
         return (
           <>Divided by {selectedVault.dividedValue} </>
         );
@@ -117,7 +118,7 @@ const Vault: React.FC = () => {
               {selectedVault.name}
             </Descriptions.Item>
             <Descriptions.Item label="Type">
-            {VaultType()}
+            {typeVault()}
             </Descriptions.Item>
             <Descriptions.Item label="Balance">
               {fromSmallestDenomination(selectedVault.balance) ?? 0} {currency.ticker}

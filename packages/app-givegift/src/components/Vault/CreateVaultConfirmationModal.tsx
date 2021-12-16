@@ -8,7 +8,7 @@ import { closeModal } from 'src/store/modal/actions';
 
 export type CreateVaultConfirmationModalProps = {
   isRandomGive: boolean;
-  isVaultType: number;
+  vaultType: number;
   newVaultMinValue: string;
   newVaultMaxValue: string;
   newVaultFixedValue: string;
@@ -24,7 +24,7 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
   const {
     newVaultName,
     isRandomGive,
-    isVaultType,
+    vaultType,
     newVaultMinValue,
     newVaultMaxValue,
     newVaultFixedValue,
@@ -45,7 +45,7 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
   }
 
   const confirmVaultType = () => {
-    switch (isVaultType) {
+    switch (vaultType) {
       // isFixed
       case 1:
         return (
