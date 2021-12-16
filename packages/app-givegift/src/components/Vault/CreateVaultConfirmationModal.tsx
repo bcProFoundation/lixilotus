@@ -8,9 +8,11 @@ import { closeModal } from 'src/store/modal/actions';
 
 export type CreateVaultConfirmationModalProps = {
   isRandomGive: boolean;
+  vaultType: number;
   newVaultMinValue: string;
   newVaultMaxValue: string;
   newVaultFixedValue: string;
+  newVaultDividedValue: string;
   newVaultName: string;
   onOkAction?: AnyAction
 }
@@ -22,9 +24,11 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
   const {
     newVaultName,
     isRandomGive,
+    vaultType,
     newVaultMinValue,
     newVaultMaxValue,
-    newVaultFixedValue
+    newVaultFixedValue,
+    newVaultDividedValue
   } = props;
 
   const handleOnCancel = () => {
@@ -40,6 +44,39 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
     dispatch(closeModal());
   }
 
+  const confirmVaultType = () => {
+    switch (vaultType) {
+      // isFixed
+      case 1:
+        return (
+          <>
+            <VaultParamLabel>The fund giving is fixed</VaultParamLabel>
+            <br />
+            <VaultParamLabel>The fixed fund:</VaultParamLabel> {newVaultFixedValue}
+          </>
+        );
+      // isDivided
+      case 2:
+        return (
+          <>
+            <VaultParamLabel>The fund giving is dividend</VaultParamLabel>
+            <br />
+            <VaultParamLabel>Divided by:</VaultParamLabel> {newVaultDividedValue}
+          </>
+        );
+      // isRandom
+      default:
+        return (
+          <>
+              <VaultParamLabel>The fund giving is randomized</VaultParamLabel>
+              <br />
+              <VaultParamLabel>Min:</VaultParamLabel> {newVaultMinValue}
+              <br />
+              <VaultParamLabel>Max:</VaultParamLabel> {newVaultMaxValue}
+            </>
+        );
+    }
+  }
 
   return (
     <>
@@ -51,21 +88,7 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
       >
         <VaultParamLabel>Name:</VaultParamLabel> {newVaultName}
         <br />
-        {isRandomGive ?
-          (
-            <>
-              <VaultParamLabel>The fund giving is randomized</VaultParamLabel>
-              <br />
-              <VaultParamLabel>Min:</VaultParamLabel> {newVaultMinValue}
-              <br />
-              <VaultParamLabel>Max:</VaultParamLabel> {newVaultMaxValue}
-            </>
-          ) :
-          (
-            <>
-              <VaultParamLabel>The fixed fund:</VaultParamLabel> {newVaultFixedValue}
-            </>
-          )}
+        {confirmVaultType()}
         <br />
       </Modal>
     </>

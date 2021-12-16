@@ -5,6 +5,7 @@ import { Descriptions, Collapse } from 'antd';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getAllVaultsEntities, getSelectedVaultId } from 'src/store/vault/selectors';
 import { QRCode } from "@abcpros/givegift-components/components/Common/QRCode";
+import { VaultType } from '@abcpros/givegift-models/src/lib/vault';
 import { StyledCollapse } from "@abcpros/givegift-components/components/Common/StyledCollapse";
 import { SmartButton } from '@abcpros/givegift-components/components/Common/PrimaryButton';
 import RedeemList from '@components/Redeem/RedeemList';
@@ -14,6 +15,7 @@ import { currency } from '../../../../givegift-components/src/components/Common/
 import { fromSmallestDenomination } from '@utils/cashMethods';
 import { CopyOutlined } from '@ant-design/icons';
 import { showToast } from 'src/store/toast/actions';
+import vaultSaga from 'src/store/vault/saga';
 
 type CopiedProps = {
   style?: React.CSSProperties
@@ -78,6 +80,23 @@ const Vault: React.FC = () => {
     }));
   }
 
+  const typeVault = () => {
+    switch (selectedVault?.vaultType) {
+      case VaultType.Fixed:
+        return (
+          <>Fixed {selectedVault.fixedValue} {currency.ticker}</>
+        );
+      case VaultType.Divided:
+        return (
+          <>Divided by {selectedVault.dividedValue} </>
+        );
+      default:
+        return (
+          <>Random {selectedVault?.minValue}-{selectedVault?.maxValue} {currency.ticker}</>
+        );
+    }
+  }
+
   return (
     <>
       {selectedVault && selectedVault.Path10605 && (
@@ -99,8 +118,7 @@ const Vault: React.FC = () => {
               {selectedVault.name}
             </Descriptions.Item>
             <Descriptions.Item label="Type">
-              {selectedVault.isRandomGive ? 'Random:  ' : 'Fixed:  '}
-              {selectedVault.isRandomGive ? <>{selectedVault.minValue}-{selectedVault.maxValue} {currency.ticker}</> : <>{selectedVault.fixedValue} {currency.ticker}</> }
+            {typeVault()}
             </Descriptions.Item>
             <Descriptions.Item label="Balance">
               {fromSmallestDenomination(selectedVault.balance) ?? 0} {currency.ticker}
