@@ -28,10 +28,12 @@ function* generateVaultSaga(action: PayloadAction<GenerateVaultDto>) {
     id: 0,
     name: vaultDto.name,
     isRandomGive: vaultDto.isRandomGive,
+    vaultType: vaultDto.vaultType, 
     encryptedMnemonic: encryptedMnemonic,
     minValue: Number(vaultDto.minValue),
     maxValue: Number(vaultDto.maxValue),
     fixedValue: Number(vaultDto.fixedValue),
+    dividedValue: Number(vaultDto.dividedValue),
     totalRedeem: 0,
     redeemCode: password,
     mnemonic: Bip39128BitMnemonic,
@@ -65,10 +67,12 @@ function* postVaultSaga(action: PayloadAction<Vault>) {
     const dataApi: CreateVaultDto = {
       name: vault.name,
       isRandomGive: vault.isRandomGive,
+      vaultType: vault.vaultType,
       encryptedMnemonic: vault.encryptedMnemonic,
       minValue: vault.minValue,
       maxValue: vault.maxValue,
-      fixedValue: vault.fixedValue
+      fixedValue: vault.fixedValue,
+      dividedValue: vault.dividedValue,
     }
 
     const data: VaultDto = yield call(vaultApi.post, dataApi);
