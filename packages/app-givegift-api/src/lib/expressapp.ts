@@ -16,7 +16,7 @@ const allowedOrigins = [
   'https://lixilotus.com',
   'https://www.sendlotus.com',
   'https://staging.sendlotus.com',
-  'https://staging.lixilotus.com/',
+  'https://staging.lixilotus.com',
   'https://dev.lixilotus.com'
 ];
 
