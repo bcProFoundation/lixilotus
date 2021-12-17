@@ -97,6 +97,15 @@ const Vault: React.FC = () => {
     }
   }
 
+  const showRedemption = () => {
+    if (selectedVault?.maxRedeem != 0) {
+      return <>{selectedVault?.redeemedNum} / {selectedVault?.maxRedeem}</>
+    }
+    else {
+      return <>{selectedVault?.redeemedNum}</>
+    }
+  }
+
   return (
     <>
       {selectedVault && selectedVault.Path10605 && (
@@ -125,6 +134,9 @@ const Vault: React.FC = () => {
             </Descriptions.Item>
             <Descriptions.Item label="Total Redeemed">
               {fromSmallestDenomination(selectedVault?.totalRedeem) ?? 0}
+            </Descriptions.Item>
+            <Descriptions.Item label="Redemptions">
+              {showRedemption()}
             </Descriptions.Item>
           </Descriptions>
           

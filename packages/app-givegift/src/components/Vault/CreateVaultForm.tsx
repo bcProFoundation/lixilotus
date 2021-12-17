@@ -27,9 +27,12 @@ const CreateVaultForm = ({
   // New Vault name
   const [newVaultName, setNewVaultName] = useState('');
   const [newVaultNameIsValid, setNewVaultNameIsValid] = useState<boolean | null>(null);
-  const [isRandomGive, setIsRandomGive] = useState<boolean>(true);
+  const [isRandomGive] = useState<boolean>(true);
   const [vaultType, setVaultType] = useState<number>(0);
 
+  // New max redemption number
+  const [newMaxRedeem, setNewMaxRedeemVault] = useState('');
+  const [newMaxRedeemVaultIsValid, setNewMaxRedeemVaultIsValid] = useState(true);
 
   // New Vault Min Value
   const [newVaultMinValue, setNewVaultMinValue] = useState('');
@@ -56,9 +59,17 @@ const CreateVaultForm = ({
     }
   };
 
+  const handleNewMaxRedeemInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setNewMaxRedeemVault(value);
+    if (value && !isEmpty(value)) {
+      setNewMaxRedeemVaultIsValid(true);
+    }
+  };
+
   // Only enable CreateVault button if all form entries are valid
   let createVaultFormDataIsValid =
-    newVaultNameIsValid &&
+    newVaultNameIsValid && newMaxRedeemVaultIsValid &&
     ((vaultType == VaultType.Random && newVaultMinValueIsValid && newVaultMaxValueIsValid) ||
       (vaultType == VaultType.Fixed && newVaultFixedValueIsValid) ||
       (vaultType == VaultType.Divided && newVaultDividedValueIsValid));
@@ -95,6 +106,7 @@ const CreateVaultForm = ({
 
     const generateVaultDto: GenerateVaultDto = {
       name: newVaultName,
+      maxRedeem: newMaxRedeem,
       minValue: newVaultMinValue,
       maxValue: newVaultMaxValue,
       fixedValue: newVaultFixedValue,
@@ -107,6 +119,7 @@ const CreateVaultForm = ({
       isRandomGive,
       vaultType,
       newVaultName,
+      newMaxRedeem,
       newVaultMinValue,
       newVaultMaxValue,
       newVaultFixedValue,
@@ -210,6 +223,7 @@ const CreateVaultForm = ({
                 width: 'auto',
               }}
             >
+              {/* Name */}
               <Form.Item
                 validateStatus={
                   newVaultNameIsValid === null ||
@@ -226,6 +240,26 @@ const CreateVaultForm = ({
                   onChange={e => handleNewVaultNameInput(e)}
                 />
               </Form.Item>
+              
+              {/* Max redemption */}
+              <Form.Item
+                validateStatus={
+                  newMaxRedeemVaultIsValid === null ||
+                    newMaxRedeemVaultIsValid
+                    ? ''
+                    : 'error'
+                }
+              >
+                <Input
+                  addonBefore="Max Redeem"
+                  type="number"
+                  placeholder="Enter max Redeem number for your vault"
+                  name="vaultMaxReDeem"
+                  value={newMaxRedeem}
+                  onChange={e => handleNewMaxRedeemInput(e)}
+                />
+              </Form.Item>
+
               <Form.Item>
                 <Radio.Group value={vaultType} onChange={handelChangeVaultType}>
                   <Radio value={0}>Random</Radio>

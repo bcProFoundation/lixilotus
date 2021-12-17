@@ -6,7 +6,7 @@ import VError from 'verror';
 import _ from 'lodash';
 import BCHJS from '@abcpros/xpi-js';
 import MinimalBCHWallet from '@abcpros/minimal-xpi-slp-wallet';
-import { CreateRedeemDto, RedeemDto, VaultType } from '@abcpros/givegift-models'
+import { CreateRedeemDto, fromSmallestDenomination, RedeemDto, VaultType } from '@abcpros/givegift-models'
 import { toSmallestDenomination } from '@abcpros/givegift-models';
 import { aesGcmDecrypt, base62ToNumber } from '../utils/encryptionMethods';
 import SlpWallet from '@abcpros/minimal-xpi-slp-wallet';
@@ -119,10 +119,15 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
         throw new VError('Insufficient fund.');
       }
 
+      if (vault.maxRedeem != 0 && vault.redeemedNum == vault.maxRedeem) {
+        throw new VError('The program has ended.');
+      }
+
       let satoshisToSend;
       if (vault.vaultType == VaultType.Random) {
-        const maxValue = balance < vault.maxValue ? balance : vault.maxValue; 
-        const maxSatoshis = toSmallestDenomination(new BigNumber(maxValue));
+        const xpiBalance = fromSmallestDenomination(balance);
+        const maxXpiValue = xpiBalance < vault.maxValue ? xpiBalance : vault.maxValue; 
+        const maxSatoshis = toSmallestDenomination(new BigNumber(maxXpiValue));
         const minSatoshis = toSmallestDenomination(new BigNumber(vault.minValue));
         satoshisToSend = maxSatoshis.minus(minSatoshis).times(new BigNumber(Math.random())).plus(minSatoshis);
       } else if (vault.vaultType == VaultType.Fixed) {
@@ -212,7 +217,8 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
         const updateVaultOperation = prisma.vault.update({
           where: { id: vault.id },
           data: {
-            totalRedeem: vault.totalRedeem + BigInt(amountSats)
+            totalRedeem: vault.totalRedeem + BigInt(amountSats),
+            redeemedNum: vault.redeemedNum + 1
           }
         });
 

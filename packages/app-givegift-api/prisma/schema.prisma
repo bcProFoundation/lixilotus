@@ -13,6 +13,8 @@ generator client {
 model Vault {
   id                Int      @id @default(autoincrement())
   name              String
+  maxRedeem         Int      @default(0)                    @map("max_redeem")
+  redeemedNum       Int      @default(0)                    @map("redeemed_num")
   isRandomGive      Boolean                                 @map("is_random_give")
   vaultType         Int      @default(0)                    @map("vault_type")
   minValue          Float                                   @map("min_value")

@@ -14,6 +14,7 @@ export type CreateVaultConfirmationModalProps = {
   newVaultFixedValue: string;
   newVaultDividedValue: string;
   newVaultName: string;
+  newMaxRedeem: string;
   onOkAction?: AnyAction
 }
 
@@ -23,6 +24,7 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
 
   const {
     newVaultName,
+    newMaxRedeem,
     isRandomGive,
     vaultType,
     newVaultMinValue,
@@ -87,6 +89,8 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
         onCancel={() => handleOnCancel()}
       >
         <VaultParamLabel>Name:</VaultParamLabel> {newVaultName}
+        <br />
+        <VaultParamLabel>Max Redemption:</VaultParamLabel> {newMaxRedeem == "" ? "Infinity" : newMaxRedeem}
         <br />
         {confirmVaultType()}
         <br />
