@@ -27,6 +27,8 @@ function* generateVaultSaga(action: PayloadAction<GenerateVaultDto>) {
   const vault: Vault = {
     id: 0,
     name: vaultDto.name,
+    maxRedeem: Number(vaultDto.maxRedeem),
+    redeemedNum: Number(vaultDto.redeemedNum),
     isRandomGive: vaultDto.isRandomGive,
     vaultType: vaultDto.vaultType, 
     encryptedMnemonic: encryptedMnemonic,
@@ -66,6 +68,8 @@ function* postVaultSaga(action: PayloadAction<Vault>) {
 
     const dataApi: CreateVaultDto = {
       name: vault.name,
+      maxRedeem: vault.maxRedeem,
+      redeemedNum: vault.redeemedNum,
       isRandomGive: vault.isRandomGive,
       vaultType: vault.vaultType,
       encryptedMnemonic: vault.encryptedMnemonic,
