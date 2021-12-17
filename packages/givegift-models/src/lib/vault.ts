@@ -1,7 +1,6 @@
 export interface GenerateVaultDto {
   name: string;
   maxRedeem: string;
-  redeemedNum: string;
   isRandomGive: boolean;
   vaultType: number;
   minValue: string;
@@ -13,7 +12,7 @@ export interface GenerateVaultDto {
 export interface CreateVaultDto {
   name: string;
   maxRedeem: number;
-  redeemedNum: number;
+  redeemedNum?: number;
   isRandomGive: boolean;
   vaultType: number;
   encryptedMnemonic: string;
@@ -45,7 +44,7 @@ export interface Vault {
   id: number;
   name: string;
   maxRedeem: number;
-  redeemedNum: number;
+  redeemedNum?: number;
   mnemonic: string;
   isRandomGive: boolean;
   vaultType: number;

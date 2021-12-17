@@ -15,7 +15,6 @@ export type CreateVaultConfirmationModalProps = {
   newVaultDividedValue: string;
   newVaultName: string;
   newMaxRedeem: string;
-  newRedeemedNum: string;
   onOkAction?: AnyAction
 }
 
@@ -26,7 +25,6 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
   const {
     newVaultName,
     newMaxRedeem,
-    newRedeemedNum,
     isRandomGive,
     vaultType,
     newVaultMinValue,

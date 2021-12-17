@@ -27,16 +27,12 @@ const CreateVaultForm = ({
   // New Vault name
   const [newVaultName, setNewVaultName] = useState('');
   const [newVaultNameIsValid, setNewVaultNameIsValid] = useState<boolean | null>(null);
-  const [isRandomGive, setIsRandomGive] = useState<boolean>(true);
+  const [isRandomGive] = useState<boolean>(true);
   const [vaultType, setVaultType] = useState<number>(0);
 
   // New max redemption number
   const [newMaxRedeem, setNewMaxRedeemVault] = useState('');
   const [newMaxRedeemVaultIsValid, setNewMaxRedeemVaultIsValid] = useState(true);
-
-  //redeemed number
-  const [newRedeemedNum, setNewRedeemedVault] = useState('');
-
 
   // New Vault Min Value
   const [newVaultMinValue, setNewVaultMinValue] = useState('');
@@ -111,7 +107,6 @@ const CreateVaultForm = ({
     const generateVaultDto: GenerateVaultDto = {
       name: newVaultName,
       maxRedeem: newMaxRedeem,
-      redeemedNum: newRedeemedNum,
       minValue: newVaultMinValue,
       maxValue: newVaultMaxValue,
       fixedValue: newVaultFixedValue,
@@ -125,7 +120,6 @@ const CreateVaultForm = ({
       vaultType,
       newVaultName,
       newMaxRedeem,
-      newRedeemedNum,
       newVaultMinValue,
       newVaultMaxValue,
       newVaultFixedValue,

@@ -125,9 +125,9 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
 
       let satoshisToSend;
       if (vault.vaultType == VaultType.Random) {
-        const smallBalance = fromSmallestDenomination(balance);
-        const maxValue = smallBalance < vault.maxValue ? smallBalance : vault.maxValue; 
-        const maxSatoshis = toSmallestDenomination(new BigNumber(maxValue));
+        const xpiBalance = fromSmallestDenomination(balance);
+        const maxXpiValue = xpiBalance < vault.maxValue ? xpiBalance : vault.maxValue; 
+        const maxSatoshis = toSmallestDenomination(new BigNumber(maxXpiValue));
         const minSatoshis = toSmallestDenomination(new BigNumber(vault.minValue));
         satoshisToSend = maxSatoshis.minus(minSatoshis).times(new BigNumber(Math.random())).plus(minSatoshis);
       } else if (vault.vaultType == VaultType.Fixed) {

@@ -28,7 +28,6 @@ function* generateVaultSaga(action: PayloadAction<GenerateVaultDto>) {
     id: 0,
     name: vaultDto.name,
     maxRedeem: Number(vaultDto.maxRedeem),
-    redeemedNum: Number(vaultDto.redeemedNum),
     isRandomGive: vaultDto.isRandomGive,
     vaultType: vaultDto.vaultType, 
     encryptedMnemonic: encryptedMnemonic,
