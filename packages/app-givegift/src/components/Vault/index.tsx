@@ -111,7 +111,7 @@ const Vault: React.FC = () => {
     if (selectedVault?.expiryTime != null) {
       return (
         <Descriptions.Item label="Expiry at">
-          {moment(selectedVault?.expiryTime).quarter(2).format("YYYY-MM-DD HH:mm")}
+          {moment(selectedVault?.expiryTime).format("YYYY-MM-DD HH:mm")}
         </Descriptions.Item>
       );
     }

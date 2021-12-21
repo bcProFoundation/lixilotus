@@ -85,7 +85,7 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
 
   const formatDate = () => {
     if (newExpiryTime != "") {
-      return <VaultParamLabel>Expiry at: {moment(newExpiryTime).quarter(2).format("YYYY-MM-DD HH:mm")}</VaultParamLabel>;
+      return <VaultParamLabel>Expiry at: {moment(newExpiryTime).format("YYYY-MM-DD HH:mm")}</VaultParamLabel>;
     }
     else {
       return <VaultParamLabel>Expiry at: Infinity</VaultParamLabel>;
