@@ -32,7 +32,7 @@ const RedeemComponent: React.FC = () => {
 
   const isLoading = useAppSelector(getIsGlobalLoading);
 
-  const { XPI } = React.useContext(AppContext);
+  const { XPI, Wallet } = React.useContext(AppContext);
 
   const dispatch = useAppDispatch();
 

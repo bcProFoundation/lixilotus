@@ -7,6 +7,7 @@ import SlpWallet from '@abcpros/minimal-xpi-slp-wallet';
 import * as Vault from './routes/vault';
 import * as Redeem from './routes/redeem';
 import * as Healthcheck from './routes/healthcheck';
+import * as Account from './routes/account';
 import { handleError } from './middlewares/handleError';
 
 const bodyParser = require('body-parser');
@@ -15,7 +16,8 @@ const xpiRestUrl = config.has('xpiRestUrl') ? config.get('xpiRestUrl') : 'https:
 const allowedOrigins = [
   'https://lixilotus.com',
   'https://www.sendlotus.com',
-  'https://staging.sendlotus.com'
+  'https://staging.sendlotus.com',
+  'https://localhost:3000'
 ];
 
 export class ExpressApp {
@@ -29,6 +31,7 @@ export class ExpressApp {
     this.app.use('/api', Vault.router);
     this.app.use('/api', Redeem.router);
     this.app.use('/api', Healthcheck.router);
+    this.app.use('/api', Account.router)
   }
 
   public DIProviders() {

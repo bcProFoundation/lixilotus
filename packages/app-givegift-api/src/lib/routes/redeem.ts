@@ -27,7 +27,7 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
     try {
       const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress) as string;
 
-      if (process.env.NODE_ENV !== 'development') {
+      if (process.env.NODE_ENV === 'development') {
         const response = await axios.post<any>(
           `https://www.google.com/recaptcha/api/siteverify?secret=${PRIVATE_KEY}&response=${redeemApi.captchaToken}`
         );
@@ -77,7 +77,7 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
         throw new VError('Unable to redeem because the vault is invalid');
       }
 
-      const mnemonic = await aesGcmDecrypt(vault.encryptedMnemonic, password);
+      const mnemonic = await aesGcmDecrypt(vault.encryptedPrivKey, password);
 
       const hdPath = "m/44'/10605'/0'/0/0";
       const xpiWallet: MinimalBCHWallet = new SlpWallet(mnemonic, {

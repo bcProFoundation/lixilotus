@@ -8,43 +8,43 @@ import { VError } from 'verror';
 const prisma = new PrismaClient();
 let router = express.Router();
 
-router.post('/import', async (req: express.Request, res: express.Response, next: NextFunction) => {
-  const importVaultDto: ImportVaultDto = req.body;
+// router.post('/import', async (req: express.Request, res: express.Response, next: NextFunction) => {
+//   const importVaultDto: ImportVaultDto = req.body;
 
-  try {
-    const redeemCode = importVaultDto.redeemCode;
-    const password = redeemCode.slice(0, 8);
-    const encodedVaultId = redeemCode.slice(8);
-    const vaultId = base62ToNumber(encodedVaultId);
-    const vault = await prisma.vault.findUnique({
-      where: {
-        id: vaultId
-      }
-    });
+//   try {
+//     const redeemCode = importVaultDto.redeemCode;
+//     const password = redeemCode.slice(0, 8);
+//     const encodedVaultId = redeemCode.slice(8);
+//     const vaultId = base62ToNumber(encodedVaultId);
+//     const vault = await prisma.vault.findUnique({
+//       where: {
+//         id: vaultId
+//       }
+//     });
 
-    if (!vault) {
-      throw Error('Could not found a vault match your import.');
-    }
+//     if (!vault) {
+//       throw Error('Could not found a vault match your import.');
+//     }
 
-    const mnemonic = await aesGcmDecrypt(vault.encryptedMnemonic, password);
+//     const encryptedPrivKey = await aesGcmDecrypt(vault.encryptedPrivKey, password);
 
-    if (mnemonic !== importVaultDto.mnemonic) {
-      throw Error('Invalid redeem code. Please try again.');
-    }
+//     if (encryptedPrivKey !== importVaultDto.encryptedPrivKey) {
+//       throw Error('Invalid redeem code. Please try again.');
+//     }
 
-    const resultApi: VaultDto = {
-      ...vault,
-      totalRedeem: Number(vault.totalRedeem)
-    };
+//     const resultApi: VaultDto = {
+//       ...vault,
+//       totalRedeem: Number(vault.totalRedeem)
+//     };
 
-    res.json(resultApi);
+//     res.json(resultApi);
 
-  } catch (error) {
-    return res.status(400).json({
-      error: `Could not import the vault.`
-    });
-  }
-});
+//   } catch (error) {
+//     return res.status(400).json({
+//       error: `Could not import the vault.`
+//     });
+//   }
+// });
 
 router.get('/:id/redeems', async (req: express.Request, res: express.Response, next: NextFunction) => {
   const { id } = req.params;

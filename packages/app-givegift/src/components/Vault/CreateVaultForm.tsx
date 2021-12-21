@@ -84,7 +84,8 @@ const CreateVaultForm = ({
       minValue: newVaultMinValue,
       maxValue: newVaultMaxValue,
       fixedValue: newVaultFixedValue,
-      isRandomGive: isRandomGive
+      isRandomGive: isRandomGive,
+      status: "active",
     };
 
     const createVaultModalProps: CreateVaultConfirmationModalProps = {

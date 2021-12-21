@@ -1,8 +1,9 @@
 import styled, { DefaultTheme } from 'styled-components';
-import { GiftOutlined, WalletOutlined } from '@ant-design/icons';
+import { GiftOutlined, WalletOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Vault } from '@abcpros/givegift-models/lib/vault';
 import { selectVault } from 'src/store/vault/actions';
 import { useAppDispatch } from 'src/store/hooks';
+import { Button } from 'antd';
 
 const VaultIcon = styled.div`
   height: 32px;
@@ -40,6 +41,8 @@ const Wrapper = styled.div`
   }
 `;
 
+const DeleteIcon = styled(DeleteOutlined);
+
 type VaultListItemProps = {
   vault: Vault,
   theme?: DefaultTheme;
@@ -59,6 +62,9 @@ const VaultListItem: React.FC<VaultListItemProps> = (props: VaultListItemProps) 
       <VaultIcon>
         <WalletIcon />
       </VaultIcon>
+      <Button icon={<DeleteOutlined />}></Button>
+      <Button>Active</Button>
+
       <BalanceAndTicker>
         <strong>{vault.name}</strong>
       </BalanceAndTicker>

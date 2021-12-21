@@ -19,7 +19,8 @@ import {
   HomeOutlined,
   GiftOutlined,
   WalletOutlined,
-  UserOutlined
+  UserOutlined,
+  SettingOutlined
 } from '@ant-design/icons';
 // import { LoadingIcon } from '@abcpros/givegift-components/atoms/CustomIcons/CustomIcons';
 import Home from '@components/Home/Home';
@@ -28,6 +29,8 @@ import Profile from '@components/Profile/Profile';
 import { Footer, NavButton } from '@abcpros/givegift-components/components';
 import Vault from '@components/Vault';
 import ModalManager from '@components/Common/ModalManager';
+import SettingsComponent from '@components/Settings';
+import OnboardingComponent from './Onboarding/Onboarding';
 
 type ThemeType = typeof theme;
 
@@ -171,16 +174,25 @@ function App(): JSX.Element {
                 <GiftOutlined />
                 Redeem
               </NavButton>
+
+              <NavButton
+                active={selectedKey === 'Settings'}
+                onClick={() => history.push('/settings')}
+              >
+                <SettingOutlined />
+                Settings
+              </NavButton>
               {/* <NavButton
                 active={selectedKey === 'profile'}
                 onClick={() => history.push('/profile')}
               >
                 <UserOutlined />
                 Profile
-              </NavButton> */}
+              </NavButton> */}  
             </Footer>
           </AppBody>
         </GiveGiftApp>
+        
       </Spin>
     </ThemeProvider>
   );

@@ -34,7 +34,8 @@ function* generateVaultSaga(action: PayloadAction<GenerateVaultDto>) {
     fixedValue: Number(vaultDto.fixedValue),
     totalRedeem: 0,
     redeemCode: password,
-    mnemonic: Bip39128BitMnemonic
+    mnemonic: Bip39128BitMnemonic,
+    status: "active"
   };
 
   yield put(postVault(vault));
@@ -67,7 +68,8 @@ function* postVaultSaga(action: PayloadAction<Vault>) {
       encryptedMnemonic: vault.encryptedMnemonic,
       minValue: vault.minValue,
       maxValue: vault.maxValue,
-      fixedValue: vault.fixedValue
+      fixedValue: vault.fixedValue,
+      status: vault.status
     }
 
     const data: VaultDto = yield call(vaultApi.post, dataApi);
