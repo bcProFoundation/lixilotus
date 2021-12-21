@@ -4,6 +4,7 @@ import { PrismaClient } from '@prisma/client';
 import BigNumber from 'bignumber.js';
 import VError from 'verror';
 import _ from 'lodash';
+import moment from 'moment';
 import BCHJS from '@abcpros/xpi-js';
 import MinimalBCHWallet from '@abcpros/minimal-xpi-slp-wallet';
 import { CreateRedeemDto, fromSmallestDenomination, RedeemDto, VaultType } from '@abcpros/givegift-models'
@@ -119,7 +120,7 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
         throw new VError('Insufficient fund.');
       }
 
-      if (vault.maxRedeem != 0 && vault.redeemedNum == vault.maxRedeem) {
+      if ((vault.maxRedeem != 0 && vault.redeemedNum == vault.maxRedeem) || moment().isAfter(vault.expiryTime)) {
         throw new VError('The program has ended.');
       }
 

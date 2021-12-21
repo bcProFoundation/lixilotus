@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import styled from 'styled-components';
 import { Descriptions, Collapse } from 'antd';
+import moment from 'moment';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getAllVaultsEntities, getSelectedVaultId } from 'src/store/vault/selectors';
 import { QRCode } from "@abcpros/givegift-components/components/Common/QRCode";
@@ -106,6 +107,19 @@ const Vault: React.FC = () => {
     }
   }
 
+  const formatDate = () => {
+    if (selectedVault?.expiryTime != null) {
+      return (
+        <Descriptions.Item label="Expiry at">
+          {moment(selectedVault?.expiryTime).format("YYYY-MM-DD HH:mm")}
+        </Descriptions.Item>
+      );
+    }
+    else {
+      return;
+    }
+  }
+
   return (
     <>
       {selectedVault && selectedVault.Path10605 && (
@@ -138,6 +152,7 @@ const Vault: React.FC = () => {
             <Descriptions.Item label="Redemptions">
               {showRedemption()}
             </Descriptions.Item>
+            {formatDate()}
           </Descriptions>
           
           {/* Detail Vault */}

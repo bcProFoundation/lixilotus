@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import { Collapse, Form, Input, Modal, notification, Radio, RadioChangeEvent } from 'antd';
+import { Collapse, DatePicker, Form, Input, Modal, notification, Radio, RadioChangeEvent, Space } from 'antd';
 import { PlusSquareOutlined } from '@ant-design/icons';
 import isEmpty from 'lodash.isempty';
+import moment from 'moment';
 import { VaultCollapse } from "@abcpros/givegift-components/components/Common/StyledCollapse";
 import { AntdFormWrapper } from '@abcpros/givegift-components/components/Common/EnhancedInputs';
 import { SmartButton } from '@abcpros/givegift-components/components/Common/PrimaryButton';
 import { currency } from '@abcpros/givegift-components/components/Common/Ticker';
 import { isValidAmountInput } from '@utils/validation';
-import { VaultParamLabel } from '@abcpros/givegift-components/components/Common/Atoms';
-import { GenerateVaultDto, Vault, VaultType } from '@abcpros/givegift-models/lib/vault';
+import { GenerateVaultDto, VaultType } from '@abcpros/givegift-models/lib/vault';
 import { useAppDispatch } from 'src/store/hooks';
 import { generateVault } from 'src/store/vault/actions';
 import { openModal } from 'src/store/modal/actions';
@@ -33,6 +33,10 @@ const CreateVaultForm = ({
   // New max redemption number
   const [newMaxRedeem, setNewMaxRedeemVault] = useState('');
   const [newMaxRedeemVaultIsValid, setNewMaxRedeemVaultIsValid] = useState(true);
+
+  // New ExpiryTime
+  const [newExpiryTime, setNewExpiryTimeVault] = useState('');
+  const [newExpiryTimeVaultIsValid, setExpiryTimeVaultIsValid] = useState(true);
 
   // New Vault Min Value
   const [newVaultMinValue, setNewVaultMinValue] = useState('');
@@ -67,9 +71,16 @@ const CreateVaultForm = ({
     }
   };
 
+  const onOk = (value) => {
+    setNewExpiryTimeVault(value._d.toUTCString())
+    if (value && !isEmpty(value)) {
+      setExpiryTimeVaultIsValid(true)
+    }
+  }
+
   // Only enable CreateVault button if all form entries are valid
   let createVaultFormDataIsValid =
-    newVaultNameIsValid && newMaxRedeemVaultIsValid &&
+    newVaultNameIsValid && newMaxRedeemVaultIsValid && newExpiryTimeVaultIsValid &&
     ((vaultType == VaultType.Random && newVaultMinValueIsValid && newVaultMaxValueIsValid) ||
       (vaultType == VaultType.Fixed && newVaultFixedValueIsValid) ||
       (vaultType == VaultType.Divided && newVaultDividedValueIsValid));
@@ -107,6 +118,7 @@ const CreateVaultForm = ({
     const generateVaultDto: GenerateVaultDto = {
       name: newVaultName,
       maxRedeem: newMaxRedeem,
+      expiryTime: newExpiryTime,
       minValue: newVaultMinValue,
       maxValue: newVaultMaxValue,
       fixedValue: newVaultFixedValue,
@@ -120,6 +132,7 @@ const CreateVaultForm = ({
       vaultType,
       newVaultName,
       newMaxRedeem,
+      newExpiryTime,
       newVaultMinValue,
       newVaultMaxValue,
       newVaultFixedValue,
@@ -130,11 +143,11 @@ const CreateVaultForm = ({
   }
 
   const selectVaultType = () => {
-      switch (vaultType) {
-        // isFixed
-        case VaultType.Fixed:
-          return (
-            <>
+    switch (vaultType) {
+      // isFixed
+      case VaultType.Fixed:
+        return (
+          <>
             <Form.Item>
               <Input.Group compact>
                 <Input
@@ -150,11 +163,11 @@ const CreateVaultForm = ({
               </Input.Group>
             </Form.Item>
           </>
-          );
-        // isDivided
-        case VaultType.Divided:
-          return (
-            <>
+        );
+      // isDivided
+      case VaultType.Divided:
+        return (
+          <>
             <Form.Item>
               <Input.Group compact>
                 <Input
@@ -170,11 +183,11 @@ const CreateVaultForm = ({
               </Input.Group>
             </Form.Item>
           </>
-          );
-        // isRandom
-        default:
-          return (
-            <>
+        );
+      // isRandom
+      default:
+        return (
+          <>
             <Form.Item>
               <Input
                 addonBefore="Min"
@@ -200,9 +213,62 @@ const CreateVaultForm = ({
               </Input>
             </Form.Item>
           </>
-          );
-          
-      }
+      );
+    }
+  }
+
+  const disabledDate = (current) => {
+    return current && current < moment().endOf('day');
+  }
+
+  const selectExpiry = () => {
+    return (
+      <>
+        {/* Max redemption */}
+        <Form.Item
+            validateStatus={
+              newMaxRedeemVaultIsValid === null ||
+                newMaxRedeemVaultIsValid
+                ? ''
+                : 'error'
+            }
+          >
+            <Input
+              addonBefore="Max Redeem"
+              type="number"
+              placeholder="Enter max Redeem number for your vault"
+              name="vaultMaxReDeem"
+              value={newMaxRedeem}
+              onChange={e => handleNewMaxRedeemInput(e)}
+            />
+        </Form.Item>
+
+        {/* Expiry Time */}
+        <Form.Item
+          validateStatus={
+            newExpiryTimeVaultIsValid === null ||
+              newExpiryTimeVaultIsValid
+              ? ''
+              : 'error'
+          }
+        >
+          <Space direction="horizontal" >
+            <DatePicker
+              placeholder="Expiry time for your vault"
+              name="vaultExpiryTime"
+              disabledDate={disabledDate}
+              showTime={{ 
+                format: 'HH:mm',
+                defaultValue: moment('00:00', 'HH:mm')
+              }}
+              format="YYYY-MM-DD HH:mm"
+              size={'large'}
+              onOk={onOk}
+              />
+          </Space>
+        </Form.Item>
+      </>
+    );
   }
 
   return (
@@ -241,25 +307,7 @@ const CreateVaultForm = ({
                 />
               </Form.Item>
               
-              {/* Max redemption */}
-              <Form.Item
-                validateStatus={
-                  newMaxRedeemVaultIsValid === null ||
-                    newMaxRedeemVaultIsValid
-                    ? ''
-                    : 'error'
-                }
-              >
-                <Input
-                  addonBefore="Max Redeem"
-                  type="number"
-                  placeholder="Enter max Redeem number for your vault"
-                  name="vaultMaxReDeem"
-                  value={newMaxRedeem}
-                  onChange={e => handleNewMaxRedeemInput(e)}
-                />
-              </Form.Item>
-
+              {/* select VaultType and Expiry */}
               <Form.Item>
                 <Radio.Group value={vaultType} onChange={handelChangeVaultType}>
                   <Radio value={0}>Random</Radio>
@@ -268,6 +316,9 @@ const CreateVaultForm = ({
                 </Radio.Group>
               </Form.Item>
               {selectVaultType()}
+              <Form.Item>
+                {selectExpiry()}
+              </Form.Item>
             </Form>
           </AntdFormWrapper>
           <SmartButton
