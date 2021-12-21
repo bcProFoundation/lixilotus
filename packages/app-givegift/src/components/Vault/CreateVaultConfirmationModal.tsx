@@ -1,6 +1,7 @@
 import { AnyAction } from 'redux';
 import { Modal } from 'antd';
 import _ from 'lodash';
+import moment from 'moment';
 import { VaultParamLabel } from '@abcpros/givegift-components/components/Common/Atoms';
 import { useAppDispatch } from 'src/store/hooks';
 import { closeModal } from 'src/store/modal/actions';
@@ -15,6 +16,7 @@ export type CreateVaultConfirmationModalProps = {
   newVaultDividedValue: string;
   newVaultName: string;
   newMaxRedeem: string;
+  newExpiryTime: string;
   onOkAction?: AnyAction
 }
 
@@ -25,6 +27,7 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
   const {
     newVaultName,
     newMaxRedeem,
+    newExpiryTime,
     isRandomGive,
     vaultType,
     newVaultMinValue,
@@ -80,6 +83,15 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
     }
   }
 
+  const formatDate = () => {
+    if (newExpiryTime != "") {
+      return <VaultParamLabel>Expiry at: {moment(newExpiryTime).quarter(2).format("YYYY-MM-DD HH:mm")}</VaultParamLabel>;
+    }
+    else {
+      return <VaultParamLabel>Expiry at: Infinity</VaultParamLabel>;
+    }
+  }
+
   return (
     <>
       <Modal
@@ -91,6 +103,8 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
         <VaultParamLabel>Name:</VaultParamLabel> {newVaultName}
         <br />
         <VaultParamLabel>Max Redemption:</VaultParamLabel> {newMaxRedeem == "" ? "Infinity" : newMaxRedeem}
+        <br />
+        {formatDate()}
         <br />
         {confirmVaultType()}
         <br />
