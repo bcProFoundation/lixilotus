@@ -13,7 +13,7 @@ import { useAppDispatch } from 'src/store/hooks';
 import { generateVault } from 'src/store/vault/actions';
 import { openModal } from 'src/store/modal/actions';
 import { CreateVaultConfirmationModalProps } from './CreateVaultConfirmationModal';
-import { range } from 'lodash';
+import { now, range } from 'lodash';
 const { Panel } = Collapse;
 
 type CreateVaultFormProps = {
@@ -71,6 +71,10 @@ const CreateVaultForm = ({
       setNewMaxRedeemVaultIsValid(true);
     }
   };
+
+  const handleNewExpityTimeInput = (value) => {
+    setNewExpiryTimeVault(value._d.toString());
+  }
 
   const onOk = (value) => {
     setNewExpiryTimeVault(value._d.toUTCString())
@@ -222,7 +226,13 @@ const CreateVaultForm = ({
     return current && current < moment().startOf('day');
   }
 
-  const disabledDateTime = () => {
+  const disabledDateTime = (current) => {
+    if (newExpiryTime && moment(newExpiryTime).date() > moment().date()) {
+      return {
+        disabledHours: () => [],
+        disabledMinutes: () => [],
+      };
+    }
     return {
       disabledHours: () => range(0, moment().hour()),
       disabledMinutes: () => range(0, moment().minute()),
@@ -264,14 +274,15 @@ const CreateVaultForm = ({
             <DatePicker
               placeholder="Expiry time for your vault"
               name="vaultExpiryTime"
-              disabledDate={disabledDate}
-              disabledTime={disabledDateTime}
+              disabledDate={(current) => disabledDate(current)}
+              disabledTime={(current) => disabledDateTime(current)}
               showTime={{ 
                 format: 'HH:mm',
                 defaultValue: moment()
               }}
               format="YYYY-MM-DD HH:mm"
               size={'large'}
+              onSelect={handleNewExpityTimeInput}
               onOk={onOk}
               />
           </Space>
