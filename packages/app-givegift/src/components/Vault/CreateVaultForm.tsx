@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Collapse, DatePicker, Form, Input, Modal, notification, Radio, RadioChangeEvent, Space } from 'antd';
 import { PlusSquareOutlined } from '@ant-design/icons';
 import isEmpty from 'lodash.isempty';
+import { range } from 'lodash';
 import moment from 'moment';
 import { VaultCollapse } from "@abcpros/givegift-components/components/Common/StyledCollapse";
 import { AntdFormWrapper } from '@abcpros/givegift-components/components/Common/EnhancedInputs';
@@ -13,7 +14,6 @@ import { useAppDispatch } from 'src/store/hooks';
 import { generateVault } from 'src/store/vault/actions';
 import { openModal } from 'src/store/modal/actions';
 import { CreateVaultConfirmationModalProps } from './CreateVaultConfirmationModal';
-import { now, range } from 'lodash';
 const { Panel } = Collapse;
 
 type CreateVaultFormProps = {
