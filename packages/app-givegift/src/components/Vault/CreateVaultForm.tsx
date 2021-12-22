@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Collapse, DatePicker, Form, Input, Modal, notification, Radio, RadioChangeEvent, Space } from 'antd';
 import { PlusSquareOutlined } from '@ant-design/icons';
 import isEmpty from 'lodash.isempty';
+import { range } from 'lodash';
 import moment from 'moment';
 import { VaultCollapse } from "@abcpros/givegift-components/components/Common/StyledCollapse";
 import { AntdFormWrapper } from '@abcpros/givegift-components/components/Common/EnhancedInputs';
@@ -70,6 +71,10 @@ const CreateVaultForm = ({
       setNewMaxRedeemVaultIsValid(true);
     }
   };
+
+  const handleNewExpityTimeInput = (value) => {
+    setNewExpiryTimeVault(value._d.toString());
+  }
 
   const onOk = (value) => {
     setNewExpiryTimeVault(value._d.toUTCString())
@@ -218,7 +223,20 @@ const CreateVaultForm = ({
   }
 
   const disabledDate = (current) => {
-    return current && current < moment().endOf('day');
+    return current && current < moment().startOf('day');
+  }
+
+  const disabledDateTime = (current) => {
+    if (newExpiryTime && moment(newExpiryTime).date() > moment().date()) {
+      return {
+        disabledHours: () => [],
+        disabledMinutes: () => [],
+      };
+    }
+    return {
+      disabledHours: () => range(0, moment().hour()),
+      disabledMinutes: () => range(0, moment().minute()),
+    };
   }
 
   const selectExpiry = () => {
@@ -256,13 +274,15 @@ const CreateVaultForm = ({
             <DatePicker
               placeholder="Expiry time for your vault"
               name="vaultExpiryTime"
-              disabledDate={disabledDate}
+              disabledDate={(current) => disabledDate(current)}
+              disabledTime={(current) => disabledDateTime(current)}
               showTime={{ 
                 format: 'HH:mm',
-                defaultValue: moment('00:00', 'HH:mm')
+                defaultValue: moment()
               }}
               format="YYYY-MM-DD HH:mm"
               size={'large'}
+              onSelect={handleNewExpityTimeInput}
               onOk={onOk}
               />
           </Space>
