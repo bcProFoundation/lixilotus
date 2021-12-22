@@ -13,6 +13,7 @@ import { useAppDispatch } from 'src/store/hooks';
 import { generateVault } from 'src/store/vault/actions';
 import { openModal } from 'src/store/modal/actions';
 import { CreateVaultConfirmationModalProps } from './CreateVaultConfirmationModal';
+import { range } from 'lodash';
 const { Panel } = Collapse;
 
 type CreateVaultFormProps = {
@@ -218,7 +219,14 @@ const CreateVaultForm = ({
   }
 
   const disabledDate = (current) => {
-    return current && current < moment().endOf('day');
+    return current && current < moment().startOf('day');
+  }
+
+  const disabledDateTime = () => {
+    return {
+      disabledHours: () => range(0, moment().hour()),
+      disabledMinutes: () => range(0, moment().minute()),
+    };
   }
 
   const selectExpiry = () => {
@@ -257,9 +265,10 @@ const CreateVaultForm = ({
               placeholder="Expiry time for your vault"
               name="vaultExpiryTime"
               disabledDate={disabledDate}
+              disabledTime={disabledDateTime}
               showTime={{ 
                 format: 'HH:mm',
-                defaultValue: moment('00:00', 'HH:mm')
+                defaultValue: moment()
               }}
               format="YYYY-MM-DD HH:mm"
               size={'large'}
