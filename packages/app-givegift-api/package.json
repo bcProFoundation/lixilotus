@@ -27,6 +27,7 @@
     "geoip-lite": "^1.4.2",
     "helmet": "^4.6.0",
     "lodash": "^4.17.21",
+    "moment": "^2.29.1",
     "reflect-metadata": "^0.1.13",
     "typedi": "^0.10.0",
     "verror": "^1.10.0",
