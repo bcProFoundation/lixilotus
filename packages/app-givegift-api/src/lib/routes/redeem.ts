@@ -9,6 +9,7 @@ import BCHJS from '@abcpros/xpi-js';
 import MinimalBCHWallet from '@abcpros/minimal-xpi-slp-wallet';
 import { CreateRedeemDto, fromSmallestDenomination, RedeemDto, VaultType } from '@abcpros/givegift-models'
 import { toSmallestDenomination } from '@abcpros/givegift-models';
+import { countries } from '@abcpros/givegift-models/src/constants/countries';
 import { aesGcmDecrypt, base62ToNumber } from '../utils/encryptionMethods';
 import SlpWallet from '@abcpros/minimal-xpi-slp-wallet';
 import logger from '../logger';
@@ -58,15 +59,6 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
     try {
       const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress) as string;
 
-      if (process.env.NODE_ENV !== 'development') {
-        await checkingCaptcha();
-        const geolocation = geoip.lookup(ip);
-
-        if (geolocation?.country != 'VN') {
-          throw new VError('You cannot redeem from outside the Vietnam zone.');
-        }
-      }
-
       const redeemCode = _.trim(redeemApi.redeemCode);
       const password = redeemCode.slice(0, 8);
       const encodedVaultId = redeemCode.slice(8);
@@ -95,6 +87,16 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
         }
       });
 
+      if (process.env.NODE_ENV !== 'development') {
+        await checkingCaptcha();
+        const geolocation = geoip.lookup(ip);
+        const country = countries.find(country => country.id === vault?.country)
+
+        if (geolocation?.country != vault?.country) {
+          throw new VError('You cannot redeem from outside the ' + country?.name + ' zone.');
+        }
+      }
+
       if (!vault) {
         throw new VError('Unable to redeem because the vault is invalid');
       }
@@ -120,7 +122,7 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
         throw new VError('Insufficient fund.');
       }
 
-      if ((vault.maxRedeem != 0 && vault.redeemedNum == vault.maxRedeem) || moment().isAfter(vault.expiryTime)) {
+      if ((vault.maxRedeem != 0 && vault.redeemedNum == vault.maxRedeem) || moment().isAfter(vault.expiryAt)) {
         throw new VError('The program has ended.');
       }
 

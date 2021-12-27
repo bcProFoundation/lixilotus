@@ -25,7 +25,8 @@ model Vault {
   totalRedeem       BigInt   @default(0)                    @map("total_redeem")
   createdAt         DateTime @default(now())                @map("created_at")
   updatedAt         DateTime @default(now())                @map("updated_at")
-  expiryTime        DateTime?                               @map("expiry_at")
+  expiryAt          DateTime?                               @map("expiry_at")
+  country           String   @default("VN")                 @map("country")
   redeems           Redeem[]
 
   @@map("vault")
