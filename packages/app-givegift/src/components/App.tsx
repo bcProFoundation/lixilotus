@@ -131,9 +131,10 @@ function App(): JSX.Element {
       >
         <GiveGiftApp>
           <AppBody>
-            <AppContainer>
+            <OnboardingComponent></OnboardingComponent>
+            {/* <AppContainer> */}
 
-              <HeaderContainer>
+              {/* <HeaderContainer>
                 <LotusLogo src={LixiLogo} alt="lixi" />
                 <LixiTextLogo src={LixiText} alt="lixi" />
               </HeaderContainer>
@@ -144,8 +145,11 @@ function App(): JSX.Element {
                 <Route path="/redeem">
                   <RedeemComponent />
                 </Route>
+                <Route path="/settings">
+                  <SettingsComponent />
+                </Route> */}
                 {/* The default route */}
-                <Route path="/">
+                {/* <Route path="/">
                   <Home />
                 </Route>
               </Switch>
@@ -181,7 +185,7 @@ function App(): JSX.Element {
               >
                 <SettingOutlined />
                 Settings
-              </NavButton>
+              </NavButton> */}
               {/* <NavButton
                 active={selectedKey === 'profile'}
                 onClick={() => history.push('/profile')}
@@ -189,7 +193,7 @@ function App(): JSX.Element {
                 <UserOutlined />
                 Profile
               </NavButton> */}  
-            </Footer>
+            {/* </Footer> */}
           </AppBody>
         </GiveGiftApp>
         

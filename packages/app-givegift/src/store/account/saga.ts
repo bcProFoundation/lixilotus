@@ -10,7 +10,7 @@ import accountApi from "./api";
  * Generate a account with random encryption password
  * @param action The data to needed generate a account
  */
-function* generateAccountSaga(action: PayloadAction<GenerateAccountDto>) {
+async function* generateAccountSaga(action: PayloadAction<GenerateAccountDto>) {
   const XPI = yield getContext('XPI');
   const accountDto = action.payload;
   const lang = 'english';
@@ -19,10 +19,17 @@ function* generateAccountSaga(action: PayloadAction<GenerateAccountDto>) {
     mnemonic: Bip39128BitMnemonic.toString(),
   });
 
+  // Hash mnemonic
+  const mnemonicUtf8 = new TextEncoder().encode(wallet['mnemonic']);             // encode mnemonic as UTF-8
+  const mnemonicHash = await crypto.subtle.digest('SHA-256', mnemonicUtf8);  // hash the mnemonic
+
+  const account_name = String(mnemonicHash).substring(0, 5);
+
   const account: Account = {
     id: 0,
-    name: accountDto.name,
-    encryptedMnemonic: wallet['mneonic']
+    name: account_name,
+    encryptedMnemonic: wallet['mneonic'],
+    mnemonicHash: String(mnemonicHash)
   };
   
   yield put(postAccount(account));

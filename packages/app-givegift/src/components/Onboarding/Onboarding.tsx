@@ -8,6 +8,9 @@ import { useState } from "react";
 import { AntdFormWrapper } from "@components/Common/EnhancedInputs";
 import React from "react";
 import { AppContext } from "src/store/store";
+import { useAppDispatch } from "src/store/hooks";
+import { generateAccount } from "src/store/account/actions";
+import { GenerateAccountDto } from '@abcpros/givegift-models/lib/account';
 
 export const LotusLogo = styled.img`
   width: 70px;
@@ -60,13 +63,21 @@ const OnboardingComponent: React.FC = () => {
   const [isValidMnemonic, setIsValidMnemonic] = useState(false);
   const { confirm } = Modal;
 
+  const dispatch = useAppDispatch();
+
   async function showBackupConfirmModal() {
     confirm({
       title: "Don't forget to back up your account",
       icon: <ExclamationCircleOutlined />,
       content: `Once your account is created you can back it up by writing down your 12-word seed. You can find your seed on the Settings page. If you are browsing in Incognito mode or if you clear your browser history, you will lose any funds that are not backed up!`,
       okText: 'Okay, make me a account!',
-      centered: true
+      centered: true,
+      onOk() {
+        dispatch(generateAccount(GenerateAccountDto))
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
     });
   };
 

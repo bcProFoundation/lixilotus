@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import express, { NextFunction } from "express";
 import VError from "verror";
 import { AccountDto } from '@abcpros/givegift-models/src/lib/account';
-//import { router as vaultChildRouter } from './account';
+import { router as accountChildRouter } from './account';
 
 
 const prisma = new PrismaClient();
@@ -58,5 +58,5 @@ router.post('/accounts', async (req: express.Request, res: express.Response, nex
   
 });
 
-//router.use('/vaults', vaultChildRouter);
+router.use('/accounts', accountChildRouter);
 export { router };

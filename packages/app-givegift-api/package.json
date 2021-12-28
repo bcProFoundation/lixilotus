@@ -16,7 +16,7 @@
     "@abcpros/givegift-models": "^1.0.1",
     "@abcpros/minimal-xpi-slp-wallet": "^3.0.10",
     "@abcpros/xpi-js": "^4.0.5",
-    "@prisma/client": "^3.2.0",
+    "@prisma/client": "^3.6.0",
     "axios": "^0.24.0",
     "bignumber.js": "^9.0.1",
     "body-parser": "^1.19.0",
@@ -41,7 +41,7 @@
     "@types/node": "^16.10.2",
     "@types/verror": "^1.10.5",
     "@types/winston": "^2.4.4",
-    "prisma": "3.2.0",
+    "prisma": "^3.6.0",
     "ts-node": "^10.2.1",
     "typescript": "^4.4.4"
   }

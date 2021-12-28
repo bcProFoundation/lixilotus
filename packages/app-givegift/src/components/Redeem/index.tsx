@@ -16,11 +16,10 @@ import { postRedeem, saveRedeemAddress, saveRedeemCode } from 'src/store/redeem/
 import { AppContext } from 'src/store/store';
 import { CreateRedeemDto } from '@abcpros/givegift-models/lib/redeem';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
-import { RedeemsState } from 'src/store/redeem/state';
 import { getCurrentAddress, getCurrentRedeemCode } from 'src/store/redeem/selectors';
 import { useSelector } from 'react-redux';
 
-const SITE_KEY = "6LdLk2odAAAAAGeveKLLu5ATP907kNbbltnz5QiQ";
+const SITE_KEY = "6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb";
 
 type RedeemFormData = {
   dirty: boolean;
@@ -42,7 +41,7 @@ const RedeemComponent: React.FC = () => {
 
   const currentAddress = useAppSelector(getCurrentAddress);
   const currentRedeemCode = useSelector(getCurrentRedeemCode)
-  
+
   const [redeemXpiAddressError, setRedeemXpiAddressError] = useState<string | boolean>(false);
 
   useEffect(() => {
@@ -64,17 +63,17 @@ const RedeemComponent: React.FC = () => {
     }
 
     // load the script by passing the URL
-    loadScriptByURL("recaptcha-key", `https://www.google.com/recaptcha/api.js?render=${SITE_KEY}`, function () {
+    loadScriptByURL("recaptcha-key", `https://www.google.com/recaptcha/enterprise.js?render=${SITE_KEY}`, function () {
       console.info("Script loaded!");
     });
   }, []);
 
   const handleOnClick = e => {
     e.preventDefault();
-    var grecaptcha = (window as any).grecaptcha
-    if (grecaptcha) {
-      grecaptcha.ready(() => {
-        grecaptcha.execute(SITE_KEY, { action: 'submit' }).then((token: any) => {
+    let captcha = (window as any).grecaptcha.enterprise
+    if (captcha) {
+      captcha.ready(() => {
+        captcha.execute(SITE_KEY, { action: 'submit' }).then((token: any) => {
           submit(token);
         });
       });

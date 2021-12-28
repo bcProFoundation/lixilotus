@@ -8,7 +8,7 @@ import { SmartButton } from '@abcpros/givegift-components/components/Common/Prim
 import { currency } from '@abcpros/givegift-components/components/Common/Ticker';
 import { isValidAmountInput } from '@utils/validation';
 import { VaultParamLabel } from '@abcpros/givegift-components/components/Common/Atoms';
-import { GenerateVaultDto, Vault } from '@abcpros/givegift-models/lib/vault';
+import { GenerateVaultDto, Vault, VaultType } from '@abcpros/givegift-models/lib/vault';
 import { useAppDispatch } from 'src/store/hooks';
 import { generateVault } from 'src/store/vault/actions';
 import { openModal } from 'src/store/modal/actions';
@@ -27,7 +27,11 @@ const CreateVaultForm = ({
   // New Vault name
   const [newVaultName, setNewVaultName] = useState('');
   const [newVaultNameIsValid, setNewVaultNameIsValid] = useState<boolean | null>(null);
-  const [isRandomGive, setIsRandomGive] = useState<boolean>(true);
+  const [vaultType, setVaultType] = useState<number>(0);
+
+  // New max redemption number
+  const [newMaxRedeem, setNewMaxRedeemVault] = useState('');
+  const [newMaxRedeemVaultIsValid, setNewMaxRedeemVaultIsValid] = useState(true);
 
   // New Vault Min Value
   const [newVaultMinValue, setNewVaultMinValue] = useState('');
@@ -41,6 +45,10 @@ const CreateVaultForm = ({
   const [newVaultFixedValue, setNewVaultFixedValue] = useState('');
   const [newVaultFixedValueIsValid, setNewVaultFixedValueIsValid] = useState(true);
 
+  // New Vault Divided Value
+  const [newVaultDividedValue, setNewVaultDividedValue] = useState('');
+  const [newVaultDividedValueIsValid, setNewVaultDividedValueIsValid] = useState(true);
+
 
   const handleNewVaultNameInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -50,16 +58,26 @@ const CreateVaultForm = ({
     }
   };
 
+  const handleNewMaxRedeemInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setNewMaxRedeemVault(value);
+    if (value && !isEmpty(value)) {
+      setNewMaxRedeemVaultIsValid(true);
+    }
+  };
+
   // Only enable CreateVault button if all form entries are valid
   let createVaultFormDataIsValid =
-    newVaultNameIsValid &&
-    ((isRandomGive && newVaultMinValueIsValid && newVaultMaxValueIsValid) ||
-      (!isRandomGive && newVaultFixedValueIsValid));
+    newVaultNameIsValid && newMaxRedeemVaultIsValid &&
+    ((vaultType == VaultType.Random && newVaultMinValueIsValid && newVaultMaxValueIsValid) ||
+      (vaultType == VaultType.Fixed && newVaultFixedValueIsValid) ||
+      (vaultType == VaultType.Divided && newVaultDividedValueIsValid));
 
-  const handleChangeIsRandomGive = (e: RadioChangeEvent) => {
+  const handelChangeVaultType = (e: RadioChangeEvent) => {
     const { value } = e.target;
-    setIsRandomGive(value);
+    setVaultType(value);
   }
+
   const handleChangeMinValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewVaultMinValueIsValid(isValidAmountInput(value));
@@ -77,28 +95,112 @@ const CreateVaultForm = ({
     setNewVaultFixedValue(value);
   }
 
+  const handleChangeDividedValue = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setNewVaultDividedValueIsValid(isValidAmountInput(value));
+    setNewVaultDividedValue(value);
+  }
+
   const handleSubmitCreateVault = () => {
 
     const generateVaultDto: GenerateVaultDto = {
       name: newVaultName,
+      maxRedeem: newMaxRedeem,
       minValue: newVaultMinValue,
       maxValue: newVaultMaxValue,
       fixedValue: newVaultFixedValue,
-      isRandomGive: isRandomGive,
-      status: "active",
+      dividedValue: newVaultDividedValue,
+      vaultType: vaultType
     };
 
     const createVaultModalProps: CreateVaultConfirmationModalProps = {
-      isRandomGive,
+      vaultType,
       newVaultName,
+      newMaxRedeem,
       newVaultMinValue,
       newVaultMaxValue,
       newVaultFixedValue,
+      newVaultDividedValue,
       onOkAction: generateVault(generateVaultDto)
     };
     dispatch(openModal('CreateVaultConfirmationModal', createVaultModalProps));
   }
 
+  const selectVaultType = () => {
+      switch (vaultType) {
+        // isFixed
+        case VaultType.Fixed:
+          return (
+            <>
+            <Form.Item>
+              <Input.Group compact>
+                <Input
+                  addonBefore="Fixed"
+                  type="number"
+                  step={1 / 10 ** currency.cashDecimals}
+                  value={newVaultFixedValue}
+                  placeholder="Default value to give"
+                  name="fixedValue"
+                  onChange={e => handleChangeFixedValue(e)}
+                >
+                </Input>
+              </Input.Group>
+            </Form.Item>
+          </>
+          );
+        // isDivided
+        case VaultType.Divided:
+          return (
+            <>
+            <Form.Item>
+              <Input.Group compact>
+                <Input
+                  addonBefore="Divided"
+                  type="number"
+                  step={1 / 10 ** currency.cashDecimals}
+                  value={newVaultDividedValue}
+                  placeholder="Dividend number (Max 1,000,000)"
+                  name="dividedValue"
+                  onChange={e => handleChangeDividedValue(e)}
+                >
+                </Input>
+              </Input.Group>
+            </Form.Item>
+          </>
+          );
+        // isRandom
+        default:
+          return (
+            <>
+            <Form.Item>
+              <Input
+                addonBefore="Min"
+                type="number"
+                step={1 / 10 ** currency.cashDecimals}
+                placeholder="Min value to give"
+                name="minValue"
+                value={newVaultMinValue}
+                onChange={e => handleChangeMinValue(e)}
+              >
+              </Input>
+            </Form.Item>
+            <Form.Item>
+              <Input
+                addonBefore="Max"
+                type="number"
+                step={1 / 10 ** currency.cashDecimals}
+                placeholder="Max value to give"
+                name="maxValue"
+                value={newVaultMaxValue}
+                onChange={e => handleChangeMaxValue(e)}
+              >
+              </Input>
+            </Form.Item>
+          </>
+          );
+          
+      }
+  }
 
   return (
     <>
@@ -118,6 +220,7 @@ const CreateVaultForm = ({
                 width: 'auto',
               }}
             >
+              {/* Name */}
               <Form.Item
                 validateStatus={
                   newVaultNameIsValid === null ||
@@ -134,57 +237,34 @@ const CreateVaultForm = ({
                   onChange={e => handleNewVaultNameInput(e)}
                 />
               </Form.Item>
+              
+              {/* Max redemption */}
+              <Form.Item
+                validateStatus={
+                  newMaxRedeemVaultIsValid === null ||
+                    newMaxRedeemVaultIsValid
+                    ? ''
+                    : 'error'
+                }
+              >
+                <Input
+                  addonBefore="Max Redeem"
+                  type="number"
+                  placeholder="Enter max Redeem number for your vault"
+                  name="vaultMaxReDeem"
+                  value={newMaxRedeem}
+                  onChange={e => handleNewMaxRedeemInput(e)}
+                />
+              </Form.Item>
+
               <Form.Item>
-                <Radio.Group value={isRandomGive} onChange={handleChangeIsRandomGive}>
-                  <Radio value={true}>Random</Radio>
-                  <Radio value={false}>Fixed</Radio>
+                <Radio.Group value={vaultType} onChange={handelChangeVaultType}>
+                  <Radio value={0}>Random</Radio>
+                  <Radio value={1}>Fixed</Radio>
+                  <Radio value={2}>Divided</Radio>
                 </Radio.Group>
               </Form.Item>
-              {isRandomGive ?
-                (
-                  <>
-                    <Form.Item>
-                      <Input
-                        addonBefore="Min"
-                        type="number"
-                        step={1 / 10 ** currency.cashDecimals}
-                        placeholder="Min value to give"
-                        name="minValue"
-                        value={newVaultMinValue}
-                        onChange={e => handleChangeMinValue(e)}
-                      >
-                      </Input>
-                    </Form.Item>
-                    <Form.Item>
-                      <Input
-                        addonBefore="Max"
-                        type="number"
-                        step={1 / 10 ** currency.cashDecimals}
-                        placeholder="Min value to give"
-                        name="maxValue"
-                        value={newVaultMaxValue}
-                        onChange={e => handleChangeMaxValue(e)}
-                      >
-                      </Input>
-                    </Form.Item>
-                  </>
-                ) : (
-                  <Form.Item>
-                    <Input.Group compact>
-                      <Input
-                        addonBefore="Fixed"
-                        type="number"
-                        step={1 / 10 ** currency.cashDecimals}
-                        value={newVaultFixedValue}
-                        placeholder="Default value to give"
-                        name="fixedValue"
-                        onChange={e => handleChangeFixedValue(e)}
-                      >
-                      </Input>
-                    </Input.Group>
-                  </Form.Item>
-                )
-              }
+              {selectVaultType()}
             </Form>
           </AntdFormWrapper>
           <SmartButton

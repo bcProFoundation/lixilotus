@@ -9,6 +9,7 @@ import * as Redeem from './routes/redeem';
 import * as Healthcheck from './routes/healthcheck';
 import * as Account from './routes/account';
 import { handleError } from './middlewares/handleError';
+import BCHJS from '@abcpros/xpi-js';
 
 const bodyParser = require('body-parser');
 const compression = require('compression');
@@ -17,7 +18,10 @@ const allowedOrigins = [
   'https://lixilotus.com',
   'https://www.sendlotus.com',
   'https://staging.sendlotus.com',
-  'https://localhost:3000'
+  'https://dev.sendlotus.com',
+  'https://localhost:3000',
+  'https://staging.lixilotus.com',
+  'https://dev.lixilotus.com'
 ];
 
 export class ExpressApp {
@@ -41,6 +45,9 @@ export class ExpressApp {
     });
     Container.set('xpiWallet', ConstructedSlpWallet);
     Container.set('xpijs', ConstructedSlpWallet.bchjs);
+
+    // const XPI: BCHJS = getXPI();
+    // const Wallet = useWallet(XPI);
   }
 
   async start() {

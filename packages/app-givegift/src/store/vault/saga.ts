@@ -1,16 +1,16 @@
 import { PayloadAction } from "@reduxjs/toolkit";
-import { notification } from "antd";
 import { push } from 'connected-react-router';
+import BCHJS from "@abcpros/xpi-js";
 import { CreateVaultDto, GenerateVaultDto, ImportVaultDto, Vault, VaultDto } from "@abcpros/givegift-models/lib/vault";
-import { all, call, fork, getContext, put, takeLatest } from "@redux-saga/core/effects";
+import { all, call, fork, getContext, put, select, takeLatest } from "@redux-saga/core/effects";
 import { generateVault, getVault, getVaultActionType, getVaultFailure, getVaultSuccess, importVault, importVaultActionType, importVaultFailure, importVaultSuccess, postVault, postVaultActionType, postVaultFailure, postVaultSuccess, refreshVault, refreshVaultActionType, refreshVaultFailure, refreshVaultSuccess, selectVault, setVault } from "./actions";
-
 import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase62Str, numberToBase62 } from "@utils/encryptionMethods";
 import { RedeemDto, Redeem } from "@abcpros/givegift-models/lib/redeem";
 import vaultApi from "./api";
 import redeemApi from "../redeem/api";
 import { showToast } from "../toast/actions";
 import { hideLoading, showLoading } from "../loading/actions";
+import { getSelectedVault } from 'src/store/vault/selectors';
 
 /**
  * Generate a vault with random encryption password
@@ -27,15 +27,23 @@ function* generateVaultSaga(action: PayloadAction<GenerateVaultDto>) {
   const vault: Vault = {
     id: 0,
     name: vaultDto.name,
-    isRandomGive: vaultDto.isRandomGive,
-    encryptedMnemonic: encryptedMnemonic,
+    maxRedeem: Number(vaultDto.maxRedeem),
+    vaultType: vaultDto.vaultType, 
+    //encryptedMnemonic: encryptedMnemonic,
     minValue: Number(vaultDto.minValue),
     maxValue: Number(vaultDto.maxValue),
     fixedValue: Number(vaultDto.fixedValue),
+    dividedValue: Number(vaultDto.dividedValue),
     totalRedeem: 0,
     redeemCode: password,
-    mnemonic: Bip39128BitMnemonic,
-    status: "active"
+    //mnemonic: Bip39128BitMnemonic,
+    balance: 0,
+    status: "active",
+    redeemedNum: Number(),
+    accountId: Number(),
+    encryptedPubKey: String(),
+    encryptedPrivKey: String()
+
   };
 
   yield put(postVault(vault));
@@ -64,12 +72,14 @@ function* postVaultSaga(action: PayloadAction<Vault>) {
 
     const dataApi: CreateVaultDto = {
       name: vault.name,
-      isRandomGive: vault.isRandomGive,
-      encryptedMnemonic: vault.encryptedMnemonic,
+      maxRedeem: vault.maxRedeem,
+      redeemedNum: vault.redeemedNum,
+      vaultType: vault.vaultType,
+      mnemonic: "Need to provide",
       minValue: vault.minValue,
       maxValue: vault.maxValue,
       fixedValue: vault.fixedValue,
-      status: vault.status
+      dividedValue: vault.dividedValue,
     }
 
     const data: VaultDto = yield call(vaultApi.post, dataApi);
@@ -99,30 +109,30 @@ function* postVaultSuccessSaga(action: PayloadAction<Vault>) {
   // Recalculate and valate the redeem code
   try {
 
-    yield put(showLoading(postVaultActionType));
+    // yield put(showLoading(postVaultActionType));
 
-    const vault = action.payload;
-    const decryptedMnemonic = yield call(aesGcmDecrypt, vault.encryptedMnemonic, vault.redeemCode);
-    const encodedId = numberToBase62(vault.id);
-    const redeemCode = vault.redeemCode + encodedId;
-    if (decryptedMnemonic !== vault.mnemonic) {
-      const message = `The vault created is invalid.`;
-      yield put(postVaultFailure(message));
-    } else {
-      // calculate vault details
-      const Wallet = yield getContext('Wallet');
-      const Path10605 = yield call(Wallet.getWalletDetails, vault.mnemonic);
-      yield put(setVault({
-        ...vault,
-        redeemCode: redeemCode,
-        Path10605: { ...Path10605 }
-      }));
-      yield put(showToast('success', {
-        message: 'Success',
-        description: 'Create vault successfully.',
-        duration: 5
-      }));
-    }
+    // const vault = action.payload;
+    // const decryptedMnemonic = yield call(aesGcmDecrypt, vault.encryptedMnemonic, vault.redeemCode);
+    // const encodedId = numberToBase62(vault.id);
+    // const redeemCode = vault.redeemCode + encodedId;
+    // if (decryptedMnemonic !== vault.mnemonic) {
+    //   const message = `The vault created is invalid.`;
+    //   yield put(postVaultFailure(message));
+    // } else {
+    //   // calculate vault details
+    //   const Wallet = yield getContext('Wallet');
+    //   const Path10605 = yield call(Wallet.getWalletDetails, vault.mnemonic);
+    //   yield put(setVault({
+    //     ...vault,
+    //     redeemCode: redeemCode,
+    //     Path10605: { ...Path10605 }
+    //   }));
+    //   yield put(showToast('success', {
+    //     message: 'Success',
+    //     description: 'Create vault successfully.',
+    //     duration: 5
+    //   }));
+    // }
   } catch (error) {
     const message = `There's an error happens when create new vault.`;
     yield put(postVaultFailure(message));
@@ -143,20 +153,20 @@ function* postVaultFailureSaga(action: PayloadAction<string>) {
 function* importVaultSaga(action: PayloadAction<ImportVaultDto>) {
   try {
 
-    yield put(showLoading(importVaultActionType));
+    // yield put(showLoading(importVaultActionType));
 
-    const importVaultDto = action.payload;
+    // const importVaultDto = action.payload;
 
-    const data: VaultDto = yield call(vaultApi.import, importVaultDto);
+    // const data: VaultDto = yield call(vaultApi.import, importVaultDto);
 
-    // Merge back to action payload
-    const result = {
-      ...data,
-      mnemonic: importVaultDto.mnemonic,
-      redeemCode: importVaultDto.redeemCode
-    } as Vault;
+    // // Merge back to action payload
+    // const result = {
+    //   ...data,
+    //   mnemonic: importVaultDto.mnemonic,
+    //   redeemCode: importVaultDto.redeemCode
+    // } as Vault;
 
-    yield put(importVaultSuccess(result));
+    // yield put(importVaultSuccess(result));
 
   } catch (err) {
     const message = (err as Error).message ?? `Unable to import the vault.`;
@@ -167,27 +177,27 @@ function* importVaultSaga(action: PayloadAction<ImportVaultDto>) {
 function* importVaultSuccessSaga(action: PayloadAction<Vault>) {
   const vault = action.payload;
   try {
-    // Recalculate and valate the redeem code
-    const password = vault.redeemCode.slice(0, 8);
-    const decryptedMnemonic = yield call(aesGcmDecrypt, vault.encryptedMnemonic, password);
-    if (decryptedMnemonic !== vault.mnemonic) {
-      const message = `The vault created is invalid.`;
-      yield put(importVaultFailure(message));
-    } else {
-      // calculate vault details
-      const Wallet = yield getContext('Wallet');
-      const Path10605 = yield call(Wallet.getWalletDetails, vault.mnemonic);
-      yield put(setVault({
-        ...vault,
-        Path10605: { ...Path10605 }
-      }));
-      yield put(showToast('success', {
-        message: 'Success',
-        description: 'Import vault successfully.',
-        duration: 5
-      }));
-    }
-    yield put(hideLoading(importVaultActionType));
+    // // Recalculate and valate the redeem code
+    // const password = vault.redeemCode.slice(0, 8);
+    // const decryptedMnemonic = yield call(aesGcmDecrypt, vault.encryptedMnemonic, password);
+    // if (decryptedMnemonic !== vault.mnemonic) {
+    //   const message = `The vault created is invalid.`;
+    //   yield put(importVaultFailure(message));
+    // } else {
+    //   // calculate vault details
+    //   const Wallet = yield getContext('Wallet');
+    //   const Path10605 = yield call(Wallet.getWalletDetails, vault.mnemonic);
+    //   yield put(setVault({
+    //     ...vault,
+    //     Path10605: { ...Path10605 }
+    //   }));
+    //   yield put(showToast('success', {
+    //     message: 'Success',
+    //     description: 'Import vault successfully.',
+    //     duration: 5
+    //   }));
+    // }
+    // yield put(hideLoading(importVaultActionType));
   } catch (error) {
     const message = `There's an error happens importing the vault.`;
     yield put(importVaultFailure(message));
@@ -206,13 +216,25 @@ function* importVaultFailureSaga(action: PayloadAction<string>) {
 
 function* refreshVaultSaga(action: PayloadAction<number>) {
   try {
-    yield put(showLoading(refreshVaultActionType));
-    const vaultId = action.payload;
-    const data: VaultDto = yield call(vaultApi.getById, vaultId);
-    const vault = data as Vault;
-    const redeemDtos: RedeemDto[] = yield call(redeemApi.getByVaultId, vaultId);
-    const redeems = (redeemDtos ?? []) as Redeem[];
-    yield put(refreshVaultSuccess({ vault: vault, redeems: redeems }))
+    // yield put(showLoading(refreshVaultActionType));
+    // const vaultId = action.payload;
+    // const data: VaultDto = yield call(vaultApi.getById, vaultId);
+    // const vault = data as Vault;
+    // const redeemDtos: RedeemDto[] = yield call(redeemApi.getByVaultId, vaultId);
+    // const redeems = (redeemDtos ?? []) as Redeem[];
+
+    // // calculate vault details
+    // const selectedVault: Vault = yield select(getSelectedVault);
+    // const mnemonic = selectedVault.mnemonic;
+
+    // const Wallet = yield getContext('Wallet');
+    // const XPI: BCHJS = yield getContext('XPI');
+    // const Path10605 = yield call(Wallet.getWalletDetails, mnemonic);
+    // const address = Path10605.xAddress;
+    // const balance = yield call([XPI, XPI.Electrumx.balance], address);
+    // vault.balance = balance.balance.confirmed;
+
+    // yield put(refreshVaultSuccess({ vault: vault, redeems: redeems }))
   } catch (err) {
     const message = (err as Error).message ?? `Unable to refresh the vault.`;
     yield put(refreshVaultFailure(message));

@@ -6,7 +6,7 @@ import VError from 'verror';
 import _ from 'lodash';
 import BCHJS from '@abcpros/xpi-js';
 import MinimalBCHWallet from '@abcpros/minimal-xpi-slp-wallet';
-import { CreateRedeemDto, RedeemDto } from '@abcpros/givegift-models'
+import { CreateRedeemDto, fromSmallestDenomination, RedeemDto, VaultType } from '@abcpros/givegift-models'
 import { toSmallestDenomination } from '@abcpros/givegift-models';
 import { aesGcmDecrypt, base62ToNumber } from '../utils/encryptionMethods';
 import SlpWallet from '@abcpros/minimal-xpi-slp-wallet';
@@ -16,31 +16,52 @@ import geoip from 'geoip-lite';
 
 const xpiRestUrl = config.has('xpiRestUrl') ? config.get('xpiRestUrl') : 'https://api.sendlotus.com/v4/';
 
+const PRIVATE_KEY = 'AIzaSyCFY2D4NRLjDTpJfk0jjJNADalSceqC4qs';
+const SITE_KEY = "6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb";
+const PROJECT_ID = 'lixilotus';
+
 const prisma = new PrismaClient();
 let router = express.Router();
-let PRIVATE_KEY = '6LdLk2odAAAAAOkH6S0iSoC6d_Zr0WvHEQ-kkYqa';
 
 router.post('/redeems', async (req: express.Request, res: express.Response, next: NextFunction) => {
   const redeemApi: CreateRedeemDto = req.body;
+
+
+  const captchaResBody = {
+    event: {
+      token: redeemApi.captchaToken,
+      siteKey: SITE_KEY,
+      expectedAction: "Redeem"
+    }
+  };
+
+  const checkingCaptcha = async () => {
+    try {
+      const response = await axios.post<any>(
+        `https://recaptchaenterprise.googleapis.com/v1beta1/projects/${PROJECT_ID}/assessments?key=${PRIVATE_KEY}`,
+        captchaResBody
+      );
+
+      logger.info(`Recaptcha: Score: ${response.data.score} | Reasons: ${response.data.reasons}`);
+
+      // Extract result from the API response
+      if (response.status !== 200 || response.data.score <= 0.5) {
+        throw new VError('Incorrect capcha? Please redeem again!');
+      }
+    } catch (err) {
+      next(err);
+    }
+  };
 
   if (redeemApi) {
     try {
       const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress) as string;
 
-      if (process.env.NODE_ENV === 'development') {
-        const response = await axios.post<any>(
-          `https://www.google.com/recaptcha/api/siteverify?secret=${PRIVATE_KEY}&response=${redeemApi.captchaToken}`
-        );
-    
-        // Extract result from the API response
-        if (!response.data.success || response.data.score <= 0.5) {
-          const error = new VError.WError('Incorrect capcha? Please redeem again!');
-          return next(error);
-        }
-        
+      if (process.env.NODE_ENV !== 'development') {
+        await checkingCaptcha();
         const geolocation = geoip.lookup(ip);
-  
-        if (!geolocation || geolocation.country != 'VN') {
+
+        if (geolocation?.country != 'VN') {
           throw new VError('You cannot redeem from outside the Vietnam zone.');
         }
       }
@@ -98,13 +119,23 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
         throw new VError('Insufficient fund.');
       }
 
+      if (vault.maxRedeem != 0 && vault.redeemedNum == vault.maxRedeem) {
+        throw new VError('The program has ended.');
+      }
+
       let satoshisToSend;
-      if (vault.isRandomGive) {
-        const maxSatoshis = toSmallestDenomination(new BigNumber(vault.maxValue));
+      if (vault.vaultType == VaultType.Random) {
+        const xpiBalance = fromSmallestDenomination(balance);
+        const maxXpiValue = xpiBalance < vault.maxValue ? xpiBalance : vault.maxValue; 
+        const maxSatoshis = toSmallestDenomination(new BigNumber(maxXpiValue));
         const minSatoshis = toSmallestDenomination(new BigNumber(vault.minValue));
         satoshisToSend = maxSatoshis.minus(minSatoshis).times(new BigNumber(Math.random())).plus(minSatoshis);
-      } else {
+      } else if (vault.vaultType == VaultType.Fixed) {
         satoshisToSend = toSmallestDenomination(new BigNumber(vault.fixedValue));
+      } else {
+        // The payout unit is satoshi
+        const payout = balance/vault.dividedValue;
+        satoshisToSend = new BigNumber(payout);
       }
 
       const satoshisBalance = new BigNumber(balance);
@@ -186,7 +217,8 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
         const updateVaultOperation = prisma.vault.update({
           where: { id: vault.id },
           data: {
-            totalRedeem: vault.totalRedeem + BigInt(amountSats)
+            totalRedeem: vault.totalRedeem + BigInt(amountSats),
+            redeemedNum: vault.redeemedNum + 1
           }
         });
 

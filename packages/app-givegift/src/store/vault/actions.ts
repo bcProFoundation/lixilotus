@@ -7,6 +7,7 @@ export const postVaultActionType = 'vault/postVault';
 export const importVaultActionType = 'vault/importVault';
 export const refreshVaultActionType = 'vault/refreshVault';
 
+
 export const generateVault = createAction<GenerateVaultDto>('vault/generateVault');
 export const getVault = createAction<Vault>('vault/getVault');
 export const getVaultSuccess = createAction<Vault>('vault/getVaultSuccess');
@@ -22,3 +23,4 @@ export const importVaultFailure = createAction<string>('vault/importVaultFailure
 export const refreshVault = createAction<number>('vault/refreshVault');
 export const refreshVaultSuccess = createAction<{ vault: Vault, redeems: Redeem[] }>('vault/refreshVaultSuccess');
 export const refreshVaultFailure = createAction<string>('vault/refreshVaultFailure');
+

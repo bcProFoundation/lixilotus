@@ -56,7 +56,7 @@ const ImportVaultForm = ({
     }
 
     const importVaultDto: ImportVaultDto = {
-      mnemonic: formData.mnemonic,
+      encryptedPrivKey: formData.mnemonic,
       redeemCode: formData.redeemCode
     };
     dispatch(importVault(importVaultDto));

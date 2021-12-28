@@ -1,5 +1,6 @@
 export interface GenerateAccountDto {
     name: string;
+    mnemonicHash: string;
 }
 
 export interface CreateAccountDto {
@@ -21,4 +22,9 @@ export interface Account {
     encryptedMnemonic: string;
     createdAt?: Date;
     updatedAt?: Date;
+    mnemonicHash: string;
+}
+
+export interface ImportAccountDto {
+    encryptedMnemonic: string;
 }
