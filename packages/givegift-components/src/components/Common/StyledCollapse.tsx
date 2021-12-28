@@ -52,5 +52,8 @@ export const VaultCollapse = styled(Collapse) <VaultCollapseProps>`
         .ant-collapse-arrow {
           font-size: 18px;
         }
+        .ant-input-group-addon:first-child {
+          width: 70px;
+        }
           `}
 `;
