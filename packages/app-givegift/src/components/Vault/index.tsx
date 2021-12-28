@@ -16,7 +16,7 @@ import { currency } from '../../../../givegift-components/src/components/Common/
 import { fromSmallestDenomination } from '@utils/cashMethods';
 import { CopyOutlined } from '@ant-design/icons';
 import { showToast } from 'src/store/toast/actions';
-import { countries } from '@abcpros/givegift-models/src/constants/countries';
+import { countries } from '@abcpros/givegift-models/constants/countries';
 
 type CopiedProps = {
   style?: React.CSSProperties
@@ -120,9 +120,11 @@ const Vault: React.FC = () => {
     }
   }
 
-  const confirmCountry = () => {
-    const country = countries.find(country => country.id === selectedVault?.country);
-    return country?.name
+  const showCountry = () => {
+    return (selectedVault?.country != null) ? (
+      <Descriptions.Item label="Country">
+      {countries.find(country => country.id === selectedVault?.country)?.name}
+    </Descriptions.Item>) : "";
   }
 
   return (
@@ -158,9 +160,7 @@ const Vault: React.FC = () => {
               {showRedemption()}
             </Descriptions.Item>
             {formatDate()}
-            <Descriptions.Item label="Country">
-              {confirmCountry()}
-            </Descriptions.Item>
+            {showCountry()}
           </Descriptions>
           
           {/* Detail Vault */}

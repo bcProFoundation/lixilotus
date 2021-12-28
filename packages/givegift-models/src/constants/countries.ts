@@ -10,5 +10,9 @@ export const countries = [
   {
     id: 'id',
     name: 'Indonesia'
-  }
+  },
+  {
+    id: 'ph',
+    name: 'Philippines'
+  },
 ];

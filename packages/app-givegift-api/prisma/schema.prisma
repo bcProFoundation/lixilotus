@@ -26,7 +26,7 @@ model Vault {
   createdAt         DateTime @default(now())                @map("created_at")
   updatedAt         DateTime @default(now())                @map("updated_at")
   expiryAt          DateTime?                               @map("expiry_at")
-  country           String   @default("VN")                 @map("country")
+  country           String?                                 @map("country")
   redeems           Redeem[]
 
   @@map("vault")

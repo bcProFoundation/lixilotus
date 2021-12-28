@@ -36,7 +36,7 @@ function* generateVaultSaga(action: PayloadAction<GenerateVaultDto>) {
     maxValue: Number(vaultDto.maxValue),
     fixedValue: Number(vaultDto.fixedValue),
     dividedValue: Number(vaultDto.dividedValue),
-    country: vaultDto.country,
+    country: vaultDto && vaultDto.country ? vaultDto.country : undefined,
     totalRedeem: 0,
     redeemCode: password,
     mnemonic: Bip39128BitMnemonic,

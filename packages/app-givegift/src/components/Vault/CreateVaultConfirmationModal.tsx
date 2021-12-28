@@ -98,7 +98,7 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
 
   const confirmCountry = () => {
     const country = countries.find(country => country.id === newCountryVault);
-    return country?.name
+    return <VaultParamLabel>Country: {country ? country.name : "All of country"}</VaultParamLabel> 
   }
 
   return (
@@ -117,7 +117,7 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
         <br />
         {confirmVaultType()}
         <br />
-        <VaultParamLabel>Country: </VaultParamLabel> {confirmCountry()}
+        {confirmCountry()}
       </Modal>
     </>
   );

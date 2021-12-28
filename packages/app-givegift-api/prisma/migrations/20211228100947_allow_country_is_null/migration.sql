@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "vault" ALTER COLUMN "country" DROP NOT NULL,
+ALTER COLUMN "country" DROP DEFAULT;

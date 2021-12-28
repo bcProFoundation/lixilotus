@@ -8,7 +8,7 @@ export interface GenerateVaultDto {
   fixedValue: string;
   dividedValue: string;
   expiryAt?: string;
-  country: string;
+  country?: string;
 }
 
 export interface CreateVaultDto {
@@ -23,7 +23,7 @@ export interface CreateVaultDto {
   fixedValue: number;
   dividedValue: number;
   expiryAt?: Date;
-  country: string;
+  country?: string;
 }
 
 
@@ -43,7 +43,7 @@ export interface VaultDto {
   createdAt?: Date;
   updatedAt?: Date;
   expiryAt?: Date;
-  country: string;
+  country?: string;
 };
 
 export interface Vault {
@@ -64,7 +64,7 @@ export interface Vault {
   createdAt?: Date;
   updatedAt?: Date;
   expiryAt?: Date;
-  country: string;
+  country?: string;
   balance: number;
   Path10605?: {
     cashAddress: string;

@@ -58,7 +58,7 @@ const CreateVaultForm = ({
   const [newVaultDividedValueIsValid, setNewVaultDividedValueIsValid] = useState(true);
 
   // New Country
-  const [newCountryVault, setNewCountryVault] = useState('vn');
+  const [newCountryVault, setNewCountryVault] = useState('');
   const [newCountryVaultIsValid, setNewCountryVaultIsValid] = useState(true);
 
 
@@ -127,7 +127,7 @@ const CreateVaultForm = ({
   const handleChangeCountry = (value, e: React.ChangeEvent<HTMLInputElement>) => {
     setNewCountryVault(value);
     if (value && !isEmpty(value)) {
-      setNewCountryVaultIsValid(true)
+      setNewCountryVaultIsValid(true);
     }
   }
 
@@ -360,7 +360,7 @@ const CreateVaultForm = ({
                 <AntdFormWrapper>
                   <CountrySelectDropdown
                     countries={countries}
-                    defaultValue={newCountryVault ? newCountryVault : 'vn'}
+                    defaultValue={newCountryVault ? newCountryVault : 'All of country'}
                     handleChangeCountry={handleChangeCountry}
                   />
                 </AntdFormWrapper>
