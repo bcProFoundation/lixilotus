@@ -7,7 +7,8 @@ export interface GenerateVaultDto {
   maxValue: string;
   fixedValue: string;
   dividedValue: string;
-  expiryTime?: string;
+  expiryAt?: string;
+  country?: string;
 }
 
 export interface CreateVaultDto {
@@ -21,7 +22,8 @@ export interface CreateVaultDto {
   maxValue: number;
   fixedValue: number;
   dividedValue: number;
-  expiryTime?: Date;
+  expiryAt?: Date;
+  country?: string;
 }
 
 
@@ -40,7 +42,8 @@ export interface VaultDto {
   totalRedeem: number;
   createdAt?: Date;
   updatedAt?: Date;
-  expiryTime?: Date;
+  expiryAt?: Date;
+  country?: string;
 };
 
 export interface Vault {
@@ -60,7 +63,8 @@ export interface Vault {
   totalRedeem: number;
   createdAt?: Date;
   updatedAt?: Date;
-  expiryTime?: Date;
+  expiryAt?: Date;
+  country?: string;
   balance: number;
   Path10605?: {
     cashAddress: string;

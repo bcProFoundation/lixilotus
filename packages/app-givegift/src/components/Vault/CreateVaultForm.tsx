@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Collapse, DatePicker, Form, Input, Modal, notification, Radio, RadioChangeEvent, Space } from 'antd';
+import { Button, Collapse, DatePicker, Dropdown, Form, Input, Menu, Modal, notification, Radio, RadioChangeEvent, Select, Space } from 'antd';
 import { PlusSquareOutlined } from '@ant-design/icons';
 import isEmpty from 'lodash.isempty';
 import { range } from 'lodash';
@@ -8,6 +8,8 @@ import { VaultCollapse } from "@abcpros/givegift-components/components/Common/St
 import { AntdFormWrapper } from '@abcpros/givegift-components/components/Common/EnhancedInputs';
 import { SmartButton } from '@abcpros/givegift-components/components/Common/PrimaryButton';
 import { currency } from '@abcpros/givegift-components/components/Common/Ticker';
+import { countries } from "@abcpros/givegift-models/src/constants/countries";
+import CountrySelectDropdown from '@components/Common/CountrySelectDropdown';
 import { isValidAmountInput } from '@utils/validation';
 import { GenerateVaultDto, VaultType } from '@abcpros/givegift-models/lib/vault';
 import { useAppDispatch } from 'src/store/hooks';
@@ -35,9 +37,9 @@ const CreateVaultForm = ({
   const [newMaxRedeem, setNewMaxRedeemVault] = useState('');
   const [newMaxRedeemVaultIsValid, setNewMaxRedeemVaultIsValid] = useState(true);
 
-  // New ExpiryTime
-  const [newExpiryTime, setNewExpiryTimeVault] = useState('');
-  const [newExpiryTimeVaultIsValid, setExpiryTimeVaultIsValid] = useState(true);
+  // New ExpiryAt
+  const [newExpiryAt, setNewExpiryAtVault] = useState('');
+  const [newExpiryAtVaultIsValid, setExpiryAtVaultIsValid] = useState(true);
 
   // New Vault Min Value
   const [newVaultMinValue, setNewVaultMinValue] = useState('');
@@ -54,6 +56,10 @@ const CreateVaultForm = ({
   // New Vault Divided Value
   const [newVaultDividedValue, setNewVaultDividedValue] = useState('');
   const [newVaultDividedValueIsValid, setNewVaultDividedValueIsValid] = useState(true);
+
+  // New Country
+  const [newCountryVault, setNewCountryVault] = useState('');
+  const [newCountryVaultIsValid, setNewCountryVaultIsValid] = useState(true);
 
 
   const handleNewVaultNameInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,19 +79,19 @@ const CreateVaultForm = ({
   };
 
   const handleNewExpityTimeInput = (value) => {
-    setNewExpiryTimeVault(value._d.toString());
+    setNewExpiryAtVault(value._d.toString());
   }
 
   const onOk = (value) => {
-    setNewExpiryTimeVault(value._d.toUTCString())
+    setNewExpiryAtVault(value._d.toUTCString())
     if (value && !isEmpty(value)) {
-      setExpiryTimeVaultIsValid(true)
+      setExpiryAtVaultIsValid(true)
     }
   }
 
   // Only enable CreateVault button if all form entries are valid
   let createVaultFormDataIsValid =
-    newVaultNameIsValid && newMaxRedeemVaultIsValid && newExpiryTimeVaultIsValid &&
+    newVaultNameIsValid && newMaxRedeemVaultIsValid && newExpiryAtVaultIsValid &&
     ((vaultType == VaultType.Random && newVaultMinValueIsValid && newVaultMaxValueIsValid) ||
       (vaultType == VaultType.Fixed && newVaultFixedValueIsValid) ||
       (vaultType == VaultType.Divided && newVaultDividedValueIsValid));
@@ -118,18 +124,26 @@ const CreateVaultForm = ({
     setNewVaultDividedValue(value);
   }
 
+  const handleChangeCountry = (value, e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewCountryVault(value);
+    if (value && !isEmpty(value)) {
+      setNewCountryVaultIsValid(true);
+    }
+  }
+
   const handleSubmitCreateVault = () => {
 
     const generateVaultDto: GenerateVaultDto = {
       name: newVaultName,
       maxRedeem: newMaxRedeem,
-      expiryTime: newExpiryTime,
+      expiryAt: newExpiryAt,
       minValue: newVaultMinValue,
       maxValue: newVaultMaxValue,
       fixedValue: newVaultFixedValue,
       dividedValue: newVaultDividedValue,
       isRandomGive: isRandomGive,
-      vaultType: vaultType
+      vaultType: vaultType,
+      country: newCountryVault
     };
 
     const createVaultModalProps: CreateVaultConfirmationModalProps = {
@@ -137,11 +151,12 @@ const CreateVaultForm = ({
       vaultType,
       newVaultName,
       newMaxRedeem,
-      newExpiryTime,
+      newExpiryAt,
       newVaultMinValue,
       newVaultMaxValue,
       newVaultFixedValue,
       newVaultDividedValue,
+      newCountryVault,
       onOkAction: generateVault(generateVaultDto)
     };
     dispatch(openModal('CreateVaultConfirmationModal', createVaultModalProps));
@@ -227,7 +242,7 @@ const CreateVaultForm = ({
   }
 
   const disabledDateTime = (current) => {
-    if (newExpiryTime && moment(newExpiryTime).date() > moment().date()) {
+    if (newExpiryAt && moment(newExpiryAt).date() > moment().date()) {
       return {
         disabledHours: () => [],
         disabledMinutes: () => [],
@@ -264,8 +279,8 @@ const CreateVaultForm = ({
         {/* Expiry Time */}
         <Form.Item
           validateStatus={
-            newExpiryTimeVaultIsValid === null ||
-              newExpiryTimeVaultIsValid
+            newExpiryAtVaultIsValid === null ||
+              newExpiryAtVaultIsValid
               ? ''
               : 'error'
           }
@@ -273,7 +288,7 @@ const CreateVaultForm = ({
           <Space direction="horizontal" >
             <DatePicker
               placeholder="Expiry time for your vault"
-              name="vaultExpiryTime"
+              name="vaultExpiryAt"
               disabledDate={(current) => disabledDate(current)}
               disabledTime={(current) => disabledDateTime(current)}
               showTime={{ 
@@ -291,6 +306,8 @@ const CreateVaultForm = ({
     );
   }
 
+
+  
   return (
     <>
       <VaultCollapse
@@ -338,6 +355,15 @@ const CreateVaultForm = ({
               {selectVaultType()}
               <Form.Item>
                 {selectExpiry()}
+              </Form.Item>
+              <Form.Item>
+                <AntdFormWrapper>
+                  <CountrySelectDropdown
+                    countries={countries}
+                    defaultValue={newCountryVault ? newCountryVault : 'All of country'}
+                    handleChangeCountry={handleChangeCountry}
+                  />
+                </AntdFormWrapper>
               </Form.Item>
             </Form>
           </AntdFormWrapper>

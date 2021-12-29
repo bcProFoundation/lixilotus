@@ -43,7 +43,8 @@ router.post('/vaults', async (req: express.Request, res: express.Response, next:
       const resultApi: VaultDto = {
         ...createdVault,
         totalRedeem: Number(createdVault.totalRedeem),
-        expiryTime: createdVault.expiryTime ? createdVault.expiryTime : undefined
+        expiryAt: createdVault.expiryAt ? createdVault.expiryAt : undefined,
+        country: createdVault.country ? createdVault.country : undefined
       };
 
       res.json(resultApi);
