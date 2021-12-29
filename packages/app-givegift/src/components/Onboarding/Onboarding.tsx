@@ -10,7 +10,6 @@ import React from "react";
 import { AppContext } from "src/store/store";
 import { useAppDispatch } from "src/store/hooks";
 import { generateAccount } from "src/store/account/actions";
-import { GenerateAccountDto } from '@abcpros/givegift-models/lib/account';
 
 export const LotusLogo = styled.img`
   width: 70px;
@@ -73,7 +72,7 @@ const OnboardingComponent: React.FC = () => {
       okText: 'Okay, make me a account!',
       centered: true,
       onOk() {
-        dispatch(generateAccount(GenerateAccountDto))
+        dispatch(generateAccount())
       },
       onCancel() {
         console.log('Cancel');
@@ -93,12 +92,12 @@ const OnboardingComponent: React.FC = () => {
 
   async function submit() {
     setFormData({
-        ...formData,
-        dirty: false,
+      ...formData,
+      dirty: false,
     });
 
     if (!formData.mnemonic) {
-        return;
+      return;
     }
     // Event("Category", "Action", "Label")
     // Track number of created wallets from onboarding
@@ -115,7 +114,8 @@ const OnboardingComponent: React.FC = () => {
 
         <h2 style={{ marginTop: '100px' }}>Welcome to LixiLotus!</h2>
         <WelcomeText>
-        LixiLotus is an open source, non-custodial web wallet for Lotus.
+          LixiLotus is an open source, non-custodial web wallet for Lotus.
+          LixiLotus allow you to giveaway your Lotus effortlessly.
           <br />
           To start, install LixiLotus to your device follow {' '}
           <WelcomeLink
@@ -123,19 +123,18 @@ const OnboardingComponent: React.FC = () => {
             target="_blank"
             rel="noreferrer"
           >
-              the guide
+            the guide
           </WelcomeLink>
         </WelcomeText>
-        
         <PrimaryButton
           style={{ marginTop: '100px' }}
           onClick={() => showBackupConfirmModal()}
         >
-            <PlusSquareOutlined /> New Account
+          <PlusSquareOutlined /> New Account
         </PrimaryButton>
 
         <SecondaryButton onClick={() => openSeedInput(!seedInput)}>
-            <ImportOutlined /> Import Account
+          <ImportOutlined /> Import Account
         </SecondaryButton>
         {seedInput && (
           <AntdFormWrapper>
@@ -143,13 +142,13 @@ const OnboardingComponent: React.FC = () => {
               <Form.Item
                 validateStatus={
                   !formData.dirty && !formData.mnemonic
-                      ? 'error'
-                      : ''
+                    ? 'error'
+                    : ''
                 }
                 help={
                   !formData.mnemonic || !isValidMnemonic
-                      ? 'Valid mnemonic seed phrase required'
-                      : ''
+                    ? 'Valid mnemonic seed phrase required'
+                    : ''
                 }
               >
                 <Input
@@ -164,14 +163,14 @@ const OnboardingComponent: React.FC = () => {
               </Form.Item>
 
               <SmartButton
-                  disabled={!isValidMnemonic}
-                  onClick={() => submit()}
+                disabled={!isValidMnemonic}
+                onClick={() => submit()}
               >
                 Import
               </SmartButton>
             </Form>
           </AntdFormWrapper>
-      )}
+        )}
       </Onboarding>
     </>
   )

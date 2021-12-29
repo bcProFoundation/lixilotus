@@ -8,14 +8,20 @@ import { loadingReducer } from './loading/reducer';
 import { errorReducer } from './error/reducer';
 import { toastReducer } from './toast/reducer';
 import { actionReducer } from './action/reducer';
+import { accountReducer } from './account/reducer';
 import { vaultReducer } from './vault/reducer';
 import { VaultsState } from './vault/state';
 import { RedeemsState } from './redeem/state';
 import { redeemReducer } from './redeem/reducer';
 import { modalReducer } from './modal/reducer';
+import { AccountsState } from './account/state';
 
 
 
+const accountPersistConfig: PersistConfig<AccountsState> = {
+  key: 'accounts',
+  storage: storage
+};
 
 const vaultPersistConfig: PersistConfig<VaultsState> = {
   key: 'vaults',
@@ -29,6 +35,7 @@ const redeemsPersistConfig: PersistConfig<RedeemsState> = {
 
 const rootReducer = combineReducers({
   router: connectRouter(history),
+  accounts: persistReducer(accountPersistConfig, accountReducer),
   vaults: persistReducer(vaultPersistConfig, vaultReducer),
   redeems: persistReducer(redeemsPersistConfig, redeemReducer),
   loading: loadingReducer,

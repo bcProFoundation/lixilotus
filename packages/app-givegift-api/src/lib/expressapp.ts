@@ -32,10 +32,10 @@ export class ExpressApp {
   }
 
   public routes() {
+    this.app.use('/api', Account.router);
     this.app.use('/api', Vault.router);
     this.app.use('/api', Redeem.router);
     this.app.use('/api', Healthcheck.router);
-    this.app.use('/api', Account.router)
   }
 
   public DIProviders() {

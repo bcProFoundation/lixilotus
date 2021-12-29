@@ -1,4 +1,4 @@
-import { Account } from "@abcpros/givegift-models/src/lib/account";
+import { Account } from "@abcpros/givegift-models/lib/account";
 import { createEntityAdapter, createReducer } from "@reduxjs/toolkit";
 import { AccountsState } from "./state";
 
@@ -12,5 +12,4 @@ const initialState: AccountsState = accountAdapter.getInitialState({
 });
 
 export const accountReducer = createReducer(initialState, (builder) => {
-    
 });

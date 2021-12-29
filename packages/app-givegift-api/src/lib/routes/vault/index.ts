@@ -75,23 +75,23 @@ router.post('/vaults', async (req: express.Request, res: express.Response, next:
         vaultIndex = latestVault.derivationIndex + 1;
         const walletService: WalletService = Container.get('WalletService');
         const walletDetail = await walletService.getWalletDetails(mnemonicFromApi, vaultIndex);
-        return res.json({walletDetail});
+        return res.json({ walletDetail });
       }
 
 
-      const vaultToInsert = {
-        ...vaultApi,
-      };
-      const createdVault = await prisma.vault.create({ data: vaultToInsert });
+      // const vaultToInsert = {
+      //   ...vaultApi,
+      // };
+      // const createdVault = await prisma.vault.create({ data: vaultToInsert });
 
-      const resultApi: VaultDto = {
-        ...createdVault,
-        totalRedeem: Number(createdVault.totalRedeem),
-        expiryAt: createdVault.expiryAt ? createdVault.expiryAt : undefined,
-        country: createdVault.country ? createdVault.country : undefined
-      };
+      // const resultApi: VaultDto = {
+      // ...createdVault,
+      // totalRedeem: Number(createdVault.totalRedeem),
+      // expiryAt: createdVault.expiryAt ? createdVault.expiryAt : undefined,
+      // country: createdVault.country ? createdVault.country : undefined
+      // };
 
-      res.json(resultApi);
+      res.json({});
     } catch (err) {
       if (err instanceof VError) {
         return next(err);

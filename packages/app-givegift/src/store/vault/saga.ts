@@ -28,8 +28,8 @@ function* generateVaultSaga(action: PayloadAction<GenerateVaultDto>) {
     id: 0,
     name: vaultDto.name,
     maxRedeem: Number(vaultDto.maxRedeem),
-    expiryAt: vaultDto && vaultDto.expiryAt ? new Date(vaultDto.expiryAt): undefined,
-    vaultType: vaultDto.vaultType, 
+    expiryAt: vaultDto && vaultDto.expiryAt ? new Date(vaultDto.expiryAt) : undefined,
+    vaultType: vaultDto.vaultType,
     //encryptedMnemonic: encryptedMnemonic,
     minValue: Number(vaultDto.minValue),
     maxValue: Number(vaultDto.maxValue),
@@ -45,7 +45,6 @@ function* generateVaultSaga(action: PayloadAction<GenerateVaultDto>) {
     accountId: Number(),
     encryptedPubKey: String(),
     encryptedPrivKey: String()
-
   };
 
   yield put(postVault(vault));

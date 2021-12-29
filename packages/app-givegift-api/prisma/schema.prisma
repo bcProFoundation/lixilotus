@@ -13,53 +13,55 @@ generator client {
 model Account {
   id                Int      @id @default(autoincrement())
   name              String
-  encryptedMnemonic String                                  @map("encrypted_mnemonic")
-  createdAt         DateTime @default(now())                @map("created_at")
-  updatedAt         DateTime @default(now())                @map("updated_at")
+  encryptedMnemonic String   @map("encrypted_mnemonic")
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime @default(now()) @map("updated_at") @db.Timestamptz
   vaults            Vault[]
-  mnemonicHash      String                                  @map("mnemonic_hash")
-  
-  @@map("account")     
+  mnemonicHash      String   @map("mnemonic_hash")
+
+  @@index([mnemonicHash])
+  @@map("account")
 }
 
 model Vault {
-  id                Int      @id @default(autoincrement())
-  name              String
-  maxRedeem         Int      @default(0)                    @map("max_redeem")
-  redeemedNum       Int      @default(0)                    @map("redeemed_num")
-  vaultType         Int      @default(0)                    @map("vault_type")
-  minValue          Float                                   @map("min_value")
-  maxValue          Float                                   @map("max_value")
-  fixedValue        Float                                   @map("fixed_value")
-  dividedValue      Int      @default(1)                    @map("divided_value")
-  encryptedPubKey   String                                  @map("encrypted_pubkey")
-  encryptedPrivKey  String                                  @map("encrypted_privkey")
-  totalRedeem       BigInt   @default(0)                    @map("total_redeem")
-  createdAt         DateTime @default(now())                @map("created_at")
-  updatedAt         DateTime @default(now())                @map("updated_at")
-  expiryAt          DateTime?                               @map("expiry_at")
-  country           String?                                 @map("country")
-  redeems           Redeem[]
-  status            String                                  @map("status")
-  account           Account  @relation(fields: [accountId], references: [id])
-  accountId         Int                                     @map("account_id")
-  derivationPath    String                                  @map("derivation_path")
-  derivationIndex   Int     @default(0)                     @map("derivation_index")
-  expiryTime        DateTime?                               @map("expiry_time")
-  address           String                                  @map("address")
+  id               Int       @id @default(autoincrement())
+  name             String
+  maxRedeem        Int       @default(0) @map("max_redeem")
+  redeemedNum      Int       @default(0) @map("redeemed_num")
+  vaultType        Int       @default(0) @map("vault_type")
+  minValue         Float     @map("min_value")
+  maxValue         Float     @map("max_value")
+  fixedValue       Float     @map("fixed_value")
+  dividedValue     Int       @default(1) @map("divided_value")
+  encryptedPubKey  String    @map("encrypted_pubkey")
+  encryptedPrivKey String    @map("encrypted_privkey")
+  totalRedeem      BigInt    @default(0) @map("total_redeem")
+  createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime  @default(now()) @map("updated_at") @db.Timestamptz
+  expiryAt         DateTime? @map("expiry_at")
+  country          String?   @map("country")
+  redeems          Redeem[]
+  status           String    @map("status")
+  account          Account   @relation(fields: [accountId], references: [id])
+  accountId        Int       @map("account_id")
+  derivationPath   String    @map("derivation_path")
+  derivationIndex  Int       @default(0) @map("derivation_index")
+  expiryTime       DateTime? @map("expiry_time") @db.Timestamptz
+  address          String    @map("address")
+
   @@map("vault")
 }
 
 model Redeem {
   id            Int      @id @default(autoincrement())
-  ipaddress     String                                 @map("ip_address")
-  transactionId String                                 @map("transaction_id")
-  createdAt     DateTime @default(now())               @map("created_at")
-  updatedAt     DateTime @default(now())               @map("updated_at")
-  redeemAddress String                                 @map("redeem_address")
-  amount        BigInt                                 @map("amount")
+  ipaddress     String   @map("ip_address")
+  transactionId String   @map("transaction_id")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime @default(now()) @map("updated_at") @db.Timestamptz
+  redeemAddress String   @map("redeem_address")
+  amount        BigInt   @map("amount")
   vault         Vault    @relation(fields: [vaultId], references: [id])
-  vaultId       Int                                    @map("vault_id")
+  vaultId       Int      @map("vault_id")
 
   @@map("redeem")
 }
