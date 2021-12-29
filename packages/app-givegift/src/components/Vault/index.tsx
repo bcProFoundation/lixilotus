@@ -16,7 +16,7 @@ import { currency } from '../../../../givegift-components/src/components/Common/
 import { fromSmallestDenomination } from '@utils/cashMethods';
 import { CopyOutlined } from '@ant-design/icons';
 import { showToast } from 'src/store/toast/actions';
-import vaultSaga from 'src/store/vault/saga';
+import { countries } from '@abcpros/givegift-models/constants/countries';
 
 type CopiedProps = {
   style?: React.CSSProperties
@@ -108,16 +108,23 @@ const Vault: React.FC = () => {
   }
 
   const formatDate = () => {
-    if (selectedVault?.expiryTime != null) {
+    if (selectedVault?.expiryAt != null) {
       return (
         <Descriptions.Item label="Expiry at">
-          {moment(selectedVault?.expiryTime).format("YYYY-MM-DD HH:mm")}
+          {moment(selectedVault?.expiryAt).format("YYYY-MM-DD HH:mm")}
         </Descriptions.Item>
       );
     }
     else {
       return;
     }
+  }
+
+  const showCountry = () => {
+    return (selectedVault?.country != null) ? (
+      <Descriptions.Item label="Country">
+      {countries.find(country => country.id === selectedVault?.country)?.name}
+    </Descriptions.Item>) : "";
   }
 
   return (
@@ -153,6 +160,7 @@ const Vault: React.FC = () => {
               {showRedemption()}
             </Descriptions.Item>
             {formatDate()}
+            {showCountry()}
           </Descriptions>
           
           {/* Detail Vault */}
