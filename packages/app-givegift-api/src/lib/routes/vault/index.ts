@@ -79,28 +79,19 @@ router.post('/vaults', async (req: express.Request, res: express.Response, next:
       }
 
 
-      // const vaultToInsert: VaultDb = {
-      //   ...vaultApi,
-      // };
+      const vaultToInsert = {
+        ...vaultApi,
+      };
+      const createdVault = await prisma.vault.create({ data: vaultToInsert });
 
-      // if (!vaultToInsert.memnonic) {
-      //   return res.status(400).json({
-      //     message: 'The payload should be provided encrypted mnemonic'
-      //   });
-      // }
-      // else {
+      const resultApi: VaultDto = {
+        ...createdVault,
+        totalRedeem: Number(createdVault.totalRedeem),
+        expiryAt: createdVault.expiryAt ? createdVault.expiryAt : undefined,
+        country: createdVault.country ? createdVault.country : undefined
+      };
 
-      //   // else {
-      //     const createdVault = await prisma.vault.create({ data: vaultToInsert });
-
-      //     const resultApi: VaultDto = {
-      //       ...createdVault,
-      //       totalRedeem: Number(createdVault.totalRedeem)
-      //     };
-      //     res.json(resultApi);
-      //   // }   
-      
-      //}
+      res.json(resultApi);
     } catch (err) {
       if (err instanceof VError) {
         return next(err);

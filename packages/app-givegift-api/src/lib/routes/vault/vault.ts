@@ -35,6 +35,8 @@ router.post('/import', async (req: express.Request, res: express.Response, next:
     const resultApi: VaultDto = {
       ...vault,
      totalRedeem: Number(vault.totalRedeem),
+      expiryAt: vault.expiryAt ? vault.expiryAt : undefined,
+      country: vault.country ? vault.country : undefined
     };
 
     res.json(resultApi);

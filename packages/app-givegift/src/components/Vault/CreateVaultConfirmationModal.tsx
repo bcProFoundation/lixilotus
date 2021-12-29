@@ -1,9 +1,12 @@
 import { AnyAction } from 'redux';
 import { Modal } from 'antd';
 import _ from 'lodash';
+import moment from 'moment';
 import { VaultParamLabel } from '@abcpros/givegift-components/components/Common/Atoms';
 import { useAppDispatch } from 'src/store/hooks';
 import { closeModal } from 'src/store/modal/actions';
+import { countries } from '@abcpros/givegift-models/src/constants/countries';
+import { VaultType } from '@abcpros/givegift-models/src/lib/vault';
 
 
 export type CreateVaultConfirmationModalProps = {
@@ -14,6 +17,8 @@ export type CreateVaultConfirmationModalProps = {
   newVaultDividedValue: string;
   newVaultName: string;
   newMaxRedeem: string;
+  newExpiryAt: string;
+  newCountryVault: string;
   onOkAction?: AnyAction
 }
 
@@ -24,11 +29,13 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
   const {
     newVaultName,
     newMaxRedeem,
+    newExpiryAt,
     vaultType,
     newVaultMinValue,
     newVaultMaxValue,
     newVaultFixedValue,
-    newVaultDividedValue
+    newVaultDividedValue,
+    newCountryVault
   } = props;
 
   const handleOnCancel = () => {
@@ -47,7 +54,7 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
   const confirmVaultType = () => {
     switch (vaultType) {
       // isFixed
-      case 1:
+      case VaultType.Fixed:
         return (
           <>
             <VaultParamLabel>The fund giving is fixed</VaultParamLabel>
@@ -56,7 +63,7 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
           </>
         );
       // isDivided
-      case 2:
+      case VaultType.Divided:
         return (
           <>
             <VaultParamLabel>The fund giving is dividend</VaultParamLabel>
@@ -78,6 +85,20 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
     }
   }
 
+  const formatDate = () => {
+    if (newExpiryAt != "") {
+      return <VaultParamLabel>Expiry at: {moment(newExpiryAt).format("YYYY-MM-DD HH:mm")}</VaultParamLabel>;
+    }
+    else {
+      return <VaultParamLabel>Expiry at: Infinity</VaultParamLabel>;
+    }
+  }
+
+  const confirmCountry = () => {
+    const country = countries.find(country => country.id === newCountryVault);
+    return <VaultParamLabel>Country: {country ? country.name : "All of country"}</VaultParamLabel> 
+  }
+
   return (
     <>
       <Modal
@@ -90,8 +111,11 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
         <br />
         <VaultParamLabel>Max Redemption:</VaultParamLabel> {newMaxRedeem == "" ? "Infinity" : newMaxRedeem}
         <br />
+        {formatDate()}
+        <br />
         {confirmVaultType()}
         <br />
+        {confirmCountry()}
       </Modal>
     </>
   );
