@@ -76,6 +76,10 @@ export const AdvancedCollapse = styled(Collapse)`
     color: ${props => props.theme.buttons.secondary.color} !important;
   }
 
+  .ant-select-single.ant-select-sm:not(.ant-select-customize-input) .ant-select-selector .ant-select-selection-item {
+    line-height: 60px;
+  }
+
   *:not(button) {
     color: ${props => props.theme.collapses.color} !important;
   }
