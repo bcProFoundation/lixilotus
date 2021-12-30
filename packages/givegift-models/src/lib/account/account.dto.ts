@@ -17,7 +17,3 @@ export interface AccountDto {
   createdAt?: Date;
   updatedAt?: Date;
 }
-
-export interface ImportAccountDto {
-  encryptedMnemonic: string;
-}

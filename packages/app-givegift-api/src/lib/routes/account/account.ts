@@ -1,30 +1,37 @@
 import express, { NextFunction } from 'express';
-import { Vault } from '@abcpros/givegift-models';
 import { VError } from 'verror';
 import { PrismaClient, Vault as VaultDb } from '@prisma/client';
-import { ImportAccountDto, AccountDto } from '@abcpros/givegift-models/src/lib/account';
+import { ImportAccountCommand, AccountDto, Vault } from '@abcpros/givegift-models';
+import { aesGcmDecrypt } from '../../utils/encryptionMethods';
 
 const prisma = new PrismaClient();
 let router = express.Router();
 
 router.post('/import', async (req: express.Request, res: express.Response, next: NextFunction) => {
-  const importAccountDto: ImportAccountDto = req.body;
+  const importAccountCommand: ImportAccountCommand = req.body;
+  const { mnemonic, mnemonicHash } = importAccountCommand;
 
   try {
-    const encryptedMnemonic = importAccountDto.encryptedMnemonic;
+
     const account = await prisma.account.findFirst({
       where: {
-        encryptedMnemonic: encryptedMnemonic
+        mnemonicHash: mnemonicHash
       }
     });
 
     if (!account) {
-      throw Error('Could not found a account match your import.');
+      throw Error('Could not found import account.');
+    }
+
+    // Decrypt to validate the mnemonic
+    const mnemonicToValidate = await aesGcmDecrypt(account.encryptedMnemonic, mnemonic);
+    if (mnemonic !== mnemonicToValidate) {
+      throw Error('Could not found import account.');
     }
 
     const resultApi: AccountDto = {
       ...account,
-      name: String(account.name)
+      name: account.name
     };
 
     res.json(resultApi);

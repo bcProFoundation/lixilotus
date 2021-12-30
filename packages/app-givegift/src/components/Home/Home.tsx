@@ -11,7 +11,7 @@ import { getIsGlobalLoading } from "src/store/loading/selectors";
 import ModalManager from "@components/Common/ModalManager";
 import { AppContext } from "src/store/store";
 import { useAppDispatch } from "src/store/hooks";
-import { generateAccount } from "src/store/account/actions";
+import { generateAccount, importAccount } from "src/store/account/actions";
 
 
 
@@ -65,7 +65,7 @@ const Home: React.FC = () => {
     if (!formData.mnemonic) {
       return;
     }
-    dispatch(generateAccount())
+    dispatch(importAccount(formData.mnemonic));
   }
 
   return (
@@ -98,7 +98,6 @@ const Home: React.FC = () => {
               >
                 <Input
                   prefix={<LockOutlined />}
-                  type="email"
                   placeholder="mnemonic (seed phrase)"
                   name="mnemonic"
                   autoComplete="off"

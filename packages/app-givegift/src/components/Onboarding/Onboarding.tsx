@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import React from "react";
 import LixiLogo from '@assets/images/lixi_logo.svg';
 import LixiText from '@assets/images/lixi_logo_text.svg';
 import PrimaryButton, { SecondaryButton, SmartButton } from "@components/Common/PrimaryButton";
@@ -6,10 +7,9 @@ import { ExclamationCircleOutlined, ImportOutlined, LockOutlined, PlusSquareOutl
 import { Form, Input, Modal } from "antd";
 import { useState } from "react";
 import { AntdFormWrapper } from "@components/Common/EnhancedInputs";
-import React from "react";
 import { AppContext } from "src/store/store";
 import { useAppDispatch } from "src/store/hooks";
-import { generateAccount } from "src/store/account/actions";
+import { generateAccount, importAccount } from "src/store/account/actions";
 
 export const LotusLogo = styled.img`
   width: 70px;
@@ -99,6 +99,8 @@ const OnboardingComponent: React.FC = () => {
     if (!formData.mnemonic) {
       return;
     }
+
+    dispatch(importAccount(formData.mnemonic));
   }
 
   return (
@@ -150,7 +152,6 @@ const OnboardingComponent: React.FC = () => {
               >
                 <Input
                   prefix={<LockOutlined />}
-                  type="email"
                   placeholder="mnemonic (seed phrase)"
                   name="mnemonic"
                   autoComplete="off"
@@ -158,7 +159,6 @@ const OnboardingComponent: React.FC = () => {
                   required
                 />
               </Form.Item>
-
               <SmartButton
                 disabled={!isValidMnemonic}
                 onClick={() => submit()}
