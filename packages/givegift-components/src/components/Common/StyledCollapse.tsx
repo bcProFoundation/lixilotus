@@ -57,3 +57,26 @@ export const VaultCollapse = styled(Collapse) <VaultCollapseProps>`
         }
           `}
 `;
+
+export const AdvancedCollapse = styled(Collapse)`
+  background: ${props => props.theme.collapses.background} !important;
+  border: 1px solid ${props => props.theme.collapses.border} !important;
+
+  .ant-collapse-content {
+    border: 1px solid ${props => props.theme.collapses.border};
+    border-top: none;
+  }
+
+  .ant-collapse-item {
+    border-bottom: none !important;
+  }
+
+  .ant-collapse-header {
+    font-weight: normal;
+    color: ${props => props.theme.buttons.secondary.color} !important;
+  }
+
+  *:not(button) {
+    color: ${props => props.theme.collapses.color} !important;
+  }
+`;
