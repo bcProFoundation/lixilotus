@@ -78,6 +78,8 @@ export const AdvancedCollapse = styled(Collapse)`
 
   .ant-select-single.ant-select-sm:not(.ant-select-customize-input) .ant-select-selector .ant-select-selection-item {
     line-height: 60px;
+    text-align: left;
+    padding-left: 10px;
   }
 
   *:not(button) {
