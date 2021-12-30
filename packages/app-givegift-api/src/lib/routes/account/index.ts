@@ -36,8 +36,8 @@ router.post('/accounts', async (req: express.Request, res: express.Response, nex
   if (accountApi) {
     try {
       const accountToInsert = {
-        id: 0,
         ...accountApi,
+        id: undefined,
       };
       const createdAccount: AccountDb = await prisma.account.create({ data: accountToInsert });
 

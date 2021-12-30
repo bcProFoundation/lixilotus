@@ -25,7 +25,6 @@ function* showToastSaga(action: PayloadAction<{ type: ToastType, config: ArgsPro
     case 'info':
       notification.info(config);
       break;
-
   }
 }
 

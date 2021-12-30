@@ -99,9 +99,6 @@ const OnboardingComponent: React.FC = () => {
     if (!formData.mnemonic) {
       return;
     }
-    // Event("Category", "Action", "Label")
-    // Track number of created wallets from onboarding
-    //createWallet(formData.mnemonic);
   }
 
   return (

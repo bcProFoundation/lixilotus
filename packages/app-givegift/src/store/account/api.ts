@@ -1,4 +1,4 @@
-import { AccountDto, CreateAccountCommand } from "@abcpros/givegift-models/src/lib/account";
+import { AccountDto, CreateAccountCommand, ImportAccountCommand } from "@abcpros/givegift-models/src/lib/account";
 import axiosClient from "@utils/axiosClient";
 
 const accountApi = {
@@ -24,6 +24,17 @@ const accountApi = {
         throw response?.data ?? err ?? 'Network Error';
       })
   },
+  import(data: ImportAccountCommand): Promise<AccountDto> {
+    const url = '/api/accounts/import';
+    return axiosClient.post(url, data)
+      .then(response => {
+        return response.data as AccountDto;
+      })
+      .catch(err => {
+        const { response } = err;
+        throw response?.data ?? err ?? 'Network Error';
+      })
+  }
 };
 
 export default accountApi;

@@ -4,6 +4,11 @@ export interface CreateAccountCommand {
   mnemonicHash: string;
 }
 
+export interface ImportAccountCommand {
+  mnemonic: string;
+  mnemonicHash: string;
+}
+
 export interface AccountDto {
   id?: number;
   name: string;

@@ -30,7 +30,9 @@ import { Footer, NavButton } from '@abcpros/givegift-components/components';
 import Vault from '@components/Vault';
 import ModalManager from '@components/Common/ModalManager';
 import SettingsComponent from '@components/Settings';
+import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import OnboardingComponent from './Onboarding/Onboarding';
+import { getSelectedAccount } from 'src/store/account/selectors';
 
 type ThemeType = typeof theme;
 
@@ -115,10 +117,10 @@ export const LixiTextLogo = styled.img`
 
 function App(): JSX.Element {
 
+  const selectedAccount = useAppSelector(getSelectedAccount);
   const location = useLocation();
   const history = useHistory();
   const [loading, setLoading] = useState(false);
-  const [loadingUtxosAfterSend, setLoadingUtxosAfterSend] = useState(false);
   const selectedKey = location && location.pathname ? location.pathname.substr(1) : '';
   return (
     <ThemeProvider theme={theme}>
@@ -131,72 +133,68 @@ function App(): JSX.Element {
       >
         <GiveGiftApp>
           <AppBody>
-            <OnboardingComponent></OnboardingComponent>
-            {/* <AppContainer> */}
+            {!selectedAccount
+              ? <OnboardingComponent></OnboardingComponent>
+              : <>
 
-              {/* <HeaderContainer>
-                <LotusLogo src={LixiLogo} alt="lixi" />
-                <LixiTextLogo src={LixiText} alt="lixi" />
-              </HeaderContainer>
-              <Switch>
-                <Route path="/Vault">
-                  <Vault />
-                </Route>
-                <Route path="/redeem">
-                  <RedeemComponent />
-                </Route>
-                <Route path="/settings">
-                  <SettingsComponent />
-                </Route> */}
-                {/* The default route */}
-                {/* <Route path="/">
-                  <Home />
-                </Route>
-              </Switch>
-            </AppContainer>
-            <Footer>
-              <NavButton
-                active={selectedKey === 'home' || selectedKey === ''}
-                onClick={() => history.push('/')}
-              >
-                <HomeOutlined />
-                Home
-              </NavButton>
+                <AppContainer>
+                  <HeaderContainer>
+                    <LotusLogo src={LixiLogo} alt="lixi" />
+                    <LixiTextLogo src={LixiText} alt="lixi" />
+                  </HeaderContainer>
+                  <Switch>
+                    <Route path="/Vault">
+                      <Vault />
+                    </Route>
+                    <Route path="/redeem">
+                      <RedeemComponent />
+                    </Route>
+                    <Route path="/settings">
+                      <SettingsComponent />
+                    </Route>
+                    <Route path="/">
+                      <Home />
+                    </Route>
+                  </Switch>
+                </AppContainer>
+                <Footer>
+                  <NavButton
+                    active={selectedKey === 'home' || selectedKey === ''}
+                    onClick={() => history.push('/')}
+                  >
+                    <UserOutlined />
+                    Accounts
+                  </NavButton>
 
-              <NavButton
-                active={selectedKey === 'vault'}
-                onClick={() => history.push('/vault')}
-              >
-                <WalletOutlined />
-                Vault
-              </NavButton>
+                  <NavButton
+                    active={selectedKey === 'vault'}
+                    onClick={() => history.push('/vault')}
+                  >
+                    <WalletOutlined />
+                    Vault
+                  </NavButton>
 
-              <NavButton
-                active={selectedKey === 'redeem'}
-                onClick={() => history.push('/redeem')}
-              >
-                <GiftOutlined />
-                Redeem
-              </NavButton>
+                  <NavButton
+                    active={selectedKey === 'redeem'}
+                    onClick={() => history.push('/redeem')}
+                  >
+                    <GiftOutlined />
+                    Redeem
+                  </NavButton>
 
-              <NavButton
-                active={selectedKey === 'Settings'}
-                onClick={() => history.push('/settings')}
-              >
-                <SettingOutlined />
-                Settings
-              </NavButton> */}
-              {/* <NavButton
-                active={selectedKey === 'profile'}
-                onClick={() => history.push('/profile')}
-              >
-                <UserOutlined />
-                Profile
-              </NavButton> */}  
-            {/* </Footer> */}
+                  <NavButton
+                    active={selectedKey === 'Settings'}
+                    onClick={() => history.push('/settings')}
+                  >
+                    <SettingOutlined />
+                    Settings
+                  </NavButton>
+                </Footer>
+              </>
+            }
           </AppBody>
         </GiveGiftApp>
-        
+
       </Spin>
     </ThemeProvider>
   );
