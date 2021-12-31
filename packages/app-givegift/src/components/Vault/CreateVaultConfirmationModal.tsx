@@ -11,6 +11,7 @@ import { VaultType } from '@abcpros/givegift-models/src/lib/vault';
 
 export type CreateVaultConfirmationModalProps = {
   vaultType: number;
+  newAccountName?: string;
   newVaultMinValue: string;
   newVaultMaxValue: string;
   newVaultFixedValue: string;
@@ -27,6 +28,7 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
   const dispatch = useAppDispatch();
 
   const {
+    newAccountName,
     newVaultName,
     newMaxRedeem,
     newExpiryAt,
@@ -57,6 +59,8 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
       case VaultType.Fixed:
         return (
           <>
+            <VaultParamLabel>Fund for the account: </VaultParamLabel> {newAccountName}
+            <br />
             <VaultParamLabel>The fund giving is fixed</VaultParamLabel>
             <br />
             <VaultParamLabel>The fixed fund:</VaultParamLabel> {newVaultFixedValue}
@@ -75,12 +79,12 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
       default:
         return (
           <>
-              <VaultParamLabel>The fund giving is randomized</VaultParamLabel>
-              <br />
-              <VaultParamLabel>Min:</VaultParamLabel> {newVaultMinValue}
-              <br />
-              <VaultParamLabel>Max:</VaultParamLabel> {newVaultMaxValue}
-            </>
+            <VaultParamLabel>The fund giving is randomized</VaultParamLabel>
+            <br />
+            <VaultParamLabel>Min:</VaultParamLabel> {newVaultMinValue}
+            <br />
+            <VaultParamLabel>Max:</VaultParamLabel> {newVaultMaxValue}
+          </>
         );
     }
   }
@@ -96,7 +100,7 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
 
   const confirmCountry = () => {
     const country = countries.find(country => country.id === newCountryVault);
-    return <VaultParamLabel>Country: {country ? country.name : "All of country"}</VaultParamLabel> 
+    return <VaultParamLabel>Country: {country ? country.name : "All of country"}</VaultParamLabel>
   }
 
   return (

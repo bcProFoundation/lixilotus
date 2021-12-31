@@ -12,6 +12,7 @@ export interface ImportAccountCommand {
 export interface AccountDto {
   id?: number;
   name: string;
+  mnemonic?: string;
   encryptedMnemonic: string;
   mnemonicHash: string;
   createdAt?: Date;

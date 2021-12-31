@@ -11,17 +11,21 @@ import { currency } from '@abcpros/givegift-components/components/Common/Ticker'
 import { countries } from "@abcpros/givegift-models/src/constants/countries";
 import CountrySelectDropdown from '@components/Common/CountrySelectDropdown';
 import { isValidAmountInput } from '@utils/validation';
-import { GenerateVaultDto, VaultType } from '@abcpros/givegift-models/lib/vault';
+import { GenerateVaultCommand, VaultType } from '@abcpros/givegift-models/lib/vault';
 import { useAppDispatch } from 'src/store/hooks';
+import { showToast } from 'src/store/toast/actions';
 import { generateVault } from 'src/store/vault/actions';
 import { openModal } from 'src/store/modal/actions';
 import { CreateVaultConfirmationModalProps } from './CreateVaultConfirmationModal';
+import { Account } from '@abcpros/givegift-models';
 const { Panel } = Collapse;
 
 type CreateVaultFormProps = {
+  account?: Account
 } & React.HTMLProps<HTMLElement>;
 
 const CreateVaultForm = ({
+  account,
   disabled,
 }: CreateVaultFormProps) => {
 
@@ -90,7 +94,8 @@ const CreateVaultForm = ({
 
   // Only enable CreateVault button if all form entries are valid
   let createVaultFormDataIsValid =
-    newVaultNameIsValid && newMaxRedeemVaultIsValid && newExpiryAtVaultIsValid &&
+    newVaultNameIsValid && newMaxRedeemVaultIsValid &&
+    newExpiryAtVaultIsValid && account &&
     ((vaultType == VaultType.Random && newVaultMinValueIsValid && newVaultMaxValueIsValid) ||
       (vaultType == VaultType.Fixed && newVaultFixedValueIsValid) ||
       (vaultType == VaultType.Divided && newVaultDividedValueIsValid));
@@ -132,8 +137,19 @@ const CreateVaultForm = ({
 
   const handleSubmitCreateVault = () => {
 
-    const generateVaultDto: GenerateVaultDto = {
+    if (!account) {
+      dispatch(showToast('error', {
+        message: 'Unable to create vault.',
+        description: 'Please Select an account first before creating vault',
+        duration: 5
+      }));
+    }
+
+    const command: GenerateVaultCommand = {
       name: newVaultName,
+      accountId: account?.id ?? 0,
+      mnemonic: account?.mnemonic ?? '',
+      mnemonicHash: account?.mnemonicHash ?? '',
       maxRedeem: newMaxRedeem,
       expiryAt: newExpiryAt,
       minValue: newVaultMinValue,
@@ -146,6 +162,7 @@ const CreateVaultForm = ({
 
     const createVaultModalProps: CreateVaultConfirmationModalProps = {
       vaultType,
+      newAccountName: account?.name ?? '',
       newVaultName,
       newMaxRedeem,
       newExpiryAt,
@@ -154,7 +171,7 @@ const CreateVaultForm = ({
       newVaultFixedValue,
       newVaultDividedValue,
       newCountryVault,
-      onOkAction: generateVault(generateVaultDto)
+      onOkAction: generateVault(command)
     };
     dispatch(openModal('CreateVaultConfirmationModal', createVaultModalProps));
   }
@@ -230,7 +247,7 @@ const CreateVaultForm = ({
               </Input>
             </Form.Item>
           </>
-      );
+        );
     }
   }
 
@@ -256,21 +273,21 @@ const CreateVaultForm = ({
       <>
         {/* Max redemption */}
         <Form.Item
-            validateStatus={
-              newMaxRedeemVaultIsValid === null ||
-                newMaxRedeemVaultIsValid
-                ? ''
-                : 'error'
-            }
-          >
-            <Input
-              addonBefore="Max Redeem"
-              type="number"
-              placeholder="Enter max Redeem number for your vault"
-              name="vaultMaxReDeem"
-              value={newMaxRedeem}
-              onChange={e => handleNewMaxRedeemInput(e)}
-            />
+          validateStatus={
+            newMaxRedeemVaultIsValid === null ||
+              newMaxRedeemVaultIsValid
+              ? ''
+              : 'error'
+          }
+        >
+          <Input
+            addonBefore="Max Redeem"
+            type="number"
+            placeholder="Enter max Redeem number for your vault"
+            name="vaultMaxReDeem"
+            value={newMaxRedeem}
+            onChange={e => handleNewMaxRedeemInput(e)}
+          />
         </Form.Item>
 
         {/* Expiry Time */}
@@ -288,7 +305,7 @@ const CreateVaultForm = ({
               name="vaultExpiryAt"
               disabledDate={(current) => disabledDate(current)}
               disabledTime={(current) => disabledDateTime(current)}
-              showTime={{ 
+              showTime={{
                 format: 'HH:mm',
                 defaultValue: moment()
               }}
@@ -296,7 +313,7 @@ const CreateVaultForm = ({
               size={'large'}
               onSelect={handleNewExpityTimeInput}
               onOk={onOk}
-              />
+            />
           </Space>
         </Form.Item>
       </>
@@ -304,7 +321,7 @@ const CreateVaultForm = ({
   }
 
 
-  
+
   return (
     <>
       <VaultCollapse
@@ -340,7 +357,7 @@ const CreateVaultForm = ({
                   onChange={e => handleNewVaultNameInput(e)}
                 />
               </Form.Item>
-              
+
               {/* select VaultType and Expiry */}
               <Form.Item>
                 <Radio.Group value={vaultType} onChange={handelChangeVaultType}>

@@ -1,5 +1,6 @@
 import MinimalBCHWallet from "@abcpros/minimal-xpi-slp-wallet";
 import BCHJS from "@abcpros/xpi-js";
+import HDNode from "@abcpros/xpi-js/types/hdnode";
 import { Inject, Service } from "typedi";
 
 @Service()
@@ -24,6 +25,19 @@ export class WalletService {
     const keyPair = this.xpijs.HDNode.toKeyPair(vaultAddress);
     const balance = await this.getBalance(vaultAddress);
     return { keyPair, balance }
+  }
 
+  async deriveVault(mnemonic: string, vaultIndex: number): Promise<{ address: string, xpriv: string }> {
+    const rootSeedBuffer: Buffer = await this.xpijs.Mnemonic.toSeed(mnemonic);
+    const masterHDNode = this.xpijs.HDNode.fromSeed(rootSeedBuffer);
+    const hdPath = `m/44'/10605'/${vaultIndex}'/0/0`;
+    const childNode: HDNode = this.xpijs.HDNode.derivePath(masterHDNode, hdPath);
+    const xAddress = this.xpijs.HDNode.toXAddress(childNode);
+    const xpriv = this.xpijs.HDNode.toXPriv(childNode);
+
+    return {
+      address: xAddress,
+      xpriv: xpriv
+    };
   }
 }

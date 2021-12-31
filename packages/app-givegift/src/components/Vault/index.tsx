@@ -68,7 +68,7 @@ const Vault: React.FC = () => {
       setRedeemCodeVisible(false);
     }, 1500);
   }
-  
+
   const handleOnCopyRedeemCode = () => {
     setRedeemCodeVisible(true);
   };
@@ -123,8 +123,8 @@ const Vault: React.FC = () => {
   const showCountry = () => {
     return (selectedVault?.country != null) ? (
       <Descriptions.Item label="Country">
-      {countries.find(country => country.id === selectedVault?.country)?.name}
-    </Descriptions.Item>) : "";
+        {countries.find(country => country.id === selectedVault?.country)?.name}
+      </Descriptions.Item>) : "";
   }
 
   return (
@@ -148,7 +148,7 @@ const Vault: React.FC = () => {
               {selectedVault.name}
             </Descriptions.Item>
             <Descriptions.Item label="Type">
-            {typeVault()}
+              {typeVault()}
             </Descriptions.Item>
             <Descriptions.Item label="Balance">
               {fromSmallestDenomination(selectedVault.balance) ?? 0} {currency.ticker}
@@ -162,7 +162,7 @@ const Vault: React.FC = () => {
             {formatDate()}
             {showCountry()}
           </Descriptions>
-          
+
           {/* Detail Vault */}
           <StyledCollapse>
             <Panel header="Click to reveal vault detail" key="1">
@@ -173,7 +173,7 @@ const Vault: React.FC = () => {
                 <Descriptions.Item label="Redeem Code">
                   {selectedVault.redeemCode}
                 </Descriptions.Item>
-                <Descriptions.Item label="Seed">
+                {/* <Descriptions.Item label="Seed">
                   <CopyToClipboard 
                     tyle={{
                       display: 'inline-block',
@@ -186,13 +186,13 @@ const Vault: React.FC = () => {
                       {selectedVault.encryptedPrivKey} <CopyOutlined/>
                     </div>
                   </CopyToClipboard>
-                </Descriptions.Item>
+                </Descriptions.Item> */}
               </Descriptions>
             </Panel>
           </StyledCollapse>
 
           {/* Copy RedeemCode */}
-          <CopyToClipboard 
+          <CopyToClipboard
             tyle={{
               display: 'inline-block',
               width: '100%',
@@ -208,8 +208,8 @@ const Vault: React.FC = () => {
                 Copied <br />
                 <span style={{ fontSize: '12px' }}>{selectedVault.redeemCode}</span>
               </Copied>
-              <SmartButton> 
-                Copy Redeem Code 
+              <SmartButton>
+                Copy Redeem Code
               </SmartButton>
             </div>
           </CopyToClipboard>

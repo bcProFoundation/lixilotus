@@ -2,6 +2,7 @@ import { createEntityAdapter, createReducer, Update } from "@reduxjs/toolkit"
 import { Vault } from "@abcpros/givegift-models/lib/vault";
 import { refreshVaultSuccess, selectVault, setVault } from "./actions";
 import { VaultsState } from "./state"
+import { selectAccountSuccess } from "../account/actions";
 
 export const vaultsAdapter = createEntityAdapter<Vault>({
 })
@@ -34,5 +35,9 @@ export const vaultReducer = createReducer(initialState, (builder) => {
       vaultsAdapter.updateOne(state, updateVault);
       const redeemIds = action.payload.redeems.map(redeem => redeem.id);
       state.redeemIdsById[vault.id] = redeemIds;
+    })
+    .addCase(selectAccountSuccess, (state, action) => {
+      const { vaults } = action.payload;
+      vaultsAdapter.setAll(state, vaults);
     })
 })

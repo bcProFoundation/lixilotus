@@ -1,5 +1,8 @@
-export interface GenerateVaultDto {
+export interface GenerateVaultCommand {
   name: string;
+  accountId: number;
+  mnemonic: string;
+  mnemonicHash: string;
   maxRedeem: string;
   vaultType: number;
   minValue: string;
@@ -10,18 +13,20 @@ export interface GenerateVaultDto {
   country?: string;
 }
 
-export interface CreateVaultDto {
+export interface CreateVaultCommand {
   name: string;
+  accountId: number
   maxRedeem: number;
-  redeemedNum?: number;
   vaultType: number;
   mnemonic: string;
+  mnemonicHash: string;
   minValue: number;
   maxValue: number;
   fixedValue: number;
   dividedValue: number;
   expiryAt?: Date;
   country?: string;
+  password: string;
 }
 
 
@@ -31,8 +36,6 @@ export interface VaultDto {
   maxRedeem: number;
   redeemedNum: number;
   vaultType: number;
-  encryptedPubKey: string;
-  encryptedPrivKey: string;
   minValue: number;
   maxValue: number;
   fixedValue: number;
@@ -51,8 +54,6 @@ export interface Vault {
   maxRedeem: number;
   redeemedNum: number;
   vaultType: number;
-  encryptedPubKey: string;
-  encryptedPrivKey: string;
   redeemCode?: string;
   minValue: number;
   maxValue: number;
@@ -73,8 +74,8 @@ export interface Vault {
   accountId: number;
 };
 
-export interface ImportVaultDto {
-  encryptedPrivKey: string;
+export interface ImportVaultCommand {
+  mnemonic: string;
   redeemCode: string;
 }
 

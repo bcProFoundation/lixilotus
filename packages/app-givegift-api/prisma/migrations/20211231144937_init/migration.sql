@@ -21,16 +21,14 @@ CREATE TABLE "vault" (
     "max_value" DOUBLE PRECISION NOT NULL,
     "fixed_value" DOUBLE PRECISION NOT NULL,
     "divided_value" INTEGER NOT NULL DEFAULT 1,
-    "encrypted_pubkey" TEXT NOT NULL,
-    "encrypted_privkey" TEXT NOT NULL,
+    "encrypted_xpriv" TEXT NOT NULL,
     "total_redeem" BIGINT NOT NULL DEFAULT 0,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "expiry_at" TIMESTAMP(3),
     "country" TEXT,
-    "status" TEXT NOT NULL,
+    "status" TEXT NOT NULL DEFAULT E'active',
     "account_id" INTEGER NOT NULL,
-    "derivation_path" TEXT NOT NULL,
     "derivation_index" INTEGER NOT NULL DEFAULT 0,
     "expiry_time" TIMESTAMPTZ,
     "address" TEXT NOT NULL,
@@ -51,6 +49,9 @@ CREATE TABLE "redeem" (
 
     CONSTRAINT "redeem_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE INDEX "account_mnemonic_hash_idx" ON "account"("mnemonic_hash");
 
 -- AddForeignKey
 ALTER TABLE "vault" ADD CONSTRAINT "vault_account_id_fkey" FOREIGN KEY ("account_id") REFERENCES "account"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

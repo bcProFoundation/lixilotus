@@ -9,7 +9,6 @@ import * as Redeem from './routes/redeem';
 import * as Healthcheck from './routes/healthcheck';
 import * as Account from './routes/account';
 import { handleError } from './middlewares/handleError';
-import BCHJS from '@abcpros/xpi-js';
 
 const bodyParser = require('body-parser');
 const compression = require('compression');
@@ -46,8 +45,6 @@ export class ExpressApp {
     Container.set('xpiWallet', ConstructedSlpWallet);
     Container.set('xpijs', ConstructedSlpWallet.bchjs);
 
-    // const XPI: BCHJS = getXPI();
-    // const Wallet = useWallet(XPI);
   }
 
   async start() {

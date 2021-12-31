@@ -7,7 +7,7 @@ import { SmartButton } from '@abcpros/givegift-components/components/Common/Prim
 import { AppContext } from 'src/store/store';
 import { useAppDispatch } from 'src/store/hooks';
 import { importVault } from 'src/store/vault/actions';
-import { ImportVaultDto } from '@abcpros/givegift-models/lib/vault';
+import { ImportVaultCommand } from '@abcpros/givegift-models/lib/vault';
 const { Panel } = Collapse;
 
 type ImportVaultFormProps = {
@@ -55,11 +55,11 @@ const ImportVaultForm = ({
       return;
     }
 
-    const importVaultDto: ImportVaultDto = {
-      encryptedPrivKey: formData.mnemonic,
+    const ImportVaultCommand: ImportVaultCommand = {
+      mnemonic: formData.mnemonic,
       redeemCode: formData.redeemCode
     };
-    dispatch(importVault(importVaultDto));
+    dispatch(importVault(ImportVaultCommand));
   }
 
   return (

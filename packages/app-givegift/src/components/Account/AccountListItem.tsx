@@ -2,8 +2,7 @@ import styled, { DefaultTheme } from 'styled-components';
 import { UserOutlined, WalletOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Account } from '@abcpros/givegift-models/lib/account';
 import { useAppDispatch } from 'src/store/hooks';
-import { Button } from 'antd';
-import { setAccount } from 'src/store/account/actions';
+import { selectAccount } from 'src/store/account/actions';
 
 const AccountIcon = styled.div`
   height: 32px;
@@ -49,7 +48,7 @@ const VaultListItem: React.FC<AccountListItemProps> = (props: AccountListItemPro
   const dispatch = useAppDispatch();
 
   const handleSelectAccount = (account: Account) => {
-    dispatch(setAccount(account));
+    dispatch(selectAccount(account.id));
   }
 
   const { account } = props;

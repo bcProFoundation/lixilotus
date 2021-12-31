@@ -20,11 +20,9 @@ export const redeemReducer = createReducer(initialState, (builder) => {
       const redeems = action.payload.redeems;
       redeemsAdapter.setAll(state, redeems);
     })
-
     .addCase(saveRedeemAddress, (state, action) => {
       state.currentAddress = action.payload;
     })
-
     .addCase(saveRedeemCode, (state, action) => {
       state.currentRedeemCode = action.payload;
     })

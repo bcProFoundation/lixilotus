@@ -1,4 +1,5 @@
 import express, { NextFunction } from 'express';
+import Container from 'typedi';
 import config from 'config';
 import { PrismaClient } from '@prisma/client';
 import BigNumber from 'bignumber.js';
@@ -101,19 +102,13 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
         throw new VError('Unable to redeem because the vault is invalid');
       }
 
-      const mnemonic = await aesGcmDecrypt(vault.encryptedPrivKey, password);
+      const xPriv = await aesGcmDecrypt(vault.encryptedXPriv, password);
 
-      const hdPath = "m/44'/10605'/0'/0/0";
-      const xpiWallet: MinimalBCHWallet = new SlpWallet(mnemonic, {
-        restURL: xpiRestUrl,
-        hdPath
-      });
-      const XPI: BCHJS = xpiWallet.bchjs;
+      const xpiWallet: MinimalBCHWallet = Container.get('xpiWallet');
+      const XPI: BCHJS = Container.get('xpijs');
 
       // Generate the HD wallet.
-      const rootSeedBuffer = await XPI.Mnemonic.toSeed(mnemonic);
-      const masterHDNode = XPI.HDNode.fromSeed(rootSeedBuffer);
-      const childNode = masterHDNode.derivePath(hdPath);
+      const childNode = XPI.HDNode.fromXPriv(xPriv);
       const vaultAddress: string = XPI.HDNode.toXAddress(childNode);
       const keyPair = XPI.HDNode.toKeyPair(childNode);
       const balance = await xpiWallet.getBalance(vaultAddress);
@@ -129,7 +124,7 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
       let satoshisToSend;
       if (vault.vaultType == VaultType.Random) {
         const xpiBalance = fromSmallestDenomination(balance);
-        const maxXpiValue = xpiBalance < vault.maxValue ? xpiBalance : vault.maxValue; 
+        const maxXpiValue = xpiBalance < vault.maxValue ? xpiBalance : vault.maxValue;
         const maxSatoshis = toSmallestDenomination(new BigNumber(maxXpiValue));
         const minSatoshis = toSmallestDenomination(new BigNumber(vault.minValue));
         satoshisToSend = maxSatoshis.minus(minSatoshis).times(new BigNumber(Math.random())).plus(minSatoshis);
@@ -137,7 +132,7 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
         satoshisToSend = toSmallestDenomination(new BigNumber(vault.fixedValue));
       } else {
         // The payout unit is satoshi
-        const payout = balance/vault.dividedValue;
+        const payout = balance / vault.dividedValue;
         satoshisToSend = new BigNumber(payout);
       }
 

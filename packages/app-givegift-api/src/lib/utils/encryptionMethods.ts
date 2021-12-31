@@ -60,3 +60,9 @@ export function base62ToNumber(text: string): number {
   }
   return result;
 }
+
+export async function hexSha256(text: string): Promise<string> {
+  const txtUtf8 = new TextEncoder().encode(text);
+  const txtHash = await crypto.createHash('sha256').update(txtUtf8).digest();
+  return txtHash.toString('hex');
+}

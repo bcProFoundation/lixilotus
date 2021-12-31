@@ -1,19 +1,23 @@
 
 import { PayloadAction } from "@reduxjs/toolkit";
+import { push } from 'connected-react-router';
 import BCHJS from "@abcpros/xpi-js";
 import { all, call, getContext, put, takeLatest, fork } from "redux-saga/effects";
 import { aesGcmEncrypt, generateRandomBase62Str } from "@utils/encryptionMethods";
-import { Account, CreateAccountCommand, ImportAccountCommand, AccountDto } from "@abcpros/givegift-models/lib/account";
+import { Account, Vault, CreateAccountCommand, ImportAccountCommand, AccountDto } from "@abcpros/givegift-models";
 import {
   getAccount, getAccountSuccess,
   getAccountFailure, postAccount,
   generateAccount, postAccountSuccess,
   postAccountFailure, setAccount,
-  importAccount, importAccountSuccess, importAccountFailure
+  importAccount, importAccountSuccess,
+  importAccountFailure, selectAccount,
+  selectAccountSuccess, selectAccountFailure,
 } from "./actions";
 import { hideLoading, showLoading } from "../loading/actions";
 import { showToast } from "../toast/actions";
-import accountApi from "./api";
+import accountApi from "../account/api";
+import vaultApi from "../vault/api";
 
 
 
@@ -155,6 +159,35 @@ function* importAccountFailureSaga(action: PayloadAction<string>) {
   yield put(hideLoading(importAccount.type));
 }
 
+function* selectAccountSaga(action: PayloadAction<number>) {
+  try {
+    yield put(showLoading(selectAccount.type));
+    const accountId = action.payload;
+    const data = yield call(accountApi.getById, accountId);
+    const account = data as Account;
+    const vaultsData = yield call(vaultApi.getByAccountId, accountId);
+    const vaults = (vaultsData ?? []) as Vault[];
+    yield put(selectAccountSuccess({ account: account, vaults: vaults }));
+  } catch (err) {
+    const message = (err as Error).message ?? `Unable to refresh the vault.`;
+    yield put(selectAccountFailure(message));
+  }
+}
+
+function* selectAccountSuccessSaga(action: PayloadAction<Account>) {
+  yield put(hideLoading(selectAccount.type));
+}
+
+function* selectAccountFailureSaga(action: PayloadAction<string>) {
+  const message = action.payload ?? 'Unable to select the account.';
+  yield put(showToast('error', {
+    message: 'Error',
+    description: message,
+    duration: 5
+  }));
+  yield put(hideLoading(selectAccount.type));
+}
+
 function* watchGenerateAccount() {
   yield takeLatest(generateAccount.type, generateAccountSaga);
 }
@@ -195,6 +228,18 @@ function* watchImportAccountFailure() {
   yield takeLatest(importAccountFailure.type, importAccountFailureSaga);
 }
 
+function* watchSelectAccount() {
+  yield takeLatest(selectAccount.type, selectAccountSaga);
+}
+
+function* watchSelectAccountSuccess() {
+  yield takeLatest(selectAccountSuccess.type, selectAccountSuccessSaga);
+}
+
+function* watchSelectAccountFailure() {
+  yield takeLatest(selectAccountFailure.type, selectAccountFailureSaga);
+}
+
 export default function* accountSaga() {
   yield all([
     fork(watchGenerateAccount),
@@ -206,6 +251,9 @@ export default function* accountSaga() {
     fork(watchPostAccountFailure),
     fork(watchImportAccount),
     fork(watchImportAccountSuccess),
-    fork(watchImportAccountFailure)
+    fork(watchImportAccountFailure),
+    fork(watchSelectAccount),
+    fork(watchSelectAccountSuccess),
+    fork(watchSelectAccountFailure)
   ]);
 }

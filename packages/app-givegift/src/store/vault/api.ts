@@ -1,4 +1,4 @@
-import { CreateVaultDto, ImportVaultDto, VaultDto } from "@abcpros/givegift-models/lib/vault";
+import { CreateVaultCommand, ImportVaultCommand, VaultDto } from "@abcpros/givegift-models/lib/vault";
 import axiosClient from "@utils/axiosClient";
 
 const vaultApi = {
@@ -13,7 +13,7 @@ const vaultApi = {
         throw response?.data ?? err ?? 'Network Error';
       })
   },
-  post(data: CreateVaultDto): Promise<VaultDto> {
+  post(data: CreateVaultCommand): Promise<VaultDto> {
     const url = '/api/vaults';
     return axiosClient.post(url, data)
       .then(response => {
@@ -24,7 +24,7 @@ const vaultApi = {
         throw response?.data ?? err ?? 'Network Error';
       })
   },
-  import(data: ImportVaultDto): Promise<VaultDto> {
+  import(data: ImportVaultCommand): Promise<VaultDto> {
     const url = '/api/vaults/import';
     return axiosClient.post(url, data)
       .then(response => {
@@ -34,6 +34,17 @@ const vaultApi = {
         const { response } = err;
         throw response?.data ?? err ?? 'Network Error';
       })
+  },
+  getByAccountId(id: number) {
+    const url = `/api/accounts/${id}/vaults`;
+    return axiosClient.get(url)
+      .then(response => {
+        return response.data as VaultDto[];
+      })
+      .catch(err => {
+        const { response } = err;
+        throw response.data;
+      });
   }
 };
 

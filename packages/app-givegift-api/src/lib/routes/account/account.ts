@@ -31,6 +31,7 @@ router.post('/import', async (req: express.Request, res: express.Response, next:
 
     const resultApi: AccountDto = {
       ...account,
+      mnemonic: mnemonic,
       name: account.name
     };
 
@@ -62,7 +63,7 @@ router.get('/:id/vaults', async (req: express.Request, res: express.Response, ne
         maxRedeem: Number(item.maxRedeem),
         redeemedNum: Number(item.redeemedNum),
         dividedValue: Number(item.dividedValue)
-      } as Vault;
+      } as unknown as Vault;
     });
 
     res.json(results ?? []);

@@ -1,13 +1,13 @@
+import * as _ from 'lodash';
 import express, { NextFunction } from 'express';
 import VError from 'verror';
 import { PrismaClient, Vault as VaultDb } from '@prisma/client';
-import { CreateVaultDto, VaultDto } from '@abcpros/givegift-models';
+import { CreateVaultCommand, VaultDto } from '@abcpros/givegift-models';
 import { router as vaultChildRouter } from './vault';
 import { logger } from '../../logger';
 import { aesGcmDecrypt, aesGcmEncrypt } from '../../utils/encryptionMethods';
 import Container from 'typedi';
-import { WalletService } from 'src/lib/services/wallet';
-import { orderBy } from 'lodash';
+import { WalletService } from '../../services/wallet';
 
 const prisma = new PrismaClient();
 let router = express.Router();
@@ -21,12 +21,11 @@ router.get('/vaults/:id/', async (req: express.Request, res: express.Response, n
       }
     });
     if (!vault) throw new VError('The vault does not exist in the database.');
-    const result = {
+    let result = {
       ...vault,
-      totalRedeem: Number(vault.totalRedeem),
-      encryptedPubKey: String(vault.encryptedPubKey),
-      encryptedPrivKey: String(vault.encryptedPrivKey)
+      totalRedeem: Number(vault.totalRedeem)
     } as VaultDto;
+    result = _.omit(result, 'encryptedXPriv');
     return res.json(result);
   } catch (err: unknown) {
     if (err instanceof VError) {
@@ -40,23 +39,27 @@ router.get('/vaults/:id/', async (req: express.Request, res: express.Response, n
 
 router.post('/vaults', async (req: express.Request, res: express.Response, next: NextFunction) => {
 
-  // Add mnemonic and required field to CreateVaultDto
-  const vaultApi: CreateVaultDto = req.body;
-  if (vaultApi) {
+  // Add mnemonic and required field to CreateVaultCommand
+  const command: CreateVaultCommand = req.body;
+  if (command) {
     try {
-      const mnemonicFromApi = vaultApi.mnemonic;
-      const encryptedMnemonicFromApi = await aesGcmEncrypt(mnemonicFromApi, mnemonicFromApi);
+      const mnemonicFromApi = command.mnemonic;
 
       const account = await prisma.account.findFirst({
         where: {
-          encryptedMnemonic: encryptedMnemonicFromApi
+          id: command.accountId,
+          mnemonicHash: command.mnemonicHash
         }
       });
 
       if (!account) {
-        return res.status(400).json({
-          message: 'Could not find the associated account.'
-        });
+        throw new Error('Could not find the associated account.');
+      }
+
+      // Decrypt to validate the mnemonic
+      const mnemonicToValidate = await aesGcmDecrypt(account.encryptedMnemonic, mnemonicFromApi);
+      if (mnemonicFromApi !== mnemonicToValidate) {
+        throw Error('Could not create vault because the account is invalid.');
       }
 
       // find the latest vault created
@@ -73,25 +76,35 @@ router.post('/vaults', async (req: express.Request, res: express.Response, next:
       let vaultIndex = 0;
       if (latestVault) {
         vaultIndex = latestVault.derivationIndex + 1;
-        const walletService: WalletService = Container.get('WalletService');
-        const walletDetail = await walletService.getWalletDetails(mnemonicFromApi, vaultIndex);
-        return res.json({ walletDetail });
       }
 
+      const walletService: WalletService = Container.get(WalletService);
+      const { address, xpriv } = await walletService.deriveVault(mnemonicFromApi, vaultIndex);
+      const encryptedXPriv = await aesGcmEncrypt(xpriv, command.password);
 
-      // const vaultToInsert = {
-      //   ...vaultApi,
-      // };
-      // const createdVault = await prisma.vault.create({ data: vaultToInsert });
+      const data = {
+        ..._.omit(command, ['mnemonic', 'mnemonicHash', 'password']),
+        id: undefined,
+        derivationIndex: vaultIndex,
+        redeemedNum: 0,
+        encryptedXPriv,
+        status: 'active',
+        expiryTime: null,
+        address,
+        totalRedeem: BigInt(0),
+      };
+      const vaultToInsert = _.omit(data, 'password');
+      const createdVault: VaultDb = await prisma.vault.create({ data: vaultToInsert });
 
-      // const resultApi: VaultDto = {
-      // ...createdVault,
-      // totalRedeem: Number(createdVault.totalRedeem),
-      // expiryAt: createdVault.expiryAt ? createdVault.expiryAt : undefined,
-      // country: createdVault.country ? createdVault.country : undefined
-      // };
+      let resultApi: VaultDto = {
+        ...createdVault,
+        totalRedeem: Number(createdVault.totalRedeem),
+        expiryAt: createdVault.expiryAt ? createdVault.expiryAt : undefined,
+        country: createdVault.country ? createdVault.country : undefined
+      };
+      resultApi = _.omit(resultApi, 'encryptedXPriv');
 
-      res.json({});
+      res.json(resultApi);
     } catch (err) {
       if (err instanceof VError) {
         return next(err);

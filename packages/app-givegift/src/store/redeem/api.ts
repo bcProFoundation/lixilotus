@@ -22,7 +22,7 @@ const redeemApi = {
       .catch(err => {
         const { response } = err;
         throw response.data;
-      })
+      });
   }
 };
 

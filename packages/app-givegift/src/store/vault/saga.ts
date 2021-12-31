@@ -1,7 +1,7 @@
 import { PayloadAction } from "@reduxjs/toolkit";
 import { push } from 'connected-react-router';
 import BCHJS from "@abcpros/xpi-js";
-import { CreateVaultDto, GenerateVaultDto, ImportVaultDto, Vault, VaultDto } from "@abcpros/givegift-models/lib/vault";
+import { CreateVaultCommand, GenerateVaultCommand, ImportVaultCommand, Vault, VaultDto } from "@abcpros/givegift-models/lib/vault";
 import { all, call, fork, getContext, put, select, takeLatest } from "@redux-saga/core/effects";
 import { generateVault, getVault, getVaultActionType, getVaultFailure, getVaultSuccess, importVault, importVaultActionType, importVaultFailure, importVaultSuccess, postVault, postVaultActionType, postVaultFailure, postVaultSuccess, refreshVault, refreshVaultActionType, refreshVaultFailure, refreshVaultSuccess, selectVault, setVault } from "./actions";
 import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase62Str, numberToBase62 } from "@utils/encryptionMethods";
@@ -16,38 +16,29 @@ import { getSelectedVault } from 'src/store/vault/selectors';
  * Generate a vault with random encryption password
  * @param action The data to needed generate a vault
  */
-function* generateVaultSaga(action: PayloadAction<GenerateVaultDto>) {
-  const XPI = yield getContext('XPI');
-  const vaultDto = action.payload;
-  const lang = 'english';
-  const Bip39128BitMnemonic = XPI.Mnemonic.generate(128, XPI.Mnemonic.wordLists()[lang]);
-  const password = generateRandomBase62Str(8);
-  const encryptedMnemonic: string = yield call(aesGcmEncrypt, Bip39128BitMnemonic, password);
+function* generateVaultSaga(action: PayloadAction<GenerateVaultCommand>) {
+  const command = action.payload;
 
-  const vault: Vault = {
-    id: 0,
-    name: vaultDto.name,
-    maxRedeem: Number(vaultDto.maxRedeem),
-    expiryAt: vaultDto && vaultDto.expiryAt ? new Date(vaultDto.expiryAt) : undefined,
-    vaultType: vaultDto.vaultType,
-    //encryptedMnemonic: encryptedMnemonic,
-    minValue: Number(vaultDto.minValue),
-    maxValue: Number(vaultDto.maxValue),
-    fixedValue: Number(vaultDto.fixedValue),
-    dividedValue: Number(vaultDto.dividedValue),
-    country: vaultDto && vaultDto.country ? vaultDto.country : undefined,
-    totalRedeem: 0,
-    redeemCode: password,
-    //mnemonic: Bip39128BitMnemonic,
-    balance: 0,
-    status: "active",
-    redeemedNum: Number(),
-    accountId: Number(),
-    encryptedPubKey: String(),
-    encryptedPrivKey: String()
+  const password = generateRandomBase62Str(8);
+  const mnemonic = command.mnemonic;
+
+  const createVaultCommand: CreateVaultCommand = {
+    name: command.name,
+    accountId: command.accountId,
+    maxRedeem: Number(command.maxRedeem),
+    expiryAt: command && command.expiryAt ? new Date(command.expiryAt) : undefined,
+    vaultType: command.vaultType,
+    minValue: Number(command.minValue),
+    maxValue: Number(command.maxValue),
+    fixedValue: Number(command.fixedValue),
+    dividedValue: Number(command.dividedValue),
+    country: command && command.country ? command.country : undefined,
+    password: password,
+    mnemonic: mnemonic,
+    mnemonicHash: command.mnemonicHash
   };
 
-  yield put(postVault(vault));
+  yield put(postVault(createVaultCommand));
 
 }
 
@@ -67,28 +58,18 @@ function* getVaultSaga(action: PayloadAction<number>) {
   }
 }
 
-function* postVaultSaga(action: PayloadAction<Vault>) {
+function* postVaultSaga(action: PayloadAction<CreateVaultCommand>) {
   try {
-    const vault = action.payload;
+    const command = action.payload;
 
-    const dataApi: CreateVaultDto = {
-      name: vault.name,
-      maxRedeem: vault.maxRedeem,
-      redeemedNum: vault.redeemedNum,
-      expiryAt: vault.expiryAt,
-      vaultType: vault.vaultType,
-      mnemonic: "Need to provide",
-      minValue: vault.minValue,
-      maxValue: vault.maxValue,
-      fixedValue: vault.fixedValue,
-      dividedValue: vault.dividedValue,
-      country: vault.country
+    const dataApi: CreateVaultCommand = {
+      ...command
     }
 
     const data: VaultDto = yield call(vaultApi.post, dataApi);
 
     // Merge back to action payload
-    const result = { ...vault, ...data } as Vault;
+    const result = { ...data } as Vault;
     yield put(postVaultSuccess(result));
 
   } catch (err) {
@@ -153,20 +134,20 @@ function* postVaultFailureSaga(action: PayloadAction<string>) {
   yield put(hideLoading(postVaultActionType));
 }
 
-function* importVaultSaga(action: PayloadAction<ImportVaultDto>) {
+function* importVaultSaga(action: PayloadAction<ImportVaultCommand>) {
   try {
 
     // yield put(showLoading(importVaultActionType));
 
-    // const importVaultDto = action.payload;
+    // const ImportVaultCommand = action.payload;
 
-    // const data: VaultDto = yield call(vaultApi.import, importVaultDto);
+    // const data: VaultDto = yield call(vaultApi.import, ImportVaultCommand);
 
     // // Merge back to action payload
     // const result = {
     //   ...data,
-    //   mnemonic: importVaultDto.mnemonic,
-    //   redeemCode: importVaultDto.redeemCode
+    //   mnemonic: ImportVaultCommand.mnemonic,
+    //   redeemCode: ImportVaultCommand.redeemCode
     // } as Vault;
 
     // yield put(importVaultSuccess(result));

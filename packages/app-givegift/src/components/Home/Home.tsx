@@ -4,16 +4,19 @@ import { ExclamationCircleOutlined, ImportOutlined, LockOutlined, PlusSquareOutl
 import { useAppSelector } from "src/store/hooks";
 import { AntdFormWrapper } from "@components/Common/EnhancedInputs";
 import AccountList from "@components/Account/AccountList";
-import { getAllAccounts } from "src/store/account/selectors";
-import { CashLoadingIcon } from "@abcpros/givegift-components/components/Common/CustomIcons";
-import PrimaryButton, { SecondaryButton, SmartButton } from "@components/Common/PrimaryButton";
 import { getIsGlobalLoading } from "src/store/loading/selectors";
+import { getAllAccounts, getSelectedAccount } from "src/store/account/selectors";
+import { getAllVaults } from "src/store/vault/selectors";
+import { CashLoadingIcon, ThemedWalletOutlined } from "@abcpros/givegift-components/components/Common/CustomIcons";
+import WalletLabel from "@abcpros/givegift-components/components/Common/WalletLabel";
+import PrimaryButton, { SecondaryButton, SmartButton } from "@components/Common/PrimaryButton";
 import ModalManager from "@components/Common/ModalManager";
+import CreateVaultForm from "@components/Vault/CreateVaultForm";
+import ImportVaultForm from "@components/Vault/ImportVaultForm";
+import VaultList from "@components/Vault/VaultList";
 import { AppContext } from "src/store/store";
 import { useAppDispatch } from "src/store/hooks";
 import { generateAccount, importAccount } from "src/store/account/actions";
-
-
 
 const Home: React.FC = () => {
 
@@ -29,6 +32,8 @@ const Home: React.FC = () => {
   const { confirm } = Modal;
   const isLoading = useAppSelector(getIsGlobalLoading);
   const accounts = useAppSelector(getAllAccounts);
+  const vaults = useAppSelector(getAllVaults);
+  const selectedAccount = useAppSelector(getSelectedAccount);
 
   async function showBackupConfirmModal() {
     confirm({
@@ -72,6 +77,7 @@ const Home: React.FC = () => {
     <>
       <ModalManager />
       <Spin spinning={isLoading} indicator={CashLoadingIcon}>
+        <WalletLabel name={selectedAccount?.name ?? ''} />
         <PrimaryButton
           style={{ marginTop: '100px' }}
           onClick={() => showBackupConfirmModal()}
@@ -116,6 +122,17 @@ const Home: React.FC = () => {
           </AntdFormWrapper>
         )}
         <AccountList accounts={accounts} />
+
+        <h2>
+          <ThemedWalletOutlined /> Manage Vaults
+        </h2>
+
+        <CreateVaultForm account={selectedAccount}
+        />
+        <ImportVaultForm
+          createVault={() => { }}
+        />
+        <VaultList vaults={vaults} />
       </Spin>
     </>
   )
