@@ -61,6 +61,24 @@ export function base62ToNumber(text: string): number {
   return result;
 }
 
+export function numberToBase62(input: number): string {
+  let n = input;
+
+  if (n === 0) {
+    return '0';
+  }
+
+  const base = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+
+  let result = '';
+  while (n > 0) {
+    result = base[n % base.length] + result;
+    n = Math.floor(n / base.length);
+  }
+
+  return result;
+}
+
 export async function hexSha256(text: string): Promise<string> {
   const txtUtf8 = new TextEncoder().encode(text);
   const txtHash = await crypto.createHash('sha256').update(txtUtf8).digest();

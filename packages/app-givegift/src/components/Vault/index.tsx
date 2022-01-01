@@ -129,10 +129,10 @@ const Vault: React.FC = () => {
 
   return (
     <>
-      {selectedVault && selectedVault.Path10605 && (
+      {selectedVault && selectedVault.address && (
         <>
           <QRCode
-            address={selectedVault.Path10605.xAddress}
+            address={selectedVault.address}
           />
 
           <Descriptions
@@ -173,20 +173,6 @@ const Vault: React.FC = () => {
                 <Descriptions.Item label="Redeem Code">
                   {selectedVault.redeemCode}
                 </Descriptions.Item>
-                {/* <Descriptions.Item label="Seed">
-                  <CopyToClipboard 
-                    tyle={{
-                      display: 'inline-block',
-                      width: '100%',
-                      position: 'relative',
-                    }}
-                    text={selectedVault.encryptedPrivKey}
-                  >
-                    <div style={{ position: 'relative' }} onClick={handleOnClickSeed}>
-                      {selectedVault.encryptedPrivKey} <CopyOutlined/>
-                    </div>
-                  </CopyToClipboard>
-                </Descriptions.Item> */}
               </Descriptions>
             </Panel>
           </StyledCollapse>

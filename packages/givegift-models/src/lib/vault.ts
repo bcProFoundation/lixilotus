@@ -36,6 +36,7 @@ export interface VaultDto {
   maxRedeem: number;
   redeemedNum: number;
   vaultType: number;
+  redeemCode?: string;
   minValue: number;
   maxValue: number;
   fixedValue: number;
@@ -45,6 +46,7 @@ export interface VaultDto {
   updatedAt?: Date;
   expiryAt?: Date;
   country?: string;
+  balance?: number;
   status: string;
 };
 
@@ -65,11 +67,7 @@ export interface Vault {
   expiryAt?: Date;
   country?: string;
   balance?: number;
-  Path10605?: {
-    cashAddress: string;
-    xAddress: string;
-    legacyAddress: string;
-  };
+  address: string;
   status: string;
   accountId: number;
 };

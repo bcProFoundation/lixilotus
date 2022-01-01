@@ -104,8 +104,14 @@ function* postAccountSaga(action: PayloadAction<Account>) {
 
 function* postAccountSuccessSaga(action: PayloadAction<Account>) {
   const account = action.payload;
-  yield put(hideLoading(postAccount.type));
+  yield put(showToast('success', {
+    message: 'Success',
+    description: 'Create account successfully.',
+    duration: 5
+  }));
   yield put(setAccount(account));
+  yield put(hideLoading(postAccount.type));
+
 }
 
 function* postAccountFailureSaga(action: PayloadAction<string>) {
@@ -169,7 +175,7 @@ function* selectAccountSaga(action: PayloadAction<number>) {
     const vaults = (vaultsData ?? []) as Vault[];
     yield put(selectAccountSuccess({ account: account, vaults: vaults }));
   } catch (err) {
-    const message = (err as Error).message ?? `Unable to refresh the vault.`;
+    const message = (err as Error).message ?? `Unable to select the account.`;
     yield put(selectAccountFailure(message));
   }
 }

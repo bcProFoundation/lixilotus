@@ -136,7 +136,6 @@ function App(): JSX.Element {
             {!selectedAccount
               ? <OnboardingComponent></OnboardingComponent>
               : <>
-
                 <AppContainer>
                   <HeaderContainer>
                     <LotusLogo src={LixiLogo} alt="lixi" />

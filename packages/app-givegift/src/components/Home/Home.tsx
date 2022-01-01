@@ -78,15 +78,6 @@ const Home: React.FC = () => {
       <ModalManager />
       <Spin spinning={isLoading} indicator={CashLoadingIcon}>
         <WalletLabel name={selectedAccount?.name ?? ''} />
-        <PrimaryButton
-          style={{ marginTop: '100px' }}
-          onClick={() => showBackupConfirmModal()}
-        >
-          <PlusSquareOutlined /> New Account
-        </PrimaryButton>
-        <SecondaryButton onClick={() => openSeedInput(!seedInput)}>
-          <ImportOutlined /> Import Account
-        </SecondaryButton>
         {seedInput && (
           <AntdFormWrapper>
             <Form style={{ width: 'auto' }}>
@@ -121,8 +112,6 @@ const Home: React.FC = () => {
             </Form>
           </AntdFormWrapper>
         )}
-        <AccountList accounts={accounts} />
-
         <h2>
           <ThemedWalletOutlined /> Manage Vaults
         </h2>

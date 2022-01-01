@@ -16,7 +16,7 @@ export const accountReducer = createReducer(initialState, (builder) => {
     .addCase(setAccount, (state, action) => {
       const account = action.payload;
       accountsAdapter.upsertOne(state, account);
-      state.selectedId = account.id ?? 0;
+      state.selectedId = account.id ?? undefined;
     })
     .addCase(selectAccountSuccess, (state, action) => {
       const { account, vaults } = action.payload;

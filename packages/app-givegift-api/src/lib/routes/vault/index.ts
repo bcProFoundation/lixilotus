@@ -2,10 +2,11 @@ import * as _ from 'lodash';
 import express, { NextFunction } from 'express';
 import VError from 'verror';
 import { PrismaClient, Vault as VaultDb } from '@prisma/client';
+import MinimalBCHWallet from '@abcpros/minimal-xpi-slp-wallet';
 import { CreateVaultCommand, VaultDto } from '@abcpros/givegift-models';
 import { router as vaultChildRouter } from './vault';
 import { logger } from '../../logger';
-import { aesGcmDecrypt, aesGcmEncrypt } from '../../utils/encryptionMethods';
+import { aesGcmDecrypt, aesGcmEncrypt, numberToBase62 } from '../../utils/encryptionMethods';
 import Container from 'typedi';
 import { WalletService } from '../../services/wallet';
 
@@ -21,8 +22,12 @@ router.get('/vaults/:id/', async (req: express.Request, res: express.Response, n
       }
     });
     if (!vault) throw new VError('The vault does not exist in the database.');
+
+    const xpiWallet: MinimalBCHWallet = Container.get('xpiWallet');
+    const balance: number = await xpiWallet.getBalance(vault.address);
     let result = {
       ...vault,
+      balance: balance,
       totalRedeem: Number(vault.totalRedeem)
     } as VaultDto;
     result = _.omit(result, 'encryptedXPriv');
@@ -91,13 +96,18 @@ router.post('/vaults', async (req: express.Request, res: express.Response, next:
         status: 'active',
         expiryTime: null,
         address,
-        totalRedeem: BigInt(0),
+        totalRedeem: BigInt(0)
       };
       const vaultToInsert = _.omit(data, 'password');
       const createdVault: VaultDb = await prisma.vault.create({ data: vaultToInsert });
 
+      const encodedId = numberToBase62(createdVault.id);
+      const redeemCode = command.password + encodedId;
+
       let resultApi: VaultDto = {
         ...createdVault,
+        balance: 0,
+        redeemCode: redeemCode,
         totalRedeem: Number(createdVault.totalRedeem),
         expiryAt: createdVault.expiryAt ? createdVault.expiryAt : undefined,
         country: createdVault.country ? createdVault.country : undefined

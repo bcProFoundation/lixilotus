@@ -1,6 +1,6 @@
 import { createEntityAdapter, createReducer, Update } from "@reduxjs/toolkit"
 import { Vault } from "@abcpros/givegift-models/lib/vault";
-import { refreshVaultSuccess, selectVault, setVault } from "./actions";
+import { refreshVaultSuccess, selectVaultSuccess, setVault } from "./actions";
 import { VaultsState } from "./state"
 import { selectAccountSuccess } from "../account/actions";
 
@@ -17,15 +17,24 @@ export const vaultReducer = createReducer(initialState, (builder) => {
   builder
     .addCase(setVault, (state, action) => {
       const vault = action.payload;
-      vaultsAdapter.addOne(state, vault);
-      state.selectedId = vault.id;
+      vaultsAdapter.upsertOne(state, vault);
+      state.selectedId = vault.id ?? undefined;
     })
-    .addCase(selectVault, (state, action) => {
-      const id = action.payload;
-      state.selectedId = id;
+    .addCase(selectVaultSuccess, (state, action) => {
+      const { vault, redeems } = action.payload;
+      state.selectedId = vault.id;
+      const updateVault: Update<Vault> = {
+        id: vault.id,
+        changes: {
+          ...vault
+        }
+      };
+      vaultsAdapter.updateOne(state, updateVault);
+      const redeemIds = redeems.map(redeem => redeem.id);
+      state.redeemIdsById[vault.id] = redeemIds;
     })
     .addCase(refreshVaultSuccess, (state, action) => {
-      const vault = action.payload.vault;
+      const { vault, redeems } = action.payload;
       const updateVault: Update<Vault> = {
         id: vault.id,
         changes: {

@@ -62,9 +62,6 @@ const VaultListItem: React.FC<VaultListItemProps> = (props: VaultListItemProps) 
       <VaultIcon>
         <WalletIcon />
       </VaultIcon>
-      <Button icon={<DeleteOutlined />}></Button>
-      <Button>Active</Button>
-
       <BalanceAndTicker>
         <strong>{vault.name}</strong>
       </BalanceAndTicker>
