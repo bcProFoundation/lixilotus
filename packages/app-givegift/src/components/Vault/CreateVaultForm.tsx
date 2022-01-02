@@ -4,7 +4,7 @@ import { PlusSquareOutlined } from '@ant-design/icons';
 import isEmpty from 'lodash.isempty';
 import { range } from 'lodash';
 import moment from 'moment';
-import { VaultCollapse } from "@abcpros/givegift-components/components/Common/StyledCollapse";
+import { AdvancedCollapse, VaultCollapse } from "@abcpros/givegift-components/components/Common/StyledCollapse";
 import { AntdFormWrapper } from '@abcpros/givegift-components/components/Common/EnhancedInputs';
 import { SmartButton } from '@abcpros/givegift-components/components/Common/PrimaryButton';
 import { currency } from '@abcpros/givegift-components/components/Common/Ticker';
@@ -17,6 +17,7 @@ import { generateVault } from 'src/store/vault/actions';
 import { openModal } from 'src/store/modal/actions';
 import { CreateVaultConfirmationModalProps } from './CreateVaultConfirmationModal';
 const { Panel } = Collapse;
+const { RangePicker } = DatePicker;
 
 type CreateVaultFormProps = {
 } & React.HTMLProps<HTMLElement>;
@@ -269,7 +270,7 @@ const CreateVaultForm = ({
             <Input
               addonBefore="Max Redeem"
               type="number"
-              placeholder="Enter max Redeem number for your vault"
+              placeholder="Enter max Redeem number"
               name="vaultMaxReDeem"
               value={newMaxRedeem}
               onChange={e => handleNewMaxRedeemInput(e)}
@@ -285,22 +286,23 @@ const CreateVaultForm = ({
               : 'error'
           }
         >
-          <Space direction="horizontal" >
-            <DatePicker
-              placeholder="Expiry time for your vault"
-              name="vaultExpiryAt"
-              disabledDate={(current) => disabledDate(current)}
-              disabledTime={(current) => disabledDateTime(current)}
-              showTime={{ 
-                format: 'HH:mm',
-                defaultValue: moment()
-              }}
-              format="YYYY-MM-DD HH:mm"
-              size={'large'}
-              onSelect={handleNewExpityTimeInput}
-              onOk={onOk}
-              />
-          </Space>
+          <DatePicker
+            placeholder="Expiry time for your vault"
+            name="vaultExpiryAt"
+            disabledDate={(current) => disabledDate(current)}
+            disabledTime={(current) => disabledDateTime(current)}
+            showTime={{ 
+              format: 'HH:mm',
+              defaultValue: moment()
+            }}
+            format="YYYY-MM-DD HH:mm"
+            size={'large'}
+            style={{
+              width: "100%",
+            }}
+            onSelect={handleNewExpityTimeInput}
+            onOk={onOk}
+            />
         </Form.Item>
       </>
     );
@@ -353,18 +355,25 @@ const CreateVaultForm = ({
                 </Radio.Group>
               </Form.Item>
               {selectVaultType()}
+
+              {/* Advanced */}
               <Form.Item>
-                {selectExpiry()}
+                <AdvancedCollapse>
+                  <Panel header="Advanced" key="2">
+                    {selectExpiry()}
+                    <Form.Item>
+                      <AntdFormWrapper>
+                        <CountrySelectDropdown
+                          countries={countries}
+                          defaultValue={newCountryVault ? newCountryVault : 'All of country'}
+                          handleChangeCountry={handleChangeCountry}
+                        />
+                      </AntdFormWrapper>
+                    </Form.Item>
+                  </Panel>
+                </AdvancedCollapse>
               </Form.Item>
-              <Form.Item>
-                <AntdFormWrapper>
-                  <CountrySelectDropdown
-                    countries={countries}
-                    defaultValue={newCountryVault ? newCountryVault : 'All of country'}
-                    handleChangeCountry={handleChangeCountry}
-                  />
-                </AntdFormWrapper>
-              </Form.Item>
+              
             </Form>
           </AntdFormWrapper>
           <SmartButton
