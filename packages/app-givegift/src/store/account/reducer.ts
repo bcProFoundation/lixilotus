@@ -1,6 +1,6 @@
 import { createEntityAdapter, createReducer, Update } from "@reduxjs/toolkit";
 import { Account } from "@abcpros/givegift-models";
-import { selectAccountSuccess, setAccount } from "./actions";
+import { renameAccountSuccess, selectAccountSuccess, setAccount } from "./actions";
 import { AccountsState } from "./state";
 
 export const accountsAdapter = createEntityAdapter<Account>({
@@ -26,6 +26,16 @@ export const accountReducer = createReducer(initialState, (builder) => {
       state.vaultIdsById[id] = vaultIds;
       const updateAccount: Update<Account> = {
         id,
+        changes: {
+          ...account
+        }
+      };
+      accountsAdapter.updateOne(state, updateAccount);
+    })
+    .addCase(renameAccountSuccess, (state, action) => {
+      const account = action.payload;
+      const updateAccount: Update<Account> = {
+        id: account.id,
         changes: {
           ...account
         }

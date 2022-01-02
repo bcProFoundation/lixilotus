@@ -1,13 +1,14 @@
 import { Alert, Collapse, Form, Input, Spin } from 'antd';
 import { useState } from 'react';
-import { generateAccount } from 'src/store/account/actions';
+import { generateAccount, renameAccount } from 'src/store/account/actions';
 import { getAllAccounts, getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
+import { openModal } from 'src/store/modal/actions';
 import styled from 'styled-components';
 
 import { CashLoadingIcon } from '@abcpros/givegift-components/components/Common/CustomIcons';
-import { Account } from '@abcpros/givegift-models';
+import { Account, RenameAccountCommand } from '@abcpros/givegift-models';
 import {
   CopyOutlined, ImportOutlined, LockOutlined, PlusSquareOutlined, WalletOutlined
 } from '@ant-design/icons';
@@ -17,6 +18,7 @@ import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
 import PrimaryButton, { SecondaryButton, SmartButton } from '@components/Common/PrimaryButton';
 import { StyledCollapse } from '@components/Common/StyledCollapse';
 import { StyledSpacer } from '@components/Common/StyledSpacer';
+import { RenameAccountModalProps } from './RenameAccountModal';
 
 const { Panel } = Collapse
 
@@ -146,6 +148,19 @@ const Settings: React.FC = () => {
   const savedAccounts: Account[] = useAppSelector(getAllAccounts);
   const selectedAccount: Account | undefined = useAppSelector(getSelectedAccount);
 
+  const showPopulatedRenameAccountModal = (account: Account) => {
+    const command: RenameAccountCommand = {
+      id: account.id,
+      mnemonic: account.mnemonic,
+      name: account.name,
+    };
+    const renameAcountModalProps: RenameAccountModalProps = {
+      account: account,
+      onOkAction: renameAccount(command)
+    };
+    dispatch(openModal('RenameAccountModal', renameAcountModalProps));
+  }
+
   async function submit() {
     setFormData({
       ...formData,
@@ -243,17 +258,17 @@ const Settings: React.FC = () => {
                 </AWRow>
                 <div>
                   {savedAccounts.map(acc => (
-                    <SWRow key={acc.name}>
+                    <SWRow key={acc.id}>
                       <SWName>
                         <h3>{acc.name}</h3>
                       </SWName>
 
                       <SWButtonCtn>
                         <Edit
-                          onClick={() => { }
-                            // showPopulatedRenameWalletModal(
-                            //   sw,
-                            // )
+                          onClick={() =>
+                            showPopulatedRenameAccountModal(
+                              acc,
+                            )
                           }
                         />
                         <Trashcan

@@ -9,6 +9,12 @@ export interface ImportAccountCommand {
   mnemonicHash: string;
 }
 
+export interface RenameAccountCommand {
+  id: number;
+  mnemonic: string;
+  name: string;
+}
+
 export interface AccountDto {
   id?: number;
   name: string;

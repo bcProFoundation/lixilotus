@@ -1,23 +1,21 @@
-import React, { useState } from "react";
-import { Form, Input, Spin, Modal } from "antd";
-import { ExclamationCircleOutlined, ImportOutlined, LockOutlined, PlusSquareOutlined } from "@ant-design/icons";
-import { useAppSelector } from "src/store/hooks";
-import { AntdFormWrapper } from "@components/Common/EnhancedInputs";
-import AccountList from "@components/Account/AccountList";
-import { getIsGlobalLoading } from "src/store/loading/selectors";
-import { getAllAccounts, getSelectedAccount } from "src/store/account/selectors";
-import { getAllVaults } from "src/store/vault/selectors";
-import { CashLoadingIcon, ThemedWalletOutlined } from "@abcpros/givegift-components/components/Common/CustomIcons";
-import WalletLabel from "@abcpros/givegift-components/components/Common/WalletLabel";
-import PrimaryButton, { SecondaryButton, SmartButton } from "@components/Common/PrimaryButton";
-import ModalManager from "@components/Common/ModalManager";
-import CreateVaultForm from "@components/Vault/CreateVaultForm";
-import ImportVaultForm from "@components/Vault/ImportVaultForm";
-import { StyledSpacer } from "@components/Common/StyledSpacer";
-import VaultList from "@components/Vault/VaultList";
-import { AppContext } from "src/store/store";
-import { useAppDispatch } from "src/store/hooks";
-import { generateAccount, importAccount } from "src/store/account/actions";
+import { Form, Input, Modal, Spin } from 'antd';
+import React, { useState } from 'react';
+import { generateAccount, importAccount } from 'src/store/account/actions';
+import { getSelectedAccount } from 'src/store/account/selectors';
+import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import { getIsGlobalLoading } from 'src/store/loading/selectors';
+import { AppContext } from 'src/store/store';
+import { getAllVaults } from 'src/store/vault/selectors';
+
+import { ThemedWalletOutlined } from '@abcpros/givegift-components/components/Common/CustomIcons';
+import WalletLabel from '@abcpros/givegift-components/components/Common/WalletLabel';
+import { ExclamationCircleOutlined, LockOutlined } from '@ant-design/icons';
+import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
+import { SmartButton } from '@components/Common/PrimaryButton';
+import { StyledSpacer } from '@components/Common/StyledSpacer';
+import CreateVaultForm from '@components/Vault/CreateVaultForm';
+import ImportVaultForm from '@components/Vault/ImportVaultForm';
+import VaultList from '@components/Vault/VaultList';
 
 const Home: React.FC = () => {
 
@@ -34,22 +32,6 @@ const Home: React.FC = () => {
   const isLoading = useAppSelector(getIsGlobalLoading);
   const vaults = useAppSelector(getAllVaults);
   const selectedAccount = useAppSelector(getSelectedAccount);
-
-  async function showBackupConfirmModal() {
-    confirm({
-      title: "Don't forget to back up your account",
-      icon: <ExclamationCircleOutlined />,
-      content: `Once your account is created you can back it up by writing down your 12-word seed. You can find your seed on the Settings page. If you are browsing in Incognito mode or if you clear your browser history, you will lose any funds that are not backed up!`,
-      okText: 'Okay, make me a account!',
-      centered: true,
-      onOk() {
-        dispatch(generateAccount())
-      },
-      onCancel() {
-        console.log('Cancel');
-      },
-    });
-  };
 
   const handleChange = e => {
     const { value, name } = e.target;
@@ -75,7 +57,6 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <ModalManager />
       <WalletLabel name={selectedAccount?.name ?? ''} />
       {seedInput && (
         <AntdFormWrapper>

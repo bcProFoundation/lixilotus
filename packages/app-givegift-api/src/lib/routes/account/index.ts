@@ -1,9 +1,11 @@
-import VError from "verror";
-import express, { NextFunction } from "express";
-import { PrismaClient, Account as AccountDb } from "@prisma/client";
-import { AccountDto, CreateAccountCommand } from '@abcpros/givegift-models/src/lib/account';
-import { router as accountChildRouter } from './account';
+import express, { NextFunction } from 'express';
+import VError from 'verror';
 
+import { AccountDto, CreateAccountCommand, RenameAccountCommand } from '@abcpros/givegift-models';
+import { Account as AccountDb, PrismaClient } from '@prisma/client';
+
+import { aesGcmDecrypt } from '../../utils/encryptionMethods';
+import { router as accountChildRouter } from './account';
 
 const prisma = new PrismaClient();
 let router = express.Router();
@@ -15,7 +17,10 @@ router.get('/accounts/:id/', async (req: express.Request, res: express.Response,
       where: {
         id: parseInt(id)
       }
-    }); if (!account) throw new VError('The account does not exist in the database.');
+    });
+    if (!account)
+      throw new VError('The account does not exist in the database.');
+
     const result = {
       ...account,
       encryptedMnemonic: String(account?.encryptedMnemonic)
@@ -32,17 +37,18 @@ router.get('/accounts/:id/', async (req: express.Request, res: express.Response,
 });
 
 router.post('/accounts', async (req: express.Request, res: express.Response, next: NextFunction) => {
-  const accountApi: CreateAccountCommand = req.body;
-  if (accountApi) {
+  const command: CreateAccountCommand = req.body;
+  if (command) {
     try {
       const accountToInsert = {
-        ...accountApi,
+        ...command,
         id: undefined,
       };
+
       const createdAccount: AccountDb = await prisma.account.create({ data: accountToInsert });
 
       const resultApi: AccountDto = {
-        ...createdAccount
+        ...command, ...createdAccount
       };
 
       res.json(resultApi);
@@ -56,6 +62,52 @@ router.post('/accounts', async (req: express.Request, res: express.Response, nex
     }
   }
 
+});
+
+router.patch('/accounts/:id/', async (req: express.Request, res: express.Response, next: NextFunction) => {
+  const { id } = req.params;
+  const command: RenameAccountCommand = req.body;
+  if (command) {
+    try {
+      const account = await prisma.account.findUnique({
+        where: {
+          id: parseInt(id)
+        }
+      });
+      if (!account)
+        throw new VError('The account does not exist in the database.');
+
+      // Validate the mnemonic
+      const mnemonicToValidate = await aesGcmDecrypt(account.encryptedMnemonic, command.mnemonic);
+      if (command.mnemonic !== mnemonicToValidate) {
+        throw Error('Invalid account! Could not update the account.');
+      }
+
+      const updatedAccount: AccountDb = await prisma.account.update({
+        where: {
+          id: parseInt(id),
+        },
+        data: {
+          name: command.name,
+          updatedAt: new Date()
+        }
+      });
+
+      const resultApi: AccountDto = {
+        ...command, ...updatedAccount
+      };
+
+      res.json(resultApi);
+
+    } catch (err) {
+      if (err instanceof VError) {
+        return next(err);
+      } else {
+        const error = new VError.WError(err as Error, 'Unable to create new account.');
+        return next(error);
+      }
+    }
+  }
 });
 
 router.use('/accounts', accountChildRouter);

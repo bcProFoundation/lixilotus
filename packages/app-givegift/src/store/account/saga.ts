@@ -1,25 +1,24 @@
 
-import { PayloadAction } from "@reduxjs/toolkit";
-import { push } from 'connected-react-router';
-import BCHJS from "@abcpros/xpi-js";
-import { all, call, getContext, put, takeLatest, fork } from "redux-saga/effects";
-import { aesGcmEncrypt, generateRandomBase62Str } from "@utils/encryptionMethods";
-import { Account, Vault, CreateAccountCommand, ImportAccountCommand, AccountDto } from "@abcpros/givegift-models";
+import { Modal } from 'antd';
+import { all, call, fork, getContext, put, takeLatest } from 'redux-saga/effects';
+
 import {
-  getAccount, getAccountSuccess,
-  getAccountFailure, postAccount,
-  generateAccount, postAccountSuccess,
-  postAccountFailure, setAccount,
-  importAccount, importAccountSuccess,
-  importAccountFailure, selectAccount,
-  selectAccountSuccess, selectAccountFailure,
-} from "./actions";
-import { hideLoading, showLoading } from "../loading/actions";
-import { showToast } from "../toast/actions";
-import accountApi from "../account/api";
-import vaultApi from "../vault/api";
+  Account, AccountDto, CreateAccountCommand, ImportAccountCommand, RenameAccountCommand, Vault
+} from '@abcpros/givegift-models';
+import BCHJS from '@abcpros/xpi-js';
+import { PayloadAction } from '@reduxjs/toolkit';
+import { aesGcmEncrypt, generateRandomBase62Str } from '@utils/encryptionMethods';
 
-
+import accountApi from '../account/api';
+import { hideLoading, showLoading } from '../loading/actions';
+import { showToast } from '../toast/actions';
+import vaultApi from '../vault/api';
+import {
+  generateAccount, getAccount, getAccountFailure, getAccountSuccess, importAccount,
+  importAccountFailure, importAccountSuccess, postAccount, postAccountFailure, postAccountSuccess,
+  renameAccount, renameAccountFailure, renameAccountSuccess, selectAccount, selectAccountFailure,
+  selectAccountSuccess, setAccount
+} from './actions';
 
 /**
  * Generate a account with random encryption password
@@ -194,6 +193,34 @@ function* selectAccountFailureSaga(action: PayloadAction<string>) {
   yield put(hideLoading(selectAccount.type));
 }
 
+function* renameAccountSaga(action: PayloadAction<RenameAccountCommand>) {
+  try {
+    yield put(showLoading(renameAccount.type));
+    const { id } = action.payload;
+    const data = yield call(accountApi.patch, id, action.payload);
+    const account = data as Account;
+    yield put(renameAccountSuccess(account));
+  } catch (err) {
+    const message = (err as Error).message ?? `Unable to rename the account.`;
+    yield put(renameAccountFailure(message));
+  }
+}
+
+function* renameAccountSuccessSaga(action: PayloadAction<Account>) {
+  const account = action.payload;
+  yield put(hideLoading(renameAccount.type));
+  Modal.success({
+    content: `Account has renamed to "${account.name}"`,
+  });
+}
+
+function* renameAccountFailureSaga(action: PayloadAction<string>) {
+  Modal.error({
+    content: 'Rename failed. All accounts must have a unique name.'
+  })
+  yield put(hideLoading(importAccount.type));
+}
+
 function* watchGenerateAccount() {
   yield takeLatest(generateAccount.type, generateAccountSaga);
 }
@@ -246,6 +273,18 @@ function* watchSelectAccountFailure() {
   yield takeLatest(selectAccountFailure.type, selectAccountFailureSaga);
 }
 
+function* watchRenameAccount() {
+  yield takeLatest(renameAccount.type, renameAccountSaga);
+}
+
+function* watchRenameAccountSuccess() {
+  yield takeLatest(renameAccountSuccess.type, renameAccountSuccessSaga);
+}
+
+function* watchRenameAccountFailure() {
+  yield takeLatest(renameAccountFailure.type, renameAccountFailureSaga);
+}
+
 export default function* accountSaga() {
   yield all([
     fork(watchGenerateAccount),
@@ -260,6 +299,9 @@ export default function* accountSaga() {
     fork(watchImportAccountFailure),
     fork(watchSelectAccount),
     fork(watchSelectAccountSuccess),
-    fork(watchSelectAccountFailure)
+    fork(watchSelectAccountFailure),
+    fork(watchRenameAccount),
+    fork(watchRenameAccountSuccess),
+    fork(watchRenameAccountFailure)
   ]);
 }

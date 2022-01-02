@@ -1,9 +1,12 @@
-import { useAppSelector } from "src/store/hooks";
-import { getModals } from "src/store/modal/selectors";
+import { useAppSelector } from 'src/store/hooks';
+import { getModals } from 'src/store/modal/selectors';
+
+import { RenameAccountModal } from '../Settings/RenameAccountModal';
 import { CreateVaultConfirmationModal } from '../Vault/CreateVaultConfirmationModal';
 
 const modalComponentLookupTable = {
-  CreateVaultConfirmationModal
+  CreateVaultConfirmationModal,
+  RenameAccountModal
 };
 
 const ModalManager = () => {

@@ -1,36 +1,29 @@
-import React, { useState } from 'react';
-import {
-  Route,
-  Redirect,
-  Switch,
-  useLocation,
-  useHistory,
-} from 'react-router-dom';
 import 'antd/dist/antd.less';
 import '../index.css';
 import './App.less';
+
 import { Spin } from 'antd';
+import React, { useState } from 'react';
+import { Redirect, Route, Switch, useHistory, useLocation } from 'react-router-dom';
+import { getSelectedAccount } from 'src/store/account/selectors';
+import { useAppSelector } from 'src/store/hooks';
 import styled, { ThemeProvider } from 'styled-components';
-import { theme, GlobalStyle } from '@abcpros/givegift-components/styles';
+
+import { Footer, NavButton } from '@abcpros/givegift-components/components';
+import { GlobalStyle, theme } from '@abcpros/givegift-components/styles';
+import {
+  GiftOutlined, HomeOutlined, LoadingOutlined, SettingOutlined, UserOutlined, WalletOutlined
+} from '@ant-design/icons';
 import LixiLogo from '@assets/images/lixi_logo.svg';
 import LixiText from '@assets/images/lixi_logo_text.svg';
-import {
-  LoadingOutlined,
-  HomeOutlined,
-  GiftOutlined,
-  WalletOutlined,
-  UserOutlined,
-  SettingOutlined
-} from '@ant-design/icons';
 // import { LoadingIcon } from '@abcpros/givegift-components/atoms/CustomIcons/CustomIcons';
 import Home from '@components/Home/Home';
 import RedeemComponent from '@components/Redeem';
-import { Footer, NavButton } from '@abcpros/givegift-components/components';
-import Vault from '@components/Vault';
 import Settings from '@components/Settings';
-import { useAppSelector } from 'src/store/hooks';
+import Vault from '@components/Vault';
+
+import ModalManager from './Common/ModalManager';
 import OnboardingComponent from './Onboarding/Onboarding';
-import { getSelectedAccount } from 'src/store/account/selectors';
 
 type ThemeType = typeof theme;
 
@@ -131,6 +124,7 @@ function App(): JSX.Element {
       >
         <GiveGiftApp>
           <AppBody>
+            <ModalManager />
             {!selectedAccount
               ? <OnboardingComponent></OnboardingComponent>
               : <>

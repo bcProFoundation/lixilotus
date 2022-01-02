@@ -28,16 +28,16 @@ export const LixiTextLogo = styled.img`
 `;
 
 export const WelcomeText = styled.p`
-    color: ${props => props.theme.wallet.text.secondary};
-    width: 100%;
-    font-size: 16px;
-    margin-bottom: 60px;
-    text-align: center;
+  color: ${props => props.theme.wallet.text.secondary};
+  width: 100%;
+  font-size: 16px;
+  margin-bottom: 60px;
+  text-align: center;
 `;
 
 export const WelcomeLink = styled.a`
-    text-decoration: underline;
-    color: ${props => props.theme.primary};
+  text-decoration: underline;
+  color: ${props => props.theme.primary};
 `;
 
 export const Onboarding = styled.div`
