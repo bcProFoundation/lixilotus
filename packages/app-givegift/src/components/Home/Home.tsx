@@ -13,6 +13,7 @@ import PrimaryButton, { SecondaryButton, SmartButton } from "@components/Common/
 import ModalManager from "@components/Common/ModalManager";
 import CreateVaultForm from "@components/Vault/CreateVaultForm";
 import ImportVaultForm from "@components/Vault/ImportVaultForm";
+import { StyledSpacer } from "@components/Common/StyledSpacer";
 import VaultList from "@components/Vault/VaultList";
 import { AppContext } from "src/store/store";
 import { useAppDispatch } from "src/store/hooks";
@@ -31,7 +32,6 @@ const Home: React.FC = () => {
   const dispatch = useAppDispatch();
   const { confirm } = Modal;
   const isLoading = useAppSelector(getIsGlobalLoading);
-  const accounts = useAppSelector(getAllAccounts);
   const vaults = useAppSelector(getAllVaults);
   const selectedAccount = useAppSelector(getSelectedAccount);
 
@@ -76,53 +76,52 @@ const Home: React.FC = () => {
   return (
     <>
       <ModalManager />
-      <Spin spinning={isLoading} indicator={CashLoadingIcon}>
-        <WalletLabel name={selectedAccount?.name ?? ''} />
-        {seedInput && (
-          <AntdFormWrapper>
-            <Form style={{ width: 'auto' }}>
-              <Form.Item
-                validateStatus={
-                  !formData.dirty && !formData.mnemonic
-                    ? 'error'
-                    : ''
-                }
-                help={
-                  !formData.mnemonic || !isValidMnemonic
-                    ? 'Valid mnemonic seed phrase required'
-                    : ''
-                }
-              >
-                <Input
-                  prefix={<LockOutlined />}
-                  placeholder="mnemonic (seed phrase)"
-                  name="mnemonic"
-                  autoComplete="off"
-                  onChange={e => handleChange(e)}
-                  required
-                />
-              </Form.Item>
+      <WalletLabel name={selectedAccount?.name ?? ''} />
+      {seedInput && (
+        <AntdFormWrapper>
+          <Form style={{ width: 'auto' }}>
+            <Form.Item
+              validateStatus={
+                !formData.dirty && !formData.mnemonic
+                  ? 'error'
+                  : ''
+              }
+              help={
+                !formData.mnemonic || !isValidMnemonic
+                  ? 'Valid mnemonic seed phrase required'
+                  : ''
+              }
+            >
+              <Input
+                prefix={<LockOutlined />}
+                placeholder="mnemonic (seed phrase)"
+                name="mnemonic"
+                autoComplete="off"
+                onChange={e => handleChange(e)}
+                required
+              />
+            </Form.Item>
 
-              <SmartButton
-                disabled={!isValidMnemonic}
-                onClick={() => submit()}
-              >
-                Import
-              </SmartButton>
-            </Form>
-          </AntdFormWrapper>
-        )}
-        <h2>
-          <ThemedWalletOutlined /> Manage Vaults
-        </h2>
+            <SmartButton
+              disabled={!isValidMnemonic}
+              onClick={() => submit()}
+            >
+              Import
+            </SmartButton>
+          </Form>
+        </AntdFormWrapper>
+      )}
+      <StyledSpacer />
+      <h2 style={{ color: '#6f2dbd' }}>
+        <ThemedWalletOutlined /> Manage Vaults
+      </h2>
 
-        <CreateVaultForm account={selectedAccount}
-        />
-        <ImportVaultForm
-          createVault={() => { }}
-        />
-        <VaultList vaults={vaults} />
-      </Spin>
+      <CreateVaultForm account={selectedAccount}
+      />
+      <ImportVaultForm
+        createVault={() => { }}
+      />
+      <VaultList vaults={vaults} />
     </>
   )
 };

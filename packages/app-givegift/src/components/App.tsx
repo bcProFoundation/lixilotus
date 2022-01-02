@@ -25,12 +25,10 @@ import {
 // import { LoadingIcon } from '@abcpros/givegift-components/atoms/CustomIcons/CustomIcons';
 import Home from '@components/Home/Home';
 import RedeemComponent from '@components/Redeem';
-import Profile from '@components/Profile/Profile';
 import { Footer, NavButton } from '@abcpros/givegift-components/components';
 import Vault from '@components/Vault';
-import ModalManager from '@components/Common/ModalManager';
-import SettingsComponent from '@components/Settings';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import Settings from '@components/Settings';
+import { useAppSelector } from 'src/store/hooks';
 import OnboardingComponent from './Onboarding/Onboarding';
 import { getSelectedAccount } from 'src/store/account/selectors';
 
@@ -149,7 +147,7 @@ function App(): JSX.Element {
                       <RedeemComponent />
                     </Route>
                     <Route path="/settings">
-                      <SettingsComponent />
+                      <Settings />
                     </Route>
                     <Route path="/">
                       <Home />
@@ -182,7 +180,7 @@ function App(): JSX.Element {
                   </NavButton>
 
                   <NavButton
-                    active={selectedKey === 'Settings'}
+                    active={selectedKey === 'settings'}
                     onClick={() => history.push('/settings')}
                   >
                     <SettingOutlined />
