@@ -1,6 +1,7 @@
 import { Alert, Collapse, Form, Input, Spin } from 'antd';
-import { useState } from 'react';
-import { generateAccount, renameAccount } from 'src/store/account/actions';
+import * as _ from 'lodash';
+import { useEffect, useState } from 'react';
+import { deleteAccount, generateAccount, renameAccount } from 'src/store/account/actions';
 import { getAllAccounts, getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
@@ -8,7 +9,7 @@ import { openModal } from 'src/store/modal/actions';
 import styled from 'styled-components';
 
 import { CashLoadingIcon } from '@abcpros/givegift-components/components/Common/CustomIcons';
-import { Account, RenameAccountCommand } from '@abcpros/givegift-models';
+import { Account, DeleteAccountCommand, RenameAccountCommand } from '@abcpros/givegift-models';
 import {
   CopyOutlined, ImportOutlined, LockOutlined, PlusSquareOutlined, WalletOutlined
 } from '@ant-design/icons';
@@ -18,6 +19,8 @@ import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
 import PrimaryButton, { SecondaryButton, SmartButton } from '@components/Common/PrimaryButton';
 import { StyledCollapse } from '@components/Common/StyledCollapse';
 import { StyledSpacer } from '@components/Common/StyledSpacer';
+
+import { DeleteAccountModalProps } from './DeleteAccountModal';
 import { RenameAccountModalProps } from './RenameAccountModal';
 
 const { Panel } = Collapse
@@ -143,10 +146,15 @@ const Settings: React.FC = () => {
     dirty: true,
     mnemonic: '',
   });
+  const [otherAccounts, setOtherAccounts] = useState<Account[]>([]);
 
   const dispatch = useAppDispatch();
   const savedAccounts: Account[] = useAppSelector(getAllAccounts);
   const selectedAccount: Account | undefined = useAppSelector(getSelectedAccount);
+
+  useEffect(() => {
+    setOtherAccounts(_.filter(savedAccounts, acc => acc.id !== selectedAccount?.id));
+  }, [savedAccounts]);
 
   const showPopulatedRenameAccountModal = (account: Account) => {
     const command: RenameAccountCommand = {
@@ -159,6 +167,18 @@ const Settings: React.FC = () => {
       onOkAction: renameAccount(command)
     };
     dispatch(openModal('RenameAccountModal', renameAcountModalProps));
+  }
+
+  const showPopulatedDeleteAccountModal = (account: Account) => {
+    const command: DeleteAccountCommand = {
+      id: account.id,
+      mnemonic: account.mnemonic,
+    };
+    const deleteAcountModalProps: DeleteAccountModalProps = {
+      account: account,
+      onOkAction: deleteAccount(command)
+    };
+    dispatch(openModal('DeleteAccountModal', deleteAcountModalProps));
   }
 
   async function submit() {
@@ -248,7 +268,7 @@ const Settings: React.FC = () => {
           </>
         )}
 
-        {savedAccounts && savedAccounts.length > 0 && (
+        {otherAccounts && otherAccounts.length > 0 && (
           <>
             <StyledCollapse>
               <Panel header="Saved accounts" key="2">
@@ -257,7 +277,7 @@ const Settings: React.FC = () => {
                   <h4>Currently active</h4>
                 </AWRow>
                 <div>
-                  {savedAccounts.map(acc => (
+                  {otherAccounts.map(acc => (
                     <SWRow key={acc.id}>
                       <SWName>
                         <h3>{acc.name}</h3>
@@ -272,10 +292,10 @@ const Settings: React.FC = () => {
                           }
                         />
                         <Trashcan
-                          onClick={() => { }
-                            // showPopulatedDeleteWalletModal(
-                            //   sw,
-                            // )
+                          onClick={() =>
+                            showPopulatedDeleteAccountModal(
+                              acc,
+                            )
                           }
                         />
                         <button

@@ -1,6 +1,6 @@
 import { createEntityAdapter, createReducer, Update } from "@reduxjs/toolkit";
 import { Account } from "@abcpros/givegift-models";
-import { renameAccountSuccess, selectAccountSuccess, setAccount } from "./actions";
+import { deleteAccountSuccess, renameAccountSuccess, selectAccountSuccess, setAccount } from "./actions";
 import { AccountsState } from "./state";
 
 export const accountsAdapter = createEntityAdapter<Account>({
@@ -41,5 +41,8 @@ export const accountReducer = createReducer(initialState, (builder) => {
         }
       };
       accountsAdapter.updateOne(state, updateAccount);
+    })
+    .addCase(deleteAccountSuccess, (state, action) => {
+      accountsAdapter.removeOne(state, action.payload);
     })
 });

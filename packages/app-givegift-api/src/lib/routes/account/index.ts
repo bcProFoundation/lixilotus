@@ -1,8 +1,10 @@
 import express, { NextFunction } from 'express';
 import VError from 'verror';
 
-import { AccountDto, CreateAccountCommand, RenameAccountCommand } from '@abcpros/givegift-models';
-import { Account as AccountDb, PrismaClient } from '@prisma/client';
+import {
+  AccountDto, CreateAccountCommand, DeleteAccountCommand, RenameAccountCommand
+} from '@abcpros/givegift-models';
+import { Account as AccountDb, PrismaClient, Prisma } from '@prisma/client';
 
 import { aesGcmDecrypt } from '../../utils/encryptionMethods';
 import { router as accountChildRouter } from './account';
@@ -106,6 +108,45 @@ router.patch('/accounts/:id/', async (req: express.Request, res: express.Respons
         const error = new VError.WError(err as Error, 'Unable to create new account.');
         return next(error);
       }
+    }
+  }
+});
+
+router.delete('/accounts/:id/', async (req: express.Request, res: express.Response, next: NextFunction) => {
+  const { id } = req.params;
+  const accountId = parseInt(id);
+  const command: DeleteAccountCommand = req.body;
+  try {
+    const account = await prisma.account.findUnique({
+      where: {
+        id: parseInt(id)
+      }
+    });
+
+    if (account) {
+      // Validate the mnemonic
+      const mnemonicToValidate = await aesGcmDecrypt(account.encryptedMnemonic, command.mnemonic);
+      if (command.mnemonic !== mnemonicToValidate) {
+        throw Error('Invalid account! Could not update the account.');
+      }
+    }
+
+    await prisma.$transaction([
+      prisma.vault.deleteMany({ where: { accountId: accountId } }),
+      prisma.account.deleteMany({ where: { id: accountId } }),
+    ])
+
+    res.status(204).send();
+  } catch (err) {
+    if ((err as any).code === 'P2025') {
+      // Record to delete does not exist.
+      return res.status(204).send();
+    }
+    if (err instanceof VError) {
+      return next(err);
+    } else {
+      const error = new VError.WError(err as Error, 'Unable to delete the account.');
+      return next(error);
     }
   }
 });

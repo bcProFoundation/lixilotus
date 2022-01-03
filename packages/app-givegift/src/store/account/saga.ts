@@ -3,7 +3,7 @@ import { Modal } from 'antd';
 import { all, call, fork, getContext, put, takeLatest } from 'redux-saga/effects';
 
 import {
-  Account, AccountDto, CreateAccountCommand, ImportAccountCommand, RenameAccountCommand, Vault
+  Account, AccountDto, CreateAccountCommand, DeleteAccountCommand, ImportAccountCommand, RenameAccountCommand, Vault
 } from '@abcpros/givegift-models';
 import BCHJS from '@abcpros/xpi-js';
 import { PayloadAction } from '@reduxjs/toolkit';
@@ -14,6 +14,9 @@ import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
 import vaultApi from '../vault/api';
 import {
+  deleteAccount,
+  deleteAccountFailure,
+  deleteAccountSuccess,
   generateAccount, getAccount, getAccountFailure, getAccountSuccess, importAccount,
   importAccountFailure, importAccountSuccess, postAccount, postAccountFailure, postAccountSuccess,
   renameAccount, renameAccountFailure, renameAccountSuccess, selectAccount, selectAccountFailure,
@@ -218,7 +221,33 @@ function* renameAccountFailureSaga(action: PayloadAction<string>) {
   Modal.error({
     content: 'Rename failed. All accounts must have a unique name.'
   })
-  yield put(hideLoading(importAccount.type));
+  yield put(hideLoading(renameAccount.type));
+}
+
+function* deleteAccountSaga(action: PayloadAction<DeleteAccountCommand>) {
+  try {
+    yield put(showLoading(deleteAccount.type));
+    const { id } = action.payload;
+    yield call(accountApi.delete, id, action.payload);
+    yield put(deleteAccountSuccess(id));
+  } catch (err) {
+    const message = (err as Error).message ?? `Unable to delete the account.`;
+    yield put(deleteAccountFailure(message));
+  }
+}
+
+function* deleteAccountSuccessSaga(action: PayloadAction<number>) {
+  yield put(hideLoading(deleteAccount.type));
+  Modal.success({
+    content: `The account has been deleted successfully.`,
+  });
+}
+
+function* deleteAccountFailureSaga(action: PayloadAction<string>) {
+  Modal.error({
+    content: 'Delete failed. Could not delete the account.'
+  })
+  yield put(hideLoading(deleteAccount.type));
 }
 
 function* watchGenerateAccount() {
@@ -285,6 +314,18 @@ function* watchRenameAccountFailure() {
   yield takeLatest(renameAccountFailure.type, renameAccountFailureSaga);
 }
 
+function* watchDeleteAccount() {
+  yield takeLatest(deleteAccount.type, deleteAccountSaga);
+}
+
+function* watchDeleteAccountSuccess() {
+  yield takeLatest(deleteAccountSuccess.type, deleteAccountSuccessSaga);
+}
+
+function* watchDeleteAccountFailure() {
+  yield takeLatest(deleteAccountFailure.type, deleteAccountFailureSaga);
+}
+
 export default function* accountSaga() {
   yield all([
     fork(watchGenerateAccount),
@@ -302,6 +343,9 @@ export default function* accountSaga() {
     fork(watchSelectAccountFailure),
     fork(watchRenameAccount),
     fork(watchRenameAccountSuccess),
-    fork(watchRenameAccountFailure)
+    fork(watchRenameAccountFailure),
+    fork(watchDeleteAccount),
+    fork(watchDeleteAccountSuccess),
+    fork(watchDeleteAccountFailure)
   ]);
 }

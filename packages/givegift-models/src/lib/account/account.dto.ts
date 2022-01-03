@@ -15,6 +15,11 @@ export interface RenameAccountCommand {
   name: string;
 }
 
+export interface DeleteAccountCommand {
+  id: number;
+  mnemonic: string;
+}
+
 export interface AccountDto {
   id?: number;
   name: string;

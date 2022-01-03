@@ -1,4 +1,4 @@
-import { RenameAccountCommand } from '@abcpros/givegift-models';
+import { DeleteAccountCommand, RenameAccountCommand } from '@abcpros/givegift-models';
 import {
   AccountDto, CreateAccountCommand, ImportAccountCommand
 } from '@abcpros/givegift-models/src/lib/account';
@@ -43,6 +43,16 @@ const accountApi = {
     return axiosClient.post(url, data)
       .then(response => {
         return response.data as AccountDto;
+      })
+      .catch(err => {
+        const { response } = err;
+        throw response?.data ?? err ?? 'Network Error';
+      })
+  },
+  delete(id: number, data: DeleteAccountCommand): Promise<any> {
+    const url = `/api/accounts/${id}`;
+    return axiosClient.delete(url, { data: data })
+      .then(response => {
       })
       .catch(err => {
         const { response } = err;

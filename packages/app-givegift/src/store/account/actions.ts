@@ -1,6 +1,9 @@
-import { createAction } from "@reduxjs/toolkit";
-import { Account, Vault, CreateAccountCommand, RenameAccountCommand } from "@abcpros/givegift-models";
-import { AppThunk } from "../store";
+import {
+  Account, CreateAccountCommand, DeleteAccountCommand, RenameAccountCommand, Vault
+} from '@abcpros/givegift-models';
+import { createAction } from '@reduxjs/toolkit';
+
+import { AppThunk } from '../store';
 
 export const generateAccount = createAction('account/generateAccount');
 export const getAccount = createAction<Account>('vault/getAccount');
@@ -19,6 +22,9 @@ export const importAccountFailure = createAction<string>('account/importAccountF
 export const renameAccount = createAction<RenameAccountCommand>('account/renameAccount');
 export const renameAccountSuccess = createAction<Account>('account/renameAccountSuccess');
 export const renameAccountFailure = createAction<string>('account/renameAccountFailure');
+export const deleteAccount = createAction<DeleteAccountCommand>('account/deleteAccount');
+export const deleteAccountSuccess = createAction<number>('account/deleteAccountSuccess');
+export const deleteAccountFailure = createAction<string>('account/deleteAccountFailure');
 
 // Thunk action creators
 // Not use currently
