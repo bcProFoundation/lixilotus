@@ -1,7 +1,7 @@
 import { Alert, Collapse, Form, Input, Spin } from 'antd';
 import * as _ from 'lodash';
 import { useEffect, useState } from 'react';
-import { deleteAccount, generateAccount, renameAccount } from 'src/store/account/actions';
+import { deleteAccount, generateAccount, renameAccount, setAccount } from 'src/store/account/actions';
 import { getAllAccounts, getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
@@ -299,9 +299,7 @@ const Settings: React.FC = () => {
                           }
                         />
                         <button
-                          onClick={() => { }
-                            // updateSavedWalletsOnLoad(sw)
-                          }
+                          onClick={() => dispatch(setAccount(acc))}
                         >
                           Activate
                         </button>
