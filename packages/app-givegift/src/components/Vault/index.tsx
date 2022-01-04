@@ -129,7 +129,7 @@ const Vault: React.FC = () => {
 
   return (
     <>
-      {selectedVault && selectedVault.address && (
+      {selectedVault && selectedVault.address ? (
         <>
           <QRCode
             address={selectedVault.address}
@@ -208,7 +208,9 @@ const Vault: React.FC = () => {
           </SmartButton>
           <RedeemList redeems={allReddemsCurrentVault} />
         </>
-      )}
+      )
+        : `No vault is selected`
+      }
     </>
   )
 };

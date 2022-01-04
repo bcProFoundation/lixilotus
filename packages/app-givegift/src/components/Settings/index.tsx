@@ -2,7 +2,7 @@ import { Alert, Collapse, Form, Input, Spin } from 'antd';
 import * as _ from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  deleteAccount, generateAccount, importAccount, renameAccount, setAccount
+  deleteAccount, generateAccount, importAccount, renameAccount, selectAccount
 } from 'src/store/account/actions';
 import { getAllAccounts, getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
@@ -341,7 +341,7 @@ const Settings: React.FC = () => {
                           }
                         />
                         <button
-                          onClick={() => dispatch(setAccount(acc))}
+                          onClick={() => dispatch(selectAccount(acc.id))}
                         >
                           Activate
                         </button>

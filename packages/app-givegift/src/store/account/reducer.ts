@@ -24,13 +24,7 @@ export const accountReducer = createReducer(initialState, (builder) => {
       state.selectedId = id;
       const vaultIds = vaults.map(vault => vault.id);
       state.vaultIdsById[id] = vaultIds;
-      const updateAccount: Update<Account> = {
-        id,
-        changes: {
-          ...account
-        }
-      };
-      accountsAdapter.updateOne(state, updateAccount);
+      accountsAdapter.upsertOne(state, account);
     })
     .addCase(renameAccountSuccess, (state, action) => {
       const account = action.payload;
