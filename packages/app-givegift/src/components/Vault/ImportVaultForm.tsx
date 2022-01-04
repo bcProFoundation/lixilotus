@@ -1,43 +1,36 @@
+import { Collapse, Form, Input } from 'antd';
 import React, { useState } from 'react';
-import { Collapse, Form, Input, Modal, notification } from 'antd';
-import { ImportOutlined } from '@ant-design/icons';
-import { VaultCollapse } from "@abcpros/givegift-components/components/Common/StyledCollapse";
-import { AntdFormWrapper } from '@abcpros/givegift-components/components/Common/EnhancedInputs';
-import { SmartButton } from '@abcpros/givegift-components/components/Common/PrimaryButton';
-import { AppContext } from 'src/store/store';
 import { useAppDispatch } from 'src/store/hooks';
 import { importVault } from 'src/store/vault/actions';
+
+import { AntdFormWrapper } from '@abcpros/givegift-components/components/Common/EnhancedInputs';
+import { SmartButton } from '@abcpros/givegift-components/components/Common/PrimaryButton';
+import { VaultCollapse } from '@abcpros/givegift-components/components/Common/StyledCollapse';
+import { Account } from '@abcpros/givegift-models';
 import { ImportVaultCommand } from '@abcpros/givegift-models/lib/vault';
+import { ImportOutlined } from '@ant-design/icons';
+
 const { Panel } = Collapse;
 
 type ImportVaultFormProps = {
-  createVault: Function;
+  account?: Account;
 } & React.HTMLProps<HTMLElement>;
 
 const ImportVaultForm = ({
+  account,
   disabled
 }: ImportVaultFormProps) => {
-
-  const { Wallet } = React.useContext(AppContext);
 
   const dispatch = useAppDispatch();
 
   const [formData, setFormData] = useState({
     dirty: true,
-    mnemonic: '',
     redeemCode: ''
   });
-  const [mnemonicIsValid, setMnemonicIsValid] = useState<boolean | null>(null);
   const [redeemCodeIsValid, setRedeemCodeIsValid] = useState<boolean | null>(null);
 
   // Only enable ImportVault button if all entries are valid
-  let importVaultFormDataIsValid = mnemonicIsValid && redeemCodeIsValid;
-
-  const handleChangeMnemonicInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, name } = e.target;
-    setMnemonicIsValid(Wallet.validateMnemonic(value));
-    setFormData(p => ({ ...p, [name]: value }));
-  };
+  let importVaultFormDataIsValid = redeemCodeIsValid;
 
   const handleChangeRedeemCodeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
@@ -51,12 +44,12 @@ const ImportVaultForm = ({
       dirty: false,
     });
 
-    if (!formData.mnemonic || !formData.redeemCode) {
+    if (!formData.redeemCode || !account) {
       return;
     }
 
     const ImportVaultCommand: ImportVaultCommand = {
-      mnemonic: formData.mnemonic,
+      mnemonic: account?.mnemonic,
       redeemCode: formData.redeemCode
     };
     dispatch(importVault(ImportVaultCommand));
@@ -80,21 +73,6 @@ const ImportVaultForm = ({
                 width: 'auto',
               }}
             >
-              <Form.Item
-                validateStatus={
-                  !formData.dirty && !formData.mnemonic
-                    ? 'error'
-                    : ''
-                }
-              >
-                <Input
-                  addonBefore="Mnemonic Phrase"
-                  autoComplete="off"
-                  placeholder="mnemonic (seed phrase)"
-                  name="mnemonic"
-                  onChange={e => handleChangeMnemonicInput(e)}
-                />
-              </Form.Item>
               <Form.Item
                 validateStatus={
                   !formData.dirty && !formData.redeemCode

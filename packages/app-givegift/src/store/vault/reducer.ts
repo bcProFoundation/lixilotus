@@ -48,7 +48,7 @@ export const vaultReducer = createReducer(initialState, (builder) => {
     .addCase(selectAccountSuccess, (state, action) => {
       const { vaults } = action.payload;
       const vaultIds = vaults.map(vault => vault.id);
-      vaultsAdapter.setAll(state, vaults);
+      vaultsAdapter.upsertMany(state, vaults);
       if (vaultIds.length == 0 || !vaultIds.includes(state.selectedId)) {
         // The current selected vault is not the same anymore
         // Reset the selected vault

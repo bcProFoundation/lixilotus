@@ -29,6 +29,12 @@ router.post('/import', async (req: express.Request, res: express.Response, next:
       throw new Error('Could not find the associated account. Please check your mnemonic seed.');
     }
 
+    // Decrypt to validate the mnemonic
+    const mnemonicToValidate = await aesGcmDecrypt(account.encryptedMnemonic, mnemonic);
+    if (mnemonic !== mnemonicToValidate) {
+      throw Error('Could not import the vault because the account is invalid.');
+    }
+
     const password = redeemCode.slice(0, 8);
     const encodedVaultId = redeemCode.slice(8);
     const vaultId = base62ToNumber(encodedVaultId);
@@ -57,6 +63,7 @@ router.post('/import', async (req: express.Request, res: express.Response, next:
 
     let resultApi: VaultDto = {
       ...vault,
+      redeemCode: redeemCode,
       totalRedeem: Number(vault.totalRedeem),
       expiryAt: vault.expiryAt ? vault.expiryAt : undefined,
       country: vault.country ? vault.country : undefined
@@ -65,10 +72,13 @@ router.post('/import', async (req: express.Request, res: express.Response, next:
 
     res.json(resultApi);
 
-  } catch (error) {
-    return res.status(400).json({
-      error: `Could not import the vault.`
-    });
+  } catch (err) {
+    if (err instanceof VError) {
+      return next(err);
+    } else {
+      const error = new VError.WError(err as Error, 'Unable to import the vault.');
+      return next(error);
+    }
   }
 });
 

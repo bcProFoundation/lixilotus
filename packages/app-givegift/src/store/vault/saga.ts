@@ -138,20 +138,20 @@ function* postVaultFailureSaga(action: PayloadAction<string>) {
 function* importVaultSaga(action: PayloadAction<ImportVaultCommand>) {
   try {
 
-    // yield put(showLoading(importVaultActionType));
+    yield put(showLoading(importVault.type));
 
-    // const ImportVaultCommand = action.payload;
+    const ImportVaultCommand = action.payload;
 
-    // const data: VaultDto = yield call(vaultApi.import, ImportVaultCommand);
+    const data: VaultDto = yield call(vaultApi.import, ImportVaultCommand);
 
-    // // Merge back to action payload
-    // const result = {
-    //   ...data,
-    //   mnemonic: ImportVaultCommand.mnemonic,
-    //   redeemCode: ImportVaultCommand.redeemCode
-    // } as Vault;
+    // Merge back to action payload
+    const result = {
+      ...data,
+      mnemonic: ImportVaultCommand.mnemonic,
+      redeemCode: ImportVaultCommand.redeemCode
+    } as Vault;
 
-    // yield put(importVaultSuccess(result));
+    yield put(importVaultSuccess(result));
 
   } catch (err) {
     const message = (err as Error).message ?? `Unable to import the vault.`;
@@ -161,32 +161,8 @@ function* importVaultSaga(action: PayloadAction<ImportVaultCommand>) {
 
 function* importVaultSuccessSaga(action: PayloadAction<Vault>) {
   const vault = action.payload;
-  try {
-    // // Recalculate and valate the redeem code
-    // const password = vault.redeemCode.slice(0, 8);
-    // const decryptedMnemonic = yield call(aesGcmDecrypt, vault.encryptedMnemonic, password);
-    // if (decryptedMnemonic !== vault.mnemonic) {
-    //   const message = `The vault created is invalid.`;
-    //   yield put(importVaultFailure(message));
-    // } else {
-    //   // calculate vault details
-    //   const Wallet = yield getContext('Wallet');
-    //   const Path10605 = yield call(Wallet.getWalletDetails, vault.mnemonic);
-    //   yield put(setVault({
-    //     ...vault,
-    //     Path10605: { ...Path10605 }
-    //   }));
-    //   yield put(showToast('success', {
-    //     message: 'Success',
-    //     description: 'Import vault successfully.',
-    //     duration: 5
-    //   }));
-    // }
-    // yield put(hideLoading(importVaultActionType));
-  } catch (error) {
-    const message = `There's an error happens importing the vault.`;
-    yield put(importVaultFailure(message));
-  }
+  yield put(hideLoading(importVault.type));
+  yield put(setVault(vault));
 }
 
 function* importVaultFailureSaga(action: PayloadAction<string>) {

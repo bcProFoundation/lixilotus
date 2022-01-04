@@ -99,8 +99,7 @@ const Home: React.FC = () => {
 
       <CreateVaultForm account={selectedAccount}
       />
-      <ImportVaultForm
-        createVault={() => { }}
+      <ImportVaultForm account={selectedAccount}
       />
       <VaultList vaults={vaults} />
     </>

@@ -47,7 +47,9 @@ export interface VaultDto {
   expiryAt?: Date;
   country?: string;
   balance?: number;
+  address: string;
   status: string;
+  accountId: number;
 };
 
 export interface Vault {
