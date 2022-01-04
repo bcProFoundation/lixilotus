@@ -23,7 +23,36 @@ const PRIVATE_KEY = 'AIzaSyCFY2D4NRLjDTpJfk0jjJNADalSceqC4qs';
 const SITE_KEY = "6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb";
 const PROJECT_ID = 'lixilotus';
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  log: [
+    {
+      emit: 'event',
+      level: 'query',
+    },
+    {
+      emit: 'event',
+      level: 'error',
+    },
+    {
+      emit: 'event',
+      level: 'warn',
+    },
+  ],
+});
+
+prisma.$on('query', (e) => {
+  logger.info('Query: ' + e.query);
+  logger.info('Duration: ' + e.duration + 'ms');
+});
+
+prisma.$on('error', (e) => {
+  logger.error('Error: ' + e.message);
+});
+
+prisma.$on('warn', (e) => {
+  logger.warn('Warn: ' + e.message);
+});
+
 let router = express.Router();
 
 router.post('/redeems', async (req: express.Request, res: express.Response, next: NextFunction) => {
