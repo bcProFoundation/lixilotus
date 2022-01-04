@@ -77,15 +77,48 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
         }
       });
 
-      if (existedRedeems.length > 0) {
-        throw new VError('You have already redeemed this offer');
-      }
+      const countRedeemAddress = await prisma.redeem.findMany({
+        where: {
+          AND: [
+            { redeemAddress: address },
+            { vaultId: vaultId }
+          ]
+        }
+      });
+
+      const countIpaddress = await prisma.redeem.count({
+        where: {
+          AND: [
+            { ipaddress: ip },
+            { vaultId: vaultId }
+          ]
+        }
+      });
 
       const vault = await prisma.vault.findUnique({
         where: {
           id: vaultId
         }
       });
+
+
+      // isFamilyFriendly == true
+      if (vault?.isFamilyFriendly) {
+        if (countRedeemAddress.length > 0) {
+          throw new VError('You have already redeemed this offer');
+        }
+        else {
+          if (countIpaddress >= 5) {
+            throw new VError('You have already redeemed this offer');
+          }
+        }
+      }
+      // isFamilyFriendly == false
+      else {
+        if (existedRedeems.length > 0) {
+          throw new VError('You have already redeemed this offer');
+        }
+      }
 
       if (process.env.NODE_ENV !== 'development') {
         await checkingCaptcha();
