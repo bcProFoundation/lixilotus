@@ -1,11 +1,14 @@
 import { Alert, Collapse, Form, Input, Spin } from 'antd';
 import * as _ from 'lodash';
-import { useEffect, useState } from 'react';
-import { deleteAccount, generateAccount, renameAccount, setAccount } from 'src/store/account/actions';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  deleteAccount, generateAccount, importAccount, renameAccount, setAccount
+} from 'src/store/account/actions';
 import { getAllAccounts, getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
 import { openModal } from 'src/store/modal/actions';
+import { AppContext } from 'src/store/store';
 import styled from 'styled-components';
 
 import { CashLoadingIcon } from '@abcpros/givegift-components/components/Common/CustomIcons';
@@ -139,13 +142,19 @@ const AWRow = styled.div`
 `;
 
 const Settings: React.FC = () => {
+
+  const ContextValue = React.useContext(AppContext);
+  const { Wallet } = ContextValue;
+
   const isLoading = useAppSelector(getIsGlobalLoading);
   const [seedInput, openSeedInput] = useState(false);
-  const [isValidMnemonic, setIsValidMnemonic] = useState(null);
+  const [isValidMnemonic, setIsValidMnemonic] = useState<boolean | null>(null);
   const [formData, setFormData] = useState({
     dirty: true,
     mnemonic: '',
   });
+
+  const [form] = Form.useForm();
   const [otherAccounts, setOtherAccounts] = useState<Account[]>([]);
 
   const dispatch = useAppDispatch();
@@ -181,6 +190,16 @@ const Settings: React.FC = () => {
     dispatch(openModal('DeleteAccountModal', deleteAcountModalProps));
   }
 
+  const handleChange = e => {
+    const { value, name } = e.target;
+
+    // Validate mnemonic on change
+    // Import button should be disabled unless mnemonic is valid
+    setIsValidMnemonic(Wallet.validateMnemonic(value));
+
+    setFormData(p => ({ ...p, [name]: value }));
+  };
+
   async function submit() {
     setFormData({
       ...formData,
@@ -196,6 +215,12 @@ const Settings: React.FC = () => {
     if (!isValidMnemonic) {
       return;
     }
+
+    dispatch(importAccount(formData.mnemonic));
+
+    form.setFieldsValue({
+      mnemonic: ''
+    });
   }
 
   return (
@@ -236,8 +261,8 @@ const Settings: React.FC = () => {
               to import an existing account
             </p>
             <AntdFormWrapper>
-              <Form style={{ width: 'auto' }}>
-                <Form.Item
+              <Form style={{ width: 'auto' }} form={form}>
+                <Form.Item name="mnemonic"
                   validateStatus={
                     isValidMnemonic === null ||
                       isValidMnemonic ? '' : 'error'
@@ -249,17 +274,16 @@ const Settings: React.FC = () => {
                 >
                   <Input
                     prefix={<LockOutlined />}
-                    type="email"
                     placeholder="mnemonic (seed phrase)"
                     name="mnemonic"
                     autoComplete="off"
-                    //onChange={e => handleChange(e)}
+                    onChange={e => handleChange(e)}
                     required
                   />
                 </Form.Item>
                 <SmartButton
                   disabled={!isValidMnemonic}
-                //onClick={() => submit()}
+                  onClick={() => submit()}
                 >
                   Import
                 </SmartButton>
@@ -268,13 +292,31 @@ const Settings: React.FC = () => {
           </>
         )}
 
-        {otherAccounts && otherAccounts.length > 0 && (
+        {(selectedAccount || (otherAccounts && otherAccounts.length > 0)) && (
           <>
             <StyledCollapse>
               <Panel header="Saved accounts" key="2">
                 <AWRow>
-                  <h3>{selectedAccount?.name}</h3>
-                  <h4>Currently active</h4>
+                  <SWName>
+                    <h3>{selectedAccount?.name}</h3>
+                  </SWName>
+                  <SWButtonCtn>
+                    <Edit
+                      onClick={() =>
+                        showPopulatedRenameAccountModal(
+                          selectedAccount as Account
+                        )
+                      }
+                    />
+                    <Trashcan
+                      onClick={() =>
+                        showPopulatedDeleteAccountModal(
+                          selectedAccount as Account
+                        )
+                      }
+                    />
+                    <h4>Activated</h4>
+                  </SWButtonCtn>
                 </AWRow>
                 <div>
                   {otherAccounts.map(acc => (

@@ -100,6 +100,11 @@ const OnboardingComponent: React.FC = () => {
       return;
     }
 
+    // Exit if mnemonic is invalid
+    if (!isValidMnemonic) {
+      return;
+    }
+
     dispatch(importAccount(formData.mnemonic));
   }
 
