@@ -9,6 +9,7 @@ export interface GenerateVaultDto {
   dividedValue: string;
   expiryAt?: string;
   country?: string;
+  isFamilyFriendly: boolean;
 }
 
 export interface CreateVaultDto {
@@ -24,6 +25,7 @@ export interface CreateVaultDto {
   dividedValue: number;
   expiryAt?: Date;
   country?: string;
+  isFamilyFriendly: boolean;
 }
 
 
@@ -44,6 +46,7 @@ export interface VaultDto {
   updatedAt?: Date;
   expiryAt?: Date;
   country?: string;
+  isFamilyFriendly: boolean;
 };
 
 export interface Vault {
@@ -65,6 +68,7 @@ export interface Vault {
   updatedAt?: Date;
   expiryAt?: Date;
   country?: string;
+  isFamilyFriendly: boolean;
   balance: number;
   Path10605?: {
     cashAddress: string;

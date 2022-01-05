@@ -94,27 +94,43 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
       const vaultId = base62ToNumber(encodedVaultId);
       const address = _.trim(redeemApi.redeemAddress);
 
-      const existedRedeems = await prisma.redeem.findMany({
+      const countRedeemAddress = await prisma.redeem.findMany({
         where: {
-          OR: [
-            { ipaddress: ip },
-            { redeemAddress: address }
-          ],
-          AND: {
-            vaultId: vaultId
-          }
+          AND: [
+            { redeemAddress: address },
+            { vaultId: vaultId }
+          ]
         }
       });
 
-      if (existedRedeems.length > 0) {
-        throw new VError('You have already redeemed this offer');
-      }
+      const countIpaddress = await prisma.redeem.count({
+        where: {
+          AND: [
+            { ipaddress: ip },
+            { vaultId: vaultId }
+          ]
+        }
+      });
 
       const vault = await prisma.vault.findUnique({
         where: {
           id: vaultId
         }
       });
+
+
+      // isFamilyFriendly == true
+      if (vault?.isFamilyFriendly) {
+        if (countRedeemAddress.length > 0 || countIpaddress >= 5) {
+          throw new VError('You have already redeemed this offer');
+        }
+      }
+      // isFamilyFriendly == false
+      else {
+        if (countRedeemAddress.length > 0 || countIpaddress > 0) {
+          throw new VError('You have already redeemed this offer');
+        }
+      }
 
       if (process.env.NODE_ENV !== 'development') {
         await checkingCaptcha();

@@ -27,6 +27,7 @@ model Vault {
   updatedAt         DateTime @default(now())                @map("updated_at")
   expiryAt          DateTime?                               @map("expiry_at")
   country           String?                                 @map("country")
+  isFamilyFriendly  Boolean                                 @map("is_family_friendly")
   redeems           Redeem[]
 
   @@map("vault")

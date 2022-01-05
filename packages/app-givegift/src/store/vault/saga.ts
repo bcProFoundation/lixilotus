@@ -37,6 +37,7 @@ function* generateVaultSaga(action: PayloadAction<GenerateVaultDto>) {
     fixedValue: Number(vaultDto.fixedValue),
     dividedValue: Number(vaultDto.dividedValue),
     country: vaultDto && vaultDto.country ? vaultDto.country : undefined,
+    isFamilyFriendly: vaultDto.isFamilyFriendly,
     totalRedeem: 0,
     redeemCode: password,
     mnemonic: Bip39128BitMnemonic,
@@ -79,7 +80,8 @@ function* postVaultSaga(action: PayloadAction<Vault>) {
       maxValue: vault.maxValue,
       fixedValue: vault.fixedValue,
       dividedValue: vault.dividedValue,
-      country: vault.country
+      country: vault.country,
+      isFamilyFriendly: vault.isFamilyFriendly
     }
 
     const data: VaultDto = yield call(vaultApi.post, dataApi);

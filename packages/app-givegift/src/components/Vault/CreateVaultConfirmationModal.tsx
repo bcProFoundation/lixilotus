@@ -20,6 +20,7 @@ export type CreateVaultConfirmationModalProps = {
   newMaxRedeem: string;
   newExpiryAt: string;
   newCountryVault: string;
+  isFamilyFriendly: boolean;
   onOkAction?: AnyAction
 }
 
@@ -37,7 +38,8 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
     newVaultMaxValue,
     newVaultFixedValue,
     newVaultDividedValue,
-    newCountryVault
+    newCountryVault,
+    isFamilyFriendly,
   } = props;
 
   const handleOnCancel = () => {
@@ -79,9 +81,7 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
           <>
               <VaultParamLabel>The fund giving is randomized</VaultParamLabel>
               <br />
-              <VaultParamLabel>Min:</VaultParamLabel> {newVaultMinValue}
-              <br />
-              <VaultParamLabel>Max:</VaultParamLabel> {newVaultMaxValue}
+              <VaultParamLabel>Min: {newVaultMinValue}; Max: {newVaultMaxValue}</VaultParamLabel> 
             </>
         );
     }
@@ -89,16 +89,20 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
 
   const formatDate = () => {
     if (newExpiryAt != "") {
-      return <VaultParamLabel>Expiry at: {moment(newExpiryAt).format("YYYY-MM-DD HH:mm")}</VaultParamLabel>;
+      return <VaultParamLabel>Expiry at: {moment(newExpiryAt).format("YYYY-MM-DD HH:mm")}<br/></VaultParamLabel> ;
     }
     else {
-      return <VaultParamLabel>Expiry at: Infinity</VaultParamLabel>;
+      return;
     }
   }
 
   const confirmCountry = () => {
     const country = countries.find(country => country.id === newCountryVault);
-    return <VaultParamLabel>Country: {country ? country.name : "All of country"}</VaultParamLabel> 
+    return <VaultParamLabel>Country: {country ? country.name : "All of country"}<br /></VaultParamLabel> 
+  }
+
+  const confirmMaxRedeem = () => {
+      return (newMaxRedeem == "" ? "" : <VaultParamLabel>Max Redemption: {newMaxRedeem} <br /></VaultParamLabel>);
   }
 
   return (
@@ -111,12 +115,10 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
       >
         <VaultParamLabel>Name:</VaultParamLabel> {newVaultName}
         <br />
-        <VaultParamLabel>Max Redemption:</VaultParamLabel> {newMaxRedeem == "" ? "Infinity" : newMaxRedeem}
-        <br />
-        {formatDate()}
-        <br />
         {confirmVaultType()}
         <br />
+        {confirmMaxRedeem()}
+        {formatDate()}
         {confirmCountry()}
       </Modal>
     </>
