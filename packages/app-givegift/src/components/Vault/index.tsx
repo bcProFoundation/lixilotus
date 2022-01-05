@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Descriptions, Collapse } from 'antd';
 import moment from 'moment';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { getAllVaultsEntities, getSelectedVaultId } from 'src/store/vault/selectors';
+import { getSelectedVaultId, getSelectedVault } from 'src/store/vault/selectors';
 import { QRCode } from "@abcpros/givegift-components/components/Common/QRCode";
 import { VaultType } from '@abcpros/givegift-models/src/lib/vault';
 import { StyledCollapse } from "@abcpros/givegift-components/components/Common/StyledCollapse";
@@ -46,9 +46,8 @@ const Vault: React.FC = () => {
 
   const dispatch = useAppDispatch();
 
-  const allVaults = useAppSelector(getAllVaultsEntities);
   const selectedVaultId = useAppSelector(getSelectedVaultId);
-  const selectedVault = allVaults[selectedVaultId];
+  const selectedVault = useAppSelector(getSelectedVault);
   const allReddemsCurrentVault = useAppSelector(getAllRedeems);
 
   const [redeemCodeVisible, setRedeemCodeVisible] = useState(false);

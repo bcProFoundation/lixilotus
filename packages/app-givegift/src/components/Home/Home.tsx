@@ -5,7 +5,7 @@ import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
 import { AppContext } from 'src/store/store';
-import { getAllVaults } from 'src/store/vault/selectors';
+import { getVaultsBySelectedAccount } from 'src/store/vault/selectors';
 
 import { ThemedWalletOutlined } from '@abcpros/givegift-components/components/Common/CustomIcons';
 import WalletLabel from '@abcpros/givegift-components/components/Common/WalletLabel';
@@ -30,7 +30,7 @@ const Home: React.FC = () => {
   const dispatch = useAppDispatch();
   const { confirm } = Modal;
   const isLoading = useAppSelector(getIsGlobalLoading);
-  const vaults = useAppSelector(getAllVaults);
+  const vaults = useAppSelector(getVaultsBySelectedAccount);
   const selectedAccount = useAppSelector(getSelectedAccount);
 
   const handleChange = e => {

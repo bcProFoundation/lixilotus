@@ -182,7 +182,7 @@ function* selectAccountSaga(action: PayloadAction<number>) {
   }
 }
 
-function* selectAccountSuccessSaga(action: PayloadAction<Account>) {
+function* selectAccountSuccessSaga(action: PayloadAction<{ account: Account, vaults: Vault[] }>) {
   yield put(hideLoading(selectAccount.type));
 }
 
