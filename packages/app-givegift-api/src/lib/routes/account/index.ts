@@ -120,8 +120,13 @@ router.delete('/accounts/:id/', async (req: express.Request, res: express.Respon
     const account = await prisma.account.findUnique({
       where: {
         id: parseInt(id)
+      },
+      include: {
+        vaults: true
       }
     });
+
+
 
     if (account) {
       // Validate the mnemonic
@@ -131,10 +136,27 @@ router.delete('/accounts/:id/', async (req: express.Request, res: express.Respon
       }
     }
 
-    await prisma.$transaction([
-      prisma.vault.deleteMany({ where: { accountId: accountId } }),
-      prisma.account.deleteMany({ where: { id: accountId } }),
-    ])
+    let vaults = account && account.vaults ? account.vaults : [];
+
+    if (vaults.length > 0) {
+      // delete associated redeems, vaults then account
+      const redeemDeleteCondition: Array<{ id: number }> = vaults.map(vault => {
+        return {
+          id: vault.id
+        };
+      });
+      await prisma.$transaction([
+        prisma.redeem.deleteMany({
+          where: {
+            OR: redeemDeleteCondition
+          }
+        }),
+        prisma.vault.deleteMany({ where: { accountId: accountId } }),
+        prisma.account.deleteMany({ where: { id: accountId } }),
+      ])
+    } else {
+      prisma.account.deleteMany({ where: { id: accountId } });
+    }
 
     res.status(204).send();
   } catch (err) {
