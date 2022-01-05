@@ -5,7 +5,7 @@ import moment from 'moment';
 import { VaultParamLabel } from '@abcpros/givegift-components/components/Common/Atoms';
 import { useAppDispatch } from 'src/store/hooks';
 import { closeModal } from 'src/store/modal/actions';
-import { countries } from '@abcpros/givegift-models/src/constants/countries';
+import { countries } from '@abcpros/givegift-models/constants';
 import { VaultType } from '@abcpros/givegift-models/src/lib/vault';
 
 
@@ -83,7 +83,7 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
           <>
             <VaultParamLabel>The fund giving is randomized</VaultParamLabel>
             <br />
-              <VaultParamLabel>Min: {newVaultMinValue}; Max: {newVaultMaxValue}</VaultParamLabel> 
+            <VaultParamLabel>Min: {newVaultMinValue}; Max: {newVaultMaxValue}</VaultParamLabel>
           </>
         );
     }
@@ -91,7 +91,7 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
 
   const formatDate = () => {
     if (newExpiryAt != "") {
-      return <VaultParamLabel>Expiry at: {moment(newExpiryAt).format("YYYY-MM-DD HH:mm")}<br/></VaultParamLabel> ;
+      return <VaultParamLabel>Expiry at: {moment(newExpiryAt).format("YYYY-MM-DD HH:mm")}<br /></VaultParamLabel>;
     }
     else {
       return;
@@ -100,11 +100,11 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
 
   const confirmCountry = () => {
     const country = countries.find(country => country.id === newCountryVault);
-    return <VaultParamLabel>Country: {country ? country.name : "All of country"}<br /></VaultParamLabel> 
+    return <VaultParamLabel>Country: {country ? country.name : "All of country"}<br /></VaultParamLabel>
   }
 
   const confirmMaxRedeem = () => {
-      return (newMaxRedeem == "" ? "" : <VaultParamLabel>Max Redemption: {newMaxRedeem} <br /></VaultParamLabel>);
+    return (newMaxRedeem == "" ? "" : <VaultParamLabel>Max Redemption: {newMaxRedeem} <br /></VaultParamLabel>);
   }
 
   return (

@@ -8,7 +8,7 @@ import { AdvancedCollapse, VaultCollapse } from "@abcpros/givegift-components/co
 import { AntdFormWrapper } from '@abcpros/givegift-components/components/Common/EnhancedInputs';
 import { SmartButton } from '@abcpros/givegift-components/components/Common/PrimaryButton';
 import { currency } from '@abcpros/givegift-components/components/Common/Ticker';
-import { countries } from "@abcpros/givegift-models/src/constants/countries";
+import { countries } from "@abcpros/givegift-models/constants";
 import CountrySelectDropdown from '@components/Common/CountrySelectDropdown';
 import { isValidAmountInput } from '@utils/validation';
 import { GenerateVaultCommand, VaultType } from '@abcpros/givegift-models/lib/vault';
@@ -64,8 +64,8 @@ const CreateVaultForm = ({
   const [newCountryVault, setNewCountryVault] = useState('');
   const [newCountryVaultIsValid, setNewCountryVaultIsValid] = useState(true);
 
-    // New FamilyFriendly
-    const [isFamilyFriendly, setIsFamilyFriendlyVault] = useState<boolean>(false);
+  // New FamilyFriendly
+  const [isFamilyFriendly, setIsFamilyFriendlyVault] = useState<boolean>(false);
 
 
   const handleNewVaultNameInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -293,7 +293,7 @@ const CreateVaultForm = ({
           <Input
             addonBefore="Max Redeem"
             type="number"
-              placeholder="Enter max Redeem number"
+            placeholder="Enter max Redeem number"
             name="vaultMaxReDeem"
             value={newMaxRedeem}
             onChange={e => handleNewMaxRedeemInput(e)}
@@ -314,7 +314,7 @@ const CreateVaultForm = ({
             name="vaultExpiryAt"
             disabledDate={(current) => disabledDate(current)}
             disabledTime={(current) => disabledDateTime(current)}
-              showTime={{ 
+            showTime={{
               format: 'HH:mm',
               defaultValue: moment()
             }}
@@ -325,7 +325,7 @@ const CreateVaultForm = ({
             }}
             onSelect={handleNewExpityTimeInput}
             onOk={onOk}
-            />
+          />
         </Form.Item>
       </>
     );
@@ -400,16 +400,16 @@ const CreateVaultForm = ({
 
                     {/* Family Friendly */}
                     <Form.Item>
-                      <Checkbox 
+                      <Checkbox
                         value={isFamilyFriendly}
                         onChange={e => handleFamilyFriendly(e)}>
-                          Family Friendly
+                        Family Friendly
                       </Checkbox>
                     </Form.Item>
                   </Panel>
                 </AdvancedCollapse>
               </Form.Item>
-              
+
             </Form>
           </AntdFormWrapper>
           <SmartButton

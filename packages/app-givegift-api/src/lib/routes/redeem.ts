@@ -10,7 +10,7 @@ import BCHJS from '@abcpros/xpi-js';
 import MinimalBCHWallet from '@abcpros/minimal-xpi-slp-wallet';
 import { CreateRedeemDto, fromSmallestDenomination, RedeemDto, VaultType } from '@abcpros/givegift-models'
 import { toSmallestDenomination } from '@abcpros/givegift-models';
-import { countries } from '@abcpros/givegift-models/src/constants/countries';
+import { countries } from '@abcpros/givegift-models';
 import { aesGcmDecrypt, base62ToNumber } from '../utils/encryptionMethods';
 import SlpWallet from '@abcpros/minimal-xpi-slp-wallet';
 import logger from '../logger';
