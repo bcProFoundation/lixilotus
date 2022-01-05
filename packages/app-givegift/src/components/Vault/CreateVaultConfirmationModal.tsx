@@ -102,12 +102,7 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
   }
 
   const confirmMaxRedeem = () => {
-    if (isFamilyFriendly && !newMaxRedeem) {
-      return (<VaultParamLabel>Max Redemption: 5 <br /></VaultParamLabel>);
-    }
-    else {
       return (newMaxRedeem == "" ? "" : <VaultParamLabel>Max Redemption: {newMaxRedeem} <br /></VaultParamLabel>);
-    } 
   }
 
   return (

@@ -84,10 +84,6 @@ function* postVaultSaga(action: PayloadAction<Vault>) {
       isFamilyFriendly: vault.isFamilyFriendly
     }
 
-    if (dataApi.isFamilyFriendly && !dataApi.maxRedeem) {
-      dataApi.maxRedeem = 5;
-    } 
-
     const data: VaultDto = yield call(vaultApi.post, dataApi);
 
     // Merge back to action payload
