@@ -11,6 +11,7 @@ export interface GenerateVaultCommand {
   dividedValue: string;
   expiryAt?: string;
   country?: string;
+  isFamilyFriendly: boolean;
 }
 
 export interface CreateVaultCommand {
@@ -26,6 +27,7 @@ export interface CreateVaultCommand {
   dividedValue: number;
   expiryAt?: Date;
   country?: string;
+  isFamilyFriendly: boolean;
   password: string;
 }
 
@@ -46,6 +48,7 @@ export interface VaultDto {
   updatedAt?: Date;
   expiryAt?: Date;
   country?: string;
+  isFamilyFriendly: boolean;
   balance?: number;
   address: string;
   status: string;
@@ -68,6 +71,7 @@ export interface Vault {
   updatedAt?: Date;
   expiryAt?: Date;
   country?: string;
+  isFamilyFriendly: boolean;
   balance?: number;
   address: string;
   status: string;

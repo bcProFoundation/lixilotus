@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Collapse, DatePicker, Dropdown, Form, Input, Menu, Modal, notification, Radio, RadioChangeEvent, Select, Space } from 'antd';
+import { Checkbox, Collapse, DatePicker, Form, Input, Menu, Modal, notification, Radio, RadioChangeEvent } from 'antd';
 import { PlusSquareOutlined } from '@ant-design/icons';
 import isEmpty from 'lodash.isempty';
 import { range } from 'lodash';
@@ -19,7 +19,6 @@ import { openModal } from 'src/store/modal/actions';
 import { CreateVaultConfirmationModalProps } from './CreateVaultConfirmationModal';
 import { Account } from '@abcpros/givegift-models';
 const { Panel } = Collapse;
-const { RangePicker } = DatePicker;
 
 type CreateVaultFormProps = {
   account?: Account
@@ -65,6 +64,9 @@ const CreateVaultForm = ({
   const [newCountryVault, setNewCountryVault] = useState('');
   const [newCountryVaultIsValid, setNewCountryVaultIsValid] = useState(true);
 
+    // New FamilyFriendly
+    const [isFamilyFriendly, setIsFamilyFriendlyVault] = useState<boolean>(false);
+
 
   const handleNewVaultNameInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -101,7 +103,7 @@ const CreateVaultForm = ({
       (vaultType == VaultType.Fixed && newVaultFixedValueIsValid) ||
       (vaultType == VaultType.Divided && newVaultDividedValueIsValid));
 
-  const handelChangeVaultType = (e: RadioChangeEvent) => {
+  const handleChangeVaultType = (e: RadioChangeEvent) => {
     const { value } = e.target;
     setVaultType(value);
   }
@@ -136,6 +138,11 @@ const CreateVaultForm = ({
     }
   }
 
+  const handleFamilyFriendly = (e) => {
+    const value = e.target.checked;
+    setIsFamilyFriendlyVault(value);
+  }
+
   const handleSubmitCreateVault = () => {
 
     if (!account) {
@@ -158,7 +165,8 @@ const CreateVaultForm = ({
       fixedValue: newVaultFixedValue,
       dividedValue: newVaultDividedValue,
       vaultType: vaultType,
-      country: newCountryVault
+      country: newCountryVault,
+      isFamilyFriendly: isFamilyFriendly
     };
 
     const createVaultModalProps: CreateVaultConfirmationModalProps = {
@@ -172,6 +180,7 @@ const CreateVaultForm = ({
       newVaultFixedValue,
       newVaultDividedValue,
       newCountryVault,
+      isFamilyFriendly,
       onOkAction: generateVault(command)
     };
     dispatch(openModal('CreateVaultConfirmationModal', createVaultModalProps));
@@ -362,7 +371,7 @@ const CreateVaultForm = ({
 
               {/* select VaultType and Expiry */}
               <Form.Item>
-                <Radio.Group value={vaultType} onChange={handelChangeVaultType}>
+                <Radio.Group value={vaultType} onChange={handleChangeVaultType}>
                   <Radio value={0}>Random</Radio>
                   <Radio value={1}>Fixed</Radio>
                   <Radio value={2}>Divided</Radio>
@@ -370,19 +379,32 @@ const CreateVaultForm = ({
               </Form.Item>
               {selectVaultType()}
 
+              {/* Vault country */}
+              <Form.Item>
+                <AntdFormWrapper>
+                  <CountrySelectDropdown
+                    countries={countries}
+                    defaultValue={newCountryVault ? newCountryVault : 'All of country'}
+                    handleChangeCountry={handleChangeCountry}
+                  />
+                </AntdFormWrapper>
+              </Form.Item>
+
               {/* Advanced */}
               <Form.Item>
                 <AdvancedCollapse>
                   <Panel header="Advanced" key="2">
+
+                    {/* Max Redeem and Expity Time */}
                     {selectExpiry()}
+
+                    {/* Family Friendly */}
                     <Form.Item>
-                      <AntdFormWrapper>
-                        <CountrySelectDropdown
-                          countries={countries}
-                          defaultValue={newCountryVault ? newCountryVault : 'All of country'}
-                          handleChangeCountry={handleChangeCountry}
-                        />
-                      </AntdFormWrapper>
+                      <Checkbox 
+                        value={isFamilyFriendly}
+                        onChange={e => handleFamilyFriendly(e)}>
+                          Family Friendly
+                      </Checkbox>
                     </Form.Item>
                   </Panel>
                 </AdvancedCollapse>

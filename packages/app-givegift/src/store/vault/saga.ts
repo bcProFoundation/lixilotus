@@ -43,6 +43,7 @@ function* generateVaultSaga(action: PayloadAction<GenerateVaultCommand>) {
     fixedValue: Number(command.fixedValue),
     dividedValue: Number(command.dividedValue),
     country: command && command.country ? command.country : undefined,
+    isFamilyFriendly: vaultDto.isFamilyFriendly,
     password: password,
     mnemonic: mnemonic,
     mnemonicHash: command.mnemonicHash

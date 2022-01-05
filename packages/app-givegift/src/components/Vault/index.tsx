@@ -127,6 +127,13 @@ const Vault: React.FC = () => {
       </Descriptions.Item>) : "";
   }
 
+  const showIsFamilyFriendly = () => {
+    return (selectedVault?.isFamilyFriendly) ? (
+      <Descriptions.Item label="Optional">
+        Family Friendly
+      </Descriptions.Item>) : "";
+  }
+
   return (
     <>
       {selectedVault && selectedVault.address ? (
@@ -161,6 +168,7 @@ const Vault: React.FC = () => {
             </Descriptions.Item>
             {formatDate()}
             {showCountry()}
+            {showIsFamilyFriendly()}
           </Descriptions>
 
           {/* Detail Vault */}

@@ -39,6 +39,7 @@ model Vault {
   updatedAt       DateTime  @default(now()) @map("updated_at") @db.Timestamptz
   expiryAt        DateTime? @map("expiry_at")
   country         String?   @map("country")
+  isFamilyFriendly  Boolean                                 @map("is_family_friendly")
   redeems         Redeem[]
   status          String    @default("active") @map("status")
   account         Account   @relation(fields: [accountId], references: [id])
