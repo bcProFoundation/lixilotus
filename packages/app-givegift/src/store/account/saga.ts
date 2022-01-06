@@ -7,7 +7,7 @@ import {
 } from '@abcpros/givegift-models';
 import BCHJS from '@abcpros/xpi-js';
 import { PayloadAction } from '@reduxjs/toolkit';
-import { aesGcmEncrypt, generateRandomBase62Str } from '@utils/encryptionMethods';
+import { aesGcmEncrypt, aesGcmDecrypt, numberToBase62 } from '@utils/encryptionMethods';
 
 import accountApi from '../account/api';
 import { hideLoading, showLoading } from '../loading/actions';
@@ -135,16 +135,31 @@ function* importAccountSaga(action: PayloadAction<string>) {
     const mnemonicHashBuffer = yield call([crypto.subtle, crypto.subtle.digest], 'SHA-256', mnemonicUtf8);       // hash the mnemonic
     const mnemonicHash = Buffer.from(new Uint8Array(mnemonicHashBuffer)).toString('hex');
 
-    const dataApi: ImportAccountCommand = {
+    const command: ImportAccountCommand = {
       mnemonic,
       mnemonicHash
     };
 
-    const data: AccountDto = yield call(accountApi.import, dataApi);
+    const data: AccountDto = yield call(accountApi.import, command);
 
     // Merge back to action payload
-    const result = { ...data } as Account;
-    yield put(importAccountSuccess(result));
+    const account = { ...data } as Account;
+
+    const vaultsData = (yield call(vaultApi.getByAccountId, account.id)) as Vault[];
+    let vaults: Vault[] = [];
+
+    for (const item of vaultsData) {
+      // Calculate the redeem code
+      const encodedId = numberToBase62(item.id);
+      const redeemPart = yield call(aesGcmDecrypt, item.encryptedRedeemCode, command.mnemonic);
+      const vault: Vault = {
+        ...item,
+        redeemCode: redeemPart + encodedId
+      }
+      vaults.push(vault);
+    }
+
+    yield put(importAccountSuccess({ account: account, vaults: vaults }));
   } catch (err) {
     const message = (err as Error).message ?? `Could not import the account.`;
     yield put(importAccountFailure(message));
@@ -154,7 +169,6 @@ function* importAccountSaga(action: PayloadAction<string>) {
 function* importAccountSuccessSaga(action: PayloadAction<Account>) {
   const account = action.payload;
   yield put(hideLoading(importAccount.type));
-  yield put(setAccount(account));
 }
 
 function* importAccountFailureSaga(action: PayloadAction<string>) {

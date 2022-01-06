@@ -86,11 +86,13 @@ router.post('/vaults', async (req: express.Request, res: express.Response, next:
       const walletService: WalletService = Container.get(WalletService);
       const { address, xpriv } = await walletService.deriveVault(mnemonicFromApi, vaultIndex);
       const encryptedXPriv = await aesGcmEncrypt(xpriv, command.password);
+      const encryptedRedeemCode = await aesGcmEncrypt(command.password, command.mnemonic);
 
       const data = {
         ..._.omit(command, ['mnemonic', 'mnemonicHash', 'password']),
         id: undefined,
         derivationIndex: vaultIndex,
+        encryptedRedeemCode: encryptedRedeemCode,
         redeemedNum: 0,
         encryptedXPriv,
         status: 'active',
@@ -101,13 +103,9 @@ router.post('/vaults', async (req: express.Request, res: express.Response, next:
       const vaultToInsert = _.omit(data, 'password');
       const createdVault: VaultDb = await prisma.vault.create({ data: vaultToInsert });
 
-      const encodedId = numberToBase62(createdVault.id);
-      const redeemCode = command.password + encodedId;
-
       let resultApi: VaultDto = {
         ...createdVault,
         balance: 0,
-        redeemCode: redeemCode,
         totalRedeem: Number(createdVault.totalRedeem),
         expiryAt: createdVault.expiryAt ? createdVault.expiryAt : undefined,
         country: createdVault.country ? createdVault.country : undefined

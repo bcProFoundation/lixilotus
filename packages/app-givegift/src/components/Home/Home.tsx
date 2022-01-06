@@ -14,7 +14,6 @@ import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
 import { SmartButton } from '@components/Common/PrimaryButton';
 import { StyledSpacer } from '@components/Common/StyledSpacer';
 import CreateVaultForm from '@components/Vault/CreateVaultForm';
-import ImportVaultForm from '@components/Vault/ImportVaultForm';
 import VaultList from '@components/Vault/VaultList';
 
 const Home: React.FC = () => {
@@ -98,8 +97,6 @@ const Home: React.FC = () => {
       </h2>
 
       <CreateVaultForm account={selectedAccount}
-      />
-      <ImportVaultForm account={selectedAccount}
       />
       <VaultList vaults={vaults} />
     </>

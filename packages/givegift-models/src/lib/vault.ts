@@ -43,6 +43,7 @@ export interface VaultDto {
   maxValue: number;
   fixedValue: number;
   dividedValue: number;
+  encryptedRedeemCode: string;
   totalRedeem: number;
   createdAt?: Date;
   updatedAt?: Date;
@@ -66,6 +67,7 @@ export interface Vault {
   maxValue: number;
   fixedValue: number;
   dividedValue: number;
+  encryptedRedeemCode: string;
   totalRedeem: number;
   createdAt?: Date;
   updatedAt?: Date;
@@ -77,11 +79,6 @@ export interface Vault {
   status: string;
   accountId: number;
 };
-
-export interface ImportVaultCommand {
-  mnemonic: string;
-  redeemCode: string;
-}
 
 export enum VaultType {
   Random = 0,

@@ -1,8 +1,9 @@
-import { createEntityAdapter, createReducer, Update } from "@reduxjs/toolkit"
-import { Vault } from "@abcpros/givegift-models/lib/vault";
-import { refreshVaultSuccess, selectVaultSuccess, setVault } from "./actions";
-import { VaultsState } from "./state"
-import { selectAccountSuccess } from "../account/actions";
+import { Vault } from '@abcpros/givegift-models/lib/vault';
+import { createEntityAdapter, createReducer, Update } from '@reduxjs/toolkit';
+
+import { importAccountSuccess, selectAccountSuccess } from '../account/actions';
+import { refreshVaultSuccess, selectVaultSuccess, setVault } from './actions';
+import { VaultsState } from './state';
 
 export const vaultsAdapter = createEntityAdapter<Vault>({
 })
@@ -46,6 +47,16 @@ export const vaultReducer = createReducer(initialState, (builder) => {
       state.redeemIdsById[vault.id] = redeemIds;
     })
     .addCase(selectAccountSuccess, (state, action) => {
+      const { vaults } = action.payload;
+      const vaultIds = vaults.map(vault => vault.id);
+      vaultsAdapter.upsertMany(state, vaults);
+      if (vaultIds.length == 0 || !vaultIds.includes(state.selectedId)) {
+        // The current selected vault is not the same anymore
+        // Reset the selected vault
+        state.selectedId = 0;
+      }
+    })
+    .addCase(importAccountSuccess, (state, action) => {
       const { vaults } = action.payload;
       const vaultIds = vaults.map(vault => vault.id);
       vaultsAdapter.upsertMany(state, vaults);

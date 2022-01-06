@@ -1,7 +1,11 @@
-import { createEntityAdapter, createReducer, Update } from "@reduxjs/toolkit";
-import { Account } from "@abcpros/givegift-models";
-import { deleteAccountSuccess, renameAccountSuccess, selectAccountSuccess, setAccount } from "./actions";
-import { AccountsState } from "./state";
+import { Account } from '@abcpros/givegift-models';
+import { createEntityAdapter, createReducer, Update } from '@reduxjs/toolkit';
+
+import {
+  deleteAccountSuccess, importAccountSuccess, renameAccountSuccess, selectAccountSuccess,
+  setAccount
+} from './actions';
+import { AccountsState } from './state';
 
 export const accountsAdapter = createEntityAdapter<Account>({
 })
@@ -19,6 +23,14 @@ export const accountReducer = createReducer(initialState, (builder) => {
       state.selectedId = account.id ?? undefined;
     })
     .addCase(selectAccountSuccess, (state, action) => {
+      const { account, vaults } = action.payload;
+      const id = account.id;
+      state.selectedId = id;
+      const vaultIds = vaults.map(vault => vault.id);
+      state.vaultIdsById[id] = vaultIds;
+      accountsAdapter.upsertOne(state, account);
+    })
+    .addCase(importAccountSuccess, (state, action) => {
       const { account, vaults } = action.payload;
       const id = account.id;
       state.selectedId = id;
