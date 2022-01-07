@@ -78,13 +78,13 @@ router.post('/vaults', async (req: express.Request, res: express.Response, next:
       });
 
       // Find the latest derivation index:
-      let vaultIndex = 0;
+      let vaultIndex = 1;
       if (latestVault) {
         vaultIndex = latestVault.derivationIndex + 1;
       }
 
       const walletService: WalletService = Container.get(WalletService);
-      const { address, xpriv } = await walletService.deriveVault(mnemonicFromApi, vaultIndex);
+      const { address, xpriv } = await walletService.deriveAddress(mnemonicFromApi, vaultIndex);
       const encryptedXPriv = await aesGcmEncrypt(xpriv, command.password);
       const encryptedRedeemCode = await aesGcmEncrypt(command.password, command.mnemonic);
 

@@ -6,10 +6,10 @@ import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
 import { AppContext } from 'src/store/store';
 import { getVaultsBySelectedAccount } from 'src/store/vault/selectors';
-
+import { QRCode } from "@abcpros/givegift-components/components/Common/QRCode";
 import { ThemedWalletOutlined } from '@abcpros/givegift-components/components/Common/CustomIcons';
 import WalletLabel from '@abcpros/givegift-components/components/Common/WalletLabel';
-import { ExclamationCircleOutlined, LockOutlined } from '@ant-design/icons';
+import { LockOutlined } from '@ant-design/icons';
 import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
 import { SmartButton } from '@components/Common/PrimaryButton';
 import { StyledSpacer } from '@components/Common/StyledSpacer';
@@ -57,6 +57,9 @@ const Home: React.FC = () => {
   return (
     <>
       <WalletLabel name={selectedAccount?.name ?? ''} />
+      <QRCode
+        address={selectedAccount?.address ?? ''}
+      />
       {seedInput && (
         <AntdFormWrapper>
           <Form style={{ width: 'auto' }}>
