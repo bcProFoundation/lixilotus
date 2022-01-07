@@ -18,6 +18,7 @@ model Account {
   updatedAt         DateTime @default(now()) @map("updated_at") @db.Timestamptz
   vaults            Vault[]
   mnemonicHash      String   @map("mnemonic_hash")
+  address           String   @default("") @map("address")
 
   @@index([mnemonicHash])
   @@map("account")

@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "account" ALTER COLUMN "address" DROP NOT NULL,
+ALTER COLUMN "address" DROP DEFAULT;

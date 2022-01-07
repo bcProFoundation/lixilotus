@@ -1,11 +1,14 @@
 import express, { NextFunction } from 'express';
+import * as _ from 'lodash';
+import Container from 'typedi';
 import VError from 'verror';
 
 import {
-  AccountDto, CreateAccountCommand, DeleteAccountCommand, RenameAccountCommand
+    AccountDto, CreateAccountCommand, DeleteAccountCommand, RenameAccountCommand
 } from '@abcpros/givegift-models';
-import { Account as AccountDb, PrismaClient, Prisma } from '@prisma/client';
+import { Account as AccountDb, Prisma, PrismaClient } from '@prisma/client';
 
+import { WalletService } from '../../services/wallet';
 import { aesGcmDecrypt } from '../../utils/encryptionMethods';
 import { router as accountChildRouter } from './account';
 
@@ -42,15 +45,22 @@ router.post('/accounts', async (req: express.Request, res: express.Response, nex
   const command: CreateAccountCommand = req.body;
   if (command) {
     try {
+      const walletService: WalletService = Container.get(WalletService);
+      const { address } = await walletService.deriveAddress(command.mnemonic, 0);
+
       const accountToInsert = {
-        ...command,
+        name: command.name,
+        encryptedMnemonic: command.encryptedMnemonic,
+        mnemonicHash: command.mnemonicHash,
         id: undefined,
+        address: address,
       };
 
       const createdAccount: AccountDb = await prisma.account.create({ data: accountToInsert });
 
       const resultApi: AccountDto = {
-        ...command, ...createdAccount
+        ...command, ...createdAccount, 
+        address
       };
 
       res.json(resultApi);
@@ -91,12 +101,13 @@ router.patch('/accounts/:id/', async (req: express.Request, res: express.Respons
         },
         data: {
           name: command.name,
-          updatedAt: new Date()
+          updatedAt: new Date(),
         }
       });
 
       const resultApi: AccountDto = {
-        ...command, ...updatedAccount
+        ...command, ...updatedAccount, 
+        address: updatedAccount.address as string
       };
 
       res.json(resultApi);

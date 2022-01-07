@@ -32,7 +32,8 @@ router.post('/import', async (req: express.Request, res: express.Response, next:
     const resultApi: AccountDto = {
       ...account,
       mnemonic: mnemonic,
-      name: account.name
+      name: account.name,
+      address: account.address
     };
 
     res.json(resultApi);

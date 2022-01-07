@@ -27,7 +27,7 @@ export class WalletService {
     return { keyPair, balance }
   }
 
-  async deriveVault(mnemonic: string, vaultIndex: number): Promise<{ address: string, xpriv: string }> {
+  async deriveAddress(mnemonic: string, vaultIndex: number): Promise<{ address: string, xpriv: string }> {
     const rootSeedBuffer: Buffer = await this.xpijs.Mnemonic.toSeed(mnemonic);
     const masterHDNode = this.xpijs.HDNode.fromSeed(rootSeedBuffer);
     const hdPath = `m/44'/10605'/${vaultIndex}'/0/0`;

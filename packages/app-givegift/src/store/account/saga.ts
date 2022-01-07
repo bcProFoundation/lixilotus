@@ -42,12 +42,11 @@ function* generateAccountSaga(action: PayloadAction) {
 
   const name = String(mnemonicHash).substring(0, 5);
 
-  const account: Account = {
-    id: 0,
+  const account: CreateAccountCommand = {
     name,
     mnemonic: Bip39128BitMnemonic,
     encryptedMnemonic,
-    mnemonicHash,
+    mnemonicHash
   };
 
   yield put(postAccount(account));
@@ -80,22 +79,16 @@ function* getAccountFailureSaga(action: PayloadAction<string>) {
   yield put(hideLoading(getAccount.type));
 }
 
-function* postAccountSaga(action: PayloadAction<Account>) {
+function* postAccountSaga(action: PayloadAction<CreateAccountCommand>) {
   try {
-    const account = action.payload;
+    const command = action.payload;
 
     yield put(showLoading(postAccount.type));
 
-    const dataApi: CreateAccountCommand = {
-      name: account.name,
-      mnemonicHash: account.mnemonicHash,
-      encryptedMnemonic: account.encryptedMnemonic
-    }
-
-    const data: AccountDto = yield call(accountApi.post, dataApi);
+    const data: AccountDto = yield call(accountApi.post, command);
 
     // Merge back to action payload
-    const result = { ...account, ...data } as Account;
+    const result = { ...command, ...data } as Account;
     yield put(postAccountSuccess(result));
 
   } catch (err) {
