@@ -1,4 +1,4 @@
-import { Form, Input, Modal, Spin } from 'antd';
+import { Form, Input, Modal, Spin, InputNumber } from 'antd';
 import React, { useState } from 'react';
 import { generateAccount, importAccount } from 'src/store/account/actions';
 import { getSelectedAccount } from 'src/store/account/selectors';
@@ -6,7 +6,6 @@ import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
 import { AppContext } from 'src/store/store';
 import { getVaultsBySelectedAccount } from 'src/store/vault/selectors';
-import { QRCode } from "@abcpros/givegift-components/components/Common/QRCode";
 import { ThemedWalletOutlined } from '@abcpros/givegift-components/components/Common/CustomIcons';
 import WalletLabel from '@abcpros/givegift-components/components/Common/WalletLabel';
 import { LockOutlined } from '@ant-design/icons';
@@ -56,9 +55,10 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <WalletLabel name={selectedAccount?.name ?? ''} />
-      <QRCode
-        address={selectedAccount?.address ?? ''}
+      <WalletLabel 
+        name={selectedAccount?.name ?? ''} 
+        address={selectedAccount?.address ?? ''} 
+        balance={selectedAccount?.balance ?? 0} 
       />
       {seedInput && (
         <AntdFormWrapper>

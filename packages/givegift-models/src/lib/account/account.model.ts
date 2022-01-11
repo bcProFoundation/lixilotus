@@ -8,4 +8,5 @@ export interface Account {
   updatedAt?: Date;
   mnemonicHash: string;
   address: string;
+  balance?: number;
 }

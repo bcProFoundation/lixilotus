@@ -1,23 +1,32 @@
-import React, { useState } from 'react';
-import { Checkbox, Collapse, DatePicker, Form, Input, Menu, Modal, notification, Radio, RadioChangeEvent } from 'antd';
-import { PlusSquareOutlined } from '@ant-design/icons';
-import isEmpty from 'lodash.isempty';
+import {
+    Button, Checkbox, Collapse, DatePicker, Form, Input, Menu, Modal, notification, Radio,
+    RadioChangeEvent
+} from 'antd';
 import { range } from 'lodash';
+import isEmpty from 'lodash.isempty';
 import moment from 'moment';
-import { AdvancedCollapse, VaultCollapse } from "@abcpros/givegift-components/components/Common/StyledCollapse";
-import { AntdFormWrapper } from '@abcpros/givegift-components/components/Common/EnhancedInputs';
-import { SmartButton } from '@abcpros/givegift-components/components/Common/PrimaryButton';
-import { currency } from '@abcpros/givegift-components/components/Common/Ticker';
-import { countries } from "@abcpros/givegift-models/constants";
-import CountrySelectDropdown from '@components/Common/CountrySelectDropdown';
-import { isValidAmountInput } from '@utils/validation';
-import { GenerateVaultCommand, VaultType } from '@abcpros/givegift-models/lib/vault';
+import React, { useState } from 'react';
 import { useAppDispatch } from 'src/store/hooks';
+import { openModal } from 'src/store/modal/actions';
 import { showToast } from 'src/store/toast/actions';
 import { generateVault } from 'src/store/vault/actions';
-import { openModal } from 'src/store/modal/actions';
-import { CreateVaultConfirmationModalProps } from './CreateVaultConfirmationModal';
+
+import { AntdFormWrapper } from '@abcpros/givegift-components/components/Common/EnhancedInputs';
+import { SmartButton } from '@abcpros/givegift-components/components/Common/PrimaryButton';
+import {
+    AdvancedCollapse, VaultCollapse
+} from '@abcpros/givegift-components/components/Common/StyledCollapse';
+import { currency } from '@abcpros/givegift-components/components/Common/Ticker';
 import { Account } from '@abcpros/givegift-models';
+import { countries } from '@abcpros/givegift-models/constants';
+import { GenerateVaultCommand, RedeemType, VaultType } from '@abcpros/givegift-models/lib/vault';
+import { PlusSquareOutlined } from '@ant-design/icons';
+import CountrySelectDropdown from '@components/Common/CountrySelectDropdown';
+import { isValidAmountInput } from '@utils/validation';
+
+import retry from '../../utils/retry';
+import { CreateVaultConfirmationModalProps } from './CreateVaultConfirmationModal';
+
 const { Panel } = Collapse;
 
 type CreateVaultFormProps = {
@@ -35,14 +44,11 @@ const CreateVaultForm = ({
   const [newVaultName, setNewVaultName] = useState('');
   const [newVaultNameIsValid, setNewVaultNameIsValid] = useState<boolean | null>(null);
   const [vaultType, setVaultType] = useState<number>(0);
+  const [redeemType, setRedeemType] = useState<number>(0);
 
-  // New max redemption number
-  const [newMaxRedeem, setNewMaxRedeemVault] = useState('');
-  const [newMaxRedeemVaultIsValid, setNewMaxRedeemVaultIsValid] = useState(true);
-
-  // New ExpiryAt
-  const [newExpiryAt, setNewExpiryAtVault] = useState('');
-  const [newExpiryAtVaultIsValid, setExpiryAtVaultIsValid] = useState(true);
+  // New vault balance number
+  const [newVaultAmount, setNewVaultAmount] = useState('');
+  const [newVaultAmountValueIsValid, setNewVaultAmountValueIsValid] = useState(true);
 
   // New Vault Min Value
   const [newVaultMinValue, setNewVaultMinValue] = useState('');
@@ -64,6 +70,14 @@ const CreateVaultForm = ({
   const [newCountryVault, setNewCountryVault] = useState('');
   const [newCountryVaultIsValid, setNewCountryVaultIsValid] = useState(true);
 
+  // New max redemption number
+  const [newMaxRedeem, setNewMaxRedeemVault] = useState('');
+  const [newMaxRedeemVaultIsValid, setNewMaxRedeemVaultIsValid] = useState(true);
+
+  // New ExpiryAt
+  const [newExpiryAt, setNewExpiryAtVault] = useState('');
+  const [newExpiryAtVaultIsValid, setExpiryAtVaultIsValid] = useState(true);
+
   // New FamilyFriendly
   const [isFamilyFriendly, setIsFamilyFriendlyVault] = useState<boolean>(false);
 
@@ -76,38 +90,30 @@ const CreateVaultForm = ({
     }
   };
 
-  const handleNewMaxRedeemInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setNewMaxRedeemVault(value);
-    if (value && !isEmpty(value)) {
-      setNewMaxRedeemVaultIsValid(true);
-    }
-  };
-
-  const handleNewExpityTimeInput = (value) => {
-    setNewExpiryAtVault(value._d.toString());
-  }
-
-  const onOk = (value) => {
-    setNewExpiryAtVault(value._d.toUTCString())
-    if (value && !isEmpty(value)) {
-      setExpiryAtVaultIsValid(true)
-    }
-  }
-
   // Only enable CreateVault button if all form entries are valid
   let createVaultFormDataIsValid =
     newVaultNameIsValid && newMaxRedeemVaultIsValid &&
-    newExpiryAtVaultIsValid && account &&
+    newExpiryAtVaultIsValid && account && newVaultAmount &&
     ((vaultType == VaultType.Random && newVaultMinValueIsValid && newVaultMaxValueIsValid) ||
       (vaultType == VaultType.Fixed && newVaultFixedValueIsValid) ||
       (vaultType == VaultType.Divided && newVaultDividedValueIsValid));
 
+  const handleChangeRedeemType = (e: RadioChangeEvent) => {
+    const { value } = e.target;
+    setRedeemType(value);
+  }
+  
   const handleChangeVaultType = (e: RadioChangeEvent) => {
     const { value } = e.target;
     setVaultType(value);
   }
 
+  const handleNewVaultAmountInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setNewVaultAmountValueIsValid(isValidAmountInput(value));
+    setNewVaultAmount(value);
+  }
+    
   const handleChangeMinValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewVaultMinValueIsValid(isValidAmountInput(value));
@@ -138,6 +144,34 @@ const CreateVaultForm = ({
     }
   }
 
+  const handleNewMaxRedeemInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setNewMaxRedeemVault(value);
+    if (value && !isEmpty(value)) {
+      setNewMaxRedeemVaultIsValid(true);
+    }
+  };
+
+  // Expiry Time
+  const disabledDate = (current) => {
+    return current && current < moment().startOf('day');
+  }
+  const disabledDateTime = (current) => {
+    if (newExpiryAt && moment(newExpiryAt).date() > moment().date()) {
+      return {
+        disabledHours: () => [],
+        disabledMinutes: () => [],
+      };
+    }
+    return {
+      disabledHours: () => range(0, moment().hour()),
+      disabledMinutes: () => range(0, moment().minute()),
+    };
+  }
+  const handleNewExpityTimeInput = (value) => {
+    setNewExpiryAtVault(value._d.toString());
+  }
+  
   const handleFamilyFriendly = (e) => {
     const value = e.target.checked;
     setIsFamilyFriendlyVault(value);
@@ -164,17 +198,21 @@ const CreateVaultForm = ({
       maxValue: newVaultMaxValue,
       fixedValue: newVaultFixedValue,
       dividedValue: newVaultDividedValue,
+      redeemType: redeemType,
       vaultType: vaultType,
       country: newCountryVault,
-      isFamilyFriendly: isFamilyFriendly
+      isFamilyFriendly: isFamilyFriendly,
+      amount: newVaultAmount
     };
 
     const createVaultModalProps: CreateVaultConfirmationModalProps = {
+      redeemType,
       vaultType,
       newAccountName: account?.name ?? '',
       newVaultName,
       newMaxRedeem,
       newExpiryAt,
+      newVaultAmount,
       newVaultMinValue,
       newVaultMaxValue,
       newVaultFixedValue,
@@ -184,6 +222,49 @@ const CreateVaultForm = ({
       onOkAction: generateVault(command)
     };
     dispatch(openModal('CreateVaultConfirmationModal', createVaultModalProps));
+  }
+
+  const onOk = (value) => {
+    setNewExpiryAtVault(value._d.toUTCString())
+    if (value && !isEmpty(value)) {
+      setExpiryAtVaultIsValid(true)
+    }
+  }
+
+  const selectRedeemType = () => {
+    if (redeemType == RedeemType.Single) {
+      return (
+        <Form.Item>
+          <Radio.Group value={vaultType} onChange={handleChangeVaultType}>
+            <Radio value={0}>Random</Radio>
+            <Radio value={1}>Fixed</Radio>
+            <Radio value={2}>Divided</Radio>
+          </Radio.Group>
+        </Form.Item>
+      );
+    }
+    else {
+      return (
+        <>
+          <Form.Item>
+            <Radio.Group value={vaultType} onChange={handleChangeVaultType}>
+              <Radio value={0}>Random</Radio>
+              <Radio value={3}>Equal</Radio>
+            </Radio.Group>
+          </Form.Item>
+          <Form.Item>
+            <Input
+              type="number"
+              addonBefore="Amount"
+              placeholder="Enter balance for your vault"
+              name="vaultAmount"
+              value={newVaultAmount}
+              onChange={e => handleNewVaultAmountInput(e)} 
+            />
+          </Form.Item>
+        </>
+      );
+    }
   }
 
   const selectVaultType = () => {
@@ -228,6 +309,26 @@ const CreateVaultForm = ({
             </Form.Item>
           </>
         );
+      // isEqual
+      case VaultType.Equal:
+        return (
+          <>
+            <Form.Item>
+              <Input.Group compact>
+                <Input
+                  addonBefore="Equal"
+                  type="number"
+                  step={1 / 10 ** currency.cashDecimals}
+                  value={newVaultFixedValue}
+                  placeholder="Number of sub vaults"
+                  name="equalValue"
+                  onChange={e => handleChangeFixedValue(e)}
+                >
+                </Input>
+              </Input.Group>
+            </Form.Item>
+          </>
+        );
       // isRandom
       default:
         return (
@@ -259,23 +360,6 @@ const CreateVaultForm = ({
           </>
         );
     }
-  }
-
-  const disabledDate = (current) => {
-    return current && current < moment().startOf('day');
-  }
-
-  const disabledDateTime = (current) => {
-    if (newExpiryAt && moment(newExpiryAt).date() > moment().date()) {
-      return {
-        disabledHours: () => [],
-        disabledMinutes: () => [],
-      };
-    }
-    return {
-      disabledHours: () => range(0, moment().hour()),
-      disabledMinutes: () => range(0, moment().minute()),
-    };
   }
 
   const selectExpiry = () => {
@@ -331,8 +415,6 @@ const CreateVaultForm = ({
     );
   }
 
-
-
   return (
     <>
       <VaultCollapse
@@ -369,14 +451,15 @@ const CreateVaultForm = ({
                 />
               </Form.Item>
 
-              {/* select VaultType and Expiry */}
+              {/* select type redeem */}
               <Form.Item>
-                <Radio.Group value={vaultType} onChange={handleChangeVaultType}>
-                  <Radio value={0}>Random</Radio>
-                  <Radio value={1}>Fixed</Radio>
-                  <Radio value={2}>Divided</Radio>
+                <Radio.Group value={redeemType} onChange={handleChangeRedeemType}>
+                  <Radio value={0}>Single Code</Radio>
+                  <Radio value={1}>One-Time Codes</Radio>
                 </Radio.Group>
               </Form.Item>
+              {/* select VaultType */}
+              {selectRedeemType()}
               {selectVaultType()}
 
               {/* Vault country */}
