@@ -15,7 +15,7 @@ import { aesGcmDecrypt, base62ToNumber } from '../utils/encryptionMethods';
 import SlpWallet from '@abcpros/minimal-xpi-slp-wallet';
 import logger from '../logger';
 import axios from 'axios';
-import geoip from 'geoip-lite';
+import geoip from 'geoip-country';
 
 const xpiRestUrl = config.has('xpiRestUrl') ? config.get('xpiRestUrl') : 'https://api.sendlotus.com/v4/';
 
@@ -138,7 +138,7 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
         const geolocation = geoip.lookup(ip);
         const country = countries.find(country => country.id === vault?.country)
 
-        if (geolocation?.country != vault?.country) {
+        if (geolocation?.country != _.upperCase(country?.id)) {
           throw new VError('You cannot redeem from outside the ' + country?.name + ' zone.');
         }
       }
