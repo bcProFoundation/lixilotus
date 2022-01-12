@@ -50,6 +50,10 @@ const CreateVaultForm = ({
   const [newVaultAmount, setNewVaultAmount] = useState('');
   const [newVaultAmountValueIsValid, setNewVaultAmountValueIsValid] = useState(true);
 
+  // New Vault sub Value
+  const [newSubVault, setNewSubVault] = useState('');
+  const [newSubVaultIsValid, setNewSubVaultIsValid] = useState(true);
+
   // New Vault Min Value
   const [newVaultMinValue, setNewVaultMinValue] = useState('');
   const [newVaultMinValueIsValid, setNewVaultMinValueIsValid] = useState(true);
@@ -112,6 +116,12 @@ const CreateVaultForm = ({
     const { value } = e.target;
     setNewVaultAmountValueIsValid(isValidAmountInput(value));
     setNewVaultAmount(value);
+  }
+
+  const handleNewSubVault = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setNewSubVaultIsValid(isValidAmountInput(value));
+    setNewSubVault(value);
   }
     
   const handleChangeMinValue = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -262,6 +272,17 @@ const CreateVaultForm = ({
               onChange={e => handleNewVaultAmountInput(e)} 
             />
           </Form.Item>
+          <Form.Item>
+              <Input
+                addonBefore="Sub-vaults"
+                type="number"
+                step={1 / 10 ** currency.cashDecimals}
+                value={newSubVault}
+                placeholder="Number of sub vaults"
+                name="equalValue"
+                onChange={e => handleNewSubVault(e)}
+              />
+            </Form.Item>
         </>
       );
     }
@@ -311,24 +332,7 @@ const CreateVaultForm = ({
         );
       // isEqual
       case VaultType.Equal:
-        return (
-          <>
-            <Form.Item>
-              <Input.Group compact>
-                <Input
-                  addonBefore="Equal"
-                  type="number"
-                  step={1 / 10 ** currency.cashDecimals}
-                  value={newVaultFixedValue}
-                  placeholder="Number of sub vaults"
-                  name="equalValue"
-                  onChange={e => handleChangeFixedValue(e)}
-                >
-                </Input>
-              </Input.Group>
-            </Form.Item>
-          </>
-        );
+        return;
       // isRandom
       default:
         return (

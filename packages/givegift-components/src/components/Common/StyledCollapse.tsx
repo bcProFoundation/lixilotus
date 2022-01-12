@@ -58,7 +58,7 @@ export const VaultCollapse = styled(Collapse) <VaultCollapseProps>`
           font-size: 18px;
         }
         .ant-input-group-addon:first-child {
-          width: 80px;
+          width: 90px;
         }
         .ant-select-single.ant-select-sm:not(.ant-select-customize-input) .ant-select-selector .ant-select-selection-item {
           line-height: 60px;
