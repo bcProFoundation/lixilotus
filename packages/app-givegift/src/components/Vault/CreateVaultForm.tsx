@@ -223,6 +223,7 @@ const CreateVaultForm = ({
       newMaxRedeem,
       newExpiryAt,
       newVaultAmount,
+      newSubVault,
       newVaultMinValue,
       newVaultMaxValue,
       newVaultFixedValue,

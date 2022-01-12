@@ -19,6 +19,7 @@ export type CreateVaultConfirmationModalProps = {
   newVaultFixedValue: string;
   newVaultDividedValue: string;
   newVaultAmount: string;
+  newSubVault: string;
   newVaultName: string;
   newMaxRedeem: string;
   newExpiryAt: string;
@@ -35,6 +36,7 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
     newAccountName,
     newVaultName,
     newVaultAmount,
+    newSubVault,
     newMaxRedeem,
     newExpiryAt,
     redeemType,
@@ -94,6 +96,10 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
 
   const confirmAmount = () => {
     return (newVaultAmount == "" ? "" : <VaultParamLabel>Amount: {newVaultAmount} <br /></VaultParamLabel>);
+  }
+
+  const confirmSubVaults = () => {
+    return (newSubVault == "" ? "" : <VaultParamLabel>Amount: {newSubVault} <br /></VaultParamLabel>);
   }
 
   const confirmCountry = () => {
