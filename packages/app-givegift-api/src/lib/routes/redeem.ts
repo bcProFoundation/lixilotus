@@ -123,13 +123,13 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
       // isFamilyFriendly == true
       if (vault?.isFamilyFriendly) {
         if (countRedeemAddress.length > 0 || countIpaddress >= 5) {
-          throw new VError('You have reach the limit of redemption for this code.');
+          throw new VError('You have reached the limit of redemptions for this code.');
         }
       }
       // isFamilyFriendly == false
       else {
         if (countRedeemAddress.length > 0 || countIpaddress > 0) {
-          throw new VError('You have already redeemed this offer');
+          throw new VError('You have reached the limit of redemptions for this code.');
         }
       }
 
