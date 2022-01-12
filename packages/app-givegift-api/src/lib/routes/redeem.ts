@@ -123,13 +123,13 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
       // isFamilyFriendly == true
       if (vault?.isFamilyFriendly) {
         if (countRedeemAddress.length > 0 || countIpaddress >= 5) {
-          throw new VError('You have already redeemed this offer');
+          throw new VError('You have reached the limit of redemptions for this code.');
         }
       }
       // isFamilyFriendly == false
       else {
         if (countRedeemAddress.length > 0 || countIpaddress > 0) {
-          throw new VError('You have already redeemed this offer');
+          throw new VError('You have reached the limit of redemptions for this code.');
         }
       }
 
@@ -138,7 +138,7 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
         const geolocation = geoip.lookup(ip);
         const country = countries.find(country => country.id === vault?.country)
 
-        if (geolocation?.country != _.upperCase(country?.id)) {
+        if (geolocation?.country != _.upperCase(country?.id) && !_.isNil(country?.id)) {
           throw new VError('You cannot redeem from outside the ' + country?.name + ' zone.');
         }
       }
