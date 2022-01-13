@@ -44,7 +44,7 @@ export const Onboarding = styled.div`
   position: relative;
   width: 500px;
   min-height: 100vh;
-  padding: 10px 30px 120px 30px;
+  padding: 10px 30px 20px 30px;
   background: #fff;
   -webkit-box-shadow: 0px 0px 24px 1px rgb(0 0 0);
   -moz-box-shadow: 0px 0px 24px 1px rgba(0,0,0,1);
@@ -111,12 +111,12 @@ const OnboardingComponent: React.FC = () => {
   return (
     <>
       <Onboarding>
-        <div style={{ marginTop: '200px' }}>
+        <div style={{ marginTop: '20px' }}>
           <LotusLogo src={LixiLogo} alt="lixi" />
           <LixiTextLogo src={LixiText} alt="lixi" />
         </div>
 
-        <h2 style={{ marginTop: '100px' }}>Welcome to LixiLotus!</h2>
+        <h2 style={{ marginTop: '50px' }}>Welcome to LixiLotus!</h2>
         <WelcomeText>
           LixiLotus is an open source, non-custodial web wallet for Lotus.
           LixiLotus allow you to giveaway your Lotus effortlessly.
