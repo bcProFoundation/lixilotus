@@ -18,6 +18,7 @@
   "scripts": {
     "start": "lerna exec --scope @abcpros/app-givegift -- yarn start",
     "start:api": "lerna exec --scope @abcpros/app-givegift-api -- yarn start",
+    "start:dev:api": "NODE_ENV=development lerna exec --scope @abcpros/app-givegift-api -- yarn start",
     "start:givegift-components": "lerna exec --scope @abcpros/givegift-components -- yarn start",
     "build": "lerna run build"
   },

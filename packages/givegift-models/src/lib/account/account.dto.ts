@@ -1,5 +1,4 @@
 export interface CreateAccountCommand {
-  name: string;
   mnemonic: string;
   encryptedMnemonic: string;
   mnemonicHash: string;
