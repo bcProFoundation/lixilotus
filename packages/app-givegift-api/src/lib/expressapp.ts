@@ -15,7 +15,7 @@ const compression = require('compression');
 const xpiRestUrl = config.has('xpiRestUrl') ? config.get('xpiRestUrl') : 'https://api.sendlotus.com/v4/'
 const allowedOrigins = [
   'https://lixilotus.com',
-  'https://www.sendlotus.com',
+  'https://sendlotus.com',
   'https://staging.sendlotus.com',
   'https://dev.sendlotus.com',
   'https://localhost:3000',
