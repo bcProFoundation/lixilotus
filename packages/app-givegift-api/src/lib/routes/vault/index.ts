@@ -9,6 +9,7 @@ import { logger } from '../../logger';
 import { aesGcmDecrypt, aesGcmEncrypt, numberToBase62 } from '../../utils/encryptionMethods';
 import Container from 'typedi';
 import { WalletService } from '../../services/wallet';
+import BCHJS from '@abcpros/xpi-js';
 
 const prisma = new PrismaClient();
 let router = express.Router();
@@ -102,6 +103,14 @@ router.post('/vaults', async (req: express.Request, res: express.Response, next:
       };
       const vaultToInsert = _.omit(data, 'password');
       const createdVault: VaultDb = await prisma.vault.create({ data: vaultToInsert });
+
+      // const xpiWallet: MinimalBCHWallet = Container.get('xpiWallet');
+      // const XPI: BCHJS = Container.get('xpijs');
+
+      // const xPriv = await aesGcmDecrypt("", command.mnemonic);
+      // const childNode = XPI.HDNode.fromXPriv(xPriv);
+      // const keyPair = XPI.HDNode.toKeyPair(childNode);
+      // await walletService,sendAmount(account.address, command.amount, command.mnemonic)
 
       let resultApi: VaultDto = {
         ...createdVault,
