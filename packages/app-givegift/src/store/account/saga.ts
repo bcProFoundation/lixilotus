@@ -40,10 +40,7 @@ function* generateAccountSaga(action: PayloadAction) {
   const mnemonicHashBuffer = yield call([crypto.subtle, crypto.subtle.digest], 'SHA-256', mnemonicUtf8);       // hash the mnemonic
   const mnemonicHash = Buffer.from(new Uint8Array(mnemonicHashBuffer)).toString('hex');
 
-  const name = String(mnemonicHash).substring(0, 5);
-
   const account: CreateAccountCommand = {
-    name,
     mnemonic: Bip39128BitMnemonic,
     encryptedMnemonic,
     mnemonicHash

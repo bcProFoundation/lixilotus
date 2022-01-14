@@ -4,7 +4,7 @@ import Container from 'typedi';
 import VError from 'verror';
 
 import {
-    AccountDto, CreateAccountCommand, DeleteAccountCommand, RenameAccountCommand
+  AccountDto, CreateAccountCommand, DeleteAccountCommand, RenameAccountCommand
 } from '@abcpros/givegift-models';
 import { Account as AccountDb, Prisma, PrismaClient } from '@prisma/client';
 
@@ -52,9 +52,10 @@ router.post('/accounts', async (req: express.Request, res: express.Response, nex
     try {
       const walletService: WalletService = Container.get(WalletService);
       const { address } = await walletService.deriveAddress(command.mnemonic, 0);
+      const name = address.slice(12, 17);
 
       const accountToInsert = {
-        name: command.name,
+        name: name,
         encryptedMnemonic: command.encryptedMnemonic,
         mnemonicHash: command.mnemonicHash,
         id: undefined,
@@ -112,7 +113,7 @@ router.patch('/accounts/:id/', async (req: express.Request, res: express.Respons
       });
 
       const resultApi: AccountDto = {
-        ...command, ...updatedAccount, 
+        ...command, ...updatedAccount,
         address: updatedAccount.address as string
       };
 
