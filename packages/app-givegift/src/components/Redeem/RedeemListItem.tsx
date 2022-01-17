@@ -3,6 +3,8 @@ import { Redeem } from '@abcpros/givegift-models/lib/redeem';
 import { useAppDispatch } from 'src/store/hooks';
 import { DollarCircleOutlined } from '@ant-design/icons';
 import { fromSmallestDenomination } from '@utils/cashMethods';
+import GrayLotus from '@assets/images/gray_lotus.svg';
+
 
 const RedeemItemWrapper = styled.div`
   display: grid;
@@ -51,14 +53,14 @@ const RedeemDescription = styled.div`
 
 const RedeemDescriptionLabel = styled.span`
   font-weight: bold;
-  color: ${props => props.theme.primary} !important;
+  color: rgba(127, 127, 127, 0.85) !important;
 `;
 
 const RedeemInfo = styled.div`
   padding: 12px;
   font-size: 1rem;
   text-align: right;
-  color: ${props => props.theme.primary};
+  color: rgba(127, 127, 127, 0.85);
   @media screen and (max-width: 500px) {
     font-size: 0.8rem;
   }
@@ -74,6 +76,14 @@ const RedeemAmount = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+`;
+
+export const LotusLogo = styled.img`
+  opacity: 0.5;
+  width: 32px;
+  @media (max-width: 32px) {
+    width: 32px;
+  }
 `;
 
 type RedeemListItemProps = {
@@ -95,7 +105,7 @@ const RedeemListItem: React.FC<RedeemListItemProps> = (props: RedeemListItemProp
   return (
     <RedeemItemWrapper onClick={(e) => handleClickRedeem(redeem)}>
       <RedeemItemIcon>
-        <DollarCircleOutlined />
+        <LotusLogo src={GrayLotus} alt="lixi" /> 
       </RedeemItemIcon>
       <RedeemDescription>
         <RedeemDescriptionLabel>Redeem</RedeemDescriptionLabel>
