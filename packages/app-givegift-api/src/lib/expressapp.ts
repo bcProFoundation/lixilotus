@@ -16,6 +16,7 @@ const xpiRestUrl = config.has('xpiRestUrl') ? config.get('xpiRestUrl') : 'https:
 const allowedOrigins = [
   'https://lixilotus.com',
   'https://sendlotus.com',
+  'https://www.sendlotus.com',
   'https://staging.sendlotus.com',
   'https://dev.sendlotus.com',
   'https://localhost:3000',
