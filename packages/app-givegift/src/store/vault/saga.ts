@@ -2,15 +2,18 @@ import * as _ from 'lodash';
 import { PayloadAction } from "@reduxjs/toolkit";
 import { push } from 'connected-react-router';
 import BCHJS from "@abcpros/xpi-js";
-import { CreateVaultCommand, GenerateVaultCommand, Vault, VaultDto } from "@abcpros/givegift-models/lib/vault";
-import { all, call, fork, getContext, put, select, takeLatest } from "@redux-saga/core/effects";
+import { CreateVaultCommand, GenerateVaultCommand, LockVaultCommand, UnlockVaultCommand, Vault, VaultDto } from "@abcpros/givegift-models/lib/vault";
+import { all, fork, getContext, put, select, takeLatest } from "@redux-saga/core/effects";
+import * as Effects from "redux-saga/effects";
+
+const call: any = Effects.call;
 import {
   generateVault, getVault, getVaultActionType,
   getVaultFailure, getVaultSuccess, postVault,
   postVaultFailure, postVaultSuccess, refreshVault,
   refreshVaultActionType, refreshVaultFailure,
   refreshVaultSuccess, selectVault, selectVaultSuccess,
-  selectVaultFailure, setVault
+  selectVaultFailure, setVault, lockVault, unlockVault, unlockVaultSuccess, lockVaultSuccess, unlockVaultFailure, lockVaultFailure
 } from "./actions";
 import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase62Str, numberToBase62 } from "@utils/encryptionMethods";
 import { RedeemDto, Redeem } from "@abcpros/givegift-models/lib/redeem";
@@ -210,6 +213,86 @@ function* selectVaultFailureSaga(action: PayloadAction<string>) {
   yield put(hideLoading(selectVault.type));
 }
 
+function* unlockVaultSaga(action: PayloadAction<UnlockVaultCommand>) {
+  try {
+    const command = action.payload;
+
+    const dataApi: UnlockVaultCommand = {
+      ...command
+    }
+
+    const data: VaultDto = yield call(vaultApi.unlockVault, command.id, dataApi);
+    const vault = data as Vault;
+    yield put(unlockVaultSuccess(vault));
+
+    if (_.isNil(data) || _.isNil(data.id)) {
+      throw new Error('Unable to unlock the vault.');
+    }
+  } catch (error) {
+    const message = `There's an error happens when create unlock vault.`;
+    yield put(unlockVaultFailure(message));
+  }
+}
+
+function* unlockVaultSuccessSaga(action: PayloadAction<Vault>) {
+  yield put(showToast('success', {
+    message: 'Success',
+    description: 'Unlock vault successfully.',
+    duration: 5
+  }));
+  yield put(hideLoading(unlockVaultSuccess.type));
+}
+
+function* unlockVaultFailureSaga(action: PayloadAction<string>) {
+  const message = action.payload ?? 'Unable to unlock the vault.';
+  yield put(showToast('error', {
+    message: 'Error',
+    description: message,
+    duration: 5
+  }));
+  yield put(hideLoading(unlockVaultFailure.type));
+}
+
+function* lockVaultSaga(action: PayloadAction<LockVaultCommand>) {
+  try {
+    const command = action.payload;
+
+    const dataApi: LockVaultCommand = {
+      ...command
+    }
+
+    const data: VaultDto = yield call(vaultApi.lockVault, command.id, dataApi);
+    const vault = data as Vault;
+    yield put(lockVaultSuccess(vault));
+
+    if (_.isNil(data) || _.isNil(data.id)) {
+      throw new Error('Unable to lock the vault.');
+    }
+  } catch (error) {
+    const message = `There's an error happens when lock vault.`;
+    yield put(postVaultFailure(message));
+  }
+}
+
+function* lockVaultSuccessSaga(action: PayloadAction<Vault>) {
+  yield put(showToast('success', {
+    message: 'Success',
+    description: 'Lock vault successfully.',
+    duration: 5
+  }));
+  yield put(hideLoading(lockVaultSuccess.type));
+}
+
+function* lockVaultFailureSaga(action: PayloadAction<string>) {
+  const message = action.payload ?? 'Unable to lock the vault.';
+  yield put(showToast('error', {
+    message: 'Error',
+    description: message,
+    duration: 5
+  }));
+  yield put(hideLoading(lockVaultFailure.type));
+}
+
 function* watchGenerateVault() {
   yield takeLatest(generateVault.type, generateVaultSaga);
 }
@@ -262,6 +345,31 @@ function* watchRefreshVaultFailure() {
   yield takeLatest(refreshVaultFailure.type, refreshVaultFailureSaga);
 }
 
+
+function* watchLockVault() {
+  yield takeLatest(lockVault.type, lockVaultSaga);
+}
+
+function* watchLockVaultSuccess() {
+  yield takeLatest(lockVaultSuccess.type, lockVaultSuccessSaga);
+}
+
+function* watchLockVaultFailure() {
+  yield takeLatest(lockVaultFailure.type, lockVaultFailureSaga);
+}
+
+function* watchUnlockVault() {
+  yield takeLatest(unlockVault.type, unlockVaultSaga);
+}
+
+function* watchUnlockVaultSuccess() {
+  yield takeLatest(unlockVaultSuccess.type, unlockVaultSuccessSaga);
+}
+
+function* watchUnlockVaultFailure() {
+  yield takeLatest(unlockVaultFailure.type, unlockVaultFailureSaga);
+}
+
 export default function* vaultSaga() {
   yield all([
     fork(watchGenerateVault),
@@ -276,6 +384,12 @@ export default function* vaultSaga() {
     fork(watchSelectVaultFailure),
     fork(watchRefreshVault),
     fork(watchRefreshVaultSuccess),
-    fork(watchRefreshVaultFailure)
+    fork(watchRefreshVaultFailure),
+    fork(watchLockVault),
+    fork(watchLockVaultSuccess),
+    fork(watchLockVaultFailure),
+    fork(watchUnlockVault),
+    fork(watchUnlockVaultSuccess),
+    fork(watchUnlockVaultFailure),
   ]);
 }
