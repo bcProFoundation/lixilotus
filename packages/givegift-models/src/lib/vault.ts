@@ -48,13 +48,13 @@ export interface VaultDto {
   maxValue: number;
   fixedValue: number;
   dividedValue: number;
-  encryptedRedeemCode: string;
+  encryptedRedeemCode?: string;
   totalRedeem: number;
   createdAt?: Date;
   updatedAt?: Date;
   expiryAt?: Date;
   country?: string;
-  isFamilyFriendly: boolean;
+  isFamilyFriendly?: boolean;
   balance?: number;
   address: string;
   status: string;
@@ -86,6 +86,18 @@ export interface Vault {
   status: string;
   accountId: number;
   amount: number;
+};
+
+export interface UnlockVaultCommand {
+  id: number;
+  mnemonic: string;
+  mnemonicHash: string;
+};
+
+export interface LockVaultCommand {
+  id: number;
+  mnemonic: string;
+  mnemonicHash: string;
 };
 
 export enum VaultType {

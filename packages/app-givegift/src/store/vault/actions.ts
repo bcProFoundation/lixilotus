@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit';
-import { GenerateVaultCommand, CreateVaultCommand, Vault } from '@abcpros/givegift-models/lib/vault';
+import { GenerateVaultCommand, CreateVaultCommand, Vault, UnlockVaultCommand, LockVaultCommand } from '@abcpros/givegift-models/lib/vault';
 import { Redeem } from '@abcpros/givegift-models/lib/redeem';
 
 export const getVaultActionType = 'vault/getVault';
@@ -21,4 +21,9 @@ export const selectVaultFailure = createAction<string>('vault/selectVaultFailure
 export const refreshVault = createAction<number>('vault/refreshVault');
 export const refreshVaultSuccess = createAction<{ vault: Vault, redeems: Redeem[] }>('vault/refreshVaultSuccess');
 export const refreshVaultFailure = createAction<string>('vault/refreshVaultFailure');
-
+export const unlockVault = createAction<UnlockVaultCommand>('vault/unlockVault');
+export const unlockVaultSuccess = createAction<Vault>('vault/unlockVaultSuccess');
+export const unlockVaultFailure = createAction<String>('vault/unlockVaultFailure');
+export const lockVault = createAction<LockVaultCommand>('vault/lockVault');
+export const lockVaultSuccess = createAction<Vault>('vault/lockVaultSuccess');
+export const lockVaultFailure = createAction<String>('vault/lockVaultFailure');

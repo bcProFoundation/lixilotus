@@ -3,7 +3,7 @@ import express, { NextFunction } from 'express';
 import VError from 'verror';
 import { PrismaClient, Vault as VaultDb } from '@prisma/client';
 import MinimalBCHWallet from '@abcpros/minimal-xpi-slp-wallet';
-import { CreateVaultCommand, VaultDto } from '@abcpros/givegift-models';
+import { Account, CreateVaultCommand, Vault, VaultDto } from '@abcpros/givegift-models';
 import { router as vaultChildRouter } from './vault';
 import { logger } from '../../logger';
 import { aesGcmDecrypt, aesGcmEncrypt, numberToBase62 } from '../../utils/encryptionMethods';
@@ -107,12 +107,6 @@ router.post('/vaults', async (req: express.Request, res: express.Response, next:
       const xpiWallet: MinimalBCHWallet = Container.get('xpiWallet');
       const XPI: BCHJS = Container.get('xpijs');
 
-      // const mnemonic = await aesGcmDecrypt(account.encryptedMnemonic, command.mnemonic);
-      // const rootSeedBuffer = await XPI.Mnemonic.toSeed(mnemonic);
-      // const masterHDNode = this.xpijs.HDNode.fromSeed(rootSeedBuffer);
-      // const childNode = XPI.HDNode.fromXPriv(xPriv);
-      // const keyPair = XPI.HDNode.toKeyPair(childNode);
-
       const {keyPair} = await walletService.getWalletDetails(command.mnemonic, 0)
       const amount:any = await walletService.sendAmount(account.address, createdVault.address, command.amount, keyPair)
 
@@ -139,60 +133,39 @@ router.post('/vaults', async (req: express.Request, res: express.Response, next:
 
 });
 
-// router.delete('/vaults/:id', async (req: express.Request, res: express.Response, next: NextFunction) => {
-//   const { id } = req.params;
-//   const vaultId = parseInt(id);
-//   try {
-//     const vault = await prisma.vault.findUnique({
-//       where: {
-//         id: vaultId
-//       }
-//     });
-
-//     if (!vault) {
-//       return res.status(400).json({
-//         totalRedeem: Number(vault.totalRedeem),
-//       });
-
-//     }
-//     else {
-//       const vault = await prisma.vault.delete({
-//         where: {
-//           id: vaultId
-//         }
-//       });
-//       if (vault) {
-//         return res.status(200).json({
-//           message: 'The vault has been deleted sucessfully.'
-//         });
-//       }
-//     }
-//   } catch (err) {
-//     if (err instanceof VError) {
-//       return next(err);
-//     } else {
-//       const error = new VError.WError(err as Error, 'Could not delete the vault.');
-//       logger.error(err);
-//       return next(error);
-//     }
-//   }
-// });
 
 router.post('/vaults/:id/lock', async (req: express.Request, res: express.Response, next: NextFunction) => {
   const { id } = req.params;
   const vaultId = parseInt(id);
 
+  const command: Account = req.body
   try {
-    const vault = await prisma.vault.findUnique({
+    const mnemonicFromApi = command.mnemonic;
+
+    const account = await prisma.account.findFirst({
       where: {
-        id: vaultId
+        mnemonicHash: command.mnemonicHash
+      }
+    });
+
+    if (!account) {
+      throw new Error('Could not find the associated account.');
+    }
+
+    // Decrypt to validate the mnemonic
+    const mnemonicToValidate = await aesGcmDecrypt(account.encryptedMnemonic, mnemonicFromApi);
+    if (mnemonicFromApi !== mnemonicToValidate) {
+      throw Error('Could not find the associated account.');
+    }
+    
+    const vault = await prisma.vault.findFirst({
+      where: {
+        id: vaultId,
+        accountId: account.id
       }
     });
     if (!vault) {
-      return res.status(400).json({
-        error: 'Could not found the vault in the database.'
-      });
-
+      throw new Error('Could not found the vault in the database.');
     }
     else {
       const vault = await prisma.vault.update({
@@ -204,11 +177,19 @@ router.post('/vaults/:id/lock', async (req: express.Request, res: express.Respon
         }
       });
       if (vault) {
-        return res.status(200).json({
-          message: 'The vault has been locked sucessfully.'
-        });
+        let resultApi: VaultDto = {
+          ...vault,
+          balance: 0,
+          totalRedeem: Number(vault.totalRedeem),
+          expiryAt: vault.expiryAt ? vault.expiryAt : undefined,
+          country: vault.country ? vault.country : undefined,
+          status: vault.status
+        };
+
+        res.json(resultApi);
       }
     }
+    
   } catch (err) {
     if (err instanceof VError) {
       return next(err);
@@ -220,21 +201,38 @@ router.post('/vaults/:id/lock', async (req: express.Request, res: express.Respon
   }
 });
 
-router.post('/vaults/:id/active', async (req: express.Request, res: express.Response, next: NextFunction) => {
+router.post('/vaults/:id/unlock', async (req: express.Request, res: express.Response, next: NextFunction) => {
   const { id } = req.params;
   const vaultId = parseInt(id);
 
+  const command: Account = req.body
   try {
-    const vault = await prisma.vault.findUnique({
+    const mnemonicFromApi = command.mnemonic;
+
+    const account = await prisma.account.findFirst({
       where: {
-        id: vaultId
+        mnemonicHash: command.mnemonicHash
+      }
+    });
+
+    if (!account) {
+      throw new Error('Could not find the associated account.');
+    }
+
+    // Decrypt to validate the mnemonic
+    const mnemonicToValidate = await aesGcmDecrypt(account.encryptedMnemonic, mnemonicFromApi);
+    if (mnemonicFromApi !== mnemonicToValidate) {
+      throw Error('Could not find the associated account.');
+    }
+    
+    const vault = await prisma.vault.findFirst({
+      where: {
+        id: vaultId,
+        accountId: account.id
       }
     });
     if (!vault) {
-      return res.status(400).json({
-        error: 'Could not found the vault in the database.'
-      });
-
+      throw new Error('Could not found the vault in the database.');
     }
     else {
       const vault = await prisma.vault.update({
@@ -246,17 +244,25 @@ router.post('/vaults/:id/active', async (req: express.Request, res: express.Resp
         }
       });
       if (vault) {
-        return res.status(200).json({
-          message: 'The vault has been actived sucessfully.'
-        });
+        let resultApi: VaultDto = {
+          ...vault,
+          balance: 0,
+          totalRedeem: Number(vault.totalRedeem),
+          expiryAt: vault.expiryAt ? vault.expiryAt : undefined,
+          country: vault.country ? vault.country : undefined,
+          status: vault.status
+        };
+
+        res.json(resultApi);
       }
     }
+    
   } catch (err) {
     if (err instanceof VError) {
       return next(err);
     } else {
       logger.error(err);
-      const error = new VError.WError(err as Error, 'Could not active the vault.');
+      const error = new VError.WError(err as Error, 'Could not actived the vault.');
       return next(error);
     }
   }
