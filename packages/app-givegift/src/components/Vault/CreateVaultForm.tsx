@@ -97,8 +97,9 @@ const CreateVaultForm = ({
   // Only enable CreateVault button if all form entries are valid
   let createVaultFormDataIsValid =
     newVaultNameIsValid && newMaxRedeemVaultIsValid &&
-    newExpiryAtVaultIsValid && account && newVaultAmount &&
-    ((vaultType == VaultType.Random && newVaultMinValueIsValid && newVaultMaxValueIsValid) ||
+    newExpiryAtVaultIsValid && account && 
+    (redeemType == RedeemType.OneTime && (vaultType == VaultType.Equal && newVaultAmount)) ||
+    (redeemType == RedeemType.Single && (vaultType == VaultType.Random && newVaultMinValueIsValid && newVaultMaxValueIsValid) ||
       (vaultType == VaultType.Fixed && newVaultFixedValueIsValid) ||
       (vaultType == VaultType.Divided && newVaultDividedValueIsValid));
 

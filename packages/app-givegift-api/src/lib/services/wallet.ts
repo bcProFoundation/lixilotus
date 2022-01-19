@@ -1,12 +1,13 @@
-import BigNumber from 'bignumber.js';
-import Container, { Inject, Service } from 'typedi';
+import { toLength } from 'lodash';
+import { Inject, Service } from 'typedi';
 import VError from 'verror';
 
 import MinimalBCHWallet from '@abcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@abcpros/xpi-js';
 import HDNode from '@abcpros/xpi-js/types/hdnode';
 import { PrismaClient } from '@prisma/client';
-import { aesGcmDecrypt } from '../utils/encryptionMethods';
+import BigNumber from 'bignumber.js';
+import { toSmallestDenomination } from '@abcpros/givegift-models';
 
 @Service()
 export class WalletService {
@@ -27,7 +28,7 @@ export class WalletService {
     const hdPath = `m/44'/10605'/${vaultIndex}'/0/0`;
     const childNode = masterHDNode.derivePath(hdPath);
     const vaultAddress: string = this.xpijs.HDNode.toXAddress(childNode);
-    const keyPair = this.xpijs.HDNode.toKeyPair(vaultAddress);
+    const keyPair = this.xpijs.HDNode.toKeyPair(childNode);
     const balance = await this.getBalance(vaultAddress);
     return { keyPair, balance }
   }
@@ -46,7 +47,31 @@ export class WalletService {
     };
   }
 
-  async sendAmount(subAddress: string, amount: number, mnemonic: string) {
+  async calcFee(
+    XPI: BCHJS,
+    utxos: any,
+    p2pkhOutputNumber = 2,
+    satoshisPerByte = 2.01,
+  ) {
+      const byteCount = XPI.BitcoinCash.getByteCount(
+          { P2PKH: utxos.length },
+          { P2PKH: p2pkhOutputNumber },
+      );
+      const txFee = Math.ceil(satoshisPerByte * byteCount);
+      return txFee;
+  };
+
+  async onMax(address: string) {
+    const balance = await this.getBalance(address);
+
+    const txFeeSats = this.calcFee(this.xpijs, this.xpijs.Utxo.get(address));
+
+    const txFeeBch = await txFeeSats / 10 ** 6;
+    const value = (balance - txFeeBch >= 0) ? (balance - txFeeBch).toFixed(6) : '0';
+    return value;
+  };
+
+  async sendAmount(mainAddress: string, subAddress: string, amount: number, keyPair: any) {
     const prisma = new PrismaClient({
       log: [
         {
@@ -64,21 +89,14 @@ export class WalletService {
       ],
     });
 
-    const xpiWallet: MinimalBCHWallet = Container.get('xpiWallet');
-    const XPI: BCHJS = Container.get('xpijs');
-
-    const xPriv = await aesGcmDecrypt(addressMain, mnemonic);
-    const childNode = XPI.HDNode.fromXPriv(xPriv);
-    const keyPair = XPI.HDNode.toKeyPair(childNode);
-
-    const addressMainBalance: number = await xpiWallet.getBalance(addressMain);
+    const addressMainBalance: number = await this.xpiWallet.getBalance(mainAddress);
     if (addressMainBalance === 0) {
       throw new VError('Insufficient fund.');
     }
 
     const satoshisBalance = new BigNumber(addressMainBalance);
 
-    let satoshisToSend = new BigNumber(amount);
+    let satoshisToSend = toSmallestDenomination(new BigNumber(amount));
 
     if (satoshisToSend.lt(546) && satoshisToSend.gte(satoshisBalance)) {
       throw new VError('Insufficient fund.');
@@ -90,21 +108,21 @@ export class WalletService {
       amountSat: amountSats
     }];
 
-    const utxos = await XPI.Utxo.get(addressMain);
+    const utxos = await this.xpijs.Utxo.get(mainAddress);
     const utxoStore = utxos[0];
 
     if (!utxoStore || !(utxoStore as any).bchUtxos || !(utxoStore as any).bchUtxos) {
       throw new VError('UTXO list is empty');
     }
 
-    const { necessaryUtxos, change } = xpiWallet.sendBch.getNecessaryUtxosAndChange(
+    const { necessaryUtxos, change } = this.xpiWallet.sendBch.getNecessaryUtxosAndChange(
       outputs,
       (utxoStore as any).bchUtxos,
       1.0
     );
 
     // Create an instance of the Transaction Builder.
-    const transactionBuilder: any = new XPI.TransactionBuilder();
+    const transactionBuilder: any = new this.xpijs.TransactionBuilder();
 
     // Add inputs
     necessaryUtxos.forEach((utxo: any) => {
@@ -117,7 +135,7 @@ export class WalletService {
     });
 
     if (change && change > 546) {
-      transactionBuilder.addOutput(addressMain, change);
+      transactionBuilder.addOutput(mainAddress, change);
     }
 
     // Sign each UTXO that is about to be spent.
@@ -137,64 +155,17 @@ export class WalletService {
     const hex = tx.toHex();
 
     try {
-
       // Broadcast the transaction to the network.
-      const txid = await XPI.RawTransactions.sendRawTransaction(hex);
+      const txid = await this.xpijs.RawTransactions.sendRawTransaction(hex);
       // const txid = await xpiWallet.send(outputs);
 
-      const createRedeemOperation = prisma.redeem.create({
-        data: {
-          ipaddress: ip,
-          vaultId: vault.id,
-          transactionId: txid,
-          redeemAddress: addressSub,
-          amount: amountSats
-        }
-      });
-
-      const updateVaultOperation = prisma.vault.update({
-        where: { id: vault.id },
-        data: {
-          totalRedeem: vault.totalRedeem + BigInt(amountSats),
-          redeemedNum: vault.redeemedNum + 1
-        }
-      });
-
-      const result = await prisma.$transaction([createRedeemOperation, updateVaultOperation]);
-
       const redeemResult = {
-        ...result[0],
-        redeemCode: redeemApi.redeemCode,
-        amount: Number(result[0].amount)
-      } as RedeemDto;
-      return (redeemResult);
-    } catch (err) {
+        amount: Number(amountSats)
+      };
+      return (redeemResult.amount);
+    } 
+    catch (err) {
       throw new VError(err as Error, 'Unable to send transaction');
     }
-  }
-  
-  // async onMax() {
-  //   try {
-  //     const txFeeSats = calcFee(BCH, slpBalancesAndUtxos.nonSlpUtxos);
-
-  //     const txFeeBch = txFeeSats / 10 ** currency.cashDecimals;
-  //     let value =
-  //         balances.totalBalance - txFeeBch >= 0
-  //             ? (balances.totalBalance - txFeeBch).toFixed(
-  //                   currency.cashDecimals,
-  //               )
-  //             : 0;
-
-  //     setFormData({
-  //         ...formData,
-  //         value,
-  //     });
-  // } catch (err) {
-  //     console.log(`Error in onMax:`);
-  //     console.log(err);
-  //     message.error(
-  //         'Unable to calculate the max value due to network errors',
-  //     );
-  //   }
-  // }
+  };
 }

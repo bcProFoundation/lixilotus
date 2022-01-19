@@ -104,17 +104,21 @@ router.post('/vaults', async (req: express.Request, res: express.Response, next:
       const vaultToInsert = _.omit(data, 'password');
       const createdVault: VaultDb = await prisma.vault.create({ data: vaultToInsert });
 
-      // const xpiWallet: MinimalBCHWallet = Container.get('xpiWallet');
-      // const XPI: BCHJS = Container.get('xpijs');
+      const xpiWallet: MinimalBCHWallet = Container.get('xpiWallet');
+      const XPI: BCHJS = Container.get('xpijs');
 
-      // const xPriv = await aesGcmDecrypt("", command.mnemonic);
+      // const mnemonic = await aesGcmDecrypt(account.encryptedMnemonic, command.mnemonic);
+      // const rootSeedBuffer = await XPI.Mnemonic.toSeed(mnemonic);
+      // const masterHDNode = this.xpijs.HDNode.fromSeed(rootSeedBuffer);
       // const childNode = XPI.HDNode.fromXPriv(xPriv);
       // const keyPair = XPI.HDNode.toKeyPair(childNode);
-      // await walletService,sendAmount(account.address, command.amount, command.mnemonic)
+
+      const {keyPair} = await walletService.getWalletDetails(command.mnemonic, 0)
+      const amount:any = await walletService.sendAmount(account.address, createdVault.address, command.amount, keyPair)
 
       let resultApi: VaultDto = {
         ...createdVault,
-        balance: 0,
+        balance: amount ?? 0,
         totalRedeem: Number(createdVault.totalRedeem),
         expiryAt: createdVault.expiryAt ? createdVault.expiryAt : undefined,
         country: createdVault.country ? createdVault.country : undefined

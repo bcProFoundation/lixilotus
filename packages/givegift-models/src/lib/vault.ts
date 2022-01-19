@@ -59,6 +59,7 @@ export interface VaultDto {
   address: string;
   status: string;
   accountId: number;
+  amount: number;
 };
 
 export interface Vault {
@@ -84,6 +85,7 @@ export interface Vault {
   address: string;
   status: string;
   accountId: number;
+  amount: number;
 };
 
 export enum VaultType {
