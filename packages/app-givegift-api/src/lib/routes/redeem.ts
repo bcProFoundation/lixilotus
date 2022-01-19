@@ -119,7 +119,6 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
         }
       });
 
-
       // isFamilyFriendly == true
       if (vault?.isFamilyFriendly) {
         if (countRedeemAddress.length > 0 || countIpaddress >= 5) {
@@ -145,6 +144,11 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
 
       if (!vault) {
         throw new VError('Unable to redeem because the vault is invalid');
+      }
+
+      const vaultStatus = vault?.status;
+      if (vaultStatus === 'locked') {
+        throw new VError('Unable to redeem because the vault is locked');
       }
 
       const xPriv = await aesGcmDecrypt(vault.encryptedXPriv, password);

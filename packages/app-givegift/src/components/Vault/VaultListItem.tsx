@@ -1,9 +1,10 @@
 import styled, { DefaultTheme } from 'styled-components';
-import { GiftOutlined, WalletOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Vault } from '@abcpros/givegift-models/lib/vault';
-import { selectVault } from 'src/store/vault/actions';
-import { useAppDispatch } from 'src/store/hooks';
-import { Button } from 'antd';
+import { GiftOutlined, WalletOutlined, DeleteOutlined, MoreOutlined, LockOutlined } from '@ant-design/icons';
+import { LockVaultCommand, UnlockVaultCommand, Vault } from '@abcpros/givegift-models/lib/vault';
+import { lockVault, selectVault, unlockVault } from 'src/store/vault/actions';
+import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import { Button, Dropdown, Menu } from 'antd';
+import { getSelectedAccount } from 'src/store/account/selectors';
 
 const VaultIcon = styled.div`
   height: 32px;
@@ -16,6 +17,13 @@ const GiftIcon = styled(GiftOutlined)`
 `;
 
 const WalletIcon = styled(WalletOutlined)`
+  position: absolute;
+  left: 0px;
+  top: 50%;
+  transform: translateY(-50%);
+`;
+
+const LockIcon = styled(LockOutlined)`
   position: absolute;
   left: 0px;
   top: 50%;
@@ -41,14 +49,29 @@ const Wrapper = styled.div`
   }
 `;
 
-const DeleteIcon = styled(DeleteOutlined);
+const MoreIcon = styled(Button)`
+  background-color: white;
+  border: 0;
+
+  :hover {
+    background-color: rgb(224, 224, 224);
+  }
+  :focus {
+    background-color: rgb(224, 224, 224);
+  }
+`;
+
+
 
 type VaultListItemProps = {
+  className?: string,
   vault: Vault,
   theme?: DefaultTheme;
 } & React.HTMLProps<HTMLDivElement>
 
 const VaultListItem: React.FC<VaultListItemProps> = (props: VaultListItemProps) => {
+
+  const { vault } = props;
 
   const dispatch = useAppDispatch();
 
@@ -56,15 +79,47 @@ const VaultListItem: React.FC<VaultListItemProps> = (props: VaultListItemProps) 
     dispatch(selectVault(vaultId));
   }
 
-  const { vault } = props;
+  const selectedAccount = useAppSelector(getSelectedAccount);
+
+  const options = vault.status === 'active' ? ['Lock'] : ['Unlock'];
+  const setStatusData = {
+    id: vault.id,
+    mnemonic: selectedAccount?.mnemonic,
+    mnemonicHash: selectedAccount?.mnemonicHash
+  };
+
+  const menus = (
+    options.map(option =>
+      <Menu.Item key={option}>
+        {option}
+      </Menu.Item>
+    )
+  );
+  const handleClickMenu = (e) => {
+    if (e.key === 'Lock') {
+      dispatch(lockVault(setStatusData as LockVaultCommand))
+    } else {
+      dispatch(unlockVault(setStatusData as UnlockVaultCommand))
+    }
+  };
+  
+  
   return (
     <Wrapper onClick={(e) => handleSelectVault(vault.id)}>
       <VaultIcon>
-        <WalletIcon />
+        {vault.status === 'active' ? <WalletIcon /> : <LockIcon />}
       </VaultIcon>
       <BalanceAndTicker>
         <strong>{vault.name}</strong>
       </BalanceAndTicker>
+      <Dropdown trigger={["click"]} overlay={
+        <Menu onClick={(e) => handleClickMenu(e)}>
+          {menus}
+        </Menu>
+      }>
+        <MoreIcon onClick={e => e.stopPropagation()} icon={<MoreOutlined />} size="large">
+        </MoreIcon>
+      </Dropdown>
     </Wrapper>
   );
 };
