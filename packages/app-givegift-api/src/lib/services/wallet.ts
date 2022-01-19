@@ -7,7 +7,7 @@ import BCHJS from '@abcpros/xpi-js';
 import HDNode from '@abcpros/xpi-js/types/hdnode';
 import { PrismaClient } from '@prisma/client';
 import BigNumber from 'bignumber.js';
-import { toSmallestDenomination } from '@abcpros/givegift-models';
+import { fromSmallestDenomination, toSmallestDenomination } from '@abcpros/givegift-models';
 
 @Service()
 export class WalletService {
@@ -64,11 +64,14 @@ export class WalletService {
   async onMax(address: string) {
     const balance = await this.getBalance(address);
 
-    const txFeeSats = this.calcFee(this.xpijs, this.xpijs.Utxo.get(address));
+    const utxos = await this.xpijs.Utxo.get(address);
+    const utxoStore = utxos[0];
 
-    const txFeeBch = await txFeeSats / 10 ** 6;
-    const value = (balance - txFeeBch >= 0) ? (balance - txFeeBch).toFixed(6) : '0';
-    return value;
+    const txFeeSats = this.calcFee(this.xpijs, (utxoStore as any).bchUtxos);
+
+    const txFeeBch = await txFeeSats;
+    const value = (balance - txFeeBch >= 0) ? (balance - txFeeBch) : '0';
+    return fromSmallestDenomination(Number(value));
   };
 
   async sendAmount(mainAddress: string, subAddress: string, amount: number, keyPair: any) {

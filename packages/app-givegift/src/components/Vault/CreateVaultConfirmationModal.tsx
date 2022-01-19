@@ -132,8 +132,8 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
         <br />
         <VaultParamLabel>Fund for the account: </VaultParamLabel> {newAccountName}
         <br />
-        <VaultParamLabel>The redeem type is: </VaultParamLabel> {redeemType==0 ? "Single" : "One-Time Codes"}
-        <br />
+        {/* <VaultParamLabel>The redeem type is: </VaultParamLabel> {redeemType==0 ? "Single" : "One-Time Codes"} */}
+        {/* <br /> */}
         {confirmAmount()}
         {confirmVaultType()}
         <br />

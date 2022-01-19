@@ -178,7 +178,6 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
 
       const xpiBalance = fromSmallestDenomination(balance);
 
-
       let satoshisToSend;
       if (vault.vaultType == VaultType.Random) {
         const maxXpiValue = xpiBalance < vault.maxValue ? xpiBalance : vault.maxValue;

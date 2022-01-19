@@ -98,7 +98,7 @@ const CreateVaultForm = ({
   let createVaultFormDataIsValid =
     newVaultNameIsValid && newMaxRedeemVaultIsValid &&
     newExpiryAtVaultIsValid && account && 
-    (redeemType == RedeemType.OneTime && (vaultType == VaultType.Equal && newVaultAmount)) ||
+    // (redeemType == RedeemType.OneTime && (vaultType == VaultType.Equal && newVaultAmount)) ||
     (redeemType == RedeemType.Single && (vaultType == VaultType.Random && newVaultMinValueIsValid && newVaultMaxValueIsValid) ||
       (vaultType == VaultType.Fixed && newVaultFixedValueIsValid) ||
       (vaultType == VaultType.Divided && newVaultDividedValueIsValid));
@@ -243,52 +243,52 @@ const CreateVaultForm = ({
     }
   }
 
-  const selectRedeemType = () => {
-    if (redeemType == RedeemType.Single) {
-      return (
-        <Form.Item>
-          <Radio.Group value={vaultType} onChange={handleChangeVaultType}>
-            <Radio value={0}>Random</Radio>
-            <Radio value={1}>Fixed</Radio>
-            <Radio value={2}>Divided</Radio>
-          </Radio.Group>
-        </Form.Item>
-      );
-    }
-    else {
-      return (
-        <>
-          <Form.Item>
-            <Radio.Group value={vaultType} onChange={handleChangeVaultType}>
-              <Radio value={0}>Random</Radio>
-              <Radio value={3}>Equal</Radio>
-            </Radio.Group>
-          </Form.Item>
-          <Form.Item>
-            <Input
-              type="number"
-              addonBefore="Amount"
-              placeholder="Enter balance for your vault"
-              name="vaultAmount"
-              value={newVaultAmount}
-              onChange={e => handleNewVaultAmountInput(e)} 
-            />
-          </Form.Item>
-          <Form.Item>
-              <Input
-                addonBefore="Sub-vaults"
-                type="number"
-                step={1 / 10 ** currency.cashDecimals}
-                value={newSubVault}
-                placeholder="Number of sub vaults"
-                name="equalValue"
-                onChange={e => handleNewSubVault(e)}
-              />
-            </Form.Item>
-        </>
-      );
-    }
-  }
+  // const selectRedeemType = () => {
+  //   if (redeemType == RedeemType.Single) {
+  //     return (
+  //       <Form.Item>
+  //         <Radio.Group value={vaultType} onChange={handleChangeVaultType}>
+  //           <Radio value={0}>Random</Radio>
+  //           <Radio value={1}>Fixed</Radio>
+  //           <Radio value={2}>Divided</Radio>
+  //         </Radio.Group>
+  //       </Form.Item>
+  //     );
+  //   }
+  //   else {
+  //     return (
+  //       <>
+  //         <Form.Item>
+  //           <Radio.Group value={vaultType} onChange={handleChangeVaultType}>
+  //             <Radio value={0}>Random</Radio>
+  //             <Radio value={3}>Equal</Radio>
+  //           </Radio.Group>
+  //         </Form.Item>
+  //         <Form.Item>
+  //           <Input
+  //             type="number"
+  //             addonBefore="Amount"
+  //             placeholder="Enter balance for your vault"
+  //             name="vaultAmount"
+  //             value={newVaultAmount}
+  //             onChange={e => handleNewVaultAmountInput(e)} 
+  //           />
+  //         </Form.Item>
+  //         <Form.Item>
+  //             <Input
+  //               addonBefore="Sub-vaults"
+  //               type="number"
+  //               step={1 / 10 ** currency.cashDecimals}
+  //               value={newSubVault}
+  //               placeholder="Number of sub vaults"
+  //               name="equalValue"
+  //               onChange={e => handleNewSubVault(e)}
+  //             />
+  //           </Form.Item>
+  //       </>
+  //     );
+  //   }
+  // }
 
   const selectVaultType = () => {
     switch (vaultType) {
@@ -459,13 +459,13 @@ const CreateVaultForm = ({
 
               {/* select type redeem */}
               <Form.Item>
-                <Radio.Group value={redeemType} onChange={handleChangeRedeemType}>
-                  <Radio value={0}>Single Code</Radio>
-                  <Radio value={1}>One-Time Codes</Radio>
+                <Radio.Group value={vaultType} onChange={handleChangeVaultType}>
+                  <Radio value={0}>Random</Radio>
+                  <Radio value={1}>Fixed</Radio>
+                  <Radio value={2}>Divided</Radio>
                 </Radio.Group>
               </Form.Item>
-              {/* select VaultType */}
-              {selectRedeemType()}
+              {/* {selectRedeemType()} */}
               {selectVaultType()}
 
               {/* Vault country */}
@@ -483,6 +483,16 @@ const CreateVaultForm = ({
               <Form.Item>
                 <AdvancedCollapse>
                   <Panel header="Advanced" key="2">
+                  <Form.Item>
+                    <Input
+                      type="number"
+                      addonBefore="Amount"
+                      placeholder="Enter balance for your vault"
+                      name="vaultAmount"
+                      value={newVaultAmount}
+                      onChange={e => handleNewVaultAmountInput(e)} 
+                    />
+                  </Form.Item>
 
                     {/* Max Redeem and Expity Time */}
                     {selectExpiry()}
