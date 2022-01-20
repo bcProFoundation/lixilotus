@@ -47,7 +47,9 @@ function* generateVaultSaga(action: PayloadAction<GenerateVaultCommand>) {
     isFamilyFriendly: command.isFamilyFriendly,
     password: password,
     mnemonic: mnemonic,
-    mnemonicHash: command.mnemonicHash
+    mnemonicHash: command.mnemonicHash,
+    envelopeId: command.envelopeId,
+    envelopeMessage: command.envelopeMessage ?? ''
   };
 
   yield put(postVault(createVaultCommand));

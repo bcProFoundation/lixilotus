@@ -71,14 +71,6 @@ const Vault: React.FC = () => {
     setRedeemCodeVisible(true);
   };
 
-  const handleOnClickSeed = evt => {
-    dispatch(showToast('success', {
-      message: 'Copy Success',
-      description: 'Copy Seed Successfully',
-      duration: 5
-    }));
-  }
-
   const typeVault = () => {
     switch (selectedVault?.vaultType) {
       case VaultType.Fixed:

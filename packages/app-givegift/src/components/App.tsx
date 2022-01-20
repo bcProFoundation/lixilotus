@@ -21,6 +21,7 @@ import Home from '@components/Home/Home';
 import RedeemComponent from '@components/Redeem';
 import Settings from '@components/Settings';
 import Vault from '@components/Vault';
+import LixiRedeemed from '@components/Redeem/LixiRedeemed';
 
 import ModalManager from './Common/ModalManager';
 import OnboardingComponent from './Onboarding/Onboarding';
@@ -29,7 +30,7 @@ type ThemeType = typeof theme;
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
 
-const GiveGiftApp = styled.div`
+const LixiApp = styled.div`
   text-align: center;
   font-family: 'Gilroy', sans-serif;
   background-color: ${props => props.theme.app.background};
@@ -122,7 +123,7 @@ function App(): JSX.Element {
         }
         indicator={LoadingIcon}
       >
-        <GiveGiftApp>
+        <LixiApp>
           <AppBody>
             <ModalManager />
             {!selectedAccount
@@ -134,7 +135,7 @@ function App(): JSX.Element {
                     <LixiTextLogo src={LixiText} alt="lixi" />
                   </HeaderContainer>
                   <Switch>
-                    <Route path="/Vault">
+                    <Route path="/vault">
                       <Vault />
                     </Route>
                     <Route path="/redeem">
@@ -143,6 +144,11 @@ function App(): JSX.Element {
                     <Route path="/settings">
                       <Settings />
                     </Route>
+                    <Route path="/lixi/:redeemId"
+                      render={props => (<LixiRedeemed
+                        redeemId={props.match.params.redeemId}
+                      />)}
+                    />
                     <Route path="/">
                       <Home />
                     </Route>
@@ -184,7 +190,7 @@ function App(): JSX.Element {
               </>
             }
           </AppBody>
-        </GiveGiftApp>
+        </LixiApp>
 
       </Spin>
     </ThemeProvider>

@@ -8,12 +8,12 @@ import _ from 'lodash';
 import moment from 'moment';
 import BCHJS from '@abcpros/xpi-js';
 import MinimalBCHWallet from '@abcpros/minimal-xpi-slp-wallet';
-import { CreateRedeemDto, fromSmallestDenomination, RedeemDto, VaultType } from '@abcpros/givegift-models'
+import { CreateRedeemDto, fromSmallestDenomination, RedeemDto, ViewRedeemDto, VaultType } from '@abcpros/givegift-models'
 import { toSmallestDenomination } from '@abcpros/givegift-models';
 import { countries } from '@abcpros/givegift-models';
-import { aesGcmDecrypt, base62ToNumber } from '../utils/encryptionMethods';
+import { aesGcmDecrypt, base62ToNumber } from '../../utils/encryptionMethods';
 import SlpWallet from '@abcpros/minimal-xpi-slp-wallet';
-import logger from '../logger';
+import logger from '../../logger';
 import axios from 'axios';
 import geoip from 'geoip-country';
 
@@ -55,9 +55,45 @@ prisma.$on('warn', (e) => {
 
 let router = express.Router();
 
+router.get('/redeems/:id/', async (req: express.Request, res: express.Response, next: NextFunction) => {
+
+  const { id } = req.params;
+  try {
+    const redeem = await prisma.redeem.findUnique({
+      where: {
+        id: parseInt(id)
+      },
+      include: {
+        vault: {
+          include: {
+            envelope: true
+          }
+        }
+      }
+    });
+    if (!redeem) throw new VError('The redeem does not exist in the database.');
+
+    let result: ViewRedeemDto = {
+      id: redeem.id,
+      vaultId: redeem.vaultId,
+      image: redeem.vault.envelope?.image ?? '',
+      thumbnail: redeem.vault.envelope?.thumbnail ?? '',
+      amount: Number(redeem.amount),
+      message: redeem.vault.envelopeMessage
+    };
+    return res.json(result);
+  } catch (err: unknown) {
+    if (err instanceof VError) {
+      return next(err);
+    } else {
+      const error = new VError.WError(err as Error, 'Unable to get the redeem.');
+      return next(error);
+    }
+  }
+});
+
 router.post('/redeems', async (req: express.Request, res: express.Response, next: NextFunction) => {
   const redeemApi: CreateRedeemDto = req.body;
-
 
   const captchaResBody = {
     event: {
@@ -118,6 +154,7 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
           id: vaultId
         }
       });
+
 
       // isFamilyFriendly == true
       if (vault?.isFamilyFriendly) {

@@ -1,3 +1,5 @@
+import { Envelope } from "./envelope";
+
 export interface GenerateVaultCommand {
   name: string;
   accountId: number;
@@ -12,6 +14,8 @@ export interface GenerateVaultCommand {
   expiryAt?: string;
   country?: string;
   isFamilyFriendly: boolean;
+  envelopeId: number | null;
+  envelopeMessage: string;
 }
 
 export interface CreateVaultCommand {
@@ -29,6 +33,8 @@ export interface CreateVaultCommand {
   country?: string;
   isFamilyFriendly: boolean;
   password: string;
+  envelopeId: number | null;
+  envelopeMessage: string;
 }
 
 
@@ -54,6 +60,9 @@ export interface VaultDto {
   address: string;
   status: string;
   accountId: number;
+  envelopeId: number | null;
+  envelopeMessage: string;
+  envelope?: Envelope | null;
 };
 
 export interface Vault {
@@ -78,6 +87,9 @@ export interface Vault {
   address: string;
   status: string;
   accountId: number;
+  envelopeId: number | null;
+  envelopeMessage: string;
+  envelope?: Envelope | null;
 };
 
 export interface UnlockVaultCommand {

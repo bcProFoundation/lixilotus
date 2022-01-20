@@ -53,6 +53,9 @@ router.get('/:id/vaults', async (req: express.Request, res: express.Response, ne
     const vaults: VaultDb[] = await prisma.vault.findMany({
       where: {
         accountId: accountId
+      },
+      include: {
+        envelope: true
       }
     });
 

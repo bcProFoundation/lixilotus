@@ -21,6 +21,7 @@ export type CreateVaultConfirmationModalProps = {
   newExpiryAt: string;
   newCountryVault: string;
   isFamilyFriendly: boolean;
+  newEnvelopeId: number | null;
   onOkAction?: AnyAction
 }
 
@@ -40,6 +41,7 @@ export const CreateVaultConfirmationModal: React.FC<CreateVaultConfirmationModal
     newVaultDividedValue,
     newCountryVault,
     isFamilyFriendly,
+    newEnvelopeId
   } = props;
 
   const handleOnCancel = () => {

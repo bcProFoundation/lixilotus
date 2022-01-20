@@ -9,6 +9,7 @@ import { errorReducer } from './error/reducer';
 import { toastReducer } from './toast/reducer';
 import { actionReducer } from './action/reducer';
 import { accountReducer } from './account/reducer';
+import { envelopeReducer } from './envelope/reducer';
 import { vaultReducer } from './vault/reducer';
 import { VaultsState } from './vault/state';
 import { RedeemsState } from './redeem/state';
@@ -38,6 +39,7 @@ const rootReducer = combineReducers({
   accounts: persistReducer(accountPersistConfig, accountReducer),
   vaults: persistReducer(vaultPersistConfig, vaultReducer),
   redeems: persistReducer(redeemsPersistConfig, redeemReducer),
+  envelopes: envelopeReducer,
   loading: loadingReducer,
   modal: modalReducer,
   toast: toastReducer,

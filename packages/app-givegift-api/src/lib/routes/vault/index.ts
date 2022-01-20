@@ -19,6 +19,9 @@ router.get('/vaults/:id/', async (req: express.Request, res: express.Response, n
     const vault = await prisma.vault.findUnique({
       where: {
         id: parseInt(id)
+      },
+      include: {
+        envelope: true
       }
     });
     if (!vault) throw new VError('The vault does not exist in the database.');
@@ -28,7 +31,8 @@ router.get('/vaults/:id/', async (req: express.Request, res: express.Response, n
     let result = {
       ...vault,
       balance: balance,
-      totalRedeem: Number(vault.totalRedeem)
+      totalRedeem: Number(vault.totalRedeem),
+      envelope: vault.envelope
     } as VaultDto;
     result = _.omit(result, 'encryptedXPriv');
     return res.json(result);
@@ -54,7 +58,7 @@ router.post('/vaults', async (req: express.Request, res: express.Response, next:
         where: {
           id: command.accountId,
           mnemonicHash: command.mnemonicHash
-        }
+        },
       });
 
       if (!account) {
@@ -98,19 +102,21 @@ router.post('/vaults', async (req: express.Request, res: express.Response, next:
         status: 'active',
         expiryTime: null,
         address,
-        totalRedeem: BigInt(0)
+        totalRedeem: BigInt(0),
+        envelopeId: command.envelopeId ?? null,
+        envelopeMessage: ''
       };
       const vaultToInsert = _.omit(data, 'password');
       const createdVault: VaultDb = await prisma.vault.create({ data: vaultToInsert });
 
-      let resultApi: VaultDto = {
+      let resultApi = {
         ...createdVault,
         balance: 0,
         totalRedeem: Number(createdVault.totalRedeem),
         expiryAt: createdVault.expiryAt ? createdVault.expiryAt : undefined,
-        country: createdVault.country ? createdVault.country : undefined
+        country: createdVault.country ? createdVault.country : undefined,
       };
-      resultApi = _.omit(resultApi, 'encryptedXPriv');
+      // resultApi = _.omit(resultApi, 'encryptedXPriv');
 
       res.json(resultApi);
     } catch (err) {

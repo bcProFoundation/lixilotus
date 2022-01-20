@@ -1,23 +1,34 @@
-import React, { useState } from 'react';
-import { Checkbox, Collapse, DatePicker, Form, Input, Menu, Modal, notification, Radio, RadioChangeEvent } from 'antd';
-import { PlusSquareOutlined } from '@ant-design/icons';
-import isEmpty from 'lodash.isempty';
+import {
+  Checkbox, Collapse, DatePicker, Form, Input, Menu, Modal, notification, Radio, RadioChangeEvent
+} from 'antd';
 import { range } from 'lodash';
+import isEmpty from 'lodash.isempty';
 import moment from 'moment';
-import { AdvancedCollapse, VaultCollapse } from "@abcpros/givegift-components/components/Common/StyledCollapse";
-import { AntdFormWrapper } from '@abcpros/givegift-components/components/Common/EnhancedInputs';
-import { SmartButton } from '@abcpros/givegift-components/components/Common/PrimaryButton';
-import { currency } from '@abcpros/givegift-components/components/Common/Ticker';
-import { countries } from "@abcpros/givegift-models/constants";
-import CountrySelectDropdown from '@components/Common/CountrySelectDropdown';
-import { isValidAmountInput } from '@utils/validation';
-import { GenerateVaultCommand, VaultType } from '@abcpros/givegift-models/lib/vault';
-import { useAppDispatch } from 'src/store/hooks';
+import React, { useState } from 'react';
+import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import { openModal } from 'src/store/modal/actions';
 import { showToast } from 'src/store/toast/actions';
 import { generateVault } from 'src/store/vault/actions';
-import { openModal } from 'src/store/modal/actions';
-import { CreateVaultConfirmationModalProps } from './CreateVaultConfirmationModal';
+
+import { AntdFormWrapper } from '@abcpros/givegift-components/components/Common/EnhancedInputs';
+import { SmartButton } from '@abcpros/givegift-components/components/Common/PrimaryButton';
+import {
+  AdvancedCollapse, VaultCollapse
+} from '@abcpros/givegift-components/components/Common/StyledCollapse';
+import { currency } from '@abcpros/givegift-components/components/Common/Ticker';
 import { Account } from '@abcpros/givegift-models';
+import { countries } from '@abcpros/givegift-models/constants';
+import { GenerateVaultCommand, VaultType } from '@abcpros/givegift-models/lib/vault';
+import { PlusSquareOutlined } from '@ant-design/icons';
+import CountrySelectDropdown from '@components/Common/CountrySelectDropdown';
+import EnvelopeSelectDropdown from '@components/Common/EnvelopeSelectDropdown';
+import { isValidAmountInput } from '@utils/validation';
+
+import { CreateVaultConfirmationModalProps } from './CreateVaultConfirmationModal';
+import { LixiEnvelopeUploader, StyledLixiEnvelopeUploaded } from './LixiEnvelopeUploader';
+import { getAllEnvelopes } from 'src/store/envelope/selectors';
+import TextArea from 'antd/lib/input/TextArea';
+
 const { Panel } = Collapse;
 
 type CreateVaultFormProps = {
@@ -30,6 +41,7 @@ const CreateVaultForm = ({
 }: CreateVaultFormProps) => {
 
   const dispatch = useAppDispatch();
+  const envelopes = useAppSelector(getAllEnvelopes);
 
   // New Vault name
   const [newVaultName, setNewVaultName] = useState('');
@@ -67,6 +79,10 @@ const CreateVaultForm = ({
   // New FamilyFriendly
   const [isFamilyFriendly, setIsFamilyFriendlyVault] = useState<boolean>(false);
 
+  // New Envelope
+  const [newEnvelopeId, setNewEnvelopeId] = useState<number | null>(null);
+  const [newEnvelopeMessage, setNewEnvelopeMessage] = useState('');
+
 
   const handleNewVaultNameInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -86,6 +102,11 @@ const CreateVaultForm = ({
 
   const handleNewExpityTimeInput = (value) => {
     setNewExpiryAtVault(value._d.toString());
+  }
+
+  const handleEnvelopeMessageInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { value } = e.target;
+    setNewEnvelopeMessage(value);
   }
 
   const onOk = (value) => {
@@ -138,6 +159,10 @@ const CreateVaultForm = ({
     }
   }
 
+  const handleChangeEnvelope = (value, e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewEnvelopeId(value);
+  }
+
   const handleFamilyFriendly = (e) => {
     const value = e.target.checked;
     setIsFamilyFriendlyVault(value);
@@ -166,7 +191,9 @@ const CreateVaultForm = ({
       dividedValue: newVaultDividedValue,
       vaultType: vaultType,
       country: newCountryVault,
-      isFamilyFriendly: isFamilyFriendly
+      isFamilyFriendly: isFamilyFriendly,
+      envelopeId: newEnvelopeId,
+      envelopeMessage: newEnvelopeMessage
     };
 
     const createVaultModalProps: CreateVaultConfirmationModalProps = {
@@ -181,6 +208,7 @@ const CreateVaultForm = ({
       newVaultDividedValue,
       newCountryVault,
       isFamilyFriendly,
+      newEnvelopeId,
       onOkAction: generateVault(command)
     };
     dispatch(openModal('CreateVaultConfirmationModal', createVaultModalProps));
@@ -379,6 +407,26 @@ const CreateVaultForm = ({
               </Form.Item>
               {selectVaultType()}
 
+              {/* Vault envelope */}
+              <Form.Item>
+                <AntdFormWrapper>
+                  <EnvelopeSelectDropdown
+                    envelopes={envelopes}
+                    handleChangeEnvelope={handleChangeEnvelope}
+                  />
+                </AntdFormWrapper>
+              </Form.Item>
+              {/* Message */}
+              <Form.Item>
+                <TextArea
+
+                  placeholder="Enter the vault message"
+                  name="envelopeMessage"
+                  value={newEnvelopeMessage}
+                  onChange={e => handleEnvelopeMessageInput(e)}
+                />
+              </Form.Item>
+
               {/* Vault country */}
               <Form.Item>
                 <AntdFormWrapper>
@@ -406,6 +454,8 @@ const CreateVaultForm = ({
                         Family Friendly
                       </Checkbox>
                     </Form.Item>
+                    {/* <StyledLixiEnvelopeUploaded /> */}
+                    <TextArea rows={4} />
                   </Panel>
                 </AdvancedCollapse>
               </Form.Item>

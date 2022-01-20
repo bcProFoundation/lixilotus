@@ -6,14 +6,17 @@ import styled, { css } from 'styled-components';
 export const AntdFormCss = css`
     .ant-input-group-addon {
         background-color: ${props =>
-            props.theme.forms.addonBackground} !important;
+        props.theme.forms.addonBackground} !important;
         border: 1px solid ${props => props.theme.forms.border};
         color: ${props => props.theme.forms.addonForeground} !important;
     }
     input.ant-input,
-    .ant-select-selection {
+    textarea.ant-input,
+    .ant-select-selection,
+    .ant-select-item-option-active,
+    .ant-select-item {
         background-color: ${props =>
-            props.theme.forms.selectionBackground} !important;
+        props.theme.forms.selectionBackground} !important;
         box-shadow: none !important;
         border-radius: 4px;
         font-weight: bold;

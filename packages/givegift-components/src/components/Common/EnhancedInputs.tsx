@@ -18,7 +18,10 @@ export const AntdFormCss = css`
         color: ${props => props.theme.forms.addonForeground} !important;
     }
     input.ant-input,
-    .ant-select-selection {
+    textarea.ant-input,
+    .ant-select-selection,
+    .ant-select-item-option-active
+    .ant-select-item {
         background-color: ${props =>
     props.theme.forms.selectionBackground} !important;
         box-shadow: none !important;

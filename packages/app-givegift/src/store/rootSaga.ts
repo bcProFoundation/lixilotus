@@ -3,6 +3,7 @@ import { all } from 'redux-saga/effects';
 import accountSaga from './account/saga';
 import vaultSaga from './vault/saga';
 import redeemSaga from './redeem/saga';
+import envelopeSaga from './envelope/saga';
 import toastSaga from './toast/saga';
 
 export default function* rootSaga() {
@@ -10,6 +11,7 @@ export default function* rootSaga() {
     accountSaga(),
     vaultSaga(),
     redeemSaga(),
+    envelopeSaga(),
     toastSaga()
   ]);
 }

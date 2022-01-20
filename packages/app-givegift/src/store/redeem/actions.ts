@@ -1,6 +1,5 @@
 import { createAction } from '@reduxjs/toolkit';
-import { CreateRedeemDto, Redeem } from '@abcpros/givegift-models/lib/redeem';
-import { RedeemsState } from './state';
+import { CreateRedeemDto, Redeem, ViewRedeemDto } from '@abcpros/givegift-models';
 
 export const postRedeemActionType = 'redeem/postRedeem';
 export const postRedeem = createAction<CreateRedeemDto>('redeem/postRedeem');
@@ -13,3 +12,7 @@ export const postRedeemFailure = createAction('redeem/postRedeemFailure', (messa
 });
 export const saveRedeemAddress = createAction<string>('redeem/saveRedeemAddress');
 export const saveRedeemCode = createAction<string>('redeem/saveRedeemCode');
+
+export const viewRedeem = createAction<number>('redeem/viewRedeem');
+export const viewRedeemSuccess = createAction<ViewRedeemDto>('redeem/viewRedeemSuccess');
+export const viewRedeemFailure = createAction<string>('redeem/viewRedeemFailure');

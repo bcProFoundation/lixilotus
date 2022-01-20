@@ -1,5 +1,5 @@
 import { Form, Input, Modal, Spin } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { generateAccount, importAccount } from 'src/store/account/actions';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
@@ -15,6 +15,7 @@ import { SmartButton } from '@components/Common/PrimaryButton';
 import { StyledSpacer } from '@components/Common/StyledSpacer';
 import CreateVaultForm from '@components/Vault/CreateVaultForm';
 import VaultList from '@components/Vault/VaultList';
+import { getEnvelopes } from 'src/store/envelope/actions';
 
 const Home: React.FC = () => {
 
@@ -31,6 +32,10 @@ const Home: React.FC = () => {
   const isLoading = useAppSelector(getIsGlobalLoading);
   const vaults = useAppSelector(getVaultsBySelectedAccount);
   const selectedAccount = useAppSelector(getSelectedAccount);
+
+  useEffect(() => {
+    dispatch(getEnvelopes());
+  }, []);
 
   const handleChange = e => {
     const { value, name } = e.target;

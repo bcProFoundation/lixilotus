@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 const axiosClient = axios.create({
-  baseURL: process.env.REACT_APP_GIVEGIFT_API ? process.env.REACT_APP_GIVEGIFT_API : 'https://api.lotusgift.com',
+  baseURL: process.env.REACT_APP_LIXI_API ? process.env.REACT_APP_LIXI_API : 'https://api.lixilotus.com',
   headers: {
     'Content-Type': 'application/json',
   },
