@@ -62,7 +62,6 @@ const MoreIcon = styled(Button)`
 `;
 
 
-
 type VaultListItemProps = {
   className?: string,
   vault: Vault,
@@ -82,12 +81,12 @@ const VaultListItem: React.FC<VaultListItemProps> = (props: VaultListItemProps) 
   const selectedAccount = useAppSelector(getSelectedAccount);
 
   const options = vault.status === 'active' ? ['Lock'] : ['Unlock'];
-  const setStatusData = {
+  const postVaultData = {
     id: vault.id,
     mnemonic: selectedAccount?.mnemonic,
     mnemonicHash: selectedAccount?.mnemonicHash
   };
-
+  
   const menus = (
     options.map(option =>
       <Menu.Item key={option}>
@@ -96,10 +95,12 @@ const VaultListItem: React.FC<VaultListItemProps> = (props: VaultListItemProps) 
     )
   );
   const handleClickMenu = (e) => {
+    e.domEvent.stopPropagation();
     if (e.key === 'Lock') {
-      dispatch(lockVault(setStatusData as LockVaultCommand))
-    } else {
-      dispatch(unlockVault(setStatusData as UnlockVaultCommand))
+      dispatch(lockVault(postVaultData as LockVaultCommand))
+    } 
+    else if (e.key === 'Unlock') {
+      dispatch(unlockVault(postVaultData as UnlockVaultCommand))
     }
   };
   
