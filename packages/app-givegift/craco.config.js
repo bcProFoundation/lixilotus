@@ -26,7 +26,7 @@ module.exports = {
               '@text-color-secondary': 'fade(@light, 45)',
               '@disabled-color': 'fade(@light, 25)',
               '@primary-5': '#40a9ff',
-              '@primary-color': '#20242D',
+              '@primary-color': '#6f2dbd',
               '@outline-color': '@primary-color',
               '@icon-color': 'fade(@light, 65)',
               '@icon-color-hover': 'fade(@light, 85)',
@@ -117,6 +117,10 @@ module.exports = {
 
               // pro
               '@pro-header-box-shadow': '@site-header-box-shadow',
+
+              // custom
+              '@select-item-active-bg': '#FBFBFD',
+              '@select-item-selected-bg': '#FBFBFD'
             },
             javascriptEnabled: true,
           },

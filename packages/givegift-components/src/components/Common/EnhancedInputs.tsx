@@ -38,6 +38,7 @@ export const AntdFormCss = css`
     .ant-select-selector {
         height: 60px !important;
         border: 1px solid ${props => props.theme.wallet.borders.color} !important;
+        align-items: center;
     }
     .ant-form-item-has-error
         > div

@@ -42,7 +42,7 @@ const LixiRedeemed = ({
     <div className={className}>
       {currentLixiRedeem && currentLixiRedeem.amount && (
         <>
-          <WalletLabel name='You have redeem lixi' />
+          <WalletLabel name='You have redeemed lixi' />
           <BalanceHeader
             balance={fromSmallestDenomination(currentLixiRedeem.amount)}
             ticker='XPI' />
