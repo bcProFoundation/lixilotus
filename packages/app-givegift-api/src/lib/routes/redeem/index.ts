@@ -128,8 +128,12 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
       const redeemCode = _.trim(redeemApi.redeemCode);
       const password = redeemCode.slice(0, 8);
       const encodedVaultId = redeemCode.slice(8);
-      const vaultId = base62ToNumber(encodedVaultId);
+      const vaultId = _.toSafeInteger(base62ToNumber(encodedVaultId));
       const address = _.trim(redeemApi.redeemAddress);
+
+      if (!Number.isInteger(vaultId)) {
+        throw new VError('Invalid redeem code.');
+      }
 
       const countRedeemAddress = await prisma.redeem.findMany({
         where: {

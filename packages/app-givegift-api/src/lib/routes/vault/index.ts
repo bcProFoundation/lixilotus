@@ -18,7 +18,7 @@ router.get('/vaults/:id/', async (req: express.Request, res: express.Response, n
   try {
     const vault = await prisma.vault.findUnique({
       where: {
-        id: parseInt(id)
+        id: _.toSafeInteger(id)
       },
       include: {
         envelope: true
@@ -135,7 +135,7 @@ router.post('/vaults', async (req: express.Request, res: express.Response, next:
 
 router.post('/vaults/:id/lock', async (req: express.Request, res: express.Response, next: NextFunction) => {
   const { id } = req.params;
-  const vaultId = parseInt(id);
+  const vaultId = _.toSafeInteger(id);
 
   const command: Account = req.body
   try {
@@ -156,7 +156,7 @@ router.post('/vaults/:id/lock', async (req: express.Request, res: express.Respon
     if (mnemonicFromApi !== mnemonicToValidate) {
       throw Error('Could not find the associated account.');
     }
-    
+
     const vault = await prisma.vault.findFirst({
       where: {
         id: vaultId,
@@ -188,7 +188,7 @@ router.post('/vaults/:id/lock', async (req: express.Request, res: express.Respon
         res.json(resultApi);
       }
     }
-    
+
   } catch (err) {
     if (err instanceof VError) {
       return next(err);
@@ -202,7 +202,7 @@ router.post('/vaults/:id/lock', async (req: express.Request, res: express.Respon
 
 router.post('/vaults/:id/unlock', async (req: express.Request, res: express.Response, next: NextFunction) => {
   const { id } = req.params;
-  const vaultId = parseInt(id);
+  const vaultId = _.toSafeInteger(id);
 
   const command: Account = req.body
   try {
@@ -223,7 +223,7 @@ router.post('/vaults/:id/unlock', async (req: express.Request, res: express.Resp
     if (mnemonicFromApi !== mnemonicToValidate) {
       throw Error('Could not find the associated account.');
     }
-    
+
     const vault = await prisma.vault.findFirst({
       where: {
         id: vaultId,
@@ -255,7 +255,7 @@ router.post('/vaults/:id/unlock', async (req: express.Request, res: express.Resp
         res.json(resultApi);
       }
     }
-    
+
   } catch (err) {
     if (err instanceof VError) {
       return next(err);

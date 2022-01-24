@@ -20,7 +20,7 @@ router.get('/accounts/:id/', async (req: express.Request, res: express.Response,
   try {
     const account = await prisma.account.findUnique({
       where: {
-        id: parseInt(id)
+        id: _.toSafeInteger(id)
       }
     });
     if (!account)
@@ -84,7 +84,7 @@ router.patch('/accounts/:id/', async (req: express.Request, res: express.Respons
     try {
       const account = await prisma.account.findUnique({
         where: {
-          id: parseInt(id)
+          id: _.toSafeInteger(id)
         }
       });
       if (!account)
@@ -98,7 +98,7 @@ router.patch('/accounts/:id/', async (req: express.Request, res: express.Respons
 
       const updatedAccount: AccountDb = await prisma.account.update({
         where: {
-          id: parseInt(id),
+          id: _.toSafeInteger(id),
         },
         data: {
           name: command.name,
@@ -126,12 +126,12 @@ router.patch('/accounts/:id/', async (req: express.Request, res: express.Respons
 
 router.delete('/accounts/:id/', async (req: express.Request, res: express.Response, next: NextFunction) => {
   const { id } = req.params;
-  const accountId = parseInt(id);
+  const accountId = _.toSafeInteger(id);
   const command: DeleteAccountCommand = req.body;
   try {
     const account = await prisma.account.findUnique({
       where: {
-        id: parseInt(id)
+        id: _.toSafeInteger(id)
       },
       include: {
         vaults: true
@@ -154,7 +154,7 @@ router.delete('/accounts/:id/', async (req: express.Request, res: express.Respon
       // delete associated redeems, vaults then account
       const redeemDeleteCondition: Array<{ id: number }> = vaults.map(vault => {
         return {
-          id: vault.id
+          id: _.toSafeInteger(vault.id)
         };
       });
       await prisma.$transaction([

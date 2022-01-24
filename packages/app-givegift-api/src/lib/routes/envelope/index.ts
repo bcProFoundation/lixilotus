@@ -13,7 +13,7 @@ router.get('/envelopes/:id/', async (req: express.Request, res: express.Response
   try {
     const envelope = await prisma.envelope.findUnique({
       where: {
-        id: parseInt(id)
+        id: _.toSafeInteger(id)
       }
     });
     if (!envelope)
