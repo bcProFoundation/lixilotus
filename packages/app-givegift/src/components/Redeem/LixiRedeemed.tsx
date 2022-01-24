@@ -31,7 +31,7 @@ const LixiRedeemed = ({
   const currentLixiRedeem = useAppSelector(getCurrentLixiRedeem) as ViewRedeemDto;
   const imageUrl = currentLixiRedeem?.image
     ? process.env.REACT_APP_LIXI_API + currentLixiRedeem?.image
-    : process.env.REACT_APP_LIXI_API + 'default.png';
+    : process.env.REACT_APP_LIXI_API + 'images/default.png';
 
   useEffect(() => {
     const id = parseInt(redeemId);
