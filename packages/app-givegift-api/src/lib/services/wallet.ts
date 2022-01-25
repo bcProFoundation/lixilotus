@@ -102,16 +102,11 @@ export class WalletService {
       throw new VError('UTXO list is empty');
     }
 
-    try {
-      const { necessaryUtxos, change } = this.xpiWallet.sendBch.getNecessaryUtxosAndChange(
-        outputs,
-        (utxoStore as any).bchUtxos,
-        2.01
-      );
-    } catch (e) {
-      throw new VError('Insufficient fund.')
-    }
-
+    const { necessaryUtxos, change } = this.xpiWallet.sendBch.getNecessaryUtxosAndChange(
+      outputs,
+      (utxoStore as any).bchUtxos,
+      2.01
+    );
 
     // Create an instance of the Transaction Builder.
     const transactionBuilder: any = new this.xpijs.TransactionBuilder();
