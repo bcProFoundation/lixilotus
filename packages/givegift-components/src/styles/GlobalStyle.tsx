@@ -2,7 +2,7 @@ import { createGlobalStyle } from 'styled-components';
 import { ThemeType } from '.';
 
 type Props = {
-  theme: ThemeType
+    theme: ThemeType
 };
 
 export const GlobalStyle = createGlobalStyle<Props>`    
@@ -38,6 +38,9 @@ export const GlobalStyle = createGlobalStyle<Props>`
     }
     #addrSwitch.ant-switch-checked {
         background-image: ${props =>
-    props.theme.buttons.primary.backgroundImage} !important;
+        props.theme.buttons.primary.backgroundImage} !important;
+    }
+    .ant-upload.ant-upload-select-picture-card {
+        background-color: white;
     }
 `;

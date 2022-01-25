@@ -61,7 +61,7 @@ function* getAccountSaga(action: PayloadAction<number>) {
   }
 }
 
-function* getVaultSuccessSaga(action: PayloadAction<Account>) {
+function* getAccountSuccessSaga(action: PayloadAction<Account>) {
   // Hide the loading
   yield put(hideLoading(getAccount.type));
 }
@@ -263,7 +263,7 @@ function* watchGetAccount() {
 }
 
 function* watchGetAccountSuccess() {
-  yield takeLatest(getAccountSuccess.type, getVaultSuccessSaga);
+  yield takeLatest(getAccountSuccess.type, getAccountSuccessSaga);
 }
 
 function* watchGetAccountFailure() {

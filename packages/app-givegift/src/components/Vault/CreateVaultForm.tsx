@@ -1,12 +1,8 @@
-import {
-    Button, Checkbox, Collapse, DatePicker, Form, Input, Menu, Modal, notification, Radio,
-    RadioChangeEvent
-} from 'antd';
+import { Checkbox, Collapse, DatePicker, Form, Input, Menu, Modal, notification, Radio, RadioChangeEvent } from 'antd';
 import { range } from 'lodash';
 import isEmpty from 'lodash.isempty';
 import moment from 'moment';
 import React, { useState } from 'react';
-import { useAppDispatch } from 'src/store/hooks';
 import { openModal } from 'src/store/modal/actions';
 import { showToast } from 'src/store/toast/actions';
 import { generateVault } from 'src/store/vault/actions';
@@ -14,18 +10,22 @@ import { generateVault } from 'src/store/vault/actions';
 import { AntdFormWrapper } from '@abcpros/givegift-components/components/Common/EnhancedInputs';
 import { SmartButton } from '@abcpros/givegift-components/components/Common/PrimaryButton';
 import {
-    AdvancedCollapse, VaultCollapse
+  AdvancedCollapse, VaultCollapse
 } from '@abcpros/givegift-components/components/Common/StyledCollapse';
 import { currency } from '@abcpros/givegift-components/components/Common/Ticker';
-import { Account } from '@abcpros/givegift-models';
+import { Account, RedeemType } from '@abcpros/givegift-models';
 import { countries } from '@abcpros/givegift-models/constants';
-import { GenerateVaultCommand, RedeemType, VaultType } from '@abcpros/givegift-models/lib/vault';
+import { GenerateVaultCommand, VaultType } from '@abcpros/givegift-models/lib/vault';
 import { PlusSquareOutlined } from '@ant-design/icons';
 import CountrySelectDropdown from '@components/Common/CountrySelectDropdown';
+import EnvelopeSelectDropdown from '@components/Common/EnvelopeSelectDropdown';
 import { isValidAmountInput } from '@utils/validation';
 
-import retry from '../../utils/retry';
 import { CreateVaultConfirmationModalProps } from './CreateVaultConfirmationModal';
+import { LixiEnvelopeUploader, StyledLixiEnvelopeUploaded } from './LixiEnvelopeUploader';
+import { getAllEnvelopes } from 'src/store/envelope/selectors';
+import TextArea from 'antd/lib/input/TextArea';
+import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 
 const { Panel } = Collapse;
 
@@ -39,6 +39,7 @@ const CreateVaultForm = ({
 }: CreateVaultFormProps) => {
 
   const dispatch = useAppDispatch();
+  const envelopes = useAppSelector(getAllEnvelopes);
 
   // New Vault name
   const [newVaultName, setNewVaultName] = useState('');
@@ -85,6 +86,10 @@ const CreateVaultForm = ({
   // New FamilyFriendly
   const [isFamilyFriendly, setIsFamilyFriendlyVault] = useState<boolean>(false);
 
+  // New Envelope
+  const [newEnvelopeId, setNewEnvelopeId] = useState<number | null>(null);
+  const [newEnvelopeMessage, setNewEnvelopeMessage] = useState('');
+
 
   const handleNewVaultNameInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -94,10 +99,21 @@ const CreateVaultForm = ({
     }
   };
 
+  const handleEnvelopeMessageInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { value } = e.target;
+    setNewEnvelopeMessage(value);
+  }
+
+  const onOk = (value) => {
+    setNewExpiryAtVault(value._d.toUTCString())
+    if (value && !isEmpty(value)) {
+      setExpiryAtVaultIsValid(true)
+    }
+  }
   // Only enable CreateVault button if all form entries are valid
   let createVaultFormDataIsValid =
     newVaultNameIsValid && newMaxRedeemVaultIsValid &&
-    newExpiryAtVaultIsValid && account && 
+    newExpiryAtVaultIsValid && account &&
     // (redeemType == RedeemType.OneTime && (vaultType == VaultType.Equal && newVaultAmount)) ||
     (redeemType == RedeemType.Single && (vaultType == VaultType.Random && newVaultMinValueIsValid && newVaultMaxValueIsValid) ||
       (vaultType == VaultType.Fixed && newVaultFixedValueIsValid) ||
@@ -107,7 +123,7 @@ const CreateVaultForm = ({
     const { value } = e.target;
     setRedeemType(value);
   }
-  
+
   const handleChangeVaultType = (e: RadioChangeEvent) => {
     const { value } = e.target;
     setVaultType(value);
@@ -124,7 +140,7 @@ const CreateVaultForm = ({
     setNewSubVaultIsValid(isValidAmountInput(value));
     setNewSubVault(value);
   }
-    
+
   const handleChangeMinValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewVaultMinValueIsValid(isValidAmountInput(value));
@@ -155,6 +171,10 @@ const CreateVaultForm = ({
     }
   }
 
+  const handleChangeEnvelope = (value, e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewEnvelopeId(value);
+  }
+
   const handleNewMaxRedeemInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewMaxRedeemVault(value);
@@ -182,7 +202,7 @@ const CreateVaultForm = ({
   const handleNewExpityTimeInput = (value) => {
     setNewExpiryAtVault(value._d.toString());
   }
-  
+
   const handleFamilyFriendly = (e) => {
     const value = e.target.checked;
     setIsFamilyFriendlyVault(value);
@@ -213,7 +233,9 @@ const CreateVaultForm = ({
       vaultType: vaultType,
       country: newCountryVault,
       isFamilyFriendly: isFamilyFriendly,
-      amount: newVaultAmount
+      amount: newVaultAmount,
+      envelopeId: newEnvelopeId,
+      envelopeMessage: newEnvelopeMessage
     };
 
     const createVaultModalProps: CreateVaultConfirmationModalProps = {
@@ -231,16 +253,10 @@ const CreateVaultForm = ({
       newVaultDividedValue,
       newCountryVault,
       isFamilyFriendly,
+      newEnvelopeId,
       onOkAction: generateVault(command)
     };
     dispatch(openModal('CreateVaultConfirmationModal', createVaultModalProps));
-  }
-
-  const onOk = (value) => {
-    setNewExpiryAtVault(value._d.toUTCString())
-    if (value && !isEmpty(value)) {
-      setExpiryAtVaultIsValid(true)
-    }
   }
 
   // const selectRedeemType = () => {
@@ -468,6 +484,26 @@ const CreateVaultForm = ({
               {/* {selectRedeemType()} */}
               {selectVaultType()}
 
+              {/* Vault envelope */}
+              <Form.Item>
+                <AntdFormWrapper>
+                  <EnvelopeSelectDropdown
+                    envelopes={envelopes}
+                    handleChangeEnvelope={handleChangeEnvelope}
+                  />
+                </AntdFormWrapper>
+              </Form.Item>
+              {/* Message */}
+              <Form.Item>
+                <TextArea
+
+                  placeholder="Enter the vault message"
+                  name="envelopeMessage"
+                  value={newEnvelopeMessage}
+                  onChange={e => handleEnvelopeMessageInput(e)}
+                />
+              </Form.Item>
+
               {/* Vault country */}
               <Form.Item>
                 <AntdFormWrapper>
@@ -483,16 +519,16 @@ const CreateVaultForm = ({
               <Form.Item>
                 <AdvancedCollapse>
                   <Panel header="Advanced" key="2">
-                  <Form.Item>
-                    <Input
-                      type="number"
-                      addonBefore="Amount"
-                      placeholder="Enter balance for your vault"
-                      name="vaultAmount"
-                      value={newVaultAmount}
-                      onChange={e => handleNewVaultAmountInput(e)} 
-                    />
-                  </Form.Item>
+                    <Form.Item>
+                      <Input
+                        type="number"
+                        addonBefore="Amount"
+                        placeholder="Enter balance for your vault"
+                        name="vaultAmount"
+                        value={newVaultAmount}
+                        onChange={e => handleNewVaultAmountInput(e)}
+                      />
+                    </Form.Item>
 
                     {/* Max Redeem and Expity Time */}
                     {selectExpiry()}
@@ -505,6 +541,8 @@ const CreateVaultForm = ({
                         Family Friendly
                       </Checkbox>
                     </Form.Item>
+                    {/* <StyledLixiEnvelopeUploaded /> */}
+                    <TextArea rows={4} />
                   </Panel>
                 </AdvancedCollapse>
               </Form.Item>

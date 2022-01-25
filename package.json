@@ -32,6 +32,9 @@
       "**/babel-jest"
     ]
   },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "yarn test"

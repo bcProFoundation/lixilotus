@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import express, { NextFunction } from 'express';
 import { VError } from 'verror';
 import { PrismaClient, Vault as VaultDb } from '@prisma/client';
@@ -47,12 +48,15 @@ router.post('/import', async (req: express.Request, res: express.Response, next:
 
 router.get('/:id/vaults', async (req: express.Request, res: express.Response, next: NextFunction) => {
   const { id } = req.params;
-  const accountId = parseInt(id);
+  const accountId = _.toSafeInteger(id);
 
   try {
     const vaults: VaultDb[] = await prisma.vault.findMany({
       where: {
         accountId: accountId
+      },
+      include: {
+        envelope: true
       }
     });
 

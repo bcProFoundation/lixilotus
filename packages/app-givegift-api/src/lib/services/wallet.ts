@@ -7,7 +7,7 @@ import BCHJS from '@abcpros/xpi-js';
 import HDNode from '@abcpros/xpi-js/types/hdnode';
 import { PrismaClient } from '@prisma/client';
 import BigNumber from 'bignumber.js';
-import { fromSmallestDenomination, toSmallestDenomination } from '@abcpros/givegift-models';
+import { currency, fromSmallestDenomination, toSmallestDenomination } from '@abcpros/givegift-models';
 
 @Service()
 export class WalletService {
@@ -53,12 +53,12 @@ export class WalletService {
     p2pkhOutputNumber = 2,
     satoshisPerByte = 2.01,
   ) {
-      const byteCount = XPI.BitcoinCash.getByteCount(
-          { P2PKH: utxos.length },
-          { P2PKH: p2pkhOutputNumber },
-      );
-      const txFee = Math.ceil(satoshisPerByte * byteCount);
-      return txFee;
+    const byteCount = XPI.BitcoinCash.getByteCount(
+      { P2PKH: utxos.length },
+      { P2PKH: p2pkhOutputNumber },
+    );
+    const txFee = Math.ceil(satoshisPerByte * byteCount);
+    return txFee;
   };
 
   async onMax(address: string) {
@@ -67,62 +67,51 @@ export class WalletService {
     const utxos = await this.xpijs.Utxo.get(address);
     const utxoStore = utxos[0];
 
-    const txFeeSats = this.calcFee(this.xpijs, (utxoStore as any).bchUtxos);
+    const txFeeSats = await this.calcFee(this.xpijs, (utxoStore as any).bchUtxos);
 
-    const txFeeBch = await txFeeSats;
-    const value = (balance - txFeeBch >= 0) ? (balance - txFeeBch) : '0';
+    const value = (balance - txFeeSats >= 0) ? (balance - txFeeSats) : '0';
     return fromSmallestDenomination(Number(value));
   };
 
-  async sendAmount(mainAddress: string, subAddress: string, amount: number, keyPair: any) {
-    const prisma = new PrismaClient({
-      log: [
-        {
-          emit: 'event',
-          level: 'query',
-        },
-        {
-          emit: 'event',
-          level: 'error',
-        },
-        {
-          emit: 'event',
-          level: 'warn',
-        },
-      ],
-    });
+  async sendAmount(sourceAddress: string, destinationAddress: string, amountXpi: number, inputKeyPair: any) {
 
-    const addressMainBalance: number = await this.xpiWallet.getBalance(mainAddress);
-    if (addressMainBalance === 0) {
+    const sourceBalance: number = await this.xpiWallet.getBalance(sourceAddress);
+    if (sourceBalance === 0) {
       throw new VError('Insufficient fund.');
     }
 
-    const satoshisBalance = new BigNumber(addressMainBalance);
+    const satoshisBalance = new BigNumber(sourceBalance);
 
-    let satoshisToSend = toSmallestDenomination(new BigNumber(amount));
+    let satoshisToSend = toSmallestDenomination(new BigNumber(amountXpi));
 
-    if (satoshisToSend.lt(546) && satoshisToSend.gte(satoshisBalance)) {
-      throw new VError('Insufficient fund.');
+    if (satoshisToSend.lt(currency.dustSats)) {
+      throw new VError('The send amount is smaller than dust.');
     }
 
     const amountSats = Math.floor(satoshisToSend.toNumber());
+
     const outputs = [{
-      address: subAddress,
+      address: destinationAddress,
       amountSat: amountSats
     }];
 
-    const utxos = await this.xpijs.Utxo.get(mainAddress);
+    const utxos = await this.xpijs.Utxo.get(sourceAddress);
     const utxoStore = utxos[0];
 
     if (!utxoStore || !(utxoStore as any).bchUtxos || !(utxoStore as any).bchUtxos) {
       throw new VError('UTXO list is empty');
     }
 
-    const { necessaryUtxos, change } = this.xpiWallet.sendBch.getNecessaryUtxosAndChange(
-      outputs,
-      (utxoStore as any).bchUtxos,
-      1.0
-    );
+    try {
+      const { necessaryUtxos, change } = this.xpiWallet.sendBch.getNecessaryUtxosAndChange(
+        outputs,
+        (utxoStore as any).bchUtxos,
+        2.01
+      );
+    } catch (e) {
+      throw new VError('Insufficient fund.')
+    }
+
 
     // Create an instance of the Transaction Builder.
     const transactionBuilder: any = new this.xpijs.TransactionBuilder();
@@ -138,7 +127,7 @@ export class WalletService {
     });
 
     if (change && change > 546) {
-      transactionBuilder.addOutput(mainAddress, change);
+      transactionBuilder.addOutput(sourceAddress, change);
     }
 
     // Sign each UTXO that is about to be spent.
@@ -147,7 +136,7 @@ export class WalletService {
 
       transactionBuilder.sign(
         i,
-        keyPair,
+        inputKeyPair,
         redeemScript,
         transactionBuilder.hashTypes.SIGHASH_ALL,
         utxo.value
@@ -166,7 +155,7 @@ export class WalletService {
         amount: Number(amountSats)
       };
       return (redeemResult.amount);
-    } 
+    }
     catch (err) {
       throw new VError(err as Error, 'Unable to send transaction');
     }

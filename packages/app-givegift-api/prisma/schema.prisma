@@ -51,6 +51,9 @@ model Vault {
   expiryTime          DateTime? @map("expiry_time") @db.Timestamptz
   address             String    @map("address")
   amount              Float     @default(0)   @map("amount")
+  envelopeId          Int?      @map("envelope_id")
+  envelope            Envelope? @relation(fields: [envelopeId], references: [id])
+  envelopeMessage     String    @default("") @map("envelope_message")
 
   @@map("vault")
 }
@@ -67,4 +70,16 @@ model Redeem {
   vaultId       Int      @map("vault_id")
 
   @@map("redeem")
+}
+
+model Envelope {
+  id          Int      @id @default(autoincrement())
+  name        String   @map("name")
+  thumbnail   String   @map("thumbnail")
+  image       String   @map("image")
+  slug        String   @map("slug")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @default(now()) @map("updated_at") @db.Timestamptz
+  description String   @default("") @map("description")
+  Vault       Vault[]
 }
