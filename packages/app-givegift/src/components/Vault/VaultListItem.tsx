@@ -1,7 +1,7 @@
 import styled, { DefaultTheme } from 'styled-components';
 import { GiftOutlined, WalletOutlined, DeleteOutlined, MoreOutlined, LockOutlined } from '@ant-design/icons';
-import { LockVaultCommand, UnlockVaultCommand, Vault } from '@abcpros/givegift-models/lib/vault';
-import { lockVault, selectVault, unlockVault } from 'src/store/vault/actions';
+import { LockVaultCommand, UnlockVaultCommand, Vault, WithdrawVaultCommand } from '@abcpros/givegift-models/lib/vault';
+import { lockVault, selectVault, unlockVault, withdrawVault } from 'src/store/vault/actions';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { Button, Dropdown, Menu } from 'antd';
 import { getSelectedAccount } from 'src/store/account/selectors';
@@ -81,13 +81,14 @@ const VaultListItem: React.FC<VaultListItemProps> = (props: VaultListItemProps) 
 
   const selectedAccount = useAppSelector(getSelectedAccount);
 
-  const options = vault.status === 'active' ? ['Lock'] : ['Unlock'];
-  const setStatusData = {
+  let options = ['Withdraw'];
+  vault.status === 'active' ? options.unshift('Lock') : options.unshift('Unlock');
+  const postVaultData = {
     id: vault.id,
     mnemonic: selectedAccount?.mnemonic,
     mnemonicHash: selectedAccount?.mnemonicHash
   };
-
+  
   const menus = (
     options.map(option =>
       <Menu.Item key={option}>
@@ -96,10 +97,15 @@ const VaultListItem: React.FC<VaultListItemProps> = (props: VaultListItemProps) 
     )
   );
   const handleClickMenu = (e) => {
+    e.domEvent.stopPropagation();
     if (e.key === 'Lock') {
-      dispatch(lockVault(setStatusData as LockVaultCommand))
-    } else {
-      dispatch(unlockVault(setStatusData as UnlockVaultCommand))
+      dispatch(lockVault(postVaultData as LockVaultCommand));
+    } 
+    else if (e.key === 'Unlock') {
+      dispatch(unlockVault(postVaultData as UnlockVaultCommand));
+    }
+    else if (e.key === 'Withdraw') {
+      dispatch(withdrawVault(postVaultData as WithdrawVaultCommand));
     }
   };
   

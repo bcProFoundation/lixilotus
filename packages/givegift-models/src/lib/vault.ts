@@ -100,6 +100,12 @@ export interface LockVaultCommand {
   mnemonicHash: string;
 };
 
+export interface WithdrawVaultCommand {
+  id: number;
+  mnemonic: string;
+  mnemonicHash: string;
+};
+
 export enum VaultType {
   Random = 0,
   Fixed = 1,

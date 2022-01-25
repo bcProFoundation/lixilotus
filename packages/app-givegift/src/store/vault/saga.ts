@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import { PayloadAction } from "@reduxjs/toolkit";
 import { push } from 'connected-react-router';
 import BCHJS from "@abcpros/xpi-js";
-import { CreateVaultCommand, GenerateVaultCommand, LockVaultCommand, UnlockVaultCommand, Vault, VaultDto } from "@abcpros/givegift-models/lib/vault";
+import { CreateVaultCommand, GenerateVaultCommand, LockVaultCommand, UnlockVaultCommand, Vault, VaultDto, WithdrawVaultCommand } from "@abcpros/givegift-models/lib/vault";
 import { all, fork, getContext, put, select, takeLatest } from "@redux-saga/core/effects";
 import * as Effects from "redux-saga/effects";
 
@@ -13,7 +13,7 @@ import {
   postVaultFailure, postVaultSuccess, refreshVault,
   refreshVaultActionType, refreshVaultFailure,
   refreshVaultSuccess, selectVault, selectVaultSuccess,
-  selectVaultFailure, setVault, lockVault, unlockVault, unlockVaultSuccess, lockVaultSuccess, unlockVaultFailure, lockVaultFailure
+  selectVaultFailure, setVault, lockVault, unlockVault, unlockVaultSuccess, lockVaultSuccess, unlockVaultFailure, lockVaultFailure, withdrawVaultFailure, withdrawVaultSuccess, withdrawVault
 } from "./actions";
 import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase62Str, numberToBase62 } from "@utils/encryptionMethods";
 import { RedeemDto, Redeem } from "@abcpros/givegift-models/lib/redeem";
@@ -295,6 +295,47 @@ function* lockVaultFailureSaga(action: PayloadAction<string>) {
   yield put(hideLoading(lockVaultFailure.type));
 }
 
+function* withdrawVaultSaga(action: PayloadAction<WithdrawVaultCommand>) {
+  try {
+    const command = action.payload;
+
+    const dataApi: WithdrawVaultCommand = {
+      ...command
+    }
+
+    const data = yield call(vaultApi.withdrawVault, command.id, dataApi);
+    const vault = data as Vault;
+
+    if (_.isNil(data) || _.isNil(data.id)) {
+      throw new Error('Unable to withdraw the vault.');
+    }
+
+    yield put(withdrawVaultSuccess(vault));
+  } catch (error) {
+    const message = `There's an error happens when withdraw vault.`;
+    yield put(withdrawVaultFailure(message));
+  }
+}
+
+function* withdrawVaultSuccessSaga(action: PayloadAction<Vault>) {
+  yield put(showToast('success', {
+    message: 'Success',
+    description: 'Withdraw vault successfully.',
+    duration: 5
+  }));
+  yield put(hideLoading(withdrawVaultSuccess.type));
+}
+
+function* withdrawVaultFailureSaga(action: PayloadAction<string>) {
+  const message = action.payload ?? 'Unable to withdraw the vault.';
+  yield put(showToast('error', {
+    message: 'Error',
+    description: message,
+    duration: 5
+  }));
+  yield put(hideLoading(withdrawVaultFailure.type));
+}
+
 function* watchGenerateVault() {
   yield takeLatest(generateVault.type, generateVaultSaga);
 }
@@ -372,6 +413,19 @@ function* watchUnlockVaultFailure() {
   yield takeLatest(unlockVaultFailure.type, unlockVaultFailureSaga);
 }
 
+function* watchWithdrawVault() {
+  yield takeLatest(withdrawVault.type, withdrawVaultSaga);
+}
+
+function* watchWithdrawVaultSuccess() {
+  yield takeLatest(withdrawVaultSuccess.type, withdrawVaultSaga);
+}
+
+function* watchWithdrawVaultFailure() {
+  yield takeLatest(withdrawVaultFailure.type, withdrawVaultSaga);
+}
+
+
 export default function* vaultSaga() {
   yield all([
     fork(watchGenerateVault),
@@ -393,5 +447,8 @@ export default function* vaultSaga() {
     fork(watchUnlockVault),
     fork(watchUnlockVaultSuccess),
     fork(watchUnlockVaultFailure),
+    fork(watchWithdrawVault),
+    fork(watchWithdrawVaultSuccess),
+    fork(watchWithdrawVaultFailure)
   ]);
 }

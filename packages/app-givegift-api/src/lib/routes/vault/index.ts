@@ -262,11 +262,71 @@ router.post('/vaults/:id/unlock', async (req: express.Request, res: express.Resp
       return next(err);
     } else {
       logger.error(err);
-      const error = new VError.WError(err as Error, 'Could not actived the vault.');
+      const error = new VError.WError(err as Error, 'Could not unlock the vault.');
       return next(error);
     }
   }
 });
+
+router.post('/vaults/:id/withdraw', async (req: express.Request, res: express.Response, next: NextFunction) => {
+  const { id } = req.params;
+  const vaultId = parseInt(id);
+
+  const command: Account = req.body
+  try {
+    const mnemonicFromApi = command.mnemonic;
+
+    const account = await prisma.account.findFirst({
+      where: {
+        mnemonicHash: command.mnemonicHash
+      }
+    });
+
+    if (!account) {
+      throw new Error('Could not find the associated account.');
+    }
+
+    // Decrypt to validate the mnemonic
+    const mnemonicToValidate = await aesGcmDecrypt(account.encryptedMnemonic, mnemonicFromApi);
+    if (mnemonicFromApi !== mnemonicToValidate) {
+      throw Error('Could not find the associated account.');
+    }
+    
+    const vault = await prisma.vault.findFirst({
+      where: {
+        id: vaultId,
+        accountId: account.id
+      }
+    });
+    if (!vault) {
+      throw new Error('Could not found the vault in the database.');
+    }
+    const walletService: WalletService = Container.get(WalletService);
+    const totalAmount: number = await walletService.onMax(vault.address);
+
+    const {keyPair} = await walletService.getWalletDetails(command.mnemonic, 0);
+    const amount:any = await walletService.sendAmount(vault.address, account.address, totalAmount, keyPair);
+    let resultApi: VaultDto = {
+      ...vault,
+      balance: amount ?? 0,
+      totalRedeem: Number(vault.totalRedeem),
+      expiryAt: vault.expiryAt ? vault.expiryAt : undefined,
+      country: vault.country ? vault.country : undefined
+    };
+
+    res.json(resultApi);
+
+  } catch (err) {
+    if (err instanceof VError) {
+      return next(err);
+    } else {
+      logger.error(err);
+      const error = new VError.WError(err as Error, 'Could not withdraw the vault.');
+      return next(error);
+    }
+  }
+});
+
 
 router.use('/vaults', vaultChildRouter);
 

@@ -1,4 +1,4 @@
-import { CreateVaultCommand, LockVaultCommand, UnlockVaultCommand, VaultDto } from "@abcpros/givegift-models/lib/vault";
+import { CreateVaultCommand, LockVaultCommand, UnlockVaultCommand, VaultDto, WithdrawVaultCommand } from "@abcpros/givegift-models/lib/vault";
 import axiosClient from "@utils/axiosClient";
 
 const vaultApi = {
@@ -51,6 +51,17 @@ const vaultApi = {
     return axiosClient.post(url, data)
       .then(response => {
         return response.data as VaultDto[];
+      })
+      .catch(err => {
+        const { response } = err;
+        throw response.data;
+      });
+  },
+  withdrawVault(id: number, data: WithdrawVaultCommand) {
+    const url = `/api/vaults/${id}/withdraw`;
+    return axiosClient.post(url, data)
+      .then(response => {
+        return response.data as VaultDto;
       })
       .catch(err => {
         const { response } = err;
