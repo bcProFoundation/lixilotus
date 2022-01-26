@@ -421,11 +421,11 @@ function* watchWithdrawVault() {
 }
 
 function* watchWithdrawVaultSuccess() {
-  yield takeLatest(withdrawVaultSuccess.type, withdrawVaultSaga);
+  yield takeLatest(withdrawVaultSuccess.type, withdrawVaultSuccessSaga);
 }
 
 function* watchWithdrawVaultFailure() {
-  yield takeLatest(withdrawVaultFailure.type, withdrawVaultSaga);
+  yield takeLatest(withdrawVaultFailure.type, withdrawVaultFailureSaga);
 }
 
 
