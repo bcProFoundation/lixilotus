@@ -22,8 +22,8 @@ export const envelopes = [
   },
   {
     name: "New Year 4",
-    thumbnail: "images/2d/e5ad03d3c3405d98376477e1e70ee82b31a3190b900b84e6ca1555b846a8fd51-200.png",
-    image: "images/2d/e5ad03d3c3405d98376477e1e70ee82b31a3190b900b84e6ca1555b846a8fd51.png",
+    thumbnail: "images/e5/e5ad03d3c3405d98376477e1e70ee82b31a3190b900b84e6ca1555b846a8fd51-200.png",
+    image: "images/e5/e5ad03d3c3405d98376477e1e70ee82b31a3190b900b84e6ca1555b846a8fd51.png",
     slug: "new-year-4",
     description: "Happy New Year",
   }
