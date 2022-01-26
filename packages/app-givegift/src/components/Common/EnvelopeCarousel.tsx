@@ -48,7 +48,7 @@ const EnvelopeCarousel = (props: EnvelopeCarouselPros) => {
                     padding: isActive ? '1px' : '0',
                     boxShadow: 'rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px'
                   }}
-                  src={baseUrl + item.image}
+                  src={baseUrl + item.thumbnail}
                   onClick={() => onCarouselItemClick(item)}
                 />
               </div>
