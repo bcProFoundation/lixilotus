@@ -39,7 +39,7 @@ const vaultApi = {
     const url = `/api/vaults/${id}/lock`;
     return axiosClient.post(url, data)
       .then(response => {
-        return response.data as VaultDto[];
+        return response.data as VaultDto;
       })
       .catch(err => {
         const { response } = err;
@@ -50,7 +50,7 @@ const vaultApi = {
     const url = `/api/vaults/${id}/unlock`;
     return axiosClient.post(url, data)
       .then(response => {
-        return response.data as VaultDto[];
+        return response.data as VaultDto;
       })
       .catch(err => {
         const { response } = err;

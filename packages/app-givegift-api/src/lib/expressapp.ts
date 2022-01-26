@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import config from 'config';
@@ -8,6 +8,7 @@ import * as Vault from './routes/vault';
 import * as Redeem from './routes/redeem';
 import * as Healthcheck from './routes/healthcheck';
 import * as Account from './routes/account';
+import * as Envelope from './routes/envelope';
 import { handleError } from './middlewares/handleError';
 
 const bodyParser = require('body-parser');
@@ -32,10 +33,24 @@ export class ExpressApp {
   }
 
   public routes() {
+
+    const nonSPArouter = express.Router();
+    // this.app.use('/lixi/:redeemId', async (req: express.Request, res: express.Response, next: NextFunction) => {
+    //   const ua = req.headers['user-agent'] ?? '';
+    //   if (/^(facebookexternalhit|twitterbot|telegrambot)/gi.test(ua)) {
+    //     nonSPArouter(req, res, next);
+    //   } else {
+    //     next();
+    //   }
+    // });
+
     this.app.use('/api', Account.router);
     this.app.use('/api', Vault.router);
     this.app.use('/api', Redeem.router);
+    this.app.use('/api', Envelope.router);
     this.app.use('/api', Healthcheck.router);
+
+    this.app.use(express.static('public'));
   }
 
   public DIProviders() {

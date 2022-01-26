@@ -9,18 +9,16 @@ import Container from 'typedi';
 import VError from 'verror';
 
 import {
-    countries, CreateRedeemDto, fromSmallestDenomination, RedeemDto, toSmallestDenomination,
-    VaultType
+  countries, CreateRedeemDto, fromSmallestDenomination, RedeemDto, toSmallestDenomination,
+  VaultType, ViewRedeemDto
 } from '@abcpros/givegift-models';
 import MinimalBCHWallet from '@abcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@abcpros/xpi-js';
 import { PrismaClient } from '@prisma/client';
 
-import { WalletService } from '../services/wallet';
-import logger from '../logger';
-import { aesGcmDecrypt, base62ToNumber } from '../utils/encryptionMethods';
-
-const xpiRestUrl = config.has('xpiRestUrl') ? config.get('xpiRestUrl') : 'https://api.sendlotus.com/v4/';
+import logger from '../../logger';
+import { WalletService } from '../../services/wallet';
+import { aesGcmDecrypt, base62ToNumber } from '../../utils/encryptionMethods';
 
 const PRIVATE_KEY = 'AIzaSyCFY2D4NRLjDTpJfk0jjJNADalSceqC4qs';
 const SITE_KEY = "6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb";
@@ -57,6 +55,43 @@ prisma.$on('warn', (e) => {
 });
 
 let router = express.Router();
+
+router.get('/redeems/:id/', async (req: express.Request, res: express.Response, next: NextFunction) => {
+
+  const { id } = req.params;
+  try {
+    const redeem = await prisma.redeem.findUnique({
+      where: {
+        id: _.toSafeInteger(id)
+      },
+      include: {
+        vault: {
+          include: {
+            envelope: true
+          }
+        }
+      }
+    });
+    if (!redeem) throw new VError('The redeem does not exist in the database.');
+
+    let result: ViewRedeemDto = {
+      id: redeem.id,
+      vaultId: redeem.vaultId,
+      image: redeem.vault.envelope?.image ?? '',
+      thumbnail: redeem.vault.envelope?.thumbnail ?? '',
+      amount: Number(redeem.amount),
+      message: redeem.vault.envelopeMessage
+    };
+    return res.json(result);
+  } catch (err: unknown) {
+    if (err instanceof VError) {
+      return next(err);
+    } else {
+      const error = new VError.WError(err as Error, 'Unable to get the redeem.');
+      return next(error);
+    }
+  }
+});
 
 router.post('/redeems', async (req: express.Request, res: express.Response, next: NextFunction) => {
   const redeemApi: CreateRedeemDto = req.body;
@@ -95,8 +130,12 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
       const redeemCode = _.trim(redeemApi.redeemCode);
       const password = redeemCode.slice(0, 8);
       const encodedVaultId = redeemCode.slice(8);
-      const vaultId = base62ToNumber(encodedVaultId);
+      const vaultId = _.toSafeInteger(base62ToNumber(encodedVaultId));
       const address = _.trim(redeemApi.redeemAddress);
+
+      if (!Number.isInteger(vaultId)) {
+        throw new VError('Invalid redeem code.');
+      }
 
       const countRedeemAddress = await prisma.redeem.findMany({
         where: {
@@ -121,6 +160,7 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
           id: vaultId
         }
       });
+
 
       // isFamilyFriendly == true
       if (vault?.isFamilyFriendly) {
@@ -205,7 +245,7 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
         amountSat: amountSats
       }];
 
-      
+
 
       if (!utxoStore || !(utxoStore as any).bchUtxos || !(utxoStore as any).bchUtxos) {
         throw new VError('UTXO list is empty');

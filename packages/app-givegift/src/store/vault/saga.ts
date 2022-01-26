@@ -49,7 +49,9 @@ function* generateVaultSaga(action: PayloadAction<GenerateVaultCommand>) {
     isFamilyFriendly: command.isFamilyFriendly,
     password: password,
     mnemonic: mnemonic,
-    mnemonicHash: command.mnemonicHash
+    mnemonicHash: command.mnemonicHash,
+    envelopeId: command.envelopeId,
+    envelopeMessage: command.envelopeMessage ?? ''
   };
 
   yield put(postVault(createVaultCommand));
@@ -223,13 +225,13 @@ function* unlockVaultSaga(action: PayloadAction<UnlockVaultCommand>) {
       ...command
     }
 
-    const data: VaultDto = yield call(vaultApi.unlockVault, command.id, dataApi);
+    const data = yield call(vaultApi.unlockVault, command.id, dataApi);
     const vault = data as Vault;
-    yield put(unlockVaultSuccess(vault));
 
     if (_.isNil(data) || _.isNil(data.id)) {
       throw new Error('Unable to unlock the vault.');
     }
+    yield put(unlockVaultSuccess(vault));
   } catch (error) {
     const message = `There's an error happens when create unlock vault.`;
     yield put(unlockVaultFailure(message));
@@ -263,13 +265,14 @@ function* lockVaultSaga(action: PayloadAction<LockVaultCommand>) {
       ...command
     }
 
-    const data: VaultDto = yield call(vaultApi.lockVault, command.id, dataApi);
+    const data = yield call(vaultApi.lockVault, command.id, dataApi);
     const vault = data as Vault;
-    yield put(lockVaultSuccess(vault));
 
     if (_.isNil(data) || _.isNil(data.id)) {
       throw new Error('Unable to lock the vault.');
     }
+
+    yield put(lockVaultSuccess(vault));
   } catch (error) {
     const message = `There's an error happens when lock vault.`;
     yield put(postVaultFailure(message));

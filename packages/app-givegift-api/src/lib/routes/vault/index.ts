@@ -19,7 +19,10 @@ router.get('/vaults/:id/', async (req: express.Request, res: express.Response, n
   try {
     const vault = await prisma.vault.findUnique({
       where: {
-        id: parseInt(id)
+        id: _.toSafeInteger(id)
+      },
+      include: {
+        envelope: true
       }
     });
     if (!vault) throw new VError('The vault does not exist in the database.');
@@ -29,7 +32,8 @@ router.get('/vaults/:id/', async (req: express.Request, res: express.Response, n
     let result = {
       ...vault,
       balance: balance,
-      totalRedeem: Number(vault.totalRedeem)
+      totalRedeem: Number(vault.totalRedeem),
+      envelope: vault.envelope
     } as VaultDto;
     result = _.omit(result, 'encryptedXPriv');
     return res.json(result);
@@ -55,7 +59,7 @@ router.post('/vaults', async (req: express.Request, res: express.Response, next:
         where: {
           id: command.accountId,
           mnemonicHash: command.mnemonicHash
-        }
+        },
       });
 
       if (!account) {
@@ -99,25 +103,23 @@ router.post('/vaults', async (req: express.Request, res: express.Response, next:
         status: 'active',
         expiryTime: null,
         address,
-        totalRedeem: BigInt(0)
+        totalRedeem: BigInt(0),
+        envelopeId: command.envelopeId ?? null,
+        envelopeMessage: ''
       };
       const vaultToInsert = _.omit(data, 'password');
       const createdVault: VaultDb = await prisma.vault.create({ data: vaultToInsert });
 
-      const xpiWallet: MinimalBCHWallet = Container.get('xpiWallet');
-      const XPI: BCHJS = Container.get('xpijs');
+      const { keyPair } = await walletService.getWalletDetails(command.mnemonic, 0)
+      const amount: any = await walletService.sendAmount(account.address, createdVault.address, command.amount, keyPair)
 
-      const {keyPair} = await walletService.getWalletDetails(command.mnemonic, 0)
-      const amount:any = await walletService.sendAmount(account.address, createdVault.address, command.amount, keyPair)
-
-      let resultApi: VaultDto = {
+      let resultApi = _.omit({
         ...createdVault,
         balance: amount ?? 0,
         totalRedeem: Number(createdVault.totalRedeem),
         expiryAt: createdVault.expiryAt ? createdVault.expiryAt : undefined,
-        country: createdVault.country ? createdVault.country : undefined
-      };
-      resultApi = _.omit(resultApi, 'encryptedXPriv');
+        country: createdVault.country ? createdVault.country : undefined,
+      }, 'encryptedXPriv');
 
       res.json(resultApi);
     } catch (err) {
@@ -136,7 +138,7 @@ router.post('/vaults', async (req: express.Request, res: express.Response, next:
 
 router.post('/vaults/:id/lock', async (req: express.Request, res: express.Response, next: NextFunction) => {
   const { id } = req.params;
-  const vaultId = parseInt(id);
+  const vaultId = _.toSafeInteger(id);
 
   const command: Account = req.body
   try {
@@ -157,7 +159,7 @@ router.post('/vaults/:id/lock', async (req: express.Request, res: express.Respon
     if (mnemonicFromApi !== mnemonicToValidate) {
       throw Error('Could not find the associated account.');
     }
-    
+
     const vault = await prisma.vault.findFirst({
       where: {
         id: vaultId,
@@ -189,7 +191,7 @@ router.post('/vaults/:id/lock', async (req: express.Request, res: express.Respon
         res.json(resultApi);
       }
     }
-    
+
   } catch (err) {
     if (err instanceof VError) {
       return next(err);
@@ -203,7 +205,7 @@ router.post('/vaults/:id/lock', async (req: express.Request, res: express.Respon
 
 router.post('/vaults/:id/unlock', async (req: express.Request, res: express.Response, next: NextFunction) => {
   const { id } = req.params;
-  const vaultId = parseInt(id);
+  const vaultId = _.toSafeInteger(id);
 
   const command: Account = req.body
   try {
@@ -224,7 +226,7 @@ router.post('/vaults/:id/unlock', async (req: express.Request, res: express.Resp
     if (mnemonicFromApi !== mnemonicToValidate) {
       throw Error('Could not find the associated account.');
     }
-    
+
     const vault = await prisma.vault.findFirst({
       where: {
         id: vaultId,
@@ -256,7 +258,7 @@ router.post('/vaults/:id/unlock', async (req: express.Request, res: express.Resp
         res.json(resultApi);
       }
     }
-    
+
   } catch (err) {
     if (err instanceof VError) {
       return next(err);

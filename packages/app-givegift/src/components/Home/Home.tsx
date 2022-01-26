@@ -1,5 +1,5 @@
 import { Form, Input, Modal, Spin, InputNumber } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { generateAccount, importAccount } from 'src/store/account/actions';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
@@ -8,12 +8,17 @@ import { AppContext } from 'src/store/store';
 import { getVaultsBySelectedAccount } from 'src/store/vault/selectors';
 import { ThemedWalletOutlined } from '@abcpros/givegift-components/components/Common/CustomIcons';
 import WalletLabel from '@abcpros/givegift-components/components/Common/WalletLabel';
+import BalanceHeader from '@abcpros/givegift-components/components/Common/BalanceHeader';
 import { LockOutlined } from '@ant-design/icons';
 import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
 import { SmartButton } from '@components/Common/PrimaryButton';
 import { StyledSpacer } from '@components/Common/StyledSpacer';
 import CreateVaultForm from '@components/Vault/CreateVaultForm';
 import VaultList from '@components/Vault/VaultList';
+import { getEnvelopes } from 'src/store/envelope/actions';
+import { currency } from '@abcpros/givegift-components/components/Common/Ticker';
+import { fromSmallestDenomination } from '@utils/cashMethods';
+import { QRCode } from '@abcpros/givegift-components/src/components/Common/QRCode';
 
 const Home: React.FC = () => {
 
@@ -30,6 +35,10 @@ const Home: React.FC = () => {
   const isLoading = useAppSelector(getIsGlobalLoading);
   const vaults = useAppSelector(getVaultsBySelectedAccount);
   const selectedAccount = useAppSelector(getSelectedAccount);
+
+  useEffect(() => {
+    dispatch(getEnvelopes());
+  }, []);
 
   const handleChange = e => {
     const { value, name } = e.target;
@@ -55,11 +64,15 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <WalletLabel 
-        name={selectedAccount?.name ?? ''} 
-        address={selectedAccount?.address ?? ''} 
-        balance={selectedAccount?.balance ?? 0} 
+      <WalletLabel
+        name={selectedAccount?.name ?? ''}
       />
+      <BalanceHeader
+        balance={fromSmallestDenomination(selectedAccount?.balance ?? 0)}
+        ticker={currency.ticker} />
+      {selectedAccount?.address && <QRCode
+        address={selectedAccount?.address}
+      />}
       {seedInput && (
         <AntdFormWrapper>
           <Form style={{ width: 'auto' }}>

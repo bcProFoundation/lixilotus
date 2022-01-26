@@ -62,7 +62,6 @@ const MoreIcon = styled(Button)`
 `;
 
 
-
 type VaultListItemProps = {
   className?: string,
   vault: Vault,
@@ -99,10 +98,10 @@ const VaultListItem: React.FC<VaultListItemProps> = (props: VaultListItemProps) 
   const handleClickMenu = (e) => {
     e.domEvent.stopPropagation();
     if (e.key === 'Lock') {
-      dispatch(lockVault(postVaultData as LockVaultCommand));
+      dispatch(lockVault(setStatusData as LockVaultCommand))
     } 
     else if (e.key === 'Unlock') {
-      dispatch(unlockVault(postVaultData as UnlockVaultCommand));
+      dispatch(unlockVault(setStatusData as UnlockVaultCommand))
     }
     else if (e.key === 'Withdraw') {
       dispatch(withdrawVault(postVaultData as WithdrawVaultCommand));
