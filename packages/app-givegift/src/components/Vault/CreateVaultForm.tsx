@@ -26,6 +26,7 @@ import { LixiEnvelopeUploader, StyledLixiEnvelopeUploaded } from './LixiEnvelope
 import { getAllEnvelopes } from 'src/store/envelope/selectors';
 import TextArea from 'antd/lib/input/TextArea';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import EnvelopeCarousel from '@components/Common/EnvelopeCarousel';
 
 const { Panel } = Collapse;
 
@@ -171,7 +172,7 @@ const CreateVaultForm = ({
     }
   }
 
-  const handleChangeEnvelope = (value, e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeEnvelope = (value: number) => {
     setNewEnvelopeId(value);
   }
 
@@ -487,7 +488,7 @@ const CreateVaultForm = ({
               {/* Vault envelope */}
               <Form.Item>
                 <AntdFormWrapper>
-                  <EnvelopeSelectDropdown
+                  <EnvelopeCarousel
                     envelopes={envelopes}
                     handleChangeEnvelope={handleChangeEnvelope}
                   />
