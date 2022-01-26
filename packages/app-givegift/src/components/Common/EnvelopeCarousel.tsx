@@ -1,7 +1,8 @@
 import { Envelope } from '@abcpros/givegift-models';
 import { Carousel, Slider } from 'antd';
 import { useState } from 'react';
-import styled from 'styled-components';
+
+const baseUrl = process.env.REACT_APP_LIXI_API;
 
 export interface EnvelopeCarouselPros {
   envelopes: Envelope[];
@@ -20,11 +21,10 @@ const carouselSettings = {
 
 const EnvelopeCarousel = (props: EnvelopeCarouselPros) => {
   const { envelopes, handleChangeEnvelope } = props;
-  const baseUrl = process.env.REACT_APP_LIXI_API;
-  const [selectEnvelopeId, setSelectEnvelopeId] = useState(0);
+  const [selectedEnvelopeId, setSelectedEnvelopeId] = useState(0);
 
   const onCarouselItemClick = (item: Envelope) => {
-    setSelectEnvelopeId(item.id);
+    setSelectedEnvelopeId(item.id);
     handleChangeEnvelope(item.id);
   };
 
@@ -34,7 +34,7 @@ const EnvelopeCarousel = (props: EnvelopeCarouselPros) => {
         {envelopes &&
           envelopes.length > 0 &&
           envelopes.map((item) => {
-            const isActive = item.id === selectEnvelopeId;
+            const isActive = item.id === selectedEnvelopeId;
 
             return (
               <div>

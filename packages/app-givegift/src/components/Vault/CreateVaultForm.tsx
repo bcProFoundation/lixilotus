@@ -160,7 +160,7 @@ const CreateVaultForm = ({
     }
   }
 
-  const handleChangeEnvelope = (value) => {
+  const handleChangeEnvelope = (value: number) => {
     setNewEnvelopeId(value);
   }
 
