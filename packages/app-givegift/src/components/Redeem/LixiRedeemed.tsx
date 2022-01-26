@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import { Dropdown, Image, Modal, notification, Popover } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { isIOS, isMobile, isSafari } from 'react-device-detect';
@@ -34,7 +35,7 @@ const LixiRedeemed = ({
     : process.env.REACT_APP_LIXI_API + 'images/default.png';
 
   useEffect(() => {
-    const id = parseInt(redeemId);
+    const id = _.toSafeInteger(redeemId);
     dispatch(viewRedeem(id));
   }, [redeemId]);
 

@@ -1,23 +1,24 @@
-import express, { NextFunction } from 'express';
-import Container from 'typedi';
-import config from 'config';
-import { PrismaClient } from '@prisma/client';
+import axios from 'axios';
 import BigNumber from 'bignumber.js';
-import VError from 'verror';
+import config from 'config';
+import express, { NextFunction } from 'express';
+import geoip from 'geoip-country';
 import _ from 'lodash';
 import moment from 'moment';
-import BCHJS from '@abcpros/xpi-js';
-import MinimalBCHWallet from '@abcpros/minimal-xpi-slp-wallet';
-import { CreateRedeemDto, fromSmallestDenomination, RedeemDto, ViewRedeemDto, VaultType } from '@abcpros/givegift-models'
-import { toSmallestDenomination } from '@abcpros/givegift-models';
-import { countries } from '@abcpros/givegift-models';
-import { aesGcmDecrypt, base62ToNumber } from '../../utils/encryptionMethods';
-import SlpWallet from '@abcpros/minimal-xpi-slp-wallet';
-import logger from '../../logger';
-import axios from 'axios';
-import geoip from 'geoip-country';
+import Container from 'typedi';
+import VError from 'verror';
 
-const xpiRestUrl = config.has('xpiRestUrl') ? config.get('xpiRestUrl') : 'https://api.sendlotus.com/v4/';
+import {
+  countries, CreateRedeemDto, fromSmallestDenomination, RedeemDto, toSmallestDenomination,
+  VaultType, ViewRedeemDto
+} from '@abcpros/givegift-models';
+import MinimalBCHWallet from '@abcpros/minimal-xpi-slp-wallet';
+import BCHJS from '@abcpros/xpi-js';
+import { PrismaClient } from '@prisma/client';
+
+import logger from '../../logger';
+import { WalletService } from '../../services/wallet';
+import { aesGcmDecrypt, base62ToNumber } from '../../utils/encryptionMethods';
 
 const PRIVATE_KEY = 'AIzaSyCFY2D4NRLjDTpJfk0jjJNADalSceqC4qs';
 const SITE_KEY = "6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb";
@@ -61,7 +62,7 @@ router.get('/redeems/:id/', async (req: express.Request, res: express.Response, 
   try {
     const redeem = await prisma.redeem.findUnique({
       where: {
-        id: parseInt(id)
+        id: _.toSafeInteger(id)
       },
       include: {
         vault: {
@@ -94,6 +95,7 @@ router.get('/redeems/:id/', async (req: express.Request, res: express.Response, 
 
 router.post('/redeems', async (req: express.Request, res: express.Response, next: NextFunction) => {
   const redeemApi: CreateRedeemDto = req.body;
+  const walletService: WalletService = Container.get(WalletService);
 
   const captchaResBody = {
     event: {
@@ -211,15 +213,20 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
         throw new VError('The program has ended.');
       }
 
+      const utxos = await XPI.Utxo.get(vaultAddress);
+      const utxoStore = utxos[0];
+
+      const xpiBalance = fromSmallestDenomination(balance);
+
       let satoshisToSend;
       if (vault.vaultType == VaultType.Random) {
-        const xpiBalance = fromSmallestDenomination(balance);
         const maxXpiValue = xpiBalance < vault.maxValue ? xpiBalance : vault.maxValue;
         const maxSatoshis = toSmallestDenomination(new BigNumber(maxXpiValue));
         const minSatoshis = toSmallestDenomination(new BigNumber(vault.minValue));
         satoshisToSend = maxSatoshis.minus(minSatoshis).times(new BigNumber(Math.random())).plus(minSatoshis);
       } else if (vault.vaultType == VaultType.Fixed) {
-        satoshisToSend = toSmallestDenomination(new BigNumber(vault.fixedValue));
+        const xpiValue = xpiBalance < vault.fixedValue ? await walletService.onMax(vaultAddress) : vault.fixedValue;
+        satoshisToSend = toSmallestDenomination(new BigNumber(xpiValue));
       } else {
         // The payout unit is satoshi
         const payout = balance / vault.dividedValue;
@@ -238,8 +245,7 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
         amountSat: amountSats
       }];
 
-      const utxos = await XPI.Utxo.get(vaultAddress);
-      const utxoStore = utxos[0];
+
 
       if (!utxoStore || !(utxoStore as any).bchUtxos || !(utxoStore as any).bchUtxos) {
         throw new VError('UTXO list is empty');

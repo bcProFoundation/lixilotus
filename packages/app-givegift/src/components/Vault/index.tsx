@@ -12,9 +12,8 @@ import { SmartButton } from '@abcpros/givegift-components/components/Common/Prim
 import RedeemList from '@components/Redeem/RedeemList';
 import { refreshVault } from 'src/store/vault/actions';
 import { getAllRedeems } from 'src/store/redeem/selectors';
-import { currency } from '../../../../givegift-components/src/components/Common/Ticker';
+import { currency } from '@abcpros/givegift-components/src/components/Common/Ticker';
 import { fromSmallestDenomination } from '@utils/cashMethods';
-import { showToast } from 'src/store/toast/actions';
 import { countries } from '@abcpros/givegift-models/constants/countries';
 
 type CopiedProps = {

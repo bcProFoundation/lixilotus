@@ -6,11 +6,13 @@ export interface GenerateVaultCommand {
   mnemonic: string;
   mnemonicHash: string;
   maxRedeem: string;
+  redeemType: number;
   vaultType: number;
   minValue: string;
   maxValue: string;
   fixedValue: string;
   dividedValue: string;
+  amount: string;
   expiryAt?: string;
   country?: string;
   isFamilyFriendly: boolean;
@@ -22,6 +24,7 @@ export interface CreateVaultCommand {
   name: string;
   accountId: number
   maxRedeem: number;
+  redeemType: number;
   vaultType: number;
   mnemonic: string;
   mnemonicHash: string;
@@ -29,6 +32,7 @@ export interface CreateVaultCommand {
   maxValue: number;
   fixedValue: number;
   dividedValue: number;
+  amount: number;
   expiryAt?: Date;
   country?: string;
   isFamilyFriendly: boolean;
@@ -43,6 +47,7 @@ export interface VaultDto {
   name: string;
   maxRedeem: number;
   redeemedNum: number;
+  redeemType: number;
   vaultType: number;
   redeemCode?: string;
   minValue: number;
@@ -60,6 +65,7 @@ export interface VaultDto {
   address: string;
   status: string;
   accountId: number;
+  amount: number;
   envelopeId: number | null;
   envelopeMessage: string;
   envelope?: Envelope | null;
@@ -70,6 +76,7 @@ export interface Vault {
   name: string;
   maxRedeem: number;
   redeemedNum: number;
+  redeemType: number;
   vaultType: number;
   redeemCode?: string;
   minValue: number;
@@ -87,6 +94,7 @@ export interface Vault {
   address: string;
   status: string;
   accountId: number;
+  amount: number;
   envelopeId: number | null;
   envelopeMessage: string;
   envelope?: Envelope | null;
@@ -104,8 +112,20 @@ export interface LockVaultCommand {
   mnemonicHash: string;
 };
 
+export interface WithdrawVaultCommand {
+  id: number;
+  mnemonic: string;
+  mnemonicHash: string;
+};
+
 export enum VaultType {
   Random = 0,
   Fixed = 1,
-  Divided = 2
+  Divided = 2,
+  Equal = 3
+};
+
+export enum RedeemType {
+  Single = 0,
+  OneTime = 1,
 };

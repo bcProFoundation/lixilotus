@@ -11,6 +11,7 @@ import { Account as AccountDb, Prisma, PrismaClient } from '@prisma/client';
 import { WalletService } from '../../services/wallet';
 import { aesGcmDecrypt } from '../../utils/encryptionMethods';
 import { router as accountChildRouter } from './account';
+import MinimalBCHWallet from '@abcpros/minimal-xpi-slp-wallet';
 
 const prisma = new PrismaClient();
 let router = express.Router();
@@ -26,9 +27,13 @@ router.get('/accounts/:id/', async (req: express.Request, res: express.Response,
     if (!account)
       throw new VError('The account does not exist in the database.');
 
+    const xpiWallet: MinimalBCHWallet = Container.get('xpiWallet');
+    const balance: number = await xpiWallet.getBalance(account.address);
+
     const result = {
       ...account,
-      encryptedMnemonic: String(account?.encryptedMnemonic)
+      encryptedMnemonic: String(account?.encryptedMnemonic),
+      balance: balance
     } as AccountDto;
     return res.json(result);
   } catch (err: unknown) {
@@ -60,8 +65,9 @@ router.post('/accounts', async (req: express.Request, res: express.Response, nex
       const createdAccount: AccountDb = await prisma.account.create({ data: accountToInsert });
 
       const resultApi: AccountDto = {
-        ...command, ...createdAccount,
-        address
+        ...command, ...createdAccount, 
+        address,
+        balance: 0
       };
 
       res.json(resultApi);

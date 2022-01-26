@@ -29,4 +29,5 @@ export interface AccountDto {
   createdAt?: Date;
   updatedAt?: Date;
   address: string;
+  balance?: number;
 }
