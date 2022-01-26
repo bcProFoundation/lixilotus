@@ -87,7 +87,7 @@ const VaultListItem: React.FC<VaultListItemProps> = (props: VaultListItemProps) 
     mnemonic: selectedAccount?.mnemonic,
     mnemonicHash: selectedAccount?.mnemonicHash
   };
-  
+
   const menus = (
     options.map(option =>
       <Menu.Item key={option}>
@@ -98,17 +98,17 @@ const VaultListItem: React.FC<VaultListItemProps> = (props: VaultListItemProps) 
   const handleClickMenu = (e) => {
     e.domEvent.stopPropagation();
     if (e.key === 'Lock') {
-      dispatch(lockVault(setStatusData as LockVaultCommand))
-    } 
+      dispatch(lockVault(postVaultData as LockVaultCommand))
+    }
     else if (e.key === 'Unlock') {
-      dispatch(unlockVault(setStatusData as UnlockVaultCommand))
+      dispatch(unlockVault(postVaultData as UnlockVaultCommand))
     }
     else if (e.key === 'Withdraw') {
       dispatch(withdrawVault(postVaultData as WithdrawVaultCommand));
     }
   };
-  
-  
+
+
   return (
     <Wrapper onClick={(e) => handleSelectVault(vault.id)}>
       <VaultIcon>
