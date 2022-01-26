@@ -1,10 +1,12 @@
 import { Envelope } from '@abcpros/givegift-models';
 import { Carousel, Slider } from 'antd';
 import { useState } from 'react';
+import styled from 'styled-components';
 
 const baseUrl = process.env.REACT_APP_LIXI_API;
 
 export interface EnvelopeCarouselPros {
+  className?: string;
   envelopes: Envelope[];
   handleChangeEnvelope: Function;
 }
@@ -17,10 +19,35 @@ const carouselSettings = {
   slidesToScroll: 1,
   swipeToSlide: true,
   draggable: true,
+  responsive: [
+    {
+      breakpoint: 1024,
+      settings: {
+        slidesToShow: 3,
+        slidesToScroll: 1
+      }
+    },
+    {
+      breakpoint: 600,
+      settings: {
+        slidesToShow: 2,
+        slidesToScroll: 1
+      }
+    },
+    {
+      breakpoint: 480,
+      settings: {
+        slidesToShow: 2,
+        slidesToScroll: 1
+      }
+    }
+  ]
 };
 
+
+
 const EnvelopeCarousel = (props: EnvelopeCarouselPros) => {
-  const { envelopes, handleChangeEnvelope } = props;
+  const { className, envelopes, handleChangeEnvelope } = props;
   const [selectedEnvelopeId, setSelectedEnvelopeId] = useState(0);
 
   const onCarouselItemClick = (item: Envelope) => {
@@ -30,7 +57,7 @@ const EnvelopeCarousel = (props: EnvelopeCarouselPros) => {
 
   return (
     <>
-      <Carousel {...carouselSettings}>
+      <Carousel {...carouselSettings} className={className}>
         {envelopes &&
           envelopes.length > 0 &&
           envelopes.map((item) => {
@@ -59,4 +86,10 @@ const EnvelopeCarousel = (props: EnvelopeCarouselPros) => {
   );
 };
 
-export default EnvelopeCarousel;
+const Container = styled(EnvelopeCarousel)`
+  .slick-slide {
+    width: 125px !important;
+  }
+`
+
+export default Container;
