@@ -9432,6 +9432,11 @@ dom-serializer@^1.0.1:
     domhandler "^4.2.0"
     entities "^2.0.0"
 
+dom-to-image-more@^2.9.5:
+  version "2.9.5"
+  resolved "https://registry.yarnpkg.com/dom-to-image-more/-/dom-to-image-more-2.9.5.tgz#a5dd5a30480e01b795fde9e99278096143b3ece7"
+  integrity sha512-7pr43ZY/Nk0k2z3NXDKN4GvnZqP/3iZvddLeIuGfNTyFJuzzr0UeLl+poZ1ewYt3YIK+WHCEZUkz+RNuocN3/Q==
+
 dom-walk@^0.1.0:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/dom-walk/-/dom-walk-0.1.2.tgz#0c548bef048f4d1f2a97249002236060daa3fd84"
@@ -10783,6 +10788,11 @@ file-loader@^6.2.0:
   dependencies:
     loader-utils "^2.0.0"
     schema-utils "^3.0.0"
+
+file-saver@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/file-saver/-/file-saver-2.0.5.tgz#d61cfe2ce059f414d899e9dd6d4107ee25670c38"
+  integrity sha512-P9bmyZ3h/PRG+Nzga+rbdI4OEpNDzAVyy74uVO9ATgzLK6VtAsYybF/+TOCvrc0MO793d6+42lLyZTw7/ArVzA==
 
 file-stream-rotator@^0.5.7:
   version "0.5.7"

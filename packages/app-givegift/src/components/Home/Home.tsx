@@ -1,6 +1,6 @@
 import { Form, Input, Modal, Spin, InputNumber } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { generateAccount, importAccount } from 'src/store/account/actions';
+import { importAccount } from 'src/store/account/actions';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';

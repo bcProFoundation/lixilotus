@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import styled from 'styled-components';
-import { Descriptions, Collapse } from 'antd';
+import { Descriptions, Collapse, Button } from 'antd';
 import moment from 'moment';
+import { saveAs } from 'file-saver';
+import domtoimage from "dom-to-image-more";
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getSelectedVaultId, getSelectedVault } from 'src/store/vault/selectors';
 import { QRCode } from "@abcpros/givegift-components/components/Common/QRCode";
+import { QRRedeemCode } from "@abcpros/givegift-components/components/Common/QRRedeemCode";
 import { VaultType } from '@abcpros/givegift-models/src/lib/vault';
+import WalletLabel from '@abcpros/givegift-components/components/Common/WalletLabel';
+import BalanceHeader from '@abcpros/givegift-components/components/Common/BalanceHeader';
 import { StyledCollapse } from "@abcpros/givegift-components/components/Common/StyledCollapse";
 import { SmartButton } from '@abcpros/givegift-components/components/Common/PrimaryButton';
 import RedeemList from '@components/Redeem/RedeemList';
@@ -15,6 +20,9 @@ import { getAllRedeems } from 'src/store/redeem/selectors';
 import { currency } from '@abcpros/givegift-components/src/components/Common/Ticker';
 import { fromSmallestDenomination } from '@utils/cashMethods';
 import { countries } from '@abcpros/givegift-models/constants/countries';
+import lixiLogo from '../../assets/images/lixi_logo.svg';
+import { CopyOutlined, DownloadOutlined, ReloadOutlined } from '@ant-design/icons';
+import { showToast } from 'src/store/toast/actions';
 
 type CopiedProps = {
   style?: React.CSSProperties
@@ -50,6 +58,8 @@ const Vault: React.FC = () => {
 
   const [redeemCodeVisible, setRedeemCodeVisible] = useState(false);
 
+  const qrPanelRef = React.useRef(null);
+
   const handleRefeshVault = () => {
     if (!(selectedVault && selectedVaultId)) {
       // Ignore if no vault is selected
@@ -69,6 +79,19 @@ const Vault: React.FC = () => {
   const handleOnCopyRedeemCode = () => {
     setRedeemCodeVisible(true);
   };
+
+  const handleDownloadQRRedeemCode = () => {
+    // console.log(qrPanelRef.current);
+    domtoimage.toPng(qrPanelRef.current).then(url => {
+      saveAs(url);
+    }).catch((err) => {
+      dispatch(showToast('error', {
+        message: 'Unable to download redeem code.',
+        description: 'Please copy the code manually',
+        duration: 5
+      }));
+    });
+  }
 
   const typeVault = () => {
     switch (selectedVault?.vaultType) {
@@ -125,6 +148,12 @@ const Vault: React.FC = () => {
 
   return (
     <>
+      <WalletLabel
+        name={selectedVault?.name ?? ''}
+      />
+      <BalanceHeader
+        balance={fromSmallestDenomination(selectedVault?.balance) ?? 0}
+        ticker={currency.ticker} />
       {selectedVault && selectedVault.address ? (
         <>
           <QRCode
@@ -136,18 +165,12 @@ const Vault: React.FC = () => {
             bordered
             title={`Vault info for "${selectedVault.name}"`}
             style={{
-              padding: '0px 20px',
-              color: 'rgb(23,23,31)'
+              padding: '0 0 20px 0',
+              color: 'rgb(23,23,31)',
             }}
           >
-            <Descriptions.Item label="Name">
-              {selectedVault.name}
-            </Descriptions.Item>
             <Descriptions.Item label="Type">
               {typeVault()}
-            </Descriptions.Item>
-            <Descriptions.Item label="Balance">
-              {fromSmallestDenomination(selectedVault.balance) ?? 0} {currency.ticker}
             </Descriptions.Item>
             <Descriptions.Item label="Total Redeemed">
               {fromSmallestDenomination(selectedVault?.totalRedeem) ?? 0}
@@ -160,23 +183,26 @@ const Vault: React.FC = () => {
             {showIsFamilyFriendly()}
           </Descriptions>
 
-          {/* Detail Vault */}
-          <StyledCollapse>
-            <Panel header="Click to reveal vault detail" key="1">
-              <Descriptions
-                column={1}
-                bordered
+          {/* Vault details */}
+          <StyledCollapse style={{ marginBottom: '20px' }}>
+            <Panel header="Click to reveal vault detail" key="panel-1">
+              <div ref={qrPanelRef}>
+                {selectedVault && selectedVault.redeemCode && <QRRedeemCode
+                  logoImage={lixiLogo}
+                  code={selectedVault?.redeemCode}
+                />}
+              </div>
+              <SmartButton
+                onClick={() => handleDownloadQRRedeemCode()}
               >
-                <Descriptions.Item label="Redeem Code">
-                  {selectedVault.redeemCode}
-                </Descriptions.Item>
-              </Descriptions>
+                <DownloadOutlined />  Download Code
+              </SmartButton>
             </Panel>
           </StyledCollapse>
 
           {/* Copy RedeemCode */}
           <CopyToClipboard
-            tyle={{
+            style={{
               display: 'inline-block',
               width: '100%',
               position: 'relative',
@@ -184,24 +210,26 @@ const Vault: React.FC = () => {
             text={selectedVault.redeemCode}
             onCopy={handleOnCopyRedeemCode}
           >
-            <div style={{ position: 'relative' }} onClick={handleOnClickRedeemCode}>
+            <div style={{ position: 'relative', paddingTop: '20px' }} onClick={handleOnClickRedeemCode}>
               <Copied
                 style={{ display: redeemCodeVisible ? undefined : 'none' }}
               >
                 Copied <br />
-                <span style={{ fontSize: '12px' }}>{selectedVault.redeemCode}</span>
+                <span style={{ fontSize: '32px' }}>{selectedVault.redeemCode}</span>
               </Copied>
               <SmartButton>
-                Copy Redeem Code
+                <CopyOutlined />  Copy Redeem Code
               </SmartButton>
             </div>
           </CopyToClipboard>
+
+
 
           {/* refreshVault */}
           <SmartButton
             onClick={() => handleRefeshVault()}
           >
-            Refresh Vault
+            <ReloadOutlined />  Refresh Vault
           </SmartButton>
           <RedeemList redeems={allReddemsCurrentVault} />
         </>
