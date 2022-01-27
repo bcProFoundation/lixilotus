@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import styled from 'styled-components';
-import { Descriptions, Collapse, Button } from 'antd';
+import { Descriptions, Collapse } from 'antd';
 import moment from 'moment';
 import { saveAs } from 'file-saver';
-import domtoimage from "dom-to-image-more";
+import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getSelectedVaultId, getSelectedVault } from 'src/store/vault/selectors';
 import { QRCode } from "@abcpros/givegift-components/components/Common/QRCode";
@@ -81,16 +81,17 @@ const Vault: React.FC = () => {
   };
 
   const handleDownloadQRRedeemCode = () => {
-    // console.log(qrPanelRef.current);
-    domtoimage.toPng(qrPanelRef.current).then(url => {
-      saveAs(url);
-    }).catch((err) => {
-      dispatch(showToast('error', {
-        message: 'Unable to download redeem code.',
-        description: 'Please copy the code manually',
-        duration: 5
-      }));
-    });
+    if (qrPanelRef.current) {
+      toPng(qrPanelRef.current, { cacheBust: true }).then(url => {
+        saveAs(url);
+      }).catch((err) => {
+        dispatch(showToast('error', {
+          message: 'Unable to download redeem code.',
+          description: 'Please copy the code manually',
+          duration: 5
+        }));
+      });
+    }
   }
 
   const typeVault = () => {

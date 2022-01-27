@@ -9,13 +9,14 @@ import {
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 type StyledRawQRCodeProps = {
+  level?: "L" | "M" | "Q" | "H" | undefined;
   id: string;
   value: string;
   xpi: number;
   size: number;
   renderAs: string;
   includeMargin: boolean | null;
-  imageSettings: qrcode.ImageSettings;
+  imageSettings?: qrcode.ImageSettings;
 };
 
 export const StyledRawQRCode: React.FC<StyledRawQRCodeProps> = styled(RawQRCode) <StyledRawQRCodeProps>`
@@ -218,6 +219,7 @@ export const QRRedeemCode = ({
           xpi={code ? 1 : 0}
           renderAs={'svg'}
           includeMargin
+          level={"H"}
           imageSettings={{
             src: logoImage ?? currency.logo,
             x: undefined,

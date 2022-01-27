@@ -63,6 +63,9 @@ const Copied = styled.div<CopiedProps>`
     top: 52px;
     padding: 20px 0;
   }
+  .copied-header, .copied-content {
+    color: #fff !important;
+  }
 `;
 const PrefixLabel = styled.span`
   text-align: right;
@@ -153,20 +156,19 @@ type QRCodeProps = {
   address: string;
   size?: number;
   onClick?: Function;
+  logoImage?: string;
 }
 
 export const QRCode = ({
   address,
   size = 210,
   onClick = () => null,
+  logoImage,
   ...otherProps
 }: QRCodeProps) => {
-  // address = address ? convertToEcashPrefix(address) : '';
 
   const [visible, setVisible] = useState(false);
   const trimAmount = 8;
-
-  const address_trim = address ? address.length - trimAmount : '';
 
   const txtRef = React.useRef<HTMLInputElement>(null);
 
@@ -200,14 +202,16 @@ export const QRCode = ({
     >
       <div style={{ position: 'relative' }} onClick={handleOnClick}>
         <Copied
+          className='copied-header'
           xpi={address ? 1 : 0}
           style={{ display: visible ? undefined : 'none' }}
         >
           Copied <br />
-          <span style={{ fontSize: '12px' }}>{address}</span>
+          <span className='copied-content' style={{ fontSize: '12px' }}>{address}</span>
         </Copied>
 
         <StyledRawQRCode
+          {...otherProps}
           id="borderedQRCode"
           value={address || ''}
           size={size}
@@ -215,7 +219,7 @@ export const QRCode = ({
           renderAs={'svg'}
           includeMargin
           imageSettings={{
-            src: currency.logo,
+            src: logoImage ?? currency.logo,
             x: undefined,
             y: undefined,
             height: 24,
