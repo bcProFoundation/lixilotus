@@ -3,13 +3,13 @@ import express, { NextFunction } from 'express';
 import VError from 'verror';
 import { PrismaClient, Vault as VaultDb } from '@prisma/client';
 import MinimalBCHWallet from '@abcpros/minimal-xpi-slp-wallet';
-import { Account, CreateVaultCommand, Vault, VaultDto } from '@abcpros/givegift-models';
+import { Account, CreateVaultCommand, fromSmallestDenomination, Vault, VaultDto } from '@abcpros/givegift-models';
 import { router as vaultChildRouter } from './vault';
 import { logger } from '../../logger';
 import { aesGcmDecrypt, aesGcmEncrypt, numberToBase62 } from '../../utils/encryptionMethods';
 import Container from 'typedi';
 import { WalletService } from '../../services/wallet';
-import BCHJS from '@abcpros/xpi-js';
+import BigNumber from 'bignumber.js';
 
 const prisma = new PrismaClient();
 let router = express.Router();
@@ -88,6 +88,7 @@ router.post('/vaults', async (req: express.Request, res: express.Response, next:
         vaultIndex = latestVault.derivationIndex + 1;
       }
 
+      const xpiWallet: MinimalBCHWallet = Container.get('xpiWallet');
       const walletService: WalletService = Container.get(WalletService);
       const { address, xpriv } = await walletService.deriveAddress(mnemonicFromApi, vaultIndex);
       const encryptedXPriv = await aesGcmEncrypt(xpriv, command.password);
@@ -108,14 +109,26 @@ router.post('/vaults', async (req: express.Request, res: express.Response, next:
         envelopeMessage: ''
       };
       const vaultToInsert = _.omit(data, 'password');
-      const createdVault: VaultDb = await prisma.vault.create({ data: vaultToInsert });
 
-      const { keyPair } = await walletService.getWalletDetails(command.mnemonic, 0)
-      const amount: any = await walletService.sendAmount(account.address, createdVault.address, command.amount, keyPair)
+
+      const accountBalance = await xpiWallet.getBalance(account.address);
+
+      let createdVault: VaultDb;
+      if (command.amount === 0) {
+        vaultToInsert.amount = 0;
+        createdVault = await prisma.vault.create({ data: vaultToInsert });
+      } else if (command.amount < fromSmallestDenomination(accountBalance)) {
+        const { keyPair } = await walletService.getWalletDetails(command.mnemonic, 0);
+        const amount: any = await walletService.sendAmount(account.address, vaultToInsert.address, command.amount, keyPair);
+        vaultToInsert.amount = amount;
+        createdVault = await prisma.vault.create({ data: vaultToInsert });
+      } else {
+        throw new VError('The account balance is not sufficient to funding the vault.')
+      }
 
       let resultApi = _.omit({
         ...createdVault,
-        balance: amount ?? 0,
+        balance: createdVault.amount,
         totalRedeem: Number(createdVault.totalRedeem),
         expiryAt: createdVault.expiryAt ? createdVault.expiryAt : undefined,
         country: createdVault.country ? createdVault.country : undefined,

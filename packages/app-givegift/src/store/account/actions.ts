@@ -6,7 +6,7 @@ import { createAction } from '@reduxjs/toolkit';
 import { AppThunk } from '../store';
 
 export const generateAccount = createAction('account/generateAccount');
-export const getAccount = createAction<Account>('account/getAccount');
+export const getAccount = createAction<number>('account/getAccount');
 export const getAccountSuccess = createAction<Account>('account/getAccountSuccess');
 export const getAccountFailure = createAction<string>('account/getAccountFailure');
 export const postAccount = createAction<CreateAccountCommand>('account/postAccount');
@@ -25,6 +25,7 @@ export const renameAccountFailure = createAction<string>('account/renameAccountF
 export const deleteAccount = createAction<DeleteAccountCommand>('account/deleteAccount');
 export const deleteAccountSuccess = createAction<number>('account/deleteAccountSuccess');
 export const deleteAccountFailure = createAction<string>('account/deleteAccountFailure');
+export const setAccountBalance = createAction<number>('account/setAccountBalance');
 
 // Thunk action creators
 // Not use currently

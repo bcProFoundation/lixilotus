@@ -482,9 +482,18 @@ const CreateVaultForm = ({
                   <Radio value={2}>Divided</Radio>
                 </Radio.Group>
               </Form.Item>
+              <Form.Item>
+                <Input
+                  type="number"
+                  addonBefore="Amount"
+                  placeholder="Enter balance for your vault"
+                  name="vaultAmount"
+                  value={newVaultAmount}
+                  onChange={e => handleNewVaultAmountInput(e)}
+                />
+              </Form.Item>
               {/* {selectRedeemType()} */}
               {selectVaultType()}
-
               {/* Vault envelope */}
               <Form.Item>
                 <AntdFormWrapper>
@@ -520,20 +529,8 @@ const CreateVaultForm = ({
               <Form.Item>
                 <AdvancedCollapse>
                   <Panel header="Advanced" key="2">
-                    <Form.Item>
-                      <Input
-                        type="number"
-                        addonBefore="Amount"
-                        placeholder="Enter balance for your vault"
-                        name="vaultAmount"
-                        value={newVaultAmount}
-                        onChange={e => handleNewVaultAmountInput(e)}
-                      />
-                    </Form.Item>
-
                     {/* Max Redeem and Expity Time */}
                     {selectExpiry()}
-
                     {/* Family Friendly */}
                     <Form.Item>
                       <Checkbox
@@ -547,7 +544,6 @@ const CreateVaultForm = ({
                   </Panel>
                 </AdvancedCollapse>
               </Form.Item>
-
             </Form>
           </AntdFormWrapper>
           <SmartButton

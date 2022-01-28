@@ -1,6 +1,6 @@
 import { Form, Input, Modal, Spin, InputNumber } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { importAccount } from 'src/store/account/actions';
+import { getAccount, importAccount, setAccountBalance } from 'src/store/account/actions';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
@@ -19,11 +19,12 @@ import { getEnvelopes } from 'src/store/envelope/actions';
 import { currency } from '@abcpros/givegift-components/components/Common/Ticker';
 import { fromSmallestDenomination } from '@utils/cashMethods';
 import { QRCode } from '@abcpros/givegift-components/src/components/Common/QRCode';
+import useAsyncTimeout from '@hooks/useAsyncTimeout';
 
 const Home: React.FC = () => {
 
   const ContextValue = React.useContext(AppContext);
-  const { /*createWallet*/ Wallet } = ContextValue;
+  const { XPI, Wallet } = ContextValue;
   const [formData, setFormData] = useState({
     dirty: true,
     mnemonic: '',
@@ -35,9 +36,29 @@ const Home: React.FC = () => {
   const isLoading = useAppSelector(getIsGlobalLoading);
   const vaults = useAppSelector(getVaultsBySelectedAccount);
   const selectedAccount = useAppSelector(getSelectedAccount);
+  const [isLoadBalanceError, setIsLoadBalanceError] = useState(false);
 
   useEffect(() => {
     dispatch(getEnvelopes());
+    if (selectedAccount) {
+      dispatch(getAccount(selectedAccount.id))
+    }
+  }, []);
+
+  useEffect(() => {
+    const id = setTimeout(() => {
+      XPI.Electrumx.balance(selectedAccount?.address).then((result => {
+        if (result && result.balance) {
+          const balance = result.balance.confirmed + result.balance.unconfirmed;
+          dispatch(setAccountBalance(balance ?? 0));
+        }
+      })).catch(e => {
+        setIsLoadBalanceError(true);
+      })
+    }, 10000);
+    return () => {
+      return clearTimeout(id);
+    }
   }, []);
 
   const handleChange = e => {

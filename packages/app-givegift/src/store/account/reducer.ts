@@ -3,7 +3,8 @@ import { createEntityAdapter, createReducer, Update } from '@reduxjs/toolkit';
 
 import {
   deleteAccountSuccess, importAccountSuccess, renameAccountSuccess, selectAccountSuccess,
-  setAccount
+  setAccount,
+  setAccountBalance
 } from './actions';
 import { AccountsState } from './state';
 
@@ -50,5 +51,17 @@ export const accountReducer = createReducer(initialState, (builder) => {
     })
     .addCase(deleteAccountSuccess, (state, action) => {
       accountsAdapter.removeOne(state, action.payload);
+    })
+    .addCase(setAccountBalance, (state, action) => {
+      const selectedId = state.selectedId;
+      if (selectedId) {
+        const updateAccount: Update<Account> = {
+          id: selectedId,
+          changes: {
+            balance: action.payload
+          }
+        };
+        accountsAdapter.updateOne(state, updateAccount);
+      }
     })
 });

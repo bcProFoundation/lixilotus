@@ -2,7 +2,7 @@ import { Vault } from '@abcpros/givegift-models/lib/vault';
 import { createEntityAdapter, createReducer, Update } from '@reduxjs/toolkit';
 
 import { importAccountSuccess, selectAccountSuccess } from '../account/actions';
-import { lockVaultSuccess, refreshVaultSuccess, selectVaultSuccess, setVault, unlockVaultSuccess } from './actions';
+import { lockVaultSuccess, refreshVaultSuccess, selectVaultSuccess, setVault, setVaultBalance, unlockVaultSuccess } from './actions';
 import { VaultsState } from './state';
 
 export const vaultsAdapter = createEntityAdapter<Vault>({
@@ -85,5 +85,17 @@ export const vaultReducer = createReducer(initialState, (builder) => {
         }
       };
       vaultsAdapter.updateOne(state, updateVault);
+    })
+    .addCase(setVaultBalance, (state, action) => {
+      const selectedId = state.selectedId;
+      if (selectedId) {
+        const updateVault: Update<Vault> = {
+          id: selectedId,
+          changes: {
+            balance: action.payload
+          }
+        };
+        vaultsAdapter.updateOne(state, updateVault);
+      }
     })
 })

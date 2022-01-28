@@ -44,7 +44,12 @@ export const store = configureStore({
       },
     }).concat(sagaMiddleware, routerMiddleware(history))
   },
-  devTools: process.env.NODE_ENV === 'production' ? false : true,
+  devTools: process.env.NODE_ENV === 'production' ? false : {
+    actionsBlacklist: [
+      'vault/setVaultBalance',
+      'account/setAccountBalance'
+    ]
+  },
 });
 
 export const persistor = persistStore(store);

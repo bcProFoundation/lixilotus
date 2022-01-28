@@ -64,7 +64,6 @@ function* generateVaultSaga(action: PayloadAction<GenerateVaultCommand>) {
  */
 function* getVaultSaga(action: PayloadAction<number>) {
   try {
-    yield put(showLoading(getVaultActionType));
     const id = action.payload;
     const data = yield call(vaultApi.getById, id);
     yield put(getVaultSuccess(data));
@@ -72,6 +71,15 @@ function* getVaultSaga(action: PayloadAction<number>) {
     const message = (err as Error).message ?? `Could not fetch the vault from api.`;
     yield put(getVaultFailure(message))
   }
+}
+
+function* getVaultFailureSaga(action: PayloadAction<string>) {
+  const message = action.payload ?? 'Unable to get the vault from server';
+  yield put(showToast('error', {
+    message: 'Error',
+    description: message,
+    duration: 5
+  }));
 }
 
 function* postVaultSaga(action: PayloadAction<CreateVaultCommand>) {
@@ -107,15 +115,7 @@ function* postVaultSaga(action: PayloadAction<CreateVaultCommand>) {
   }
 }
 
-function* getVaultFailureSaga(action: PayloadAction<string>) {
-  const message = action.payload ?? 'Unable to get the vault from server';
-  yield put(showToast('error', {
-    message: 'Error',
-    description: message,
-    duration: 5
-  }));
-  yield put(hideLoading(getVaultActionType));
-}
+
 
 function* postVaultSuccessSaga(action: PayloadAction<Vault>) {
 

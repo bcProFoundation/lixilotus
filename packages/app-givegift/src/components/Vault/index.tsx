@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import styled from 'styled-components';
 import { Descriptions, Collapse } from 'antd';
 import moment from 'moment';
 import { saveAs } from 'file-saver';
-import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
+import { AppContext } from 'src/store/store';
+import { toPng } from 'html-to-image';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getSelectedVaultId, getSelectedVault } from 'src/store/vault/selectors';
 import { QRCode } from "@abcpros/givegift-components/components/Common/QRCode";
@@ -15,7 +16,7 @@ import BalanceHeader from '@abcpros/givegift-components/components/Common/Balanc
 import { StyledCollapse } from "@abcpros/givegift-components/components/Common/StyledCollapse";
 import { SmartButton } from '@abcpros/givegift-components/components/Common/PrimaryButton';
 import RedeemList from '@components/Redeem/RedeemList';
-import { refreshVault } from 'src/store/vault/actions';
+import { getVault, refreshVault, setVaultBalance } from 'src/store/vault/actions';
 import { getAllRedeems } from 'src/store/redeem/selectors';
 import { currency } from '@abcpros/givegift-components/src/components/Common/Ticker';
 import { fromSmallestDenomination } from '@utils/cashMethods';
@@ -23,6 +24,7 @@ import { countries } from '@abcpros/givegift-models/constants/countries';
 import lixiLogo from '../../assets/images/lixi_logo.svg';
 import { CopyOutlined, DownloadOutlined, ReloadOutlined } from '@ant-design/icons';
 import { showToast } from 'src/store/toast/actions';
+import useAsyncTimeout from '@hooks/useAsyncTimeout';
 
 type CopiedProps = {
   style?: React.CSSProperties
@@ -51,14 +53,36 @@ const { Panel } = Collapse;
 const Vault: React.FC = () => {
 
   const dispatch = useAppDispatch();
-
+  const ContextValue = React.useContext(AppContext);
+  const { XPI, Wallet } = ContextValue;
   const selectedVaultId = useAppSelector(getSelectedVaultId);
   const selectedVault = useAppSelector(getSelectedVault);
   const allReddemsCurrentVault = useAppSelector(getAllRedeems);
-
   const [redeemCodeVisible, setRedeemCodeVisible] = useState(false);
-
   const qrPanelRef = React.useRef(null);
+  const [isLoadBalanceError, setIsLoadBalanceError] = useState(false);
+
+  useEffect(() => {
+    if (selectedVault) {
+      dispatch(getVault(selectedVault.id))
+    }
+  }, []);
+
+  useEffect(() => {
+    const id = setTimeout(() => {
+      XPI.Electrumx.balance(selectedVault?.address).then((result => {
+        if (result && result.balance) {
+          const balance = result.balance.confirmed + result.balance.unconfirmed;
+          dispatch(setVaultBalance(balance ?? 0));
+        }
+      })).catch(e => {
+        setIsLoadBalanceError(true);
+      })
+    }, 10000);
+    return () => {
+      return clearTimeout(id);
+    }
+  }, []);
 
   const handleRefeshVault = () => {
     if (!(selectedVault && selectedVaultId)) {
@@ -224,14 +248,6 @@ const Vault: React.FC = () => {
             </div>
           </CopyToClipboard>
 
-
-
-          {/* refreshVault */}
-          <SmartButton
-            onClick={() => handleRefeshVault()}
-          >
-            <ReloadOutlined />  Refresh Vault
-          </SmartButton>
           <RedeemList redeems={allReddemsCurrentVault} />
         </>
       )

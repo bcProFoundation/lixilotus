@@ -63,6 +63,7 @@ function* getAccountSaga(action: PayloadAction<number>) {
 
 function* getAccountSuccessSaga(action: PayloadAction<Account>) {
   // Hide the loading
+  yield put(setAccount(action.payload));
   yield put(hideLoading(getAccount.type));
 }
 
