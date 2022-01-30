@@ -248,6 +248,12 @@ const Vault: React.FC = () => {
             </div>
           </CopyToClipboard>
 
+          <SmartButton
+            onClick={() => handleRefeshVault()}
+          >
+            <ReloadOutlined />  Refresh Vault
+          </SmartButton>
+
           <RedeemList redeems={allReddemsCurrentVault} />
         </>
       )
