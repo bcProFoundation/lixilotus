@@ -539,8 +539,6 @@ const CreateVaultForm = ({
                         Family Friendly
                       </Checkbox>
                     </Form.Item>
-                    {/* <StyledLixiEnvelopeUploaded /> */}
-                    <TextArea rows={4} />
                   </Panel>
                 </AdvancedCollapse>
               </Form.Item>

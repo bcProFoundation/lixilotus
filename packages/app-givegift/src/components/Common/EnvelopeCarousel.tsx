@@ -39,9 +39,9 @@ const carouselSettings = {
       settings: {
         slidesToShow: 2,
         slidesToScroll: 1
-      },
-    },
-  ],
+      }
+    }
+  ]
 };
 
 const EnvelopeCarousel = (props: EnvelopeCarouselPros) => {
