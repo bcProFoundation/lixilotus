@@ -24,21 +24,21 @@ const carouselSettings = {
       breakpoint: 1024,
       settings: {
         slidesToShow: 3,
-        slidesToScroll: 1,
+        slidesToScroll: 1
       },
     },
     {
       breakpoint: 600,
       settings: {
         slidesToShow: 2,
-        slidesToScroll: 1,
+        slidesToScroll: 1
       },
     },
     {
       breakpoint: 480,
       settings: {
         slidesToShow: 2,
-        slidesToScroll: 1,
+        slidesToScroll: 1
       },
     },
   ],
@@ -48,11 +48,10 @@ const EnvelopeCarousel = (props: EnvelopeCarouselPros) => {
   const { className, envelopes, handleChangeEnvelope } = props;
   const [selectedEnvelopeId, setSelectedEnvelopeId] = useState(0);
 
-  const onCarouselItemClick = (item: Envelope, isActive: boolean) => {
-    if (item.id === selectedEnvelopeId && isActive) {
+  const onCarouselItemClick = (item: Envelope) => {
+    if (item.id === selectedEnvelopeId) {
       setSelectedEnvelopeId(0);
       handleChangeEnvelope(0);
-      isActive = false;
     } else {
       setSelectedEnvelopeId(item.id);
       handleChangeEnvelope(item.id);
@@ -80,7 +79,7 @@ const EnvelopeCarousel = (props: EnvelopeCarouselPros) => {
                     boxShadow: 'rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px',
                   }}
                   src={baseUrl + item.thumbnail}
-                  onClick={() => onCarouselItemClick(item, isActive)}
+                  onClick={() => onCarouselItemClick(item)}
                 />
               </div>
             );
