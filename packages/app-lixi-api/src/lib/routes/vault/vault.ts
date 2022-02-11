@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import express, { NextFunction } from 'express';
 import { PrismaClient } from '@prisma/client';
-import { Redeem } from '@abcpros/givegift-models';
+import { Redeem } from '@bcpros/lixi-models';
 import { VError } from 'verror';
 
 const prisma = new PrismaClient();

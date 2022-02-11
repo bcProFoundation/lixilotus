@@ -11,7 +11,7 @@ import VError from 'verror';
 import {
   countries, CreateRedeemDto, fromSmallestDenomination, RedeemDto, toSmallestDenomination,
   VaultType, ViewRedeemDto
-} from '@abcpros/givegift-models';
+} from '@bcpros/lixi-models';
 import MinimalBCHWallet from '@abcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@abcpros/xpi-js';
 import { PrismaClient } from '@prisma/client';

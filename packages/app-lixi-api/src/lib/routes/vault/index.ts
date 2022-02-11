@@ -3,7 +3,7 @@ import express, { NextFunction } from 'express';
 import VError from 'verror';
 import { PrismaClient, Vault as VaultDb } from '@prisma/client';
 import MinimalBCHWallet from '@abcpros/minimal-xpi-slp-wallet';
-import { Account, CreateVaultCommand, fromSmallestDenomination, Vault, VaultDto } from '@abcpros/givegift-models';
+import { Account, CreateVaultCommand, fromSmallestDenomination, Vault, VaultDto } from '@bcpros/lixi-models';
 import { router as vaultChildRouter } from './vault';
 import { logger } from '../../logger';
 import { aesGcmDecrypt, aesGcmEncrypt, numberToBase62 } from '../../utils/encryptionMethods';

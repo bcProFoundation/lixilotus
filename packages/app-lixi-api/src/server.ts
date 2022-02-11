@@ -32,7 +32,7 @@ async function startInstance() {
 
   await expressApp.start();
   server.listen(port, () => {
-    logger.info(`Server givegift-api is running at port ${port}`);
+    logger.info(`Server lixi-api is running at port ${port}`);
   });
 }
 

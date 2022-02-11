@@ -3,7 +3,7 @@ import 'winston-daily-rotate-file';
 const { combine, label, timestamp, printf } = format;
 
 export const transport = new winston.transports.DailyRotateFile({
-  filename: 'givegift-api-%DATE%.log',
+  filename: 'lixi-api-%DATE%.log',
   handleExceptions: true,
   maxSize: '40m',
   maxFiles: '14d',

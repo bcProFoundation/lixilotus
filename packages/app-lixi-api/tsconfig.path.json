@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+  },
+  "paths": {
+    "@abcpros/lixi-models/*": [
+      "../packages/lixi-models/*"
+    ]
+  },
+  "include": [
+    "../packages/lixi-models"
+  ]
+}

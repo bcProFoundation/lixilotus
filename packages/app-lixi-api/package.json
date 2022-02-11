@@ -1,5 +1,5 @@
 {
-  "name": "@abcpros/app-givegift-api",
+  "name": "@abcpros/app-lixi-api",
   "version": "0.1.0",
   "description": "Api for gift giving application",
   "main": "server.js",
@@ -14,7 +14,7 @@
     "seed": "ts-node prisma/seeds/index.ts"
   },
   "dependencies": {
-    "@abcpros/givegift-models": "^1.0.1",
+    "@abcpros/lixi-models": "^1.0.1",
     "@abcpros/minimal-xpi-slp-wallet": "^3.0.10",
     "@abcpros/xpi-js": "^4.0.5",
     "@prisma/client": "^3.6.0",

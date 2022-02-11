@@ -7,7 +7,7 @@ import BCHJS from '@abcpros/xpi-js';
 import HDNode from '@abcpros/xpi-js/types/hdnode';
 import { PrismaClient } from '@prisma/client';
 import BigNumber from 'bignumber.js';
-import { currency, fromSmallestDenomination, toSmallestDenomination } from '@abcpros/givegift-models';
+import { currency, fromSmallestDenomination, toSmallestDenomination } from '@bcpros/lixi-models';
 
 @Service()
 export class WalletService {

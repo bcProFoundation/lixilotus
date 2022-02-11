@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import express, { NextFunction } from 'express';
 import { VError } from 'verror';
 import { PrismaClient, Vault as VaultDb } from '@prisma/client';
-import { ImportAccountCommand, AccountDto, Vault } from '@abcpros/givegift-models';
+import { ImportAccountCommand, AccountDto, Vault } from '@bcpros/lixi-models';
 import { aesGcmDecrypt } from '../../utils/encryptionMethods';
 
 const prisma = new PrismaClient();

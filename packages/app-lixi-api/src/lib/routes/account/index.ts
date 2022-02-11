@@ -5,7 +5,7 @@ import VError from 'verror';
 
 import {
   AccountDto, CreateAccountCommand, DeleteAccountCommand, RenameAccountCommand
-} from '@abcpros/givegift-models';
+} from '@bcpros/lixi-models';
 import { Account as AccountDb, Prisma, PrismaClient } from '@prisma/client';
 
 import { WalletService } from '../../services/wallet';

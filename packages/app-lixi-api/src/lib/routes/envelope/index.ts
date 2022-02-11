@@ -2,7 +2,7 @@ import express, { NextFunction } from 'express';
 import _ from 'lodash';
 import VError from 'verror';
 
-import { Envelope } from '@abcpros/givegift-models';
+import { Envelope } from '@bcpros/lixi-models';
 import { Envelope as EnvelopeDb, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
