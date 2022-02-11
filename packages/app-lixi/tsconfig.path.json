@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@assets/*": [
+        "src/assets/*"
+      ],
+      "@images/*": [
+        "src/assets/images/*"
+      ],
+      "@icons/*": [
+        "src/assets/icons/*"
+      ],
+      "@utils/*": [
+        "src/utils/*"
+      ],
+      "@components/*": [
+        "src/components/*"
+      ],
+      "@hooks/*": [
+        "src/hooks/*"
+      ],
+      "@bcpros/lixi-components/*": [
+        "../../packages/lixi-components/src/*"
+      ],
+      "@bcpros/lixi-models/*": [
+        "../../packages/lixi-models/src/*"
+      ]
+    }
+  },
+}

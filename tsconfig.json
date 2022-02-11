@@ -8,6 +8,12 @@
       ],
       "@abcpros/givegift-components": [
         "abcpros/giveegift-components"
+      ],
+      "@bcpros/lixi-models": [
+        "@bcpros/lixi-models"
+      ],
+      "@bcpros/lixi-components": [
+        "bcpros/lixi-components"
       ]
     }
   }
