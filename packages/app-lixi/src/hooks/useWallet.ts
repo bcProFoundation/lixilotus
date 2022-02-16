@@ -6,7 +6,7 @@ import useXPI from "./useXPI";
 const useWallet = (XPI: BCHJS) => {
 
   const getWalletDetails = async (mnemonic) => {
-    const NETWORK = process.env.REACT_APP_NETWORK;
+    const NETWORK = process.env.NEXT_PUBLIC_NETWORK;
     const rootSeedBuffer = await XPI.Mnemonic.toSeed(mnemonic);
     let masterHDNode;
 

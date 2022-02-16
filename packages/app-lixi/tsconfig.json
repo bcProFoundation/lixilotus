@@ -1,41 +1,37 @@
 {
-  "extends": "../configs/tsconfig.demo.json",
+  "extends": "./tsconfig.path.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "target": "es5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "preserve",
+    "noImplicitAny": false,
+    "incremental": true
+  },
   "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules"
   ],
-  "compilerOptions": {
-    "incremental": true,
-    "baseUrl": ".",
-    "paths": {
-      "@assets/*": [
-        "src/assets/*"
-      ],
-      "@images/*": [
-        "src/assets/images/*"
-      ],
-      "@icons/*": [
-        "src/assets/icons/*"
-      ],
-      "@utils/*": [
-        "src/utils/*"
-      ],
-      "@components/*": [
-        "src/components/*"
-      ],
-      "@hooks/*": [
-        "src/hooks/*"
-      ],
-      "@bcpros/lixi-components/*": [
-        "../../packages/lixi-components/src/*"
-      ],
-      "@bcpros/lixi-models/*": [
-        "../../packages/lixi-models/src/*"
-      ]
-    }
-  }
+  "typeRoots": [
+    "./src/@types",
+    "./node_modules/@types"
+  ],
 }

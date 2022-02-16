@@ -1,10 +1,11 @@
 // import original module declarations
+import { ThemeType } from '@bcpros/lixi-components/src/styles';
 import 'styled-components';
 import { CSSProp } from 'styled-components';
 
 // and extend them!
 declare module 'styled-components' {
-  export interface DefaultTheme {
+  export interface DefaultTheme extends ThemeType {
     name: string;
     primary: string;
     secondary: string;
@@ -92,6 +93,7 @@ declare module 'styled-components' {
       border: string;
       color: string;
     };
+    footerBackground: string;
   }
 };
 

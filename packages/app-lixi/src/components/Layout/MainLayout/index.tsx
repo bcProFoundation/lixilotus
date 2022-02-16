@@ -1,30 +1,30 @@
 import 'antd/dist/antd.less';
-import './App.less';
 
 import { Spin } from 'antd';
 import React, { useState } from 'react';
-import { Redirect, Route, Switch, useHistory, useLocation } from 'react-router-dom';
+import { useRouter } from 'next/router';
+// import { Route, Switch, useHistory, useLocation } from 'react-router-dom';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppSelector } from 'src/store/hooks';
-import styled, { ThemeProvider } from 'styled-components';
+import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 
-import { Footer, NavButton } from '@bcpros/lixi-components/components';
-import { GlobalStyle, theme } from '@bcpros/lixi-components/styles';
 import {
   GiftOutlined, HomeOutlined, LoadingOutlined, SettingOutlined, UserOutlined, WalletOutlined
 } from '@ant-design/icons';
 import LixiLogo from '@assets/images/lixi_logo.svg';
 import LixiText from '@assets/images/lixi_logo_text.svg';
+import { Footer, NavButton } from '@bcpros/lixi-components/components';
+import { GlobalStyle } from './GlobalStyle';
+import { theme } from './theme';
 import Home from '@components/Home/Home';
 import RedeemComponent from '@components/Redeem';
+import LixiRedeemed from '@components/Redeem/LixiRedeemed';
 import Settings from '@components/Settings';
 import Vault from '@components/Vault';
-import LixiRedeemed from '@components/Redeem/LixiRedeemed';
 
-import ModalManager from './Common/ModalManager';
-import OnboardingComponent from './Onboarding/Onboarding';
-
-type ThemeType = typeof theme;
+import ModalManager from '../../Common/ModalManager';
+import OnboardingComponent from '../../Onboarding/Onboarding';
+import Image from 'next/image';
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
 
@@ -104,16 +104,20 @@ export const LixiTextLogo = styled.img`
   }
 `;
 
+const MainLayout: React.FC = (props) => {
 
-function App(): JSX.Element {
+  const { children } = props;
 
-  const selectedAccount = useAppSelector(getSelectedAccount);
-  const location = useLocation();
-  const history = useHistory();
+  const selectedAccount = false;
+  // const selectedAccount = useAppSelector(getSelectedAccount);
+  const router = useRouter()
   const [loading, setLoading] = useState(false);
-  const selectedKey = location && location.pathname ? location.pathname.substr(1) : '';
+  const selectedKey = router.pathname ?? '';
+
+  console.log('LixiLogo', LixiLogo);
+  console.log('LixiText', LixiText);
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme as DefaultTheme}>
       <GlobalStyle />
       <Spin
         spinning={
@@ -129,33 +133,15 @@ function App(): JSX.Element {
               : <>
                 <AppContainer>
                   <HeaderContainer>
-                    <LotusLogo src={LixiLogo} alt="lixi" />
-                    <LixiTextLogo src={LixiText} alt="lixi" />
+                    <img src={LixiLogo} alt="lixi" />
+                    <img src={LixiText} alt="lixi" />
                   </HeaderContainer>
-                  <Switch>
-                    <Route path="/vault">
-                      <Vault />
-                    </Route>
-                    <Route path="/redeem">
-                      <RedeemComponent />
-                    </Route>
-                    <Route path="/settings">
-                      <Settings />
-                    </Route>
-                    <Route path="/lixi/:redeemId"
-                      render={props => (<LixiRedeemed
-                        redeemId={props.match.params.redeemId}
-                      />)}
-                    />
-                    <Route path="/">
-                      <Home />
-                    </Route>
-                  </Switch>
+                  {children}
                 </AppContainer>
                 <Footer>
                   <NavButton
                     active={selectedKey === 'home' || selectedKey === ''}
-                    onClick={() => history.push('/')}
+                    onClick={() => router.push('/')}
                   >
                     <UserOutlined />
                     Accounts
@@ -163,7 +149,7 @@ function App(): JSX.Element {
 
                   <NavButton
                     active={selectedKey === 'vault'}
-                    onClick={() => history.push('/vault')}
+                    onClick={() => router.push('/vault')}
                   >
                     <WalletOutlined />
                     Vault
@@ -171,7 +157,7 @@ function App(): JSX.Element {
 
                   <NavButton
                     active={selectedKey === 'redeem'}
-                    onClick={() => history.push('/redeem')}
+                    onClick={() => router.push('/redeem')}
                   >
                     <GiftOutlined />
                     Redeem
@@ -179,7 +165,7 @@ function App(): JSX.Element {
 
                   <NavButton
                     active={selectedKey === 'settings'}
-                    onClick={() => history.push('/settings')}
+                    onClick={() => router.push('/settings')}
                   >
                     <SettingOutlined />
                     Settings
@@ -194,6 +180,5 @@ function App(): JSX.Element {
     </ThemeProvider>
   );
 }
-export type { ThemeType };
 
-export default App;
+export default MainLayout;

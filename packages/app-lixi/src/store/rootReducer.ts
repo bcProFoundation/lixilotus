@@ -33,6 +33,20 @@ const redeemsPersistConfig: PersistConfig<RedeemsState> = {
   storage: storage
 };
 
+const appReducer = combineReducers({
+  accounts: accountReducer,
+  vaults: vaultReducer,
+  redeems: redeemReducer,
+  envelopes: envelopeReducer,
+  loading: loadingReducer,
+  modal: modalReducer,
+  toast: toastReducer,
+  error: errorReducer,
+  // This is use for useReduxEffect
+  // Should be always at the end
+  action: actionReducer
+});
+
 // const rootReducer = combineReducers({
 //   // router: routerReducer,
 //   accounts: persistReducer(accountPersistConfig, accountReducer),

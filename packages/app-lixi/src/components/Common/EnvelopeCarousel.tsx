@@ -1,9 +1,8 @@
 import { Envelope } from '@bcpros/lixi-models';
 import { Carousel, Slider } from 'antd';
 import { useState } from 'react';
-import styled from 'styled-components';
 
-const baseUrl = process.env.REACT_APP_LIXI_API;
+const baseUrl = process.env.NEXT_PUBLIC_LIXI_API;
 
 export interface EnvelopeCarouselPros {
   className?: string;

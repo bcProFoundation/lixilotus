@@ -49,21 +49,21 @@ const makeStore = (context: Context) => {
 
   let store;
 
-  const newReducer = (state: RootState, action: AnyAction) => {
-    if (action.type === HYDRATE) {
-      const nextState = {
-        ...state, // use previous state
-        ...action.payload, // apply delta from hydration
-      };
-      return nextState;
-    } else {
-      return rootReducer(state, action);
-    }
-  }
+  // const newReducer = (state: RootState, action: AnyAction) => {
+  //   if (action.type === HYDRATE) {
+  //     const nextState = {
+  //       ...state, // use previous state
+  //       ...action.payload, // apply delta from hydration
+  //     };
+  //     return nextState;
+  //   } else {
+  //     return rootReducer(state, action);
+  //   }
+  // }
 
   if (isServer) {
     store = configureStore({
-      reducer: combineReducers(newReducer),
+      reducer: rootReducer,
       middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware),
       devTools: false,
       // preloadedState: initialState
@@ -73,7 +73,7 @@ const makeStore = (context: Context) => {
 
   } else {
     store = configureStore({
-      reducer: combineReducers(newReducer),
+      reducer: rootReducer,
       middleware: (getDefaultMiddleware) => {
         return getDefaultMiddleware({
           serializableCheck: {
@@ -95,10 +95,7 @@ const makeStore = (context: Context) => {
   }
   (store as SagaStore).__sagaTask = sagaMiddleware.run(rootSaga);
   return store;
-
 }
-
-
 
 // Define utilities types for redux toolkit
 export type AppStore = ReturnType<typeof makeStore>;
