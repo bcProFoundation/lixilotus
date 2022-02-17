@@ -3,14 +3,8 @@
   "compilerOptions": {
     "baseUrl": "./packages",
     "paths": {
-      "@abcpros/givegift-models": [
-        "@abcpros/givegift-models"
-      ],
-      "@abcpros/givegift-components": [
-        "abcpros/giveegift-components"
-      ],
       "@bcpros/lixi-models": [
-        "@bcpros/lixi-models"
+        "@abcpros/lixi-models"
       ],
       "@bcpros/lixi-components": [
         "bcpros/lixi-components"

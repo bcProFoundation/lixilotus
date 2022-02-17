@@ -33,7 +33,8 @@ const redeemsPersistConfig: PersistConfig<RedeemsState> = {
   storage: storage
 };
 
-const appReducer = combineReducers({
+export const serverReducer = combineReducers({
+  // router: routerReducer,
   accounts: accountReducer,
   vaults: vaultReducer,
   redeems: redeemReducer,
@@ -44,29 +45,14 @@ const appReducer = combineReducers({
   error: errorReducer,
   // This is use for useReduxEffect
   // Should be always at the end
-  action: actionReducer
+  action: actionReducer,
 });
 
-// const rootReducer = combineReducers({
-//   // router: routerReducer,
-//   accounts: persistReducer(accountPersistConfig, accountReducer),
-//   vaults: persistReducer(vaultPersistConfig, vaultReducer),
-//   redeems: persistReducer(redeemsPersistConfig, redeemReducer),
-//   envelopes: envelopeReducer,
-//   loading: loadingReducer,
-//   modal: modalReducer,
-//   toast: toastReducer,
-//   error: errorReducer,
-//   // This is use for useReduxEffect
-//   // Should be always at the end
-//   action: actionReducer,
-// });
-
-export const serverRootReducer = combineReducers({
+export const reducer = combineReducers({
   // router: routerReducer,
-  accounts: accountReducer,
-  vaults: vaultReducer,
-  redeems: redeemReducer,
+  accounts: persistReducer(accountPersistConfig, accountReducer),
+  vaults: persistReducer(vaultPersistConfig, vaultReducer),
+  redeems: persistReducer(redeemsPersistConfig, redeemReducer),
   envelopes: envelopeReducer,
   loading: loadingReducer,
   modal: modalReducer,
@@ -89,4 +75,4 @@ export const serverRootReducer = combineReducers({
 //   }
 // };
 
-export default serverRootReducer;
+export default reducer;

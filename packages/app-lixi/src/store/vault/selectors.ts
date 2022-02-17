@@ -46,7 +46,7 @@ export const getVaultsBySelectedAccount = createSelector(
   (accountId, vaults) => vaults.filter(vault => vault.accountId === accountId) as Vault[]
 );
 
-// export const getSelectedVault = createSelector(
-//   [getVaultsBySelectedAccount, getSelectedVaultId],
-//   (vaults, selectedVaultId) => vaults.find(vault => vault.id === selectedVaultId)
-// );
+export const getSelectedVault = createSelector(
+  [getVaultsBySelectedAccount, getSelectedVaultId],
+  (vaults, selectedVaultId) => vaults.find(vault => vault.id === selectedVaultId)
+);

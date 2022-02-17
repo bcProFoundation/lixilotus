@@ -4,9 +4,7 @@ import { Alert, Modal } from 'antd';
 import { BrowserQRCodeReader } from '@zxing/library';
 import { ThemedQrcodeOutlined } from './CustomIcons';
 
-
 import {
-  currency,
   isValidLotusPrefix
 } from './Ticker';
 

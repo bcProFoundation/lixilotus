@@ -1,10 +1,7 @@
-import mainLogo from '../../assets/logo_primary.png';
-import tokenLogo from '../../assets/logo_secondary.png';
-
 export const currency = {
   name: 'Lotus',
   ticker: 'XPI',
-  logo: mainLogo,
+  logo: '/images/logo_primary.png',
   legacyPrefix: 'bitcoincash',
   prefixes: ['lotus'],
   coingeckoId: 'bitcoin-cash-abc-2',
@@ -17,7 +14,7 @@ export const currency = {
   blockExplorerUrlTestnet: 'https://texplorer.bitcoinabc.org',
   tokenName: 'eToken',
   tokenTicker: 'eToken',
-  tokenLogo: tokenLogo,
+  tokenLogo: '/images/logo_secondary.png',
   tokenPrefixes: ['etoken'],
   tokenIconsUrl: '', //https://tokens.bitcoin.com/32 for BCH SLP
   txHistoryCount: 5,

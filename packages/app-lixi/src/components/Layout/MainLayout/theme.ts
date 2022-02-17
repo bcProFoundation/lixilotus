@@ -1,6 +1,6 @@
 import { DefaultTheme } from "styled-components";
 
-export const theme: DefaultTheme = {
+export const theme = {
   name: 'Default',
   primary: '#6f2dbd',
   secondary: '#CD0BC3',
@@ -85,6 +85,7 @@ export const theme: DefaultTheme = {
     border: '#eaedf3',
     color: '#3e3f42',
   },
+  footerBackground: '#fff'
 };
 
 type ThemeType = typeof theme;

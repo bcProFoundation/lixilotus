@@ -92,6 +92,7 @@ declare module 'styled-components' {
       border: string;
       color: string;
     };
+    footerBackground: string;
   }
 };
 

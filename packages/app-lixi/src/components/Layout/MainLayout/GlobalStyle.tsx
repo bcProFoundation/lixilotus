@@ -1,11 +1,7 @@
 import { createGlobalStyle } from 'styled-components';
 import { ThemeType } from './theme';
 
-type Props = {
-    theme: ThemeType
-};
-
-export const GlobalStyle = createGlobalStyle<Props>`    
+export const GlobalStyle = createGlobalStyle`    
     .ant-modal-wrap > div > div.ant-modal-content > div > div > div.ant-modal-confirm-btns > button, .ant-modal > button, .ant-modal-confirm-btns > button, .ant-modal-footer > button {
         border-radius: 8px;
         background-color: ${props => props.theme.modals.buttons.background};

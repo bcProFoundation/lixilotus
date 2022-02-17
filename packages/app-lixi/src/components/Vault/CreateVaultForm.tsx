@@ -22,7 +22,6 @@ import EnvelopeSelectDropdown from '@components/Common/EnvelopeSelectDropdown';
 import { isValidAmountInput } from '@utils/validation';
 
 import { CreateVaultConfirmationModalProps } from './CreateVaultConfirmationModal';
-import { LixiEnvelopeUploader, StyledLixiEnvelopeUploaded } from './LixiEnvelopeUploader';
 import { getAllEnvelopes } from 'src/store/envelope/selectors';
 import TextArea from 'antd/lib/input/TextArea';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';

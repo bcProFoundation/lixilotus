@@ -159,7 +159,7 @@ type QRCodeProps = {
   logoImage?: string;
 }
 
-export const QRCode = ({
+const QRCode = ({
   address,
   size = 210,
   onClick = () => null,
@@ -246,3 +246,5 @@ export const QRCode = ({
     </CopyToClipboard>
   );
 };
+
+export default QRCode;

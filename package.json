@@ -16,10 +16,11 @@
     "prettier": "^2.4.1"
   },
   "scripts": {
-    "start": "lerna exec --scope @abcpros/app-givegift -- yarn start",
-    "start:api": "lerna exec --scope @abcpros/app-givegift-api -- yarn start",
-    "start:dev:api": "NODE_ENV=development lerna exec --scope @abcpros/app-givegift-api -- yarn start",
-    "start:givegift-components": "lerna exec --scope @abcpros/givegift-components -- yarn start",
+    "dev": "lerna exec --scope @bcpros/app-lixi -- yarn dev",
+    "start": "lerna exec --scope @bcpros/app-lixi -- yarn start",
+    "start:api": "lerna exec --scope @bcpros/app-lixi-api -- yarn start",
+    "start:dev:api": "NODE_ENV=development lerna exec --scope @bcpros/app-lixi-api -- yarn start",
+    "start:givegift-components": "lerna exec --scope @abcpros/lixi-components -- yarn start",
     "build": "lerna run build"
   },
   "workspaces": {

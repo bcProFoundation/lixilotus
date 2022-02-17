@@ -14,7 +14,7 @@ import {
 import rootSaga from './rootSaga';
 import useXPI from '@hooks/useXPI';
 import useWallet from '@hooks/useWallet';
-import rootReducer from './rootReducer';
+import rootReducer, { serverReducer } from './rootReducer';
 import BCHJS from '@abcpros/xpi-js';
 // import { createRouterMiddleware, initialRouterState, routerReducer } from 'connected-next-router';
 import { Context, createWrapper, HYDRATE } from 'next-redux-wrapper';
@@ -33,7 +33,7 @@ export const AppContext = createContext({ XPI, Wallet });
 const makeStore = (context: Context) => {
 
   const isServer = typeof window === 'undefined';
-  console.log('isServer', isServer);
+
 
   const sagaMiddleware = createSagaMiddleware({
     context: {
@@ -49,27 +49,12 @@ const makeStore = (context: Context) => {
 
   let store;
 
-  // const newReducer = (state: RootState, action: AnyAction) => {
-  //   if (action.type === HYDRATE) {
-  //     const nextState = {
-  //       ...state, // use previous state
-  //       ...action.payload, // apply delta from hydration
-  //     };
-  //     return nextState;
-  //   } else {
-  //     return rootReducer(state, action);
-  //   }
-  // }
-
   if (isServer) {
     store = configureStore({
-      reducer: rootReducer,
+      reducer: serverReducer,
       middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware),
       devTools: false,
-      // preloadedState: initialState
     });
-
-    console.log('store', store);
 
   } else {
     store = configureStore({
@@ -80,7 +65,6 @@ const makeStore = (context: Context) => {
             ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
           },
         }).concat(sagaMiddleware)
-        //.concat(sagaMiddleware, routerMiddleware)
       },
       devTools: process.env.NODE_ENV === 'production' ? false : {
         actionsBlacklist: [
@@ -90,7 +74,7 @@ const makeStore = (context: Context) => {
       },
     });
 
-    // (store as any).__persistor = persistStore(store);
+    (store as any).__persistor = persistStore(store);
 
   }
   (store as SagaStore).__sagaTask = sagaMiddleware.run(rootSaga);
@@ -109,4 +93,4 @@ export type AppThunk<ReturnType = void> = ThunkAction<
 >;
 
 
-export const wrapper = createWrapper<AppStore>(makeStore, { debug: process.env.NODE_ENV !== 'production' });
+export const wrapper = createWrapper<AppStore>(makeStore, { debug: false });

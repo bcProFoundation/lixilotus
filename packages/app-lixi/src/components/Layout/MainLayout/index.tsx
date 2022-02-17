@@ -1,8 +1,6 @@
-import 'antd/dist/antd.less';
-
 import { Spin } from 'antd';
-import React, { useState } from 'react';
 import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 // import { Route, Switch, useHistory, useLocation } from 'react-router-dom';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppSelector } from 'src/store/hooks';
@@ -14,17 +12,21 @@ import {
 import LixiLogo from '@assets/images/lixi_logo.svg';
 import LixiText from '@assets/images/lixi_logo_text.svg';
 import { Footer, NavButton } from '@bcpros/lixi-components/components';
-import { GlobalStyle } from './GlobalStyle';
-import { theme } from './theme';
 import Home from '@components/Home/Home';
 import RedeemComponent from '@components/Redeem';
 import LixiRedeemed from '@components/Redeem/LixiRedeemed';
 import Settings from '@components/Settings';
 import Vault from '@components/Vault';
 
+import { Layout, BackTop } from 'antd';
+
 import ModalManager from '../../Common/ModalManager';
 import OnboardingComponent from '../../Onboarding/Onboarding';
-import Image from 'next/image';
+import { theme } from './theme';
+import Link from 'next/link';
+import { GlobalStyle } from './GlobalStyle';
+
+const { Content } = Layout;
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
 
@@ -105,17 +107,12 @@ export const LixiTextLogo = styled.img`
 `;
 
 const MainLayout: React.FC = (props) => {
-
   const { children } = props;
-
-  const selectedAccount = false;
-  // const selectedAccount = useAppSelector(getSelectedAccount);
+  const selectedAccount = useAppSelector(getSelectedAccount);
   const router = useRouter()
   const [loading, setLoading] = useState(false);
   const selectedKey = router.pathname ?? '';
 
-  console.log('LixiLogo', LixiLogo);
-  console.log('LixiText', LixiText);
   return (
     <ThemeProvider theme={theme as DefaultTheme}>
       <GlobalStyle />
@@ -133,28 +130,30 @@ const MainLayout: React.FC = (props) => {
               : <>
                 <AppContainer>
                   <HeaderContainer>
-                    <img src={LixiLogo} alt="lixi" />
-                    <img src={LixiText} alt="lixi" />
+                    <LotusLogo src='/images/lixi_logo.svg' alt="lixi" />
+                    <LixiTextLogo src='/images/lixi_logo_text.svg' alt="lixi" />
                   </HeaderContainer>
-                  {children}
+                  <Content>
+                    {children}
+                  </Content>
                 </AppContainer>
                 <Footer>
-                  <NavButton
-                    active={selectedKey === 'home' || selectedKey === ''}
-                    onClick={() => router.push('/')}
-                  >
-                    <UserOutlined />
-                    Accounts
-                  </NavButton>
-
-                  <NavButton
-                    active={selectedKey === 'vault'}
-                    onClick={() => router.push('/vault')}
-                  >
-                    <WalletOutlined />
-                    Vault
-                  </NavButton>
-
+                  <Link href='/' passHref>
+                    <NavButton
+                      active={selectedKey === ''}
+                    >
+                      <UserOutlined />
+                      Accounts
+                    </NavButton>
+                  </Link>
+                  <Link href='/vault' passHref>
+                    <NavButton
+                      active={selectedKey === 'vault'}
+                    >
+                      <WalletOutlined />
+                      Vault
+                    </NavButton>
+                  </Link>
                   <NavButton
                     active={selectedKey === 'redeem'}
                     onClick={() => router.push('/redeem')}

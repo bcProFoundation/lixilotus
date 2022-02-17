@@ -8,7 +8,7 @@ import { AppContext } from 'src/store/store';
 import { toPng } from 'html-to-image';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getSelectedVaultId, getSelectedVault } from 'src/store/vault/selectors';
-import { QRCode } from "@bcpros/lixi-components/components/Common/QRCode";
+// import QRCode from "@bcpros/lixi-components/components/Common/QRCode";
 import { QRRedeemCode } from "@bcpros/lixi-components/components/Common/QRRedeemCode";
 import { VaultType } from '@bcpros/lixi-models/src/lib/vault';
 import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
@@ -24,7 +24,6 @@ import { countries } from '@bcpros/lixi-models/constants/countries';
 import lixiLogo from '../../assets/images/lixi_logo.svg';
 import { CopyOutlined, DownloadOutlined, ReloadOutlined } from '@ant-design/icons';
 import { showToast } from 'src/store/toast/actions';
-import useAsyncTimeout from '@hooks/useAsyncTimeout';
 
 type CopiedProps = {
   style?: React.CSSProperties
@@ -181,9 +180,9 @@ const Vault: React.FC = () => {
         ticker={currency.ticker} />
       {selectedVault && selectedVault.address ? (
         <>
-          <QRCode
-            address={selectedVault.address}
-          />
+          {/* <QRCode
+          address={selectedVault.address}
+          /> */}
 
           <Descriptions
             column={1}

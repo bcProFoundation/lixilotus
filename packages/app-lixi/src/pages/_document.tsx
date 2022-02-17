@@ -39,8 +39,6 @@ export default class MyDocument extends Document {
           <meta charSet="utf-8" />
           <link rel="manifest" href="/manifest.json" />
           <link rel="shortcut icon" href="/favicon.ico" />
-
-
           <meta name="theme-color" content="#000000" />
           <meta name="description" content="Website allow user to give lotus to others" />
           <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />

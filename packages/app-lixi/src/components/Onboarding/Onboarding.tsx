@@ -10,6 +10,7 @@ import { AntdFormWrapper } from "@components/Common/EnhancedInputs";
 import { AppContext } from "src/store/store";
 import { useAppDispatch } from "src/store/hooks";
 import { generateAccount, importAccount } from "src/store/account/actions";
+import Image from "next/image";
 
 export const LotusLogo = styled.img`
   width: 70px;
@@ -112,8 +113,8 @@ const OnboardingComponent: React.FC = () => {
     <>
       <Onboarding>
         <div style={{ marginTop: '20px' }}>
-          <LotusLogo src={LixiLogo} alt="lixi" />
-          <LixiTextLogo src={LixiText} alt="lixi" />
+          <LotusLogo src='/images/lixi_logo.svg' alt="lixi" />
+          <LixiTextLogo src='/images/lixi_logo_text.svg' alt="lixi" />
         </div>
 
         <h2 style={{ marginTop: '50px' }}>Welcome to LixiLotus!</h2>

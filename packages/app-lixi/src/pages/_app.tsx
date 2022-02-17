@@ -1,15 +1,21 @@
+import '../styles/style.less';
+
 // import '../styles/globals.css';
 import App, { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React, { createContext, FC } from 'react';
 import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 import { END } from 'redux-saga';
-import MainLayout from '@components/Layout/MainLayout';
 
+
+import MainLayout from '@components/Layout/MainLayout';
 
 // import { ConnectedRouter } from 'connected-next-router';
 import { AppContext, SagaStore, Wallet, wrapper, XPI } from '../store/store';
+
+
 
 const LixiApp = ({ Component, ...rest }) => {
 
@@ -19,6 +25,8 @@ const LixiApp = ({ Component, ...rest }) => {
 
   const router = useRouter();
 
+  const isServer = typeof window === 'undefined';
+
   return (
     <Provider store={store}>
       <AppContext.Provider value={{ XPI, Wallet }}>
@@ -27,10 +35,17 @@ const LixiApp = ({ Component, ...rest }) => {
             <title>LixiLotus</title>
             <meta name="viewport" content="width=device-width, initial-scale=1" />
           </Head>
-          {/* <PersistGate persistor={store.__persistor}> */}
+          {/* <PersistGate persistor={store.__persistor} loading={<div>Loading</div>}> */}
           {/* <ConnectedRouter> */}
           {/* {GA.init() && <GA.RouteTracker />} */}
           <Component {...props.pageProps} router={router} />
+          {isServer ? (<PersistGate persistor={store}>
+            <Component {...props.pageProps} router={router} />
+          </PersistGate>) : (
+            <PersistGate persistor={store}> loading={<div>Loading</div>}
+              <Component {...props.pageProps} router={router} />
+            </PersistGate>
+          )}
           {/* </ConnectedRouter> */}
           {/* </PersistGate> */}
         </Layout>
@@ -77,8 +92,7 @@ LixiApp.getInitialProps = wrapper.getInitialAppProps((store: SagaStore) => async
   return {
     pageProps: {
       ...propsData,
-      ...layoutProps,
-      test: 'abc'
+      ...layoutProps
     },
   };
 });

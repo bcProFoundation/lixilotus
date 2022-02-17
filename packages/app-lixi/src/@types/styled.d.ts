@@ -5,7 +5,7 @@ import { CSSProp } from 'styled-components';
 
 // and extend them!
 declare module 'styled-components' {
-  export interface DefaultTheme extends ThemeType {
+  export interface DefaultTheme {
     name: string;
     primary: string;
     secondary: string;

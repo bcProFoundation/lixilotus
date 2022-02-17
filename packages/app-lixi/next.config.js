@@ -3,7 +3,7 @@
 const path = require('path');
 const webpack = require('webpack');
 
-const withAntdLess = require('next-plugin-antd-less');
+const withLess = require("next-with-less");
 
 const lessToJS = require('less-vars-to-js');
 const fs = require('fs');
@@ -37,9 +37,14 @@ const tmModules = [
 	// for legacy browsers support (only in prod)
 	...(isProd
 		? [
+			// '@bcpros/lixi-components',
+			// '@bcpros/lixi-models'
 			// ie: '@react-google-maps/api'...
 		]
-		: []),
+		: [
+			'@bcpros/lixi-components',
+			'@bcpros/lixi-models'
+		]),
 	// ESM only packages are not yet supported by NextJs if you're not
 	// using experimental experimental esmExternals
 	// @link {https://nextjs.org/blog/next-11-1#es-modules-support|Blog 11.1.0}
@@ -51,15 +56,22 @@ const tmModules = [
 	],
 ];
 
+
 const antdVariables = lessToJS(fs.readFileSync(path.resolve(__dirname, 'src/styles/variables.less'), 'utf8'));
 
-const withImages = require('next-images');
 
-const nextConfig = withAntdLess({
-	// modifyVars: {
-	// 	'hack': 'true;@import "~antd/lib/style/themes/compact.less";',
-	// 	...antdVariables,
-	// },
+const nextConfig = withLess({
+	lessLoaderOptions: {
+		lessOptions: {
+			javascriptEnabled: true,
+			modifyVars: {
+				'hack': 'true;@import "~antd/lib/style/themes/compact.less";',
+				...antdVariables,
+			},
+			localIdentName: '[path]___[local]___[hash:base64:5]'
+		}
+	},
+
 	reactStrictMode: true,
 	productionBrowserSourceMaps: !disableSourceMaps,
 	optimizeFonts: true,
@@ -121,6 +133,9 @@ const nextConfig = withAntdLess({
 		dirs: ['src'],
 	},
 
+	nextjs: {
+		localIdentNameFollowDev: true, // default false, for easy to debug on PROD mode
+	},
 
 	// Other Config Here...
 
@@ -190,7 +205,7 @@ if (tmModules.length > 0) {
 		tmModules,
 		{
 			resolveSymlinks: true,
-			debug: false,
+			debug: true,
 		}
 	);
 	config = withNextTranspileModules(nextConfig);

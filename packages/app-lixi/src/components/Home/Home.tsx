@@ -1,27 +1,41 @@
-import { Form, Input, Modal, Spin, InputNumber } from 'antd';
+import { Form, Input, InputNumber, Modal, Spin } from 'antd';
+import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react';
 import { getAccount, importAccount, setAccountBalance } from 'src/store/account/actions';
 import { getSelectedAccount } from 'src/store/account/selectors';
+import { getEnvelopes } from 'src/store/envelope/actions';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
 import { AppContext } from 'src/store/store';
 import { getVaultsBySelectedAccount } from 'src/store/vault/selectors';
-import { ThemedWalletOutlined } from '@bcpros/lixi-components/components/Common/CustomIcons';
-import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
-import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
+
 import { LockOutlined } from '@ant-design/icons';
+import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
+import { ThemedWalletOutlined } from '@bcpros/lixi-components/components/Common/CustomIcons';
+import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
+import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
+// import QRCode from '@components/Common/QRCode';
 import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
 import { SmartButton } from '@components/Common/PrimaryButton';
 import { StyledSpacer } from '@components/Common/StyledSpacer';
-import CreateVaultForm from '@components/Vault/CreateVaultForm';
+// import CreateVaultForm from '@components/Vault/CreateVaultForm';
 import VaultList from '@components/Vault/VaultList';
-import { getEnvelopes } from 'src/store/envelope/actions';
-import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import { fromSmallestDenomination } from '@utils/cashMethods';
-import { QRCode } from '@bcpros/lixi-components/src/components/Common/QRCode';
+
+
+const QRCode = dynamic(
+  () => import('@bcpros/lixi-components/components/Common/QRCode'),
+  { ssr: false }
+);
+
+const CreateVaultForm = dynamic(
+  () => import('@components/Vault/CreateVaultForm'),
+  { ssr: false }
+);
 
 const Home: React.FC = () => {
 
+  const isServer = () => typeof window === 'undefined';
   const ContextValue = React.useContext(AppContext);
   const { XPI, Wallet } = ContextValue;
   const [formData, setFormData] = useState({
@@ -36,6 +50,7 @@ const Home: React.FC = () => {
   const vaults = useAppSelector(getVaultsBySelectedAccount);
   const selectedAccount = useAppSelector(getSelectedAccount);
   const [isLoadBalanceError, setIsLoadBalanceError] = useState(false);
+
 
   useEffect(() => {
     dispatch(getEnvelopes());
@@ -90,7 +105,7 @@ const Home: React.FC = () => {
       <BalanceHeader
         balance={fromSmallestDenomination(selectedAccount?.balance ?? 0)}
         ticker={currency.ticker} />
-      {selectedAccount?.address && <QRCode
+      {!isServer() && selectedAccount?.address && <QRCode
         address={selectedAccount?.address}
       />}
       {seedInput && (
@@ -132,8 +147,7 @@ const Home: React.FC = () => {
         <ThemedWalletOutlined /> Manage Vaults
       </h2>
 
-      <CreateVaultForm account={selectedAccount}
-      />
+      <CreateVaultForm account={selectedAccount} />
       <VaultList vaults={vaults} />
     </>
   )

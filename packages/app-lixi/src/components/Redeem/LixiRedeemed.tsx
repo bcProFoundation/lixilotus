@@ -2,7 +2,6 @@ import * as _ from 'lodash';
 import { Dropdown, Image, Modal, notification, Popover } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { isIOS, isMobile, isSafari } from 'react-device-detect';
-import { useHistory } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { viewRedeem } from 'src/store/redeem/actions';
 import { getCurrentLixiRedeem } from 'src/store/redeem/selectors';
@@ -24,7 +23,6 @@ const LixiRedeemed = ({
   redeemId
 }: LixiRedeemProps) => {
 
-  const history = useHistory();
   const dispatch = useAppDispatch();
 
   const currentLixiRedeem = useAppSelector(getCurrentLixiRedeem) as ViewRedeemDto;
