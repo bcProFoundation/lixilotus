@@ -13,7 +13,9 @@ import { handleError } from './middlewares/handleError';
 
 const bodyParser = require('body-parser');
 const compression = require('compression');
-const xpiRestUrl = config.has('xpiRestUrl') ? config.get('xpiRestUrl') : 'https://api.sendlotus.com/v4/'
+const xpiRestUrl = config.has('xpiRestUrl')
+  ? config.get('xpiRestUrl')
+  : 'https://api.sendlotus.com/v4/';
 const allowedOrigins = [
   'https://lixilotus.com',
   'https://sendlotus.com',
@@ -22,7 +24,8 @@ const allowedOrigins = [
   'https://dev.sendlotus.com',
   'https://localhost:3000',
   'https://staging.lixilotus.com',
-  'https://dev.lixilotus.com'
+  'https://dev.lixilotus.com',
+  'https://lixilotus.test',
 ];
 
 export class ExpressApp {
@@ -33,7 +36,6 @@ export class ExpressApp {
   }
 
   public routes() {
-
     const nonSPArouter = express.Router();
     // this.app.use('/lixi/:redeemId', async (req: express.Request, res: express.Response, next: NextFunction) => {
     //   const ua = req.headers['user-agent'] ?? '';
@@ -56,35 +58,36 @@ export class ExpressApp {
   public DIProviders() {
     const ConstructedSlpWallet = new SlpWallet('', {
       restURL: xpiRestUrl,
-      hdPath: "m/44'/10605'/0'/0/0"
+      hdPath: "m/44'/10605'/0'/0/0",
     });
     Container.set('xpiWallet', ConstructedSlpWallet);
     Container.set('xpijs', ConstructedSlpWallet.bchjs);
-
   }
 
   async start() {
     this.app.use(
-      process.env.NODE_ENV === 'development' ?
-        cors() :
-        cors({
-          origin: function (origin, callback) {
-            if (!origin) return callback(null, true);
-            if (allowedOrigins.indexOf(origin) === -1) {
-              const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-              return callback(new Error(msg), false);
-            }
-            return callback(null, true);
-          }
-        }));
+      process.env.NODE_ENV === 'development'
+        ? cors()
+        : cors({
+            origin: function (origin, callback) {
+              if (!origin) return callback(null, true);
+              if (allowedOrigins.indexOf(origin) === -1) {
+                const msg =
+                  'The CORS policy for this site does not allow access from the specified Origin.';
+                return callback(new Error(msg), false);
+              }
+              return callback(null, true);
+            },
+          })
+    );
     this.app.use(helmet());
     this.app.use(compression());
 
-    const POST_LIMIT = 1024 * 100 /* Max POST 100 kb */;
+    const POST_LIMIT = 1024 * 100; /* Max POST 100 kb */
 
     this.app.use(
       bodyParser.json({
-        limit: POST_LIMIT
+        limit: POST_LIMIT,
       })
     );
 

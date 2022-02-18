@@ -22,7 +22,6 @@ import { QRCode } from '@abcpros/givegift-components/src/components/Common/QRCod
 import useAsyncTimeout from '@hooks/useAsyncTimeout';
 
 const Home: React.FC = () => {
-
   const ContextValue = React.useContext(AppContext);
   const { XPI, Wallet } = ContextValue;
   const [formData, setFormData] = useState({
@@ -41,34 +40,34 @@ const Home: React.FC = () => {
   useEffect(() => {
     dispatch(getEnvelopes());
     if (selectedAccount) {
-      dispatch(getAccount(selectedAccount.id))
+      dispatch(getAccount(selectedAccount.id));
     }
   }, []);
 
   useEffect(() => {
-    const id = setTimeout(() => {
-      XPI.Electrumx.balance(selectedAccount?.address).then((result => {
-        if (result && result.balance) {
-          const balance = result.balance.confirmed + result.balance.unconfirmed;
-          dispatch(setAccountBalance(balance ?? 0));
-        }
-      })).catch(e => {
-        setIsLoadBalanceError(true);
-      })
+    const id = setInterval(() => {
+      XPI.Electrumx.balance(selectedAccount?.address)
+        .then((result) => {
+          if (result && result.balance) {
+            const balance = result.balance.confirmed + result.balance.unconfirmed;
+            dispatch(setAccountBalance(balance ?? 0));
+          }
+        })
+        .catch((e) => {
+          setIsLoadBalanceError(true);
+        });
     }, 10000);
-    return () => {
-      return clearTimeout(id);
-    }
+    return () => clearInterval(id);
   }, []);
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { value, name } = e.target;
 
     // Validate mnemonic on change
     // Import button should be disabled unless mnemonic is valid
     setIsValidMnemonic(Wallet.validateMnemonic(value));
 
-    setFormData(p => ({ ...p, [name]: value }));
+    setFormData((p) => ({ ...p, [name]: value }));
   };
 
   async function submit() {
@@ -85,28 +84,19 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <WalletLabel
-        name={selectedAccount?.name ?? ''}
-      />
+      <WalletLabel name={selectedAccount?.name ?? ''} />
       <BalanceHeader
         balance={fromSmallestDenomination(selectedAccount?.balance ?? 0)}
-        ticker={currency.ticker} />
-      {selectedAccount?.address && <QRCode
-        address={selectedAccount?.address}
-      />}
+        ticker={currency.ticker}
+      />
+      {selectedAccount?.address && <QRCode address={selectedAccount?.address} />}
       {seedInput && (
         <AntdFormWrapper>
           <Form style={{ width: 'auto' }}>
             <Form.Item
-              validateStatus={
-                !formData.dirty && !formData.mnemonic
-                  ? 'error'
-                  : ''
-              }
+              validateStatus={!formData.dirty && !formData.mnemonic ? 'error' : ''}
               help={
-                !formData.mnemonic || !isValidMnemonic
-                  ? 'Valid mnemonic seed phrase required'
-                  : ''
+                !formData.mnemonic || !isValidMnemonic ? 'Valid mnemonic seed phrase required' : ''
               }
             >
               <Input
@@ -114,15 +104,12 @@ const Home: React.FC = () => {
                 placeholder="mnemonic (seed phrase)"
                 name="mnemonic"
                 autoComplete="off"
-                onChange={e => handleChange(e)}
+                onChange={(e) => handleChange(e)}
                 required
               />
             </Form.Item>
 
-            <SmartButton
-              disabled={!isValidMnemonic}
-              onClick={() => submit()}
-            >
+            <SmartButton disabled={!isValidMnemonic} onClick={() => submit()}>
               Import
             </SmartButton>
           </Form>
@@ -133,11 +120,10 @@ const Home: React.FC = () => {
         <ThemedWalletOutlined /> Manage Vaults
       </h2>
 
-      <CreateVaultForm account={selectedAccount}
-      />
+      <CreateVaultForm account={selectedAccount} />
       <VaultList vaults={vaults} />
     </>
-  )
+  );
 };
 
 export default Home;
