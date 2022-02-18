@@ -8,12 +8,12 @@ import { AppContext } from 'src/store/store';
 import { toPng } from 'html-to-image';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getSelectedVaultId, getSelectedVault } from 'src/store/vault/selectors';
-import { QRCode } from "@abcpros/givegift-components/components/Common/QRCode";
-import { QRRedeemCode } from "@abcpros/givegift-components/components/Common/QRRedeemCode";
+import { QRCode } from '@abcpros/givegift-components/components/Common/QRCode';
+import { QRRedeemCode } from '@abcpros/givegift-components/components/Common/QRRedeemCode';
 import { VaultType } from '@abcpros/givegift-models/src/lib/vault';
 import WalletLabel from '@abcpros/givegift-components/components/Common/WalletLabel';
 import BalanceHeader from '@abcpros/givegift-components/components/Common/BalanceHeader';
-import { StyledCollapse } from "@abcpros/givegift-components/components/Common/StyledCollapse";
+import { StyledCollapse } from '@abcpros/givegift-components/components/Common/StyledCollapse';
 import { SmartButton } from '@abcpros/givegift-components/components/Common/PrimaryButton';
 import RedeemList from '@components/Redeem/RedeemList';
 import { getVault, refreshVault, setVaultBalance } from 'src/store/vault/actions';
@@ -27,7 +27,7 @@ import { showToast } from 'src/store/toast/actions';
 import useAsyncTimeout from '@hooks/useAsyncTimeout';
 
 type CopiedProps = {
-  style?: React.CSSProperties
+  style?: React.CSSProperties;
 };
 
 const Copied = styled.div<CopiedProps>`
@@ -38,7 +38,7 @@ const Copied = styled.div<CopiedProps>`
   border: 1px solid;
   background-color: ${({ ...props }) => props.theme.primary};
   border-color: ${({ ...props }) => props.theme.qr.copyBorderCash};
-  color: ${props => props.theme.contrast};
+  color: ${(props) => props.theme.contrast};
   position: absolute;
   top: 65px;
   padding: 30px 0;
@@ -51,7 +51,6 @@ const Copied = styled.div<CopiedProps>`
 const { Panel } = Collapse;
 
 const Vault: React.FC = () => {
-
   const dispatch = useAppDispatch();
   const ContextValue = React.useContext(AppContext);
   const { XPI, Wallet } = ContextValue;
@@ -64,24 +63,24 @@ const Vault: React.FC = () => {
 
   useEffect(() => {
     if (selectedVault) {
-      dispatch(getVault(selectedVault.id))
+      dispatch(getVault(selectedVault.id));
     }
   }, []);
 
   useEffect(() => {
-    const id = setTimeout(() => {
-      XPI.Electrumx.balance(selectedVault?.address).then((result => {
-        if (result && result.balance) {
-          const balance = result.balance.confirmed + result.balance.unconfirmed;
-          dispatch(setVaultBalance(balance ?? 0));
-        }
-      })).catch(e => {
-        setIsLoadBalanceError(true);
-      })
+    const id = setInterval(() => {
+      XPI.Electrumx.balance(selectedVault?.address)
+        .then((result) => {
+          if (result && result.balance) {
+            const balance = result.balance.confirmed + result.balance.unconfirmed;
+            dispatch(setVaultBalance(balance ?? 0));
+          }
+        })
+        .catch((e) => {
+          setIsLoadBalanceError(true);
+        });
     }, 10000);
-    return () => {
-      return clearTimeout(id);
-    }
+    return () => clearInterval(id);
   }, []);
 
   const handleRefeshVault = () => {
@@ -91,14 +90,14 @@ const Vault: React.FC = () => {
     }
     const vaultId = selectedVaultId;
     dispatch(refreshVault(vaultId));
-  }
+  };
 
-  const handleOnClickRedeemCode = evt => {
+  const handleOnClickRedeemCode = (evt) => {
     setRedeemCodeVisible(true);
     setTimeout(() => {
       setRedeemCodeVisible(false);
     }, 1500);
-  }
+  };
 
   const handleOnCopyRedeemCode = () => {
     setRedeemCodeVisible(true);
@@ -106,84 +105,93 @@ const Vault: React.FC = () => {
 
   const handleDownloadQRRedeemCode = () => {
     if (qrPanelRef.current) {
-      toPng(qrPanelRef.current, { cacheBust: true }).then(url => {
-        saveAs(url);
-      }).catch((err) => {
-        dispatch(showToast('error', {
-          message: 'Unable to download redeem code.',
-          description: 'Please copy the code manually',
-          duration: 5
-        }));
-      });
+      toPng(qrPanelRef.current, { cacheBust: true })
+        .then((url) => {
+          saveAs(url);
+        })
+        .catch((err) => {
+          dispatch(
+            showToast('error', {
+              message: 'Unable to download redeem code.',
+              description: 'Please copy the code manually',
+              duration: 5,
+            })
+          );
+        });
     }
-  }
+  };
 
   const typeVault = () => {
     switch (selectedVault?.vaultType) {
       case VaultType.Fixed:
         return (
-          <>Fixed {selectedVault.fixedValue} {currency.ticker}</>
+          <>
+            Fixed {selectedVault.fixedValue} {currency.ticker}
+          </>
         );
       case VaultType.Divided:
-        return (
-          <>Divided by {selectedVault.dividedValue} </>
-        );
+        return <>Divided by {selectedVault.dividedValue} </>;
       default:
         return (
-          <>Random {selectedVault?.minValue}-{selectedVault?.maxValue} {currency.ticker}</>
+          <>
+            Random {selectedVault?.minValue}-{selectedVault?.maxValue} {currency.ticker}
+          </>
         );
     }
-  }
+  };
 
   const showRedemption = () => {
     if (selectedVault?.maxRedeem != 0) {
-      return <>{selectedVault?.redeemedNum} / {selectedVault?.maxRedeem}</>
+      return (
+        <>
+          {selectedVault?.redeemedNum} / {selectedVault?.maxRedeem}
+        </>
+      );
+    } else {
+      return <>{selectedVault?.redeemedNum}</>;
     }
-    else {
-      return <>{selectedVault?.redeemedNum}</>
-    }
-  }
+  };
 
   const formatDate = () => {
     if (selectedVault?.expiryAt != null) {
       return (
         <Descriptions.Item label="Expiry at">
-          {moment(selectedVault?.expiryAt).format("YYYY-MM-DD HH:mm")}
+          {moment(selectedVault?.expiryAt).format('YYYY-MM-DD HH:mm')}
         </Descriptions.Item>
       );
-    }
-    else {
+    } else {
       return;
     }
-  }
+  };
 
   const showCountry = () => {
-    return (selectedVault?.country != null) ? (
+    return selectedVault?.country != null ? (
       <Descriptions.Item label="Country">
-        {countries.find(country => country.id === selectedVault?.country)?.name}
-      </Descriptions.Item>) : "";
-  }
+        {countries.find((country) => country.id === selectedVault?.country)?.name}
+      </Descriptions.Item>
+    ) : (
+      ''
+    );
+  };
 
   const showIsFamilyFriendly = () => {
-    return (selectedVault?.isFamilyFriendly) ? (
-      <Descriptions.Item label="Optional">
-        Family Friendly
-      </Descriptions.Item>) : "";
-  }
+    return selectedVault?.isFamilyFriendly ? (
+      <Descriptions.Item label="Optional">Family Friendly</Descriptions.Item>
+    ) : (
+      ''
+    );
+  };
 
   return (
     <>
-      <WalletLabel
-        name={selectedVault?.name ?? ''}
-      />
+      <WalletLabel name={selectedVault?.name ?? ''} />
       <BalanceHeader
         balance={fromSmallestDenomination(selectedVault?.balance) ?? 0}
-        ticker={currency.ticker} />
+        ticker={currency.ticker}
+      />
       {selectedVault && selectedVault.address ? (
         <>
-          <QRCode
-            address={selectedVault.address}
-          />
+          <QRCode address={selectedVault.address} />
 
           <Descriptions
             column={1}
@@ -194,15 +202,11 @@ const Vault: React.FC = () => {
               color: 'rgb(23,23,31)',
             }}
           >
-            <Descriptions.Item label="Type">
-              {typeVault()}
-            </Descriptions.Item>
+            <Descriptions.Item label="Type">{typeVault()}</Descriptions.Item>
             <Descriptions.Item label="Total Redeemed">
               {fromSmallestDenomination(selectedVault?.totalRedeem) ?? 0}
             </Descriptions.Item>
-            <Descriptions.Item label="Redemptions">
-              {showRedemption()}
-            </Descriptions.Item>
+            <Descriptions.Item label="Redemptions">{showRedemption()}</Descriptions.Item>
             {formatDate()}
             {showCountry()}
             {showIsFamilyFriendly()}
@@ -212,15 +216,12 @@ const Vault: React.FC = () => {
           <StyledCollapse style={{ marginBottom: '20px' }}>
             <Panel header="Click to reveal vault detail" key="panel-1">
               <div ref={qrPanelRef}>
-                {selectedVault && selectedVault.redeemCode && <QRRedeemCode
-                  logoImage={lixiLogo}
-                  code={selectedVault?.redeemCode}
-                />}
+                {selectedVault && selectedVault.redeemCode && (
+                  <QRRedeemCode logoImage={lixiLogo} code={selectedVault?.redeemCode} />
+                )}
               </div>
-              <SmartButton
-                onClick={() => handleDownloadQRRedeemCode()}
-              >
-                <DownloadOutlined />  Download Code
+              <SmartButton onClick={() => handleDownloadQRRedeemCode()}>
+                <DownloadOutlined /> Download Code
               </SmartButton>
             </Panel>
           </StyledCollapse>
@@ -235,32 +236,31 @@ const Vault: React.FC = () => {
             text={selectedVault.redeemCode}
             onCopy={handleOnCopyRedeemCode}
           >
-            <div style={{ position: 'relative', paddingTop: '20px' }} onClick={handleOnClickRedeemCode}>
-              <Copied
-                style={{ display: redeemCodeVisible ? undefined : 'none' }}
-              >
+            <div
+              style={{ position: 'relative', paddingTop: '20px' }}
+              onClick={handleOnClickRedeemCode}
+            >
+              <Copied style={{ display: redeemCodeVisible ? undefined : 'none' }}>
                 Copied <br />
                 <span style={{ fontSize: '32px' }}>{selectedVault.redeemCode}</span>
               </Copied>
               <SmartButton>
-                <CopyOutlined />  Copy Redeem Code
+                <CopyOutlined /> Copy Redeem Code
               </SmartButton>
             </div>
           </CopyToClipboard>
 
-          <SmartButton
-            onClick={() => handleRefeshVault()}
-          >
-            <ReloadOutlined />  Refresh Vault
+          <SmartButton onClick={() => handleRefeshVault()}>
+            <ReloadOutlined /> Refresh Vault
           </SmartButton>
 
           <RedeemList redeems={allReddemsCurrentVault} />
         </>
-      )
-        : `No vault is selected`
-      }
+      ) : (
+        `No vault is selected`
+      )}
     </>
-  )
+  );
 };
 
 export default Vault;
