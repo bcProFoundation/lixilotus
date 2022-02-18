@@ -1,4 +1,5 @@
 // import Vault from '@components/Vault';
+import RedeemComponent from '@components/Redeem';
 import dynamic from 'next/dynamic';
 import React from 'react';
 
@@ -9,8 +10,7 @@ import React from 'react';
 
 const RedeemPage = () => {
   return (
-    // <Redeem />
-    <div>Redeem</div>
+    <RedeemComponent />
   );
 }
 

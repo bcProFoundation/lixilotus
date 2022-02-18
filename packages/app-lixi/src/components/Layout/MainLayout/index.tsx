@@ -152,7 +152,7 @@ const MainLayout: React.FC = (props) => {
                       Redeem
                     </NavButton>
                   </Link>
-                  <Link href='/settings'>
+                  <Link href='/settings' passHref>
                     <NavButton
                       active={selectedKey === 'settings'}
                     >

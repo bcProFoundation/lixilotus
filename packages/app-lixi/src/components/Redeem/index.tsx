@@ -18,7 +18,6 @@ import { CreateRedeemDto } from '@bcpros/lixi-models/lib/redeem';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
 import { getCurrentAddress, getCurrentRedeemCode } from 'src/store/redeem/selectors';
 import { useSelector } from 'react-redux';
-import dynamic from 'next/dynamic';
 
 const SITE_KEY = "6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb";
 

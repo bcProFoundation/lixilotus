@@ -12,7 +12,6 @@ import Vault from '@components/Vault';
 const VaultPage = () => {
   return (
     <Vault />
-    // <div>Vault</div>
   );
 }
 

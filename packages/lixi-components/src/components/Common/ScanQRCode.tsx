@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Alert, Modal } from 'antd';
-import { BrowserQRCodeReader } from '@zxing/library';
+import { BrowserQRCodeReader } from '@zxing/library/esm5';
 import { ThemedQrcodeOutlined } from './CustomIcons';
 
 import {

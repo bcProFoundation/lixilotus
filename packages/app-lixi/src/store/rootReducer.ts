@@ -34,7 +34,7 @@ const redeemsPersistConfig: PersistConfig<RedeemsState> = {
 };
 
 export const serverReducer = combineReducers({
-  router: routerReducer,
+  // router: routerReducer,
   accounts: accountReducer,
   vaults: vaultReducer,
   redeems: redeemReducer,

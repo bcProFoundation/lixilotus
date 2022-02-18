@@ -16,7 +16,7 @@ import useXPI from '@hooks/useXPI';
 import useWallet from '@hooks/useWallet';
 import rootReducer, { serverReducer } from './rootReducer';
 import BCHJS from '@abcpros/xpi-js';
-import { createRouterMiddleware, initialRouterState, routerReducer } from 'connected-next-router';
+// import { createRouterMiddleware, initialRouterState, routerReducer } from 'connected-next-router';
 import { Context, createWrapper, HYDRATE } from 'next-redux-wrapper';
 import { Router } from 'next/router';
 
@@ -35,7 +35,6 @@ const makeStore = (context: Context) => {
 
   const isServer = typeof window === 'undefined';
 
-
   const sagaMiddleware = createSagaMiddleware({
     context: {
       XPI,
@@ -46,24 +45,23 @@ const makeStore = (context: Context) => {
     }
   });
 
-  const routerMiddleware = createRouterMiddleware();
-  const { asPath } = (context as any).ctx || (Router as any).router || {};
-  let initialState;
-  if (asPath) {
-    initialState = {
-      router: initialRouterState(asPath)
-    }
-  }
+  // const routerMiddleware = createRouterMiddleware();
+  // const { asPath } = (context as any).ctx || (Router as any).router || {};
+  // let initialState;
+  // if (asPath) {
+  //   initialState = {
+  //     router: initialRouterState(asPath)
+  //   }
+  // }
 
   let store;
 
   if (isServer) {
     store = configureStore({
       reducer: serverReducer,
-      middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware, routerMiddleware),
+      middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware),
       devTools: false,
     });
-
   } else {
     store = configureStore({
       reducer: rootReducer,
@@ -72,15 +70,14 @@ const makeStore = (context: Context) => {
           serializableCheck: {
             ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
           },
-        }).concat(sagaMiddleware, routerMiddleware)
+        }).concat(sagaMiddleware)
       },
       devTools: process.env.NODE_ENV === 'production' ? false : {
         actionsBlacklist: [
           'vault/setVaultBalance',
           'account/setAccountBalance'
         ]
-      },
-      preloadedState: initialState
+      }
     });
 
     (store as any).__persistor = persistStore(store);
