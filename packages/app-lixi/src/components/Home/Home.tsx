@@ -14,24 +14,24 @@ import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHead
 import { ThemedWalletOutlined } from '@bcpros/lixi-components/components/Common/CustomIcons';
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
-// import QRCode from '@components/Common/QRCode';
+import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
 import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
 import { SmartButton } from '@components/Common/PrimaryButton';
 import { StyledSpacer } from '@components/Common/StyledSpacer';
-// import CreateVaultForm from '@components/Vault/CreateVaultForm';
+import CreateVaultForm from '@components/Vault/CreateVaultForm';
 import VaultList from '@components/Vault/VaultList';
 import { fromSmallestDenomination } from '@utils/cashMethods';
 
 
-const QRCode = dynamic(
-  () => import('@bcpros/lixi-components/components/Common/QRCode'),
-  { ssr: false }
-);
+// const QRCode = dynamic(
+//   () => import('@bcpros/lixi-components/components/Common/QRCode'),
+//   { ssr: false }
+// );
 
-const CreateVaultForm = dynamic(
-  () => import('@components/Vault/CreateVaultForm'),
-  { ssr: false }
-);
+// const CreateVaultForm = dynamic(
+//   () => import('@components/Vault/CreateVaultForm'),
+//   { ssr: false }
+// );
 
 const Home: React.FC = () => {
 

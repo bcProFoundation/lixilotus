@@ -2,7 +2,7 @@ import { AnyAction, combineReducers } from '@reduxjs/toolkit'
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { PersistConfig } from 'redux-persist';
-// import { createRouterMiddleware, initialRouterState, routerReducer } from 'connected-next-router'
+import { createRouterMiddleware, initialRouterState, routerReducer } from 'connected-next-router';
 import { loadingReducer } from './loading/reducer';
 import { errorReducer } from './error/reducer';
 import { toastReducer } from './toast/reducer';
@@ -34,7 +34,7 @@ const redeemsPersistConfig: PersistConfig<RedeemsState> = {
 };
 
 export const serverReducer = combineReducers({
-  // router: routerReducer,
+  router: routerReducer,
   accounts: accountReducer,
   vaults: vaultReducer,
   redeems: redeemReducer,

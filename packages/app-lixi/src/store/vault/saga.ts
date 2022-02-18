@@ -1,7 +1,6 @@
 import * as _ from 'lodash';
 import { PayloadAction } from "@reduxjs/toolkit";
-// import { push } from 'connected-next-router';
-import BCHJS from "@abcpros/xpi-js";
+import Router from 'next/router';
 import { CreateVaultCommand, GenerateVaultCommand, LockVaultCommand, UnlockVaultCommand, Vault, VaultDto, WithdrawVaultCommand } from "@bcpros/lixi-models/lib/vault";
 import { all, fork, getContext, put, select, takeLatest } from "@redux-saga/core/effects";
 import * as Effects from "redux-saga/effects";
@@ -183,8 +182,8 @@ function* refreshVaultFailureSaga(action: PayloadAction<string>) {
 
 function* setVaultSaga(action: PayloadAction<Vault>) {
   const { id } = action.payload;
-  // yield put(push('/vault'));
   yield put(refreshVault(id));
+  Router.push('/vault');
 }
 
 function* selectVaultSaga(action: PayloadAction<number>) {
@@ -204,7 +203,7 @@ function* selectVaultSaga(action: PayloadAction<number>) {
 
 function* selectVaultSuccessSaga(action: PayloadAction<Vault>) {
   yield put(hideLoading(selectVaultSuccess.type));
-  // yield put(push('/vault'));
+  Router.push('/vault');
 }
 
 function* selectVaultFailureSaga(action: PayloadAction<string>) {

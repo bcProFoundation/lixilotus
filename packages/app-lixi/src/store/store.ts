@@ -16,8 +16,9 @@ import useXPI from '@hooks/useXPI';
 import useWallet from '@hooks/useWallet';
 import rootReducer, { serverReducer } from './rootReducer';
 import BCHJS from '@abcpros/xpi-js';
-// import { createRouterMiddleware, initialRouterState, routerReducer } from 'connected-next-router';
+import { createRouterMiddleware, initialRouterState, routerReducer } from 'connected-next-router';
 import { Context, createWrapper, HYDRATE } from 'next-redux-wrapper';
+import { Router } from 'next/router';
 
 export interface SagaStore extends Store {
   __sagaTask: Task;
@@ -45,14 +46,21 @@ const makeStore = (context: Context) => {
     }
   });
 
-  // const routerMiddleware = createRouterMiddleware();
+  const routerMiddleware = createRouterMiddleware();
+  const { asPath } = (context as any).ctx || (Router as any).router || {};
+  let initialState;
+  if (asPath) {
+    initialState = {
+      router: initialRouterState(asPath)
+    }
+  }
 
   let store;
 
   if (isServer) {
     store = configureStore({
       reducer: serverReducer,
-      middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware),
+      middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware, routerMiddleware),
       devTools: false,
     });
 
@@ -64,7 +72,7 @@ const makeStore = (context: Context) => {
           serializableCheck: {
             ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
           },
-        }).concat(sagaMiddleware)
+        }).concat(sagaMiddleware, routerMiddleware)
       },
       devTools: process.env.NODE_ENV === 'production' ? false : {
         actionsBlacklist: [
@@ -72,6 +80,7 @@ const makeStore = (context: Context) => {
           'account/setAccountBalance'
         ]
       },
+      preloadedState: initialState
     });
 
     (store as any).__persistor = persistStore(store);

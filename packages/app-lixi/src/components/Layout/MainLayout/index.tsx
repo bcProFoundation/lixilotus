@@ -1,30 +1,20 @@
-import { Spin } from 'antd';
+import { Layout, Spin } from 'antd';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-// import { Route, Switch, useHistory, useLocation } from 'react-router-dom';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppSelector } from 'src/store/hooks';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 
 import {
-  GiftOutlined, HomeOutlined, LoadingOutlined, SettingOutlined, UserOutlined, WalletOutlined
+  GiftOutlined, LoadingOutlined, SettingOutlined, UserOutlined, WalletOutlined
 } from '@ant-design/icons';
-import LixiLogo from '@assets/images/lixi_logo.svg';
-import LixiText from '@assets/images/lixi_logo_text.svg';
 import { Footer, NavButton } from '@bcpros/lixi-components/components';
-import Home from '@components/Home/Home';
-import RedeemComponent from '@components/Redeem';
-import LixiRedeemed from '@components/Redeem/LixiRedeemed';
-import Settings from '@components/Settings';
-import Vault from '@components/Vault';
-
-import { Layout, BackTop } from 'antd';
 
 import ModalManager from '../../Common/ModalManager';
 import OnboardingComponent from '../../Onboarding/Onboarding';
-import { theme } from './theme';
-import Link from 'next/link';
 import { GlobalStyle } from './GlobalStyle';
+import { theme } from './theme';
 
 const { Content } = Layout;
 
@@ -154,27 +144,27 @@ const MainLayout: React.FC = (props) => {
                       Vault
                     </NavButton>
                   </Link>
-                  <NavButton
-                    active={selectedKey === 'redeem'}
-                    onClick={() => router.push('/redeem')}
-                  >
-                    <GiftOutlined />
-                    Redeem
-                  </NavButton>
-
-                  <NavButton
-                    active={selectedKey === 'settings'}
-                    onClick={() => router.push('/settings')}
-                  >
-                    <SettingOutlined />
-                    Settings
-                  </NavButton>
+                  <Link href='/redeem' passHref>
+                    <NavButton
+                      active={selectedKey === 'redeem'}
+                    >
+                      <GiftOutlined />
+                      Redeem
+                    </NavButton>
+                  </Link>
+                  <Link href='/settings'>
+                    <NavButton
+                      active={selectedKey === 'settings'}
+                    >
+                      <SettingOutlined />
+                      Settings
+                    </NavButton>
+                  </Link>
                 </Footer>
               </>
             }
           </AppBody>
         </LixiApp>
-
       </Spin>
     </ThemeProvider>
   );

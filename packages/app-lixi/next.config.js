@@ -40,10 +40,12 @@ const tmModules = [
 			// '@bcpros/lixi-components',
 			// '@bcpros/lixi-models'
 			// ie: '@react-google-maps/api'...
+			// '@bcpros/lixi-models',
+			// '@bcpros/lixi-components'
 		]
 		: [
-			'@bcpros/lixi-components',
-			'@bcpros/lixi-models'
+			// '@bcpros/lixi-models',
+			// '@bcpros/lixi-components'
 		]),
 	// ESM only packages are not yet supported by NextJs if you're not
 	// using experimental experimental esmExternals

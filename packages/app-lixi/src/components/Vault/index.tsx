@@ -1,29 +1,31 @@
+import { Collapse, Descriptions } from 'antd';
+import { saveAs } from 'file-saver';
+import { toPng } from 'html-to-image';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import styled from 'styled-components';
-import { Descriptions, Collapse } from 'antd';
-import moment from 'moment';
-import { saveAs } from 'file-saver';
-import { AppContext } from 'src/store/store';
-import { toPng } from 'html-to-image';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { getSelectedVaultId, getSelectedVault } from 'src/store/vault/selectors';
-// import QRCode from "@bcpros/lixi-components/components/Common/QRCode";
-import { QRRedeemCode } from "@bcpros/lixi-components/components/Common/QRRedeemCode";
-import { VaultType } from '@bcpros/lixi-models/src/lib/vault';
-import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
-import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
-import { StyledCollapse } from "@bcpros/lixi-components/components/Common/StyledCollapse";
-import { SmartButton } from '@bcpros/lixi-components/components/Common/PrimaryButton';
-import RedeemList from '@components/Redeem/RedeemList';
-import { getVault, refreshVault, setVaultBalance } from 'src/store/vault/actions';
 import { getAllRedeems } from 'src/store/redeem/selectors';
-import { currency } from '@bcpros/lixi-components/src/components/Common/Ticker';
-import { fromSmallestDenomination } from '@utils/cashMethods';
-import { countries } from '@bcpros/lixi-models/constants/countries';
-import lixiLogo from '../../assets/images/lixi_logo.svg';
-import { CopyOutlined, DownloadOutlined, ReloadOutlined } from '@ant-design/icons';
+import { AppContext } from 'src/store/store';
 import { showToast } from 'src/store/toast/actions';
+import { getVault, refreshVault, setVaultBalance } from 'src/store/vault/actions';
+import { getSelectedVault, getSelectedVaultId } from 'src/store/vault/selectors';
+import styled from 'styled-components';
+
+import { CopyOutlined, DownloadOutlined, ReloadOutlined } from '@ant-design/icons';
+import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
+import { SmartButton } from '@bcpros/lixi-components/components/Common/PrimaryButton';
+import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
+import { QRRedeemCode } from '@bcpros/lixi-components/components/Common/QRRedeemCode';
+import { StyledCollapse } from '@bcpros/lixi-components/components/Common/StyledCollapse';
+import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
+import { countries } from '@bcpros/lixi-models/constants/countries';
+import { VaultType } from '@bcpros/lixi-models/src/lib/vault';
+import { currency } from '@components/Common/Ticker';
+import RedeemList from '@components/Redeem/RedeemList';
+import { fromSmallestDenomination } from '@utils/cashMethods';
+
+import lixiLogo from '../../assets/images/lixi_logo.svg';
 
 type CopiedProps = {
   style?: React.CSSProperties
@@ -180,9 +182,9 @@ const Vault: React.FC = () => {
         ticker={currency.ticker} />
       {selectedVault && selectedVault.address ? (
         <>
-          {/* <QRCode
-          address={selectedVault.address}
-          /> */}
+          <QRCode
+            address={selectedVault.address}
+          />
 
           <Descriptions
             column={1}
