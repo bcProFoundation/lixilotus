@@ -22,10 +22,8 @@ const allowedOrigins = [
   'https://www.sendlotus.com',
   'https://staging.sendlotus.com',
   'https://dev.sendlotus.com',
-  'https://localhost:3000',
   'https://staging.lixilotus.com',
   'https://dev.lixilotus.com',
-  'https://lixilotus.test',
 ];
 
 export class ExpressApp {
