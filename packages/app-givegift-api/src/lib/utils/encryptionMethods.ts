@@ -84,3 +84,10 @@ export async function hexSha256(text: string): Promise<string> {
   const txtHash = await crypto.createHash('sha256').update(txtUtf8).digest();
   return txtHash.toString('hex');
 }
+
+export async function hashMnemonic(mnemonic: string): Promise<string> {
+  const mnemonicUtf8 = new TextEncoder().encode(mnemonic); // encode mnemonic as UTF-8
+  const mnemonicHashBuffer = await crypto.createHash('sha256').update(mnemonicUtf8).digest();;// hash the mnemonic
+  const mnemonicHash = Buffer.from(new Uint8Array(mnemonicHashBuffer)).toString('hex');
+  return mnemonicHash;
+}
