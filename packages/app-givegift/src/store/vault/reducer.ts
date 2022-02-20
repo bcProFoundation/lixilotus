@@ -1,18 +1,37 @@
 import { Vault } from '@abcpros/givegift-models/lib/vault';
 import { createEntityAdapter, createReducer, Update } from '@reduxjs/toolkit';
 
-import { importAccountSuccess, selectAccountSuccess } from '../account/actions';
-import { lockVaultSuccess, refreshVaultSuccess, selectVaultSuccess, setVault, setVaultBalance, unlockVaultSuccess } from './actions';
+import {
+  importAccountSuccess,
+  selectAccountSuccess,
+  refreshVaultListSuccess,
+} from '../account/actions';
+import {
+  lockVaultSuccess,
+  refreshVaultSuccess,
+  selectVaultSuccess,
+  setVault,
+  setVaultBalance,
+  unlockVaultSuccess,
+} from './actions';
 import { VaultsState } from './state';
 
-export const vaultsAdapter = createEntityAdapter<Vault>({
-})
-
+export const vaultsAdapter = createEntityAdapter<Vault>({});
 
 const initialState: VaultsState = vaultsAdapter.getInitialState({
   selectedId: 0,
-  redeemIdsById: {}
+  redeemIdsById: {},
 });
+
+const refreshVaultList = (vaults: Vault[], state) => {
+  const vaultIds = vaults.map((vault) => vault.id);
+  vaultsAdapter.upsertMany(state, vaults);
+  if (vaultIds.length == 0 || !vaultIds.includes(state.selectedId)) {
+    // The current selected vault is not the same anymore
+    // Reset the selected vault
+    state.selectedId = 0;
+  }
+};
 
 export const vaultReducer = createReducer(initialState, (builder) => {
   builder
@@ -27,11 +46,11 @@ export const vaultReducer = createReducer(initialState, (builder) => {
       const updateVault: Update<Vault> = {
         id: vault.id,
         changes: {
-          ...vault
-        }
+          ...vault,
+        },
       };
       vaultsAdapter.updateOne(state, updateVault);
-      const redeemIds = redeems.map(redeem => redeem.id);
+      const redeemIds = redeems.map((redeem) => redeem.id);
       state.redeemIdsById[vault.id] = redeemIds;
     })
     .addCase(refreshVaultSuccess, (state, action) => {
@@ -39,40 +58,32 @@ export const vaultReducer = createReducer(initialState, (builder) => {
       const updateVault: Update<Vault> = {
         id: vault.id,
         changes: {
-          ...vault
-        }
+          ...vault,
+        },
       };
       vaultsAdapter.updateOne(state, updateVault);
-      const redeemIds = action.payload.redeems.map(redeem => redeem.id);
+      const redeemIds = action.payload.redeems.map((redeem) => redeem.id);
       state.redeemIdsById[vault.id] = redeemIds;
     })
     .addCase(selectAccountSuccess, (state, action) => {
       const { vaults } = action.payload;
-      const vaultIds = vaults.map(vault => vault.id);
-      vaultsAdapter.upsertMany(state, vaults);
-      if (vaultIds.length == 0 || !vaultIds.includes(state.selectedId)) {
-        // The current selected vault is not the same anymore
-        // Reset the selected vault
-        state.selectedId = 0;
-      }
+      refreshVaultList(vaults, state);
+    })
+    .addCase(refreshVaultListSuccess, (state, action) => {
+      const { vaults } = action.payload;
+      refreshVaultList(vaults, state);
     })
     .addCase(importAccountSuccess, (state, action) => {
       const { vaults } = action.payload;
-      const vaultIds = vaults.map(vault => vault.id);
-      vaultsAdapter.upsertMany(state, vaults);
-      if (vaultIds.length == 0 || !vaultIds.includes(state.selectedId)) {
-        // The current selected vault is not the same anymore
-        // Reset the selected vault
-        state.selectedId = 0;
-      }
+      refreshVaultList(vaults, state);
     })
     .addCase(lockVaultSuccess, (state, action) => {
       const vault = action.payload;
       const updateVault: Update<Vault> = {
         id: vault.id,
         changes: {
-          status: vault.status
-        }
+          status: vault.status,
+        },
       };
       vaultsAdapter.updateOne(state, updateVault);
     })
@@ -81,8 +92,8 @@ export const vaultReducer = createReducer(initialState, (builder) => {
       const updateVault: Update<Vault> = {
         id: vault.id,
         changes: {
-          status: vault.status
-        }
+          status: vault.status,
+        },
       };
       vaultsAdapter.updateOne(state, updateVault);
     })
@@ -92,10 +103,10 @@ export const vaultReducer = createReducer(initialState, (builder) => {
         const updateVault: Update<Vault> = {
           id: selectedId,
           changes: {
-            balance: action.payload
-          }
+            balance: action.payload,
+          },
         };
         vaultsAdapter.updateOne(state, updateVault);
       }
-    })
-})
+    });
+});
