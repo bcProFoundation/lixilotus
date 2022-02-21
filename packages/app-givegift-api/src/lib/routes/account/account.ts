@@ -30,7 +30,7 @@ router.post('/import', async (req: express.Request, res: express.Response, next:
       // encrypt mnemonic
       let encryptedMnemonic = await aesGcmEncrypt(mnemonic, mnemonic);
 
-      // Check Mnemonic Hash is exist in database
+      // Check Mnemonic Hash is existed in database
       const account = await prisma.account.findFirst({
         where: {
           mnemonicHash: mnemonicHash
