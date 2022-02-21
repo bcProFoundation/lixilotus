@@ -8,6 +8,7 @@ import HDNode from '@abcpros/xpi-js/types/hdnode';
 import { PrismaClient } from '@prisma/client';
 import BigNumber from 'bignumber.js';
 import { currency, fromSmallestDenomination, toSmallestDenomination } from '@abcpros/givegift-models';
+import logger from '../logger';
 
 @Service()
 export class WalletService {
@@ -172,7 +173,7 @@ export class WalletService {
         return false;
       }
     } catch (err) {
-      console.log(err);
+      logger.error(err);
       return false;
     }
   };

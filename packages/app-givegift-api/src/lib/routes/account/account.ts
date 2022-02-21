@@ -30,26 +30,44 @@ router.post('/import', async (req: express.Request, res: express.Response, next:
       // encrypt mnemonic
       let encryptedMnemonic = await aesGcmEncrypt(mnemonic, mnemonic);
 
-      // create account in database
-      const { address } = await walletService.deriveAddress(mnemonic, 0);
-      const name = address.slice(12, 17);
-      const accountToInsert = {
-        name: name,
-        encryptedMnemonic: encryptedMnemonic,
-        mnemonicHash: mnemonicHash,
-        id: undefined,
-        address: address,
-      };
+      // Check Mnemonic Hash is exist in database
+      const account = await prisma.account.findFirst({
+        where: {
+          mnemonicHash: mnemonicHash
+        }
+      });
+      if (!account) {
+        // create account in database
+        const { address } = await walletService.deriveAddress(mnemonic, 0);
+        const name = address.slice(12, 17);
+        const accountToInsert = {
+          name: name,
+          encryptedMnemonic: encryptedMnemonic,
+          mnemonicHash: mnemonicHash,
+          id: undefined,
+          address: address,
+        };
 
-      const createdAccount: AccountDb = await prisma.account.create({ data: accountToInsert });
+        const createdAccount: AccountDb = await prisma.account.create({ data: accountToInsert });
 
-      const resultApi: AccountDto = {
-        ...createdAccount, 
-        address,
-        balance: 0
-      };
+        const resultApi: AccountDto = {
+          ...createdAccount, 
+          address,
+          balance: 0
+        };
 
-      res.json(resultApi);
+        res.json(resultApi);
+      }
+      else {
+        const resultApi: AccountDto = {
+          ...account,
+          mnemonic: mnemonic,
+          name: account.name,
+          address: account.address
+        };
+  
+        res.json(resultApi);
+      }
 
     }
     else {
