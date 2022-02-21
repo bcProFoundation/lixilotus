@@ -38,18 +38,4 @@ export const refreshVaultList = createAction<any>('vault/refreshVaultList');
 export const refreshVaultListSuccess = createAction<{ account: Account; vaults: Vault[] }>(
   'vault/refreshVaultListSuccess'
 );
-export const refreshVaultListFailure = createAction<string>('vault/refreshVaultListFailure'); // i will be back
-
-// Thunk action creators
-// Not use currently
-// export const renameAccountThunk =
-//   (name: string, prebuiltCommand: RenameAccountCommand): AppThunk =>
-//   (dispatch) => {
-//     if (prebuiltCommand) {
-//       const command: RenameAccountCommand = {
-//         ...prebuiltCommand,
-//         name: name,
-//       };
-//       dispatch(renameAccount(command));
-//     }
-//   };
+export const refreshVaultListFailure = createAction<string>('vault/refreshVaultListFailure');
