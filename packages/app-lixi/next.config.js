@@ -161,6 +161,11 @@ const nextConfig = withLess({
 		}
 
 		config.module.rules.push({
+			type: 'asset',
+			resourceQuery: /url/, // *.svg?url
+		});
+
+		config.module.rules.push({
 			test: /\.svg$/,
 			issuer: /\.(js|ts)x?$/,
 			use: [
@@ -168,18 +173,14 @@ const nextConfig = withLess({
 					loader: '@svgr/webpack',
 					// https://react-svgr.com/docs/webpack/#passing-options
 					options: {
-						svgo: true,
-						// @link https://github.com/svg/svgo#configuration
-						svgoConfig: {
-							multipass: false,
-							datauri: 'base64',
-							js2svg: {
-								indent: 2,
-								pretty: false,
-							},
-						},
+						prettier: false,
+						svgo: false,
+						titleProp: true,
 					},
 				},
+				{
+					loader: 'url-loader'
+				}
 			],
 		});
 

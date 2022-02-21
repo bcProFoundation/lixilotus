@@ -14,6 +14,11 @@ export const StyledCollapse = styled(Collapse)`
         border-bottom: none !important;
     }
 
+    .ant-collapse-header {
+        justify-content: center;
+        align-items: center;
+    }
+
     *:not(button) {
         color: ${props => props.theme.collapses.color} !important;
     }

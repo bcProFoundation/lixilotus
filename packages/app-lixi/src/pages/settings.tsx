@@ -1,11 +1,6 @@
-// import Vault from '@components/Vault';
-import dynamic from 'next/dynamic';
 import React from 'react';
 
-const Settings = dynamic(
-  () => import('@components/Settings'),
-  { ssr: false }
-)
+import Settings from '@components/Settings';
 
 const SettingsPage = () => {
   return (

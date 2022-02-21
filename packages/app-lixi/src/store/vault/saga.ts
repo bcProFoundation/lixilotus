@@ -1,28 +1,32 @@
+import { push } from 'connected-next-router';
 import * as _ from 'lodash';
-import { PayloadAction } from "@reduxjs/toolkit";
+import * as Effects from 'redux-saga/effects';
+
+import { Redeem, RedeemDto } from '@bcpros/lixi-models/lib/redeem';
 // import Router from 'next/router';
-import { CreateVaultCommand, GenerateVaultCommand, LockVaultCommand, UnlockVaultCommand, Vault, VaultDto, WithdrawVaultCommand } from "@bcpros/lixi-models/lib/vault";
-import { all, fork, getContext, put, select, takeLatest } from "@redux-saga/core/effects";
-import * as Effects from "redux-saga/effects";
+import {
+  CreateVaultCommand, GenerateVaultCommand, LockVaultCommand, UnlockVaultCommand, Vault, VaultDto,
+  WithdrawVaultCommand
+} from '@bcpros/lixi-models/lib/vault';
+import { all, fork, put, takeLatest } from '@redux-saga/core/effects';
+import { PayloadAction } from '@reduxjs/toolkit';
+import {
+  aesGcmDecrypt, generateRandomBase62Str, numberToBase62
+} from '@utils/encryptionMethods';
+
+import { hideLoading, showLoading } from '../loading/actions';
+import redeemApi from '../redeem/api';
+import { showToast } from '../toast/actions';
+import {
+  generateVault, getVault, getVaultActionType, getVaultFailure, getVaultSuccess, lockVault,
+  lockVaultFailure, lockVaultSuccess, postVault, postVaultFailure, postVaultSuccess, refreshVault,
+  refreshVaultActionType, refreshVaultFailure, refreshVaultSuccess, selectVault,
+  selectVaultFailure, selectVaultSuccess, setVault, unlockVault, unlockVaultFailure,
+  unlockVaultSuccess, withdrawVault, withdrawVaultFailure, withdrawVaultSuccess
+} from './actions';
+import vaultApi from './api';
 
 const call: any = Effects.call;
-import {
-  generateVault, getVault, getVaultActionType,
-  getVaultFailure, getVaultSuccess, postVault,
-  postVaultFailure, postVaultSuccess, refreshVault,
-  refreshVaultActionType, refreshVaultFailure,
-  refreshVaultSuccess, selectVault, selectVaultSuccess,
-  selectVaultFailure, setVault, lockVault, unlockVault, unlockVaultSuccess, lockVaultSuccess, unlockVaultFailure, lockVaultFailure, withdrawVaultFailure, withdrawVaultSuccess, withdrawVault
-} from "./actions";
-import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase62Str, numberToBase62 } from "@utils/encryptionMethods";
-import { RedeemDto, Redeem } from "@bcpros/lixi-models/lib/redeem";
-import vaultApi from "./api";
-import redeemApi from "../redeem/api";
-import { showToast } from "../toast/actions";
-import { hideLoading, showLoading } from "../loading/actions";
-import { push } from 'connected-next-router';
-// import { getSelectedVault } from 'src/store/vault/selectors';
-
 /**
  * Generate a vault with random encryption password
  * @param action The data to needed generate a vault
@@ -184,7 +188,7 @@ function* refreshVaultFailureSaga(action: PayloadAction<string>) {
 function* setVaultSaga(action: PayloadAction<Vault>) {
   const { id } = action.payload;
   yield put(refreshVault(id));
-  // Router.push('/vault');
+  yield put(push({ pathname: '/vault' }));
 }
 
 function* selectVaultSaga(action: PayloadAction<number>) {
@@ -204,7 +208,6 @@ function* selectVaultSaga(action: PayloadAction<number>) {
 
 function* selectVaultSuccessSaga(action: PayloadAction<Vault>) {
   yield put(hideLoading(selectVaultSuccess.type));
-  // Router.push('/vault');
   yield put(push({ pathname: '/vault' }));
 }
 

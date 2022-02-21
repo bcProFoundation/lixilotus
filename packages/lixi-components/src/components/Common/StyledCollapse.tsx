@@ -30,6 +30,8 @@ export const VaultCollapse = styled(Collapse) <VaultCollapseProps>`
         .ant-collapse-header {
           font-size: 18px;
           font-weight: bold;
+          justify-content: center;
+          align-items: center;
           color: ${props.theme.buttons.secondary.color} !important;
           svg {
             color: ${props.theme.buttons.secondary.color} !important;
@@ -49,6 +51,8 @@ export const VaultCollapse = styled(Collapse) <VaultCollapseProps>`
         .ant-collapse-header {
           font-size: 18px;
           font-weight: bold;
+          justify-content: center;
+          align-items: center;
           color: ${props.theme.contrast} !important;
           svg {
             color: ${props.theme.contrast} !important;
@@ -83,6 +87,8 @@ export const AdvancedCollapse = styled(Collapse)`
 
   .ant-collapse-header {
     font-weight: normal;
+    justify-content: center;
+    align-items: center;
     color: ${props => props.theme.buttons.secondary.color} !important;
   }
 

@@ -58,7 +58,7 @@ const makeStore = (context: Context) => {
 
   if (isServer) {
     store = configureStore({
-      reducer: rootReducer,
+      reducer: serverReducer,
       middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware),
       devTools: false,
     });
@@ -100,4 +100,4 @@ export type AppThunk<ReturnType = void> = ThunkAction<
 >;
 
 
-export const wrapper = createWrapper<AppStore>(makeStore, { debug: false });
+export const wrapper = createWrapper<AppStore>(makeStore, { debug: true });

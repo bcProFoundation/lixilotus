@@ -16,8 +16,8 @@ import { Account, DeleteAccountCommand, RenameAccountCommand } from '@bcpros/lix
 import {
   CopyOutlined, ImportOutlined, LockOutlined, PlusSquareOutlined, WalletOutlined
 } from '@ant-design/icons';
-import Edit from '@assets/icons/edit.svg';
-import Trashcan from '@assets/icons/trashcan.svg';
+import { ReactComponent as Edit } from '@assets/icons/edit.svg';
+import { ReactComponent as Trashcan } from '@assets/icons/trashcan.svg';
 import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
 import PrimaryButton, { SecondaryButton, SmartButton } from '@components/Common/PrimaryButton';
 import { StyledCollapse } from '@components/Common/StyledCollapse';
@@ -25,7 +25,6 @@ import { StyledSpacer } from '@components/Common/StyledSpacer';
 
 import { DeleteAccountModalProps } from './DeleteAccountModal';
 import { RenameAccountModalProps } from './RenameAccountModal';
-import Image from 'next/image';
 
 const { Panel } = Collapse
 
@@ -302,14 +301,14 @@ const Settings: React.FC = () => {
                     <h3>{selectedAccount?.name}</h3>
                   </SWName>
                   <SWButtonCtn>
-                    <Image src={Edit}
+                    <Edit
                       onClick={() =>
                         showPopulatedRenameAccountModal(
                           selectedAccount as Account
                         )
                       }
                     />
-                    <Image src={Trashcan}
+                    <Trashcan
                       onClick={() =>
                         showPopulatedDeleteAccountModal(
                           selectedAccount as Account
@@ -327,14 +326,14 @@ const Settings: React.FC = () => {
                       </SWName>
 
                       <SWButtonCtn>
-                        <Image src={Edit}
+                        <Edit
                           onClick={() =>
                             showPopulatedRenameAccountModal(
                               acc,
                             )
                           }
                         />
-                        <Image src={Trashcan}
+                        <Trashcan
                           onClick={() =>
                             showPopulatedDeleteAccountModal(
                               acc,
