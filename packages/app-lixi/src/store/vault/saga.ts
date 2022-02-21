@@ -20,6 +20,7 @@ import vaultApi from "./api";
 import redeemApi from "../redeem/api";
 import { showToast } from "../toast/actions";
 import { hideLoading, showLoading } from "../loading/actions";
+import { push } from 'connected-next-router';
 // import { getSelectedVault } from 'src/store/vault/selectors';
 
 /**
@@ -204,6 +205,7 @@ function* selectVaultSaga(action: PayloadAction<number>) {
 function* selectVaultSuccessSaga(action: PayloadAction<Vault>) {
   yield put(hideLoading(selectVaultSuccess.type));
   // Router.push('/vault');
+  yield put(push({ pathname: '/vault' }));
 }
 
 function* selectVaultFailureSaga(action: PayloadAction<string>) {

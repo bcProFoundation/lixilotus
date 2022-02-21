@@ -12,7 +12,7 @@ import { END } from 'redux-saga';
 
 import MainLayout from '@components/Layout/MainLayout';
 
-// import { ConnectedRouter } from 'connected-next-router';
+import { ConnectedRouter } from 'connected-next-router';
 import { AppContext, SagaStore, Wallet, wrapper, XPI } from '../store/store';
 
 
@@ -36,20 +36,20 @@ const LixiApp = ({ Component, ...rest }) => {
             <meta name="viewport" content="width=device-width, initial-scale=1" />
           </Head>
           {/* <PersistGate persistor={store.__persistor} loading={<div>Loading</div>}> */}
-          {/* <ConnectedRouter> */}
-          {/* {GA.init() && <GA.RouteTracker />} */}
-          {/* <Component {...props.pageProps} router={router} /> */}
-          <PersistGate persistor={store.__persistor} loading={<div>Loading</div>}>
-            <Component {...props.pageProps} router={router} />
-          </PersistGate>
-          {/* {isServer() ? (
+          <ConnectedRouter>
+            {/* {GA.init() && <GA.RouteTracker />} */}
+            {/* <Component {...props.pageProps} router={router} /> */}
+            <PersistGate persistor={store.__persistor} loading={<div>Loading</div>}>
+              <Component {...props.pageProps} router={router} />
+            </PersistGate>
+            {/* {isServer() ? (
             <Component {...props.pageProps} router={router} />
           ) : (
             <PersistGate persistor={store}> loading={<div>Loading</div>}
               <Component {...props.pageProps} router={router} />
             </PersistGate>
           )} */}
-          {/* </ConnectedRouter> */}
+          </ConnectedRouter>
           {/* </PersistGate> */}
         </Layout>
       </AppContext.Provider>
@@ -100,4 +100,5 @@ LixiApp.getInitialProps = wrapper.getInitialAppProps((store: SagaStore) => async
   };
 });
 
-export default LixiApp;
+// export default wrapper.withRedux(LixiApp);
+export default wrapper.withRedux(LixiApp);

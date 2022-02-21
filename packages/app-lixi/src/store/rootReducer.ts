@@ -15,6 +15,7 @@ import { RedeemsState } from './redeem/state';
 import { redeemReducer } from './redeem/reducer';
 import { modalReducer } from './modal/reducer';
 import { AccountsState } from './account/state';
+import { HYDRATE } from 'next-redux-wrapper';
 
 
 
@@ -34,7 +35,7 @@ const redeemsPersistConfig: PersistConfig<RedeemsState> = {
 };
 
 export const serverReducer = combineReducers({
-  // router: routerReducer,
+  router: routerReducer,
   accounts: accountReducer,
   vaults: vaultReducer,
   redeems: redeemReducer,
@@ -48,8 +49,8 @@ export const serverReducer = combineReducers({
   action: actionReducer,
 });
 
-export const reducer = combineReducers({
-  // router: routerReducer,
+export const appReducer = combineReducers({
+  router: routerReducer,
   accounts: persistReducer(accountPersistConfig, accountReducer),
   vaults: persistReducer(vaultPersistConfig, vaultReducer),
   redeems: persistReducer(redeemsPersistConfig, redeemReducer),
@@ -63,16 +64,21 @@ export const reducer = combineReducers({
   action: actionReducer,
 });
 
-// const reducer = (state, action: AnyAction) => {
-//   if (action.type === HYDRATE) {
-//     const nextState = {
-//       ...state, // use previous state
-//       ...action.payload, // apply delta from hydration
-//     };
-//     return nextState;
-//   } else {
-//     return serverRootReducer(state, action);
-//   }
-// };
+const reducer = (state, action: AnyAction) => {
+  if (action.type === HYDRATE) {
+    const nextState = {
+      ...state, // use previous state
+      // ...action.payload, // apply delta from hydration
+    };
+    if (typeof window !== 'undefined' && state?.router) {
+      // preserve router value on client side navigation
+      nextState.router = state.router;
+    }
+    return nextState;
+  } else {
+    return appReducer(state, action);
+  }
+};
+
 
 export default reducer;
