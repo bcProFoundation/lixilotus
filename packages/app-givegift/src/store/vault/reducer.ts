@@ -23,16 +23,6 @@ const initialState: VaultsState = vaultsAdapter.getInitialState({
   redeemIdsById: {},
 });
 
-const refreshVaultList = (vaults: Vault[], state) => {
-  const vaultIds = vaults.map((vault) => vault.id);
-  vaultsAdapter.upsertMany(state, vaults);
-  if (vaultIds.length == 0 || !vaultIds.includes(state.selectedId)) {
-    // The current selected vault is not the same anymore
-    // Reset the selected vault
-    state.selectedId = 0;
-  }
-};
-
 export const vaultReducer = createReducer(initialState, (builder) => {
   builder
     .addCase(setVault, (state, action) => {
@@ -67,15 +57,33 @@ export const vaultReducer = createReducer(initialState, (builder) => {
     })
     .addCase(selectAccountSuccess, (state, action) => {
       const { vaults } = action.payload;
-      refreshVaultList(vaults, state);
+      const vaultIds = vaults.map((vault) => vault.id);
+      vaultsAdapter.upsertMany(state, vaults);
+      if (vaultIds.length == 0 || !vaultIds.includes(state.selectedId)) {
+        // The current selected vault is not the same anymore
+        // Reset the selected vault
+        state.selectedId = 0;
+      }
     })
     .addCase(refreshVaultListSuccess, (state, action) => {
       const { vaults } = action.payload;
-      refreshVaultList(vaults, state);
+      const vaultIds = vaults.map((vault) => vault.id);
+      vaultsAdapter.upsertMany(state, vaults);
+      if (vaultIds.length == 0 || !vaultIds.includes(state.selectedId)) {
+        // The current selected vault is not the same anymore
+        // Reset the selected vault
+        state.selectedId = 0;
+      }
     })
     .addCase(importAccountSuccess, (state, action) => {
       const { vaults } = action.payload;
-      refreshVaultList(vaults, state);
+      const vaultIds = vaults.map((vault) => vault.id);
+      vaultsAdapter.upsertMany(state, vaults);
+      if (vaultIds.length == 0 || !vaultIds.includes(state.selectedId)) {
+        // The current selected vault is not the same anymore
+        // Reset the selected vault
+        state.selectedId = 0;
+      }
     })
     .addCase(lockVaultSuccess, (state, action) => {
       const vault = action.payload;

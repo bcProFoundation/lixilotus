@@ -2,18 +2,21 @@ import { Account } from '@abcpros/givegift-models';
 import { createEntityAdapter, createReducer, Update } from '@reduxjs/toolkit';
 
 import {
-  deleteAccountSuccess, importAccountSuccess, renameAccountSuccess, selectAccountSuccess,
+  deleteAccountSuccess,
+  importAccountSuccess,
+  renameAccountSuccess,
+  selectAccountSuccess,
   setAccount,
-  setAccountBalance
+  setAccountBalance,
+  refreshVaultListSuccess,
 } from './actions';
 import { AccountsState } from './state';
 
-export const accountsAdapter = createEntityAdapter<Account>({
-})
+export const accountsAdapter = createEntityAdapter<Account>({});
 
 const initialState: AccountsState = accountsAdapter.getInitialState({
   selectedId: undefined,
-  vaultIdsById: {}
+  vaultIdsById: {},
 });
 
 export const accountReducer = createReducer(initialState, (builder) => {
@@ -27,7 +30,7 @@ export const accountReducer = createReducer(initialState, (builder) => {
       const { account, vaults } = action.payload;
       const id = account.id;
       state.selectedId = id;
-      const vaultIds = vaults.map(vault => vault.id);
+      const vaultIds = vaults.map((vault) => vault.id);
       state.vaultIdsById[id] = vaultIds;
       accountsAdapter.upsertOne(state, account);
     })
@@ -35,7 +38,15 @@ export const accountReducer = createReducer(initialState, (builder) => {
       const { account, vaults } = action.payload;
       const id = account.id;
       state.selectedId = id;
-      const vaultIds = vaults.map(vault => vault.id);
+      const vaultIds = vaults.map((vault) => vault.id);
+      state.vaultIdsById[id] = vaultIds;
+      accountsAdapter.upsertOne(state, account);
+    })
+    .addCase(refreshVaultListSuccess, (state, action) => {
+      const { account, vaults } = action.payload;
+      const id = account.id;
+      state.selectedId = id;
+      const vaultIds = vaults.map((vault) => vault.id);
       state.vaultIdsById[id] = vaultIds;
       accountsAdapter.upsertOne(state, account);
     })
@@ -44,8 +55,8 @@ export const accountReducer = createReducer(initialState, (builder) => {
       const updateAccount: Update<Account> = {
         id: account.id,
         changes: {
-          ...account
-        }
+          ...account,
+        },
       };
       accountsAdapter.updateOne(state, updateAccount);
     })
@@ -58,10 +69,10 @@ export const accountReducer = createReducer(initialState, (builder) => {
         const updateAccount: Update<Account> = {
           id: selectedId,
           changes: {
-            balance: action.payload
-          }
+            balance: action.payload,
+          },
         };
         accountsAdapter.updateOne(state, updateAccount);
       }
-    })
+    });
 });

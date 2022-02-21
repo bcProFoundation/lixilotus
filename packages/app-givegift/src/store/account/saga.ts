@@ -298,7 +298,7 @@ function* deleteAccountFailureSaga(action: PayloadAction<string>) {
 
 function* refreshVaultListSaga(action: PayloadAction<number>) {
   try {
-    yield put(showLoading(selectAccount.type));
+    yield put(showLoading(refreshVaultList.type));
     const accountId = action.payload;
     const data = yield call(accountApi.getById, accountId);
     const account = data as Account;
@@ -314,7 +314,7 @@ function* refreshVaultListSaga(action: PayloadAction<number>) {
 function* refreshVaultListSuccessSaga(
   action: PayloadAction<{ account: Account; vaults: Vault[] }>
 ) {
-  yield put(hideLoading(selectAccountSuccess.type));
+  yield put(hideLoading(refreshVaultList.type));
 }
 
 function* refreshVaultListFailureSaga(action: PayloadAction<number>) {
@@ -326,7 +326,7 @@ function* refreshVaultListFailureSaga(action: PayloadAction<number>) {
       duration: 5,
     })
   );
-  yield put(hideLoading(selectAccountSuccess.type));
+  yield put(hideLoading(refreshVaultList.type));
 }
 
 function* watchGenerateAccount() {
