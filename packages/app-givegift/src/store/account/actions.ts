@@ -1,5 +1,9 @@
 import {
-  Account, CreateAccountCommand, DeleteAccountCommand, RenameAccountCommand, Vault
+  Account,
+  CreateAccountCommand,
+  DeleteAccountCommand,
+  RenameAccountCommand,
+  Vault,
 } from '@abcpros/givegift-models';
 import { createAction } from '@reduxjs/toolkit';
 
@@ -14,10 +18,14 @@ export const postAccountSuccess = createAction<Account>('account/postAccountSucc
 export const postAccountFailure = createAction<string>('account/postAccountFailure');
 export const setAccount = createAction<Account>('account/setAccount');
 export const selectAccount = createAction<number>('account/selectAccount');
-export const selectAccountSuccess = createAction<{ account: Account, vaults: Vault[] }>('account/selectAccountSuccess');
+export const selectAccountSuccess = createAction<{ account: Account; vaults: Vault[] }>(
+  'account/selectAccountSuccess'
+);
 export const selectAccountFailure = createAction<string>('account/selectAccountFailure');
 export const importAccount = createAction<string>('account/importAccount');
-export const importAccountSuccess = createAction<{ account: Account, vaults: Vault[] }>('account/importAccountSuccess');
+export const importAccountSuccess = createAction<{ account: Account; vaults: Vault[] }>(
+  'account/importAccountSuccess'
+);
 export const importAccountFailure = createAction<string>('account/importAccountFailure');
 export const renameAccount = createAction<RenameAccountCommand>('account/renameAccount');
 export const renameAccountSuccess = createAction<Account>('account/renameAccountSuccess');
@@ -26,15 +34,8 @@ export const deleteAccount = createAction<DeleteAccountCommand>('account/deleteA
 export const deleteAccountSuccess = createAction<number>('account/deleteAccountSuccess');
 export const deleteAccountFailure = createAction<string>('account/deleteAccountFailure');
 export const setAccountBalance = createAction<number>('account/setAccountBalance');
-
-// Thunk action creators
-// Not use currently
-export const renameAccountThunk = (name: string, prebuiltCommand: RenameAccountCommand): AppThunk => (dispatch) => {
-  if (prebuiltCommand) {
-    const command: RenameAccountCommand = {
-      ...prebuiltCommand,
-      name: name
-    };
-    dispatch(renameAccount(command));
-  }
-}
+export const refreshVaultList = createAction<any>('vault/refreshVaultList');
+export const refreshVaultListSuccess = createAction<{ account: Account; vaults: Vault[] }>(
+  'vault/refreshVaultListSuccess'
+);
+export const refreshVaultListFailure = createAction<string>('vault/refreshVaultListFailure');

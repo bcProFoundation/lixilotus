@@ -1,6 +1,11 @@
 import { Form, Input, Modal, Spin, InputNumber } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { getAccount, importAccount, setAccountBalance } from 'src/store/account/actions';
+import {
+  getAccount,
+  importAccount,
+  setAccountBalance,
+  refreshVaultList,
+} from 'src/store/account/actions';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
@@ -19,6 +24,7 @@ import { getEnvelopes } from 'src/store/envelope/actions';
 import { currency } from '@abcpros/givegift-components/components/Common/Ticker';
 import { fromSmallestDenomination } from '@utils/cashMethods';
 import { QRCode } from '@abcpros/givegift-components/src/components/Common/QRCode';
+import ReloadOutlined from '@ant-design/icons';
 import useAsyncTimeout from '@hooks/useAsyncTimeout';
 
 const Home: React.FC = () => {
@@ -82,6 +88,9 @@ const Home: React.FC = () => {
     dispatch(importAccount(formData.mnemonic));
   }
 
+  const refreshList = () => {
+    dispatch(refreshVaultList(selectedAccount?.id));
+  };
   return (
     <>
       <WalletLabel name={selectedAccount?.name ?? ''} />
@@ -121,6 +130,9 @@ const Home: React.FC = () => {
       </h2>
 
       <CreateVaultForm account={selectedAccount} />
+      <SmartButton onClick={() => refreshList()}>
+        <ReloadOutlined /> Refresh Vault List
+      </SmartButton>
       <VaultList vaults={vaults} />
     </>
   );

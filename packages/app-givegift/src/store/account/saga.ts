@@ -1,9 +1,14 @@
-
 import { Modal } from 'antd';
 import { all, call, fork, getContext, put, takeLatest } from 'redux-saga/effects';
 
 import {
-  Account, AccountDto, CreateAccountCommand, DeleteAccountCommand, ImportAccountCommand, RenameAccountCommand, Vault
+  Account,
+  AccountDto,
+  CreateAccountCommand,
+  DeleteAccountCommand,
+  ImportAccountCommand,
+  RenameAccountCommand,
+  Vault,
 } from '@abcpros/givegift-models';
 import BCHJS from '@abcpros/xpi-js';
 import { PayloadAction } from '@reduxjs/toolkit';
@@ -17,10 +22,26 @@ import {
   deleteAccount,
   deleteAccountFailure,
   deleteAccountSuccess,
-  generateAccount, getAccount, getAccountFailure, getAccountSuccess, importAccount,
-  importAccountFailure, importAccountSuccess, postAccount, postAccountFailure, postAccountSuccess,
-  renameAccount, renameAccountFailure, renameAccountSuccess, selectAccount, selectAccountFailure,
-  selectAccountSuccess, setAccount
+  generateAccount,
+  getAccount,
+  getAccountFailure,
+  getAccountSuccess,
+  importAccount,
+  importAccountFailure,
+  importAccountSuccess,
+  postAccount,
+  postAccountFailure,
+  postAccountSuccess,
+  renameAccount,
+  renameAccountFailure,
+  renameAccountSuccess,
+  selectAccount,
+  selectAccountFailure,
+  selectAccountSuccess,
+  setAccount,
+  refreshVaultList,
+  refreshVaultListFailure,
+  refreshVaultListSuccess,
 } from './actions';
 
 /**
@@ -33,17 +54,25 @@ function* generateAccountSaga(action: PayloadAction) {
   const Bip39128BitMnemonic = XPI.Mnemonic.generate(128, XPI.Mnemonic.wordLists()[lang]);
 
   // Encrypted mnemonic is encrypted by itself
-  const encryptedMnemonic: string = yield call(aesGcmEncrypt, Bip39128BitMnemonic, Bip39128BitMnemonic);
+  const encryptedMnemonic: string = yield call(
+    aesGcmEncrypt,
+    Bip39128BitMnemonic,
+    Bip39128BitMnemonic
+  );
 
   // Hash mnemonic and use it as an id in the database
-  const mnemonicUtf8 = new TextEncoder().encode(Bip39128BitMnemonic);              // encode mnemonic as UTF-8
-  const mnemonicHashBuffer = yield call([crypto.subtle, crypto.subtle.digest], 'SHA-256', mnemonicUtf8);       // hash the mnemonic
+  const mnemonicUtf8 = new TextEncoder().encode(Bip39128BitMnemonic); // encode mnemonic as UTF-8
+  const mnemonicHashBuffer = yield call(
+    [crypto.subtle, crypto.subtle.digest],
+    'SHA-256',
+    mnemonicUtf8
+  ); // hash the mnemonic
   const mnemonicHash = Buffer.from(new Uint8Array(mnemonicHashBuffer)).toString('hex');
 
   const account: CreateAccountCommand = {
     mnemonic: Bip39128BitMnemonic,
     encryptedMnemonic,
-    mnemonicHash
+    mnemonicHash,
   };
 
   yield put(postAccount(account));
@@ -69,11 +98,13 @@ function* getAccountSuccessSaga(action: PayloadAction<Account>) {
 
 function* getAccountFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? 'Unable to get the account from server';
-  yield put(showToast('error', {
-    message: 'Error',
-    description: message,
-    duration: 5
-  }));
+  yield put(
+    showToast('error', {
+      message: 'Error',
+      description: message,
+      duration: 5,
+    })
+  );
   yield put(hideLoading(getAccount.type));
 }
 
@@ -88,7 +119,6 @@ function* postAccountSaga(action: PayloadAction<CreateAccountCommand>) {
     // Merge back to action payload
     const result = { ...command, ...data } as Account;
     yield put(postAccountSuccess(result));
-
   } catch (err) {
     const message = (err as Error).message ?? `Could not post the account to the api.`;
     yield put(postAccountFailure(message));
@@ -97,23 +127,26 @@ function* postAccountSaga(action: PayloadAction<CreateAccountCommand>) {
 
 function* postAccountSuccessSaga(action: PayloadAction<Account>) {
   const account = action.payload;
-  yield put(showToast('success', {
-    message: 'Success',
-    description: 'Create account successfully.',
-    duration: 5
-  }));
+  yield put(
+    showToast('success', {
+      message: 'Success',
+      description: 'Create account successfully.',
+      duration: 5,
+    })
+  );
   yield put(setAccount(account));
   yield put(hideLoading(postAccount.type));
-
 }
 
 function* postAccountFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? 'Unable to create account on the server.';
-  yield put(showToast('error', {
-    message: 'Error',
-    description: message,
-    duration: 5
-  }));
+  yield put(
+    showToast('error', {
+      message: 'Error',
+      description: message,
+      duration: 5,
+    })
+  );
   yield put(hideLoading(postAccount.type));
 }
 
@@ -122,13 +155,17 @@ function* importAccountSaga(action: PayloadAction<string>) {
     const mnemonic: string = action.payload;
 
     // Hash mnemonic and use it as an id in the database
-    const mnemonicUtf8 = new TextEncoder().encode(mnemonic);                // encode mnemonic as UTF-8
-    const mnemonicHashBuffer = yield call([crypto.subtle, crypto.subtle.digest], 'SHA-256', mnemonicUtf8);       // hash the mnemonic
+    const mnemonicUtf8 = new TextEncoder().encode(mnemonic); // encode mnemonic as UTF-8
+    const mnemonicHashBuffer = yield call(
+      [crypto.subtle, crypto.subtle.digest],
+      'SHA-256',
+      mnemonicUtf8
+    ); // hash the mnemonic
     const mnemonicHash = Buffer.from(new Uint8Array(mnemonicHashBuffer)).toString('hex');
 
     const command: ImportAccountCommand = {
       mnemonic,
-      mnemonicHash
+      mnemonicHash,
     };
 
     const data: AccountDto = yield call(accountApi.import, command);
@@ -145,8 +182,8 @@ function* importAccountSaga(action: PayloadAction<string>) {
       const redeemPart = yield call(aesGcmDecrypt, item.encryptedRedeemCode, command.mnemonic);
       const vault: Vault = {
         ...item,
-        redeemCode: redeemPart + encodedId
-      }
+        redeemCode: redeemPart + encodedId,
+      };
       vaults.push(vault);
     }
 
@@ -164,11 +201,13 @@ function* importAccountSuccessSaga(action: PayloadAction<Account>) {
 
 function* importAccountFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? 'Unable to import the account.';
-  yield put(showToast('error', {
-    message: 'Error',
-    description: message,
-    duration: 5
-  }));
+  yield put(
+    showToast('error', {
+      message: 'Error',
+      description: message,
+      duration: 5,
+    })
+  );
   yield put(hideLoading(importAccount.type));
 }
 
@@ -187,17 +226,19 @@ function* selectAccountSaga(action: PayloadAction<number>) {
   }
 }
 
-function* selectAccountSuccessSaga(action: PayloadAction<{ account: Account, vaults: Vault[] }>) {
+function* selectAccountSuccessSaga(action: PayloadAction<{ account: Account; vaults: Vault[] }>) {
   yield put(hideLoading(selectAccount.type));
 }
 
 function* selectAccountFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? 'Unable to select the account.';
-  yield put(showToast('error', {
-    message: 'Error',
-    description: message,
-    duration: 5
-  }));
+  yield put(
+    showToast('error', {
+      message: 'Error',
+      description: message,
+      duration: 5,
+    })
+  );
   yield put(hideLoading(selectAccount.type));
 }
 
@@ -224,8 +265,8 @@ function* renameAccountSuccessSaga(action: PayloadAction<Account>) {
 
 function* renameAccountFailureSaga(action: PayloadAction<string>) {
   Modal.error({
-    content: 'Rename failed. All accounts must have a unique name.'
-  })
+    content: 'Rename failed. All accounts must have a unique name.',
+  });
   yield put(hideLoading(renameAccount.type));
 }
 
@@ -250,9 +291,42 @@ function* deleteAccountSuccessSaga(action: PayloadAction<number>) {
 
 function* deleteAccountFailureSaga(action: PayloadAction<string>) {
   Modal.error({
-    content: 'Delete failed. Could not delete the account.'
-  })
+    content: 'Delete failed. Could not delete the account.',
+  });
   yield put(hideLoading(deleteAccount.type));
+}
+
+function* refreshVaultListSaga(action: PayloadAction<number>) {
+  try {
+    yield put(showLoading(refreshVaultList.type));
+    const accountId = action.payload;
+    const data = yield call(accountApi.getById, accountId);
+    const account = data as Account;
+    const vaultsData = yield call(vaultApi.getByAccountId, accountId);
+    const vaults = (vaultsData ?? []) as Vault[];
+    yield put(refreshVaultListSuccess({ account: account, vaults: vaults }));
+  } catch (err) {
+    const message = (err as Error).message ?? `Unable to refresh the list.`;
+    yield put(refreshVaultListFailure(message));
+  }
+}
+
+function* refreshVaultListSuccessSaga(
+  action: PayloadAction<{ account: Account; vaults: Vault[] }>
+) {
+  yield put(hideLoading(refreshVaultList.type));
+}
+
+function* refreshVaultListFailureSaga(action: PayloadAction<number>) {
+  const message = action.payload ?? 'Unable to refresh the vault list.';
+  yield put(
+    showToast('error', {
+      message: 'Error',
+      description: message,
+      duration: 5,
+    })
+  );
+  yield put(hideLoading(refreshVaultList.type));
 }
 
 function* watchGenerateAccount() {
@@ -331,6 +405,18 @@ function* watchDeleteAccountFailure() {
   yield takeLatest(deleteAccountFailure.type, deleteAccountFailureSaga);
 }
 
+function* watchRefreshVaultList() {
+  yield takeLatest(refreshVaultList.type, refreshVaultListSaga);
+}
+
+function* watchRefreshVaultListSuccess() {
+  yield takeLatest(refreshVaultListSuccess.type, refreshVaultListSuccessSaga);
+}
+
+function* watchRefreshVaultListFailure() {
+  yield takeLatest(refreshVaultListFailure.type, refreshVaultListFailureSaga);
+}
+
 export default function* accountSaga() {
   yield all([
     fork(watchGenerateAccount),
@@ -346,11 +432,14 @@ export default function* accountSaga() {
     fork(watchSelectAccount),
     fork(watchSelectAccountSuccess),
     fork(watchSelectAccountFailure),
+    fork(watchRefreshVaultList),
+    fork(watchRefreshVaultListSuccess),
+    fork(watchRefreshVaultListFailure),
     fork(watchRenameAccount),
     fork(watchRenameAccountSuccess),
     fork(watchRenameAccountFailure),
     fork(watchDeleteAccount),
     fork(watchDeleteAccountSuccess),
-    fork(watchDeleteAccountFailure)
+    fork(watchDeleteAccountFailure),
   ]);
 }
