@@ -8,6 +8,7 @@ import HDNode from '@abcpros/xpi-js/types/hdnode';
 import { PrismaClient } from '@prisma/client';
 import BigNumber from 'bignumber.js';
 import { currency, fromSmallestDenomination, toSmallestDenomination } from '@abcpros/givegift-models';
+import logger from '../logger';
 
 @Service()
 export class WalletService {
@@ -157,6 +158,23 @@ export class WalletService {
     }
     catch (err) {
       throw new VError(err as Error, 'Unable to send transaction');
+    }
+  };
+
+  async validateMnemonic(mnemonic: string, wordlist = this.xpijs.Mnemonic.wordLists().english) {
+    let mnemonicTestOutput;
+
+    try {
+      mnemonicTestOutput = await this.xpijs.Mnemonic.validate(mnemonic, wordlist);
+
+      if (mnemonicTestOutput === 'Valid mnemonic') {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (err) {
+      logger.error(err);
+      return false;
     }
   };
 }

@@ -6,7 +6,7 @@ export interface CreateAccountCommand {
 
 export interface ImportAccountCommand {
   mnemonic: string;
-  mnemonicHash: string;
+  mnemonicHash?: string;
 }
 
 export interface RenameAccountCommand {
