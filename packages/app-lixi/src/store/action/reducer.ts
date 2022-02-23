@@ -19,9 +19,9 @@ export const actionReducer = (
   return {
     ...state,
     type: action.type,
-    payload: action.payload,
-    meta: action.meta,
-    error: action.error,
+    payload: action.payload | null,
+    meta: action.meta | null,
+    error: action.error | null,
     count: state.count + 1
   }
 }

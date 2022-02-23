@@ -12,7 +12,7 @@ export const accountsAdapter = createEntityAdapter<Account>({
 })
 
 const initialState: AccountsState = accountsAdapter.getInitialState({
-  selectedId: undefined,
+  selectedId: null,
   vaultIdsById: {}
 });
 

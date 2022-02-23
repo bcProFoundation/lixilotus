@@ -74,7 +74,7 @@ const nextConfig = withLess({
 		}
 	},
 
-	reactStrictMode: true,
+	reactStrictMode: false,
 	productionBrowserSourceMaps: !disableSourceMaps,
 	optimizeFonts: true,
 	httpAgentOptions: {
@@ -124,7 +124,7 @@ const nextConfig = withLess({
 		// https://nextjs.org/docs/api-reference/next/image#caching-behavior
 		minimumCacheTTL: 60,
 		// Allowed domains for next/image
-		// domains: ['lixilotus.com', 'dev.lixilotus.com', 'staging.lixilotus.com', 'lixilotus.test'],
+		domains: ['api.lixilotus.test', 'lixilotus.com', 'dev.lixilotus.com', 'staging.lixilotus.com', 'lixilotus.test'],
 	},
 	typescript: {
 		ignoreBuildErrors: NEXTJS_IGNORE_TYPECHECK,
@@ -151,6 +151,7 @@ const nextConfig = withLess({
 			'@utils': path.resolve(__dirname, 'src/utils/'),
 			'@components': path.resolve(__dirname, 'src/components/'),
 			'@hooks': path.resolve(__dirname, 'src/hooks/'),
+			'@store': path.resolve(__dirname, 'src/store/'),
 			'@bcpros/lixi-components': path.resolve(__dirname, '../lixi-components/src')
 		};
 

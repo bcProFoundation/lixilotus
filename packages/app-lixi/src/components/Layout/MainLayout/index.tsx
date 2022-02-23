@@ -102,6 +102,7 @@ const MainLayout: React.FC = (props) => {
   const router = useRouter()
   const [loading, setLoading] = useState(false);
   const selectedKey = router.pathname ?? '';
+  console.log(selectedKey);
 
   return (
     <ThemeProvider theme={theme as DefaultTheme}>
@@ -130,7 +131,7 @@ const MainLayout: React.FC = (props) => {
                 <Footer>
                   <Link href='/' passHref>
                     <NavButton
-                      active={selectedKey === ''}
+                      active={selectedKey === '/'}
                     >
                       <UserOutlined />
                       Accounts
@@ -138,7 +139,7 @@ const MainLayout: React.FC = (props) => {
                   </Link>
                   <Link href='/vault' passHref>
                     <NavButton
-                      active={selectedKey === 'vault'}
+                      active={selectedKey === '/vault'}
                     >
                       <WalletOutlined />
                       Vault
@@ -146,7 +147,7 @@ const MainLayout: React.FC = (props) => {
                   </Link>
                   <Link href='/redeem' passHref>
                     <NavButton
-                      active={selectedKey === 'redeem'}
+                      active={selectedKey === '/redeem'}
                     >
                       <GiftOutlined />
                       Redeem
@@ -154,7 +155,7 @@ const MainLayout: React.FC = (props) => {
                   </Link>
                   <Link href='/settings' passHref>
                     <NavButton
-                      active={selectedKey === 'settings'}
+                      active={selectedKey === '/settings'}
                     >
                       <SettingOutlined />
                       Settings

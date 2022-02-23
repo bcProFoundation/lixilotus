@@ -55,46 +55,4 @@ const LixiApp = ({ Component, ...rest }) => {
 
 }
 
-LixiApp.getInitialProps = wrapper.getInitialAppProps((store: SagaStore) => async (context) => {
-
-  const { ctx, Component } = context;
-
-  const pageProps = {
-    // https://nextjs.org/docs/advanced-features/custom-app#caveats
-    ...(await App.getInitialProps(context)).pageProps,
-  };
-
-  // 2. Stop the saga if on server
-  if (ctx.req) {
-    store.dispatch(END);
-    await (store as SagaStore).__sagaTask.toPromise();
-  }
-
-  // 3. Return props
-  const propsData = {
-    ...pageProps,
-  };
-
-  let layoutProps = {};
-
-  if ((Component as any)?.Layout) {
-    layoutProps = await (Component as any)?.Layout?.getInitialProps?.({
-      ...ctx,
-      pageProps: propsData,
-    });
-  } else {
-    layoutProps = await (MainLayout as any)?.getInitialProps?.({
-      ...ctx,
-      pageProps: propsData,
-    });
-  }
-
-  return {
-    pageProps: {
-      ...propsData,
-      ...layoutProps
-    },
-  };
-});
-
 export default LixiApp;

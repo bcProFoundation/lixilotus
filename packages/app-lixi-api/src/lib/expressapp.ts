@@ -10,6 +10,7 @@ import * as Healthcheck from './routes/healthcheck';
 import * as Account from './routes/account';
 import * as Envelope from './routes/envelope';
 import { handleError } from './middlewares/handleError';
+import logger from './logger';
 
 const bodyParser = require('body-parser');
 const compression = require('compression');
@@ -22,7 +23,8 @@ const allowedOrigins = [
   'https://dev.sendlotus.com',
   'https://localhost:3000',
   'https://staging.lixilotus.com',
-  'https://dev.lixilotus.com'
+  'https://dev.lixilotus.com',
+  'https://lixilotus.test',
 ];
 
 export class ExpressApp {
@@ -64,6 +66,7 @@ export class ExpressApp {
   }
 
   async start() {
+    logger.info(process.env.NODE_ENV);
     this.app.use(
       process.env.NODE_ENV === 'development' ?
         cors() :

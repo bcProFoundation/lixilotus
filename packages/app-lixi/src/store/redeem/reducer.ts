@@ -12,7 +12,6 @@ export const redeemsAdapter = createEntityAdapter<Redeem>({
 const initialState: RedeemsState = redeemsAdapter.getInitialState({
   currentAddress: '',
   currentRedeemCode: '',
-  currentLixiRedeem: undefined
 });
 
 export const redeemReducer = createReducer(initialState, (builder) => {
@@ -26,11 +25,5 @@ export const redeemReducer = createReducer(initialState, (builder) => {
     })
     .addCase(saveRedeemCode, (state, action) => {
       state.currentRedeemCode = action.payload;
-    })
-    .addCase(viewRedeemSuccess, (state, action) => {
-      state.currentLixiRedeem = action.payload;
-    })
-    .addCase(viewRedeemFailure, (state, action) => {
-      state.currentLixiRedeem = undefined;
     })
 })

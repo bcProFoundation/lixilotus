@@ -14,6 +14,11 @@ export const StyledCollapse = styled(Collapse)`
     border-bottom: none !important;
   }
 
+  .ant-collapse-header {
+    justify-content: center !important;
+    align-items: center !important;
+  }
+
   *:not(button) {
     color: ${props => props.theme.collapses.color} !important;
   }
@@ -26,12 +31,12 @@ export const VaultCollapse = styled(Collapse) <VaultCollapseProps>`
     ${({ disabled = false, ...props }) =>
     disabled === true
       ? `
-          background: ${props.theme.buttons.secondary.background} !important;
+        background: ${props.theme.buttons.secondary.background} !important;
         .ant-collapse-header {
           font-size: 18px;
           font-weight: bold;
-          justify-content: center;
-          align-items: center;
+          justify-content: center !important;
+          align-items: center !important;
           color: ${props.theme.buttons.secondary.color} !important;
           svg {
             color: ${props.theme.buttons.secondary.color} !important;
@@ -47,12 +52,12 @@ export const VaultCollapse = styled(Collapse) <VaultCollapseProps>`
         }
         `
       : `
-          background: ${props.theme.primary} !important;
+        background: ${props.theme.primary} !important;
         .ant-collapse-header {
           font-size: 18px;
           font-weight: bold;
-          justify-content: center;
-          align-items: center;
+          justify-content: center !important;
+          align-items: center !important;
           color: ${props.theme.contrast} !important;
           svg {
             color: ${props.theme.contrast} !important;
@@ -87,8 +92,8 @@ export const AdvancedCollapse = styled(Collapse)`
 
   .ant-collapse-header {
     font-weight: normal;
-    justify-content: center;
-    align-items: center;
+    justify-content: center !important;
+    align-items: center !important;
     color: ${props => props.theme.buttons.secondary.color} !important;
   }
 

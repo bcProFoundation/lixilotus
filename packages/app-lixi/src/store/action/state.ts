@@ -1,7 +1,7 @@
 export interface ActionState {
-  type: string | null;
-  payload: any;
-  meta: any;
-  error: boolean;
-  count: number;
+  type: Nullable<string>;
+  payload: Nullable<any>;
+  meta: Nullable<any>;
+  error: Nullable<boolean>;
+  count: Nullable<number>;
 }

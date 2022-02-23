@@ -1,24 +1,23 @@
+import MinimalBCHWallet from '@abcpros/minimal-xpi-slp-wallet';
+import BCHJS from '@abcpros/xpi-js';
+import {
+  countries, CreateRedeemDto, fromSmallestDenomination, RedeemDto, toSmallestDenomination,
+  VaultType, ViewRedeemDto
+} from '@bcpros/lixi-models';
+import { PrismaClient } from '@prisma/client';
 import axios from 'axios';
 import BigNumber from 'bignumber.js';
-import config from 'config';
 import express, { NextFunction } from 'express';
 import geoip from 'geoip-country';
 import _ from 'lodash';
 import moment from 'moment';
 import Container from 'typedi';
 import VError from 'verror';
-
-import {
-  countries, CreateRedeemDto, fromSmallestDenomination, RedeemDto, toSmallestDenomination,
-  VaultType, ViewRedeemDto
-} from '@bcpros/lixi-models';
-import MinimalBCHWallet from '@abcpros/minimal-xpi-slp-wallet';
-import BCHJS from '@abcpros/xpi-js';
-import { PrismaClient } from '@prisma/client';
-
 import logger from '../../logger';
 import { WalletService } from '../../services/wallet';
 import { aesGcmDecrypt, base62ToNumber } from '../../utils/encryptionMethods';
+
+
 
 const PRIVATE_KEY = 'AIzaSyCFY2D4NRLjDTpJfk0jjJNADalSceqC4qs';
 const SITE_KEY = "6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb";

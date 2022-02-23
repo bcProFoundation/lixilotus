@@ -20,6 +20,9 @@
       "@hooks/*": [
         "src/hooks/*"
       ],
+      "@store/*": [
+        "src/store/*"
+      ],
       "@bcpros/lixi-components/*": [
         "../../packages/lixi-components/src/*"
       ],
