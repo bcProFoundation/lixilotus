@@ -97,8 +97,7 @@ const CreateVaultForm = ({
     setNewVaultName(value);
     if (value && !isEmpty(value)) {
       setNewVaultNameIsValid(true);
-    }else
-    {
+    } else {
       setNewVaultNameIsValid(false);
     }
   };
