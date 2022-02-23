@@ -66,11 +66,11 @@ const CreateVaultForm = ({
 
   // New Vault Default Value
   const [newVaultFixedValue, setNewVaultFixedValue] = useState('');
-  const [newVaultFixedValueIsValid, setNewVaultFixedValueIsValid] = useState(true);
+  const [newVaultFixedValueIsValid, setNewVaultFixedValueIsValid] = useState(false);
 
   // New Vault Divided Value
   const [newVaultDividedValue, setNewVaultDividedValue] = useState('');
-  const [newVaultDividedValueIsValid, setNewVaultDividedValueIsValid] = useState(true);
+  const [newVaultDividedValueIsValid, setNewVaultDividedValueIsValid] = useState(false);
 
   // New Country
   const [newCountryVault, setNewCountryVault] = useState('');
@@ -97,6 +97,8 @@ const CreateVaultForm = ({
     setNewVaultName(value);
     if (value && !isEmpty(value)) {
       setNewVaultNameIsValid(true);
+    } else {
+      setNewVaultNameIsValid(false);
     }
   };
 
