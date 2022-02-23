@@ -70,7 +70,7 @@ const CreateVaultForm = ({
 
   // New Vault Divided Value
   const [newVaultDividedValue, setNewVaultDividedValue] = useState('');
-  const [newVaultDividedValueIsValid, setNewVaultDividedValueIsValid] = useState(true);
+  const [newVaultDividedValueIsValid, setNewVaultDividedValueIsValid] = useState(false);
 
   // New Country
   const [newCountryVault, setNewCountryVault] = useState('');
@@ -113,7 +113,7 @@ const CreateVaultForm = ({
   }
   // Only enable CreateVault button if all form entries are valid
   let createVaultFormDataIsValid =
-    newVaultNameIsValid && newMaxRedeemVaultIsValid &&
+    newVaultNameIsValid && newVaultAmountValueIsValid && newMaxRedeemVaultIsValid &&
     newExpiryAtVaultIsValid && account &&
     // (redeemType == RedeemType.OneTime && (vaultType == VaultType.Equal && newVaultAmount)) ||
     (redeemType == RedeemType.Single && (vaultType == VaultType.Random && newVaultMinValueIsValid && newVaultMaxValueIsValid) ||

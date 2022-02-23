@@ -52,7 +52,7 @@ export const isValidVaultName = (vaultName: string) => {
 
 export const isValidAmountInput = (cashAmount: string) => {
   let testedAmount = new BigNumber(cashAmount);
-  return (!testedAmount.isNaN() && testedAmount.isFinite())
+  return (!testedAmount.isNaN() && testedAmount.isFinite()&& testedAmount.gt(0));
 }
 
 // export const isValidQty = (quantityValue) => {
