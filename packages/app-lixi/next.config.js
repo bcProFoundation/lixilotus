@@ -88,9 +88,9 @@ const nextConfig = withLess({
 
 		// Standalone build
 		// @link https://nextjs.org/docs/advanced-features/output-file-tracing#automatically-copying-traced-files-experimental
-		outputStandalone: false,
+		outputStandalone: true,
 		// @link https://nextjs.org/docs/advanced-features/output-file-tracing#caveats
-		// outputFileTracingRoot: path.join(__dirname, '../../'),
+		outputFileTracingRoot: path.join(__dirname, '../../'),
 
 		// Prefer loading of ES Modules over CommonJS
 		// @link {https://nextjs.org/blog/next-11-1#es-modules-support|Blog 11.1.0}
