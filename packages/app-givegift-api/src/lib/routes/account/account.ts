@@ -7,6 +7,7 @@ import { Account as AccountDb, Prisma } from '@prisma/client';
 import { aesGcmDecrypt, aesGcmEncrypt, hashMnemonic } from '../../utils/encryptionMethods';
 import { WalletService } from '../../services/wallet';
 import { Container } from 'typedi';
+import BCHJS from "@abcpros/xpi-js";
 
 const prisma = new PrismaClient();
 let router = express.Router();
@@ -81,6 +82,7 @@ router.post('/import', async (req: express.Request, res: express.Response, next:
 router.get('/:id/vaults', async (req: express.Request, res: express.Response, next: NextFunction) => {
   const { id } = req.params;
   const accountId = _.toSafeInteger(id);
+  const xpijs: BCHJS = Container.get('xpijs');
 
   try {
     const vaults: VaultDb[] = await prisma.vault.findMany({
@@ -92,14 +94,18 @@ router.get('/:id/vaults', async (req: express.Request, res: express.Response, ne
       }
     });
 
-    const results = vaults.map(item => {
+    const totalBalances = await xpijs.Electrumx.balance(vaults.map(v => v.address));
+    const {balances} = totalBalances;
+  
+    const results = vaults.map((item,index) => {
       return {
         ...item,
         totalRedeem: Number(item.totalRedeem),
         vaultType: Number(item.vaultType),
         maxRedeem: Number(item.maxRedeem),
         redeemedNum: Number(item.redeemedNum),
-        dividedValue: Number(item.dividedValue)
+        dividedValue: Number(item.dividedValue),
+        balance: Number(balances[index].balance.confirmed) + Number(balances[index].balance.unconfirmed),
       } as unknown as Vault;
     });
 
