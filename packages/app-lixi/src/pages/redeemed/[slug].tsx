@@ -7,9 +7,10 @@ import _ from 'lodash';
 import { NextSeo } from 'next-seo';
 import React from 'react';
 import { END } from 'redux-saga';
+import { getSelectorsByUserAgent } from 'react-device-detect';
 
 const RedeemPage = (props) => {
-  const { redeem } = props;
+  const { redeem, isMobile } = props;
   const slug = numberToBase62(redeem.id);
   const canonicalUrl = `/redeemed/${slug}`;
 
@@ -38,12 +39,17 @@ const RedeemPage = (props) => {
           cardType: 'summary_large_image',
         }}
       />
-      <LixiRedeemed redeem={redeem} />
+      <LixiRedeemed redeem={redeem} isMobile={isMobile}/>
     </>
   );
 }
 
 export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) => async (context) => {
+
+  const { req } = context;
+  const userAgent = req ? req.headers['user-agent'] : navigator.userAgent;
+  const { isMobile } = getSelectorsByUserAgent(userAgent);
+
   store.dispatch(END);
   await (store as SagaStore).__sagaTask.toPromise();
 
@@ -54,7 +60,8 @@ export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) 
 
   return {
     props: {
-      redeem
+      redeem,
+      isMobile
     }
   };
 });

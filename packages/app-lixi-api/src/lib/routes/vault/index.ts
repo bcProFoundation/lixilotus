@@ -9,7 +9,6 @@ import { logger } from '../../logger';
 import { aesGcmDecrypt, aesGcmEncrypt, numberToBase62 } from '../../utils/encryptionMethods';
 import Container from 'typedi';
 import { WalletService } from '../../services/wallet';
-import BigNumber from 'bignumber.js';
 
 const prisma = new PrismaClient();
 let router = express.Router();

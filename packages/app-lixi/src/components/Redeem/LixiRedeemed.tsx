@@ -129,12 +129,14 @@ const popOverContent = (shareUrl) => {
 
 type LixiRedeemProps = {
   className?: string;
-  redeem: ViewRedeemDto
+  redeem: ViewRedeemDto;
+  isMobile: boolean;
 }
 
 const LixiRedeemed = ({
   className,
-  redeem
+  redeem,
+  isMobile
 }: LixiRedeemProps) => {
 
   const baseApiUrl = process.env.NEXT_PUBLIC_LIXI_API;
@@ -148,7 +150,6 @@ const LixiRedeemed = ({
 
   const shareUrl = `${baseUrl}redeemed/${slug}`;
 
-
   const ShareSocialDropdown = (
     <Popover content={() => popOverContent(shareUrl)}>
       <RedeemButton>
@@ -161,10 +162,10 @@ const LixiRedeemed = ({
     <RWebShare
       data={{
         text: "Lixi Program sent you a small gift!",
-        url: '',
-        title: "Flamingos",
+        url: shareUrl,
+        title: "LixiLotus",
       }}
-      onClick={() => console.log("shared successfully!")}
+      onClick={() => { }}
     >
       <RedeemButton>
         <ShareAltOutlined /> Share
@@ -192,7 +193,7 @@ const LixiRedeemed = ({
             <RedeemButton onClick={() => imageBrowserDownload(imageUrl)}>
               <SaveOutlined /> Save
             </RedeemButton>
-            {ShareSocialDropdown}
+            {isMobile ? ShareSocialButton : ShareSocialDropdown}
           </div>
         </>
       )}
