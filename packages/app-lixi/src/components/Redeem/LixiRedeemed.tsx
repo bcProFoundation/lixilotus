@@ -3,7 +3,8 @@ import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHead
 import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
 import { ViewRedeemDto } from '@bcpros/lixi-models';
 import { fromSmallestDenomination } from '@utils/cashMethods';
-import { Image } from 'antd';
+import { numberToBase62 } from '@utils/encryptionMethods';
+import { Image, Popover } from 'antd';
 import { saveAs } from 'file-saver';
 import React from 'react';
 import {
@@ -46,7 +47,12 @@ const RedeemButton = styled.button`
   }
 `;
 
-const SocialSharePanel = ({ className, shareUrl }) => {
+type SocialSharePanelProps = {
+  className?: string;
+  shareUrl: string;
+}
+
+const SocialSharePanel = ({ className, shareUrl }: SocialSharePanelProps): JSX.Element => {
   const title = 'Lixi Program sent you a small gift!';
   return (
     <div className={className}>
@@ -114,6 +120,13 @@ const StyledSocialSharePanel = styled(SocialSharePanel)`
   }
 `;
 
+const popOverContent = (shareUrl) => {
+  return (
+    <StyledSocialSharePanel shareUrl={shareUrl} />
+  )
+};
+
+
 type LixiRedeemProps = {
   className?: string;
   redeem: ViewRedeemDto
@@ -124,9 +137,25 @@ const LixiRedeemed = ({
   redeem
 }: LixiRedeemProps) => {
 
+  const baseApiUrl = process.env.NEXT_PUBLIC_LIXI_API;
+  const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
+
   const imageUrl = redeem?.image
     ? process.env.NEXT_PUBLIC_LIXI_API + redeem?.image
     : process.env.NEXT_PUBLIC_LIXI_API + 'images/default.png';
+
+  const slug = numberToBase62(redeem.id);
+
+  const shareUrl = `${baseUrl}redeemed/${slug}`;
+
+
+  const ShareSocialDropdown = (
+    <Popover content={() => popOverContent(shareUrl)}>
+      <RedeemButton>
+        <ShareAltOutlined /> Share
+      </RedeemButton>
+    </Popover>
+  );
 
   const ShareSocialButton = (
     <RWebShare
@@ -163,7 +192,7 @@ const LixiRedeemed = ({
             <RedeemButton onClick={() => imageBrowserDownload(imageUrl)}>
               <SaveOutlined /> Save
             </RedeemButton>
-            {ShareSocialButton}
+            {ShareSocialDropdown}
           </div>
         </>
       )}

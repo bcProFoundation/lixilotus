@@ -40,7 +40,6 @@ const RedeemPage = (props) => {
       />
       <LixiRedeemed redeem={redeem} />
     </>
-
   );
 }
 

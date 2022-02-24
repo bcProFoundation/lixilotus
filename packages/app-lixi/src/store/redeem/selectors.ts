@@ -30,8 +30,3 @@ export const getCurrentRedeemCode = createSelector(
   (state: RootState) => state.redeems,
   (state: RedeemsState) => state.currentRedeemCode
 );
-
-export const getCurrentLixiRedeem = createSelector(
-  (state: RootState) => state.redeems,
-  (state: RedeemsState) => state.currentLixiRedeem
-);
