@@ -118,7 +118,7 @@ const VaultListItem: React.FC<VaultListItemProps> = (props: VaultListItemProps) 
       <BalanceAndTicker>
         <strong>{vault.name}</strong>
         <br/>
-        <span>({vault.redeemedNum}) {vault.totalRedeem}/{fromSmallestDenomination(vault.balance)}</span>
+        <span>({vault.redeemedNum}) {fromSmallestDenomination(vault.totalRedeem)}/{fromSmallestDenomination(vault.balance)} XPI remaining</span>
       </BalanceAndTicker>
       <Dropdown trigger={["click"]} overlay={
         <Menu onClick={(e) => handleClickMenu(e)}>
