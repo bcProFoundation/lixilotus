@@ -5,6 +5,7 @@ import { lockVault, selectVault, unlockVault, withdrawVault } from 'src/store/va
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { Button, Dropdown, Menu } from 'antd';
 import { getSelectedAccount } from 'src/store/account/selectors';
+import { fromSmallestDenomination } from '@utils/cashMethods';
 
 const VaultIcon = styled.div`
   height: 32px;
@@ -116,6 +117,8 @@ const VaultListItem: React.FC<VaultListItemProps> = (props: VaultListItemProps) 
       </VaultIcon>
       <BalanceAndTicker>
         <strong>{vault.name}</strong>
+        <br/>
+        <span>({vault.redeemedNum}) {vault.totalRedeem}/{fromSmallestDenomination(vault.balance)}</span>
       </BalanceAndTicker>
       <Dropdown trigger={["click"]} overlay={
         <Menu onClick={(e) => handleClickMenu(e)}>
