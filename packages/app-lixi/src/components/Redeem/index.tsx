@@ -35,9 +35,9 @@ const RedeemComponent: React.FC = () => {
 
   const dispatch = useAppDispatch();
 
-  const { width } = useWindowDimensions();
+  // const { width } = useWindowDimensions();
   // Load with QR code open if device is mobile and NOT iOS + anything but safari
-  const scannerSupported = width < 769 && isMobile && !(isIOS && !isSafari);
+  const scannerSupported = false;// width < 769 && isMobile && !(isIOS && !isSafari);
 
   const currentAddress = useAppSelector(getCurrentAddress);
   const currentRedeemCode = useSelector(getCurrentRedeemCode)

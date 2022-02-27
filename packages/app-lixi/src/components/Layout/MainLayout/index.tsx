@@ -102,7 +102,6 @@ const MainLayout: React.FC = (props) => {
   const router = useRouter()
   const [loading, setLoading] = useState(false);
   const selectedKey = router.pathname ?? '';
-  console.log(selectedKey);
 
   return (
     <ThemeProvider theme={theme as DefaultTheme}>

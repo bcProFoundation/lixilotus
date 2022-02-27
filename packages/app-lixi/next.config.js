@@ -81,6 +81,9 @@ const nextConfig = withLess({
 		// @link https://nextjs.org/blog/next-11-1#builds--data-fetching
 		keepAlive: true,
 	},
+  compiler: {
+    styledComponents: true
+  },
 	experimental: {
 		// React 18 related
 		// @link https://nextjs.org/docs/advanced-features/react-18
@@ -99,15 +102,14 @@ const nextConfig = withLess({
 		// Experimental monorepo support
 		// @link {https://github.com/vercel/next.js/pull/22867|Original PR}
 		// @link {https://github.com/vercel/next.js/discussions/26420|Discussion}
-		externalDir: true,
-		styledComponents: true,
+		externalDir: true
 	},
 	future: {
 		// @link https://github.com/vercel/next.js/pull/20914
 		// strictPostcssConfiguration: true,
 	},
 	// @link https://nextjs.org/docs/advanced-features/compiler#minification
-	swcMinify: true,
+	swcMinify: false,
 	lessVarsFilePath: './src/styles/variables.less',
 	lessVarsFilePathAppendToEndOfContent: true,
 	// optional https://github.com/webpack-contrib/css-loader#object
