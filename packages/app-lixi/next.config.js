@@ -67,7 +67,6 @@ const nextConfig = withLess({
 		lessOptions: {
 			javascriptEnabled: true,
 			modifyVars: {
-				'hack': 'true;@import "~antd/lib/style/themes/compact.less";',
 				...antdVariables,
 			},
 			localIdentName: '[path]___[local]___[hash:base64:5]'
