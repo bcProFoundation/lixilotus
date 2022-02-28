@@ -15,8 +15,8 @@ const RedeemPage = (props) => {
   const canonicalUrl = `/redeemed/${slug}`;
 
   const imageUrl = redeem?.image
-    ? process.env.NEXT_PUBLIC_LIXI_API + redeem?.image
-    : process.env.NEXT_PUBLIC_LIXI_API + 'images/default.png';
+    ? process.env.NEXT_PUBLIC_LIXI_API + 'api/' + redeem?.image
+    : process.env.NEXT_PUBLIC_LIXI_API + 'api/images/default.png';
 
   return (
     <>

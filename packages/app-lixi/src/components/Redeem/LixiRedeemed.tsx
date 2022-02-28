@@ -143,8 +143,8 @@ const LixiRedeemed = ({
   const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
 
   const imageUrl = redeem?.image
-    ? process.env.NEXT_PUBLIC_LIXI_API + redeem?.image
-    : process.env.NEXT_PUBLIC_LIXI_API + 'images/default.png';
+    ? baseApiUrl + 'api/' + redeem?.image
+    : baseApiUrl + 'api/' + 'images/default.png';
 
   const slug = numberToBase62(redeem.id);
 
