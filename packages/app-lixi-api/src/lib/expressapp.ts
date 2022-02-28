@@ -25,6 +25,7 @@ const allowedOrigins = [
   'https://staging.lixilotus.com',
   'https://dev.lixilotus.com',
   'https://lixilotus.test',
+  'https://vince8x.lixilotus.com'
 ];
 
 export class ExpressApp {
