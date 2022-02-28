@@ -42,7 +42,7 @@ export class ExpressApp {
     this.app.use('/api', Redeem.router);
     this.app.use('/api', Envelope.router);
     this.app.use('/api', Healthcheck.router);
-    this.app.use(express.static('public'));
+    this.app.use('/api', express.static('public'))
   }
 
   public DIProviders() {
@@ -58,7 +58,7 @@ export class ExpressApp {
   async start() {
     logger.info(process.env.NODE_ENV);
     this.app.use(
-      process.env.NODE_ENV === 'development' ?
+      process.env.NODE_ENV !== 'production' ?
         cors() :
         cors({
           origin: function (origin, callback) {
