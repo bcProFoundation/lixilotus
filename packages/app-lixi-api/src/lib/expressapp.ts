@@ -58,7 +58,7 @@ export class ExpressApp {
   async start() {
     logger.info(process.env.NODE_ENV);
     this.app.use(
-      process.env.NODE_ENV !== 'production' ?
+      process.env.NODE_ENV === 'development' ?
         cors() :
         cors({
           origin: function (origin, callback) {
