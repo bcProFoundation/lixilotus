@@ -287,6 +287,7 @@ router.post('/vaults/:id/withdraw', async (req: express.Request, res: express.Re
   const { id } = req.params;
   const vaultId = parseInt(id);
   const walletService: WalletService = Container.get(WalletService);
+  const xpiWallet: MinimalBCHWallet = Container.get('xpiWallet');
 
   const command: Account = req.body
   try {
@@ -325,6 +326,12 @@ router.post('/vaults/:id/withdraw', async (req: express.Request, res: express.Re
       throw new Error('Invalid account. Unable to withdraw the vault');
     }
 
+    const vaultCurrentBalance: number= await xpiWallet.getBalance(vault.address);
+
+    if(vaultCurrentBalance === 0) {
+      throw new VError('Unable to withdraw. The vault is empty!');
+    }
+     
     const totalAmount: number = await walletService.onMax(vault.address);
 
     const amount: any = await walletService.sendAmount(vault.address, account.address, totalAmount, keyPair);

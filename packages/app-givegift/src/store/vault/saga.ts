@@ -315,8 +315,8 @@ function* withdrawVaultSaga(action: PayloadAction<WithdrawVaultCommand>) {
 
     yield put(withdrawVaultSuccess(vault));
   } catch (error) {
-    const message = `There's an error happens when withdraw vault.`;
-    yield put(withdrawVaultFailure(message));
+    const message = (error as Error).message ?? `There's an error happens when withdraw vault.`;
+    yield put(withdrawVaultFailure(message)); 
   }
 }
 
@@ -331,12 +331,13 @@ function* withdrawVaultSuccessSaga(action: PayloadAction<Vault>) {
 
 function* withdrawVaultFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? 'Unable to withdraw the vault.';
+
   yield put(showToast('error', {
-    message: 'Error',
-    description: message,
-    duration: 5
+  message: 'Error',
+  description: message,
+  duration: 5
   }));
-  yield put(hideLoading(withdrawVaultFailure.type));
+  yield put(hideLoading(withdrawVaultFailure.type)); 
 }
 
 function* watchGenerateVault() {
