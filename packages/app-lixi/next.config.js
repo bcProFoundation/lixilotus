@@ -61,7 +61,6 @@ const tmModules = [
 
 const antdVariables = lessToJS(fs.readFileSync(path.resolve(__dirname, 'src/styles/variables.less'), 'utf8'));
 
-
 const nextConfig = withLess({
 	lessLoaderOptions: {
 		lessOptions: {
@@ -151,6 +150,7 @@ const nextConfig = withLess({
 			'@icons': path.resolve(__dirname, 'src/assets/icons/'),
 			'@utils': path.resolve(__dirname, 'src/utils/'),
 			'@components': path.resolve(__dirname, 'src/components/'),
+			'@containers': path.resolve(__dirname, 'src/containers/'),
 			'@hooks': path.resolve(__dirname, 'src/hooks/'),
 			'@store': path.resolve(__dirname, 'src/store/'),
 			'@bcpros/lixi-components': path.resolve(__dirname, '../lixi-components/src')

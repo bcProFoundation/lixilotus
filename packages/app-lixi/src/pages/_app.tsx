@@ -38,7 +38,7 @@ const LixiApp = ({ Component, ...rest }) => {
   return (
     <Provider store={store}>
       <AppContext.Provider value={{ XPI, Wallet }}>
-        <Layout>
+        <Layout className='lixi-app-layout'>
           <Head>
             <title>LixiLotus</title>
             <meta name="viewport" content="width=device-width, initial-scale=1" />

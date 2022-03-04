@@ -1,19 +1,19 @@
 import { createGlobalStyle } from 'styled-components';
 import { ThemeType } from './theme';
 
-export const GlobalStyle = createGlobalStyle`    
+export const GlobalStyle = createGlobalStyle`
     .ant-modal-wrap > div > div.ant-modal-content > div > div > div.ant-modal-confirm-btns > button, .ant-modal > button, .ant-modal-confirm-btns > button, .ant-modal-footer > button {
         border-radius: 8px;
         background-color: ${props => props.theme.modals.buttons.background};
         color: ${props => props.theme.wallet.text.secondary};
         font-weight: bold;
-    }    
-    
+    }
+
     .ant-modal-wrap > div > div.ant-modal-content > div > div > div.ant-modal-confirm-btns > button:hover,.ant-modal-confirm-btns > button:hover, .ant-modal-footer > button:hover {
         color: ${props => props.theme.primary};
         transition: color 0.3s;
         background-color: ${props => props.theme.modals.buttons.background};
-    }   
+    }
     .selectedCurrencyOption {
         text-align: left;
         color: ${props => props.theme.wallet.text.secondary} !important;
@@ -38,5 +38,11 @@ export const GlobalStyle = createGlobalStyle`
     }
     .ant-upload.ant-upload-select-picture-card {
         background-color: white;
+    }
+    .ant-drawer-content-wrapper {
+      width: 260px !important;
+    }
+    .ant-layout {
+      background-color: white !important;
     }
 `;

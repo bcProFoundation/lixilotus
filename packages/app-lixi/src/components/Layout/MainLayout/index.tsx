@@ -15,8 +15,10 @@ import ModalManager from '../../Common/ModalManager';
 import OnboardingComponent from '../../Onboarding/Onboarding';
 import { GlobalStyle } from './GlobalStyle';
 import { theme } from './theme';
+import Sidebar from '@containers/Sidebar';
+import Topbar from '@containers/Topbar';
 
-const { Content } = Layout;
+const { Content, Sider, Header } = Layout;
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
 
@@ -42,6 +44,7 @@ export const AppContainer = styled.div`
   background-color: ${props => props.theme.footerBackground};
   min-height: 100vh;
   padding: 10px 30px 120px 30px;
+  overflow: hidden;
   background: ${props => props.theme.wallet.background};
   -webkit-box-shadow: 0px 0px 24px 1px ${props => props.theme.wallet.shadow};
   -moz-box-shadow: 0px 0px 24px 1px ${props => props.theme.wallet.shadow};
@@ -113,57 +116,61 @@ const MainLayout: React.FC = (props) => {
         indicator={LoadingIcon}
       >
         <LixiApp>
-          <AppBody>
-            <ModalManager />
-            {!selectedAccount
-              ? <OnboardingComponent></OnboardingComponent>
-              : <>
-                <AppContainer>
-                  <HeaderContainer>
-                    <LotusLogo src='/images/lixi_logo.svg' alt="lixi" />
-                    <LixiTextLogo src='/images/lixi_logo_text.svg' alt="lixi" />
-                  </HeaderContainer>
-                  <Content>
-                    {children}
-                  </Content>
-                </AppContainer>
-                <Footer>
-                  <Link href='/' passHref>
-                    <NavButton
-                      active={selectedKey === '/'}
-                    >
-                      <UserOutlined />
-                      Accounts
-                    </NavButton>
-                  </Link>
-                  <Link href='/vault' passHref>
-                    <NavButton
-                      active={selectedKey === '/vault'}
-                    >
-                      <WalletOutlined />
-                      Vault
-                    </NavButton>
-                  </Link>
-                  <Link href='/redeem' passHref>
-                    <NavButton
-                      active={selectedKey === '/redeem'}
-                    >
-                      <GiftOutlined />
-                      Redeem
-                    </NavButton>
-                  </Link>
-                  <Link href='/settings' passHref>
-                    <NavButton
-                      active={selectedKey === '/settings'}
-                    >
-                      <SettingOutlined />
-                      Settings
-                    </NavButton>
-                  </Link>
-                </Footer>
-              </>
-            }
-          </AppBody>
+          <Layout>
+            <AppBody>
+              <ModalManager />
+              {!selectedAccount
+                ? <OnboardingComponent></OnboardingComponent>
+                : <>
+                  <AppContainer>
+                    <Layout>
+                      <Sidebar />
+                      <Layout>
+                        <Topbar />
+                        <Content>
+                          {children}
+                        </Content>
+                      </Layout>
+                    </Layout>
+                  </AppContainer>
+                  <Footer>
+                    <Link href='/' passHref>
+                      <NavButton
+                        active={selectedKey === '/'}
+                      >
+                        <UserOutlined />
+                        Accounts
+                      </NavButton>
+                    </Link>
+                    <Link href='/vault' passHref>
+                      <NavButton
+                        active={selectedKey === '/vault'}
+                      >
+                        <WalletOutlined />
+                        Vault
+                      </NavButton>
+                    </Link>
+                    <Link href='/redeem' passHref>
+                      <NavButton
+                        active={selectedKey === '/redeem'}
+                      >
+                        <GiftOutlined />
+                        Redeem
+                      </NavButton>
+                    </Link>
+                    <Link href='/settings' passHref>
+                      <NavButton
+                        active={selectedKey === '/settings'}
+                      >
+                        <SettingOutlined />
+                        Settings
+                      </NavButton>
+                    </Link>
+                  </Footer>
+                </>
+              }
+            </AppBody>
+          </Layout>
         </LixiApp>
       </Spin>
     </ThemeProvider>

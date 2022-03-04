@@ -17,6 +17,9 @@
       "@components/*": [
         "src/components/*"
       ],
+      "@containers/*": [
+        "src/containers/*"
+      ],
       "@hooks/*": [
         "src/hooks/*"
       ],

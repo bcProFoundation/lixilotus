@@ -2,7 +2,7 @@ import { AnyAction, combineReducers } from '@reduxjs/toolkit'
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { PersistConfig } from 'redux-persist';
-import { createRouterMiddleware, initialRouterState, routerReducer } from 'connected-next-router';
+import { routerReducer } from 'connected-next-router';
 import { loadingReducer } from './loading/reducer';
 import { errorReducer } from './error/reducer';
 import { toastReducer } from './toast/reducer';
@@ -14,8 +14,10 @@ import { VaultsState } from './vault/state';
 import { RedeemsState } from './redeem/state';
 import { redeemReducer } from './redeem/reducer';
 import { modalReducer } from './modal/reducer';
+import { settingsReducer } from './settings/reducer';
 import { AccountsState } from './account/state';
 import { HYDRATE } from 'next-redux-wrapper';
+
 
 
 
@@ -44,6 +46,7 @@ export const serverReducer = combineReducers({
   modal: modalReducer,
   toast: toastReducer,
   error: errorReducer,
+  settings: settingsReducer,
   // This is use for useReduxEffect
   // Should be always at the end
   action: actionReducer,
@@ -59,6 +62,7 @@ export const appReducer = combineReducers({
   modal: modalReducer,
   toast: toastReducer,
   error: errorReducer,
+  settings: settingsReducer,
   // This is use for useReduxEffect
   // Should be always at the end
   action: actionReducer,
