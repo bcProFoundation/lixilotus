@@ -34,4 +34,11 @@ export const envelopes = [
     slug: "heart",
     description: "Heart",
   },
+  {
+    name: "Inner Peace",
+    thumbnail: "images/81/8161e5049c2a6b97e79ad6293a950247b4776e8764a752e47239776f0e051d93-200.gif",
+    image: "images/81/8161e5049c2a6b97e79ad6293a950247b4776e8764a752e47239776f0e051d93.gif",
+    slug: "inner-peace",
+    description: "Inner Peace"
+  }
 ];
