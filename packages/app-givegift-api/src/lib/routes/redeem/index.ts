@@ -120,7 +120,7 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
       }
     } catch (err) {
       logger.error('Unable to check captcha');
-      logger.error(err);
+      logger.error(JSON.stringify(err));
       next(err);
     }
   };
