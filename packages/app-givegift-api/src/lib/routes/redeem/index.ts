@@ -119,6 +119,8 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
         throw new VError('Incorrect capcha? Please redeem again!');
       }
     } catch (err) {
+      logger.error('Unable to check captcha');
+      logger.error(err);
       next(err);
     }
   };
@@ -177,9 +179,13 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
 
       if (process.env.NODE_ENV !== 'development') {
         await checkingCaptcha();
-        const geolocation = geoip.lookup(ip);
+        let geolocation;
+        try {
+          geolocation = geoip.lookup(ip);
+        } catch (err) {
+          logger.warn('Unable to detect geolocation of redeem');
+        }
         const country = countries.find(country => country.id === vault?.country)
-
         if (geolocation?.country != _.upperCase(country?.id) && !_.isNil(country?.id)) {
           throw new VError('You cannot redeem from outside the ' + country?.name + ' zone.');
         }
