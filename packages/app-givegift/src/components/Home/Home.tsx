@@ -1,4 +1,5 @@
-import { Form, Input, Modal, Spin, InputNumber } from 'antd';
+import { Form, Input, Modal, Tabs } from 'antd';
+import 'antd/dist/antd.css';
 import React, { useEffect, useState } from 'react';
 import {
   getAccount,
@@ -14,7 +15,7 @@ import { getVaultsBySelectedAccount } from 'src/store/vault/selectors';
 import { ThemedWalletOutlined } from '@abcpros/givegift-components/components/Common/CustomIcons';
 import WalletLabel from '@abcpros/givegift-components/components/Common/WalletLabel';
 import BalanceHeader from '@abcpros/givegift-components/components/Common/BalanceHeader';
-import { LockOutlined } from '@ant-design/icons';
+import { CheckCircleOutlined, CloseCircleOutlined, LockOutlined } from '@ant-design/icons';
 import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
 import { SmartButton } from '@components/Common/PrimaryButton';
 import { StyledSpacer } from '@components/Common/StyledSpacer';
@@ -25,9 +26,40 @@ import { currency } from '@abcpros/givegift-components/components/Common/Ticker'
 import { fromSmallestDenomination } from '@utils/cashMethods';
 import { QRCode } from '@abcpros/givegift-components/src/components/Common/QRCode';
 import ReloadOutlined from '@ant-design/icons';
-import useAsyncTimeout from '@hooks/useAsyncTimeout';
+import moment from 'moment';
+import styled from 'styled-components';
+
 
 const Home: React.FC = () => {
+  const { TabPane } = Tabs;
+
+  const StyledTabs = styled(Tabs)`
+  .ant-collapse-header { 
+    justify-content: center; 
+    align-items: center; 
+  }
+
+  .ant-tabs-nav-list {
+    width: 100%;
+    text-align: center;
+  }
+
+  .ant-tabs-tab {
+    width: 50%;
+    background: #fff;
+    text-align: center;
+  }
+
+  .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: #6f2dbd;
+    text-shadow: 0 0 0.25px currentColor;
+  }
+
+  .ant-tabs-content {
+    text-align: center;
+  }
+`;
+
   const ContextValue = React.useContext(AppContext);
   const { XPI, Wallet } = ContextValue;
   const [formData, setFormData] = useState({
@@ -133,9 +165,18 @@ const Home: React.FC = () => {
       <SmartButton onClick={() => refreshList()}>
         <ReloadOutlined /> Refresh Vault List
       </SmartButton>
-      <VaultList vaults={vaults} />
+
+      <StyledTabs type="card" size="large" defaultActiveKey="1" centered>
+        <TabPane tab={ <span> <CheckCircleOutlined/> Active </span> } key="1">
+          <VaultList vaults={vaults.filter(vault => vault.status == 'active' && !moment().isAfter(vault.expiryAt) && !(vault.maxRedeem != 0 && vault.redeemedNum == vault.maxRedeem) )}/>
+        </TabPane>
+        <TabPane tab={ <span> <CloseCircleOutlined /> Archive </span> } key="2">
+          <VaultList vaults={vaults.filter(vault => vault.status != 'active' || moment().isAfter(vault.expiryAt) || vault.maxRedeem != 0 && vault.redeemedNum == vault.maxRedeem)}/>
+        </TabPane>
+      </StyledTabs>
     </>
   );
 };
 
 export default Home;
+status
