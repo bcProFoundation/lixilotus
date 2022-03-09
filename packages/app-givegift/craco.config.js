@@ -38,7 +38,7 @@ module.exports = {
               '@btn-ghost-color': 'fade(@light, 45)',
               '@btn-ghost-border': 'fade(@light, 45)',
               '@input-color': '@text-color',
-              '@input-bg': '#3b3b4d',
+              '@input-bg': '#ffffff',
               '@input-disabled-bg': '#4c4c61',
               '@input-placeholder-color': '@text-color-secondary',
               '@input-hover-border-color': 'fade(@light, 10)',
@@ -69,7 +69,7 @@ module.exports = {
               '@radio-button-checked-bg': 'transparent',
               '@radio-dot-color': '@primary-color',
               '@table-row-hover-bg': '#383847',
-              '@item-hover-bg': '#383847',
+              '@item-hover-bg': '#f0f0f7',
               '@alert-text-color': 'fade(@dark, 65%)',
 
               '@tabs-horizontal-padding': '12px 0',
