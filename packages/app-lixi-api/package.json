@@ -19,7 +19,7 @@
     "@bcpros/lixi-models": "^1.0.1",
     "@prisma/client": "^3.10.0",
     "axios": "^0.24.0",
-    "bignumber.js": "^9.0.2",
+    "bignumber.js": "9.0.1",
     "body-parser": "^1.19.0",
     "compression": "^1.7.4",
     "config": "^3.3.6",
