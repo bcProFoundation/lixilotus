@@ -1,9 +1,9 @@
 import { SaveOutlined, ShareAltOutlined } from '@ant-design/icons';
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
-import { ViewRedeemDto } from '@bcpros/lixi-models';
+import { ViewClaimDto } from '@bcpros/lixi-models';
 import { fromSmallestDenomination } from '@utils/cashMethods';
-import { numberToBase62 } from '@utils/encryptionMethods';
+import { numberToBase58 } from '@utils/encryptionMethods';
 import { Image, Popover } from 'antd';
 import { saveAs } from 'file-saver';
 import React from 'react';
@@ -16,11 +16,11 @@ import styled from 'styled-components';
 
 
 const imageBrowserDownload = (imageUri) => {
-  const filename = 'redeem' + Date.now() + '.png';
+  const filename = 'claim' + Date.now() + '.png';
   saveAs(imageUri, filename);
 };
 
-const RedeemButton = styled.button`
+const ClaimButton = styled.button`
   border: none;
   color: ${props => props.theme.buttons.primary.color};
   background-image: ${props => props.theme.buttons.primary.backgroundImage};
@@ -127,34 +127,34 @@ const popOverContent = (shareUrl) => {
 };
 
 
-type LixiRedeemProps = {
+type LixiClaimProps = {
   className?: string;
-  redeem: ViewRedeemDto;
+  claim: ViewClaimDto;
   isMobile: boolean;
 }
 
-const LixiRedeemed = ({
+const LixiClaimed = ({
   className,
-  redeem,
+  claim,
   isMobile
-}: LixiRedeemProps) => {
+}: LixiClaimProps) => {
 
   const baseApiUrl = process.env.NEXT_PUBLIC_LIXI_API;
   const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
 
-  const imageUrl = redeem?.image
-    ? baseApiUrl + 'api/' + redeem?.image
+  const imageUrl = claim?.image
+    ? baseApiUrl + 'api/' + claim?.image
     : baseApiUrl + 'api/' + 'images/default.png';
 
-  const slug = numberToBase62(redeem.id);
+  const slug = numberToBase58(claim.id);
 
-  const shareUrl = `${baseUrl}redeemed/${slug}`;
+  const shareUrl = `${baseUrl}claimed/${slug}`;
 
   const ShareSocialDropdown = (
     <Popover content={() => popOverContent(shareUrl)}>
-      <RedeemButton>
+      <ClaimButton>
         <ShareAltOutlined /> Share
-      </RedeemButton>
+      </ClaimButton>
     </Popover>
   );
 
@@ -167,22 +167,22 @@ const LixiRedeemed = ({
       }}
       onClick={() => { }}
     >
-      <RedeemButton>
+      <ClaimButton>
         <ShareAltOutlined /> Share
-      </RedeemButton>
+      </ClaimButton>
     </RWebShare>
   );
 
   return (
     <div className={className}>
-      {redeem && redeem.amount && (
+      {claim && claim.amount && (
         <>
-          <WalletLabel name='You have redeemed lixi' />
+          <WalletLabel name='You have claimed lixi' />
           <BalanceHeader
-            balance={fromSmallestDenomination(redeem.amount)}
+            balance={fromSmallestDenomination(claim.amount)}
             ticker='XPI' />
           <Image src={imageUrl} alt='lixi' />
-          <h3>{redeem.message}</h3>
+          <h3>{claim.message}</h3>
 
           <div style={{
             display: 'flex',
@@ -190,9 +190,9 @@ const LixiRedeemed = ({
             paddingTop: '20px'
 
           }}>
-            <RedeemButton onClick={() => imageBrowserDownload(imageUrl)}>
+            <ClaimButton onClick={() => imageBrowserDownload(imageUrl)}>
               <SaveOutlined /> Save
-            </RedeemButton>
+            </ClaimButton>
             {isMobile ? ShareSocialButton : ShareSocialDropdown}
           </div>
         </>
@@ -201,7 +201,7 @@ const LixiRedeemed = ({
   );
 };
 
-const Container = styled(LixiRedeemed)`
+const Container = styled(LixiClaimed)`
 
   .ant-modal, .ant-modal-content {
       height: 100vh !important;

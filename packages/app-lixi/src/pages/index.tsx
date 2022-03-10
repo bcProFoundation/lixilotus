@@ -12,8 +12,11 @@ const HomePage = (): JSX.Element => {
 }
 
 export const getStaticProps = wrapper.getStaticProps((store: SagaStore) => async (context) => {
+
   store.dispatch(END);
   await (store as SagaStore).__sagaTask.toPromise();
+
+  const result = await (store as SagaStore).getState();
 
   return {
     props: {

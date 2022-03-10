@@ -1,5 +1,5 @@
 import { createSelector } from "reselect";
-import { RootState, store } from "../store";
+import { RootState } from "../store";
 import { claimsAdapter } from "./reducer";
 import { ClaimsState } from "./state";
 

@@ -65,10 +65,10 @@ export async function aesGcmDecrypt(ciphertext: string, password: string) {
 /**
  * 
  * @param {number} length The length of string to generate
- * @returns base62 random string (should be use in redeem code)
+ * @returns base58 random string (should be use in claim code)
  */
-export function generateRandomBase62Str(length: number): string {
-  const base = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
+export function generateRandomBase58Str(length: number): string {
+  const base = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'.split('');
   const array = new Uint8Array(length);
   crypto.getRandomValues(array);
   let str = '';
@@ -78,14 +78,14 @@ export function generateRandomBase62Str(length: number): string {
   return str;
 }
 
-export function numberToBase62(input: number): string {
+export function numberToBase58(input: number): string {
   let n = input;
 
   if (n === 0) {
     return '0';
   }
 
-  const base = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  const base = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
   let result = '';
   while (n > 0) {
@@ -96,8 +96,8 @@ export function numberToBase62(input: number): string {
   return result;
 }
 
-export function base62ToNumber(text: string): number {
-  const base = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+export function base58ToNumber(text: string): number {
+  const base = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
   let result = 0;
   for (let i = 0; i < text.length; i++) {
     const p = base.indexOf(text[i]);

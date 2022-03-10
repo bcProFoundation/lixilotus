@@ -12,7 +12,7 @@ export const claimsAdapter = createEntityAdapter<Claim>({
 const initialState: ClaimsState = claimsAdapter.getInitialState({
   currentAddress: '',
   currentClaimCode: '',
-  currentLixiClaim: undefined
+  currentLixiClaim: null
 });
 
 export const claimReducer = createReducer(initialState, (builder) => {
@@ -31,6 +31,6 @@ export const claimReducer = createReducer(initialState, (builder) => {
       state.currentLixiClaim = action.payload;
     })
     .addCase(viewClaimFailure, (state, action) => {
-      state.currentLixiClaim = undefined;
+      state.currentLixiClaim = null;
     })
 })

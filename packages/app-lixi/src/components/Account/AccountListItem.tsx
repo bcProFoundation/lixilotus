@@ -43,7 +43,7 @@ type AccountListItemProps = {
   theme?: DefaultTheme;
 } & React.HTMLProps<HTMLDivElement>
 
-const VaultListItem: React.FC<AccountListItemProps> = (props: AccountListItemProps) => {
+const LixiListItem: React.FC<AccountListItemProps> = (props: AccountListItemProps) => {
 
   const dispatch = useAppDispatch();
 
@@ -64,4 +64,4 @@ const VaultListItem: React.FC<AccountListItemProps> = (props: AccountListItemPro
   );
 };
 
-export default VaultListItem;
+export default LixiListItem;

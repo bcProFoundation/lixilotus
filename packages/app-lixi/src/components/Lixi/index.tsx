@@ -5,24 +5,24 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { getAllRedeems } from 'src/store/redeem/selectors';
+import { getAllClaims } from 'src/store/claim/selectors';
 import { AppContext } from 'src/store/store';
 import { showToast } from 'src/store/toast/actions';
-import { getVault, refreshVault, setVaultBalance } from 'src/store/vault/actions';
-import { getSelectedVault, getSelectedVaultId } from 'src/store/vault/selectors';
+import { getLixi, refreshLixi, setLixiBalance } from 'src/store/lixi/actions';
+import { getSelectedLixi, getSelectedLixiId } from 'src/store/lixi/selectors';
 import styled from 'styled-components';
 
 import { CopyOutlined, DownloadOutlined, ReloadOutlined } from '@ant-design/icons';
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import { SmartButton } from '@bcpros/lixi-components/components/Common/PrimaryButton';
 import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
-import { QRRedeemCode } from '@bcpros/lixi-components/components/Common/QRRedeemCode';
+import { QRClaimCode } from '@bcpros/lixi-components/components/Common/QRClaimCode';
 import { StyledCollapse } from '@bcpros/lixi-components/components/Common/StyledCollapse';
 import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
 import { countries } from '@bcpros/lixi-models/constants/countries';
-import { VaultType } from '@bcpros/lixi-models/src/lib/vault';
+import { LixiType } from '@bcpros/lixi-models/src/lib/lixi';
 import { currency } from '@components/Common/Ticker';
-import RedeemList from '@components/Redeem/RedeemList';
+import ClaimList from '@components/Claim/ClaimList';
 import { fromSmallestDenomination } from '@utils/cashMethods';
 
 import lixiLogo from '../../assets/images/lixi_logo.svg';
@@ -51,30 +51,30 @@ const Copied = styled.div<CopiedProps>`
 
 const { Panel } = Collapse;
 
-const Vault: React.FC = () => {
+const Lixi: React.FC = () => {
 
   const dispatch = useAppDispatch();
   const ContextValue = React.useContext(AppContext);
   const { XPI, Wallet } = ContextValue;
-  const selectedVaultId = useAppSelector(getSelectedVaultId);
-  const selectedVault = useAppSelector(getSelectedVault);
-  const allReddemsCurrentVault = useAppSelector(getAllRedeems);
-  const [redeemCodeVisible, setRedeemCodeVisible] = useState(false);
+  const selectedLixiId = useAppSelector(getSelectedLixiId);
+  const selectedLixi = useAppSelector(getSelectedLixi);
+  const allReddemsCurrentLixi = useAppSelector(getAllClaims);
+  const [claimCodeVisible, setClaimCodeVisible] = useState(false);
   const qrPanelRef = React.useRef(null);
   const [isLoadBalanceError, setIsLoadBalanceError] = useState(false);
 
   useEffect(() => {
-    if (selectedVault) {
-      dispatch(getVault(selectedVault.id))
+    if (selectedLixi) {
+      dispatch(getLixi(selectedLixi.id))
     }
   }, []);
 
   useEffect(() => {
     const id = setTimeout(() => {
-      XPI.Electrumx.balance(selectedVault?.address).then((result => {
+      XPI.Electrumx.balance(selectedLixi?.address).then((result => {
         if (result && result.balance) {
           const balance = result.balance.confirmed + result.balance.unconfirmed;
-          dispatch(setVaultBalance(balance ?? 0));
+          dispatch(setLixiBalance(balance ?? 0));
         }
       })).catch(e => {
         setIsLoadBalanceError(true);
@@ -85,33 +85,33 @@ const Vault: React.FC = () => {
     }
   }, []);
 
-  const handleRefeshVault = () => {
-    if (!(selectedVault && selectedVaultId)) {
-      // Ignore if no vault is selected
+  const handleRefeshLixi = () => {
+    if (!(selectedLixi && selectedLixiId)) {
+      // Ignore if no lixi is selected
       return;
     }
-    const vaultId = selectedVaultId;
-    dispatch(refreshVault(vaultId));
+    const lixiId = selectedLixiId;
+    dispatch(refreshLixi(lixiId));
   }
 
-  const handleOnClickRedeemCode = evt => {
-    setRedeemCodeVisible(true);
+  const handleOnClickClaimCode = evt => {
+    setClaimCodeVisible(true);
     setTimeout(() => {
-      setRedeemCodeVisible(false);
+      setClaimCodeVisible(false);
     }, 1500);
   }
 
-  const handleOnCopyRedeemCode = () => {
-    setRedeemCodeVisible(true);
+  const handleOnCopyClaimCode = () => {
+    setClaimCodeVisible(true);
   };
 
-  const handleDownloadQRRedeemCode = () => {
+  const handleDownloadQRClaimCode = () => {
     if (qrPanelRef.current) {
       toPng(qrPanelRef.current, { cacheBust: true }).then(url => {
         saveAs(url);
       }).catch((err) => {
         dispatch(showToast('error', {
-          message: 'Unable to download redeem code.',
+          message: 'Unable to download claim code.',
           description: 'Please copy the code manually',
           duration: 5
         }));
@@ -119,37 +119,37 @@ const Vault: React.FC = () => {
     }
   }
 
-  const typeVault = () => {
-    switch (selectedVault?.vaultType) {
-      case VaultType.Fixed:
+  const typeLixi = () => {
+    switch (selectedLixi?.lixiType) {
+      case LixiType.Fixed:
         return (
-          <>Fixed {selectedVault.fixedValue} {currency.ticker}</>
+          <>Fixed {selectedLixi.fixedValue} {currency.ticker}</>
         );
-      case VaultType.Divided:
+      case LixiType.Divided:
         return (
-          <>Divided by {selectedVault.dividedValue} </>
+          <>Divided by {selectedLixi.dividedValue} </>
         );
       default:
         return (
-          <>Random {selectedVault?.minValue}-{selectedVault?.maxValue} {currency.ticker}</>
+          <>Random {selectedLixi?.minValue}-{selectedLixi?.maxValue} {currency.ticker}</>
         );
     }
   }
 
   const showRedemption = () => {
-    if (selectedVault?.maxRedeem != 0) {
-      return <>{selectedVault?.redeemedNum} / {selectedVault?.maxRedeem}</>
+    if (selectedLixi?.maxClaim != 0) {
+      return <>{selectedLixi?.claimedNum} / {selectedLixi?.maxClaim}</>
     }
     else {
-      return <>{selectedVault?.redeemedNum}</>
+      return <>{selectedLixi?.claimedNum}</>
     }
   }
 
   const formatDate = () => {
-    if (selectedVault?.expiryAt != null) {
+    if (selectedLixi?.expiryAt != null) {
       return (
         <Descriptions.Item label="Expiry at">
-          {moment(selectedVault?.expiryAt).format("YYYY-MM-DD HH:mm")}
+          {moment(selectedLixi?.expiryAt).format("YYYY-MM-DD HH:mm")}
         </Descriptions.Item>
       );
     }
@@ -159,14 +159,14 @@ const Vault: React.FC = () => {
   }
 
   const showCountry = () => {
-    return (selectedVault?.country != null) ? (
+    return (selectedLixi?.country != null) ? (
       <Descriptions.Item label="Country">
-        {countries.find(country => country.id === selectedVault?.country)?.name}
+        {countries.find(country => country.id === selectedLixi?.country)?.name}
       </Descriptions.Item>) : "";
   }
 
   const showIsFamilyFriendly = () => {
-    return (selectedVault?.isFamilyFriendly) ? (
+    return (selectedLixi?.isFamilyFriendly) ? (
       <Descriptions.Item label="Optional">
         Family Friendly
       </Descriptions.Item>) : "";
@@ -175,31 +175,31 @@ const Vault: React.FC = () => {
   return (
     <>
       <WalletLabel
-        name={selectedVault?.name ?? ''}
+        name={selectedLixi?.name ?? ''}
       />
       <BalanceHeader
-        balance={fromSmallestDenomination(selectedVault?.balance) ?? 0}
+        balance={fromSmallestDenomination(selectedLixi?.balance) ?? 0}
         ticker={currency.ticker} />
-      {selectedVault && selectedVault.address ? (
+      {selectedLixi && selectedLixi.address ? (
         <>
           <QRCode
-            address={selectedVault.address}
+            address={selectedLixi.address}
           />
 
           <Descriptions
             column={1}
             bordered
-            title={`Vault info for "${selectedVault.name}"`}
+            title={`Lixi info for "${selectedLixi.name}"`}
             style={{
               padding: '0 0 20px 0',
               color: 'rgb(23,23,31)',
             }}
           >
             <Descriptions.Item label="Type">
-              {typeVault()}
+              {typeLixi()}
             </Descriptions.Item>
-            <Descriptions.Item label="Total Redeemed">
-              {fromSmallestDenomination(selectedVault?.totalRedeem) ?? 0}
+            <Descriptions.Item label="Total Claimed">
+              {fromSmallestDenomination(selectedLixi?.totalClaim) ?? 0}
             </Descriptions.Item>
             <Descriptions.Item label="Redemptions">
               {showRedemption()}
@@ -209,59 +209,59 @@ const Vault: React.FC = () => {
             {showIsFamilyFriendly()}
           </Descriptions>
 
-          {/* Vault details */}
+          {/* Lixi details */}
           <StyledCollapse style={{ marginBottom: '20px' }}>
-            <Panel header="Click to reveal vault detail" key="panel-1">
+            <Panel header="Click to reveal lixi detail" key="panel-1">
               <div ref={qrPanelRef}>
-                {selectedVault && selectedVault.redeemCode && <QRRedeemCode
+                {selectedLixi && selectedLixi.claimCode && <QRClaimCode
                   logoImage={lixiLogo}
-                  code={selectedVault?.redeemCode}
+                  code={selectedLixi?.claimCode}
                 />}
               </div>
               <SmartButton
-                onClick={() => handleDownloadQRRedeemCode()}
+                onClick={() => handleDownloadQRClaimCode()}
               >
                 <DownloadOutlined />  Download Code
               </SmartButton>
             </Panel>
           </StyledCollapse>
 
-          {/* Copy RedeemCode */}
+          {/* Copy ClaimCode */}
           <CopyToClipboard
             style={{
               display: 'inline-block',
               width: '100%',
               position: 'relative',
             }}
-            text={selectedVault.redeemCode}
-            onCopy={handleOnCopyRedeemCode}
+            text={selectedLixi.claimCode}
+            onCopy={handleOnCopyClaimCode}
           >
-            <div style={{ position: 'relative', paddingTop: '20px' }} onClick={handleOnClickRedeemCode}>
+            <div style={{ position: 'relative', paddingTop: '20px' }} onClick={handleOnClickClaimCode}>
               <Copied
-                style={{ display: redeemCodeVisible ? undefined : 'none' }}
+                style={{ display: claimCodeVisible ? undefined : 'none' }}
               >
                 Copied <br />
-                <span style={{ fontSize: '32px' }}>{selectedVault.redeemCode}</span>
+                <span style={{ fontSize: '32px' }}>{selectedLixi.claimCode}</span>
               </Copied>
               <SmartButton>
-                <CopyOutlined />  Copy Redeem Code
+                <CopyOutlined />  Copy Claim Code
               </SmartButton>
             </div>
           </CopyToClipboard>
 
           <SmartButton
-            onClick={() => handleRefeshVault()}
+            onClick={() => handleRefeshLixi()}
           >
-            <ReloadOutlined />  Refresh Vault
+            <ReloadOutlined />  Refresh Lixi
           </SmartButton>
 
-          <RedeemList redeems={allReddemsCurrentVault} />
+          <ClaimList claims={allReddemsCurrentLixi} />
         </>
       )
-        : `No vault is selected`
+        : `No lixi is selected`
       }
     </>
   )
 };
 
-export default Vault;
+export default Lixi;

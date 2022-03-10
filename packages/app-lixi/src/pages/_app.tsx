@@ -14,6 +14,7 @@ import MainLayout from '@components/Layout/MainLayout';
 
 import { ConnectedRouter } from 'connected-next-router';
 import { AppContext, SagaStore, Wallet, wrapper, XPI } from '../store/store';
+import { loadGetInitialProps } from 'next/dist/shared/lib/utils';
 
 
 const PersistGateServer = (props: any) => {

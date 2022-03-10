@@ -1,21 +1,22 @@
-import { ViewRedeemDto } from '@bcpros/lixi-models';
-import LixiRedeemed from '@components/Redeem/LixiRedeemed';
-import redeemApi from '@store/redeem/api';
+import { ViewClaimDto } from '@bcpros/lixi-models';
+import LixiClaimed from '@components/Claim/LixiClaimed';
+import claimApi from '@store/claim/api';
 import { SagaStore, wrapper } from '@store/store';
-import { base62ToNumber, numberToBase62 } from '@utils/encryptionMethods';
+import { base58ToNumber, numberToBase58 } from '@utils/encryptionMethods';
 import _ from 'lodash';
 import { NextSeo } from 'next-seo';
 import React from 'react';
 import { END } from 'redux-saga';
 import { getSelectorsByUserAgent } from 'react-device-detect';
+import { loadGetInitialProps } from 'next/dist/shared/lib/utils';
 
-const RedeemPage = (props) => {
-  const { redeem, isMobile } = props;
-  const slug = numberToBase62(redeem.id);
-  const canonicalUrl = `/redeemed/${slug}`;
+const ClaimPage = (props) => {
+  const { claim, isMobile } = props;
+  const slug = numberToBase58(claim.id);
+  const canonicalUrl = `/claimed/${slug}`;
 
-  const imageUrl = redeem?.image
-    ? process.env.NEXT_PUBLIC_LIXI_API + 'api/' + redeem?.image
+  const imageUrl = claim?.image
+    ? process.env.NEXT_PUBLIC_LIXI_API + 'api/' + claim?.image
     : process.env.NEXT_PUBLIC_LIXI_API + 'api/images/default.png';
 
   return (
@@ -39,7 +40,7 @@ const RedeemPage = (props) => {
           cardType: 'summary_large_image',
         }}
       />
-      <LixiRedeemed redeem={redeem} isMobile={isMobile}/>
+      <LixiClaimed claim={claim} isMobile={isMobile}/>
     </>
   );
 }
@@ -54,16 +55,17 @@ export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) 
   await (store as SagaStore).__sagaTask.toPromise();
 
   const slug: string = _.isArray(context.params.slug) ? context.params.slug[0] : context.params.slug;
-  const redeemId: number = _.toSafeInteger(base62ToNumber(slug));
+  const claimId: number = _.toSafeInteger(base58ToNumber(slug));
 
-  const redeem: ViewRedeemDto = await redeemApi.getById(redeemId);
+  const claim: ViewClaimDto = await claimApi.getById(claimId);
 
   return {
     props: {
-      redeem,
+      claim,
       isMobile
     }
   };
 });
 
-export default RedeemPage;
+
+export default ClaimPage;

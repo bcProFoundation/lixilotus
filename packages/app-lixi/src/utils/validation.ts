@@ -42,11 +42,11 @@ import { fromSmallestDenomination } from '@utils/cashMethods';
 //     return error;
 // };
 
-export const isValidVaultName = (vaultName: string) => {
+export const isValidLixiName = (lixiName: string) => {
   return (
-    typeof vaultName === 'string' &&
-    vaultName.length > 0 &&
-    vaultName.length < 100
+    typeof lixiName === 'string' &&
+    lixiName.length > 0 &&
+    lixiName.length < 100
   );
 };
 

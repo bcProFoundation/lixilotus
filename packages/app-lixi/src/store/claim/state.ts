@@ -4,5 +4,5 @@ import { Claim, ViewClaimDto } from "@bcpros/lixi-models";
 export interface ClaimsState extends EntityState<Claim> {
     currentAddress: string;
     currentClaimCode: string;
-    currentLixiClaim?: ViewClaimDto;
+    currentLixiClaim?: Nullable<ViewClaimDto>;
 }

@@ -5,29 +5,28 @@ import { isMobile, isIOS, isSafari } from 'react-device-detect';
 import PrimaryButton from '@bcpros/lixi-components/components/Common/PrimaryButton';
 import { CashLoadingIcon } from "@bcpros/lixi-components/components/Common/CustomIcons";
 import {
-  FormItemRedeemCodeXpiInput,
+  FormItemClaimCodeXpiInput,
   FormItemWithQRCodeAddon
 } from '@bcpros/lixi-components/components/Common/EnhancedInputs';
-import useWindowDimensions from '@hooks/useWindowDimensions';
 import { parseAddress } from '@utils/addressMethods';
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { postRedeem, saveRedeemAddress, saveRedeemCode } from 'src/store/redeem/actions';
+import { postClaim, saveClaimAddress, saveClaimCode } from 'src/store/claim/actions';
 import { AppContext } from 'src/store/store';
-import { CreateRedeemDto } from '@bcpros/lixi-models/lib/redeem';
+import { CreateClaimDto } from '@bcpros/lixi-models/lib/claim';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
-import { getCurrentAddress, getCurrentRedeemCode } from 'src/store/redeem/selectors';
+import { getCurrentAddress, getCurrentClaimCode } from 'src/store/claim/selectors';
 import { useSelector } from 'react-redux';
 
 const SITE_KEY = "6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb";
 
-type RedeemFormData = {
+type ClaimFormData = {
   dirty: boolean;
-  redeemCode: string;
+  claimCode: string;
   address: string;
 }
 
-const RedeemComponent: React.FC = () => {
+const ClaimComponent: React.FC = () => {
 
   const isLoading = useAppSelector(getIsGlobalLoading);
 
@@ -40,9 +39,9 @@ const RedeemComponent: React.FC = () => {
   const scannerSupported = false;// width < 769 && isMobile && !(isIOS && !isSafari);
 
   const currentAddress = useAppSelector(getCurrentAddress);
-  const currentRedeemCode = useSelector(getCurrentRedeemCode)
+  const currentClaimCode = useSelector(getCurrentClaimCode)
 
-  const [redeemXpiAddressError, setRedeemXpiAddressError] = useState<string | boolean>(false);
+  const [claimXpiAddressError, setClaimXpiAddressError] = useState<string | boolean>(false);
 
   useEffect(() => {
     const loadScriptByURL = (id: string, url: string, callback: { (): void; (): void; }) => {
@@ -83,13 +82,13 @@ const RedeemComponent: React.FC = () => {
   async function submit(token) {
     if (
       !currentAddress ||
-      !currentRedeemCode
+      !currentClaimCode
     ) {
       return;
     }
 
     const address = currentAddress;
-    const redeemCode = currentRedeemCode;
+    const claimCode = currentClaimCode;
 
     // Get the param-free address
     let cleanAddress = address.split('?')[0];
@@ -98,14 +97,14 @@ const RedeemComponent: React.FC = () => {
 
     if (!isValidAddress) {
       const error = `Destination is not a valid ${currency.ticker} address`;
-      setRedeemXpiAddressError(error);
+      setClaimXpiAddressError(error);
     }
 
-    dispatch(postRedeem({
-      redeemAddress: address,
-      redeemCode: redeemCode,
+    dispatch(postClaim({
+      claimAddress: address,
+      claimCode: claimCode,
       captchaToken: token,
-    } as CreateRedeemDto));
+    } as CreateClaimDto));
 
   }
 
@@ -125,17 +124,17 @@ const RedeemComponent: React.FC = () => {
     else {
       error = false;
     }
-    setRedeemXpiAddressError(error);
+    setClaimXpiAddressError(error);
 
 
 
-    dispatch(saveRedeemAddress(address));
+    dispatch(saveClaimAddress(address));
   }
 
-  const handleRedeemCodeChange = e => {
+  const handleClaimCodeChange = e => {
     const { value, name } = e.target;
-    let redeemCode = value;
-    dispatch(saveRedeemCode(redeemCode));
+    let claimCode = value;
+    dispatch(saveClaimCode(claimCode));
   }
 
   return (
@@ -155,8 +154,8 @@ const RedeemComponent: React.FC = () => {
                   margin: '0 0 20px 0'
                 }}
                 loadWithCameraOpen={scannerSupported}
-                validateStatus={redeemXpiAddressError ? 'error' : ''}
-                help={redeemXpiAddressError ? redeemXpiAddressError : ''}
+                validateStatus={claimXpiAddressError ? 'error' : ''}
+                help={claimXpiAddressError ? claimXpiAddressError : ''}
                 onScan={result =>
                   handleAddressChange({
                     target: {
@@ -173,12 +172,12 @@ const RedeemComponent: React.FC = () => {
                   value: currentAddress,
                 }}
               ></FormItemWithQRCodeAddon>
-              <FormItemRedeemCodeXpiInput
+              <FormItemClaimCodeXpiInput
                 inputProps={{
-                  onChange: e => handleRedeemCodeChange(e),
-                  value: currentRedeemCode
+                  onChange: e => handleClaimCodeChange(e),
+                  value: currentClaimCode
                 }}
-              ></FormItemRedeemCodeXpiInput>
+              ></FormItemClaimCodeXpiInput>
               <div
                 style={{
                   paddingTop: '12px',
@@ -186,7 +185,7 @@ const RedeemComponent: React.FC = () => {
               >
                 <PrimaryButton
                   onClick={handleOnClick}
-                >Redeem</PrimaryButton>
+                >Claim</PrimaryButton>
               </div>
             </Form>
           </Spin>
@@ -196,4 +195,4 @@ const RedeemComponent: React.FC = () => {
   )
 };
 
-export default RedeemComponent;
+export default ClaimComponent;

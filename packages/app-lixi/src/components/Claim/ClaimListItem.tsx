@@ -1,12 +1,12 @@
 import styled, { DefaultTheme } from 'styled-components';
-import { Redeem } from '@bcpros/lixi-models/lib/redeem';
+import { Claim } from '@bcpros/lixi-models';
 import { useAppDispatch } from 'src/store/hooks';
 import { DollarCircleOutlined } from '@ant-design/icons';
 import { fromSmallestDenomination } from '@utils/cashMethods';
 import GrayLotus from '@assets/images/gray_lotus.svg';
 
 
-const RedeemItemWrapper = styled.div`
+const ClaimItemWrapper = styled.div`
   display: grid;
   grid-template-columns: 36px 50% 30%;
   justify-content: space-between;
@@ -26,7 +26,7 @@ const RedeemItemWrapper = styled.div`
   }
 `;
 
-const RedeemItemIcon = styled.div`
+const ClaimItemIcon = styled.div`
   svg {
     width: 32px;
     height: 32px;
@@ -43,7 +43,7 @@ const RedeemItemIcon = styled.div`
   }
 `;
 
-const RedeemDescription = styled.div`
+const ClaimDescription = styled.div`
   text-align: left;
   padding: 12px;
   @media screen and (max-width: 500px) {
@@ -51,12 +51,12 @@ const RedeemDescription = styled.div`
   }
 `;
 
-const RedeemDescriptionLabel = styled.span`
+const ClaimDescriptionLabel = styled.span`
   font-weight: bold;
   color: rgba(127, 127, 127, 0.85) !important;
 `;
 
-const RedeemInfo = styled.div`
+const ClaimInfo = styled.div`
   padding: 12px;
   font-size: 1rem;
   text-align: right;
@@ -66,7 +66,7 @@ const RedeemInfo = styled.div`
   }
 `;
 
-const RedeemAmount = styled.div`
+const ClaimAmount = styled.div`
   padding-left: 12px;
   font-size: 0.8rem;
   @media screen and (max-width: 500px) {
@@ -86,41 +86,41 @@ export const LotusLogo = styled.img`
   }
 `;
 
-type RedeemListItemProps = {
-  redeem: Redeem,
+type ClaimListItemProps = {
+  claim: Claim,
   theme?: DefaultTheme;
 } & React.HTMLProps<HTMLDivElement>
 
-const RedeemListItem: React.FC<RedeemListItemProps> = (props: RedeemListItemProps) => {
+const ClaimListItem: React.FC<ClaimListItemProps> = (props: ClaimListItemProps) => {
 
-  const handleClickRedeem = (redeem: Redeem,) => {
-    const url = `https://explorer.givelotus.org/tx/${redeem.transactionId}`;
+  const handleClickClaim = (claim: Claim,) => {
+    const url = `https://explorer.givelotus.org/tx/${claim.transactionId}`;
     window.open(url, '_blank');
   }
 
-  const { redeem } = props;
-  const redeemDateLocalTime = redeem.createdAt ? redeem.createdAt.toString() : '';
-  const displayAmount = fromSmallestDenomination(redeem.amount);
+  const { claim } = props;
+  const claimDateLocalTime = claim.createdAt ? claim.createdAt.toString() : '';
+  const displayAmount = fromSmallestDenomination(claim.amount);
 
   return (
-    <RedeemItemWrapper onClick={(e) => handleClickRedeem(redeem)}>
-      <RedeemItemIcon>
-        <LotusLogo src={GrayLotus} alt="lixi" /> 
-      </RedeemItemIcon>
-      <RedeemDescription>
-        <RedeemDescriptionLabel>Redeem</RedeemDescriptionLabel>
+    <ClaimItemWrapper onClick={(e) => handleClickClaim(claim)}>
+      <ClaimItemIcon>
+        <LotusLogo src={GrayLotus} alt="lixi" />
+      </ClaimItemIcon>
+      <ClaimDescription>
+        <ClaimDescriptionLabel>Claim</ClaimDescriptionLabel>
         <br />
-        {redeemDateLocalTime}
-      </RedeemDescription>
-      <RedeemInfo>
-        <RedeemAmount>
+        {claimDateLocalTime}
+      </ClaimDescription>
+      <ClaimInfo>
+        <ClaimAmount>
           {displayAmount}
           &nbsp;
           {'XPI'}
-        </RedeemAmount>
-      </RedeemInfo>
-    </RedeemItemWrapper>
+        </ClaimAmount>
+      </ClaimInfo>
+    </ClaimItemWrapper>
   );
 };
 
-export default RedeemListItem;
+export default ClaimListItem;

@@ -9,7 +9,7 @@ type AccountListProps = {
   accounts: Account[];
 };
 
-const VaultList = ({ accounts }: AccountListProps) => {
+const LixiList = ({ accounts }: AccountListProps) => {
 
   const isLoading = useAppSelector(getIsGlobalLoading);
 
@@ -31,4 +31,4 @@ const VaultList = ({ accounts }: AccountListProps) => {
   );
 };
 
-export default VaultList;
+export default LixiList;

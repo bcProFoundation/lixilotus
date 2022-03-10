@@ -15,7 +15,7 @@ import { AccountsState } from './state';
 export const accountsAdapter = createEntityAdapter<Account>({});
 
 const initialState: AccountsState = accountsAdapter.getInitialState({
-  selectedId: undefined,
+  selectedId: null,
   lixiIdsById: {},
 });
 
@@ -24,7 +24,7 @@ export const accountReducer = createReducer(initialState, (builder) => {
     .addCase(setAccount, (state, action) => {
       const account = action.payload;
       accountsAdapter.upsertOne(state, account);
-      state.selectedId = account.id ?? undefined;
+      state.selectedId = account.id ?? null;
     })
     .addCase(selectAccountSuccess, (state, action) => {
       const { account, lixies } = action.payload;

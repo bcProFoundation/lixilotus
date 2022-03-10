@@ -3,7 +3,7 @@ import { createSelector } from 'reselect';
 
 import { Lixi } from '@bcpros/lixi-models';
 
-import { RootState, store } from '../store';
+import { RootState } from '../store';
 import { lixiesAdapter } from './reducer';
 import { LixiesState } from './state';
 

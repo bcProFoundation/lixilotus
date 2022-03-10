@@ -1,15 +1,15 @@
 import { Spin } from "antd";
-import { Vault } from "@bcpros/lixi-models/lib/vault";
+import { Lixi } from "@bcpros/lixi-models/lib/lixi";
 import { useAppSelector } from "src/store/hooks";
 import { getIsGlobalLoading } from "src/store/loading/selectors";
 import { CashLoadingIcon } from "@bcpros/lixi-components/components/Common/CustomIcons";
-import VaultListItem from "./VaultListItem";
+import LixiListItem from "./LixiListItem";
 
-type VaultListProps = {
-  vaults: Vault[];
+type LixiListProps = {
+  lixies: Lixi[];
 };
 
-const VaultList = ({ vaults }: VaultListProps) => {
+const LixiList = ({ lixies }: LixiListProps) => {
 
   const isLoading = useAppSelector(getIsGlobalLoading);
 
@@ -17,11 +17,11 @@ const VaultList = ({ vaults }: VaultListProps) => {
     <>
       <Spin spinning={isLoading} indicator={CashLoadingIcon}>
         <div style={{ paddingTop: '20px' }}>
-          {vaults && vaults.length > 0 &&
-            vaults.map(item => (
-              <VaultListItem
+          {lixies && lixies.length > 0 &&
+            lixies.map(item => (
+              <LixiListItem
                 key={item.id}
-                vault={item}
+                lixi={item}
               />
             ))
           }
@@ -31,4 +31,4 @@ const VaultList = ({ vaults }: VaultListProps) => {
   );
 };
 
-export default VaultList;
+export default LixiList;

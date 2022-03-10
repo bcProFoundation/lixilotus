@@ -142,20 +142,20 @@ const MainLayout: React.FC = (props) => {
                         Accounts
                       </NavButton>
                     </Link>
-                    <Link href='/vault' passHref>
+                    <Link href='/lixi' passHref>
                       <NavButton
-                        active={selectedKey === '/vault'}
+                        active={selectedKey === '/lixi'}
                       >
                         <WalletOutlined />
-                        Vault
+                        Lixi
                       </NavButton>
                     </Link>
-                    <Link href='/redeem' passHref>
+                    <Link href='/claim' passHref>
                       <NavButton
-                        active={selectedKey === '/redeem'}
+                        active={selectedKey === '/claim'}
                       >
                         <GiftOutlined />
-                        Redeem
+                        Claim
                       </NavButton>
                     </Link>
                     <Link href='/settings' passHref>

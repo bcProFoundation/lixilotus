@@ -1,12 +1,13 @@
 import styled, { DefaultTheme } from 'styled-components';
 import { GiftOutlined, WalletOutlined, DeleteOutlined, MoreOutlined, LockOutlined } from '@ant-design/icons';
-import { LockVaultCommand, UnlockVaultCommand, Vault, WithdrawVaultCommand } from '@bcpros/lixi-models/lib/vault';
-import { lockVault, selectVault, unlockVault, withdrawVault } from 'src/store/vault/actions';
+import { LockLixiCommand, UnlockLixiCommand, Lixi, WithdrawLixiCommand } from '@bcpros/lixi-models/lib/lixi';
+import { lockLixi, selectLixi, unlockLixi, withdrawLixi } from 'src/store/lixi/actions';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { Button, Dropdown, Menu } from 'antd';
 import { getSelectedAccount } from 'src/store/account/selectors';
+import { fromSmallestDenomination } from '@utils/cashMethods';
 
-const VaultIcon = styled.div`
+const LixiIcon = styled.div`
   height: 32px;
   width: 32px;
   position: relative;
@@ -62,28 +63,28 @@ const MoreIcon = styled(Button)`
 `;
 
 
-type VaultListItemProps = {
+type LixiListItemProps = {
   className?: string,
-  vault: Vault,
+  lixi: Lixi,
   theme?: DefaultTheme;
 } & React.HTMLProps<HTMLDivElement>
 
-const VaultListItem: React.FC<VaultListItemProps> = (props: VaultListItemProps) => {
+const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => {
 
-  const { vault } = props;
+  const { lixi } = props;
 
   const dispatch = useAppDispatch();
 
-  const handleSelectVault = (vaultId: number) => {
-    dispatch(selectVault(vaultId));
+  const handleSelectLixi = (lixiId: number) => {
+    dispatch(selectLixi(lixiId));
   }
 
   const selectedAccount = useAppSelector(getSelectedAccount);
 
   let options = ['Withdraw'];
-  vault.status === 'active' ? options.unshift('Lock') : options.unshift('Unlock');
-  const postVaultData = {
-    id: vault.id,
+  lixi.status === 'active' ? options.unshift('Lock') : options.unshift('Unlock');
+  const postLixiData = {
+    id: lixi.id,
     mnemonic: selectedAccount?.mnemonic,
     mnemonicHash: selectedAccount?.mnemonicHash
   };
@@ -98,24 +99,26 @@ const VaultListItem: React.FC<VaultListItemProps> = (props: VaultListItemProps) 
   const handleClickMenu = (e) => {
     e.domEvent.stopPropagation();
     if (e.key === 'Lock') {
-      dispatch(lockVault(postVaultData as LockVaultCommand))
+      dispatch(lockLixi(postLixiData as LockLixiCommand))
     }
     else if (e.key === 'Unlock') {
-      dispatch(unlockVault(postVaultData as UnlockVaultCommand))
+      dispatch(unlockLixi(postLixiData as UnlockLixiCommand))
     }
     else if (e.key === 'Withdraw') {
-      dispatch(withdrawVault(postVaultData as WithdrawVaultCommand));
+      dispatch(withdrawLixi(postLixiData as WithdrawLixiCommand));
     }
   };
 
 
   return (
-    <Wrapper onClick={(e) => handleSelectVault(vault.id)}>
-      <VaultIcon>
-        {vault.status === 'active' ? <WalletIcon /> : <LockIcon />}
-      </VaultIcon>
+    <Wrapper onClick={(e) => handleSelectLixi(lixi.id)}>
+      <LixiIcon>
+        {lixi.status === 'active' ? <WalletIcon /> : <LockIcon />}
+      </LixiIcon>
       <BalanceAndTicker>
-        <strong>{vault.name}</strong>
+        <strong>{lixi.name}</strong>
+        <br/>
+        <span>({lixi.claimedNum}) {fromSmallestDenomination(lixi.totalClaim)}/{fromSmallestDenomination(lixi.balance)} XPI remaining</span>
       </BalanceAndTicker>
       <Dropdown trigger={["click"]} overlay={
         <Menu onClick={(e) => handleClickMenu(e)}>
@@ -129,4 +132,4 @@ const VaultListItem: React.FC<VaultListItemProps> = (props: VaultListItemProps) 
   );
 };
 
-export default VaultListItem;
+export default LixiListItem;

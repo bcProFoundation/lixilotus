@@ -1,37 +1,50 @@
-import { Form, Input, InputNumber, Modal, Spin } from 'antd';
-import dynamic from 'next/dynamic';
-import React, { useEffect, useState } from 'react';
-import { getAccount, importAccount, setAccountBalance } from 'src/store/account/actions';
-import { getSelectedAccount } from 'src/store/account/selectors';
-import { getEnvelopes } from 'src/store/envelope/actions';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { getIsGlobalLoading } from 'src/store/loading/selectors';
-import { AppContext } from 'src/store/store';
-import { getVaultsBySelectedAccount } from 'src/store/vault/selectors';
-
-import { LockOutlined } from '@ant-design/icons';
+import ReloadOutlined, { CheckCircleOutlined, CloseCircleOutlined, LockOutlined } from '@ant-design/icons';
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import { ThemedWalletOutlined } from '@bcpros/lixi-components/components/Common/CustomIcons';
+import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
-import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
 import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
 import { SmartButton } from '@components/Common/PrimaryButton';
 import { StyledSpacer } from '@components/Common/StyledSpacer';
-import CreateVaultForm from '@components/Vault/CreateVaultForm';
-import VaultList from '@components/Vault/VaultList';
+import CreateLixiForm from '@components/Lixi/CreateLixiForm';
+import LixiList from '@components/Lixi/LixiList';
+import { getAccount, importAccount, refreshLixiList, setAccountBalance } from '@store/account/actions';
 import { fromSmallestDenomination } from '@utils/cashMethods';
+import { Form, Input, Modal, Tabs } from 'antd';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { getSelectedAccount } from 'src/store/account/selectors';
+import { getEnvelopes } from 'src/store/envelope/actions';
+import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import { getLixiesBySelectedAccount } from 'src/store/lixi/selectors';
+import { getIsGlobalLoading } from 'src/store/loading/selectors';
+import { AppContext } from 'src/store/store';
+import styled from 'styled-components';
 
-
-// const QRCode = dynamic(
-//   () => import('@bcpros/lixi-components/components/Common/QRCode'),
-//   { ssr: false }
-// );
-
-// const CreateVaultForm = dynamic(
-//   () => import('@components/Vault/CreateVaultForm'),
-//   { ssr: false }
-// );
+const { TabPane } = Tabs;
+const StyledTabs = styled(Tabs)`
+.ant-collapse-header {
+  justify-content: center;
+  align-items: center;
+}
+.ant-tabs-nav-list {
+  width: 100%;
+  text-align: center;
+}
+.ant-tabs-tab {
+  width: 50%;
+  background: #fff;
+  text-align: center;
+}
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #6f2dbd;
+  text-shadow: 0 0 0.25px currentColor;
+}
+.ant-tabs-content {
+  text-align: center;
+}
+`;
 
 const Home: React.FC = () => {
 
@@ -47,7 +60,7 @@ const Home: React.FC = () => {
   const dispatch = useAppDispatch();
   const { confirm } = Modal;
   const isLoading = useAppSelector(getIsGlobalLoading);
-  const vaults = useAppSelector(getVaultsBySelectedAccount);
+  const lixies = useAppSelector(getLixiesBySelectedAccount);
   const selectedAccount = useAppSelector(getSelectedAccount);
   const [isLoadBalanceError, setIsLoadBalanceError] = useState(false);
 
@@ -55,34 +68,34 @@ const Home: React.FC = () => {
   useEffect(() => {
     dispatch(getEnvelopes());
     if (selectedAccount) {
-      dispatch(getAccount(selectedAccount.id))
+      dispatch(getAccount(selectedAccount.id));
     }
   }, []);
 
   useEffect(() => {
-    const id = setTimeout(() => {
-      XPI.Electrumx.balance(selectedAccount?.address).then((result => {
+    const id = setInterval(() => {
+      XPI.Electrumx.balance(selectedAccount?.address)
+        .then((result) => {
         if (result && result.balance) {
           const balance = result.balance.confirmed + result.balance.unconfirmed;
           dispatch(setAccountBalance(balance ?? 0));
         }
-      })).catch(e => {
+        })
+        .catch((e) => {
         setIsLoadBalanceError(true);
-      })
+        });
     }, 10000);
-    return () => {
-      return clearTimeout(id);
-    }
+    return () => clearInterval(id);
   }, []);
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { value, name } = e.target;
 
     // Validate mnemonic on change
     // Import button should be disabled unless mnemonic is valid
     setIsValidMnemonic(Wallet.validateMnemonic(value));
 
-    setFormData(p => ({ ...p, [name]: value }));
+    setFormData((p) => ({ ...p, [name]: value }));
   };
 
   async function submit() {
@@ -97,11 +110,12 @@ const Home: React.FC = () => {
     dispatch(importAccount(formData.mnemonic));
   }
 
+  const refreshList = () => {
+    dispatch(refreshLixiList(selectedAccount?.id));
+  };
   return (
     <>
-      <WalletLabel
-        name={selectedAccount?.name ?? ''}
-      />
+      <WalletLabel name={selectedAccount?.name ?? ''} />
       <BalanceHeader
         balance={fromSmallestDenomination(selectedAccount?.balance ?? 0)}
         ticker={currency.ticker} />
@@ -128,15 +142,12 @@ const Home: React.FC = () => {
                 placeholder="mnemonic (seed phrase)"
                 name="mnemonic"
                 autoComplete="off"
-                onChange={e => handleChange(e)}
+                onChange={(e) => handleChange(e)}
                 required
               />
             </Form.Item>
 
-            <SmartButton
-              disabled={!isValidMnemonic}
-              onClick={() => submit()}
-            >
+            <SmartButton disabled={!isValidMnemonic} onClick={() => submit()}>
               Import
             </SmartButton>
           </Form>
@@ -144,13 +155,24 @@ const Home: React.FC = () => {
       )}
       <StyledSpacer />
       <h2 style={{ color: '#6f2dbd' }}>
-        <ThemedWalletOutlined /> Manage Vaults
+        <ThemedWalletOutlined /> Manage Lixi
       </h2>
 
-      <CreateVaultForm account={selectedAccount} />
-      <VaultList vaults={vaults} />
+      <CreateLixiForm account={selectedAccount} />
+      <SmartButton onClick={() => refreshList()}>
+        <ReloadOutlined /> Refresh Lixi List
+      </SmartButton>
+      <LixiList lixies={lixies} />
+      <StyledTabs type="card" size="large" defaultActiveKey="1" centered>
+        <TabPane tab={ <span> <CheckCircleOutlined /> Active </span> } key="1">
+          <LixiList lixies={lixies.filter(lixi => lixi.status == 'active' && !moment().isAfter(lixi.expiryAt) && !(lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim) )}/>
+        </TabPane>
+        <TabPane tab={ <span> <CloseCircleOutlined /> Archive </span> } key="2">
+          <LixiList lixies={lixies.filter(lixi => lixi.status != 'active' || moment().isAfter(lixi.expiryAt) || lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim)}/>
+        </TabPane>
+      </StyledTabs>
     </>
-  )
+  );
 };
 
 export default Home;

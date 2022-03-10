@@ -3,10 +3,10 @@ import { getModals } from 'src/store/modal/selectors';
 
 import { RenameAccountModal } from '../Settings/RenameAccountModal';
 import { DeleteAccountModal } from '../Settings/DeleteAccountModal';
-import { CreateVaultConfirmationModal } from '../Vault/CreateVaultConfirmationModal';
+import { CreateLixiConfirmationModal } from '../Lixi/CreateLixiConfirmationModal';
 
 const modalComponentLookupTable = {
-  CreateVaultConfirmationModal,
+  CreateLixiConfirmationModal,
   RenameAccountModal,
   DeleteAccountModal
 };
