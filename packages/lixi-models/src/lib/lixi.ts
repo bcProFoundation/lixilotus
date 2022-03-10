@@ -1,18 +1,20 @@
 import { Envelope } from "./envelope";
 
-export interface GenerateVaultCommand {
+export interface GenerateLixiCommand {
   name: string;
   accountId: number;
   mnemonic: string;
   mnemonicHash: string;
-  maxRedeem: string;
-  redeemType: number;
-  vaultType: number;
+  maxClaim: string;
+  claimType: number;
+  lixiType: number;
   minValue: string;
   maxValue: string;
   fixedValue: string;
   dividedValue: string;
   amount: string;
+  numberOfSubLixi: string;
+  parentId?: number;
   expiryAt?: string;
   country?: string;
   isFamilyFriendly: boolean;
@@ -20,12 +22,12 @@ export interface GenerateVaultCommand {
   envelopeMessage: string;
 }
 
-export interface CreateVaultCommand {
+export interface CreateLixiCommand {
   name: string;
-  accountId: number
-  maxRedeem: number;
-  redeemType: number;
-  vaultType: number;
+  accountId: number;
+  maxClaim: number;
+  claimType: number;
+  lixiType: number;
   mnemonic: string;
   mnemonicHash: string;
   minValue: number;
@@ -33,6 +35,8 @@ export interface CreateVaultCommand {
   fixedValue: number;
   dividedValue: number;
   amount: number;
+  numberOfSubLixi: number;
+  parentId?: number;
   expiryAt?: Date;
   country?: string;
   isFamilyFriendly: boolean;
@@ -42,20 +46,20 @@ export interface CreateVaultCommand {
 }
 
 
-export interface VaultDto {
+export interface LixiDto {
   id?: number;
   name: string;
-  maxRedeem: number;
-  redeemedNum: number;
-  redeemType: number;
-  vaultType: number;
-  redeemCode?: string;
+  maxClaim: number;
+  claimedNum: number;
+  claimType: number;
+  lixiType: number;
+  claimCode?: string;
   minValue: number;
   maxValue: number;
   fixedValue: number;
   dividedValue: number;
-  encryptedRedeemCode?: string;
-  totalRedeem: number;
+  encryptedClaimCode?: string;
+  totalClaim: number;
   createdAt?: Date;
   updatedAt?: Date;
   expiryAt?: Date;
@@ -66,25 +70,28 @@ export interface VaultDto {
   status: string;
   accountId: number;
   amount: number;
+  numberOfSubLixi: number;
+  parentId?: number;
+  isClaimed?: boolean;
   envelopeId: number | null;
   envelopeMessage: string;
   envelope?: Envelope | null;
 };
 
-export interface Vault {
+export interface Lixi {
   id: number;
   name: string;
-  maxRedeem: number;
-  redeemedNum: number;
-  redeemType: number;
-  vaultType: number;
-  redeemCode?: string;
+  maxClaim: number;
+  claimedNum: number;
+  claimType: number;
+  lixiType: number;
+  claimCode?: string;
   minValue: number;
   maxValue: number;
   fixedValue: number;
   dividedValue: number;
-  encryptedRedeemCode: string;
-  totalRedeem: number;
+  encryptedClaimCode: string;
+  totalClaim: number;
   createdAt?: Date;
   updatedAt?: Date;
   expiryAt?: Date;
@@ -95,37 +102,40 @@ export interface Vault {
   status: string;
   accountId: number;
   amount: number;
+  numberOfSubLixi: number;
+  parentId?: number;
+  isClaimed?: boolean;
   envelopeId: number | null;
   envelopeMessage: string;
   envelope?: Envelope | null;
 };
 
-export interface UnlockVaultCommand {
+export interface UnlockLixiCommand {
   id: number;
   mnemonic: string;
   mnemonicHash: string;
 };
 
-export interface LockVaultCommand {
+export interface LockLixiCommand {
   id: number;
   mnemonic: string;
   mnemonicHash: string;
 };
 
-export interface WithdrawVaultCommand {
+export interface WithdrawLixiCommand {
   id: number;
   mnemonic: string;
   mnemonicHash: string;
 };
 
-export enum VaultType {
+export enum LixiType {
   Random = 0,
   Fixed = 1,
   Divided = 2,
   Equal = 3
 };
 
-export enum RedeemType {
+export enum ClaimType {
   Single = 0,
   OneTime = 1,
 };
