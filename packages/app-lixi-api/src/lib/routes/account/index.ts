@@ -140,7 +140,7 @@ router.delete('/accounts/:id/', async (req: express.Request, res: express.Respon
         id: _.toSafeInteger(id)
       },
       include: {
-        vaults: true
+        lixies: true
       }
     });
 
@@ -154,22 +154,22 @@ router.delete('/accounts/:id/', async (req: express.Request, res: express.Respon
       }
     }
 
-    let vaults = account && account.vaults ? account.vaults : [];
+    let lixies = account && account.lixies ? account.lixies : [];
 
-    if (vaults.length > 0) {
-      // delete associated redeems, vaults then account
-      const redeemDeleteCondition: Array<{ id: number }> = vaults.map(vault => {
+    if (lixies.length > 0) {
+      // delete associated claims, lixies then account
+      const claimDeleteCondition: Array<{ id: number }> = lixies.map(lixi => {
         return {
-          id: _.toSafeInteger(vault.id)
+          id: _.toSafeInteger(lixi.id)
         };
       });
       await prisma.$transaction([
-        prisma.redeem.deleteMany({
+        prisma.claim.deleteMany({
           where: {
-            OR: redeemDeleteCondition
+            OR: claimDeleteCondition
           }
         }),
-        prisma.vault.deleteMany({ where: { accountId: accountId } }),
+        prisma.lixi.deleteMany({ where: { accountId: accountId } }),
         prisma.account.deleteMany({ where: { id: accountId } }),
       ])
     } else {

@@ -4,8 +4,8 @@ import helmet from 'helmet';
 import config from 'config';
 import Container from 'typedi';
 import SlpWallet from '@abcpros/minimal-xpi-slp-wallet';
-import * as Vault from './routes/vault';
-import * as Redeem from './routes/redeem';
+import * as Lixi from './routes/lixi';
+import * as Claim from './routes/claim';
 import * as Healthcheck from './routes/healthcheck';
 import * as Account from './routes/account';
 import * as Envelope from './routes/envelope';
@@ -38,8 +38,8 @@ export class ExpressApp {
   public routes() {
 
     this.app.use('/api', Account.router);
-    this.app.use('/api', Vault.router);
-    this.app.use('/api', Redeem.router);
+    this.app.use('/api', Lixi.router);
+    this.app.use('/api', Claim.router);
     this.app.use('/api', Envelope.router);
     this.app.use('/api', Healthcheck.router);
     this.app.use('/api', express.static('public'))

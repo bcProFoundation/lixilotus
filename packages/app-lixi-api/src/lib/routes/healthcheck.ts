@@ -8,8 +8,8 @@ const prisma = new PrismaClient();
 
 router.get('/healthcheck', async (req: express.Request, res: express.Response, next: NextFunction) => {
 
-  const existedRedeems = await prisma.$queryRaw`SELECT 1`;
-  if (!existedRedeems) {
+  const existedClaims = await prisma.$queryRaw`SELECT 1`;
+  if (!existedClaims) {
     const error = new VError('Database is shuting down');
     return next(error);
   }

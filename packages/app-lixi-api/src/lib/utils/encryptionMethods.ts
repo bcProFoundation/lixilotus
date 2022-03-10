@@ -48,8 +48,8 @@ export async function aesGcmEncrypt(plaintext: string, password: string): Promis
   return encryptedResult.toString('base64');
 }
 
-export function base62ToNumber(text: string): number {
-  const base = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+export function base58ToNumber(text: string): number {
+  const base = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
   let result = 0;
   for (let i = 0; i < text.length; i++) {
     const p = base.indexOf(text[i]);
@@ -61,14 +61,14 @@ export function base62ToNumber(text: string): number {
   return result;
 }
 
-export function numberToBase62(input: number): string {
+export function numberToBase58(input: number): string {
   let n = input;
 
   if (n === 0) {
     return '0';
   }
 
-  const base = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  const base = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
 
   let result = '';
   while (n > 0) {
@@ -83,4 +83,24 @@ export async function hexSha256(text: string): Promise<string> {
   const txtUtf8 = new TextEncoder().encode(text);
   const txtHash = await crypto.createHash('sha256').update(txtUtf8).digest();
   return txtHash.toString('hex');
+}
+/**
+ * 
+ * @param {number} length The length of string to generate
+ * @returns base58 random string (should be use in claim code)
+ */
+export function generateRandomBase58Str(length: number): string {
+  const base = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'.split('');
+  const array = new Uint8Array(crypto.randomBytes(length));
+  let str = '';
+  for (var i = 0; i < array.length; i++) {
+    str += base[array[i] % base.length];
+  };
+  return str;
+}
+export async function hashMnemonic(mnemonic: string): Promise<string> {
+  const mnemonicUtf8 = new TextEncoder().encode(mnemonic); // encode mnemonic as UTF-8
+  const mnemonicHashBuffer = await crypto.createHash('sha256').update(mnemonicUtf8).digest();;// hash the mnemonic
+  const mnemonicHash = Buffer.from(new Uint8Array(mnemonicHashBuffer)).toString('hex');
+  return mnemonicHash;
 }
