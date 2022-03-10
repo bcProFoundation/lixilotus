@@ -74,7 +74,7 @@ const makeStore = (context: Context) => {
       },
       devTools: process.env.NODE_ENV === 'production' ? false : {
         actionsBlacklist: [
-          'vault/setVaultBalance',
+          'lixi/setLixiBalance',
           'account/setAccountBalance'
         ]
       },

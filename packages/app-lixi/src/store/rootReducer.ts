@@ -9,16 +9,14 @@ import { toastReducer } from './toast/reducer';
 import { actionReducer } from './action/reducer';
 import { accountReducer } from './account/reducer';
 import { envelopeReducer } from './envelope/reducer';
-import { vaultReducer } from './vault/reducer';
-import { VaultsState } from './vault/state';
-import { RedeemsState } from './redeem/state';
-import { redeemReducer } from './redeem/reducer';
+import { lixiReducer } from './lixi/reducer';
+import { LixiesState } from './lixi/state';
+import { ClaimsState } from './claim/state';
+import { claimReducer } from './claim/reducer';
 import { modalReducer } from './modal/reducer';
 import { settingsReducer } from './settings/reducer';
 import { AccountsState } from './account/state';
 import { HYDRATE } from 'next-redux-wrapper';
-
-
 
 
 const accountPersistConfig: PersistConfig<AccountsState> = {
@@ -26,21 +24,21 @@ const accountPersistConfig: PersistConfig<AccountsState> = {
   storage: storage
 };
 
-const vaultPersistConfig: PersistConfig<VaultsState> = {
-  key: 'vaults',
+const lixiPersistConfig: PersistConfig<LixiesState> = {
+  key: 'lixies',
   storage: storage
 };
 
-const redeemsPersistConfig: PersistConfig<RedeemsState> = {
-  key: 'redeems',
+const claimsPersistConfig: PersistConfig<ClaimsState> = {
+  key: 'claims',
   storage: storage
 };
 
 export const serverReducer = combineReducers({
   router: routerReducer,
   accounts: accountReducer,
-  vaults: vaultReducer,
-  redeems: redeemReducer,
+  lixies: lixiReducer,
+  claims: claimReducer,
   envelopes: envelopeReducer,
   loading: loadingReducer,
   modal: modalReducer,
@@ -55,8 +53,8 @@ export const serverReducer = combineReducers({
 export const appReducer = combineReducers({
   router: routerReducer,
   accounts: persistReducer(accountPersistConfig, accountReducer),
-  vaults: persistReducer(vaultPersistConfig, vaultReducer),
-  redeems: persistReducer(redeemsPersistConfig, redeemReducer),
+  lixies: persistReducer(lixiPersistConfig, lixiReducer),
+  claims: persistReducer(claimsPersistConfig, claimReducer),
   envelopes: envelopeReducer,
   loading: loadingReducer,
   modal: modalReducer,

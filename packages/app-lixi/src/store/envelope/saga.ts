@@ -89,7 +89,7 @@ function* watchGetEnvelopesFailure() {
   yield takeLatest(getEnvelopesFailure.type, getEnvelopesFailureSaga);
 }
 
-export default function* vaultSaga() {
+export default function* lixiSaga() {
   yield all([
     fork(watchGetEnvelope),
     fork(watchGetEnvelopeSuccess),

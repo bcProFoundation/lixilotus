@@ -3,24 +3,46 @@ import { Modal } from 'antd';
 import { all, call, fork, getContext, put, takeLatest } from 'redux-saga/effects';
 
 import {
-  Account, AccountDto, CreateAccountCommand, DeleteAccountCommand, ImportAccountCommand, RenameAccountCommand, Vault
+  Account,
+  AccountDto,
+  CreateAccountCommand,
+  DeleteAccountCommand,
+  ImportAccountCommand,
+  RenameAccountCommand,
+  Lixi,
 } from '@bcpros/lixi-models';
 import BCHJS from '@abcpros/xpi-js';
 import { PayloadAction } from '@reduxjs/toolkit';
-import { aesGcmEncrypt, aesGcmDecrypt, numberToBase62 } from '@utils/encryptionMethods';
+import { aesGcmEncrypt, aesGcmDecrypt, numberToBase58 } from '@utils/encryptionMethods';
 
 import accountApi from '../account/api';
 import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
-import vaultApi from '../vault/api';
+import lixiApi from '../lixi/api';
 import {
   deleteAccount,
   deleteAccountFailure,
   deleteAccountSuccess,
-  generateAccount, getAccount, getAccountFailure, getAccountSuccess, importAccount,
-  importAccountFailure, importAccountSuccess, postAccount, postAccountFailure, postAccountSuccess,
-  renameAccount, renameAccountFailure, renameAccountSuccess, selectAccount, selectAccountFailure,
-  selectAccountSuccess, setAccount
+  generateAccount,
+  getAccount,
+  getAccountFailure,
+  getAccountSuccess,
+  importAccount,
+  importAccountFailure,
+  importAccountSuccess,
+  postAccount,
+  postAccountFailure,
+  postAccountSuccess,
+  renameAccount,
+  renameAccountFailure,
+  renameAccountSuccess,
+  selectAccount,
+  selectAccountFailure,
+  selectAccountSuccess,
+  setAccount,
+  refreshLixiList,
+  refreshLixiListFailure,
+  refreshLixiListSuccess,
 } from './actions';
 
 /**
@@ -33,11 +55,19 @@ function* generateAccountSaga(action: PayloadAction) {
   const Bip39128BitMnemonic = XPI.Mnemonic.generate(128, XPI.Mnemonic.wordLists()[lang]);
 
   // Encrypted mnemonic is encrypted by itself
-  const encryptedMnemonic: string = yield call(aesGcmEncrypt, Bip39128BitMnemonic, Bip39128BitMnemonic);
+  const encryptedMnemonic: string = yield call(
+    aesGcmEncrypt,
+    Bip39128BitMnemonic,
+    Bip39128BitMnemonic
+  );
 
   // Hash mnemonic and use it as an id in the database
   const mnemonicUtf8 = new TextEncoder().encode(Bip39128BitMnemonic);              // encode mnemonic as UTF-8
-  const mnemonicHashBuffer = yield call([crypto.subtle, crypto.subtle.digest], 'SHA-256', mnemonicUtf8);       // hash the mnemonic
+  const mnemonicHashBuffer = yield call(
+    [crypto.subtle, crypto.subtle.digest],
+    'SHA-256',
+    mnemonicUtf8
+  ); // hash the mnemonic
   const mnemonicHash = Buffer.from(new Uint8Array(mnemonicHashBuffer)).toString('hex');
 
   const account: CreateAccountCommand = {
@@ -69,11 +99,13 @@ function* getAccountSuccessSaga(action: PayloadAction<Account>) {
 
 function* getAccountFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? 'Unable to get the account from server';
-  yield put(showToast('error', {
+  yield put(
+    showToast('error', {
     message: 'Error',
     description: message,
-    duration: 5
-  }));
+      duration: 5,
+    })
+  );
   yield put(hideLoading(getAccount.type));
 }
 
@@ -97,11 +129,13 @@ function* postAccountSaga(action: PayloadAction<CreateAccountCommand>) {
 
 function* postAccountSuccessSaga(action: PayloadAction<Account>) {
   const account = action.payload;
-  yield put(showToast('success', {
+  yield put(
+    showToast('success', {
     message: 'Success',
     description: 'Create account successfully.',
-    duration: 5
-  }));
+      duration: 5,
+    })
+  );
   yield put(setAccount(account));
   yield put(hideLoading(postAccount.type));
 
@@ -123,7 +157,11 @@ function* importAccountSaga(action: PayloadAction<string>) {
 
     // Hash mnemonic and use it as an id in the database
     const mnemonicUtf8 = new TextEncoder().encode(mnemonic);                // encode mnemonic as UTF-8
-    const mnemonicHashBuffer = yield call([crypto.subtle, crypto.subtle.digest], 'SHA-256', mnemonicUtf8);       // hash the mnemonic
+    const mnemonicHashBuffer = yield call(
+      [crypto.subtle, crypto.subtle.digest],
+      'SHA-256',
+      mnemonicUtf8
+    ); // hash the mnemonic
     const mnemonicHash = Buffer.from(new Uint8Array(mnemonicHashBuffer)).toString('hex');
 
     const command: ImportAccountCommand = {
@@ -136,21 +174,21 @@ function* importAccountSaga(action: PayloadAction<string>) {
     // Merge back to action payload
     const account = { ...data } as Account;
 
-    const vaultsData = (yield call(vaultApi.getByAccountId, account.id)) as Vault[];
-    let vaults: Vault[] = [];
+    const lixiesData = (yield call(lixiApi.getByAccountId, account.id)) as Lixi[];
+    let lixies: Lixi[] = [];
 
-    for (const item of vaultsData) {
-      // Calculate the redeem code
-      const encodedId = numberToBase62(item.id);
-      const redeemPart = yield call(aesGcmDecrypt, item.encryptedRedeemCode, command.mnemonic);
-      const vault: Vault = {
+    for (const item of lixiesData) {
+      // Calculate the claim code
+      const encodedId = numberToBase58(item.id);
+      const claimPart = yield call(aesGcmDecrypt, item.encryptedClaimCode, command.mnemonic);
+      const lixi: Lixi = {
         ...item,
-        redeemCode: redeemPart + encodedId
-      }
-      vaults.push(vault);
+        claimCode: claimPart + encodedId,
+      };
+      lixies.push(lixi);
     }
 
-    yield put(importAccountSuccess({ account: account, vaults: vaults }));
+    yield put(importAccountSuccess({ account: account, lixies: lixies }));
   } catch (err) {
     const message = (err as Error).message ?? `Could not import the account.`;
     yield put(importAccountFailure(message));
@@ -178,16 +216,16 @@ function* selectAccountSaga(action: PayloadAction<number>) {
     const accountId = action.payload;
     const data = yield call(accountApi.getById, accountId);
     const account = data as Account;
-    const vaultsData = yield call(vaultApi.getByAccountId, accountId);
-    const vaults = (vaultsData ?? []) as Vault[];
-    yield put(selectAccountSuccess({ account: account, vaults: vaults }));
+    const lixiesData = yield call(lixiApi.getByAccountId, accountId);
+    const lixies = (lixiesData ?? []) as Lixi[];
+    yield put(selectAccountSuccess({ account: account, lixies: lixies }));
   } catch (err) {
     const message = (err as Error).message ?? `Unable to select the account.`;
     yield put(selectAccountFailure(message));
   }
 }
 
-function* selectAccountSuccessSaga(action: PayloadAction<{ account: Account, vaults: Vault[] }>) {
+function* selectAccountSuccessSaga(action: PayloadAction<{ account: Account; lixies: Lixi[] }>) {
   yield put(hideLoading(selectAccount.type));
 }
 
@@ -224,8 +262,8 @@ function* renameAccountSuccessSaga(action: PayloadAction<Account>) {
 
 function* renameAccountFailureSaga(action: PayloadAction<string>) {
   Modal.error({
-    content: 'Rename failed. All accounts must have a unique name.'
-  })
+    content: 'Rename failed. All accounts must have a unique name.',
+  });
   yield put(hideLoading(renameAccount.type));
 }
 
@@ -250,9 +288,39 @@ function* deleteAccountSuccessSaga(action: PayloadAction<number>) {
 
 function* deleteAccountFailureSaga(action: PayloadAction<string>) {
   Modal.error({
-    content: 'Delete failed. Could not delete the account.'
-  })
+    content: 'Delete failed. Could not delete the account.',
+  });
   yield put(hideLoading(deleteAccount.type));
+}
+function* refreshLixiListSaga(action: PayloadAction<number>) {
+  try {
+    yield put(showLoading(refreshLixiList.type));
+    const accountId = action.payload;
+    const data = yield call(accountApi.getById, accountId);
+    const account = data as Account;
+    const lixiesData = yield call(lixiApi.getByAccountId, accountId);
+    const lixies = (lixiesData ?? []) as Lixi[];
+    yield put(refreshLixiListSuccess({ account: account, lixies: lixies }));
+  } catch (err) {
+    const message = (err as Error).message ?? `Unable to refresh the list.`;
+    yield put(refreshLixiListFailure(message));
+  }
+}
+function* refreshLixiListSuccessSaga(
+  action: PayloadAction<{ account: Account; lixies: Lixi[] }>
+) {
+  yield put(hideLoading(refreshLixiList.type));
+}
+function* refreshLixiListFailureSaga(action: PayloadAction<number>) {
+  const message = action.payload ?? 'Unable to refresh the lixi list.';
+  yield put(
+    showToast('error', {
+      message: 'Error',
+      description: message,
+      duration: 5,
+    })
+  );
+  yield put(hideLoading(refreshLixiList.type));
 }
 
 function* watchGenerateAccount() {
@@ -331,6 +399,15 @@ function* watchDeleteAccountFailure() {
   yield takeLatest(deleteAccountFailure.type, deleteAccountFailureSaga);
 }
 
+function* watchRefreshLixiList() {
+  yield takeLatest(refreshLixiList.type, refreshLixiListSaga);
+}
+function* watchRefreshLixiListSuccess() {
+  yield takeLatest(refreshLixiListSuccess.type, refreshLixiListSuccessSaga);
+}
+function* watchRefreshLixiListFailure() {
+  yield takeLatest(refreshLixiListFailure.type, refreshLixiListFailureSaga);
+}
 export default function* accountSaga() {
   yield all([
     fork(watchGenerateAccount),
@@ -346,6 +423,9 @@ export default function* accountSaga() {
     fork(watchSelectAccount),
     fork(watchSelectAccountSuccess),
     fork(watchSelectAccountFailure),
+    fork(watchRefreshLixiList),
+    fork(watchRefreshLixiListSuccess),
+    fork(watchRefreshLixiListFailure),
     fork(watchRenameAccount),
     fork(watchRenameAccountSuccess),
     fork(watchRenameAccountFailure),
