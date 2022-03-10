@@ -280,11 +280,11 @@ export const FormItemWithQRCodeAddon = (props: FormItemWithQRCodeAddonProps) => 
   );
 };
 
-type FormItemRedeemCodeXpiInputProps = {
+type FormItemClaimCodeXpiInputProps = {
   inputProps: InputProps;
 } & FormItemProps;
 
-export const FormItemRedeemCodeXpiInput = (props: FormItemRedeemCodeXpiInputProps) => {
+export const FormItemClaimCodeXpiInput = (props: FormItemClaimCodeXpiInputProps) => {
 
   const { inputProps, ...otherProps } = props;
   return (
@@ -292,8 +292,8 @@ export const FormItemRedeemCodeXpiInput = (props: FormItemRedeemCodeXpiInputProp
       <Form.Item {...otherProps}>
         <Input
           prefix={<LockOutlined />}
-          placeholder="Redeem Code"
-          name="redeemCode"
+          placeholder="Claim Code"
+          name="claimCode"
           autoComplete="off"
           required
           {...inputProps}

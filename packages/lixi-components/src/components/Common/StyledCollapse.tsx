@@ -24,10 +24,10 @@ export const StyledCollapse = styled(Collapse)`
   }
 `;
 
-type VaultCollapseProps = {
+type LixiCollapseProps = {
 } & React.HTMLProps<HTMLElement> & CollapseProps
 
-export const VaultCollapse = styled(Collapse) <VaultCollapseProps>`
+export const LixiCollapse = styled(Collapse) <LixiCollapseProps>`
     ${({ disabled = false, ...props }) =>
     disabled === true
       ? `

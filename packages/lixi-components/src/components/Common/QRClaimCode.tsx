@@ -154,20 +154,20 @@ const CustomInput = styled.div<CustomInputProps>`
     }
 `;
 
-type QRRedeemCodeProps = {
+type QRClaimCodeProps = {
   code: string;
   size?: number;
   onClick?: Function;
   logoImage?: string;
 }
 
-export const QRRedeemCode = ({
+export const QRClaimCode = ({
   code,
   size = 210,
   onClick = () => null,
   logoImage,
   ...otherProps
-}: QRRedeemCodeProps) => {
+}: QRClaimCodeProps) => {
 
   const [visible, setVisible] = useState(false);
 

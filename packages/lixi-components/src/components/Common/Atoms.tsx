@@ -43,7 +43,7 @@ export const ZeroBalanceHeader = styled.div`
   margin-bottom: 5px;
 `;
 
-export const VaultParamLabel = styled.span`
+export const LixiParamLabel = styled.span`
   font-weight: bold;
 `;
 
