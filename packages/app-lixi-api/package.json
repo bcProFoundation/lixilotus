@@ -14,12 +14,12 @@
     "seed": "ts-node prisma/seeds/index.ts"
   },
   "dependencies": {
-    "@bcpros/lixi-models": "^1.0.1",
     "@abcpros/minimal-xpi-slp-wallet": "^3.0.10",
     "@abcpros/xpi-js": "^4.0.5",
+    "@bcpros/lixi-models": "^1.0.1",
     "@prisma/client": "^3.10.0",
     "axios": "^0.24.0",
-    "bignumber.js": "^9.0.1",
+    "bignumber.js": "^9.0.2",
     "body-parser": "^1.19.0",
     "compression": "^1.7.4",
     "config": "^3.3.6",
