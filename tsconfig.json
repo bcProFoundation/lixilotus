@@ -4,7 +4,7 @@
     "baseUrl": "./packages",
     "paths": {
       "@bcpros/lixi-models": [
-        "@abcpros/lixi-models"
+        "@bcpros/lixi-models"
       ],
       "@bcpros/lixi-components": [
         "bcpros/lixi-components"

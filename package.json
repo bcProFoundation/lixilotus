@@ -20,7 +20,7 @@
     "start": "lerna exec --scope @bcpros/app-lixi -- yarn start",
     "start:api": "lerna exec --scope @bcpros/app-lixi-api -- yarn start",
     "start:dev:api": "NODE_ENV=development lerna exec --scope @bcpros/app-lixi-api -- yarn start",
-    "start:givegift-components": "lerna exec --scope @abcpros/lixi-components -- yarn start",
+    "start:lixi-components": "lerna exec --scope @bcpros/lixi-components -- yarn start",
     "build": "lerna run build"
   },
   "workspaces": {
