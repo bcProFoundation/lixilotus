@@ -12,7 +12,7 @@
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "@bcpros/lixi-components": "^0.1.1",
-    "@bcpros/lixi-models": "^1.0.1",
+    "@bcpros/lixi-models": "^1.1.1",
     "@bcpros/minimal-xpi-slp-wallet": "^3.0.10",
     "@fortawesome/fontawesome-free": "^6.0.0",
     "@reduxjs/toolkit": "^1.7.2",

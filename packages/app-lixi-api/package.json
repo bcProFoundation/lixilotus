@@ -16,7 +16,7 @@
   "dependencies": {
     "@abcpros/minimal-xpi-slp-wallet": "^3.0.10",
     "@abcpros/xpi-js": "^4.0.5",
-    "@bcpros/lixi-models": "^1.0.1",
+    "@bcpros/lixi-models": "^1.1.1",
     "@prisma/client": "^3.10.0",
     "axios": "^0.24.0",
     "bignumber.js": "9.0.1",
