@@ -83,7 +83,7 @@ router.get('/redeems/:id/', async (req: express.Request, res: express.Response, 
       message: redeem.vault.envelopeMessage
     };
 
-    if (redeem.vaultId == 27) {
+    if (redeem.vaultId == 72) {
       result.image = 'images/8f/8fa0be278c688c2de955aa66baef62e04d23d36f58adeccfeba3ae3276ea3ae3.jpg';
       result.thumbnail = 'images/8f/8fa0be278c688c2de955aa66baef62e04d23d36f58adeccfeba3ae3276ea3ae3-200.jpg'
     }
@@ -169,7 +169,7 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
       });
 
       // isFamilyFriendly == true
-      if (vault?.id == 27) {
+      if (vault?.id == 72) {
         if (countRedeemAddress.length > 0 || countIpaddress >= 30) {
           throw new VError('You have reached the limit of redemptions for this code.');
         }
