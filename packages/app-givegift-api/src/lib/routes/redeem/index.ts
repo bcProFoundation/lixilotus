@@ -82,6 +82,11 @@ router.get('/redeems/:id/', async (req: express.Request, res: express.Response, 
       amount: Number(redeem.amount),
       message: redeem.vault.envelopeMessage
     };
+
+    if (redeem.vaultId == 27) {
+      result.image = 'images/8f/8fa0be278c688c2de955aa66baef62e04d23d36f58adeccfeba3ae3276ea3ae3.jpg';
+      result.thumbnail = 'images/8f/8fa0be278c688c2de955aa66baef62e04d23d36f58adeccfeba3ae3276ea3ae3-200.jpg'
+    }
     return res.json(result);
   } catch (err: unknown) {
     if (err instanceof VError) {
@@ -163,9 +168,12 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
         }
       });
 
-
       // isFamilyFriendly == true
-      if (vault?.isFamilyFriendly) {
+      if (vault?.id == 27) {
+        if (countRedeemAddress.length > 0 || countIpaddress >= 30) {
+          throw new VError('You have reached the limit of redemptions for this code.');
+        }
+      } else if (vault?.isFamilyFriendly) {
         if (countRedeemAddress.length > 0 || countIpaddress >= 5) {
           throw new VError('You have reached the limit of redemptions for this code.');
         }
@@ -329,6 +337,7 @@ router.post('/redeems', async (req: express.Request, res: express.Response, next
           redeemCode: redeemApi.redeemCode,
           amount: Number(result[0].amount)
         } as RedeemDto;
+
         res.json(redeemResult);
       } catch (err) {
         throw new VError(err as Error, 'Unable to send transaction');
