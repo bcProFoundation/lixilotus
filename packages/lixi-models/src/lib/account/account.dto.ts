@@ -25,7 +25,7 @@ export interface AccountDto {
   name: string;
   mnemonic?: string;
   encryptedMnemonic: string;
-  mnemonicHash: string;
+  mnemonicHash?: string;
   createdAt?: Date;
   updatedAt?: Date;
   address: string;

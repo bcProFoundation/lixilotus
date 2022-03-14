@@ -1,18 +1,24 @@
-import * as _ from 'lodash';
 import express, { NextFunction } from 'express';
+import * as _ from 'lodash';
+import { Container } from 'typedi';
 import { VError } from 'verror';
-import { PrismaClient, Lixi as LixiDb } from '@prisma/client';
-import { ImportAccountCommand, AccountDto, Lixi } from '@bcpros/lixi-models';
-import { aesGcmDecrypt } from '../../utils/encryptionMethods';
+
+import { AccountDto, ImportAccountCommand, Lixi } from '@bcpros/lixi-models';
+import { Account as AccountDb, Lixi as LixiDb, PrismaClient } from '@prisma/client';
+
+import { WalletService } from '../../services/wallet';
+import { aesGcmDecrypt, aesGcmEncrypt, hashMnemonic } from '../../utils/encryptionMethods';
 
 const prisma = new PrismaClient();
 let router = express.Router();
 
 router.post('/import', async (req: express.Request, res: express.Response, next: NextFunction) => {
   const importAccountCommand: ImportAccountCommand = req.body;
-  const { mnemonic, mnemonicHash } = importAccountCommand;
+  const { mnemonic } = importAccountCommand;
 
   try {
+
+    const mnemonicHash = importAccountCommand?.mnemonicHash ?? await hashMnemonic(mnemonic);
 
     const account = await prisma.account.findFirst({
       where: {
@@ -21,23 +27,52 @@ router.post('/import', async (req: express.Request, res: express.Response, next:
     });
 
     if (!account) {
-      throw Error('Could not found import account.');
+      const walletService: WalletService = Container.get(WalletService);
+
+      // Validate mnemonic
+      let isValidMnemonic = await walletService.validateMnemonic(mnemonic);
+      if (!isValidMnemonic) {
+        throw Error('The mnemonic is not valid');
+      }
+
+      // encrypt mnemonic
+      let encryptedMnemonic = await aesGcmEncrypt(mnemonic, mnemonic);
+
+      // create account in database
+      const { address } = await walletService.deriveAddress(mnemonic, 0);
+      const name = address.slice(12, 17);
+      const accountToInsert = {
+        name: name,
+        encryptedMnemonic: encryptedMnemonic,
+        mnemonicHash: mnemonicHash,
+        id: undefined,
+        address: address,
+      };
+      const createdAccount: AccountDb = await prisma.account.create({ data: accountToInsert });
+      const resultApi: AccountDto = {
+        ...createdAccount,
+        address,
+        balance: 0
+      };
+
+      res.json(resultApi);
+    } else {
+
+      // Decrypt to validate the mnemonic
+      const mnemonicToValidate = await aesGcmDecrypt(account.encryptedMnemonic, mnemonic);
+      if (mnemonic !== mnemonicToValidate) {
+        throw Error('Could not found import account.');
+      }
+
+      const resultApi: AccountDto = {
+        ...account,
+        mnemonic: mnemonic,
+        name: account.name,
+        address: account.address
+      };
+
+      res.json(resultApi);
     }
-
-    // Decrypt to validate the mnemonic
-    const mnemonicToValidate = await aesGcmDecrypt(account.encryptedMnemonic, mnemonic);
-    if (mnemonic !== mnemonicToValidate) {
-      throw Error('Could not found import account.');
-    }
-
-    const resultApi: AccountDto = {
-      ...account,
-      mnemonic: mnemonic,
-      name: account.name,
-      address: account.address
-    };
-
-    res.json(resultApi);
 
   } catch (error) {
     return res.status(400).json({
