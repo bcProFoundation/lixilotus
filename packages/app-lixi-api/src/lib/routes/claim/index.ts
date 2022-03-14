@@ -19,7 +19,7 @@ import { PrismaClient } from '@prisma/client';
 import logger from '../../logger';
 import { WalletService } from '../../services/wallet';
 import { aesGcmDecrypt, base58ToNumber } from '../../utils/encryptionMethods';
-import { ClaimType } from '@bcpros/lixi-models/src/lib/lixi';
+import { ClaimType } from '@bcpros/lixi-models';
 
 const PRIVATE_KEY = 'AIzaSyCFY2D4NRLjDTpJfk0jjJNADalSceqC4qs';
 const SITE_KEY = "6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb";

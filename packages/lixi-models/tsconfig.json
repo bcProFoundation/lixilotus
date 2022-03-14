@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
     "incremental": true,
-    "target": "es2017",
+    "target": "ES2021",
     "outDir": "build/main",
     "rootDir": "src",
-    "moduleResolution": "node",
+    // "moduleResolution": "node",
     "module": "commonjs",
     "declaration": true,
     "inlineSourceMap": true,
@@ -32,7 +32,7 @@
     "experimentalDecorators": true /* Enables experimental support for ES7 decorators. */,
     // "emitDecoratorMetadata": true /* Enables experimental support for emitting type metadata for decorators. */,
     "lib": [
-      "es2017"
+      "ES2021"
     ],
     "types": [
       "node"

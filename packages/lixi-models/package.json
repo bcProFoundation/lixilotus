@@ -9,6 +9,16 @@
   "repository": "https://gitlab.com/abcpros/lixilotus/-/tree/master/packages/lixi-models",
   "license": "MIT",
   "keywords": [],
+  "exports": {
+    ".": {
+      "require": "./build/main/index.js",
+      "import": "./dist/module/index.mjs"
+    },
+    "./*": {
+      "require": "./build/main/*.js",
+      "import": "./build/module/*.mjs"
+    }
+  },
   "scripts": {
     "build": "run-p build:*",
     "build:main": "tsc -p tsconfig.json",

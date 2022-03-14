@@ -1,4 +1,4 @@
-import { Country } from "@bcpros/lixi-models/src/lib/country";
+import { Country } from "@bcpros/lixi-models";
 import { Select } from "antd";
 
 const { Option } = Select;
@@ -11,18 +11,18 @@ export interface CountrySelectDropdownProps {
 
 const CountrySelectDropdown = (props: CountrySelectDropdownProps) => {
 
-  const {countries, defaultValue, handleChangeCountry} = props;
-  
-    return (
-      <Select
-          className="select-after"
-          style={{
-              width: '100%',
-              alignItems: 'center'
-          }}
-          defaultValue={defaultValue}
-          onSelect={(value, event) => handleChangeCountry(value, event)}
-      >
+  const { countries, defaultValue, handleChangeCountry } = props;
+
+  return (
+    <Select
+      className="select-after"
+      style={{
+        width: '100%',
+        alignItems: 'center'
+      }}
+      defaultValue={defaultValue}
+      onSelect={(value, event) => handleChangeCountry(value, event)}
+    >
       {countries.map(country => {
         return (
           <Option
@@ -35,11 +35,11 @@ const CountrySelectDropdown = (props: CountrySelectDropdownProps) => {
             {country.name}
           </Option>
         );
-          
-      })}
-          
-      </Select>
-    );
-  }
 
-  export default CountrySelectDropdown;
+      })}
+
+    </Select>
+  );
+}
+
+export default CountrySelectDropdown;

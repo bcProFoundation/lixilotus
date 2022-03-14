@@ -6,7 +6,7 @@ import { LixiParamLabel } from '@bcpros/lixi-components/components/Common/Atoms'
 import { useAppDispatch } from 'src/store/hooks';
 import { closeModal } from 'src/store/modal/actions';
 import { countries } from '@bcpros/lixi-models/constants';
-import { LixiType } from '@bcpros/lixi-models/src/lib/lixi';
+import { LixiType } from '@bcpros/lixi-models';
 import { ClaimType } from '@bcpros/lixi-models';
 
 

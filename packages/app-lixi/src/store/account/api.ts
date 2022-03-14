@@ -1,7 +1,7 @@
 import { DeleteAccountCommand, RenameAccountCommand } from '@bcpros/lixi-models';
 import {
   AccountDto, CreateAccountCommand, ImportAccountCommand
-} from '@bcpros/lixi-models/src/lib/account';
+} from '@bcpros/lixi-models';
 import axiosClient from '@utils/axiosClient';
 
 const accountApi = {

@@ -1,15 +1,15 @@
 import * as _ from 'lodash';
 
 import { Lixi } from '@bcpros/lixi-models/lib/lixi';
-import { ClaimType } from '@bcpros/lixi-models/src/lib/lixi';
+import { ClaimType } from '@bcpros/lixi-models';
 import { createEntityAdapter, createReducer, Update } from '@reduxjs/toolkit';
 
 import {
-    importAccountSuccess, refreshLixiListSuccess, selectAccountSuccess
+  importAccountSuccess, refreshLixiListSuccess, selectAccountSuccess
 } from '../account/actions';
 import {
-    lockLixiSuccess, refreshLixiSuccess, selectLixiSuccess, setLixi, setLixiBalance,
-    unlockLixiSuccess
+  lockLixiSuccess, refreshLixiSuccess, selectLixiSuccess, setLixi, setLixiBalance,
+  unlockLixiSuccess
 } from './actions';
 import { LixiesState } from './state';
 
@@ -23,7 +23,7 @@ const initialState: LixiesState = lixiesAdapter.getInitialState({
 export const lixiReducer = createReducer(initialState, (builder) => {
   builder
     .addCase(setLixi, (state, action) => {
-      const lixies : any = action.payload;
+      const lixies: any = action.payload;
       lixiesAdapter.upsertOne(state, lixies.lixi as Lixi);
       state.selectedId = lixies.lixi.id ?? undefined;
       if (lixies.lixi.claimType == ClaimType.OneTime) {
@@ -42,7 +42,7 @@ export const lixiReducer = createReducer(initialState, (builder) => {
       };
       lixiesAdapter.updateOne(state, updateLixi);
 
-      for (let i=0; i< _.size(children); i++) {
+      for (let i = 0; i < _.size(children); i++) {
         const child = children[i];
         const updatechild: Update<Lixi> = {
           id: child.id,
@@ -66,7 +66,7 @@ export const lixiReducer = createReducer(initialState, (builder) => {
       };
       lixiesAdapter.updateOne(state, updateLixi);
 
-      for (let i=0; i< _.size(children); i++) {
+      for (let i = 0; i < _.size(children); i++) {
         const child = children[i];
         const updatechild: Update<Lixi> = {
           id: child.id,
