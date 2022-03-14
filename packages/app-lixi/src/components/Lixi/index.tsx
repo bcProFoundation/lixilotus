@@ -20,7 +20,7 @@ import { QRClaimCode } from '@bcpros/lixi-components/components/Common/QRClaimCo
 import { StyledCollapse } from '@bcpros/lixi-components/components/Common/StyledCollapse';
 import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
 import { countries } from '@bcpros/lixi-models/constants/countries';
-import { LixiType } from '@bcpros/lixi-models';
+import { LixiType } from '@bcpros/lixi-models/lib/lixi';
 import { currency } from '@components/Common/Ticker';
 import ClaimList from '@components/Claim/ClaimList';
 import { fromSmallestDenomination } from '@utils/cashMethods';

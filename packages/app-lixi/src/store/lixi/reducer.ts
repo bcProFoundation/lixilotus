@@ -1,7 +1,6 @@
 import * as _ from 'lodash';
 
-import { Lixi } from '@bcpros/lixi-models/lib/lixi';
-import { ClaimType } from '@bcpros/lixi-models';
+import { Lixi, ClaimType } from '@bcpros/lixi-models/lib/lixi';
 import { createEntityAdapter, createReducer, Update } from '@reduxjs/toolkit';
 
 import {

@@ -101,8 +101,8 @@ function* getAccountFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? 'Unable to get the account from server';
   yield put(
     showToast('error', {
-    message: 'Error',
-    description: message,
+      message: 'Error',
+      description: message,
       duration: 5,
     })
   );
@@ -131,8 +131,8 @@ function* postAccountSuccessSaga(action: PayloadAction<Account>) {
   const account = action.payload;
   yield put(
     showToast('success', {
-    message: 'Success',
-    description: 'Create account successfully.',
+      message: 'Success',
+      description: 'Create account successfully.',
       duration: 5,
     })
   );
@@ -174,18 +174,25 @@ function* importAccountSaga(action: PayloadAction<string>) {
     // Merge back to action payload
     const account = { ...data } as Account;
 
-    const lixiesData = (yield call(lixiApi.getByAccountId, account.id)) as Lixi[];
     let lixies: Lixi[] = [];
 
-    for (const item of lixiesData) {
-      // Calculate the claim code
-      const encodedId = numberToBase58(item.id);
-      const claimPart = yield call(aesGcmDecrypt, item.encryptedClaimCode, command.mnemonic);
-      const lixi: Lixi = {
-        ...item,
-        claimCode: claimPart + encodedId,
-      };
-      lixies.push(lixi);
+    try {
+
+      const lixiesData = (yield call(lixiApi.getByAccountId, account.id)) as Lixi[];
+      if (lixiesData && lixiesData.length > 0) {
+        for (const item of lixiesData) {
+          // Calculate the claim code
+          const encodedId = numberToBase58(item.id);
+          const claimPart = yield call(aesGcmDecrypt, item.encryptedClaimCode, command.mnemonic);
+          const lixi: Lixi = {
+            ...item,
+            claimCode: claimPart + encodedId,
+          };
+          lixies.push(lixi);
+        }
+      }
+    } catch (err) {
+      // The mnemonic is new and currently not existed in the database
     }
 
     yield put(importAccountSuccess({ account: account, lixies: lixies }));

@@ -13,9 +13,9 @@ import {
   AdvancedCollapse, LixiCollapse
 } from '@bcpros/lixi-components/components/Common/StyledCollapse';
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
-import { Account, ClaimType } from '@bcpros/lixi-models';
+import { Account } from '@bcpros/lixi-models/lib/account';
 import { countries } from '@bcpros/lixi-models/constants';
-import { GenerateLixiCommand, LixiType } from '@bcpros/lixi-models/lib/lixi';
+import { GenerateLixiCommand, LixiType, ClaimType } from '@bcpros/lixi-models/lib/lixi';
 import { PlusSquareOutlined } from '@ant-design/icons';
 import CountrySelectDropdown from '@components/Common/CountrySelectDropdown';
 import EnvelopeSelectDropdown from '@components/Common/EnvelopeSelectDropdown';
