@@ -145,6 +145,13 @@ const Lixi: React.FC = () => {
     }
   }
 
+  const showMinStaking = () => {
+    return (selectedLixi?.minStaking) ? (
+      <Descriptions.Item label="Min Staking">
+        {selectedLixi.minStaking} {currency.ticker}
+      </Descriptions.Item>) : "";
+  }
+
   const formatDate = () => {
     if (selectedLixi?.expiryAt != null) {
       return (
@@ -201,11 +208,12 @@ const Lixi: React.FC = () => {
             <Descriptions.Item label="Total Claimed">
               {fromSmallestDenomination(selectedLixi?.totalClaim) ?? 0}
             </Descriptions.Item>
-            <Descriptions.Item label="Redemptions">
+            <Descriptions.Item label="Claim">
               {showRedemption()}
             </Descriptions.Item>
-            {formatDate()}
             {showCountry()}
+            {showMinStaking()}
+            {formatDate()}
             {showIsFamilyFriendly()}
           </Descriptions>
 

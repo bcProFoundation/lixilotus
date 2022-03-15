@@ -40,6 +40,7 @@ model Lixi {
   totalClaim         BigInt    @default(0) @map("total_claim")
   createdAt          DateTime  @default(now()) @map("created_at") @db.Timestamptz
   updatedAt          DateTime  @default(now()) @map("updated_at") @db.Timestamptz
+  minStaking         Float     @default(0) @map("min_staking")
   expiryAt           DateTime? @map("expiry_at") @db.Timestamptz
   country            String?   @map("country")
   isFamilyFriendly   Boolean   @map("is_family_friendly")

@@ -148,10 +148,10 @@ export class WalletService {
       const txid = await this.xpijs.RawTransactions.sendRawTransaction(hex);
       // const txid = await xpiWallet.send(outputs);
 
-      const redeemResult = {
+      const claimResult = {
         amount: Number(amountSats)
       };
-      return (redeemResult.amount);
+      return (claimResult.amount);
     }
     catch (err) {
       throw new VError(err as Error, 'Unable to send transaction');

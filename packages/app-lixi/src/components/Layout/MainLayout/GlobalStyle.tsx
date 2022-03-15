@@ -40,7 +40,7 @@ export const GlobalStyle = createGlobalStyle`
         background-color: white;
     }
     .ant-drawer-content-wrapper {
-      width: 260px !important;
+      width: 320px !important;
     }
     .ant-layout {
       background-color: white !important;

@@ -1,14 +1,27 @@
-import { ShopOutlined } from "@ant-design/icons";
-import { Menu } from "antd";
-import Link from "next/link";
-import SidebarLogo from "./SidebarLogo";
+import { Menu } from 'antd';
+import Link from 'next/link';
+import styled from 'styled-components';
+import { ShopOutlined } from '@ant-design/icons';
+import SidebarLogo from './SidebarLogo';
 
 type SidebarContentProps = {
+  className?: string,
   sidebarCollapsed: boolean;
   setSidebarCollapsed: Function
 };
 
+const MenuCustom = styled(Menu)`
+  .ant-menu-title-content {
+    font-size: 24px
+  }
+
+  .anticon {
+    font-size: 28px
+  }
+`;
+
 const SidebarContent = ({
+  className,
   sidebarCollapsed,
   setSidebarCollapsed
 }: SidebarContentProps) => {
@@ -17,7 +30,7 @@ const SidebarContent = ({
     <>
       <SidebarLogo sidebarCollapsed={sidebarCollapsed} setSidebarCollapsed={setSidebarCollapsed} />
       <div className='lixi-sidebar-content'>
-        <Menu
+        <MenuCustom className={className}
           // defaultOpenKeys={[defaultOpenKeys]}
           // selectedKeys={[selectedKeys]}
           mode="inline">
@@ -29,7 +42,7 @@ const SidebarContent = ({
               </a>
             </Link>
           </Menu.Item>
-        </Menu>
+        </MenuCustom>
       </div>
     </>
   );
