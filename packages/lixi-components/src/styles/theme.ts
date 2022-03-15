@@ -85,7 +85,10 @@ export const theme: DefaultTheme = {
     border: '#eaedf3',
     color: '#3e3f42',
   },
-  footerBackground: '#fff'
+  footerBackground: '#fff',
+  tab:{
+    background: 'white',
+  }
 };
 
 type ThemeType = typeof theme;

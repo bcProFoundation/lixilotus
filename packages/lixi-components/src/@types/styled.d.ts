@@ -93,6 +93,9 @@ declare module 'styled-components' {
       color: string;
     };
     footerBackground: string;
+    tab :{
+      background: string;
+    }
   }
 };
 
