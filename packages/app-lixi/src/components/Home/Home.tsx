@@ -33,9 +33,9 @@ const StyledTabs = styled(Tabs)`
   text-align: center;
 }
 .ant-tabs-tab {
-  width: 50%;
-  background: #fff;
+  width: 100%;
   text-align: center;
+  background-color: ${props => props.theme.tab.background} !important;
 }
 .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
   color: #6f2dbd;
@@ -162,15 +162,19 @@ const Home: React.FC = () => {
       <SmartButton onClick={() => refreshList()}>
         <ReloadOutlined /> Refresh Lixi List
       </SmartButton>
-      <LixiList lixies={lixies} />
-      <StyledTabs type="card" size="large" defaultActiveKey="1" centered>
-        <TabPane tab={ <span> <CheckCircleOutlined /> Active </span> } key="1">
-          <LixiList lixies={lixies.filter(lixi => lixi.status == 'active' && !moment().isAfter(lixi.expiryAt) && !(lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim) )}/>
-        </TabPane>
-        <TabPane tab={ <span> <CloseCircleOutlined /> Archive </span> } key="2">
-          <LixiList lixies={lixies.filter(lixi => lixi.status != 'active' || moment().isAfter(lixi.expiryAt) || lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim)}/>
-        </TabPane>
-      </StyledTabs>
+      {
+        lixies.length > 0 && (
+          <StyledTabs type="card" size="large" defaultActiveKey="1" centered>
+            <TabPane tab={ <span> <CheckCircleOutlined /> Active </span> } key="1">
+              <LixiList lixies={lixies.filter(lixi => lixi.status == 'active' && !moment().isAfter(lixi.expiryAt) && !(lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim) )}/>
+            </TabPane>
+            <TabPane tab={ <span> <CloseCircleOutlined /> Archive </span> } key="2">
+              <LixiList lixies={lixies.filter(lixi => lixi.status != 'active' || moment().isAfter(lixi.expiryAt) || lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim)}/>
+            </TabPane>
+          </StyledTabs>
+        )
+      }
+      
     </>
   );
 };
