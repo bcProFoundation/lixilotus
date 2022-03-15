@@ -164,6 +164,11 @@ export class ClaimController {
           throw new VError('Unable to claim because the lixi is locked');
         }
 
+        const claimAddressBalance = await this.xpiWallet.getBalance(address);
+        if (claimAddressBalance < lixi.minStaking) {
+          throw new VError('You must have at least ' + lixi.minStaking + ' XPI in your account to claim this offer.');
+        }
+
         const xPriv = await aesGcmDecrypt(lixi.encryptedXPriv, password);
 
         // Generate the HD wallet.
@@ -212,8 +217,6 @@ export class ClaimController {
           amountSat: amountSats
         }];
 
-
-
         if (!utxoStore || !(utxoStore as any).bchUtxos || !(utxoStore as any).bchUtxos) {
           throw new VError('UTXO list is empty');
         }
@@ -245,12 +248,12 @@ export class ClaimController {
 
         // Sign each UTXO that is about to be spent.
         necessaryUtxos.forEach((utxo, i) => {
-          let claimScript
+          let redeemScript
 
           transactionBuilder.sign(
             i,
             keyPair,
-            claimScript,
+            redeemScript,
             transactionBuilder.hashTypes.SIGHASH_ALL,
             utxo.value
           )

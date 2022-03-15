@@ -80,6 +80,10 @@ const CreateLixiForm = ({
   const [newMaxClaim, setNewMaxClaimLixi] = useState('');
   const [newMaxClaimLixiIsValid, setNewMaxClaimLixiIsValid] = useState(true);
 
+  // New minimum staking number
+  const [newMinStaking, setNewMinStaking] = useState('');
+  const [newMinStakingIsValid, setNewMinStakingIsValid] = useState(true);
+
   // New ExpiryAt
   const [newExpiryAt, setNewExpiryAtLixi] = useState('');
   const [newExpiryAtLixiIsValid, setExpiryAtLixiIsValid] = useState(true);
@@ -184,6 +188,15 @@ const CreateLixiForm = ({
     }
   };
 
+  // Minimum Staking
+  const handleNewMinStakingInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setNewMinStaking(value);
+    if (value && !isEmpty(value)) {
+      setNewMinStakingIsValid(true);
+    }
+  };
+
   // Expiry Time
   const disabledDate = (current) => {
     return current && current < moment().startOf('day');
@@ -232,6 +245,7 @@ const CreateLixiForm = ({
       dividedValue: newLixiDividedValue,
       claimType: claimType,
       lixiType: lixiType,
+      minStaking: newMinStaking,
       country: newCountryLixi,
       isFamilyFriendly: isFamilyFriendly,
       amount: newLixiAmount,
@@ -253,6 +267,7 @@ const CreateLixiForm = ({
       newLixiMaxValue,
       newLixiFixedValue,
       newLixiDividedValue,
+      newMinStaking,
       newCountryLixi,
       isFamilyFriendly,
       newEnvelopeId,
@@ -398,9 +413,29 @@ const CreateLixiForm = ({
             addonBefore="Max Claim"
             type="number"
             placeholder="Enter max Claim number"
-            name="lixiMaxReDeem"
+            name="lixiMaxClaim"
             value={newMaxClaim}
             onChange={e => handleNewMaxClaimInput(e)}
+          />
+        </Form.Item>
+
+        {/* Minimum Staking */}
+        <Form.Item
+          validateStatus={
+            newMinStakingIsValid === null ||
+              newMinStakingIsValid
+              ? ''
+              : 'error'
+          }
+        >
+          <Input
+            addonBefore="Min Staking"
+            type="number"
+            step={1 / 10 ** currency.cashDecimals}
+            placeholder="Enter minimum staking number"
+            name="MinStaking"
+            value={newMinStaking}
+            onChange={e => handleNewMinStakingInput(e)}
           />
         </Form.Item>
 

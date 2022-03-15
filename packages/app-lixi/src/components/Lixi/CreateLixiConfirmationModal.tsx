@@ -21,6 +21,7 @@ export type CreateLixiConfirmationModalProps = {
   newNumberOfSubLixi: string;
   newLixiName: string;
   newMaxClaim: string;
+  newMinStaking: string;
   newExpiryAt: string;
   newCountryLixi: string;
   isFamilyFriendly: boolean;
@@ -38,6 +39,7 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
     newLixiAmount,
     newNumberOfSubLixi,
     newMaxClaim,
+    newMinStaking,
     newExpiryAt,
     claimType,
     lixiType,
@@ -121,6 +123,10 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
     return (newMaxClaim == "" ? "" : <LixiParamLabel>Max Redemption: {newMaxClaim} <br /></LixiParamLabel>);
   }
 
+  const confirmMinStaking = () => {
+    return (newMinStaking == "" ? "" : <LixiParamLabel>Minimum Staking: {newMinStaking} <br /></LixiParamLabel>);
+  }
+
   const formatDate = () => {
     if (newExpiryAt != "") {
       return <LixiParamLabel>Expiry at: {moment(newExpiryAt).format("YYYY-MM-DD HH:mm")}<br /></LixiParamLabel>;
@@ -150,6 +156,7 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
         <br />
         {confirmCountry()}
         {confirmMaxClaim()}
+        {confirmMinStaking()}
         {formatDate()}
         <LixiParamLabel>{isFamilyFriendly ? "Option: Family Friendly" : ""}</LixiParamLabel>
       </Modal>

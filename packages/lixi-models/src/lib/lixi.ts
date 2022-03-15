@@ -15,6 +15,7 @@ export interface GenerateLixiCommand {
   amount: string;
   numberOfSubLixi: string;
   parentId?: number;
+  minStaking: string;
   expiryAt?: string;
   country?: string;
   isFamilyFriendly: boolean;
@@ -37,6 +38,7 @@ export interface CreateLixiCommand {
   amount: number;
   numberOfSubLixi: number;
   parentId?: number;
+  minStaking: number;
   expiryAt?: Date;
   country?: string;
   isFamilyFriendly: boolean;
@@ -62,6 +64,7 @@ export interface LixiDto {
   totalClaim: number;
   createdAt?: Date;
   updatedAt?: Date;
+  minStaking: number;
   expiryAt?: Date;
   country?: string;
   isFamilyFriendly?: boolean;
@@ -94,6 +97,7 @@ export interface Lixi {
   totalClaim: number;
   createdAt?: Date;
   updatedAt?: Date;
+  minStaking: number;
   expiryAt?: Date;
   country?: string;
   isFamilyFriendly: boolean;

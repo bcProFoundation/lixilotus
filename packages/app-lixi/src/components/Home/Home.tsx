@@ -24,26 +24,26 @@ import styled from 'styled-components';
 
 const { TabPane } = Tabs;
 const StyledTabs = styled(Tabs)`
-.ant-collapse-header {
-  justify-content: center;
-  align-items: center;
-}
-.ant-tabs-nav-list {
-  width: 100%;
-  text-align: center;
-}
-.ant-tabs-tab {
-  width: 100%;
-  text-align: center;
-  background-color: ${props => props.theme.tab.background} !important;
-}
-.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
-  color: #6f2dbd;
-  text-shadow: 0 0 0.25px currentColor;
-}
-.ant-tabs-content {
-  text-align: center;
-}
+  .ant-collapse-header {
+    justify-content: center;
+    align-items: center;
+  }
+  .ant-tabs-nav-list {
+    width: 100%;
+    text-align: center;
+  }
+  .ant-tabs-tab {
+    width: 100%;
+    text-align: center;
+    background-color: ${props => props.theme.tab.background} !important;
+  }
+  .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: ${props => props.theme.primary};
+    text-shadow: 0 0 0.25px currentColor;
+  }
+  .ant-tabs-content {
+    text-align: center;
+  }
 `;
 
 const Home: React.FC = () => {
@@ -76,13 +76,13 @@ const Home: React.FC = () => {
     const id = setInterval(() => {
       XPI.Electrumx.balance(selectedAccount?.address)
         .then((result) => {
-        if (result && result.balance) {
-          const balance = result.balance.confirmed + result.balance.unconfirmed;
-          dispatch(setAccountBalance(balance ?? 0));
-        }
+          if (result && result.balance) {
+            const balance = result.balance.confirmed + result.balance.unconfirmed;
+            dispatch(setAccountBalance(balance ?? 0));
+          }
         })
         .catch((e) => {
-        setIsLoadBalanceError(true);
+          setIsLoadBalanceError(true);
         });
     }, 10000);
     return () => clearInterval(id);
@@ -165,16 +165,16 @@ const Home: React.FC = () => {
       {
         lixies.length > 0 && (
           <StyledTabs type="card" size="large" defaultActiveKey="1" centered>
-            <TabPane tab={ <span> <CheckCircleOutlined /> Active </span> } key="1">
-              <LixiList lixies={lixies.filter(lixi => lixi.status == 'active' && !moment().isAfter(lixi.expiryAt) && !(lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim) )}/>
+            <TabPane tab={<span> <CheckCircleOutlined /> Active </span>} key="1">
+              <LixiList lixies={lixies.filter(lixi => lixi.status == 'active' && !moment().isAfter(lixi.expiryAt) && !(lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim))} />
             </TabPane>
-            <TabPane tab={ <span> <CloseCircleOutlined /> Archive </span> } key="2">
-              <LixiList lixies={lixies.filter(lixi => lixi.status != 'active' || moment().isAfter(lixi.expiryAt) || lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim)}/>
+            <TabPane tab={<span> <CloseCircleOutlined /> Archive </span>} key="2">
+              <LixiList lixies={lixies.filter(lixi => lixi.status != 'active' || moment().isAfter(lixi.expiryAt) || lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim)} />
             </TabPane>
           </StyledTabs>
         )
       }
-      
+
     </>
   );
 };
