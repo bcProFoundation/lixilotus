@@ -11,7 +11,7 @@ import {
   RenameAccountCommand,
   Lixi,
 } from '@bcpros/lixi-models';
-import BCHJS from '@abcpros/xpi-js';
+import BCHJS from '@bcpros/xpi-js';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { aesGcmEncrypt, aesGcmDecrypt, numberToBase58 } from '@utils/encryptionMethods';
 

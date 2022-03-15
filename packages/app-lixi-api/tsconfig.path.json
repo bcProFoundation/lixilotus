@@ -3,7 +3,7 @@
     "baseUrl": ".",
   },
   "paths": {
-    "@abcpros/lixi-models/*": [
+    "@bcpros/lixi-models/*": [
       "../packages/lixi-models/*"
     ]
   },

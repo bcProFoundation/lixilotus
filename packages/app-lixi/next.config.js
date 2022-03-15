@@ -79,9 +79,9 @@ const nextConfig = withLess({
 		// @link https://nextjs.org/blog/next-11-1#builds--data-fetching
 		keepAlive: true,
 	},
-  compiler: {
-    styledComponents: true
-  },
+	compiler: {
+		styledComponents: true
+	},
 	experimental: {
 		// React 18 related
 		// @link https://nextjs.org/docs/advanced-features/react-18
@@ -180,9 +180,9 @@ const nextConfig = withLess({
 						titleProp: true,
 					},
 				},
-				{
-					loader: 'url-loader'
-				}
+				// {
+				// 	loader: 'url-loader'
+				// }
 			],
 		});
 

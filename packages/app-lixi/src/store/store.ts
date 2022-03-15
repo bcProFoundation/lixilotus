@@ -15,7 +15,7 @@ import rootSaga from './rootSaga';
 import useXPI from '@hooks/useXPI';
 import useWallet from '@hooks/useWallet';
 import rootReducer, { serverReducer } from './rootReducer';
-import BCHJS from '@abcpros/xpi-js';
+import BCHJS from '@bcpros/xpi-js';
 import { createRouterMiddleware, initialRouterState, routerReducer } from 'connected-next-router';
 import { Context, createWrapper, HYDRATE } from 'next-redux-wrapper';
 import { Router } from 'next/router';

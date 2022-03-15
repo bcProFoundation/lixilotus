@@ -1,41 +1,40 @@
-import { Inject, Service } from 'typedi';
 import VError from 'verror';
-
-import MinimalBCHWallet from '@abcpros/minimal-xpi-slp-wallet';
-import BCHJS from '@abcpros/xpi-js';
-import HDNode from '@abcpros/xpi-js/types/hdnode';
+import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
+import BCHJS from '@bcpros/xpi-js';
+import HDNode from '@bcpros/xpi-js/types/hdnode';
 import BigNumber from 'bignumber.js';
 import { currency, fromSmallestDenomination, toSmallestDenomination } from '@bcpros/lixi-models';
-import logger from '../logger';
+import { Inject, Injectable } from '@nestjs/common';
+import logger from 'src/logger';
 
-@Service()
+
+@Injectable()
 export class WalletService {
   constructor(
-    @Inject('xpijs') private xpijs: BCHJS,
-    @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet
+    @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
+    @Inject('xpijs') private xpijs: BCHJS
   ) {
-
   }
 
   async getBalance(address: string) {
     return this.xpiWallet.getBalance(address);
   }
 
-  async getWalletDetails(mnemonic: string, lixiIndex: number) {
+  async getWalletDetails(mnemonic: string, vaultIndex: number) {
     const rootSeedBuffer = await this.xpijs.Mnemonic.toSeed(mnemonic);
     const masterHDNode = this.xpijs.HDNode.fromSeed(rootSeedBuffer);
-    const hdPath = `m/44'/10605'/${lixiIndex}'/0/0`;
+    const hdPath = `m/44'/10605'/${vaultIndex}'/0/0`;
     const childNode = masterHDNode.derivePath(hdPath);
-    const lixiAddress: string = this.xpijs.HDNode.toXAddress(childNode);
+    const vaultAddress: string = this.xpijs.HDNode.toXAddress(childNode);
     const keyPair = this.xpijs.HDNode.toKeyPair(childNode);
-    const balance = await this.getBalance(lixiAddress);
+    const balance = await this.getBalance(vaultAddress);
     return { keyPair, balance }
   }
 
-  async deriveAddress(mnemonic: string, lixiIndex: number) {
+  async deriveAddress(mnemonic: string, vaultIndex: number) {
     const rootSeedBuffer: Buffer = await this.xpijs.Mnemonic.toSeed(mnemonic);
     const masterHDNode = this.xpijs.HDNode.fromSeed(rootSeedBuffer);
-    const hdPath = `m/44'/10605'/${lixiIndex}'/0/0`;
+    const hdPath = `m/44'/10605'/${vaultIndex}'/0/0`;
     const childNode: HDNode = this.xpijs.HDNode.derivePath(masterHDNode, hdPath);
     const xAddress = this.xpijs.HDNode.toXAddress(childNode);
     const xpriv = this.xpijs.HDNode.toXPriv(childNode);
@@ -160,9 +159,10 @@ export class WalletService {
   };
 
   async validateMnemonic(mnemonic: string, wordlist = this.xpijs.Mnemonic.wordLists().english) {
+    let mnemonicTestOutput;
 
     try {
-      const mnemonicTestOutput = await this.xpijs.Mnemonic.validate(mnemonic, wordlist);
+      mnemonicTestOutput = await this.xpijs.Mnemonic.validate(mnemonic, wordlist);
 
       if (mnemonicTestOutput === 'Valid mnemonic') {
         return true;

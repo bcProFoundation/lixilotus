@@ -1,4 +1,4 @@
-import { Country } from "@bcpros/lixi-models";
+import { Country } from "@bcpros/lixi-models/lib/country";
 import { Select } from "antd";
 
 const { Option } = Select;

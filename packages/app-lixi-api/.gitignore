@@ -112,6 +112,7 @@ public/images/
 .vscode-test
 
 # yarn v2
+.yarn/releases
 .yarn/cache
 .yarn/unplugged
 .yarn/build-state.yml

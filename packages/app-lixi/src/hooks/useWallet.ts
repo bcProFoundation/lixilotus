@@ -1,4 +1,4 @@
-import BCHJS from "@abcpros/xpi-js";
+import BCHJS from "@bcpros/xpi-js";
 import { useState } from "react";
 import useXPI from "./useXPI";
 

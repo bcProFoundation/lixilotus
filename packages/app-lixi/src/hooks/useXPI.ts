@@ -1,5 +1,5 @@
-import SlpWallet from '@abcpros/minimal-xpi-slp-wallet';
-import BCHJS from '@abcpros/xpi-js';
+import SlpWallet from '@bcpros/minimal-xpi-slp-wallet';
+import BCHJS from '@bcpros/xpi-js';
 
 export default function useXPI() {
   const SEND_XPI_ERRORS = {
