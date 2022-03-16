@@ -36,12 +36,7 @@ const config = {
 
       {
         test: /\.(png|gif|jpg|svg)$/,
-        use: {
-          loader: 'url-loader',
-          options: {
-            limit: 50000,
-          },
-        },
+        type: 'asset/inline'
       },
     ],
   },

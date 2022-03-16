@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 import { AccountController } from './controller/account.controller';
 import { HeathController } from './controller/heathcheck.controller';
 import { WalletService } from "./services/wallet.service";
@@ -29,7 +31,11 @@ const XpijsProvider = {
 };
 
 @Module({
-  imports: [],
+  imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
+    })
+  ],
   controllers: [AccountController, EnvelopeController, ClaimController, LixiController, HeathController],
   providers: [PrismaService, WalletService, XpiWalletProvider, XpijsProvider],
 })
