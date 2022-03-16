@@ -60,3 +60,6 @@ typings/
 .DS_Store
 
 .idea/
+
+# NPM lock file
+package-lock.json

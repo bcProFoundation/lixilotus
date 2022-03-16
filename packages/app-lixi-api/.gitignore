@@ -118,3 +118,6 @@ public/images/
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# NPM lock file
+package-lock.json
