@@ -14,7 +14,7 @@ import { VError } from 'verror';
 import logger from 'src/logger';
 import { PrismaService } from '../services/prisma/prisma.service';
 
-@Controller('lixis')
+@Controller('lixies')
 export class LixiController {
 
   constructor(

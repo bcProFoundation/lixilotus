@@ -33,7 +33,8 @@ const XpijsProvider = {
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public'),
+      serveRoot: '/api/images',
+      rootPath: join(__dirname, '..', 'public/images'),
     })
   ],
   controllers: [AccountController, EnvelopeController, ClaimController, LixiController, HeathController],

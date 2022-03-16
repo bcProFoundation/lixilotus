@@ -37,7 +37,11 @@ async function bootstrap() {
     await NestFactory.create(AppModule, nestApplicationOptions) :
     await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
-  app.useGlobalFilters(new HttpExceptionFilter());
+  // app.useGlobalFilters(new HttpExceptionFilter());
+
+  process.on('uncaughtException', function (err) {
+    console.log(err);
+  });
 
   process.env.NODE_ENV === 'development'
     ? app.enableCors()
