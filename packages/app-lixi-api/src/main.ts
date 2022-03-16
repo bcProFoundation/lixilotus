@@ -20,6 +20,7 @@ const allowedOrigins = [
   'https://dev.sendlotus.com',
   'https://staging.lixilotus.com',
   'https://dev.lixilotus.com',
+  'https://vince8x.lixilotus.com'
 ];
 
 async function bootstrap() {
