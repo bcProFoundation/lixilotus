@@ -20,7 +20,8 @@ const allowedOrigins = [
   'https://dev.sendlotus.com',
   'https://staging.lixilotus.com',
   'https://dev.lixilotus.com',
-  'https://vince8x.lixilotus.com'
+  'https://vince8x.lixilotus.com',
+  'https://sendlotus.test',
 ];
 
 async function bootstrap() {
@@ -38,7 +39,7 @@ async function bootstrap() {
     await NestFactory.create(AppModule, nestApplicationOptions) :
     await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
-  // app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   process.on('uncaughtException', function (err) {
     console.log(err);
@@ -61,7 +62,11 @@ async function bootstrap() {
   const prismaService: PrismaService = app.get(PrismaService);
   prismaService.enableShutdownHooks(app);
 
-  app.use(helmet());
+  app.use(helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    crossOriginEmbedderPolicy: true,
+    crossOriginOpenerPolicy: { policy: 'same-origin' }
+  }));
   app.use(compression());
 
   const POST_LIMIT = 1024 * 100; /* Max POST 100 kb */

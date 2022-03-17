@@ -40,7 +40,7 @@ const ClaimPage = (props) => {
           cardType: 'summary_large_image',
         }}
       />
-      <LixiClaimed claim={claim} isMobile={isMobile}/>
+      <LixiClaimed claim={claim} isMobile={isMobile} />
     </>
   );
 }
