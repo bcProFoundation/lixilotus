@@ -286,14 +286,35 @@ export class ClaimController {
             }
           });
 
-          const result = await this.prisma.$transaction([createClaimOperation, updateLixiOperation]);
+          const insertResult = await this.prisma.$transaction([createClaimOperation, updateLixiOperation]);
 
-          const claimResult = {
-            ...result[0],
-            claimCode: claimApi.claimCode,
-            amount: Number(result[0].amount)
-          } as ClaimDto;
-          return claimResult;
+          const claimId: number = insertResult[0].id;
+
+          const claim = await this.prisma.claim.findUnique({
+            where: {
+              id: _.toSafeInteger(claimId)
+            },
+            include: {
+              lixi: {
+                include: {
+                  envelope: true
+                }
+              }
+            }
+          });
+
+          if (!claim) throw new VError('Unable to claim.');
+
+          let result: ViewClaimDto = {
+            id: claimId,
+            lixiId: claim.lixiId,
+            image: claim.lixi.envelope?.image ?? '',
+            thumbnail: claim.lixi.envelope?.thumbnail ?? '',
+            amount: Number(claim.amount),
+            message: claim.lixi.envelopeMessage
+          };
+
+          return result;
         } catch (err) {
           throw new VError(err as Error, 'Unable to send transaction');
         }
