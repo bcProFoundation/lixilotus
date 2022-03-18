@@ -9,11 +9,12 @@ import React from 'react';
 import { END } from 'redux-saga';
 import { getSelectorsByUserAgent } from 'react-device-detect';
 import { loadGetInitialProps } from 'next/dist/shared/lib/utils';
+import ClaimedLayout from '@components/Layout/ClaimedLayout';
 
 const ClaimPage = (props) => {
   const { claim, isMobile } = props;
   const slug = numberToBase58(claim.id);
-  const canonicalUrl = `/claimed/${slug}`;
+  const canonicalUrl = process.env.NEXT_PUBLIC_LIXI_URL + `claimed/${slug}`;
 
   const imageUrl = claim?.image
     ? process.env.NEXT_PUBLIC_LIXI_API + 'api/' + claim?.image
@@ -67,5 +68,6 @@ export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) 
   };
 });
 
+ClaimPage.Layout = ({ children }) => <ClaimedLayout children={children} />
 
 export default ClaimPage;
