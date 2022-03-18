@@ -8,7 +8,6 @@ import { NextSeo } from 'next-seo';
 import React from 'react';
 import { END } from 'redux-saga';
 import { getSelectorsByUserAgent } from 'react-device-detect';
-import { loadGetInitialProps } from 'next/dist/shared/lib/utils';
 import ClaimedLayout from '@components/Layout/ClaimedLayout';
 
 const ClaimPage = (props) => {
@@ -28,8 +27,8 @@ const ClaimPage = (props) => {
         canonical={canonicalUrl}
         openGraph={{
           url: canonicalUrl,
-          title: 'Open Graph Title',
-          description: 'Open Graph Description',
+          title: 'LixiLotus',
+          description: claim.message ?? 'LixiLotus allow you to giveaway your Lotus effortlessly',
           images: [
             { url: imageUrl },
           ],
