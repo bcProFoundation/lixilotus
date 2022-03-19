@@ -1,12 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { HttpExceptionFilter } from './middlewares/exception.filter';
 import helmet from 'helmet';
 import config from 'config';
-import fs from 'fs';
-import path from 'path';
-import { NestApplicationOptions } from '@nestjs/common';
 import { PrismaService } from './services/prisma/prisma.service';
+import {
+  FastifyAdapter,
+  NestFastifyApplication,
+} from '@nestjs/platform-fastify';
 
 
 const bodyParser = require('body-parser');
@@ -24,19 +24,14 @@ const allowedOrigins = [
 ];
 
 async function bootstrap() {
-  let nestApplicationOptions: NestApplicationOptions = {};
-  try {
-    nestApplicationOptions.httpsOptions = {
-    };
-  } catch (err) {
-    console.log(err);
-  }
+  const httpsOptions = {
+  };
 
-  const isHttps = config.has('https') && config.get('https') && nestApplicationOptions?.httpsOptions?.key !== undefined;
+  const isHttps = config.has('https') && config.get('https');
 
   const app = isHttps ?
-    await NestFactory.create(AppModule, nestApplicationOptions) :
-    await NestFactory.create(AppModule);
+    await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter({ https: httpsOptions })) :
+    await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
   app.setGlobalPrefix('api');
   // app.useGlobalFilters(new HttpExceptionFilter());
 
