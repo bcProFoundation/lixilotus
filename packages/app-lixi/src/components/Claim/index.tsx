@@ -153,7 +153,7 @@ const ClaimComponent: React.FC = () => {
                 style={{
                   margin: '0 0 20px 0'
                 }}
-                loadWithCameraOpen={scannerSupported}
+                loadWithCameraOpen={false}
                 validateStatus={claimXpiAddressError ? 'error' : ''}
                 help={claimXpiAddressError ? claimXpiAddressError : ''}
                 onScan={result =>
