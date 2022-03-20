@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Inject, Param, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Headers, HttpException, HttpStatus, Inject, Param, Post } from '@nestjs/common';
 import * as _ from 'lodash';
 import axios from 'axios';
 import { PrismaService } from '../services/prisma/prisma.service';
@@ -13,9 +13,9 @@ import {
 import { WalletService } from "src/services/wallet.service";
 import moment from 'moment';
 import { aesGcmDecrypt, base58ToNumber } from 'src/utils/encryptionMethods';
-import { Request } from 'express';
 import { VError } from 'verror';
 import logger from 'src/logger';
+import { ReqSocket } from 'src/decorators/req.socket.decorator';
 
 const PRIVATE_KEY = 'AIzaSyCFY2D4NRLjDTpJfk0jjJNADalSceqC4qs';
 const SITE_KEY = "6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb";
@@ -66,7 +66,7 @@ export class ClaimController {
   }
 
   @Post()
-  async claim(@Req() req: Request, @Body() claimApi: CreateClaimDto): Promise<ClaimDto | any> {
+  async claim(@Headers('x-forwarded-for') headerIp: string, @ReqSocket() socket: any, @Body() claimApi: CreateClaimDto): Promise<ClaimDto | any> {
     const captchaResBody = {
       event: {
         token: claimApi.captchaToken,
@@ -95,7 +95,7 @@ export class ClaimController {
 
     if (claimApi) {
       try {
-        const ip = (req.headers['x-forwarded-for'] || req.socket.remoteAddress) as string;
+        const ip = (headerIp || socket.remoteAddress) as string;
 
         const claimCode = _.trim(claimApi.claimCode);
         const password = claimCode.slice(0, 8);

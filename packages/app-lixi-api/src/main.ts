@@ -1,16 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import helmet from 'helmet';
-import config from 'config';
 import { PrismaService } from './services/prisma/prisma.service';
 import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-
-
-const bodyParser = require('body-parser');
-const compression = require('compression');
+import compression from 'fastify-compress';
+import { fastifyHelmet } from 'fastify-helmet';
 
 const allowedOrigins = [
   'https://lixilotus.com',
@@ -20,18 +16,29 @@ const allowedOrigins = [
   'https://dev.sendlotus.com',
   'https://staging.lixilotus.com',
   'https://dev.lixilotus.com',
-  'https://vince8x.lixilotus.com'
+  'https://vince8x.lixilotus.com',
+  'https://givegift.test'
 ];
 
 async function bootstrap() {
   const httpsOptions = {
   };
 
-  const isHttps = config.has('https') && config.get('https');
+  const POST_LIMIT = 1024 * 100; /* Max POST 100 kb */
 
-  const app = isHttps ?
-    await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter({ https: httpsOptions })) :
-    await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
+  const fastifyAdapter = new FastifyAdapter();
+  fastifyAdapter.getInstance().addContentTypeParser(
+    'application/json',
+    { bodyLimit: POST_LIMIT },
+    (_request, _payload, done) => {
+      done(null, (_payload as any).body);
+    }
+  );
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    new FastifyAdapter(),
+  );
+
   app.setGlobalPrefix('api');
   // app.useGlobalFilters(new HttpExceptionFilter());
 
@@ -56,16 +63,8 @@ async function bootstrap() {
   const prismaService: PrismaService = app.get(PrismaService);
   prismaService.enableShutdownHooks(app);
 
-  app.use(helmet());
-  app.use(compression());
-
-  const POST_LIMIT = 1024 * 100; /* Max POST 100 kb */
-
-  app.use(
-    bodyParser.json({
-      limit: POST_LIMIT,
-    })
-  );
+  await app.register(fastifyHelmet);
+  app.register(compression);
 
   await app.listen(4800);
 }
