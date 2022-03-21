@@ -87,7 +87,7 @@ export const theme:DefaultTheme = {
   },
   footerBackground: '#fff',
   tab:{
-    background: 'white',
+    background: '#ffffff',
   }
 };
 

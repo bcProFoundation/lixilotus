@@ -70,7 +70,7 @@ const Lixi: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const id = setTimeout(() => {
+    const id = setInterval(() => {
       XPI.Electrumx.balance(selectedLixi?.address).then((result => {
         if (result && result.balance) {
           const balance = result.balance.confirmed + result.balance.unconfirmed;
@@ -81,7 +81,7 @@ const Lixi: React.FC = () => {
       })
     }, 10000);
     return () => {
-      return clearTimeout(id);
+      return clearInterval(id);
     }
   }, []);
 
