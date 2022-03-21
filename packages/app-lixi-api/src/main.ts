@@ -7,6 +7,7 @@ import {
 } from '@nestjs/platform-fastify';
 import compression from 'fastify-compress';
 import { fastifyHelmet } from 'fastify-helmet';
+import { HttpExceptionFilter } from './middlewares/exception.filter';
 
 const allowedOrigins = [
   'https://lixilotus.com',
@@ -17,7 +18,7 @@ const allowedOrigins = [
   'https://staging.lixilotus.com',
   'https://dev.lixilotus.com',
   'https://vince8x.lixilotus.com',
-  'https://givegift.test'
+  'https://sendlotus.test',
 ];
 
 async function bootstrap() {
@@ -40,7 +41,7 @@ async function bootstrap() {
   );
 
   app.setGlobalPrefix('api');
-  // app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   process.on('uncaughtException', function (err) {
     console.log(err);
@@ -63,7 +64,11 @@ async function bootstrap() {
   const prismaService: PrismaService = app.get(PrismaService);
   prismaService.enableShutdownHooks(app);
 
-  await app.register(fastifyHelmet);
+  await app.register(fastifyHelmet, {
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    crossOriginEmbedderPolicy: true,
+    crossOriginOpenerPolicy: { policy: 'same-origin' }
+  });
   app.register(compression);
 
   await app.listen(4800);

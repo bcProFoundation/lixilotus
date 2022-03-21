@@ -272,7 +272,7 @@ export class AccountController {
       const results = lixies.map(item => {
         return {
           ...item,
-          totalRedeem: Number(item.totalClaim),
+          totalClaim: Number(item.totalClaim),
           lixiType: Number(item.lixiType),
           maxClaim: Number(item.maxClaim),
           claimedNum: Number(item.claimedNum),
