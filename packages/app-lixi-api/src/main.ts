@@ -71,6 +71,6 @@ async function bootstrap() {
   });
   app.register(compression);
 
-  await app.listen(4800);
+  await app.listen(4800, '0.0.0.0');
 }
 bootstrap();
