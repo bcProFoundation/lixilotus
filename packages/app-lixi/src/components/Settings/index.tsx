@@ -16,8 +16,8 @@ import { Account, DeleteAccountCommand, RenameAccountCommand } from '@bcpros/lix
 import {
   CopyOutlined, ImportOutlined, LockOutlined, PlusSquareOutlined, WalletOutlined
 } from '@ant-design/icons';
-import { ReactComponent as Edit } from '@assets/icons/edit.svg';
-import { ReactComponent as Trashcan } from '@assets/icons/trashcan.svg';
+import Edit from '@assets/icons/edit.svg';
+import Trashcan from '@assets/icons/trashcan.svg';
 import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
 import PrimaryButton, { SecondaryButton, SmartButton } from '@components/Common/PrimaryButton';
 import { StyledCollapse } from '@components/Common/StyledCollapse';
@@ -26,7 +26,7 @@ import { StyledSpacer } from '@components/Common/StyledSpacer';
 import { DeleteAccountModalProps } from './DeleteAccountModal';
 import { RenameAccountModalProps } from './RenameAccountModal';
 
-const { Panel } = Collapse
+const { Panel } = Collapse;
 
 export const ThemedCopyOutlined = styled(CopyOutlined)`
   color: ${props => props.theme.icons.outlined} !important;
@@ -296,50 +296,50 @@ const Settings: React.FC = () => {
           <>
             <StyledCollapse>
               <Panel header="Saved accounts" key="2">
-                <AWRow>
+                {<AWRow>
                   <SWName>
                     <h3>{selectedAccount?.name}</h3>
                   </SWName>
                   <SWButtonCtn>
-                    <Edit
-                      onClick={() =>
-                        showPopulatedRenameAccountModal(
-                          selectedAccount as Account
-                        )
-                      }
-                    />
-                    <Trashcan
-                      onClick={() =>
-                        showPopulatedDeleteAccountModal(
-                          selectedAccount as Account
-                        )
-                      }
-                    />
+                    <span onClick={() =>
+                      showPopulatedRenameAccountModal(
+                        selectedAccount as Account
+                      )
+                    }>
+                      <Edit />
+                    </span>
+                    <span onClick={() =>
+                      showPopulatedDeleteAccountModal(
+                        selectedAccount as Account
+                      )
+                    }>
+                      <Trashcan />
+                    </span >
                     <h4>Activated</h4>
                   </SWButtonCtn>
-                </AWRow>
+                </AWRow>}
                 <div>
-                  {otherAccounts.map(acc => (
+                  {otherAccounts && otherAccounts.map(acc => (
                     <SWRow key={acc.id}>
                       <SWName>
                         <h3>{acc.name}</h3>
                       </SWName>
 
                       <SWButtonCtn>
-                        <Edit
-                          onClick={() =>
-                            showPopulatedRenameAccountModal(
-                              acc,
-                            )
-                          }
-                        />
-                        <Trashcan
-                          onClick={() =>
-                            showPopulatedDeleteAccountModal(
-                              acc,
-                            )
-                          }
-                        />
+                        <span onClick={() =>
+                          showPopulatedRenameAccountModal(
+                            acc,
+                          )
+                        }>
+                          <Edit />
+                        </span>
+                        <span onClick={() =>
+                          showPopulatedDeleteAccountModal(
+                            acc,
+                          )
+                        }>
+                          <Trashcan />
+                        </span>
                         <button
                           onClick={() => dispatch(selectAccount(acc.id))}
                         >
