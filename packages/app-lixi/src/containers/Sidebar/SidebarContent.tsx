@@ -34,11 +34,11 @@ const SidebarContent = ({
           // defaultOpenKeys={[defaultOpenKeys]}
           // selectedKeys={[selectedKeys]}
           mode="inline">
-          <Menu.Item key='main/market'>
-            <Link href='/'>
+          <Menu.Item key='main/mobile-card'>
+            <Link href='/mobile-card' passHref>
               <a>
                 <ShopOutlined />
-                <span>Market</span>
+                <span>Mobile Card</span>
               </a>
             </Link>
           </Menu.Item>
