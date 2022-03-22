@@ -165,10 +165,10 @@ const Home: React.FC = () => {
       {
         lixies.length > 0 && (
           <StyledTabs type="card" size="large" defaultActiveKey="1" centered>
-            <TabPane tab={<span> <CheckCircleOutlined /> Active </span>} key="1">
+            <TabPane key={'1'} tab={(<span> <CheckCircleOutlined className='active-tab-icon' /> Active </span>)}>
               <LixiList lixies={lixies.filter(lixi => lixi.status == 'active' && !moment().isAfter(lixi.expiryAt) && !(lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim))} />
             </TabPane>
-            <TabPane tab={<span> <CloseCircleOutlined /> Archive </span>} key="2">
+            <TabPane key={'2'} tab={(<span> <CloseCircleOutlined className='archive-tab-icon' /> Archive </span>)}>
               <LixiList lixies={lixies.filter(lixi => lixi.status != 'active' || moment().isAfter(lixi.expiryAt) || lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim)} />
             </TabPane>
           </StyledTabs>

@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { PrismaService } from './services/prisma/prisma.service';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import {
   FastifyAdapter,
   NestFastifyApplication,
@@ -61,13 +62,31 @@ async function bootstrap() {
       },
     });
 
+  // Prisma
   const prismaService: PrismaService = app.get(PrismaService);
   prismaService.enableShutdownHooks(app);
+
+  // Swagger
+  const config = new DocumentBuilder()
+    .setTitle('LixiLotus API')
+    .setDescription('The LixiLotus API description')
+    .setVersion('0.1')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
 
   await app.register(fastifyHelmet, {
     crossOriginResourcePolicy: { policy: 'cross-origin' },
     crossOriginEmbedderPolicy: true,
-    crossOriginOpenerPolicy: { policy: 'same-origin' }
+    crossOriginOpenerPolicy: { policy: 'same-origin' },
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: [`'self'`],
+        styleSrc: [`'self'`, `'unsafe-inline'`],
+        imgSrc: [`'self'`, 'data:', 'validator.swagger.io'],
+        scriptSrc: [`'self'`, `https: 'unsafe-inline'`],
+      },
+    },
   });
   app.register(compression);
 
