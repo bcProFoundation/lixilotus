@@ -4,27 +4,29 @@ import { toPng } from 'html-to-image';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getAllClaims } from 'src/store/claim/selectors';
-import { AppContext } from 'src/store/store';
-import { showToast } from 'src/store/toast/actions';
+import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getLixi, refreshLixi, setLixiBalance } from 'src/store/lixi/actions';
 import { getSelectedLixi, getSelectedLixiId } from 'src/store/lixi/selectors';
+import { AppContext } from 'src/store/store';
+import { showToast } from 'src/store/toast/actions';
 import styled from 'styled-components';
 
 import { CopyOutlined, DownloadOutlined, ReloadOutlined } from '@ant-design/icons';
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import { SmartButton } from '@bcpros/lixi-components/components/Common/PrimaryButton';
-import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
 import { QRClaimCode } from '@bcpros/lixi-components/components/Common/QRClaimCode';
+import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
 import { StyledCollapse } from '@bcpros/lixi-components/components/Common/StyledCollapse';
 import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
 import { countries } from '@bcpros/lixi-models/constants/countries';
 import { LixiType } from '@bcpros/lixi-models/lib/lixi';
-import { currency } from '@components/Common/Ticker';
 import ClaimList from '@components/Claim/ClaimList';
+import { currency } from '@components/Common/Ticker';
+import { getLixiesBySelectedLixiParent } from '@store/lixi/selectors';
 import { fromSmallestDenomination } from '@utils/cashMethods';
 
+import { ClaimType } from '../../../../lixi-models/src/lib/lixi';
 import lixiLogo from '../../assets/images/lixi_logo.svg';
 
 type CopiedProps = {
@@ -62,6 +64,7 @@ const Lixi: React.FC = () => {
   const [claimCodeVisible, setClaimCodeVisible] = useState(false);
   const qrPanelRef = React.useRef(null);
   const [isLoadBalanceError, setIsLoadBalanceError] = useState(false);
+  const subLixies = useAppSelector(getLixiesBySelectedLixiParent);
 
   useEffect(() => {
     if (selectedLixi) {
@@ -128,6 +131,10 @@ const Lixi: React.FC = () => {
       case LixiType.Divided:
         return (
           <>Divided by {selectedLixi.dividedValue} </>
+        );
+      case LixiType.Equal:
+        return (
+          <>Equal {selectedLixi.amount / selectedLixi.numberOfSubLixi} {currency.ticker}</>
         );
       default:
         return (
@@ -202,6 +209,9 @@ const Lixi: React.FC = () => {
               color: 'rgb(23,23,31)',
             }}
           >
+            <Descriptions.Item label="Claim Type">
+              {selectedLixi.claimType == ClaimType.Single ? "Single" : "One-Time Codes"}
+            </Descriptions.Item>
             <Descriptions.Item label="Type">
               {typeLixi()}
             </Descriptions.Item>
@@ -220,42 +230,72 @@ const Lixi: React.FC = () => {
           {/* Lixi details */}
           <StyledCollapse style={{ marginBottom: '20px' }}>
             <Panel header="Click to reveal lixi detail" key="panel-1">
-              <div ref={qrPanelRef}>
-                {selectedLixi && selectedLixi.claimCode && <QRClaimCode
-                  logoImage={lixiLogo}
-                  code={selectedLixi?.claimCode}
-                />}
-              </div>
-              <SmartButton
-                onClick={() => handleDownloadQRClaimCode()}
-              >
-                <DownloadOutlined />  Download Code
-              </SmartButton>
+              {selectedLixi.claimType == ClaimType.Single ? 
+                <>
+                  <div ref={qrPanelRef}>
+                    {selectedLixi && selectedLixi.claimCode && <QRClaimCode
+                      logoImage={lixiLogo}
+                      code={selectedLixi?.claimCode}
+                    />}
+                  </div>
+                  <SmartButton
+                    onClick={() => handleDownloadQRClaimCode()}
+                  >
+                    <DownloadOutlined />  Download Code
+                  </SmartButton>
+                </> :
+                <Descriptions
+                  column={1}
+                  bordered
+                  style={{
+                    padding: '0 0 20px 0',
+                    color: 'rgb(23,23,31)',
+                  }}
+                >
+                  {subLixies.map(item =>  
+                    <Descriptions.Item label={
+                      <CopyToClipboard
+                        text={item.claimCode}
+                        onCopy={handleOnCopyClaimCode}
+                      >
+                        <div>
+                          <CopyOutlined />  {item.claimCode}
+                        </div>
+                      </CopyToClipboard>
+                    }>
+                      {item.amount - 0.000455}
+                    </Descriptions.Item>
+                  )}
+                </Descriptions>
+              }
             </Panel>
           </StyledCollapse>
 
           {/* Copy ClaimCode */}
-          <CopyToClipboard
-            style={{
-              display: 'inline-block',
-              width: '100%',
-              position: 'relative',
-            }}
-            text={selectedLixi.claimCode}
-            onCopy={handleOnCopyClaimCode}
-          >
-            <div style={{ position: 'relative', paddingTop: '20px' }} onClick={handleOnClickClaimCode}>
-              <Copied
-                style={{ display: claimCodeVisible ? undefined : 'none' }}
-              >
-                Copied <br />
-                <span style={{ fontSize: '32px' }}>{selectedLixi.claimCode}</span>
-              </Copied>
-              <SmartButton>
-                <CopyOutlined />  Copy Claim Code
-              </SmartButton>
-            </div>
-          </CopyToClipboard>
+          {selectedLixi.claimType == ClaimType.Single ? 
+            <CopyToClipboard
+              style={{
+                display: 'inline-block',
+                width: '100%',
+                position: 'relative',
+              }}
+              text={selectedLixi.claimCode}
+              onCopy={handleOnCopyClaimCode}
+            >
+              <div style={{ position: 'relative', paddingTop: '20px' }} onClick={handleOnClickClaimCode}>
+                <Copied
+                  style={{ display: claimCodeVisible ? undefined : 'none' }}
+                >
+                  Copied <br />
+                  <span style={{ fontSize: '32px' }}>{selectedLixi.claimCode}</span>
+                </Copied>
+                <SmartButton>
+                  <CopyOutlined />  Copy Claim Code
+                </SmartButton>
+              </div>
+            </CopyToClipboard> : 
+            <></>
+          }
 
           <SmartButton
             onClick={() => handleRefeshLixi()}
