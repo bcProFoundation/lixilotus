@@ -134,7 +134,7 @@ export class LixiController {
           address,
           totalClaim: BigInt(0),
           envelopeId: command.envelopeId ?? null,
-          envelopeMessage: '',
+          envelopeMessage: command.envelopeMessage ?? '',
         };
         const lixiToInsert = _.omit(data, 'password');
         const accountBalance = await this.xpiWallet.getBalance(account.address);
@@ -217,7 +217,7 @@ export class LixiController {
               address,
               totalClaim: BigInt(0),
               envelopeId: command.envelopeId ?? null,
-              envelopeMessage: '',
+              envelopeMessage: command.envelopeMessage ?? '',
               parentId: createdLixi.id,
               amount: Number(satoshisToSend?.toFixed(6)),
             };

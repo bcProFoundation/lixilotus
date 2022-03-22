@@ -233,6 +233,11 @@ const Lixi: React.FC = () => {
             <Descriptions.Item label="Claim">
               {showRedemption()}
             </Descriptions.Item>
+            {selectedLixi.envelopeMessage && (
+              <Descriptions.Item label="Message">
+              {selectedLixi?.envelopeMessage}
+              </Descriptions.Item>
+            )}          
             {showCountry()}
             {showMinStaking()}
             {formatDate()}
