@@ -1,4 +1,4 @@
-import ReloadOutlined, { CheckCircleOutlined, CloseCircleOutlined, LockOutlined } from '@ant-design/icons';
+import ReloadOutlined, { CheckCircleOutlined, InboxOutlined, LockOutlined } from '@ant-design/icons';
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import { ThemedWalletOutlined } from '@bcpros/lixi-components/components/Common/CustomIcons';
 import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
@@ -168,7 +168,7 @@ const Home: React.FC = () => {
             <TabPane key={'1'} tab={(<span> <CheckCircleOutlined className='active-tab-icon' /> Active </span>)}>
               <LixiList lixies={lixies.filter(lixi => lixi.status == 'active' && !moment().isAfter(lixi.expiryAt) && !(lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim))} />
             </TabPane>
-            <TabPane key={'2'} tab={(<span> <CloseCircleOutlined className='archive-tab-icon' /> Archive </span>)}>
+            <TabPane key={'2'} tab={(<span> <InboxOutlined className='archive-tab-icon' /> Archive </span>)}>
               <LixiList lixies={lixies.filter(lixi => lixi.status != 'active' || moment().isAfter(lixi.expiryAt) || lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim)} />
             </TabPane>
           </StyledTabs>

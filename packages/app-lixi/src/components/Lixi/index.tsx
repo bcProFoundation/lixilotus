@@ -1,6 +1,7 @@
 import { Collapse, Descriptions } from 'antd';
 import { saveAs } from 'file-saver';
 import { toPng } from 'html-to-image';
+import * as _ from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -24,7 +25,7 @@ import { LixiType } from '@bcpros/lixi-models/lib/lixi';
 import ClaimList from '@components/Claim/ClaimList';
 import { currency } from '@components/Common/Ticker';
 import { getLixiesBySelectedLixiParent } from '@store/lixi/selectors';
-import { fromSmallestDenomination } from '@utils/cashMethods';
+import { fromSmallestDenomination, toSmallestDenomination } from '@utils/cashMethods';
 
 import { ClaimType } from '../../../../lixi-models/src/lib/lixi';
 import lixiLogo from '../../assets/images/lixi_logo.svg';
@@ -186,19 +187,30 @@ const Lixi: React.FC = () => {
       </Descriptions.Item>) : "";
   }
 
+  const parentBalance = () => {
+    let sum=0;
+    subLixies.map(item => sum += item.amount-0.000455);
+    // dispatch(setLixiBalance(sum ?? 0));
+    return sum.toFixed(6);
+  }
+
   return (
     <>
       <WalletLabel
         name={selectedLixi?.name ?? ''}
       />
       <BalanceHeader
-        balance={fromSmallestDenomination(selectedLixi?.balance) ?? 0}
+        balance={selectedLixi.claimType==ClaimType.Single ? (fromSmallestDenomination(selectedLixi?.balance) ?? 0) : parentBalance() }
         ticker={currency.ticker} />
       {selectedLixi && selectedLixi.address ? (
         <>
-          <QRCode
-            address={selectedLixi.address}
-          />
+          {selectedLixi.claimType == ClaimType.Single ? 
+            <QRCode
+              address={selectedLixi.address}
+            /> : 
+            <></>
+          }
+          
 
           <Descriptions
             column={1}
