@@ -1,6 +1,6 @@
-import { DefaultTheme } from "styled-components";
+import { DefaultTheme } from 'styled-components';
 
-export const theme:DefaultTheme = {
+export const theme: DefaultTheme = {
   name: 'Default',
   primary: '#6f2dbd',
   secondary: '#CD0BC3',
@@ -19,13 +19,11 @@ export const theme:DefaultTheme = {
     },
     switch: {
       activeCash: {
-        shadow:
-          'inset 8px 8px 16px #44107A, inset -8px -8px 16px #6f2dbd',
+        shadow: 'inset 8px 8px 16px #44107A, inset -8px -8px 16px #6f2dbd',
       },
       activeToken: {
         background: '#CD0BC3',
-        shadow:
-          'inset 5px 5px 11px #FF21D0, inset -5px -5px 11px #CD0BC3',
+        shadow: 'inset 5px 5px 11px #FF21D0, inset -5px -5px 11px #CD0BC3',
       },
       inactive: {
         background: 'linear-gradient(145deg, #eeeeee, #c8c8c8)',
@@ -69,8 +67,7 @@ export const theme:DefaultTheme = {
   },
   buttons: {
     primary: {
-      backgroundImage:
-        'linear-gradient(270deg,#6f2dbd 0%, #CD0BC3 100%)',
+      backgroundImage: 'linear-gradient(270deg,#6f2dbd 0%, #CD0BC3 100%)',
       color: '#fff',
       hoverShadow: '0px 3px 10px -5px rgba(0, 0, 0, 0.75)',
     },
@@ -84,6 +81,11 @@ export const theme:DefaultTheme = {
     background: '#fbfcfd',
     border: '#eaedf3',
     color: '#3e3f42',
+  },
+  radio: {
+    primary: '#6f2dbd',
+    secondary: '#e8e8e8',
+    borderRadius: '6px',
   },
   footerBackground: '#fff',
   tab:{

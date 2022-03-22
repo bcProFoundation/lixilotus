@@ -57,14 +57,14 @@ declare module 'styled-components' {
       addonBackground: string;
       addonForeground: string;
       selectionBackground: string;
-    },
+    };
     icons: {
       outlined: string;
     };
     modals: {
       buttons: {
         background: string;
-      }
+      };
     };
     settings: {
       delete: string;
@@ -93,12 +93,17 @@ declare module 'styled-components' {
       border: string;
       color: string;
     };
+    radio: {
+      primary: string;
+      secondary: string;
+      borderRadius: string;
+    };
     footerBackground: string;
     tab :{
       background: string;
     }
   }
-};
+}
 
 declare module 'react' {
   interface Attributes {
