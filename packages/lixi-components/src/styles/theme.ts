@@ -85,6 +85,11 @@ export const theme: DefaultTheme = {
     border: '#eaedf3',
     color: '#3e3f42',
   },
+  radio: {
+    primary: '#6f2dbd',
+    secondary: '#e8e8e8',
+    borderRadius: '6px',
+  },
   footerBackground: '#fff',
   tab:{
     background: 'white',

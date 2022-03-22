@@ -23,7 +23,7 @@ const Topbar = ({
 
   return (
     <Header className={className}>
-      <MenuOutlined style={{fontSize: '32px'}} onClick={handleMenuClick} />
+      {/* <MenuOutlined style={{fontSize: '32px'}} onClick={handleMenuClick} /> */}
       <img src='/images/lixilotus-logo.png' alt='lixilotus' />
       <img src='/images/lotus-logo-small.png' alt='lotus' />
     </Header>

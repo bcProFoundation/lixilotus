@@ -92,6 +92,11 @@ declare module 'styled-components' {
       border: string;
       color: string;
     };
+    radio: {
+      primary: string;
+      secondary: string;
+      borderRadius: string;
+    };
     footerBackground: string;
     tab :{
       background: string;
