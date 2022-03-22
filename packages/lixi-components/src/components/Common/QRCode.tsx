@@ -104,7 +104,6 @@ const CustomInput = styled.div<CustomInputProps>`
     border-radius: 5px;
 
     span {
-      font-weight: bold;
       color: ${props => props.theme.wallet.text.primary};
       font-size: 16px;
     }
@@ -158,6 +157,23 @@ type QRCodeProps = {
   onClick?: Function;
   logoImage?: string;
 }
+
+const FormattedWalletAddress = ({address}) => {
+    const prefixLength = 11;
+    const trimLength = 8;
+    return (
+        <>
+            {address.slice(0,prefixLength)}
+            <AddressHighlightTrim>
+                {address.slice(prefixLength, prefixLength + trimLength)}
+            </AddressHighlightTrim>
+            {address.slice(prefixLength+trimLength, -trimLength)}
+            <AddressHighlightTrim>
+                {address.slice(-trimLength)}
+            </AddressHighlightTrim>
+        </>
+    );
+};
 
 const QRCode = ({
   address,
@@ -238,7 +254,7 @@ const QRCode = ({
               type="text"
             />
             <span>
-              {address}
+              <FormattedWalletAddress address={address} />
             </span>
           </CustomInput>
         )}
