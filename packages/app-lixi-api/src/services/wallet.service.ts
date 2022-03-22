@@ -1,12 +1,13 @@
+import BigNumber from 'bignumber.js';
+import * as _ from 'lodash';
+import logger from 'src/logger';
 import VError from 'verror';
+
+import { currency, fromSmallestDenomination, toSmallestDenomination } from '@bcpros/lixi-models';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
 import HDNode from '@bcpros/xpi-js/types/hdnode';
-import BigNumber from 'bignumber.js';
-import { currency, fromSmallestDenomination, toSmallestDenomination } from '@bcpros/lixi-models';
 import { Inject, Injectable } from '@nestjs/common';
-import logger from 'src/logger';
-
 
 @Injectable()
 export class WalletService {
@@ -75,27 +76,30 @@ export class WalletService {
     return fromSmallestDenomination(Number(value));
   };
 
-  async sendAmount(sourceAddress: string, destinationAddress: string, amountXpi: number, inputKeyPair: any) {
+  async sendAmount(sourceAddress: string, destination: {address: string, amountXpi: number}[], inputKeyPair: any) {
 
     const sourceBalance: number = await this.xpiWallet.getBalance(sourceAddress);
     if (sourceBalance === 0) {
       throw new VError('Insufficient fund.');
     }
 
-    const satoshisBalance = new BigNumber(sourceBalance);
+    let outputs: {address: string, amountSat: number}[] = [];
 
-    let satoshisToSend = toSmallestDenomination(new BigNumber(amountXpi));
+    for (let i=0; i< _.size(destination); i++) {
+      const item = destination[i]
+      let satoshisToSend = toSmallestDenomination(new BigNumber(item.amountXpi));
 
-    if (satoshisToSend.lt(currency.dustSats)) {
-      throw new VError('The send amount is smaller than dust.');
+      if (satoshisToSend.lt(currency.dustSats)) {
+        throw new VError('The send amount is smaller than dust.');
+      }
+
+      const amountSats = Math.floor(satoshisToSend.toNumber());
+
+      outputs.push({
+        address: item.address,
+        amountSat: amountSats
+      });
     }
-
-    const amountSats = Math.floor(satoshisToSend.toNumber());
-
-    const outputs = [{
-      address: destinationAddress,
-      amountSat: amountSats
-    }];
 
     const utxos = await this.xpijs.Utxo.get(sourceAddress);
     const utxoStore = utxos[0];
@@ -145,13 +149,8 @@ export class WalletService {
 
     try {
       // Broadcast the transaction to the network.
-      const txid = await this.xpijs.RawTransactions.sendRawTransaction(hex);
+      await this.xpijs.RawTransactions.sendRawTransaction(hex);
       // const txid = await xpiWallet.send(outputs);
-
-      const claimResult = {
-        amount: Number(amountSats)
-      };
-      return (claimResult.amount);
     }
     catch (err) {
       throw new VError(err as Error, 'Unable to send transaction');

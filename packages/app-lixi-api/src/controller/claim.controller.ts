@@ -8,7 +8,7 @@ import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
 import {
   countries, CreateClaimDto, fromSmallestDenomination, ClaimDto, toSmallestDenomination,
-  LixiType, ViewClaimDto
+  LixiType, ViewClaimDto, ClaimType
 } from '@bcpros/lixi-models';
 import { WalletService } from "src/services/wallet.service";
 import moment from 'moment';
@@ -165,7 +165,7 @@ export class ClaimController {
         }
 
         const claimAddressBalance = await this.xpiWallet.getBalance(address);
-        if (claimAddressBalance < lixi.minStaking) {
+        if (claimAddressBalance < toSmallestDenomination(new BigNumber(lixi.minStaking))) {
           throw new VError('You must have at least ' + lixi.minStaking + ' XPI in your account to claim this offer.');
         }
 
@@ -191,13 +191,16 @@ export class ClaimController {
         const xpiBalance = fromSmallestDenomination(balance);
 
         let satoshisToSend;
-        if (lixi.lixiType == LixiType.Random) {
+        if (lixi.claimType == ClaimType.OneTime) {
+          const xpiValue = await this.walletService.onMax(lixiAddress);
+          satoshisToSend = toSmallestDenomination(new BigNumber(xpiValue));
+        } else if (lixi.lixiType == LixiType.Random) {
           const maxXpiValue = xpiBalance < lixi.maxValue ? xpiBalance : lixi.maxValue;
           const maxSatoshis = toSmallestDenomination(new BigNumber(maxXpiValue));
           const minSatoshis = toSmallestDenomination(new BigNumber(lixi.minValue));
           satoshisToSend = maxSatoshis.minus(minSatoshis).times(new BigNumber(Math.random())).plus(minSatoshis);
         } else if (lixi.lixiType == LixiType.Fixed) {
-          const xpiValue = xpiBalance < lixi.fixedValue ? await this.walletService.onMax(lixiAddress) : lixi.fixedValue;
+          const xpiValue = (xpiBalance <= lixi.fixedValue) ? await this.walletService.onMax(lixiAddress) : lixi.fixedValue;
           satoshisToSend = toSmallestDenomination(new BigNumber(xpiValue));
         } else {
           // The payout unit is satoshi
@@ -282,7 +285,8 @@ export class ClaimController {
             where: { id: lixi.id },
             data: {
               totalClaim: lixi.totalClaim + BigInt(amountSats),
-              claimedNum: lixi.claimedNum + 1
+              claimedNum: lixi.claimedNum + 1,
+              isClaimed: lixi.claimType == ClaimType.OneTime ? true : false
             }
           });
 

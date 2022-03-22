@@ -144,6 +144,8 @@ export class LixiController {
         let { keyPair } = await this.walletService.deriveAddress(command.mnemonic, 0); // keyPair of account
         let fee = await this.walletService.calcFee(this.XPI, (utxoStore as any).bchUtxos);
 
+        const receivingLixi = [{address: lixiToInsert.address, amountXpi: command.amount}];
+
         // Insert the lixi to db and send fund from account to lixi
         let createdLixi: LixiDb;
         if (command.amount === 0) {
@@ -151,7 +153,7 @@ export class LixiController {
           [createdLixi] = await this.prisma.$transaction([this.prisma.lixi.create({ data: lixiToInsert })]);
         } else if (command.amount < fromSmallestDenomination(accountBalance)) {
           if (command.claimType == ClaimType.Single) {
-            const amount: any = await this.walletService.sendAmount(account.address, lixiToInsert.address, command.amount, keyPair);
+            const amount: any = await this.walletService.sendAmount(account.address, receivingLixi, keyPair);
             lixiToInsert.amount = amount;
             [createdLixi] = await this.prisma.$transaction([this.prisma.lixi.create({ data: lixiToInsert })]);
           } else {
@@ -232,12 +234,18 @@ export class LixiController {
             }
           });
 
+          const receivingSubLixi = createdSubLixi.map(item => {
+            return ({
+              address: item.address,
+              amountXpi: item.amount
+            })
+          })
+
+          // Fund xpi from account to sub Lixi
+          await this.walletService.sendAmount(account.address, receivingSubLixi, keyPair);
+
           for (let j = 0; j < _.size(createdSubLixi); j++) {
             const item: any = createdSubLixi[j];
-
-            // Fund xpi from account to sub Lixi
-            await this.walletService.sendAmount(account.address, item.address, item.amount, keyPair);
-            await sleep(3000);
 
             // Calculate the claim code
             const encodedId = numberToBase58(item.id);
@@ -460,8 +468,9 @@ export class LixiController {
       }
 
       const totalAmount: number = await this.walletService.onMax(lixi.address);
+      const receivingAccount = [{address: account.address, amountXpi: totalAmount,}]
 
-      const amount: any = await this.walletService.sendAmount(lixi.address, account.address, totalAmount, keyPair);
+      const amount: any = await this.walletService.sendAmount(lixi.address, receivingAccount, keyPair);
       let resultApi: LixiDto = {
         ...lixi,
         balance: amount ?? 0,

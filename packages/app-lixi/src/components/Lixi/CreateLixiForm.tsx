@@ -307,7 +307,6 @@ const CreateLixiForm = ({
             <Input
               addonBefore="Sub-lixi"
               type="number"
-              step={1 / 10 ** currency.cashDecimals}
               value={newNumberOfSubLixi}
               placeholder="Number of sub lixi"
               name="equalValue"
