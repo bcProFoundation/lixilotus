@@ -15,7 +15,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const message = exception instanceof HttpException ? exception.message : 'Internal server error'
 
     logger.error(error);
-    logger.error(JSON.stringify(info));
     let err = error;
     while (err && (err as any).cause) {
       err = (err as any).cause();
@@ -35,7 +34,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       statusCode,
       message
     };
-    logger.log(`request method: ${request.method} request url${request.url}`, JSON.stringify(devErrorResponse));
-    response.status(statusCode).json(process.env.NODE_ENV === 'development' ? devErrorResponse : prodErrorResponse);
+    logger.error(`error at request method: ${request.method} request url${request.url}`, JSON.stringify(devErrorResponse));
+    response.code(statusCode).send(process.env.NODE_ENV === 'development' ? devErrorResponse : prodErrorResponse);
   }
 }
