@@ -1,4 +1,5 @@
-import { Layout } from 'antd';
+import React, { useState } from 'react';
+import { Layout, Spin } from 'antd';
 import Link from 'next/link';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 
@@ -96,63 +97,71 @@ export const LixiTextLogo = styled.img`
 
 const ClaimedLayout: React.FC = (props) => {
   const { children } = props;
+  const [loading, setLoading] = useState(false);
 
   return (
     <ThemeProvider theme={theme as DefaultTheme}>
       <GlobalStyle />
-      <LixiApp>
-        <Layout>
-          <AppBody>
-            <ModalManager />
-            <AppContainer>
-              <Layout>
-                <Sidebar />
+      <Spin
+        spinning={
+          loading
+        }
+        indicator={LoadingIcon}
+      >
+        <LixiApp>
+          <Layout>
+            <AppBody>
+              <ModalManager />
+              <AppContainer>
                 <Layout>
-                  <Topbar />
-                  <Content>
-                    {children}
-                  </Content>
+                  <Sidebar />
+                  <Layout>
+                    <Topbar />
+                    <Content>
+                      {children}
+                    </Content>
+                  </Layout>
                 </Layout>
-              </Layout>
-            </AppContainer>
-            <Footer>
-              <Link href='/' passHref>
-                <NavButton
-                  active={false}
-                >
-                  <UserOutlined />
-                  Accounts
-                </NavButton>
-              </Link>
-              <Link href='/lixi' passHref>
-                <NavButton
-                  active={false}
-                >
-                  <WalletOutlined />
-                  Lixi
-                </NavButton>
-              </Link>
-              <Link href='/claim' passHref>
-                <NavButton
-                  active={false}
-                >
-                  <GiftOutlined />
-                  Claim
-                </NavButton>
-              </Link>
-              <Link href='/settings' passHref>
-                <NavButton
-                  active={false}
-                >
-                  <SettingOutlined />
-                  Settings
-                </NavButton>
-              </Link>
-            </Footer>
-          </AppBody>
-        </Layout>
-      </LixiApp>
-    </ThemeProvider>
+              </AppContainer>
+              <Footer>
+                <Link href='/' passHref>
+                  <NavButton
+                    active={false}
+                  >
+                    <UserOutlined />
+                    Accounts
+                  </NavButton>
+                </Link>
+                <Link href='/lixi' passHref>
+                  <NavButton
+                    active={false}
+                  >
+                    <WalletOutlined />
+                    Lixi
+                  </NavButton>
+                </Link>
+                <Link href='/claim' passHref>
+                  <NavButton
+                    active={false}
+                  >
+                    <GiftOutlined />
+                    Claim
+                  </NavButton>
+                </Link>
+                <Link href='/settings' passHref>
+                  <NavButton
+                    active={false}
+                  >
+                    <SettingOutlined />
+                    Settings
+                  </NavButton>
+                </Link>
+              </Footer>
+            </AppBody>
+          </Layout>
+        </LixiApp>
+      </Spin>
+    </ThemeProvider >
   );
 }
 

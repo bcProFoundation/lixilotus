@@ -6,7 +6,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React, { createContext, FC } from 'react';
 import { Provider } from 'react-redux';
-import { PersistGate as PersistGateClient } from 'redux-persist/integration/react';
+import { PersistGate } from 'redux-persist/integration/react';
 import { END } from 'redux-saga';
 
 
@@ -29,12 +29,12 @@ const LixiApp = ({ Component, ...rest }) => {
 
   const router = useRouter();
 
-  const isServer = () => typeof window === 'undefined';
+  // const isServer = () => typeof window === 'undefined';
 
-  let PersistGate = PersistGateServer;
-  if (!isServer()) {
-    PersistGate = PersistGateClient as any;
-  }
+  // let PersistGate = PersistGateServer;
+  // if (typeof window === 'undefined') {
+  //   PersistGate = PersistGateClient as any;
+  // }
 
   return (
     <Provider store={store}>
