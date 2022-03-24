@@ -45,8 +45,8 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
 
   const teardownCodeReader = codeReader => {
     if (codeReader !== null) {
-      codeReader.reset();
-      codeReader.stop();
+      codeReader.reset && codeReader.reset();
+      codeReader.stop && codeReader.stop();
       codeReader = null;
       setActiveCodeReader(codeReader);
     }
