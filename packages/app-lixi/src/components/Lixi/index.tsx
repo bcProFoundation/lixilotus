@@ -1,4 +1,4 @@
-import { Collapse, Descriptions } from 'antd';
+import { Collapse, Descriptions, message } from 'antd';
 import { saveAs } from 'file-saver';
 import { toPng } from 'html-to-image';
 import * as _ from 'lodash';
@@ -107,6 +107,7 @@ const Lixi: React.FC = () => {
 
   const handleOnCopyClaimCode = () => {
     setClaimCodeVisible(true);
+    message.info('The claim code has been copied.');
   };
 
   const handleDownloadQRClaimCode = () => {
