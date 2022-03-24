@@ -1,7 +1,7 @@
 import { createEntityAdapter, createReducer } from "@reduxjs/toolkit"
 import { Claim } from "@bcpros/lixi-models/lib/claim";
 import { ClaimsState } from "./state";
-import { refreshLixiSuccess } from "../lixi/actions";
+import { refreshLixiSuccess, selectLixiSuccess } from "../lixi/actions";
 import { saveClaimAddress, saveClaimCode, viewClaimFailure, viewClaimSuccess } from "./actions";
 
 
@@ -18,6 +18,10 @@ const initialState: ClaimsState = claimsAdapter.getInitialState({
 export const claimReducer = createReducer(initialState, (builder) => {
   builder
     .addCase(refreshLixiSuccess, (state, action) => {
+      const claims = action.payload.claims;
+      claimsAdapter.setAll(state, claims);
+    })
+    .addCase(selectLixiSuccess, (state, action) => {
       const claims = action.payload.claims;
       claimsAdapter.setAll(state, claims);
     })

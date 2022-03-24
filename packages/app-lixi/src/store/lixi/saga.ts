@@ -117,7 +117,7 @@ function* postLixiSaga(action: PayloadAction<CreateLixiCommand>) {
 function* postLixiSuccessSaga(action: PayloadAction<Lixi>) {
 
   try {
-    const lixies: any = action.payload;
+    const lixi: any = action.payload;
 
     // Calculate 
     yield put(showToast('success', {
@@ -125,7 +125,7 @@ function* postLixiSuccessSaga(action: PayloadAction<Lixi>) {
       description: 'Create lixi successfully.',
       duration: 5
     }));
-    yield put(setLixi(lixies));
+    yield put(setLixi(lixi));
     yield put(hideLoading(postLixi.type));
   } catch (error) {
     const message = `There's an error happens when create new lixi.`;

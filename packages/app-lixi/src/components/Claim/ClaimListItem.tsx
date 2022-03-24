@@ -78,7 +78,7 @@ const ClaimAmount = styled.div`
   text-overflow: ellipsis;
 `;
 
-export const LotusLogo = styled.img`
+export const LotusLogo = styled.span`
   opacity: 0.5;
   width: 32px;
   @media (max-width: 32px) {
@@ -105,7 +105,9 @@ const ClaimListItem: React.FC<ClaimListItemProps> = (props: ClaimListItemProps) 
   return (
     <ClaimItemWrapper onClick={(e) => handleClickClaim(claim)}>
       <ClaimItemIcon>
-        <LotusLogo src={GrayLotus} alt="lixi" />
+        <LotusLogo>
+          <GrayLotus />
+        </LotusLogo>
       </ClaimItemIcon>
       <ClaimDescription>
         <ClaimDescriptionLabel>Claim</ClaimDescriptionLabel>

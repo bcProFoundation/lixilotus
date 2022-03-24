@@ -61,7 +61,7 @@ const Lixi: React.FC = () => {
   const { XPI, Wallet } = ContextValue;
   const selectedLixiId = useAppSelector(getSelectedLixiId);
   const selectedLixi = useAppSelector(getSelectedLixi);
-  const allReddemsCurrentLixi = useAppSelector(getAllClaims);
+  const allClaimsCurrentLixi = useAppSelector(getAllClaims);
   const [claimCodeVisible, setClaimCodeVisible] = useState(false);
   const qrPanelRef = React.useRef(null);
   const [isLoadBalanceError, setIsLoadBalanceError] = useState(false);
@@ -156,7 +156,7 @@ const Lixi: React.FC = () => {
 
   const showMinStaking = () => {
     return (selectedLixi?.minStaking) ? (
-      <Descriptions.Item label="Min Staking">
+      <Descriptions.Item label="Min Staking" key='desc.minstaking'>
         {selectedLixi.minStaking} {currency.ticker}
       </Descriptions.Item>) : "";
   }
@@ -164,7 +164,7 @@ const Lixi: React.FC = () => {
   const formatDate = () => {
     if (selectedLixi?.expiryAt != null) {
       return (
-        <Descriptions.Item label="Expiry at">
+        <Descriptions.Item label="Expiry at" key='desc.expiryat'>
           {moment(selectedLixi?.expiryAt).format("YYYY-MM-DD HH:mm")}
         </Descriptions.Item>
       );
@@ -176,14 +176,14 @@ const Lixi: React.FC = () => {
 
   const showCountry = () => {
     return (selectedLixi?.country != null) ? (
-      <Descriptions.Item label="Country">
+      <Descriptions.Item label="Country" key='desc.country'>
         {countries.find(country => country.id === selectedLixi?.country)?.name}
       </Descriptions.Item>) : "";
   }
 
   const showIsFamilyFriendly = () => {
     return (selectedLixi?.isFamilyFriendly) ? (
-      <Descriptions.Item label="Optional">
+      <Descriptions.Item label="Optional" key='desc.optional'>
         Family Friendly
       </Descriptions.Item>) : "";
   }
@@ -222,16 +222,16 @@ const Lixi: React.FC = () => {
               color: 'rgb(23,23,31)',
             }}
           >
-            <Descriptions.Item label="Claim Type">
+            <Descriptions.Item label="Claim Type" key='desc.claimtype'>
               {selectedLixi.claimType == ClaimType.Single ? "Single" : "One-Time Codes"}
             </Descriptions.Item>
-            <Descriptions.Item label="Type">
+            <Descriptions.Item label="Type" key='desc.type'>
               {typeLixi()}
             </Descriptions.Item>
-            <Descriptions.Item label="Total Claimed">
+            <Descriptions.Item label="Total Claimed" key='desc.totalclaimed'>
               {fromSmallestDenomination(selectedLixi?.totalClaim) ?? 0}
             </Descriptions.Item>
-            <Descriptions.Item label="Claim">
+            <Descriptions.Item label="Claim" key='desc.claim'>
               {showRedemption()}
             </Descriptions.Item>
             {selectedLixi.envelopeMessage && (
@@ -321,7 +321,7 @@ const Lixi: React.FC = () => {
             <ReloadOutlined />  Refresh Lixi
           </SmartButton>
 
-          <ClaimList claims={allReddemsCurrentLixi} />
+          <ClaimList claims={allClaimsCurrentLixi} />
         </>
       )
         : `No lixi is selected`

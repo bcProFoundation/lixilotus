@@ -132,6 +132,11 @@ export interface WithdrawLixiCommand {
   mnemonicHash: string;
 };
 
+export interface ExportLixiCommand {
+  id: number;
+  mnemonicHash: string;
+}
+
 export enum LixiType {
   Random = 0,
   Fixed = 1,
