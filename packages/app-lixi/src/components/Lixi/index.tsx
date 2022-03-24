@@ -188,29 +188,29 @@ const Lixi: React.FC = () => {
   }
 
   const parentBalance = () => {
-    let sum=0;
-    subLixies.map(item => sum += item.amount-0.000455);
+    let sum = 0;
+    subLixies.map(item => sum += item.amount - 0.000455);
     // dispatch(setLixiBalance(sum ?? 0));
     return sum.toFixed(6);
   }
 
   return (
     <>
-      <WalletLabel
-        name={selectedLixi?.name ?? ''}
-      />
-      <BalanceHeader
-        balance={selectedLixi.claimType==ClaimType.Single ? (fromSmallestDenomination(selectedLixi?.balance) ?? 0) : parentBalance() }
-        ticker={currency.ticker} />
       {selectedLixi && selectedLixi.address ? (
         <>
-          {selectedLixi.claimType == ClaimType.Single ? 
+          <WalletLabel
+            name={selectedLixi?.name ?? ''}
+          />
+          <BalanceHeader
+            balance={selectedLixi?.claimType === ClaimType.Single ? (fromSmallestDenomination(selectedLixi?.balance) ?? 0) : parentBalance()}
+            ticker={currency.ticker} />
+          {selectedLixi?.claimType === ClaimType.Single ?
             <QRCode
               address={selectedLixi.address}
-            /> : 
+            /> :
             <></>
           }
-          
+
 
           <Descriptions
             column={1}
@@ -235,9 +235,9 @@ const Lixi: React.FC = () => {
             </Descriptions.Item>
             {selectedLixi.envelopeMessage && (
               <Descriptions.Item label="Message">
-              {selectedLixi?.envelopeMessage}
+                {selectedLixi?.envelopeMessage}
               </Descriptions.Item>
-            )}          
+            )}
             {showCountry()}
             {showMinStaking()}
             {formatDate()}
@@ -247,7 +247,7 @@ const Lixi: React.FC = () => {
           {/* Lixi details */}
           <StyledCollapse style={{ marginBottom: '20px' }}>
             <Panel header="Click to reveal lixi detail" key="panel-1">
-              {selectedLixi.claimType == ClaimType.Single ? 
+              {selectedLixi.claimType == ClaimType.Single ?
                 <>
                   <div ref={qrPanelRef}>
                     {selectedLixi && selectedLixi.claimCode && <QRClaimCode
@@ -269,7 +269,7 @@ const Lixi: React.FC = () => {
                     color: 'rgb(23,23,31)',
                   }}
                 >
-                  {subLixies.map(item =>  
+                  {subLixies.map(item =>
                     <Descriptions.Item label={
                       <CopyToClipboard
                         text={item.claimCode}
@@ -289,7 +289,7 @@ const Lixi: React.FC = () => {
           </StyledCollapse>
 
           {/* Copy ClaimCode */}
-          {selectedLixi.claimType == ClaimType.Single ? 
+          {selectedLixi.claimType == ClaimType.Single ?
             <CopyToClipboard
               style={{
                 display: 'inline-block',
@@ -310,7 +310,7 @@ const Lixi: React.FC = () => {
                   <CopyOutlined />  Copy Claim Code
                 </SmartButton>
               </div>
-            </CopyToClipboard> : 
+            </CopyToClipboard> :
             <></>
           }
 
