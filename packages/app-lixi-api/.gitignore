@@ -121,3 +121,6 @@ public/images/
 
 # NPM lock file
 package-lock.json
+
+# VSCode
+.vscode/

@@ -17,6 +17,7 @@ import { CreateClaimDto } from '@bcpros/lixi-models/lib/claim';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
 import { getCurrentAddress, getCurrentClaimCode } from 'src/store/claim/selectors';
 import { useSelector } from 'react-redux';
+import { getSelectedAccount } from '@store/account/selectors';
 
 const SITE_KEY = "6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb";
 
@@ -39,7 +40,8 @@ const ClaimComponent: React.FC = () => {
   const scannerSupported = false;// width < 769 && isMobile && !(isIOS && !isSafari);
 
   const currentAddress = useAppSelector(getCurrentAddress);
-  const currentClaimCode = useSelector(getCurrentClaimCode)
+  const currentClaimCode = useSelector(getCurrentClaimCode);
+  const selectedAccount = useAppSelector(getSelectedAccount);
 
   const [claimXpiAddressError, setClaimXpiAddressError] = useState<string | boolean>(false);
 
@@ -65,6 +67,11 @@ const ClaimComponent: React.FC = () => {
     loadScriptByURL("recaptcha-key", `https://www.google.com/recaptcha/enterprise.js?render=${SITE_KEY}`, function () {
       console.info("Script loaded!");
     });
+
+    // set the default claim address
+    if (selectedAccount && selectedAccount.address && !currentAddress) {
+      dispatch(saveClaimAddress(selectedAccount.address));
+    }
   }, []);
 
   const handleOnClick = e => {
@@ -125,8 +132,6 @@ const ClaimComponent: React.FC = () => {
       error = false;
     }
     setClaimXpiAddressError(error);
-
-
 
     dispatch(saveClaimAddress(address));
   }
