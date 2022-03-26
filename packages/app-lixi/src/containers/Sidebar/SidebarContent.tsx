@@ -11,6 +11,8 @@ type SidebarContentProps = {
 };
 
 const MenuCustom = styled(Menu)`
+  border-right: none !important;
+
   .ant-menu-title-content {
     font-size: 24px
   }
