@@ -7,10 +7,11 @@ import {
   importAccountSuccess, refreshLixiListSuccess, selectAccountSuccess
 } from '../account/actions';
 import {
-  lockLixiSuccess, refreshLixiSuccess, selectLixiSuccess, setLixi, setLixiBalance,
+  lockLixiSuccess, refreshLixiSuccess, renameLixiSuccess, selectLixiSuccess, setLixi, setLixiBalance,
   unlockLixiSuccess
 } from './actions';
 import { LixiesState } from './state';
+import { rename } from 'fs';
 
 export const lixiesAdapter = createEntityAdapter<Lixi>({});
 
@@ -140,5 +141,15 @@ export const lixiReducer = createReducer(initialState, (builder) => {
         };
         lixiesAdapter.updateOne(state, updateLixi);
       }
+    })
+    .addCase(renameLixiSuccess, (state, action) => {
+      const lixi = action.payload;
+      const updateLixi: Update<Lixi> = {
+        id: lixi.id,
+        changes: {
+          name: lixi.name,
+        },
+      };
+      lixiesAdapter.updateOne(state, updateLixi);
     });
 });

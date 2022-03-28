@@ -1,11 +1,12 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Inject, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Inject, Param, Post,Patch } from '@nestjs/common';
 import * as _ from 'lodash';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
 import { Lixi as LixiDb } from '@prisma/client';
 import {
   Account,
-  CreateLixiCommand, fromSmallestDenomination, Claim, LixiDto, ClaimType, LixiType
+  CreateLixiCommand, fromSmallestDenomination, Claim, LixiDto, ClaimType, LixiType,
+  RenameLixiCommand
 } from '@bcpros/lixi-models';
 import { WalletService } from "src/services/wallet.service";
 import { aesGcmDecrypt, aesGcmEncrypt, numberToBase58, generateRandomBase58Str } from 'src/utils/encryptionMethods';
@@ -522,5 +523,79 @@ export class LixiController {
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
+  }
+
+  @Patch(':id/rename')
+  async renameLixi(@Param('id') id: string, @Body() command: RenameLixiCommand): Promise<LixiDto> {
+    if (command) {
+      try {
+        const mnemonicFromApi = command.mnemonic;
+        const account = await this.prisma.account.findFirst({
+          where: {
+            mnemonicHash: command.mnemonicHash
+          }
+        });
+
+        if (!account) {
+        throw new Error('Could not find the associated account.');
+        }
+
+        const mnemonicToValidate = await aesGcmDecrypt(account.encryptedMnemonic, mnemonicFromApi);
+        if (mnemonicFromApi !== mnemonicToValidate) { 
+          throw new VError('Invalid account! Could not update the lixi.'); 
+        }
+
+        const lixi = await this.prisma.lixi.findUnique({
+          where: {
+            id: _.toSafeInteger(id)
+          }
+        });
+        if (!lixi)
+          throw new VError('The lixi does not exist in the database.');       
+
+        const nameExist = await this.prisma.lixi.findFirst({
+          where: {
+            name: command.name,
+            accountId: lixi.accountId
+          }
+        });
+        if (nameExist)
+          throw new VError('The name is already taken.');
+
+        const updatedLixi: LixiDb = await this.prisma.lixi.update({
+          where: {
+            id: _.toSafeInteger(id),
+          },
+          data: {
+            name: command.name,
+            updatedAt: new Date(),
+          }
+        });
+
+        if (updatedLixi) {
+          let resultApi: LixiDto = {
+            ...lixi,
+            name: updatedLixi.name,
+            totalClaim: Number(lixi.totalClaim),
+            expiryAt: lixi.expiryAt ? lixi.expiryAt : undefined,
+            country: lixi.country ? lixi.country : undefined,
+            status: lixi.status,
+            numberOfSubLixi: lixi.numberOfSubLixi ?? 0,
+            parentId: lixi.parentId ?? undefined,
+            isClaimed: lixi.isClaimed ?? false,
+          };
+
+          return resultApi;
+        }
+      } catch (err) {
+        if (err instanceof VError) {
+          throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+          const error = new VError.WError(err as Error, 'Unable to update lixi.');
+          throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+      }
+    }
+    return null as any;
   }
 }

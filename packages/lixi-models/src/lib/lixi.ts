@@ -132,6 +132,13 @@ export interface WithdrawLixiCommand {
   mnemonicHash: string;
 };
 
+export interface RenameLixiCommand {
+  id: number;
+  mnemonic: string;
+  mnemonicHash: string;
+  name: string;
+};
+
 export interface ExportLixiCommand {
   id: number;
   mnemonicHash: string;
