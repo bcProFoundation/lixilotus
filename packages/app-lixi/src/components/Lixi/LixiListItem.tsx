@@ -1,11 +1,14 @@
 import styled, { DefaultTheme } from 'styled-components';
 import { GiftOutlined, WalletOutlined, DeleteOutlined, MoreOutlined, LockOutlined } from '@ant-design/icons';
-import { LockLixiCommand, UnlockLixiCommand, Lixi, WithdrawLixiCommand } from '@bcpros/lixi-models/lib/lixi';
-import { lockLixi, selectLixi, unlockLixi, withdrawLixi } from 'src/store/lixi/actions';
+import { LockLixiCommand, UnlockLixiCommand, Lixi, WithdrawLixiCommand,RenameLixiCommand } from '@bcpros/lixi-models/lib/lixi';
+
+import { lockLixi, renameLixi, selectLixi, unlockLixi, withdrawLixi } from 'src/store/lixi/actions';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { Button, Dropdown, Menu } from 'antd';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { fromSmallestDenomination } from '@utils/cashMethods';
+import { RenameLixiModalProps } from './RenameLixiModal';
+import { openModal } from '@store/modal/actions';
 
 const LixiIcon = styled.div`
   height: 32px;
@@ -81,13 +84,27 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
 
   const selectedAccount = useAppSelector(getSelectedAccount);
 
-  let options = ['Withdraw'];
+  let options = ['Withdraw','Rename'];
   lixi.status === 'active' ? options.unshift('Lock') : options.unshift('Unlock');
   const postLixiData = {
     id: lixi.id,
     mnemonic: selectedAccount?.mnemonic,
     mnemonicHash: selectedAccount?.mnemonicHash
   };
+
+  const showPopulatedRenameLixiModal = (lixi: Lixi) => {
+    const command: RenameLixiCommand = {
+      id: lixi.id,
+      name: lixi.name,
+      mnemonic: selectedAccount?.mnemonic,
+      mnemonicHash: selectedAccount?.mnemonicHash
+    };
+    const renameLixiModalProps: RenameLixiModalProps = {
+      lixi: lixi,
+      onOkAction: renameLixi(command)
+    };
+    dispatch(openModal('RenameLixiModal', renameLixiModalProps));
+  }
 
   const menus = (
     options.map(option =>
@@ -106,6 +123,9 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
     }
     else if (e.key === 'Withdraw') {
       dispatch(withdrawLixi(postLixiData as WithdrawLixiCommand));
+    }
+    else if (e.key === 'Rename') {
+      showPopulatedRenameLixiModal(lixi as Lixi)
     }
   };
 

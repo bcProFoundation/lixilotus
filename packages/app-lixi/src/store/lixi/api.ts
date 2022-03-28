@@ -1,4 +1,4 @@
-import { CreateLixiCommand, LockLixiCommand, UnlockLixiCommand, LixiDto, WithdrawLixiCommand } from "@bcpros/lixi-models/lib/lixi";
+import { CreateLixiCommand, LockLixiCommand, UnlockLixiCommand, LixiDto, WithdrawLixiCommand, RenameLixiCommand } from "@bcpros/lixi-models/lib/lixi";
 import axiosClient from "@utils/axiosClient";
 
 const lixiApi = {
@@ -16,6 +16,17 @@ const lixiApi = {
   post(data: CreateLixiCommand): Promise<LixiDto> {
     const url = '/api/lixies';
     return axiosClient.post(url, data)
+      .then(response => {
+        return response.data as LixiDto;
+      })
+      .catch(err => {
+        const { response } = err;
+        throw response?.data ?? err ?? 'Network Error';
+      })
+  },
+  patch(id: number, data: RenameLixiCommand): Promise<LixiDto> {
+    const url = `/api/lixies/${id}/rename`;
+    return axiosClient.patch(url, data)
       .then(response => {
         return response.data as LixiDto;
       })

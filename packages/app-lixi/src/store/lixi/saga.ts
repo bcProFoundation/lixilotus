@@ -1,11 +1,11 @@
 import { push } from 'connected-next-router';
 import * as _ from 'lodash';
 import * as Effects from 'redux-saga/effects';
-
+import { Modal } from 'antd';
 import { Claim, ClaimDto } from '@bcpros/lixi-models';
 import {
   CreateLixiCommand, GenerateLixiCommand, LockLixiCommand, UnlockLixiCommand, Lixi, LixiDto,
-  WithdrawLixiCommand
+  WithdrawLixiCommand,RenameLixiCommand
 } from '@bcpros/lixi-models/lib/lixi';
 import { all, fork, put, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
@@ -21,9 +21,10 @@ import {
   lockLixi, lockLixiFailure, lockLixiSuccess, postLixi, postLixiFailure, postLixiSuccess, refreshLixi,
   refreshLixiActionType, refreshLixiFailure, refreshLixiSuccess, selectLixi,
   selectLixiFailure, selectLixiSuccess, setLixi, unlockLixi, unlockLixiFailure,
-  unlockLixiSuccess, withdrawLixi, withdrawLixiFailure, withdrawLixiSuccess
+  unlockLixiSuccess, withdrawLixi, withdrawLixiFailure, withdrawLixiSuccess,renameLixi,renameLixiFailure,renameLixiSuccess
 } from './actions';
 import lixiApi from './api';
+import { refreshLixiList } from '@store/account/actions';
 
 const call: any = Effects.call;
 /**
@@ -339,6 +340,34 @@ function* withdrawLixiFailureSaga(action: PayloadAction<string>) {
   yield put(hideLoading(withdrawLixiFailure.type));
 }
 
+function* renameLixiSaga(action: PayloadAction<RenameLixiCommand>) {
+  try {
+    yield put(showLoading(renameLixi.type));
+    const { id } = action.payload;
+    const data = yield call(lixiApi.patch, id, action.payload);
+    const lixi = data as Lixi;
+    yield put(renameLixiSuccess(lixi));
+  } catch (err) {
+    const message = (err as Error).message ?? `Unable to rename the account.`;
+    yield put(renameLixiFailure(message));
+  }
+}
+
+function* renameLixiSuccessSaga(action: PayloadAction<Lixi>) {
+  const lixi = action.payload;
+  yield put(hideLoading(renameLixi.type));
+  Modal.success({
+    content: `Lixi has been renamed to "${lixi.name}"`,
+  });
+}
+
+function* renameLixiFailureSaga(action: PayloadAction<string>) {
+  Modal.error({
+    content: 'Rename failed. All lixi must have a unique name.',
+  });
+  yield put(hideLoading(renameLixi.type));
+}
+
 function* watchGenerateLixi() {
   yield takeLatest(generateLixi.type, generateLixiSaga);
 }
@@ -427,6 +456,18 @@ function* watchWithdrawLixiFailure() {
   yield takeLatest(withdrawLixiFailure.type, withdrawLixiFailureSaga);
 }
 
+function* watchRenameLixi() {
+  yield takeLatest(renameLixi.type, renameLixiSaga);
+}
+
+function* watchRenameLixiSuccess() {
+  yield takeLatest(renameLixiSuccess.type, renameLixiSuccessSaga);
+}
+
+function* watchRenameLixiFailure() {
+  yield takeLatest(renameLixiFailure.type, renameLixiFailureSaga);
+}
+
 
 export default function* lixiSaga() {
   yield all([
@@ -451,6 +492,9 @@ export default function* lixiSaga() {
     fork(watchUnlockLixiFailure),
     fork(watchWithdrawLixi),
     fork(watchWithdrawLixiSuccess),
-    fork(watchWithdrawLixiFailure)
+    fork(watchWithdrawLixiFailure),
+    fork(watchRenameLixi),
+    fork(watchRenameLixiSuccess),
+    fork(watchRenameLixiFailure),
   ]);
 }

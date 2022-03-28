@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit';
-import { GenerateLixiCommand, CreateLixiCommand, Lixi, UnlockLixiCommand, LockLixiCommand, WithdrawLixiCommand } from '@bcpros/lixi-models/lib/lixi';
+import { GenerateLixiCommand, CreateLixiCommand, Lixi, UnlockLixiCommand, LockLixiCommand, WithdrawLixiCommand, RenameLixiCommand } from '@bcpros/lixi-models/lib/lixi';
 import { Claim } from '@bcpros/lixi-models/lib/claim';
 
 export const getLixiActionType = 'lixi/getLixi';
@@ -11,6 +11,9 @@ export const generateLixi = createAction<GenerateLixiCommand>('lixi/generateLixi
 export const getLixi = createAction<number>('lixi/getLixi');
 export const getLixiSuccess = createAction<Lixi>('lixi/getLixiSuccess');
 export const getLixiFailure = createAction<string>('lixi/getLixiFailure');
+export const renameLixi = createAction<RenameLixiCommand>('lixi/renameLixi');
+export const renameLixiSuccess = createAction<Lixi>('lixi/renameLixiSuccess');
+export const renameLixiFailure = createAction<string>('lixi/renameLixiFailure');
 export const postLixi = createAction<CreateLixiCommand>('lixi/postLixi');
 export const postLixiSuccess = createAction<Lixi>('lixi/postLixiSuccess');
 export const postLixiFailure = createAction<string>('lixi/postLixiFailure');

@@ -2,13 +2,15 @@ import { useAppSelector } from 'src/store/hooks';
 import { getModals } from 'src/store/modal/selectors';
 
 import { RenameAccountModal } from '../Settings/RenameAccountModal';
+import { RenameLixiModal } from '../Lixi/RenameLixiModal';
 import { DeleteAccountModal } from '../Settings/DeleteAccountModal';
 import { CreateLixiConfirmationModal } from '../Lixi/CreateLixiConfirmationModal';
 
 const modalComponentLookupTable = {
   CreateLixiConfirmationModal,
   RenameAccountModal,
-  DeleteAccountModal
+  DeleteAccountModal,
+  RenameLixiModal,
 };
 
 const ModalManager = () => {
