@@ -57,7 +57,7 @@ export const getSelectedLixi = createSelector(
   (lixies: Lixi[], selectedLixiId: number) => lixies.find(lixi => lixi.id === selectedLixiId)
 )
 
-export const getLixiesBySelectedLixiParent = createSelector(
+export const getLixiesByLixiParent = (id: number) => createSelector(
   [getSelectedLixiId, getAllLixies],
-  (lixiId, lixies) => lixies.filter(lixi => lixi.parentId === lixiId && lixi.isClaimed == false)
+  (lixiId, lixies) => lixies.filter(lixi => lixi.parentId === id)
 )

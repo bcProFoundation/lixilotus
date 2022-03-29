@@ -1,6 +1,5 @@
 import BCHJS from "@bcpros/xpi-js";
-import { useState } from "react";
-import useXPI from "./useXPI";
+import { Lixi } from "@bcpros/lixi-models";
 
 /* eslint-disable react-hooks/exhaustive-deps */
 const useWallet = (XPI: BCHJS) => {
@@ -62,7 +61,7 @@ const useWallet = (XPI: BCHJS) => {
 
   return {
     getWalletDetails,
-    validateMnemonic
+    validateMnemonic,
   } as const;
 };
 
