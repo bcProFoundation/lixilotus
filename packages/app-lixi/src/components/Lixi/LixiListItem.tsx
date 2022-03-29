@@ -1,11 +1,18 @@
-import styled, { DefaultTheme } from 'styled-components';
-import { GiftOutlined, WalletOutlined, DeleteOutlined, MoreOutlined, LockOutlined } from '@ant-design/icons';
-import { LockLixiCommand, UnlockLixiCommand, Lixi, WithdrawLixiCommand,RenameLixiCommand } from '@bcpros/lixi-models/lib/lixi';
-
-import { lockLixi, renameLixi, selectLixi, unlockLixi, withdrawLixi } from 'src/store/lixi/actions';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { Button, Dropdown, Menu } from 'antd';
+import * as _ from 'lodash';
 import { getSelectedAccount } from 'src/store/account/selectors';
+import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import { lockLixi, renameLixi, selectLixi, unlockLixi, withdrawLixi } from 'src/store/lixi/actions';
+import styled, { DefaultTheme } from 'styled-components';
+
+import {
+    GiftOutlined, LockOutlined, MoreOutlined, WalletOutlined
+} from '@ant-design/icons';
+import {
+  ClaimType,
+    Lixi, LockLixiCommand, RenameLixiCommand, UnlockLixiCommand, WithdrawLixiCommand
+} from '@bcpros/lixi-models/lib/lixi';
+import { getLixiesByLixiParent } from '@store/lixi/selectors';
 import { fromSmallestDenomination } from '@utils/cashMethods';
 import { RenameLixiModalProps } from './RenameLixiModal';
 import { openModal } from '@store/modal/actions';
@@ -83,9 +90,11 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
   }
 
   const selectedAccount = useAppSelector(getSelectedAccount);
+  const subLixies = useAppSelector(getLixiesByLixiParent(lixi.id));
 
   let options = ['Withdraw','Rename'];
   lixi.status === 'active' ? options.unshift('Lock') : options.unshift('Unlock');
+  
   const postLixiData = {
     id: lixi.id,
     mnemonic: selectedAccount?.mnemonic,
@@ -113,19 +122,18 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
       </Menu.Item>
     )
   );
+
   const handleClickMenu = (e) => {
     e.domEvent.stopPropagation();
-    if (e.key === 'Lock') {
-      dispatch(lockLixi(postLixiData as LockLixiCommand))
-    }
-    else if (e.key === 'Unlock') {
-      dispatch(unlockLixi(postLixiData as UnlockLixiCommand))
-    }
-    else if (e.key === 'Withdraw') {
-      dispatch(withdrawLixi(postLixiData as WithdrawLixiCommand));
-    }
-    else if (e.key === 'Rename') {
-      showPopulatedRenameLixiModal(lixi as Lixi)
+    switch(e.key) {
+      case 'Lock': 
+        return dispatch(lockLixi(postLixiData as LockLixiCommand));
+      case 'Unlock': 
+        return dispatch(unlockLixi(postLixiData as UnlockLixiCommand));
+      case 'Withdraw':
+        return dispatch(withdrawLixi(postLixiData as WithdrawLixiCommand));
+      case 'Rename':
+        return showPopulatedRenameLixiModal(lixi as Lixi)
     }
   };
 
@@ -138,7 +146,10 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
       <BalanceAndTicker>
         <strong>{lixi.name}</strong>
         <br/>
-        <span>({lixi.claimedNum}) {fromSmallestDenomination(lixi.totalClaim)}/{fromSmallestDenomination(lixi.balance)} XPI remaining</span>
+        {lixi.claimType == ClaimType.Single ? 
+          <span>({lixi.claimedNum}) {fromSmallestDenomination(lixi.totalClaim)}/{fromSmallestDenomination(lixi.balance)} XPI remaining</span>
+        : <span>({_.size(subLixies.filter(item => item.isClaimed))}/{lixi.numberOfSubLixi}) { (_.sumBy(subLixies.filter(item => item.isClaimed), 'amount')).toFixed(2) } / { (_.sumBy(subLixies.filter(item => !item.isClaimed), 'amount')).toFixed(2) } XPI remaining</span>
+        }
       </BalanceAndTicker>
       <Dropdown trigger={["click"]} overlay={
         <Menu onClick={(e) => handleClickMenu(e)}>

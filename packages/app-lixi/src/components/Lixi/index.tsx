@@ -24,7 +24,7 @@ import { countries } from '@bcpros/lixi-models/constants/countries';
 import { LixiType } from '@bcpros/lixi-models/lib/lixi';
 import ClaimList from '@components/Claim/ClaimList';
 import { currency } from '@components/Common/Ticker';
-import { getLixiesBySelectedLixiParent } from '@store/lixi/selectors';
+import { getLixiesByLixiParent } from '@store/lixi/selectors';
 import { fromSmallestDenomination, toSmallestDenomination } from '@utils/cashMethods';
 
 import { ClaimType } from '../../../../lixi-models/src/lib/lixi';
@@ -65,7 +65,15 @@ const Lixi: React.FC = () => {
   const [claimCodeVisible, setClaimCodeVisible] = useState(false);
   const qrPanelRef = React.useRef(null);
   const [isLoadBalanceError, setIsLoadBalanceError] = useState(false);
-  const subLixies = useAppSelector(getLixiesBySelectedLixiParent);
+  let subLixies = useAppSelector(getLixiesByLixiParent(selectedLixi.id));
+
+  subLixies = _.sortBy(subLixies, ['isClaimed'])
+
+  // subLixies.sort(function (a,b) {
+  //   const claimedYet = a.isClaimed === true ? 1:0;
+  //   const claimed = b.isClaimed === true ? 1:0;
+  //   return claimedYet - claimed;
+  // })
 
   useEffect(() => {
     if (selectedLixi) {
@@ -146,11 +154,15 @@ const Lixi: React.FC = () => {
   }
 
   const showRedemption = () => {
-    if (selectedLixi?.maxClaim != 0) {
-      return <>{selectedLixi?.claimedNum} / {selectedLixi?.maxClaim}</>
-    }
-    else {
-      return <>{selectedLixi?.claimedNum}</>
+    if (selectedLixi.claimType == ClaimType.Single) {  
+      if (selectedLixi?.maxClaim != 0) {
+        return <>{selectedLixi?.claimedNum} / {selectedLixi?.maxClaim}</>
+      }
+      else {
+        return <>{selectedLixi?.claimedNum}</>
+      }
+    } else {
+      return <>{_.size(subLixies.filter(item => item.isClaimed))}/{selectedLixi.numberOfSubLixi}</>
     }
   }
 
@@ -188,13 +200,6 @@ const Lixi: React.FC = () => {
       </Descriptions.Item>) : "";
   }
 
-  const parentBalance = () => {
-    let sum = 0;
-    subLixies.map(item => sum += item.amount - 0.000455);
-    // dispatch(setLixiBalance(sum ?? 0));
-    return sum.toFixed(6);
-  }
-
   return (
     <>
       {selectedLixi && selectedLixi.address ? (
@@ -203,7 +208,10 @@ const Lixi: React.FC = () => {
             name={selectedLixi?.name ?? ''}
           />
           <BalanceHeader
-            balance={selectedLixi?.claimType === ClaimType.Single ? (fromSmallestDenomination(selectedLixi?.balance) ?? 0) : parentBalance()}
+            balance={selectedLixi.claimType==ClaimType.Single ? 
+              (fromSmallestDenomination(selectedLixi?.balance) ?? 0) : 
+              (_.sumBy(subLixies.filter(item => !item.isClaimed), 'amount')).toFixed(2)+fromSmallestDenomination(selectedLixi?.balance) 
+            }
             ticker={currency.ticker} />
           {selectedLixi?.claimType === ClaimType.Single ?
             <QRCode
@@ -229,9 +237,11 @@ const Lixi: React.FC = () => {
               {typeLixi()}
             </Descriptions.Item>
             <Descriptions.Item label="Total Claimed" key='desc.totalclaimed'>
-              {fromSmallestDenomination(selectedLixi?.totalClaim) ?? 0}
+              {selectedLixi.claimType == ClaimType.Single ?  
+              (fromSmallestDenomination(selectedLixi?.totalClaim) ?? 0): 
+              ( (_.sumBy(subLixies.filter(item => item.isClaimed), 'amount')).toFixed(2) )} {currency.ticker}
             </Descriptions.Item>
-            <Descriptions.Item label="Claim" key='desc.claim'>
+            <Descriptions.Item label="Remaining Lixi" key='desc.claim'>
               {showRedemption()}
             </Descriptions.Item>
             {selectedLixi.envelopeMessage && (
@@ -281,7 +291,7 @@ const Lixi: React.FC = () => {
                         </div>
                       </CopyToClipboard>
                     }>
-                      {item.amount - 0.000455}
+                      {item.isClaimed ? 0 : item.amount - 0.000455}
                     </Descriptions.Item>
                   )}
                 </Descriptions>
