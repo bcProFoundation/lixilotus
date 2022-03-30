@@ -1,10 +1,10 @@
-import { SaveOutlined, ShareAltOutlined } from '@ant-design/icons';
+import { SaveOutlined, ShareAltOutlined, LinkOutlined } from '@ant-design/icons';
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
 import { ViewClaimDto } from '@bcpros/lixi-models';
 import { fromSmallestDenomination } from '@utils/cashMethods';
 import { numberToBase58 } from '@utils/encryptionMethods';
-import { Image, Popover } from 'antd';
+import { Image, Popover,Button, message } from 'antd';
 import { saveAs } from 'file-saver';
 import React from 'react';
 import {
@@ -106,6 +106,18 @@ const SocialSharePanel = ({ className, shareUrl }: SocialSharePanelProps): JSX.E
         >
           <WhatsappIcon size={32} round />
         </WhatsappShareButton>
+      </div>
+
+      <div className="socialshare-network">
+        <Button
+          type="primary"
+          shape="circle"
+          icon={<LinkOutlined style={{ color: 'white', fontSize: '20px' }} />}
+          onClick={() => {
+            navigator.clipboard.writeText(window.location.href);
+            message.success('Link copied to clipboard');
+          }}
+        />
       </div>
     </div>
   );
