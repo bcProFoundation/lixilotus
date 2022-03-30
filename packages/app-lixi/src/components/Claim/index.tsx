@@ -178,6 +178,15 @@ const ClaimComponent: React.FC = () => {
                 }}
               ></FormItemWithQRCodeAddon>
               <FormItemClaimCodeXpiInput
+                loadWithCameraOpen={false}
+                onScan={result =>
+                  handleAddressChange({
+                    target: {
+                      name: 'claimCode',
+                      value: result,
+                    },
+                  })
+                }
                 inputProps={{
                   onChange: e => handleClaimCodeChange(e),
                   value: currentClaimCode
