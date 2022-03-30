@@ -194,7 +194,7 @@ function* importAccountSaga(action: PayloadAction<string>) {
     } catch (err) {
       // The mnemonic is new and currently not existed in the database
     }
-
+    account.mnemonic = mnemonic;
     yield put(importAccountSuccess({ account: account, lixies: lixies }));
   } catch (err) {
     const message = (err as Error).message ?? `Could not import the account.`;
