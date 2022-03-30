@@ -78,11 +78,14 @@ export class AccountController {
           address: address,
         };
         const createdAccount: AccountDb = await this.prisma.account.create({ data: accountToInsert });
-        const resultApi: AccountDto = {
+        const balance: number = await this.xpiWallet.getBalance(createdAccount.address);
+
+        const resultApi = _.omit({
           ...createdAccount,
-          address,
-          balance: 0
-        };
+          name: createdAccount.name,
+          address: createdAccount.address,
+          balance: balance
+        } as AccountDto, ['mnemonic', 'encryptedMnemonic']);
 
         return resultApi;
       }
@@ -93,12 +96,14 @@ export class AccountController {
           throw Error('Could not found import account.');
         }
 
-        const resultApi: AccountDto = {
+        const balance: number = await this.xpiWallet.getBalance(account.address);
+
+        const resultApi = _.omit({
           ...account,
-          mnemonic: mnemonic,
           name: account.name,
-          address: account.address
-        };
+          address: account.address,
+          balance: balance
+        } as AccountDto, ['mnemonic', 'encryptedMnemonic']);
 
         return resultApi;
       }
