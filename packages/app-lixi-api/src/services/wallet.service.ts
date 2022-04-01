@@ -76,16 +76,16 @@ export class WalletService {
     return fromSmallestDenomination(Number(value));
   };
 
-  async sendAmount(sourceAddress: string, destination: {address: string, amountXpi: number}[], inputKeyPair: any) {
+  async sendAmount(sourceAddress: string, destination: { address: string, amountXpi: number }[], inputKeyPair: any) {
 
     const sourceBalance: number = await this.xpiWallet.getBalance(sourceAddress);
     if (sourceBalance === 0) {
       throw new VError('Insufficient fund.');
     }
 
-    let outputs: {address: string, amountSat: number}[] = [];
+    let outputs: { address: string, amountSat: number }[] = [];
 
-    for (let i=0; i< _.size(destination); i++) {
+    for (let i = 0; i < _.size(destination); i++) {
       const item = destination[i]
       let satoshisToSend = toSmallestDenomination(new BigNumber(item.amountXpi));
 

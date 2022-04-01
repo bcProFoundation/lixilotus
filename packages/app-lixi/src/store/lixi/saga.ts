@@ -132,7 +132,6 @@ function* postLixiSuccessSaga(action: PayloadAction<Lixi>) {
     const message = `There's an error happens when create new lixi.`;
     yield put(postLixiFailure(message));
   }
-
 }
 
 function* postLixiFailureSaga(action: PayloadAction<string>) {

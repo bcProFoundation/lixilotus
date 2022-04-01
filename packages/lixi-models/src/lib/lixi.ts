@@ -14,12 +14,13 @@ export interface GenerateLixiCommand {
   dividedValue: string;
   amount: string;
   numberOfSubLixi: string;
-  parentId?: number;
+  parentId?: Nullable<number>;
   minStaking: string;
   expiryAt?: string;
+  activationAt?: string;
   country?: string;
   isFamilyFriendly: boolean;
-  envelopeId: number | null;
+  envelopeId: Nullable<number>;
   envelopeMessage: string;
 }
 
@@ -36,14 +37,15 @@ export interface CreateLixiCommand {
   fixedValue: number;
   dividedValue: number;
   amount: number;
-  numberOfSubLixi: number;
+  numberOfSubLixi?: Nullable<number>;
   parentId?: number;
   minStaking: number;
   expiryAt?: Date;
+  activationAt?: Date;
   country?: string;
   isFamilyFriendly: boolean;
   password: string;
-  envelopeId: number | null;
+  envelopeId: Nullable<number>;
   envelopeMessage: string;
 }
 
@@ -66,6 +68,7 @@ export interface LixiDto {
   updatedAt?: Date;
   minStaking: number;
   expiryAt?: Date;
+  activationAt?: Date;
   country?: string;
   isFamilyFriendly?: boolean;
   balance?: number;
@@ -73,12 +76,12 @@ export interface LixiDto {
   status: string;
   accountId: number;
   amount: number;
-  numberOfSubLixi: number;
-  parentId?: number;
-  isClaimed?: boolean;
-  envelopeId: number | null;
+  numberOfSubLixi: Nullable<number>;
+  parentId?: Nullable<number>;
+  isClaimed?: Nullable<boolean>;
+  envelopeId: Nullable<number>;
   envelopeMessage: string;
-  envelope?: Envelope | null;
+  envelope?: Nullable<Envelope>;
 };
 
 export interface Lixi {
@@ -99,6 +102,7 @@ export interface Lixi {
   updatedAt?: Date;
   minStaking: number;
   expiryAt?: Date;
+  activationAt?: Nullable<Date>;
   country?: string;
   isFamilyFriendly: boolean;
   balance?: number;
@@ -106,12 +110,12 @@ export interface Lixi {
   status: string;
   accountId: number;
   amount: number;
-  numberOfSubLixi: number;
-  parentId?: number;
-  isClaimed?: boolean;
-  envelopeId: number | null;
+  numberOfSubLixi: Nullable<number>;
+  parentId?: Nullable<number>;
+  isClaimed?: Nullable<boolean>;
+  envelopeId: Nullable<number>;
   envelopeMessage: string;
-  envelope?: Envelope | null;
+  envelope?: Nullable<Envelope>;
 };
 
 export interface UnlockLixiCommand {

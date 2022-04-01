@@ -7,7 +7,8 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
 }
 
 model Account {
@@ -42,6 +43,7 @@ model Lixi {
   updatedAt          DateTime  @default(now()) @map("updated_at") @db.Timestamptz
   minStaking         Float     @default(0) @map("min_staking")
   expiryAt           DateTime? @map("expiry_at") @db.Timestamptz
+  activationAt       DateTime? @map("activation_at") @db.Timestamptz
   country            String?   @map("country")
   isFamilyFriendly   Boolean   @map("is_family_friendly")
   claims             Claim[]

@@ -10,6 +10,7 @@ import { ClaimController } from './controller/claim.controller';
 import { LixiController } from './controller/lixi.controller';
 import config from 'config';
 import { PrismaService } from './services/prisma/prisma.service';
+import { LixiService } from './services/lixi/lixi.service';
 
 const xpiRestUrl = config.has('xpiRestUrl')
   ? config.get('xpiRestUrl')
@@ -38,6 +39,6 @@ const XpijsProvider = {
     })
   ],
   controllers: [AccountController, EnvelopeController, ClaimController, LixiController, HeathController],
-  providers: [PrismaService, WalletService, XpiWalletProvider, XpijsProvider],
+  providers: [PrismaService, WalletService, LixiService, XpiWalletProvider, XpijsProvider],
 })
 export class AppModule { }
