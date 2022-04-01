@@ -1,16 +1,18 @@
+import SlpWallet from '@bcpros/minimal-xpi-slp-wallet';
+import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
-import { AccountController } from './controller/account.controller';
-import { HeathController } from './controller/heathcheck.controller';
-import { WalletService } from "./services/wallet.service";
-import SlpWallet from '@bcpros/minimal-xpi-slp-wallet';
-import { EnvelopeController } from './controller/envelope.controller';
-import { ClaimController } from './controller/claim.controller';
-import { LixiController } from './controller/lixi.controller';
 import config from 'config';
-import { PrismaService } from './services/prisma/prisma.service';
+import { join } from 'path';
+import { CREATE_LIXI_QUEUE } from './constants/lixi.constants';
+import { AccountController } from './controller/account.controller';
+import { ClaimController } from './controller/claim.controller';
+import { EnvelopeController } from './controller/envelope.controller';
+import { HeathController } from './controller/heathcheck.controller';
+import { LixiController } from './controller/lixi.controller';
 import { LixiService } from './services/lixi/lixi.service';
+import { PrismaService } from './services/prisma/prisma.service';
+import { WalletService } from "./services/wallet.service";
 
 const xpiRestUrl = config.has('xpiRestUrl')
   ? config.get('xpiRestUrl')
@@ -36,7 +38,16 @@ const XpijsProvider = {
     ServeStaticModule.forRoot({
       serveRoot: '/api/images',
       rootPath: join(__dirname, '..', 'public/images'),
-    })
+    }),
+    BullModule.forRoot({
+      redis: {
+        host: 'localhost',
+        port: 6379,
+      },
+    }),
+    BullModule.registerQueue({
+      name: CREATE_LIXI_QUEUE,
+    }),
   ],
   controllers: [AccountController, EnvelopeController, ClaimController, LixiController, HeathController],
   providers: [PrismaService, WalletService, LixiService, XpiWalletProvider, XpijsProvider],

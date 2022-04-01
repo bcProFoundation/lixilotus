@@ -126,7 +126,6 @@ export class LixiController {
           lixi = await this.lixiService.createSingleLixi(lixiIndex, account as Account, command);
           return {
             lixi,
-            subLixies: []
           };
         } else {
           // One time child codes type

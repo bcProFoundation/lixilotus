@@ -266,15 +266,22 @@ export class LixiService {
       try {
         const savedLixies = await this.prisma.$transaction(async (prisma) => {
           const createdLixies = prisma.lixi.createMany({ data: subLixiesToInsert });
-          // await this.walletService.sendAmount(account.address, receivingSubLixies, keyPair);
+          await this.walletService.sendAmount(account.address, receivingSubLixies, keyPair);
           return createdLixies;
         });
-        console.log(savedLixies);
+
+
 
         _.map(savedLixies, (item: LixiDb) => {
+
+          // Calculate the claim code of the sub lixi
+          const encodedId = numberToBase58(item.id);
+          const claimPart = mapXprivToPassword[item.encryptedClaimCode];
+          const claimCode = claimPart + encodedId;
+
           const subLixi = _.omit({
             ...item,
-            claimCode: '',
+            claimCode: claimCode,
             balance: 0,
             totalClaim: Number(item.totalClaim),
             expiryAt: item.expiryAt ? item.expiryAt : undefined,
