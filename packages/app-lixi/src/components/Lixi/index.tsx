@@ -29,6 +29,7 @@ import { fromSmallestDenomination, toSmallestDenomination } from '@utils/cashMet
 
 import { ClaimType } from '../../../../lixi-models/src/lib/lixi';
 import lixiLogo from '../../assets/images/lixi_logo.svg';
+import VirtualTable from './SubLixiListScroll';
 
 type CopiedProps = {
   style?: React.CSSProperties
@@ -68,12 +69,8 @@ const Lixi: React.FC = () => {
   let subLixies = useAppSelector(getLixiesByLixiParent(selectedLixi.id));
 
   subLixies = _.sortBy(subLixies, ['isClaimed'])
-
-  // subLixies.sort(function (a,b) {
-  //   const claimedYet = a.isClaimed === true ? 1:0;
-  //   const claimed = b.isClaimed === true ? 1:0;
-  //   return claimedYet - claimed;
-  // })
+  const isClaimed = subLixies.filter(item => item.isClaimed);
+  const isNotClaimed = subLixies.filter(item => !item.isClaimed);
 
   useEffect(() => {
     if (selectedLixi) {
@@ -200,6 +197,27 @@ const Lixi: React.FC = () => {
       </Descriptions.Item>) : "";
   }
 
+  const columns = [
+    { title: 'Claim Code', dataIndex: 'claimCode'},
+    { title: 'Amount', dataIndex: 'amount'},
+  ];
+
+
+  // const data = Array.from({ length: 100000 }, (_, key) => ({ key }));
+  const data = subLixies.map(item => {
+    return ({
+      claimCode: <CopyToClipboard
+        text={item.claimCode}
+        onCopy={handleOnCopyClaimCode}
+      >
+        <div>
+          <CopyOutlined />  {item.claimCode}
+        </div>
+      </CopyToClipboard>,
+      amount: item.isClaimed ? 0 : item.amount - 0.000455,
+    })
+  });
+
   return (
     <>
       {selectedLixi && selectedLixi.address ? (
@@ -210,7 +228,7 @@ const Lixi: React.FC = () => {
           <BalanceHeader
             balance={selectedLixi.claimType==ClaimType.Single ? 
               (fromSmallestDenomination(selectedLixi?.balance) ?? 0) : 
-              (_.sumBy(subLixies.filter(item => !item.isClaimed), 'amount')).toFixed(2)+fromSmallestDenomination(selectedLixi?.balance) 
+              (_.sumBy(isNotClaimed, 'amount')).toFixed(2)+fromSmallestDenomination(selectedLixi?.balance) 
             }
             ticker={currency.ticker} />
           {selectedLixi?.claimType === ClaimType.Single ?
@@ -239,7 +257,7 @@ const Lixi: React.FC = () => {
             <Descriptions.Item label="Total Claimed" key='desc.totalclaimed'>
               {selectedLixi.claimType == ClaimType.Single ?  
               (fromSmallestDenomination(selectedLixi?.totalClaim) ?? 0): 
-              ( (_.sumBy(subLixies.filter(item => item.isClaimed), 'amount')).toFixed(2) )} {currency.ticker}
+              ( (_.sumBy(isClaimed, 'amount')).toFixed(2) )} {currency.ticker}
             </Descriptions.Item>
             <Descriptions.Item label="Remaining Lixi" key='desc.claim'>
               {showRedemption()}
@@ -272,29 +290,9 @@ const Lixi: React.FC = () => {
                     <DownloadOutlined />  Download Code
                   </SmartButton>
                 </> :
-                <Descriptions
-                  column={1}
-                  bordered
-                  style={{
-                    padding: '0 0 20px 0',
-                    color: 'rgb(23,23,31)',
-                  }}
-                >
-                  {subLixies.map(item =>
-                    <Descriptions.Item label={
-                      <CopyToClipboard
-                        text={item.claimCode}
-                        onCopy={handleOnCopyClaimCode}
-                      >
-                        <div>
-                          <CopyOutlined />  {item.claimCode}
-                        </div>
-                      </CopyToClipboard>
-                    }>
-                      {item.isClaimed ? 0 : item.amount - 0.000455}
-                    </Descriptions.Item>
-                  )}
-                </Descriptions>
+                <>
+                  <VirtualTable columns={columns} dataSource={data} scroll={{ y: 300, x: '90vm' }}/>
+                </>
               }
             </Panel>
           </StyledCollapse>
