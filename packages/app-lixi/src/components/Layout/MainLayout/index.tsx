@@ -1,7 +1,7 @@
 import { Layout, Spin } from 'antd';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppSelector } from 'src/store/hooks';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
@@ -103,8 +103,12 @@ const MainLayout: React.FC = (props) => {
   const { children } = props;
   const selectedAccount = useAppSelector(getSelectedAccount);
   const router = useRouter()
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const selectedKey = router.pathname ?? '';
+
+  useEffect(() => {
+    setLoading(false);
+  }, [selectedAccount])
 
   return (
     <ThemeProvider theme={theme as DefaultTheme}>
