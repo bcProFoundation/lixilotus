@@ -207,18 +207,10 @@ export class LixiService {
 
       for (let indexInChunk = 0; indexInChunk < numberOfSubLixiInChunk; indexInChunk++) {
         // Generate new password for each sub lixi
-        const password = generateRandomBase58Str(8);
         const derivationIndex = startDerivationIndex + subLixiIndex;
 
-        const { address, xpriv } = await this.walletService.deriveAddress(command.mnemonic, derivationIndex);
-        const encryptedXPriv = await aesGcmEncrypt(xpriv, command.password);
-        const encryptedClaimCode = await aesGcmEncrypt(command.password, command.mnemonic);
-
-        const name = address.slice(12, 17);
-        mapXprivToPassword[encryptedClaimCode] = password;
-
         // Calculate xpi to send
-        let xpiToSend;
+        let xpiToSend: number = 0;
         if (command.lixiType == LixiType.Random) {
           const maxSatoshis = xpiBalance < command.maxValue ? xpiBalance : command.maxValue;
           const minSatoshis = command.minValue;
@@ -229,28 +221,9 @@ export class LixiService {
           xpiToSend = command.amount / Number(command.numberOfSubLixi) + fromSmallestDenomination(fee);
         }
 
-        // Prepare data to insert into the database
-        const dataSubLixi = {
-          ..._.omit(command, ['mnemonic', 'mnemonicHash', 'password']),
-          id: undefined,
-          name: name,
-          derivationIndex: derivationIndex,
-          encryptedClaimCode: encryptedClaimCode,
-          claimedNum: 0,
-          encryptedXPriv,
-          amount: isPrefund ? Number(xpiToSend?.toFixed(6)) : 0,
-          status: 'active',
-          expiryAt: null,
-          activationAt: null,
-          address,
-          totalClaim: BigInt(0),
-          envelopeId: command.envelopeId ?? null,
-          envelopeMessage: command.envelopeMessage ?? '',
-          parentId: parentLixi.id,
-          createdAt: new Date(),
-        } as unknown as LixiDb;
-        const subLixiToInsert = _.omit(dataSubLixi, 'password');
+        const subLixiToInsert: LixiDb = await this.prepareSubLixiToInsert(derivationIndex, xpiToSend, parentLixi.id, command, mapXprivToPassword);
         subLixiesToInsert.push(subLixiToInsert);
+
         subLixiIndex += 1;
       }
 
@@ -269,8 +242,6 @@ export class LixiService {
           await this.walletService.sendAmount(account.address, receivingSubLixies, keyPair);
           return createdLixies;
         });
-
-
 
         _.map(savedLixies, (item: LixiDb) => {
 
@@ -296,5 +267,44 @@ export class LixiService {
       }
     }
     return resultSubLixies;
+  }
+
+  private async prepareSubLixiToInsert(
+    derivationIndex: number, xpiToSend: number,
+    parentId: number, command: CreateLixiCommand,
+    mapXprivToPassword: MapXPrivToPassword
+  ): Promise<LixiDb> {
+
+    // Generate the random password to encrypt the key
+    const password = generateRandomBase58Str(8);
+
+    const { address, xpriv } = await this.walletService.deriveAddress(command.mnemonic, derivationIndex);
+    const encryptedXPriv = await aesGcmEncrypt(xpriv, command.password);
+    const encryptedClaimCode = await aesGcmEncrypt(command.password, command.mnemonic);
+    const name = address.slice(12, 17);
+    mapXprivToPassword[encryptedClaimCode] = password;
+
+    // Prepare data to insert into the database
+    const dataSubLixi = {
+      ..._.omit(command, ['mnemonic', 'mnemonicHash', 'password']),
+      id: undefined,
+      name: name,
+      derivationIndex: derivationIndex,
+      encryptedClaimCode: encryptedClaimCode,
+      claimedNum: 0,
+      encryptedXPriv,
+      amount: xpiToSend ? Number(xpiToSend?.toFixed(6)) : 0,
+      status: 'active',
+      expiryAt: null,
+      activationAt: null,
+      address,
+      totalClaim: BigInt(0),
+      envelopeId: command.envelopeId ?? null,
+      envelopeMessage: command.envelopeMessage ?? '',
+      parentId: parentId,
+      createdAt: new Date(),
+    } as unknown as LixiDb;
+
+    return dataSubLixi;
   }
 }

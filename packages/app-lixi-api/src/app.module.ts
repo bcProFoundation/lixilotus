@@ -4,7 +4,7 @@ import { Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import config from 'config';
 import { join } from 'path';
-import { CREATE_LIXI_QUEUE } from './constants/lixi.constants';
+import { LIXI_QUEUE } from './constants/lixi.constants';
 import { AccountController } from './controller/account.controller';
 import { ClaimController } from './controller/claim.controller';
 import { EnvelopeController } from './controller/envelope.controller';
@@ -46,7 +46,7 @@ const XpijsProvider = {
       },
     }),
     BullModule.registerQueue({
-      name: CREATE_LIXI_QUEUE,
+      name: LIXI_QUEUE,
     }),
   ],
   controllers: [AccountController, EnvelopeController, ClaimController, LixiController, HeathController],
