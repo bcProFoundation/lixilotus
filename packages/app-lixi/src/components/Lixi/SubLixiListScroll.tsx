@@ -7,8 +7,23 @@ import { Table } from 'antd';
 import styled from 'styled-components';
 
 const StyledTable = styled(Table)`
+  .ant-table {
+    text-align: start;
+  }
+
   .ant-table-thead > tr > th {
     background: #fafafa;
+  }
+
+  .virtual-grid {
+    overflow-x: hidden !important;
+    div {
+      width: 100% !important;
+    }
+    .virtual-table-cell-last { 
+      text-align: start;
+      margin-left: 30px;
+    }
   }
 `
 

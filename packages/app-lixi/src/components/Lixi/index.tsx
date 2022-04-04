@@ -1,4 +1,4 @@
-import { Collapse, Descriptions, message } from 'antd';
+import { Button, Collapse, Descriptions, message } from 'antd';
 import { saveAs } from 'file-saver';
 import { toPng } from 'html-to-image';
 import * as _ from 'lodash';
@@ -53,6 +53,24 @@ const Copied = styled.div<CopiedProps>`
   }
 `;
 
+const LoadMoreButton = styled.button`
+  background: #fafafa;
+  border: none;
+  transition: all 0.5s ease;
+  font-size: 18px;
+  width: 100%;
+  padding: 15px 0;
+  border-radius: 4px;
+  cursor: pointer;
+  outline: none;
+  margin-bottom: 20px;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+    padding: 12px 0;
+  }
+`;
+
 const { Panel } = Collapse;
 
 const Lixi: React.FC = () => {
@@ -71,6 +89,8 @@ const Lixi: React.FC = () => {
   subLixies = _.sortBy(subLixies, ['isClaimed'])
   const isClaimed = subLixies.filter(item => item.isClaimed);
   const isNotClaimed = subLixies.filter(item => !item.isClaimed);
+
+  const [limit, setLimit] = useState(5);
 
   useEffect(() => {
     if (selectedLixi) {
@@ -202,8 +222,6 @@ const Lixi: React.FC = () => {
     { title: 'Amount', dataIndex: 'amount'},
   ];
 
-
-  // const data = Array.from({ length: 100000 }, (_, key) => ({ key }));
   const data = subLixies.map(item => {
     return ({
       claimCode: <CopyToClipboard
@@ -214,9 +232,13 @@ const Lixi: React.FC = () => {
           <CopyOutlined />  {item.claimCode}
         </div>
       </CopyToClipboard>,
-      amount: item.isClaimed ? 0 : item.amount - 0.000455,
+      amount: item.isClaimed ? 0 : (item.amount - 0.000455).toFixed(2),
     })
   });
+
+  const showMoreSubLixi = () => {
+    setLimit(limit+5)
+  }
 
   return (
     <>
@@ -291,7 +313,15 @@ const Lixi: React.FC = () => {
                   </SmartButton>
                 </> :
                 <>
-                  <VirtualTable columns={columns} dataSource={data} scroll={{ y: 300, x: '90vm' }}/>
+                  <VirtualTable columns={columns} dataSource={data.slice(0,limit)} scroll={{ y: data.length*54 <= 270 ? data.length*54 : 270 }}/>
+                  { data.length*54 > 270 ?
+                    <LoadMoreButton 
+                      onClick={showMoreSubLixi}
+                    >
+                      Load More...
+                    </LoadMoreButton>
+                  : <></>
+                  }
                 </>
               }
             </Panel>
