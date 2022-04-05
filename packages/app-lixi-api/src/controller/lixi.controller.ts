@@ -120,7 +120,6 @@ export class LixiController {
         }
 
         let lixi = null;
-        let subLixies = [];
         if (command.claimType === ClaimType.Single) {
           // Single type
           lixi = await this.lixiService.createSingleLixi(lixiIndex, account as Account, command);
@@ -130,10 +129,10 @@ export class LixiController {
         } else {
           // One time child codes type
           lixi = await this.lixiService.createOneTimeParentLixi(lixiIndex, account as Account, command);
-          subLixies = await this.lixiService.createSubLixies(lixiIndex + 1, account as Account, command, lixi);
+          const jobId = await this.lixiService.createSubLixies(lixiIndex + 1, account as Account, command, lixi);
           return {
             lixi,
-            subLixies
+            jobId
           };
         }
       } catch (err) {

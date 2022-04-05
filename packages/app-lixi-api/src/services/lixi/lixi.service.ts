@@ -1,19 +1,20 @@
-import { Account, ClaimType, CreateLixiCommand, fromSmallestDenomination, Lixi, LixiType } from '@bcpros/lixi-models';
+import { Account, CreateLixiCommand, fromSmallestDenomination, Lixi, LixiType } from '@bcpros/lixi-models';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
+import { InjectQueue } from '@nestjs/bullmq';
 import { Inject, Injectable } from '@nestjs/common';
-import { Lixi as LixiDb, Prisma } from '@prisma/client';
+import { Lixi as LixiDb } from '@prisma/client';
+import { FlowJob, Queue } from 'bullmq';
 import * as _ from 'lodash';
-import { lixiChunkSize } from 'src/constants/lixi.constants';
+import { lixiChunkSize, CREATE_SUB_LIXIES_QUEUE } from 'src/constants/lixi.constants';
 import logger from 'src/logger';
 import { aesGcmEncrypt, generateRandomBase58Str, numberToBase58 } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
 import { PrismaService } from '../prisma/prisma.service';
 import { WalletService } from '../wallet.service';
+import { FlowProducer } from 'bullmq';
+import { CreateSubLixiesChunkJobData } from 'src/models/lixi.models';
 
-interface MapXPrivToPassword {
-  [xpriv: string]: string
-};
 
 @Injectable()
 export class LixiService {
@@ -22,7 +23,8 @@ export class LixiService {
     private prisma: PrismaService,
     private readonly walletService: WalletService,
     @Inject('xpijs') private XPI: BCHJS,
-    @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet
+    @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
+    @InjectQueue(CREATE_SUB_LIXIES_QUEUE) private lixiQueue: Queue
   ) { }
 
   /**
@@ -170,141 +172,75 @@ export class LixiService {
     return resultLixi;
   }
 
-  async createSubLixies(startDerivationIndex: number, account: Account, command: CreateLixiCommand, parentLixi: Lixi): Promise<Array<Lixi>> {
+  /**
+   * Create the batch of sub lixies by schedule background jobs to create in chunks
+   * @param startDerivationIndex the start derivation index for whole batch
+   * @param account The account associated
+   * @param command The command instruction to create sub lixies
+   * @param parentLixi The parent one-time codes lixi
+   * @returns The background job id to create the batch of sub lixies
+   */
+  async createSubLixies(startDerivationIndex: number, account: Account, command: CreateLixiCommand, parentLixi: Lixi): Promise<string | undefined> {
 
-    const chunkSize = lixiChunkSize; // number of output per 
-    const numberOfChunks = Math.ceil(command.numberOfSubLixi / chunkSize);
     // If users input the amount means that the lixi need to be prefund
     const isPrefund = !!command.amount;
 
-    // The amount should be funded from the account
-    let xpiBalance = command.amount;
+    const chunkSize = lixiChunkSize; // number of output per 
+    const numberOfChunks = Math.ceil(command.numberOfSubLixi / chunkSize);
 
-    // The mapping from xpriv of lixi to the password used to encryted that paticular xpriv
-    let mapXprivToPassword: MapXPrivToPassword = {};
+    if (numberOfChunks === 0) {
+      throw new Error('Must create at least a sub lixi');
+    }
+
+    // The amount should be funded from the account
+    const xpiAllowance = command.amount / numberOfChunks;
 
     // Prepare the utxo and keypair to send funding
     const utxos = await this.XPI.Utxo.get(account.address);
     const utxoStore = utxos[0];
-    let { keyPair } = await this.walletService.deriveAddress(command.mnemonic, 0); // keyPair of the account
 
-    // Prepare array to hold the result
-    let resultSubLixies: Lixi[] = [];
+    const childrenJobs: FlowJob[] = [];
 
     for (let chunkIndex = 0; chunkIndex < numberOfChunks; chunkIndex++) {
 
-      // Start to process from the start of each chunk
-      let subLixiIndex = (chunkIndex * chunkSize);
-
       const numberOfSubLixiInChunk = chunkIndex < numberOfChunks - 1 ?
         chunkSize :
-        command.numberOfSubLixi - subLixiIndex;
+        command.numberOfSubLixi - (chunkIndex * chunkSize);
+
+      // Start to process from the start of each chunk
+      const startDerivationIndexForChunk = startDerivationIndex + (chunkIndex * chunkSize);
 
       // Calculate fee for each chunk process
       let fee = await this.walletService.calcFee(this.XPI, (utxoStore as any).bchUtxos, numberOfSubLixiInChunk + 1);
 
-      let subLixiesToInsert: LixiDb[] = [];
+      // Create the child job data
+      const childJobData: CreateSubLixiesChunkJobData = {
+        numberOfSubLixiInChunk: numberOfSubLixiInChunk,
+        startDerivationIndexForChunk: startDerivationIndexForChunk,
+        xpiAllowance: xpiAllowance,
+        temporaryFeeCalc: fee,
+        parentId: parentLixi.id,
+        command: command,
+        fundingAddress: account.address
+      };
 
-      for (let indexInChunk = 0; indexInChunk < numberOfSubLixiInChunk; indexInChunk++) {
-        // Generate new password for each sub lixi
-        const derivationIndex = startDerivationIndex + subLixiIndex;
+      const childJob: FlowJob = {
+        name: 'create-sub-lixies-chunk',
+        data: childJobData,
+        queueName: CREATE_SUB_LIXIES_QUEUE
+      };
 
-        // Calculate xpi to send
-        let xpiToSend: number = 0;
-        if (command.lixiType == LixiType.Random) {
-          const maxSatoshis = xpiBalance < command.maxValue ? xpiBalance : command.maxValue;
-          const minSatoshis = command.minValue;
-          const satoshisRandom = (Math.random() * (maxSatoshis - minSatoshis) + minSatoshis);
-          xpiToSend = satoshisRandom + fromSmallestDenomination(fee);
-          xpiBalance -= satoshisRandom;
-        } else if (command.lixiType == LixiType.Equal) {
-          xpiToSend = command.amount / Number(command.numberOfSubLixi) + fromSmallestDenomination(fee);
-        }
-
-        const subLixiToInsert: LixiDb = await this.prepareSubLixiToInsert(derivationIndex, xpiToSend, parentLixi.id, command, mapXprivToPassword);
-        subLixiesToInsert.push(subLixiToInsert);
-
-        subLixiIndex += 1;
-      }
-
-      // Preparing receive address and amount
-      const receivingSubLixies = subLixiesToInsert.map(item => {
-        return ({
-          address: item.address,
-          amountXpi: item.amount
-        })
-      })
-
-      // Save the lixi into the database
-      try {
-        const savedLixies = await this.prisma.$transaction(async (prisma) => {
-          const createdLixies = prisma.lixi.createMany({ data: subLixiesToInsert });
-          await this.walletService.sendAmount(account.address, receivingSubLixies, keyPair);
-          return createdLixies;
-        });
-
-        _.map(savedLixies, (item: LixiDb) => {
-
-          // Calculate the claim code of the sub lixi
-          const encodedId = numberToBase58(item.id);
-          const claimPart = mapXprivToPassword[item.encryptedClaimCode];
-          const claimCode = claimPart + encodedId;
-
-          const subLixi = _.omit({
-            ...item,
-            claimCode: claimCode,
-            balance: 0,
-            totalClaim: Number(item.totalClaim),
-            expiryAt: item.expiryAt ? item.expiryAt : undefined,
-            activationAt: item.activationAt ? item.expiryAt : undefined,
-            country: item.country ? item.country : undefined,
-          }, 'encryptedXPriv') as Lixi;
-          resultSubLixies.push(subLixi);
-        });
-      } catch (err) {
-        logger.error(err);
-        // Continue to process even if there's error in each batch
-      }
+      childrenJobs.push(childJob);
     }
-    return resultSubLixies;
+
+    const flowProducer = new FlowProducer();
+    const flow = await flowProducer.add({
+      name: 'create-all-sub-lixies',
+      queueName: CREATE_SUB_LIXIES_QUEUE,
+      children: childrenJobs,
+    });
+
+    return flow.job.id;
   }
 
-  private async prepareSubLixiToInsert(
-    derivationIndex: number, xpiToSend: number,
-    parentId: number, command: CreateLixiCommand,
-    mapXprivToPassword: MapXPrivToPassword
-  ): Promise<LixiDb> {
-
-    // Generate the random password to encrypt the key
-    const password = generateRandomBase58Str(8);
-
-    const { address, xpriv } = await this.walletService.deriveAddress(command.mnemonic, derivationIndex);
-    const encryptedXPriv = await aesGcmEncrypt(xpriv, command.password);
-    const encryptedClaimCode = await aesGcmEncrypt(command.password, command.mnemonic);
-    const name = address.slice(12, 17);
-    mapXprivToPassword[encryptedClaimCode] = password;
-
-    // Prepare data to insert into the database
-    const dataSubLixi = {
-      ..._.omit(command, ['mnemonic', 'mnemonicHash', 'password']),
-      id: undefined,
-      name: name,
-      derivationIndex: derivationIndex,
-      encryptedClaimCode: encryptedClaimCode,
-      claimedNum: 0,
-      encryptedXPriv,
-      amount: xpiToSend ? Number(xpiToSend?.toFixed(6)) : 0,
-      status: 'active',
-      expiryAt: null,
-      activationAt: null,
-      address,
-      totalClaim: BigInt(0),
-      envelopeId: command.envelopeId ?? null,
-      envelopeMessage: command.envelopeMessage ?? '',
-      parentId: parentId,
-      createdAt: new Date(),
-    } as unknown as LixiDb;
-
-    return dataSubLixi;
-  }
 }

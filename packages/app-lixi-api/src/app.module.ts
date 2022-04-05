@@ -1,10 +1,10 @@
 import SlpWallet from '@bcpros/minimal-xpi-slp-wallet';
-import { BullModule } from '@nestjs/bull';
+import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import config from 'config';
 import { join } from 'path';
-import { LIXI_QUEUE } from './constants/lixi.constants';
+import { CREATE_SUB_LIXIES_QUEUE } from './constants/lixi.constants';
 import { AccountController } from './controller/account.controller';
 import { ClaimController } from './controller/claim.controller';
 import { EnvelopeController } from './controller/envelope.controller';
@@ -13,6 +13,10 @@ import { LixiController } from './controller/lixi.controller';
 import { LixiService } from './services/lixi/lixi.service';
 import { PrismaService } from './services/prisma/prisma.service';
 import { WalletService } from "./services/wallet.service";
+import IORedis from 'ioredis';
+import { CreateSubLixiesProcessor } from './processors/create-sub-lixies.processor';
+import { CreateSubLixiesEventsListener } from './processors/create-sub-lixies.eventslistener';
+
 
 const xpiRestUrl = config.has('xpiRestUrl')
   ? config.get('xpiRestUrl')
@@ -40,16 +44,22 @@ const XpijsProvider = {
       rootPath: join(__dirname, '..', 'public/images'),
     }),
     BullModule.forRoot({
-      redis: {
-        host: 'localhost',
-        port: 6379,
-      },
     }),
     BullModule.registerQueue({
-      name: LIXI_QUEUE,
+      name: CREATE_SUB_LIXIES_QUEUE,
+      connection: new IORedis({
+        maxRetriesPerRequest: null,
+        enableReadyCheck: false
+      }),
+      // processors: [
+      //   {
+      //     path: join(__dirname, 'processors/create-sub-lixies.processor'),
+      //     concurrency: 3
+      //   }
+      // ]
     }),
   ],
   controllers: [AccountController, EnvelopeController, ClaimController, LixiController, HeathController],
-  providers: [PrismaService, WalletService, LixiService, XpiWalletProvider, XpijsProvider],
+  providers: [PrismaService, WalletService, LixiService, XpiWalletProvider, XpijsProvider, CreateSubLixiesProcessor, CreateSubLixiesEventsListener],
 })
 export class AppModule { }
