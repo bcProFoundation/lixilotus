@@ -51,12 +51,12 @@ const XpijsProvider = {
         maxRetriesPerRequest: null,
         enableReadyCheck: false
       }),
-      // processors: [
-      //   {
-      //     path: join(__dirname, 'processors/create-sub-lixies.processor'),
-      //     concurrency: 3
-      //   }
-      // ]
+      processors: [
+        {
+          path: join(__dirname, 'processors/create-sub-lixies.isolated.processor'),
+          concurrency: 3
+        }
+      ]
     }),
   ],
   controllers: [AccountController, EnvelopeController, ClaimController, LixiController, HeathController],

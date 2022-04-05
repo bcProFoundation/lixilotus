@@ -18,7 +18,7 @@ import SlpWallet from '@bcpros/minimal-xpi-slp-wallet';
 import { processCreateSubLixiesChunk } from './create-sub-lixies.isolated.processor';
 
 // @Injectable()
-@Processor(CREATE_SUB_LIXIES_QUEUE, { concurrency: 5 })
+@Processor(CREATE_SUB_LIXIES_QUEUE, { concurrency: 3 })
 export class CreateSubLixiesProcessor extends WorkerHost {
 
   private prisma: PrismaClient;
