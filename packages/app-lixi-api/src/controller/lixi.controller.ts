@@ -455,35 +455,85 @@ export class LixiController {
         throw new Error('Could not found the lixi in the database.');
       }
 
-      const lixiIndex = lixi.derivationIndex;
-      const { address, keyPair } = await this.walletService.deriveAddress(mnemonicFromApi, lixiIndex);
+      if (lixi.claimType === ClaimType.Single) {
+        const lixiIndex = lixi.derivationIndex;
+        const { address, keyPair } = await this.walletService.deriveAddress(mnemonicFromApi, lixiIndex);
 
-      if (address !== lixi.address) {
-        throw new Error('Invalid account. Unable to withdraw the lixi');
+        if (address !== lixi.address) {
+          throw new Error('Invalid account. Unable to withdraw the lixi');
+        }
+
+        const lixiCurrentBalance: number = await this.xpiWallet.getBalance(lixi.address);
+
+        if (lixiCurrentBalance === 0) {
+          throw new VError('Unable to withdraw. The lixi is empty!');
+        }
+
+        const totalAmount: number = await this.walletService.onMax(lixi.address);
+        const receivingAccount = [{address: account.address, amountXpi: totalAmount,}]
+
+        const amount: any = await this.walletService.sendAmount(lixi.address, receivingAccount, keyPair);
+
+        let resultApi: LixiDto = {
+          ...lixi,
+          balance: amount ?? 0,
+          totalClaim: Number(lixi.totalClaim),
+          expiryAt: lixi.expiryAt ? lixi.expiryAt : undefined,
+          country: lixi.country ? lixi.country : undefined,
+          numberOfSubLixi: 0,
+          parentId: lixi.parentId ?? undefined,
+          isClaimed: lixi.isClaimed ?? false,
+        };
+
+        return resultApi;
       }
 
-      const lixiCurrentBalance: number = await this.xpiWallet.getBalance(lixi.address);
+      else {
+        // Withdraw for OneTime Code
+        const subLixies = await this.prisma.lixi.findMany({
+          where: {
+            parentId: lixiId
+          }
+        });
+  
+        for (let item in subLixies) {
+          const subLixiAddress = subLixies[item].address;
+          const subLixiDerivationIndex = subLixies[item].derivationIndex;
+  
+          const subLixiIndex = subLixiDerivationIndex;
+          const { keyPair } = await this.walletService.deriveAddress(mnemonicFromApi, subLixiIndex);
+  
+          try {
+            const totalAmount: number = await this.walletService.onMax(subLixiAddress);
+            const receivingAccount = [{address: account.address, amountXpi: totalAmount}];
+            const amount: any = await this.walletService.sendAmount(subLixiAddress, receivingAccount, keyPair);
 
-      if (lixiCurrentBalance === 0) {
-        throw new VError('Unable to withdraw. The lixi is empty!');
+            const updatedSubLixies = await this.prisma.lixi.update({
+              where: {
+                id: subLixies[item].id
+              },
+              data: {
+                amount: 0
+              }
+            });
+          } catch (err) {
+            continue;
+          }
+        }
+
+        let resultApi: LixiDto = {
+          ...lixi,
+          amount: lixi.amount ?? 0,
+          totalClaim: Number(lixi.totalClaim),
+          expiryAt: lixi.expiryAt ? lixi.expiryAt : undefined,
+          country: lixi.country ? lixi.country : undefined,
+          numberOfSubLixi: 0,
+          parentId: lixi.parentId ?? undefined,
+          isClaimed: lixi.isClaimed ?? false,
+        };
+
+        return resultApi;
       }
-
-      const totalAmount: number = await this.walletService.onMax(lixi.address);
-      const receivingAccount = [{address: account.address, amountXpi: totalAmount,}]
-
-      const amount: any = await this.walletService.sendAmount(lixi.address, receivingAccount, keyPair);
-      let resultApi: LixiDto = {
-        ...lixi,
-        balance: amount ?? 0,
-        totalClaim: Number(lixi.totalClaim),
-        expiryAt: lixi.expiryAt ? lixi.expiryAt : undefined,
-        country: lixi.country ? lixi.country : undefined,
-        numberOfSubLixi: 0,
-        parentId: lixi.parentId ?? undefined,
-        isClaimed: lixi.isClaimed ?? false,
-      };
-
-      return resultApi;
 
     } catch (err) {
       if (err instanceof VError) {
