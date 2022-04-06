@@ -286,7 +286,8 @@ export class ClaimController {
             data: {
               totalClaim: lixi.totalClaim + BigInt(amountSats),
               claimedNum: lixi.claimedNum + 1,
-              isClaimed: lixi.claimType == ClaimType.OneTime ? true : false
+              isClaimed: lixi.claimType == ClaimType.OneTime ? true : false,
+              amount: lixi.claimType == ClaimType.OneTime ? 0 : lixi.amount
             }
           });
 
