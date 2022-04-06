@@ -2,10 +2,10 @@ import { push } from 'connected-next-router';
 import * as _ from 'lodash';
 import * as Effects from 'redux-saga/effects';
 import { Modal } from 'antd';
-import { Claim, ClaimDto } from '@bcpros/lixi-models';
+import { Claim, ClaimDto, PostLixiResponseDto } from '@bcpros/lixi-models';
 import {
   CreateLixiCommand, GenerateLixiCommand, LockLixiCommand, UnlockLixiCommand, Lixi, LixiDto,
-  WithdrawLixiCommand,RenameLixiCommand
+  WithdrawLixiCommand, RenameLixiCommand
 } from '@bcpros/lixi-models/lib/lixi';
 import { all, fork, put, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
@@ -21,10 +21,9 @@ import {
   lockLixi, lockLixiFailure, lockLixiSuccess, postLixi, postLixiFailure, postLixiSuccess, refreshLixi,
   refreshLixiActionType, refreshLixiFailure, refreshLixiSuccess, selectLixi,
   selectLixiFailure, selectLixiSuccess, setLixi, unlockLixi, unlockLixiFailure,
-  unlockLixiSuccess, withdrawLixi, withdrawLixiFailure, withdrawLixiSuccess,renameLixi,renameLixiFailure,renameLixiSuccess
+  unlockLixiSuccess, withdrawLixi, withdrawLixiFailure, withdrawLixiSuccess, renameLixi, renameLixiFailure, renameLixiSuccess
 } from './actions';
 import lixiApi from './api';
-import { refreshLixiList } from '@store/account/actions';
 
 const call: any = Effects.call;
 /**
@@ -98,16 +97,14 @@ function* postLixiSaga(action: PayloadAction<CreateLixiCommand>) {
       ...command
     }
 
-    const data = yield call(lixiApi.post, dataApi);
+    const data: PostLixiResponseDto = yield call(lixiApi.post, dataApi);
 
     if (_.isNil(data.lixi) || _.isNil(data.lixi.id)) {
       throw new Error('Unable to create the lixi.');
     }
 
-    const result = {
-      ...data,
-    };
-    yield put(postLixiSuccess(result));
+    const lixi = data.lixi;
+    yield put(postLixiSuccess(lixi));
 
   } catch (err) {
     const message = (err as Error).message ?? `Could not post the lixi to the api.`;
@@ -148,7 +145,7 @@ function* refreshLixiSaga(action: PayloadAction<number>) {
   try {
     yield put(showLoading(refreshLixiActionType));
     const lixiId = action.payload;
-    const data: LixiDto = yield call(lixiApi.getById, lixiId);
+    const data = yield call(lixiApi.getById, lixiId);
     const lixi = (data as any).lixi as Lixi;
     const children = (data as any).children as Lixi[];
     const claimDtos: ClaimDto[] = yield call(claimApi.getByLixiId, lixiId);

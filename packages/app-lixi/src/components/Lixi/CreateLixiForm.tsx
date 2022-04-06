@@ -116,8 +116,8 @@ const CreateLixiForm = ({
     newLixiNameIsValid && newMaxClaimLixiIsValid &&
     newExpiryAtLixiIsValid && account &&
     (claimType == ClaimType.OneTime &&
-      (lixiType == LixiType.Random && newNumberOfSubLixi && newLixiAmount && newLixiMinValueIsValid && newLixiMaxValueIsValid) ||
-      (lixiType == LixiType.Equal && newNumberOfSubLixi && newLixiAmount)) ||
+      (lixiType == LixiType.Random && newNumberOfSubLixi && newLixiAmountValueIsValid && newLixiMinValueIsValid && newLixiMaxValueIsValid) ||
+      (lixiType == LixiType.Equal && newNumberOfSubLixi && newLixiAmountValueIsValid)) ||
     (claimType == ClaimType.Single &&
       (lixiType == LixiType.Random && newLixiMinValueIsValid && newLixiMaxValueIsValid) ||
       (lixiType == LixiType.Fixed && newLixiFixedValueIsValid) ||

@@ -26,9 +26,6 @@ export const lixiReducer = createReducer(initialState, (builder) => {
       const lixies: any = action.payload;
       lixiesAdapter.upsertOne(state, lixies.lixi as Lixi);
       state.selectedId = lixies.lixi.id ?? undefined;
-      if (lixies.lixi.claimType == ClaimType.OneTime) {
-        lixies.subLixies.map((item: Lixi) => lixiesAdapter.upsertOne(state, item));
-      }
     })
     .addCase(selectLixiSuccess, (state, action) => {
       const { lixi, children, claims } = action.payload;

@@ -6,7 +6,8 @@ import { Lixi, Lixi as LixiDb } from '@prisma/client';
 import {
   Account,
   CreateLixiCommand, fromSmallestDenomination, Claim, LixiDto, ClaimType, LixiType,
-  RenameLixiCommand
+  RenameLixiCommand,
+  PostLixiResponseDto
 } from '@bcpros/lixi-models';
 import { WalletService } from "src/services/wallet.service";
 import { aesGcmDecrypt, aesGcmEncrypt, numberToBase58, generateRandomBase58Str } from 'src/utils/encryptionMethods';
@@ -40,6 +41,7 @@ export class LixiController {
       });
 
       const childrenLixies = await this.prisma.lixi.findMany({
+        take: 10,
         where: {
           parentId: _.toSafeInteger(id),
         }
@@ -81,7 +83,7 @@ export class LixiController {
   }
 
   @Post()
-  async createLixi(@Body() command: CreateLixiCommand): Promise<any> {
+  async createLixi(@Body() command: CreateLixiCommand): Promise<PostLixiResponseDto | undefined> {
     if (command) {
       try {
         const mnemonicFromApi = command.mnemonic;
@@ -124,8 +126,8 @@ export class LixiController {
           // Single type
           lixi = await this.lixiService.createSingleLixi(lixiIndex, account as Account, command);
           return {
-            lixi,
-          };
+            lixi
+          } as PostLixiResponseDto;
         } else {
           // One time child codes type
           lixi = await this.lixiService.createOneTimeParentLixi(lixiIndex, account as Account, command);
@@ -133,7 +135,7 @@ export class LixiController {
           return {
             lixi,
             jobId
-          };
+          } as PostLixiResponseDto;
         }
       } catch (err) {
         if (err instanceof VError) {

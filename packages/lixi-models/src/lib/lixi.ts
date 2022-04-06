@@ -159,3 +159,8 @@ export enum ClaimType {
   Single = 0,
   OneTime = 1,
 };
+
+export interface PostLixiResponseDto {
+  lixi: Lixi,
+  jobId?: string
+};
