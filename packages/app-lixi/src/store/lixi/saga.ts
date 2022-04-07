@@ -2,7 +2,7 @@ import { push } from 'connected-next-router';
 import * as _ from 'lodash';
 import * as Effects from 'redux-saga/effects';
 import { Modal } from 'antd';
-import { Claim, ClaimDto, PostLixiResponseDto } from '@bcpros/lixi-models';
+import { Claim, ClaimDto, PaginationResult, PostLixiResponseDto } from '@bcpros/lixi-models';
 import {
   CreateLixiCommand, GenerateLixiCommand, LockLixiCommand, UnlockLixiCommand, Lixi, LixiDto,
   WithdrawLixiCommand, RenameLixiCommand
@@ -148,8 +148,8 @@ function* refreshLixiSaga(action: PayloadAction<number>) {
     const data = yield call(lixiApi.getById, lixiId);
     const lixi = (data as any).lixi as Lixi;
     const children = (data as any).children as Lixi[];
-    const claimDtos: ClaimDto[] = yield call(claimApi.getByLixiId, lixiId);
-    const claims = (claimDtos ?? []) as Claim[];
+    const claimResult: PaginationResult<Claim> = yield call(claimApi.getByLixiId, lixiId);
+    const claims = (claimResult.data ?? []) as Claim[];
     yield put(selectLixiSuccess({ lixi: lixi, children: children, claims: claims }));
   } catch (err) {
     const message = (err as Error).message ?? `Unable to refresh the lixi.`;
@@ -189,8 +189,8 @@ function* selectLixiSaga(action: PayloadAction<number>) {
     const data: LixiDto = yield call(lixiApi.getById, lixiId);
     const lixi = (data as any).lixi as Lixi;
     const children = (data as any).children as Lixi[];
-    const claimDtos: ClaimDto[] = yield call(claimApi.getByLixiId, lixiId);
-    const claims = (claimDtos ?? []) as Claim[];
+    const claimResult: PaginationResult<Claim> = yield call(claimApi.getByLixiId, lixiId);
+    const claims = (claimResult.data ?? []) as Claim[];
     yield put(selectLixiSuccess({ lixi: lixi, children: children, claims: claims }));
   } catch (err) {
     const message = (err as Error).message ?? `Unable to select the lixi.`;

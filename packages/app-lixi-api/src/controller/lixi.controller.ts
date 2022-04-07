@@ -1,13 +1,14 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Inject, Param, Post, Patch } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Inject, Param, Post, Patch, Query, Header, Headers } from '@nestjs/common';
 import * as _ from 'lodash';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
-import { Lixi, Lixi as LixiDb } from '@prisma/client';
+import { Lixi, Lixi as LixiDb, Claim as ClaimDb } from '@prisma/client';
 import {
   Account,
   CreateLixiCommand, fromSmallestDenomination, Claim, LixiDto, ClaimType, LixiType,
   RenameLixiCommand,
-  PostLixiResponseDto
+  PostLixiResponseDto,
+  PaginationResult
 } from '@bcpros/lixi-models';
 import { WalletService } from "src/services/wallet.service";
 import { aesGcmDecrypt, aesGcmEncrypt, numberToBase58, generateRandomBase58Str } from 'src/utils/encryptionMethods';
@@ -16,6 +17,7 @@ import { VError } from 'verror';
 import logger from 'src/logger';
 import { PrismaService } from '../services/prisma/prisma.service';
 import { LixiService } from 'src/services/lixi/lixi.service';
+import { PaginationParams } from 'src/common/models/paginationParams';
 
 @Controller('lixies')
 export class LixiController {
@@ -412,14 +414,54 @@ export class LixiController {
   }
 
   @Get(':id/claims')
-  async getLixiClaims(@Param('id') id: string): Promise<Claim[]> {
+  async getLixiClaims(
+    @Param('id') id: string,
+    @Query() { startId, limit }: PaginationParams
+  ): Promise<PaginationResult<Claim>> {
     const lixiId = _.toSafeInteger(id);
+    const take = limit ? _.toSafeInteger(limit) : 4;
+
     try {
-      const claims = await this.prisma.claim.findMany({
+      let claims: ClaimDb[] = [];
+
+      const count = await this.prisma.claim.count({
         where: {
           lixiId: lixiId
         }
       });
+
+      if (!startId) {
+        // No start id, we should return the normal data without the cursor
+        claims = await this.prisma.claim.findMany({
+          where: {
+            lixiId: lixiId
+          },
+          orderBy: [
+            {
+              id: 'asc'
+            }
+          ],
+          take: take,
+          skip: startId ? 1 : 0,
+        });
+      } else {
+        // Query with the cursor
+        claims = await this.prisma.claim.findMany({
+          where: {
+            lixiId: lixiId
+          },
+          orderBy: [
+            {
+              id: 'asc'
+            }
+          ],
+          take: take,
+          skip: 1,
+          cursor: {
+            id: _.toSafeInteger(startId)
+          }
+        });
+      }
 
       const results = claims.map(item => {
         return {
@@ -428,7 +470,34 @@ export class LixiController {
         } as Claim;
       });
 
-      return results ?? [];
+      const startCursor = results.length > 0 ? _.first(results)?.id : null;
+      const endCursor = results.length > 0 ? _.last(results)?.id : null;
+      const countAfter = !endCursor ? 0 : await this.prisma.claim.count({
+        where: {
+          lixiId: lixiId
+        },
+        orderBy: [
+          {
+            id: 'asc'
+          }
+        ],
+        cursor: {
+          id: _.toSafeInteger(endCursor)
+        },
+        skip: 1
+      });
+
+      const hasNextPage = countAfter > 0;
+
+      return {
+        data: results ?? [],
+        pageInfo: {
+          hasNextPage,
+          startCursor,
+          endCursor
+        },
+        totalCount: count
+      } as PaginationResult<Claim>
 
     } catch (err) {
       if (err instanceof VError) {
