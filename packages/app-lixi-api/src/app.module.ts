@@ -1,15 +1,22 @@
+import SlpWallet from '@bcpros/minimal-xpi-slp-wallet';
+import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
-import { AccountController } from './controller/account.controller';
-import { HeathController } from './controller/heathcheck.controller';
-import { WalletService } from "./services/wallet.service";
-import SlpWallet from '@bcpros/minimal-xpi-slp-wallet';
-import { EnvelopeController } from './controller/envelope.controller';
-import { ClaimController } from './controller/claim.controller';
-import { LixiController } from './controller/lixi.controller';
 import config from 'config';
+import { join } from 'path';
+import { CREATE_SUB_LIXIES_QUEUE } from './constants/lixi.constants';
+import { AccountController } from './controller/account.controller';
+import { ClaimController } from './controller/claim.controller';
+import { EnvelopeController } from './controller/envelope.controller';
+import { HeathController } from './controller/heathcheck.controller';
+import { LixiController } from './controller/lixi.controller';
+import { LixiService } from './services/lixi/lixi.service';
 import { PrismaService } from './services/prisma/prisma.service';
+import { WalletService } from "./services/wallet.service";
+import IORedis from 'ioredis';
+import { CreateSubLixiesProcessor } from './processors/create-sub-lixies.processor';
+import { CreateSubLixiesEventsListener } from './processors/create-sub-lixies.eventslistener';
+
 
 const xpiRestUrl = config.has('xpiRestUrl')
   ? config.get('xpiRestUrl')
@@ -35,9 +42,24 @@ const XpijsProvider = {
     ServeStaticModule.forRoot({
       serveRoot: '/api/images',
       rootPath: join(__dirname, '..', 'public/images'),
-    })
+    }),
+    BullModule.forRoot({
+    }),
+    BullModule.registerQueue({
+      name: CREATE_SUB_LIXIES_QUEUE,
+      connection: new IORedis({
+        maxRetriesPerRequest: null,
+        enableReadyCheck: false
+      }),
+      processors: [
+        {
+          path: join(__dirname, 'processors/create-sub-lixies.isolated.processor'),
+          concurrency: 3
+        }
+      ]
+    }),
   ],
   controllers: [AccountController, EnvelopeController, ClaimController, LixiController, HeathController],
-  providers: [PrismaService, WalletService, XpiWalletProvider, XpijsProvider],
+  providers: [PrismaService, WalletService, LixiService, XpiWalletProvider, XpijsProvider, CreateSubLixiesProcessor, CreateSubLixiesEventsListener],
 })
 export class AppModule { }

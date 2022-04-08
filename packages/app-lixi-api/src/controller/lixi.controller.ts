@@ -1,19 +1,26 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Inject, Param, Post,Patch } from '@nestjs/common';
 import * as _ from 'lodash';
+import logger from 'src/logger';
+import { WalletService } from 'src/services/wallet.service';
+import {
+    aesGcmDecrypt, aesGcmEncrypt, generateRandomBase58Str, numberToBase58
+} from 'src/utils/encryptionMethods';
+import { VError } from 'verror';
+
+import {
+    Account, Claim, ClaimType, CreateLixiCommand, fromSmallestDenomination, LixiDto, LixiType,
+    PostLixiResponseDto,
+    RenameLixiCommand
+} from '@bcpros/lixi-models';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
-import { Lixi as LixiDb } from '@prisma/client';
 import {
-  Account,
-  CreateLixiCommand, fromSmallestDenomination, Claim, LixiDto, ClaimType, LixiType,
-  RenameLixiCommand
-} from '@bcpros/lixi-models';
-import { WalletService } from "src/services/wallet.service";
-import { aesGcmDecrypt, aesGcmEncrypt, numberToBase58, generateRandomBase58Str } from 'src/utils/encryptionMethods';
-import sleep from '../utils/sleep';
-import { VError } from 'verror';
-import logger from 'src/logger';
+    Body, Controller, Get, Headers, HttpException, HttpStatus, Inject, Param, Patch, Post, Query
+} from '@nestjs/common';
+import { Lixi as LixiDb } from '@prisma/client';
+
 import { PrismaService } from '../services/prisma/prisma.service';
+import { LixiService } from 'src/services/lixi/lixi.service';
+import { PaginationParams } from 'src/models/pagination.models';
 
 @Controller('lixies')
 export class LixiController {
@@ -21,6 +28,7 @@ export class LixiController {
   constructor(
     private prisma: PrismaService,
     private readonly walletService: WalletService,
+    private readonly lixiService: LixiService,
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
     @Inject('xpijs') private XPI: BCHJS
   ) { }
@@ -38,6 +46,7 @@ export class LixiController {
       });
 
       const childrenLixies = await this.prisma.lixi.findMany({
+        take: 10,
         where: {
           parentId: _.toSafeInteger(id),
         }
@@ -59,7 +68,7 @@ export class LixiController {
       let childrenApi = childrenLixies.map(item => {
         return _.omit({
           ...item,
-          totalClaim: Number(lixi.totalClaim),
+          totalClaim: Number(item.totalClaim),
           expiryAt: item.expiryAt ? item.expiryAt : undefined,
           country: item.country ? item.country : undefined,
         }, 'encryptedXPriv');
@@ -78,8 +87,50 @@ export class LixiController {
     }
   }
 
+  @Get(':id/children')
+  async getSubLixi (
+    @Param('id') id: string,
+    @Query() { startId, limit }: PaginationParams,
+    @Headers('Mnemonic') mnemonic: string): Promise<any> {
+    try {
+      const subLixies = startId ? 
+        await this.prisma.lixi.findMany({
+          take: limit,
+          skip: 1,
+          where: {
+            parentId: _.toSafeInteger(id),
+          },
+          cursor: {
+            id: _.toSafeInteger(startId),
+          },
+        }) : 
+        await this.prisma.lixi.findMany({
+          take: limit,
+          where: {
+            parentId: _.toSafeInteger(startId),
+          },
+        })
+      
+      let resultApi: any
+      resultApi = subLixies.map(subLixi => {
+        return _.omit({
+          ...subLixi,
+          totalClaim: Number(subLixi.totalClaim),
+        } as unknown as LixiDto, 'encryptedXPriv');
+      })
+      return { resultApi };
+    } catch (err: unknown) {
+      if (err instanceof VError) {
+        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      } else {
+        const error = new VError.WError(err as Error, 'Unable to get lixi.');
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  }
+
   @Post()
-  async createLixi(@Body() command: CreateLixiCommand): Promise<any> {
+  async createLixi(@Body() command: CreateLixiCommand): Promise<PostLixiResponseDto | undefined> {
     if (command) {
       try {
         const mnemonicFromApi = command.mnemonic;
@@ -117,167 +168,22 @@ export class LixiController {
           lixiIndex = latestLixi.derivationIndex + 1;
         }
 
-        // Calculate the lixi encrypted claim code from the input password
-        const { address, xpriv } = await this.walletService.deriveAddress(mnemonicFromApi, lixiIndex);
-        const encryptedXPriv = await aesGcmEncrypt(xpriv, command.password);
-        const encryptedClaimCode = await aesGcmEncrypt(command.password, command.mnemonic);
-
-        // Prepare the lixi data
-        const data = {
-          ..._.omit(command, ['mnemonic', 'mnemonicHash', 'password']),
-          id: undefined,
-          derivationIndex: lixiIndex,
-          encryptedClaimCode: encryptedClaimCode,
-          claimedNum: 0,
-          encryptedXPriv,
-          status: 'active',
-          expiryAt: null,
-          address,
-          totalClaim: BigInt(0),
-          envelopeId: command.envelopeId ?? null,
-          envelopeMessage: command.envelopeMessage ?? '',
-        };
-        const lixiToInsert = _.omit(data, 'password');
-        const accountBalance = await this.xpiWallet.getBalance(account.address);
-
-        const utxos = await this.XPI.Utxo.get(account.address);
-        const utxoStore = utxos[0];
-        let { keyPair } = await this.walletService.deriveAddress(command.mnemonic, 0); // keyPair of account
-        let fee = await this.walletService.calcFee(this.XPI, (utxoStore as any).bchUtxos);
-
-        const receivingLixi = [{address: lixiToInsert.address, amountXpi: command.amount}];
-
-        // Insert the lixi to db and send fund from account to lixi
-        let createdLixi: LixiDb;
-        if (command.amount === 0) {
-          lixiToInsert.amount = 0;
-          [createdLixi] = await this.prisma.$transaction([this.prisma.lixi.create({ data: lixiToInsert })]);
-        } else if (command.amount < fromSmallestDenomination(accountBalance)) {
-          if (command.claimType == ClaimType.Single) {
-            const amount: any = await this.walletService.sendAmount(account.address, receivingLixi, keyPair);
-            lixiToInsert.amount = amount;
-            [createdLixi] = await this.prisma.$transaction([this.prisma.lixi.create({ data: lixiToInsert })]);
-          } else {
-            lixiToInsert.amount = command.amount;
-            [createdLixi] = await this.prisma.$transaction([this.prisma.lixi.create({ data: lixiToInsert })]);
-          }
+        let lixi = null;
+        if (command.claimType === ClaimType.Single) {
+          // Single type
+          lixi = await this.lixiService.createSingleLixi(lixiIndex, account as Account, command);
+          return {
+            lixi
+          } as PostLixiResponseDto;
         } else {
-          throw new VError('The account balance is not sufficient to funding the lixi.')
+          // One time child codes type
+          lixi = await this.lixiService.createOneTimeParentLixi(lixiIndex, account as Account, command);
+          const jobId = await this.lixiService.createSubLixies(lixiIndex + 1, account as Account, command, lixi);
+          return {
+            lixi,
+            jobId
+          } as PostLixiResponseDto;
         }
-
-        // Calculate the claim code of the main lixi
-        const encodedId = numberToBase58(createdLixi.id);
-        const claimPart = command.password;
-        const claimCode = claimPart + encodedId;
-
-        let createdSubLixi;
-        let xpiBalance = command.amount;
-        let mapXprivToPassword: { [xpiv: string]: string } = {};
-
-        // Create sub lixies
-        if (command.claimType == ClaimType.OneTime) {
-          let subLixies = [];
-          for (let i = 1; i <= command.numberOfSubLixi; i++) {
-
-            // New password for each sub lixi
-            const password = generateRandomBase58Str(8);
-
-            const { address, xpriv } = await this.walletService.deriveAddress(mnemonicFromApi, lixiIndex + i);
-            const encryptedXPriv = await aesGcmEncrypt(xpriv, password);
-            const encryptedClaimCode = await aesGcmEncrypt(password, command.mnemonic);
-
-            const name = address.slice(12, 17);
-            mapXprivToPassword[encryptedClaimCode] = password;
-
-            // Calculate satoshis to send
-            let satoshisToSend;
-            if (command.lixiType == LixiType.Random) {
-              const maxSatoshis = xpiBalance < command.maxValue ? xpiBalance : command.maxValue;
-              const minSatoshis = command.minValue;
-              const satoshisRandom = (Math.random() * (maxSatoshis - minSatoshis) + minSatoshis);
-              satoshisToSend = satoshisRandom + fromSmallestDenomination(fee);
-              xpiBalance -= satoshisRandom;
-            } else if (command.lixiType == LixiType.Equal) {
-              satoshisToSend = command.amount / Number(command.numberOfSubLixi) + fromSmallestDenomination(fee);
-            }
-
-            const subData = {
-              ..._.omit(command, [
-                'mnemonic',
-                'mnemonicHash',
-                'password',
-              ]),
-              id: undefined,
-              name: name,
-              derivationIndex: lixiIndex + i,
-              encryptedClaimCode: encryptedClaimCode,
-              claimedNum: 0,
-              encryptedXPriv,
-              status: 'active',
-              expiryAt: null,
-              address,
-              totalClaim: BigInt(0),
-              envelopeId: command.envelopeId ?? null,
-              envelopeMessage: command.envelopeMessage ?? '',
-              parentId: createdLixi.id,
-              amount: Number(satoshisToSend?.toFixed(6)),
-            };
-
-            const subLixiToInsert = _.omit(subData, 'password');
-            subLixies.push(subLixiToInsert);
-          }
-
-          await this.prisma.$transaction([this.prisma.lixi.createMany({ data: subLixies as unknown as LixiDb })]);
-
-          createdSubLixi = await this.prisma.lixi.findMany({
-            where: {
-              parentId: createdLixi.id
-            }
-          });
-
-          const receivingSubLixi = createdSubLixi.map(item => {
-            return ({
-              address: item.address,
-              amountXpi: item.amount
-            })
-          })
-
-          // Fund xpi from account to sub Lixi
-          await this.walletService.sendAmount(account.address, receivingSubLixi, keyPair);
-
-          for (let j = 0; j < _.size(createdSubLixi); j++) {
-            const item: any = createdSubLixi[j];
-
-            // Calculate the claim code
-            const encodedId = numberToBase58(item.id);
-            const claimPart = mapXprivToPassword[item.encryptedClaimCode];
-            const claimSubCode = claimPart + encodedId;
-            item.claimCode = claimSubCode;
-          }
-        }
-
-        let resultApi = _.omit({
-          ...createdLixi,
-          claimCode: claimCode,
-          balance: createdLixi.amount,
-          totalClaim: Number(createdLixi.totalClaim),
-          expiryAt: createdLixi.expiryAt ? createdLixi.expiryAt : undefined,
-          country: createdLixi.country ? createdLixi.country : undefined,
-        }, 'encryptedXPriv');
-
-        const createdSubLixiesResult = createdSubLixi?.map(item => {
-          return _.omit({
-            ...item,
-            totalClaim: 0,
-            expiryAt: item.expiryAt ? item.expiryAt : undefined,
-            country: item.country ? item.country : undefined,
-          }, 'encryptedXPriv');
-        })
-
-        return {
-          lixi: resultApi,
-          subLixies: createdSubLixiesResult
-        };
       } catch (err) {
         if (err instanceof VError) {
           throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -326,7 +232,8 @@ export class LixiController {
             id: lixiId
           },
           data: {
-            status: 'locked'
+            status: 'locked',
+            updatedAt: new Date()
           }
         });
         if (lixi) {
@@ -335,6 +242,7 @@ export class LixiController {
             balance: 0,
             totalClaim: Number(lixi.totalClaim),
             expiryAt: lixi.expiryAt ? lixi.expiryAt : undefined,
+            activationAt: lixi.activationAt ? lixi.activationAt : undefined,
             country: lixi.country ? lixi.country : undefined,
             status: lixi.status,
             numberOfSubLixi: 0,
@@ -393,7 +301,8 @@ export class LixiController {
             id: lixiId
           },
           data: {
-            status: 'active'
+            status: 'active',
+            updatedAt: new Date()
           }
         });
         if (lixi) {
@@ -402,6 +311,7 @@ export class LixiController {
             balance: 0,
             totalClaim: Number(lixi.totalClaim),
             expiryAt: lixi.expiryAt ? lixi.expiryAt : undefined,
+            activationAt: lixi.activationAt ? lixi.activationAt : undefined,
             country: lixi.country ? lixi.country : undefined,
             status: lixi.status,
             numberOfSubLixi: 0,
@@ -455,35 +365,87 @@ export class LixiController {
         throw new Error('Could not found the lixi in the database.');
       }
 
-      const lixiIndex = lixi.derivationIndex;
-      const { address, keyPair } = await this.walletService.deriveAddress(mnemonicFromApi, lixiIndex);
+      if (lixi.claimType === ClaimType.Single) {
+        const lixiIndex = lixi.derivationIndex;
+        const { address, keyPair } = await this.walletService.deriveAddress(mnemonicFromApi, lixiIndex);
 
-      if (address !== lixi.address) {
-        throw new Error('Invalid account. Unable to withdraw the lixi');
+        if (address !== lixi.address) {
+          throw new Error('Invalid account. Unable to withdraw the lixi');
+        }
+
+        const lixiCurrentBalance: number = await this.xpiWallet.getBalance(lixi.address);
+
+        if (lixiCurrentBalance === 0) {
+          throw new VError('Unable to withdraw. The lixi is empty!');
+        }
+
+        const totalAmount: number = await this.walletService.onMax(lixi.address);
+        const receivingAccount = [{ address: account.address, amountXpi: totalAmount, }]
+
+        const amount: any = await this.walletService.sendAmount(lixi.address, receivingAccount, keyPair);
+
+        let resultApi: LixiDto = {
+          ...lixi,
+          balance: amount ?? 0,
+          totalClaim: Number(lixi.totalClaim),
+          expiryAt: lixi.expiryAt ? lixi.expiryAt : undefined,
+          activationAt: lixi.activationAt ? lixi.activationAt : undefined,
+          country: lixi.country ? lixi.country : undefined,
+          numberOfSubLixi: 0,
+          parentId: lixi.parentId ?? undefined,
+          isClaimed: lixi.isClaimed ?? false,
+        };
+
+        return resultApi;
       }
 
-      const lixiCurrentBalance: number = await this.xpiWallet.getBalance(lixi.address);
+      else {
+        // Withdraw for OneTime Code
+        const subLixies = await this.prisma.lixi.findMany({
+          where: {
+            parentId: lixiId
+          }
+        });
 
-      if (lixiCurrentBalance === 0) {
-        throw new VError('Unable to withdraw. The lixi is empty!');
+        for (let item in subLixies) {
+          const subLixiAddress = subLixies[item].address;
+          const subLixiDerivationIndex = subLixies[item].derivationIndex;
+
+          const subLixiIndex = subLixiDerivationIndex;
+          const { keyPair } = await this.walletService.deriveAddress(mnemonicFromApi, subLixiIndex);
+
+          try {
+            const totalAmount: number = await this.walletService.onMax(subLixiAddress);
+            const receivingAccount = [{ address: account.address, amountXpi: totalAmount }];
+            const amount: any = await this.walletService.sendAmount(subLixiAddress, receivingAccount, keyPair);
+
+            const updatedSubLixies = await this.prisma.lixi.update({
+              where: {
+                id: subLixies[item].id
+              },
+              data: {
+                amount: 0
+              }
+            });
+          } catch (err) {
+            continue;
+          }
+        }
+
+        let resultApi: LixiDto = {
+          ...lixi,
+          amount: lixi.amount ?? 0,
+          totalClaim: Number(lixi.totalClaim),
+          expiryAt: lixi.expiryAt ? lixi.expiryAt : undefined,
+          activationAt: lixi.activationAt ? lixi.activationAt : undefined,
+          country: lixi.country ? lixi.country : undefined,
+          numberOfSubLixi: 0,
+          parentId: lixi.parentId ?? undefined,
+          isClaimed: lixi.isClaimed ?? false,
+        };
+
+        return resultApi;
       }
-
-      const totalAmount: number = await this.walletService.onMax(lixi.address);
-      const receivingAccount = [{address: account.address, amountXpi: totalAmount,}]
-
-      const amount: any = await this.walletService.sendAmount(lixi.address, receivingAccount, keyPair);
-      let resultApi: LixiDto = {
-        ...lixi,
-        balance: amount ?? 0,
-        totalClaim: Number(lixi.totalClaim),
-        expiryAt: lixi.expiryAt ? lixi.expiryAt : undefined,
-        country: lixi.country ? lixi.country : undefined,
-        numberOfSubLixi: 0,
-        parentId: lixi.parentId ?? undefined,
-        isClaimed: lixi.isClaimed ?? false,
-      };
-
-      return resultApi;
 
     } catch (err) {
       if (err instanceof VError) {
@@ -537,12 +499,12 @@ export class LixiController {
         });
 
         if (!account) {
-        throw new Error('Could not find the associated account.');
+          throw new Error('Could not find the associated account.');
         }
 
         const mnemonicToValidate = await aesGcmDecrypt(account.encryptedMnemonic, mnemonicFromApi);
-        if (mnemonicFromApi !== mnemonicToValidate) { 
-          throw new VError('Invalid account! Could not update the lixi.'); 
+        if (mnemonicFromApi !== mnemonicToValidate) {
+          throw new VError('Invalid account! Could not update the lixi.');
         }
 
         const lixi = await this.prisma.lixi.findUnique({
@@ -551,7 +513,7 @@ export class LixiController {
           }
         });
         if (!lixi)
-          throw new VError('The lixi does not exist in the database.');       
+          throw new VError('The lixi does not exist in the database.');
 
         const nameExist = await this.prisma.lixi.findFirst({
           where: {
@@ -578,6 +540,7 @@ export class LixiController {
             name: updatedLixi.name,
             totalClaim: Number(lixi.totalClaim),
             expiryAt: lixi.expiryAt ? lixi.expiryAt : undefined,
+            activationAt: lixi.activationAt ? lixi.activationAt : undefined,
             country: lixi.country ? lixi.country : undefined,
             status: lixi.status,
             numberOfSubLixi: lixi.numberOfSubLixi ?? 0,

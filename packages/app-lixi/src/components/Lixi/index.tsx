@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { getAllClaims } from 'src/store/claim/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { getLixi, refreshLixi, setLixiBalance } from 'src/store/lixi/actions';
+import { getLixi, getSubLixi, refreshLixi, setLixiBalance } from 'src/store/lixi/actions';
 import { getSelectedLixi, getSelectedLixiId } from 'src/store/lixi/selectors';
 import { AppContext } from 'src/store/store';
 import { showToast } from 'src/store/toast/actions';
@@ -237,6 +237,7 @@ const Lixi: React.FC = () => {
   });
 
   const showMoreSubLixi = () => {
+    dispatch(getSubLixi(selectedLixi.id));
     setLimit(limit+5)
   }
 
@@ -316,7 +317,7 @@ const Lixi: React.FC = () => {
                   <VirtualTable columns={columns} dataSource={data.slice(0,limit)} scroll={{ y: data.length*54 <= 270 ? data.length*54 : 270 }}/>
                   { data.length*54 > 270 ?
                     <LoadMoreButton 
-                      onClick={showMoreSubLixi}
+                      onClick={() => showMoreSubLixi()}
                     >
                       Load More...
                     </LoadMoreButton>

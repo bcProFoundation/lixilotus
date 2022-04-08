@@ -51,14 +51,7 @@ export const isValidLixiName = (lixiName: string) => {
 };
 
 export const isValidAmountInput = (cashAmount: string) => {
+  if (cashAmount === '') return true;
   let testedAmount = new BigNumber(cashAmount);
-  return (!testedAmount.isNaN() && testedAmount.isFinite())
+  return (!testedAmount.isNaN() && testedAmount.isFinite() && testedAmount.isPositive())
 }
-
-// export const isValidQty = (quantityValue) => {
-
-//     const tokenIntialQtyBig = new BigNumber(quantityValue);
-//     return (
-//         tokenIntialQtyBig.lt(100000000000)
-//     );
-// };
