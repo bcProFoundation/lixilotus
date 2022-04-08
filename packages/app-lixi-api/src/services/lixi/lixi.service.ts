@@ -3,12 +3,12 @@ import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Inject, Injectable } from '@nestjs/common';
-import { Lixi as LixiDb } from '@prisma/client';
+import { Account as AccountDb } from '@prisma/client';
 import { FlowJob, Queue } from 'bullmq';
 import * as _ from 'lodash';
 import { lixiChunkSize, CREATE_SUB_LIXIES_QUEUE } from 'src/constants/lixi.constants';
 import logger from 'src/logger';
-import { aesGcmEncrypt, generateRandomBase58Str, numberToBase58 } from 'src/utils/encryptionMethods';
+import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase58Str, numberToBase58 } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
 import { PrismaService } from '../prisma/prisma.service';
 import { WalletService } from '../wallet.service';
@@ -32,7 +32,7 @@ export class LixiService {
    * @param account The account which is associated with the lixi
    * @param command The create command, hold value to create the lixi
    */
-  async createSingleLixi(derivationIndex: number, account: Account, command: CreateLixiCommand): Promise<Lixi> {
+  async createSingleLixi(derivationIndex: number, account: AccountDb, command: CreateLixiCommand): Promise<Lixi> {
 
     // If users input the amount means that the lixi need to be prefund
     const isPrefund = !!command.amount;
@@ -40,7 +40,8 @@ export class LixiService {
     // Calculate the lixi encrypted claim code from the input password
     const { address, xpriv } = await this.walletService.deriveAddress(command.mnemonic, derivationIndex);
     const encryptedXPriv = await aesGcmEncrypt(xpriv, command.password);
-    const encryptedClaimCode = await aesGcmEncrypt(command.password, command.mnemonic);
+    const secret = await aesGcmDecrypt(account.encryptedMnemonic, command.mnemonic);
+    const encryptedClaimCode = await aesGcmEncrypt(command.password, secret);
 
     // Prepare data to insert into the database
     const data = {
@@ -106,7 +107,7 @@ export class LixiService {
     return resultLixi;
   }
 
-  async createOneTimeParentLixi(derivationIndex: number, account: Account, command: CreateLixiCommand): Promise<Lixi> {
+  async createOneTimeParentLixi(derivationIndex: number, account: AccountDb, command: CreateLixiCommand): Promise<Lixi> {
     // If users input the amount means that the lixi need to be prefund
     const isPrefund = !!command.amount;
 
@@ -177,10 +178,10 @@ export class LixiService {
    * @param startDerivationIndex the start derivation index for whole batch
    * @param account The account associated
    * @param command The command instruction to create sub lixies
-   * @param parentLixi The parent one-time codes lixi
+   * @param parentLixiId The parent id of one-time codes lixi
    * @returns The background job id to create the batch of sub lixies
    */
-  async createSubLixies(startDerivationIndex: number, account: Account, command: CreateLixiCommand, parentLixi: Lixi): Promise<string | undefined> {
+  async createSubLixies(startDerivationIndex: number, account: AccountDb, command: CreateLixiCommand, parentLixiId: number): Promise<string | undefined> {
 
     // If users input the amount means that the lixi need to be prefund
     const isPrefund = !!command.amount;
@@ -219,7 +220,7 @@ export class LixiService {
         startDerivationIndexForChunk: startDerivationIndexForChunk,
         xpiAllowance: xpiAllowance,
         temporaryFeeCalc: fee,
-        parentId: parentLixi.id,
+        parentId: parentLixiId,
         command: command,
         fundingAddress: account.address
       };

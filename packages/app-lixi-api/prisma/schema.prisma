@@ -15,6 +15,7 @@ model Account {
   id                Int      @id @default(autoincrement())
   name              String
   encryptedMnemonic String   @map("encrypted_mnemonic")
+  encryptedSecret   String   @default("") @map("encrypted_secret")
   createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt         DateTime @default(now()) @map("updated_at") @db.Timestamptz
   lixies            Lixi[]

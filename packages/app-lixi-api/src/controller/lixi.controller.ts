@@ -2,7 +2,7 @@ import { Body, Controller, Get, HttpException, HttpStatus, Inject, Param, Post, 
 import * as _ from 'lodash';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
-import { Lixi, Lixi as LixiDb, Claim as ClaimDb } from '@prisma/client';
+import { Lixi, Lixi as LixiDb, Claim as ClaimDb, Account as AccountDb } from '@prisma/client';
 import {
   Account,
   CreateLixiCommand, fromSmallestDenomination, Claim, LixiDto, ClaimType, LixiType,
@@ -11,8 +11,7 @@ import {
   PaginationResult
 } from '@bcpros/lixi-models';
 import { WalletService } from "src/services/wallet.service";
-import { aesGcmDecrypt, aesGcmEncrypt, numberToBase58, generateRandomBase58Str } from 'src/utils/encryptionMethods';
-import sleep from '../utils/sleep';
+import { aesGcmDecrypt } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
 import logger from 'src/logger';
 import { PrismaService } from '../services/prisma/prisma.service';
@@ -126,14 +125,14 @@ export class LixiController {
         let lixi = null;
         if (command.claimType === ClaimType.Single) {
           // Single type
-          lixi = await this.lixiService.createSingleLixi(lixiIndex, account as Account, command);
+          lixi = await this.lixiService.createSingleLixi(lixiIndex, account, command);
           return {
             lixi
           } as PostLixiResponseDto;
         } else {
           // One time child codes type
-          lixi = await this.lixiService.createOneTimeParentLixi(lixiIndex, account as Account, command);
-          const jobId = await this.lixiService.createSubLixies(lixiIndex + 1, account as Account, command, lixi);
+          lixi = await this.lixiService.createOneTimeParentLixi(lixiIndex, account, command);
+          const jobId = await this.lixiService.createSubLixies(lixiIndex + 1, account, command, lixi.id);
           return {
             lixi,
             jobId
@@ -208,7 +207,6 @@ export class LixiController {
           return resultApi;
         }
       }
-
     } catch (err) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
