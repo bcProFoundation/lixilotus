@@ -99,7 +99,7 @@ function* postLixiSaga(action: PayloadAction<CreateLixiCommand>) {
 
     const data: PostLixiResponseDto = yield call(lixiApi.post, dataApi);
 
-    if (_.isNil(data.lixi) || _.isNil(data.lixi.id)) {
+    if (_.isNil(data) || _.isNil(data.lixi) || _.isNil(data.lixi.id)) {
       throw new Error('Unable to create the lixi.');
     }
 

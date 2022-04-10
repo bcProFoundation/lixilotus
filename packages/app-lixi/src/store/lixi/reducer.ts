@@ -7,7 +7,7 @@ import {
   importAccountSuccess, refreshLixiListSuccess, selectAccountSuccess
 } from '../account/actions';
 import {
-  lockLixiSuccess, refreshLixiSuccess, renameLixiSuccess, selectLixiSuccess, setLixi, setLixiBalance,
+  lockLixiSuccess, postLixiSuccess, refreshLixiSuccess, renameLixiSuccess, selectLixiSuccess, setLixi, setLixiBalance,
   unlockLixiSuccess
 } from './actions';
 import { LixiesState } from './state';
@@ -22,10 +22,13 @@ const initialState: LixiesState = lixiesAdapter.getInitialState({
 
 export const lixiReducer = createReducer(initialState, (builder) => {
   builder
+    .addCase(postLixiSuccess, (state, action) => {
+      const lixi: any = action.payload;
+      lixiesAdapter.upsertOne(state, lixi as Lixi);
+    })
     .addCase(setLixi, (state, action) => {
-      const lixies: any = action.payload;
-      lixiesAdapter.upsertOne(state, lixies.lixi as Lixi);
-      state.selectedId = lixies.lixi.id ?? undefined;
+      const lixi: any = action.payload;
+      state.selectedId = lixi.id ?? undefined;
     })
     .addCase(selectLixiSuccess, (state, action) => {
       const { lixi, children, claims } = action.payload;
