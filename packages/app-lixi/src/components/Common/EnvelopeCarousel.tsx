@@ -66,7 +66,7 @@ const EnvelopeCarousel = (props: EnvelopeCarouselPros) => {
             const isActive = item.id === selectedEnvelopeId;
 
             return (
-              <div>
+              <div key={item.id}>
                 <img
                   style={{
                     height: '160px',

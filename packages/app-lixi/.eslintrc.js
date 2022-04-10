@@ -4,7 +4,7 @@ module.exports = {
     'plugin:react/recommended', // Uses the recommended rules from @eslint-plugin-react
     'plugin:@typescript-eslint/recommended', // Uses the recommended rules from @typescript-eslint/eslint-plugin
     'next',
-    'next/core-web-vitals',
+    // 'next/core-web-vitals',
     'prettier'
   ],
   parserOptions: {
