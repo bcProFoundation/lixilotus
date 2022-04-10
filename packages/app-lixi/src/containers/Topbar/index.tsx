@@ -1,4 +1,6 @@
-import { MenuOutlined } from "@ant-design/icons"
+import { useState } from "react";
+import { BellTwoTone} from "@ant-design/icons"
+import { Space,Menu,Popover,Badge } from "antd";
 import { useAppDispatch, useAppSelector } from "@store/hooks";
 import { toggleCollapsedSideNav } from "@store/settings/actions";
 import { getNavCollapsed } from "@store/settings/selectors";
@@ -9,11 +11,67 @@ export type TopbarProps = {
   className?: string,
 }
 
+const StyledBell = styled(BellTwoTone)`
+  font-size: 22px;
+  position: relative;
+  top: 7px;
+  cursor: pointer;
+`;
+
+const NotificationMenu = (
+  <Menu style={{color:"black",border:"none"}}>
+    <Menu.Item>
+        1st menu item
+    </Menu.Item>
+    <Menu.Item>
+        2nd menu item
+    </Menu.Item>
+  </Menu>
+)
+
+const StyledPopover = styled(Popover)`
+
+  .ant-popover {
+    width: 200px;
+    position: relative;
+    top: 40px !important;
+    left: -165px !important;
+
+    @media (max-width: 768px) {
+      top: 40px !important;
+      left: -165px !important;
+    }
+
+    @media (max-width: 576px) {
+      top: 40px !important;
+      left: -165px !important;
+    }
+  }
+
+  .ant-popover-title {
+    font-weight: bold;
+    color: #fff;
+    border: none;
+    background:  ${props=>props.theme.primary};
+  }
+
+  .ant-popover-arrow > .ant-popover-arrow-content::before {
+    background: ${props=>props.theme.primary};
+  }
+
+  .ant-popover-inner-content {
+    padding: 0 !important;
+    border: 2px solid ${props=>props.theme.primary} !important;
+  }
+
+`
+
+
 const Topbar = ({
   className
 }: TopbarProps) => {
 
-
+  const [count, setCount] = useState(4);
   const dispatch = useAppDispatch();
   const navCollapsed = useAppSelector(getNavCollapsed);
 
@@ -25,7 +83,17 @@ const Topbar = ({
     <Header className={className}>
       {/* <MenuOutlined style={{fontSize: '32px'}} onClick={handleMenuClick} /> */}
       <img src='/images/lixilotus-logo.png' alt='lixilotus' />
-      <img src='/images/lotus-logo-small.png' alt='lotus' />
+      <Space direction="horizontal" size={25} >
+
+        <StyledPopover content={NotificationMenu} placement="bottomRight" 
+          getPopupContainer={(trigger)=> trigger} trigger="click" title="Notifications">
+          <Badge count={count} overflowCount={9} offset={[count<10 ? 0 : 5, 25]} color="#6f2dbd">
+            <StyledBell twoToneColor="#6f2dbd" />    
+           </Badge>
+        </StyledPopover>
+
+        <img src='/images/lotus-logo-small.png' alt='lotus' />
+      </Space>
     </Header>
   )
 }
