@@ -1,10 +1,11 @@
 import { SaveOutlined, ShareAltOutlined, LinkOutlined } from '@ant-design/icons';
+import intl from 'react-intl-universal';
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
 import { ViewClaimDto } from '@bcpros/lixi-models';
 import { fromSmallestDenomination } from '@utils/cashMethods';
 import { numberToBase58 } from '@utils/encryptionMethods';
-import { Image, Popover,Button, message } from 'antd';
+import { Image, Popover, Button, message } from 'antd';
 import { saveAs } from 'file-saver';
 import React from 'react';
 import {
@@ -53,7 +54,7 @@ type SocialSharePanelProps = {
 }
 
 const SocialSharePanel = ({ className, shareUrl }: SocialSharePanelProps): JSX.Element => {
-  const title = 'Lixi Program sent you a small gift!';
+  const title = intl.get('claim.titleShared');
   return (
     <div className={className}>
       <div className="socialshare-network">
@@ -115,7 +116,7 @@ const SocialSharePanel = ({ className, shareUrl }: SocialSharePanelProps): JSX.E
           icon={<LinkOutlined style={{ color: 'white', fontSize: '20px' }} />}
           onClick={() => {
             navigator.clipboard.writeText(window.location.href);
-            message.success('Link copied to clipboard');
+            message.success(intl.get('claim.copyToClipboard'));
           }}
         />
       </div>
@@ -173,7 +174,7 @@ const LixiClaimed = ({
   const ShareSocialButton = (
     <RWebShare
       data={{
-        text: "Lixi Program sent you a small gift!",
+        text: intl.get('claim.titleShared'),
         url: shareUrl,
         title: "LixiLotus",
       }}
@@ -189,7 +190,7 @@ const LixiClaimed = ({
     <div className={className}>
       {claim && claim.amount && (
         <>
-          <WalletLabel name='You have claimed lixi' />
+          <WalletLabel name={intl.get('claim.youClaimedLixi')} />
           <BalanceHeader
             balance={fromSmallestDenomination(claim.amount)}
             ticker='XPI' />

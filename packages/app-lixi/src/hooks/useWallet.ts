@@ -3,7 +3,6 @@ import { Lixi } from "@bcpros/lixi-models";
 
 /* eslint-disable react-hooks/exhaustive-deps */
 const useWallet = (XPI: BCHJS) => {
-
   const getWalletDetails = async (mnemonic) => {
     const NETWORK = process.env.NEXT_PUBLIC_NETWORK;
     const rootSeedBuffer = await XPI.Mnemonic.toSeed(mnemonic);

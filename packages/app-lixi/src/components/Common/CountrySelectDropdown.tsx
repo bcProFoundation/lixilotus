@@ -1,5 +1,6 @@
 import { Country } from "@bcpros/lixi-models/lib/country";
 import { Select } from "antd";
+import intl from 'react-intl-universal';
 
 const { Option } = Select;
 
@@ -32,7 +33,9 @@ const CountrySelectDropdown = (props: CountrySelectDropdownProps) => {
               alignItems: 'center'
             }}
           >
-            {country.name}
+            {intl.formatMessage({
+              id: `country.${country.id}`
+            })}
           </Option>
         );
 

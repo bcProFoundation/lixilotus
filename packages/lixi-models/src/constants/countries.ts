@@ -1,12 +1,12 @@
 export const countries = [
   {
-    id: '',
+    id: 'all',
     name: 'All of country'
   },
   {
     id: 'vn',
     name: 'Viet Nam'
-  }, 
+  },
   {
     id: 'us',
     name: 'USA'

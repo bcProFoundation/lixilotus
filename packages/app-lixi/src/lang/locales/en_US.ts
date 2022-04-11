@@ -1,0 +1,153 @@
+/* SendLotus Language Texts
+
+Table of Contents
+
+01.General
+02.Account
+03.Lixi
+04.Claim
+05.Settings
+06.Countries
+07.Onboarding
+*/
+
+export default {
+  /* 01.General */
+  'general.Accounts': 'Accounts',
+  'general.Lixi': 'Lixi',
+  'general.Claim': 'Claim',
+  'general.Settings': 'Settings',
+  'general.SwapCard': 'Swap Card',
+  'general.ConnectionLost': 'API connection lost.',
+  'general.ReEstablishing': 'Re-establishing connection...',
+  'general.QRScannerError': 'Error in QR scanner:',
+  'general.ScanQRCode': 'Scan QR code',
+  'general.ScanQRCodeError': 'Error in QR scanner. Please ensure your camera is not in use. Due to Apple restrictions on third-party browsers, you must use Safari browser for QR code scanning on an iPhone.',
+
+  /* 02.Account */
+  'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
+  'account.mnemonic': 'mnemonic (seed phrase)',
+  'account.manageLixi': 'Manage Lixi',
+  'account.refreshLixiList': 'Refresh Lixi List',
+  'account.unableCreateLixi': 'Unable to create lixi.',
+  'account.selectLixiFirst': 'Please Select an account first before creating lixi',
+  'account.random': 'Random',
+  'account.fixed': 'Fixed',
+  'account.divided': 'Divided',
+  'account.equal': 'Equal',
+  'account.numberOfSubLixi': 'Number of sub lixi',
+  'account.defaultValueToGive': 'Default value to give',
+  'account.dividedNumber': 'Dividend number (Max 1,000,000)',
+  'account.min': 'Min',
+  'account.max': 'Max',
+  'account.minValueToGive': 'Min value to give',
+  'account.maxValueToGive': 'Max value to give',
+  'account.maxClaim': 'Max Claim',
+  'account.enterMaxClaimNumber': 'Enter max Claim number',
+  'account.minStaking': 'Min Staking',
+  'account.enterMinStaking': 'Enter minimum staking number',
+  'account.expiryTime': 'Expiry time for your lixi',
+  'account.createLixi': 'Create Lixi',
+  'account.enterLixiName': 'Enter a name for your lixi',
+  'account.enterLixiBalance': 'Enter balance for your lixi',
+  'account.lixiMessage': 'Enter the lixi message',
+  'account.allCountry': 'All of country',
+  'account.advance': 'Advance',
+  'account.amount': 'Amount',
+  'account.singleCode': 'Single code',
+  'account.oneTimeCode': 'One-time codes',
+  'account.familyFriendly': 'Family Friendly',
+  'account.sub-lixi': 'Sub-lixi',
+
+  /* 03.Lixi */
+  'lixi.sub-lixi': 'Sub-lixi',
+  'lixi.DividedBy': 'Divided by',
+  'lixi.FundGiveFixed': 'The fund giving is fixed',
+  'lixi.FixedFund': 'The fixed fund:',
+  'lixi.FundGiveDividend': 'The fund giving is dividend',
+  'lixi.DividedFund': 'Divided by:',
+  'lixi.FundGiveEqual': 'The fund giving is equal',
+  'lixi.EqualFund': 'Equal:',
+  'lixi.FundGiveRandomize': 'The fund giving is randomized',
+  'lixi.RandomFund': 'Min: {newLixiMinValue}; Max: {newLixiMaxValue}',
+  'lixi.Amount': 'Amount: {newLixiAmount}',
+  'lixi.NumberOfSub': 'Number of sub lixi: {newNumberOfSubLixi}',
+  'lixi.MaxClaim': 'Max Redemption: {newMaxClaim}',
+  'lixi.Country': 'Country: ',
+  'lixi.MinStake': 'Minimum Staking: {newMinStaking}',
+  'lixi.ExpireAt': 'Expiry at:',
+  'lixi.settingConfirm': 'Please confirm your lixi settings.',
+  'lixi.Name': 'Name:',
+  'lixi.FundForAccount': 'Fund for the account:',
+  'lixi.OptionFamilyFriendly': 'Option: Family Friendly',
+  'lixi.Optional': 'Optional',
+  'lixi.lixiInfo': 'Lixi info for {lixiName}',
+  'lixi.claimType': 'Claim Type',
+  'lixi.type': 'Type',
+  'lixi.totalClaimed': 'Total Claimed',
+  'lixi.remainingLixi': 'Remaining Lixi',
+  'lixi.remainingXPI': 'XPI Remaining',
+  'lixi.message': 'Message',
+  'lixi.lixiDetail': 'Click to reveal Lixi detail',
+  'lixi.downloadCode': 'Download Code',
+  'lixi.copyClaim': 'Copy Claim Code',
+  'lixi.refreshLixi': 'Refresh Lixi',
+  'lixi.noLixiSelected': 'No lixi is selected',
+  'lixi.fileTypeError': 'You can only upload JPG file!',
+  'lixi.fileSizeError': 'Image must smaller than 2MB!',
+  'lixi.lixiPostcard': 'Lixi Postcard',
+  'lixi.renameLixi': 'Rename Lixi',
+  'lixi.enterNewLixiName': 'Enter new lixi name',
+  'lixi.lixiLengthError': 'Lixi name must be a string between 1 and 24 characters long',
+
+  /* 04.Claim */
+  'claim.claim': 'Claim',
+  'claim.titleShared': 'Lixi Program sent you a small gift!',
+  'claim.copyToClipboard': 'Link copied to clipboard',
+  'claim.youClaimedLixi': 'You have claimed lixi',
+  'claim.addressNotValid': 'Destination is not a valid {ticker} address',
+  'claim.invalidAddress': 'Invalid {ticker} address',
+  'claim.tickerAddress': '{ticker} Address',
+  'claim.claimCode': 'Claim Code',
+
+  /* 05.Settings */
+  'settings.languages': 'Languages',
+  'settings.backupAccount': 'Backup your account',
+  'settings.manageAccounts': 'Manage Accounts',
+  'settings.newAccount': 'New Account',
+  'settings.importAccount': 'Import Account',
+  'settings.activated': 'Activated',
+  'settings.savedAccount': 'Saved accounts',
+  'settings.revealPhrase': 'Click to reveal seed phrase',
+  'settings.backupAccountWarning': 'Your seed phrase is the only way to restore your account. Write it down. Keep it safe.',
+  'settings.backupAccountHint': 'Copy and paste your mnemonic seed phrase below to import an existing account',
+  'settings.accountLengthMessage': 'Account name must be a string between 1 and 24 characters long',
+  'settings.enterAccountName': 'Enter new account name',
+  'settings.renameAccount': 'Rename Account',
+  'settings.deleteAccountConfirm': 'Type "delete {account}" to confirm',
+  'settings.deleteAccountConfirmMessage': 'Are you sure you want to delete account "{account}"?',
+  'settings.yourConfirmationPhraseMustExact': 'Your confirmation phrase must match exactly',
+  'en': 'English',
+  'vi': 'Tiếng Việt',
+
+  /* 06.Countries */
+  'country.all': 'All of country',
+  'country.vn': 'Vietnam',
+  'country.us': 'United States',
+  'country.id': 'Indonesia',
+  'country.ph': 'Philippines',
+
+  /* 07.Onboarding */
+  'onboarding.dontForgetBackup': 'Don\'t forget to back up your account',
+  'onboarding.dontForgetBackupConfirm': 'Okay, make me a account!',
+  'onboarding.dontForgetBackupDescription': 'Once your account is created you can back it up by writing down your 12-word seed. You can find your seed on the Settings page. If you are browsing in Incognito mode or if you clear your browser history, you will lose any funds that are not backed up!',
+  'onboarding.cancel': 'Cancel',
+  'onboarding.newAccount': 'New Account',
+  'onboarding.importAccount': 'Import Account',
+  'onboarding.import': 'Import',
+  'onboarding.welcomeToLotus': 'Welcome to LixiLotus!',
+  'onboarding.lixiLotusIntroduce1': 'LixiLotus is an open-source, non-custodial web wallet for Lotus.',
+  'onboarding.lixiLotusIntroduce2': 'LixiLotus allow you to giveaway your Lotus effortlessly.',
+  'onboarding.lixiLotusIntroduce3': 'To start, install LixiLotus to your device follow',
+  'onboarding.lixiLotusIntroduce4': 'the guide'
+};

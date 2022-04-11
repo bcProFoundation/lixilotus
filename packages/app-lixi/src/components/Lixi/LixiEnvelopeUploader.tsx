@@ -1,5 +1,6 @@
 
 import { useState } from 'react';
+import intl from 'react-intl-universal';
 import { message, Upload } from "antd";
 import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { RcFile, UploadChangeParam } from 'antd/lib/upload';
@@ -15,11 +16,11 @@ function getBase64(img: any, callback: Function) {
 const beforeUpload = (file: RcFile) => {
   const isJPG = file.type === 'image/jpeg';
   if (!isJPG) {
-    message.error('You can only upload JPG file!');
+    message.error(intl.get('account.fileTypeError'));
   }
   const isLt2M = file.size / 1024 / 1024 < 2;
   if (!isLt2M) {
-    message.error('Image must smaller than 2MB!');
+    message.error(intl.get('account.fileSizeError'));
   }
   return isJPG && isLt2M;
 }
@@ -34,7 +35,7 @@ export const LixiEnvelopeUploader = ({
   const uploadButton = (
     <div>
       {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div className="ant-upload-text">Lixi Postcard</div>
+      <div className="ant-upload-text">{intl.get('account.lixiPostcard')}</div>
     </div>
   );
 

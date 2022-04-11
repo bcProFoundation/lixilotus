@@ -1,6 +1,7 @@
 import { Alert, Collapse, Form, Input, Spin } from 'antd';
+import intl from 'react-intl-universal';
 import * as _ from 'lodash';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   deleteAccount, generateAccount, importAccount, renameAccount, selectAccount
 } from 'src/store/account/actions';
@@ -11,20 +12,22 @@ import { openModal } from 'src/store/modal/actions';
 import { AppContext } from 'src/store/store';
 import styled from 'styled-components';
 
-import { CashLoadingIcon } from '@bcpros/lixi-components/components/Common/CustomIcons';
+import { CashLoadingIcon, ThemedDollarOutlined } from '@bcpros/lixi-components/components/Common/CustomIcons';
 import { Account, DeleteAccountCommand, RenameAccountCommand } from '@bcpros/lixi-models';
 import {
   CopyOutlined, ImportOutlined, LockOutlined, PlusSquareOutlined, WalletOutlined
 } from '@ant-design/icons';
 import Edit from '@assets/icons/edit.svg';
 import Trashcan from '@assets/icons/trashcan.svg';
-import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
+import { AntdFormWrapper, LanguageSelectDropdown } from '@components/Common/EnhancedInputs';
 import PrimaryButton, { SecondaryButton, SmartButton } from '@components/Common/PrimaryButton';
 import { StyledCollapse } from '@components/Common/StyledCollapse';
 import { StyledSpacer } from '@components/Common/StyledSpacer';
 
 import { DeleteAccountModalProps } from './DeleteAccountModal';
 import { RenameAccountModalProps } from './RenameAccountModal';
+import { setInitIntlStatus, updateLocale } from '@store/settings/actions';
+import { getCurrentLocale } from '@store/settings/selectors';
 
 const { Panel } = Collapse;
 
@@ -165,6 +168,8 @@ const Settings: React.FC = () => {
     setOtherAccounts(_.filter(savedAccounts, acc => acc.id !== selectedAccount?.id));
   }, [savedAccounts]);
 
+  const currentLocale = useAppSelector(getCurrentLocale);
+
   const showPopulatedRenameAccountModal = (account: Account) => {
     const command: RenameAccountCommand = {
       id: account.id,
@@ -200,6 +205,11 @@ const Settings: React.FC = () => {
     setFormData(p => ({ ...p, [name]: value }));
   };
 
+  function setLocale(locales: any) {
+    dispatch(setInitIntlStatus(false));
+    dispatch(updateLocale(locales));
+  }
+
   async function submit() {
     setFormData({
       ...formData,
@@ -227,16 +237,16 @@ const Settings: React.FC = () => {
     <>
       <Spin spinning={isLoading} indicator={CashLoadingIcon}>
         <h2 style={{ color: '#6f2dbd' }}>
-          <ThemedCopyOutlined /> Backup your account
+          <ThemedCopyOutlined /> {intl.get('settings.backupAccount')}
         </h2>
         <Alert
           style={{ marginBottom: '12px' }}
-          description="Your seed phrase is the only way to restore your account. Write it down. Keep it safe."
+          description={intl.get('settings.backupAccountWarning')}
           type="warning"
           showIcon message
         />
         <StyledCollapse>
-          <Panel header="Click to reveal seed phrase" key="1">
+          <Panel header={intl.get('settings.revealPhrase')} key="1">
             <p className="notranslate">
               {selectedAccount && selectedAccount.mnemonic
                 ? selectedAccount.mnemonic
@@ -246,19 +256,18 @@ const Settings: React.FC = () => {
         </StyledCollapse>
         <StyledSpacer />
         <h2 style={{ color: '#6f2dbd' }}>
-          <ThemedWalletOutlined /> Manage Accounts
+          <ThemedWalletOutlined /> {intl.get('settings.manageAccounts')}
         </h2>
         <PrimaryButton onClick={() => dispatch(generateAccount())}>
-          <PlusSquareOutlined /> New Account
+          <PlusSquareOutlined /> {intl.get('settings.newAccount')}
         </PrimaryButton>
         <SecondaryButton onClick={() => openSeedInput(!seedInput)}>
-          <ImportOutlined /> Import Account
+          <ImportOutlined /> {intl.get('settings.importAccount')}
         </SecondaryButton>
         {seedInput && (
           <>
             <p>
-              Copy and paste your mnemonic seed phrase below
-              to import an existing account
+              {intl.get('settings.backupAccountHint')}
             </p>
             <AntdFormWrapper>
               <Form style={{ width: 'auto' }} form={form}>
@@ -295,7 +304,7 @@ const Settings: React.FC = () => {
         {(selectedAccount || (otherAccounts && otherAccounts.length > 0)) && (
           <>
             <StyledCollapse>
-              <Panel header="Saved accounts" key="2">
+              <Panel header={intl.get('settings.savedAccount')} key="2">
                 {<AWRow>
                   <SWName>
                     <h3>{selectedAccount?.name}</h3>
@@ -315,7 +324,7 @@ const Settings: React.FC = () => {
                     }>
                       <Trashcan />
                     </span >
-                    <h4>Activated</h4>
+                    <h4>{intl.get('settings.activated')}</h4>
                   </SWButtonCtn>
                 </AWRow>}
                 <div>
@@ -353,9 +362,26 @@ const Settings: React.FC = () => {
             </StyledCollapse>
           </>
         )}
+        <StyledSpacer />
+        <h2>
+          {intl.get('settings.languages')}
+        </h2>
+        <AntdFormWrapper>
+          <LanguageSelectDropdown
+            defaultValue={
+              currentLocale
+            }
+            onChange={(locale: any) => {
+              setLocale(locale)
+            }
+            }
+          />
+        </AntdFormWrapper>
+        <StyledSpacer />
       </Spin>
     </>
   )
 };
 
 export default Settings;
+
