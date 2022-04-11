@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import intl from 'react-intl-universal';
 import { Layout, Spin } from 'antd';
 import Link from 'next/link';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
@@ -129,7 +130,7 @@ const ClaimedLayout: React.FC = (props) => {
                     active={false}
                   >
                     <UserOutlined />
-                    Accounts
+                    {intl.get('general.Accounts')}
                   </NavButton>
                 </Link>
                 <Link href='/lixi' passHref>
@@ -137,7 +138,7 @@ const ClaimedLayout: React.FC = (props) => {
                     active={false}
                   >
                     <WalletOutlined />
-                    Lixi
+                    {intl.get('general.Lixi')}
                   </NavButton>
                 </Link>
                 <Link href='/claim' passHref>
@@ -145,7 +146,7 @@ const ClaimedLayout: React.FC = (props) => {
                     active={false}
                   >
                     <GiftOutlined />
-                    Claim
+                    {intl.get('general.Claim')}
                   </NavButton>
                 </Link>
                 <Link href='/settings' passHref>
@@ -153,7 +154,7 @@ const ClaimedLayout: React.FC = (props) => {
                     active={false}
                   >
                     <SettingOutlined />
-                    Settings
+                    {intl.get('general.Settings')}
                   </NavButton>
                 </Link>
               </Footer>

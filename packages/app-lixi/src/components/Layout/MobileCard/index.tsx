@@ -1,4 +1,5 @@
 import { Radio } from 'antd';
+import intl from 'react-intl-universal';
 import * as _ from 'lodash';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
@@ -191,7 +192,7 @@ const SwapMobileCard : React.FC = () => {
       {/* <h1>Need {0.000403*500000} XPI</h1> */}
 
       <SmartButton>
-        <MoneyCollectOutlined /> Swap Card
+        <MoneyCollectOutlined /> {intl.get('general.SwapCard')}
       </SmartButton>
     </>
   );

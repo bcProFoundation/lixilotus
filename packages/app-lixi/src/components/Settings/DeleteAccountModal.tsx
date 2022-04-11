@@ -1,4 +1,5 @@
 import { Form, Input, Modal } from 'antd';
+import intl from 'react-intl-universal';
 import * as _ from 'lodash';
 import React, { useState } from 'react';
 import { useAppDispatch } from 'src/store/hooks';
@@ -53,7 +54,7 @@ export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = (props: Del
   return (
     <>
       <Modal
-        title={`Are you sure you want to delete account "${account.name}"?`}
+        title={intl.get('settings.deleteAccountConfirmMessage', { account: account.name })}
         visible={true}
         onOk={handleOnOk}
         onCancel={() => handleOnCancel()}
@@ -71,12 +72,12 @@ export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = (props: Del
                 accountDeleteValid === null ||
                   accountDeleteValid
                   ? ''
-                  : 'Your confirmation phrase must match exactly'
+                  : intl.get('settings.yourConfirmationPhraseMustExact')
               }
             >
               <Input
                 prefix={<WalletFilled />}
-                placeholder={`Type "delete ${account.name}" to confirm`}
+                placeholder={intl.get('settings.deleteAccountConfirm', { account: account.name })}
                 name="accountToBeDeletedInput"
                 value={confirmationOfAccountToBeDeleted}
                 onChange={e => handleAccountToDeleteInput(e)}

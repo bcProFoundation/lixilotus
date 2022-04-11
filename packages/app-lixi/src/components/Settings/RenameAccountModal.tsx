@@ -1,4 +1,5 @@
 import { Form, Input, Modal } from 'antd';
+import intl from 'react-intl-universal';
 import * as _ from 'lodash';
 import React, { useState } from 'react';
 import { useAppDispatch } from 'src/store/hooks';
@@ -49,7 +50,7 @@ export const RenameAccountModal: React.FC<RenameAccountModalProps> = (props: Ren
   return (
     <>
       <Modal
-        title={`Rename Account ${account.name}`}
+        title={`${intl.get('settings.enterAccountName')} ${account.name}`}
         visible={true}
         onOk={handleOnOk}
         onCancel={handleOnCancel}
@@ -67,12 +68,12 @@ export const RenameAccountModal: React.FC<RenameAccountModalProps> = (props: Ren
                 newAccountNameIsValid === null ||
                   newAccountNameIsValid
                   ? ''
-                  : 'Account name must be a string between 1 and 24 characters long'
+                  : intl.get('settings.accountLengthMessage')
               }
             >
               <Input
                 prefix={<ProfileFilled />}
-                placeholder="Enter new account name"
+                placeholder={intl.get('settings.enterAccountName')}
                 name="newName"
                 value={newAccountName}
                 onChange={e => handleAccountNameInput(e)}

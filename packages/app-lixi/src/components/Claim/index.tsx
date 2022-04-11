@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import intl from 'react-intl-universal';
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Form, Spin } from 'antd';
 import { isMobile, isIOS, isSafari } from 'react-device-detect';
@@ -103,7 +104,7 @@ const ClaimComponent: React.FC = () => {
     const isValidAddress = XPI.Address.isXAddress(cleanAddress);
 
     if (!isValidAddress) {
-      const error = `Destination is not a valid ${currency.ticker} address`;
+      const error = intl.get('claim.titleShared', {ticker: currency.ticker});
       setClaimXpiAddressError(error);
     }
 
@@ -126,7 +127,7 @@ const ClaimComponent: React.FC = () => {
 
     // Is this valid address?
     if (!isValid) {
-      error = `Invalid ${currency.ticker} address`;
+      error = intl.get('claim.invalidAddress', {ticker: currency.ticker});
     }
     else {
       error = false;
@@ -170,7 +171,7 @@ const ClaimComponent: React.FC = () => {
                   })
                 }
                 inputProps={{
-                  placeholder: `${currency.ticker} Address`,
+                  placeholder: intl.get('claim.tickerAddress', {ticker: currency.ticker}),
                   name: 'address',
                   onChange: e => handleAddressChange(e),
                   required: true,
@@ -199,7 +200,7 @@ const ClaimComponent: React.FC = () => {
               >
                 <PrimaryButton
                   onClick={handleOnClick}
-                >Claim</PrimaryButton>
+                >{intl.get('claim.claim')}</PrimaryButton>
               </div>
             </Form>
           </Spin>

@@ -1,4 +1,5 @@
 import ReloadOutlined, { CheckCircleOutlined, InboxOutlined, LockOutlined } from '@ant-design/icons';
+import intl from 'react-intl-universal';
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import { ThemedWalletOutlined } from '@bcpros/lixi-components/components/Common/CustomIcons';
 import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
@@ -133,13 +134,13 @@ const Home: React.FC = () => {
               }
               help={
                 !formData.mnemonic || !isValidMnemonic
-                  ? 'Valid mnemonic seed phrase required'
+                  ? intl.get('account.mnemonicRequired')
                   : ''
               }
             >
               <Input
                 prefix={<LockOutlined />}
-                placeholder="mnemonic (seed phrase)"
+                placeholder={intl.get('account.mnemonic')}
                 name="mnemonic"
                 autoComplete="off"
                 onChange={(e) => handleChange(e)}
@@ -155,12 +156,12 @@ const Home: React.FC = () => {
       )}
       <StyledSpacer />
       <h2 style={{ color: '#6f2dbd' }}>
-        <ThemedWalletOutlined /> Manage Lixi
+        <ThemedWalletOutlined /> {intl.get('account.manageLixi')}
       </h2>
 
       <CreateLixiForm account={selectedAccount} />
       <SmartButton onClick={() => refreshList()}>
-        <ReloadOutlined /> Refresh Lixi List
+        <ReloadOutlined /> {intl.get('account.refreshLixiList')}
       </SmartButton>
       {
         lixies.length > 0 && (

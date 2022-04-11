@@ -1,9 +1,10 @@
 import { Layout, Spin } from 'antd';
+import intl from 'react-intl-universal';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useState,useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { getSelectedAccount } from 'src/store/account/selectors';
-import { useAppSelector } from 'src/store/hooks';
+import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 
 import {
@@ -17,6 +18,9 @@ import { GlobalStyle } from './GlobalStyle';
 import { theme } from './theme';
 import Sidebar from '@containers/Sidebar';
 import Topbar from '@containers/Topbar';
+import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
+import { loadLocale } from '@store/settings/actions';
+import { getIsGlobalLoading } from 'src/store/loading/selectors';
 
 const { Content, Sider, Header } = Layout;
 
@@ -102,6 +106,16 @@ export const LixiTextLogo = styled.img`
 const MainLayout: React.FC = (props) => {
   const { children } = props;
   const selectedAccount = useAppSelector(getSelectedAccount);
+  const currentLocale = useAppSelector(getCurrentLocale);
+  const intlInitDone = useAppSelector(getIntlInitStatus);
+  const dispatch = useAppDispatch();
+
+  const isLoading = useAppSelector(getIsGlobalLoading);
+
+  useEffect(() => {
+    dispatch(loadLocale(currentLocale));
+  }, [currentLocale]);
+
   const router = useRouter()
   const [loading, setLoading] = useState(true);
   const selectedKey = router.pathname ?? '';
@@ -113,70 +127,73 @@ const MainLayout: React.FC = (props) => {
   return (
     <ThemeProvider theme={theme as DefaultTheme}>
       <GlobalStyle />
-      <Spin
-        spinning={
-          loading
-        }
-        indicator={LoadingIcon}
-      >
-        <LixiApp>
-          <Layout>
-            <AppBody>
-              <ModalManager />
-              {!selectedAccount
-                ? <OnboardingComponent></OnboardingComponent>
-                : <>
-                  <AppContainer>
-                    <Layout>
-                      <Sidebar />
+      {
+        intlInitDone &&
+        <Spin
+          spinning={
+            loading
+          }
+          indicator={LoadingIcon}
+        >
+          <LixiApp>
+            <Layout>
+              <AppBody>
+                <ModalManager />
+                {!selectedAccount
+                  ? <OnboardingComponent></OnboardingComponent>
+                  : <>
+                    <AppContainer>
                       <Layout>
-                        <Topbar />
-                        <Content>
-                          {children}
-                        </Content>
+                        <Sidebar />
+                        <Layout>
+                          <Topbar />
+                          <Content>
+                            {children}
+                          </Content>
+                        </Layout>
                       </Layout>
-                    </Layout>
-                  </AppContainer>
-                  <Footer>
-                    <Link href='/' passHref>
-                      <NavButton
-                        active={selectedKey === '/'}
-                      >
-                        <UserOutlined />
-                        Accounts
-                      </NavButton>
-                    </Link>
-                    <Link href='/lixi' passHref>
-                      <NavButton
-                        active={selectedKey === '/lixi'}
-                      >
-                        <WalletOutlined />
-                        Lixi
-                      </NavButton>
-                    </Link>
-                    <Link href='/claim' passHref>
-                      <NavButton
-                        active={selectedKey === '/claim'}
-                      >
-                        <GiftOutlined />
-                        Claim
-                      </NavButton>
-                    </Link>
-                    <Link href='/settings' passHref>
-                      <NavButton
-                        active={selectedKey === '/settings'}
-                      >
-                        <SettingOutlined />
-                        Settings
-                      </NavButton>
-                    </Link>
-                  </Footer>
-                </>
-              }
-            </AppBody>
-          </Layout>
-        </LixiApp>
-      </Spin>
+                    </AppContainer>
+                    <Footer>
+                      <Link href='/' passHref>
+                        <NavButton
+                          active={selectedKey === '/'}
+                        >
+                          <UserOutlined />
+                          {intl.get('general.Accounts')}
+                        </NavButton>
+                      </Link>
+                      <Link href='/lixi' passHref>
+                        <NavButton
+                          active={selectedKey === '/lixi'}
+                        >
+                          <WalletOutlined />
+                          {intl.get('general.Lixi')}
+                        </NavButton>
+                      </Link>
+                      <Link href='/claim' passHref>
+                        <NavButton
+                          active={selectedKey === '/claim'}
+                        >
+                          <GiftOutlined />
+                          {intl.get('general.Claim')}
+                        </NavButton>
+                      </Link>
+                      <Link href='/settings' passHref>
+                        <NavButton
+                          active={selectedKey === '/settings'}
+                        >
+                          <SettingOutlined />
+                          {intl.get('general.Settings')}
+                        </NavButton>
+                      </Link>
+                    </Footer>
+                  </>
+                }
+              </AppBody>
+            </Layout>
+          </LixiApp>
+        </Spin>
+      }
     </ThemeProvider>
   );
 }
