@@ -498,7 +498,7 @@ const CreateLixiForm = ({
                 }
               >
                 <Input
-                  addonBefore={intl.get('lixi.Nasme')}
+                  addonBefore={intl.get('lixi.Name')}
                   placeholder={intl.get('account.enterLixiName')}
                   name="lixiName"
                   value={newLixiName}
