@@ -1,4 +1,5 @@
-import { CreateLixiCommand, LockLixiCommand, UnlockLixiCommand, LixiDto, WithdrawLixiCommand, RenameLixiCommand, Lixi, PostLixiResponseDto } from "@bcpros/lixi-models/lib/lixi";
+import { LixiDto, PaginationResult } from "@bcpros/lixi-models";
+import { CreateLixiCommand, LockLixiCommand, UnlockLixiCommand, WithdrawLixiCommand, RenameLixiCommand, Lixi, PostLixiResponseDto } from "@bcpros/lixi-models/lib/lixi";
 import axiosClient from "@utils/axiosClient";
 
 const lixiApi = {
@@ -13,11 +14,13 @@ const lixiApi = {
         throw response?.data ?? err ?? 'Network Error';
       })
   },
-  getSubLixi(id: number, data: any): Promise<LixiDto> {
-    const url = `/api/lixies/${id}/children`;
-    return axiosClient.get(url, data)
+  getSubLixi(id: number, startId?: number): Promise<PaginationResult<LixiDto>> {
+    const url = startId ?
+      `/api/lixies/${id}/children?startId=${startId}` :
+      `/api/lixies/${id}/children`;
+    return axiosClient.get(url)
       .then(response => {
-        return response.data as LixiDto;
+        return response.data as PaginationResult<LixiDto>;;
       })
       .catch(err => {
         const { response } = err;

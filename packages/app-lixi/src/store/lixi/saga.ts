@@ -2,7 +2,7 @@ import { push } from 'connected-next-router';
 import * as _ from 'lodash';
 import * as Effects from 'redux-saga/effects';
 import { Modal } from 'antd';
-import { Claim, ClaimDto, PostLixiResponseDto } from '@bcpros/lixi-models';
+import { Claim, ClaimDto, PaginationResult, PostLixiResponseDto } from '@bcpros/lixi-models';
 import {
   CreateLixiCommand, GenerateLixiCommand, LockLixiCommand, UnlockLixiCommand, Lixi, LixiDto,
   WithdrawLixiCommand, RenameLixiCommand
@@ -90,8 +90,9 @@ function* getLixiFailureSaga(action: PayloadAction<string>) {
 function* getSubLixiSaga(action: PayloadAction<number>) {
   try {
     const id = action.payload;
-    const data = yield call(lixiApi.getSubLixi, id);
-    yield put(getSubLixiSuccess(data));
+    const subLixiResult : PaginationResult<Lixi> = yield call(lixiApi.getSubLixi, id);
+    const subLixies = (subLixiResult.data ?? []) as Lixi[];
+    yield put(getSubLixiSuccess(subLixies));
   } catch (err) {
     const message = (err as Error).message ?? `Could not fetch the lixi from api.`;
     yield put(getLixiFailure(message))
@@ -159,8 +160,10 @@ function* refreshLixiSaga(action: PayloadAction<number>) {
     const data = yield call(lixiApi.getById, lixiId);
     const lixi = (data as any).lixi as Lixi;
     const children = (data as any).children as Lixi[];
-    const claimDtos: ClaimDto[] = yield call(claimApi.getByLixiId, lixiId);
-    const claims = (claimDtos ?? []) as Claim[];
+    // const childrenResult: PaginationResult<Lixi> = yield call(lixiApi.getSubLixi, lixiId);
+    // const children = (childrenResult.data ?? []) as Lixi[];
+    const claimResult: PaginationResult<Claim> = yield call(claimApi.getByLixiId, lixiId);
+    const claims = (claimResult.data ?? []) as Claim[];
     yield put(selectLixiSuccess({ lixi: lixi, children: children, claims: claims }));
   } catch (err) {
     const message = (err as Error).message ?? `Unable to refresh the lixi.`;
@@ -200,8 +203,9 @@ function* selectLixiSaga(action: PayloadAction<number>) {
     const data: LixiDto = yield call(lixiApi.getById, lixiId);
     const lixi = (data as any).lixi as Lixi;
     const children = (data as any).children as Lixi[];
-    const claimDtos: ClaimDto[] = yield call(claimApi.getByLixiId, lixiId);
-    const claims = (claimDtos ?? []) as Claim[];
+    // const children = yield put(getSubLixi(lixiId));
+    const claimResult: PaginationResult<Claim> = yield call(claimApi.getByLixiId, lixiId);
+    const claims = (claimResult.data ?? []) as Claim[];
     yield put(selectLixiSuccess({ lixi: lixi, children: children, claims: claims }));
   } catch (err) {
     const message = (err as Error).message ?? `Unable to select the lixi.`;

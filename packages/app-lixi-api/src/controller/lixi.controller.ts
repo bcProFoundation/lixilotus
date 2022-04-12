@@ -1,26 +1,24 @@
+import { Body, Controller, Get, HttpException, HttpStatus, Inject, Param, Post, Patch, Query, Header, Headers } from '@nestjs/common';
 import * as _ from 'lodash';
 import logger from 'src/logger';
-import { WalletService } from 'src/services/wallet.service';
-import {
-    aesGcmDecrypt, aesGcmEncrypt, generateRandomBase58Str, numberToBase58
-} from 'src/utils/encryptionMethods';
-import { VError } from 'verror';
 
-import {
-    Account, Claim, ClaimType, CreateLixiCommand, fromSmallestDenomination, LixiDto, LixiType,
-    PostLixiResponseDto,
-    RenameLixiCommand
-} from '@bcpros/lixi-models';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
+import { Lixi, Lixi as LixiDb, Claim as ClaimDb } from '@prisma/client';
 import {
-    Body, Controller, Get, Headers, HttpException, HttpStatus, Inject, Param, Patch, Post, Query
-} from '@nestjs/common';
-import { Lixi as LixiDb } from '@prisma/client';
-
+  Account,
+  CreateLixiCommand, fromSmallestDenomination, Claim, LixiDto, ClaimType, LixiType,
+  RenameLixiCommand,
+  PostLixiResponseDto,
+  PaginationResult
+} from '@bcpros/lixi-models';
+import { WalletService } from "src/services/wallet.service";
+import { aesGcmDecrypt, aesGcmEncrypt, numberToBase58, generateRandomBase58Str } from 'src/utils/encryptionMethods';
+import sleep from '../utils/sleep';
+import { VError } from 'verror';
 import { PrismaService } from '../services/prisma/prisma.service';
 import { LixiService } from 'src/services/lixi/lixi.service';
-import { PaginationParams } from 'src/models/pagination.models';
+import { PaginationParams } from 'src/common/models/paginationParams';
 
 @Controller('lixies')
 export class LixiController {
@@ -91,34 +89,68 @@ export class LixiController {
   async getSubLixi (
     @Param('id') id: string,
     @Query() { startId, limit }: PaginationParams,
-    @Headers('Mnemonic') mnemonic: string): Promise<any> {
+    @Headers('Mnemonic') mnemonic: string
+  ): Promise<PaginationResult<LixiDto>> {
+    const lixiId = _.toSafeInteger(id);
+    const take = limit ? _.toSafeInteger(limit) : 5;
+      
     try {
-      const subLixies = startId ? 
+      let subLixies: Lixi[] = [];
+
+      const count = await this.prisma.lixi.count({
+        where: {
+          id: lixiId
+        }
+      });
+
+      subLixies = startId ? 
         await this.prisma.lixi.findMany({
-          take: limit,
+          take: take,
           skip: 1,
           where: {
-            parentId: _.toSafeInteger(id),
+            parentId: lixiId,
           },
           cursor: {
-            id: _.toSafeInteger(startId),
+            id: startId,
           },
         }) : 
         await this.prisma.lixi.findMany({
-          take: limit,
+          take: take,
           where: {
-            parentId: _.toSafeInteger(startId),
+            parentId: lixiId,
           },
         })
       
-      let resultApi: any
-      resultApi = subLixies.map(subLixi => {
+      const resultApi = subLixies.map(subLixi => {
         return _.omit({
           ...subLixi,
           totalClaim: Number(subLixi.totalClaim),
         } as unknown as LixiDto, 'encryptedXPriv');
       })
-      return { resultApi };
+
+      const startCursor = resultApi.length > 0 ? _.first(resultApi)?.id : null;
+      const endCursor = resultApi.length > 0 ? _.last(resultApi)?.id : null;
+      const countAfter = !endCursor ? 0 : await this.prisma.claim.count({
+        where: {
+          lixiId: lixiId
+        },
+        cursor: {
+          id: _.toSafeInteger(endCursor)
+        },
+        skip: 1
+      });
+
+      const hasNextPage = countAfter > 0;
+
+      return {
+        data: resultApi ?? [],
+        pageInfo: {
+          hasNextPage,
+          startCursor,
+          endCursor
+        },
+        totalCount: count
+      } as PaginationResult<LixiDto>
     } catch (err: unknown) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -459,14 +491,54 @@ export class LixiController {
   }
 
   @Get(':id/claims')
-  async getLixiClaims(@Param('id') id: string): Promise<Claim[]> {
+  async getLixiClaims(
+    @Param('id') id: string,
+    @Query() { startId, limit }: PaginationParams
+  ): Promise<PaginationResult<Claim>> {
     const lixiId = _.toSafeInteger(id);
+    const take = limit ? _.toSafeInteger(limit) : 4;
+
     try {
-      const claims = await this.prisma.claim.findMany({
+      let claims: ClaimDb[] = [];
+
+      const count = await this.prisma.claim.count({
         where: {
           lixiId: lixiId
         }
       });
+
+      if (!startId) {
+        // No start id, we should return the normal data without the cursor
+        claims = await this.prisma.claim.findMany({
+          where: {
+            lixiId: lixiId
+          },
+          orderBy: [
+            {
+              id: 'asc'
+            }
+          ],
+          take: take,
+          skip: startId ? 1 : 0,
+        });
+      } else {
+        // Query with the cursor
+        claims = await this.prisma.claim.findMany({
+          where: {
+            lixiId: lixiId
+          },
+          orderBy: [
+            {
+              id: 'asc'
+            }
+          ],
+          take: take,
+          skip: 1,
+          cursor: {
+            id: _.toSafeInteger(startId)
+          }
+        });
+      }
 
       const results = claims.map(item => {
         return {
@@ -475,7 +547,34 @@ export class LixiController {
         } as Claim;
       });
 
-      return results ?? [];
+      const startCursor = results.length > 0 ? _.first(results)?.id : null;
+      const endCursor = results.length > 0 ? _.last(results)?.id : null;
+      const countAfter = !endCursor ? 0 : await this.prisma.claim.count({
+        where: {
+          lixiId: lixiId
+        },
+        orderBy: [
+          {
+            id: 'asc'
+          }
+        ],
+        cursor: {
+          id: _.toSafeInteger(endCursor)
+        },
+        skip: 1
+      });
+
+      const hasNextPage = countAfter > 0;
+
+      return {
+        data: results ?? [],
+        pageInfo: {
+          hasNextPage,
+          startCursor,
+          endCursor
+        },
+        totalCount: count
+      } as PaginationResult<Claim>
 
     } catch (err) {
       if (err instanceof VError) {
