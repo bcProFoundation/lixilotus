@@ -16,7 +16,7 @@ type StyledRawQRCodeProps = {
   size: number;
   renderAs: string;
   includeMargin: boolean | null;
-  imageSettings?: qrcode.ImageSettings;
+  imageSettings?: any;
 };
 
 export const StyledRawQRCode: React.FC<StyledRawQRCodeProps> = styled(RawQRCode) <StyledRawQRCodeProps>`

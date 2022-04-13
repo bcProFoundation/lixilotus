@@ -145,7 +145,7 @@ const Lixi: React.FC = () => {
         );
       case LixiType.Equal:
         return (
-          <>{intl.get('account.Equal')} {selectedLixi.amount / selectedLixi.numberOfSubLixi} {currency.ticker}</>
+          <>{intl.get('account.equal')} {selectedLixi.amount / selectedLixi.numberOfSubLixi} {currency.ticker}</>
         );
       default:
         return (
