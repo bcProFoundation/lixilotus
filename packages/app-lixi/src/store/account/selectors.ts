@@ -31,6 +31,6 @@ export const getSelectedAccount = createSelector(
 )
 
 export const getAccountById = (id: number) => createSelector(
-  selectEntities,
-  (accounts) => accounts[id]
+  getAllAccountsEntities,
+  (accounts) => accounts?.[id]
 )

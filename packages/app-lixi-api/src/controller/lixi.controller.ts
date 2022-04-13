@@ -13,7 +13,7 @@ import {
   PaginationResult
 } from '@bcpros/lixi-models';
 import { WalletService } from "src/services/wallet.service";
-import { aesGcmDecrypt } from 'src/utils/encryptionMethods';
+import { aesGcmDecrypt, numberToBase58 } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
 import { PrismaService } from '../services/prisma/prisma.service';
 import { LixiService } from 'src/services/lixi/lixi.service';
@@ -31,7 +31,7 @@ export class LixiController {
   ) { }
 
   @Get(':id')
-  async getLixi(@Param('id') id: string): Promise<any> {
+  async getLixi(@Param('id') id: string, @Headers('account-secret') accountSecret: string): Promise<any> {
     try {
       const lixi = await this.prisma.lixi.findUnique({
         where: {
@@ -55,21 +55,16 @@ export class LixiController {
         envelope: lixi.envelope,
       } as unknown as LixiDto, 'encryptedXPriv');
 
-      // const childrenLixies = await this.prisma.lixi.findMany({
-      //   take: 10,
-      //   where: {
-      //     parentId: _.toSafeInteger(id),
-      //   }
-      // });
-
-      // let childrenApi = childrenLixies.map(item => {
-      //   return _.omit({
-      //     ...item,
-      //     totalClaim: Number(item.totalClaim),
-      //     expiryAt: item.expiryAt ? item.expiryAt : undefined,
-      //     country: item.country ? item.country : undefined,
-      //   }, 'encryptedXPriv');
-      // })
+      // Return the claim code only if there's account secret attach to the header
+      try {
+        if (accountSecret && accountSecret !== 'undefined' && accountSecret !== 'null') {
+          const claimPart = await aesGcmDecrypt(lixi.encryptedClaimCode, accountSecret);
+          const encodedId = numberToBase58(lixi.id);
+          resultApi.claimCode = claimPart + encodedId;
+        }
+      } catch (err: unknown) {
+        logger.error(err);
+      }
       return { resultApi };
     } catch (err: unknown) {
       if (err instanceof VError) {
