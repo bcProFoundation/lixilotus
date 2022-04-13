@@ -72,7 +72,6 @@ export class LixiController {
         logger.error(err);
       }
 
-
       const childrenApi: LixiDto[] = [];
 
       for (let item of childrenLixies) {

@@ -2,12 +2,13 @@ import { push } from 'connected-next-router';
 import * as _ from 'lodash';
 import * as Effects from 'redux-saga/effects';
 import { Modal } from 'antd';
-import { Claim, ClaimDto, PaginationResult, PostLixiResponseDto } from '@bcpros/lixi-models';
+import { AccountDto, Claim, ClaimDto, PaginationResult, PostLixiResponseDto } from '@bcpros/lixi-models';
 import {
   CreateLixiCommand, GenerateLixiCommand, LockLixiCommand, UnlockLixiCommand, Lixi, LixiDto,
   WithdrawLixiCommand, RenameLixiCommand
 } from '@bcpros/lixi-models/lib/lixi';
 import { all, fork, put, takeLatest } from '@redux-saga/core/effects';
+import { select } from 'redux-saga/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 import {
   generateRandomBase58Str
@@ -24,6 +25,8 @@ import {
   unlockLixiSuccess, withdrawLixi, withdrawLixiFailure, withdrawLixiSuccess, renameLixi, renameLixiFailure, renameLixiSuccess
 } from './actions';
 import lixiApi from './api';
+import { getAccountById } from '@store/account/selectors';
+import { getLixiById } from './selectors';
 
 const call: any = Effects.call;
 /**
@@ -70,7 +73,8 @@ function* generateLixiSaga(action: PayloadAction<GenerateLixiCommand>) {
 function* getLixiSaga(action: PayloadAction<number>) {
   try {
     const id = action.payload;
-    const data = yield call(lixiApi.getById, id);
+    const account: AccountDto = yield select(getAccountById(id));
+    const data = yield call(lixiApi.getById, id, account?.secret);
     yield put(getLixiSuccess(data));
   } catch (err) {
     const message = (err as Error).message ?? `Could not fetch the lixi from api.`;
@@ -143,15 +147,18 @@ function* postLixiFailureSaga(action: PayloadAction<string>) {
 
 function* refreshLixiSaga(action: PayloadAction<number>) {
   try {
-    yield put(showLoading(refreshLixiActionType));
     const lixiId = action.payload;
-    const data = yield call(lixiApi.getById, lixiId);
+    const selectedLixi: LixiDto = yield select(getLixiById(lixiId));
+    const account: AccountDto = yield select(getAccountById(selectedLixi.accountId));
+    yield put(showLoading(refreshLixi.type));
+    const data = yield call(lixiApi.getById, lixiId, account?.secret);
     const lixi = (data as any).lixi as Lixi;
     const children = (data as any).children as Lixi[];
     const claimResult: PaginationResult<Claim> = yield call(claimApi.getByLixiId, lixiId);
     const claims = (claimResult.data ?? []) as Claim[];
-    yield put(selectLixiSuccess({ lixi: lixi, children: children, claims: claims }));
+    yield put(refreshLixiSuccess({ lixi: lixi, children: children, claims: claims }));
   } catch (err) {
+    console.log(err);
     const message = (err as Error).message ?? `Unable to refresh the lixi.`;
     yield put(refreshLixiFailure(message));
   }
@@ -163,7 +170,7 @@ function* refreshLixiSuccessSaga(action: PayloadAction<{ lixi: Lixi, children: L
     description: 'Refresh the lixi successfully.',
     duration: 5
   }));
-  yield put(hideLoading(refreshLixiActionType));
+  yield put(hideLoading(refreshLixi.type));
 }
 
 function* refreshLixiFailureSaga(action: PayloadAction<string>) {
@@ -173,7 +180,7 @@ function* refreshLixiFailureSaga(action: PayloadAction<string>) {
     description: message,
     duration: 5
   }));
-  yield put(hideLoading(refreshLixiActionType));
+  yield put(hideLoading(refreshLixi.type));
 }
 
 function* setLixiSaga(action: PayloadAction<Lixi>) {
@@ -184,9 +191,11 @@ function* setLixiSaga(action: PayloadAction<Lixi>) {
 
 function* selectLixiSaga(action: PayloadAction<number>) {
   try {
-    yield put(showLoading(refreshLixiActionType));
     const lixiId = action.payload;
-    const data: LixiDto = yield call(lixiApi.getById, lixiId);
+    const selectedLixi: LixiDto = yield select(getLixiById(lixiId));
+    const account: AccountDto = yield select(getAccountById(selectedLixi.accountId));
+    yield put(showLoading(selectLixi.type));
+    const data: LixiDto = yield call(lixiApi.getById, lixiId, account?.secret);
     const lixi = (data as any).lixi as Lixi;
     const children = (data as any).children as Lixi[];
     const claimResult: PaginationResult<Claim> = yield call(claimApi.getByLixiId, lixiId);
@@ -199,8 +208,7 @@ function* selectLixiSaga(action: PayloadAction<number>) {
 }
 
 function* selectLixiSuccessSaga(action: PayloadAction<Lixi>) {
-  const lixies = action.payload;
-  yield put(hideLoading(selectLixiSuccess.type));
+  yield put(hideLoading(selectLixi.type));
   yield put(push('/lixi'));
 }
 

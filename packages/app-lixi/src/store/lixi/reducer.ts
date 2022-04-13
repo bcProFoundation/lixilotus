@@ -11,7 +11,6 @@ import {
   unlockLixiSuccess
 } from './actions';
 import { LixiesState } from './state';
-import { rename } from 'fs';
 
 export const lixiesAdapter = createEntityAdapter<Lixi>({});
 

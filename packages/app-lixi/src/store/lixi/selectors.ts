@@ -43,8 +43,8 @@ export const getSelectedLixiId = createSelector(
 );
 
 export const getLixiById = (id: number) => createSelector(
-  selectEntities,
-  (lixies) => lixies[id]
+  getAllLixiesEntities,
+  (lixies) => lixies?.[id]
 )
 
 export const getLixiesBySelectedAccount = createSelector(
