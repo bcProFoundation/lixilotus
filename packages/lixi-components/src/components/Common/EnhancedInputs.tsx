@@ -1,4 +1,5 @@
 import * as React from 'react';
+import intl from 'react-intl-universal';
 import { Form, FormItemProps, Input, InputProps, Select } from 'antd';
 import {
   ThemedDollarOutlined,
@@ -314,7 +315,7 @@ export const FormItemClaimCodeXpiInput = (props: FormItemClaimCodeXpiInputProps)
       <Form.Item {...otherProps}>
         <Input
           prefix={<LockOutlined />}
-          placeholder="Claim Code"
+          placeholder={intl.get('claim.claimCode')}
           name="claimCode"
           autoComplete="off"
           addonAfter={

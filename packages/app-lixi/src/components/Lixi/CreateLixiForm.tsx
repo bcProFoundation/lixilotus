@@ -1,6 +1,7 @@
 import { Checkbox, Collapse, DatePicker, Form, Input, Menu, Modal, notification, Radio, RadioChangeEvent } from 'antd';
 import { range } from 'lodash';
 import isEmpty from 'lodash.isempty';
+import intl from 'react-intl-universal';
 import moment from 'moment';
 import React, { useState } from 'react';
 import { openModal } from 'src/store/modal/actions';
@@ -226,8 +227,8 @@ const CreateLixiForm = ({
 
     if (!account) {
       dispatch(showToast('error', {
-        message: 'Unable to create lixi.',
-        description: 'Please Select an account first before creating lixi',
+        message: intl.get('account.unableCreateLixi'),
+        description: intl.get('account.selectLixiFirst'),
         duration: 5
       }));
     }
@@ -287,9 +288,9 @@ const CreateLixiForm = ({
       return (
         <Form.Item>
           <Radio.Group value={lixiType} onChange={handleChangeLixiType}>
-            <Radio value={LixiType.Random}>Random</Radio>
-            <Radio value={LixiType.Fixed}>Fixed</Radio>
-            <Radio value={LixiType.Divided}>Divided</Radio>
+            <Radio value={LixiType.Random}>{intl.get('account.random')}</Radio>
+            <Radio value={LixiType.Fixed}>{intl.get('account.fixed')}</Radio>
+            <Radio value={LixiType.Divided}>{intl.get('account.divided')}</Radio>
           </Radio.Group>
         </Form.Item>
       );
@@ -299,16 +300,16 @@ const CreateLixiForm = ({
         <>
           <Form.Item>
             <Radio.Group value={lixiType} onChange={handleChangeLixiType}>
-              <Radio value={LixiType.Random}>Random</Radio>
-              <Radio value={LixiType.Equal}>Equal</Radio>
+              <Radio value={LixiType.Random}>{intl.get('account.random')}</Radio>
+              <Radio value={LixiType.Equal}>{intl.get('account.equal')}</Radio>
             </Radio.Group>
           </Form.Item>
           <Form.Item>
             <Input
-              addonBefore="Sub-lixi"
+              addonBefore={intl.get('account.sub-lixi')}
               type="number"
               value={newNumberOfSubLixi}
-              placeholder="Number of sub lixi"
+              placeholder={intl.get('account.numberOfSubLixi')}
               name="equalValue"
               onChange={e => handleNewNumberOfSubLixi(e)}
             />
@@ -327,11 +328,11 @@ const CreateLixiForm = ({
             <Form.Item>
               <Input.Group compact>
                 <Input
-                  addonBefore="Fixed"
+                  addonBefore={intl.get('account.fixed')}
                   type="number"
                   step={1 / 10 ** currency.cashDecimals}
                   value={newLixiFixedValue}
-                  placeholder="Default value to give"
+                  placeholder={intl.get('account.defaultValueToGive')}
                   name="fixedValue"
                   onChange={e => handleChangeFixedValue(e)}
                 >
@@ -347,11 +348,11 @@ const CreateLixiForm = ({
             <Form.Item>
               <Input.Group compact>
                 <Input
-                  addonBefore="Divided"
+                  addonBefore={intl.get('account.divided')}
                   type="number"
                   step={1 / 10 ** currency.cashDecimals}
                   value={newLixiDividedValue}
-                  placeholder="Dividend number (Max 1,000,000)"
+                  placeholder={intl.get('account.dividedNumber')}
                   name="dividedValue"
                   onChange={e => handleChangeDividedValue(e)}
                 >
@@ -369,10 +370,10 @@ const CreateLixiForm = ({
           <>
             <Form.Item>
               <Input
-                addonBefore="Min"
+                addonBefore={intl.get('account.min')}
                 type="number"
                 step={1 / 10 ** currency.cashDecimals}
-                placeholder="Min value to give"
+                placeholder={intl.get('account.minValueToGive')}
                 name="minValue"
                 value={newLixiMinValue}
                 onChange={e => handleChangeMinValue(e)}
@@ -381,10 +382,10 @@ const CreateLixiForm = ({
             </Form.Item>
             <Form.Item>
               <Input
-                addonBefore="Max"
+                addonBefore={intl.get('account.max')}
                 type="number"
                 step={1 / 10 ** currency.cashDecimals}
-                placeholder="Max value to give"
+                placeholder={intl.get('account.maxValueToGive')}
                 name="maxValue"
                 value={newLixiMaxValue}
                 onChange={e => handleChangeMaxValue(e)}
@@ -409,9 +410,9 @@ const CreateLixiForm = ({
           }
         >
           <Input
-            addonBefore="Max Claim"
+            addonBefore={intl.get('account.maxClaim')}
             type="number"
-            placeholder="Enter max Claim number"
+            placeholder={intl.get('account.enterMaxClaimNumber')}
             name="lixiMaxClaim"
             value={newMaxClaim}
             onChange={e => handleNewMaxClaimInput(e)}
@@ -428,10 +429,10 @@ const CreateLixiForm = ({
           }
         >
           <Input
-            addonBefore="Min Staking"
+            addonBefore={intl.get('account.minStaking')}
             type="number"
             step={1 / 10 ** currency.cashDecimals}
-            placeholder="Enter minimum staking number"
+            placeholder={intl.get('account.enterMinStaking')}
             name="MinStaking"
             value={newMinStaking}
             onChange={e => handleNewMinStakingInput(e)}
@@ -448,7 +449,7 @@ const CreateLixiForm = ({
           }
         >
           <DatePicker
-            placeholder="Expiry time for your lixi"
+            placeholder={intl.get('account.expiryTime')}
             name="lixiExpiryAt"
             disabledDate={(current) => disabledDate(current)}
             disabledTime={(current) => disabledDateTime(current)}
@@ -479,7 +480,7 @@ const CreateLixiForm = ({
           marginBottom: '24px'
         }}
       >
-        <Panel header="Create Lixi" key="1">
+        <Panel header={intl.get('account.createLixi')} key="1">
           <AntdFormWrapper>
             <Form
               size="small"
@@ -497,8 +498,8 @@ const CreateLixiForm = ({
                 }
               >
                 <Input
-                  addonBefore="Name"
-                  placeholder="Enter a name for your lixi"
+                  addonBefore={intl.get('lixi.Name')}
+                  placeholder={intl.get('account.enterLixiName')}
                   name="lixiName"
                   value={newLixiName}
                   onChange={e => handleNewLixiNameInput(e)}
@@ -508,16 +509,16 @@ const CreateLixiForm = ({
               {/* select type claim */}
               <Form.Item>
                 <Radio.Group buttonStyle="solid" size="large" value={claimType} onChange={handleChangeClaimType}>
-                  <Radio.Button value={ClaimType.Single}>Single code</Radio.Button>
-                  <Radio.Button value={ClaimType.OneTime}>One-time codes</Radio.Button>
+                  <Radio.Button value={ClaimType.Single}>{intl.get('account.singleCode')}</Radio.Button>
+                  <Radio.Button value={ClaimType.OneTime}>{intl.get('account.oneTimeCode')}</Radio.Button>
                 </Radio.Group>
               </Form.Item>
               {selectClaimType()}
               <Form.Item>
                 <Input
                   type="number"
-                  addonBefore="Amount"
-                  placeholder="Enter balance for your lixi"
+                  addonBefore={intl.get('account.amount')}
+                  placeholder={intl.get('account.enterLixiBalance')}
                   name="lixiAmount"
                   value={newLixiAmount}
                   onChange={e => handleNewLixiAmountInput(e)}
@@ -536,8 +537,7 @@ const CreateLixiForm = ({
               {/* Message */}
               <Form.Item>
                 <TextArea
-
-                  placeholder="Enter the lixi message"
+                  placeholder={intl.get('account.lixiMessage')}
                   name="envelopeMessage"
                   value={newEnvelopeMessage}
                   onChange={e => handleEnvelopeMessageInput(e)}
@@ -549,7 +549,7 @@ const CreateLixiForm = ({
                 <AntdFormWrapper>
                   <CountrySelectDropdown
                     countries={countries}
-                    defaultValue={newCountryLixi ? newCountryLixi : 'All of country'}
+                    defaultValue={newCountryLixi ? newCountryLixi : intl.get('account.allCountry')}
                     handleChangeCountry={handleChangeCountry}
                   />
                 </AntdFormWrapper>
@@ -558,7 +558,7 @@ const CreateLixiForm = ({
               {/* Advanced */}
               <Form.Item>
                 <AdvancedCollapse>
-                  <Panel header="Advanced" key="2">
+                  <Panel header={intl.get('account.advance')} key="2">
                     {/* Max Claim and Expity Time */}
                     {selectExpiry()}
                     {/* Family Friendly */}
@@ -566,7 +566,7 @@ const CreateLixiForm = ({
                       <Checkbox
                         value={isFamilyFriendly}
                         onChange={e => handleFamilyFriendly(e)}>
-                        Family Friendly
+                        {intl.get('account.familyFriendly')}
                       </Checkbox>
                     </Form.Item>
                   </Panel>
@@ -579,7 +579,7 @@ const CreateLixiForm = ({
             disabled={!createLixiFormDataIsValid}
           >
             <PlusSquareOutlined />
-            &nbsp;Create Lixi
+            &nbsp;{intl.get('account.createLixi')}
           </SmartButton>
         </Panel>
       </LixiCollapse>

@@ -30,6 +30,7 @@
     "react": "17.0.2",
     "react-device-detect": "^2.1.2",
     "react-dom": "^17.0.2",
+    "react-intl-universal": "^2.4.12",
     "react-redux": "^7.2.6",
     "react-share": "^4.4.0",
     "react-web-share": "^1.1.3",

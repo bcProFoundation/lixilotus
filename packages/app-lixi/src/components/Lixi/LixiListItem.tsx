@@ -1,4 +1,5 @@
 import { Button, Dropdown, Menu } from 'antd';
+import intl from 'react-intl-universal';
 import * as _ from 'lodash';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
@@ -6,11 +7,11 @@ import { lockLixi, renameLixi, selectLixi, unlockLixi, withdrawLixi } from 'src/
 import styled, { DefaultTheme } from 'styled-components';
 
 import {
-    GiftOutlined, LockOutlined, MoreOutlined, WalletOutlined
+  GiftOutlined, LockOutlined, MoreOutlined, WalletOutlined
 } from '@ant-design/icons';
 import {
   ClaimType,
-    Lixi, LockLixiCommand, RenameLixiCommand, UnlockLixiCommand, WithdrawLixiCommand
+  Lixi, LockLixiCommand, RenameLixiCommand, UnlockLixiCommand, WithdrawLixiCommand
 } from '@bcpros/lixi-models/lib/lixi';
 import { getLixiesByLixiParent } from '@store/lixi/selectors';
 import { fromSmallestDenomination } from '@utils/cashMethods';
@@ -92,9 +93,9 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
   const selectedAccount = useAppSelector(getSelectedAccount);
   const subLixies = useAppSelector(getLixiesByLixiParent(lixi.id));
 
-  let options = ['Withdraw','Rename'];
+  let options = ['Withdraw', 'Rename'];
   lixi.status === 'active' ? options.unshift('Lock') : options.unshift('Unlock');
-  
+
   const postLixiData = {
     id: lixi.id,
     mnemonic: selectedAccount?.mnemonic,
@@ -125,10 +126,10 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
 
   const handleClickMenu = (e) => {
     e.domEvent.stopPropagation();
-    switch(e.key) {
-      case 'Lock': 
+    switch (e.key) {
+      case 'Lock':
         return dispatch(lockLixi(postLixiData as LockLixiCommand));
-      case 'Unlock': 
+      case 'Unlock':
         return dispatch(unlockLixi(postLixiData as UnlockLixiCommand));
       case 'Withdraw':
         return dispatch(withdrawLixi(postLixiData as WithdrawLixiCommand));
@@ -145,10 +146,10 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
       </LixiIcon>
       <BalanceAndTicker>
         <strong>{lixi.name}</strong>
-        <br/>
-        {lixi.claimType == ClaimType.Single ? 
-          <span>({lixi.claimedNum}) {fromSmallestDenomination(lixi.totalClaim)}/{fromSmallestDenomination(lixi.balance)} XPI remaining</span>
-        : <span>({_.size(subLixies.filter(item => item.isClaimed))}/{lixi.numberOfSubLixi}) { (_.sumBy(subLixies.filter(item => item.isClaimed), 'amount')).toFixed(2) } / { (_.sumBy(subLixies.filter(item => !item.isClaimed), 'amount')).toFixed(2) } XPI remaining</span>
+        <br />
+        {lixi.claimType == ClaimType.Single ?
+          <span>({lixi.claimedNum}) {fromSmallestDenomination(lixi.totalClaim)}/{fromSmallestDenomination(lixi.balance)} {intl.get('lixi.remainingXPI')}</span>
+          : <span>({_.size(subLixies.filter(item => item.isClaimed))}/{lixi.numberOfSubLixi}) {(_.sumBy(subLixies.filter(item => item.isClaimed), 'amount')).toFixed(2)} / {(_.sumBy(subLixies.filter(item => !item.isClaimed), 'amount')).toFixed(2)} {intl.get('lixi.remainingXPI')}</span>
         }
       </BalanceAndTicker>
       <Dropdown trigger={["click"]} overlay={

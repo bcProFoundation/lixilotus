@@ -4,7 +4,7 @@ import logger from 'src/logger';
 
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
-import { Lixi, Lixi as LixiDb, Claim as ClaimDb } from '@prisma/client';
+import { Lixi, Lixi as LixiDb, Claim as ClaimDb, Account as AccountDb } from '@prisma/client';
 import {
   Account,
   CreateLixiCommand, fromSmallestDenomination, Claim, LixiDto, ClaimType, LixiType,
@@ -13,8 +13,7 @@ import {
   PaginationResult
 } from '@bcpros/lixi-models';
 import { WalletService } from "src/services/wallet.service";
-import { aesGcmDecrypt, aesGcmEncrypt, numberToBase58, generateRandomBase58Str } from 'src/utils/encryptionMethods';
-import sleep from '../utils/sleep';
+import { aesGcmDecrypt } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
 import { PrismaService } from '../services/prisma/prisma.service';
 import { LixiService } from 'src/services/lixi/lixi.service';
@@ -43,13 +42,6 @@ export class LixiController {
         }
       });
 
-      const childrenLixies = await this.prisma.lixi.findMany({
-        take: 10,
-        where: {
-          parentId: _.toSafeInteger(id),
-        }
-      });
-
       if (!lixi) throw new VError('The lixi does not exist in the database.');
 
       const balance: number = await this.xpiWallet.getBalance(lixi.address);
@@ -63,18 +55,22 @@ export class LixiController {
         envelope: lixi.envelope,
       } as unknown as LixiDto, 'encryptedXPriv');
 
-      let childrenApi = childrenLixies.map(item => {
-        return _.omit({
-          ...item,
-          totalClaim: Number(item.totalClaim),
-          expiryAt: item.expiryAt ? item.expiryAt : undefined,
-          country: item.country ? item.country : undefined,
-        }, 'encryptedXPriv');
-      })
-      return {
-        lixi: resultApi,
-        children: childrenApi
-      };
+      // const childrenLixies = await this.prisma.lixi.findMany({
+      //   take: 10,
+      //   where: {
+      //     parentId: _.toSafeInteger(id),
+      //   }
+      // });
+
+      // let childrenApi = childrenLixies.map(item => {
+      //   return _.omit({
+      //     ...item,
+      //     totalClaim: Number(item.totalClaim),
+      //     expiryAt: item.expiryAt ? item.expiryAt : undefined,
+      //     country: item.country ? item.country : undefined,
+      //   }, 'encryptedXPriv');
+      // })
+      return { resultApi };
     } catch (err: unknown) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -203,14 +199,14 @@ export class LixiController {
         let lixi = null;
         if (command.claimType === ClaimType.Single) {
           // Single type
-          lixi = await this.lixiService.createSingleLixi(lixiIndex, account as Account, command);
+          lixi = await this.lixiService.createSingleLixi(lixiIndex, account, command);
           return {
             lixi
           } as PostLixiResponseDto;
         } else {
           // One time child codes type
-          lixi = await this.lixiService.createOneTimeParentLixi(lixiIndex, account as Account, command);
-          const jobId = await this.lixiService.createSubLixies(lixiIndex + 1, account as Account, command, lixi);
+          lixi = await this.lixiService.createOneTimeParentLixi(lixiIndex, account, command);
+          const jobId = await this.lixiService.createSubLixies(lixiIndex + 1, account, command, lixi.id);
           return {
             lixi,
             jobId
@@ -285,7 +281,6 @@ export class LixiController {
           return resultApi;
         }
       }
-
     } catch (err) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);

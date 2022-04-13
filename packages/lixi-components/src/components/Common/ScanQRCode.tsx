@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import { Alert, Modal } from 'antd';
 import { BrowserQRCodeReader } from '@zxing/library';
@@ -95,7 +96,7 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
         return teardownCodeReader(codeReader);
       }
     } catch (err) {
-      console.log(`Error in QR scanner:`);
+      console.log(intl.get('claim.QRScannerError'));
       console.log(err);
       console.log(JSON.stringify((err as any).message));
       //setMobileErrorMsg(JSON.stringify(err.message));
@@ -128,7 +129,7 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
         <ThemedQrcodeOutlined />
       </StyledScanQRCode>
       <StyledModal
-        title="Scan QR code"
+        title={intl.get('claim.ScanQRCode')}
         visible={visible}
         onCancel={() => setVisible(false)}
         footer={null}
@@ -139,7 +140,7 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
               <>
                 <Alert
                   message="Error"
-                  description="Error in QR scanner. Please ensure your camera is not in use. Due to Apple restrictions on third-party browsers, you must use Safari browser for QR code scanning on an iPhone."
+                  description={intl.get('claim.ScanQRCodeError')}
                   type="error"
                   showIcon
                   style={{ textAlign: 'left' }}

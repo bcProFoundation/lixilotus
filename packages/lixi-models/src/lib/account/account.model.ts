@@ -4,6 +4,8 @@ export interface Account {
   name: string;
   mnemonic: string;
   encryptedMnemonic: string;
+  encryptedSecret: string;
+  secret?: string;
   createdAt?: Date;
   updatedAt?: Date;
   mnemonicHash: string;

@@ -13,7 +13,7 @@ import {
 } from '@bcpros/lixi-models';
 import BCHJS from '@bcpros/xpi-js';
 import { PayloadAction } from '@reduxjs/toolkit';
-import { aesGcmEncrypt, aesGcmDecrypt, numberToBase58 } from '@utils/encryptionMethods';
+import { aesGcmEncrypt, aesGcmDecrypt, numberToBase58, generateRandomBase58Str } from '@utils/encryptionMethods';
 
 import accountApi from '../account/api';
 import { hideLoading, showLoading } from '../loading/actions';
@@ -117,8 +117,16 @@ function* postAccountSaga(action: PayloadAction<CreateAccountCommand>) {
 
     const data: AccountDto = yield call(accountApi.post, command);
 
+    // Calculate the account secret
+    const secret: string = yield call(aesGcmDecrypt, data.encryptedSecret, command.mnemonic);
+
     // Merge back to action payload
-    const result = { ...command, ...data } as Account;
+    const result = {
+      ...command,
+      ...data,
+      secret
+    } as Account;
+
     yield put(postAccountSuccess(result));
 
   } catch (err) {

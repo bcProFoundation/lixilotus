@@ -1,7 +1,8 @@
 import { Form, Input, Modal } from 'antd';
+import intl from 'react-intl-universal';
 import * as _ from 'lodash';
 import React, { useState } from 'react';
-import { useAppDispatch,useAppSelector } from 'src/store/hooks';
+import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { closeModal } from 'src/store/modal/actions';
 import { refreshLixiList } from '@store/account/actions';
 import { Lixi } from '@bcpros/lixi-models';
@@ -51,7 +52,7 @@ export const RenameLixiModal: React.FC<RenameLixiModalProps> = (props: RenameLix
   return (
     <>
       <Modal
-        title={`Rename Lixi ${lixi.name}`}
+        title={`${intl.get('lixi.renameLixi')} ${lixi.name}`}
         visible={true}
         onOk={handleOnOk}
         onCancel={handleOnCancel}
@@ -69,12 +70,12 @@ export const RenameLixiModal: React.FC<RenameLixiModalProps> = (props: RenameLix
                 newLixiNameIsValid === null ||
                   newLixiNameIsValid
                   ? ''
-                  : 'Lixi name must be a string between 1 and 24 characters long'
+                  : intl.get('lixi.lixiLengthError')
               }
             >
               <Input
                 prefix={<ProfileFilled />}
-                placeholder="Enter new lixi name"
+                placeholder={intl.get('lixi.enterNewLixiName')}
                 name="newName"
                 value={newLixiName}
                 onChange={e => handleLixiNameInput(e)}

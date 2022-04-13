@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import React from "react";
+import intl from 'react-intl-universal';
 import PrimaryButton, { SecondaryButton, SmartButton } from "@components/Common/PrimaryButton";
 import { ExclamationCircleOutlined, ImportOutlined, LockOutlined, PlusSquareOutlined } from "@ant-design/icons";
 import { Form, Input, Modal } from "antd";
@@ -64,10 +65,11 @@ const OnboardingComponent: React.FC = () => {
 
   async function showBackupConfirmModal() {
     confirm({
-      title: "Don't forget to back up your account",
+      title: intl.get('onboarding.dontForgetBackup'),
       icon: <ExclamationCircleOutlined />,
-      content: `Once your account is created you can back it up by writing down your 12-word seed. You can find your seed on the Settings page. If you are browsing in Incognito mode or if you clear your browser history, you will lose any funds that are not backed up!`,
-      okText: 'Okay, make me a account!',
+      content: intl.get('onboarding.dontForgetBackupDescription'),
+      okText: intl.get('onboarding.dontForgetBackupConfirm'),
+      cancelText: intl.get('onboarding.cancel'),
       centered: true,
       onOk() {
         dispatch(generateAccount())
@@ -113,29 +115,29 @@ const OnboardingComponent: React.FC = () => {
           <LixiTextLogo src='/images/lixi_logo_text.png' alt="lixi" />
         </div>
 
-        <h2 style={{ marginTop: '50px' }}>Welcome to LixiLotus!</h2>
+        <h2 style={{ marginTop: '50px' }}>{intl.get('onboarding.welcomeToLotus')}</h2>
         <WelcomeText>
-          LixiLotus is an open source, non-custodial web wallet for Lotus.
-          LixiLotus allow you to giveaway your Lotus effortlessly.
+          {intl.get('onboarding.lixiLotusIntroduce1')}
+          {intl.get('onboarding.lixiLotusIntroduce2')}
           <br />
-          To start, install LixiLotus to your device follow {' '}
+          {intl.get('onboarding.lixiLotusIntroduce3')} {' '}
           <WelcomeLink
             href="https://gitlab.com/abcpros/givegift/-/wikis/home"
             target="_blank"
             rel="noreferrer"
           >
-            the guide
+            {intl.get('onboarding.lixiLotusIntroduce4')}
           </WelcomeLink>
         </WelcomeText>
         <PrimaryButton
           style={{ marginTop: '100px' }}
           onClick={() => showBackupConfirmModal()}
         >
-          <PlusSquareOutlined /> New Account
+          <PlusSquareOutlined /> {intl.get('onboarding.newAccount')}
         </PrimaryButton>
 
         <SecondaryButton onClick={() => openSeedInput(!seedInput)}>
-          <ImportOutlined /> Import Account
+          <ImportOutlined /> {intl.get('onboarding.importAccount')}
         </SecondaryButton>
         {seedInput && (
           <AntdFormWrapper>
@@ -148,13 +150,13 @@ const OnboardingComponent: React.FC = () => {
                 }
                 help={
                   !formData.mnemonic || !isValidMnemonic
-                    ? 'Valid mnemonic seed phrase required'
+                    ? intl.get('account.mnemonicRequired')
                     : ''
                 }
               >
                 <Input
                   prefix={<LockOutlined />}
-                  placeholder="mnemonic (seed phrase)"
+                  placeholder={intl.get('account.mnemonic')}
                   name="mnemonic"
                   autoComplete="off"
                   onChange={e => handleChange(e)}
@@ -165,7 +167,7 @@ const OnboardingComponent: React.FC = () => {
                 disabled={!isValidMnemonic}
                 onClick={() => submit()}
               >
-                Import
+                {intl.get('onboarding.import')}
               </SmartButton>
             </Form>
           </AntdFormWrapper>

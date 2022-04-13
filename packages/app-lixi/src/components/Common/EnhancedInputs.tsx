@@ -1,7 +1,9 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
-import { Form, Input, Select } from 'antd';
+import { Select } from 'antd';
 import styled, { css } from 'styled-components';
+import intl from 'react-intl-universal';
+import AppLocale from '../../lang';
+import _ from 'lodash';
 
 export const AntdFormCss = css`
     .ant-input-group-addon {
@@ -77,3 +79,48 @@ export const AntdFormCss = css`
 export const AntdFormWrapper = styled.div`
     ${AntdFormCss}
 `;
+
+export const LanguageSelectDropdown = selectProps => {
+    const { Option } = Select;
+
+    // Build select dropdown from currency.languages
+    const languageMenuOptions: LanguageMenuOption[] = [];
+
+    for (var key in AppLocale) {
+        const languageMenuOption: LanguageMenuOption = {
+            value: key,
+            label: intl.formatMessage({
+                id: key
+            })
+        };
+        languageMenuOptions.push(languageMenuOption);
+    }
+
+    const languageOptions = languageMenuOptions.map(languageMenuOption => {
+        return (
+            <Option
+                key={languageMenuOption.value}
+                value={languageMenuOption.value}
+                className="selectedLanguageOption"
+            >
+                {languageMenuOption.label}
+            </Option>
+        );
+    });
+    return (
+        <Select
+            className="select-after"
+            style={{
+                width: '100%',
+            }}
+            {...selectProps}
+        >
+            {languageOptions}
+        </Select>
+    );
+};
+
+interface LanguageMenuOption {
+    value: string,
+    label: string
+}

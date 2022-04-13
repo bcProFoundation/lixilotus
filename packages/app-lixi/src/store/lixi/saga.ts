@@ -111,7 +111,7 @@ function* postLixiSaga(action: PayloadAction<CreateLixiCommand>) {
 
     const data: PostLixiResponseDto = yield call(lixiApi.post, dataApi);
 
-    if (_.isNil(data.lixi) || _.isNil(data.lixi.id)) {
+    if (_.isNil(data) || _.isNil(data.lixi) || _.isNil(data.lixi.id)) {
       throw new Error('Unable to create the lixi.');
     }
 
@@ -157,11 +157,8 @@ function* refreshLixiSaga(action: PayloadAction<number>) {
   try {
     yield put(showLoading(refreshLixiActionType));
     const lixiId = action.payload;
-    const data = yield call(lixiApi.getById, lixiId);
-    const lixi = (data as any).lixi as Lixi;
-    const children = (data as any).children as Lixi[];
-    // const childrenResult: PaginationResult<Lixi> = yield call(lixiApi.getSubLixi, lixiId);
-    // const children = (childrenResult.data ?? []) as Lixi[];
+    const lixi = yield call(lixiApi.getById, lixiId);
+    const children = yield put(getSubLixi(lixiId));
     const claimResult: PaginationResult<Claim> = yield call(claimApi.getByLixiId, lixiId);
     const claims = (claimResult.data ?? []) as Claim[];
     yield put(selectLixiSuccess({ lixi: lixi, children: children, claims: claims }));
@@ -200,10 +197,8 @@ function* selectLixiSaga(action: PayloadAction<number>) {
   try {
     yield put(showLoading(refreshLixiActionType));
     const lixiId = action.payload;
-    const data: LixiDto = yield call(lixiApi.getById, lixiId);
-    const lixi = (data as any).lixi as Lixi;
-    const children = (data as any).children as Lixi[];
-    // const children = yield put(getSubLixi(lixiId));
+    const lixi = yield call(lixiApi.getById, lixiId);
+    const children = yield put(getSubLixi(lixiId));
     const claimResult: PaginationResult<Claim> = yield call(claimApi.getByLixiId, lixiId);
     const claims = (claimResult.data ?? []) as Claim[];
     yield put(selectLixiSuccess({ lixi: lixi, children: children, claims: claims }));

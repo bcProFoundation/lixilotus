@@ -5,6 +5,7 @@ import lixiSaga from './lixi/saga';
 import claimSaga from './claim/saga';
 import envelopeSaga from './envelope/saga';
 import toastSaga from './toast/saga';
+import settingsSaga from './settings/saga';
 
 export default function* rootSaga() {
   yield all([
@@ -12,6 +13,7 @@ export default function* rootSaga() {
     lixiSaga(),
     claimSaga(),
     envelopeSaga(),
-    toastSaga()
+    toastSaga(),
+    settingsSaga()
   ]);
 }

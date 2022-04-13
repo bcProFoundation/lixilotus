@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import { VError } from 'verror';
 import { Account as AccountDb, Lixi as LixiDb, PrismaClient } from '@prisma/client';
 import { ImportAccountCommand, AccountDto, CreateAccountCommand, RenameAccountCommand, DeleteAccountCommand, Lixi } from '@bcpros/lixi-models';
-import { aesGcmDecrypt, aesGcmEncrypt, hashMnemonic } from '../utils/encryptionMethods';
+import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase58Str, hashMnemonic } from '../utils/encryptionMethods';
 import { WalletService } from "../services/wallet.service";
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import { PrismaService } from '../services/prisma/prisma.service';
@@ -31,7 +31,6 @@ export class AccountController {
 
       const result = {
         ...account,
-        encryptedMnemonic: String(account?.encryptedMnemonic),
         balance: balance
       } as AccountDto;
       return result;
@@ -65,7 +64,9 @@ export class AccountController {
         }
 
         // encrypt mnemonic
-        let encryptedMnemonic = await aesGcmEncrypt(mnemonic, mnemonic);
+        const encryptedMnemonic = await aesGcmEncrypt(mnemonic, mnemonic);
+        // Create random account secret then encrypt it using mnemonic
+        const encryptedSecret = await aesGcmDecrypt(generateRandomBase58Str(10), mnemonic);
 
         // create account in database
         const { address } = await this.walletService.deriveAddress(mnemonic, 0);
@@ -73,6 +74,7 @@ export class AccountController {
         const accountToInsert = {
           name: name,
           encryptedMnemonic: encryptedMnemonic,
+          encryptedSecret: encryptedSecret,
           mnemonicHash: mnemonicHash,
           id: undefined,
           address: address,
@@ -119,15 +121,20 @@ export class AccountController {
   }
 
   @Post()
-  async addAccounts(@Body() command: CreateAccountCommand): Promise<AccountDto> {
+  async createAccount(@Body() command: CreateAccountCommand): Promise<AccountDto> {
     if (command) {
       try {
         const { address } = await this.walletService.deriveAddress(command.mnemonic, 0);
         const name = address.slice(12, 17);
 
+        // Create random account secret then encrypt it using mnemonic
+        const accountSecret: string = generateRandomBase58Str(10);
+        const encryptedSecret = await aesGcmEncrypt(accountSecret, command.mnemonic);
+
         const accountToInsert = {
           name: name,
           encryptedMnemonic: command.encryptedMnemonic,
+          encryptedSecret: encryptedSecret,
           mnemonicHash: command.mnemonicHash,
           id: undefined,
           address: address,
@@ -135,10 +142,10 @@ export class AccountController {
 
         const createdAccount: AccountDb = await this.prisma.account.create({ data: accountToInsert });
 
-        const resultApi: AccountDto = {
+        const resultApi: AccountDto = _.omit({
           ...command, ...createdAccount,
           address
-        };
+        }, ['mnemonic', 'encryptedMnemonic']);
 
         return resultApi;
       } catch (err) {
@@ -181,10 +188,10 @@ export class AccountController {
           }
         });
 
-        const resultApi: AccountDto = {
+        const resultApi: AccountDto = _.omit({
           ...command, ...updatedAccount,
           address: updatedAccount.address as string
-        };
+        }, ['mnemonic', 'encryptedMnemonic']);
 
         return resultApi;
 
@@ -213,8 +220,6 @@ export class AccountController {
           lixies: true
         }
       });
-
-
 
       if (account) {
         // Validate the mnemonic

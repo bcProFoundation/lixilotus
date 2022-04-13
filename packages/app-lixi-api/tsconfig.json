@@ -93,7 +93,8 @@
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
   "include": [
-    "./src/**/*.ts"
+    "./src/**/*.ts",
+    "src/processors/create-sub-lixies.isolated.processor.js"
   ],
   "exclude": [
     "node_modules"

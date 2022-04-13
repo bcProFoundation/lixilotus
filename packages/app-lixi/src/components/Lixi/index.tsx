@@ -1,4 +1,5 @@
-import { Button, Collapse, Descriptions, message } from 'antd';
+import { Collapse, Descriptions, message } from 'antd';
+import intl from 'react-intl-universal';
 import { saveAs } from 'file-saver';
 import { toPng } from 'html-to-image';
 import * as _ from 'lodash';
@@ -87,8 +88,6 @@ const Lixi: React.FC = () => {
   let subLixies = useAppSelector(getLixiesByLixiParent(selectedLixi.id));
 
   subLixies = _.sortBy(subLixies, ['isClaimed'])
-  const isClaimed = subLixies.filter(item => item.isClaimed);
-  const isNotClaimed = subLixies.filter(item => !item.isClaimed);
 
   const [limit, setLimit] = useState(5);
 
@@ -153,25 +152,25 @@ const Lixi: React.FC = () => {
     switch (selectedLixi?.lixiType) {
       case LixiType.Fixed:
         return (
-          <>Fixed {selectedLixi.fixedValue} {currency.ticker}</>
+          <>{intl.get('account.fixed')} {selectedLixi.fixedValue} {currency.ticker}</>
         );
       case LixiType.Divided:
         return (
-          <>Divided by {selectedLixi.dividedValue} </>
+          <>{intl.get('account.DividedBy')} {selectedLixi.dividedValue} </>
         );
       case LixiType.Equal:
         return (
-          <>Equal {selectedLixi.amount / selectedLixi.numberOfSubLixi} {currency.ticker}</>
+          <>{intl.get('account.Equal')} {selectedLixi.amount / selectedLixi.numberOfSubLixi} {currency.ticker}</>
         );
       default:
         return (
-          <>Random {selectedLixi?.minValue}-{selectedLixi?.maxValue} {currency.ticker}</>
+          <>{intl.get('account.random')} {selectedLixi?.minValue}-{selectedLixi?.maxValue} {currency.ticker}</>
         );
     }
   }
 
   const showRedemption = () => {
-    if (selectedLixi.claimType == ClaimType.Single) {  
+    if (selectedLixi.claimType == ClaimType.Single) {
       if (selectedLixi?.maxClaim != 0) {
         return <>{selectedLixi?.claimedNum} / {selectedLixi?.maxClaim}</>
       }
@@ -185,7 +184,7 @@ const Lixi: React.FC = () => {
 
   const showMinStaking = () => {
     return (selectedLixi?.minStaking) ? (
-      <Descriptions.Item label="Min Staking" key='desc.minstaking'>
+      <Descriptions.Item label={intl.get('account.minStaking')} key='desc.minstaking'>
         {selectedLixi.minStaking} {currency.ticker}
       </Descriptions.Item>) : "";
   }
@@ -193,7 +192,7 @@ const Lixi: React.FC = () => {
   const formatDate = () => {
     if (selectedLixi?.expiryAt != null) {
       return (
-        <Descriptions.Item label="Expiry at" key='desc.expiryat'>
+        <Descriptions.Item label={intl.get('lixi.ExpireAt')} key='desc.expiryat'>
           {moment(selectedLixi?.expiryAt).format("YYYY-MM-DD HH:mm")}
         </Descriptions.Item>
       );
@@ -205,14 +204,14 @@ const Lixi: React.FC = () => {
 
   const showCountry = () => {
     return (selectedLixi?.country != null) ? (
-      <Descriptions.Item label="Country" key='desc.country'>
+      <Descriptions.Item label={intl.get('lixi.Country')} key='desc.country'>
         {countries.find(country => country.id === selectedLixi?.country)?.name}
       </Descriptions.Item>) : "";
   }
 
   const showIsFamilyFriendly = () => {
     return (selectedLixi?.isFamilyFriendly) ? (
-      <Descriptions.Item label="Optional" key='desc.optional'>
+      <Descriptions.Item label={intl.get('lixi.Optional')} key='desc.optional'>
         Family Friendly
       </Descriptions.Item>) : "";
   }
@@ -249,9 +248,9 @@ const Lixi: React.FC = () => {
             name={selectedLixi?.name ?? ''}
           />
           <BalanceHeader
-            balance={selectedLixi.claimType==ClaimType.Single ? 
-              (fromSmallestDenomination(selectedLixi?.balance) ?? 0) : 
-              (_.sumBy(isNotClaimed, 'amount')).toFixed(2)+fromSmallestDenomination(selectedLixi?.balance) 
+            balance={selectedLixi.claimType == ClaimType.Single ?
+              (fromSmallestDenomination(selectedLixi?.balance) ?? 0) :
+              (_.sumBy(subLixies.filter(item => !item.isClaimed), 'amount')).toFixed(2) + fromSmallestDenomination(selectedLixi?.balance)
             }
             ticker={currency.ticker} />
           {selectedLixi?.claimType === ClaimType.Single ?
@@ -265,28 +264,28 @@ const Lixi: React.FC = () => {
           <Descriptions
             column={1}
             bordered
-            title={`Lixi info for "${selectedLixi.name}"`}
+            title={intl.get('lixi.lixiInfo', { lixiName: selectedLixi.name })}
             style={{
               padding: '0 0 20px 0',
               color: 'rgb(23,23,31)',
             }}
           >
-            <Descriptions.Item label="Claim Type" key='desc.claimtype'>
+            <Descriptions.Item label={intl.get('lixi.claimType')} key='desc.claimtype'>
               {selectedLixi.claimType == ClaimType.Single ? "Single" : "One-Time Codes"}
             </Descriptions.Item>
-            <Descriptions.Item label="Type" key='desc.type'>
+            <Descriptions.Item label={intl.get('lixi.type')} key='desc.type'>
               {typeLixi()}
             </Descriptions.Item>
-            <Descriptions.Item label="Total Claimed" key='desc.totalclaimed'>
-              {selectedLixi.claimType == ClaimType.Single ?  
-              (fromSmallestDenomination(selectedLixi?.totalClaim) ?? 0): 
-              ( (_.sumBy(isClaimed, 'amount')).toFixed(2) )} {currency.ticker}
+            <Descriptions.Item label={intl.get('lixi.totalClaimed')} key='desc.totalclaimed'>
+              {selectedLixi.claimType == ClaimType.Single ?
+                (fromSmallestDenomination(selectedLixi?.totalClaim) ?? 0) :
+                ((_.sumBy(subLixies.filter(item => item.isClaimed), 'amount')).toFixed(2))} {currency.ticker}
             </Descriptions.Item>
-            <Descriptions.Item label="Remaining Lixi" key='desc.claim'>
+            <Descriptions.Item label={intl.get('lixi.remainingLixi')} key='desc.claim'>
               {showRedemption()}
             </Descriptions.Item>
             {selectedLixi.envelopeMessage && (
-              <Descriptions.Item label="Message">
+              <Descriptions.Item label={intl.get('lixi.message')}>
                 {selectedLixi?.envelopeMessage}
               </Descriptions.Item>
             )}
@@ -298,7 +297,7 @@ const Lixi: React.FC = () => {
 
           {/* Lixi details */}
           <StyledCollapse style={{ marginBottom: '20px' }}>
-            <Panel header="Click to reveal lixi detail" key="panel-1">
+            <Panel header={intl.get('lixi.lixiDetail')} key="panel-1">
               {selectedLixi.claimType == ClaimType.Single ?
                 <>
                   <div ref={qrPanelRef}>
@@ -310,7 +309,7 @@ const Lixi: React.FC = () => {
                   <SmartButton
                     onClick={() => handleDownloadQRClaimCode()}
                   >
-                    <DownloadOutlined />  Download Code
+                    <DownloadOutlined />  {intl.get('lixi.downloadCode')}
                   </SmartButton>
                 </> :
                 <>
@@ -347,7 +346,7 @@ const Lixi: React.FC = () => {
                   <span style={{ fontSize: '32px' }}>{selectedLixi.claimCode}</span>
                 </Copied>
                 <SmartButton>
-                  <CopyOutlined />  Copy Claim Code
+                  <CopyOutlined />  {intl.get('lixi.copyClaim')}
                 </SmartButton>
               </div>
             </CopyToClipboard> :
@@ -357,13 +356,13 @@ const Lixi: React.FC = () => {
           <SmartButton
             onClick={() => handleRefeshLixi()}
           >
-            <ReloadOutlined />  Refresh Lixi
+            <ReloadOutlined />  {intl.get('lixi.refreshLixi')}
           </SmartButton>
 
           <ClaimList claims={allClaimsCurrentLixi} />
         </>
       )
-        : `No lixi is selected`
+        : intl.get('lixi.noLixiSelected')
       }
     </>
   )

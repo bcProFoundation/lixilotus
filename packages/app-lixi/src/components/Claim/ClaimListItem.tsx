@@ -1,7 +1,6 @@
 import styled, { DefaultTheme } from 'styled-components';
+import intl from 'react-intl-universal';
 import { Claim } from '@bcpros/lixi-models';
-import { useAppDispatch } from 'src/store/hooks';
-import { DollarCircleOutlined } from '@ant-design/icons';
 import { fromSmallestDenomination } from '@utils/cashMethods';
 import GrayLotus from '@assets/images/gray_lotus.svg';
 
@@ -110,7 +109,7 @@ const ClaimListItem: React.FC<ClaimListItemProps> = (props: ClaimListItemProps) 
         </LotusLogo>
       </ClaimItemIcon>
       <ClaimDescription>
-        <ClaimDescriptionLabel>Claim</ClaimDescriptionLabel>
+        <ClaimDescriptionLabel>{intl.get('claim.claim')}</ClaimDescriptionLabel>
         <br />
         {claimDateLocalTime}
       </ClaimDescription>
