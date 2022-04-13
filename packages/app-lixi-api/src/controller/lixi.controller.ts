@@ -11,7 +11,7 @@ import {
   PaginationResult
 } from '@bcpros/lixi-models';
 import { WalletService } from "src/services/wallet.service";
-import { aesGcmDecrypt } from 'src/utils/encryptionMethods';
+import { aesGcmDecrypt, numberToBase58 } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
 import logger from 'src/logger';
 import { PrismaService } from '../services/prisma/prisma.service';
@@ -30,7 +30,7 @@ export class LixiController {
   ) { }
 
   @Get(':id')
-  async getLixi(@Param('id') id: string): Promise<any> {
+  async getLixi(@Param('id') id: string, @Headers('account-secret') accountSecret: string): Promise<any> {
     try {
       const lixi = await this.prisma.lixi.findUnique({
         where: {
@@ -59,16 +59,44 @@ export class LixiController {
         balance: balance,
         totalClaim: Number(lixi.totalClaim),
         envelope: lixi.envelope,
-      } as unknown as LixiDto, 'encryptedXPriv');
+      } as LixiDto, 'encryptedXPriv', 'encryptedClaimCode');
 
-      let childrenApi = childrenLixies.map(item => {
-        return _.omit({
+      // Return the claim code only if there's account secret attach to the header
+      try {
+        if (accountSecret && accountSecret !== 'undefined' && accountSecret !== 'null') {
+          const claimPart = await aesGcmDecrypt(lixi.encryptedClaimCode, accountSecret);
+          const encodedId = numberToBase58(lixi.id);
+          resultApi.claimCode = claimPart + encodedId;
+        }
+      } catch (err: unknown) {
+        logger.error(err);
+      }
+
+
+      const childrenApi: LixiDto[] = [];
+
+      for (let item of childrenLixies) {
+
+        const childResult = _.omit({
           ...item,
           totalClaim: Number(lixi.totalClaim),
           expiryAt: item.expiryAt ? item.expiryAt : undefined,
           country: item.country ? item.country : undefined,
-        }, 'encryptedXPriv');
-      })
+        } as LixiDto, 'encryptedXPriv', 'encryptedClaimCode');
+
+        // Return the claim code only if there's account secret attach to the header
+        try {
+          if (accountSecret && accountSecret !== 'undefined' && accountSecret !== 'null') {
+            const claimPart = await aesGcmDecrypt(item.encryptedClaimCode, accountSecret);
+            const encodedId = numberToBase58(item.id);
+            childResult.claimCode = claimPart + encodedId;
+          }
+        } catch (err: unknown) {
+          logger.error(err);
+        }
+        childrenApi.push(childResult);
+      }
+
       return {
         lixi: resultApi,
         children: childrenApi

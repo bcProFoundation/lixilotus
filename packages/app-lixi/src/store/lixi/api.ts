@@ -3,9 +3,16 @@ import { CreateLixiCommand, LockLixiCommand, UnlockLixiCommand, LixiDto, Withdra
 import axiosClient from "@utils/axiosClient";
 
 const lixiApi = {
-  getById(id: number): Promise<LixiDto> {
+  getById(id: number, accountSecret: string): Promise<LixiDto> {
     const url = `/api/lixies/${id}`;
-    return axiosClient.get(url)
+
+    const config = accountSecret ? {
+      headers: {
+        'Account-Secret': accountSecret
+      }
+    } : {};
+
+    return axiosClient.get(url, config)
       .then(response => {
         return response.data as LixiDto;
       })

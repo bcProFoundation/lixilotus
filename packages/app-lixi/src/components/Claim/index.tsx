@@ -88,29 +88,23 @@ const ClaimComponent: React.FC = () => {
   }
 
   async function submit(token) {
-    if (
-      !currentAddress ||
-      !currentClaimCode
-    ) {
+    if (!currentAddress || !currentClaimCode) {
       return;
     }
 
-    const address = currentAddress;
-    const claimCode = currentClaimCode;
-
     // Get the param-free address
-    let cleanAddress = address.split('?')[0];
+    let cleanAddress = currentAddress.split('?')[0];
 
     const isValidAddress = XPI.Address.isXAddress(cleanAddress);
 
     if (!isValidAddress) {
-      const error = intl.get('claim.titleShared', {ticker: currency.ticker});
+      const error = intl.get('claim.titleShared', { ticker: currency.ticker });
       setClaimXpiAddressError(error);
     }
 
     dispatch(postClaim({
-      claimAddress: address,
-      claimCode: claimCode,
+      claimAddress: cleanAddress,
+      claimCode: currentClaimCode,
       captchaToken: token,
     } as CreateClaimDto));
 
@@ -127,7 +121,7 @@ const ClaimComponent: React.FC = () => {
 
     // Is this valid address?
     if (!isValid) {
-      error = intl.get('claim.invalidAddress', {ticker: currency.ticker});
+      error = intl.get('claim.invalidAddress', { ticker: currency.ticker });
     }
     else {
       error = false;
@@ -171,7 +165,7 @@ const ClaimComponent: React.FC = () => {
                   })
                 }
                 inputProps={{
-                  placeholder: intl.get('claim.tickerAddress', {ticker: currency.ticker}),
+                  placeholder: intl.get('claim.tickerAddress', { ticker: currency.ticker }),
                   name: 'address',
                   onChange: e => handleAddressChange(e),
                   required: true,

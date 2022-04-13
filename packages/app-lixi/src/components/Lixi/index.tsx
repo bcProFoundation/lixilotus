@@ -231,10 +231,10 @@ const Lixi: React.FC = () => {
               color: 'rgb(23,23,31)',
             }}
           >
-            <Descriptions.Item label={intl.get('lixi.ClaimType')} key='desc.claimtype'>
+            <Descriptions.Item label={intl.get('lixi.claimType')} key='desc.claimtype'>
               {selectedLixi.claimType == ClaimType.Single ? "Single" : "One-Time Codes"}
             </Descriptions.Item>
-            <Descriptions.Item label={intl.get('lixi.Type')} key='desc.type'>
+            <Descriptions.Item label={intl.get('lixi.type')} key='desc.type'>
               {typeLixi()}
             </Descriptions.Item>
             <Descriptions.Item label={intl.get('lixi.totalClaimed')} key='desc.totalclaimed'>

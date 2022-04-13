@@ -40,7 +40,7 @@ export class LixiService {
     // Calculate the lixi encrypted claim code from the input password
     const { address, xpriv } = await this.walletService.deriveAddress(command.mnemonic, derivationIndex);
     const encryptedXPriv = await aesGcmEncrypt(xpriv, command.password);
-    const secret = await aesGcmDecrypt(account.encryptedMnemonic, command.mnemonic);
+    const secret = await aesGcmDecrypt(account.encryptedSecret, command.mnemonic);
     const encryptedClaimCode = await aesGcmEncrypt(command.password, secret);
 
     // Prepare data to insert into the database
@@ -114,7 +114,8 @@ export class LixiService {
     // Calculate the lixi encrypted claim code from the input password
     const { address, xpriv } = await this.walletService.deriveAddress(command.mnemonic, derivationIndex);
     const encryptedXPriv = await aesGcmEncrypt(xpriv, command.password);
-    const encryptedClaimCode = await aesGcmEncrypt(command.password, command.mnemonic);
+    const secret = await aesGcmDecrypt(account.encryptedSecret, command.mnemonic);
+    const encryptedClaimCode = await aesGcmEncrypt(command.password, secret);
 
     // Prepare data to insert into the database
     const data = {
@@ -196,6 +197,9 @@ export class LixiService {
     // The amount should be funded from the account
     const xpiAllowance = command.amount / numberOfChunks;
 
+    // Decrypt the account secret
+    const secret = await aesGcmDecrypt(account.encryptedSecret, command.mnemonic);
+
     // Prepare the utxo and keypair to send funding
     const utxos = await this.XPI.Utxo.get(account.address);
     const utxoStore = utxos[0];
@@ -222,7 +226,8 @@ export class LixiService {
         temporaryFeeCalc: fee,
         parentId: parentLixiId,
         command: command,
-        fundingAddress: account.address
+        fundingAddress: account.address,
+        accountSecret: secret
       };
 
       const childJob: FlowJob = {
