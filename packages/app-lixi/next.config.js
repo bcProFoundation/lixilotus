@@ -85,7 +85,7 @@ const nextConfig = withLess({
 	experimental: {
 		// React 18 related
 		// @link https://nextjs.org/docs/advanced-features/react-18
-		// reactRoot: true,
+		reactRoot: true,
 
 		// Standalone build
 		// @link https://nextjs.org/docs/advanced-features/output-file-tracing#automatically-copying-traced-files-experimental

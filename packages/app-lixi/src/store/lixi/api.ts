@@ -3,7 +3,7 @@ import { CreateLixiCommand, LockLixiCommand, UnlockLixiCommand, WithdrawLixiComm
 import axiosClient from "@utils/axiosClient";
 
 const lixiApi = {
-  getById(id: number, accountSecret: string): Promise<LixiDto> {
+  getById(id: number, accountSecret?: string): Promise<LixiDto> {
     const url = `/api/lixies/${id}`;
 
     const config = accountSecret ? {
@@ -21,11 +21,19 @@ const lixiApi = {
         throw response?.data ?? err ?? 'Network Error';
       })
   },
-  getSubLixi(id: number, startId?: number): Promise<PaginationResult<LixiDto>> {
+  getSubLixies(parentId: number, accountSecret?: string, startId?: number): Promise<PaginationResult<LixiDto>> {
+
+    const config = accountSecret ? {
+      headers: {
+        'Account-Secret': accountSecret
+      }
+    } : {};
+
     const url = startId ?
-      `/api/lixies/${id}/children?startId=${startId}` :
-      `/api/lixies/${id}/children`;
-    return axiosClient.get(url)
+      `/api/lixies/${parentId}/children?startId=${startId}` :
+      `/api/lixies/${parentId}/children`;
+
+    return axiosClient.get(url, config)
       .then(response => {
         return response.data as PaginationResult<LixiDto>;;
       })

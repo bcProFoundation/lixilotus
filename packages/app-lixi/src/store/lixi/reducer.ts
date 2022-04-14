@@ -7,6 +7,8 @@ import {
   importAccountSuccess, refreshLixiListSuccess, selectAccountSuccess
 } from '../account/actions';
 import {
+  fetchInitialSubLixiesSuccess,
+  fetchMoreSubLixiesSuccess,
   lockLixiSuccess, postLixiSuccess, refreshLixiSuccess, renameLixiSuccess, selectLixiSuccess, setLixi, setLixiBalance,
   unlockLixiSuccess
 } from './actions';
@@ -14,9 +16,12 @@ import { LixiesState } from './state';
 
 export const lixiesAdapter = createEntityAdapter<Lixi>({});
 
+export const childrenLixiesAdapter = createEntityAdapter<Lixi>({});
+
 const initialState: LixiesState = lixiesAdapter.getInitialState({
   selectedId: 0,
   claimIdsById: {},
+  children: childrenLixiesAdapter.getInitialState({})
 });
 
 export const lixiReducer = createReducer(initialState, (builder) => {
@@ -30,7 +35,7 @@ export const lixiReducer = createReducer(initialState, (builder) => {
       state.selectedId = lixi.id ?? undefined;
     })
     .addCase(selectLixiSuccess, (state, action) => {
-      const { lixi, children, claims } = action.payload;
+      const { lixi, claims } = action.payload;
       const id = lixi.id;
       state.selectedId = id;
       const updateLixi: Update<Lixi> = {
@@ -41,22 +46,11 @@ export const lixiReducer = createReducer(initialState, (builder) => {
       };
       lixiesAdapter.updateOne(state, updateLixi);
 
-      for (let i = 0; i < _.size(children); i++) {
-        const child = children[i];
-        const updatechild: Update<Lixi> = {
-          id: child.id,
-          changes: {
-            ...child,
-          },
-        };
-        lixiesAdapter.updateOne(state, updatechild);
-      }
-
       const claimIds = claims.map(claim => claim.id);
       state.claimIdsById[id] = claimIds;
     })
     .addCase(refreshLixiSuccess, (state, action) => {
-      const { lixi, children, claims } = action.payload;
+      const { lixi, claims } = action.payload;
       const updateLixi: Update<Lixi> = {
         id: lixi.id,
         changes: {
@@ -65,18 +59,7 @@ export const lixiReducer = createReducer(initialState, (builder) => {
       };
       lixiesAdapter.updateOne(state, updateLixi);
 
-      for (let i = 0; i < _.size(children); i++) {
-        const child = children[i];
-        const updatechild: Update<Lixi> = {
-          id: child.id,
-          changes: {
-            ...child,
-          },
-        };
-        lixiesAdapter.updateOne(state, updatechild);
-      }
-
-      const claimIds = action.payload.claims.map((claim) => claim.id);
+      const claimIds = claims.map((claim) => claim.id);
       state.claimIdsById[lixi.id] = claimIds;
     })
     .addCase(selectAccountSuccess, (state, action) => {
@@ -150,5 +133,13 @@ export const lixiReducer = createReducer(initialState, (builder) => {
         },
       };
       lixiesAdapter.updateOne(state, updateLixi);
-    });
+    })
+    .addCase(fetchInitialSubLixiesSuccess, (state, action) => {
+      const lixies = action.payload;
+      childrenLixiesAdapter.setAll(state, lixies);
+    })
+    .addCase(fetchMoreSubLixiesSuccess, (state, action) => {
+      const lixies = action.payload;
+      childrenLixiesAdapter.upsertMany(state, lixies);
+    })
 });

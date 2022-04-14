@@ -53,7 +53,7 @@ export class LixiController {
         balance: balance,
         totalClaim: Number(lixi.totalClaim),
         envelope: lixi.envelope,
-      } as unknown as LixiDto, 'encryptedXPriv');
+      } as unknown as LixiDto, 'encryptedXPriv', 'encryptedClaimCode');
 
       // Return the claim code only if there's account secret attach to the header
       try {
@@ -65,7 +65,7 @@ export class LixiController {
       } catch (err: unknown) {
         logger.error(err);
       }
-      return { resultApi };
+      return resultApi;
     } catch (err: unknown) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -77,24 +77,25 @@ export class LixiController {
   }
 
   @Get(':id/children')
-  async getSubLixi (
+  async getSubLixi(
     @Param('id') id: string,
     @Query() { startId, limit }: PaginationParams,
-    @Headers('Mnemonic') mnemonic: string
+    @Headers('account-secret') accountSecret: string
   ): Promise<PaginationResult<LixiDto>> {
     const lixiId = _.toSafeInteger(id);
-    const take = limit ? _.toSafeInteger(limit) : 5;
-      
+    const take = limit ? _.toSafeInteger(limit) : 10;
+
     try {
+
       let subLixies: Lixi[] = [];
 
       const count = await this.prisma.lixi.count({
         where: {
-          id: lixiId
+          parentId: lixiId
         }
       });
 
-      subLixies = startId ? 
+      subLixies = startId ?
         await this.prisma.lixi.findMany({
           take: take,
           skip: 1,
@@ -104,26 +105,43 @@ export class LixiController {
           cursor: {
             id: startId,
           },
-        }) : 
+        }) :
         await this.prisma.lixi.findMany({
           take: take,
           where: {
             parentId: lixiId,
           },
-        })
-      
-      const resultApi = subLixies.map(subLixi => {
-        return _.omit({
-          ...subLixi,
-          totalClaim: Number(subLixi.totalClaim),
-        } as unknown as LixiDto, 'encryptedXPriv');
-      })
+        });
 
-      const startCursor = resultApi.length > 0 ? _.first(resultApi)?.id : null;
-      const endCursor = resultApi.length > 0 ? _.last(resultApi)?.id : null;
-      const countAfter = !endCursor ? 0 : await this.prisma.claim.count({
+      const childrenApiResult: LixiDto[] = [];
+
+      for (let item of subLixies) {
+
+        const childResult = _.omit({
+          ...item,
+          totalClaim: Number(item.totalClaim),
+          expiryAt: item.expiryAt ? item.expiryAt : undefined,
+          country: item.country ? item.country : undefined,
+        } as LixiDto, 'encryptedXPriv', 'encryptedClaimCode');
+
+        // Return the claim code only if there's account secret attach to the header
+        try {
+          if (accountSecret && accountSecret !== 'undefined' && accountSecret !== 'null') {
+            const claimPart = await aesGcmDecrypt(item.encryptedClaimCode, accountSecret);
+            const encodedId = numberToBase58(item.id);
+            childResult.claimCode = claimPart + encodedId;
+          }
+        } catch (err: unknown) {
+          logger.error(err);
+        }
+        childrenApiResult.push(childResult);
+      }
+
+      const startCursor = childrenApiResult.length > 0 ? _.first(childrenApiResult)?.id : null;
+      const endCursor = childrenApiResult.length > 0 ? _.last(childrenApiResult)?.id : null;
+      const countAfter = !endCursor ? 0 : await this.prisma.lixi.count({
         where: {
-          lixiId: lixiId
+          parentId: lixiId
         },
         cursor: {
           id: _.toSafeInteger(endCursor)
@@ -134,7 +152,7 @@ export class LixiController {
       const hasNextPage = countAfter > 0;
 
       return {
-        data: resultApi ?? [],
+        data: childrenApiResult ?? [],
         pageInfo: {
           hasNextPage,
           startCursor,

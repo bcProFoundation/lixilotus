@@ -8,7 +8,7 @@ import React, { useEffect, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { getAllClaims } from 'src/store/claim/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { getLixi, getSubLixi, refreshLixi, setLixiBalance } from 'src/store/lixi/actions';
+import { fetchMoreSubLixies, getLixi, refreshLixi, setLixiBalance } from 'src/store/lixi/actions';
 import { getSelectedLixi, getSelectedLixiId } from 'src/store/lixi/selectors';
 import { AppContext } from 'src/store/store';
 import { showToast } from 'src/store/toast/actions';
@@ -92,9 +92,9 @@ const Lixi: React.FC = () => {
   const [limit, setLimit] = useState(5);
 
   useEffect(() => {
-    if (selectedLixi) {
-      dispatch(getLixi(selectedLixi.id))
-    }
+    // if (selectedLixi) {
+    // dispatch(getLixi(selectedLixi.id))
+    // }
   }, []);
 
   useEffect(() => {
@@ -217,8 +217,8 @@ const Lixi: React.FC = () => {
   }
 
   const columns = [
-    { title: 'Claim Code', dataIndex: 'claimCode'},
-    { title: 'Amount', dataIndex: 'amount'},
+    { title: 'Claim Code', dataIndex: 'claimCode' },
+    { title: 'Amount', dataIndex: 'amount' },
   ];
 
   const data = subLixies.map(item => {
@@ -236,8 +236,8 @@ const Lixi: React.FC = () => {
   });
 
   const showMoreSubLixi = () => {
-    dispatch(getSubLixi(selectedLixi.id));
-    setLimit(limit+5)
+    // dispatch(fetchMoreSubLixies({parentId: selectedLixi.id, }));
+    setLimit(limit + 5)
   }
 
   return (
@@ -313,14 +313,14 @@ const Lixi: React.FC = () => {
                   </SmartButton>
                 </> :
                 <>
-                  <VirtualTable columns={columns} dataSource={data.slice(0,limit)} scroll={{ y: data.length*54 <= 270 ? data.length*54 : 270 }}/>
-                  { data.length*54 > 270 ?
-                    <LoadMoreButton 
+                  <VirtualTable columns={columns} dataSource={data.slice(0, limit)} scroll={{ y: data.length * 54 <= 270 ? data.length * 54 : 270 }} />
+                  {data.length * 54 > 270 ?
+                    <LoadMoreButton
                       onClick={() => showMoreSubLixi()}
                     >
                       Load More...
                     </LoadMoreButton>
-                  : <></>
+                    : <></>
                   }
                 </>
               }
