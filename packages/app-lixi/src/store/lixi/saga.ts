@@ -100,8 +100,9 @@ function* fetchInitialSubLixiesSaga(action: PayloadAction<number>) {
     const subLixies = (subLixiResult.data ?? []) as Lixi[];
     yield put(fetchInitialSubLixiesSuccess(subLixies));
   } catch (err) {
+    console.error(err);
     const message = (err as Error).message ?? `Could not fetch the lixi from api.`;
-    yield put(getLixiFailure(message))
+    yield put(getLixiFailure(message));
   }
 }
 

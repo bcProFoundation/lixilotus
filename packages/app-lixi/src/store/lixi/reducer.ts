@@ -136,10 +136,10 @@ export const lixiReducer = createReducer(initialState, (builder) => {
     })
     .addCase(fetchInitialSubLixiesSuccess, (state, action) => {
       const lixies = action.payload;
-      childrenLixiesAdapter.setAll(state, lixies);
+      childrenLixiesAdapter.setAll(state.children, lixies);
     })
     .addCase(fetchMoreSubLixiesSuccess, (state, action) => {
       const lixies = action.payload;
-      childrenLixiesAdapter.upsertMany(state, lixies);
+      childrenLixiesAdapter.upsertMany(state.children, lixies);
     })
 });

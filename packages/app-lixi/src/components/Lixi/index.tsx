@@ -92,9 +92,9 @@ const Lixi: React.FC = () => {
   const [limit, setLimit] = useState(5);
 
   useEffect(() => {
-    // if (selectedLixi) {
-    // dispatch(getLixi(selectedLixi.id))
-    // }
+    if (selectedLixi) {
+      dispatch(getLixi(selectedLixi.id))
+    }
   }, []);
 
   useEffect(() => {
