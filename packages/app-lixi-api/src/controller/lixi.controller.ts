@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Inject, Param, Post, Patch, Query, Header, Headers } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Inject, Param, Post, Patch, Query, Header, Headers, ClassSerializerInterceptor, UseInterceptors } from '@nestjs/common';
 import * as _ from 'lodash';
 import logger from 'src/logger';
 
@@ -20,6 +20,7 @@ import { LixiService } from 'src/services/lixi/lixi.service';
 import { PaginationParams } from 'src/common/models/paginationParams';
 
 @Controller('lixies')
+@UseInterceptors(ClassSerializerInterceptor)
 export class LixiController {
 
   constructor(
@@ -79,23 +80,24 @@ export class LixiController {
   @Get(':id/children')
   async getSubLixi(
     @Param('id') id: string,
-    @Query() { startId, limit }: PaginationParams,
+    @Query('startId') startId: number,
+    @Query('limit') limit: number,
     @Headers('account-secret') accountSecret: string
   ): Promise<PaginationResult<LixiDto>> {
+
     const lixiId = _.toSafeInteger(id);
-    const take = limit ? _.toSafeInteger(limit) : 10;
+    const take = limit ? _.toSafeInteger(limit) : 5;
+    const cursor = startId ? _.toSafeInteger(startId) : null;
 
     try {
-
       let subLixies: Lixi[] = [];
-
       const count = await this.prisma.lixi.count({
         where: {
           parentId: lixiId
         }
       });
 
-      subLixies = startId ?
+      subLixies = cursor ?
         await this.prisma.lixi.findMany({
           take: take,
           skip: 1,
@@ -103,7 +105,7 @@ export class LixiController {
             parentId: lixiId,
           },
           cursor: {
-            id: startId,
+            id: cursor,
           },
         }) :
         await this.prisma.lixi.findMany({

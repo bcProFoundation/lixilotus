@@ -21,7 +21,10 @@ export const childrenLixiesAdapter = createEntityAdapter<Lixi>({});
 const initialState: LixiesState = lixiesAdapter.getInitialState({
   selectedId: 0,
   claimIdsById: {},
-  children: childrenLixiesAdapter.getInitialState({})
+  subLixies: childrenLixiesAdapter.getInitialState({}),
+  subLixiesCount: 0,
+  currentSubLixiesStartId: 0,
+  hasMoreSubLixies: false
 });
 
 export const lixiReducer = createReducer(initialState, (builder) => {
@@ -135,11 +138,17 @@ export const lixiReducer = createReducer(initialState, (builder) => {
       lixiesAdapter.updateOne(state, updateLixi);
     })
     .addCase(fetchInitialSubLixiesSuccess, (state, action) => {
-      const lixies = action.payload;
-      childrenLixiesAdapter.setAll(state.children, lixies);
+      const result = action.payload;
+      childrenLixiesAdapter.setAll(state.subLixies, result.data ?? []);
+      state.subLixiesCount = result.totalCount;
+      state.currentSubLixiesStartId = result.pageInfo.endCursor;
+      state.hasMoreSubLixies = result.pageInfo.hasNextPage;
     })
     .addCase(fetchMoreSubLixiesSuccess, (state, action) => {
-      const lixies = action.payload;
-      childrenLixiesAdapter.upsertMany(state.children, lixies);
+      const result = action.payload;
+      childrenLixiesAdapter.upsertMany(state.subLixies, result.data ?? []);
+      state.subLixiesCount = result.totalCount;
+      state.currentSubLixiesStartId = result.pageInfo.endCursor;
+      state.hasMoreSubLixies = result.pageInfo.hasNextPage;
     })
 });

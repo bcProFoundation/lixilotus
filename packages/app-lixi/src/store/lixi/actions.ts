@@ -1,6 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 import { GenerateLixiCommand, CreateLixiCommand, Lixi, UnlockLixiCommand, LockLixiCommand, WithdrawLixiCommand, RenameLixiCommand } from '@bcpros/lixi-models/lib/lixi';
 import { Claim } from '@bcpros/lixi-models/lib/claim';
+import { PaginationResult } from '@bcpros/lixi-models';
 
 export const getLixiActionType = 'lixi/getLixi';
 export const postLixiActionType = 'lixi/postLixi';
@@ -36,8 +37,8 @@ export const withdrawLixiFailure = createAction<String>('lixi/withdrawLixiFailur
 export const setLixiBalance = createAction<number>('lixi/setLixiBalance');
 export const setAllLixi = createAction<Lixi>('lixi/setLixi');
 export const fetchInitialSubLixies = createAction<number>('lixi/fetchInitialSubLixies');
-export const fetchInitialSubLixiesSuccess = createAction<Lixi[]>('lixi/fetchInitialSubLixiesSuccess');
+export const fetchInitialSubLixiesSuccess = createAction<PaginationResult<Lixi>>('lixi/fetchInitialSubLixiesSuccess');
 export const fetchInitialSubLixiesFailure = createAction<String>('lixi/fetchInitialSubLixiesFailure');
 export const fetchMoreSubLixies = createAction<{ parentId: number, startId: number }>('lixi/fetchMoreSubLixies');
-export const fetchMoreSubLixiesSuccess = createAction<Lixi[]>('lixi/fetchMoreSubLixiesSuccess');
+export const fetchMoreSubLixiesSuccess = createAction<PaginationResult<Lixi>>('lixi/fetchMoreSubLixiesSuccess');
 export const fetchMoreSubLixiesFailure = createAction<String>('lixi/fetchMoreSubLixiesFailure');

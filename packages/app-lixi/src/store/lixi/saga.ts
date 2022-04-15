@@ -97,8 +97,7 @@ function* fetchInitialSubLixiesSaga(action: PayloadAction<number>) {
     const parentLixi: LixiDto = yield select(getLixiById(id));
     const account: AccountDto = yield select(getAccountById(parentLixi.accountId));
     const subLixiResult: PaginationResult<Lixi> = yield call(lixiApi.getSubLixies, id, account?.secret);
-    const subLixies = (subLixiResult.data ?? []) as Lixi[];
-    yield put(fetchInitialSubLixiesSuccess(subLixies));
+    yield put(fetchInitialSubLixiesSuccess(subLixiResult));
   } catch (err) {
     console.error(err);
     const message = (err as Error).message ?? `Could not fetch the lixi from api.`;
@@ -126,7 +125,7 @@ function* fetchMoreSubLixiesSaga(action: PayloadAction<number>) {
     const account: AccountDto = yield select(getAccountById(parentLixi.accountId));
     const subLixiResult: PaginationResult<Lixi> = yield call(lixiApi.getSubLixies, id, account?.secret);
     const subLixies = (subLixiResult.data ?? []) as Lixi[];
-    yield put(fetchMoreSubLixiesSuccess(subLixies));
+    yield put(fetchMoreSubLixiesSuccess(subLixiResult));
   } catch (err) {
     const message = (err as Error).message ?? `Could not fetch the lixi from api.`;
     yield put(getLixiFailure(message))

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as _ from 'lodash';
 import { VariableSizeGrid as Grid } from 'react-window';
-import ResizeObserver from 'rc-resize-observer';
 import classNames from 'classnames';
 import { Table } from 'antd';
 import styled from 'styled-components';
@@ -20,7 +19,7 @@ const StyledTable = styled(Table)`
     div {
       width: 100% !important;
     }
-    .virtual-table-cell-last { 
+    .virtual-table-cell-last {
       text-align: start;
       margin-left: 30px;
     }
@@ -60,7 +59,7 @@ const VirtualTable = (props: Parameters<typeof Table>[0]) => {
 
   const resetVirtualGrid = () => {
     if (!_.isNil(gridRef.current)) {
-        gridRef.current.resetAfterIndices({
+      gridRef.current.resetAfterIndices({
         columnIndex: 0,
         shouldForceUpdate: true,
       });
@@ -115,21 +114,15 @@ const VirtualTable = (props: Parameters<typeof Table>[0]) => {
   };
 
   return (
-    <ResizeObserver
-      onResize={({ width }) => {
-        setTableWidth(width);
+    <StyledTable
+      {...props}
+      className="virtual-table"
+      columns={mergedColumns}
+      pagination={false}
+      components={{
+        body: renderVirtualList,
       }}
-    >
-      <StyledTable
-        {...props}
-        className="virtual-table"
-        columns={mergedColumns}
-        pagination={false}
-        components={{
-          body: renderVirtualList,
-        }}
-      />
-    </ResizeObserver>
+    />
   );
 }
 

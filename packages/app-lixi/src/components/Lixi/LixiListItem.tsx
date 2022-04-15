@@ -13,10 +13,10 @@ import {
   ClaimType,
   Lixi, LockLixiCommand, RenameLixiCommand, UnlockLixiCommand, WithdrawLixiCommand
 } from '@bcpros/lixi-models/lib/lixi';
-import { getLixiesByLixiParent } from '@store/lixi/selectors';
 import { fromSmallestDenomination } from '@utils/cashMethods';
 import { RenameLixiModalProps } from './RenameLixiModal';
 import { openModal } from '@store/modal/actions';
+import { getAllSubLixies } from '@store/lixi/selectors';
 
 const LixiIcon = styled.div`
   height: 32px;
@@ -91,7 +91,7 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
   }
 
   const selectedAccount = useAppSelector(getSelectedAccount);
-  const subLixies = useAppSelector(getLixiesByLixiParent(lixi.id));
+  const subLixies = useAppSelector(getAllSubLixies);
 
   let options = ['Withdraw', 'Rename'];
   lixi.status === 'active' ? options.unshift('Lock') : options.unshift('Unlock');
