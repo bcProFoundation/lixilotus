@@ -40,8 +40,5 @@
     "hooks": {
       "pre-commit": "yarn test"
     }
-  },
-  "dependencies": {
-    "react-window": "^1.8.6"
   }
 }

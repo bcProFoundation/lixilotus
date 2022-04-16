@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
-import * as _ from 'lodash';
-import { VariableSizeGrid as Grid } from 'react-window';
-import classNames from 'classnames';
 import { Table } from 'antd';
+import classNames from 'classnames';
+import * as _ from 'lodash';
+import ResizeObserver from 'rc-resize-observer';
+import React, { useEffect, useRef, useState } from 'react';
+import { VariableSizeGrid as Grid } from 'react-window';
 import styled from 'styled-components';
 
 const StyledTable = styled(Table)`
@@ -114,15 +115,21 @@ const VirtualTable = (props: Parameters<typeof Table>[0]) => {
   };
 
   return (
-    <StyledTable
-      {...props}
-      className="virtual-table"
-      columns={mergedColumns}
-      pagination={false}
-      components={{
-        body: renderVirtualList,
+    <ResizeObserver
+      onResize={({ width }) => {
+        setTableWidth(width);
       }}
-    />
+    >
+      <StyledTable
+        {...props}
+        className="virtual-table"
+        columns={mergedColumns}
+        pagination={false}
+        components={{
+          body: renderVirtualList,
+        }}
+      />
+    </ResizeObserver>
   );
 }
 

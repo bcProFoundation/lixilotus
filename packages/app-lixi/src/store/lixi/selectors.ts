@@ -66,11 +66,16 @@ export const getSelectedLixi = createSelector(
 );
 
 export const getAllSubLixies = createSelector(
-  getLixiesState,
+  (state: RootState) => state.lixies.subLixies,
   selectAllSubLixies
 );
 
 export const getHasMoreSubLixies = createSelector(
   getLixiesState,
   (lixies: LixiesState) => lixies.hasMoreSubLixies
+);
+
+export const getLoadMoreSubLixiesStartId = createSelector(
+  getLixiesState,
+  (lixies: LixiesState) => lixies.currentSubLixiesStartId
 );

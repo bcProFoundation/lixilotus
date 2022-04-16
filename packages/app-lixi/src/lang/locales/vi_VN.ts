@@ -87,6 +87,7 @@ export default {
   'lixi.remainingLixi': 'Lì xì còn lại',
   'lixi.remainingXPI': 'XPI còn lại',
   'lixi.message': 'Thông điệp',
+  'lixi.loadmore': 'Xem thêm',
   'lixi.lixiDetail': 'Bấm để xem chi tiết Lì xì',
   'lixi.downloadCode': 'Tải về mã code',
   'lixi.copyClaim': 'Sao chép mã code',

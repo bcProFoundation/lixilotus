@@ -9,7 +9,7 @@ import { countries } from '@bcpros/lixi-models/constants/countries';
 import { LixiType } from '@bcpros/lixi-models/lib/lixi';
 import ClaimList from '@components/Claim/ClaimList';
 import { currency } from '@components/Common/Ticker';
-import { getAllSubLixies } from '@store/lixi/selectors';
+import { getAllSubLixies, getLoadMoreSubLixiesStartId } from '@store/lixi/selectors';
 import { fromSmallestDenomination } from '@utils/cashMethods';
 import { Collapse, Descriptions, message } from 'antd';
 import { saveAs } from 'file-saver';
@@ -21,7 +21,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import intl from 'react-intl-universal';
 import { getAllClaims } from 'src/store/claim/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { getLixi, refreshLixi, setLixiBalance } from 'src/store/lixi/actions';
+import { fetchMoreSubLixies, getLixi, refreshLixi, setLixiBalance } from 'src/store/lixi/actions';
 import { getHasMoreSubLixies, getSelectedLixi, getSelectedLixiId } from 'src/store/lixi/selectors';
 import { AppContext } from 'src/store/store';
 import { showToast } from 'src/store/toast/actions';
@@ -86,6 +86,7 @@ const Lixi: React.FC = () => {
   const qrPanelRef = React.useRef(null);
   const [isLoadBalanceError, setIsLoadBalanceError] = useState(false);
   const hasMoreSubLixies = useAppSelector(getHasMoreSubLixies);
+  const loadMoreStartId = useAppSelector(getLoadMoreSubLixiesStartId);
   let subLixies = useAppSelector(getAllSubLixies);
 
   subLixies = _.sortBy(subLixies, ['isClaimed'])
@@ -235,7 +236,7 @@ const Lixi: React.FC = () => {
   });
 
   const showMoreSubLixies = () => {
-    // dispatch(fetchMoreSubLixies({parentId: selectedLixi.id, }));
+    dispatch(fetchMoreSubLixies({ parentId: selectedLixi.id, startId: loadMoreStartId }));
   }
 
   return (
@@ -309,12 +310,12 @@ const Lixi: React.FC = () => {
                   </SmartButton>
                 </> :
                 <>
-                  <VirtualTable columns={columns} dataSource={subLixiesDataSource.slice(0, 10)} scroll={{ y: subLixiesDataSource.length * 54 <= 270 ? subLixiesDataSource.length * 54 : 270 }} />
+                  <VirtualTable columns={columns} dataSource={subLixiesDataSource} scroll={{ y: subLixiesDataSource.length * 54 <= 270 ? subLixiesDataSource.length * 54 : 270 }} />
                   {hasMoreSubLixies &&
-                    < LoadMoreButton
+                    <LoadMoreButton
                       onClick={() => showMoreSubLixies()}
                     >
-                      Load More...
+                      {intl.get('lixi.loadmore')}
                     </LoadMoreButton>
                   }
                 </>

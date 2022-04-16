@@ -88,6 +88,7 @@ export default {
   'lixi.remainingLixi': 'Remaining Lixi',
   'lixi.remainingXPI': 'XPI Remaining',
   'lixi.message': 'Message',
+  'lixi.loadmore': 'Load More',
   'lixi.lixiDetail': 'Click to reveal Lixi detail',
   'lixi.downloadCode': 'Download Code',
   'lixi.copyClaim': 'Copy Claim Code',
