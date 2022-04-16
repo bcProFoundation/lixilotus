@@ -96,7 +96,7 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
         return teardownCodeReader(codeReader);
       }
     } catch (err) {
-      console.log(intl.get('claim.QRScannerError'));
+      console.log(intl.get('general.QRScannerError'));
       console.log(err);
       console.log(JSON.stringify((err as any).message));
       //setMobileErrorMsg(JSON.stringify(err.message));
@@ -129,7 +129,7 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
         <ThemedQrcodeOutlined />
       </StyledScanQRCode>
       <StyledModal
-        title={intl.get('claim.ScanQRCode')}
+        title={intl.get('general.scanQRCode')}
         visible={visible}
         onCancel={() => setVisible(false)}
         footer={null}
@@ -140,7 +140,7 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
               <>
                 <Alert
                   message="Error"
-                  description={intl.get('claim.ScanQRCodeError')}
+                  description={intl.get('general.scanQRCodeError')}
                   type="error"
                   showIcon
                   style={{ textAlign: 'left' }}

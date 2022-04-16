@@ -155,7 +155,7 @@ const Lixi: React.FC = () => {
         );
       case LixiType.Divided:
         return (
-          <>{intl.get('account.DividedBy')} {selectedLixi.dividedValue} </>
+          <>{intl.get('lixi.dividedBy')} {selectedLixi.dividedValue} </>
         );
       case LixiType.Equal:
         return (
@@ -191,7 +191,7 @@ const Lixi: React.FC = () => {
   const formatDate = () => {
     if (selectedLixi?.expiryAt != null) {
       return (
-        <Descriptions.Item label={intl.get('lixi.ExpireAt')} key='desc.expiryat'>
+        <Descriptions.Item label={intl.get('lixi.expireAt')} key='desc.expiryat'>
           {moment(selectedLixi?.expiryAt).format("YYYY-MM-DD HH:mm")}
         </Descriptions.Item>
       );
@@ -203,14 +203,14 @@ const Lixi: React.FC = () => {
 
   const showCountry = () => {
     return (selectedLixi?.country != null) ? (
-      <Descriptions.Item label={intl.get('lixi.Country')} key='desc.country'>
+      <Descriptions.Item label={intl.get('lixi.country')} key='desc.country'>
         {countries.find(country => country.id === selectedLixi?.country)?.name}
       </Descriptions.Item>) : "";
   }
 
   const showIsFamilyFriendly = () => {
     return (selectedLixi?.isFamilyFriendly) ? (
-      <Descriptions.Item label={intl.get('lixi.Optional')} key='desc.optional'>
+      <Descriptions.Item label={intl.get('lixi.optional')} key='desc.optional'>
         Family Friendly
       </Descriptions.Item>) : "";
   }

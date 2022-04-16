@@ -140,7 +140,7 @@ const Denominations: Object[] = [
   },
 ];
 
-const SwapMobileCard : React.FC = () => {
+const SwapMobileCard: React.FC = () => {
   const selectedAccount = useAppSelector(getSelectedAccount);
   const [selectedMobileNetwork, setMobileNetwork] = useState('');
   const [selectedDenomination, setDenomination] = useState('');
@@ -192,10 +192,10 @@ const SwapMobileCard : React.FC = () => {
       {/* <h1>Need {0.000403*500000} XPI</h1> */}
 
       <SmartButton>
-        <MoneyCollectOutlined /> {intl.get('general.SwapCard')}
+        <MoneyCollectOutlined /> {intl.get('general.swapCard')}
       </SmartButton>
     </>
   );
 };
 
-export default SwapMobileCard ;
+export default SwapMobileCard;
