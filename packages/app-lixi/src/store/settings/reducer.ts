@@ -5,7 +5,7 @@ import { SettingsState } from "./state";
 const initialState: SettingsState = {
   navCollapsed: true,
   locale: 'en',
-  initIntlStatus: true
+  initIntlStatus: false
 };
 
 export const settingsReducer = createReducer(initialState, (builder) => {

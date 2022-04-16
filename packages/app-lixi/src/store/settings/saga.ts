@@ -1,22 +1,34 @@
 import * as _ from 'lodash';
 import intl from 'react-intl-universal';
-import { all, fork, put, takeLatest } from '@redux-saga/core/effects';
+import { all, call, fork, put, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 
 import { loadLocale, loadLocaleFailure, loadLocaleSuccess, setInitIntlStatus } from './actions';
 import AppLocale from 'src/lang';
 import { showToast } from '@store/toast/actions';
 
+function initLocale(currentAppLocale: any): Promise<boolean> {
+  return intl.init({
+    currentLocale: currentAppLocale.locale,
+    locales: {
+      [currentAppLocale.locale]: currentAppLocale.messages
+    },
+  }).then(() => {
+    return true;
+  }).catch(err => {
+    return false;
+  });
+}
+
 function* loadLocaleSaga(action: PayloadAction<string>) {
   try {
     const currentAppLocale = AppLocale[action.payload ?? 'en'];
-    intl.init({
-      currentLocale: currentAppLocale.locale, // TODO: determine locale here
-      locales: {
-        [currentAppLocale.locale]: currentAppLocale.messages
-      },
-    });
-    yield put(loadLocaleSuccess());
+    const initDone: boolean = yield call(initLocale, currentAppLocale);
+    if (initDone) {
+      yield put(loadLocaleSuccess());
+    } else {
+      yield put(loadLocaleFailure(loadLocale.type));
+    }
   } catch {
     yield put(loadLocaleFailure(loadLocale.type));
   }
@@ -32,6 +44,7 @@ function* loadLocaleSuccessSaga() {
 }
 
 function* loadLocaleFailureSaga(action: PayloadAction<string>) {
+  yield put(setInitIntlStatus(true));
   const message = action.payload ?? 'Unable to change language';
   yield put(showToast('error', {
     message: 'Error',

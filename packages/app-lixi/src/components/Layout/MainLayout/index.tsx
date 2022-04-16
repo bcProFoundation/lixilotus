@@ -129,7 +129,7 @@ const MainLayout: React.FC = (props) => {
       <GlobalStyle />
       {
         intlInitDone &&
-        <Spin
+        (<Spin
           spinning={
             loading
           }
@@ -159,7 +159,7 @@ const MainLayout: React.FC = (props) => {
                           active={selectedKey === '/'}
                         >
                           <UserOutlined />
-                          {intl.get('general.Accounts')}
+                          {intl.get('general.accounts')}
                         </NavButton>
                       </Link>
                       <Link href='/lixi' passHref>
@@ -167,7 +167,7 @@ const MainLayout: React.FC = (props) => {
                           active={selectedKey === '/lixi'}
                         >
                           <WalletOutlined />
-                          {intl.get('general.Lixi')}
+                          {intl.get('general.lixi')}
                         </NavButton>
                       </Link>
                       <Link href='/claim' passHref>
@@ -175,7 +175,7 @@ const MainLayout: React.FC = (props) => {
                           active={selectedKey === '/claim'}
                         >
                           <GiftOutlined />
-                          {intl.get('general.Claim')}
+                          {intl.get('general.claim')}
                         </NavButton>
                       </Link>
                       <Link href='/settings' passHref>
@@ -183,7 +183,7 @@ const MainLayout: React.FC = (props) => {
                           active={selectedKey === '/settings'}
                         >
                           <SettingOutlined />
-                          {intl.get('general.Settings')}
+                          {intl.get('general.settings')}
                         </NavButton>
                       </Link>
                     </Footer>
@@ -192,7 +192,7 @@ const MainLayout: React.FC = (props) => {
               </AppBody>
             </Layout>
           </LixiApp>
-        </Spin>
+        </Spin>)
       }
     </ThemeProvider>
   );
