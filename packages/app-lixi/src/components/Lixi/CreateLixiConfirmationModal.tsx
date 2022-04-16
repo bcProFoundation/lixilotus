@@ -72,34 +72,34 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
       case LixiType.Fixed:
         return (
           <>
-            <LixiParamLabel>{intl.get('lixi.FundGiveFixed')}</LixiParamLabel>
+            <LixiParamLabel>{intl.get('lixi.fundGiveFixed')}</LixiParamLabel>
             <br />
-            <LixiParamLabel>{intl.get('lixi.FixedFund')}</LixiParamLabel> {newLixiFixedValue}
+            <LixiParamLabel>{intl.get('lixi.fixedFund')}</LixiParamLabel> {newLixiFixedValue}
           </>
         );
       // isDivided
       case LixiType.Divided:
         return (
           <>
-            <LixiParamLabel>{intl.get('lixi.FundGiveDividend')}</LixiParamLabel>
+            <LixiParamLabel>{intl.get('lixi.fundGiveDividend')}</LixiParamLabel>
             <br />
-            <LixiParamLabel>{intl.get('lixi.DividedFund')}</LixiParamLabel> {newLixiDividedValue}
+            <LixiParamLabel>{intl.get('lixi.dividedFund')}</LixiParamLabel> {newLixiDividedValue}
           </>
         );
       // Equal
       case LixiType.Equal:
         return (
           <>
-            <LixiParamLabel>{intl.get('lixi.FundGiveEqual')}</LixiParamLabel>
+            <LixiParamLabel>{intl.get('lixi.fundGiveEqual')}</LixiParamLabel>
             <br />
-            <LixiParamLabel>{intl.get('lixi.EqualFund')}</LixiParamLabel> {Number(newLixiAmount) / Number(newNumberOfSubLixi)}
+            <LixiParamLabel>{intl.get('lixi.equalFund')}</LixiParamLabel> {Number(newLixiAmount) / Number(newNumberOfSubLixi)}
           </>
         );
       // isRandom
       default:
         return (
           <>
-            <LixiParamLabel>{intl.get('lixi.FundGiveRandomize')}</LixiParamLabel>
+            <LixiParamLabel>{intl.get('lixi.fundGiveRandomize')}</LixiParamLabel>
             <br />
             <LixiParamLabel>{intl.get('lixi.RandomFund', { newLixiMinValue: newLixiMinValue, newLixiMaxValue: newLixiMaxValue })}</LixiParamLabel>
           </>
@@ -108,29 +108,29 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
   }
 
   const confirmAmount = () => {
-    return (newLixiAmount == "" ? "" : <LixiParamLabel>{intl.get('lixi.Amount', { newLixiAmount: newLixiAmount })} <br /></LixiParamLabel>);
+    return (newLixiAmount == "" ? "" : <LixiParamLabel>{intl.get('lixi.amount', { newLixiAmount: newLixiAmount })} <br /></LixiParamLabel>);
   }
 
   const confirmSubLixies = () => {
-    return (claimType == ClaimType.OneTime ? <LixiParamLabel>{intl.get('lixi.NumberOfSub', { newNumberOfSubLixi: newNumberOfSubLixi })} <br /></LixiParamLabel> : "");
+    return (claimType == ClaimType.OneTime ? <LixiParamLabel>{intl.get('lixi.numberOfSub', { newNumberOfSubLixi: newNumberOfSubLixi })} <br /></LixiParamLabel> : "");
   }
 
   const confirmCountry = () => {
     const country = countries.find(country => country.id === newCountryLixi);
-    return <LixiParamLabel>{intl.get('lixi.Country')} {country ? intl.get(`country.${country.id}`) : intl.get(`country.all`)}<br /></LixiParamLabel>
+    return <LixiParamLabel>{intl.get('lixi.country')} {country ? intl.get(`country.${country.id}`) : intl.get(`country.all`)}<br /></LixiParamLabel>
   }
 
   const confirmMaxClaim = () => {
-    return (newMaxClaim == "" ? "" : <LixiParamLabel>{intl.get('lixi.MaxClaim', { newMaxClaim: newMaxClaim })} <br /></LixiParamLabel>);
+    return (newMaxClaim == "" ? "" : <LixiParamLabel>{intl.get('lixi.maxClaim', { newMaxClaim: newMaxClaim })} <br /></LixiParamLabel>);
   }
 
   const confirmMinStaking = () => {
-    return (newMinStaking == "" ? "" : <LixiParamLabel>{intl.get('lixi.MinStake', { newMinStaking: newMinStaking })} <br /></LixiParamLabel>);
+    return (newMinStaking == "" ? "" : <LixiParamLabel>{intl.get('lixi.minStake', { newMinStaking: newMinStaking })} <br /></LixiParamLabel>);
   }
 
   const formatDate = () => {
     if (newExpiryAt != "") {
-      return <LixiParamLabel>{intl.get('lixi.ExpireAt')} {moment(newExpiryAt).format("YYYY-MM-DD HH:mm")}<br /></LixiParamLabel>;
+      return <LixiParamLabel>{intl.get('lixi.expireAt')} {moment(newExpiryAt).format("YYYY-MM-DD HH:mm")}<br /></LixiParamLabel>;
     }
     else {
       return;
@@ -145,9 +145,9 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
         onOk={() => handleOnOk()}
         onCancel={() => handleOnCancel()}
       >
-        <LixiParamLabel>{intl.get('lixi.Name')}</LixiParamLabel> {newLixiName}
+        <LixiParamLabel>{intl.get('lixi.name')}</LixiParamLabel> {newLixiName}
         <br />
-        <LixiParamLabel>{intl.get('lixi.FundForAccount')} </LixiParamLabel> {newAccountName}
+        <LixiParamLabel>{intl.get('lixi.fundForAccount')} </LixiParamLabel> {newAccountName}
         <br />
         {/* <LixiParamLabel>The claim type is: </LixiParamLabel> {claimType==0 ? "Single" : "One-Time Codes"} */}
         {/* <br /> */}
@@ -159,7 +159,7 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
         {confirmMaxClaim()}
         {confirmMinStaking()}
         {formatDate()}
-        <LixiParamLabel>{isFamilyFriendly ? intl.get('lixi.OptionFamilyFriendly') : ""}</LixiParamLabel>
+        <LixiParamLabel>{isFamilyFriendly ? intl.get('lixi.optionFamilyFriendly') : ""}</LixiParamLabel>
       </Modal>
     </>
   );

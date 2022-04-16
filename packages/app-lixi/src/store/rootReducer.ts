@@ -37,7 +37,8 @@ const claimsPersistConfig: PersistConfig<ClaimsState> = {
 
 const settingsPersistConfig: PersistConfig<SettingsState> = {
   key: 'settings',
-  storage: storage
+  storage: storage,
+  whitelist: ['locale']
 };
 
 export const serverReducer = combineReducers({
