@@ -4,7 +4,7 @@ import { Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import config from 'config';
 import { join } from 'path';
-import { CREATE_SUB_LIXIES_QUEUE } from './constants/lixi.constants';
+import { CREATE_SUB_LIXIES_QUEUE, WITHDRAW_SUB_LIXIES_QUEUE } from './constants/lixi.constants';
 import { AccountController } from './controller/account.controller';
 import { ClaimController } from './controller/claim.controller';
 import { EnvelopeController } from './controller/envelope.controller';
@@ -16,6 +16,7 @@ import { WalletService } from "./services/wallet.service";
 import IORedis from 'ioredis';
 import { CreateSubLixiesProcessor } from './processors/create-sub-lixies.processor';
 import { CreateSubLixiesEventsListener } from './processors/create-sub-lixies.eventslistener';
+import { WithdrawSubLixiesProcessor } from './processors/withdraw-sub-lixies.processor';
 
 
 const xpiRestUrl = config.has('xpiRestUrl')
@@ -45,7 +46,8 @@ const XpijsProvider = {
     }),
     BullModule.forRoot({
     }),
-    BullModule.registerQueue({
+    BullModule.registerQueue(
+    {
       name: CREATE_SUB_LIXIES_QUEUE,
       connection: new IORedis({
         maxRetriesPerRequest: null,
@@ -57,9 +59,17 @@ const XpijsProvider = {
           concurrency: 3
         }
       ]
+    },
+    {
+      name: WITHDRAW_SUB_LIXIES_QUEUE,
+      connection: new IORedis({
+        maxRetriesPerRequest: null,
+        enableReadyCheck: false
+      }),
     }),
   ],
   controllers: [AccountController, EnvelopeController, ClaimController, LixiController, HeathController],
-  providers: [PrismaService, WalletService, LixiService, XpiWalletProvider, XpijsProvider, CreateSubLixiesProcessor, CreateSubLixiesEventsListener],
+  providers: [PrismaService, WalletService, LixiService, XpiWalletProvider, XpijsProvider,
+     CreateSubLixiesProcessor, CreateSubLixiesEventsListener, WithdrawSubLixiesProcessor],
 })
 export class AppModule { }

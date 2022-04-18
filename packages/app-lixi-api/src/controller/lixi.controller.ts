@@ -17,6 +17,8 @@ import logger from 'src/logger';
 import { PrismaService } from '../services/prisma/prisma.service';
 import { LixiService } from 'src/services/lixi/lixi.service';
 import { PaginationParams } from 'src/common/models/paginationParams';
+import { WITHDRAW_SUB_LIXIES_QUEUE } from 'src/constants/lixi.constants';
+import { FlowProducer } from 'bullmq';
 
 @Controller('lixies')
 export class LixiController {
@@ -354,50 +356,19 @@ export class LixiController {
 
       else {
         // Withdraw for OneTime Code
-        const subLixies = await this.prisma.lixi.findMany({
-          where: {
-            parentId: lixiId
+        const flowProducer = new FlowProducer();
+        const flow = await flowProducer.add({
+          name: 'withdraw-all-sub-lixies',
+          queueName: WITHDRAW_SUB_LIXIES_QUEUE,
+          data: {
+            parentId: lixiId,
+            mnemonicFromApi: mnemonicFromApi,
+            account: account
           }
         });
-
-        for (let item in subLixies) {
-          const subLixiAddress = subLixies[item].address;
-          const subLixiDerivationIndex = subLixies[item].derivationIndex;
-
-          const subLixiIndex = subLixiDerivationIndex;
-          const { keyPair } = await this.walletService.deriveAddress(mnemonicFromApi, subLixiIndex);
-
-          try {
-            const totalAmount: number = await this.walletService.onMax(subLixiAddress);
-            const receivingAccount = [{ address: account.address, amountXpi: totalAmount }];
-            const amount: any = await this.walletService.sendAmount(subLixiAddress, receivingAccount, keyPair);
-
-            const updatedSubLixies = await this.prisma.lixi.update({
-              where: {
-                id: subLixies[item].id
-              },
-              data: {
-                amount: 0
-              }
-            });
-          } catch (err) {
-            continue;
-          }
+        return {
+          jobId: flow.job.id
         }
-
-        let resultApi: LixiDto = {
-          ...lixi,
-          amount: lixi.amount ?? 0,
-          totalClaim: Number(lixi.totalClaim),
-          expiryAt: lixi.expiryAt ? lixi.expiryAt : undefined,
-          activationAt: lixi.activationAt ? lixi.activationAt : undefined,
-          country: lixi.country ? lixi.country : undefined,
-          numberOfSubLixi: 0,
-          parentId: lixi.parentId ?? undefined,
-          isClaimed: lixi.isClaimed ?? false,
-        };
-
-        return resultApi;
       }
 
     } catch (err) {
@@ -409,6 +380,7 @@ export class LixiController {
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
+
   }
 
   @Get(':id/claims')
