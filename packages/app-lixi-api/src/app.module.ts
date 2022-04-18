@@ -44,8 +44,6 @@ const XpijsProvider = {
       serveRoot: '/api/images',
       rootPath: join(__dirname, '..', 'public/images'),
     }),
-    BullModule.forRoot({
-    }),
     BullModule.registerQueue({
       name: CREATE_SUB_LIXIES_QUEUE,
       connection: new IORedis({
