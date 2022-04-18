@@ -75,16 +75,16 @@ export class WithdrawSubLixiesProcessor extends WorkerHost {
 }
 
 
-// @Injectable()
-// @QueueEventsListener(WITHDRAW_SUB_LIXIES_QUEUE)
-// export class WithdrawSubLixiesEventsListener extends QueueEventsHost {
+@Injectable()
+@QueueEventsListener(WITHDRAW_SUB_LIXIES_QUEUE)
+export class WithdrawSubLixiesEventsListener extends QueueEventsHost {
 
-//   @OnQueueEvent('completed')
-//   completed(args: {
-//     jobId: string;
-//     returnvalue: string;
-//     prev?: string;
-//   }, id: string) {
-//     console.log('completed', id);
-//   }
-// }
+  @OnQueueEvent('completed')
+  completed(args: {
+    jobId: string;
+    returnvalue: string;
+    prev?: string;
+  }, id: string) {
+    console.log('completed', id);
+  }
+}
