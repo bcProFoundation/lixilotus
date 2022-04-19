@@ -54,24 +54,6 @@ const Copied = styled.div<CopiedProps>`
   }
 `;
 
-const LoadMoreButton = styled.button`
-  background: #fafafa;
-  border: none;
-  transition: all 0.5s ease;
-  font-size: 18px;
-  width: 100%;
-  padding: 15px 0;
-  border-radius: 4px;
-  cursor: pointer;
-  outline: none;
-  margin-bottom: 20px;
-
-  @media (max-width: 768px) {
-    font-size: 16px;
-    padding: 12px 0;
-  }
-`;
-
 const { Panel } = Collapse;
 
 const Lixi: React.FC = () => {
@@ -312,11 +294,11 @@ const Lixi: React.FC = () => {
                 <>
                   <VirtualTable columns={columns} dataSource={subLixiesDataSource} scroll={{ y: subLixiesDataSource.length * 54 <= 270 ? subLixiesDataSource.length * 54 : 270 }} />
                   {hasMoreSubLixies &&
-                    <LoadMoreButton
+                    <SmartButton
                       onClick={() => showMoreSubLixies()}
                     >
                       {intl.get('lixi.loadmore')}
-                    </LoadMoreButton>
+                    </SmartButton>
                   }
                 </>
               }
