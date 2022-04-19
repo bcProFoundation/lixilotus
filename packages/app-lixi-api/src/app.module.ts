@@ -6,6 +6,7 @@ import config from 'config';
 import IORedis from 'ioredis';
 import * as _ from 'lodash';
 import { join } from 'path';
+import { NotificationController } from './common/notifications/notification.controller';
 import { CREATE_SUB_LIXIES_QUEUE } from './constants/lixi.constants';
 import { AccountController } from './controller/account.controller';
 import { ClaimController } from './controller/claim.controller';
@@ -60,7 +61,10 @@ const XpijsProvider = {
       ]
     }),
   ],
-  controllers: [AccountController, EnvelopeController, ClaimController, LixiController, HeathController],
+  controllers: [
+    AccountController, EnvelopeController,
+    ClaimController, LixiController,
+    NotificationController, HeathController],
   providers: [PrismaService, WalletService, LixiService, XpiWalletProvider, XpijsProvider, CreateSubLixiesProcessor, CreateSubLixiesEventsListener],
 })
 export class AppModule { }

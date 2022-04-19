@@ -93,3 +93,43 @@ model Envelope {
 
   @@map("envelope")
 }
+
+model NotificationType {
+  id            Int            @id @default(autoincrement())
+  name          String
+  description   String
+  template      String
+  notifications Notification[]
+  createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime       @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@map("notification_type")
+}
+
+model Notification {
+  id                 String            @id @default(uuid())
+  readAt             DateTime?         @db.Timestamptz
+  deletedAt          DateTime?         @db.Timestamptz
+  recipientId        Int?              @map("recipient_id")
+  senderId           Int?              @map("sender_id")
+  additionalData     Json?             @map("additional_data")
+  notificationType   NotificationType  @relation(fields: [notificationTypeId], references: [id])
+  notificationTypeId Int               @map("type_id")
+  level              NotificationLevel
+  createdAt          DateTime          @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime          @default(now()) @map("updated_at") @db.Timestamptz
+  status             String            @default("pending")
+  url                String?
+  action             String?
+
+  @@map("notification")
+}
+
+enum NotificationLevel {
+  DEBUG
+  INFO
+  WARNING
+  ERROR
+
+  @@map("notification_level")
+}
