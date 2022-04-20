@@ -22,7 +22,7 @@ const StyledTable = styled(Table)`
     }
     .virtual-table-cell-last {
       text-align: start;
-      margin-left: 30px;
+      margin-left: 15px;
     }
   }
 `

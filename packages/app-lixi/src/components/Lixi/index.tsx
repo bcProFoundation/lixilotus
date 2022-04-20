@@ -199,12 +199,14 @@ const Lixi: React.FC = () => {
   }
 
   const columns = [
+    { title: 'Num', dataIndex: 'num', width: 70},
     { title: 'Claim Code', dataIndex: 'claimCode' },
     { title: 'Amount', dataIndex: 'amount' },
   ];
 
-  const subLixiesDataSource = subLixies.map(item => {
+  const subLixiesDataSource = subLixies.map((item, i) => {
     return ({
+      num: i+1,
       claimCode: <CopyToClipboard
         text={item.claimCode}
         onCopy={handleOnCopyClaimCode}
