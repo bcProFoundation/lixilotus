@@ -2,12 +2,13 @@ import { push } from 'connected-next-router';
 import * as _ from 'lodash';
 import * as Effects from 'redux-saga/effects';
 import { Modal } from 'antd';
-import { Claim, ClaimDto, PaginationResult, PostLixiResponseDto } from '@bcpros/lixi-models';
+import { AccountDto, Claim, ClaimDto, PaginationResult, PostLixiResponseDto } from '@bcpros/lixi-models';
 import {
   CreateLixiCommand, GenerateLixiCommand, LockLixiCommand, UnlockLixiCommand, Lixi, LixiDto,
   WithdrawLixiCommand, RenameLixiCommand
 } from '@bcpros/lixi-models/lib/lixi';
 import { all, fork, put, takeLatest } from '@redux-saga/core/effects';
+import { select } from 'redux-saga/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 import {
   generateRandomBase58Str
@@ -21,9 +22,11 @@ import {
   lockLixi, lockLixiFailure, lockLixiSuccess, postLixi, postLixiFailure, postLixiSuccess, refreshLixi,
   refreshLixiActionType, refreshLixiFailure, refreshLixiSuccess, selectLixi,
   selectLixiFailure, selectLixiSuccess, setLixi, unlockLixi, unlockLixiFailure,
-  unlockLixiSuccess, withdrawLixi, withdrawLixiFailure, withdrawLixiSuccess, renameLixi, renameLixiFailure, renameLixiSuccess
+  unlockLixiSuccess, withdrawLixi, withdrawLixiFailure, withdrawLixiSuccess, renameLixi, renameLixiFailure, renameLixiSuccess, fetchInitialSubLixies, fetchInitialSubLixiesSuccess, fetchInitialSubLixiesFailure, fetchMoreSubLixies, fetchMoreSubLixiesSuccess, fetchMoreSubLixiesFailure,
 } from './actions';
 import lixiApi from './api';
+import { getAccountById } from '@store/account/selectors';
+import { getLixiById } from './selectors';
 
 const call: any = Effects.call;
 /**
@@ -70,7 +73,8 @@ function* generateLixiSaga(action: PayloadAction<GenerateLixiCommand>) {
 function* getLixiSaga(action: PayloadAction<number>) {
   try {
     const id = action.payload;
-    const data = yield call(lixiApi.getById, id);
+    const account: AccountDto = yield select(getAccountById(id));
+    const data = yield call(lixiApi.getById, id, account?.secret);
     yield put(getLixiSuccess(data));
   } catch (err) {
     const message = (err as Error).message ?? `Could not fetch the lixi from api.`;
@@ -80,6 +84,59 @@ function* getLixiSaga(action: PayloadAction<number>) {
 
 function* getLixiFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? 'Unable to get the lixi from server';
+  yield put(showToast('error', {
+    message: 'Error',
+    description: message,
+    duration: 5
+  }));
+}
+
+function* fetchInitialSubLixiesSaga(action: PayloadAction<number>) {
+  try {
+    const id = action.payload;
+    const parentLixi: LixiDto = yield select(getLixiById(id));
+    const account: AccountDto = yield select(getAccountById(parentLixi.accountId));
+    const subLixiResult: PaginationResult<Lixi> = yield call(lixiApi.getSubLixies, id, account?.secret);
+    yield put(fetchInitialSubLixiesSuccess(subLixiResult));
+  } catch (err) {
+    console.error(err);
+    const message = (err as Error).message ?? `Could not fetch the lixi from api.`;
+    yield put(getLixiFailure(message));
+  }
+}
+
+function* fetchInitialSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) {
+
+}
+
+function* fetchInitialSubLixiesFailureSaga(action: PayloadAction<string>) {
+  const message = action.payload ?? 'Unable to get the children lixies from server';
+  yield put(showToast('error', {
+    message: 'Error',
+    description: message,
+    duration: 5
+  }));
+}
+
+function* fetchMoreSubLixiesSaga(action: PayloadAction<{ parentId: number, startId: number }>) {
+  try {
+    const { parentId, startId } = action.payload;
+    const parentLixi: LixiDto = yield select(getLixiById(parentId));
+    const account: AccountDto = yield select(getAccountById(parentLixi.accountId));
+    const subLixiResult: PaginationResult<Lixi> = yield call(lixiApi.getSubLixies, parentId, account?.secret, startId);
+    yield put(fetchMoreSubLixiesSuccess(subLixiResult));
+  } catch (err) {
+    const message = (err as Error).message ?? `Could not fetch the lixi from api.`;
+    yield put(getLixiFailure(message))
+  }
+}
+
+function* fetchMoreSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) {
+
+}
+
+function* fetchMoreSubLixiesFailureSaga(action: PayloadAction<string>) {
+  const message = action.payload ?? 'Unable to get the children lixies from server';
   yield put(showToast('error', {
     message: 'Error',
     description: message,
@@ -143,14 +200,15 @@ function* postLixiFailureSaga(action: PayloadAction<string>) {
 
 function* refreshLixiSaga(action: PayloadAction<number>) {
   try {
-    yield put(showLoading(refreshLixiActionType));
     const lixiId = action.payload;
-    const data = yield call(lixiApi.getById, lixiId);
-    const lixi = (data as any).lixi as Lixi;
-    const children = (data as any).children as Lixi[];
+    const selectedLixi: LixiDto = yield select(getLixiById(lixiId));
+    const account: AccountDto = yield select(getAccountById(selectedLixi.accountId));
+    yield put(showLoading(refreshLixi.type));
+    const lixi: Lixi = yield call(lixiApi.getById, lixiId, account?.secret);
     const claimResult: PaginationResult<Claim> = yield call(claimApi.getByLixiId, lixiId);
     const claims = (claimResult.data ?? []) as Claim[];
-    yield put(selectLixiSuccess({ lixi: lixi, children: children, claims: claims }));
+    yield put(refreshLixiSuccess({ lixi: lixi, claims: claims }));
+    yield put(fetchInitialSubLixies(lixi.id));
   } catch (err) {
     const message = (err as Error).message ?? `Unable to refresh the lixi.`;
     yield put(refreshLixiFailure(message));
@@ -163,7 +221,7 @@ function* refreshLixiSuccessSaga(action: PayloadAction<{ lixi: Lixi, children: L
     description: 'Refresh the lixi successfully.',
     duration: 5
   }));
-  yield put(hideLoading(refreshLixiActionType));
+  yield put(hideLoading(refreshLixi.type));
 }
 
 function* refreshLixiFailureSaga(action: PayloadAction<string>) {
@@ -173,7 +231,7 @@ function* refreshLixiFailureSaga(action: PayloadAction<string>) {
     description: message,
     duration: 5
   }));
-  yield put(hideLoading(refreshLixiActionType));
+  yield put(hideLoading(refreshLixi.type));
 }
 
 function* setLixiSaga(action: PayloadAction<Lixi>) {
@@ -184,14 +242,15 @@ function* setLixiSaga(action: PayloadAction<Lixi>) {
 
 function* selectLixiSaga(action: PayloadAction<number>) {
   try {
-    yield put(showLoading(refreshLixiActionType));
     const lixiId = action.payload;
-    const data: LixiDto = yield call(lixiApi.getById, lixiId);
-    const lixi = (data as any).lixi as Lixi;
-    const children = (data as any).children as Lixi[];
+    const selectedLixi: LixiDto = yield select(getLixiById(lixiId));
+    const account: AccountDto = yield select(getAccountById(selectedLixi.accountId));
+    yield put(showLoading(selectLixi.type));
+    const lixi: Lixi = yield call(lixiApi.getById, lixiId, account?.secret);
     const claimResult: PaginationResult<Claim> = yield call(claimApi.getByLixiId, lixiId);
     const claims = (claimResult.data ?? []) as Claim[];
-    yield put(selectLixiSuccess({ lixi: lixi, children: children, claims: claims }));
+    yield put(selectLixiSuccess({ lixi: lixi, claims: claims }));
+    yield put(fetchInitialSubLixies(lixi.id));
   } catch (err) {
     const message = (err as Error).message ?? `Unable to select the lixi.`;
     yield put(selectLixiFailure(message));
@@ -199,8 +258,7 @@ function* selectLixiSaga(action: PayloadAction<number>) {
 }
 
 function* selectLixiSuccessSaga(action: PayloadAction<Lixi>) {
-  const lixies = action.payload;
-  yield put(hideLoading(selectLixiSuccess.type));
+  yield put(hideLoading(selectLixi.type));
   yield put(push('/lixi'));
 }
 
@@ -376,6 +434,30 @@ function* watchGetLixiFailure() {
   yield takeLatest(getLixiFailure.type, getLixiFailureSaga);
 }
 
+function* watchFetchInitialSubLixies() {
+  yield takeLatest(fetchInitialSubLixies.type, fetchInitialSubLixiesSaga);
+}
+
+function* watchFetchInitialSubLixiesSuccess() {
+  yield takeLatest(fetchInitialSubLixiesSuccess.type, fetchInitialSubLixiesSuccessSaga);
+}
+
+function* watchFetchInitialSubLixiesFailure() {
+  yield takeLatest(fetchInitialSubLixiesFailure.type, fetchInitialSubLixiesFailureSaga);
+}
+
+function* watchFetchMoreSubLixies() {
+  yield takeLatest(fetchMoreSubLixies.type, fetchMoreSubLixiesSaga);
+}
+
+function* watchFetchMoreSubLixiesSuccess() {
+  yield takeLatest(fetchMoreSubLixiesSuccess.type, fetchMoreSubLixiesSuccessSaga);
+}
+
+function* watchFetchMoreSubLixiesFailure() {
+  yield takeLatest(fetchMoreSubLixiesFailure.type, fetchMoreSubLixiesFailureSaga);
+}
+
 function* watchPostLixi() {
   yield takeLatest(postLixi.type, postLixiSaga);
 }
@@ -470,6 +552,12 @@ export default function* lixiSaga() {
     fork(watchGenerateLixi),
     fork(watchGetLixi),
     fork(watchGetLixiFailure),
+    fork(watchFetchInitialSubLixies),
+    fork(watchFetchInitialSubLixiesSuccess),
+    fork(watchFetchInitialSubLixiesFailure),
+    fork(watchFetchMoreSubLixies),
+    fork(watchFetchMoreSubLixiesSuccess),
+    fork(watchFetchMoreSubLixiesFailure),
     fork(watchPostLixi),
     fork(watchPostLixiFailure),
     fork(watchPostLixiSuccess),

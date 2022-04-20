@@ -1,13 +1,41 @@
-import { PostLixiResponseDto } from "@bcpros/lixi-models";
-import { CreateLixiCommand, LockLixiCommand, UnlockLixiCommand, LixiDto, WithdrawLixiCommand, RenameLixiCommand } from "@bcpros/lixi-models/lib/lixi";
+import { LixiDto, PaginationResult } from "@bcpros/lixi-models";
+import { CreateLixiCommand, LockLixiCommand, UnlockLixiCommand, WithdrawLixiCommand, RenameLixiCommand, Lixi, PostLixiResponseDto } from "@bcpros/lixi-models/lib/lixi";
 import axiosClient from "@utils/axiosClient";
 
 const lixiApi = {
-  getById(id: number): Promise<LixiDto> {
+  getById(id: number, accountSecret?: string): Promise<LixiDto> {
     const url = `/api/lixies/${id}`;
-    return axiosClient.get(url)
+
+    const config = accountSecret ? {
+      headers: {
+        'Account-Secret': accountSecret
+      }
+    } : {};
+
+    return axiosClient.get(url, config)
       .then(response => {
         return response.data as LixiDto;
+      })
+      .catch(err => {
+        const { response } = err;
+        throw response?.data ?? err ?? 'Network Error';
+      })
+  },
+  getSubLixies(parentId: number, accountSecret?: string, startId?: number): Promise<PaginationResult<LixiDto>> {
+
+    const config = accountSecret ? {
+      headers: {
+        'Account-Secret': accountSecret
+      }
+    } : {};
+
+    const url = startId ?
+      `/api/lixies/${parentId}/children?startId=${startId}` :
+      `/api/lixies/${parentId}/children`;
+
+    return axiosClient.get(url, config)
+      .then(response => {
+        return response.data as PaginationResult<LixiDto>;;
       })
       .catch(err => {
         const { response } = err;

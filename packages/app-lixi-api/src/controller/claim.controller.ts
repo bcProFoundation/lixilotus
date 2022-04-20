@@ -65,6 +65,8 @@ export class ClaimController {
     }
   }
 
+  
+
   @Post()
   async claim(@Headers('x-forwarded-for') headerIp: string, @ReqSocket() socket: any, @Body() claimApi: CreateClaimDto): Promise<ClaimDto | any> {
     const captchaResBody = {
@@ -86,7 +88,7 @@ export class ClaimController {
 
         // Extract result from the API response
         if (response.status !== 200 || response.data.score <= 0.5) {
-          throw new VError('Incorrect capcha? Please claim again!');
+          throw new VError('Incorrect captcha? Please claim again!');
         }
       } catch (err) {
         throw err;
@@ -333,5 +335,103 @@ export class ClaimController {
         }
       }
     }
+  }
+
+  @Post('validate')
+  async validate(@Headers('x-forwarded-for') headerIp: string, @ReqSocket() socket: any, @Body() claimApi: CreateClaimDto): Promise<any>  {
+    if (claimApi) {
+      try {
+        const ip = (headerIp || socket.remoteAddress) as string;
+        const claimCode = _.trim(claimApi.claimCode);
+        const password = claimCode.slice(0, 8);
+        const encodedLixiId = claimCode.slice(8);
+        const lixiId = _.toSafeInteger(base58ToNumber(encodedLixiId));
+        const address = _.trim(claimApi.claimAddress);
+
+        if (!Number.isInteger(lixiId)) {
+          throw new VError('Invalid claim code.');
+        }
+
+        const countClaimAddress = await this.prisma.claim.findMany({
+          where: {
+            AND: [
+              { claimAddress: address },
+              { lixiId: lixiId }
+            ]
+          }
+        });
+
+        const countIpaddress = await this.prisma.claim.count({
+          where: {
+            AND: [
+              { ipaddress: ip },
+              { lixiId: lixiId }
+            ]
+          }
+        });
+
+        const lixi = await this.prisma.lixi.findUnique({
+          where: {
+            id: lixiId
+          }
+        });
+
+
+        // isFamilyFriendly == true
+        if (lixi?.isFamilyFriendly) {
+          if (countClaimAddress.length > 0 || countIpaddress >= 5) {
+            throw new VError('You have reached the limit of redemptions for this code.');
+          }
+        }
+        // isFamilyFriendly == false
+        else {
+          if (countClaimAddress.length > 0 || countIpaddress > 0) {
+            throw new VError('You have reached the limit of redemptions for this code.');
+          }
+        }
+
+         if (!lixi) {
+          throw new VError('Unable to claim because the lixi is invalid');
+        }
+
+        const lixiStatus = lixi?.status;
+        if (lixiStatus === 'locked') {
+          throw new VError('Unable to claim because the lixi is locked');
+        }
+
+        const claimAddressBalance = await this.xpiWallet.getBalance(address);
+        if (claimAddressBalance < toSmallestDenomination(new BigNumber(lixi.minStaking))) {
+          throw new VError('You must have at least ' + lixi.minStaking + ' XPI in your account to claim this offer.');
+        }
+
+         const xPriv = await aesGcmDecrypt(lixi.encryptedXPriv, password);
+
+        // Generate the HD wallet.
+        const childNode = this.XPI.HDNode.fromXPriv(xPriv);
+        const lixiAddress: string = this.XPI.HDNode.toXAddress(childNode);
+        const keyPair = this.XPI.HDNode.toKeyPair(childNode);
+        const balance = await this.xpiWallet.getBalance(lixiAddress);
+
+        if (balance === 0) {
+          throw new VError('Insufficient fund.');
+        }
+
+        if ((lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim) || moment().isAfter(lixi.expiryAt)) {
+          throw new VError('The program has ended.');
+        }
+
+        return true;
+
+      } catch (err) {
+        if (err instanceof VError) {
+          throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+          logger.error(err);
+          const error = new VError.WError(err as Error, 'Unable to claim.');
+          throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+      }
+    }
+
   }
 }

@@ -51,6 +51,7 @@ export async function processCreateSubLixiesChunk(job: Job): Promise<boolean> {
     command,
     temporaryFeeCalc,
     fundingAddress,
+    accountSecret
   } = jobData;
 
   const { keyPair } = await walletService.deriveAddress(command.mnemonic, 0); // keyPair of the account
@@ -61,7 +62,7 @@ export async function processCreateSubLixiesChunk(job: Job): Promise<boolean> {
   // Prepare array to hold the result
   let resultSubLixies: Lixi[] = [];
 
-  const subLixiesToInsert: LixiDb[] = await prepareSubLixiChunkToInsert(numberOfSubLixiInChunk, startDerivationIndexForChunk, xpiAllowance, parentId, command, mapEncryptedClaimCode, temporaryFeeCalc);
+  const subLixiesToInsert: LixiDb[] = await prepareSubLixiChunkToInsert(numberOfSubLixiInChunk, startDerivationIndexForChunk, xpiAllowance, parentId, command, mapEncryptedClaimCode, temporaryFeeCalc, accountSecret);
 
   // Preparing receive address and amount
   const receivingSubLixies = _.filter(subLixiesToInsert.map(item => {
@@ -130,7 +131,8 @@ async function prepareSubLixiChunkToInsert(
   parentId: number,
   command: CreateLixiCommand,
   mapEncryptedClaimCode: MapEncryptedClaimCode,
-  temporaryFeeCalc: number
+  temporaryFeeCalc: number,
+  accountSecret: string
 ): Promise<LixiDb[]> {
 
   // If users input the amount means that the lixi need to be prefund
@@ -159,7 +161,7 @@ async function prepareSubLixiChunkToInsert(
       }
     }
 
-    const subLixiToInsert: LixiDb = await prepareSubLixiToInsert(derivationIndex, xpiToSend, parentId, command, mapEncryptedClaimCode);
+    const subLixiToInsert: LixiDb = await prepareSubLixiToInsert(derivationIndex, xpiToSend, parentId, command, mapEncryptedClaimCode, accountSecret);
     subLixiesToInsert.push(subLixiToInsert);
 
   }
@@ -179,15 +181,16 @@ async function prepareSubLixiChunkToInsert(
 async function prepareSubLixiToInsert(
   derivationIndex: number, xpiToSend: number,
   parentId: number, command: CreateLixiCommand,
-  mapEncryptedClaimCode: MapEncryptedClaimCode
+  mapEncryptedClaimCode: MapEncryptedClaimCode,
+  accountSecret: string
 ): Promise<LixiDb> {
 
   // Generate the random password to encrypt the key
   const password = generateRandomBase58Str(8);
 
   const { address, xpriv } = await walletService.deriveAddress(command.mnemonic, derivationIndex);
-  const encryptedXPriv = await aesGcmEncrypt(xpriv, command.password);
-  const encryptedClaimCode = await aesGcmEncrypt(command.password, command.mnemonic);
+  const encryptedXPriv = await aesGcmEncrypt(xpriv, password);
+  const encryptedClaimCode = await aesGcmEncrypt(password, accountSecret);
   const name = address.slice(12, 17);
   mapEncryptedClaimCode[encryptedClaimCode] = password;
 

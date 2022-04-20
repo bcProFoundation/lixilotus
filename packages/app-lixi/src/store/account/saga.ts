@@ -117,14 +117,10 @@ function* postAccountSaga(action: PayloadAction<CreateAccountCommand>) {
 
     const data: AccountDto = yield call(accountApi.post, command);
 
-    // Calculate the account secret
-    const secret: string = yield call(aesGcmDecrypt, data.encryptedSecret, command.mnemonic);
-
     // Merge back to action payload
     const result = {
       ...command,
       ...data,
-      secret
     } as Account;
 
     yield put(postAccountSuccess(result));

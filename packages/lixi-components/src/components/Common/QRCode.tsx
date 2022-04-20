@@ -14,7 +14,7 @@ type StyledRawQRCodeProps = {
   size: number;
   renderAs: string;
   includeMargin: boolean | null;
-  imageSettings: qrcode.ImageSettings;
+  imageSettings: any;
 };
 
 export const StyledRawQRCode: React.FC<StyledRawQRCodeProps> = styled(RawQRCode) <StyledRawQRCodeProps>`
@@ -158,21 +158,21 @@ type QRCodeProps = {
   logoImage?: string;
 }
 
-const FormattedWalletAddress = ({address}) => {
-    const prefixLength = 11;
-    const trimLength = 8;
-    return (
-        <>
-            {address.slice(0,prefixLength)}
-            <AddressHighlightTrim>
-                {address.slice(prefixLength, prefixLength + trimLength)}
-            </AddressHighlightTrim>
-            {address.slice(prefixLength+trimLength, -trimLength)}
-            <AddressHighlightTrim>
-                {address.slice(-trimLength)}
-            </AddressHighlightTrim>
-        </>
-    );
+const FormattedWalletAddress = ({ address }) => {
+  const prefixLength = 11;
+  const trimLength = 8;
+  return (
+    <>
+      {address.slice(0, prefixLength)}
+      <AddressHighlightTrim>
+        {address.slice(prefixLength, prefixLength + trimLength)}
+      </AddressHighlightTrim>
+      {address.slice(prefixLength + trimLength, -trimLength)}
+      <AddressHighlightTrim>
+        {address.slice(-trimLength)}
+      </AddressHighlightTrim>
+    </>
+  );
 };
 
 const QRCode = ({

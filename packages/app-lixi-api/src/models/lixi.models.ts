@@ -15,6 +15,7 @@ export interface CreateSubLixiesChunkJobData extends CreateSubLixiesJobData {
   xpiAllowance: number;
   temporaryFeeCalc: number;
   fundingAddress: string;
+  accountSecret: string;
 };
 
 export interface WithdrawSubLixiesJobData {

@@ -1,19 +1,3 @@
-import { Collapse, Descriptions, message } from 'antd';
-import intl from 'react-intl-universal';
-import { saveAs } from 'file-saver';
-import { toPng } from 'html-to-image';
-import * as _ from 'lodash';
-import moment from 'moment';
-import React, { useEffect, useState } from 'react';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { getAllClaims } from 'src/store/claim/selectors';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { getLixi, refreshLixi, setLixiBalance } from 'src/store/lixi/actions';
-import { getSelectedLixi, getSelectedLixiId } from 'src/store/lixi/selectors';
-import { AppContext } from 'src/store/store';
-import { showToast } from 'src/store/toast/actions';
-import styled from 'styled-components';
-
 import { CopyOutlined, DownloadOutlined, ReloadOutlined } from '@ant-design/icons';
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import { SmartButton } from '@bcpros/lixi-components/components/Common/PrimaryButton';
@@ -25,11 +9,28 @@ import { countries } from '@bcpros/lixi-models/constants/countries';
 import { LixiType } from '@bcpros/lixi-models/lib/lixi';
 import ClaimList from '@components/Claim/ClaimList';
 import { currency } from '@components/Common/Ticker';
-import { getLixiesByLixiParent } from '@store/lixi/selectors';
-import { fromSmallestDenomination, toSmallestDenomination } from '@utils/cashMethods';
-
+import { getAllSubLixies, getLoadMoreSubLixiesStartId } from '@store/lixi/selectors';
+import { fromSmallestDenomination } from '@utils/cashMethods';
+import { Collapse, Descriptions, message } from 'antd';
+import { saveAs } from 'file-saver';
+import { toPng } from 'html-to-image';
+import * as _ from 'lodash';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import intl from 'react-intl-universal';
+import { getAllClaims } from 'src/store/claim/selectors';
+import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import { fetchMoreSubLixies, getLixi, refreshLixi, setLixiBalance } from 'src/store/lixi/actions';
+import { getHasMoreSubLixies, getSelectedLixi, getSelectedLixiId } from 'src/store/lixi/selectors';
+import { AppContext } from 'src/store/store';
+import { showToast } from 'src/store/toast/actions';
+import styled from 'styled-components';
 import { ClaimType } from '../../../../lixi-models/src/lib/lixi';
 import lixiLogo from '../../assets/images/lixi_logo.svg';
+import VirtualTable from './SubLixiListScroll';
+
+
 
 type CopiedProps = {
   style?: React.CSSProperties
@@ -66,15 +67,11 @@ const Lixi: React.FC = () => {
   const [claimCodeVisible, setClaimCodeVisible] = useState(false);
   const qrPanelRef = React.useRef(null);
   const [isLoadBalanceError, setIsLoadBalanceError] = useState(false);
-  let subLixies = useAppSelector(getLixiesByLixiParent(selectedLixi.id));
+  const hasMoreSubLixies = useAppSelector(getHasMoreSubLixies);
+  const loadMoreStartId = useAppSelector(getLoadMoreSubLixiesStartId);
+  let subLixies = useAppSelector(getAllSubLixies);
 
   subLixies = _.sortBy(subLixies, ['isClaimed'])
-
-  // subLixies.sort(function (a,b) {
-  //   const claimedYet = a.isClaimed === true ? 1:0;
-  //   const claimed = b.isClaimed === true ? 1:0;
-  //   return claimedYet - claimed;
-  // })
 
   useEffect(() => {
     if (selectedLixi) {
@@ -141,11 +138,11 @@ const Lixi: React.FC = () => {
         );
       case LixiType.Divided:
         return (
-          <>{intl.get('account.DividedBy')} {selectedLixi.dividedValue} </>
+          <>{intl.get('lixi.dividedBy')} {selectedLixi.dividedValue} </>
         );
       case LixiType.Equal:
         return (
-          <>{intl.get('account.Equal')} {selectedLixi.amount / selectedLixi.numberOfSubLixi} {currency.ticker}</>
+          <>{intl.get('account.equal')} {selectedLixi.amount / selectedLixi.numberOfSubLixi} {currency.ticker}</>
         );
       default:
         return (
@@ -177,7 +174,7 @@ const Lixi: React.FC = () => {
   const formatDate = () => {
     if (selectedLixi?.expiryAt != null) {
       return (
-        <Descriptions.Item label={intl.get('lixi.ExpireAt')} key='desc.expiryat'>
+        <Descriptions.Item label={intl.get('lixi.expireAt')} key='desc.expiryat'>
           {moment(selectedLixi?.expiryAt).format("YYYY-MM-DD HH:mm")}
         </Descriptions.Item>
       );
@@ -189,16 +186,39 @@ const Lixi: React.FC = () => {
 
   const showCountry = () => {
     return (selectedLixi?.country != null) ? (
-      <Descriptions.Item label={intl.get('lixi.Country')} key='desc.country'>
+      <Descriptions.Item label={intl.get('lixi.country')} key='desc.country'>
         {countries.find(country => country.id === selectedLixi?.country)?.name}
       </Descriptions.Item>) : "";
   }
 
   const showIsFamilyFriendly = () => {
     return (selectedLixi?.isFamilyFriendly) ? (
-      <Descriptions.Item label={intl.get('lixi.Optional')} key='desc.optional'>
+      <Descriptions.Item label={intl.get('lixi.optional')} key='desc.optional'>
         Family Friendly
       </Descriptions.Item>) : "";
+  }
+
+  const columns = [
+    { title: 'Claim Code', dataIndex: 'claimCode' },
+    { title: 'Amount', dataIndex: 'amount' },
+  ];
+
+  const subLixiesDataSource = subLixies.map(item => {
+    return ({
+      claimCode: <CopyToClipboard
+        text={item.claimCode}
+        onCopy={handleOnCopyClaimCode}
+      >
+        <div>
+          <CopyOutlined />  {item.claimCode}
+        </div>
+      </CopyToClipboard>,
+      amount: item.isClaimed ? 0 : (item.amount - 0.000455).toFixed(2),
+    })
+  });
+
+  const showMoreSubLixies = () => {
+    dispatch(fetchMoreSubLixies({ parentId: selectedLixi.id, startId: loadMoreStartId }));
   }
 
   return (
@@ -220,8 +240,6 @@ const Lixi: React.FC = () => {
             /> :
             <></>
           }
-
-
           <Descriptions
             column={1}
             bordered
@@ -231,10 +249,10 @@ const Lixi: React.FC = () => {
               color: 'rgb(23,23,31)',
             }}
           >
-            <Descriptions.Item label={intl.get('lixi.ClaimType')} key='desc.claimtype'>
+            <Descriptions.Item label={intl.get('lixi.claimType')} key='desc.claimtype'>
               {selectedLixi.claimType == ClaimType.Single ? "Single" : "One-Time Codes"}
             </Descriptions.Item>
-            <Descriptions.Item label={intl.get('lixi.Type')} key='desc.type'>
+            <Descriptions.Item label={intl.get('lixi.type')} key='desc.type'>
               {typeLixi()}
             </Descriptions.Item>
             <Descriptions.Item label={intl.get('lixi.totalClaimed')} key='desc.totalclaimed'>
@@ -273,29 +291,16 @@ const Lixi: React.FC = () => {
                     <DownloadOutlined />  {intl.get('lixi.downloadCode')}
                   </SmartButton>
                 </> :
-                <Descriptions
-                  column={1}
-                  bordered
-                  style={{
-                    padding: '0 0 20px 0',
-                    color: 'rgb(23,23,31)',
-                  }}
-                >
-                  {subLixies.map(item =>
-                    <Descriptions.Item label={
-                      <CopyToClipboard
-                        text={item.claimCode}
-                        onCopy={handleOnCopyClaimCode}
-                      >
-                        <div>
-                          <CopyOutlined />  {item.claimCode}
-                        </div>
-                      </CopyToClipboard>
-                    }>
-                      {item.isClaimed ? 0 : item.amount - 0.000455}
-                    </Descriptions.Item>
-                  )}
-                </Descriptions>
+                <>
+                  <VirtualTable columns={columns} dataSource={subLixiesDataSource} scroll={{ y: subLixiesDataSource.length * 54 <= 270 ? subLixiesDataSource.length * 54 : 270 }} />
+                  {hasMoreSubLixies &&
+                    <SmartButton
+                      onClick={() => showMoreSubLixies()}
+                    >
+                      {intl.get('lixi.loadmore')}
+                    </SmartButton>
+                  }
+                </>
               }
             </Panel>
           </StyledCollapse>

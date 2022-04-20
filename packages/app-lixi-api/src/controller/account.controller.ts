@@ -144,8 +144,9 @@ export class AccountController {
 
         const resultApi: AccountDto = _.omit({
           ...command, ...createdAccount,
+          secret: accountSecret,
           address
-        }, ['mnemonic', 'encryptedMnemonic']);
+        }, ['mnemonic', 'encryptedMnemonic', 'encryptedSecret']);
 
         return resultApi;
       } catch (err) {

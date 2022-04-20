@@ -6,5 +6,8 @@ export interface LixiesState extends EntityState<Lixi> {
   claimIdsById: {
     [key: number]: Array<number>
   };
-
-}
+  subLixies: EntityState<Lixi>;
+  subLixiesCount: number;
+  currentSubLixiesStartId: number;
+  hasMoreSubLixies: boolean;
+};

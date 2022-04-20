@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import intl from 'react-intl-universal';
 import { Layout, Spin } from 'antd';
 import Link from 'next/link';
@@ -14,6 +14,9 @@ import { GlobalStyle } from '../MainLayout/GlobalStyle';
 import { theme } from '../MainLayout/theme';
 import Sidebar from '@containers/Sidebar';
 import Topbar from '@containers/Topbar';
+import { loadLocale } from '@store/settings/actions';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
 
 const { Content, Sider, Header } = Layout;
 
@@ -99,69 +102,79 @@ export const LixiTextLogo = styled.img`
 const ClaimedLayout: React.FC = (props) => {
   const { children } = props;
   const [loading, setLoading] = useState(false);
+  const currentLocale = useAppSelector(getCurrentLocale);
+  const intlInitDone = useAppSelector(getIntlInitStatus);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(loadLocale(currentLocale));
+  }, [currentLocale]);
 
   return (
     <ThemeProvider theme={theme as DefaultTheme}>
       <GlobalStyle />
-      <Spin
-        spinning={
-          loading
-        }
-        indicator={LoadingIcon}
-      >
-        <LixiApp>
-          <Layout>
-            <AppBody>
-              <ModalManager />
-              <AppContainer>
-                <Layout>
-                  <Sidebar />
+      {
+        intlInitDone &&
+        (<Spin
+          spinning={
+            loading
+          }
+          indicator={LoadingIcon}
+        >
+          <LixiApp>
+            <Layout>
+              <AppBody>
+                <ModalManager />
+                <AppContainer>
                   <Layout>
-                    <Topbar />
-                    <Content>
-                      {children}
-                    </Content>
+                    <Sidebar />
+                    <Layout>
+                      <Topbar />
+                      <Content>
+                        {children}
+                      </Content>
+                    </Layout>
                   </Layout>
-                </Layout>
-              </AppContainer>
-              <Footer>
-                <Link href='/' passHref>
-                  <NavButton
-                    active={false}
-                  >
-                    <UserOutlined />
-                    {intl.get('general.Accounts')}
-                  </NavButton>
-                </Link>
-                <Link href='/lixi' passHref>
-                  <NavButton
-                    active={false}
-                  >
-                    <WalletOutlined />
-                    {intl.get('general.Lixi')}
-                  </NavButton>
-                </Link>
-                <Link href='/claim' passHref>
-                  <NavButton
-                    active={false}
-                  >
-                    <GiftOutlined />
-                    {intl.get('general.Claim')}
-                  </NavButton>
-                </Link>
-                <Link href='/settings' passHref>
-                  <NavButton
-                    active={false}
-                  >
-                    <SettingOutlined />
-                    {intl.get('general.Settings')}
-                  </NavButton>
-                </Link>
-              </Footer>
-            </AppBody>
-          </Layout>
-        </LixiApp>
-      </Spin>
+                </AppContainer>
+                <Footer>
+                  <Link href='/' passHref>
+                    <NavButton
+                      active={false}
+                    >
+                      <UserOutlined />
+                      {intl.get('general.accounts')}
+                    </NavButton>
+                  </Link>
+                  <Link href='/lixi' passHref>
+                    <NavButton
+                      active={false}
+                    >
+                      <WalletOutlined />
+                      {intl.get('general.lixi')}
+                    </NavButton>
+                  </Link>
+                  <Link href='/claim' passHref>
+                    <NavButton
+                      active={false}
+                    >
+                      <GiftOutlined />
+                      {intl.get('general.claim')}
+                    </NavButton>
+                  </Link>
+                  <Link href='/settings' passHref>
+                    <NavButton
+                      active={false}
+                    >
+                      <SettingOutlined />
+                      {intl.get('general.settings')}
+                    </NavButton>
+                  </Link>
+                </Footer>
+              </AppBody>
+            </Layout>
+          </LixiApp>
+        </Spin>)
+      }
     </ThemeProvider >
   );
 }
