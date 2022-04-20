@@ -33,7 +33,7 @@ export class LixiController {
     private readonly lixiService: LixiService,
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
     @Inject('xpijs') private XPI: BCHJS,
-    @InjectQueue(WITHDRAW_SUB_LIXIES_QUEUE) private sublixiesQueue: Queue
+    @InjectQueue(WITHDRAW_SUB_LIXIES_QUEUE) private withdrawSubLixiesQueue: Queue
   ) { }
 
   @Get(':id')
@@ -448,7 +448,7 @@ export class LixiController {
 
       else {
         // Withdraw for OneTime Code
-        const job = await this.sublixiesQueue.add(
+        const job = await this.withdrawSubLixiesQueue.add(
           'withdraw-all-sub-lixies',
           {
             parentId: lixiId,
@@ -458,7 +458,7 @@ export class LixiController {
         );
         return {
           jobId: job.id
-        }
+        };
       }
 
     } catch (err) {

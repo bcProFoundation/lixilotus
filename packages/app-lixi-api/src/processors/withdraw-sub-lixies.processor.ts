@@ -40,15 +40,13 @@ export class WithdrawSubLixiesProcessor extends WorkerHost {
       }
     });
 
-    const mnemonicFromApi = jobData.mnemonic;
-    //const account = jobData.account;
-  
+    const mnemonic = jobData.mnemonic;
     for (let item in subLixies) {
       const subLixiAddress = subLixies[item].address;
       const subLixiDerivationIndex = subLixies[item].derivationIndex;
   
       const subLixiIndex = subLixiDerivationIndex;
-      const { keyPair } = await this.walletService.deriveAddress(mnemonicFromApi, subLixiIndex);
+      const { keyPair } = await this.walletService.deriveAddress(mnemonic, subLixiIndex);
 
       const subLixiBalance: number = await this.xpiWallet.getBalance(subLixiAddress);
       
