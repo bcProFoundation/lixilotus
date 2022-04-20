@@ -5,7 +5,6 @@ import { WITHDRAW_SUB_LIXIES_QUEUE } from "src/constants/lixi.constants";
 @Injectable()
 @QueueEventsListener(WITHDRAW_SUB_LIXIES_QUEUE)
 export class WithdrawSubLixiesEventsListener extends QueueEventsHost {
-
   @OnQueueEvent('completed')
   completed(args: {
     jobId: string;

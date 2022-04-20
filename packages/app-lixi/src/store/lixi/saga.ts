@@ -361,13 +361,13 @@ function* withdrawLixiSaga(action: PayloadAction<WithdrawLixiCommand>) {
       ...command
     }
 
-    const data = yield call(lixiApi.withdrawLixi, command.id, dataApi);
-    const lixi = data as Lixi;
+    const data: PostLixiResponseDto = yield call(lixiApi.withdrawLixi, command.id, dataApi);
 
-    if (_.isNil(data) || _.isNil(data.id)) {
+    if (_.isNil(data) || _.isNil(data.lixi.id)) {
       throw new Error('Unable to withdraw the lixi.');
     }
 
+    const lixi = data.lixi;
     yield put(withdrawLixiSuccess(lixi));
   } catch (error) {
     const message = (error as Error).message ?? `There's an error happens when withdraw lixi.`;

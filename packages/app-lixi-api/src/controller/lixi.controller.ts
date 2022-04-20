@@ -443,22 +443,35 @@ export class LixiController {
           isClaimed: lixi.isClaimed ?? false,
         };
 
-        return resultApi;
+        return {
+          lixi: resultApi
+        } as PostLixiResponseDto;
       }
 
       else {
         // Withdraw for OneTime Code
-        const job = await this.withdrawSubLixiesQueue.add(
-          'withdraw-all-sub-lixies',
-          {
-            parentId: lixiId,
-            mnemonic: mnemonicFromApi,
-            accountAddress: account.address
-          }
-        );
-        return {
-          jobId: job.id
+        const jobData = {
+          parentId: lixiId,
+          mnemonic: mnemonicFromApi,
+          accountAddress: account.address
         };
+        
+        const job = await this.withdrawSubLixiesQueue.add('withdraw-all-sub-lixies', jobData);
+        let resultApi: LixiDto = {
+          ...lixi,
+          balance: 0,
+          totalClaim: Number(lixi.totalClaim),
+          expiryAt: lixi.expiryAt ? lixi.expiryAt : undefined,
+          activationAt: lixi.activationAt ? lixi.activationAt : undefined,
+          country: lixi.country ? lixi.country : undefined,
+          numberOfSubLixi: 0,
+          parentId: lixi.parentId ?? undefined,
+          isClaimed: lixi.isClaimed ?? false,
+        };
+        return {
+          lixi: resultApi,
+          jobId: job.id
+        } as PostLixiResponseDto;
       }
 
     } catch (err) {
