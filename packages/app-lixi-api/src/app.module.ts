@@ -17,6 +17,7 @@ import IORedis from 'ioredis';
 import { CreateSubLixiesProcessor } from './processors/create-sub-lixies.processor';
 import { CreateSubLixiesEventsListener } from './processors/create-sub-lixies.eventslistener';
 import { WithdrawSubLixiesProcessor } from './processors/withdraw-sub-lixies.processor';
+import _ from 'lodash';
 
 
 const xpiRestUrl = config.has('xpiRestUrl')
@@ -51,7 +52,9 @@ const XpijsProvider = {
       name: CREATE_SUB_LIXIES_QUEUE,
       connection: new IORedis({
         maxRetriesPerRequest: null,
-        enableReadyCheck: false
+        enableReadyCheck: false,
+        host: process.env.REDIS_HOST ? process.env.REDIS_HOST : 'redis-lixi',
+        port: process.env.REDIS_PORT ? _.toSafeInteger(process.env.REDIS_PORT) : 6379
       }),
       processors: [
         {
@@ -64,7 +67,9 @@ const XpijsProvider = {
       name: WITHDRAW_SUB_LIXIES_QUEUE,
       connection: new IORedis({
         maxRetriesPerRequest: null,
-        enableReadyCheck: false
+        enableReadyCheck: false,
+        host: process.env.REDIS_HOST ? process.env.REDIS_HOST : 'redis-lixi',
+        port: process.env.REDIS_PORT ? _.toSafeInteger(process.env.REDIS_PORT) : 6379
       }),
     }),
   ],

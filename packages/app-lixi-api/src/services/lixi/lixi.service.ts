@@ -1,19 +1,18 @@
-import { Account, CreateLixiCommand, fromSmallestDenomination, Lixi, LixiType } from '@bcpros/lixi-models';
+import { CreateLixiCommand, fromSmallestDenomination, Lixi } from '@bcpros/lixi-models';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Inject, Injectable } from '@nestjs/common';
 import { Account as AccountDb } from '@prisma/client';
-import { FlowJob, Queue } from 'bullmq';
+import { FlowJob, FlowProducer, Queue } from 'bullmq';
+import IORedis from 'ioredis';
 import * as _ from 'lodash';
-import { lixiChunkSize, CREATE_SUB_LIXIES_QUEUE } from 'src/constants/lixi.constants';
-import logger from 'src/logger';
-import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase58Str, numberToBase58 } from 'src/utils/encryptionMethods';
+import { CREATE_SUB_LIXIES_QUEUE, lixiChunkSize } from 'src/constants/lixi.constants';
+import { CreateSubLixiesChunkJobData } from 'src/models/lixi.models';
+import { aesGcmDecrypt, aesGcmEncrypt, numberToBase58 } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
 import { PrismaService } from '../prisma/prisma.service';
 import { WalletService } from '../wallet.service';
-import { FlowProducer } from 'bullmq';
-import { CreateSubLixiesChunkJobData } from 'src/models/lixi.models';
 
 
 @Injectable()
@@ -40,7 +39,7 @@ export class LixiService {
     // Calculate the lixi encrypted claim code from the input password
     const { address, xpriv } = await this.walletService.deriveAddress(command.mnemonic, derivationIndex);
     const encryptedXPriv = await aesGcmEncrypt(xpriv, command.password);
-    const secret = await aesGcmDecrypt(account.encryptedMnemonic, command.mnemonic);
+    const secret = await aesGcmDecrypt(account.encryptedSecret, command.mnemonic);
     const encryptedClaimCode = await aesGcmEncrypt(command.password, secret);
 
     // Prepare data to insert into the database
@@ -114,7 +113,8 @@ export class LixiService {
     // Calculate the lixi encrypted claim code from the input password
     const { address, xpriv } = await this.walletService.deriveAddress(command.mnemonic, derivationIndex);
     const encryptedXPriv = await aesGcmEncrypt(xpriv, command.password);
-    const encryptedClaimCode = await aesGcmEncrypt(command.password, command.mnemonic);
+    const secret = await aesGcmDecrypt(account.encryptedSecret, command.mnemonic);
+    const encryptedClaimCode = await aesGcmEncrypt(command.password, secret);
 
     // Prepare data to insert into the database
     const data = {
@@ -196,6 +196,9 @@ export class LixiService {
     // The amount should be funded from the account
     const xpiAllowance = command.amount / numberOfChunks;
 
+    // Decrypt the account secret
+    const secret = await aesGcmDecrypt(account.encryptedSecret, command.mnemonic);
+
     // Prepare the utxo and keypair to send funding
     const utxos = await this.XPI.Utxo.get(account.address);
     const utxoStore = utxos[0];
@@ -222,7 +225,8 @@ export class LixiService {
         temporaryFeeCalc: fee,
         parentId: parentLixiId,
         command: command,
-        fundingAddress: account.address
+        fundingAddress: account.address,
+        accountSecret: secret
       };
 
       const childJob: FlowJob = {
@@ -234,7 +238,14 @@ export class LixiService {
       childrenJobs.push(childJob);
     }
 
-    const flowProducer = new FlowProducer();
+    const flowProducer = new FlowProducer({
+      connection: new IORedis({
+        maxRetriesPerRequest: null,
+        enableReadyCheck: false,
+        host: process.env.REDIS_HOST ? process.env.REDIS_HOST : 'redis-lixi',
+        port: process.env.REDIS_PORT ? _.toSafeInteger(process.env.REDIS_PORT) : 6379
+      })
+    });
     const flow = await flowProducer.add({
       name: 'create-all-sub-lixies',
       queueName: CREATE_SUB_LIXIES_QUEUE,
