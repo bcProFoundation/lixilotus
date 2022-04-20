@@ -1,8 +1,8 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Inject, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Headers, Delete, Get, HttpCode, HttpException, HttpStatus, Inject, Param, Patch, Post, Query } from '@nestjs/common';
 import * as _ from 'lodash';
 import { VError } from 'verror';
-import { Account as AccountDb, Lixi as LixiDb, PrismaClient } from '@prisma/client';
-import { ImportAccountCommand, AccountDto, CreateAccountCommand, RenameAccountCommand, DeleteAccountCommand, Lixi } from '@bcpros/lixi-models';
+import { Account as AccountDb, Lixi as LixiDb, Notification as NotificationDb } from '@prisma/client';
+import { ImportAccountCommand, AccountDto, CreateAccountCommand, RenameAccountCommand, DeleteAccountCommand, Lixi, PaginationResult, NotificationDto } from '@bcpros/lixi-models';
 import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase58Str, hashMnemonic } from '../utils/encryptionMethods';
 import { WalletService } from "../services/wallet.service";
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
@@ -33,6 +33,7 @@ export class AccountController {
         ...account,
         balance: balance
       } as AccountDto;
+
       return result;
     } catch (err: unknown) {
       if (err instanceof VError) {
@@ -296,7 +297,58 @@ export class AccountController {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
-        const error = new VError.WError(err as Error, 'Unable to get vault list of the account.');
+        const error = new VError.WError(err as Error, 'Unable to get the lixi list of the account.');
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  }
+
+  @Get(':id/notifications')
+  async getNotifications(
+    @Param('id') id: string,
+    @Headers('mnemonic-hash') mnemonicHash?: string,
+  ): Promise<NotificationDto[]> {
+
+    const accountId = _.toSafeInteger(id);
+
+    try {
+      // Find the associated account
+      const account = await this.prisma.account.findFirst({
+        where: {
+          mnemonicHash: mnemonicHash
+        }
+      });
+
+      if (!account || (account?.id !== accountId)) {
+        throw Error('No perimission to get the notifications');
+      }
+
+      const notifications = await this.prisma.notification.findMany({
+        where: {
+          recipientId: accountId
+        },
+        include: {
+          notificationType: true
+        },
+        orderBy: [
+          {
+            createdAt: 'desc'
+          }
+        ],
+        take: 20,
+      });
+
+      return notifications.map(item => {
+        return {
+          ...item
+        } as NotificationDto;
+      });
+
+    } catch (err) {
+      if (err instanceof VError) {
+        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      } else {
+        const error = new VError.WError(err as Error, 'Unable to get the notification list of the account.');
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }

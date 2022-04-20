@@ -6,6 +6,7 @@ import claimSaga from './claim/saga';
 import envelopeSaga from './envelope/saga';
 import toastSaga from './toast/saga';
 import settingsSaga from './settings/saga';
+import notificationSaga from './notification/saga';
 
 export default function* rootSaga() {
   yield all([
@@ -14,6 +15,7 @@ export default function* rootSaga() {
     claimSaga(),
     envelopeSaga(),
     toastSaga(),
-    settingsSaga()
+    settingsSaga(),
+    notificationSaga(),
   ]);
 }

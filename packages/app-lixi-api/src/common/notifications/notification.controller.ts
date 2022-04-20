@@ -1,5 +1,5 @@
 import { NotificationDto } from '@bcpros/lixi-models';
-import { Controller, HttpException, HttpStatus, Param, Get } from '@nestjs/common';
+import { Controller, HttpException, HttpStatus, Param, Get, Headers } from '@nestjs/common';
 import * as _ from 'lodash';
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { VError } from 'verror';
@@ -12,8 +12,24 @@ export class NotificationController {
   ) { }
 
   @Get(':id')
-  async getNotification(@Param('id') id: string): Promise<NotificationDto> {
+  async getNotification(
+    @Param('id') id: string,
+    @Headers('mnemonic-hash') mnemonicHash?: string
+  ): Promise<NotificationDto> {
     try {
+
+      // Find the associated account
+      const account = await this.prisma.account.findFirst({
+        where: {
+          mnemonicHash: mnemonicHash
+        }
+      });
+
+      if (!account) {
+        throw Error('No perimission to get the notification');
+      }
+
+      // Get the notification
       const notification = await this.prisma.notification.findUnique({
         where: {
           id: id
@@ -23,11 +39,15 @@ export class NotificationController {
         }
       });
 
+      // Check if the user have sufficient permission to get the notification
+      if (notification?.recipientId !== account?.id) {
+        throw Error('No perimission to get the notification');
+      }
+
       return {
-        id: notification?.id,
-        ...notification,
-        notificationType: ...notification?.notificationType,
-      };
+        ...notification
+      } as NotificationDto;
+
     } catch (err: unknown) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);

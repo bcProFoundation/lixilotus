@@ -15,9 +15,11 @@ import { ClaimsState } from './claim/state';
 import { claimReducer } from './claim/reducer';
 import { modalReducer } from './modal/reducer';
 import { settingsReducer } from './settings/reducer';
+import { notificationReducer } from './notification/reducer';
 import { AccountsState } from './account/state';
 import { HYDRATE } from 'next-redux-wrapper';
 import { SettingsState } from './settings/state';
+
 
 
 const accountPersistConfig: PersistConfig<AccountsState> = {
@@ -52,6 +54,7 @@ export const serverReducer = combineReducers({
   toast: toastReducer,
   error: errorReducer,
   settings: settingsReducer,
+  notifications: notificationReducer,
   // This is use for useReduxEffect
   // Should be always at the end
   action: actionReducer,
@@ -63,6 +66,7 @@ export const appReducer = combineReducers({
   lixies: persistReducer(lixiPersistConfig, lixiReducer),
   claims: persistReducer(claimsPersistConfig, claimReducer),
   settings: persistReducer(settingsPersistConfig, settingsReducer),
+  notifications: notificationReducer,
   envelopes: envelopeReducer,
   loading: loadingReducer,
   modal: modalReducer,

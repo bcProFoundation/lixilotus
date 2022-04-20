@@ -12,15 +12,17 @@ generator client {
 }
 
 model Account {
-  id                Int      @id @default(autoincrement())
+  id                Int            @id @default(autoincrement())
   name              String
-  encryptedMnemonic String   @map("encrypted_mnemonic")
-  encryptedSecret   String   @default("") @map("encrypted_secret")
-  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt         DateTime @default(now()) @map("updated_at") @db.Timestamptz
+  encryptedMnemonic String         @map("encrypted_mnemonic")
+  encryptedSecret   String         @default("") @map("encrypted_secret")
+  createdAt         DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime       @default(now()) @map("updated_at") @db.Timestamptz
   lixies            Lixi[]
-  mnemonicHash      String   @map("mnemonic_hash")
-  address           String   @default("") @map("address")
+  mnemonicHash      String         @map("mnemonic_hash")
+  address           String         @default("") @map("address")
+  notifications     Notification[]
+
 
   @@index([mnemonicHash])
   @@map("account")
@@ -110,7 +112,6 @@ model Notification {
   id                 String            @id @default(uuid())
   readAt             DateTime?         @db.Timestamptz
   deletedAt          DateTime?         @db.Timestamptz
-  recipientId        Int?              @map("recipient_id")
   senderId           Int?              @map("sender_id")
   additionalData     Json?             @map("additional_data")
   notificationType   NotificationType  @relation(fields: [notificationTypeId], references: [id])
@@ -119,6 +120,8 @@ model Notification {
   createdAt          DateTime          @default(now()) @map("created_at") @db.Timestamptz
   updatedAt          DateTime          @default(now()) @map("updated_at") @db.Timestamptz
   status             String            @default("pending")
+  recipient          Account?          @relation(fields: [recipientId], references: [id])
+  recipientId        Int?              @map("recipient_id")
   url                String?
   action             String?
 

@@ -2,7 +2,7 @@ import { push } from 'connected-next-router';
 import * as _ from 'lodash';
 import * as Effects from 'redux-saga/effects';
 import { Modal } from 'antd';
-import { AccountDto, Claim, ClaimDto, PaginationResult, PostLixiResponseDto } from '@bcpros/lixi-models';
+import { AccountDto, Claim, PaginationResult, PostLixiResponseDto } from '@bcpros/lixi-models';
 import {
   CreateLixiCommand, GenerateLixiCommand, LockLixiCommand, UnlockLixiCommand, Lixi, LixiDto,
   WithdrawLixiCommand, RenameLixiCommand
