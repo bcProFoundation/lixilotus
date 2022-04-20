@@ -20,6 +20,6 @@ export interface CreateSubLixiesChunkJobData extends CreateSubLixiesJobData {
 
 export interface WithdrawSubLixiesJobData {
   parentId: number;
-  mnemonicFromApi: string;
-  account: Account
+  mnemonic: string;
+  accountAddress: string;
 };

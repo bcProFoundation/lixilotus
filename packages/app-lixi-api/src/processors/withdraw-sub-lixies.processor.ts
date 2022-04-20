@@ -12,7 +12,7 @@ import { PrismaService } from 'src/services/prisma/prisma.service';
 import { WalletService } from 'src/services/wallet.service';
 
 @Injectable()
-@Processor(WITHDRAW_SUB_LIXIES_QUEUE, { concurrency: 3 })
+@Processor(WITHDRAW_SUB_LIXIES_QUEUE)
 export class WithdrawSubLixiesProcessor extends WorkerHost {
 
   constructor(
@@ -28,7 +28,6 @@ export class WithdrawSubLixiesProcessor extends WorkerHost {
     if (job.name === 'withdraw-all-sub-lixies') {
       return this.processWithdrawSubLixies(job);
     }
-
     return true;
   }
 
@@ -41,7 +40,7 @@ export class WithdrawSubLixiesProcessor extends WorkerHost {
       }
     });
 
-    const mnemonicFromApi = jobData.mnemonicFromApi;
+    const mnemonicFromApi = jobData.mnemonic;
     //const account = jobData.account;
   
     for (let item in subLixies) {
@@ -56,7 +55,7 @@ export class WithdrawSubLixiesProcessor extends WorkerHost {
       if (subLixiBalance !== 0) {
         try {
           const totalAmount: number = await this.walletService.onMax(subLixiAddress);
-          const receivingAccount = [{ address: job.data.account.address, amountXpi: totalAmount }];
+          const receivingAccount = [{ address: jobData.accountAddress, amountXpi: totalAmount }];
           const amount: any = await this.walletService.sendAmount(subLixiAddress, receivingAccount, keyPair);
     
           const updatedSubLixies = await this.prisma.lixi.update({

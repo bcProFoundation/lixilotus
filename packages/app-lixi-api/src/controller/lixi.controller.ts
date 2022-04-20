@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Inject, Param, Post, Patch, Query, Header, Headers, ClassSerializerInterceptor, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Inject, Param, Post, Patch, Query, Header, Headers, ClassSerializerInterceptor, UseInterceptors, Injectable } from '@nestjs/common';
 import * as _ from 'lodash';
 import logger from 'src/logger';
 
@@ -19,10 +19,12 @@ import { PrismaService } from '../services/prisma/prisma.service';
 import { LixiService } from 'src/services/lixi/lixi.service';
 import { PaginationParams } from 'src/common/models/paginationParams';
 import { WITHDRAW_SUB_LIXIES_QUEUE } from 'src/constants/lixi.constants';
-import { FlowProducer } from 'bullmq';
+import { Queue } from 'bullmq';
+import { InjectQueue } from '@nestjs/bullmq';
 
 @Controller('lixies')
 @UseInterceptors(ClassSerializerInterceptor)
+@Injectable()
 export class LixiController {
 
   constructor(
@@ -30,7 +32,8 @@ export class LixiController {
     private readonly walletService: WalletService,
     private readonly lixiService: LixiService,
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
-    @Inject('xpijs') private XPI: BCHJS
+    @Inject('xpijs') private XPI: BCHJS,
+    @InjectQueue(WITHDRAW_SUB_LIXIES_QUEUE) private sublixiesQueue: Queue
   ) { }
 
   @Get(':id')
@@ -445,18 +448,16 @@ export class LixiController {
 
       else {
         // Withdraw for OneTime Code
-        const flowProducer = new FlowProducer();
-        const flow = await flowProducer.add({
-          name: 'withdraw-all-sub-lixies',
-          queueName: WITHDRAW_SUB_LIXIES_QUEUE,
-          data: {
+        const job = await this.sublixiesQueue.add(
+          'withdraw-all-sub-lixies',
+          {
             parentId: lixiId,
-            mnemonicFromApi: mnemonicFromApi,
-            account: account
+            mnemonic: mnemonicFromApi,
+            accountAddress: account.address
           }
-        });
+        );
         return {
-          jobId: flow.job.id
+          jobId: job.id
         }
       }
 
