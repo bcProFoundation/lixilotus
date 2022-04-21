@@ -55,6 +55,7 @@ export class LixiController {
       let resultApi: any
       resultApi = _.omit({
         ...lixi,
+        activationAt: lixi.activationAt ? lixi.activationAt.toISOString() : null,
         isClaimed: lixi.isClaimed,
         balance: balance,
         totalClaim: Number(lixi.totalClaim),

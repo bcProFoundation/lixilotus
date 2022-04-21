@@ -184,6 +184,19 @@ const Lixi: React.FC = () => {
     }
   }
 
+  const formatActivationDate = () => {
+    if (selectedLixi?.activationAt != null) {
+      return (
+        <Descriptions.Item label={intl.get('lixi.activatedAt')} key='desc.activatedat'>
+          {moment(selectedLixi?.activationAt).format("YYYY-MM-DD HH:mm")}
+        </Descriptions.Item>
+      );
+    }
+    else {
+      return;
+    }
+  }
+
   const showCountry = () => {
     return (selectedLixi?.country != null) ? (
       <Descriptions.Item label={intl.get('lixi.country')} key='desc.country'>
@@ -272,6 +285,7 @@ const Lixi: React.FC = () => {
             )}
             {showCountry()}
             {showMinStaking()}
+            {formatActivationDate()}
             {formatDate()}
             {showIsFamilyFriendly()}
           </Descriptions>

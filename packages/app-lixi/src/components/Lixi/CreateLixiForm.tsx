@@ -89,6 +89,10 @@ const CreateLixiForm = ({
   const [newExpiryAt, setNewExpiryAtLixi] = useState('');
   const [newExpiryAtLixiIsValid, setExpiryAtLixiIsValid] = useState(true);
 
+  // New ActivatedAt
+  const [newActivatedAt, setNewActivatedAtLixi] = useState('');
+  const [newActivatedAtLixiIsValid, setActivatedAtLixiIsValid] = useState(true);
+
   // New FamilyFriendly
   const [isFamilyFriendly, setIsFamilyFriendlyLixi] = useState<boolean>(false);
 
@@ -115,7 +119,7 @@ const CreateLixiForm = ({
   // Only enable CreateLixi button if all form entries are valid
   let createLixiFormDataIsValid =
     newLixiNameIsValid && newMaxClaimLixiIsValid &&
-    newExpiryAtLixiIsValid && account &&
+    newExpiryAtLixiIsValid && account && newActivatedAtLixiIsValid &&
     (claimType == ClaimType.OneTime &&
       (lixiType == LixiType.Random && newNumberOfSubLixi && newLixiAmountValueIsValid && newLixiMinValueIsValid && newLixiMaxValueIsValid) ||
       (lixiType == LixiType.Equal && newNumberOfSubLixi && newLixiAmountValueIsValid)) ||
@@ -218,6 +222,10 @@ const CreateLixiForm = ({
     setNewExpiryAtLixi(value._d.toString());
   }
 
+  const handleNewActivatedTimeInput = (value) => {
+    setNewActivatedAtLixi(value._d.toString());
+  }
+
   const handleFamilyFriendly = (e) => {
     const value = e.target.checked;
     setIsFamilyFriendlyLixi(value);
@@ -240,6 +248,7 @@ const CreateLixiForm = ({
       mnemonicHash: account?.mnemonicHash ?? '',
       maxClaim: newMaxClaim,
       expiryAt: newExpiryAt,
+      activationAt: newActivatedAt,
       minValue: newLixiMinValue,
       maxValue: newLixiMaxValue,
       fixedValue: newLixiFixedValue,
@@ -252,7 +261,7 @@ const CreateLixiForm = ({
       amount: newLixiAmount,
       numberOfSubLixi: newNumberOfSubLixi,
       envelopeId: newEnvelopeId,
-      envelopeMessage: newEnvelopeMessage
+      envelopeMessage: newEnvelopeMessage,
     };
 
     const createLixiModalProps: CreateLixiConfirmationModalProps = {
@@ -262,6 +271,7 @@ const CreateLixiForm = ({
       newLixiName,
       newMaxClaim,
       newExpiryAt,
+      newActivatedAt,
       newLixiAmount,
       newNumberOfSubLixi,
       newLixiMinValue,
@@ -281,6 +291,13 @@ const CreateLixiForm = ({
     setNewExpiryAtLixi(value._d.toUTCString())
     if (value && !isEmpty(value)) {
       setExpiryAtLixiIsValid(true)
+    }
+  }
+
+  const onActivatedOk = (value) => {
+    setNewActivatedAtLixi(value._d.toUTCString())
+    if (value && !isEmpty(value)) {
+      setActivatedAtLixiIsValid(true)
     }
   }
   const selectClaimType = () => {
@@ -436,6 +453,34 @@ const CreateLixiForm = ({
             name="MinStaking"
             value={newMinStaking}
             onChange={e => handleNewMinStakingInput(e)}
+          />
+        </Form.Item>
+
+        {/* Activation Time */}
+        <Form.Item
+          validateStatus={
+            newActivatedAtLixiIsValid === null ||
+              newActivatedAtLixiIsValid
+              ? ''
+              : 'error'
+          }
+        >
+          <DatePicker
+            placeholder={intl.get('account.activatedTime')}
+            name="lixiActivatedAt"
+            disabledDate={(current) => disabledDate(current)}
+            disabledTime={(current) => disabledDateTime(current)}
+            showTime={{
+              format: 'HH:mm',
+              defaultValue: moment()
+            }}
+            format="YYYY-MM-DD HH:mm"
+            size={'large'}
+            style={{
+              width: "100%",
+            }}
+            onSelect={handleNewActivatedTimeInput}
+            onOk={onActivatedOk}
           />
         </Form.Item>
 
