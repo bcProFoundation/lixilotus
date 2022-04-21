@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Inject, Param, Post, Patch, Query, Header, Headers, ClassSerializerInterceptor, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Inject, Param, Post, Patch, Query, Header, Headers, ClassSerializerInterceptor, UseInterceptors, Injectable } from '@nestjs/common';
 import * as _ from 'lodash';
 import logger from 'src/logger';
 
@@ -18,9 +18,13 @@ import { VError } from 'verror';
 import { PrismaService } from '../services/prisma/prisma.service';
 import { LixiService } from 'src/services/lixi/lixi.service';
 import { PaginationParams } from 'src/common/models/paginationParams';
+import { WITHDRAW_SUB_LIXIES_QUEUE } from 'src/constants/lixi.constants';
+import { Queue } from 'bullmq';
+import { InjectQueue } from '@nestjs/bullmq';
 
 @Controller('lixies')
 @UseInterceptors(ClassSerializerInterceptor)
+@Injectable()
 export class LixiController {
 
   constructor(
@@ -28,7 +32,8 @@ export class LixiController {
     private readonly walletService: WalletService,
     private readonly lixiService: LixiService,
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
-    @Inject('xpijs') private XPI: BCHJS
+    @Inject('xpijs') private XPI: BCHJS,
+    @InjectQueue(WITHDRAW_SUB_LIXIES_QUEUE) private withdrawSubLixiesQueue: Queue
   ) { }
 
   @Get(':id')
@@ -50,6 +55,7 @@ export class LixiController {
       let resultApi: any
       resultApi = _.omit({
         ...lixi,
+        activationAt: lixi.activationAt ? lixi.activationAt.toISOString() : null,
         isClaimed: lixi.isClaimed,
         balance: balance,
         totalClaim: Number(lixi.totalClaim),
@@ -438,45 +444,23 @@ export class LixiController {
           isClaimed: lixi.isClaimed ?? false,
         };
 
-        return resultApi;
+        return {
+          lixi: resultApi
+        } as PostLixiResponseDto;
       }
 
       else {
         // Withdraw for OneTime Code
-        const subLixies = await this.prisma.lixi.findMany({
-          where: {
-            parentId: lixiId
-          }
-        });
-
-        for (let item in subLixies) {
-          const subLixiAddress = subLixies[item].address;
-          const subLixiDerivationIndex = subLixies[item].derivationIndex;
-
-          const subLixiIndex = subLixiDerivationIndex;
-          const { keyPair } = await this.walletService.deriveAddress(mnemonicFromApi, subLixiIndex);
-
-          try {
-            const totalAmount: number = await this.walletService.onMax(subLixiAddress);
-            const receivingAccount = [{ address: account.address, amountXpi: totalAmount }];
-            const amount: any = await this.walletService.sendAmount(subLixiAddress, receivingAccount, keyPair);
-
-            const updatedSubLixies = await this.prisma.lixi.update({
-              where: {
-                id: subLixies[item].id
-              },
-              data: {
-                amount: 0
-              }
-            });
-          } catch (err) {
-            continue;
-          }
-        }
-
+        const jobData = {
+          parentId: lixiId,
+          mnemonic: mnemonicFromApi,
+          accountAddress: account.address
+        };
+        
+        const job = await this.withdrawSubLixiesQueue.add('withdraw-all-sub-lixies', jobData);
         let resultApi: LixiDto = {
           ...lixi,
-          amount: lixi.amount ?? 0,
+          balance: 0,
           totalClaim: Number(lixi.totalClaim),
           expiryAt: lixi.expiryAt ? lixi.expiryAt : undefined,
           activationAt: lixi.activationAt ? lixi.activationAt : undefined,
@@ -485,8 +469,10 @@ export class LixiController {
           parentId: lixi.parentId ?? undefined,
           isClaimed: lixi.isClaimed ?? false,
         };
-
-        return resultApi;
+        return {
+          lixi: resultApi,
+          jobId: job.id
+        } as PostLixiResponseDto;
       }
 
     } catch (err) {
@@ -498,6 +484,7 @@ export class LixiController {
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
+
   }
 
   @Get(':id/claims')

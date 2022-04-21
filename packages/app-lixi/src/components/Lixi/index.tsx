@@ -184,6 +184,19 @@ const Lixi: React.FC = () => {
     }
   }
 
+  const formatActivationDate = () => {
+    if (selectedLixi?.activationAt != null) {
+      return (
+        <Descriptions.Item label={intl.get('lixi.activatedAt')} key='desc.activatedat'>
+          {moment(selectedLixi?.activationAt).format("YYYY-MM-DD HH:mm")}
+        </Descriptions.Item>
+      );
+    }
+    else {
+      return;
+    }
+  }
+
   const showCountry = () => {
     return (selectedLixi?.country != null) ? (
       <Descriptions.Item label={intl.get('lixi.country')} key='desc.country'>
@@ -199,12 +212,14 @@ const Lixi: React.FC = () => {
   }
 
   const columns = [
+    { title: 'Num', dataIndex: 'num', width: 70},
     { title: 'Claim Code', dataIndex: 'claimCode' },
     { title: 'Amount', dataIndex: 'amount' },
   ];
 
-  const subLixiesDataSource = subLixies.map(item => {
+  const subLixiesDataSource = subLixies.map((item, i) => {
     return ({
+      num: i+1,
       claimCode: <CopyToClipboard
         text={item.claimCode}
         onCopy={handleOnCopyClaimCode}
@@ -270,6 +285,7 @@ const Lixi: React.FC = () => {
             )}
             {showCountry()}
             {showMinStaking()}
+            {formatActivationDate()}
             {formatDate()}
             {showIsFamilyFriendly()}
           </Descriptions>

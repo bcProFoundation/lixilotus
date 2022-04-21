@@ -52,8 +52,8 @@ export class LixiService {
       encryptedXPriv,
       amount: isPrefund ? command.amount : 0,
       status: 'active',
-      expiryAt: null,
-      activationAt: null,
+      expiryAt: command.expiryAt,
+      activationAt: command.activationAt,
       address,
       totalClaim: BigInt(0),
       envelopeId: command.envelopeId ?? null,
@@ -126,8 +126,8 @@ export class LixiService {
       encryptedXPriv,
       amount: 0,
       status: 'active',
-      expiryAt: null,
-      activationAt: null,
+      expiryAt: command.expiryAt,
+      activationAt: command.activationAt,
       address,
       totalClaim: BigInt(0),
       envelopeId: command.envelopeId ?? null,
@@ -253,6 +253,23 @@ export class LixiService {
     });
 
     return flow.job.id;
+  }
+
+  checkDate(expiryAt:Date, activationAt:Date):any {
+    const now = new Date();
+    if (expiryAt != null) {
+      const expiryAtDate = new Date(expiryAt);
+      if (expiryAtDate.getTime() < now.getTime()) {
+        throw new VError('Unable to claim because the lixi is expired');
+      }
+    }
+
+    if (activationAt != null) {
+      const activationAtDate = new Date(activationAt);
+      if (activationAtDate.getTime() > now.getTime()) {
+        throw new VError('Unable to claim because the lixi is not activated yet');
+      }
+    }    
   }
 
 }

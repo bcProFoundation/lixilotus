@@ -7,7 +7,7 @@ import IORedis from 'ioredis';
 import * as _ from 'lodash';
 import { join } from 'path';
 import { NotificationController } from './common/notifications/notification.controller';
-import { CREATE_SUB_LIXIES_QUEUE } from './constants/lixi.constants';
+import { CREATE_SUB_LIXIES_QUEUE, WITHDRAW_SUB_LIXIES_QUEUE } from './constants/lixi.constants';
 import { AccountController } from './controller/account.controller';
 import { ClaimController } from './controller/claim.controller';
 import { EnvelopeController } from './controller/envelope.controller';
@@ -18,6 +18,7 @@ import { CreateSubLixiesProcessor } from './processors/create-sub-lixies.process
 import { LixiService } from './services/lixi/lixi.service';
 import { PrismaService } from './services/prisma/prisma.service';
 import { WalletService } from "./services/wallet.service";
+import { WithdrawSubLixiesProcessor } from './processors/withdraw-sub-lixies.processor';
 
 
 const xpiRestUrl = config.has('xpiRestUrl')
@@ -53,18 +54,28 @@ const XpijsProvider = {
         host: process.env.REDIS_HOST ? process.env.REDIS_HOST : 'redis-lixi',
         port: process.env.REDIS_PORT ? _.toSafeInteger(process.env.REDIS_PORT) : 6379
       }),
-      // processors: [
-      //   {
-      //     path: join(__dirname, 'processors/create-sub-lixies.isolated.processor'),
-      //     concurrency: 3
-      //   }
-      // ]
+      processors: [
+        {
+          path: join(__dirname, 'processors/create-sub-lixies.isolated.processor'),
+          concurrency: 3
+        }
+      ]
+    },
+    {
+      name: WITHDRAW_SUB_LIXIES_QUEUE,
+      connection: new IORedis({
+        maxRetriesPerRequest: null,
+        enableReadyCheck: false,
+        host: process.env.REDIS_HOST ? process.env.REDIS_HOST : 'redis-lixi',
+        port: process.env.REDIS_PORT ? _.toSafeInteger(process.env.REDIS_PORT) : 6379
+      }),
     }),
   ],
   controllers: [
     AccountController, EnvelopeController,
     ClaimController, LixiController,
     NotificationController, HeathController],
-  providers: [PrismaService, WalletService, LixiService, XpiWalletProvider, XpijsProvider, CreateSubLixiesProcessor, CreateSubLixiesEventsListener],
+  providers: [PrismaService, WalletService, LixiService, XpiWalletProvider, XpijsProvider,
+     CreateSubLixiesProcessor, CreateSubLixiesEventsListener, WithdrawSubLixiesProcessor],
 })
 export class AppModule { }
