@@ -11,6 +11,7 @@ import {
   LixiType, ViewClaimDto, ClaimType
 } from '@bcpros/lixi-models';
 import { WalletService } from "src/services/wallet.service";
+import { LixiService } from 'src/services/lixi/lixi.service';
 import moment from 'moment';
 import { aesGcmDecrypt, base58ToNumber } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
@@ -26,6 +27,7 @@ export class ClaimController {
   constructor(
     private prisma: PrismaService,
     private readonly walletService: WalletService,
+    private readonly lixiService: LixiService,
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
     @Inject('xpijs') private XPI: BCHJS) { }
 
@@ -165,6 +167,28 @@ export class ClaimController {
         if (lixiStatus === 'locked') {
           throw new VError('Unable to claim because the lixi is locked');
         }
+
+        //check if lixi is one time code
+        if (lixi.parentId != null) {
+          const parentLixi = await this.prisma.lixi.findUnique({
+            where: {
+              id: lixi.parentId
+            }
+          });
+
+          if (parentLixi?.status == 'locked') {
+            throw new VError('Unable to claim because the parent lixi is locked');
+          }
+
+          if (parentLixi?.expiryAt != null || parentLixi?.activationAt != null) {
+            this.lixiService.checkDate(lixi.expiryAt!,lixi.activationAt!);
+          }
+        }
+
+        if (lixi.expiryAt != null || lixi.activationAt != null) {
+           this.lixiService.checkDate(lixi.expiryAt!,lixi.activationAt!);
+        }
+
 
         const claimAddressBalance = await this.xpiWallet.getBalance(address);
         if (claimAddressBalance < toSmallestDenomination(new BigNumber(lixi.minStaking))) {
@@ -397,6 +421,27 @@ export class ClaimController {
         const lixiStatus = lixi?.status;
         if (lixiStatus === 'locked') {
           throw new VError('Unable to claim because the lixi is locked');
+        }
+
+        //check if lixi is one time code
+        if (lixi.parentId != null) {
+          const parentLixi = await this.prisma.lixi.findUnique({
+            where: {
+              id: lixi.parentId
+            }
+          });
+
+          if (parentLixi?.status == 'locked') {
+            throw new VError('Unable to claim because the parent lixi is locked');
+          }
+
+          if (parentLixi?.expiryAt != null || parentLixi?.activationAt != null) {
+            this.lixiService.checkDate(lixi.expiryAt!,lixi.activationAt!);
+          }
+        }
+
+        if (lixi.expiryAt != null || lixi.activationAt != null) {
+           this.lixiService.checkDate(lixi.expiryAt!,lixi.activationAt!);
         }
 
         const claimAddressBalance = await this.xpiWallet.getBalance(address);

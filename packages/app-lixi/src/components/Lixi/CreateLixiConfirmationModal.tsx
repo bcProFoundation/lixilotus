@@ -23,6 +23,7 @@ export type CreateLixiConfirmationModalProps = {
   newLixiName: string;
   newMaxClaim: string;
   newMinStaking: string;
+  newActivatedAt: string;
   newExpiryAt: string;
   newCountryLixi: string;
   isFamilyFriendly: boolean;
@@ -42,6 +43,7 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
     newMaxClaim,
     newMinStaking,
     newExpiryAt,
+    newActivatedAt,
     claimType,
     lixiType,
     newLixiMinValue,
@@ -128,11 +130,27 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
     return (newMinStaking == "" ? "" : <LixiParamLabel>{intl.get('lixi.minStake', { newMinStaking: newMinStaking })} <br /></LixiParamLabel>);
   }
 
-  const formatDate = () => {
-    if (newExpiryAt != "") {
-      return <LixiParamLabel>{intl.get('lixi.expireAt')} {moment(newExpiryAt).format("YYYY-MM-DD HH:mm")}<br /></LixiParamLabel>;
+  const formatActivationDate = () => {
+    if (newActivatedAt != "") {
+      return (
+        <>
+          <LixiParamLabel>{intl.get('lixi.activatedAt')} {moment(newActivatedAt).format("YYYY-MM-DD HH:mm")}<br /></LixiParamLabel>
+        </>
+      )
     }
     else {
+      return;
+    }
+  }
+
+  const formatExpireDate = () => {
+    if (newExpiryAt != "") {
+      return (
+        <>
+          <LixiParamLabel>{intl.get('lixi.expireAt')} {moment(newExpiryAt).format("YYYY-MM-DD HH:mm")}<br /></LixiParamLabel>
+        </>
+      )
+    }else {
       return;
     }
   }
@@ -158,7 +176,8 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
         {confirmCountry()}
         {confirmMaxClaim()}
         {confirmMinStaking()}
-        {formatDate()}
+        {formatActivationDate()}
+        {formatExpireDate()}
         <LixiParamLabel>{isFamilyFriendly ? intl.get('lixi.optionFamilyFriendly') : ""}</LixiParamLabel>
       </Modal>
     </>

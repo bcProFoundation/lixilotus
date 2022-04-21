@@ -44,6 +44,7 @@ function* generateLixiSaga(action: PayloadAction<GenerateLixiCommand>) {
     accountId: command.accountId,
     maxClaim: Number(command.maxClaim),
     expiryAt: command && command.expiryAt ? new Date(command.expiryAt) : undefined,
+    activationAt: command && command.activationAt ? new Date(command.activationAt) : undefined,
     claimType: command.claimType,
     lixiType: command.lixiType,
     minValue: Number(command.minValue),
