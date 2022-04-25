@@ -132,6 +132,7 @@ const CreateLixiForm = ({
   const handleChangeClaimType = (e: RadioChangeEvent) => {
     const { value } = e.target;
     setClaimType(value);
+    setLixiType(LixiType.Random);
   }
 
   const handleChangeLixiType = (e: RadioChangeEvent) => {
