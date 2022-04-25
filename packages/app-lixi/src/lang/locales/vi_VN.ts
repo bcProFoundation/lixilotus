@@ -94,6 +94,7 @@ export default {
   'lixi.downloadCode': 'Tải về mã code',
   'lixi.copyClaim': 'Sao chép mã code',
   'lixi.refreshLixi': 'Làm mới Lì xì',
+  'lixi.exportLixi': 'Export Lixi',
   'lixi.noLixiSelected': 'Chọn ít nhất một Lì xì',
   'lixi.fileTypeError': 'Bạn chỉ có thể tải lên tệp JPG!',
   'lixi.fileSizeError': 'Hình ảnh phải nhỏ hơn 2MB!',

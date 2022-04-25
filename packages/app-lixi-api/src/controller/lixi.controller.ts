@@ -1,30 +1,34 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Inject, Param, Post, Patch, Query, Header, Headers, ClassSerializerInterceptor, UseInterceptors, Injectable } from '@nestjs/common';
+import { FlowProducer, Queue } from 'bullmq';
+import { Response } from 'express';
+import { Parser } from 'json2csv';
 import * as _ from 'lodash';
+import { PaginationParams } from 'src/common/models/paginationParams';
+import { EXPORT_SUB_LIXIES_QUEUE, WITHDRAW_SUB_LIXIES_QUEUE } from 'src/constants/lixi.constants';
 import logger from 'src/logger';
-
-import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
-import BCHJS from '@bcpros/xpi-js';
-import { Lixi, Lixi as LixiDb, Claim as ClaimDb, Account as AccountDb } from '@prisma/client';
-import {
-  Account,
-  CreateLixiCommand, fromSmallestDenomination, Claim, LixiDto, ClaimType, LixiType,
-  RenameLixiCommand,
-  PostLixiResponseDto,
-  PaginationResult
-} from '@bcpros/lixi-models';
-import { WalletService } from "src/services/wallet.service";
+import { LixiService } from 'src/services/lixi/lixi.service';
+import { WalletService } from 'src/services/wallet.service';
 import { aesGcmDecrypt, numberToBase58 } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
-import { PrismaService } from '../services/prisma/prisma.service';
-import { LixiService } from 'src/services/lixi/lixi.service';
-import { PaginationParams } from 'src/common/models/paginationParams';
-import { WITHDRAW_SUB_LIXIES_QUEUE } from 'src/constants/lixi.constants';
-import { Queue } from 'bullmq';
+
+import {
+    Account, Claim, ClaimType, CreateLixiCommand, fromSmallestDenomination, LixiDto, LixiType,
+    PaginationResult, PostLixiResponseDto, RenameLixiCommand
+} from '@bcpros/lixi-models';
+import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
+import BCHJS from '@bcpros/xpi-js';
 import { InjectQueue } from '@nestjs/bullmq';
+import {
+    Body, ClassSerializerInterceptor, Controller, Get, Header, Headers, HttpException, HttpStatus,
+    Inject, Injectable, Param, Patch, Post, Query, Res, UseInterceptors
+} from '@nestjs/common';
+import { Account as AccountDb, Claim as ClaimDb, Lixi } from '@prisma/client';
+
+import { PrismaService } from '../services/prisma/prisma.service';
 
 @Controller('lixies')
 @UseInterceptors(ClassSerializerInterceptor)
 @Injectable()
+
 export class LixiController {
 
   constructor(
@@ -33,6 +37,7 @@ export class LixiController {
     private readonly lixiService: LixiService,
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
     @Inject('xpijs') private XPI: BCHJS,
+    @InjectQueue(EXPORT_SUB_LIXIES_QUEUE) private exportSubLixiesQueue: Queue,
     @InjectQueue(WITHDRAW_SUB_LIXIES_QUEUE) private withdrawSubLixiesQueue: Queue
   ) { }
 
@@ -202,7 +207,7 @@ export class LixiController {
         }
 
         // find the latest lixi created
-        const latestLixi: LixiDb | null = await this.prisma.lixi.findFirst({
+        const latestLixi: Lixi | null = await this.prisma.lixi.findFirst({
           where: {
             accountId: account.id,
           },
@@ -480,7 +485,35 @@ export class LixiController {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
         logger.error(err);
-        const error = new VError.WError(err as Error, 'Could not withdraw the lixi.');
+        const error = new VError.WError(err as Error, 'Could not export the lixi.');
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  }
+
+  @Post(':id/export')
+  async exportLixies(
+    @Param('id') id: string, 
+    @Headers('account-secret') accountSecret: string, 
+  ) {
+    const lixiId = _.toSafeInteger(id);
+    try {
+
+      const jobData = {
+        parentId: lixiId,
+        secret: accountSecret,
+      };
+      
+      const job = await this.exportSubLixiesQueue.add('withdraw-all-sub-lixies', jobData);
+
+      return {
+        jobId: job.id
+      } as PostLixiResponseDto;
+    } catch (err) {
+      if (err instanceof VError) {
+        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      } else {
+        const error = new VError.WError(err as Error, 'Could not export the lixi.');
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
@@ -620,7 +653,7 @@ export class LixiController {
         if (nameExist)
           throw new VError('The name is already taken.');
 
-        const updatedLixi: LixiDb = await this.prisma.lixi.update({
+        const updatedLixi: Lixi = await this.prisma.lixi.update({
           where: {
             id: _.toSafeInteger(id),
           },

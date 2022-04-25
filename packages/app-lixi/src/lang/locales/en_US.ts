@@ -95,6 +95,7 @@ export default {
   'lixi.downloadCode': 'Download Code',
   'lixi.copyClaim': 'Copy Claim Code',
   'lixi.refreshLixi': 'Refresh Lixi',
+  'lixi.exportLixi': 'Export Lixi',
   'lixi.noLixiSelected': 'No lixi is selected',
   'lixi.fileTypeError': 'You can only upload JPG file!',
   'lixi.fileSizeError': 'Image must smaller than 2MB!',
