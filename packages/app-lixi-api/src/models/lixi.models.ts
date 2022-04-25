@@ -17,6 +17,10 @@ export interface CreateSubLixiesChunkJobData extends CreateSubLixiesJobData {
   fundingAddress: string;
   accountSecret: string;
 };
+export interface ExportSubLixiesJobData {
+  parentId: number;
+  secret: string;
+};
 
 export interface WithdrawSubLixiesJobData {
   parentId: number;

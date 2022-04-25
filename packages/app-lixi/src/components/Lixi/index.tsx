@@ -1,16 +1,3 @@
-import { CopyOutlined, DownloadOutlined, ReloadOutlined } from '@ant-design/icons';
-import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
-import { SmartButton } from '@bcpros/lixi-components/components/Common/PrimaryButton';
-import { QRClaimCode } from '@bcpros/lixi-components/components/Common/QRClaimCode';
-import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
-import { StyledCollapse } from '@bcpros/lixi-components/components/Common/StyledCollapse';
-import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
-import { countries } from '@bcpros/lixi-models/constants/countries';
-import { LixiType } from '@bcpros/lixi-models/lib/lixi';
-import ClaimList from '@components/Claim/ClaimList';
-import { currency } from '@components/Common/Ticker';
-import { getAllSubLixies, getLoadMoreSubLixiesStartId } from '@store/lixi/selectors';
-import { fromSmallestDenomination } from '@utils/cashMethods';
 import { Collapse, Descriptions, message } from 'antd';
 import { saveAs } from 'file-saver';
 import { toPng } from 'html-to-image';
@@ -26,11 +13,26 @@ import { getHasMoreSubLixies, getSelectedLixi, getSelectedLixiId } from 'src/sto
 import { AppContext } from 'src/store/store';
 import { showToast } from 'src/store/toast/actions';
 import styled from 'styled-components';
+
+import { CopyOutlined, DownloadOutlined, ExportOutlined, ReloadOutlined } from '@ant-design/icons';
+import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
+import { SmartButton } from '@bcpros/lixi-components/components/Common/PrimaryButton';
+import { QRClaimCode } from '@bcpros/lixi-components/components/Common/QRClaimCode';
+import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
+import { StyledCollapse } from '@bcpros/lixi-components/components/Common/StyledCollapse';
+import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
+import { countries } from '@bcpros/lixi-models/constants/countries';
+import { LixiType } from '@bcpros/lixi-models/lib/lixi';
+import ClaimList from '@components/Claim/ClaimList';
+import { currency } from '@components/Common/Ticker';
+import { getSelectedAccount } from '@store/account/selectors';
+import { getAllSubLixies, getLoadMoreSubLixiesStartId } from '@store/lixi/selectors';
+import { fromSmallestDenomination, toSmallestDenomination } from '@utils/cashMethods';
+
 import { ClaimType } from '../../../../lixi-models/src/lib/lixi';
 import lixiLogo from '../../assets/images/lixi_logo.svg';
+import { exportSubLixies } from '../../store/lixi/actions';
 import VirtualTable from './SubLixiListScroll';
-
-
 
 type CopiedProps = {
   style?: React.CSSProperties
@@ -61,6 +63,7 @@ const Lixi: React.FC = () => {
   const dispatch = useAppDispatch();
   const ContextValue = React.useContext(AppContext);
   const { XPI, Wallet } = ContextValue;
+  const selectedAccount = useAppSelector(getSelectedAccount);
   const selectedLixiId = useAppSelector(getSelectedLixiId);
   const selectedLixi = useAppSelector(getSelectedLixi);
   const allClaimsCurrentLixi = useAppSelector(getAllClaims);
@@ -102,6 +105,18 @@ const Lixi: React.FC = () => {
     }
     const lixiId = selectedLixiId;
     dispatch(refreshLixi(lixiId));
+  }
+
+  const handleExportLixi = () => {
+    if (!(selectedLixi && selectedLixiId)) {
+      // Ignore if no lixi is selected
+      return;
+    }
+    const exportLixiData = {
+      id: selectedLixiId,
+      mnemonicHash: selectedAccount?.mnemonicHash
+    };
+    dispatch(exportSubLixies(exportLixiData));
   }
 
   const handleOnClickClaimCode = evt => {
@@ -228,7 +243,7 @@ const Lixi: React.FC = () => {
           <CopyOutlined />  {item.claimCode}
         </div>
       </CopyToClipboard>,
-      amount: item.isClaimed ? 0 : (item.amount - 0.000455).toFixed(2),
+      amount: item.isClaimed ? 0 : (item.amount==0 ? 0 : (item.amount - 0.000455).toFixed(2)),
     })
   });
 
@@ -344,7 +359,11 @@ const Lixi: React.FC = () => {
                 </SmartButton>
               </div>
             </CopyToClipboard> :
-            <></>
+            <>
+              <SmartButton onClick={() => handleExportLixi()} >
+                <ExportOutlined /> {intl.get('lixi.exportLixi')}
+              </SmartButton>
+            </>
           }
 
           <SmartButton

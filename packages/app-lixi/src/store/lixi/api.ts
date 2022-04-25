@@ -35,7 +35,7 @@ const lixiApi = {
 
     return axiosClient.get(url, config)
       .then(response => {
-        return response.data as PaginationResult<LixiDto>;;
+        return response.data as PaginationResult<LixiDto>;
       })
       .catch(err => {
         const { response } = err;
@@ -102,6 +102,23 @@ const lixiApi = {
     return axiosClient.post(url, data)
       .then(response => {
         return response.data as LixiDto;
+      })
+      .catch(err => {
+        const { response } = err;
+        throw response.data;
+      });
+  },
+  exportSubLixies(id: number, accountSecret?: string) {
+    const config = accountSecret ? {
+      headers: {
+        'Account-Secret': accountSecret
+      }
+    } : {};
+
+    const url = `/api/lixies/${id}/export`;
+    return axiosClient.post(url, {}, config)
+      .then(response => {
+        return response.data;
       })
       .catch(err => {
         const { response } = err;
