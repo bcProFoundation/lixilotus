@@ -105,7 +105,7 @@ const Topbar = ({
       <img src='/images/lixilotus-logo.png' alt='lixilotus' />
       <Space direction="horizontal" size={25} >
         <StyledPopover content={NotificationMenu(notifications)} placement="bottomRight"
-          getPopupContainer={(trigger) => trigger} trigger="click" title="Notifications">
+          getPopupContainer={(trigger) => trigger} trigger={notifications.length != 0 ? "click": ""} title="Notifications">
           <Badge count={notifications.length} overflowCount={9} offset={[notifications.length < 10 ? 0 : 5, 25]} color="#6f2dbd">
             <StyledBell twoToneColor="#6f2dbd" />
           </Badge>
