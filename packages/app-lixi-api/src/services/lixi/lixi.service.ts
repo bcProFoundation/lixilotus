@@ -1,19 +1,19 @@
-import { CreateLixiCommand, fromSmallestDenomination, Lixi } from '@bcpros/lixi-models';
+import { CreateLixiCommand, fromSmallestDenomination, Lixi, NotificationDto } from '@bcpros/lixi-models';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Inject, Injectable } from '@nestjs/common';
-import { Account as AccountDb } from '@prisma/client';
+import { Account as AccountDb, Notification as NotificationDb, Prisma } from '@prisma/client';
 import { FlowJob, FlowProducer, Queue } from 'bullmq';
 import IORedis from 'ioredis';
 import * as _ from 'lodash';
 import { CREATE_SUB_LIXIES_QUEUE, lixiChunkSize } from 'src/constants/lixi.constants';
-import { CreateSubLixiesChunkJobData } from 'src/models/lixi.models';
+import { CreateSubLixiesChunkJobData, CreateSubLixiesJobData } from 'src/models/lixi.models';
 import { aesGcmDecrypt, aesGcmEncrypt, numberToBase58 } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
 import { PrismaService } from '../prisma/prisma.service';
 import { WalletService } from '../wallet.service';
-
+import { pope } from 'pope';
 
 @Injectable()
 export class LixiService {
@@ -250,12 +250,16 @@ export class LixiService {
       name: 'create-all-sub-lixies',
       queueName: CREATE_SUB_LIXIES_QUEUE,
       children: childrenJobs,
+      data: {
+        parentId: parentLixiId,
+        command: command
+      } as CreateSubLixiesJobData
     });
 
     return flow.job.id;
   }
 
-  checkDate(expiryAt:Date, activationAt:Date):any {
+  checkDate(expiryAt: Date, activationAt: Date): any {
     const now = new Date();
     if (expiryAt != null) {
       const expiryAtDate = new Date(expiryAt);
@@ -269,7 +273,30 @@ export class LixiService {
       if (activationAtDate.getTime() > now.getTime()) {
         throw new VError('Unable to claim because the lixi is not activated yet');
       }
-    }    
+    }
+  }
+
+  async buildNotification(notificationTypeId: number, senderId: number, recipientId: number, additionalData: Object) {
+    const notifType = await this.prisma.notificationType.findFirst({
+      where: {
+        id: notificationTypeId
+      }
+    });
+
+    if (!notifType) return null;
+
+    const message = pope(notifType.template, additionalData);
+    const result: NotificationDto = {
+      senderId,
+      recipientId,
+      level: 'INFO',
+      action: 'open',
+      message: message,
+      additionalData: additionalData as Prisma.JsonValue,
+      notificationTypeId: notificationTypeId
+    };
+
+    return result;
   }
 
 }

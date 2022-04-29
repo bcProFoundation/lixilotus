@@ -1,14 +1,15 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { PrismaService } from './services/prisma/prisma.service';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import {
   FastifyAdapter,
-  NestFastifyApplication,
+  NestFastifyApplication
 } from '@nestjs/platform-fastify';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import compression from 'fastify-compress';
 import { fastifyHelmet } from 'fastify-helmet';
+import { AppModule } from './app.module';
+import { RedisIoAdapter } from './common/adapters/redis-io.adapter';
 import { HttpExceptionFilter } from './middlewares/exception.filter';
+import { PrismaService } from './services/prisma/prisma.service';
 
 const allowedOrigins = [
   'https://lixilotus.com',
@@ -23,8 +24,6 @@ const allowedOrigins = [
 ];
 
 async function bootstrap() {
-  const httpsOptions = {
-  };
 
   const POST_LIMIT = 1024 * 100; /* Max POST 100 kb */
 
@@ -75,6 +74,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
+  // Redis socket adapter
+  app.useWebSocketAdapter(new RedisIoAdapter(app));
+
   await app.register(fastifyHelmet, {
     crossOriginResourcePolicy: { policy: 'cross-origin' },
     crossOriginEmbedderPolicy: true,
@@ -90,6 +92,6 @@ async function bootstrap() {
   });
   app.register(compression);
 
-  await app.listen(4800, '0.0.0.0');
+  await app.listen(process.env.PORT || 4800, '0.0.0.0');
 }
 bootstrap();

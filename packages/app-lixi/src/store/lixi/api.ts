@@ -1,4 +1,4 @@
-import { LixiDto, PaginationResult } from "@bcpros/lixi-models";
+import { ExportLixiCommand, LixiDto, PaginationResult } from "@bcpros/lixi-models";
 import { CreateLixiCommand, LockLixiCommand, UnlockLixiCommand, WithdrawLixiCommand, RenameLixiCommand, Lixi, PostLixiResponseDto } from "@bcpros/lixi-models/lib/lixi";
 import axiosClient from "@utils/axiosClient";
 
@@ -86,9 +86,9 @@ const lixiApi = {
         throw response.data;
       });
   },
-  unlockLixi(id: number, data: UnlockLixiCommand) {
+  unlockLixi(id: number, command: UnlockLixiCommand) {
     const url = `/api/lixies/${id}/unlock`;
-    return axiosClient.post(url, data)
+    return axiosClient.post(url, command)
       .then(response => {
         return response.data as LixiDto;
       })
@@ -97,9 +97,9 @@ const lixiApi = {
         throw response.data;
       });
   },
-  withdrawLixi(id: number, data: WithdrawLixiCommand) {
+  withdrawLixi(id: number, command: WithdrawLixiCommand) {
     const url = `/api/lixies/${id}/withdraw`;
-    return axiosClient.post(url, data)
+    return axiosClient.post(url, command)
       .then(response => {
         return response.data as LixiDto;
       })
@@ -108,7 +108,7 @@ const lixiApi = {
         throw response.data;
       });
   },
-  exportSubLixies(id: number, accountSecret?: string) {
+  exportSubLixies(id: number, command: ExportLixiCommand, accountSecret?: string) {
     const config = accountSecret ? {
       headers: {
         'Account-Secret': accountSecret
@@ -116,7 +116,7 @@ const lixiApi = {
     } : {};
 
     const url = `/api/lixies/${id}/export`;
-    return axiosClient.post(url, {}, config)
+    return axiosClient.post(url, command, config)
       .then(response => {
         return response.data;
       })

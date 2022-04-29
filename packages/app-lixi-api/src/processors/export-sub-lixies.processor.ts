@@ -33,7 +33,7 @@ export class ExportSubLixiesProcessor extends WorkerHost {
 
   public async processExportSubLixies(job: Job): Promise<boolean> {
     const jobData = job.data as ExportSubLixiesJobData;
-  
+
     const lixi = await this.prisma.lixi.findFirst({
       where: {
         id: jobData.parentId,
@@ -47,7 +47,7 @@ export class ExportSubLixiesProcessor extends WorkerHost {
     });
 
     const childrenApiResult: LixiDto[] = [];
-    
+
     for (let item of subLixies) {
       const childResult = _.omit({
         ...item,
@@ -57,9 +57,9 @@ export class ExportSubLixiesProcessor extends WorkerHost {
       } as LixiDto, 'encryptedXPriv', 'encryptedClaimCode');
 
       try {
-          const claimPart = await aesGcmDecrypt(item.encryptedClaimCode, jobData.secret);
-          const encodedId = numberToBase58(item.id);
-          childResult.claimCode = claimPart + encodedId;
+        const claimPart = await aesGcmDecrypt(item.encryptedClaimCode, jobData.secret);
+        const encodedId = numberToBase58(item.id);
+        childResult.claimCode = claimPart + encodedId;
       } catch (err) {
         logger.error(err);
         continue;

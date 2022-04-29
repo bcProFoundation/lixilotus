@@ -98,7 +98,7 @@ model Envelope {
 
 model NotificationType {
   id            Int            @id @default(autoincrement())
-  name          String
+  name          String         @default("")
   description   String
   template      String
   notifications Notification[]
@@ -110,6 +110,7 @@ model NotificationType {
 
 model Notification {
   id                 String            @id @default(uuid())
+  message            String            @default("")
   readAt             DateTime?         @db.Timestamptz
   deletedAt          DateTime?         @db.Timestamptz
   senderId           Int?              @map("sender_id")

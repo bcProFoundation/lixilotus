@@ -3,11 +3,11 @@ import { push } from 'connected-next-router';
 import * as _ from 'lodash';
 import * as Effects from 'redux-saga/effects';
 import {
-    AccountDto, Claim, ExportLixiCommand, PaginationResult, PostLixiResponseDto
+  AccountDto, Claim, ExportLixiCommand, PaginationResult, PostLixiResponseDto
 } from '@bcpros/lixi-models';
 import {
-    CreateLixiCommand, GenerateLixiCommand, Lixi, LixiDto, LockLixiCommand, RenameLixiCommand,
-    UnlockLixiCommand, WithdrawLixiCommand
+  CreateLixiCommand, GenerateLixiCommand, Lixi, LixiDto, LockLixiCommand, RenameLixiCommand,
+  UnlockLixiCommand, WithdrawLixiCommand
 } from '@bcpros/lixi-models/lib/lixi';
 import { all, fork, put, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
@@ -18,14 +18,14 @@ import claimApi from '../claim/api';
 import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
 import {
-    exportSubLixies, exportSubLixiesFailure, exportSubLixiesSuccess, fetchInitialSubLixies,
-    fetchInitialSubLixiesFailure, fetchInitialSubLixiesSuccess, fetchMoreSubLixies,
-    fetchMoreSubLixiesFailure, fetchMoreSubLixiesSuccess, generateLixi, getLixi, getLixiFailure,
-    getLixiSuccess, lockLixi, lockLixiFailure, lockLixiSuccess, postLixi, postLixiFailure,
-    postLixiSuccess, refreshLixi, refreshLixiActionType, refreshLixiFailure, refreshLixiSuccess,
-    renameLixi, renameLixiFailure, renameLixiSuccess, selectLixi, selectLixiFailure,
-    selectLixiSuccess, setLixi, unlockLixi, unlockLixiFailure, unlockLixiSuccess, withdrawLixi,
-    withdrawLixiFailure, withdrawLixiSuccess
+  exportSubLixies, exportSubLixiesFailure, exportSubLixiesSuccess, fetchInitialSubLixies,
+  fetchInitialSubLixiesFailure, fetchInitialSubLixiesSuccess, fetchMoreSubLixies,
+  fetchMoreSubLixiesFailure, fetchMoreSubLixiesSuccess, generateLixi, getLixi, getLixiFailure,
+  getLixiSuccess, lockLixi, lockLixiFailure, lockLixiSuccess, postLixi, postLixiFailure,
+  postLixiSuccess, refreshLixi, refreshLixiActionType, refreshLixiFailure, refreshLixiSuccess,
+  renameLixi, renameLixiFailure, renameLixiSuccess, selectLixi, selectLixiFailure,
+  selectLixiSuccess, setLixi, unlockLixi, unlockLixiFailure, unlockLixiSuccess, withdrawLixi,
+  withdrawLixiFailure, withdrawLixiSuccess
 } from './actions';
 import lixiApi from './api';
 import { getLixiById } from './selectors';
@@ -239,9 +239,9 @@ function* refreshLixiFailureSaga(action: PayloadAction<string>) {
 }
 
 function* setLixiSaga(action: PayloadAction<Lixi>) {
-  const lixies: any = action.payload;
+  const lixi: any = action.payload;
   yield put(push('/lixi'));
-  yield put(refreshLixi(lixies.lixi.id));
+  yield put(refreshLixi(lixi.id));
 }
 
 function* selectLixiSaga(action: PayloadAction<number>) {
@@ -429,9 +429,10 @@ function* renameLixiFailureSaga(action: PayloadAction<string>) {
 function* exportSubLixiesSaga(action: PayloadAction<ExportLixiCommand>) {
   try {
     const { id } = action.payload;
+    const command = action.payload;
     const parentLixi: LixiDto = yield select(getLixiById(id));
     const account: AccountDto = yield select(getAccountById(parentLixi.accountId));
-    const data = yield call(lixiApi.exportSubLixies, id, account?.secret);
+    const data = yield call(lixiApi.exportSubLixies, id, command, account?.secret);
     yield put(exportSubLixiesSuccess(data));
   } catch (err) {
     const message = (err as Error).message ?? `Unable to export sub-lixies.`;

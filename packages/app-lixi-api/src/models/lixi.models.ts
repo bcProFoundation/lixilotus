@@ -9,6 +9,10 @@ export interface CreateSubLixiesJobData {
   command: CreateLixiCommand;
 };
 
+export interface CreateSubLixiesResult {
+  id: number;
+}
+
 export interface CreateSubLixiesChunkJobData extends CreateSubLixiesJobData {
   numberOfSubLixiInChunk: number;
   startDerivationIndexForChunk: number;

@@ -44,6 +44,7 @@ import {
   refreshLixiListFailure,
   refreshLixiListSuccess,
 } from './actions';
+import { fetchNotifications } from '@store/notification/actions';
 
 /**
  * Generate a account with random encryption password
@@ -207,7 +208,10 @@ function* importAccountSaga(action: PayloadAction<string>) {
 }
 
 function* importAccountSuccessSaga(action: PayloadAction<Account>) {
-  const account = action.payload;
+  yield put(fetchNotifications({
+    accountId: action.payload.id,
+    mnemonichHash: action.payload.mnemonicHash
+  }));
   yield put(hideLoading(importAccount.type));
 }
 
@@ -237,6 +241,10 @@ function* selectAccountSaga(action: PayloadAction<number>) {
 }
 
 function* selectAccountSuccessSaga(action: PayloadAction<{ account: Account; lixies: Lixi[] }>) {
+  yield put(fetchNotifications({
+    accountId: action.payload.account.id,
+    mnemonichHash: action.payload.account.mnemonicHash
+  }));
   yield put(hideLoading(selectAccount.type));
 }
 
@@ -248,6 +256,13 @@ function* selectAccountFailureSaga(action: PayloadAction<string>) {
     duration: 5
   }));
   yield put(hideLoading(selectAccount.type));
+}
+
+function* setAccountSaga(action: PayloadAction<Account>) {
+  yield put(fetchNotifications({
+    accountId: action.payload.id,
+    mnemonichHash: action.payload.mnemonicHash
+  }));
 }
 
 function* renameAccountSaga(action: PayloadAction<RenameAccountCommand>) {
@@ -386,6 +401,10 @@ function* watchSelectAccountFailure() {
   yield takeLatest(selectAccountFailure.type, selectAccountFailureSaga);
 }
 
+function* watchSetAccount() {
+  yield takeLatest(setAccount.type, setAccountSaga);
+}
+
 function* watchRenameAccount() {
   yield takeLatest(renameAccount.type, renameAccountSaga);
 }
@@ -434,6 +453,7 @@ export default function* accountSaga() {
     fork(watchSelectAccount),
     fork(watchSelectAccountSuccess),
     fork(watchSelectAccountFailure),
+    fork(watchSetAccount),
     fork(watchRefreshLixiList),
     fork(watchRefreshLixiListSuccess),
     fork(watchRefreshLixiListFailure),
