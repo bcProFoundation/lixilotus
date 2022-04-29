@@ -473,7 +473,6 @@ const CreateLixiForm = ({
             disabledTime={(current) => disabledDateTime(current)}
             showTime={{
               format: 'HH:mm',
-              defaultValue: moment()
             }}
             format="YYYY-MM-DD HH:mm"
             size={'large'}
@@ -501,7 +500,6 @@ const CreateLixiForm = ({
             disabledTime={(current) => disabledDateTime(current)}
             showTime={{
               format: 'HH:mm',
-              defaultValue: moment()
             }}
             format="YYYY-MM-DD HH:mm"
             size={'large'}

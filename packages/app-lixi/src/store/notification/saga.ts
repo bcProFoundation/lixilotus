@@ -76,10 +76,6 @@ function* watchFetchNotificationsFailure() {
   yield takeLatest(fetchNotificationsFailure.type, fetchNotificationsFailureSaga);
 }
 
-function* watchReceiveNotification() {
-  yield takeEvery(receiveNotification.type,)
-}
-
 function connect(): Promise<Socket> {
   socket = io(socketServerUrl, { transports: ['websocket'] });
   return new Promise((resolve) => {
