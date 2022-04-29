@@ -4,8 +4,8 @@ import { Processor, WorkerHost } from "@nestjs/bullmq";
 import { PrismaClient } from '@prisma/client';
 import { Job } from "bullmq";
 import * as _ from 'lodash';
-import { CREATE_SUB_LIXIES_QUEUE } from 'src/constants/lixi.constants';
-import { CreateSubLixiesJobData } from "src/models/lixi.models";
+import { CREATE_SUB_LIXIES_QUEUE, LIXI_JOB_NAMES } from 'src/constants/lixi.constants';
+import { CreateSubLixiesJobData, CreateSubLixiesJobResult } from "src/models/lixi.models";
 import { WalletService } from 'src/services/wallet.service';
 import config from 'config';
 import SlpWallet from '@bcpros/minimal-xpi-slp-wallet';
@@ -36,13 +36,22 @@ export class CreateSubLixiesProcessor extends WorkerHost {
     this.walletService = new WalletService(this.xpiWallet, this.XPI);
   }
 
-  public async process(job: Job<CreateSubLixiesJobData, boolean, string>): Promise<boolean> {
+  public async process(job: Job<CreateSubLixiesJobData, boolean, string>): Promise<CreateSubLixiesJobResult | boolean> {
 
-    if (job.name === 'create-sub-lixies-chunk') {
+    if (job.name === LIXI_JOB_NAMES.CREATE_SUB_LIXIES_CHUNK) {
       return processCreateSubLixiesChunk(job);
     }
 
-    return true;
+    const { parentId, command } = job.data;
+
+    return {
+      id: parentId,
+      name: command.name,
+      jobName: LIXI_JOB_NAMES.CREATE_ALL_SUB_LIXIES,
+      mnemonicHash: command.mnemonicHash,
+      senderId: command.accountId,
+      recipientId: command.accountId
+    } as CreateSubLixiesJobResult;
   }
 
 

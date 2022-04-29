@@ -9,8 +9,13 @@ export interface CreateSubLixiesJobData {
   command: CreateLixiCommand;
 };
 
-export interface CreateSubLixiesResult {
+export interface CreateSubLixiesJobResult {
   id: number;
+  name: string;
+  jobName: string;
+  mnemonicHash: string;
+  senderId: number;
+  recipientId: number;
 }
 
 export interface CreateSubLixiesChunkJobData extends CreateSubLixiesJobData {
@@ -26,8 +31,27 @@ export interface ExportSubLixiesJobData {
   secret: string;
 };
 
+export interface ExportSubLixiesJobResult {
+  id: number;
+  name: string;
+  jobName: string;
+  path: string;
+  mnemonicHash: string;
+  senderId: number;
+  recipientId: number;
+}
+
 export interface WithdrawSubLixiesJobData {
   parentId: number;
   mnemonic: string;
   accountAddress: string;
 };
+
+export interface WithdrawSubLixiesJobResult {
+  id: number;
+  name: string;
+  jobName: string;
+  mnemonicHash: string;
+  senderId: number;
+  recipientId: number;
+}

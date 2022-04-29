@@ -3,17 +3,17 @@ import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Inject, Injectable } from '@nestjs/common';
-import { Account as AccountDb, Notification as NotificationDb, Prisma } from '@prisma/client';
+import { Account as AccountDb, Prisma } from '@prisma/client';
 import { FlowJob, FlowProducer, Queue } from 'bullmq';
 import IORedis from 'ioredis';
 import * as _ from 'lodash';
-import { CREATE_SUB_LIXIES_QUEUE, lixiChunkSize } from 'src/constants/lixi.constants';
+import { pope } from 'pope';
+import { CREATE_SUB_LIXIES_QUEUE, lixiChunkSize, LIXI_JOB_NAMES } from 'src/constants/lixi.constants';
 import { CreateSubLixiesChunkJobData, CreateSubLixiesJobData } from 'src/models/lixi.models';
 import { aesGcmDecrypt, aesGcmEncrypt, numberToBase58 } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
 import { PrismaService } from '../prisma/prisma.service';
 import { WalletService } from '../wallet.service';
-import { pope } from 'pope';
 
 @Injectable()
 export class LixiService {
@@ -230,7 +230,7 @@ export class LixiService {
       };
 
       const childJob: FlowJob = {
-        name: 'create-sub-lixies-chunk',
+        name: LIXI_JOB_NAMES.CREATE_SUB_LIXIES_CHUNK,
         data: childJobData,
         queueName: CREATE_SUB_LIXIES_QUEUE
       };
@@ -247,7 +247,7 @@ export class LixiService {
       })
     });
     const flow = await flowProducer.add({
-      name: 'create-all-sub-lixies',
+      name: LIXI_JOB_NAMES.CREATE_ALL_SUB_LIXIES,
       queueName: CREATE_SUB_LIXIES_QUEUE,
       children: childrenJobs,
       data: {

@@ -8,7 +8,7 @@ import { Parser } from 'json2csv';
 import * as _ from 'lodash';
 import { EXPORT_SUB_LIXIES_QUEUE } from 'src/constants/lixi.constants';
 import logger from 'src/logger';
-import { ExportSubLixiesJobData } from "src/models/lixi.models";
+import { ExportSubLixiesJobData, ExportSubLixiesJobResult } from "src/models/lixi.models";
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { WalletService } from 'src/services/wallet.service';
 import { aesGcmDecrypt, numberToBase58 } from 'src/utils/encryptionMethods';
@@ -27,16 +27,22 @@ export class ExportSubLixiesProcessor extends WorkerHost {
     super();
   }
 
-  public async process(job: Job<ExportSubLixiesJobData, boolean, string>): Promise<boolean> {
+  public async process(job: Job<ExportSubLixiesJobData, boolean, string>): Promise<ExportSubLixiesJobResult> {
     return this.processExportSubLixies(job);
   }
 
-  public async processExportSubLixies(job: Job): Promise<boolean> {
+  public async processExportSubLixies(job: Job): Promise<ExportSubLixiesJobResult> {
     const jobData = job.data as ExportSubLixiesJobData;
 
     const lixi = await this.prisma.lixi.findFirst({
       where: {
-        id: jobData.parentId,
+        id: _.toSafeInteger(jobData.parentId),
+      }
+    });
+
+    const account = await this.prisma.account.findFirst({
+      where: {
+        id: _.toSafeInteger(lixi?.accountId)
       }
     });
 
@@ -75,11 +81,22 @@ export class ExportSubLixiesProcessor extends WorkerHost {
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir);
     }
-    fs.writeFile('./public/download/' + (lixi as any).id + '.csv', csv, function (err) {
+
+    const fileName = `${lixi?.id}.csv`;
+    const filePath = `public/download/${fileName}`;
+    fs.writeFile(`./${filePath}`, csv, function (err) {
       if (err) {
         throw err;
       }
-    })
-    return true;
+    });
+    return {
+      id: jobData.parentId,
+      name: lixi?.name,
+      jobName: job.name,
+      path: filePath,
+      mnemonicHash: account?.mnemonicHash,
+      senderId: account?.id,
+      recipientId: account?.id,
+    } as ExportSubLixiesJobResult;
   }
 }

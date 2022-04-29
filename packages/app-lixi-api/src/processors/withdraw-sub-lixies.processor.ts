@@ -5,9 +5,9 @@ import { Inject, Injectable } from "@nestjs/common";
 import { Lixi as LixiDb, prisma, PrismaClient } from '@prisma/client';
 import { Job } from "bullmq";
 import * as _ from 'lodash';
-import { WITHDRAW_SUB_LIXIES_QUEUE } from 'src/constants/lixi.constants';
+import { LIXI_JOB_NAMES, WITHDRAW_SUB_LIXIES_QUEUE } from 'src/constants/lixi.constants';
 import logger from 'src/logger';
-import { WithdrawSubLixiesJobData } from "src/models/lixi.models";
+import { WithdrawSubLixiesJobData, WithdrawSubLixiesJobResult } from "src/models/lixi.models";
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { WalletService } from 'src/services/wallet.service';
 
@@ -24,19 +24,28 @@ export class WithdrawSubLixiesProcessor extends WorkerHost {
     super();
   }
 
-  public async process(job: Job<WithdrawSubLixiesJobData, boolean, string>): Promise<boolean> {
-    if (job.name === 'withdraw-all-sub-lixies') {
-      return this.processWithdrawSubLixies(job);
-    }
-    return true;
+  public async process(job: Job<WithdrawSubLixiesJobData, boolean, string>): Promise<WithdrawSubLixiesJobResult> {
+    return this.processWithdrawSubLixies(job);
   }
 
-  public async processWithdrawSubLixies(job: Job): Promise<boolean> {
+  public async processWithdrawSubLixies(job: Job): Promise<WithdrawSubLixiesJobResult> {
     const jobData = job.data as WithdrawSubLixiesJobData;
-  
+
+    const lixi = await this.prisma.lixi.findFirst({
+      where: {
+        id: _.toSafeInteger(jobData.parentId),
+      }
+    });
+
+    const account = await this.prisma.account.findFirst({
+      where: {
+        id: _.toSafeInteger(lixi?.accountId)
+      }
+    });
+
     const subLixies = await this.prisma.lixi.findMany({
       where: {
-        parentId: jobData.parentId,
+        parentId: _.toSafeInteger(jobData.parentId),
       }
     });
 
@@ -44,18 +53,18 @@ export class WithdrawSubLixiesProcessor extends WorkerHost {
     for (let item in subLixies) {
       const subLixiAddress = subLixies[item].address;
       const subLixiDerivationIndex = subLixies[item].derivationIndex;
-  
+
       const subLixiIndex = subLixiDerivationIndex;
       const { keyPair } = await this.walletService.deriveAddress(mnemonic, subLixiIndex);
 
       const subLixiBalance: number = await this.xpiWallet.getBalance(subLixiAddress);
-      
+
       if (subLixiBalance !== 0) {
         try {
           const totalAmount: number = await this.walletService.onMax(subLixiAddress);
           const receivingAccount = [{ address: jobData.accountAddress, amountXpi: totalAmount }];
           const amount: any = await this.walletService.sendAmount(subLixiAddress, receivingAccount, keyPair);
-    
+
           const updatedSubLixies = await this.prisma.lixi.update({
             where: {
               id: subLixies[item].id
@@ -70,6 +79,14 @@ export class WithdrawSubLixiesProcessor extends WorkerHost {
         }
       }
     }
-    return true;
+
+    return {
+      id: jobData.parentId,
+      name: lixi?.name,
+      jobName: job.name,
+      mnemonicHash: account?.mnemonicHash,
+      senderId: account?.id,
+      recipientId: account?.id,
+    } as WithdrawSubLixiesJobResult;
   }
 }

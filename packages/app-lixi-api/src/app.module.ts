@@ -23,6 +23,7 @@ import { CreateSubLixiesEventsListener } from './processors/create-sub-lixies.ev
 import { CreateSubLixiesProcessor } from './processors/create-sub-lixies.processor';
 import { ExportSubLixiesEventsListener } from './processors/export-sub-lixies.eventslistener';
 import { ExportSubLixiesProcessor } from './processors/export-sub-lixies.processor';
+import { WithdrawSubLixiesEventsListener } from './processors/withdraw-sub-lixies.eventslistener';
 import { WithdrawSubLixiesProcessor } from './processors/withdraw-sub-lixies.processor';
 import { LixiService } from './services/lixi/lixi.service';
 import { PrismaService } from './services/prisma/prisma.service';
@@ -108,6 +109,7 @@ const XpijsProvider = {
     CreateSubLixiesProcessor, CreateSubLixiesEventsListener,
     WithdrawSubLixiesProcessor, ExportSubLixiesProcessor,
     ExportSubLixiesEventsListener, NotificationGateway,
+    WithdrawSubLixiesEventsListener,
     NotificationOutboundProcessor, NotificationService
   ],
 })

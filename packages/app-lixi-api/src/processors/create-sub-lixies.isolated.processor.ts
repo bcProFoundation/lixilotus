@@ -7,13 +7,14 @@ import { Lixi as LixiDb, PrismaClient } from '@prisma/client';
 import { Job } from "bullmq";
 import * as _ from 'lodash';
 import logger from 'src/logger';
-import { CreateSubLixiesChunkJobData, CreateSubLixiesJobData, CreateSubLixiesResult, MapEncryptedClaimCode } from "src/models/lixi.models";
+import { CreateSubLixiesChunkJobData, CreateSubLixiesJobData, CreateSubLixiesJobResult, MapEncryptedClaimCode } from "src/models/lixi.models";
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { WalletService } from 'src/services/wallet.service';
 import { aesGcmEncrypt, generateRandomBase58Str, numberToBase58 } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
 import config from 'config';
 import SlpWallet from '@bcpros/minimal-xpi-slp-wallet';
+import { LIXI_JOB_NAMES } from 'src/constants/lixi.constants';
 
 
 const xpiRestUrl = config.has('xpiRestUrl')
@@ -28,15 +29,22 @@ const xpiWallet = new SlpWallet('', {
 const XPI = xpiWallet.bchjs;
 const walletService = new WalletService(xpiWallet, XPI);
 
-export default async function (job: Job<CreateSubLixiesJobData, boolean, string>): Promise<any> {
+export default async function (job: Job<CreateSubLixiesJobData, boolean, string>): Promise<CreateSubLixiesJobResult | boolean> {
 
   return new Promise((resolve, reject) => {
-    if (job.name === 'create-sub-lixies-chunk') {
+    if (job.name === LIXI_JOB_NAMES.CREATE_SUB_LIXIES_CHUNK) {
       const result = processCreateSubLixiesChunk(job);
       resolve(result);
     }
-    const { parentId } = job.data;
-    resolve({ id: parentId } as CreateSubLixiesResult);
+    const { parentId, command } = job.data;
+    resolve({
+      id: parentId,
+      name: command.name,
+      jobName: LIXI_JOB_NAMES.CREATE_ALL_SUB_LIXIES,
+      mnemonicHash: command.mnemonicHash,
+      senderId: command.accountId,
+      recipientId: command.accountId
+    } as CreateSubLixiesJobResult);
   })
 }
 

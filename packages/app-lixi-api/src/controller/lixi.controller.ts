@@ -1,29 +1,28 @@
-import { Queue } from 'bullmq';
-import * as _ from 'lodash';
-import { PaginationParams } from 'src/common/models/paginationParams';
-import { EXPORT_SUB_LIXIES_QUEUE, WITHDRAW_SUB_LIXIES_QUEUE } from 'src/constants/lixi.constants';
-import logger from 'src/logger';
-import { LixiService } from 'src/services/lixi/lixi.service';
-import { WalletService } from 'src/services/wallet.service';
-import { aesGcmDecrypt, numberToBase58 } from 'src/utils/encryptionMethods';
-import { VError } from 'verror';
-
 import {
-  Account, Claim, ClaimType, CreateLixiCommand, ExportLixiCommand, fromSmallestDenomination, LixiDto, LixiType,
-  PaginationResult, PostLixiResponseDto, RenameLixiCommand, WithdrawLixiCommand
+  Account, Claim, ClaimType, CreateLixiCommand, ExportLixiCommand, LixiDto, PaginationResult, PostLixiResponseDto, RenameLixiCommand, WithdrawLixiCommand
 } from '@bcpros/lixi-models';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
 import { InjectQueue } from '@nestjs/bullmq';
 import {
-  Body, ClassSerializerInterceptor, Controller, Get, Header, Headers, HttpException, HttpStatus,
+  Body, ClassSerializerInterceptor, Controller, Get, Headers, HttpException, HttpStatus,
   Inject, Injectable, Param, Patch, Post, Query, UseInterceptors
 } from '@nestjs/common';
-import { Account as AccountDb, Claim as ClaimDb, Lixi } from '@prisma/client';
-
-import { PrismaService } from '../services/prisma/prisma.service';
-import { NotificationService } from 'src/common/notifications/notification.service';
+import { Claim as ClaimDb, Lixi } from '@prisma/client';
+import { Queue } from 'bullmq';
+import * as _ from 'lodash';
+import { PaginationParams } from 'src/common/models/paginationParams';
 import { NOTIFICATION_TYPES } from 'src/common/notifications/notification.constants';
+import { NotificationService } from 'src/common/notifications/notification.service';
+import { EXPORT_SUB_LIXIES_QUEUE, LIXI_JOB_NAMES, WITHDRAW_SUB_LIXIES_QUEUE } from 'src/constants/lixi.constants';
+import logger from 'src/logger';
+import { LixiService } from 'src/services/lixi/lixi.service';
+import { WalletService } from 'src/services/wallet.service';
+import { aesGcmDecrypt, numberToBase58 } from 'src/utils/encryptionMethods';
+import { VError } from 'verror';
+import { PrismaService } from '../services/prisma/prisma.service';
+
+
 
 @Controller('lixies')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -236,14 +235,6 @@ export class LixiController {
           // One time child codes type
           lixi = await this.lixiService.createOneTimeParentLixi(lixiIndex, account, command);
           const jobId = await this.lixiService.createSubLixies(lixiIndex + 1, account, command, lixi.id);
-          const notif = await this.lixiService.buildNotification(
-            NOTIFICATION_TYPES.CREATE_SUB_LIXIES,
-            account.id, account.id, lixi
-          );
-          if (notif) {
-            const room = account.mnemonicHash;
-            await this.notificationService.saveAndDispatchNotification(room, notif);
-          }
 
           return {
             lixi,
@@ -474,7 +465,7 @@ export class LixiController {
           accountAddress: account.address
         };
 
-        const job = await this.withdrawSubLixiesQueue.add('withdraw-all-sub-lixies', jobData);
+        const job = await this.withdrawSubLixiesQueue.add(LIXI_JOB_NAMES.WITHDRAW_ALL_SUB_LIXIES, jobData);
         let resultApi: LixiDto = {
           ...lixi,
           balance: 0,
@@ -486,16 +477,6 @@ export class LixiController {
           parentId: lixi.parentId ?? undefined,
           isClaimed: lixi.isClaimed ?? false,
         };
-
-        // Build and dispatch notification
-        const notif = await this.lixiService.buildNotification(
-          NOTIFICATION_TYPES.WITHDRAW_SUB_LIXIES,
-          account.id, account.id, lixi
-        );
-        if (notif) {
-          const room = account.mnemonicHash;
-          await this.notificationService.saveAndDispatchNotification(room, notif);
-        }
 
         return {
           lixi: resultApi,
@@ -533,36 +514,16 @@ export class LixiController {
         throw new Error('Could not found the lixi in the database.');
       }
 
-      const account = await this.prisma.account.findFirst({
-        where: {
-          id: lixi.accountId
-        }
-      });
-
-      if (!account || account.mnemonicHash !== command.mnemonicHash) {
-        throw new Error('Could not found the account in the database.');
-      }
-
       const jobData = {
         parentId: lixiId,
         secret: accountSecret,
       };
 
-      const job = await this.exportSubLixiesQueue.add('export-all-sub-lixies', jobData);
-
-      // Build and dispatch notification
-      const notif = await this.lixiService.buildNotification(
-        NOTIFICATION_TYPES.WITHDRAW_SUB_LIXIES,
-        account.id, account.id, lixi
-      );
-      if (notif) {
-        const room = account.mnemonicHash;
-        await this.notificationService.saveAndDispatchNotification(room, notif);
-      }
+      const job = await this.exportSubLixiesQueue.add(LIXI_JOB_NAMES.EXPORT_ALL_SUB_LIXIES, jobData);
 
       return {
         jobId: job.id
-      } as PostLixiResponseDto;
+      };
     } catch (err) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
