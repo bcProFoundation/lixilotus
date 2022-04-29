@@ -1,3 +1,10 @@
+export enum NotificationLevel {
+  DEBUG,
+  INFO,
+  WARNING,
+  ERROR
+}
+
 export interface NotificationTypeDto {
   id?: number;
   name: string;
@@ -9,8 +16,10 @@ export interface NotificationTypeDto {
 
 export interface NotificationDto {
   id?: string;
+  message?: string;
   readAt?: Nullable<Date>;
   deletedAt?: Nullable<Date>;
+  additionalData?: Nullable<Object>;
   recipientId?: Nullable<number>;
   senderId?: Nullable<number>;
   notificationType?: Nullable<NotificationTypeDto>;
@@ -18,11 +27,13 @@ export interface NotificationDto {
   level?: Nullable<number>;
   createdAt?: Nullable<Date>;
   updatedAt?: Nullable<Date>;
+  status?: Nullable<string>;
+  url?: Nullable<string>;
+  action?: Nullable<string>;
 }
 
-export enum NotificationLevel {
-  DEBUG,
-  INFO,
-  WARNING,
-  ERROR
+export interface SendNotificationJobData {
+  room: string;
+  notification: NotificationDto;
 }
+

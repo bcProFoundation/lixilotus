@@ -94,6 +94,7 @@
   },
   "include": [
     "./src/**/*.ts",
+    "src/index.d.ts",
     "src/processors/create-sub-lixies.isolated.processor.js"
   ],
   "exclude": [

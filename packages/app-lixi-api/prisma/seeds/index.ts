@@ -6,6 +6,7 @@ const prisma = new PrismaClient();
 
 async function main() {
   await prisma.envelope.deleteMany({});
+  await prisma.notificationType.deleteMany({});
 
   await prisma.envelope.createMany({
     data: envelopes,

@@ -33,9 +33,6 @@ export class NotificationController {
       const notification = await this.prisma.notification.findUnique({
         where: {
           id: id
-        },
-        include: {
-          notificationType: true
         }
       });
 

@@ -7,9 +7,11 @@ import { getNavCollapsed } from "@store/settings/selectors";
 import { Header } from "antd/lib/layout/layout";
 import styled from 'styled-components';
 import { getSelectedAccount } from "@store/account/selectors";
-import { fetchNotifications } from "@store/notification/actions";
+import { fetchNotifications, startChannel, stopChannel } from "@store/notification/actions";
 import { getAllNotifications } from "@store/notification/selectors";
 import { NotificationDto as Notification } from "@bcpros/lixi-models";
+import { connect } from "socket.io-client";
+
 
 export type TopbarProps = {
   className?: string,
@@ -27,19 +29,16 @@ const StyledBell = styled(BellTwoTone)`
   cursor: pointer;
 `;
 
-
-
 const NotificationMenu = (notifications: Notification[]) => {
   return notifications && notifications.length > 0 ?
     (
       <Menu style={{ color: "black", border: "none" }}>
-        {notifications.map(item => <Menu.Item key={item.id}>{item.notificationType.template}</Menu.Item>)}
+        {notifications.map(item => <Menu.Item key={item.id}>{item.message}</Menu.Item>)}
       </Menu>
     ) : <></>
 }
 
 const StyledPopover = styled(Popover)`
-
   .ant-popover {
     width: 200px;
     position: relative;
@@ -94,6 +93,12 @@ const Topbar = ({
     }
   }, [])
 
+  useEffect(() => {
+    dispatch(startChannel());
+    return () => {
+      stopChannel();
+    }
+  }, []);
 
   const handleMenuClick = (e) => {
     dispatch(toggleCollapsedSideNav(!navCollapsed));
