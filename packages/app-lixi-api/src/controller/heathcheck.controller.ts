@@ -23,7 +23,7 @@ export class HeathController {
       host: defaultHost,
       family: 4,
       password: '',
-      db: 0,
+      db: 0
     });
 
     const redisPing = await redis.ping();

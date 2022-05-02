@@ -1,0 +1,6 @@
+{
+  "messages": {
+    "envelopeNotExist": "Phong bì không tồn tại trong cơ sở dữ liệu.",
+    "unableGetEnvelope": "Không thể lấy phong bì."
+  }
+}

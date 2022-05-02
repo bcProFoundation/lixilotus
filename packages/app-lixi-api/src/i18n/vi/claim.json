@@ -1,0 +1,20 @@
+{
+  "messages": {
+    "claimDoesNotExist": "Lì xì không tồn tại trong cơ sở dữ liệu.",
+    "unableGetClaim": "Không thể nhận Lì xì.",
+    "invalidClaimCode": "Mã xác nhận Lì xì không hợp lệ.",
+    "limitRedemptions": "Bạn đã đạt đến giới hạn đổi cho mã này.",
+    "claimOutsideZone": "Bạn không thể nhận Lì xì từ bên ngoài khu vực {countryName}.",
+    "unableClaimLixi": "Không thể nhận vì Lì xì không hợp lệ",
+    "unableClaimLockedLixi": "Không thể nhận vì Lì xì bị khóa",
+    "unableClaimParentLockedLixi": "Không thể xác vì Lì xì gốc bị khóa",
+    "minStakingToClaim": "Bạn phải có ít nhất {minStaking} XPI trong tài khoản của mình để yêu cầu ưu đãi này.",
+    "insufficientFund": "Không còn đủ phần thưởng.",
+    "programEnded": "Chương trình đã kết thúc.",
+    "utxoEmpty": "Danh sách UTXO trống",
+    "unableClaim": "Không thể nhận Lì xì.",
+    "unableSendTransaction": "Không thể gửi giao dịch",
+    "invalidCode": "Mã xác nhận Lì xì không hợp lệ.",
+    "incorrectCaptcha": "Hình ảnh xác thực không chính xác? Vui lòng yêu cầu lại!"
+  }
+}
