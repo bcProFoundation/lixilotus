@@ -1,10 +1,32 @@
-import { Body, Controller, Headers, Delete, Get, HttpCode, HttpException, HttpStatus, Inject, Param, Patch, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Headers,
+  Delete,
+  Get,
+  HttpCode,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Param,
+  Patch,
+  Post
+} from '@nestjs/common';
 import * as _ from 'lodash';
 import { VError } from 'verror';
-import { Account as AccountDb, Lixi as LixiDb, Notification as NotificationDb } from '@prisma/client';
-import { ImportAccountCommand, AccountDto, CreateAccountCommand, RenameAccountCommand, DeleteAccountCommand, Lixi, PaginationResult, NotificationDto } from '@bcpros/lixi-models';
+import { Account as AccountDb, Lixi as LixiDb } from '@prisma/client';
+import {
+  ImportAccountCommand,
+  AccountDto,
+  CreateAccountCommand,
+  RenameAccountCommand,
+  DeleteAccountCommand,
+  Lixi,
+  NotificationDto
+} from '@bcpros/lixi-models';
 import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase58Str, hashMnemonic } from '../utils/encryptionMethods';
-import { WalletService } from "../services/wallet.service";
+import { I18n, I18nContext } from 'nestjs-i18n';
+import { WalletService } from '../services/wallet.service';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import { PrismaService } from '../services/prisma/prisma.service';
 
@@ -14,18 +36,20 @@ export class AccountController {
     private prisma: PrismaService,
     private readonly walletService: WalletService,
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet
-  ) { }
+  ) {}
 
   @Get(':id')
-  async getAccount(@Param('id') id: string): Promise<AccountDto> {
+  async getAccount(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<AccountDto> {
     try {
       const account = await this.prisma.account.findUnique({
         where: {
           id: _.toSafeInteger(id)
         }
       });
-      if (!account)
-        throw new VError('The account does not exist in the database.');
+      if (!account) {
+        const accountNotExistMessage = await i18n.t('account.messages.accountNotExist');
+        throw new VError(accountNotExistMessage);
+      }
 
       const balance: number = await this.xpiWallet.getBalance(account.address);
 
@@ -39,18 +63,19 @@ export class AccountController {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
-        const error = new VError.WError(err as Error, 'Unable to get account.');
+        const unableGetAccountMessage = await i18n.t('account.messages.unableGetAccount');
+        const error = new VError.WError(err as Error, unableGetAccountMessage);
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
   }
 
   @Post('import')
-  async import(@Body() importAccountCommand: ImportAccountCommand): Promise<AccountDto> {
+  async import(@Body() importAccountCommand: ImportAccountCommand, @I18n() i18n: I18nContext): Promise<AccountDto> {
     const { mnemonic } = importAccountCommand;
 
     try {
-      const mnemonicHash = importAccountCommand?.mnemonicHash ?? await hashMnemonic(mnemonic);
+      const mnemonicHash = importAccountCommand?.mnemonicHash ?? (await hashMnemonic(mnemonic));
       const account = await this.prisma.account.findFirst({
         where: {
           mnemonicHash: mnemonicHash
@@ -61,7 +86,8 @@ export class AccountController {
         // Validate mnemonic
         let isValidMnemonic = await this.walletService.validateMnemonic(mnemonic);
         if (!isValidMnemonic) {
-          throw Error('The mnemonic is not valid');
+          const mnemonicNotValidMessage = await i18n.t('account.messages.mnemonicNotValid');
+          throw Error(mnemonicNotValidMessage);
         }
 
         // encrypt mnemonic
@@ -78,51 +104,59 @@ export class AccountController {
           encryptedSecret: encryptedSecret,
           mnemonicHash: mnemonicHash,
           id: undefined,
-          address: address,
+          address: address
         };
-        const createdAccount: AccountDb = await this.prisma.account.create({ data: accountToInsert });
+        const createdAccount: AccountDb = await this.prisma.account.create({
+          data: accountToInsert
+        });
         const balance: number = await this.xpiWallet.getBalance(createdAccount.address);
 
-        const resultApi = _.omit({
-          ...createdAccount,
-          name: createdAccount.name,
-          address: createdAccount.address,
-          balance: balance
-        } as AccountDto, ['mnemonic', 'encryptedMnemonic']);
+        const resultApi = _.omit(
+          {
+            ...createdAccount,
+            name: createdAccount.name,
+            address: createdAccount.address,
+            balance: balance
+          } as AccountDto,
+          ['mnemonic', 'encryptedMnemonic']
+        );
 
         return resultApi;
-      }
-      else {
+      } else {
         // Decrypt to validate the mnemonic
         const mnemonicToValidate = await aesGcmDecrypt(account.encryptedMnemonic, mnemonic);
         if (mnemonic !== mnemonicToValidate) {
-          throw Error('Could not found import account.');
+          const importAccountNotFoundMessage = await i18n.t('account.messages.importAccountNotFound');
+          throw Error(importAccountNotFoundMessage);
         }
 
         const balance: number = await this.xpiWallet.getBalance(account.address);
 
-        const resultApi = _.omit({
-          ...account,
-          name: account.name,
-          address: account.address,
-          balance: balance
-        } as AccountDto, ['mnemonic', 'encryptedMnemonic']);
+        const resultApi = _.omit(
+          {
+            ...account,
+            name: account.name,
+            address: account.address,
+            balance: balance
+          } as AccountDto,
+          ['mnemonic', 'encryptedMnemonic']
+        );
 
         return resultApi;
       }
-
     } catch (err) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
-        const error = new VError.WError(err as Error, 'Could not import the account.');
+        const importCouldNotImportAccountMessage = await i18n.t('account.messages.couldNotImportAccount');
+        const error = new VError.WError(err as Error, importCouldNotImportAccountMessage);
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
   }
 
   @Post()
-  async createAccount(@Body() command: CreateAccountCommand): Promise<AccountDto> {
+  async createAccount(@Body() command: CreateAccountCommand, @I18n() i18n: I18nContext): Promise<AccountDto> {
     if (command) {
       try {
         const { address } = await this.walletService.deriveAddress(command.mnemonic, 0);
@@ -138,23 +172,30 @@ export class AccountController {
           encryptedSecret: encryptedSecret,
           mnemonicHash: command.mnemonicHash,
           id: undefined,
-          address: address,
+          address: address
         };
 
-        const createdAccount: AccountDb = await this.prisma.account.create({ data: accountToInsert });
+        const createdAccount: AccountDb = await this.prisma.account.create({
+          data: accountToInsert
+        });
 
-        const resultApi: AccountDto = _.omit({
-          ...command, ...createdAccount,
-          secret: accountSecret,
-          address
-        }, ['mnemonic', 'encryptedMnemonic', 'encryptedSecret']);
+        const resultApi: AccountDto = _.omit(
+          {
+            ...command,
+            ...createdAccount,
+            secret: accountSecret,
+            address
+          },
+          ['mnemonic', 'encryptedMnemonic', 'encryptedSecret']
+        );
 
         return resultApi;
       } catch (err) {
         if (err instanceof VError) {
           throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
         } else {
-          const error = new VError.WError(err as Error, 'Unable to create new account.');
+          const unableCreateAccountMessage = await i18n.t('account.messages.unableCreateAccount');
+          const error = new VError.WError(err as Error, unableCreateAccountMessage);
           throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
       }
@@ -163,7 +204,11 @@ export class AccountController {
   }
 
   @Patch(':id')
-  async updateAccounts(@Param('id') id: string, @Body() command: RenameAccountCommand): Promise<AccountDto> {
+  async updateAccounts(
+    @Param('id') id: string,
+    @Body() command: RenameAccountCommand,
+    @I18n() i18n: I18nContext
+  ): Promise<AccountDto> {
     if (command) {
       try {
         const account = await this.prisma.account.findUnique({
@@ -171,37 +216,44 @@ export class AccountController {
             id: _.toSafeInteger(id)
           }
         });
-        if (!account)
-          throw new VError('The account does not exist in the database.');
+        if (!account) {
+          const accountDoesNotExistMessage = await i18n.t('account.messages.accountNotExist');
+          throw new VError(accountDoesNotExistMessage);
+        }
 
         // Validate the mnemonic
         const mnemonicToValidate = await aesGcmDecrypt(account.encryptedMnemonic, command.mnemonic);
         if (command.mnemonic !== mnemonicToValidate) {
-          throw new VError('Invalid account! Could not update the account.');
+          const invalidAccountMessage = await i18n.t('account.messages.invalidAccount');
+          throw new VError(invalidAccountMessage);
         }
 
         const updatedAccount: AccountDb = await this.prisma.account.update({
           where: {
-            id: _.toSafeInteger(id),
+            id: _.toSafeInteger(id)
           },
           data: {
             name: command.name,
-            updatedAt: new Date(),
+            updatedAt: new Date()
           }
         });
 
-        const resultApi: AccountDto = _.omit({
-          ...command, ...updatedAccount,
-          address: updatedAccount.address as string
-        }, ['mnemonic', 'encryptedMnemonic']);
+        const resultApi: AccountDto = _.omit(
+          {
+            ...command,
+            ...updatedAccount,
+            address: updatedAccount.address as string
+          },
+          ['mnemonic', 'encryptedMnemonic']
+        );
 
         return resultApi;
-
       } catch (err) {
         if (err instanceof VError) {
           throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
         } else {
-          const error = new VError.WError(err as Error, 'Unable to update account.');
+          const unableUpdateAccountMessage = await i18n.t('account.messages.unableUpdateAccount');
+          const error = new VError.WError(err as Error, unableUpdateAccountMessage);
           throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
       }
@@ -211,7 +263,11 @@ export class AccountController {
 
   @Delete(':id')
   @HttpCode(204)
-  async deleteAccounts(@Param('id') id: string, @Body() command: DeleteAccountCommand): Promise<AccountDto> {
+  async deleteAccounts(
+    @Param('id') id: string,
+    @Body() command: DeleteAccountCommand,
+    @I18n() i18n: I18nContext
+  ): Promise<AccountDto> {
     const accountId = _.toSafeInteger(id);
     try {
       const account = await this.prisma.account.findUnique({
@@ -227,7 +283,8 @@ export class AccountController {
         // Validate the mnemonic
         const mnemonicToValidate = await aesGcmDecrypt(account.encryptedMnemonic, command.mnemonic);
         if (command.mnemonic !== mnemonicToValidate) {
-          throw Error('Invalid account! Could not update the account.');
+          const invalidAccountMessage = await i18n.t('account.messages.invalidAccount');
+          throw Error(invalidAccountMessage);
         }
       }
 
@@ -247,8 +304,8 @@ export class AccountController {
             }
           }),
           this.prisma.lixi.deleteMany({ where: { accountId: accountId } }),
-          this.prisma.account.deleteMany({ where: { id: accountId } }),
-        ])
+          this.prisma.account.deleteMany({ where: { id: accountId } })
+        ]);
       } else {
         this.prisma.account.deleteMany({ where: { id: accountId } });
       }
@@ -262,14 +319,15 @@ export class AccountController {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
-        const error = new VError.WError(err as Error, 'Unable to delete the account.');
+        const unableDeleteAccountMessage = await i18n.t('account.messages.unableDeleteAccount');
+        const error = new VError.WError(err as Error, unableDeleteAccountMessage);
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
   }
 
   @Get(':id/lixies')
-  async getLixies(@Param('id') id: string): Promise<any> {
+  async getLixies(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<any> {
     const accountId = _.toSafeInteger(id);
     try {
       const lixies: LixiDb[] = await this.prisma.lixi.findMany({
@@ -297,7 +355,8 @@ export class AccountController {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
-        const error = new VError.WError(err as Error, 'Unable to get the lixi list of the account.');
+        const unableGetLixiListMessage = await i18n.t('account.messages.unableGetLixiList');
+        const error = new VError.WError(err as Error, unableGetLixiListMessage);
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
@@ -306,9 +365,9 @@ export class AccountController {
   @Get(':id/notifications')
   async getNotifications(
     @Param('id') id: string,
-    @Headers('mnemonic-hash') mnemonicHash?: string,
+    @I18n() i18n: I18nContext,
+    @Headers('mnemonic-hash') mnemonicHash?: string
   ): Promise<NotificationDto[]> {
-
     const accountId = _.toSafeInteger(id);
 
     try {
@@ -319,8 +378,9 @@ export class AccountController {
         }
       });
 
-      if (!account || (account?.id !== accountId)) {
-        throw Error('No perimission to get the notifications');
+      if (!account || account?.id !== accountId) {
+        const noPermissionMessage = await i18n.t('account.messages.noPermission');
+        throw Error(noPermissionMessage);
       }
 
       const notifications = await this.prisma.notification.findMany({
@@ -335,7 +395,7 @@ export class AccountController {
             createdAt: 'desc'
           }
         ],
-        take: 20,
+        take: 20
       });
 
       return notifications.map(item => {
@@ -343,12 +403,12 @@ export class AccountController {
           ...item
         } as NotificationDto;
       });
-
     } catch (err) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
-        const error = new VError.WError(err as Error, 'Unable to get the notification list of the account.');
+        const unableGetNotification = await i18n.t('account.messages.unableGetNotification');
+        const error = new VError.WError(err as Error, unableGetNotification);
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }

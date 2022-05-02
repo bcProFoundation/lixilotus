@@ -5,14 +5,16 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import config from 'config';
 import IORedis from 'ioredis';
 import * as _ from 'lodash';
-import { join } from 'path';
+import path, { join } from 'path';
 import { NOTIFICATION_OUTBOUND_QUEUE } from './common/notifications/notification.constants';
 import { NotificationController } from './common/notifications/notification.controller';
 import { NotificationGateway } from './common/notifications/notification.gateway';
 import { NotificationOutboundProcessor } from './common/notifications/notification.processor';
 import { NotificationService } from './common/notifications/notification.service';
 import {
-  CREATE_SUB_LIXIES_QUEUE, EXPORT_SUB_LIXIES_QUEUE, WITHDRAW_SUB_LIXIES_QUEUE
+  CREATE_SUB_LIXIES_QUEUE,
+  EXPORT_SUB_LIXIES_QUEUE,
+  WITHDRAW_SUB_LIXIES_QUEUE,
 } from './constants/lixi.constants';
 import { AccountController } from './controller/account.controller';
 import { ClaimController } from './controller/claim.controller';
@@ -28,7 +30,7 @@ import { WithdrawSubLixiesProcessor } from './processors/withdraw-sub-lixies.pro
 import { LixiService } from './services/lixi/lixi.service';
 import { PrismaService } from './services/prisma/prisma.service';
 import { WalletService } from './services/wallet.service';
-
+import { AcceptLanguageResolver, HeaderResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
 
 const xpiRestUrl = config.has('xpiRestUrl')
   ? config.get('xpiRestUrl')
@@ -41,12 +43,12 @@ const ConstructedSlpWallet = new SlpWallet('', {
 
 const XpiWalletProvider = {
   provide: 'xpiWallet',
-  useValue: ConstructedSlpWallet
+  useValue: ConstructedSlpWallet,
 };
 
 const XpijsProvider = {
   provide: 'xpijs',
-  useValue: ConstructedSlpWallet.bchjs
+  useValue: ConstructedSlpWallet.bchjs,
 };
 
 @Module({
@@ -55,28 +57,29 @@ const XpijsProvider = {
       serveRoot: '/api/images',
       rootPath: join(__dirname, '..', 'public/images'),
     }),
-    BullModule.registerQueue({
-      name: CREATE_SUB_LIXIES_QUEUE,
-      connection: new IORedis({
-        maxRetriesPerRequest: null,
-        enableReadyCheck: false,
-        host: process.env.REDIS_HOST ? process.env.REDIS_HOST : 'redis-lixi',
-        port: process.env.REDIS_PORT ? _.toSafeInteger(process.env.REDIS_PORT) : 6379
-      }),
-      processors: [
-        {
-          path: join(__dirname, 'processors/create-sub-lixies.isolated.processor'),
-          concurrency: 3
-        }
-      ]
-    },
+    BullModule.registerQueue(
+      {
+        name: CREATE_SUB_LIXIES_QUEUE,
+        connection: new IORedis({
+          maxRetriesPerRequest: null,
+          enableReadyCheck: false,
+          host: process.env.REDIS_HOST ? process.env.REDIS_HOST : 'redis-lixi',
+          port: process.env.REDIS_PORT ? _.toSafeInteger(process.env.REDIS_PORT) : 6379,
+        }),
+        processors: [
+          {
+            path: join(__dirname, 'processors/create-sub-lixies.isolated.processor'),
+            concurrency: 3,
+          },
+        ],
+      },
       {
         name: EXPORT_SUB_LIXIES_QUEUE,
         connection: new IORedis({
           maxRetriesPerRequest: null,
           enableReadyCheck: false,
           host: process.env.REDIS_HOST ? process.env.REDIS_HOST : 'redis-lixi',
-          port: process.env.REDIS_PORT ? _.toSafeInteger(process.env.REDIS_PORT) : 6379
+          port: process.env.REDIS_PORT ? _.toSafeInteger(process.env.REDIS_PORT) : 6379,
         }),
       },
       {
@@ -85,7 +88,7 @@ const XpijsProvider = {
           maxRetriesPerRequest: null,
           enableReadyCheck: false,
           host: process.env.REDIS_HOST ? process.env.REDIS_HOST : 'redis-lixi',
-          port: process.env.REDIS_PORT ? _.toSafeInteger(process.env.REDIS_PORT) : 6379
+          port: process.env.REDIS_PORT ? _.toSafeInteger(process.env.REDIS_PORT) : 6379,
         }),
       },
       {
@@ -94,23 +97,42 @@ const XpijsProvider = {
           maxRetriesPerRequest: null,
           enableReadyCheck: false,
           host: process.env.REDIS_HOST ? process.env.REDIS_HOST : 'redis-lixi',
-          port: process.env.REDIS_PORT ? _.toSafeInteger(process.env.REDIS_PORT) : 6379
+          port: process.env.REDIS_PORT ? _.toSafeInteger(process.env.REDIS_PORT) : 6379,
         }),
       }
     ),
+    I18nModule.forRoot({
+      fallbackLanguage: 'en',
+      loaderOptions: {
+        path: path.join(__dirname, '/i18n/'),
+        watch: true,
+      },
+      resolvers: [{ use: HeaderResolver, options: ['lang'] }, AcceptLanguageResolver],
+    }),
   ],
   controllers: [
-    AccountController, EnvelopeController,
-    ClaimController, LixiController,
-    NotificationController, HeathController],
+    AccountController,
+    EnvelopeController,
+    ClaimController,
+    LixiController,
+    NotificationController,
+    HeathController,
+  ],
   providers: [
-    PrismaService, WalletService,
-    LixiService, XpiWalletProvider, XpijsProvider,
-    CreateSubLixiesProcessor, CreateSubLixiesEventsListener,
-    WithdrawSubLixiesProcessor, ExportSubLixiesProcessor,
-    ExportSubLixiesEventsListener, NotificationGateway,
+    PrismaService,
+    WalletService,
+    LixiService,
+    XpiWalletProvider,
+    XpijsProvider,
+    CreateSubLixiesProcessor,
+    CreateSubLixiesEventsListener,
+    WithdrawSubLixiesProcessor,
+    ExportSubLixiesProcessor,
+    ExportSubLixiesEventsListener,
+    NotificationGateway,
     WithdrawSubLixiesEventsListener,
-    NotificationOutboundProcessor, NotificationService
+    NotificationOutboundProcessor,
+    NotificationService,
   ],
 })
-export class AppModule { }
+export class AppModule {}
