@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { BellTwoTone, MenuOutlined } from "@ant-design/icons"
-import { Space, Menu, Popover, Badge } from "antd";
+import { Space, Menu, Popover, Badge,Comment } from "antd";
 import { useAppDispatch, useAppSelector } from "@store/hooks";
 import { toggleCollapsedSideNav } from "@store/settings/actions";
 import { getNavCollapsed } from "@store/settings/selectors";
@@ -11,6 +11,8 @@ import { fetchNotifications, startChannel, stopChannel } from "@store/notificati
 import { getAllNotifications } from "@store/notification/selectors";
 import { NotificationDto as Notification } from "@bcpros/lixi-models";
 import { connect } from "socket.io-client";
+import SwipeToDelete from 'react-swipe-to-delete-ios'
+import moment from 'moment';
 
 
 export type TopbarProps = {
@@ -29,30 +31,95 @@ const StyledBell = styled(BellTwoTone)`
   cursor: pointer;
 `;
 
+const StyledComment = styled(Comment)`
+  background-color: #fff;
+  border-bottom: 1px solid #e8e8e8;
+  padding: 5px;
+
+  &:hover {
+    background-color: #eceff5;
+  }
+
+  .ant-comment-inner {
+    padding: 0px;
+    color: black;
+  }
+`;
+
+const StyledAuthor = styled.div`
+  font-size: 14px;
+  color: black;
+  display: inline-block;
+  width: 300px;
+
+  &:hover {
+    color: black;
+  }
+
+  @media (max-width: 568px) {
+    width:250px
+  }
+`
+
+const StyledTextLeft = styled.span`
+  float: left;
+  font-size: 16px;
+  font-weight: bold;
+`
+
+const StyledTextRight = styled.span`
+  float: right;
+  font-size: 10px;
+  font-style: italic;
+`
+
+const handleDelete = (id: string) => {
+  //remove notification from array
+}
+
 const NotificationMenu = (notifications: Notification[]) => {
-  return notifications && notifications.length > 0 ?
-    (
-      <Menu style={{ color: "black", border: "none" }}>
-        {notifications.map(item => <Menu.Item key={item.id}>{item.message}</Menu.Item>)}
-      </Menu>
-    ) : <></>
+  return notifications && notifications.length > 0 && (
+    <> 
+      {notifications.map(notification => (
+        <>
+          <SwipeToDelete 
+            onDelete={()=>handleDelete(notification.id)}
+            deleteColor="#6f2dbd"
+            style={{borderRadius:"10px"}}
+          >
+            <StyledComment
+              key={notification.id}
+              author={
+                <StyledAuthor >
+                  <StyledTextLeft></StyledTextLeft>
+                  <StyledTextRight >{moment(notification.createdAt).format("MMMM Do YYYY, h:mm a")}</StyledTextRight>
+                </StyledAuthor>
+              }
+              content={notification.message}
+          /> 
+          </SwipeToDelete>
+        </>
+      ))}
+    </>
+  )
 }
 
 const StyledPopover = styled(Popover)`
   .ant-popover {
-    width: 200px;
+    width: 350px;
     position: relative;
     top: 40px !important;
-    left: -165px !important;
+    left: -315px !important;
 
     @media (max-width: 768px) {
       top: 40px !important;
-      left: -165px !important;
+      left: -315px !important;
     }
 
     @media (max-width: 576px) {
       top: 40px !important;
-      left: -165px !important;
+      left: -265px !important;
+      width: 300px;
     }
   }
 
@@ -67,13 +134,20 @@ const StyledPopover = styled(Popover)`
     background: ${props => props.theme.primary};
   }
 
-  .ant-popover-inner-content {
-    padding: 0 !important;
-    border: 2px solid ${props => props.theme.primary} !important;
+  .ant-popover-inner {
+    background: #fff;
   }
 
+  .ant-popover-inner-content {
+    padding: 10px !important;
+    height: 300px !important;
+    overflow: auto;
+    
+    #delete {
+      border-radius: 8px;
+    }
+  }
 `
-
 
 const Topbar = ({
   className
