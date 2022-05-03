@@ -7,11 +7,11 @@ import { Account as AccountDb, Prisma } from '@prisma/client';
 import { FlowJob, FlowProducer, Queue } from 'bullmq';
 import IORedis from 'ioredis';
 import * as _ from 'lodash';
-const pope = require('pope');
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { CREATE_SUB_LIXIES_QUEUE, lixiChunkSize, LIXI_JOB_NAMES } from 'src/constants/lixi.constants';
 import { CreateSubLixiesChunkJobData, CreateSubLixiesJobData } from 'src/models/lixi.models';
 import { aesGcmDecrypt, aesGcmEncrypt, numberToBase58 } from 'src/utils/encryptionMethods';
+import { template } from 'src/utils/stringTemplate';
 import { VError } from 'verror';
 import { PrismaService } from '../prisma/prisma.service';
 import { WalletService } from '../wallet.service';
@@ -24,7 +24,7 @@ export class LixiService {
     @Inject('xpijs') private XPI: BCHJS,
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
     @InjectQueue(CREATE_SUB_LIXIES_QUEUE) private lixiQueue: Queue
-  ) {}
+  ) { }
 
   /**
    * @param derivationIndex The derivation index of the lixi
@@ -304,7 +304,7 @@ export class LixiService {
 
     if (!notifType) return null;
 
-    const message = pope(notifType.template, additionalData);
+    const message = template(notifType.template, additionalData);
     const result: NotificationDto = {
       senderId,
       recipientId,
