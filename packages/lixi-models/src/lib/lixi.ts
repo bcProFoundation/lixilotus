@@ -119,7 +119,7 @@ export interface Lixi {
   envelopeId: Nullable<number>;
   envelopeMessage: string;
   envelope?: Nullable<Envelope>;
-  claimedCount?: number;
+  claimCount?: number;
   subLixiTotalClaim?: number;
   subLixiBalance?: number;
 };
