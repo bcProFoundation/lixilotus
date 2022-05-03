@@ -127,7 +127,7 @@ export class LixiController {
     @I18n() i18n: I18nContext
   ): Promise<PaginationResult<LixiDto>> {
     const lixiId = _.toSafeInteger(id);
-    const take = limit ? _.toSafeInteger(limit) : 5;
+    const take = limit ? _.toSafeInteger(limit) : 10;
     const cursor = startId ? _.toSafeInteger(startId) : null;
 
     try {
@@ -601,9 +601,18 @@ export class LixiController {
     try {
       let claims: ClaimDb[] = [];
 
+      const subLixies = await this.prisma.lixi.findMany({
+        where: {
+          parentId: lixiId
+        }
+      })
+      
+      const subLixiesIds = subLixies.map(item => item.id);
+      subLixiesIds.push(lixiId)
+
       const count = await this.prisma.claim.count({
         where: {
-          lixiId: lixiId
+          lixiId: { in: subLixiesIds }
         }
       });
 
@@ -611,7 +620,7 @@ export class LixiController {
         // No start id, we should return the normal data without the cursor
         claims = await this.prisma.claim.findMany({
           where: {
-            lixiId: lixiId
+            lixiId: { in: subLixiesIds }
           },
           orderBy: [
             {
@@ -625,7 +634,7 @@ export class LixiController {
         // Query with the cursor
         claims = await this.prisma.claim.findMany({
           where: {
-            lixiId: lixiId
+            lixiId: { in: subLixiesIds }
           },
           orderBy: [
             {

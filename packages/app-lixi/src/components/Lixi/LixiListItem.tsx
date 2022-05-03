@@ -91,7 +91,9 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
   }
 
   const selectedAccount = useAppSelector(getSelectedAccount);
-  const subLixies = useAppSelector(getAllSubLixies);
+  const allSubLixies = useAppSelector(getAllSubLixies);
+
+  const subLixiById = allSubLixies.filter(item => item.parentId == lixi.id);
 
   let options = ['Withdraw', 'Rename'];
   lixi.status === 'active' ? options.unshift('Lock') : options.unshift('Unlock');
@@ -149,7 +151,7 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
         <br />
         {lixi.claimType == ClaimType.Single ?
           <span>({lixi.claimedNum}) {fromSmallestDenomination(lixi.totalClaim)}/{fromSmallestDenomination(lixi.balance)} {intl.get('lixi.remainingXPI')}</span>
-          : <span>({_.size(subLixies.filter(item => item.isClaimed))}/{lixi.numberOfSubLixi}) {(_.sumBy(subLixies.filter(item => item.isClaimed), 'amount')).toFixed(2)} / {(_.sumBy(subLixies.filter(item => !item.isClaimed), 'amount')).toFixed(2)} {intl.get('lixi.remainingXPI')}</span>
+          : <span>({lixi.claimCount}/{lixi.numberOfSubLixi}) {fromSmallestDenomination(lixi.subLixiTotalClaim).toFixed(2)} / {fromSmallestDenomination(lixi.subLixiBalance).toFixed(2)} {intl.get('lixi.remainingXPI')}</span>
         }
       </BalanceAndTicker>
       <Dropdown trigger={["click"]} overlay={

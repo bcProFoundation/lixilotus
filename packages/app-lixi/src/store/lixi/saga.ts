@@ -18,14 +18,14 @@ import claimApi from '../claim/api';
 import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
 import {
-  exportSubLixies, exportSubLixiesFailure, exportSubLixiesSuccess, fetchInitialSubLixies,
-  fetchInitialSubLixiesFailure, fetchInitialSubLixiesSuccess, fetchMoreSubLixies,
-  fetchMoreSubLixiesFailure, fetchMoreSubLixiesSuccess, generateLixi, getLixi, getLixiFailure,
-  getLixiSuccess, lockLixi, lockLixiFailure, lockLixiSuccess, postLixi, postLixiFailure,
-  postLixiSuccess, refreshLixi, refreshLixiActionType, refreshLixiFailure, refreshLixiSuccess,
-  renameLixi, renameLixiFailure, renameLixiSuccess, selectLixi, selectLixiFailure,
-  selectLixiSuccess, setLixi, unlockLixi, unlockLixiFailure, unlockLixiSuccess, withdrawLixi,
-  withdrawLixiFailure, withdrawLixiSuccess
+    exportSubLixies, exportSubLixiesFailure, exportSubLixiesSuccess, fetchInitialSubLixies,
+    fetchInitialSubLixiesFailure, fetchInitialSubLixiesSuccess, fetchMoreSubLixies,
+    fetchMoreSubLixiesFailure, fetchMoreSubLixiesSuccess, generateLixi, getLixi, getLixiFailure,
+    getLixiSuccess, lockLixi, lockLixiFailure, lockLixiSuccess, postLixi, postLixiFailure,
+    postLixiSuccess, refreshLixi, refreshLixiActionType, refreshLixiFailure, refreshLixiSuccess,
+    renameLixi, renameLixiFailure, renameLixiSuccess, selectLixi, selectLixiFailure,
+    selectLixiSuccess, setLixi, unlockLixi, unlockLixiFailure, unlockLixiSuccess, withdrawLixi,
+    withdrawLixiFailure, withdrawLixiSuccess
 } from './actions';
 import lixiApi from './api';
 import { getLixiById } from './selectors';

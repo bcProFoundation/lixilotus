@@ -261,7 +261,7 @@ const Lixi: React.FC = () => {
           <BalanceHeader
             balance={selectedLixi.claimType == ClaimType.Single ?
               (fromSmallestDenomination(selectedLixi?.balance) ?? 0) :
-              (_.sumBy(subLixies.filter(item => !item.isClaimed), 'amount')).toFixed(2) + fromSmallestDenomination(selectedLixi?.balance)
+              (_.sumBy(subLixies, 'amount')).toFixed(2) + fromSmallestDenomination(selectedLixi?.balance)
             }
             ticker={currency.ticker} />
           {selectedLixi?.claimType === ClaimType.Single ?
@@ -288,7 +288,8 @@ const Lixi: React.FC = () => {
             <Descriptions.Item label={intl.get('lixi.totalClaimed')} key='desc.totalclaimed'>
               {selectedLixi.claimType == ClaimType.Single ?
                 (fromSmallestDenomination(selectedLixi?.totalClaim) ?? 0) :
-                ((_.sumBy(subLixies.filter(item => item.isClaimed), 'amount')).toFixed(2))} {currency.ticker}
+                (fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim')).toFixed(2))
+              } {currency.ticker}
             </Descriptions.Item>
             <Descriptions.Item label={intl.get('lixi.remainingLixi')} key='desc.claim'>
               {showRedemption()}

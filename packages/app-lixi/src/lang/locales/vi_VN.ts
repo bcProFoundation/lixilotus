@@ -69,7 +69,7 @@ export default {
   'lixi.fundGiveEqual': 'Loại Lì xì: Chia đều',
   'lixi.equalFund': 'Giá trị:',
   'lixi.fundGiveRandomize': 'Loại Lì xì: Ngẫu nhiên',
-  'lixi.RandomFund': 'Từ: {newLixiMinValue}; Đến: {newLixiMaxValue}',
+  'lixi.randomFund': 'Từ: {newLixiMinValue}; Đến: {newLixiMaxValue}',
   'lixi.amount': 'Tổng cộng: {newLixiAmount}',
   'lixi.NumberOfSub': 'Số lượng bao Lì xì phụ: {newNumberOfSubLixi}',
   'lixi.maxClaim': 'Số lần nhận tối đa: {newMaxClaim}',

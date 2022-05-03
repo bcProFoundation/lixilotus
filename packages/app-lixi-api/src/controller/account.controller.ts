@@ -330,23 +330,47 @@ export class AccountController {
   async getLixies(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<any> {
     const accountId = _.toSafeInteger(id);
     try {
-      const lixies: LixiDb[] = await this.prisma.lixi.findMany({
+      let lixies = []
+      let subLixies: LixiDb[] = []
+
+      lixies = await this.prisma.lixi.findMany({
         where: {
-          accountId: accountId
-        },
-        include: {
-          envelope: true
+          AND: [
+            {accountId: accountId},
+            {parentId: null}
+          ]
         }
       });
 
+      const lixiesIds = lixies.map(item => item.id);
+      subLixies = await this.prisma.lixi.findMany({
+        where: {
+          parentId: { in: lixiesIds }
+        }
+      });
+      
+      let claimCount = 0;
+      let subLixiTotalClaim = 0;
+      let subLixiBalance = 0;
+      
       const results = lixies.map(item => {
+        for (const sub of subLixies) {
+          if (item.id == sub.parentId) {
+            sub.isClaimed ? claimCount++ : claimCount;
+            subLixiTotalClaim += Number(sub.totalClaim);
+            subLixiBalance += Number(sub.amount);
+          }
+        }
+
         return {
           ...item,
           totalClaim: Number(item.totalClaim),
           lixiType: Number(item.lixiType),
           maxClaim: Number(item.maxClaim),
           claimedNum: Number(item.claimedNum),
-          dividedValue: Number(item.dividedValue)
+          claimCount: claimCount,
+          subLixiTotalClaim: _.isNaN(subLixiTotalClaim) ? 0 : subLixiTotalClaim,
+          subLixiBalance: _.isNaN(subLixiBalance) ? 0 : subLixiBalance,
         } as unknown as Lixi;
       });
 
