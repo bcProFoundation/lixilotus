@@ -103,7 +103,7 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
           <>
             <LixiParamLabel>{intl.get('lixi.fundGiveRandomize')}</LixiParamLabel>
             <br />
-            <LixiParamLabel>{intl.get('lixi.RandomFund', { newLixiMinValue: newLixiMinValue, newLixiMaxValue: newLixiMaxValue })}</LixiParamLabel>
+            <LixiParamLabel>{intl.get('lixi.randomFund', { newLixiMinValue: newLixiMinValue, newLixiMaxValue: newLixiMaxValue })}</LixiParamLabel>
           </>
         );
     }
