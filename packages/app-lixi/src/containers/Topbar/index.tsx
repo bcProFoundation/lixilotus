@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { BellTwoTone, MenuOutlined } from "@ant-design/icons"
-import { Space, Menu, Popover, Badge,Comment } from "antd";
+import { BellTwoTone, MenuOutlined, CloseCircleOutlined } from "@ant-design/icons"
+import { Space, Menu, Popover, Badge, Comment } from "antd";
 import { useAppDispatch, useAppSelector } from "@store/hooks";
 import { toggleCollapsedSideNav } from "@store/settings/actions";
 import { getNavCollapsed } from "@store/settings/selectors";
@@ -13,7 +13,7 @@ import { NotificationDto as Notification } from "@bcpros/lixi-models";
 import { connect } from "socket.io-client";
 import SwipeToDelete from 'react-swipe-to-delete-ios'
 import moment from 'moment';
-
+import { isMobile } from "react-device-detect";
 
 export type TopbarProps = {
   className?: string,
@@ -32,7 +32,7 @@ const StyledBell = styled(BellTwoTone)`
 `;
 
 const StyledComment = styled(Comment)`
-  background-color: #fff;
+  border-radius: 5px;
   border-bottom: 1px solid #e8e8e8;
   padding: 5px;
 
@@ -50,7 +50,7 @@ const StyledAuthor = styled.div`
   font-size: 14px;
   color: black;
   display: inline-block;
-  width: 300px;
+  width: 310px;
 
   &:hover {
     color: black;
@@ -82,22 +82,44 @@ const NotificationMenu = (notifications: Notification[]) => {
     <> 
       {notifications.map(notification => (
         <>
-          <SwipeToDelete 
-            onDelete={()=>handleDelete(notification.id)}
-            deleteColor="#6f2dbd"
-            style={{borderRadius:"10px"}}
-          >
+          {isMobile ? (
+            <SwipeToDelete 
+              onDelete={()=>handleDelete(notification.id)}
+              deleteColor="#6f2dbd"
+              style={{borderRadius:"10px"}}
+            >
+              <StyledComment
+                key={notification.id}
+                style={{backgroundColor: notification.readAt==null ? "#eceff5" : "#fff"}}
+                author={
+                  <StyledAuthor >
+                    <StyledTextLeft></StyledTextLeft>
+                    <StyledTextRight >{moment(notification.createdAt).local().format("MMMM Do YYYY, h:mm a")}</StyledTextRight>
+                  </StyledAuthor>
+                }
+                content={
+                  <div style={{fontWeight: notification.readAt==null && "bold" }}>{notification.message}</div>
+                }
+            /> 
+            </SwipeToDelete>
+          ) : (
             <StyledComment
               key={notification.id}
+              style={{borderRadius:"10px", backgroundColor: notification.readAt==null ? "#eceff5" : "#fff" , marginBottom:"5px"}}
               author={
                 <StyledAuthor >
                   <StyledTextLeft></StyledTextLeft>
-                  <StyledTextRight >{moment(notification.createdAt).format("MMMM Do YYYY, h:mm a")}</StyledTextRight>
+                  <StyledTextRight >{moment(notification.createdAt).local().format("MMMM Do YYYY, h:mm a")}</StyledTextRight>
                 </StyledAuthor>
               }
-              content={notification.message}
-          /> 
-          </SwipeToDelete>
+              content={
+                <Space>
+                  <div style={{fontWeight: notification.readAt==null && "bold" }}>{notification.message}</div>
+                  <CloseCircleOutlined />
+                </Space>
+              }
+            /> 
+          )}
         </>
       ))}
     </>
@@ -128,6 +150,7 @@ const StyledPopover = styled(Popover)`
     color: #fff;
     border: none;
     background:  ${props => props.theme.primary};
+    border-radius: 5px 5px 0px 0px;
   }
 
   .ant-popover-arrow > .ant-popover-arrow-content::before {
@@ -136,6 +159,7 @@ const StyledPopover = styled(Popover)`
 
   .ant-popover-inner {
     background: #fff;
+    border-radius: 0px 0px 5px 5px;
   }
 
   .ant-popover-inner-content {
