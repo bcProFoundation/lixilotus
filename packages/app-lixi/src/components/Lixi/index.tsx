@@ -232,15 +232,17 @@ const Lixi: React.FC = () => {
     { title: 'Amount', dataIndex: 'amount' },
   ];
 
+  const prefixClaimCode = 'lixi'; 
+
   const subLixiesDataSource = subLixies.map((item, i) => {
     return ({
       num: i+1,
       claimCode: <CopyToClipboard
-        text={item.claimCode}
+        text={`${prefixClaimCode}_${item.claimCode}`}
         onCopy={handleOnCopyClaimCode}
       >
         <div>
-          <CopyOutlined />  {item.claimCode}
+          <CopyOutlined />  {`${prefixClaimCode}_${item.claimCode}`}
         </div>
       </CopyToClipboard>,
       amount: item.isClaimed ? 0 : (item.amount==0 ? 0 : (item.amount - 0.000455).toFixed(2)),
@@ -314,7 +316,7 @@ const Lixi: React.FC = () => {
                   <div ref={qrPanelRef}>
                     {selectedLixi && selectedLixi.claimCode && <QRClaimCode
                       logoImage={lixiLogo}
-                      code={selectedLixi?.claimCode}
+                      code={`${prefixClaimCode}_${selectedLixi?.claimCode}`}
                     />}
                   </div>
                   <SmartButton
@@ -345,7 +347,7 @@ const Lixi: React.FC = () => {
                 width: '100%',
                 position: 'relative',
               }}
-              text={selectedLixi.claimCode}
+              text={`${prefixClaimCode}_${selectedLixi.claimCode}`}
               onCopy={handleOnCopyClaimCode}
             >
               <div style={{ position: 'relative', paddingTop: '20px' }} onClick={handleOnClickClaimCode}>
@@ -353,7 +355,7 @@ const Lixi: React.FC = () => {
                   style={{ display: claimCodeVisible ? undefined : 'none' }}
                 >
                   Copied <br />
-                  <span style={{ fontSize: '32px' }}>{selectedLixi.claimCode}</span>
+                  <span style={{ fontSize: '32px' }}>{`${prefixClaimCode}_${selectedLixi.claimCode}`}</span>
                 </Copied>
                 <SmartButton>
                   <CopyOutlined />  {intl.get('lixi.copyClaim')}
