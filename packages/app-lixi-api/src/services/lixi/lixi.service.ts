@@ -7,17 +7,17 @@ import { Account as AccountDb, Prisma } from '@prisma/client';
 import { FlowJob, FlowProducer, Queue } from 'bullmq';
 import IORedis from 'ioredis';
 import * as _ from 'lodash';
-import { pope } from 'pope';
+import { I18n, I18nContext } from 'nestjs-i18n';
 import { CREATE_SUB_LIXIES_QUEUE, lixiChunkSize, LIXI_JOB_NAMES } from 'src/constants/lixi.constants';
 import { CreateSubLixiesChunkJobData, CreateSubLixiesJobData } from 'src/models/lixi.models';
 import { aesGcmDecrypt, aesGcmEncrypt, numberToBase58 } from 'src/utils/encryptionMethods';
+import { template } from 'src/utils/stringTemplate';
 import { VError } from 'verror';
 import { PrismaService } from '../prisma/prisma.service';
 import { WalletService } from '../wallet.service';
 
 @Injectable()
 export class LixiService {
-
   constructor(
     private prisma: PrismaService,
     private readonly walletService: WalletService,
@@ -31,8 +31,12 @@ export class LixiService {
    * @param account The account which is associated with the lixi
    * @param command The create command, hold value to create the lixi
    */
-  async createSingleLixi(derivationIndex: number, account: AccountDb, command: CreateLixiCommand): Promise<Lixi> {
-
+  async createSingleLixi(
+    derivationIndex: number,
+    account: AccountDb,
+    command: CreateLixiCommand,
+    i18n: I18nContext
+  ): Promise<Lixi> {
     // If users input the amount means that the lixi need to be prefund
     const isPrefund = !!command.amount;
 
@@ -57,7 +61,7 @@ export class LixiService {
       address,
       totalClaim: BigInt(0),
       envelopeId: command.envelopeId ?? null,
-      envelopeMessage: command.envelopeMessage ?? '',
+      envelopeMessage: command.envelopeMessage ?? ''
     };
     const lixiToInsert = _.omit(data, 'password');
 
@@ -71,8 +75,9 @@ export class LixiService {
       // Check the account balance in xpi
       const accountBalance: number = await this.xpiWallet.getBalance(account.address);
       if (command.amount >= fromSmallestDenomination(accountBalance - fee)) {
+        const accountNotSufficientFund = await i18n.t('account.messages.accountNotSufficientFund');
         // Validate to make sure the account has sufficient balance
-        throw new VError('The account balance is not sufficient to funding the lixi.')
+        throw new VError(accountNotSufficientFund);
       }
     }
 
@@ -80,10 +85,10 @@ export class LixiService {
     const receivingLixi = [{ address: lixiToInsert.address, amountXpi: command.amount }];
 
     // Save the lixi into the database
-    const savedLixi = await this.prisma.$transaction(async (prisma) => {
+    const savedLixi = await this.prisma.$transaction(async prisma => {
       const createdLixi = prisma.lixi.create({ data: lixiToInsert });
       if (isPrefund) {
-        await this.walletService.sendAmount(account.address, receivingLixi, keyPair);
+        await this.walletService.sendAmount(account.address, receivingLixi, keyPair, i18n);
       }
       return createdLixi;
     });
@@ -93,20 +98,28 @@ export class LixiService {
     const claimPart = command.password;
     const claimCode = claimPart + encodedId;
 
-    const resultLixi: Lixi = _.omit({
-      ...savedLixi,
-      claimCode: claimCode,
-      balance: savedLixi.amount,
-      totalClaim: Number(savedLixi.totalClaim),
-      expiryAt: savedLixi.expiryAt ? savedLixi.expiryAt : undefined,
-      activationAt: savedLixi.activationAt ? savedLixi.expiryAt : undefined,
-      country: savedLixi.country ? savedLixi.country : undefined,
-    }, 'encryptedXPriv');
+    const resultLixi: Lixi = _.omit(
+      {
+        ...savedLixi,
+        claimCode: claimCode,
+        balance: savedLixi.amount,
+        totalClaim: Number(savedLixi.totalClaim),
+        expiryAt: savedLixi.expiryAt ? savedLixi.expiryAt : undefined,
+        activationAt: savedLixi.activationAt ? savedLixi.expiryAt : undefined,
+        country: savedLixi.country ? savedLixi.country : undefined
+      },
+      'encryptedXPriv'
+    );
 
     return resultLixi;
   }
 
-  async createOneTimeParentLixi(derivationIndex: number, account: AccountDb, command: CreateLixiCommand): Promise<Lixi> {
+  async createOneTimeParentLixi(
+    derivationIndex: number,
+    account: AccountDb,
+    command: CreateLixiCommand,
+    i18n: I18nContext
+  ): Promise<Lixi> {
     // If users input the amount means that the lixi need to be prefund
     const isPrefund = !!command.amount;
 
@@ -131,7 +144,7 @@ export class LixiService {
       address,
       totalClaim: BigInt(0),
       envelopeId: command.envelopeId ?? null,
-      envelopeMessage: command.envelopeMessage ?? '',
+      envelopeMessage: command.envelopeMessage ?? ''
     };
     const lixiToInsert = _.omit(data, 'password');
 
@@ -144,13 +157,14 @@ export class LixiService {
       const accountBalance: number = await this.xpiWallet.getBalance(account.address);
       let fee = await this.walletService.calcFee(this.XPI, (utxoStore as any).bchUtxos, command.numberOfSubLixi + 1);
       if (command.amount >= fromSmallestDenomination(accountBalance - fee)) {
+        const accountNotSufficientFund = await i18n.t('account.messages.accountNotSufficientFund');
         // Validate to make sure the account has sufficient balance
-        throw new VError('The account balance is not sufficient to funding the lixi.')
+        throw new VError(accountNotSufficientFund);
       }
     }
 
     // Save the lixi into the database
-    const savedLixi = await this.prisma.$transaction(async (prisma) => {
+    const savedLixi = await this.prisma.$transaction(async prisma => {
       const createdLixi = prisma.lixi.create({ data: lixiToInsert });
       return createdLixi;
     });
@@ -160,15 +174,18 @@ export class LixiService {
     const claimPart = command.password;
     const claimCode = claimPart + encodedId;
 
-    const resultLixi: Lixi = _.omit({
-      ...savedLixi,
-      claimCode: claimCode,
-      balance: 0,
-      totalClaim: Number(savedLixi.totalClaim),
-      expiryAt: savedLixi.expiryAt ? savedLixi.expiryAt : undefined,
-      activationAt: savedLixi.activationAt ? savedLixi.expiryAt : undefined,
-      country: savedLixi.country ? savedLixi.country : undefined,
-    }, 'encryptedXPriv');
+    const resultLixi: Lixi = _.omit(
+      {
+        ...savedLixi,
+        claimCode: claimCode,
+        balance: 0,
+        totalClaim: Number(savedLixi.totalClaim),
+        expiryAt: savedLixi.expiryAt ? savedLixi.expiryAt : undefined,
+        activationAt: savedLixi.activationAt ? savedLixi.expiryAt : undefined,
+        country: savedLixi.country ? savedLixi.country : undefined
+      },
+      'encryptedXPriv'
+    );
 
     return resultLixi;
   }
@@ -181,12 +198,16 @@ export class LixiService {
    * @param parentLixiId The parent id of one-time codes lixi
    * @returns The background job id to create the batch of sub lixies
    */
-  async createSubLixies(startDerivationIndex: number, account: AccountDb, command: CreateLixiCommand, parentLixiId: number): Promise<string | undefined> {
-
+  async createSubLixies(
+    startDerivationIndex: number,
+    account: AccountDb,
+    command: CreateLixiCommand,
+    parentLixiId: number
+  ): Promise<string | undefined> {
     // If users input the amount means that the lixi need to be prefund
     const isPrefund = !!command.amount;
 
-    const chunkSize = lixiChunkSize; // number of output per 
+    const chunkSize = lixiChunkSize; // number of output per
     const numberOfChunks = Math.ceil(command.numberOfSubLixi / chunkSize);
 
     if (numberOfChunks === 0) {
@@ -206,13 +227,11 @@ export class LixiService {
     const childrenJobs: FlowJob[] = [];
 
     for (let chunkIndex = 0; chunkIndex < numberOfChunks; chunkIndex++) {
-
-      const numberOfSubLixiInChunk = chunkIndex < numberOfChunks - 1 ?
-        chunkSize :
-        command.numberOfSubLixi - (chunkIndex * chunkSize);
+      const numberOfSubLixiInChunk =
+        chunkIndex < numberOfChunks - 1 ? chunkSize : command.numberOfSubLixi - chunkIndex * chunkSize;
 
       // Start to process from the start of each chunk
-      const startDerivationIndexForChunk = startDerivationIndex + (chunkIndex * chunkSize);
+      const startDerivationIndexForChunk = startDerivationIndex + chunkIndex * chunkSize;
 
       // Calculate fee for each chunk process
       let fee = await this.walletService.calcFee(this.XPI, (utxoStore as any).bchUtxos, numberOfSubLixiInChunk + 1);
@@ -242,7 +261,7 @@ export class LixiService {
       connection: new IORedis({
         maxRetriesPerRequest: null,
         enableReadyCheck: false,
-        host: process.env.REDIS_HOST ? process.env.REDIS_HOST : 'redis-lixi',
+        host: process.env.REDIS_HOST ? process.env.REDIS_HOST : '127.0.0.1',
         port: process.env.REDIS_PORT ? _.toSafeInteger(process.env.REDIS_PORT) : 6379
       })
     });
@@ -285,7 +304,7 @@ export class LixiService {
 
     if (!notifType) return null;
 
-    const message = pope(notifType.template, additionalData);
+    const message = template(notifType.template, additionalData);
     const result: NotificationDto = {
       senderId,
       recipientId,
@@ -298,5 +317,4 @@ export class LixiService {
 
     return result;
   }
-
 }
