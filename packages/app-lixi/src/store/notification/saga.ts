@@ -1,10 +1,11 @@
 import { AccountDto as Account, NotificationDto as Notification } from '@bcpros/lixi-models';
 import { all, call, cancelled, fork, put, select, take, takeLatest } from '@redux-saga/core/effects';
+import intl from 'react-intl-universal';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { getSelectedAccount } from '@store/account/selectors';
 import { eventChannel } from 'redux-saga';
 import { delay, race } from 'redux-saga/effects';
-import io, { Socket } from "socket.io-client";
+import io, { Socket } from 'socket.io-client';
 import { hideLoading, showLoading } from '../loading/actions';
 import {
   channelOff,
@@ -20,11 +21,9 @@ import {
 } from './actions';
 import notificationApi from './api';
 
-
 let socket: Socket;
 const baseUrl = process.env.NEXT_PUBLIC_LIXI_API ? process.env.NEXT_PUBLIC_LIXI_API : 'https://lixilotus.com/';
 const socketServerUrl = `${baseUrl}ws/notifications`;
-
 
 /**
  * Wait for the selector until the value existed
@@ -43,15 +42,14 @@ function* waitFor(selector) {
   }
 }
 
-
-function* fetchNotificationsSaga(action: PayloadAction<{ accountId: number, mnemonichHash }>) {
+function* fetchNotificationsSaga(action: PayloadAction<{ accountId: number; mnemonichHash }>) {
   try {
     yield put(showLoading(fetchNotifications.type));
     const { accountId, mnemonichHash } = action.payload;
     const notifications: Notification[] = yield call(notificationApi.getByAccountId, accountId, mnemonichHash);
     yield put(fetchNotificationsSuccess(notifications));
   } catch (err) {
-    const message = (err as Error).message ?? `Unable to claim.`;
+    const message = (err as Error).message ?? intl.get('claim.unableClaim');
     yield put(fetchNotificationsFailure(message));
   }
 }
@@ -78,35 +76,34 @@ function* watchFetchNotificationsFailure() {
 
 function connect(): Promise<Socket> {
   socket = io(socketServerUrl, { transports: ['websocket'] });
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     socket.on('connect', () => {
       resolve(socket);
     });
   });
-};
+}
 
 function disconnect() {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     socket.on('disconnect', () => {
       resolve(socket);
     });
   });
-};
+}
 
 function reconnect(): Promise<Socket> {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     socket.io.on('reconnect', () => {
       resolve(socket);
     });
   });
-};
+}
 
 function subscribe(account: Account) {
   socket.emit('subscribe', account.mnemonicHash);
 }
 
 function createSocketChannel(socket: Socket) {
-
   return eventChannel(emit => {
     const handler = (data: Notification) => {
       emit(data);
@@ -142,7 +139,7 @@ function* listenServerSaga() {
       timeout: yield delay(2000)
     });
     if (timeout) {
-      yield put((serverOff()));
+      yield put(serverOff());
     }
 
     const socketChannel = yield call(createSocketChannel, socket);
@@ -159,8 +156,7 @@ function* listenServerSaga() {
     }
   } catch (error) {
     console.log('error', error.message);
-  }
-  finally {
+  } finally {
     if (yield cancelled()) {
       if (socket) {
         socket.disconnect();
@@ -173,10 +169,7 @@ function* listenServerSaga() {
 function* startStopChannel() {
   while (true) {
     yield take(startChannel.type);
-    yield race([
-      yield call(listenServerSaga),
-      yield take(stopChannel.type)
-    ]);
+    yield race([yield call(listenServerSaga), yield take(stopChannel.type)]);
   }
 }
 
