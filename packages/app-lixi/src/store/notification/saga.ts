@@ -6,6 +6,7 @@ import { eventChannel } from 'redux-saga';
 import { delay, race } from 'redux-saga/effects';
 import io, { Socket } from "socket.io-client";
 import { hideLoading, showLoading } from '../loading/actions';
+import { showToast } from '../toast/actions';
 import {
   channelOff,
   channelOn,
@@ -16,7 +17,13 @@ import {
   serverOff,
   serverOn,
   startChannel,
-  stopChannel
+  stopChannel,
+  deleteNotification,
+  deleteNotificationSuccess,
+  deleteNotificationFailure,
+  seenNotification,
+  seenNotificationSuccess,
+  seenNotificationFailure
 } from './actions';
 import notificationApi from './api';
 
@@ -51,9 +58,62 @@ function* fetchNotificationsSaga(action: PayloadAction<{ accountId: number, mnem
     const notifications: Notification[] = yield call(notificationApi.getByAccountId, accountId, mnemonichHash);
     yield put(fetchNotificationsSuccess(notifications));
   } catch (err) {
-    const message = (err as Error).message ?? `Unable to claim.`;
+    const message = (err as Error).message ?? `Unable to fetch.`;
     yield put(fetchNotificationsFailure(message));
   }
+}
+
+function* deleteNotificationSaga(action: PayloadAction<{ mnemonichHash, notificationId }>) {
+  try {
+    yield put(showLoading(deleteNotification.type));
+    const { mnemonichHash, notificationId } = action.payload;
+    yield call(notificationApi.deleteByNotificationId, mnemonichHash, notificationId);
+    yield put(deleteNotificationSuccess(notificationId));
+  } catch (err) {
+    const message = (err as Error).message ?? `Unable to delete.`;
+    yield put(deleteNotificationFailure(message));
+  }
+}
+
+function* deleteNotificationSuccessSaga(action: PayloadAction<any>) {
+  yield put(hideLoading(deleteNotification.type));
+}
+
+function* deleteNotificationFailureSaga(action: PayloadAction<any>) {
+  const message = action.payload ?? 'Unable to delete the notification.';
+  yield put(showToast('error', {
+    message: 'Error',
+    description: message,
+    duration: 5
+  }));
+  yield put(hideLoading(deleteNotification.type));
+}
+
+function* seenNotificationSaga(action: PayloadAction<{ mnemonichHash, notificationId }>) {
+  try {
+    yield put(showLoading(seenNotification.type));
+    const { mnemonichHash, notificationId } = action.payload;
+    const data = yield call(notificationApi.seenByNotificationId, mnemonichHash, notificationId);
+    const notification = data as Notification;
+    yield put(seenNotificationSuccess(notification));
+  } catch (err) {
+    const message = (err as Error).message ?? `Unable to seen.`;
+    yield put(seenNotificationFailure(message));
+  }
+}
+
+function* seenNotificationSuccessSaga(action: PayloadAction<Notification>) {
+  yield put(hideLoading(seenNotification.type));
+}
+
+function* seenNotificationFailureSaga(action: PayloadAction<Notification>) {
+  const message = action.payload ?? 'Unable to seen the notification.';
+  yield put(showToast('error', {
+    message: 'Error',
+    description: message,
+    duration: 5
+  }));
+  yield put(hideLoading(seenNotification.type));
 }
 
 function* fetchNotificationsSuccessSaga(action: PayloadAction<Notification[]>) {
@@ -74,6 +134,30 @@ function* watchFetchNotificationsSuccess() {
 
 function* watchFetchNotificationsFailure() {
   yield takeLatest(fetchNotificationsFailure.type, fetchNotificationsFailureSaga);
+}
+
+function* watchDeleteNotification() {
+  yield takeLatest(deleteNotification.type, deleteNotificationSaga);
+}
+
+function* watchDeleteNotificationSuccess() {
+  yield takeLatest(deleteNotificationSuccess.type, deleteNotificationSuccessSaga);
+}
+
+function* watchDeleteNotificationFailure() {
+  yield takeLatest(deleteNotificationFailure.type, deleteNotificationFailureSaga);
+}
+
+function* watchSeenNotification() {
+  yield takeLatest(seenNotification.type, seenNotificationSaga);
+}
+
+function* watchSeenNotificationSuccess() {
+  yield takeLatest(seenNotificationSuccess.type, seenNotificationSuccessSaga);
+}
+
+function* watchSeenNotificationFailure() {
+  yield takeLatest(seenNotificationFailure.type, seenNotificationFailureSaga);
 }
 
 function connect(): Promise<Socket> {
@@ -185,14 +269,26 @@ export default function* notificationSaga() {
     yield all([
       fork(watchFetchNotifications),
       fork(watchFetchNotificationsSuccess),
-      fork(watchFetchNotificationsFailure)
+      fork(watchFetchNotificationsFailure),
+      fork(watchDeleteNotification),
+      fork(watchDeleteNotificationSuccess),
+      fork(watchDeleteNotificationFailure),
+      fork(watchSeenNotification),
+      fork(watchSeenNotificationSuccess),
+      fork(watchSeenNotificationFailure)
     ]);
   } else {
     yield all([
       fork(startStopChannel),
       fork(watchFetchNotifications),
       fork(watchFetchNotificationsSuccess),
-      fork(watchFetchNotificationsFailure)
+      fork(watchFetchNotificationsFailure),
+      fork(watchDeleteNotification),
+      fork(watchDeleteNotificationSuccess),
+      fork(watchDeleteNotificationFailure),
+      fork(watchSeenNotification),
+      fork(watchSeenNotificationSuccess),
+      fork(watchSeenNotificationFailure)
     ]);
   }
 }
