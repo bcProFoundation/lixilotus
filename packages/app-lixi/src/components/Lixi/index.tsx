@@ -35,7 +35,7 @@ import { exportSubLixies } from '../../store/lixi/actions';
 import VirtualTable from './SubLixiListScroll';
 
 type CopiedProps = {
-  style?: React.CSSProperties
+  style?: React.CSSProperties;
 };
 
 const Copied = styled.div<CopiedProps>`
@@ -59,7 +59,6 @@ const Copied = styled.div<CopiedProps>`
 const { Panel } = Collapse;
 
 const Lixi: React.FC = () => {
-
   const dispatch = useAppDispatch();
   const ContextValue = React.useContext(AppContext);
   const { XPI, Wallet } = ContextValue;
@@ -74,28 +73,30 @@ const Lixi: React.FC = () => {
   const loadMoreStartId = useAppSelector(getLoadMoreSubLixiesStartId);
   let subLixies = useAppSelector(getAllSubLixies);
 
-  subLixies = _.sortBy(subLixies, ['isClaimed'])
+  subLixies = _.sortBy(subLixies, ['isClaimed']);
 
   useEffect(() => {
     if (selectedLixi) {
-      dispatch(getLixi(selectedLixi.id))
+      dispatch(getLixi(selectedLixi.id));
     }
   }, []);
 
   useEffect(() => {
     const id = setInterval(() => {
-      XPI.Electrumx.balance(selectedLixi?.address).then((result => {
-        if (result && result.balance) {
-          const balance = result.balance.confirmed + result.balance.unconfirmed;
-          dispatch(setLixiBalance(balance ?? 0));
-        }
-      })).catch(e => {
-        setIsLoadBalanceError(true);
-      })
+      XPI.Electrumx.balance(selectedLixi?.address)
+        .then(result => {
+          if (result && result.balance) {
+            const balance = result.balance.confirmed + result.balance.unconfirmed;
+            dispatch(setLixiBalance(balance ?? 0));
+          }
+        })
+        .catch(e => {
+          setIsLoadBalanceError(true);
+        });
     }, 10000);
     return () => {
       return clearInterval(id);
-    }
+    };
   }, []);
 
   const handleRefeshLixi = () => {
@@ -105,7 +106,7 @@ const Lixi: React.FC = () => {
     }
     const lixiId = selectedLixiId;
     dispatch(refreshLixi(lixiId));
-  }
+  };
 
   const handleExportLixi = () => {
     if (!(selectedLixi && selectedLixiId)) {
@@ -117,189 +118,207 @@ const Lixi: React.FC = () => {
       mnemonicHash: selectedAccount?.mnemonicHash
     };
     dispatch(exportSubLixies(exportLixiData));
-  }
+  };
 
   const handleOnClickClaimCode = evt => {
     setClaimCodeVisible(true);
     setTimeout(() => {
       setClaimCodeVisible(false);
     }, 1500);
-  }
+  };
 
   const handleOnCopyClaimCode = () => {
     setClaimCodeVisible(true);
-    message.info('The claim code has been copied.');
+    message.info(intl.get('claim.claimCodeCopied'));
   };
 
   const handleDownloadQRClaimCode = () => {
     if (qrPanelRef.current) {
-      toPng(qrPanelRef.current, { cacheBust: true }).then(url => {
-        saveAs(url);
-      }).catch((err) => {
-        dispatch(showToast('error', {
-          message: 'Unable to download claim code.',
-          description: 'Please copy the code manually',
-          duration: 5
-        }));
-      });
+      toPng(qrPanelRef.current, { cacheBust: true })
+        .then(url => {
+          saveAs(url);
+        })
+        .catch(err => {
+          dispatch(
+            showToast('error', {
+              message: intl.get('claim.unableDownloadClaimCode'),
+              description: intl.get('claim.pleaseCopyManually'),
+              duration: 5
+            })
+          );
+        });
     }
-  }
+  };
 
   const typeLixi = () => {
     switch (selectedLixi?.lixiType) {
       case LixiType.Fixed:
         return (
-          <>{intl.get('account.fixed')} {selectedLixi.fixedValue} {currency.ticker}</>
+          <>
+            {intl.get('account.fixed')} {selectedLixi.fixedValue} {currency.ticker}
+          </>
         );
       case LixiType.Divided:
         return (
-          <>{intl.get('lixi.dividedBy')} {selectedLixi.dividedValue} </>
+          <>
+            {intl.get('lixi.dividedBy')} {selectedLixi.dividedValue}{' '}
+          </>
         );
       case LixiType.Equal:
         return (
-          <>{intl.get('account.equal')} {selectedLixi.amount / selectedLixi.numberOfSubLixi} {currency.ticker}</>
+          <>
+            {intl.get('account.equal')} {selectedLixi.amount / selectedLixi.numberOfSubLixi} {currency.ticker}
+          </>
         );
       default:
         return (
-          <>{intl.get('account.random')} {selectedLixi?.minValue}-{selectedLixi?.maxValue} {currency.ticker}</>
+          <>
+            {intl.get('account.random')} {selectedLixi?.minValue}-{selectedLixi?.maxValue} {currency.ticker}
+          </>
         );
     }
-  }
+  };
 
   const showRedemption = () => {
     if (selectedLixi.claimType == ClaimType.Single) {
       if (selectedLixi?.maxClaim != 0) {
-        return <>{selectedLixi?.claimedNum} / {selectedLixi?.maxClaim}</>
-      }
-      else {
-        return <>{selectedLixi?.claimedNum}</>
+        return (
+          <>
+            {selectedLixi?.claimedNum} / {selectedLixi?.maxClaim}
+          </>
+        );
+      } else {
+        return <>{selectedLixi?.claimedNum}</>;
       }
     } else {
-      return <>{_.size(subLixies.filter(item => item.isClaimed))}/{selectedLixi.numberOfSubLixi}</>
+      return (
+        <>
+          {_.size(subLixies.filter(item => item.isClaimed))}/{selectedLixi.numberOfSubLixi}
+        </>
+      );
     }
-  }
+  };
 
   const showMinStaking = () => {
-    return (selectedLixi?.minStaking) ? (
-      <Descriptions.Item label={intl.get('account.minStaking')} key='desc.minstaking'>
+    return selectedLixi?.minStaking ? (
+      <Descriptions.Item label={intl.get('account.minStaking')} key="desc.minstaking">
         {selectedLixi.minStaking} {currency.ticker}
-      </Descriptions.Item>) : "";
-  }
+      </Descriptions.Item>
+    ) : (
+      ''
+    );
+  };
 
   const formatDate = () => {
     if (selectedLixi?.expiryAt != null) {
       return (
-        <Descriptions.Item label={intl.get('lixi.expireAt')} key='desc.expiryat'>
-          {moment(selectedLixi?.expiryAt).format("YYYY-MM-DD HH:mm")}
+        <Descriptions.Item label={intl.get('lixi.expireAt')} key="desc.expiryat">
+          {moment(selectedLixi?.expiryAt).format('YYYY-MM-DD HH:mm')}
         </Descriptions.Item>
       );
-    }
-    else {
+    } else {
       return;
     }
-  }
+  };
 
   const formatActivationDate = () => {
     if (selectedLixi?.activationAt != null) {
       return (
-        <Descriptions.Item label={intl.get('lixi.activatedAt')} key='desc.activatedat'>
-          {moment(selectedLixi?.activationAt).format("YYYY-MM-DD HH:mm")}
+        <Descriptions.Item label={intl.get('lixi.activatedAt')} key="desc.activatedat">
+          {moment(selectedLixi?.activationAt).format('YYYY-MM-DD HH:mm')}
         </Descriptions.Item>
       );
-    }
-    else {
+    } else {
       return;
     }
-  }
+  };
 
   const showCountry = () => {
-    return (selectedLixi?.country != null) ? (
-      <Descriptions.Item label={intl.get('lixi.country')} key='desc.country'>
+    return selectedLixi?.country != null ? (
+      <Descriptions.Item label={intl.get('lixi.country')} key="desc.country">
         {countries.find(country => country.id === selectedLixi?.country)?.name}
-      </Descriptions.Item>) : "";
-  }
+      </Descriptions.Item>
+    ) : (
+      ''
+    );
+  };
 
   const showIsFamilyFriendly = () => {
-    return (selectedLixi?.isFamilyFriendly) ? (
-      <Descriptions.Item label={intl.get('lixi.optional')} key='desc.optional'>
+    return selectedLixi?.isFamilyFriendly ? (
+      <Descriptions.Item label={intl.get('lixi.optional')} key="desc.optional">
         Family Friendly
-      </Descriptions.Item>) : "";
-  }
+      </Descriptions.Item>
+    ) : (
+      ''
+    );
+  };
 
   const columns = [
-    { title: 'Num', dataIndex: 'num', width: 70},
+    { title: 'Num', dataIndex: 'num', width: 70 },
     { title: 'Claim Code', dataIndex: 'claimCode' },
-    { title: 'Amount', dataIndex: 'amount' },
+    { title: 'Amount', dataIndex: 'amount' }
   ];
 
-  const prefixClaimCode = 'lixi'; 
+  const prefixClaimCode = 'lixi';
 
   const subLixiesDataSource = subLixies.map((item, i) => {
-    return ({
-      num: i+1,
-      claimCode: <CopyToClipboard
-        text={`${prefixClaimCode}_${item.claimCode}`}
-        onCopy={handleOnCopyClaimCode}
-      >
-        <div>
-          <CopyOutlined />  {`${prefixClaimCode}_${item.claimCode}`}
-        </div>
-      </CopyToClipboard>,
-      amount: item.isClaimed ? 0 : (item.amount==0 ? 0 : (item.amount - 0.000455).toFixed(2)),
-    })
+    return {
+      num: i + 1,
+      claimCode: (
+        <CopyToClipboard text={`${prefixClaimCode}_${item.claimCode}`} onCopy={handleOnCopyClaimCode}>
+          <div>
+            <CopyOutlined /> {`${prefixClaimCode}_${item.claimCode}`}
+          </div>
+        </CopyToClipboard>
+      ),
+      amount: item.isClaimed ? 0 : item.amount == 0 ? 0 : (item.amount - 0.000455).toFixed(2)
+    };
   });
 
   const showMoreSubLixies = () => {
     dispatch(fetchMoreSubLixies({ parentId: selectedLixi.id, startId: loadMoreStartId }));
-  }
+  };
 
   return (
     <>
       {selectedLixi && selectedLixi.address ? (
         <>
-          <WalletLabel
-            name={selectedLixi?.name ?? ''}
-          />
+          <WalletLabel name={selectedLixi?.name ?? ''} />
           <BalanceHeader
-            balance={selectedLixi.claimType == ClaimType.Single ?
-              (fromSmallestDenomination(selectedLixi?.balance) ?? 0) :
-              (_.sumBy(subLixies, 'amount')).toFixed(2) + fromSmallestDenomination(selectedLixi?.balance)
+            balance={
+              selectedLixi.claimType == ClaimType.Single
+                ? fromSmallestDenomination(selectedLixi?.balance) ?? 0
+                : _.sumBy(subLixies, 'amount').toFixed(2) + fromSmallestDenomination(selectedLixi?.balance)
             }
-            ticker={currency.ticker} />
-          {selectedLixi?.claimType === ClaimType.Single ?
-            <QRCode
-              address={selectedLixi.address}
-            /> :
-            <></>
-          }
+            ticker={currency.ticker}
+          />
+          {selectedLixi?.claimType === ClaimType.Single ? <QRCode address={selectedLixi.address} /> : <></>}
           <Descriptions
             column={1}
             bordered
             title={intl.get('lixi.lixiInfo', { lixiName: selectedLixi.name })}
             style={{
               padding: '0 0 20px 0',
-              color: 'rgb(23,23,31)',
+              color: 'rgb(23,23,31)'
             }}
           >
-            <Descriptions.Item label={intl.get('lixi.claimType')} key='desc.claimtype'>
-              {selectedLixi.claimType == ClaimType.Single ? "Single" : "One-Time Codes"}
+            <Descriptions.Item label={intl.get('lixi.claimType')} key="desc.claimtype">
+              {selectedLixi.claimType == ClaimType.Single ? 'Single' : 'One-Time Codes'}
             </Descriptions.Item>
-            <Descriptions.Item label={intl.get('lixi.type')} key='desc.type'>
+            <Descriptions.Item label={intl.get('lixi.type')} key="desc.type">
               {typeLixi()}
             </Descriptions.Item>
-            <Descriptions.Item label={intl.get('lixi.totalClaimed')} key='desc.totalclaimed'>
-              {selectedLixi.claimType == ClaimType.Single ?
-                (fromSmallestDenomination(selectedLixi?.totalClaim) ?? 0) :
-                (fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim')).toFixed(2))
-              } {currency.ticker}
+            <Descriptions.Item label={intl.get('lixi.totalClaimed')} key="desc.totalclaimed">
+              {selectedLixi.claimType == ClaimType.Single
+                ? fromSmallestDenomination(selectedLixi?.totalClaim) ?? 0
+                : fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim')).toFixed(2)}{' '}
+              {currency.ticker}
             </Descriptions.Item>
-            <Descriptions.Item label={intl.get('lixi.remainingLixi')} key='desc.claim'>
+            <Descriptions.Item label={intl.get('lixi.remainingLixi')} key="desc.claim">
               {showRedemption()}
             </Descriptions.Item>
             {selectedLixi.envelopeMessage && (
-              <Descriptions.Item label={intl.get('lixi.message')}>
-                {selectedLixi?.envelopeMessage}
-              </Descriptions.Item>
+              <Descriptions.Item label={intl.get('lixi.message')}>{selectedLixi?.envelopeMessage}</Descriptions.Item>
             )}
             {showCountry()}
             {showMinStaking()}
@@ -311,77 +330,72 @@ const Lixi: React.FC = () => {
           {/* Lixi details */}
           <StyledCollapse style={{ marginBottom: '20px' }}>
             <Panel header={intl.get('lixi.lixiDetail')} key="panel-1">
-              {selectedLixi.claimType == ClaimType.Single ?
+              {selectedLixi.claimType == ClaimType.Single ? (
                 <>
                   <div ref={qrPanelRef}>
-                    {selectedLixi && selectedLixi.claimCode && <QRClaimCode
-                      logoImage={lixiLogo}
-                      code={`${prefixClaimCode}_${selectedLixi?.claimCode}`}
-                    />}
+                    {selectedLixi && selectedLixi.claimCode && (
+                      <QRClaimCode logoImage={lixiLogo} code={`${prefixClaimCode}_${selectedLixi?.claimCode}`} />
+                    )}
                   </div>
-                  <SmartButton
-                    onClick={() => handleDownloadQRClaimCode()}
-                  >
-                    <DownloadOutlined />  {intl.get('lixi.downloadCode')}
+                  <SmartButton onClick={() => handleDownloadQRClaimCode()}>
+                    <DownloadOutlined /> {intl.get('lixi.downloadCode')}
                   </SmartButton>
-                </> :
-                <>
-                  <VirtualTable columns={columns} dataSource={subLixiesDataSource} scroll={{ y: subLixiesDataSource.length * 54 <= 270 ? subLixiesDataSource.length * 54 : 270 }} />
-                  {hasMoreSubLixies &&
-                    <SmartButton
-                      onClick={() => showMoreSubLixies()}
-                    >
-                      {intl.get('lixi.loadmore')}
-                    </SmartButton>
-                  }
                 </>
-              }
+              ) : (
+                <>
+                  <VirtualTable
+                    columns={columns}
+                    dataSource={subLixiesDataSource}
+                    scroll={{ y: subLixiesDataSource.length * 54 <= 270 ? subLixiesDataSource.length * 54 : 270 }}
+                  />
+                  {hasMoreSubLixies && (
+                    <SmartButton onClick={() => showMoreSubLixies()}>{intl.get('lixi.loadmore')}</SmartButton>
+                  )}
+                </>
+              )}
             </Panel>
           </StyledCollapse>
 
           {/* Copy ClaimCode */}
-          {selectedLixi.claimType == ClaimType.Single ?
+          {selectedLixi.claimType == ClaimType.Single ? (
             <CopyToClipboard
               style={{
                 display: 'inline-block',
                 width: '100%',
-                position: 'relative',
+                position: 'relative'
               }}
               text={`${prefixClaimCode}_${selectedLixi.claimCode}`}
               onCopy={handleOnCopyClaimCode}
             >
               <div style={{ position: 'relative', paddingTop: '20px' }} onClick={handleOnClickClaimCode}>
-                <Copied
-                  style={{ display: claimCodeVisible ? undefined : 'none' }}
-                >
+                <Copied style={{ display: claimCodeVisible ? undefined : 'none' }}>
                   Copied <br />
                   <span style={{ fontSize: '32px' }}>{`${prefixClaimCode}_${selectedLixi.claimCode}`}</span>
                 </Copied>
                 <SmartButton>
-                  <CopyOutlined />  {intl.get('lixi.copyClaim')}
+                  <CopyOutlined /> {intl.get('lixi.copyClaim')}
                 </SmartButton>
               </div>
-            </CopyToClipboard> :
+            </CopyToClipboard>
+          ) : (
             <>
-              <SmartButton onClick={() => handleExportLixi()} >
+              <SmartButton onClick={() => handleExportLixi()}>
                 <ExportOutlined /> {intl.get('lixi.exportLixi')}
               </SmartButton>
             </>
-          }
+          )}
 
-          <SmartButton
-            onClick={() => handleRefeshLixi()}
-          >
-            <ReloadOutlined />  {intl.get('lixi.refreshLixi')}
+          <SmartButton onClick={() => handleRefeshLixi()}>
+            <ReloadOutlined /> {intl.get('lixi.refreshLixi')}
           </SmartButton>
 
           <ClaimList claims={allClaimsCurrentLixi} />
         </>
-      )
-        : intl.get('lixi.noLixiSelected')
-      }
+      ) : (
+        intl.get('lixi.noLixiSelected')
+      )}
     </>
-  )
+  );
 };
 
 export default Lixi;
