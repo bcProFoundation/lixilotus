@@ -9,8 +9,8 @@ import {
 import {
   fetchInitialSubLixiesSuccess,
   fetchMoreSubLixiesSuccess,
-  lockLixiSuccess, postLixiSuccess, refreshLixiSuccess, renameLixiSuccess, selectLixiSuccess, setLixi, setLixiBalance,
-  unlockLixiSuccess
+  archiveLixiSuccess, postLixiSuccess, refreshLixiSuccess, renameLixiSuccess, selectLixiSuccess, setLixi, setLixiBalance,
+  unarchiveLixiSuccess
 } from './actions';
 import { LixiesState } from './state';
 
@@ -95,7 +95,7 @@ export const lixiReducer = createReducer(initialState, (builder) => {
         state.selectedId = 0;
       }
     })
-    .addCase(lockLixiSuccess, (state, action) => {
+    .addCase(archiveLixiSuccess, (state, action) => {
       const lixi = action.payload;
       const updateLixi: Update<Lixi> = {
         id: lixi.id,
@@ -105,7 +105,7 @@ export const lixiReducer = createReducer(initialState, (builder) => {
       };
       lixiesAdapter.updateOne(state, updateLixi);
     })
-    .addCase(unlockLixiSuccess, (state, action) => {
+    .addCase(unarchiveLixiSuccess, (state, action) => {
       const lixi = action.payload;
       const updateLixi: Update<Lixi> = {
         id: lixi.id,

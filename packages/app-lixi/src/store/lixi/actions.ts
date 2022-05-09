@@ -1,5 +1,5 @@
 import { createAction } from '@reduxjs/toolkit';
-import { GenerateLixiCommand, CreateLixiCommand, Lixi, UnlockLixiCommand, LockLixiCommand, WithdrawLixiCommand, RenameLixiCommand } from '@bcpros/lixi-models/lib/lixi';
+import { GenerateLixiCommand, CreateLixiCommand, Lixi, UnarchiveLixiCommand, ArchiveLixiCommand, WithdrawLixiCommand, RenameLixiCommand } from '@bcpros/lixi-models/lib/lixi';
 import { Claim } from '@bcpros/lixi-models/lib/claim';
 import { ExportLixiCommand, PaginationResult } from '@bcpros/lixi-models';
 
@@ -25,12 +25,12 @@ export const selectLixiFailure = createAction<string>('lixi/selectLixiFailure');
 export const refreshLixi = createAction<number>('lixi/refreshLixi');
 export const refreshLixiSuccess = createAction<{ lixi: Lixi, claims: Claim[] }>('lixi/refreshLixiSuccess');
 export const refreshLixiFailure = createAction<string>('lixi/refreshLixiFailure');
-export const unlockLixi = createAction<UnlockLixiCommand>('lixi/unlockLixi');
-export const unlockLixiSuccess = createAction<Lixi>('lixi/unlockLixiSuccess');
-export const unlockLixiFailure = createAction<String>('lixi/unlockLixiFailure');
-export const lockLixi = createAction<LockLixiCommand>('lixi/lockLixi');
-export const lockLixiSuccess = createAction<Lixi>('lixi/lockLixiSuccess');
-export const lockLixiFailure = createAction<String>('lixi/lockLixiFailure');
+export const unarchiveLixi = createAction<UnarchiveLixiCommand>('lixi/unarchiveLixi');
+export const unarchiveLixiSuccess = createAction<Lixi>('lixi/unarchiveLixiSuccess');
+export const unarchiveLixiFailure = createAction<String>('lixi/unarchiveLixiFailure');
+export const archiveLixi = createAction<ArchiveLixiCommand>('lixi/archiveLixi');
+export const archiveLixiSuccess = createAction<Lixi>('lixi/archiveLixiSuccess');
+export const archiveLixiFailure = createAction<String>('lixi/archiveLixiFailure');
 export const withdrawLixi = createAction<WithdrawLixiCommand>('lixi/withdrawLixi');
 export const withdrawLixiSuccess = createAction<Lixi>('lixi/withdrawLixiSuccess');
 export const withdrawLixiFailure = createAction<String>('lixi/withdrawLixiFailure');

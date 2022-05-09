@@ -292,7 +292,7 @@ export class LixiController {
     }
   }
 
-  @Post(':id/lock')
+  @Post(':id/archive')
   async lockLixi(
     @Param('id') id: string,
     @Body() command: Account,
@@ -367,7 +367,7 @@ export class LixiController {
     }
   }
 
-  @Post(':id/unlock')
+  @Post(':id/unarchive')
   async unlockLixi(
     @Param('id') id: string,
     @Body() command: Account,
