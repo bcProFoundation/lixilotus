@@ -9,9 +9,9 @@ import {
   GenerateLixiCommand,
   Lixi,
   LixiDto,
-  LockLixiCommand,
+  ArchiveLixiCommand,
   RenameLixiCommand,
-  UnlockLixiCommand,
+  UnarchiveLixiCommand,
   WithdrawLixiCommand
 } from '@bcpros/lixi-models/lib/lixi';
 import { all, fork, put, takeLatest } from '@redux-saga/core/effects';
@@ -36,9 +36,9 @@ import {
   getLixi,
   getLixiFailure,
   getLixiSuccess,
-  lockLixi,
-  lockLixiFailure,
-  lockLixiSuccess,
+  archiveLixi,
+  archiveLixiFailure,
+  archiveLixiSuccess,
   postLixi,
   postLixiFailure,
   postLixiSuccess,
@@ -53,9 +53,9 @@ import {
   selectLixiFailure,
   selectLixiSuccess,
   setLixi,
-  unlockLixi,
-  unlockLixiFailure,
-  unlockLixiSuccess,
+  unarchiveLixi,
+  unarchiveLixiFailure,
+  unarchiveLixiSuccess,
   withdrawLixi,
   withdrawLixiFailure,
   withdrawLixiSuccess
@@ -318,28 +318,28 @@ function* selectLixiFailureSaga(action: PayloadAction<string>) {
   yield put(hideLoading(selectLixi.type));
 }
 
-function* unlockLixiSaga(action: PayloadAction<UnlockLixiCommand>) {
+function* unarchiveLixiSaga(action: PayloadAction<UnarchiveLixiCommand>) {
   try {
     const command = action.payload;
 
-    const dataApi: UnlockLixiCommand = {
+    const dataApi: UnarchiveLixiCommand = {
       ...command
     };
 
-    const data = yield call(lixiApi.unlockLixi, command.id, dataApi);
+    const data = yield call(lixiApi.unarchiveLixi, command.id, dataApi);
     const lixi = data as Lixi;
 
     if (_.isNil(data) || _.isNil(data.id)) {
       throw new Error(intl.get('claim.unableUnlock'));
     }
-    yield put(unlockLixiSuccess(lixi));
+    yield put(unarchiveLixiSuccess(lixi));
   } catch (error) {
     const message = intl.get('claim.errorWhenUnlock');
-    yield put(unlockLixiFailure(message));
+    yield put(unarchiveLixiFailure(message));
   }
 }
 
-function* unlockLixiSuccessSaga(action: PayloadAction<Lixi>) {
+function* unarchiveLixiSuccessSaga(action: PayloadAction<Lixi>) {
   yield put(
     showToast('success', {
       message: 'Success',
@@ -347,10 +347,10 @@ function* unlockLixiSuccessSaga(action: PayloadAction<Lixi>) {
       duration: 5
     })
   );
-  yield put(hideLoading(unlockLixiSuccess.type));
+  yield put(hideLoading(unarchiveLixiSuccess.type));
 }
 
-function* unlockLixiFailureSaga(action: PayloadAction<string>) {
+function* unarchiveLixiFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? intl.get('claim.unableUnlock');
   yield put(
     showToast('error', {
@@ -359,32 +359,32 @@ function* unlockLixiFailureSaga(action: PayloadAction<string>) {
       duration: 5
     })
   );
-  yield put(hideLoading(unlockLixiFailure.type));
+  yield put(hideLoading(unarchiveLixiFailure.type));
 }
 
-function* lockLixiSaga(action: PayloadAction<LockLixiCommand>) {
+function* archiveLixiSaga(action: PayloadAction<ArchiveLixiCommand>) {
   try {
     const command = action.payload;
 
-    const dataApi: LockLixiCommand = {
+    const dataApi: ArchiveLixiCommand = {
       ...command
     };
 
-    const data = yield call(lixiApi.lockLixi, command.id, dataApi);
+    const data = yield call(lixiApi.archiveLixi, command.id, dataApi);
     const lixi = data as Lixi;
 
     if (_.isNil(data) || _.isNil(data.id)) {
       throw new Error(intl.get('claim.unableLock'));
     }
 
-    yield put(lockLixiSuccess(lixi));
+    yield put(archiveLixiSuccess(lixi));
   } catch (error) {
     const message = intl.get('claim.errorWhenLock');
     yield put(postLixiFailure(message));
   }
 }
 
-function* lockLixiSuccessSaga(action: PayloadAction<Lixi>) {
+function* archiveLixiSuccessSaga(action: PayloadAction<Lixi>) {
   yield put(
     showToast('success', {
       message: 'Success',
@@ -392,10 +392,10 @@ function* lockLixiSuccessSaga(action: PayloadAction<Lixi>) {
       duration: 5
     })
   );
-  yield put(hideLoading(lockLixiSuccess.type));
+  yield put(hideLoading(archiveLixiSuccess.type));
 }
 
-function* lockLixiFailureSaga(action: PayloadAction<string>) {
+function* archiveLixiFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? intl.get('claim.unableLock');
   yield put(
     showToast('error', {
@@ -404,7 +404,7 @@ function* lockLixiFailureSaga(action: PayloadAction<string>) {
       duration: 5
     })
   );
-  yield put(hideLoading(lockLixiFailure.type));
+  yield put(hideLoading(archiveLixiFailure.type));
 }
 
 function* withdrawLixiSaga(action: PayloadAction<WithdrawLixiCommand>) {
@@ -582,28 +582,28 @@ function* watchRefreshLixiFailure() {
   yield takeLatest(refreshLixiFailure.type, refreshLixiFailureSaga);
 }
 
-function* watchLockLixi() {
-  yield takeLatest(lockLixi.type, lockLixiSaga);
+function* watchArchiveLixi() {
+  yield takeLatest(archiveLixi.type, archiveLixiSaga);
 }
 
-function* watchLockLixiSuccess() {
-  yield takeLatest(lockLixiSuccess.type, lockLixiSuccessSaga);
+function* watchArchiveLixiSuccess() {
+  yield takeLatest(archiveLixiSuccess.type, archiveLixiSuccessSaga);
 }
 
-function* watchLockLixiFailure() {
-  yield takeLatest(lockLixiFailure.type, lockLixiFailureSaga);
+function* watchArchiveLixiFailure() {
+  yield takeLatest(archiveLixiFailure.type, archiveLixiFailureSaga);
 }
 
-function* watchUnlockLixi() {
-  yield takeLatest(unlockLixi.type, unlockLixiSaga);
+function* watchUnarchiveLixi() {
+  yield takeLatest(unarchiveLixi.type, unarchiveLixiSaga);
 }
 
-function* watchUnlockLixiSuccess() {
-  yield takeLatest(unlockLixiSuccess.type, unlockLixiSuccessSaga);
+function* watchUnarchiveLixiSuccess() {
+  yield takeLatest(unarchiveLixiSuccess.type, unarchiveLixiSuccessSaga);
 }
 
-function* watchUnlockLixiFailure() {
-  yield takeLatest(unlockLixiFailure.type, unlockLixiFailureSaga);
+function* watchUnarchiveLixiFailure() {
+  yield takeLatest(unarchiveLixiFailure.type, unarchiveLixiFailureSaga);
 }
 
 function* watchWithdrawLixi() {
@@ -659,12 +659,12 @@ export default function* lixiSaga() {
     fork(watchRefreshLixi),
     fork(watchRefreshLixiSuccess),
     fork(watchRefreshLixiFailure),
-    fork(watchLockLixi),
-    fork(watchLockLixiSuccess),
-    fork(watchLockLixiFailure),
-    fork(watchUnlockLixi),
-    fork(watchUnlockLixiSuccess),
-    fork(watchUnlockLixiFailure),
+    fork(watchArchiveLixi),
+    fork(watchArchiveLixiSuccess),
+    fork(watchArchiveLixiFailure),
+    fork(watchUnarchiveLixi),
+    fork(watchUnarchiveLixiSuccess),
+    fork(watchUnarchiveLixiFailure),
     fork(watchWithdrawLixi),
     fork(watchWithdrawLixiSuccess),
     fork(watchWithdrawLixiFailure),

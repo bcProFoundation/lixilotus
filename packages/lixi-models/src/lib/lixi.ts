@@ -124,13 +124,13 @@ export interface Lixi {
   subLixiBalance?: number;
 };
 
-export interface UnlockLixiCommand {
+export interface UnarchiveLixiCommand {
   id: number;
   mnemonic: string;
   mnemonicHash: string;
 };
 
-export interface LockLixiCommand {
+export interface ArchiveLixiCommand {
   id: number;
   mnemonic: string;
   mnemonicHash: string;

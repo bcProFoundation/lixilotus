@@ -3,7 +3,7 @@ import intl from 'react-intl-universal';
 import * as _ from 'lodash';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { lockLixi, renameLixi, selectLixi, unlockLixi, withdrawLixi } from 'src/store/lixi/actions';
+import { archiveLixi, renameLixi, selectLixi, unarchiveLixi, withdrawLixi } from 'src/store/lixi/actions';
 import styled, { DefaultTheme } from 'styled-components';
 
 import {
@@ -11,7 +11,7 @@ import {
 } from '@ant-design/icons';
 import {
   ClaimType,
-  Lixi, LockLixiCommand, RenameLixiCommand, UnlockLixiCommand, WithdrawLixiCommand
+  Lixi, ArchiveLixiCommand, RenameLixiCommand, UnarchiveLixiCommand, WithdrawLixiCommand
 } from '@bcpros/lixi-models/lib/lixi';
 import { fromSmallestDenomination } from '@utils/cashMethods';
 import { RenameLixiModalProps } from './RenameLixiModal';
@@ -96,7 +96,7 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
   const subLixiById = allSubLixies.filter(item => item.parentId == lixi.id);
 
   let options = ['Withdraw', 'Rename'];
-  lixi.status === 'active' ? options.unshift('Lock') : options.unshift('Unlock');
+  lixi.status === 'active' ? options.unshift('Archive') : options.unshift('Unarchive');
 
   const postLixiData = {
     id: lixi.id,
@@ -129,10 +129,10 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
   const handleClickMenu = (e) => {
     e.domEvent.stopPropagation();
     switch (e.key) {
-      case 'Lock':
-        return dispatch(lockLixi(postLixiData as LockLixiCommand));
-      case 'Unlock':
-        return dispatch(unlockLixi(postLixiData as UnlockLixiCommand));
+      case 'Archive':
+        return dispatch(archiveLixi(postLixiData as ArchiveLixiCommand));
+      case 'Unarchive':
+        return dispatch(unarchiveLixi(postLixiData as UnarchiveLixiCommand));
       case 'Withdraw':
         return dispatch(withdrawLixi(postLixiData as WithdrawLixiCommand));
       case 'Rename':

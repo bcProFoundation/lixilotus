@@ -1,5 +1,5 @@
 import { ExportLixiCommand, LixiDto, PaginationResult } from "@bcpros/lixi-models";
-import { CreateLixiCommand, LockLixiCommand, UnlockLixiCommand, WithdrawLixiCommand, RenameLixiCommand, Lixi, PostLixiResponseDto } from "@bcpros/lixi-models/lib/lixi";
+import { CreateLixiCommand, ArchiveLixiCommand, UnarchiveLixiCommand, WithdrawLixiCommand, RenameLixiCommand, Lixi, PostLixiResponseDto } from "@bcpros/lixi-models/lib/lixi";
 import axiosClient from "@utils/axiosClient";
 
 const lixiApi = {
@@ -75,8 +75,8 @@ const lixiApi = {
         throw response.data;
       });
   },
-  lockLixi(id: number, data: LockLixiCommand) {
-    const url = `/api/lixies/${id}/lock`;
+  archiveLixi(id: number, data: ArchiveLixiCommand) {
+    const url = `/api/lixies/${id}/archive`;
     return axiosClient.post(url, data)
       .then(response => {
         return response.data as LixiDto;
@@ -86,8 +86,8 @@ const lixiApi = {
         throw response.data;
       });
   },
-  unlockLixi(id: number, command: UnlockLixiCommand) {
-    const url = `/api/lixies/${id}/unlock`;
+  unarchiveLixi(id: number, command: UnarchiveLixiCommand) {
+    const url = `/api/lixies/${id}/unarchive`;
     return axiosClient.post(url, command)
       .then(response => {
         return response.data as LixiDto;
