@@ -19,6 +19,39 @@ const notificationApi = {
         const { response } = err;
         throw response.data;
       });
+  },
+  deleteNofificationById(mnemonicHash?: string, notificationId?: number): Promise<any> {
+    const url = `/api/notifications/${notificationId}`;
+    const config = mnemonicHash ? {
+      headers: {
+        'Mnemonic-Hash': mnemonicHash
+      }
+    } : {};
+
+    return axiosClient.delete(url,config)
+      .then(response => {
+      })
+      .catch(err => {
+        const { response } = err;
+        throw response.data;
+      });
+  },
+  readByNotificationId(mnemonicHash?: string, notificationId?: number): Promise<Notification> {
+    const url = `/api/notifications/${notificationId}`;
+    const config = mnemonicHash ? {
+      headers: {
+        'Mnemonic-Hash': mnemonicHash
+      }
+    } : {};
+
+    return axiosClient.patch(url,config)
+      .then(response => {
+        return response.data as Notification;
+      })
+      .catch(err => {
+        const { response } = err;
+        throw response.data;
+      });
   }
 };
 

@@ -1,12 +1,12 @@
 import { AccountDto as Account, NotificationDto as Notification } from '@bcpros/lixi-models';
 import { all, call, cancelled, fork, put, select, take, takeLatest } from '@redux-saga/core/effects';
-import intl from 'react-intl-universal';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { getSelectedAccount } from '@store/account/selectors';
 import { eventChannel } from 'redux-saga';
 import { delay, race } from 'redux-saga/effects';
 import io, { Socket } from 'socket.io-client';
 import { hideLoading, showLoading } from '../loading/actions';
+import { showToast } from '../toast/actions';
 import {
   channelOff,
   channelOn,
@@ -17,9 +17,16 @@ import {
   serverOff,
   serverOn,
   startChannel,
-  stopChannel
+  stopChannel,
+  deleteNotification,
+  deleteNotificationSuccess,
+  deleteNotificationFailure,
+  readNotification,
+  readNotificationSuccess,
+  readNotificationFailure
 } from './actions';
 import notificationApi from './api';
+import intl from 'react-intl-universal';
 
 let socket: Socket;
 const baseUrl = process.env.NEXT_PUBLIC_LIXI_API ? process.env.NEXT_PUBLIC_LIXI_API : 'https://lixilotus.com/';
@@ -49,9 +56,66 @@ function* fetchNotificationsSaga(action: PayloadAction<{ accountId: number; mnem
     const notifications: Notification[] = yield call(notificationApi.getByAccountId, accountId, mnemonichHash);
     yield put(fetchNotificationsSuccess(notifications));
   } catch (err) {
-    const message = (err as Error).message ?? intl.get('claim.unableClaim');
+    const message = (err as Error).message ?? intl.get('notification.unableToFetch');
     yield put(fetchNotificationsFailure(message));
   }
+}
+
+function* deleteNotificationSaga(action: PayloadAction<{ mnemonichHash; notificationId }>) {
+  try {
+    yield put(showLoading(deleteNotification.type));
+    const { mnemonichHash, notificationId } = action.payload;
+    yield call(notificationApi.deleteNofificationById, mnemonichHash, notificationId);
+    yield put(deleteNotificationSuccess(notificationId));
+  } catch (err) {
+    const message = (err as Error).message ?? intl.get('notification.unableToDelete');
+    yield put(deleteNotificationFailure(message));
+  }
+}
+
+function* deleteNotificationSuccessSaga(action: PayloadAction<any>) {
+  yield put(hideLoading(deleteNotification.type));
+}
+
+function* deleteNotificationFailureSaga(action: PayloadAction<any>) {
+  const message = action.payload ?? intl.get('notification.unableToDelete');
+  yield put(
+    showToast('error', {
+      message: 'Error',
+      description: message,
+      duration: 5
+    })
+  );
+  yield put(hideLoading(deleteNotification.type));
+}
+
+function* readNotificationSaga(action: PayloadAction<{ mnemonichHash; notificationId }>) {
+  try {
+    yield put(showLoading(readNotification.type));
+    const { mnemonichHash, notificationId } = action.payload;
+    const data = yield call(notificationApi.readByNotificationId, mnemonichHash, notificationId);
+    const notification = data as Notification;
+    yield put(readNotificationSuccess(notification));
+  } catch (err) {
+    const message = (err as Error).message ?? intl.get('notification.unableToRead');
+    yield put(readNotificationFailure(message));
+  }
+}
+
+function* readNotificationSuccessSaga(action: PayloadAction<Notification>) {
+  yield put(hideLoading(readNotification.type));
+}
+
+function* readNotificationFailureSaga(action: PayloadAction<Notification>) {
+  const message = action.payload ?? intl.get('notification.unableToRead');
+  yield put(
+    showToast('error', {
+      message: 'Error',
+      description: message,
+      duration: 5
+    })
+  );
+  yield put(hideLoading(readNotification.type));
 }
 
 function* fetchNotificationsSuccessSaga(action: PayloadAction<Notification[]>) {
@@ -72,6 +136,30 @@ function* watchFetchNotificationsSuccess() {
 
 function* watchFetchNotificationsFailure() {
   yield takeLatest(fetchNotificationsFailure.type, fetchNotificationsFailureSaga);
+}
+
+function* watchDeleteNotification() {
+  yield takeLatest(deleteNotification.type, deleteNotificationSaga);
+}
+
+function* watchDeleteNotificationSuccess() {
+  yield takeLatest(deleteNotificationSuccess.type, deleteNotificationSuccessSaga);
+}
+
+function* watchDeleteNotificationFailure() {
+  yield takeLatest(deleteNotificationFailure.type, deleteNotificationFailureSaga);
+}
+
+function* watchReadNotification() {
+  yield takeLatest(readNotification.type, readNotificationSaga);
+}
+
+function* watchReadNotificationSuccess() {
+  yield takeLatest(readNotificationSuccess.type, readNotificationSuccessSaga);
+}
+
+function* watchReadNotificationFailure() {
+  yield takeLatest(readNotificationFailure.type, readNotificationFailureSaga);
 }
 
 function connect(): Promise<Socket> {
@@ -178,14 +266,26 @@ export default function* notificationSaga() {
     yield all([
       fork(watchFetchNotifications),
       fork(watchFetchNotificationsSuccess),
-      fork(watchFetchNotificationsFailure)
+      fork(watchFetchNotificationsFailure),
+      fork(watchDeleteNotification),
+      fork(watchDeleteNotificationSuccess),
+      fork(watchDeleteNotificationFailure),
+      fork(watchReadNotification),
+      fork(watchReadNotificationSuccess),
+      fork(watchReadNotificationFailure)
     ]);
   } else {
     yield all([
       fork(startStopChannel),
       fork(watchFetchNotifications),
       fork(watchFetchNotificationsSuccess),
-      fork(watchFetchNotificationsFailure)
+      fork(watchFetchNotificationsFailure),
+      fork(watchDeleteNotification),
+      fork(watchDeleteNotificationSuccess),
+      fork(watchDeleteNotificationFailure),
+      fork(watchReadNotification),
+      fork(watchReadNotificationSuccess),
+      fork(watchReadNotificationFailure)
     ]);
   }
 }

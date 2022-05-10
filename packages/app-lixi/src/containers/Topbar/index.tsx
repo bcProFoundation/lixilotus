@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { BellTwoTone, MenuOutlined } from "@ant-design/icons"
-import { Space, Menu, Popover, Badge } from "antd";
+import { BellTwoTone, MenuOutlined, CloseCircleOutlined } from "@ant-design/icons"
+import { Space, Menu, Popover, Badge, Comment } from "antd";
 import { useAppDispatch, useAppSelector } from "@store/hooks";
 import { toggleCollapsedSideNav } from "@store/settings/actions";
 import { getNavCollapsed } from "@store/settings/selectors";
@@ -9,9 +9,12 @@ import styled from 'styled-components';
 import { getSelectedAccount } from "@store/account/selectors";
 import { fetchNotifications, startChannel, stopChannel } from "@store/notification/actions";
 import { getAllNotifications } from "@store/notification/selectors";
-import { NotificationDto as Notification } from "@bcpros/lixi-models";
+import { Account, NotificationDto as Notification } from "@bcpros/lixi-models";
 import { connect } from "socket.io-client";
-
+import SwipeToDelete from 'react-swipe-to-delete-ios'
+import moment from 'moment';
+import { isMobile } from "react-device-detect";
+import { deleteNotification, readNotification } from "@store/notification/actions";
 
 export type TopbarProps = {
   className?: string,
@@ -29,30 +32,133 @@ const StyledBell = styled(BellTwoTone)`
   cursor: pointer;
 `;
 
-const NotificationMenu = (notifications: Notification[]) => {
-  return notifications && notifications.length > 0 ?
-    (
-      <Menu style={{ color: "black", border: "none" }}>
-        {notifications.map(item => <Menu.Item key={item.id}>{item.message}</Menu.Item>)}
-      </Menu>
-    ) : <></>
+const StyledComment = styled(Comment)`
+  border-radius: 5px;
+  border-bottom: 1px solid #e8e8e8;
+  padding: 5px;
+
+  &:hover {
+    background-color: #eceff5;
+  }
+
+  .ant-comment-inner {
+    padding: 0px;
+    color: black;
+  }
+`;
+
+const StyledAuthor = styled.div`
+  font-size: 14px;
+  color: black;
+  display: inline-block;
+  width: 310px;
+
+  &:hover {
+    color: black;
+  }
+
+  @media (max-width: 568px) {
+    width:250px
+  }
+`
+
+const StyledTextLeft = styled.span`
+  float: left;
+  font-size: 16px;
+  font-weight: bold;
+`
+
+const StyledTextRight = styled.span`
+  float: right;
+  font-size: 10px;
+  font-style: italic;
+`
+
+
+
+const NotificationMenu = (notifications: Notification[], account: Account) => {
+  const dispatch = useAppDispatch();
+
+  const handleDelete = (account: Account, notificationId: string) => {
+    dispatch(deleteNotification({mnemonichHash: account.mnemonicHash, notificationId}));
+  }
+
+  const handleRead = (account: Account, notificationId: string) => {
+     dispatch(readNotification({mnemonichHash: account.mnemonicHash, notificationId}));
+  }
+  
+  return notifications && notifications.length > 0 && (
+    <> 
+      {notifications.map(notification => (
+        <>
+          {isMobile ? (
+            <div onClick={()=>handleRead(account, notification.id)}>
+              <SwipeToDelete
+                key={notification.id}
+                onDelete={()=>handleDelete(account, notification.id)}
+                deleteColor="#6f2dbd"
+                style={{borderRadius:"10px"}}
+              >
+                <StyledComment
+                  key={notification.id}
+                  style={{backgroundColor: notification.readAt == null ? "#eceff5" : "#fff"}}
+                  author={
+                    <StyledAuthor >
+                      <StyledTextLeft></StyledTextLeft>
+                      <StyledTextRight >{moment(notification.createdAt).local().format("MMMM Do YYYY, h:mm a")}</StyledTextRight>
+                    </StyledAuthor>
+                  }
+                  content={
+                    <div style={{fontWeight: notification.readAt == null && "bold" }}>{notification.message}</div>
+                  }
+              /> 
+              </SwipeToDelete>
+            </div>
+          ) : (
+            <StyledComment
+              key={notification.id}
+              style={{borderRadius:"10px", backgroundColor: notification.readAt == null ? "#eceff5" : "#fff" , marginBottom:"5px"}}
+              author={
+                <StyledAuthor >
+                  <StyledTextLeft></StyledTextLeft>
+                  <StyledTextRight >{moment(notification.createdAt).local().format("MMMM Do YYYY, h:mm a")}</StyledTextRight>
+                </StyledAuthor>
+              }
+              content={
+                <Space>
+                  <div 
+                    style={{fontWeight: notification.readAt == null && "bold", cursor:"pointer" }}
+                    onClick={()=>handleRead(account, notification.id)}
+                  >
+                    {notification.message}
+                  </div>
+                  <CloseCircleOutlined onClick={()=>handleDelete(account, notification.id)}/>
+                </Space>       
+              }
+            />
+          )}
+        </>
+      ))}
+    </>
+  )
 }
 
 const StyledPopover = styled(Popover)`
   .ant-popover {
-    width: 200px;
+    width: 350px;
     position: relative;
     top: 40px !important;
-    left: -165px !important;
+    left: -315px !important;
 
     @media (max-width: 768px) {
       top: 40px !important;
-      left: -165px !important;
+      left: -315px !important;
     }
 
     @media (max-width: 576px) {
       top: 40px !important;
-      left: -165px !important;
+      left: -265px !important;
+      width: 350px;
     }
   }
 
@@ -61,24 +167,38 @@ const StyledPopover = styled(Popover)`
     color: #fff;
     border: none;
     background:  ${props => props.theme.primary};
+    border-radius: 5px 5px 0px 0px;
   }
 
+   @media (max-width: 576px) {
+    .ant-popover-arrow {
+      right: 65px ;
+    }
+  }
+  
   .ant-popover-arrow > .ant-popover-arrow-content::before {
     background: ${props => props.theme.primary};
   }
 
-  .ant-popover-inner-content {
-    padding: 0 !important;
-    border: 2px solid ${props => props.theme.primary} !important;
+  .ant-popover-inner {
+    background: #fff;
+    border-radius: 0px 0px 5px 5px;
   }
 
+  .ant-popover-inner-content {
+    padding: 10px !important;
+    height: 300px !important;
+    overflow: auto;
+    
+    #delete {
+      border-radius: 8px;
+    }
+  }
 `
-
 
 const Topbar = ({
   className
 }: TopbarProps) => {
-
   const dispatch = useAppDispatch();
   const navCollapsed = useAppSelector(getNavCollapsed);
   const selectedAccount = useAppSelector(getSelectedAccount);
@@ -109,7 +229,7 @@ const Topbar = ({
       <MenuOutlined style={{ fontSize: '32px' }} onClick={handleMenuClick} />
       <img src='/images/lixilotus-logo.png' alt='lixilotus' />
       <Space direction="horizontal" size={25} >
-        <StyledPopover content={NotificationMenu(notifications)} placement="bottomRight"
+        <StyledPopover content={NotificationMenu(notifications, selectedAccount)} placement="bottomRight"
           getPopupContainer={(trigger) => trigger} trigger={notifications.length != 0 ? "click": ""} title="Notifications">
           <Badge count={notifications.length} overflowCount={9} offset={[notifications.length < 10 ? 0 : 5, 25]} color="#6f2dbd">
             <StyledBell twoToneColor="#6f2dbd" />

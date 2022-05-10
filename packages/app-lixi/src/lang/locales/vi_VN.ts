@@ -9,6 +9,7 @@ Table of Contents
 05.Settings
 06.Countries
 07.Onboarding
+08.Notification
 */
 
 export default {
@@ -210,5 +211,10 @@ export default {
   /* 08.Envelope */
   'envelope.unableGetEnvelope': 'Không thể tải phong bì từ máy chủ',
   'envelope.pleaseSelectEnvelope': 'Hãy chọn 1 phong bì bạn thích',
-  'envelope.couldNotFetch': 'Không thể làm mới phong bì.'
+  'envelope.couldNotFetch': 'Không thể làm mới phong bì.',
+
+  /* 09.Notification */
+  'notification.unableToFetch': 'Không thể tải thông báo.',
+  'notification.unableToDelete': 'Không thể xóa thông báo.',
+  'notification.unableToRead': 'Không thể đọc thông báo.',
 };

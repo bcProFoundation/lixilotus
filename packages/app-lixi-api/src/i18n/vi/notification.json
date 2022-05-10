@@ -1,0 +1,7 @@
+{
+  "messages": {
+    "noPermission": "Không có quyền nhận thông báo",
+    "unableGetNotification": "Không thể nhận danh sách thông báo của tài khoản.",
+    "noDeletePermisson": "Không có quyền xóa thông báo"
+  }
+}
