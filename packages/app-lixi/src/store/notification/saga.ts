@@ -26,6 +26,7 @@ import {
   readNotificationFailure
 } from './actions';
 import notificationApi from './api';
+import intl from 'react-intl-universal';
 
 let socket: Socket;
 const baseUrl = process.env.NEXT_PUBLIC_LIXI_API ? process.env.NEXT_PUBLIC_LIXI_API : 'https://lixilotus.com/';
@@ -55,7 +56,7 @@ function* fetchNotificationsSaga(action: PayloadAction<{ accountId: number; mnem
     const notifications: Notification[] = yield call(notificationApi.getByAccountId, accountId, mnemonichHash);
     yield put(fetchNotificationsSuccess(notifications));
   } catch (err) {
-    const message = (err as Error).message ?? `Unable to fetch.`;
+    const message = (err as Error).message ?? intl.get('notification.unableToFetch');
     yield put(fetchNotificationsFailure(message));
   }
 }
@@ -67,7 +68,7 @@ function* deleteNotificationSaga(action: PayloadAction<{ mnemonichHash; notifica
     yield call(notificationApi.deleteNofificationById, mnemonichHash, notificationId);
     yield put(deleteNotificationSuccess(notificationId));
   } catch (err) {
-    const message = (err as Error).message ?? `Unable to delete.`;
+    const message = (err as Error).message ?? intl.get('notification.unableToDelete');
     yield put(deleteNotificationFailure(message));
   }
 }
@@ -77,7 +78,7 @@ function* deleteNotificationSuccessSaga(action: PayloadAction<any>) {
 }
 
 function* deleteNotificationFailureSaga(action: PayloadAction<any>) {
-  const message = action.payload ?? 'Unable to delete the notification.';
+  const message = action.payload ?? intl.get('notification.unableToDelete');
   yield put(
     showToast('error', {
       message: 'Error',
@@ -96,7 +97,7 @@ function* readNotificationSaga(action: PayloadAction<{ mnemonichHash; notificati
     const notification = data as Notification;
     yield put(readNotificationSuccess(notification));
   } catch (err) {
-    const message = (err as Error).message ?? `Unable to read.`;
+    const message = (err as Error).message ?? intl.get('notification.unableToRead');
     yield put(readNotificationFailure(message));
   }
 }
@@ -106,7 +107,7 @@ function* readNotificationSuccessSaga(action: PayloadAction<Notification>) {
 }
 
 function* readNotificationFailureSaga(action: PayloadAction<Notification>) {
-  const message = action.payload ?? 'Unable to read the notification.';
+  const message = action.payload ?? intl.get('notification.unableToRead');
   yield put(
     showToast('error', {
       message: 'Error',
