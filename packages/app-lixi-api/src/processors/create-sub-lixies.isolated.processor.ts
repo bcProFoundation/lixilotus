@@ -1,18 +1,13 @@
 import { CreateLixiCommand, fromSmallestDenomination, Lixi, LixiType } from '@bcpros/lixi-models';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
-import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
-import { Inject, Injectable } from '@nestjs/common';
+import { OnWorkerEvent, Processor, WorkerHost } from "@nestjs/bullmq";
+import { Inject, Injectable } from "@nestjs/common";
 import { Lixi as LixiDb, PrismaClient } from '@prisma/client';
-import { Job } from 'bullmq';
+import { Job } from "bullmq";
 import * as _ from 'lodash';
 import logger from 'src/logger';
-import {
-  CreateSubLixiesChunkJobData,
-  CreateSubLixiesJobData,
-  CreateSubLixiesJobResult,
-  MapEncryptedClaimCode
-} from 'src/models/lixi.models';
+import { CreateSubLixiesChunkJobData, CreateSubLixiesJobData, CreateSubLixiesJobResult, MapEncryptedClaimCode } from "src/models/lixi.models";
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { WalletService } from 'src/services/wallet.service';
 import { aesGcmEncrypt, generateRandomBase58Str, numberToBase58 } from 'src/utils/encryptionMethods';
@@ -21,19 +16,21 @@ import config from 'config';
 import SlpWallet from '@bcpros/minimal-xpi-slp-wallet';
 import { LIXI_JOB_NAMES } from 'src/constants/lixi.constants';
 
-const xpiRestUrl = config.has('xpiRestUrl') ? config.get('xpiRestUrl') : 'https://api.sendlotus.com/v4/';
+
+const xpiRestUrl = config.has('xpiRestUrl')
+  ? config.get('xpiRestUrl')
+  : 'https://api.sendlotus.com/v4/';
 const prisma = new PrismaClient();
 const xpiWallet = new SlpWallet('', {
   restURL: xpiRestUrl,
-  hdPath: "m/44'/10605'/0'/0/0"
+  hdPath: "m/44'/10605'/0'/0/0",
 });
 
 const XPI = xpiWallet.bchjs;
 const walletService = new WalletService(xpiWallet, XPI);
 
-export default async function (
-  job: Job<CreateSubLixiesJobData, boolean, string>
-): Promise<CreateSubLixiesJobResult | boolean> {
+export default async function (job: Job<CreateSubLixiesJobData, boolean, string>): Promise<CreateSubLixiesJobResult | boolean> {
+
   return new Promise((resolve, reject) => {
     if (job.name === LIXI_JOB_NAMES.CREATE_SUB_LIXIES_CHUNK) {
       const result = processCreateSubLixiesChunk(job);
@@ -48,10 +45,11 @@ export default async function (
       senderId: command.accountId,
       recipientId: command.accountId
     } as CreateSubLixiesJobResult);
-  });
+  })
 }
 
 export async function processCreateSubLixiesChunk(job: Job): Promise<boolean> {
+
   const jobData = job.data as CreateSubLixiesChunkJobData;
   const {
     numberOfSubLixiInChunk,
@@ -72,31 +70,19 @@ export async function processCreateSubLixiesChunk(job: Job): Promise<boolean> {
   // Prepare array to hold the result
   let resultSubLixies: Lixi[] = [];
 
-  const subLixiesToInsert: LixiDb[] = await prepareSubLixiChunkToInsert(
-    numberOfSubLixiInChunk,
-    startDerivationIndexForChunk,
-    xpiAllowance,
-    parentId,
-    command,
-    mapEncryptedClaimCode,
-    temporaryFeeCalc,
-    accountSecret
-  );
+  const subLixiesToInsert: LixiDb[] = await prepareSubLixiChunkToInsert(numberOfSubLixiInChunk, startDerivationIndexForChunk, xpiAllowance, parentId, command, mapEncryptedClaimCode, temporaryFeeCalc, accountSecret);
 
   // Preparing receive address and amount
-  const receivingSubLixies = _.filter(
-    subLixiesToInsert.map(item => {
-      return {
-        address: item.address,
-        amountXpi: item.amount
-      };
-    }),
-    item => item.amountXpi !== 0
-  );
+  const receivingSubLixies = _.filter(subLixiesToInsert.map(item => {
+    return ({
+      address: item.address,
+      amountXpi: item.amount
+    })
+  }), item => item.amountXpi !== 0);
 
   // Save the lixi into the database
   try {
-    const savedLixies = await prisma.$transaction(async prisma => {
+    const savedLixies = await prisma.$transaction(async (prisma) => {
       const createdLixies = prisma.lixi.createMany({ data: subLixiesToInsert });
       if (receivingSubLixies.length > 0) {
         await walletService.sendAmount(fundingAddress, receivingSubLixies, keyPair);
@@ -105,23 +91,21 @@ export async function processCreateSubLixiesChunk(job: Job): Promise<boolean> {
     });
 
     _.map(savedLixies, (item: LixiDb) => {
+
       // Calculate the claim code of the sub lixi
       const encodedId = numberToBase58(item.id);
       const claimPart = mapEncryptedClaimCode[item.encryptedClaimCode];
       const claimCode = claimPart + encodedId;
 
-      const subLixi = _.omit(
-        {
-          ...item,
-          claimCode: claimCode,
-          balance: 0,
-          totalClaim: Number(item.totalClaim),
-          expiryAt: item.expiryAt ? item.expiryAt : undefined,
-          activationAt: item.activationAt ? item.expiryAt : undefined,
-          country: item.country ? item.country : undefined
-        },
-        'encryptedXPriv'
-      ) as Lixi;
+      const subLixi = _.omit({
+        ...item,
+        claimCode: claimCode,
+        balance: 0,
+        totalClaim: Number(item.totalClaim),
+        expiryAt: item.expiryAt ? item.expiryAt : undefined,
+        activationAt: item.activationAt ? item.expiryAt : undefined,
+        country: item.country ? item.country : undefined,
+      }, 'encryptedXPriv') as Lixi;
 
       resultSubLixies.push(subLixi);
     });
@@ -135,6 +119,7 @@ export async function processCreateSubLixiesChunk(job: Job): Promise<boolean> {
     throw new VError(err as Error, 'Unable to process job processCreateSubLixiesChunk');
   }
 }
+
 
 /**
  * Prepare the model of a chunk of sub lixi to insert into the database
@@ -157,6 +142,7 @@ async function prepareSubLixiChunkToInsert(
   temporaryFeeCalc: number,
   accountSecret: string
 ): Promise<LixiDb[]> {
+
   // If users input the amount means that the lixi need to be prefund
   const isPrefund = !!command.amount;
 
@@ -175,7 +161,7 @@ async function prepareSubLixiChunkToInsert(
       if (command.lixiType == LixiType.Random) {
         const maxXpi = xpiAllowance < command.maxValue ? xpiAllowance : command.maxValue;
         const minXpi = command.minValue;
-        const xpiRandom = Math.random() * (maxXpi - minXpi) + maxXpi;
+        const xpiRandom = (Math.random() * (maxXpi - minXpi) + maxXpi);
         xpiToSend = xpiRandom + fromSmallestDenomination(temporaryFeeCalc);
         xpiAllowance -= xpiRandom;
       } else if (command.lixiType == LixiType.Equal) {
@@ -183,15 +169,9 @@ async function prepareSubLixiChunkToInsert(
       }
     }
 
-    const subLixiToInsert: LixiDb = await prepareSubLixiToInsert(
-      derivationIndex,
-      xpiToSend,
-      parentId,
-      command,
-      mapEncryptedClaimCode,
-      accountSecret
-    );
+    const subLixiToInsert: LixiDb = await prepareSubLixiToInsert(derivationIndex, xpiToSend, parentId, command, mapEncryptedClaimCode, accountSecret);
     subLixiesToInsert.push(subLixiToInsert);
+
   }
 
   return subLixiesToInsert;
@@ -207,13 +187,12 @@ async function prepareSubLixiChunkToInsert(
  * @returns {LixiDb} The Prisma model used to insert into the database
  */
 async function prepareSubLixiToInsert(
-  derivationIndex: number,
-  xpiToSend: number,
-  parentId: number,
-  command: CreateLixiCommand,
+  derivationIndex: number, xpiToSend: number,
+  parentId: number, command: CreateLixiCommand,
   mapEncryptedClaimCode: MapEncryptedClaimCode,
   accountSecret: string
 ): Promise<LixiDb> {
+
   // Generate the random password to encrypt the key
   const password = generateRandomBase58Str(8);
 
@@ -241,7 +220,7 @@ async function prepareSubLixiToInsert(
     envelopeId: command.envelopeId ?? null,
     envelopeMessage: command.envelopeMessage ?? '',
     parentId: parentId,
-    createdAt: new Date()
+    createdAt: new Date(),
   } as unknown as LixiDb;
 
   return dataSubLixi;

@@ -1,6 +1,0 @@
-{
-  "messages": {
-    "envelopeNotExist": "The envelope does not exist in the database.",
-    "unableGetEnvelope": "Unable to get the envelope."
-  }
-}

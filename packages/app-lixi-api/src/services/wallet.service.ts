@@ -8,11 +8,14 @@ import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
 import HDNode from '@bcpros/xpi-js/types/hdnode';
 import { Inject, Injectable } from '@nestjs/common';
-import { I18n, I18nContext } from 'nestjs-i18n';
 
 @Injectable()
 export class WalletService {
-  constructor(@Inject('xpiWallet') private xpiWallet: MinimalBCHWallet, @Inject('xpijs') private xpijs: BCHJS) {}
+  constructor(
+    @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
+    @Inject('xpijs') private xpijs: BCHJS
+  ) {
+  }
 
   async getBalance(address: string) {
     return this.xpiWallet.getBalance(address);
@@ -26,7 +29,7 @@ export class WalletService {
     const vaultAddress: string = this.xpijs.HDNode.toXAddress(childNode);
     const keyPair = this.xpijs.HDNode.toKeyPair(childNode);
     const balance = await this.getBalance(vaultAddress);
-    return { keyPair, balance };
+    return { keyPair, balance }
   }
 
   async deriveAddress(mnemonic: string, vaultIndex: number) {
@@ -47,11 +50,19 @@ export class WalletService {
     };
   }
 
-  async calcFee(XPI: BCHJS, utxos: any, p2pkhOutputNumber = 2, satoshisPerByte = 2.01) {
-    const byteCount = XPI.BitcoinCash.getByteCount({ P2PKH: utxos.length }, { P2PKH: p2pkhOutputNumber });
+  async calcFee(
+    XPI: BCHJS,
+    utxos: any,
+    p2pkhOutputNumber = 2,
+    satoshisPerByte = 2.01,
+  ) {
+    const byteCount = XPI.BitcoinCash.getByteCount(
+      { P2PKH: utxos.length },
+      { P2PKH: p2pkhOutputNumber },
+    );
     const txFee = Math.ceil(satoshisPerByte * byteCount);
     return txFee;
-  }
+  };
 
   async onMax(address: string) {
     const balance = await this.getBalance(address);
@@ -61,35 +72,25 @@ export class WalletService {
 
     const txFeeSats = await this.calcFee(this.xpijs, (utxoStore as any).bchUtxos);
 
-    const value = balance - txFeeSats >= 0 ? balance - txFeeSats : '0';
+    const value = (balance - txFeeSats >= 0) ? (balance - txFeeSats) : '0';
     return fromSmallestDenomination(Number(value));
-  }
+  };
 
-  async sendAmount(
-    sourceAddress: string,
-    destination: { address: string; amountXpi: number }[],
-    inputKeyPair: any,
-    i18n?: I18nContext
-  ) {
+  async sendAmount(sourceAddress: string, destination: { address: string, amountXpi: number }[], inputKeyPair: any) {
+
     const sourceBalance: number = await this.xpiWallet.getBalance(sourceAddress);
     if (sourceBalance === 0) {
-      if (i18n === undefined) throw new VError('Insufficient Fund');
-
-      const insufficientFund = await i18n.t('claim.messages.insufficientFund');
-      throw new VError(insufficientFund);
+      throw new VError('Insufficient fund.');
     }
 
-    let outputs: { address: string; amountSat: number }[] = [];
+    let outputs: { address: string, amountSat: number }[] = [];
 
     for (let i = 0; i < _.size(destination); i++) {
-      const item = destination[i];
+      const item = destination[i]
       let satoshisToSend = toSmallestDenomination(new BigNumber(item.amountXpi));
 
       if (satoshisToSend.lt(currency.dustSats)) {
-        if (i18n === undefined) throw new VError('The send amount is smaller than dust');
-
-        const sendAmountSmallerThanDust = await i18n.t('account.messages.sendAmountSmallerThanDust');
-        throw new VError(sendAmountSmallerThanDust);
+        throw new VError('The send amount is smaller than dust.');
       }
 
       const amountSats = Math.floor(satoshisToSend.toNumber());
@@ -118,7 +119,7 @@ export class WalletService {
 
     // Add inputs
     necessaryUtxos.forEach((utxo: any) => {
-      transactionBuilder.addInput(utxo.tx_hash, utxo.tx_pos);
+      transactionBuilder.addInput(utxo.tx_hash, utxo.tx_pos)
     });
 
     // Add outputs
@@ -132,9 +133,15 @@ export class WalletService {
 
     // Sign each UTXO that is about to be spent.
     necessaryUtxos.forEach((utxo, i) => {
-      let redeemScript;
+      let redeemScript
 
-      transactionBuilder.sign(i, inputKeyPair, redeemScript, transactionBuilder.hashTypes.SIGHASH_ALL, utxo.value);
+      transactionBuilder.sign(
+        i,
+        inputKeyPair,
+        redeemScript,
+        transactionBuilder.hashTypes.SIGHASH_ALL,
+        utxo.value
+      )
     });
 
     const tx = transactionBuilder.build();
@@ -144,13 +151,11 @@ export class WalletService {
       // Broadcast the transaction to the network.
       await this.xpijs.RawTransactions.sendRawTransaction(hex);
       // const txid = await xpiWallet.send(outputs);
-    } catch (err) {
-      if (i18n === undefined) throw new VError('Unable to send transaction');
-
-      const unableSendTransaction = await i18n.t('claim.messages.unableSendTransaction');
-      throw new VError(unableSendTransaction);
     }
-  }
+    catch (err) {
+      throw new VError(err as Error, 'Unable to send transaction');
+    }
+  };
 
   async validateMnemonic(mnemonic: string, wordlist = this.xpijs.Mnemonic.wordLists().english) {
     let mnemonicTestOutput;
@@ -167,5 +172,5 @@ export class WalletService {
       logger.error(err);
       return false;
     }
-  }
+  };
 }

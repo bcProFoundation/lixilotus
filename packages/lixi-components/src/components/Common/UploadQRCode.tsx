@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Upload, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
-import { BrowserQRCodeReader } from '@zxing/browser';
+import { BrowserQRCodeReader } from '@zxing/library';
 
 import {
   isValidLotusPrefix
@@ -60,8 +60,8 @@ const UploadQRCode = (props: UploadQRCodeProps) => {
 
   const teardownCodeReader = codeReader => {
     if (codeReader !== null) {
-      codeReader.reset && codeReader.reset();
-      codeReader.stop && codeReader.stop();
+      codeReader.reset();
+      codeReader.stop();
       codeReader = null;
       setActiveCodeReader(codeReader);
     }
@@ -70,6 +70,7 @@ const UploadQRCode = (props: UploadQRCodeProps) => {
   const parseAddressContent = content => {
     let type = 'unknown';
     let values = {};
+    let value = content;
 
     // If what scanner reads from QR code begins with 'bitcoincash:' or 'simpleledger:' or their successor prefixes
     if (isValidLotusPrefix(content)) {
@@ -93,7 +94,7 @@ const UploadQRCode = (props: UploadQRCodeProps) => {
     setActiveCodeReader(codeReader);
 
     try {
-      const content = await codeReader.decodeFromImageUrl(imageUrl);
+      const content = await codeReader.decodeFromImage(undefined, imageUrl);
       let result = null;
 
       switch (codeType) {

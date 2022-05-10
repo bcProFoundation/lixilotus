@@ -124,7 +124,7 @@ const lixiApi = {
         const { response } = err;
         throw response.data;
       });
-  },
+  }
 };
 
 export default lixiApi;

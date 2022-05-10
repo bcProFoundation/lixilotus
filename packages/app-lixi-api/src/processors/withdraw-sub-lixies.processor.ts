@@ -1,26 +1,20 @@
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
-import {
-  OnQueueEvent,
-  OnWorkerEvent,
-  Processor,
-  QueueEventsHost,
-  QueueEventsListener,
-  WorkerHost
-} from '@nestjs/bullmq';
-import { Inject, Injectable } from '@nestjs/common';
+import { OnQueueEvent, OnWorkerEvent, Processor, QueueEventsHost, QueueEventsListener, WorkerHost } from "@nestjs/bullmq";
+import { Inject, Injectable } from "@nestjs/common";
 import { Lixi as LixiDb, prisma, PrismaClient } from '@prisma/client';
-import { Job } from 'bullmq';
+import { Job } from "bullmq";
 import * as _ from 'lodash';
 import { LIXI_JOB_NAMES, WITHDRAW_SUB_LIXIES_QUEUE } from 'src/constants/lixi.constants';
 import logger from 'src/logger';
-import { WithdrawSubLixiesJobData, WithdrawSubLixiesJobResult } from 'src/models/lixi.models';
+import { WithdrawSubLixiesJobData, WithdrawSubLixiesJobResult } from "src/models/lixi.models";
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { WalletService } from 'src/services/wallet.service';
 
 @Injectable()
 @Processor(WITHDRAW_SUB_LIXIES_QUEUE)
 export class WithdrawSubLixiesProcessor extends WorkerHost {
+
   constructor(
     private prisma: PrismaService,
     private walletService: WalletService,
@@ -39,7 +33,7 @@ export class WithdrawSubLixiesProcessor extends WorkerHost {
 
     const lixi = await this.prisma.lixi.findFirst({
       where: {
-        id: _.toSafeInteger(jobData.parentId)
+        id: _.toSafeInteger(jobData.parentId),
       }
     });
 
@@ -51,7 +45,7 @@ export class WithdrawSubLixiesProcessor extends WorkerHost {
 
     const subLixies = await this.prisma.lixi.findMany({
       where: {
-        parentId: _.toSafeInteger(jobData.parentId)
+        parentId: _.toSafeInteger(jobData.parentId),
       }
     });
 
@@ -92,7 +86,7 @@ export class WithdrawSubLixiesProcessor extends WorkerHost {
       jobName: job.name,
       mnemonicHash: account?.mnemonicHash,
       senderId: account?.id,
-      recipientId: account?.id
+      recipientId: account?.id,
     } as WithdrawSubLixiesJobResult;
   }
 }

@@ -1,5 +1,4 @@
 import { Select } from 'antd';
-import intl from 'react-intl-universal';
 
 import { Envelope } from '@bcpros/lixi-models';
 
@@ -11,6 +10,7 @@ export interface EnvelopeSelectDropdownProps {
 }
 
 const EnvelopeSelectDropdown = (props: EnvelopeSelectDropdownProps) => {
+
   const { envelopes, handleChangeEnvelope } = props;
 
   return (
@@ -20,7 +20,7 @@ const EnvelopeSelectDropdown = (props: EnvelopeSelectDropdownProps) => {
         width: '100%',
         alignItems: 'center'
       }}
-      placeholder={intl.get('claim.pleaseSelectEnvelope')}
+      placeholder="Please select your envelope"
       onSelect={(value, event) => handleChangeEnvelope(value, event)}
     >
       {envelopes.map(envelope => {
@@ -35,9 +35,11 @@ const EnvelopeSelectDropdown = (props: EnvelopeSelectDropdownProps) => {
             {envelope.name}
           </Option>
         );
+
       })}
+
     </Select>
   );
-};
+}
 
 export default EnvelopeSelectDropdown;

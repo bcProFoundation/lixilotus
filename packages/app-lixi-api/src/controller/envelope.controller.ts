@@ -3,49 +3,46 @@ import * as _ from 'lodash';
 import { Envelope } from '@bcpros/lixi-models';
 import { VError } from 'verror';
 import { PrismaService } from '../services/prisma/prisma.service';
-import { I18n, I18nContext } from 'nestjs-i18n';
 
 @Controller('envelopes')
 export class EnvelopeController {
-  constructor(private prisma: PrismaService) {}
+
+  constructor(private prisma: PrismaService) {
+  }
 
   @Get(':id')
-  async getEnvelope(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<Envelope> {
+  async getEnvelope(@Param('id') id: string): Promise<Envelope> {
     try {
       const envelope = await this.prisma.envelope.findUnique({
         where: {
           id: _.toSafeInteger(id)
         }
       });
-      if (!envelope) {
-        const envelopeNotExist = await i18n.t('claim.messages.envelopeNotExist');
-        throw new VError(envelopeNotExist);
-      }
+      if (!envelope)
+        throw new VError('The envelope does not exist in the database.');
 
       const result = {
-        ...envelope
+        ...envelope,
       } as Envelope;
       return result;
     } catch (err: unknown) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
-        const unableGetEnvelope = await i18n.t('claim.messages.unableGetEnvelope');
-        const error = new VError.WError(err as Error, unableGetEnvelope);
+        const error = new VError.WError(err as Error, 'Unable to get the envelope.');
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
   }
 
   @Get()
-  async getAll(@I18n() i18n: I18nContext): Promise<Envelope[]> {
+  async getAll(): Promise<Envelope[]> {
     try {
       const envelopes = await this.prisma.envelope.findMany();
       const result = envelopes as Envelope[];
       return result;
     } catch (err: unknown) {
-      const unableGetEnvelope = await i18n.t('claim.messages.unableGetEnvelope');
-      throw new HttpException(unableGetEnvelope, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException('Unable to get the envelopes.', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

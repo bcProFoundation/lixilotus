@@ -22,8 +22,7 @@ export default {
   'general.reEstablishing': 'Re-establishing connection...',
   'general.qrScannerError': 'Error in QR scanner:',
   'general.scanQRCode': 'Scan QR code',
-  'general.scanQRCodeError':
-    'Error in QR scanner. Please ensure your camera is not in use. Due to Apple restrictions on third-party browsers, you must use Safari browser for QR code scanning on an iPhone.',
+  'general.scanQRCodeError': 'Error in QR scanner. Please ensure your camera is not in use. Due to Apple restrictions on third-party browsers, you must use Safari browser for QR code scanning on an iPhone.',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
@@ -60,21 +59,6 @@ export default {
   'account.oneTimeCode': 'One-time codes',
   'account.familyFriendly': 'Family Friendly',
   'account.sub-lixi': 'Sub-lixi',
-  'account.couldNotFetchAccount': 'Could not fetch the account from api.',
-  'account.unableGetAccountFromServer': 'Unable to get the account from server',
-  'account.couldNotPostAccount': 'Could not post the account to the api.',
-  'account.createAccountSuccessful': 'Create account successfully.',
-  'account.unableToCreateServer': 'Unable to create account on the server.',
-  'account.couldNotInport': 'Could not import the account.',
-  'account.unableToImport': 'Unable to import the account.',
-  'account.unableToSelect': 'Unable to select the account.',
-  'account.unableToRename': 'Unable to rename the account.',
-  'account.unableToDelete': 'Unable to delete the account.',
-  'account.unableToRefresh': 'Unable to refresh lixi list.',
-  'account.renameFailed': 'Rename failed. All accounts must have a unique name.',
-  'account.deleteFailed': 'Delete failed. Could not delete the account.',
-  'account.accountRenamedSuccess': 'Account has renamed to {accountName}',
-  'account.accountDeleteSuccess': 'The account has been deleted successfully.',
 
   /* 03.Lixi */
   'lixi.sub-lixi': 'Sub-lixi',
@@ -119,32 +103,6 @@ export default {
   'lixi.renameLixi': 'Rename Lixi',
   'lixi.enterNewLixiName': 'Enter new lixi name',
   'lixi.lixiLengthError': 'Lixi name must be a string between 1 and 24 characters long',
-  'lixi.couldNotFetchLixi': 'Could not fetch the lixi from api.',
-  'lixi.unableGetLixi': 'Unable to get the lixi from server',
-  'lixi.unableGetChildLixi': 'Unable to get the children lixies from server',
-  'lixi.unableCreateLixi': 'Unable to create the lixi.',
-  'lixi.unableCreateChildLixi': 'Unable to create the children lixies from server',
-  'lixi.couldNotPostLixi': 'Could not post the lixi to the api.',
-  'lixi.createLixiSuccessful': 'Create lixi successfully.',
-  'lixi.errorWhenCreateLixi': "There's an error happens when create new lixi.",
-  'lixi.unableCreateLixiServer': 'Unable to create lixi on server',
-  'lixi.unableRefresh': 'Unable to refresh the lixi.',
-  'lixi.unableSelect': 'Unable to select the lixi.',
-  'lixi.unableUnlock': 'Unable to unlock the lixi.',
-  'lixi.unableLock': 'Unable to lock the lixi.',
-  'lixi.unableWithdraw': 'Unable to withdraw the lixi.',
-  'lixi.unableRename': 'Unable to rename the lixi.',
-  'lixi.unableWExportSub': 'Unable to export sub-lixies.',
-  'lixi.unableWExport': 'Unable to export the lixi.',
-  'lixi.errorWhenUnlock': "There's an error happens when create unlock lixi.",
-  'lixi.errorWhenLock': "There's an error happens when lock lixi.",
-  'lixi.errorWhenWithdraw': "There's an error happens when withdraw lixi.",
-  'lixi.refreshSuccess': 'Refresh the lixi successfully.',
-  'lixi.unlockSuccess': 'Unlock lixi successfully.',
-  'lixi.lockSuccess': 'Lock lixi successfully.',
-  'lixi.withdrawSuccess': 'Withdraw lixi successfully.',
-  'lixi.renameSuccess': 'Lixi has been renamed to {lixiName}',
-  'lixi.renameFailed': 'Rename failed. All lixi must have a unique name.',
 
   /* 04.Claim */
   'claim.claim': 'Claim',
@@ -155,12 +113,6 @@ export default {
   'claim.invalidAddress': 'Invalid {ticker} address',
   'claim.tickerAddress': '{ticker} Address',
   'claim.claimCode': 'Claim Code',
-  'claim.claimSuccess': 'Claim Success',
-  'claim.unableClaim': 'Unable to claim',
-  'claim.claimSuccessAmount': 'Claim successfully {xpiAmount} XPI',
-  'claim.claimCodeCopied': 'The claim code has been copied.',
-  'claim.unableDownloadClaimCode': 'Unable to download claim code.',
-  'claim.pleaseCopyManually': 'Please copy the code manually',
 
   /* 05.Settings */
   'settings.languages': 'Languages',
@@ -171,8 +123,7 @@ export default {
   'settings.activated': 'Activated',
   'settings.savedAccount': 'Saved accounts',
   'settings.revealPhrase': 'Click to reveal seed phrase',
-  'settings.backupAccountWarning':
-    'Your seed phrase is the only way to restore your account. Write it down. Keep it safe.',
+  'settings.backupAccountWarning': 'Your seed phrase is the only way to restore your account. Write it down. Keep it safe.',
   'settings.backupAccountHint': 'Copy and paste your mnemonic seed phrase below to import an existing account',
   'settings.accountLengthMessage': 'Account name must be a string between 1 and 24 characters long',
   'settings.enterAccountName': 'Enter new account name',
@@ -180,8 +131,8 @@ export default {
   'settings.deleteAccountConfirm': 'Type "delete {account}" to confirm',
   'settings.deleteAccountConfirmMessage': 'Are you sure you want to delete account "{account}"?',
   'settings.yourConfirmationPhraseMustExact': 'Your confirmation phrase must match exactly',
-  en: 'English',
-  vi: 'Vietnamese',
+  'en': 'English',
+  'vi': 'Vietnamese',
 
   /* 06.Countries */
   'country.all': 'All of country',
@@ -191,10 +142,9 @@ export default {
   'country.ph': 'Philippines',
 
   /* 07.Onboarding */
-  'onboarding.dontForgetBackup': "Don't forget to back up your account",
+  'onboarding.dontForgetBackup': 'Don\'t forget to back up your account',
   'onboarding.dontForgetBackupConfirm': 'Okay, make me a account!',
-  'onboarding.dontForgetBackupDescription':
-    'Once your account is created you can back it up by writing down your 12-word seed. You can find your seed on the Settings page. If you are browsing in Incognito mode or if you clear your browser history, you will lose any funds that are not backed up!',
+  'onboarding.dontForgetBackupDescription': 'Once your account is created you can back it up by writing down your 12-word seed. You can find your seed on the Settings page. If you are browsing in Incognito mode or if you clear your browser history, you will lose any funds that are not backed up!',
   'onboarding.cancel': 'Cancel',
   'onboarding.newAccount': 'New Account',
   'onboarding.importAccount': 'Import Account',
@@ -203,10 +153,5 @@ export default {
   'onboarding.lixiLotusIntroduce1': 'LixiLotus is an open-source, non-custodial web wallet for Lotus.',
   'onboarding.lixiLotusIntroduce2': 'LixiLotus allow you to giveaway your Lotus effortlessly.',
   'onboarding.lixiLotusIntroduce3': 'To start, install LixiLotus to your device follow',
-  'onboarding.lixiLotusIntroduce4': 'the guide',
-
-  /* 08.Envelope */
-  'envelope.unableGetEnvelope': 'Unable to get the envelope from server',
-  'envelope.pleaseSelectEnvelope': 'Please select your envelope',
-  'envelope.couldNotFetch': 'Could not fetch the envelope from api.'
+  'onboarding.lixiLotusIntroduce4': 'the guide'
 };

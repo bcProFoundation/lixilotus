@@ -4,7 +4,9 @@ import { Layout, Spin } from 'antd';
 import Link from 'next/link';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 
-import { GiftOutlined, LoadingOutlined, SettingOutlined, UserOutlined, WalletOutlined } from '@ant-design/icons';
+import {
+  GiftOutlined, LoadingOutlined, SettingOutlined, UserOutlined, WalletOutlined
+} from '@ant-design/icons';
 import { Footer, NavButton } from '@bcpros/lixi-components/components';
 
 import ModalManager from '../../Common/ModalManager';
@@ -15,7 +17,6 @@ import Topbar from '@containers/Topbar';
 import { loadLocale } from '@store/settings/actions';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
-import { injectStore } from 'src/utils/axiosClient';
 
 const { Content, Sider, Header } = Layout;
 
@@ -98,14 +99,12 @@ export const LixiTextLogo = styled.img`
   }
 `;
 
-const ClaimedLayout: React.FC = props => {
+const ClaimedLayout: React.FC = (props) => {
   const { children } = props;
   const [loading, setLoading] = useState(false);
   const currentLocale = useAppSelector(getCurrentLocale);
   const intlInitDone = useAppSelector(getIntlInitStatus);
   const dispatch = useAppDispatch();
-
-  injectStore(currentLocale);
 
   useEffect(() => {
     dispatch(loadLocale(currentLocale));
@@ -114,8 +113,14 @@ const ClaimedLayout: React.FC = props => {
   return (
     <ThemeProvider theme={theme as DefaultTheme}>
       <GlobalStyle />
-      {intlInitDone && (
-        <Spin spinning={loading} indicator={LoadingIcon}>
+      {
+        intlInitDone &&
+        (<Spin
+          spinning={
+            loading
+          }
+          indicator={LoadingIcon}
+        >
           <LixiApp>
             <Layout>
               <AppBody>
@@ -125,31 +130,41 @@ const ClaimedLayout: React.FC = props => {
                     <Sidebar />
                     <Layout>
                       <Topbar />
-                      <Content>{children}</Content>
+                      <Content>
+                        {children}
+                      </Content>
                     </Layout>
                   </Layout>
                 </AppContainer>
                 <Footer>
-                  <Link href="/" passHref>
-                    <NavButton active={false}>
+                  <Link href='/' passHref>
+                    <NavButton
+                      active={false}
+                    >
                       <UserOutlined />
                       {intl.get('general.accounts')}
                     </NavButton>
                   </Link>
-                  <Link href="/lixi" passHref>
-                    <NavButton active={false}>
+                  <Link href='/lixi' passHref>
+                    <NavButton
+                      active={false}
+                    >
                       <WalletOutlined />
                       {intl.get('general.lixi')}
                     </NavButton>
                   </Link>
-                  <Link href="/claim" passHref>
-                    <NavButton active={false}>
+                  <Link href='/claim' passHref>
+                    <NavButton
+                      active={false}
+                    >
                       <GiftOutlined />
                       {intl.get('general.claim')}
                     </NavButton>
                   </Link>
-                  <Link href="/settings" passHref>
-                    <NavButton active={false}>
+                  <Link href='/settings' passHref>
+                    <NavButton
+                      active={false}
+                    >
                       <SettingOutlined />
                       {intl.get('general.settings')}
                     </NavButton>
@@ -158,10 +173,10 @@ const ClaimedLayout: React.FC = props => {
               </AppBody>
             </Layout>
           </LixiApp>
-        </Spin>
-      )}
-    </ThemeProvider>
+        </Spin>)
+      }
+    </ThemeProvider >
   );
-};
+}
 
 export default ClaimedLayout;

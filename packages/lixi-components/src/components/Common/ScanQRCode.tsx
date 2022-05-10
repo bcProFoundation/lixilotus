@@ -2,14 +2,12 @@ import React, { useState } from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import { Alert, Modal } from 'antd';
-import { BrowserQRCodeReader } from '@zxing/browser';
+import { BrowserQRCodeReader } from '@zxing/library';
 import { ThemedQrcodeOutlined } from './CustomIcons';
 
 import {
   isValidLotusPrefix
 } from './Ticker';
-import { Result } from '@zxing/library';
-import _ from 'lodash';
 
 const StyledScanQRCode = styled.span`
   display: block;
@@ -57,16 +55,12 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
 
   const parseContent = (content: string) => {
     let type = 'unknown';
-    let values: { address?: string, lixi?: string } = {};
+    let values: { address?: string } = {};
 
     // If what scanner reads from QR code begins with 'bitcoincash:' or 'simpleledger:' or their successor prefixes
     if (isValidLotusPrefix(content)) {
       type = 'address';
       values = { address: content };
-    }
-    else {
-      type = 'claimCode';
-      values = { lixi: content };
     }
     return { type, values };
   };
@@ -78,7 +72,8 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
     try {
       // Need to execute this before you can decode input
       // eslint-disable-next-line no-unused-vars
-      const videoInputDevices = await BrowserQRCodeReader.listVideoInputDevices();
+      const videoInputDevices = await codeReader.getVideoInputDevices();
+      //console.log(`videoInputDevices`, videoInputDevices);
       //setMobileError(JSON.stringify(videoInputDevices));
 
       // choose your media device (webcam, frontal camera, back camera, etc.)
@@ -86,32 +81,20 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
       //const selectedDeviceId = videoInputDevices[0].deviceId;
 
       //const previewElem = document.querySelector("#test-area-qr-code-webcam");
-      const selectedDeviceId = videoInputDevices[0].deviceId;
 
-      const previewElem = document.querySelector('#test-area-qr-code-webcam');
-      const controls = await codeReader.decodeFromVideoDevice(selectedDeviceId, previewElem as any, (content: Result, error, controls) => {
-        // use the result and error values to choose your actions
-        // you can also use controls API in this scope like the controls
-        // returned from the method.
-        if (!_.isNil(content) && content.getText()) {
-          controls.stop();
-          const result = parseContent(content.getText());
-          // stop scanning and fill form if it's an address
-          if (result.type === 'address') {
-            // Hide the scanner
-            setVisible(false);
-            onScan(result.values.address);
-            return teardownCodeReader(codeReader);
-          }
-          else if (result.type === 'claimCode') {
-            // Hide the scanner
-            setVisible(false);
-            onScan(result.values.lixi);
-            return teardownCodeReader(codeReader);
-          }
-        }
-        
-      })
+      const content = await codeReader.decodeFromInputVideoDevice(
+        undefined,
+        'test-area-qr-code-webcam',
+      );
+      const result = parseContent(content.getText());
+
+      // stop scanning and fill form if it's an address
+      if (result.type === 'address') {
+        // Hide the scanner
+        setVisible(false);
+        onScan(result.values.address);
+        return teardownCodeReader(codeReader);
+      }
     } catch (err) {
       console.log(intl.get('general.QRScannerError'));
       console.log(err);
@@ -120,6 +103,8 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
       setError(err as any);
       teardownCodeReader(codeReader);
     }
+
+    // stop scanning after 20s no matter what
   };
 
   React.useEffect(() => {

@@ -1,33 +1,12 @@
 import {
-  Account,
-  Claim,
-  ClaimType,
-  CreateLixiCommand,
-  ExportLixiCommand,
-  LixiDto,
-  PaginationResult,
-  PostLixiResponseDto,
-  RenameLixiCommand,
-  WithdrawLixiCommand
+  Account, Claim, ClaimType, CreateLixiCommand, ExportLixiCommand, LixiDto, PaginationResult, PostLixiResponseDto, RenameLixiCommand, WithdrawLixiCommand
 } from '@bcpros/lixi-models';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
 import { InjectQueue } from '@nestjs/bullmq';
 import {
-  Body,
-  ClassSerializerInterceptor,
-  Controller,
-  Get,
-  Headers,
-  HttpException,
-  HttpStatus,
-  Inject,
-  Injectable,
-  Param,
-  Patch,
-  Post,
-  Query,
-  UseInterceptors
+  Body, ClassSerializerInterceptor, Controller, Get, Headers, HttpException, HttpStatus,
+  Inject, Injectable, Param, Patch, Post, Query, UseInterceptors
 } from '@nestjs/common';
 import { Claim as ClaimDb, Lixi } from '@prisma/client';
 import { Queue } from 'bullmq';
@@ -42,12 +21,15 @@ import { WalletService } from 'src/services/wallet.service';
 import { aesGcmDecrypt, numberToBase58 } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
 import { PrismaService } from '../services/prisma/prisma.service';
-import { I18n, I18nContext } from 'nestjs-i18n';
+
+
 
 @Controller('lixies')
 @UseInterceptors(ClassSerializerInterceptor)
 @Injectable()
+
 export class LixiController {
+
   constructor(
     private prisma: PrismaService,
     private readonly walletService: WalletService,
@@ -57,14 +39,10 @@ export class LixiController {
     @Inject('xpijs') private XPI: BCHJS,
     @InjectQueue(EXPORT_SUB_LIXIES_QUEUE) private exportSubLixiesQueue: Queue,
     @InjectQueue(WITHDRAW_SUB_LIXIES_QUEUE) private withdrawSubLixiesQueue: Queue
-  ) {}
+  ) { }
 
   @Get(':id')
-  async getLixi(
-    @Param('id') id: string,
-    @Headers('account-secret') accountSecret: string,
-    @I18n() i18n: I18nContext
-  ): Promise<any> {
+  async getLixi(@Param('id') id: string, @Headers('account-secret') accountSecret: string): Promise<any> {
     try {
       const lixi = await this.prisma.lixi.findUnique({
         where: {
@@ -75,26 +53,19 @@ export class LixiController {
         }
       });
 
-      if (!lixi) {
-        const lixiNotExist = await i18n.t('lixi.messages.lixiNotExist');
-        throw new VError(lixiNotExist);
-      }
+      if (!lixi) throw new VError('The lixi does not exist in the database.');
 
       const balance: number = await this.xpiWallet.getBalance(lixi.address);
 
-      let resultApi: any;
-      resultApi = _.omit(
-        {
-          ...lixi,
-          activationAt: lixi.activationAt ? lixi.activationAt.toISOString() : null,
-          isClaimed: lixi.isClaimed,
-          balance: balance,
-          totalClaim: Number(lixi.totalClaim),
-          envelope: lixi.envelope
-        } as unknown as LixiDto,
-        'encryptedXPriv',
-        'encryptedClaimCode'
-      );
+      let resultApi: any
+      resultApi = _.omit({
+        ...lixi,
+        activationAt: lixi.activationAt ? lixi.activationAt.toISOString() : null,
+        isClaimed: lixi.isClaimed,
+        balance: balance,
+        totalClaim: Number(lixi.totalClaim),
+        envelope: lixi.envelope,
+      } as unknown as LixiDto, 'encryptedXPriv', 'encryptedClaimCode');
 
       // Return the claim code only if there's account secret attach to the header
       try {
@@ -111,8 +82,7 @@ export class LixiController {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
-        const unableToGetLixi = await i18n.t('lixi.messages.unableToGetLixi');
-        const error = new VError.WError(err as Error, unableToGetLixi);
+        const error = new VError.WError(err as Error, 'Unable to get lixi.');
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
@@ -123,11 +93,11 @@ export class LixiController {
     @Param('id') id: string,
     @Query('startId') startId: number,
     @Query('limit') limit: number,
-    @Headers('account-secret') accountSecret: string,
-    @I18n() i18n: I18nContext
+    @Headers('account-secret') accountSecret: string
   ): Promise<PaginationResult<LixiDto>> {
+
     const lixiId = _.toSafeInteger(id);
-    const take = limit ? _.toSafeInteger(limit) : 10;
+    const take = limit ? _.toSafeInteger(limit) : 5;
     const cursor = startId ? _.toSafeInteger(startId) : null;
 
     try {
@@ -138,37 +108,34 @@ export class LixiController {
         }
       });
 
-      subLixies = cursor
-        ? await this.prisma.lixi.findMany({
-            take: take,
-            skip: 1,
-            where: {
-              parentId: lixiId
-            },
-            cursor: {
-              id: cursor
-            }
-          })
-        : await this.prisma.lixi.findMany({
-            take: take,
-            where: {
-              parentId: lixiId
-            }
-          });
+      subLixies = cursor ?
+        await this.prisma.lixi.findMany({
+          take: take,
+          skip: 1,
+          where: {
+            parentId: lixiId,
+          },
+          cursor: {
+            id: cursor,
+          },
+        }) :
+        await this.prisma.lixi.findMany({
+          take: take,
+          where: {
+            parentId: lixiId,
+          },
+        });
 
       const childrenApiResult: LixiDto[] = [];
 
       for (let item of subLixies) {
-        const childResult = _.omit(
-          {
-            ...item,
-            totalClaim: Number(item.totalClaim),
-            expiryAt: item.expiryAt ? item.expiryAt : undefined,
-            country: item.country ? item.country : undefined
-          } as LixiDto,
-          'encryptedXPriv',
-          'encryptedClaimCode'
-        );
+
+        const childResult = _.omit({
+          ...item,
+          totalClaim: Number(item.totalClaim),
+          expiryAt: item.expiryAt ? item.expiryAt : undefined,
+          country: item.country ? item.country : undefined,
+        } as LixiDto, 'encryptedXPriv', 'encryptedClaimCode');
 
         // Return the claim code only if there's account secret attach to the header
         try {
@@ -185,17 +152,15 @@ export class LixiController {
 
       const startCursor = childrenApiResult.length > 0 ? _.first(childrenApiResult)?.id : null;
       const endCursor = childrenApiResult.length > 0 ? _.last(childrenApiResult)?.id : null;
-      const countAfter = !endCursor
-        ? 0
-        : await this.prisma.lixi.count({
-            where: {
-              parentId: lixiId
-            },
-            cursor: {
-              id: _.toSafeInteger(endCursor)
-            },
-            skip: 1
-          });
+      const countAfter = !endCursor ? 0 : await this.prisma.lixi.count({
+        where: {
+          parentId: lixiId
+        },
+        cursor: {
+          id: _.toSafeInteger(endCursor)
+        },
+        skip: 1
+      });
 
       const hasNextPage = countAfter > 0;
 
@@ -207,13 +172,12 @@ export class LixiController {
           endCursor
         },
         totalCount: count
-      } as PaginationResult<LixiDto>;
+      } as PaginationResult<LixiDto>
     } catch (err: unknown) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
-        const unableToGetLixi = await i18n.t('lixi.messages.unableToGetLixi');
-        const error = new VError.WError(err as Error, unableToGetLixi);
+        const error = new VError.WError(err as Error, 'Unable to get lixi.');
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
@@ -222,7 +186,6 @@ export class LixiController {
   @Post()
   async createLixi(
     @Body() command: CreateLixiCommand,
-    @I18n() i18n: I18nContext
   ): Promise<PostLixiResponseDto | undefined> {
     if (command) {
       try {
@@ -232,25 +195,23 @@ export class LixiController {
           where: {
             id: command.accountId,
             mnemonicHash: command.mnemonicHash
-          }
+          },
         });
 
         if (!account) {
-          const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
-          throw new Error(couldNotFindAccount);
+          throw new Error('Could not find the associated account.');
         }
 
         // Decrypt to validate the mnemonic
         const mnemonicToValidate = await aesGcmDecrypt(account.encryptedMnemonic, mnemonicFromApi);
         if (mnemonicFromApi !== mnemonicToValidate) {
-          const couldNotCreateLixi = await i18n.t('lixi.messages.couldNotCreateLixi');
-          throw Error(couldNotCreateLixi);
+          throw Error('Could not create lixi because the account is invalid.');
         }
 
         // find the latest lixi created
         const latestLixi: Lixi | null = await this.prisma.lixi.findFirst({
           where: {
-            accountId: account.id
+            accountId: account.id,
           },
           orderBy: {
             id: 'desc'
@@ -266,13 +227,13 @@ export class LixiController {
         let lixi = null;
         if (command.claimType === ClaimType.Single) {
           // Single type
-          lixi = await this.lixiService.createSingleLixi(lixiIndex, account, command, i18n);
+          lixi = await this.lixiService.createSingleLixi(lixiIndex, account, command);
           return {
             lixi
           } as PostLixiResponseDto;
         } else {
           // One time child codes type
-          lixi = await this.lixiService.createOneTimeParentLixi(lixiIndex, account, command, i18n);
+          lixi = await this.lixiService.createOneTimeParentLixi(lixiIndex, account, command);
           const jobId = await this.lixiService.createSubLixies(lixiIndex + 1, account, command, lixi.id);
 
           return {
@@ -284,8 +245,7 @@ export class LixiController {
         if (err instanceof VError) {
           throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
         } else {
-          const unableCreateLixi = await i18n.t('lixi.messages.unableCreateLixi');
-          const error = new VError.WError(err as Error, unableCreateLixi);
+          const error = new VError.WError(err as Error, 'Unable to create new lixi.');
           throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
       }
@@ -293,11 +253,7 @@ export class LixiController {
   }
 
   @Post(':id/lock')
-  async lockLixi(
-    @Param('id') id: string,
-    @Body() command: Account,
-    @I18n() i18n: I18nContext
-  ): Promise<LixiDto | undefined> {
+  async lockLixi(@Param('id') id: string, @Body() command: Account): Promise<LixiDto | undefined> {
     const lixiId = _.toSafeInteger(id);
     try {
       const mnemonicFromApi = command.mnemonic;
@@ -309,15 +265,13 @@ export class LixiController {
       });
 
       if (!account) {
-        const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
-        throw new Error(couldNotFindAccount);
+        throw new Error('Could not find the associated account.');
       }
 
       // Decrypt to validate the mnemonic
       const mnemonicToValidate = await aesGcmDecrypt(account.encryptedMnemonic, mnemonicFromApi);
       if (mnemonicFromApi !== mnemonicToValidate) {
-        const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
-        throw Error(couldNotFindAccount);
+        throw Error('Could not find the associated account.');
       }
 
       const lixi = await this.prisma.lixi.findFirst({
@@ -327,9 +281,9 @@ export class LixiController {
         }
       });
       if (!lixi) {
-        const lixiNotExist = await i18n.t('lixi.messages.lixiNotExist');
-        throw new Error(lixiNotExist);
-      } else {
+        throw new Error('Could not found the lixi in the database.');
+      }
+      else {
         const lixi = await this.prisma.lixi.update({
           where: {
             id: lixiId
@@ -350,7 +304,7 @@ export class LixiController {
             status: lixi.status,
             numberOfSubLixi: 0,
             parentId: lixi.parentId ?? undefined,
-            isClaimed: lixi.isClaimed ?? false
+            isClaimed: lixi.isClaimed ?? false,
           };
 
           return resultApi;
@@ -360,19 +314,14 @@ export class LixiController {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
-        const couldNotLockLixi = await i18n.t('lixi.messages.couldNotLockLixi');
-        const error = new VError.WError(err as Error, couldNotLockLixi);
+        const error = new VError.WError(err as Error, 'Could not locked the lixi.');
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
   }
 
   @Post(':id/unlock')
-  async unlockLixi(
-    @Param('id') id: string,
-    @Body() command: Account,
-    @I18n() i18n: I18nContext
-  ): Promise<LixiDto | undefined> {
+  async unlockLixi(@Param('id') id: string, @Body() command: Account): Promise<LixiDto | undefined> {
     const lixiId = _.toSafeInteger(id);
     try {
       const mnemonicFromApi = command.mnemonic;
@@ -384,15 +333,13 @@ export class LixiController {
       });
 
       if (!account) {
-        const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
-        throw new Error(couldNotFindAccount);
+        throw new Error('Could not find the associated account.');
       }
 
       // Decrypt to validate the mnemonic
       const mnemonicToValidate = await aesGcmDecrypt(account.encryptedMnemonic, mnemonicFromApi);
       if (mnemonicFromApi !== mnemonicToValidate) {
-        const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
-        throw Error(couldNotFindAccount);
+        throw Error('Could not find the associated account.');
       }
 
       const lixi = await this.prisma.lixi.findFirst({
@@ -402,9 +349,9 @@ export class LixiController {
         }
       });
       if (!lixi) {
-        const couldNotFindLixi = await i18n.t('lixi.messages.couldNotFindLixi');
-        throw new Error(couldNotFindLixi);
-      } else {
+        throw new Error('Could not found the lixi in the database.');
+      }
+      else {
         const lixi = await this.prisma.lixi.update({
           where: {
             id: lixiId
@@ -425,25 +372,25 @@ export class LixiController {
             status: lixi.status,
             numberOfSubLixi: 0,
             parentId: lixi.parentId ?? undefined,
-            isClaimed: lixi.isClaimed ?? false
+            isClaimed: lixi.isClaimed ?? false,
           };
 
           return resultApi;
         }
       }
+
     } catch (err) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
-        const couldNotUnlockLixi = await i18n.t('lixi.messages.couldNotUnlockLixi');
-        const error = new VError.WError(err as Error, couldNotUnlockLixi);
+        const error = new VError.WError(err as Error, 'Could not unlock the lixi.');
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
   }
 
   @Post(':id/withdraw')
-  async withdrawLixi(@Param('id') id: string, @Body() command: Account, @I18n() i18n: I18nContext) {
+  async withdrawLixi(@Param('id') id: string, @Body() command: WithdrawLixiCommand) {
     const lixiId = _.toSafeInteger(id);
     try {
       const mnemonicFromApi = command.mnemonic;
@@ -455,15 +402,13 @@ export class LixiController {
       });
 
       if (!account) {
-        const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
-        throw new Error(couldNotFindAccount);
+        throw new Error('Could not find the associated account.');
       }
 
       // Decrypt to validate the mnemonic
       const mnemonicToValidate = await aesGcmDecrypt(account.encryptedMnemonic, mnemonicFromApi);
       if (mnemonicFromApi !== mnemonicToValidate) {
-        const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
-        throw Error(couldNotFindAccount);
+        throw Error('Could not find the associated account.');
       }
 
       const lixi = await this.prisma.lixi.findFirst({
@@ -473,8 +418,7 @@ export class LixiController {
         }
       });
       if (!lixi) {
-        const couldNotFindLixi = await i18n.t('lixi.messages.couldNotFindLixi');
-        throw new Error(couldNotFindLixi);
+        throw new Error('Could not found the lixi in the database.');
       }
 
       if (lixi.claimType === ClaimType.Single) {
@@ -482,21 +426,19 @@ export class LixiController {
         const { address, keyPair } = await this.walletService.deriveAddress(mnemonicFromApi, lixiIndex);
 
         if (address !== lixi.address) {
-          const invalidAccount = await i18n.t('lixi.messages.invalidAccount');
-          throw new Error(invalidAccount);
+          throw new Error('Invalid account. Unable to withdraw the lixi');
         }
 
         const lixiCurrentBalance: number = await this.xpiWallet.getBalance(lixi.address);
 
         if (lixiCurrentBalance === 0) {
-          const unableWithdraw = await i18n.t('lixi.messages.unableWithdraw');
-          throw new VError(unableWithdraw);
+          throw new VError('Unable to withdraw. The lixi is empty!');
         }
 
         const totalAmount: number = await this.walletService.onMax(lixi.address);
-        const receivingAccount = [{ address: account.address, amountXpi: totalAmount }];
+        const receivingAccount = [{ address: account.address, amountXpi: totalAmount, }]
 
-        const amount: any = await this.walletService.sendAmount(lixi.address, receivingAccount, keyPair, i18n);
+        const amount: any = await this.walletService.sendAmount(lixi.address, receivingAccount, keyPair);
 
         let resultApi: LixiDto = {
           ...lixi,
@@ -507,13 +449,15 @@ export class LixiController {
           country: lixi.country ? lixi.country : undefined,
           numberOfSubLixi: 0,
           parentId: lixi.parentId ?? undefined,
-          isClaimed: lixi.isClaimed ?? false
+          isClaimed: lixi.isClaimed ?? false,
         };
 
         return {
           lixi: resultApi
         } as PostLixiResponseDto;
-      } else {
+      }
+
+      else {
         // Withdraw for OneTime Code
         const jobData = {
           parentId: lixiId,
@@ -531,7 +475,7 @@ export class LixiController {
           country: lixi.country ? lixi.country : undefined,
           numberOfSubLixi: 0,
           parentId: lixi.parentId ?? undefined,
-          isClaimed: lixi.isClaimed ?? false
+          isClaimed: lixi.isClaimed ?? false,
         };
 
         return {
@@ -539,13 +483,13 @@ export class LixiController {
           jobId: job.id
         } as PostLixiResponseDto;
       }
+
     } catch (err) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
         logger.error(err);
-        const couldNotWithdraw = await i18n.t('lixi.messages.couldNotWithdraw');
-        const error = new VError.WError(err as Error, couldNotWithdraw);
+        const error = new VError.WError(err as Error, 'Could not export the lixi.');
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
@@ -555,13 +499,14 @@ export class LixiController {
   async exportLixies(
     @Param('id') id: string,
     @Body() command: ExportLixiCommand,
-    @Headers('account-secret') accountSecret: string
+    @Headers('account-secret') accountSecret: string,
   ) {
     const lixiId = _.toSafeInteger(id);
     try {
+
       const lixi = await this.prisma.lixi.findFirst({
         where: {
-          id: lixiId
+          id: lixiId,
         }
       });
 
@@ -571,7 +516,7 @@ export class LixiController {
 
       const jobData = {
         parentId: lixiId,
-        secret: accountSecret
+        secret: accountSecret,
       };
 
       const job = await this.exportSubLixiesQueue.add(LIXI_JOB_NAMES.EXPORT_ALL_SUB_LIXIES, jobData);
@@ -587,13 +532,13 @@ export class LixiController {
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
+
   }
 
   @Get(':id/claims')
   async getLixiClaims(
     @Param('id') id: string,
-    @Query() { startId, limit }: PaginationParams,
-    @I18n() i18n: I18nContext
+    @Query() { startId, limit }: PaginationParams
   ): Promise<PaginationResult<Claim>> {
     const lixiId = _.toSafeInteger(id);
     const take = limit ? _.toSafeInteger(limit) : 4;
@@ -601,18 +546,9 @@ export class LixiController {
     try {
       let claims: ClaimDb[] = [];
 
-      const subLixies = await this.prisma.lixi.findMany({
-        where: {
-          parentId: lixiId
-        }
-      })
-      
-      const subLixiesIds = subLixies.map(item => item.id);
-      subLixiesIds.push(lixiId)
-
       const count = await this.prisma.claim.count({
         where: {
-          lixiId: { in: subLixiesIds }
+          lixiId: lixiId
         }
       });
 
@@ -620,7 +556,7 @@ export class LixiController {
         // No start id, we should return the normal data without the cursor
         claims = await this.prisma.claim.findMany({
           where: {
-            lixiId: { in: subLixiesIds }
+            lixiId: lixiId
           },
           orderBy: [
             {
@@ -628,13 +564,13 @@ export class LixiController {
             }
           ],
           take: take,
-          skip: startId ? 1 : 0
+          skip: startId ? 1 : 0,
         });
       } else {
         // Query with the cursor
         claims = await this.prisma.claim.findMany({
           where: {
-            lixiId: { in: subLixiesIds }
+            lixiId: lixiId
           },
           orderBy: [
             {
@@ -658,22 +594,20 @@ export class LixiController {
 
       const startCursor = results.length > 0 ? _.first(results)?.id : null;
       const endCursor = results.length > 0 ? _.last(results)?.id : null;
-      const countAfter = !endCursor
-        ? 0
-        : await this.prisma.claim.count({
-            where: {
-              lixiId: lixiId
-            },
-            orderBy: [
-              {
-                id: 'asc'
-              }
-            ],
-            cursor: {
-              id: _.toSafeInteger(endCursor)
-            },
-            skip: 1
-          });
+      const countAfter = !endCursor ? 0 : await this.prisma.claim.count({
+        where: {
+          lixiId: lixiId
+        },
+        orderBy: [
+          {
+            id: 'asc'
+          }
+        ],
+        cursor: {
+          id: _.toSafeInteger(endCursor)
+        },
+        skip: 1
+      });
 
       const hasNextPage = countAfter > 0;
 
@@ -685,24 +619,20 @@ export class LixiController {
           endCursor
         },
         totalCount: count
-      } as PaginationResult<Claim>;
+      } as PaginationResult<Claim>
+
     } catch (err) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
-        const unableToGetClaimListLixi = await i18n.t('lixi.messages.unableToGetClaimListLixi');
-        const error = new VError.WError(err as Error, unableToGetClaimListLixi);
+        const error = new VError.WError(err as Error, 'Unable to get claim list of the lixi.');
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
   }
 
   @Patch(':id/rename')
-  async renameLixi(
-    @Param('id') id: string,
-    @Body() command: RenameLixiCommand,
-    @I18n() i18n: I18nContext
-  ): Promise<LixiDto> {
+  async renameLixi(@Param('id') id: string, @Body() command: RenameLixiCommand): Promise<LixiDto> {
     if (command) {
       try {
         const mnemonicFromApi = command.mnemonic;
@@ -713,14 +643,12 @@ export class LixiController {
         });
 
         if (!account) {
-          const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
-          throw new Error(couldNotFindAccount);
+          throw new Error('Could not find the associated account.');
         }
 
         const mnemonicToValidate = await aesGcmDecrypt(account.encryptedMnemonic, mnemonicFromApi);
         if (mnemonicFromApi !== mnemonicToValidate) {
-          const invalidAccount = await i18n.t('lixi.messages.invalidAccountCouldNotUpdateLixi');
-          throw new VError(invalidAccount);
+          throw new VError('Invalid account! Could not update the lixi.');
         }
 
         const lixi = await this.prisma.lixi.findUnique({
@@ -728,10 +656,8 @@ export class LixiController {
             id: _.toSafeInteger(id)
           }
         });
-        if (!lixi) {
-          const lixiNotExist = await i18n.t('lixi.messages.lixiNotExist');
-          throw new VError(lixiNotExist);
-        }
+        if (!lixi)
+          throw new VError('The lixi does not exist in the database.');
 
         const nameExist = await this.prisma.lixi.findFirst({
           where: {
@@ -739,18 +665,16 @@ export class LixiController {
             accountId: lixi.accountId
           }
         });
-        if (nameExist) {
-          const nameAlreadyTaken = await i18n.t('lixi.messages.nameAlreadyTaken');
-          throw new VError(nameAlreadyTaken);
-        }
+        if (nameExist)
+          throw new VError('The name is already taken.');
 
         const updatedLixi: Lixi = await this.prisma.lixi.update({
           where: {
-            id: _.toSafeInteger(id)
+            id: _.toSafeInteger(id),
           },
           data: {
             name: command.name,
-            updatedAt: new Date()
+            updatedAt: new Date(),
           }
         });
 
@@ -765,7 +689,7 @@ export class LixiController {
             status: lixi.status,
             numberOfSubLixi: lixi.numberOfSubLixi ?? 0,
             parentId: lixi.parentId ?? undefined,
-            isClaimed: lixi.isClaimed ?? false
+            isClaimed: lixi.isClaimed ?? false,
           };
 
           return resultApi;
@@ -774,8 +698,7 @@ export class LixiController {
         if (err instanceof VError) {
           throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
         } else {
-          const unableToUpdateLixi = await i18n.t('lixi.messages.unableToUpdateLixi');
-          const error = new VError.WError(err as Error, unableToUpdateLixi);
+          const error = new VError.WError(err as Error, 'Unable to update lixi.');
           throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
       }
