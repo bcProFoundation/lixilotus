@@ -14,7 +14,7 @@ import { connect } from "socket.io-client";
 import SwipeToDelete from 'react-swipe-to-delete-ios'
 import moment from 'moment';
 import { isMobile } from "react-device-detect";
-import { deleteNotification, seenNotification } from "@store/notification/actions";
+import { deleteNotification, readNotification } from "@store/notification/actions";
 
 export type TopbarProps = {
   className?: string,
@@ -83,8 +83,8 @@ const NotificationMenu = (notifications: Notification[], account: Account) => {
     dispatch(deleteNotification({mnemonichHash: account.mnemonicHash, notificationId}));
   }
 
-  const handleSeen = (account: Account, notificationId: string) => {
-     dispatch(seenNotification({mnemonichHash: account.mnemonicHash, notificationId}));
+  const handleRead = (account: Account, notificationId: string) => {
+     dispatch(readNotification({mnemonichHash: account.mnemonicHash, notificationId}));
   }
   
   return notifications && notifications.length > 0 && (
@@ -92,7 +92,7 @@ const NotificationMenu = (notifications: Notification[], account: Account) => {
       {notifications.map(notification => (
         <>
           {isMobile ? (
-            <div onClick={()=>handleSeen(account, notification.id)}>
+            <div onClick={()=>handleRead(account, notification.id)}>
               <SwipeToDelete
                 key={notification.id}
                 onDelete={()=>handleDelete(account, notification.id)}
@@ -128,7 +128,7 @@ const NotificationMenu = (notifications: Notification[], account: Account) => {
                 <Space>
                   <div 
                     style={{fontWeight: notification.readAt == null && "bold", cursor:"pointer" }}
-                    onClick={()=>handleSeen(account, notification.id)}
+                    onClick={()=>handleRead(account, notification.id)}
                   >
                     {notification.message}
                   </div>
@@ -158,7 +158,7 @@ const StyledPopover = styled(Popover)`
     @media (max-width: 576px) {
       top: 40px !important;
       left: -265px !important;
-      width: 300px;
+      width: 350px;
     }
   }
 
@@ -170,6 +170,12 @@ const StyledPopover = styled(Popover)`
     border-radius: 5px 5px 0px 0px;
   }
 
+   @media (max-width: 576px) {
+    .ant-popover-arrow {
+      right: 65px ;
+    }
+  }
+  
   .ant-popover-arrow > .ant-popover-arrow-content::before {
     background: ${props => props.theme.primary};
   }

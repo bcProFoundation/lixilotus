@@ -20,7 +20,7 @@ const notificationApi = {
         throw response.data;
       });
   },
-  deleteByNotificationId(mnemonicHash?: string, notificationId?: number): Promise<any> {
+  deleteNofificationById(mnemonicHash?: string, notificationId?: number): Promise<any> {
     const url = `/api/notifications/${notificationId}`;
     const config = mnemonicHash ? {
       headers: {
@@ -36,7 +36,7 @@ const notificationApi = {
         throw response.data;
       });
   },
-  seenByNotificationId(mnemonicHash?: string, notificationId?: number): Promise<Notification> {
+  readByNotificationId(mnemonicHash?: string, notificationId?: number): Promise<Notification> {
     const url = `/api/notifications/${notificationId}`;
     const config = mnemonicHash ? {
       headers: {

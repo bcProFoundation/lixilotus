@@ -3,6 +3,7 @@ import { Controller, HttpException, HttpStatus, Param, Get, Headers, Delete, Htt
 import * as _ from 'lodash';
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { VError } from 'verror';
+import { I18n, I18nContext } from 'nestjs-i18n';
 
 @Controller('notifications')
 export class NotificationController {
@@ -14,6 +15,7 @@ export class NotificationController {
   @Get(':id')
   async getNotification(
     @Param('id') id: string,
+    @I18n() i18n: I18nContext,
     @Headers('mnemonic-hash') mnemonicHash?: string
   ): Promise<NotificationDto> {
     try {
@@ -26,7 +28,8 @@ export class NotificationController {
       });
 
       if (!account) {
-        throw Error('No perimission to get the notification');
+        const accountNotExist = await i18n.t('account.messages.accountNotExist');
+        throw Error(accountNotExist);
       }
 
       // Get the notification
@@ -38,7 +41,8 @@ export class NotificationController {
 
       // Check if the user have sufficient permission to get the notification
       if (notification?.recipientId !== account?.id) {
-        throw Error('No perimission to get the notification');
+        const noPermisson = await i18n.t('notification.messages.noPermisson');
+        throw Error(noPermisson);
       }
 
       return {
@@ -49,7 +53,8 @@ export class NotificationController {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
-        const error = new VError.WError(err as Error, 'Unable to get the notification.');
+       const unableGetNotification = await i18n.t('notification.messages.unableGetNotification');
+        const error = new VError.WError(err as Error, unableGetNotification);
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
@@ -59,6 +64,7 @@ export class NotificationController {
   @HttpCode(204)
   async deleteNotification(
     @Param('id') id: string,
+    @I18n() i18n: I18nContext,
     @Headers('mnemonic-hash') mnemonicHash?: string,
   ): Promise<NotificationDto> {
     try {
@@ -71,7 +77,8 @@ export class NotificationController {
       });
 
       if (!account) {
-        throw Error('No perimission to get the notification');
+        const accountNotExist = await i18n.t('account.messages.accountNotExist');
+        throw Error(accountNotExist);
       }
 
       // Get the notification
@@ -82,8 +89,9 @@ export class NotificationController {
       });
 
       // Check if the user have sufficient permission to get the notification
-      if (notification?.recipientId !== account?.id) {
-        throw Error('No perimission to get the notification');
+       if (notification?.recipientId !== account?.id) {
+        const noDeletePermisson = await i18n.t('notification.messages.noPermisson');
+        throw Error(noDeletePermisson);
       }
 
       // Delete the notification
@@ -98,7 +106,8 @@ export class NotificationController {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
-        const error = new VError.WError(err as Error, 'Unable to get the notification.');
+        const unableGetNotification = await i18n.t('notification.messages.unableGetNotification');
+        const error = new VError.WError(err as Error, unableGetNotification);
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
@@ -106,8 +115,9 @@ export class NotificationController {
 
   @Patch(':id')
   @HttpCode(200)
-  async seenNotification(
+  async readNotification(
     @Param('id') id: string,
+    @I18n() i18n: I18nContext,
     @Headers('mnemonic-hash') mnemonicHash?: string,
   ): Promise<NotificationDto> {
     try {
@@ -120,7 +130,8 @@ export class NotificationController {
       });
 
       if (!account) {
-        throw Error('No perimission to get the notification');
+        const accountNotExist = await i18n.t('account.messages.accountNotExist');
+        throw Error(accountNotExist);
       }
 
       // Get the notification
@@ -131,8 +142,9 @@ export class NotificationController {
       });
 
       // Check if the user have sufficient permission to get the notification
-      if (notification?.recipientId !== account?.id) {
-        throw Error('No perimission to get the notification');
+     if (notification?.recipientId !== account?.id) {
+        const noPermisson = await i18n.t('notification.messages.noPermisson');
+        throw Error(noPermisson);
       }
 
       // Set readAt to now
@@ -150,7 +162,8 @@ export class NotificationController {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
-        const error = new VError.WError(err as Error, 'Unable to get the notification.');
+        const unableGetNotification = await i18n.t('notification.messages.unableGetNotification');
+        const error = new VError.WError(err as Error, unableGetNotification);
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }

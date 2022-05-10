@@ -1,7 +1,7 @@
 import { createEntityAdapter, createReducer, Update } from "@reduxjs/toolkit"
 import { NotificationDto as Notification } from "@bcpros/lixi-models";
 import { NotificationsState } from "./state";
-import { channelOff, channelOn, fetchNotificationsSuccess, receiveNotification, serverOff, serverOn, deleteNotificationSuccess, seenNotificationSuccess } from "./actions";
+import { channelOff, channelOn, fetchNotificationsSuccess, receiveNotification, serverOff, serverOn, deleteNotificationSuccess, readNotificationSuccess } from "./actions";
 
 export const notificationsAdapter = createEntityAdapter<Notification>({
 });
@@ -21,7 +21,7 @@ export const notificationReducer = createReducer(initialState, (builder) => {
     .addCase(deleteNotificationSuccess, (state, action) => {
       notificationsAdapter.removeOne(state, action.payload);
     })
-    .addCase(seenNotificationSuccess, (state, action) => {
+    .addCase(readNotificationSuccess, (state, action) => {
       const notification = action.payload as Notification;
       const updateNotification: Update<Notification> = {
         id: notification.id,
