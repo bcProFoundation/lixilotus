@@ -1,6 +1,6 @@
-
 import { Modal } from 'antd';
 import { all, call, fork, getContext, put, takeLatest } from 'redux-saga/effects';
+import intl from 'react-intl-universal';
 
 import {
   Account,
@@ -9,7 +9,7 @@ import {
   DeleteAccountCommand,
   ImportAccountCommand,
   RenameAccountCommand,
-  Lixi,
+  Lixi
 } from '@bcpros/lixi-models';
 import BCHJS from '@bcpros/xpi-js';
 import { PayloadAction } from '@reduxjs/toolkit';
@@ -42,7 +42,7 @@ import {
   setAccount,
   refreshLixiList,
   refreshLixiListFailure,
-  refreshLixiListSuccess,
+  refreshLixiListSuccess
 } from './actions';
 import { fetchNotifications } from '@store/notification/actions';
 
@@ -56,19 +56,11 @@ function* generateAccountSaga(action: PayloadAction) {
   const Bip39128BitMnemonic = XPI.Mnemonic.generate(128, XPI.Mnemonic.wordLists()[lang]);
 
   // Encrypted mnemonic is encrypted by itself
-  const encryptedMnemonic: string = yield call(
-    aesGcmEncrypt,
-    Bip39128BitMnemonic,
-    Bip39128BitMnemonic
-  );
+  const encryptedMnemonic: string = yield call(aesGcmEncrypt, Bip39128BitMnemonic, Bip39128BitMnemonic);
 
   // Hash mnemonic and use it as an id in the database
-  const mnemonicUtf8 = new TextEncoder().encode(Bip39128BitMnemonic);              // encode mnemonic as UTF-8
-  const mnemonicHashBuffer = yield call(
-    [crypto.subtle, crypto.subtle.digest],
-    'SHA-256',
-    mnemonicUtf8
-  ); // hash the mnemonic
+  const mnemonicUtf8 = new TextEncoder().encode(Bip39128BitMnemonic); // encode mnemonic as UTF-8
+  const mnemonicHashBuffer = yield call([crypto.subtle, crypto.subtle.digest], 'SHA-256', mnemonicUtf8); // hash the mnemonic
   const mnemonicHash = Buffer.from(new Uint8Array(mnemonicHashBuffer)).toString('hex');
 
   const account: CreateAccountCommand = {
@@ -87,7 +79,7 @@ function* getAccountSaga(action: PayloadAction<number>) {
     const data = yield call(accountApi.getById, id);
     yield put(getAccountSuccess(data));
   } catch (err) {
-    const message = (err as Error).message ?? `Could not fetch the account from api.`;
+    const message = (err as Error).message ?? intl.get('account.couldNotFetchAccount');
     yield put(getAccountFailure(message));
   }
 }
@@ -99,12 +91,12 @@ function* getAccountSuccessSaga(action: PayloadAction<Account>) {
 }
 
 function* getAccountFailureSaga(action: PayloadAction<string>) {
-  const message = action.payload ?? 'Unable to get the account from server';
+  const message = action.payload ?? intl.get('account.unableGetAccountFromServer');
   yield put(
     showToast('error', {
       message: 'Error',
       description: message,
-      duration: 5,
+      duration: 5
     })
   );
   yield put(hideLoading(getAccount.type));
@@ -121,13 +113,12 @@ function* postAccountSaga(action: PayloadAction<CreateAccountCommand>) {
     // Merge back to action payload
     const result = {
       ...command,
-      ...data,
+      ...data
     } as Account;
 
     yield put(postAccountSuccess(result));
-
   } catch (err) {
-    const message = (err as Error).message ?? `Could not post the account to the api.`;
+    const message = (err as Error).message ?? intl.get('account.couldNotPostAccount');
     yield put(postAccountFailure(message));
   }
 }
@@ -137,22 +128,23 @@ function* postAccountSuccessSaga(action: PayloadAction<Account>) {
   yield put(
     showToast('success', {
       message: 'Success',
-      description: 'Create account successfully.',
-      duration: 5,
+      description: intl.get('account.createAccountSuccessful'),
+      duration: 5
     })
   );
   yield put(setAccount(account));
   yield put(hideLoading(postAccount.type));
-
 }
 
 function* postAccountFailureSaga(action: PayloadAction<string>) {
-  const message = action.payload ?? 'Unable to create account on the server.';
-  yield put(showToast('error', {
-    message: 'Error',
-    description: message,
-    duration: 5
-  }));
+  const message = action.payload ?? intl.get('account.unableToCreateServer');
+  yield put(
+    showToast('error', {
+      message: 'Error',
+      description: message,
+      duration: 5
+    })
+  );
   yield put(hideLoading(postAccount.type));
 }
 
@@ -161,12 +153,8 @@ function* importAccountSaga(action: PayloadAction<string>) {
     const mnemonic: string = action.payload;
 
     // Hash mnemonic and use it as an id in the database
-    const mnemonicUtf8 = new TextEncoder().encode(mnemonic);                // encode mnemonic as UTF-8
-    const mnemonicHashBuffer = yield call(
-      [crypto.subtle, crypto.subtle.digest],
-      'SHA-256',
-      mnemonicUtf8
-    ); // hash the mnemonic
+    const mnemonicUtf8 = new TextEncoder().encode(mnemonic); // encode mnemonic as UTF-8
+    const mnemonicHashBuffer = yield call([crypto.subtle, crypto.subtle.digest], 'SHA-256', mnemonicUtf8); // hash the mnemonic
     const mnemonicHash = Buffer.from(new Uint8Array(mnemonicHashBuffer)).toString('hex');
 
     const command: ImportAccountCommand = {
@@ -182,7 +170,6 @@ function* importAccountSaga(action: PayloadAction<string>) {
     let lixies: Lixi[] = [];
 
     try {
-
       const lixiesData = (yield call(lixiApi.getByAccountId, account.id)) as Lixi[];
       if (lixiesData && lixiesData.length > 0) {
         for (const item of lixiesData) {
@@ -191,7 +178,7 @@ function* importAccountSaga(action: PayloadAction<string>) {
           const claimPart = yield call(aesGcmDecrypt, item.encryptedClaimCode, command.mnemonic);
           const lixi: Lixi = {
             ...item,
-            claimCode: claimPart + encodedId,
+            claimCode: claimPart + encodedId
           };
           lixies.push(lixi);
         }
@@ -202,26 +189,30 @@ function* importAccountSaga(action: PayloadAction<string>) {
     account.mnemonic = mnemonic;
     yield put(importAccountSuccess({ account: account, lixies: lixies }));
   } catch (err) {
-    const message = (err as Error).message ?? `Could not import the account.`;
+    const message = (err as Error).message ?? intl.get('account.unableToImport');
     yield put(importAccountFailure(message));
   }
 }
 
 function* importAccountSuccessSaga(action: PayloadAction<Account>) {
-  yield put(fetchNotifications({
-    accountId: action.payload.id,
-    mnemonichHash: action.payload.mnemonicHash
-  }));
+  yield put(
+    fetchNotifications({
+      accountId: action.payload.id,
+      mnemonichHash: action.payload.mnemonicHash
+    })
+  );
   yield put(hideLoading(importAccount.type));
 }
 
 function* importAccountFailureSaga(action: PayloadAction<string>) {
-  const message = action.payload ?? 'Unable to import the account.';
-  yield put(showToast('error', {
-    message: 'Error',
-    description: message,
-    duration: 5
-  }));
+  const message = action.payload ?? intl.get('account.unableToImport');
+  yield put(
+    showToast('error', {
+      message: 'Error',
+      description: message,
+      duration: 5
+    })
+  );
   yield put(hideLoading(importAccount.type));
 }
 
@@ -235,34 +226,40 @@ function* selectAccountSaga(action: PayloadAction<number>) {
     const lixies = (lixiesData ?? []) as Lixi[];
     yield put(selectAccountSuccess({ account: account, lixies: lixies }));
   } catch (err) {
-    const message = (err as Error).message ?? `Unable to select the account.`;
+    const message = (err as Error).message ?? intl.get('account.unableToSelect');
     yield put(selectAccountFailure(message));
   }
 }
 
 function* selectAccountSuccessSaga(action: PayloadAction<{ account: Account; lixies: Lixi[] }>) {
-  yield put(fetchNotifications({
-    accountId: action.payload.account.id,
-    mnemonichHash: action.payload.account.mnemonicHash
-  }));
+  yield put(
+    fetchNotifications({
+      accountId: action.payload.account.id,
+      mnemonichHash: action.payload.account.mnemonicHash
+    })
+  );
   yield put(hideLoading(selectAccount.type));
 }
 
 function* selectAccountFailureSaga(action: PayloadAction<string>) {
-  const message = action.payload ?? 'Unable to select the account.';
-  yield put(showToast('error', {
-    message: 'Error',
-    description: message,
-    duration: 5
-  }));
+  const message = action.payload ?? intl.get('account.unableToSelect');
+  yield put(
+    showToast('error', {
+      message: 'Error',
+      description: message,
+      duration: 5
+    })
+  );
   yield put(hideLoading(selectAccount.type));
 }
 
 function* setAccountSaga(action: PayloadAction<Account>) {
-  yield put(fetchNotifications({
-    accountId: action.payload.id,
-    mnemonichHash: action.payload.mnemonicHash
-  }));
+  yield put(
+    fetchNotifications({
+      accountId: action.payload.id,
+      mnemonichHash: action.payload.mnemonicHash
+    })
+  );
 }
 
 function* renameAccountSaga(action: PayloadAction<RenameAccountCommand>) {
@@ -273,7 +270,7 @@ function* renameAccountSaga(action: PayloadAction<RenameAccountCommand>) {
     const account = data as Account;
     yield put(renameAccountSuccess(account));
   } catch (err) {
-    const message = (err as Error).message ?? `Unable to rename the account.`;
+    const message = (err as Error).message ?? intl.get('account.unableToSelect');
     yield put(renameAccountFailure(message));
   }
 }
@@ -282,13 +279,13 @@ function* renameAccountSuccessSaga(action: PayloadAction<Account>) {
   const account = action.payload;
   yield put(hideLoading(renameAccount.type));
   Modal.success({
-    content: `Account has renamed to "${account.name}"`,
+    content: intl.get('account.accountRenamedSuccess', { accountName: account.name })
   });
 }
 
 function* renameAccountFailureSaga(action: PayloadAction<string>) {
   Modal.error({
-    content: 'Rename failed. All accounts must have a unique name.',
+    content: intl.get('account.renameFailed')
   });
   yield put(hideLoading(renameAccount.type));
 }
@@ -300,7 +297,7 @@ function* deleteAccountSaga(action: PayloadAction<DeleteAccountCommand>) {
     yield call(accountApi.delete, id, action.payload);
     yield put(deleteAccountSuccess(id));
   } catch (err) {
-    const message = (err as Error).message ?? `Unable to delete the account.`;
+    const message = (err as Error).message ?? intl.get('account.deleteFailed');
     yield put(deleteAccountFailure(message));
   }
 }
@@ -308,13 +305,13 @@ function* deleteAccountSaga(action: PayloadAction<DeleteAccountCommand>) {
 function* deleteAccountSuccessSaga(action: PayloadAction<number>) {
   yield put(hideLoading(deleteAccount.type));
   Modal.success({
-    content: `The account has been deleted successfully.`,
+    content: intl.get('account.accountDeleteSuccess')
   });
 }
 
 function* deleteAccountFailureSaga(action: PayloadAction<string>) {
   Modal.error({
-    content: 'Delete failed. Could not delete the account.',
+    content: intl.get('account.deleteFailed')
   });
   yield put(hideLoading(deleteAccount.type));
 }
@@ -328,22 +325,20 @@ function* refreshLixiListSaga(action: PayloadAction<number>) {
     const lixies = (lixiesData ?? []) as Lixi[];
     yield put(refreshLixiListSuccess({ account: account, lixies: lixies }));
   } catch (err) {
-    const message = (err as Error).message ?? `Unable to refresh the list.`;
+    const message = (err as Error).message ?? intl.get('account.unableToRefresh');
     yield put(refreshLixiListFailure(message));
   }
 }
-function* refreshLixiListSuccessSaga(
-  action: PayloadAction<{ account: Account; lixies: Lixi[] }>
-) {
+function* refreshLixiListSuccessSaga(action: PayloadAction<{ account: Account; lixies: Lixi[] }>) {
   yield put(hideLoading(refreshLixiList.type));
 }
 function* refreshLixiListFailureSaga(action: PayloadAction<number>) {
-  const message = action.payload ?? 'Unable to refresh the lixi list.';
+  const message = action.payload ?? intl.get('account.unableToRefresh');
   yield put(
     showToast('error', {
       message: 'Error',
       description: message,
-      duration: 5,
+      duration: 5
     })
   );
   yield put(hideLoading(refreshLixiList.type));

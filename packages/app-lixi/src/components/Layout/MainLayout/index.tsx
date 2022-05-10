@@ -7,9 +7,7 @@ import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 
-import {
-  GiftOutlined, LoadingOutlined, SettingOutlined, UserOutlined, WalletOutlined
-} from '@ant-design/icons';
+import { GiftOutlined, LoadingOutlined, SettingOutlined, UserOutlined, WalletOutlined } from '@ant-design/icons';
 import { Footer, NavButton } from '@bcpros/lixi-components/components';
 
 import ModalManager from '../../Common/ModalManager';
@@ -21,6 +19,7 @@ import Topbar from '@containers/Topbar';
 import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
 import { loadLocale } from '@store/settings/actions';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
+import { injectStore } from 'src/utils/axiosClient';
 
 const { Content, Sider, Header } = Layout;
 
@@ -103,99 +102,85 @@ export const LixiTextLogo = styled.img`
   }
 `;
 
-const MainLayout: React.FC = (props) => {
+const MainLayout: React.FC = props => {
   const { children } = props;
   const selectedAccount = useAppSelector(getSelectedAccount);
   const currentLocale = useAppSelector(getCurrentLocale);
   const intlInitDone = useAppSelector(getIntlInitStatus);
   const dispatch = useAppDispatch();
 
+  injectStore(currentLocale);
   const isLoading = useAppSelector(getIsGlobalLoading);
 
   useEffect(() => {
     dispatch(loadLocale(currentLocale));
   }, [currentLocale]);
 
-  const router = useRouter()
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const selectedKey = router.pathname ?? '';
 
   useEffect(() => {
     setLoading(false);
-  }, [selectedAccount])
+  }, [selectedAccount]);
 
   return (
     <ThemeProvider theme={theme as DefaultTheme}>
       <GlobalStyle />
-      {
-        intlInitDone &&
-        (<Spin
-          spinning={
-            loading
-          }
-          indicator={LoadingIcon}
-        >
+      {intlInitDone && (
+        <Spin spinning={loading} indicator={LoadingIcon}>
           <LixiApp>
             <Layout>
               <AppBody>
                 <ModalManager />
-                {!selectedAccount
-                  ? <OnboardingComponent></OnboardingComponent>
-                  : <>
+                {!selectedAccount ? (
+                  <OnboardingComponent></OnboardingComponent>
+                ) : (
+                  <>
                     <AppContainer>
                       <Layout>
                         <Sidebar />
                         <Layout>
                           <Topbar />
-                          <Content>
-                            {children}
-                          </Content>
+                          <Content>{children}</Content>
                         </Layout>
                       </Layout>
                     </AppContainer>
                     <Footer>
-                      <Link href='/' passHref>
-                        <NavButton
-                          active={selectedKey === '/'}
-                        >
+                      <Link href="/" passHref>
+                        <NavButton active={selectedKey === '/'}>
                           <UserOutlined />
                           {intl.get('general.accounts')}
                         </NavButton>
                       </Link>
-                      <Link href='/lixi' passHref>
-                        <NavButton
-                          active={selectedKey === '/lixi'}
-                        >
+                      <Link href="/lixi" passHref>
+                        <NavButton active={selectedKey === '/lixi'}>
                           <WalletOutlined />
                           {intl.get('general.lixi')}
                         </NavButton>
                       </Link>
-                      <Link href='/claim' passHref>
-                        <NavButton
-                          active={selectedKey === '/claim'}
-                        >
+                      <Link href="/claim" passHref>
+                        <NavButton active={selectedKey === '/claim'}>
                           <GiftOutlined />
                           {intl.get('general.claim')}
                         </NavButton>
                       </Link>
-                      <Link href='/settings' passHref>
-                        <NavButton
-                          active={selectedKey === '/settings'}
-                        >
+                      <Link href="/settings" passHref>
+                        <NavButton active={selectedKey === '/settings'}>
                           <SettingOutlined />
                           {intl.get('general.settings')}
                         </NavButton>
                       </Link>
                     </Footer>
                   </>
-                }
+                )}
               </AppBody>
             </Layout>
           </LixiApp>
-        </Spin>)
-      }
+        </Spin>
+      )}
     </ThemeProvider>
   );
-}
+};
 
 export default MainLayout;

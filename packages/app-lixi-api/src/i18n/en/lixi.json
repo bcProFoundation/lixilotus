@@ -1,0 +1,19 @@
+{
+  "messages": {
+    "lixiNotExist": "The lixi does not exist in the database.",
+    "couldNotFindAccount": "Could not find the associated account.",
+    "couldNotFindLixi": "Could not found the lixi in the database.",
+    "couldNotCreateLixi": "Could not create lixi because the account is invalid.",
+    "unableCreateLixi": "Unable to create new lixi.",
+    "couldNotLockLixi": "Could not locked the lixi.",
+    "couldNotUnlockLixi": "Could not unlock the lixi.",
+    "invalidAccount": "Invalid account. Unable to withdraw the lixi",
+    "unableWithdraw": "Unable to withdraw. The lixi is empty!",
+    "couldNotWithdraw": "Could not withdraw the lixi.",
+    "nameAlreadyTaken": "The name is already taken.",
+    "invalidAccountCouldNotUpdateLixi": "Invalid account! Could not update the lixi.",
+    "unableToGetClaimListLixi": "Unable to get claim list of the lixi.",
+    "unableToGetLixi": "Unable to get lixi.",
+    "unableToUpdateLixi": "Unable to update lixi."
+  }
+}

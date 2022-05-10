@@ -1,4 +1,5 @@
 import * as _ from 'lodash';
+import intl from 'react-intl-universal';
 
 import { Envelope } from '@bcpros/lixi-models';
 import { all, call, fork, put, takeLatest } from '@redux-saga/core/effects';
@@ -7,7 +8,11 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
 import {
-  getEnvelope, getEnvelopeFailure, getEnvelopes, getEnvelopesFailure, getEnvelopesSuccess,
+  getEnvelope,
+  getEnvelopeFailure,
+  getEnvelopes,
+  getEnvelopesFailure,
+  getEnvelopesSuccess,
   getEnvelopeSuccess
 } from './actions';
 import envelopeApi from './api';
@@ -19,8 +24,8 @@ function* getEnvelopeSaga(action: PayloadAction<number>) {
     const data = yield call(envelopeApi.getById, id);
     yield put(getEnvelopeSuccess(data));
   } catch (err) {
-    const message = (err as Error).message ?? `Could not fetch the envelope from api.`;
-    yield put(getEnvelopeFailure(message))
+    const message = (err as Error).message ?? intl.get('envelope.couldNotFetch');
+    yield put(getEnvelopeFailure(message));
   }
 }
 
@@ -30,12 +35,14 @@ function* getEnvelopeSuccessSaga(action: PayloadAction<Envelope>) {
 }
 
 function* getEnvelopeFailureSaga(action: PayloadAction<string>) {
-  const message = action.payload ?? 'Unable to get the envelope from server';
-  yield put(showToast('error', {
-    message: 'Error',
-    description: message,
-    duration: 5
-  }));
+  const message = action.payload ?? intl.get('envelope.unableGetEnvelope');
+  yield put(
+    showToast('error', {
+      message: 'Error',
+      description: message,
+      duration: 5
+    })
+  );
   yield put(hideLoading(getEnvelope.type));
 }
 
@@ -45,8 +52,8 @@ function* getEnvelopesSaga(action: PayloadAction) {
     const data = yield call(envelopeApi.getAll);
     yield put(getEnvelopesSuccess(data));
   } catch (err) {
-    const message = (err as Error).message ?? `Could not fetch the envelopes from api.`;
-    yield put(getEnvelopeFailure(message))
+    const message = (err as Error).message ?? intl.get('envelope.couldNotFetch');
+    yield put(getEnvelopeFailure(message));
   }
 }
 
@@ -56,12 +63,14 @@ function* getEnvelopesSuccessSaga(action: PayloadAction<Envelope[]>) {
 }
 
 function* getEnvelopesFailureSaga(action: PayloadAction<string>) {
-  const message = action.payload ?? 'Unable to get the envelopes from server';
-  yield put(showToast('error', {
-    message: 'Error',
-    description: message,
-    duration: 5
-  }));
+  const message = action.payload ?? intl.get('envelope.unableGetEnvelope');
+  yield put(
+    showToast('error', {
+      message: 'Error',
+      description: message,
+      duration: 5
+    })
+  );
   yield put(hideLoading(getEnvelopes.type));
 }
 
@@ -96,6 +105,6 @@ export default function* lixiSaga() {
     fork(watchGetEnvelopeFailure),
     fork(watchGetEnvelopes),
     fork(watchGetEnvelopesSuccess),
-    fork(watchGetEnvelopesFailure),
+    fork(watchGetEnvelopesFailure)
   ]);
 }

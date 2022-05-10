@@ -2,9 +2,7 @@ import { Alert, Collapse, Form, Input, Spin } from 'antd';
 import intl from 'react-intl-universal';
 import * as _ from 'lodash';
 import React, { useEffect, useState } from 'react';
-import {
-  deleteAccount, generateAccount, importAccount, renameAccount, selectAccount
-} from 'src/store/account/actions';
+import { deleteAccount, generateAccount, importAccount, renameAccount, selectAccount } from 'src/store/account/actions';
 import { getAllAccounts, getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
@@ -14,9 +12,7 @@ import styled from 'styled-components';
 
 import { CashLoadingIcon, ThemedDollarOutlined } from '@bcpros/lixi-components/components/Common/CustomIcons';
 import { Account, DeleteAccountCommand, RenameAccountCommand } from '@bcpros/lixi-models';
-import {
-  CopyOutlined, ImportOutlined, LockOutlined, PlusSquareOutlined, WalletOutlined
-} from '@ant-design/icons';
+import { CopyOutlined, ImportOutlined, LockOutlined, PlusSquareOutlined, WalletOutlined } from '@ant-design/icons';
 import Edit from '@assets/icons/edit.svg';
 import Trashcan from '@assets/icons/trashcan.svg';
 import { AntdFormWrapper, LanguageSelectDropdown } from '@components/Common/EnhancedInputs';
@@ -40,78 +36,78 @@ export const ThemedWalletOutlined = styled(WalletOutlined)`
 `;
 
 const SWRow = styled.div`
-    border-radius: 3px;
-    padding: 10px 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 6px;
-    @media (max-width: 500px) {
-        flex-direction: column;
-        margin-bottom: 12px;
-    }
+  border-radius: 3px;
+  padding: 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6px;
+  @media (max-width: 500px) {
+    flex-direction: column;
+    margin-bottom: 12px;
+  }
 `;
 
 const SWName = styled.div`
-    width: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    word-wrap: break-word;
-    hyphens: auto;
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  word-wrap: break-word;
+  hyphens: auto;
 
-    @media (max-width: 500px) {
-        width: 100%;
-        justify-content: center;
-        margin-bottom: 15px;
-    }
+  @media (max-width: 500px) {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 15px;
+  }
 
-    h3 {
-        font-size: 16px;
-        color: ${props => props.theme.wallet.text.secondary};
-        margin: 0;
-        text-align: left;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+  h3 {
+    font-size: 16px;
+    color: ${props => props.theme.wallet.text.secondary};
+    margin: 0;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `;
 
 const SWButtonCtn = styled.div`
-    width: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    @media (max-width: 500px) {
-        width: 100%;
-        justify-content: center;
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  @media (max-width: 500px) {
+    width: 100%;
+    justify-content: center;
+  }
+
+  button {
+    cursor: pointer;
+
+    @media (max-width: 768px) {
+      font-size: 14px;
     }
+  }
 
-    button {
-        cursor: pointer;
+  svg {
+    stroke: ${props => props.theme.wallet.text.secondary};
+    fill: ${props => props.theme.wallet.text.secondary};
+    width: 25px;
+    height: 25px;
+    margin-right: 20px;
+    cursor: pointer;
 
-        @media (max-width: 768px) {
-            font-size: 14px;
-        }
+    :first-child:hover {
+      stroke: ${props => props.theme.primary};
+      fill: ${props => props.theme.primary};
     }
-
-    svg {
-        stroke: ${props => props.theme.wallet.text.secondary};
-        fill: ${props => props.theme.wallet.text.secondary};
-        width: 25px;
-        height: 25px;
-        margin-right: 20px;
-        cursor: pointer;
-
-        :first-child:hover {
-            stroke: ${props => props.theme.primary};
-            fill: ${props => props.theme.primary};
-        }
-        :hover {
-            stroke: ${props => props.theme.settings.delete};
-            fill: ${props => props.theme.settings.delete};
-        }
+    :hover {
+      stroke: ${props => props.theme.settings.delete};
+      fill: ${props => props.theme.settings.delete};
     }
+  }
 `;
 
 const AWRow = styled.div`
@@ -145,7 +141,6 @@ const AWRow = styled.div`
 `;
 
 const Settings: React.FC = () => {
-
   const ContextValue = React.useContext(AppContext);
   const { Wallet } = ContextValue;
 
@@ -154,7 +149,7 @@ const Settings: React.FC = () => {
   const [isValidMnemonic, setIsValidMnemonic] = useState<boolean | null>(null);
   const [formData, setFormData] = useState({
     dirty: true,
-    mnemonic: '',
+    mnemonic: ''
   });
 
   const [form] = Form.useForm();
@@ -174,26 +169,26 @@ const Settings: React.FC = () => {
     const command: RenameAccountCommand = {
       id: account.id,
       mnemonic: account.mnemonic,
-      name: account.name,
+      name: account.name
     };
     const renameAcountModalProps: RenameAccountModalProps = {
       account: account,
       onOkAction: renameAccount(command)
     };
     dispatch(openModal('RenameAccountModal', renameAcountModalProps));
-  }
+  };
 
   const showPopulatedDeleteAccountModal = (account: Account) => {
     const command: DeleteAccountCommand = {
       id: account.id,
-      mnemonic: account.mnemonic,
+      mnemonic: account.mnemonic
     };
     const deleteAcountModalProps: DeleteAccountModalProps = {
       account: account,
       onOkAction: deleteAccount(command)
     };
     dispatch(openModal('DeleteAccountModal', deleteAcountModalProps));
-  }
+  };
 
   const handleChange = e => {
     const { value, name } = e.target;
@@ -213,7 +208,7 @@ const Settings: React.FC = () => {
   async function submit() {
     setFormData({
       ...formData,
-      dirty: false,
+      dirty: false
     });
 
     // Exit if no user input
@@ -243,15 +238,12 @@ const Settings: React.FC = () => {
           style={{ marginBottom: '12px' }}
           description={intl.get('settings.backupAccountWarning')}
           type="warning"
-          showIcon message
+          showIcon
+          message
         />
         <StyledCollapse>
           <Panel header={intl.get('settings.revealPhrase')} key="1">
-            <p className="notranslate">
-              {selectedAccount && selectedAccount.mnemonic
-                ? selectedAccount.mnemonic
-                : ''}
-            </p>
+            <p className="notranslate">{selectedAccount && selectedAccount.mnemonic ? selectedAccount.mnemonic : ''}</p>
           </Panel>
         </StyledCollapse>
         <StyledSpacer />
@@ -266,34 +258,24 @@ const Settings: React.FC = () => {
         </SecondaryButton>
         {seedInput && (
           <>
-            <p>
-              {intl.get('settings.backupAccountHint')}
-            </p>
+            <p>{intl.get('settings.backupAccountHint')}</p>
             <AntdFormWrapper>
               <Form style={{ width: 'auto' }} form={form}>
-                <Form.Item name="mnemonic"
-                  validateStatus={
-                    isValidMnemonic === null ||
-                      isValidMnemonic ? '' : 'error'
-                  }
-                  help={
-                    isValidMnemonic === null ||
-                      isValidMnemonic ? '' : 'Valid mnemonic seed phrase required'
-                  }
+                <Form.Item
+                  name="mnemonic"
+                  validateStatus={isValidMnemonic === null || isValidMnemonic ? '' : 'error'}
+                  help={isValidMnemonic === null || isValidMnemonic ? '' : intl.get('account.mnemonicRequired')}
                 >
                   <Input
                     prefix={<LockOutlined />}
-                    placeholder="mnemonic (seed phrase)"
+                    placeholder={intl.get('account.mnemonic')}
                     name="mnemonic"
                     autoComplete="off"
                     onChange={e => handleChange(e)}
                     required
                   />
                 </Form.Item>
-                <SmartButton
-                  disabled={!isValidMnemonic}
-                  onClick={() => submit()}
-                >
+                <SmartButton disabled={!isValidMnemonic} onClick={() => submit()}>
                   Import
                 </SmartButton>
               </Form>
@@ -305,83 +287,60 @@ const Settings: React.FC = () => {
           <>
             <StyledCollapse>
               <Panel header={intl.get('settings.savedAccount')} key="2">
-                {<AWRow>
-                  <SWName>
-                    <h3>{selectedAccount?.name}</h3>
-                  </SWName>
-                  <SWButtonCtn>
-                    <span onClick={() =>
-                      showPopulatedRenameAccountModal(
-                        selectedAccount as Account
-                      )
-                    }>
-                      <Edit />
-                    </span>
-                    <span onClick={() =>
-                      showPopulatedDeleteAccountModal(
-                        selectedAccount as Account
-                      )
-                    }>
-                      <Trashcan />
-                    </span >
-                    <h4>{intl.get('settings.activated')}</h4>
-                  </SWButtonCtn>
-                </AWRow>}
+                {
+                  <AWRow>
+                    <SWName>
+                      <h3>{selectedAccount?.name}</h3>
+                    </SWName>
+                    <SWButtonCtn>
+                      <span onClick={() => showPopulatedRenameAccountModal(selectedAccount as Account)}>
+                        <Edit />
+                      </span>
+                      <span onClick={() => showPopulatedDeleteAccountModal(selectedAccount as Account)}>
+                        <Trashcan />
+                      </span>
+                      <h4>{intl.get('settings.activated')}</h4>
+                    </SWButtonCtn>
+                  </AWRow>
+                }
                 <div>
-                  {otherAccounts && otherAccounts.map(acc => (
-                    <SWRow key={acc.id}>
-                      <SWName>
-                        <h3>{acc.name}</h3>
-                      </SWName>
+                  {otherAccounts &&
+                    otherAccounts.map(acc => (
+                      <SWRow key={acc.id}>
+                        <SWName>
+                          <h3>{acc.name}</h3>
+                        </SWName>
 
-                      <SWButtonCtn>
-                        <span onClick={() =>
-                          showPopulatedRenameAccountModal(
-                            acc,
-                          )
-                        }>
-                          <Edit />
-                        </span>
-                        <span onClick={() =>
-                          showPopulatedDeleteAccountModal(
-                            acc,
-                          )
-                        }>
-                          <Trashcan />
-                        </span>
-                        <button
-                          onClick={() => dispatch(selectAccount(acc.id))}
-                        >
-                          Activate
-                        </button>
-                      </SWButtonCtn>
-                    </SWRow>
-                  ))}
+                        <SWButtonCtn>
+                          <span onClick={() => showPopulatedRenameAccountModal(acc)}>
+                            <Edit />
+                          </span>
+                          <span onClick={() => showPopulatedDeleteAccountModal(acc)}>
+                            <Trashcan />
+                          </span>
+                          <button onClick={() => dispatch(selectAccount(acc.id))}>Activate</button>
+                        </SWButtonCtn>
+                      </SWRow>
+                    ))}
                 </div>
               </Panel>
             </StyledCollapse>
           </>
         )}
         <StyledSpacer />
-        <h2>
-          {intl.get('settings.languages')}
-        </h2>
+        <h2>{intl.get('settings.languages')}</h2>
         <AntdFormWrapper>
           <LanguageSelectDropdown
-            defaultValue={
-              currentLocale
-            }
+            defaultValue={currentLocale}
             onChange={(locale: any) => {
-              setLocale(locale)
-            }
-            }
+              setLocale(locale);
+            }}
           />
         </AntdFormWrapper>
         <StyledSpacer />
       </Spin>
     </>
-  )
+  );
 };
 
 export default Settings;
-

@@ -7,19 +7,26 @@ import geoip from 'geoip-country';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
 import {
-  countries, CreateClaimDto, fromSmallestDenomination, ClaimDto, toSmallestDenomination,
-  LixiType, ViewClaimDto, ClaimType
+  countries,
+  CreateClaimDto,
+  fromSmallestDenomination,
+  ClaimDto,
+  toSmallestDenomination,
+  LixiType,
+  ViewClaimDto,
+  ClaimType
 } from '@bcpros/lixi-models';
-import { WalletService } from "src/services/wallet.service";
+import { WalletService } from 'src/services/wallet.service';
 import { LixiService } from 'src/services/lixi/lixi.service';
 import moment from 'moment';
 import { aesGcmDecrypt, base58ToNumber } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
 import logger from 'src/logger';
 import { ReqSocket } from 'src/decorators/req.socket.decorator';
+import { I18n, I18nContext } from 'nestjs-i18n';
 
 const PRIVATE_KEY = 'AIzaSyCFY2D4NRLjDTpJfk0jjJNADalSceqC4qs';
-const SITE_KEY = "6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb";
+const SITE_KEY = '6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb';
 const PROJECT_ID = 'lixilotus';
 
 @Controller('claims')
@@ -29,10 +36,11 @@ export class ClaimController {
     private readonly walletService: WalletService,
     private readonly lixiService: LixiService,
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
-    @Inject('xpijs') private XPI: BCHJS) { }
+    @Inject('xpijs') private XPI: BCHJS
+  ) {}
 
   @Get(':id')
-  async getEnvelope(@Param('id') id: string): Promise<ViewClaimDto> {
+  async getEnvelope(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<ViewClaimDto> {
     try {
       const claim = await this.prisma.claim.findUnique({
         where: {
@@ -46,7 +54,10 @@ export class ClaimController {
           }
         }
       });
-      if (!claim) throw new VError('The claim does not exist in the database.');
+      if (!claim) {
+        const claimDoesNotExist = await i18n.t('claim.messages.claimDoesNotExist');
+        throw new VError(claimDoesNotExist);
+      }
 
       let result: ViewClaimDto = {
         id: claim.id,
@@ -61,21 +72,25 @@ export class ClaimController {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
-        const error = new VError.WError(err as Error, 'Unable to get the claim.');
+        const unableGetClaim = await i18n.t('claim.messages.unableGetClaim');
+        const error = new VError.WError(err as Error, unableGetClaim);
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
   }
 
-  
-
   @Post()
-  async claim(@Headers('x-forwarded-for') headerIp: string, @ReqSocket() socket: any, @Body() claimApi: CreateClaimDto): Promise<ClaimDto | any> {
+  async claim(
+    @Headers('x-forwarded-for') headerIp: string,
+    @ReqSocket() socket: any,
+    @Body() claimApi: CreateClaimDto,
+    @I18n() i18n: I18nContext
+  ): Promise<ClaimDto | any> {
     const captchaResBody = {
       event: {
         token: claimApi.captchaToken,
         siteKey: SITE_KEY,
-        expectedAction: "Claim"
+        expectedAction: 'Claim'
       }
     };
 
@@ -90,7 +105,8 @@ export class ClaimController {
 
         // Extract result from the API response
         if (response.status !== 200 || response.data.score <= 0.5) {
-          throw new VError('Incorrect captcha? Please claim again!');
+          const incorrectCaptcha = await i18n.t('claim.messages.incorrectCaptcha');
+          throw new VError(incorrectCaptcha);
         }
       } catch (err) {
         throw err;
@@ -108,24 +124,19 @@ export class ClaimController {
         const address = _.trim(claimApi.claimAddress);
 
         if (!Number.isInteger(lixiId)) {
-          throw new VError('Invalid claim code.');
+          const invalidClaimCode = await i18n.t('claim.messages.invalidClaimCode');
+          throw new VError(invalidClaimCode);
         }
 
         const countClaimAddress = await this.prisma.claim.findMany({
           where: {
-            AND: [
-              { claimAddress: address },
-              { lixiId: lixiId }
-            ]
+            AND: [{ claimAddress: address }, { lixiId: lixiId }]
           }
         });
 
         const countIpaddress = await this.prisma.claim.count({
           where: {
-            AND: [
-              { ipaddress: ip },
-              { lixiId: lixiId }
-            ]
+            AND: [{ ipaddress: ip }, { lixiId: lixiId }]
           }
         });
 
@@ -135,37 +146,43 @@ export class ClaimController {
           }
         });
 
-
         // isFamilyFriendly == true
         if (lixi?.isFamilyFriendly) {
           if (countClaimAddress.length > 0 || countIpaddress >= 5) {
-            throw new VError('You have reached the limit of redemptions for this code.');
+            const limitRedemptions = await i18n.t('claim.messages.limitRedemptions');
+            throw new VError(limitRedemptions);
           }
         }
         // isFamilyFriendly == false
         else {
           if (countClaimAddress.length > 0 || countIpaddress > 0) {
-            throw new VError('You have reached the limit of redemptions for this code.');
+            const limitRedemptions = await i18n.t('claim.messages.limitRedemptions');
+            throw new VError(limitRedemptions);
           }
         }
 
         if (process.env.NODE_ENV !== 'development') {
           await checkingCaptcha();
           const geolocation = geoip.lookup(ip);
-          const country = countries.find(country => country.id === lixi?.country)
+          const country = countries.find(country => country.id === lixi?.country);
 
           if (geolocation?.country != _.upperCase(country?.id) && !_.isNil(country?.id)) {
-            throw new VError('You cannot claim from outside the ' + country?.name + ' zone.');
+            const claimOutsideZone = await i18n.t('claim.messages.claimOutsideZone', {
+              args: { countryName: country?.name }
+            });
+            throw new VError(claimOutsideZone);
           }
         }
 
         if (!lixi) {
-          throw new VError('Unable to claim because the lixi is invalid');
+          const unableClaimLixi = await i18n.t('claim.messages.unableClaimLixi');
+          throw new VError(unableClaimLixi);
         }
 
         const lixiStatus = lixi?.status;
         if (lixiStatus === 'locked') {
-          throw new VError('Unable to claim because the lixi is locked');
+          const unableClaimLockedLixi = await i18n.t('claim.messages.unableClaimLockedLixi');
+          throw new VError(unableClaimLockedLixi);
         }
 
         //check if lixi is one time code
@@ -177,22 +194,25 @@ export class ClaimController {
           });
 
           if (parentLixi?.status == 'locked') {
-            throw new VError('Unable to claim because the parent lixi is locked');
+            const unableClaimParentLockedLixi = await i18n.t('claim.messages.unableClaimParentLockedLixi');
+            throw new VError(unableClaimParentLockedLixi);
           }
 
           if (parentLixi?.expiryAt != null || parentLixi?.activationAt != null) {
-            this.lixiService.checkDate(lixi.expiryAt!,lixi.activationAt!);
+            this.lixiService.checkDate(lixi.expiryAt!, lixi.activationAt!);
           }
         }
 
         if (lixi.expiryAt != null || lixi.activationAt != null) {
-           this.lixiService.checkDate(lixi.expiryAt!,lixi.activationAt!);
+          this.lixiService.checkDate(lixi.expiryAt!, lixi.activationAt!);
         }
-
 
         const claimAddressBalance = await this.xpiWallet.getBalance(address);
         if (claimAddressBalance < toSmallestDenomination(new BigNumber(lixi.minStaking))) {
-          throw new VError('You must have at least ' + lixi.minStaking + ' XPI in your account to claim this offer.');
+          const minStakingToClaim = await i18n.t('claim.messages.minStakingToClaim', {
+            args: { minStaking: lixi.minStaking }
+          });
+          throw new VError(minStakingToClaim);
         }
 
         const xPriv = await aesGcmDecrypt(lixi.encryptedXPriv, password);
@@ -204,11 +224,13 @@ export class ClaimController {
         const balance = await this.xpiWallet.getBalance(lixiAddress);
 
         if (balance === 0) {
-          throw new VError('Insufficient fund.');
+          const insufficientFund = await i18n.t('claim.messages.insufficientFund');
+          throw new VError(insufficientFund);
         }
 
         if ((lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim) || moment().isAfter(lixi.expiryAt)) {
-          throw new VError('The program has ended.');
+          const programEnded = await i18n.t('claim.messages.programEnded');
+          throw new VError(programEnded);
         }
 
         const utxos = await this.XPI.Utxo.get(lixiAddress);
@@ -226,7 +248,8 @@ export class ClaimController {
           const minSatoshis = toSmallestDenomination(new BigNumber(lixi.minValue));
           satoshisToSend = maxSatoshis.minus(minSatoshis).times(new BigNumber(Math.random())).plus(minSatoshis);
         } else if (lixi.lixiType == LixiType.Fixed) {
-          const xpiValue = (xpiBalance <= lixi.fixedValue) ? await this.walletService.onMax(lixiAddress) : lixi.fixedValue;
+          const xpiValue =
+            xpiBalance <= lixi.fixedValue ? await this.walletService.onMax(lixiAddress) : lixi.fixedValue;
           satoshisToSend = toSmallestDenomination(new BigNumber(xpiValue));
         } else {
           // The payout unit is satoshi
@@ -237,17 +260,21 @@ export class ClaimController {
         const satoshisBalance = new BigNumber(balance);
 
         if (satoshisToSend.lt(546) && satoshisToSend.gte(satoshisBalance)) {
-          throw new VError('Insufficient fund.');
+          const insufficientFund = await i18n.t('claim.messages.insufficientFund');
+          throw new VError(insufficientFund);
         }
 
         const amountSats = Math.floor(satoshisToSend.toNumber());
-        const outputs = [{
-          address: claimApi.claimAddress,
-          amountSat: amountSats
-        }];
+        const outputs = [
+          {
+            address: claimApi.claimAddress,
+            amountSat: amountSats
+          }
+        ];
 
         if (!utxoStore || !(utxoStore as any).bchUtxos || !(utxoStore as any).bchUtxos) {
-          throw new VError('UTXO list is empty');
+          const utxoEmpty = await i18n.t('claim.messages.utxoEmpty');
+          throw new VError(utxoEmpty);
         }
 
         // Determine the UTXOs needed to be spent for this TX, and the change
@@ -263,7 +290,7 @@ export class ClaimController {
 
         // Add inputs
         necessaryUtxos.forEach((utxo: any) => {
-          transactionBuilder.addInput(utxo.tx_hash, utxo.tx_pos)
+          transactionBuilder.addInput(utxo.tx_hash, utxo.tx_pos);
         });
 
         // Add outputs
@@ -277,22 +304,15 @@ export class ClaimController {
 
         // Sign each UTXO that is about to be spent.
         necessaryUtxos.forEach((utxo, i) => {
-          let redeemScript
+          let redeemScript;
 
-          transactionBuilder.sign(
-            i,
-            keyPair,
-            redeemScript,
-            transactionBuilder.hashTypes.SIGHASH_ALL,
-            utxo.value
-          )
+          transactionBuilder.sign(i, keyPair, redeemScript, transactionBuilder.hashTypes.SIGHASH_ALL, utxo.value);
         });
 
         const tx = transactionBuilder.build();
         const hex = tx.toHex();
 
         try {
-
           // Broadcast the transaction to the network.
           const txid = await this.XPI.RawTransactions.sendRawTransaction(hex);
           // const txid = await xpiWallet.send(outputs);
@@ -334,7 +354,10 @@ export class ClaimController {
             }
           });
 
-          if (!claim) throw new VError('Unable to claim.');
+          if (!claim) {
+            const unableClaim = await i18n.t('claim.messages.unableClaim');
+            throw new VError(unableClaim);
+          }
 
           let result: ViewClaimDto = {
             id: claimId,
@@ -347,14 +370,16 @@ export class ClaimController {
 
           return result;
         } catch (err) {
-          throw new VError(err as Error, 'Unable to send transaction');
+          const unableSendTransaction = await i18n.t('claim.messages.unableSendTransaction');
+          throw new VError(err as Error, unableSendTransaction);
         }
       } catch (err) {
         if (err instanceof VError) {
           throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
         } else {
           logger.error(err);
-          const error = new VError.WError(err as Error, 'Unable to claim.');
+          const unableClaim = await i18n.t('claim.messages.unableClaim');
+          const error = new VError.WError(err as Error, unableClaim);
           throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
       }
@@ -362,7 +387,12 @@ export class ClaimController {
   }
 
   @Post('validate')
-  async validate(@Headers('x-forwarded-for') headerIp: string, @ReqSocket() socket: any, @Body() claimApi: CreateClaimDto): Promise<any>  {
+  async validate(
+    @Headers('x-forwarded-for') headerIp: string,
+    @ReqSocket() socket: any,
+    @Body() claimApi: CreateClaimDto,
+    @I18n() i18n: I18nContext
+  ): Promise<any> {
     if (claimApi) {
       try {
         const ip = (headerIp || socket.remoteAddress) as string;
@@ -373,24 +403,19 @@ export class ClaimController {
         const address = _.trim(claimApi.claimAddress);
 
         if (!Number.isInteger(lixiId)) {
-          throw new VError('Invalid claim code.');
+          const invalidCode = await i18n.t('claim.messages.invalidCode');
+          throw new VError(invalidCode);
         }
 
         const countClaimAddress = await this.prisma.claim.findMany({
           where: {
-            AND: [
-              { claimAddress: address },
-              { lixiId: lixiId }
-            ]
+            AND: [{ claimAddress: address }, { lixiId: lixiId }]
           }
         });
 
         const countIpaddress = await this.prisma.claim.count({
           where: {
-            AND: [
-              { ipaddress: ip },
-              { lixiId: lixiId }
-            ]
+            AND: [{ ipaddress: ip }, { lixiId: lixiId }]
           }
         });
 
@@ -400,27 +425,30 @@ export class ClaimController {
           }
         });
 
-
         // isFamilyFriendly == true
         if (lixi?.isFamilyFriendly) {
           if (countClaimAddress.length > 0 || countIpaddress >= 5) {
-            throw new VError('You have reached the limit of redemptions for this code.');
+            const limitRedemptions = await i18n.t('claim.messages.limitRedemptions');
+            throw new VError(limitRedemptions);
           }
         }
         // isFamilyFriendly == false
         else {
           if (countClaimAddress.length > 0 || countIpaddress > 0) {
-            throw new VError('You have reached the limit of redemptions for this code.');
+            const limitRedemptions = await i18n.t('claim.messages.limitRedemptions');
+            throw new VError(limitRedemptions);
           }
         }
 
-         if (!lixi) {
-          throw new VError('Unable to claim because the lixi is invalid');
+        if (!lixi) {
+          const unableClaimLixi = await i18n.t('claim.messages.unableClaimLixi');
+          throw new VError(unableClaimLixi);
         }
 
         const lixiStatus = lixi?.status;
         if (lixiStatus === 'locked') {
-          throw new VError('Unable to claim because the lixi is locked');
+          const unableClaimLockedLixi = await i18n.t('claim.messages.unableClaimLockedLixi');
+          throw new VError(unableClaimLockedLixi);
         }
 
         //check if lixi is one time code
@@ -432,24 +460,28 @@ export class ClaimController {
           });
 
           if (parentLixi?.status == 'locked') {
-            throw new VError('Unable to claim because the parent lixi is locked');
+            const unableClaimParentLockedLixi = await i18n.t('claim.messages.unableClaimParentLockedLixi');
+            throw new VError(unableClaimParentLockedLixi);
           }
 
           if (parentLixi?.expiryAt != null || parentLixi?.activationAt != null) {
-            this.lixiService.checkDate(lixi.expiryAt!,lixi.activationAt!);
+            this.lixiService.checkDate(lixi.expiryAt!, lixi.activationAt!);
           }
         }
 
         if (lixi.expiryAt != null || lixi.activationAt != null) {
-           this.lixiService.checkDate(lixi.expiryAt!,lixi.activationAt!);
+          this.lixiService.checkDate(lixi.expiryAt!, lixi.activationAt!);
         }
 
         const claimAddressBalance = await this.xpiWallet.getBalance(address);
         if (claimAddressBalance < toSmallestDenomination(new BigNumber(lixi.minStaking))) {
-          throw new VError('You must have at least ' + lixi.minStaking + ' XPI in your account to claim this offer.');
+          const minStakingToClaim = await i18n.t('claim.messages.minStakingToClaim', {
+            args: { minStaking: lixi.minStaking }
+          });
+          throw new VError(minStakingToClaim);
         }
 
-         const xPriv = await aesGcmDecrypt(lixi.encryptedXPriv, password);
+        const xPriv = await aesGcmDecrypt(lixi.encryptedXPriv, password);
 
         // Generate the HD wallet.
         const childNode = this.XPI.HDNode.fromXPriv(xPriv);
@@ -458,25 +490,26 @@ export class ClaimController {
         const balance = await this.xpiWallet.getBalance(lixiAddress);
 
         if (balance === 0) {
-          throw new VError('Insufficient fund.');
+          const insufficientFund = await i18n.t('claim.messages.insufficientFund');
+          throw new VError(insufficientFund);
         }
 
         if ((lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim) || moment().isAfter(lixi.expiryAt)) {
-          throw new VError('The program has ended.');
+          const programEnded = await i18n.t('claim.messages.programEnded');
+          throw new VError(programEnded);
         }
 
         return true;
-
       } catch (err) {
         if (err instanceof VError) {
           throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
         } else {
           logger.error(err);
-          const error = new VError.WError(err as Error, 'Unable to claim.');
+          const unableClaim = await i18n.t('claim.messages.unableClaim');
+          const error = new VError.WError(err as Error, unableClaim);
           throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
       }
     }
-
   }
 }

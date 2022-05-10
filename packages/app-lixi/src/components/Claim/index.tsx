@@ -88,8 +88,12 @@ const ClaimComponent: React.FC = () => {
   }
 
   async function submit(token) {
+    let claimCode = currentClaimCode;
     if (!currentAddress || !currentClaimCode) {
       return;
+    }
+    else if (currentClaimCode.includes('lixi_')) {
+      claimCode = claimCode.match('(?<=lixi_).*')[0];
     }
 
     // Get the param-free address
@@ -104,7 +108,7 @@ const ClaimComponent: React.FC = () => {
 
     dispatch(postClaim({
       claimAddress: cleanAddress,
-      claimCode: currentClaimCode,
+      claimCode: claimCode,
       captchaToken: token,
     } as CreateClaimDto));
 
@@ -133,7 +137,7 @@ const ClaimComponent: React.FC = () => {
 
   const handleClaimCodeChange = e => {
     const { value, name } = e.target;
-    let claimCode = value;
+    let claimCode: string = _.trim(value);
     dispatch(saveClaimCode(claimCode));
   }
 
@@ -175,7 +179,7 @@ const ClaimComponent: React.FC = () => {
               <FormItemClaimCodeXpiInput
                 loadWithCameraOpen={false}
                 onScan={result =>
-                  handleAddressChange({
+                  handleClaimCodeChange({
                     target: {
                       name: 'claimCode',
                       value: result,
