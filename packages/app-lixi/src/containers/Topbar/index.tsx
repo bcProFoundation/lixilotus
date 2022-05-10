@@ -109,7 +109,7 @@ const NotificationMenu = (notifications: Notification[], account: Account) => {
                     </StyledAuthor>
                   }
                   content={
-                    <div style={{fontWeight: notification.readAt == null && "bold" }}>{notification.message}</div>
+                    <div style={{fontWeight: notification.readAt != null ? "normal" : "bold"}}>{notification.message}</div>
                   }
               /> 
               </SwipeToDelete>
@@ -127,7 +127,7 @@ const NotificationMenu = (notifications: Notification[], account: Account) => {
               content={
                 <Space>
                   <div 
-                    style={{fontWeight: notification.readAt == null && "bold", cursor:"pointer" }}
+                    style={{fontWeight: notification.readAt != null ? "normal" : "bold", cursor:"pointer" }}
                     onClick={()=>handleRead(account, notification.id)}
                   >
                     {notification.message}
