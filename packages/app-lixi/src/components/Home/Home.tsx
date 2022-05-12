@@ -70,6 +70,7 @@ const Home: React.FC = () => {
     dispatch(getEnvelopes());
     if (selectedAccount) {
       dispatch(getAccount(selectedAccount.id));
+      dispatch(refreshLixiList(selectedAccount?.id));
     }
   }, []);
 
