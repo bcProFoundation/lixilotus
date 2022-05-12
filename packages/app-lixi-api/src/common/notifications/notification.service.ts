@@ -8,7 +8,7 @@ import { PrismaService } from 'src/services/prisma/prisma.service';
 import { NOTIFICATION_OUTBOUND_QUEUE } from './notification.constants';
 import VError from 'verror';
 import _ from 'lodash';
-import { I18n, I18nContext } from 'nestjs-i18n';
+import { I18n, I18nContext, I18nService } from 'nestjs-i18n';
 
 @Injectable()
 export class NotificationService {
@@ -18,7 +18,7 @@ export class NotificationService {
   constructor(
     private prisma: PrismaService,
     @InjectQueue(NOTIFICATION_OUTBOUND_QUEUE) private notificationOutboundQueue: Queue,
-    @I18n() private i18n: I18nContext
+    @I18n() private i18n: I18nService
   ) {
   }
 
