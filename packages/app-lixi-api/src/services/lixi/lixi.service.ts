@@ -138,7 +138,7 @@ export class LixiService {
       claimedNum: 0,
       encryptedXPriv,
       amount: 0,
-      status: 'active',
+      status: 'pending',
       expiryAt: command.expiryAt,
       activationAt: command.activationAt,
       address,

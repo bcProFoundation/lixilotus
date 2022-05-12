@@ -5,6 +5,7 @@ import { NotificationService } from "src/common/notifications/notification.servi
 import { CREATE_SUB_LIXIES_QUEUE, LIXI_JOB_NAMES } from "src/constants/lixi.constants";
 import { CreateSubLixiesJobResult } from "src/models/lixi.models";
 import { LixiService } from "src/services/lixi/lixi.service";
+import { UpdateLixiStatusCommand } from "@bcpros/lixi-models";
 
 @Injectable()
 @QueueEventsListener(CREATE_SUB_LIXIES_QUEUE)
@@ -29,10 +30,21 @@ export class CreateSubLixiesEventsListener extends QueueEventsHost {
       // The parent job
       const notif = await this.lixiService.buildNotification(
         NOTIFICATION_TYPES.CREATE_SUB_LIXIES,
-        senderId, recipientId, { name: args?.returnvalue?.name }
+        senderId, recipientId, {
+          id: args.returnvalue.id, 
+          name: args?.returnvalue?.name ,
+          mnemonicHash: args.returnvalue.mnemonicHash,
+        }
       );
+      const id = args.returnvalue.id;
+      const updateStatus = {
+        id: id,
+        mnemonicHash: args.returnvalue.mnemonicHash,
+        status: 'active'
+      };
       if (notif) {
         const room = mnemonicHash;
+        await this.notificationService.updateStatusLixi(id, updateStatus as UpdateLixiStatusCommand);
         await this.notificationService.saveAndDispatchNotification(room, notif);
       }
     }

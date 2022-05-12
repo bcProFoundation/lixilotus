@@ -154,6 +154,12 @@ export interface ExportLixiCommand {
   mnemonicHash: string;
 }
 
+export interface UpdateLixiStatusCommand {
+  id: number;
+  mnemonicHash: string;
+  status: string;
+}
+
 export enum LixiType {
   Random = 0,
   Fixed = 1,

@@ -53,7 +53,7 @@ const lixiApi = {
         throw response?.data ?? err ?? 'Network Error';
       })
   },
-  patch(id: number, data: RenameLixiCommand): Promise<LixiDto> {
+  renameLixi(id: number, data: RenameLixiCommand): Promise<LixiDto> {
     const url = `/api/lixies/${id}/rename`;
     return axiosClient.patch(url, data)
       .then(response => {

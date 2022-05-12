@@ -58,7 +58,7 @@ import {
   unarchiveLixiSuccess,
   withdrawLixi,
   withdrawLixiFailure,
-  withdrawLixiSuccess
+  withdrawLixiSuccess,
 } from './actions';
 import lixiApi from './api';
 import { getLixiById } from './selectors';
@@ -456,7 +456,7 @@ function* renameLixiSaga(action: PayloadAction<RenameLixiCommand>) {
   try {
     yield put(showLoading(renameLixi.type));
     const { id } = action.payload;
-    const data = yield call(lixiApi.patch, id, action.payload);
+    const data = yield call(lixiApi.renameLixi, id, action.payload);
     const lixi = data as Lixi;
     yield put(renameLixiSuccess(lixi));
   } catch (err) {
@@ -505,6 +505,7 @@ function* exportSubLixiesFailureSaga(action: PayloadAction<string>) {
   );
   yield put(hideLoading(exportSubLixies.type));
 }
+
 
 function* watchGenerateLixi() {
   yield takeLatest(generateLixi.type, generateLixiSaga);
@@ -638,6 +639,7 @@ function* watchExportSubLixiesFailure() {
   yield takeLatest(exportSubLixiesFailure.type, exportSubLixiesFailureSaga);
 }
 
+
 export default function* lixiSaga() {
   yield all([
     fork(watchGenerateLixi),
@@ -672,6 +674,6 @@ export default function* lixiSaga() {
     fork(watchRenameLixiSuccess),
     fork(watchRenameLixiFailure),
     fork(watchExportSubLixies),
-    fork(watchExportSubLixiesFailure)
+    fork(watchExportSubLixiesFailure),
   ]);
 }

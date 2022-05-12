@@ -349,11 +349,10 @@ export class AccountController {
         }
       });
       
-      let claimCount = 0;
-      let subLixiTotalClaim = 0;
-      let subLixiBalance = 0;
-      
       const results = lixies.map(item => {
+        let claimCount = 0;
+        let subLixiTotalClaim = 0;
+        let subLixiBalance = 0;
         for (const sub of subLixies) {
           if (item.id == sub.parentId) {
             sub.isClaimed ? claimCount++ : claimCount;
