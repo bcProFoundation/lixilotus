@@ -1,5 +1,6 @@
 import { AccountDto as Account, NotificationDto as Notification } from '@bcpros/lixi-models';
 import { all, call, cancelled, fork, put, select, take, takeLatest } from '@redux-saga/core/effects';
+import intl from 'react-intl-universal';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { getSelectedAccount } from '@store/account/selectors';
 import { eventChannel } from 'redux-saga';
@@ -26,11 +27,17 @@ import {
   readNotificationFailure
 } from './actions';
 import notificationApi from './api';
-import intl from 'react-intl-universal';
+import { refreshLixi } from '../lixi/actions';
 
 let socket: Socket;
 const baseUrl = process.env.NEXT_PUBLIC_LIXI_API ? process.env.NEXT_PUBLIC_LIXI_API : 'https://lixilotus.com/';
 const socketServerUrl = `${baseUrl}ws/notifications`;
+
+const NOTIFICATION_TYPES = {
+  CREATE_SUB_LIXIES: 1,
+  WITHDRAW_SUB_LIXIES: 2,
+  EXPORT_SUB_LIXIES: 3
+};
 
 /**
  * Wait for the selector until the value existed
@@ -56,7 +63,7 @@ function* fetchNotificationsSaga(action: PayloadAction<{ accountId: number; mnem
     const notifications: Notification[] = yield call(notificationApi.getByAccountId, accountId, mnemonichHash);
     yield put(fetchNotificationsSuccess(notifications));
   } catch (err) {
-    const message = (err as Error).message ?? intl.get('notification.unableToFetch');
+    const message = (err as Error).message ?? intl.get('claim.unableClaim');
     yield put(fetchNotificationsFailure(message));
   }
 }
@@ -136,6 +143,10 @@ function* watchFetchNotificationsSuccess() {
 
 function* watchFetchNotificationsFailure() {
   yield takeLatest(fetchNotificationsFailure.type, fetchNotificationsFailureSaga);
+}
+
+function* watchReceiveNotifications() {
+  yield takeLatest(receiveNotification.type, receiveNotificationSaga);
 }
 
 function* watchDeleteNotification() {
@@ -261,6 +272,18 @@ function* startStopChannel() {
   }
 }
 
+function* receiveNotificationSaga(action: PayloadAction<Notification>) {
+  try {
+    const { notificationTypeId, additionalData } = action.payload;
+    if (notificationTypeId == NOTIFICATION_TYPES.CREATE_SUB_LIXIES) {
+      const { id } = additionalData as any;
+      yield put(refreshLixi(id));
+    }
+  } catch (error) {
+    console.log('error', error.message);
+  }
+}
+
 export default function* notificationSaga() {
   if (typeof window === 'undefined') {
     yield all([
@@ -272,7 +295,7 @@ export default function* notificationSaga() {
       fork(watchDeleteNotificationFailure),
       fork(watchReadNotification),
       fork(watchReadNotificationSuccess),
-      fork(watchReadNotificationFailure)
+      fork(watchReadNotificationFailure),
     ]);
   } else {
     yield all([
@@ -280,12 +303,13 @@ export default function* notificationSaga() {
       fork(watchFetchNotifications),
       fork(watchFetchNotificationsSuccess),
       fork(watchFetchNotificationsFailure),
+      fork(watchReceiveNotifications),
       fork(watchDeleteNotification),
       fork(watchDeleteNotificationSuccess),
       fork(watchDeleteNotificationFailure),
       fork(watchReadNotification),
       fork(watchReadNotificationSuccess),
-      fork(watchReadNotificationFailure)
+      fork(watchReadNotificationFailure),
     ]);
   }
 }

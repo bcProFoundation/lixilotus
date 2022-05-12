@@ -167,7 +167,7 @@ const Home: React.FC = () => {
         lixies.length > 0 && (
           <StyledTabs type="card" size="large" defaultActiveKey="1" centered>
             <TabPane key={'1'} tab={(<span> <CheckCircleOutlined className='active-tab-icon' /> Active </span>)}>
-              <LixiList lixies={lixies.filter(lixi => lixi.status == 'active' && !moment().isAfter(lixi.expiryAt) && !(lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim))} />
+              <LixiList lixies={lixies.filter(lixi => (lixi.status == 'active' || lixi.status == 'pending') && !moment().isAfter(lixi.expiryAt) && !(lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim))} />
             </TabPane>
             <TabPane key={'2'} tab={(<span> <InboxOutlined className='archive-tab-icon' /> Archive </span>)}>
               <LixiList lixies={lixies.filter(lixi => lixi.status != 'active' || moment().isAfter(lixi.expiryAt) || lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim)} />

@@ -53,6 +53,4 @@ export class CreateSubLixiesProcessor extends WorkerHost {
       recipientId: command.accountId
     } as CreateSubLixiesJobResult;
   }
-
-
 }

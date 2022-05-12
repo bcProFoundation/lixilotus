@@ -14,7 +14,7 @@ import { AppContext } from 'src/store/store';
 import { showToast } from 'src/store/toast/actions';
 import styled from 'styled-components';
 
-import { CopyOutlined, DownloadOutlined, ExportOutlined, ReloadOutlined } from '@ant-design/icons';
+import { CaretRightOutlined, CopyOutlined, DownloadOutlined, ExportOutlined, LoadingOutlined, ReloadOutlined } from '@ant-design/icons';
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import { SmartButton } from '@bcpros/lixi-components/components/Common/PrimaryButton';
 import { QRClaimCode } from '@bcpros/lixi-components/components/Common/QRClaimCode';
@@ -328,7 +328,11 @@ const Lixi: React.FC = () => {
           </Descriptions>
 
           {/* Lixi details */}
-          <StyledCollapse style={{ marginBottom: '20px' }}>
+          <StyledCollapse 
+            style={{ marginBottom: '20px' }} 
+            collapsible={selectedLixi.status == 'active'? "header" : "disabled"}
+            expandIcon={({ isActive }) => (selectedLixi.status == 'active') ? <CaretRightOutlined rotate={isActive ? 90 : 0} /> : <LoadingOutlined />}
+            >
             <Panel header={intl.get('lixi.lixiDetail')} key="panel-1">
               {selectedLixi.claimType == ClaimType.Single ? (
                 <>
@@ -356,7 +360,7 @@ const Lixi: React.FC = () => {
             </Panel>
           </StyledCollapse>
 
-          {/* Copy ClaimCode */}
+          {/* Copy ClaimCode or Export Lixi*/}
           {selectedLixi.claimType == ClaimType.Single ? (
             <CopyToClipboard
               style={{

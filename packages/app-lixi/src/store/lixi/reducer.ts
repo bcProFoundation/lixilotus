@@ -10,7 +10,7 @@ import {
   fetchInitialSubLixiesSuccess,
   fetchMoreSubLixiesSuccess,
   archiveLixiSuccess, postLixiSuccess, refreshLixiSuccess, renameLixiSuccess, selectLixiSuccess, setLixi, setLixiBalance,
-  unarchiveLixiSuccess
+  unarchiveLixiSuccess,
 } from './actions';
 import { LixiesState } from './state';
 

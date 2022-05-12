@@ -36,4 +36,3 @@ export interface SendNotificationJobData {
   room: string;
   notification: NotificationDto;
 }
-
