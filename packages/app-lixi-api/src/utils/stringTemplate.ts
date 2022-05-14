@@ -25,7 +25,7 @@ function prop(obj: any, path: string) {
       break;
     }
   }
-  return;
+  return obj;
 }
 
 /**

@@ -161,6 +161,8 @@ export default {
   'claim.claimCodeCopied': 'Sao chép mã nhận Lì xì thành công',
   'claim.unableDownloadClaimCode': 'Không thể tải mã nhạn Lì xì.',
   'claim.pleaseCopyManually': 'Hãy thử sao chép mã Lì xì và tiếp tục',
+  'claim.withdrawSuccess': 'Rút thành công',
+  'claim.refreshSuccess': 'Làm mới thành công',
 
   'settings.settings': 'Cài đặt',
 

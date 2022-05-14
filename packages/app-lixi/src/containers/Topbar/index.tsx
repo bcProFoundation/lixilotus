@@ -51,7 +51,7 @@ const StyledAuthor = styled.div`
   font-size: 14px;
   color: black;
   display: inline-block;
-  width: 310px;
+  width: 300px;
 
   &:hover {
     color: black;
