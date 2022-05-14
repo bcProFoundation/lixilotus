@@ -4,6 +4,15 @@ import { NotificationsState } from "./state";
 import { channelOff, channelOn, fetchNotificationsSuccess, receiveNotification, serverOff, serverOn, deleteNotificationSuccess, readNotificationSuccess } from "./actions";
 
 export const notificationsAdapter = createEntityAdapter<Notification>({
+  sortComparer: (a, b) => {
+    if (a.createdAt === b.createdAt)  {
+      return 0;
+    } else if (a.createdAt > b.createdAt) {
+      return -1;
+    } else {
+      return 1;
+    }  
+  }
 });
 
 

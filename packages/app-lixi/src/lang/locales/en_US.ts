@@ -162,6 +162,8 @@ export default {
   'claim.claimCodeCopied': 'The claim code has been copied.',
   'claim.unableDownloadClaimCode': 'Unable to download claim code.',
   'claim.pleaseCopyManually': 'Please copy the code manually',
+  'claim.withdrawSuccess': 'Withdraw successfully',
+  'claim.refreshSuccess': 'Refresh successfully',
 
   /* 05.Settings */
   'settings.languages': 'Languages',
