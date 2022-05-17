@@ -44,7 +44,7 @@ const notificationApi = {
       }
     } : {};
 
-    return axiosClient.patch(url,config)
+    return axiosClient.patch(url, {}, config)
       .then(response => {
         return response.data as Notification;
       })
