@@ -1,7 +1,8 @@
 {
   "messages": {
-    "noPermisson": "No perimission to get the notification.",
+    "noPermission": "No permission to get the notification.",
     "unableGetNotification": "Unable to get the notification.",
-    "noDeletePermisson": "No perimission to delete the notification."
+    "noReadPermission": "No permission to read the notification.",
+    "noDeletePermission": "No permission to delete the notification."
   }
 }
