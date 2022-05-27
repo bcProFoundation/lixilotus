@@ -3,7 +3,7 @@ import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Inject, Injectable } from '@nestjs/common';
-import { Account as AccountDb, Prisma } from '@prisma/client';
+import { Account as AccountDb, Package, Prisma } from '@prisma/client';
 import { FlowJob, FlowProducer, Queue } from 'bullmq';
 import IORedis from 'ioredis';
 import * as _ from 'lodash';
@@ -207,7 +207,7 @@ export class LixiService {
     // If users input the amount means that the lixi need to be prefund
     const isPrefund = !!command.amount;
 
-    const chunkSize = lixiChunkSize; // number of output per
+    const chunkSize = (command.numberOfPackage) ? Math.ceil(command.numberOfSubLixi / command.numberOfPackage)  : lixiChunkSize; // number of output per
     const numberOfChunks = Math.ceil(command.numberOfSubLixi / chunkSize);
 
     if (numberOfChunks === 0) {
@@ -236,6 +236,12 @@ export class LixiService {
       // Calculate fee for each chunk process
       let fee = await this.walletService.calcFee(this.XPI, (utxoStore as any).bchUtxos, numberOfSubLixiInChunk + 1);
 
+      const createPackage = await this.prisma.package.create({
+        data: {
+          packCode: command.name + "_" + command.numberOfPackage + "_" + chunkIndex,
+        }
+      });
+
       // Create the child job data
       const childJobData: CreateSubLixiesChunkJobData = {
         numberOfSubLixiInChunk: numberOfSubLixiInChunk,
@@ -245,7 +251,8 @@ export class LixiService {
         parentId: parentLixiId,
         command: command,
         fundingAddress: account.address,
-        accountSecret: secret
+        accountSecret: secret,
+        packageSKU: createPackage
       };
 
       const childJob: FlowJob = {

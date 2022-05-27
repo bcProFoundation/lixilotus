@@ -73,6 +73,10 @@ const CreateLixiForm = ({
   const [newLixiDividedValue, setNewLixiDividedValue] = useState('');
   const [newLixiDividedValueIsValid, setNewLixiDividedValueIsValid] = useState(false);
 
+  // New Lixi Packages Value
+  const [newNumberOfPackage, setNewNumberOfPackage] = useState('');
+  const [newPackageIsValid, setNewPackageIsValid] = useState(true);  
+
   // New Country
   const [newCountryLixi, setNewCountryLixi] = useState('');
   const [newCountryLixiIsValid, setNewCountryLixiIsValid] = useState(true);
@@ -118,7 +122,7 @@ const CreateLixiForm = ({
 
   // Only enable CreateLixi button if all form entries are valid
   let createLixiFormDataIsValid =
-    newLixiNameIsValid && newMaxClaimLixiIsValid &&
+    newLixiNameIsValid && newMaxClaimLixiIsValid && newPackageIsValid &&
     newExpiryAtLixiIsValid && account && newActivatedAtLixiIsValid &&
     (claimType == ClaimType.OneTime &&
       (lixiType == LixiType.Random && newNumberOfSubLixi && newLixiAmountValueIsValid && newLixiMinValueIsValid && newLixiMaxValueIsValid) ||
@@ -173,6 +177,12 @@ const CreateLixiForm = ({
     const { value } = e.target;
     setNewLixiDividedValueIsValid(isValidAmountInput(value));
     setNewLixiDividedValue(value);
+  }
+
+  const handleNewNumberOfPackage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setNewPackageIsValid(isValidAmountInput(value));
+    setNewNumberOfPackage(value);
   }
 
   const handleChangeCountry = (value, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -263,6 +273,7 @@ const CreateLixiForm = ({
       numberOfSubLixi: newNumberOfSubLixi,
       envelopeId: newEnvelopeId,
       envelopeMessage: newEnvelopeMessage,
+      numberOfPackage: newNumberOfPackage,
     };
 
     const createLixiModalProps: CreateLixiConfirmationModalProps = {
@@ -275,6 +286,7 @@ const CreateLixiForm = ({
       newActivatedAt,
       newLixiAmount,
       newNumberOfSubLixi,
+      newNumberOfPackage,
       newLixiMinValue,
       newLixiMaxValue,
       newLixiFixedValue,
@@ -418,24 +430,44 @@ const CreateLixiForm = ({
   const selectExpiry = () => {
     return (
       <>
-        {/* Max redemption */}
-        <Form.Item
-          validateStatus={
-            newMaxClaimLixiIsValid === null ||
-              newMaxClaimLixiIsValid
-              ? ''
-              : 'error'
-          }
-        >
-          <Input
-            addonBefore={intl.get('account.maxClaim')}
-            type="number"
-            placeholder={intl.get('account.enterMaxClaimNumber')}
-            name="lixiMaxClaim"
-            value={newMaxClaim}
-            onChange={e => handleNewMaxClaimInput(e)}
-          />
-        </Form.Item>
+        {/* Max redemption && Packages*/}
+        {claimType == ClaimType.Single ?
+          <Form.Item
+            validateStatus={
+              newMaxClaimLixiIsValid === null ||
+                newMaxClaimLixiIsValid
+                ? ''
+                : 'error'
+            }
+          >
+            <Input
+              addonBefore={intl.get('account.maxClaim')}
+              type="number"
+              placeholder={intl.get('account.enterMaxClaimNumber')}
+              name="lixiMaxClaim"
+              value={newMaxClaim}
+              onChange={e => handleNewMaxClaimInput(e)}
+            />
+          </Form.Item>
+          :
+          <Form.Item
+            validateStatus={
+              newPackageIsValid === null || newPackageIsValid
+                ? ''
+                : 'error'
+            }
+          >
+            <Input
+              addonBefore={intl.get('account.package')}
+              type="number"
+              placeholder={intl.get('account.numberOfPackage')}
+              name="package"
+              value={newNumberOfPackage}
+              onChange={e => handleNewNumberOfPackage(e)}
+            />
+          </Form.Item>
+        }
+        
 
         {/* Minimum Staking */}
         <Form.Item

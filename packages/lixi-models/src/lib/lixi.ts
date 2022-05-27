@@ -22,6 +22,7 @@ export interface GenerateLixiCommand {
   isFamilyFriendly: boolean;
   envelopeId: Nullable<number>;
   envelopeMessage: string;
+  numberOfPackage?: Nullable<string>;
 }
 
 export interface CreateLixiCommand {
@@ -47,6 +48,7 @@ export interface CreateLixiCommand {
   password: string;
   envelopeId: Nullable<number>;
   envelopeMessage: string;
+  numberOfPackage?: Nullable<number>;
 }
 
 
@@ -85,6 +87,8 @@ export interface LixiDto {
   claimCount?: number;
   subLixiTotalClaim?: number;
   subLixiBalance?: number;
+  numberOfPackage?: Nullable<number>;
+  packCode?: Nullable<string>;
 };
 
 export interface Lixi {
@@ -122,6 +126,8 @@ export interface Lixi {
   claimCount?: number;
   subLixiTotalClaim?: number;
   subLixiBalance?: number;
+  numberOfPackage?: Nullable<number>;
+  packCode?: Nullable<string>;
 };
 
 export interface UnarchiveLixiCommand {
@@ -164,7 +170,7 @@ export enum LixiType {
   Random = 0,
   Fixed = 1,
   Divided = 2,
-  Equal = 3
+  Equal = 3,
 };
 
 export enum ClaimType {
