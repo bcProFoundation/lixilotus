@@ -14,6 +14,8 @@
     "invalidAccountCouldNotUpdateLixi": "Tài khoản không hợp lệ! Không thể cập nhật Lì xì.",
     "unableToGetClaimListLixi": "Không thể lấy danh sách xác nhận quyền sở hữu của Lì xì.",
     "unableToGetLixi": "Không thể tải Lì xì.",
-    "unableToUpdateLixi": "Không thể cập nhật Lì xì."
+    "unableToUpdateLixi": "Không thể cập nhật Lì xì.",
+    "unableToDowloadLixi": "Không thể download Lì xì",
+    "fileNameNotExist": "Tên file không tồn tại"
   }
 }

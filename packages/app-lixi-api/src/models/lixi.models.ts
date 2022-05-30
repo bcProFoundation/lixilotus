@@ -39,6 +39,8 @@ export interface ExportSubLixiesJobResult {
   mnemonicHash: string;
   senderId: number;
   recipientId: number;
+  fileName: string;
+  parentId: number;
 }
 
 export interface WithdrawSubLixiesJobData {

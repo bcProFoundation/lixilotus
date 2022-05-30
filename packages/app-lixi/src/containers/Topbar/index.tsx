@@ -15,6 +15,7 @@ import SwipeToDelete from 'react-swipe-to-delete-ios'
 import moment from 'moment';
 import { isMobile } from "react-device-detect";
 import { deleteNotification, readNotification } from "@store/notification/actions";
+import { downloadExportedLixi } from "@store/lixi/actions";
 
 export type TopbarProps = {
   className?: string,
@@ -83,8 +84,12 @@ const NotificationMenu = (notifications: Notification[], account: Account) => {
     dispatch(deleteNotification({mnemonichHash: account.mnemonicHash, notificationId}));
   }
 
-  const handleRead = (account: Account, notificationId: string) => {
-     dispatch(readNotification({mnemonichHash: account.mnemonicHash, notificationId}));
+  const handleRead = (account: Account, notification: Notification) => {
+    dispatch(readNotification({mnemonichHash: account.mnemonicHash, notificationId: notification.id}));
+    if (notification.notificationTypeId === 3) {
+      const { parentId, mnemonicHash, fileName } = notification.additionalData as any;
+      dispatch(downloadExportedLixi({ lixiId: parentId, mnemonicHash, fileName }));
+    }
   }
   
   return notifications && notifications.length > 0 && (
@@ -92,7 +97,7 @@ const NotificationMenu = (notifications: Notification[], account: Account) => {
       {notifications.map(notification => (
         <>
           {isMobile ? (
-            <div onClick={()=>handleRead(account, notification.id)}>
+            <div onClick={()=>handleRead(account, notification)}>
               <SwipeToDelete
                 key={notification.id}
                 onDelete={()=>handleDelete(account, notification.id)}
@@ -128,7 +133,7 @@ const NotificationMenu = (notifications: Notification[], account: Account) => {
                 <Space>
                   <div 
                     style={{fontWeight: notification.readAt != null ? "normal" : "bold", cursor:"pointer" }}
-                    onClick={()=>handleRead(account, notification.id)}
+                    onClick={()=>handleRead(account, notification)}
                   >
                     {notification.message}
                   </div>

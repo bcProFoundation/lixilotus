@@ -27,7 +27,7 @@ import {
   readNotificationFailure
 } from './actions';
 import notificationApi from './api';
-import { refreshLixi } from '../lixi/actions';
+import { downloadExportedLixi, refreshLixi } from '../lixi/actions';
 
 let socket: Socket;
 const baseUrl = process.env.NEXT_PUBLIC_LIXI_API ? process.env.NEXT_PUBLIC_LIXI_API : 'https://lixilotus.com/';
@@ -278,6 +278,9 @@ function* receiveNotificationSaga(action: PayloadAction<Notification>) {
     if (notificationTypeId == NOTIFICATION_TYPES.CREATE_SUB_LIXIES) {
       const { id } = additionalData as any;
       yield put(refreshLixi(id));
+    } else if (notificationTypeId == NOTIFICATION_TYPES.EXPORT_SUB_LIXIES) {
+      const { parentId, mnemonicHash, fileName } = additionalData as any;
+      yield put(downloadExportedLixi({ lixiId: parentId, mnemonicHash, fileName }));
     }
   } catch (error) {
     console.log('error', error.message);

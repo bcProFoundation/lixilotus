@@ -14,6 +14,8 @@
     "invalidAccountCouldNotUpdateLixi": "Invalid account! Could not update the lixi.",
     "unableToGetClaimListLixi": "Unable to get claim list of the lixi.",
     "unableToGetLixi": "Unable to get lixi.",
-    "unableToUpdateLixi": "Unable to update lixi."
+    "unableToUpdateLixi": "Unable to update lixi.",
+    "unableToDowloadLixi": "Unable to download lixi",
+    "fileNameNotExist": "File name not exist"
   }
 }
