@@ -64,7 +64,7 @@ model Lixi {
   envelope           Envelope? @relation(fields: [envelopeId], references: [id])
   envelopeMessage    String    @default("") @map("envelope_message")
   isClaimed          Boolean?  @default(false) @map("check_claim")
-  numberOfPackage    Int?      @map("package_value")
+  numberPerPackage   Int?      @map("package_value")
   packageId          Int?      @map("package_id")
   package            Package?  @relation(fields: [packageId], references: [id])
 

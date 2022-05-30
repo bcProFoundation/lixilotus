@@ -74,7 +74,7 @@ const CreateLixiForm = ({
   const [newLixiDividedValueIsValid, setNewLixiDividedValueIsValid] = useState(false);
 
   // New Lixi Packages Value
-  const [newNumberOfPackage, setNewNumberOfPackage] = useState('');
+  const [newNumberPerPackage, setNewNumberPerPackage] = useState('');
   const [newPackageIsValid, setNewPackageIsValid] = useState(true);  
 
   // New Country
@@ -179,10 +179,10 @@ const CreateLixiForm = ({
     setNewLixiDividedValue(value);
   }
 
-  const handleNewNumberOfPackage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNewNumberPerPackage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewPackageIsValid(isValidAmountInput(value));
-    setNewNumberOfPackage(value);
+    setNewNumberPerPackage(value);
   }
 
   const handleChangeCountry = (value, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -273,7 +273,7 @@ const CreateLixiForm = ({
       numberOfSubLixi: newNumberOfSubLixi,
       envelopeId: newEnvelopeId,
       envelopeMessage: newEnvelopeMessage,
-      numberOfPackage: newNumberOfPackage,
+      numberPerPackage: newNumberPerPackage,
     };
 
     const createLixiModalProps: CreateLixiConfirmationModalProps = {
@@ -286,7 +286,7 @@ const CreateLixiForm = ({
       newActivatedAt,
       newLixiAmount,
       newNumberOfSubLixi,
-      newNumberOfPackage,
+      newNumberPerPackage,
       newLixiMinValue,
       newLixiMaxValue,
       newLixiFixedValue,
@@ -460,10 +460,10 @@ const CreateLixiForm = ({
             <Input
               addonBefore={intl.get('account.package')}
               type="number"
-              placeholder={intl.get('account.numberOfPackage')}
+              placeholder={intl.get('account.numberPerPackage')}
               name="package"
-              value={newNumberOfPackage}
-              onChange={e => handleNewNumberOfPackage(e)}
+              value={newNumberPerPackage}
+              onChange={e => handleNewNumberPerPackage(e)}
             />
           </Form.Item>
         }

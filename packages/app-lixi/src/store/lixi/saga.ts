@@ -89,7 +89,7 @@ function* generateLixiSaga(action: PayloadAction<GenerateLixiCommand>) {
     dividedValue: Number(command.dividedValue),
     amount: Number(command.amount),
     numberOfSubLixi: Number(command.numberOfSubLixi),
-    numberOfPackage: Number(command.numberOfPackage),
+    numberPerPackage: Number(command.numberPerPackage),
     minStaking: Number(command.minStaking),
     country: command && command.country ? command.country : undefined,
     isFamilyFriendly: command.isFamilyFriendly,

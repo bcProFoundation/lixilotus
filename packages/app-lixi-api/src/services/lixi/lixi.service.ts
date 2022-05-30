@@ -208,7 +208,7 @@ export class LixiService {
     // If users input the amount means that the lixi need to be prefund
     const isPrefund = !!command.amount;
 
-    const chunkSize = command.numberOfPackage ? command.numberOfPackage : lixiChunkSize; // number of output per
+    const chunkSize = command.numberPerPackage ? command.numberPerPackage : lixiChunkSize; // number of output per
     const numberOfChunks = Math.ceil(command.numberOfSubLixi as number / chunkSize);
 
     if (numberOfChunks === 0) {
@@ -239,7 +239,7 @@ export class LixiService {
 
       
       let createPackage;
-      if (command.numberOfPackage) {
+      if (command.numberPerPackage) {
         const preparePackCode = command.name + "_" + command.accountId + "_" + parentLixiId + "_" + chunkIndex + Date.now();
         const packCode = await hexSha256(preparePackCode);
 
@@ -260,7 +260,7 @@ export class LixiService {
         command: command,
         fundingAddress: account.address,
         accountSecret: secret,
-        packageId: command.numberOfPackage ? createPackage?.id : undefined,
+        packageId: command.numberPerPackage ? createPackage?.id : undefined,
       };
 
       const childJob: FlowJob = {

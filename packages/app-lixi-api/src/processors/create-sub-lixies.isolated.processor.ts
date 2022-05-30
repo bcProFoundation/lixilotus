@@ -121,7 +121,7 @@ export async function processCreateSubLixiesChunk(job: Job): Promise<boolean> {
           expiryAt: item.expiryAt ? item.expiryAt : undefined,
           activationAt: item.activationAt ? item.expiryAt : undefined,
           country: item.country ? item.country : undefined,
-          packageId: (item.numberOfPackage && packageId) ? packageId : null,
+          packageId: (item.numberPerPackage && packageId) ? packageId : null,
         },
         'encryptedXPriv'
       ) as Lixi;
