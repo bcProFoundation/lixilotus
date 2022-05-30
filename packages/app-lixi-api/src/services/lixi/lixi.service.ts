@@ -10,11 +10,12 @@ import * as _ from 'lodash';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { CREATE_SUB_LIXIES_QUEUE, lixiChunkSize, LIXI_JOB_NAMES } from 'src/constants/lixi.constants';
 import { CreateSubLixiesChunkJobData, CreateSubLixiesJobData } from 'src/models/lixi.models';
-import { aesGcmDecrypt, aesGcmEncrypt, numberToBase58 } from 'src/utils/encryptionMethods';
+import { aesGcmDecrypt, aesGcmEncrypt, hexSha256, numberToBase58 } from 'src/utils/encryptionMethods';
 import { template } from 'src/utils/stringTemplate';
 import { VError } from 'verror';
 import { PrismaService } from '../prisma/prisma.service';
 import { WalletService } from '../wallet.service';
+import crypto from 'crypto';
 
 @Injectable()
 export class LixiService {
@@ -155,7 +156,7 @@ export class LixiService {
     if (isPrefund) {
       // Check the account balance
       const accountBalance: number = await this.xpiWallet.getBalance(account.address);
-      let fee = await this.walletService.calcFee(this.XPI, (utxoStore as any).bchUtxos, command.numberOfSubLixi + 1);
+      let fee = await this.walletService.calcFee(this.XPI, (utxoStore as any).bchUtxos, command.numberOfSubLixi as number + 1);
       if (command.amount >= fromSmallestDenomination(accountBalance - fee)) {
         const accountNotSufficientFund = await i18n.t('account.messages.accountNotSufficientFund');
         // Validate to make sure the account has sufficient balance
@@ -207,8 +208,8 @@ export class LixiService {
     // If users input the amount means that the lixi need to be prefund
     const isPrefund = !!command.amount;
 
-    const chunkSize = (command.numberOfPackage) ? Math.ceil(command.numberOfSubLixi / command.numberOfPackage)  : lixiChunkSize; // number of output per
-    const numberOfChunks = Math.ceil(command.numberOfSubLixi / chunkSize);
+    const chunkSize = command.numberOfPackage ? command.numberOfPackage : lixiChunkSize; // number of output per
+    const numberOfChunks = Math.ceil(command.numberOfSubLixi as number / chunkSize);
 
     if (numberOfChunks === 0) {
       throw new Error('Must create at least a sub lixi');
@@ -228,7 +229,7 @@ export class LixiService {
 
     for (let chunkIndex = 0; chunkIndex < numberOfChunks; chunkIndex++) {
       const numberOfSubLixiInChunk =
-        chunkIndex < numberOfChunks - 1 ? chunkSize : command.numberOfSubLixi - chunkIndex * chunkSize;
+        chunkIndex < numberOfChunks - 1 ? chunkSize : command.numberOfSubLixi as number - chunkIndex * chunkSize;
 
       // Start to process from the start of each chunk
       const startDerivationIndexForChunk = startDerivationIndex + chunkIndex * chunkSize;
@@ -236,11 +237,18 @@ export class LixiService {
       // Calculate fee for each chunk process
       let fee = await this.walletService.calcFee(this.XPI, (utxoStore as any).bchUtxos, numberOfSubLixiInChunk + 1);
 
-      const createPackage = await this.prisma.package.create({
-        data: {
-          packCode: command.name + "_" + command.numberOfPackage + "_" + chunkIndex,
-        }
-      });
+      
+      let createPackage;
+      if (command.numberOfPackage) {
+        const preparePackCode = command.name + "_" + command.accountId + "_" + parentLixiId + "_" + chunkIndex + Date.now();
+        const packCode = await hexSha256(preparePackCode);
+
+        createPackage = await this.prisma.package.create({
+          data: {
+            packCode: packCode.slice(0,8),
+          }
+        });
+      }
 
       // Create the child job data
       const childJobData: CreateSubLixiesChunkJobData = {
@@ -252,7 +260,7 @@ export class LixiService {
         command: command,
         fundingAddress: account.address,
         accountSecret: secret,
-        packageSKU: createPackage
+        packageId: command.numberOfPackage ? createPackage?.id : undefined,
       };
 
       const childJob: FlowJob = {

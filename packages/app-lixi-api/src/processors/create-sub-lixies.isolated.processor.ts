@@ -62,7 +62,7 @@ export async function processCreateSubLixiesChunk(job: Job): Promise<boolean> {
     temporaryFeeCalc,
     fundingAddress,
     accountSecret, 
-    packageSKU
+    packageId
   } = jobData;
 
   const { keyPair } = await walletService.deriveAddress(command.mnemonic, 0); // keyPair of the account
@@ -82,7 +82,7 @@ export async function processCreateSubLixiesChunk(job: Job): Promise<boolean> {
     mapEncryptedClaimCode,
     temporaryFeeCalc,
     accountSecret,
-    packageSKU
+    packageId as number
   );
 
   // Preparing receive address and amount
@@ -121,7 +121,7 @@ export async function processCreateSubLixiesChunk(job: Job): Promise<boolean> {
           expiryAt: item.expiryAt ? item.expiryAt : undefined,
           activationAt: item.activationAt ? item.expiryAt : undefined,
           country: item.country ? item.country : undefined,
-          packageId: packageSKU.id
+          packageId: (item.numberOfPackage && packageId) ? packageId : null,
         },
         'encryptedXPriv'
       ) as Lixi;
@@ -159,7 +159,7 @@ async function prepareSubLixiChunkToInsert(
   mapEncryptedClaimCode: MapEncryptedClaimCode,
   temporaryFeeCalc: number,
   accountSecret: string,
-  packageSKU: Package
+  packageId?: number
 ): Promise<LixiDb[]> {
   // If users input the amount means that the lixi need to be prefund
   const isPrefund = !!command.amount;
@@ -194,7 +194,7 @@ async function prepareSubLixiChunkToInsert(
       command,
       mapEncryptedClaimCode,
       accountSecret,
-      packageSKU
+      packageId
     );
     subLixiesToInsert.push(subLixiToInsert);
   }
@@ -218,7 +218,7 @@ async function prepareSubLixiToInsert(
   command: CreateLixiCommand,
   mapEncryptedClaimCode: MapEncryptedClaimCode,
   accountSecret: string,
-  packageSKU: Package
+  packageId?: number
 ): Promise<LixiDb> {
   // Generate the random password to encrypt the key
   const password = generateRandomBase58Str(8);
@@ -248,7 +248,7 @@ async function prepareSubLixiToInsert(
     envelopeMessage: command.envelopeMessage ?? '',
     parentId: parentId,
     createdAt: new Date(),
-    packageId: packageSKU.id,
+    packageId: packageId ?? null,
   } as unknown as LixiDb;
 
   return dataSubLixi;

@@ -124,7 +124,6 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
       <>
         <LixiParamLabel>{intl.get('lixi.numberOfPackage', { newNumberOfPackage: newNumberOfPackage })} </LixiParamLabel>
         <br />
-        <LixiParamLabel>{intl.get('lixi.eachPackage')} </LixiParamLabel> { Math.ceil(Number(newNumberOfSubLixi)/Number(newNumberOfPackage)) } 
       </>
     );
   }

@@ -24,7 +24,7 @@ export interface NotificationDto {
   senderId?: Nullable<number>;
   notificationType?: Nullable<NotificationTypeDto>;
   notificationTypeId?: Nullable<number>;
-  level?: Nullable<number>;
+  level?: Nullable<string>;
   createdAt?: Nullable<Date>;
   updatedAt?: Nullable<Date>;
   status?: Nullable<string>;

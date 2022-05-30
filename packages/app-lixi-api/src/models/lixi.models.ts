@@ -25,7 +25,7 @@ export interface CreateSubLixiesChunkJobData extends CreateSubLixiesJobData {
   temporaryFeeCalc: number;
   fundingAddress: string;
   accountSecret: string;
-  packageSKU: Package;
+  packageId?: Nullable<number>;
 };
 export interface ExportSubLixiesJobData {
   parentId: number;
