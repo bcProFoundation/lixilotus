@@ -176,3 +176,9 @@ export interface PostLixiResponseDto {
   lixi: Lixi,
   jobId?: string
 };
+
+export interface DownloadExportedLixiCommand {
+  lixiId: number,
+  fileName: string,
+  mnemonicHash: string
+}

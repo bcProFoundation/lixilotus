@@ -13,6 +13,7 @@
     "unableGetNotification": "Unable to get the notification list of the account.",
     "sendAmountSmallerThanDust": "The send amount is smaller than dust",
     "accountNotSufficientFund": "The account balance is not sufficient to funding the lixi.",
-    "importAccountNotFound": "Could not found import account."
+    "importAccountNotFound": "Could not found import account.",
+    "requiredMnemonicHash": "Access denied. Need to provide mnemonic-hash in headers"
   }
 }

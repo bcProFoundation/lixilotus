@@ -32,7 +32,10 @@ export class ExportSubLixiesEventsListener extends QueueEventsHost {
       senderId, recipientId,
       {
         name: args?.returnvalue?.name,
-        path: args?.returnvalue.path
+        path: args?.returnvalue.path,
+        fileName: args?.returnvalue.fileName,
+        mnemonicHash: args?.returnvalue.mnemonicHash,
+        parentId: args?.returnvalue.id,
       }
     );
     if (notif) {

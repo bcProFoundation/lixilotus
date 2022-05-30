@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
-import { GenerateLixiCommand, CreateLixiCommand, Lixi, UnarchiveLixiCommand, ArchiveLixiCommand, WithdrawLixiCommand, RenameLixiCommand } from '@bcpros/lixi-models/lib/lixi';
+import { GenerateLixiCommand, CreateLixiCommand, Lixi, UnarchiveLixiCommand, ArchiveLixiCommand, WithdrawLixiCommand, RenameLixiCommand, DownloadExportedLixiCommand } from '@bcpros/lixi-models/lib/lixi';
 import { Claim } from '@bcpros/lixi-models/lib/claim';
-import { ExportLixiCommand, PaginationResult } from '@bcpros/lixi-models';
+import { ExportLixiCommand, LixiDto, PaginationResult } from '@bcpros/lixi-models';
 
 export const getLixiActionType = 'lixi/getLixi';
 export const postLixiActionType = 'lixi/postLixi';
@@ -42,6 +42,9 @@ export const fetchInitialSubLixiesFailure = createAction<String>('lixi/fetchInit
 export const fetchMoreSubLixies = createAction<{ parentId: number, startId: number }>('lixi/fetchMoreSubLixies');
 export const fetchMoreSubLixiesSuccess = createAction<PaginationResult<Lixi>>('lixi/fetchMoreSubLixiesSuccess');
 export const fetchMoreSubLixiesFailure = createAction<String>('lixi/fetchMoreSubLixiesFailure');
-export const exportSubLixies = createAction<ExportLixiCommand>('lixi/export');
-export const exportSubLixiesSuccess = createAction<Lixi>('lixi/exportSuccess');
-export const exportSubLixiesFailure = createAction<string>('lixi/exportFailure');
+export const exportSubLixies = createAction<ExportLixiCommand>('lixi/exportSubLixies');
+export const exportSubLixiesSuccess = createAction<{fileName :string, lixiId: number, mnemonicHash: string}>('lixi/exportSubLixiesSuccess');
+export const exportSubLixiesFailure = createAction<string>('lixi/exportSubLixiesFailure');
+export const downloadExportedLixi = createAction<DownloadExportedLixiCommand>('lixi/downloadExportedLixi');
+export const downloadExportedLixiSuccess = createAction<string>('lixi/downloadExportedLixiSuccess');
+export const downloadExportedLixiFailure = createAction<string>('lixi/downloadExportedLixiFailure');

@@ -135,8 +135,8 @@ export default {
   'lixi.unableLock': 'Unable to lock the lixi.',
   'lixi.unableWithdraw': 'Unable to withdraw the lixi.',
   'lixi.unableRename': 'Unable to rename the lixi.',
-  'lixi.unableWExportSub': 'Unable to export sub-lixies.',
-  'lixi.unableWExport': 'Unable to export the lixi.',
+  'lixi.unableExportSub': 'Unable to export sub-lixies.',
+  'lixi.unableExport': 'Unable to export the lixi.',
   'lixi.errorWhenUnlock': "There's an error happens when create unlock lixi.",
   'lixi.errorWhenLock': "There's an error happens when lock lixi.",
   'lixi.errorWhenWithdraw': "There's an error happens when withdraw lixi.",
@@ -146,6 +146,7 @@ export default {
   'lixi.withdrawSuccess': 'Withdraw lixi successfully.',
   'lixi.renameSuccess': 'Lixi has been renamed to {lixiName}',
   'lixi.renameFailed': 'Rename failed. All lixi must have a unique name.',
+  'lixi.unableDownloadSub': 'Unable to download the sub-lixies.',
 
   /* 04.Claim */
   'claim.claim': 'Claim',

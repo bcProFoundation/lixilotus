@@ -12,13 +12,13 @@ import {
   ArchiveLixiCommand,
   RenameLixiCommand,
   UnarchiveLixiCommand,
-  WithdrawLixiCommand
+  WithdrawLixiCommand,
+  DownloadExportedLixiCommand
 } from '@bcpros/lixi-models/lib/lixi';
 import { all, fork, put, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { getAccountById } from '@store/account/selectors';
 import { generateRandomBase58Str } from '@utils/encryptionMethods';
-
 import claimApi from '../claim/api';
 import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
@@ -59,10 +59,15 @@ import {
   withdrawLixi,
   withdrawLixiFailure,
   withdrawLixiSuccess,
+  downloadExportedLixi,
+  downloadExportedLixiFailure,
+  downloadExportedLixiSuccess
 } from './actions';
 import lixiApi from './api';
 import { getLixiById } from './selectors';
 import { select } from 'redux-saga/effects';
+import { saveAs } from 'file-saver';
+
 
 const call: any = Effects.call;
 /**
@@ -487,15 +492,19 @@ function* exportSubLixiesSaga(action: PayloadAction<ExportLixiCommand>) {
     const parentLixi: LixiDto = yield select(getLixiById(id));
     const account: AccountDto = yield select(getAccountById(parentLixi.accountId));
     const data = yield call(lixiApi.exportSubLixies, id, command, account?.secret);
-    yield put(exportSubLixiesSuccess(data));
+    yield put(exportSubLixiesSuccess({ fileName: data.fileName, lixiId : parentLixi.id, mnemonicHash: account?.mnemonicHash }));
   } catch (err) {
-    const message = (err as Error).message ?? `Unable to export sub-lixies.`;
+    const message = (err as Error).message ?? intl.get('lixi.unableExportSub');
     yield put(exportSubLixiesFailure(message));
   }
 }
 
+function* exportSubLixiesSuccessSaga(action: PayloadAction<DownloadExportedLixiCommand>) {
+  yield put(hideLoading(exportSubLixies.type));
+}
+
 function* exportSubLixiesFailureSaga(action: PayloadAction<string>) {
-  const message = action.payload ?? 'Unable to export the lixi.';
+  const message = action.payload ?? intl.get('lixi.unableExportSub');
   yield put(
     showToast('error', {
       message: 'Error',
@@ -506,6 +515,36 @@ function* exportSubLixiesFailureSaga(action: PayloadAction<string>) {
   yield put(hideLoading(exportSubLixies.type));
 }
 
+function* downloadExportedLixiSaga(action: PayloadAction<DownloadExportedLixiCommand>) {
+  try {
+    const data = yield call(lixiApi.downloadExportedLixi, action.payload);
+    yield put(downloadExportedLixiSuccess(data));
+  } catch (err) {
+    const message = (err as Error).message ?? intl.get('lixi.unableDownloadSub')
+    yield put(downloadExportedLixiFailure(message));
+  }
+}
+
+function* downloadExportedLixiSuccessSaga(action: PayloadAction<any>) {
+  const filename = "SubLixiList"
+  const result = action.payload.replace(/['"]+/g, '')
+  var blob = new Blob([result], {type: "text/csv;charset=utf-8"});
+  saveAs(blob, filename);
+
+  yield put(hideLoading(downloadExportedLixi.type));
+}
+
+function* downloadExportedLixiFailureSaga(action: PayloadAction<string>) {
+  const message = action.payload ?? intl.get('lixi.unableDownloadSub');
+  yield put(
+    showToast('error', {
+      message: 'Error',
+      description: message,
+      duration: 5
+    })
+  );
+  yield put(hideLoading(downloadExportedLixi.type));
+}
 
 function* watchGenerateLixi() {
   yield takeLatest(generateLixi.type, generateLixiSaga);
@@ -639,6 +678,21 @@ function* watchExportSubLixiesFailure() {
   yield takeLatest(exportSubLixiesFailure.type, exportSubLixiesFailureSaga);
 }
 
+function* watchExportSubLixiesSuccess() {
+  yield takeLatest(exportSubLixiesSuccess.type, exportSubLixiesSuccessSaga);
+}
+
+function* watchDownloadExportedLixi() {
+  yield takeLatest(downloadExportedLixi.type, downloadExportedLixiSaga);
+}
+
+function* watchDownloadExportedLixiFailure() {
+  yield takeLatest(downloadExportedLixiFailure.type, downloadExportedLixiFailureSaga);
+}
+
+function* watchDownloadExportedLixiSuccess() {
+  yield takeLatest(downloadExportedLixiSuccess.type, downloadExportedLixiSuccessSaga);
+}
 
 export default function* lixiSaga() {
   yield all([
@@ -674,6 +728,10 @@ export default function* lixiSaga() {
     fork(watchRenameLixiSuccess),
     fork(watchRenameLixiFailure),
     fork(watchExportSubLixies),
+    fork(watchExportSubLixiesSuccess),
     fork(watchExportSubLixiesFailure),
+    fork(watchDownloadExportedLixi),
+    fork(watchDownloadExportedLixiFailure),
+    fork(watchDownloadExportedLixiSuccess)
   ]);
 }

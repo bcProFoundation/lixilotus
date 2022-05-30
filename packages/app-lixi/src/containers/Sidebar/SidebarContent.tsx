@@ -36,11 +36,21 @@ const SidebarContent = ({
           // defaultOpenKeys={[defaultOpenKeys]}
           // selectedKeys={[selectedKeys]}
           mode="inline">
-          <Menu.Item key='main/mobile-card'>
+          {/* <Menu.Item key='main/mobile-card'>
             <Link href='/mobile-card' passHref>
               <a>
                 <ShopOutlined />
                 <span>Mobile Card</span>
+              </a>
+            </Link>
+          </Menu.Item> */}
+          <Menu.Item key='main/mobile-card'>
+            <Link href='https://sendlotus.com' >
+              <a target="_blank">
+                <img src='/images/lotus-logo-small.png' alt='lotus' 
+                  style={{width: "20px", marginBottom: "5px", marginRight: "10px"}}
+                />
+                <span>Send Lotus</span>
               </a>
             </Link>
           </Menu.Item>
