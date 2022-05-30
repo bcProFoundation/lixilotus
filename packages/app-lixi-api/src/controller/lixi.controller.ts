@@ -27,6 +27,8 @@ import {
   Patch,
   Post,
   Query,
+  Res,
+  StreamableFile,
   UseInterceptors
 } from '@nestjs/common';
 import { Claim as ClaimDb, Lixi } from '@prisma/client';
@@ -43,6 +45,9 @@ import { aesGcmDecrypt, numberToBase58 } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
 import { PrismaService } from '../services/prisma/prisma.service';
 import { I18n, I18nContext } from 'nestjs-i18n';
+import { Response } from 'express';
+import { createReadStream } from 'fs';
+import { join } from 'path';
 
 @Controller('lixies')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -577,6 +582,7 @@ export class LixiController {
       const job = await this.exportSubLixiesQueue.add(LIXI_JOB_NAMES.EXPORT_ALL_SUB_LIXIES, jobData);
 
       return {
+        fileName: `${lixiId}.csv`,
         jobId: job.id
       };
     } catch (err) {
@@ -781,5 +787,62 @@ export class LixiController {
       }
     }
     return null as any;
+  }
+
+  @Get(':id/download')
+  async downloadExportedLixies(
+    @Param('id') id: string,
+    @Query('file') fileName: string,
+    @Headers('mnemonic-hash') mnemonicHash: string,
+    @Res({passthrough: true}) res: Response,
+    @I18n() i18n: I18nContext
+  ): Promise<StreamableFile> {
+    try {
+      if (_.isNil(mnemonicHash) || _.isEmpty(mnemonicHash)) {
+        const requiredMnemonicHash = await i18n.t('account.messages.requiredMnemonicHash')
+        throw new Error(requiredMnemonicHash);
+      }
+      
+      const account = await this.prisma.account.findFirst({
+        where: {
+          mnemonicHash: mnemonicHash
+        }
+      });
+
+      if (!account) {
+        const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
+        throw new Error(couldNotFindAccount);
+      }
+
+      const lixi = await this.prisma.lixi.findUnique({
+        where: {
+          id: _.toSafeInteger(id)
+        }
+      });
+      if (!lixi) {
+        const lixiNotExist = await i18n.t('lixi.messages.lixiNotExist');
+        throw new VError(lixiNotExist);
+      }
+
+      if (fileName !== `${lixi.id}.csv`) {
+        const fileNameNotExist = await i18n.t('lixi.messages.fileNameNotExist');
+        throw new VError(fileNameNotExist);
+      }
+
+      const file = createReadStream(join(process.cwd(), 'public', "download", fileName));
+      
+      res.header('Content-Type', 'text/csv');
+      res.header('Content-Disposition', `attachment; filename=${fileName}`);
+
+      return new StreamableFile(file);
+    } catch (err) {
+      if (err instanceof VError) {
+        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      } else {
+        const unableToDownloadLixi = await i18n.t('lixi.messages.unableToDownloadLixi');
+        const error = new VError.WError(err as Error, unableToDownloadLixi);
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
   }
 }

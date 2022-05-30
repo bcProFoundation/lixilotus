@@ -138,8 +138,8 @@ export default {
   'lixi.unableLock': 'Không thể khóa Lì xì.',
   'lixi.unableWithdraw': 'Không thể rút Lì xì.',
   'lixi.unableRename': 'Unable to rename the lixi.',
-  'lixi.unableWExportSub': 'Không thể trích xuất các Lì xì phụ.',
-  'lixi.unableWExport': 'Không thể trích xuất Lì xì.',
+  'lixi.unableExportSub': 'Không thể trích xuất các Lì xì phụ.',
+  'lixi.unableExport': 'Không thể trích xuất Lì xì.',
   'lixi.errorWhenUnlock': 'Lỗi không xác định. Mở khóa Lì xì không thành công.',
   'lixi.errorWhenLock': 'Lỗi không xác định. Khóa Lì xì không thành công.',
   'lixi.errorWhenWithdraw': 'Lỗi không xác định. Rút Lì xì không thành công.',
@@ -149,6 +149,7 @@ export default {
   'lixi.withdrawSuccess': 'Rút Lì xì thành công.',
   'lixi.renameSuccess': 'Lì xì đã được đổi tên thành {lixiName}',
   'lixi.renameFailed': 'Đổi tên không thành công. Hãy thử lại với một tên khác.',
+  'lixi.unableDownloadSub': 'Không thể tải về các Lì xì phụ.',
 
   /* 04.Claim */
   'claim.claim': 'Nhận Lì xì',

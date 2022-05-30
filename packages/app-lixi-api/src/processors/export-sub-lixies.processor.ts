@@ -94,6 +94,7 @@ export class ExportSubLixiesProcessor extends WorkerHost {
       name: lixi?.name,
       jobName: job.name,
       path: filePath,
+      fileName: fileName,
       mnemonicHash: account?.mnemonicHash,
       senderId: account?.id,
       recipientId: account?.id,

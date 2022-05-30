@@ -1,4 +1,4 @@
-import { ExportLixiCommand, LixiDto, PaginationResult } from "@bcpros/lixi-models";
+import { DownloadExportedLixiCommand, ExportLixiCommand, LixiDto, PaginationResult } from "@bcpros/lixi-models";
 import { CreateLixiCommand, ArchiveLixiCommand, UnarchiveLixiCommand, WithdrawLixiCommand, RenameLixiCommand, Lixi, PostLixiResponseDto } from "@bcpros/lixi-models/lib/lixi";
 import axiosClient from "@utils/axiosClient";
 
@@ -125,6 +125,24 @@ const lixiApi = {
         throw response.data;
       });
   },
+
+  downloadExportedLixi(command:DownloadExportedLixiCommand) {
+    const config = command.mnemonicHash ? {
+      headers: {
+        'mnemonic-hash': command.mnemonicHash
+      }
+    } : {};
+
+    const url = `/api/lixies/${command.lixiId}/download?file=${command.fileName}`;
+    return axiosClient.get(url, config)
+      .then(response => {
+        return response.data;
+      })
+      .catch(err => {
+        const { response } = err;
+        throw response.data;
+      });
+  }
 };
 
 export default lixiApi;
