@@ -4,6 +4,7 @@ import * as _ from 'lodash';
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { VError } from 'verror';
 import { I18n, I18nContext } from 'nestjs-i18n';
+import logger from 'src/logger';
 
 @Controller('notifications')
 export class NotificationController {
@@ -39,10 +40,13 @@ export class NotificationController {
         }
       });
 
+      logger.info(`Notification Recipient Id: ${notification?.recipientId}` );
+      logger.info(`Account Id: ${account?.id}`, );
+
       // Check if the user have sufficient permission to get the notification
       if (notification?.recipientId !== account?.id) {
-        const noPermisson = await i18n.t('notification.messages.noPermisson');
-        throw Error(noPermisson);
+        const noPermission = await i18n.t('notification.messages.noPermission');
+        throw Error(noPermission);
       }
 
       return {
@@ -88,10 +92,13 @@ export class NotificationController {
         }
       });
 
+      logger.info(`Notification Recipient Id: ${notification?.recipientId}` );
+      logger.info(`Account Id: ${account?.id}`, );
+
       // Check if the user have sufficient permission to get the notification
-       if (notification?.recipientId !== account?.id) {
-        const noDeletePermisson = await i18n.t('notification.messages.noPermisson');
-        throw Error(noDeletePermisson);
+      if (notification?.recipientId !== account?.id) {
+        const noDeletePermission = await i18n.t('notification.messages.noDeletePermission');
+        throw Error(noDeletePermission);
       }
 
       // Delete the notification
@@ -141,10 +148,13 @@ export class NotificationController {
         }
       });
 
+      logger.info(`Notification Recipient Id: ${notification?.recipientId}` );
+      logger.info(`Account Id: ${account?.id}`, );
+
       // Check if the user have sufficient permission to get the notification
-     if (notification?.recipientId !== account?.id) {
-        const noPermisson = await i18n.t('notification.messages.noPermisson');
-        throw Error(noPermisson);
+      if (notification?.recipientId !== account?.id) {
+        const noReadPermission = await i18n.t('notification.messages.noReadPermission');
+        throw Error(noReadPermission);
       }
 
       // Set readAt to now
