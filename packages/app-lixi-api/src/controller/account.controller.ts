@@ -36,7 +36,7 @@ export class AccountController {
     private prisma: PrismaService,
     private readonly walletService: WalletService,
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet
-  ) {}
+  ) { }
 
   @Get(':id')
   async getAccount(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<AccountDto> {
@@ -93,7 +93,8 @@ export class AccountController {
         // encrypt mnemonic
         const encryptedMnemonic = await aesGcmEncrypt(mnemonic, mnemonic);
         // Create random account secret then encrypt it using mnemonic
-        const encryptedSecret = await aesGcmDecrypt(generateRandomBase58Str(10), mnemonic);
+        const accountSecret: string = generateRandomBase58Str(10);
+        const encryptedSecret = await aesGcmEncrypt(accountSecret, mnemonic);
 
         // create account in database
         const { address } = await this.walletService.deriveAddress(mnemonic, 0);
@@ -336,8 +337,8 @@ export class AccountController {
       lixies = await this.prisma.lixi.findMany({
         where: {
           AND: [
-            {accountId: accountId},
-            {parentId: null}
+            { accountId: accountId },
+            { parentId: null }
           ]
         }
       });
@@ -348,7 +349,7 @@ export class AccountController {
           parentId: { in: lixiesIds }
         }
       });
-      
+
       const results = lixies.map(item => {
         let claimCount = 0;
         let subLixiTotalClaim = 0;

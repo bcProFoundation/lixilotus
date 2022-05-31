@@ -77,6 +77,7 @@ export default {
   'account.deleteFailed': 'Xóa tài khoản không thành công.',
   'account.accountRenamedSuccess': 'Tài khoản được sửa lại thành {accountName}',
   'account.accountDeleteSuccess': 'Xóa tài khoản thành công.',
+  'account.accountImportSuccess': 'Tài khoản được nhập thành công.',
 
   /* 03.Lixi */
   'lixi.sub-lixi': 'Bao lì xì phụ',

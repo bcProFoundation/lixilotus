@@ -78,6 +78,7 @@ export default {
   'account.deleteFailed': 'Delete failed. Could not delete the account.',
   'account.accountRenamedSuccess': 'Account has renamed to {accountName}',
   'account.accountDeleteSuccess': 'The account has been deleted successfully.',
+  'account.accountImportSuccess': 'The account has been imported successfully.',
 
   /* 03.Lixi */
   'lixi.sub-lixi': 'Sub-lixi',

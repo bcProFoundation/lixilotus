@@ -194,11 +194,19 @@ function* importAccountSaga(action: PayloadAction<string>) {
   }
 }
 
-function* importAccountSuccessSaga(action: PayloadAction<Account>) {
+function* importAccountSuccessSaga(action: PayloadAction<{ account: Account; lixies: Lixi[] }>) {
+  const { account, lixies } = action.payload;
   yield put(
     fetchNotifications({
-      accountId: action.payload.id,
-      mnemonichHash: action.payload.mnemonicHash
+      accountId: account.id,
+      mnemonichHash: account.mnemonicHash
+    })
+  );
+  yield put(
+    showToast('success', {
+      message: 'Success',
+      description: intl.get('account.accountImportSuccess'),
+      duration: 5
     })
   );
   yield put(hideLoading(importAccount.type));
