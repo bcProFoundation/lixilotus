@@ -37,7 +37,7 @@ export class ClaimController {
     private readonly lixiService: LixiService,
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
     @Inject('xpijs') private XPI: BCHJS
-  ) {}
+  ) { }
 
   @Get(':id')
   async getEnvelope(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<ViewClaimDto> {
@@ -117,7 +117,14 @@ export class ClaimController {
       try {
         const ip = (headerIp || socket.remoteAddress) as string;
 
-        const claimCode = _.trim(claimApi.claimCode);
+        let claimCode = _.trim(claimApi.claimCode) ?? '';
+        if (claimCode && claimApi.claimCode.includes('lixi_')) {
+          const matches = claimCode.match('(?<=lixi_).*');
+          if (matches && matches[0]) {
+            claimCode = matches[0];
+          }
+        }
+        console.log(claimCode);
         const password = claimCode.slice(0, 8);
         const encodedLixiId = claimCode.slice(8);
         const lixiId = _.toSafeInteger(base58ToNumber(encodedLixiId));
@@ -396,7 +403,13 @@ export class ClaimController {
     if (claimApi) {
       try {
         const ip = (headerIp || socket.remoteAddress) as string;
-        const claimCode = _.trim(claimApi.claimCode);
+        let claimCode = _.trim(claimApi.claimCode) ?? '';
+        if (claimCode && claimApi.claimCode.includes('lixi_')) {
+          const matches = claimCode.match('(?<=lixi_).*');
+          if (matches && matches[0]) {
+            claimCode = matches[0];
+          }
+        }
         const password = claimCode.slice(0, 8);
         const encodedLixiId = claimCode.slice(8);
         const lixiId = _.toSafeInteger(base58ToNumber(encodedLixiId));
