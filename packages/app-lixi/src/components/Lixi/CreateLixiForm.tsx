@@ -74,8 +74,8 @@ const CreateLixiForm = ({
   const [newLixiDividedValueIsValid, setNewLixiDividedValueIsValid] = useState(false);
 
   // New Lixi Packages Value
-  const [newNumberPerPackage, setNewNumberPerPackage] = useState('');
-  const [newPackageIsValid, setNewPackageIsValid] = useState(true);  
+  const [newNumberLixiPerPackage, setNewNumberLixiPerPackage] = useState('');
+  const [newPackageIsValid, setNewPackageIsValid] = useState(true);
 
   // New Country
   const [newCountryLixi, setNewCountryLixi] = useState('');
@@ -179,10 +179,10 @@ const CreateLixiForm = ({
     setNewLixiDividedValue(value);
   }
 
-  const handleNewNumberPerPackage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNewNumberLixiPerPackage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewPackageIsValid(isValidAmountInput(value));
-    setNewNumberPerPackage(value);
+    setNewNumberLixiPerPackage(value);
   }
 
   const handleChangeCountry = (value, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -273,7 +273,7 @@ const CreateLixiForm = ({
       numberOfSubLixi: newNumberOfSubLixi,
       envelopeId: newEnvelopeId,
       envelopeMessage: newEnvelopeMessage,
-      numberPerPackage: newNumberPerPackage,
+      numberLixiPerPackage: newNumberLixiPerPackage,
     };
 
     const createLixiModalProps: CreateLixiConfirmationModalProps = {
@@ -286,7 +286,7 @@ const CreateLixiForm = ({
       newActivatedAt,
       newLixiAmount,
       newNumberOfSubLixi,
-      newNumberPerPackage,
+      newNumberLixiPerPackage,
       newLixiMinValue,
       newLixiMaxValue,
       newLixiFixedValue,
@@ -427,7 +427,7 @@ const CreateLixiForm = ({
     }
   }
 
-  const selectExpiry = () => {
+  const advanceOptions = () => {
     return (
       <>
         {/* Max redemption && Packages*/}
@@ -458,16 +458,16 @@ const CreateLixiForm = ({
             }
           >
             <Input
-              addonBefore={intl.get('account.package')}
+              addonBefore={intl.get('account.perPack')}
               type="number"
-              placeholder={intl.get('account.numberPerPackage')}
+              placeholder={intl.get('account.numberLixiPerPackage')}
               name="package"
-              value={newNumberPerPackage}
-              onChange={e => handleNewNumberPerPackage(e)}
+              value={newNumberLixiPerPackage}
+              onChange={e => handleNewNumberLixiPerPackage(e)}
             />
           </Form.Item>
         }
-        
+
 
         {/* Minimum Staking */}
         <Form.Item
@@ -636,7 +636,7 @@ const CreateLixiForm = ({
                 <AdvancedCollapse>
                   <Panel header={intl.get('account.advance')} key="2">
                     {/* Max Claim and Expity Time */}
-                    {selectExpiry()}
+                    {advanceOptions()}
                     {/* Family Friendly */}
                     <Form.Item>
                       <Checkbox

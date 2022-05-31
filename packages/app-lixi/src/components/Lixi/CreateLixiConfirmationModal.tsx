@@ -20,7 +20,7 @@ export type CreateLixiConfirmationModalProps = {
   newLixiDividedValue: string;
   newLixiAmount: string;
   newNumberOfSubLixi: string;
-  newNumberPerPackage: string;
+  newNumberLixiPerPackage: string;
   newLixiName: string;
   newMaxClaim: string;
   newMinStaking: string;
@@ -41,7 +41,7 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
     newLixiName,
     newLixiAmount,
     newNumberOfSubLixi,
-    newNumberPerPackage,
+    newNumberLixiPerPackage,
     newMaxClaim,
     newMinStaking,
     newExpiryAt,
@@ -122,7 +122,7 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
   const confirmPackages = () => {
     return (
       <>
-        <LixiParamLabel>{intl.get('lixi.numberPerPackage', { newNumberPerPackage: newNumberPerPackage })} </LixiParamLabel>
+        <LixiParamLabel>{intl.get('lixi.numberLixiPerPackage', { newNumberLixiPerPackage: newNumberLixiPerPackage })} </LixiParamLabel>
         <br />
       </>
     );
@@ -161,7 +161,7 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
           <LixiParamLabel>{intl.get('lixi.expireAt')} {moment(newExpiryAt).format("YYYY-MM-DD HH:mm")}<br /></LixiParamLabel>
         </>
       )
-    }else {
+    } else {
       return;
     }
   }
@@ -185,7 +185,7 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
         {confirmLixiType()}
         <br />
         {confirmCountry()}
-        {newNumberPerPackage == "" ? "" : confirmPackages()}
+        {newNumberLixiPerPackage == "" ? "" : confirmPackages()}
         {confirmMaxClaim()}
         {confirmMinStaking()}
         {formatActivationDate()}

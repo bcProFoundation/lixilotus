@@ -2,7 +2,7 @@
 import { LixiDto, NotificationDto, SendNotificationJobData, UpdateLixiStatusCommand } from '@bcpros/lixi-models';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { Notification as NotificationDb, Prisma } from '@prisma/client';
+import { Notification as NotificationDb, NotificationLevel as NotificationLevelDb, Prisma } from '@prisma/client';
 import { Queue } from 'bullmq';
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { NOTIFICATION_OUTBOUND_QUEUE } from './notification.constants';
@@ -29,10 +29,10 @@ export class NotificationService {
       data: {
         senderId: notification.senderId,
         recipientId: notification.recipientId,
-        level: notification.level,
+        level: notification.level as NotificationLevelDb,
         action: notification.action,
         message: notification.message,
-        notificationTypeId: notification.notificationTypeId,
+        notificationTypeId: notification.notificationTypeId as number,
         additionalData: notification.additionalData as Prisma.InputJsonValue,
       }
     });

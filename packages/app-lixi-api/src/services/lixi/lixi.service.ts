@@ -8,7 +8,7 @@ import { FlowJob, FlowProducer, Queue } from 'bullmq';
 import IORedis from 'ioredis';
 import * as _ from 'lodash';
 import { I18n, I18nContext } from 'nestjs-i18n';
-import { CREATE_SUB_LIXIES_QUEUE, lixiChunkSize, LIXI_JOB_NAMES } from 'src/constants/lixi.constants';
+import { CREATE_SUB_LIXIES_QUEUE, defaultLixiChunkSize, LIXI_JOB_NAMES } from 'src/constants/lixi.constants';
 import { CreateSubLixiesChunkJobData, CreateSubLixiesJobData } from 'src/models/lixi.models';
 import { aesGcmDecrypt, aesGcmEncrypt, hexSha256, numberToBase58 } from 'src/utils/encryptionMethods';
 import { template } from 'src/utils/stringTemplate';
@@ -208,7 +208,7 @@ export class LixiService {
     // If users input the amount means that the lixi need to be prefund
     const isPrefund = !!command.amount;
 
-    const chunkSize = command.numberPerPackage ? command.numberPerPackage : lixiChunkSize; // number of output per
+    const chunkSize = command.numberLixiPerPackage ? command.numberLixiPerPackage : defaultLixiChunkSize; // number of output per
     const numberOfChunks = Math.ceil(command.numberOfSubLixi as number / chunkSize);
 
     if (numberOfChunks === 0) {
@@ -237,15 +237,15 @@ export class LixiService {
       // Calculate fee for each chunk process
       let fee = await this.walletService.calcFee(this.XPI, (utxoStore as any).bchUtxos, numberOfSubLixiInChunk + 1);
 
-      
-      let createPackage;
-      if (command.numberPerPackage) {
-        const preparePackCode = command.name + "_" + command.accountId + "_" + parentLixiId + "_" + chunkIndex + Date.now();
-        const packCode = await hexSha256(preparePackCode);
 
-        createPackage = await this.prisma.package.create({
+      let createdPackage;
+      if (command.numberLixiPerPackage) {
+        const preparedPackCode = command.name + "_" + command.accountId + "_" + parentLixiId + "_" + chunkIndex + Date.now();
+        const packCode = await hexSha256(preparedPackCode);
+
+        createdPackage = await this.prisma.package.create({
           data: {
-            packCode: packCode.slice(0,8),
+            packCode: packCode.slice(0, 8),
           }
         });
       }
@@ -260,7 +260,7 @@ export class LixiService {
         command: command,
         fundingAddress: account.address,
         accountSecret: secret,
-        packageId: command.numberPerPackage ? createPackage?.id : undefined,
+        packageId: command.numberLixiPerPackage && createdPackage?.id ? createdPackage?.id : undefined,
       };
 
       const childJob: FlowJob = {

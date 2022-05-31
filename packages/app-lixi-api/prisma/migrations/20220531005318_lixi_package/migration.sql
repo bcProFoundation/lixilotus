@@ -1,6 +1,6 @@
 -- AlterTable
-ALTER TABLE "lixi" ADD COLUMN     "package_id" INTEGER,
-ADD COLUMN     "package_value" INTEGER;
+ALTER TABLE "lixi" ADD COLUMN     "number_lixi_per_package" INTEGER,
+ADD COLUMN     "package_id" INTEGER;
 
 -- CreateTable
 CREATE TABLE "package" (
