@@ -5,16 +5,26 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  await prisma.envelope.deleteMany({});
-  await prisma.notificationType.deleteMany({});
 
-  await prisma.envelope.createMany({
-    data: envelopes,
-  });
+  const resultEnvelopes = await prisma.$transaction(
+    envelopes.map(envelope =>
+      prisma.envelope.upsert({
+        where: { id: envelope.id },
+        update: {},
+        create: { ...envelope },
+      })
+    )
+  );
 
-  await prisma.notificationType.createMany({
-    data: notificationTypes
-  });
+  const resultNotifTypes = await prisma.$transaction(
+    notificationTypes.map(notificationType =>
+      prisma.notificationType.upsert({
+        where: { id: notificationType.id },
+        update: {},
+        create: { ...notificationType },
+      })
+    )
+  );
 }
 
 main()
