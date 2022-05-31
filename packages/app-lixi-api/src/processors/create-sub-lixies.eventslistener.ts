@@ -27,24 +27,29 @@ export class CreateSubLixiesEventsListener extends QueueEventsHost {
     const { id: lixiId, jobName, mnemonicHash, senderId, recipientId } = args.returnvalue;
 
     if (jobName === LIXI_JOB_NAMES.CREATE_ALL_SUB_LIXIES) {
-      // The parent job
-      const notif = await this.lixiService.buildNotification(
-        NOTIFICATION_TYPES.CREATE_SUB_LIXIES,
-        senderId, recipientId, {
-          id: args.returnvalue.id, 
-          name: args?.returnvalue?.name ,
-          mnemonicHash: args.returnvalue.mnemonicHash,
-        }
-      );
+
+      // Update the status of lixi
       const id = args.returnvalue.id;
       const updateStatus = {
         id: id,
         mnemonicHash: args.returnvalue.mnemonicHash,
         status: 'active'
       };
+      await this.lixiService.updateStatusLixi(id, updateStatus as UpdateLixiStatusCommand);
+
+      // The parent job
+      const notif = await this.lixiService.buildNotification(
+        NOTIFICATION_TYPES.CREATE_SUB_LIXIES,
+        senderId, recipientId, {
+        id: args.returnvalue.id,
+        name: args?.returnvalue?.name,
+        mnemonicHash: args.returnvalue.mnemonicHash,
+      }
+      );
+
       if (notif) {
+        // Notify the clients
         const room = mnemonicHash;
-        await this.notificationService.updateStatusLixi(id, updateStatus as UpdateLixiStatusCommand);
         await this.notificationService.saveAndDispatchNotification(room, notif);
       }
     }

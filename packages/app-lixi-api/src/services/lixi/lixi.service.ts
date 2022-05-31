@@ -1,13 +1,13 @@
-import { CreateLixiCommand, fromSmallestDenomination, Lixi, NotificationDto } from '@bcpros/lixi-models';
+import { CreateLixiCommand, fromSmallestDenomination, Lixi, LixiDto, NotificationDto, UpdateLixiStatusCommand } from '@bcpros/lixi-models';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Inject, Injectable } from '@nestjs/common';
-import { Account as AccountDb, Package, Prisma } from '@prisma/client';
+import { Account as AccountDb, Prisma } from '@prisma/client';
 import { FlowJob, FlowProducer, Queue } from 'bullmq';
 import IORedis from 'ioredis';
 import * as _ from 'lodash';
-import { I18n, I18nContext } from 'nestjs-i18n';
+import { I18n, I18nContext, I18nService } from 'nestjs-i18n';
 import { CREATE_SUB_LIXIES_QUEUE, defaultLixiChunkSize, LIXI_JOB_NAMES } from 'src/constants/lixi.constants';
 import { CreateSubLixiesChunkJobData, CreateSubLixiesJobData } from 'src/models/lixi.models';
 import { aesGcmDecrypt, aesGcmEncrypt, hexSha256, numberToBase58 } from 'src/utils/encryptionMethods';
@@ -15,7 +15,6 @@ import { template } from 'src/utils/stringTemplate';
 import { VError } from 'verror';
 import { PrismaService } from '../prisma/prisma.service';
 import { WalletService } from '../wallet.service';
-import crypto from 'crypto';
 
 @Injectable()
 export class LixiService {
@@ -24,7 +23,8 @@ export class LixiService {
     private readonly walletService: WalletService,
     @Inject('xpijs') private XPI: BCHJS,
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
-    @InjectQueue(CREATE_SUB_LIXIES_QUEUE) private lixiQueue: Queue
+    @InjectQueue(CREATE_SUB_LIXIES_QUEUE) private lixiQueue: Queue,
+    @I18n() private i18n: I18nService
   ) { }
 
   /**
@@ -307,6 +307,55 @@ export class LixiService {
       if (activationAtDate.getTime() > now.getTime()) {
         throw new VError('Unable to claim because the lixi is not activated yet');
       }
+    }
+  }
+
+  async updateStatusLixi(id: number, command: UpdateLixiStatusCommand) {
+    const account = await this.prisma.account.findFirst({
+      where: {
+        mnemonicHash: command.mnemonicHash
+      }
+    });
+
+    if (!account) {
+      const couldNotFindAccount = await this.i18n.t('lixi.messages.couldNotFindAccount');
+      throw new Error(couldNotFindAccount);
+    }
+
+    const lixi = await this.prisma.lixi.findUnique({
+      where: {
+        id: _.toSafeInteger(id)
+      }
+    });
+    if (!lixi) {
+      const lixiNotExist = await this.i18n.t('lixi.messages.lixiNotExist');
+      throw new VError(lixiNotExist);
+    }
+
+    const updatedLixi = await this.prisma.lixi.update({
+      where: {
+        id: _.toSafeInteger(id)
+      },
+      data: {
+        status: command.status,
+        updatedAt: new Date()
+      }
+    });
+
+    if (updatedLixi) {
+      let resultApi: LixiDto = {
+        ...lixi,
+        name: updatedLixi.name,
+        totalClaim: Number(lixi.totalClaim),
+        expiryAt: lixi.expiryAt ? lixi.expiryAt : undefined,
+        activationAt: lixi.activationAt ? lixi.activationAt : undefined,
+        country: lixi.country ? lixi.country : undefined,
+        status: lixi.status,
+        numberOfSubLixi: lixi.numberOfSubLixi ?? 0,
+        parentId: lixi.parentId ?? undefined,
+        isClaimed: lixi.isClaimed ?? false
+      };
+      return resultApi;
     }
   }
 
