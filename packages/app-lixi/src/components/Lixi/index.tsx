@@ -75,6 +75,8 @@ const Lixi: React.FC = () => {
 
   subLixies = _.sortBy(subLixies, ['isClaimed']);
 
+  const [loadings, setLoadings] = useState<boolean[]>([]);
+
   useEffect(() => {
     if (selectedLixi) {
       dispatch(getLixi(selectedLixi.id));
@@ -383,7 +385,10 @@ const Lixi: React.FC = () => {
             </CopyToClipboard>
           ) : (
             <>
-              <SmartButton onClick={() => handleExportLixi()}>
+              <SmartButton 
+              disabled = {selectedLixi.status != "active"}
+              onClick={() => handleExportLixi()}
+            >
                 <ExportOutlined /> {intl.get('lixi.exportLixi')}
               </SmartButton>
             </>
