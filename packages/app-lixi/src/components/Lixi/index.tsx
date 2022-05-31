@@ -386,7 +386,7 @@ const Lixi: React.FC = () => {
           ) : (
             <>
               <SmartButton 
-              disabled = {selectedLixi.status != "active"}
+              disabled = {selectedLixi.status == "pending"}
               onClick={() => handleExportLixi()}
             >
                 <ExportOutlined /> {intl.get('lixi.exportLixi')}
