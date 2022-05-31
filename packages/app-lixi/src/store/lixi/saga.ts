@@ -94,6 +94,7 @@ function* generateLixiSaga(action: PayloadAction<GenerateLixiCommand>) {
     dividedValue: Number(command.dividedValue),
     amount: Number(command.amount),
     numberOfSubLixi: Number(command.numberOfSubLixi),
+    numberLixiPerPackage: Number(command.numberLixiPerPackage),
     minStaking: Number(command.minStaking),
     country: command && command.country ? command.country : undefined,
     isFamilyFriendly: command.isFamilyFriendly,
@@ -148,7 +149,7 @@ function* fetchInitialSubLixiesSaga(action: PayloadAction<number>) {
   }
 }
 
-function* fetchInitialSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) {}
+function* fetchInitialSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) { }
 
 function* fetchInitialSubLixiesFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? intl.get('claim.unableGetChildLixi');
@@ -174,7 +175,7 @@ function* fetchMoreSubLixiesSaga(action: PayloadAction<{ parentId: number; start
   }
 }
 
-function* fetchMoreSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) {}
+function* fetchMoreSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) { }
 
 function* fetchMoreSubLixiesFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? intl.get('claim.unableCreateChildLixi');
@@ -492,7 +493,7 @@ function* exportSubLixiesSaga(action: PayloadAction<ExportLixiCommand>) {
     const parentLixi: LixiDto = yield select(getLixiById(id));
     const account: AccountDto = yield select(getAccountById(parentLixi.accountId));
     const data = yield call(lixiApi.exportSubLixies, id, command, account?.secret);
-    yield put(exportSubLixiesSuccess({ fileName: data.fileName, lixiId : parentLixi.id, mnemonicHash: account?.mnemonicHash }));
+    yield put(exportSubLixiesSuccess({ fileName: data.fileName, lixiId: parentLixi.id, mnemonicHash: account?.mnemonicHash }));
   } catch (err) {
     const message = (err as Error).message ?? intl.get('lixi.unableExportSub');
     yield put(exportSubLixiesFailure(message));
@@ -528,7 +529,7 @@ function* downloadExportedLixiSaga(action: PayloadAction<DownloadExportedLixiCom
 function* downloadExportedLixiSuccessSaga(action: PayloadAction<any>) {
   const filename = "SubLixiList"
   const result = action.payload.replace(/['"]+/g, '')
-  var blob = new Blob([result], {type: "text/csv;charset=utf-8"});
+  var blob = new Blob([result], { type: "text/csv;charset=utf-8" });
   saveAs(blob, filename);
 
   yield put(hideLoading(downloadExportedLixi.type));
