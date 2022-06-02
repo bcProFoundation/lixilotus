@@ -20,6 +20,7 @@ export interface GenerateLixiCommand {
   activationAt?: string;
   country?: string;
   isFamilyFriendly: boolean;
+  isNFTEnabled: boolean;
   envelopeId: Nullable<number>;
   envelopeMessage: string;
   numberLixiPerPackage?: Nullable<string>;
@@ -45,6 +46,7 @@ export interface CreateLixiCommand {
   activationAt?: Date;
   country?: string;
   isFamilyFriendly: boolean;
+  isNFTEnabled: boolean;
   password: string;
   envelopeId: Nullable<number>;
   envelopeMessage: string;

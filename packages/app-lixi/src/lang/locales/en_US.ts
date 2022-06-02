@@ -150,6 +150,8 @@ export default {
   'lixi.withdrawSuccess': 'Withdraw lixi successfully.',
   'lixi.renameSuccess': 'Lixi has been renamed to {lixiName}',
   'lixi.renameFailed': 'Rename failed. All lixi must have a unique name.',
+  'lixi.isNFTEnabled': 'NFT Enabled',
+  'lixi.optionNFTEnabled': 'Option: NFT Enabled',
   'lixi.unableDownloadSub': 'Unable to download the sub-lixies.',
 
   /* 04.Claim */

@@ -149,6 +149,8 @@ export default {
   'lixi.withdrawSuccess': 'Rút Lì xì thành công.',
   'lixi.renameSuccess': 'Lì xì đã được đổi tên thành {lixiName}',
   'lixi.renameFailed': 'Đổi tên không thành công. Hãy thử lại với một tên khác.',
+  'lixi.isNFTEnabled': 'Kích hoạt NFT',
+  'lixi.optionNFTEnabled': 'Tùy chọn: Kích hoạt NFT',
   'lixi.unableDownloadSub': 'Không thể tải về các Lì xì phụ.',
 
   /* 04.Claim */

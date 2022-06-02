@@ -98,6 +98,7 @@ function* generateLixiSaga(action: PayloadAction<GenerateLixiCommand>) {
     minStaking: Number(command.minStaking),
     country: command && command.country ? command.country : undefined,
     isFamilyFriendly: command.isFamilyFriendly,
+    isNFTEnabled: command.isNFTEnabled,
     password: password,
     mnemonic: mnemonic,
     mnemonicHash: command.mnemonicHash,
