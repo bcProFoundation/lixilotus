@@ -102,7 +102,6 @@ const NotificationMenu = (notifications: Notification[], account: Account) => {
                 key={notification.id}
                 onDelete={() => handleDelete(account, notification.id)}
                 deleteColor="#6f2dbd"
-                style={{ borderRadius: "10px" }}
               >
                 <StyledComment
                   key={notification.id}
