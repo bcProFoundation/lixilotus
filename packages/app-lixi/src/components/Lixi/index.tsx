@@ -73,7 +73,7 @@ const Lixi: React.FC = () => {
   const loadMoreStartId = useAppSelector(getLoadMoreSubLixiesStartId);
   let subLixies = useAppSelector(getAllSubLixies);
 
-  subLixies = _.sortBy(subLixies, ['isClaimed']);
+  subLixies = _.sortBy(subLixies, ['isClaimed', 'packageId']);
 
   useEffect(() => {
     if (selectedLixi) {
@@ -253,11 +253,19 @@ const Lixi: React.FC = () => {
     );
   };
 
-  const columns = [
-    { title: 'Num', dataIndex: 'num', width: 70 },
-    { title: 'Claim Code', dataIndex: 'claimCode' },
-    { title: 'Amount', dataIndex: 'amount' }
-  ];
+  const columns = selectedLixi.numberLixiPerPackage ? 
+    [
+      { title: 'Num', dataIndex: 'num', width: 70 },
+      { title: 'Claim Code', dataIndex: 'claimCode', width: 150 },
+      { title: 'Amount', dataIndex: 'amount', width: 85 },
+      { title: 'packageId', dataIndex: 'packageId'},
+    ] :
+    [
+      { title: 'Num', dataIndex: 'num', width: 70 },
+      { title: 'Claim Code', dataIndex: 'claimCode' },
+      { title: 'Amount', dataIndex: 'amount' },
+    ]
+    ;
 
   const prefixClaimCode = 'lixi';
 
@@ -271,7 +279,8 @@ const Lixi: React.FC = () => {
           </div>
         </CopyToClipboard>
       ),
-      amount: item.isClaimed ? 0 : item.amount == 0 ? 0 : (item.amount - 0.000455).toFixed(2)
+      amount: item.isClaimed ? 0 : item.amount == 0 ? 0 : (item.amount - 0.000455).toFixed(2),
+      packageId: item.packageId
     };
   });
 

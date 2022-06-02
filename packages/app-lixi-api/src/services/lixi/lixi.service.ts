@@ -237,7 +237,6 @@ export class LixiService {
       // Calculate fee for each chunk process
       let fee = await this.walletService.calcFee(this.XPI, (utxoStore as any).bchUtxos, numberOfSubLixiInChunk + 1);
 
-
       let createdPackage;
       if (command.numberLixiPerPackage) {
         const preparedPackCode = command.name + "_" + command.accountId + "_" + parentLixiId + "_" + chunkIndex + Date.now();

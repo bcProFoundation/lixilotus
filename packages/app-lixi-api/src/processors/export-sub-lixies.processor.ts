@@ -45,12 +45,30 @@ export class ExportSubLixiesProcessor extends WorkerHost {
         id: _.toSafeInteger(lixi?.accountId)
       }
     });
-
-    const subLixies = await this.prisma.lixi.findMany({
+    
+    let subLixies = await this.prisma.lixi.findMany({
       where: {
         parentId: jobData.parentId,
       }
     });
+    
+    if (lixi?.numberLixiPerPackage) {
+      const packIdes: (number | null)[] = [];
+      subLixies.map(item => item.packageId).filter(element => packIdes.includes(element) ? '' : packIdes.push(element))
+      const packages = await this.prisma.package.findMany({
+        where: {
+          id: { in: packIdes as unknown as number }
+        }
+      })
+
+      // const res:any = subLixies.map(lixi => packages.find(pack => pack.id === lixi.packageId) || lixi);
+
+      const res = subLixies.map((item,i)=>{
+        if(item.id === packages[i].id){
+          return Object.assign({},item,packages[i])
+        }
+      })
+    }
 
     const childrenApiResult: LixiDto[] = [];
 
@@ -73,10 +91,9 @@ export class ExportSubLixiesProcessor extends WorkerHost {
       childrenApiResult.push(childResult);
     }
     const parser = new Parser({
-      fields: ['name', 'claimCode', 'amount']
+      fields: ['name', 'claimCode', 'amount', 'packageId']
     });
     const csv = parser.parse(childrenApiResult);
-    console.log((lixi as any).id);
     const dir = './public/download/';
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir);

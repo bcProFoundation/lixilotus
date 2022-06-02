@@ -88,7 +88,7 @@ export interface LixiDto {
   subLixiTotalClaim?: number;
   subLixiBalance?: number;
   numberLixiPerPackage?: Nullable<number>;
-  packCode?: Nullable<string>;
+  packageId?: Nullable<number>;
 };
 
 export interface Lixi {
@@ -127,7 +127,7 @@ export interface Lixi {
   subLixiTotalClaim?: number;
   subLixiBalance?: number;
   numberLixiPerPackage?: Nullable<number>;
-  packCode?: Nullable<string>;
+  packageId?: Nullable<number>;
 };
 
 export interface UnarchiveLixiCommand {
