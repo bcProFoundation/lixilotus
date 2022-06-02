@@ -1,19 +1,21 @@
-import { BellTwoTone, CloseCircleOutlined, MenuOutlined } from "@ant-design/icons";
-import { Account, NotificationDto as Notification } from "@bcpros/lixi-models";
-import { getSelectedAccount } from "@store/account/selectors";
+import { useEffect, useState } from "react";
+import { BellTwoTone, MenuOutlined, CloseCircleOutlined } from "@ant-design/icons"
+import { Space, Menu, Popover, Badge, Comment } from "antd";
 import { useAppDispatch, useAppSelector } from "@store/hooks";
-import { downloadExportedLixi } from "@store/lixi/actions";
-import { deleteNotification, fetchNotifications, readNotification, startChannel, stopChannel } from "@store/notification/actions";
-import { getAllNotifications } from "@store/notification/selectors";
 import { toggleCollapsedSideNav } from "@store/settings/actions";
 import { getNavCollapsed } from "@store/settings/selectors";
-import { Badge, Comment, Popover, Space } from "antd";
 import { Header } from "antd/lib/layout/layout";
-import moment from 'moment';
-import { useEffect } from "react";
-import { isMobile } from "react-device-detect";
-import SwipeToDelete from 'react-swipe-to-delete-ios';
 import styled from 'styled-components';
+import { getSelectedAccount } from "@store/account/selectors";
+import { fetchNotifications, startChannel, stopChannel } from "@store/notification/actions";
+import { getAllNotifications } from "@store/notification/selectors";
+import { Account, NotificationDto as Notification } from "@bcpros/lixi-models";
+import { connect } from "socket.io-client";
+import SwipeToDelete from 'react-swipe-to-delete-ios'
+import moment from 'moment';
+import { isMobile } from "react-device-detect";
+import { deleteNotification, readNotification } from "@store/notification/actions";
+import { downloadExportedLixi } from "@store/lixi/actions";
 
 export type TopbarProps = {
   className?: string,
@@ -100,6 +102,7 @@ const NotificationMenu = (notifications: Notification[], account: Account) => {
                 key={notification.id}
                 onDelete={() => handleDelete(account, notification.id)}
                 deleteColor="#6f2dbd"
+                style={{ borderRadius: "10px" }}
               >
                 <StyledComment
                   key={notification.id}
