@@ -1,10 +1,13 @@
 import SlpWallet from '@bcpros/minimal-xpi-slp-wallet';
 import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import config from 'config';
 import IORedis from 'ioredis';
 import * as _ from 'lodash';
+import { EthersModule, RINKEBY_NETWORK, ROPSTEN_NETWORK } from 'nestjs-ethers';
+import { AcceptLanguageResolver, HeaderResolver, I18nModule } from 'nestjs-i18n';
 import path, { join } from 'path';
 import { NOTIFICATION_OUTBOUND_QUEUE } from './common/notifications/notification.constants';
 import { NotificationController } from './common/notifications/notification.controller';
@@ -14,13 +17,14 @@ import { NotificationService } from './common/notifications/notification.service
 import {
   CREATE_SUB_LIXIES_QUEUE,
   EXPORT_SUB_LIXIES_QUEUE,
-  WITHDRAW_SUB_LIXIES_QUEUE,
+  WITHDRAW_SUB_LIXIES_QUEUE
 } from './constants/lixi.constants';
 import { AccountController } from './controller/account.controller';
 import { ClaimController } from './controller/claim.controller';
 import { EnvelopeController } from './controller/envelope.controller';
 import { HeathController } from './controller/heathcheck.controller';
 import { LixiController } from './controller/lixi.controller';
+import { LixiNftModule } from './modules/nft/lixinft.module';
 import { CreateSubLixiesEventsListener } from './processors/create-sub-lixies.eventslistener';
 import { CreateSubLixiesProcessor } from './processors/create-sub-lixies.processor';
 import { ExportSubLixiesEventsListener } from './processors/export-sub-lixies.eventslistener';
@@ -30,7 +34,6 @@ import { WithdrawSubLixiesProcessor } from './processors/withdraw-sub-lixies.pro
 import { LixiService } from './services/lixi/lixi.service';
 import { PrismaService } from './services/prisma/prisma.service';
 import { WalletService } from './services/wallet.service';
-import { AcceptLanguageResolver, HeaderResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
 
 const xpiRestUrl = config.has('xpiRestUrl')
   ? config.get('xpiRestUrl')
@@ -56,6 +59,9 @@ const XpijsProvider = {
     ServeStaticModule.forRoot({
       serveRoot: '/api/images',
       rootPath: join(__dirname, '..', 'public/images'),
+    }),
+    ConfigModule.forRoot({
+      isGlobal: true
     }),
     BullModule.registerQueue(
       {
@@ -109,6 +115,19 @@ const XpijsProvider = {
       },
       resolvers: [{ use: HeaderResolver, options: ['lang'] }, AcceptLanguageResolver],
     }),
+    EthersModule.forRootAsync({
+      providers: [ConfigService],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        const etherNetworkUrl = config.get<string>('ETHER_NETWORK_URL');
+        return {
+          network: { name: 'hardhat', chainId: 31337 },
+          custom: etherNetworkUrl,
+          useDefaultProvider: false
+        };
+      }
+    }),
+    LixiNftModule
   ],
   controllers: [
     AccountController,
@@ -132,7 +151,7 @@ const XpijsProvider = {
     NotificationGateway,
     WithdrawSubLixiesEventsListener,
     NotificationOutboundProcessor,
-    NotificationService,
+    NotificationService
   ],
 })
-export class AppModule {}
+export class AppModule { }

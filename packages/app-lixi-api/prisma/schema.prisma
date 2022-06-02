@@ -82,6 +82,8 @@ model Claim {
   amount        BigInt   @map("amount")
   lixi          Lixi     @relation(fields: [lixiId], references: [id])
   lixiId        Int      @map("lixi_id")
+  nftTokenId    String?  @map("nft_token_id")
+  nftTokenUrl   String   @default("") @map("nft_token_url")
 
   @@map("claim")
 }

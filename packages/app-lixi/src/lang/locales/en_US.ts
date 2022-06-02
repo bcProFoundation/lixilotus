@@ -224,4 +224,7 @@ export default {
   'notification.unableToFetch': 'Unable to fetch the notification.',
   'notification.unableToDelete': 'Unable to delete the notification.',
   'notification.unableToRead': 'Unable to read the notification.',
+
+  /* 10.NFT */
+  'lixinft.unableToMint': 'Unable to mint the lixi NFT'
 };
