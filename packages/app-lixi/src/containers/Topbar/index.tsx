@@ -1,21 +1,19 @@
-import { useEffect, useState } from "react";
-import { BellTwoTone, MenuOutlined, CloseCircleOutlined } from "@ant-design/icons"
-import { Space, Menu, Popover, Badge, Comment } from "antd";
+import { BellTwoTone, CloseCircleOutlined, MenuOutlined } from "@ant-design/icons";
+import { Account, NotificationDto as Notification } from "@bcpros/lixi-models";
+import { getSelectedAccount } from "@store/account/selectors";
 import { useAppDispatch, useAppSelector } from "@store/hooks";
+import { downloadExportedLixi } from "@store/lixi/actions";
+import { deleteNotification, fetchNotifications, readNotification, startChannel, stopChannel } from "@store/notification/actions";
+import { getAllNotifications } from "@store/notification/selectors";
 import { toggleCollapsedSideNav } from "@store/settings/actions";
 import { getNavCollapsed } from "@store/settings/selectors";
+import { Badge, Comment, Popover, Space } from "antd";
 import { Header } from "antd/lib/layout/layout";
-import styled from 'styled-components';
-import { getSelectedAccount } from "@store/account/selectors";
-import { fetchNotifications, startChannel, stopChannel } from "@store/notification/actions";
-import { getAllNotifications } from "@store/notification/selectors";
-import { Account, NotificationDto as Notification } from "@bcpros/lixi-models";
-import { connect } from "socket.io-client";
-import SwipeToDelete from 'react-swipe-to-delete-ios'
 import moment from 'moment';
+import { useEffect } from "react";
 import { isMobile } from "react-device-detect";
-import { deleteNotification, readNotification } from "@store/notification/actions";
-import { downloadExportedLixi } from "@store/lixi/actions";
+import SwipeToDelete from 'react-swipe-to-delete-ios';
+import styled from 'styled-components';
 
 export type TopbarProps = {
   className?: string,
@@ -81,32 +79,31 @@ const NotificationMenu = (notifications: Notification[], account: Account) => {
   const dispatch = useAppDispatch();
 
   const handleDelete = (account: Account, notificationId: string) => {
-    dispatch(deleteNotification({mnemonichHash: account.mnemonicHash, notificationId}));
+    dispatch(deleteNotification({ mnemonichHash: account.mnemonicHash, notificationId }));
   }
 
   const handleRead = (account: Account, notification: Notification) => {
-    dispatch(readNotification({mnemonichHash: account.mnemonicHash, notificationId: notification.id}));
+    dispatch(readNotification({ mnemonichHash: account.mnemonicHash, notificationId: notification.id }));
     if (notification.notificationTypeId === 3) {
       const { parentId, mnemonicHash, fileName } = notification.additionalData as any;
       dispatch(downloadExportedLixi({ lixiId: parentId, mnemonicHash, fileName }));
     }
   }
-  
+
   return notifications && notifications.length > 0 && (
-    <> 
+    <>
       {notifications.map(notification => (
         <>
           {isMobile ? (
-            <div onClick={()=>handleRead(account, notification)}>
+            <div onClick={() => handleRead(account, notification)}>
               <SwipeToDelete
                 key={notification.id}
-                onDelete={()=>handleDelete(account, notification.id)}
+                onDelete={() => handleDelete(account, notification.id)}
                 deleteColor="#6f2dbd"
-                style={{borderRadius:"10px"}}
               >
                 <StyledComment
                   key={notification.id}
-                  style={{backgroundColor: notification.readAt == null ? "#eceff5" : "#fff"}}
+                  style={{ backgroundColor: notification.readAt == null ? "#eceff5" : "#fff" }}
                   author={
                     <StyledAuthor >
                       <StyledTextLeft></StyledTextLeft>
@@ -114,15 +111,15 @@ const NotificationMenu = (notifications: Notification[], account: Account) => {
                     </StyledAuthor>
                   }
                   content={
-                    <div style={{fontWeight: notification.readAt != null ? "normal" : "bold"}}>{notification.message}</div>
+                    <div style={{ fontWeight: notification.readAt != null ? "normal" : "bold" }}>{notification.message}</div>
                   }
-              /> 
+                />
               </SwipeToDelete>
             </div>
           ) : (
             <StyledComment
               key={notification.id}
-              style={{borderRadius:"10px", backgroundColor: notification.readAt == null ? "#eceff5" : "#fff" , marginBottom:"5px"}}
+              style={{ borderRadius: "10px", backgroundColor: notification.readAt == null ? "#eceff5" : "#fff", marginBottom: "5px" }}
               author={
                 <StyledAuthor >
                   <StyledTextLeft></StyledTextLeft>
@@ -131,14 +128,14 @@ const NotificationMenu = (notifications: Notification[], account: Account) => {
               }
               content={
                 <Space>
-                  <div 
-                    style={{fontWeight: notification.readAt != null ? "normal" : "bold", cursor:"pointer" }}
-                    onClick={()=>handleRead(account, notification)}
+                  <div
+                    style={{ fontWeight: notification.readAt != null ? "normal" : "bold", cursor: "pointer" }}
+                    onClick={() => handleRead(account, notification)}
                   >
                     {notification.message}
                   </div>
-                  <CloseCircleOutlined onClick={()=>handleDelete(account, notification.id)}/>
-                </Space>       
+                  <CloseCircleOutlined onClick={() => handleDelete(account, notification.id)} />
+                </Space>
               }
             />
           )}
@@ -180,7 +177,7 @@ const StyledPopover = styled(Popover)`
       right: 65px ;
     }
   }
-  
+
   .ant-popover-arrow > .ant-popover-arrow-content::before {
     background: ${props => props.theme.primary};
   }
@@ -194,7 +191,7 @@ const StyledPopover = styled(Popover)`
     padding: 10px !important;
     height: 300px !important;
     overflow: auto;
-    
+
     #delete {
       border-radius: 8px;
     }
@@ -235,7 +232,7 @@ const Topbar = ({
       <img src='/images/lixilotus-logo.png' alt='lixilotus' />
       <Space direction="horizontal" size={25} >
         <StyledPopover content={NotificationMenu(notifications, selectedAccount)} placement="bottomRight"
-          getPopupContainer={(trigger) => trigger} trigger={notifications.length != 0 ? "click": ""} title="Notifications">
+          getPopupContainer={(trigger) => trigger} trigger={notifications.length != 0 ? "click" : ""} title="Notifications">
           <Badge count={notifications.length} overflowCount={9} offset={[notifications.length < 10 ? 0 : 5, 25]} color="#6f2dbd">
             <StyledBell twoToneColor="#6f2dbd" />
           </Badge>

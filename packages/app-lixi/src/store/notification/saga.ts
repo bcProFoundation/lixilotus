@@ -1,4 +1,4 @@
-import { AccountDto as Account, NotificationDto as Notification } from '@bcpros/lixi-models';
+import { AccountDto as Account, NotificationDto } from '@bcpros/lixi-models';
 import { all, call, cancelled, fork, put, select, take, takeLatest } from '@redux-saga/core/effects';
 import intl from 'react-intl-universal';
 import { PayloadAction } from '@reduxjs/toolkit';
@@ -60,7 +60,7 @@ function* fetchNotificationsSaga(action: PayloadAction<{ accountId: number; mnem
   try {
     yield put(showLoading(fetchNotifications.type));
     const { accountId, mnemonichHash } = action.payload;
-    const notifications: Notification[] = yield call(notificationApi.getByAccountId, accountId, mnemonichHash);
+    const notifications: NotificationDto[] = yield call(notificationApi.getByAccountId, accountId, mnemonichHash);
     yield put(fetchNotificationsSuccess(notifications));
   } catch (err) {
     const message = (err as Error).message ?? intl.get('claim.unableClaim');
@@ -272,7 +272,7 @@ function* startStopChannel() {
   }
 }
 
-function* receiveNotificationSaga(action: PayloadAction<Notification>) {
+function* receiveNotificationSaga(action: PayloadAction<NotificationDto>) {
   try {
     const { notificationTypeId, additionalData } = action.payload;
     if (notificationTypeId == NOTIFICATION_TYPES.CREATE_SUB_LIXIES) {

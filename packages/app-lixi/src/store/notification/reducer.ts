@@ -1,17 +1,17 @@
-import { createEntityAdapter, createReducer, Update } from "@reduxjs/toolkit"
-import { NotificationDto as Notification } from "@bcpros/lixi-models";
+import { NotificationDto } from "@bcpros/lixi-models/lib/common/notification";
+import { createEntityAdapter, createReducer, Update } from "@reduxjs/toolkit";
+import { channelOff, channelOn, deleteNotificationSuccess, fetchNotificationsSuccess, readNotificationSuccess, receiveNotification, serverOff, serverOn } from "./actions";
 import { NotificationsState } from "./state";
-import { channelOff, channelOn, fetchNotificationsSuccess, receiveNotification, serverOff, serverOn, deleteNotificationSuccess, readNotificationSuccess } from "./actions";
 
-export const notificationsAdapter = createEntityAdapter<Notification>({
+export const notificationsAdapter = createEntityAdapter<NotificationDto>({
   sortComparer: (a, b) => {
-    if (a.createdAt === b.createdAt)  {
+    if (a.createdAt === b.createdAt) {
       return 0;
     } else if (a.createdAt > b.createdAt) {
       return -1;
     } else {
       return 1;
-    }  
+    }
   }
 });
 
@@ -24,15 +24,16 @@ const initialState: NotificationsState = notificationsAdapter.getInitialState({
 export const notificationReducer = createReducer(initialState, (builder) => {
   builder
     .addCase(fetchNotificationsSuccess, (state, action) => {
-      const notifications = action.payload;
+      const notifications: NotificationDto[] = action.payload;
       notificationsAdapter.setAll(state, notifications);
+      state.channelStatusOn = false;
     })
     .addCase(deleteNotificationSuccess, (state, action) => {
       notificationsAdapter.removeOne(state, action.payload);
     })
     .addCase(readNotificationSuccess, (state, action) => {
-      const notification = action.payload as Notification;
-      const updateNotification: Update<Notification> = {
+      const notification = action.payload as NotificationDto;
+      const updateNotification: Update<NotificationDto> = {
         id: notification.id,
         changes: {
           readAt: notification.readAt

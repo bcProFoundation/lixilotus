@@ -19,7 +19,7 @@ export interface NotificationDto {
   message?: string;
   readAt?: Nullable<Date>;
   deletedAt?: Nullable<Date>;
-  additionalData?: Nullable<Object>;
+  additionalData?: Nullable<any>;
   recipientId?: Nullable<number>;
   senderId?: Nullable<number>;
   notificationType?: Nullable<NotificationTypeDto>;

@@ -19,7 +19,7 @@ export function useReduxEffect(
 
   const handleChange = (): void => {
     const state = store.getState();
-    const action = state.action;
+    const action = (state as any).action;
     const previousValue = currentValue.current;
     currentValue.current = action.count;
 

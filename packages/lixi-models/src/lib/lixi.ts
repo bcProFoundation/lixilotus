@@ -89,6 +89,7 @@ export interface LixiDto {
   claimCount?: number;
   subLixiTotalClaim?: number;
   subLixiBalance?: number;
+  isNFTEnabled: boolean;
   numberLixiPerPackage?: Nullable<number>;
   packCode?: Nullable<string>;
 };
@@ -128,6 +129,7 @@ export interface Lixi {
   claimCount?: number;
   subLixiTotalClaim?: number;
   subLixiBalance?: number;
+  isNFTEnabled: boolean;
   numberLixiPerPackage?: Nullable<number>;
   packCode?: Nullable<string>;
 };

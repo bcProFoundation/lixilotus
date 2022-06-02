@@ -4,8 +4,8 @@ import {
   NestFastifyApplication
 } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import compression from 'fastify-compress';
-import { fastifyHelmet } from 'fastify-helmet';
+import compression from '@fastify/compress';
+import { fastifyHelmet } from '@fastify/helmet';
 import { AppModule } from './app.module';
 import { RedisIoAdapter } from './common/adapters/redis-io.adapter';
 import { HttpExceptionFilter } from './middlewares/exception.filter';

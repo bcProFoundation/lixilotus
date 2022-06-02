@@ -1,7 +1,7 @@
+import { NotificationDto } from "@bcpros/lixi-models/lib/common/notification";
 import { EntityState } from "@reduxjs/toolkit";
-import { NotificationDto as Notification } from "@bcpros/lixi-models";
 
-export interface NotificationsState extends EntityState<Notification> {
+export interface NotificationsState extends EntityState<NotificationDto> {
   channelStatusOn: boolean;
   serverStatusOn: boolean;
 }
