@@ -1,29 +1,26 @@
-import { Body, Controller, Get, Headers, HttpException, HttpStatus, Inject, Param, Post } from '@nestjs/common';
-import * as _ from 'lodash';
-import axios from 'axios';
-import { PrismaService } from '../services/prisma/prisma.service';
-import BigNumber from 'bignumber.js';
-import geoip from 'geoip-country';
+import {
+  ClaimDto, ClaimType, countries,
+  CreateClaimDto,
+  fromSmallestDenomination, LixiType, toSmallestDenomination, ViewClaimDto
+} from '@bcpros/lixi-models';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
-import {
-  countries,
-  CreateClaimDto,
-  fromSmallestDenomination,
-  ClaimDto,
-  toSmallestDenomination,
-  LixiType,
-  ViewClaimDto,
-  ClaimType
-} from '@bcpros/lixi-models';
-import { WalletService } from 'src/services/wallet.service';
-import { LixiService } from 'src/services/lixi/lixi.service';
+import { Body, Controller, Get, Headers, HttpException, HttpStatus, Inject, Param, Post } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import axios from 'axios';
+import BigNumber from 'bignumber.js';
+import geoip from 'geoip-country';
+import * as _ from 'lodash';
 import moment from 'moment';
+import { I18n, I18nContext } from 'nestjs-i18n';
+import { ReqSocket } from 'src/decorators/req.socket.decorator';
+import logger from 'src/logger';
+import { LixiNftService } from 'src/modules/nft/lixinft.service';
+import { LixiService } from 'src/services/lixi/lixi.service';
+import { WalletService } from 'src/services/wallet.service';
 import { aesGcmDecrypt, base58ToNumber } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
-import logger from 'src/logger';
-import { ReqSocket } from 'src/decorators/req.socket.decorator';
-import { I18n, I18nContext } from 'nestjs-i18n';
+import { PrismaService } from '../services/prisma/prisma.service';
 
 const PRIVATE_KEY = 'AIzaSyCFY2D4NRLjDTpJfk0jjJNADalSceqC4qs';
 const SITE_KEY = '6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb';
@@ -36,7 +33,9 @@ export class ClaimController {
     private readonly walletService: WalletService,
     private readonly lixiService: LixiService,
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
-    @Inject('xpijs') private XPI: BCHJS
+    @Inject('xpijs') private XPI: BCHJS,
+    private readonly config: ConfigService,
+    private readonly lixiNftService: LixiNftService
   ) { }
 
   @Get(':id')
@@ -65,7 +64,9 @@ export class ClaimController {
         image: claim.lixi.envelope?.image ?? '',
         thumbnail: claim.lixi.envelope?.thumbnail ?? '',
         amount: Number(claim.amount),
-        message: claim.lixi.envelopeMessage
+        message: claim.lixi.envelopeMessage,
+        nftTokenId: claim.nftTokenId,
+        nftTokenUrl: claim.nftTokenUrl
       };
       return result;
     } catch (err: unknown) {
@@ -324,13 +325,24 @@ export class ClaimController {
           const txid = await this.XPI.RawTransactions.sendRawTransaction(hex);
           // const txid = await xpiWallet.send(outputs);
 
+          // Mint the NFT
+          let nftTokenUrl = '';
+          let nftTokenId = null;
+          const tokenBaseUrl = this.config.get<string>('TOKEN_BASE_URL');
+          if (lixi.isNFTEnabled && claimApi.nftReceiverAddress) {
+            nftTokenId = await this.lixiNftService.mintNFT(claimApi.nftReceiverAddress);
+            nftTokenUrl = `${tokenBaseUrl}nft/${nftTokenId}`;
+          }
+
           const createClaimOperation = this.prisma.claim.create({
             data: {
               ipaddress: ip,
               lixiId: lixi.id,
               transactionId: txid,
               claimAddress: claimApi.claimAddress,
-              amount: amountSats
+              amount: amountSats,
+              nftTokenId: nftTokenId,
+              nftTokenUrl: nftTokenUrl
             }
           });
 
@@ -361,6 +373,8 @@ export class ClaimController {
             }
           });
 
+
+
           if (!claim) {
             const unableClaim = await i18n.t('claim.messages.unableClaim');
             throw new VError(unableClaim);
@@ -372,7 +386,9 @@ export class ClaimController {
             image: claim.lixi.envelope?.image ?? '',
             thumbnail: claim.lixi.envelope?.thumbnail ?? '',
             amount: Number(claim.amount),
-            message: claim.lixi.envelopeMessage
+            message: claim.lixi.envelopeMessage,
+            nftTokenId: claim.nftTokenId,
+            nftTokenUrl: claim.nftTokenUrl
           };
 
           return result;
