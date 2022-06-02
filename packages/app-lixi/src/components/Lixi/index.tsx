@@ -255,6 +255,16 @@ const Lixi: React.FC = () => {
     );
   };
 
+  const showIsNFTEnabled = () => {
+    return selectedLixi?.isNFTEnabled ? (
+      <Descriptions.Item label={intl.get('lixi.optional')} key="desc.optional">
+        {intl.get('lixi.isNFTEnabled')}
+      </Descriptions.Item>
+    ) : (
+      ''
+    );
+  };
+
   const columns = [
     { title: 'Num', dataIndex: 'num', width: 70 },
     { title: 'Claim Code', dataIndex: 'claimCode' },
@@ -327,6 +337,7 @@ const Lixi: React.FC = () => {
             {formatActivationDate()}
             {formatDate()}
             {showIsFamilyFriendly()}
+            {showIsNFTEnabled()}
           </Descriptions>
 
           {/* Lixi details */}

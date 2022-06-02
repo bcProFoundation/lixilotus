@@ -99,6 +99,8 @@ const CreateLixiForm = ({
 
   // New FamilyFriendly
   const [isFamilyFriendly, setIsFamilyFriendlyLixi] = useState<boolean>(false);
+  // New isNFTEnabled
+  const [isNFTEnabled, setIsNFTEnabledLixi] = useState<boolean>(false);
 
   // New Envelope
   const [newEnvelopeId, setNewEnvelopeId] = useState<number | null>(null);
@@ -242,6 +244,11 @@ const CreateLixiForm = ({
     setIsFamilyFriendlyLixi(value);
   }
 
+  const handleNFTEnabled = (e) => {
+    const value = e.target.checked;
+    setIsNFTEnabledLixi(value);
+  }
+
   const handleSubmitCreateLixi = () => {
 
     if (!account) {
@@ -269,6 +276,7 @@ const CreateLixiForm = ({
       minStaking: newMinStaking,
       country: newCountryLixi,
       isFamilyFriendly: isFamilyFriendly,
+      isNFTEnabled: isNFTEnabled,
       amount: newLixiAmount,
       numberOfSubLixi: newNumberOfSubLixi,
       envelopeId: newEnvelopeId,
@@ -294,6 +302,7 @@ const CreateLixiForm = ({
       newMinStaking,
       newCountryLixi,
       isFamilyFriendly,
+      isNFTEnabled,
       newEnvelopeId,
       onOkAction: generateLixi(command)
     };
@@ -644,6 +653,13 @@ const CreateLixiForm = ({
                         onChange={e => handleFamilyFriendly(e)}>
                         {intl.get('account.familyFriendly')}
                       </Checkbox>
+                      {ClaimType.OneTime === claimType && (
+                        <Checkbox
+                          value={isNFTEnabled}
+                          onChange={e => handleNFTEnabled(e)}>
+                          {intl.get('lixi.isNFTEnabled')}
+                        </Checkbox>
+                      )} 
                     </Form.Item>
                   </Panel>
                 </AdvancedCollapse>

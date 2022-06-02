@@ -64,6 +64,7 @@ model Lixi {
   envelope             Envelope? @relation(fields: [envelopeId], references: [id])
   envelopeMessage      String    @default("") @map("envelope_message")
   isClaimed            Boolean?  @default(false) @map("check_claim")
+  isNFTEnabled         Boolean   @default(false) @map("is_nft_enabled")
   numberLixiPerPackage Int?      @map("number_lixi_per_package")
   packageId            Int?      @map("package_id")
   package              Package?  @relation(fields: [packageId], references: [id])
