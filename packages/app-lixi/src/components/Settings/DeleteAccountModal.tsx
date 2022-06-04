@@ -9,14 +9,15 @@ import { Account } from '@bcpros/lixi-models';
 import { WalletFilled } from '@ant-design/icons';
 import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
 import { AnyAction } from '@reduxjs/toolkit';
+import { selectAccount } from 'src/store/account/actions';
 
 export type DeleteAccountModalProps = {
   account: Account;
+  remainingAccounts?: Account[];
   onOkAction?: AnyAction;
 }
 
 export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = (props: DeleteAccountModalProps) => {
-
   const [accountDeleteValid, setAccountDeleteValid] = useState<boolean | null>(null);
   const [
     confirmationOfAccountToBeDeleted,
@@ -31,6 +32,9 @@ export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = (props: Del
       // There's an action should be dispatch on ok
       // Set selected name to the clone action and dispatch
       const newAction = _.cloneDeep(props.onOkAction);
+      if (props.remainingAccounts.length > 0) {
+        dispatch(selectAccount(props.remainingAccounts[0].id));
+      }
       dispatch(newAction);
       dispatch(closeModal());
     }
