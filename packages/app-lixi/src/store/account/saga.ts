@@ -1,5 +1,5 @@
 import { Modal } from 'antd';
-import { all, call, fork, getContext, put, takeLatest } from 'redux-saga/effects';
+import { all, call, fork, getContext, put, select, takeLatest } from 'redux-saga/effects';
 import intl from 'react-intl-universal';
 
 import {
@@ -42,9 +42,13 @@ import {
   setAccount,
   refreshLixiList,
   refreshLixiListFailure,
-  refreshLixiListSuccess
+  refreshLixiListSuccess,
+  changeAccountLocaleSuccess,
+  changeAccountLocaleFailure,
+  changeAccountLocale
 } from './actions';
 import { fetchNotifications } from '@store/notification/actions';
+import { getCurrentLocale } from '@store/settings/selectors';
 
 /**
  * Generate a account with random encryption password
@@ -62,11 +66,13 @@ function* generateAccountSaga(action: PayloadAction) {
   const mnemonicUtf8 = new TextEncoder().encode(Bip39128BitMnemonic); // encode mnemonic as UTF-8
   const mnemonicHashBuffer = yield call([crypto.subtle, crypto.subtle.digest], 'SHA-256', mnemonicUtf8); // hash the mnemonic
   const mnemonicHash = Buffer.from(new Uint8Array(mnemonicHashBuffer)).toString('hex');
+  const locale: string | undefined = yield select(getCurrentLocale);
 
   const account: CreateAccountCommand = {
     mnemonic: Bip39128BitMnemonic,
     encryptedMnemonic,
-    mnemonicHash
+    mnemonicHash,
+    language: locale
   };
 
   yield put(postAccount(account));
@@ -157,9 +163,12 @@ function* importAccountSaga(action: PayloadAction<string>) {
     const mnemonicHashBuffer = yield call([crypto.subtle, crypto.subtle.digest], 'SHA-256', mnemonicUtf8); // hash the mnemonic
     const mnemonicHash = Buffer.from(new Uint8Array(mnemonicHashBuffer)).toString('hex');
 
+    const locale = yield select(getCurrentLocale);
+
     const command: ImportAccountCommand = {
       mnemonic,
-      mnemonicHash
+      mnemonicHash,
+      language: locale
     };
 
     const data: AccountDto = yield call(accountApi.import, command);
@@ -274,7 +283,14 @@ function* renameAccountSaga(action: PayloadAction<RenameAccountCommand>) {
   try {
     yield put(showLoading(renameAccount.type));
     const { id } = action.payload;
-    const data = yield call(accountApi.patch, id, action.payload);
+
+    const patchAccountCommand: PatchAccountCommand = {
+      id: action.payload.id,
+      mnemonic: action.payload.mnemonic,
+      name: action.payload.name
+    };
+
+    const data = yield call(accountApi.patch, id, patchAccountCommand);
     const account = data as Account;
     yield put(renameAccountSuccess(account));
   } catch (err) {
@@ -296,6 +312,41 @@ function* renameAccountFailureSaga(action: PayloadAction<string>) {
     content: intl.get('account.renameFailed')
   });
   yield put(hideLoading(renameAccount.type));
+}
+
+function* changeAccountLocaleSaga(action: PayloadAction<ChangeAccountLocaleCommand>) {
+  try {
+    yield put(showLoading(changeAccountLocale.type));
+    const { id } = action.payload;
+    const patchAccountCommand: PatchAccountCommand = {
+      id: action.payload.id,
+      mnemonic: action.payload.mnemonic,
+      language: action.payload.language
+    };
+
+    const data = yield call(accountApi.patch, id, patchAccountCommand);
+    const account = data as Account;
+    yield put(changeAccountLocaleSuccess(account));
+  } catch (err) {
+    const message = (err as Error).message ?? intl.get('account.unableToChangeLocaleAccount');
+    yield put(changeAccountLocaleFailure(message));
+  }
+}
+
+function* changeAccountLocaleSuccessSaga(action: PayloadAction<Account>) {
+  const account = action.payload;
+  yield put(hideLoading(changeAccountLocale.type));
+  const languageName: string = intl.get(account.language);
+  Modal.success({
+    content: intl.get('account.accountChangeLocaleSuccess', { language: languageName })
+  });
+}
+
+function* changeAccountLocaleFailureSaga(action: PayloadAction<string>) {
+  Modal.error({
+    content: intl.get('account.unableToChangeLocaleAccount')
+  });
+  yield put(hideLoading(changeAccountLocale.type));
 }
 
 function* deleteAccountSaga(action: PayloadAction<DeleteAccountCommand>) {
@@ -391,6 +442,8 @@ function* watchImportAccountSuccess() {
 function* watchImportAccountFailure() {
   yield takeLatest(importAccountFailure.type, importAccountFailureSaga);
 }
+import { ChangeAccountLocaleCommand } from '../../../../lixi-models/build/module/lib/account/account.dto.d';
+import { PatchAccountCommand } from '../../../../lixi-models/src/lib/account/account.dto';
 
 function* watchSelectAccount() {
   yield takeLatest(selectAccount.type, selectAccountSaga);
@@ -418,6 +471,18 @@ function* watchRenameAccountSuccess() {
 
 function* watchRenameAccountFailure() {
   yield takeLatest(renameAccountFailure.type, renameAccountFailureSaga);
+}
+
+function* watchChangeAccountLocale() {
+  yield takeLatest(changeAccountLocale.type, changeAccountLocaleSaga);
+}
+
+function* watchChangeAccountLocaleSuccessSaga() {
+  yield takeLatest(changeAccountLocaleSuccess.type, changeAccountLocaleSuccessSaga);
+}
+
+function* watchChangeAccountLocaleFailureSaga() {
+  yield takeLatest(changeAccountLocaleFailure.type, changeAccountLocaleFailureSaga);
 }
 
 function* watchDeleteAccount() {
@@ -463,6 +528,9 @@ export default function* accountSaga() {
     fork(watchRenameAccount),
     fork(watchRenameAccountSuccess),
     fork(watchRenameAccountFailure),
+    fork(watchChangeAccountLocale),
+    fork(watchChangeAccountLocaleSuccessSaga),
+    fork(watchChangeAccountLocaleFailureSaga),
     fork(watchDeleteAccount),
     fork(watchDeleteAccountSuccess),
     fork(watchDeleteAccountFailure)

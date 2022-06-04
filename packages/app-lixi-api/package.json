@@ -72,7 +72,7 @@
     "@types/jest": "^28.1.0",
     "@types/json2csv": "^5.0.3",
     "@types/moment": "^2.13.0",
-    "@types/node": "^17.0.23",
+    "@types/node": "^17.0.33",
     "@types/socket.io": "^3.0.2",
     "@types/supertest": "^2.0.12",
     "@types/verror": "^1.10.5",
@@ -89,6 +89,9 @@
     "ts-loader": "^9.3.0",
     "tsconfig-paths": "^4.0.0",
     "typescript": "4.7.2"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seeds/index.ts"
   },
   "jest": {
     "moduleFileExtensions": [
