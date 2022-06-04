@@ -1,4 +1,3 @@
-
 export interface Account {
   id: number;
   name: string;
@@ -11,4 +10,5 @@ export interface Account {
   mnemonicHash: string;
   address: string;
   balance?: number;
+  language?: string;
 }

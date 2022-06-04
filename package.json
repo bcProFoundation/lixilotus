@@ -34,7 +34,7 @@
     ]
   },
   "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "ts-node prisma/seeds/index.ts"
   },
   "husky": {
     "hooks": {

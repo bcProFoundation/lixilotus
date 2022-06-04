@@ -72,11 +72,13 @@ export default {
   'account.unableToImport': 'Unable to import the account.',
   'account.unableToSelect': 'Unable to select the account.',
   'account.unableToRename': 'Unable to rename the account.',
+  'account.unableToChangeLocaleAccount': 'Unable to change locale the account.',
   'account.unableToDelete': 'Unable to delete the account.',
   'account.unableToRefresh': 'Unable to refresh lixi list.',
   'account.renameFailed': 'Rename failed. All accounts must have a unique name.',
   'account.deleteFailed': 'Delete failed. Could not delete the account.',
   'account.accountRenamedSuccess': 'Account has renamed to {accountName}',
+  'account.accountChangeLocaleSuccess': 'Account locale has changed to {language}',
   'account.accountDeleteSuccess': 'The account has been deleted successfully.',
   'account.accountImportSuccess': 'The account has been imported successfully.',
 

@@ -325,19 +325,19 @@ const Settings: React.FC = () => {
                 </div>
               </Panel>
             </StyledCollapse>
+            <StyledSpacer />
+            <h2>{intl.get('settings.languages')}</h2>
+            <AntdFormWrapper>
+              <LanguageSelectDropdown
+                defaultValue={currentLocale}
+                onChange={(locale: any) => {
+                  setLocale(locale);
+                }}
+              />
+            </AntdFormWrapper>
+            <StyledSpacer />
           </>
         )}
-        <StyledSpacer />
-        <h2>{intl.get('settings.languages')}</h2>
-        <AntdFormWrapper>
-          <LanguageSelectDropdown
-            defaultValue={currentLocale}
-            onChange={(locale: any) => {
-              setLocale(locale);
-            }}
-          />
-        </AntdFormWrapper>
-        <StyledSpacer />
       </Spin>
     </>
   );

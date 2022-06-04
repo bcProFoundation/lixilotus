@@ -1,4 +1,11 @@
-import { CreateLixiCommand, fromSmallestDenomination, Lixi, LixiDto, NotificationDto, UpdateLixiStatusCommand } from '@bcpros/lixi-models';
+import {
+  CreateLixiCommand,
+  fromSmallestDenomination,
+  Lixi,
+  LixiDto,
+  NotificationDto,
+  UpdateLixiStatusCommand
+} from '@bcpros/lixi-models';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
 import { InjectQueue } from '@nestjs/bullmq';
@@ -15,6 +22,8 @@ import { template } from 'src/utils/stringTemplate';
 import { VError } from 'verror';
 import { PrismaService } from '../prisma/prisma.service';
 import { WalletService } from '../wallet.service';
+import { notificationTypes } from '../../../prisma/seeds/notificationTypes';
+import { notificationTypeTranslations } from '../../../prisma/seeds/notificationTypeTranslations';
 
 @Injectable()
 export class LixiService {
@@ -25,7 +34,7 @@ export class LixiService {
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
     @InjectQueue(CREATE_SUB_LIXIES_QUEUE) private lixiQueue: Queue,
     @I18n() private i18n: I18nService
-  ) { }
+  ) {}
 
   /**
    * @param derivationIndex The derivation index of the lixi
@@ -157,7 +166,11 @@ export class LixiService {
     if (isPrefund) {
       // Check the account balance
       const accountBalance: number = await this.xpiWallet.getBalance(account.address);
-      let fee = await this.walletService.calcFee(this.XPI, (utxoStore as any).bchUtxos, command.numberOfSubLixi as number + 1);
+      let fee = await this.walletService.calcFee(
+        this.XPI,
+        (utxoStore as any).bchUtxos,
+        (command.numberOfSubLixi as number) + 1
+      );
       if (command.amount >= fromSmallestDenomination(accountBalance - fee)) {
         const accountNotSufficientFund = await i18n.t('account.messages.accountNotSufficientFund');
         // Validate to make sure the account has sufficient balance
@@ -210,7 +223,7 @@ export class LixiService {
     const isPrefund = !!command.amount;
 
     const chunkSize = command.numberLixiPerPackage ? command.numberLixiPerPackage : defaultLixiChunkSize; // number of output per
-    const numberOfChunks = Math.ceil(command.numberOfSubLixi as number / chunkSize);
+    const numberOfChunks = Math.ceil((command.numberOfSubLixi as number) / chunkSize);
 
     if (numberOfChunks === 0) {
       throw new Error('Must create at least a sub lixi');
@@ -230,7 +243,7 @@ export class LixiService {
 
     for (let chunkIndex = 0; chunkIndex < numberOfChunks; chunkIndex++) {
       const numberOfSubLixiInChunk =
-        chunkIndex < numberOfChunks - 1 ? chunkSize : command.numberOfSubLixi as number - chunkIndex * chunkSize;
+        chunkIndex < numberOfChunks - 1 ? chunkSize : (command.numberOfSubLixi as number) - chunkIndex * chunkSize;
 
       // Start to process from the start of each chunk
       const startDerivationIndexForChunk = startDerivationIndex + chunkIndex * chunkSize;
@@ -238,15 +251,15 @@ export class LixiService {
       // Calculate fee for each chunk process
       let fee = await this.walletService.calcFee(this.XPI, (utxoStore as any).bchUtxos, numberOfSubLixiInChunk + 1);
 
-
       let createdPackage;
       if (command.numberLixiPerPackage) {
-        const preparedPackCode = command.name + "_" + command.accountId + "_" + parentLixiId + "_" + chunkIndex + Date.now();
+        const preparedPackCode =
+          command.name + '_' + command.accountId + '_' + parentLixiId + '_' + chunkIndex + Date.now();
         const packCode = await hexSha256(preparedPackCode);
 
         createdPackage = await this.prisma.package.create({
           data: {
-            packCode: packCode.slice(0, 8),
+            packCode: packCode.slice(0, 8)
           }
         });
       }
@@ -261,7 +274,7 @@ export class LixiService {
         command: command,
         fundingAddress: account.address,
         accountSecret: secret,
-        packageId: command.numberLixiPerPackage && createdPackage?.id ? createdPackage?.id : undefined,
+        packageId: command.numberLixiPerPackage && createdPackage?.id ? createdPackage?.id : undefined
       };
 
       const childJob: FlowJob = {
@@ -360,16 +373,36 @@ export class LixiService {
     }
   }
 
-  async buildNotification(notificationTypeId: number, senderId: number, recipientId: number, additionalData: Object) {
+  async buildNotification(
+    notificationTypeId: number,
+    senderId: number,
+    recipientId: number,
+    additionalData: Object,
+    mnemonicHash: string
+  ) {
     const notifType = await this.prisma.notificationType.findFirst({
       where: {
         id: notificationTypeId
+      },
+      include: {
+        notificationTypeTranslations: true
       }
     });
 
     if (!notifType) return null;
 
-    const message = template(notifType.template, additionalData);
+    const account = await this.prisma.account.findFirst({
+      where: {
+        mnemonicHash: mnemonicHash
+      }
+    });
+
+    const translateTemplate: string =
+      notifType.notificationTypeTranslations.find(x => x.language == account?.language)?.template ??
+      notifType.notificationTypeTranslations.find(x => x.isDefault)?.template ??
+      '';
+
+    const message = template(translateTemplate, additionalData);
     const result: NotificationDto = {
       senderId,
       recipientId,

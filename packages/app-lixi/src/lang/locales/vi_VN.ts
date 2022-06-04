@@ -71,13 +71,15 @@ export default {
   'account.unableToImport': 'Không thể khôi phục tài khoản.',
   'account.unableToSelect': 'Không thể chọn tài khoản.',
   'account.unableToRename': 'Không thể đổi tên tài khoản.',
+  'account.unableToChangeLocaleAccount': 'Đổi ngôn ngữ không thành công.',
   'account.unableToDelete': 'Không thể xóa tài khoản.',
   'account.unableToRefresh': 'Không thể làm mới danh sách Lì xì.',
   'account.renameFailed': 'Đổi tên tài khoản không thành công. Hãy thử lại với một tên khác.',
   'account.deleteFailed': 'Xóa tài khoản không thành công.',
-  'account.accountRenamedSuccess': 'Tài khoản được sửa lại thành {accountName}',
+  'account.accountRenamedSuccess': 'Tài khoản được sửa lại thành {accountName}.',
   'account.accountDeleteSuccess': 'Xóa tài khoản thành công.',
   'account.accountImportSuccess': 'Tài khoản được nhập thành công.',
+  'account.accountChangeLocaleSuccess': 'Ngôn ngữ được cập nhật thành {language}.',
 
   /* 03.Lixi */
   'lixi.sub-lixi': 'Bao lì xì phụ',

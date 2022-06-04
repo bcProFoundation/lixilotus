@@ -22,7 +22,7 @@ model Account {
   mnemonicHash      String         @map("mnemonic_hash")
   address           String         @default("") @map("address")
   notifications     Notification[]
-
+  language          String         @default("en")
 
   @@index([mnemonicHash])
   @@map("account")
@@ -113,15 +113,28 @@ model Package {
 }
 
 model NotificationType {
-  id            Int            @id @default(autoincrement())
-  name          String         @default("")
-  description   String
-  template      String
-  notifications Notification[]
-  createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt     DateTime       @default(now()) @map("updated_at") @db.Timestamptz
+  id                           Int            @id @default(autoincrement())
+  name                         String         @default("")
+  description                  String
+  notifications                Notification[]
+  notificationTypeTranslations  NotificationTypeTranslation[]
+  createdAt                    DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt                    DateTime       @default(now()) @map("updated_at") @db.Timestamptz
 
   @@map("notification_type")
+}
+
+model NotificationTypeTranslation {
+  id                 Int              @id @default(autoincrement())
+  notificationType   NotificationType @relation(fields: [notificationTypeId], references: [id])
+  notificationTypeId Int              @map("notification_type_id")
+  language           String
+  isDefault          Boolean?         @map("is_default")
+  template           String
+  createdAt          DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime         @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@map("notification_type_translation")
 }
 
 model Notification {

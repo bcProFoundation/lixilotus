@@ -22,7 +22,8 @@ import {
   RenameAccountCommand,
   DeleteAccountCommand,
   Lixi,
-  NotificationDto
+  NotificationDto,
+  PatchAccountCommand
 } from '@bcpros/lixi-models';
 import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase58Str, hashMnemonic } from '../utils/encryptionMethods';
 import { I18n, I18nContext } from 'nestjs-i18n';
@@ -36,7 +37,7 @@ export class AccountController {
     private prisma: PrismaService,
     private readonly walletService: WalletService,
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet
-  ) { }
+  ) {}
 
   @Get(':id')
   async getAccount(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<AccountDto> {
@@ -207,7 +208,7 @@ export class AccountController {
   @Patch(':id')
   async updateAccounts(
     @Param('id') id: string,
-    @Body() command: RenameAccountCommand,
+    @Body() command: PatchAccountCommand,
     @I18n() i18n: I18nContext
   ): Promise<AccountDto> {
     if (command) {
@@ -235,6 +236,7 @@ export class AccountController {
           },
           data: {
             name: command.name,
+            language: command.language,
             updatedAt: new Date()
           }
         });
@@ -331,15 +333,12 @@ export class AccountController {
   async getLixies(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<any> {
     const accountId = _.toSafeInteger(id);
     try {
-      let lixies = []
-      let subLixies: LixiDb[] = []
+      let lixies = [];
+      let subLixies: LixiDb[] = [];
 
       lixies = await this.prisma.lixi.findMany({
         where: {
-          AND: [
-            { accountId: accountId },
-            { parentId: null }
-          ]
+          AND: [{ accountId: accountId }, { parentId: null }]
         }
       });
 
@@ -370,7 +369,7 @@ export class AccountController {
           claimedNum: Number(item.claimedNum),
           claimCount: claimCount,
           subLixiTotalClaim: _.isNaN(subLixiTotalClaim) ? 0 : subLixiTotalClaim,
-          subLixiBalance: _.isNaN(subLixiBalance) ? 0 : subLixiBalance,
+          subLixiBalance: _.isNaN(subLixiBalance) ? 0 : subLixiBalance
         } as unknown as Lixi;
       });
 
