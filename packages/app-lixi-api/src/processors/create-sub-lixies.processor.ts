@@ -10,8 +10,9 @@ import { WalletService } from 'src/services/wallet.service';
 import config from 'config';
 import SlpWallet from '@bcpros/minimal-xpi-slp-wallet';
 import { processCreateSubLixiesChunk } from './create-sub-lixies.isolated.processor';
+import { Injectable } from '@nestjs/common';
 
-// @Injectable()
+@Injectable()
 @Processor(CREATE_SUB_LIXIES_QUEUE, { concurrency: 3 })
 export class CreateSubLixiesProcessor extends WorkerHost {
 
@@ -53,4 +54,5 @@ export class CreateSubLixiesProcessor extends WorkerHost {
       recipientId: command.accountId
     } as CreateSubLixiesJobResult;
   }
+
 }

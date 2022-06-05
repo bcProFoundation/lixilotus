@@ -341,11 +341,11 @@ const Lixi: React.FC = () => {
           </Descriptions>
 
           {/* Lixi details */}
-          <StyledCollapse 
-            style={{ marginBottom: '20px' }} 
-            collapsible={selectedLixi.status == 'active'? "header" : "disabled"}
+          <StyledCollapse
+            style={{ marginBottom: '20px' }}
+            collapsible={selectedLixi.status == 'active' ? "header" : "disabled"}
             expandIcon={({ isActive }) => (selectedLixi.status == 'active') ? <CaretRightOutlined rotate={isActive ? 90 : 0} /> : <LoadingOutlined />}
-            >
+          >
             <Panel header={intl.get('lixi.lixiDetail')} key="panel-1">
               {selectedLixi.claimType == ClaimType.Single ? (
                 <>
@@ -396,10 +396,10 @@ const Lixi: React.FC = () => {
             </CopyToClipboard>
           ) : (
             <>
-              <SmartButton 
-              disabled = {selectedLixi.status == "pending"}
-              onClick={() => handleExportLixi()}
-            >
+              <SmartButton
+                disabled={selectedLixi.status == "pending"}
+                onClick={() => handleExportLixi()}
+              >
                 <ExportOutlined /> {intl.get('lixi.exportLixi')}
               </SmartButton>
             </>

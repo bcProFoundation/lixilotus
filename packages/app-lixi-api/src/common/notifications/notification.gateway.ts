@@ -44,8 +44,6 @@ export class NotificationGateway
 
     client.join(mnemonicHash);
 
-    // console.log(this.server?.server);
-
     return {
       event: 'subscribe',
       data: client.id

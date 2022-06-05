@@ -125,7 +125,6 @@ export class ClaimController {
             claimCode = matches[0];
           }
         }
-        console.log(claimCode);
         const password = claimCode.slice(0, 8);
         const encodedLixiId = claimCode.slice(8);
         const lixiId = _.toSafeInteger(base58ToNumber(encodedLixiId));

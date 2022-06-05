@@ -76,7 +76,6 @@ export class ExportSubLixiesProcessor extends WorkerHost {
       fields: ['name', 'claimCode', 'amount']
     });
     const csv = parser.parse(childrenApiResult);
-    console.log((lixi as any).id);
     const dir = './public/download/';
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir);

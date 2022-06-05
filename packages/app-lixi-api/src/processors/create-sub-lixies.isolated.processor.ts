@@ -36,6 +36,7 @@ export default async function (
 ): Promise<CreateSubLixiesJobResult | boolean> {
   return new Promise((resolve, reject) => {
     if (job.name === LIXI_JOB_NAMES.CREATE_SUB_LIXIES_CHUNK) {
+      logger.info('process chunk: ', job);
       const result = processCreateSubLixiesChunk(job);
       resolve(result);
     }
@@ -132,9 +133,6 @@ export async function processCreateSubLixiesChunk(job: Job): Promise<boolean> {
     return true;
   } catch (err) {
     logger.error(err);
-    if (job.attemptsMade >= 3) {
-      return false;
-    }
     throw new VError(err as Error, 'Unable to process job processCreateSubLixiesChunk');
   }
 }
@@ -179,11 +177,15 @@ async function prepareSubLixiChunkToInsert(
       if (command.lixiType == LixiType.Random) {
         const maxXpi = xpiAllowance < command.maxValue ? xpiAllowance : command.maxValue;
         const minXpi = command.minValue;
-        const xpiRandom = Math.random() * (maxXpi - minXpi) + maxXpi;
+        const xpiRandom = Math.random() * (maxXpi - minXpi);
         xpiToSend = xpiRandom + fromSmallestDenomination(temporaryFeeCalc);
+        if (xpiToSend <= 0) {
+          throw new Error('Incorrect number to send');
+        }
         xpiAllowance -= xpiRandom;
       } else if (command.lixiType == LixiType.Equal) {
         xpiToSend = command.amount / Number(command.numberOfSubLixi) + fromSmallestDenomination(temporaryFeeCalc);
+        throw new Error('Incorrect number to send');
       }
     }
 

@@ -13,5 +13,10 @@ export const notificationTypes = [
     id: 3,
     name: 'export-all-sub-lixies',
     description: 'Notification to export all sub lixies'
+  },
+  {
+    id: 4,
+    name: 'create-all-sub-lixies-failure',
+    description: 'Notification fail to create one time child codes'
   }
 ];

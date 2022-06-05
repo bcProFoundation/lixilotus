@@ -1,22 +1,22 @@
+import {
+  ClockCircleOutlined,
+  ExclamationCircleOutlined, LockOutlined, MoreOutlined, WalletOutlined
+} from '@ant-design/icons';
+import {
+  ArchiveLixiCommand, ClaimType,
+  Lixi, RenameLixiCommand, UnarchiveLixiCommand, WithdrawLixiCommand
+} from '@bcpros/lixi-models/lib/lixi';
+import { getAllSubLixies } from '@store/lixi/selectors';
+import { openModal } from '@store/modal/actions';
+import { fromSmallestDenomination } from '@utils/cashMethods';
 import { Button, Dropdown, Menu } from 'antd';
 import intl from 'react-intl-universal';
-import * as _ from 'lodash';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { archiveLixi, renameLixi, selectLixi, unarchiveLixi, withdrawLixi } from 'src/store/lixi/actions';
 import styled, { DefaultTheme } from 'styled-components';
-
-import {
-  GiftOutlined, LockOutlined, MoreOutlined, WalletOutlined
-} from '@ant-design/icons';
-import {
-  ClaimType,
-  Lixi, ArchiveLixiCommand, RenameLixiCommand, UnarchiveLixiCommand, WithdrawLixiCommand
-} from '@bcpros/lixi-models/lib/lixi';
-import { fromSmallestDenomination } from '@utils/cashMethods';
 import { RenameLixiModalProps } from './RenameLixiModal';
-import { openModal } from '@store/modal/actions';
-import { getAllSubLixies } from '@store/lixi/selectors';
+
 
 const LixiIcon = styled.div`
   height: 32px;
@@ -24,9 +24,6 @@ const LixiIcon = styled.div`
   position: relative;
 `;
 
-const GiftIcon = styled(GiftOutlined)`
-  color: ${props => props.theme.secondary}
-`;
 
 const WalletIcon = styled(WalletOutlined)`
   position: absolute;
@@ -36,6 +33,20 @@ const WalletIcon = styled(WalletOutlined)`
 `;
 
 const LockIcon = styled(LockOutlined)`
+  position: absolute;
+  left: 0px;
+  top: 50%;
+  transform: translateY(-50%);
+`;
+
+const LoadingIcon = styled(ClockCircleOutlined)`
+  position: absolute;
+  left: 0px;
+  top: 50%;
+  transform: translateY(-50%);
+`;
+
+const ExclamationIcon = styled(ExclamationCircleOutlined)`
   position: absolute;
   left: 0px;
   top: 50%;
@@ -96,7 +107,7 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
   const subLixiById = allSubLixies.filter(item => item.parentId == lixi.id);
 
   let options = ['Withdraw', 'Rename'];
-  lixi.status === 'active' ? options.unshift('Archive') : options.unshift('Unarchive');
+  lixi.status === 'locked' ? options.unshift('Unarchive') : options.unshift('Archive');
 
   const postLixiData = {
     id: lixi.id,
@@ -140,11 +151,26 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
     }
   };
 
+  const getLixiStatusIcon = (status: string) => {
+    switch (status) {
+      case 'active':
+        return <WalletIcon />
+      case 'pending':
+        return <LoadingIcon />
+      case 'locked':
+        return <LockIcon />
+      case 'failed':
+        return <ExclamationIcon />
+      default:
+        return <WalletIcon />
+    }
+  }
+
 
   return (
     <Wrapper onClick={(e) => handleSelectLixi(lixi.id)}>
       <LixiIcon>
-        {lixi.status === 'active' ? <WalletIcon /> : <LockIcon />}
+        {getLixiStatusIcon(lixi.status)}
       </LixiIcon>
       <BalanceAndTicker>
         <strong>{lixi.name}</strong>

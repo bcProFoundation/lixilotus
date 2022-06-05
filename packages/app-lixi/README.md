@@ -14,6 +14,8 @@ yarn install
 
 ## Prepare
 
+Setup https certificate on local machine (Recommend: mkcert)
+
 Setup environment variables
 
 ```

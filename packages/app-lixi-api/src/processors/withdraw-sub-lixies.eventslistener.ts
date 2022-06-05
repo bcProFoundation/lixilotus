@@ -9,7 +9,10 @@ import { LixiService } from 'src/services/lixi/lixi.service';
 @Injectable()
 @QueueEventsListener(WITHDRAW_SUB_LIXIES_QUEUE)
 export class WithdrawSubLixiesEventsListener extends QueueEventsHost {
-  constructor(private readonly lixiService: LixiService, private readonly notificationService: NotificationService) {
+  constructor(
+    private readonly lixiService: LixiService,
+    private readonly notificationService: NotificationService
+  ) {
     super();
   }
 
@@ -37,4 +40,5 @@ export class WithdrawSubLixiesEventsListener extends QueueEventsHost {
       await this.notificationService.saveAndDispatchNotification(room, notif);
     }
   }
+
 }

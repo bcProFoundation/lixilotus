@@ -3,8 +3,7 @@ import {
   fromSmallestDenomination,
   Lixi,
   LixiDto,
-  NotificationDto,
-  UpdateLixiStatusCommand
+  NotificationDto
 } from '@bcpros/lixi-models';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
@@ -22,8 +21,6 @@ import { template } from 'src/utils/stringTemplate';
 import { VError } from 'verror';
 import { PrismaService } from '../prisma/prisma.service';
 import { WalletService } from '../wallet.service';
-import { notificationTypes } from '../../../prisma/seeds/notificationTypes';
-import { notificationTypeTranslations } from '../../../prisma/seeds/notificationTypeTranslations';
 
 @Injectable()
 export class LixiService {
@@ -34,7 +31,7 @@ export class LixiService {
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
     @InjectQueue(CREATE_SUB_LIXIES_QUEUE) private lixiQueue: Queue,
     @I18n() private i18n: I18nService
-  ) {}
+  ) { }
 
   /**
    * @param derivationIndex The derivation index of the lixi
@@ -324,17 +321,7 @@ export class LixiService {
     }
   }
 
-  async updateStatusLixi(id: number, command: UpdateLixiStatusCommand) {
-    const account = await this.prisma.account.findFirst({
-      where: {
-        mnemonicHash: command.mnemonicHash
-      }
-    });
-
-    if (!account) {
-      const couldNotFindAccount = await this.i18n.t('lixi.messages.couldNotFindAccount');
-      throw new Error(couldNotFindAccount);
-    }
+  async updateStatusLixi(id: number, status: string) {
 
     const lixi = await this.prisma.lixi.findUnique({
       where: {
@@ -351,7 +338,7 @@ export class LixiService {
         id: _.toSafeInteger(id)
       },
       data: {
-        status: command.status,
+        status: status,
         updatedAt: new Date()
       }
     });
@@ -377,7 +364,7 @@ export class LixiService {
     notificationTypeId: number,
     senderId: number,
     recipientId: number,
-    additionalData: Object,
+    additionalData: any,
     mnemonicHash: string
   ) {
     const notifType = await this.prisma.notificationType.findFirst({

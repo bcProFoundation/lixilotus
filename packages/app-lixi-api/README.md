@@ -14,15 +14,19 @@ $ yarn install
 
 ## Prepare
 
+Setup Postgres database
+
 Setup Redis since the job queue need Redis to run
+
+Setup https certificate on local machine (Recommend: mkcert)
 
 Setup environment variables
 
 ```bash
-- Copy file .env.example to .env and change the variable accordingly
-- Prepare the certificate in order to run the application (the encrypt/hash features need https)
+- Copy file .env.example to .env and change the variable accordingly (postgres, redis, evm url)
+- Prepare the certificate in order to run the application (with mkcert) (the encrypt/hash features need https)
 $ npx prisma migrate
-$ yarn seed
+$ npx prisma db seed
 ```
 
 Setup nginx reverse proxy so the frontend and backend use same domain (example for windows below:)
@@ -30,8 +34,8 @@ Setup nginx reverse proxy so the frontend and backend use same domain (example f
 ```conf
 server {
   listen		127.0.0.1:443 ssl http2;
-  ssl_certificate_key "f:/winnmp/conf/opensslCA/selfsigned/lixilotus.test.key";
-  ssl_certificate "f:/winnmp/conf/opensslCA/selfsigned/lixilotus.test.crt";
+  ssl_certificate_key "f:/winnmp/conf/opensslCA/selfsigned/lixilotus.test.key" # use your cert;
+  ssl_certificate "f:/winnmp/conf/opensslCA/selfsigned/lixilotus.test.crt" # use your cert;
 
   server_name 	lixilotus.test;
 
@@ -83,6 +87,7 @@ $ set NODE_ENV=development&& yarn start:dev
 $ NODE_ENV=development yarn start:dev
 
 # production mode
+$ yarn build
 $ yarn start:prod
 ```
 

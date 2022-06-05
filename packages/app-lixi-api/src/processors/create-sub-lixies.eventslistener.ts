@@ -1,49 +1,82 @@
-import { OnQueueEvent, QueueEventsHost, QueueEventsListener } from '@nestjs/bullmq';
-import { Injectable } from '@nestjs/common';
-import { NOTIFICATION_TYPES } from 'src/common/notifications/notification.constants';
-import { NotificationService } from 'src/common/notifications/notification.service';
-import { CREATE_SUB_LIXIES_QUEUE, LIXI_JOB_NAMES } from 'src/constants/lixi.constants';
-import { CreateSubLixiesJobResult } from 'src/models/lixi.models';
-import { LixiService } from 'src/services/lixi/lixi.service';
-import { UpdateLixiStatusCommand } from '@bcpros/lixi-models';
+import { InjectQueue, OnQueueEvent, QueueEventsHost, QueueEventsListener } from "@nestjs/bullmq";
+import { Injectable, Logger } from "@nestjs/common";
+import { Job, Queue } from "bullmq";
+import { NOTIFICATION_TYPES } from "src/common/notifications/notification.constants";
+import { NotificationService } from "src/common/notifications/notification.service";
+import { CREATE_SUB_LIXIES_QUEUE, LIXI_JOB_NAMES } from "src/constants/lixi.constants";
+import { CreateSubLixiesJobData, CreateSubLixiesJobResult } from "src/models/lixi.models";
+import { LixiService } from "src/services/lixi/lixi.service";
 
 @Injectable()
 @QueueEventsListener(CREATE_SUB_LIXIES_QUEUE)
 export class CreateSubLixiesEventsListener extends QueueEventsHost {
-  constructor(private readonly lixiService: LixiService, private readonly notificationService: NotificationService) {
+
+  private logger: Logger = new Logger(CreateSubLixiesEventsListener.name);
+
+  constructor(
+    @InjectQueue(CREATE_SUB_LIXIES_QUEUE) private someQueue: Queue,
+    private readonly lixiService: LixiService,
+    private readonly notificationService: NotificationService
+  ) {
     super();
   }
 
   @OnQueueEvent('completed')
-  async completed(
-    args: {
-      jobId: string;
-      returnvalue: CreateSubLixiesJobResult;
-      prev?: string;
-    },
-    id: string
-  ) {
+  async completed(args: {
+    jobId: string;
+    returnvalue: CreateSubLixiesJobResult;
+    prev?: string;
+  }, id: string) {
     const { id: lixiId, jobName, mnemonicHash, senderId, recipientId } = args.returnvalue;
 
     if (jobName === LIXI_JOB_NAMES.CREATE_ALL_SUB_LIXIES) {
+
       // Update the status of lixi
       const id = args.returnvalue.id;
-      const updateStatus = {
-        id: id,
-        mnemonicHash: args.returnvalue.mnemonicHash,
-        status: 'active'
-      };
-      await this.lixiService.updateStatusLixi(id, updateStatus as UpdateLixiStatusCommand);
+      await this.lixiService.updateStatusLixi(id, 'active');
 
       // The parent job
       const notif = await this.lixiService.buildNotification(
         NOTIFICATION_TYPES.CREATE_SUB_LIXIES,
-        senderId,
-        recipientId,
+        senderId, recipientId,
         {
           id: args.returnvalue.id,
           name: args?.returnvalue?.name,
-          mnemonicHash: args.returnvalue.mnemonicHash
+          mnemonicHash: args.returnvalue.mnemonicHash,
+        },
+        mnemonicHash
+      );
+
+      if (notif) {
+        // Notify the clients
+        const room = mnemonicHash;
+        await this.notificationService.saveAndDispatchNotification(room, notif);
+      }
+    }
+  }
+
+  @OnQueueEvent('failed')
+  async failed(args: {
+    jobId: string;
+    failedReason: string;
+    prev?: string;
+  }, id: string) {
+    const jobId = args.jobId;
+    const job = await Job.fromId<CreateSubLixiesJobData, boolean, string>(this.someQueue, jobId);
+    if (job && this.someQueue) {
+      const { parentId, command } = job.data;
+      await this.lixiService.updateStatusLixi(parentId, 'failed');
+
+      const senderId = command.accountId;
+      const recipientId = command.accountId;
+      const mnemonicHash = command.mnemonicHash;
+      const notif = await this.lixiService.buildNotification(
+        NOTIFICATION_TYPES.CREATE_SUB_LIXIES_FAILURE,
+        senderId, recipientId,
+        {
+          id: parentId,
+          name: command.name,
+          mnemonicHash: mnemonicHash,
         },
         mnemonicHash
       );

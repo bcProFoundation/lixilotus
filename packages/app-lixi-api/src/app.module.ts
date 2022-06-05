@@ -72,12 +72,12 @@ const XpijsProvider = {
           host: process.env.REDIS_HOST ? process.env.REDIS_HOST : 'redis-lixi',
           port: process.env.REDIS_PORT ? _.toSafeInteger(process.env.REDIS_PORT) : 6379,
         }),
-        processors: [
-          {
-            path: join(__dirname, 'processors/create-sub-lixies.isolated.processor'),
-            concurrency: 3,
-          },
-        ],
+        // processors: [
+        //   {
+        //     path: join(__dirname, 'processors/create-sub-lixies.isolated.processor'),
+        //     concurrency: 3,
+        //   },
+        // ],
       },
       {
         name: EXPORT_SUB_LIXIES_QUEUE,
