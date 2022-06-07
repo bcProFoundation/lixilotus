@@ -48,6 +48,7 @@ import { I18n, I18nContext } from 'nestjs-i18n';
 import { Response } from 'express';
 import { createReadStream } from 'fs';
 import { join } from 'path';
+import moment from 'moment';
 
 @Controller('lixies')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -824,7 +825,8 @@ export class LixiController {
         throw new VError(lixiNotExist);
       }
 
-      if (fileName !== `${lixi.id}.csv`) {
+      var timestamp = moment().format('YYYYMMDD_HHmm');
+      if (fileName !== `${lixi?.id}_${timestamp}.csv`) {
         const fileNameNotExist = await i18n.t('lixi.messages.fileNameNotExist');
         throw new VError(fileNameNotExist);
       }

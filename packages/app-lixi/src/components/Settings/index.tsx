@@ -185,6 +185,7 @@ const Settings: React.FC = () => {
     };
     const deleteAcountModalProps: DeleteAccountModalProps = {
       account: account,
+      remainingAccounts: account == selectedAccount ? otherAccounts : [],
       onOkAction: deleteAccount(command)
     };
     dispatch(openModal('DeleteAccountModal', deleteAcountModalProps));

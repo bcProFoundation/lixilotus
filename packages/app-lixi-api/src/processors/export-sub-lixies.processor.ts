@@ -13,6 +13,7 @@ import { PrismaService } from 'src/services/prisma/prisma.service';
 import { WalletService } from 'src/services/wallet.service';
 import { aesGcmDecrypt, numberToBase58 } from 'src/utils/encryptionMethods';
 import * as fs from 'fs';
+import moment from 'moment';
 
 @Injectable()
 @Processor(EXPORT_SUB_LIXIES_QUEUE)
@@ -81,7 +82,8 @@ export class ExportSubLixiesProcessor extends WorkerHost {
       fs.mkdirSync(dir);
     }
 
-    const fileName = `${lixi?.id}.csv`;
+    var timestamp = moment().format('YYYYMMDD_HHmm');
+    const fileName = `${lixi?.id}_${timestamp}.csv`;
     const filePath = `public/download/${fileName}`;
     fs.writeFile(`./${filePath}`, csv, function (err) {
       if (err) {
