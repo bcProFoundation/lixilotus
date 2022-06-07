@@ -23,6 +23,7 @@ model Account {
   address           String         @default("") @map("address")
   notifications     Notification[]
   language          String         @default("en")
+  publicKey         String         @default("") @map("public_key")
 
   @@index([mnemonicHash])
   @@map("account")

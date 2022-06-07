@@ -7,8 +7,9 @@ const notificationApi = {
 
     const config = mnemonicHash ? {
       headers: {
-        'Mnemonic-Hash': mnemonicHash
-      }
+        // 'Mnemonic-Hash': mnemonicHash
+      },
+      withCredentials: true
     } : {};
 
     return axiosClient.get(url, config)
@@ -24,11 +25,12 @@ const notificationApi = {
     const url = `/api/notifications/${notificationId}`;
     const config = mnemonicHash ? {
       headers: {
-        'Mnemonic-Hash': mnemonicHash
-      }
+        // 'Mnemonic-Hash': mnemonicHash
+      },
+      withCredentials: true
     } : {};
 
-    return axiosClient.delete(url,config)
+    return axiosClient.delete(url, config)
       .then(response => {
       })
       .catch(err => {
@@ -40,8 +42,9 @@ const notificationApi = {
     const url = `/api/notifications/${notificationId}`;
     const config = mnemonicHash ? {
       headers: {
-        'Mnemonic-Hash': mnemonicHash
-      }
+        // 'Mnemonic-Hash': mnemonicHash
+      },
+      withCredentials: true
     } : {};
 
     return axiosClient.patch(url, {}, config)

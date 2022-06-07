@@ -56,7 +56,19 @@ const accountApi = {
     const url = `/api/accounts/${id}`;
     return axiosClient
       .delete(url, { data: data })
-      .then(response => {})
+      .then(response => { })
+      .catch(err => {
+        const { response } = err;
+        throw response?.data ?? err ?? 'Network Error';
+      });
+  },
+  login(mnemonic: string): Promise<string> {
+    const url = `/api/auth/login`;
+    return axiosClient
+      .post(url, { mnemonic })
+      .then(response => {
+        return response.data as string;
+      })
       .catch(err => {
         const { response } = err;
         throw response?.data ?? err ?? 'Network Error';

@@ -9,7 +9,8 @@ const lixiApi = {
     const config = accountSecret ? {
       headers: {
         'Account-Secret': accountSecret
-      }
+      },
+      withCredentials: true
     } : {};
 
     return axiosClient.get(url, config)
@@ -26,7 +27,8 @@ const lixiApi = {
     const config = accountSecret ? {
       headers: {
         'Account-Secret': accountSecret
-      }
+      },
+      withCredentials: true
     } : {};
 
     const url = startId ?
@@ -112,7 +114,8 @@ const lixiApi = {
     const config = accountSecret ? {
       headers: {
         'Account-Secret': accountSecret
-      }
+      },
+      withCredentials: true
     } : {};
 
     const url = `/api/lixies/${id}/export`;
@@ -126,11 +129,12 @@ const lixiApi = {
       });
   },
 
-  downloadExportedLixi(command:DownloadExportedLixiCommand) {
+  downloadExportedLixi(command: DownloadExportedLixiCommand) {
     const config = command.mnemonicHash ? {
       headers: {
-        'mnemonic-hash': command.mnemonicHash
-      }
+        // 'mnemonic-hash': command.mnemonicHash
+      },
+      withCredentials: true
     } : {};
 
     const url = `/api/lixies/${command.lixiId}/download?file=${command.fileName}`;

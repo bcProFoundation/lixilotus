@@ -14,7 +14,7 @@ import { AppContext } from 'src/store/store';
 import { showToast } from 'src/store/toast/actions';
 import styled from 'styled-components';
 
-import { CaretRightOutlined, CopyOutlined, DownloadOutlined, ExportOutlined, LoadingOutlined, ReloadOutlined } from '@ant-design/icons';
+import { CaretRightOutlined, CopyOutlined, DownloadOutlined, ExclamationCircleOutlined, ExportOutlined, LoadingOutlined, ReloadOutlined } from '@ant-design/icons';
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import { SmartButton } from '@bcpros/lixi-components/components/Common/PrimaryButton';
 import { QRClaimCode } from '@bcpros/lixi-components/components/Common/QRClaimCode';
@@ -291,6 +291,19 @@ const Lixi: React.FC = () => {
     dispatch(fetchMoreSubLixies({ parentId: selectedLixi.id, startId: loadMoreStartId }));
   };
 
+  const getLixiPanelDetailsIcon = (status: string, isPanelOpen: boolean) => {
+    switch (status) {
+      case 'pending':
+        return <LoadingOutlined />;
+      case 'failed':
+        return <ExclamationCircleOutlined />
+      case 'active':
+      case 'lock':
+      default:
+        return <CaretRightOutlined rotate={isPanelOpen ? 90 : 0} />;
+    }
+  }
+
   return (
     <>
       {selectedLixi && selectedLixi.address ? (
@@ -344,7 +357,7 @@ const Lixi: React.FC = () => {
           <StyledCollapse
             style={{ marginBottom: '20px' }}
             collapsible={selectedLixi.status == 'active' ? "header" : "disabled"}
-            expandIcon={({ isActive }) => (selectedLixi.status == 'active') ? <CaretRightOutlined rotate={isActive ? 90 : 0} /> : <LoadingOutlined />}
+            expandIcon={({ isActive }) => getLixiPanelDetailsIcon(selectedLixi.status, isActive)}
           >
             <Panel header={intl.get('lixi.lixiDetail')} key="panel-1">
               {selectedLixi.claimType == ClaimType.Single ? (

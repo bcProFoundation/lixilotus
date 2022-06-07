@@ -5,11 +5,13 @@ import {
 } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import compression from '@fastify/compress';
+import { fastifyCookie } from '@fastify/cookie';
 import { fastifyHelmet } from '@fastify/helmet';
+import fastifyCsrf from '@fastify/csrf-protection';
 import { AppModule } from './app.module';
 import { RedisIoAdapter } from './common/adapters/redis-io.adapter';
 import { HttpExceptionFilter } from './middlewares/exception.filter';
-import { PrismaService } from './services/prisma/prisma.service';
+import { PrismaService } from './modules/prisma/prisma.service';
 
 const allowedOrigins = [
   'https://lixilotus.com',
@@ -90,6 +92,18 @@ async function bootstrap() {
       },
     },
   });
+
+  await app.register(fastifyCookie, {
+    secret: process.env.COOKIE_SECRET ?? 'my-secret'
+  });
+
+  app.register(fastifyCsrf, {
+    cookieOpts: {
+      signed: true,
+      httpOnly: true
+    }
+  });
+
   app.register(compression);
 
   await app.listen(process.env.PORT || 4800, '0.0.0.0');
