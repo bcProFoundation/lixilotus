@@ -95,7 +95,7 @@
   "include": [
     "./src/**/*.ts",
     "src/index.d.ts",
-    "src/processors/create-sub-lixies.isolated.processor.js"
+    "src/modules/core/lixi/processors/create-sub-lixies.isolated.processor.js"
   ],
   "exclude": [
     "node_modules"

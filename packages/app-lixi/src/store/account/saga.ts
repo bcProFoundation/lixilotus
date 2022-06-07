@@ -1,26 +1,26 @@
-import { Modal } from 'antd';
-import { all, call, fork, getContext, put, select, takeLatest } from 'redux-saga/effects';
-import intl from 'react-intl-universal';
-
 import {
   Account,
   AccountDto,
   CreateAccountCommand,
   DeleteAccountCommand,
-  ImportAccountCommand,
-  RenameAccountCommand,
-  Lixi
+  ImportAccountCommand, Lixi, RenameAccountCommand
 } from '@bcpros/lixi-models';
 import BCHJS from '@bcpros/xpi-js';
 import { PayloadAction } from '@reduxjs/toolkit';
-import { aesGcmEncrypt, aesGcmDecrypt, numberToBase58, generateRandomBase58Str } from '@utils/encryptionMethods';
-
+import { fetchNotifications } from '@store/notification/actions';
+import { getCurrentLocale } from '@store/settings/selectors';
+import { aesGcmDecrypt, aesGcmEncrypt, numberToBase58 } from '@utils/encryptionMethods';
+import { Modal } from 'antd';
+import intl from 'react-intl-universal';
+import { all, call, fork, getContext, put, putResolve, select, takeLatest } from 'redux-saga/effects';
+import { ChangeAccountLocaleCommand } from '../../../../lixi-models/build/module/lib/account/account.dto.d';
+import { PatchAccountCommand } from '../../../../lixi-models/src/lib/account/account.dto';
 import accountApi from '../account/api';
+import lixiApi from '../lixi/api';
 import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
-import lixiApi from '../lixi/api';
 import {
-  deleteAccount,
+  changeAccountLocale, changeAccountLocaleFailure, changeAccountLocaleSuccess, deleteAccount,
   deleteAccountFailure,
   deleteAccountSuccess,
   generateAccount,
@@ -33,6 +33,9 @@ import {
   postAccount,
   postAccountFailure,
   postAccountSuccess,
+  refreshLixiList,
+  refreshLixiListFailure,
+  refreshLixiListSuccess,
   renameAccount,
   renameAccountFailure,
   renameAccountSuccess,
@@ -40,15 +43,11 @@ import {
   selectAccountFailure,
   selectAccountSuccess,
   setAccount,
-  refreshLixiList,
-  refreshLixiListFailure,
-  refreshLixiListSuccess,
-  changeAccountLocaleSuccess,
-  changeAccountLocaleFailure,
-  changeAccountLocale
+  setAccountSuccess,
+  silentLogin,
+  silentLoginFailure, silentLoginSuccess
 } from './actions';
-import { fetchNotifications } from '@store/notification/actions';
-import { getCurrentLocale } from '@store/settings/selectors';
+import { getAccountById, getSelectedAccount } from './selectors';
 
 /**
  * Generate a account with random encryption password
@@ -204,13 +203,6 @@ function* importAccountSaga(action: PayloadAction<string>) {
 }
 
 function* importAccountSuccessSaga(action: PayloadAction<{ account: Account; lixies: Lixi[] }>) {
-  const { account, lixies } = action.payload;
-  yield put(
-    fetchNotifications({
-      accountId: account.id,
-      mnemonichHash: account.mnemonicHash
-    })
-  );
   yield put(
     showToast('success', {
       message: 'Success',
@@ -218,7 +210,9 @@ function* importAccountSuccessSaga(action: PayloadAction<{ account: Account; lix
       duration: 5
     })
   );
+  const account = yield select(getAccountById(action.payload.account.id));
   yield put(hideLoading(importAccount.type));
+  yield putResolve(silentLogin(action.payload.account.mnemonic));
 }
 
 function* importAccountFailureSaga(action: PayloadAction<string>) {
@@ -249,12 +243,8 @@ function* selectAccountSaga(action: PayloadAction<number>) {
 }
 
 function* selectAccountSuccessSaga(action: PayloadAction<{ account: Account; lixies: Lixi[] }>) {
-  yield put(
-    fetchNotifications({
-      accountId: action.payload.account.id,
-      mnemonichHash: action.payload.account.mnemonicHash
-    })
-  );
+  const account = yield select(getAccountById(action.payload.account.id));
+  yield putResolve(silentLogin(account.mnemonic));
   yield put(hideLoading(selectAccount.type));
 }
 
@@ -271,12 +261,12 @@ function* selectAccountFailureSaga(action: PayloadAction<string>) {
 }
 
 function* setAccountSaga(action: PayloadAction<Account>) {
-  yield put(
-    fetchNotifications({
-      accountId: action.payload.id,
-      mnemonichHash: action.payload.mnemonicHash
-    })
-  );
+  yield put(setAccountSuccess({ ...action.payload }));
+}
+
+function* setAccountSuccessSaga(action: PayloadAction<Account>) {
+  const account = yield select(getAccountById(action.payload.id));
+  yield putResolve(silentLogin(account.mnemonic));
 }
 
 function* renameAccountSaga(action: PayloadAction<RenameAccountCommand>) {
@@ -442,8 +432,6 @@ function* watchImportAccountSuccess() {
 function* watchImportAccountFailure() {
   yield takeLatest(importAccountFailure.type, importAccountFailureSaga);
 }
-import { ChangeAccountLocaleCommand } from '../../../../lixi-models/build/module/lib/account/account.dto.d';
-import { PatchAccountCommand } from '../../../../lixi-models/src/lib/account/account.dto';
 
 function* watchSelectAccount() {
   yield takeLatest(selectAccount.type, selectAccountSaga);
@@ -459,6 +447,10 @@ function* watchSelectAccountFailure() {
 
 function* watchSetAccount() {
   yield takeLatest(setAccount.type, setAccountSaga);
+}
+
+function* watchSetAccountSuccess() {
+  yield takeLatest(setAccountSuccess.type, setAccountSuccessSaga);
 }
 
 function* watchRenameAccount() {
@@ -506,6 +498,37 @@ function* watchRefreshLixiListSuccess() {
 function* watchRefreshLixiListFailure() {
   yield takeLatest(refreshLixiListFailure.type, refreshLixiListFailureSaga);
 }
+
+function* silentLoginSaga(action: PayloadAction<string>) {
+  const mnemonic = action.payload;
+  try {
+    const data = yield call(accountApi.login, mnemonic);
+    console.log('data:', data);
+    yield put(silentLoginSuccess());
+  } catch (err) {
+    yield put(silentLoginFailure());
+  }
+}
+
+function* silentLoginSuccessSaga(action: PayloadAction) {
+  const account = yield select(getSelectedAccount);
+  yield put(
+    fetchNotifications({
+      accountId: account.id,
+      mnemonichHash: account.mnemonicHash
+    })
+  );
+}
+
+function* watchSilentLogin() {
+  yield takeLatest(silentLogin.type, silentLoginSaga);
+}
+
+function* watchSilentLoginSuccess() {
+  yield takeLatest(silentLoginSuccess.type, silentLoginSuccessSaga);
+}
+
+
 export default function* accountSaga() {
   yield all([
     fork(watchGenerateAccount),
@@ -522,6 +545,7 @@ export default function* accountSaga() {
     fork(watchSelectAccountSuccess),
     fork(watchSelectAccountFailure),
     fork(watchSetAccount),
+    fork(watchSetAccountSuccess),
     fork(watchRefreshLixiList),
     fork(watchRefreshLixiListSuccess),
     fork(watchRefreshLixiListFailure),
@@ -533,6 +557,8 @@ export default function* accountSaga() {
     fork(watchChangeAccountLocaleFailureSaga),
     fork(watchDeleteAccount),
     fork(watchDeleteAccountSuccess),
-    fork(watchDeleteAccountFailure)
+    fork(watchDeleteAccountFailure),
+    fork(watchSilentLogin),
+    fork(watchSilentLoginSuccess)
   ]);
 }
