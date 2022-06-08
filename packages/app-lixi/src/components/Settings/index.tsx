@@ -273,7 +273,6 @@ const Settings: React.FC = () => {
                     name="mnemonic"
                     autoComplete="off"
                     onChange={e => handleChange(e)}
-                    required
                   />
                 </Form.Item>
                 <SmartButton disabled={!isValidMnemonic} onClick={() => submit()}>
