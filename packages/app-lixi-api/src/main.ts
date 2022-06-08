@@ -14,15 +14,8 @@ import { HttpExceptionFilter } from './middlewares/exception.filter';
 import { PrismaService } from './modules/prisma/prisma.service';
 
 const allowedOrigins = [
-  'https://lixilotus.com',
-  'https://sendlotus.com',
-  'https://www.sendlotus.com',
-  'https://staging.sendlotus.com',
-  'https://dev.sendlotus.com',
-  'https://staging.lixilotus.com',
-  'https://dev.lixilotus.com',
-  'https://vince8x.lixilotus.com',
-  'https://sendlotus.test',
+  process.env.SENDLOTUS_URL,
+  process.env.BASE_URL
 ];
 
 async function bootstrap() {

@@ -1,18 +1,15 @@
 import { Body, Controller, Get, Post, Request, Res, UseGuards } from '@nestjs/common';
-import { HttpAdapterHost } from '@nestjs/core';
 import {
   FastifyReply,
   FastifyRequest
 } from 'fastify';
 import { AuthService } from './auth.service';
-import { CsrfGuard } from './csrf.guard';
 import { JwtAuthGuard } from './jwtauth.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(
-    private authService: AuthService,
-    private adapterHost: HttpAdapterHost
+    private authService: AuthService
   ) {
   }
 
@@ -36,22 +33,12 @@ export class AuthController {
   @Get('csrf')
   @UseGuards(JwtAuthGuard)
   async csrf(@Request() req: FastifyRequest, @Res({ passthrough: true }) response: FastifyReply) {
-
-    const unsginedCookie = response.unsignCookie(req.cookies['_csrf'] || '').value;
-    const csrfToken = await response.generateCsrf();
+    const csrfToken = await response.generateCsrf({
+      signed: true,
+      sameSite: 'strict',
+      path: '/api',
+      httpOnly: true,
+    });
     return csrfToken;
   }
-
-  @Post('testjwt')
-  @UseGuards(JwtAuthGuard)
-  async testjwt(@Request() req: FastifyRequest, @Body() body: { value: string }): Promise<string> {
-    return body.value;
-  }
-
-  @Post('testguard')
-  @UseGuards(CsrfGuard)
-  async testguard(@Request() req: FastifyRequest, @Body() body: { value: string }): Promise<string> {
-    return body.value;
-  }
-
 }

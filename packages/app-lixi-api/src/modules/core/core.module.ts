@@ -1,8 +1,7 @@
 import { BullModule } from '@nestjs/bullmq';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import IORedis from 'ioredis';
 import * as _ from 'lodash';
-import { join } from 'path';
 import { NotificationModule } from 'src/common/modules/notifications/notification.module';
 import { AuthModule } from '../auth/auth.module';
 import { LixiNftModule } from '../nft/lixinft.module';
@@ -23,6 +22,13 @@ import { ExportSubLixiesEventsListener } from './lixi/processors/export-sub-lixi
 import { ExportSubLixiesProcessor } from './lixi/processors/export-sub-lixies.processor';
 import { WithdrawSubLixiesEventsListener } from './lixi/processors/withdraw-sub-lixies.eventslistener';
 import { WithdrawSubLixiesProcessor } from './lixi/processors/withdraw-sub-lixies.processor';
+
+import cors from 'cors';
+import { join } from 'path';
+console.log(process.env)
+const baseCorsConfig = cors({
+  origin: process.env.BASE_URL ?? ''
+});
 
 @Module({
   imports: [
@@ -91,4 +97,9 @@ import { WithdrawSubLixiesProcessor } from './lixi/processors/withdraw-sub-lixie
     WithdrawSubLixiesEventsListener,
   ]
 })
-export class CoreModule { }
+export class CoreModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(baseCorsConfig)
+      .forRoutes({ path: '/api/claims/validate', method: RequestMethod.POST })
+  }
+}

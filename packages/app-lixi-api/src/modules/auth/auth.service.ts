@@ -4,9 +4,10 @@ import { decodeToken, TokenSigner, TokenVerifier } from 'jsontokens';
 import { I18n, I18nService } from 'nestjs-i18n';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { VError } from 'verror';
-import * as wif from 'wif';
+// import * as wif from 'wif';
 import { hashMnemonic } from '../../utils/encryptionMethods';
 import { WalletService } from '../wallet/wallet.service';
+const wif = require('wif');
 
 @Injectable()
 export class AuthService {
