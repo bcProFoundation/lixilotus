@@ -46,5 +46,5 @@ export const exportSubLixies = createAction<ExportLixiCommand>('lixi/exportSubLi
 export const exportSubLixiesSuccess = createAction<{fileName :string, lixiId: number, mnemonicHash: string}>('lixi/exportSubLixiesSuccess');
 export const exportSubLixiesFailure = createAction<string>('lixi/exportSubLixiesFailure');
 export const downloadExportedLixi = createAction<DownloadExportedLixiCommand>('lixi/downloadExportedLixi');
-export const downloadExportedLixiSuccess = createAction<string>('lixi/downloadExportedLixiSuccess');
+export const downloadExportedLixiSuccess = createAction<any>('lixi/downloadExportedLixiSuccess');
 export const downloadExportedLixiFailure = createAction<string>('lixi/downloadExportedLixiFailure');
