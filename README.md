@@ -18,6 +18,7 @@
 ## Libraries
 
 - [Lixi Models](packages/lixi-models) - A models library to use on both frontend and backend
+- [Lixi Contract](packages/lixi-contracts) - Contains the contract to issue NFT on smartBCH
 - [Lixi Components](packages/lixi-components) - A React library contains the components to use on the frontend
 
 ## License
