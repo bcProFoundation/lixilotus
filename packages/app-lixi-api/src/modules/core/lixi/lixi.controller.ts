@@ -825,7 +825,7 @@ export class LixiController {
         throw new VError(lixiNotExist);
       }
 
-      var timestamp = moment().format('YYYYMMDD_HHmm');
+      var timestamp = moment().format('YYYYMMDD');
       if (fileName !== `${lixi?.id}_${timestamp}.csv`) {
         const fileNameNotExist = await i18n.t('lixi.messages.fileNameNotExist');
         throw new VError(fileNameNotExist);
