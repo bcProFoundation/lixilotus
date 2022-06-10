@@ -82,7 +82,7 @@ export class ExportSubLixiesProcessor extends WorkerHost {
       fs.mkdirSync(dir);
     }
 
-    var timestamp = moment().format('YYYYMMDD_HHmm');
+    var timestamp = moment().format('YYYYMMDD');
     const fileName = `${lixi?.id}_${timestamp}.csv`;
     const filePath = `public/download/${fileName}`;
     fs.writeFile(`./${filePath}`, csv, function (err) {
