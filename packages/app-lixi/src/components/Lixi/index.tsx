@@ -14,7 +14,15 @@ import { AppContext } from 'src/store/store';
 import { showToast } from 'src/store/toast/actions';
 import styled from 'styled-components';
 
-import { CaretRightOutlined, CopyOutlined, DownloadOutlined, ExportOutlined, LoadingOutlined, ReloadOutlined } from '@ant-design/icons';
+import {
+  CaretRightOutlined,
+  CopyOutlined,
+  DownloadOutlined,
+  ExclamationCircleOutlined,
+  ExportOutlined,
+  LoadingOutlined,
+  ReloadOutlined
+} from '@ant-design/icons';
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import { SmartButton } from '@bcpros/lixi-components/components/Common/PrimaryButton';
 import { QRClaimCode } from '@bcpros/lixi-components/components/Common/QRClaimCode';
@@ -74,6 +82,8 @@ const Lixi: React.FC = () => {
   let subLixies = useAppSelector(getAllSubLixies);
 
   subLixies = _.sortBy(subLixies, ['isClaimed', 'packageId']);
+
+  const [loadings, setLoadings] = useState<boolean[]>([]);
 
   useEffect(() => {
     if (selectedLixi) {
@@ -253,20 +263,28 @@ const Lixi: React.FC = () => {
     );
   };
 
-  const columns = selectedLixi.numberLixiPerPackage ? 
-    [
-      { title: 'Num', dataIndex: 'num', width: 70 },
-      { title: 'Claim Code', dataIndex: 'claimCode', width: 150 },
-      { title: 'Amount', dataIndex: 'amount', width: 85 },
-      { title: 'packageId', dataIndex: 'packageId'},
-    ] :
-    [
-      { title: 'Num', dataIndex: 'num', width: 70 },
-      { title: 'Claim Code', dataIndex: 'claimCode' },
-      { title: 'Amount', dataIndex: 'amount' },
-    ]
-    ;
+  const showIsNFTEnabled = () => {
+    return selectedLixi?.isNFTEnabled ? (
+      <Descriptions.Item label={intl.get('lixi.optional')} key="desc.optional">
+        {intl.get('lixi.isNFTEnabled')}
+      </Descriptions.Item>
+    ) : (
+      ''
+    );
+  };
 
+  const columns = selectedLixi.numberLixiPerPackage
+    ? [
+      { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
+      { title: intl.get('claim.claimCode'), dataIndex: 'claimCode', width: 150 },
+      { title: intl.get('general.amount'), dataIndex: 'amount', width: 85 },
+      { title: 'packageId', dataIndex: 'packageId' }
+    ]
+    : [
+      { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
+      { title: intl.get('claim.claimCode'), dataIndex: 'claimCode' },
+      { title: intl.get('general.amount'), dataIndex: 'amount' }
+    ];
   const prefixClaimCode = 'lixi';
 
   const subLixiesDataSource = subLixies.map((item, i) => {
@@ -286,6 +304,19 @@ const Lixi: React.FC = () => {
 
   const showMoreSubLixies = () => {
     dispatch(fetchMoreSubLixies({ parentId: selectedLixi.id, startId: loadMoreStartId }));
+  };
+
+  const getLixiPanelDetailsIcon = (status: string, isPanelOpen: boolean) => {
+    switch (status) {
+      case 'pending':
+        return <LoadingOutlined />;
+      case 'failed':
+        return <ExclamationCircleOutlined />;
+      case 'active':
+      case 'lock':
+      default:
+        return <CaretRightOutlined rotate={isPanelOpen ? 90 : 0} />;
+    }
   };
 
   return (
@@ -334,14 +365,15 @@ const Lixi: React.FC = () => {
             {formatActivationDate()}
             {formatDate()}
             {showIsFamilyFriendly()}
+            {showIsNFTEnabled()}
           </Descriptions>
 
           {/* Lixi details */}
-          <StyledCollapse 
-            style={{ marginBottom: '20px' }} 
-            collapsible={selectedLixi.status == 'active'? "header" : "disabled"}
-            expandIcon={({ isActive }) => (selectedLixi.status == 'active') ? <CaretRightOutlined rotate={isActive ? 90 : 0} /> : <LoadingOutlined />}
-            >
+          <StyledCollapse
+            style={{ marginBottom: '20px' }}
+            collapsible={selectedLixi.status == 'active' ? 'header' : 'disabled'}
+            expandIcon={({ isActive }) => getLixiPanelDetailsIcon(selectedLixi.status, isActive)}
+          >
             <Panel header={intl.get('lixi.lixiDetail')} key="panel-1">
               {selectedLixi.claimType == ClaimType.Single ? (
                 <>
@@ -392,7 +424,7 @@ const Lixi: React.FC = () => {
             </CopyToClipboard>
           ) : (
             <>
-              <SmartButton onClick={() => handleExportLixi()}>
+              <SmartButton disabled={selectedLixi.status == 'pending'} onClick={() => handleExportLixi()}>
                 <ExportOutlined /> {intl.get('lixi.exportLixi')}
               </SmartButton>
             </>

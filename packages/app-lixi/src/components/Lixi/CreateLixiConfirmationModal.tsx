@@ -28,6 +28,7 @@ export type CreateLixiConfirmationModalProps = {
   newExpiryAt: string;
   newCountryLixi: string;
   isFamilyFriendly: boolean;
+  isNFTEnabled: boolean;
   newEnvelopeId: number | null;
   onOkAction?: AnyAction
 }
@@ -54,6 +55,7 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
     newLixiDividedValue,
     newCountryLixi,
     isFamilyFriendly,
+    isNFTEnabled,
     newEnvelopeId
   } = props;
 
@@ -191,6 +193,8 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
         {formatActivationDate()}
         {formatExpireDate()}
         <LixiParamLabel>{isFamilyFriendly ? intl.get('lixi.optionFamilyFriendly') : ""}</LixiParamLabel>
+        <br />
+        <LixiParamLabel>{isNFTEnabled ? intl.get('lixi.optionNFTEnabled') : ""}</LixiParamLabel>
       </Modal>
     </>
   );

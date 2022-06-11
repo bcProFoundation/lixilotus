@@ -2,13 +2,23 @@ export enum NotificationLevel {
   DEBUG,
   INFO,
   WARNING,
-  ERROR
+  ERROR,
 }
 
 export interface NotificationTypeDto {
   id?: number;
   name: string;
   description: string;
+  notificationTypeTranslations?: NotificationTypeTranslationDto[];
+  createdAt?: Nullable<Date>;
+  updatedAt?: Nullable<Date>;
+}
+
+export interface NotificationTypeTranslationDto {
+  id?: number;
+  notificationTypeId?: Nullable<number>;
+  language: string;
+  isDefault: string;
   template: string;
   createdAt?: Nullable<Date>;
   updatedAt?: Nullable<Date>;
@@ -19,7 +29,7 @@ export interface NotificationDto {
   message?: string;
   readAt?: Nullable<Date>;
   deletedAt?: Nullable<Date>;
-  additionalData?: Nullable<Object>;
+  additionalData?: Nullable<any>;
   recipientId?: Nullable<number>;
   senderId?: Nullable<number>;
   notificationType?: Nullable<NotificationTypeDto>;

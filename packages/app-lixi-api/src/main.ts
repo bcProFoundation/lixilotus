@@ -4,23 +4,18 @@ import {
   NestFastifyApplication
 } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import compression from 'fastify-compress';
-import { fastifyHelmet } from 'fastify-helmet';
+import compression from '@fastify/compress';
+import { fastifyCookie } from '@fastify/cookie';
+import { fastifyHelmet } from '@fastify/helmet';
+import fastifyCsrf from '@fastify/csrf-protection';
 import { AppModule } from './app.module';
 import { RedisIoAdapter } from './common/adapters/redis-io.adapter';
 import { HttpExceptionFilter } from './middlewares/exception.filter';
-import { PrismaService } from './services/prisma/prisma.service';
+import { PrismaService } from './modules/prisma/prisma.service';
 
 const allowedOrigins = [
-  'https://lixilotus.com',
-  'https://sendlotus.com',
-  'https://www.sendlotus.com',
-  'https://staging.sendlotus.com',
-  'https://dev.sendlotus.com',
-  'https://staging.lixilotus.com',
-  'https://dev.lixilotus.com',
-  'https://vince8x.lixilotus.com',
-  'https://sendlotus.test',
+  process.env.SENDLOTUS_URL,
+  process.env.BASE_URL
 ];
 
 async function bootstrap() {
@@ -90,6 +85,18 @@ async function bootstrap() {
       },
     },
   });
+
+  await app.register(fastifyCookie, {
+    secret: process.env.COOKIE_SECRET ?? 'my-secret'
+  });
+
+  app.register(fastifyCsrf, {
+    cookieOpts: {
+      signed: true,
+      httpOnly: true
+    }
+  });
+
   app.register(compression);
 
   await app.listen(process.env.PORT || 4800, '0.0.0.0');

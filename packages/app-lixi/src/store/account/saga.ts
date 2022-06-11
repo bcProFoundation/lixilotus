@@ -1,26 +1,26 @@
-import { Modal } from 'antd';
-import { all, call, fork, getContext, put, takeLatest } from 'redux-saga/effects';
-import intl from 'react-intl-universal';
-
 import {
   Account,
   AccountDto,
   CreateAccountCommand,
   DeleteAccountCommand,
-  ImportAccountCommand,
-  RenameAccountCommand,
-  Lixi
+  ImportAccountCommand, Lixi, RenameAccountCommand
 } from '@bcpros/lixi-models';
 import BCHJS from '@bcpros/xpi-js';
 import { PayloadAction } from '@reduxjs/toolkit';
-import { aesGcmEncrypt, aesGcmDecrypt, numberToBase58, generateRandomBase58Str } from '@utils/encryptionMethods';
-
+import { fetchNotifications } from '@store/notification/actions';
+import { getCurrentLocale } from '@store/settings/selectors';
+import { aesGcmDecrypt, aesGcmEncrypt, numberToBase58 } from '@utils/encryptionMethods';
+import { Modal } from 'antd';
+import intl from 'react-intl-universal';
+import { all, call, fork, getContext, put, putResolve, select, takeLatest } from 'redux-saga/effects';
+import { ChangeAccountLocaleCommand } from '../../../../lixi-models/build/module/lib/account/account.dto.d';
+import { PatchAccountCommand } from '../../../../lixi-models/src/lib/account/account.dto';
 import accountApi from '../account/api';
+import lixiApi from '../lixi/api';
 import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
-import lixiApi from '../lixi/api';
 import {
-  deleteAccount,
+  changeAccountLocale, changeAccountLocaleFailure, changeAccountLocaleSuccess, deleteAccount,
   deleteAccountFailure,
   deleteAccountSuccess,
   generateAccount,
@@ -33,6 +33,9 @@ import {
   postAccount,
   postAccountFailure,
   postAccountSuccess,
+  refreshLixiList,
+  refreshLixiListFailure,
+  refreshLixiListSuccess,
   renameAccount,
   renameAccountFailure,
   renameAccountSuccess,
@@ -40,11 +43,11 @@ import {
   selectAccountFailure,
   selectAccountSuccess,
   setAccount,
-  refreshLixiList,
-  refreshLixiListFailure,
-  refreshLixiListSuccess
+  setAccountSuccess,
+  silentLogin,
+  silentLoginFailure, silentLoginSuccess
 } from './actions';
-import { fetchNotifications } from '@store/notification/actions';
+import { getAccountById, getSelectedAccount } from './selectors';
 
 /**
  * Generate a account with random encryption password
@@ -62,11 +65,13 @@ function* generateAccountSaga(action: PayloadAction) {
   const mnemonicUtf8 = new TextEncoder().encode(Bip39128BitMnemonic); // encode mnemonic as UTF-8
   const mnemonicHashBuffer = yield call([crypto.subtle, crypto.subtle.digest], 'SHA-256', mnemonicUtf8); // hash the mnemonic
   const mnemonicHash = Buffer.from(new Uint8Array(mnemonicHashBuffer)).toString('hex');
+  const locale: string | undefined = yield select(getCurrentLocale);
 
   const account: CreateAccountCommand = {
     mnemonic: Bip39128BitMnemonic,
     encryptedMnemonic,
-    mnemonicHash
+    mnemonicHash,
+    language: locale
   };
 
   yield put(postAccount(account));
@@ -157,9 +162,12 @@ function* importAccountSaga(action: PayloadAction<string>) {
     const mnemonicHashBuffer = yield call([crypto.subtle, crypto.subtle.digest], 'SHA-256', mnemonicUtf8); // hash the mnemonic
     const mnemonicHash = Buffer.from(new Uint8Array(mnemonicHashBuffer)).toString('hex');
 
+    const locale = yield select(getCurrentLocale);
+
     const command: ImportAccountCommand = {
       mnemonic,
-      mnemonicHash
+      mnemonicHash,
+      language: locale
     };
 
     const data: AccountDto = yield call(accountApi.import, command);
@@ -194,14 +202,17 @@ function* importAccountSaga(action: PayloadAction<string>) {
   }
 }
 
-function* importAccountSuccessSaga(action: PayloadAction<Account>) {
+function* importAccountSuccessSaga(action: PayloadAction<{ account: Account; lixies: Lixi[] }>) {
   yield put(
-    fetchNotifications({
-      accountId: action.payload.id,
-      mnemonichHash: action.payload.mnemonicHash
+    showToast('success', {
+      message: 'Success',
+      description: intl.get('account.accountImportSuccess'),
+      duration: 5
     })
   );
+  const account = yield select(getAccountById(action.payload.account.id));
   yield put(hideLoading(importAccount.type));
+  yield putResolve(silentLogin(action.payload.account.mnemonic));
 }
 
 function* importAccountFailureSaga(action: PayloadAction<string>) {
@@ -232,12 +243,8 @@ function* selectAccountSaga(action: PayloadAction<number>) {
 }
 
 function* selectAccountSuccessSaga(action: PayloadAction<{ account: Account; lixies: Lixi[] }>) {
-  yield put(
-    fetchNotifications({
-      accountId: action.payload.account.id,
-      mnemonichHash: action.payload.account.mnemonicHash
-    })
-  );
+  const account = yield select(getAccountById(action.payload.account.id));
+  yield putResolve(silentLogin(account.mnemonic));
   yield put(hideLoading(selectAccount.type));
 }
 
@@ -254,19 +261,26 @@ function* selectAccountFailureSaga(action: PayloadAction<string>) {
 }
 
 function* setAccountSaga(action: PayloadAction<Account>) {
-  yield put(
-    fetchNotifications({
-      accountId: action.payload.id,
-      mnemonichHash: action.payload.mnemonicHash
-    })
-  );
+  yield put(setAccountSuccess({ ...action.payload }));
+}
+
+function* setAccountSuccessSaga(action: PayloadAction<Account>) {
+  const account = yield select(getAccountById(action.payload.id));
+  yield putResolve(silentLogin(account.mnemonic));
 }
 
 function* renameAccountSaga(action: PayloadAction<RenameAccountCommand>) {
   try {
     yield put(showLoading(renameAccount.type));
     const { id } = action.payload;
-    const data = yield call(accountApi.patch, id, action.payload);
+
+    const patchAccountCommand: PatchAccountCommand = {
+      id: action.payload.id,
+      mnemonic: action.payload.mnemonic,
+      name: action.payload.name
+    };
+
+    const data = yield call(accountApi.patch, id, patchAccountCommand);
     const account = data as Account;
     yield put(renameAccountSuccess(account));
   } catch (err) {
@@ -288,6 +302,41 @@ function* renameAccountFailureSaga(action: PayloadAction<string>) {
     content: intl.get('account.renameFailed')
   });
   yield put(hideLoading(renameAccount.type));
+}
+
+function* changeAccountLocaleSaga(action: PayloadAction<ChangeAccountLocaleCommand>) {
+  try {
+    yield put(showLoading(changeAccountLocale.type));
+    const { id } = action.payload;
+    const patchAccountCommand: PatchAccountCommand = {
+      id: action.payload.id,
+      mnemonic: action.payload.mnemonic,
+      language: action.payload.language
+    };
+
+    const data = yield call(accountApi.patch, id, patchAccountCommand);
+    const account = data as Account;
+    yield put(changeAccountLocaleSuccess(account));
+  } catch (err) {
+    const message = (err as Error).message ?? intl.get('account.unableToChangeLocaleAccount');
+    yield put(changeAccountLocaleFailure(message));
+  }
+}
+
+function* changeAccountLocaleSuccessSaga(action: PayloadAction<Account>) {
+  const account = action.payload;
+  yield put(hideLoading(changeAccountLocale.type));
+  const languageName: string = intl.get(account.language);
+  Modal.success({
+    content: intl.get('account.accountChangeLocaleSuccess', { language: languageName })
+  });
+}
+
+function* changeAccountLocaleFailureSaga(action: PayloadAction<string>) {
+  Modal.error({
+    content: intl.get('account.unableToChangeLocaleAccount')
+  });
+  yield put(hideLoading(changeAccountLocale.type));
 }
 
 function* deleteAccountSaga(action: PayloadAction<DeleteAccountCommand>) {
@@ -400,6 +449,10 @@ function* watchSetAccount() {
   yield takeLatest(setAccount.type, setAccountSaga);
 }
 
+function* watchSetAccountSuccess() {
+  yield takeLatest(setAccountSuccess.type, setAccountSuccessSaga);
+}
+
 function* watchRenameAccount() {
   yield takeLatest(renameAccount.type, renameAccountSaga);
 }
@@ -410,6 +463,18 @@ function* watchRenameAccountSuccess() {
 
 function* watchRenameAccountFailure() {
   yield takeLatest(renameAccountFailure.type, renameAccountFailureSaga);
+}
+
+function* watchChangeAccountLocale() {
+  yield takeLatest(changeAccountLocale.type, changeAccountLocaleSaga);
+}
+
+function* watchChangeAccountLocaleSuccessSaga() {
+  yield takeLatest(changeAccountLocaleSuccess.type, changeAccountLocaleSuccessSaga);
+}
+
+function* watchChangeAccountLocaleFailureSaga() {
+  yield takeLatest(changeAccountLocaleFailure.type, changeAccountLocaleFailureSaga);
 }
 
 function* watchDeleteAccount() {
@@ -433,6 +498,37 @@ function* watchRefreshLixiListSuccess() {
 function* watchRefreshLixiListFailure() {
   yield takeLatest(refreshLixiListFailure.type, refreshLixiListFailureSaga);
 }
+
+function* silentLoginSaga(action: PayloadAction<string>) {
+  const mnemonic = action.payload;
+  try {
+    const data = yield call(accountApi.login, mnemonic);
+    console.log('data:', data);
+    yield put(silentLoginSuccess());
+  } catch (err) {
+    yield put(silentLoginFailure());
+  }
+}
+
+function* silentLoginSuccessSaga(action: PayloadAction) {
+  const account = yield select(getSelectedAccount);
+  yield put(
+    fetchNotifications({
+      accountId: account.id,
+      mnemonichHash: account.mnemonicHash
+    })
+  );
+}
+
+function* watchSilentLogin() {
+  yield takeLatest(silentLogin.type, silentLoginSaga);
+}
+
+function* watchSilentLoginSuccess() {
+  yield takeLatest(silentLoginSuccess.type, silentLoginSuccessSaga);
+}
+
+
 export default function* accountSaga() {
   yield all([
     fork(watchGenerateAccount),
@@ -449,14 +545,20 @@ export default function* accountSaga() {
     fork(watchSelectAccountSuccess),
     fork(watchSelectAccountFailure),
     fork(watchSetAccount),
+    fork(watchSetAccountSuccess),
     fork(watchRefreshLixiList),
     fork(watchRefreshLixiListSuccess),
     fork(watchRefreshLixiListFailure),
     fork(watchRenameAccount),
     fork(watchRenameAccountSuccess),
     fork(watchRenameAccountFailure),
+    fork(watchChangeAccountLocale),
+    fork(watchChangeAccountLocaleSuccessSaga),
+    fork(watchChangeAccountLocaleFailureSaga),
     fork(watchDeleteAccount),
     fork(watchDeleteAccountSuccess),
-    fork(watchDeleteAccountFailure)
+    fork(watchDeleteAccountFailure),
+    fork(watchSilentLogin),
+    fork(watchSilentLoginSuccess)
   ]);
 }

@@ -20,6 +20,7 @@ export interface GenerateLixiCommand {
   activationAt?: string;
   country?: string;
   isFamilyFriendly: boolean;
+  isNFTEnabled: boolean;
   envelopeId: Nullable<number>;
   envelopeMessage: string;
   numberLixiPerPackage?: Nullable<string>;
@@ -45,6 +46,7 @@ export interface CreateLixiCommand {
   activationAt?: Date;
   country?: string;
   isFamilyFriendly: boolean;
+  isNFTEnabled: boolean;
   password: string;
   envelopeId: Nullable<number>;
   envelopeMessage: string;
@@ -87,6 +89,7 @@ export interface LixiDto {
   claimCount?: number;
   subLixiTotalClaim?: number;
   subLixiBalance?: number;
+  isNFTEnabled: boolean;
   numberLixiPerPackage?: Nullable<number>;
   packageId?: Nullable<number>;
 };
@@ -126,6 +129,7 @@ export interface Lixi {
   claimCount?: number;
   subLixiTotalClaim?: number;
   subLixiBalance?: number;
+  isNFTEnabled: boolean;
   numberLixiPerPackage?: Nullable<number>;
   packageId?: Nullable<number>;
 };
@@ -158,12 +162,6 @@ export interface RenameLixiCommand {
 export interface ExportLixiCommand {
   id: number;
   mnemonicHash: string;
-}
-
-export interface UpdateLixiStatusCommand {
-  id: number;
-  mnemonicHash: string;
-  status: string;
 }
 
 export enum LixiType {

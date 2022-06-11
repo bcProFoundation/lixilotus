@@ -67,6 +67,7 @@ import lixiApi from './api';
 import { getLixiById } from './selectors';
 import { select } from 'redux-saga/effects';
 import { saveAs } from 'file-saver';
+import moment from 'moment';
 
 
 const call: any = Effects.call;
@@ -98,6 +99,7 @@ function* generateLixiSaga(action: PayloadAction<GenerateLixiCommand>) {
     minStaking: Number(command.minStaking),
     country: command && command.country ? command.country : undefined,
     isFamilyFriendly: command.isFamilyFriendly,
+    isNFTEnabled: command.isNFTEnabled,
     password: password,
     mnemonic: mnemonic,
     mnemonicHash: command.mnemonicHash,
@@ -519,7 +521,8 @@ function* exportSubLixiesFailureSaga(action: PayloadAction<string>) {
 function* downloadExportedLixiSaga(action: PayloadAction<DownloadExportedLixiCommand>) {
   try {
     const data = yield call(lixiApi.downloadExportedLixi, action.payload);
-    yield put(downloadExportedLixiSuccess(data));
+    const parentLixi: LixiDto = yield select(getLixiById(action.payload.lixiId));
+    yield put(downloadExportedLixiSuccess({ data:data, lixiName: parentLixi.name }));
   } catch (err) {
     const message = (err as Error).message ?? intl.get('lixi.unableDownloadSub')
     yield put(downloadExportedLixiFailure(message));
@@ -527,10 +530,15 @@ function* downloadExportedLixiSaga(action: PayloadAction<DownloadExportedLixiCom
 }
 
 function* downloadExportedLixiSuccessSaga(action: PayloadAction<any>) {
-  const filename = "SubLixiList"
-  const result = action.payload.replace(/['"]+/g, '')
+  const { data, lixiName } = action.payload;
+
+  const name = lixiName.replace(/\s/g, '').toLowerCase();
+  var timestamp = moment().format('YYYYMMDD_HHmmss');
+  const fileName = `${name}_SubLixiList_${timestamp}.csv`;
+
+  const result = data.replace(/['"]+/g, '')
   var blob = new Blob([result], { type: "text/csv;charset=utf-8" });
-  saveAs(blob, filename);
+  saveAs(blob, fileName);
 
   yield put(hideLoading(downloadExportedLixi.type));
 }

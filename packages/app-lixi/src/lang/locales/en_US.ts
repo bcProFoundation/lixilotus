@@ -25,6 +25,8 @@ export default {
   'general.scanQRCode': 'Scan QR code',
   'general.scanQRCodeError':
     'Error in QR scanner. Please ensure your camera is not in use. Due to Apple restrictions on third-party browsers, you must use Safari browser for QR code scanning on an iPhone.',
+  'general.num': 'Num',
+  'general.amount': 'Amount',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
@@ -72,12 +74,15 @@ export default {
   'account.unableToImport': 'Unable to import the account.',
   'account.unableToSelect': 'Unable to select the account.',
   'account.unableToRename': 'Unable to rename the account.',
+  'account.unableToChangeLocaleAccount': 'Unable to change locale the account.',
   'account.unableToDelete': 'Unable to delete the account.',
   'account.unableToRefresh': 'Unable to refresh lixi list.',
   'account.renameFailed': 'Rename failed. All accounts must have a unique name.',
   'account.deleteFailed': 'Delete failed. Could not delete the account.',
   'account.accountRenamedSuccess': 'Account has renamed to {accountName}',
+  'account.accountChangeLocaleSuccess': 'Account locale has changed to {language}',
   'account.accountDeleteSuccess': 'The account has been deleted successfully.',
+  'account.accountImportSuccess': 'The account has been imported successfully.',
 
   /* 03.Lixi */
   'lixi.sub-lixi': 'Sub-lixi',
@@ -149,6 +154,8 @@ export default {
   'lixi.withdrawSuccess': 'Withdraw lixi successfully.',
   'lixi.renameSuccess': 'Lixi has been renamed to {lixiName}',
   'lixi.renameFailed': 'Rename failed. All lixi must have a unique name.',
+  'lixi.isNFTEnabled': 'NFT Enabled',
+  'lixi.optionNFTEnabled': 'Option: NFT Enabled',
   'lixi.unableDownloadSub': 'Unable to download the sub-lixies.',
 
   /* 04.Claim */
@@ -221,4 +228,7 @@ export default {
   'notification.unableToFetch': 'Unable to fetch the notification.',
   'notification.unableToDelete': 'Unable to delete the notification.',
   'notification.unableToRead': 'Unable to read the notification.',
+
+  /* 10.NFT */
+  'lixinft.unableToMint': 'Unable to mint the lixi NFT'
 };

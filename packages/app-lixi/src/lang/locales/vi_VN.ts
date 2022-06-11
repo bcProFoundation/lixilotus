@@ -25,6 +25,8 @@ export default {
   'general.scanQRCode': 'Quét mã QR',
   'general.scanQRCodeError':
     'Lỗi trong lúc quét mã QR. Vui lòng đảm bảo rằng máy ảnh của bạn đang không sử dụng vào mục đích khác. Do các yêu cầu giới hạn của Apple với các trình duyệt thứ ba, bạn phải sử dụng trình duyệt của Safari để quét mã QR từ điện thoại iPhone.',
+  'general.num': 'STT',
+  'general.amount': 'Số dư',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',
@@ -71,12 +73,15 @@ export default {
   'account.unableToImport': 'Không thể khôi phục tài khoản.',
   'account.unableToSelect': 'Không thể chọn tài khoản.',
   'account.unableToRename': 'Không thể đổi tên tài khoản.',
+  'account.unableToChangeLocaleAccount': 'Đổi ngôn ngữ không thành công.',
   'account.unableToDelete': 'Không thể xóa tài khoản.',
   'account.unableToRefresh': 'Không thể làm mới danh sách Lì xì.',
   'account.renameFailed': 'Đổi tên tài khoản không thành công. Hãy thử lại với một tên khác.',
   'account.deleteFailed': 'Xóa tài khoản không thành công.',
-  'account.accountRenamedSuccess': 'Tài khoản được sửa lại thành {accountName}',
+  'account.accountRenamedSuccess': 'Tài khoản được sửa lại thành {accountName}.',
   'account.accountDeleteSuccess': 'Xóa tài khoản thành công.',
+  'account.accountImportSuccess': 'Tài khoản được nhập thành công.',
+  'account.accountChangeLocaleSuccess': 'Ngôn ngữ được cập nhật thành {language}.',
 
   /* 03.Lixi */
   'lixi.sub-lixi': 'Bao lì xì phụ',
@@ -148,6 +153,8 @@ export default {
   'lixi.withdrawSuccess': 'Rút Lì xì thành công.',
   'lixi.renameSuccess': 'Lì xì đã được đổi tên thành {lixiName}',
   'lixi.renameFailed': 'Đổi tên không thành công. Hãy thử lại với một tên khác.',
+  'lixi.isNFTEnabled': 'Kích hoạt NFT',
+  'lixi.optionNFTEnabled': 'Tùy chọn: Kích hoạt NFT',
   'lixi.unableDownloadSub': 'Không thể tải về các Lì xì phụ.',
 
   /* 04.Claim */
@@ -223,4 +230,7 @@ export default {
   'notification.unableToFetch': 'Không thể tải thông báo.',
   'notification.unableToDelete': 'Không thể xóa thông báo.',
   'notification.unableToRead': 'Không thể đọc thông báo.',
+
+  /* 10.NFT */
+  'lixinft.unableToMint': 'Không thể tạo NFT'
 };

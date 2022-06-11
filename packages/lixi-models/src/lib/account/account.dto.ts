@@ -2,17 +2,32 @@ export interface CreateAccountCommand {
   mnemonic: string;
   encryptedMnemonic: string;
   mnemonicHash: string;
+  language?: string;
 }
 
 export interface ImportAccountCommand {
   mnemonic: string;
   mnemonicHash?: string;
+  language?: string;
+}
+
+export interface ChangeAccountLocaleCommand {
+  id: number;
+  mnemonic: string;
+  language: string;
 }
 
 export interface RenameAccountCommand {
   id: number;
   mnemonic: string;
   name: string;
+}
+
+export interface PatchAccountCommand {
+  id: number;
+  mnemonic: string;
+  language?: string;
+  name?: string;
 }
 
 export interface DeleteAccountCommand {
@@ -31,4 +46,5 @@ export interface AccountDto {
   updatedAt?: Date;
   address: string;
   balance?: number;
+  language?: string;
 }

@@ -2,6 +2,7 @@ export interface CreateClaimDto {
   claimAddress: string;
   claimCode: string;
   captchaToken: string;
+  nftReceiverAddress?: string;
 }
 
 export interface ClaimDto {
@@ -12,6 +13,8 @@ export interface ClaimDto {
   transactionId: string;
   amount: number;
   lixiId: number;
+  nftTokenId: Nullable<string>;
+  nftTokenUrl: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -27,4 +30,6 @@ export interface ViewClaimDto {
   thumbnail: string;
   message: string;
   amount: number;
+  nftTokenId: Nullable<string>;
+  nftTokenUrl: string;
 }

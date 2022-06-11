@@ -1,73 +1,106 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
+  <a href="https://github.com/bcProFoundation/lixilotus/tree/master/packages/app-lixi-api/" target="blank"><img src="https://lixilotus.com/images/lixi_logo.svg" width="160" alt="LixiLotus Logo" /></a>
 </p>
-
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+The backend application provides the api for the LixiLotusLove and SendLotus applications.
 
 ## Installation
 
 ```bash
-$ npm install
+$ yarn install
+```
+
+## Prepare
+
+Setup Postgres database
+
+Setup Redis since the job queue need Redis to run
+
+Setup https certificate on local machine (Recommend: mkcert)
+
+Setup environment variables
+
+```bash
+- Copy file .env.example to .env and change the variable accordingly (postgres, redis, evm url)
+- Prepare the certificate in order to run the application (with mkcert) (the encrypt/hash features need https)
+$ npx prisma migrate
+$ npx prisma db seed
+```
+
+Setup nginx reverse proxy so the frontend and backend use same domain (example for windows below:)
+
+```conf
+server {
+  listen		127.0.0.1:443 ssl http2;
+  ssl_certificate_key "f:/winnmp/conf/opensslCA/selfsigned/lixilotus.test.key" # use your cert;
+  ssl_certificate "f:/winnmp/conf/opensslCA/selfsigned/lixilotus.test.crt" # use your cert;
+
+  server_name 	lixilotus.test;
+
+  location ^~ /socket.io/ {
+    proxy_pass http://localhost:4800/socket.io/;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+  }
+
+  location / {
+    proxy_pass http://localhost:3000;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_set_header X-Forwarded-Proto $scheme;
+  }
+
+  location /_next/webpack-hmr {
+    proxy_pass http://localhost:3000/_next/webpack-hmr;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+  }
+
+  location ^~ /api/ {
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP  $remote_addr;
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_pass http://localhost:4800$request_uri;
+  }
+}
+
 ```
 
 ## Running the app
 
 ```bash
 # development
-$ npm run start
+# windows
+$ set NODE_ENV=development&& yarn start
+# linux
+$ NODE_ENV=development yarn start
 
 # watch mode
-$ npm run start:dev
+# windows
+$ set NODE_ENV=development&& yarn start:dev
+# linux
+$ NODE_ENV=development yarn start:dev
 
 # production mode
-$ npm run start:prod
+$ yarn build
+$ yarn start:prod
 ```
 
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Open [https://lixilotus.test/api](https://lixilotus.test/api) with your browser to see the api list.
 
 ## Stay in touch
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- Author - [bcPro Foundation](https://github.com/bcProFoundation)
+- Website - [GiveLotus](https://givelotus.org/)
+- Telegram - [GiveLotus](https://t.me/givelotus)
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+Code released under [the MIT license](https://github.com/bcProFoundation/lixilotus/blob/master/LICENSE).
+
+Copyright 2020-2022 bcProFoundation.

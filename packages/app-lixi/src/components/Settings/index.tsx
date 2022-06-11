@@ -185,6 +185,7 @@ const Settings: React.FC = () => {
     };
     const deleteAcountModalProps: DeleteAccountModalProps = {
       account: account,
+      remainingAccounts: account == selectedAccount ? otherAccounts : [],
       onOkAction: deleteAccount(command)
     };
     dispatch(openModal('DeleteAccountModal', deleteAcountModalProps));
@@ -272,7 +273,6 @@ const Settings: React.FC = () => {
                     name="mnemonic"
                     autoComplete="off"
                     onChange={e => handleChange(e)}
-                    required
                   />
                 </Form.Item>
                 <SmartButton disabled={!isValidMnemonic} onClick={() => submit()}>
@@ -325,19 +325,19 @@ const Settings: React.FC = () => {
                 </div>
               </Panel>
             </StyledCollapse>
+            <StyledSpacer />
+            <h2>{intl.get('settings.languages')}</h2>
+            <AntdFormWrapper>
+              <LanguageSelectDropdown
+                defaultValue={currentLocale}
+                onChange={(locale: any) => {
+                  setLocale(locale);
+                }}
+              />
+            </AntdFormWrapper>
+            <StyledSpacer />
           </>
         )}
-        <StyledSpacer />
-        <h2>{intl.get('settings.languages')}</h2>
-        <AntdFormWrapper>
-          <LanguageSelectDropdown
-            defaultValue={currentLocale}
-            onChange={(locale: any) => {
-              setLocale(locale);
-            }}
-          />
-        </AntdFormWrapper>
-        <StyledSpacer />
       </Spin>
     </>
   );
