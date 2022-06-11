@@ -41,6 +41,7 @@ import { ClaimType } from '../../../../lixi-models/src/lib/lixi';
 import lixiLogo from '../../assets/images/lixi_logo.svg';
 import { exportSubLixies } from '../../store/lixi/actions';
 import VirtualTable from './SubLixiListScroll';
+import { numberToBase58 } from '@utils/encryptionMethods';
 
 type CopiedProps = {
   style?: React.CSSProperties;
@@ -278,7 +279,7 @@ const Lixi: React.FC = () => {
       { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
       { title: intl.get('claim.claimCode'), dataIndex: 'claimCode', width: 150 },
       { title: intl.get('general.amount'), dataIndex: 'amount', width: 85 },
-      { title: 'packageId', dataIndex: 'packageId' }
+      { title: intl.get('lixi.package'), dataIndex: 'packageId' }
     ]
     : [
       { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
@@ -298,7 +299,7 @@ const Lixi: React.FC = () => {
         </CopyToClipboard>
       ),
       amount: item.isClaimed ? 0 : item.amount == 0 ? 0 : (item.amount - 0.000455).toFixed(2),
-      packageId: item.packageId
+      packageId: item.packageId ? numberToBase58(item.packageId) : ''
     };
   });
 

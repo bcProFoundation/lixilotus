@@ -1,10 +1,4 @@
-import {
-  CreateLixiCommand,
-  fromSmallestDenomination,
-  Lixi,
-  LixiDto,
-  NotificationDto
-} from '@bcpros/lixi-models';
+import { CreateLixiCommand, fromSmallestDenomination, Lixi, LixiDto, NotificationDto } from '@bcpros/lixi-models';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
 import { InjectQueue } from '@nestjs/bullmq';
@@ -14,7 +8,11 @@ import { FlowJob, FlowProducer, Queue } from 'bullmq';
 import IORedis from 'ioredis';
 import * as _ from 'lodash';
 import { I18n, I18nContext, I18nService } from 'nestjs-i18n';
-import { CREATE_SUB_LIXIES_QUEUE, defaultLixiChunkSize, LIXI_JOB_NAMES } from 'src/modules/core/lixi/constants/lixi.constants';
+import {
+  CREATE_SUB_LIXIES_QUEUE,
+  defaultLixiChunkSize,
+  LIXI_JOB_NAMES
+} from 'src/modules/core/lixi/constants/lixi.constants';
 import { CreateSubLixiesChunkJobData, CreateSubLixiesJobData } from 'src/modules/core/lixi/models/lixi.models';
 import { aesGcmDecrypt, aesGcmEncrypt, hexSha256, numberToBase58 } from 'src/utils/encryptionMethods';
 import { template } from 'src/utils/stringTemplate';
@@ -31,7 +29,7 @@ export class LixiService {
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
     @InjectQueue(CREATE_SUB_LIXIES_QUEUE) private lixiQueue: Queue,
     @I18n() private i18n: I18nService
-  ) { }
+  ) {}
 
   /**
    * @param derivationIndex The derivation index of the lixi
@@ -250,14 +248,8 @@ export class LixiService {
 
       let createdPackage;
       if (command.numberLixiPerPackage) {
-        const preparedPackCode =
-          command.name + '_' + command.accountId + '_' + parentLixiId + '_' + chunkIndex + Date.now();
-        const packCode = await hexSha256(preparedPackCode);
-
         createdPackage = await this.prisma.package.create({
-          data: {
-            packCode: packCode.slice(0, 8)
-          }
+          data: {}
         });
       }
 
@@ -322,7 +314,6 @@ export class LixiService {
   }
 
   async updateStatusLixi(id: number, status: string) {
-
     const lixi = await this.prisma.lixi.findUnique({
       where: {
         id: _.toSafeInteger(id)

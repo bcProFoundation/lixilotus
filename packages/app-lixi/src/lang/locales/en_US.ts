@@ -98,6 +98,7 @@ export default {
   'lixi.amount': 'Amount: {newLixiAmount}',
   'lixi.numberOfSub': 'Number of sub lixi: {newNumberOfSubLixi}',
   'lixi.numberLixiPerPackage': 'Number of sub-lixi per package: {newNumberLixiPerPackage}',
+  'lixi.package': 'Package',
   'lixi.maxClaim': 'Max Redemption: {newMaxClaim}',
   'lixi.country': 'Country: ',
   'lixi.minStake': 'Minimum Staking: {newMinStaking}',

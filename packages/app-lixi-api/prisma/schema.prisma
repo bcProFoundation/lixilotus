@@ -105,7 +105,6 @@ model Envelope {
 
 model Package {
   id        Int      @id @default(autoincrement())
-  packCode  String   @map("pack_code")
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
   lixi      Lixi[]

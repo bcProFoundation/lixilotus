@@ -97,6 +97,7 @@ export default {
   'lixi.amount': 'Tổng cộng: {newLixiAmount}',
   'lixi.NumberOfSub': 'Số lượng bao Lì xì phụ: {newNumberOfSubLixi}',
   'lixi.numberLixiPerPackage': 'Số lượng bao lì xì phụ trong mỗi gói: {newNumberLixiPerPackage}',
+  'lixi.package': 'Package',
   'lixi.maxClaim': 'Số lần nhận tối đa: {newMaxClaim}',
   'lixi.country': 'Quốc gia: ',
   'lixi.minStake': 'Số lần trữ tới thiểu: {newMinStaking}',
