@@ -185,7 +185,9 @@ async function prepareSubLixiChunkToInsert(
         xpiAllowance -= xpiRandom;
       } else if (command.lixiType == LixiType.Equal) {
         xpiToSend = command.amount / Number(command.numberOfSubLixi) + fromSmallestDenomination(temporaryFeeCalc);
-        throw new Error('Incorrect number to send');
+        if (xpiToSend <= 0) {
+          throw new Error('Incorrect number to send');
+        }
       }
     }
 
