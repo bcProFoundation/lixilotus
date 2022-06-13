@@ -177,7 +177,7 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
         <br />
         {lixi.claimType == ClaimType.Single ?
           <span>({lixi.claimedNum}) {fromSmallestDenomination(lixi.totalClaim)}/{fromSmallestDenomination(lixi.balance)} {intl.get('lixi.remainingXPI')}</span>
-          : <span>({lixi.claimCount}/{lixi.numberOfSubLixi}) {fromSmallestDenomination(lixi.subLixiTotalClaim).toFixed(2)} / {fromSmallestDenomination(lixi.subLixiBalance).toFixed(2)} {intl.get('lixi.remainingXPI')}</span>
+          : <span>({lixi.claimCount}/{lixi.numberOfSubLixi}) {fromSmallestDenomination(lixi.subLixiTotalClaim).toFixed(2)} / {lixi.subLixiBalance != undefined ? lixi.subLixiBalance.toFixed(2) : 0.00} {intl.get('lixi.remainingXPI')}</span>
         }
       </BalanceAndTicker>
       <Dropdown trigger={["click"]} overlay={

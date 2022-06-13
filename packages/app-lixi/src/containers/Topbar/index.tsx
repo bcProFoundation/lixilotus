@@ -52,14 +52,10 @@ const StyledAuthor = styled.div`
   font-size: 14px;
   color: black;
   display: inline-block;
-  width: 300px;
+  width: 310px;
 
   &:hover {
     color: black;
-  }
-
-  @media (max-width: 568px) {
-    width:250px
   }
 `
 
@@ -75,6 +71,9 @@ const StyledTextRight = styled.span`
   font-style: italic;
 `
 
+const StyledSwipeToDelete = styled(SwipeToDelete)`
+  --rstdiHeight: 100% !important;
+`
 
 
 const NotificationMenu = (notifications: Notification[], account: Account) => {
@@ -98,14 +97,14 @@ const NotificationMenu = (notifications: Notification[], account: Account) => {
         <>
           {isMobile ? (
             <div onClick={() => handleRead(account, notification)}>
-              <SwipeToDelete
+              <StyledSwipeToDelete
                 key={notification.id}
                 onDelete={() => handleDelete(account, notification.id)}
                 deleteColor="#6f2dbd"
               >
                 <StyledComment
                   key={notification.id}
-                  style={{ backgroundColor: notification.readAt == null ? "#eceff5" : "#fff" }}
+                  style={{ backgroundColor: notification.readAt == null ? "#eceff5" : "#fff", borderRadius:"0px" }}
                   author={
                     <StyledAuthor >
                       <StyledTextLeft></StyledTextLeft>
@@ -116,7 +115,7 @@ const NotificationMenu = (notifications: Notification[], account: Account) => {
                     <div style={{ fontWeight: notification.readAt != null ? "normal" : "bold" }}>{notification.message}</div>
                   }
                 />
-              </SwipeToDelete>
+              </StyledSwipeToDelete>
             </div>
           ) : (
             <StyledComment
