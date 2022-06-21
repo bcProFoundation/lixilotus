@@ -274,7 +274,7 @@ const Lixi: React.FC = () => {
     );
   };
 
-  const columns = selectedLixi.numberLixiPerPackage
+  const columns = selectedLixi && selectedLixi.numberLixiPerPackage
     ? [
       { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
       { title: intl.get('claim.claimCode'), dataIndex: 'claimCode', width: 150 },
