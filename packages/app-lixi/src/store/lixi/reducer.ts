@@ -4,13 +4,23 @@ import { Lixi, ClaimType } from '@bcpros/lixi-models/lib/lixi';
 import { createEntityAdapter, createReducer, Update } from '@reduxjs/toolkit';
 
 import {
-  importAccountSuccess, refreshLixiListSuccess, selectAccountSuccess
+  importAccountSuccess,
+  refreshLixiListSilentSuccess,
+  refreshLixiListSuccess,
+  selectAccountSuccess
 } from '../account/actions';
 import {
   fetchInitialSubLixiesSuccess,
   fetchMoreSubLixiesSuccess,
-  archiveLixiSuccess, postLixiSuccess, refreshLixiSuccess, renameLixiSuccess, selectLixiSuccess, setLixi, setLixiBalance,
+  archiveLixiSuccess,
+  postLixiSuccess,
+  refreshLixiSuccess,
+  renameLixiSuccess,
+  selectLixiSuccess,
+  setLixi,
+  setLixiBalance,
   unarchiveLixiSuccess,
+  refreshLixiSilentSuccess
 } from './actions';
 import { LixiesState } from './state';
 
@@ -27,7 +37,7 @@ const initialState: LixiesState = lixiesAdapter.getInitialState({
   hasMoreSubLixies: false
 });
 
-export const lixiReducer = createReducer(initialState, (builder) => {
+export const lixiReducer = createReducer(initialState, builder => {
   builder
     .addCase(postLixiSuccess, (state, action) => {
       const lixi: any = action.payload;
@@ -44,8 +54,8 @@ export const lixiReducer = createReducer(initialState, (builder) => {
       const updateLixi: Update<Lixi> = {
         id: lixi.id,
         changes: {
-          ...lixi,
-        },
+          ...lixi
+        }
       };
       lixiesAdapter.updateOne(state, updateLixi);
 
@@ -57,17 +67,30 @@ export const lixiReducer = createReducer(initialState, (builder) => {
       const updateLixi: Update<Lixi> = {
         id: lixi.id,
         changes: {
-          ...lixi,
-        },
+          ...lixi
+        }
       };
       lixiesAdapter.updateOne(state, updateLixi);
 
-      const claimIds = claims.map((claim) => claim.id);
+      const claimIds = claims.map(claim => claim.id);
+      state.claimIdsById[lixi.id] = claimIds;
+    })
+    .addCase(refreshLixiSilentSuccess, (state, action) => {
+      const { lixi, claims } = action.payload;
+      const updateLixi: Update<Lixi> = {
+        id: lixi.id,
+        changes: {
+          ...lixi
+        }
+      };
+      lixiesAdapter.updateOne(state, updateLixi);
+
+      const claimIds = claims.map(claim => claim.id);
       state.claimIdsById[lixi.id] = claimIds;
     })
     .addCase(selectAccountSuccess, (state, action) => {
       const { lixies } = action.payload;
-      const lixiIds = lixies.map((lixi) => lixi.id);
+      const lixiIds = lixies.map(lixi => lixi.id);
       lixiesAdapter.upsertMany(state, lixies);
       if (lixiIds.length == 0 || !lixiIds.includes(state.selectedId)) {
         // The current selected lixi is not the same anymore
@@ -77,7 +100,17 @@ export const lixiReducer = createReducer(initialState, (builder) => {
     })
     .addCase(refreshLixiListSuccess, (state, action) => {
       const { lixies } = action.payload;
-      const lixiIds = lixies.map((lixi) => lixi.id);
+      const lixiIds = lixies.map(lixi => lixi.id);
+      lixiesAdapter.upsertMany(state, lixies);
+      if (lixiIds.length == 0 || !lixiIds.includes(state.selectedId as number)) {
+        // The current selected lixi is not the same anymore
+        // Reset the selected lixi
+        state.selectedId = 0;
+      }
+    })
+    .addCase(refreshLixiListSilentSuccess, (state, action) => {
+      const { lixies } = action.payload;
+      const lixiIds = lixies.map(lixi => lixi.id);
       lixiesAdapter.upsertMany(state, lixies);
       if (lixiIds.length == 0 || !lixiIds.includes(state.selectedId as number)) {
         // The current selected lixi is not the same anymore
@@ -87,7 +120,7 @@ export const lixiReducer = createReducer(initialState, (builder) => {
     })
     .addCase(importAccountSuccess, (state, action) => {
       const { lixies } = action.payload;
-      const lixiIds = lixies.map((lixi) => lixi.id);
+      const lixiIds = lixies.map(lixi => lixi.id);
       lixiesAdapter.upsertMany(state, lixies);
       if (lixiIds.length == 0 || !lixiIds.includes(state.selectedId as number)) {
         // The current selected lixi is not the same anymore
@@ -100,8 +133,8 @@ export const lixiReducer = createReducer(initialState, (builder) => {
       const updateLixi: Update<Lixi> = {
         id: lixi.id,
         changes: {
-          status: lixi.status,
-        },
+          status: lixi.status
+        }
       };
       lixiesAdapter.updateOne(state, updateLixi);
     })
@@ -110,8 +143,8 @@ export const lixiReducer = createReducer(initialState, (builder) => {
       const updateLixi: Update<Lixi> = {
         id: lixi.id,
         changes: {
-          status: lixi.status,
-        },
+          status: lixi.status
+        }
       };
       lixiesAdapter.updateOne(state, updateLixi);
     })
@@ -121,8 +154,8 @@ export const lixiReducer = createReducer(initialState, (builder) => {
         const updateLixi: Update<Lixi> = {
           id: selectedId,
           changes: {
-            balance: action.payload,
-          },
+            balance: action.payload
+          }
         };
         lixiesAdapter.updateOne(state, updateLixi);
       }
@@ -132,8 +165,8 @@ export const lixiReducer = createReducer(initialState, (builder) => {
       const updateLixi: Update<Lixi> = {
         id: lixi.id,
         changes: {
-          name: lixi.name,
-        },
+          name: lixi.name
+        }
       };
       lixiesAdapter.updateOne(state, updateLixi);
     })
@@ -150,5 +183,5 @@ export const lixiReducer = createReducer(initialState, (builder) => {
       state.subLixiesCount = result.totalCount;
       state.currentSubLixiesStartId = result.pageInfo.endCursor;
       state.hasMoreSubLixies = result.pageInfo.hasNextPage;
-    })
+    });
 });
