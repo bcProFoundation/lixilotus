@@ -116,7 +116,9 @@ export default {
   'lixi.remainingXPI': 'XPI còn lại',
   'lixi.message': 'Thông điệp',
   'lixi.loadmore': 'Xem thêm',
+  'lixi.addLeader': 'thêm trưởng nhóm',
   'lixi.lixiDetail': 'Bấm để xem chi tiết Lì xì',
+  'lixi.lixiLeader': 'Bấm để xem chi tiết Lì xì',
   'lixi.downloadCode': 'Tải về mã code',
   'lixi.copyClaim': 'Sao chép mã code',
   'lixi.refreshLixi': 'Làm mới Lì xì',
@@ -155,8 +157,13 @@ export default {
   'lixi.renameSuccess': 'Lì xì đã được đổi tên thành {lixiName}',
   'lixi.renameFailed': 'Đổi tên không thành công. Hãy thử lại với một tên khác.',
   'lixi.isNFTEnabled': 'Kích hoạt NFT',
+  'lixi.isCharity': 'Quỹ từ thiện',
   'lixi.optionNFTEnabled': 'Tùy chọn: Kích hoạt NFT',
   'lixi.unableDownloadSub': 'Không thể tải về các Lì xì phụ.',
+  'lixi.loyaltyProgram': 'Khách hàng thân thiết',
+  'lixi.staffAddress': 'Địa chỉ ví nhân viên',
+  'lixi.charityAddress': 'Địa chỉ ví từ thiện',
+  'lixi.loterryAddress': 'Địa chỉ ví xổ số',
 
   /* 04.Claim */
   'claim.claim': 'Nhận Lì xì',

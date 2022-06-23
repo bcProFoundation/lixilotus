@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { Checkbox, Collapse, DatePicker, Form, Input, Menu, Modal, notification, Radio, RadioChangeEvent } from 'antd';
 import { range } from 'lodash';
 import isEmpty from 'lodash.isempty';
@@ -8,10 +9,10 @@ import { openModal } from 'src/store/modal/actions';
 import { showToast } from 'src/store/toast/actions';
 import { generateLixi } from 'src/store/lixi/actions';
 
-import { AntdFormWrapper } from '@bcpros/lixi-components/components/Common/EnhancedInputs';
+import { AntdFormWrapper, FormItemWithQRCodeAddon } from '@bcpros/lixi-components/components/Common/EnhancedInputs';
 import { SmartButton } from '@bcpros/lixi-components/components/Common/PrimaryButton';
 import {
-  AdvancedCollapse, LixiCollapse
+  AdvancedCollapse, LixiCollapse, StyledCollapse
 } from '@bcpros/lixi-components/components/Common/StyledCollapse';
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import { Account } from '@bcpros/lixi-models/lib/account';
@@ -28,6 +29,9 @@ import { getAllEnvelopes } from 'src/store/envelope/selectors';
 import TextArea from 'antd/lib/input/TextArea';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import EnvelopeCarousel from '@components/Common/EnvelopeCarousel';
+import { parseAddress } from '@utils/addressMethods';
+import { AppContext } from '@store/store';
+import { getCurrentAddress } from '@store/claim/selectors';
 
 const { Panel } = Collapse;
 
@@ -42,6 +46,9 @@ const CreateLixiForm = ({
 
   const dispatch = useAppDispatch();
   const envelopes = useAppSelector(getAllEnvelopes);
+  const currentAddress = useAppSelector(getCurrentAddress);
+
+  const { XPI, Wallet } = React.useContext(AppContext);
 
   // New Lixi name
   const [newLixiName, setNewLixiName] = useState('');
@@ -101,6 +108,26 @@ const CreateLixiForm = ({
   const [isFamilyFriendly, setIsFamilyFriendlyLixi] = useState<boolean>(false);
   // New isNFTEnabled
   const [isNFTEnabled, setIsNFTEnabledLixi] = useState<boolean>(false);
+  // New charity
+  const [isCharity, setIsCharityLixi] = useState<boolean>(false);
+  const handleAddressChange = e => {
+    const { value, name } = e.target;
+    let error: boolean | string = false;
+    let addressString: string = _.trim(value);
+
+    // parse address
+    const addressInfo = parseAddress(XPI, addressString);
+    const { address, isValid } = addressInfo;
+
+    // Is this valid address?
+    if (!isValid) {
+      error = intl.get('claim.invalidAddress', { ticker: currency.ticker });
+    }
+    else {
+      error = false;
+    }
+  }
+
 
   // New Envelope
   const [newEnvelopeId, setNewEnvelopeId] = useState<number | null>(null);
@@ -242,6 +269,83 @@ const CreateLixiForm = ({
   const handleFamilyFriendly = (e) => {
     const value = e.target.checked;
     setIsFamilyFriendlyLixi(value);
+  }
+
+  const selectCharity = () => {
+    return (
+    <StyledCollapse> 
+      <Panel key={''} header={intl.get('lixi.loyaltyProgram')}>
+        {/* address for staff */}
+        <FormItemWithQRCodeAddon
+          style={{
+            margin: '0 0 20px 0'
+          }}
+          loadWithCameraOpen={false}
+          onScan={result =>
+            handleAddressChange({
+              target: {
+                name: 'staff',
+                value: result,
+              },
+            })
+          }
+          inputProps={{
+            placeholder: intl.get('lixi.staffAddress'),
+            name: 'staff',
+            onChange: e => handleAddressChange(e),
+            required: true,
+            value: '',
+          }}
+        ></FormItemWithQRCodeAddon>
+
+        {/* Charity */}
+        <FormItemWithQRCodeAddon
+          style={{
+            margin: '0 0 20px 0'
+          }}
+          loadWithCameraOpen={false}
+          onScan={result =>
+            handleAddressChange({
+              target: {
+                name: 'charity',
+                value: result,
+              },
+            })
+          }
+          inputProps={{
+            placeholder: intl.get('lixi.charityAddress', { ticker: currency.ticker }),
+            name: 'charity',
+            onChange: e => handleAddressChange(e),
+            required: true,
+            value: '',
+          }}
+        ></FormItemWithQRCodeAddon>
+
+        {/* Lottery */}
+        <FormItemWithQRCodeAddon
+          style={{
+            margin: '0 0 20px 0'
+          }}
+          loadWithCameraOpen={false}
+          onScan={result =>
+            handleAddressChange({
+              target: {
+                name: 'loterry',
+                value: result,
+              },
+            })
+          }
+          inputProps={{
+            placeholder: intl.get('lixi.loterryAddress', { ticker: currency.ticker }),
+            name: 'loterry',
+            onChange: e => handleAddressChange(e),
+            required: true,
+            value: '',
+          }}
+        ></FormItemWithQRCodeAddon>
+      </Panel>
+    </StyledCollapse> 
+    );
   }
 
   const handleNFTEnabled = (e) => {
@@ -660,6 +764,9 @@ const CreateLixiForm = ({
                           {intl.get('lixi.isNFTEnabled')}
                         </Checkbox>
                       )} 
+
+                      {selectCharity()}
+
                     </Form.Item>
                   </Panel>
                 </AdvancedCollapse>

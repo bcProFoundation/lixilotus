@@ -117,7 +117,9 @@ export default {
   'lixi.remainingXPI': 'XPI Remaining',
   'lixi.message': 'Message',
   'lixi.loadmore': 'Load More',
+  'lixi.addLeader': 'Add Leader',
   'lixi.lixiDetail': 'Click to reveal Lixi detail',
+  'lixi.lixiLeader': 'Click to reveal Lixi detail',
   'lixi.downloadCode': 'Download Code',
   'lixi.copyClaim': 'Copy Claim Code',
   'lixi.refreshLixi': 'Refresh Lixi',
@@ -156,8 +158,13 @@ export default {
   'lixi.renameSuccess': 'Lixi has been renamed to {lixiName}',
   'lixi.renameFailed': 'Rename failed. All lixi must have a unique name.',
   'lixi.isNFTEnabled': 'NFT Enabled',
+  'lixi.isCharity': 'Charity Fund',
   'lixi.optionNFTEnabled': 'Option: NFT Enabled',
   'lixi.unableDownloadSub': 'Unable to download the sub-lixies.',
+  'lixi.loyaltyProgram': 'Loyalty Programs',
+  'lixi.staffAddress': 'Staff Address',
+  'lixi.charityAddress': 'Charity Address',
+  'lixi.loterryAddress': 'Loterry Address',
 
   /* 04.Claim */
   'claim.claim': 'Claim',
