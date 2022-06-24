@@ -43,7 +43,6 @@ import {
   postLixiFailure,
   postLixiSuccess,
   refreshLixi,
-  refreshLixiActionType,
   refreshLixiFailure,
   refreshLixiSuccess,
   renameLixi,
@@ -61,14 +60,15 @@ import {
   withdrawLixiSuccess,
   downloadExportedLixi,
   downloadExportedLixiFailure,
-  downloadExportedLixiSuccess
+  downloadExportedLixiSuccess,
+  refreshLixiSilentSuccess
 } from './actions';
 import lixiApi from './api';
 import { getLixiById } from './selectors';
 import { select } from 'redux-saga/effects';
 import { saveAs } from 'file-saver';
 import moment from 'moment';
-
+import { refreshLixiSilent } from './actions';
 
 const call: any = Effects.call;
 /**
@@ -151,7 +151,7 @@ function* fetchInitialSubLixiesSaga(action: PayloadAction<number>) {
   }
 }
 
-function* fetchInitialSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) { }
+function* fetchInitialSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) {}
 
 function* fetchInitialSubLixiesFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? intl.get('claim.unableGetChildLixi');
@@ -177,7 +177,7 @@ function* fetchMoreSubLixiesSaga(action: PayloadAction<{ parentId: number; start
   }
 }
 
-function* fetchMoreSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) { }
+function* fetchMoreSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) {}
 
 function* fetchMoreSubLixiesFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? intl.get('claim.unableCreateChildLixi');
@@ -286,10 +286,23 @@ function* refreshLixiFailureSaga(action: PayloadAction<string>) {
   yield put(hideLoading(refreshLixi.type));
 }
 
+function* refreshLixiSilentSaga(action: PayloadAction<number>) {
+  try {
+    const lixiId = action.payload;
+    const selectedLixi: LixiDto = yield select(getLixiById(lixiId));
+    const account: AccountDto = yield select(getAccountById(selectedLixi.accountId));
+    const lixi: Lixi = yield call(lixiApi.getById, lixiId, account?.secret);
+    const claimResult: PaginationResult<Claim> = yield call(claimApi.getByLixiId, lixiId);
+    const claims = (claimResult.data ?? []) as Claim[];
+    yield put(refreshLixiSilentSuccess({ lixi: lixi, claims: claims }));
+    yield put(fetchInitialSubLixies(lixi.id));
+  } catch (err) {}
+}
+
 function* setLixiSaga(action: PayloadAction<Lixi>) {
   const lixi: any = action.payload;
   yield put(push('/lixi'));
-  yield put(refreshLixi(lixi.id));
+  yield put(refreshLixiSilent(lixi.id));
 }
 
 function* selectLixiSaga(action: PayloadAction<number>) {
@@ -495,7 +508,9 @@ function* exportSubLixiesSaga(action: PayloadAction<ExportLixiCommand>) {
     const parentLixi: LixiDto = yield select(getLixiById(id));
     const account: AccountDto = yield select(getAccountById(parentLixi.accountId));
     const data = yield call(lixiApi.exportSubLixies, id, command, account?.secret);
-    yield put(exportSubLixiesSuccess({ fileName: data.fileName, lixiId: parentLixi.id, mnemonicHash: account?.mnemonicHash }));
+    yield put(
+      exportSubLixiesSuccess({ fileName: data.fileName, lixiId: parentLixi.id, mnemonicHash: account?.mnemonicHash })
+    );
   } catch (err) {
     const message = (err as Error).message ?? intl.get('lixi.unableExportSub');
     yield put(exportSubLixiesFailure(message));
@@ -522,9 +537,9 @@ function* downloadExportedLixiSaga(action: PayloadAction<DownloadExportedLixiCom
   try {
     const data = yield call(lixiApi.downloadExportedLixi, action.payload);
     const parentLixi: LixiDto = yield select(getLixiById(action.payload.lixiId));
-    yield put(downloadExportedLixiSuccess({ data:data, lixiName: parentLixi.name }));
+    yield put(downloadExportedLixiSuccess({ data: data, lixiName: parentLixi.name }));
   } catch (err) {
-    const message = (err as Error).message ?? intl.get('lixi.unableDownloadSub')
+    const message = (err as Error).message ?? intl.get('lixi.unableDownloadSub');
     yield put(downloadExportedLixiFailure(message));
   }
 }
@@ -536,8 +551,8 @@ function* downloadExportedLixiSuccessSaga(action: PayloadAction<any>) {
   var timestamp = moment().format('YYYYMMDD_HHmmss');
   const fileName = `${name}_SubLixiList_${timestamp}.csv`;
 
-  const result = data.replace(/['"]+/g, '')
-  var blob = new Blob([result], { type: "text/csv;charset=utf-8" });
+  const result = data.replace(/['"]+/g, '');
+  var blob = new Blob([result], { type: 'text/csv;charset=utf-8' });
   saveAs(blob, fileName);
 
   yield put(hideLoading(downloadExportedLixi.type));
@@ -629,6 +644,10 @@ function* watchRefreshLixiSuccess() {
 
 function* watchRefreshLixiFailure() {
   yield takeLatest(refreshLixiFailure.type, refreshLixiFailureSaga);
+}
+
+function* watchRefreshLixiSilent() {
+  yield takeLatest(refreshLixi.type, refreshLixiSilentSaga);
 }
 
 function* watchArchiveLixi() {
@@ -724,6 +743,7 @@ export default function* lixiSaga() {
     fork(watchRefreshLixi),
     fork(watchRefreshLixiSuccess),
     fork(watchRefreshLixiFailure),
+    fork(watchRefreshLixiSilent),
     fork(watchArchiveLixi),
     fork(watchArchiveLixiSuccess),
     fork(watchArchiveLixiFailure),

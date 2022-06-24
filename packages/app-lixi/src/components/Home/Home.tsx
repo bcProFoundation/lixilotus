@@ -10,7 +10,7 @@ import { SmartButton } from '@components/Common/PrimaryButton';
 import { StyledSpacer } from '@components/Common/StyledSpacer';
 import CreateLixiForm from '@components/Lixi/CreateLixiForm';
 import LixiList from '@components/Lixi/LixiList';
-import { getAccount, importAccount, refreshLixiList, setAccountBalance } from '@store/account/actions';
+import { getAccount, importAccount, refreshLixiList, refreshLixiListSilent, setAccountBalance } from '@store/account/actions';
 import { fromSmallestDenomination } from '@utils/cashMethods';
 import { Form, Input, Modal, Tabs } from 'antd';
 import moment from 'moment';
@@ -70,7 +70,7 @@ const Home: React.FC = () => {
     dispatch(getEnvelopes());
     if (selectedAccount) {
       dispatch(getAccount(selectedAccount.id));
-      dispatch(refreshLixiList(selectedAccount?.id));
+      dispatch(refreshLixiListSilent(selectedAccount?.id));
     }
   }, []);
 
