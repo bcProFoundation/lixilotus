@@ -40,9 +40,8 @@ import {
   postAccountSuccess,
   refreshLixiList,
   refreshLixiListFailure,
-  refreshLixiListSilentFailure,
-  refreshLixiListSilentSuccess,
   refreshLixiListSuccess,
+  refreshLixiListSilentSuccess,
   renameAccount,
   renameAccountFailure,
   renameAccountSuccess,
@@ -411,31 +410,13 @@ function* refreshLixiListFailureSaga(action: PayloadAction<number>) {
 
 function* refreshLixiListSilentSaga(action: PayloadAction<number>) {
   try {
-    yield put(showLoading(refreshLixiList.type));
     const accountId = action.payload;
     const data = yield call(accountApi.getById, accountId);
     const account = data as Account;
     const lixiesData = yield call(lixiApi.getByAccountId, accountId);
     const lixies = (lixiesData ?? []) as Lixi[];
     yield put(refreshLixiListSilentSuccess({ account: account, lixies: lixies }));
-  } catch (err) {
-    const message = (err as Error).message ?? intl.get('account.unableToRefresh');
-    yield put(refreshLixiListSilentFailure(message));
-  }
-}
-function* refreshLixiListSilentSuccessSaga(action: PayloadAction<{ account: Account; lixies: Lixi[] }>) {
-  yield put(hideLoading(refreshLixiList.type));
-}
-function* refreshLixiListSilentFailureSaga(action: PayloadAction<number>) {
-  const message = action.payload ?? intl.get('account.unableToRefresh');
-  yield put(
-    showToast('error', {
-      message: 'Error',
-      description: message,
-      duration: 5
-    })
-  );
-  yield put(hideLoading(refreshLixiList.type));
+  } catch (err) {}
 }
 
 function* watchGenerateAccount() {
@@ -547,12 +528,6 @@ function* watchRefreshLixiListFailure() {
 function* watchRefreshLixiListSilent() {
   yield takeLatest(refreshLixiList.type, refreshLixiListSilentSaga);
 }
-function* watchRefreshLixiListSilentSuccess() {
-  yield takeLatest(refreshLixiListSuccess.type, refreshLixiListSilentSuccessSaga);
-}
-function* watchRefreshLixiListSilentFailure() {
-  yield takeLatest(refreshLixiListFailure.type, refreshLixiListSilentFailureSaga);
-}
 
 function* silentLoginSaga(action: PayloadAction<string>) {
   const mnemonic = action.payload;
@@ -604,8 +579,6 @@ export default function* accountSaga() {
     fork(watchRefreshLixiListSuccess),
     fork(watchRefreshLixiListFailure),
     fork(watchRefreshLixiListSilent),
-    fork(watchRefreshLixiListSilentSuccess),
-    fork(watchRefreshLixiListSilentFailure),
     fork(watchRenameAccount),
     fork(watchRenameAccountSuccess),
     fork(watchRenameAccountFailure),

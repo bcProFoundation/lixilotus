@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 
 import { Lixi, ClaimType } from '@bcpros/lixi-models/lib/lixi';
-import { createEntityAdapter, createReducer, Update } from '@reduxjs/toolkit';
+import { createEntityAdapter, createReducer, isAnyOf, Update } from '@reduxjs/toolkit';
 
 import {
   importAccountSuccess,
@@ -62,57 +62,11 @@ export const lixiReducer = createReducer(initialState, builder => {
       const claimIds = claims.map(claim => claim.id);
       state.claimIdsById[id] = claimIds;
     })
-    .addCase(refreshLixiSuccess, (state, action) => {
-      const { lixi, claims } = action.payload;
-      const updateLixi: Update<Lixi> = {
-        id: lixi.id,
-        changes: {
-          ...lixi
-        }
-      };
-      lixiesAdapter.updateOne(state, updateLixi);
-
-      const claimIds = claims.map(claim => claim.id);
-      state.claimIdsById[lixi.id] = claimIds;
-    })
-    .addCase(refreshLixiSilentSuccess, (state, action) => {
-      const { lixi, claims } = action.payload;
-      const updateLixi: Update<Lixi> = {
-        id: lixi.id,
-        changes: {
-          ...lixi
-        }
-      };
-      lixiesAdapter.updateOne(state, updateLixi);
-
-      const claimIds = claims.map(claim => claim.id);
-      state.claimIdsById[lixi.id] = claimIds;
-    })
     .addCase(selectAccountSuccess, (state, action) => {
       const { lixies } = action.payload;
       const lixiIds = lixies.map(lixi => lixi.id);
       lixiesAdapter.upsertMany(state, lixies);
       if (lixiIds.length == 0 || !lixiIds.includes(state.selectedId)) {
-        // The current selected lixi is not the same anymore
-        // Reset the selected lixi
-        state.selectedId = 0;
-      }
-    })
-    .addCase(refreshLixiListSuccess, (state, action) => {
-      const { lixies } = action.payload;
-      const lixiIds = lixies.map(lixi => lixi.id);
-      lixiesAdapter.upsertMany(state, lixies);
-      if (lixiIds.length == 0 || !lixiIds.includes(state.selectedId as number)) {
-        // The current selected lixi is not the same anymore
-        // Reset the selected lixi
-        state.selectedId = 0;
-      }
-    })
-    .addCase(refreshLixiListSilentSuccess, (state, action) => {
-      const { lixies } = action.payload;
-      const lixiIds = lixies.map(lixi => lixi.id);
-      lixiesAdapter.upsertMany(state, lixies);
-      if (lixiIds.length == 0 || !lixiIds.includes(state.selectedId as number)) {
         // The current selected lixi is not the same anymore
         // Reset the selected lixi
         state.selectedId = 0;
@@ -183,5 +137,28 @@ export const lixiReducer = createReducer(initialState, builder => {
       state.subLixiesCount = result.totalCount;
       state.currentSubLixiesStartId = result.pageInfo.endCursor;
       state.hasMoreSubLixies = result.pageInfo.hasNextPage;
+    })
+    .addMatcher(isAnyOf(refreshLixiListSuccess, refreshLixiListSilentSuccess), (state, action) => {
+      const { lixies } = action.payload;
+      const lixiIds = lixies.map(lixi => lixi.id);
+      lixiesAdapter.upsertMany(state, lixies);
+      if (lixiIds.length == 0 || !lixiIds.includes(state.selectedId as number)) {
+        // The current selected lixi is not the same anymore
+        // Reset the selected lixi
+        state.selectedId = 0;
+      }
+    })
+    .addMatcher(isAnyOf(refreshLixiSuccess, refreshLixiSilentSuccess), (state, action) => {
+      const { lixi, claims } = action.payload;
+      const updateLixi: Update<Lixi> = {
+        id: lixi.id,
+        changes: {
+          ...lixi
+        }
+      };
+      lixiesAdapter.updateOne(state, updateLixi);
+
+      const claimIds = claims.map(claim => claim.id);
+      state.claimIdsById[lixi.id] = claimIds;
     });
 });

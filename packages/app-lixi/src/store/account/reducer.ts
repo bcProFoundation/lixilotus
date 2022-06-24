@@ -1,5 +1,5 @@
 import { Account } from '@bcpros/lixi-models';
-import { createEntityAdapter, createReducer, Update } from '@reduxjs/toolkit';
+import { createEntityAdapter, createReducer, isAnyOf, Update } from '@reduxjs/toolkit';
 
 import {
   deleteAccountSuccess,
@@ -9,6 +9,7 @@ import {
   setAccount,
   setAccountBalance,
   refreshLixiListSuccess,
+  refreshLixiListSilentSuccess
 } from './actions';
 import { AccountsState } from './state';
 
@@ -16,10 +17,10 @@ export const accountsAdapter = createEntityAdapter<Account>({});
 
 const initialState: AccountsState = accountsAdapter.getInitialState({
   selectedId: null,
-  lixiIdsById: {},
+  lixiIdsById: {}
 });
 
-export const accountReducer = createReducer(initialState, (builder) => {
+export const accountReducer = createReducer(initialState, builder => {
   builder
     .addCase(setAccount, (state, action) => {
       const account = action.payload;
@@ -30,7 +31,7 @@ export const accountReducer = createReducer(initialState, (builder) => {
       const { account, lixies } = action.payload;
       const id = account.id;
       state.selectedId = id;
-      const lixiIds = lixies.map((lixi) => lixi.id);
+      const lixiIds = lixies.map(lixi => lixi.id);
       state.lixiIdsById[id] = lixiIds;
       accountsAdapter.upsertOne(state, account);
     })
@@ -38,15 +39,7 @@ export const accountReducer = createReducer(initialState, (builder) => {
       const { account, lixies } = action.payload;
       const id = account.id;
       state.selectedId = id;
-      const lixiIds = lixies.map((lixi) => lixi.id);
-      state.lixiIdsById[id] = lixiIds;
-      accountsAdapter.upsertOne(state, account);
-    })
-    .addCase(refreshLixiListSuccess, (state, action) => {
-      const { account, lixies } = action.payload;
-      const id = account.id;
-      state.selectedId = id;
-      const lixiIds = lixies.map((lixi) => lixi.id);
+      const lixiIds = lixies.map(lixi => lixi.id);
       state.lixiIdsById[id] = lixiIds;
       accountsAdapter.upsertOne(state, account);
     })
@@ -74,5 +67,13 @@ export const accountReducer = createReducer(initialState, (builder) => {
         };
         accountsAdapter.updateOne(state, updateAccount);
       }
+    })
+    .addMatcher(isAnyOf(refreshLixiListSuccess, refreshLixiListSilentSuccess), (state, action) => {
+      const { account, lixies } = action.payload;
+      const id = account.id;
+      state.selectedId = id;
+      const lixiIds = lixies.map(lixi => lixi.id);
+      state.lixiIdsById[id] = lixiIds;
+      accountsAdapter.upsertOne(state, account);
     });
 });

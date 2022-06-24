@@ -43,7 +43,6 @@ import {
   postLixiFailure,
   postLixiSuccess,
   refreshLixi,
-  refreshLixiActionType,
   refreshLixiFailure,
   refreshLixiSuccess,
   renameLixi,
@@ -62,8 +61,7 @@ import {
   downloadExportedLixi,
   downloadExportedLixiFailure,
   downloadExportedLixiSuccess,
-  refreshLixiSilentSuccess,
-  refreshLixiSilentFailure
+  refreshLixiSilentSuccess
 } from './actions';
 import lixiApi from './api';
 import { getLixiById } from './selectors';
@@ -293,32 +291,12 @@ function* refreshLixiSilentSaga(action: PayloadAction<number>) {
     const lixiId = action.payload;
     const selectedLixi: LixiDto = yield select(getLixiById(lixiId));
     const account: AccountDto = yield select(getAccountById(selectedLixi.accountId));
-    yield put(showLoading(refreshLixi.type));
     const lixi: Lixi = yield call(lixiApi.getById, lixiId, account?.secret);
     const claimResult: PaginationResult<Claim> = yield call(claimApi.getByLixiId, lixiId);
     const claims = (claimResult.data ?? []) as Claim[];
     yield put(refreshLixiSilentSuccess({ lixi: lixi, claims: claims }));
     yield put(fetchInitialSubLixies(lixi.id));
-  } catch (err) {
-    const message = (err as Error).message ?? intl.get('claim.unableRefresh');
-    yield put(refreshLixiSilentFailure(message));
-  }
-}
-
-function* refreshLixiSilentSuccessSaga(action: PayloadAction<{ lixi: Lixi; children: Lixi[]; claims: Claim[] }>) {
-  yield put(hideLoading(refreshLixi.type));
-}
-
-function* refreshLixiSilentFailureSaga(action: PayloadAction<string>) {
-  const message = action.payload ?? intl.get('claim.unableRefresh');
-  yield put(
-    showToast('error', {
-      message: 'Error',
-      description: message,
-      duration: 5
-    })
-  );
-  yield put(hideLoading(refreshLixi.type));
+  } catch (err) {}
 }
 
 function* setLixiSaga(action: PayloadAction<Lixi>) {
@@ -672,14 +650,6 @@ function* watchRefreshLixiSilent() {
   yield takeLatest(refreshLixi.type, refreshLixiSilentSaga);
 }
 
-function* watchRefreshLixiSilentSuccess() {
-  yield takeLatest(refreshLixiSuccess.type, refreshLixiSilentSuccessSaga);
-}
-
-function* watchRefreshLixiSilentFailure() {
-  yield takeLatest(refreshLixiFailure.type, refreshLixiSilentFailureSaga);
-}
-
 function* watchArchiveLixi() {
   yield takeLatest(archiveLixi.type, archiveLixiSaga);
 }
@@ -774,8 +744,6 @@ export default function* lixiSaga() {
     fork(watchRefreshLixiSuccess),
     fork(watchRefreshLixiFailure),
     fork(watchRefreshLixiSilent),
-    fork(watchRefreshLixiSilentSuccess),
-    fork(watchRefreshLixiSilentFailure),
     fork(watchArchiveLixi),
     fork(watchArchiveLixiSuccess),
     fork(watchArchiveLixiFailure),
