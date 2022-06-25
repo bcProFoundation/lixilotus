@@ -3,7 +3,7 @@ import { range } from 'lodash';
 import isEmpty from 'lodash.isempty';
 import intl from 'react-intl-universal';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { openModal } from 'src/store/modal/actions';
 import { showToast } from 'src/store/toast/actions';
 import { generateLixi } from 'src/store/lixi/actions';
