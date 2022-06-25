@@ -490,7 +490,7 @@ function* renameLixiSuccessSaga(action: PayloadAction<Lixi>) {
   const lixi = action.payload;
   yield put(hideLoading(renameLixi.type));
   Modal.success({
-    content: intl.get('claim.unableRename', { lixiName: lixi.name })
+    content: intl.get('lixi.renameSuccess', { lixiName: lixi.name })
   });
 }
 

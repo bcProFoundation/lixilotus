@@ -351,6 +351,7 @@ const CreateLixiForm = ({
               placeholder={intl.get('account.numberOfSubLixi')}
               name="equalValue"
               onChange={e => handleNewNumberOfSubLixi(e)}
+              onWheel={e => e.currentTarget.blur()}
             />
           </Form.Item>
         </>
@@ -374,6 +375,7 @@ const CreateLixiForm = ({
                   placeholder={intl.get('account.defaultValueToGive')}
                   name="fixedValue"
                   onChange={e => handleChangeFixedValue(e)}
+                  onWheel={e => e.currentTarget.blur()}
                 >
                 </Input>
               </Input.Group>
@@ -394,6 +396,7 @@ const CreateLixiForm = ({
                   placeholder={intl.get('account.dividedNumber')}
                   name="dividedValue"
                   onChange={e => handleChangeDividedValue(e)}
+                  onWheel={e => e.currentTarget.blur()}
                 >
                 </Input>
               </Input.Group>
@@ -410,12 +413,19 @@ const CreateLixiForm = ({
             <Form.Item>
               <Input
                 addonBefore={intl.get('account.min')}
+                id = "min"
+                onWheel={e => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  e.defaultPrevented = true;
+                }}
                 type="number"
                 step={1 / 10 ** currency.cashDecimals}
                 placeholder={intl.get('account.minValueToGive')}
                 name="minValue"
                 value={newLixiMinValue}
                 onChange={e => handleChangeMinValue(e)}
+                onWheel={e => e.currentTarget.blur()}
               >
               </Input>
             </Form.Item>
@@ -428,6 +438,7 @@ const CreateLixiForm = ({
                 name="maxValue"
                 value={newLixiMaxValue}
                 onChange={e => handleChangeMaxValue(e)}
+                onWheel={e => e.currentTarget.blur()}
               >
               </Input>
             </Form.Item>
@@ -456,6 +467,7 @@ const CreateLixiForm = ({
               name="lixiMaxClaim"
               value={newMaxClaim}
               onChange={e => handleNewMaxClaimInput(e)}
+              onWheel={e => e.currentTarget.blur()}
             />
           </Form.Item>
           :
@@ -473,6 +485,7 @@ const CreateLixiForm = ({
               name="package"
               value={newNumberLixiPerPackage}
               onChange={e => handleNewNumberLixiPerPackage(e)}
+              onWheel={e => e.currentTarget.blur()}
             />
           </Form.Item>
         }
@@ -495,6 +508,7 @@ const CreateLixiForm = ({
             name="MinStaking"
             value={newMinStaking}
             onChange={e => handleNewMinStakingInput(e)}
+            onWheel={e => e.currentTarget.blur()}
           />
         </Form.Item>
 
@@ -607,6 +621,7 @@ const CreateLixiForm = ({
                   name="lixiAmount"
                   value={newLixiAmount}
                   onChange={e => handleNewLixiAmountInput(e)}
+                  onWheel={e => e.currentTarget.blur()}
                 />
               </Form.Item>
               {selectLixiType()}
@@ -659,7 +674,7 @@ const CreateLixiForm = ({
                           onChange={e => handleNFTEnabled(e)}>
                           {intl.get('lixi.isNFTEnabled')}
                         </Checkbox>
-                      )} 
+                      )}
                     </Form.Item>
                   </Panel>
                 </AdvancedCollapse>
