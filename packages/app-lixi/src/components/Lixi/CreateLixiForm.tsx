@@ -21,7 +21,6 @@ import { PlusSquareOutlined } from '@ant-design/icons';
 import CountrySelectDropdown from '@components/Common/CountrySelectDropdown';
 import EnvelopeSelectDropdown from '@components/Common/EnvelopeSelectDropdown';
 import { isValidAmountInput } from '@utils/validation';
-
 import { CreateLixiConfirmationModalProps } from './CreateLixiConfirmationModal';
 import { LixiEnvelopeUploader, StyledLixiEnvelopeUploaded } from './LixiEnvelopeUploader';
 import { getAllEnvelopes } from 'src/store/envelope/selectors';
@@ -619,6 +618,11 @@ const CreateLixiForm = ({
                   />
                 </AntdFormWrapper>
               </Form.Item>
+              {/* Custom Envelope */}
+              <Form.Item>
+                <StyledLixiEnvelopeUploaded/>
+              </Form.Item>
+              <hr/>
               {/* Message */}
               <Form.Item>
                 <TextArea
