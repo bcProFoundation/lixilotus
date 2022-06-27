@@ -8,7 +8,96 @@ datasource db {
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["interactiveTransactions"]
+  previewFeatures = ["interactiveTransactions", "extendedIndexes"]
+}
+
+// The handle for page or user account
+model Handle {
+  id           String @id @default(uuid())
+  handle       String @map("handle") @db.VarChar(150)
+  handleNumber Int    @map("handle_number") @db.Oid
+
+  User User[]
+  Page Page[]
+
+  @@unique([handle, handleNumber])
+  @@map("handle")
+}
+
+model UserAccount {
+  id   String @id @default(uuid())
+  User User[]
+}
+
+model User {
+  id               String            @id @default(uuid())
+  userAccount      UserAccount       @relation(fields: [userAccountId], references: [id])
+  userAccountId    String            @unique @map("user_account_id")
+  handle           Handle            @relation(fields: [handleId], references: [id])
+  handleId         String            @map("handle_id")
+  phone            String?           @db.VarChar(60)
+  phoneHidden      Boolean?          @default(false) @map("phone_hidden")
+  username         String?           @db.VarChar(255)
+  passwordHash     String?           @map("password_hash") @db.VarChar(64)
+  salt             String?           @db.VarChar(32)
+  email            String?           @db.VarChar(100)
+  emailVerifiedAt  DateTime?         @map("email_verified_at") @db.Timestamptz
+  country          String            @db.VarChar(11)
+  language         String?           @db.VarChar(10)
+  first_name       String            @default("") @db.VarChar(60)
+  last_name        String            @default("") @db.VarChar(32)
+  twoFactorEnabled Boolean           @default(true) @map("two_factor_enabled")
+  twoFactorType    UserTwoFactorType @default(email) @map("two_factor_type")
+  twoFactorKey     String?           @db.VarChar(64)
+  twoFactorGsecret String?           @db.VarChar(64)
+
+  avatar String @default("upload/photos/d-avatar.jpg") @db.VarChar(100)
+  cover  String @default("upload/photos/d-cover.jpg") @db.VarChar(100)
+
+  deletedAT DateTime @default(now()) @map("deleted_at") @db.Timestamptz
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@map("user")
+}
+
+model PageAccount {
+  id                String @id @default(uuid())
+  encryptedMnemonic String @map("encrypted_mnemonic")
+  encryptedSecret   String @default("") @map("encrypted_secret")
+  Page              Page?
+  mnemonicHash      String @map("mnemonic_hash")
+  address           String @default("") @map("address")
+  publicKey         String @default("") @map("public_key")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@index([mnemonicHash], type: Hash)
+  @@map("page_account")
+}
+
+model Page {
+  id            String      @id @default(uuid())
+  pageAccount   PageAccount @relation(fields: [pageAccountId], references: [id])
+  pageAccountId String      @unique @map("page_account_id")
+  name          String      @default("") @map("name") @db.VarChar(255)
+  title         String      @default("") @map("title") @db.VarChar(255)
+  description   String      @default("") @map("description") @db.VarChar(1000)
+  avatar        String      @default("upload/photos/d-page.jpg") @db.VarChar(100)
+  cover         String      @default("upload/photos/d-cover.jpg") @db.VarChar(100)
+  children      Page[]      @relation("subPages")
+  parent        Page?       @relation("subPages", fields: [parentId], references: [id])
+  parentId      String?     @map("parent_id")
+  handle        Handle      @relation(fields: [handleId], references: [id])
+  handleId      String      @map("handle_id")
+  website       String      @default("") @map("website")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
+
+
+  @@map("page")
 }
 
 model Account {
@@ -25,7 +114,7 @@ model Account {
   language          String         @default("en")
   publicKey         String         @default("") @map("public_key")
 
-  @@index([mnemonicHash])
+  @@index([mnemonicHash], type: Hash)
   @@map("account")
 }
 
@@ -113,13 +202,13 @@ model Package {
 }
 
 model NotificationType {
-  id                           Int            @id @default(autoincrement())
-  name                         String         @default("")
+  id                           Int                           @id @default(autoincrement())
+  name                         String                        @default("")
   description                  String
   notifications                Notification[]
-  notificationTypeTranslations  NotificationTypeTranslation[]
-  createdAt                    DateTime       @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt                    DateTime       @default(now()) @map("updated_at") @db.Timestamptz
+  notificationTypeTranslations NotificationTypeTranslation[]
+  createdAt                    DateTime                      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt                    DateTime                      @default(now()) @map("updated_at") @db.Timestamptz
 
   @@map("notification_type")
 }
@@ -165,4 +254,11 @@ enum NotificationLevel {
   ERROR
 
   @@map("notification_level")
+}
+
+enum UserTwoFactorType {
+  email
+  authenticator
+
+  @@map("user_two_factor_type")
 }
