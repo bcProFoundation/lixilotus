@@ -1,17 +1,12 @@
 import { useState } from 'react';
 import intl from 'react-intl-universal';
 import { message, Upload, Button, Modal } from "antd";
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { UploadOutlined } from '@ant-design/icons';
 import { RcFile, UploadChangeParam } from 'antd/lib/upload';
 import styled from 'styled-components';
 import Image from 'next/image'
 import type { UploadFile } from 'antd/es/upload/interface';
-
-// function getBase64(img: any, callback: Function) {
-//   const reader = new FileReader();
-//   reader.addEventListener('load', () => callback(reader.result));
-//   reader.readAsDataURL(img);
-// }
+import { isMobile } from 'react-device-detect';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -45,6 +40,16 @@ const StyledDivider = styled.h3`
   margin: 10px 0 20px; 
 `
 
+const StyledButton = styled(Button)`
+  font-size: 17px;
+  border-radius: 3px;
+  border: none;
+
+  :disabled {
+    color: gray;
+  }
+`
+
 export const LixiEnvelopeUploader = ({
 }) => {
   const [loading, setLoading] = useState(false);
@@ -55,7 +60,11 @@ export const LixiEnvelopeUploader = ({
 
   const uploadButton = (
     <div>
-      <Button disabled={loading}>{intl.get('lixi.uploadText')}</Button>
+      <StyledButton disabled={loading} type='primary' size="middle" loading={loading}
+        icon={<UploadOutlined style={{color: loading ? "gray" : "white"}}/>}
+      >
+        {loading ? intl.get('lixi.uploadingText') : intl.get('lixi.uploadText')}
+      </StyledButton>
     </div>
   );
 
@@ -124,7 +133,9 @@ export const LixiEnvelopeUploader = ({
         {uploadButton}
       </Upload>
        <Modal visible={previewVisible} title={previewTitle} footer={null} onCancel={handleCancel}>
-        <img alt="custom-envelope" style={{ width: '100%' }} src={previewImage} />
+        <div style={{width: '100%', height: '50vh', position: isMobile ? 'initial' : 'relative'}}>
+          <Image alt="custom-envelope" layout='fill' quality={100} src={previewImage} />
+        </div>  
       </Modal>
     </>
   )

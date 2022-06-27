@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 /* SendLotus Language Texts
 
 Table of Contents
@@ -124,10 +125,11 @@ export default {
   'lixi.noLixiSelected': 'Chọn ít nhất một Lì xì',
   'lixi.fileTypeError': 'Bạn chỉ có thể tải lên tệp JPG/PNG/GIF !',
   'lixi.fileSizeError': 'Hình ảnh phải nhỏ hơn 5MB!',
-  'lixi.fileUploadError': 'Lỗi khi tải ảnh lên server',
-  'lixi.fileUploadSuccess': 'Tải ảnh lên thành công',
+  'lixi.fileUploadError': 'Lỗi khi tải thiệp lên server',
+  'lixi.fileUploadSuccess': 'Tải thiệp lên thành công',
   'lixi.uploadDividerText': "Thiệp tự chọn",
-  'lixi.uploadText' : 'Đăng ảnh',
+  'lixi.uploadText' : 'Đăng thiệp',
+  'lixi.uploadingText': 'Đang tải...',
   'lixi.previewFileFailed' : 'Không thể xem trước file',
   'lixi.renameLixi': 'Đổi tên Lì xi',
   'lixi.enterNewLixiName': 'Nhập tên mới cho Lì xì',

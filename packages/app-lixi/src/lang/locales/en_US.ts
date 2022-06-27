@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 /* SendLotus Language Texts
 
 Table of Contents
@@ -129,6 +130,7 @@ export default {
   'lixi.fileUploadSuccess': 'Upload Successfully',
   'lixi.uploadDividerText': "Custom Enevelope",
   'lixi.uploadText' : 'Upload',
+  'lixi.uploadingText': 'Uploading...',
   'lixi.previewFileFailed' : 'Cannot preview file',
   'lixi.renameLixi': 'Rename Lixi',
   'lixi.enterNewLixiName': 'Enter new lixi name',
