@@ -414,18 +414,13 @@ const CreateLixiForm = ({
               <Input
                 addonBefore={intl.get('account.min')}
                 id = "min"
-                onWheel={e => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  e.defaultPrevented = true;
-                }}
+                onWheel={e => e.currentTarget.blur()}
                 type="number"
                 step={1 / 10 ** currency.cashDecimals}
                 placeholder={intl.get('account.minValueToGive')}
                 name="minValue"
                 value={newLixiMinValue}
                 onChange={e => handleChangeMinValue(e)}
-                onWheel={e => e.currentTarget.blur()}
               >
               </Input>
             </Form.Item>
