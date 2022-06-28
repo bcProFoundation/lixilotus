@@ -149,6 +149,7 @@ export const lixiReducer = createReducer(initialState, builder => {
       }
     })
     .addMatcher(isAnyOf(refreshLixiSuccess, refreshLixiSilentSuccess), (state, action) => {
+      console.log('matcher');
       const { lixi, claims } = action.payload;
       const updateLixi: Update<Lixi> = {
         id: lixi.id,

@@ -1,5 +1,6 @@
 import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import IORedis from 'ioredis';
 import * as _ from 'lodash';
 import { AuthModule } from 'src/modules/auth/auth.module';
@@ -11,15 +12,21 @@ import { NotificationService } from './notification.service';
 
 @Module({
   imports: [
-    BullModule.registerQueue(
+    BullModule.registerQueueAsync(
       {
         name: NOTIFICATION_OUTBOUND_QUEUE,
-        connection: new IORedis({
-          maxRetriesPerRequest: null,
-          enableReadyCheck: false,
-          host: process.env.REDIS_HOST ? process.env.REDIS_HOST : 'redis-lixi',
-          port: process.env.REDIS_PORT ? _.toSafeInteger(process.env.REDIS_PORT) : 6379,
-        }),
+        inject: [ConfigService],
+        useFactory: (config: ConfigService) => {
+          return {
+            name: NOTIFICATION_OUTBOUND_QUEUE,
+            connection: new IORedis({
+              maxRetriesPerRequest: null,
+              enableReadyCheck: false,
+              host: config.get<string>('REDIS_HOST') ? config.get<string>('REDIS_HOST') : 'redis-lixi',
+              port: config.get<string>('REDIS_PORT') ? _.toSafeInteger(config.get<string>('REDIS_PORT')) : 6379,
+            })
+          }
+        }
       }
     ),
     AuthModule

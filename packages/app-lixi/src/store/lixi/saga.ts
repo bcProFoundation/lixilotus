@@ -61,7 +61,8 @@ import {
   downloadExportedLixi,
   downloadExportedLixiFailure,
   downloadExportedLixiSuccess,
-  refreshLixiSilentSuccess
+  refreshLixiSilentSuccess,
+  refreshLixiSilentFailure
 } from './actions';
 import lixiApi from './api';
 import { getLixiById } from './selectors';
@@ -121,13 +122,13 @@ function* getLixiSaga(action: PayloadAction<number>) {
     const data = yield call(lixiApi.getById, id, account?.secret);
     yield put(getLixiSuccess(data));
   } catch (err) {
-    const message = (err as Error).message ?? intl.get('claim.couldNotFetchLixi');
+    const message = (err as Error).message ?? intl.get('lixi.couldNotFetchLixi');
     yield put(getLixiFailure(message));
   }
 }
 
 function* getLixiFailureSaga(action: PayloadAction<string>) {
-  const message = action.payload ?? intl.get('claim.unableGetLixi');
+  const message = action.payload ?? intl.get('lixi.unableGetLixi');
   yield put(
     showToast('error', {
       message: 'Error',
@@ -146,15 +147,15 @@ function* fetchInitialSubLixiesSaga(action: PayloadAction<number>) {
     yield put(fetchInitialSubLixiesSuccess(subLixiResult));
   } catch (err) {
     console.error(err);
-    const message = (err as Error).message ?? intl.get('claim.couldNotFetchLixi');
+    const message = (err as Error).message ?? intl.get('lixi.couldNotFetchLixi');
     yield put(getLixiFailure(message));
   }
 }
 
-function* fetchInitialSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) {}
+function* fetchInitialSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) { }
 
 function* fetchInitialSubLixiesFailureSaga(action: PayloadAction<string>) {
-  const message = action.payload ?? intl.get('claim.unableGetChildLixi');
+  const message = action.payload ?? intl.get('lixi.unableGetChildLixi');
   yield put(
     showToast('error', {
       message: 'Error',
@@ -172,15 +173,15 @@ function* fetchMoreSubLixiesSaga(action: PayloadAction<{ parentId: number; start
     const subLixiResult: PaginationResult<Lixi> = yield call(lixiApi.getSubLixies, parentId, account?.secret, startId);
     yield put(fetchMoreSubLixiesSuccess(subLixiResult));
   } catch (err) {
-    const message = (err as Error).message ?? intl.get('claim.couldNotFetchLixi');
+    const message = (err as Error).message ?? intl.get('lixi.couldNotFetchLixi');
     yield put(getLixiFailure(message));
   }
 }
 
-function* fetchMoreSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) {}
+function* fetchMoreSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) { }
 
 function* fetchMoreSubLixiesFailureSaga(action: PayloadAction<string>) {
-  const message = action.payload ?? intl.get('claim.unableCreateChildLixi');
+  const message = action.payload ?? intl.get('lixi.unableCreateChildLixi');
   yield put(
     showToast('error', {
       message: 'Error',
@@ -203,13 +204,13 @@ function* postLixiSaga(action: PayloadAction<CreateLixiCommand>) {
     const data: PostLixiResponseDto = yield call(lixiApi.post, dataApi);
 
     if (_.isNil(data) || _.isNil(data.lixi) || _.isNil(data.lixi.id)) {
-      throw new Error(intl.get('claim.unableCreateLixi'));
+      throw new Error(intl.get('lixi.unableCreateLixi'));
     }
 
     const lixi = data.lixi;
     yield put(postLixiSuccess(lixi));
   } catch (err) {
-    const message = (err as Error).message ?? intl.get('claim.couldNotPostLixi');
+    const message = (err as Error).message ?? intl.get('lixi.couldNotPostLixi');
     yield put(postLixiFailure(message));
   }
 }
@@ -222,20 +223,20 @@ function* postLixiSuccessSaga(action: PayloadAction<Lixi>) {
     yield put(
       showToast('success', {
         message: 'Success',
-        description: intl.get('claim.createLixiSuccessful'),
+        description: intl.get('lixi.createLixiSuccessful'),
         duration: 5
       })
     );
     yield put(setLixi(lixi));
     yield put(hideLoading(postLixi.type));
   } catch (error) {
-    const message = intl.get('claim.errorWhenCreateLixi');
+    const message = intl.get('lixi.errorWhenCreateLixi');
     yield put(postLixiFailure(message));
   }
 }
 
 function* postLixiFailureSaga(action: PayloadAction<string>) {
-  const message = action.payload ?? intl.get('claim.unableCreateLixiServer');
+  const message = action.payload ?? intl.get('lixi.unableCreateLixiServer');
   yield put(
     showToast('error', {
       message: 'Error',
@@ -258,7 +259,7 @@ function* refreshLixiSaga(action: PayloadAction<number>) {
     yield put(refreshLixiSuccess({ lixi: lixi, claims: claims }));
     yield put(fetchInitialSubLixies(lixi.id));
   } catch (err) {
-    const message = (err as Error).message ?? intl.get('claim.unableRefresh');
+    const message = (err as Error).message ?? intl.get('lixi.unableRefresh');
     yield put(refreshLixiFailure(message));
   }
 }
@@ -267,7 +268,7 @@ function* refreshLixiSuccessSaga(action: PayloadAction<{ lixi: Lixi; children: L
   yield put(
     showToast('success', {
       message: 'Success',
-      description: intl.get('claim.refreshSuccess'),
+      description: intl.get('lixi.refreshSuccess'),
       duration: 5
     })
   );
@@ -275,7 +276,7 @@ function* refreshLixiSuccessSaga(action: PayloadAction<{ lixi: Lixi; children: L
 }
 
 function* refreshLixiFailureSaga(action: PayloadAction<string>) {
-  const message = action.payload ?? intl.get('claim.unableRefresh');
+  const message = action.payload ?? intl.get('lixi.unableRefresh');
   yield put(
     showToast('error', {
       message: 'Error',
@@ -296,7 +297,9 @@ function* refreshLixiSilentSaga(action: PayloadAction<number>) {
     const claims = (claimResult.data ?? []) as Claim[];
     yield put(refreshLixiSilentSuccess({ lixi: lixi, claims: claims }));
     yield put(fetchInitialSubLixies(lixi.id));
-  } catch (err) {}
+  } catch (err) {
+    yield put(refreshLixiSilentFailure(''));
+  }
 }
 
 function* setLixiSaga(action: PayloadAction<Lixi>) {
@@ -317,7 +320,7 @@ function* selectLixiSaga(action: PayloadAction<number>) {
     yield put(selectLixiSuccess({ lixi: lixi, claims: claims }));
     yield put(fetchInitialSubLixies(lixi.id));
   } catch (err) {
-    const message = (err as Error).message ?? intl.get('claim.unableSelect');
+    const message = (err as Error).message ?? intl.get('lixi.unableSelect');
     yield put(selectLixiFailure(message));
   }
 }
@@ -328,7 +331,7 @@ function* selectLixiSuccessSaga(action: PayloadAction<Lixi>) {
 }
 
 function* selectLixiFailureSaga(action: PayloadAction<string>) {
-  const message = action.payload ?? intl.get('claim.unableSelect');
+  const message = action.payload ?? intl.get('lixi.unableSelect');
   yield put(
     showToast('error', {
       message: 'Error',
@@ -351,11 +354,11 @@ function* unarchiveLixiSaga(action: PayloadAction<UnarchiveLixiCommand>) {
     const lixi = data as Lixi;
 
     if (_.isNil(data) || _.isNil(data.id)) {
-      throw new Error(intl.get('claim.unableUnlock'));
+      throw new Error(intl.get('lixi.unableUnlock'));
     }
     yield put(unarchiveLixiSuccess(lixi));
   } catch (error) {
-    const message = intl.get('claim.errorWhenUnlock');
+    const message = intl.get('lixi.errorWhenUnlock');
     yield put(unarchiveLixiFailure(message));
   }
 }
@@ -364,7 +367,7 @@ function* unarchiveLixiSuccessSaga(action: PayloadAction<Lixi>) {
   yield put(
     showToast('success', {
       message: 'Success',
-      description: intl.get('claim.unlockSuccess'),
+      description: intl.get('lixi.unlockSuccess'),
       duration: 5
     })
   );
@@ -372,7 +375,7 @@ function* unarchiveLixiSuccessSaga(action: PayloadAction<Lixi>) {
 }
 
 function* unarchiveLixiFailureSaga(action: PayloadAction<string>) {
-  const message = action.payload ?? intl.get('claim.unableUnlock');
+  const message = action.payload ?? intl.get('lixi.unableUnlock');
   yield put(
     showToast('error', {
       message: 'Error',
@@ -395,12 +398,12 @@ function* archiveLixiSaga(action: PayloadAction<ArchiveLixiCommand>) {
     const lixi = data as Lixi;
 
     if (_.isNil(data) || _.isNil(data.id)) {
-      throw new Error(intl.get('claim.unableLock'));
+      throw new Error(intl.get('lixi.unableLock'));
     }
 
     yield put(archiveLixiSuccess(lixi));
   } catch (error) {
-    const message = intl.get('claim.errorWhenLock');
+    const message = intl.get('lixi.errorWhenLock');
     yield put(postLixiFailure(message));
   }
 }
@@ -409,7 +412,7 @@ function* archiveLixiSuccessSaga(action: PayloadAction<Lixi>) {
   yield put(
     showToast('success', {
       message: 'Success',
-      description: intl.get('claim.lockSuccess'),
+      description: intl.get('lixi.lockSuccess'),
       duration: 5
     })
   );
@@ -417,7 +420,7 @@ function* archiveLixiSuccessSaga(action: PayloadAction<Lixi>) {
 }
 
 function* archiveLixiFailureSaga(action: PayloadAction<string>) {
-  const message = action.payload ?? intl.get('claim.unableLock');
+  const message = action.payload ?? intl.get('lixi.unableLock');
   yield put(
     showToast('error', {
       message: 'Error',
@@ -439,13 +442,13 @@ function* withdrawLixiSaga(action: PayloadAction<WithdrawLixiCommand>) {
     const data: PostLixiResponseDto = yield call(lixiApi.withdrawLixi, command.id, dataApi);
 
     if (_.isNil(data) || _.isNil(data.lixi.id)) {
-      throw new Error(intl.get('claim.unableWithdraw'));
+      throw new Error(intl.get('lixi.unableWithdraw'));
     }
 
     const lixi = data.lixi;
     yield put(withdrawLixiSuccess(lixi));
   } catch (error) {
-    const message = (error as Error).message ?? intl.get('claim.errorWhenWithdraw');
+    const message = (error as Error).message ?? intl.get('lixi.errorWhenWithdraw');
     yield put(withdrawLixiFailure(message));
   }
 }
@@ -454,7 +457,7 @@ function* withdrawLixiSuccessSaga(action: PayloadAction<Lixi>) {
   yield put(
     showToast('success', {
       message: 'Success',
-      description: intl.get('claim.withdrawSuccess'),
+      description: intl.get('lixi.withdrawSuccess'),
       duration: 5
     })
   );
@@ -462,7 +465,7 @@ function* withdrawLixiSuccessSaga(action: PayloadAction<Lixi>) {
 }
 
 function* withdrawLixiFailureSaga(action: PayloadAction<string>) {
-  const message = action.payload ?? intl.get('claim.unableRename');
+  const message = action.payload ?? intl.get('lixi.unableRename');
   yield put(
     showToast('error', {
       message: 'Error',
@@ -481,7 +484,7 @@ function* renameLixiSaga(action: PayloadAction<RenameLixiCommand>) {
     const lixi = data as Lixi;
     yield put(renameLixiSuccess(lixi));
   } catch (err) {
-    const message = (err as Error).message ?? intl.get('claim.unableRename');
+    const message = (err as Error).message ?? intl.get('lixi.unableRename');
     yield put(renameLixiFailure(message));
   }
 }
@@ -496,7 +499,7 @@ function* renameLixiSuccessSaga(action: PayloadAction<Lixi>) {
 
 function* renameLixiFailureSaga(action: PayloadAction<string>) {
   Modal.error({
-    content: intl.get('claim.renameFailed')
+    content: intl.get('lixi.renameFailed')
   });
   yield put(hideLoading(renameLixi.type));
 }
@@ -647,7 +650,7 @@ function* watchRefreshLixiFailure() {
 }
 
 function* watchRefreshLixiSilent() {
-  yield takeLatest(refreshLixi.type, refreshLixiSilentSaga);
+  yield takeLatest(refreshLixiSilent.type, refreshLixiSilentSaga);
 }
 
 function* watchArchiveLixi() {
