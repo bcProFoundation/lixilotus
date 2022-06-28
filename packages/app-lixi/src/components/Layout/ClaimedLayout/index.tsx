@@ -136,19 +136,19 @@ const ClaimedLayout: React.FC = props => {
                       {intl.get('general.accounts')}
                     </NavButton>
                   </Link>
-                  <Link href="/lixi" passHref>
+                  <Link href="/admin/lixi" passHref>
                     <NavButton active={false}>
                       <WalletOutlined />
                       {intl.get('general.lixi')}
                     </NavButton>
                   </Link>
-                  <Link href="/claim" passHref>
+                  <Link href="/admin/claim" passHref>
                     <NavButton active={false}>
                       <GiftOutlined />
                       {intl.get('general.claim')}
                     </NavButton>
                   </Link>
-                  <Link href="/settings" passHref>
+                  <Link href="/admin/settings" passHref>
                     <NavButton active={false}>
                       <SettingOutlined />
                       {intl.get('general.settings')}
