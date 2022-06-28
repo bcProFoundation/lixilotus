@@ -25,8 +25,16 @@ model Handle {
 }
 
 model UserAccount {
-  id   String @id @default(uuid())
-  User User[]
+  id                String @id @default(uuid())
+  User              User[]
+  encryptedMnemonic String @map("encrypted_mnemonic")
+  encryptedSecret   String @default("") @map("encrypted_secret")
+  mnemonicHash      String @map("mnemonic_hash")
+  address           String @default("") @map("address")
+  publicKey         String @default("") @map("public_key")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
 }
 
 model User {
@@ -44,17 +52,17 @@ model User {
   emailVerifiedAt  DateTime?         @map("email_verified_at") @db.Timestamptz
   country          String            @db.VarChar(11)
   language         String?           @db.VarChar(10)
-  first_name       String            @default("") @db.VarChar(60)
-  last_name        String            @default("") @db.VarChar(32)
+  firstName        String            @default("") @map("first_name") @db.VarChar(60)
+  lastName         String            @default("") @map("last_name") @db.VarChar(32)
   twoFactorEnabled Boolean           @default(true) @map("two_factor_enabled")
   twoFactorType    UserTwoFactorType @default(email) @map("two_factor_type")
-  twoFactorKey     String?           @db.VarChar(64)
-  twoFactorGsecret String?           @db.VarChar(64)
+  twoFactorKey     String?           @map("two_factor_key") @db.VarChar(64)
+  twoFactorSecret  String?           @map("two_factor_secret") @db.VarChar(64)
 
   avatar String @default("upload/photos/d-avatar.jpg") @db.VarChar(100)
   cover  String @default("upload/photos/d-cover.jpg") @db.VarChar(100)
 
-  deletedAT DateTime @default(now()) @map("deleted_at") @db.Timestamptz
+  deletedAt DateTime @default(now()) @map("deleted_at") @db.Timestamptz
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
 
@@ -74,6 +82,7 @@ model PageAccount {
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
 
   @@index([mnemonicHash], type: Hash)
+  @@index([address])
   @@map("page_account")
 }
 
@@ -258,6 +267,7 @@ enum NotificationLevel {
 
 enum UserTwoFactorType {
   email
+  sms
   authenticator
 
   @@map("user_two_factor_type")
