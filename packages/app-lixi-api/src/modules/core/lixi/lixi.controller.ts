@@ -39,7 +39,11 @@ import * as _ from 'lodash';
 import { PaginationParams } from 'src/common/models/paginationParams';
 import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
-import { EXPORT_SUB_LIXIES_QUEUE, LIXI_JOB_NAMES, WITHDRAW_SUB_LIXIES_QUEUE } from 'src/modules/core/lixi/constants/lixi.constants';
+import {
+  EXPORT_SUB_LIXIES_QUEUE,
+  LIXI_JOB_NAMES,
+  WITHDRAW_SUB_LIXIES_QUEUE
+} from 'src/modules/core/lixi/constants/lixi.constants';
 import logger from 'src/logger';
 import { LixiService } from 'src/modules/core/lixi/lixi.service';
 import { WalletService } from 'src/modules/wallet/wallet.service';
@@ -51,11 +55,9 @@ import { Response } from 'express';
 import { createReadStream } from 'fs';
 import { join } from 'path';
 import { JwtAuthGuard } from 'src/modules/auth/jwtauth.guard';
-import {
-  FastifyRequest,
-  FastifyReply
-} from 'fastify';
+import { FastifyRequest, FastifyReply } from 'fastify';
 import moment from 'moment';
+import createSubLixiesIsolatedProcessor from './processors/create-sub-lixies.isolated.processor';
 
 @Controller('lixies')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -70,7 +72,7 @@ export class LixiController {
     @Inject('xpijs') private XPI: BCHJS,
     @InjectQueue(EXPORT_SUB_LIXIES_QUEUE) private exportSubLixiesQueue: Queue,
     @InjectQueue(WITHDRAW_SUB_LIXIES_QUEUE) private withdrawSubLixiesQueue: Queue
-  ) { }
+  ) {}
 
   @Get(':id')
   async getLixi(
@@ -153,21 +155,21 @@ export class LixiController {
 
       subLixies = cursor
         ? await this.prisma.lixi.findMany({
-          take: take,
-          skip: 1,
-          where: {
-            parentId: lixiId
-          },
-          cursor: {
-            id: cursor
-          }
-        })
+            take: take,
+            skip: 1,
+            where: {
+              parentId: lixiId
+            },
+            cursor: {
+              id: cursor
+            }
+          })
         : await this.prisma.lixi.findMany({
-          take: take,
-          where: {
-            parentId: lixiId
-          }
-        });
+            take: take,
+            where: {
+              parentId: lixiId
+            }
+          });
 
       const childrenApiResult: LixiDto[] = [];
 
@@ -201,14 +203,14 @@ export class LixiController {
       const countAfter = !endCursor
         ? 0
         : await this.prisma.lixi.count({
-          where: {
-            parentId: lixiId
-          },
-          cursor: {
-            id: _.toSafeInteger(endCursor)
-          },
-          skip: 1
-        });
+            where: {
+              parentId: lixiId
+            },
+            cursor: {
+              id: _.toSafeInteger(endCursor)
+            },
+            skip: 1
+          });
 
       const hasNextPage = countAfter > 0;
 
@@ -301,6 +303,86 @@ export class LixiController {
           const error = new VError.WError(err as Error, unableCreateLixi);
           throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+      }
+    }
+  }
+
+  @Post('register/:id/')
+  async registerPack(
+    @Param('id') id: string,
+    @Body() command: Account,
+    @I18n() i18n: I18nContext
+  ): Promise<boolean | undefined> {
+    const packId = _.toSafeInteger(id);
+    try {
+      const mnemonicFromApi = command.mnemonic;
+
+      const account = await this.prisma.account.findFirst({
+        where: {
+          mnemonicHash: command.mnemonicHash
+        }
+      });
+
+      if (!account) {
+        const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
+        throw new Error(couldNotFindAccount);
+      }
+
+      // Decrypt to validate the mnemonic
+      const mnemonicToValidate = await aesGcmDecrypt(account.encryptedMnemonic, mnemonicFromApi);
+      if (mnemonicFromApi !== mnemonicToValidate) {
+        const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
+        throw Error(couldNotFindAccount);
+      }
+
+      const lixi = await this.prisma.lixi.findMany({
+        where: {
+          packageId: packId,
+          accountId: account.id
+        }
+      });
+
+      if (!lixi) {
+        const lixiNotExist = await i18n.t('lixi.messages.lixiNotExist');
+        throw new Error(lixiNotExist);
+      } else {
+        const lixiList = await this.prisma.lixi.updateMany({
+          where: {
+            packageId: packId
+          },
+          data: {
+            status: 'registered',
+            updatedAt: new Date()
+          }
+        });
+        if (lixiList) {
+          return lixiList.count > 0;
+        }
+
+        // if (lixi) {
+        //   let resultApi: LixiDto = {
+        //     ...lixi,
+        //     balance: 0,
+        //     totalClaim: Number(lixi.totalClaim),
+        //     expiryAt: lixi.expiryAt ? lixi.expiryAt : undefined,
+        //     activationAt: lixi.activationAt ? lixi.activationAt : undefined,
+        //     country: lixi.country ? lixi.country : undefined,
+        //     status: lixi.status,
+        //     numberOfSubLixi: 0,
+        //     parentId: lixi.parentId ?? undefined,
+        //     isClaimed: lixi.isClaimed ?? false
+        //   };
+
+        //   return resultApi;
+        // }
+      }
+    } catch (err) {
+      if (err instanceof VError) {
+        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      } else {
+        const couldNotLockLixi = await i18n.t('lixi.messages.couldNotLockLixi');
+        const error = new VError.WError(err as Error, couldNotLockLixi);
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
   }
@@ -619,10 +701,10 @@ export class LixiController {
         where: {
           parentId: lixiId
         }
-      })
+      });
 
       const subLixiesIds = subLixies.map(item => item.id);
-      subLixiesIds.push(lixiId)
+      subLixiesIds.push(lixiId);
 
       const count = await this.prisma.claim.count({
         where: {
@@ -675,19 +757,19 @@ export class LixiController {
       const countAfter = !endCursor
         ? 0
         : await this.prisma.claim.count({
-          where: {
-            lixiId: lixiId
-          },
-          orderBy: [
-            {
-              id: 'asc'
-            }
-          ],
-          cursor: {
-            id: _.toSafeInteger(endCursor)
-          },
-          skip: 1
-        });
+            where: {
+              lixiId: lixiId
+            },
+            orderBy: [
+              {
+                id: 'asc'
+              }
+            ],
+            cursor: {
+              id: _.toSafeInteger(endCursor)
+            },
+            skip: 1
+          });
 
       const hasNextPage = countAfter > 0;
 
@@ -807,7 +889,6 @@ export class LixiController {
     @I18n() i18n: I18nContext
   ): Promise<StreamableFile> {
     try {
-
       const account = (req as any).account;
 
       if (!account) {
@@ -831,7 +912,7 @@ export class LixiController {
         throw new VError(fileNameNotExist);
       }
 
-      const file = createReadStream(join(process.cwd(), 'public', "download", fileName));
+      const file = createReadStream(join(process.cwd(), 'public', 'download', fileName));
 
       res.header('Content-Type', 'text/csv');
       res.header('Content-Disposition', `attachment; filename=${fileName}`);

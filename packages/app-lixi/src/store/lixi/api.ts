@@ -67,6 +67,18 @@ const lixiApi = {
         throw response?.data ?? err ?? 'Network Error';
       });
   },
+  postRegister(data: number): Promise<boolean> {
+    const url = `/api/lixies/register/${data}`;
+    return axiosClient
+      .post(url, data)
+      .then(response => {
+        return response.data;
+      })
+      .catch(err => {
+        const { response } = err;
+        throw response?.data ?? err ?? 'Network Error';
+      });
+  },
   renameLixi(id: number, data: RenameLixiCommand): Promise<LixiDto> {
     const url = `/api/lixies/${id}/rename`;
     return axiosClient

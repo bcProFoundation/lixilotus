@@ -69,6 +69,7 @@ import { select } from 'redux-saga/effects';
 import { saveAs } from 'file-saver';
 import moment from 'moment';
 import { refreshLixiSilent } from './actions';
+import { postRegister } from '@store/claim/actions';
 
 const call: any = Effects.call;
 /**
@@ -211,6 +212,30 @@ function* postLixiSaga(action: PayloadAction<CreateLixiCommand>) {
   } catch (err) {
     const message = (err as Error).message ?? intl.get('claim.couldNotPostLixi');
     yield put(postLixiFailure(message));
+  }
+}
+
+function* postRegisterSaga(action: PayloadAction<number>) {
+  try {
+    const command = action.payload;
+
+    yield put(showLoading(postRegister.type));
+
+    // const dataApi: CreateLixiCommand = {
+    //   ...command
+    // };
+
+    const data: boolean = yield call(lixiApi.postRegister, command);
+    console.log(data);
+    if (_.isNil(data)) {
+      throw new Error(intl.get('claim.unableCreateLixi'));
+    }
+
+    // const lixi = data.lixi;
+    // yield put(postLixiSuccess(lixi));
+  } catch (err) {
+    // const message = (err as Error).message ?? intl.get('claim.couldNotPostLixi');
+    // yield put(postLixiFailure(message));
   }
 }
 
@@ -608,6 +633,10 @@ function* watchFetchMoreSubLixiesFailure() {
 
 function* watchPostLixi() {
   yield takeLatest(postLixi.type, postLixiSaga);
+}
+
+function* watchPostRegister() {
+  yield takeLatest(postRegister.type, postRegisterSaga);
 }
 
 function* watchPostLixiSuccess() {

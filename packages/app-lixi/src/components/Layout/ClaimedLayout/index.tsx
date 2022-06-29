@@ -154,6 +154,12 @@ const ClaimedLayout: React.FC = props => {
                       {intl.get('general.settings')}
                     </NavButton>
                   </Link>
+                  <Link href="/admin/register" passHref>
+                    <NavButton active={false}>
+                      <GiftOutlined />
+                      {intl.get('general.register')}
+                    </NavButton>
+                  </Link>
                 </Footer>
               </AppBody>
             </Layout>

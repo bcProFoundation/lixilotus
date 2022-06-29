@@ -13,11 +13,14 @@ Table of Contents
 */
 
 export default {
+  'register.register': 'Register',
+
   /* 01.General */
   'general.accounts': 'Accounts',
   'general.lixi': 'Lixi',
   'general.claim': 'Claim',
   'general.settings': 'Settings',
+  'general.register': 'Register',
   'general.swapCard': 'Swap Card',
   'general.connectionLost': 'API connection lost.',
   'general.reEstablishing': 'Re-establishing connection...',

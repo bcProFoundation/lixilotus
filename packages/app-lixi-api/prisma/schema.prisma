@@ -52,6 +52,7 @@ model Lixi {
   isFamilyFriendly     Boolean   @map("is_family_friendly")
   claims               Claim[]
   status               String    @default("active") @map("status")
+  inventoryStatus      String    @default("initialized") @map("invetory_status")
   account              Account   @relation(fields: [accountId], references: [id])
   accountId            Int       @map("account_id")
   derivationIndex      Int       @default(0) @map("derivation_index")
@@ -113,13 +114,13 @@ model Package {
 }
 
 model NotificationType {
-  id                           Int            @id @default(autoincrement())
-  name                         String         @default("")
+  id                           Int                           @id @default(autoincrement())
+  name                         String                        @default("")
   description                  String
   notifications                Notification[]
-  notificationTypeTranslations  NotificationTypeTranslation[]
-  createdAt                    DateTime       @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt                    DateTime       @default(now()) @map("updated_at") @db.Timestamptz
+  notificationTypeTranslations NotificationTypeTranslation[]
+  createdAt                    DateTime                      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt                    DateTime                      @default(now()) @map("updated_at") @db.Timestamptz
 
   @@map("notification_type")
 }
