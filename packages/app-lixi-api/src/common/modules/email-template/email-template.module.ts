@@ -1,9 +1,8 @@
-import { forwardRef, Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { Module } from '@nestjs/common';
 
-import { EmailTemplateService } from 'src/email-template/email-template.service';
-import { EmailTemplateController } from 'src/email-template/email-template.controller';
 import { AuthModule } from 'src/modules/auth/auth.module';
+import { EmailTemplateController } from './email-template.controller';
+import { EmailTemplateService } from './email-template.service';
 
 @Module({
   imports: [AuthModule],
@@ -11,4 +10,4 @@ import { AuthModule } from 'src/modules/auth/auth.module';
   controllers: [EmailTemplateController],
   providers: [EmailTemplateService]
 })
-export class EmailTemplateModule {}
+export class EmailTemplateModule { }

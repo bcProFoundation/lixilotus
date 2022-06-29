@@ -1,50 +1,53 @@
-import { Module } from '@nestjs/common';
-import { BullModule } from '@nestjs/bull';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
-import * as config from 'config';
+import { BullModule } from '@nestjs/bullmq';
+import { Module } from '@nestjs/common';
+import IORedis from 'ioredis';
+import * as _ from 'lodash';
 
-import { MailService } from 'src/mail/mail.service';
-import { MailProcessor } from 'src/mail/mail.processor';
-import { EmailTemplateModule } from 'src/email-template/email-template.module';
-
-const mailConfig = config.get('mail');
-const queueConfig = config.get('queue');
+import { ConfigService } from '@nestjs/config';
+import { EmailTemplateModule } from '../email-template/email-template.module';
+import { MAIL_QUEUE } from './mail.constants';
+import { MailEventListener } from './mail.eventlistener';
+import { MailProcessor } from './mail.processor';
+import { MailService } from './mail.service';
 
 @Module({
   imports: [
     EmailTemplateModule,
     BullModule.registerQueueAsync({
-      name: config.get('mail.queueName'),
-      useFactory: () => ({
-        redis: {
-          host: process.env.REDIS_HOST || queueConfig.host,
-          port: process.env.REDIS_PORT || queueConfig.port,
-          password: process.env.REDIS_PASSWORD || queueConfig.password,
-          retryStrategy(times) {
-            return Math.min(times * 50, 2000);
-          }
+      name: MAIL_QUEUE,
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        return {
+          name: MAIL_QUEUE,
+          connection: new IORedis({
+            maxRetriesPerRequest: null,
+            enableReadyCheck: false,
+            host: config.get<string>('REDIS_HOST') ? config.get<string>('REDIS_HOST') : 'redis-lixi',
+            port: config.get<string>('REDIS_PORT') ? _.toSafeInteger(config.get<string>('REDIS_PORT')) : 6379,
+          })
         }
-      })
+      }
     }),
     MailerModule.forRootAsync({
-      useFactory: () => ({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
         transport: {
-          host: process.env.MAIL_HOST || mailConfig.host,
-          port: process.env.MAIL_PORT || mailConfig.port,
-          secure: mailConfig.secure,
-          ignoreTLS: mailConfig.ignoreTLS,
+          host: config.get<string>('MAIL_HOST'),
+          port: _.toSafeInteger(config.get<string>('MAIL_PORT')),
+          secure: config.get<string>('MAIL_ENCRYPTION') ? true : false,
+          ignoreTLS: config.get<string>('MAIL_ENCRYPTION') == 'tls' ? false : true,
           auth: {
-            user: process.env.MAIL_USER || mailConfig.user,
-            pass: process.env.MAIL_PASS || mailConfig.pass
-          }
+            user: config.get<string>('MAIL_USER'),
+            pass: config.get<string>('MAIL_PASS'),
+          },
+          pool: true
         },
         defaults: {
-          from: `"${process.env.MAIL_FROM || mailConfig.from}" <${
-            process.env.MAIL_FROM || mailConfig.fromMail
-          }>`
+          from: `"${config.get<string>('MAIL_FROM')}" <${config.get<string>('MAIL_FROM')
+            }>`
         },
-        preview: mailConfig.preview,
         template: {
           dir: __dirname + '/templates/email/layouts/',
           adapter: new PugAdapter(),
@@ -56,7 +59,7 @@ const queueConfig = config.get('queue');
     })
   ],
   controllers: [],
-  providers: [MailService, MailProcessor],
+  providers: [MailService, MailProcessor, MailEventListener],
   exports: [MailService]
 })
-export class MailModule {}
+export class MailModule { }

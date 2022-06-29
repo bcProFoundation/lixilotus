@@ -1,73 +1,34 @@
-import { Logger } from '@nestjs/common';
-import * as config from 'config';
 import { MailerService } from '@nestjs-modules/mailer';
-import {
-  OnQueueActive,
-  OnQueueCompleted,
-  OnQueueFailed,
-  Process,
-  Processor
-} from '@nestjs/bull';
-import { Job } from 'bull';
+import { Processor, WorkerHost } from '@nestjs/bullmq';
+import { Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { Job } from 'bullmq';
+import { MailJobData } from './interface/mail-job.interface';
+import { MAIL_QUEUE } from './mail.constants';
 
-import { MailJobInterface } from 'src/mail/interface/mail-job.interface';
-
-@Processor(config.get('mail.queueName'))
-export class MailProcessor {
+@Processor(MAIL_QUEUE)
+export class MailProcessor extends WorkerHost {
   private readonly logger = new Logger(this.constructor.name);
 
-  constructor(private readonly mailerService: MailerService) {}
-
-  @OnQueueActive()
-  onActive(job: Job) {
-    this.logger.debug(
-      `Processing job ${job.id} of type ${job.name}. Data: ${JSON.stringify(
-        job.data
-      )}`
-    );
+  constructor(private readonly config: ConfigService, private readonly mailerService: MailerService) {
+    super();
   }
 
-  @OnQueueCompleted()
-  onComplete(job: Job, result: any) {
-    this.logger.debug(
-      `Completed job ${job.id} of type ${job.name}. Result: ${JSON.stringify(
-        result
-      )}`
-    );
-  }
-
-  @OnQueueFailed()
-  onError(job: Job<any>, error: any) {
-    this.logger.error(
-      `Failed job ${job.id} of type ${job.name}: ${error.message}`,
-      error.stack
-    );
-  }
-
-  @Process('system-mail')
-  async sendEmail(
-    job: Job<{
-      payload: MailJobInterface;
-      type: string;
-    }>
-  ): Promise<any> {
-    this.logger.log(`Sending email to '${job.data.payload.to}'`);
-    const mailConfig = config.get('mail');
+  public async process(job: Job<MailJobData, boolean, string>): Promise<any> {
+    const { payload, type } = job.data;
+    this.logger.log(`Sending email to '${payload.to}'`);
     try {
       const options: Record<string, any> = {
-        to: job.data.payload.to,
-        from: process.env.MAIL_FROM || mailConfig.fromMail,
-        subject: job.data.payload.subject,
+        to: payload.to,
+        from: this.config.get<string>('MAIL_FROM'),
+        subject: payload.subject,
         template: 'email-layout',
-        context: job.data.payload.context,
-        attachments: job.data.payload.attachments
+        context: payload.context,
+        attachments: payload.attachments
       };
       return await this.mailerService.sendMail({ ...options });
     } catch (error) {
-      this.logger.error(
-        `Failed to send email to '${job.data.payload.to}'`,
-        error.stack
-      );
+      this.logger.error(`Failed to send email to '${job.data.payload.to}'`, (error as any).stack);
       throw error;
     }
   }

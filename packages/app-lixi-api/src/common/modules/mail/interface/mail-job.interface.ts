@@ -5,3 +5,8 @@ export interface MailJobInterface {
   context: any;
   attachments?: any;
 }
+
+export interface MailJobData {
+  payload: MailJobInterface;
+  type: string;
+}
