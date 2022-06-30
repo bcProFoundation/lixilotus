@@ -1,17 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Logger,
-  Param,
-  Post,
-  Put,
-  Query,
-  UseGuards
-} from '@nestjs/common';
+import { Controller, Logger, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/modules/auth/jwtauth.guard';
 import { PrismaService } from 'src/modules/prisma/prisma.service';

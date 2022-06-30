@@ -12,7 +12,7 @@ export class MailService {
     @InjectQueue(MAIL_QUEUE)
     private mailQueue: Queue,
     private readonly emailTemplateService: EmailTemplateService
-  ) { }
+  ) {}
 
   /**
    * Replace place holder
