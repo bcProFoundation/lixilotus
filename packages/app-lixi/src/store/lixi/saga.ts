@@ -61,7 +61,10 @@ import {
   withdrawLixiSuccess,
   downloadExportedLixi,
   downloadExportedLixiFailure,
-  downloadExportedLixiSuccess
+  downloadExportedLixiSuccess,
+  uploadCustomEnvelope,
+  uploadCustomEnvelopeSuccess,
+  uploadCustomEnvelopeFailure
 } from './actions';
 import lixiApi from './api';
 import { getLixiById } from './selectors';
@@ -555,6 +558,41 @@ function* downloadExportedLixiFailureSaga(action: PayloadAction<string>) {
   yield put(hideLoading(downloadExportedLixi.type));
 }
 
+function* uploadCustomEnvelopeSaga(action: PayloadAction<any>) {
+  // try {
+  //   const data = yield call(lixiApi.downloadExportedLixi, action.payload);
+  //   const parentLixi: LixiDto = yield select(getLixiById(action.payload.lixiId));
+  //   yield put(downloadExportedLixiSuccess({ data:data, lixiName: parentLixi.name }));
+  // } catch (err) {
+  //   const message = (err as Error).message ?? intl.get('lixi.unableDownloadSub')
+  //   yield put(downloadExportedLixiFailure(message));
+  // }
+
+  console.log(action.payload);
+}
+
+function* uploadCustomEnvelopeSuccessSaga(action: PayloadAction<any>) {
+  try {
+    const data = yield call(lixiApi.downloadExportedLixi, action.payload);
+    const parentLixi: LixiDto = yield select(getLixiById(action.payload.lixiId));
+    yield put(downloadExportedLixiSuccess({ data:data, lixiName: parentLixi.name }));
+  } catch (err) {
+    const message = (err as Error).message ?? intl.get('lixi.unableDownloadSub')
+    yield put(downloadExportedLixiFailure(message));
+  }
+}
+
+function* uploadCustomEnvelopeFailureSaga(action: PayloadAction<any>) {
+  try {
+    const data = yield call(lixiApi.downloadExportedLixi, action.payload);
+    const parentLixi: LixiDto = yield select(getLixiById(action.payload.lixiId));
+    yield put(downloadExportedLixiSuccess({ data:data, lixiName: parentLixi.name }));
+  } catch (err) {
+    const message = (err as Error).message ?? intl.get('lixi.unableDownloadSub')
+    yield put(downloadExportedLixiFailure(message));
+  }
+}
+
 function* watchGenerateLixi() {
   yield takeLatest(generateLixi.type, generateLixiSaga);
 }
@@ -703,6 +741,18 @@ function* watchDownloadExportedLixiSuccess() {
   yield takeLatest(downloadExportedLixiSuccess.type, downloadExportedLixiSuccessSaga);
 }
 
+function* watchUploadCustomEnvelope() {
+  yield takeLatest(uploadCustomEnvelope.type, uploadCustomEnvelopeSaga);
+}
+
+function* watchUploadCustomEnvelopeSuccess() {
+  yield takeLatest(uploadCustomEnvelopeSuccess.type, uploadCustomEnvelopeSuccessSaga);
+}
+
+function* watchUploadCustomEnvelopeFailure() {
+  yield takeLatest(uploadCustomEnvelopeFailure.type, uploadCustomEnvelopeFailureSaga);
+}
+
 export default function* lixiSaga() {
   yield all([
     fork(watchGenerateLixi),
@@ -741,6 +791,9 @@ export default function* lixiSaga() {
     fork(watchExportSubLixiesFailure),
     fork(watchDownloadExportedLixi),
     fork(watchDownloadExportedLixiFailure),
-    fork(watchDownloadExportedLixiSuccess)
+    fork(watchDownloadExportedLixiSuccess),
+    fork(watchUploadCustomEnvelope),
+    fork(watchUploadCustomEnvelopeSuccess),
+    fork(watchUploadCustomEnvelopeFailure)
   ]);
 }

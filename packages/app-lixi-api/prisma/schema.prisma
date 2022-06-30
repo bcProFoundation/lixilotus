@@ -24,6 +24,7 @@ model Account {
   notifications     Notification[]
   language          String         @default("en")
   publicKey         String         @default("") @map("public_key")
+  upload            Upload[]
 
   @@index([mnemonicHash])
   @@map("account")
@@ -69,7 +70,7 @@ model Lixi {
   numberLixiPerPackage Int?      @map("number_lixi_per_package")
   packageId            Int?      @map("package_id")
   package              Package?  @relation(fields: [packageId], references: [id])
-
+  upload               Upload? 
   @@map("lixi")
 }
 
@@ -113,13 +114,13 @@ model Package {
 }
 
 model NotificationType {
-  id                           Int            @id @default(autoincrement())
-  name                         String         @default("")
+  id                           Int                           @id @default(autoincrement())
+  name                         String                        @default("")
   description                  String
   notifications                Notification[]
-  notificationTypeTranslations  NotificationTypeTranslation[]
-  createdAt                    DateTime       @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt                    DateTime       @default(now()) @map("updated_at") @db.Timestamptz
+  notificationTypeTranslations NotificationTypeTranslation[]
+  createdAt                    DateTime                      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt                    DateTime                      @default(now()) @map("updated_at") @db.Timestamptz
 
   @@map("notification_type")
 }
@@ -156,6 +157,28 @@ model Notification {
   action             String?
 
   @@map("notification")
+}
+
+model Upload {
+  id               String   @id @default(uuid())
+  originalFilename String   @db.VarChar
+  fileSize         Int
+  width            Int?
+  height           Int?
+  url              String   @db.VarChar
+  createdAt        DateTime @db.Timestamptz
+  updatedAt        DateTime @db.Timestamptz
+  sha              String?  @unique
+  extension        String?  @db.VarChar(10)
+  thumbnailWidth   Int?
+  thumbnailHeight  Int?
+  type             String?  @db.VarChar
+  lixi             Lixi?     @relation(fields: [lixiId], references: [id])
+  lixiId           Int
+  account          Account? @relation(fields: [accountId], references: [id])
+  accountId        Int
+
+  @@map("upload")
 }
 
 enum NotificationLevel {

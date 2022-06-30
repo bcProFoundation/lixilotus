@@ -7,6 +7,8 @@ import styled from 'styled-components';
 import Image from 'next/image'
 import type { UploadFile } from 'antd/es/upload/interface';
 import { isMobile } from 'react-device-detect';
+import { uploadCustomEnvelope, uploadCustomEnvelopeFailure } from "@store/lixi/actions";
+import { useAppDispatch, useAppSelector } from "@store/hooks";
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -15,22 +17,6 @@ const getBase64 = (file: RcFile): Promise<string> =>
     reader.onload = () => resolve(reader.result as string);
     reader.onerror = error => reject(error);
   });
-
-const beforeUpload = (file: RcFile) => {
-  const isJPG = file.type === 'image/jpeg';
-  const isPNG = file.type === 'image/png'
-  const isGIF = file.type === "image/gif"
-  const isLt5M = file.size / 1024 / 1024 < 5;
-
-  if (!isJPG && !isPNG && !isGIF) {
-    message.error(intl.get('lixi.fileTypeError'));
-  }
-
-  if (!isLt5M) {
-    message.error(intl.get('lixi.fileSizeError'));
-  }
-  return (isJPG || isPNG || isGIF) && isLt5M;
-}
 
 const StyledDivider = styled.h3`
   width: 100%;
@@ -50,6 +36,10 @@ const StyledButton = styled(Button)`
   }
 `
 
+const StyledContainer = styled.div`
+  padding: 10px;
+`
+
 export const LixiEnvelopeUploader = ({
 }) => {
   const [loading, setLoading] = useState(false);
@@ -57,15 +47,14 @@ export const LixiEnvelopeUploader = ({
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
   const [previewVisible, setPreviewVisible] = useState(false);
+  const dispatch = useAppDispatch();
 
   const uploadButton = (
-    <div>
-      <StyledButton disabled={loading} type='primary' size="middle" loading={loading}
-        icon={<UploadOutlined style={{color: loading ? "gray" : "white"}}/>}
-      >
-        {loading ? intl.get('lixi.uploadingText') : intl.get('lixi.uploadText')}
-      </StyledButton>
-    </div>
+    <StyledButton disabled={loading} type='primary' size="middle" loading={loading}
+      icon={<UploadOutlined style={{color: loading ? "gray" : "white"}}/>}
+    >
+      {loading ? intl.get('lixi.uploadingText') : intl.get('lixi.uploadText')}
+    </StyledButton>
   );
 
   const customProgress = {
@@ -80,6 +69,40 @@ export const LixiEnvelopeUploader = ({
     //hide percentage number
     format: percent => '',
   }
+
+  const beforeUpload = (file: RcFile) => {
+    const isJPG = file.type === 'image/jpeg';
+    const isPNG = file.type === 'image/png'
+    const isGIF = file.type === "image/gif"
+    const isLt5M = file.size / 1024 / 1024 < 5;
+
+    if (!isJPG && !isPNG && !isGIF) {
+      message.error(intl.get('lixi.fileTypeError'));
+    }
+
+    if (!isLt5M) {
+      message.error(intl.get('lixi.fileSizeError'));
+    }
+
+    //Get width and height
+    // const reader = new FileReader();
+    //   reader.readAsDataURL(file);
+    //   reader.addEventListener('load', event => {
+    //     const _loadedImageUrl = event.target.result;
+    //     const image = document.createElement('img');
+    //     image.src = _loadedImageUrl as string;
+    //     image.addEventListener('load', () => {
+    //       const { width, height } = image;
+    //       // set image width and height to your state here
+    //       console.log(width, height);
+    //     });
+    //   });
+
+    dispatch(uploadCustomEnvelope({file}))
+
+    return (isJPG || isPNG || isGIF) && isLt5M;
+  }
+
 
   const handleCancel = () => setPreviewVisible(false);
 
@@ -113,8 +136,14 @@ export const LixiEnvelopeUploader = ({
     }
   };
 
+  const uploadImage = async options => {
+    const { onSuccess, onError, file, onProgress } = options;
+
+    dispatch(uploadCustomEnvelope(file));
+  };
+
   return (
-    <>
+    <StyledContainer>
       <StyledDivider>
         <span style={{backgroundColor: "#FFF",padding: "0 10px"}}>{intl.get('lixi.uploadDividerText')}</span>
       </StyledDivider>
@@ -123,12 +152,12 @@ export const LixiEnvelopeUploader = ({
         listType="picture"
         className="lixi-envelope-uploader"
         maxCount={1}
-        action="https://jsonplaceholder.typicode.com/posts/"
         beforeUpload={beforeUpload}
         onChange={handleChange}
         onPreview={handlePreview}
         accept="image/png, image/gif, image/jpeg"
         progress={customProgress}
+        customRequest={uploadImage}
       >
         {uploadButton}
       </Upload>
@@ -137,7 +166,7 @@ export const LixiEnvelopeUploader = ({
           <Image alt="custom-envelope" layout='fill' quality={100} src={previewImage} />
         </div>  
       </Modal>
-    </>
+    </StyledContainer>
   )
 }
 
