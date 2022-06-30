@@ -14,13 +14,13 @@ import { WalletModule } from './modules/wallet/wallet.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true
+    }),
     PrismaModule,
     ServeStaticModule.forRoot({
       serveRoot: '/api/images',
       rootPath: join(__dirname, '..', 'public/images'),
-    }),
-    ConfigModule.forRoot({
-      isGlobal: true
     }),
     I18nModule.forRoot({
       fallbackLanguage: 'en',
