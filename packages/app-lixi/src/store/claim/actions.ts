@@ -10,8 +10,8 @@ export const postClaimFailure = createAction('claim/postClaimFailure', (message:
     error: true
   };
 });
-export const postRegister = createAction<number>('claim/postRegister');
-
+export const postRegisterWithPackId = createAction<any>('claim/postRegisterWithPackId');
+export const postRegisterWithClaimCode = createAction<any>('claim/postRegisterWithClaimCode');
 export const saveClaimAddress = createAction<string>('claim/saveClaimAddress');
 export const saveClaimCode = createAction<string>('claim/saveClaimCode');
 

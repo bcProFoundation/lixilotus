@@ -12,7 +12,7 @@ import {
 import { parseAddress } from '@utils/addressMethods';
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { postClaim, postRegister, saveClaimAddress, saveClaimCode } from 'src/store/claim/actions';
+import { postClaim, postRegisterWithClaimCode, postRegisterWithPackId, saveClaimAddress, saveClaimCode } from 'src/store/claim/actions';
 import { AppContext } from 'src/store/store';
 import { CreateClaimDto } from '@bcpros/lixi-models/lib/claim';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
@@ -20,6 +20,7 @@ import { getCurrentAddress, getCurrentClaimCode } from 'src/store/claim/selector
 import { useSelector } from 'react-redux';
 import { getSelectedAccount } from '@store/account/selectors';
 import { base58ToNumber } from '@utils/encryptionMethods';
+import { Account } from '@bcpros/lixi-models/src/lib/account';
 
 const SITE_KEY = "6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb";
 
@@ -43,7 +44,7 @@ const RegisterComponent: React.FC = () => {
 
   const currentAddress = useAppSelector(getCurrentAddress);
   const currentClaimCode = useSelector(getCurrentClaimCode);
-  const selectedAccount = useAppSelector(getSelectedAccount);
+  const selectedAccount: Account | undefined = useAppSelector(getSelectedAccount);
 
   const [claimXpiAddressError, setClaimXpiAddressError] = useState<string | boolean>(false);
 
@@ -89,48 +90,13 @@ const RegisterComponent: React.FC = () => {
   }
 
   async function submit(token) {
-    let registerCode = currentClaimCode;
-    // if (!currentAddress || !currentClaimCode) {
-    //   return;
-    // }
-    // else if (currentClaimCode.includes('lixi_')) {
-    //   claimCode = claimCode.match('(?<=lixi_).*')[0];
-    // }
-
-    // Get the param-free address
-    const packId = _.toSafeInteger(base58ToNumber(registerCode));
-    // let cleanAddress = currentAddress.split('?')[0];
-
-    // const isValidAddress = XPI.Address.isXAddress(cleanAddress);
-
-    // if (!isValidAddress) {
-    //   const error = intl.get('claim.titleShared', { ticker: currency.ticker });
-    //   setClaimXpiAddressError(error);
-    // }
-
-    dispatch(postRegister(packId));
-
-  }
-
-  const handleAddressChange = e => {
-    const { value, name } = e.target;
-    let error: boolean | string = false;
-    let addressString: string = _.trim(value);
-
-    // parse address
-    const addressInfo = parseAddress(XPI, addressString);
-    const { address, isValid } = addressInfo;
-
-    // Is this valid address?
-    if (!isValid) {
-      error = intl.get('claim.invalidAddress', { ticker: currency.ticker });
+    if (!currentAddress || !currentClaimCode) {
+      return;
     }
-    else {
-      error = false;
-    }
-    setClaimXpiAddressError(error);
-
-    dispatch(saveClaimAddress(address));
+    else if (currentClaimCode.includes('lixi_')) {
+      const claimCode = currentClaimCode.match('(?<=lixi_).*')[0];
+      dispatch(postRegisterWithClaimCode({claimCode, account: selectedAccount}));
+    } 
   }
 
   const handleClaimCodeChange = e => {

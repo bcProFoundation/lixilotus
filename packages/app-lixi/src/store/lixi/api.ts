@@ -67,12 +67,12 @@ const lixiApi = {
         throw response?.data ?? err ?? 'Network Error';
       });
   },
-  postRegister(data: number): Promise<boolean> {
-    const url = `/api/lixies/register/${data}`;
+  postRegisterWithClaimCode(data: any): Promise<LixiDto[]> {
+    const url = `/api/lixies/register/${data.claimCode}`;
     return axiosClient
-      .post(url, data)
+      .post(url, data.account)
       .then(response => {
-        return response.data;
+        return response.data as LixiDto[];
       })
       .catch(err => {
         const { response } = err;
