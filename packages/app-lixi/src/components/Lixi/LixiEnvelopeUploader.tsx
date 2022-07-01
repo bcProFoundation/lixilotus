@@ -7,8 +7,8 @@ import styled from 'styled-components';
 import Image from 'next/image'
 import type { UploadFile } from 'antd/es/upload/interface';
 import { isMobile } from 'react-device-detect';
-import { uploadCustomEnvelope, uploadCustomEnvelopeFailure } from "@store/lixi/actions";
 import { useAppDispatch, useAppSelector } from "@store/hooks";
+import axiosClient from "@utils/axiosClient";
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -98,8 +98,6 @@ export const LixiEnvelopeUploader = ({
     //     });
     //   });
 
-    dispatch(uploadCustomEnvelope({file}))
-
     return (isJPG || isPNG || isGIF) && isLt5M;
   }
 
@@ -122,24 +120,43 @@ export const LixiEnvelopeUploader = ({
 
 
   const handleChange = (info: UploadChangeParam) => {
-    if (info.file.status === 'uploading') {
-      setLoading(true);
-      return;
-    }
-    if (info.file.status === 'done') {
-      setLoading(false);
-      message.success(intl.get('lixi.fileUploadSuccess'))
-    }
-    if(info.file.status === 'error'){
-      setLoading(false);
-      message.error(intl.get('lixi.fileUploadError'))
+    const { status } = info.file;
+    switch (status) {
+      case 'uploading':
+        setLoading(true);
+        break;
+      case 'done':
+        setLoading(false);
+        message.success(intl.get('lixi.fileUploadSuccess'))
+        break;
+      case 'error':
+        setLoading(false);
+        message.error(intl.get('lixi.fileUploadError'));
+        break;
     }
   };
 
   const uploadImage = async options => {
     const { onSuccess, onError, file, onProgress } = options;
+    const url = `/api/lixies/custom-envelope`
+    const formData = new FormData();
 
-    dispatch(uploadCustomEnvelope(file));
+    formData.append('file',file);
+    const config = {
+      headers: { "content-type": "multipart/form-data" },
+      withCredentials: true,
+      onUploadProgress: event => {
+        onProgress({ percent: (event.loaded / event.total) * 100 });
+      }
+    };
+
+    await axiosClient.post(url, formData, config).then(response => {
+      return onSuccess();
+    })
+    .catch(err => {
+      const { response } = err;
+      return onError(response);
+    })
   };
 
   return (

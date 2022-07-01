@@ -48,6 +48,3 @@ export const exportSubLixiesFailure = createAction<string>('lixi/exportSubLixies
 export const downloadExportedLixi = createAction<DownloadExportedLixiCommand>('lixi/downloadExportedLixi');
 export const downloadExportedLixiSuccess = createAction<any>('lixi/downloadExportedLixiSuccess');
 export const downloadExportedLixiFailure = createAction<string>('lixi/downloadExportedLixiFailure');
-export const uploadCustomEnvelope = createAction<any>('lixi/uploadCustomEnvelope');
-export const uploadCustomEnvelopeSuccess = createAction<any>('lixi/uploadCustomEnvelopeSuccess');
-export const uploadCustomEnvelopeFailure = createAction<any>('lixi/uploadCustomEnvelopeFailure');

@@ -32,7 +32,6 @@ import {
   StreamableFile,
   UseGuards,
   UseInterceptors,
-  UploadedFile
 } from '@nestjs/common';
 import { Claim as ClaimDb, Lixi } from '@prisma/client';
 import { Queue } from 'bullmq';
@@ -48,7 +47,6 @@ import { aesGcmDecrypt, numberToBase58 } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
 import { PrismaService } from '../../prisma/prisma.service';
 import { I18n, I18nContext } from 'nestjs-i18n';
-import { Response, Request } from 'express';
 import { createReadStream } from 'fs';
 import { join } from 'path';
 import { JwtAuthGuard } from 'src/modules/auth/jwtauth.guard';
@@ -57,11 +55,10 @@ import {
   FastifyReply
 } from 'fastify';
 import moment from 'moment';
-import { FastifyFileInterceptor } from 'src/utils/fastify-file-interceptor';
-import { fileMapper } from 'src/utils/file-mapper';
-import { diskStorage } from 'multer';
-import { ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { editFileName, imageFileFilter } from 'src/utils/file-upload-util';
+import { extname } from 'path'
+import { UploadGuard } from 'src/utils/upload.guard';
+import { File } from 'src/utils/file.decorator';
+import fs from 'fs';
 
 @Controller('lixies')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -854,41 +851,37 @@ export class LixiController {
     }
   }
 
-  @ApiConsumes('multipart/form-data')
   @Post('custom-envelope')
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(
-    FastifyFileInterceptor('photo_url', {
-      storage: diskStorage({
-        destination: './upload/single',
-        filename: editFileName,
-      }),
-      fileFilter: imageFileFilter,
-    }),
-  )
-  async uploadEnvelope(
-    @Req() req: Request,
-    @Param('id') id: string,
-    @I18n() i18n: I18nContext,
-    @Body() body : any
+  @UseGuards(UploadGuard)
+  async upload(
+    @File() file: Storage.MultipartFile,
+    @Req() req: FastifyRequest,
+    @I18n() i18n: I18nContext
   ) {
-     const accountId = _.toSafeInteger(id);
     try {
       const account = (req as any).account;
-
-      if (!account || account?.id !== accountId) {
-        const noPermissionMessage = await i18n.t('account.messages.noPermission');
-        throw Error(noPermissionMessage);
+      if (!account) {
+        const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
+        throw new Error(couldNotFindAccount);
       }
 
-      console.log(body);
+      console.log(account);
 
-
+      const buffer = await file.toBuffer();
+      const fileExtension = extname(file.filename);
+      fs.writeFile(`./uploads/${file.filename}`, buffer, function (err) {
+        if (err) {
+          throw err;
+        }
+      });
+      return;
     } catch (err) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
-        const error = new VError.WError(err as Error, 'Could not export the lixi.');
+        const unableToUpload = await i18n.t('lixi.messages.unableToUpload');
+        const error = new VError.WError(err as Error, unableToUpload);
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }

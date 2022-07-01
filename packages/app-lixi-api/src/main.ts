@@ -12,8 +12,7 @@ import { AppModule } from './app.module';
 import { RedisIoAdapter } from './common/adapters/redis-io.adapter';
 import { HttpExceptionFilter } from './middlewares/exception.filter';
 import { PrismaService } from './modules/prisma/prisma.service';
-import { join } from 'path';
-import { contentParser } from 'fastify-multer';
+import multipart from '@fastify/multipart';
 
 const allowedOrigins = [
   process.env.SENDLOTUS_URL,
@@ -36,6 +35,8 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter(),
   );
+  
+  app.register(multipart);
 
   app.setGlobalPrefix('api');
   app.useGlobalFilters(new HttpExceptionFilter());
@@ -73,10 +74,6 @@ async function bootstrap() {
 
   // Redis socket adapter
   app.useWebSocketAdapter(new RedisIoAdapter(app));
-
-  // Fastify Mutler
-  app.register(contentParser);
-  app.useStaticAssets({ root: join(__dirname, '../../fastify-file-upload') });
 
   await app.register(fastifyHelmet, {
     crossOriginResourcePolicy: { policy: 'cross-origin' },
