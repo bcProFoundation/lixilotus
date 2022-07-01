@@ -1,4 +1,4 @@
-import { AnyAction, combineReducers } from '@reduxjs/toolkit'
+import { AnyAction, combineReducers } from '@reduxjs/toolkit';
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { PersistConfig } from 'redux-persist';
@@ -19,8 +19,7 @@ import { notificationReducer } from './notification/reducer';
 import { AccountsState } from './account/state';
 import { HYDRATE } from 'next-redux-wrapper';
 import { SettingsState } from './settings/state';
-
-
+import { registerReducer } from './register/reducer';
 
 const accountPersistConfig: PersistConfig<AccountsState> = {
   key: 'accounts',
@@ -47,6 +46,7 @@ export const serverReducer = combineReducers({
   router: routerReducer,
   accounts: accountReducer,
   lixies: lixiReducer,
+  register: registerReducer,
   claims: claimReducer,
   envelopes: envelopeReducer,
   loading: loadingReducer,
@@ -57,7 +57,7 @@ export const serverReducer = combineReducers({
   notifications: notificationReducer,
   // This is use for useReduxEffect
   // Should be always at the end
-  action: actionReducer,
+  action: actionReducer
 });
 
 export const appReducer = combineReducers({
@@ -66,6 +66,7 @@ export const appReducer = combineReducers({
   lixies: persistReducer(lixiPersistConfig, lixiReducer),
   claims: persistReducer(claimsPersistConfig, claimReducer),
   settings: persistReducer(settingsPersistConfig, settingsReducer),
+  register: registerReducer,
   notifications: notificationReducer,
   envelopes: envelopeReducer,
   loading: loadingReducer,
@@ -74,13 +75,13 @@ export const appReducer = combineReducers({
   error: errorReducer,
   // This is use for useReduxEffect
   // Should be always at the end
-  action: actionReducer,
+  action: actionReducer
 });
 
 const reducer = (state, action: AnyAction) => {
   if (action.type === HYDRATE) {
     const nextState = {
-      ...state, // use previous state
+      ...state // use previous state
       // ...action.payload, // apply delta from hydration
     };
     if (typeof window !== 'undefined' && state?.router) {
@@ -92,6 +93,5 @@ const reducer = (state, action: AnyAction) => {
     return appReducer(state, action);
   }
 };
-
 
 export default reducer;

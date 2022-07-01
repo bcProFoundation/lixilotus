@@ -1,3 +1,4 @@
+import { Account } from '..';
 import { Envelope } from './envelope';
 
 export interface GenerateLixiCommand {
@@ -133,6 +134,11 @@ export interface Lixi {
   isNFTEnabled: boolean;
   numberLixiPerPackage?: Nullable<number>;
   packageId?: Nullable<number>;
+}
+
+export interface RegisterLixiPackCommand {
+  claimCode: string;
+  account: Account;
 }
 
 export interface UnarchiveLixiCommand {

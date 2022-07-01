@@ -7,8 +7,8 @@ import {
   LixiDto,
   PaginationResult,
   PostLixiResponseDto,
-  RenameLixiCommand,
-  WithdrawLixiCommand
+  RegisterLixiPackCommand,
+  RenameLixiCommand
 } from '@bcpros/lixi-models';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
@@ -47,18 +47,16 @@ import {
 import logger from 'src/logger';
 import { LixiService } from 'src/modules/core/lixi/lixi.service';
 import { WalletService } from 'src/modules/wallet/wallet.service';
-import { aesGcmDecrypt, aesGcmEncrypt, base58ToNumber, numberToBase58 } from 'src/utils/encryptionMethods';
+import { aesGcmDecrypt, base58ToNumber, numberToBase58 } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
 import { PrismaService } from '../../prisma/prisma.service';
 import { I18n, I18nContext } from 'nestjs-i18n';
-import { Response } from 'express';
 import { createReadStream } from 'fs';
 import { join } from 'path';
 import { JwtAuthGuard } from 'src/modules/auth/jwtauth.guard';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import moment from 'moment';
-import createSubLixiesIsolatedProcessor from './processors/create-sub-lixies.isolated.processor';
-import { pack } from 'nestjs-ethers';
+
 
 @Controller('lixies')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -308,99 +306,16 @@ export class LixiController {
     }
   }
 
-  // @Post('register/:id/')
-  // async registerPackWithPackId(
-  //   @Param('id') id: string,
-  //   @Body() command: Account,
-  //   @I18n() i18n: I18nContext
-  // ): Promise<boolean | undefined> {
-  //   let packId = _.toSafeInteger(id);
-  //   console.log('packId: ' + packId);
-  //   try {
-  //     const mnemonicFromApi = command.mnemonic;
-
-  //     const account = await this.prisma.account.findFirst({
-  //       where: {
-  //         mnemonicHash: command.mnemonicHash
-  //       }
-  //     });
-
-  //     if (!account) {
-  //       const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
-  //       throw new Error(couldNotFindAccount);
-  //     }
-
-  //     // Decrypt to validate the mnemonic
-  //     // const mnemonicToValidate = await aesGcmDecrypt(account.encryptedMnemonic, mnemonicFromApi);
-  //     // if (mnemonicFromApi !== mnemonicToValidate) {
-  //     //   const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
-  //     //   throw Error(couldNotFindAccount);
-  //     // }
-  //     console.log('account id: ' + account.id);
-  //     const lixiList = await this.prisma.lixi.findMany({
-  //       where: {
-  //         packageId: packId,
-  //         accountId: account.id
-  //       }
-  //     });
-  //     console.log('lixiList: ' + lixiList);
-
-  //     if (!lixiList) {
-  //       const lixiNotExist = await i18n.t('lixi.messages.lixiNotExist');
-  //       throw new Error(lixiNotExist);
-  //     } else {
-  //       const lixiList = await this.prisma.lixi.updateMany({
-  //         where: {
-  //           packageId: packId
-  //         },
-  //         data: {
-  //           inventoryStatus: 'registered',
-  //           updatedAt: new Date()
-  //         }
-  //       });
-  //       if (lixiList) {
-  //         return lixiList.count > 0;
-  //       }
-
-  //       // if (lixi) {
-  //       //   let resultApi: LixiDto = {
-  //       //     ...lixi,
-  //       //     balance: 0,
-  //       //     totalClaim: Number(lixi.totalClaim),
-  //       //     expiryAt: lixi.expiryAt ? lixi.expiryAt : undefined,
-  //       //     activationAt: lixi.activationAt ? lixi.activationAt : undefined,
-  //       //     country: lixi.country ? lixi.country : undefined,
-  //       //     status: lixi.status,
-  //       //     numberOfSubLixi: 0,
-  //       //     parentId: lixi.parentId ?? undefined,
-  //       //     isClaimed: lixi.isClaimed ?? false
-  //       //   };
-
-  //       //   return resultApi;
-  //       // }
-  //     }
-  //   } catch (err) {
-  //     if (err instanceof VError) {
-  //       throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
-  //     } else {
-  //       const couldNotLockLixi = await i18n.t('lixi.messages.couldNotLockLixi');
-  //       const error = new VError.WError(err as Error, couldNotLockLixi);
-  //       throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
-  //     }
-  //   }
-  // }
-
-  @Post('register/:code/')
+  @Patch('register')
   async registerPackWithClaimCode(
-    @Param('code') code: string,
-    @Body() command: Account,
+    @Body() command: RegisterLixiPackCommand,
     @I18n() i18n: I18nContext
   ): Promise<boolean | undefined> {
     try {
-      const mnemonicFromApi = command.mnemonic;
+      const mnemonicFromApi = command.account.mnemonic;
       const account = await this.prisma.account.findFirst({
         where: {
-          mnemonicHash: command.mnemonicHash
+          mnemonicHash: command.account.mnemonicHash
         }
       });
 
@@ -415,7 +330,7 @@ export class LixiController {
         const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
         throw Error(couldNotFindAccount);
       }
-      const encodedLixiId = code.slice(8);
+      const encodedLixiId = command.claimCode.slice(8);
       const lixiId = _.toSafeInteger(base58ToNumber(encodedLixiId));
       const lixi = await this.prisma.lixi.findFirst({
         where: {
@@ -426,44 +341,37 @@ export class LixiController {
 
       if (!lixi) {
         const lixiNotExist = await i18n.t('lixi.messages.lixiNotExist');
-        throw new Error(lixiNotExist);
+        throw new VError(lixiNotExist);
       } else {
-        const lixiList = await this.prisma.lixi.updateMany({
-          where: {
-            packageId: lixi.packageId
-          },
-          data: {
-            inventoryStatus: 'registered',
-            updatedAt: new Date()
+        if(lixi.inventoryStatus === 'registered'){
+          // if already register => ignore and return success
+          return true;
+        } else {
+          const lixiList = await this.prisma.lixi.updateMany({
+            where: {
+              packageId: lixi.packageId
+            },
+            data: {
+              inventoryStatus: 'registered',
+              updatedAt: new Date()
+            }
+          });
+          if (lixiList.count > 0) {
+            // if having lixilist update => return true noti update successfully
+            return true;
+          } else{
+            // count === 0 => don't have any data to update
+            const lixiPackNotRegister = await i18n.t('lixi.messages.lixiPackNotRegister');
+            throw new VError(lixiPackNotRegister);
           }
-        });
-        if (lixiList) {
-          return lixiList.count > 0;
         }
-
-        // if (lixi) {
-        //   let resultApi: LixiDto = {
-        //     ...lixi,
-        //     balance: 0,
-        //     totalClaim: Number(lixi.totalClaim),
-        //     expiryAt: lixi.expiryAt ? lixi.expiryAt : undefined,
-        //     activationAt: lixi.activationAt ? lixi.activationAt : undefined,
-        //     country: lixi.country ? lixi.country : undefined,
-        //     status: lixi.status,
-        //     numberOfSubLixi: 0,
-        //     parentId: lixi.parentId ?? undefined,
-        //     isClaimed: lixi.isClaimed ?? false
-        //   };
-
-        //   return resultApi;
-        // }
       }
     } catch (err) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
-        const couldNotLockLixi = await i18n.t('lixi.messages.couldNotLockLixi');
-        const error = new VError.WError(err as Error, couldNotLockLixi);
+        const lixiPackNotRegister = await i18n.t('lixi.messages.lixiPackNotRegister');
+        const error = new VError.WError(err as Error, lixiPackNotRegister);
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }

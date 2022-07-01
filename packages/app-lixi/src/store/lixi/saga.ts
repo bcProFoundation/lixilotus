@@ -3,7 +3,15 @@ import { push } from 'connected-next-router';
 import * as _ from 'lodash';
 import * as Effects from 'redux-saga/effects';
 import intl from 'react-intl-universal';
-import { AccountDto, Claim, ExportLixiCommand, PaginationResult, PostLixiResponseDto } from '@bcpros/lixi-models';
+import {
+  Account,
+  AccountDto,
+  Claim,
+  ExportLixiCommand,
+  PaginationResult,
+  PostLixiResponseDto,
+  RegisterLixiPackCommand
+} from '@bcpros/lixi-models';
 import {
   CreateLixiCommand,
   GenerateLixiCommand,
@@ -62,7 +70,10 @@ import {
   downloadExportedLixiFailure,
   downloadExportedLixiSuccess,
   refreshLixiSilentSuccess,
-  refreshLixiSilentFailure
+  refreshLixiSilentFailure,
+  registerLixiPack,
+  registerLixiPackSuccess,
+  registerLixiPackFailure
 } from './actions';
 import lixiApi from './api';
 import { getLixiById } from './selectors';
@@ -70,7 +81,7 @@ import { select } from 'redux-saga/effects';
 import { saveAs } from 'file-saver';
 import moment from 'moment';
 import { refreshLixiSilent } from './actions';
-import { postRegisterWithClaimCode, postRegisterWithPackId } from '@store/claim/actions';
+import { refreshLixiListSilent } from '@store/account/actions';
 
 const call: any = Effects.call;
 /**
@@ -216,53 +227,50 @@ function* postLixiSaga(action: PayloadAction<CreateLixiCommand>) {
   }
 }
 
-function* postRegisterWithPackIdSaga(action: PayloadAction<any>) {
+function* registerLixiPackSaga(action: PayloadAction<any>) {
   try {
     const command = action.payload;
 
-    yield put(showLoading(postRegisterWithPackId.type));
+    yield put(showLoading(registerLixiPack.type));
 
-    // const dataApi: CreateLixiCommand = {
-    //   ...command
-    // };
+    const dataApi: RegisterLixiPackCommand = {
+      ...command
+    };
 
-    const data: boolean = yield call(lixiApi.postRegister, command);
-    console.log(data);
+    const data: Lixi[] = yield call(lixiApi.registerLixiPack, dataApi);
     if (_.isNil(data)) {
-      throw new Error(intl.get('claim.unableCreateLixi'));
+      throw new Error(intl.get('lixi.unableRegisterLixiPack'));
     }
-
-    // const lixi = data.lixi;
-    // yield put(postLixiSuccess(lixi));
+    if (data) {
+      yield put(registerLixiPackSuccess(dataApi.account));
+    }
   } catch (err) {
-    // const message = (err as Error).message ?? intl.get('claim.couldNotPostLixi');
-    // yield put(postLixiFailure(message));
+    const message = (err as Error).message ?? intl.get('lixi.unableRegisterLixiPack');
+    yield put(registerLixiPackFailure(message));
   }
 }
 
-function* postRegisterWithClaimCodeSaga(action: PayloadAction<any>) {
-  try {
-    const command = action.payload;
-
-    yield put(showLoading(postRegisterWithClaimCode.type));
-
-    // const dataApi: CreateLixiCommand = {
-    //   ...command
-    // };
-
-    const data: Lixi[] = yield call(lixiApi.postRegisterWithClaimCode, command);
-    console.log(data);
-    if (_.isNil(data)) {
-      throw new Error(intl.get('claim.unableCreateLixi'));
-    }
-
-    // const lixi = data.lixi;
-    // yield put(postLixiSuccess(lixi));
-  } catch (err) {
-    // const message = (err as Error).message ?? intl.get('claim.couldNotPostLixi');
-    // yield put(postLixiFailure(message));
-  }
+function* registerLixiPackSuccessSaga(action: PayloadAction<Account>) {
+  const account: Account = action.payload;
+  Modal.success({
+    content: intl.get('lixi.registerSuccess')
+  });
+  yield put(refreshLixiListSilent(account));
+  yield put(hideLoading(registerLixiPack.type));
 }
+
+function* registerLixiPackFailureSaga(action: PayloadAction<string>) {
+  const message = action.payload ?? intl.get('lixi.unableRegisterLixiPack');
+  yield put(
+    showToast('error', {
+      message: 'Error',
+      description: message,
+      duration: 5
+    })
+  );
+  yield put(hideLoading(registerLixiPack.type));
+}
+
 function* postLixiSuccessSaga(action: PayloadAction<Lixi>) {
   try {
     const lixi: any = action.payload;
@@ -661,10 +669,6 @@ function* watchPostLixi() {
   yield takeLatest(postLixi.type, postLixiSaga);
 }
 
-function* watchPostRegisterWithClaimCode() {
-  yield takeLatest(postRegisterWithClaimCode.type, postRegisterWithClaimCodeSaga);
-}
-
 function* watchPostLixiSuccess() {
   yield takeLatest(postLixiSuccess.type, postLixiSuccessSaga);
 }
@@ -777,6 +781,18 @@ function* watchDownloadExportedLixiSuccess() {
   yield takeLatest(downloadExportedLixiSuccess.type, downloadExportedLixiSuccessSaga);
 }
 
+function* watchRegisterLixiPack() {
+  yield takeLatest(registerLixiPack.type, registerLixiPackSaga);
+}
+
+function* watchRegisterLixiPackSuccess() {
+  yield takeLatest(registerLixiPackSuccess.type, registerLixiPackSuccessSaga);
+}
+
+function* watchRegisterLixiPackFailure() {
+  yield takeLatest(registerLixiPackFailure.type, registerLixiPackFailureSaga);
+}
+
 export default function* lixiSaga() {
   yield all([
     fork(watchGenerateLixi),
@@ -789,7 +805,6 @@ export default function* lixiSaga() {
     fork(watchFetchMoreSubLixiesSuccess),
     fork(watchFetchMoreSubLixiesFailure),
     fork(watchPostLixi),
-    fork(watchPostRegisterWithClaimCode),
     fork(watchPostLixiFailure),
     fork(watchPostLixiSuccess),
     fork(watchSetLixi),
@@ -817,6 +832,9 @@ export default function* lixiSaga() {
     fork(watchExportSubLixiesFailure),
     fork(watchDownloadExportedLixi),
     fork(watchDownloadExportedLixiFailure),
-    fork(watchDownloadExportedLixiSuccess)
+    fork(watchDownloadExportedLixiSuccess),
+    fork(watchRegisterLixiPack),
+    fork(watchRegisterLixiPackSuccess),
+    fork(watchRegisterLixiPackFailure)
   ]);
 }
