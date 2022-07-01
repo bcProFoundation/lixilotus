@@ -17,7 +17,6 @@
     "unableToUpdateLixi": "Unable to update lixi.",
     "unableToDowloadLixi": "Unable to download lixi",
     "fileNameNotExist": "File name not exist",
-    "lixiAlreadyRegistered": "Lixi already registered",
     "lixiPackNotRegister": "Unable to register lixi pack"
   }
 }
