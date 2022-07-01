@@ -167,3 +167,30 @@ enum NotificationLevel {
 
   @@map("notification_level")
 }
+
+model EmailTemplate {
+  id                        String                     @id @default(uuid())
+  slug                      String                     @default("")
+  description               String
+  createdAt                 DateTime                   @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt                 DateTime                   @default(now()) @map("updated_at") @db.Timestamptz
+  EmailTemplateTranslations EmailTemplateTranslation[]
+
+  @@map("email_template")
+}
+
+model EmailTemplateTranslation {
+  id              String        @id @default(uuid())
+  sender          String        @default("")
+  emailTemplate   EmailTemplate @relation(fields: [emailTemplateId], references: [id])
+  emailTemplateId String        @map("email_template_id")
+  title           String        @default("")
+  body            String        @default("")
+  subject         String        @default("")
+  language        String
+  isDefault       Boolean?      @map("is_default")
+  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime      @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@map("email_template_translation")
+}
