@@ -74,9 +74,12 @@ const lixiApi = {
       });
   },
   registerLixiPack(data: RegisterLixiPackCommand): Promise<boolean> {
+    const config = {
+      withCredentials: true
+    };
     const url = `/api/lixies/register`;
     return axiosClient
-      .patch(url, data)
+      .patch(url, data, config)
       .then(response => {
         return response.data;
       })

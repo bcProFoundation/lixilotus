@@ -28,6 +28,7 @@ import {
   Post,
   Query,
   Req,
+  Request,
   Res,
   StreamableFile,
   UseGuards,
@@ -307,28 +308,17 @@ export class LixiController {
   }
 
   @Patch('register')
+  @UseGuards(JwtAuthGuard)
   async registerPackWithClaimCode(
     @Body() command: RegisterLixiPackCommand,
+    @Request() req: FastifyRequest,
     @I18n() i18n: I18nContext
   ): Promise<boolean | undefined> {
     try {
-      const mnemonicFromApi = command.account.mnemonic;
-      const account = await this.prisma.account.findFirst({
-        where: {
-          mnemonicHash: command.account.mnemonicHash
-        }
-      });
-
+      const account = (req as any).account;
       if (!account) {
         const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
         throw new Error(couldNotFindAccount);
-      }
-
-      // Decrypt to validate the mnemonic
-      const mnemonicToValidate = await aesGcmDecrypt(account.encryptedMnemonic, mnemonicFromApi);
-      if (mnemonicFromApi !== mnemonicToValidate) {
-        const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
-        throw Error(couldNotFindAccount);
       }
       const encodedLixiId = command.claimCode.slice(8);
       const lixiId = _.toSafeInteger(base58ToNumber(encodedLixiId));

@@ -20,7 +20,7 @@ export default {
   'general.lixi': 'Lixi',
   'general.claim': 'Claim',
   'general.settings': 'Settings',
-  'general.register': 'Register',
+  'general.registerPack': 'Register Pack',
   'general.swapCard': 'Swap Card',
   'general.connectionLost': 'API connection lost.',
   'general.reEstablishing': 'Re-establishing connection...',

@@ -18,6 +18,7 @@ export default {
   'general.lixi': 'Lì xì',
   'general.claim': 'Nhận Lì xì',
   'general.settings': 'Cài đặt',
+  'general.registerPack': 'Đăng ký Pack Lì xì',
   'general.swapCard': 'Đổi thẻ',
   'general.connectionLost': 'Mất kết nối API',
   'general.reEstablishing': 'Đang thiết lập lại kết nối...',

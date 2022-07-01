@@ -1,7 +1,7 @@
 import { Menu } from 'antd';
 import Link from 'next/link';
 import styled from 'styled-components';
-import { ShopOutlined } from '@ant-design/icons';
+import intl from 'react-intl-universal';
 import SidebarLogo from './SidebarLogo';
 
 type SidebarContentProps = {
@@ -60,7 +60,7 @@ const SidebarContent = ({
                 <img src='/images/lotus-logo-small.png' alt='lotus' 
                   style={{width: "20px", marginBottom: "5px", marginRight: "10px"}}
                 />
-                <span>Pack Regiser</span>
+                <span>{intl.get('general.registerPack')}</span>
               </a>
             </Link>
           </Menu.Item>

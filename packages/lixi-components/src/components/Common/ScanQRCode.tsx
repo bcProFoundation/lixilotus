@@ -97,7 +97,6 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
           controls.stop();
           const result = parseContent(content.getText());
           // stop scanning and fill form if it's an address
-          console.log(result);
           if (result.type === 'address') {
             // Hide the scanner
             setVisible(false);
