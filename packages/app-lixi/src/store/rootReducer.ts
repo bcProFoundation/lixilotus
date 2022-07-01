@@ -19,7 +19,6 @@ import { notificationReducer } from './notification/reducer';
 import { AccountsState } from './account/state';
 import { HYDRATE } from 'next-redux-wrapper';
 import { SettingsState } from './settings/state';
-import { registerReducer } from './register/reducer';
 
 const accountPersistConfig: PersistConfig<AccountsState> = {
   key: 'accounts',
@@ -46,7 +45,6 @@ export const serverReducer = combineReducers({
   router: routerReducer,
   accounts: accountReducer,
   lixies: lixiReducer,
-  register: registerReducer,
   claims: claimReducer,
   envelopes: envelopeReducer,
   loading: loadingReducer,
@@ -66,7 +64,6 @@ export const appReducer = combineReducers({
   lixies: persistReducer(lixiPersistConfig, lixiReducer),
   claims: persistReducer(claimsPersistConfig, claimReducer),
   settings: persistReducer(settingsPersistConfig, settingsReducer),
-  register: registerReducer,
   notifications: notificationReducer,
   envelopes: envelopeReducer,
   loading: loadingReducer,

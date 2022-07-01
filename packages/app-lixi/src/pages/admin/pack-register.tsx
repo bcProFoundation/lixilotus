@@ -1,6 +1,6 @@
 import React from 'react';
 
-import RegisterComponent from '@components/Register';
+import RegisterComponent from '@components/PackRegister';
 import ClaimedLayout from '@components/Layout/ClaimedLayout';
 
 const ClaimPage = () => {

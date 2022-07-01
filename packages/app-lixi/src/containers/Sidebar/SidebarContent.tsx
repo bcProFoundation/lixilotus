@@ -54,6 +54,16 @@ const SidebarContent = ({
               </a>
             </Link>
           </Menu.Item>
+          <Menu.Item>
+            <Link href='/admin/pack-register' >
+              <a>
+                <img src='/images/lotus-logo-small.png' alt='lotus' 
+                  style={{width: "20px", marginBottom: "5px", marginRight: "10px"}}
+                />
+                <span>Pack Regiser</span>
+              </a>
+            </Link>
+          </Menu.Item>
         </MenuCustom>
       </div>
     </>

@@ -171,12 +171,6 @@ const MainLayout: React.FC = props => {
                           {intl.get('general.settings')}
                         </NavButton>
                       </Link>
-                      <Link href="/admin/register" passHref>
-                        <NavButton active={selectedKey === '/admin/register'}>
-                          <SettingOutlined />
-                          {intl.get('general.register')}
-                        </NavButton>
-                      </Link>
                     </Footer>
                   </>
                 )}

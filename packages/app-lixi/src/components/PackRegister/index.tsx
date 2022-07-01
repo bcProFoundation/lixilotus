@@ -1,36 +1,24 @@
 import _ from 'lodash';
 import intl from 'react-intl-universal';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Row, Col, Form, Spin } from 'antd';
-import { isMobile, isIOS, isSafari } from 'react-device-detect';
 import PrimaryButton from '@bcpros/lixi-components/components/Common/PrimaryButton';
 import { CashLoadingIcon } from "@bcpros/lixi-components/components/Common/CustomIcons";
 import {
   FormItemClaimCodeXpiInput,
-  FormItemWithQRCodeAddon
 } from '@bcpros/lixi-components/components/Common/EnhancedInputs';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { saveClaimCode } from 'src/store/claim/actions';
-import { AppContext } from 'src/store/store';
-import { CreateClaimDto } from '@bcpros/lixi-models/lib/claim';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
-import { getCurrentAddress, getCurrentClaimCode } from 'src/store/claim/selectors';
-import { useSelector } from 'react-redux';
 import { getSelectedAccount } from '@store/account/selectors';
-import { base58ToNumber } from '@utils/encryptionMethods';
 import { Account } from '@bcpros/lixi-models/src/lib/account';
 import { registerLixiPack, registerLixiPackFailure } from '@store/lixi/actions';
 import { RegisterLixiPackCommand } from '@bcpros/lixi-models';
-import { getCurrentClaimCodeRegister } from '@store/register/selectors';
 
 const RegisterComponent: React.FC = () => {
-
   const isLoading = useAppSelector(getIsGlobalLoading);
   const dispatch = useAppDispatch();
-  const currentClaimCode = useSelector(getCurrentClaimCodeRegister);
+  const [currentClaimCode, setCurrentClaimCode] = useState('');
   const selectedAccount: Account | undefined = useAppSelector(getSelectedAccount);
-
-
 
   const handleOnClick = e => {
     e.preventDefault();
@@ -38,9 +26,7 @@ const RegisterComponent: React.FC = () => {
   }
 
   async function submit() {
-    console.log('abc');
     if (!currentClaimCode) {
-      console.log('return');
       return;
     }
     else if (currentClaimCode.includes('lixi_')) {
@@ -54,12 +40,13 @@ const RegisterComponent: React.FC = () => {
     else{
       dispatch(registerLixiPackFailure());
     }
+    setCurrentClaimCode('');
   }
 
   const handleClaimCodeChange = e => {
     const { value, name } = e.target;
     let claimCode: string = _.trim(value);
-    dispatch(saveClaimCode(claimCode));
+    setCurrentClaimCode(claimCode);
   }
 
   return (
