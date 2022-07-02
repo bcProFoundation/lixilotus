@@ -156,7 +156,7 @@ export default {
   'lixi.lockSuccess': 'Lock lixi successfully.',
   'lixi.withdrawSuccess': 'Withdraw lixi successfully.',
   'lixi.renameSuccess': 'Lixi has been renamed to {lixiName}',
-  'lixi.registerSuccess': 'Đăng ký pack Lì xì thành công',
+  'lixi.registerSuccess': 'Register lixi pack successfully',
   'lixi.renameFailed': 'Rename failed. All lixi must have a unique name.',
   'lixi.isNFTEnabled': 'NFT Enabled',
   'lixi.optionNFTEnabled': 'Option: NFT Enabled',

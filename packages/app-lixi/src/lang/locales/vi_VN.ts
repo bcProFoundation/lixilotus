@@ -155,7 +155,7 @@ export default {
   'lixi.lockSuccess': 'Khóa Lì xì thành công.',
   'lixi.withdrawSuccess': 'Rút Lì xì thành công.',
   'lixi.renameSuccess': 'Lì xì đã được đổi tên thành {lixiName}',
-  'lixi.registerSuccess': 'Register lixi pack successfully',
+  'lixi.registerSuccess': 'Đăng ký pack Lì xì thành công',
   'lixi.renameFailed': 'Đổi tên không thành công. Hãy thử lại với một tên khác.',
   'lixi.isNFTEnabled': 'Kích hoạt NFT',
   'lixi.optionNFTEnabled': 'Tùy chọn: Kích hoạt NFT',
