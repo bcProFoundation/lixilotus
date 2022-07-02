@@ -27,6 +27,7 @@ export default {
     'Lỗi trong lúc quét mã QR. Vui lòng đảm bảo rằng máy ảnh của bạn đang không sử dụng vào mục đích khác. Do các yêu cầu giới hạn của Apple với các trình duyệt thứ ba, bạn phải sử dụng trình duyệt của Safari để quét mã QR từ điện thoại iPhone.',
   'general.num': 'STT',
   'general.amount': 'Số dư',
+  'general.companies': 'Công ty',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',
@@ -233,5 +234,8 @@ export default {
   'notification.unableToRead': 'Không thể đọc thông báo.',
 
   /* 10.NFT */
-  'lixinft.unableToMint': 'Không thể tạo NFT'
+  'lixinft.unableToMint': 'Không thể tạo NFT',
+
+  /* 11.Company */
+  'company.unableGetCompanyFromServer': 'Không thể lấy thông tin công ty từ máy chủ'
 };

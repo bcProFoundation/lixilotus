@@ -7,7 +7,14 @@ import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 
-import { GiftOutlined, LoadingOutlined, SettingOutlined, UserOutlined, WalletOutlined } from '@ant-design/icons';
+import {
+  GiftOutlined,
+  LoadingOutlined,
+  SettingOutlined,
+  UserOutlined,
+  WalletOutlined,
+  ShopOutlined
+} from '@ant-design/icons';
 import { Footer, NavButton } from '@bcpros/lixi-components/components';
 
 import ModalManager from '../../Common/ModalManager';
@@ -147,6 +154,12 @@ const MainLayout: React.FC = props => {
                       </Layout>
                     </AppContainer>
                     <Footer>
+                      <Link href="/company" passHref>
+                        <NavButton active={selectedKey === '/company'}>
+                          <ShopOutlined />
+                          {intl.get('general.companies')}
+                        </NavButton>
+                      </Link>
                       <Link href="/" passHref>
                         <NavButton active={selectedKey === '/'}>
                           <UserOutlined />

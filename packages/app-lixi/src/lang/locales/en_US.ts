@@ -27,6 +27,7 @@ export default {
     'Error in QR scanner. Please ensure your camera is not in use. Due to Apple restrictions on third-party browsers, you must use Safari browser for QR code scanning on an iPhone.',
   'general.num': 'Num',
   'general.amount': 'Amount',
+  'general.companies': 'Companies',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
@@ -231,5 +232,8 @@ export default {
   'notification.unableToRead': 'Unable to read the notification.',
 
   /* 10.NFT */
-  'lixinft.unableToMint': 'Unable to mint the lixi NFT'
+  'lixinft.unableToMint': 'Unable to mint the lixi NFT',
+
+  /* 11.Company */
+  'company.unableGetCompanyFromServer': 'Unable to get the companies from server'
 };

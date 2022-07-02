@@ -158,6 +158,33 @@ model Notification {
   @@map("notification")
 }
 
+model Company {
+  id                 Int              @id @default(autoincrement())
+  name               String           @map("name")
+  description        String           @map("description")
+  mnemonicHash       String           @map("mnemonic_hash")
+  category           String           @map("category")
+  totalVote          Int              @map("total_vote")
+  companyComments    CompanyComment[]
+  createdAt          DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime         @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@map("company")
+}
+
+model CompanyComment {
+  id                 Int              @id @default(autoincrement())
+  company            Company          @relation(fields: [companyId], references: [id])
+  companyId          Int              @map("company_id")
+  comment            String           @map("comment")
+  header             String           @map("header")
+  totalVote          Int              @map("total_vote")
+  createdAt          DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime         @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@map("company_comment")
+}
+
 enum NotificationLevel {
   DEBUG
   INFO
