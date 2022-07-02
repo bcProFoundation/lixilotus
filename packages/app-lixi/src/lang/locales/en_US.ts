@@ -13,8 +13,6 @@ Table of Contents
 */
 
 export default {
-  'register.register': 'Register',
-
   /* 01.General */
   'general.accounts': 'Accounts',
   'general.lixi': 'Lixi',
@@ -158,7 +156,7 @@ export default {
   'lixi.lockSuccess': 'Lock lixi successfully.',
   'lixi.withdrawSuccess': 'Withdraw lixi successfully.',
   'lixi.renameSuccess': 'Lixi has been renamed to {lixiName}',
-  'lixi.registerSuccess': 'Register lixi pack successfully',
+  'lixi.registerSuccess': 'Đăng ký pack Lì xì thành công',
   'lixi.renameFailed': 'Rename failed. All lixi must have a unique name.',
   'lixi.isNFTEnabled': 'NFT Enabled',
   'lixi.optionNFTEnabled': 'Option: NFT Enabled',
@@ -236,5 +234,8 @@ export default {
   'notification.unableToRead': 'Unable to read the notification.',
 
   /* 10.NFT */
-  'lixinft.unableToMint': 'Unable to mint the lixi NFT'
+  'lixinft.unableToMint': 'Unable to mint the lixi NFT',
+
+  /* 11.Register */
+  'register.register': 'Register'
 };

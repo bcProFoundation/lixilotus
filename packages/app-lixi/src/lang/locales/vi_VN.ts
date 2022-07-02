@@ -138,6 +138,7 @@ export default {
   'lixi.createLixiSuccessful': 'Tạo mới Lì xì thành công.',
   'lixi.errorWhenCreateLixi': 'Lỗi không xác định. Tạo Lì xì không thành công.',
   'lixi.unableCreateLixiServer': 'Máy chủ tạo mới Lì xì không thành công',
+  'lixi.unableRegisterLixiPack': 'Không thể đăng ký pack Lì xì',
   'lixi.unableRefresh': 'Không thể làm mới Lì xì.',
   'lixi.unableSelect': 'Không thể chọn lì xì.',
   'lixi.unableUnlock': 'Không thể mở khóa Lì xì.',
@@ -154,6 +155,7 @@ export default {
   'lixi.lockSuccess': 'Khóa Lì xì thành công.',
   'lixi.withdrawSuccess': 'Rút Lì xì thành công.',
   'lixi.renameSuccess': 'Lì xì đã được đổi tên thành {lixiName}',
+  'lixi.registerSuccess': 'Register lixi pack successfully',
   'lixi.renameFailed': 'Đổi tên không thành công. Hãy thử lại với một tên khác.',
   'lixi.isNFTEnabled': 'Kích hoạt NFT',
   'lixi.optionNFTEnabled': 'Tùy chọn: Kích hoạt NFT',
@@ -234,5 +236,8 @@ export default {
   'notification.unableToRead': 'Không thể đọc thông báo.',
 
   /* 10.NFT */
-  'lixinft.unableToMint': 'Không thể tạo NFT'
+  'lixinft.unableToMint': 'Không thể tạo NFT',
+
+  /* 11.Register */
+  'register.register': 'Register'
 };
