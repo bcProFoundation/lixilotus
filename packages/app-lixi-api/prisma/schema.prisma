@@ -13,7 +13,7 @@ generator client {
 
 // The handle for page or user account
 model Handle {
-  id           String @id @default(uuid())
+  id           String @id @default(cuid())
   handle       String @map("handle") @db.VarChar(150)
   handleNumber Int    @map("handle_number") @db.Oid
 
@@ -25,7 +25,7 @@ model Handle {
 }
 
 model UserAccount {
-  id                String @id @default(uuid())
+  id                String @id @default(cuid())
   User              User[]
   encryptedMnemonic String @map("encrypted_mnemonic")
   encryptedSecret   String @default("") @map("encrypted_secret")
@@ -33,12 +33,17 @@ model UserAccount {
   address           String @default("") @map("address")
   publicKey         String @default("") @map("public_key")
 
+
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@index([mnemonicHash], type: Hash)
+  @@index([address])
+  @@map("user_account")
 }
 
 model User {
-  id               String            @id @default(uuid())
+  id               String            @id @default(cuid())
   userAccount      UserAccount       @relation(fields: [userAccountId], references: [id])
   userAccountId    String            @unique @map("user_account_id")
   handle           Handle            @relation(fields: [handleId], references: [id])
@@ -70,7 +75,7 @@ model User {
 }
 
 model PageAccount {
-  id                String @id @default(uuid())
+  id                String @id @default(cuid())
   encryptedMnemonic String @map("encrypted_mnemonic")
   encryptedSecret   String @default("") @map("encrypted_secret")
   Page              Page?
@@ -87,7 +92,7 @@ model PageAccount {
 }
 
 model Page {
-  id            String      @id @default(uuid())
+  id            String      @id @default(cuid())
   pageAccount   PageAccount @relation(fields: [pageAccountId], references: [id])
   pageAccountId String      @unique @map("page_account_id")
   name          String      @default("") @map("name") @db.VarChar(255)
@@ -100,6 +105,7 @@ model Page {
   parentId      String?     @map("parent_id")
   handle        Handle      @relation(fields: [handleId], references: [id])
   handleId      String      @map("handle_id")
+  address       String      @default("")
   website       String      @default("") @map("website")
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
@@ -107,6 +113,18 @@ model Page {
 
 
   @@map("page")
+}
+
+model PageLogin {
+  id String @id @default(cuid())
+
+  @@map("page_login")
+}
+
+model ClaimCode {
+  id String @id @default(cuid())
+
+  @@map("claim_code")
 }
 
 model Account {
@@ -236,7 +254,7 @@ model NotificationTypeTranslation {
 }
 
 model Notification {
-  id                 String            @id @default(uuid())
+  id                 String            @id @default(cuid())
   message            String            @default("")
   readAt             DateTime?         @db.Timestamptz
   deletedAt          DateTime?         @db.Timestamptz
@@ -266,7 +284,7 @@ enum NotificationLevel {
 }
 
 model EmailTemplate {
-  id                        String                     @id @default(uuid())
+  id                        String                     @id @default(cuid())
   slug                      String                     @default("")
   description               String
   createdAt                 DateTime                   @default(now()) @map("created_at") @db.Timestamptz
@@ -277,7 +295,7 @@ model EmailTemplate {
 }
 
 model EmailTemplateTranslation {
-  id              String        @id @default(uuid())
+  id              String        @id @default(cuid())
   sender          String        @default("")
   emailTemplate   EmailTemplate @relation(fields: [emailTemplateId], references: [id])
   emailTemplateId String        @map("email_template_id")
