@@ -1,4 +1,5 @@
-import { Envelope } from "./envelope";
+import { Account } from '..';
+import { Envelope } from './envelope';
 
 export interface GenerateLixiCommand {
   name: string;
@@ -53,7 +54,6 @@ export interface CreateLixiCommand {
   numberLixiPerPackage?: Nullable<number>;
 }
 
-
 export interface LixiDto {
   id?: number;
   name: string;
@@ -78,6 +78,7 @@ export interface LixiDto {
   balance?: number;
   address: string;
   status: string;
+  inventoryStatus: string;
   accountId: number;
   amount: number;
   numberOfSubLixi: Nullable<number>;
@@ -92,7 +93,7 @@ export interface LixiDto {
   isNFTEnabled: boolean;
   numberLixiPerPackage?: Nullable<number>;
   packageId?: Nullable<number>;
-};
+}
 
 export interface Lixi {
   id: number;
@@ -118,6 +119,7 @@ export interface Lixi {
   balance?: number;
   address: string;
   status: string;
+  inventoryStatus: string;
   accountId: number;
   amount: number;
   numberOfSubLixi: Nullable<number>;
@@ -132,32 +134,37 @@ export interface Lixi {
   isNFTEnabled: boolean;
   numberLixiPerPackage?: Nullable<number>;
   packageId?: Nullable<number>;
-};
+}
+
+export interface RegisterLixiPackCommand {
+  claimCode: string;
+  account: Account;
+}
 
 export interface UnarchiveLixiCommand {
   id: number;
   mnemonic: string;
   mnemonicHash: string;
-};
+}
 
 export interface ArchiveLixiCommand {
   id: number;
   mnemonic: string;
   mnemonicHash: string;
-};
+}
 
 export interface WithdrawLixiCommand {
   id: number;
   mnemonic: string;
   mnemonicHash: string;
-};
+}
 
 export interface RenameLixiCommand {
   id: number;
   mnemonic: string;
   mnemonicHash: string;
   name: string;
-};
+}
 
 export interface ExportLixiCommand {
   id: number;
@@ -169,20 +176,20 @@ export enum LixiType {
   Fixed = 1,
   Divided = 2,
   Equal = 3,
-};
+}
 
 export enum ClaimType {
   Single = 0,
   OneTime = 1,
-};
+}
 
 export interface PostLixiResponseDto {
-  lixi: Lixi,
-  jobId?: string
-};
+  lixi: Lixi;
+  jobId?: string;
+}
 
 export interface DownloadExportedLixiCommand {
-  lixiId: number,
-  fileName: string,
-  mnemonicHash: string
+  lixiId: number;
+  fileName: string;
+  mnemonicHash: string;
 }
