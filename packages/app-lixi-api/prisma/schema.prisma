@@ -173,8 +173,8 @@ model Upload {
   thumbnailWidth   Int?
   thumbnailHeight  Int?
   type             String?  @db.VarChar
-  lixi             Lixi?     @relation(fields: [lixiId], references: [id])
-  lixiId           Int
+  lixi             Lixi?    @relation(fields: [lixiId], references: [id])
+  lixiId           Int      @unique
   account          Account? @relation(fields: [accountId], references: [id])
   accountId        Int
 

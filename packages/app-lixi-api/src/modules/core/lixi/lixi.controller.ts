@@ -43,7 +43,7 @@ import { EXPORT_SUB_LIXIES_QUEUE, LIXI_JOB_NAMES, WITHDRAW_SUB_LIXIES_QUEUE } fr
 import logger from 'src/logger';
 import { LixiService } from 'src/modules/core/lixi/lixi.service';
 import { WalletService } from 'src/modules/wallet/wallet.service';
-import { aesGcmDecrypt, numberToBase58 } from 'src/utils/encryptionMethods';
+import { aesGcmDecrypt, numberToBase58, hexSha256 } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
 import { PrismaService } from '../../prisma/prisma.service';
 import { I18n, I18nContext } from 'nestjs-i18n';
@@ -861,20 +861,29 @@ export class LixiController {
   ) {
     try {
       const account = (req as any).account;
+      const publicDir = `./public/uploads`
+      const buffer = await file.toBuffer();
+      const fileExtension = extname(file.filename);
+      const encryptedName = await hexSha256(file.filename);
+      const folderName = encryptedName.substring(0,2);
+
       if (!account) {
         const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
         throw new Error(couldNotFindAccount);
       }
 
-      console.log(account);
+      if (!fs.existsSync(`${publicDir}/${folderName}`)) {
+        fs.mkdirSync(`${publicDir}/${folderName}`);
+      }
 
-      const buffer = await file.toBuffer();
-      const fileExtension = extname(file.filename);
-      fs.writeFile(`./uploads/${file.filename}`, buffer, function (err) {
+      const fileUrl = `${publicDir}/${folderName}/${encryptedName}${fileExtension}`;
+
+      fs.writeFile(fileUrl, buffer, function (err) {
         if (err) {
-          throw err;
+          throw new VError;
         }
       });
+
       return;
     } catch (err) {
       if (err instanceof VError) {
