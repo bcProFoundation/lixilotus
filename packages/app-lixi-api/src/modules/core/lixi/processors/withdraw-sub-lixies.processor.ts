@@ -1,19 +1,10 @@
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
-import {
-  OnQueueEvent,
-  OnWorkerEvent,
-  Processor,
-  QueueEventsHost,
-  QueueEventsListener,
-  WorkerHost
-} from '@nestjs/bullmq';
-import { Inject, Injectable } from '@nestjs/common';
-import { Lixi as LixiDb, prisma, PrismaClient } from '@prisma/client';
+import { Processor, WorkerHost } from '@nestjs/bullmq';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
 import * as _ from 'lodash';
-import { LIXI_JOB_NAMES, WITHDRAW_SUB_LIXIES_QUEUE } from 'src/modules/core/lixi/constants/lixi.constants';
-import logger from 'src/logger';
+import { WITHDRAW_SUB_LIXIES_QUEUE } from 'src/modules/core/lixi/constants/lixi.constants';
 import { WithdrawSubLixiesJobData, WithdrawSubLixiesJobResult } from 'src/modules/core/lixi/models/lixi.models';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { WalletService } from 'src/modules/wallet/wallet.service';
@@ -21,6 +12,7 @@ import { WalletService } from 'src/modules/wallet/wallet.service';
 @Injectable()
 @Processor(WITHDRAW_SUB_LIXIES_QUEUE)
 export class WithdrawSubLixiesProcessor extends WorkerHost {
+  private logger: Logger = new Logger(WithdrawSubLixiesProcessor.name);
   constructor(
     private prisma: PrismaService,
     private walletService: WalletService,
@@ -80,7 +72,7 @@ export class WithdrawSubLixiesProcessor extends WorkerHost {
             }
           });
         } catch (err) {
-          logger.error(err);
+          this.logger.error(err);
           continue;
         }
       }

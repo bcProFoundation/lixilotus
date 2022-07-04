@@ -1,8 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import {
-  FastifyAdapter,
-  NestFastifyApplication
-} from '@nestjs/platform-fastify';
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import compression from '@fastify/compress';
 import { fastifyCookie } from '@fastify/cookie';
@@ -12,28 +9,47 @@ import { AppModule } from './app.module';
 import { RedisIoAdapter } from './common/adapters/redis-io.adapter';
 import { HttpExceptionFilter } from './middlewares/exception.filter';
 import { PrismaService } from './modules/prisma/prisma.service';
+import { WinstonModule } from 'nest-winston';
+import winston, { format } from 'winston';
+import 'winston-daily-rotate-file';
+const { combine, timestamp, printf } = format;
 
-const allowedOrigins = [
-  process.env.SENDLOTUS_URL,
-  process.env.BASE_URL
-];
+const allowedOrigins = [process.env.SENDLOTUS_URL, process.env.BASE_URL];
 
 async function bootstrap() {
-
   const POST_LIMIT = 1024 * 100; /* Max POST 100 kb */
-
+  const transport = new winston.transports.DailyRotateFile({
+    filename: 'lixi-api-%DATE%.log',
+    handleExceptions: true,
+    maxSize: '40m',
+    maxFiles: '14d',
+    dirname: './logs',
+    level: 'debug' // TODO
+  });
   const fastifyAdapter = new FastifyAdapter();
-  fastifyAdapter.getInstance().addContentTypeParser(
-    'application/json',
-    { bodyLimit: POST_LIMIT },
-    (_request, _payload, done) => {
+  fastifyAdapter
+    .getInstance()
+    .addContentTypeParser('application/json', { bodyLimit: POST_LIMIT }, (_request, _payload, done) => {
       done(null, (_payload as any).body);
-    }
-  );
-  const app = await NestFactory.create<NestFastifyApplication>(
-    AppModule,
-    new FastifyAdapter(),
-  );
+    });
+  const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), {
+    logger: WinstonModule.createLogger({
+      transports: [transport],
+      exceptionHandlers: [new winston.transports.File({ filename: 'exceptions.log', dirname: './logs' })],
+      exitOnError: false,
+      format: combine(
+        format.errors({ stack: true }), // log the full stack
+        timestamp(), // get the time stamp part of the full log message
+        printf(({ level, message, timestamp, stack }) => {
+          // formating the log outcome to show/store
+          if (level === 'error') {
+            console.log(message);
+          }
+          return `${timestamp} ${level ?? ''}: ${message} - ${stack}`;
+        })
+      )
+    })
+  });
 
   app.setGlobalPrefix('api');
   app.useGlobalFilters(new HttpExceptionFilter());
@@ -45,16 +61,15 @@ async function bootstrap() {
   process.env.NODE_ENV === 'development'
     ? app.enableCors()
     : app.enableCors({
-      origin: function (origin, callback) {
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) === -1) {
-          const msg =
-            'The CORS policy for this site does not allow access from the specified Origin.';
-          return callback(new Error(msg), false);
+        origin: function (origin, callback) {
+          if (!origin) return callback(null, true);
+          if (allowedOrigins.indexOf(origin) === -1) {
+            const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+            return callback(new Error(msg), false);
+          }
+          return callback(null, true);
         }
-        return callback(null, true);
-      },
-    });
+      });
 
   // Prisma
   const prismaService: PrismaService = app.get(PrismaService);
@@ -81,9 +96,9 @@ async function bootstrap() {
         defaultSrc: [`'self'`],
         styleSrc: [`'self'`, `'unsafe-inline'`],
         imgSrc: [`'self'`, 'data:', 'validator.swagger.io'],
-        scriptSrc: [`'self'`, `https: 'unsafe-inline'`],
-      },
-    },
+        scriptSrc: [`'self'`, `https: 'unsafe-inline'`]
+      }
+    }
   });
 
   await app.register(fastifyCookie, {

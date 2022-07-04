@@ -11,32 +11,20 @@ export const transport = new winston.transports.DailyRotateFile({
   level: 'debug' // TODO
 });
 
-
-
-
-const timezone = new Date()
-  .toLocaleString('en-US', { timeZoneName: 'short' })
-  .split(' ')
-  .pop();
+const timezone = new Date().toLocaleString('en-US', { timeZoneName: 'short' }).split(' ').pop();
 
 export const formatTimestamp = (date: Date): string =>
   `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date
     .getDate()
     .toString()
-    .padStart(2, '0')} ${date
-      .getHours()
-      .toString()
-      .padStart(2, '0')}:${date
-        .getMinutes()
-        .toString()
-        .padStart(2, '0')}:${date
-          .getSeconds()
-          .toString()
-          .padStart(2, '0')}.${date
-            .getMilliseconds()
-            .toString()
-            // .padEnd(3, '0')} ${timezone}`;
-            .padEnd(3, '0')}`;
+    .padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date
+    .getMinutes()
+    .toString()
+    .padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}.${date
+    .getMilliseconds()
+    .toString()
+    // .padEnd(3, '0')} ${timezone}`;
+    .padEnd(3, '0')}`;
 
 // export const timestamp = () => formatTimestamp(new Date());
 
@@ -47,10 +35,11 @@ export const logger = createLogger({
   format: combine(
     format.errors({ stack: true }), // log the full stack
     timestamp(), // get the time stamp part of the full log message
-    printf(({ level, message, timestamp, stack }) => { // formating the log outcome to show/store 
-      return `${timestamp} ${level}: ${message} - ${stack}`;
+    printf(({ level, message, timestamp, stack }) => {
+      // formating the log outcome to show/store
+      return `${timestamp} ${level ?? ''}: ${message} - ${stack}`;
     })
-  ),
+  )
 });
 
 logger.on('error', function (err) {

@@ -1,18 +1,18 @@
 import BigNumber from 'bignumber.js';
 import * as _ from 'lodash';
-import logger from 'src/logger';
 import VError from 'verror';
 
 import { currency, fromSmallestDenomination, toSmallestDenomination } from '@bcpros/lixi-models';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
 import HDNode from '@bcpros/xpi-js/types/hdnode';
-import { Inject, Injectable } from '@nestjs/common';
-import { I18n, I18nContext } from 'nestjs-i18n';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { I18nContext } from 'nestjs-i18n';
 
 @Injectable()
 export class WalletService {
-  constructor(@Inject('xpiWallet') private xpiWallet: MinimalBCHWallet, @Inject('xpijs') private xpijs: BCHJS) { }
+  private logger: Logger = new Logger(WalletService.name);
+  constructor(@Inject('xpiWallet') private xpiWallet: MinimalBCHWallet, @Inject('xpijs') private xpijs: BCHJS) {}
 
   async getBalance(address: string) {
     return this.xpiWallet.getBalance(address);
@@ -169,7 +169,7 @@ export class WalletService {
         return false;
       }
     } catch (err) {
-      logger.error(err);
+      this.logger.error(err);
       return false;
     }
   }

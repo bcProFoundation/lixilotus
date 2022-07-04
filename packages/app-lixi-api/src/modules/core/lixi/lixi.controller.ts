@@ -7,8 +7,7 @@ import {
   LixiDto,
   PaginationResult,
   PostLixiResponseDto,
-  RenameLixiCommand,
-  WithdrawLixiCommand
+  RenameLixiCommand
 } from '@bcpros/lixi-models';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
@@ -23,6 +22,7 @@ import {
   HttpStatus,
   Inject,
   Injectable,
+  Logger,
   Param,
   Patch,
   Post,
@@ -37,30 +37,30 @@ import { Claim as ClaimDb, Lixi } from '@prisma/client';
 import { Queue } from 'bullmq';
 import * as _ from 'lodash';
 import { PaginationParams } from 'src/common/models/paginationParams';
-import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
-import { EXPORT_SUB_LIXIES_QUEUE, LIXI_JOB_NAMES, WITHDRAW_SUB_LIXIES_QUEUE } from 'src/modules/core/lixi/constants/lixi.constants';
-import logger from 'src/logger';
+import {
+  EXPORT_SUB_LIXIES_QUEUE,
+  LIXI_JOB_NAMES,
+  WITHDRAW_SUB_LIXIES_QUEUE
+} from 'src/modules/core/lixi/constants/lixi.constants';
 import { LixiService } from 'src/modules/core/lixi/lixi.service';
 import { WalletService } from 'src/modules/wallet/wallet.service';
 import { aesGcmDecrypt, numberToBase58 } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
 import { PrismaService } from '../../prisma/prisma.service';
 import { I18n, I18nContext } from 'nestjs-i18n';
-import { Response } from 'express';
 import { createReadStream } from 'fs';
 import { join } from 'path';
 import { JwtAuthGuard } from 'src/modules/auth/jwtauth.guard';
-import {
-  FastifyRequest,
-  FastifyReply
-} from 'fastify';
+import { FastifyRequest, FastifyReply } from 'fastify';
 import moment from 'moment';
 
 @Controller('lixies')
 @UseInterceptors(ClassSerializerInterceptor)
 @Injectable()
 export class LixiController {
+  private logger: Logger = new Logger(LixiController.name);
+
   constructor(
     private prisma: PrismaService,
     private readonly walletService: WalletService,
@@ -70,7 +70,7 @@ export class LixiController {
     @Inject('xpijs') private XPI: BCHJS,
     @InjectQueue(EXPORT_SUB_LIXIES_QUEUE) private exportSubLixiesQueue: Queue,
     @InjectQueue(WITHDRAW_SUB_LIXIES_QUEUE) private withdrawSubLixiesQueue: Queue
-  ) { }
+  ) {}
 
   @Get(':id')
   async getLixi(
@@ -117,7 +117,7 @@ export class LixiController {
           resultApi.claimCode = claimPart + encodedId;
         }
       } catch (err: unknown) {
-        logger.error(err);
+        this.logger.error(err);
       }
       return resultApi;
     } catch (err: unknown) {
@@ -153,21 +153,21 @@ export class LixiController {
 
       subLixies = cursor
         ? await this.prisma.lixi.findMany({
-          take: take,
-          skip: 1,
-          where: {
-            parentId: lixiId
-          },
-          cursor: {
-            id: cursor
-          }
-        })
+            take: take,
+            skip: 1,
+            where: {
+              parentId: lixiId
+            },
+            cursor: {
+              id: cursor
+            }
+          })
         : await this.prisma.lixi.findMany({
-          take: take,
-          where: {
-            parentId: lixiId
-          }
-        });
+            take: take,
+            where: {
+              parentId: lixiId
+            }
+          });
 
       const childrenApiResult: LixiDto[] = [];
 
@@ -191,7 +191,7 @@ export class LixiController {
             childResult.claimCode = claimPart + encodedId;
           }
         } catch (err: unknown) {
-          logger.error(err);
+          this.logger.error(err);
         }
         childrenApiResult.push(childResult);
       }
@@ -201,14 +201,14 @@ export class LixiController {
       const countAfter = !endCursor
         ? 0
         : await this.prisma.lixi.count({
-          where: {
-            parentId: lixiId
-          },
-          cursor: {
-            id: _.toSafeInteger(endCursor)
-          },
-          skip: 1
-        });
+            where: {
+              parentId: lixiId
+            },
+            cursor: {
+              id: _.toSafeInteger(endCursor)
+            },
+            skip: 1
+          });
 
       const hasNextPage = countAfter > 0;
 
@@ -556,7 +556,7 @@ export class LixiController {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
-        logger.error(err);
+        this.logger.error(err);
         const couldNotWithdraw = await i18n.t('lixi.messages.couldNotWithdraw');
         const error = new VError.WError(err as Error, couldNotWithdraw);
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -619,10 +619,10 @@ export class LixiController {
         where: {
           parentId: lixiId
         }
-      })
+      });
 
       const subLixiesIds = subLixies.map(item => item.id);
-      subLixiesIds.push(lixiId)
+      subLixiesIds.push(lixiId);
 
       const count = await this.prisma.claim.count({
         where: {
@@ -675,19 +675,19 @@ export class LixiController {
       const countAfter = !endCursor
         ? 0
         : await this.prisma.claim.count({
-          where: {
-            lixiId: lixiId
-          },
-          orderBy: [
-            {
-              id: 'asc'
-            }
-          ],
-          cursor: {
-            id: _.toSafeInteger(endCursor)
-          },
-          skip: 1
-        });
+            where: {
+              lixiId: lixiId
+            },
+            orderBy: [
+              {
+                id: 'asc'
+              }
+            ],
+            cursor: {
+              id: _.toSafeInteger(endCursor)
+            },
+            skip: 1
+          });
 
       const hasNextPage = countAfter > 0;
 
@@ -807,7 +807,6 @@ export class LixiController {
     @I18n() i18n: I18nContext
   ): Promise<StreamableFile> {
     try {
-
       const account = (req as any).account;
 
       if (!account) {
@@ -831,7 +830,7 @@ export class LixiController {
         throw new VError(fileNameNotExist);
       }
 
-      const file = createReadStream(join(process.cwd(), 'public', "download", fileName));
+      const file = createReadStream(join(process.cwd(), 'public', 'download', fileName));
 
       res.header('Content-Type', 'text/csv');
       res.header('Content-Disposition', `attachment; filename=${fileName}`);
