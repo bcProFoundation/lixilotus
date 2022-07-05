@@ -3,7 +3,15 @@ import { push } from 'connected-next-router';
 import * as _ from 'lodash';
 import * as Effects from 'redux-saga/effects';
 import intl from 'react-intl-universal';
-import { AccountDto, Claim, ExportLixiCommand, PaginationResult, PostLixiResponseDto } from '@bcpros/lixi-models';
+import {
+  Account,
+  AccountDto,
+  Claim,
+  ExportLixiCommand,
+  PaginationResult,
+  PostLixiResponseDto,
+  RegisterLixiPackCommand
+} from '@bcpros/lixi-models';
 import {
   CreateLixiCommand,
   GenerateLixiCommand,
@@ -62,7 +70,10 @@ import {
   downloadExportedLixiFailure,
   downloadExportedLixiSuccess,
   refreshLixiSilentSuccess,
-  refreshLixiSilentFailure
+  refreshLixiSilentFailure,
+  registerLixiPack,
+  registerLixiPackSuccess,
+  registerLixiPackFailure
 } from './actions';
 import lixiApi from './api';
 import { getLixiById } from './selectors';
@@ -70,6 +81,7 @@ import { select } from 'redux-saga/effects';
 import { saveAs } from 'file-saver';
 import moment from 'moment';
 import { refreshLixiSilent } from './actions';
+import { refreshLixiListSilent } from '@store/account/actions';
 
 const call: any = Effects.call;
 /**
@@ -152,7 +164,7 @@ function* fetchInitialSubLixiesSaga(action: PayloadAction<number>) {
   }
 }
 
-function* fetchInitialSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) { }
+function* fetchInitialSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) {}
 
 function* fetchInitialSubLixiesFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? intl.get('lixi.unableGetChildLixi');
@@ -178,7 +190,7 @@ function* fetchMoreSubLixiesSaga(action: PayloadAction<{ parentId: number; start
   }
 }
 
-function* fetchMoreSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) { }
+function* fetchMoreSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) {}
 
 function* fetchMoreSubLixiesFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? intl.get('lixi.unableCreateChildLixi');
@@ -213,6 +225,50 @@ function* postLixiSaga(action: PayloadAction<CreateLixiCommand>) {
     const message = (err as Error).message ?? intl.get('lixi.couldNotPostLixi');
     yield put(postLixiFailure(message));
   }
+}
+
+function* registerLixiPackSaga(action: PayloadAction<any>) {
+  try {
+    const command = action.payload;
+
+    yield put(showLoading(registerLixiPack.type));
+
+    const dataApi: RegisterLixiPackCommand = {
+      ...command
+    };
+
+    const data: Lixi[] = yield call(lixiApi.registerLixiPack, dataApi);
+    if (_.isNil(data)) {
+      throw new Error(intl.get('lixi.unableRegisterLixiPack'));
+    }
+    if (data) {
+      yield put(registerLixiPackSuccess(dataApi.account));
+    }
+  } catch (err) {
+    const message = (err as Error).message ?? intl.get('lixi.unableRegisterLixiPack');
+    yield put(registerLixiPackFailure(message));
+  }
+}
+
+function* registerLixiPackSuccessSaga(action: PayloadAction<Account>) {
+  const account: Account = action.payload;
+  Modal.success({
+    content: intl.get('lixi.registerSuccess')
+  });
+  yield put(refreshLixiListSilent(account));
+  yield put(hideLoading(registerLixiPack.type));
+}
+
+function* registerLixiPackFailureSaga(action: PayloadAction<string>) {
+  const message = action.payload ?? intl.get('lixi.unableRegisterLixiPack');
+  yield put(
+    showToast('error', {
+      message: 'Error',
+      description: message,
+      duration: 5
+    })
+  );
+  yield put(hideLoading(registerLixiPack.type));
 }
 
 function* postLixiSuccessSaga(action: PayloadAction<Lixi>) {
@@ -725,6 +781,18 @@ function* watchDownloadExportedLixiSuccess() {
   yield takeLatest(downloadExportedLixiSuccess.type, downloadExportedLixiSuccessSaga);
 }
 
+function* watchRegisterLixiPack() {
+  yield takeLatest(registerLixiPack.type, registerLixiPackSaga);
+}
+
+function* watchRegisterLixiPackSuccess() {
+  yield takeLatest(registerLixiPackSuccess.type, registerLixiPackSuccessSaga);
+}
+
+function* watchRegisterLixiPackFailure() {
+  yield takeLatest(registerLixiPackFailure.type, registerLixiPackFailureSaga);
+}
+
 export default function* lixiSaga() {
   yield all([
     fork(watchGenerateLixi),
@@ -764,6 +832,9 @@ export default function* lixiSaga() {
     fork(watchExportSubLixiesFailure),
     fork(watchDownloadExportedLixi),
     fork(watchDownloadExportedLixiFailure),
-    fork(watchDownloadExportedLixiSuccess)
+    fork(watchDownloadExportedLixiSuccess),
+    fork(watchRegisterLixiPack),
+    fork(watchRegisterLixiPackSuccess),
+    fork(watchRegisterLixiPackFailure)
   ]);
 }

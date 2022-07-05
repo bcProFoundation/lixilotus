@@ -150,6 +150,7 @@ model Lixi {
   isFamilyFriendly     Boolean   @map("is_family_friendly")
   claims               Claim[]
   status               String    @default("active") @map("status")
+  inventoryStatus      String    @default("initialized") @map("invetory_status")
   account              Account   @relation(fields: [accountId], references: [id])
   accountId            Int       @map("account_id")
   derivationIndex      Int       @default(0) @map("derivation_index")

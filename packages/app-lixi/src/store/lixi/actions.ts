@@ -10,7 +10,7 @@ import {
   DownloadExportedLixiCommand
 } from '@bcpros/lixi-models/lib/lixi';
 import { Claim } from '@bcpros/lixi-models/lib/claim';
-import { ExportLixiCommand, LixiDto, PaginationResult } from '@bcpros/lixi-models';
+import { Account, ExportLixiCommand, LixiDto, PaginationResult, RegisterLixiPackCommand } from '@bcpros/lixi-models';
 
 export const getLixiActionType = 'lixi/getLixi';
 export const postLixiActionType = 'lixi/postLixi';
@@ -61,3 +61,6 @@ export const exportSubLixiesFailure = createAction<string>('lixi/exportSubLixies
 export const downloadExportedLixi = createAction<DownloadExportedLixiCommand>('lixi/downloadExportedLixi');
 export const downloadExportedLixiSuccess = createAction<any>('lixi/downloadExportedLixiSuccess');
 export const downloadExportedLixiFailure = createAction<string>('lixi/downloadExportedLixiFailure');
+export const registerLixiPack = createAction<RegisterLixiPackCommand>('lixi/registerLixiPack');
+export const registerLixiPackSuccess = createAction<Account>('lixi/registerLixiPackSuccess');
+export const registerLixiPackFailure = createAction<String>('lixi/registerLixiPackFailure');

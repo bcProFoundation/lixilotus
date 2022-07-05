@@ -1,4 +1,10 @@
-import { DownloadExportedLixiCommand, ExportLixiCommand, LixiDto, PaginationResult } from '@bcpros/lixi-models';
+import {
+  DownloadExportedLixiCommand,
+  ExportLixiCommand,
+  LixiDto,
+  PaginationResult,
+  RegisterLixiPackCommand
+} from '@bcpros/lixi-models';
 import {
   CreateLixiCommand,
   ArchiveLixiCommand,
@@ -61,6 +67,21 @@ const lixiApi = {
       .post(url, data)
       .then(response => {
         return response.data as PostLixiResponseDto;
+      })
+      .catch(err => {
+        const { response } = err;
+        throw response?.data ?? err ?? 'Network Error';
+      });
+  },
+  registerLixiPack(data: RegisterLixiPackCommand): Promise<boolean> {
+    const config = {
+      withCredentials: true
+    };
+    const url = `/api/lixies/register`;
+    return axiosClient
+      .patch(url, data, config)
+      .then(response => {
+        return response.data;
       })
       .catch(err => {
         const { response } = err;
