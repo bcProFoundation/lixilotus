@@ -1,7 +1,7 @@
 import {
   ClaimDto, ClaimType, countries,
   CreateClaimDto,
-  fromSmallestDenomination, LixiType, toSmallestDenomination, ViewClaimDto
+  fromSmallestDenomination, LixiType, LotteryAddress, toSmallestDenomination, ViewClaimDto
 } from '@bcpros/lixi-models';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
@@ -150,6 +150,9 @@ export class ClaimController {
         const lixi = await this.prisma.lixi.findUnique({
           where: {
             id: lixiId
+          },
+          include: {
+            distribution: true,
           }
         });
 
@@ -247,8 +250,23 @@ export class ClaimController {
 
         let satoshisToSend;
         if (lixi.claimType == ClaimType.OneTime) {
-          const xpiValue = await this.walletService.onMax(lixiAddress);
-          satoshisToSend = toSmallestDenomination(new BigNumber(xpiValue));
+          // Loyalty program
+          if (lixi.distribution.length != 0 || lixi.isLottery) {
+            const xpiValue = await this.walletService.onMax(lixiAddress);
+
+            let count = 1;
+            lixi.isLottery === true && count++;
+            count += lixi.distribution.length;
+
+            const xpiDistributions = xpiValue / (count);
+            satoshisToSend = toSmallestDenomination(new BigNumber(xpiDistributions));
+          }
+
+          // without Loyalty program
+          else {
+            const xpiValue = await this.walletService.onMax(lixiAddress);
+            satoshisToSend = toSmallestDenomination(new BigNumber(xpiValue));
+          }
         } else if (lixi.lixiType == LixiType.Random) {
           const maxXpiValue = xpiBalance < lixi.maxValue ? xpiBalance : lixi.maxValue;
           const maxSatoshis = toSmallestDenomination(new BigNumber(maxXpiValue));
@@ -272,12 +290,39 @@ export class ClaimController {
         }
 
         const amountSats = Math.floor(satoshisToSend.toNumber());
-        const outputs = [
+
+        let outputs: { address: string; amountSat: number }[] = [];
+        outputs = [
           {
             address: claimApi.claimAddress,
             amountSat: amountSats
           }
         ];
+        if (lixi.distribution) {
+          // Get distribution address
+          const distributionId = lixi?.distribution.map(item => item.distributionId)
+          const distributions = await this.prisma.distribution.findMany({
+            where: {
+              id: { in: distributionId }
+            }
+          })
+
+          // add receiving address
+          distributions.map(item => {
+            outputs.push({
+              address: item.address,
+              amountSat: amountSats
+            })
+          })
+        }
+        if (lixi.isLottery === true) {
+          outputs.push({
+            address: LotteryAddress,
+            amountSat: amountSats
+          })
+        }
+
+        console.log(outputs);
 
         if (!utxoStore || !(utxoStore as any).bchUtxos || !(utxoStore as any).bchUtxos) {
           const utxoEmpty = await i18n.t('claim.messages.utxoEmpty');

@@ -285,6 +285,16 @@ export class LixiController {
           } as PostLixiResponseDto;
         } else {
           // One time child codes type
+          const countDistributions = [command.staffAddress, command.charityAddress];
+          let count = 1;
+          for (var item of countDistributions) {
+            if (item != '') {
+              count++
+            }
+          }
+          command.isLottery === true && count++;
+          command.amount = command.amount * count;
+
           lixi = await this.lixiService.createOneTimeParentLixi(lixiIndex, account, command, i18n);
           const jobId = await this.lixiService.createSubLixies(lixiIndex + 1, account, command, lixi.id);
 

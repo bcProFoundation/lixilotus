@@ -1,4 +1,4 @@
-import { Account, CreateLixiCommand, Lixi, Package, WithdrawLixiCommand } from "@bcpros/lixi-models";
+import { CreateLixiCommand } from "@bcpros/lixi-models";
 
 export interface MapEncryptedClaimCode {
   [xpriv: string]: string
@@ -26,6 +26,7 @@ export interface CreateSubLixiesChunkJobData extends CreateSubLixiesJobData {
   fundingAddress: string;
   accountSecret: string;
   packageId?: Nullable<number>;
+  distributions?: string[];
 };
 export interface ExportSubLixiesJobData {
   parentId: number;

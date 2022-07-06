@@ -164,6 +164,8 @@ export default {
   'lixi.staffAddress': 'Địa chỉ ví nhân viên',
   'lixi.charityAddress': 'Địa chỉ ví từ thiện',
   'lixi.loterryAddress': 'Địa chỉ ví xổ số',
+  'lixi.loterryAddressCheck': 'Xác nhận',
+  'lixi.noteAmount': 'lý do số tiền tăng',
 
   /* 04.Claim */
   'claim.claim': 'Nhận Lì xì',

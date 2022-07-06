@@ -1,40 +1,42 @@
-import _ from 'lodash';
-import { Checkbox, Collapse, DatePicker, Form, Input, Menu, Modal, notification, Radio, RadioChangeEvent } from 'antd';
-import { range } from 'lodash';
+import { Checkbox, Collapse, DatePicker, Form, Input, Radio, RadioChangeEvent, Tooltip } from 'antd';
+import TextArea from 'antd/lib/input/TextArea';
+import _, { range } from 'lodash';
 import isEmpty from 'lodash.isempty';
-import intl from 'react-intl-universal';
 import moment from 'moment';
 import React, { useState } from 'react';
+import intl from 'react-intl-universal';
+import { getAllEnvelopes } from 'src/store/envelope/selectors';
+import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import { generateLixi } from 'src/store/lixi/actions';
 import { openModal } from 'src/store/modal/actions';
 import { showToast } from 'src/store/toast/actions';
-import { generateLixi } from 'src/store/lixi/actions';
+import styled from 'styled-components';
 
-import { AntdFormWrapper, FormItemWithQRCodeAddon } from '@bcpros/lixi-components/components/Common/EnhancedInputs';
+import { DollarOutlined, HeartOutlined, PlusSquareOutlined, TeamOutlined } from '@ant-design/icons';
+import { AntdFormWrapper } from '@bcpros/lixi-components/components/Common/EnhancedInputs';
 import { SmartButton } from '@bcpros/lixi-components/components/Common/PrimaryButton';
 import {
   AdvancedCollapse, LixiCollapse, StyledCollapse
 } from '@bcpros/lixi-components/components/Common/StyledCollapse';
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
-import { Account } from '@bcpros/lixi-models/lib/account';
 import { countries } from '@bcpros/lixi-models/constants';
-import { GenerateLixiCommand, LixiType, ClaimType } from '@bcpros/lixi-models/lib/lixi';
-import { PlusSquareOutlined } from '@ant-design/icons';
+import { Account } from '@bcpros/lixi-models/lib/account';
+import { ClaimType, GenerateLixiCommand, LixiType, LotteryAddress } from '@bcpros/lixi-models/lib/lixi';
 import CountrySelectDropdown from '@components/Common/CountrySelectDropdown';
-import EnvelopeSelectDropdown from '@components/Common/EnvelopeSelectDropdown';
+import EnvelopeCarousel from '@components/Common/EnvelopeCarousel';
+import { getCurrentAddress } from '@store/claim/selectors';
+import { AppContext } from '@store/store';
 import { isValidAmountInput } from '@utils/validation';
 
 import { CreateLixiConfirmationModalProps } from './CreateLixiConfirmationModal';
-import { LixiEnvelopeUploader, StyledLixiEnvelopeUploaded } from './LixiEnvelopeUploader';
-import { getAllEnvelopes } from 'src/store/envelope/selectors';
-import TextArea from 'antd/lib/input/TextArea';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import EnvelopeCarousel from '@components/Common/EnvelopeCarousel';
-import { parseAddress } from '@utils/addressMethods';
-import { AppContext } from '@store/store';
-import { getCurrentAddress } from '@store/claim/selectors';
 
 const { Panel } = Collapse;
 
+const LotteryInput = styled(Input)`
+  .ant-input-group-addon {
+    width: 52px
+  }
+`
 type CreateLixiFormProps = {
   account?: Account
 } & React.HTMLProps<HTMLElement>;
@@ -46,13 +48,14 @@ const CreateLixiForm = ({
 
   const dispatch = useAppDispatch();
   const envelopes = useAppSelector(getAllEnvelopes);
-  const currentAddress = useAppSelector(getCurrentAddress);
 
   const { XPI, Wallet } = React.useContext(AppContext);
 
   // New Lixi name
   const [newLixiName, setNewLixiName] = useState('');
   const [newLixiNameIsValid, setNewLixiNameIsValid] = useState<boolean | null>(null);
+
+  // LixiType && ClaimType
   const [lixiType, setLixiType] = useState<number>(LixiType.Random);
   const [claimType, setClaimType] = useState<number>(ClaimType.Single);
 
@@ -80,9 +83,9 @@ const CreateLixiForm = ({
   const [newLixiDividedValue, setNewLixiDividedValue] = useState('');
   const [newLixiDividedValueIsValid, setNewLixiDividedValueIsValid] = useState(false);
 
-  // New Lixi Packages Value
-  const [newNumberLixiPerPackage, setNewNumberLixiPerPackage] = useState('');
-  const [newPackageIsValid, setNewPackageIsValid] = useState(true);
+  // New Envelope
+  const [newEnvelopeId, setNewEnvelopeId] = useState<number | null>(null);
+  const [newEnvelopeMessage, setNewEnvelopeMessage] = useState('');
 
   // New Country
   const [newCountryLixi, setNewCountryLixi] = useState('');
@@ -92,47 +95,32 @@ const CreateLixiForm = ({
   const [newMaxClaim, setNewMaxClaimLixi] = useState('');
   const [newMaxClaimLixiIsValid, setNewMaxClaimLixiIsValid] = useState(true);
 
+  // New Lixi Packages Value
+  const [newNumberLixiPerPackage, setNewNumberLixiPerPackage] = useState('');
+  const [newPackageIsValid, setNewPackageIsValid] = useState(true);
+
   // New minimum staking number
   const [newMinStaking, setNewMinStaking] = useState('');
   const [newMinStakingIsValid, setNewMinStakingIsValid] = useState(true);
-
-  // New ExpiryAt
-  const [newExpiryAt, setNewExpiryAtLixi] = useState('');
-  const [newExpiryAtLixiIsValid, setExpiryAtLixiIsValid] = useState(true);
 
   // New ActivatedAt
   const [newActivatedAt, setNewActivatedAtLixi] = useState('');
   const [newActivatedAtLixiIsValid, setActivatedAtLixiIsValid] = useState(true);
 
+  // New ExpiryAt
+  const [newExpiryAt, setNewExpiryAtLixi] = useState('');
+  const [newExpiryAtLixiIsValid, setExpiryAtLixiIsValid] = useState(true);
+
   // New FamilyFriendly
   const [isFamilyFriendly, setIsFamilyFriendlyLixi] = useState<boolean>(false);
+
   // New isNFTEnabled
   const [isNFTEnabled, setIsNFTEnabledLixi] = useState<boolean>(false);
-  // New charity
-  const [isCharity, setIsCharityLixi] = useState<boolean>(false);
-  const handleAddressChange = e => {
-    const { value, name } = e.target;
-    let error: boolean | string = false;
-    let addressString: string = _.trim(value);
 
-    // parse address
-    const addressInfo = parseAddress(XPI, addressString);
-    const { address, isValid } = addressInfo;
-
-    // Is this valid address?
-    if (!isValid) {
-      error = intl.get('claim.invalidAddress', { ticker: currency.ticker });
-    }
-    else {
-      error = false;
-    }
-  }
-
-
-  // New Envelope
-  const [newEnvelopeId, setNewEnvelopeId] = useState<number | null>(null);
-  const [newEnvelopeMessage, setNewEnvelopeMessage] = useState('');
-
+  // New distribution program
+  const [newStaffAddress, setNewStaffAddress] = useState('');
+  const [newCharityAddress, setNewCharityAddress] = useState('');
+  const [isLottery, setIsLottery] = useState<boolean>(false);
 
   const handleNewLixiNameInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -147,6 +135,21 @@ const CreateLixiForm = ({
   const handleEnvelopeMessageInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = e.target;
     setNewEnvelopeMessage(value);
+  }
+
+  const handleStaffAddressInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setNewStaffAddress(value);
+  }
+
+  const handleCharityAddressInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setNewCharityAddress(value);
+  }
+
+  const handleIsLottery = (e) => {
+    const value = e.target.checked;
+    setIsLottery(value);
   }
 
   // Only enable CreateLixi button if all form entries are valid
@@ -271,80 +274,60 @@ const CreateLixiForm = ({
     setIsFamilyFriendlyLixi(value);
   }
 
-  const selectCharity = () => {
+  const lotterProgram = () => {
     return (
-    <StyledCollapse> 
-      <Panel key={''} header={intl.get('lixi.loyaltyProgram')}>
-        {/* address for staff */}
-        <FormItemWithQRCodeAddon
-          style={{
-            margin: '0 0 20px 0'
-          }}
-          loadWithCameraOpen={false}
-          onScan={result =>
-            handleAddressChange({
-              target: {
-                name: 'staff',
-                value: result,
-              },
-            })
-          }
-          inputProps={{
-            placeholder: intl.get('lixi.staffAddress'),
-            name: 'staff',
-            onChange: e => handleAddressChange(e),
-            required: true,
-            value: '',
-          }}
-        ></FormItemWithQRCodeAddon>
+      <StyledCollapse>
+        <StyledCollapse>
+          <StyledCollapse>
+            <Panel key={''} header={intl.get('lixi.loyaltyProgram')}>
+              {/* address for staff */}
+              <Form.Item>
+                <Input
+                  autoComplete="off"
+                  prefix={<TeamOutlined />}
+                  placeholder={intl.get('lixi.staffAddress')}
+                  name="staffAddress"
+                  value={newStaffAddress}
+                  onChange={e => handleStaffAddressInput(e)}
+                />
+              </Form.Item>
+              {/* Charity */}
+              <Form.Item>
+                <Input
+                  autoComplete="off"
+                  prefix={<HeartOutlined />}
+                  placeholder={intl.get('lixi.charityAddress')}
+                  name="charityAddress"
+                  value={newCharityAddress}
+                  onChange={e => handleCharityAddressInput(e)}
+                />
+              </Form.Item>
 
-        {/* Charity */}
-        <FormItemWithQRCodeAddon
-          style={{
-            margin: '0 0 20px 0'
-          }}
-          loadWithCameraOpen={false}
-          onScan={result =>
-            handleAddressChange({
-              target: {
-                name: 'charity',
-                value: result,
-              },
-            })
-          }
-          inputProps={{
-            placeholder: intl.get('lixi.charityAddress', { ticker: currency.ticker }),
-            name: 'charity',
-            onChange: e => handleAddressChange(e),
-            required: true,
-            value: '',
-          }}
-        ></FormItemWithQRCodeAddon>
-
-        {/* Lottery */}
-        <FormItemWithQRCodeAddon
-          style={{
-            margin: '0 0 20px 0'
-          }}
-          loadWithCameraOpen={false}
-          onScan={result =>
-            handleAddressChange({
-              target: {
-                name: 'loterry',
-                value: result,
-              },
-            })
-          }
-          inputProps={{
-            placeholder: intl.get('lixi.loterryAddress', { ticker: currency.ticker }),
-            name: 'loterry',
-            onChange: e => handleAddressChange(e),
-            required: true,
-            value: '',
-          }}
-        ></FormItemWithQRCodeAddon>
-      </Panel>
-    </StyledCollapse> 
+              {/* Lottery */}
+              <Form.Item>
+                <Tooltip title={intl.get('lixi.loterryAddress')}>
+                  <div>
+                    <LotteryInput
+                      disabled
+                      prefix={<DollarOutlined />}
+                      name="loterryAddress"
+                      value={LotteryAddress}
+                      placeholder={intl.get('lixi.loterryAddress')}
+                      addonAfter={
+                        <Checkbox
+                          value={isLottery}
+                          onChange={e => handleIsLottery(e)}>
+                          {/* {intl.get('lixi.loterryAddressCheck')} */}
+                        </Checkbox>
+                      }
+                    />
+                  </div>
+                </Tooltip>
+              </Form.Item>
+            </Panel>
+          </StyledCollapse>
+        </StyledCollapse>
+      </StyledCollapse>
     );
   }
 
@@ -386,6 +369,9 @@ const CreateLixiForm = ({
       envelopeId: newEnvelopeId,
       envelopeMessage: newEnvelopeMessage,
       numberLixiPerPackage: newNumberLixiPerPackage,
+      staffAddress: newStaffAddress,
+      charityAddress: newCharityAddress,
+      isLottery: isLottery,
     };
 
     const createLixiModalProps: CreateLixiConfirmationModalProps = {
@@ -408,6 +394,9 @@ const CreateLixiForm = ({
       isFamilyFriendly,
       isNFTEnabled,
       newEnvelopeId,
+      newStaffAddress,
+      newCharityAddress,
+      isLottery,
       onOkAction: generateLixi(command)
     };
     dispatch(openModal('CreateLixiConfirmationModal', createLixiModalProps));
@@ -750,6 +739,14 @@ const CreateLixiForm = ({
                   <Panel header={intl.get('account.advance')} key="2">
                     {/* Max Claim and Expity Time */}
                     {advanceOptions()}
+
+                    {/* Lottery Program */}
+                    {ClaimType.OneTime === claimType && (
+                      <Form.Item>
+                        {lotterProgram()}
+                      </Form.Item>
+                    )}
+
                     {/* Family Friendly */}
                     <Form.Item>
                       <Checkbox
@@ -763,10 +760,7 @@ const CreateLixiForm = ({
                           onChange={e => handleNFTEnabled(e)}>
                           {intl.get('lixi.isNFTEnabled')}
                         </Checkbox>
-                      )} 
-
-                      {selectCharity()}
-
+                      )}
                     </Form.Item>
                   </Panel>
                 </AdvancedCollapse>

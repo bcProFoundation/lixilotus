@@ -1,4 +1,4 @@
-import { CreateLixiCommand, fromSmallestDenomination, Lixi, LixiDto, NotificationDto } from '@bcpros/lixi-models';
+import { CreateLixiCommand, fromSmallestDenomination, Lixi, Distribution, LixiDto, NotificationDto } from '@bcpros/lixi-models';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
 import { InjectQueue } from '@nestjs/bullmq';
@@ -29,7 +29,7 @@ export class LixiService {
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
     @InjectQueue(CREATE_SUB_LIXIES_QUEUE) private lixiQueue: Queue,
     @I18n() private i18n: I18nService
-  ) {}
+  ) { }
 
   /**
    * @param derivationIndex The derivation index of the lixi
@@ -66,9 +66,9 @@ export class LixiService {
       address,
       totalClaim: BigInt(0),
       envelopeId: command.envelopeId ?? null,
-      envelopeMessage: command.envelopeMessage ?? ''
+      envelopeMessage: command.envelopeMessage ?? '',
     };
-    const lixiToInsert = _.omit(data, 'password');
+    const lixiToInsert = _.omit(data, 'password', 'staffAddress', 'charityAddress');
 
     const utxos = await this.XPI.Utxo.get(account.address);
     const utxoStore = utxos[0];
@@ -111,7 +111,7 @@ export class LixiService {
         totalClaim: Number(savedLixi.totalClaim),
         expiryAt: savedLixi.expiryAt ? savedLixi.expiryAt : undefined,
         activationAt: savedLixi.activationAt ? savedLixi.expiryAt : undefined,
-        country: savedLixi.country ? savedLixi.country : undefined
+        country: savedLixi.country ? savedLixi.country : undefined,
       },
       'encryptedXPriv'
     );
@@ -152,7 +152,7 @@ export class LixiService {
       envelopeMessage: command.envelopeMessage ?? '',
       isNFTEnabled: command.isNFTEnabled ?? false
     };
-    const lixiToInsert = _.omit(data, 'password');
+    const lixiToInsert = _.omit(data, 'password', 'staffAddress', 'charityAddress');
 
     const utxos = await this.XPI.Utxo.get(account.address);
     const utxoStore = utxos[0];
@@ -236,6 +236,27 @@ export class LixiService {
 
     const childrenJobs: FlowJob[] = [];
 
+    // Prepare distributions
+    const distributionId: string[] = [];
+    if (command.staffAddress != '') {
+      const staffAddress = await this.prisma.distribution.create({
+        data: {
+          address: command.staffAddress as string,
+          distributionType: "staff",
+        }
+      });
+      distributionId.push(staffAddress.id);
+    }
+    if (command.charityAddress != '') {
+      const charityAddress = await this.prisma.distribution.create({
+        data: {
+          address: command.charityAddress as string,
+          distributionType: "charity",
+        }
+      });
+      distributionId.push(charityAddress.id);
+    }
+
     for (let chunkIndex = 0; chunkIndex < numberOfChunks; chunkIndex++) {
       const numberOfSubLixiInChunk =
         chunkIndex < numberOfChunks - 1 ? chunkSize : (command.numberOfSubLixi as number) - chunkIndex * chunkSize;
@@ -263,7 +284,8 @@ export class LixiService {
         command: command,
         fundingAddress: account.address,
         accountSecret: secret,
-        packageId: command.numberLixiPerPackage && createdPackage?.id ? createdPackage?.id : undefined
+        packageId: command.numberLixiPerPackage && createdPackage?.id ? createdPackage?.id : undefined,
+        distributions: (command.staffAddress != '' || command.charityAddress != '') ? distributionId : undefined,
       };
 
       const childJob: FlowJob = {

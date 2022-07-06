@@ -1,3 +1,4 @@
+import { Distribution } from './distribution';
 import { Envelope } from "./envelope";
 
 export interface GenerateLixiCommand {
@@ -24,6 +25,9 @@ export interface GenerateLixiCommand {
   envelopeId: Nullable<number>;
   envelopeMessage: string;
   numberLixiPerPackage?: Nullable<string>;
+  staffAddress?: string;
+  charityAddress?: string;
+  isLottery: boolean;
 }
 
 export interface CreateLixiCommand {
@@ -51,6 +55,9 @@ export interface CreateLixiCommand {
   envelopeId: Nullable<number>;
   envelopeMessage: string;
   numberLixiPerPackage?: Nullable<number>;
+  staffAddress?: string;
+  charityAddress?: string;
+  isLottery: boolean;
 }
 
 
@@ -92,6 +99,8 @@ export interface LixiDto {
   isNFTEnabled: boolean;
   numberLixiPerPackage?: Nullable<number>;
   packageId?: Nullable<number>;
+  isLottery: boolean;
+  Lixidistribution?: Nullable<Distribution>;
 };
 
 export interface Lixi {
@@ -132,6 +141,8 @@ export interface Lixi {
   isNFTEnabled: boolean;
   numberLixiPerPackage?: Nullable<number>;
   packageId?: Nullable<number>;
+  isLottery: boolean;
+  Lixidistribution?: Nullable<Distribution>;
 };
 
 export interface UnarchiveLixiCommand {
@@ -186,3 +197,5 @@ export interface DownloadExportedLixiCommand {
   fileName: string,
   mnemonicHash: string
 }
+
+export const LotteryAddress = 'lotus_16PSJM2jboGWYzs71usSip5hFhGTAyUw4nt3GS43u';

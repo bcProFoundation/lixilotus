@@ -165,6 +165,8 @@ export default {
   'lixi.staffAddress': 'Staff Address',
   'lixi.charityAddress': 'Charity Address',
   'lixi.loterryAddress': 'Loterry Address',
+  'lixi.loterryAddressCheck': 'Confirm',
+  'lixi.noteAmount': 'The reason the amount increased',
 
   /* 04.Claim */
   'claim.claim': 'Claim',

@@ -30,45 +30,47 @@ model Account {
 }
 
 model Lixi {
-  id                   Int       @id @default(autoincrement())
+  id                   Int                @id @default(autoincrement())
   name                 String
-  maxClaim             Int       @default(0) @map("max_claim")
-  claimedNum           Int       @default(0) @map("claimed_num")
-  claimType            Int       @default(0) @map("claim_type")
-  lixiType             Int       @default(0) @map("lixi_type")
-  minValue             Float     @map("min_value")
-  maxValue             Float     @map("max_value")
-  fixedValue           Float     @map("fixed_value")
-  dividedValue         Int       @default(1) @map("divided_value")
-  encryptedXPriv       String    @map("encrypted_xpriv")
-  encryptedClaimCode   String    @map("encrypted_claim_code")
-  totalClaim           BigInt    @default(0) @map("total_claim")
-  createdAt            DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt            DateTime  @default(now()) @map("updated_at") @db.Timestamptz
-  minStaking           Float     @default(0) @map("min_staking")
-  expiryAt             DateTime? @map("expiry_at") @db.Timestamptz
-  activationAt         DateTime? @map("activation_at") @db.Timestamptz
-  country              String?   @map("country")
-  isFamilyFriendly     Boolean   @map("is_family_friendly")
+  maxClaim             Int                @default(0) @map("max_claim")
+  claimedNum           Int                @default(0) @map("claimed_num")
+  claimType            Int                @default(0) @map("claim_type")
+  lixiType             Int                @default(0) @map("lixi_type")
+  minValue             Float              @map("min_value")
+  maxValue             Float              @map("max_value")
+  fixedValue           Float              @map("fixed_value")
+  dividedValue         Int                @default(1) @map("divided_value")
+  encryptedXPriv       String             @map("encrypted_xpriv")
+  encryptedClaimCode   String             @map("encrypted_claim_code")
+  totalClaim           BigInt             @default(0) @map("total_claim")
+  createdAt            DateTime           @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt            DateTime           @default(now()) @map("updated_at") @db.Timestamptz
+  minStaking           Float              @default(0) @map("min_staking")
+  expiryAt             DateTime?          @map("expiry_at") @db.Timestamptz
+  activationAt         DateTime?          @map("activation_at") @db.Timestamptz
+  country              String?            @map("country")
+  isFamilyFriendly     Boolean            @map("is_family_friendly")
   claims               Claim[]
-  status               String    @default("active") @map("status")
-  account              Account   @relation(fields: [accountId], references: [id])
-  accountId            Int       @map("account_id")
-  derivationIndex      Int       @default(0) @map("derivation_index")
-  address              String    @map("address")
-  amount               Float     @default(0) @map("amount")
-  numberOfSubLixi      Int?      @map("sub_lixi_value")
-  parent               Lixi?     @relation("parentSubLixi", fields: [parentId], references: [id])
-  subLixies            Lixi[]    @relation("parentSubLixi")
-  parentId             Int?      @map("parent_id")
-  envelopeId           Int?      @map("envelope_id")
-  envelope             Envelope? @relation(fields: [envelopeId], references: [id])
-  envelopeMessage      String    @default("") @map("envelope_message")
-  isClaimed            Boolean?  @default(false) @map("check_claim")
-  isNFTEnabled         Boolean   @default(false) @map("is_nft_enabled")
-  numberLixiPerPackage Int?      @map("number_lixi_per_package")
-  packageId            Int?      @map("package_id")
-  package              Package?  @relation(fields: [packageId], references: [id])
+  status               String             @default("active") @map("status")
+  account              Account            @relation(fields: [accountId], references: [id])
+  accountId            Int                @map("account_id")
+  derivationIndex      Int                @default(0) @map("derivation_index")
+  address              String             @map("address")
+  amount               Float              @default(0) @map("amount")
+  numberOfSubLixi      Int?               @map("sub_lixi_value")
+  parent               Lixi?              @relation("parentSubLixi", fields: [parentId], references: [id])
+  subLixies            Lixi[]             @relation("parentSubLixi")
+  parentId             Int?               @map("parent_id")
+  envelopeId           Int?               @map("envelope_id")
+  envelope             Envelope?          @relation(fields: [envelopeId], references: [id])
+  envelopeMessage      String             @default("") @map("envelope_message")
+  isClaimed            Boolean?           @default(false) @map("check_claim")
+  isNFTEnabled         Boolean            @default(false) @map("is_nft_enabled")
+  numberLixiPerPackage Int?               @map("number_lixi_per_package")
+  packageId            Int?               @map("package_id")
+  package              Package?           @relation(fields: [packageId], references: [id])
+  isLottery            Boolean            @default(false) @map("is_lottery")
+  distribution         LixiDistribution[]
 
   @@map("lixi")
 }
@@ -112,14 +114,33 @@ model Package {
   @@map("package")
 }
 
+model Distribution {
+  id               String             @id @default(uuid())
+  address          String             @map("address")
+  distributionType String             @map("type")
+  lixi             LixiDistribution[]
+
+  @@map("distribution")
+}
+
+model LixiDistribution {
+  lixi           Lixi         @relation(fields: [lixiId], references: [id])
+  lixiId         Int
+  distribution   Distribution @relation(fields: [distributionId], references: [id])
+  distributionId String
+
+  @@id([lixiId, distributionId])
+  @@map("lixi_distribution")
+}
+
 model NotificationType {
-  id                           Int            @id @default(autoincrement())
-  name                         String         @default("")
+  id                           Int                           @id @default(autoincrement())
+  name                         String                        @default("")
   description                  String
   notifications                Notification[]
-  notificationTypeTranslations  NotificationTypeTranslation[]
-  createdAt                    DateTime       @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt                    DateTime       @default(now()) @map("updated_at") @db.Timestamptz
+  notificationTypeTranslations NotificationTypeTranslation[]
+  createdAt                    DateTime                      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt                    DateTime                      @default(now()) @map("updated_at") @db.Timestamptz
 
   @@map("notification_type")
 }

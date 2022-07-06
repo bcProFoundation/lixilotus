@@ -1,8 +1,4 @@
-import { CreateLixiCommand, fromSmallestDenomination, Lixi, LixiType, Package } from '@bcpros/lixi-models';
-import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
-import BCHJS from '@bcpros/xpi-js';
-import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
-import { Inject, Injectable } from '@nestjs/common';
+import { CreateLixiCommand, fromSmallestDenomination, Lixi, LixiType } from '@bcpros/lixi-models';
 import { Lixi as LixiDb, PrismaClient } from '@prisma/client';
 import { Job } from 'bullmq';
 import * as _ from 'lodash';
@@ -13,7 +9,6 @@ import {
   CreateSubLixiesJobResult,
   MapEncryptedClaimCode
 } from 'src/modules/core/lixi/models/lixi.models';
-import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { WalletService } from 'src/modules/wallet/wallet.service';
 import { aesGcmEncrypt, generateRandomBase58Str, numberToBase58 } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
@@ -63,7 +58,8 @@ export async function processCreateSubLixiesChunk(job: Job): Promise<boolean> {
     temporaryFeeCalc,
     fundingAddress,
     accountSecret,
-    packageId
+    packageId,
+    distributions
   } = jobData;
 
   const { keyPair } = await walletService.deriveAddress(command.mnemonic, 0); // keyPair of the account
@@ -83,7 +79,7 @@ export async function processCreateSubLixiesChunk(job: Job): Promise<boolean> {
     mapEncryptedClaimCode,
     temporaryFeeCalc,
     accountSecret,
-    packageId as number
+    packageId as number,
   );
 
   // Preparing receive address and amount
@@ -100,12 +96,38 @@ export async function processCreateSubLixiesChunk(job: Job): Promise<boolean> {
   // Save the lixi into the database
   try {
     const savedLixies = await prisma.$transaction(async prisma => {
-      const createdLixies = prisma.lixi.createMany({ data: subLixiesToInsert });
+      const createdLixies = prisma.lixi.createMany({
+        data: subLixiesToInsert,
+      });
       if (receivingSubLixies.length > 0) {
         await walletService.sendAmount(fundingAddress, receivingSubLixies, keyPair);
       }
       return createdLixies;
     });
+
+    if (distributions) {
+      const subLixi = await prisma.lixi.findMany({
+        where: {
+          packageId: jobData.parentId,
+        }
+      })
+
+      const lixiDistributions: { lixiId: number, distributionId: string }[] = [];
+      for (let distribution of (distributions as string[])) {
+        for (let lixi of subLixi) {
+          const lixiDistribution = {
+            lixiId: lixi.id,
+            distributionId: distribution
+          };
+
+          lixiDistributions.push(lixiDistribution);
+        }
+      }
+
+      await prisma.lixiDistribution.createMany({
+        data: lixiDistributions,
+      });
+    }
 
     _.map(savedLixies, (item: LixiDb) => {
       // Calculate the claim code of the sub lixi
@@ -157,7 +179,7 @@ async function prepareSubLixiChunkToInsert(
   mapEncryptedClaimCode: MapEncryptedClaimCode,
   temporaryFeeCalc: number,
   accountSecret: string,
-  packageId?: number
+  packageId?: number,
 ): Promise<LixiDb[]> {
   // If users input the amount means that the lixi need to be prefund
   const isPrefund = !!command.amount;
@@ -198,7 +220,7 @@ async function prepareSubLixiChunkToInsert(
       command,
       mapEncryptedClaimCode,
       accountSecret,
-      packageId
+      packageId,
     );
     subLixiesToInsert.push(subLixiToInsert);
   }
@@ -222,7 +244,7 @@ async function prepareSubLixiToInsert(
   command: CreateLixiCommand,
   mapEncryptedClaimCode: MapEncryptedClaimCode,
   accountSecret: string,
-  packageId?: number
+  packageId?: number,
 ): Promise<LixiDb> {
   // Generate the random password to encrypt the key
   const password = generateRandomBase58Str(8);
@@ -235,7 +257,7 @@ async function prepareSubLixiToInsert(
 
   // Prepare data to insert into the database
   const dataSubLixi = {
-    ..._.omit(command, ['mnemonic', 'mnemonicHash', 'password']),
+    ..._.omit(command, ['mnemonic', 'mnemonicHash', 'password', 'staffAddress', 'charityAddress']),
     id: undefined,
     name: name,
     derivationIndex: derivationIndex,
@@ -253,6 +275,7 @@ async function prepareSubLixiToInsert(
     parentId: parentId,
     createdAt: new Date(),
     packageId: packageId ?? null,
+    isLottery: command.isLottery,
   } as unknown as LixiDb;
 
   return dataSubLixi;

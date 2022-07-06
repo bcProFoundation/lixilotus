@@ -69,7 +69,6 @@ import { select } from 'redux-saga/effects';
 import { saveAs } from 'file-saver';
 import moment from 'moment';
 
-
 const call: any = Effects.call;
 /**
  * Generate a lixi with random encryption password
@@ -104,7 +103,10 @@ function* generateLixiSaga(action: PayloadAction<GenerateLixiCommand>) {
     mnemonic: mnemonic,
     mnemonicHash: command.mnemonicHash,
     envelopeId: command.envelopeId,
-    envelopeMessage: command.envelopeMessage ?? ''
+    envelopeMessage: command.envelopeMessage ?? '',
+    staffAddress: command.staffAddress,
+    charityAddress: command.charityAddress,
+    isLottery: command.isLottery,
   };
 
   yield put(postLixi(createLixiCommand));
@@ -522,7 +524,7 @@ function* downloadExportedLixiSaga(action: PayloadAction<DownloadExportedLixiCom
   try {
     const data = yield call(lixiApi.downloadExportedLixi, action.payload);
     const parentLixi: LixiDto = yield select(getLixiById(action.payload.lixiId));
-    yield put(downloadExportedLixiSuccess({ data:data, lixiName: parentLixi.name }));
+    yield put(downloadExportedLixiSuccess({ data: data, lixiName: parentLixi.name }));
   } catch (err) {
     const message = (err as Error).message ?? intl.get('lixi.unableDownloadSub')
     yield put(downloadExportedLixiFailure(message));

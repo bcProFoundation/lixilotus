@@ -1,13 +1,14 @@
 import { AnyAction } from 'redux';
 import intl from 'react-intl-universal';
-import { Modal } from 'antd';
+import { Descriptions, Modal } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 import { LixiParamLabel } from '@bcpros/lixi-components/components/Common/Atoms';
 import { useAppDispatch } from 'src/store/hooks';
 import { closeModal } from 'src/store/modal/actions';
 import { countries } from '@bcpros/lixi-models/constants';
-import { LixiType, ClaimType } from '@bcpros/lixi-models/lib/lixi';
+import { LixiType, ClaimType, LotteryAddress } from '@bcpros/lixi-models/lib/lixi';
+import { InfoCircleOutlined } from '@ant-design/icons';
 
 
 export type CreateLixiConfirmationModalProps = {
@@ -30,6 +31,9 @@ export type CreateLixiConfirmationModalProps = {
   isFamilyFriendly: boolean;
   isNFTEnabled: boolean;
   newEnvelopeId: number | null;
+  newStaffAddress: string | null;
+  newCharityAddress: string | null;
+  isLottery: boolean;
   onOkAction?: AnyAction
 }
 
@@ -56,8 +60,21 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
     newCountryLixi,
     isFamilyFriendly,
     isNFTEnabled,
-    newEnvelopeId
+    newEnvelopeId,
+    newStaffAddress,
+    newCharityAddress,
+    isLottery,
   } = props;
+
+  const distribution = [newStaffAddress, newCharityAddress];
+  let count = 1;
+  for (var item of distribution) {
+    if (item != '') {
+      count++
+    }
+  }
+  isLottery === true && count++;
+  const amount = Number(newLixiAmount) * count;
 
   const handleOnCancel = () => {
     dispatch(closeModal());
@@ -98,7 +115,7 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
           <>
             <LixiParamLabel>{intl.get('lixi.fundGiveEqual')}</LixiParamLabel>
             <br />
-            <LixiParamLabel>{intl.get('lixi.equalFund')}</LixiParamLabel> {Number(newLixiAmount) / Number(newNumberOfSubLixi)}
+            <LixiParamLabel>{intl.get('lixi.equalFund')}</LixiParamLabel> {Number(amount) / Number(newNumberOfSubLixi)}
           </>
         );
       // isRandom
@@ -114,7 +131,7 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
   }
 
   const confirmAmount = () => {
-    return (newLixiAmount == "" ? "" : <LixiParamLabel>{intl.get('lixi.amount', { newLixiAmount: newLixiAmount })} <br /></LixiParamLabel>);
+    return (newLixiAmount == "" ? "" : <LixiParamLabel>{intl.get('lixi.amount', { newLixiAmount: amount })} <br /></LixiParamLabel>);
   }
 
   const confirmSubLixies = () => {
@@ -168,6 +185,28 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
     }
   }
 
+  const confirmStaff = () => {
+    return (
+      <Descriptions.Item label={newStaffAddress}>
+        {Number(newLixiAmount)}
+      </Descriptions.Item>
+    )
+  }
+  const confirmCharity = () => {
+    return (
+      <Descriptions.Item label={newCharityAddress}>
+        {Number(newLixiAmount)}
+      </Descriptions.Item>
+    )
+  }
+  const confirmLottery = () => {
+    return (
+      <Descriptions.Item label={LotteryAddress}>
+        {Number(newLixiAmount)}
+      </Descriptions.Item>
+    )
+  }
+
   return (
     <>
       <Modal
@@ -195,6 +234,17 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
         <LixiParamLabel>{isFamilyFriendly ? intl.get('lixi.optionFamilyFriendly') : ""}</LixiParamLabel>
         <br />
         <LixiParamLabel>{isNFTEnabled ? intl.get('lixi.optionNFTEnabled') : ""}</LixiParamLabel>
+
+        {/* Note */}
+        {count >= 2 &&
+          <span>
+            <InfoCircleOutlined /> {intl.get('lixi.noteAmount')} <br />
+            <Descriptions column={1} bordered>
+              {newStaffAddress != "" && confirmStaff()}
+              {newCharityAddress != "" && confirmCharity()}
+              {isLottery && confirmLottery()}
+            </Descriptions>
+          </span>}
       </Modal>
     </>
   );
