@@ -1,6 +1,7 @@
-import winston, { format, createLogger } from 'winston';
+import { WinstonModule } from 'nest-winston';
+import winston, { format } from 'winston';
 import 'winston-daily-rotate-file';
-const { combine, label, timestamp, printf } = format;
+const { combine, timestamp, printf } = format;
 
 export const transport = new winston.transports.DailyRotateFile({
   filename: 'lixi-api-%DATE%.log',
@@ -10,8 +11,6 @@ export const transport = new winston.transports.DailyRotateFile({
   dirname: './logs',
   level: 'debug' // TODO
 });
-
-const timezone = new Date().toLocaleString('en-US', { timeZoneName: 'short' }).split(' ').pop();
 
 export const formatTimestamp = (date: Date): string =>
   `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date
@@ -28,7 +27,7 @@ export const formatTimestamp = (date: Date): string =>
 
 // export const timestamp = () => formatTimestamp(new Date());
 
-export const logger = createLogger({
+export const loggerConfig = WinstonModule.createLogger({
   transports: [transport],
   exceptionHandlers: [new winston.transports.File({ filename: 'exceptions.log', dirname: './logs' })],
   exitOnError: false,
@@ -37,13 +36,13 @@ export const logger = createLogger({
     timestamp(), // get the time stamp part of the full log message
     printf(({ level, message, timestamp, stack }) => {
       // formating the log outcome to show/store
-      return `${timestamp} ${level ?? ''}: ${message} - ${stack}`;
+      const logMessage: string = `${timestamp} ${level ?? ''}: ${message} - ${stack}`;
+      if (level == 'error') {
+        console.log(logMessage);
+      }
+      return logMessage;
     })
   )
 });
 
-logger.on('error', function (err) {
-  console.log(err);
-});
-
-export default logger;
+export default loggerConfig;

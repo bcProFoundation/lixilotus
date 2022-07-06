@@ -9,23 +9,14 @@ import { AppModule } from './app.module';
 import { RedisIoAdapter } from './common/adapters/redis-io.adapter';
 import { HttpExceptionFilter } from './middlewares/exception.filter';
 import { PrismaService } from './modules/prisma/prisma.service';
-import { WinstonModule } from 'nest-winston';
-import winston, { format } from 'winston';
 import 'winston-daily-rotate-file';
-const { combine, timestamp, printf } = format;
+import loggerConfig from './logger.config';
 
 const allowedOrigins = [process.env.SENDLOTUS_URL, process.env.BASE_URL];
 
 async function bootstrap() {
   const POST_LIMIT = 1024 * 100; /* Max POST 100 kb */
-  const transport = new winston.transports.DailyRotateFile({
-    filename: 'lixi-api-%DATE%.log',
-    handleExceptions: true,
-    maxSize: '40m',
-    maxFiles: '14d',
-    dirname: './logs',
-    level: 'debug' // TODO
-  });
+
   const fastifyAdapter = new FastifyAdapter();
   fastifyAdapter
     .getInstance()
@@ -33,22 +24,7 @@ async function bootstrap() {
       done(null, (_payload as any).body);
     });
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), {
-    logger: WinstonModule.createLogger({
-      transports: [transport],
-      exceptionHandlers: [new winston.transports.File({ filename: 'exceptions.log', dirname: './logs' })],
-      exitOnError: false,
-      format: combine(
-        format.errors({ stack: true }), // log the full stack
-        timestamp(), // get the time stamp part of the full log message
-        printf(({ level, message, timestamp, stack }) => {
-          // formating the log outcome to show/store
-          if (level === 'error') {
-            console.log(message);
-          }
-          return `${timestamp} ${level ?? ''}: ${message} - ${stack}`;
-        })
-      )
-    })
+    logger: loggerConfig
   });
 
   app.setGlobalPrefix('api');
