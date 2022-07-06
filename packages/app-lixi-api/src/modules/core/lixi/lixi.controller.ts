@@ -33,7 +33,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { Claim as ClaimDb, Lixi } from '@prisma/client';
+import { Claim as ClaimDb, Lixi, Upload as UploadDb } from '@prisma/client';
 import { Queue } from 'bullmq';
 import * as _ from 'lodash';
 import { PaginationParams } from 'src/common/models/paginationParams';
@@ -59,6 +59,7 @@ import { extname } from 'path'
 import { UploadGuard } from 'src/utils/upload.guard';
 import { File } from 'src/utils/file.decorator';
 import fs from 'fs';
+import sharp from 'sharp';
 
 @Controller('lixies')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -857,34 +858,63 @@ export class LixiController {
   async upload(
     @File() file: Storage.MultipartFile,
     @Req() req: FastifyRequest,
-    @I18n() i18n: I18nContext
+    @I18n() i18n: I18nContext,
   ) {
     try {
       const account = (req as any).account;
-      const publicDir = `./public/uploads`
-      const buffer = await file.toBuffer();
-      const fileExtension = extname(file.filename);
-      const encryptedName = await hexSha256(file.filename);
-      const folderName = encryptedName.substring(0,2);
-
-      if (!account) {
-        const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
-        throw new Error(couldNotFindAccount);
-      }
-
-      if (!fs.existsSync(`${publicDir}/${folderName}`)) {
-        fs.mkdirSync(`${publicDir}/${folderName}`);
-      }
-
-      const fileUrl = `${publicDir}/${folderName}/${encryptedName}${fileExtension}`;
-
-      fs.writeFile(fileUrl, buffer, function (err) {
-        if (err) {
-          throw new VError;
+      const originalName = file.filename.replace(/\.[^/.]+$/, "")
+      const sha = await hexSha256(originalName);
+      const uploaded = await this.prisma.upload.findFirst({
+        where: {
+          sha: sha
         }
-      });
+      })
 
-      return;
+      if(!uploaded) {
+        const dir = `uploads`
+        const buffer = await file.toBuffer();
+        const fileExtension = extname(file.filename);
+        const folderName = sha.substring(0,2);
+        const fileUrl = `${dir}/${folderName}/${sha}`;
+
+        if (!account) {
+          const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
+          throw new Error(couldNotFindAccount);
+        }
+
+        //create new folder if there are no existing is founded
+        if (!fs.existsSync(`./public/${dir}/${folderName}`)) {
+          fs.mkdirSync(`./public/${dir}/${folderName}`);
+        }
+
+        //write image file to folder
+        const originalImage = await sharp(buffer).toFile(`./public/${fileUrl}${fileExtension}`)
+        const thumbnailImage = await sharp(buffer).resize(200).toFile(`./public/${fileUrl}-200${fileExtension}`);
+
+        const uploadToInsert = {
+          originalFilename : originalName,
+          fileSize: originalImage.size,
+          width: originalImage.width,
+          height: originalImage.height,
+          url: `${process.env.BASE_URL}/api/${fileUrl}${fileExtension}`,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          sha: sha,
+          extension: file.mimetype,
+          thumbnailWidth: thumbnailImage.width,
+          thumbnailHeight: thumbnailImage.height,
+          type: '',
+          account: {connect : {id: account.id}},
+        }
+        
+        const resultImage: UploadDb = await this.prisma.upload.create({
+            data: uploadToInsert
+        });
+
+        return resultImage;
+      }
+
+      return uploaded;
     } catch (err) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);

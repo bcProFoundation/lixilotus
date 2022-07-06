@@ -70,7 +70,8 @@ model Lixi {
   numberLixiPerPackage Int?      @map("number_lixi_per_package")
   packageId            Int?      @map("package_id")
   package              Package?  @relation(fields: [packageId], references: [id])
-  upload               Upload? 
+  upload               Upload?
+
   @@map("lixi")
 }
 
@@ -174,9 +175,9 @@ model Upload {
   thumbnailHeight  Int?
   type             String?  @db.VarChar
   lixi             Lixi?    @relation(fields: [lixiId], references: [id])
-  lixiId           Int      @unique
+  lixiId           Int?     @unique
   account          Account? @relation(fields: [accountId], references: [id])
-  accountId        Int
+  accountId        Int?
 
   @@map("upload")
 }

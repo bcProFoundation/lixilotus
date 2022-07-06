@@ -30,3 +30,19 @@ ALTER TABLE "upload" ADD CONSTRAINT "upload_accountId_fkey" FOREIGN KEY ("accoun
 
 -- AddForeignKey
 ALTER TABLE "upload" ADD CONSTRAINT "upload_lixiId_fkey" FOREIGN KEY ("lixiId") REFERENCES "lixi"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- DropForeignKey
+ALTER TABLE "upload" DROP CONSTRAINT "upload_accountId_fkey";
+
+-- DropForeignKey
+ALTER TABLE "upload" DROP CONSTRAINT "upload_lixiId_fkey";
+
+-- AlterTable
+ALTER TABLE "upload" ALTER COLUMN "lixiId" DROP NOT NULL,
+ALTER COLUMN "accountId" DROP NOT NULL;
+
+-- AddForeignKey
+ALTER TABLE "upload" ADD CONSTRAINT "upload_accountId_fkey" FOREIGN KEY ("accountId") REFERENCES "account"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "upload" ADD CONSTRAINT "upload_lixiId_fkey" FOREIGN KEY ("lixiId") REFERENCES "lixi"("id") ON DELETE SET NULL ON UPDATE CASCADE;

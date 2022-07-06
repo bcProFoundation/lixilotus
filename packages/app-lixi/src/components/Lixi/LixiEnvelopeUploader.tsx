@@ -141,7 +141,7 @@ export const LixiEnvelopeUploader = ({
     const url = `/api/lixies/custom-envelope`
     const formData = new FormData();
 
-    formData.append('file',file);
+    formData.append('file', file);
     const config = {
       headers: { "content-type": "multipart/form-data" },
       withCredentials: true,
