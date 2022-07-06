@@ -1,10 +1,7 @@
 import * as React from 'react';
 import intl from 'react-intl-universal';
 import { Form, FormItemProps, Input, InputProps, Select } from 'antd';
-import {
-  ThemedDollarOutlined,
-  ThemedWalletOutlined,
-} from './CustomIcons';
+import { ThemedDollarOutlined, ThemedWalletOutlined } from './CustomIcons';
 import styled, { css } from 'styled-components';
 import ScanQRCode from './ScanQRCode';
 // import useBCH from '@hooks/useBCH';
@@ -22,10 +19,8 @@ export const AntdFormCss = css`
   input.ant-input,
   textarea.ant-input,
   .ant-select-selection,
-  .ant-select-item-option-active
-  .ant-select-item {
-      background-color: ${props =>
-  props.theme.forms.selectionBackground} !important;
+  .ant-select-item-option-active .ant-select-item {
+    background-color: ${props => props.theme.forms.selectionBackground} !important;
     box-shadow: none !important;
     border-radius: 4px;
     font-weight: bold;
@@ -42,13 +37,7 @@ export const AntdFormCss = css`
     border: 1px solid ${props => props.theme.wallet.borders.color} !important;
     align-items: center;
   }
-  .ant-form-item-has-error
-    > div
-    > div.ant-form-item-control-input
-    > div
-    > span
-    > span
-    > span.ant-input-affix-wrapper {
+  .ant-form-item-has-error > div > div.ant-form-item-control-input > div > span > span > span.ant-input-affix-wrapper {
     background-color: ${props => props.theme.forms.selectionBackground};
     border-color: ${props => props.theme.forms.error} !important;
   }
@@ -61,9 +50,7 @@ export const AntdFormCss = css`
     border-color: ${props => props.theme.forms.error} !important;
   }
 
-  .ant-form-item-has-error
-    .ant-select:not(.ant-select-disabled):not(.ant-select-customize-input)
-    .ant-select-selector {
+  .ant-form-item-has-error .ant-select:not(.ant-select-disabled):not(.ant-select-customize-input) .ant-select-selector {
     background-color: ${props => props.theme.forms.selectionBackground};
     border-color: ${props => props.theme.forms.error} !important;
   }
@@ -84,11 +71,10 @@ export const AntdFormCss = css`
 `;
 
 export const AntdFormWrapper = styled.div`
-    ${AntdFormCss}
+  ${AntdFormCss}
 `;
 
-type InputAddonTextProps = {
-} & React.HTMLProps<HTMLSpanElement> & React.HTMLAttributes<HTMLElement>
+type InputAddonTextProps = {} & React.HTMLProps<HTMLSpanElement> & React.HTMLAttributes<HTMLElement>;
 
 export const InputAddonText = styled.span<InputAddonTextProps>`
   width: 100%;
@@ -96,15 +82,14 @@ export const InputAddonText = styled.span<InputAddonTextProps>`
   display: block;
 
   ${props =>
-  props.disabled
-    ? `
+    props.disabled
+      ? `
     cursor: not-allowed;
     `
-    : `cursor: pointer;`}
+      : `cursor: pointer;`}
 `;
 
-type InputNumberAddonTextProps = {
-} & React.HTMLProps<HTMLElement> & React.HTMLAttributes<HTMLElement>;
+type InputNumberAddonTextProps = {} & React.HTMLProps<HTMLElement> & React.HTMLAttributes<HTMLElement>;
 
 export const InputNumberAddonText = styled.span<InputNumberAddonTextProps>`
   background-color: ${props => props.theme.forms.addonBackground} !important;
@@ -114,14 +99,14 @@ export const InputNumberAddonText = styled.span<InputNumberAddonTextProps>`
   line-height: 47px;
 
   * {
-      color: ${props => props.theme.forms.addonForeground} !important;
+    color: ${props => props.theme.forms.addonForeground} !important;
   }
   ${props =>
-  props.disabled
-    ? `
+    props.disabled
+      ? `
     cursor: not-allowed;
     `
-    : `cursor: pointer;`}
+      : `cursor: pointer;`}
 `;
 
 export const StyledScanQRCode = styled(ScanQRCode)`
@@ -145,41 +130,26 @@ type SendXpiInputProps = {
   };
   selectProps: Object;
   activeFiatCode: string;
-}
+};
 
-export const SendXpiInput = ({
-  onMax,
-  inputProps,
-  selectProps,
-  activeFiatCode,
-  ...otherProps
-}: SendXpiInputProps) => {
+export const SendXpiInput = ({ onMax, inputProps, selectProps, activeFiatCode, ...otherProps }: SendXpiInputProps) => {
   const { Option } = Select;
   const currencies = [
     {
       value: currency.ticker,
-      label: currency.ticker,
+      label: currency.ticker
     }
   ];
   const currencyOptions = currencies.map(currency => {
     return (
-      <Option
-        key={currency.value}
-        value={currency.value}
-        className="selectedCurrencyOption"
-      >
+      <Option key={currency.value} value={currency.value} className="selectedCurrencyOption">
         {currency.label}
       </Option>
     );
   });
 
   const CurrencySelect = (
-    <Select
-      defaultValue={currency.ticker}
-      className="select-after"
-      style={{ width: '25%' }}
-      {...selectProps}
-    >
+    <Select defaultValue={currency.ticker} className="select-after" style={{ width: '25%' }} {...selectProps}>
       {currencyOptions}
     </Select>
   );
@@ -190,21 +160,12 @@ export const SendXpiInput = ({
           <Input
             style={{ width: '58%', textAlign: 'left' }}
             type="number"
-            step={
-              inputProps.dollar === 1
-                ? 0.01
-                : 1 / 10 ** currency.cashDecimals
-            }
+            step={inputProps.dollar === 1 ? 0.01 : 1 / 10 ** currency.cashDecimals}
             prefix={
               inputProps.dollar === 1 ? (
                 <ThemedDollarOutlined />
               ) : (
-                <img
-                  src={currency.logo}
-                  alt=""
-                  width={16}
-                  height={16}
-                />
+                <img src={currency.logo} alt="" width={16} height={16} />
               )
             }
             {...inputProps}
@@ -214,7 +175,7 @@ export const SendXpiInput = ({
             style={{
               width: '17%',
               height: '60px',
-              lineHeight: '60px',
+              lineHeight: '60px'
             }}
             disabled={!!(inputProps || {}).disabled}
             onClick={!(inputProps || {}).disabled && onMax()}
@@ -227,14 +188,12 @@ export const SendXpiInput = ({
   );
 };
 
-
-
 type FormItemWithMaxAddonProps = {
-  onMax: Function,
+  onMax: Function;
   inputProps: {
-    disabled?: boolean | undefined
-  },
-}
+    disabled?: boolean | undefined;
+  };
+};
 
 export const FormItemWithMaxAddon = ({ onMax, inputProps, ...otherProps }: FormItemWithMaxAddonProps) => {
   return (
@@ -242,19 +201,9 @@ export const FormItemWithMaxAddon = ({ onMax, inputProps, ...otherProps }: FormI
       <Form.Item {...otherProps}>
         <Input
           type="number"
-          prefix={
-            <img
-              src={currency.logo}
-              alt=""
-              width={16}
-              height={16}
-            />
-          }
+          prefix={<img src={currency.logo} alt="" width={16} height={16} />}
           addonAfter={
-            <InputAddonText
-              disabled={!!(inputProps || {}).disabled}
-              onClick={!(inputProps || {}).disabled && onMax()}
-            >
+            <InputAddonText disabled={!!(inputProps || {}).disabled} onClick={!(inputProps || {}).disabled && onMax()}>
               max
             </InputAddonText>
           }
@@ -265,7 +214,6 @@ export const FormItemWithMaxAddon = ({ onMax, inputProps, ...otherProps }: FormI
   );
 };
 
-
 type FormItemWithQRCodeAddonProps = {
   onScan: Function;
   loadWithCameraOpen: boolean;
@@ -275,7 +223,7 @@ type FormItemWithQRCodeAddonProps = {
 
 // loadWithCameraOpen prop: if true, load page with camera scanning open
 export const FormItemWithQRCodeAddon = (props: FormItemWithQRCodeAddonProps) => {
-  const { onScan, loadWithCameraOpen, inputProps, ...otherProps } = props
+  const { onScan, loadWithCameraOpen, inputProps, ...otherProps } = props;
   return (
     <AntdFormWrapper>
       <Form.Item {...otherProps}>
@@ -284,15 +232,8 @@ export const FormItemWithQRCodeAddon = (props: FormItemWithQRCodeAddonProps) => 
           autoComplete="off"
           addonAfter={
             <>
-              <StyledScanQRCode
-                loadWithCameraOpen={loadWithCameraOpen}
-                onScan={onScan}
-                id={Date.now().toString()}
-              />
-              <UploadQRCode
-                onScan={onScan}
-                codeType='address'
-              />
+              <StyledScanQRCode loadWithCameraOpen={loadWithCameraOpen} onScan={onScan} id={Date.now().toString()} />
+              <UploadQRCode onScan={onScan} codeType="address" />
             </>
           }
           {...inputProps}
@@ -309,7 +250,6 @@ type FormItemClaimCodeXpiInputProps = {
 } & FormItemProps;
 
 export const FormItemClaimCodeXpiInput = (props: FormItemClaimCodeXpiInputProps) => {
-
   const { onScan, loadWithCameraOpen, inputProps, ...otherProps } = props;
   return (
     <AntdFormWrapper {...otherProps}>
@@ -321,15 +261,8 @@ export const FormItemClaimCodeXpiInput = (props: FormItemClaimCodeXpiInputProps)
           autoComplete="off"
           addonAfter={
             <>
-              <StyledScanQRCode
-                loadWithCameraOpen={loadWithCameraOpen}
-                onScan={onScan}
-                id={Date.now().toString()}
-              />
-              <UploadQRCode
-                onScan={onScan}
-                codeType='claimCode'
-              />
+              <StyledScanQRCode loadWithCameraOpen={loadWithCameraOpen} onScan={onScan} id={Date.now().toString()} />
+              <UploadQRCode onScan={onScan} codeType="claimCode" />
             </>
           }
           required
@@ -338,4 +271,4 @@ export const FormItemClaimCodeXpiInput = (props: FormItemClaimCodeXpiInputProps)
       </Form.Item>
     </AntdFormWrapper>
   );
-}
+};
