@@ -5,5 +5,6 @@ export interface AccountsState extends EntityState<Account> {
   selectedId: Nullable<number> | undefined;
   lixiIdsById: {
     [key: number]: Array<number>
-  }
+  };
+  uploadedImageId:  Nullable<string> | undefined;
 }

@@ -20,11 +20,16 @@ import { AccountsState } from './account/state';
 import { HYDRATE } from 'next-redux-wrapper';
 import { SettingsState } from './settings/state';
 
-
+const persistConfig = {
+  key: 'root',
+  storage: storage,
+  blacklist: ['accounts'],
+}
 
 const accountPersistConfig: PersistConfig<AccountsState> = {
   key: 'accounts',
-  storage: storage
+  storage: storage,
+  blacklist: [`uploadedImageId`]
 };
 
 const lixiPersistConfig: PersistConfig<LixiesState> = {
@@ -94,4 +99,4 @@ const reducer = (state, action: AnyAction) => {
 };
 
 
-export default reducer;
+export default persistReducer(persistConfig, reducer);

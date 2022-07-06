@@ -9,6 +9,8 @@ import {
   setAccount,
   setAccountBalance,
   refreshLixiListSuccess,
+  setUploadedImageId,
+  removeUploadedImageId
 } from './actions';
 import { AccountsState } from './state';
 
@@ -17,6 +19,7 @@ export const accountsAdapter = createEntityAdapter<Account>({});
 const initialState: AccountsState = accountsAdapter.getInitialState({
   selectedId: null,
   lixiIdsById: {},
+  uploadedImageId: null
 });
 
 export const accountReducer = createReducer(initialState, (builder) => {
@@ -74,5 +77,11 @@ export const accountReducer = createReducer(initialState, (builder) => {
         };
         accountsAdapter.updateOne(state, updateAccount);
       }
-    });
+    })
+    .addCase(setUploadedImageId, (state, action) => {
+      state.uploadedImageId = action.payload.id
+    })
+    .addCase(removeUploadedImageId, (state, action) => {
+      state.uploadedImageId = null;
+    })
 });

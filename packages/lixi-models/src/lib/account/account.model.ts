@@ -11,4 +11,5 @@ export interface Account {
   address: string;
   balance?: number;
   language?: string;
+  uploadedImageId?: string;
 }

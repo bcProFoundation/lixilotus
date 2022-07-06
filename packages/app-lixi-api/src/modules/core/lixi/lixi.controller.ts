@@ -852,7 +852,7 @@ export class LixiController {
     }
   }
 
-  @Post('custom-envelope')
+  @Post('custom-upload')
   @UseGuards(JwtAuthGuard)
   @UseGuards(UploadGuard)
   async upload(
@@ -862,59 +862,50 @@ export class LixiController {
   ) {
     try {
       const account = (req as any).account;
-      const originalName = file.filename.replace(/\.[^/.]+$/, "")
-      const sha = await hexSha256(originalName);
-      const uploaded = await this.prisma.upload.findFirst({
-        where: {
-          sha: sha
-        }
-      })
-
-      if(!uploaded) {
-        const dir = `uploads`
-        const buffer = await file.toBuffer();
-        const fileExtension = extname(file.filename);
-        const folderName = sha.substring(0,2);
-        const fileUrl = `${dir}/${folderName}/${sha}`;
-
-        if (!account) {
-          const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
-          throw new Error(couldNotFindAccount);
-        }
-
-        //create new folder if there are no existing is founded
-        if (!fs.existsSync(`./public/${dir}/${folderName}`)) {
-          fs.mkdirSync(`./public/${dir}/${folderName}`);
-        }
-
-        //write image file to folder
-        const originalImage = await sharp(buffer).toFile(`./public/${fileUrl}${fileExtension}`)
-        const thumbnailImage = await sharp(buffer).resize(200).toFile(`./public/${fileUrl}-200${fileExtension}`);
-
-        const uploadToInsert = {
-          originalFilename : originalName,
-          fileSize: originalImage.size,
-          width: originalImage.width,
-          height: originalImage.height,
-          url: `${process.env.BASE_URL}/api/${fileUrl}${fileExtension}`,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          sha: sha,
-          extension: file.mimetype,
-          thumbnailWidth: thumbnailImage.width,
-          thumbnailHeight: thumbnailImage.height,
-          type: '',
-          account: {connect : {id: account.id}},
-        }
-        
-        const resultImage: UploadDb = await this.prisma.upload.create({
-            data: uploadToInsert
-        });
-
-        return resultImage;
+      if (!account) {
+        const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
+        throw new Error(couldNotFindAccount);
       }
 
-      return uploaded;
+      const buffer = await file.toBuffer();
+      const originalName = file.filename.replace(/\.[^/.]+$/, "")
+      const sha = await hexSha256(buffer.toString() + moment.now());
+      const dir = `uploads`
+
+      const fileExtension = extname(file.filename);
+      const folderName = sha.substring(0,2);
+      const fileUrl = `${dir}/${folderName}/${sha}`;
+
+      //create new folder if there are no existing is founded
+      if (!fs.existsSync(`./public/${dir}/${folderName}`)) {
+        fs.mkdirSync(`./public/${dir}/${folderName}`);
+      }
+
+      //write image file to folder
+      const originalImage = await sharp(buffer).toFile(`./public/${fileUrl}${fileExtension}`)
+      const thumbnailImage = await sharp(buffer).resize(200).toFile(`./public/${fileUrl}-200${fileExtension}`);
+
+      const uploadToInsert = {
+        originalFilename : originalName,
+        fileSize: originalImage.size,
+        width: originalImage.width,
+        height: originalImage.height,
+        url: `${process.env.BASE_URL}/api/${fileUrl}${fileExtension}`,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        sha: sha,
+        extension: file.mimetype,
+        thumbnailWidth: thumbnailImage.width,
+        thumbnailHeight: thumbnailImage.height,
+        type: 'envelope',
+        account: {connect : {id: account.id}},
+      }
+      
+      const resultImage: UploadDb = await this.prisma.upload.create({
+          data: uploadToInsert
+      });
+
+      return resultImage;
     } catch (err) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);

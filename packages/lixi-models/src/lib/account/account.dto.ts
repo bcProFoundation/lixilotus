@@ -47,4 +47,5 @@ export interface AccountDto {
   address: string;
   balance?: number;
   language?: string;
+  uploadedImageId?: string;
 }

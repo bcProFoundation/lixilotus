@@ -24,6 +24,7 @@ import { isValidAmountInput } from '@utils/validation';
 import { CreateLixiConfirmationModalProps } from './CreateLixiConfirmationModal';
 import { LixiEnvelopeUploader, StyledLixiEnvelopeUploaded } from './LixiEnvelopeUploader';
 import { getAllEnvelopes } from 'src/store/envelope/selectors';
+import { getUploadedImageId } from '@store/account/selectors';
 import TextArea from 'antd/lib/input/TextArea';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import EnvelopeCarousel from '@components/Common/EnvelopeCarousel';
@@ -41,6 +42,7 @@ const CreateLixiForm = ({
 
   const dispatch = useAppDispatch();
   const envelopes = useAppSelector(getAllEnvelopes);
+  const uploadedImageId = useAppSelector(getUploadedImageId);
 
   // New Lixi name
   const [newLixiName, setNewLixiName] = useState('');
@@ -281,6 +283,7 @@ const CreateLixiForm = ({
       envelopeId: newEnvelopeId,
       envelopeMessage: newEnvelopeMessage,
       numberLixiPerPackage: newNumberLixiPerPackage,
+      upload: uploadedImageId
     };
 
     const createLixiModalProps: CreateLixiConfirmationModalProps = {

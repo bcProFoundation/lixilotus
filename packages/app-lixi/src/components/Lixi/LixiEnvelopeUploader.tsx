@@ -8,6 +8,7 @@ import Image from 'next/image'
 import type { UploadFile } from 'antd/es/upload/interface';
 import { isMobile } from 'react-device-detect';
 import { useAppDispatch, useAppSelector } from "@store/hooks";
+import { setUploadedImageId, removeUploadedImageId } from '@store/account/actions';
 import axiosClient from "@utils/axiosClient";
 
 const getBase64 = (file: RcFile): Promise<string> =>
@@ -84,20 +85,6 @@ export const LixiEnvelopeUploader = ({
       message.error(intl.get('lixi.fileSizeError'));
     }
 
-    //Get width and height
-    // const reader = new FileReader();
-    //   reader.readAsDataURL(file);
-    //   reader.addEventListener('load', event => {
-    //     const _loadedImageUrl = event.target.result;
-    //     const image = document.createElement('img');
-    //     image.src = _loadedImageUrl as string;
-    //     image.addEventListener('load', () => {
-    //       const { width, height } = image;
-    //       // set image width and height to your state here
-    //       console.log(width, height);
-    //     });
-    //   });
-
     return (isJPG || isPNG || isGIF) && isLt5M;
   }
 
@@ -138,7 +125,7 @@ export const LixiEnvelopeUploader = ({
 
   const uploadImage = async options => {
     const { onSuccess, onError, file, onProgress } = options;
-    const url = `/api/lixies/custom-envelope`
+    const url = `/api/lixies/custom-upload`
     const formData = new FormData();
 
     formData.append('file', file);
@@ -151,7 +138,7 @@ export const LixiEnvelopeUploader = ({
     };
 
     await axiosClient.post(url, formData, config).then(response => {
-      return onSuccess();
+      return onSuccess(dispatch(setUploadedImageId(response.data)));
     })
     .catch(err => {
       const { response } = err;
@@ -175,12 +162,13 @@ export const LixiEnvelopeUploader = ({
         accept="image/png, image/gif, image/jpeg"
         progress={customProgress}
         customRequest={uploadImage}
+        onRemove={() => dispatch(removeUploadedImageId(null))}
       >
         {uploadButton}
       </Upload>
        <Modal visible={previewVisible} title={previewTitle} footer={null} onCancel={handleCancel}>
         <div style={{width: '100%', height: '50vh', position: isMobile ? 'initial' : 'relative'}}>
-          <Image alt="custom-envelope" layout='fill' quality={100} src={previewImage} />
+          <Image alt="custom-upload" layout='fill' quality={100} src={previewImage} />
         </div>  
       </Modal>
     </StyledContainer>
