@@ -1,5 +1,5 @@
 import { Account } from '@bcpros/lixi-models';
-import { createEntityAdapter, createReducer, Update } from '@reduxjs/toolkit';
+import { createEntityAdapter, createReducer, isAnyOf, Update } from '@reduxjs/toolkit';
 
 import {
   deleteAccountSuccess,
@@ -10,7 +10,8 @@ import {
   setAccountBalance,
   refreshLixiListSuccess,
   setUploadedImageId,
-  removeUploadedImageId
+  removeUploadedImageId,
+  refreshLixiListSilentSuccess
 } from './actions';
 import { AccountsState } from './state';
 
@@ -22,7 +23,7 @@ const initialState: AccountsState = accountsAdapter.getInitialState({
   uploadedImageId: null
 });
 
-export const accountReducer = createReducer(initialState, (builder) => {
+export const accountReducer = createReducer(initialState, builder => {
   builder
     .addCase(setAccount, (state, action) => {
       const account = action.payload;
@@ -33,7 +34,7 @@ export const accountReducer = createReducer(initialState, (builder) => {
       const { account, lixies } = action.payload;
       const id = account.id;
       state.selectedId = id;
-      const lixiIds = lixies.map((lixi) => lixi.id);
+      const lixiIds = lixies.map(lixi => lixi.id);
       state.lixiIdsById[id] = lixiIds;
       accountsAdapter.upsertOne(state, account);
     })
@@ -41,15 +42,7 @@ export const accountReducer = createReducer(initialState, (builder) => {
       const { account, lixies } = action.payload;
       const id = account.id;
       state.selectedId = id;
-      const lixiIds = lixies.map((lixi) => lixi.id);
-      state.lixiIdsById[id] = lixiIds;
-      accountsAdapter.upsertOne(state, account);
-    })
-    .addCase(refreshLixiListSuccess, (state, action) => {
-      const { account, lixies } = action.payload;
-      const id = account.id;
-      state.selectedId = id;
-      const lixiIds = lixies.map((lixi) => lixi.id);
+      const lixiIds = lixies.map(lixi => lixi.id);
       state.lixiIdsById[id] = lixiIds;
       accountsAdapter.upsertOne(state, account);
     })
@@ -83,5 +76,12 @@ export const accountReducer = createReducer(initialState, (builder) => {
     })
     .addCase(removeUploadedImageId, (state, action) => {
       state.uploadedImageId = null;
-    })
+    }).addMatcher(isAnyOf(refreshLixiListSuccess, refreshLixiListSilentSuccess), (state, action) => {
+      const { account, lixies } = action.payload;
+      const id = account.id;
+      state.selectedId = id;
+      const lixiIds = lixies.map(lixi => lixi.id);
+      state.lixiIdsById[id] = lixiIds;
+      accountsAdapter.upsertOne(state, account);
+    });
 });

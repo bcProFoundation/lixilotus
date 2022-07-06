@@ -17,6 +17,7 @@
     "unableToUpdateLixi": "Unable to update lixi.",
     "unableToDowloadLixi": "Unable to download lixi",
     "unableToUpload": "Unable to upload envelope",
-    "fileNameNotExist": "File name not exist"
+    "fileNameNotExist": "File name not exist",
+    "lixiPackNotRegister": "Unable to register lixi pack"
   }
 }

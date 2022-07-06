@@ -5,6 +5,8 @@ import { EthersModule } from 'nestjs-ethers';
 import { AcceptLanguageResolver, HeaderResolver, I18nModule } from 'nestjs-i18n';
 import path, { join } from 'path';
 import { NotificationModule } from './common/modules/notifications/notification.module';
+import config from './config/config';
+import { GraphqlConfig } from './config/config.interface';
 import { AuthModule } from './modules/auth/auth.module';
 import { CoreModule } from './modules/core/core.module';
 import { LixiNftModule } from './modules/nft/lixinft.module';
@@ -36,19 +38,23 @@ export const serveStaticModule_uploads: FastifyServeStaticModuleOptions = {
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true
+    }),
     PrismaModule,
     ServeStaticModule.forRoot(serveStaticModule_images),
     ServeStaticModule.forRoot(serveStaticModule_uploads),
     ConfigModule.forRoot({
-      isGlobal: true
+      isGlobal: true,
+      load: [config]
     }),
     I18nModule.forRoot({
       fallbackLanguage: 'en',
       loaderOptions: {
         path: path.join(__dirname, '/i18n/'),
-        watch: true,
+        watch: true
       },
-      resolvers: [{ use: HeaderResolver, options: ['lang'] }, AcceptLanguageResolver],
+      resolvers: [{ use: HeaderResolver, options: ['lang'] }, AcceptLanguageResolver]
     }),
     EthersModule.forRootAsync({
       providers: [ConfigService],
@@ -68,9 +74,7 @@ export const serveStaticModule_uploads: FastifyServeStaticModuleOptions = {
     CoreModule,
     NotificationModule
   ],
-  controllers: [
-  ],
-  providers: [
-  ],
+  controllers: [],
+  providers: []
 })
 export class AppModule { }

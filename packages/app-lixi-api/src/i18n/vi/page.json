@@ -1,0 +1,15 @@
+{
+  "messages": {
+    "pageNotExist": "Trang không tồn tại trong cơ sở dữ liệu.",
+    "couldNotFindAccount": "Không thể tìm thấy tài khoản được liên kết.",
+    "couldNotFindPage": "Không thể tìm thấy trang trong cơ sở dữ liệu.",
+    "couldNotCreatePage": "Không thể tạo trang vì tài khoản không hợp lệ.",
+    "unableCreatePage": "Không thể tạo trang mới.",
+    "nameAlreadyTaken": "Tên đã được sử dụng.",
+    "invalidAccountCouldNotUpdatePage": "Tài khoản không hợp lệ! Không thể cập nhật trang.",
+    "unableToGetPage": "Không thể tải trang.",
+    "unableToUpdatePage": "Không thể cập nhật trang.",
+    "unableToDowloadPage": "Không thể tải trang",
+    "fileNameNotExist": "Tên file không tồn tại"
+  }
+}

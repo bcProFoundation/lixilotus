@@ -7,8 +7,8 @@ import {
   LixiDto,
   PaginationResult,
   PostLixiResponseDto,
-  RenameLixiCommand,
-  WithdrawLixiCommand
+  RegisterLixiPackCommand,
+  RenameLixiCommand
 } from '@bcpros/lixi-models';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
@@ -28,6 +28,7 @@ import {
   Post,
   Query,
   Req,
+  Request,
   Res,
   StreamableFile,
   UseGuards,
@@ -39,21 +40,22 @@ import * as _ from 'lodash';
 import { PaginationParams } from 'src/common/models/paginationParams';
 import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
-import { EXPORT_SUB_LIXIES_QUEUE, LIXI_JOB_NAMES, WITHDRAW_SUB_LIXIES_QUEUE } from 'src/modules/core/lixi/constants/lixi.constants';
+import {
+  EXPORT_SUB_LIXIES_QUEUE,
+  LIXI_JOB_NAMES,
+  WITHDRAW_SUB_LIXIES_QUEUE
+} from 'src/modules/core/lixi/constants/lixi.constants';
 import logger from 'src/logger';
 import { LixiService } from 'src/modules/core/lixi/lixi.service';
 import { WalletService } from 'src/modules/wallet/wallet.service';
-import { aesGcmDecrypt, numberToBase58, hexSha256 } from 'src/utils/encryptionMethods';
+import { aesGcmDecrypt, base58ToNumber, numberToBase58, hexSha256 } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
 import { PrismaService } from '../../prisma/prisma.service';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { createReadStream } from 'fs';
 import { join } from 'path';
 import { JwtAuthGuard } from 'src/modules/auth/jwtauth.guard';
-import {
-  FastifyRequest,
-  FastifyReply
-} from 'fastify';
+import { FastifyRequest, FastifyReply } from 'fastify';
 import moment from 'moment';
 import { extname } from 'path'
 import { UploadGuard } from 'src/utils/upload.guard';
@@ -237,6 +239,7 @@ export class LixiController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   async createLixi(
     @Body() command: CreateLixiCommand,
     @I18n() i18n: I18nContext
@@ -305,6 +308,66 @@ export class LixiController {
           const error = new VError.WError(err as Error, unableCreateLixi);
           throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+      }
+    }
+  }
+
+  @Patch('register')
+  @UseGuards(JwtAuthGuard)
+  async registerPackWithClaimCode(
+    @Body() command: RegisterLixiPackCommand,
+    @Request() req: FastifyRequest,
+    @I18n() i18n: I18nContext
+  ): Promise<boolean | undefined> {
+    try {
+      const account = (req as any).account;
+      if (!account) {
+        const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
+        throw new Error(couldNotFindAccount);
+      }
+      const encodedLixiId = command.claimCode.slice(8);
+      const lixiId = _.toSafeInteger(base58ToNumber(encodedLixiId));
+      const lixi = await this.prisma.lixi.findFirst({
+        where: {
+          id: lixiId,
+          accountId: account.id
+        }
+      });
+
+      if (!lixi) {
+        const lixiNotExist = await i18n.t('lixi.messages.lixiNotExist');
+        throw new VError(lixiNotExist);
+      } else {
+        if (lixi.inventoryStatus === 'registered') {
+          // if already register => ignore and return success
+          return true;
+        } else {
+          const lixiList = await this.prisma.lixi.updateMany({
+            where: {
+              packageId: lixi.packageId
+            },
+            data: {
+              inventoryStatus: 'registered',
+              updatedAt: new Date()
+            }
+          });
+          if (lixiList.count > 0) {
+            // if having lixilist update => return true noti update successfully
+            return true;
+          } else {
+            // count === 0 => don't have any data to update
+            const lixiPackNotRegister = await i18n.t('lixi.messages.lixiPackNotRegister');
+            throw new VError(lixiPackNotRegister);
+          }
+        }
+      }
+    } catch (err) {
+      if (err instanceof VError) {
+        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      } else {
+        const lixiPackNotRegister = await i18n.t('lixi.messages.lixiPackNotRegister');
+        const error = new VError.WError(err as Error, lixiPackNotRegister);
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
   }
@@ -385,6 +448,7 @@ export class LixiController {
   }
 
   @Post(':id/unarchive')
+  @UseGuards(JwtAuthGuard)
   async unlockLixi(
     @Param('id') id: string,
     @Body() command: Account,
@@ -460,6 +524,7 @@ export class LixiController {
   }
 
   @Post(':id/withdraw')
+  @UseGuards(JwtAuthGuard)
   async withdrawLixi(@Param('id') id: string, @Body() command: Account, @I18n() i18n: I18nContext) {
     const lixiId = _.toSafeInteger(id);
     try {
@@ -569,6 +634,7 @@ export class LixiController {
   }
 
   @Post(':id/export')
+  @UseGuards(JwtAuthGuard)
   async exportLixies(
     @Param('id') id: string,
     @Body() command: ExportLixiCommand,
@@ -623,10 +689,10 @@ export class LixiController {
         where: {
           parentId: lixiId
         }
-      })
+      });
 
       const subLixiesIds = subLixies.map(item => item.id);
-      subLixiesIds.push(lixiId)
+      subLixiesIds.push(lixiId);
 
       const count = await this.prisma.claim.count({
         where: {
@@ -716,6 +782,7 @@ export class LixiController {
   }
 
   @Patch(':id/rename')
+  @UseGuards(JwtAuthGuard)
   async renameLixi(
     @Param('id') id: string,
     @Body() command: RenameLixiCommand,
@@ -811,7 +878,6 @@ export class LixiController {
     @I18n() i18n: I18nContext
   ): Promise<StreamableFile> {
     try {
-
       const account = (req as any).account;
 
       if (!account) {
@@ -835,7 +901,7 @@ export class LixiController {
         throw new VError(fileNameNotExist);
       }
 
-      const file = createReadStream(join(process.cwd(), 'public', "download", fileName));
+      const file = createReadStream(join(process.cwd(), 'public', 'download', fileName));
 
       res.header('Content-Type', 'text/csv');
       res.header('Content-Disposition', `attachment; filename=${fileName}`);

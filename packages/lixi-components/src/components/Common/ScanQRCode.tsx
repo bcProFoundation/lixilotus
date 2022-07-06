@@ -32,10 +32,10 @@ const QRPreview = styled.video`
 type ScanQRCodeProps = {
   loadWithCameraOpen: boolean;
   onScan: Function;
+  id: string;
 }
-
 const ScanQRCode = (props: ScanQRCodeProps) => {
-  const { loadWithCameraOpen, onScan, ...otherProps } = props;
+  const { loadWithCameraOpen, onScan, id, ...otherProps } = props;
   const [visible, setVisible] = useState(loadWithCameraOpen);
   const [error, setError] = useState(false);
   // Use these states to debug video errors on mobile
@@ -88,7 +88,7 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
       //const previewElem = document.querySelector("#test-area-qr-code-webcam");
       const selectedDeviceId = videoInputDevices[0].deviceId;
 
-      const previewElem = document.querySelector('#test-area-qr-code-webcam');
+      const previewElem = document.querySelector('#test-area-qr-code-webcam-'+id);
       const controls = await codeReader.decodeFromVideoDevice(selectedDeviceId, previewElem as any, (content: Result, error, controls) => {
         // use the result and error values to choose your actions
         // you can also use controls API in this scope like the controls
@@ -110,7 +110,7 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
             return teardownCodeReader(codeReader);
           }
         }
-        
+
       })
     } catch (err) {
       console.log(intl.get('general.QRScannerError'));
@@ -162,7 +162,7 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
                 />
               </>
             ) : (
-              <QRPreview id="test-area-qr-code-webcam"></QRPreview>
+              <QRPreview id={`test-area-qr-code-webcam-${id}`}></QRPreview>
             )}
           </div>
         ) : null}

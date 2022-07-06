@@ -3,7 +3,9 @@ import {
   AccountDto,
   CreateAccountCommand,
   DeleteAccountCommand,
-  ImportAccountCommand, Lixi, RenameAccountCommand
+  ImportAccountCommand,
+  Lixi,
+  RenameAccountCommand
 } from '@bcpros/lixi-models';
 import BCHJS from '@bcpros/xpi-js';
 import { PayloadAction } from '@reduxjs/toolkit';
@@ -20,7 +22,10 @@ import lixiApi from '../lixi/api';
 import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
 import {
-  changeAccountLocale, changeAccountLocaleFailure, changeAccountLocaleSuccess, deleteAccount,
+  changeAccountLocale,
+  changeAccountLocaleFailure,
+  changeAccountLocaleSuccess,
+  deleteAccount,
   deleteAccountFailure,
   deleteAccountSuccess,
   generateAccount,
@@ -36,6 +41,7 @@ import {
   refreshLixiList,
   refreshLixiListFailure,
   refreshLixiListSuccess,
+  refreshLixiListSilentSuccess,
   renameAccount,
   renameAccountFailure,
   renameAccountSuccess,
@@ -45,7 +51,8 @@ import {
   setAccount,
   setAccountSuccess,
   silentLogin,
-  silentLoginFailure, silentLoginSuccess
+  silentLoginFailure,
+  silentLoginSuccess
 } from './actions';
 import { getAccountById, getSelectedAccount } from './selectors';
 
@@ -364,6 +371,7 @@ function* deleteAccountFailureSaga(action: PayloadAction<string>) {
   });
   yield put(hideLoading(deleteAccount.type));
 }
+
 function* refreshLixiListSaga(action: PayloadAction<number>) {
   try {
     yield put(showLoading(refreshLixiList.type));
@@ -379,6 +387,13 @@ function* refreshLixiListSaga(action: PayloadAction<number>) {
   }
 }
 function* refreshLixiListSuccessSaga(action: PayloadAction<{ account: Account; lixies: Lixi[] }>) {
+  yield put(
+    showToast('success', {
+      message: 'Success',
+      description: intl.get('claim.refreshSuccess'),
+      duration: 5
+    })
+  );
   yield put(hideLoading(refreshLixiList.type));
 }
 function* refreshLixiListFailureSaga(action: PayloadAction<number>) {
@@ -391,6 +406,17 @@ function* refreshLixiListFailureSaga(action: PayloadAction<number>) {
     })
   );
   yield put(hideLoading(refreshLixiList.type));
+}
+
+function* refreshLixiListSilentSaga(action: PayloadAction<number>) {
+  try {
+    const accountId = action.payload;
+    const data = yield call(accountApi.getById, accountId);
+    const account = data as Account;
+    const lixiesData = yield call(lixiApi.getByAccountId, accountId);
+    const lixies = (lixiesData ?? []) as Lixi[];
+    yield put(refreshLixiListSilentSuccess({ account: account, lixies: lixies }));
+  } catch (err) {}
 }
 
 function* watchGenerateAccount() {
@@ -499,6 +525,10 @@ function* watchRefreshLixiListFailure() {
   yield takeLatest(refreshLixiListFailure.type, refreshLixiListFailureSaga);
 }
 
+function* watchRefreshLixiListSilent() {
+  yield takeLatest(refreshLixiList.type, refreshLixiListSilentSaga);
+}
+
 function* silentLoginSaga(action: PayloadAction<string>) {
   const mnemonic = action.payload;
   try {
@@ -528,7 +558,6 @@ function* watchSilentLoginSuccess() {
   yield takeLatest(silentLoginSuccess.type, silentLoginSuccessSaga);
 }
 
-
 export default function* accountSaga() {
   yield all([
     fork(watchGenerateAccount),
@@ -549,6 +578,7 @@ export default function* accountSaga() {
     fork(watchRefreshLixiList),
     fork(watchRefreshLixiListSuccess),
     fork(watchRefreshLixiListFailure),
+    fork(watchRefreshLixiListSilent),
     fork(watchRenameAccount),
     fork(watchRenameAccountSuccess),
     fork(watchRenameAccountFailure),
