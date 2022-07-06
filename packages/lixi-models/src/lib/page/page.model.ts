@@ -1,7 +1,8 @@
 import { Account } from '../account';
 
-export interface Page {
+export class Page {
   id: string;
+  pageAccountId: number;
   pageAccount: Account;
   name: string;
   title: string;

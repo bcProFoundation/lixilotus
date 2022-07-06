@@ -128,14 +128,14 @@ export const lixiReducer = createReducer(initialState, builder => {
       const result = action.payload;
       childrenLixiesAdapter.setAll(state.subLixies, result.data ?? []);
       state.subLixiesCount = result.totalCount;
-      state.currentSubLixiesStartId = result.pageInfo.endCursor;
+      state.currentSubLixiesStartId = _.toSafeInteger(result.pageInfo.endCursor);
       state.hasMoreSubLixies = result.pageInfo.hasNextPage;
     })
     .addCase(fetchMoreSubLixiesSuccess, (state, action) => {
       const result = action.payload;
       childrenLixiesAdapter.upsertMany(state.subLixies, result.data ?? []);
       state.subLixiesCount = result.totalCount;
-      state.currentSubLixiesStartId = result.pageInfo.endCursor;
+      state.currentSubLixiesStartId = _.toSafeInteger(result.pageInfo.endCursor);
       state.hasMoreSubLixies = result.pageInfo.hasNextPage;
     })
     .addMatcher(isAnyOf(refreshLixiListSuccess, refreshLixiListSilentSuccess), (state, action) => {

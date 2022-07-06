@@ -71,7 +71,7 @@ export class LixiController {
     @Inject('xpijs') private XPI: BCHJS,
     @InjectQueue(EXPORT_SUB_LIXIES_QUEUE) private exportSubLixiesQueue: Queue,
     @InjectQueue(WITHDRAW_SUB_LIXIES_QUEUE) private withdrawSubLixiesQueue: Queue
-  ) {}
+  ) { }
 
   @Get(':id')
   async getLixi(
@@ -154,21 +154,21 @@ export class LixiController {
 
       subLixies = cursor
         ? await this.prisma.lixi.findMany({
-            take: take,
-            skip: 1,
-            where: {
-              parentId: lixiId
-            },
-            cursor: {
-              id: cursor
-            }
-          })
+          take: take,
+          skip: 1,
+          where: {
+            parentId: lixiId
+          },
+          cursor: {
+            id: cursor
+          }
+        })
         : await this.prisma.lixi.findMany({
-            take: take,
-            where: {
-              parentId: lixiId
-            }
-          });
+          take: take,
+          where: {
+            parentId: lixiId
+          }
+        });
 
       const childrenApiResult: LixiDto[] = [];
 
@@ -202,14 +202,14 @@ export class LixiController {
       const countAfter = !endCursor
         ? 0
         : await this.prisma.lixi.count({
-            where: {
-              parentId: lixiId
-            },
-            cursor: {
-              id: _.toSafeInteger(endCursor)
-            },
-            skip: 1
-          });
+          where: {
+            parentId: lixiId
+          },
+          cursor: {
+            id: _.toSafeInteger(endCursor)
+          },
+          skip: 1
+        });
 
       const hasNextPage = countAfter > 0;
 
@@ -234,6 +234,7 @@ export class LixiController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   async createLixi(
     @Body() command: CreateLixiCommand,
     @I18n() i18n: I18nContext
@@ -442,6 +443,7 @@ export class LixiController {
   }
 
   @Post(':id/unarchive')
+  @UseGuards(JwtAuthGuard)
   async unlockLixi(
     @Param('id') id: string,
     @Body() command: Account,
@@ -517,6 +519,7 @@ export class LixiController {
   }
 
   @Post(':id/withdraw')
+  @UseGuards(JwtAuthGuard)
   async withdrawLixi(@Param('id') id: string, @Body() command: Account, @I18n() i18n: I18nContext) {
     const lixiId = _.toSafeInteger(id);
     try {
@@ -626,6 +629,7 @@ export class LixiController {
   }
 
   @Post(':id/export')
+  @UseGuards(JwtAuthGuard)
   async exportLixies(
     @Param('id') id: string,
     @Body() command: ExportLixiCommand,
@@ -736,19 +740,19 @@ export class LixiController {
       const countAfter = !endCursor
         ? 0
         : await this.prisma.claim.count({
-            where: {
-              lixiId: lixiId
-            },
-            orderBy: [
-              {
-                id: 'asc'
-              }
-            ],
-            cursor: {
-              id: _.toSafeInteger(endCursor)
-            },
-            skip: 1
-          });
+          where: {
+            lixiId: lixiId
+          },
+          orderBy: [
+            {
+              id: 'asc'
+            }
+          ],
+          cursor: {
+            id: _.toSafeInteger(endCursor)
+          },
+          skip: 1
+        });
 
       const hasNextPage = countAfter > 0;
 
@@ -773,6 +777,7 @@ export class LixiController {
   }
 
   @Patch(':id/rename')
+  @UseGuards(JwtAuthGuard)
   async renameLixi(
     @Param('id') id: string,
     @Body() command: RenameLixiCommand,
