@@ -58,7 +58,6 @@ import { JwtAuthGuard } from 'src/modules/auth/jwtauth.guard';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import moment from 'moment';
 
-
 @Controller('lixies')
 @UseInterceptors(ClassSerializerInterceptor)
 @Injectable()
@@ -333,7 +332,7 @@ export class LixiController {
         const lixiNotExist = await i18n.t('lixi.messages.lixiNotExist');
         throw new VError(lixiNotExist);
       } else {
-        if(lixi.inventoryStatus === 'registered'){
+        if (lixi.inventoryStatus === 'registered') {
           // if already register => ignore and return success
           return true;
         } else {
@@ -349,7 +348,7 @@ export class LixiController {
           if (lixiList.count > 0) {
             // if having lixilist update => return true noti update successfully
             return true;
-          } else{
+          } else {
             // count === 0 => don't have any data to update
             const lixiPackNotRegister = await i18n.t('lixi.messages.lixiPackNotRegister');
             throw new VError(lixiPackNotRegister);
