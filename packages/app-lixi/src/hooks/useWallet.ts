@@ -1,8 +1,12 @@
 import BCHJS from "@bcpros/xpi-js";
 import { Lixi } from "@bcpros/lixi-models";
+import { useState } from "react";
 
 /* eslint-disable react-hooks/exhaustive-deps */
 const useWallet = (XPI: BCHJS) => {
+
+  const [apiError, setApiError] = useState(false);
+
   const getWalletDetails = async (mnemonic) => {
     const NETWORK = process.env.NEXT_PUBLIC_NETWORK;
     const rootSeedBuffer = await XPI.Mnemonic.toSeed(mnemonic);
@@ -59,8 +63,13 @@ const useWallet = (XPI: BCHJS) => {
   };
 
   return {
+    deriveAccount,
+    apiError,
     getWalletDetails,
     validateMnemonic,
+    refresh: async () => {
+      // update({walletToUpdate: wallet})
+  }
   } as const;
 };
 
