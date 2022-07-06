@@ -16,6 +16,7 @@
     "unableToGetLixi": "Unable to get lixi.",
     "unableToUpdateLixi": "Unable to update lixi.",
     "unableToDowloadLixi": "Unable to download lixi",
-    "fileNameNotExist": "File name not exist"
+    "fileNameNotExist": "File name not exist",
+    "lixiPackNotRegister": "Unable to register lixi pack"
   }
 }

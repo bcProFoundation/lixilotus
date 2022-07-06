@@ -287,6 +287,7 @@ export const FormItemWithQRCodeAddon = (props: FormItemWithQRCodeAddonProps) => 
               <StyledScanQRCode
                 loadWithCameraOpen={loadWithCameraOpen}
                 onScan={onScan}
+                id={Date.now().toString()}
               />
               <UploadQRCode
                 onScan={onScan}
@@ -323,6 +324,7 @@ export const FormItemClaimCodeXpiInput = (props: FormItemClaimCodeXpiInputProps)
               <StyledScanQRCode
                 loadWithCameraOpen={loadWithCameraOpen}
                 onScan={onScan}
+                id={Date.now().toString()}
               />
               <UploadQRCode
                 onScan={onScan}

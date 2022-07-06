@@ -153,20 +153,20 @@ const MainLayout: React.FC = props => {
                           {intl.get('general.accounts')}
                         </NavButton>
                       </Link>
-                      <Link href="/lixi" passHref>
-                        <NavButton active={selectedKey === '/lixi'}>
+                      <Link href="/admin/lixi" passHref>
+                        <NavButton active={selectedKey === 'admin/lixi'}>
                           <WalletOutlined />
                           {intl.get('general.lixi')}
                         </NavButton>
                       </Link>
-                      <Link href="/claim" passHref>
-                        <NavButton active={selectedKey === '/claim'}>
+                      <Link href="/admin/claim" passHref>
+                        <NavButton active={selectedKey === '/admin/claim'}>
                           <GiftOutlined />
                           {intl.get('general.claim')}
                         </NavButton>
                       </Link>
-                      <Link href="/settings" passHref>
-                        <NavButton active={selectedKey === '/settings'}>
+                      <Link href="/admin/settings" passHref>
+                        <NavButton active={selectedKey === '/admin/settings'}>
                           <SettingOutlined />
                           {intl.get('general.settings')}
                         </NavButton>
