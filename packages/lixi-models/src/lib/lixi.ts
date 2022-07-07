@@ -1,5 +1,6 @@
 import { Account } from '..';
 import { Envelope } from './envelope';
+import { Upload } from './upload';
 
 export interface GenerateLixiCommand {
   name: string;
@@ -25,7 +26,7 @@ export interface GenerateLixiCommand {
   envelopeId: Nullable<number>;
   envelopeMessage: string;
   numberLixiPerPackage?: Nullable<string>;
-  upload?: Nullable<string>;
+  upload: Upload;
 }
 
 export interface CreateLixiCommand {
@@ -53,7 +54,7 @@ export interface CreateLixiCommand {
   envelopeId: Nullable<number>;
   envelopeMessage: string;
   numberLixiPerPackage?: Nullable<number>;
-  upload: string
+  upload: string;
 }
 
 export interface LixiDto {

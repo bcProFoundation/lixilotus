@@ -35,7 +35,7 @@ export const getAccountById = (id: number) => createSelector(
   (accounts) => accounts?.[id]
 )
 
-export const getUploadedImageId = createSelector(
+export const getUpload = createSelector(
   (state: RootState) => state.accounts,
-  (accounts: AccountsState) => accounts.uploadedImageId
+  (accounts: AccountsState) => accounts.upload
 )

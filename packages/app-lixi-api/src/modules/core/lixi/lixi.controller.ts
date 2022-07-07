@@ -937,7 +937,7 @@ export class LixiController {
       const buffer = await file.toBuffer();
       const originalName = file.filename.replace(/\.[^/.]+$/, "")
       const sha = await hexSha256(buffer.toString() + moment.now());
-      const dir = `uploads`
+      const dir = `uploads`;
 
       const fileExtension = extname(file.filename);
       const folderName = sha.substring(0,2);

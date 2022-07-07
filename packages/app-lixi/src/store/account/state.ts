@@ -1,4 +1,5 @@
 import { Account } from "@bcpros/lixi-models/lib/account";
+import { Upload } from "@bcpros/lixi-models/lib/upload"
 import { EntityState } from "@reduxjs/toolkit";
 
 export interface AccountsState extends EntityState<Account> {
@@ -6,5 +7,5 @@ export interface AccountsState extends EntityState<Account> {
   lixiIdsById: {
     [key: number]: Array<number>
   };
-  uploadedImageId:  Nullable<string> | undefined;
+  upload: Upload;
 }

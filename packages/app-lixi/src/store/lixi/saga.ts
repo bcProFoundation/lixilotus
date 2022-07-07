@@ -118,7 +118,7 @@ function* generateLixiSaga(action: PayloadAction<GenerateLixiCommand>) {
     mnemonicHash: command.mnemonicHash,
     envelopeId: command.envelopeId,
     envelopeMessage: command.envelopeMessage ?? '',
-    upload: command.upload ?? null
+    upload: command.upload.id ?? null
   };
 
   yield put(postLixi(createLixiCommand));

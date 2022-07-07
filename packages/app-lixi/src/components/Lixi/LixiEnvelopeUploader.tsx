@@ -7,8 +7,8 @@ import styled from 'styled-components';
 import Image from 'next/image'
 import type { UploadFile } from 'antd/es/upload/interface';
 import { isMobile } from 'react-device-detect';
-import { useAppDispatch, useAppSelector } from "@store/hooks";
-import { setUploadedImageId, removeUploadedImageId } from '@store/account/actions';
+import { useAppDispatch } from "@store/hooks";
+import { setUpload, removeUpload } from '@store/account/actions';
 import axiosClient from "@utils/axiosClient";
 
 const getBase64 = (file: RcFile): Promise<string> =>
@@ -138,7 +138,7 @@ export const LixiEnvelopeUploader = ({
     };
 
     await axiosClient.post(url, formData, config).then(response => {
-      return onSuccess(dispatch(setUploadedImageId(response.data)));
+      return onSuccess(dispatch(setUpload(response.data)));
     })
     .catch(err => {
       const { response } = err;
@@ -162,7 +162,7 @@ export const LixiEnvelopeUploader = ({
         accept="image/png, image/gif, image/jpeg"
         progress={customProgress}
         customRequest={uploadImage}
-        onRemove={() => dispatch(removeUploadedImageId(null))}
+        onRemove={() => dispatch(removeUpload(null))}
       >
         {uploadButton}
       </Upload>

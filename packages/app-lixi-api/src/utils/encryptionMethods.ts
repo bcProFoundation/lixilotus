@@ -79,9 +79,9 @@ export function numberToBase58(input: number): string {
   return result;
 }
 
-export async function hexSha256(text: string): Promise<string> {
-  const txtUtf8 = new TextEncoder().encode(text);
-  const txtHash = await crypto.createHash('sha256').update(txtUtf8).digest();
+export async function hexSha256(text: string | Buffer): Promise<string> {
+  const txtUtf8 = typeof text === "string" ? new TextEncoder().encode(text) : text ;
+  const txtHash = crypto.createHash('sha256').update(txtUtf8).digest();
   return txtHash.toString('hex');
 }
 /**
