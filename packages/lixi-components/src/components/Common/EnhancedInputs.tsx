@@ -9,7 +9,7 @@ import styled, { css } from 'styled-components';
 import ScanQRCode from './ScanQRCode';
 // import useBCH from '@hooks/useBCH';
 import { currency } from './Ticker';
-import { LockOutlined } from '@ant-design/icons';
+import { HeartOutlined, LockOutlined, TeamOutlined } from '@ant-design/icons';
 import UploadQRCode from './UploadQRCode';
 
 export const AntdFormCss = css`
@@ -25,7 +25,7 @@ export const AntdFormCss = css`
   .ant-select-item-option-active
   .ant-select-item {
       background-color: ${props =>
-  props.theme.forms.selectionBackground} !important;
+    props.theme.forms.selectionBackground} !important;
     box-shadow: none !important;
     border-radius: 4px;
     font-weight: bold;
@@ -96,11 +96,11 @@ export const InputAddonText = styled.span<InputAddonTextProps>`
   display: block;
 
   ${props =>
-  props.disabled
-    ? `
+    props.disabled
+      ? `
     cursor: not-allowed;
     `
-    : `cursor: pointer;`}
+      : `cursor: pointer;`}
 `;
 
 type InputNumberAddonTextProps = {
@@ -117,11 +117,11 @@ export const InputNumberAddonText = styled.span<InputNumberAddonTextProps>`
       color: ${props => props.theme.forms.addonForeground} !important;
   }
   ${props =>
-  props.disabled
-    ? `
+    props.disabled
+      ? `
     cursor: not-allowed;
     `
-    : `cursor: pointer;`}
+      : `cursor: pointer;`}
 `;
 
 export const StyledScanQRCode = styled(ScanQRCode)`
@@ -339,3 +339,75 @@ export const FormItemClaimCodeXpiInput = (props: FormItemClaimCodeXpiInputProps)
     </AntdFormWrapper>
   );
 }
+
+type FormItemWithStaffAddonProps = {
+  onScan: Function;
+  loadWithCameraOpen: boolean;
+  inputProps: InputProps;
+  style?: React.CSSProperties;
+} & FormItemProps;
+
+// loadWithCameraOpen prop: if true, load page with camera scanning open
+export const FormItemWithStaffAddon = (props: FormItemWithStaffAddonProps) => {
+  const { onScan, loadWithCameraOpen, inputProps, ...otherProps } = props
+  return (
+    <AntdFormWrapper>
+      <Form.Item {...otherProps}>
+        <Input
+          prefix={<TeamOutlined />}
+          autoComplete="off"
+          addonAfter={
+            <>
+              <StyledScanQRCode
+                loadWithCameraOpen={loadWithCameraOpen}
+                onScan={onScan}
+                id={Date.now().toString()}
+              />
+              <UploadQRCode
+                onScan={onScan}
+                codeType='address'
+              />
+            </>
+          }
+          {...inputProps}
+        />
+      </Form.Item>
+    </AntdFormWrapper>
+  );
+};
+
+type FormItemWithCharityAddonProps = {
+  onScan: Function;
+  loadWithCameraOpen: boolean;
+  inputProps: InputProps;
+  style?: React.CSSProperties;
+} & FormItemProps;
+
+// loadWithCameraOpen prop: if true, load page with camera scanning open
+export const FormItemWithCharityAddon = (props: FormItemWithCharityAddonProps) => {
+  const { onScan, loadWithCameraOpen, inputProps, ...otherProps } = props
+  return (
+    <AntdFormWrapper>
+      <Form.Item {...otherProps}>
+        <Input
+          prefix={<HeartOutlined />}
+          autoComplete="off"
+          addonAfter={
+            <>
+              <StyledScanQRCode
+                loadWithCameraOpen={loadWithCameraOpen}
+                onScan={onScan}
+                id={Date.now().toString()}
+              />
+              <UploadQRCode
+                onScan={onScan}
+                codeType='address'
+              />
+            </>
+          }
+          {...inputProps}
+        />
+      </Form.Item>
+    </AntdFormWrapper>
+  );
+};

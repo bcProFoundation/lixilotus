@@ -150,9 +150,6 @@ export class ClaimController {
         const lixi = await this.prisma.lixi.findUnique({
           where: {
             id: lixiId
-          },
-          include: {
-            distribution: true,
           }
         });
 
@@ -171,18 +168,18 @@ export class ClaimController {
           }
         }
 
-        if (process.env.NODE_ENV !== 'development') {
-          await checkingCaptcha();
-          const geolocation = geoip.lookup(ip);
-          const country = countries.find(country => country.id === lixi?.country);
+        // if (process.env.NODE_ENV !== 'development') {
+        //   await checkingCaptcha();
+        //   const geolocation = geoip.lookup(ip);
+        //   const country = countries.find(country => country.id === lixi?.country);
 
-          if (geolocation?.country != _.upperCase(country?.id) && !_.isNil(country?.id)) {
-            const claimOutsideZone = await i18n.t('claim.messages.claimOutsideZone', {
-              args: { countryName: country?.name }
-            });
-            throw new VError(claimOutsideZone);
-          }
-        }
+        //   if (geolocation?.country != _.upperCase(country?.id) && !_.isNil(country?.id)) {
+        //     const claimOutsideZone = await i18n.t('claim.messages.claimOutsideZone', {
+        //       args: { countryName: country?.name }
+        //     });
+        //     throw new VError(claimOutsideZone);
+        //   }
+        // }
 
         if (!lixi) {
           const unableClaimLixi = await i18n.t('claim.messages.unableClaimLixi');
@@ -196,10 +193,14 @@ export class ClaimController {
         }
 
         //check if lixi is one time code
+        let parentLixi;
         if (lixi.parentId != null) {
-          const parentLixi = await this.prisma.lixi.findUnique({
+          parentLixi = await this.prisma.lixi.findUnique({
             where: {
               id: lixi.parentId
+            },
+            include: {
+              distribution: true,
             }
           });
 
@@ -250,23 +251,23 @@ export class ClaimController {
 
         let satoshisToSend;
         if (lixi.claimType == ClaimType.OneTime) {
-          // Loyalty program
-          if (lixi.distribution.length != 0 || lixi.isLottery) {
-            const xpiValue = await this.walletService.onMax(lixiAddress);
+          // // Loyalty program
+          // if (lixi.distribution.length != 0 || lixi.isLottery) {
+          //   const xpiValue = await this.walletService.onMax(lixiAddress);
 
-            let count = 1;
-            lixi.isLottery === true && count++;
-            count += lixi.distribution.length;
+          //   let count = 1;
+          //   lixi.isLottery === true && count++;
+          //   count += lixi.distribution.length;
 
-            const xpiDistributions = xpiValue / (count);
-            satoshisToSend = toSmallestDenomination(new BigNumber(xpiDistributions));
-          }
+          //   const xpiDistributions = xpiValue / (count);
+          //   satoshisToSend = toSmallestDenomination(new BigNumber(xpiDistributions));
+          // }
 
-          // without Loyalty program
-          else {
-            const xpiValue = await this.walletService.onMax(lixiAddress);
-            satoshisToSend = toSmallestDenomination(new BigNumber(xpiValue));
-          }
+          // // without Loyalty program
+          // else {
+          const xpiValue = await this.walletService.onMax(lixiAddress);
+          satoshisToSend = toSmallestDenomination(new BigNumber(xpiValue));
+          // }
         } else if (lixi.lixiType == LixiType.Random) {
           const maxXpiValue = xpiBalance < lixi.maxValue ? xpiBalance : lixi.maxValue;
           const maxSatoshis = toSmallestDenomination(new BigNumber(maxXpiValue));
@@ -298,31 +299,29 @@ export class ClaimController {
             amountSat: amountSats
           }
         ];
-        if (lixi.distribution) {
-          // Get distribution address
-          const distributionId = lixi?.distribution.map(item => item.distributionId)
-          const distributions = await this.prisma.distribution.findMany({
-            where: {
-              id: { in: distributionId }
-            }
-          })
+        // if (lixi.distribution) {
+        //   // Get distribution address
+        //   const distributionId = lixi?.distribution.map(item => item.distributionId)
+        //   const distributions = await this.prisma.distribution.findMany({
+        //     where: {
+        //       id: { in: distributionId }
+        //     }
+        //   })
 
-          // add receiving address
-          distributions.map(item => {
-            outputs.push({
-              address: item.address,
-              amountSat: amountSats
-            })
-          })
-        }
-        if (lixi.isLottery === true) {
-          outputs.push({
-            address: LotteryAddress,
-            amountSat: amountSats
-          })
-        }
-
-        console.log(outputs);
+        //   // add receiving address
+        //   distributions.map(item => {
+        //     outputs.push({
+        //       address: item.address,
+        //       amountSat: amountSats
+        //     })
+        //   })
+        // }
+        // if (lixi.isLottery === true) {
+        //   outputs.push({
+        //     address: LotteryAddress,
+        //     amountSat: amountSats
+        //   })
+        // }
 
         if (!utxoStore || !(utxoStore as any).bchUtxos || !(utxoStore as any).bchUtxos) {
           const utxoEmpty = await i18n.t('claim.messages.utxoEmpty');

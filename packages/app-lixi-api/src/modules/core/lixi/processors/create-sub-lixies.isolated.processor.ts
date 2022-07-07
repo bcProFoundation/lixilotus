@@ -1,4 +1,4 @@
-import { CreateLixiCommand, fromSmallestDenomination, Lixi, LixiType } from '@bcpros/lixi-models';
+import { CreateLixiCommand, fromSmallestDenomination, Lixi, LixiType, Distribution } from '@bcpros/lixi-models';
 import { Lixi as LixiDb, PrismaClient } from '@prisma/client';
 import { Job } from 'bullmq';
 import * as _ from 'lodash';
@@ -59,7 +59,6 @@ export async function processCreateSubLixiesChunk(job: Job): Promise<boolean> {
     fundingAddress,
     accountSecret,
     packageId,
-    distributions
   } = jobData;
 
   const { keyPair } = await walletService.deriveAddress(command.mnemonic, 0); // keyPair of the account
@@ -96,7 +95,7 @@ export async function processCreateSubLixiesChunk(job: Job): Promise<boolean> {
   // Save the lixi into the database
   try {
     const savedLixies = await prisma.$transaction(async prisma => {
-      const createdLixies = prisma.lixi.createMany({
+      const createdLixies = await prisma.lixi.createMany({
         data: subLixiesToInsert,
       });
       if (receivingSubLixies.length > 0) {
@@ -104,30 +103,6 @@ export async function processCreateSubLixiesChunk(job: Job): Promise<boolean> {
       }
       return createdLixies;
     });
-
-    if (distributions) {
-      const subLixi = await prisma.lixi.findMany({
-        where: {
-          packageId: jobData.parentId,
-        }
-      })
-
-      const lixiDistributions: { lixiId: number, distributionId: string }[] = [];
-      for (let distribution of (distributions as string[])) {
-        for (let lixi of subLixi) {
-          const lixiDistribution = {
-            lixiId: lixi.id,
-            distributionId: distribution
-          };
-
-          lixiDistributions.push(lixiDistribution);
-        }
-      }
-
-      await prisma.lixiDistribution.createMany({
-        data: lixiDistributions,
-      });
-    }
 
     _.map(savedLixies, (item: LixiDb) => {
       // Calculate the claim code of the sub lixi

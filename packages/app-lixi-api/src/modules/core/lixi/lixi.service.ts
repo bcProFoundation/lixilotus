@@ -136,7 +136,7 @@ export class LixiService {
 
     // Prepare data to insert into the database
     const data = {
-      ..._.omit(command, ['mnemonic', 'mnemonicHash', 'password']),
+      ..._.omit(command, ['mnemonic', 'mnemonicHash', 'password', 'staffAddress', 'charityAddress']),
       id: undefined,
       derivationIndex: derivationIndex,
       encryptedClaimCode: encryptedClaimCode,
@@ -150,9 +150,10 @@ export class LixiService {
       totalClaim: BigInt(0),
       envelopeId: command.envelopeId ?? null,
       envelopeMessage: command.envelopeMessage ?? '',
-      isNFTEnabled: command.isNFTEnabled ?? false
+      isNFTEnabled: command.isNFTEnabled ?? false,
+      isLottery: command.isLottery,
     };
-    const lixiToInsert = _.omit(data, 'password', 'staffAddress', 'charityAddress');
+    const lixiToInsert = _.omit(data, 'password');
 
     const utxos = await this.XPI.Utxo.get(account.address);
     const utxoStore = utxos[0];
@@ -175,7 +176,34 @@ export class LixiService {
 
     // Save the lixi into the database
     const savedLixi = await this.prisma.$transaction(async prisma => {
-      const createdLixi = prisma.lixi.create({ data: lixiToInsert });
+      const createdLixi = await prisma.lixi.create({ data: lixiToInsert });
+
+      const distribtion: { address: string, distributionType: string, lixi: any }[] = [];
+      if (command.staffAddress != '') {
+        distribtion.push({
+          address: command.staffAddress as string,
+          distributionType: 'staff',
+          lixi: {
+            connect: { id: createdLixi.id }
+          }
+        })
+      }
+      if (command.charityAddress != '') {
+        distribtion.push({
+          address: command.charityAddress as string,
+          distributionType: 'charity',
+          lixi: {
+            connect: { id: createdLixi.id }
+          }
+        })
+      }
+      if (distribtion) {
+        const out = await prisma.distribution.createMany({
+          data: distribtion
+        })
+
+        console.log(out)
+      }
       return createdLixi;
     });
 
@@ -236,27 +264,6 @@ export class LixiService {
 
     const childrenJobs: FlowJob[] = [];
 
-    // Prepare distributions
-    const distributionId: string[] = [];
-    if (command.staffAddress != '') {
-      const staffAddress = await this.prisma.distribution.create({
-        data: {
-          address: command.staffAddress as string,
-          distributionType: "staff",
-        }
-      });
-      distributionId.push(staffAddress.id);
-    }
-    if (command.charityAddress != '') {
-      const charityAddress = await this.prisma.distribution.create({
-        data: {
-          address: command.charityAddress as string,
-          distributionType: "charity",
-        }
-      });
-      distributionId.push(charityAddress.id);
-    }
-
     for (let chunkIndex = 0; chunkIndex < numberOfChunks; chunkIndex++) {
       const numberOfSubLixiInChunk =
         chunkIndex < numberOfChunks - 1 ? chunkSize : (command.numberOfSubLixi as number) - chunkIndex * chunkSize;
@@ -285,7 +292,6 @@ export class LixiService {
         fundingAddress: account.address,
         accountSecret: secret,
         packageId: command.numberLixiPerPackage && createdPackage?.id ? createdPackage?.id : undefined,
-        distributions: (command.staffAddress != '' || command.charityAddress != '') ? distributionId : undefined,
       };
 
       const childJob: FlowJob = {

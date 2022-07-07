@@ -101,7 +101,7 @@ export interface LixiDto {
   numberLixiPerPackage?: Nullable<number>;
   packageId?: Nullable<number>;
   isLottery: boolean;
-  Lixidistribution?: Nullable<Distribution>;
+  distribution?: Nullable<Distribution[]>;
 };
 
 export interface Lixi {
@@ -144,7 +144,7 @@ export interface Lixi {
   numberLixiPerPackage?: Nullable<number>;
   packageId?: Nullable<number>;
   isLottery: boolean;
-  Lixidistribution?: Nullable<Distribution>;
+  distribution?: Nullable<Distribution[]>;
 };
 
 export interface RegisterLixiPackCommand {

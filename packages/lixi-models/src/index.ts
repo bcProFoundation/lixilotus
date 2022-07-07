@@ -9,5 +9,4 @@ export * from './utils/paginationResult';
 export * from './constants';
 export * from './lib/package';
 export * from './lib/distribution';
-export * from './lib/lixiDistribution';
 export * from './lib/page';

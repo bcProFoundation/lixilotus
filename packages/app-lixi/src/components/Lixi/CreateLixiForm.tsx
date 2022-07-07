@@ -13,7 +13,7 @@ import { showToast } from 'src/store/toast/actions';
 import styled from 'styled-components';
 
 import { DollarOutlined, HeartOutlined, PlusSquareOutlined, TeamOutlined } from '@ant-design/icons';
-import { AntdFormWrapper } from '@bcpros/lixi-components/components/Common/EnhancedInputs';
+import { AntdFormWrapper, FormItemWithCharityAddon, FormItemWithStaffAddon } from '@bcpros/lixi-components/components/Common/EnhancedInputs';
 import { SmartButton } from '@bcpros/lixi-components/components/Common/PrimaryButton';
 import {
   AdvancedCollapse, LixiCollapse, StyledCollapse
@@ -29,6 +29,7 @@ import { AppContext } from '@store/store';
 import { isValidAmountInput } from '@utils/validation';
 
 import { CreateLixiConfirmationModalProps } from './CreateLixiConfirmationModal';
+import { parseAddress } from '@utils/addressMethods';
 
 const { Panel } = Collapse;
 
@@ -119,7 +120,11 @@ const CreateLixiForm = ({
 
   // New distribution program
   const [newStaffAddress, setNewStaffAddress] = useState('');
+  const [claimStaffAddressError, setClaimStaffAddressError] = useState<string | boolean>(false);
+
   const [newCharityAddress, setNewCharityAddress] = useState('');
+  const [claimCharityAddressError, setClaimCharityAddressError] = useState<string | boolean>(false);
+
   const [isLottery, setIsLottery] = useState<boolean>(false);
 
   const handleNewLixiNameInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -140,11 +145,44 @@ const CreateLixiForm = ({
   const handleStaffAddressInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewStaffAddress(value);
+  };
+
+  const handleStaffAddressChange = e => {
+    const { value, name } = e.target;
+    let error: boolean | string = false;
+    let addressString: string = _.trim(value);
+
+    // parse address
+    const addressInfo = parseAddress(XPI, addressString);
+    const { address, isValid } = addressInfo;
+
+    // Is this valid address?
+    if (!isValid) {
+      error = intl.get('claim.invalidAddress', { ticker: currency.ticker });
+    }
+    else {
+      error = false;
+    }
+    setClaimStaffAddressError(error);
   }
 
-  const handleCharityAddressInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setNewCharityAddress(value);
+  const handleCharityAddressChange = e => {
+    const { value, name } = e.target;
+    let error: boolean | string = false;
+    let addressString: string = _.trim(value);
+
+    // parse address
+    const addressInfo = parseAddress(XPI, addressString);
+    const { address, isValid } = addressInfo;
+
+    // Is this valid address?
+    if (!isValid) {
+      error = intl.get('claim.invalidAddress', { ticker: currency.ticker });
+    }
+    else {
+      error = false;
+    }
+    setClaimStaffAddressError(error);
   }
 
   const handleIsLottery = (e) => {
@@ -291,17 +329,46 @@ const CreateLixiForm = ({
                   onChange={e => handleStaffAddressInput(e)}
                 />
               </Form.Item>
+
+              <FormItemWithStaffAddon
+                loadWithCameraOpen={false}
+                validateStatus={claimStaffAddressError ? 'error' : ''}
+                help={claimStaffAddressError ? claimStaffAddressError : ''}
+                onScan={result =>
+                  handleStaffAddressChange({
+                    target: {
+                      name: 'staffAddress',
+                      value: result,
+                    },
+                  })
+                }
+                inputProps={{
+                  placeholder: intl.get('lixi.staffAddress'),
+                  name: 'staffAddress',
+                  onChange: e => handleStaffAddressChange(e),
+                  required: true,
+                  value: newStaffAddress,
+                }}
+              ></FormItemWithStaffAddon>
+
               {/* Charity */}
-              <Form.Item>
-                <Input
-                  autoComplete="off"
-                  prefix={<HeartOutlined />}
-                  placeholder={intl.get('lixi.charityAddress')}
-                  name="charityAddress"
-                  value={newCharityAddress}
-                  onChange={e => handleCharityAddressInput(e)}
-                />
-              </Form.Item>
+              <FormItemWithCharityAddon
+                loadWithCameraOpen={false}
+                onScan={result =>
+                  handleCharityAddressChange({
+                    target: {
+                      name: 'charityAddress',
+                      value: result,
+                    },
+                  })
+                }
+                inputProps={{
+                  placeholder: intl.get('lixi.charityAddress'),
+                  name: 'charityAddress',
+                  onChange: e => handleCharityAddressChange(e),
+                  value: newCharityAddress,
+                }}
+              ></FormItemWithCharityAddon>
 
               {/* Lottery */}
               <Form.Item>
@@ -506,7 +573,7 @@ const CreateLixiForm = ({
             <Form.Item>
               <Input
                 addonBefore={intl.get('account.min')}
-                id = "min"
+                id="min"
                 onWheel={e => e.currentTarget.blur()}
                 type="number"
                 step={1 / 10 ** currency.cashDecimals}
@@ -791,3 +858,7 @@ const CreateLixiForm = ({
 }
 
 export default CreateLixiForm;
+function setClaimXpiAddressError(error: string | boolean) {
+  throw new Error('Function not implemented.');
+}
+
