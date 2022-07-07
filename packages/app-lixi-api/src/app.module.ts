@@ -5,6 +5,8 @@ import { EthersModule } from 'nestjs-ethers';
 import { AcceptLanguageResolver, HeaderResolver, I18nModule } from 'nestjs-i18n';
 import path, { join } from 'path';
 import { NotificationModule } from './common/modules/notifications/notification.module';
+import config from './config/config';
+import { GraphqlConfig } from './config/config.interface';
 import { AuthModule } from './modules/auth/auth.module';
 import { CoreModule } from './modules/core/core.module';
 import { LixiNftModule } from './modules/nft/lixinft.module';
@@ -20,6 +22,10 @@ import { WalletModule } from './modules/wallet/wallet.module';
     ServeStaticModule.forRoot({
       serveRoot: '/api/images',
       rootPath: join(__dirname, '..', 'public/images')
+    }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [config]
     }),
     I18nModule.forRoot({
       fallbackLanguage: 'en',

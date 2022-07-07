@@ -8,7 +8,93 @@ datasource db {
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["interactiveTransactions"]
+  previewFeatures = ["interactiveTransactions", "extendedIndexes"]
+}
+
+// The handle for page or user account
+model Handle {
+  id           String @id @default(cuid())
+  handle       String @map("handle") @db.VarChar(150)
+  handleNumber Int    @map("handle_number") @db.Oid
+
+  // User User[]
+  Page Page[]
+
+  @@unique([handle, handleNumber])
+  @@map("handle")
+}
+
+// model UserAccount {
+//   id                String @id @default(cuid())
+//   User              User[]
+//   encryptedMnemonic String @map("encrypted_mnemonic")
+//   encryptedSecret   String @default("") @map("encrypted_secret")
+//   mnemonicHash      String @map("mnemonic_hash")
+//   address           String @default("") @map("address")
+//   publicKey         String @default("") @map("public_key")
+
+//   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+//   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
+
+//   @@index([mnemonicHash], type: Hash)
+//   @@index([address])
+//   @@map("user_account")
+// }
+
+// model User {
+//   id               String            @id @default(cuid())
+//   userAccount      UserAccount       @relation(fields: [userAccountId], references: [id])
+//   userAccountId    String            @unique @map("user_account_id")
+//   handle           Handle            @relation(fields: [handleId], references: [id])
+//   handleId         String            @map("handle_id")
+//   phone            String?           @db.VarChar(60)
+//   phoneHidden      Boolean?          @default(false) @map("phone_hidden")
+//   username         String?           @db.VarChar(255)
+//   passwordHash     String?           @map("password_hash") @db.VarChar(64)
+//   salt             String?           @db.VarChar(32)
+//   email            String?           @db.VarChar(100)
+//   emailVerifiedAt  DateTime?         @map("email_verified_at") @db.Timestamptz
+//   country          String            @db.VarChar(11)
+//   language         String?           @db.VarChar(10)
+//   firstName        String            @default("") @map("first_name") @db.VarChar(60)
+//   lastName         String            @default("") @map("last_name") @db.VarChar(32)
+//   twoFactorEnabled Boolean           @default(true) @map("two_factor_enabled")
+//   twoFactorType    UserTwoFactorType @default(email) @map("two_factor_type")
+//   twoFactorKey     String?           @map("two_factor_key") @db.VarChar(64)
+//   twoFactorSecret  String?           @map("two_factor_secret") @db.VarChar(64)
+
+//   avatar String @default("upload/photos/d-avatar.jpg") @db.VarChar(100)
+//   cover  String @default("upload/photos/d-cover.jpg") @db.VarChar(100)
+
+//   deletedAt DateTime @default(now()) @map("deleted_at") @db.Timestamptz
+//   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+//   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
+
+//   @@map("user")
+// }
+
+model Page {
+  id            String  @id @default(cuid())
+  pageAccount   Account @relation(fields: [pageAccountId], references: [id])
+  pageAccountId Int     @unique @map("page_account_id")
+  name          String  @default("") @map("name") @db.VarChar(255)
+  title         String  @default("") @map("title") @db.VarChar(255)
+  description   String  @default("") @map("description") @db.VarChar(1000)
+  avatar        String  @default("upload/photos/d-page.jpg") @db.VarChar(100)
+  cover         String  @default("upload/photos/d-cover.jpg") @db.VarChar(100)
+  children      Page[]  @relation("subPages")
+  parent        Page?   @relation("subPages", fields: [parentId], references: [id])
+  parentId      String? @map("parent_id")
+  handle        Handle  @relation(fields: [handleId], references: [id])
+  handleId      String  @map("handle_id")
+  address       String  @default("")
+  website       String  @default("") @map("website")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
+
+
+  @@map("page")
 }
 
 model Account {
@@ -25,7 +111,8 @@ model Account {
   language          String         @default("en")
   publicKey         String         @default("") @map("public_key")
 
-  @@index([mnemonicHash])
+  Page Page[]
+  @@index([mnemonicHash], type: Hash)
   @@map("account")
 }
 
@@ -52,6 +139,7 @@ model Lixi {
   isFamilyFriendly     Boolean   @map("is_family_friendly")
   claims               Claim[]
   status               String    @default("active") @map("status")
+  inventoryStatus      String    @default("initialized") @map("invetory_status")
   account              Account   @relation(fields: [accountId], references: [id])
   accountId            Int       @map("account_id")
   derivationIndex      Int       @default(0) @map("derivation_index")
@@ -138,7 +226,7 @@ model NotificationTypeTranslation {
 }
 
 model Notification {
-  id                 String            @id @default(uuid())
+  id                 String            @id @default(cuid())
   message            String            @default("")
   readAt             DateTime?         @db.Timestamptz
   deletedAt          DateTime?         @db.Timestamptz
@@ -168,7 +256,7 @@ enum NotificationLevel {
 }
 
 model EmailTemplate {
-  id                        String                     @id @default(uuid())
+  id                        String                     @id @default(cuid())
   slug                      String                     @default("")
   description               String
   createdAt                 DateTime                   @default(now()) @map("created_at") @db.Timestamptz
@@ -179,7 +267,7 @@ model EmailTemplate {
 }
 
 model EmailTemplateTranslation {
-  id              String        @id @default(uuid())
+  id              String        @id @default(cuid())
   sender          String        @default("")
   emailTemplate   EmailTemplate @relation(fields: [emailTemplateId], references: [id])
   emailTemplateId String        @map("email_template_id")
@@ -192,4 +280,12 @@ model EmailTemplateTranslation {
   updatedAt       DateTime      @default(now()) @map("updated_at") @db.Timestamptz
 
   @@map("email_template_translation")
+}
+
+enum UserTwoFactorType {
+  email
+  sms
+  authenticator
+
+  @@map("user_two_factor_type")
 }

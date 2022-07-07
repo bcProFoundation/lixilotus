@@ -1,0 +1,15 @@
+{
+  "messages": {
+    "pageNotExist": "The page does not exist in the database.",
+    "couldNotFindAccount": "Could not find the associated account.",
+    "couldNotFindPage": "Could not found the page in the database.",
+    "couldNotCreatePage": "Could not create page because the account is invalid.",
+    "unableCreatePage": "Unable to create new page.",
+    "nameAlreadyTaken": "The name is already taken.",
+    "invalidAccountCouldNotUpdatePage": "Invalid account! Could not update the page.",
+    "unableToGetPage": "Unable to get page.",
+    "unableToUpdatePage": "Unable to update page.",
+    "unableToDowloadPage": "Unable to download page",
+    "fileNameNotExist": "File name not exist"
+  }
+}

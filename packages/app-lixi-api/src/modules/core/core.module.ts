@@ -23,10 +23,8 @@ import { ExportSubLixiesProcessor } from './lixi/processors/export-sub-lixies.pr
 import { WithdrawSubLixiesEventsListener } from './lixi/processors/withdraw-sub-lixies.eventslistener';
 import { WithdrawSubLixiesProcessor } from './lixi/processors/withdraw-sub-lixies.processor';
 
-import cors from 'cors';
-import { join } from 'path';
 import { ConfigService } from '@nestjs/config';
-console.log(process.env)
+import cors from 'cors';
 const baseCorsConfig = cors({
   origin: process.env.BASE_URL ?? ''
 });
