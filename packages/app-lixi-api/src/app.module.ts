@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ServeStaticModule, ServeStaticModuleOptions } from '@nestjs/serve-static';
 import { EthersModule } from 'nestjs-ethers';
@@ -75,6 +75,6 @@ export const serveStaticModule_uploads: FastifyServeStaticModuleOptions = {
     NotificationModule
   ],
   controllers: [],
-  providers: []
+  providers: [Logger]
 })
-export class AppModule { }
+export class AppModule {}
