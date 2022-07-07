@@ -340,21 +340,22 @@ export const FormItemClaimCodeXpiInput = (props: FormItemClaimCodeXpiInputProps)
   );
 }
 
-type FormItemWithStaffAddonProps = {
+type FormItemStaffAddressInputProps = {
   onScan: Function;
   loadWithCameraOpen: boolean;
   inputProps: InputProps;
-  style?: React.CSSProperties;
 } & FormItemProps;
 
-// loadWithCameraOpen prop: if true, load page with camera scanning open
-export const FormItemWithStaffAddon = (props: FormItemWithStaffAddonProps) => {
-  const { onScan, loadWithCameraOpen, inputProps, ...otherProps } = props
+export const FormItemStaffAddressInput = (props: FormItemStaffAddressInputProps) => {
+
+  const { onScan, loadWithCameraOpen, inputProps, ...otherProps } = props;
   return (
-    <AntdFormWrapper>
+    <AntdFormWrapper {...otherProps}>
       <Form.Item {...otherProps}>
         <Input
           prefix={<TeamOutlined />}
+          placeholder={intl.get('lixi.staffAddress')}
+          name="staffAddress"
           autoComplete="off"
           addonAfter={
             <>
@@ -365,32 +366,34 @@ export const FormItemWithStaffAddon = (props: FormItemWithStaffAddonProps) => {
               />
               <UploadQRCode
                 onScan={onScan}
-                codeType='address'
+                codeType='staffAddress'
               />
             </>
           }
+          required
           {...inputProps}
         />
       </Form.Item>
     </AntdFormWrapper>
   );
-};
+}
 
-type FormItemWithCharityAddonProps = {
+type FormItemCharityAddressInputProps = {
   onScan: Function;
   loadWithCameraOpen: boolean;
   inputProps: InputProps;
-  style?: React.CSSProperties;
 } & FormItemProps;
 
-// loadWithCameraOpen prop: if true, load page with camera scanning open
-export const FormItemWithCharityAddon = (props: FormItemWithCharityAddonProps) => {
-  const { onScan, loadWithCameraOpen, inputProps, ...otherProps } = props
+export const FormItemCharityAddressInput = (props: FormItemCharityAddressInputProps) => {
+
+  const { onScan, loadWithCameraOpen, inputProps, ...otherProps } = props;
   return (
-    <AntdFormWrapper>
+    <AntdFormWrapper {...otherProps}>
       <Form.Item {...otherProps}>
         <Input
           prefix={<HeartOutlined />}
+          placeholder={intl.get('lixi.charityAddress')}
+          name="charityAddress"
           autoComplete="off"
           addonAfter={
             <>
@@ -401,13 +404,14 @@ export const FormItemWithCharityAddon = (props: FormItemWithCharityAddonProps) =
               />
               <UploadQRCode
                 onScan={onScan}
-                codeType='address'
+                codeType='charityAddress'
               />
             </>
           }
+          required
           {...inputProps}
         />
       </Form.Item>
     </AntdFormWrapper>
   );
-};
+}
