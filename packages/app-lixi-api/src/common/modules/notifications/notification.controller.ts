@@ -1,31 +1,39 @@
 import { NotificationDto } from '@bcpros/lixi-models';
-import { Controller, Delete, Get, Headers, HttpCode, HttpException, HttpStatus, Param, Patch, Request, UseGuards } from '@nestjs/common';
-import { Account } from '@prisma/client';
 import {
-  FastifyRequest
-} from 'fastify';
+  Controller,
+  Delete,
+  Get,
+  Headers,
+  HttpCode,
+  HttpException,
+  HttpStatus,
+  Logger,
+  Param,
+  Patch,
+  Request,
+  UseGuards
+} from '@nestjs/common';
+import { Account } from '@prisma/client';
+import { FastifyRequest } from 'fastify';
 import { I18n, I18nContext } from 'nestjs-i18n';
-import logger from 'src/logger';
 import { JwtAuthGuard } from 'src/modules/auth/jwtauth.guard';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { VError } from 'verror';
 
 @Controller('notifications')
 export class NotificationController {
+  private logger: Logger = new Logger(NotificationController.name);
 
-  constructor(
-    private prisma: PrismaService,
-  ) { }
+  constructor(private prisma: PrismaService) {}
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   async getNotification(
     @Param('id') id: string,
     @Request() req: FastifyRequest,
-    @I18n() i18n: I18nContext,
+    @I18n() i18n: I18nContext
   ): Promise<NotificationDto> {
     try {
-
       // Find the associated account
       const account = (req as any).account;
 
@@ -41,8 +49,8 @@ export class NotificationController {
         }
       });
 
-      logger.info(`Notification Recipient Id: ${notification?.recipientId}`);
-      logger.info(`Account Id: ${account?.id}`,);
+      this.logger.log(`Notification Recipient Id: ${notification?.recipientId}`);
+      this.logger.log(`Account Id: ${account?.id}`);
 
       // Check if the user have sufficient permission to get the notification
       if (notification?.recipientId !== account?.id) {
@@ -53,7 +61,6 @@ export class NotificationController {
       return {
         ...notification
       } as NotificationDto;
-
     } catch (err: unknown) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -71,10 +78,9 @@ export class NotificationController {
   async deleteNotification(
     @Param('id') id: string,
     @Request() req: FastifyRequest,
-    @I18n() i18n: I18nContext,
+    @I18n() i18n: I18nContext
   ): Promise<NotificationDto> {
     try {
-
       // Find the associated account
       const account = (req as any).account;
 
@@ -90,8 +96,8 @@ export class NotificationController {
         }
       });
 
-      logger.info(`Notification Recipient Id: ${notification?.recipientId}`);
-      logger.info(`Account Id: ${account?.id}`,);
+      this.logger.log(`Notification Recipient Id: ${notification?.recipientId}`);
+      this.logger.log(`Account Id: ${account?.id}`);
 
       // Check if the user have sufficient permission to get the notification
       if (notification?.recipientId !== account?.id) {
@@ -124,10 +130,9 @@ export class NotificationController {
   async readNotification(
     @Param('id') id: string,
     @Request() req: FastifyRequest,
-    @I18n() i18n: I18nContext,
+    @I18n() i18n: I18nContext
   ): Promise<NotificationDto> {
     try {
-
       // Find the associated account
       const account: Account = (req as any).account;
 
@@ -143,8 +148,8 @@ export class NotificationController {
         }
       });
 
-      logger.info(`Notification Recipient Id: ${notification?.recipientId}`);
-      logger.info(`Account Id: ${account?.id}`,);
+      this.logger.log(`Notification Recipient Id: ${notification?.recipientId}`);
+      this.logger.log(`Account Id: ${account?.id}`);
 
       // Check if the user have sufficient permission to get the notification
       if (notification?.recipientId !== account?.id) {
@@ -158,7 +163,7 @@ export class NotificationController {
           id: id
         },
         data: {
-          readAt: new Date(),
+          readAt: new Date()
         }
       });
 

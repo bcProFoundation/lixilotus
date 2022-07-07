@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { EthersModule } from 'nestjs-ethers';
@@ -54,6 +54,6 @@ import { WalletModule } from './modules/wallet/wallet.module';
     NotificationModule
   ],
   controllers: [],
-  providers: []
+  providers: [Logger]
 })
-export class AppModule { }
+export class AppModule {}

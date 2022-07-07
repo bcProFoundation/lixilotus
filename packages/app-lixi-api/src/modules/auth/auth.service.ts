@@ -11,14 +11,9 @@ const wif = require('wif');
 
 @Injectable()
 export class AuthService {
-
   private logger: Logger = new Logger(AuthService.name);
 
-  constructor(
-    private prisma: PrismaService,
-    private walletService: WalletService,
-    @I18n() private i18n: I18nService
-  ) { }
+  constructor(private prisma: PrismaService, private walletService: WalletService, @I18n() private i18n: I18nService) {}
 
   /**
    * Generate the jwt token from mnemonic
@@ -26,7 +21,6 @@ export class AuthService {
    * @returns The jwt token
    */
   public async login(mnemonic: string): Promise<string | never> {
-
     const mnemonicHash = await hashMnemonic(mnemonic);
 
     // Find the account
@@ -61,13 +55,11 @@ export class AuthService {
     const privateKey = wifDecoded.privateKey.toString('hex');
 
     const payload = JSON.stringify(dataToSign);
-    const token = await (new TokenSigner('ES256K', privateKey)).signAsync(payload);
+    const token = await new TokenSigner('ES256K', privateKey).signAsync(payload);
     return token;
-
   }
 
   public async verifyJwt(token: string): Promise<Account> {
-
     try {
       const tokenDecoded = decodeToken(token);
       const { id } = JSON.parse(tokenDecoded.payload as string);
@@ -79,8 +71,7 @@ export class AuthService {
         }
       });
 
-      if (!account)
-        throw new Error('Invalid account');
+      if (!account) throw new Error('Invalid account');
 
       const verified = await new TokenVerifier('ES256K', account.publicKey).verifyAsync(token);
 
