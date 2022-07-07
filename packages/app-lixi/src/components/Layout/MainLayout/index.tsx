@@ -154,7 +154,7 @@ const MainLayout: React.FC = props => {
                         </NavButton>
                       </Link>
                       <Link href="/admin/lixi" passHref>
-                        <NavButton active={selectedKey === 'admin/lixi'}>
+                        <NavButton active={selectedKey === '/admin/lixi'}>
                           <WalletOutlined />
                           {intl.get('general.lixi')}
                         </NavButton>
