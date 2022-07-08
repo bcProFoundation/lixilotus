@@ -1,9 +1,8 @@
 import {
   ClaimDto,
   ClaimType,
-  countries,
   CreateClaimDto,
-  fromSmallestDenomination, LixiType, toSmallestDenomination, ViewClaimDto
+  fromSmallestDenomination,
   LixiType,
   toSmallestDenomination,
   ViewClaimDto
@@ -14,13 +13,12 @@ import { Body, Controller, Get, Headers, HttpException, HttpStatus, Inject, Logg
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import BigNumber from 'bignumber.js';
-import geoip from 'geoip-country';
 import * as _ from 'lodash';
 import moment from 'moment';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { ReqSocket } from 'src/decorators/req.socket.decorator';
-import { LixiNftService } from 'src/modules/nft/lixinft.service';
 import { LixiService } from 'src/modules/core/lixi/lixi.service';
+import { LixiNftService } from 'src/modules/nft/lixinft.service';
 import { WalletService } from 'src/modules/wallet/wallet.service';
 import { aesGcmDecrypt, base58ToNumber } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
@@ -41,7 +39,7 @@ export class ClaimController {
     @Inject('xpijs') private XPI: BCHJS,
     private readonly config: ConfigService,
     private readonly lixiNftService: LixiNftService
-  ) {}
+  ) { }
 
   @Get(':id')
   async getEnvelope(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<ViewClaimDto> {
@@ -205,7 +203,7 @@ export class ClaimController {
               id: lixi.parentId
             },
             include: {
-              distribution: true,
+              distributions: true
             }
           });
 

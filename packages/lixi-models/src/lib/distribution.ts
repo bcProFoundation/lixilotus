@@ -1,5 +1,6 @@
 export interface Distribution {
-    id: string;
-    address: string;
-    distributionType: string;
+  id: string;
+  address: string;
+  distributionType: string;
+  lixiId: number;
 }

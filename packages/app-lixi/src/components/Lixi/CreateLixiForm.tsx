@@ -129,7 +129,7 @@ const CreateLixiForm = ({
   const [newCharityAddress, setNewCharityAddress] = useState('');
   const [claimCharityAddressError, setClaimCharityAddressError] = useState<string | boolean>(false);
 
-  const [isLottery, setIsLottery] = useState<boolean>(false);
+  const [joinLotteryProgram, setJoinLotteryProgram] = useState<boolean>(false);
 
   const handleNewLixiNameInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -158,9 +158,9 @@ const CreateLixiForm = ({
     setNewCharityAddress(charityAddress);
   }
 
-  const handleIsLottery = (e) => {
+  const handleJoinLotteryProgram = (e) => {
     const value = e.target.checked;
-    setIsLottery(value);
+    setJoinLotteryProgram(value);
   }
 
   // Only enable CreateLixi button if all form entries are valid
@@ -337,9 +337,8 @@ const CreateLixiForm = ({
                       placeholder={intl.get('lixi.loterryAddress')}
                       addonAfter={
                         <Checkbox
-                          value={isLottery}
-                          onChange={e => handleIsLottery(e)}>
-                          {/* {intl.get('lixi.loterryAddressCheck')} */}
+                          value={joinLotteryProgram}
+                          onChange={e => handleJoinLotteryProgram(e)}>
                         </Checkbox>
                       }
                     />
@@ -393,7 +392,7 @@ const CreateLixiForm = ({
       numberLixiPerPackage: newNumberLixiPerPackage,
       staffAddress: newStaffAddress,
       charityAddress: newCharityAddress,
-      isLottery: isLottery,
+      joinLotteryProgram: joinLotteryProgram,
     };
 
     const createLixiModalProps: CreateLixiConfirmationModalProps = {
@@ -418,7 +417,7 @@ const CreateLixiForm = ({
       newEnvelopeId,
       newStaffAddress,
       newCharityAddress,
-      isLottery,
+      joinLotteryProgram,
       onOkAction: generateLixi(command)
     };
     dispatch(openModal('CreateLixiConfirmationModal', createLixiModalProps));

@@ -72,7 +72,7 @@ export class LixiController {
     @Inject('xpijs') private XPI: BCHJS,
     @InjectQueue(EXPORT_SUB_LIXIES_QUEUE) private exportSubLixiesQueue: Queue,
     @InjectQueue(WITHDRAW_SUB_LIXIES_QUEUE) private withdrawSubLixiesQueue: Queue
-  ) {}
+  ) { }
 
   @Get(':id')
   async getLixi(
@@ -155,21 +155,21 @@ export class LixiController {
 
       subLixies = cursor
         ? await this.prisma.lixi.findMany({
-            take: take,
-            skip: 1,
-            where: {
-              parentId: lixiId
-            },
-            cursor: {
-              id: cursor
-            }
-          })
+          take: take,
+          skip: 1,
+          where: {
+            parentId: lixiId
+          },
+          cursor: {
+            id: cursor
+          }
+        })
         : await this.prisma.lixi.findMany({
-            take: take,
-            where: {
-              parentId: lixiId
-            }
-          });
+          take: take,
+          where: {
+            parentId: lixiId
+          }
+        });
 
       const childrenApiResult: LixiDto[] = [];
 
@@ -203,14 +203,14 @@ export class LixiController {
       const countAfter = !endCursor
         ? 0
         : await this.prisma.lixi.count({
-            where: {
-              parentId: lixiId
-            },
-            cursor: {
-              id: _.toSafeInteger(endCursor)
-            },
-            skip: 1
-          });
+          where: {
+            parentId: lixiId
+          },
+          cursor: {
+            id: _.toSafeInteger(endCursor)
+          },
+          skip: 1
+        });
 
       const hasNextPage = countAfter > 0;
 
@@ -287,18 +287,7 @@ export class LixiController {
             lixi
           } as PostLixiResponseDto;
         } else {
-          // One time child codes type
-          const countDistributions = [command.staffAddress, command.charityAddress];
-          let count = 1;
-          for (var item of countDistributions) {
-            if (item != '') {
-              count++
-            }
-          }
-          command.isLottery === true && count++;
-          command.amount = command.amount * count;
-
-          lixi = await this.lixiService.createOneTimeParentLixi(lixiIndex, account, command, i18n);
+          lixi = await this.lixiService.createOneTimeParentLixi(lixiIndex, account, command);
           const jobId = await this.lixiService.createSubLixies(lixiIndex + 1, account, command, lixi.id);
 
           return {
@@ -751,19 +740,19 @@ export class LixiController {
       const countAfter = !endCursor
         ? 0
         : await this.prisma.claim.count({
-            where: {
-              lixiId: lixiId
-            },
-            orderBy: [
-              {
-                id: 'asc'
-              }
-            ],
-            cursor: {
-              id: _.toSafeInteger(endCursor)
-            },
-            skip: 1
-          });
+          where: {
+            lixiId: lixiId
+          },
+          orderBy: [
+            {
+              id: 'asc'
+            }
+          ],
+          cursor: {
+            id: _.toSafeInteger(endCursor)
+          },
+          skip: 1
+        });
 
       const hasNextPage = countAfter > 0;
 

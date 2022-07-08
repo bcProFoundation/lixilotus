@@ -1,5 +1,5 @@
 -- AlterTable
-ALTER TABLE "lixi" ADD COLUMN     "is_lottery" BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE "lixi" ADD COLUMN     "join_lottery_program" BOOLEAN NOT NULL DEFAULT false;
 
 -- CreateTable
 CREATE TABLE "lixi_distribution" (

@@ -289,9 +289,6 @@ const Lixi: React.FC = () => {
   const prefixClaimCode = 'lixi';
 
   const subLixiesDataSource = subLixies.map((item, i) => {
-    // let count = 1;
-    // count += item.distribution.length;
-    // item.isLottery && count++
     return {
       num: i + 1,
       claimCode: (

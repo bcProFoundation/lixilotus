@@ -97,6 +97,7 @@ export default {
   'lixi.fundGiveRandomize': 'The fund giving is randomized',
   'lixi.randomFund': 'Min: {newLixiMinValue}; Max: {newLixiMaxValue}',
   'lixi.amount': 'Amount: {newLixiAmount}',
+  'lixi.totalAmountRequire': 'Total amount require: {newLixiAmount}',
   'lixi.numberOfSub': 'Number of sub lixi: {newNumberOfSubLixi}',
   'lixi.numberLixiPerPackage': 'Number of sub-lixi per package: {newNumberLixiPerPackage}',
   'lixi.package': 'Package',
@@ -169,7 +170,6 @@ export default {
   'lixi.charityAddress': 'Charity Address',
   'lixi.loterryAddress': 'Loterry Address',
   'lixi.loterryAddressCheck': 'Confirm',
-  'lixi.noteAmount': 'The reason the amount increased',
 
   /* 04.Claim */
   'claim.claim': 'Claim',

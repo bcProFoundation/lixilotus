@@ -33,7 +33,7 @@ export type CreateLixiConfirmationModalProps = {
   newEnvelopeId: number | null;
   newStaffAddress: string | null;
   newCharityAddress: string | null;
-  isLottery: boolean;
+  joinLotteryProgram: boolean;
   onOkAction?: AnyAction
 }
 
@@ -63,18 +63,17 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
     newEnvelopeId,
     newStaffAddress,
     newCharityAddress,
-    isLottery,
+    joinLotteryProgram,
   } = props;
 
-  const distribution = [newStaffAddress, newCharityAddress];
-  let count = 1;
-  for (var item of distribution) {
-    if (item != '') {
-      count++
-    }
+  const distributions = _.filter([newStaffAddress, newCharityAddress], (address) => {
+    return !!address;
+  });
+  if (joinLotteryProgram) {
+    distributions.push(LotteryAddress);
   }
-  isLottery === true && count++;
-  const amount = Number(newLixiAmount) * count;
+  const numberOfDistribution = distributions.length + 1;  // for the user distribution
+  const requireAmount = Number(newLixiAmount) * numberOfDistribution;
 
   const handleOnCancel = () => {
     dispatch(closeModal());
@@ -115,7 +114,7 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
           <>
             <LixiParamLabel>{intl.get('lixi.fundGiveEqual')}</LixiParamLabel>
             <br />
-            <LixiParamLabel>{intl.get('lixi.equalFund')}</LixiParamLabel> {Number(amount) / Number(newNumberOfSubLixi)}
+            <LixiParamLabel>{intl.get('lixi.equalFund')}</LixiParamLabel> {Number(newLixiAmount) / Number(newNumberOfSubLixi)}
           </>
         );
       // isRandom
@@ -131,7 +130,7 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
   }
 
   const confirmAmount = () => {
-    return (newLixiAmount == "" ? "" : <LixiParamLabel>{intl.get('lixi.amount', { newLixiAmount: amount })} <br /></LixiParamLabel>);
+    return (newLixiAmount == "" ? "" : <LixiParamLabel>{intl.get('lixi.totalAmountRequire', { newLixiAmount: requireAmount })} <br /></LixiParamLabel>);
   }
 
   const confirmSubLixies = () => {
@@ -188,21 +187,21 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
   const confirmStaff = () => {
     return (
       <Descriptions.Item label={newStaffAddress}>
-        {Number(newLixiAmount)}
+        {Number(newLixiAmount) / Number(newNumberOfSubLixi)}
       </Descriptions.Item>
     )
   }
   const confirmCharity = () => {
     return (
       <Descriptions.Item label={newCharityAddress}>
-        {Number(newLixiAmount)}
+        {Number(newLixiAmount) / Number(newNumberOfSubLixi)}
       </Descriptions.Item>
     )
   }
   const confirmLottery = () => {
     return (
       <Descriptions.Item label={LotteryAddress}>
-        {Number(newLixiAmount)}
+        {Number(newLixiAmount) / Number(newNumberOfSubLixi)}
       </Descriptions.Item>
     )
   }
@@ -236,13 +235,13 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
         <LixiParamLabel>{isNFTEnabled ? intl.get('lixi.optionNFTEnabled') : ""}</LixiParamLabel>
 
         {/* Note */}
-        {count >= 2 &&
+        {numberOfDistribution >= 2 &&
           <span>
-            <InfoCircleOutlined /> {intl.get('lixi.noteAmount')} <br />
+            <InfoCircleOutlined /> {intl.get('lixi.loyaltyProgram')} <br />
             <Descriptions column={1} bordered>
               {newStaffAddress != "" && confirmStaff()}
               {newCharityAddress != "" && confirmCharity()}
-              {isLottery && confirmLottery()}
+              {joinLotteryProgram && confirmLottery()}
             </Descriptions>
           </span>}
       </Modal>

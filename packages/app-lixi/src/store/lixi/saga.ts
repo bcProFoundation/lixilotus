@@ -120,7 +120,7 @@ function* generateLixiSaga(action: PayloadAction<GenerateLixiCommand>) {
     envelopeMessage: command.envelopeMessage ?? '',
     staffAddress: command.staffAddress,
     charityAddress: command.charityAddress,
-    isLottery: command.isLottery,
+    joinLotteryProgram: command.joinLotteryProgram,
   };
 
   yield put(postLixi(createLixiCommand));

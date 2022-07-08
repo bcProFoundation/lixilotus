@@ -96,6 +96,7 @@ export default {
   'lixi.fundGiveRandomize': 'Loại Lì xì: Ngẫu nhiên',
   'lixi.randomFund': 'Từ: {newLixiMinValue}; Đến: {newLixiMaxValue}',
   'lixi.amount': 'Tổng cộng: {newLixiAmount}',
+  'lixi.totalAmountRequire': 'Tổng số lượng cần: {newLixiAmount}',
   'lixi.NumberOfSub': 'Số lượng bao Lì xì phụ: {newNumberOfSubLixi}',
   'lixi.numberLixiPerPackage': 'Số lượng bao lì xì phụ trong mỗi gói: {newNumberLixiPerPackage}',
   'lixi.package': 'Package',
@@ -168,7 +169,6 @@ export default {
   'lixi.charityAddress': 'Địa chỉ ví từ thiện',
   'lixi.loterryAddress': 'Địa chỉ ví xổ số',
   'lixi.loterryAddressCheck': 'Xác nhận',
-  'lixi.noteAmount': 'lý do số tiền tăng',
 
   /* 04.Claim */
   'claim.claim': 'Nhận Lì xì',

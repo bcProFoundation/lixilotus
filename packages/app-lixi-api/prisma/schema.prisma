@@ -138,7 +138,7 @@ model Lixi {
   country              String?            @map("country")
   isFamilyFriendly     Boolean            @map("is_family_friendly")
   claims               Claim[]
-  isLottery            Boolean            @default(false) @map("is_lottery")
+  joinLotteryProgram   Boolean            @default(false) @map("join_lottery_program")
   status               String             @default("active") @map("status")
   inventoryStatus      String             @default("initialized") @map("invetory_status")
   account              Account            @relation(fields: [accountId], references: [id])

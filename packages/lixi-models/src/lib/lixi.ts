@@ -28,7 +28,7 @@ export interface GenerateLixiCommand {
   numberLixiPerPackage?: Nullable<string>;
   staffAddress?: string;
   charityAddress?: string;
-  isLottery: boolean;
+  joinLotteryProgram: boolean;
 }
 
 export interface CreateLixiCommand {
@@ -58,7 +58,7 @@ export interface CreateLixiCommand {
   numberLixiPerPackage?: Nullable<number>;
   staffAddress?: string;
   charityAddress?: string;
-  isLottery: boolean;
+  joinLotteryProgram: boolean;
 }
 
 export interface LixiDto {
@@ -100,8 +100,8 @@ export interface LixiDto {
   isNFTEnabled: boolean;
   numberLixiPerPackage?: Nullable<number>;
   packageId?: Nullable<number>;
-  isLottery: boolean;
-  distribution?: Nullable<Distribution[]>;
+  joinLotteryProgram: boolean;
+  distributions?: Nullable<Distribution[]>;
 };
 
 export interface Lixi {
@@ -143,8 +143,8 @@ export interface Lixi {
   isNFTEnabled: boolean;
   numberLixiPerPackage?: Nullable<number>;
   packageId?: Nullable<number>;
-  isLottery: boolean;
-  distribution?: Nullable<Distribution[]>;
+  joinLotteryProgram: boolean;
+  distributions?: Nullable<Distribution[]>;
 };
 
 export interface RegisterLixiPackCommand {
