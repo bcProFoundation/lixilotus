@@ -1,8 +1,7 @@
-import { CreateLixiCommand, fromSmallestDenomination, Lixi, LixiType, Distribution } from '@bcpros/lixi-models';
+import { CreateLixiCommand, fromSmallestDenomination, Lixi, LixiType, Package } from '@bcpros/lixi-models';
 import { Lixi as LixiDb, PrismaClient } from '@prisma/client';
 import { Job } from 'bullmq';
 import * as _ from 'lodash';
-import logger from 'src/logger';
 import {
   CreateSubLixiesChunkJobData,
   CreateSubLixiesJobData,
@@ -15,7 +14,9 @@ import { VError } from 'verror';
 import config from 'config';
 import SlpWallet from '@bcpros/minimal-xpi-slp-wallet';
 import { LIXI_JOB_NAMES } from 'src/modules/core/lixi/constants/lixi.constants';
+import { Logger } from '@nestjs/common';
 
+const logger = new Logger('create-sub-lixies.isolated.processor');
 const xpiRestUrl = config.has('xpiRestUrl') ? config.get('xpiRestUrl') : 'https://api.sendlotus.com/v4/';
 const prisma = new PrismaClient();
 const xpiWallet = new SlpWallet('', {
@@ -31,7 +32,7 @@ export default async function (
 ): Promise<CreateSubLixiesJobResult | boolean> {
   return new Promise((resolve, reject) => {
     if (job.name === LIXI_JOB_NAMES.CREATE_SUB_LIXIES_CHUNK) {
-      logger.info('process chunk: ', job);
+      logger.log('process chunk: ', job);
       const result = processCreateSubLixiesChunk(job);
       resolve(result);
     }
@@ -119,7 +120,7 @@ export async function processCreateSubLixiesChunk(job: Job): Promise<boolean> {
           expiryAt: item.expiryAt ? item.expiryAt : undefined,
           activationAt: item.activationAt ? item.expiryAt : undefined,
           country: item.country ? item.country : undefined,
-          packageId: (item.numberLixiPerPackage && packageId) ? packageId : null,
+          packageId: item.numberLixiPerPackage && packageId ? packageId : null
         },
         'encryptedXPriv'
       ) as Lixi;
@@ -249,7 +250,7 @@ async function prepareSubLixiToInsert(
     envelopeMessage: command.envelopeMessage ?? '',
     parentId: parentId,
     createdAt: new Date(),
-    packageId: packageId ?? null,
+    packageId: packageId ?? null
     isLottery: command.isLottery,
   } as unknown as LixiDb;
 

@@ -11,7 +11,6 @@ import {
   Injectable,
   Logger,
   Param,
-  Patch,
   Post,
   Put,
   Query,
@@ -22,7 +21,6 @@ import { FastifyRequest } from 'fastify';
 import * as _ from 'lodash';
 import { I18n, I18nContext, I18nService } from 'nestjs-i18n';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
-import { aesGcmDecrypt } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
 import { JwtAuthGuard } from '../auth/jwtauth.guard';
 import { PrismaService } from '../prisma/prisma.service';
@@ -37,7 +35,7 @@ export class PageController {
     @I18n() private i18n: I18nService,
     private readonly notificationService: NotificationService,
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet
-  ) { }
+  ) {}
 
   @Get(':id')
   async get(@Param('id') id: string): Promise<PageDto> {
@@ -89,21 +87,21 @@ export class PageController {
 
       const subPages = cursor
         ? await this.prisma.page.findMany({
-          take: take,
-          skip: 1,
-          where: {
-            parentId: pageId
-          },
-          cursor: {
-            id: cursor
-          }
-        })
+            take: take,
+            skip: 1,
+            where: {
+              parentId: pageId
+            },
+            cursor: {
+              id: cursor
+            }
+          })
         : await this.prisma.page.findMany({
-          take: take,
-          where: {
-            parentId: pageId
-          }
-        });
+            take: take,
+            where: {
+              parentId: pageId
+            }
+          });
 
       const childrenApiResult: PageDto[] = [];
 
@@ -116,14 +114,14 @@ export class PageController {
       const countAfter = !endCursor
         ? 0
         : await this.prisma.page.count({
-          where: {
-            parentId: pageId
-          },
-          cursor: {
-            id: endCursor
-          },
-          skip: 1
-        });
+            where: {
+              parentId: pageId
+            },
+            cursor: {
+              id: endCursor
+            },
+            skip: 1
+          });
 
       const hasNextPage = countAfter > 0;
 

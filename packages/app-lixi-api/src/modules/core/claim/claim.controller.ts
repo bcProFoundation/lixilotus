@@ -1,11 +1,16 @@
 import {
-  ClaimDto, ClaimType, countries,
+  ClaimDto,
+  ClaimType,
+  countries,
   CreateClaimDto,
-  fromSmallestDenomination, LixiType, LotteryAddress, toSmallestDenomination, ViewClaimDto
+  fromSmallestDenomination, LixiType, toSmallestDenomination, ViewClaimDto
+  LixiType,
+  toSmallestDenomination,
+  ViewClaimDto
 } from '@bcpros/lixi-models';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
-import { Body, Controller, Get, Headers, HttpException, HttpStatus, Inject, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Headers, HttpException, HttpStatus, Inject, Logger, Param, Post } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import BigNumber from 'bignumber.js';
@@ -14,7 +19,6 @@ import * as _ from 'lodash';
 import moment from 'moment';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { ReqSocket } from 'src/decorators/req.socket.decorator';
-import logger from 'src/logger';
 import { LixiNftService } from 'src/modules/nft/lixinft.service';
 import { LixiService } from 'src/modules/core/lixi/lixi.service';
 import { WalletService } from 'src/modules/wallet/wallet.service';
@@ -28,6 +32,7 @@ const PROJECT_ID = 'lixilotus';
 
 @Controller('claims')
 export class ClaimController {
+  private logger: Logger = new Logger(ClaimController.name);
   constructor(
     private prisma: PrismaService,
     private readonly walletService: WalletService,
@@ -36,7 +41,7 @@ export class ClaimController {
     @Inject('xpijs') private XPI: BCHJS,
     private readonly config: ConfigService,
     private readonly lixiNftService: LixiNftService
-  ) { }
+  ) {}
 
   @Get(':id')
   async getEnvelope(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<ViewClaimDto> {
@@ -102,7 +107,7 @@ export class ClaimController {
           captchaResBody
         );
 
-        logger.info(`Recaptcha: Score: ${response.data.score} | Reasons: ${response.data.reasons}`);
+        this.logger.log(`Recaptcha: Score: ${response.data.score} | Reasons: ${response.data.reasons}`);
 
         // Extract result from the API response
         if (response.status !== 200 || response.data.score <= 0.5) {
@@ -416,8 +421,6 @@ export class ClaimController {
             }
           });
 
-
-
           if (!claim) {
             const unableClaim = await i18n.t('claim.messages.unableClaim');
             throw new VError(unableClaim);
@@ -443,7 +446,7 @@ export class ClaimController {
         if (err instanceof VError) {
           throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
         } else {
-          logger.error(err);
+          this.logger.error(err);
           const unableClaim = await i18n.t('claim.messages.unableClaim');
           const error = new VError.WError(err as Error, unableClaim);
           throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -576,7 +579,7 @@ export class ClaimController {
         if (err instanceof VError) {
           throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
         } else {
-          logger.error(err);
+          this.logger.error(err);
           const unableClaim = await i18n.t('claim.messages.unableClaim');
           const error = new VError.WError(err as Error, unableClaim);
           throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
