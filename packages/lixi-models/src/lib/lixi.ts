@@ -27,6 +27,8 @@ export interface GenerateLixiCommand {
   numberLixiPerPackage?: Nullable<string>;
 }
 
+export interface SendXPICommand {}
+
 export interface CreateLixiCommand {
   name: string;
   accountId: number;

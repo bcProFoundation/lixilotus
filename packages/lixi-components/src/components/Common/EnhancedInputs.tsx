@@ -139,13 +139,12 @@ export const StyledScanQRCode = styled(ScanQRCode)`
 
 type SendXpiInputProps = {
   onMax: Function;
-  inputProps: {
-    dollar: number;
-    disabled?: boolean | undefined;
-  };
+  inputProps: any;
   selectProps: Object;
   activeFiatCode: string;
-}
+  validateStatus: string;
+  help: string;
+} & InputProps
 
 export const SendXpiInput = ({
   onMax,
@@ -217,7 +216,7 @@ export const SendXpiInput = ({
               lineHeight: '60px',
             }}
             disabled={!!(inputProps || {}).disabled}
-            onClick={!(inputProps || {}).disabled && onMax()}
+            onClick={() => onMax()}
           >
             max
           </InputNumberAddonText>

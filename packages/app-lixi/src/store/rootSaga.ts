@@ -7,15 +7,17 @@ import envelopeSaga from './envelope/saga';
 import toastSaga from './toast/saga';
 import settingsSaga from './settings/saga';
 import notificationSaga from './notification/saga';
+import sendSaga from './send/saga';
 
 export default function* rootSaga() {
   yield all([
     accountSaga(),
     lixiSaga(),
+    sendSaga(),
     claimSaga(),
     envelopeSaga(),
     toastSaga(),
     settingsSaga(),
-    notificationSaga(),
+    notificationSaga()
   ]);
 }
