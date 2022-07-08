@@ -77,5 +77,8 @@
       "**/*.spec.js"
     ]
   },
-  "dependencies": {}
+  "dependencies": {
+    "@nestjs/mapped-types": "^1.0.1",
+    "class-validator": "^0.13.2"
+  }
 }

@@ -1,12 +1,14 @@
+import { Logger } from '@nestjs/common';
 import express from 'express';
-import logger from '../logger';
 
 type TimedRequest = {
   startTime?: Date;
 } & express.Request;
 
+const logger: Logger = new Logger('MiddleWare');
+
 function LogObj(logOut: { [key: string]: string }) {
-  logger.info(
+  logger.log(
     `${logOut.time} | ${logOut.ip} | ${logOut.phase} | ${logOut.took} | ${logOut.method} | ${logOut.status} | ${logOut.url} | ${logOut.openConnections} open`
   );
 }

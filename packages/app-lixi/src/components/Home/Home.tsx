@@ -8,14 +8,14 @@ import LixiList from '@components/Lixi/LixiList';
 import { getAccount, refreshLixiList, refreshLixiListSilent } from '@store/account/actions';
 import {Tabs } from 'antd';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { getEnvelopes } from 'src/store/envelope/actions';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getLixiesBySelectedAccount } from 'src/store/lixi/selectors';
 import { AppContext } from 'src/store/store';
 import styled from 'styled-components';
-import WalletComponent from '@components/Wallet';
+import WalletInfoComponent from '@components/Wallet/WalletInfo';
 
 const { TabPane } = Tabs;
 const StyledTabs = styled(Tabs)`
@@ -63,7 +63,7 @@ const Home: React.FC = () => {
   };
   return (
     <>
-    <WalletComponent />
+    <WalletInfoComponent />
       <StyledSpacer />
       <h2 style={{ color: '#6f2dbd' }}>
         <ThemedWalletOutlined /> {intl.get('account.manageLixi')}

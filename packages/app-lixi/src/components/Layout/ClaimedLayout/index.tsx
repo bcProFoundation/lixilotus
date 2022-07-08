@@ -143,7 +143,7 @@ const ClaimedLayout: React.FC = props => {
                     </NavButton>
                   </Link>
                   <Link href="/admin/claim" passHref>
-                    <NavButton active={false}>
+                    <NavButton active={true}>
                       <GiftOutlined />
                       {intl.get('general.claim')}
                     </NavButton>

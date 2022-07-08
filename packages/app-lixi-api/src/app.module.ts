@@ -1,16 +1,17 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { EthersModule } from 'nestjs-ethers';
 import { AcceptLanguageResolver, HeaderResolver, I18nModule } from 'nestjs-i18n';
 import path, { join } from 'path';
 import { NotificationModule } from './common/modules/notifications/notification.module';
+import config from './config/config';
+import { GraphqlConfig } from './config/config.interface';
 import { AuthModule } from './modules/auth/auth.module';
 import { CoreModule } from './modules/core/core.module';
 import { LixiNftModule } from './modules/nft/lixinft.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { WalletModule } from './modules/wallet/wallet.module';
-
 
 @Module({
   imports: [
@@ -20,15 +21,19 @@ import { WalletModule } from './modules/wallet/wallet.module';
     PrismaModule,
     ServeStaticModule.forRoot({
       serveRoot: '/api/images',
-      rootPath: join(__dirname, '..', 'public/images'),
+      rootPath: join(__dirname, '..', 'public/images')
+    }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [config]
     }),
     I18nModule.forRoot({
       fallbackLanguage: 'en',
       loaderOptions: {
         path: path.join(__dirname, '/i18n/'),
-        watch: true,
+        watch: true
       },
-      resolvers: [{ use: HeaderResolver, options: ['lang'] }, AcceptLanguageResolver],
+      resolvers: [{ use: HeaderResolver, options: ['lang'] }, AcceptLanguageResolver]
     }),
     EthersModule.forRootAsync({
       providers: [ConfigService],
@@ -48,9 +53,7 @@ import { WalletModule } from './modules/wallet/wallet.module';
     CoreModule,
     NotificationModule
   ],
-  controllers: [
-  ],
-  providers: [
-  ],
+  controllers: [],
+  providers: [Logger]
 })
-export class AppModule { }
+export class AppModule {}

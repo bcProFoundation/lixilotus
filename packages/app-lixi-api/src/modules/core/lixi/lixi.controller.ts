@@ -23,6 +23,7 @@ import {
   HttpStatus,
   Inject,
   Injectable,
+  Logger,
   Param,
   Patch,
   Post,
@@ -38,14 +39,12 @@ import { Claim as ClaimDb, Lixi } from '@prisma/client';
 import { Queue } from 'bullmq';
 import * as _ from 'lodash';
 import { PaginationParams } from 'src/common/models/paginationParams';
-import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
 import {
   EXPORT_SUB_LIXIES_QUEUE,
   LIXI_JOB_NAMES,
   WITHDRAW_SUB_LIXIES_QUEUE
 } from 'src/modules/core/lixi/constants/lixi.constants';
-import logger from 'src/logger';
 import { LixiService } from 'src/modules/core/lixi/lixi.service';
 import { WalletService } from 'src/modules/wallet/wallet.service';
 import { aesGcmDecrypt, base58ToNumber, numberToBase58 } from 'src/utils/encryptionMethods';
@@ -58,11 +57,12 @@ import { JwtAuthGuard } from 'src/modules/auth/jwtauth.guard';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import moment from 'moment';
 
-
 @Controller('lixies')
 @UseInterceptors(ClassSerializerInterceptor)
 @Injectable()
 export class LixiController {
+  private logger: Logger = new Logger(LixiController.name);
+
   constructor(
     private prisma: PrismaService,
     private readonly walletService: WalletService,
@@ -119,7 +119,7 @@ export class LixiController {
           resultApi.claimCode = claimPart + encodedId;
         }
       } catch (err: unknown) {
-        logger.error(err);
+        this.logger.error(err);
       }
       return resultApi;
     } catch (err: unknown) {
@@ -193,7 +193,7 @@ export class LixiController {
             childResult.claimCode = claimPart + encodedId;
           }
         } catch (err: unknown) {
-          logger.error(err);
+          this.logger.error(err);
         }
         childrenApiResult.push(childResult);
       }
@@ -235,6 +235,7 @@ export class LixiController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   async createLixi(
     @Body() command: CreateLixiCommand,
     @I18n() i18n: I18nContext
@@ -333,7 +334,7 @@ export class LixiController {
         const lixiNotExist = await i18n.t('lixi.messages.lixiNotExist');
         throw new VError(lixiNotExist);
       } else {
-        if(lixi.inventoryStatus === 'registered'){
+        if (lixi.inventoryStatus === 'registered') {
           // if already register => ignore and return success
           return true;
         } else {
@@ -349,7 +350,7 @@ export class LixiController {
           if (lixiList.count > 0) {
             // if having lixilist update => return true noti update successfully
             return true;
-          } else{
+          } else {
             // count === 0 => don't have any data to update
             const lixiPackNotRegister = await i18n.t('lixi.messages.lixiPackNotRegister');
             throw new VError(lixiPackNotRegister);
@@ -443,6 +444,7 @@ export class LixiController {
   }
 
   @Post(':id/unarchive')
+  @UseGuards(JwtAuthGuard)
   async unlockLixi(
     @Param('id') id: string,
     @Body() command: Account,
@@ -518,6 +520,7 @@ export class LixiController {
   }
 
   @Post(':id/withdraw')
+  @UseGuards(JwtAuthGuard)
   async withdrawLixi(@Param('id') id: string, @Body() command: Account, @I18n() i18n: I18nContext) {
     const lixiId = _.toSafeInteger(id);
     try {
@@ -618,7 +621,7 @@ export class LixiController {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
-        logger.error(err);
+        this.logger.error(err);
         const couldNotWithdraw = await i18n.t('lixi.messages.couldNotWithdraw');
         const error = new VError.WError(err as Error, couldNotWithdraw);
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -627,6 +630,7 @@ export class LixiController {
   }
 
   @Post(':id/export')
+  @UseGuards(JwtAuthGuard)
   async exportLixies(
     @Param('id') id: string,
     @Body() command: ExportLixiCommand,
@@ -774,6 +778,7 @@ export class LixiController {
   }
 
   @Patch(':id/rename')
+  @UseGuards(JwtAuthGuard)
   async renameLixi(
     @Param('id') id: string,
     @Body() command: RenameLixiCommand,
