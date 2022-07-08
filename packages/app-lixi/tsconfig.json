@@ -23,6 +23,7 @@
     "jsx": "preserve",
     "noImplicitAny": false,
     "incremental": true,
+    "experimentalDecorators": true
   },
   "include": [
     "src/**/*"
