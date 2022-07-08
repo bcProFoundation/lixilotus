@@ -19,7 +19,7 @@ import { CreateLixiCommand, fromSmallestDenomination, Lixi, LixiType, Package } 
 import { aesGcmEncrypt, generateRandomBase58Str, numberToBase58 } from 'src/utils/encryptionMethods';
 
 @Injectable()
-@Processor(CREATE_SUB_LIXIES_QUEUE, { concurrency: 3 })
+@Processor(CREATE_SUB_LIXIES_QUEUE, { concurrency: 1 })
 export class CreateSubLixiesProcessor extends WorkerHost {
   private logger: Logger = new Logger(this.constructor.name);
 
@@ -68,9 +68,6 @@ export class CreateSubLixiesProcessor extends WorkerHost {
     // The mapping from xpriv of lixi to the password used to encryted that paticular xpriv
     let mapEncryptedClaimCode: MapEncryptedClaimCode = {};
 
-    // Prepare array to hold the result
-    let resultSubLixies: Lixi[] = [];
-
     const subLixiesToInsert: LixiDb[] = await this.prepareSubLixiChunkToInsert(
       numberOfSubLixiInChunk,
       startDerivationIndexForChunk,
@@ -96,37 +93,14 @@ export class CreateSubLixiesProcessor extends WorkerHost {
 
     // Save the lixi into the database
     try {
-      const savedLixies = await this.prisma.$transaction(async prisma => {
-        const createdLixies = await prisma.lixi.createMany({
+      await this.prisma.$transaction(async prisma => {
+        const countLixiesCreated = await prisma.lixi.createMany({
           data: subLixiesToInsert
         });
         if (receivingSubLixies.length > 0) {
           await this.walletService.sendAmount(fundingAddress, receivingSubLixies, keyPair);
         }
-        return createdLixies;
-      });
-
-      _.map(savedLixies, (item: LixiDb) => {
-        // Calculate the claim code of the sub lixi
-        const encodedId = numberToBase58(item.id);
-        const claimPart = mapEncryptedClaimCode[item.encryptedClaimCode];
-        const claimCode = claimPart + encodedId;
-
-        const subLixi = _.omit(
-          {
-            ...item,
-            claimCode: claimCode,
-            balance: 0,
-            totalClaim: Number(item.totalClaim),
-            expiryAt: item.expiryAt ? item.expiryAt : undefined,
-            activationAt: item.activationAt ? item.expiryAt : undefined,
-            country: item.country ? item.country : undefined,
-            packageId: item.numberLixiPerPackage && packageId ? packageId : null
-          },
-          'encryptedXPriv'
-        ) as Lixi;
-
-        resultSubLixies.push(subLixi);
+        return countLixiesCreated;
       });
 
       return true;
