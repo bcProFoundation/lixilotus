@@ -957,7 +957,7 @@ export class LixiController {
         fileSize: originalImage.size,
         width: originalImage.width,
         height: originalImage.height,
-        url: `${process.env.BASE_URL}/api/${fileUrl}${fileExtension}`,
+        url: `${process.env.BASE_URL}/api/${dir}/${folderName}?fileId=${sha}${fileExtension}`,
         createdAt: new Date(),
         updatedAt: new Date(),
         sha: sha,

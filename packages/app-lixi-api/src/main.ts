@@ -12,6 +12,7 @@ import { PrismaService } from './modules/prisma/prisma.service';
 import multipart from '@fastify/multipart';
 import 'winston-daily-rotate-file';
 import loggerConfig from './logger.config';
+import { join } from 'path';
 
 const allowedOrigins = [process.env.SENDLOTUS_URL, process.env.BASE_URL];
 
@@ -29,6 +30,10 @@ async function bootstrap() {
   });
 
   app.register(multipart);
+  app.useStaticAssets({
+    root: join(__dirname, '..', 'public'),
+    prefix: '/public/',
+  });
 
   app.setGlobalPrefix('api');
   app.useGlobalFilters(new HttpExceptionFilter());

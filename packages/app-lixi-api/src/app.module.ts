@@ -24,15 +24,7 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
   serveRoot: '/api/images',
   rootPath: join(__dirname, '..', 'public/images'),
   serveStaticOptions: {
-      decorateReply: false
-  }
-};
-
-export const serveStaticModule_uploads: FastifyServeStaticModuleOptions = {
-  serveRoot: '/api/uploads',
-  rootPath: join(__dirname, '..', 'public/uploads'),
-  serveStaticOptions: {
-      decorateReply: false
+    decorateReply: false
   }
 };
 
@@ -43,7 +35,6 @@ export const serveStaticModule_uploads: FastifyServeStaticModuleOptions = {
     }),
     PrismaModule,
     ServeStaticModule.forRoot(serveStaticModule_images),
-    ServeStaticModule.forRoot(serveStaticModule_uploads),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [config]
