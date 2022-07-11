@@ -1,6 +1,8 @@
 import express from 'express';
 import config from 'config';
-import logger from '../logger';
+import { Logger } from '@nestjs/common';
+
+const logger: Logger = new Logger('RateLimiter');
 
 function isWhiteListed(whitelist: Array<string> = [], ip: string) {
   return whitelist.some(listItem => ip.startsWith(listItem));

@@ -3,6 +3,8 @@ import { notificationTypes } from './notificationTypes';
 import { notificationTypeTranslations } from './notificationTypeTranslations';
 
 import { PrismaClient } from '@prisma/client';
+import { emailTemplates } from './emailTemplates';
+import { emailTemplateTranslations } from './emailTemplateTranslations';
 const prisma = new PrismaClient();
 
 async function main() {
@@ -34,6 +36,26 @@ async function main() {
         create: { ...notificationTypeTranslation }
       })
     )
+  );
+
+  const resultEmailTemplate = await prisma.$transaction(
+    emailTemplates.map(item =>
+      prisma.emailTemplate.upsert({
+        where: { id: item.id },
+        update: {},
+        create: { ...item }
+      })
+    )
+  );
+
+  const resultEmailTemplateTranslation = await prisma.$transaction(
+    emailTemplateTranslations.map(translation => {
+      return prisma.emailTemplateTranslation.upsert({
+        where: { id: translation.id },
+        update: {},
+        create: { ...translation }
+      });
+    })
   );
 }
 

@@ -74,7 +74,7 @@ const UploadQRCode = (props: UploadQRCodeProps) => {
     // If what scanner reads from QR code begins with 'bitcoincash:' or 'simpleledger:' or their successor prefixes
     if (isValidLotusPrefix(content)) {
       type = 'address';
-      values = { address: content };
+      values = { result: content };
     }
     return { type, values };
   };

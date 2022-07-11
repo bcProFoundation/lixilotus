@@ -128,14 +128,14 @@ export const lixiReducer = createReducer(initialState, builder => {
       const result = action.payload;
       childrenLixiesAdapter.setAll(state.subLixies, result.data ?? []);
       state.subLixiesCount = result.totalCount;
-      state.currentSubLixiesStartId = result.pageInfo.endCursor;
+      state.currentSubLixiesStartId = _.toSafeInteger(result.pageInfo.endCursor);
       state.hasMoreSubLixies = result.pageInfo.hasNextPage;
     })
     .addCase(fetchMoreSubLixiesSuccess, (state, action) => {
       const result = action.payload;
       childrenLixiesAdapter.upsertMany(state.subLixies, result.data ?? []);
       state.subLixiesCount = result.totalCount;
-      state.currentSubLixiesStartId = result.pageInfo.endCursor;
+      state.currentSubLixiesStartId = _.toSafeInteger(result.pageInfo.endCursor);
       state.hasMoreSubLixies = result.pageInfo.hasNextPage;
     })
     .addMatcher(isAnyOf(refreshLixiListSuccess, refreshLixiListSilentSuccess), (state, action) => {
@@ -149,6 +149,7 @@ export const lixiReducer = createReducer(initialState, builder => {
       }
     })
     .addMatcher(isAnyOf(refreshLixiSuccess, refreshLixiSilentSuccess), (state, action) => {
+      console.log('matcher');
       const { lixi, claims } = action.payload;
       const updateLixi: Update<Lixi> = {
         id: lixi.id,

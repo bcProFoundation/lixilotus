@@ -1,26 +1,22 @@
-import { CreateLixiCommand, fromSmallestDenomination, Lixi, LixiType, Package } from '@bcpros/lixi-models';
-import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
-import BCHJS from '@bcpros/xpi-js';
-import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
-import { Inject, Injectable } from '@nestjs/common';
+import { CreateLixiCommand, fromSmallestDenomination, Lixi, LixiType } from '@bcpros/lixi-models';
 import { Lixi as LixiDb, PrismaClient } from '@prisma/client';
 import { Job } from 'bullmq';
 import * as _ from 'lodash';
-import logger from 'src/logger';
 import {
   CreateSubLixiesChunkJobData,
   CreateSubLixiesJobData,
   CreateSubLixiesJobResult,
   MapEncryptedClaimCode
 } from 'src/modules/core/lixi/models/lixi.models';
-import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { WalletService } from 'src/modules/wallet/wallet.service';
 import { aesGcmEncrypt, generateRandomBase58Str, numberToBase58 } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
 import config from 'config';
 import SlpWallet from '@bcpros/minimal-xpi-slp-wallet';
 import { LIXI_JOB_NAMES } from 'src/modules/core/lixi/constants/lixi.constants';
+import { Logger } from '@nestjs/common';
 
+const logger = new Logger('create-sub-lixies.isolated.processor');
 const xpiRestUrl = config.has('xpiRestUrl') ? config.get('xpiRestUrl') : 'https://api.sendlotus.com/v4/';
 const prisma = new PrismaClient();
 const xpiWallet = new SlpWallet('', {
@@ -36,7 +32,7 @@ export default async function (
 ): Promise<CreateSubLixiesJobResult | boolean> {
   return new Promise((resolve, reject) => {
     if (job.name === LIXI_JOB_NAMES.CREATE_SUB_LIXIES_CHUNK) {
-      logger.info('process chunk: ', job);
+      logger.log('process chunk: ', job);
       const result = processCreateSubLixiesChunk(job);
       resolve(result);
     }
@@ -122,7 +118,7 @@ export async function processCreateSubLixiesChunk(job: Job): Promise<boolean> {
           expiryAt: item.expiryAt ? item.expiryAt : undefined,
           activationAt: item.activationAt ? item.expiryAt : undefined,
           country: item.country ? item.country : undefined,
-          packageId: (item.numberLixiPerPackage && packageId) ? packageId : null,
+          packageId: item.numberLixiPerPackage && packageId ? packageId : null
         },
         'encryptedXPriv'
       ) as Lixi;
@@ -252,7 +248,7 @@ async function prepareSubLixiToInsert(
     envelopeMessage: command.envelopeMessage ?? '',
     parentId: parentId,
     createdAt: new Date(),
-    packageId: packageId ?? null,
+    packageId: packageId ?? null
   } as unknown as LixiDb;
 
   return dataSubLixi;

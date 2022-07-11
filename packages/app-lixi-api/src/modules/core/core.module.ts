@@ -23,49 +23,60 @@ import { ExportSubLixiesProcessor } from './lixi/processors/export-sub-lixies.pr
 import { WithdrawSubLixiesEventsListener } from './lixi/processors/withdraw-sub-lixies.eventslistener';
 import { WithdrawSubLixiesProcessor } from './lixi/processors/withdraw-sub-lixies.processor';
 
+import { ConfigService } from '@nestjs/config';
 import cors from 'cors';
-import { join } from 'path';
-console.log(process.env)
 const baseCorsConfig = cors({
   origin: process.env.BASE_URL ?? ''
 });
 
 @Module({
   imports: [
-    BullModule.registerQueue(
+    BullModule.registerQueueAsync(
       {
         name: CREATE_SUB_LIXIES_QUEUE,
-        connection: new IORedis({
-          maxRetriesPerRequest: null,
-          enableReadyCheck: false,
-          host: process.env.REDIS_HOST ? process.env.REDIS_HOST : 'redis-lixi',
-          port: process.env.REDIS_PORT ? _.toSafeInteger(process.env.REDIS_PORT) : 6379,
-        }),
-        processors: [
-          {
-            path: join(__dirname, 'lixi/processors/create-sub-lixies.isolated.processor'),
-            concurrency: 3,
-          },
-        ],
+        inject: [ConfigService],
+        useFactory: (config: ConfigService) => {
+          return {
+            name: CREATE_SUB_LIXIES_QUEUE,
+            connection: new IORedis({
+              maxRetriesPerRequest: null,
+              enableReadyCheck: false,
+              host: config.get<string>('REDIS_HOST') ? config.get<string>('REDIS_HOST') : 'redis-lixi',
+              port: config.get<string>('REDIS_PORT') ? _.toSafeInteger(config.get<string>('REDIS_PORT')) : 6379,
+            })
+          }
+        }
       },
       {
         name: EXPORT_SUB_LIXIES_QUEUE,
-        connection: new IORedis({
-          maxRetriesPerRequest: null,
-          enableReadyCheck: false,
-          host: process.env.REDIS_HOST ? process.env.REDIS_HOST : 'redis-lixi',
-          port: process.env.REDIS_PORT ? _.toSafeInteger(process.env.REDIS_PORT) : 6379,
-        }),
+        inject: [ConfigService],
+        useFactory: (config: ConfigService) => {
+          return {
+            name: EXPORT_SUB_LIXIES_QUEUE,
+            connection: new IORedis({
+              maxRetriesPerRequest: null,
+              enableReadyCheck: false,
+              host: config.get<string>('REDIS_HOST') ? config.get<string>('REDIS_HOST') : 'redis-lixi',
+              port: config.get<string>('REDIS_PORT') ? _.toSafeInteger(config.get<string>('REDIS_PORT')) : 6379,
+            })
+          }
+        }
       },
       {
         name: WITHDRAW_SUB_LIXIES_QUEUE,
-        connection: new IORedis({
-          maxRetriesPerRequest: null,
-          enableReadyCheck: false,
-          host: process.env.REDIS_HOST ? process.env.REDIS_HOST : 'redis-lixi',
-          port: process.env.REDIS_PORT ? _.toSafeInteger(process.env.REDIS_PORT) : 6379,
-        }),
-      },
+        inject: [ConfigService],
+        useFactory: (config: ConfigService) => {
+          return {
+            name: WITHDRAW_SUB_LIXIES_QUEUE,
+            connection: new IORedis({
+              maxRetriesPerRequest: null,
+              enableReadyCheck: false,
+              host: config.get<string>('REDIS_HOST') ? config.get<string>('REDIS_HOST') : 'redis-lixi',
+              port: config.get<string>('REDIS_PORT') ? _.toSafeInteger(config.get<string>('REDIS_PORT')) : 6379,
+            })
+          }
+        }
+      }
     ),
     AuthModule,
     NotificationModule,

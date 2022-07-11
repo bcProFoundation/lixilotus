@@ -9,12 +9,11 @@ import {
   QueueEventsListener,
   WorkerHost
 } from '@nestjs/bullmq';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { Parser } from 'json2csv';
 import * as _ from 'lodash';
 import { EXPORT_SUB_LIXIES_QUEUE } from 'src/modules/core/lixi/constants/lixi.constants';
-import logger from 'src/logger';
 import { ExportSubLixiesJobData, ExportSubLixiesJobResult } from 'src/modules/core/lixi/models/lixi.models';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { WalletService } from 'src/modules/wallet/wallet.service';
@@ -25,6 +24,7 @@ import moment from 'moment';
 @Injectable()
 @Processor(EXPORT_SUB_LIXIES_QUEUE)
 export class ExportSubLixiesProcessor extends WorkerHost {
+  private logger: Logger = new Logger(ExportSubLixiesProcessor.name);
   constructor(
     private prisma: PrismaService,
     private walletService: WalletService,
@@ -98,7 +98,7 @@ export class ExportSubLixiesProcessor extends WorkerHost {
         const encodedId = numberToBase58(item.id);
         childResult.claimCode = claimPart + encodedId;
       } catch (err) {
-        logger.error(err);
+        this.logger.error(err);
         continue;
       }
       childrenApiResult.push(childResult);
