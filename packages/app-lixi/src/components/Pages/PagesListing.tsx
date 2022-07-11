@@ -6,8 +6,8 @@ import React from 'react';
 import { AppContext } from '@store/store';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getSelectedAccount } from '@store/account/selectors';
-import { getSelectedId } from '@store/page/selectors';
-import { getSelectedIdShop } from '@store/page/action';
+import { getSelectedPageId } from '@store/page/selectors';
+import { setSelectedPage } from '@store/page/action';
 import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
 import { push } from 'connected-next-router';
 
@@ -43,7 +43,7 @@ const PagesListing: React.FC = () => {
   const dispatch = useAppDispatch();
   const { XPI, Wallet } = ContextValue;
   const selectedAccount = useAppSelector(getSelectedAccount);
-  const selectedIdShop = useAppSelector(getSelectedId);
+  const selectedPageId = useAppSelector(getSelectedPageId);
   const [isShowQrCode, setIsShowQrCode] = useState(false);
   const [lists, setLists] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -187,7 +187,7 @@ const PagesListing: React.FC = () => {
       setLists([...tempLists]);
     }
     if (e.key === 'week') {
-      dispatch(getSelectedIdShop('ahihi'));
+      dispatch(setSelectedPage('testPage'));
     }
   };
 

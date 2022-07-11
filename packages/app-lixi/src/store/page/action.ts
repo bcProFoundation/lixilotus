@@ -1,3 +1,3 @@
 import { createAction } from '@reduxjs/toolkit';
 
-export const getSelectedIdShop = createAction<string>('page/getSelectedId');
+export const setSelectedPage = createAction<string>('page/getSelectedId');

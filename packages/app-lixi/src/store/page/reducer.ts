@@ -1,6 +1,6 @@
 import { createEntityAdapter, createReducer } from '@reduxjs/toolkit';
 import { PageState } from './state';
-import { getSelectedIdShop } from './action';
+import { setSelectedPage } from './action';
 import { PageDetail } from './pageDetail.model';
 
 export const pageAdapter = createEntityAdapter<PageDetail>({});
@@ -10,7 +10,7 @@ const initialState: PageState = pageAdapter.getInitialState({
 });
 
 export const pageReducer = createReducer(initialState, builder => {
-  builder.addCase(getSelectedIdShop, (state, action) => {
+  builder.addCase(setSelectedPage, (state, action) => {
     state.selectedId = action.payload;
   });
 });

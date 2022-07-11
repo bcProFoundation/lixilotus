@@ -5,7 +5,7 @@ import { PageState } from './state';
 
 const { selectAll, selectEntities, selectIds, selectTotal } = pageAdapter.getSelectors();
 
-export const getSelectedId = createSelector(
+export const getSelectedPageId = createSelector(
   (state: RootState) => state.pages,
   (state: PageState) => state.selectedId
 );

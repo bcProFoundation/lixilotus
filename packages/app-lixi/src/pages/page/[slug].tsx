@@ -10,7 +10,7 @@ import PageDetailLayout from '@components/Layout/PageDetailLayout';
 const PageDetailPage = props => {
   const { shopId, isMobile } = props;
   const slug = shopId;
-  const canonicalUrl = process.env.NEXT_PUBLIC_LIXI_URL + `claimed/${slug}`;
+  const canonicalUrl = process.env.NEXT_PUBLIC_LIXI_URL + `pages/${slug}`;
 
   return (
     <>
