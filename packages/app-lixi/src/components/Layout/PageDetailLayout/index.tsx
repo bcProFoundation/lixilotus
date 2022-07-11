@@ -4,7 +4,14 @@ import { Layout, Spin } from 'antd';
 import Link from 'next/link';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 
-import { GiftOutlined, HomeOutlined, LoadingOutlined, SettingOutlined, UserOutlined, WalletOutlined } from '@ant-design/icons';
+import {
+  GiftOutlined,
+  HomeOutlined,
+  LoadingOutlined,
+  SettingOutlined,
+  UserOutlined,
+  WalletOutlined
+} from '@ant-design/icons';
 import { Footer, NavButton } from '@bcpros/lixi-components/components';
 
 import ModalManager from '../../Common/ModalManager';
@@ -98,7 +105,7 @@ export const LixiTextLogo = styled.img`
   }
 `;
 
-const ClaimedLayout: React.FC = props => {
+const PageDetailLayout: React.FC = props => {
   const { children } = props;
   const [loading, setLoading] = useState(false);
   const currentLocale = useAppSelector(getCurrentLocale);
@@ -149,7 +156,7 @@ const ClaimedLayout: React.FC = props => {
                     </NavButton>
                   </Link>
                   <Link href="/admin/claim" passHref>
-                    <NavButton active={true}>
+                    <NavButton active={false}>
                       <GiftOutlined />
                       {intl.get('general.claim')}
                     </NavButton>
@@ -170,4 +177,4 @@ const ClaimedLayout: React.FC = props => {
   );
 };
 
-export default ClaimedLayout;
+export default PageDetailLayout;

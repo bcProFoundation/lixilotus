@@ -15,6 +15,7 @@ Table of Contents
 
 export default {
   /* 01.General */
+  'general.home': 'Home',
   'general.accounts': 'Accounts',
   'general.lixi': 'Lixi',
   'general.claim': 'Claim',

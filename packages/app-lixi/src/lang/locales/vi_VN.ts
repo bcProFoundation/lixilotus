@@ -15,6 +15,7 @@ Table of Contents
 
 export default {
   /* 01.General */
+  'general.home': 'Nhà',
   'general.accounts': 'Tài khoản',
   'general.lixi': 'Lì xì',
   'general.claim': 'Nhận Lì xì',
