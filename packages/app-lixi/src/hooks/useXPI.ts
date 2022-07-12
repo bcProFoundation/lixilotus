@@ -45,7 +45,9 @@ export default function useXPI() {
   const sendAmount = async (
     sourceAddress: string,
     destination: { address: string; amountXpi: string }[],
-    inputKeyPair: any
+    inputKeyPair: any,
+    optionalOpReturnMsg,
+    encryptionFlag
   ) => {
     const XPI = getXPI();
     const XPIWallet = getXPIWallet();
@@ -74,15 +76,12 @@ export default function useXPI() {
     const utxos = await XPI.Utxo.get(sourceAddress);
     const utxoStore = utxos[0];
 
-    if (!utxoStore || !(utxoStore as any).bchUtxos || !(utxoStore as any).bchUtxos) {
+    if (!utxoStore || (!(utxoStore as any).bchUtxos && !(utxoStore as any).nullUtxos)) {
       throw new Error(intl.get('send.utxoEmpty'));
     }
-
-    const { necessaryUtxos, change } = XPIWallet.sendBch.getNecessaryUtxosAndChange(
-      outputs,
-      (utxoStore as any).bchUtxos,
-      2.01
-    );
+    const utxosStore =
+      (utxoStore as any).bchUtxos.length > 0 ? (utxoStore as any).bchUtxos : (utxoStore as any).nullUtxos;
+    const { necessaryUtxos, change } = XPIWallet.sendBch.getNecessaryUtxosAndChange(outputs, utxosStore, 2.01);
 
     // Create an instance of the Transaction Builder.
     const transactionBuilder: any = new XPI.TransactionBuilder();
@@ -91,7 +90,30 @@ export default function useXPI() {
     necessaryUtxos.forEach((utxo: any) => {
       transactionBuilder.addInput(utxo.tx_hash, utxo.tx_pos);
     });
-
+    let script;
+    let opReturnBuffer;
+    // Start of building the OP_RETURN output.
+    // only build the OP_RETURN output if the user supplied it
+    if (optionalOpReturnMsg && typeof optionalOpReturnMsg !== 'undefined') {
+      if (encryptionFlag) {
+        // build the OP_RETURN script with the encryption prefix
+        script = [
+          XPI.Script.opcodes.OP_RETURN, // 6a
+          Buffer.from(currency.opReturn.appPrefixesHex.lotusChatEncrypted, 'hex'), // 03030303
+          Buffer.from(optionalOpReturnMsg)
+        ];
+      } else {
+        // this is un-encrypted message
+        script = [
+          XPI.Script.opcodes.OP_RETURN, // 6a
+          Buffer.from(currency.opReturn.appPrefixesHex.lotusChat, 'hex'), // 02020202
+          Buffer.from(optionalOpReturnMsg)
+        ];
+      }
+      opReturnBuffer = XPI.Script.encode(script);
+      transactionBuilder.addOutput(opReturnBuffer, 0);
+    }
+    // End of building the OP_RETURN output.
     // Add outputs
     outputs.forEach(receiver => {
       transactionBuilder.addOutput(receiver.address, receiver.amountSat);
