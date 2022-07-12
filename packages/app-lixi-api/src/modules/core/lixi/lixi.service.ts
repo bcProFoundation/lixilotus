@@ -66,7 +66,8 @@ export class LixiService {
       address,
       totalClaim: BigInt(0),
       envelopeId: command.envelopeId ?? null,
-      envelopeMessage: command.envelopeMessage ?? ''
+      envelopeMessage: command.envelopeMessage ?? '',
+      upload: {connect : {id: command.upload}}
     };
     const lixiToInsert = _.omit(data, 'password');
 

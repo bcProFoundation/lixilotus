@@ -22,9 +22,16 @@ import { SettingsState } from './settings/state';
 import { PageState } from './page/state';
 import { pageReducer } from './page/reducer';
 
+const persistConfig = {
+  key: 'root',
+  storage: storage,
+  blacklist: ['accounts'],
+}
+
 const accountPersistConfig: PersistConfig<AccountsState> = {
   key: 'accounts',
-  storage: storage
+  storage: storage,
+  blacklist: [`upload`]
 };
 
 const lixiPersistConfig: PersistConfig<LixiesState> = {
@@ -100,4 +107,5 @@ const reducer = (state, action: AnyAction) => {
   }
 };
 
-export default reducer;
+
+export default persistReducer(persistConfig, reducer);

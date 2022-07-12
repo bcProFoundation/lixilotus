@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 /* SendLotus Language Texts
 
 Table of Contents
@@ -125,9 +126,14 @@ export default {
   'lixi.refreshLixi': 'Refresh Lixi',
   'lixi.exportLixi': 'Export Lixi',
   'lixi.noLixiSelected': 'No lixi is selected',
-  'lixi.fileTypeError': 'You can only upload JPG file!',
-  'lixi.fileSizeError': 'Image must smaller than 2MB!',
-  'lixi.lixiPostcard': 'Lixi Postcard',
+  'lixi.fileTypeError': 'You can only upload JPG/PNG/GIF file!',
+  'lixi.fileSizeError': 'Image must smaller than 5MB!',
+  'lixi.fileUploadError': 'Error uploading to server',
+  'lixi.fileUploadSuccess': 'Upload Successfully',
+  'lixi.uploadDividerText': "Custom Enevelope",
+  'lixi.uploadText' : 'Upload',
+  'lixi.uploadingText': 'Uploading...',
+  'lixi.previewFileFailed' : 'Cannot preview file',
   'lixi.renameLixi': 'Rename Lixi',
   'lixi.enterNewLixiName': 'Enter new lixi name',
   'lixi.lixiLengthError': 'Lixi name must be a string between 1 and 24 characters long',

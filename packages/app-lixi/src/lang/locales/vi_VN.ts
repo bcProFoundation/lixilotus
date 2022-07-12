@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 /* SendLotus Language Texts
 
 Table of Contents
@@ -124,9 +125,14 @@ export default {
   'lixi.refreshLixi': 'Làm mới Lì xì',
   'lixi.exportLixi': 'Export Lixi',
   'lixi.noLixiSelected': 'Chọn ít nhất một Lì xì',
-  'lixi.fileTypeError': 'Bạn chỉ có thể tải lên tệp JPG!',
-  'lixi.fileSizeError': 'Hình ảnh phải nhỏ hơn 2MB!',
-  'lixi.lixiPostcard': 'Bưu thiếp Lì xì',
+  'lixi.fileTypeError': 'Bạn chỉ có thể tải lên tệp JPG/PNG/GIF !',
+  'lixi.fileSizeError': 'Hình ảnh phải nhỏ hơn 5MB!',
+  'lixi.fileUploadError': 'Lỗi khi tải thiệp lên server',
+  'lixi.fileUploadSuccess': 'Tải thiệp lên thành công',
+  'lixi.uploadDividerText': "Thiệp tự chọn",
+  'lixi.uploadText' : 'Đăng thiệp',
+  'lixi.uploadingText': 'Đang tải...',
+  'lixi.previewFileFailed' : 'Không thể xem trước file',
   'lixi.renameLixi': 'Đổi tên Lì xi',
   'lixi.enterNewLixiName': 'Nhập tên mới cho Lì xì',
   'lixi.lixiLengthError': 'Tên Lì xì phải là một chuỗi dài từ 1 đến 24 ký tự',
