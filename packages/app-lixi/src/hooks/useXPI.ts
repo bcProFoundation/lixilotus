@@ -47,12 +47,12 @@ export default function useXPI() {
     destination: { address: string; amountXpi: string }[],
     inputKeyPair: any
   ) => {
-    const sourceBalance: number = await this.xpiWallet.getBalance(sourceAddress);
+    const XPI = getXPI();
+    const XPIWallet = getXPIWallet();
+    const sourceBalance: number = await XPIWallet.getBalance(sourceAddress);
     if (sourceBalance === 0) {
       throw new Error(intl.get('send.insufficientFund'));
     }
-    const XPI = getXPI();
-    const XPIWallet = getXPIWallet();
     let outputs: { address: string; amountSat: number }[] = [];
 
     for (let i = 0; i < _.size(destination); i++) {

@@ -106,8 +106,7 @@ const SendComponent: React.FC = () => {
             amountXpi: formData.value
           }
         ],
-        keyPair,
-        wallet.id
+        keyPair
       );
       if (link) {
         dispatch(sendXPISuccess(wallet.id));
