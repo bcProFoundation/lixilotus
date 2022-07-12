@@ -241,5 +241,9 @@ export default {
   'register.register': 'Register',
 
   /* 12.Send */
-  'send.unableToSend': 'Unable to send'
+  'send.unableToSend': 'Unable to send',
+  'send.sendAmountSmallerThanDust': 'The send amount is smaller than dust',
+  'send.utxoEmpty': 'UTXO list is empty',
+  'send.unableSendTransaction': 'Unable to send transaction',
+  'send.insufficientFund': 'Insufficient fund'
 };

@@ -243,5 +243,9 @@ export default {
   'register.register': 'Register',
 
   /* 12.Send */
-  'send.unableToSend': 'Không thể gửi thành công'
+  'send.unableToSend': 'Không thể gửi thành công',
+  'send.sendAmountSmallerThanDust': 'Số tiền gửi nhỏ hơn số tiền gửi tối thiểu"',
+  'send.utxoEmpty': 'Danh sách UTXO trống',
+  'send.unableSendTransaction': 'Không thể gửi giao dịch',
+  'send.insufficientFund': 'Số dư tài khoản không đủ'
 };

@@ -1,23 +1,12 @@
 import { currency } from '@bcpros/lixi-models/constants/ticker';
-import { fromSmallestDenomination, toSmallestDenomination } from '@bcpros/lixi-models/utils/cashMethods';
+import { toSmallestDenomination } from '@bcpros/lixi-models/utils/cashMethods';
 import SlpWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
-import { AnyAsyncThunk } from '@reduxjs/toolkit/dist/matchers';
-import { useAppDispatch } from '@store/hooks';
-import { sendXPISuccess } from '@store/send/actions';
 import BigNumber from 'bignumber.js';
 import _ from 'lodash';
-import { useDispatch } from 'react-redux';
+import intl from 'react-intl-universal';
 
 export default function useXPI() {
-  const SEND_XPI_ERRORS = {
-    INSUFFICIENT_FUNDS: 0,
-    NETWORK_ERROR: 1,
-    INSUFFICIENT_PRIORITY: 66, // ~insufficient fee
-    DOUBLE_SPENDING: 18,
-    MAX_UNCONFIRMED_TXS: 64
-  };
-
   const getRestUrl = (apiIndex = 0) => {
     const apiString: string =
       process.env.NEXT_PUBLIC_NETWORK === `mainnet`
@@ -46,37 +35,6 @@ export default function useXPI() {
     });
     return ConstructedSlpWallet;
   };
-  // const calcFee = (XPI, utxos, p2pkhOutputNumber = 2, satoshisPerByte = currency.defaultFee, opReturnLength = 0) => {
-  //   let byteCount = XPI.BitcoinCash.getByteCount({ P2PKH: utxos.length }, { P2PKH: p2pkhOutputNumber });
-  //   // 8 bytes : the output's value
-  //   // 1 bytes : Locking-Script Size
-  //   // opReturnLength: the size of the OP_RETURN script
-  //   // Referece
-  //   // https://github.com/bitcoinbook/bitcoinbook/blob/develop/ch06.asciidoc#transaction-serializationoutputs
-  //   //
-  //   // Technically, Locking-Script Size can be 1, 3, 5 or 9 bytes, But
-  //   //  - Lotus Node's default allowed OP_RETURN length is set the 223 bytes
-  //   //  - SendLotus max OP_RETURN length is also limited to 223 bytes
-  //   // We can safely assume it is 1 byte (0 - 252. fd, fe, ff are special)
-  //   //
-  //   // The Output Count field is of VarInt (1, 3, 5 or 9 bytes), which indicates the number of outputs present in the transaction
-  //   // Adding OP_RETURNs to the outputs increases the count
-  //   // Since SendLotus only allows single recipient transaction, the maxium number of outputs in a tx is 5
-  //   //  - one for recipient
-  //   //  - one for change
-  //   //  - maximum 3 for OP_RETURNs
-  //   // So we can safely assume the Output will only take 1 byte.
-  //   //
-  //   // In wallet where multiple recipients are allowed in a transaction
-  //   // adding extra OP_RETURN outputs may change the output count from 1 byte to 3 bytes
-  //   // this would affect the fee
-  //   let opReturnOutputByteLength = opReturnLength;
-  //   if (opReturnLength) {
-  //     opReturnOutputByteLength += 8 + 1;
-  //   }
-  //   const txFee = Math.ceil(satoshisPerByte * (byteCount + opReturnOutputByteLength));
-  //   return txFee;
-  // };
 
   const calcFee = (XPI: BCHJS, utxos: any, p2pkhOutputNumber = 2, satoshisPerByte = 2.01) => {
     const byteCount = XPI.BitcoinCash.getByteCount({ P2PKH: utxos.length }, { P2PKH: p2pkhOutputNumber });
@@ -87,16 +45,12 @@ export default function useXPI() {
   const sendAmount = async (
     sourceAddress: string,
     destination: { address: string; amountXpi: string }[],
-    inputKeyPair: any,
-    selectedAccountId
+    inputKeyPair: any
   ) => {
-    // const sourceBalance: number = await this.xpiWallet.getBalance(sourceAddress);
-    // if (sourceBalance === 0) {
-    //   // if (i18n === undefined) throw new VError('Insufficient Fund');
-
-    //   // const insufficientFund = await i18n.t('claim.messages.insufficientFund');
-    //   // throw new VError(insufficientFund);
-    // }
+    const sourceBalance: number = await this.xpiWallet.getBalance(sourceAddress);
+    if (sourceBalance === 0) {
+      throw new Error(intl.get('send.insufficientFund'));
+    }
     const XPI = getXPI();
     const XPIWallet = getXPIWallet();
     let outputs: { address: string; amountSat: number }[] = [];
@@ -106,9 +60,7 @@ export default function useXPI() {
       let satoshisToSend = toSmallestDenomination(new BigNumber(item.amountXpi));
 
       if (satoshisToSend.lt(currency.dustSats)) {
-        // if (i18n === undefined) throw new VError('The send amount is smaller than dust');
-        // const sendAmountSmallerThanDust = await i18n.t('account.messages.sendAmountSmallerThanDust');
-        // throw new VError(sendAmountSmallerThanDust);
+        throw new Error(intl.get('send.sendAmountSmallerThanDust'));
       }
 
       const amountSats = Math.floor(satoshisToSend.toNumber());
@@ -123,7 +75,7 @@ export default function useXPI() {
     const utxoStore = utxos[0];
 
     if (!utxoStore || !(utxoStore as any).bchUtxos || !(utxoStore as any).bchUtxos) {
-      // throw new VError('UTXO list is empty');
+      throw new Error(intl.get('send.utxoEmpty'));
     }
 
     const { necessaryUtxos, change } = XPIWallet.sendBch.getNecessaryUtxosAndChange(
@@ -164,9 +116,7 @@ export default function useXPI() {
       const data = await XPI.RawTransactions.sendRawTransaction(hex);
       return data;
     } catch (err) {
-      // if (i18n === undefined) throw new VError('Unable to send transaction');
-      // const unableSendTransaction = await i18n.t('claim.messages.unableSendTransaction');
-      // throw new VError(unableSendTransaction);
+      throw new Error(intl.get('send.unableSendTransaction'));
     }
   };
 
