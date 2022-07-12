@@ -237,5 +237,8 @@ export default {
   'lixinft.unableToMint': 'Unable to mint the lixi NFT',
 
   /* 11.Register */
-  'register.register': 'Register'
+  'register.register': 'Register',
+
+  /* 12.Send */
+  'send.unableToSend': 'Unable to send'
 };

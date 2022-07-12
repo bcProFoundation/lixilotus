@@ -6,7 +6,6 @@ import PrimaryButton from '@components/Common/PrimaryButton';
 import { FormItemWithQRCodeAddon } from '@bcpros/lixi-components/components/Common/EnhancedInputs';
 import { currency } from '@components/Common/Ticker';
 import { shouldRejectAmountInput } from '@utils/validation';
-import { ZeroBalanceHeader } from '@components/Common/Atoms';
 import { AppContext } from '@store/store';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getSelectedAccount } from '@store/account/selectors';
@@ -15,11 +14,11 @@ import _ from 'lodash';
 import { parseAddress } from '@utils/addressMethods';
 import useXPI from '@hooks/useXPI';
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
-import { useDispatch } from 'react-redux';
-import { sendXPISuccess } from '@store/send/actions';
+import { sendXPIFailure, sendXPISuccess } from '@store/send/actions';
 import { setAccountBalance } from '@store/account/actions';
 import { getWalletState } from '@utils/cashMethods';
 import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
+import { ZeroBalanceHeader } from '@bcpros/lixi-components/components/Common/Atoms';
 
 // Note jestBCH is only used for unit tests; BCHJS must be mocked for jest
 const SendComponent: React.FC = () => {
@@ -139,24 +138,19 @@ const SendComponent: React.FC = () => {
       );
       if (link) {
         dispatch(sendXPISuccess(wallet.id));
-        XPI.Electrumx.balance(wallet?.address)
-          .then(result => {
-            if (result && result.balance) {
-              const balance = result.balance.confirmed + result.balance.unconfirmed;
-              dispatch(setAccountBalance(balance ?? 0));
-            }
-          })
-          .catch(e => {
-            setIsLoadBalanceError(true);
-          });
+        // XPI.Electrumx.balance(wallet?.address)
+        //   .then(result => {
+        //     if (result && result.balance) {
+        //       const balance = result.balance.confirmed + result.balance.unconfirmed;
+        //       dispatch(setAccountBalance(balance ?? 0));
+        //     }
+        //   })
+        //   .catch(e => {
+        //     setIsLoadBalanceError(true);
+        //   });
       }
-      // update the wallet the get the new utxos 1s after sending
-      // setTimeout(refresh, 1000);
-      // Todo: Success show notification
     } catch (e) {
-      // Set loading to false here as well, as balance may not change depending on where error occured in try loop
       let message;
-
       if (!e.error && !e.message) {
         message = `Transaction failed: no response from ${getRestUrl()}.`;
       } else if (/Could not communicate with full node or other external service/.test(e.error)) {
@@ -169,13 +163,7 @@ const SendComponent: React.FC = () => {
       } else {
         message = e.message || e.error || JSON.stringify(e);
       }
-
-      notification.error({
-        message: 'Error',
-        description: message,
-        duration: 5
-      });
-      console.error(e);
+      dispatch(sendXPIFailure(message));
     }
   }
 

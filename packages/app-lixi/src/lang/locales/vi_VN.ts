@@ -239,5 +239,8 @@ export default {
   'lixinft.unableToMint': 'Không thể tạo NFT',
 
   /* 11.Register */
-  'register.register': 'Register'
+  'register.register': 'Register',
+
+  /* 12.Send */
+  'send.unableToSend': 'Không thể gửi thành công'
 };
