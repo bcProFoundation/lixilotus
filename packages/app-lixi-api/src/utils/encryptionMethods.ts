@@ -1,5 +1,6 @@
 import { TextEncoder } from "util";
 import crypto from 'crypto';
+import moment from "moment";
 
 /**
  * Decrypts ciphertext encrypted with aesGcmEncrypt() using supplied password.
@@ -80,8 +81,10 @@ export function numberToBase58(input: number): string {
 }
 
 export async function hexSha256(text: string | Buffer): Promise<string> {
-  const txtUtf8 = typeof text === "string" ? new TextEncoder().encode(text) : text ;
-  const txtHash = crypto.createHash('sha256').update(txtUtf8).digest();
+  const txtUtf8 = typeof text === "string" ? new TextEncoder().encode(text + moment.now()) : text ;
+  const momentHash = crypto.createHash('sha256').update(moment.now().toString()).digest();
+  const txtHash = crypto.createHash('sha256').update(typeof txtUtf8 === typeof Uint8Array ? txtUtf8 : Buffer.concat([txtUtf8,momentHash])).digest();
+  
   return txtHash.toString('hex');
 }
 /**
