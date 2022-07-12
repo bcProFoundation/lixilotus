@@ -87,6 +87,12 @@ export class AccountController {
         }
       });
 
+      // encrypt mnemonic
+      const encryptedMnemonic = await aesGcmEncrypt(mnemonic, mnemonic);
+      // Create random account secret then encrypt it using mnemonic
+      const accountSecret: string = generateRandomBase58Str(10);
+      const encryptedSecret = await aesGcmEncrypt(accountSecret, mnemonic);
+
       if (!account) {
         // Validate mnemonic
         let isValidMnemonic = await this.walletService.validateMnemonic(mnemonic);
@@ -94,12 +100,6 @@ export class AccountController {
           const mnemonicNotValidMessage = await i18n.t('account.messages.mnemonicNotValid');
           throw Error(mnemonicNotValidMessage);
         }
-
-        // encrypt mnemonic
-        const encryptedMnemonic = await aesGcmEncrypt(mnemonic, mnemonic);
-        // Create random account secret then encrypt it using mnemonic
-        const accountSecret: string = generateRandomBase58Str(10);
-        const encryptedSecret = await aesGcmEncrypt(accountSecret, mnemonic);
 
         // create account in database
         const { address, publicKey } = await this.walletService.deriveAddress(mnemonic, 0);
@@ -123,7 +123,8 @@ export class AccountController {
             ..._.omit(createdAccount, 'publicKey'),
             name: createdAccount.name,
             address: createdAccount.address,
-            balance: balance
+            balance: balance,
+            secret: accountSecret,
           } as AccountDto,
           ['mnemonic', 'encryptedMnemonic']
         );
@@ -144,7 +145,8 @@ export class AccountController {
             ..._.omit(account, 'publicKey'),
             name: account.name,
             address: account.address,
-            balance: balance
+            balance: balance,
+            secret: accountSecret,
           } as AccountDto,
           ['mnemonic', 'encryptedMnemonic']
         );
