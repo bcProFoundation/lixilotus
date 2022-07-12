@@ -24,23 +24,12 @@ import { ZeroBalanceHeader } from '@bcpros/lixi-components/components/Common/Ato
 const SendComponent: React.FC = () => {
   const dispatch = useAppDispatch();
   const { XPI, Wallet } = React.useContext(AppContext);
-  // use balance parameters from wallet.state object and not legacy balances parameter from walletState, if user has migrated wallet
-  // this handles edge case of user with old wallet who has not opened latest Cashtab version yet
-
-  // If the wallet object from ContextValue has a `state key`, then check which keys are in the wallet object
-  // Else set it as blank
-
   const wallet = useAppSelector(getSelectedAccount);
-
   const currentAddress = wallet?.address;
   const walletState = getWalletState(wallet);
   const { balance } = walletState;
-
   const [recipientPubKeyWarning, setRecipientPubKeyWarning] = useState(false);
   const [isLoadBalanceError, setIsLoadBalanceError] = useState(false);
-
-  // const [bchObj, setBchObj] = useState(false);
-
   const [formData, setFormData] = useState({
     dirty: true,
     value: '',
@@ -102,24 +91,8 @@ const SendComponent: React.FC = () => {
 
     // Get the param-free address
     let cleanAddress = address.split('?')[0];
-
-    // Ensure address has bitcoincash: prefix and checksum
-    // cleanAddress = toLegacy(cleanAddress);
-
     const isValidAddress = XPI.Address.isXAddress(cleanAddress);
-    // try {
-    //     hasValidLotusPrefix = cleanAddress.startsWith(
-    //         currency.legacyPrefix + ':',
-    //     );
-    // } catch (err) {
-    //     hasValidCashPrefix = false;
-    //     console.log(`toLegacy() returned an error:`, cleanAddress);
-    // }
-
     if (!isValidAddress) {
-      // set loading to false and set address validation to false
-      // Now that the no-prefix case is handled, this happens when user tries to send
-      // BCHA to an SLPA address
       setSendXpiAddressError(`Destination is not a valid ${currency.ticker} address`);
       return;
     }
@@ -138,16 +111,16 @@ const SendComponent: React.FC = () => {
       );
       if (link) {
         dispatch(sendXPISuccess(wallet.id));
-        // XPI.Electrumx.balance(wallet?.address)
-        //   .then(result => {
-        //     if (result && result.balance) {
-        //       const balance = result.balance.confirmed + result.balance.unconfirmed;
-        //       dispatch(setAccountBalance(balance ?? 0));
-        //     }
-        //   })
-        //   .catch(e => {
-        //     setIsLoadBalanceError(true);
-        //   });
+        XPI.Electrumx.balance(wallet?.address)
+          .then(result => {
+            if (result && result.balance) {
+              const balance = result.balance.confirmed + result.balance.unconfirmed;
+              dispatch(setAccountBalance(balance ?? 0));
+            }
+          })
+          .catch(e => {
+            setIsLoadBalanceError(true);
+          });
       }
     } catch (e) {
       let message;
@@ -234,7 +207,7 @@ const SendComponent: React.FC = () => {
   const onMax = async () => {
     // Clear amt error
     setSendXpiAmountError('');
-    // Set currency to BCH
+    // Set currency to XPI
     setSelectedCurrency(currency.ticker);
     try {
       const utxos = await XPI.Utxo.get(formData.address);
@@ -362,12 +335,5 @@ const SendComponent: React.FC = () => {
     </>
   );
 };
-
-/*
-passLoadingStatus must receive a default prop that is a function
-in order to pass the rendering unit test in Send.test.js
-
-status => {console.log(status)} is an arbitrary stub function
-*/
 
 export default SendComponent;
