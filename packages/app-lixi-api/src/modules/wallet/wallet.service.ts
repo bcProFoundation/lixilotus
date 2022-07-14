@@ -63,10 +63,8 @@ export class WalletService {
 
     const utxos = await this.xpijs.Utxo.get(address);
     const utxoStore = utxos[0];
-    const utxosStore =
-     
+    const utxosStore = (utxoStore as any).bchUtxos.concat((utxoStore as any).nullUtxos);
     const txFeeSats = await this.calcFee(this.xpijs, utxosStore);
-
     const value = balance - txFeeSats >= 0 ? balance - txFeeSats : '0';
     return fromSmallestDenomination(Number(value));
   }
