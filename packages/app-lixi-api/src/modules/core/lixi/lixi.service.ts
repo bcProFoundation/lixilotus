@@ -73,8 +73,7 @@ export class LixiService {
     const utxos = await this.XPI.Utxo.get(account.address);
     const utxoStore = utxos[0];
     let { keyPair } = await this.walletService.deriveAddress(command.mnemonic, 0); // keyPair of account
-    const utxosStore =
-      (utxoStore as any).bchUtxos.length > 0 ? (utxoStore as any).bchUtxos : (utxoStore as any).nullUtxos;
+    const utxosStore = (utxoStore as any).bchUtxos.concat((utxoStore as any).nullUtxos);
     let fee = await this.walletService.calcFee(this.XPI, utxosStore);
 
     // Validate the amount params
@@ -163,8 +162,7 @@ export class LixiService {
     if (isPrefund) {
       // Check the account balance
       const accountBalance: number = await this.xpiWallet.getBalance(account.address);
-      const utxosStore =
-        (utxoStore as any).bchUtxos.length > 0 ? (utxoStore as any).bchUtxos : (utxoStore as any).nullUtxos;
+      const utxosStore = (utxoStore as any).bchUtxos.concat((utxoStore as any).nullUtxos);
       let fee = await this.walletService.calcFee(this.XPI, utxosStore, (command.numberOfSubLixi as number) + 1);
       if (command.amount >= fromSmallestDenomination(accountBalance - fee)) {
         const accountNotSufficientFund = await i18n.t('account.messages.accountNotSufficientFund');
@@ -244,8 +242,7 @@ export class LixiService {
       const startDerivationIndexForChunk = startDerivationIndex + chunkIndex * chunkSize;
 
       // Calculate fee for each chunk process
-      const utxosStore =
-        (utxoStore as any).bchUtxos.length > 0 ? (utxoStore as any).bchUtxos : (utxoStore as any).nullUtxos;
+      const utxosStore = (utxoStore as any).bchUtxos.concat((utxoStore as any).nullUtxos);
       let fee = await this.walletService.calcFee(this.XPI, utxosStore, numberOfSubLixiInChunk + 1);
 
       let createdPackage;

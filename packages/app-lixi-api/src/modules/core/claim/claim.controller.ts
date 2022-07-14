@@ -291,8 +291,7 @@ export class ClaimController {
 
         // Determine the UTXOs needed to be spent for this TX, and the change
         // that will be returned to the wallet.
-        const utxosStore =
-          (utxoStore as any).bchUtxos.length > 0 ? (utxoStore as any).bchUtxos : (utxoStore as any).nullUtxos;
+        const utxosStore = (utxoStore as any).bchUtxos.concat((utxoStore as any).nullUtxos);
         const { necessaryUtxos, change } = this.xpiWallet.sendBch.getNecessaryUtxosAndChange(outputs, utxosStore, 1.0);
 
         // Create an instance of the Transaction Builder.

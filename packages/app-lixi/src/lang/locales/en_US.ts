@@ -252,5 +252,18 @@ export default {
   'send.longMempoolChain': 'too-long-mempool-chain, too many unconfirmed ancestors',
   'send.communicateApi': 'Could not communicate with API. Please try again.',
   'send.manyAncestors':
-    'The XPI you are trying to send has too many unModaled ancestors to send (limit 50). Sending will be possible after a block Modal.ation. Try again in about 10 minutes.'
+    'The XPI you are trying to send has too many unModaled ancestors to send (limit 50). Sending will be possible after a block Modal.ation. Try again in about 10 minutes.',
+  'send.onlyMessage': 'Send only message',
+  'send.canNotEncryptMessage': 'Cannot encrypt message',
+  'send.addressNoOutgoingTrans': 'This address has no outgoing transaction, you cannot send message.',
+  'send.newAddress': 'It looks like this address is NEW, please verify it before sending a large amount.',
+  'send.canNotSendToYourSelf': 'Cannot send to yourself!',
+  'send.calcMaxError': 'Unable to calculate the max value due to network errors',
+  'send.sendModalTitle': 'Are you sure you want to send {value} {ticker} to {address}?',
+  'send.queryString':
+    'You are sending a transaction to an address including query parameters "{queryStringText}." Only the "amount" parameter, in units of {currency} satoshis, is currently supported.',
+  'send.optionalPrivateMessage': 'Optional Private Message',
+  /* 12.Zero balance header */
+  'zeroBalanceHeader.noBalance': 'You currently have 0 {ticker}',
+  'zeroBalanceHeader.deposit': 'Deposit some funds to use this feature'
 };

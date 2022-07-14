@@ -112,8 +112,7 @@ export default function useXPI() {
     if (!utxoStore || (!(utxoStore as any).bchUtxos && !(utxoStore as any).nullUtxos)) {
       throw new Error(intl.get('send.utxoEmpty'));
     }
-    const utxosStore =
-      (utxoStore as any).bchUtxos.length > 0 ? (utxoStore as any).bchUtxos : (utxoStore as any).nullUtxos;
+    const utxosStore = (utxoStore as any).bchUtxos.concat((utxoStore as any).nullUtxos);
     const { necessaryUtxos, change } = XPIWallet.sendBch.getNecessaryUtxosAndChange(outputs, utxosStore, 2.01);
     // Create an instance of the Transaction Builder.
     const transactionBuilder: any = new XPI.TransactionBuilder();
@@ -261,6 +260,8 @@ export default function useXPI() {
           break;
         }
       }
+      console.log(satoshisToSend);
+      console.log(txFee);
 
       // amount to send back to the remainder address.
       const remainder = originalAmount.minus(satoshisToSend).minus(txFee);

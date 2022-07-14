@@ -64,7 +64,7 @@ export class WalletService {
     const utxos = await this.xpijs.Utxo.get(address);
     const utxoStore = utxos[0];
     const utxosStore =
-      (utxoStore as any).bchUtxos.length > 0 ? (utxoStore as any).bchUtxos : (utxoStore as any).nullUtxos;
+     
     const txFeeSats = await this.calcFee(this.xpijs, utxosStore);
 
     const value = balance - txFeeSats >= 0 ? balance - txFeeSats : '0';
@@ -112,8 +112,7 @@ export class WalletService {
     if (!utxoStore || (!(utxoStore as any).bchUtxos && !(utxoStore as any).nullUtxos)) {
       throw new VError('UTXO list is empty');
     }
-    const utxosStore =
-      (utxoStore as any).bchUtxos.length > 0 ? (utxoStore as any).bchUtxos : (utxoStore as any).nullUtxos;
+    const utxosStore = (utxoStore as any).bchUtxos.concat((utxoStore as any).nullUtxos);      
     const { necessaryUtxos, change } = this.xpiWallet.sendBch.getNecessaryUtxosAndChange(outputs, utxosStore, 2.01);
 
     // Create an instance of the Transaction Builder.

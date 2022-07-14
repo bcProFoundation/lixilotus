@@ -62,7 +62,7 @@ const SendComponent: React.FC = () => {
   const [selectedCurrency, setSelectedCurrency] = useState(currency.ticker);
 
   // Support cashtab button from web pages
-  const [txInfoFromUrl, setTxInfoFromUrl] = useState({});
+  const [txInfoFromUrl, setTxInfoFromUrl] = useState(null);
 
   // Show a Modal.ation modal on transactions created by populating form from web page button
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -153,7 +153,7 @@ const SendComponent: React.FC = () => {
             } catch (error) {
                 notification.error({
                     message: 'Error',
-                    description: 'Cannot encrypt message',
+                    description: intl.get('send.canNotEncryptMessage'),
                     duration: 5,
                 });
                 console.log(error);
@@ -163,7 +163,7 @@ const SendComponent: React.FC = () => {
 
       const utxos = await XPI.Utxo.get(currentAddress);
       const utxoStore = utxos[0];
-      const utxosStore = (utxoStore as any).bchUtxos.length > 0 ? (utxoStore as any).bchUtxos : (utxoStore as any).nullUtxos;
+      const utxosStore = (utxoStore as any).bchUtxos.concat((utxoStore as any).nullUtxos);
       const link = sendXpi(
         currentAddress,
         utxosStore,
@@ -197,7 +197,7 @@ const SendComponent: React.FC = () => {
       if (!e.error && !e.message) {
         message = intl.get('send.unableSendTransaction');
       } else if (/Could not communicate with full node or other external service/.test(e.error)) {
-        message = 'Could not communicate with API. Please try again.';
+        message = intl.get('send.communicateApi');
       } else if (
         e.error &&
         e.error.includes('too-long-mempool-chain, too many unModal.ed ancestors [limit: 50] (code 64)')
@@ -241,9 +241,9 @@ const SendComponent: React.FC = () => {
         setRecipientPubKeyHex('');
         setIsOpReturnMsgDisabled(true);
         if ( publicKey && publicKey === 'not found' ) {
-            setRecipientPubKeyWarning('This address has no outgoing transaction, you cannot send message.');
+            setRecipientPubKeyWarning(intl.get('send.addressNoOutgoingTrans'));
         } else {
-            setRecipientPubKeyWarning('It looks like this address is NEW, please verify it before sending a large amount.')
+            setRecipientPubKeyWarning(intl.get('send.newAddress'))
         }
     }
 }
@@ -267,7 +267,7 @@ const SendComponent: React.FC = () => {
     }
      // Is this address same with my address?
      if (currentAddress && address && address === currentAddress) {
-      error = 'Cannot send to yourself!';
+      error = intl.get('send.canNotSendToYourSelf');
     }
     setSendXpiAddressError(error);
     // if the address is correct
@@ -330,12 +330,9 @@ const SendComponent: React.FC = () => {
     try {
       const utxos = await XPI.Utxo.get(currentAddress);
       const utxoStore = utxos[0];
-      const utxosStore = (utxoStore as any).bchUtxos.length > 0 ? (utxoStore as any).bchUtxos : (utxoStore as any).nullUtxos;
-      console.log(utxosStore);
+      const utxosStore = (utxoStore as any).bchUtxos.concat((utxoStore as any).nullUtxos);
       const txFeeSats = calcFee(XPI, utxosStore);
       const txFeeBch = txFeeSats / 10 ** currency.cashDecimals;
-      console.log('balance: '+ balance);
-      console.log('fee: '+  txFeeBch);
       let value = balance - txFeeBch >= 0 ? (balance - txFeeBch).toFixed(currency.cashDecimals) : 0;
       value = value.toString();
       setFormData({
@@ -343,9 +340,7 @@ const SendComponent: React.FC = () => {
         value
       });
     } catch (err) {
-      console.log(`Error in onMax:`);
-      console.log(err);
-      message.error('Unable to calculate the max value due to network errors');
+      message.error('send.calcMaxError');
     }
   };
 
@@ -354,7 +349,7 @@ const SendComponent: React.FC = () => {
     <div
     style={{textAlign: "right"}}
     >
-        send only message &nbsp;
+        {intl.get('send.onlyMessage')} &nbsp;
         <StyledCheckbox
             defaultChecked={false}
             onChange={() =>
@@ -381,14 +376,14 @@ const SendComponent: React.FC = () => {
     <>
       <Modal title="Modal. Send" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
         <p>
-          Are you sure you want to send {formData.value} {currency.ticker} to {formData.address}?
+          {intl.get('send.sendModalTitle', {value: formData.value, ticker: currency.ticker, address: formData.address})}
         </p>
       </Modal>
       {!balance ? (
         <ZeroBalanceHeader>
-          You currently have 0 {currency.ticker}
+          {intl.get('zeroBalanceHeader.noBalance', {ticker: currency.ticker})}
           <br />
-          Deposit some funds to use this feature
+          {intl.get('zeroBalanceHeader.deposit')}
         </ZeroBalanceHeader>
       ) : (
         <>
@@ -467,7 +462,7 @@ const SendComponent: React.FC = () => {
                              style={{
                                 margin: '0 0 25px 0',
                             }}
-                            placeholder="Optional Private Message"
+                            placeholder={intl.get('send.optionalPrivateMessage')}
                             disabled={isOpReturnMsgDisabled}
                             value={
                                 opReturnMsg
@@ -497,7 +492,7 @@ const SendComponent: React.FC = () => {
             </div>
             {queryStringText && (
               <Alert
-                message={`You are sending a transaction to an address including query parameters "${queryStringText}." Only the "amount" parameter, in units of ${currency.ticker} satoshis, is currently supported.`}
+                message = {intl.get('send.queryString', {queryStringText, currency: currency.ticker})}
                 type="warning"
               />
             )}
