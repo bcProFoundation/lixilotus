@@ -246,5 +246,33 @@ export default {
   'lixinft.unableToMint': 'Không thể tạo NFT',
 
   /* 11.Register */
-  'register.register': 'Register'
+  'register.register': 'Register',
+
+  /* 12.Send */
+  'send.unableToSend': 'Không thể gửi thành công',
+  'send.sendAmountSmallerThanDust': 'Số tiền gửi nhỏ hơn số tiền gửi tối thiểu"',
+  'send.utxoEmpty': 'Danh sách UTXO trống',
+  'send.unableSendTransaction': 'Không thể gửi giao dịch',
+  'send.insufficientFund': 'Số dư tài khoản không đủ',
+  'send.invalidDecimalPlaces': 'Số tiền gửi đi không đúng định dạng',
+  'send.insufficientPriority': 'Không đủ phí gửi trên giao dịch',
+  'send.networkError': 'Lỗi mạng',
+  'send.longMempoolChain': 'Số tiền khả dụng chưa được xác nhận quá nhiều',
+  'send.communicateApi': 'Không thể kết nối với máy chủ. Vui lòng thử lại',
+  'send.manyAncestors':
+    'Bạn đang gửi XPI với nhiều nguồn tiền chưa được xác thưc (giới hạn 50 ). Việc gửi sẽ được gửi đi sau khi nguồn tiền được xác nhận. Hãy thử lại sau 10 phút',
+  'send.onlyMessage': 'Chỉ gửi tin nhắn',
+  'send.canNotEncryptMessage': 'Không thể mã hoá tin nhắn',
+  'send.addressNoOutgoingTrans':
+    'Địa chỉ này không có giao dịch gửi đi trước đó, không thể gửi tin nhắn tới địa chỉ này',
+  'send.newAddress': 'Địa chỉ này mới được khởi tạo, hãy kiểm tra kỹ trước khi thực hiện giao dịch với số tiền lớn',
+  'send.canNotSendToYourSelf': 'Không thể tự gửi cho bản thân!',
+  'send.calcMaxError': 'Không thể tính số tiền tối đa bạn có thể gửi',
+  'send.sendModalTitle': 'Bạn có muốn gửi số tiền {value} {ticker} tới {address}?',
+  'send.queryString':
+    'Bạn đang gửi giao dịch với định dạng đặc biệt "{queryStringText}." Chỉ có tham số "amount", với đồng tiền {currency} satoshis, được hỗ trợ.',
+  'send.optionalPrivateMessage': 'Tin nhắn riêng tư',
+  /* 12.Zero balance header */
+  'zeroBalanceHeader.noBalance': 'Hiện tại bạn đang có {ticker} trong tài khoản',
+  'zeroBalanceHeader.deposit': 'Hãy nạp thêm vào tài khoản để có thể sử dụng tính năng giao dịch'
 };
