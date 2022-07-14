@@ -60,10 +60,7 @@ const useWallet = (XPI: BCHJS) => {
   return {
     deriveAccount,
     getWalletDetails,
-    validateMnemonic,
-    refresh: async () => {
-      // update({walletToUpdate: wallet})
-    }
+    validateMnemonic
   } as const;
 };
 
