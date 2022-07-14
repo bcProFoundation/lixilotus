@@ -120,7 +120,7 @@ const SendComponent: React.FC = () => {
     return encryptedMsg;
 };
 
-  const { getRestUrl, calcFee, sendAmount } = useXPI();
+  const { getRestUrl, calcFee, sendXpi } = useXPI();
 
   async function submit() {
     setFormData({
@@ -138,7 +138,7 @@ const SendComponent: React.FC = () => {
     let cleanAddress = address.split('?')[0];
     const isValidAddress = XPI.Address.isXAddress(cleanAddress);
     if (!isValidAddress) {
-      setSendXpiAddressError(`Destination is not a valid ${currency.ticker} address`);
+      setSendXpiAddressError(`Destination is not a valid XPI address`);
       return;
     }
     try {
@@ -161,19 +161,20 @@ const SendComponent: React.FC = () => {
             }
         }
 
-      const link = await sendAmount(
+      const utxos = await XPI.Utxo.get(currentAddress);
+      const utxoStore = utxos[0];
+      const utxosStore = (utxoStore as any).bchUtxos.length > 0 ? (utxoStore as any).bchUtxos : (utxoStore as any).nullUtxos;
+      const link = sendXpi(
         currentAddress,
-        [
-          {
-            address: formData.address,
-            amountXpi: formData.value
-          }
-        ],
+        utxosStore,
         keyPair,
+        cleanAddress,
+        formData.value,
+        2.01,
         encryptedOpReturnMsg,
         isEncryptedOptionalOpReturnMsg
-      );
-      if (link) {
+      )
+      link.then(res => {
         dispatch(sendXPISuccess(wallet.id));
         XPI.Electrumx.balance(wallet?.address)
           .then(result => {
@@ -185,18 +186,23 @@ const SendComponent: React.FC = () => {
           .catch(e => {
             setIsLoadBalanceError(true);
           });
+      }, err =>{
+        dispatch(sendXPIFailure((err as Error).message));
+      })
+      if (link) {
+
       }
     } catch (e) {
       let message;
       if (!e.error && !e.message) {
-        message = `Transaction failed: no response from ${getRestUrl()}.`;
+        message = intl.get('send.unableSendTransaction');
       } else if (/Could not communicate with full node or other external service/.test(e.error)) {
         message = 'Could not communicate with API. Please try again.';
       } else if (
         e.error &&
         e.error.includes('too-long-mempool-chain, too many unModal.ed ancestors [limit: 50] (code 64)')
       ) {
-        message = `The ${currency.ticker} you are trying to send has too many unModal.ed ancestors to send (limit 50). Sending will be possible after a block Modal.ation. Try again in about 10 minutes.`;
+        message = intl.get('send.manyAncestors');
       } else {
         message = e.message || e.error || JSON.stringify(e);
       }
@@ -322,11 +328,14 @@ const SendComponent: React.FC = () => {
     // Set currency to XPI
     setSelectedCurrency(currency.ticker);
     try {
-      const utxos = await XPI.Utxo.get(formData.address);
+      const utxos = await XPI.Utxo.get(currentAddress);
       const utxoStore = utxos[0];
       const utxosStore = (utxoStore as any).bchUtxos.length > 0 ? (utxoStore as any).bchUtxos : (utxoStore as any).nullUtxos;
+      console.log(utxosStore);
       const txFeeSats = calcFee(XPI, utxosStore);
       const txFeeBch = txFeeSats / 10 ** currency.cashDecimals;
+      console.log('balance: '+ balance);
+      console.log('fee: '+  txFeeBch);
       let value = balance - txFeeBch >= 0 ? (balance - txFeeBch).toFixed(currency.cashDecimals) : 0;
       value = value.toString();
       setFormData({

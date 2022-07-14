@@ -1,5 +1,5 @@
 import { currency } from '@bcpros/lixi-models/constants/ticker';
-import { toSmallestDenomination } from '@bcpros/lixi-models/utils/cashMethods';
+import { fromSmallestDenomination, toSmallestDenomination } from '@bcpros/lixi-models/utils/cashMethods';
 import SlpWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
 import BigNumber from 'bignumber.js';
@@ -7,6 +7,13 @@ import _ from 'lodash';
 import intl from 'react-intl-universal';
 
 export default function useXPI() {
+  const SEND_XPI_ERRORS = {
+    INSUFFICIENT_FUNDS: 0,
+    NETWORK_ERROR: 1,
+    INSUFFICIENT_PRIORITY: 66, // ~insufficient fee
+    DOUBLE_SPENDING: 18,
+    MAX_UNCONFIRMED_TXS: 64
+  };
   const getRestUrl = (apiIndex = 0) => {
     const apiString: string =
       process.env.NEXT_PUBLIC_NETWORK === `mainnet`
@@ -36,8 +43,34 @@ export default function useXPI() {
     return ConstructedSlpWallet;
   };
 
-  const calcFee = (XPI: BCHJS, utxos: any, p2pkhOutputNumber = 2, satoshisPerByte = 2.01) => {
+  const calcFee = (XPI: BCHJS, utxos: any, p2pkhOutputNumber = 2, satoshisPerByte = 2.01, opReturnLength = 0) => {
     const byteCount = XPI.BitcoinCash.getByteCount({ P2PKH: utxos.length }, { P2PKH: p2pkhOutputNumber });
+    // 8 bytes : the output's value
+    // 1 bytes : Locking-Script Size
+    // opReturnLength: the size of the OP_RETURN script
+    // Referece
+    // https://github.com/bitcoinbook/bitcoinbook/blob/develop/ch06.asciidoc#transaction-serializationoutputs
+    //
+    // Technically, Locking-Script Size can be 1, 3, 5 or 9 bytes, But
+    //  - Lotus Node's default allowed OP_RETURN length is set the 223 bytes
+    //  - SendLotus max OP_RETURN length is also limited to 223 bytes
+    // We can safely assume it is 1 byte (0 - 252. fd, fe, ff are special)
+    //
+    // The Output Count field is of VarInt (1, 3, 5 or 9 bytes), which indicates the number of outputs present in the transaction
+    // Adding OP_RETURNs to the outputs increases the count
+    // Since SendLotus only allows single recipient transaction, the maxium number of outputs in a tx is 5
+    //  - one for recipient
+    //  - one for change
+    //  - maximum 3 for OP_RETURNs
+    // So we can safely assume the Output will only take 1 byte.
+    //
+    // In wallet where multiple recipients are allowed in a transaction
+    // adding extra OP_RETURN outputs may change the output count from 1 byte to 3 bytes
+    // this would affect the fee
+    let opReturnOutputByteLength = opReturnLength;
+    if (opReturnLength) {
+      opReturnOutputByteLength += 8 + 1;
+    }
     const txFee = Math.ceil(satoshisPerByte * byteCount);
     return txFee;
   };
@@ -82,7 +115,6 @@ export default function useXPI() {
     const utxosStore =
       (utxoStore as any).bchUtxos.length > 0 ? (utxoStore as any).bchUtxos : (utxoStore as any).nullUtxos;
     const { necessaryUtxos, change } = XPIWallet.sendBch.getNecessaryUtxosAndChange(outputs, utxosStore, 2.01);
-
     // Create an instance of the Transaction Builder.
     const transactionBuilder: any = new XPI.TransactionBuilder();
 
@@ -142,11 +174,143 @@ export default function useXPI() {
     }
   };
 
+  const sendXpi = async (
+    sourceAddress: string,
+    utxos,
+    inputKeyPair,
+    destinationAddress,
+    sendAmount,
+    feeInSatsPerByte,
+    optionalOpReturnMsg,
+    encryptionFlag
+  ) => {
+    try {
+      if (!sendAmount) {
+        return null;
+      }
+      const XPI = getXPI();
+      const XPIWallet = getXPIWallet();
+      const sourceBalance: number = await XPIWallet.getBalance(sourceAddress);
+
+      // throw new Error(intl.get('send.insufficientFund'));
+      if (sourceBalance === 0) {
+        throw new Error(intl.get('send.insufficientFund'));
+      }
+      const value = new BigNumber(sendAmount);
+
+      // If user is attempting to send less than minimum accepted by the backend
+      if (value.lt(new BigNumber(fromSmallestDenomination(currency.dustSats).toString()))) {
+        // Throw the same error given by the backend attempting to broadcast such a tx
+        throw new Error('dust');
+      }
+
+      const inputUtxos = [];
+      const transactionBuilder: any = new XPI.TransactionBuilder();
+
+      const satoshisToSend = toSmallestDenomination(value);
+
+      // Throw validation error if toSmallestDenomination returns false
+      if (!satoshisToSend) {
+        throw new Error(intl.get('send.invalidDecimalPlaces'));
+      }
+
+      if (satoshisToSend.lt(currency.dustSats)) {
+        throw new Error(intl.get('send.sendAmountSmallerThanDust'));
+      }
+
+      let script;
+      let opReturnBuffer;
+      // Start of building the OP_RETURN output.
+      // only build the OP_RETURN output if the user supplied it
+      if (optionalOpReturnMsg && typeof optionalOpReturnMsg !== 'undefined') {
+        if (encryptionFlag) {
+          // build the OP_RETURN script with the encryption prefix
+          script = [
+            XPI.Script.opcodes.OP_RETURN, // 6a
+            Buffer.from(currency.opReturn.appPrefixesHex.lotusChatEncrypted, 'hex'), // 03030303
+            Buffer.from(optionalOpReturnMsg)
+          ];
+        } else {
+          // this is un-encrypted message
+          script = [
+            XPI.Script.opcodes.OP_RETURN, // 6a
+            Buffer.from(currency.opReturn.appPrefixesHex.lotusChat, 'hex'), // 02020202
+            Buffer.from(optionalOpReturnMsg)
+          ];
+        }
+        opReturnBuffer = XPI.Script.encode(script);
+        transactionBuilder.addOutput(opReturnBuffer, 0);
+      }
+      // End of building the OP_RETURN output.
+
+      let originalAmount = new BigNumber(0);
+      let txFee = 0;
+      for (let i = 0; i < utxos.length; i++) {
+        const utxo = utxos[i];
+        originalAmount = originalAmount.plus(utxo.value);
+        const vout = utxo.vout;
+        const txid = utxo.txid;
+        // add input with txid and index of vout
+        transactionBuilder.addInput(txid, vout);
+
+        inputUtxos.push(utxo);
+        const opReturnLength = opReturnBuffer ? opReturnBuffer.length : 0;
+        txFee = calcFee(XPI, inputUtxos, 2, feeInSatsPerByte, opReturnLength);
+
+        if (originalAmount.minus(satoshisToSend).minus(txFee).gte(0)) {
+          break;
+        }
+      }
+
+      // amount to send back to the remainder address.
+      const remainder = originalAmount.minus(satoshisToSend).minus(txFee);
+
+      if (remainder.lt(0)) {
+        throw new Error(intl.get('send.insufficientFund'));
+      }
+
+      // add output w/ address and amount to send
+      transactionBuilder.addOutput(destinationAddress, parseInt(toSmallestDenomination(value).toString()));
+
+      if (remainder.gte(new BigNumber(currency.dustSats))) {
+        transactionBuilder.addOutput(sourceAddress, parseInt(remainder.toString()));
+      }
+
+      // Sign the transactions with the HD node.
+      for (let i = 0; i < inputUtxos.length; i++) {
+        const utxo = inputUtxos[i];
+        transactionBuilder.sign(i, inputKeyPair, undefined, transactionBuilder.hashTypes.SIGHASH_ALL, utxo.value);
+      }
+
+      // build tx
+      const tx = transactionBuilder.build();
+      // output rawhex
+      const hex = tx.toHex();
+
+      // Broadcast transaction to the network
+      const data = await XPI.RawTransactions.sendRawTransaction([hex]);
+
+      return data;
+    } catch (err) {
+      if (err.error === 'insufficient priority (code 66)') {
+        err = new Error(intl.get('send.insufficientPriority'));
+      } else if (err.error === 'txn-mempool-conflict (code 18)') {
+        err = new Error('txn-mempool-conflict');
+      } else if (err.error === 'Network Error') {
+        err = new Error(intl.get('send.networkError'));
+      } else if (err.error === 'too-long-mempool-chain, too many unconfirmed ancestors [limit: 25] (code 64)') {
+        err = new Error(intl.get('send.longMempoolChain'));
+      }
+      throw err;
+    }
+  };
+
   return {
     getXPI,
     getRestUrl,
     calcFee,
     getXPIWallet,
-    sendAmount
+    sendAmount,
+    sendXpi
   };
 }

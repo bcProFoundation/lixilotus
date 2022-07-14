@@ -247,5 +247,12 @@ export default {
   'send.sendAmountSmallerThanDust': 'Số tiền gửi nhỏ hơn số tiền gửi tối thiểu"',
   'send.utxoEmpty': 'Danh sách UTXO trống',
   'send.unableSendTransaction': 'Không thể gửi giao dịch',
-  'send.insufficientFund': 'Số dư tài khoản không đủ'
+  'send.insufficientFund': 'Số dư tài khoản không đủ',
+  'send.invalidDecimalPlaces': 'Số tiền gửi đi không đúng định dạng',
+  'send.insufficientPriority': 'Không đủ phí gửi trên giao dịch',
+  'send.networkError': 'Lỗi mạng',
+  'send.longMempoolChain': 'Số tiền khả dụng chưa được xác nhận quá nhiều',
+  'send.communicateApi': 'Không thể kết nối với máy chủ. Vui lòng thử lại',
+  'send.manyAncestors':
+    'Bạn đang gửi XPI với nhiều nguồn tiền chưa được xác thưc (giới hạn 50 ). Việc gửi sẽ được gửi đi sau khi nguồn tiền được xác nhận. Hãy thử lại sau 10 phút'
 };

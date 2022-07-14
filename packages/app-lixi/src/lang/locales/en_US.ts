@@ -245,5 +245,12 @@ export default {
   'send.sendAmountSmallerThanDust': 'The send amount is smaller than dust',
   'send.utxoEmpty': 'UTXO list is empty',
   'send.unableSendTransaction': 'Unable to send transaction',
-  'send.insufficientFund': 'Insufficient fund'
+  'send.insufficientFund': 'Insufficient fund',
+  'send.invalidDecimalPlaces': 'Invalid decimal places for send amount',
+  'send.insufficientPriority': 'Insufficient priority',
+  'send.networkError': 'Network Error',
+  'send.longMempoolChain': 'too-long-mempool-chain, too many unconfirmed ancestors',
+  'send.communicateApi': 'Could not communicate with API. Please try again.',
+  'send.manyAncestors':
+    'The XPI you are trying to send has too many unModaled ancestors to send (limit 50). Sending will be possible after a block Modal.ation. Try again in about 10 minutes.'
 };
