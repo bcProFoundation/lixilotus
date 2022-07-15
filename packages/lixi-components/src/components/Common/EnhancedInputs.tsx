@@ -143,9 +143,8 @@ type SendXpiInputProps = {
   inputProps: any;
   selectProps: Object;
   activeFiatCode: string;
-  validateStatus: string;
   help: string;
-} & InputProps
+} & InputProps & FormItemProps
 
 export const SendXpiInput = ({
   onMax,
