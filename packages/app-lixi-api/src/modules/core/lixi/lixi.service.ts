@@ -1,10 +1,4 @@
-import {
-  CreateLixiCommand,
-  fromSmallestDenomination,
-  Lixi,
-  LixiDto,
-  NotificationDto
-} from '@bcpros/lixi-models';
+import { CreateLixiCommand, fromSmallestDenomination, Lixi, LixiDto, NotificationDto } from '@bcpros/lixi-models';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
 import { InjectQueue } from '@nestjs/bullmq';
@@ -35,7 +29,7 @@ export class LixiService {
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
     @InjectQueue(CREATE_SUB_LIXIES_QUEUE) private lixiQueue: Queue,
     @I18n() private i18n: I18nService
-  ) { }
+  ) {}
 
   /**
    * @param derivationIndex The derivation index of the lixi
@@ -128,7 +122,7 @@ export class LixiService {
   async createOneTimeParentLixi(
     derivationIndex: number,
     account: AccountDb,
-    command: CreateLixiCommand,
+    command: CreateLixiCommand
   ): Promise<Lixi> {
     // If users input the amount means that the lixi need to be prefund
     const isPrefund = !!command.amount;
@@ -167,10 +161,11 @@ export class LixiService {
     if (isPrefund) {
       // Check the account balance
       const accountBalance: number = await this.xpiWallet.getBalance(account.address);
+      const numberOfDistributions = this.calcNumberOfDistributions(command);
       let fee = await this.walletService.calcFee(
         this.XPI,
         (utxoStore as any).bchUtxos,
-        (command.numberOfSubLixi as number) + 1
+        (command.numberOfSubLixi as number) * numberOfDistributions + 1
       );
       const requireAmount = this.calcRequireAmount(command);
       if (requireAmount >= fromSmallestDenomination(accountBalance - fee)) {
@@ -184,24 +179,24 @@ export class LixiService {
     const savedLixi = await this.prisma.$transaction(async prisma => {
       const createdLixi = await prisma.lixi.create({ data: lixiToInsert });
 
-      const distribtions = [];
+      const distributions = [];
       if (command.staffAddress != '') {
-        distribtions.push({
+        distributions.push({
           address: command.staffAddress as string,
           distributionType: 'staff',
           lixiId: createdLixi.id
         });
       }
       if (command.charityAddress != '') {
-        distribtions.push({
+        distributions.push({
           address: command.charityAddress as string,
           distributionType: 'charity',
           lixiId: createdLixi.id
         });
       }
-      if (distribtions) {
+      if (distributions) {
         await prisma.lixiDistribution.createMany({
-          data: distribtions
+          data: distributions
         });
       }
       return createdLixi;
@@ -429,11 +424,15 @@ export class LixiService {
    * @returns The amount need to be prepare to create the lixi
    */
   private calcRequireAmount(command: CreateLixiCommand): number {
+    const numberOfDistribution = this.calcNumberOfDistributions(command);
+    return command.amount * numberOfDistribution;
+  }
+
+  private calcNumberOfDistributions(command: CreateLixiCommand): number {
     // One time child codes type
-    const distributions = _.filter([command.staffAddress, command.charityAddress], (address) => {
+    const distributions = _.filter([command.staffAddress, command.charityAddress], address => {
       return !!address;
     });
-    const numberOfDistribution = distributions.length + 1 + (command.joinLotteryProgram ? 1 : 0);
-    return command.amount * numberOfDistribution;
+    return command.joinLotteryProgram ? distributions.length + 2 : distributions.length + 1;
   }
 }

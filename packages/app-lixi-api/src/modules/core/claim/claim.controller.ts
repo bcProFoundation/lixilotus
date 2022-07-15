@@ -1,6 +1,7 @@
 import {
   ClaimDto,
   ClaimType,
+  countries,
   CreateClaimDto,
   fromSmallestDenomination,
   LixiType,
@@ -13,6 +14,7 @@ import { Body, Controller, Get, Headers, HttpException, HttpStatus, Inject, Logg
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import BigNumber from 'bignumber.js';
+import geoip from 'geoip-country';
 import * as _ from 'lodash';
 import moment from 'moment';
 import { I18n, I18nContext } from 'nestjs-i18n';
@@ -39,7 +41,7 @@ export class ClaimController {
     @Inject('xpijs') private XPI: BCHJS,
     private readonly config: ConfigService,
     private readonly lixiNftService: LixiNftService
-  ) { }
+  ) {}
 
   @Get(':id')
   async getEnvelope(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<ViewClaimDto> {
@@ -171,18 +173,18 @@ export class ClaimController {
           }
         }
 
-        // if (process.env.NODE_ENV !== 'development') {
-        //   await checkingCaptcha();
-        //   const geolocation = geoip.lookup(ip);
-        //   const country = countries.find(country => country.id === lixi?.country);
+        if (process.env.NODE_ENV !== 'development') {
+          await checkingCaptcha();
+          const geolocation = geoip.lookup(ip);
+          const country = countries.find(country => country.id === lixi?.country);
 
-        //   if (geolocation?.country != _.upperCase(country?.id) && !_.isNil(country?.id)) {
-        //     const claimOutsideZone = await i18n.t('claim.messages.claimOutsideZone', {
-        //       args: { countryName: country?.name }
-        //     });
-        //     throw new VError(claimOutsideZone);
-        //   }
-        // }
+          if (geolocation?.country != _.upperCase(country?.id) && !_.isNil(country?.id)) {
+            const claimOutsideZone = await i18n.t('claim.messages.claimOutsideZone', {
+              args: { countryName: country?.name }
+            });
+            throw new VError(claimOutsideZone);
+          }
+        }
 
         if (!lixi) {
           const unableClaimLixi = await i18n.t('claim.messages.unableClaimLixi');
