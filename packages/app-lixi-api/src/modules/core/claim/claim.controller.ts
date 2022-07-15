@@ -5,6 +5,7 @@ import {
   CreateClaimDto,
   fromSmallestDenomination,
   LixiType,
+  LotteryAddress,
   toSmallestDenomination,
   ViewClaimDto
 } from '@bcpros/lixi-models';
@@ -41,7 +42,7 @@ export class ClaimController {
     @Inject('xpijs') private XPI: BCHJS,
     private readonly config: ConfigService,
     private readonly lixiNftService: LixiNftService
-  ) {}
+  ) { }
 
   @Get(':id')
   async getEnvelope(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<ViewClaimDto> {
@@ -255,24 +256,13 @@ export class ClaimController {
         const xpiBalance = fromSmallestDenomination(balance);
 
         let satoshisToSend;
-        if (lixi.claimType == ClaimType.OneTime) {
-          // // Loyalty program
-          // if (lixi.distribution.length != 0 || lixi.isLottery) {
-          //   const xpiValue = await this.walletService.onMax(lixiAddress);
+        if (parentLixi && lixi.claimType == ClaimType.OneTime) {
+          const numberOfDistributions = parentLixi.joinLotteryProgram ?
+            parentLixi.distributions.length + 2 :
+            parentLixi.distributions.length + 1;
 
-          //   let count = 1;
-          //   lixi.isLottery === true && count++;
-          //   count += lixi.distribution.length;
-
-          //   const xpiDistributions = xpiValue / (count);
-          //   satoshisToSend = toSmallestDenomination(new BigNumber(xpiDistributions));
-          // }
-
-          // // without Loyalty program
-          // else {
-          const xpiValue = await this.walletService.onMax(lixiAddress);
+          const xpiValue = numberOfDistributions * lixi.amount;
           satoshisToSend = toSmallestDenomination(new BigNumber(xpiValue));
-          // }
         } else if (lixi.lixiType == LixiType.Random) {
           const maxXpiValue = xpiBalance < lixi.maxValue ? xpiBalance : lixi.maxValue;
           const maxSatoshis = toSmallestDenomination(new BigNumber(maxXpiValue));
@@ -304,29 +294,20 @@ export class ClaimController {
             amountSat: amountSats
           }
         ];
-        // if (lixi.distribution) {
-        //   // Get distribution address
-        //   const distributionId = lixi?.distribution.map(item => item.distributionId)
-        //   const distributions = await this.prisma.distribution.findMany({
-        //     where: {
-        //       id: { in: distributionId }
-        //     }
-        //   })
-
-        //   // add receiving address
-        //   distributions.map(item => {
-        //     outputs.push({
-        //       address: item.address,
-        //       amountSat: amountSats
-        //     })
-        //   })
-        // }
-        // if (lixi.isLottery === true) {
-        //   outputs.push({
-        //     address: LotteryAddress,
-        //     amountSat: amountSats
-        //   })
-        // }
+        if (parentLixi?.distributions) {
+          _.map(parentLixi.distributions, item => {
+            outputs.push({
+              address: item.address,
+              amountSat: amountSats
+            })
+          })
+        }
+        if (parentLixi?.joinLotteryProgram === true) {
+          outputs.push({
+            address: LotteryAddress,
+            amountSat: amountSats
+          })
+        }
 
         if (!utxoStore || !(utxoStore as any).bchUtxos || !(utxoStore as any).bchUtxos) {
           const utxoEmpty = await i18n.t('claim.messages.utxoEmpty');
@@ -354,9 +335,10 @@ export class ClaimController {
           transactionBuilder.addOutput(receiver.address, receiver.amountSat);
         });
 
-        if (change && change > 546) {
-          transactionBuilder.addOutput(lixiAddress, change);
-        }
+        // No need the change, all the change (if there's any) comes to miner
+        // if (change && change > 546) {
+        //   transactionBuilder.addOutput(lixiAddress, change);
+        // }
 
         // Sign each UTXO that is about to be spent.
         necessaryUtxos.forEach((utxo, i) => {
@@ -531,6 +513,9 @@ export class ClaimController {
           const parentLixi = await this.prisma.lixi.findUnique({
             where: {
               id: lixi.parentId
+            },
+            include: {
+              distributions: true
             }
           });
 
@@ -561,7 +546,6 @@ export class ClaimController {
         // Generate the HD wallet.
         const childNode = this.XPI.HDNode.fromXPriv(xPriv);
         const lixiAddress: string = this.XPI.HDNode.toXAddress(childNode);
-        const keyPair = this.XPI.HDNode.toKeyPair(childNode);
         const balance = await this.xpiWallet.getBalance(lixiAddress);
 
         if (balance === 0) {

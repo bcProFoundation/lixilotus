@@ -29,7 +29,7 @@ export class LixiService {
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
     @InjectQueue(CREATE_SUB_LIXIES_QUEUE) private lixiQueue: Queue,
     @I18n() private i18n: I18nService
-  ) {}
+  ) { }
 
   /**
    * @param derivationIndex The derivation index of the lixi
@@ -73,7 +73,7 @@ export class LixiService {
     const utxos = await this.XPI.Utxo.get(account.address);
     const utxoStore = utxos[0];
     let { keyPair } = await this.walletService.deriveAddress(command.mnemonic, 0); // keyPair of account
-    let fee = await this.walletService.calcFee(this.XPI, (utxoStore as any).bchUtxos);
+    let fee = this.walletService.calcFee(this.XPI, (utxoStore as any).bchUtxos);
 
     // Validate the amount params
     if (isPrefund) {
@@ -162,13 +162,20 @@ export class LixiService {
       // Check the account balance
       const accountBalance: number = await this.xpiWallet.getBalance(account.address);
       const numberOfDistributions = this.calcNumberOfDistributions(command);
-      let fee = await this.walletService.calcFee(
+      // Calc fee to send out from account to sub lixies
+      let mainFee = this.walletService.calcFee(
         this.XPI,
         (utxoStore as any).bchUtxos,
         (command.numberOfSubLixi as number) * numberOfDistributions + 1
       );
+      // Calc fee to send from sub lixies to claim address
+      let subLixiesFee = (command.numberOfSubLixi as number) * (this.walletService.calcFee(
+        this.XPI,
+        (utxoStore as any).bchUtxos,
+        2
+      ));
       const requireAmount = this.calcRequireAmount(command);
-      if (requireAmount >= fromSmallestDenomination(accountBalance - fee)) {
+      if (requireAmount >= fromSmallestDenomination(accountBalance - mainFee - subLixiesFee)) {
         const accountNotSufficientFund = await this.i18n.t('account.messages.accountNotSufficientFund');
         // Validate to make sure the account has sufficient balance
         throw new VError(accountNotSufficientFund);
@@ -248,8 +255,7 @@ export class LixiService {
     }
 
     // The amount should be funded from the account
-    const requireAmount = this.calcRequireAmount(command);
-    const xpiAllowanceEachChunk = requireAmount / numberOfChunks;
+    const xpiAllowanceEachChunk = command.amount / numberOfChunks;
 
     // Decrypt the account secret
     const secret = await aesGcmDecrypt(account.encryptedSecret, command.mnemonic);
@@ -267,9 +273,6 @@ export class LixiService {
       // Start to process from the start of each chunk
       const startDerivationIndexForChunk = startDerivationIndex + chunkIndex * chunkSize;
 
-      // Calculate fee for each chunk process
-      let fee = await this.walletService.calcFee(this.XPI, (utxoStore as any).bchUtxos, numberOfSubLixiInChunk + 1);
-
       let createdPackage;
       if (command.numberLixiPerPackage) {
         createdPackage = await this.prisma.package.create({
@@ -282,7 +285,6 @@ export class LixiService {
         numberOfSubLixiInChunk: numberOfSubLixiInChunk,
         startDerivationIndexForChunk: startDerivationIndexForChunk,
         xpiAllowance: xpiAllowanceEachChunk,
-        temporaryFeeCalc: fee,
         parentId: parentLixiId,
         command: command,
         fundingAddress: account.address,

@@ -12,7 +12,7 @@ import { I18nContext } from 'nestjs-i18n';
 @Injectable()
 export class WalletService {
   private logger: Logger = new Logger(WalletService.name);
-  constructor(@Inject('xpiWallet') private xpiWallet: MinimalBCHWallet, @Inject('xpijs') private xpijs: BCHJS) {}
+  constructor(@Inject('xpiWallet') private xpiWallet: MinimalBCHWallet, @Inject('xpijs') private xpijs: BCHJS) { }
 
   async getBalance(address: string) {
     return this.xpiWallet.getBalance(address);
@@ -52,7 +52,7 @@ export class WalletService {
     };
   }
 
-  async calcFee(XPI: BCHJS, utxos: any, p2pkhOutputNumber = 2, satoshisPerByte = 2.01) {
+  calcFee(XPI: BCHJS, utxos: any, p2pkhOutputNumber = 2, satoshisPerByte = 2.01) {
     const byteCount = XPI.BitcoinCash.getByteCount({ P2PKH: utxos.length }, { P2PKH: p2pkhOutputNumber });
     const txFee = Math.ceil(satoshisPerByte * byteCount);
     return txFee;
@@ -64,7 +64,7 @@ export class WalletService {
     const utxos = await this.xpijs.Utxo.get(address);
     const utxoStore = utxos[0];
 
-    const txFeeSats = await this.calcFee(this.xpijs, (utxoStore as any).bchUtxos);
+    const txFeeSats = this.calcFee(this.xpijs, (utxoStore as any).bchUtxos);
 
     const value = balance - txFeeSats >= 0 ? balance - txFeeSats : '0';
     return fromSmallestDenomination(Number(value));

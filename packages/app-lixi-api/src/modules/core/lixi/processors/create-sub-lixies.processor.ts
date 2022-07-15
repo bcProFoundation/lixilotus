@@ -57,7 +57,6 @@ export class CreateSubLixiesProcessor extends WorkerHost {
       xpiAllowance,
       parentId,
       command,
-      temporaryFeeCalc,
       fundingAddress,
       accountSecret,
       packageId
@@ -75,13 +74,17 @@ export class CreateSubLixiesProcessor extends WorkerHost {
       parentId,
       command,
       mapEncryptedClaimCode,
-      temporaryFeeCalc,
       accountSecret,
       packageId as number
     );
 
+    // Calculate fee for each sub lixi sending out
+    const txFee = Math.ceil(
+      this.XPI.BitcoinCash.getByteCount({ P2PKH: 1 }, { P2PKH: 2 }) * 2.01
+    );
+
     // Preparing receive address and amount
-    const receivingSubLixies = _.filter(
+    let receivingSubLixies = _.filter(
       subLixiesToInsert.map(item => {
         return {
           address: item.address,
@@ -90,6 +93,14 @@ export class CreateSubLixiesProcessor extends WorkerHost {
       }),
       item => item.amountXpi !== 0
     );
+
+    // Add the fee for each sub lixi transaction
+    receivingSubLixies = _.map(receivingSubLixies, item => {
+      return {
+        address: item.address,
+        amountXpi: item.amountXpi + + fromSmallestDenomination(Number(txFee))
+      }
+    });
 
     // Save the lixi into the database
     try {
@@ -128,7 +139,6 @@ export class CreateSubLixiesProcessor extends WorkerHost {
     parentId: number,
     command: CreateLixiCommand,
     mapEncryptedClaimCode: MapEncryptedClaimCode,
-    temporaryFeeCalc: number,
     accountSecret: string,
     packageId?: number
   ): Promise<LixiDb[]> {
@@ -151,13 +161,13 @@ export class CreateSubLixiesProcessor extends WorkerHost {
           const maxXpi = xpiAllowance < command.maxValue ? xpiAllowance : command.maxValue;
           const minXpi = command.minValue;
           const xpiRandom = Math.random() * (maxXpi - minXpi);
-          xpiToSend = xpiRandom + fromSmallestDenomination(temporaryFeeCalc);
+          xpiToSend = xpiRandom;
           if (xpiToSend <= 0) {
             throw new Error('Incorrect number to send');
           }
           xpiAllowance -= xpiRandom;
         } else if (command.lixiType == LixiType.Equal) {
-          xpiToSend = xpiAllowance / Number(command.numberOfSubLixi) + fromSmallestDenomination(temporaryFeeCalc);
+          xpiToSend = xpiAllowance / Number(command.numberOfSubLixi);
           if (xpiToSend <= 0) {
             throw new Error('Incorrect number to send');
           }
@@ -182,7 +192,7 @@ export class CreateSubLixiesProcessor extends WorkerHost {
   /**
    * Prepare the model of a sub lixi to insert into the database
    * @param derivationIndex The derivation index of the paticular sub lixi
-   * @param xpiToSend The xpi to fund to this sub lixi
+   * @param amount The xpi to fund to this sub lixi (only lixi value, not include loyalty program)
    * @param parentId The parent id of this paticular sub lixi
    * @param command The command instruction to build lixi
    * @param mapEncryptedClaimCode The dictionary mapping between the encrypted claim code and the password used to encrypt that claim code
@@ -190,7 +200,7 @@ export class CreateSubLixiesProcessor extends WorkerHost {
    */
   private async prepareSubLixiToInsert(
     derivationIndex: number,
-    xpiToSend: number,
+    amount: number,
     parentId: number,
     command: CreateLixiCommand,
     mapEncryptedClaimCode: MapEncryptedClaimCode,
@@ -215,7 +225,7 @@ export class CreateSubLixiesProcessor extends WorkerHost {
       encryptedClaimCode: encryptedClaimCode,
       claimedNum: 0,
       encryptedXPriv,
-      amount: xpiToSend ? Number(xpiToSend?.toFixed(6)) : 0,
+      amount: amount ? Number(amount?.toFixed(6)) : 0,
       status: 'active',
       expiryAt: null,
       activationAt: null,

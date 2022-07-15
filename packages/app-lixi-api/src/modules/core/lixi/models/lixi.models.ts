@@ -22,7 +22,6 @@ export interface CreateSubLixiesChunkJobData extends CreateSubLixiesJobData {
   numberOfSubLixiInChunk: number;
   startDerivationIndexForChunk: number;
   xpiAllowance: number;
-  temporaryFeeCalc: number;
   fundingAddress: string;
   accountSecret: string;
   packageId?: Nullable<number>;
