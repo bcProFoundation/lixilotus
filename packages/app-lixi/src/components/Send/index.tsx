@@ -415,7 +415,7 @@ const SendComponent: React.FC = () => {
                 margin: '0 0 10px 0'
               }}
               loadWithCameraOpen={false}
-              validateStatus={sendXpiAddressError ? "error" : "" }
+              validateStatus={sendXpiAddressError ? 'error' : ''}
               help={sendXpiAddressError ? sendXpiAddressError : ''}
               onScan={result =>
                 handleAddressChange({
@@ -439,7 +439,7 @@ const SendComponent: React.FC = () => {
               style={{
                 margin: '0 0 10px 0'
               }}
-              validateStatus={sendXpiAmountError ? "error" : ""}
+              validateStatus={sendXpiAmountError ? 'error' : ''}
               help={sendXpiAmountError ? sendXpiAmountError : ''}
               onMax={() => onMax()}
               inputProps={{

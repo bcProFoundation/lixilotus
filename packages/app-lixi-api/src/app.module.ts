@@ -1,6 +1,6 @@
 import { Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ServeStaticModule } from '@nestjs/serve-static';
+import { ServeStaticModule, ServeStaticModuleOptions } from '@nestjs/serve-static';
 import { EthersModule } from 'nestjs-ethers';
 import { AcceptLanguageResolver, HeaderResolver, I18nModule } from 'nestjs-i18n';
 import path, { join } from 'path';
@@ -13,16 +13,28 @@ import { LixiNftModule } from './modules/nft/lixinft.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { WalletModule } from './modules/wallet/wallet.module';
 
+//enabled serving multiple static for fastify
+type FastifyServeStaticModuleOptions = ServeStaticModuleOptions & {
+  serveStaticOptions: {
+      decorateReply: boolean;
+  };
+};
+
+export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
+  serveRoot: '/api/images',
+  rootPath: join(__dirname, '..', 'public/images'),
+  serveStaticOptions: {
+    decorateReply: false
+  }
+};
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true
     }),
     PrismaModule,
-    ServeStaticModule.forRoot({
-      serveRoot: '/api/images',
-      rootPath: join(__dirname, '..', 'public/images')
-    }),
+    ServeStaticModule.forRoot(serveStaticModule_images),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [config]
