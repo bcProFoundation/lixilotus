@@ -7,6 +7,7 @@ import envelopeSaga from './envelope/saga';
 import toastSaga from './toast/saga';
 import settingsSaga from './settings/saga';
 import notificationSaga from './notification/saga';
+import pageSaga from './page/saga';
 
 export default function* rootSaga() {
   yield all([
@@ -17,5 +18,6 @@ export default function* rootSaga() {
     toastSaga(),
     settingsSaga(),
     notificationSaga(),
+    pageSaga()
   ]);
 }

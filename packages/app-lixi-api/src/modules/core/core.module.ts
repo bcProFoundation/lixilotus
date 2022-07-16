@@ -87,7 +87,7 @@ const baseCorsConfig = cors({
     LixiController,
     ClaimController,
     EnvelopeController,
-    HeathController
+    HeathController,
   ],
   providers: [
     LixiService,
