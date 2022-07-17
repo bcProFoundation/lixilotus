@@ -284,18 +284,15 @@ export class ClaimController {
           }
         ];
 
-        if (!utxoStore || !(utxoStore as any).bchUtxos || !(utxoStore as any).bchUtxos) {
+        if (!utxoStore || (!(utxoStore as any).bchUtxos && !(utxoStore as any).nullUtxos)) {
           const utxoEmpty = await i18n.t('claim.messages.utxoEmpty');
           throw new VError(utxoEmpty);
         }
 
         // Determine the UTXOs needed to be spent for this TX, and the change
         // that will be returned to the wallet.
-        const { necessaryUtxos, change } = this.xpiWallet.sendBch.getNecessaryUtxosAndChange(
-          outputs,
-          (utxoStore as any).bchUtxos,
-          1.0
-        );
+        const utxosStore = (utxoStore as any).bchUtxos.concat((utxoStore as any).nullUtxos);
+        const { necessaryUtxos, change } = this.xpiWallet.sendBch.getNecessaryUtxosAndChange(outputs, utxosStore, 1.0);
 
         // Create an instance of the Transaction Builder.
         const transactionBuilder: any = new this.XPI.TransactionBuilder();

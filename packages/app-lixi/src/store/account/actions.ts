@@ -44,3 +44,5 @@ export const refreshLixiListSilentFailure = createAction<string>('lixi/refreshLi
 export const silentLogin = createAction<string>('account/silentLogin');
 export const silentLoginSuccess = createAction('account/silentLoginSuccess');
 export const silentLoginFailure = createAction('account/silentLoginFailure');
+export const setUpload = createAction<any>('account/setUpload');
+export const removeUpload = createAction<any>('account/removeUpload');

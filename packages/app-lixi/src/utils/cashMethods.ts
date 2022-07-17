@@ -2,34 +2,23 @@ import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import BigNumber from 'bignumber.js';
 // import cashaddr from 'ecashaddrjs';
 
-export const fromLegacyDecimals = (
-  amount,
-  cashDecimals = currency.cashDecimals,
-) => {
+export const fromLegacyDecimals = (amount, cashDecimals = currency.cashDecimals) => {
   // Input 0.00000546 BCH
   // Output 5.46 XEC or 0.00000546 BCH, depending on currency.cashDecimals
   const amountBig = new BigNumber(amount);
   const conversionFactor = new BigNumber(10 ** (8 - cashDecimals));
-  const amountSmallestDenomination = amountBig
-    .times(conversionFactor)
-    .toNumber();
+  const amountSmallestDenomination = amountBig.times(conversionFactor).toNumber();
   return amountSmallestDenomination;
 };
 
-export const fromSmallestDenomination = (
-  amount,
-  cashDecimals = currency.cashDecimals,
-) => {
+export const fromSmallestDenomination = (amount, cashDecimals = currency.cashDecimals) => {
   const amountBig = new BigNumber(amount);
   const multiplier = new BigNumber(10 ** (-1 * cashDecimals));
   const amountInBaseUnits = amountBig.times(multiplier);
   return amountInBaseUnits.toNumber();
 };
 
-export const toSmallestDenomination = (
-  sendAmount,
-  cashDecimals = currency.cashDecimals,
-) => {
+export const toSmallestDenomination = (sendAmount, cashDecimals = currency.cashDecimals) => {
   // Replace the BCH.toSatoshi method with an equivalent function that works for arbitrary decimal places
   // Example, for an 8 decimal place currency like Bitcoin
   // Input: a BigNumber of the amount of Bitcoin to be sent
@@ -37,8 +26,7 @@ export const toSmallestDenomination = (
 
   // Validate
   // Input should be a BigNumber with no more decimal places than cashDecimals
-  const isValidSendAmount =
-    BigNumber.isBigNumber(sendAmount) && sendAmount.dp() <= cashDecimals;
+  const isValidSendAmount = BigNumber.isBigNumber(sendAmount) && sendAmount.dp() <= cashDecimals;
   if (!isValidSendAmount) {
     return false;
   }
@@ -47,13 +35,14 @@ export const toSmallestDenomination = (
   return sendAmountSmallestDenomination;
 };
 
+export const getDustXPI = () => {
+  return (currency.dustSats / 10 ** currency.cashDecimals).toString();
+};
+
 export const formatBalance = x => {
   try {
     let balanceInParts = x.toString().split('.');
-    balanceInParts[0] = balanceInParts[0].replace(
-      /\B(?=(\d{2})+(?!\d))/g,
-      '',
-    );
+    balanceInParts[0] = balanceInParts[0].replace(/\B(?=(\d{2})+(?!\d))/g, '');
     if (balanceInParts.length > 1) {
       balanceInParts[1] = balanceInParts[1].slice(0, 2);
     }
@@ -99,11 +88,11 @@ export const loadStoredWallet = walletStateFromStorage => {
 export const normalizeBalance = slpBalancesAndUtxos => {
   const totalBalanceInSatoshis = slpBalancesAndUtxos.nonSlpUtxos.reduce(
     (previousBalance, utxo) => previousBalance + utxo.value,
-    0,
+    0
   );
   return {
     totalBalanceInSatoshis,
-    totalBalance: fromSmallestDenomination(totalBalanceInSatoshis),
+    totalBalance: fromSmallestDenomination(totalBalanceInSatoshis)
   };
 };
 
@@ -121,16 +110,16 @@ export const isValidStoredWallet = walletStateFromStorage => {
 };
 
 export const getWalletState = wallet => {
-  if (!wallet || !wallet.state) {
+  if (!wallet) {
     return {
-      balances: { totalBalance: 0, totalBalanceInSatoshis: 0 },
-      hydratedUtxoDetails: {},
-      tokens: [],
-      slpBalancesAndUtxos: {},
+      balance: 0,
       parsedTxHistory: [],
-      utxos: [],
+      utxos: []
     };
   }
 
-  return wallet.state;
+  return {
+    ...wallet,
+    balance: fromSmallestDenomination(wallet?.balance || 0)
+  };
 };
