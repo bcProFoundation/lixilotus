@@ -225,6 +225,7 @@ export class ClaimController {
         }
 
         const claimAddressBalance = await this.xpiWallet.getBalance(address);
+
         if (claimAddressBalance < toSmallestDenomination(new BigNumber(lixi.minStaking))) {
           const minStakingToClaim = await i18n.t('claim.messages.minStakingToClaim', {
             args: { minStaking: lixi.minStaking }
@@ -256,13 +257,20 @@ export class ClaimController {
         const xpiBalance = fromSmallestDenomination(balance);
 
         let satoshisToSend;
-        if (parentLixi && lixi.claimType == ClaimType.OneTime) {
+        if (parentLixi && parentLixi.claimType == ClaimType.OneTime) {
           const numberOfDistributions = parentLixi.joinLotteryProgram ?
             parentLixi.distributions.length + 2 :
             parentLixi.distributions.length + 1;
 
           const xpiValue = numberOfDistributions * lixi.amount;
           satoshisToSend = toSmallestDenomination(new BigNumber(xpiValue));
+
+          this.logger.debug(xpiBalance, 'xpiBalance');
+          this.logger.debug(numberOfDistributions, 'numberOfDistribution');
+          this.logger.debug(lixi.amount, 'amount');
+          this.logger.debug(xpiValue.toString(), 'xpiValue');
+          this.logger.debug(JSON.stringify(new BigNumber(xpiValue)), 'bignumber');
+          this.logger.debug(satoshisToSend, 'satoshiToSend');
         } else if (lixi.lixiType == LixiType.Random) {
           const maxXpiValue = xpiBalance < lixi.maxValue ? xpiBalance : lixi.maxValue;
           const maxSatoshis = toSmallestDenomination(new BigNumber(maxXpiValue));
@@ -447,7 +455,11 @@ export class ClaimController {
     if (claimApi) {
       try {
         const ip = (headerIp || socket.remoteAddress) as string;
+
         let claimCode = _.trim(claimApi.claimCode) ?? '';
+
+        this.logger.log(claimCode, 'claimcode');
+
         if (claimCode && claimApi.claimCode.includes('lixi_')) {
           const matches = claimCode.match('(?<=lixi_).*');
           if (matches && matches[0]) {
@@ -561,8 +573,12 @@ export class ClaimController {
         return true;
       } catch (err) {
         if (err instanceof VError) {
+          this.logger.error('verror');
+          this.logger.error(err);
           throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
         } else {
+          this.logger.error('not verror');
+          this.logger.error(err);
           this.logger.error(err);
           const unableClaim = await i18n.t('claim.messages.unableClaim');
           const error = new VError.WError(err as Error, unableClaim);

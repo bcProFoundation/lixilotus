@@ -53,6 +53,7 @@ export class CreateSubLixiesProcessor extends WorkerHost {
     const jobData = job.data as CreateSubLixiesChunkJobData;
     const {
       numberOfSubLixiInChunk,
+      numberOfDistributions,
       startDerivationIndexForChunk,
       xpiAllowance,
       parentId,
@@ -79,8 +80,9 @@ export class CreateSubLixiesProcessor extends WorkerHost {
     );
 
     // Calculate fee for each sub lixi sending out
+    const outputsNum = 1 + numberOfDistributions;
     const txFee = Math.ceil(
-      this.XPI.BitcoinCash.getByteCount({ P2PKH: 1 }, { P2PKH: 2 }) * 2.01
+      this.XPI.BitcoinCash.getByteCount({ P2PKH: 1 }, { P2PKH: outputsNum }) * 2.01
     );
 
     // Preparing receive address and amount
@@ -88,7 +90,7 @@ export class CreateSubLixiesProcessor extends WorkerHost {
       subLixiesToInsert.map(item => {
         return {
           address: item.address,
-          amountXpi: item.amount
+          amountXpi: item.amount * numberOfDistributions
         };
       }),
       item => item.amountXpi !== 0
@@ -98,7 +100,7 @@ export class CreateSubLixiesProcessor extends WorkerHost {
     receivingSubLixies = _.map(receivingSubLixies, item => {
       return {
         address: item.address,
-        amountXpi: item.amountXpi + + fromSmallestDenomination(Number(txFee))
+        amountXpi: item.amountXpi + fromSmallestDenomination(Number(txFee))
       }
     });
 
@@ -153,6 +155,8 @@ export class CreateSubLixiesProcessor extends WorkerHost {
 
       // Calculate xpi to send
       let xpiToSend: number = 0;
+
+      this.logger.debug(xpiAllowance);
 
       if (!isPrefund) {
         xpiToSend = 0;

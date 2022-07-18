@@ -20,6 +20,7 @@ export interface CreateSubLixiesJobResult {
 
 export interface CreateSubLixiesChunkJobData extends CreateSubLixiesJobData {
   numberOfSubLixiInChunk: number;
+  numberOfDistributions: number;
   startDerivationIndexForChunk: number;
   xpiAllowance: number;
   fundingAddress: string;

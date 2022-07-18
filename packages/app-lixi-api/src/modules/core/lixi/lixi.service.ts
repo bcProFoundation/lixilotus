@@ -2,7 +2,7 @@ import { CreateLixiCommand, fromSmallestDenomination, Lixi, LixiDto, Notificatio
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
 import { InjectQueue } from '@nestjs/bullmq';
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Account as AccountDb, Prisma } from '@prisma/client';
 import { FlowJob, FlowProducer, Queue } from 'bullmq';
 import IORedis from 'ioredis';
@@ -22,6 +22,9 @@ import { WalletService } from '../../wallet/wallet.service';
 
 @Injectable()
 export class LixiService {
+
+  private logger: Logger = new Logger(this.constructor.name);
+
   constructor(
     private prisma: PrismaService,
     private readonly walletService: WalletService,
@@ -201,6 +204,7 @@ export class LixiService {
           lixiId: createdLixi.id
         });
       }
+
       if (distributions) {
         await prisma.lixiDistribution.createMany({
           data: distributions
@@ -214,6 +218,13 @@ export class LixiService {
     const claimPart = command.password;
     const claimCode = claimPart + encodedId;
 
+    // Query the inserted lixi with distribution data
+    const distributions = await this.prisma.lixiDistribution.findMany({
+      where: {
+        lixiId: _.toSafeInteger(savedLixi.id)
+      }
+    });
+
     const resultLixi: Lixi = _.omit(
       {
         ...savedLixi,
@@ -222,7 +233,8 @@ export class LixiService {
         totalClaim: Number(savedLixi.totalClaim),
         expiryAt: savedLixi.expiryAt ? savedLixi.expiryAt : undefined,
         activationAt: savedLixi.activationAt ? savedLixi.expiryAt : undefined,
-        country: savedLixi.country ? savedLixi.country : undefined
+        country: savedLixi.country ? savedLixi.country : undefined,
+        distributions: distributions
       },
       'encryptedXPriv'
     );
@@ -242,8 +254,11 @@ export class LixiService {
     startDerivationIndex: number,
     account: AccountDb,
     command: CreateLixiCommand,
-    parentLixiId: number
+    parentLixi: Lixi
   ): Promise<string | undefined> {
+
+    const parentLixiId = parentLixi.id;
+
     // If users input the amount means that the lixi need to be prefund
     const isPrefund = !!command.amount;
 
@@ -257,12 +272,14 @@ export class LixiService {
     // The amount should be funded from the account
     const xpiAllowanceEachChunk = command.amount / numberOfChunks;
 
+    // Check the number of distributions
+    const additionalDistributionsNum = parentLixi && parentLixi.distributions ? parentLixi.distributions.length : 0;
+    const numberOfDistributions = parentLixi.joinLotteryProgram ?
+      additionalDistributionsNum + 2 :
+      additionalDistributionsNum + 1;
+
     // Decrypt the account secret
     const secret = await aesGcmDecrypt(account.encryptedSecret, command.mnemonic);
-
-    // Prepare the utxo and keypair to send funding
-    const utxos = await this.XPI.Utxo.get(account.address);
-    const utxoStore = utxos[0];
 
     const childrenJobs: FlowJob[] = [];
 
@@ -283,6 +300,7 @@ export class LixiService {
       // Create the child job data
       const childJobData: CreateSubLixiesChunkJobData = {
         numberOfSubLixiInChunk: numberOfSubLixiInChunk,
+        numberOfDistributions,
         startDerivationIndexForChunk: startDerivationIndexForChunk,
         xpiAllowance: xpiAllowanceEachChunk,
         parentId: parentLixiId,

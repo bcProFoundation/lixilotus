@@ -288,7 +288,7 @@ export class LixiController {
           } as PostLixiResponseDto;
         } else {
           lixi = await this.lixiService.createOneTimeParentLixi(lixiIndex, account, command);
-          const jobId = await this.lixiService.createSubLixies(lixiIndex + 1, account, command, lixi.id);
+          const jobId = await this.lixiService.createSubLixies(lixiIndex + 1, account, command, lixi);
 
           return {
             lixi,
