@@ -54,7 +54,7 @@ export interface CreateLixiCommand {
   envelopeId: Nullable<number>;
   envelopeMessage: string;
   numberLixiPerPackage?: Nullable<number>;
-  uploadId: Nullable<string>;
+  upload: string;
 }
 
 export interface LixiDto {

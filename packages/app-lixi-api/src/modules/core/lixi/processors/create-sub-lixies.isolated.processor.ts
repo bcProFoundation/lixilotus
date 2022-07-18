@@ -248,8 +248,7 @@ async function prepareSubLixiToInsert(
     envelopeMessage: command.envelopeMessage ?? '',
     parentId: parentId,
     createdAt: new Date(),
-    packageId: packageId ?? null,
-    uploadId: command.uploadId ?? null
+    packageId: packageId ?? null
   } as unknown as LixiDb;
 
   return dataSubLixi;

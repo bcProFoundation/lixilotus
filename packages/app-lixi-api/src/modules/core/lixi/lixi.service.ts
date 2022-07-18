@@ -67,11 +67,9 @@ export class LixiService {
       totalClaim: BigInt(0),
       envelopeId: command.envelopeId ?? null,
       envelopeMessage: command.envelopeMessage ?? '',
-      uploadId: command.uploadId ?? null,
-    };   
+      upload: {connect : {id: command.upload}}
+    };
     const lixiToInsert = _.omit(data, 'password');
-
-    console.log(lixiToInsert);
 
     const utxos = await this.XPI.Utxo.get(account.address);
     const utxoStore = utxos[0];
