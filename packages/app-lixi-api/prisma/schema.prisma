@@ -159,7 +159,6 @@ model Lixi {
   packageId            Int?      @map("package_id")
   package              Package?  @relation(fields: [packageId], references: [id])
   upload               Upload?
-  uploadId             String?   @map("upload_id")
 
   @@map("lixi")
 }

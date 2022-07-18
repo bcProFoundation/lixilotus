@@ -28,14 +28,3 @@ ADD COLUMN     "thumbnail_height" INTEGER,
 ADD COLUMN     "thumbnail_width" INTEGER,
 ADD COLUMN     "updated_at" TIMESTAMPTZ NOT NULL,
 ALTER COLUMN "type" SET DATA TYPE VARCHAR(10);
-
-/*
-  Warnings:
-
-  - Added the required column `upload_id` to the `lixi` table without a default value. This is not possible if the table is not empty.
-
-*/
--- AlterTable
-ALTER TABLE "lixi" ADD COLUMN     "upload_id" TEXT NOT NULL;
--- AlterTable
-ALTER TABLE "lixi" ALTER COLUMN "upload_id" DROP NOT NULL;
