@@ -60,11 +60,11 @@ const CreateLixiForm = ({
 
   // New Lixi Min Value
   const [newLixiMinValue, setNewLixiMinValue] = useState('');
-  const [newLixiMinValueIsValid, setNewLixiMinValueIsValid] = useState(true);
+  const [newLixiMinValueIsValid, setNewLixiMinValueIsValid] = useState(false);
 
   // New Lixi Max Value
   const [newLixiMaxValue, setNewLixiMaxValue] = useState('');
-  const [newLixiMaxValueIsValid, setNewLixiMaxValueIsValid] = useState(true);
+  const [newLixiMaxValueIsValid, setNewLixiMaxValueIsValid] = useState(false);
 
   // New Lixi Default Value
   const [newLixiFixedValue, setNewLixiFixedValue] = useState('');
@@ -127,13 +127,17 @@ const CreateLixiForm = ({
   let createLixiFormDataIsValid =
     newLixiNameIsValid && newMaxClaimLixiIsValid && newPackageIsValid &&
     newExpiryAtLixiIsValid && account && newActivatedAtLixiIsValid &&
-    (claimType == ClaimType.OneTime &&
-      (lixiType == LixiType.Random && newNumberOfSubLixi && newLixiAmountValueIsValid && newLixiMinValueIsValid && newLixiMaxValueIsValid) ||
-      (lixiType == LixiType.Equal && newNumberOfSubLixi && newLixiAmountValueIsValid)) ||
-    (claimType == ClaimType.Single &&
-      (lixiType == LixiType.Random && newLixiMinValueIsValid && newLixiMaxValueIsValid) ||
-      (lixiType == LixiType.Fixed && newLixiFixedValueIsValid) ||
-      (lixiType == LixiType.Divided && newLixiDividedValueIsValid)
+    (
+      (
+        claimType == ClaimType.OneTime &&
+        (lixiType == LixiType.Random && newSubLixiIsValid && newLixiAmountValueIsValid && newLixiMinValueIsValid && newLixiMaxValueIsValid) ||
+        (lixiType == LixiType.Equal && newSubLixiIsValid && newLixiAmountValueIsValid)
+      ) || (
+        claimType == ClaimType.Single &&
+        (lixiType == LixiType.Random && newLixiMinValueIsValid && newLixiMaxValueIsValid) ||
+        (lixiType == LixiType.Fixed && newLixiFixedValueIsValid) ||
+        (lixiType == LixiType.Divided && newLixiDividedValueIsValid)
+      )
     );
 
   const handleChangeClaimType = (e: RadioChangeEvent) => {
