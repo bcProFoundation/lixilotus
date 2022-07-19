@@ -81,9 +81,7 @@ export class CreateSubLixiesProcessor extends WorkerHost {
 
     // Calculate fee for each sub lixi sending out
     const outputsNum = 1 + numberOfDistributions;
-    const txFee = Math.ceil(
-      this.XPI.BitcoinCash.getByteCount({ P2PKH: 1 }, { P2PKH: outputsNum }) * 2.01
-    );
+    const txFee = Math.ceil(this.XPI.BitcoinCash.getByteCount({ P2PKH: 1 }, { P2PKH: outputsNum }) * 2.01);
 
     // Preparing receive address and amount
     let receivingSubLixies = _.filter(
@@ -101,8 +99,10 @@ export class CreateSubLixiesProcessor extends WorkerHost {
       return {
         address: item.address,
         amountXpi: item.amountXpi + fromSmallestDenomination(Number(txFee))
-      }
+      };
     });
+
+    console.log(receivingSubLixies);
 
     // Save the lixi into the database
     try {
@@ -155,8 +155,6 @@ export class CreateSubLixiesProcessor extends WorkerHost {
 
       // Calculate xpi to send
       let xpiToSend: number = 0;
-
-      this.logger.debug(xpiAllowance);
 
       if (!isPrefund) {
         xpiToSend = 0;

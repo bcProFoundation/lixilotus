@@ -42,7 +42,7 @@ export class ClaimController {
     @Inject('xpijs') private XPI: BCHJS,
     private readonly config: ConfigService,
     private readonly lixiNftService: LixiNftService
-  ) { }
+  ) {}
 
   @Get(':id')
   async getEnvelope(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<ViewClaimDto> {
@@ -256,21 +256,15 @@ export class ClaimController {
 
         const xpiBalance = fromSmallestDenomination(balance);
 
+        let numberOfDistributions = 1;
         let satoshisToSend;
         if (parentLixi && parentLixi.claimType == ClaimType.OneTime) {
-          const numberOfDistributions = parentLixi.joinLotteryProgram ?
-            parentLixi.distributions.length + 2 :
-            parentLixi.distributions.length + 1;
+          numberOfDistributions = parentLixi.joinLotteryProgram
+            ? parentLixi.distributions.length + 2
+            : parentLixi.distributions.length + 1;
 
-          const xpiValue = numberOfDistributions * lixi.amount;
+          const xpiValue = lixi.amount;
           satoshisToSend = toSmallestDenomination(new BigNumber(xpiValue));
-
-          this.logger.debug(xpiBalance, 'xpiBalance');
-          this.logger.debug(numberOfDistributions, 'numberOfDistribution');
-          this.logger.debug(lixi.amount, 'amount');
-          this.logger.debug(xpiValue.toString(), 'xpiValue');
-          this.logger.debug(JSON.stringify(new BigNumber(xpiValue)), 'bignumber');
-          this.logger.debug(satoshisToSend, 'satoshiToSend');
         } else if (lixi.lixiType == LixiType.Random) {
           const maxXpiValue = xpiBalance < lixi.maxValue ? xpiBalance : lixi.maxValue;
           const maxSatoshis = toSmallestDenomination(new BigNumber(maxXpiValue));
@@ -302,19 +296,19 @@ export class ClaimController {
             amountSat: amountSats
           }
         ];
-        if (parentLixi?.distributions) {
+        if (parentLixi && parentLixi.claimType == ClaimType.OneTime && parentLixi?.distributions) {
           _.map(parentLixi.distributions, item => {
             outputs.push({
               address: item.address,
               amountSat: amountSats
-            })
-          })
+            });
+          });
         }
         if (parentLixi?.joinLotteryProgram === true) {
           outputs.push({
             address: LotteryAddress,
             amountSat: amountSats
-          })
+          });
         }
 
         if (!utxoStore || !(utxoStore as any).bchUtxos || !(utxoStore as any).bchUtxos) {
