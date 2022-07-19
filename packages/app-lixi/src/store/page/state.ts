@@ -1,6 +1,6 @@
-import { PageDetail } from './pageDetail.model';
 import { EntityState } from '@reduxjs/toolkit';
 
-export interface PageState extends EntityState<PageDetail> {
+export interface PageState extends EntityState<any> {
   selectedId: string;
+  pagesByAccountId: Array<any>;
 }

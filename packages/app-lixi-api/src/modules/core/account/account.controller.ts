@@ -123,7 +123,8 @@ export class AccountController {
             ..._.omit(createdAccount, 'publicKey'),
             name: createdAccount.name,
             address: createdAccount.address,
-            balance: balance
+            balance: balance,
+            secret: accountSecret,
           } as AccountDto,
           ['mnemonic', 'encryptedMnemonic']
         );
@@ -138,13 +139,15 @@ export class AccountController {
         }
 
         const balance: number = await this.xpiWallet.getBalance(account.address);
+        const accountSecret = await aesGcmDecrypt(account.encryptedSecret, mnemonic);
 
         const resultApi = _.omit(
           {
             ..._.omit(account, 'publicKey'),
             name: account.name,
             address: account.address,
-            balance: balance
+            balance: balance,
+            secret: accountSecret,
           } as AccountDto,
           ['mnemonic', 'encryptedMnemonic']
         );

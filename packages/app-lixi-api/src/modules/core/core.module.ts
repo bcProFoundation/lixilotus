@@ -89,7 +89,6 @@ const baseCorsConfig = cors({
     ClaimController,
     EnvelopeController,
     HeathController,
-    UploadFilesController
   ],
   providers: [
     LixiService,
