@@ -159,7 +159,7 @@ const CreateLixiForm = ({
 
   const handleNewNumberOfSubLixi = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    setNewSubLixiIsValid(isValidAmountInput(value));
+    setNewSubLixiIsValid(isValidAmountInput(value) && parseInt(value) > 0);
     setNewNumberOfSubLixi(value);
   }
 
