@@ -126,7 +126,6 @@ const CreatePageComponent: React.FC = isEditPage => {
     // }
     dispatch(getPagesByAccountId(3));
     console.log('***********' + JSON.stringify(pagesByAccountIdList));
-    setNewPageName('ahihi');
   }, []);
 
   //   const refreshList = () => {

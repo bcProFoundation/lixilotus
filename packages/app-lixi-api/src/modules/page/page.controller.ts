@@ -221,7 +221,6 @@ export class PageController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async create(@Body() command: CreatePageCommand, @Request() req: FastifyRequest, @I18n() i18n: I18nContext) {
-    this.logger.error('********** AHIHIHIHI')
     const account = (req as any).account;
 
     if (!account) {
@@ -230,7 +229,6 @@ export class PageController {
     }
 
     try {
-      this.logger.error('********** AHIHIHIHI')
       const createdPage = await this.prisma.page.create({
         data: {
           ..._.omit(command, 'parentId', 'handleId'),
