@@ -6,7 +6,7 @@ import { StyledSpacer } from '@components/Common/StyledSpacer';
 import CreateLixiForm from '@components/Lixi/CreateLixiForm';
 import LixiList from '@components/Lixi/LixiList';
 import { getAccount, refreshLixiList, refreshLixiListSilent } from '@store/account/actions';
-import { Tabs } from 'antd';
+import {Tabs } from 'antd';
 import moment from 'moment';
 import React, { useEffect } from 'react';
 import { getSelectedAccount } from 'src/store/account/selectors';
@@ -16,7 +16,6 @@ import { getLixiesBySelectedAccount } from 'src/store/lixi/selectors';
 import { AppContext } from 'src/store/store';
 import styled from 'styled-components';
 import WalletInfoComponent from '@components/Wallet/WalletInfo';
-import Link from 'next/link';
 
 const { TabPane } = Tabs;
 const StyledTabs = styled(Tabs)`
@@ -43,11 +42,13 @@ const StyledTabs = styled(Tabs)`
 `;
 
 const Home: React.FC = () => {
+
   const ContextValue = React.useContext(AppContext);
 
   const dispatch = useAppDispatch();
   const lixies = useAppSelector(getLixiesBySelectedAccount);
   const selectedAccount = useAppSelector(getSelectedAccount);
+
 
   useEffect(() => {
     dispatch(getEnvelopes());
@@ -62,59 +63,29 @@ const Home: React.FC = () => {
   };
   return (
     <>
-      <WalletInfoComponent />
+    <WalletInfoComponent />
       <StyledSpacer />
       <h2 style={{ color: '#6f2dbd' }}>
         <ThemedWalletOutlined /> {intl.get('account.manageLixi')}
       </h2>
 
-      <Link href="/page/create" passHref>
-        <button>Create Page</button>
-      </Link>
       <CreateLixiForm account={selectedAccount} />
       <SmartButton onClick={() => refreshList()}>
         <ReloadOutlined /> {intl.get('account.refreshLixiList')}
       </SmartButton>
-      {lixies.length > 0 && (
-        <StyledTabs type="card" size="large" defaultActiveKey="1" centered>
-          <TabPane
-            key={'1'}
-            tab={
-              <span>
-                {' '}
-                <CheckCircleOutlined className="active-tab-icon" /> Active{' '}
-              </span>
-            }
-          >
-            <LixiList
-              lixies={lixies.filter(
-                lixi =>
-                  lixi.status != 'locked' &&
-                  !moment().isAfter(lixi.expiryAt) &&
-                  !(lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim)
-              )}
-            />
-          </TabPane>
-          <TabPane
-            key={'2'}
-            tab={
-              <span>
-                {' '}
-                <InboxOutlined className="archive-tab-icon" /> Archive{' '}
-              </span>
-            }
-          >
-            <LixiList
-              lixies={lixies.filter(
-                lixi =>
-                  lixi.status === 'locked' ||
-                  moment().isAfter(lixi.expiryAt) ||
-                  (lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim)
-              )}
-            />
-          </TabPane>
-        </StyledTabs>
-      )}
+      {
+        lixies.length > 0 && (
+          <StyledTabs type="card" size="large" defaultActiveKey="1" centered>
+            <TabPane key={'1'} tab={(<span> <CheckCircleOutlined className='active-tab-icon' /> Active </span>)}>
+              <LixiList lixies={lixies.filter(lixi => (lixi.status != 'locked') && !moment().isAfter(lixi.expiryAt) && !(lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim))} />
+            </TabPane>
+            <TabPane key={'2'} tab={(<span> <InboxOutlined className='archive-tab-icon' /> Archive </span>)}>
+              <LixiList lixies={lixies.filter(lixi => lixi.status === 'locked' || moment().isAfter(lixi.expiryAt) || lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim)} />
+            </TabPane>
+          </StyledTabs>
+        )
+      }
+
     </>
   );
 };

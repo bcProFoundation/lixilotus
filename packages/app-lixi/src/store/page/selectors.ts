@@ -9,8 +9,3 @@ export const getSelectedPageId = createSelector(
   (state: RootState) => state.pages,
   (state: PageState) => state.selectedId
 );
-
-export const pagesByAccountId = createSelector(
-  (state: RootState) => state.pages,
-  (state: PageState) => state.pagesByAccountId
-);

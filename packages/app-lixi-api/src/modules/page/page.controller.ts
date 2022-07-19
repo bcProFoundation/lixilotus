@@ -33,6 +33,8 @@ export class PageController {
   constructor(
     private prisma: PrismaService,
     @I18n() private i18n: I18nService,
+    private readonly notificationService: NotificationService,
+    @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet
   ) {}
 
   @Get(':id')
@@ -143,85 +145,9 @@ export class PageController {
     }
   }
 
-  @Get(':id/subPage')
-  async getSubPageByAccountId(
-    @Param('id') id: string,
-  ): Promise<PaginationResult<PageDto>> {
-    const pageAccountId = Number(id);
-    const take = 10;
-    const cursor = null;
-
-    try {
-      const count = await this.prisma.page.count({
-        where: {
-        pageAccountId: pageAccountId
-        }
-      });
-
-      const subPages = cursor
-        ? await this.prisma.page.findMany({
-            take: take,
-            skip: 1,
-            where: {
-              pageAccountId: pageAccountId
-            },
-            cursor: {
-              id: cursor
-            }
-          })
-        : await this.prisma.page.findMany({
-            take: take,
-            where: {
-              pageAccountId: pageAccountId
-            }
-          });
-
-      const childrenApiResult: PageDto[] = [];
-
-      for (let item of subPages) {
-        childrenApiResult.push(new PageDto(item));
-      }
-
-      const startCursor = childrenApiResult.length > 0 ? _.first(childrenApiResult)?.id : null;
-      const endCursor = childrenApiResult.length > 0 ? _.last(childrenApiResult)?.id : null;
-      const countAfter = !endCursor
-        ? 0
-        : await this.prisma.page.count({
-            where: {
-              pageAccountId: pageAccountId
-            },
-            cursor: {
-              id: endCursor
-            },
-            skip: 1
-          });
-
-      const hasNextPage = countAfter > 0;
-
-      return {
-        data: childrenApiResult ?? [],
-        pageInfo: {
-          hasNextPage,
-          startCursor,
-          endCursor
-        },
-        totalCount: count
-      } as PaginationResult<PageDto>;
-    } catch (err: unknown) {
-      if (err instanceof VError) {
-        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
-      } else {
-        const unableToGetLixi = await this.i18n.t('page.messages.unableToGetLixi');
-        const error = new VError.WError(err as Error, unableToGetLixi);
-        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
-    }
-  }
-
   @Post()
   @UseGuards(JwtAuthGuard)
   async create(@Body() command: CreatePageCommand, @Request() req: FastifyRequest, @I18n() i18n: I18nContext) {
-    this.logger.error('********** AHIHIHIHI')
     const account = (req as any).account;
 
     if (!account) {
@@ -230,7 +156,6 @@ export class PageController {
     }
 
     try {
-      this.logger.error('********** AHIHIHIHI')
       const createdPage = await this.prisma.page.create({
         data: {
           ..._.omit(command, 'parentId', 'handleId'),
@@ -239,9 +164,9 @@ export class PageController {
           handle: { connect: { id: command.handleId } }
         }
       });
+
       return new PageDto(createdPage);
     } catch (err) {
-      this.logger.error('**********' + JSON.stringify(err))
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {

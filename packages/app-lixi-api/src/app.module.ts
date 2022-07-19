@@ -10,7 +10,6 @@ import { GraphqlConfig } from './config/config.interface';
 import { AuthModule } from './modules/auth/auth.module';
 import { CoreModule } from './modules/core/core.module';
 import { LixiNftModule } from './modules/nft/lixinft.module';
-import { PageModule } from './modules/page/page.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { WalletModule } from './modules/wallet/wallet.module';
 
@@ -64,8 +63,7 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
     AuthModule,
     LixiNftModule,
     CoreModule,
-    NotificationModule,
-    PageModule
+    NotificationModule
   ],
   controllers: [],
   providers: [Logger]
