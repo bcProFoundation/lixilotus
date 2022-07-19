@@ -56,7 +56,7 @@ const CreateLixiForm = ({
 
   // New Lixi sub Value
   const [newNumberOfSubLixi, setNewNumberOfSubLixi] = useState('');
-  const [newSubLixiIsValid, setNewSubLixiIsValid] = useState(true);
+  const [newSubLixiIsValid, setNewSubLixiIsValid] = useState(false);
 
   // New Lixi Min Value
   const [newLixiMinValue, setNewLixiMinValue] = useState('');
@@ -159,7 +159,7 @@ const CreateLixiForm = ({
 
   const handleNewNumberOfSubLixi = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    setNewSubLixiIsValid(isValidAmountInput(value) && parseInt(value) > 0);
+    setNewSubLixiIsValid(isValidAmountInput(value) && Number(value) !== 0);
     setNewNumberOfSubLixi(value);
   }
 
