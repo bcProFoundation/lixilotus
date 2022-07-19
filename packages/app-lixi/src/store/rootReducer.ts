@@ -19,10 +19,19 @@ import { notificationReducer } from './notification/reducer';
 import { AccountsState } from './account/state';
 import { HYDRATE } from 'next-redux-wrapper';
 import { SettingsState } from './settings/state';
+import { PageState } from './page/state';
+import { pageReducer } from './page/reducer';
+
+const persistConfig = {
+  key: 'root',
+  storage: storage,
+  blacklist: ['accounts'],
+}
 
 const accountPersistConfig: PersistConfig<AccountsState> = {
   key: 'accounts',
-  storage: storage
+  storage: storage,
+  blacklist: [`upload`]
 };
 
 const lixiPersistConfig: PersistConfig<LixiesState> = {
@@ -32,6 +41,11 @@ const lixiPersistConfig: PersistConfig<LixiesState> = {
 
 const claimsPersistConfig: PersistConfig<ClaimsState> = {
   key: 'claims',
+  storage: storage
+};
+
+const shopPersistConfig: PersistConfig<PageState> = {
+  key: 'pages',
   storage: storage
 };
 
@@ -53,6 +67,7 @@ export const serverReducer = combineReducers({
   error: errorReducer,
   settings: settingsReducer,
   notifications: notificationReducer,
+  pages: pageReducer,
   // This is use for useReduxEffect
   // Should be always at the end
   action: actionReducer
@@ -64,6 +79,7 @@ export const appReducer = combineReducers({
   lixies: persistReducer(lixiPersistConfig, lixiReducer),
   claims: persistReducer(claimsPersistConfig, claimReducer),
   settings: persistReducer(settingsPersistConfig, settingsReducer),
+  pages: persistReducer(shopPersistConfig, pageReducer),
   notifications: notificationReducer,
   envelopes: envelopeReducer,
   loading: loadingReducer,
@@ -91,4 +107,5 @@ const reducer = (state, action: AnyAction) => {
   }
 };
 
-export default reducer;
+
+export default persistReducer(persistConfig, reducer);

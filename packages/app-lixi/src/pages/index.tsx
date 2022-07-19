@@ -1,28 +1,22 @@
 import React from 'react';
 
-import Home from '@components/Home/Home';
+import PagesListing from '@components/Pages/PagesListing';
 import { END } from 'redux-saga';
+import { SagaStore, wrapper } from '@store/store';
 
-import { SagaStore, wrapper } from '../store/store';
+const ListingPage = () => {
+  return <PagesListing />;
+};
 
-const HomePage = (): JSX.Element => {
-  return (
-    <Home />
-  );
-}
-
-export const getStaticProps = wrapper.getStaticProps((store: SagaStore) => async (context) => {
-
+export const getStaticProps = wrapper.getStaticProps((store: SagaStore) => async context => {
   store.dispatch(END);
   await (store as SagaStore).__sagaTask.toPromise();
 
   const result = await (store as SagaStore).getState();
 
   return {
-    props: {
-    }
+    props: {}
   };
-})
+});
 
-
-export default HomePage;
+export default ListingPage;

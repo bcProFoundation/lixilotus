@@ -32,8 +32,13 @@ import CountrySelectDropdown from '@components/Common/CountrySelectDropdown';
 import EnvelopeCarousel from '@components/Common/EnvelopeCarousel';
 import { AppContext } from '@store/store';
 import { isValidAmountInput } from '@utils/validation';
-
 import { CreateLixiConfirmationModalProps } from './CreateLixiConfirmationModal';
+import { LixiEnvelopeUploader, StyledLixiEnvelopeUploaded } from './LixiEnvelopeUploader';
+import { getAllEnvelopes } from 'src/store/envelope/selectors';
+import { getUpload } from '@store/account/selectors';
+import TextArea from 'antd/lib/input/TextArea';
+import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import EnvelopeCarousel from '@components/Common/EnvelopeCarousel';
 
 const { Panel } = Collapse;
 
@@ -53,6 +58,7 @@ const CreateLixiForm = ({
 
   const dispatch = useAppDispatch();
   const envelopes = useAppSelector(getAllEnvelopes);
+  const upload = useAppSelector(getUpload);
 
   const { XPI, Wallet } = React.useContext(AppContext);
 
@@ -390,6 +396,7 @@ const CreateLixiForm = ({
       envelopeId: newEnvelopeId,
       envelopeMessage: newEnvelopeMessage,
       numberLixiPerPackage: newNumberLixiPerPackage,
+      upload: upload,
       staffAddress: newStaffAddress,
       charityAddress: newCharityAddress,
       joinLotteryProgram: joinLotteryProgram,
@@ -743,6 +750,11 @@ const CreateLixiForm = ({
                   />
                 </AntdFormWrapper>
               </Form.Item>
+              {/* Custom Envelope */}
+              <Form.Item>
+                <StyledLixiEnvelopeUploaded/>
+              </Form.Item>
+              <hr/>
               {/* Message */}
               <Form.Item>
                 <TextArea

@@ -4,7 +4,7 @@ import { Layout, Spin } from 'antd';
 import Link from 'next/link';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 
-import { GiftOutlined, LoadingOutlined, SettingOutlined, UserOutlined, WalletOutlined } from '@ant-design/icons';
+import { GiftOutlined, HomeOutlined, LoadingOutlined, SettingOutlined, UserOutlined, WalletOutlined } from '@ant-design/icons';
 import { Footer, NavButton } from '@bcpros/lixi-components/components';
 
 import ModalManager from '../../Common/ModalManager';
@@ -132,6 +132,12 @@ const ClaimedLayout: React.FC = props => {
                 <Footer>
                   <Link href="/" passHref>
                     <NavButton active={false}>
+                      <HomeOutlined />
+                      {intl.get('general.home')}
+                    </NavButton>
+                  </Link>
+                  <Link href="/admin/accounts" passHref>
+                    <NavButton active={false}>
                       <UserOutlined />
                       {intl.get('general.accounts')}
                     </NavButton>
@@ -143,7 +149,7 @@ const ClaimedLayout: React.FC = props => {
                     </NavButton>
                   </Link>
                   <Link href="/admin/claim" passHref>
-                    <NavButton active={false}>
+                    <NavButton active={true}>
                       <GiftOutlined />
                       {intl.get('general.claim')}
                     </NavButton>

@@ -1,6 +1,7 @@
 import { Account } from '../';
 import { Distribution } from './distribution';
 import { Envelope } from './envelope';
+import { Upload } from './upload';
 
 export interface GenerateLixiCommand {
   name: string;
@@ -26,6 +27,7 @@ export interface GenerateLixiCommand {
   envelopeId: Nullable<number>;
   envelopeMessage: string;
   numberLixiPerPackage?: Nullable<string>;
+  upload: Upload;
   staffAddress?: string;
   charityAddress?: string;
   joinLotteryProgram: boolean;
@@ -56,6 +58,7 @@ export interface CreateLixiCommand {
   envelopeId: Nullable<number>;
   envelopeMessage: string;
   numberLixiPerPackage?: Nullable<number>;
+  uploadId: Nullable<string>;
   staffAddress?: string;
   charityAddress?: string;
   joinLotteryProgram: boolean;

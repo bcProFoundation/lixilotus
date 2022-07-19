@@ -110,6 +110,7 @@ model Account {
   notifications     Notification[]
   language          String         @default("en")
   publicKey         String         @default("") @map("public_key")
+  uploads           Upload[]
 
   Page Page[]
   @@index([mnemonicHash], type: Hash)
@@ -159,6 +160,8 @@ model Lixi {
   packageId            Int?               @map("package_id")
   package              Package?           @relation(fields: [packageId], references: [id])
   distributions        LixiDistribution[]
+  upload               Upload?
+  uploadId             String?   @map("upload_id")
 
   @@map("lixi")
 }
@@ -256,6 +259,28 @@ model Notification {
   action             String?
 
   @@map("notification")
+}
+
+model Upload {
+  id               String   @id @default(uuid())
+  originalFilename String   @map("original_filename") @db.VarChar
+  fileSize         Int      @map("file_size")
+  width            Int?
+  height           Int?
+  url              String   @db.VarChar
+  createdAt        DateTime @map("created_at") @db.Timestamptz
+  updatedAt        DateTime @map("updated_at") @db.Timestamptz
+  sha              String?  @unique
+  extension        String?  @db.VarChar(10)
+  thumbnailWidth   Int?     @map("thumbnail_width")
+  thumbnailHeight  Int?     @map("thumbnail_height")
+  type             String?  @db.VarChar(10)
+  lixi             Lixi?    @relation(fields: [lixiId], references: [id])
+  lixiId           Int?     @unique
+  account          Account? @relation(fields: [accountId], references: [id])
+  accountId        Int?
+
+  @@map("upload")
 }
 
 enum NotificationLevel {

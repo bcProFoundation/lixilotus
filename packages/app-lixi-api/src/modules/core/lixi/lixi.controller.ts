@@ -33,9 +33,9 @@ import {
   Res,
   StreamableFile,
   UseGuards,
-  UseInterceptors
+  UseInterceptors,
 } from '@nestjs/common';
-import { Claim as ClaimDb, Lixi } from '@prisma/client';
+import { Claim as ClaimDb, Lixi, Upload as UploadDb } from '@prisma/client';
 import { Queue } from 'bullmq';
 import * as _ from 'lodash';
 import { PaginationParams } from 'src/common/models/paginationParams';
@@ -47,7 +47,7 @@ import {
 } from 'src/modules/core/lixi/constants/lixi.constants';
 import { LixiService } from 'src/modules/core/lixi/lixi.service';
 import { WalletService } from 'src/modules/wallet/wallet.service';
-import { aesGcmDecrypt, base58ToNumber, numberToBase58 } from 'src/utils/encryptionMethods';
+import { aesGcmDecrypt, base58ToNumber, numberToBase58, hexSha256 } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
 import { PrismaService } from '../../prisma/prisma.service';
 import { I18n, I18nContext } from 'nestjs-i18n';
@@ -56,6 +56,11 @@ import { join } from 'path';
 import { JwtAuthGuard } from 'src/modules/auth/jwtauth.guard';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import moment from 'moment';
+import { extname } from 'path'
+import { UploadGuard } from 'src/utils/upload.guard';
+import { File } from 'src/utils/file.decorator';
+import fs from 'fs';
+import sharp from 'sharp';
 
 @Controller('lixies')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -72,7 +77,7 @@ export class LixiController {
     @Inject('xpijs') private XPI: BCHJS,
     @InjectQueue(EXPORT_SUB_LIXIES_QUEUE) private exportSubLixiesQueue: Queue,
     @InjectQueue(WITHDRAW_SUB_LIXIES_QUEUE) private withdrawSubLixiesQueue: Queue
-  ) { }
+  ) {}
 
   @Get(':id')
   async getLixi(
@@ -155,21 +160,21 @@ export class LixiController {
 
       subLixies = cursor
         ? await this.prisma.lixi.findMany({
-          take: take,
-          skip: 1,
-          where: {
-            parentId: lixiId
-          },
-          cursor: {
-            id: cursor
-          }
-        })
+            take: take,
+            skip: 1,
+            where: {
+              parentId: lixiId
+            },
+            cursor: {
+              id: cursor
+            }
+          })
         : await this.prisma.lixi.findMany({
-          take: take,
-          where: {
-            parentId: lixiId
-          }
-        });
+            take: take,
+            where: {
+              parentId: lixiId
+            }
+          });
 
       const childrenApiResult: LixiDto[] = [];
 
@@ -203,14 +208,14 @@ export class LixiController {
       const countAfter = !endCursor
         ? 0
         : await this.prisma.lixi.count({
-          where: {
-            parentId: lixiId
-          },
-          cursor: {
-            id: _.toSafeInteger(endCursor)
-          },
-          skip: 1
-        });
+            where: {
+              parentId: lixiId
+            },
+            cursor: {
+              id: _.toSafeInteger(endCursor)
+            },
+            skip: 1
+          });
 
       const hasNextPage = countAfter > 0;
 
@@ -740,19 +745,19 @@ export class LixiController {
       const countAfter = !endCursor
         ? 0
         : await this.prisma.claim.count({
-          where: {
-            lixiId: lixiId
-          },
-          orderBy: [
-            {
-              id: 'asc'
-            }
-          ],
-          cursor: {
-            id: _.toSafeInteger(endCursor)
-          },
-          skip: 1
-        });
+            where: {
+              lixiId: lixiId
+            },
+            orderBy: [
+              {
+                id: 'asc'
+              }
+            ],
+            cursor: {
+              id: _.toSafeInteger(endCursor)
+            },
+            skip: 1
+          });
 
       const hasNextPage = countAfter > 0;
 
@@ -908,6 +913,71 @@ export class LixiController {
       } else {
         const unableToDownloadLixi = await i18n.t('lixi.messages.unableToDownloadLixi');
         const error = new VError.WError(err as Error, unableToDownloadLixi);
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  }
+
+  @Post('custom-upload')
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(UploadGuard)
+  async upload(
+    @File() file: Storage.MultipartFile,
+    @Req() req: FastifyRequest,
+    @I18n() i18n: I18nContext,
+  ) {
+    try {
+      const account = (req as any).account;
+      if (!account) {
+        const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
+        throw new Error(couldNotFindAccount);
+      }
+
+      const buffer = await file.toBuffer();
+      const originalName = file.filename.replace(/\.[^/.]+$/, "")
+      const sha = await hexSha256(buffer);
+      const dir = `uploads`;
+
+      const fileExtension = extname(file.filename);
+      const folderName = sha.substring(0,2);
+      const fileUrl = `${dir}/${folderName}/${sha}`;
+
+      //create new folder if there are no existing is founded
+      if (!fs.existsSync(`./public/${dir}/${folderName}`)) {
+        fs.mkdirSync(`./public/${dir}/${folderName}`);
+      }
+
+      //write image file to folder
+      const originalImage = await sharp(buffer).toFile(`./public/${fileUrl}${fileExtension}`)
+      const thumbnailImage = await sharp(buffer).resize(200).toFile(`./public/${fileUrl}-200${fileExtension}`);
+
+      const uploadToInsert = {
+        originalFilename : originalName,
+        fileSize: originalImage.size,
+        width: originalImage.width,
+        height: originalImage.height,
+        url: `${process.env.BASE_URL}/api/${dir}/${folderName}?fileId=${sha}${fileExtension}`,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        sha: sha,
+        extension: file.mimetype,
+        thumbnailWidth: thumbnailImage.width,
+        thumbnailHeight: thumbnailImage.height,
+        type: 'envelope',
+        account: {connect : {id: account.id}},
+      }
+      
+      const resultImage: UploadDb = await this.prisma.upload.create({
+          data: uploadToInsert
+      });
+
+      return resultImage;
+    } catch (err) {
+      if (err instanceof VError) {
+        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      } else {
+        const unableToUpload = await i18n.t('lixi.messages.unableToUpload');
+        const error = new VError.WError(err as Error, unableToUpload);
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }

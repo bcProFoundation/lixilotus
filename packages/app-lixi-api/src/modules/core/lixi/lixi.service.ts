@@ -69,14 +69,17 @@ export class LixiService {
       address,
       totalClaim: BigInt(0),
       envelopeId: command.envelopeId ?? null,
-      envelopeMessage: command.envelopeMessage ?? ''
-    };
+      envelopeMessage: command.envelopeMessage ?? '',
+      upload: {connect : command.uploadId ? {id: command.uploadId} : undefined}
+    };   
+    
     const lixiToInsert = _.omit(data, 'password', 'staffAddress', 'charityAddress');
 
     const utxos = await this.XPI.Utxo.get(account.address);
     const utxoStore = utxos[0];
     let { keyPair } = await this.walletService.deriveAddress(command.mnemonic, 0); // keyPair of account
-    let fee = this.walletService.calcFee(this.XPI, (utxoStore as any).bchUtxos);
+    const utxosStore = (utxoStore as any).bchUtxos.concat((utxoStore as any).nullUtxos);
+    let fee = await this.walletService.calcFee(this.XPI, utxosStore);
 
     // Validate the amount params
     if (isPrefund) {
@@ -153,22 +156,25 @@ export class LixiService {
       envelopeId: command.envelopeId ?? null,
       envelopeMessage: command.envelopeMessage ?? '',
       isNFTEnabled: command.isNFTEnabled ?? false,
+      upload: {connect : command.uploadId ? {id: command.uploadId} : undefined},
       joinLotteryProgram: command.joinLotteryProgram
     };
     const lixiToInsert = _.omit(data, 'password');
 
     const utxos = await this.XPI.Utxo.get(account.address);
-    const utxoStore = utxos[0];
+    let utxoStore = utxos[0];
 
     // Validate the amount params
     if (isPrefund) {
       // Check the account balance
       const accountBalance: number = await this.xpiWallet.getBalance(account.address);
+      const utxosStore = (utxoStore as any).bchUtxos.concat((utxoStore as any).nullUtxos);
+
       const numberOfDistributions = this.calcNumberOfDistributions(command);
       // Calc fee to send out from account to sub lixies
       let mainFee = this.walletService.calcFee(
         this.XPI,
-        (utxoStore as any).bchUtxos,
+        (utxoStore as any),
         (command.numberOfSubLixi as number) * numberOfDistributions + 1
       );
       // Calc fee to send from sub lixies to claim address
