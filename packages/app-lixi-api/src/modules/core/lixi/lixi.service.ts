@@ -67,8 +67,9 @@ export class LixiService {
       totalClaim: BigInt(0),
       envelopeId: command.envelopeId ?? null,
       envelopeMessage: command.envelopeMessage ?? '',
-      upload: {connect : {id: command.upload}}
-    };
+      upload: {connect : command.uploadId ? {id: command.uploadId} : undefined}
+    };   
+    
     const lixiToInsert = _.omit(data, 'password');
 
     const utxos = await this.XPI.Utxo.get(account.address);
@@ -152,7 +153,8 @@ export class LixiService {
       totalClaim: BigInt(0),
       envelopeId: command.envelopeId ?? null,
       envelopeMessage: command.envelopeMessage ?? '',
-      isNFTEnabled: command.isNFTEnabled ?? false
+      isNFTEnabled: command.isNFTEnabled ?? false,
+      upload: {connect : command.uploadId ? {id: command.uploadId} : undefined}
     };
     const lixiToInsert = _.omit(data, 'password');
 
