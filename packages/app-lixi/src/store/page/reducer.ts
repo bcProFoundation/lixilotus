@@ -1,16 +1,21 @@
 import { createEntityAdapter, createReducer } from '@reduxjs/toolkit';
 import { PageState } from './state';
-import { setSelectedPage } from './action';
-import { PageDetail } from './pageDetail.model';
+import { setPagesByAccountId, setSelectedPage } from './action';
+import { Page } from '@bcpros/lixi-models/src';
 
-export const pageAdapter = createEntityAdapter<PageDetail>({});
+export const pageAdapter = createEntityAdapter<Page>({});
 
 const initialState: PageState = pageAdapter.getInitialState({
-  selectedId: ''
+  selectedId: '',
+  pagesByAccountId: []
 });
 
 export const pageReducer = createReducer(initialState, builder => {
-  builder.addCase(setSelectedPage, (state, action) => {
-    state.selectedId = action.payload;
-  });
+  builder
+    .addCase(setSelectedPage, (state, action) => {
+      state.selectedId = action.payload;
+    })
+    .addCase(setPagesByAccountId, (state, action) => {
+      state.pagesByAccountId = action.payload;
+    });
 });
