@@ -313,3 +313,72 @@ enum UserTwoFactorType {
 
   @@map("user_two_factor_type")
 }
+
+model cities {
+  id           Int       @id(map: "idx_158778_primary") @default(autoincrement())
+  name         String    @db.VarChar(255)
+  state_id     Int
+  state_code   String    @db.VarChar(255)
+  country_id   Int
+  country_code String    @db.Char(2)
+  latitude     Decimal   @db.Decimal(10, 8)
+  longitude    Decimal   @db.Decimal(11, 8)
+  created_at   DateTime? @db.Timestamptz(6)
+  updated_at   DateTime? @db.Timestamptz(6)
+  flag         Boolean   @default(true)
+  wikidataid   String?   @db.VarChar(255)
+  countries    countries @relation(fields: [country_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cities_ibfk_2")
+  states       states    @relation(fields: [state_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cities_ibfk_1")
+
+  @@index([state_id], map: "idx_158778_cities_test_ibfk_1")
+  @@index([country_id], map: "idx_158778_cities_test_ibfk_2")
+}
+
+model countries {
+  id              Int       @id(map: "idx_158788_primary") @default(autoincrement())
+  name            String    @db.VarChar(100)
+  iso3            String?   @db.Char(3)
+  numeric_code    String?   @db.Char(3)
+  iso2            String?   @db.Char(2)
+  phonecode       String?   @db.VarChar(255)
+  capital         String?   @db.VarChar(255)
+  currency        String?   @db.VarChar(255)
+  currency_name   String?   @db.VarChar(255)
+  currency_symbol String?   @db.VarChar(255)
+  tld             String?   @db.VarChar(255)
+  native          String?   @db.VarChar(255)
+  region          String?   @db.VarChar(255)
+  subregion       String?   @db.VarChar(255)
+  timezones       String?
+  translations    String?
+  latitude        Decimal?  @db.Decimal(10, 8)
+  longitude       Decimal?  @db.Decimal(11, 8)
+  emoji           String?   @db.VarChar(191)
+  emojiu          String?   @db.VarChar(191)
+  created_at      DateTime? @db.Timestamptz(6)
+  updated_at      DateTime  @default(now()) @db.Timestamptz(6)
+  flag            Boolean   @default(true)
+  wikidataid      String?   @db.VarChar(255)
+  cities          cities[]
+  states          states[]
+}
+
+model states {
+  id           Int       @id(map: "idx_158799_primary") @default(autoincrement())
+  name         String    @db.VarChar(255)
+  country_id   Int
+  country_code String    @db.Char(2)
+  fips_code    String?   @db.VarChar(255)
+  iso2         String?   @db.VarChar(255)
+  type         String?   @db.VarChar(191)
+  latitude     Decimal?  @db.Decimal(10, 8)
+  longitude    Decimal?  @db.Decimal(11, 8)
+  created_at   DateTime? @db.Timestamptz(6)
+  updated_at   DateTime  @default(now()) @db.Timestamptz(6)
+  flag         Boolean   @default(true)
+  wikidataid   String?   @db.VarChar(255)
+  countries    countries @relation(fields: [country_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "country_region_final")
+  cities       cities[]
+
+  @@index([country_id], map: "idx_158799_country_region")
+}
