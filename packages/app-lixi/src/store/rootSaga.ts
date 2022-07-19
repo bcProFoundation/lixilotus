@@ -20,6 +20,5 @@ export default function* rootSaga() {
     toastSaga(),
     settingsSaga(),
     notificationSaga(),
-    pageSaga()
   ]);
 }
