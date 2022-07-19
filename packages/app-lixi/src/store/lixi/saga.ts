@@ -82,6 +82,7 @@ import { saveAs } from 'file-saver';
 import moment from 'moment';
 import { refreshLixiSilent } from './actions';
 import { refreshLixiListSilent } from '@store/account/actions';
+import { removeUpload } from '@store/account/actions';
 
 const call: any = Effects.call;
 /**
@@ -117,7 +118,8 @@ function* generateLixiSaga(action: PayloadAction<GenerateLixiCommand>) {
     mnemonic: mnemonic,
     mnemonicHash: command.mnemonicHash,
     envelopeId: command.envelopeId,
-    envelopeMessage: command.envelopeMessage ?? ''
+    envelopeMessage: command.envelopeMessage ?? '',
+    uploadId: command.upload ? command.upload.id : null,
   };
 
   yield put(postLixi(createLixiCommand));
@@ -283,6 +285,7 @@ function* postLixiSuccessSaga(action: PayloadAction<Lixi>) {
         duration: 5
       })
     );
+    yield put(removeUpload(null));
     yield put(setLixi(lixi));
     yield put(hideLoading(postLixi.type));
   } catch (error) {

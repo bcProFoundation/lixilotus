@@ -5,6 +5,7 @@ import {
   LoadingOutlined,
   WalletOutlined,
   QrcodeOutlined,
+  QuestionCircleOutlined,
 } from '@ant-design/icons';
 import { Image } from 'antd';
 import { currency } from './Ticker';
@@ -48,6 +49,10 @@ export const LoadingBlock = styled.div`
     height: 50px;
     fill: ${props => props.theme.primary};
   }
+`;
+
+export const ThemedQuerstionCircleOutlinedFaded = styled(QuestionCircleOutlined)`
+    color: ${props => props.theme.icons.outlinedFaded} !important;
 `;
 
 export const CashLoader = () => (
