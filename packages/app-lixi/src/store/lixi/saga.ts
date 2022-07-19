@@ -288,6 +288,7 @@ function* postLixiSuccessSaga(action: PayloadAction<Lixi>) {
     yield put(removeUpload(null));
     yield put(setLixi(lixi));
     yield put(hideLoading(postLixi.type));
+    yield put(refreshLixiListSilent(lixi.accountId));
   } catch (error) {
     const message = intl.get('lixi.errorWhenCreateLixi');
     yield put(postLixiFailure(message));
