@@ -3,6 +3,9 @@ import Link from 'next/link';
 import styled from 'styled-components';
 import intl from 'react-intl-universal';
 import SidebarLogo from './SidebarLogo';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { getNavCollapsed } from '@store/settings/selectors';
+import { toggleCollapsedSideNav } from '@store/settings/actions';
 
 type SidebarContentProps = {
   className?: string,
@@ -27,6 +30,13 @@ const SidebarContent = ({
   sidebarCollapsed,
   setSidebarCollapsed
 }: SidebarContentProps) => {
+
+const dispatch = useAppDispatch();
+const navCollapsed = useAppSelector(getNavCollapsed);
+
+const handleOnClick = () => {
+  dispatch(toggleCollapsedSideNav(!navCollapsed));
+};
 
   return (
     <>
@@ -56,7 +66,7 @@ const SidebarContent = ({
           </Menu.Item>
           <Menu.Item>
             <Link href='/admin/pack-register' >
-              <a>
+              <a onClick={handleOnClick}>
                 <img src='/images/lotus-logo-small.png' alt='lotus'
                   style={{width: "20px", marginBottom: "5px", marginRight: "10px"}}
                 />
@@ -65,8 +75,8 @@ const SidebarContent = ({
             </Link>
           </Menu.Item>
           <Menu.Item>
-            <Link href='/wallet' >
-              <a>
+            <Link href='/wallet'>
+              <a onClick={handleOnClick}>
                 <img src='/images/lotus-logo-small.png' alt='lotus'
                   style={{width: "20px", marginBottom: "5px", marginRight: "10px"}}
                 />
@@ -76,7 +86,7 @@ const SidebarContent = ({
           </Menu.Item>
           <Menu.Item>
             <Link href='/send' >
-              <a>
+              <a onClick={handleOnClick}>
                 <img src='/images/lotus-logo-small.png' alt='lotus'
                   style={{width: "20px", marginBottom: "5px", marginRight: "10px"}}
                 />
