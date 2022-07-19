@@ -6,10 +6,6 @@ import React from 'react';
 import { END } from 'redux-saga';
 import { getSelectorsByUserAgent } from 'react-device-detect';
 import PageDetailLayout from '@components/Layout/PageDetailLayout';
-<<<<<<< HEAD
-import CreatePageComponent from '@components/Pages/CreatePageComponent';
-=======
->>>>>>> master
 
 const PageDetailPage = props => {
   const { shopId, isMobile } = props;
