@@ -111,7 +111,6 @@ const CreatePageComponent: React.FC = isEditPage => {
   };
 
   const normFile = (e: any) => {
-    console.log('Upload event:', e);
     if (Array.isArray(e)) {
       return e;
     }
@@ -125,7 +124,6 @@ const CreatePageComponent: React.FC = isEditPage => {
     //   dispatch(refreshLixiListSilent(selectedAccount?.id));
     // }
     dispatch(getPagesByAccountId(3));
-    console.log('***********' + JSON.stringify(pagesByAccountIdList));
   }, []);
 
   //   const refreshList = () => {
@@ -157,7 +155,6 @@ const CreatePageComponent: React.FC = isEditPage => {
       handleId: '1',
       parentId: '1'
     };
-    console.log('VALUE CREATE PAGE' + valueCreatePage);
     if (valueCreatePage) dispatch(postPage(valueCreatePage));
   };
 
