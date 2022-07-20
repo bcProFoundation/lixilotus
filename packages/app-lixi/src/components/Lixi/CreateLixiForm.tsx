@@ -171,11 +171,11 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
       newActivatedAtLixiIsValid &&
       ((claimType == ClaimType.OneTime &&
         lixiType == LixiType.Random &&
-        newNumberOfSubLixi &&
+        newSubLixiIsValid &&
         newLixiAmountValueIsValid &&
         newLixiMinValueIsValid &&
         newLixiMaxValueIsValid) ||
-        (lixiType == LixiType.Equal && newNumberOfSubLixi && newLixiAmountValueIsValid))) ||
+        (lixiType == LixiType.Equal && newSubLixiIsValid && newLixiAmountValueIsValid))) ||
     (claimType == ClaimType.Single &&
       lixiType == LixiType.Random &&
       newLixiMinValueIsValid &&
@@ -199,6 +199,8 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
     setNewLixiAmountValueIsValid(isValidAmountInput(value));
     setNewLixiAmount(value);
   };
+
+  console.log(newSubLixiIsValid);
 
   const handleNewNumberOfSubLixi = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
