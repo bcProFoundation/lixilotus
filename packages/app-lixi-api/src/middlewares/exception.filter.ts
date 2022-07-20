@@ -28,7 +28,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
       path: request.url,
       method: request.method,
       errorName: exception?.name,
-      message: exception?.message
+      message: exception?.message,
+      stack: exception?.stack
     };
 
     const prodErrorResponse: any = {
