@@ -199,9 +199,7 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
     setNewLixiAmountValueIsValid(isValidAmountInput(value));
     setNewLixiAmount(value);
   };
-
-  console.log(newSubLixiIsValid);
-
+  
   const handleNewNumberOfSubLixi = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewSubLixiIsValid(isValidAmountInput(value) && Number(value) !== 0);
