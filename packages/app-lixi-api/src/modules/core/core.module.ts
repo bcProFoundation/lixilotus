@@ -16,6 +16,7 @@ import {
 } from './lixi/constants/lixi.constants';
 import { LixiController } from './lixi/lixi.controller';
 import { LixiService } from './lixi/lixi.service';
+import { UploadFilesController } from './upload/upload.controller';
 import { CreateSubLixiesEventsListener } from './lixi/processors/create-sub-lixies.eventslistener';
 import { CreateSubLixiesProcessor } from './lixi/processors/create-sub-lixies.processor';
 import { ExportSubLixiesEventsListener } from './lixi/processors/export-sub-lixies.eventslistener';
@@ -87,7 +88,7 @@ const baseCorsConfig = cors({
     LixiController,
     ClaimController,
     EnvelopeController,
-    HeathController
+    HeathController,
   ],
   providers: [
     LixiService,

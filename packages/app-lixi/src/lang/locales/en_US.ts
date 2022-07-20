@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 /* SendLotus Language Texts
 
 Table of Contents
@@ -14,6 +15,7 @@ Table of Contents
 
 export default {
   /* 01.General */
+  'general.home': 'Home',
   'general.accounts': 'Accounts',
   'general.lixi': 'Lixi',
   'general.claim': 'Claim',
@@ -97,6 +99,7 @@ export default {
   'lixi.fundGiveRandomize': 'The fund giving is randomized',
   'lixi.randomFund': 'Min: {newLixiMinValue}; Max: {newLixiMaxValue}',
   'lixi.amount': 'Amount: {newLixiAmount}',
+  'lixi.totalAmountRequire': 'Total amount require: {newLixiAmount}',
   'lixi.numberOfSub': 'Number of sub lixi: {newNumberOfSubLixi}',
   'lixi.numberLixiPerPackage': 'Number of sub-lixi per package: {newNumberLixiPerPackage}',
   'lixi.package': 'Package',
@@ -118,15 +121,22 @@ export default {
   'lixi.remainingXPI': 'XPI Remaining',
   'lixi.message': 'Message',
   'lixi.loadmore': 'Load More',
+  'lixi.addLeader': 'Add Leader',
   'lixi.lixiDetail': 'Click to reveal Lixi detail',
+  'lixi.lixiLeader': 'Click to reveal Lixi detail',
   'lixi.downloadCode': 'Download Code',
   'lixi.copyClaim': 'Copy Claim Code',
   'lixi.refreshLixi': 'Refresh Lixi',
   'lixi.exportLixi': 'Export Lixi',
   'lixi.noLixiSelected': 'No lixi is selected',
-  'lixi.fileTypeError': 'You can only upload JPG file!',
-  'lixi.fileSizeError': 'Image must smaller than 2MB!',
-  'lixi.lixiPostcard': 'Lixi Postcard',
+  'lixi.fileTypeError': 'You can only upload JPG/PNG/GIF file!',
+  'lixi.fileSizeError': 'Image must smaller than 5MB!',
+  'lixi.fileUploadError': 'Error uploading to server',
+  'lixi.fileUploadSuccess': 'Upload Successfully',
+  'lixi.uploadDividerText': "Custom Enevelope",
+  'lixi.uploadText' : 'Upload',
+  'lixi.uploadingText': 'Uploading...',
+  'lixi.previewFileFailed' : 'Cannot preview file',
   'lixi.renameLixi': 'Rename Lixi',
   'lixi.enterNewLixiName': 'Enter new lixi name',
   'lixi.lixiLengthError': 'Lixi name must be a string between 1 and 24 characters long',
@@ -159,8 +169,14 @@ export default {
   'lixi.registerSuccess': 'Register lixi pack successfully',
   'lixi.renameFailed': 'Rename failed. All lixi must have a unique name.',
   'lixi.isNFTEnabled': 'NFT Enabled',
+  'lixi.isCharity': 'Charity Fund',
   'lixi.optionNFTEnabled': 'Option: NFT Enabled',
   'lixi.unableDownloadSub': 'Unable to download the sub-lixies.',
+  'lixi.loyaltyProgram': 'Loyalty Programs',
+  'lixi.staffAddress': 'Staff Address',
+  'lixi.charityAddress': 'Charity Address',
+  'lixi.loterryAddress': 'Loterry Address',
+  'lixi.loterryAddressCheck': 'Confirm',
 
   /* 04.Claim */
   'claim.claim': 'Claim',
@@ -237,5 +253,32 @@ export default {
   'lixinft.unableToMint': 'Unable to mint the lixi NFT',
 
   /* 11.Register */
-  'register.register': 'Register'
+  'register.register': 'Register',
+
+  /* 12.Send */
+  'send.unableToSend': 'Unable to send',
+  'send.sendAmountSmallerThanDust': 'The send amount is smaller than dust',
+  'send.utxoEmpty': 'UTXO list is empty',
+  'send.unableSendTransaction': 'Unable to send transaction',
+  'send.insufficientFund': 'Insufficient fund',
+  'send.invalidDecimalPlaces': 'Invalid decimal places for send amount',
+  'send.insufficientPriority': 'Insufficient priority',
+  'send.networkError': 'Network Error',
+  'send.longMempoolChain': 'too-long-mempool-chain, too many unconfirmed ancestors',
+  'send.communicateApi': 'Could not communicate with API. Please try again.',
+  'send.manyAncestors':
+    'The XPI you are trying to send has too many unModaled ancestors to send (limit 50). Sending will be possible after a block Modal.ation. Try again in about 10 minutes.',
+  'send.onlyMessage': 'Send only message',
+  'send.canNotEncryptMessage': 'Cannot encrypt message',
+  'send.addressNoOutgoingTrans': 'This address has no outgoing transaction, you cannot send message.',
+  'send.newAddress': 'It looks like this address is NEW, please verify it before sending a large amount.',
+  'send.canNotSendToYourSelf': 'Cannot send to yourself!',
+  'send.calcMaxError': 'Unable to calculate the max value due to network errors',
+  'send.sendModalTitle': 'Are you sure you want to send {value} {ticker} to {address}?',
+  'send.queryString':
+    'You are sending a transaction to an address including query parameters "{queryStringText}." Only the "amount" parameter, in units of {currency} satoshis, is currently supported.',
+  'send.optionalPrivateMessage': 'Optional Private Message',
+  /* 12.Zero balance header */
+  'zeroBalanceHeader.noBalance': 'You currently have 0 {ticker}',
+  'zeroBalanceHeader.deposit': 'Deposit some funds to use this feature'
 };

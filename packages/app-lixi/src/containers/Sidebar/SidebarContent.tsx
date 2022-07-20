@@ -3,6 +3,9 @@ import Link from 'next/link';
 import styled from 'styled-components';
 import intl from 'react-intl-universal';
 import SidebarLogo from './SidebarLogo';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { getNavCollapsed } from '@store/settings/selectors';
+import { toggleCollapsedSideNav } from '@store/settings/actions';
 
 type SidebarContentProps = {
   className?: string,
@@ -28,6 +31,13 @@ const SidebarContent = ({
   setSidebarCollapsed
 }: SidebarContentProps) => {
 
+const dispatch = useAppDispatch();
+const navCollapsed = useAppSelector(getNavCollapsed);
+
+const handleOnClick = () => {
+  dispatch(toggleCollapsedSideNav(!navCollapsed));
+};
+
   return (
     <>
       <SidebarLogo sidebarCollapsed={sidebarCollapsed} setSidebarCollapsed={setSidebarCollapsed} />
@@ -47,7 +57,7 @@ const SidebarContent = ({
           <Menu.Item key='main/mobile-card'>
             <Link href='https://sendlotus.com' >
               <a target="_blank">
-                <img src='/images/lotus-logo-small.png' alt='lotus' 
+                <img src='/images/lotus-logo-small.png' alt='lotus'
                   style={{width: "20px", marginBottom: "5px", marginRight: "10px"}}
                 />
                 <span>Send Lotus</span>
@@ -56,8 +66,8 @@ const SidebarContent = ({
           </Menu.Item>
           <Menu.Item>
             <Link href='/admin/pack-register' >
-              <a>
-                <img src='/images/lotus-logo-small.png' alt='lotus' 
+              <a onClick={handleOnClick}>
+                <img src='/images/lotus-logo-small.png' alt='lotus'
                   style={{width: "20px", marginBottom: "5px", marginRight: "10px"}}
                 />
                 <span>{intl.get('general.registerPack')}</span>
@@ -65,12 +75,22 @@ const SidebarContent = ({
             </Link>
           </Menu.Item>
           <Menu.Item>
-            <Link href='/wallet' >
-              <a>
-                <img src='/images/lotus-logo-small.png' alt='lotus' 
+            <Link href='/wallet'>
+              <a onClick={handleOnClick}>
+                <img src='/images/lotus-logo-small.png' alt='lotus'
                   style={{width: "20px", marginBottom: "5px", marginRight: "10px"}}
                 />
                 <span>Wallet</span>
+              </a>
+            </Link>
+          </Menu.Item>
+          <Menu.Item>
+            <Link href='/send' >
+              <a onClick={handleOnClick}>
+                <img src='/images/lotus-logo-small.png' alt='lotus'
+                  style={{width: "20px", marginBottom: "5px", marginRight: "10px"}}
+                />
+                <span>Send</span>
               </a>
             </Link>
           </Menu.Item>

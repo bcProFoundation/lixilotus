@@ -16,6 +16,8 @@
     "unableToGetLixi": "Không thể tải Lì xì.",
     "unableToUpdateLixi": "Không thể cập nhật Lì xì.",
     "unableToDowloadLixi": "Không thể download Lì xì",
+    "unableToUpload": "Không thể tải lên thiệp",
+    "unableToGet": "Không thể tải hình ảnh",
     "fileNameNotExist": "Tên file không tồn tại",
     "lixiPackNotRegister": "Không thể đăng ký pack Lì xì"
   }

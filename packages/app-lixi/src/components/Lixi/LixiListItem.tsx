@@ -13,7 +13,7 @@ import { Button, Dropdown, Menu } from 'antd';
 import intl from 'react-intl-universal';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { archiveLixi, renameLixi, selectLixi, unarchiveLixi, withdrawLixi } from 'src/store/lixi/actions';
+import { archiveLixi, refreshLixiSilent, renameLixi, selectLixi, unarchiveLixi, withdrawLixi } from 'src/store/lixi/actions';
 import styled, { DefaultTheme } from 'styled-components';
 import { RenameLixiModalProps } from './RenameLixiModal';
 
