@@ -6,6 +6,7 @@ import { notificationTypeTranslations } from './notificationTypeTranslations';
 import { PrismaClient } from '@prisma/client';
 import { emailTemplates } from './emailTemplates';
 import { emailTemplateTranslations } from './emailTemplateTranslations';
+
 const prisma = new PrismaClient();
 
 async function main() {
@@ -60,7 +61,7 @@ async function main() {
   );
 
   const sqls = fs
-    .readFileSync('./world_db.sql')
+    .readFileSync('./prisma/data/world_db.sql')
     .toString()
     .split('\n')
     .filter((line) => line.indexOf('--') !== 0)
