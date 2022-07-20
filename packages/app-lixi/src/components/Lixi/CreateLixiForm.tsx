@@ -1,52 +1,64 @@
-import { Checkbox, Collapse, DatePicker, Form, Input, Menu, Modal, notification, Radio, RadioChangeEvent } from 'antd';
-import { range } from 'lodash';
+import { Checkbox, Collapse, DatePicker, Form, Input, Radio, RadioChangeEvent, Tooltip } from 'antd';
+import _, { range } from 'lodash';
 import isEmpty from 'lodash.isempty';
-import intl from 'react-intl-universal';
 import moment from 'moment';
 import React, { useState } from 'react';
+import intl from 'react-intl-universal';
+import { getAllEnvelopes } from 'src/store/envelope/selectors';
+import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import { generateLixi } from 'src/store/lixi/actions';
 import { openModal } from 'src/store/modal/actions';
 import { showToast } from 'src/store/toast/actions';
-import { generateLixi } from 'src/store/lixi/actions';
+import styled from 'styled-components';
 
-import { AntdFormWrapper } from '@bcpros/lixi-components/components/Common/EnhancedInputs';
+import { DollarOutlined, PlusSquareOutlined } from '@ant-design/icons';
+import {
+  AntdFormWrapper,
+  FormItemCharityAddressInput,
+  FormItemStaffAddressInput
+} from '@bcpros/lixi-components/components/Common/EnhancedInputs';
 import { SmartButton } from '@bcpros/lixi-components/components/Common/PrimaryButton';
 import {
-  AdvancedCollapse, LixiCollapse
+  AdvancedCollapse,
+  LixiCollapse,
+  StyledCollapse
 } from '@bcpros/lixi-components/components/Common/StyledCollapse';
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
-import { Account } from '@bcpros/lixi-models/lib/account';
 import { countries } from '@bcpros/lixi-models/constants';
-import { GenerateLixiCommand, LixiType, ClaimType } from '@bcpros/lixi-models/lib/lixi';
-import { PlusSquareOutlined } from '@ant-design/icons';
+import { Account } from '@bcpros/lixi-models/lib/account';
+import { ClaimType, GenerateLixiCommand, LixiType, LotteryAddress } from '@bcpros/lixi-models/lib/lixi';
 import CountrySelectDropdown from '@components/Common/CountrySelectDropdown';
-import EnvelopeSelectDropdown from '@components/Common/EnvelopeSelectDropdown';
-import { isValidAmountInput } from '@utils/validation';
-import { CreateLixiConfirmationModalProps } from './CreateLixiConfirmationModal';
-import { LixiEnvelopeUploader, StyledLixiEnvelopeUploaded } from './LixiEnvelopeUploader';
-import { getAllEnvelopes } from 'src/store/envelope/selectors';
-import { getUpload } from '@store/account/selectors';
-import TextArea from 'antd/lib/input/TextArea';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import EnvelopeCarousel from '@components/Common/EnvelopeCarousel';
+import { getUpload } from '@store/account/selectors';
+import { AppContext } from '@store/store';
+import { isValidAmountInput } from '@utils/validation';
+import TextArea from 'antd/lib/input/TextArea';
+import { CreateLixiConfirmationModalProps } from './CreateLixiConfirmationModal';
+import { StyledLixiEnvelopeUploaded } from './LixiEnvelopeUploader';
 
 const { Panel } = Collapse;
 
+const LotteryInput = styled(Input)`
+  .ant-input-group-addon {
+    width: 52px;
+  }
+`;
 type CreateLixiFormProps = {
-  account?: Account
+  account?: Account;
 } & React.HTMLProps<HTMLElement>;
 
-const CreateLixiForm = ({
-  account,
-  disabled,
-}: CreateLixiFormProps) => {
-
+const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
   const dispatch = useAppDispatch();
   const envelopes = useAppSelector(getAllEnvelopes);
   const upload = useAppSelector(getUpload);
 
+  const { XPI, Wallet } = React.useContext(AppContext);
+
   // New Lixi name
   const [newLixiName, setNewLixiName] = useState('');
   const [newLixiNameIsValid, setNewLixiNameIsValid] = useState<boolean | null>(null);
+
+  // LixiType && ClaimType
   const [lixiType, setLixiType] = useState<number>(LixiType.Random);
   const [claimType, setClaimType] = useState<number>(ClaimType.Single);
 
@@ -74,9 +86,9 @@ const CreateLixiForm = ({
   const [newLixiDividedValue, setNewLixiDividedValue] = useState('');
   const [newLixiDividedValueIsValid, setNewLixiDividedValueIsValid] = useState(false);
 
-  // New Lixi Packages Value
-  const [newNumberLixiPerPackage, setNewNumberLixiPerPackage] = useState('');
-  const [newPackageIsValid, setNewPackageIsValid] = useState(true);
+  // New Envelope
+  const [newEnvelopeId, setNewEnvelopeId] = useState<number | null>(null);
+  const [newEnvelopeMessage, setNewEnvelopeMessage] = useState('');
 
   // New Country
   const [newCountryLixi, setNewCountryLixi] = useState('');
@@ -86,27 +98,36 @@ const CreateLixiForm = ({
   const [newMaxClaim, setNewMaxClaimLixi] = useState('');
   const [newMaxClaimLixiIsValid, setNewMaxClaimLixiIsValid] = useState(true);
 
+  // New Lixi Packages Value
+  const [newNumberLixiPerPackage, setNewNumberLixiPerPackage] = useState('');
+  const [newPackageIsValid, setNewPackageIsValid] = useState(true);
+
   // New minimum staking number
   const [newMinStaking, setNewMinStaking] = useState('');
   const [newMinStakingIsValid, setNewMinStakingIsValid] = useState(true);
-
-  // New ExpiryAt
-  const [newExpiryAt, setNewExpiryAtLixi] = useState('');
-  const [newExpiryAtLixiIsValid, setExpiryAtLixiIsValid] = useState(true);
 
   // New ActivatedAt
   const [newActivatedAt, setNewActivatedAtLixi] = useState('');
   const [newActivatedAtLixiIsValid, setActivatedAtLixiIsValid] = useState(true);
 
+  // New ExpiryAt
+  const [newExpiryAt, setNewExpiryAtLixi] = useState('');
+  const [newExpiryAtLixiIsValid, setExpiryAtLixiIsValid] = useState(true);
+
   // New FamilyFriendly
   const [isFamilyFriendly, setIsFamilyFriendlyLixi] = useState<boolean>(false);
+
   // New isNFTEnabled
   const [isNFTEnabled, setIsNFTEnabledLixi] = useState<boolean>(false);
 
-  // New Envelope
-  const [newEnvelopeId, setNewEnvelopeId] = useState<number | null>(null);
-  const [newEnvelopeMessage, setNewEnvelopeMessage] = useState('');
+  // New distribution program
+  const [newStaffAddress, setNewStaffAddress] = useState('');
+  const [claimStaffAddressError, setClaimStaffAddressError] = useState<string | boolean>(false);
 
+  const [newCharityAddress, setNewCharityAddress] = useState('');
+  const [claimCharityAddressError, setClaimCharityAddressError] = useState<string | boolean>(false);
+
+  const [joinLotteryProgram, setJoinLotteryProgram] = useState<boolean>(false);
 
   const handleNewLixiNameInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -121,83 +142,109 @@ const CreateLixiForm = ({
   const handleEnvelopeMessageInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = e.target;
     setNewEnvelopeMessage(value);
-  }
+  };
+
+  const handleStaffAddressChange = e => {
+    const { value, name } = e.target;
+    let staffAddress: string = _.trim(value);
+    setNewStaffAddress(staffAddress);
+  };
+
+  const handleCharityAddressChange = e => {
+    const { value, name } = e.target;
+    let charityAddress: string = _.trim(value);
+    setNewCharityAddress(charityAddress);
+  };
+
+  const handleJoinLotteryProgram = e => {
+    const value = e.target.checked;
+    setJoinLotteryProgram(value);
+  };
 
   // Only enable CreateLixi button if all form entries are valid
   let createLixiFormDataIsValid =
-    newLixiNameIsValid && newMaxClaimLixiIsValid && newPackageIsValid &&
-    newExpiryAtLixiIsValid && account && newActivatedAtLixiIsValid &&
-    (claimType == ClaimType.OneTime &&
-      (lixiType == LixiType.Random && newNumberOfSubLixi && newLixiAmountValueIsValid && newLixiMinValueIsValid && newLixiMaxValueIsValid) ||
-      (lixiType == LixiType.Equal && newNumberOfSubLixi && newLixiAmountValueIsValid)) ||
+    (newLixiNameIsValid &&
+      newMaxClaimLixiIsValid &&
+      newPackageIsValid &&
+      newExpiryAtLixiIsValid &&
+      account &&
+      newActivatedAtLixiIsValid &&
+      ((claimType == ClaimType.OneTime &&
+        lixiType == LixiType.Random &&
+        newNumberOfSubLixi &&
+        newLixiAmountValueIsValid &&
+        newLixiMinValueIsValid &&
+        newLixiMaxValueIsValid) ||
+        (lixiType == LixiType.Equal && newNumberOfSubLixi && newLixiAmountValueIsValid))) ||
     (claimType == ClaimType.Single &&
-      (lixiType == LixiType.Random && newLixiMinValueIsValid && newLixiMaxValueIsValid) ||
-      (lixiType == LixiType.Fixed && newLixiFixedValueIsValid) ||
-      (lixiType == LixiType.Divided && newLixiDividedValueIsValid)
-    );
+      lixiType == LixiType.Random &&
+      newLixiMinValueIsValid &&
+      newLixiMaxValueIsValid) ||
+    (lixiType == LixiType.Fixed && newLixiFixedValueIsValid) ||
+    (lixiType == LixiType.Divided && newLixiDividedValueIsValid);
 
   const handleChangeClaimType = (e: RadioChangeEvent) => {
     const { value } = e.target;
     setClaimType(value);
     setLixiType(LixiType.Random);
-  }
+  };
 
   const handleChangeLixiType = (e: RadioChangeEvent) => {
     const { value } = e.target;
     setLixiType(value);
-  }
+  };
 
   const handleNewLixiAmountInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewLixiAmountValueIsValid(isValidAmountInput(value));
     setNewLixiAmount(value);
-  }
+  };
 
   const handleNewNumberOfSubLixi = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewSubLixiIsValid(isValidAmountInput(value));
     setNewNumberOfSubLixi(value);
-  }
+  };
 
   const handleChangeMinValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewLixiMinValueIsValid(isValidAmountInput(value));
     setNewLixiMinValue(value);
-  }
+  };
   const handleChangeMaxValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewLixiMaxValueIsValid(isValidAmountInput(value) && Number(value) !== 0);
     setNewLixiMaxValue(value);
-  }
+  };
 
   const handleChangeFixedValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewLixiFixedValueIsValid(isValidAmountInput(value));
     setNewLixiFixedValue(value);
-  }
+  };
 
   const handleChangeDividedValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewLixiDividedValueIsValid(isValidAmountInput(value));
     setNewLixiDividedValue(value);
-  }
+  };
 
   const handleNewNumberLixiPerPackage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewPackageIsValid(isValidAmountInput(value));
     setNewNumberLixiPerPackage(value);
-  }
+  };
 
   const handleChangeCountry = (value, e: React.ChangeEvent<HTMLInputElement>) => {
     setNewCountryLixi(value);
     if (value && !isEmpty(value)) {
       setNewCountryLixiIsValid(true);
     }
-  }
+  };
 
   const handleChangeEnvelope = (value: number) => {
     setNewEnvelopeId(value);
-  }
+  };
 
   const handleNewMaxClaimInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -217,47 +264,112 @@ const CreateLixiForm = ({
   };
 
   // Expiry Time
-  const disabledDate = (current) => {
+  const disabledDate = current => {
     return current && current < moment().startOf('day');
-  }
-  const disabledDateTime = (current) => {
+  };
+  const disabledDateTime = current => {
     if (newExpiryAt && moment(newExpiryAt).date() > moment().date()) {
       return {
         disabledHours: () => [],
-        disabledMinutes: () => [],
+        disabledMinutes: () => []
       };
     }
     return {
       disabledHours: () => range(0, moment().hour()),
-      disabledMinutes: () => range(0, moment().minute()),
+      disabledMinutes: () => range(0, moment().minute())
     };
-  }
-  const handleNewExpityTimeInput = (value) => {
+  };
+  const handleNewExpityTimeInput = value => {
     setNewExpiryAtLixi(value._d.toString());
-  }
+  };
 
-  const handleNewActivatedTimeInput = (value) => {
+  const handleNewActivatedTimeInput = value => {
     setNewActivatedAtLixi(value._d.toString());
-  }
+  };
 
-  const handleFamilyFriendly = (e) => {
+  const handleFamilyFriendly = e => {
     const value = e.target.checked;
     setIsFamilyFriendlyLixi(value);
-  }
+  };
 
-  const handleNFTEnabled = (e) => {
+  const lotterProgram = () => {
+    return (
+      <StyledCollapse>
+        <StyledCollapse>
+          <StyledCollapse>
+            <Panel key={''} header={intl.get('lixi.loyaltyProgram')}>
+              {/* address for staff */}
+              <FormItemStaffAddressInput
+                loadWithCameraOpen={false}
+                onScan={result =>
+                  handleStaffAddressChange({
+                    target: {
+                      name: 'staffAddress',
+                      value: result
+                    }
+                  })
+                }
+                inputProps={{
+                  onChange: e => handleStaffAddressChange(e),
+                  value: newStaffAddress
+                }}
+              ></FormItemStaffAddressInput>
+
+              {/* Charity */}
+              <FormItemCharityAddressInput
+                loadWithCameraOpen={false}
+                onScan={result =>
+                  handleCharityAddressChange({
+                    target: {
+                      name: 'charityAddress',
+                      value: result
+                    }
+                  })
+                }
+                inputProps={{
+                  onChange: e => handleCharityAddressChange(e),
+                  value: newCharityAddress
+                }}
+              ></FormItemCharityAddressInput>
+
+              {/* Lottery */}
+              <Form.Item>
+                <Tooltip title={intl.get('lixi.loterryAddress')}>
+                  <div>
+                    <LotteryInput
+                      disabled
+                      prefix={<DollarOutlined />}
+                      name="loterryAddress"
+                      value={LotteryAddress}
+                      placeholder={intl.get('lixi.loterryAddress')}
+                      addonAfter={
+                        <Checkbox value={joinLotteryProgram} onChange={e => handleJoinLotteryProgram(e)}></Checkbox>
+                      }
+                    />
+                  </div>
+                </Tooltip>
+              </Form.Item>
+            </Panel>
+          </StyledCollapse>
+        </StyledCollapse>
+      </StyledCollapse>
+    );
+  };
+
+  const handleNFTEnabled = e => {
     const value = e.target.checked;
     setIsNFTEnabledLixi(value);
-  }
+  };
 
   const handleSubmitCreateLixi = () => {
-
     if (!account) {
-      dispatch(showToast('error', {
-        message: intl.get('account.unableCreateLixi'),
-        description: intl.get('account.selectLixiFirst'),
-        duration: 5
-      }));
+      dispatch(
+        showToast('error', {
+          message: intl.get('account.unableCreateLixi'),
+          description: intl.get('account.selectLixiFirst'),
+          duration: 5
+        })
+      );
     }
 
     const command: GenerateLixiCommand = {
@@ -283,7 +395,10 @@ const CreateLixiForm = ({
       envelopeId: newEnvelopeId,
       envelopeMessage: newEnvelopeMessage,
       numberLixiPerPackage: newNumberLixiPerPackage,
-      upload: upload
+      upload: upload,
+      staffAddress: newStaffAddress,
+      charityAddress: newCharityAddress,
+      joinLotteryProgram: joinLotteryProgram
     };
 
     const createLixiModalProps: CreateLixiConfirmationModalProps = {
@@ -306,24 +421,27 @@ const CreateLixiForm = ({
       isFamilyFriendly,
       isNFTEnabled,
       newEnvelopeId,
+      newStaffAddress,
+      newCharityAddress,
+      joinLotteryProgram,
       onOkAction: generateLixi(command)
     };
     dispatch(openModal('CreateLixiConfirmationModal', createLixiModalProps));
-  }
+  };
 
-  const onOk = (value) => {
-    setNewExpiryAtLixi(value._d.toUTCString())
+  const onOk = value => {
+    setNewExpiryAtLixi(value._d.toUTCString());
     if (value && !isEmpty(value)) {
-      setExpiryAtLixiIsValid(true)
+      setExpiryAtLixiIsValid(true);
     }
-  }
+  };
 
-  const onActivatedOk = (value) => {
-    setNewActivatedAtLixi(value._d.toUTCString())
+  const onActivatedOk = value => {
+    setNewActivatedAtLixi(value._d.toUTCString());
     if (value && !isEmpty(value)) {
-      setActivatedAtLixiIsValid(true)
+      setActivatedAtLixiIsValid(true);
     }
-  }
+  };
   const selectClaimType = () => {
     if (claimType == ClaimType.Single) {
       return (
@@ -335,8 +453,7 @@ const CreateLixiForm = ({
           </Radio.Group>
         </Form.Item>
       );
-    }
-    else {
+    } else {
       return (
         <>
           <Form.Item>
@@ -359,7 +476,7 @@ const CreateLixiForm = ({
         </>
       );
     }
-  }
+  };
 
   const selectLixiType = () => {
     switch (lixiType) {
@@ -378,8 +495,7 @@ const CreateLixiForm = ({
                   name="fixedValue"
                   onChange={e => handleChangeFixedValue(e)}
                   onWheel={e => e.currentTarget.blur()}
-                >
-                </Input>
+                ></Input>
               </Input.Group>
             </Form.Item>
           </>
@@ -399,8 +515,7 @@ const CreateLixiForm = ({
                   name="dividedValue"
                   onChange={e => handleChangeDividedValue(e)}
                   onWheel={e => e.currentTarget.blur()}
-                >
-                </Input>
+                ></Input>
               </Input.Group>
             </Form.Item>
           </>
@@ -415,7 +530,7 @@ const CreateLixiForm = ({
             <Form.Item>
               <Input
                 addonBefore={intl.get('account.min')}
-                id = "min"
+                id="min"
                 onWheel={e => e.currentTarget.blur()}
                 type="number"
                 step={1 / 10 ** currency.cashDecimals}
@@ -423,8 +538,7 @@ const CreateLixiForm = ({
                 name="minValue"
                 value={newLixiMinValue}
                 onChange={e => handleChangeMinValue(e)}
-              >
-              </Input>
+              ></Input>
             </Form.Item>
             <Form.Item>
               <Input
@@ -436,27 +550,19 @@ const CreateLixiForm = ({
                 value={newLixiMaxValue}
                 onChange={e => handleChangeMaxValue(e)}
                 onWheel={e => e.currentTarget.blur()}
-              >
-              </Input>
+              ></Input>
             </Form.Item>
           </>
         );
     }
-  }
+  };
 
   const advanceOptions = () => {
     return (
       <>
         {/* Max redemption && Packages*/}
-        {claimType == ClaimType.Single ?
-          <Form.Item
-            validateStatus={
-              newMaxClaimLixiIsValid === null ||
-                newMaxClaimLixiIsValid
-                ? ''
-                : 'error'
-            }
-          >
+        {claimType == ClaimType.Single ? (
+          <Form.Item validateStatus={newMaxClaimLixiIsValid === null || newMaxClaimLixiIsValid ? '' : 'error'}>
             <Input
               addonBefore={intl.get('account.maxClaim')}
               type="number"
@@ -467,14 +573,8 @@ const CreateLixiForm = ({
               onWheel={e => e.currentTarget.blur()}
             />
           </Form.Item>
-          :
-          <Form.Item
-            validateStatus={
-              newPackageIsValid === null || newPackageIsValid
-                ? ''
-                : 'error'
-            }
-          >
+        ) : (
+          <Form.Item validateStatus={newPackageIsValid === null || newPackageIsValid ? '' : 'error'}>
             <Input
               addonBefore={intl.get('account.perPack')}
               type="number"
@@ -485,18 +585,10 @@ const CreateLixiForm = ({
               onWheel={e => e.currentTarget.blur()}
             />
           </Form.Item>
-        }
-
+        )}
 
         {/* Minimum Staking */}
-        <Form.Item
-          validateStatus={
-            newMinStakingIsValid === null ||
-              newMinStakingIsValid
-              ? ''
-              : 'error'
-          }
-        >
+        <Form.Item validateStatus={newMinStakingIsValid === null || newMinStakingIsValid ? '' : 'error'}>
           <Input
             addonBefore={intl.get('account.minStaking')}
             type="number"
@@ -510,26 +602,19 @@ const CreateLixiForm = ({
         </Form.Item>
 
         {/* Activation Time */}
-        <Form.Item
-          validateStatus={
-            newActivatedAtLixiIsValid === null ||
-              newActivatedAtLixiIsValid
-              ? ''
-              : 'error'
-          }
-        >
+        <Form.Item validateStatus={newActivatedAtLixiIsValid === null || newActivatedAtLixiIsValid ? '' : 'error'}>
           <DatePicker
             placeholder={intl.get('account.activatedTime')}
             name="lixiActivatedAt"
-            disabledDate={(current) => disabledDate(current)}
-            disabledTime={(current) => disabledDateTime(current)}
+            disabledDate={current => disabledDate(current)}
+            disabledTime={current => disabledDateTime(current)}
             showTime={{
-              format: 'HH:mm',
+              format: 'HH:mm'
             }}
             format="YYYY-MM-DD HH:mm"
             size={'large'}
             style={{
-              width: "100%",
+              width: '100%'
             }}
             onSelect={handleNewActivatedTimeInput}
             onOk={onActivatedOk}
@@ -537,26 +622,19 @@ const CreateLixiForm = ({
         </Form.Item>
 
         {/* Expiry Time */}
-        <Form.Item
-          validateStatus={
-            newExpiryAtLixiIsValid === null ||
-              newExpiryAtLixiIsValid
-              ? ''
-              : 'error'
-          }
-        >
+        <Form.Item validateStatus={newExpiryAtLixiIsValid === null || newExpiryAtLixiIsValid ? '' : 'error'}>
           <DatePicker
             placeholder={intl.get('account.expiryTime')}
             name="lixiExpiryAt"
-            disabledDate={(current) => disabledDate(current)}
-            disabledTime={(current) => disabledDateTime(current)}
+            disabledDate={current => disabledDate(current)}
+            disabledTime={current => disabledDateTime(current)}
             showTime={{
-              format: 'HH:mm',
+              format: 'HH:mm'
             }}
             format="YYYY-MM-DD HH:mm"
             size={'large'}
             style={{
-              width: "100%",
+              width: '100%'
             }}
             onSelect={handleNewExpityTimeInput}
             onOk={onOk}
@@ -564,7 +642,7 @@ const CreateLixiForm = ({
         </Form.Item>
       </>
     );
-  }
+  };
 
   return (
     <>
@@ -581,18 +659,11 @@ const CreateLixiForm = ({
             <Form
               size="small"
               style={{
-                width: 'auto',
+                width: 'auto'
               }}
             >
               {/* Name */}
-              <Form.Item
-                validateStatus={
-                  newLixiNameIsValid === null ||
-                    newLixiNameIsValid
-                    ? ''
-                    : 'error'
-                }
-              >
+              <Form.Item validateStatus={newLixiNameIsValid === null || newLixiNameIsValid ? '' : 'error'}>
                 <Input
                   addonBefore={intl.get('lixi.name')}
                   placeholder={intl.get('account.enterLixiName')}
@@ -625,17 +696,14 @@ const CreateLixiForm = ({
               {/* Lixi envelope */}
               <Form.Item>
                 <AntdFormWrapper>
-                  <EnvelopeCarousel
-                    envelopes={envelopes}
-                    handleChangeEnvelope={handleChangeEnvelope}
-                  />
+                  <EnvelopeCarousel envelopes={envelopes} handleChangeEnvelope={handleChangeEnvelope} />
                 </AntdFormWrapper>
               </Form.Item>
               {/* Custom Envelope */}
               <Form.Item>
-                <StyledLixiEnvelopeUploaded/>
+                <StyledLixiEnvelopeUploaded />
               </Form.Item>
-              <hr/>
+              <hr />
               {/* Message */}
               <Form.Item>
                 <TextArea
@@ -663,17 +731,17 @@ const CreateLixiForm = ({
                   <Panel header={intl.get('account.advance')} key="2">
                     {/* Max Claim and Expity Time */}
                     {advanceOptions()}
+
+                    {/* Lottery Program */}
+                    {ClaimType.OneTime === claimType && <Form.Item>{lotterProgram()}</Form.Item>}
+
                     {/* Family Friendly */}
                     <Form.Item>
-                      <Checkbox
-                        value={isFamilyFriendly}
-                        onChange={e => handleFamilyFriendly(e)}>
+                      <Checkbox value={isFamilyFriendly} onChange={e => handleFamilyFriendly(e)}>
                         {intl.get('account.familyFriendly')}
                       </Checkbox>
                       {ClaimType.OneTime === claimType && (
-                        <Checkbox
-                          value={isNFTEnabled}
-                          onChange={e => handleNFTEnabled(e)}>
+                        <Checkbox value={isNFTEnabled} onChange={e => handleNFTEnabled(e)}>
                           {intl.get('lixi.isNFTEnabled')}
                         </Checkbox>
                       )}
@@ -683,10 +751,7 @@ const CreateLixiForm = ({
               </Form.Item>
             </Form>
           </AntdFormWrapper>
-          <SmartButton
-            onClick={() => handleSubmitCreateLixi()}
-            disabled={!createLixiFormDataIsValid}
-          >
+          <SmartButton onClick={() => handleSubmitCreateLixi()} disabled={!createLixiFormDataIsValid}>
             <PlusSquareOutlined />
             &nbsp;{intl.get('account.createLixi')}
           </SmartButton>
@@ -694,6 +759,9 @@ const CreateLixiForm = ({
       </LixiCollapse>
     </>
   );
-}
+};
 
 export default CreateLixiForm;
+function setClaimXpiAddressError(error: string | boolean) {
+  throw new Error('Function not implemented.');
+}

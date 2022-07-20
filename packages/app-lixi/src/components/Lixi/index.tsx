@@ -298,7 +298,7 @@ const Lixi: React.FC = () => {
           </div>
         </CopyToClipboard>
       ),
-      amount: item.isClaimed ? 0 : item.amount == 0 ? 0 : (item.amount - 0.000455).toFixed(2),
+      amount: item.isClaimed ? 0 : item.amount == 0 ? 0 : (item.amount).toFixed(2),
       packageId: item.packageId ? numberToBase58(item.packageId) : ''
     };
   });
