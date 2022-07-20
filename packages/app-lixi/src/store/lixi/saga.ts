@@ -291,6 +291,7 @@ function* postLixiSuccessSaga(action: PayloadAction<Lixi>) {
     yield put(removeUpload(null));
     yield put(setLixi(lixi));
     yield put(hideLoading(postLixi.type));
+    yield put(refreshLixiListSilent(lixi.accountId));
   } catch (error) {
     const message = intl.get('lixi.errorWhenCreateLixi');
     yield put(postLixiFailure(message));
@@ -391,7 +392,7 @@ function* selectLixiSuccessSaga(action: PayloadAction<Lixi>) {
   const lixi = action.payload;
   yield put(refreshLixiSilent(lixi.id))
   yield put(hideLoading(selectLixi.type));
-  yield put(push('admin/lixi'));
+  yield put(push('/admin/lixi'));
 }
 
 function* selectLixiFailureSaga(action: PayloadAction<string>) {
