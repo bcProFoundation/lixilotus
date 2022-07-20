@@ -99,7 +99,6 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
 
   const handleSelectLixi = (lixiId: number) => {
     dispatch(selectLixi(lixiId));
-    dispatch(refreshLixiSilent(lixiId))
   }
 
   const selectedAccount = useAppSelector(getSelectedAccount);
