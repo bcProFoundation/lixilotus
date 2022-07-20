@@ -292,9 +292,8 @@ export class LixiController {
             lixi
           } as PostLixiResponseDto;
         } else {
-          // One time child codes type
-          lixi = await this.lixiService.createOneTimeParentLixi(lixiIndex, account, command, i18n);
-          const jobId = await this.lixiService.createSubLixies(lixiIndex + 1, account, command, lixi.id);
+          lixi = await this.lixiService.createOneTimeParentLixi(lixiIndex, account, command);
+          const jobId = await this.lixiService.createSubLixies(lixiIndex + 1, account, command, lixi);
 
           return {
             lixi,
