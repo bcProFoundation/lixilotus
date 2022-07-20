@@ -102,8 +102,6 @@ export class CreateSubLixiesProcessor extends WorkerHost {
       };
     });
 
-    console.log(receivingSubLixies);
-
     // Save the lixi into the database
     try {
       await this.prisma.$transaction(async prisma => {

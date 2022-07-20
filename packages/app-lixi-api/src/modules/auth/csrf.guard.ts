@@ -20,11 +20,8 @@ export class CsrfGuard implements CanActivate {
 
       instance.csrfProtection(req, res, () => { });
 
-      console.log('csrf guard: ', true);
       return true;
     } catch (e) {
-      console.log('error', e);
-      console.log('csrf guard: ', false);
       return false;
     }
   }
