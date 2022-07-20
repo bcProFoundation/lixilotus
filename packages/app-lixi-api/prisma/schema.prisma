@@ -93,7 +93,6 @@ model Page {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
 
-
   @@map("page")
 }
 
@@ -113,6 +112,7 @@ model Account {
   uploads           Upload[]
 
   Page Page[]
+
   @@index([mnemonicHash], type: Hash)
   @@map("account")
 }
@@ -325,4 +325,77 @@ enum UserTwoFactorType {
   authenticator
 
   @@map("user_two_factor_type")
+}
+
+model Country {
+  id             Int       @id(map: "idx_158788_primary") @default(autoincrement())
+  name           String    @map("name") @db.VarChar(100)
+  iso3           String?   @map("iso3") @db.Char(3)
+  iso2           String?   @map("iso2") @db.Char(2)
+  numericCode    String?   @map("numeric_code") @db.Char(3)
+  phoneCode      String?   @map("phone_code") @db.VarChar(255)
+  capital        String?   @map("capital") @db.VarChar(255)
+  currency       String?   @map("currency") @db.VarChar(255)
+  currencyName   String?   @map("currency_name") @db.VarChar(255)
+  currencySymbol String?   @map("currency_symbol") @db.VarChar(255)
+  tld            String?   @map("tld") @db.VarChar(255)
+  native         String?   @map("native") @db.VarChar(255)
+  region         String?   @map("region") @db.VarChar(255)
+  subRegion      String?   @map("sub_region") @db.VarChar(255)
+  timezones      String?   @map("timezones")
+  translations   String?   @map("translations")
+  latitude       Decimal?  @map("latitude") @db.Decimal(10, 8)
+  longitude      Decimal?  @map("longitude") @db.Decimal(11, 8)
+  emoji          String?   @map("emoji") @db.VarChar(191)
+  emojiU         String?   @map("emoji_u") @db.VarChar(191)
+  createdAt      DateTime? @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime  @default(now()) @map("updated_at") @db.Timestamptz(6)
+  flag           Boolean   @default(true) @map("flag")
+  wikiDataId     String?   @map("wiki_data_id") @db.VarChar(255)
+  state          State[]
+  city           City[]
+
+  @@map("country")
+}
+
+model State {
+  id          Int       @id(map: "idx_158799_primary") @default(autoincrement())
+  name        String    @map("name") @db.VarChar(255)
+  countryCode String    @map("country_code") @db.Char(2)
+  fipsCode    String?   @map("fips_code") @db.VarChar(255)
+  iso2        String?   @map("iso2") @db.VarChar(255)
+  type        String?   @map("type") @db.VarChar(191)
+  latitude    Decimal?  @map("latitude") @db.Decimal(10, 8)
+  longitude   Decimal?  @map("longitude") @db.Decimal(11, 8)
+  createdAt   DateTime? @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime  @default(now()) @map("updated_at") @db.Timestamptz(6)
+  flag        Boolean   @default(true) @map("flag")
+  wikiDataId  String?   @map("wiki_data_id") @db.VarChar(255)
+  countryId   Int       @map("country_id")
+  country     Country   @relation(fields: [countryId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "country_region_final")
+  city        City[]
+
+  @@index([countryId], map: "idx_158799_country_region")
+  @@map("state")
+}
+
+model City {
+  id          Int       @id(map: "idx_158778_primary") @default(autoincrement())
+  name        String    @map("name") @db.VarChar(255)
+  stateCode   String    @map("state_code") @db.VarChar(255)
+  countryCode String    @map("country_code") @db.Char(2)
+  latitude    Decimal   @map("latitude") @db.Decimal(10, 8)
+  longitude   Decimal   @map("longitude") @db.Decimal(11, 8)
+  createdAt   DateTime? @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime? @map("updated_at") @db.Timestamptz(6)
+  flag        Boolean   @default(true) @map("flag")
+  wikiDataId  String?   @map("wiki_data_id") @db.VarChar(255)
+  countryId   Int       @map("country_id")
+  country     Country   @relation(fields: [countryId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cities_ibfk_2")
+  stateId     Int       @map("state_id")
+  state       State     @relation(fields: [stateId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cities_ibfk_1")
+
+  @@index([stateId], map: "idx_158778_cities_test_ibfk_1")
+  @@index([countryId], map: "idx_158778_cities_test_ibfk_2")
+  @@map("city")
 }

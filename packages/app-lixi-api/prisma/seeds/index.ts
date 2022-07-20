@@ -1,3 +1,4 @@
+import fs from 'fs';
 import { envelopes } from './envelopes';
 import { notificationTypes } from './notificationTypes';
 import { notificationTypeTranslations } from './notificationTypeTranslations';
@@ -5,6 +6,7 @@ import { notificationTypeTranslations } from './notificationTypeTranslations';
 import { PrismaClient } from '@prisma/client';
 import { emailTemplates } from './emailTemplates';
 import { emailTemplateTranslations } from './emailTemplateTranslations';
+
 const prisma = new PrismaClient();
 
 async function main() {
@@ -57,6 +59,20 @@ async function main() {
       });
     })
   );
+
+  const sqls = fs
+    .readFileSync('./prisma/data/world_db.sql')
+    .toString()
+    .split('\n')
+    .filter((line) => line.indexOf('--') !== 0)
+    .join('\n')
+    .replace(/(\r\n|\n|\r)/gm, ' ') // remove newlines
+    .replace(/\s+/g, ' ') // excess white space
+    .split(';')
+
+  for (const sql of sqls) {
+    await prisma.$executeRawUnsafe(sql)
+  }
 }
 
 main()
