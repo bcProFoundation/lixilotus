@@ -392,7 +392,7 @@ function* selectLixiSuccessSaga(action: PayloadAction<Lixi>) {
   const lixi = action.payload;
   yield put(refreshLixiSilent(lixi.id))
   yield put(hideLoading(selectLixi.type));
-  yield put(push('lixi'));
+  yield put(push('/admin/lixi'));
 }
 
 function* selectLixiFailureSaga(action: PayloadAction<string>) {
