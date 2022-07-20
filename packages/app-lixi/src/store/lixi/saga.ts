@@ -120,6 +120,9 @@ function* generateLixiSaga(action: PayloadAction<GenerateLixiCommand>) {
     envelopeId: command.envelopeId,
     envelopeMessage: command.envelopeMessage ?? '',
     uploadId: command.upload ? command.upload.id : null,
+    staffAddress: command.staffAddress,
+    charityAddress: command.charityAddress,
+    joinLotteryProgram: command.joinLotteryProgram,
   };
 
   yield put(postLixi(createLixiCommand));
@@ -166,7 +169,7 @@ function* fetchInitialSubLixiesSaga(action: PayloadAction<number>) {
   }
 }
 
-function* fetchInitialSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) {}
+function* fetchInitialSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) { }
 
 function* fetchInitialSubLixiesFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? intl.get('lixi.unableGetChildLixi');
@@ -192,7 +195,7 @@ function* fetchMoreSubLixiesSaga(action: PayloadAction<{ parentId: number; start
   }
 }
 
-function* fetchMoreSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) {}
+function* fetchMoreSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) { }
 
 function* fetchMoreSubLixiesFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? intl.get('lixi.unableCreateChildLixi');
@@ -386,6 +389,8 @@ function* selectLixiSaga(action: PayloadAction<number>) {
 }
 
 function* selectLixiSuccessSaga(action: PayloadAction<Lixi>) {
+  const lixi = action.payload;
+  yield put(refreshLixiSilent(lixi.id))
   yield put(hideLoading(selectLixi.type));
   yield put(push('lixi'));
 }

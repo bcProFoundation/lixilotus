@@ -93,7 +93,6 @@ model Page {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
 
-
   @@map("page")
 }
 
@@ -113,51 +112,54 @@ model Account {
   uploads           Upload[]
 
   Page Page[]
+
   @@index([mnemonicHash], type: Hash)
   @@map("account")
 }
 
 model Lixi {
-  id                   Int       @id @default(autoincrement())
+  id                   Int                @id @default(autoincrement())
   name                 String
-  maxClaim             Int       @default(0) @map("max_claim")
-  claimedNum           Int       @default(0) @map("claimed_num")
-  claimType            Int       @default(0) @map("claim_type")
-  lixiType             Int       @default(0) @map("lixi_type")
-  minValue             Float     @map("min_value")
-  maxValue             Float     @map("max_value")
-  fixedValue           Float     @map("fixed_value")
-  dividedValue         Int       @default(1) @map("divided_value")
-  encryptedXPriv       String    @map("encrypted_xpriv")
-  encryptedClaimCode   String    @map("encrypted_claim_code")
-  totalClaim           BigInt    @default(0) @map("total_claim")
-  createdAt            DateTime  @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt            DateTime  @default(now()) @map("updated_at") @db.Timestamptz
-  minStaking           Float     @default(0) @map("min_staking")
-  expiryAt             DateTime? @map("expiry_at") @db.Timestamptz
-  activationAt         DateTime? @map("activation_at") @db.Timestamptz
-  country              String?   @map("country")
-  isFamilyFriendly     Boolean   @map("is_family_friendly")
+  maxClaim             Int                @default(0) @map("max_claim")
+  claimedNum           Int                @default(0) @map("claimed_num")
+  claimType            Int                @default(0) @map("claim_type")
+  lixiType             Int                @default(0) @map("lixi_type")
+  minValue             Float              @map("min_value")
+  maxValue             Float              @map("max_value")
+  fixedValue           Float              @map("fixed_value")
+  dividedValue         Int                @default(1) @map("divided_value")
+  encryptedXPriv       String             @map("encrypted_xpriv")
+  encryptedClaimCode   String             @map("encrypted_claim_code")
+  totalClaim           BigInt             @default(0) @map("total_claim")
+  createdAt            DateTime           @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt            DateTime           @default(now()) @map("updated_at") @db.Timestamptz
+  minStaking           Float              @default(0) @map("min_staking")
+  expiryAt             DateTime?          @map("expiry_at") @db.Timestamptz
+  activationAt         DateTime?          @map("activation_at") @db.Timestamptz
+  country              String?            @map("country")
+  isFamilyFriendly     Boolean            @map("is_family_friendly")
   claims               Claim[]
-  status               String    @default("active") @map("status")
-  inventoryStatus      String    @default("initialized") @map("invetory_status")
-  account              Account   @relation(fields: [accountId], references: [id])
-  accountId            Int       @map("account_id")
-  derivationIndex      Int       @default(0) @map("derivation_index")
-  address              String    @map("address")
-  amount               Float     @default(0) @map("amount")
-  numberOfSubLixi      Int?      @map("sub_lixi_value")
-  parent               Lixi?     @relation("parentSubLixi", fields: [parentId], references: [id])
-  subLixies            Lixi[]    @relation("parentSubLixi")
-  parentId             Int?      @map("parent_id")
-  envelopeId           Int?      @map("envelope_id")
-  envelope             Envelope? @relation(fields: [envelopeId], references: [id])
-  envelopeMessage      String    @default("") @map("envelope_message")
-  isClaimed            Boolean?  @default(false) @map("check_claim")
-  isNFTEnabled         Boolean   @default(false) @map("is_nft_enabled")
-  numberLixiPerPackage Int?      @map("number_lixi_per_package")
-  packageId            Int?      @map("package_id")
-  package              Package?  @relation(fields: [packageId], references: [id])
+  joinLotteryProgram   Boolean            @default(false) @map("join_lottery_program")
+  status               String             @default("active") @map("status")
+  inventoryStatus      String             @default("initialized") @map("invetory_status")
+  account              Account            @relation(fields: [accountId], references: [id])
+  accountId            Int                @map("account_id")
+  derivationIndex      Int                @default(0) @map("derivation_index")
+  address              String             @map("address")
+  amount               Float              @default(0) @map("amount")
+  numberOfSubLixi      Int?               @map("sub_lixi_value")
+  parent               Lixi?              @relation("parentSubLixi", fields: [parentId], references: [id])
+  subLixies            Lixi[]             @relation("parentSubLixi")
+  parentId             Int?               @map("parent_id")
+  envelopeId           Int?               @map("envelope_id")
+  envelope             Envelope?          @relation(fields: [envelopeId], references: [id])
+  envelopeMessage      String             @default("") @map("envelope_message")
+  isClaimed            Boolean?           @default(false) @map("check_claim")
+  isNFTEnabled         Boolean            @default(false) @map("is_nft_enabled")
+  numberLixiPerPackage Int?               @map("number_lixi_per_package")
+  packageId            Int?               @map("package_id")
+  package              Package?           @relation(fields: [packageId], references: [id])
+  distributions        LixiDistribution[]
   upload               Upload?
   uploadId             String?   @map("upload_id")
 
@@ -201,6 +203,16 @@ model Package {
   lixi      Lixi[]
 
   @@map("package")
+}
+
+model LixiDistribution {
+  id               String @id @default(cuid())
+  address          String @map("address")
+  distributionType String @map("type")
+  lixiId           Int
+  lixi             Lixi   @relation(fields: [lixiId], references: [id])
+
+  @@map("lixi_distribution")
 }
 
 model NotificationType {
@@ -313,4 +325,77 @@ enum UserTwoFactorType {
   authenticator
 
   @@map("user_two_factor_type")
+}
+
+model Country {
+  id             Int       @id(map: "idx_158788_primary") @default(autoincrement())
+  name           String    @map("name") @db.VarChar(100)
+  iso3           String?   @map("iso3") @db.Char(3)
+  iso2           String?   @map("iso2") @db.Char(2)
+  numericCode    String?   @map("numeric_code") @db.Char(3)
+  phoneCode      String?   @map("phone_code") @db.VarChar(255)
+  capital        String?   @map("capital") @db.VarChar(255)
+  currency       String?   @map("currency") @db.VarChar(255)
+  currencyName   String?   @map("currency_name") @db.VarChar(255)
+  currencySymbol String?   @map("currency_symbol") @db.VarChar(255)
+  tld            String?   @map("tld") @db.VarChar(255)
+  native         String?   @map("native") @db.VarChar(255)
+  region         String?   @map("region") @db.VarChar(255)
+  subRegion      String?   @map("sub_region") @db.VarChar(255)
+  timezones      String?   @map("timezones")
+  translations   String?   @map("translations")
+  latitude       Decimal?  @map("latitude") @db.Decimal(10, 8)
+  longitude      Decimal?  @map("longitude") @db.Decimal(11, 8)
+  emoji          String?   @map("emoji") @db.VarChar(191)
+  emojiU         String?   @map("emoji_u") @db.VarChar(191)
+  createdAt      DateTime? @map("created_at") @db.Timestamptz(6)
+  updatedAt      DateTime  @default(now()) @map("updated_at") @db.Timestamptz(6)
+  flag           Boolean   @default(true) @map("flag")
+  wikiDataId     String?   @map("wiki_data_id") @db.VarChar(255)
+  state          State[]
+  city           City[]
+
+  @@map("country")
+}
+
+model State {
+  id          Int       @id(map: "idx_158799_primary") @default(autoincrement())
+  name        String    @map("name") @db.VarChar(255)
+  countryCode String    @map("country_code") @db.Char(2)
+  fipsCode    String?   @map("fips_code") @db.VarChar(255)
+  iso2        String?   @map("iso2") @db.VarChar(255)
+  type        String?   @map("type") @db.VarChar(191)
+  latitude    Decimal?  @map("latitude") @db.Decimal(10, 8)
+  longitude   Decimal?  @map("longitude") @db.Decimal(11, 8)
+  createdAt   DateTime? @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime  @default(now()) @map("updated_at") @db.Timestamptz(6)
+  flag        Boolean   @default(true) @map("flag")
+  wikiDataId  String?   @map("wiki_data_id") @db.VarChar(255)
+  countryId   Int       @map("country_id")
+  country     Country   @relation(fields: [countryId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "country_region_final")
+  city        City[]
+
+  @@index([countryId], map: "idx_158799_country_region")
+  @@map("state")
+}
+
+model City {
+  id          Int       @id(map: "idx_158778_primary") @default(autoincrement())
+  name        String    @map("name") @db.VarChar(255)
+  stateCode   String    @map("state_code") @db.VarChar(255)
+  countryCode String    @map("country_code") @db.Char(2)
+  latitude    Decimal   @map("latitude") @db.Decimal(10, 8)
+  longitude   Decimal   @map("longitude") @db.Decimal(11, 8)
+  createdAt   DateTime? @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime? @map("updated_at") @db.Timestamptz(6)
+  flag        Boolean   @default(true) @map("flag")
+  wikiDataId  String?   @map("wiki_data_id") @db.VarChar(255)
+  countryId   Int       @map("country_id")
+  country     Country   @relation(fields: [countryId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cities_ibfk_2")
+  stateId     Int       @map("state_id")
+  state       State     @relation(fields: [stateId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cities_ibfk_1")
+
+  @@index([stateId], map: "idx_158778_cities_test_ibfk_1")
+  @@index([countryId], map: "idx_158778_cities_test_ibfk_2")
+  @@map("city")
 }
