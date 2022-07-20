@@ -1,0 +1,291 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions", "extendedIndexes"]
+}
+
+// The handle for page or user account
+model Handle {
+  id           String @id @default(cuid())
+  handle       String @map("handle") @db.VarChar(150)
+  handleNumber Int    @map("handle_number") @db.Oid
+
+  // User User[]
+  Page Page[]
+
+  @@unique([handle, handleNumber])
+  @@map("handle")
+}
+
+// model UserAccount {
+//   id                String @id @default(cuid())
+//   User              User[]
+//   encryptedMnemonic String @map("encrypted_mnemonic")
+//   encryptedSecret   String @default("") @map("encrypted_secret")
+//   mnemonicHash      String @map("mnemonic_hash")
+//   address           String @default("") @map("address")
+//   publicKey         String @default("") @map("public_key")
+
+//   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+//   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
+
+//   @@index([mnemonicHash], type: Hash)
+//   @@index([address])
+//   @@map("user_account")
+// }
+
+// model User {
+//   id               String            @id @default(cuid())
+//   userAccount      UserAccount       @relation(fields: [userAccountId], references: [id])
+//   userAccountId    String            @unique @map("user_account_id")
+//   handle           Handle            @relation(fields: [handleId], references: [id])
+//   handleId         String            @map("handle_id")
+//   phone            String?           @db.VarChar(60)
+//   phoneHidden      Boolean?          @default(false) @map("phone_hidden")
+//   username         String?           @db.VarChar(255)
+//   passwordHash     String?           @map("password_hash") @db.VarChar(64)
+//   salt             String?           @db.VarChar(32)
+//   email            String?           @db.VarChar(100)
+//   emailVerifiedAt  DateTime?         @map("email_verified_at") @db.Timestamptz
+//   country          String            @db.VarChar(11)
+//   language         String?           @db.VarChar(10)
+//   firstName        String            @default("") @map("first_name") @db.VarChar(60)
+//   lastName         String            @default("") @map("last_name") @db.VarChar(32)
+//   twoFactorEnabled Boolean           @default(true) @map("two_factor_enabled")
+//   twoFactorType    UserTwoFactorType @default(email) @map("two_factor_type")
+//   twoFactorKey     String?           @map("two_factor_key") @db.VarChar(64)
+//   twoFactorSecret  String?           @map("two_factor_secret") @db.VarChar(64)
+
+//   avatar String @default("upload/photos/d-avatar.jpg") @db.VarChar(100)
+//   cover  String @default("upload/photos/d-cover.jpg") @db.VarChar(100)
+
+//   deletedAt DateTime @default(now()) @map("deleted_at") @db.Timestamptz
+//   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+//   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
+
+//   @@map("user")
+// }
+
+model Page {
+  id            String  @id @default(cuid())
+  pageAccount   Account @relation(fields: [pageAccountId], references: [id])
+  pageAccountId Int     @unique @map("page_account_id")
+  name          String  @default("") @map("name") @db.VarChar(255)
+  title         String  @default("") @map("title") @db.VarChar(255)
+  description   String  @default("") @map("description") @db.VarChar(1000)
+  avatar        String  @default("upload/photos/d-page.jpg") @db.VarChar(100)
+  cover         String  @default("upload/photos/d-cover.jpg") @db.VarChar(100)
+  children      Page[]  @relation("subPages")
+  parent        Page?   @relation("subPages", fields: [parentId], references: [id])
+  parentId      String? @map("parent_id")
+  handle        Handle  @relation(fields: [handleId], references: [id])
+  handleId      String  @map("handle_id")
+  address       String  @default("")
+  website       String  @default("") @map("website")
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
+
+
+  @@map("page")
+}
+
+model Account {
+  id                Int            @id @default(autoincrement())
+  name              String
+  encryptedMnemonic String         @map("encrypted_mnemonic")
+  encryptedSecret   String         @default("") @map("encrypted_secret")
+  createdAt         DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime       @default(now()) @map("updated_at") @db.Timestamptz
+  lixies            Lixi[]
+  mnemonicHash      String         @map("mnemonic_hash")
+  address           String         @default("") @map("address")
+  notifications     Notification[]
+  language          String         @default("en")
+  publicKey         String         @default("") @map("public_key")
+
+  Page Page[]
+  @@index([mnemonicHash], type: Hash)
+  @@map("account")
+}
+
+model Lixi {
+  id                   Int       @id @default(autoincrement())
+  name                 String
+  maxClaim             Int       @default(0) @map("max_claim")
+  claimedNum           Int       @default(0) @map("claimed_num")
+  claimType            Int       @default(0) @map("claim_type")
+  lixiType             Int       @default(0) @map("lixi_type")
+  minValue             Float     @map("min_value")
+  maxValue             Float     @map("max_value")
+  fixedValue           Float     @map("fixed_value")
+  dividedValue         Int       @default(1) @map("divided_value")
+  encryptedXPriv       String    @map("encrypted_xpriv")
+  encryptedClaimCode   String    @map("encrypted_claim_code")
+  totalClaim           BigInt    @default(0) @map("total_claim")
+  createdAt            DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt            DateTime  @default(now()) @map("updated_at") @db.Timestamptz
+  minStaking           Float     @default(0) @map("min_staking")
+  expiryAt             DateTime? @map("expiry_at") @db.Timestamptz
+  activationAt         DateTime? @map("activation_at") @db.Timestamptz
+  country              String?   @map("country")
+  isFamilyFriendly     Boolean   @map("is_family_friendly")
+  claims               Claim[]
+  status               String    @default("active") @map("status")
+  inventoryStatus      String    @default("initialized") @map("invetory_status")
+  account              Account   @relation(fields: [accountId], references: [id])
+  accountId            Int       @map("account_id")
+  derivationIndex      Int       @default(0) @map("derivation_index")
+  address              String    @map("address")
+  amount               Float     @default(0) @map("amount")
+  numberOfSubLixi      Int?      @map("sub_lixi_value")
+  parent               Lixi?     @relation("parentSubLixi", fields: [parentId], references: [id])
+  subLixies            Lixi[]    @relation("parentSubLixi")
+  parentId             Int?      @map("parent_id")
+  envelopeId           Int?      @map("envelope_id")
+  envelope             Envelope? @relation(fields: [envelopeId], references: [id])
+  envelopeMessage      String    @default("") @map("envelope_message")
+  isClaimed            Boolean?  @default(false) @map("check_claim")
+  isNFTEnabled         Boolean   @default(false) @map("is_nft_enabled")
+  numberLixiPerPackage Int?      @map("number_lixi_per_package")
+  packageId            Int?      @map("package_id")
+  package              Package?  @relation(fields: [packageId], references: [id])
+
+  @@map("lixi")
+}
+
+model Claim {
+  id            Int      @id @default(autoincrement())
+  ipaddress     String   @map("ip_address")
+  transactionId String   @map("transaction_id")
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt     DateTime @default(now()) @map("updated_at") @db.Timestamptz
+  claimAddress  String   @map("claim_address")
+  amount        BigInt   @map("amount")
+  lixi          Lixi     @relation(fields: [lixiId], references: [id])
+  lixiId        Int      @map("lixi_id")
+  nftTokenId    String?  @map("nft_token_id")
+  nftTokenUrl   String   @default("") @map("nft_token_url")
+
+  @@map("claim")
+}
+
+model Envelope {
+  id          Int      @id @default(autoincrement())
+  name        String   @map("name")
+  thumbnail   String   @map("thumbnail")
+  image       String   @map("image")
+  slug        String   @map("slug")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt   DateTime @default(now()) @map("updated_at") @db.Timestamptz
+  description String   @default("") @map("description")
+  Lixi        Lixi[]
+
+  @@map("envelope")
+}
+
+model Package {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
+  lixi      Lixi[]
+
+  @@map("package")
+}
+
+model NotificationType {
+  id                           Int                           @id @default(autoincrement())
+  name                         String                        @default("")
+  description                  String
+  notifications                Notification[]
+  notificationTypeTranslations NotificationTypeTranslation[]
+  createdAt                    DateTime                      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt                    DateTime                      @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@map("notification_type")
+}
+
+model NotificationTypeTranslation {
+  id                 Int              @id @default(autoincrement())
+  notificationType   NotificationType @relation(fields: [notificationTypeId], references: [id])
+  notificationTypeId Int              @map("notification_type_id")
+  language           String
+  isDefault          Boolean?         @map("is_default")
+  template           String
+  createdAt          DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime         @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@map("notification_type_translation")
+}
+
+model Notification {
+  id                 String            @id @default(cuid())
+  message            String            @default("")
+  readAt             DateTime?         @db.Timestamptz
+  deletedAt          DateTime?         @db.Timestamptz
+  senderId           Int?              @map("sender_id")
+  additionalData     Json?             @map("additional_data")
+  notificationType   NotificationType  @relation(fields: [notificationTypeId], references: [id])
+  notificationTypeId Int               @map("type_id")
+  level              NotificationLevel
+  createdAt          DateTime          @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime          @default(now()) @map("updated_at") @db.Timestamptz
+  status             String            @default("pending")
+  recipient          Account?          @relation(fields: [recipientId], references: [id])
+  recipientId        Int?              @map("recipient_id")
+  url                String?
+  action             String?
+
+  @@map("notification")
+}
+
+enum NotificationLevel {
+  DEBUG
+  INFO
+  WARNING
+  ERROR
+
+  @@map("notification_level")
+}
+
+model EmailTemplate {
+  id                        String                     @id @default(cuid())
+  slug                      String                     @default("")
+  description               String
+  createdAt                 DateTime                   @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt                 DateTime                   @default(now()) @map("updated_at") @db.Timestamptz
+  EmailTemplateTranslations EmailTemplateTranslation[]
+
+  @@map("email_template")
+}
+
+model EmailTemplateTranslation {
+  id              String        @id @default(cuid())
+  sender          String        @default("")
+  emailTemplate   EmailTemplate @relation(fields: [emailTemplateId], references: [id])
+  emailTemplateId String        @map("email_template_id")
+  title           String        @default("")
+  body            String        @default("")
+  subject         String        @default("")
+  language        String
+  isDefault       Boolean?      @map("is_default")
+  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime      @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@map("email_template_translation")
+}
+
+enum UserTwoFactorType {
+  email
+  sms
+  authenticator
+
+  @@map("user_two_factor_type")
+}
