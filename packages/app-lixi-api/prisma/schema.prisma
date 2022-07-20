@@ -93,7 +93,6 @@ model Page {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
 
-
   @@map("page")
 }
 
@@ -113,6 +112,7 @@ model Account {
   uploads           Upload[]
 
   Page Page[]
+
   @@index([mnemonicHash], type: Hash)
   @@map("account")
 }
@@ -140,6 +140,7 @@ model Lixi {
   isFamilyFriendly     Boolean   @map("is_family_friendly")
   claims               Claim[]
   status               String    @default("active") @map("status")
+  previousStatus       String    @default("active") @map("previous_status")
   inventoryStatus      String    @default("initialized") @map("invetory_status")
   account              Account   @relation(fields: [accountId], references: [id])
   accountId            Int       @map("account_id")

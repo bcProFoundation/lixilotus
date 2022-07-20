@@ -77,7 +77,7 @@ export class LixiController {
     @Inject('xpijs') private XPI: BCHJS,
     @InjectQueue(EXPORT_SUB_LIXIES_QUEUE) private exportSubLixiesQueue: Queue,
     @InjectQueue(WITHDRAW_SUB_LIXIES_QUEUE) private withdrawSubLixiesQueue: Queue
-  ) {}
+  ) { }
 
   @Get(':id')
   async getLixi(
@@ -160,21 +160,21 @@ export class LixiController {
 
       subLixies = cursor
         ? await this.prisma.lixi.findMany({
-            take: take,
-            skip: 1,
-            where: {
-              parentId: lixiId
-            },
-            cursor: {
-              id: cursor
-            }
-          })
+          take: take,
+          skip: 1,
+          where: {
+            parentId: lixiId
+          },
+          cursor: {
+            id: cursor
+          }
+        })
         : await this.prisma.lixi.findMany({
-            take: take,
-            where: {
-              parentId: lixiId
-            }
-          });
+          take: take,
+          where: {
+            parentId: lixiId
+          }
+        });
 
       const childrenApiResult: LixiDto[] = [];
 
@@ -208,14 +208,14 @@ export class LixiController {
       const countAfter = !endCursor
         ? 0
         : await this.prisma.lixi.count({
-            where: {
-              parentId: lixiId
-            },
-            cursor: {
-              id: _.toSafeInteger(endCursor)
-            },
-            skip: 1
-          });
+          where: {
+            parentId: lixiId
+          },
+          cursor: {
+            id: _.toSafeInteger(endCursor)
+          },
+          skip: 1
+        });
 
       const hasNextPage = countAfter > 0;
 
@@ -411,15 +411,23 @@ export class LixiController {
         const lixiNotExist = await i18n.t('lixi.messages.lixiNotExist');
         throw new Error(lixiNotExist);
       } else {
-        const lixi = await this.prisma.lixi.update({
+        let lixi = await this.prisma.lixi.findUnique({
+          where: {
+            id: lixiId
+          }
+        });
+
+        lixi = await this.prisma.lixi.update({
           where: {
             id: lixiId
           },
           data: {
             status: 'locked',
+            previousStatus: (lixi as any).status,
             updatedAt: new Date()
           }
         });
+
         if (lixi) {
           let resultApi: LixiDto = {
             ...lixi,
@@ -487,15 +495,23 @@ export class LixiController {
         const couldNotFindLixi = await i18n.t('lixi.messages.couldNotFindLixi');
         throw new Error(couldNotFindLixi);
       } else {
-        const lixi = await this.prisma.lixi.update({
+        let lixi = await this.prisma.lixi.findUnique({
+          where: {
+            id: lixiId
+          }
+        });
+
+        lixi = await this.prisma.lixi.update({
           where: {
             id: lixiId
           },
           data: {
-            status: 'active',
+            previousStatus: lixi?.status,
+            status: lixi?.previousStatus == 'failed' ? 'failed' : 'active',
             updatedAt: new Date()
           }
         });
+
         if (lixi) {
           let resultApi: LixiDto = {
             ...lixi,
@@ -746,19 +762,19 @@ export class LixiController {
       const countAfter = !endCursor
         ? 0
         : await this.prisma.claim.count({
-            where: {
-              lixiId: lixiId
-            },
-            orderBy: [
-              {
-                id: 'asc'
-              }
-            ],
-            cursor: {
-              id: _.toSafeInteger(endCursor)
-            },
-            skip: 1
-          });
+          where: {
+            lixiId: lixiId
+          },
+          orderBy: [
+            {
+              id: 'asc'
+            }
+          ],
+          cursor: {
+            id: _.toSafeInteger(endCursor)
+          },
+          skip: 1
+        });
 
       const hasNextPage = countAfter > 0;
 
@@ -940,7 +956,7 @@ export class LixiController {
       const dir = `uploads`;
 
       const fileExtension = extname(file.filename);
-      const folderName = sha.substring(0,2);
+      const folderName = sha.substring(0, 2);
       const fileUrl = `${dir}/${folderName}/${sha}`;
 
       //create new folder if there are no existing is founded
@@ -953,7 +969,7 @@ export class LixiController {
       const thumbnailImage = await sharp(buffer).resize(200).toFile(`./public/${fileUrl}-200${fileExtension}`);
 
       const uploadToInsert = {
-        originalFilename : originalName,
+        originalFilename: originalName,
         fileSize: originalImage.size,
         width: originalImage.width,
         height: originalImage.height,
@@ -965,11 +981,11 @@ export class LixiController {
         thumbnailWidth: thumbnailImage.width,
         thumbnailHeight: thumbnailImage.height,
         type: 'envelope',
-        account: {connect : {id: account.id}},
+        account: { connect: { id: account.id } },
       }
-      
+
       const resultImage: UploadDb = await this.prisma.upload.create({
-          data: uploadToInsert
+        data: uploadToInsert
       });
 
       return resultImage;
