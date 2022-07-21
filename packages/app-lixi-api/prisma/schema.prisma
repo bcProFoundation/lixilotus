@@ -141,6 +141,7 @@ model Lixi {
   claims               Claim[]
   joinLotteryProgram   Boolean            @default(false) @map("join_lottery_program")
   status               String             @default("active") @map("status")
+  previousStatus       String             @default("active") @map("previous_status")
   inventoryStatus      String             @default("initialized") @map("invetory_status")
   account              Account            @relation(fields: [accountId], references: [id])
   accountId            Int                @map("account_id")
@@ -161,7 +162,7 @@ model Lixi {
   package              Package?           @relation(fields: [packageId], references: [id])
   distributions        LixiDistribution[]
   upload               Upload?
-  uploadId             String?   @map("upload_id")
+  uploadId             String?            @map("upload_id")
 
   @@map("lixi")
 }
