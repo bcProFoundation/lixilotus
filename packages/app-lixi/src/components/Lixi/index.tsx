@@ -281,7 +281,7 @@ const Lixi: React.FC = () => {
   const showDistributions = () => {
     const dist = selectedLixi.distributions.map(item => {
       return (
-        <Descriptions.Item label={item.distributionType == 'staff' ? intl.get('lixi.staffAddress') : intl.get('lixi.charityAddress')} key="desc.optional">
+        <Descriptions.Item label={item.distributionType == 'staff' ? intl.get('lixi.staffAddress') : intl.get('lixi.charityAddress')} key={"desc." + item.distributionType}>
           <CopyToClipboard text={item.address} onCopy={handleOnCopyDistributionAddress}>
             <div>
               <CopyOutlined /> {item.address}
@@ -295,7 +295,7 @@ const Lixi: React.FC = () => {
 
   const showLottery = () => {
     return selectedLixi.joinLotteryProgram && (
-      <Descriptions.Item label={intl.get('lixi.lotteryAddress')} key="desc.optional">
+      <Descriptions.Item label={intl.get('lixi.lotteryAddress')} key="desc.lottery">
         <CopyToClipboard text={LotteryAddress} onCopy={handleOnCopyDistributionAddress}>
           <div>
             <CopyOutlined /> {LotteryAddress}
