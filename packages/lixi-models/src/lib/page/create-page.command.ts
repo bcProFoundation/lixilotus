@@ -11,7 +11,6 @@ export class CreatePageCommand {
   avatar: string;
   cover: string;
   parentId?: string;
-  handleId?: string;
   address: string;
   website: string;
 }

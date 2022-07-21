@@ -280,5 +280,11 @@ export default {
   'send.optionalPrivateMessage': 'Optional Private Message',
   /* 12.Zero balance header */
   'zeroBalanceHeader.noBalance': 'You currently have 0 {ticker}',
-  'zeroBalanceHeader.deposit': 'Deposit some funds to use this feature'
+  'zeroBalanceHeader.deposit': 'Deposit some funds to use this feature',
+
+  /* 13.Page */
+  'page.couldNotpostPage': 'Could not create page',
+  'page.createPageSuccessful': 'Create page successful',
+  'page.unableCreatePageServer': 'Unable to create page on server',
+  'page.errorWhenCreatePage': "There's an error happens when create new Page"
 };

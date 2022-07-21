@@ -159,6 +159,12 @@ export class ClaimController {
           }
         });
 
+        const page = await this.prisma.page.findUnique({
+          where: {
+            pageAccountId: _.toSafeInteger(lixi?.accountId)
+          }
+        });
+
         // isFamilyFriendly == true
         if (lixi?.isFamilyFriendly) {
           if (countClaimAddress.length > 0 || countIpaddress >= 5) {
@@ -174,7 +180,7 @@ export class ClaimController {
           }
         }
 
-        if (process.env.NODE_ENV !== 'development') {
+        if (process.env.NODE_ENV !== 'development' && claimApi.captchaToken === 'isAbcpay') {
           await checkingCaptcha();
           const geolocation = geoip.lookup(ip);
           const country = countries.find(country => country.id === lixi?.country);
@@ -415,7 +421,8 @@ export class ClaimController {
             amount: Number(claim.amount),
             message: claim.lixi.envelopeMessage,
             nftTokenId: claim.nftTokenId,
-            nftTokenUrl: claim.nftTokenUrl
+            nftTokenUrl: claim.nftTokenUrl,
+            pageName: page?.name || ''
           };
 
           return result;

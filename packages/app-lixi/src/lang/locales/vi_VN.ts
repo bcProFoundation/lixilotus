@@ -283,5 +283,11 @@ export default {
   'send.optionalPrivateMessage': 'Tin nhắn riêng tư',
   /* 12.Zero balance header */
   'zeroBalanceHeader.noBalance': 'Hiện tại bạn đang có {ticker} trong tài khoản',
-  'zeroBalanceHeader.deposit': 'Hãy nạp thêm vào tài khoản để có thể sử dụng tính năng giao dịch'
+  'zeroBalanceHeader.deposit': 'Hãy nạp thêm vào tài khoản để có thể sử dụng tính năng giao dịch',
+
+  /* 13.Page */
+  'page.couldNotpostPage': 'Tạo trang không thành công',
+  'page.createPageSuccessful': 'Trang đã tạo thành công',
+  'page.unableCreatePageServer': 'Không thể kết nối server tạo trang',
+  'page.errorWhenCreatePage': "Đã có lỗi xảy ra khi tạo mới trang"
 };

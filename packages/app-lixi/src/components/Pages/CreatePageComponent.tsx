@@ -123,7 +123,7 @@ const CreatePageComponent: React.FC = isEditPage => {
     //   dispatch(getAccount(selectedAccount.id));
     //   dispatch(refreshLixiListSilent(selectedAccount?.id));
     // }
-    dispatch(getPagesByAccountId(3));
+    // dispatch(getPagesByAccountId(selectedAccount));
   }, []);
 
   //   const refreshList = () => {
@@ -144,16 +144,12 @@ const CreatePageComponent: React.FC = isEditPage => {
       );
     }
 
-    const valueCreatePage: CreatePageCommand = {
+    const valueCreatePage = {
       name: newPageName,
       title: newPageTitle,
       description: newPageDescription,
       address: newPageAddress,
-      website: newPageWebsite,
-      avatar: '12341',
-      cover: 'dqad',
-      handleId: '1',
-      parentId: '1'
+      website: newPageWebsite
     };
     if (valueCreatePage) dispatch(postPage(valueCreatePage));
   };
@@ -182,7 +178,6 @@ const CreatePageComponent: React.FC = isEditPage => {
           label="Avatar"
           valuePropName="fileList"
           getValueFromEvent={normFile}
-          rules={[{ required: true, message: 'Please upload avatar' }]}
         >
           <Upload name="logo" action="/upload.do" listType="picture">
             <Button icon={<UploadOutlined />}>Click to upload</Button>
@@ -193,7 +188,6 @@ const CreatePageComponent: React.FC = isEditPage => {
           label="Cover"
           valuePropName="fileList"
           getValueFromEvent={normFile}
-          rules={[{ required: true, message: 'Please upload cover' }]}
         >
           <Upload name="logo" action="/upload.do" listType="picture">
             <Button icon={<UploadOutlined />}>Click to upload</Button>
@@ -217,7 +211,6 @@ const CreatePageComponent: React.FC = isEditPage => {
           </Button>
         </Form.Item>
       </Form>
-      <p>{pagesByAccountIdList[0].name + pagesByAccountIdList[0].title}</p>
     </>
   );
 };

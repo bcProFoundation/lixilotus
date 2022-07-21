@@ -6,8 +6,7 @@ export class PageDto {
   description: string;
   avatar: string;
   cover: string;
-  parentId: Nullable<string>;
-  handleId: string;
+  parentId?: Nullable<string>;
   address: string;
   website: string;
   createdAt: Date;

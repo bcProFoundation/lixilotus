@@ -18,7 +18,7 @@ model Handle {
   handleNumber Int    @map("handle_number") @db.Oid
 
   // User User[]
-  Page Page[]
+  // Page Page[]
 
   @@unique([handle, handleNumber])
   @@map("handle")
@@ -85,8 +85,8 @@ model Page {
   children      Page[]  @relation("subPages")
   parent        Page?   @relation("subPages", fields: [parentId], references: [id])
   parentId      String? @map("parent_id")
-  handle        Handle  @relation(fields: [handleId], references: [id])
-  handleId      String  @map("handle_id")
+  // handle        Handle  @relation(fields: [handleId], references: [id])
+  // handleId      String  @map("handle_id")
   address       String  @default("")
   website       String  @default("") @map("website")
 
