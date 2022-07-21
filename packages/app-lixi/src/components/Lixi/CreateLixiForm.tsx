@@ -199,7 +199,7 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
     setNewLixiAmountValueIsValid(isValidAmountInput(value));
     setNewLixiAmount(value);
   };
-  
+
   const handleNewNumberOfSubLixi = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewSubLixiIsValid(isValidAmountInput(value) && Number(value) !== 0);
@@ -740,11 +740,11 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
                       <Checkbox value={isFamilyFriendly} onChange={e => handleFamilyFriendly(e)}>
                         {intl.get('account.familyFriendly')}
                       </Checkbox>
-                      {ClaimType.OneTime === claimType && (
+                      {/* {ClaimType.OneTime === claimType && (
                         <Checkbox value={isNFTEnabled} onChange={e => handleNFTEnabled(e)}>
                           {intl.get('lixi.isNFTEnabled')}
                         </Checkbox>
-                      )}
+                      )} */}
                     </Form.Item>
                   </Panel>
                 </AdvancedCollapse>
