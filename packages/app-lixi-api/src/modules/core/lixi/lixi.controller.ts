@@ -77,7 +77,7 @@ export class LixiController {
     @Inject('xpijs') private XPI: BCHJS,
     @InjectQueue(EXPORT_SUB_LIXIES_QUEUE) private exportSubLixiesQueue: Queue,
     @InjectQueue(WITHDRAW_SUB_LIXIES_QUEUE) private withdrawSubLixiesQueue: Queue
-  ) {}
+  ) { }
 
   @Get(':id')
   async getLixi(
@@ -91,7 +91,8 @@ export class LixiController {
           id: _.toSafeInteger(id)
         },
         include: {
-          envelope: true
+          envelope: true,
+          distributions: true,
         }
       });
 
@@ -110,7 +111,8 @@ export class LixiController {
           isClaimed: lixi.isClaimed,
           balance: balance,
           totalClaim: Number(lixi.totalClaim),
-          envelope: lixi.envelope
+          envelope: lixi.envelope,
+          distributions: lixi.distributions
         } as unknown as LixiDto,
         'encryptedXPriv',
         'encryptedClaimCode'
@@ -160,21 +162,21 @@ export class LixiController {
 
       subLixies = cursor
         ? await this.prisma.lixi.findMany({
-            take: take,
-            skip: 1,
-            where: {
-              parentId: lixiId
-            },
-            cursor: {
-              id: cursor
-            }
-          })
+          take: take,
+          skip: 1,
+          where: {
+            parentId: lixiId
+          },
+          cursor: {
+            id: cursor
+          }
+        })
         : await this.prisma.lixi.findMany({
-            take: take,
-            where: {
-              parentId: lixiId
-            }
-          });
+          take: take,
+          where: {
+            parentId: lixiId
+          }
+        });
 
       const childrenApiResult: LixiDto[] = [];
 
@@ -208,14 +210,14 @@ export class LixiController {
       const countAfter = !endCursor
         ? 0
         : await this.prisma.lixi.count({
-            where: {
-              parentId: lixiId
-            },
-            cursor: {
-              id: _.toSafeInteger(endCursor)
-            },
-            skip: 1
-          });
+          where: {
+            parentId: lixiId
+          },
+          cursor: {
+            id: _.toSafeInteger(endCursor)
+          },
+          skip: 1
+        });
 
       const hasNextPage = countAfter > 0;
 
@@ -745,19 +747,19 @@ export class LixiController {
       const countAfter = !endCursor
         ? 0
         : await this.prisma.claim.count({
-            where: {
-              lixiId: lixiId
-            },
-            orderBy: [
-              {
-                id: 'asc'
-              }
-            ],
-            cursor: {
-              id: _.toSafeInteger(endCursor)
-            },
-            skip: 1
-          });
+          where: {
+            lixiId: lixiId
+          },
+          orderBy: [
+            {
+              id: 'asc'
+            }
+          ],
+          cursor: {
+            id: _.toSafeInteger(endCursor)
+          },
+          skip: 1
+        });
 
       const hasNextPage = countAfter > 0;
 
@@ -939,7 +941,7 @@ export class LixiController {
       const dir = `uploads`;
 
       const fileExtension = extname(file.filename);
-      const folderName = sha.substring(0,2);
+      const folderName = sha.substring(0, 2);
       const fileUrl = `${dir}/${folderName}/${sha}`;
 
       //create new folder if there are no existing is founded
@@ -952,7 +954,7 @@ export class LixiController {
       const thumbnailImage = await sharp(buffer).resize(200).toFile(`./public/${fileUrl}-200${fileExtension}`);
 
       const uploadToInsert = {
-        originalFilename : originalName,
+        originalFilename: originalName,
         fileSize: originalImage.size,
         width: originalImage.width,
         height: originalImage.height,
@@ -964,11 +966,11 @@ export class LixiController {
         thumbnailWidth: thumbnailImage.width,
         thumbnailHeight: thumbnailImage.height,
         type: 'envelope',
-        account: {connect : {id: account.id}},
+        account: { connect: { id: account.id } },
       }
-      
+
       const resultImage: UploadDb = await this.prisma.upload.create({
-          data: uploadToInsert
+        data: uploadToInsert
       });
 
       return resultImage;

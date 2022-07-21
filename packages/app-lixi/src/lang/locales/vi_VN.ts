@@ -133,9 +133,9 @@ export default {
   'lixi.fileUploadError': 'Lỗi khi tải thiệp lên server',
   'lixi.fileUploadSuccess': 'Tải thiệp lên thành công',
   'lixi.uploadDividerText': "Thiệp tự chọn",
-  'lixi.uploadText' : 'Đăng thiệp',
+  'lixi.uploadText': 'Đăng thiệp',
   'lixi.uploadingText': 'Đang tải...',
-  'lixi.previewFileFailed' : 'Không thể xem trước file',
+  'lixi.previewFileFailed': 'Không thể xem trước file',
   'lixi.renameLixi': 'Đổi tên Lì xi',
   'lixi.enterNewLixiName': 'Nhập tên mới cho Lì xì',
   'lixi.lixiLengthError': 'Tên Lì xì phải là một chuỗi dài từ 1 đến 24 ký tự',
@@ -174,8 +174,10 @@ export default {
   'lixi.loyaltyProgram': 'Khách hàng thân thiết',
   'lixi.staffAddress': 'Địa chỉ ví nhân viên',
   'lixi.charityAddress': 'Địa chỉ ví từ thiện',
-  'lixi.loterryAddress': 'Địa chỉ ví xổ số',
-  'lixi.loterryAddressCheck': 'Xác nhận',
+  'lixi.lotteryAddress': 'Địa chỉ ví xổ số',
+  'lixi.lotteryAddressCheck': 'Xác nhận',
+  'lixi.addressCopied': 'địa chỉ đã được sao chép.',
+
 
   /* 04.Claim */
   'claim.claim': 'Nhận Lì xì',
