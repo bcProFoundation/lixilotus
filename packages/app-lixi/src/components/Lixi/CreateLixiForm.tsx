@@ -740,11 +740,11 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
                       <Checkbox value={isFamilyFriendly} onChange={e => handleFamilyFriendly(e)}>
                         {intl.get('account.familyFriendly')}
                       </Checkbox>
-                      {ClaimType.OneTime === claimType && (
+                      {/* {ClaimType.OneTime === claimType && (
                         <Checkbox value={isNFTEnabled} onChange={e => handleNFTEnabled(e)}>
                           {intl.get('lixi.isNFTEnabled')}
                         </Checkbox>
-                      )}
+                      )} */}
                     </Form.Item>
                   </Panel>
                 </AdvancedCollapse>
