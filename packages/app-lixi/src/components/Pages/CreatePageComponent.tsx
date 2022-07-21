@@ -144,7 +144,7 @@ const CreatePageComponent: React.FC = isEditPage => {
       );
     }
 
-    const valueCreatePage = {
+    const valueCreatePage: CreatePageCommand = {
       name: newPageName,
       title: newPageTitle,
       description: newPageDescription,

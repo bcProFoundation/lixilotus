@@ -8,8 +8,8 @@ export class CreatePageCommand {
   title: string;
 
   description: string;
-  avatar: string;
-  cover: string;
+  avatar?: string;
+  cover?: string;
   parentId?: string;
   address: string;
   website: string;

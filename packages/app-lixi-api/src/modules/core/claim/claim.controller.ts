@@ -180,7 +180,7 @@ export class ClaimController {
           }
         }
 
-        if (process.env.NODE_ENV !== 'development' && claimApi.captchaToken === 'isAbcpay') {
+        if (process.env.NODE_ENV !== 'development' || claimApi.captchaToken === 'isAbcpay') {
           await checkingCaptcha();
           const geolocation = geoip.lookup(ip);
           const country = countries.find(country => country.id === lixi?.country);
