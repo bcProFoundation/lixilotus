@@ -62,7 +62,7 @@ async function main() {
   );
 
   let sqls = fs
-    .readFileSync('./prisma/data/country_db.sql')
+    .readFileSync('./prisma/data/countries.sql')
     .toString()
     .split('\n')
     .filter((line) => line.indexOf('--') !== 0)
