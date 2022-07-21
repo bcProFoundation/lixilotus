@@ -134,9 +134,9 @@ export default {
   'lixi.fileUploadError': 'Error uploading to server',
   'lixi.fileUploadSuccess': 'Upload Successfully',
   'lixi.uploadDividerText': "Custom Enevelope",
-  'lixi.uploadText' : 'Upload',
+  'lixi.uploadText': 'Upload',
   'lixi.uploadingText': 'Uploading...',
-  'lixi.previewFileFailed' : 'Cannot preview file',
+  'lixi.previewFileFailed': 'Cannot preview file',
   'lixi.renameLixi': 'Rename Lixi',
   'lixi.enterNewLixiName': 'Enter new lixi name',
   'lixi.lixiLengthError': 'Lixi name must be a string between 1 and 24 characters long',
@@ -175,8 +175,9 @@ export default {
   'lixi.loyaltyProgram': 'Loyalty Programs',
   'lixi.staffAddress': 'Staff Address',
   'lixi.charityAddress': 'Charity Address',
-  'lixi.loterryAddress': 'Loterry Address',
-  'lixi.loterryAddressCheck': 'Confirm',
+  'lixi.lotteryAddress': 'Lottery Address',
+  'lixi.lotteryAddressCheck': 'Confirm',
+  'lixi.addressCopied': 'The address has been copied.',
 
   /* 04.Claim */
   'claim.claim': 'Claim',

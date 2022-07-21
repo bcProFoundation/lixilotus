@@ -91,7 +91,8 @@ export class LixiController {
           id: _.toSafeInteger(id)
         },
         include: {
-          envelope: true
+          envelope: true,
+          distributions: true,
         }
       });
 
@@ -110,7 +111,8 @@ export class LixiController {
           isClaimed: lixi.isClaimed,
           balance: balance,
           totalClaim: Number(lixi.totalClaim),
-          envelope: lixi.envelope
+          envelope: lixi.envelope,
+          distributions: lixi.distributions
         } as unknown as LixiDto,
         'encryptedXPriv',
         'encryptedClaimCode'
