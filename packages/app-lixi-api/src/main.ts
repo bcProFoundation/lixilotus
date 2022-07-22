@@ -3,7 +3,7 @@ import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import compression from '@fastify/compress';
 import { fastifyCookie } from '@fastify/cookie';
-import { fastifyHelmet } from '@fastify/helmet';
+import fastifyHelmet from '@fastify/helmet';
 import fastifyCsrf from '@fastify/csrf-protection';
 import { AppModule } from './app.module';
 import { RedisIoAdapter } from './common/adapters/redis-io.adapter';
@@ -76,6 +76,7 @@ async function bootstrap() {
     crossOriginEmbedderPolicy: true,
     crossOriginOpenerPolicy: { policy: 'same-origin' },
     contentSecurityPolicy: {
+      useDefaults: false,
       directives: {
         defaultSrc: [`'self'`],
         styleSrc: [`'self'`, `'unsafe-inline'`],
