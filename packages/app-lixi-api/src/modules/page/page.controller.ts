@@ -261,10 +261,9 @@ export class PageController {
     try {
       const createdPage = await this.prisma.page.create({
         data: {
-          ..._.omit(command, 'parentId', 'handleId'),
+          ...command,
           pageAccount: { connect: { id: account.id } },
-          parent: { connect: { id: command.parentId } },
-          handle: { connect: { id: command.handleId } }
+          parentId: undefined
         }
       });
       return new PageDto(createdPage);
@@ -273,7 +272,7 @@ export class PageController {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
-        const unableCreatePage = await this.i18n.t('lixi.messages.unableCreatePage');
+        const unableCreatePage = await this.i18n.t('page.messages.couldNotCreatePage');
         const error = new VError.WError(err as Error, unableCreatePage);
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }

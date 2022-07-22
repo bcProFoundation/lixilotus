@@ -30,7 +30,7 @@ import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
 import { StyledCollapse } from '@bcpros/lixi-components/components/Common/StyledCollapse';
 import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
 import { countries } from '@bcpros/lixi-models/constants/countries';
-import { LixiType } from '@bcpros/lixi-models/lib/lixi';
+import { LixiType, LotteryAddress } from '@bcpros/lixi-models/lib/lixi';
 import ClaimList from '@components/Claim/ClaimList';
 import { currency } from '@components/Common/Ticker';
 import { getSelectedAccount } from '@store/account/selectors';
@@ -141,6 +141,10 @@ const Lixi: React.FC = () => {
   const handleOnCopyClaimCode = () => {
     setClaimCodeVisible(true);
     message.info(intl.get('claim.claimCodeCopied'));
+  };
+
+  const handleOnCopyDistributionAddress = () => {
+    message.info(intl.get('lixi.addressCopied'));
   };
 
   const handleDownloadQRClaimCode = () => {
@@ -274,6 +278,33 @@ const Lixi: React.FC = () => {
     );
   };
 
+  const showDistributions = () => {
+    const dist = selectedLixi.distributions.map(item => {
+      return (
+        <Descriptions.Item label={item.distributionType == 'staff' ? intl.get('lixi.staffAddress') : intl.get('lixi.charityAddress')} key={"desc." + item.distributionType}>
+          <CopyToClipboard text={item.address} onCopy={handleOnCopyDistributionAddress}>
+            <div>
+              <CopyOutlined /> {item.address}
+            </div>
+          </CopyToClipboard>
+        </Descriptions.Item >
+      )
+    });
+    return dist;
+  }
+
+  const showLottery = () => {
+    return selectedLixi.joinLotteryProgram && (
+      <Descriptions.Item label={intl.get('lixi.lotteryAddress')} key="desc.lottery">
+        <CopyToClipboard text={LotteryAddress} onCopy={handleOnCopyDistributionAddress}>
+          <div>
+            <CopyOutlined /> {LotteryAddress}
+          </div>
+        </CopyToClipboard>
+      </Descriptions.Item>
+    )
+  }
+
   const columns = selectedLixi && selectedLixi.numberLixiPerPackage
     ? [
       { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
@@ -367,6 +398,8 @@ const Lixi: React.FC = () => {
             {formatDate()}
             {showIsFamilyFriendly()}
             {showIsNFTEnabled()}
+            {showDistributions()}
+            {showLottery()}
           </Descriptions>
 
           {/* Lixi details */}
