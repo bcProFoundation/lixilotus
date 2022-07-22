@@ -1,4 +1,3 @@
-import fs from 'fs';
 import { envelopes } from './envelopes';
 import { notificationTypes } from './notificationTypes';
 import { notificationTypeTranslations } from './notificationTypeTranslations';
@@ -59,20 +58,6 @@ async function main() {
       });
     })
   );
-
-  const sqls = fs
-    .readFileSync('./prisma/data/world_db.sql')
-    .toString()
-    .split('\n')
-    .filter((line) => line.indexOf('--') !== 0)
-    .join('\n')
-    .replace(/(\r\n|\n|\r)/gm, ' ') // remove newlines
-    .replace(/\s+/g, ' ') // excess white space
-    .split(';')
-
-  for (const sql of sqls) {
-    await prisma.$executeRawUnsafe(sql)
-  }
 }
 
 main()
