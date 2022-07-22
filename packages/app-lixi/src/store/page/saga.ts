@@ -41,7 +41,7 @@ function* postPageSaga(action: PayloadAction<CreatePageCommand>) {
 
     yield put(postPageSuccess(data));
   } catch (err) {
-    const message = (err as Error).message ?? intl.get('lixi.couldNotpostPage');
+    const message = (err as Error).message ?? intl.get('page.couldNotpostPage');
     yield put(postPageFailure(message));
   }
 }
@@ -54,20 +54,20 @@ function* postPageSuccessSaga(action: PayloadAction<any>) {
     yield put(
       showToast('success', {
         message: 'Success',
-        description: intl.get('lixi.createLixiSuccessful'),
+        description: intl.get('page.createPageSuccessful'),
         duration: 5
       })
     );
     yield put(setPage(page));
     yield put(hideLoading(postPage.type));
   } catch (error) {
-    const message = intl.get('lixi.errorWhenCreateLixi');
+    const message = intl.get('page.errorWhenCreatePage');
     yield put(postPageFailure(message));
   }
 }
 
 function* postPageFailureSaga(action: PayloadAction<string>) {
-  const message = action.payload ?? intl.get('lixi.unableCreateLixiServer');
+  const message = action.payload ?? intl.get('page.unableCreatePageServer');
   yield put(
     showToast('error', {
       message: 'Error',

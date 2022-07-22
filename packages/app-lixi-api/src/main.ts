@@ -14,7 +14,7 @@ import 'winston-daily-rotate-file';
 import loggerConfig from './logger.config';
 import { join } from 'path';
 
-const allowedOrigins = [process.env.SENDLOTUS_URL, process.env.BASE_URL];
+const allowedOrigins = [process.env.SENDLOTUS_URL, process.env.BASE_URL, process.env.ABCPAY_URL];
 
 async function bootstrap() {
   const POST_LIMIT = 1024 * 100; /* Max POST 100 kb */
