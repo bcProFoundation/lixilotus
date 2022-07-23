@@ -78,7 +78,7 @@
     ]
   },
   "dependencies": {
-    "@nestjs/mapped-types": "^1.0.1",
+    "@nestjs/mapped-types": "^1.1.0",
     "class-validator": "^0.13.2"
   }
 }

@@ -30,10 +30,7 @@ import { PrismaService } from '../prisma/prisma.service';
 export class PageController {
   private logger: Logger = new Logger(this.constructor.name);
 
-  constructor(
-    private prisma: PrismaService,
-    @I18n() private i18n: I18nService,
-  ) {}
+  constructor(private prisma: PrismaService, @I18n() private i18n: I18nService) {}
 
   @Get(':id')
   async get(@Param('id') id: string): Promise<PageDto> {
@@ -52,6 +49,41 @@ export class PageController {
         throw new VError(pageNotExist);
       }
 
+      return new PageDto(page);
+    } catch (err: unknown) {
+      if (err instanceof VError) {
+        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      } else {
+        const unableToGetPage = await this.i18n.t('page.messages.unableToGetPage');
+        const error = new VError.WError(err as Error, unableToGetPage);
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  }
+
+  @Get('address/:address')
+  async getByAddress(@Param('address') address: string): Promise<PageDto> {
+    try {
+      const account = await this.prisma.account.findFirst({
+        where: {
+          address: address
+        }
+      });
+
+      if (!account) {
+        const couldNotFindAccount = await this.i18n.t('page.messages.couldNotFindAccount');
+        throw new Error(couldNotFindAccount);
+      }
+      const page = await this.prisma.page.findFirst({
+        where: {
+          pageAccountId: account?.id
+        }
+      });
+
+      if (!page) {
+        const pageNotExist = await this.i18n.t('page.messages.pageNotExist');
+        throw new VError(pageNotExist);
+      }
       return new PageDto(page);
     } catch (err: unknown) {
       if (err instanceof VError) {
@@ -144,9 +176,7 @@ export class PageController {
   }
 
   @Get(':id/subPage')
-  async getSubPageByAccountId(
-    @Param('id') id: string,
-  ): Promise<PaginationResult<PageDto>> {
+  async getSubPageByAccountId(@Param('id') id: string): Promise<PaginationResult<PageDto>> {
     const pageAccountId = Number(id);
     const take = 10;
     const cursor = null;
@@ -154,7 +184,7 @@ export class PageController {
     try {
       const count = await this.prisma.page.count({
         where: {
-        pageAccountId: pageAccountId
+          pageAccountId: pageAccountId
         }
       });
 
@@ -231,19 +261,18 @@ export class PageController {
     try {
       const createdPage = await this.prisma.page.create({
         data: {
-          ..._.omit(command, 'parentId', 'handleId'),
+          ...command,
           pageAccount: { connect: { id: account.id } },
-          parent: { connect: { id: command.parentId } },
-          handle: { connect: { id: command.handleId } }
+          parentId: undefined
         }
       });
       return new PageDto(createdPage);
     } catch (err) {
-      this.logger.error('**********' + JSON.stringify(err))
+      this.logger.error('**********' + JSON.stringify(err));
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
-        const unableCreatePage = await this.i18n.t('lixi.messages.unableCreatePage');
+        const unableCreatePage = await this.i18n.t('page.messages.couldNotCreatePage');
         const error = new VError.WError(err as Error, unableCreatePage);
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }

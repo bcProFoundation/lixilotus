@@ -134,9 +134,9 @@ export default {
   'lixi.fileUploadError': 'Error uploading to server',
   'lixi.fileUploadSuccess': 'Upload Successfully',
   'lixi.uploadDividerText': "Custom Enevelope",
-  'lixi.uploadText' : 'Upload',
+  'lixi.uploadText': 'Upload',
   'lixi.uploadingText': 'Uploading...',
-  'lixi.previewFileFailed' : 'Cannot preview file',
+  'lixi.previewFileFailed': 'Cannot preview file',
   'lixi.renameLixi': 'Rename Lixi',
   'lixi.enterNewLixiName': 'Enter new lixi name',
   'lixi.lixiLengthError': 'Lixi name must be a string between 1 and 24 characters long',
@@ -175,8 +175,9 @@ export default {
   'lixi.loyaltyProgram': 'Loyalty Programs',
   'lixi.staffAddress': 'Staff Address',
   'lixi.charityAddress': 'Charity Address',
-  'lixi.loterryAddress': 'Loterry Address',
-  'lixi.loterryAddressCheck': 'Confirm',
+  'lixi.lotteryAddress': 'Lottery Address',
+  'lixi.lotteryAddressCheck': 'Confirm',
+  'lixi.addressCopied': 'The address has been copied.',
 
   /* 04.Claim */
   'claim.claim': 'Claim',
@@ -280,5 +281,11 @@ export default {
   'send.optionalPrivateMessage': 'Optional Private Message',
   /* 12.Zero balance header */
   'zeroBalanceHeader.noBalance': 'You currently have 0 {ticker}',
-  'zeroBalanceHeader.deposit': 'Deposit some funds to use this feature'
+  'zeroBalanceHeader.deposit': 'Deposit some funds to use this feature',
+
+  /* 13.Page */
+  'page.couldNotpostPage': 'Could not create page',
+  'page.createPageSuccessful': 'Create page successful',
+  'page.unableCreatePageServer': 'Unable to create page on server',
+  'page.errorWhenCreatePage': "There's an error happens when create new Page"
 };

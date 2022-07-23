@@ -1,4 +1,4 @@
-import { CreatePageCommand, Page } from '@bcpros/lixi-models';
+import { CreatePageCommand, Page } from '@bcpros/lixi-models/src';
 import { createAction } from '@reduxjs/toolkit';
 
 export const setSelectedPage = createAction<string>('pages/getSelectedId');

@@ -18,7 +18,7 @@ model Handle {
   handleNumber Int    @map("handle_number") @db.Oid
 
   // User User[]
-  Page Page[]
+  // Page Page[]
 
   @@unique([handle, handleNumber])
   @@map("handle")
@@ -85,8 +85,8 @@ model Page {
   children      Page[]  @relation("subPages")
   parent        Page?   @relation("subPages", fields: [parentId], references: [id])
   parentId      String? @map("parent_id")
-  handle        Handle  @relation(fields: [handleId], references: [id])
-  handleId      String  @map("handle_id")
+  // handle        Handle  @relation(fields: [handleId], references: [id])
+  // handleId      String  @map("handle_id")
   address       String  @default("")
   website       String  @default("") @map("website")
 
@@ -141,6 +141,7 @@ model Lixi {
   claims               Claim[]
   joinLotteryProgram   Boolean            @default(false) @map("join_lottery_program")
   status               String             @default("active") @map("status")
+  previousStatus       String             @default("active") @map("previous_status")
   inventoryStatus      String             @default("initialized") @map("invetory_status")
   account              Account            @relation(fields: [accountId], references: [id])
   accountId            Int                @map("account_id")
@@ -161,7 +162,7 @@ model Lixi {
   package              Package?           @relation(fields: [packageId], references: [id])
   distributions        LixiDistribution[]
   upload               Upload?
-  uploadId             String?   @map("upload_id")
+  uploadId             String?            @map("upload_id")
 
   @@map("lixi")
 }

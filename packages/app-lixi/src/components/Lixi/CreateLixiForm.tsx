@@ -68,15 +68,15 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
 
   // New Lixi sub Value
   const [newNumberOfSubLixi, setNewNumberOfSubLixi] = useState('');
-  const [newSubLixiIsValid, setNewSubLixiIsValid] = useState(true);
+  const [newSubLixiIsValid, setNewSubLixiIsValid] = useState(false);
 
   // New Lixi Min Value
   const [newLixiMinValue, setNewLixiMinValue] = useState('');
-  const [newLixiMinValueIsValid, setNewLixiMinValueIsValid] = useState(true);
+  const [newLixiMinValueIsValid, setNewLixiMinValueIsValid] = useState(false);
 
   // New Lixi Max Value
   const [newLixiMaxValue, setNewLixiMaxValue] = useState('');
-  const [newLixiMaxValueIsValid, setNewLixiMaxValueIsValid] = useState(true);
+  const [newLixiMaxValueIsValid, setNewLixiMaxValueIsValid] = useState(false);
 
   // New Lixi Default Value
   const [newLixiFixedValue, setNewLixiFixedValue] = useState('');
@@ -171,11 +171,11 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
       newActivatedAtLixiIsValid &&
       ((claimType == ClaimType.OneTime &&
         lixiType == LixiType.Random &&
-        newNumberOfSubLixi &&
+        newSubLixiIsValid &&
         newLixiAmountValueIsValid &&
         newLixiMinValueIsValid &&
         newLixiMaxValueIsValid) ||
-        (lixiType == LixiType.Equal && newNumberOfSubLixi && newLixiAmountValueIsValid))) ||
+        (lixiType == LixiType.Equal && newSubLixiIsValid && newLixiAmountValueIsValid))) ||
     (claimType == ClaimType.Single &&
       lixiType == LixiType.Random &&
       newLixiMinValueIsValid &&
@@ -202,7 +202,7 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
 
   const handleNewNumberOfSubLixi = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    setNewSubLixiIsValid(isValidAmountInput(value));
+    setNewSubLixiIsValid(isValidAmountInput(value) && Number(value) !== 0);
     setNewNumberOfSubLixi(value);
   };
 
@@ -740,11 +740,11 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
                       <Checkbox value={isFamilyFriendly} onChange={e => handleFamilyFriendly(e)}>
                         {intl.get('account.familyFriendly')}
                       </Checkbox>
-                      {ClaimType.OneTime === claimType && (
+                      {/* {ClaimType.OneTime === claimType && (
                         <Checkbox value={isNFTEnabled} onChange={e => handleNFTEnabled(e)}>
                           {intl.get('lixi.isNFTEnabled')}
                         </Checkbox>
-                      )}
+                      )} */}
                     </Form.Item>
                   </Panel>
                 </AdvancedCollapse>

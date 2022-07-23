@@ -70,9 +70,9 @@ export class LixiService {
       totalClaim: BigInt(0),
       envelopeId: command.envelopeId ?? null,
       envelopeMessage: command.envelopeMessage ?? '',
-      upload: {connect : command.uploadId ? {id: command.uploadId} : undefined}
-    };   
-    
+      upload: { connect: command.uploadId ? { id: command.uploadId } : undefined }
+    };
+
     const lixiToInsert = _.omit(data, 'password', 'staffAddress', 'charityAddress');
 
     const utxos = await this.XPI.Utxo.get(account.address);
@@ -156,7 +156,7 @@ export class LixiService {
       envelopeId: command.envelopeId ?? null,
       envelopeMessage: command.envelopeMessage ?? '',
       isNFTEnabled: command.isNFTEnabled ?? false,
-      upload: {connect : command.uploadId ? {id: command.uploadId} : undefined},
+      upload: { connect: command.uploadId ? { id: command.uploadId } : undefined },
       joinLotteryProgram: command.joinLotteryProgram
     };
     const lixiToInsert = _.omit(data, 'password');
@@ -374,11 +374,18 @@ export class LixiService {
       throw new VError(lixiNotExist);
     }
 
-    const updatedLixi = await this.prisma.lixi.update({
+    let updatedLixi = await this.prisma.lixi.findUnique({
+      where: {
+        id: _.toSafeInteger(id)
+      }
+    });
+
+    updatedLixi = await this.prisma.lixi.update({
       where: {
         id: _.toSafeInteger(id)
       },
       data: {
+        previousStatus: updatedLixi?.status,
         status: status,
         updatedAt: new Date()
       }
