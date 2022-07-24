@@ -20,7 +20,7 @@ export const accountsAdapter = createEntityAdapter<Account>({});
 const initialState: AccountsState = accountsAdapter.getInitialState({
   selectedId: null,
   lixiIdsById: {},
-  upload: null
+  envelopeUpload: null
 });
 
 export const accountReducer = createReducer(initialState, builder => {
@@ -72,10 +72,10 @@ export const accountReducer = createReducer(initialState, builder => {
       }
     })
     .addCase(setUpload, (state, action) => {
-      state.upload = action.payload
+      state.envelopeUpload = action.payload
     })
     .addCase(removeUpload, (state, action) => {
-      state.upload = null;
+      state.envelopeUpload = null;
     }).addMatcher(isAnyOf(refreshLixiListSuccess, refreshLixiListSilentSuccess), (state, action) => {
       const { account, lixies } = action.payload;
       const id = account.id;

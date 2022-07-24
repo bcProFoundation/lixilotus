@@ -10,6 +10,7 @@ import { isMobile } from 'react-device-detect';
 import { useAppDispatch } from "@store/hooks";
 import { setUpload, removeUpload } from '@store/account/actions';
 import axiosClient from "@utils/axiosClient";
+import { UPLOAD_API, UPLOAD_TYPES } from 'src/constants/upload';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -125,10 +126,11 @@ export const LixiEnvelopeUploader = ({
 
   const uploadImage = async options => {
     const { onSuccess, onError, file, onProgress } = options;
-    const url = `/api/lixies/custom-upload`
+    const url = UPLOAD_API
     const formData = new FormData();
 
     formData.append('file', file);
+    formData.append('type', UPLOAD_TYPES.ENVELOPE);
     const config = {
       headers: { "content-type": "multipart/form-data" },
       withCredentials: true,

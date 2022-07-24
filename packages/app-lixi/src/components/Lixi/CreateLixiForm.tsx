@@ -29,7 +29,7 @@ import { Account } from '@bcpros/lixi-models/lib/account';
 import { ClaimType, GenerateLixiCommand, LixiType, LotteryAddress } from '@bcpros/lixi-models/lib/lixi';
 import CountrySelectDropdown from '@components/Common/CountrySelectDropdown';
 import EnvelopeCarousel from '@components/Common/EnvelopeCarousel';
-import { getUpload } from '@store/account/selectors';
+import { getEnvelopeUpload } from '@store/account/selectors';
 import { AppContext } from '@store/store';
 import { isValidAmountInput } from '@utils/validation';
 import TextArea from 'antd/lib/input/TextArea';
@@ -50,7 +50,7 @@ type CreateLixiFormProps = {
 const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
   const dispatch = useAppDispatch();
   const envelopes = useAppSelector(getAllEnvelopes);
-  const upload = useAppSelector(getUpload);
+  const envelopeUpload = useAppSelector(getEnvelopeUpload);
 
   const { XPI, Wallet } = React.useContext(AppContext);
 
@@ -395,7 +395,7 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
       envelopeId: newEnvelopeId,
       envelopeMessage: newEnvelopeMessage,
       numberLixiPerPackage: newNumberLixiPerPackage,
-      upload: upload,
+      upload: envelopeUpload,
       staffAddress: newStaffAddress,
       charityAddress: newCharityAddress,
       joinLotteryProgram: joinLotteryProgram
