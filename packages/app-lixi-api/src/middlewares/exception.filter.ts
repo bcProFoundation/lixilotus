@@ -19,7 +19,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     let err = error;
     while (err && (err as any).cause) {
       err = (err as any).cause();
-      this.logger.error(err);
+      this.logger.error(JSON.stringify(err));
     }
 
     const devErrorResponse: any = {
