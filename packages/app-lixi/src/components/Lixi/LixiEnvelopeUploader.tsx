@@ -10,7 +10,7 @@ import { isMobile } from 'react-device-detect';
 import { useAppDispatch } from "@store/hooks";
 import { setUpload, removeUpload } from '@store/account/actions';
 import axiosClient from "@utils/axiosClient";
-import { UPLOAD_API, UPLOAD_TYPES } from 'src/constants/upload';
+import { UPLOAD_TYPES, UPLOAD_API } from '@bcpros/lixi-models/constants'
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -140,7 +140,7 @@ export const LixiEnvelopeUploader = ({
     };
 
     await axiosClient.post(url, formData, config).then(response => {
-      return onSuccess(dispatch(setUpload(response.data)));
+      return onSuccess(dispatch(setUpload({upload: response.data, type: UPLOAD_TYPES.ENVELOPE})));
     })
     .catch(err => {
       const { response } = err;
@@ -164,7 +164,7 @@ export const LixiEnvelopeUploader = ({
         accept="image/png, image/gif, image/jpeg"
         progress={customProgress}
         customRequest={uploadImage}
-        onRemove={() => dispatch(removeUpload(null))}
+        onRemove={() => dispatch(removeUpload({type: UPLOAD_TYPES.ENVELOPE}))}
       >
         {uploadButton}
       </Upload>

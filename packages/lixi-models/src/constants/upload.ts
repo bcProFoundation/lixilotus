@@ -1,3 +1,4 @@
+
 export const UPLOAD_TYPES = {
     ENVELOPE: 'envelope',
     PAGE_COVER: 'page_cover',

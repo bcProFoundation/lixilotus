@@ -8,4 +8,6 @@ export interface AccountsState extends EntityState<Account> {
     [key: number]: Array<number>
   };
   envelopeUpload: Upload;
+  pageCoverUpload: Upload;
+  pageAvatarUpload: Upload;
 }

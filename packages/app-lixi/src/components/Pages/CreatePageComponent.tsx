@@ -12,6 +12,8 @@ import { CreatePageCommand } from '@bcpros/lixi-models/src';
 import { getPagesByAccountId, postPage } from '@store/page/action';
 import {} from 'src/store/page/selectors';
 import styled from 'styled-components';
+import { StyledPageImageUploader } from './PageImageUploader';
+import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
 
 const { TextArea } = Input;
 
@@ -179,9 +181,7 @@ const CreatePageComponent: React.FC = isEditPage => {
           valuePropName="fileList"
           getValueFromEvent={normFile}
         >
-          <Upload name="logo" action="/upload.do" listType="picture">
-            <Button icon={<UploadOutlined />}>Click to upload</Button>
-          </Upload>
+          <StyledPageImageUploader type={UPLOAD_TYPES.PAGE_AVATAR}/>
         </Form.Item>
         <Form.Item
           name="cover"
@@ -189,9 +189,7 @@ const CreatePageComponent: React.FC = isEditPage => {
           valuePropName="fileList"
           getValueFromEvent={normFile}
         >
-          <Upload name="logo" action="/upload.do" listType="picture">
-            <Button icon={<UploadOutlined />}>Click to upload</Button>
-          </Upload>
+          <StyledPageImageUploader type={UPLOAD_TYPES.PAGE_COVER}/>
         </Form.Item>
         <Form.Item name="website" label="Website">
           <Input onChange={e => handleNewPageWebsiteInput(e)} />

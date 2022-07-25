@@ -275,7 +275,7 @@ model Upload {
   extension        String?  @db.VarChar(10)
   thumbnailWidth   Int?     @map("thumbnail_width")
   thumbnailHeight  Int?     @map("thumbnail_height")
-  type             String?  @db.VarChar(10)
+  type             String?  @db.VarChar(15)
   lixi             Lixi?    @relation(fields: [lixiId], references: [id])
   lixiId           Int?     @unique
   account          Account? @relation(fields: [accountId], references: [id])

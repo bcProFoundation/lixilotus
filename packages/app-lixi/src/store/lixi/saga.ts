@@ -83,6 +83,7 @@ import moment from 'moment';
 import { refreshLixiSilent } from './actions';
 import { refreshLixiListSilent } from '@store/account/actions';
 import { removeUpload } from '@store/account/actions';
+import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
 
 const call: any = Effects.call;
 /**
@@ -288,7 +289,7 @@ function* postLixiSuccessSaga(action: PayloadAction<Lixi>) {
         duration: 5
       })
     );
-    yield put(removeUpload(null));
+    yield put(removeUpload({type: UPLOAD_TYPES.ENVELOPE}));
     yield put(setLixi(lixi));
     yield put(hideLoading(postLixi.type));
     yield put(refreshLixiListSilent(lixi.accountId));

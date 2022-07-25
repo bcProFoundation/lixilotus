@@ -39,3 +39,13 @@ export const getEnvelopeUpload = createSelector(
   (state: RootState) => state.accounts,
   (accounts: AccountsState) => accounts.envelopeUpload
 )
+
+export const getPageCoverUpload = createSelector(
+  (state: RootState) => state.accounts,
+  (accounts: AccountsState) => accounts.pageCoverUpload
+)
+
+export const getPageAvatarUpload = createSelector(
+  (state: RootState) => state.accounts,
+  (accounts: AccountsState) => accounts.pageAvatarUpload
+)
