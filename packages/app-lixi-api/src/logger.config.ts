@@ -17,13 +17,13 @@ export const formatTimestamp = (date: Date): string =>
     .getDate()
     .toString()
     .padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date
-      .getMinutes()
-      .toString()
-      .padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}.${date
-        .getMilliseconds()
-        .toString()
-        // .padEnd(3, '0')} ${timezone}`;
-        .padEnd(3, '0')}`;
+    .getMinutes()
+    .toString()
+    .padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}.${date
+    .getMilliseconds()
+    .toString()
+    // .padEnd(3, '0')} ${timezone}`;
+    .padEnd(3, '0')}`;
 
 // export const timestamp = () => formatTimestamp(new Date());
 
@@ -35,8 +35,10 @@ export const loggerConfig = WinstonModule.createLogger({
     format.errors({ stack: true }), // log the full stack
     timestamp(), // get the time stamp part of the full log message
     printf(({ level, message, context, timestamp, stack }) => {
+      const logLevel = level ?? '';
+      const logStack = stack ? ` - stack: ${stack} ` : '';
       // formating the log outcome to show/store
-      const logMessage: string = `${timestamp} [${context}] ${level ?? ''}: ${message} - stack: ${stack}`;
+      const logMessage: string = `${timestamp} [${context}] ${level ?? ''}: ${message} ${logStack}`;
       if (level == 'error') {
         console.log(logMessage);
       }
