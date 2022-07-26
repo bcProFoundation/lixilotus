@@ -13,4 +13,6 @@ export class CreatePageCommand {
   parentId?: string;
   address: string;
   website: string;
+  country?: string;
+  state?: string;
 }

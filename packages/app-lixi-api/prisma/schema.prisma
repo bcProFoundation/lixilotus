@@ -89,6 +89,8 @@ model Page {
   // handleId      String  @map("handle_id")
   address       String  @default("")
   website       String  @default("") @map("website")
+  country       String  @default("") @map("country")
+  state         String  @default("") @map("state")
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz

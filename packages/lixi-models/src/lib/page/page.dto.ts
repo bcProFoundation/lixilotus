@@ -9,6 +9,8 @@ export class PageDto {
   parentId?: Nullable<string>;
   address: string;
   website: string;
+  country?: string;
+  state?: string;
   createdAt: Date;
   updatedAt: Date;
 

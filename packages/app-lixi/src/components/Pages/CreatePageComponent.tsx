@@ -1,23 +1,30 @@
-import { UploadOutlined } from '@ant-design/icons';
-import { showToast } from '@store/toast/actions';
-import intl from 'react-intl-universal';
-import { Button, Form, Input, Upload } from 'antd';
+import { Button, Form, Input, Select, Upload } from 'antd';
+import isEmpty from 'lodash.isempty';
 import React, { useEffect, useState } from 'react';
+import intl from 'react-intl-universal';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getLixiesBySelectedAccount } from 'src/store/lixi/selectors';
 import { pagesByAccountId } from 'src/store/page/selectors';
 import { AppContext } from 'src/store/store';
+import { UploadOutlined } from '@ant-design/icons';
 import { CreatePageCommand } from '@bcpros/lixi-models/src';
+import { getAllCountries, getAllStates, getAllStatesBySelectedCountry } from '@store/country/selectors';
 import { getPagesByAccountId, postPage } from '@store/page/action';
-import {} from 'src/store/page/selectors';
-import styled from 'styled-components';
+import { showToast } from '@store/toast/actions';
+import { getCountry, getState } from '../../store/country/actions';
 
 const { TextArea } = Input;
+const { Option } = Select;
 
 const CreatePageComponent: React.FC = isEditPage => {
   const ContextValue = React.useContext(AppContext);
   const pagesByAccountIdList = useAppSelector(pagesByAccountId);
+  useEffect(() => {
+    dispatch(getCountry());
+  }, [])
+  const countries = useAppSelector(getAllCountries);
+  const states = useAppSelector(getAllStates);
 
   // Page account id
   const [pageAccountId, setPageAccountId] = useState(null);
@@ -58,6 +65,14 @@ const CreatePageComponent: React.FC = isEditPage => {
   // New page cover
   const [newPageCover, setNewPageCover] = useState('');
   const [newPageCoverIsValid, setNewPageCoverIsValid] = useState(true);
+
+  // New page country
+  const [newPageCountry, setNewPageCountry] = useState('');
+  const [newPageCountryIsValid, setNewPageCountryIsValid] = useState(true);
+
+  // New page state
+  const [newPageState, setNewPageState] = useState('');
+  const [newPageStateIsValid, setNewPageStateIsValid] = useState(true);
 
   const dispatch = useAppDispatch();
   const lixies = useAppSelector(getLixiesBySelectedAccount);
@@ -110,6 +125,21 @@ const CreatePageComponent: React.FC = isEditPage => {
     setNewPageWebsiteIsValid(true);
   };
 
+  const handleChangeCountry = (value: string) => {
+    setNewPageCountry(value);
+    if (value && !isEmpty(value)) {
+      setNewPageCountryIsValid(true);
+    }
+    dispatch(getState(value))
+  };
+
+  const handleChangeState = (value: string) => {
+    setNewPageState(value);
+    if (value && !isEmpty(value)) {
+      setNewPageStateIsValid(true);
+    }
+  };
+
   const normFile = (e: any) => {
     if (Array.isArray(e)) {
       return e;
@@ -149,7 +179,9 @@ const CreatePageComponent: React.FC = isEditPage => {
       title: newPageTitle,
       description: newPageDescription,
       address: newPageAddress,
-      website: newPageWebsite
+      website: newPageWebsite,
+      country: newPageCountry,
+      state: newPageState,
     };
     if (valueCreatePage) dispatch(postPage(valueCreatePage));
   };
@@ -199,6 +231,52 @@ const CreatePageComponent: React.FC = isEditPage => {
         <Form.Item label="Description">
           <TextArea onChange={e => handleNewPageDescriptionInput(e)} rows={4} />
         </Form.Item>
+
+        {/* Country */}
+        <Form.Item>
+          <Select
+            showSearch
+            onChange={handleChangeCountry}
+            style={{ width: 200 }}
+            placeholder="Search to select country"
+            optionFilterProp="children"
+            filterOption={(input, option) => (option!.children as unknown as string).toLocaleLowerCase().includes(input)}
+            filterSort={(optionA, optionB) =>
+              (optionA!.children as unknown as string)
+                .toLowerCase()
+                .localeCompare((optionB!.children as unknown as string).toLowerCase())
+            }
+          >
+            {countries.map(country => (
+              <Option key={country.id}>{country.name}</Option>
+            ))}
+          </Select>
+        </Form.Item>
+
+        {/* State */}
+        {newPageCountry != '' &&
+          <Form.Item>
+            <Select
+              showSearch
+              onChange={handleChangeState}
+              style={{ width: 200 }}
+              placeholder="Search to select state"
+              optionFilterProp="children"
+              filterOption={(input, option) => (option!.children as unknown as string).toLocaleLowerCase().includes(input)}
+              filterSort={(optionA, optionB) =>
+                (optionA!.children as unknown as string)
+                  .toLowerCase()
+                  .localeCompare((optionB!.children as unknown as string).toLowerCase())
+              }
+            >
+              {states.map(state => (
+                <Option key={state.id}>{state.name}</Option>
+              ))}
+            </Select>
+          </Form.Item>
+        }
+
+
 
         <Form.Item wrapperCol={{ offset: 0, span: 24 }}>
           <Button
