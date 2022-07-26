@@ -80,8 +80,6 @@ model Page {
   name          String  @default("") @map("name") @db.VarChar(255)
   title         String  @default("") @map("title") @db.VarChar(255)
   description   String  @default("") @map("description") @db.VarChar(1000)
-  avatar        String  @default("upload/photos/d-page.jpg") @db.VarChar(100)
-  cover         String  @default("upload/photos/d-cover.jpg") @db.VarChar(100)
   children      Page[]  @relation("subPages")
   parent        Page?   @relation("subPages", fields: [parentId], references: [id])
   parentId      String? @map("parent_id")
@@ -89,7 +87,8 @@ model Page {
   // handleId      String  @map("handle_id")
   address       String  @default("")
   website       String  @default("") @map("website")
-
+  avatar        UploadDetail? @relation("PageAvatar")
+  cover         UploadDetail? @relation("PageCover")
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
 
@@ -109,7 +108,7 @@ model Account {
   notifications     Notification[]
   language          String         @default("en")
   publicKey         String         @default("") @map("public_key")
-  uploads           Upload[]
+  uploadDetail      UploadDetail[]
 
   Page Page[]
 
@@ -161,8 +160,8 @@ model Lixi {
   packageId            Int?               @map("package_id")
   package              Package?           @relation(fields: [packageId], references: [id])
   distributions        LixiDistribution[]
-  upload               Upload?
-  uploadId             String?            @map("upload_id")
+  uploadDetail         UploadDetail?
+  uploadDetailId       String?            @map("upload_detail_id")
 
   @@map("lixi")
 }
@@ -276,10 +275,7 @@ model Upload {
   thumbnailWidth   Int?     @map("thumbnail_width")
   thumbnailHeight  Int?     @map("thumbnail_height")
   type             String?  @db.VarChar(15)
-  lixi             Lixi?    @relation(fields: [lixiId], references: [id])
-  lixiId           Int?     @unique
-  account          Account? @relation(fields: [accountId], references: [id])
-  accountId        Int?
+  uploadDetail     UploadDetail?
 
   @@map("upload")
 }
@@ -399,4 +395,20 @@ model City {
   @@index([stateId], map: "idx_158778_cities_test_ibfk_1")
   @@index([countryId], map: "idx_158778_cities_test_ibfk_2")
   @@map("city")
+}
+
+model UploadDetail {
+  id        String      @id @default(cuid())
+  account   Account     @relation(fields: [accountId], references: [id])
+  accountId Int         @map("account_id")
+  upload    Upload      @relation(fields: [uploadId], references: [id])
+  uploadId  String      @map("upload_id") @unique
+  lixi      Lixi?       @relation(fields: [lixiId], references: [id])
+  lixiId    Int?        @map("lixi_id") @unique
+  pageCover Page?       @relation("PageCover", fields: [pageCoverId], references: [id])
+  pageCoverId String?   @map("page_cover_id") @unique
+  pageAvatar Page?      @relation("PageAvatar", fields: [pageAvatarId], references: [id])
+  pageAvatarId String?  @map("page_avatar_id") @unique
+
+  @@map("upload_detail")
 }

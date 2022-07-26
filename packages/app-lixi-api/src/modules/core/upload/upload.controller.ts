@@ -98,12 +98,18 @@ export class UploadFilesController {
                 thumbnailWidth: thumbnailImage.width,
                 thumbnailHeight: thumbnailImage.height,
                 type: type,
-                account: { connect: { id: account.id } },
             }
 
             const resultImage: UploadDb = await this.prisma.upload.create({
                 data: uploadToInsert
             });
+
+            await this.prisma.uploadDetail.create({
+                data: {
+                    account : {connect : {id: account.id}},
+                    upload : {connect : {id: resultImage.id}}
+                }
+            })
 
             return resultImage;
         } catch (err) {
