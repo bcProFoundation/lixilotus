@@ -341,9 +341,9 @@ export class ClaimController {
         });
 
         // No need the change, all the change (if there's any) comes to miner
-        // if (change && change > 546) {
-        //   transactionBuilder.addOutput(lixiAddress, change);
-        // }
+        if (change && change > 546) {
+          transactionBuilder.addOutput(lixiAddress, change);
+        }
 
         // Sign each UTXO that is about to be spent.
         necessaryUtxos.forEach((utxo, i) => {
