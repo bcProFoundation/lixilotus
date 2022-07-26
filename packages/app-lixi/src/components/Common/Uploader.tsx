@@ -34,7 +34,7 @@ const StyledContainer = styled.div`
   padding: 10px;
 `
 
-export const PageImageUploader = (props) => {
+export const Uploader = (props) => {
   const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
@@ -164,7 +164,7 @@ export const PageImageUploader = (props) => {
   )
 }
 
-export const StyledPageImageUploader = styled(PageImageUploader)`
+export const StyledUploader = styled(Uploader)`
   .ant-upload.ant-upload-select-picture-card {
     background-color: white;
   }
