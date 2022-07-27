@@ -79,6 +79,7 @@ model Page {
   pageAccountId Int     @unique @map("page_account_id")
   name          String  @default("") @map("name") @db.VarChar(255)
   title         String  @default("") @map("title") @db.VarChar(255)
+  walletAddress String  @default("") @map("wallet_address")
   description   String  @default("") @map("description") @db.VarChar(1000)
   avatar        String  @default("upload/photos/d-page.jpg") @db.VarChar(100)
   cover         String  @default("upload/photos/d-cover.jpg") @db.VarChar(100)
@@ -87,10 +88,10 @@ model Page {
   parentId      String? @map("parent_id")
   // handle        Handle  @relation(fields: [handleId], references: [id])
   // handleId      String  @map("handle_id")
-  address       String  @default("")
   website       String  @default("") @map("website")
   country       String  @default("") @map("country")
   state         String  @default("") @map("state")
+  address       String  @default("") @map("address")
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz

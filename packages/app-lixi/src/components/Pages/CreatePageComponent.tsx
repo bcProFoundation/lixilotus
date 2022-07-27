@@ -70,6 +70,10 @@ const CreatePageComponent: React.FC = isEditPage => {
   const [newPageState, setNewPageState] = useState('');
   const [newPageStateIsValid, setNewPageStateIsValid] = useState(true);
 
+  // New page address
+  const [newPageAddress, setNewPageAddress] = useState('');
+  const [newPageAddressIsValid, setNewPageAddressIsValid] = useState(true);
+
   const dispatch = useAppDispatch();
   const lixies = useAppSelector(getLixiesBySelectedAccount);
   // const pages = useAppSelector(getPagesBySelectedAccount);
@@ -130,6 +134,13 @@ const CreatePageComponent: React.FC = isEditPage => {
     }
   };
 
+  const handleNewPageAddressInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setNewPageAddress(value);
+    setNewPageAddressIsValid(true);
+  };
+
+
   const normFile = (e: any) => {
     if (Array.isArray(e)) {
       return e;
@@ -168,10 +179,11 @@ const CreatePageComponent: React.FC = isEditPage => {
       name: newPageName,
       title: newPageTitle,
       description: newPageDescription,
-      address: selectedAccount.address,
+      walletAddress: selectedAccount.address,
       website: newPageWebsite,
       country: newPageCountry,
       state: newPageState,
+      address: newPageAddress,
     };
     if (valueCreatePage) dispatch(postPage(valueCreatePage));
   };
@@ -266,7 +278,13 @@ const CreatePageComponent: React.FC = isEditPage => {
           </Form.Item>
         }
 
-
+        <Form.Item>
+          <Input
+            addonBefore="page.address"
+            value={newPageAddress}
+            onChange={e => handleNewPageAddressInput(e)}
+          />
+        </Form.Item>
 
         <Form.Item wrapperCol={{ offset: 0, span: 24 }}>
           <Button
