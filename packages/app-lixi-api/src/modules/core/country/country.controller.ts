@@ -27,17 +27,6 @@ export class CountryController {
     @I18n() i18n: I18nContext
   ): Promise<State[]> {
     try {
-      const country = await this.prisma.country.findUnique({
-        where: {
-          id: _.toSafeInteger(id)
-        }
-      })
-
-      if (!country) {
-        const lixiNotExist = await i18n.t('country.messages.countryNotExist');
-        throw new VError(lixiNotExist);
-      }
-
       const states = await this.prisma.state.findMany({
         where: {
           countryId: _.toSafeInteger(id)
