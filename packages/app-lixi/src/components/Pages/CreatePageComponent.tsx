@@ -50,10 +50,6 @@ const CreatePageComponent: React.FC = isEditPage => {
   const [newPageDescription, setNewPageDescription] = useState('');
   const [newPageDescriptionIsValid, setNewPageDescriptionIsValid] = useState(true);
 
-  // New page address
-  const [newPageAddress, setNewPageAddress] = useState('');
-  const [newPageAddressIsValid, setNewPageAddressIsValid] = useState(true);
-
   // New page website
   const [newPageWebsite, setNewPageWebsite] = useState('');
   const [newPageWebsiteIsValid, setNewPageWebsiteIsValid] = useState(true);
@@ -93,12 +89,6 @@ const CreatePageComponent: React.FC = isEditPage => {
     const { value } = e.target;
     setNewPageTitle(value);
     setNewPageTitleIsValid(true);
-  };
-
-  const handleNewPageAddressInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setNewPageAddress(value);
-    setNewPageAddressIsValid(true);
   };
 
   const handleNewPageAvatarInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -178,7 +168,7 @@ const CreatePageComponent: React.FC = isEditPage => {
       name: newPageName,
       title: newPageTitle,
       description: newPageDescription,
-      address: newPageAddress,
+      address: selectedAccount.address,
       website: newPageWebsite,
       country: newPageCountry,
       state: newPageState,
@@ -202,8 +192,8 @@ const CreatePageComponent: React.FC = isEditPage => {
         <Form.Item name="title" label="Title" rules={[{ required: true, message: 'Please input title' }]}>
           <Input onChange={e => handleNewPageTitleInput(e)} />
         </Form.Item>
-        <Form.Item name="address" label="Address" rules={[{ required: true, message: 'Please input address' }]}>
-          <Input onChange={e => handleNewPageAddressInput(e)} />
+        <Form.Item name="address" label="Wallet Address" rules={[{ required: true, message: 'Please input address' }]}>
+          <Input defaultValue={selectedAccount.address} disabled />
         </Form.Item>
         <Form.Item
           name="avatar"

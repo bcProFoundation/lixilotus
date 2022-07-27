@@ -112,8 +112,7 @@ model Account {
   language          String         @default("en")
   publicKey         String         @default("") @map("public_key")
   uploads           Upload[]
-
-  Page Page[]
+  page              Page?
 
   @@index([mnemonicHash], type: Hash)
   @@map("account")
