@@ -74,21 +74,24 @@ model Handle {
 // }
 
 model Page {
-  id            String  @id @default(cuid())
-  pageAccount   Account @relation(fields: [pageAccountId], references: [id])
-  pageAccountId Int     @unique @map("page_account_id")
-  name          String  @default("") @map("name") @db.VarChar(255)
-  title         String  @default("") @map("title") @db.VarChar(255)
-  description   String  @default("") @map("description") @db.VarChar(1000)
-  children      Page[]  @relation("subPages")
-  parent        Page?   @relation("subPages", fields: [parentId], references: [id])
-  parentId      String? @map("parent_id")
+  id            String        @id @default(cuid())
+  pageAccount   Account       @relation(fields: [pageAccountId], references: [id])
+  pageAccountId Int           @unique @map("page_account_id")
+  name          String        @default("") @map("name") @db.VarChar(255)
+  title         String        @default("") @map("title") @db.VarChar(255)
+  description   String        @default("") @map("description") @db.VarChar(1000)
+  children      Page[]        @relation("subPages")
+  parent        Page?         @relation("subPages", fields: [parentId], references: [id])
+  parentId      String?       @map("parent_id")
   // handle        Handle  @relation(fields: [handleId], references: [id])
   // handleId      String  @map("handle_id")
-  address       String  @default("")
-  website       String  @default("") @map("website")
+  website       String        @default("") @map("website")
   avatar        UploadDetail? @relation("PageAvatar")
   cover         UploadDetail? @relation("PageCover")
+  country       String        @default("") @map("country")
+  state         String        @default("") @map("state")
+  address       String        @default("") @map("address")
+
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
 
@@ -109,8 +112,7 @@ model Account {
   language          String         @default("en")
   publicKey         String         @default("") @map("public_key")
   uploadDetail      UploadDetail[]
-
-  Page Page[]
+  page              Page?
 
   @@index([mnemonicHash], type: Hash)
   @@map("account")
@@ -262,19 +264,19 @@ model Notification {
 }
 
 model Upload {
-  id               String   @id @default(uuid())
-  originalFilename String   @map("original_filename") @db.VarChar
-  fileSize         Int      @map("file_size")
+  id               String        @id @default(uuid())
+  originalFilename String        @map("original_filename") @db.VarChar
+  fileSize         Int           @map("file_size")
   width            Int?
   height           Int?
-  url              String   @db.VarChar
-  createdAt        DateTime @map("created_at") @db.Timestamptz
-  updatedAt        DateTime @map("updated_at") @db.Timestamptz
-  sha              String?  @unique
-  extension        String?  @db.VarChar(10)
-  thumbnailWidth   Int?     @map("thumbnail_width")
-  thumbnailHeight  Int?     @map("thumbnail_height")
-  type             String?  @db.VarChar(15)
+  url              String        @db.VarChar
+  createdAt        DateTime      @map("created_at") @db.Timestamptz
+  updatedAt        DateTime      @map("updated_at") @db.Timestamptz
+  sha              String?       @unique
+  extension        String?       @db.VarChar(10)
+  thumbnailWidth   Int?          @map("thumbnail_width")
+  thumbnailHeight  Int?          @map("thumbnail_height")
+  type             String?       @db.VarChar(15)
   uploadDetail     UploadDetail?
 
   @@map("upload")
@@ -398,17 +400,17 @@ model City {
 }
 
 model UploadDetail {
-  id        String      @id @default(cuid())
-  account   Account     @relation(fields: [accountId], references: [id])
-  accountId Int         @map("account_id")
-  upload    Upload      @relation(fields: [uploadId], references: [id])
-  uploadId  String      @map("upload_id") @unique
-  lixi      Lixi?       @relation(fields: [lixiId], references: [id])
-  lixiId    Int?        @map("lixi_id") @unique
-  pageCover Page?       @relation("PageCover", fields: [pageCoverId], references: [id])
-  pageCoverId String?   @map("page_cover_id") @unique
-  pageAvatar Page?      @relation("PageAvatar", fields: [pageAvatarId], references: [id])
-  pageAvatarId String?  @map("page_avatar_id") @unique
+  id           String  @id @default(cuid())
+  account      Account @relation(fields: [accountId], references: [id])
+  accountId    Int     @map("account_id")
+  upload       Upload  @relation(fields: [uploadId], references: [id])
+  uploadId     String  @unique @map("upload_id")
+  lixi         Lixi?   @relation(fields: [lixiId], references: [id])
+  lixiId       Int?    @unique @map("lixi_id")
+  pageCover    Page?   @relation("PageCover", fields: [pageCoverId], references: [id])
+  pageCoverId  String? @unique @map("page_cover_id")
+  pageAvatar   Page?   @relation("PageAvatar", fields: [pageAvatarId], references: [id])
+  pageAvatarId String? @unique @map("page_avatar_id")
 
   @@map("upload_detail")
 }

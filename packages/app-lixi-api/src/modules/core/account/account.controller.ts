@@ -49,6 +49,9 @@ export class AccountController {
       const account = await this.prisma.account.findUnique({
         where: {
           id: _.toSafeInteger(id)
+        },
+        include: {
+          page: true
         }
       });
       if (!account) {
@@ -60,7 +63,8 @@ export class AccountController {
 
       const result = {
         ...account,
-        balance: balance
+        balance: balance,
+        page: account.page,
       } as AccountDto;
 
       return result;

@@ -9,6 +9,7 @@ import settingsSaga from './settings/saga';
 import notificationSaga from './notification/saga';
 import sendSaga from './send/saga';
 import pageSaga from './page/saga';
+import countrySaga from './country/saga';
 
 export default function* rootSaga() {
   yield all([
@@ -20,6 +21,7 @@ export default function* rootSaga() {
     toastSaga(),
     settingsSaga(),
     notificationSaga(),
-    pageSaga()
+    pageSaga(),
+    countrySaga(),
   ]);
 }
