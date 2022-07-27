@@ -9,7 +9,7 @@ import { pagesByAccountId } from 'src/store/page/selectors';
 import { AppContext } from 'src/store/store';
 import { UploadOutlined } from '@ant-design/icons';
 import { CreatePageCommand } from '@bcpros/lixi-models/src';
-import { getAllCountries, getAllStates, getAllStatesBySelectedCountry } from '@store/country/selectors';
+import { getAllCountries, getAllStates, getAllStatesByCountry } from '@store/country/selectors';
 import { getPagesByAccountId, postPage } from '@store/page/action';
 import { showToast } from '@store/toast/actions';
 import { getCountries, getStates } from '../../store/country/actions';
