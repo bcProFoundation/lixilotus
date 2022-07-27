@@ -26,18 +26,6 @@ const countryApi = {
         throw response?.data ?? err ?? 'Network Error';
       });
   },
-  // getCities(): Promise<City> {
-  //   const url = `/api/countries/cities`;
-  //   return axiosClient
-  //     .get(url)
-  //     .then(response => {
-  //       return response.data as City;
-  //     })
-  //     .catch(err => {
-  //       const { response } = err;
-  //       throw response?.data ?? err ?? 'Network Error';
-  //     });
-  // },
 };
 
 export default countryApi;

@@ -2,7 +2,7 @@
   "messages": {
     "countryNotExist": "The country does not exist in the database.",
     "stateNotExist": "The state does not exist in the database.",
-    "unableToGetCountry": "Unable to get country.",
-    "unableToGetState": "Unable to get state."
+    "unableToGetCountries": "Unable to get country.",
+    "unableToGetStates": "Unable to get state."
   }
 }

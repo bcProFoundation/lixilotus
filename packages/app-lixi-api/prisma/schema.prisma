@@ -79,7 +79,6 @@ model Page {
   pageAccountId Int     @unique @map("page_account_id")
   name          String  @default("") @map("name") @db.VarChar(255)
   title         String  @default("") @map("title") @db.VarChar(255)
-  walletAddress String  @default("") @map("wallet_address")
   description   String  @default("") @map("description") @db.VarChar(1000)
   avatar        String  @default("upload/photos/d-page.jpg") @db.VarChar(100)
   cover         String  @default("upload/photos/d-cover.jpg") @db.VarChar(100)

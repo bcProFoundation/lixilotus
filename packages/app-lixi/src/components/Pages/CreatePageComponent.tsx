@@ -12,7 +12,7 @@ import { CreatePageCommand } from '@bcpros/lixi-models/src';
 import { getAllCountries, getAllStates, getAllStatesBySelectedCountry } from '@store/country/selectors';
 import { getPagesByAccountId, postPage } from '@store/page/action';
 import { showToast } from '@store/toast/actions';
-import { getCountry, getState } from '../../store/country/actions';
+import { getCountries, getStates } from '../../store/country/actions';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -21,7 +21,7 @@ const CreatePageComponent: React.FC = isEditPage => {
   const ContextValue = React.useContext(AppContext);
   const pagesByAccountIdList = useAppSelector(pagesByAccountId);
   useEffect(() => {
-    dispatch(getCountry());
+    dispatch(getCountries());
   }, [])
   const countries = useAppSelector(getAllCountries);
   const states = useAppSelector(getAllStates);
@@ -124,7 +124,7 @@ const CreatePageComponent: React.FC = isEditPage => {
     if (value && !isEmpty(value)) {
       setNewPageCountryIsValid(true);
     }
-    dispatch(getState(value))
+    dispatch(getStates(value))
   };
 
   const handleChangeState = (value: string) => {
@@ -162,7 +162,9 @@ const CreatePageComponent: React.FC = isEditPage => {
   //   };
 
   // Only enable CreateLixi button if all form entries are valid
-  let createPageFormDataIsValid = pageAccountIdIsValid;
+  let createPageFormDataIsValid = (
+    newPageName && newPageTitle
+  );
 
   const handleOnCreateNewPage = () => {
     if (!createPageFormDataIsValid && !selectedAccount.id) {
@@ -179,7 +181,6 @@ const CreatePageComponent: React.FC = isEditPage => {
       name: newPageName,
       title: newPageTitle,
       description: newPageDescription,
-      walletAddress: selectedAccount.address,
       website: newPageWebsite,
       country: newPageCountry,
       state: newPageState,
@@ -190,7 +191,7 @@ const CreatePageComponent: React.FC = isEditPage => {
 
   return (
     <>
-      <h3>{isEditPage ? 'Edit page' : 'Create new page'}</h3>
+      <h3>{isEditPage ? intl.get('page.editPage') : intl.get('page.createNewPage')}</h3>
       <Form
         labelCol={{ span: 5 }}
         wrapperCol={{ span: 24 }}
@@ -198,39 +199,39 @@ const CreatePageComponent: React.FC = isEditPage => {
         initialValues={{ disabled: componentDisabled }}
         onValuesChange={onFormLayoutChange}
       >
-        <Form.Item name="name" label="Name" rules={[{ required: true, message: 'Please input name' }]}>
+        <Form.Item name="name" label={intl.get('page.name')} rules={[{ required: true, message: intl.get('page.inputName') }]}>
           <Input defaultValue={newPageName} onChange={e => handleNewPageNameInput(e)} />
         </Form.Item>
-        <Form.Item name="title" label="Title" rules={[{ required: true, message: 'Please input title' }]}>
+        <Form.Item name="title" label={intl.get('page.title')} rules={[{ required: true, message: intl.get('page.inputTitle') }]}>
           <Input onChange={e => handleNewPageTitleInput(e)} />
         </Form.Item>
-        <Form.Item name="address" label="Wallet Address" rules={[{ required: true, message: 'Please input address' }]}>
+        <Form.Item name="walletAddress" label={intl.get('page.walletAddress')}>
           <Input defaultValue={selectedAccount.address} disabled />
         </Form.Item>
         <Form.Item
           name="avatar"
-          label="Avatar"
+          label={intl.get('page.avatar')}
           valuePropName="fileList"
           getValueFromEvent={normFile}
         >
           <Upload name="logo" action="/upload.do" listType="picture">
-            <Button icon={<UploadOutlined />}>Click to upload</Button>
+            <Button icon={<UploadOutlined />}>{intl.get('page.upload')}</Button>
           </Upload>
         </Form.Item>
         <Form.Item
           name="cover"
-          label="Cover"
+          label={intl.get('page.cover')}
           valuePropName="fileList"
           getValueFromEvent={normFile}
         >
           <Upload name="logo" action="/upload.do" listType="picture">
-            <Button icon={<UploadOutlined />}>Click to upload</Button>
+            <Button icon={<UploadOutlined />}>{intl.get('page.upload')}</Button>
           </Upload>
         </Form.Item>
-        <Form.Item name="website" label="Website">
+        <Form.Item name="website" label={intl.get('page.website')}>
           <Input onChange={e => handleNewPageWebsiteInput(e)} />
         </Form.Item>
-        <Form.Item label="Description">
+        <Form.Item label={intl.get('page.description')}>
           <TextArea onChange={e => handleNewPageDescriptionInput(e)} rows={4} />
         </Form.Item>
 
@@ -240,7 +241,7 @@ const CreatePageComponent: React.FC = isEditPage => {
             showSearch
             onChange={handleChangeCountry}
             style={{ width: 200 }}
-            placeholder="Search to select country"
+            placeholder={intl.get('page.country')}
             optionFilterProp="children"
             filterOption={(input, option) => (option!.children as unknown as string).toLocaleLowerCase().includes(input)}
             filterSort={(optionA, optionB) =>
@@ -262,7 +263,7 @@ const CreatePageComponent: React.FC = isEditPage => {
               showSearch
               onChange={handleChangeState}
               style={{ width: 200 }}
-              placeholder="Search to select state"
+              placeholder={intl.get('page.state')}
               optionFilterProp="children"
               filterOption={(input, option) => (option!.children as unknown as string).toLocaleLowerCase().includes(input)}
               filterSort={(optionA, optionB) =>
@@ -280,7 +281,7 @@ const CreatePageComponent: React.FC = isEditPage => {
 
         <Form.Item>
           <Input
-            addonBefore="page.address"
+            addonBefore={intl.get('page.address')}
             value={newPageAddress}
             onChange={e => handleNewPageAddressInput(e)}
           />
@@ -293,7 +294,7 @@ const CreatePageComponent: React.FC = isEditPage => {
             onClick={handleOnCreateNewPage}
             disabled={!createPageFormDataIsValid}
           >
-            Create page
+            {intl.get('page.createPage')}
           </Button>
         </Form.Item>
       </Form>

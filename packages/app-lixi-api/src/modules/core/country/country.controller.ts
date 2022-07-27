@@ -16,7 +16,7 @@ export class CountryController {
       const result = countries as Country[];
       return result;
     } catch (err: unknown) {
-      const unableGetEnvelope = await i18n.t('country.messages.unableToGetCountry');
+      const unableGetEnvelope = await i18n.t('country.messages.unableToGetCountries');
       throw new HttpException(unableGetEnvelope, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }

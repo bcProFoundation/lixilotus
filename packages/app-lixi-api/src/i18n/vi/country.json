@@ -2,7 +2,7 @@
   "messages": {
     "countryNotExist": "Quốc gia không tồn tại trong cơ sở dữ liệu.",
     "stateNotExist": "Tỉnh/thành không tồn tại trong cơ sở dữ liệu.",
-    "unableToGetCountry": "Không thể tải quốc gia.",
-    "unableToGetState": "Không thể tải tỉnh/thành."
+    "unableToGetCountries": "Không thể tải quốc gia.",
+    "unableToGetStates": "Không thể tải tỉnh/thành."
   }
 }

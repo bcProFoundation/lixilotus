@@ -8,7 +8,3 @@ export interface CountriesState extends EntityState<Country> {
 export interface StatesState extends EntityState<State> {
   selectedStateId: number;
 };
-
-// export interface CitiesState extends EntityState<City> {
-//   selectedId: number;
-// };

@@ -11,7 +11,6 @@ export class CreatePageCommand {
   avatar?: string;
   cover?: string;
   parentId?: string;
-  walletAddress: string;
   website: string;
   country?: string;
   state?: string;

@@ -6,32 +6,29 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { showToast } from '@store/toast/actions';
 
 import {
-  getCountry,
-  getCountryFailure,
-  getCountrySuccess,
-  getState,
-  getStateFailure,
-  getStateSuccess,
-  // getCity, 
-  // getCityFailure, 
-  // getCitySuccess, 
+  getCountries,
+  getCountriesFailure,
+  getCountriesSuccess,
+  getStates,
+  getStatesFailure,
+  getStatesSuccess,
 } from './actions';
 import countryApi from './api';
 
 const call: any = Effects.call;
 
-function* getCountrySaga(action: PayloadAction) {
+function* getCountriesSaga(action: PayloadAction) {
   try {
     const data = yield call(countryApi.getCountries);
-    yield put(getCountrySuccess(data));
+    yield put(getCountriesSuccess(data));
   } catch (err) {
-    const message = (err as Error).message ?? intl.get('lixi.couldNotFetchCountry');
-    yield put(getCountryFailure(message));
+    const message = (err as Error).message ?? intl.get('country.unablegetCountries');
+    yield put(getCountriesFailure(message));
   }
 }
 
-function* getCountryFailureSaga(action: PayloadAction<string>) {
-  const message = action.payload ?? intl.get('lixi.unableGetCountry');
+function* getCountriesFailureSaga(action: PayloadAction<string>) {
+  const message = action.payload ?? intl.get('country.unablegetCountries');
   yield put(
     showToast('error', {
       message: 'Error',
@@ -41,20 +38,20 @@ function* getCountryFailureSaga(action: PayloadAction<string>) {
   );
 }
 
-function* getStateSaga(action: PayloadAction<number>) {
+function* getStatesSaga(action: PayloadAction<number>) {
   try {
     const id = action.payload;
     console.log("id: ", id)
     const data = yield call(countryApi.getStates, id);
-    yield put(getStateSuccess(data));
+    yield put(getStatesSuccess(data));
   } catch (err) {
-    const message = (err as Error).message ?? intl.get('lixi.couldNotFetchState');
-    yield put(getStateFailure(message));
+    const message = (err as Error).message ?? intl.get('country.unableGetState');
+    yield put(getStatesFailure(message));
   }
 }
 
-function* getStateFailureSaga(action: PayloadAction<string>) {
-  const message = action.payload ?? intl.get('lixi.unableGetState');
+function* getStatesFailureSaga(action: PayloadAction<string>) {
+  const message = action.payload ?? intl.get('country.unableGetState');
   yield put(
     showToast('error', {
       message: 'Error',
@@ -64,58 +61,27 @@ function* getStateFailureSaga(action: PayloadAction<string>) {
   );
 }
 
-// function* getCitySaga(action: PayloadAction<number>) {
-//   try {
-//     const data = yield call(countryApi.getCities);
-//     yield put(getCitySuccess(data));
-//   } catch (err) {
-//     const message = (err as Error).message ?? intl.get('lixi.couldNotFetchCity');
-//     yield put(getCityFailure(message));
-//   }
-// }
-
-// function* getCityFailureSaga(action: PayloadAction<string>) {
-//   const message = action.payload ?? intl.get('lixi.unableGetCity');
-//   yield put(
-//     showToast('error', {
-//       message: 'Error',
-//       description: message,
-//       duration: 5
-//     })
-//   );
-// }
-
-function* watchGetCountry() {
-  yield takeLatest(getCountry.type, getCountrySaga);
+function* watchgetCountries() {
+  yield takeLatest(getCountries.type, getCountriesSaga);
 }
 
-function* watchGetCountryFailure() {
-  yield takeLatest(getCountryFailure.type, getCountryFailureSaga);
+function* watchgetCountriesFailure() {
+  yield takeLatest(getCountriesFailure.type, getCountriesFailureSaga);
 }
 
-function* watchGetState() {
-  yield takeLatest(getState.type, getStateSaga);
+function* watchGetStates() {
+  yield takeLatest(getStates.type, getStatesSaga);
 }
 
-function* watchGetStateFailure() {
-  yield takeLatest(getStateFailure.type, getStateFailureSaga);
+function* watchGetStatesFailure() {
+  yield takeLatest(getStatesFailure.type, getStatesFailureSaga);
 }
-
-// function* watchGetCity() {
-//   yield takeLatest(getCity.type, getCitySaga);
-// }
-
-// function* watchGetCityFailure() {
-//   yield takeLatest(getCityFailure.type, getCityFailureSaga);
-// }
 
 export default function* countrySaga() {
   yield all([
-    fork(watchGetCountry),
-    fork(watchGetCountryFailure),
-    fork(watchGetState),
-    fork(watchGetStateFailure),
-    // fork(watchGetCity),
-    // fork(watchGetCityFailure),
+    fork(watchgetCountries),
+    fork(watchgetCountriesFailure),
+    fork(watchGetStates),
+    fork(watchGetStatesFailure),
   ])
 };
