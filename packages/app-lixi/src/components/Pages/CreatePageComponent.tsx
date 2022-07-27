@@ -17,6 +17,7 @@ import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
 import { StyledUploader } from '@components/Common/Uploader';
 import { showToast } from '@store/toast/actions';
 import { getCountries, getStates } from '../../store/country/actions';
+import { getPageCoverUpload, getPageAvatarUpload } from 'src/store/account/selectors';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -29,6 +30,8 @@ const CreatePageComponent: React.FC = isEditPage => {
   }, [])
   const countries = useAppSelector(getAllCountries);
   const states = useAppSelector(getAllStates);
+  const avatar = useAppSelector(getPageAvatarUpload);
+  const cover = useAppSelector(getPageCoverUpload);
 
   // Page account id
   const [pageAccountId, setPageAccountId] = useState(null);
@@ -189,6 +192,8 @@ const CreatePageComponent: React.FC = isEditPage => {
       country: newPageCountry,
       state: newPageState,
       address: newPageAddress,
+      avatar: avatar.id,
+      cover: cover.id
     };
     if (valueCreatePage) dispatch(postPage(valueCreatePage));
   };
