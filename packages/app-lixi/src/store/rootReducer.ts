@@ -21,6 +21,8 @@ import { HYDRATE } from 'next-redux-wrapper';
 import { SettingsState } from './settings/state';
 import { PageState } from './page/state';
 import { pageReducer } from './page/reducer';
+import { countryReducer, stateReducer } from './country/reducer';
+import { CountriesState, StatesState } from './country/state';
 
 const persistConfig = {
   key: 'root',
@@ -55,6 +57,16 @@ const settingsPersistConfig: PersistConfig<SettingsState> = {
   whitelist: ['locale']
 };
 
+const countryPersistConfig: PersistConfig<CountriesState> = {
+  key: 'countries',
+  storage: storage
+};
+
+const statePersistConfig: PersistConfig<StatesState> = {
+  key: 'states',
+  storage: storage
+};
+
 export const serverReducer = combineReducers({
   router: routerReducer,
   accounts: accountReducer,
@@ -68,6 +80,8 @@ export const serverReducer = combineReducers({
   settings: settingsReducer,
   notifications: notificationReducer,
   pages: pageReducer,
+  countries: countryReducer,
+  states: stateReducer,
   // This is use for useReduxEffect
   // Should be always at the end
   action: actionReducer
@@ -86,6 +100,8 @@ export const appReducer = combineReducers({
   modal: modalReducer,
   toast: toastReducer,
   error: errorReducer,
+  countries: persistReducer(countryPersistConfig, countryReducer),
+  states: persistReducer(statePersistConfig, stateReducer),
   // This is use for useReduxEffect
   // Should be always at the end
   action: actionReducer

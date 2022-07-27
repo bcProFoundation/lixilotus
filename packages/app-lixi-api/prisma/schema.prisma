@@ -87,8 +87,10 @@ model Page {
   parentId      String? @map("parent_id")
   // handle        Handle  @relation(fields: [handleId], references: [id])
   // handleId      String  @map("handle_id")
-  address       String  @default("")
   website       String  @default("") @map("website")
+  country       String  @default("") @map("country")
+  state         String  @default("") @map("state")
+  address       String  @default("") @map("address")
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
@@ -110,8 +112,7 @@ model Account {
   language          String         @default("en")
   publicKey         String         @default("") @map("public_key")
   uploads           Upload[]
-
-  Page Page[]
+  page              Page?
 
   @@index([mnemonicHash], type: Hash)
   @@map("account")
