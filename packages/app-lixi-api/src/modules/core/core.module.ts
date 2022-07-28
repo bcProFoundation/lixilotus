@@ -15,6 +15,7 @@ import {
   WITHDRAW_SUB_LIXIES_QUEUE
 } from './lixi/constants/lixi.constants';
 import { LixiController } from './lixi/lixi.controller';
+import { CountryController } from './country/country.controller';
 import { LixiService } from './lixi/lixi.service';
 import { UploadFilesController } from './upload/upload.controller';
 import { CreateSubLixiesEventsListener } from './lixi/processors/create-sub-lixies.eventslistener';
@@ -89,6 +90,7 @@ const baseCorsConfig = cors({
     ClaimController,
     EnvelopeController,
     HeathController,
+    CountryController,
   ],
   providers: [
     LixiService,
