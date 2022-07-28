@@ -1,4 +1,4 @@
-import { City, Country, State } from '@bcpros/lixi-models';
+import { Country, State } from '@bcpros/lixi-models';
 import axiosClient from '@utils/axiosClient';
 
 const countryApi = {
