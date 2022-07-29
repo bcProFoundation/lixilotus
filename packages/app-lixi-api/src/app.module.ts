@@ -17,7 +17,7 @@ import { WalletModule } from './modules/wallet/wallet.module';
 //enabled serving multiple static for fastify
 type FastifyServeStaticModuleOptions = ServeStaticModuleOptions & {
   serveStaticOptions: {
-      decorateReply: boolean;
+    decorateReply: boolean;
   };
 };
 

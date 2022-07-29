@@ -33,7 +33,7 @@ import {
   Res,
   StreamableFile,
   UseGuards,
-  UseInterceptors,
+  UseInterceptors
 } from '@nestjs/common';
 import { Claim as ClaimDb, Lixi, Upload as UploadDb } from '@prisma/client';
 import { Queue } from 'bullmq';
@@ -56,7 +56,7 @@ import { join } from 'path';
 import { JwtAuthGuard } from 'src/modules/auth/jwtauth.guard';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import moment from 'moment';
-import { extname } from 'path'
+import { extname } from 'path';
 import { UploadGuard } from 'src/utils/upload.guard';
 import { File } from 'src/utils/file.decorator';
 import fs from 'fs';
@@ -77,7 +77,7 @@ export class LixiController {
     @Inject('xpijs') private XPI: BCHJS,
     @InjectQueue(EXPORT_SUB_LIXIES_QUEUE) private exportSubLixiesQueue: Queue,
     @InjectQueue(WITHDRAW_SUB_LIXIES_QUEUE) private withdrawSubLixiesQueue: Queue
-  ) { }
+  ) {}
 
   @Get(':id')
   async getLixi(
@@ -92,7 +92,7 @@ export class LixiController {
         },
         include: {
           envelope: true,
-          distributions: true,
+          distributions: true
         }
       });
 
@@ -162,21 +162,21 @@ export class LixiController {
 
       subLixies = cursor
         ? await this.prisma.lixi.findMany({
-          take: take,
-          skip: 1,
-          where: {
-            parentId: lixiId
-          },
-          cursor: {
-            id: cursor
-          }
-        })
+            take: take,
+            skip: 1,
+            where: {
+              parentId: lixiId
+            },
+            cursor: {
+              id: cursor
+            }
+          })
         : await this.prisma.lixi.findMany({
-          take: take,
-          where: {
-            parentId: lixiId
-          }
-        });
+            take: take,
+            where: {
+              parentId: lixiId
+            }
+          });
 
       const childrenApiResult: LixiDto[] = [];
 
@@ -210,14 +210,14 @@ export class LixiController {
       const countAfter = !endCursor
         ? 0
         : await this.prisma.lixi.count({
-          where: {
-            parentId: lixiId
-          },
-          cursor: {
-            id: _.toSafeInteger(endCursor)
-          },
-          skip: 1
-        });
+            where: {
+              parentId: lixiId
+            },
+            cursor: {
+              id: _.toSafeInteger(endCursor)
+            },
+            skip: 1
+          });
 
       const hasNextPage = countAfter > 0;
 
@@ -763,19 +763,19 @@ export class LixiController {
       const countAfter = !endCursor
         ? 0
         : await this.prisma.claim.count({
-          where: {
-            lixiId: lixiId
-          },
-          orderBy: [
-            {
-              id: 'asc'
-            }
-          ],
-          cursor: {
-            id: _.toSafeInteger(endCursor)
-          },
-          skip: 1
-        });
+            where: {
+              lixiId: lixiId
+            },
+            orderBy: [
+              {
+                id: 'asc'
+              }
+            ],
+            cursor: {
+              id: _.toSafeInteger(endCursor)
+            },
+            skip: 1
+          });
 
       const hasNextPage = countAfter > 0;
 
@@ -939,11 +939,7 @@ export class LixiController {
   @Post('custom-upload')
   @UseGuards(JwtAuthGuard)
   @UseGuards(UploadGuard)
-  async upload(
-    @File() file: Storage.MultipartFile,
-    @Req() req: FastifyRequest,
-    @I18n() i18n: I18nContext,
-  ) {
+  async upload(@File() file: Storage.MultipartFile, @Req() req: FastifyRequest, @I18n() i18n: I18nContext) {
     try {
       const account = (req as any).account;
       if (!account) {
@@ -952,7 +948,7 @@ export class LixiController {
       }
 
       const buffer = await file.toBuffer();
-      const originalName = file.filename.replace(/\.[^/.]+$/, "")
+      const originalName = file.filename.replace(/\.[^/.]+$/, '');
       const sha = await hexSha256(buffer);
       const dir = `uploads`;
 
@@ -966,7 +962,7 @@ export class LixiController {
       }
 
       //write image file to folder
-      const originalImage = await sharp(buffer).toFile(`./public/${fileUrl}${fileExtension}`)
+      const originalImage = await sharp(buffer).toFile(`./public/${fileUrl}${fileExtension}`);
       const thumbnailImage = await sharp(buffer).resize(200).toFile(`./public/${fileUrl}-200${fileExtension}`);
 
       const uploadToInsert = {
@@ -982,8 +978,8 @@ export class LixiController {
         thumbnailWidth: thumbnailImage.width,
         thumbnailHeight: thumbnailImage.height,
         type: 'envelope',
-        account: { connect: { id: account.id } },
-      }
+        account: { connect: { id: account.id } }
+      };
 
       const resultImage: UploadDb = await this.prisma.upload.create({
         data: uploadToInsert

@@ -44,9 +44,9 @@ const baseCorsConfig = cors({
               maxRetriesPerRequest: null,
               enableReadyCheck: false,
               host: config.get<string>('REDIS_HOST') ? config.get<string>('REDIS_HOST') : 'redis-lixi',
-              port: config.get<string>('REDIS_PORT') ? _.toSafeInteger(config.get<string>('REDIS_PORT')) : 6379,
+              port: config.get<string>('REDIS_PORT') ? _.toSafeInteger(config.get<string>('REDIS_PORT')) : 6379
             })
-          }
+          };
         }
       },
       {
@@ -59,9 +59,9 @@ const baseCorsConfig = cors({
               maxRetriesPerRequest: null,
               enableReadyCheck: false,
               host: config.get<string>('REDIS_HOST') ? config.get<string>('REDIS_HOST') : 'redis-lixi',
-              port: config.get<string>('REDIS_PORT') ? _.toSafeInteger(config.get<string>('REDIS_PORT')) : 6379,
+              port: config.get<string>('REDIS_PORT') ? _.toSafeInteger(config.get<string>('REDIS_PORT')) : 6379
             })
-          }
+          };
         }
       },
       {
@@ -74,9 +74,9 @@ const baseCorsConfig = cors({
               maxRetriesPerRequest: null,
               enableReadyCheck: false,
               host: config.get<string>('REDIS_HOST') ? config.get<string>('REDIS_HOST') : 'redis-lixi',
-              port: config.get<string>('REDIS_PORT') ? _.toSafeInteger(config.get<string>('REDIS_PORT')) : 6379,
+              port: config.get<string>('REDIS_PORT') ? _.toSafeInteger(config.get<string>('REDIS_PORT')) : 6379
             })
-          }
+          };
         }
       }
     ),
@@ -90,7 +90,7 @@ const baseCorsConfig = cors({
     ClaimController,
     EnvelopeController,
     HeathController,
-    CountryController,
+    CountryController
   ],
   providers: [
     LixiService,
@@ -99,7 +99,7 @@ const baseCorsConfig = cors({
     WithdrawSubLixiesProcessor,
     ExportSubLixiesProcessor,
     ExportSubLixiesEventsListener,
-    WithdrawSubLixiesEventsListener,
+    WithdrawSubLixiesEventsListener
   ],
   exports: [
     LixiService,
@@ -108,12 +108,11 @@ const baseCorsConfig = cors({
     WithdrawSubLixiesProcessor,
     ExportSubLixiesProcessor,
     ExportSubLixiesEventsListener,
-    WithdrawSubLixiesEventsListener,
+    WithdrawSubLixiesEventsListener
   ]
 })
 export class CoreModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(baseCorsConfig)
-      .forRoutes({ path: '/api/claims/validate', method: RequestMethod.POST })
+    consumer.apply(baseCorsConfig).forRoutes({ path: '/api/claims/validate', method: RequestMethod.POST });
   }
 }

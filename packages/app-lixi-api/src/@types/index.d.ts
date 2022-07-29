@@ -1,1 +1,1 @@
-declare module "wif"
+declare module 'wif';

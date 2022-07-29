@@ -1,17 +1,11 @@
 import { Body, Controller, Get, Post, Request, Res, UseGuards } from '@nestjs/common';
-import {
-  FastifyReply,
-  FastifyRequest
-} from 'fastify';
+import { FastifyReply, FastifyRequest } from 'fastify';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwtauth.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private authService: AuthService
-  ) {
-  }
+  constructor(private authService: AuthService) {}
 
   @Post('login')
   async login(@Body() body: { mnemonic: string }, @Res({ passthrough: true }) response: FastifyReply): Promise<string> {
@@ -37,7 +31,7 @@ export class AuthController {
       signed: true,
       sameSite: 'strict',
       path: '/api',
-      httpOnly: true,
+      httpOnly: true
     });
     return csrfToken;
   }

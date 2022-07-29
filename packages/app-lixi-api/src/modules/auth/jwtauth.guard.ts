@@ -1,15 +1,13 @@
-import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
-import { resolve } from "path";
-import { Observable } from "rxjs";
-import { AuthService } from "./auth.service";
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { resolve } from 'path';
+import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     try {
       const ctx = context.switchToHttp();
       const req = ctx.getRequest();
@@ -27,7 +25,7 @@ export class JwtAuthGuard implements CanActivate {
         } catch (err) {
           resolve(false);
         }
-      })
+      });
     } catch (e) {
       return false;
     }

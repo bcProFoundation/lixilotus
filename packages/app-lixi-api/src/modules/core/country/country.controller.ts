@@ -7,7 +7,7 @@ import { I18n, I18nContext } from 'nestjs-i18n';
 
 @Controller('countries')
 export class CountryController {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   @Get()
   async getCountries(@I18n() i18n: I18nContext): Promise<Country[]> {
@@ -22,10 +22,7 @@ export class CountryController {
   }
 
   @Get(':id/states')
-  async getStates(
-    @Param('id') id: number | string,
-    @I18n() i18n: I18nContext
-  ): Promise<State[]> {
+  async getStates(@Param('id') id: number | string, @I18n() i18n: I18nContext): Promise<State[]> {
     try {
       const states = await this.prisma.state.findMany({
         where: {

@@ -32,7 +32,7 @@ async function bootstrap() {
   app.register(multipart);
   app.useStaticAssets({
     root: join(__dirname, '..', 'public'),
-    prefix: '/public/',
+    prefix: '/public/'
   });
 
   app.setGlobalPrefix('api');
