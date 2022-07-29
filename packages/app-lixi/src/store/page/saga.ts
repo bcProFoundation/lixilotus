@@ -127,6 +127,14 @@ function* fetchAllPagesSaga() {
   }
 }
 
+function* fetchAllPagesSuccessSaga(action: any) {
+  yield put(hideLoading(fetchAllPages.type))
+}
+
+function* fetchAllPagesFailureSaga(action: any) {
+  yield put(hideLoading(fetchAllPages.type))
+}
+
 function* watchPostPage() {
   yield takeLatest(postPage.type, postPageSaga);
 }
@@ -151,6 +159,14 @@ function* watchFetchAllPages() {
   yield takeLatest(fetchAllPages.type, fetchAllPagesSaga);
 }
 
+function* watchFetchAllPagesSuccess() {
+  yield takeLatest(fetchAllPagesSuccess.type, fetchAllPagesSuccessSaga);
+}
+
+function* watchFetchAllPagesFailure() {
+  yield takeLatest(fetchAllPagesFailure.type, fetchAllPagesFailureSaga);
+}
+
 export default function* pageSaga() {
   yield all([
     fork(watchPostPage),
@@ -159,5 +175,7 @@ export default function* pageSaga() {
     fork(watchSetPage),
     fork(watchGetPagesByAccountId),
     fork(watchFetchAllPages),
+    fork(watchFetchAllPagesSuccess),
+    fork(watchFetchAllPagesFailure),
   ]);
 }
