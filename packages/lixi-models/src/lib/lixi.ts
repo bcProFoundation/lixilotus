@@ -59,7 +59,7 @@ export interface CreateLixiCommand {
   envelopeId: Nullable<number>;
   envelopeMessage: string;
   numberLixiPerPackage?: Nullable<number>;
-  uploadId: Nullable<string>;
+  uploadId?: Nullable<string>;
   staffAddress?: string;
   charityAddress?: string;
   joinLotteryProgram: boolean;

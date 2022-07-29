@@ -24,17 +24,17 @@ import {
   StyledCollapse
 } from '@bcpros/lixi-components/components/Common/StyledCollapse';
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
-import { countries } from '@bcpros/lixi-models/constants';
+import { countries, UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
 import { Account } from '@bcpros/lixi-models/lib/account';
 import { ClaimType, GenerateLixiCommand, LixiType, LotteryAddress } from '@bcpros/lixi-models/lib/lixi';
 import CountrySelectDropdown from '@components/Common/CountrySelectDropdown';
 import EnvelopeCarousel from '@components/Common/EnvelopeCarousel';
-import { getUpload } from '@store/account/selectors';
+import { getEnvelopeUpload } from '@store/account/selectors';
 import { AppContext } from '@store/store';
 import { isValidAmountInput } from '@utils/validation';
 import TextArea from 'antd/lib/input/TextArea';
 import { CreateLixiConfirmationModalProps } from './CreateLixiConfirmationModal';
-import { StyledLixiEnvelopeUploaded } from './LixiEnvelopeUploader';
+import { StyledUploader } from '@components/Common/Uploader';
 
 const { Panel } = Collapse;
 
@@ -43,6 +43,15 @@ const LotteryInput = styled(Input)`
     width: 52px;
   }
 `;
+
+const StyledDivider = styled.h3`
+  width: 100%;
+  text-align: center; 
+  border-bottom: 1px solid #000; 
+  line-height: 0.1em;
+  margin: 10px 0 20px; 
+`
+
 type CreateLixiFormProps = {
   account?: Account;
 } & React.HTMLProps<HTMLElement>;
@@ -50,7 +59,7 @@ type CreateLixiFormProps = {
 const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
   const dispatch = useAppDispatch();
   const envelopes = useAppSelector(getAllEnvelopes);
-  const upload = useAppSelector(getUpload);
+  const envelopeUpload = useAppSelector(getEnvelopeUpload);
 
   const { XPI, Wallet } = React.useContext(AppContext);
 
@@ -395,7 +404,7 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
       envelopeId: newEnvelopeId,
       envelopeMessage: newEnvelopeMessage,
       numberLixiPerPackage: newNumberLixiPerPackage,
-      upload: upload,
+      upload: envelopeUpload,
       staffAddress: newStaffAddress,
       charityAddress: newCharityAddress,
       joinLotteryProgram: joinLotteryProgram
@@ -701,7 +710,10 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
               </Form.Item>
               {/* Custom Envelope */}
               <Form.Item>
-                <StyledLixiEnvelopeUploaded />
+                <StyledDivider>
+                  <span style={{backgroundColor: "#FFF",padding: "0 10px"}}>{intl.get('lixi.uploadDividerText')}</span>
+                </StyledDivider>
+                <StyledUploader type={UPLOAD_TYPES.ENVELOPE}/>
               </Form.Item>
               <hr />
               {/* Message */}

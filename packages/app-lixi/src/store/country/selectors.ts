@@ -3,7 +3,6 @@ import { createSelector } from 'reselect';
 import { RootState } from '../store';
 import { countriesAdapter, statesAdapter } from "./reducer";
 import { CountriesState, StatesState } from "./state";
-import { countries } from '../../../../lixi-models/src/constants/countries';
 import { State } from '@bcpros/lixi-models';
 
 export const getCountriesState = createSelector(

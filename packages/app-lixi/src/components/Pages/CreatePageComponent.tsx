@@ -11,8 +11,13 @@ import { UploadOutlined } from '@ant-design/icons';
 import { CreatePageCommand } from '@bcpros/lixi-models/src';
 import { getAllCountries, getAllStates, getAllStatesByCountry } from '@store/country/selectors';
 import { getPagesByAccountId, postPage } from '@store/page/action';
+import {} from 'src/store/page/selectors';
+import styled from 'styled-components';
+import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
+import { StyledUploader } from '@components/Common/Uploader';
 import { showToast } from '@store/toast/actions';
 import { getCountries, getStates } from '../../store/country/actions';
+import { getPageCoverUpload, getPageAvatarUpload } from 'src/store/account/selectors';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -25,6 +30,8 @@ const CreatePageComponent: React.FC = isEditPage => {
   }, [])
   const countries = useAppSelector(getAllCountries);
   const states = useAppSelector(getAllStates);
+  const avatar = useAppSelector(getPageAvatarUpload);
+  const cover = useAppSelector(getPageCoverUpload);
 
   // Page account id
   const [pageAccountId, setPageAccountId] = useState(null);
@@ -185,6 +192,8 @@ const CreatePageComponent: React.FC = isEditPage => {
       country: newPageCountry,
       state: newPageState,
       address: newPageAddress,
+      avatar: avatar.id,
+      cover: cover.id
     };
     if (valueCreatePage) dispatch(postPage(valueCreatePage));
   };
@@ -214,9 +223,7 @@ const CreatePageComponent: React.FC = isEditPage => {
           valuePropName="fileList"
           getValueFromEvent={normFile}
         >
-          <Upload name="logo" action="/upload.do" listType="picture">
-            <Button icon={<UploadOutlined />}>{intl.get('page.upload')}</Button>
-          </Upload>
+          <StyledUploader type={UPLOAD_TYPES.PAGE_AVATAR}/>
         </Form.Item>
         <Form.Item
           name="cover"
@@ -224,9 +231,7 @@ const CreatePageComponent: React.FC = isEditPage => {
           valuePropName="fileList"
           getValueFromEvent={normFile}
         >
-          <Upload name="logo" action="/upload.do" listType="picture">
-            <Button icon={<UploadOutlined />}>{intl.get('page.upload')}</Button>
-          </Upload>
+          <StyledUploader type={UPLOAD_TYPES.PAGE_COVER}/>
         </Form.Item>
         <Form.Item name="website" label={intl.get('page.website')}>
           <Input onChange={e => handleNewPageWebsiteInput(e)} />
