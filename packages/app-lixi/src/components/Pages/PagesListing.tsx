@@ -93,8 +93,6 @@ const PagesListing: React.FC = () => {
           item.upVote = Math.floor(Math.random() * 101);
           item.downVote = Math.floor(Math.random() * 101);
         }
-        item.avatar = 'https://joeschmoe.io/api/v1/random';
-        item.cover = 'https://picsum.photos/500/300';
       });
     }
     return lists;

@@ -35,14 +35,14 @@ export class PageController {
   @Get()
   async getAllPages(): Promise<any> {
     try {
-      const page = await this.prisma.page.findMany();
+      const pages = await this.prisma.page.findMany();
 
-      if (!page) {
+      if (!pages) {
         const pageNotExist = await this.i18n.t('page.messages.pageNotExist');
         throw new VError(pageNotExist);
       }
 
-      return page;
+      return pages;
     } catch (err: unknown) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
