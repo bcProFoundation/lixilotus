@@ -1,12 +1,12 @@
-import { createReducer } from "@reduxjs/toolkit";
-import { closeModal, openModal } from "./actions";
-import { ModalState } from "./state";
+import { createReducer } from '@reduxjs/toolkit';
+import { closeModal, openModal } from './actions';
+import { ModalState } from './state';
 
 const initialState: ModalState = {
   modals: []
 };
 
-export const modalReducer = createReducer(initialState, (builder) => {
+export const modalReducer = createReducer(initialState, builder => {
   builder
     .addCase(openModal, (state, action) => {
       const { modalType, modalProps } = action.payload;
@@ -18,5 +18,5 @@ export const modalReducer = createReducer(initialState, (builder) => {
     })
     .addCase(closeModal, (state, action) => {
       state.modals.pop();
-    })
+    });
 });

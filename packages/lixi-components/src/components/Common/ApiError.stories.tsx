@@ -13,9 +13,6 @@ storiesOf('ApiError', module)
       {story()}
     </ThemeProvider>
   ))
-  .add('default',
-    () => {
-      return (
-        <ApiError></ApiError>
-      )
-    })
+  .add('default', () => {
+    return <ApiError></ApiError>;
+  });

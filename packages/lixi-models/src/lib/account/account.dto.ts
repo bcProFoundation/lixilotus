@@ -1,3 +1,5 @@
+import { Page } from '../page';
+
 export interface CreateAccountCommand {
   mnemonic: string;
   encryptedMnemonic: string;
@@ -47,4 +49,5 @@ export interface AccountDto {
   address: string;
   balance?: number;
   language?: string;
+  page?: Nullable<Page>;
 }

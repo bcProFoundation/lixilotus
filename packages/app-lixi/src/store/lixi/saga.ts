@@ -83,6 +83,7 @@ import moment from 'moment';
 import { refreshLixiSilent } from './actions';
 import { refreshLixiListSilent } from '@store/account/actions';
 import { removeUpload } from '@store/account/actions';
+import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
 
 const call: any = Effects.call;
 /**
@@ -122,7 +123,7 @@ function* generateLixiSaga(action: PayloadAction<GenerateLixiCommand>) {
     uploadId: command.upload ? command.upload.id : null,
     staffAddress: command.staffAddress,
     charityAddress: command.charityAddress,
-    joinLotteryProgram: command.joinLotteryProgram,
+    joinLotteryProgram: command.joinLotteryProgram
   };
 
   yield put(postLixi(createLixiCommand));
@@ -169,7 +170,7 @@ function* fetchInitialSubLixiesSaga(action: PayloadAction<number>) {
   }
 }
 
-function* fetchInitialSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) { }
+function* fetchInitialSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) {}
 
 function* fetchInitialSubLixiesFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? intl.get('lixi.unableGetChildLixi');
@@ -195,7 +196,7 @@ function* fetchMoreSubLixiesSaga(action: PayloadAction<{ parentId: number; start
   }
 }
 
-function* fetchMoreSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) { }
+function* fetchMoreSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) {}
 
 function* fetchMoreSubLixiesFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? intl.get('lixi.unableCreateChildLixi');
@@ -288,7 +289,7 @@ function* postLixiSuccessSaga(action: PayloadAction<Lixi>) {
         duration: 5
       })
     );
-    yield put(removeUpload(null));
+    yield put(removeUpload({ type: UPLOAD_TYPES.ENVELOPE }));
     yield put(setLixi(lixi));
     yield put(hideLoading(postLixi.type));
     yield put(refreshLixiListSilent(lixi.accountId));
@@ -390,7 +391,7 @@ function* selectLixiSaga(action: PayloadAction<number>) {
 
 function* selectLixiSuccessSaga(action: PayloadAction<Lixi>) {
   const lixi = action.payload;
-  yield put(refreshLixiSilent(lixi.id))
+  yield put(refreshLixiSilent(lixi.id));
   yield put(hideLoading(selectLixi.type));
   yield put(push('/admin/lixi'));
 }

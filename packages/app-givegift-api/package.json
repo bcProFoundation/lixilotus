@@ -1,0 +1,51 @@
+{
+  "name": "@abcpros/app-givegift-api",
+  "version": "0.1.0",
+  "description": "Api for gift giving application",
+  "main": "server.js",
+  "author": "vince.tran8x@gmail.com",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "ts-node src/server.ts",
+    "debug": "node --inspect -r ts-node/register src/server.ts",
+    "dev": "nodemon src/server.ts",
+    "build": "rm -r dist/ && tsc",
+    "seed": "ts-node prisma/seeds/index.ts"
+  },
+  "dependencies": {
+    "@abcpros/givegift-models": "^1.0.1",
+    "@abcpros/minimal-xpi-slp-wallet": "^3.0.10",
+    "@abcpros/xpi-js": "^4.0.5",
+    "@prisma/client": "^3.6.0",
+    "axios": "^0.24.0",
+    "bignumber.js": "^9.0.1",
+    "body-parser": "^1.19.0",
+    "compression": "^1.7.4",
+    "config": "^3.3.6",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "geoip-country": "^4.0.102",
+    "helmet": "^4.6.0",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.1",
+    "reflect-metadata": "^0.1.13",
+    "typedi": "^0.10.0",
+    "verror": "^1.10.0",
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.5"
+  },
+  "devDependencies": {
+    "@types/config": "^0.0.39",
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
+    "@types/geoip-country": "^4.0.0",
+    "@types/moment": "^2.13.0",
+    "@types/node": "^16.10.2",
+    "@types/verror": "^1.10.5",
+    "@types/winston": "^2.4.4",
+    "prisma": "^3.6.0",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.4"
+  }
+}

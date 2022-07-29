@@ -3,7 +3,7 @@ import viLang from './entries/vi-VN';
 
 const AppLocale = {
   en: enLang,
-  vi: viLang,
+  vi: viLang
 };
 
 export default AppLocale;

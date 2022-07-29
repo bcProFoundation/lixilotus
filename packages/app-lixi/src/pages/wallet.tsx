@@ -4,11 +4,9 @@ import ClaimedLayout from '@components/Layout/ClaimedLayout';
 import FullWalletComponent from '@components/Wallet/FullWallet';
 
 const WalletPage = () => {
-  return (
-    <FullWalletComponent />
-  );
-}
+  return <FullWalletComponent />;
+};
 
-WalletPage.Layout = ({ children }) => <ClaimedLayout children={children} />
+WalletPage.Layout = ({ children }) => <ClaimedLayout children={children} />;
 
 export default WalletPage;

@@ -12,7 +12,7 @@ import { I18nContext } from 'nestjs-i18n';
 @Injectable()
 export class WalletService {
   private logger: Logger = new Logger(WalletService.name);
-  constructor(@Inject('xpiWallet') private xpiWallet: MinimalBCHWallet, @Inject('xpijs') private xpijs: BCHJS) { }
+  constructor(@Inject('xpiWallet') private xpiWallet: MinimalBCHWallet, @Inject('xpijs') private xpijs: BCHJS) {}
 
   async getBalance(address: string) {
     return this.xpiWallet.getBalance(address);

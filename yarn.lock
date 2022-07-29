@@ -8564,6 +8564,13 @@
   resolved "https://registry.yarnpkg.com/@webpack-cli/serve/-/serve-1.6.1.tgz#0de2875ac31b46b6c5bb1ae0a7d7f0ba5678dffe"
   integrity sha512-gNGTiTrjEVQ0OcVnzsRSqTxaBSr+dmTfm+qJsCDluky8uhdLWep7Gcr62QsAKHTMxjCS/8nEITsmFAhfIx+QSw==
 
+"@webundsoehne/nest-fastify-file-upload@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@webundsoehne/nest-fastify-file-upload/-/nest-fastify-file-upload-2.0.0.tgz#ead0e093fc6aa8f3382d299d549bda977d0418cc"
+  integrity sha512-MX/KZEkg8kFxlgTXIr0AKvQzb1w7G+lRi22gdbOUFX0ATUTk6/3qNCZzIEdpfZ1OAB6MoJZlwrenM6vrmewqlA==
+  dependencies:
+    fastify-multer "^2.0.3"
+
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@xtuc/ieee754/-/ieee754-1.2.0.tgz#eef014a3145ae477a1cbc00cd1e552336dceb790"

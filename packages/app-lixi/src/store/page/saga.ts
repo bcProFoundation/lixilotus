@@ -6,6 +6,9 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
 import {
+  fetchAllPages,
+  fetchAllPagesFailure,
+  fetchAllPagesSuccess,
   getPagesByAccountId,
   postPage,
   postPageFailure,
@@ -106,6 +109,32 @@ function* getPagesByAccountIdSaga(action: PayloadAction<number>) {
   }
 }
 
+function* fetchAllPagesSaga() {
+  try {
+
+    yield put(showLoading(fetchAllPages.type));
+
+    const data: any = yield call(pageApi.getAllPages);
+
+    if (_.isNil(data)) {
+      throw new Error(intl.get('page.couldNotFindPage'));
+    }
+
+    yield put(fetchAllPagesSuccess(data));
+  } catch (err) {
+    const message = (err as Error).message ?? intl.get('lixi.couldNotpostPage');
+    yield put(fetchAllPagesFailure(message));
+  }
+}
+
+function* fetchAllPagesSuccessSaga(action: any) {
+  yield put(hideLoading(fetchAllPages.type))
+}
+
+function* fetchAllPagesFailureSaga(action: any) {
+  yield put(hideLoading(fetchAllPages.type))
+}
+
 function* watchPostPage() {
   yield takeLatest(postPage.type, postPageSaga);
 }
@@ -126,12 +155,27 @@ function* watchGetPagesByAccountId() {
   yield takeLatest(getPagesByAccountId.type, getPagesByAccountIdSaga);
 }
 
+function* watchFetchAllPages() {
+  yield takeLatest(fetchAllPages.type, fetchAllPagesSaga);
+}
+
+function* watchFetchAllPagesSuccess() {
+  yield takeLatest(fetchAllPagesSuccess.type, fetchAllPagesSuccessSaga);
+}
+
+function* watchFetchAllPagesFailure() {
+  yield takeLatest(fetchAllPagesFailure.type, fetchAllPagesFailureSaga);
+}
+
 export default function* pageSaga() {
   yield all([
     fork(watchPostPage),
     fork(watchPostPageFailure),
     fork(watchPostPageSuccess),
     fork(watchSetPage),
-    fork(watchGetPagesByAccountId)
+    fork(watchGetPagesByAccountId),
+    fork(watchFetchAllPages),
+    fork(watchFetchAllPagesSuccess),
+    fork(watchFetchAllPagesFailure),
   ]);
 }

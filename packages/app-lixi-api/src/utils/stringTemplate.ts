@@ -1,5 +1,5 @@
 function isObj(obj: any): boolean {
-  return obj !== null && typeof (obj) === 'object';
+  return obj !== null && typeof obj === 'object';
 }
 
 /**
@@ -39,7 +39,11 @@ function prop(obj: any, path: string) {
  *
  * @return {String}
  */
-export function template(input: string, data: Object, options?: { skipUndefined: boolean, throwOnUndefined: boolean }): string {
+export function template(
+  input: string,
+  data: Object,
+  options?: { skipUndefined: boolean; throwOnUndefined: boolean }
+): string {
   options = options || { skipUndefined: false, throwOnUndefined: false };
 
   const regex = /{{2}(.+?)}{2}/g;
@@ -54,14 +58,12 @@ export function template(input: string, data: Object, options?: { skipUndefined:
       if (value !== undefined && value !== null) {
         formattedString = formattedString.replace(result[0], value);
       } else if (options.throwOnUndefined) {
-        const error = new Error('Missing value for ' + result[0])
-        throw error
+        const error = new Error('Missing value for ' + result[0]);
+        throw error;
       } else if (!options.skipUndefined) {
         formattedString = formattedString.replace(result[0], '');
       }
     }
   }
   return formattedString;
-
 }
-

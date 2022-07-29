@@ -4,14 +4,12 @@ import { UploadOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import { BrowserQRCodeReader } from '@zxing/browser';
 
-import {
-  isValidLotusPrefix
-} from './Ticker';
+import { isValidLotusPrefix } from './Ticker';
 
 const StyledUploadOutlined = styled(UploadOutlined)`
   color: ${props => props.theme.primary} !important;
   font-size: 20px;
-`
+`;
 
 const StyledSpan = styled.span`
   width: 50%;
@@ -26,9 +24,9 @@ const StyledSpan = styled.span`
 `;
 
 type UploadQRCodeProps = {
-  codeType: String,
+  codeType: String;
   onScan: Function;
-}
+};
 
 const UploadQRCode = (props: UploadQRCodeProps) => {
   const { codeType, onScan, ...otherProps } = props;
@@ -38,16 +36,16 @@ const UploadQRCode = (props: UploadQRCodeProps) => {
   const [error, setError] = useState(false);
 
   const uploadProps = {
-    accept: "image/*",
+    accept: 'image/*',
     showUploadList: false,
     defaultFileList: defaultFileList,
-    className: "image-upload-grid",
+    className: 'image-upload-grid',
     maxCount: 1,
 
     beforeUpload: file => {
       const reader = new FileReader();
 
-      reader.onload = async (e) => {
+      reader.onload = async e => {
         const imageUrl = e.target.result;
         scanQrFromImage(imageUrl);
       };
@@ -88,7 +86,7 @@ const UploadQRCode = (props: UploadQRCodeProps) => {
     return { type, values };
   };
 
-  const scanQrFromImage = async (imageUrl) => {
+  const scanQrFromImage = async imageUrl => {
     const codeReader = new BrowserQRCodeReader();
     setActiveCodeReader(codeReader);
 
@@ -97,9 +95,11 @@ const UploadQRCode = (props: UploadQRCodeProps) => {
       let result = null;
 
       switch (codeType) {
-        case 'address': result = parseAddressContent(content.getText());
+        case 'address':
+          result = parseAddressContent(content.getText());
           break;
-        case 'claimCode': result = parseRedeemContent(content.getText());
+        case 'claimCode':
+          result = parseRedeemContent(content.getText());
           break;
 
         default:
@@ -107,7 +107,8 @@ const UploadQRCode = (props: UploadQRCodeProps) => {
       }
 
       // stop scanning and fill form if it's an address
-      if (result?.type === codeType) { // Hide the scanner
+      if (result?.type === codeType) {
+        // Hide the scanner
         onScan(result.values?.result);
         return teardownCodeReader(codeReader);
       }
@@ -130,7 +131,7 @@ const UploadQRCode = (props: UploadQRCodeProps) => {
         </Upload>
       </StyledSpan>
     </>
-  )
+  );
 };
 
 export default UploadQRCode;

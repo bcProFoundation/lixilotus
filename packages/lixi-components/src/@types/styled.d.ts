@@ -1,5 +1,4 @@
 // import original module declarations
-import { ThemeType } from '@bcpros/lixi-components/src/styles';
 import 'styled-components';
 import { CSSProp } from 'styled-components';
 

@@ -215,10 +215,17 @@ export class CreateSubLixiesProcessor extends WorkerHost {
     const encryptedClaimCode = await aesGcmEncrypt(password, accountSecret);
     const name = address.slice(12, 17);
     mapEncryptedClaimCode[encryptedClaimCode] = password;
+    const uploadDetail = command.uploadId
+      ? await this.prisma.uploadDetail.findFirst({
+          where: {
+            uploadId: command.uploadId
+          }
+        })
+      : undefined;
 
     // Prepare data to insert into the database
     const dataSubLixi = {
-      ..._.omit(command, ['mnemonic', 'mnemonicHash', 'password', 'staffAddress', 'charityAddress']),
+      ..._.omit(command, ['mnemonic', 'mnemonicHash', 'password', 'staffAddress', 'charityAddress', 'uploadId']),
       id: undefined,
       name: name,
       derivationIndex: derivationIndex,
@@ -236,7 +243,8 @@ export class CreateSubLixiesProcessor extends WorkerHost {
       parentId: parentId,
       createdAt: new Date(),
       packageId: packageId ?? null,
-      joinLotteryProgram: command.joinLotteryProgram
+      joinLotteryProgram: command.joinLotteryProgram,
+      uploadDetailId: uploadDetail ? uploadDetail.id : undefined
     } as unknown as LixiDb;
 
     return dataSubLixi;

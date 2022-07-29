@@ -132,7 +132,7 @@ export default {
   'lixi.fileSizeError': 'Hình ảnh phải nhỏ hơn 5MB!',
   'lixi.fileUploadError': 'Lỗi khi tải thiệp lên server',
   'lixi.fileUploadSuccess': 'Tải thiệp lên thành công',
-  'lixi.uploadDividerText': "Thiệp tự chọn",
+  'lixi.uploadDividerText': 'Thiệp tự chọn',
   'lixi.uploadText': 'Đăng thiệp',
   'lixi.uploadingText': 'Đang tải...',
   'lixi.previewFileFailed': 'Không thể xem trước file',
@@ -177,7 +177,6 @@ export default {
   'lixi.lotteryAddress': 'Địa chỉ ví xổ số',
   'lixi.lotteryAddressCheck': 'Xác nhận',
   'lixi.addressCopied': 'địa chỉ đã được sao chép.',
-
 
   /* 04.Claim */
   'claim.claim': 'Nhận Lì xì',
@@ -288,8 +287,29 @@ export default {
   'zeroBalanceHeader.deposit': 'Hãy nạp thêm vào tài khoản để có thể sử dụng tính năng giao dịch',
 
   /* 13.Page */
+  'page.createNewPage': 'tạo trang mới',
+  'page.createPage': 'tạo trang',
+  'page.editPage': 'Sửa trang',
+  'page.name': 'Tên',
+  'page.inputName': 'Vui lòng nhập tên',
+  'page.title': 'Tiêu đề',
+  'page.inputTitle': 'Vui lòng nhập tiêu đề',
+  'page.walletAddress': 'Địa chỉ ví',
+  'page.avatar': 'Ảnh đại diện',
+  'page.cover': 'Ảnh bìa',
+  'page.upload': 'Tải lên',
+  'page.website': 'Trang web',
+  'page.description': 'Mô tả',
+  'page.country': 'Tìm kiếm quốc gia',
+  'page.state': 'Tìm kiếm tỉnh thành',
+  'page.address': 'Địa chỉ',
+  'page.inputAddress': 'Vui lòng nhập địa chỉ',
   'page.couldNotpostPage': 'Tạo trang không thành công',
   'page.createPageSuccessful': 'Trang đã tạo thành công',
   'page.unableCreatePageServer': 'Không thể kết nối server tạo trang',
-  'page.errorWhenCreatePage': "Đã có lỗi xảy ra khi tạo mới trang"
+  'page.errorWhenCreatePage': 'Đã có lỗi xảy ra khi tạo mới trang',
+
+  /* 14.Country */
+  'country.unablegetCountries': 'Không thể tải quốc gia',
+  'country.unablegetStates': 'Không thể tải tỉnh thành'
 };

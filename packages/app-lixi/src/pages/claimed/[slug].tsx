@@ -10,7 +10,7 @@ import { END } from 'redux-saga';
 import { getSelectorsByUserAgent } from 'react-device-detect';
 import ClaimedLayout from '@components/Layout/ClaimedLayout';
 
-const ClaimPage = (props) => {
+const ClaimPage = props => {
   const { claim, isMobile } = props;
   const slug = numberToBase58(claim.id);
   const canonicalUrl = process.env.NEXT_PUBLIC_LIXI_URL + `claimed/${slug}`;
@@ -29,24 +29,21 @@ const ClaimPage = (props) => {
           url: canonicalUrl,
           title: 'LixiLotus',
           description: claim.message ?? 'LixiLotus allow you to giveaway your Lotus effortlessly',
-          images: [
-            { url: imageUrl },
-          ],
-          site_name: 'LixiLotus',
+          images: [{ url: imageUrl }],
+          site_name: 'LixiLotus'
         }}
         twitter={{
           handle: '@handle',
           site: '@site',
-          cardType: 'summary_large_image',
+          cardType: 'summary_large_image'
         }}
       />
       <LixiClaimed claim={claim} isMobile={isMobile} />
     </>
   );
-}
+};
 
-export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) => async (context) => {
-
+export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) => async context => {
   const { req } = context;
   const userAgent = req ? req.headers['user-agent'] : navigator.userAgent;
   const { isMobile } = getSelectorsByUserAgent(userAgent);
@@ -67,6 +64,6 @@ export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) 
   };
 });
 
-ClaimPage.Layout = ({ children }) => <ClaimedLayout children={children} />
+ClaimPage.Layout = ({ children }) => <ClaimedLayout children={children} />;
 
 export default ClaimPage;

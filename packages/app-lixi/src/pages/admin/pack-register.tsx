@@ -4,11 +4,9 @@ import RegisterComponent from '@components/PackRegister';
 import ClaimedLayout from '@components/Layout/ClaimedLayout';
 
 const RegisterPage = () => {
-  return (
-    <RegisterComponent />
-  );
-}
+  return <RegisterComponent />;
+};
 
-RegisterPage.Layout = ({ children }) => <ClaimedLayout children={children} />
+RegisterPage.Layout = ({ children }) => <ClaimedLayout children={children} />;
 
 export default RegisterPage;

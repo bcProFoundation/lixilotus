@@ -1,15 +1,13 @@
-import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
-import { HttpAdapterHost } from "@nestjs/core";
-import { FastifyAdapter } from "@nestjs/platform-fastify";
-import { Observable } from "rxjs";
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { HttpAdapterHost } from '@nestjs/core';
+import { FastifyAdapter } from '@nestjs/platform-fastify';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class CsrfGuard implements CanActivate {
-  constructor(private adapterHost: HttpAdapterHost) { }
+  constructor(private adapterHost: HttpAdapterHost) {}
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     try {
       const httpAdapter = this.adapterHost.httpAdapter as FastifyAdapter;
       const instance = httpAdapter.getInstance();
@@ -18,7 +16,7 @@ export class CsrfGuard implements CanActivate {
       const res = ctx.getResponse();
       const next = ctx.getNext();
 
-      instance.csrfProtection(req, res, () => { });
+      instance.csrfProtection(req, res, () => {});
 
       return true;
     } catch (e) {

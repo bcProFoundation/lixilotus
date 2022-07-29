@@ -33,8 +33,8 @@ export const currency = {
       'try',
       'rub',
       'inr',
-      'brl',
-    ],
+      'brl'
+    ]
   },
   fiatCurrencies: {
     usd: { name: 'US Dollar', symbol: '$', slug: 'usd' },
@@ -51,7 +51,7 @@ export const currency = {
     rub: { name: 'Russian Ruble', symbol: 'р.', slug: 'rub' },
     zar: { name: 'South African Rand', symbol: 'R', slug: 'zar' },
     try: { name: 'Turkish Lira', symbol: '₺', slug: 'try' },
-    vnd: { name: 'Vietnamese đồng', symbol: 'đ', slug: 'vnd' },
+    vnd: { name: 'Vietnamese đồng', symbol: 'đ', slug: 'vnd' }
   },
   opReturn: {
     opReturnPrefixHex: '6a',
@@ -60,11 +60,11 @@ export const currency = {
     appPrefixesHex: {
       eToken: '534c5000',
       lotusChat: '02020202',
-      lotusChatEncrypted: '03030303',
+      lotusChatEncrypted: '03030303'
     },
     encryptedMsgByteLimit: 206,
-    unencryptedMsgByteLimit: 215,
-  },
+    unencryptedMsgByteLimit: 215
+  }
 };
 
 export function isValidLotusPrefix(addressString: string) {

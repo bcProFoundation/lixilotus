@@ -25,7 +25,7 @@ const StyledTable = styled(Table)`
       margin-left: 15px;
     }
   }
-`
+`;
 
 const VirtualTable = (props: Parameters<typeof Table>[0]) => {
   const { columns, scroll } = props;
@@ -39,7 +39,7 @@ const VirtualTable = (props: Parameters<typeof Table>[0]) => {
 
     return {
       ...column,
-      width: Math.floor(tableWidth / widthColumnCount),
+      width: Math.floor(tableWidth / widthColumnCount)
     };
   });
 
@@ -52,7 +52,7 @@ const VirtualTable = (props: Parameters<typeof Table>[0]) => {
         if (gridRef.current) {
           gridRef.current.scrollTo({ scrollLeft });
         }
-      },
+      }
     });
 
     return obj;
@@ -62,7 +62,7 @@ const VirtualTable = (props: Parameters<typeof Table>[0]) => {
     if (!_.isNil(gridRef.current)) {
       gridRef.current.resetAfterIndices({
         columnIndex: 0,
-        shouldForceUpdate: true,
+        shouldForceUpdate: true
       });
     }
   };
@@ -92,18 +92,10 @@ const VirtualTable = (props: Parameters<typeof Table>[0]) => {
           onScroll({ scrollLeft });
         }}
       >
-        {({
-          columnIndex,
-          rowIndex,
-          style,
-        }: {
-          columnIndex: number;
-          rowIndex: number;
-          style: React.CSSProperties;
-        }) => (
+        {({ columnIndex, rowIndex, style }: { columnIndex: number; rowIndex: number; style: React.CSSProperties }) => (
           <div
             className={classNames('virtual-table-cell', {
-              'virtual-table-cell-last': columnIndex === mergedColumns.length - 1,
+              'virtual-table-cell-last': columnIndex === mergedColumns.length - 1
             })}
             style={style}
           >
@@ -126,11 +118,11 @@ const VirtualTable = (props: Parameters<typeof Table>[0]) => {
         columns={mergedColumns}
         pagination={false}
         components={{
-          body: renderVirtualList,
+          body: renderVirtualList
         }}
       />
     </ResizeObserver>
   );
-}
+};
 
 export default VirtualTable;

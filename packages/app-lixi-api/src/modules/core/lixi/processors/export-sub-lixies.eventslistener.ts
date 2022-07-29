@@ -1,10 +1,10 @@
 import { OnQueueEvent, QueueEventsHost, QueueEventsListener } from '@nestjs/bullmq';
 import { Injectable } from '@nestjs/common';
-import { NOTIFICATION_TYPES } from "src/common/modules/notifications/notification.constants";
-import { NotificationService } from "src/common/modules/notifications/notification.service";
-import { EXPORT_SUB_LIXIES_QUEUE } from "src/modules/core/lixi/constants/lixi.constants";
+import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
+import { NotificationService } from 'src/common/modules/notifications/notification.service';
+import { EXPORT_SUB_LIXIES_QUEUE } from 'src/modules/core/lixi/constants/lixi.constants';
 import { ExportSubLixiesJobResult } from 'src/modules/core/lixi/models/lixi.models';
-import { LixiService } from "src/modules/core/lixi/lixi.service";
+import { LixiService } from 'src/modules/core/lixi/lixi.service';
 
 @Injectable()
 @QueueEventsListener(EXPORT_SUB_LIXIES_QUEUE)

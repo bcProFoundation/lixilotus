@@ -2,12 +2,12 @@ import React from 'react';
 import WalletInfoComponent from './WalletInfo';
 
 const FullWalletComponent: React.FC = () => {
-  return(
+  return (
     <>
       <WalletInfoComponent />
       {/* Todo : add history in this page */}
     </>
   );
-}
+};
 
 export default FullWalletComponent;

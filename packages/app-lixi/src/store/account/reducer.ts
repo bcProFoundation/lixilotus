@@ -1,6 +1,6 @@
 import { Account } from '@bcpros/lixi-models';
 import { createEntityAdapter, createReducer, isAnyOf, Update } from '@reduxjs/toolkit';
-
+import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
 import {
   deleteAccountSuccess,
   importAccountSuccess,
@@ -20,7 +20,9 @@ export const accountsAdapter = createEntityAdapter<Account>({});
 const initialState: AccountsState = accountsAdapter.getInitialState({
   selectedId: null,
   lixiIdsById: {},
-  upload: null
+  envelopeUpload: null,
+  pageAvatarUpload: null,
+  pageCoverUpload: null
 });
 
 export const accountReducer = createReducer(initialState, builder => {
@@ -72,11 +74,36 @@ export const accountReducer = createReducer(initialState, builder => {
       }
     })
     .addCase(setUpload, (state, action) => {
-      state.upload = action.payload
+      const { type, upload } = action.payload;
+
+      switch (type) {
+        case UPLOAD_TYPES.ENVELOPE:
+          state.envelopeUpload = upload;
+          break;
+        case UPLOAD_TYPES.PAGE_AVATAR:
+          state.pageAvatarUpload = upload;
+          break;
+        case UPLOAD_TYPES.PAGE_COVER:
+          state.pageCoverUpload = upload;
+          break;
+      }
     })
     .addCase(removeUpload, (state, action) => {
-      state.upload = null;
-    }).addMatcher(isAnyOf(refreshLixiListSuccess, refreshLixiListSilentSuccess), (state, action) => {
+      const { type } = action.payload;
+
+      switch (type) {
+        case UPLOAD_TYPES.ENVELOPE:
+          state.envelopeUpload = null;
+          break;
+        case UPLOAD_TYPES.PAGE_AVATAR:
+          state.pageAvatarUpload = null;
+          break;
+        case UPLOAD_TYPES.PAGE_COVER:
+          state.pageCoverUpload = null;
+          break;
+      }
+    })
+    .addMatcher(isAnyOf(refreshLixiListSuccess, refreshLixiListSilentSuccess), (state, action) => {
       const { account, lixies } = action.payload;
       const id = account.id;
       state.selectedId = id;

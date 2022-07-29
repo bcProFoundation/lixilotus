@@ -1,4 +1,3 @@
-
 import { HomeOutlined, GiftOutlined, WalletOutlined, UserOutlined } from '@ant-design/icons';
 import { storiesOf } from '@storybook/react';
 import { ThemeProvider } from 'styled-components';
@@ -7,11 +6,7 @@ import { NavButton } from '../NavButton/NavButton';
 import Footer from './Footer';
 
 storiesOf('Footer', module)
-  .addDecorator(story => (
-    <ThemeProvider theme={theme}>
-      {story()}
-    </ThemeProvider>
-  ))
+  .addDecorator(story => <ThemeProvider theme={theme}>{story()}</ThemeProvider>)
   .add(
     'Footer',
     () => {
@@ -37,6 +32,6 @@ storiesOf('Footer', module)
       );
     },
     {
-      notes: 'Displaying a Home NavButton',
-    },
+      notes: 'Displaying a Home NavButton'
+    }
   );

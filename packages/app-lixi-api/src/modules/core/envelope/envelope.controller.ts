@@ -7,7 +7,7 @@ import { I18n, I18nContext } from 'nestjs-i18n';
 
 @Controller('envelopes')
 export class EnvelopeController {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   @Get(':id')
   async getEnvelope(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<Envelope> {

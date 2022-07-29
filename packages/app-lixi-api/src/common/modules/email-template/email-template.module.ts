@@ -10,4 +10,4 @@ import { EmailTemplateService } from './email-template.service';
   controllers: [EmailTemplateController],
   providers: [EmailTemplateService]
 })
-export class EmailTemplateModule { }
+export class EmailTemplateModule {}

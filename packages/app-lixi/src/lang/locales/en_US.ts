@@ -133,7 +133,7 @@ export default {
   'lixi.fileSizeError': 'Image must smaller than 5MB!',
   'lixi.fileUploadError': 'Error uploading to server',
   'lixi.fileUploadSuccess': 'Upload Successfully',
-  'lixi.uploadDividerText': "Custom Enevelope",
+  'lixi.uploadDividerText': 'Custom Enevelope',
   'lixi.uploadText': 'Upload',
   'lixi.uploadingText': 'Uploading...',
   'lixi.previewFileFailed': 'Cannot preview file',
@@ -284,8 +284,29 @@ export default {
   'zeroBalanceHeader.deposit': 'Deposit some funds to use this feature',
 
   /* 13.Page */
+  'page.createNewPage': 'Create new page',
+  'page.createPage': 'Create page',
+  'page.editPage': 'Edit page',
+  'page.name': 'Name',
+  'page.inputName': 'Please input name',
+  'page.title': 'Title',
+  'page.inputTitle': 'Please input title',
+  'page.walletAddress': 'Wallet address',
+  'page.avatar': 'Avatar',
+  'page.cover': 'Cover',
+  'page.upload': 'Click to upload',
+  'page.website': 'Website',
+  'page.description': 'Description',
+  'page.country': 'Search to select country',
+  'page.state': 'Search to select state',
+  'page.address': 'Address',
+  'page.inputAddress': 'Please input address',
   'page.couldNotpostPage': 'Could not create page',
   'page.createPageSuccessful': 'Create page successful',
   'page.unableCreatePageServer': 'Unable to create page on server',
-  'page.errorWhenCreatePage': "There's an error happens when create new Page"
+  'page.errorWhenCreatePage': "There's an error happens when create new Page",
+
+  /* 14.Country */
+  'country.unablegetCountries': 'Unable to get countries',
+  'country.unablegetStates': 'Unable to get states'
 };

@@ -1,17 +1,15 @@
-import { Country } from "@bcpros/lixi-models/lib/country";
-import { Select } from "antd";
+import { Select } from 'antd';
 import intl from 'react-intl-universal';
 
 const { Option } = Select;
 
 export interface CountrySelectDropdownProps {
-  countries: Country[];
+  countries: { id: string; name: string }[];
   defaultValue: string;
   handleChangeCountry: Function;
 }
 
 const CountrySelectDropdown = (props: CountrySelectDropdownProps) => {
-
   const { countries, defaultValue, handleChangeCountry } = props;
 
   return (
@@ -38,11 +36,9 @@ const CountrySelectDropdown = (props: CountrySelectDropdownProps) => {
             })}
           </Option>
         );
-
       })}
-
     </Select>
   );
-}
+};
 
 export default CountrySelectDropdown;

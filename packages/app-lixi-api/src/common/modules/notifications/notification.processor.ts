@@ -1,19 +1,15 @@
-import { NotificationDto, SendNotificationJobData } from "@bcpros/lixi-models";
-import { Processor, WorkerHost } from "@nestjs/bullmq";
-import { Inject, Injectable } from "@nestjs/common";
-import { Job } from "bullmq";
-import { PrismaService } from "src/modules/prisma/prisma.service";
-import { NOTIFICATION_OUTBOUND_QUEUE } from "./notification.constants";
-import { NotificationGateway } from "./notification.gateway";
+import { NotificationDto, SendNotificationJobData } from '@bcpros/lixi-models';
+import { Processor, WorkerHost } from '@nestjs/bullmq';
+import { Inject, Injectable } from '@nestjs/common';
+import { Job } from 'bullmq';
+import { PrismaService } from 'src/modules/prisma/prisma.service';
+import { NOTIFICATION_OUTBOUND_QUEUE } from './notification.constants';
+import { NotificationGateway } from './notification.gateway';
 
 @Injectable()
 @Processor(NOTIFICATION_OUTBOUND_QUEUE)
 export class NotificationOutboundProcessor extends WorkerHost {
-
-  constructor(
-    private prisma: PrismaService,
-    private notificationGateway: NotificationGateway
-  ) {
+  constructor(private prisma: PrismaService, private notificationGateway: NotificationGateway) {
     super();
   }
 

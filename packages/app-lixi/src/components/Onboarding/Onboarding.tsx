@@ -1,14 +1,14 @@
-import styled from "styled-components";
-import React from "react";
+import styled from 'styled-components';
+import React from 'react';
 import intl from 'react-intl-universal';
-import PrimaryButton, { SecondaryButton, SmartButton } from "@components/Common/PrimaryButton";
-import { ExclamationCircleOutlined, ImportOutlined, LockOutlined, PlusSquareOutlined } from "@ant-design/icons";
-import { Form, Input, Modal } from "antd";
-import { useState } from "react";
-import { AntdFormWrapper } from "@components/Common/EnhancedInputs";
-import { AppContext } from "src/store/store";
-import { useAppDispatch } from "src/store/hooks";
-import { generateAccount, importAccount } from "src/store/account/actions";
+import PrimaryButton, { SecondaryButton, SmartButton } from '@components/Common/PrimaryButton';
+import { ExclamationCircleOutlined, ImportOutlined, LockOutlined, PlusSquareOutlined } from '@ant-design/icons';
+import { Form, Input, Modal } from 'antd';
+import { useState } from 'react';
+import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
+import { AppContext } from 'src/store/store';
+import { useAppDispatch } from 'src/store/hooks';
+import { generateAccount, importAccount } from 'src/store/account/actions';
 
 export const LotusLogo = styled.img`
   width: 70px;
@@ -46,7 +46,7 @@ export const Onboarding = styled.div`
   padding: 10px 30px 20px 30px;
   background: #fff;
   -webkit-box-shadow: 0px 0px 24px 1px rgb(0 0 0);
-  -moz-box-shadow: 0px 0px 24px 1px rgba(0,0,0,1);
+  -moz-box-shadow: 0px 0px 24px 1px rgba(0, 0, 0, 1);
   box-shadow: 0px 0px 24px 1px rgb(0 0 0);
 `;
 
@@ -55,7 +55,7 @@ const OnboardingComponent: React.FC = () => {
   const { /*createWallet*/ Wallet } = ContextValue;
   const [formData, setFormData] = useState({
     dirty: true,
-    mnemonic: '',
+    mnemonic: ''
   });
   const [seedInput, openSeedInput] = useState(false);
   const [isValidMnemonic, setIsValidMnemonic] = useState(false);
@@ -72,13 +72,13 @@ const OnboardingComponent: React.FC = () => {
       cancelText: intl.get('onboarding.cancel'),
       centered: true,
       onOk() {
-        dispatch(generateAccount())
+        dispatch(generateAccount());
       },
       onCancel() {
         console.log('Cancel');
-      },
+      }
     });
-  };
+  }
 
   const handleChange = e => {
     const { value, name } = e.target;
@@ -93,7 +93,7 @@ const OnboardingComponent: React.FC = () => {
   async function submit() {
     setFormData({
       ...formData,
-      dirty: false,
+      dirty: false
     });
 
     if (!formData.mnemonic) {
@@ -112,7 +112,7 @@ const OnboardingComponent: React.FC = () => {
     <>
       <Onboarding>
         <div style={{ marginTop: '20px' }}>
-          <LixiTextLogo src='/images/lixi_logo_text.png' alt="lixi" />
+          <LixiTextLogo src="/images/lixi_logo_text.png" alt="lixi" />
         </div>
 
         <h2 style={{ marginTop: '50px' }}>{intl.get('onboarding.welcomeToLotus')}</h2>
@@ -120,19 +120,12 @@ const OnboardingComponent: React.FC = () => {
           {intl.get('onboarding.lixiLotusIntroduce1')}
           {intl.get('onboarding.lixiLotusIntroduce2')}
           <br />
-          {intl.get('onboarding.lixiLotusIntroduce3')} {' '}
-          <WelcomeLink
-            href="https://gitlab.com/abcpros/givegift/-/wikis/home"
-            target="_blank"
-            rel="noreferrer"
-          >
+          {intl.get('onboarding.lixiLotusIntroduce3')}{' '}
+          <WelcomeLink href="https://gitlab.com/abcpros/givegift/-/wikis/home" target="_blank" rel="noreferrer">
             {intl.get('onboarding.lixiLotusIntroduce4')}
           </WelcomeLink>
         </WelcomeText>
-        <PrimaryButton
-          style={{ marginTop: '100px' }}
-          onClick={() => showBackupConfirmModal()}
-        >
+        <PrimaryButton style={{ marginTop: '100px' }} onClick={() => showBackupConfirmModal()}>
           <PlusSquareOutlined /> {intl.get('onboarding.newAccount')}
         </PrimaryButton>
 
@@ -143,16 +136,8 @@ const OnboardingComponent: React.FC = () => {
           <AntdFormWrapper>
             <Form style={{ width: 'auto' }}>
               <Form.Item
-                validateStatus={
-                  !formData.dirty && !formData.mnemonic
-                    ? 'error'
-                    : ''
-                }
-                help={
-                  !formData.mnemonic || !isValidMnemonic
-                    ? intl.get('account.mnemonicRequired')
-                    : ''
-                }
+                validateStatus={!formData.dirty && !formData.mnemonic ? 'error' : ''}
+                help={!formData.mnemonic || !isValidMnemonic ? intl.get('account.mnemonicRequired') : ''}
               >
                 <Input
                   prefix={<LockOutlined />}
@@ -163,10 +148,7 @@ const OnboardingComponent: React.FC = () => {
                   required
                 />
               </Form.Item>
-              <SmartButton
-                disabled={!isValidMnemonic}
-                onClick={() => submit()}
-              >
+              <SmartButton disabled={!isValidMnemonic} onClick={() => submit()}>
                 {intl.get('onboarding.import')}
               </SmartButton>
             </Form>
@@ -174,7 +156,7 @@ const OnboardingComponent: React.FC = () => {
         )}
       </Onboarding>
     </>
-  )
+  );
 };
 
 export default OnboardingComponent;
