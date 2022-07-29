@@ -6,17 +6,22 @@ import React from 'react';
 import { AppContext } from '@store/store';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getSelectedAccount } from '@store/account/selectors';
-import { getSelectedPageId } from '@store/page/selectors';
-import { setSelectedPage } from '@store/page/action';
+import { getAllPages, getSelectedPageId } from '@store/page/selectors';
+import { fetchAllPages, setSelectedPage } from '@store/page/action';
 import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
 import { push } from 'connected-next-router';
+import _ from 'lodash';
 
 const CardContainer = styled.div`
   display: flex;
 `;
 
 const Image = styled.div`
-  width: 300px;
+  width: fit-content;
+  img {
+    width: 80px;
+    height: 80px;
+  }
 `;
 
 const Content = styled.div`
@@ -44,12 +49,12 @@ const PagesListing: React.FC = () => {
   const { XPI, Wallet } = ContextValue;
   const selectedAccount = useAppSelector(getSelectedAccount);
   const selectedPageId = useAppSelector(getSelectedPageId);
+  const pageLists = useAppSelector(getAllPages);
   const [isShowQrCode, setIsShowQrCode] = useState(false);
   const [lists, setLists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [balanceAccount, setBalanceAccount] = useState(0);
-  // const dispatch = useAppDispatch();
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -64,59 +69,9 @@ const PagesListing: React.FC = () => {
   };
 
   useEffect(() => {
-    const data = [
-      {
-        href: 'https://ant.design',
-        title: `@gml777 Grandma Lu`,
-        avatar: 'https://joeschmoe.io/api/v1/random',
-        address: '238 Le Van Sy Street, Ward 1, District 7 , HCMC',
-        description:
-          'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-        createDate: '22/02/2022',
-        updateDate: '27/08/2022',
-        upVote: 200,
-        downVote: 10
-      },
-      {
-        href: 'https://ant.design',
-        title: `@mb678 Ma Bu`,
-        avatar: 'https://joeschmoe.io/api/v1/random',
-        address: '99 Bach Dang Street, Ward 3, District 4, HCMC',
-        description:
-          'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-        createDate: '22/03/2022',
-        updateDate: '27/08/2022',
-        upVote: 100,
-        downVote: 20
-      },
-      {
-        href: 'https://ant.design',
-        title: `@min123 Min Min`,
-        avatar: 'https://joeschmoe.io/api/v1/random',
-        address: '109 Man Thien Street, Ward 5, District 9, HCMC',
-        description:
-          'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-        createDate: '22/04/2022',
-        updateDate: '27/08/2022',
-        upVote: 6,
-        downVote: 20
-      },
-      {
-        href: 'https://ant.design',
-        title: `@kinggrab King Grab`,
-        avatar: 'https://joeschmoe.io/api/v1/random',
-        address: '8 Ly Thuong Kiet Street, Ward 7, District 10, HCMC',
-        description:
-          'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-        createDate: '22/04/2022',
-        updateDate: '27/08/2022',
-        upVote: 12,
-        downVote: 2
-      }
-    ];
-    // dispatch(getListings);
-
-    console.log(selectedAccount);
+    dispatch(fetchAllPages());
+    const tempList = mapPagesList(_.cloneDeep(pageLists));
+    setLists([...tempList]);
     // check balance account
     XPI.Electrumx.balance(selectedAccount?.address)
       .then(result => {
@@ -129,20 +84,19 @@ const PagesListing: React.FC = () => {
         setBalanceAccount(0);
       });
 
-    setLists(data);
   }, []);
 
-  //   const data = Array.from({ length: 23 }).map((_, i) => ({
-  //     href: 'https://ant.design',
-  //     title: `#${i} Grandma Lu`,
-  //     avatar: 'https://joeschmoe.io/api/v1/random',
-  //     address: '238 Le Van Sy Street, Ward 1, HCMC',
-  //     description:
-  //       'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
-  //     createDate: '22/02/2022',
-  //     updateDate: '27/08/2022',
-  //     countUp: 123
-  //   }));
+  let mapPagesList = (lists) => {
+    if (lists.length != 0) {
+      lists.forEach(item => {
+        if (!item.hasOwnProperty('upVote') && !item.hasOwnProperty('downVote') ) {
+          item.upVote = Math.floor(Math.random() * 101);
+          item.downVote = Math.floor(Math.random() * 101);
+        }
+      });
+    }
+    return lists;
+  }
 
   const IconText = ({ icon, text, dataItem }: { icon: React.FC; text: string; dataItem: any }) => (
     <Space onClick={e => (icon === LikeOutlined ? upVoteShop(dataItem) : downVoteShop(dataItem))}>
@@ -153,7 +107,6 @@ const PagesListing: React.FC = () => {
 
   const upVoteShop = dataItem => {
     if (selectedAccount && balanceAccount !== 0) {
-      if (dataItem) console.log(dataItem);
       lists.forEach(item => {
         if (item.title === dataItem.title) item.upVote += 1;
       });
@@ -166,7 +119,6 @@ const PagesListing: React.FC = () => {
 
   const downVoteShop = dataItem => {
     if (selectedAccount && balanceAccount !== 0) {
-      if (dataItem) console.log(dataItem);
       lists.forEach(item => {
         if (item.title === dataItem.title) item.downVote += 1;
       });
@@ -192,7 +144,6 @@ const PagesListing: React.FC = () => {
   };
 
   const onLixiClick = item => {
-    console.log(item);
     setIsShowQrCode(true);
     showModal();
   };

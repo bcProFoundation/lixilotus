@@ -14,3 +14,8 @@ export const pagesByAccountId = createSelector(
   (state: RootState) => state.pages,
   (state: PageState) => state.pagesByAccountId
 );
+
+export const getAllPages = createSelector(
+  (state: RootState) => state.pages,
+  selectAll
+);
