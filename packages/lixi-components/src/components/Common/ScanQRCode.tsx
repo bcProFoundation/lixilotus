@@ -5,9 +5,7 @@ import { Alert, Modal } from 'antd';
 import { BrowserQRCodeReader } from '@zxing/browser';
 import { ThemedQrcodeOutlined } from './CustomIcons';
 
-import {
-  isValidLotusPrefix
-} from './Ticker';
+import { isValidLotusPrefix } from './Ticker';
 import { Result } from '@zxing/library';
 import _ from 'lodash';
 
@@ -33,7 +31,7 @@ type ScanQRCodeProps = {
   loadWithCameraOpen: boolean;
   onScan: Function;
   id: string;
-}
+};
 const ScanQRCode = (props: ScanQRCodeProps) => {
   const { loadWithCameraOpen, onScan, id, ...otherProps } = props;
   const [visible, setVisible] = useState(loadWithCameraOpen);
@@ -57,14 +55,13 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
 
   const parseContent = (content: string) => {
     let type = 'unknown';
-    let values: { address?: string, lixi?: string } = {};
+    let values: { address?: string; lixi?: string } = {};
 
     // If what scanner reads from QR code begins with 'bitcoincash:' or 'simpleledger:' or their successor prefixes
     if (isValidLotusPrefix(content)) {
       type = 'address';
       values = { address: content };
-    }
-    else {
+    } else {
       type = 'claimCode';
       values = { lixi: content };
     }
@@ -88,30 +85,32 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
       //const previewElem = document.querySelector("#test-area-qr-code-webcam");
       const selectedDeviceId = videoInputDevices[0].deviceId;
 
-      const previewElem = document.querySelector('#test-area-qr-code-webcam-'+id);
-      const controls = await codeReader.decodeFromVideoDevice(selectedDeviceId, previewElem as any, (content: Result, error, controls) => {
-        // use the result and error values to choose your actions
-        // you can also use controls API in this scope like the controls
-        // returned from the method.
-        if (!_.isNil(content) && content.getText()) {
-          controls.stop();
-          const result = parseContent(content.getText());
-          // stop scanning and fill form if it's an address
-          if (result.type === 'address') {
-            // Hide the scanner
-            setVisible(false);
-            onScan(result.values.address);
-            return teardownCodeReader(codeReader);
-          }
-          else if (result.type === 'claimCode') {
-            // Hide the scanner
-            setVisible(false);
-            onScan(result.values.lixi);
-            return teardownCodeReader(codeReader);
+      const previewElem = document.querySelector('#test-area-qr-code-webcam-' + id);
+      const controls = await codeReader.decodeFromVideoDevice(
+        selectedDeviceId,
+        previewElem as any,
+        (content: Result, error, controls) => {
+          // use the result and error values to choose your actions
+          // you can also use controls API in this scope like the controls
+          // returned from the method.
+          if (!_.isNil(content) && content.getText()) {
+            controls.stop();
+            const result = parseContent(content.getText());
+            // stop scanning and fill form if it's an address
+            if (result.type === 'address') {
+              // Hide the scanner
+              setVisible(false);
+              onScan(result.values.address);
+              return teardownCodeReader(codeReader);
+            } else if (result.type === 'claimCode') {
+              // Hide the scanner
+              setVisible(false);
+              onScan(result.values.lixi);
+              return teardownCodeReader(codeReader);
+            }
           }
         }
-
-      })
+      );
     } catch (err) {
       console.log(intl.get('general.QRScannerError'));
       console.log(err);
@@ -137,10 +136,7 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
 
   return (
     <>
-      <StyledScanQRCode
-        {...otherProps}
-        onClick={() => setVisible(!visible)}
-      >
+      <StyledScanQRCode {...otherProps} onClick={() => setVisible(!visible)}>
         <ThemedQrcodeOutlined />
       </StyledScanQRCode>
       <StyledModal

@@ -8,7 +8,7 @@ const Footer = styled.div`
   bottom: 0;
   width: 500px;
   @media (max-width: 768px) {
-      width: 100%;
+    width: 100%;
   }
   border-top: 1px solid ${props => props.theme.wallet.borders.color};
 `;

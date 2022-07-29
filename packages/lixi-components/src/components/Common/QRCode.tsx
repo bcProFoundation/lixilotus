@@ -2,9 +2,7 @@ import React, { CSSProperties, useState } from 'react';
 import styled from 'styled-components';
 import * as qrcode from 'qrcode.react';
 import RawQRCode from 'qrcode.react';
-import {
-  currency,
-} from './Ticker';
+import { currency } from './Ticker';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 type StyledRawQRCodeProps = {
@@ -17,7 +15,7 @@ type StyledRawQRCodeProps = {
   imageSettings: any;
 };
 
-export const StyledRawQRCode: React.FC<StyledRawQRCodeProps> = styled(RawQRCode) <StyledRawQRCodeProps>`
+export const StyledRawQRCode: React.FC<StyledRawQRCodeProps> = styled(RawQRCode)<StyledRawQRCodeProps>`
   cursor: pointer;
   border-radius: 23px;
   background: ${props => props.theme.qr.background};
@@ -28,8 +26,7 @@ export const StyledRawQRCode: React.FC<StyledRawQRCodeProps> = styled(RawQRCode)
     fill: ${props => props.theme.qr.background};
   }
   :hover {
-    border-color: ${({ xpi = 0, ...props }) =>
-    xpi === 1 ? props.theme.primary : props.theme.qr.token};
+    border-color: ${({ xpi = 0, ...props }) => (xpi === 1 ? props.theme.primary : props.theme.qr.token)};
   }
   @media (max-width: 768px) {
     border-radius: 18px;
@@ -40,7 +37,7 @@ export const StyledRawQRCode: React.FC<StyledRawQRCodeProps> = styled(RawQRCode)
 
 type CopiedProps = {
   xpi: number;
-  style?: React.CSSProperties
+  style?: React.CSSProperties;
 };
 
 const Copied = styled.div<CopiedProps>`
@@ -48,13 +45,10 @@ const Copied = styled.div<CopiedProps>`
   font-weight: bold;
   width: 100%;
   text-align: center;
-  background-color: ${({ xpi = 0, ...props }) =>
-    xpi === 1 ? props.theme.primary : props.theme.qr.token};
+  background-color: ${({ xpi = 0, ...props }) => (xpi === 1 ? props.theme.primary : props.theme.qr.token)};
   border: 1px solid;
   border-color: ${({ xpi = 0, ...props }) =>
-    xpi === 1
-      ? props.theme.qr.copyBorderCash
-      : props.theme.qr.copyBorderToken};
+    xpi === 1 ? props.theme.qr.copyBorderCash : props.theme.qr.copyBorderToken};
   color: ${props => props.theme.contrast};
   position: absolute;
   top: 65px;
@@ -63,7 +57,8 @@ const Copied = styled.div<CopiedProps>`
     top: 52px;
     padding: 20px 0;
   }
-  .copied-header, .copied-content {
+  .copied-header,
+  .copied-content {
     color: #fff !important;
   }
 `;
@@ -94,61 +89,61 @@ type CustomInputProps = {
 };
 
 const CustomInput = styled.div<CustomInputProps>`
-    font-size: 15px;
-    color: ${props => props.theme.wallet.text.secondary};
-    text-align: center;
-    cursor: pointer;
-    margin-bottom: 0px;
-    padding: 6px 0;
-    font-family: 'Roboto Mono', monospace;
-    border-radius: 5px;
+  font-size: 15px;
+  color: ${props => props.theme.wallet.text.secondary};
+  text-align: center;
+  cursor: pointer;
+  margin-bottom: 0px;
+  padding: 6px 0;
+  font-family: 'Roboto Mono', monospace;
+  border-radius: 5px;
 
+  span {
+    color: ${props => props.theme.wallet.text.primary};
+    font-size: 16px;
+  }
+  input {
+    border: none;
+    width: 100%;
+    text-align: center;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    color: ${props => props.theme.wallet.text.primary};
+    padding: 10px 0;
+    background: transparent;
+    margin-bottom: 15px;
+    display: none;
+  }
+  input:focus {
+    outline: none;
+  }
+  input::selection {
+    background: transparent;
+    color: ${props => props.theme.wallet.text.primary};
+  }
+  @media (max-width: 768px) {
+    font-size: 11px;
     span {
-      color: ${props => props.theme.wallet.text.primary};
-      font-size: 16px;
+      font-size: 12px;
     }
     input {
-      border: none;
-      width: 100%;
-      text-align: center;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
-      user-select: none;
-      cursor: pointer;
-      color: ${props => props.theme.wallet.text.primary};
-      padding: 10px 0;
-      background: transparent;
-      margin-bottom: 15px;
-      display: none;
-    }
-    input:focus {
-      outline: none;
-    }
-    input::selection {
-      background: transparent;
-      color: ${props => props.theme.wallet.text.primary};
-    }
-    @media (max-width: 768px) {
       font-size: 11px;
-      span {
-        font-size: 12px;
-      }
-      input {
-        font-size: 11px;
-        margin-bottom: 10px;
-      }
+      margin-bottom: 10px;
     }
-    @media (max-width: 340px) {
-      font-size: 10px;
-      span {
-        font-size: 11px;
-      }
-      input {
-        font-size: 11px;
-        margin-bottom: 10px;
-      }
+  }
+  @media (max-width: 340px) {
+    font-size: 10px;
+    span {
+      font-size: 11px;
     }
+    input {
+      font-size: 11px;
+      margin-bottom: 10px;
+    }
+  }
 `;
 
 type QRCodeProps = {
@@ -156,7 +151,7 @@ type QRCodeProps = {
   size?: number;
   onClick?: Function;
   logoImage?: string;
-}
+};
 
 const FormattedWalletAddress = ({ address }) => {
   const prefixLength = 11;
@@ -164,25 +159,14 @@ const FormattedWalletAddress = ({ address }) => {
   return (
     <>
       {address.slice(0, prefixLength)}
-      <AddressHighlightTrim>
-        {address.slice(prefixLength, prefixLength + trimLength)}
-      </AddressHighlightTrim>
+      <AddressHighlightTrim>{address.slice(prefixLength, prefixLength + trimLength)}</AddressHighlightTrim>
       {address.slice(prefixLength + trimLength, -trimLength)}
-      <AddressHighlightTrim>
-        {address.slice(-trimLength)}
-      </AddressHighlightTrim>
+      <AddressHighlightTrim>{address.slice(-trimLength)}</AddressHighlightTrim>
     </>
   );
 };
 
-const QRCode = ({
-  address,
-  size = 210,
-  onClick = () => null,
-  logoImage,
-  ...otherProps
-}: QRCodeProps) => {
-
+const QRCode = ({ address, size = 210, onClick = () => null, logoImage, ...otherProps }: QRCodeProps) => {
   const [visible, setVisible] = useState(false);
   const trimAmount = 8;
 
@@ -195,7 +179,6 @@ const QRCode = ({
     }, 1500);
     onClick(evt);
   };
-
 
   const handleOnCopy = () => {
     setVisible(true);
@@ -211,19 +194,17 @@ const QRCode = ({
       style={{
         display: 'inline-block',
         width: '100%',
-        position: 'relative',
+        position: 'relative'
       }}
       text={address}
       onCopy={handleOnCopy}
     >
       <div style={{ position: 'relative' }} onClick={handleOnClick}>
-        <Copied
-          className='copied-header'
-          xpi={address ? 1 : 0}
-          style={{ display: visible ? undefined : 'none' }}
-        >
+        <Copied className="copied-header" xpi={address ? 1 : 0} style={{ display: visible ? undefined : 'none' }}>
           Copied <br />
-          <span className='copied-content' style={{ fontSize: '12px' }}>{address}</span>
+          <span className="copied-content" style={{ fontSize: '12px' }}>
+            {address}
+          </span>
         </Copied>
 
         <StyledRawQRCode
@@ -240,19 +221,13 @@ const QRCode = ({
             y: undefined,
             height: 24,
             width: 24,
-            excavate: true,
+            excavate: true
           }}
         />
 
         {address && (
           <CustomInput xpi={address ? 1 : 0}>
-            <input
-              ref={txtRef}
-              readOnly
-              value={address}
-              spellCheck="false"
-              type="text"
-            />
+            <input ref={txtRef} readOnly value={address} spellCheck="false" type="text" />
             <span>
               <FormattedWalletAddress address={address} />
             </span>
