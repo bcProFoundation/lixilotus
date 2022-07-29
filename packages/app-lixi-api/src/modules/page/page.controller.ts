@@ -32,6 +32,28 @@ export class PageController {
 
   constructor(private prisma: PrismaService, @I18n() private i18n: I18nService) { }
 
+  @Get()
+  async getAllPages(): Promise<any> {
+    try {
+      const page = await this.prisma.page.findMany();
+
+      if (!page) {
+        const pageNotExist = await this.i18n.t('page.messages.pageNotExist');
+        throw new VError(pageNotExist);
+      }
+
+      return page;
+    } catch (err: unknown) {
+      if (err instanceof VError) {
+        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      } else {
+        const unableToGetPage = await this.i18n.t('page.messages.unableToGetPage');
+        const error = new VError.WError(err as Error, unableToGetPage);
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  }
+
   @Get(':id')
   async get(@Param('id') id: string): Promise<PageDto> {
     try {

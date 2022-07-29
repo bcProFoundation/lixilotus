@@ -26,6 +26,18 @@ const pageApi = {
         const { response } = err;
         throw response?.data ?? err ?? 'Network Error';
       });
+  },
+  getAllPages(): Promise<any> {
+    const url = `/api/pages`;
+    return axiosClient
+      .get(url)
+      .then(response => {
+        return response.data as any;
+      })
+      .catch(err => {
+        const { response } = err;
+        throw response?.data ?? err ?? 'Network Error';
+      });
   }
 };
 
