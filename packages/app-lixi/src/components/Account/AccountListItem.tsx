@@ -32,28 +32,27 @@ const Wrapper = styled.div`
   border: 1px solid ${props => props.theme.listItem.border};
 
   :hover {
-      border-color: ${props => props.theme.listItem.hoverBorder};
+    border-color: ${props => props.theme.listItem.hoverBorder};
   }
 `;
 
 const DeleteIcon = styled(DeleteOutlined);
 
 type AccountListItemProps = {
-  account: Account,
+  account: Account;
   theme?: DefaultTheme;
-} & React.HTMLProps<HTMLDivElement>
+} & React.HTMLProps<HTMLDivElement>;
 
 const LixiListItem: React.FC<AccountListItemProps> = (props: AccountListItemProps) => {
-
   const dispatch = useAppDispatch();
 
   const handleSelectAccount = (account: Account) => {
     dispatch(selectAccount(account.id));
-  }
+  };
 
   const { account } = props;
   return (
-    <Wrapper onClick={(e) => handleSelectAccount(account)}>
+    <Wrapper onClick={e => handleSelectAccount(account)}>
       <AccountIcon>
         <UserIcon />
       </AccountIcon>

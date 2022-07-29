@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import intl from 'react-intl-universal';
-import { message, Upload, Button, Modal } from "antd";
+import { message, Upload, Button, Modal } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { RcFile, UploadChangeParam } from 'antd/lib/upload';
 import styled from 'styled-components';
-import Image from 'next/image'
+import Image from 'next/image';
 import type { UploadFile } from 'antd/es/upload/interface';
 import { isMobile } from 'react-device-detect';
-import { useAppDispatch } from "@store/hooks";
+import { useAppDispatch } from '@store/hooks';
 import { setUpload, removeUpload } from '@store/account/actions';
-import axiosClient from "@utils/axiosClient";
-import { UPLOAD_API } from '@bcpros/lixi-models/constants'
+import axiosClient from '@utils/axiosClient';
+import { UPLOAD_API } from '@bcpros/lixi-models/constants';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -28,13 +28,13 @@ const StyledButton = styled(Button)`
   :disabled {
     color: gray;
   }
-`
+`;
 
 const StyledContainer = styled.div`
   padding: 10px;
-`
+`;
 
-export const Uploader = (props) => {
+export const Uploader = props => {
   const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
@@ -42,8 +42,12 @@ export const Uploader = (props) => {
   const dispatch = useAppDispatch();
 
   const uploadButton = (
-    <StyledButton disabled={loading} type='primary' size="middle" loading={loading}
-      icon={<UploadOutlined style={{color: loading ? "gray" : "white"}}/>}
+    <StyledButton
+      disabled={loading}
+      type="primary"
+      size="middle"
+      loading={loading}
+      icon={<UploadOutlined style={{ color: loading ? 'gray' : 'white' }} />}
     >
       {loading ? intl.get('lixi.uploadingText') : intl.get('lixi.uploadText')}
     </StyledButton>
@@ -54,18 +58,18 @@ export const Uploader = (props) => {
       '0%': '#231557',
       '29%': '#44107A',
       '67%': '#FF1361',
-      '100%': '#d38cad',
+      '100%': '#d38cad'
     },
     strokeWidth: 3,
 
     //hide percentage number
-    format: percent => '',
-  }
+    format: percent => ''
+  };
 
   const beforeUpload = (file: RcFile) => {
     const isJPG = file.type === 'image/jpeg';
-    const isPNG = file.type === 'image/png'
-    const isGIF = file.type === "image/gif"
+    const isPNG = file.type === 'image/png';
+    const isGIF = file.type === 'image/gif';
     const isLt5M = file.size / 1024 / 1024 < 5;
 
     if (!isJPG && !isPNG && !isGIF) {
@@ -77,13 +81,12 @@ export const Uploader = (props) => {
     }
 
     return (isJPG || isPNG || isGIF) && isLt5M;
-  }
-
+  };
 
   const handleCancel = () => setPreviewVisible(false);
 
   const handlePreview = async (file: UploadFile) => {
-    if(file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
+    if (file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/gif') {
       return message.error(intl.get('lixi.previewFileFailed'));
     }
 
@@ -96,7 +99,6 @@ export const Uploader = (props) => {
     setPreviewTitle(file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1));
   };
 
-
   const handleChange = (info: UploadChangeParam) => {
     const { status } = info.file;
     switch (status) {
@@ -105,7 +107,7 @@ export const Uploader = (props) => {
         break;
       case 'done':
         setLoading(false);
-        message.success(intl.get('lixi.fileUploadSuccess'))
+        message.success(intl.get('lixi.fileUploadSuccess'));
         break;
       case 'error':
         setLoading(false);
@@ -116,26 +118,28 @@ export const Uploader = (props) => {
 
   const uploadImage = async options => {
     const { onSuccess, onError, file, onProgress } = options;
-    const url = UPLOAD_API
+    const url = UPLOAD_API;
     const formData = new FormData();
 
     formData.append('file', file);
     formData.append('type', props.type);
     const config = {
-      headers: { "content-type": "multipart/form-data" },
+      headers: { 'content-type': 'multipart/form-data' },
       withCredentials: true,
       onUploadProgress: event => {
         onProgress({ percent: (event.loaded / event.total) * 100 });
       }
     };
 
-    await axiosClient.post(url, formData, config).then(response => {
-      return onSuccess(dispatch(setUpload({upload: response.data, type: props.type})));
-    })
-    .catch(err => {
-      const { response } = err;
-      return onError(response);
-    })
+    await axiosClient
+      .post(url, formData, config)
+      .then(response => {
+        return onSuccess(dispatch(setUpload({ upload: response.data, type: props.type })));
+      })
+      .catch(err => {
+        const { response } = err;
+        return onError(response);
+      });
   };
 
   return (
@@ -151,21 +155,21 @@ export const Uploader = (props) => {
         accept="image/png, image/gif, image/jpeg"
         progress={customProgress}
         customRequest={uploadImage}
-        onRemove={() => dispatch(removeUpload({type: props.type}))}
+        onRemove={() => dispatch(removeUpload({ type: props.type }))}
       >
         {uploadButton}
       </Upload>
-       <Modal visible={previewVisible} title={previewTitle} footer={null} onCancel={handleCancel}>
-        <div style={{width: '100%', height: '50vh', position: isMobile ? 'initial' : 'relative'}}>
-          <Image alt="custom-upload" layout='fill' quality={100} src={previewImage} />
-        </div>  
+      <Modal visible={previewVisible} title={previewTitle} footer={null} onCancel={handleCancel}>
+        <div style={{ width: '100%', height: '50vh', position: isMobile ? 'initial' : 'relative' }}>
+          <Image alt="custom-upload" layout="fill" quality={100} src={previewImage} />
+        </div>
       </Modal>
     </StyledContainer>
-  )
-}
+  );
+};
 
 export const StyledUploader = styled(Uploader)`
   .ant-upload.ant-upload-select-picture-card {
     background-color: white;
   }
-`
+`;

@@ -5,7 +5,7 @@ import Redis from 'ioredis';
 
 @Controller('healthcheck')
 export class HeathController {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   @Get()
   async check(): Promise<any> {

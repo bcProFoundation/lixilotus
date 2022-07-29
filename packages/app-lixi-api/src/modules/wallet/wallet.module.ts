@@ -3,11 +3,9 @@ import { ConfigService } from '@nestjs/config';
 import SlpWallet from '@bcpros/minimal-xpi-slp-wallet';
 import { WalletService } from './wallet.service';
 
-
 @Global()
 @Module({
-  imports: [
-  ],
+  imports: [],
   providers: [
     {
       provide: 'xpiWallet',
@@ -15,7 +13,7 @@ import { WalletService } from './wallet.service';
         const xpiRestUrl = config.get<string>('XPI_REST_URL') ?? 'https://api.sendlotus.com/v4/';
         const ConstructedSlpWallet = new SlpWallet('', {
           restURL: xpiRestUrl,
-          hdPath: "m/44'/10605'/0'/0/0",
+          hdPath: "m/44'/10605'/0'/0/0"
         });
         return ConstructedSlpWallet;
       },
@@ -32,4 +30,4 @@ import { WalletService } from './wallet.service';
   ],
   exports: ['xpiWallet', 'xpijs', WalletService]
 })
-export class WalletModule { }
+export class WalletModule {}

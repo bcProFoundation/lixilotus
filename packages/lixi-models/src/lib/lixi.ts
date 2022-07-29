@@ -1,4 +1,5 @@
 import { Account } from '../';
+
 import { Distribution } from './distribution';
 import { Envelope } from './envelope';
 import { Upload } from './upload';
@@ -105,7 +106,7 @@ export interface LixiDto {
   packageId?: Nullable<number>;
   joinLotteryProgram: boolean;
   distributions?: Nullable<Distribution[]>;
-};
+}
 
 export interface Lixi {
   id: number;
@@ -148,7 +149,7 @@ export interface Lixi {
   packageId?: Nullable<number>;
   joinLotteryProgram: boolean;
   distributions?: Nullable<Distribution[]>;
-};
+}
 
 export interface RegisterLixiPackCommand {
   claimCode: string;
@@ -189,12 +190,12 @@ export enum LixiType {
   Random = 0,
   Fixed = 1,
   Divided = 2,
-  Equal = 3,
+  Equal = 3
 }
 
 export enum ClaimType {
   Single = 0,
-  OneTime = 1,
+  OneTime = 1
 }
 
 export interface PostLixiResponseDto {

@@ -215,11 +215,13 @@ export class CreateSubLixiesProcessor extends WorkerHost {
     const encryptedClaimCode = await aesGcmEncrypt(password, accountSecret);
     const name = address.slice(12, 17);
     mapEncryptedClaimCode[encryptedClaimCode] = password;
-    const uploadDetail = command.uploadId ? await this.prisma.uploadDetail.findFirst({
-      where:{
-        uploadId: command.uploadId
-      }
-    }) : undefined
+    const uploadDetail = command.uploadId
+      ? await this.prisma.uploadDetail.findFirst({
+          where: {
+            uploadId: command.uploadId
+          }
+        })
+      : undefined;
 
     // Prepare data to insert into the database
     const dataSubLixi = {

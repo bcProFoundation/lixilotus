@@ -1,25 +1,13 @@
-import { createSelector } from "reselect";
-import { RootState } from "../store";
-import { claimsAdapter } from "./reducer";
-import { ClaimsState } from "./state";
+import { createSelector } from 'reselect';
+import { RootState } from '../store';
+import { claimsAdapter } from './reducer';
+import { ClaimsState } from './state';
 
+const { selectAll, selectEntities, selectIds, selectTotal } = claimsAdapter.getSelectors();
 
-const {
-  selectAll,
-  selectEntities,
-  selectIds,
-  selectTotal
-} = claimsAdapter.getSelectors();
+export const getAllClaims = createSelector((state: RootState) => state.claims, selectAll);
 
-export const getAllClaims = createSelector(
-  (state: RootState) => state.claims,
-  selectAll
-);
-
-export const getAllClaimsEntities = createSelector(
-  (state: RootState) => state.claims,
-  selectEntities
-);
+export const getAllClaimsEntities = createSelector((state: RootState) => state.claims, selectEntities);
 
 export const getCurrentAddress = createSelector(
   (state: RootState) => state.claims,

@@ -10,18 +10,15 @@ import { NOTIFICATION_OUTBOUND_QUEUE } from './notification.constants';
 
 @Injectable()
 export class NotificationService {
-
   private logger: Logger = new Logger('NotificationService');
 
   constructor(
     private prisma: PrismaService,
     @InjectQueue(NOTIFICATION_OUTBOUND_QUEUE) private notificationOutboundQueue: Queue,
     @I18n() private i18n: I18nService
-  ) {
-  }
+  ) {}
 
   async saveAndDispatchNotification(room: string, notification: NotificationDto) {
-
     // Save to the database
     const notif: NotificationDb = await this.prisma.notification.create({
       data: {
@@ -31,7 +28,7 @@ export class NotificationService {
         action: notification.action,
         message: notification.message,
         notificationTypeId: notification.notificationTypeId as number,
-        additionalData: notification.additionalData as Prisma.InputJsonValue,
+        additionalData: notification.additionalData as Prisma.InputJsonValue
       }
     });
 
@@ -43,6 +40,4 @@ export class NotificationService {
     const job = await this.notificationOutboundQueue.add('send-notification', sendNotifJobData);
     return job.id;
   }
-
-
 }

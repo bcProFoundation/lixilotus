@@ -21,7 +21,9 @@
     "start:api": "lerna exec --scope @bcpros/app-lixi-api -- yarn start",
     "start:dev:api": "NODE_ENV=development lerna exec --scope @bcpros/app-lixi-api -- yarn start",
     "start:lixi-components": "lerna exec --scope @bcpros/lixi-components -- yarn start",
-    "build": "lerna run build"
+    "prepare": "husky install",
+    "build": "lerna run --concurrency 1 build --stream",
+    "precommit": "lerna run --concurrency 1 --stream precommit"
   },
   "workspaces": {
     "packages": [
@@ -38,7 +40,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn test"
+      "pre-commit": "yarn precommit"
     }
   }
 }

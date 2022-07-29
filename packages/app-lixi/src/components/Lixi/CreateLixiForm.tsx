@@ -46,11 +46,11 @@ const LotteryInput = styled(Input)`
 
 const StyledDivider = styled.h3`
   width: 100%;
-  text-align: center; 
-  border-bottom: 1px solid #000; 
+  text-align: center;
+  border-bottom: 1px solid #000;
   line-height: 0.1em;
-  margin: 10px 0 20px; 
-`
+  margin: 10px 0 20px;
+`;
 
 type CreateLixiFormProps = {
   account?: Account;
@@ -711,9 +711,11 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
               {/* Custom Envelope */}
               <Form.Item>
                 <StyledDivider>
-                  <span style={{backgroundColor: "#FFF",padding: "0 10px"}}>{intl.get('lixi.uploadDividerText')}</span>
+                  <span style={{ backgroundColor: '#FFF', padding: '0 10px' }}>
+                    {intl.get('lixi.uploadDividerText')}
+                  </span>
                 </StyledDivider>
-                <StyledUploader type={UPLOAD_TYPES.ENVELOPE}/>
+                <StyledUploader type={UPLOAD_TYPES.ENVELOPE} />
               </Form.Item>
               <hr />
               {/* Message */}

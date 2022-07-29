@@ -30,7 +30,7 @@ import { PrismaService } from '../prisma/prisma.service';
 export class PageController {
   private logger: Logger = new Logger(this.constructor.name);
 
-  constructor(private prisma: PrismaService, @I18n() private i18n: I18nService) { }
+  constructor(private prisma: PrismaService, @I18n() private i18n: I18nService) {}
 
   @Get(':id')
   async get(@Param('id') id: string): Promise<PageDto> {
@@ -117,21 +117,21 @@ export class PageController {
 
       const subPages = cursor
         ? await this.prisma.page.findMany({
-          take: take,
-          skip: 1,
-          where: {
-            parentId: pageId
-          },
-          cursor: {
-            id: cursor
-          }
-        })
+            take: take,
+            skip: 1,
+            where: {
+              parentId: pageId
+            },
+            cursor: {
+              id: cursor
+            }
+          })
         : await this.prisma.page.findMany({
-          take: take,
-          where: {
-            parentId: pageId
-          }
-        });
+            take: take,
+            where: {
+              parentId: pageId
+            }
+          });
 
       const childrenApiResult: PageDto[] = [];
 
@@ -144,14 +144,14 @@ export class PageController {
       const countAfter = !endCursor
         ? 0
         : await this.prisma.page.count({
-          where: {
-            parentId: pageId
-          },
-          cursor: {
-            id: endCursor
-          },
-          skip: 1
-        });
+            where: {
+              parentId: pageId
+            },
+            cursor: {
+              id: endCursor
+            },
+            skip: 1
+          });
 
       const hasNextPage = countAfter > 0;
 
@@ -190,21 +190,21 @@ export class PageController {
 
       const subPages = cursor
         ? await this.prisma.page.findMany({
-          take: take,
-          skip: 1,
-          where: {
-            pageAccountId: pageAccountId
-          },
-          cursor: {
-            id: cursor
-          }
-        })
+            take: take,
+            skip: 1,
+            where: {
+              pageAccountId: pageAccountId
+            },
+            cursor: {
+              id: cursor
+            }
+          })
         : await this.prisma.page.findMany({
-          take: take,
-          where: {
-            pageAccountId: pageAccountId
-          }
-        });
+            take: take,
+            where: {
+              pageAccountId: pageAccountId
+            }
+          });
 
       const childrenApiResult: PageDto[] = [];
 
@@ -217,14 +217,14 @@ export class PageController {
       const countAfter = !endCursor
         ? 0
         : await this.prisma.page.count({
-          where: {
-            pageAccountId: pageAccountId
-          },
-          cursor: {
-            id: endCursor
-          },
-          skip: 1
-        });
+            where: {
+              pageAccountId: pageAccountId
+            },
+            cursor: {
+              id: endCursor
+            },
+            skip: 1
+          });
 
       const hasNextPage = countAfter > 0;
 
@@ -258,25 +258,29 @@ export class PageController {
       throw new Error(couldNotFindAccount);
     }
 
-    const uploadAvatarDetail = command.avatar ? await this.prisma.uploadDetail.findFirst({
-      where:{
-        uploadId: command.avatar
-      }
-    }) : undefined
+    const uploadAvatarDetail = command.avatar
+      ? await this.prisma.uploadDetail.findFirst({
+          where: {
+            uploadId: command.avatar
+          }
+        })
+      : undefined;
 
-    const uploadCoverDetail = command.cover ? await this.prisma.uploadDetail.findFirst({
-      where:{
-        uploadId: command.cover
-      }
-    }) : undefined
+    const uploadCoverDetail = command.cover
+      ? await this.prisma.uploadDetail.findFirst({
+          where: {
+            uploadId: command.cover
+          }
+        })
+      : undefined;
 
     try {
       const createdPage = await this.prisma.page.create({
         data: {
-          ..._.omit(command,['avatar','cover']),
+          ..._.omit(command, ['avatar', 'cover']),
           pageAccount: { connect: { id: account.id } },
-          avatar: { connect: uploadAvatarDetail ? {id: uploadAvatarDetail.id} : undefined },
-          cover: { connect: uploadCoverDetail ? {id: uploadCoverDetail.id} : undefined },
+          avatar: { connect: uploadAvatarDetail ? { id: uploadAvatarDetail.id } : undefined },
+          cover: { connect: uploadCoverDetail ? { id: uploadCoverDetail.id } : undefined },
           parentId: undefined
         }
       });

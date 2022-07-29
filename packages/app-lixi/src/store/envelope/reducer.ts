@@ -5,15 +5,13 @@ import { importAccountSuccess, selectAccountSuccess } from '../account/actions';
 import { getEnvelopesSuccess, getEnvelopeSuccess } from './actions';
 import { EnvelopesState } from './state';
 
-export const envelopesAdapter = createEntityAdapter<Envelope>({
-})
-
+export const envelopesAdapter = createEntityAdapter<Envelope>({});
 
 const initialState: EnvelopesState = envelopesAdapter.getInitialState({
-  selectedId: 0,
+  selectedId: 0
 });
 
-export const envelopeReducer = createReducer(initialState, (builder) => {
+export const envelopeReducer = createReducer(initialState, builder => {
   builder
     .addCase(getEnvelopeSuccess, (state, action) => {
       const envelope = action.payload;
@@ -23,5 +21,5 @@ export const envelopeReducer = createReducer(initialState, (builder) => {
     .addCase(getEnvelopesSuccess, (state, action) => {
       const envelopes = action.payload;
       envelopesAdapter.setAll(state, envelopes);
-    })
-})
+    });
+});

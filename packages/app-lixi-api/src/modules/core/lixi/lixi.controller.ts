@@ -33,7 +33,7 @@ import {
   Res,
   StreamableFile,
   UseGuards,
-  UseInterceptors,
+  UseInterceptors
 } from '@nestjs/common';
 import { Claim as ClaimDb, Lixi } from '@prisma/client';
 import { Queue } from 'bullmq';
@@ -56,6 +56,7 @@ import { join } from 'path';
 import { JwtAuthGuard } from 'src/modules/auth/jwtauth.guard';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import moment from 'moment';
+import { extname } from 'path';
 
 @Controller('lixies')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -72,7 +73,7 @@ export class LixiController {
     @Inject('xpijs') private XPI: BCHJS,
     @InjectQueue(EXPORT_SUB_LIXIES_QUEUE) private exportSubLixiesQueue: Queue,
     @InjectQueue(WITHDRAW_SUB_LIXIES_QUEUE) private withdrawSubLixiesQueue: Queue
-  ) { }
+  ) {}
 
   @Get(':id')
   async getLixi(
@@ -87,7 +88,7 @@ export class LixiController {
         },
         include: {
           envelope: true,
-          distributions: true,
+          distributions: true
         }
       });
 
@@ -157,21 +158,21 @@ export class LixiController {
 
       subLixies = cursor
         ? await this.prisma.lixi.findMany({
-          take: take,
-          skip: 1,
-          where: {
-            parentId: lixiId
-          },
-          cursor: {
-            id: cursor
-          }
-        })
+            take: take,
+            skip: 1,
+            where: {
+              parentId: lixiId
+            },
+            cursor: {
+              id: cursor
+            }
+          })
         : await this.prisma.lixi.findMany({
-          take: take,
-          where: {
-            parentId: lixiId
-          }
-        });
+            take: take,
+            where: {
+              parentId: lixiId
+            }
+          });
 
       const childrenApiResult: LixiDto[] = [];
 
@@ -205,14 +206,14 @@ export class LixiController {
       const countAfter = !endCursor
         ? 0
         : await this.prisma.lixi.count({
-          where: {
-            parentId: lixiId
-          },
-          cursor: {
-            id: _.toSafeInteger(endCursor)
-          },
-          skip: 1
-        });
+            where: {
+              parentId: lixiId
+            },
+            cursor: {
+              id: _.toSafeInteger(endCursor)
+            },
+            skip: 1
+          });
 
       const hasNextPage = countAfter > 0;
 
@@ -758,19 +759,19 @@ export class LixiController {
       const countAfter = !endCursor
         ? 0
         : await this.prisma.claim.count({
-          where: {
-            lixiId: lixiId
-          },
-          orderBy: [
-            {
-              id: 'asc'
-            }
-          ],
-          cursor: {
-            id: _.toSafeInteger(endCursor)
-          },
-          skip: 1
-        });
+            where: {
+              lixiId: lixiId
+            },
+            orderBy: [
+              {
+                id: 'asc'
+              }
+            ],
+            cursor: {
+              id: _.toSafeInteger(endCursor)
+            },
+            skip: 1
+          });
 
       const hasNextPage = countAfter > 0;
 

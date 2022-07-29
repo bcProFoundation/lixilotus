@@ -27,13 +27,13 @@ import { CountriesState, StatesState } from './country/state';
 const persistConfig = {
   key: 'root',
   storage: storage,
-  blacklist: ['accounts'],
-}
+  blacklist: ['accounts']
+};
 
 const accountPersistConfig: PersistConfig<AccountsState> = {
   key: 'accounts',
   storage: storage,
-  blacklist: [`envelopeUpload`,'pageCoverUpload','pageAvatarUpload']
+  blacklist: [`envelopeUpload`, 'pageCoverUpload', 'pageAvatarUpload']
 };
 
 const lixiPersistConfig: PersistConfig<LixiesState> = {
@@ -122,6 +122,5 @@ const reducer = (state, action: AnyAction) => {
     return appReducer(state, action);
   }
 };
-
 
 export default persistReducer(persistConfig, reducer);

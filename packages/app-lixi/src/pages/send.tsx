@@ -4,11 +4,9 @@ import ClaimedLayout from '@components/Layout/ClaimedLayout';
 import SendComponent from '@components/Send';
 
 const SendPage = () => {
-  return (
-    <SendComponent />
-  );
-}
+  return <SendComponent />;
+};
 
-SendPage.Layout = ({ children }) => <ClaimedLayout children={children} />
+SendPage.Layout = ({ children }) => <ClaimedLayout children={children} />;
 
 export default SendPage;

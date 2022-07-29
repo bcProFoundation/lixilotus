@@ -1,10 +1,17 @@
 import {
   ClockCircleOutlined,
-  ExclamationCircleOutlined, LockOutlined, MoreOutlined, WalletOutlined
+  ExclamationCircleOutlined,
+  LockOutlined,
+  MoreOutlined,
+  WalletOutlined
 } from '@ant-design/icons';
 import {
-  ArchiveLixiCommand, ClaimType,
-  Lixi, RenameLixiCommand, UnarchiveLixiCommand, WithdrawLixiCommand
+  ArchiveLixiCommand,
+  ClaimType,
+  Lixi,
+  RenameLixiCommand,
+  UnarchiveLixiCommand,
+  WithdrawLixiCommand
 } from '@bcpros/lixi-models/lib/lixi';
 import { getAllSubLixies } from '@store/lixi/selectors';
 import { openModal } from '@store/modal/actions';
@@ -13,17 +20,22 @@ import { Button, Dropdown, Menu } from 'antd';
 import intl from 'react-intl-universal';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { archiveLixi, refreshLixiSilent, renameLixi, selectLixi, unarchiveLixi, withdrawLixi } from 'src/store/lixi/actions';
+import {
+  archiveLixi,
+  refreshLixiSilent,
+  renameLixi,
+  selectLixi,
+  unarchiveLixi,
+  withdrawLixi
+} from 'src/store/lixi/actions';
 import styled, { DefaultTheme } from 'styled-components';
 import { RenameLixiModalProps } from './RenameLixiModal';
-
 
 const LixiIcon = styled.div`
   height: 32px;
   width: 32px;
   position: relative;
 `;
-
 
 const WalletIcon = styled(WalletOutlined)`
   position: absolute;
@@ -68,7 +80,7 @@ const Wrapper = styled.div`
   border: 1px solid ${props => props.theme.listItem.border};
 
   :hover {
-      border-color: ${props => props.theme.listItem.hoverBorder};
+    border-color: ${props => props.theme.listItem.hoverBorder};
   }
 `;
 
@@ -84,22 +96,20 @@ const MoreIcon = styled(Button)`
   }
 `;
 
-
 type LixiListItemProps = {
-  className?: string,
-  lixi: Lixi,
+  className?: string;
+  lixi: Lixi;
   theme?: DefaultTheme;
-} & React.HTMLProps<HTMLDivElement>
+} & React.HTMLProps<HTMLDivElement>;
 
 const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => {
-
   const { lixi } = props;
 
   const dispatch = useAppDispatch();
 
   const handleSelectLixi = (lixiId: number) => {
     dispatch(selectLixi(lixiId));
-  }
+  };
 
   const selectedAccount = useAppSelector(getSelectedAccount);
   const allSubLixies = useAppSelector(getAllSubLixies);
@@ -127,17 +137,11 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
       onOkAction: renameLixi(command)
     };
     dispatch(openModal('RenameLixiModal', renameLixiModalProps));
-  }
+  };
 
-  const menus = (
-    options.map(option =>
-      <Menu.Item key={option}>
-        {option}
-      </Menu.Item>
-    )
-  );
+  const menus = options.map(option => <Menu.Item key={option}>{option}</Menu.Item>);
 
-  const handleClickMenu = (e) => {
+  const handleClickMenu = e => {
     e.domEvent.stopPropagation();
     switch (e.key) {
       case 'Archive':
@@ -147,46 +151,45 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
       case 'Withdraw':
         return dispatch(withdrawLixi(postLixiData as WithdrawLixiCommand));
       case 'Rename':
-        return showPopulatedRenameLixiModal(lixi as Lixi)
+        return showPopulatedRenameLixiModal(lixi as Lixi);
     }
   };
 
   const getLixiStatusIcon = (status: string) => {
     switch (status) {
       case 'active':
-        return <WalletIcon />
+        return <WalletIcon />;
       case 'pending':
-        return <LoadingIcon />
+        return <LoadingIcon />;
       case 'locked':
-        return <LockIcon />
+        return <LockIcon />;
       case 'failed':
-        return <ExclamationIcon />
+        return <ExclamationIcon />;
       default:
-        return <WalletIcon />
+        return <WalletIcon />;
     }
-  }
-
+  };
 
   return (
-    <Wrapper onClick={(e) => handleSelectLixi(lixi.id)}>
-      <LixiIcon>
-        {getLixiStatusIcon(lixi.status)}
-      </LixiIcon>
+    <Wrapper onClick={e => handleSelectLixi(lixi.id)}>
+      <LixiIcon>{getLixiStatusIcon(lixi.status)}</LixiIcon>
       <BalanceAndTicker>
         <strong>{lixi.name}</strong>
         <br />
-        {lixi.claimType == ClaimType.Single ?
-          <span>({lixi.claimedNum}) {fromSmallestDenomination(lixi.totalClaim)}/{fromSmallestDenomination(lixi.balance)} {intl.get('lixi.remainingXPI')}</span>
-          : <span>({lixi.claimCount}/{lixi.numberOfSubLixi}) {fromSmallestDenomination(lixi.subLixiTotalClaim).toFixed(2)} / {lixi.subLixiBalance != undefined ? lixi.subLixiBalance.toFixed(2) : 0.00} {intl.get('lixi.remainingXPI')}</span>
-        }
+        {lixi.claimType == ClaimType.Single ? (
+          <span>
+            ({lixi.claimedNum}) {fromSmallestDenomination(lixi.totalClaim)}/{fromSmallestDenomination(lixi.balance)}{' '}
+            {intl.get('lixi.remainingXPI')}
+          </span>
+        ) : (
+          <span>
+            ({lixi.claimCount}/{lixi.numberOfSubLixi}) {fromSmallestDenomination(lixi.subLixiTotalClaim).toFixed(2)} /{' '}
+            {lixi.subLixiBalance != undefined ? lixi.subLixiBalance.toFixed(2) : 0.0} {intl.get('lixi.remainingXPI')}
+          </span>
+        )}
       </BalanceAndTicker>
-      <Dropdown trigger={["click"]} overlay={
-        <Menu onClick={(e) => handleClickMenu(e)}>
-          {menus}
-        </Menu>
-      }>
-        <MoreIcon onClick={e => e.stopPropagation()} icon={<MoreOutlined />} size="large">
-        </MoreIcon>
+      <Dropdown trigger={['click']} overlay={<Menu onClick={e => handleClickMenu(e)}>{menus}</Menu>}>
+        <MoreIcon onClick={e => e.stopPropagation()} icon={<MoreOutlined />} size="large"></MoreIcon>
       </Dropdown>
     </Wrapper>
   );

@@ -25,7 +25,7 @@ const countryApi = {
         const { response } = err;
         throw response?.data ?? err ?? 'Network Error';
       });
-  },
+  }
 };
 
 export default countryApi;

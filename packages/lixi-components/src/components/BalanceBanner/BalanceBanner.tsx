@@ -60,10 +60,7 @@ const BalanceBannerWrapper = styled.div`
 //   theme?: DefaultTheme;
 // }
 
-const BalanceBanner = (
-  {
-    title
-  }) => {
+const BalanceBanner = ({ title }) => {
   return (
     <>
       <BalanceBannerWrapper>
@@ -76,6 +73,6 @@ const BalanceBanner = (
       </BalanceBannerWrapper>
     </>
   );
-}
+};
 
 export default BalanceBanner;

@@ -3,10 +3,8 @@ import intl from 'react-intl-universal';
 import React, { useState } from 'react';
 import { Row, Col, Form, Spin } from 'antd';
 import PrimaryButton from '@bcpros/lixi-components/components/Common/PrimaryButton';
-import { CashLoadingIcon } from "@bcpros/lixi-components/components/Common/CustomIcons";
-import {
-  FormItemClaimCodeXpiInput,
-} from '@bcpros/lixi-components/components/Common/EnhancedInputs';
+import { CashLoadingIcon } from '@bcpros/lixi-components/components/Common/CustomIcons';
+import { FormItemClaimCodeXpiInput } from '@bcpros/lixi-components/components/Common/EnhancedInputs';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
 import { getSelectedAccount } from '@store/account/selectors';
@@ -23,21 +21,19 @@ const RegisterComponent: React.FC = () => {
   const handleOnClick = e => {
     e.preventDefault();
     submit();
-  }
+  };
 
   async function submit() {
     if (!currentClaimCode) {
       return;
-    }
-    else if (currentClaimCode.includes('lixi_')) {
+    } else if (currentClaimCode.includes('lixi_')) {
       const claimCode = currentClaimCode.match('(?<=lixi_).*')[0];
       const dataApi: RegisterLixiPackCommand = {
         claimCode,
         account: selectedAccount
       };
       dispatch(registerLixiPack(dataApi));
-    }
-    else{
+    } else {
       dispatch(registerLixiPackFailure());
     }
     setCurrentClaimCode('');
@@ -47,18 +43,20 @@ const RegisterComponent: React.FC = () => {
     const { value, name } = e.target;
     let claimCode: string = _.trim(value);
     setCurrentClaimCode(claimCode);
-  }
+  };
 
   return (
     <>
-      <Row style={{
-        display: 'flex'
-      }}>
+      <Row
+        style={{
+          display: 'flex'
+        }}
+      >
         <Col span={24}>
           <Spin spinning={isLoading} indicator={CashLoadingIcon}>
             <Form
               style={{
-                width: 'auto',
+                width: 'auto'
               }}
             >
               <FormItemClaimCodeXpiInput
@@ -67,8 +65,8 @@ const RegisterComponent: React.FC = () => {
                   handleClaimCodeChange({
                     target: {
                       name: 'claimCode',
-                      value: result,
-                    },
+                      value: result
+                    }
                   })
                 }
                 inputProps={{
@@ -78,19 +76,17 @@ const RegisterComponent: React.FC = () => {
               ></FormItemClaimCodeXpiInput>
               <div
                 style={{
-                  paddingTop: '12px',
+                  paddingTop: '12px'
                 }}
               >
-                <PrimaryButton
-                  onClick={handleOnClick}
-                >{intl.get('register.register')}</PrimaryButton>
+                <PrimaryButton onClick={handleOnClick}>{intl.get('register.register')}</PrimaryButton>
               </div>
             </Form>
           </Spin>
         </Col>
       </Row>
     </>
-  )
+  );
 };
 
 export default RegisterComponent;

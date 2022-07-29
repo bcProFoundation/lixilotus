@@ -3,17 +3,14 @@ import Document, { Html, Head, Main, NextScript, DocumentContext, DocumentInitia
 import { ServerStyleSheet } from 'styled-components';
 
 export default class MyDocument extends Document {
-
   static async getInitialProps(ctx: DocumentContext): Promise<DocumentInitialProps> {
-
     const sheet = new ServerStyleSheet();
     const originalRenderPage = ctx.renderPage;
 
     try {
       ctx.renderPage = () =>
         originalRenderPage({
-          enhanceApp: (App) => (props) =>
-            sheet.collectStyles(<App {...props} />),
+          enhanceApp: App => props => sheet.collectStyles(<App {...props} />)
         });
 
       const initialProps = await Document.getInitialProps(ctx);
@@ -24,17 +21,16 @@ export default class MyDocument extends Document {
             {initialProps.styles}
             {sheet.getStyleElement()}
           </>
-        ),
+        )
       };
     } finally {
       sheet.seal();
     }
-
   }
 
   render(): JSX.Element {
     return (
-      <Html lang="en" >
+      <Html lang="en">
         <Head>
           <meta charSet="utf-8" />
           <link rel="manifest" href="/manifest.json" />
@@ -44,11 +40,11 @@ export default class MyDocument extends Document {
           <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
           <link rel="shortcut icon" type="image/x-icon" sizes="512x512" href="/favicon.ico" />
         </Head>
-        < body >
+        <body>
           <Main />
           <NextScript />
         </body>
-      </Html >
-    )
+      </Html>
+    );
   }
 }

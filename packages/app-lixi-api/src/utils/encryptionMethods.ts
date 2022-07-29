@@ -1,6 +1,6 @@
-import { TextEncoder } from "util";
+import { TextEncoder } from 'util';
 import crypto from 'crypto';
-import moment from "moment";
+import moment from 'moment';
 
 /**
  * Decrypts ciphertext encrypted with aesGcmEncrypt() using supplied password.
@@ -14,11 +14,11 @@ import moment from "moment";
  *   aesGcmDecrypt(ciphertext, 'pw').then(function(plaintext) { console.log(plaintext); });
  */
 export async function aesGcmDecrypt(ciphertext: string, password: string): Promise<string> {
-  const pwUtf8 = new TextEncoder().encode(password);                         // encode password as UTF-8
-  const pwHash = await crypto.createHash('sha256').update(pwUtf8).digest();  // hash the password
+  const pwUtf8 = new TextEncoder().encode(password); // encode password as UTF-8
+  const pwHash = await crypto.createHash('sha256').update(pwUtf8).digest(); // hash the password
 
   const cipherBuffer = Buffer.from(ciphertext, 'base64');
-  const iv = cipherBuffer.slice(0, 12);          // decode base64 iv
+  const iv = cipherBuffer.slice(0, 12); // decode base64 iv
 
   const key = pwHash;
   const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv);
@@ -33,8 +33,8 @@ export async function aesGcmDecrypt(ciphertext: string, password: string): Promi
 }
 
 export async function aesGcmEncrypt(plaintext: string, password: string): Promise<string> {
-  const pwUtf8 = new TextEncoder().encode(password);                         // encode password as UTF-8
-  const pwHash = await crypto.createHash('sha256').update(pwUtf8).digest();  // hash the password
+  const pwUtf8 = new TextEncoder().encode(password); // encode password as UTF-8
+  const pwHash = await crypto.createHash('sha256').update(pwUtf8).digest(); // hash the password
 
   const iv = crypto.randomBytes(12);
   const key = pwHash;
@@ -81,14 +81,17 @@ export function numberToBase58(input: number): string {
 }
 
 export async function hexSha256(text: string | Buffer): Promise<string> {
-  const txtUtf8 = typeof text === "string" ? new TextEncoder().encode(text + moment.now()) : text ;
+  const txtUtf8 = typeof text === 'string' ? new TextEncoder().encode(text + moment.now()) : text;
   const momentHash = crypto.createHash('sha256').update(moment.now().toString()).digest();
-  const txtHash = crypto.createHash('sha256').update(typeof txtUtf8 === typeof Uint8Array ? txtUtf8 : Buffer.concat([txtUtf8,momentHash])).digest();
-  
+  const txtHash = crypto
+    .createHash('sha256')
+    .update(typeof txtUtf8 === typeof Uint8Array ? txtUtf8 : Buffer.concat([txtUtf8, momentHash]))
+    .digest();
+
   return txtHash.toString('hex');
 }
 /**
- * 
+ *
  * @param {number} length The length of string to generate
  * @returns base58 random string (should be use in claim code)
  */
@@ -98,12 +101,12 @@ export function generateRandomBase58Str(length: number): string {
   let str = '';
   for (var i = 0; i < array.length; i++) {
     str += base[array[i] % base.length];
-  };
+  }
   return str;
 }
 export async function hashMnemonic(mnemonic: string): Promise<string> {
   const mnemonicUtf8 = new TextEncoder().encode(mnemonic); // encode mnemonic as UTF-8
-  const mnemonicHashBuffer = await crypto.createHash('sha256').update(mnemonicUtf8).digest();;// hash the mnemonic
+  const mnemonicHashBuffer = await crypto.createHash('sha256').update(mnemonicUtf8).digest(); // hash the mnemonic
   const mnemonicHash = Buffer.from(new Uint8Array(mnemonicHashBuffer)).toString('hex');
   return mnemonicHash;
 }

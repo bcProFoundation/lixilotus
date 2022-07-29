@@ -30,11 +30,9 @@ const useImage = () => {
             for (var i = 0; i < len; i++) {
               arr[i] = binStr.charCodeAt(i);
             }
-            callback(
-              new Blob([arr], { type: type || 'image/png' }),
-            );
+            callback(new Blob([arr], { type: type || 'image/png' }));
           });
-        },
+        }
       });
     }
 
@@ -42,19 +40,17 @@ const useImage = () => {
       ctx.canvas.toBlob(
         blob => {
           const file = new File([blob as Blob], fileName, {
-            type: 'image/png',
+            type: 'image/png'
           });
           const resultReader = new FileReader();
 
           resultReader.readAsDataURL(file);
 
-          resultReader.addEventListener('load', () =>
-            callback({ file, url: resultReader.result }),
-          );
+          resultReader.addEventListener('load', () => callback({ file, url: resultReader.result }));
           resolve();
         },
         'image/png',
-        1,
+        1
       );
     });
   };
@@ -70,13 +66,7 @@ const useImage = () => {
     ctx.drawImage(image, 0, 0);
     ctx.globalCompositeOperation = 'destination-in';
     ctx.beginPath();
-    ctx.arc(
-      image.width / 2,
-      image.height / 2,
-      image.height / 2,
-      0,
-      Math.PI * 2,
-    );
+    ctx.arc(image.width / 2, image.height / 2, image.height / 2, 0, Math.PI * 2);
     ctx.closePath();
     ctx.fill();
     if (!HTMLCanvasElement.prototype.toBlob) {
@@ -90,29 +80,25 @@ const useImage = () => {
             for (var i = 0; i < len; i++) {
               arr[i] = binStr.charCodeAt(i);
             }
-            callback(
-              new Blob([arr], { type: type || 'image/png' }),
-            );
+            callback(new Blob([arr], { type: type || 'image/png' }));
           });
-        },
+        }
       });
     }
     return new Promise(resolve => {
       ctx.canvas.toBlob(
         blob => {
           const file = new File([blob as Blob], fileName, {
-            type: 'image/png',
+            type: 'image/png'
           });
           const resultReader = new FileReader();
 
           resultReader.readAsDataURL(file);
 
-          resultReader.addEventListener('load', () =>
-            resolve({ file, url: resultReader.result }),
-          );
+          resultReader.addEventListener('load', () => resolve({ file, url: resultReader.result }));
         },
         'image/png',
-        1,
+        1
       );
     });
   };
@@ -121,12 +107,7 @@ const useImage = () => {
     return (degreeValue * Math.PI) / 180;
   };
 
-  const getCroppedImg = async (
-    imageSrc,
-    pixelCrop,
-    rotation = 0,
-    fileName,
-  ) => {
+  const getCroppedImg = async (imageSrc, pixelCrop, rotation = 0, fileName) => {
     const image = await createImage(imageSrc);
     console.log('image :', image);
     const canvas = document.createElement('canvas');
@@ -142,11 +123,7 @@ const useImage = () => {
     ctx.rotate(getRadianAngle(rotation));
     ctx.translate(-safeArea / 2, -safeArea / 2);
 
-    ctx.drawImage(
-      image,
-      safeArea / 2 - image.width * 0.5,
-      safeArea / 2 - image.height * 0.5,
-    );
+    ctx.drawImage(image, safeArea / 2 - image.width * 0.5, safeArea / 2 - image.height * 0.5);
     const data = ctx.getImageData(0, 0, safeArea, safeArea);
 
     canvas.width = pixelCrop.width;
@@ -155,7 +132,7 @@ const useImage = () => {
     ctx.putImageData(
       data,
       0 - safeArea / 2 + image.width * 0.5 - pixelCrop.x,
-      0 - safeArea / 2 + image.height * 0.5 - pixelCrop.y,
+      0 - safeArea / 2 + image.height * 0.5 - pixelCrop.y
     );
 
     if (!HTMLCanvasElement.prototype.toBlob) {
@@ -169,29 +146,25 @@ const useImage = () => {
             for (var i = 0; i < len; i++) {
               arr[i] = binStr.charCodeAt(i);
             }
-            callback(
-              new Blob([arr], { type: type || 'image/png' }),
-            );
+            callback(new Blob([arr], { type: type || 'image/png' }));
           });
-        },
+        }
       });
     }
     return new Promise(resolve => {
       ctx.canvas.toBlob(
         blob => {
           const file = new File([blob as Blob], fileName, {
-            type: 'image/png',
+            type: 'image/png'
           });
           const resultReader = new FileReader();
 
           resultReader.readAsDataURL(file);
 
-          resultReader.addEventListener('load', () =>
-            resolve({ file, url: resultReader.result }),
-          );
+          resultReader.addEventListener('load', () => resolve({ file, url: resultReader.result }));
         },
         'image/png',
-        1,
+        1
       );
     });
   };
@@ -200,7 +173,7 @@ const useImage = () => {
     getCroppedImg,
     getRadianAngle,
     getRoundImg,
-    getResizedImg,
+    getResizedImg
   };
 };
 

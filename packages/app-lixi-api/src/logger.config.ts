@@ -17,13 +17,13 @@ export const formatTimestamp = (date: Date): string =>
     .getDate()
     .toString()
     .padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date
-      .getMinutes()
-      .toString()
-      .padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}.${date
-        .getMilliseconds()
-        .toString()
-        // .padEnd(3, '0')} ${timezone}`;
-        .padEnd(3, '0')}`;
+    .getMinutes()
+    .toString()
+    .padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}.${date
+    .getMilliseconds()
+    .toString()
+    // .padEnd(3, '0')} ${timezone}`;
+    .padEnd(3, '0')}`;
 
 // export const timestamp = () => formatTimestamp(new Date());
 

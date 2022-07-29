@@ -10,11 +10,10 @@ const modalComponentLookupTable = {
   CreateLixiConfirmationModal,
   RenameAccountModal,
   DeleteAccountModal,
-  RenameLixiModal,
+  RenameLixiModal
 };
 
 const ModalManager = () => {
-
   const currentModals = useAppSelector(getModals);
 
   const renderedModals = currentModals.map((modalDescription, index) => {
@@ -22,10 +21,9 @@ const ModalManager = () => {
     const ModalComponent = modalComponentLookupTable[modalType];
 
     return <ModalComponent {...modalProps} key={modalType + index} />;
-
   });
 
-  return <span>{renderedModals}</span>
-}
+  return <span>{renderedModals}</span>;
+};
 
 export default ModalManager;

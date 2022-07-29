@@ -24,11 +24,10 @@ export const StyledCollapse = styled(Collapse)`
   }
 `;
 
-type LixiCollapseProps = {
-} & React.HTMLProps<HTMLElement> & CollapseProps
+type LixiCollapseProps = {} & React.HTMLProps<HTMLElement> & CollapseProps;
 
-export const LixiCollapse = styled(Collapse) <LixiCollapseProps>`
-    ${({ disabled = false, ...props }) =>
+export const LixiCollapse = styled(Collapse)<LixiCollapseProps>`
+  ${({ disabled = false, ...props }) =>
     disabled === true
       ? `
         background: ${props.theme.buttons.secondary.background} !important;

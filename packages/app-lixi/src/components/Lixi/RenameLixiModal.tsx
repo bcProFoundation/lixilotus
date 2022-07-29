@@ -14,7 +14,7 @@ import { getSelectedAccount } from 'src/store/account/selectors';
 export type RenameLixiModalProps = {
   lixi: Lixi;
   onOkAction?: AnyAction;
-}
+};
 
 export const RenameLixiModal: React.FC<RenameLixiModalProps> = (props: RenameLixiModalProps) => {
   const [newLixiName, setNewLixiName] = useState('');
@@ -32,11 +32,11 @@ export const RenameLixiModal: React.FC<RenameLixiModalProps> = (props: RenameLix
       dispatch(newAction);
     }
     dispatch(closeModal());
-  }
+  };
 
   const handleOnCancel = () => {
     dispatch(closeModal());
-  }
+  };
 
   const handleLixiNameInput = e => {
     const { value } = e.target;
@@ -60,18 +60,8 @@ export const RenameLixiModal: React.FC<RenameLixiModalProps> = (props: RenameLix
         <AntdFormWrapper>
           <Form style={{ width: 'auto' }}>
             <Form.Item
-              validateStatus={
-                newLixiNameIsValid === null ||
-                  newLixiNameIsValid
-                  ? ''
-                  : 'error'
-              }
-              help={
-                newLixiNameIsValid === null ||
-                  newLixiNameIsValid
-                  ? ''
-                  : intl.get('lixi.lixiLengthError')
-              }
+              validateStatus={newLixiNameIsValid === null || newLixiNameIsValid ? '' : 'error'}
+              help={newLixiNameIsValid === null || newLixiNameIsValid ? '' : intl.get('lixi.lixiLengthError')}
             >
               <Input
                 prefix={<ProfileFilled />}
@@ -85,5 +75,5 @@ export const RenameLixiModal: React.FC<RenameLixiModalProps> = (props: RenameLix
         </AntdFormWrapper>
       </Modal>
     </>
-  )
-}
+  );
+};

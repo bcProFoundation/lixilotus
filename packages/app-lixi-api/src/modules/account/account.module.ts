@@ -3,12 +3,10 @@ import { Module } from '@nestjs/common';
 // import { LixiNftController } from './lixinft.controller';
 // import { LixiNftService } from './lixinft.service';
 
-
 @Module({
-  imports: [
-  ],
+  imports: []
   // controllers: [AccountController],
   // providers: [AccountService],
   // exports: [AccountService]
 })
-export class AccountModule { }
+export class AccountModule {}

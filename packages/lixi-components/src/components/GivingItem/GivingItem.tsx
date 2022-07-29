@@ -3,7 +3,7 @@ import styled, { DefaultTheme } from 'styled-components';
 import { GiftOutlined } from '@ant-design/icons';
 
 const GiftIcon = styled(GiftOutlined)`
-  color: ${props => props.theme.secondary}
+  color: ${props => props.theme.secondary};
 `;
 
 const GivingItemIcon = styled.div`
@@ -85,12 +85,9 @@ type IGivingItemProps = {
   ticker: string;
   giftNumber: number;
   theme?: DefaultTheme;
-}
+};
 
-const GivingItem: React.FC<IGivingItemProps> = (
-  {
-    description, givingDate, givingAmount, ticker, giftNumber
-  }) => {
+const GivingItem: React.FC<IGivingItemProps> = ({ description, givingDate, givingAmount, ticker, giftNumber }) => {
   const givingDateLocalTime = givingDate.toLocaleDateString();
   return (
     <>
@@ -107,13 +104,11 @@ const GivingItem: React.FC<IGivingItemProps> = (
           {givingAmount}
           &nbsp;
           {ticker}
-          <GiftNumber>
-            {giftNumber} gift
-          </GiftNumber>
+          <GiftNumber>{giftNumber} gift</GiftNumber>
         </GivingAwayInfo>
       </GivingItemWrapper>
     </>
   );
-}
+};
 
 export default GivingItem;

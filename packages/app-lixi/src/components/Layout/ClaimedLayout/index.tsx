@@ -4,7 +4,14 @@ import { Layout, Spin } from 'antd';
 import Link from 'next/link';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 
-import { GiftOutlined, HomeOutlined, LoadingOutlined, SettingOutlined, UserOutlined, WalletOutlined } from '@ant-design/icons';
+import {
+  GiftOutlined,
+  HomeOutlined,
+  LoadingOutlined,
+  SettingOutlined,
+  UserOutlined,
+  WalletOutlined
+} from '@ant-design/icons';
 import { Footer, NavButton } from '@bcpros/lixi-components/components';
 
 import ModalManager from '../../Common/ModalManager';

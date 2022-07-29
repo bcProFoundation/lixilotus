@@ -11,7 +11,7 @@ import {
   getCountriesSuccess,
   getStates,
   getStatesFailure,
-  getStatesSuccess,
+  getStatesSuccess
 } from './actions';
 import countryApi from './api';
 
@@ -41,7 +41,7 @@ function* getCountriesFailureSaga(action: PayloadAction<string>) {
 function* getStatesSaga(action: PayloadAction<number>) {
   try {
     const id = action.payload;
-    console.log("id: ", id)
+    console.log('id: ', id);
     const data = yield call(countryApi.getStates, id);
     yield put(getStatesSuccess(data));
   } catch (err) {
@@ -82,6 +82,6 @@ export default function* countrySaga() {
     fork(watchgetCountries),
     fork(watchgetCountriesFailure),
     fork(watchGetStates),
-    fork(watchGetStatesFailure),
-  ])
-};
+    fork(watchGetStatesFailure)
+  ]);
+}

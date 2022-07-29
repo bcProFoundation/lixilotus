@@ -22,7 +22,6 @@ import { WalletService } from '../../wallet/wallet.service';
 
 @Injectable()
 export class LixiService {
-
   private logger: Logger = new Logger(this.constructor.name);
 
   constructor(
@@ -32,7 +31,7 @@ export class LixiService {
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
     @InjectQueue(CREATE_SUB_LIXIES_QUEUE) private lixiQueue: Queue,
     @I18n() private i18n: I18nService
-  ) { }
+  ) {}
 
   /**
    * @param derivationIndex The derivation index of the lixi
@@ -53,11 +52,13 @@ export class LixiService {
     const encryptedXPriv = await aesGcmEncrypt(xpriv, command.password);
     const secret = await aesGcmDecrypt(account.encryptedSecret, command.mnemonic);
     const encryptedClaimCode = await aesGcmEncrypt(command.password, secret);
-    const uploadDetail = command.uploadId ? await this.prisma.uploadDetail.findFirst({
-      where:{
-        uploadId: command.uploadId
-      }
-    }) : undefined
+    const uploadDetail = command.uploadId
+      ? await this.prisma.uploadDetail.findFirst({
+          where: {
+            uploadId: command.uploadId
+          }
+        })
+      : undefined;
 
     // Prepare data to insert into the database
     const data = {
@@ -75,7 +76,7 @@ export class LixiService {
       totalClaim: BigInt(0),
       envelopeId: command.envelopeId ?? null,
       envelopeMessage: command.envelopeMessage ?? '',
-      uploadDetail: { connect: uploadDetail ? {id: uploadDetail.id} : undefined }
+      uploadDetail: { connect: uploadDetail ? { id: uploadDetail.id } : undefined }
     };
 
     const lixiToInsert = _.omit(data, 'password', 'staffAddress', 'charityAddress');
@@ -143,11 +144,13 @@ export class LixiService {
     const encryptedXPriv = await aesGcmEncrypt(xpriv, command.password);
     const secret = await aesGcmDecrypt(account.encryptedSecret, command.mnemonic);
     const encryptedClaimCode = await aesGcmEncrypt(command.password, secret);
-    const uploadDetail = command.uploadId ? await this.prisma.uploadDetail.findFirst({
-      where:{
-        uploadId: command.uploadId
-      }
-    }) : undefined
+    const uploadDetail = command.uploadId
+      ? await this.prisma.uploadDetail.findFirst({
+          where: {
+            uploadId: command.uploadId
+          }
+        })
+      : undefined;
 
     // Prepare data to insert into the database
     const data = {
@@ -166,7 +169,7 @@ export class LixiService {
       envelopeId: command.envelopeId ?? null,
       envelopeMessage: command.envelopeMessage ?? '',
       isNFTEnabled: command.isNFTEnabled ?? false,
-      uploadDetail: { connect: uploadDetail ? {id: uploadDetail.id} : undefined },
+      uploadDetail: { connect: uploadDetail ? { id: uploadDetail.id } : undefined },
       joinLotteryProgram: command.joinLotteryProgram
     };
     const lixiToInsert = _.omit(data, 'password');
@@ -184,15 +187,12 @@ export class LixiService {
       // Calc fee to send out from account to sub lixies
       let mainFee = this.walletService.calcFee(
         this.XPI,
-        (utxoStore as any),
+        utxoStore as any,
         (command.numberOfSubLixi as number) * numberOfDistributions + 1
       );
       // Calc fee to send from sub lixies to claim address
-      let subLixiesFee = (command.numberOfSubLixi as number) * (this.walletService.calcFee(
-        this.XPI,
-        (utxoStore as any).bchUtxos,
-        2
-      ));
+      let subLixiesFee =
+        (command.numberOfSubLixi as number) * this.walletService.calcFee(this.XPI, (utxoStore as any).bchUtxos, 2);
       const requireAmount = this.calcRequireAmount(command);
       if (requireAmount >= fromSmallestDenomination(accountBalance - mainFee - subLixiesFee)) {
         const accountNotSufficientFund = await this.i18n.t('account.messages.accountNotSufficientFund');
@@ -272,7 +272,6 @@ export class LixiService {
     command: CreateLixiCommand,
     parentLixi: Lixi
   ): Promise<string | undefined> {
-
     const parentLixiId = parentLixi.id;
 
     // If users input the amount means that the lixi need to be prefund
@@ -290,9 +289,9 @@ export class LixiService {
 
     // Check the number of distributions
     const additionalDistributionsNum = parentLixi && parentLixi.distributions ? parentLixi.distributions.length : 0;
-    const numberOfDistributions = parentLixi.joinLotteryProgram ?
-      additionalDistributionsNum + 2 :
-      additionalDistributionsNum + 1;
+    const numberOfDistributions = parentLixi.joinLotteryProgram
+      ? additionalDistributionsNum + 2
+      : additionalDistributionsNum + 1;
 
     // Decrypt the account secret
     const secret = await aesGcmDecrypt(account.encryptedSecret, command.mnemonic);

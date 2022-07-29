@@ -27,7 +27,7 @@ const CreatePageComponent: React.FC = isEditPage => {
   const pagesByAccountIdList = useAppSelector(pagesByAccountId);
   useEffect(() => {
     dispatch(getCountries());
-  }, [])
+  }, []);
   const countries = useAppSelector(getAllCountries);
   const states = useAppSelector(getAllStates);
   const avatar = useAppSelector(getPageAvatarUpload);
@@ -131,7 +131,7 @@ const CreatePageComponent: React.FC = isEditPage => {
     if (value && !isEmpty(value)) {
       setNewPageCountryIsValid(true);
     }
-    dispatch(getStates(value))
+    dispatch(getStates(value));
   };
 
   const handleChangeState = (value: string) => {
@@ -146,7 +146,6 @@ const CreatePageComponent: React.FC = isEditPage => {
     setNewPageAddress(value);
     setNewPageAddressIsValid(true);
   };
-
 
   const normFile = (e: any) => {
     if (Array.isArray(e)) {
@@ -169,9 +168,7 @@ const CreatePageComponent: React.FC = isEditPage => {
   //   };
 
   // Only enable CreateLixi button if all form entries are valid
-  let createPageFormDataIsValid = (
-    newPageName && newPageTitle
-  );
+  let createPageFormDataIsValid = newPageName && newPageTitle;
 
   const handleOnCreateNewPage = () => {
     if (!createPageFormDataIsValid && !selectedAccount.id) {
@@ -208,30 +205,28 @@ const CreatePageComponent: React.FC = isEditPage => {
         initialValues={{ disabled: componentDisabled }}
         onValuesChange={onFormLayoutChange}
       >
-        <Form.Item name="name" label={intl.get('page.name')} rules={[{ required: true, message: intl.get('page.inputName') }]}>
+        <Form.Item
+          name="name"
+          label={intl.get('page.name')}
+          rules={[{ required: true, message: intl.get('page.inputName') }]}
+        >
           <Input defaultValue={newPageName} onChange={e => handleNewPageNameInput(e)} />
         </Form.Item>
-        <Form.Item name="title" label={intl.get('page.title')} rules={[{ required: true, message: intl.get('page.inputTitle') }]}>
+        <Form.Item
+          name="title"
+          label={intl.get('page.title')}
+          rules={[{ required: true, message: intl.get('page.inputTitle') }]}
+        >
           <Input onChange={e => handleNewPageTitleInput(e)} />
         </Form.Item>
         <Form.Item name="walletAddress" label={intl.get('page.walletAddress')}>
           <Input defaultValue={selectedAccount.address} disabled />
         </Form.Item>
-        <Form.Item
-          name="avatar"
-          label={intl.get('page.avatar')}
-          valuePropName="fileList"
-          getValueFromEvent={normFile}
-        >
-          <StyledUploader type={UPLOAD_TYPES.PAGE_AVATAR}/>
+        <Form.Item name="avatar" label={intl.get('page.avatar')} valuePropName="fileList" getValueFromEvent={normFile}>
+          <StyledUploader type={UPLOAD_TYPES.PAGE_AVATAR} />
         </Form.Item>
-        <Form.Item
-          name="cover"
-          label={intl.get('page.cover')}
-          valuePropName="fileList"
-          getValueFromEvent={normFile}
-        >
-          <StyledUploader type={UPLOAD_TYPES.PAGE_COVER}/>
+        <Form.Item name="cover" label={intl.get('page.cover')} valuePropName="fileList" getValueFromEvent={normFile}>
+          <StyledUploader type={UPLOAD_TYPES.PAGE_COVER} />
         </Form.Item>
         <Form.Item name="website" label={intl.get('page.website')}>
           <Input onChange={e => handleNewPageWebsiteInput(e)} />
@@ -248,7 +243,9 @@ const CreatePageComponent: React.FC = isEditPage => {
             style={{ width: 200 }}
             placeholder={intl.get('page.country')}
             optionFilterProp="children"
-            filterOption={(input, option) => (option!.children as unknown as string).toLocaleLowerCase().includes(input)}
+            filterOption={(input, option) =>
+              (option!.children as unknown as string).toLocaleLowerCase().includes(input)
+            }
             filterSort={(optionA, optionB) =>
               (optionA!.children as unknown as string)
                 .toLowerCase()
@@ -262,7 +259,7 @@ const CreatePageComponent: React.FC = isEditPage => {
         </Form.Item>
 
         {/* State */}
-        {newPageCountry != '' &&
+        {newPageCountry != '' && (
           <Form.Item>
             <Select
               showSearch
@@ -270,7 +267,9 @@ const CreatePageComponent: React.FC = isEditPage => {
               style={{ width: 200 }}
               placeholder={intl.get('page.state')}
               optionFilterProp="children"
-              filterOption={(input, option) => (option!.children as unknown as string).toLocaleLowerCase().includes(input)}
+              filterOption={(input, option) =>
+                (option!.children as unknown as string).toLocaleLowerCase().includes(input)
+              }
               filterSort={(optionA, optionB) =>
                 (optionA!.children as unknown as string)
                   .toLowerCase()
@@ -282,7 +281,7 @@ const CreatePageComponent: React.FC = isEditPage => {
               ))}
             </Select>
           </Form.Item>
-        }
+        )}
 
         <Form.Item>
           <Input
