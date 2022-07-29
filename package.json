@@ -21,7 +21,7 @@
     "start:api": "lerna exec --scope @bcpros/app-lixi-api -- yarn start",
     "start:dev:api": "NODE_ENV=development lerna exec --scope @bcpros/app-lixi-api -- yarn start",
     "start:lixi-components": "lerna exec --scope @bcpros/lixi-components -- yarn start",
-    "build": "lerna run build"
+    "build": "lerna run --concurrency 1 build --stream"
   },
   "workspaces": {
     "packages": [
