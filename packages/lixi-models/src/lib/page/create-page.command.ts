@@ -1,4 +1,4 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty } from 'class-validator';
 
 export class CreatePageCommand {
   @IsNotEmpty()
@@ -14,5 +14,5 @@ export class CreatePageCommand {
   website: string;
   country?: string;
   state?: string;
-  address?: string
+  address?: string;
 }

@@ -10,4 +10,4 @@ export * from './constants';
 export * from './lib/package';
 export * from './lib/distribution';
 export * from './lib/page';
-export * from './lib/country'
+export * from './lib/country';
