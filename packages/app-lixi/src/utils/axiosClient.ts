@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-let locale;
+let locale = 'en';
 
 export const injectStore = (_locale: string) => {
   locale = _locale;
