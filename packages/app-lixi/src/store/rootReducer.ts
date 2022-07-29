@@ -33,7 +33,7 @@ const persistConfig = {
 const accountPersistConfig: PersistConfig<AccountsState> = {
   key: 'accounts',
   storage: storage,
-  blacklist: [`upload`]
+  blacklist: [`envelopeUpload`,'pageCoverUpload','pageAvatarUpload']
 };
 
 const lixiPersistConfig: PersistConfig<LixiesState> = {

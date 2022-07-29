@@ -7,5 +7,7 @@ export interface AccountsState extends EntityState<Account> {
   lixiIdsById: {
     [key: number]: Array<number>
   };
-  upload: Upload;
+  envelopeUpload: Upload;
+  pageCoverUpload: Upload;
+  pageAvatarUpload: Upload;
 }

@@ -90,6 +90,7 @@ const baseCorsConfig = cors({
     ClaimController,
     EnvelopeController,
     HeathController,
+    UploadFilesController,
     CountryController,
   ],
   providers: [
