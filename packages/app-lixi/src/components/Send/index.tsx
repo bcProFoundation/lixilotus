@@ -3,7 +3,10 @@ import intl from 'react-intl-universal';
 import { Form, notification, message, Modal, Alert, Checkbox } from 'antd';
 import { Row, Col } from 'antd';
 import PrimaryButton from '@components/Common/PrimaryButton';
-import { FormItemWithQRCodeAddon, OpReturnMessageInput } from '@bcpros/lixi-components/components/Common/EnhancedInputs';
+import {
+  FormItemWithQRCodeAddon,
+  OpReturnMessageInput
+} from '@bcpros/lixi-components/components/Common/EnhancedInputs';
 import { currency } from '@components/Common/Ticker';
 import { shouldRejectAmountInput } from '@utils/validation';
 import { AppContext } from '@store/store';
@@ -23,23 +26,23 @@ import styled from 'styled-components';
 import { createSharedKey, encrypt } from '@utils/encryption';
 
 const StyledCheckbox = styled(Checkbox)`
-    .ant-checkbox-inner {
-        background-color: #fff !important;
-        border: 1px solid ${props => props.theme.forms.border} !important
-    }
+  .ant-checkbox-inner {
+    background-color: #fff !important;
+    border: 1px solid ${props => props.theme.forms.border} !important;
+  }
 
-    .ant-checkbox-checked .ant-checkbox-inner::after {
-        position: absolute;
-        display: table;
-        border: 2px solid ${props => props.theme.primary};
-        border-top: 0;
-        border-left: 0;
-        transform: rotate(45deg) scale(1) translate(-50%, -50%);
-        opacity: 1;
-        transition: all 0.2s cubic-bezier(0.12, 0.4, 0.29, 1.46) 0.1s;
-        content: ' ';
-    }
-`
+  .ant-checkbox-checked .ant-checkbox-inner::after {
+    position: absolute;
+    display: table;
+    border: 2px solid ${props => props.theme.primary};
+    border-top: 0;
+    border-left: 0;
+    transform: rotate(45deg) scale(1) translate(-50%, -50%);
+    opacity: 1;
+    transition: all 0.2s cubic-bezier(0.12, 0.4, 0.29, 1.46) 0.1s;
+    content: ' ';
+  }
+`;
 // Note jestBCH is only used for unit tests; BCHJS must be mocked for jest
 const SendComponent: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -48,7 +51,6 @@ const SendComponent: React.FC = () => {
   const currentAddress = wallet?.address;
   const walletState = getWalletState(wallet);
   const { balance } = walletState;
-
 
   const [isLoadBalanceError, setIsLoadBalanceError] = useState(false);
   const [formData, setFormData] = useState({
@@ -67,7 +69,7 @@ const SendComponent: React.FC = () => {
   // Show a Modal.ation modal on transactions created by populating form from web page button
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const [isOpReturnMsgDisabled,setIsOpReturnMsgDisabled] = useState(true);
+  const [isOpReturnMsgDisabled, setIsOpReturnMsgDisabled] = useState(true);
   const [isEncryptedOptionalOpReturnMsg, setIsEncryptedOptionalOpReturnMsg] = useState(true);
   const [opReturnMsg, setOpReturnMsg] = useState('');
   const [recipientPubKeyWarning, setRecipientPubKeyWarning] = useState('');
@@ -102,23 +104,18 @@ const SendComponent: React.FC = () => {
     setIsModalVisible(false);
   };
 
-  const encryptOpReturnMsg = (
-    privateKeyWIF,
-    recipientPubKeyHex,
-    plainTextMsg,
-) => {
+  const encryptOpReturnMsg = (privateKeyWIF, recipientPubKeyHex, plainTextMsg) => {
     let encryptedMsg;
     try {
-        const sharedKey = createSharedKey(privateKeyWIF, recipientPubKeyHex);
-        encryptedMsg = encrypt(sharedKey,Uint8Array.from(Buffer.from(plainTextMsg)));
-
+      const sharedKey = createSharedKey(privateKeyWIF, recipientPubKeyHex);
+      encryptedMsg = encrypt(sharedKey, Uint8Array.from(Buffer.from(plainTextMsg)));
     } catch (err) {
-        console.log(`SendBCH.encryptOpReturnMsg() error: ` + err);
-        throw err;
+      console.log(`SendBCH.encryptOpReturnMsg() error: ` + err);
+      throw err;
     }
 
     return encryptedMsg;
-};
+  };
 
   const { getRestUrl, calcFee, sendXpi } = useXPI();
 
@@ -144,22 +141,19 @@ const SendComponent: React.FC = () => {
     try {
       const { keyPair, fundingWif } = await Wallet.getWalletDetails(wallet.mnemonic);
       let encryptedOpReturnMsg = undefined;
-        if (opReturnMsg &&
-            typeof opReturnMsg !== 'undefined' &&
-            opReturnMsg.trim() !== '' &&
-            recipientPubKeyHex ) {
-            try {
-                encryptedOpReturnMsg = encryptOpReturnMsg(fundingWif , recipientPubKeyHex, opReturnMsg);
-            } catch (error) {
-                notification.error({
-                    message: 'Error',
-                    description: intl.get('send.canNotEncryptMessage'),
-                    duration: 5,
-                });
-                console.log(error);
-                return;
-            }
+      if (opReturnMsg && typeof opReturnMsg !== 'undefined' && opReturnMsg.trim() !== '' && recipientPubKeyHex) {
+        try {
+          encryptedOpReturnMsg = encryptOpReturnMsg(fundingWif, recipientPubKeyHex, opReturnMsg);
+        } catch (error) {
+          notification.error({
+            message: 'Error',
+            description: intl.get('send.canNotEncryptMessage'),
+            duration: 5
+          });
+          console.log(error);
+          return;
         }
+      }
 
       const utxos = await XPI.Utxo.get(currentAddress);
       const utxoStore = utxos[0];
@@ -173,24 +167,26 @@ const SendComponent: React.FC = () => {
         2.01,
         encryptedOpReturnMsg,
         isEncryptedOptionalOpReturnMsg
-      )
-      link.then(res => {
-        dispatch(sendXPISuccess(wallet.id));
-        XPI.Electrumx.balance(wallet?.address)
-          .then(result => {
-            if (result && result.balance) {
-              const balance = result.balance.confirmed + result.balance.unconfirmed;
-              dispatch(setAccountBalance(balance ?? 0));
-            }
-          })
-          .catch(e => {
-            setIsLoadBalanceError(true);
-          });
-      }, err =>{
-        dispatch(sendXPIFailure((err as Error).message));
-      })
+      );
+      link.then(
+        res => {
+          dispatch(sendXPISuccess(wallet.id));
+          XPI.Electrumx.balance(wallet?.address)
+            .then(result => {
+              if (result && result.balance) {
+                const balance = result.balance.confirmed + result.balance.unconfirmed;
+                dispatch(setAccountBalance(balance ?? 0));
+              }
+            })
+            .catch(e => {
+              setIsLoadBalanceError(true);
+            });
+        },
+        err => {
+          dispatch(sendXPIFailure((err as Error).message));
+        }
+      );
       if (link) {
-
       }
     } catch (e) {
       let message;
@@ -210,43 +206,43 @@ const SendComponent: React.FC = () => {
     }
   }
 
-  const fetchRecipientPublicKey = async (recipientAddress) => {
+  const fetchRecipientPublicKey = async recipientAddress => {
     let recipientPubKey;
     try {
-        // see https://api.fullstack.cash/docs/#api-Encryption-Get_encryption_key_for_bch_address
-        // if successful, returns
-        // {
-        //   success: true,
-        //   publicKey: hex string
-        // }
-        // if Address only has incoming transaction but NO outgoing transaction, returns
-        // {
-        //   success: false,
-        //   publicKey: "not found"
-        // }
-        recipientPubKey = await XPI.encryption.getPubKey(recipientAddress);
+      // see https://api.fullstack.cash/docs/#api-Encryption-Get_encryption_key_for_bch_address
+      // if successful, returns
+      // {
+      //   success: true,
+      //   publicKey: hex string
+      // }
+      // if Address only has incoming transaction but NO outgoing transaction, returns
+      // {
+      //   success: false,
+      //   publicKey: "not found"
+      // }
+      recipientPubKey = await XPI.encryption.getPubKey(recipientAddress);
     } catch (err) {
-        console.log(`SendBCH.handleAddressChange() error: ` + err);
-        recipientPubKey = {
-            success: false,
-            error: 'fetch error - exception thrown'
-        }
+      console.log(`SendBCH.handleAddressChange() error: ` + err);
+      recipientPubKey = {
+        success: false,
+        error: 'fetch error - exception thrown'
+      };
     }
-    const {success, publicKey} = recipientPubKey;
-    if ( success ) {
-        setRecipientPubKeyHex(publicKey);
-        setIsOpReturnMsgDisabled(false);
-        setRecipientPubKeyWarning('');
+    const { success, publicKey } = recipientPubKey;
+    if (success) {
+      setRecipientPubKeyHex(publicKey);
+      setIsOpReturnMsgDisabled(false);
+      setRecipientPubKeyWarning('');
     } else {
-        setRecipientPubKeyHex('');
-        setIsOpReturnMsgDisabled(true);
-        if ( publicKey && publicKey === 'not found' ) {
-            setRecipientPubKeyWarning(intl.get('send.addressNoOutgoingTrans'));
-        } else {
-            setRecipientPubKeyWarning(intl.get('send.newAddress'))
-        }
+      setRecipientPubKeyHex('');
+      setIsOpReturnMsgDisabled(true);
+      if (publicKey && publicKey === 'not found') {
+        setRecipientPubKeyWarning(intl.get('send.addressNoOutgoingTrans'));
+      } else {
+        setRecipientPubKeyWarning(intl.get('send.newAddress'));
+      }
     }
-}
+  };
 
   const handleAddressChange = e => {
     const { value, name } = e.target;
@@ -265,40 +261,40 @@ const SendComponent: React.FC = () => {
     if (!isValid) {
       error = intl.get('claim.invalidAddress', { ticker: currency.ticker });
     }
-     // Is this address same with my address?
-     if (currentAddress && address && address === currentAddress) {
+    // Is this address same with my address?
+    if (currentAddress && address && address === currentAddress) {
       error = intl.get('send.canNotSendToYourSelf');
     }
     setSendXpiAddressError(error);
     // if the address is correct
     // attempt the fetch the public key assocciated with this address
     if (error === '') {
-        fetchRecipientPublicKey(address);
+      fetchRecipientPublicKey(address);
     }
 
-      // Set amount if it's in the query string
-      if (amount !== null) {
-        // Set currency to BCHA
-        setSelectedCurrency(currency.ticker);
+    // Set amount if it's in the query string
+    if (amount !== null) {
+      // Set currency to BCHA
+      setSelectedCurrency(currency.ticker);
 
-        // Use this object to mimic user input and get validation for the value
-        let amountObj = {
-          target: {
-            name: 'value',
-            value: amount
-          }
-        };
-        handleBchAmountChange(amountObj);
-        setFormData({
-          ...formData,
-          value: amount.toString()
-        });
-      }
-      setFormData(p => ({
-        ...p,
-        address
-      }));
-      error = '';
+      // Use this object to mimic user input and get validation for the value
+      let amountObj = {
+        target: {
+          name: 'value',
+          value: amount
+        }
+      };
+      handleBchAmountChange(amountObj);
+      setFormData({
+        ...formData,
+        value: amount.toString()
+      });
+    }
+    setFormData(p => ({
+      ...p,
+      address
+    }));
+    error = '';
   };
 
   const handleSelectedCurrencyChange = e => {
@@ -346,42 +342,42 @@ const SendComponent: React.FC = () => {
 
   // Only Send Mesage Checkbox
   const sendOnlyMessageCheckbox = (
-    <div
-    style={{textAlign: "right"}}
-    >
-        {intl.get('send.onlyMessage')} &nbsp;
-        <StyledCheckbox
-            defaultChecked={false}
-            onChange={() =>
-                setFormData({
-                    ...formData,
-                    value: getDustXPI(),
-                })
-            }
-        />
+    <div style={{ textAlign: 'right' }}>
+      {intl.get('send.onlyMessage')} &nbsp;
+      <StyledCheckbox
+        defaultChecked={false}
+        onChange={() =>
+          setFormData({
+            ...formData,
+            value: getDustXPI()
+          })
+        }
+      />
     </div>
-);
+  );
 
   const computeOpReturnMsgMaxByteLength = () => {
-    const maxOpReturnLimit = (
-        isEncryptedOptionalOpReturnMsg
-            ? currency.opReturn.encryptedMsgByteLimit
-            : currency.opReturn.unencryptedMsgByteLimit
-    );
+    const maxOpReturnLimit = isEncryptedOptionalOpReturnMsg
+      ? currency.opReturn.encryptedMsgByteLimit
+      : currency.opReturn.unencryptedMsgByteLimit;
 
-    return maxOpReturnLimit
-}
+    return maxOpReturnLimit;
+  };
 
   return (
     <>
       <Modal title="Modal. Send" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
         <p>
-          {intl.get('send.sendModalTitle', {value: formData.value, ticker: currency.ticker, address: formData.address})}
+          {intl.get('send.sendModalTitle', {
+            value: formData.value,
+            ticker: currency.ticker,
+            address: formData.address
+          })}
         </p>
       </Modal>
       {!balance ? (
         <ZeroBalanceHeader>
-          {intl.get('zeroBalanceHeader.noBalance', {ticker: currency.ticker})}
+          {intl.get('zeroBalanceHeader.noBalance', { ticker: currency.ticker })}
           <br />
           {intl.get('zeroBalanceHeader.deposit')}
         </ZeroBalanceHeader>
@@ -433,7 +429,7 @@ const SendComponent: React.FC = () => {
                 value: formData.address
               }}
             ></FormItemWithQRCodeAddon>
-                                    {sendOnlyMessageCheckbox}
+            {sendOnlyMessageCheckbox}
 
             <SendXpiInput
               style={{
@@ -457,26 +453,26 @@ const SendComponent: React.FC = () => {
               }}
               activeFiatCode={''}
             ></SendXpiInput>
-                                    {/* OP_RETURN message */}
-                                    <OpReturnMessageInput
-                             style={{
-                                margin: '0 0 25px 0',
-                            }}
-                            placeholder={intl.get('send.optionalPrivateMessage')}
-                            disabled={isOpReturnMsgDisabled}
-                            value={
-                                opReturnMsg
-                                    ? isEncryptedOptionalOpReturnMsg
-                                        ? opReturnMsg.substring(0,currency.opReturn.encryptedMsgByteLimit)
-                                        : opReturnMsg
-                                    : ''
-                            }
-                            onChange={msg => setOpReturnMsg(msg)}
-                            maxByteLength={computeOpReturnMsgMaxByteLength()}
-                            labelTop={null}
-                            labelBottom={null}
-                        />
-                        {/* END OF OP_RETURN message */}
+            {/* OP_RETURN message */}
+            <OpReturnMessageInput
+              style={{
+                margin: '0 0 25px 0'
+              }}
+              placeholder={intl.get('send.optionalPrivateMessage')}
+              disabled={isOpReturnMsgDisabled}
+              value={
+                opReturnMsg
+                  ? isEncryptedOptionalOpReturnMsg
+                    ? opReturnMsg.substring(0, currency.opReturn.encryptedMsgByteLimit)
+                    : opReturnMsg
+                  : ''
+              }
+              onChange={msg => setOpReturnMsg(msg)}
+              maxByteLength={computeOpReturnMsgMaxByteLength()}
+              labelTop={null}
+              labelBottom={null}
+            />
+            {/* END OF OP_RETURN message */}
             <div>
               {!balance || sendXpiAmountError || sendXpiAddressError ? (
                 <PrimaryButton>Send</PrimaryButton>
@@ -492,7 +488,7 @@ const SendComponent: React.FC = () => {
             </div>
             {queryStringText && (
               <Alert
-                message = {intl.get('send.queryString', {queryStringText, currency: currency.ticker})}
+                message={intl.get('send.queryString', { queryStringText, currency: currency.ticker })}
                 type="warning"
               />
             )}

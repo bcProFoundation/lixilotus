@@ -1,13 +1,13 @@
 import { NotificationDto } from '@bcpros/lixi-models';
 import { createAction } from '@reduxjs/toolkit';
 
-export const fetchNotifications = createAction<{ accountId: number, mnemonichHash }>('notification/fetchNotifications');
+export const fetchNotifications = createAction<{ accountId: number; mnemonichHash }>('notification/fetchNotifications');
 export const fetchNotificationsSuccess = createAction<NotificationDto[]>('notification/fetchNotificationsSuccess');
 export const fetchNotificationsFailure = createAction<string>('notification/fetchNotificationsFailure');
-export const deleteNotification = createAction<{ mnemonichHash, notificationId }>('notification/deleteNotification');
+export const deleteNotification = createAction<{ mnemonichHash; notificationId }>('notification/deleteNotification');
 export const deleteNotificationSuccess = createAction<string>('notification/deleteNotificationSuccess');
 export const deleteNotificationFailure = createAction<string>('notification/deleteNotificationFailure');
-export const readNotification = createAction<{ mnemonichHash, notificationId }>('notification/readNotification');
+export const readNotification = createAction<{ mnemonichHash; notificationId }>('notification/readNotification');
 export const readNotificationSuccess = createAction<NotificationDto>('notification/readNotificationSuccess');
 export const readNotificationFailure = createAction<string>('notification/readNotificationFailure');
 export const startChannel = createAction('notification/startChannel');

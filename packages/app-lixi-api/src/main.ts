@@ -13,7 +13,7 @@ import multipart from '@fastify/multipart';
 import 'winston-daily-rotate-file';
 import loggerConfig from './logger.config';
 import { join } from 'path';
-import { contentParser } from 'fastify-multer'
+import { contentParser } from 'fastify-multer';
 
 const allowedOrigins = [process.env.SENDLOTUS_URL, process.env.BASE_URL, process.env.ABCPAY_URL];
 

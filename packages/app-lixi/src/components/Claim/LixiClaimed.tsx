@@ -9,14 +9,21 @@ import { Image, Popover, Button, message } from 'antd';
 import { saveAs } from 'file-saver';
 import React from 'react';
 import {
-  FacebookIcon, FacebookMessengerIcon, FacebookMessengerShareButton, FacebookShareButton, TelegramIcon, TelegramShareButton, TwitterIcon, TwitterShareButton, WhatsappIcon, WhatsappShareButton
+  FacebookIcon,
+  FacebookMessengerIcon,
+  FacebookMessengerShareButton,
+  FacebookShareButton,
+  TelegramIcon,
+  TelegramShareButton,
+  TwitterIcon,
+  TwitterShareButton,
+  WhatsappIcon,
+  WhatsappShareButton
 } from 'react-share';
-import { RWebShare } from "react-web-share";
+import { RWebShare } from 'react-web-share';
 import styled from 'styled-components';
 
-
-
-const imageBrowserDownload = (imageUri) => {
+const imageBrowserDownload = imageUri => {
   const filename = 'claim' + Date.now() + '.png';
   saveAs(imageUri, filename);
 };
@@ -34,77 +41,55 @@ const ClaimButton = styled.button`
   margin-bottom: 20px;
   cursor: pointer;
   :hover {
-      background-position: right center;
-      -webkit-box-shadow: ${props => props.theme.buttons.primary.hoverShadow};
-      -moz-box-shadow: ${props => props.theme.buttons.primary.hoverShadow};
-      box-shadow: ${props => props.theme.buttons.primary.hoverShadow};
+    background-position: right center;
+    -webkit-box-shadow: ${props => props.theme.buttons.primary.hoverShadow};
+    -moz-box-shadow: ${props => props.theme.buttons.primary.hoverShadow};
+    box-shadow: ${props => props.theme.buttons.primary.hoverShadow};
   }
   svg {
-      fill: ${props => props.theme.buttons.primary.color};
+    fill: ${props => props.theme.buttons.primary.color};
   }
   @media (max-width: 768px) {
-      font-size: 16px;
-      padding: 10px 5px;
+    font-size: 16px;
+    padding: 10px 5px;
   }
 `;
 
 type SocialSharePanelProps = {
   className?: string;
   shareUrl: string;
-}
+};
 
 const SocialSharePanel = ({ className, shareUrl }: SocialSharePanelProps): JSX.Element => {
   const title = intl.get('claim.titleShared');
   return (
     <div className={className}>
       <div className="socialshare-network">
-        <FacebookShareButton
-          url={shareUrl}
-          quote={title}
-          className="socialshare-button"
-        >
+        <FacebookShareButton url={shareUrl} quote={title} className="socialshare-button">
           <FacebookIcon size={32} round />
         </FacebookShareButton>
       </div>
 
       <div className="socialshare-network">
-        <FacebookMessengerShareButton
-          url={shareUrl}
-          appId="521270401588372"
-          className="socialshare-button"
-        >
+        <FacebookMessengerShareButton url={shareUrl} appId="521270401588372" className="socialshare-button">
           <FacebookMessengerIcon size={32} round />
         </FacebookMessengerShareButton>
       </div>
 
       <div className="socialshare-network">
-        <TwitterShareButton
-          url={shareUrl}
-          title={title}
-          className="socialshare"
-        >
+        <TwitterShareButton url={shareUrl} title={title} className="socialshare">
           <TwitterIcon size={32} round />
         </TwitterShareButton>
       </div>
 
       <div className="socialshare-network">
-        <TelegramShareButton
-          url={shareUrl}
-          title={title}
-          className="socialshare-button"
-        >
+        <TelegramShareButton url={shareUrl} title={title} className="socialshare-button">
           <TelegramIcon size={32} round />
         </TelegramShareButton>
-
       </div>
 
       <div className="socialshare-network">
-        <WhatsappShareButton
-          url={shareUrl}
-          title={title}
-          separator=":: "
-          className="socialshare-button"
-        >
+        <WhatsappShareButton url={shareUrl} title={title} separator=":: " className="socialshare-button">
           <WhatsappIcon size={32} round />
         </WhatsappShareButton>
       </div>
@@ -122,7 +107,7 @@ const SocialSharePanel = ({ className, shareUrl }: SocialSharePanelProps): JSX.E
       </div>
     </div>
   );
-}
+};
 
 const StyledSocialSharePanel = styled(SocialSharePanel)`
   display: flex;
@@ -133,31 +118,21 @@ const StyledSocialSharePanel = styled(SocialSharePanel)`
   }
 `;
 
-const popOverContent = (shareUrl) => {
-  return (
-    <StyledSocialSharePanel shareUrl={shareUrl} />
-  )
+const popOverContent = shareUrl => {
+  return <StyledSocialSharePanel shareUrl={shareUrl} />;
 };
-
 
 type LixiClaimProps = {
   className?: string;
   claim: ViewClaimDto;
   isMobile: boolean;
-}
+};
 
-const LixiClaimed = ({
-  className,
-  claim,
-  isMobile
-}: LixiClaimProps) => {
-
+const LixiClaimed = ({ className, claim, isMobile }: LixiClaimProps) => {
   const baseApiUrl = process.env.NEXT_PUBLIC_LIXI_API;
   const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
 
-  const imageUrl = claim?.image
-    ? baseApiUrl + 'api/' + claim?.image
-    : baseApiUrl + 'api/' + 'images/default.png';
+  const imageUrl = claim?.image ? baseApiUrl + 'api/' + claim?.image : baseApiUrl + 'api/' + 'images/default.png';
 
   const slug = numberToBase58(claim.id);
 
@@ -176,9 +151,9 @@ const LixiClaimed = ({
       data={{
         text: intl.get('claim.titleShared'),
         url: shareUrl,
-        title: "LixiLotus",
+        title: 'LixiLotus'
       }}
-      onClick={() => { }}
+      onClick={() => {}}
     >
       <ClaimButton>
         <ShareAltOutlined /> Share
@@ -191,18 +166,17 @@ const LixiClaimed = ({
       {claim && claim.amount && (
         <>
           <WalletLabel name={intl.get('claim.youClaimedLixi')} />
-          <BalanceHeader
-            balance={fromSmallestDenomination(claim.amount)}
-            ticker='XPI' />
-          <Image src={imageUrl} alt='lixi' />
+          <BalanceHeader balance={fromSmallestDenomination(claim.amount)} ticker="XPI" />
+          <Image src={imageUrl} alt="lixi" />
           <h3>{claim.message}</h3>
 
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-around',
-            paddingTop: '20px'
-
-          }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-around',
+              paddingTop: '20px'
+            }}
+          >
             <ClaimButton onClick={() => imageBrowserDownload(imageUrl)}>
               <SaveOutlined /> Save
             </ClaimButton>
@@ -215,15 +189,14 @@ const LixiClaimed = ({
 };
 
 const Container = styled(LixiClaimed)`
-
-  .ant-modal, .ant-modal-content {
-      height: 100vh !important;
-      top: 0 !important;
+  .ant-modal,
+  .ant-modal-content {
+    height: 100vh !important;
+    top: 0 !important;
   }
   .ant-modal-body {
-      height: calc(100vh - 110px) !important;
+    height: calc(100vh - 110px) !important;
   }
-
 `;
 
 export default Container;

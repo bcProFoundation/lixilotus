@@ -3,9 +3,7 @@ import React from 'react';
 import SwapMobileCard from '@components/Layout/MobileCard/index';
 
 const MarketPage = () => {
-  return (
-    <SwapMobileCard />
-  );
-}
+  return <SwapMobileCard />;
+};
 
 export default MarketPage;

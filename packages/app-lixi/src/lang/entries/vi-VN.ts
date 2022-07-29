@@ -2,8 +2,8 @@ import viMessages from '../locales/vi_VN';
 
 const ViLang = {
   messages: {
-    ...viMessages,
+    ...viMessages
   },
-  locale: 'vi-VN',
+  locale: 'vi-VN'
 };
 export default ViLang;

@@ -22,6 +22,6 @@ export default function* rootSaga() {
     settingsSaga(),
     notificationSaga(),
     pageSaga(),
-    countrySaga(),
+    countrySaga()
   ]);
 }

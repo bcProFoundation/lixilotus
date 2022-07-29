@@ -133,7 +133,7 @@ export default {
   'lixi.fileSizeError': 'Image must smaller than 5MB!',
   'lixi.fileUploadError': 'Error uploading to server',
   'lixi.fileUploadSuccess': 'Upload Successfully',
-  'lixi.uploadDividerText': "Custom Enevelope",
+  'lixi.uploadDividerText': 'Custom Enevelope',
   'lixi.uploadText': 'Upload',
   'lixi.uploadingText': 'Uploading...',
   'lixi.previewFileFailed': 'Cannot preview file',

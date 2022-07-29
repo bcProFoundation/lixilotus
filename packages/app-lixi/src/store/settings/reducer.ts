@@ -1,6 +1,6 @@
-import { createReducer } from "@reduxjs/toolkit"
+import { createReducer } from '@reduxjs/toolkit';
 import { setInitIntlStatus, toggleCollapsedSideNav, updateLocale } from './actions';
-import { SettingsState } from "./state";
+import { SettingsState } from './state';
 
 const initialState: SettingsState = {
   navCollapsed: true,
@@ -8,7 +8,7 @@ const initialState: SettingsState = {
   initIntlStatus: false
 };
 
-export const settingsReducer = createReducer(initialState, (builder) => {
+export const settingsReducer = createReducer(initialState, builder => {
   builder
     .addCase(toggleCollapsedSideNav, (state, action) => {
       state.navCollapsed = action.payload;
@@ -18,5 +18,5 @@ export const settingsReducer = createReducer(initialState, (builder) => {
     })
     .addCase(setInitIntlStatus, (state, action) => {
       state.initIntlStatus = action.payload;
-    })
-})
+    });
+});

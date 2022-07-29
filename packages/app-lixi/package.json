@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "precommit": "yarn fix && yarn lint",
     "build": "next build",
     "debug": "NODE_OPTIONS='--inspect' next dev",
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start",
     "fix": "run-s fix:*",
-    "lint:prettier": "prettier \"src/**/*.ts\" --check --config .prettierrc.js",
+    "lint:prettier": "prettier \"src/**/*{.ts,.tsx}\" --check --config .prettierrc.js",
     "fix:prettier": "prettier \"src/**/*{.ts,.tsx}\" --write --config .prettierrc.js"
   },
   "dependencies": {

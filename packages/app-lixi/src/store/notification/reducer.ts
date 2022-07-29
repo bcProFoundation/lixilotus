@@ -1,7 +1,16 @@
-import { NotificationDto } from "@bcpros/lixi-models/lib/common/notification";
-import { createEntityAdapter, createReducer, Update } from "@reduxjs/toolkit";
-import { channelOff, channelOn, deleteNotificationSuccess, fetchNotificationsSuccess, readNotificationSuccess, receiveNotification, serverOff, serverOn } from "./actions";
-import { NotificationsState } from "./state";
+import { NotificationDto } from '@bcpros/lixi-models/lib/common/notification';
+import { createEntityAdapter, createReducer, Update } from '@reduxjs/toolkit';
+import {
+  channelOff,
+  channelOn,
+  deleteNotificationSuccess,
+  fetchNotificationsSuccess,
+  readNotificationSuccess,
+  receiveNotification,
+  serverOff,
+  serverOn
+} from './actions';
+import { NotificationsState } from './state';
 
 export const notificationsAdapter = createEntityAdapter<NotificationDto>({
   sortComparer: (a, b) => {
@@ -15,13 +24,12 @@ export const notificationsAdapter = createEntityAdapter<NotificationDto>({
   }
 });
 
-
 const initialState: NotificationsState = notificationsAdapter.getInitialState({
   channelStatusOn: false,
   serverStatusOn: false
 });
 
-export const notificationReducer = createReducer(initialState, (builder) => {
+export const notificationReducer = createReducer(initialState, builder => {
   builder
     .addCase(fetchNotificationsSuccess, (state, action) => {
       const notifications: NotificationDto[] = action.payload;
@@ -56,5 +64,5 @@ export const notificationReducer = createReducer(initialState, (builder) => {
     })
     .addCase(serverOn, (state, action) => {
       state.serverStatusOn = true;
-    })
-})
+    });
+});

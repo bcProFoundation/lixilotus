@@ -3,12 +3,9 @@ import { ErrorState } from './state';
 
 const initialState: ErrorState = {
   error: null
-}
+};
 
-export const errorReducer = (
-  state = initialState,
-  action: AnyAction
-): ErrorState => {
+export const errorReducer = (state = initialState, action: AnyAction): ErrorState => {
   const { error, payload } = action;
   if (error === true) {
     return {
@@ -16,4 +13,4 @@ export const errorReducer = (
     };
   }
   return state;
-}
+};

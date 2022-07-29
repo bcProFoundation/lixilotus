@@ -258,25 +258,29 @@ export class PageController {
       throw new Error(couldNotFindAccount);
     }
 
-    const uploadAvatarDetail = command.avatar ? await this.prisma.uploadDetail.findFirst({
-      where:{
-        uploadId: command.avatar
-      }
-    }) : undefined
+    const uploadAvatarDetail = command.avatar
+      ? await this.prisma.uploadDetail.findFirst({
+          where: {
+            uploadId: command.avatar
+          }
+        })
+      : undefined;
 
-    const uploadCoverDetail = command.cover ? await this.prisma.uploadDetail.findFirst({
-      where:{
-        uploadId: command.cover
-      }
-    }) : undefined
+    const uploadCoverDetail = command.cover
+      ? await this.prisma.uploadDetail.findFirst({
+          where: {
+            uploadId: command.cover
+          }
+        })
+      : undefined;
 
     try {
       const createdPage = await this.prisma.page.create({
         data: {
-          ..._.omit(command,['avatar','cover']),
+          ..._.omit(command, ['avatar', 'cover']),
           pageAccount: { connect: { id: account.id } },
-          avatar: { connect: uploadAvatarDetail ? {id: uploadAvatarDetail.id} : undefined },
-          cover: { connect: uploadCoverDetail ? {id: uploadCoverDetail.id} : undefined },
+          avatar: { connect: uploadAvatarDetail ? { id: uploadAvatarDetail.id } : undefined },
+          cover: { connect: uploadCoverDetail ? { id: uploadCoverDetail.id } : undefined },
           parentId: undefined
         }
       });

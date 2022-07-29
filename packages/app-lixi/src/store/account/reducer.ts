@@ -22,7 +22,7 @@ const initialState: AccountsState = accountsAdapter.getInitialState({
   lixiIdsById: {},
   envelopeUpload: null,
   pageAvatarUpload: null,
-  pageCoverUpload: null,
+  pageCoverUpload: null
 });
 
 export const accountReducer = createReducer(initialState, builder => {
@@ -74,35 +74,36 @@ export const accountReducer = createReducer(initialState, builder => {
       }
     })
     .addCase(setUpload, (state, action) => {
-      const {type, upload} = action.payload;
+      const { type, upload } = action.payload;
 
-      switch(type){
-        case (UPLOAD_TYPES.ENVELOPE):
+      switch (type) {
+        case UPLOAD_TYPES.ENVELOPE:
           state.envelopeUpload = upload;
           break;
-        case (UPLOAD_TYPES.PAGE_AVATAR):
-            state.pageAvatarUpload = upload;
-            break;
-        case (UPLOAD_TYPES.PAGE_COVER):
+        case UPLOAD_TYPES.PAGE_AVATAR:
+          state.pageAvatarUpload = upload;
+          break;
+        case UPLOAD_TYPES.PAGE_COVER:
           state.pageCoverUpload = upload;
           break;
       }
     })
     .addCase(removeUpload, (state, action) => {
-      const {type} = action.payload;
+      const { type } = action.payload;
 
-      switch(type){
-        case (UPLOAD_TYPES.ENVELOPE):
+      switch (type) {
+        case UPLOAD_TYPES.ENVELOPE:
           state.envelopeUpload = null;
           break;
-        case (UPLOAD_TYPES.PAGE_AVATAR):
-            state.pageAvatarUpload = null;
-            break;
-        case (UPLOAD_TYPES.PAGE_COVER):
+        case UPLOAD_TYPES.PAGE_AVATAR:
+          state.pageAvatarUpload = null;
+          break;
+        case UPLOAD_TYPES.PAGE_COVER:
           state.pageCoverUpload = null;
           break;
       }
-    }).addMatcher(isAnyOf(refreshLixiListSuccess, refreshLixiListSilentSuccess), (state, action) => {
+    })
+    .addMatcher(isAnyOf(refreshLixiListSuccess, refreshLixiListSilentSuccess), (state, action) => {
       const { account, lixies } = action.payload;
       const id = account.id;
       state.selectedId = id;

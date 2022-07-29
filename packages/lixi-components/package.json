@@ -33,6 +33,7 @@
     "eject": "react-scripts eject",
     "storybook": "start-storybook -p 6006 -s public",
     "build-storybook": "build-storybook -s public",
+    "precommit": "yarn fix && yarn lint",
     "fix": "run-s fix:*",
     "lint": "run-s lint:*",
     "lint:ts": "eslint src --ext .ts",

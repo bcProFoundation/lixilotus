@@ -52,11 +52,13 @@ export class LixiService {
     const encryptedXPriv = await aesGcmEncrypt(xpriv, command.password);
     const secret = await aesGcmDecrypt(account.encryptedSecret, command.mnemonic);
     const encryptedClaimCode = await aesGcmEncrypt(command.password, secret);
-    const uploadDetail = command.uploadId ? await this.prisma.uploadDetail.findFirst({
-      where:{
-        uploadId: command.uploadId
-      }
-    }) : undefined
+    const uploadDetail = command.uploadId
+      ? await this.prisma.uploadDetail.findFirst({
+          where: {
+            uploadId: command.uploadId
+          }
+        })
+      : undefined;
 
     // Prepare data to insert into the database
     const data = {
@@ -74,7 +76,7 @@ export class LixiService {
       totalClaim: BigInt(0),
       envelopeId: command.envelopeId ?? null,
       envelopeMessage: command.envelopeMessage ?? '',
-      uploadDetail: { connect: uploadDetail ? {id: uploadDetail.id} : undefined }
+      uploadDetail: { connect: uploadDetail ? { id: uploadDetail.id } : undefined }
     };
 
     const lixiToInsert = _.omit(data, 'password', 'staffAddress', 'charityAddress');
@@ -142,11 +144,13 @@ export class LixiService {
     const encryptedXPriv = await aesGcmEncrypt(xpriv, command.password);
     const secret = await aesGcmDecrypt(account.encryptedSecret, command.mnemonic);
     const encryptedClaimCode = await aesGcmEncrypt(command.password, secret);
-    const uploadDetail = command.uploadId ? await this.prisma.uploadDetail.findFirst({
-      where:{
-        uploadId: command.uploadId
-      }
-    }) : undefined
+    const uploadDetail = command.uploadId
+      ? await this.prisma.uploadDetail.findFirst({
+          where: {
+            uploadId: command.uploadId
+          }
+        })
+      : undefined;
 
     // Prepare data to insert into the database
     const data = {
@@ -165,7 +169,7 @@ export class LixiService {
       envelopeId: command.envelopeId ?? null,
       envelopeMessage: command.envelopeMessage ?? '',
       isNFTEnabled: command.isNFTEnabled ?? false,
-      uploadDetail: { connect: uploadDetail ? {id: uploadDetail.id} : undefined },
+      uploadDetail: { connect: uploadDetail ? { id: uploadDetail.id } : undefined },
       joinLotteryProgram: command.joinLotteryProgram
     };
     const lixiToInsert = _.omit(data, 'password');

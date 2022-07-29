@@ -56,7 +56,7 @@ import { join } from 'path';
 import { JwtAuthGuard } from 'src/modules/auth/jwtauth.guard';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import moment from 'moment';
-import { extname } from 'path'
+import { extname } from 'path';
 
 @Controller('lixies')
 @UseInterceptors(ClassSerializerInterceptor)

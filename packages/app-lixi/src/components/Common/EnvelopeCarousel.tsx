@@ -24,14 +24,14 @@ const carouselSettings = {
       settings: {
         slidesToShow: 3,
         slidesToScroll: 1
-      },
+      }
     },
     {
       breakpoint: 600,
       settings: {
         slidesToShow: 2,
         slidesToScroll: 1
-      },
+      }
     },
     {
       breakpoint: 480,
@@ -62,7 +62,7 @@ const EnvelopeCarousel = (props: EnvelopeCarouselPros) => {
       <Carousel {...carouselSettings} className={className}>
         {envelopes &&
           envelopes.length > 0 &&
-          envelopes.map((item) => {
+          envelopes.map(item => {
             const isActive = item.id === selectedEnvelopeId;
 
             return (
@@ -75,7 +75,7 @@ const EnvelopeCarousel = (props: EnvelopeCarouselPros) => {
                     textAlign: 'center',
                     border: isActive ? 'solid 2px #6f2dbd' : 'none',
                     padding: isActive ? '1px' : '0',
-                    boxShadow: 'rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px',
+                    boxShadow: 'rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px'
                   }}
                   src={baseUrl + 'api/' + item.thumbnail}
                   onClick={() => onCarouselItemClick(item)}
