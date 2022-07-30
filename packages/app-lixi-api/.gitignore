@@ -93,7 +93,6 @@ dist
 # public
 public/images/
 public/download/
-public/uploads/
 
 # vuepress build output
 .vuepress/dist
