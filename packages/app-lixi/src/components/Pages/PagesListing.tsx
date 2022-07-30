@@ -89,10 +89,19 @@ const PagesListing: React.FC = () => {
   let mapPagesList = (lists) => {
     if (lists.length != 0) {
       lists.forEach(item => {
+        const avatarUrl: string = item.avatar?.upload.url;
+        const coverUrl: string = item.cover?.upload.url;
+        
         if (!item.hasOwnProperty('upVote') && !item.hasOwnProperty('downVote') ) {
           item.upVote = Math.floor(Math.random() * 101);
           item.downVote = Math.floor(Math.random() * 101);
         }
+
+        const avatarThumbnail = avatarUrl.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+        const coverThumbnail = coverUrl.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+
+        item.avatar = avatarThumbnail;
+        item.cover = coverThumbnail;
       });
     }
     return lists;
