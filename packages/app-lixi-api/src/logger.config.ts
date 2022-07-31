@@ -2,6 +2,7 @@ import { WinstonModule } from 'nest-winston';
 import winston, { format } from 'winston';
 import LogzioWinstonTransport from 'winston-logzio';
 import 'winston-daily-rotate-file';
+import { verrorFormat } from 'winston-verror-format';
 const { combine, timestamp, printf } = format;
 
 const environment = process.env.DEPLOY_ENVIRONMENT;
@@ -51,8 +52,9 @@ export const loggerConfig = WinstonModule.createLogger({
   exceptionHandlers: [new winston.transports.File({ filename: 'exceptions.log', dirname: './logs' })],
   exitOnError: false,
   format: combine(
-    format.errors({ stack: true }), // log the full stack
+    verrorFormat({ stack: true }), // log the full stack
     timestamp(), // get the time stamp part of the full log message
+    format.prettyPrint(),
     printf(({ level, message, context, stack, timestamp }) => {
       const logStack = stack ? ` - stack: ${stack} ` : '';
       // formating the log outcome to show/store
