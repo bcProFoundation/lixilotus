@@ -11,17 +11,15 @@ import { fetchAllPages, setSelectedPage } from '@store/page/action';
 import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
 import { push } from 'connected-next-router';
 import _ from 'lodash';
+import Image from 'next/image';
 
 const CardContainer = styled.div`
   display: flex;
 `;
 
-const Image = styled.div`
-  width: fit-content;
-  img {
-    width: 80px;
-    height: 80px;
-  }
+const StyledImage = styled(Image)`
+  width: 80px;
+  height: 80px;
 `;
 
 const Content = styled.div`
@@ -89,16 +87,13 @@ const PagesListing: React.FC = () => {
   let mapPagesList = (lists) => {
     if (lists.length != 0) {
       lists.forEach(item => {
-        const avatarUrl: string = item.avatar?.upload.url;
-        const coverUrl: string = item.cover?.upload.url;
-        
         if (!item.hasOwnProperty('upVote') && !item.hasOwnProperty('downVote') ) {
           item.upVote = Math.floor(Math.random() * 101);
           item.downVote = Math.floor(Math.random() * 101);
         }
 
-        const avatarThumbnail = avatarUrl.replace(/(\.[\w\d_-]+)$/i, '-200$1');
-        const coverThumbnail = coverUrl.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+        const avatarThumbnail = item.avatar ? item.avatar.upload.url.replace(/(\.[\w\d_-]+)$/i, '-200$1') : '/images/lotus_logo.png';
+        const coverThumbnail = item.cover ? item.cover.upload.url.replace(/(\.[\w\d_-]+)$/i, '-200$1') : '/images/lotus_logo.png';
 
         item.avatar = avatarThumbnail;
         item.cover = coverThumbnail;
@@ -198,9 +193,7 @@ const PagesListing: React.FC = () => {
             key={item.title}
           >
             <CardContainer>
-              <Image>
-                <img src={item.avatar} alt="" />
-              </Image>
+              <StyledImage src={item.avatar} width="80px" height="80px"/>
               <Content>
                 <h3 onClick={() => routerShopDetail(item.title)}>{item.title}</h3>
                 <p>{item.address}</p>
