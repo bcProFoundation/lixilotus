@@ -23,8 +23,8 @@ if (nodeEnv !== 'development') {
   const logzioWinstonTransport = new LogzioWinstonTransport({
     level: 'info',
     name: 'winston_logzio',
-    token: 'cyUCOLibVZzYPMorIQOoMjFnPBgHzUQi',
-    host: 'listener-au.logz.io',
+    token: process.env.LOGZIO_TOKEN ?? '',
+    host: process.env.LOGZIO_HOST ?? '',
     extraFields: {
       environment: `${environment}`
     }
