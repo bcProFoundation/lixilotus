@@ -85,6 +85,8 @@ export default {
   'account.accountDeleteSuccess': 'Xóa tài khoản thành công.',
   'account.accountImportSuccess': 'Tài khoản được nhập thành công.',
   'account.accountChangeLocaleSuccess': 'Ngôn ngữ được cập nhật thành {language}.',
+  'account.login' : 'Đăng nhập',
+  'account.register' : 'Đăng ký',
 
   /* 03.Lixi */
   'lixi.sub-lixi': 'Bao lì xì phụ',

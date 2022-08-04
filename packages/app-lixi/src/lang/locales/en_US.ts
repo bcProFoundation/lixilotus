@@ -86,6 +86,8 @@ export default {
   'account.accountChangeLocaleSuccess': 'Account locale has changed to {language}',
   'account.accountDeleteSuccess': 'The account has been deleted successfully.',
   'account.accountImportSuccess': 'The account has been imported successfully.',
+  'account.login' : 'Sign In',
+  'account.register' : 'Register',
 
   /* 03.Lixi */
   'lixi.sub-lixi': 'Sub-lixi',
