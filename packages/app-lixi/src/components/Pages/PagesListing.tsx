@@ -18,8 +18,10 @@ const CardContainer = styled.div`
 `;
 
 const StyledImage = styled(Image)`
-  width: 80px;
-  height: 80px;
+  width: 80px !important;
+  height: 80px !important;
+  min-width: auto !important;
+  min-height: auto !important;
 `;
 
 const Content = styled.div`
@@ -195,7 +197,7 @@ const PagesListing: React.FC = () => {
             <CardContainer>
               <StyledImage src={item.avatar} width="80px" height="80px"/>
               <Content>
-                <h3 onClick={() => routerShopDetail(item.title)}>{item.title}</h3>
+                <h3 onClick={() => routerShopDetail(item.id)}>{item.title}</h3>
                 <p>{item.address}</p>
                 <p>{item.description}</p>
               </Content>
