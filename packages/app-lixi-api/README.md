@@ -104,3 +104,43 @@ Open [https://lixilotus.test/api](https://lixilotus.test/api) with your browser 
 Code released under [the MIT license](https://github.com/bcProFoundation/lixilotus/blob/master/LICENSE).
 
 Copyright 2020-2022 bcProFoundation.
+
+## Logging
+
+- To log message:
+
+```
+  private logger: Logger = new Logger(ClaimController.name);
+  ...
+  ...
+  this.logger.log(`log message`);
+  this.logger.log(`log message`);
+```
+
+- To log **object** don't forget to **stringify**
+
+```
+  this.logger.log(`${JSON.stringify(object)}`);
+
+```
+
+- Throw instance of VError for every Error of HTTP methods to log error message
+- Example:
+
+```
+  @Post()
+  async createItem(){
+    try {
+      // logic of method
+    } catch {
+      catch (err) {
+        if (err instanceof VError) {
+          throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+          const message = `${errorMessage}`;
+          const error = new VError.WError(err as Error, message);
+          throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+  }
+```
