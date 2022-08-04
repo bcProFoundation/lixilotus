@@ -77,14 +77,31 @@ export class PageController {
   }
 
   @Get(':id')
-  async get(@Param('id') id: string): Promise<PageDto> {
+  async get(@Param('id') id: string): Promise<any> {
     try {
       const page = await this.prisma.page.findUnique({
         where: {
           id: id
         },
-        include: {
-          children: true
+        include:{
+          avatar: {
+            include: {
+              upload: {
+                select: {
+                  url: true
+                }
+              }
+            }
+          },
+          cover: {
+            include: {
+              upload: {
+                select: {
+                  url: true
+                }
+              }
+            }
+          }
         }
       });
 
@@ -93,7 +110,7 @@ export class PageController {
         throw new VError(pageNotExist);
       }
 
-      return new PageDto(page);
+      return page;
     } catch (err: unknown) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);

@@ -2,34 +2,15 @@ import { DashOutlined, DislikeOutlined, LikeOutlined, SmallDashOutlined, UpOutli
 import { Avatar, Input, List } from 'antd';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-
-export type PageDetailData = {
-  id: string;
-  name: string;
-  description: string;
-  logo: string;
-  image: string;
-  upVote: number;
-  downVote: number;
-};
+import moment from 'moment';
 
 const { Search } = Input;
 
-const PageDetail = ({ shopId, isMobile }) => {
+const PageDetail = ({ page, isMobile }) => {
   const baseApiUrl = process.env.NEXT_PUBLIC_LIXI_API;
   const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
-  const slug = shopId;
   const [listComment, setListComment] = useState([]);
-  const [pageDetailData, setPageDetailData] = useState<PageDetailData>({
-    id: '@Ken7777',
-    name: 'Kensaurus',
-    logo: 'https://joeschmoe.io/api/v1/random',
-    image: 'https://picsum.photos/500/300',
-    description: `Easy to use, stylish placeholders Just add your desired image size after our URL, and you'll get a random
-      image.`,
-    upVote: 109,
-    downVote: 15
-  });
+  const [pageDetailData, setPageDetailData] = useState<any>(page);
 
   const CommentContainer = styled.div`
     padding: 0 1rem;
@@ -100,19 +81,8 @@ const PageDetail = ({ shopId, isMobile }) => {
         comment: 'Wow, this pasta salad is amazing!'
       }
     ];
-    const dataPageDetail: PageDetailData = {
-      id: '@Ken7777',
-      name: 'Kensaurus',
-      logo: 'https://joeschmoe.io/api/v1/random',
-      image: 'https://picsum.photos/500/300',
-      description: `Easy to use, stylish placeholders Just add your desired image size after our URL, and you'll get a random
-        image.`,
-      upVote: 109,
-      downVote: 15
-    };
 
     setListComment([...dataListComment]);
-    setPageDetailData({ ...dataPageDetail });
   }, []);
 
   const onUpVotePage = () => {
@@ -141,25 +111,25 @@ const PageDetail = ({ shopId, isMobile }) => {
       <StyledContainerPageDetail>
         <PageCardDetail>
           <div className="info-page">
-            <img style={{ marginRight: '1rem' }} src={pageDetailData.logo} alt="" />
+            <img style={{ marginRight: '1rem' }} src={pageDetailData?.avatar?.upload?.url} alt="" />
             <div>
               <h4 style={{ margin: '0' }}>{pageDetailData.name}</h4>
-              <p>{pageDetailData.id}</p>
+              <p>{pageDetailData.title}</p>
             </div>
           </div>
           <div className="func-page">
-            <span>29 mins</span> <SmallDashOutlined />
+            <span>{moment(pageDetailData.createdAt).fromNow()}</span>
           </div>
         </PageCardDetail>
         <PageContentDetail>
-          <img style={{ marginRight: '5px', width: '100%' }} src={pageDetailData.image} alt="" />
+          <img style={{ marginRight: '5px', width: '100%' }} src={pageDetailData?.cover?.upload?.url} alt="" />
           <p style={{ padding: '0 1rem', margin: '1rem 0' }}>{pageDetailData.description}</p>
           <div className="reaction-container">
             <div className="reaction-ico">
               <LikeOutlined onClick={onUpVotePage} />
-              <span style={{ marginLeft: '5px', marginRight: '10px' }}>{pageDetailData.upVote}</span>
+              <span style={{ marginLeft: '5px', marginRight: '10px' }}>{Math.floor(Math.random() * 100)}</span>
               <DislikeOutlined onClick={onDownVotePage} />
-              <span style={{ marginLeft: '5px' }}>{pageDetailData.downVote}</span>
+              <span style={{ marginLeft: '5px' }}>{Math.floor(Math.random() * 100)}</span>
             </div>
             <div className="reaction-func">
               <span>{listComment.length}</span>&nbsp;
