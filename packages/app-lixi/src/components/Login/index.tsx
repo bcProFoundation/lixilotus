@@ -79,7 +79,7 @@ const LoginComponent = () => {
 					<p>{errors.password && errors.password.message}</p>
 
 					<Button type="primary" onClick={handleSubmit(onSubmit)}>
-						{intl.get('account.register')}
+						{intl.get('account.login')}
 					</Button>
 				</form>
 			</Form>
