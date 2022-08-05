@@ -35,6 +35,7 @@ export default {
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
   'account.mnemonic': 'mnemonic (seed phrase)',
   'account.manageLixi': 'Manage Lixi',
+  'account.managePage': 'Manage Page',
   'account.refreshLixiList': 'Refresh Lixi List',
   'account.unableCreateLixi': 'Unable to create lixi.',
   'account.selectLixiFirst': 'Please Select an account first before creating lixi',
@@ -305,6 +306,9 @@ export default {
   'page.createPageSuccessful': 'Create page successful',
   'page.unableCreatePageServer': 'Unable to create page on server',
   'page.errorWhenCreatePage': "There's an error happens when create new Page",
+  'page.unableCreatePage': 'Unable to create page.',
+  'page.unableEditPage': 'Unable to edit page.',
+  'page.selectAccountFirst': 'Please Select an account first before creating page',
 
   /* 14.Country */
   'country.unablegetCountries': 'Unable to get countries',

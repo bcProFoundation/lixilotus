@@ -1,4 +1,4 @@
-import { CreatePageCommand, Page } from '@bcpros/lixi-models/src';
+import { CreatePageCommand, EditPageCommand, Page } from '@bcpros/lixi-models/src';
 import { createAction } from '@reduxjs/toolkit';
 
 export const fetchAllPages = createAction('pages/fetchAllPages');
@@ -11,3 +11,6 @@ export const postPage = createAction<CreatePageCommand>('pages/postPage');
 export const postPageSuccess = createAction<any>('pages/postPageSuccess');
 export const postPageFailure = createAction<string>('pages/postPageFailure');
 export const setPage = createAction<Page>('pages/setPage');
+export const editPage = createAction<EditPageCommand>('pages/editPage');
+export const editPageSuccess = createAction<any>('pages/editPageSuccess');
+export const editPageFailure = createAction<string>('pages/editPageFailure');

@@ -1,4 +1,4 @@
-import { PageDto } from '@bcpros/lixi-models';
+import { EditPageCommand, PageDto } from '@bcpros/lixi-models';
 import { CreatePageCommand } from '@bcpros/lixi-models/src';
 import axiosClient from '@utils/axiosClient';
 
@@ -50,7 +50,19 @@ const pageApi = {
         const { response } = err;
         throw response?.data ?? err ?? 'Network Error';
       });
-  }
+  },
+  update(id: string, data: EditPageCommand): Promise<PageDto> {
+    const url = `/api/pages/${id}/update`;
+    return axiosClient
+      .patch(url, data)
+      .then(response => {
+        return response.data as PageDto;
+      })
+      .catch(err => {
+        const { response } = err;
+        throw response?.data ?? err ?? 'Network Error';
+      });
+  },
 };
 
 export default pageApi;

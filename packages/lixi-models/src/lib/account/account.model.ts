@@ -1,3 +1,5 @@
+import { Page } from "../page";
+
 export interface Account {
   id: number;
   name: string;
@@ -11,4 +13,5 @@ export interface Account {
   address: string;
   balance?: number;
   language?: string;
+  page?: Nullable<Page>;
 }

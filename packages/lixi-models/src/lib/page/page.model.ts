@@ -14,4 +14,6 @@ export class Page {
   website: string;
   createdAt: Date;
   updatedAt: Date;
+  country?: string;
+  state?: string;
 }

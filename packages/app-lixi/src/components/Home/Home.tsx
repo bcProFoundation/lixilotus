@@ -63,14 +63,21 @@ const Home: React.FC = () => {
   return (
     <>
       <WalletInfoComponent />
+
+      {selectedAccount.page ?
+        <Link href="/page/edit" passHref>
+          <SmartButton>{intl.get('page.editPage')}</SmartButton>
+        </Link> :
+        <Link href="/page/create" passHref>
+          <SmartButton>{intl.get('page.createPage')}</SmartButton>
+        </Link>
+      }
+
       <StyledSpacer />
       <h2 style={{ color: '#6f2dbd' }}>
         <ThemedWalletOutlined /> {intl.get('account.manageLixi')}
       </h2>
 
-      <Link href="/page/create" passHref>
-        <button>Create Page</button>
-      </Link>
       <CreateLixiForm account={selectedAccount} />
       <SmartButton onClick={() => refreshList()}>
         <ReloadOutlined /> {intl.get('account.refreshLixiList')}
