@@ -1,7 +1,8 @@
 import React from 'react'
 import { Form, Input, Button } from 'antd'
 import intl from 'react-intl-universal';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { Register } from '@bcpros/lixi-models/lib/auth';
 
 const RegisterComponent = () => {
     const {
@@ -9,9 +10,9 @@ const RegisterComponent = () => {
         watch,
         formState: { errors },
         control
-    } = useForm()
+    } = useForm<Register>()
 
-    const onSubmit = (data) => {
+    const onSubmit: SubmitHandler<Register> = (data) => {
         console.log(data);
     }
 
@@ -24,94 +25,92 @@ const RegisterComponent = () => {
                 wrapperCol={{ span: 24 }}
                 layout="horizontal"
             >
-                <form>
-                    <Form.Item
+                <Form.Item
+                    name="email"
+                    label="Email"
+                >
+                    <Controller
                         name="email"
-                        label="Email"
-                    >
-                        <Controller
-                            name="email"
-                            control={control}
-                            rules={{
-                                required: {
-                                    value: true,
-                                    message: "Email is required *",
-                                },
-                                pattern: {
-                                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                    message: "invalid email address"
-                                }
-                            }}
-                            render={({ field: { onChange, onBlur, value } }) => (
-                                <Input
-                                    onChange={onChange}
-                                    onBlur={onBlur}
-                                    value={value}
-                                />
-                            )}
-                        />
-                    </Form.Item>
-                    <p>{errors.email && errors.email.message}</p>
+                        control={control}
+                        rules={{
+                            required: {
+                                value: true,
+                                message: intl.get('account.emailRequired'),
+                            },
+                            pattern: {
+                                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                message: intl.get('account.invalidEmail')
+                            }
+                        }}
+                        render={({ field: { onChange, onBlur, value } }) => (
+                            <Input
+                                onChange={onChange}
+                                onBlur={onBlur}
+                                value={value}
+                            />
+                        )}
+                    />
+                </Form.Item>
+                <p>{errors.email && errors.email.message}</p>
 
-                    <Form.Item
+                <Form.Item
+                    name="password"
+                    label="Password"
+                >
+                    <Controller
                         name="password"
-                        label="Password"
-                    >
-                        <Controller
-                            name="password"
-                            control={control}
-                            rules={{
-                                required: {
-                                    value: true,
-                                    message: "Password is required *",
-                                },
-                            }}
-                            render={({ field: { onChange, onBlur, value } }) => (
-                                <Input
-                                    type="password"
-                                    onChange={onChange}
-                                    onBlur={onBlur}
-                                    value={value}
-                                />
-                            )}
-                        />
-                    </Form.Item>
-                    <p>{errors.password && errors.password.message}</p>
+                        control={control}
+                        rules={{
+                            required: {
+                                value: true,
+                                message: intl.get('account.passwordRequired'),
+                            },
+                        }}
+                        render={({ field: { onChange, onBlur, value } }) => (
+                            <Input
+                                type="password"
+                                onChange={onChange}
+                                onBlur={onBlur}
+                                value={value}
+                            />
+                        )}
+                    />
+                </Form.Item>
+                <p>{errors.password && errors.password.message}</p>
 
-                    <Form.Item
-                        name="confirm-password"
-                        label="Confirm Password"
-                    >
-                        <Controller
-                            name="confirmPassword"
-                            control={control}
-                            rules={{
-                                required: {
-                                    value: true,
-                                    message: "Repeat Password",
-                                },
-                                validate: (value: string) => {
-                                    if (watch('password') !== value) {
-                                        return "Password must match *"
-                                    }
+                <Form.Item
+                    name="confirm-password"
+                    label="Confirm Password"
+                >
+                    <Controller
+                        name="confirmPassword"
+                        control={control}
+                        rules={{
+                            required: {
+                                value: true,
+                                message: intl.get('account.repeatPassword'),
+                            },
+                            validate: (value: string) => {
+                                if (watch('password') !== value) {
+                                    return intl.get('account.matchPassword')
                                 }
-                            }}
-                            render={({ field: { onChange, onBlur, value } }) => (
-                                <Input
-                                    type="password"
-                                    onChange={onChange}
-                                    onBlur={onBlur}
-                                    value={value}
-                                />
-                            )}
-                        />
-                    </Form.Item>
-                    <p>{errors.confirmPassword && errors.confirmPassword.message}</p>
+                            }
+                        }}
+                        render={({ field: { onChange, onBlur, value } }) => (
+                            <Input
+                                type="password"
+                                onChange={onChange}
+                                onBlur={onBlur}
+                                value={value}
+                            />
+                        )}
+                    />
+                </Form.Item>
+                <p>{errors.confirmPassword && errors.confirmPassword.message}</p>
 
-                    <Button type="primary" onClick={handleSubmit(onSubmit)}>
-                        {intl.get('account.register')}
-                    </Button>
-                </form>
+                <Button type="primary" onClick={handleSubmit(onSubmit)}>
+                    {intl.get('account.register')}
+                </Button>
             </Form>
         </>
     )
