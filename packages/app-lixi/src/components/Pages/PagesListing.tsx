@@ -83,26 +83,29 @@ const PagesListing: React.FC = () => {
       .catch(e => {
         setBalanceAccount(0);
       });
-
   }, []);
 
-  let mapPagesList = (lists) => {
+  let mapPagesList = lists => {
     if (lists.length != 0) {
       lists.forEach(item => {
-        if (!item.hasOwnProperty('upVote') && !item.hasOwnProperty('downVote') ) {
+        if (!item.hasOwnProperty('upVote') && !item.hasOwnProperty('downVote')) {
           item.upVote = Math.floor(Math.random() * 101);
           item.downVote = Math.floor(Math.random() * 101);
         }
 
-        const avatarThumbnail = item.avatar ? item.avatar.upload.url.replace(/(\.[\w\d_-]+)$/i, '-200$1') : '/images/lotus_logo.png';
-        const coverThumbnail = item.cover ? item.cover.upload.url.replace(/(\.[\w\d_-]+)$/i, '-200$1') : '/images/lotus_logo.png';
+        const avatarThumbnail = item.avatar
+          ? item.avatar.upload.url.replace(/(\.[\w\d_-]+)$/i, '-200$1')
+          : '/images/lotus_logo.png';
+        const coverThumbnail = item.cover
+          ? item.cover.upload.url.replace(/(\.[\w\d_-]+)$/i, '-200$1')
+          : '/images/lotus_logo.png';
 
         item.avatar = avatarThumbnail;
         item.cover = coverThumbnail;
       });
     }
     return lists;
-  }
+  };
 
   const IconText = ({ icon, text, dataItem }: { icon: React.FC; text: string; dataItem: any }) => (
     <Space onClick={e => (icon === LikeOutlined ? upVoteShop(dataItem) : downVoteShop(dataItem))}>
@@ -195,7 +198,7 @@ const PagesListing: React.FC = () => {
             key={item.title}
           >
             <CardContainer>
-              <StyledImage src={item.avatar} width="80px" height="80px"/>
+              <StyledImage src={item.avatar} width="80px" height="80px" />
               <Content>
                 <h3 onClick={() => routerShopDetail(item.id)}>{item.title}</h3>
                 <p>{item.address}</p>
@@ -207,7 +210,9 @@ const PagesListing: React.FC = () => {
                 <IconText icon={LikeOutlined} text={item.upVote} key="list-vertical-like-o" dataItem={item} />
                 <IconText icon={DislikeOutlined} text={item.downVote} key="list-vertical-dis-like-o" dataItem={item} />
               </GroupIconText>
-              <Button type='primary' onClick={item => onLixiClick(item)}>lixi</Button>
+              <Button type="primary" onClick={item => onLixiClick(item)}>
+                lixi
+              </Button>
             </ActionBar>
           </List.Item>
         )}

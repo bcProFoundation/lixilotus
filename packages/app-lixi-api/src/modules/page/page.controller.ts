@@ -37,7 +37,7 @@ export class PageController {
   async getAllPages(): Promise<any> {
     try {
       const pages = await this.prisma.page.findMany({
-        include:{
+        include: {
           avatar: {
             include: {
               upload: {
@@ -83,7 +83,7 @@ export class PageController {
         where: {
           id: id
         },
-        include:{
+        include: {
           avatar: {
             include: {
               upload: {
