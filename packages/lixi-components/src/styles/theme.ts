@@ -61,7 +61,8 @@ export const theme: DefaultTheme = {
   },
   footer: {
     background: '#fff',
-    navIconInactive: '#949494'
+    navIconInactive: '#949494',
+    color: 'var(--text-color-1)'
   },
   icons: {
     outlined: '#6f2dbd',

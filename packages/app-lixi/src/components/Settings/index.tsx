@@ -232,7 +232,7 @@ const Settings: React.FC = () => {
   return (
     <>
       <Spin spinning={isLoading} indicator={CashLoadingIcon}>
-        <h2 style={{ color: '#6f2dbd' }}>
+        <h2 style={{ color: 'var(--color-primary)' }}>
           <ThemedCopyOutlined /> {intl.get('settings.backupAccount')}
         </h2>
         <Alert
@@ -248,7 +248,7 @@ const Settings: React.FC = () => {
           </Panel>
         </StyledCollapse>
         <StyledSpacer />
-        <h2 style={{ color: '#6f2dbd' }}>
+        <h2 style={{ color: 'var(--color-primary)' }}>
           <ThemedWalletOutlined /> {intl.get('settings.manageAccounts')}
         </h2>
         <PrimaryButton onClick={() => dispatch(generateAccount())}>

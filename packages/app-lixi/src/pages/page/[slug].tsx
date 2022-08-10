@@ -47,9 +47,9 @@ export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) 
   const slug: string = _.isArray(context.params.slug) ? context.params.slug[0] : context.params.slug;
   const pageId: string = slug;
 
-  const page = await pageApi.getDetailPage(pageId).then((data => {
+  const page = await pageApi.getDetailPage(pageId).then(data => {
     return data;
-  }));
+  });
 
   return {
     props: {
