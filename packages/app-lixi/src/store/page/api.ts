@@ -62,7 +62,7 @@ const pageApi = {
         const { response } = err;
         throw response?.data ?? err ?? 'Network Error';
       });
-  },
+  }
 };
 
 export default pageApi;

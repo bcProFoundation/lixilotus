@@ -26,9 +26,9 @@ export const pageReducer = createReducer(initialState, builder => {
       const updatePage: Update<Page> = {
         id: page.id,
         changes: {
-          ...page,
+          ...page
         }
       };
       pageAdapter.updateOne(state, updatePage);
-    })
+    });
 });

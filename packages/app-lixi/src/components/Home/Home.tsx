@@ -64,14 +64,15 @@ const Home: React.FC = () => {
     <>
       <WalletInfoComponent />
 
-      {selectedAccount.page ?
+      {selectedAccount.page ? (
         <Link href="/page/edit" passHref>
           <SmartButton>{intl.get('page.editPage')}</SmartButton>
-        </Link> :
+        </Link>
+      ) : (
         <Link href="/page/create" passHref>
           <SmartButton>{intl.get('page.createPage')}</SmartButton>
         </Link>
-      }
+      )}
 
       <StyledSpacer />
       <h2 style={{ color: 'var(--color-primary)' }}>

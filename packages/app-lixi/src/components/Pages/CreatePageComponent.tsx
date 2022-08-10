@@ -205,7 +205,7 @@ const CreatePageComponent: React.FC = () => {
     <>
       <h3>{selectedAccount.page ? intl.get('page.editPage') : intl.get('page.createNewPage')}</h3>
 
-      {!selectedAccount.page ?
+      {!selectedAccount.page ? (
         // Create Page
         <Form
           labelCol={{ span: 5 }}
@@ -214,16 +214,29 @@ const CreatePageComponent: React.FC = () => {
           initialValues={{ disabled: componentDisabled }}
           onValuesChange={onFormLayoutChange}
         >
-          <Form.Item name="name" label={intl.get('page.name')} rules={[{ required: true, message: intl.get('page.inputName') }]}>
+          <Form.Item
+            name="name"
+            label={intl.get('page.name')}
+            rules={[{ required: true, message: intl.get('page.inputName') }]}
+          >
             <Input defaultValue={newPageName} onChange={e => handleNewPageNameInput(e)} />
           </Form.Item>
-          <Form.Item name="title" label={intl.get('page.title')} rules={[{ required: true, message: intl.get('page.inputTitle') }]}>
+          <Form.Item
+            name="title"
+            label={intl.get('page.title')}
+            rules={[{ required: true, message: intl.get('page.inputTitle') }]}
+          >
             <Input onChange={e => handleNewPageTitleInput(e)} />
           </Form.Item>
           <Form.Item name="walletAddress" label={intl.get('page.walletAddress')}>
             <Input defaultValue={selectedAccount.address} disabled />
           </Form.Item>
-          <Form.Item name="avatar" label={intl.get('page.avatar')} valuePropName="fileList" getValueFromEvent={normFile}>
+          <Form.Item
+            name="avatar"
+            label={intl.get('page.avatar')}
+            valuePropName="fileList"
+            getValueFromEvent={normFile}
+          >
             <StyledUploader type={UPLOAD_TYPES.PAGE_AVATAR} />
           </Form.Item>
           <Form.Item name="cover" label={intl.get('page.cover')} valuePropName="fileList" getValueFromEvent={normFile}>
@@ -260,7 +273,7 @@ const CreatePageComponent: React.FC = () => {
           </Form.Item>
 
           {/* State */}
-          {newPageCountry != '' &&
+          {newPageCountry != '' && (
             <Form.Item>
               <Select
                 showSearch
@@ -268,7 +281,9 @@ const CreatePageComponent: React.FC = () => {
                 style={{ width: 200 }}
                 placeholder={intl.get('page.state')}
                 optionFilterProp="children"
-                filterOption={(input, option) => (option!.children as unknown as string).toLocaleLowerCase().includes(input)}
+                filterOption={(input, option) =>
+                  (option!.children as unknown as string).toLocaleLowerCase().includes(input)
+                }
                 filterSort={(optionA, optionB) =>
                   (optionA!.children as unknown as string)
                     .toLowerCase()
@@ -280,7 +295,7 @@ const CreatePageComponent: React.FC = () => {
                 ))}
               </Select>
             </Form.Item>
-          }
+          )}
 
           <Form.Item>
             <Input
@@ -301,7 +316,7 @@ const CreatePageComponent: React.FC = () => {
             </Button>
           </Form.Item>
         </Form>
-        :
+      ) : (
         // Edit Page
         <Form
           labelCol={{ span: 5 }}
@@ -311,22 +326,41 @@ const CreatePageComponent: React.FC = () => {
           onValuesChange={onFormLayoutChange}
         >
           <Form.Item name="name">
-            <Input addonBefore={intl.get('page.name')} defaultValue={page.name} value={page.name} onChange={e => handleNewPageNameInput(e)} />
+            <Input
+              addonBefore={intl.get('page.name')}
+              defaultValue={page.name}
+              value={page.name}
+              onChange={e => handleNewPageNameInput(e)}
+            />
           </Form.Item>
-          <Form.Item name="title" >
-            <Input addonBefore={intl.get('page.title')} defaultValue={page.title} onChange={e => handleNewPageTitleInput(e)} />
+          <Form.Item name="title">
+            <Input
+              addonBefore={intl.get('page.title')}
+              defaultValue={page.title}
+              onChange={e => handleNewPageTitleInput(e)}
+            />
           </Form.Item>
           <Form.Item name="walletAddress">
             <Input addonBefore={intl.get('page.walletAddress')} defaultValue={selectedAccount.address} disabled />
           </Form.Item>
-          <Form.Item name="avatar" label={intl.get('page.avatar')} valuePropName="fileList" getValueFromEvent={normFile}>
+          <Form.Item
+            name="avatar"
+            label={intl.get('page.avatar')}
+            valuePropName="fileList"
+            getValueFromEvent={normFile}
+          >
             <StyledUploader type={UPLOAD_TYPES.PAGE_AVATAR} />
           </Form.Item>
           <Form.Item name="cover" label={intl.get('page.cover')} valuePropName="fileList" getValueFromEvent={normFile}>
             <StyledUploader type={UPLOAD_TYPES.PAGE_COVER} />
           </Form.Item>
           <Form.Item name="website">
-            <Input addonBefore={intl.get('page.website')} defaultValue={page.website} value={page.website} onChange={e => handleNewPageWebsiteInput(e)} />
+            <Input
+              addonBefore={intl.get('page.website')}
+              defaultValue={page.website}
+              value={page.website}
+              onChange={e => handleNewPageWebsiteInput(e)}
+            />
           </Form.Item>
           <Form.Item label={intl.get('page.description')}>
             <TextArea defaultValue={page.description} onChange={e => handleNewPageDescriptionInput(e)} rows={4} />
@@ -341,7 +375,9 @@ const CreatePageComponent: React.FC = () => {
               style={{ width: 200 }}
               placeholder={intl.get('page.country')}
               optionFilterProp="children"
-              filterOption={(input, option) => (option!.children as unknown as string).toLocaleLowerCase().includes(input)}
+              filterOption={(input, option) =>
+                (option!.children as unknown as string).toLocaleLowerCase().includes(input)
+              }
               filterSort={(optionA, optionB) =>
                 (optionA!.children as unknown as string)
                   .toLowerCase()
@@ -363,7 +399,9 @@ const CreatePageComponent: React.FC = () => {
               style={{ width: 200 }}
               placeholder={intl.get('page.state')}
               optionFilterProp="children"
-              filterOption={(input, option) => (option!.children as unknown as string).toLocaleLowerCase().includes(input)}
+              filterOption={(input, option) =>
+                (option!.children as unknown as string).toLocaleLowerCase().includes(input)
+              }
               filterSort={(optionA, optionB) =>
                 (optionA!.children as unknown as string)
                   .toLowerCase()
@@ -385,17 +423,12 @@ const CreatePageComponent: React.FC = () => {
           </Form.Item>
 
           <Form.Item wrapperCol={{ offset: 0, span: 24 }}>
-            <Button
-              type="primary"
-              htmlType="submit"
-              onClick={handleOnEditPage}
-            >
+            <Button type="primary" htmlType="submit" onClick={handleOnEditPage}>
               {intl.get('page.editPage')}
             </Button>
           </Form.Item>
         </Form>
-      }
-
+      )}
     </>
   );
 };
