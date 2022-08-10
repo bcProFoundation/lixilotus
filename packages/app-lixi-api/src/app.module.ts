@@ -1,12 +1,14 @@
 import { Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { GraphQLModule } from '@nestjs/graphql';
+import { MercuriusDriver, MercuriusDriverConfig } from '@nestjs/mercurius';
 import { ServeStaticModule, ServeStaticModuleOptions } from '@nestjs/serve-static';
 import { EthersModule } from 'nestjs-ethers';
 import { AcceptLanguageResolver, HeaderResolver, I18nModule } from 'nestjs-i18n';
 import path, { join } from 'path';
 import { NotificationModule } from './common/modules/notifications/notification.module';
-import config from './config/config';
 import { GraphqlConfig } from './config/config.interface';
+import configuration from './config/configuration';
 import { AuthModule } from './modules/auth/auth.module';
 import { CoreModule } from './modules/core/core.module';
 import { LixiNftModule } from './modules/nft/lixinft.module';
@@ -32,13 +34,29 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true
+      isGlobal: true,
+      load: [configuration]
     }),
     PrismaModule,
     ServeStaticModule.forRoot(serveStaticModule_images),
-    ConfigModule.forRoot({
-      isGlobal: true,
-      load: [config]
+    GraphQLModule.forRootAsync<MercuriusDriverConfig>({
+      driver: MercuriusDriver,
+      useFactory: async (configService: ConfigService) => {
+        const graphqlConfig = configService.get<GraphqlConfig>('graphql');
+        return {
+          graphiql: graphqlConfig?.playgroundEnabled || true,
+          installSubscriptionHandlers: true,
+          buildSchemaOptions: {
+            numberScalarMode: 'integer'
+          },
+          sortSchema: graphqlConfig?.sortSchema || true,
+          autoSchemaFile: graphqlConfig?.schemaDestination || './src/schema.graphql',
+          debug: graphqlConfig?.debug
+          // context: ({ req }) => ({ req }),
+        };
+      },
+
+      inject: [ConfigService]
     }),
     I18nModule.forRoot({
       fallbackLanguage: 'en',
