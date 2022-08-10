@@ -246,13 +246,9 @@ export default function* pageSaga() {
     fork(watchGetPagesByAccountId),
     fork(watchFetchAllPages),
     fork(watchFetchAllPagesSuccess),
-<<<<<<< HEAD
     fork(watchFetchAllPagesFailure),
     fork(watchEditPage),
     fork(watchEditPageFailure),
     fork(watchEditPageSuccess),
-=======
-    fork(watchFetchAllPagesFailure)
->>>>>>> master
   ]);
 }
