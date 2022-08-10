@@ -64,7 +64,7 @@ const Home: React.FC = () => {
     <>
       <WalletInfoComponent />
       <StyledSpacer />
-      <h2 style={{ color: '#6f2dbd' }}>
+      <h2 style={{ color: 'var(--color-primary)' }}>
         <ThemedWalletOutlined /> {intl.get('account.manageLixi')}
       </h2>
 

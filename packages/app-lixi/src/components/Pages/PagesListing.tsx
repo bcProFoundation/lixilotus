@@ -1,5 +1,5 @@
 import { DislikeOutlined, FilterOutlined, LikeOutlined } from '@ant-design/icons';
-import { Button, List, Menu, MenuProps, message, Modal, Space } from 'antd';
+import { Button, List, Menu, MenuProps, message, Modal, Radio, Space } from 'antd';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import React from 'react';
@@ -28,7 +28,7 @@ const Content = styled.div`
   text-align: left;
   padding-left: 2rem;
   h3 {
-    color: red;
+    color: var(--color-primary);
   }
 `;
 
@@ -207,7 +207,7 @@ const PagesListing: React.FC = () => {
                 <IconText icon={LikeOutlined} text={item.upVote} key="list-vertical-like-o" dataItem={item} />
                 <IconText icon={DislikeOutlined} text={item.downVote} key="list-vertical-dis-like-o" dataItem={item} />
               </GroupIconText>
-              <Button onClick={item => onLixiClick(item)}>lixi</Button>
+              <Button type='primary' onClick={item => onLixiClick(item)}>lixi</Button>
             </ActionBar>
           </List.Item>
         )}
