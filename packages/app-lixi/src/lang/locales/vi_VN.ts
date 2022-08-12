@@ -301,6 +301,7 @@ export default {
   'page.name': 'Tên',
   'page.inputName': 'Vui lòng nhập tên',
   'page.title': 'Tiêu đề',
+  'page.titleShared': 'Please input title',
   'page.inputTitle': 'Vui lòng nhập tiêu đề',
   'page.walletAddress': 'Địa chỉ ví',
   'page.avatar': 'Ảnh đại diện',
@@ -316,6 +317,7 @@ export default {
   'page.createPageSuccessful': 'Trang đã tạo thành công',
   'page.unableCreatePageServer': 'Không thể kết nối server tạo trang',
   'page.errorWhenCreatePage': 'Đã có lỗi xảy ra khi tạo mới trang',
+  'page.copyToClipboard': 'Liên kết đã được sao chép',
 
   /* 14.Country */
   'country.unablegetCountries': 'Không thể tải quốc gia',
