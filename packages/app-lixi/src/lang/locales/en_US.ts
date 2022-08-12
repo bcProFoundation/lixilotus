@@ -86,6 +86,14 @@ export default {
   'account.accountChangeLocaleSuccess': 'Account locale has changed to {language}',
   'account.accountDeleteSuccess': 'The account has been deleted successfully.',
   'account.accountImportSuccess': 'The account has been imported successfully.',
+  'account.login': 'Sign In',
+  'account.register': 'Register',
+  'account.emailRequired': ' Email is required',
+  'account.passwordRequired': 'Password is required',
+  'account.invalidEmail': 'Invalid email address',
+  'account.invalidPassword': 'Invalid password',
+  'account.matchPassword': 'Password must match',
+  'account.repeatPassword': 'Repeat password',
 
   /* 03.Lixi */
   'lixi.sub-lixi': 'Sub-lixi',
@@ -290,6 +298,7 @@ export default {
   'page.name': 'Name',
   'page.inputName': 'Please input name',
   'page.title': 'Title',
+  'page.titleShared': 'Please input title',
   'page.inputTitle': 'Please input title',
   'page.walletAddress': 'Wallet address',
   'page.avatar': 'Avatar',
@@ -305,6 +314,7 @@ export default {
   'page.createPageSuccessful': 'Create page successful',
   'page.unableCreatePageServer': 'Unable to create page on server',
   'page.errorWhenCreatePage': "There's an error happens when create new Page",
+  'page.copyToClipboard': 'Link copied to clipboard',
 
   /* 14.Country */
   'country.unablegetCountries': 'Unable to get countries',

@@ -59,6 +59,7 @@ declare module 'styled-components' {
     footer: {
       background: string;
       navIconInactive: string;
+      color: string;
     };
     forms: {
       error: string;

@@ -73,7 +73,7 @@ const EnvelopeCarousel = (props: EnvelopeCarouselPros) => {
                     color: '#fff',
                     lineHeight: '160px',
                     textAlign: 'center',
-                    border: isActive ? 'solid 2px #6f2dbd' : 'none',
+                    border: isActive ? 'solid 2px var(--color-primary)' : 'none',
                     padding: isActive ? '1px' : '0',
                     boxShadow: 'rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px'
                   }}

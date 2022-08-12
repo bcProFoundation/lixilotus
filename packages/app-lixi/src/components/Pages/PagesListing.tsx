@@ -1,5 +1,5 @@
 import { DislikeOutlined, FilterOutlined, LikeOutlined } from '@ant-design/icons';
-import { Button, List, Menu, MenuProps, message, Modal, Space } from 'antd';
+import { Button, List, Menu, MenuProps, message, Modal, Radio, Space } from 'antd';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import React from 'react';
@@ -11,24 +11,24 @@ import { fetchAllPages, setSelectedPage } from '@store/page/action';
 import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
 import { push } from 'connected-next-router';
 import _ from 'lodash';
+import Image from 'next/image';
 
 const CardContainer = styled.div`
   display: flex;
 `;
 
-const Image = styled.div`
-  width: fit-content;
-  img {
-    width: 80px;
-    height: 80px;
-  }
+const StyledImage = styled(Image)`
+  width: 80px !important;
+  height: 80px !important;
+  min-width: auto !important;
+  min-height: auto !important;
 `;
 
 const Content = styled.div`
   text-align: left;
   padding-left: 2rem;
   h3 {
-    color: red;
+    color: var(--color-primary);
   }
 `;
 
@@ -83,20 +83,29 @@ const PagesListing: React.FC = () => {
       .catch(e => {
         setBalanceAccount(0);
       });
-
   }, []);
 
-  let mapPagesList = (lists) => {
+  let mapPagesList = lists => {
     if (lists.length != 0) {
       lists.forEach(item => {
-        if (!item.hasOwnProperty('upVote') && !item.hasOwnProperty('downVote') ) {
+        if (!item.hasOwnProperty('upVote') && !item.hasOwnProperty('downVote')) {
           item.upVote = Math.floor(Math.random() * 101);
           item.downVote = Math.floor(Math.random() * 101);
         }
+
+        const avatarThumbnail = item.avatar
+          ? item.avatar.upload.url.replace(/(\.[\w\d_-]+)$/i, '-200$1')
+          : '/images/lotus_logo.png';
+        const coverThumbnail = item.cover
+          ? item.cover.upload.url.replace(/(\.[\w\d_-]+)$/i, '-200$1')
+          : '/images/lotus_logo.png';
+
+        item.avatar = avatarThumbnail;
+        item.cover = coverThumbnail;
       });
     }
     return lists;
-  }
+  };
 
   const IconText = ({ icon, text, dataItem }: { icon: React.FC; text: string; dataItem: any }) => (
     <Space onClick={e => (icon === LikeOutlined ? upVoteShop(dataItem) : downVoteShop(dataItem))}>
@@ -189,11 +198,9 @@ const PagesListing: React.FC = () => {
             key={item.title}
           >
             <CardContainer>
-              <Image>
-                <img src={item.avatar} alt="" />
-              </Image>
+              <StyledImage src={item.avatar} width="80px" height="80px" />
               <Content>
-                <h3 onClick={() => routerShopDetail(item.title)}>{item.title}</h3>
+                <h3 onClick={() => routerShopDetail(item.id)}>{item.title}</h3>
                 <p>{item.address}</p>
                 <p>{item.description}</p>
               </Content>
@@ -203,7 +210,9 @@ const PagesListing: React.FC = () => {
                 <IconText icon={LikeOutlined} text={item.upVote} key="list-vertical-like-o" dataItem={item} />
                 <IconText icon={DislikeOutlined} text={item.downVote} key="list-vertical-dis-like-o" dataItem={item} />
               </GroupIconText>
-              <Button onClick={item => onLixiClick(item)}>lixi</Button>
+              <Button type="primary" onClick={item => onLixiClick(item)}>
+                lixi
+              </Button>
             </ActionBar>
           </List.Item>
         )}

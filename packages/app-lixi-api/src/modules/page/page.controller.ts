@@ -18,6 +18,7 @@ import {
   UseGuards
 } from '@nestjs/common';
 import { FastifyRequest } from 'fastify';
+import { url } from 'inspector';
 import * as _ from 'lodash';
 import { I18n, I18nContext, I18nService } from 'nestjs-i18n';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
@@ -35,7 +36,28 @@ export class PageController {
   @Get()
   async getAllPages(): Promise<any> {
     try {
-      const pages = await this.prisma.page.findMany();
+      const pages = await this.prisma.page.findMany({
+        include: {
+          avatar: {
+            include: {
+              upload: {
+                select: {
+                  url: true
+                }
+              }
+            }
+          },
+          cover: {
+            include: {
+              upload: {
+                select: {
+                  url: true
+                }
+              }
+            }
+          }
+        }
+      });
 
       if (!pages) {
         const pageNotExist = await this.i18n.t('page.messages.pageNotExist');
@@ -55,14 +77,31 @@ export class PageController {
   }
 
   @Get(':id')
-  async get(@Param('id') id: string): Promise<PageDto> {
+  async get(@Param('id') id: string): Promise<any> {
     try {
       const page = await this.prisma.page.findUnique({
         where: {
           id: id
         },
         include: {
-          children: true
+          avatar: {
+            include: {
+              upload: {
+                select: {
+                  url: true
+                }
+              }
+            }
+          },
+          cover: {
+            include: {
+              upload: {
+                select: {
+                  url: true
+                }
+              }
+            }
+          }
         }
       });
 
@@ -71,7 +110,7 @@ export class PageController {
         throw new VError(pageNotExist);
       }
 
-      return new PageDto(page);
+      return page;
     } catch (err: unknown) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);

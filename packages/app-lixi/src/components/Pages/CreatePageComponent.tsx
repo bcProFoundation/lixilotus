@@ -189,8 +189,8 @@ const CreatePageComponent: React.FC = isEditPage => {
       country: newPageCountry,
       state: newPageState,
       address: newPageAddress,
-      avatar: avatar.id,
-      cover: cover.id
+      avatar: avatar?.id,
+      cover: cover?.id
     };
     if (valueCreatePage) dispatch(postPage(valueCreatePage));
   };

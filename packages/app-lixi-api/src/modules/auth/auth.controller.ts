@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Post, Request, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, Request, Res, UseGuards } from '@nestjs/common';
 import { FastifyReply, FastifyRequest } from 'fastify';
+import VError from 'verror';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwtauth.guard';
 
@@ -20,7 +21,12 @@ export class AuthController {
       });
       return token;
     } catch (err) {
-      throw err;
+      if (err instanceof VError) {
+        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      } else {
+        const error = new VError.WError(err as Error, 'auth.messages.loginFailed');
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
     }
   }
 

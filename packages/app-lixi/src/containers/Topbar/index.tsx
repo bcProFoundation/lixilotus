@@ -101,7 +101,7 @@ const NotificationMenu = (notifications: Notification[], account: Account) => {
                 <StyledSwipeToDelete
                   key={notification.id}
                   onDelete={() => handleDelete(account, notification.id)}
-                  deleteColor="#6f2dbd"
+                  deleteColor="var(--color-primary)"
                 >
                   <StyledComment
                     key={notification.id}
@@ -255,7 +255,7 @@ const Topbar = ({ className }: TopbarProps) => {
             count={notifications.length}
             overflowCount={9}
             offset={[notifications.length < 10 ? 0 : 5, 25]}
-            color="#6f2dbd"
+            color="var(--color-primary)"
           >
             <StyledBell twoToneColor="#6f2dbd" />
           </Badge>

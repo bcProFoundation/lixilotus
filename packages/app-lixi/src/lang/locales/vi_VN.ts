@@ -85,6 +85,14 @@ export default {
   'account.accountDeleteSuccess': 'Xóa tài khoản thành công.',
   'account.accountImportSuccess': 'Tài khoản được nhập thành công.',
   'account.accountChangeLocaleSuccess': 'Ngôn ngữ được cập nhật thành {language}.',
+  'account.login': 'Đăng nhập',
+  'account.register': 'Đăng ký',
+  'account.emailRequired': ' Vui lòng nhập email',
+  'account.passwordRequired': 'Vui lòng nhập mật khẩu',
+  'account.invalidEmail': 'Email không hợp lệ',
+  'account.invalidPassword': 'Mật khẩu không hợp lệ',
+  'account.matchPassword': 'Mật khẩu phải trùng',
+  'account.repeatPassword': 'Vui lòng nhập lại mật khẩu ',
 
   /* 03.Lixi */
   'lixi.sub-lixi': 'Bao lì xì phụ',
@@ -293,6 +301,7 @@ export default {
   'page.name': 'Tên',
   'page.inputName': 'Vui lòng nhập tên',
   'page.title': 'Tiêu đề',
+  'page.titleShared': 'Please input title',
   'page.inputTitle': 'Vui lòng nhập tiêu đề',
   'page.walletAddress': 'Địa chỉ ví',
   'page.avatar': 'Ảnh đại diện',
@@ -308,6 +317,7 @@ export default {
   'page.createPageSuccessful': 'Trang đã tạo thành công',
   'page.unableCreatePageServer': 'Không thể kết nối server tạo trang',
   'page.errorWhenCreatePage': 'Đã có lỗi xảy ra khi tạo mới trang',
+  'page.copyToClipboard': 'Liên kết đã được sao chép',
 
   /* 14.Country */
   'country.unablegetCountries': 'Không thể tải quốc gia',

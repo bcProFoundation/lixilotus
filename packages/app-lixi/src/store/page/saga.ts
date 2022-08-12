@@ -111,7 +111,6 @@ function* getPagesByAccountIdSaga(action: PayloadAction<number>) {
 
 function* fetchAllPagesSaga() {
   try {
-
     yield put(showLoading(fetchAllPages.type));
 
     const data: any = yield call(pageApi.getAllPages);
@@ -128,11 +127,11 @@ function* fetchAllPagesSaga() {
 }
 
 function* fetchAllPagesSuccessSaga(action: any) {
-  yield put(hideLoading(fetchAllPages.type))
+  yield put(hideLoading(fetchAllPages.type));
 }
 
 function* fetchAllPagesFailureSaga(action: any) {
-  yield put(hideLoading(fetchAllPages.type))
+  yield put(hideLoading(fetchAllPages.type));
 }
 
 function* watchPostPage() {
@@ -176,6 +175,6 @@ export default function* pageSaga() {
     fork(watchGetPagesByAccountId),
     fork(watchFetchAllPages),
     fork(watchFetchAllPagesSuccess),
-    fork(watchFetchAllPagesFailure),
+    fork(watchFetchAllPagesFailure)
   ]);
 }

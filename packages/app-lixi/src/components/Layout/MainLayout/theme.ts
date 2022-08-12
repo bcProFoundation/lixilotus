@@ -2,9 +2,9 @@ import { DefaultTheme } from 'styled-components';
 
 export const theme: DefaultTheme = {
   name: 'Default',
-  primary: '#6f2dbd',
-  secondary: '#CD0BC3',
-  brandSecondary: '#CD0BC3',
+  primary: 'var(--color-primary)',
+  secondary: 'var(--color-secondary)',
+  brandSecondary: 'var(--color-secondary)',
   grey: '#adaeae',
   greyLight: '#d5d5d5',
   greyDark: '#757575',
@@ -17,7 +17,7 @@ export const theme: DefaultTheme = {
   wallet: {
     background: '#fff',
     text: {
-      primary: '#6f2dbd',
+      primary: 'var(--color-primary)',
       secondary: '#6212f5'
     },
     switch: {
@@ -25,7 +25,7 @@ export const theme: DefaultTheme = {
         shadow: 'inset 8px 8px 16px #44107A, inset -8px -8px 16px #6f2dbd'
       },
       activeToken: {
-        background: '#CD0BC3',
+        background: 'var(--color-secondary)',
         shadow: 'inset 5px 5px 11px #FF21D0, inset -5px -5px 11px #CD0BC3'
       },
       inactive: {
@@ -40,7 +40,7 @@ export const theme: DefaultTheme = {
     color: '',
     boxShadow:
       'rgba(0, 0, 0, 0.01) 0px 0px 1px, rgba(0, 0, 0, 0.04) 0px 4px 8px,rgba(0, 0, 0, 0.04) 0px 16px 24px, rgba(0, 0, 0, 0.01) 0px 24px 32px',
-    border: '#e9eaed',
+    border: 'var(--border-item)',
     hoverBorder: '#231F20'
   },
   listItem: {
@@ -48,31 +48,32 @@ export const theme: DefaultTheme = {
     color: '',
     boxShadow:
       'rgba(0, 0, 0, 0.01) 0px 0px 1px, rgba(0, 0, 0, 0.04) 0px 4px 8px,rgba(0, 0, 0, 0.04) 0px 16px 24px, rgba(0, 0, 0, 0.01) 0px 24px 32px',
-    border: '#e9eaed',
+    border: 'var(--border-item)',
     hoverBorder: '#231F20'
   },
   forms: {
     error: '#FF21D0',
     border: '#e7edf3',
-    text: '#6f2dbd',
+    text: 'var(--color-primary)',
     addonBackground: '#f4f4f4',
-    addonForeground: '#6f2dbd',
+    addonForeground: 'var(--color-primary)',
     selectionBackground: '#fff'
   },
   footer: {
     background: '#fff',
-    navIconInactive: '#949494'
+    navIconInactive: '#949494',
+    color: 'var(--text-color-1)'
   },
   icons: {
-    outlined: '#6f2dbd',
+    outlined: 'var(--color-primary)',
     outlinedFaded: '#bb98ff',
-    filled: '#6f2dbd',
+    filled: 'var(--color-primary)',
     filledFaded: '#bb98ff'
   },
   modals: {
     buttons: { background: '#fff' }
   },
-  settings: { delete: '#CD0BC3' },
+  settings: { delete: 'var(--color-secondary)' },
   qr: {
     copyBorderCash: '#00ABE7',
     copyBorderToken: '#FF21D0',
@@ -99,7 +100,7 @@ export const theme: DefaultTheme = {
     color: '#3e3f42'
   },
   radio: {
-    primary: '#6f2dbd',
+    primary: 'var(--color-primary)',
     secondary: '#e8e8e8',
     borderRadius: '6px'
   },
