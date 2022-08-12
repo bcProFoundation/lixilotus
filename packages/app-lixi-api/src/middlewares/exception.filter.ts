@@ -28,17 +28,15 @@ export class HttpExceptionFilter implements ExceptionFilter {
       path: request.url,
       method: request.method,
       errorName: exception?.name,
-      message: exception?.message
+      message: exception?.message,
+      stack: exception?.stack
     };
 
     const prodErrorResponse: any = {
       statusCode,
       message
     };
-    this.logger.error(
-      `error at request method: ${request.method} request url${request.url}`,
-      JSON.stringify(devErrorResponse)
-    );
+    this.logger.error(devErrorResponse, 'HttpExceptionFilter');
     response.code(statusCode).send(process.env.NODE_ENV === 'development' ? devErrorResponse : prodErrorResponse);
   }
 }

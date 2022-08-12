@@ -12,27 +12,25 @@ import { NotificationService } from './notification.service';
 
 @Module({
   imports: [
-    BullModule.registerQueueAsync(
-      {
-        name: NOTIFICATION_OUTBOUND_QUEUE,
-        inject: [ConfigService],
-        useFactory: (config: ConfigService) => {
-          return {
-            name: NOTIFICATION_OUTBOUND_QUEUE,
-            connection: new IORedis({
-              maxRetriesPerRequest: null,
-              enableReadyCheck: false,
-              host: config.get<string>('REDIS_HOST') ? config.get<string>('REDIS_HOST') : 'redis-lixi',
-              port: config.get<string>('REDIS_PORT') ? _.toSafeInteger(config.get<string>('REDIS_PORT')) : 6379,
-            })
-          }
-        }
+    BullModule.registerQueueAsync({
+      name: NOTIFICATION_OUTBOUND_QUEUE,
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        return {
+          name: NOTIFICATION_OUTBOUND_QUEUE,
+          connection: new IORedis({
+            maxRetriesPerRequest: null,
+            enableReadyCheck: false,
+            host: config.get<string>('REDIS_HOST') ? config.get<string>('REDIS_HOST') : 'redis-lixi',
+            port: config.get<string>('REDIS_PORT') ? _.toSafeInteger(config.get<string>('REDIS_PORT')) : 6379
+          })
+        };
       }
-    ),
+    }),
     AuthModule
   ],
   controllers: [NotificationController],
   providers: [NotificationGateway, NotificationService, NotificationOutboundProcessor],
   exports: [NotificationGateway, NotificationService, NotificationOutboundProcessor]
 })
-export class NotificationModule { }
+export class NotificationModule {}

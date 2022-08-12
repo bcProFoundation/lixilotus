@@ -3,13 +3,15 @@ export class PageDto {
   pageAccountId: number;
   name: string;
   title: string;
+  walletAddress: string;
   description: string;
   avatar: string;
   cover: string;
-  parentId: Nullable<string>;
-  handleId: string;
-  address: string;
+  parentId?: Nullable<string>;
+  address?: string;
   website: string;
+  country?: string;
+  state?: string;
   createdAt: Date;
   updatedAt: Date;
 

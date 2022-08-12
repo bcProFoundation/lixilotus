@@ -9,13 +9,10 @@ const initialState: ActionState = {
   payload: null,
   meta: null,
   error: false,
-  count: 0,
-}
+  count: 0
+};
 
-export const actionReducer = (
-  state = initialState,
-  action: AnyAction
-): ActionState => {
+export const actionReducer = (state = initialState, action: AnyAction): ActionState => {
   return {
     ...state,
     type: action.type,
@@ -23,5 +20,5 @@ export const actionReducer = (
     meta: action.meta ?? null,
     error: action.error ?? null,
     count: state.count + 1
-  }
-}
+  };
+};

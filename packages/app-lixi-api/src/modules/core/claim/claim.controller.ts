@@ -5,6 +5,7 @@ import {
   CreateClaimDto,
   fromSmallestDenomination,
   LixiType,
+  LotteryAddress,
   toSmallestDenomination,
   ViewClaimDto
 } from '@bcpros/lixi-models';
@@ -19,8 +20,8 @@ import * as _ from 'lodash';
 import moment from 'moment';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { ReqSocket } from 'src/decorators/req.socket.decorator';
-import { LixiNftService } from 'src/modules/nft/lixinft.service';
 import { LixiService } from 'src/modules/core/lixi/lixi.service';
+import { LixiNftService } from 'src/modules/nft/lixinft.service';
 import { WalletService } from 'src/modules/wallet/wallet.service';
 import { aesGcmDecrypt, base58ToNumber } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
@@ -94,7 +95,7 @@ export class ClaimController {
   ): Promise<ClaimDto | any> {
     const captchaResBody = {
       event: {
-        token: claimApi.captchaToken,
+        token: claimApi?.captchaToken || '',
         siteKey: SITE_KEY,
         expectedAction: 'Claim'
       }
@@ -158,6 +159,12 @@ export class ClaimController {
           }
         });
 
+        const page = await this.prisma.page.findUnique({
+          where: {
+            pageAccountId: _.toSafeInteger(lixi?.accountId)
+          }
+        });
+
         // isFamilyFriendly == true
         if (lixi?.isFamilyFriendly) {
           if (countClaimAddress.length > 0 || countIpaddress >= 5) {
@@ -173,7 +180,7 @@ export class ClaimController {
           }
         }
 
-        if (process.env.NODE_ENV !== 'development') {
+        if (process.env.NODE_ENV !== 'development' && claimApi.captchaToken !== 'isAbcpay') {
           await checkingCaptcha();
           const geolocation = geoip.lookup(ip);
           const country = countries.find(country => country.id === lixi?.country);
@@ -198,10 +205,14 @@ export class ClaimController {
         }
 
         //check if lixi is one time code
+        let parentLixi;
         if (lixi.parentId != null) {
-          const parentLixi = await this.prisma.lixi.findUnique({
+          parentLixi = await this.prisma.lixi.findUnique({
             where: {
               id: lixi.parentId
+            },
+            include: {
+              distributions: true
             }
           });
 
@@ -220,6 +231,7 @@ export class ClaimController {
         }
 
         const claimAddressBalance = await this.xpiWallet.getBalance(address);
+
         if (claimAddressBalance < toSmallestDenomination(new BigNumber(lixi.minStaking))) {
           const minStakingToClaim = await i18n.t('claim.messages.minStakingToClaim', {
             args: { minStaking: lixi.minStaking }
@@ -250,9 +262,14 @@ export class ClaimController {
 
         const xpiBalance = fromSmallestDenomination(balance);
 
+        let numberOfDistributions = 1;
         let satoshisToSend;
-        if (lixi.claimType == ClaimType.OneTime) {
-          const xpiValue = await this.walletService.onMax(lixiAddress);
+        if (parentLixi && parentLixi.claimType == ClaimType.OneTime) {
+          numberOfDistributions = parentLixi.joinLotteryProgram
+            ? parentLixi.distributions.length + 2
+            : parentLixi.distributions.length + 1;
+
+          const xpiValue = lixi.amount;
           satoshisToSend = toSmallestDenomination(new BigNumber(xpiValue));
         } else if (lixi.lixiType == LixiType.Random) {
           const maxXpiValue = xpiBalance < lixi.maxValue ? xpiBalance : lixi.maxValue;
@@ -277,25 +294,38 @@ export class ClaimController {
         }
 
         const amountSats = Math.floor(satoshisToSend.toNumber());
-        const outputs = [
+
+        let outputs: { address: string; amountSat: number }[] = [];
+        outputs = [
           {
             address: claimApi.claimAddress,
             amountSat: amountSats
           }
         ];
+        if (parentLixi && parentLixi.claimType == ClaimType.OneTime && parentLixi?.distributions) {
+          _.map(parentLixi.distributions, item => {
+            outputs.push({
+              address: item.address,
+              amountSat: amountSats
+            });
+          });
+        }
+        if (parentLixi?.joinLotteryProgram === true) {
+          outputs.push({
+            address: LotteryAddress,
+            amountSat: amountSats
+          });
+        }
 
-        if (!utxoStore || !(utxoStore as any).bchUtxos || !(utxoStore as any).bchUtxos) {
+        if (!utxoStore || (!(utxoStore as any).bchUtxos && !(utxoStore as any).nullUtxos)) {
           const utxoEmpty = await i18n.t('claim.messages.utxoEmpty');
           throw new VError(utxoEmpty);
         }
 
         // Determine the UTXOs needed to be spent for this TX, and the change
         // that will be returned to the wallet.
-        const { necessaryUtxos, change } = this.xpiWallet.sendBch.getNecessaryUtxosAndChange(
-          outputs,
-          (utxoStore as any).bchUtxos,
-          1.0
-        );
+        const utxosStore = (utxoStore as any).bchUtxos.concat((utxoStore as any).nullUtxos);
+        const { necessaryUtxos, change } = this.xpiWallet.sendBch.getNecessaryUtxosAndChange(outputs, utxosStore, 1.0);
 
         // Create an instance of the Transaction Builder.
         const transactionBuilder: any = new this.XPI.TransactionBuilder();
@@ -310,6 +340,7 @@ export class ClaimController {
           transactionBuilder.addOutput(receiver.address, receiver.amountSat);
         });
 
+        // No need the change, all the change (if there's any) comes to miner
         if (change && change > 546) {
           transactionBuilder.addOutput(lixiAddress, change);
         }
@@ -390,7 +421,8 @@ export class ClaimController {
             amount: Number(claim.amount),
             message: claim.lixi.envelopeMessage,
             nftTokenId: claim.nftTokenId,
-            nftTokenUrl: claim.nftTokenUrl
+            nftTokenUrl: claim.nftTokenUrl,
+            pageName: page?.name || ''
           };
 
           return result;
@@ -421,7 +453,11 @@ export class ClaimController {
     if (claimApi) {
       try {
         const ip = (headerIp || socket.remoteAddress) as string;
+
         let claimCode = _.trim(claimApi.claimCode) ?? '';
+
+        this.logger.log(claimCode, 'claimcode');
+
         if (claimCode && claimApi.claimCode.includes('lixi_')) {
           const matches = claimCode.match('(?<=lixi_).*');
           if (matches && matches[0]) {
@@ -487,6 +523,9 @@ export class ClaimController {
           const parentLixi = await this.prisma.lixi.findUnique({
             where: {
               id: lixi.parentId
+            },
+            include: {
+              distributions: true
             }
           });
 
@@ -517,7 +556,6 @@ export class ClaimController {
         // Generate the HD wallet.
         const childNode = this.XPI.HDNode.fromXPriv(xPriv);
         const lixiAddress: string = this.XPI.HDNode.toXAddress(childNode);
-        const keyPair = this.XPI.HDNode.toKeyPair(childNode);
         const balance = await this.xpiWallet.getBalance(lixiAddress);
 
         if (balance === 0) {
@@ -533,8 +571,12 @@ export class ClaimController {
         return true;
       } catch (err) {
         if (err instanceof VError) {
+          this.logger.error('verror');
+          this.logger.error(err);
           throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
         } else {
+          this.logger.error('not verror');
+          this.logger.error(err);
           this.logger.error(err);
           const unableClaim = await i18n.t('claim.messages.unableClaim');
           const error = new VError.WError(err as Error, unableClaim);

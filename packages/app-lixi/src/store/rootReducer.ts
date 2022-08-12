@@ -19,10 +19,21 @@ import { notificationReducer } from './notification/reducer';
 import { AccountsState } from './account/state';
 import { HYDRATE } from 'next-redux-wrapper';
 import { SettingsState } from './settings/state';
+import { PageState } from './page/state';
+import { pageReducer } from './page/reducer';
+import { countryReducer, stateReducer } from './country/reducer';
+import { CountriesState, StatesState } from './country/state';
+
+const persistConfig = {
+  key: 'root',
+  storage: storage,
+  blacklist: ['accounts']
+};
 
 const accountPersistConfig: PersistConfig<AccountsState> = {
   key: 'accounts',
-  storage: storage
+  storage: storage,
+  blacklist: [`envelopeUpload`, 'pageCoverUpload', 'pageAvatarUpload']
 };
 
 const lixiPersistConfig: PersistConfig<LixiesState> = {
@@ -35,10 +46,25 @@ const claimsPersistConfig: PersistConfig<ClaimsState> = {
   storage: storage
 };
 
+const shopPersistConfig: PersistConfig<PageState> = {
+  key: 'pages',
+  storage: storage
+};
+
 const settingsPersistConfig: PersistConfig<SettingsState> = {
   key: 'settings',
   storage: storage,
   whitelist: ['locale']
+};
+
+const countryPersistConfig: PersistConfig<CountriesState> = {
+  key: 'countries',
+  storage: storage
+};
+
+const statePersistConfig: PersistConfig<StatesState> = {
+  key: 'states',
+  storage: storage
 };
 
 export const serverReducer = combineReducers({
@@ -53,6 +79,9 @@ export const serverReducer = combineReducers({
   error: errorReducer,
   settings: settingsReducer,
   notifications: notificationReducer,
+  pages: pageReducer,
+  countries: countryReducer,
+  states: stateReducer,
   // This is use for useReduxEffect
   // Should be always at the end
   action: actionReducer
@@ -64,12 +93,15 @@ export const appReducer = combineReducers({
   lixies: persistReducer(lixiPersistConfig, lixiReducer),
   claims: persistReducer(claimsPersistConfig, claimReducer),
   settings: persistReducer(settingsPersistConfig, settingsReducer),
+  pages: persistReducer(shopPersistConfig, pageReducer),
   notifications: notificationReducer,
   envelopes: envelopeReducer,
   loading: loadingReducer,
   modal: modalReducer,
   toast: toastReducer,
   error: errorReducer,
+  countries: persistReducer(countryPersistConfig, countryReducer),
+  states: persistReducer(statePersistConfig, stateReducer),
   // This is use for useReduxEffect
   // Should be always at the end
   action: actionReducer
@@ -91,4 +123,4 @@ const reducer = (state, action: AnyAction) => {
   }
 };
 
-export default reducer;
+export default persistReducer(persistConfig, reducer);

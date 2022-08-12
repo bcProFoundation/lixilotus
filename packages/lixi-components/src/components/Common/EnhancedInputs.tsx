@@ -1,15 +1,12 @@
 import * as React from 'react';
 import intl from 'react-intl-universal';
-import { Form, FormItemProps, Input, InputProps, Select } from 'antd';
-import {
-  ThemedDollarOutlined,
-  ThemedWalletOutlined,
-} from './CustomIcons';
+import { Form, FormItemProps, Input, InputProps, Modal, Select } from 'antd';
+import { ThemedDollarOutlined, ThemedQuerstionCircleOutlinedFaded, ThemedWalletOutlined } from './CustomIcons';
 import styled, { css } from 'styled-components';
 import ScanQRCode from './ScanQRCode';
 // import useBCH from '@hooks/useBCH';
 import { currency } from './Ticker';
-import { LockOutlined } from '@ant-design/icons';
+import { HeartOutlined, LockOutlined, TeamOutlined } from '@ant-design/icons';
 import UploadQRCode from './UploadQRCode';
 
 export const AntdFormCss = css`
@@ -22,10 +19,8 @@ export const AntdFormCss = css`
   input.ant-input,
   textarea.ant-input,
   .ant-select-selection,
-  .ant-select-item-option-active
-  .ant-select-item {
-      background-color: ${props =>
-  props.theme.forms.selectionBackground} !important;
+  .ant-select-item-option-active .ant-select-item {
+    background-color: ${props => props.theme.forms.selectionBackground} !important;
     box-shadow: none !important;
     border-radius: 4px;
     font-weight: bold;
@@ -42,13 +37,7 @@ export const AntdFormCss = css`
     border: 1px solid ${props => props.theme.wallet.borders.color} !important;
     align-items: center;
   }
-  .ant-form-item-has-error
-    > div
-    > div.ant-form-item-control-input
-    > div
-    > span
-    > span
-    > span.ant-input-affix-wrapper {
+  .ant-form-item-has-error > div > div.ant-form-item-control-input > div > span > span > span.ant-input-affix-wrapper {
     background-color: ${props => props.theme.forms.selectionBackground};
     border-color: ${props => props.theme.forms.error} !important;
   }
@@ -61,9 +50,7 @@ export const AntdFormCss = css`
     border-color: ${props => props.theme.forms.error} !important;
   }
 
-  .ant-form-item-has-error
-    .ant-select:not(.ant-select-disabled):not(.ant-select-customize-input)
-    .ant-select-selector {
+  .ant-form-item-has-error .ant-select:not(.ant-select-disabled):not(.ant-select-customize-input) .ant-select-selector {
     background-color: ${props => props.theme.forms.selectionBackground};
     border-color: ${props => props.theme.forms.error} !important;
   }
@@ -84,11 +71,10 @@ export const AntdFormCss = css`
 `;
 
 export const AntdFormWrapper = styled.div`
-    ${AntdFormCss}
+  ${AntdFormCss}
 `;
 
-type InputAddonTextProps = {
-} & React.HTMLProps<HTMLSpanElement> & React.HTMLAttributes<HTMLElement>
+type InputAddonTextProps = {} & React.HTMLProps<HTMLSpanElement> & React.HTMLAttributes<HTMLElement>;
 
 export const InputAddonText = styled.span<InputAddonTextProps>`
   width: 100%;
@@ -96,15 +82,14 @@ export const InputAddonText = styled.span<InputAddonTextProps>`
   display: block;
 
   ${props =>
-  props.disabled
-    ? `
+    props.disabled
+      ? `
     cursor: not-allowed;
     `
-    : `cursor: pointer;`}
+      : `cursor: pointer;`}
 `;
 
-type InputNumberAddonTextProps = {
-} & React.HTMLProps<HTMLElement> & React.HTMLAttributes<HTMLElement>;
+type InputNumberAddonTextProps = {} & React.HTMLProps<HTMLElement> & React.HTMLAttributes<HTMLElement>;
 
 export const InputNumberAddonText = styled.span<InputNumberAddonTextProps>`
   background-color: ${props => props.theme.forms.addonBackground} !important;
@@ -114,14 +99,14 @@ export const InputNumberAddonText = styled.span<InputNumberAddonTextProps>`
   line-height: 47px;
 
   * {
-      color: ${props => props.theme.forms.addonForeground} !important;
+    color: ${props => props.theme.forms.addonForeground} !important;
   }
   ${props =>
-  props.disabled
-    ? `
+    props.disabled
+      ? `
     cursor: not-allowed;
     `
-    : `cursor: pointer;`}
+      : `cursor: pointer;`}
 `;
 
 export const StyledScanQRCode = styled(ScanQRCode)`
@@ -139,47 +124,31 @@ export const StyledScanQRCode = styled(ScanQRCode)`
 
 type SendXpiInputProps = {
   onMax: Function;
-  inputProps: {
-    dollar: number;
-    disabled?: boolean | undefined;
-  };
+  inputProps: any;
   selectProps: Object;
   activeFiatCode: string;
-}
+  help: string;
+} & InputProps &
+  FormItemProps;
 
-export const SendXpiInput = ({
-  onMax,
-  inputProps,
-  selectProps,
-  activeFiatCode,
-  ...otherProps
-}: SendXpiInputProps) => {
+export const SendXpiInput = ({ onMax, inputProps, selectProps, activeFiatCode, ...otherProps }: SendXpiInputProps) => {
   const { Option } = Select;
   const currencies = [
     {
       value: currency.ticker,
-      label: currency.ticker,
+      label: currency.ticker
     }
   ];
   const currencyOptions = currencies.map(currency => {
     return (
-      <Option
-        key={currency.value}
-        value={currency.value}
-        className="selectedCurrencyOption"
-      >
+      <Option key={currency.value} value={currency.value} className="selectedCurrencyOption">
         {currency.label}
       </Option>
     );
   });
 
   const CurrencySelect = (
-    <Select
-      defaultValue={currency.ticker}
-      className="select-after"
-      style={{ width: '25%' }}
-      {...selectProps}
-    >
+    <Select defaultValue={currency.ticker} className="select-after" style={{ width: '25%' }} {...selectProps}>
       {currencyOptions}
     </Select>
   );
@@ -190,21 +159,12 @@ export const SendXpiInput = ({
           <Input
             style={{ width: '58%', textAlign: 'left' }}
             type="number"
-            step={
-              inputProps.dollar === 1
-                ? 0.01
-                : 1 / 10 ** currency.cashDecimals
-            }
+            step={inputProps.dollar === 1 ? 0.01 : 1 / 10 ** currency.cashDecimals}
             prefix={
               inputProps.dollar === 1 ? (
                 <ThemedDollarOutlined />
               ) : (
-                <img
-                  src={currency.logo}
-                  alt=""
-                  width={16}
-                  height={16}
-                />
+                <img src={currency.logo} alt="" width={16} height={16} />
               )
             }
             {...inputProps}
@@ -214,10 +174,10 @@ export const SendXpiInput = ({
             style={{
               width: '17%',
               height: '60px',
-              lineHeight: '60px',
+              lineHeight: '60px'
             }}
             disabled={!!(inputProps || {}).disabled}
-            onClick={!(inputProps || {}).disabled && onMax()}
+            onClick={() => onMax()}
           >
             max
           </InputNumberAddonText>
@@ -227,14 +187,12 @@ export const SendXpiInput = ({
   );
 };
 
-
-
 type FormItemWithMaxAddonProps = {
-  onMax: Function,
+  onMax: Function;
   inputProps: {
-    disabled?: boolean | undefined
-  },
-}
+    disabled?: boolean | undefined;
+  };
+};
 
 export const FormItemWithMaxAddon = ({ onMax, inputProps, ...otherProps }: FormItemWithMaxAddonProps) => {
   return (
@@ -242,19 +200,9 @@ export const FormItemWithMaxAddon = ({ onMax, inputProps, ...otherProps }: FormI
       <Form.Item {...otherProps}>
         <Input
           type="number"
-          prefix={
-            <img
-              src={currency.logo}
-              alt=""
-              width={16}
-              height={16}
-            />
-          }
+          prefix={<img src={currency.logo} alt="" width={16} height={16} />}
           addonAfter={
-            <InputAddonText
-              disabled={!!(inputProps || {}).disabled}
-              onClick={!(inputProps || {}).disabled && onMax()}
-            >
+            <InputAddonText disabled={!!(inputProps || {}).disabled} onClick={!(inputProps || {}).disabled && onMax()}>
               max
             </InputAddonText>
           }
@@ -265,7 +213,6 @@ export const FormItemWithMaxAddon = ({ onMax, inputProps, ...otherProps }: FormI
   );
 };
 
-
 type FormItemWithQRCodeAddonProps = {
   onScan: Function;
   loadWithCameraOpen: boolean;
@@ -275,7 +222,7 @@ type FormItemWithQRCodeAddonProps = {
 
 // loadWithCameraOpen prop: if true, load page with camera scanning open
 export const FormItemWithQRCodeAddon = (props: FormItemWithQRCodeAddonProps) => {
-  const { onScan, loadWithCameraOpen, inputProps, ...otherProps } = props
+  const { onScan, loadWithCameraOpen, inputProps, ...otherProps } = props;
   return (
     <AntdFormWrapper>
       <Form.Item {...otherProps}>
@@ -284,15 +231,8 @@ export const FormItemWithQRCodeAddon = (props: FormItemWithQRCodeAddonProps) => 
           autoComplete="off"
           addonAfter={
             <>
-              <StyledScanQRCode
-                loadWithCameraOpen={loadWithCameraOpen}
-                onScan={onScan}
-                id={Date.now().toString()}
-              />
-              <UploadQRCode
-                onScan={onScan}
-                codeType='address'
-              />
+              <StyledScanQRCode loadWithCameraOpen={loadWithCameraOpen} onScan={onScan} id={Date.now().toString()} />
+              <UploadQRCode onScan={onScan} codeType="address" />
             </>
           }
           {...inputProps}
@@ -309,7 +249,6 @@ type FormItemClaimCodeXpiInputProps = {
 } & FormItemProps;
 
 export const FormItemClaimCodeXpiInput = (props: FormItemClaimCodeXpiInputProps) => {
-
   const { onScan, loadWithCameraOpen, inputProps, ...otherProps } = props;
   return (
     <AntdFormWrapper {...otherProps}>
@@ -321,15 +260,8 @@ export const FormItemClaimCodeXpiInput = (props: FormItemClaimCodeXpiInputProps)
           autoComplete="off"
           addonAfter={
             <>
-              <StyledScanQRCode
-                loadWithCameraOpen={loadWithCameraOpen}
-                onScan={onScan}
-                id={Date.now().toString()}
-              />
-              <UploadQRCode
-                onScan={onScan}
-                codeType='claimCode'
-              />
+              <StyledScanQRCode loadWithCameraOpen={loadWithCameraOpen} onScan={onScan} id={Date.now().toString()} />
+              <UploadQRCode onScan={onScan} codeType="claimCode" />
             </>
           }
           required
@@ -338,4 +270,179 @@ export const FormItemClaimCodeXpiInput = (props: FormItemClaimCodeXpiInputProps)
       </Form.Item>
     </AntdFormWrapper>
   );
-}
+};
+
+type FormItemStaffAddressInputProps = {
+  onScan: Function;
+  loadWithCameraOpen: boolean;
+  inputProps: InputProps;
+} & FormItemProps;
+
+export const FormItemStaffAddressInput = (props: FormItemStaffAddressInputProps) => {
+  const { onScan, loadWithCameraOpen, inputProps, ...otherProps } = props;
+  return (
+    <AntdFormWrapper {...otherProps}>
+      <Form.Item {...otherProps}>
+        <Input
+          prefix={<TeamOutlined />}
+          placeholder={intl.get('lixi.staffAddress')}
+          name="staffAddress"
+          autoComplete="off"
+          addonAfter={
+            <>
+              <StyledScanQRCode loadWithCameraOpen={loadWithCameraOpen} onScan={onScan} id={Date.now().toString()} />
+              <UploadQRCode onScan={onScan} codeType="staffAddress" />
+            </>
+          }
+          required
+          {...inputProps}
+        />
+      </Form.Item>
+    </AntdFormWrapper>
+  );
+};
+
+type FormItemCharityAddressInputProps = {
+  onScan: Function;
+  loadWithCameraOpen: boolean;
+  inputProps: InputProps;
+} & FormItemProps;
+
+export const FormItemCharityAddressInput = (props: FormItemCharityAddressInputProps) => {
+  const { onScan, loadWithCameraOpen, inputProps, ...otherProps } = props;
+  return (
+    <AntdFormWrapper {...otherProps}>
+      <Form.Item {...otherProps}>
+        <Input
+          prefix={<HeartOutlined />}
+          placeholder={intl.get('lixi.charityAddress')}
+          name="charityAddress"
+          autoComplete="off"
+          addonAfter={
+            <>
+              <StyledScanQRCode loadWithCameraOpen={loadWithCameraOpen} onScan={onScan} id={Date.now().toString()} />
+              <UploadQRCode onScan={onScan} codeType="charityAddress" />
+            </>
+          }
+          required
+          {...inputProps}
+        />
+      </Form.Item>
+    </AntdFormWrapper>
+  );
+};
+
+// OP_RETURN message related component
+const OpReturnMessageHelp = styled.div`
+  margin-top: 20px;
+  font-size: 12px;
+
+  .heading {
+    margin-left: -20px;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+
+  ul {
+    padding-left: 0;
+  }
+
+  em {
+    color: ${props => props.theme.primary} !important;
+  }
+`;
+
+export const OpReturnMessageInput = ({ value, onChange, maxByteLength, labelTop, labelBottom, ...otherProps }) => {
+  // in order to access the theme object provided by styled-component ThemeProvider
+  // we need to use Modal.useModal() hook
+  // see https://ant.design/components/modal/#FAQ
+  const [modal, contextHolder] = Modal.useModal();
+
+  // Help (?) Icon that shows the OP_RETURN info
+  const helpInfoIcon = (
+    <ThemedQuerstionCircleOutlinedFaded
+      onClick={() => {
+        // console.log(contextHolder);
+        modal.info({
+          centered: true,
+          okText: 'Got It',
+          title: 'Optional Message',
+          maskClosable: true,
+          content: (
+            <OpReturnMessageHelp>
+              <div className="heading">Higher Fee</div>
+              <ul>
+                <li>
+                  Transaction with attached message will incur <em>higher fee.</em>
+                </li>
+              </ul>
+              <div className="heading">Encryption</div>
+              <ul>
+                <li>Message is encrypted and only readable to the intended recipient.</li>
+                <li>
+                  Encrypted message can only be sent to <em>wallets with at least 1 outgoing transaction.</em>
+                </li>
+              </ul>
+              <div className="heading">Message Length</div>
+              <ul>
+                <li>
+                  Depending on your language, <em>each character may occupy from 1 to 4 bytes.</em>
+                </li>
+                <li>Encrypted message max length is 206 bytes.</li>
+              </ul>
+            </OpReturnMessageHelp>
+          )
+        });
+      }}
+    />
+  );
+
+  const trimMessage = msg => {
+    // keep trimming the message one character at time
+    // until the length in bytes < maxByteLength
+    let trim = msg;
+    while (Buffer.from(trim).length > maxByteLength) {
+      trim = trim.substring(0, trim.length - 1);
+    }
+    return trim;
+  };
+
+  const handleInputChange = event => {
+    // trim the input value against to maxByteLength
+    let msg = trimMessage(event.target.value);
+    // pass the value back up to parent component
+    onChange(msg);
+  };
+
+  return (
+    <AntdFormWrapper>
+      <Form.Item {...otherProps}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'flex-start',
+            alignItems: 'flex-end'
+          }}
+        >
+          <div style={{ flexGrow: 1 }}>{labelTop}</div>
+          <div>
+            {contextHolder}
+            {Buffer.from(value).length} / {maxByteLength} bytes {helpInfoIcon}
+          </div>
+        </div>
+
+        <Input.TextArea {...otherProps} onChange={handleInputChange} value={value} />
+        {labelBottom && (
+          <div
+            css={`
+              color: ${props => props.theme.greyLight};
+            `}
+            style={{ textAlign: 'right' }}
+          >
+            {labelBottom}
+          </div>
+        )}
+      </Form.Item>
+    </AntdFormWrapper>
+  );
+};

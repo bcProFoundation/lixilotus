@@ -82,6 +82,8 @@ import { saveAs } from 'file-saver';
 import moment from 'moment';
 import { refreshLixiSilent } from './actions';
 import { refreshLixiListSilent } from '@store/account/actions';
+import { removeUpload } from '@store/account/actions';
+import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
 
 const call: any = Effects.call;
 /**
@@ -117,7 +119,11 @@ function* generateLixiSaga(action: PayloadAction<GenerateLixiCommand>) {
     mnemonic: mnemonic,
     mnemonicHash: command.mnemonicHash,
     envelopeId: command.envelopeId,
-    envelopeMessage: command.envelopeMessage ?? ''
+    envelopeMessage: command.envelopeMessage ?? '',
+    uploadId: command.upload ? command.upload.id : null,
+    staffAddress: command.staffAddress,
+    charityAddress: command.charityAddress,
+    joinLotteryProgram: command.joinLotteryProgram
   };
 
   yield put(postLixi(createLixiCommand));
@@ -283,8 +289,10 @@ function* postLixiSuccessSaga(action: PayloadAction<Lixi>) {
         duration: 5
       })
     );
+    yield put(removeUpload({ type: UPLOAD_TYPES.ENVELOPE }));
     yield put(setLixi(lixi));
     yield put(hideLoading(postLixi.type));
+    yield put(refreshLixiListSilent(lixi.accountId));
   } catch (error) {
     const message = intl.get('lixi.errorWhenCreateLixi');
     yield put(postLixiFailure(message));
@@ -382,8 +390,10 @@ function* selectLixiSaga(action: PayloadAction<number>) {
 }
 
 function* selectLixiSuccessSaga(action: PayloadAction<Lixi>) {
+  const lixi = action.payload;
+  yield put(refreshLixiSilent(lixi.id));
   yield put(hideLoading(selectLixi.type));
-  yield put(push('admin/lixi'));
+  yield put(push('/admin/lixi'));
 }
 
 function* selectLixiFailureSaga(action: PayloadAction<string>) {

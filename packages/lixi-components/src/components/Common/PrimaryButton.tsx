@@ -40,8 +40,7 @@ const SecondaryButton = styled.button`
   outline: none;
   margin-bottom: 20px;
   :hover {
-    -webkit-box-shadow: ${props =>
-    props.theme.buttons.secondary.hoverShadow};
+    -webkit-box-shadow: ${props => props.theme.buttons.secondary.hoverShadow};
     -moz-box-shadow: ${props => props.theme.buttons.secondary.hoverShadow};
     box-shadow: ${props => props.theme.buttons.secondary.hoverShadow};
   }
@@ -55,7 +54,7 @@ const SecondaryButton = styled.button`
 `;
 
 const SmartButton = styled.button`
-    ${({ disabled = false, ...props }) =>
+  ${({ disabled = false, ...props }) =>
     disabled === true
       ? `
             background-image: 'none';
@@ -84,20 +83,20 @@ const SmartButton = styled.button`
             }
         `}
 
-    border: none;
-    transition: all 0.5s ease;
-    font-size: 18px;
-    width: 100%;
-    padding: 15px 0;
-    border-radius: 4px;
-    cursor: pointer;
-    outline: none;
-    margin-bottom: 20px;
+  border: none;
+  transition: all 0.5s ease;
+  font-size: 18px;
+  width: 100%;
+  padding: 15px 0;
+  border-radius: 4px;
+  cursor: pointer;
+  outline: none;
+  margin-bottom: 20px;
 
-    @media (max-width: 768px) {
-      font-size: 16px;
-      padding: 12px 0;
-    }
+  @media (max-width: 768px) {
+    font-size: 16px;
+    padding: 12px 0;
+  }
 `;
 
 export default PrimaryButton;

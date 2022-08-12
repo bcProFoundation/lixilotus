@@ -4,7 +4,8 @@ import {
   DeleteAccountCommand,
   RenameAccountCommand,
   Lixi,
-  ChangeAccountLocaleCommand
+  ChangeAccountLocaleCommand,
+  Upload
 } from '@bcpros/lixi-models';
 import { createAction } from '@reduxjs/toolkit';
 
@@ -39,8 +40,12 @@ export const refreshLixiList = createAction<any>('lixi/refreshLixiList');
 export const refreshLixiListSuccess = createAction<{ account: Account; lixies: Lixi[] }>('lixi/refreshLixiListSuccess');
 export const refreshLixiListFailure = createAction<string>('lixi/refreshLixiListFailure');
 export const refreshLixiListSilent = createAction<any>('lixi/refreshLixiListSilent');
-export const refreshLixiListSilentSuccess = createAction<{ account: Account; lixies: Lixi[] }>('lixi/refreshLixiListSilentSuccess');
+export const refreshLixiListSilentSuccess = createAction<{ account: Account; lixies: Lixi[] }>(
+  'lixi/refreshLixiListSilentSuccess'
+);
 export const refreshLixiListSilentFailure = createAction<string>('lixi/refreshLixiListSilentFailure');
 export const silentLogin = createAction<string>('account/silentLogin');
 export const silentLoginSuccess = createAction('account/silentLoginSuccess');
 export const silentLoginFailure = createAction('account/silentLoginFailure');
+export const setUpload = createAction<{ upload: Upload; type: any }>('account/setUpload');
+export const removeUpload = createAction<{ type: any }>('account/removeUpload');

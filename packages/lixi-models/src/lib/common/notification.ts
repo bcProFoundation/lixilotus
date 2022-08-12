@@ -2,7 +2,7 @@ export enum NotificationLevel {
   DEBUG,
   INFO,
   WARNING,
-  ERROR,
+  ERROR
 }
 
 export interface NotificationTypeDto {

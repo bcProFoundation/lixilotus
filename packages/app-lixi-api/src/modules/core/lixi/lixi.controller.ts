@@ -56,6 +56,7 @@ import { join } from 'path';
 import { JwtAuthGuard } from 'src/modules/auth/jwtauth.guard';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import moment from 'moment';
+import { extname } from 'path';
 
 @Controller('lixies')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -86,7 +87,8 @@ export class LixiController {
           id: _.toSafeInteger(id)
         },
         include: {
-          envelope: true
+          envelope: true,
+          distributions: true
         }
       });
 
@@ -105,7 +107,8 @@ export class LixiController {
           isClaimed: lixi.isClaimed,
           balance: balance,
           totalClaim: Number(lixi.totalClaim),
-          envelope: lixi.envelope
+          envelope: lixi.envelope,
+          distributions: lixi.distributions
         } as unknown as LixiDto,
         'encryptedXPriv',
         'encryptedClaimCode'
@@ -287,9 +290,8 @@ export class LixiController {
             lixi
           } as PostLixiResponseDto;
         } else {
-          // One time child codes type
-          lixi = await this.lixiService.createOneTimeParentLixi(lixiIndex, account, command, i18n);
-          const jobId = await this.lixiService.createSubLixies(lixiIndex + 1, account, command, lixi.id);
+          lixi = await this.lixiService.createOneTimeParentLixi(lixiIndex, account, command);
+          const jobId = await this.lixiService.createSubLixies(lixiIndex + 1, account, command, lixi);
 
           return {
             lixi,
@@ -406,15 +408,23 @@ export class LixiController {
         const lixiNotExist = await i18n.t('lixi.messages.lixiNotExist');
         throw new Error(lixiNotExist);
       } else {
-        const lixi = await this.prisma.lixi.update({
+        let lixi = await this.prisma.lixi.findUnique({
+          where: {
+            id: lixiId
+          }
+        });
+
+        lixi = await this.prisma.lixi.update({
           where: {
             id: lixiId
           },
           data: {
             status: 'locked',
+            previousStatus: (lixi as any).status,
             updatedAt: new Date()
           }
         });
+
         if (lixi) {
           let resultApi: LixiDto = {
             ...lixi,
@@ -482,15 +492,23 @@ export class LixiController {
         const couldNotFindLixi = await i18n.t('lixi.messages.couldNotFindLixi');
         throw new Error(couldNotFindLixi);
       } else {
-        const lixi = await this.prisma.lixi.update({
+        let lixi = await this.prisma.lixi.findUnique({
+          where: {
+            id: lixiId
+          }
+        });
+
+        lixi = await this.prisma.lixi.update({
           where: {
             id: lixiId
           },
           data: {
-            status: 'active',
+            previousStatus: lixi?.status,
+            status: lixi?.previousStatus == 'failed' ? 'failed' : 'active',
             updatedAt: new Date()
           }
         });
+
         if (lixi) {
           let resultApi: LixiDto = {
             ...lixi,

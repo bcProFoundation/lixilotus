@@ -9,6 +9,9 @@ declare module 'styled-components' {
     primary: string;
     secondary: string;
     brandSecondary: string;
+    grey: string;
+    greyLight: string;
+    greyDark: string;
     contrast: string;
     app: {
       sidebars: string;
@@ -38,6 +41,13 @@ declare module 'styled-components' {
       };
       shadow: string;
     };
+    tokenListItem: {
+      background: string;
+      color: string;
+      boxShadow: string;
+      border: string;
+      hoverBorder: string;
+    };
     listItem: {
       background: string;
       color: string;
@@ -56,14 +66,17 @@ declare module 'styled-components' {
       addonBackground: string;
       addonForeground: string;
       selectionBackground: string;
-    },
+    };
     icons: {
       outlined: string;
+      outlinedFaded: string;
+      filled: string;
+      filledFaded: string;
     };
     modals: {
       buttons: {
         background: string;
-      }
+      };
     };
     settings: {
       delete: string;
@@ -98,11 +111,11 @@ declare module 'styled-components' {
       borderRadius: string;
     };
     footerBackground: string;
-    tab :{
+    tab: {
       background: string;
-    }
+    };
   }
-};
+}
 
 declare module 'react' {
   interface Attributes {

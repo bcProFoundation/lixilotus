@@ -1,8 +1,10 @@
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import {
   Body,
-  Controller, Delete,
-  Get, HttpCode,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
   HttpException,
   HttpStatus,
   Inject,
@@ -13,9 +15,7 @@ import {
   UseGuards
 } from '@nestjs/common';
 import { Account as AccountDb, Lixi as LixiDb } from '@prisma/client';
-import {
-  FastifyRequest
-} from 'fastify';
+import { FastifyRequest } from 'fastify';
 import {
   ImportAccountCommand,
   AccountDto,
@@ -34,14 +34,13 @@ import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase58Str, hashMnemonic } f
 import { PrismaService } from '../../prisma/prisma.service';
 import { WalletService } from '../../wallet/wallet.service';
 
-
 @Controller('accounts')
 export class AccountController {
   constructor(
     private prisma: PrismaService,
     private readonly walletService: WalletService,
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet
-  ) { }
+  ) {}
 
   @Get(':id')
   async getAccount(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<AccountDto> {
@@ -49,6 +48,9 @@ export class AccountController {
       const account = await this.prisma.account.findUnique({
         where: {
           id: _.toSafeInteger(id)
+        },
+        include: {
+          page: true
         }
       });
       if (!account) {
@@ -60,7 +62,8 @@ export class AccountController {
 
       const result = {
         ...account,
-        balance: balance
+        balance: balance,
+        page: account.page
       } as AccountDto;
 
       return result;
@@ -123,7 +126,8 @@ export class AccountController {
             ..._.omit(createdAccount, 'publicKey'),
             name: createdAccount.name,
             address: createdAccount.address,
-            balance: balance
+            balance: balance,
+            secret: accountSecret
           } as AccountDto,
           ['mnemonic', 'encryptedMnemonic']
         );
@@ -138,13 +142,15 @@ export class AccountController {
         }
 
         const balance: number = await this.xpiWallet.getBalance(account.address);
+        const accountSecret = await aesGcmDecrypt(account.encryptedSecret, mnemonic);
 
         const resultApi = _.omit(
           {
             ..._.omit(account, 'publicKey'),
             name: account.name,
             address: account.address,
-            balance: balance
+            balance: balance,
+            secret: accountSecret
           } as AccountDto,
           ['mnemonic', 'encryptedMnemonic']
         );
@@ -396,7 +402,7 @@ export class AccountController {
   async getNotifications(
     @Param('id') id: string,
     @Request() req: FastifyRequest,
-    @I18n() i18n: I18nContext,
+    @I18n() i18n: I18nContext
   ): Promise<NotificationDto[]> {
     const accountId = _.toSafeInteger(id);
 

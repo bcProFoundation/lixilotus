@@ -13,7 +13,7 @@ import { AnyAction } from '@reduxjs/toolkit';
 export type RenameAccountModalProps = {
   account: Account;
   onOkAction?: AnyAction;
-}
+};
 
 export const RenameAccountModal: React.FC<RenameAccountModalProps> = (props: RenameAccountModalProps) => {
   const [newAccountName, setNewAccountName] = useState('');
@@ -30,11 +30,11 @@ export const RenameAccountModal: React.FC<RenameAccountModalProps> = (props: Ren
       dispatch(newAction);
     }
     dispatch(closeModal());
-  }
+  };
 
   const handleOnCancel = () => {
     dispatch(closeModal());
-  }
+  };
 
   const handleAccountNameInput = e => {
     const { value } = e.target;
@@ -58,17 +58,9 @@ export const RenameAccountModal: React.FC<RenameAccountModalProps> = (props: Ren
         <AntdFormWrapper>
           <Form style={{ width: 'auto' }}>
             <Form.Item
-              validateStatus={
-                newAccountNameIsValid === null ||
-                  newAccountNameIsValid
-                  ? ''
-                  : 'error'
-              }
+              validateStatus={newAccountNameIsValid === null || newAccountNameIsValid ? '' : 'error'}
               help={
-                newAccountNameIsValid === null ||
-                  newAccountNameIsValid
-                  ? ''
-                  : intl.get('settings.accountLengthMessage')
+                newAccountNameIsValid === null || newAccountNameIsValid ? '' : intl.get('settings.accountLengthMessage')
               }
             >
               <Input
@@ -83,5 +75,5 @@ export const RenameAccountModal: React.FC<RenameAccountModalProps> = (props: Ren
         </AntdFormWrapper>
       </Modal>
     </>
-  )
-}
+  );
+};

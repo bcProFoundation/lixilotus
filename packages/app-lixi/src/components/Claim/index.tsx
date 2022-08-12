@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Form, Spin } from 'antd';
 import { isMobile, isIOS, isSafari } from 'react-device-detect';
 import PrimaryButton from '@bcpros/lixi-components/components/Common/PrimaryButton';
-import { CashLoadingIcon } from "@bcpros/lixi-components/components/Common/CustomIcons";
+import { CashLoadingIcon } from '@bcpros/lixi-components/components/Common/CustomIcons';
 import {
   FormItemClaimCodeXpiInput,
   FormItemWithQRCodeAddon
@@ -20,16 +20,15 @@ import { getCurrentAddress, getCurrentClaimCode } from 'src/store/claim/selector
 import { useSelector } from 'react-redux';
 import { getSelectedAccount } from '@store/account/selectors';
 
-const SITE_KEY = "6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb";
+const SITE_KEY = '6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb';
 
 type ClaimFormData = {
   dirty: boolean;
   claimCode: string;
   address: string;
-}
+};
 
 const ClaimComponent: React.FC = () => {
-
   const isLoading = useAppSelector(getIsGlobalLoading);
 
   const { XPI, Wallet } = React.useContext(AppContext);
@@ -38,7 +37,7 @@ const ClaimComponent: React.FC = () => {
 
   // const { width } = useWindowDimensions();
   // Load with QR code open if device is mobile and NOT iOS + anything but safari
-  const scannerSupported = false;// width < 769 && isMobile && !(isIOS && !isSafari);
+  const scannerSupported = false; // width < 769 && isMobile && !(isIOS && !isSafari);
 
   const currentAddress = useAppSelector(getCurrentAddress);
   const currentClaimCode = useSelector(getCurrentClaimCode);
@@ -47,12 +46,12 @@ const ClaimComponent: React.FC = () => {
   const [claimXpiAddressError, setClaimXpiAddressError] = useState<string | boolean>(false);
 
   useEffect(() => {
-    const loadScriptByURL = (id: string, url: string, callback: { (): void; (): void; }) => {
+    const loadScriptByURL = (id: string, url: string, callback: { (): void; (): void }) => {
       const isScriptExist = document.getElementById(id);
 
       if (!isScriptExist) {
-        let script = document.createElement("script");
-        script.type = "text/javascript";
+        let script = document.createElement('script');
+        script.type = 'text/javascript';
         script.src = url;
         script.id = id;
         script.onload = function () {
@@ -62,11 +61,11 @@ const ClaimComponent: React.FC = () => {
       }
 
       if (isScriptExist && callback) callback();
-    }
+    };
 
     // load the script by passing the URL
-    loadScriptByURL("recaptcha-key", `https://www.google.com/recaptcha/enterprise.js?render=${SITE_KEY}`, function () {
-      console.info("Script loaded!");
+    loadScriptByURL('recaptcha-key', `https://www.google.com/recaptcha/enterprise.js?render=${SITE_KEY}`, function () {
+      console.info('Script loaded!');
     });
 
     // set the default claim address
@@ -77,7 +76,7 @@ const ClaimComponent: React.FC = () => {
 
   const handleOnClick = e => {
     e.preventDefault();
-    let captcha = (window as any).grecaptcha.enterprise
+    let captcha = (window as any).grecaptcha.enterprise;
     if (captcha) {
       captcha.ready(() => {
         captcha.execute(SITE_KEY, { action: 'submit' }).then((token: any) => {
@@ -85,14 +84,13 @@ const ClaimComponent: React.FC = () => {
         });
       });
     }
-  }
+  };
 
   async function submit(token) {
     let claimCode = currentClaimCode;
     if (!currentAddress || !currentClaimCode) {
       return;
-    }
-    else if (currentClaimCode.includes('lixi_')) {
+    } else if (currentClaimCode.includes('lixi_')) {
       claimCode = claimCode.match('(?<=lixi_).*')[0];
     }
 
@@ -106,12 +104,13 @@ const ClaimComponent: React.FC = () => {
       setClaimXpiAddressError(error);
     }
 
-    dispatch(postClaim({
-      claimAddress: cleanAddress,
-      claimCode: claimCode,
-      captchaToken: token,
-    } as CreateClaimDto));
-
+    dispatch(
+      postClaim({
+        claimAddress: cleanAddress,
+        claimCode: claimCode,
+        captchaToken: token
+      } as CreateClaimDto)
+    );
   }
 
   const handleAddressChange = e => {
@@ -126,31 +125,32 @@ const ClaimComponent: React.FC = () => {
     // Is this valid address?
     if (!isValid) {
       error = intl.get('claim.invalidAddress', { ticker: currency.ticker });
-    }
-    else {
+    } else {
       error = false;
     }
     setClaimXpiAddressError(error);
 
     dispatch(saveClaimAddress(address));
-  }
+  };
 
   const handleClaimCodeChange = e => {
     const { value, name } = e.target;
     let claimCode: string = _.trim(value);
     dispatch(saveClaimCode(claimCode));
-  }
+  };
 
   return (
     <>
-      <Row style={{
-        display: 'flex'
-      }}>
+      <Row
+        style={{
+          display: 'flex'
+        }}
+      >
         <Col span={24}>
           <Spin spinning={isLoading} indicator={CashLoadingIcon}>
             <Form
               style={{
-                width: 'auto',
+                width: 'auto'
               }}
             >
               <FormItemWithQRCodeAddon
@@ -164,8 +164,8 @@ const ClaimComponent: React.FC = () => {
                   handleAddressChange({
                     target: {
                       name: 'address',
-                      value: result,
-                    },
+                      value: result
+                    }
                   })
                 }
                 inputProps={{
@@ -173,7 +173,7 @@ const ClaimComponent: React.FC = () => {
                   name: 'address',
                   onChange: e => handleAddressChange(e),
                   required: true,
-                  value: currentAddress,
+                  value: currentAddress
                 }}
               ></FormItemWithQRCodeAddon>
               <FormItemClaimCodeXpiInput
@@ -182,8 +182,8 @@ const ClaimComponent: React.FC = () => {
                   handleClaimCodeChange({
                     target: {
                       name: 'claimCode',
-                      value: result,
-                    },
+                      value: result
+                    }
                   })
                 }
                 inputProps={{
@@ -193,19 +193,17 @@ const ClaimComponent: React.FC = () => {
               ></FormItemClaimCodeXpiInput>
               <div
                 style={{
-                  paddingTop: '12px',
+                  paddingTop: '12px'
                 }}
               >
-                <PrimaryButton
-                  onClick={handleOnClick}
-                >{intl.get('claim.claim')}</PrimaryButton>
+                <PrimaryButton onClick={handleOnClick}>{intl.get('claim.claim')}</PrimaryButton>
               </div>
             </Form>
           </Spin>
         </Col>
       </Row>
     </>
-  )
+  );
 };
 
 export default ClaimComponent;

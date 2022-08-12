@@ -40,45 +40,45 @@ const StyledRadioGroup = styled(Radio.Group)`
 
     &:first-child {
       border: 1px solid #e8e8e8;
-      border-radius: ${(props) => props.theme.radio.borderRadius};
+      border-radius: ${props => props.theme.radio.borderRadius};
     }
     &:last-child {
       border: 1px solid #e8e8e8;
-      border-radius: ${(props) => props.theme.radio.borderRadius};
+      border-radius: ${props => props.theme.radio.borderRadius};
     }
 
     &:hover {
-      border: 3px solid ${(props) => props.theme.radio.primary};
+      border: 3px solid ${props => props.theme.radio.primary};
     }
   }
 
   .ant-radio-button-wrapper-checked {
-    border: 3px solid ${(props) => props.theme.radio.primary};
-    border-radius: ${(props) => props.theme.radio.borderRadius};
-    color: ${(props) => props.theme.radio.secondary}!important;
+    border: 3px solid ${props => props.theme.radio.primary};
+    border-radius: ${props => props.theme.radio.borderRadius};
+    color: ${props => props.theme.radio.secondary}!important;
 
     &:first-child {
-      border: 3px solid ${(props) => props.theme.radio.primary} !important;
-      border-radius: ${(props) => props.theme.radio.borderRadius};
+      border: 3px solid ${props => props.theme.radio.primary} !important;
+      border-radius: ${props => props.theme.radio.borderRadius};
     }
   }
 `;
 
 const StyledMNButton = styled(Radio.Button)`
-  border: 1px solid ${(props) => props.theme.radio.secondary};
-  border-radius: ${(props) => props.theme.radio.borderRadius};
+  border: 1px solid ${props => props.theme.radio.secondary};
+  border-radius: ${props => props.theme.radio.borderRadius};
 `;
 
 const StyledDenominationButton = styled(Radio.Button)`
-  border: 1px solid ${(props) => props.theme.radio.secondary};
-  border-radius: ${(props) => props.theme.radio.borderRadius};
+  border: 1px solid ${props => props.theme.radio.secondary};
+  border-radius: ${props => props.theme.radio.borderRadius};
   & > span {
     font-size: 16px;
     font-weight: bold;
   }
 
   .ant-radio-button-checked {
-    background-color: ${(props) => props.theme.radio.primary};
+    background-color: ${props => props.theme.radio.primary};
   }
 `;
 
@@ -93,51 +93,51 @@ const ImageContainer = styled.div`
 const MobileNetworks: Object[] = [
   {
     name: 'mobifone',
-    src: Mobifone,
+    src: Mobifone
   },
   {
     name: 'vietnamobile',
-    src: Vietnamobile,
+    src: Vietnamobile
   },
   {
     name: 'Viettel',
-    src: Viettel,
+    src: Viettel
   },
   {
     name: 'VinaPhone',
-    src: Vinaphone,
+    src: Vinaphone
   },
   {
     name: 'Gmobile',
-    src: Gmobile,
-  },
+    src: Gmobile
+  }
 ];
 
 const Denominations: Object[] = [
   {
     name: '10.000',
-    value: 10000,
+    value: 10000
   },
   {
     name: '20.000',
-    value: 20000,
+    value: 20000
   },
   {
     name: '50.000',
-    value: 50000,
+    value: 50000
   },
   {
     name: '100.000',
-    value: 100000,
+    value: 100000
   },
   {
     name: '200.000',
-    value: 200000,
+    value: 200000
   },
   {
     name: '500.000',
-    value: 500000,
-  },
+    value: 500000
+  }
 ];
 
 const SwapMobileCard: React.FC = () => {
@@ -173,11 +173,7 @@ const SwapMobileCard: React.FC = () => {
       <StyledRadioGroup className="denominations" size="large">
         {Denominations.map((item: any, index: number) => {
           return (
-            <StyledDenominationButton
-              value={item.value}
-              key={index}
-              onChange={onChangeDenomination}
-            >
+            <StyledDenominationButton value={item.value} key={index} onChange={onChangeDenomination}>
               {selectedDenomination == `${item.value}` && (
                 <ImageContainer>
                   <Image src={InvertedCheckmark} alt="checkmark" />

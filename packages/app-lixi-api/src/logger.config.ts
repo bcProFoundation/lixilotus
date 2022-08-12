@@ -34,9 +34,11 @@ export const loggerConfig = WinstonModule.createLogger({
   format: combine(
     format.errors({ stack: true }), // log the full stack
     timestamp(), // get the time stamp part of the full log message
-    printf(({ level, message, timestamp, stack }) => {
+    printf(({ level, message, context, stack, timestamp }) => {
+      const logLevel = level ?? '';
+      const logStack = stack ? ` - stack: ${stack} ` : '';
       // formating the log outcome to show/store
-      const logMessage: string = `${timestamp} ${level ?? ''}: ${message} - ${stack}`;
+      const logMessage: string = `${timestamp} [${context}] ${level ?? ''}: ${message} ${logStack}`;
       if (level == 'error') {
         console.log(logMessage);
       }

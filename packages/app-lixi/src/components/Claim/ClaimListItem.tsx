@@ -4,7 +4,6 @@ import { Claim } from '@bcpros/lixi-models';
 import { fromSmallestDenomination } from '@utils/cashMethods';
 import GrayLotus from '@assets/images/gray_lotus.svg';
 
-
 const ClaimItemWrapper = styled.div`
   display: grid;
   grid-template-columns: 36px 50% 30%;
@@ -86,23 +85,22 @@ export const LotusLogo = styled.span`
 `;
 
 type ClaimListItemProps = {
-  claim: Claim,
+  claim: Claim;
   theme?: DefaultTheme;
-} & React.HTMLProps<HTMLDivElement>
+} & React.HTMLProps<HTMLDivElement>;
 
 const ClaimListItem: React.FC<ClaimListItemProps> = (props: ClaimListItemProps) => {
-
-  const handleClickClaim = (claim: Claim,) => {
+  const handleClickClaim = (claim: Claim) => {
     const url = `https://explorer.givelotus.org/tx/${claim.transactionId}`;
     window.open(url, '_blank');
-  }
+  };
 
   const { claim } = props;
   const claimDateLocalTime = claim.createdAt ? claim.createdAt.toString() : '';
   const displayAmount = fromSmallestDenomination(claim.amount);
 
   return (
-    <ClaimItemWrapper onClick={(e) => handleClickClaim(claim)}>
+    <ClaimItemWrapper onClick={e => handleClickClaim(claim)}>
       <ClaimItemIcon>
         <LotusLogo>
           <GrayLotus />

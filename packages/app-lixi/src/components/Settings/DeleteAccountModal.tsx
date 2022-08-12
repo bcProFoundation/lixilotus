@@ -15,17 +15,13 @@ export type DeleteAccountModalProps = {
   account: Account;
   remainingAccounts?: Account[];
   onOkAction?: AnyAction;
-}
+};
 
 export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = (props: DeleteAccountModalProps) => {
   const [accountDeleteValid, setAccountDeleteValid] = useState<boolean | null>(null);
-  const [
-    confirmationOfAccountToBeDeleted,
-    setConfirmationOfAccountToBeDeleted,
-  ] = useState('');
+  const [confirmationOfAccountToBeDeleted, setConfirmationOfAccountToBeDeleted] = useState('');
   const dispatch = useAppDispatch();
   const { account } = props;
-
 
   const handleOnOk = () => {
     if (props.onOkAction && accountDeleteValid) {
@@ -38,11 +34,11 @@ export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = (props: Del
       dispatch(newAction);
       dispatch(closeModal());
     }
-  }
+  };
 
   const handleOnCancel = () => {
     dispatch(closeModal());
-  }
+  };
 
   const handleAccountToDeleteInput = e => {
     const { value } = e.target;
@@ -66,15 +62,9 @@ export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = (props: Del
         <AntdFormWrapper>
           <Form style={{ width: 'auto' }}>
             <Form.Item
-              validateStatus={
-                accountDeleteValid === null ||
-                  accountDeleteValid
-                  ? ''
-                  : 'error'
-              }
+              validateStatus={accountDeleteValid === null || accountDeleteValid ? '' : 'error'}
               help={
-                accountDeleteValid === null ||
-                  accountDeleteValid
+                accountDeleteValid === null || accountDeleteValid
                   ? ''
                   : intl.get('settings.yourConfirmationPhraseMustExact')
               }
@@ -91,7 +81,5 @@ export const DeleteAccountModal: React.FC<DeleteAccountModalProps> = (props: Del
         </AntdFormWrapper>
       </Modal>
     </>
-  )
-}
-
-
+  );
+};

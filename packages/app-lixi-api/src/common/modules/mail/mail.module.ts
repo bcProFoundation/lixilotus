@@ -25,9 +25,9 @@ import { MailService } from './mail.service';
             maxRetriesPerRequest: null,
             enableReadyCheck: false,
             host: config.get<string>('REDIS_HOST') ? config.get<string>('REDIS_HOST') : 'redis-lixi',
-            port: config.get<string>('REDIS_PORT') ? _.toSafeInteger(config.get<string>('REDIS_PORT')) : 6379,
+            port: config.get<string>('REDIS_PORT') ? _.toSafeInteger(config.get<string>('REDIS_PORT')) : 6379
           })
-        }
+        };
       }
     }),
     MailerModule.forRootAsync({
@@ -40,13 +40,12 @@ import { MailService } from './mail.service';
           ignoreTLS: config.get<string>('MAIL_ENCRYPTION') == 'tls' ? false : true,
           auth: {
             user: config.get<string>('MAIL_USER'),
-            pass: config.get<string>('MAIL_PASS'),
+            pass: config.get<string>('MAIL_PASS')
           },
           pool: true
         },
         defaults: {
-          from: `"${config.get<string>('MAIL_FROM')}" <${config.get<string>('MAIL_FROM')
-            }>`
+          from: `"${config.get<string>('MAIL_FROM')}" <${config.get<string>('MAIL_FROM')}>`
         },
         template: {
           dir: __dirname + '/templates/email/layouts/',
@@ -62,4 +61,4 @@ import { MailService } from './mail.service';
   providers: [MailService, MailProcessor, MailEventListener],
   exports: [MailService]
 })
-export class MailModule { }
+export class MailModule {}

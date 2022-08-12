@@ -21,7 +21,7 @@ export const BalanceHeaderWrap = styled.div`
   font-size: 30px;
   font-weight: bold;
   @media (max-width: 768px) {
-      font-size: 23px;
+    font-size: 23px;
   }
 `;
 
@@ -32,7 +32,7 @@ export const BalanceHeaderFiatWrap = styled.div`
   margin-bottom: 20px;
   font-weight: bold;
   @media (max-width: 768px) {
-      font-size: 16px;
+    font-size: 16px;
   }
 `;
 

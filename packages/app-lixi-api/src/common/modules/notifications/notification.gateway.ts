@@ -1,7 +1,17 @@
-import { NotificationDto as Notification } from "@bcpros/lixi-models";
-import { Injectable, Logger } from "@nestjs/common";
-import { ConnectedSocket, MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer, WsResponse } from "@nestjs/websockets";
-import io, { Server, Socket } from "socket.io";
+import { NotificationDto as Notification } from '@bcpros/lixi-models';
+import { Injectable, Logger } from '@nestjs/common';
+import {
+  ConnectedSocket,
+  MessageBody,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+  OnGatewayInit,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer,
+  WsResponse
+} from '@nestjs/websockets';
+import io, { Server, Socket } from 'socket.io';
 
 // https://build.diligent.com/message-queues-in-database-transactions-f830718f4f12
 // https://cloudificationzone.com/2021/08/13/notification-system-design/
@@ -9,18 +19,12 @@ import io, { Server, Socket } from "socket.io";
 
 @Injectable()
 @WebSocketGateway({ namespace: 'ws/notifications', cors: true })
-export class NotificationGateway
-  implements
-  OnGatewayInit,
-  OnGatewayConnection,
-  OnGatewayDisconnect {
-
+export class NotificationGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server!: Server;
 
   private logger: Logger = new Logger('NotificationGateway');
-  constructor(
-  ) { }
+  constructor() {}
 
   handleConnection(client: Socket, ...args: any[]) {
     this.logger.log(`Client connected: ${client.id}`);
@@ -34,13 +38,8 @@ export class NotificationGateway
     this.logger.log('Notification gateway initialized');
   }
 
-
   @SubscribeMessage('subscribe')
-  handleSubscription(
-    @MessageBody() mnemonicHash: string,
-    @ConnectedSocket() client: Socket
-  ): WsResponse<string> {
-
+  handleSubscription(@MessageBody() mnemonicHash: string, @ConnectedSocket() client: Socket): WsResponse<string> {
     client.join(mnemonicHash);
 
     return {

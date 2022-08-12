@@ -5,4 +5,3 @@ export { default as GivingItem } from './GivingItem';
 export { default as Footer } from './Footer';
 export { default as BalanceBanner } from './BalanceBanner';
 export * from './NavButton';
-

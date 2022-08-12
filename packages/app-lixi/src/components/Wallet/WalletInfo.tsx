@@ -15,13 +15,12 @@ import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { AppContext } from 'src/store/store';
 
 const WalletInfoComponent: React.FC = () => {
-
   const isServer = () => typeof window === 'undefined';
   const ContextValue = React.useContext(AppContext);
   const { XPI, Wallet } = ContextValue;
   const [formData, setFormData] = useState({
     dirty: true,
-    mnemonic: '',
+    mnemonic: ''
   });
   const [isValidMnemonic, setIsValidMnemonic] = useState(false);
   const [seedInput, openSeedInput] = useState(false);
@@ -29,37 +28,36 @@ const WalletInfoComponent: React.FC = () => {
   const selectedAccount = useAppSelector(getSelectedAccount);
   const [isLoadBalanceError, setIsLoadBalanceError] = useState(false);
 
-
   useEffect(() => {
     const id = setInterval(() => {
       XPI.Electrumx.balance(selectedAccount?.address)
-        .then((result) => {
+        .then(result => {
           if (result && result.balance) {
             const balance = result.balance.confirmed + result.balance.unconfirmed;
             dispatch(setAccountBalance(balance ?? 0));
           }
         })
-        .catch((e) => {
+        .catch(e => {
           setIsLoadBalanceError(true);
         });
     }, 10000);
     return () => clearInterval(id);
   }, []);
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const { value, name } = e.target;
 
     // Validate mnemonic on change
     // Import button should be disabled unless mnemonic is valid
     setIsValidMnemonic(Wallet.validateMnemonic(value));
 
-    setFormData((p) => ({ ...p, [name]: value }));
+    setFormData(p => ({ ...p, [name]: value }));
   };
 
   async function submit() {
     setFormData({
       ...formData,
-      dirty: false,
+      dirty: false
     });
 
     if (!formData.mnemonic) {
@@ -68,37 +66,24 @@ const WalletInfoComponent: React.FC = () => {
     dispatch(importAccount(formData.mnemonic));
   }
 
-
   return (
     <>
       <WalletLabel name={selectedAccount?.name ?? ''} />
-      <BalanceHeader
-        balance={fromSmallestDenomination(selectedAccount?.balance ?? 0)}
-        ticker={currency.ticker} />
-      {!isServer() && selectedAccount?.address && <QRCode
-        address={selectedAccount?.address}
-      />}
+      <BalanceHeader balance={fromSmallestDenomination(selectedAccount?.balance ?? 0)} ticker={currency.ticker} />
+      {!isServer() && selectedAccount?.address && <QRCode address={selectedAccount?.address} />}
       {seedInput && (
         <AntdFormWrapper>
           <Form style={{ width: 'auto' }}>
             <Form.Item
-              validateStatus={
-                !formData.dirty && !formData.mnemonic
-                  ? 'error'
-                  : ''
-              }
-              help={
-                !formData.mnemonic || !isValidMnemonic
-                  ? intl.get('account.mnemonicRequired')
-                  : ''
-              }
+              validateStatus={!formData.dirty && !formData.mnemonic ? 'error' : ''}
+              help={!formData.mnemonic || !isValidMnemonic ? intl.get('account.mnemonicRequired') : ''}
             >
               <Input
                 prefix={<LockOutlined />}
                 placeholder={intl.get('account.mnemonic')}
                 name="mnemonic"
                 autoComplete="off"
-                onChange={(e) => handleChange(e)}
+                onChange={e => handleChange(e)}
                 required
               />
             </Form.Item>

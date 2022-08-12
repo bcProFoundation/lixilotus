@@ -1,13 +1,13 @@
-import { Account, CreateLixiCommand, Lixi, Package, WithdrawLixiCommand } from "@bcpros/lixi-models";
+import { CreateLixiCommand, Distribution } from '@bcpros/lixi-models';
 
 export interface MapEncryptedClaimCode {
-  [xpriv: string]: string
-};
+  [xpriv: string]: string;
+}
 
 export interface CreateSubLixiesJobData {
   parentId: number;
   command: CreateLixiCommand;
-};
+}
 
 export interface CreateSubLixiesJobResult {
   id: number;
@@ -20,17 +20,17 @@ export interface CreateSubLixiesJobResult {
 
 export interface CreateSubLixiesChunkJobData extends CreateSubLixiesJobData {
   numberOfSubLixiInChunk: number;
+  numberOfDistributions: number;
   startDerivationIndexForChunk: number;
   xpiAllowance: number;
-  temporaryFeeCalc: number;
   fundingAddress: string;
   accountSecret: string;
   packageId?: Nullable<number>;
-};
+}
 export interface ExportSubLixiesJobData {
   parentId: number;
   secret: string;
-};
+}
 
 export interface ExportSubLixiesJobResult {
   id: number;
@@ -48,7 +48,7 @@ export interface WithdrawSubLixiesJobData {
   parentId: number;
   mnemonic: string;
   accountAddress: string;
-};
+}
 
 export interface WithdrawSubLixiesJobResult {
   id: number;

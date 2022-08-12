@@ -52,7 +52,8 @@ import {
   setAccountSuccess,
   silentLogin,
   silentLoginFailure,
-  silentLoginSuccess
+  silentLoginSuccess,
+  refreshLixiListSilent
 } from './actions';
 import { getAccountById, getSelectedAccount } from './selectors';
 
@@ -526,7 +527,7 @@ function* watchRefreshLixiListFailure() {
 }
 
 function* watchRefreshLixiListSilent() {
-  yield takeLatest(refreshLixiList.type, refreshLixiListSilentSaga);
+  yield takeLatest(refreshLixiListSilent.type, refreshLixiListSilentSaga);
 }
 
 function* silentLoginSaga(action: PayloadAction<string>) {

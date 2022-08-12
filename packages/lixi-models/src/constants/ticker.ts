@@ -33,8 +33,8 @@ export const currency = {
       'try',
       'rub',
       'inr',
-      'brl',
-    ],
+      'brl'
+    ]
   },
   fiatCurrencies: {
     usd: { name: 'US Dollar', symbol: '$', slug: 'usd' },
@@ -51,8 +51,20 @@ export const currency = {
     rub: { name: 'Russian Ruble', symbol: 'р.', slug: 'rub' },
     zar: { name: 'South African Rand', symbol: 'R', slug: 'zar' },
     try: { name: 'Turkish Lira', symbol: '₺', slug: 'try' },
-    vnd: { name: 'Vietnamese đồng', symbol: 'đ', slug: 'vnd' },
+    vnd: { name: 'Vietnamese đồng', symbol: 'đ', slug: 'vnd' }
   },
+  opReturn: {
+    opReturnPrefixHex: '6a',
+    opReturnAppPrefixLengthHex: '04',
+    opPushDataOne: '4c',
+    appPrefixesHex: {
+      eToken: '534c5000',
+      lotusChat: '02020202',
+      lotusChatEncrypted: '03030303'
+    },
+    encryptedMsgByteLimit: 206,
+    unencryptedMsgByteLimit: 215
+  }
 };
 
 export function isValidLotusPrefix(addressString: string) {
@@ -64,9 +76,7 @@ export function isValidLotusPrefix(addressString: string) {
   // Also accept an address with no prefix, as some exchanges provide these
   for (let i = 0; i < currency.prefixes.length; i += 1) {
     // If the addressString being tested starts with an accepted prefix or no prefix at all
-    if (
-      addressString.startsWith(currency.prefixes[i])
-    ) {
+    if (addressString.startsWith(currency.prefixes[i])) {
       return true;
     }
   }

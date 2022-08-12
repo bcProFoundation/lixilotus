@@ -33,8 +33,7 @@ export const GlobalStyle = createGlobalStyle`
         }
     }
     #addrSwitch.ant-switch-checked {
-        background-image: ${props =>
-        props.theme.buttons.primary.backgroundImage} !important;
+        background-image: ${props => props.theme.buttons.primary.backgroundImage} !important;
     }
     .ant-upload.ant-upload-select-picture-card {
         background-color: white;

@@ -1,6 +1,6 @@
-import { createReducer } from "@reduxjs/toolkit";
-import { hideLoading, showLoading } from "./actions";
-import { LoadingState } from "./state";
+import { createReducer } from '@reduxjs/toolkit';
+import { hideLoading, showLoading } from './actions';
+import { LoadingState } from './state';
 
 const initialState: LoadingState = {
   global: false,
@@ -8,7 +8,7 @@ const initialState: LoadingState = {
   effects: {}
 };
 
-export const loadingReducer = createReducer(initialState, (builder) => {
+export const loadingReducer = createReducer(initialState, builder => {
   builder
     .addCase(showLoading, (state, action) => {
       const modelAndEffect = action.payload.split('/');
@@ -39,5 +39,5 @@ export const loadingReducer = createReducer(initialState, (builder) => {
           state.global = false;
         }
       }
-    })
-})
+    });
+});

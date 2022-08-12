@@ -1,13 +1,11 @@
-import { PayloadAction } from "@reduxjs/toolkit";
-import { all, fork, takeLatest } from "@redux-saga/core/effects";
+import { PayloadAction } from '@reduxjs/toolkit';
+import { all, fork, takeLatest } from '@redux-saga/core/effects';
 import { notification } from 'antd';
-import { ArgsProps } from "antd/lib/notification";
-import { ToastType } from "./state";
-import { showToast } from "./actions";
+import { ArgsProps } from 'antd/lib/notification';
+import { ToastType } from './state';
+import { showToast } from './actions';
 
-
-
-function* showToastSaga(action: PayloadAction<{ type: ToastType, config: ArgsProps }>) {
+function* showToastSaga(action: PayloadAction<{ type: ToastType; config: ArgsProps }>) {
   const { type, config } = action.payload;
   switch (type) {
     case 'success':
@@ -33,7 +31,5 @@ function* watchShowToast() {
 }
 
 export default function* toastSaga() {
-  yield all([
-    fork(watchShowToast)
-  ])
+  yield all([fork(watchShowToast)]);
 }

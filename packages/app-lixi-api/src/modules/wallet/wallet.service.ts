@@ -52,7 +52,7 @@ export class WalletService {
     };
   }
 
-  async calcFee(XPI: BCHJS, utxos: any, p2pkhOutputNumber = 2, satoshisPerByte = 2.01) {
+  calcFee(XPI: BCHJS, utxos: any, p2pkhOutputNumber = 2, satoshisPerByte = 2.01) {
     const byteCount = XPI.BitcoinCash.getByteCount({ P2PKH: utxos.length }, { P2PKH: p2pkhOutputNumber });
     const txFee = Math.ceil(satoshisPerByte * byteCount);
     return txFee;
@@ -63,9 +63,8 @@ export class WalletService {
 
     const utxos = await this.xpijs.Utxo.get(address);
     const utxoStore = utxos[0];
-
-    const txFeeSats = await this.calcFee(this.xpijs, (utxoStore as any).bchUtxos);
-
+    const utxosStore = (utxoStore as any).bchUtxos.concat((utxoStore as any).nullUtxos);
+    const txFeeSats = await this.calcFee(this.xpijs, utxosStore);
     const value = balance - txFeeSats >= 0 ? balance - txFeeSats : '0';
     return fromSmallestDenomination(Number(value));
   }
@@ -108,15 +107,11 @@ export class WalletService {
     const utxos = await this.xpijs.Utxo.get(sourceAddress);
     const utxoStore = utxos[0];
 
-    if (!utxoStore || !(utxoStore as any).bchUtxos || !(utxoStore as any).bchUtxos) {
+    if (!utxoStore || (!(utxoStore as any).bchUtxos && !(utxoStore as any).nullUtxos)) {
       throw new VError('UTXO list is empty');
     }
-
-    const { necessaryUtxos, change } = this.xpiWallet.sendBch.getNecessaryUtxosAndChange(
-      outputs,
-      (utxoStore as any).bchUtxos,
-      2.01
-    );
+    const utxosStore = (utxoStore as any).bchUtxos.concat((utxoStore as any).nullUtxos);
+    const { necessaryUtxos, change } = this.xpiWallet.sendBch.getNecessaryUtxosAndChange(outputs, utxosStore, 2.01);
 
     // Create an instance of the Transaction Builder.
     const transactionBuilder: any = new this.xpijs.TransactionBuilder();
@@ -147,13 +142,13 @@ export class WalletService {
 
     try {
       // Broadcast the transaction to the network.
-      await this.xpijs.RawTransactions.sendRawTransaction(hex);
+      await this.xpijs.RawTransactions.sendRawTransaction([hex]);
       // const txid = await xpiWallet.send(outputs);
     } catch (err) {
-      if (i18n === undefined) throw new VError('Unable to send transaction');
+      if (i18n === undefined) throw new VError('Unable to send transaction', err);
 
       const unableSendTransaction = await i18n.t('claim.messages.unableSendTransaction');
-      throw new VError(unableSendTransaction);
+      throw new VError(unableSendTransaction, err);
     }
   }
 

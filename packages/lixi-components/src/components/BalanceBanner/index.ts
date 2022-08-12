@@ -1,2 +1,2 @@
-import BalanceBanner from './BalanceBanner'
+import BalanceBanner from './BalanceBanner';
 export default BalanceBanner;

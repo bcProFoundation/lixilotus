@@ -1,4 +1,3 @@
-
 import { HomeOutlined, GiftOutlined, WalletOutlined, UserOutlined } from '@ant-design/icons';
 import { storiesOf } from '@storybook/react';
 import { ThemeProvider } from 'styled-components';
@@ -6,11 +5,7 @@ import { theme } from '../../styles/theme';
 import { NavButton } from './NavButton';
 
 storiesOf('NavButton', module)
-  .addDecorator(story => (
-    <ThemeProvider theme={theme}>
-      {story()}
-    </ThemeProvider>
-  ))
+  .addDecorator(story => <ThemeProvider theme={theme}>{story()}</ThemeProvider>)
   .add(
     'Home NavButton',
     () => {
@@ -22,8 +17,8 @@ storiesOf('NavButton', module)
       );
     },
     {
-      notes: 'Displaying a Home NavButton',
-    },
+      notes: 'Displaying a Home NavButton'
+    }
   )
   .add(
     'My Giving NavButton',
@@ -36,8 +31,8 @@ storiesOf('NavButton', module)
       );
     },
     {
-      notes: 'Displaying a Home NavButton',
-    },
+      notes: 'Displaying a Home NavButton'
+    }
   )
   .add(
     'My Receive',
@@ -50,8 +45,8 @@ storiesOf('NavButton', module)
       );
     },
     {
-      notes: 'Displaying a MyReceive NavButton',
-    },
+      notes: 'Displaying a MyReceive NavButton'
+    }
   )
   .add(
     'Profile NavButton',
@@ -64,6 +59,6 @@ storiesOf('NavButton', module)
       );
     },
     {
-      notes: 'Displaying a Home NavButton',
-    },
-  )
+      notes: 'Displaying a Home NavButton'
+    }
+  );

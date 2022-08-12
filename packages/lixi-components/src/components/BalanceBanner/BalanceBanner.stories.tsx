@@ -1,4 +1,3 @@
-
 import { storiesOf } from '@storybook/react';
 import { ThemeProvider } from 'styled-components';
 import { GlobalStyle } from '../../styles/GlobalStyle';
@@ -22,13 +21,9 @@ storiesOf('BalanceBanner', module)
     () => {
       const title = 'My Giving';
 
-      return (
-        <BalanceBanner
-          title={title}
-        />
-      );
+      return <BalanceBanner title={title} />;
     },
     {
-      notes: 'Displaying a BalanceBanner',
-    },
+      notes: 'Displaying a BalanceBanner'
+    }
   );

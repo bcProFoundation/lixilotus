@@ -5,6 +5,7 @@ import { notificationTypeTranslations } from './notificationTypeTranslations';
 import { PrismaClient } from '@prisma/client';
 import { emailTemplates } from './emailTemplates';
 import { emailTemplateTranslations } from './emailTemplateTranslations';
+
 const prisma = new PrismaClient();
 
 async function main() {

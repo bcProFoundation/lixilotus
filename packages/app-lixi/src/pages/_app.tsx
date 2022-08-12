@@ -9,20 +9,17 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { END } from 'redux-saga';
 
-
 import MainLayout from '@components/Layout/MainLayout';
 
 import { ConnectedRouter } from 'connected-next-router';
 import { AppContext, SagaStore, Wallet, wrapper, XPI } from '../store/store';
 import { loadGetInitialProps } from 'next/dist/shared/lib/utils';
 
-
 const PersistGateServer = (props: any) => {
   return props.children;
-}
+};
 
 const LixiApp = ({ Component, ...rest }) => {
-
   const { store, props } = wrapper.useWrappedStore(rest);
 
   const Layout = Component.Layout || MainLayout;
@@ -39,7 +36,7 @@ const LixiApp = ({ Component, ...rest }) => {
   return (
     <Provider store={store}>
       <AppContext.Provider value={{ XPI, Wallet }}>
-        <Layout className='lixi-app-layout'>
+        <Layout className="lixi-app-layout">
           <Head>
             <title>LixiLotus</title>
             <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -53,7 +50,6 @@ const LixiApp = ({ Component, ...rest }) => {
       </AppContext.Provider>
     </Provider>
   );
-
-}
+};
 
 export default LixiApp;

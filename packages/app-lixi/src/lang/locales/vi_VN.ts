@@ -1,3 +1,4 @@
+/* eslint-disable import/no-anonymous-default-export */
 /* SendLotus Language Texts
 
 Table of Contents
@@ -14,6 +15,7 @@ Table of Contents
 
 export default {
   /* 01.General */
+  'general.home': 'Nhà',
   'general.accounts': 'Tài khoản',
   'general.lixi': 'Lì xì',
   'general.claim': 'Nhận Lì xì',
@@ -96,6 +98,7 @@ export default {
   'lixi.fundGiveRandomize': 'Loại Lì xì: Ngẫu nhiên',
   'lixi.randomFund': 'Từ: {newLixiMinValue}; Đến: {newLixiMaxValue}',
   'lixi.amount': 'Tổng cộng: {newLixiAmount}',
+  'lixi.totalAmountRequire': 'Tổng số lượng cần: {newLixiAmount}',
   'lixi.NumberOfSub': 'Số lượng bao Lì xì phụ: {newNumberOfSubLixi}',
   'lixi.numberLixiPerPackage': 'Số lượng bao lì xì phụ trong mỗi gói: {newNumberLixiPerPackage}',
   'lixi.package': 'Package',
@@ -117,15 +120,22 @@ export default {
   'lixi.remainingXPI': 'XPI còn lại',
   'lixi.message': 'Thông điệp',
   'lixi.loadmore': 'Xem thêm',
+  'lixi.addLeader': 'thêm trưởng nhóm',
   'lixi.lixiDetail': 'Bấm để xem chi tiết Lì xì',
+  'lixi.lixiLeader': 'Bấm để xem chi tiết Lì xì',
   'lixi.downloadCode': 'Tải về mã code',
   'lixi.copyClaim': 'Sao chép mã code',
   'lixi.refreshLixi': 'Làm mới Lì xì',
   'lixi.exportLixi': 'Export Lixi',
   'lixi.noLixiSelected': 'Chọn ít nhất một Lì xì',
-  'lixi.fileTypeError': 'Bạn chỉ có thể tải lên tệp JPG!',
-  'lixi.fileSizeError': 'Hình ảnh phải nhỏ hơn 2MB!',
-  'lixi.lixiPostcard': 'Bưu thiếp Lì xì',
+  'lixi.fileTypeError': 'Bạn chỉ có thể tải lên tệp JPG/PNG/GIF !',
+  'lixi.fileSizeError': 'Hình ảnh phải nhỏ hơn 5MB!',
+  'lixi.fileUploadError': 'Lỗi khi tải thiệp lên server',
+  'lixi.fileUploadSuccess': 'Tải thiệp lên thành công',
+  'lixi.uploadDividerText': 'Thiệp tự chọn',
+  'lixi.uploadText': 'Đăng thiệp',
+  'lixi.uploadingText': 'Đang tải...',
+  'lixi.previewFileFailed': 'Không thể xem trước file',
   'lixi.renameLixi': 'Đổi tên Lì xi',
   'lixi.enterNewLixiName': 'Nhập tên mới cho Lì xì',
   'lixi.lixiLengthError': 'Tên Lì xì phải là một chuỗi dài từ 1 đến 24 ký tự',
@@ -158,8 +168,15 @@ export default {
   'lixi.registerSuccess': 'Đăng ký pack Lì xì thành công',
   'lixi.renameFailed': 'Đổi tên không thành công. Hãy thử lại với một tên khác.',
   'lixi.isNFTEnabled': 'Kích hoạt NFT',
+  'lixi.isCharity': 'Quỹ từ thiện',
   'lixi.optionNFTEnabled': 'Tùy chọn: Kích hoạt NFT',
   'lixi.unableDownloadSub': 'Không thể tải về các Lì xì phụ.',
+  'lixi.loyaltyProgram': 'Khách hàng thân thiết',
+  'lixi.staffAddress': 'Địa chỉ ví nhân viên',
+  'lixi.charityAddress': 'Địa chỉ ví từ thiện',
+  'lixi.lotteryAddress': 'Địa chỉ ví xổ số',
+  'lixi.lotteryAddressCheck': 'Xác nhận',
+  'lixi.addressCopied': 'địa chỉ đã được sao chép.',
 
   /* 04.Claim */
   'claim.claim': 'Nhận Lì xì',
@@ -239,5 +256,60 @@ export default {
   'lixinft.unableToMint': 'Không thể tạo NFT',
 
   /* 11.Register */
-  'register.register': 'Register'
+  'register.register': 'Register',
+
+  /* 12.Send */
+  'send.unableToSend': 'Không thể gửi thành công',
+  'send.sendAmountSmallerThanDust': 'Số tiền gửi nhỏ hơn số tiền gửi tối thiểu"',
+  'send.utxoEmpty': 'Danh sách UTXO trống',
+  'send.unableSendTransaction': 'Không thể gửi giao dịch',
+  'send.insufficientFund': 'Số dư tài khoản không đủ',
+  'send.invalidDecimalPlaces': 'Số tiền gửi đi không đúng định dạng',
+  'send.insufficientPriority': 'Không đủ phí gửi trên giao dịch',
+  'send.networkError': 'Lỗi mạng',
+  'send.longMempoolChain': 'Số tiền khả dụng chưa được xác nhận quá nhiều',
+  'send.communicateApi': 'Không thể kết nối với máy chủ. Vui lòng thử lại',
+  'send.manyAncestors':
+    'Bạn đang gửi XPI với nhiều nguồn tiền chưa được xác thưc (giới hạn 50 ). Việc gửi sẽ được gửi đi sau khi nguồn tiền được xác nhận. Hãy thử lại sau 10 phút',
+  'send.onlyMessage': 'Chỉ gửi tin nhắn',
+  'send.canNotEncryptMessage': 'Không thể mã hoá tin nhắn',
+  'send.addressNoOutgoingTrans':
+    'Địa chỉ này không có giao dịch gửi đi trước đó, không thể gửi tin nhắn tới địa chỉ này',
+  'send.newAddress': 'Địa chỉ này mới được khởi tạo, hãy kiểm tra kỹ trước khi thực hiện giao dịch với số tiền lớn',
+  'send.canNotSendToYourSelf': 'Không thể tự gửi cho bản thân!',
+  'send.calcMaxError': 'Không thể tính số tiền tối đa bạn có thể gửi',
+  'send.sendModalTitle': 'Bạn có muốn gửi số tiền {value} {ticker} tới {address}?',
+  'send.queryString':
+    'Bạn đang gửi giao dịch với định dạng đặc biệt "{queryStringText}." Chỉ có tham số "amount", với đồng tiền {currency} satoshis, được hỗ trợ.',
+  'send.optionalPrivateMessage': 'Tin nhắn riêng tư',
+  /* 12.Zero balance header */
+  'zeroBalanceHeader.noBalance': 'Hiện tại bạn đang có {ticker} trong tài khoản',
+  'zeroBalanceHeader.deposit': 'Hãy nạp thêm vào tài khoản để có thể sử dụng tính năng giao dịch',
+
+  /* 13.Page */
+  'page.createNewPage': 'tạo trang mới',
+  'page.createPage': 'tạo trang',
+  'page.editPage': 'Sửa trang',
+  'page.name': 'Tên',
+  'page.inputName': 'Vui lòng nhập tên',
+  'page.title': 'Tiêu đề',
+  'page.inputTitle': 'Vui lòng nhập tiêu đề',
+  'page.walletAddress': 'Địa chỉ ví',
+  'page.avatar': 'Ảnh đại diện',
+  'page.cover': 'Ảnh bìa',
+  'page.upload': 'Tải lên',
+  'page.website': 'Trang web',
+  'page.description': 'Mô tả',
+  'page.country': 'Tìm kiếm quốc gia',
+  'page.state': 'Tìm kiếm tỉnh thành',
+  'page.address': 'Địa chỉ',
+  'page.inputAddress': 'Vui lòng nhập địa chỉ',
+  'page.couldNotpostPage': 'Tạo trang không thành công',
+  'page.createPageSuccessful': 'Trang đã tạo thành công',
+  'page.unableCreatePageServer': 'Không thể kết nối server tạo trang',
+  'page.errorWhenCreatePage': 'Đã có lỗi xảy ra khi tạo mới trang',
+
+  /* 14.Country */
+  'country.unablegetCountries': 'Không thể tải quốc gia',
+  'country.unablegetStates': 'Không thể tải tỉnh thành'
 };

@@ -1,13 +1,10 @@
-import { createEntityAdapter, createReducer } from "@reduxjs/toolkit"
-import { Claim } from "@bcpros/lixi-models/lib/claim";
-import { ClaimsState } from "./state";
-import { refreshLixiSuccess, selectLixiSuccess } from "../lixi/actions";
-import { saveClaimAddress, saveClaimCode, viewClaimFailure, viewClaimSuccess } from "./actions";
+import { createEntityAdapter, createReducer } from '@reduxjs/toolkit';
+import { Claim } from '@bcpros/lixi-models/lib/claim';
+import { ClaimsState } from './state';
+import { refreshLixiSuccess, selectLixiSuccess } from '../lixi/actions';
+import { saveClaimAddress, saveClaimCode, viewClaimFailure, viewClaimSuccess } from './actions';
 
-
-export const claimsAdapter = createEntityAdapter<Claim>({
-})
-
+export const claimsAdapter = createEntityAdapter<Claim>({});
 
 const initialState: ClaimsState = claimsAdapter.getInitialState({
   currentAddress: '',
@@ -15,7 +12,7 @@ const initialState: ClaimsState = claimsAdapter.getInitialState({
   currentLixiClaim: null
 });
 
-export const claimReducer = createReducer(initialState, (builder) => {
+export const claimReducer = createReducer(initialState, builder => {
   builder
     .addCase(refreshLixiSuccess, (state, action) => {
       const claims = action.payload.claims;
@@ -36,5 +33,5 @@ export const claimReducer = createReducer(initialState, (builder) => {
     })
     .addCase(viewClaimFailure, (state, action) => {
       state.currentLixiClaim = null;
-    })
-})
+    });
+});

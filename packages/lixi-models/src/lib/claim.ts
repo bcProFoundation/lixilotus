@@ -32,4 +32,5 @@ export interface ViewClaimDto {
   amount: number;
   nftTokenId: Nullable<string>;
   nftTokenUrl: string;
+  pageName?: string;
 }

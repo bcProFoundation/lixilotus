@@ -4,10 +4,9 @@ import { PrismaService } from 'src/modules/prisma/prisma.service';
 
 @Injectable()
 export class EmailTemplateService {
-
   private logger: Logger = new Logger(EmailTemplateService.name);
 
-  constructor(private prisma: PrismaService, @I18n() private i18n: I18nService) { }
+  constructor(private prisma: PrismaService, @I18n() private i18n: I18nService) {}
 
   /**
    * convert string to slug
