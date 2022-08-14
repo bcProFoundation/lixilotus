@@ -21,8 +21,15 @@
     }
   },
   "scripts": {
+    "precommit": "yarn fix && yarn lint",
     "postinstall": "run-s generate build",
-    "prebuild": "rimraf dist",
+    "prebuild": "rimraf build",
+    "fix": "run-s fix:*",
+    "lint": "run-s lint:*",
+    "lint:prettier": "prettier --write \"src/**/*{.ts,.json}\" --check --config .prettierrc.js",
+    "lint:ts": "eslint \"src/**/*.ts\"",
+    "fix:prettier": "prettier --write \"src/**/*{.ts,.json}\" --write --config .prettierrc.js",
+    "fix:lint": "eslint \"src/**/*.ts\" --fix",
     "build": "tsc -p tsconfig.build.json",
     "build:watch": "tsc -p tsconfig.build.json -w --preserveWatchOutput",
     "start:dev": "yarn run build:watch",
@@ -40,7 +47,11 @@
   },
   "devDependencies": {
     "@types/node": "^16.11.5",
+    "eslint": "^8.16.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.0.0",
     "npm-run-all": "^4.1.5",
+    "prettier": "^2.6.2",
     "prisma": "^3.3.0",
     "rimraf": "^3.0.2",
     "ts-node": "^10.4.0",

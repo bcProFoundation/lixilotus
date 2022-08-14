@@ -1,15 +1,11 @@
 import { DynamicModule, Module, Provider } from '@nestjs/common';
-import {
-  PrismaModuleAsyncOptions,
-  PrismaModuleOptions,
-  PrismaOptionsFactory,
-} from './interfaces';
+import { PrismaModuleAsyncOptions, PrismaModuleOptions, PrismaOptionsFactory } from './interfaces';
 import { PRISMA_SERVICE_OPTIONS } from './prisma.constants';
 import { PrismaService } from './prisma.service';
 
 @Module({
   providers: [PrismaService],
-  exports: [PrismaService],
+  exports: [PrismaService]
 })
 export class PrismaModule {
   static forRoot(options: PrismaModuleOptions = {}): DynamicModule {
@@ -19,9 +15,9 @@ export class PrismaModule {
       providers: [
         {
           provide: PRISMA_SERVICE_OPTIONS,
-          useValue: options.prismaServiceOptions,
-        },
-      ],
+          useValue: options.prismaServiceOptions
+        }
+      ]
     };
   }
 
@@ -30,13 +26,11 @@ export class PrismaModule {
       global: options.isGlobal,
       module: PrismaModule,
       imports: options.imports || [],
-      providers: this.createAsyncProviders(options),
+      providers: this.createAsyncProviders(options)
     };
   }
 
-  private static createAsyncProviders(
-    options: PrismaModuleAsyncOptions,
-  ): Provider[] {
+  private static createAsyncProviders(options: PrismaModuleAsyncOptions): Provider[] {
     if (options.useExisting || options.useFactory) {
       return this.createAsyncOptionsProvider(options);
     }
@@ -45,30 +39,27 @@ export class PrismaModule {
       ...this.createAsyncOptionsProvider(options),
       {
         provide: options.useClass,
-        useClass: options.useClass,
-      },
+        useClass: options.useClass
+      }
     ];
   }
 
-  private static createAsyncOptionsProvider(
-    options: PrismaModuleAsyncOptions,
-  ): Provider[] {
+  private static createAsyncOptionsProvider(options: PrismaModuleAsyncOptions): Provider[] {
     if (options.useFactory) {
       return [
         {
           provide: PRISMA_SERVICE_OPTIONS,
           useFactory: options.useFactory,
-          inject: options.inject || [],
-        },
+          inject: options.inject || []
+        }
       ];
     }
     return [
       {
         provide: PRISMA_SERVICE_OPTIONS,
-        useFactory: async (optionsFactory: PrismaOptionsFactory) =>
-          await optionsFactory.createPrismaOptions(),
-        inject: [options.useExisting || options.useClass],
-      },
+        useFactory: async (optionsFactory: PrismaOptionsFactory) => await optionsFactory.createPrismaOptions(),
+        inject: [options.useExisting || options.useClass]
+      }
     ];
   }
 }

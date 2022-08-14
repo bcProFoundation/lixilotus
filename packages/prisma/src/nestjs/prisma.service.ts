@@ -1,5 +1,5 @@
 import { Inject, Injectable, OnModuleInit, Optional } from '@nestjs/common';
-import { PrismaClient } from '@bcpros/prisma';
+import { PrismaClient } from '@prisma/client';
 import { PrismaServiceOptions } from './interfaces';
 import { PRISMA_SERVICE_OPTIONS } from './prisma.constants';
 

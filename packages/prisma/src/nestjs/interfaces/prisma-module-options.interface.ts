@@ -31,13 +31,10 @@ export interface PrismaOptionsFactory {
   createPrismaOptions(): Promise<PrismaServiceOptions> | PrismaServiceOptions;
 }
 
-export interface PrismaModuleAsyncOptions
-  extends Pick<ModuleMetadata, 'imports'> {
+export interface PrismaModuleAsyncOptions extends Pick<ModuleMetadata, 'imports'> {
   isGlobal?: boolean;
   useExisting?: Type<PrismaOptionsFactory>;
   useClass?: Type<PrismaOptionsFactory>;
-  useFactory?: (
-    ...args: any[]
-  ) => Promise<PrismaServiceOptions> | PrismaServiceOptions;
+  useFactory?: (...args: any[]) => Promise<PrismaServiceOptions> | PrismaServiceOptions;
   inject?: any[];
 }
