@@ -1,9 +1,25 @@
 {
-  "name": "@acme/prisma",
+  "name": "@bcpros/prisma",
+  "version": "1.0.0",
   "packageManager": "yarn@3.1.0",
+  "author": "vince.tran8x@gmail.com",
+  "description": "Db orm for lixi lotus application",
   "private": true,
-  "main": "dist/index.js",
-  "types": "dist/index.d.js",
+  "main": "build/main/index.js",
+  "types": "build/main/index.d.ts",
+  "typings": "build/main/index.d.ts",
+  "module": "build/module/index.js",
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "require": "./build/main/index.js",
+      "import": "./dist/module/index.mjs"
+    },
+    "./*": {
+      "require": "./build/main/*.js",
+      "import": "./build/module/*.mjs"
+    }
+  },
   "scripts": {
     "postinstall": "run-s generate build",
     "prebuild": "rimraf dist",
@@ -31,11 +47,10 @@
     "typescript": "^4.4.4"
   },
   "dependencies": {
-    "@acme/core": "workspace:*",
     "@prisma/client": "^3.3.0"
   },
   "prisma": {
     "schema": "./prisma/schema.prisma",
-    "seed": "ts-node ./prisma/seed.ts"
+    "seed": "ts-node prisma/seeds/index.ts"
   }
 }

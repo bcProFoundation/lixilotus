@@ -2,7 +2,7 @@ import { envelopes } from './envelopes';
 import { notificationTypes } from './notificationTypes';
 import { notificationTypeTranslations } from './notificationTypeTranslations';
 
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@bcpros/prisma';
 import { emailTemplates } from './emailTemplates';
 import { emailTemplateTranslations } from './emailTemplateTranslations';
 

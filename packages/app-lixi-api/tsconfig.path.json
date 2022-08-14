@@ -5,9 +5,13 @@
   "paths": {
     "@bcpros/lixi-models/*": [
       "../packages/lixi-models/*"
+    ],
+    "@bcpros/prisma/*": [
+      "../../packages/prisma/src/*"
     ]
   },
   "include": [
-    "../packages/lixi-models"
+    "../packages/lixi-models",
+    "../packages/prisma"
   ]
 }

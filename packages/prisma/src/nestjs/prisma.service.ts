@@ -1,5 +1,5 @@
 import { Inject, Injectable, OnModuleInit, Optional } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@bcpros/prisma';
 import { PrismaServiceOptions } from './interfaces';
 import { PRISMA_SERVICE_OPTIONS } from './prisma.constants';
 
@@ -8,7 +8,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
   constructor(
     @Optional()
     @Inject(PRISMA_SERVICE_OPTIONS)
-    private readonly prismaServiceOptions: PrismaServiceOptions = {},
+    private readonly prismaServiceOptions: PrismaServiceOptions = {}
   ) {
     super(prismaServiceOptions.prismaOptions);
   }
