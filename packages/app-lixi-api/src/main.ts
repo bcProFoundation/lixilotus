@@ -43,7 +43,7 @@ async function bootstrap() {
     console.log(err);
   });
 
-  process.env.NODE_ENV === 'development'
+  process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'local'
     ? app.enableCors()
     : app.enableCors({
         origin: function (origin, callback) {

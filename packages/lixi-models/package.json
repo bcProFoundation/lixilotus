@@ -83,6 +83,7 @@
   },
   "dependencies": {
     "@nestjs/mapped-types": "^1.1.0",
-    "class-validator": "^0.13.2"
+    "class-validator": "^0.13.2",
+    "ts-morph": "^15.1.0"
   }
 }
