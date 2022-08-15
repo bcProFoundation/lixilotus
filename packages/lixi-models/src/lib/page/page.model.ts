@@ -1,5 +1,6 @@
-import { Field, ObjectType, ID } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { IsOptional } from 'class-validator';
+
 import { Account } from '../account';
 
 @ObjectType()
@@ -21,10 +22,10 @@ export class Page {
   @Field(() => String)
   description: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   avatar: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   cover: string;
 
   @IsOptional()
@@ -38,13 +39,12 @@ export class Page {
   website: string;
 
   @Field(() => Date, {
-    description: 'Identifies the date and time when the object was created.',
+    description: 'Identifies the date and time when the object was created.'
   })
   createdAt: Date;
 
   @Field(() => Date, {
-    description:
-      'Identifies the date and time when the object was last updated.',
+    description: 'Identifies the date and time when the object was last updated.'
   })
   updatedAt: Date;
 }

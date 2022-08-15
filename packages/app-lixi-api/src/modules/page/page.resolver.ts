@@ -1,10 +1,10 @@
-import { Page } from "@bcpros/lixi-models";
-import { Args, Query, ResolveField, Resolver } from "@nestjs/graphql";
-import { PrismaService } from "../prisma/prisma.service";
+import { Page } from '@bcpros/lixi-models';
+import { Args, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Resolver(() => Page)
 export class PageResolver {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   @Query(() => Page)
   async page(@Args('id', { type: () => String }) id: string) {

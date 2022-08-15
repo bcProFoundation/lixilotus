@@ -5,7 +5,7 @@ export default () => {
   let envConfig = {};
   try {
     envConfig = require(`./config.${process.env.NODE_ENV}`).default;
-  } catch (e) { }
+  } catch (e) {}
 
   return merge(DefaultConfig(), envConfig);
 };

@@ -9,8 +9,8 @@ scalar DateTime
 
 type Page {
   address: String!
-  avatar: String!
-  cover: String!
+  avatar: String
+  cover: String
 
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!

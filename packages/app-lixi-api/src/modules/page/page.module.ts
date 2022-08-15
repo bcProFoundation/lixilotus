@@ -13,4 +13,4 @@ import { PageResolver } from './page.resolver';
   providers: [PageResolver],
   exports: []
 })
-export class PageModule { }
+export class PageModule {}
