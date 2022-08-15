@@ -1,9 +1,10 @@
-import { Logger, Module } from '@nestjs/common';
+import { ConsoleLogger, Logger, Module, OnApplicationShutdown } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { MercuriusDriver, MercuriusDriverConfig } from '@nestjs/mercurius';
 import { ServeStaticModule, ServeStaticModuleOptions } from '@nestjs/serve-static';
 import { EthersModule } from 'nestjs-ethers';
+import { FastifyRequest } from 'fastify';
 import { AcceptLanguageResolver, HeaderResolver, I18nModule } from 'nestjs-i18n';
 import path, { join } from 'path';
 import { NotificationModule } from './common/modules/notifications/notification.module';
@@ -51,8 +52,10 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
           },
           sortSchema: graphqlConfig?.sortSchema || true,
           autoSchemaFile: graphqlConfig?.schemaDestination || './src/schema.graphql',
-          debug: graphqlConfig?.debug
-          // context: ({ req }) => ({ req }),
+          debug: graphqlConfig?.debug,
+          context: ({ req }: { req: FastifyRequest }) => ({
+            req
+          })
         };
       },
 
@@ -88,4 +91,8 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
   controllers: [],
   providers: [Logger]
 })
-export class AppModule {}
+export class AppModule implements OnApplicationShutdown {
+  onApplicationShutdown(signal: string) {
+    console.trace(`Application shut down (signal: ${signal})`);
+  }
+}

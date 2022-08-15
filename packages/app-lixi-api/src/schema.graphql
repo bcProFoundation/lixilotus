@@ -1,0 +1,31 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Page {
+  address: String!
+  avatar: String!
+  cover: String!
+
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  description: String!
+  id: ID!
+  name: String!
+  pageAccountId: Int!
+  parentId: String
+  title: String!
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
+  website: String!
+}
+
+type Query {
+  page(id: String!): Page!
+}
