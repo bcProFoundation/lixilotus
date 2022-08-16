@@ -1,4 +1,4 @@
-export interface Account {
+export class Account {
   id: number;
   name: string;
   mnemonic: string;
