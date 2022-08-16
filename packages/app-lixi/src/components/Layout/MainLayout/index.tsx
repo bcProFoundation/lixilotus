@@ -109,7 +109,9 @@ export const LixiTextLogo = styled.img`
   }
 `;
 
-const MainLayout: React.FC = props => {
+type MainLayoutProps = React.PropsWithChildren<{}>;
+
+const MainLayout: React.FC = (props: MainLayoutProps) => {
   const { children } = props;
   const selectedAccount = useAppSelector(getSelectedAccount);
   const currentLocale = useAppSelector(getCurrentLocale);

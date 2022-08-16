@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import intl from 'react-intl-universal';
 import { Layout, Spin } from 'antd';
 import Link from 'next/link';
@@ -105,10 +105,11 @@ export const LixiTextLogo = styled.img`
   }
 `;
 
-const ClaimedLayout: React.FC = props => {
-  const { children } = props;
+type ClaimedLayoutProps = React.PropsWithChildren<{}>;
+
+const ClaimedLayout: React.FC = ({ children }: ClaimedLayoutProps) => {
   const [loading, setLoading] = useState(false);
-  const currentLocale = useAppSelector(getCurrentLocale);
+  const currentLocale: string = useAppSelector(getCurrentLocale);
   const intlInitDone = useAppSelector(getIntlInitStatus);
   const dispatch = useAppDispatch();
 
