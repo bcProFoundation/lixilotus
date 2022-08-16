@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { PrismaClient } from '@bcpros/prisma';
+import { PrismaClient } from '@bcpros/lixi-prisma';
 
 const prisma = new PrismaClient();
 const dbSchema = process.env.DATABASE_SCHEMA;

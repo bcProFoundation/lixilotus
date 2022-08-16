@@ -1,6 +1,6 @@
 {
-  "name": "@bcpros/prisma",
-  "version": "1.0.0",
+  "name": "@bcpros/lixi-prisma",
+  "version": "0.0.1",
   "packageManager": "yarn@3.1.0",
   "author": "vince.tran8x@gmail.com",
   "description": "Db orm for lixi lotus application",
@@ -22,7 +22,6 @@
   },
   "scripts": {
     "precommit": "yarn fix && yarn lint",
-    "postinstall": "run-s generate build",
     "prebuild": "rimraf build",
     "fix": "run-s fix:*",
     "lint": "run-s lint:*",
@@ -50,15 +49,15 @@
     "eslint": "^8.16.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "npm-run-all": "^4.1.5",
+    "npm-run-all": "4.1.5",
     "prettier": "^2.6.2",
-    "prisma": "^3.3.0",
+    "prisma": "^4.2.1",
     "rimraf": "^3.0.2",
-    "ts-node": "^10.4.0",
-    "typescript": "^4.4.4"
+    "ts-node": "^10.8.0",
+    "typescript": "^4.7.2"
   },
   "dependencies": {
-    "@prisma/client": "^3.3.0"
+    "@prisma/client": "^4.2.1"
   },
   "prisma": {
     "schema": "./prisma/schema.prisma",

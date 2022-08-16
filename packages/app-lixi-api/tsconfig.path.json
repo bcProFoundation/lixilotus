@@ -6,12 +6,12 @@
     "@bcpros/lixi-models/*": [
       "../packages/lixi-models/*"
     ],
-    "@bcpros/prisma/*": [
-      "../../packages/prisma/src/*"
+    "@bcpros/lixi-prisma/*": [
+      "../../packages/lixi-prisma/src/*"
     ]
   },
   "include": [
     "../packages/lixi-models",
-    "../packages/prisma"
+    "../packages/lixi-prisma"
   ]
 }

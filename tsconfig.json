@@ -9,8 +9,8 @@
       "@bcpros/lixi-components": [
         "bcpros/lixi-components"
       ],
-      "@bcpros/prisma": [
-        "@bcpros/prisma"
+      "@bcpros/lixi-prisma": [
+        "@bcpros/lixi-prisma"
       ]
     }
   }

@@ -74,7 +74,7 @@ interface IState {
   intervalTimer?: NodeJS.Timeout;
 }
 
-const CashtabBase = (Wrapped: React.ComponentType<any>) => {
+const CashtabBase = (Wrapped) => {
   return class extends React.Component<CashtabBaseProps, IState> {
     static defaultProps = {
       currency: 'USD',

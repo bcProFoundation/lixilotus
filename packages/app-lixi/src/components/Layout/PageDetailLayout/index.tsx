@@ -105,7 +105,9 @@ export const LixiTextLogo = styled.img`
   }
 `;
 
-const PageDetailLayout: React.FC = props => {
+type PageDetailsLayoutProps = React.PropsWithChildren<{}>;
+
+const PageDetailLayout: React.FC = (props: PageDetailsLayoutProps) => {
   const { children } = props;
   const [loading, setLoading] = useState(false);
   const currentLocale = useAppSelector(getCurrentLocale);
