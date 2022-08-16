@@ -2,7 +2,7 @@ import fs from 'fs';
 import { PrismaClient } from '@bcpros/lixi-prisma';
 
 const prisma = new PrismaClient();
-const dbSchema = process.env.DATABASE_SCHEMA;
+const dbSchema = process.env.DB_SCHEMA;
 
 async function main() {
   let sqls = fs

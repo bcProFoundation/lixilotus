@@ -1,7 +1,6 @@
 {
   "name": "@bcpros/lixi-prisma",
   "version": "0.0.1",
-  "packageManager": "yarn@3.1.0",
   "author": "vince.tran8x@gmail.com",
   "description": "Db orm for lixi lotus application",
   "private": true,
@@ -13,16 +12,16 @@
   "exports": {
     ".": {
       "require": "./build/main/index.js",
-      "import": "./dist/module/index.mjs"
+      "import": "./build/main/index.js"
     },
     "./*": {
       "require": "./build/main/*.js",
-      "import": "./build/module/*.mjs"
+      "import": "./build/main/*.js"
     }
   },
   "scripts": {
     "precommit": "yarn fix && yarn lint",
-    "prebuild": "rimraf build",
+    "prebuild": "rimraf build && npx prisma generate",
     "fix": "run-s fix:*",
     "lint": "run-s lint:*",
     "lint:prettier": "prettier --write \"src/**/*{.ts,.json}\" --check --config .prettierrc.js",
@@ -42,7 +41,8 @@
     "generate": "yarn prisma generate",
     "generate:watch": "yarn prisma generate --watch",
     "start:db": "run-s migrate:up generate seed",
-    "seed": "yarn prisma db seed"
+    "seed": "ts-node prisma/seeds/index.ts",
+    "seed:countries": "ts-node prisma/seeds/countries.ts"
   },
   "devDependencies": {
     "@types/node": "^16.11.5",

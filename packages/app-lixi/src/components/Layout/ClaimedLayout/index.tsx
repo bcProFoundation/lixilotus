@@ -105,8 +105,7 @@ export const LixiTextLogo = styled.img`
   }
 `;
 
-type ClaimedLayoutProps = React.PropsWithChildren<{
-}>;
+type ClaimedLayoutProps = React.PropsWithChildren<{}>;
 
 const ClaimedLayout: React.FC = ({ children }: ClaimedLayoutProps) => {
   const [loading, setLoading] = useState(false);

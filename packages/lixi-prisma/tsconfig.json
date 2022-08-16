@@ -11,8 +11,8 @@
     "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
     "resolveJsonModule": true /* Include modules imported with .json extension. */,
     /* Additional Checks */
-    "noUnusedLocals": true /* Report errors on unused locals. */,
-    "noUnusedParameters": true /* Report errors on unused parameters. */,
+    "noUnusedLocals": false /* Report errors on unused locals. */,
+    "noUnusedParameters": false /* Report errors on unused parameters. */,
     "noImplicitReturns": true /* Report error when not all code paths in function return a value. */,
     "noFallthroughCasesInSwitch": true /* Report errors for fallthrough cases in switch statement. */,
     /* Debugging Options */
@@ -37,6 +37,9 @@
   "include": [
     "src/**/*.ts"
   ],
-  "exclude": ["./prisma", "node_modules/**"],
+  "exclude": [
+    "./prisma",
+    "node_modules/**"
+  ],
   "compileOnSave": false
 }

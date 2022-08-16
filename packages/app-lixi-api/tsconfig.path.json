@@ -7,7 +7,7 @@
       "../packages/lixi-models/*"
     ],
     "@bcpros/lixi-prisma/*": [
-      "../../packages/lixi-prisma/src/*"
+      "../packages/lixi-prisma/*"
     ]
   },
   "include": [
