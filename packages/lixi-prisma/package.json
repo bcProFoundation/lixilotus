@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "author": "vince.tran8x@gmail.com",
   "description": "Db orm for lixi lotus application",
-  "private": true,
   "main": "build/main/index.js",
   "types": "build/main/index.d.ts",
   "typings": "build/main/index.d.ts",
