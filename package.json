@@ -14,9 +14,12 @@
     "eslint-plugin-react-hooks": "^4.4.0",
     "husky": "^8.0.1",
     "lerna": "^5.4.2",
-    "prettier": "^2.6.2"
+    "nx": "14.5.7",
+    "prettier": "^2.6.2",
+    "@nrwl/nx-cloud": "latest"
   },
   "scripts": {
+    "postinstall": "lerna bootstrap",
     "dev": "lerna exec --scope @bcpros/app-lixi -- yarn dev",
     "start": "lerna exec --scope @bcpros/app-lixi -- yarn start",
     "start:api": "lerna exec --scope @bcpros/app-lixi-api -- yarn start",
