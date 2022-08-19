@@ -1340,6 +1340,13 @@
     varuint-bitcoin "^1.0.4"
     wif "^2.0.1"
 
+"@bcpros/lixi-prisma@latest":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@bcpros/lixi-prisma/-/lixi-prisma-0.0.1.tgz#b268ee6e35b71aef68b031dee1f22545240801dd"
+  integrity sha512-goIGedXxJwaZR+Qe/9h8YNnLFV0bu7P6OAEEYDvXiUTvem6FutRCOhNZ0mk8LSdtZxterHbOn60jgIj2S7ihYg==
+  dependencies:
+    "@prisma/client" "^4.2.1"
+
 "@bcpros/minimal-xpi-slp-wallet@^3.0.10":
   version "3.0.10"
   resolved "https://registry.yarnpkg.com/@bcpros/minimal-xpi-slp-wallet/-/minimal-xpi-slp-wallet-3.0.10.tgz#02a894f3501ff1e19c530d5ea313ad4f8dd1e932"
