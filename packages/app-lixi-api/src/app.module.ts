@@ -51,7 +51,7 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
             numberScalarMode: 'integer'
           },
           sortSchema: graphqlConfig?.sortSchema || true,
-          autoSchemaFile: graphqlConfig?.schemaDestination || './src/schema.graphql',
+          autoSchemaFile: graphqlConfig?.schemaDestination || './schema.graphql',
           debug: graphqlConfig?.debug,
           context: ({ req }: { req: FastifyRequest }) => ({
             req

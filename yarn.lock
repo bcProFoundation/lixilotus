@@ -2178,10 +2178,10 @@
     pump "^3.0.0"
     pumpify "^2.0.1"
 
-"@fastify/cookie@7.4.0":
-  version "7.4.0"
-  resolved "https://registry.yarnpkg.com/@fastify/cookie/-/cookie-7.4.0.tgz#a4782e24a0d230547d4c14f1dbbc13bcfc5dc52d"
-  integrity sha512-82MUHsZJY/Wl+rG2E+bnYxSifOtNRChm2M+8xnZHnKtYmyNfLvy/37ElCtqD3KzUyTycR+GE7v7uiDD/tY4TkA==
+"@fastify/cookie@8.0.0":
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/@fastify/cookie/-/cookie-8.0.0.tgz#470519200f96d966efd81e5e0fd1ddb1a6c87f54"
+  integrity sha512-VYEKAeJXx0ezormR7IlVd7iwMZDY+ksMUk50ruGKiMiuvMBkivzsPzNckR8dMme+5rxjXgOyfLunpS9jCvWlqA==
   dependencies:
     cookie "^0.5.0"
     fastify-plugin "^4.0.0"
@@ -2275,6 +2275,18 @@
     p-limit "^3.1.0"
     readable-stream "^4.0.0"
     send "^0.18.0"
+
+"@fastify/swagger@^7.4.1":
+  version "7.4.1"
+  resolved "https://registry.yarnpkg.com/@fastify/swagger/-/swagger-7.4.1.tgz#7149a5db69f03a7d43b74ba891fda8ce35d761a0"
+  integrity sha512-SN3sjz4dsb6jyochD6RNXG1GYBmt45YCIiQW3YjXF1Q8hP4aYQ7pVcRH2prcm12G6MJ4fGq58ywqh3prrO/Ocg==
+  dependencies:
+    "@fastify/static" "^6.0.0"
+    fastify-plugin "^3.0.1"
+    js-yaml "^4.1.0"
+    json-schema-resolver "^1.3.0"
+    openapi-types "^11.0.0"
+    rfdc "^1.3.0"
 
 "@fastify/websocket@^6.0.0":
   version "6.0.1"
@@ -11427,11 +11439,6 @@ destroy@1.2.0:
   resolved "https://registry.yarnpkg.com/destroy/-/destroy-1.2.0.tgz#4803735509ad8be552934c67df614f94e66fa015"
   integrity sha512-2sJGJTaXIIaR1w4iJSNoN0hnMY7Gpc/n8D4qSCJw8QqFWXf7cuAgnEHxBpweaVcPevC2l3KpjYCx3NypQQgaJg==
 
-destroy@~1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/destroy/-/destroy-1.0.4.tgz#978857442c44749e4206613e37946205826abd80"
-  integrity sha512-3NdhDuEXnfun/z7x9GOElY49LoqVHoGScmOKwmxhsS8N5Y+Z8KyPPDnaSzqWgYt/ji4mqwfTS34Htrk0zPIXVg==
-
 detab@2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/detab/-/detab-2.0.4.tgz#b927892069aff405fbb9a186fe97a44a92a94b43"
@@ -13626,47 +13633,6 @@ fastify-plugin@^4.0.0:
   resolved "https://registry.yarnpkg.com/fastify-plugin/-/fastify-plugin-4.2.0.tgz#fb28ec08312777ad343059177f13277ca3e7c3b1"
   integrity sha512-hovKzEXZc2YgeuXn41/2EA/IaIOdRu1pB9WKgnzDBj3lhKSdDCEsckHa7I6LiT/LhflvAQX7ZY8IQ6eBX0htTg==
 
-"fastify-static-deprecated@npm:fastify-static@4.6.1":
-  version "4.6.1"
-  resolved "https://registry.yarnpkg.com/fastify-static/-/fastify-static-4.6.1.tgz#687131da76f1d4391fb8b47f71ea2118cdc85803"
-  integrity sha512-vy7N28U4AMhuOim12ZZWHulEE6OQKtzZbHgiB8Zj4llUuUQXPka0WHAQI3njm1jTCx4W6fixUHfpITxweMtAIA==
-  dependencies:
-    content-disposition "^0.5.3"
-    encoding-negotiator "^2.0.1"
-    fastify-plugin "^3.0.0"
-    glob "^7.1.4"
-    p-limit "^3.1.0"
-    readable-stream "^3.4.0"
-    send "^0.17.1"
-
-fastify-static@^4.0.0:
-  version "4.7.0"
-  resolved "https://registry.yarnpkg.com/fastify-static/-/fastify-static-4.7.0.tgz#e802658d69c1dcddb380b9afc2456d467a3494be"
-  integrity sha512-zZhCfJv/hkmud2qhWqpU3K9XVAuy3+IV8Tp9BC5J5U+GyA2XwoB6h8lh9GqpEIqdXOw01WyWQllV7dOWVyAlXg==
-  dependencies:
-    fastify-static-deprecated "npm:fastify-static@4.6.1"
-    process-warning "^1.0.0"
-
-"fastify-swagger-deprecated@npm:fastify-swagger@5.1.1":
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/fastify-swagger/-/fastify-swagger-5.1.1.tgz#9aae3f7edb629c98e534841c3c0a1347f9321cd1"
-  integrity sha512-7DA0zS8CCV5r+gbLgWdeeKEwLrVbbOxLMJVUfOl1H9+wSildSLD8hok2TLX7s3c28wOjF8+iZRxsz/hBDzfdIw==
-  dependencies:
-    fastify-plugin "^3.0.0"
-    fastify-static "^4.0.0"
-    js-yaml "^4.0.0"
-    json-schema-resolver "^1.3.0"
-    openapi-types "^10.0.0"
-    rfdc "^1.3.0"
-
-fastify-swagger@^5.2.0:
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/fastify-swagger/-/fastify-swagger-5.2.0.tgz#680cae4352b68b7e064aaaeb36fa1de60ff26dc7"
-  integrity sha512-yKct50Mev9YIrhd2FRO4AChcJM9JwTBCziIjA4C+AI+hV2ystaIklgHVEwHoyqlaeQ+B4gZ1Z5rgOE87i4llLg==
-  dependencies:
-    fastify-swagger-deprecated "npm:fastify-swagger@5.1.1"
-    process-warning "^1.0.0"
-
 fastify@4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/fastify/-/fastify-4.4.0.tgz#0543aa039c70d49df4ddcca796679f305f10d2ae"
@@ -15338,17 +15304,6 @@ http-deceiver@^1.2.7:
   version "1.2.7"
   resolved "https://registry.yarnpkg.com/http-deceiver/-/http-deceiver-1.2.7.tgz#fa7168944ab9a519d337cb0bec7284dc3e723d87"
   integrity sha512-LmpOGxTfbpgtGVxJrj5k7asXHCgNZp5nLfp+hWc8QQRqtb7fUy6kRY3BO1h9ddF6yIPYUARgxGOwB42DnxIaNw==
-
-http-errors@1.8.1:
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/http-errors/-/http-errors-1.8.1.tgz#7c3f28577cbc8a207388455dbd62295ed07bd68c"
-  integrity sha512-Kpk9Sm7NmI+RHhnj6OIWDI1d6fIoFAtFt9RLaTMRlg/8w49juAStsrBgp0Dp4OdxdVbRIeKhtCUvoi/RuAhO4g==
-  dependencies:
-    depd "~1.1.2"
-    inherits "2.0.4"
-    setprototypeof "1.2.0"
-    statuses ">= 1.5.0 < 2"
-    toidentifier "1.0.1"
 
 http-errors@2.0.0:
   version "2.0.0"
@@ -17483,7 +17438,7 @@ js-tokens@^3.0.2:
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-3.0.2.tgz#9866df395102130e38f7f996bceb65443209c25b"
   integrity sha512-RjTcuD4xjtthQkaWH7dFlH85L+QaVtSoOyGdZ3g6HFhS9dFNDfLyqgm2NFe2X6cQpeFmt0452FJjFG5UameExg==
 
-js-yaml@4.1.0, js-yaml@^4.0.0, js-yaml@^4.1.0:
+js-yaml@4.1.0, js-yaml@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-4.1.0.tgz#c1fb65f8f5017901cdd2c951864ba18458a10602"
   integrity sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==
@@ -20698,13 +20653,6 @@ on-finished@2.4.1, on-finished@^2.3.0:
   dependencies:
     ee-first "1.1.1"
 
-on-finished@~2.3.0:
-  version "2.3.0"
-  resolved "https://registry.yarnpkg.com/on-finished/-/on-finished-2.3.0.tgz#20f1336481b083cd75337992a16971aa2d906947"
-  integrity sha512-ikqdkGAAyf/X/gPhXGvfgAytDZtDbr+bkNUJ0N9h5MI/dmdgCs3l6hoHrcUv41sRKew3jIwrp4qQDXiK99Utww==
-  dependencies:
-    ee-first "1.1.1"
-
 on-headers@~1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/on-headers/-/on-headers-1.0.2.tgz#772b0ae6aaa525c399e489adfad90c403eb3c28f"
@@ -20748,10 +20696,10 @@ open@^8.0.9, open@^8.4.0:
     is-docker "^2.1.1"
     is-wsl "^2.2.0"
 
-openapi-types@^10.0.0:
-  version "10.0.0"
-  resolved "https://registry.yarnpkg.com/openapi-types/-/openapi-types-10.0.0.tgz#0debbf663b2feed0322030b5b7c9080804076934"
-  integrity sha512-Y8xOCT2eiKGYDzMW9R4x5cmfc3vGaaI4EL2pwhDmodWw1HlK18YcZ4uJxc7Rdp7/gGzAygzH9SXr6GKYIXbRcQ==
+openapi-types@^11.0.0:
+  version "11.1.0"
+  resolved "https://registry.yarnpkg.com/openapi-types/-/openapi-types-11.1.0.tgz#037969f3dfa5999423ee33bf889fb0d12984277e"
+  integrity sha512-ZW+Jf12flFF6DXSij8DGL3svDA4RtSyHXjC/xB/JAh18gg3uVfVIFLvCfScUMowrpvlkxsMMbErakbth2g3/iQ==
 
 opener@^1.5.2:
   version "1.5.2"
@@ -22316,11 +22264,6 @@ process-nextick-args@~2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/process-nextick-args/-/process-nextick-args-2.0.1.tgz#7820d9b16120cc55ca9ae7792680ae7dba6d7fe2"
   integrity sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==
-
-process-warning@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/process-warning/-/process-warning-1.0.0.tgz#980a0b25dc38cd6034181be4b7726d89066b4616"
-  integrity sha512-du4wfLyj4yCZq1VupnVSZmRsPJsNuxoDQFdCFHLaYiEbFBD7QE0a+I4D7hOxrVnh78QE/YipFAj9lXHiXocV+Q==
 
 process-warning@^2.0.0:
   version "2.0.0"
@@ -24629,25 +24572,6 @@ send@0.18.0, send@^0.18.0:
     range-parser "~1.2.1"
     statuses "2.0.1"
 
-send@^0.17.1:
-  version "0.17.2"
-  resolved "https://registry.yarnpkg.com/send/-/send-0.17.2.tgz#926622f76601c41808012c8bf1688fe3906f7820"
-  integrity sha512-UJYB6wFSJE3G00nEivR5rgWp8c2xXvJ3OPWPhmuteU0IKj8nKbG3DrjiOmLwpnHGYWAVwA69zmTm++YG0Hmwww==
-  dependencies:
-    debug "2.6.9"
-    depd "~1.1.2"
-    destroy "~1.0.4"
-    encodeurl "~1.0.2"
-    escape-html "~1.0.3"
-    etag "~1.8.1"
-    fresh "0.5.2"
-    http-errors "1.8.1"
-    mime "1.6.0"
-    ms "2.1.3"
-    on-finished "~2.3.0"
-    range-parser "~1.2.1"
-    statuses "~1.5.0"
-
 serialize-javascript@6.0.0, serialize-javascript@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/serialize-javascript/-/serialize-javascript-6.0.0.tgz#efae5d88f45d7924141da8b5c3a7a7e663fefeb8"
@@ -25410,7 +25334,7 @@ statuses@2.0.1:
   resolved "https://registry.yarnpkg.com/statuses/-/statuses-2.0.1.tgz#55cb000ccf1d48728bd23c685a063998cf1a1b63"
   integrity sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ==
 
-"statuses@>= 1.4.0 < 2", "statuses@>= 1.5.0 < 2", statuses@~1.5.0:
+"statuses@>= 1.4.0 < 2":
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/statuses/-/statuses-1.5.0.tgz#161c7dac177659fd9811f43771fa99381478628c"
   integrity sha512-OpZ3zP+jT1PI7I8nemJX4AKmAX070ZkYPVWV/AaKTJl+tXCTGyVdC1a4SL8RUQYEwk/f34ZX8UTykN68FwrqAA==
