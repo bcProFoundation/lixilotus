@@ -67,6 +67,15 @@ server {
     proxy_set_header X-Forwarded-Proto $scheme;
     proxy_pass http://localhost:4800$request_uri;
   }
+
+  location /graphql {
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP  $remote_addr;
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_pass http://localhost:4800/graphql;
+	}
+
 }
 
 ```
@@ -75,14 +84,18 @@ server {
 
 ```bash
 # development
-# windows
+# windows command line
 $ set NODE_ENV=development&& yarn start
+# windows powershell
+($env:NODE_ENV="development") -and (yarn start)
 # linux
 $ NODE_ENV=development yarn start
 
 # watch mode
-# windows
+# windows command line
 $ set NODE_ENV=development&& yarn start:dev
+# windows powershell
+($env:NODE_ENV="development") -and (yarn start)
 # linux
 $ NODE_ENV=development yarn start:dev
 

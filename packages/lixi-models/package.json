@@ -6,7 +6,7 @@
   "types": "build/main/index.d.ts",
   "typings": "build/main/index.d.ts",
   "module": "build/module/index.js",
-  "repository": "https://gitlab.com/abcpros/lixilotus/-/tree/master/packages/lixi-models",
+  "repository": "https://github.com/bcProFoundation/lixilotus/tree/master/packages/lixi-models",
   "license": "MIT",
   "keywords": [],
   "exports": {
@@ -83,6 +83,7 @@
   },
   "dependencies": {
     "@nestjs/mapped-types": "^1.1.0",
-    "class-validator": "^0.13.2"
+    "class-validator": "^0.13.2",
+    "ts-morph": "^15.1.0"
   }
 }
