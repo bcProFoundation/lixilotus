@@ -1,7 +1,7 @@
 {
   "name": "@bcpros/lixi-prisma",
   "private": true,
-  "version": "0.0.9",
+  "version": "1.1.3",
   "author": "vince.tran8x@gmail.com",
   "description": "Db orm for lixi lotus application",
   "main": "build/main/index.js",
