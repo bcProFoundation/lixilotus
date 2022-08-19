@@ -2,27 +2,34 @@ import React from 'react';
 import { Form, Input, Button } from 'antd';
 import intl from 'react-intl-universal';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
-import { Login } from '@bcpros/lixi-models/lib/auth';
+import { useAppDispatch } from '@store/hooks';
+import { loginViaEmail } from '@store/account/actions';
+import { LoginViaEmailCommand } from '@bcpros/lixi-models';
+import OAuth2Login from 'react-simple-oauth2-login';
 
 const LoginComponent = () => {
   const {
     handleSubmit,
     formState: { errors },
     control
-  } = useForm<Login>();
+  } = useForm<LoginViaEmailCommand>();
+  const dispatch = useAppDispatch();
 
-  const onSubmit: SubmitHandler<Login> = data => {
-    console.log(data);
+  const onSubmit: SubmitHandler<LoginViaEmailCommand> = data => {
+    dispatch(loginViaEmail(data));
   };
+
+  const onSuccess = response => console.log(response);
+  const onFailure = response => console.error(response);
 
   return (
     <>
       <h1>Login</h1>
 
       <Form labelCol={{ span: 7 }} wrapperCol={{ span: 24 }} layout="horizontal">
-        <Form.Item name="email" label="Email">
+        <Form.Item name="username" label="Email">
           <Controller
-            name="email"
+            name="username"
             control={control}
             rules={{
               required: {
@@ -39,7 +46,7 @@ const LoginComponent = () => {
             )}
           />
         </Form.Item>
-        <p>{errors.email && errors.email.message}</p>
+        <p>{errors.username && errors.username.message}</p>
 
         <Form.Item name="password" label="Password">
           <Controller
@@ -61,6 +68,15 @@ const LoginComponent = () => {
         <Button type="primary" onClick={handleSubmit(onSubmit)}>
           {intl.get('account.login')}
         </Button>
+        <OAuth2Login
+          authorizationUrl="http://accounts.localhost:3000/oauth2/confirmation"
+          responseType="code"
+          clientId="0485a20d-74d5-46ea-80ac-51a603319d19"
+          redirectUri="https://lixilotus.test"
+          scope="openid roles"
+          onSuccess={onSuccess}
+          onFailure={onFailure}
+        />
       </Form>
     </>
   );

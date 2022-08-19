@@ -14,6 +14,14 @@ const axiosClient = axios.create({
   withCredentials: true
 });
 
+export const axiosAuthClient = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_AUTH_URL ? process.env.NEXT_PUBLIC_AUTH_URL : 'http://accounts.localhost:3000', //will change in the future
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  withCredentials: true
+});
+
 // Add a request interceptor
 axiosClient.interceptors.request.use(function (config) {
   config.headers.lang = locale;

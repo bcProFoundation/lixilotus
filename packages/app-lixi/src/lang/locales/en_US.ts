@@ -88,12 +88,16 @@ export default {
   'account.accountImportSuccess': 'The account has been imported successfully.',
   'account.login': 'Sign In',
   'account.register': 'Register',
+  'account.verify': 'Verify',
   'account.emailRequired': ' Email is required',
   'account.passwordRequired': 'Password is required',
   'account.invalidEmail': 'Invalid email address',
   'account.invalidPassword': 'Invalid password',
   'account.matchPassword': 'Password must match',
   'account.repeatPassword': 'Repeat password',
+  'account.nameRequired': 'Username is required',
+  'account.verificationCodeRequired': 'Verification code is required',
+  'account.verificationCodeSent': 'Verification code has been sent to <b>{email}</b>. Please check your inbox !',
 
   /* 03.Lixi */
   'lixi.sub-lixi': 'Sub-lixi',

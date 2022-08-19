@@ -26802,6 +26802,11 @@ react-share@^4.4.0:
     classnames "^2.2.5"
     jsonp "^0.2.1"
 
+react-simple-oauth2-login@^0.5.3:
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/react-simple-oauth2-login/-/react-simple-oauth2-login-0.5.3.tgz#6bb785e3d4efcd0ac55143f2c6cbde6115ef0bb5"
+  integrity sha512-gLrvxu1/9oxGPOo9Uy5AWcNMBu6XWcMVngyi0gCkQqyntHbbkc97yeCCP9t2AsMa5iIyHjMc+U5nUi4804Y0+g==
+
 react-sizeme@^3.0.1:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/react-sizeme/-/react-sizeme-3.0.2.tgz#4a2f167905ba8f8b8d932a9e35164e459f9020e4"
