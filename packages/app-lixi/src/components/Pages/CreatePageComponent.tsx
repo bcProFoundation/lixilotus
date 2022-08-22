@@ -349,7 +349,9 @@ const CreatePageComponent: React.FC = () => {
             valuePropName="fileList"
             getValueFromEvent={normFile}
           >
-            {selectedPage.avatar && <Image src={(selectedPage.avatar as any).upload.url} width="150px" height="150px" />}
+            {selectedPage.avatar && (
+              <Image src={(selectedPage.avatar as any).upload.url} width="150px" height="150px" />
+            )}
             <StyledUploader type={UPLOAD_TYPES.PAGE_AVATAR} />
           </Form.Item>
           <Form.Item name="cover" label={intl.get('page.cover')} valuePropName="fileList" getValueFromEvent={normFile}>
