@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@bcpros/lixi-models": "^1.1.2",
-    "@bcpros/lixi-prisma": "0.0.1",
+    "@bcpros/lixi-prisma": "^0.0.1",
     "@bcpros/minimal-xpi-slp-wallet": "^3.0.10",
     "@bcpros/xpi-js": "^4.0.6",
     "@fastify/compress": "^6.1.0",

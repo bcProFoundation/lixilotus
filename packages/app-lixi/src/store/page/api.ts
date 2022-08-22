@@ -15,7 +15,19 @@ const pageApi = {
         throw response?.data ?? err ?? 'Network Error';
       });
   },
-  get(accountId: number): Promise<any> {
+  getPageByAccountId(id: number) {
+    const url = `/api/accounts/${id}/page`;
+    return axiosClient
+      .get(url)
+      .then(response => {
+        return response.data.data as PageDto;
+      })
+      .catch(err => {
+        const { response } = err;
+        throw response?.data ?? err ?? 'Network Error';
+      });
+  },
+  getSubPage(accountId: number): Promise<any> {
     const url = `/api/pages/${accountId}/subPage`;
     return axiosClient
       .get(url)
@@ -39,7 +51,7 @@ const pageApi = {
         throw response?.data ?? err ?? 'Network Error';
       });
   },
-  getDetailPage(id): Promise<any> {
+  getDetailPage(id: string): Promise<any> {
     const url = `/api/pages/${id}`;
     return axiosClient
       .get(url)

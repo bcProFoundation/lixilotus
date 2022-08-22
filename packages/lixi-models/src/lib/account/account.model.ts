@@ -1,4 +1,4 @@
-import { Page } from '../page';
+import { Page } from '@bcpros/lixi-models';
 export interface Account {
   id: number;
   name: string;

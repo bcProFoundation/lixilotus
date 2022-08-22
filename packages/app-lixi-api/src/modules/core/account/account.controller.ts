@@ -40,7 +40,7 @@ export class AccountController {
     private prisma: PrismaService,
     private readonly walletService: WalletService,
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet
-  ) {}
+  ) { }
 
   @Get(':id')
   async getAccount(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<AccountDto> {
@@ -63,7 +63,7 @@ export class AccountController {
       const result = {
         ...account,
         balance: balance,
-        page: account.page
+        page: account.page,
       } as AccountDto;
 
       return result;
@@ -392,6 +392,28 @@ export class AccountController {
       } else {
         const unableGetLixiListMessage = await i18n.t('account.messages.unableGetLixiList');
         const error = new VError.WError(err as Error, unableGetLixiListMessage);
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  }
+
+  @Get(':id/page')
+  async getPage(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<any> {
+    const accountId = _.toSafeInteger(id);
+    try {
+      const page = await this.prisma.page.findFirst({
+        where: {
+          pageAccountId: accountId
+        }
+      });
+
+      return page ?? {};
+    } catch (err: unknown) {
+      if (err instanceof VError) {
+        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      } else {
+        const unableToGetPage = await i18n.t('page.messages.unableToGetPage');
+        const error = new VError.WError(err as Error, unableToGetPage);
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }

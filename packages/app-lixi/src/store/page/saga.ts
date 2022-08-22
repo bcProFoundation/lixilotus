@@ -16,12 +16,15 @@ import {
   postPage,
   postPageFailure,
   postPageSuccess,
+  getPage,
+  getPageFailure,
+  getPageSuccess,
   setPage,
   setPagesByAccountId
 } from './action';
 import { CreatePageCommand } from '@bcpros/lixi-models/src';
 import pageApi from './api';
-import { EditPageCommand, PageDto } from '@bcpros/lixi-models';
+import { AccountDto, EditPageCommand, Page, PageDto } from '@bcpros/lixi-models';
 
 const call: any = Effects.call;
 /**
@@ -82,6 +85,29 @@ function* postPageFailureSaga(action: PayloadAction<string>) {
     })
   );
   yield put(hideLoading(postPage.type));
+}
+
+function* getPageSaga(action: PayloadAction<string>) {
+  try {
+    const id = action.payload;
+    const data = yield call(pageApi.getDetailPage, id);
+    yield put(getPageSuccess(data));
+  } catch (err) {
+    const message = (err as Error).message ?? intl.get('page.unableSelect');
+    yield put(getPageFailure(message));
+  }
+}
+
+function* getPageFailureSaga(action: PayloadAction<string>) {
+  const message = action.payload ?? intl.get('lixi.unableSelect');
+  yield put(
+    showToast('error', {
+      message: 'Error',
+      description: message,
+      duration: 5
+    })
+  );
+  yield put(hideLoading(getPage.type));
 }
 
 function* editPageSaga(action: PayloadAction<EditPageCommand>) {
@@ -154,7 +180,7 @@ function* getPagesByAccountIdSaga(action: PayloadAction<number>) {
 
     const dataApi: number = command;
 
-    const data: any = yield call(pageApi.get, dataApi);
+    const data: any = yield call(pageApi.getSubPage, dataApi);
 
     if (_.isNil(data)) {
       throw new Error(intl.get('lixi.unableCreateLixi'));
@@ -237,6 +263,13 @@ function* watchFetchAllPagesFailure() {
   yield takeLatest(fetchAllPagesFailure.type, fetchAllPagesFailureSaga);
 }
 
+function* watchGetPage() {
+  yield takeLatest(getPage.type, getPageSaga);
+}
+function* watchGetPageFailure() {
+  yield takeLatest(getPageFailure.type, getPageFailureSaga);
+}
+
 export default function* pageSaga() {
   yield all([
     fork(watchPostPage),
@@ -249,6 +282,8 @@ export default function* pageSaga() {
     fork(watchFetchAllPagesFailure),
     fork(watchEditPage),
     fork(watchEditPageFailure),
-    fork(watchEditPageSuccess)
+    fork(watchEditPageSuccess),
+    fork(watchGetPage),
+    fork(watchGetPageFailure),
   ]);
 }

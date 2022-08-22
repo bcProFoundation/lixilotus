@@ -1,4 +1,4 @@
-import { Button, Form, Input, Select } from 'antd';
+import { Button, Form, Input, Select, Upload } from 'antd';
 import isEmpty from 'lodash.isempty';
 import React, { useEffect, useState } from 'react';
 import intl from 'react-intl-universal';
@@ -6,21 +6,22 @@ import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { CreatePageCommand, EditPageCommand } from '@bcpros/lixi-models';
 import { getAllCountries, getAllStates, getAllStatesByCountry } from '@store/country/selectors';
-import { editPage, postPage } from '@store/page/action';
+import { editPage, postPage, getPage } from '@store/page/action';
 import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
 import { StyledUploader } from '@components/Common/Uploader';
 import { showToast } from '@store/toast/actions';
 import { getCountries, getStates } from '../../store/country/actions';
 import { getPageCoverUpload, getPageAvatarUpload } from 'src/store/account/selectors';
 import _ from 'lodash';
+import { getPageBySelectedAccount } from '@store/page/selectors';
 
 const { TextArea } = Input;
 const { Option } = Select;
 
 const CreatePageComponent: React.FC = () => {
   const dispatch = useAppDispatch();
-  // const pages = useAppSelector(getPagesBySelectedAccount);
   const selectedAccount = useAppSelector(getSelectedAccount);
+  const selectedPage = useAppSelector(getPageBySelectedAccount);
 
   useEffect(() => {
     dispatch(getCountries());
@@ -29,8 +30,6 @@ const CreatePageComponent: React.FC = () => {
   const states = useAppSelector(getAllStates);
   const avatar = useAppSelector(getPageAvatarUpload);
   const cover = useAppSelector(getPageCoverUpload);
-
-  const page = selectedAccount.page;
 
   // New page name
   const [newPageName, setNewPageName] = useState('');
@@ -187,25 +186,25 @@ const CreatePageComponent: React.FC = () => {
 
   const handleOnEditPage = () => {
     const valueEditPage: EditPageCommand = {
-      id: selectedAccount.page.id,
-      name: _.isEmpty(newPageName) ? page.name : newPageName,
-      title: _.isEmpty(newPageTitle) ? page.title : newPageTitle,
-      description: _.isEmpty(newPageDescription) ? page.description : newPageDescription,
-      website: _.isEmpty(newPageWebsite) ? page.website : newPageWebsite,
-      country: _.isEmpty(newPageCountry) ? page.country : newPageCountry,
-      state: _.isEmpty(newPageState) ? page.state : newPageState,
-      address: _.isEmpty(newPageAddress) ? page.address : newPageAddress,
-      avatar: avatar?.id ?? page.avatar,
-      cover: cover?.id ?? page.cover
+      id: selectedPage.id,
+      name: _.isEmpty(newPageName) ? selectedPage.name : newPageName,
+      title: _.isEmpty(newPageTitle) ? selectedPage.title : newPageTitle,
+      description: _.isEmpty(newPageDescription) ? selectedPage.description : newPageDescription,
+      website: _.isEmpty(newPageWebsite) ? selectedPage.website : newPageWebsite,
+      country: _.isEmpty(newPageCountry) ? selectedPage.country : newPageCountry,
+      state: _.isEmpty(newPageState) ? selectedPage.state : newPageState,
+      address: _.isEmpty(newPageAddress) ? selectedPage.address : newPageAddress,
+      avatar: avatar?.id,
+      cover: cover?.id
     };
     valueEditPage && dispatch(editPage(valueEditPage));
   };
 
   return (
     <>
-      <h3>{selectedAccount.page ? intl.get('page.editPage') : intl.get('page.createNewPage')}</h3>
+      <h3>{selectedPage ? intl.get('page.editPage') : intl.get('page.createNewPage')}</h3>
 
-      {!selectedAccount.page ? (
+      {!selectedPage ? (
         // Create Page
         <Form
           labelCol={{ span: 5 }}
@@ -328,15 +327,15 @@ const CreatePageComponent: React.FC = () => {
           <Form.Item name="name">
             <Input
               addonBefore={intl.get('page.name')}
-              defaultValue={page.name}
-              value={page.name}
+              defaultValue={selectedPage.name}
+              value={selectedPage.name}
               onChange={e => handleNewPageNameInput(e)}
             />
           </Form.Item>
           <Form.Item name="title">
             <Input
               addonBefore={intl.get('page.title')}
-              defaultValue={page.title}
+              defaultValue={selectedPage.title}
               onChange={e => handleNewPageTitleInput(e)}
             />
           </Form.Item>
@@ -349,28 +348,30 @@ const CreatePageComponent: React.FC = () => {
             valuePropName="fileList"
             getValueFromEvent={normFile}
           >
+            <Upload listType="picture" defaultFileList={selectedPage.avatar ? [selectedPage.avatar as any] : []} />
             <StyledUploader type={UPLOAD_TYPES.PAGE_AVATAR} />
           </Form.Item>
           <Form.Item name="cover" label={intl.get('page.cover')} valuePropName="fileList" getValueFromEvent={normFile}>
+            <Upload listType="picture" defaultFileList={selectedPage.cover ? [selectedPage.cover as any] : []} />
             <StyledUploader type={UPLOAD_TYPES.PAGE_COVER} />
           </Form.Item>
           <Form.Item name="website">
             <Input
               addonBefore={intl.get('page.website')}
-              defaultValue={page.website}
-              value={page.website}
+              defaultValue={selectedPage.website}
+              value={selectedPage.website}
               onChange={e => handleNewPageWebsiteInput(e)}
             />
           </Form.Item>
           <Form.Item label={intl.get('page.description')}>
-            <TextArea defaultValue={page.description} onChange={e => handleNewPageDescriptionInput(e)} rows={4} />
+            <TextArea defaultValue={selectedPage.description} onChange={e => handleNewPageDescriptionInput(e)} rows={4} />
           </Form.Item>
 
           {/* Country */}
           <Form.Item>
             <Select
               showSearch
-              defaultValue={page.country}
+              defaultValue={selectedPage.country}
               onChange={handleChangeCountry}
               style={{ width: 200 }}
               placeholder={intl.get('page.country')}
@@ -394,7 +395,7 @@ const CreatePageComponent: React.FC = () => {
           <Form.Item>
             <Select
               showSearch
-              defaultValue={page.state}
+              defaultValue={selectedPage.state}
               onChange={handleChangeState}
               style={{ width: 200 }}
               placeholder={intl.get('page.state')}
@@ -417,7 +418,7 @@ const CreatePageComponent: React.FC = () => {
           <Form.Item>
             <Input
               addonBefore={intl.get('page.address')}
-              defaultValue={page.address}
+              defaultValue={selectedPage.address}
               onChange={e => handleNewPageAddressInput(e)}
             />
           </Form.Item>
