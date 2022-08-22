@@ -124,7 +124,7 @@ const nextConfig = withLess({
 		// https://nextjs.org/docs/api-reference/next/image#caching-behavior
 		minimumCacheTTL: 60,
 		// Allowed domains for next/image
-		domains: ['api.lixilotus.test', 'lixilotus.com', 'dev.lixilotus.com', 'staging.lixilotus.com', 'lixilotus.local'],
+		domains: ['api.lixilotus.test', 'lixilotus.com', 'dev.lixilotus.com', 'staging.lixilotus.com', 'lixilotus.test'],
 	},
 	typescript: {
 		ignoreBuildErrors: NEXTJS_IGNORE_TYPECHECK,
