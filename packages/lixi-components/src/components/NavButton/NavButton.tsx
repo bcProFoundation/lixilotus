@@ -1,10 +1,10 @@
 import styled, { DefaultTheme } from 'styled-components';
 
-type INavButtonProps = {
+type INavButtonProps = React.PropsWithChildren<{
   active?: boolean;
   theme?: DefaultTheme;
   onClick?: Function;
-};
+}>;
 
 export const NavButton: React.FC<INavButtonProps> = styled.button<INavButtonProps>`
   :focus,
@@ -36,7 +36,7 @@ export const NavButton: React.FC<INavButtonProps> = styled.button<INavButtonProp
   }
   ${({ active, ...props }) =>
     active &&
-    `    
+    `
         color: ${props.theme.primary};
         .anticon {
             color: ${props.theme.primary};

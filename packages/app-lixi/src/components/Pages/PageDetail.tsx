@@ -1,13 +1,108 @@
-import { DashOutlined, DislikeOutlined, LikeOutlined, SmallDashOutlined, UpOutlined } from '@ant-design/icons';
-import { Avatar, Input, List } from 'antd';
+import {
+  DashOutlined,
+  DislikeOutlined,
+  LikeOutlined,
+  LinkOutlined,
+  ShareAltOutlined,
+  SmallDashOutlined,
+  UpOutlined
+} from '@ant-design/icons';
+import { Avatar, Button, Input, List, message, Popover } from 'antd';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
 
+import {
+  FacebookIcon,
+  FacebookMessengerIcon,
+  FacebookMessengerShareButton,
+  FacebookShareButton,
+  TelegramIcon,
+  TelegramShareButton,
+  TwitterIcon,
+  TwitterShareButton,
+  WhatsappIcon,
+  WhatsappShareButton
+} from 'react-share';
+import { RWebShare } from 'react-web-share';
+import intl from 'react-intl-universal';
+import { PageDto } from '@bcpros/lixi-models';
+
 const { Search } = Input;
 
-const PageDetail = ({ page, isMobile }) => {
-  const baseApiUrl = process.env.NEXT_PUBLIC_LIXI_API;
+type SocialSharePanelProps = {
+  className?: string;
+  shareUrl: string;
+};
+
+const SocialSharePanel = ({ className, shareUrl }: SocialSharePanelProps): JSX.Element => {
+  const title = intl.get('page.titleShared');
+  return (
+    <div className={className}>
+      <div className="socialshare-network">
+        <FacebookShareButton url={shareUrl} quote={title} className="socialshare-button">
+          <FacebookIcon size={32} round />
+        </FacebookShareButton>
+      </div>
+
+      <div className="socialshare-network">
+        <FacebookMessengerShareButton url={shareUrl} appId="521270401588372" className="socialshare-button">
+          <FacebookMessengerIcon size={32} round />
+        </FacebookMessengerShareButton>
+      </div>
+
+      <div className="socialshare-network">
+        <TwitterShareButton url={shareUrl} title={title} className="socialshare">
+          <TwitterIcon size={32} round />
+        </TwitterShareButton>
+      </div>
+
+      <div className="socialshare-network">
+        <TelegramShareButton url={shareUrl} title={title} className="socialshare-button">
+          <TelegramIcon size={32} round />
+        </TelegramShareButton>
+      </div>
+
+      <div className="socialshare-network">
+        <WhatsappShareButton url={shareUrl} title={title} separator=":: " className="socialshare-button">
+          <WhatsappIcon size={32} round />
+        </WhatsappShareButton>
+      </div>
+
+      <div className="socialshare-network">
+        <Button
+          type="primary"
+          shape="circle"
+          icon={<LinkOutlined style={{ color: 'white', fontSize: '20px' }} />}
+          onClick={() => {
+            navigator.clipboard.writeText(window.location.href);
+            message.success(intl.get('page.copyToClipboard'));
+          }}
+        />
+      </div>
+    </div>
+  );
+};
+
+const StyledSocialSharePanel = styled(SocialSharePanel)`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  .socialshare-network {
+    padding: 10px 4px;
+  }
+`;
+
+const popOverContent = shareUrl => {
+  return <StyledSocialSharePanel shareUrl={shareUrl} />;
+};
+
+type PageDetailProps = {
+  page: PageDto;
+  isMobile: boolean;
+};
+
+const PageDetail = ({ page, isMobile }: PageDetailProps) => {
   const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
   const [listComment, setListComment] = useState([]);
   const [pageDetailData, setPageDetailData] = useState<any>(page);
@@ -70,6 +165,10 @@ const PageDetail = ({ page, isMobile }) => {
     }
   `;
 
+  const ShareButton = styled.span`
+    margin-left: 10px;
+  `;
+
   useEffect(() => {
     const dataListComment = [
       {
@@ -106,6 +205,33 @@ const PageDetail = ({ page, isMobile }) => {
     setListComment([...listComment]);
   };
 
+  const slug = page.id;
+
+  const shareUrl = `${baseUrl}page/${slug}`;
+
+  const ShareSocialDropdown = (
+    <Popover content={() => popOverContent(shareUrl)}>
+      <ShareButton>
+        <ShareAltOutlined /> Share
+      </ShareButton>
+    </Popover>
+  );
+
+  const ShareSocialButton = (
+    <RWebShare
+      data={{
+        text: intl.get('page.titleShared'),
+        url: shareUrl,
+        title: 'LixiLotus'
+      }}
+      onClick={() => {}}
+    >
+      <ShareButton>
+        <ShareAltOutlined /> Share
+      </ShareButton>
+    </RWebShare>
+  );
+
   return (
     <>
       <StyledContainerPageDetail>
@@ -135,7 +261,7 @@ const PageDetail = ({ page, isMobile }) => {
               <span>{listComment.length}</span>&nbsp;
               <span>Comments</span>&nbsp;
               <UpOutlined />
-              <span style={{ marginLeft: '10px' }}>Share</span>
+              {isMobile ? ShareSocialButton : ShareSocialDropdown}
             </div>
           </div>
         </PageContentDetail>

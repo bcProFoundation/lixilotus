@@ -1,5 +1,4 @@
 import { Page } from '../page';
-
 export interface Account {
   id: number;
   name: string;
