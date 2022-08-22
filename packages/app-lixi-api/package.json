@@ -29,6 +29,7 @@
     "@bcpros/lixi-prisma": "latest",
     "@bcpros/minimal-xpi-slp-wallet": "^3.0.10",
     "@bcpros/xpi-js": "^4.0.6",
+    "@devoxa/prisma-relay-cursor-connection": "^2.2.2",
     "@fastify/compress": "^6.1.0",
     "@fastify/cookie": "8.0.0",
     "@fastify/csrf-protection": "^5.1.0",

@@ -1535,6 +1535,13 @@
     enabled "2.0.x"
     kuler "^2.0.0"
 
+"@devoxa/prisma-relay-cursor-connection@^2.2.2":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@devoxa/prisma-relay-cursor-connection/-/prisma-relay-cursor-connection-2.2.2.tgz#dd0d5656dfa3c1f357eadb1d069dddb9c89589e0"
+  integrity sha512-nR8/f8DQXNG6a1C3wNRs2YZa6eDCuygz/fzwt6a/ARMsr0asnMK95NhFkZ2jN+ksKHA/AtfvVZvG7UVtJOB09Q==
+  dependencies:
+    graphql-fields "^2.0.3"
+
 "@discoveryjs/json-ext@^0.5.0", "@discoveryjs/json-ext@^0.5.3":
   version "0.5.7"
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.7.tgz#1d572bfbbe14b7704e0ba0f39b74815b84870d70"
@@ -14763,6 +14770,11 @@ grapheme-splitter@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/grapheme-splitter/-/grapheme-splitter-1.0.4.tgz#9cf3a665c6247479896834af35cf1dbb4400767e"
   integrity sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ==
+
+graphql-fields@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/graphql-fields/-/graphql-fields-2.0.3.tgz#5e68dff7afbb202be4f4f40623e983b22c96ab8f"
+  integrity sha512-x3VE5lUcR4XCOxPIqaO4CE+bTK8u6gVouOdpQX9+EKHr+scqtK5Pp/l8nIGqIpN1TUlkKE6jDCCycm/WtLRAwA==
 
 graphql-jit@^0.7.3:
   version "0.7.4"

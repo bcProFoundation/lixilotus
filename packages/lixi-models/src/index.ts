@@ -1,3 +1,4 @@
+export * from './core';
 export * from './lib/account';
 export * from './lib/envelope';
 export * from './lib/lixi';
