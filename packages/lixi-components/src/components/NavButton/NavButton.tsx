@@ -24,6 +24,9 @@ export const NavButton: React.FC<INavButtonProps> = styled.button<INavButtonProp
   @media (max-width: 350px) {
     margin: 0 8px;
   }
+  @media (min-width: 768px) {
+    padding: 0;
+  }
   background-color: ${props => props.theme.footer.background};
   border: none;
   font-size: 12px;

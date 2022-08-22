@@ -65,6 +65,11 @@ export const AppContainer = styled.div`
     -moz-box-shadow: none;
     box-shadow: none;
   }
+  @media (min-width: 768px) {
+    width: 100%;
+    background: #fffbff;
+    padding: 0;
+  }
 `;
 
 export const HeaderContainer = styled.div`
