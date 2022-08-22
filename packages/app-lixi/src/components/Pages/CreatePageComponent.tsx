@@ -1,4 +1,4 @@
-import { Button, Form, Input, Select, Upload } from 'antd';
+import { Button, Form, Input, Select } from 'antd';
 import isEmpty from 'lodash.isempty';
 import React, { useEffect, useState } from 'react';
 import intl from 'react-intl-universal';
@@ -14,6 +14,7 @@ import { getCountries, getStates } from '../../store/country/actions';
 import { getPageCoverUpload, getPageAvatarUpload } from 'src/store/account/selectors';
 import _ from 'lodash';
 import { getPageBySelectedAccount } from '@store/page/selectors';
+import Image from 'next/image';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -348,11 +349,11 @@ const CreatePageComponent: React.FC = () => {
             valuePropName="fileList"
             getValueFromEvent={normFile}
           >
-            <Upload listType="picture" defaultFileList={selectedPage.avatar ? [selectedPage.avatar as any] : []} />
+            {selectedPage.avatar && <Image src={(selectedPage.avatar as any).upload.url} width="150px" height="150px" />}
             <StyledUploader type={UPLOAD_TYPES.PAGE_AVATAR} />
           </Form.Item>
           <Form.Item name="cover" label={intl.get('page.cover')} valuePropName="fileList" getValueFromEvent={normFile}>
-            <Upload listType="picture" defaultFileList={selectedPage.cover ? [selectedPage.cover as any] : []} />
+            {selectedPage.cover && <Image src={(selectedPage.cover as any).upload.url} width="150px" height="150px" />}
             <StyledUploader type={UPLOAD_TYPES.PAGE_COVER} />
           </Form.Item>
           <Form.Item name="website">
