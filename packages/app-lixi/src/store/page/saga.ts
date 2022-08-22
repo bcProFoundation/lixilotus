@@ -284,6 +284,6 @@ export default function* pageSaga() {
     fork(watchEditPageFailure),
     fork(watchEditPageSuccess),
     fork(watchGetPage),
-    fork(watchGetPageFailure),
+    fork(watchGetPageFailure)
   ]);
 }

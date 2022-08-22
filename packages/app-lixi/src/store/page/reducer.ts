@@ -1,6 +1,15 @@
 import { createEntityAdapter, createReducer, Update } from '@reduxjs/toolkit';
 import { PageState } from './state';
-import { fetchAllPagesSuccess, setPagesByAccountId, setSelectedPage, editPageSuccess, postPageSuccess, setPage, getPage, getPageSuccess } from './action';
+import {
+  fetchAllPagesSuccess,
+  setPagesByAccountId,
+  setSelectedPage,
+  editPageSuccess,
+  postPageSuccess,
+  setPage,
+  getPage,
+  getPageSuccess
+} from './action';
 import { Page } from '@bcpros/lixi-models/src';
 
 export const pageAdapter = createEntityAdapter<Page>({});

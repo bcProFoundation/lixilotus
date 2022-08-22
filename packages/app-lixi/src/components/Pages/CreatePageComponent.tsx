@@ -364,7 +364,11 @@ const CreatePageComponent: React.FC = () => {
             />
           </Form.Item>
           <Form.Item label={intl.get('page.description')}>
-            <TextArea defaultValue={selectedPage.description} onChange={e => handleNewPageDescriptionInput(e)} rows={4} />
+            <TextArea
+              defaultValue={selectedPage.description}
+              onChange={e => handleNewPageDescriptionInput(e)}
+              rows={4}
+            />
           </Form.Item>
 
           {/* Country */}

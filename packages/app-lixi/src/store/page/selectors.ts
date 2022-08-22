@@ -9,15 +9,9 @@ const selectSelectedAccount = createSelector(selectAccounts, state => state.sele
 
 const { selectAll, selectEntities, selectIds, selectTotal } = pageAdapter.getSelectors();
 
-export const getAllPages = createSelector(
-  (state: RootState) => state.pages,
-  selectAll
-);
+export const getAllPages = createSelector((state: RootState) => state.pages, selectAll);
 
-export const getAllPagesEntities = createSelector(
-  (state: RootState) => state.pages,
-  selectEntities
-);
+export const getAllPagesEntities = createSelector((state: RootState) => state.pages, selectEntities);
 
 export const getSelectedPageId = createSelector(
   (state: RootState) => state.pages,
@@ -31,7 +25,6 @@ export const pagesByAccountId = createSelector(
 
 export const getPageById = (id: string) => createSelector(getAllPagesEntities, pages => pages?.[id]);
 
-export const getPageBySelectedAccount = createSelector(
-  [selectSelectedAccount, getAllPages],
-  (accountId, pages) => pages.find(page => page.pageAccountId === accountId)
+export const getPageBySelectedAccount = createSelector([selectSelectedAccount, getAllPages], (accountId, pages) =>
+  pages.find(page => page.pageAccountId === accountId)
 );
