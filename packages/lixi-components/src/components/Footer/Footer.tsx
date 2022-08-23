@@ -10,6 +10,13 @@ const Footer = styled.div`
   @media (max-width: 768px) {
     width: 100%;
   }
+  @media (min-width: 768px) {
+    top: 0;
+    bottom: auto;
+    border: 0;
+    position: absolute;
+    transform: translate(0, 20%);
+  }
   border-top: 1px solid ${props => props.theme.wallet.borders.color};
 `;
 
