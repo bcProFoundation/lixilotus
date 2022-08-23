@@ -17,6 +17,7 @@ import { AppContext } from 'src/store/store';
 import styled from 'styled-components';
 import WalletInfoComponent from '@components/Wallet/WalletInfo';
 import Link from 'next/link';
+import { getPageBySelectedAccount } from '@store/page/selectors';
 
 const { TabPane } = Tabs;
 const StyledTabs = styled(Tabs)`
@@ -48,6 +49,7 @@ const Home: React.FC = () => {
   const dispatch = useAppDispatch();
   const lixies = useAppSelector(getLixiesBySelectedAccount);
   const selectedAccount = useAppSelector(getSelectedAccount);
+  const selectedPage = useAppSelector(getPageBySelectedAccount);
 
   useEffect(() => {
     dispatch(getEnvelopes());
@@ -64,7 +66,7 @@ const Home: React.FC = () => {
     <>
       <WalletInfoComponent />
 
-      {selectedAccount.page ? (
+      {selectedPage ? (
         <Link href="/page/edit" passHref>
           <SmartButton>{intl.get('page.editPage')}</SmartButton>
         </Link>

@@ -18,8 +18,11 @@ import Image from 'next/image';
 
 const { TextArea } = Input;
 const { Option } = Select;
-
-const CreatePageComponent: React.FC = () => {
+type PageEditProps = {
+  className?: string;
+  isEditPage: boolean;
+};
+const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
   const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
   const selectedPage = useAppSelector(getPageBySelectedAccount);
@@ -203,7 +206,7 @@ const CreatePageComponent: React.FC = () => {
 
   return (
     <>
-      <h3>{selectedPage ? intl.get('page.editPage') : intl.get('page.createNewPage')}</h3>
+      <h3>{isEditPage ? intl.get('page.editPage') : intl.get('page.createNewPage')}</h3>
 
       {!selectedPage ? (
         // Create Page
@@ -441,4 +444,4 @@ const CreatePageComponent: React.FC = () => {
   );
 };
 
-export default CreatePageComponent;
+export default CreateOrEditPageComponent;

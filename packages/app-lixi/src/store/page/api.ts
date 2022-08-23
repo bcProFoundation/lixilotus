@@ -15,18 +15,6 @@ const pageApi = {
         throw response?.data ?? err ?? 'Network Error';
       });
   },
-  getPageByAccountId(id: number) {
-    const url = `/api/accounts/${id}/page`;
-    return axiosClient
-      .get(url)
-      .then(response => {
-        return response.data.data as PageDto;
-      })
-      .catch(err => {
-        const { response } = err;
-        throw response?.data ?? err ?? 'Network Error';
-      });
-  },
   getSubPage(accountId: number): Promise<any> {
     const url = `/api/pages/${accountId}/subPage`;
     return axiosClient
@@ -64,9 +52,9 @@ const pageApi = {
       });
   },
   update(id: string, data: EditPageCommand): Promise<PageDto> {
-    const url = `/api/pages/${id}/update`;
+    const url = `/api/pages/${id}`;
     return axiosClient
-      .patch(url, data)
+      .patch(url, data, { withCredentials: true })
       .then(response => {
         return response.data as PageDto;
       })

@@ -397,28 +397,6 @@ export class AccountController {
     }
   }
 
-  @Get(':id/page')
-  async getPage(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<any> {
-    const accountId = _.toSafeInteger(id);
-    try {
-      const page = await this.prisma.page.findFirst({
-        where: {
-          pageAccountId: accountId
-        }
-      });
-
-      return page ?? {};
-    } catch (err: unknown) {
-      if (err instanceof VError) {
-        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
-      } else {
-        const unableToGetPage = await i18n.t('page.messages.unableToGetPage');
-        const error = new VError.WError(err as Error, unableToGetPage);
-        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
-    }
-  }
-
   @Get(':id/notifications')
   @UseGuards(JwtAuthGuard)
   async getNotifications(

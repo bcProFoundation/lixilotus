@@ -1,4 +1,3 @@
-import { Page } from '@bcpros/lixi-models';
 export interface Account {
   id: number;
   name: string;
@@ -12,5 +11,4 @@ export interface Account {
   address: string;
   balance?: number;
   language?: string;
-  page?: Nullable<Page>;
 }

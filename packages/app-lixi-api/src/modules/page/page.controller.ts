@@ -320,32 +320,6 @@ export class PageController {
       throw new Error(couldNotFindAccount);
     }
 
-    const prePage = await this.prisma.page.findUnique({
-      where: {
-        pageAccountId: account.id
-      },
-      include: {
-        avatar: {
-          include: {
-            upload: {
-              select: {
-                url: true
-              }
-            }
-          }
-        },
-        cover: {
-          include: {
-            upload: {
-              select: {
-                url: true
-              }
-            }
-          }
-        }
-      }
-    });
-
     const uploadAvatarDetail = command.avatar
       ? await this.prisma.uploadDetail.findFirst({
           where: {
@@ -385,7 +359,7 @@ export class PageController {
     }
   }
 
-  @Patch(':id/update')
+  @Patch(':id')
   @UseGuards(JwtAuthGuard)
   async update(
     @Param('id') id: string,
@@ -399,12 +373,6 @@ export class PageController {
       const couldNotFindAccount = await this.i18n.t('page.messages.couldNotFindAccount');
       throw new Error(couldNotFindAccount);
     }
-
-    const prePage = this.prisma.page.findUnique({
-      where: {
-        pageAccountId: account.id
-      }
-    });
 
     const uploadAvatarDetail = command.avatar
       ? await this.prisma.uploadDetail.findFirst({
