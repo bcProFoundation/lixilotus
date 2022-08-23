@@ -1,5 +1,5 @@
-import { DislikeOutlined, FilterOutlined, LikeOutlined } from '@ant-design/icons';
-import { Button, List, Menu, MenuProps, message, Modal, Radio, Space } from 'antd';
+import { CommentOutlined, DislikeOutlined, FilterOutlined, LikeOutlined } from '@ant-design/icons';
+import { List, Menu, MenuProps, message, Modal, Space } from 'antd';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import React from 'react';
@@ -11,24 +11,44 @@ import { fetchAllPages, setSelectedPage } from '@store/page/action';
 import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
 import { push } from 'connected-next-router';
 import _ from 'lodash';
-import Image from 'next/image';
 
 const CardContainer = styled.div`
   display: flex;
+  flex-direction: column;
+  padding: 1rem 4rem 0 4rem;
+  @media (max-width: 768px) {
+    padding: 1rem 1rem 0 1rem;
+  }
 `;
 
-const StyledImage = styled(Image)`
-  width: 80px !important;
-  height: 80px !important;
-  min-width: auto !important;
-  min-height: auto !important;
+const CardHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  .info-user {
+    .name-title {
+      margin-left: 0.5rem;
+      font-size: 12px;
+    }
+  }
+  .time-created {
+    font-size: 12px;
+  }
 `;
 
 const Content = styled.div`
-  text-align: left;
-  padding-left: 2rem;
-  h3 {
-    color: var(--color-primary);
+  .description-post {
+    text-align: left;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    white-space: break-spaces;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .image-cover {
+    width: 100%;
+    max-height: 300px;
   }
 `;
 
@@ -38,8 +58,21 @@ const ActionBar = styled.div`
 `;
 
 const GroupIconText = styled.div`
+  width: 100%;
+  padding: 1rem;
+  border-top: 1px solid #e0e0e0;
+  &.num-react {
+    padding: 1rem 0;
+    border: none;
+    text-align: left;
+  }
   .ant-space {
-    margin-right: 1rem;
+    margin-right: 2rem;
+  }
+  @media (max-width: 768px) {
+    .ant-space {
+      margin-right: 1rem;
+    }
   }
 `;
 
@@ -190,29 +223,46 @@ const PagesListing: React.FC = () => {
         renderItem={item => (
           <List.Item
             style={{
-              border: '0',
               marginBottom: '1rem',
-              borderRadius: '8px',
-              boxShadow: '0px 1px 2px rgb(0 0 0 / 4%), 0px 2px 6px 2px rgb(0 0 0 / 8%)'
+              borderRadius: '24px',
+              boxShadow: '0px 1px 2px rgb(0 0 0 / 4%), 0px 2px 6px 2px rgb(0 0 0 / 8%)',
+              background: 'white',
+              padding: '0',
+              border: '1px solid #e0e0e0'
             }}
             key={item.title}
           >
             <CardContainer>
-              <StyledImage src={item.avatar} width="80px" height="80px" />
+              <CardHeader onClick={() => routerShopDetail(item.id)}>
+                <div className="info-user">
+                  <img style={{ borderRadius: '50%' }} src={item.avatar} width="24px" height="24px" alt="" />
+                  <span className="name-title">{item.title}</span>
+                </div>
+                <span className="time-created">18 hour ago</span>
+              </CardHeader>
               <Content>
-                <h3 onClick={() => routerShopDetail(item.id)}>{item.title}</h3>
-                <p>{item.address}</p>
-                <p>{item.description}</p>
+                <p className="description-post">{item.description}</p>
+                <img className="image-cover" src={item.cover} alt="" />
+                <GroupIconText className="num-react">
+                  <IconText icon={LikeOutlined} text={item.upVote} key="list-vertical-like-o" dataItem={item} />
+                  <IconText
+                    icon={DislikeOutlined}
+                    text={item.downVote}
+                    key="list-vertical-dis-like-o"
+                    dataItem={item}
+                  />
+                </GroupIconText>
               </Content>
             </CardContainer>
             <ActionBar>
               <GroupIconText>
-                <IconText icon={LikeOutlined} text={item.upVote} key="list-vertical-like-o" dataItem={item} />
-                <IconText icon={DislikeOutlined} text={item.downVote} key="list-vertical-dis-like-o" dataItem={item} />
+                <IconText icon={LikeOutlined} text={'Vote Up'} key="list-vertical-like-o" dataItem={item} />
+                <IconText icon={DislikeOutlined} text={'Vote Down'} key="list-vertical-dis-like-o" dataItem={item} />
+                <IconText icon={CommentOutlined} text={'Comment'} key="list-vertical-comment-o" dataItem={item} />
               </GroupIconText>
-              <Button type="primary" onClick={item => onLixiClick(item)}>
+              {/* <Button type="primary" onClick={item => onLixiClick(item)}>
                 lixi
-              </Button>
+              </Button> */}
             </ActionBar>
           </List.Item>
         )}
