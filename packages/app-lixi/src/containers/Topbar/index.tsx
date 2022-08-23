@@ -241,8 +241,8 @@ const Topbar = ({ className }: TopbarProps) => {
 
   return (
     <Header className={className}>
-      <MenuOutlined style={{ fontSize: '32px' }} onClick={handleMenuClick} />
-      <img src="/images/lixilotus-logo.png" alt="lixilotus" />
+      <MenuOutlined className="collapse-menu" style={{ fontSize: '32px' }} onClick={handleMenuClick} />
+      <img width="120px" src="/images/lixilotus-logo.svg" alt="lixilotus" />
       <Space direction="horizontal" size={25}>
         <StyledPopover
           content={NotificationMenu(notifications, selectedAccount)}
@@ -289,6 +289,13 @@ const StyledTopbar = styled(Topbar)`
       font-size: 12px;
     }
     padding: 20px 0 20px;
+  }
+
+  @media (min-width: 768px) {
+    padding: 1rem 2rem;
+    .collapse-menu {
+      display: none;
+    }
   }
 `;
 
