@@ -1,0 +1,13 @@
+query Page($id: String!) {
+  page(id: $id) {
+    ...PageFields
+  }
+}
+
+fragment PageFields on Page {
+  id
+  name
+  title
+  website
+  pageAccountId
+}

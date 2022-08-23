@@ -3,6 +3,14 @@
   "version": "0.0.9",
   "private": true,
   "devDependencies": {
+    "@graphql-codegen/cli": "^2.11.6",
+    "@graphql-codegen/near-operation-file-preset": "^2.4.1",
+    "@graphql-codegen/typescript": "^2.7.3",
+    "@graphql-codegen/typescript-operations": "^2.5.3",
+    "@graphql-codegen/typescript-rtk-query": "^2.3.3",
+    "@graphql-typed-document-node/core": "^3.1.1",
+    "@nrwl/nx-cloud": "latest",
+    "@rtk-query/graphql-request-base-query": "^2.2.0",
     "@typescript-eslint/eslint-plugin": "^5.19.0",
     "@typescript-eslint/parser": "^5.19.0",
     "babel-eslint": "^10.1.0",
@@ -15,8 +23,7 @@
     "husky": "^8.0.1",
     "lerna": "^5.4.2",
     "nx": "14.5.7",
-    "prettier": "^2.6.2",
-    "@nrwl/nx-cloud": "latest"
+    "prettier": "^2.6.2"
   },
   "scripts": {
     "postinstall": "lerna bootstrap",
