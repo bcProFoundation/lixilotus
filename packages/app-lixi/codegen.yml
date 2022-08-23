@@ -19,7 +19,7 @@ generates:
               *
               * instead, edit one of the `.graphql` files in this project and run
               *
-              * npm run graphql-codegen
+              * yarn graphql-codegen
               *
               * for this file to be re-created
               */
