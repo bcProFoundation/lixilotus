@@ -23448,6 +23448,11 @@ react-share@^4.4.0:
     classnames "^2.2.5"
     jsonp "^0.2.1"
 
+react-simple-oauth2-login@^0.5.3:
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/react-simple-oauth2-login/-/react-simple-oauth2-login-0.5.3.tgz#6bb785e3d4efcd0ac55143f2c6cbde6115ef0bb5"
+  integrity sha512-gLrvxu1/9oxGPOo9Uy5AWcNMBu6XWcMVngyi0gCkQqyntHbbkc97yeCCP9t2AsMa5iIyHjMc+U5nUi4804Y0+g==
+
 react-swipe-to-delete-ios@^2.0.71:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/react-swipe-to-delete-ios/-/react-swipe-to-delete-ios-2.1.0.tgz#fa5f0b05efd877e9cbc0aa2c53dc1ded083f6b93"

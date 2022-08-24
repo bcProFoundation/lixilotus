@@ -6,7 +6,7 @@ import { JwtAuthGuard } from './jwtauth.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   @Post('login')
   async login(@Body() body: { mnemonic: string }, @Res({ passthrough: true }) response: FastifyReply): Promise<string> {
@@ -40,5 +40,34 @@ export class AuthController {
       httpOnly: true
     });
     return csrfToken;
+  }
+
+  @Post('get-token')
+  async getToken(@Body() body: { authCode: string }, @Res({ passthrough: true }) response: any): Promise<any> {
+    try {
+      const { authCode } = body;
+      const token = await this.authService.getAccessToken(authCode);
+      response.setCookie('access_token', token.access_token, {
+        httpOnly: true,
+        sameSite: 'strict',
+        signed: true,
+        path: '/api'
+      });
+      response.setCookie('refresh_token', token.refresh_token, {
+        httpOnly: true,
+        sameSite: 'strict',
+        signed: true,
+        path: '/api'
+      });
+      return token
+    } catch (err) {
+      if (err instanceof VError) {
+        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      } else {
+        console.log(err);
+        const error = new VError.WError(err as Error, 'auth.messages.loginFailed');
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
   }
 }

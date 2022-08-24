@@ -7,13 +7,14 @@ import { VError } from 'verror';
 // import * as wif from 'wif';
 import { hashMnemonic } from '../../utils/encryptionMethods';
 import { WalletService } from '../wallet/wallet.service';
+import axios from 'axios';
 const wif = require('wif');
 
 @Injectable()
 export class AuthService {
   private logger: Logger = new Logger(AuthService.name);
 
-  constructor(private prisma: PrismaService, private walletService: WalletService, @I18n() private i18n: I18nService) {}
+  constructor(private prisma: PrismaService, private walletService: WalletService, @I18n() private i18n: I18nService) { }
 
   /**
    * Generate the jwt token from mnemonic
@@ -83,5 +84,22 @@ export class AuthService {
     }
 
     throw new Error('Invalid account');
+  }
+
+  public async getAccessToken(code: string): Promise<any> {
+    try {
+      const res = await axios.post('http://accounts.localhost:4210/oauth2/token', {
+        grant_type: 'authorization_code',
+        code: code,
+        redirect_uri: 'https://lixilotus.test/callback',
+        client_id: process.env.LIXILOTUS_CLIENT_ID,
+        scope: 'openid roles email',
+      })
+
+      return res.data
+
+    } catch (err: any) {
+      throw new Error(err)
+    }
   }
 }
