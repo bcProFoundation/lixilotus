@@ -124,6 +124,7 @@ export default {
   'lixi.lixiInfo': 'Lixi info for {lixiName}',
   'lixi.claimType': 'Claim Type',
   'lixi.type': 'Type',
+  'lixi.rules': 'Rules',
   'lixi.totalClaimed': 'Total Claimed',
   'lixi.remainingLixi': 'Remaining Lixi',
   'lixi.remainingXPI': 'XPI Remaining',
@@ -186,6 +187,8 @@ export default {
   'lixi.lotteryAddress': 'Lottery Address',
   'lixi.lotteryAddressCheck': 'Confirm',
   'lixi.addressCopied': 'The address has been copied.',
+  'lixi.GeneralInfo': 'General information',
+  'lixi.balance': 'Balance',
 
   /* 04.Claim */
   'claim.claim': 'Claim',

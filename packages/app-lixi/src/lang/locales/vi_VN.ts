@@ -122,7 +122,8 @@ export default {
   'lixi.optional': 'Tùy chọn',
   'lixi.lixiInfo': 'Thông tin Lì xì {lixiName}',
   'lixi.claimType': 'Loại Lì xì',
-  'lixi.type': 'Loại',
+  'lixi.type': 'Loại mã',
+  'lixi.rules': 'Mệnh giá',
   'lixi.totalClaimed': 'Lì xì đã nhận',
   'lixi.remainingLixi': 'Lì xì còn lại',
   'lixi.remainingXPI': 'XPI còn lại',
@@ -185,6 +186,8 @@ export default {
   'lixi.lotteryAddress': 'Địa chỉ ví xổ số',
   'lixi.lotteryAddressCheck': 'Xác nhận',
   'lixi.addressCopied': 'địa chỉ đã được sao chép.',
+  'lixi.GeneralInfo': 'Thông tin chung',
+  'lixi.balance': 'Số dư',
 
   /* 04.Claim */
   'claim.claim': 'Nhận Lì xì',

@@ -1,4 +1,4 @@
-import { Collapse, Descriptions, message } from 'antd';
+import { Collapse, Descriptions, message, Image, Progress } from 'antd';
 import { saveAs } from 'file-saver';
 import { toPng } from 'html-to-image';
 import * as _ from 'lodash';
@@ -63,6 +63,97 @@ const Copied = styled.div<CopiedProps>`
     top: 52px;
     padding: 20px 0;
   }
+`;
+
+const LabelHeader = styled.h4`
+  height: 28px;
+  left: 15px;
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 28px;
+  display: flex;
+  align-items: center;
+  color: #333333;
+`;
+const CardContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 4rem 0 4rem;
+  @media (max-width: 768px) {
+    padding: 1rem 1rem 0 1rem;
+  }
+`;
+
+const InfoCard = styled.div`
+  box-sizing: border-box;
+  position: absolute;
+  width: 92%;
+  height: 483px;
+  left: 16px;
+  top: 155px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 24px;
+
+  img {
+    border-radius: 16px;
+  }
+
+  .ant-descriptions-item-label {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: #828282;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+  }
+
+  .ant-descriptions-item-content {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.15px;
+    color: #333333;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+  }
+`;
+
+const LixiStatus = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 2px 8px;
+  gap: 10px;
+  position: absolute;
+  width: 53px;
+  height: 28px;
+  left: 119px;
+  top: 59px;
+  background: #ffeedc;
+  border-radius: 8px;
+`;
+
+const Text = styled.p`
+  position: absolute;
+  height: 24px;
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  display: flex;
+  color: #333333;
 `;
 
 const { Panel } = Collapse;
@@ -168,29 +259,26 @@ const Lixi: React.FC = () => {
   const typeLixi = () => {
     switch (selectedLixi?.lixiType) {
       case LixiType.Fixed:
-        return (
-          <>
-            {intl.get('account.fixed')} {selectedLixi.fixedValue} {currency.ticker}
-          </>
-        );
+        return <>{intl.get('account.fixed')} </>;
       case LixiType.Divided:
-        return (
-          <>
-            {intl.get('lixi.dividedBy')} {selectedLixi.dividedValue}{' '}
-          </>
-        );
+        return <> {intl.get('lixi.dividedBy')} </>;
       case LixiType.Equal:
-        return (
-          <>
-            {intl.get('account.equal')} {selectedLixi.amount / selectedLixi.numberOfSubLixi} {currency.ticker}
-          </>
-        );
+        return <> {intl.get('account.equal')} </>;
       default:
-        return (
-          <>
-            {intl.get('account.random')} {selectedLixi?.minValue}-{selectedLixi?.maxValue} {currency.ticker}
-          </>
-        );
+        return <> {intl.get('account.random')} </>;
+    }
+  };
+
+  const rulesLixi = () => {
+    switch (selectedLixi?.lixiType) {
+      case LixiType.Fixed:
+        return <> {selectedLixi.fixedValue} {currency.ticker} </>;
+      case LixiType.Divided:
+        return <> {selectedLixi.dividedValue} </>;
+      case LixiType.Equal:
+        return <> {selectedLixi.amount / selectedLixi.numberOfSubLixi} {currency.ticker} </>;
+      default:
+        return <>{selectedLixi?.minValue}-{selectedLixi?.maxValue} {currency.ticker}</>;
     }
   };
 
@@ -245,6 +333,21 @@ const Lixi: React.FC = () => {
       );
     } else {
       return;
+    }
+  };
+
+  const formatValidityDate = () => {
+    const activeAt = selectedLixi.activationAt;
+    const expiryAt = selectedLixi.expiryAt;
+    switch (true) {
+      case (!_.isEmpty(activeAt) && _.isEmpty(expiryAt)):
+        return <>{moment(activeAt).format('YYYY-MM-DD HH:mm')} - 'N/A'</>;
+      case (_.isEmpty(activeAt) && !_.isEmpty(expiryAt)):
+        return <>'N/A' - {moment(expiryAt).format('YYYY-MM-DD HH:mm')}</>;
+      case (!_.isEmpty(activeAt) && !_.isEmpty(expiryAt)):
+        return <>{moment(activeAt).format('YYYY-MM-DD HH:mm')} - <br /> {moment(expiryAt).format('YYYY-MM-DD HH:mm')}</>;
+      default:
+        return <>'N/A' - 'N/A'</>;
     }
   };
 
@@ -315,16 +418,16 @@ const Lixi: React.FC = () => {
   const columns =
     selectedLixi && selectedLixi.numberLixiPerPackage
       ? [
-          { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
-          { title: intl.get('claim.claimCode'), dataIndex: 'claimCode', width: 150 },
-          { title: intl.get('general.amount'), dataIndex: 'amount', width: 85 },
-          { title: intl.get('lixi.package'), dataIndex: 'packageId' }
-        ]
+        { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
+        { title: intl.get('claim.claimCode'), dataIndex: 'claimCode', width: 150 },
+        { title: intl.get('general.amount'), dataIndex: 'amount', width: 85 },
+        { title: intl.get('lixi.package'), dataIndex: 'packageId' }
+      ]
       : [
-          { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
-          { title: intl.get('claim.claimCode'), dataIndex: 'claimCode' },
-          { title: intl.get('general.amount'), dataIndex: 'amount' }
-        ];
+        { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
+        { title: intl.get('claim.claimCode'), dataIndex: 'claimCode' },
+        { title: intl.get('general.amount'), dataIndex: 'amount' }
+      ];
   const prefixClaimCode = 'lixi';
 
   const subLixiesDataSource = subLixies.map((item, i) => {
@@ -363,6 +466,82 @@ const Lixi: React.FC = () => {
     <>
       {selectedLixi && selectedLixi.address ? (
         <>
+          <LabelHeader>{intl.get('lixi.GeneralInfo')}</LabelHeader>
+          <CardContainer>
+            <InfoCard className='GeneralInfo'>
+              <img
+                src={selectedLixi.envelope ? selectedLixi.envelope.image : '/images/lixi_logo.svg'}
+                style={{
+                  position: 'absolute',
+                  borderRadius: '50%',
+                  width: '80px',
+                  height: '80px',
+                  left: '16px',
+                  top: '16px',
+                  display: 'flex'
+                }}
+              />
+              <Text
+                style={{
+                  position: 'absolute',
+                  width: '136px',
+                  height: '24px',
+                  left: '119px',
+                  top: '30px'
+                }}
+              >
+                {selectedLixi?.name ?? ''}
+              </Text>
+              <LixiStatus className="lixi-status">
+                <Text style={{ position: 'absolute', color: '#EE9809' }}>{selectedLixi.status}</Text>
+              </LixiStatus>
+
+              <Descriptions
+                column={1}
+                style={{
+                  padding: '129px 0 20px 0',
+                }}
+              >
+                <Descriptions.Item label={intl.get('lixi.balance')} key="desc.balance">
+                  {selectedLixi.claimType == ClaimType.Single
+                    ? fromSmallestDenomination(selectedLixi?.balance) ?? 0
+                    : _.sumBy(subLixies, 'amount').toFixed(2) + fromSmallestDenomination(selectedLixi?.balance)}{' '}
+                  {currency.ticker}
+                </Descriptions.Item>
+                <Descriptions.Item label={intl.get('lixi.claimType')} key="desc.claimType">
+                  {selectedLixi.claimType == ClaimType.Single ? 'Single' : 'One-Time Codes'}
+                </Descriptions.Item>
+                <Descriptions.Item label={intl.get('lixi.type')} key="desc.type">
+                  {typeLixi()}
+                </Descriptions.Item>
+                <Descriptions.Item label={intl.get('lixi.rules')} key="desc.rules">
+                  {rulesLixi()}
+                </Descriptions.Item>
+                <Descriptions.Item label={intl.get('lixi.remainingLixi')} key="desc.claim">
+                  {showRedemption()}
+                </Descriptions.Item>
+                <Descriptions.Item label={intl.get('lixi.activatedAt')} key="desc.activatedat">
+                  {formatValidityDate()}
+                </Descriptions.Item>
+                <Descriptions.Item label={intl.get('lixi.country')} key="desc.country">
+                  {countries.find(country => country.id === selectedLixi?.country)?.name ?? 'All of countries'}
+                </Descriptions.Item>
+              </Descriptions>
+            </InfoCard>
+          </CardContainer>
+
+
+          <LabelHeader>Redeem overview</LabelHeader>
+          {/* <InfoCard className='claim-overview'>
+            <Progress
+              type="circle"
+              format={percent => `${percent} ${currency.ticker}`}
+              percent={selectedLixi.claimType == ClaimType.Single
+                ? fromSmallestDenomination(selectedLixi?.totalClaim) ?? 0
+                : fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim'))} />
+          </InfoCard> */}
+          {/* 
+          
           <WalletLabel name={selectedLixi?.name ?? ''} />
           <BalanceHeader
             balance={
@@ -409,9 +588,11 @@ const Lixi: React.FC = () => {
             {showDistributions()}
             {showLottery()}
           </Descriptions>
+          
+          */}
 
           {/* Lixi details */}
-          <StyledCollapse
+          {/* <StyledCollapse
             style={{ marginBottom: '20px' }}
             collapsible={selectedLixi.status == 'active' ? 'header' : 'disabled'}
             expandIcon={({ isActive }) => getLixiPanelDetailsIcon(selectedLixi.status, isActive)}
@@ -441,10 +622,10 @@ const Lixi: React.FC = () => {
                 </>
               )}
             </Panel>
-          </StyledCollapse>
+          </StyledCollapse> */}
 
           {/* Copy ClaimCode or Export Lixi*/}
-          {selectedLixi.claimType == ClaimType.Single ? (
+          {/* {selectedLixi.claimType == ClaimType.Single ? (
             <CopyToClipboard
               style={{
                 display: 'inline-block',
@@ -476,7 +657,7 @@ const Lixi: React.FC = () => {
             <ReloadOutlined /> {intl.get('lixi.refreshLixi')}
           </SmartButton>
 
-          <ClaimList claims={allClaimsCurrentLixi} />
+          <ClaimList claims={allClaimsCurrentLixi} /> */}
         </>
       ) : (
         intl.get('lixi.noLixiSelected')
