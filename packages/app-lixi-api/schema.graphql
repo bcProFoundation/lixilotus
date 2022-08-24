@@ -7,6 +7,14 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+"""
+Possible directions in which to order a list of items when provided an `orderBy` argument.
+"""
+enum OrderDirection {
+  asc
+  desc
+}
+
 type Page {
   address: String!
   avatar: String
@@ -26,6 +34,39 @@ type Page {
   website: String!
 }
 
+type PageConnection {
+  edges: [PageEdge!]
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+type PageEdge {
+  cursor: String!
+  node: Page!
+}
+
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
+
+input PageOrder {
+  direction: OrderDirection!
+  field: PageOrderField!
+}
+
+"""Properties by which page connections can be ordered."""
+enum PageOrderField {
+  createdAt
+  id
+  name
+  title
+  updatedAt
+}
+
 type Query {
+  allPages(after: String, before: String, first: Int, last: Int, orderBy: PageOrder, query: String, skip: Int): PageConnection!
   page(id: String!): Page!
 }

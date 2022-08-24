@@ -41,7 +41,14 @@ export const GlobalStyle = createGlobalStyle`
     .ant-drawer-content-wrapper {
       width: 320px !important;
     }
-    .ant-layout {
-      background-color: white !important;
+    @media (max-width: 768px) {
+        .ant-layout {
+          background: none;
+        }
+    }
+    @media (min-width: 768px) {
+        .ant-layout {
+          background: var(--bg-color-light-theme);
+        }
     }
 `;
