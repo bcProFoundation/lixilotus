@@ -1,4 +1,4 @@
-import { PageDto } from '@bcpros/lixi-models';
+import { EditPageCommand, PageDto } from '@bcpros/lixi-models';
 import { CreatePageCommand } from '@bcpros/lixi-models/src';
 import axiosClient from '@utils/axiosClient';
 
@@ -15,7 +15,7 @@ const pageApi = {
         throw response?.data ?? err ?? 'Network Error';
       });
   },
-  get(accountId: number): Promise<any> {
+  getSubPage(accountId: number): Promise<any> {
     const url = `/api/pages/${accountId}/subPage`;
     return axiosClient
       .get(url)
@@ -39,12 +39,24 @@ const pageApi = {
         throw response?.data ?? err ?? 'Network Error';
       });
   },
-  getDetailPage(id): Promise<any> {
+  getDetailPage(id: string): Promise<any> {
     const url = `/api/pages/${id}`;
     return axiosClient
       .get(url)
       .then(response => {
         return response.data as any;
+      })
+      .catch(err => {
+        const { response } = err;
+        throw response?.data ?? err ?? 'Network Error';
+      });
+  },
+  update(id: string, data: EditPageCommand): Promise<PageDto> {
+    const url = `/api/pages/${id}`;
+    return axiosClient
+      .patch(url, data, { withCredentials: true })
+      .then(response => {
+        return response.data as PageDto;
       })
       .catch(err => {
         const { response } = err;

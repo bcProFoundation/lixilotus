@@ -17,6 +17,7 @@ import { AppContext } from 'src/store/store';
 import styled from 'styled-components';
 import WalletInfoComponent from '@components/Wallet/WalletInfo';
 import Link from 'next/link';
+import { getPageBySelectedAccount } from '@store/page/selectors';
 
 const { TabPane } = Tabs;
 const StyledTabs = styled(Tabs)`
@@ -48,6 +49,7 @@ const Home: React.FC = () => {
   const dispatch = useAppDispatch();
   const lixies = useAppSelector(getLixiesBySelectedAccount);
   const selectedAccount = useAppSelector(getSelectedAccount);
+  const selectedPage = useAppSelector(getPageBySelectedAccount);
 
   useEffect(() => {
     dispatch(getEnvelopes());
@@ -63,14 +65,22 @@ const Home: React.FC = () => {
   return (
     <>
       <WalletInfoComponent />
+
+      {selectedPage ? (
+        <Link href="/page/edit" passHref>
+          <SmartButton>{intl.get('page.editPage')}</SmartButton>
+        </Link>
+      ) : (
+        <Link href="/page/create" passHref>
+          <SmartButton>{intl.get('page.createPage')}</SmartButton>
+        </Link>
+      )}
+
       <StyledSpacer />
       <h2 style={{ color: 'var(--color-primary)' }}>
         <ThemedWalletOutlined /> {intl.get('account.manageLixi')}
       </h2>
 
-      <Link href="/page/create" passHref>
-        <button>Create Page</button>
-      </Link>
       <CreateLixiForm account={selectedAccount} />
       <SmartButton onClick={() => refreshList()}>
         <ReloadOutlined /> {intl.get('account.refreshLixiList')}

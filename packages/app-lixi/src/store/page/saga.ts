@@ -6,6 +6,9 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
 import {
+  editPage,
+  editPageFailure,
+  editPageSuccess,
   fetchAllPages,
   fetchAllPagesFailure,
   fetchAllPagesSuccess,
@@ -13,12 +16,15 @@ import {
   postPage,
   postPageFailure,
   postPageSuccess,
+  getPage,
+  getPageFailure,
+  getPageSuccess,
   setPage,
   setPagesByAccountId
 } from './action';
 import { CreatePageCommand } from '@bcpros/lixi-models/src';
 import pageApi from './api';
-import { PageDto } from '@bcpros/lixi-models';
+import { AccountDto, EditPageCommand, Page, PageDto } from '@bcpros/lixi-models';
 
 const call: any = Effects.call;
 /**
@@ -81,6 +87,85 @@ function* postPageFailureSaga(action: PayloadAction<string>) {
   yield put(hideLoading(postPage.type));
 }
 
+function* getPageSaga(action: PayloadAction<string>) {
+  try {
+    const id = action.payload;
+    const data = yield call(pageApi.getDetailPage, id);
+    yield put(getPageSuccess(data));
+  } catch (err) {
+    const message = (err as Error).message ?? intl.get('page.unableSelect');
+    yield put(getPageFailure(message));
+  }
+}
+
+function* getPageFailureSaga(action: PayloadAction<string>) {
+  const message = action.payload ?? intl.get('lixi.unableSelect');
+  yield put(
+    showToast('error', {
+      message: 'Error',
+      description: message,
+      duration: 5
+    })
+  );
+  yield put(hideLoading(getPage.type));
+}
+
+function* editPageSaga(action: PayloadAction<EditPageCommand>) {
+  try {
+    const { id } = action.payload;
+    const command = action.payload;
+
+    yield put(showLoading(editPage.type));
+
+    const dataApi: EditPageCommand = {
+      ...command
+    };
+
+    const data: PageDto = yield call(pageApi.update, id, dataApi);
+
+    if (_.isNil(data) || _.isNil(data.id)) {
+      throw new Error(intl.get('lixi.unableCreateLixi'));
+    }
+
+    yield put(editPageSuccess(data));
+  } catch (err) {
+    const message = (err as Error).message ?? intl.get('page.couldNoteditPage');
+    yield put(editPageFailure(message));
+  }
+}
+
+function* editPageSuccessSaga(action: PayloadAction<any>) {
+  try {
+    const page: any = action.payload;
+
+    // Calculate
+    yield put(
+      showToast('success', {
+        message: 'Success',
+        description: intl.get('page.createPageSuccessful'),
+        duration: 5
+      })
+    );
+    yield put(setPage(page));
+    yield put(hideLoading(editPage.type));
+  } catch (error) {
+    const message = intl.get('page.errorWhenCreatePage');
+    yield put(editPageFailure(message));
+  }
+}
+
+function* editPageFailureSaga(action: PayloadAction<string>) {
+  const message = action.payload ?? intl.get('page.unableCreatePageServer');
+  yield put(
+    showToast('error', {
+      message: 'Error',
+      description: message,
+      duration: 5
+    })
+  );
+  yield put(hideLoading(editPage.type));
+}
+
 function* setPageSaga(action: PayloadAction<any>) {
   const page: any = action.payload;
   // yield put(push('/admin/lixi'));
@@ -95,7 +180,7 @@ function* getPagesByAccountIdSaga(action: PayloadAction<number>) {
 
     const dataApi: number = command;
 
-    const data: any = yield call(pageApi.get, dataApi);
+    const data: any = yield call(pageApi.getSubPage, dataApi);
 
     if (_.isNil(data)) {
       throw new Error(intl.get('lixi.unableCreateLixi'));
@@ -146,6 +231,18 @@ function* watchPostPageFailure() {
   yield takeLatest(postPageFailure.type, postPageFailureSaga);
 }
 
+function* watchEditPage() {
+  yield takeLatest(editPage.type, editPageSaga);
+}
+
+function* watchEditPageSuccess() {
+  yield takeLatest(editPageSuccess.type, editPageSuccessSaga);
+}
+
+function* watchEditPageFailure() {
+  yield takeLatest(editPageFailure.type, editPageFailureSaga);
+}
+
 function* watchSetPage() {
   yield takeLatest(setPage.type, setPageSaga);
 }
@@ -166,6 +263,13 @@ function* watchFetchAllPagesFailure() {
   yield takeLatest(fetchAllPagesFailure.type, fetchAllPagesFailureSaga);
 }
 
+function* watchGetPage() {
+  yield takeLatest(getPage.type, getPageSaga);
+}
+function* watchGetPageFailure() {
+  yield takeLatest(getPageFailure.type, getPageFailureSaga);
+}
+
 export default function* pageSaga() {
   yield all([
     fork(watchPostPage),
@@ -175,6 +279,11 @@ export default function* pageSaga() {
     fork(watchGetPagesByAccountId),
     fork(watchFetchAllPages),
     fork(watchFetchAllPagesSuccess),
-    fork(watchFetchAllPagesFailure)
+    fork(watchFetchAllPagesFailure),
+    fork(watchEditPage),
+    fork(watchEditPageFailure),
+    fork(watchEditPageSuccess),
+    fork(watchGetPage),
+    fork(watchGetPageFailure)
   ]);
 }

@@ -11,6 +11,10 @@ export class UpdatePageCommand {
   title: string;
 
   description: string;
-  address: string;
   website: string;
+  avatar?: string;
+  cover?: string;
+  country?: string;
+  state?: string;
+  address?: string;
 }
