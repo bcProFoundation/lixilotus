@@ -10,6 +10,7 @@ import BCHJS from '@bcpros/xpi-js';
 import { createRouterMiddleware, initialRouterState, routerReducer } from 'connected-next-router';
 import { Context, createWrapper, HYDRATE } from 'next-redux-wrapper';
 import { Router } from 'next/router';
+import { api as pagesApi } from './page/pages.generated';
 
 export interface SagaStore extends Store {
   __sagaTask: Task;
@@ -59,7 +60,9 @@ const makeStore = (context: Context) => {
           serializableCheck: {
             ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
           }
-        }).concat(sagaMiddleware, routerMiddleware);
+        })
+          .concat(pagesApi.middleware)
+          .concat(sagaMiddleware, routerMiddleware);
       },
       devTools:
         process.env.NODE_ENV === 'production'

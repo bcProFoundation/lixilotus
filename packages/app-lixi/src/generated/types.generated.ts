@@ -14,6 +14,28 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type CreatePageInput = {
+  address: Scalars['String'];
+  avatar: Scalars['String'];
+  country: Scalars['String'];
+  cover: Scalars['String'];
+  description: Scalars['String'];
+  name: Scalars['String'];
+  parentId?: InputMaybe<Scalars['String']>;
+  state: Scalars['String'];
+  title: Scalars['String'];
+  website: Scalars['String'];
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  createPage: Page;
+};
+
+export type MutationCreatePageArgs = {
+  data: CreatePageInput;
+};
+
 /** Possible directions in which to order a list of items when provided an `orderBy` argument. */
 export enum OrderDirection {
   Asc = 'asc',
@@ -79,7 +101,6 @@ export type Query = {
   page: Page;
 };
 
-
 export type QueryAllPagesArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
@@ -90,7 +111,11 @@ export type QueryAllPagesArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
-
 export type QueryPageArgs = {
   id: Scalars['String'];
+};
+
+export type Subscription = {
+  __typename?: 'Subscription';
+  pageCreated: Page;
 };
