@@ -47,4 +47,6 @@ export class Page {
     description: 'Identifies the date and time when the object was last updated.'
   })
   updatedAt: Date;
+  country?: string;
+  state?: string;
 }

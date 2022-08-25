@@ -11,6 +11,7 @@ import {
   Injectable,
   Logger,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -358,7 +359,7 @@ export class PageController {
     }
   }
 
-  @Put(':id')
+  @Patch(':id')
   @UseGuards(JwtAuthGuard)
   async update(
     @Param('id') id: string,
@@ -373,13 +374,31 @@ export class PageController {
       throw new Error(couldNotFindAccount);
     }
 
+    const uploadAvatarDetail = command.avatar
+      ? await this.prisma.uploadDetail.findFirst({
+          where: {
+            uploadId: command.avatar
+          }
+        })
+      : undefined;
+
+    const uploadCoverDetail = command.cover
+      ? await this.prisma.uploadDetail.findFirst({
+          where: {
+            uploadId: command.cover
+          }
+        })
+      : undefined;
+
     try {
       const updatedPage = await this.prisma.page.update({
         where: {
           id: id
         },
         data: {
-          ...command
+          ...command,
+          avatar: { connect: uploadAvatarDetail ? { id: uploadAvatarDetail.id } : undefined },
+          cover: { connect: uploadCoverDetail ? { id: uploadCoverDetail.id } : undefined }
         }
       });
 
