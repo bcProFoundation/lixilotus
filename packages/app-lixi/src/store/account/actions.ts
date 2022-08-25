@@ -54,6 +54,8 @@ export const removeUpload = createAction<{ type: any }>('account/removeUpload');
 export const loginViaEmail = createAction<LoginViaEmailCommand>('account/loginViaEmail');
 export const loginViaEmailSuccess = createAction<any>('account/loginViaEmailSuccess');
 export const loginViaEmailFailure = createAction<any>('account/loginViaEmailFailure');
-export const registerViaEmailNoVerified = createAction<RegisterViaEmailNoVerifiedCommand>('account/registerViaEmailNoVerified');
+export const registerViaEmailNoVerified = createAction<RegisterViaEmailNoVerifiedCommand>(
+  'account/registerViaEmailNoVerified'
+);
 export const registerViaEmailNoVerifiedSuccess = createAction<any>('account/registerViaEmailNoVerifiedSuccess');
 export const registerViaEmailNoVerifiedFailure = createAction<any>('account/registerViaEmailNoVerifiedFailure');

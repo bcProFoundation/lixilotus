@@ -53,13 +53,13 @@ export interface AccountDto {
 }
 
 export interface RegisterViaEmailNoVerifiedCommand {
-  email: string,
-  name: string,
-  password: string,
-  confirmPassword: string
+  email: string;
+  name: string;
+  password: string;
+  confirmPassword: string;
 }
 
 export interface LoginViaEmailCommand {
-  username: string,
-  password: string
+  username: string;
+  password: string;
 }

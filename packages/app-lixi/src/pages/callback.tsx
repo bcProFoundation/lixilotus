@@ -1,34 +1,38 @@
 import React from 'react';
 import axiosClient from '@utils/axiosClient';
 import CallbackComponent from '@components/Callback';
-import { GetServerSideProps } from 'next'
+import { GetServerSideProps } from 'next';
+import { setCookie } from 'cookies-next';
 
-const CallbackPage = ({ token }) => {
-   return <CallbackComponent accessToken={token} />;
+const CallbackPage = ({ statusCode }) => {
+  return <CallbackComponent statusCode={statusCode} />;
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-
-   const authCode = context.query.code
-   const url = `api/auth/get-token`;
-   let token = null
-   if (authCode) {
-      await axiosClient.post(url, { authCode }).then((res) => {
-         console.log(res.headers);
-         context.res.setHeader('set-cookie', res.headers['set-cookie']);
-         token = res.data;
-      }).catch((err) => {
-         console.log(err.response);
+export const getServerSideProps: GetServerSideProps = async ({ req, res, query }) => {
+  const authCode = query.code;
+  const url = `api/auth/get-token`;
+  let statusCode = 200;
+  if (authCode) {
+    await axiosClient
+      .post(url, { authCode })
+      .then(response => {
+        setCookie('access_token', response.headers['set-cookie'].pop().split(';')[0], {
+          req,
+          res,
+          maxAge: 60 * 6 * 24
+        });
       })
-   }
+      .catch(err => {
+        console.log(err.response);
+        statusCode = err.response.data.statusCode;
+      });
+  }
 
-   // context.res.setHeader('set-cookie',)
-
-   return {
-      props: {
-         token
-      },
-   }
-}
+  return {
+    props: {
+      statusCode
+    }
+  };
+};
 
 export default CallbackPage;

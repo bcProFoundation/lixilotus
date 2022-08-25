@@ -1,4 +1,9 @@
-import { DeleteAccountCommand, RenameAccountCommand, RegisterViaEmailNoVerifiedCommand, LoginViaEmailCommand } from '@bcpros/lixi-models';
+import {
+  DeleteAccountCommand,
+  RenameAccountCommand,
+  RegisterViaEmailNoVerifiedCommand,
+  LoginViaEmailCommand
+} from '@bcpros/lixi-models';
 import { AccountDto, CreateAccountCommand, ImportAccountCommand } from '@bcpros/lixi-models';
 import { PatchAccountCommand } from '@bcpros/lixi-models/src/lib/account';
 import axiosClient, { axiosAuthClient } from '@utils/axiosClient';
@@ -57,7 +62,7 @@ const accountApi = {
     const url = `/api/accounts/${id}`;
     return axiosClient
       .delete(url, { data: data })
-      .then(response => { })
+      .then(response => {})
       .catch(err => {
         const { response } = err;
         throw response?.data ?? err ?? 'Network Error';
@@ -90,8 +95,8 @@ const accountApi = {
   loginViaEmail(data: LoginViaEmailCommand): Promise<any> {
     const url = '/auth/login';
     const allowedScopes = ['openid', 'email'];
-    const clientId = '​6aa82f7e-e1aa-41f2-8e01-06addce862f6'
-    const redirect_uri = 'http://admin.localhost:4220/index.html'
+    const clientId = '​6aa82f7e-e1aa-41f2-8e01-06addce862f6';
+    const redirect_uri = 'http://admin.localhost:4220/index.html';
 
     const options = {
       method: 'GET',
@@ -118,8 +123,8 @@ const accountApi = {
     //   });
     return axios.request(options).then(function (response) {
       console.log(response.data);
-    })
-  },
+    });
+  }
 };
 
 export default accountApi;

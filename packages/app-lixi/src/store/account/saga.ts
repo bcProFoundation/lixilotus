@@ -425,14 +425,14 @@ function* refreshLixiListSilentSaga(action: PayloadAction<number>) {
     const lixiesData = yield call(lixiApi.getByAccountId, accountId);
     const lixies = (lixiesData ?? []) as Lixi[];
     yield put(refreshLixiListSilentSuccess({ account: account, lixies: lixies }));
-  } catch (err) { }
+  } catch (err) {}
 }
 
 function* registerViaEmailNoVerifiedSaga(action: PayloadAction<RegisterViaEmailNoVerifiedCommand>) {
-  yield put(showLoading(registerViaEmailNoVerified.type))
-  const { email } = action.payload
+  yield put(showLoading(registerViaEmailNoVerified.type));
+  const { email } = action.payload;
   try {
-    const data = yield call(accountApi.registerViaEmailNoVerified, action.payload)
+    const data = yield call(accountApi.registerViaEmailNoVerified, action.payload);
     yield put(
       showToast('success', {
         message: 'Success',
@@ -447,8 +447,8 @@ function* registerViaEmailNoVerifiedSaga(action: PayloadAction<RegisterViaEmailN
 }
 
 function* registerViaEmailSuccessNoVerifiedSaga(action: PayloadAction<any>) {
-  yield put(hideLoading(registerViaEmailNoVerified.type))
-  console.log(action.payload)
+  yield put(hideLoading(registerViaEmailNoVerified.type));
+  console.log(action.payload);
 }
 
 function* registerViaEmailFailureNoVerifiedSaga(action: PayloadAction<any>) {
@@ -464,9 +464,9 @@ function* registerViaEmailFailureNoVerifiedSaga(action: PayloadAction<any>) {
 }
 
 function* loginViaEmailSaga(action: PayloadAction<LoginViaEmailCommand>) {
-  yield put(showLoading(loginViaEmail.type))
+  yield put(showLoading(loginViaEmail.type));
   try {
-    const data = yield call(accountApi.loginViaEmail, action.payload)
+    const data = yield call(accountApi.loginViaEmail, action.payload);
     yield put(
       showToast('success', {
         message: 'Success',
@@ -481,8 +481,8 @@ function* loginViaEmailSaga(action: PayloadAction<LoginViaEmailCommand>) {
 }
 
 function* loginViaEmailSuccessSaga(action: PayloadAction<any>) {
-  yield put(hideLoading(loginViaEmail.type))
-  console.log(action.payload)
+  yield put(hideLoading(loginViaEmail.type));
+  console.log(action.payload);
 }
 
 function* loginViaEmailFailureSaga(action: PayloadAction<any>) {

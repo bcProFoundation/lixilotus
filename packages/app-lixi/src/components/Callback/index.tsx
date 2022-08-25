@@ -1,34 +1,31 @@
 import React, { useEffect } from 'react';
-import { Form, Input, Button, message } from 'antd';
-import intl from 'react-intl-universal';
-import { useForm, Controller, SubmitHandler } from 'react-hook-form';
-import { useAppDispatch } from '@store/hooks';
-import { loginViaEmail } from '@store/account/actions';
-import { LoginViaEmailCommand } from '@bcpros/lixi-models';
-import OAuth2Login from 'react-simple-oauth2-login';
-import { useRouter } from 'next/router'
-import axios from 'axios';
-import { LoadingOutlined } from '@ant-design/icons';
-import { Spin } from 'antd';
+import { Statistic } from 'antd';
 
-const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+const { Countdown } = Statistic;
 
-const CallbackComponent = (props) => {
-   const { accessToken } = props
-   console.log(accessToken);
-   return (
-      <>
-         {accessToken ?
-            <>
-               <h1>Login successfully!</h1>
-            </> :
-            <>
-               <h1>No authorization code found</h1>
-            </>
-         }
-      </>
+const CallbackComponent = props => {
+  const { statusCode } = props;
+  const TIMEOUT = 5000;
 
-   );
+  useEffect(() => {
+    setTimeout(() => {
+      window.close();
+    }, TIMEOUT);
+  }, []);
+  return (
+    <>
+      {statusCode == 200 ? (
+        <>
+          <h1>Login successfully!</h1>
+          <Countdown title="Tab closing in: " value={Date.now() + TIMEOUT} format="s" />
+        </>
+      ) : (
+        <>
+          <h1>No authorization code found</h1>
+        </>
+      )}
+    </>
+  );
 };
 
 export default CallbackComponent;
