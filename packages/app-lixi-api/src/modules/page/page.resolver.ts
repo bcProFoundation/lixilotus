@@ -1,4 +1,4 @@
-import { Page, PaginationArgs, PageOrder, PageConnection, CreatePageInput } from '@bcpros/lixi-models';
+import { Page, PaginationArgs, PageOrder, PageConnection, CreatePageInput, Account } from '@bcpros/lixi-models';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
 import { ExecutionContext, Request, UseGuards } from '@nestjs/common';
 import {
@@ -12,10 +12,10 @@ import {
   Subscription
 } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
-import { FastifyRequest } from 'fastify';
 import { PrismaService } from '../prisma/prisma.service';
 import * as _ from 'lodash';
 import { GqlJwtAuthGuard } from '../auth/gql-jwtauth.guard';
+import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
 
 const pubSub = new PubSub();
 
@@ -79,10 +79,12 @@ export class PageResolver {
 
   @UseGuards(GqlJwtAuthGuard)
   @Mutation(() => Page)
-  async createPage(@Context() context: ExecutionContext, @Args('data') data: CreatePageInput) {
-    const req = (context as any).req;
-    const account = (req as any).account;
-
+  async createPage(
+    @PageAccountEntity() account: Account,
+    @Context() context: ExecutionContext,
+    @Args('data') data: CreatePageInput
+  ) {
+    console.log('account', account);
     const uploadAvatarDetail = data.avatar
       ? await this.prisma.uploadDetail.findFirst({
           where: {

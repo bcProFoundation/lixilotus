@@ -23,7 +23,8 @@ import {
   DeleteAccountCommand,
   Lixi,
   NotificationDto,
-  PatchAccountCommand
+  PatchAccountCommand,
+  Account
 } from '@bcpros/lixi-models';
 
 import * as _ from 'lodash';
@@ -33,6 +34,7 @@ import { VError } from 'verror';
 import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase58Str, hashMnemonic } from '../../../utils/encryptionMethods';
 import { PrismaService } from '../../prisma/prisma.service';
 import { WalletService } from '../../wallet/wallet.service';
+import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
 
 @Controller('accounts')
 export class AccountController {
@@ -400,6 +402,7 @@ export class AccountController {
   @Get(':id/notifications')
   @UseGuards(JwtAuthGuard)
   async getNotifications(
+    @PageAccountEntity() account: Account,
     @Param('id') id: string,
     @Request() req: FastifyRequest,
     @I18n() i18n: I18nContext
@@ -407,9 +410,6 @@ export class AccountController {
     const accountId = _.toSafeInteger(id);
 
     try {
-      // Find the associated account
-      const account = (req as any).account;
-
       if (!account || account?.id !== accountId) {
         const noPermissionMessage = await i18n.t('account.messages.noPermission');
         throw Error(noPermissionMessage);
