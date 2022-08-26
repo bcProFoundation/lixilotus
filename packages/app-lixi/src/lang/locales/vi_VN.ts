@@ -94,6 +94,7 @@ export default {
   'account.invalidPassword': 'Mật khẩu không hợp lệ',
   'account.matchPassword': 'Mật khẩu phải trùng',
   'account.repeatPassword': 'Vui lòng nhập lại mật khẩu ',
+  'account.transactionHistory': 'Lịch sử giao dịch',
 
   /* 03.Lixi */
   'lixi.sub-lixi': 'Bao lì xì phụ',
@@ -186,6 +187,7 @@ export default {
   'lixi.lotteryAddress': 'Địa chỉ ví xổ số',
   'lixi.lotteryAddressCheck': 'Xác nhận',
   'lixi.addressCopied': 'địa chỉ đã được sao chép.',
+  'lixi.redeemLixi': 'Nhận lì xì',
 
   /* 04.Claim */
   'claim.claim': 'Nhận Lì xì',

@@ -4,6 +4,7 @@ import * as qrcode from 'qrcode.react';
 import RawQRCode from 'qrcode.react';
 import { currency } from './Ticker';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { CopyOutlined } from '@ant-design/icons';
 
 type StyledRawQRCodeProps = {
   id: string;
@@ -91,7 +92,7 @@ type CustomInputProps = {
 const CustomInput = styled.div<CustomInputProps>`
   font-size: 15px;
   color: ${props => props.theme.wallet.text.secondary};
-  text-align: center;
+  text-align: right;
   cursor: pointer;
   margin-bottom: 0px;
   padding: 6px 0;
@@ -151,22 +152,33 @@ type QRCodeProps = {
   size?: number;
   onClick?: Function;
   logoImage?: string;
+  isAccountPage?: boolean;
 };
 
-const FormattedWalletAddress = ({ address }) => {
+export const FormattedWalletAddress = ({ address, isAccountPage }) => {
   const prefixLength = 11;
   const trimLength = 8;
   return (
     <>
-      {address.slice(0, prefixLength)}
-      <AddressHighlightTrim>{address.slice(prefixLength, prefixLength + trimLength)}</AddressHighlightTrim>
-      {address.slice(prefixLength + trimLength, -trimLength)}
+      {!isAccountPage && address.slice(0, prefixLength)}
+      {!isAccountPage && (
+        <AddressHighlightTrim>{address.slice(prefixLength, prefixLength + trimLength)}</AddressHighlightTrim>
+      )}
+      {!isAccountPage && address.slice(prefixLength + trimLength, -trimLength)}
+      {isAccountPage && <CopyOutlined />}
       <AddressHighlightTrim>{address.slice(-trimLength)}</AddressHighlightTrim>
     </>
   );
 };
 
-const QRCode = ({ address, size = 210, onClick = () => null, logoImage, ...otherProps }: QRCodeProps) => {
+const QRCode = ({
+  isAccountPage,
+  address,
+  size = 210,
+  onClick = () => null,
+  logoImage,
+  ...otherProps
+}: QRCodeProps) => {
   const [visible, setVisible] = useState(false);
   const trimAmount = 8;
 
@@ -225,11 +237,11 @@ const QRCode = ({ address, size = 210, onClick = () => null, logoImage, ...other
           }}
         />
 
-        {address && (
+        {address && !isAccountPage && (
           <CustomInput xpi={address ? 1 : 0}>
             <input ref={txtRef} readOnly value={address} spellCheck="false" type="text" />
             <span>
-              <FormattedWalletAddress address={address} />
+              <FormattedWalletAddress address={address} isAccountPage={isAccountPage} />
             </span>
           </CustomInput>
         )}

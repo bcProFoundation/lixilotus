@@ -1,18 +1,106 @@
-import LockOutlined from '@ant-design/icons';
+import LockOutlined, { EditOutlined } from '@ant-design/icons';
 import intl from 'react-intl-universal';
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
-import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
+import QRCode, { FormattedWalletAddress } from '@bcpros/lixi-components/components/Common/QRCode';
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
 import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
 import { SmartButton } from '@components/Common/PrimaryButton';
-import { importAccount, setAccountBalance } from '@store/account/actions';
+import { importAccount, renameAccount, setAccountBalance } from '@store/account/actions';
 import { fromSmallestDenomination } from '@utils/cashMethods';
 import { Form, Input } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { AppContext } from 'src/store/store';
+import styled from 'styled-components';
+import { Account, RenameAccountCommand } from '@bcpros/lixi-models';
+import { RenameAccountModalProps } from '@components/Settings/RenameAccountModal';
+import { openModal } from '@store/modal/actions';
+
+const CardContainer = styled.div`
+  position: relative;
+  display: flex;
+  background: url(../images/bg-xpi.svg) no-repeat;
+  background-size: cover !important;
+  border-radius: 24px;
+  padding: 2rem 2rem 3rem 2rem;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  @media (max-width: 768px) {
+    padding: 2rem;
+    border-bottom-left-radius: 24px;
+    border-bottom-right-radius: 24px;
+  }
+`;
+
+const WalletCard = styled.div`
+  .wallet-name {
+    display: flex;
+    align-items: center;
+    h4 {
+      color: #edeff0;
+      font-size: 16px;
+      margin: 0 8px;
+    }
+    .edit-ico {
+      font-size: 17px;
+      color: rgba(237, 239, 240, 0.6);
+    }
+  }
+`;
+
+const StyledBalanceHeader = styled.div`
+  > div {
+    min-width: 150px;
+    text-align: left;
+    font-size: 28px;
+    color: #edeff0;
+    margin-top: 8px;
+  }
+  .iso-amount {
+    font-size: 16px;
+    color: rgba(237, 239, 240, 0.6);
+    text-align: left;
+  }
+`;
+
+const StyledQRCode = styled.div`
+  flex: 1 auto;
+  text-align: right;
+  opacity: 0.7;
+  #borderedQRCode {
+    @media (max-width: 768px) {
+      border-radius: 18px;
+      width: 60px;
+      height: 60px;
+    }
+    @media (min-width: 768px) {
+      border-radius: 18px;
+      width: 90px;
+      height: 90px;
+    }
+  }
+`;
+
+const AddressWalletBar = styled.div`
+  opacity: 0.8;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  text-align: right;
+  padding: 5px 2rem;
+  background: linear-gradient(270deg, rgba(0, 30, 46, 0.24) 2.04%, rgba(0, 30, 46, 0) 100%);
+  border-radius: 0px 8px 26px 0px;
+  color: #edeff0;
+  span {
+    color: #edeff0;
+    margin-left: 4px;
+  }
+`;
+
+const urlFiatRate = 'https://aws-dev.abcpay.cash/bws/api/v3/fiatrates/xpi';
 
 const WalletInfoComponent: React.FC = () => {
   const isServer = () => typeof window === 'undefined';
@@ -27,8 +115,10 @@ const WalletInfoComponent: React.FC = () => {
   const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
   const [isLoadBalanceError, setIsLoadBalanceError] = useState(false);
+  const [amountFiatCoin, setAmountFiatCoin] = useState('');
 
   useEffect(() => {
+    fetchFiatRate();
     const id = setInterval(() => {
       XPI.Electrumx.balance(selectedAccount?.address)
         .then(result => {
@@ -43,6 +133,41 @@ const WalletInfoComponent: React.FC = () => {
     }, 10000);
     return () => clearInterval(id);
   }, []);
+
+  const fetchFiatRate = () => {
+    fetch(urlFiatRate)
+      .then(res => res.json())
+      .then(body => {
+        const fiatRateUsd = body.find(item => item.code === 'USD') || 0;
+        const rateUsd = fiatRateUsd?.rate;
+        const resultAmount = fromSmallestDenomination(selectedAccount?.balance ?? 0) * rateUsd;
+        setAmountFiatCoin(decimalFormatBalance(resultAmount));
+      });
+  };
+
+  const decimalFormatBalance = balance => {
+    if (Number(balance) < 10) {
+      return Number(Number(balance).toFixed(Math.round(1 / Number(balance)).toString().length + 2)).toLocaleString(
+        'en-GB'
+      );
+    } else {
+      return Number(Number(balance).toFixed(Math.round(1 / Number(balance)).toString().length + 1)).toLocaleString(
+        'en-GB'
+      );
+    }
+  };
+  const showPopulatedRenameAccountModal = (account: Account) => {
+    const command: RenameAccountCommand = {
+      id: account.id,
+      mnemonic: account.mnemonic,
+      name: account.name
+    };
+    const renameAcountModalProps: RenameAccountModalProps = {
+      account: account,
+      onOkAction: renameAccount(command)
+    };
+    dispatch(openModal('RenameAccountModal', renameAcountModalProps));
+  };
 
   const handleChange = e => {
     const { value, name } = e.target;
@@ -68,9 +193,31 @@ const WalletInfoComponent: React.FC = () => {
 
   return (
     <>
-      <WalletLabel name={selectedAccount?.name ?? ''} />
-      <BalanceHeader balance={fromSmallestDenomination(selectedAccount?.balance ?? 0)} ticker={currency.ticker} />
-      {!isServer() && selectedAccount?.address && <QRCode address={selectedAccount?.address} />}
+      <CardContainer>
+        <WalletCard>
+          <div className="wallet-name">
+            <img src="../images/xpi.svg" alt="" />
+            <WalletLabel name={selectedAccount?.name ?? ''} />
+            <EditOutlined
+              className="edit-ico"
+              onClick={() => showPopulatedRenameAccountModal(selectedAccount as Account)}
+            />
+          </div>
+          <StyledBalanceHeader>
+            <BalanceHeader balance={fromSmallestDenomination(selectedAccount?.balance ?? 0)} ticker={currency.ticker} />
+            <p className="iso-amount">~ {amountFiatCoin} USD</p>
+          </StyledBalanceHeader>
+        </WalletCard>
+        {!isServer() && selectedAccount?.address && (
+          <StyledQRCode>
+            <QRCode address={selectedAccount?.address} isAccountPage={true} />
+          </StyledQRCode>
+        )}
+        <AddressWalletBar>
+          <FormattedWalletAddress address={selectedAccount?.address} isAccountPage={true}></FormattedWalletAddress>
+        </AddressWalletBar>
+      </CardContainer>
+
       {seedInput && (
         <AntdFormWrapper>
           <Form style={{ width: 'auto' }}>
