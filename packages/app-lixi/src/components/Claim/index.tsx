@@ -245,7 +245,7 @@ const ClaimComponent = ({ isClaimFromAccount }) => {
       )}
       {isClaimFromAccount && (
         <RedeemCodeBox>
-          <h3 className="title-redeem-code">{intl.get('account.redeemLixi')}</h3>
+          <h3 className="title-redeem-code">{intl.get('lixi.redeemLixi')}</h3>
           <FormItemClaimCodeXpiInput
             loadWithCameraOpen={false}
             onScan={result =>
