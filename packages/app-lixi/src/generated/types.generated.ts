@@ -30,10 +30,17 @@ export type CreatePageInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   createPage: Page;
+  updatePage: Page;
 };
+
 
 export type MutationCreatePageArgs = {
   data: CreatePageInput;
+};
+
+
+export type MutationUpdatePageArgs = {
+  data: UpdatePageInput;
 };
 
 /** Possible directions in which to order a list of items when provided an `orderBy` argument. */
@@ -44,8 +51,9 @@ export enum OrderDirection {
 
 export type Page = {
   __typename?: 'Page';
-  address: Scalars['String'];
+  address?: Maybe<Scalars['String']>;
   avatar?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
   cover?: Maybe<Scalars['String']>;
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
@@ -53,11 +61,13 @@ export type Page = {
   id: Scalars['ID'];
   name: Scalars['String'];
   pageAccountId: Scalars['Int'];
+  parent?: Maybe<Page>;
   parentId?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
   title: Scalars['String'];
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
-  website: Scalars['String'];
+  website?: Maybe<Scalars['String']>;
 };
 
 export type PageConnection = {
@@ -101,6 +111,7 @@ export type Query = {
   page: Page;
 };
 
+
 export type QueryAllPagesArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
@@ -111,6 +122,7 @@ export type QueryAllPagesArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
+
 export type QueryPageArgs = {
   id: Scalars['String'];
 };
@@ -118,4 +130,18 @@ export type QueryPageArgs = {
 export type Subscription = {
   __typename?: 'Subscription';
   pageCreated: Page;
+};
+
+export type UpdatePageInput = {
+  address?: InputMaybe<Scalars['String']>;
+  avatar?: InputMaybe<Scalars['String']>;
+  country?: InputMaybe<Scalars['String']>;
+  cover?: InputMaybe<Scalars['String']>;
+  description?: InputMaybe<Scalars['String']>;
+  id: Scalars['ID'];
+  name?: InputMaybe<Scalars['String']>;
+  parentId?: InputMaybe<Scalars['String']>;
+  state?: InputMaybe<Scalars['String']>;
+  title?: InputMaybe<Scalars['String']>;
+  website?: InputMaybe<Scalars['String']>;
 };

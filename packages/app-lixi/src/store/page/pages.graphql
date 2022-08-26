@@ -1,7 +1,6 @@
 # import PageOrder from '/packages/app-lixi-api/schema.graphql'
 # import PageInfoFields from '../../graphql/fragments/page-info-fields.fragment.graphql'
 
-
 query Page($id: String!) {
   page(id: $id) {
     ...PageFields
@@ -48,6 +47,12 @@ fragment PageFields on Page {
 
 mutation createPage($input: CreatePageInput!) {
   createPage(data: $input) {
+    ...PageFields
+  }
+}
+
+mutation updatePage($input: UpdatePageInput!) {
+  updatePage(data: $input) {
     ...PageFields
   }
 }

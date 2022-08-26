@@ -318,11 +318,12 @@ export default {
   'page.inputAddress': 'Vui lòng nhập địa chỉ',
   'page.couldNotpostPage': 'Tạo trang không thành công',
   'page.createPageSuccessful': 'Trang đã tạo thành công',
+  'page.updatePageSuccessful': 'Trang đã được cập nhật thành công',
   'page.unableCreatePageServer': 'Không thể kết nối server tạo trang',
   'page.errorWhenCreatePage': 'Đã có lỗi xảy ra khi tạo mới trang',
   'page.copyToClipboard': 'Liên kết đã được sao chép',
   'page.unableCreatePage': 'Không thể tạo trang.',
-  'page.unableEditPage': 'Không thể sửa trang.',
+  'page.unableUpdatePage': 'Không thể sửa trang.',
   'page.selectAccountFirst': 'Hãy chọn một tài khoản trước khi tạo trang',
 
   /* 14.Country */

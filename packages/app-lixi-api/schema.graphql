@@ -22,6 +22,7 @@ scalar DateTime
 
 type Mutation {
   createPage(data: CreatePageInput!): Page!
+  updatePage(data: UpdatePageInput!): Page!
 }
 
 """
@@ -33,8 +34,9 @@ enum OrderDirection {
 }
 
 type Page {
-  address: String!
+  address: String
   avatar: String
+  country: String
   cover: String
 
   """Identifies the date and time when the object was created."""
@@ -43,12 +45,14 @@ type Page {
   id: ID!
   name: String!
   pageAccountId: Int!
+  parent: Page
   parentId: String
+  state: String
   title: String!
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
-  website: String!
+  website: String
 }
 
 type PageConnection {
@@ -90,4 +94,18 @@ type Query {
 
 type Subscription {
   pageCreated: Page!
+}
+
+input UpdatePageInput {
+  address: String
+  avatar: String
+  country: String
+  cover: String
+  description: String
+  id: ID!
+  name: String
+  parentId: String
+  state: String
+  title: String
+  website: String
 }
