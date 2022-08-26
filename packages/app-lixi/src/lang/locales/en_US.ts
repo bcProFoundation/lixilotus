@@ -94,6 +94,7 @@ export default {
   'account.invalidPassword': 'Invalid password',
   'account.matchPassword': 'Password must match',
   'account.repeatPassword': 'Repeat password',
+  'account.transactionHistory': 'Transaction History',
 
   /* 03.Lixi */
   'lixi.sub-lixi': 'Sub-lixi',
@@ -186,6 +187,7 @@ export default {
   'lixi.lotteryAddress': 'Lottery Address',
   'lixi.lotteryAddressCheck': 'Confirm',
   'lixi.addressCopied': 'The address has been copied.',
+  'lixi.redeemLixi': 'Redeem lixi',
 
   /* 04.Claim */
   'claim.claim': 'Claim',

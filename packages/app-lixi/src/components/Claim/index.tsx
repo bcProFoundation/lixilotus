@@ -19,6 +19,7 @@ import { getIsGlobalLoading } from 'src/store/loading/selectors';
 import { getCurrentAddress, getCurrentClaimCode } from 'src/store/claim/selectors';
 import { useSelector } from 'react-redux';
 import { getSelectedAccount } from '@store/account/selectors';
+import styled from 'styled-components';
 
 const SITE_KEY = '6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb';
 
@@ -28,7 +29,45 @@ type ClaimFormData = {
   address: string;
 };
 
-const ClaimComponent: React.FC = () => {
+const RedeemCodeBox = styled.div`
+  background: #fff;
+  padding: 2rem 2rem 3rem 2rem;
+  @media (max-width: 768px) {
+    padding: 2rem 0 3rem 0;
+  }
+  .title-redeem-code {
+    font-size: 14px;
+    color: #333333;
+    font-weight: 600;
+  }
+  .ant-input-affix-wrapper {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-right: 0 !important;
+    .ant-input {
+      height: 35px;
+    }
+  }
+  .ant-input-group-addon {
+    border: 1px solid #e2e2e2;
+    border-left: none;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    cursor: pointer;
+    background-color: #ffffff !important;
+    span {
+      border-right-width: 0px;
+    }
+  }
+  button {
+    font-size: 16px;
+    padding: 8px 0;
+    border-radius: 8px;
+    margin-bottom: 0;
+  }
+`;
+
+const ClaimComponent = ({ isClaimFromAccount }) => {
   const isLoading = useAppSelector(getIsGlobalLoading);
 
   const { XPI, Wallet } = React.useContext(AppContext);
@@ -141,67 +180,90 @@ const ClaimComponent: React.FC = () => {
 
   return (
     <>
-      <Row
-        style={{
-          display: 'flex'
-        }}
-      >
-        <Col span={24}>
-          <Spin spinning={isLoading} indicator={CashLoadingIcon}>
-            <Form
-              style={{
-                width: 'auto'
-              }}
-            >
-              <FormItemWithQRCodeAddon
+      {!isClaimFromAccount && (
+        <Row
+          style={{
+            display: 'flex'
+          }}
+        >
+          <Col span={24}>
+            <Spin spinning={isLoading} indicator={CashLoadingIcon}>
+              <Form
                 style={{
-                  margin: '0 0 20px 0'
-                }}
-                loadWithCameraOpen={false}
-                validateStatus={claimXpiAddressError ? 'error' : ''}
-                help={claimXpiAddressError ? claimXpiAddressError : ''}
-                onScan={result =>
-                  handleAddressChange({
-                    target: {
-                      name: 'address',
-                      value: result
-                    }
-                  })
-                }
-                inputProps={{
-                  placeholder: intl.get('claim.tickerAddress', { ticker: currency.ticker }),
-                  name: 'address',
-                  onChange: e => handleAddressChange(e),
-                  required: true,
-                  value: currentAddress
-                }}
-              ></FormItemWithQRCodeAddon>
-              <FormItemClaimCodeXpiInput
-                loadWithCameraOpen={false}
-                onScan={result =>
-                  handleClaimCodeChange({
-                    target: {
-                      name: 'claimCode',
-                      value: result
-                    }
-                  })
-                }
-                inputProps={{
-                  onChange: e => handleClaimCodeChange(e),
-                  value: currentClaimCode
-                }}
-              ></FormItemClaimCodeXpiInput>
-              <div
-                style={{
-                  paddingTop: '12px'
+                  width: 'auto'
                 }}
               >
-                <PrimaryButton onClick={handleOnClick}>{intl.get('claim.claim')}</PrimaryButton>
-              </div>
-            </Form>
-          </Spin>
-        </Col>
-      </Row>
+                <FormItemWithQRCodeAddon
+                  style={{
+                    margin: '0 0 20px 0'
+                  }}
+                  loadWithCameraOpen={false}
+                  validateStatus={claimXpiAddressError ? 'error' : ''}
+                  help={claimXpiAddressError ? claimXpiAddressError : ''}
+                  onScan={result =>
+                    handleAddressChange({
+                      target: {
+                        name: 'address',
+                        value: result
+                      }
+                    })
+                  }
+                  inputProps={{
+                    placeholder: intl.get('claim.tickerAddress', { ticker: currency.ticker }),
+                    name: 'address',
+                    onChange: e => handleAddressChange(e),
+                    required: true,
+                    value: currentAddress
+                  }}
+                ></FormItemWithQRCodeAddon>
+                <FormItemClaimCodeXpiInput
+                  loadWithCameraOpen={false}
+                  onScan={result =>
+                    handleClaimCodeChange({
+                      target: {
+                        name: 'claimCode',
+                        value: result
+                      }
+                    })
+                  }
+                  inputProps={{
+                    onChange: e => handleClaimCodeChange(e),
+                    value: currentClaimCode
+                  }}
+                ></FormItemClaimCodeXpiInput>
+                <div
+                  style={{
+                    paddingTop: '12px'
+                  }}
+                >
+                  <PrimaryButton onClick={handleOnClick}>{intl.get('claim.claim')}</PrimaryButton>
+                </div>
+              </Form>
+            </Spin>
+          </Col>
+        </Row>
+      )}
+      {isClaimFromAccount && (
+        <RedeemCodeBox>
+          <h3 className="title-redeem-code">{intl.get('account.redeemLixi')}</h3>
+          <FormItemClaimCodeXpiInput
+            loadWithCameraOpen={false}
+            onScan={result =>
+              handleClaimCodeChange({
+                target: {
+                  name: 'claimCode',
+                  value: result
+                }
+              })
+            }
+            inputProps={{
+              onChange: e => handleClaimCodeChange(e),
+              value: currentClaimCode
+            }}
+          ></FormItemClaimCodeXpiInput>
+          <PrimaryButton onClick={handleOnClick}>{intl.get('claim.claim')}</PrimaryButton>
+        </RedeemCodeBox>
+      )}
     </>
   );
 };
