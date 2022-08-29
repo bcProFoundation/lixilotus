@@ -16,6 +16,7 @@ import {
 import { Account } from '@prisma/client';
 import { FastifyRequest } from 'fastify';
 import { I18n, I18nContext } from 'nestjs-i18n';
+import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
 import { JwtAuthGuard } from 'src/modules/auth/jwtauth.guard';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { VError } from 'verror';
@@ -29,14 +30,12 @@ export class NotificationController {
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   async getNotification(
+    @PageAccountEntity() account: Account,
     @Param('id') id: string,
     @Request() req: FastifyRequest,
     @I18n() i18n: I18nContext
   ): Promise<NotificationDto> {
     try {
-      // Find the associated account
-      const account = (req as any).account;
-
       if (!account) {
         const accountNotExist = await i18n.t('account.messages.accountNotExist');
         throw Error(accountNotExist);
@@ -76,14 +75,12 @@ export class NotificationController {
   @HttpCode(204)
   @UseGuards(JwtAuthGuard)
   async deleteNotification(
+    @PageAccountEntity() account: Account,
     @Param('id') id: string,
     @Request() req: FastifyRequest,
     @I18n() i18n: I18nContext
   ): Promise<NotificationDto> {
     try {
-      // Find the associated account
-      const account = (req as any).account;
-
       if (!account) {
         const accountNotExist = await i18n.t('account.messages.accountNotExist');
         throw Error(accountNotExist);

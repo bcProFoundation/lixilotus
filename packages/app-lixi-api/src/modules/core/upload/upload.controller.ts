@@ -30,6 +30,8 @@ import { FastifyRequest } from 'fastify';
 import { PrismaService } from '../../prisma/prisma.service';
 import { FileInterceptor } from '@webundsoehne/nest-fastify-file-upload';
 import { MulterFile } from '@webundsoehne/nest-fastify-file-upload/dist/interfaces/multer-options.interface';
+import { Account } from '@bcpros/lixi-models';
+import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
 
 @Controller('uploads')
 export class UploadFilesController {
@@ -66,6 +68,7 @@ export class UploadFilesController {
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
   async upload(
+    @PageAccountEntity() account: Account,
     @UploadedFile('file') file: MulterFile,
     @Body() body: any,
     @Req() req: FastifyRequest,
@@ -73,7 +76,6 @@ export class UploadFilesController {
   ) {
     try {
       const { type } = body;
-      const account = (req as any).account;
       if (!account) {
         const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
         throw new Error(couldNotFindAccount);
