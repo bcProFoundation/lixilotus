@@ -19,11 +19,11 @@ import { AntdFormWrapper, LanguageSelectDropdown } from '@components/Common/Enha
 import PrimaryButton, { SecondaryButton, SmartButton } from '@components/Common/PrimaryButton';
 import { StyledCollapse } from '@components/Common/StyledCollapse';
 import { StyledSpacer } from '@components/Common/StyledSpacer';
-
 import { DeleteAccountModalProps } from './DeleteAccountModal';
 import { RenameAccountModalProps } from './RenameAccountModal';
 import { setInitIntlStatus, updateLocale } from '@store/settings/actions';
 import { getCurrentLocale } from '@store/settings/selectors';
+import OAuth2Login from 'react-simple-oauth2-login';
 
 const { Panel } = Collapse;
 
@@ -229,6 +229,14 @@ const Settings: React.FC = () => {
     });
   }
 
+  const onSuccess = response => {
+    console.log(response);
+  };
+
+  const onFailure = response => {
+    console.log(response);
+  };
+
   return (
     <>
       <Spin spinning={isLoading} indicator={CashLoadingIcon}>
@@ -336,6 +344,15 @@ const Settings: React.FC = () => {
               />
             </AntdFormWrapper>
             <StyledSpacer />
+            <OAuth2Login
+              authorizationUrl="http://lixilotus.test/oauth2/confirmation" // will change in the next commit
+              responseType="code"
+              clientId="0485a20d-74d5-46ea-80ac-51a603319d19"
+              redirectUri="https://lixilotus.test/callback"
+              scope="openid roles"
+              onSuccess={onSuccess}
+              onFailure={onFailure}
+            />
           </>
         )}
       </Spin>

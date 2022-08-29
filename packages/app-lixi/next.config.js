@@ -61,6 +61,23 @@ const tmModules = [
 
 const antdVariables = lessToJS(fs.readFileSync(path.resolve(__dirname, 'src/styles/variables.less'), 'utf8'));
 
+const rewrites = () => {
+	return [
+		{
+			source: "/oauth2/confirmation",
+			destination: "http://accounts.localhost:3000/oauth2/confirmation", // will change in the next commit
+		},
+		{
+			source: "/info",
+			destination: "http://accounts.localhost:3000/info", // will change in the next commit
+		},
+		{
+			source: "/auth/login",
+			destination: "http://accounts.localhost:3000/auth/login", // will change in the next commit
+		},
+	];
+};
+
 const nextConfig = withLess({
 	lessLoaderOptions: {
 		lessOptions: {
@@ -201,6 +218,8 @@ const nextConfig = withLess({
 		// to bypass https://github.com/zeit/next.js/issues/8251
 		PROJECT_ROOT: __dirname,
 	},
+
+	rewrites
 });
 
 let config;

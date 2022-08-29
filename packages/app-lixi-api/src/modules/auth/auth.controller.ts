@@ -47,7 +47,7 @@ export class AuthController {
     try {
       const { authCode } = body;
       const token = await this.authService.getAccessToken(authCode);
-      response.setCookie(token.access_token, {
+      response.setCookie('access_token', token.access_token, {
         httpOnly: true,
         sameSite: 'strict',
         signed: true,

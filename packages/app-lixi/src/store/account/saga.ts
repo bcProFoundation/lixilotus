@@ -61,9 +61,13 @@ import {
   loginViaEmailFailure,
   registerViaEmailNoVerified,
   registerViaEmailNoVerifiedSuccess,
-  registerViaEmailNoVerifiedFailure
+  registerViaEmailNoVerifiedFailure,
+  verifyEmail,
+  verifyEmailSuccess,
+  verifyEmailFailure
 } from './actions';
 import { getAccountById, getSelectedAccount } from './selectors';
+import { push } from 'connected-next-router';
 
 /**
  * Generate a account with random encryption password
@@ -467,13 +471,6 @@ function* loginViaEmailSaga(action: PayloadAction<LoginViaEmailCommand>) {
   yield put(showLoading(loginViaEmail.type));
   try {
     const data = yield call(accountApi.loginViaEmail, action.payload);
-    yield put(
-      showToast('success', {
-        message: 'Success',
-        description: 'Login success!',
-        duration: 5
-      })
-    );
     yield put(loginViaEmailSuccess(data));
   } catch (err) {
     yield put(loginViaEmailFailure(err));
@@ -483,9 +480,44 @@ function* loginViaEmailSaga(action: PayloadAction<LoginViaEmailCommand>) {
 function* loginViaEmailSuccessSaga(action: PayloadAction<any>) {
   yield put(hideLoading(loginViaEmail.type));
   console.log(action.payload);
+  yield put(
+    showToast('success', {
+      message: 'Success',
+      description: 'Login success!',
+      duration: 5
+    })
+  );
+  yield put(push(`${action.payload.path}`));
 }
 
 function* loginViaEmailFailureSaga(action: PayloadAction<any>) {
+  const message = action.payload.message ?? intl.get('account.unableToRefresh'); // just placeholder
+  yield put(
+    showToast('error', {
+      message: 'Error',
+      description: message,
+      duration: 5
+    })
+  );
+  yield put(hideLoading(loginViaEmail.type));
+}
+
+function* verifyEmailSaga(action: PayloadAction<LoginViaEmailCommand>) {
+  yield put(showLoading(verifyEmail.type));
+  try {
+    yield call(accountApi.verifyEmail, action.payload.username);
+    yield put(verifyEmailSuccess(action.payload));
+  } catch (err) {
+    yield put(verifyEmailFailure(err));
+  }
+}
+
+function* verifyEmailSuccessSaga(action: PayloadAction<any>) {
+  yield put(hideLoading(verifyEmail.type));
+  yield put(loginViaEmail(action.payload));
+}
+
+function* verifyEmailFailureSaga(action: PayloadAction<any>) {
   const message = action.payload.message ?? intl.get('account.unableToRefresh'); // just placeholder
   yield put(
     showToast('error', {
@@ -627,6 +659,16 @@ function* watchloginViaEmailFailure() {
   yield takeLatest(loginViaEmailFailure.type, loginViaEmailFailureSaga);
 }
 
+function* watchVerifyEmailEmail() {
+  yield takeLatest(verifyEmail.type, verifyEmailSaga);
+}
+function* watchVerifyEmailSuccess() {
+  yield takeLatest(verifyEmailSuccess.type, verifyEmailSuccessSaga);
+}
+function* watchVerifyEmailFailure() {
+  yield takeLatest(verifyEmailFailure.type, verifyEmailFailureSaga);
+}
+
 function* silentLoginSaga(action: PayloadAction<string>) {
   const mnemonic = action.payload;
   try {
@@ -693,6 +735,9 @@ export default function* accountSaga() {
     fork(watchRegisterViaEmailNoVerifiedFailure),
     fork(watchloginViaEmail),
     fork(watchloginViaEmailSuccess),
-    fork(watchloginViaEmailFailure)
+    fork(watchloginViaEmailFailure),
+    fork(watchVerifyEmailEmail),
+    fork(watchVerifyEmailSuccess),
+    fork(watchVerifyEmailFailure)
   ]);
 }

@@ -94,36 +94,32 @@ const accountApi = {
   },
   loginViaEmail(data: LoginViaEmailCommand): Promise<any> {
     const url = '/auth/login';
-    const allowedScopes = ['openid', 'email'];
-    const clientId = '​6aa82f7e-e1aa-41f2-8e01-06addce862f6';
-    const redirect_uri = 'http://admin.localhost:4220/index.html';
+    // will change in the next commit
+    const redirectURL =
+      '/oauth2/confirmation?client_id=0485a20d-74d5-46ea-80ac-51a603319d19&scope=openid%20roles&redirect_uri=https%3A%2F%2Flixilotus.test%2Fcallback&response_type=code';
 
-    const options = {
-      method: 'GET',
-      url: 'http://accounts.localhost:4210/oauth2/confirmation',
-      params: {
-        response_type: 'code',
-        client_id: '0485a20d-74d5-46ea-80ac-51a603319d19',
-        redirect_uri: 'https://lixilotus.test',
-        scope: 'openid roles'
-      },
-      redirect_uri: 'http://accounts.localhost:4210'
-    };
+    return axiosAuthClient
+      .post('https://lixilotus.test/auth/login', { ...data, redirect: redirectURL }) // will change in the next commit
+      .then(response => {
+        return response.data;
+      })
+      .catch(err => {
+        const { response } = err;
+        throw response?.data ?? err ?? 'Network Error';
+      });
+  },
+  verifyEmail(data: string): Promise<any> {
+    const url = '/auth/verify_user';
 
-    // return axiosAuthClient
-    //   .post(url, data)
-    //   .then(() => {
-    //     axios.request(options).then(function (response) {
-    //       console.log(response.data);
-    //     })
-    //   })
-    //   .catch(err => {
-    //     const { response } = err;
-    //     throw response?.data ?? err ?? 'Network Error';
-    //   });
-    return axios.request(options).then(function (response) {
-      console.log(response.data);
-    });
+    return axiosAuthClient
+      .post(url, { username: data })
+      .then(res => {
+        return res.data;
+      })
+      .catch(err => {
+        const { response } = err;
+        throw response?.data ?? err ?? 'Network Error';
+      });
   }
 };
 

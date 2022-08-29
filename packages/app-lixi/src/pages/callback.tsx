@@ -16,15 +16,15 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, query }
     await axiosClient
       .post(url, { authCode })
       .then(response => {
-        setCookie('access_token', response.headers['set-cookie'].pop().split(';')[0], {
+        setCookie('access_token', response.data.access_token, {
           req,
           res,
-          maxAge: 60 * 6 * 24
+          maxAge: 60 * 6 * 24,
+          httpOnly: true
         });
       })
       .catch(err => {
-        console.log(err.response);
-        statusCode = err.response.data.statusCode;
+        if (err.response) statusCode = err.response.data.statusCode;
       });
   }
 

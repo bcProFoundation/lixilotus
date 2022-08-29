@@ -59,3 +59,6 @@ export const registerViaEmailNoVerified = createAction<RegisterViaEmailNoVerifie
 );
 export const registerViaEmailNoVerifiedSuccess = createAction<any>('account/registerViaEmailNoVerifiedSuccess');
 export const registerViaEmailNoVerifiedFailure = createAction<any>('account/registerViaEmailNoVerifiedFailure');
+export const verifyEmail = createAction<LoginViaEmailCommand>('account/verifyEmail');
+export const verifyEmailSuccess = createAction<any>('account/verifyEmailSuccess');
+export const verifyEmailFailure = createAction<any>('account/verifyEmailFailure');
