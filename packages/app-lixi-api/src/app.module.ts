@@ -16,6 +16,7 @@ import { LixiNftModule } from './modules/nft/lixinft.module';
 import { PageModule } from './modules/page/page.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { WalletModule } from './modules/wallet/wallet.module';
+import { GraphQLError, GraphQLFormattedError } from 'graphql';
 
 //enabled serving multiple static for fastify
 type FastifyServeStaticModuleOptions = ServeStaticModuleOptions & {
@@ -53,6 +54,12 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
           sortSchema: graphqlConfig?.sortSchema || true,
           autoSchemaFile: graphqlConfig?.schemaDestination || './schema.graphql',
           debug: graphqlConfig?.debug,
+          formatError: (error: GraphQLError) => {
+            const graphQLFormattedError: GraphQLFormattedError = {
+              message: (error?.extensions?.exception as any)?.response?.message || error?.message
+            };
+            return graphQLFormattedError;
+          },
           context: ({ req }: { req: FastifyRequest }) => ({
             req
           })

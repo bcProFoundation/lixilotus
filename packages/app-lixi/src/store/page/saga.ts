@@ -168,7 +168,7 @@ function* editPageFailureSaga(action: PayloadAction<string>) {
 
 function* setPageSaga(action: PayloadAction<any>) {
   const page: any = action.payload;
-  // yield put(push('/admin/lixi'));
+  // yield put(push('/page/lixi'));
   // yield put(refreshLixiSilent(lixi.id));
 }
 

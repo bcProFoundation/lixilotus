@@ -99,6 +99,7 @@ export default {
   'account.nameRequired': 'Username is required',
   'account.verificationCodeRequired': 'Verification code is required',
   'account.verificationCodeSent': 'Verification code has been sent to <b>{email}</b>. Please check your inbox !',
+  'account.transactionHistory': 'Transaction History',
 
   /* 03.Lixi */
   'lixi.sub-lixi': 'Sub-lixi',
@@ -191,6 +192,7 @@ export default {
   'lixi.lotteryAddress': 'Lottery Address',
   'lixi.lotteryAddressCheck': 'Confirm',
   'lixi.addressCopied': 'The address has been copied.',
+  'lixi.redeemLixi': 'Redeem lixi',
 
   /* 04.Claim */
   'claim.claim': 'Claim',
@@ -318,10 +320,11 @@ export default {
   'page.couldNotpostPage': 'Could not create page',
   'page.createPageSuccessful': 'Create page successful',
   'page.unableCreatePageServer': 'Unable to create page on server',
+  'page.updatePageSuccessful': 'Update the page successful',
   'page.errorWhenCreatePage': "There's an error happens when create new Page",
   'page.copyToClipboard': 'Link copied to clipboard',
   'page.unableCreatePage': 'Unable to create page.',
-  'page.unableEditPage': 'Unable to edit page.',
+  'page.unableUpdatePage': 'Unable to update the page.',
   'page.selectAccountFirst': 'Please Select an account first before creating page',
 
   /* 14.Country */

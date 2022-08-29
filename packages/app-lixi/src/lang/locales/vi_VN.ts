@@ -98,6 +98,7 @@ export default {
   'account.nameRequired': 'Vui lòng nhập tên đăng nhập',
   'account.verificationCodeRequired': 'Vui lòng nhập mã xác thực',
   'account.verificationCodeSent': 'Mã xác thực đã được gửi tới <b>{email}</b>. Vui lòng kiểm tra email của bạn !',
+  'account.transactionHistory': 'Lịch sử giao dịch',
 
   /* 03.Lixi */
   'lixi.sub-lixi': 'Bao lì xì phụ',
@@ -190,6 +191,7 @@ export default {
   'lixi.lotteryAddress': 'Địa chỉ ví xổ số',
   'lixi.lotteryAddressCheck': 'Xác nhận',
   'lixi.addressCopied': 'địa chỉ đã được sao chép.',
+  'lixi.redeemLixi': 'Nhận lì xì',
 
   /* 04.Claim */
   'claim.claim': 'Nhận Lì xì',
@@ -320,11 +322,12 @@ export default {
   'page.inputAddress': 'Vui lòng nhập địa chỉ',
   'page.couldNotpostPage': 'Tạo trang không thành công',
   'page.createPageSuccessful': 'Trang đã tạo thành công',
+  'page.updatePageSuccessful': 'Trang đã được cập nhật thành công',
   'page.unableCreatePageServer': 'Không thể kết nối server tạo trang',
   'page.errorWhenCreatePage': 'Đã có lỗi xảy ra khi tạo mới trang',
   'page.copyToClipboard': 'Liên kết đã được sao chép',
   'page.unableCreatePage': 'Không thể tạo trang.',
-  'page.unableEditPage': 'Không thể sửa trang.',
+  'page.unableUpdatePage': 'Không thể sửa trang.',
   'page.selectAccountFirst': 'Hãy chọn một tài khoản trước khi tạo trang',
 
   /* 14.Country */

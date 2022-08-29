@@ -4,9 +4,8 @@ import React, { useEffect, useState } from 'react';
 import intl from 'react-intl-universal';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { CreatePageCommand, EditPageCommand } from '@bcpros/lixi-models';
-import { getAllCountries, getAllStates, getAllStatesByCountry } from '@store/country/selectors';
-import { editPage, postPage, getPage } from '@store/page/action';
+import { getAllCountries, getAllStates } from '@store/country/selectors';
+import { setPage } from '@store/page/action';
 import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
 import { StyledUploader } from '@components/Common/Uploader';
 import { showToast } from '@store/toast/actions';
@@ -15,6 +14,9 @@ import { getPageCoverUpload, getPageAvatarUpload } from 'src/store/account/selec
 import _ from 'lodash';
 import { getPageBySelectedAccount } from '@store/page/selectors';
 import Image from 'next/image';
+import { CreatePageInput, UpdatePageInput, Page } from 'src/generated/types.generated';
+import { useCreatePageMutation, useUpdatePageMutation } from '@store/page/pages.generated';
+import { useRouter } from 'next/router';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -26,6 +28,17 @@ const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
   const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
   const selectedPage = useAppSelector(getPageBySelectedAccount);
+
+  const router = useRouter();
+
+  const [
+    createPageTrigger,
+    { isLoading: isLoadingCreatePage, isSuccess: isSuccessCreatePage, isError: isErrorCreatePage }
+  ] = useCreatePageMutation();
+  const [
+    updatePageTrigger,
+    { isLoading: isLoadingUpdatePage, isSuccess: isSuccessUpdatePage, isError: isErrorUpdatePage }
+  ] = useUpdatePageMutation();
 
   useEffect(() => {
     dispatch(getCountries());
@@ -147,23 +160,10 @@ const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
     return e?.fileList;
   };
 
-  useEffect(() => {
-    // dispatch(getEnvelopes());
-    // if (selectedAccount) {
-    //   dispatch(getAccount(selectedAccount.id));
-    //   dispatch(refreshLixiListSilent(selectedAccount?.id));
-    // }
-    // dispatch(getPagesByAccountId(selectedAccount));
-  }, []);
-
-  //   const refreshList = () => {
-  //     dispatch(refreshLixiList(selectedAccount?.id));
-  //   };
-
   // Only enable CreateLixi button if all form entries are valid
   let createPageFormDataIsValid = newPageName && newPageTitle;
 
-  const handleOnCreateNewPage = () => {
+  const handleOnCreateNewPage = async () => {
     if (!createPageFormDataIsValid && !selectedAccount.id) {
       dispatch(
         showToast('error', {
@@ -174,7 +174,7 @@ const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
       );
     }
 
-    const valueCreatePage: CreatePageCommand = {
+    const createPageInput: CreatePageInput = {
       name: newPageName,
       title: newPageTitle,
       description: newPageDescription,
@@ -183,25 +183,71 @@ const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
       state: newPageState,
       address: newPageAddress,
       avatar: avatar?.id,
-      cover: cover?.id
+      cover: cover?.id,
+      parentId: null
     };
-    if (valueCreatePage) dispatch(postPage(valueCreatePage));
+
+    try {
+      if (createPageInput) {
+        const pageCreated = await createPageTrigger({ input: createPageInput }).unwrap();
+        dispatch(
+          showToast('success', {
+            message: 'Success',
+            description: intl.get('page.createPageSuccessful'),
+            duration: 5
+          })
+        );
+        dispatch(setPage({ ...pageCreated.createPage }));
+        router.push(`/page/${pageCreated.createPage.id}`);
+      }
+    } catch (error) {
+      const message = intl.get('page.unableCreatePageServer');
+
+      dispatch(
+        showToast('error', {
+          message: 'Error',
+          description: message,
+          duration: 5
+        })
+      );
+    }
   };
 
-  const handleOnEditPage = () => {
-    const valueEditPage: EditPageCommand = {
+  const handleOnEditPage = async () => {
+    const updatePageInput: UpdatePageInput = {
       id: selectedPage.id,
-      name: _.isEmpty(newPageName) ? selectedPage.name : newPageName,
-      title: _.isEmpty(newPageTitle) ? selectedPage.title : newPageTitle,
-      description: _.isEmpty(newPageDescription) ? selectedPage.description : newPageDescription,
-      website: _.isEmpty(newPageWebsite) ? selectedPage.website : newPageWebsite,
-      country: _.isEmpty(newPageCountry) ? selectedPage.country : newPageCountry,
-      state: _.isEmpty(newPageState) ? selectedPage.state : newPageState,
-      address: _.isEmpty(newPageAddress) ? selectedPage.address : newPageAddress,
+      name: _.isEmpty(newPageName) ? selectedPage?.name : newPageName,
+      title: _.isEmpty(newPageTitle) ? selectedPage?.title : newPageTitle,
+      description: _.isEmpty(newPageDescription) ? selectedPage?.description : newPageDescription,
+      website: _.isEmpty(newPageWebsite) ? selectedPage?.website : newPageWebsite,
+      country: _.isEmpty(newPageCountry) ? selectedPage?.country : newPageCountry,
+      state: _.isEmpty(newPageState) ? selectedPage?.state : newPageState,
+      address: _.isEmpty(newPageAddress) ? selectedPage?.address : newPageAddress,
       avatar: avatar?.id,
       cover: cover?.id
     };
-    valueEditPage && dispatch(editPage(valueEditPage));
+
+    try {
+      const pageUpdated = await updatePageTrigger({ input: updatePageInput }).unwrap();
+      dispatch(
+        showToast('success', {
+          message: 'Success',
+          description: intl.get('page.updatePageSuccessful'),
+          duration: 5
+        })
+      );
+      dispatch(setPage({ ...pageUpdated.updatePage }));
+    } catch (error) {
+      const message = intl.get('page.unableUpdatePage');
+
+      dispatch(
+        showToast('error', {
+          message: 'Error',
+          description: message,
+          duration: 5
+        })
+      );
+    }
   };
 
   return (

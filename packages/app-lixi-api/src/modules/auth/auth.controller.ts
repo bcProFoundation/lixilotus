@@ -17,7 +17,7 @@ export class AuthController {
         httpOnly: true,
         sameSite: 'strict',
         signed: true,
-        path: '/api'
+        path: '/'
       });
       return token;
     } catch (err) {

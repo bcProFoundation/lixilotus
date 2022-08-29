@@ -44,3 +44,15 @@ fragment PageFields on Page {
   createdAt
   updatedAt
 }
+
+mutation createPage($input: CreatePageInput!) {
+  createPage(data: $input) {
+    ...PageFields
+  }
+}
+
+mutation updatePage($input: UpdatePageInput!) {
+  updatePage(data: $input) {
+    ...PageFields
+  }
+}

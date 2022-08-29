@@ -57,6 +57,7 @@ import { JwtAuthGuard } from 'src/modules/auth/jwtauth.guard';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import moment from 'moment';
 import { extname } from 'path';
+import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
 
 @Controller('lixies')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -313,12 +314,12 @@ export class LixiController {
   @Patch('register')
   @UseGuards(JwtAuthGuard)
   async registerPackWithClaimCode(
+    @PageAccountEntity() account: Account,
     @Body() command: RegisterLixiPackCommand,
     @Request() req: FastifyRequest,
     @I18n() i18n: I18nContext
   ): Promise<boolean | undefined> {
     try {
-      const account = (req as any).account;
       if (!account) {
         const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
         throw new Error(couldNotFindAccount);
@@ -885,6 +886,7 @@ export class LixiController {
   @Get(':id/download')
   @UseGuards(JwtAuthGuard)
   async downloadExportedLixies(
+    @PageAccountEntity() account: Account,
     @Param('id') id: string,
     @Query('file') fileName: string,
     @Req() req: FastifyRequest,
@@ -892,8 +894,6 @@ export class LixiController {
     @I18n() i18n: I18nContext
   ): Promise<StreamableFile> {
     try {
-      const account = (req as any).account;
-
       if (!account) {
         const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
         throw new Error(couldNotFindAccount);
