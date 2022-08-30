@@ -11,6 +11,7 @@ import { fetchAllPages, setSelectedPage } from '@store/page/action';
 import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
 import { push } from 'connected-next-router';
 import _ from 'lodash';
+import moment from 'moment';
 
 const CardContainer = styled.div`
   display: flex;
@@ -238,7 +239,7 @@ const PagesListing: React.FC = () => {
                   <img style={{ borderRadius: '50%' }} src={item.avatar} width="24px" height="24px" alt="" />
                   <span className="name-title">{item.title}</span>
                 </div>
-                <span className="time-created">18 hour ago</span>
+                <span className="time-created">{moment(item.createdAt).fromNow()}</span>
               </CardHeader>
               <Content>
                 <p className="description-post">{item.description}</p>

@@ -293,6 +293,8 @@ const StyledTopbar = styled(Topbar)`
 
   @media (min-width: 768px) {
     padding: 1rem 2rem;
+    position: fixed;
+    z-index: 999;
     .collapse-menu {
       display: none;
     }

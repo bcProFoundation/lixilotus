@@ -27,6 +27,8 @@ import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
 import { loadLocale } from '@store/settings/actions';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
 import { injectStore } from 'src/utils/axiosClient';
+import SidebarRanking from '@containers/Sidebar/SideBarRanking';
+import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
 
 const { Content, Sider, Header } = Layout;
 
@@ -69,6 +71,10 @@ export const AppContainer = styled.div`
     width: 100%;
     background: #fffbff;
     padding: 0;
+    .content-layout {
+      margin-top: 80px;
+      z-index: 1;
+    }
   }
 `;
 
@@ -153,11 +159,13 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                   <>
                     <AppContainer>
                       <Layout>
+                        <SidebarShortcut></SidebarShortcut>
                         <Sidebar />
                         <Layout>
                           <Topbar />
-                          <Content>{children}</Content>
+                          <Content className="content-layout">{children}</Content>
                         </Layout>
+                        <SidebarRanking></SidebarRanking>
                       </Layout>
                     </AppContainer>
                     <Footer>
