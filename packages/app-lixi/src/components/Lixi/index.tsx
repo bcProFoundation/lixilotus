@@ -1,4 +1,4 @@
-import { Collapse, Descriptions, message } from 'antd';
+import { Collapse, Descriptions, message, Tabs, Input, Button, Row, Col, Modal, Typography, Checkbox } from 'antd';
 import { saveAs } from 'file-saver';
 import { toPng } from 'html-to-image';
 import * as _ from 'lodash';
@@ -20,8 +20,10 @@ import {
   DownloadOutlined,
   ExclamationCircleOutlined,
   ExportOutlined,
+  FilterOutlined,
   LoadingOutlined,
-  ReloadOutlined
+  ReloadOutlined,
+  SearchOutlined
 } from '@ant-design/icons';
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import { SmartButton } from '@bcpros/lixi-components/components/Common/PrimaryButton';
@@ -65,7 +67,60 @@ const Copied = styled.div<CopiedProps>`
   }
 `;
 
+const StyledSearchLixi = styled(Input)`
+  border-radius: 5px;
+`;
+
+const StyledFilterButton = styled(Button)`
+  background: white;
+  border-color: black;
+  border-radius: 5px;
+`;
+
+const StyledFilterModal = styled(Modal)`
+  position: absolute;
+  top: auto;
+  left: auto;
+  right: auto;
+  bottom: 0;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+  max-width: 100%;
+
+  .ant-modal-content {
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+  }
+
+  .ant-modal-header {
+    border-bottom: none;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    padding-bottom: 5px;
+  }
+
+  .ant-modal-header {
+    padding-top: 10px;
+
+    .ant-modal-title {
+      font-size: 23px;
+    }
+  }
+
+  .ant-modal-footer {
+    border-top: none;
+    display: flex;
+    justify-content: space-between;
+  }
+`;
+
+const StyledCol = styled(Col)`
+  padding-top: 10px;
+  padding-bottom: 10px;
+`;
+
 const { Panel } = Collapse;
+const { Text } = Typography;
 
 const Lixi: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -81,10 +136,15 @@ const Lixi: React.FC = () => {
   const hasMoreSubLixies = useAppSelector(getHasMoreSubLixies);
   const loadMoreStartId = useAppSelector(getLoadMoreSubLixiesStartId);
   let subLixies = useAppSelector(getAllSubLixies);
+  const [isModalVisible, setModalVisible] = useState(false);
 
   subLixies = _.sortBy(subLixies, ['isClaimed', 'packageId']);
 
   const [loadings, setLoadings] = useState<boolean[]>([]);
+
+  const typeOfCodeOptions = ['Same code', 'Unique codes with one-time redeem'];
+  const valuePerRedeemOptions = ['Equal', 'Random', 'Sooner redeem more get'];
+  const statusOptions = ['Waiting', 'Running', 'Ended', 'Archived'];
 
   useEffect(() => {
     if (selectedLixi) {
@@ -359,8 +419,69 @@ const Lixi: React.FC = () => {
     }
   };
 
+  const showFilterModal = () => {
+    setModalVisible(true);
+  };
+
   return (
     <>
+      <Row>
+        <Col span={21}>
+          <StyledSearchLixi placeholder="Search lixi" suffix={<SearchOutlined />} />
+        </Col>
+        <Col span={2} offset={1}>
+          <StyledFilterButton onClick={showFilterModal} type="primary" icon={<FilterOutlined />}></StyledFilterButton>
+          <StyledFilterModal
+            title="Filter"
+            width={'100%'}
+            visible={isModalVisible}
+            onOk={() => setModalVisible(false)}
+            okText={'Apply'}
+            onCancel={() => setModalVisible(false)}
+            cancelText={'Reset'}
+            maskClosable={true}
+            closable={false}
+          >
+            <Row>
+              <StyledCol span={24}>
+                <Text type="secondary">Type of code</Text>
+              </StyledCol>
+              {typeOfCodeOptions.map((item, index) => {
+                return (
+                  <StyledCol span={24}>
+                    <Checkbox>{item}</Checkbox>
+                  </StyledCol>
+                );
+              })}
+              <StyledCol span={24}>
+                <Text type="secondary">Value per redeem</Text>
+              </StyledCol>
+              {valuePerRedeemOptions.map((item, index) => {
+                return index !== 2 ? (
+                  <StyledCol span={12}>
+                    <Checkbox>{item}</Checkbox>
+                  </StyledCol>
+                ) : (
+                  <StyledCol span={24}>
+                    <Checkbox>{item}</Checkbox>
+                  </StyledCol>
+                );
+              })}
+              <StyledCol span={24}>
+                <Text type="secondary">Status</Text>
+              </StyledCol>
+              {statusOptions.map((item, index) => {
+                return (
+                  <StyledCol span={12}>
+                    <Checkbox>{item}</Checkbox>
+                  </StyledCol>
+                );
+              })}
+            </Row>
+          </StyledFilterModal>
+        </Col>
+      </Row>
+
       {selectedLixi && selectedLixi.address ? (
         <>
           <WalletLabel name={selectedLixi?.name ?? ''} />
