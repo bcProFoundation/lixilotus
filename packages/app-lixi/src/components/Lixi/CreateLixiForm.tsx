@@ -52,6 +52,21 @@ const StyledDivider = styled.h3`
   margin: 10px 0 20px;
 `;
 
+const Title = styled.h1`
+  display: flex
+  height: 32px;
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 32px;
+  text-align: center;
+  color: #1E1A1D;
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+`
+
 const CreateForm = styled(Form)`
   .ant-form-item-label {
     font-family: 'Roboto';
@@ -770,7 +785,7 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
 
   return (
     <>
-      <h1>{intl.get('lixi.createLixi')}</h1>
+      <Title>{intl.get('lixi.createLixi')}</Title>
       <CreateForm layout="vertical">
 
         <Form.Item label={intl.get('lixi.claimType')}>
