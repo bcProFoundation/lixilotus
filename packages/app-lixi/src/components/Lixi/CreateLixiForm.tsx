@@ -848,6 +848,19 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
 
 
         {selectLixiType()}
+        {claimType == ClaimType.OneTime &&
+
+          <Form.Item label={intl.get('account.numberOfSubLixi')}>
+            <CreateInput
+              type="number"
+              step={1}
+              value={newNumberOfSubLixi}
+              name="numberOfSubLixi"
+              onChange={e => handleNewNumberOfSubLixi(e)}
+              onWheel={e => e.currentTarget.blur()}
+            />
+          </Form.Item>
+        }
 
 
         <Form.Item>

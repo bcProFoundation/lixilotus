@@ -46,7 +46,7 @@ export default {
   'account.eachClaim': 'Value of each claim',
   'account.perPack': 'Per pack',
   'account.numberLixiPerPackage': 'number of sub lixi per package',
-  'account.numberOfSubLixi': 'Number of sub lixi',
+  'account.numberOfSubLixi': 'Number of codes',
   'account.defaultValueToGive': 'Default value to give',
   'account.dividedNumber': 'Dividend number (Max 1,000,000)',
   'account.min': 'Min value',
