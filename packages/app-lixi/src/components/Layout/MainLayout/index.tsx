@@ -2,7 +2,7 @@ import { Layout, Spin } from 'antd';
 import intl from 'react-intl-universal';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { Ref, useEffect, useRef, useState } from 'react';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
@@ -128,6 +128,9 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   const currentLocale = useAppSelector(getCurrentLocale);
   const intlInitDone = useAppSelector(getIntlInitStatus);
   const dispatch = useAppDispatch();
+  const [height, setHeight] = useState(0);
+  const refa = useRef(null);
+  const ref = React.createRef();
 
   injectStore(currentLocale);
   const isLoading = useAppSelector(getIsGlobalLoading);
@@ -143,6 +146,14 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   useEffect(() => {
     setLoading(false);
   }, [selectedAccount]);
+
+  useEffect(() => {
+    console.log('******* REF', ref);
+    // if (ref && ref?.current) {
+    //   // setHeight(ref?.current);
+    //   console.log('**********' + height);
+    // }
+  }, [ref]);
 
   return (
     <ThemeProvider theme={theme as DefaultTheme}>
@@ -162,7 +173,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                         <SidebarShortcut></SidebarShortcut>
                         <Sidebar />
                         <Layout>
-                          <Topbar />
+                          <Topbar ref={ref} />
                           <Content className="content-layout">{children}</Content>
                         </Layout>
                         <SidebarRanking></SidebarRanking>

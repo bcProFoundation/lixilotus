@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { Ref, RefAttributes, useEffect, useRef, useState } from 'react';
 import { BellTwoTone, MenuOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { Space, Menu, Popover, Badge, Comment } from 'antd';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
@@ -211,7 +211,7 @@ const StyledPopover = styled(Popover)`
   }
 `;
 
-const Topbar = ({ className }: TopbarProps) => {
+const Topbar = React.forwardRef(({ className }: TopbarProps, ref) => {
   const dispatch = useAppDispatch();
   const navCollapsed = useAppSelector(getNavCollapsed);
   const selectedAccount = useAppSelector(getSelectedAccount);
@@ -264,7 +264,7 @@ const Topbar = ({ className }: TopbarProps) => {
       </Space>
     </Header>
   );
-};
+});
 
 const StyledTopbar = styled(Topbar)`
   display: flex;
