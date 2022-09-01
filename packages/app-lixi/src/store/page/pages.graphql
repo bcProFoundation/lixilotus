@@ -1,0 +1,58 @@
+# import PageOrder from '/packages/app-lixi-api/schema.graphql'
+# import PageInfoFields from '../../graphql/fragments/page-info-fields.fragment.graphql'
+
+query Page($id: String!) {
+  page(id: $id) {
+    ...PageFields
+  }
+}
+
+query Pages(
+  $after: String
+  $before: String
+  $first: Int = 20
+  $last: Int = 20
+  $orderBy: PageOrder
+  $query: String
+  $skip: Int
+) {
+  allPages(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, query: $query, skip: $skip) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...PageFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+
+fragment PageFields on Page {
+  id
+  pageAccountId
+  name
+  title
+  description
+  avatar
+  cover
+  parentId
+  address
+  website
+  createdAt
+  updatedAt
+}
+
+mutation createPage($input: CreatePageInput!) {
+  createPage(data: $input) {
+    ...PageFields
+  }
+}
+
+mutation updatePage($input: UpdatePageInput!) {
+  updatePage(data: $input) {
+    ...PageFields
+  }
+}

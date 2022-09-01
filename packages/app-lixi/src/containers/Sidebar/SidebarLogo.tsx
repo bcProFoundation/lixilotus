@@ -10,7 +10,7 @@ const SidebarLogo = ({ sidebarCollapsed, setSidebarCollapsed }: SidebarLogoProps
     <div className="lixi-layout-sider-header">
       <Link href="/">
         <a className="lixi-site-logo">
-          <img alt="sidebar-logo" src="/images/lixilotus-logo.png" />
+          <img width="120px" alt="sidebar-logo" src="/images/lixilotus-logo.svg" />
         </a>
       </Link>
     </div>

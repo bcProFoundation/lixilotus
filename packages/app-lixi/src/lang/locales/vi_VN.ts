@@ -35,6 +35,7 @@ export default {
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',
   'account.mnemonic': 'mnemonic (cụm từ bảo mật)',
   'account.manageLixi': 'Quản lí Lì xì',
+  'account.managePage': 'Quản lí Trang',
   'account.refreshLixiList': 'Làm mới danh sách',
   'account.unableCreateLixi': 'Tạo Lì xì không thành công.',
   'account.selectLixiFirst': 'Hãy chọn một tài khoản trước khi tạo Lì xì',
@@ -93,6 +94,7 @@ export default {
   'account.invalidPassword': 'Mật khẩu không hợp lệ',
   'account.matchPassword': 'Mật khẩu phải trùng',
   'account.repeatPassword': 'Vui lòng nhập lại mật khẩu ',
+  'account.transactionHistory': 'Lịch sử giao dịch',
 
   /* 03.Lixi */
   'lixi.sub-lixi': 'Bao lì xì phụ',
@@ -185,6 +187,7 @@ export default {
   'lixi.lotteryAddress': 'Địa chỉ ví xổ số',
   'lixi.lotteryAddressCheck': 'Xác nhận',
   'lixi.addressCopied': 'địa chỉ đã được sao chép.',
+  'lixi.redeemLixi': 'Nhận lì xì',
 
   /* 04.Claim */
   'claim.claim': 'Nhận Lì xì',
@@ -315,9 +318,13 @@ export default {
   'page.inputAddress': 'Vui lòng nhập địa chỉ',
   'page.couldNotpostPage': 'Tạo trang không thành công',
   'page.createPageSuccessful': 'Trang đã tạo thành công',
+  'page.updatePageSuccessful': 'Trang đã được cập nhật thành công',
   'page.unableCreatePageServer': 'Không thể kết nối server tạo trang',
   'page.errorWhenCreatePage': 'Đã có lỗi xảy ra khi tạo mới trang',
   'page.copyToClipboard': 'Liên kết đã được sao chép',
+  'page.unableCreatePage': 'Không thể tạo trang.',
+  'page.unableUpdatePage': 'Không thể sửa trang.',
+  'page.selectAccountFirst': 'Hãy chọn một tài khoản trước khi tạo trang',
 
   /* 14.Country */
   'country.unablegetCountries': 'Không thể tải quốc gia',

@@ -28,15 +28,18 @@ export class Page {
   @Field(() => String, { nullable: true })
   cover: string;
 
+  @Field(() => Page, { nullable: true })
+  parent?: Page;
+
   @IsOptional()
   @Field(() => String, { nullable: true })
   parentId?: Nullable<string>;
 
-  @Field(() => String)
-  address: string;
+  @Field(() => String, { nullable: true })
+  address?: string;
 
-  @Field(() => String)
-  website: string;
+  @Field(() => String, { nullable: true })
+  website?: string;
 
   @Field(() => Date, {
     description: 'Identifies the date and time when the object was created.'
@@ -47,4 +50,10 @@ export class Page {
     description: 'Identifies the date and time when the object was last updated.'
   })
   updatedAt: Date;
+
+  @Field(() => String, { nullable: true })
+  country?: string;
+
+  @Field(() => String, { nullable: true })
+  state?: string;
 }

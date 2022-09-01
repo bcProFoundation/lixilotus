@@ -2,14 +2,41 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input CreatePageInput {
+  address: String!
+  avatar: String!
+  country: String!
+  cover: String!
+  description: String!
+  name: String!
+  parentId: String
+  state: String!
+  title: String!
+  website: String!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
 
+type Mutation {
+  createPage(data: CreatePageInput!): Page!
+  updatePage(data: UpdatePageInput!): Page!
+}
+
+"""
+Possible directions in which to order a list of items when provided an `orderBy` argument.
+"""
+enum OrderDirection {
+  asc
+  desc
+}
+
 type Page {
-  address: String!
+  address: String
   avatar: String
+  country: String
   cover: String
 
   """Identifies the date and time when the object was created."""
@@ -18,14 +45,67 @@ type Page {
   id: ID!
   name: String!
   pageAccountId: Int!
+  parent: Page
   parentId: String
+  state: String
   title: String!
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
-  website: String!
+  website: String
+}
+
+type PageConnection {
+  edges: [PageEdge!]
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+type PageEdge {
+  cursor: String!
+  node: Page!
+}
+
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
+
+input PageOrder {
+  direction: OrderDirection!
+  field: PageOrderField!
+}
+
+"""Properties by which page connections can be ordered."""
+enum PageOrderField {
+  createdAt
+  id
+  name
+  title
+  updatedAt
 }
 
 type Query {
+  allPages(after: String, before: String, first: Int, last: Int, orderBy: PageOrder, query: String, skip: Int): PageConnection!
   page(id: String!): Page!
+}
+
+type Subscription {
+  pageCreated: Page!
+}
+
+input UpdatePageInput {
+  address: String
+  avatar: String
+  country: String
+  cover: String
+  description: String
+  id: ID!
+  name: String
+  parentId: String
+  state: String
+  title: String
+  website: String
 }

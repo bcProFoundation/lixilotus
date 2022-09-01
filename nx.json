@@ -1,0 +1,57 @@
+{
+  "extends": "nx/presets/npm.json",
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nrwl/nx-cloud",
+      "options": {
+        "cacheableOperations": [
+          "precommit",
+          "build",
+          "debug",
+          "dev",
+          "lint",
+          "fix",
+          "lint:prettier",
+          "fix:prettier",
+          "prebuild",
+          "lint:ts",
+          "fix:lint",
+          "test",
+          "test:watch",
+          "test:cov",
+          "test:debug",
+          "test:e2e",
+          "prepublish",
+          "eject",
+          "storybook",
+          "build-storybook",
+          "build:main",
+          "build:module",
+          "build:watch",
+          "migrate:dev",
+          "migrate:dev:create",
+          "migrate:reset",
+          "migrate:deploy",
+          "migrate:status",
+          "migrate:resolve",
+          "studio",
+          "generate",
+          "generate:watch",
+          "seed",
+          "seed:countries"
+        ],
+        "accessToken": "OGMyYmQ5N2ItYWM2Ny00YTg1LWIxZjMtNzVkMTIzMmI1OWE4fHJlYWQtd3JpdGU="
+      }
+    }
+  },
+  "targetDefaults": {
+    "build": {
+      "dependsOn": [
+        "^build"
+      ]
+    }
+  },
+  "affected": {
+    "defaultBase": "master"
+  }
+}

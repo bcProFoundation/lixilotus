@@ -35,6 +35,7 @@ export default {
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
   'account.mnemonic': 'mnemonic (seed phrase)',
   'account.manageLixi': 'Manage Lixi',
+  'account.managePage': 'Manage Page',
   'account.refreshLixiList': 'Refresh Lixi List',
   'account.unableCreateLixi': 'Unable to create lixi.',
   'account.selectLixiFirst': 'Please Select an account first before creating lixi',
@@ -94,6 +95,7 @@ export default {
   'account.invalidPassword': 'Invalid password',
   'account.matchPassword': 'Password must match',
   'account.repeatPassword': 'Repeat password',
+  'account.transactionHistory': 'Transaction History',
 
   /* 03.Lixi */
   'lixi.sub-lixi': 'Sub-lixi',
@@ -186,6 +188,7 @@ export default {
   'lixi.lotteryAddress': 'Lottery Address',
   'lixi.lotteryAddressCheck': 'Confirm',
   'lixi.addressCopied': 'The address has been copied.',
+  'lixi.redeemLixi': 'Redeem lixi',
 
   /* 04.Claim */
   'claim.claim': 'Claim',
@@ -313,8 +316,12 @@ export default {
   'page.couldNotpostPage': 'Could not create page',
   'page.createPageSuccessful': 'Create page successful',
   'page.unableCreatePageServer': 'Unable to create page on server',
+  'page.updatePageSuccessful': 'Update the page successful',
   'page.errorWhenCreatePage': "There's an error happens when create new Page",
   'page.copyToClipboard': 'Link copied to clipboard',
+  'page.unableCreatePage': 'Unable to create page.',
+  'page.unableUpdatePage': 'Unable to update the page.',
+  'page.selectAccountFirst': 'Please Select an account first before creating page',
 
   /* 14.Country */
   'country.unablegetCountries': 'Unable to get countries',

@@ -1,4 +1,4 @@
-import { CreatePageCommand, PageDto, PaginationResult, UpdatePageCommand } from '@bcpros/lixi-models';
+import { Account, CreatePageCommand, PageDto, PaginationResult, UpdatePageCommand } from '@bcpros/lixi-models';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import {
   Body,
@@ -11,6 +11,7 @@ import {
   Injectable,
   Logger,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -22,6 +23,7 @@ import { url } from 'inspector';
 import * as _ from 'lodash';
 import { I18n, I18nContext, I18nService } from 'nestjs-i18n';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
+import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
 import { VError } from 'verror';
 import { JwtAuthGuard } from '../auth/jwtauth.guard';
 import { PrismaService } from '../prisma/prisma.service';
@@ -311,9 +313,12 @@ export class PageController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  async create(@Body() command: CreatePageCommand, @Request() req: FastifyRequest, @I18n() i18n: I18nContext) {
-    const account = (req as any).account;
-
+  async create(
+    @PageAccountEntity() account: Account,
+    @Body() command: CreatePageCommand,
+    @Request() req: FastifyRequest,
+    @I18n() i18n: I18nContext
+  ) {
     if (!account) {
       const couldNotFindAccount = await this.i18n.t('page.messages.couldNotFindAccount');
       throw new Error(couldNotFindAccount);
@@ -358,20 +363,35 @@ export class PageController {
     }
   }
 
-  @Put(':id')
+  @Patch(':id')
   @UseGuards(JwtAuthGuard)
   async update(
+    @PageAccountEntity() account: Account,
     @Param('id') id: string,
     @Body() command: UpdatePageCommand,
     @Request() req: FastifyRequest,
     @I18n() i18n: I18nContext
   ) {
-    const account = (req as any).account;
-
     if (!account) {
       const couldNotFindAccount = await this.i18n.t('page.messages.couldNotFindAccount');
       throw new Error(couldNotFindAccount);
     }
+
+    const uploadAvatarDetail = command.avatar
+      ? await this.prisma.uploadDetail.findFirst({
+          where: {
+            uploadId: command.avatar
+          }
+        })
+      : undefined;
+
+    const uploadCoverDetail = command.cover
+      ? await this.prisma.uploadDetail.findFirst({
+          where: {
+            uploadId: command.cover
+          }
+        })
+      : undefined;
 
     try {
       const updatedPage = await this.prisma.page.update({
@@ -379,7 +399,9 @@ export class PageController {
           id: id
         },
         data: {
-          ...command
+          ...command,
+          avatar: { connect: uploadAvatarDetail ? { id: uploadAvatarDetail.id } : undefined },
+          cover: { connect: uploadCoverDetail ? { id: uploadCoverDetail.id } : undefined }
         }
       });
 

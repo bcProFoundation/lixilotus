@@ -1,9 +1,9 @@
 import React from 'react';
 
-import CreatePageComponent from '@components/Pages/CreatePageComponent';
+import CreateOrEditPageComponent from '@components/Pages/CreateOrEditPageComponent';
 
 const CreatePage = () => {
-  return <CreatePageComponent />;
+  return <CreateOrEditPageComponent isEditPage={false} />;
 };
 
 export default CreatePage;
