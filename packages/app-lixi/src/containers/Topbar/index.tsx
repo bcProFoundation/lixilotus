@@ -1,4 +1,4 @@
-import React, { Ref, RefAttributes, useEffect, useRef, useState } from 'react';
+import React, { Ref, RefAttributes, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { BellTwoTone, MenuOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { Space, Menu, Popover, Badge, Comment } from 'antd';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
@@ -211,7 +211,7 @@ const StyledPopover = styled(Popover)`
   }
 `;
 
-const Topbar = React.forwardRef(({ className }: TopbarProps, ref) => {
+const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallback<HTMLElement>) => {
   const dispatch = useAppDispatch();
   const navCollapsed = useAppSelector(getNavCollapsed);
   const selectedAccount = useAppSelector(getSelectedAccount);
@@ -240,7 +240,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref) => {
   };
 
   return (
-    <Header className={className}>
+    <Header ref={ref} className={className}>
       <MenuOutlined className="collapse-menu" style={{ fontSize: '32px' }} onClick={handleMenuClick} />
       <img width="120px" src="/images/lixilotus-logo.svg" alt="lixilotus" />
       <Space direction="horizontal" size={25}>

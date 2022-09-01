@@ -2,7 +2,7 @@ import { Layout, Spin } from 'antd';
 import intl from 'react-intl-universal';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { Ref, useEffect, useRef, useState } from 'react';
+import React, { Ref, useCallback, useEffect, useRef, useState } from 'react';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
@@ -29,8 +29,8 @@ import { getIsGlobalLoading } from 'src/store/loading/selectors';
 import { injectStore } from 'src/utils/axiosClient';
 import SidebarRanking from '@containers/Sidebar/SideBarRanking';
 import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
-
-const { Content, Sider, Header } = Layout;
+import { Header } from 'antd/lib/layout/layout';
+const { Content } = Layout;
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
 
@@ -129,8 +129,16 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   const intlInitDone = useAppSelector(getIntlInitStatus);
   const dispatch = useAppDispatch();
   const [height, setHeight] = useState(0);
-  const refa = useRef(null);
-  const ref = React.createRef();
+  const ref = useRef(null);
+  const setRef = useCallback(node => {
+    if (node && node.clientHeight) {
+      // Check if a node is actually passed. Otherwise node would be null.
+      const height = node.clientHeight;
+      setHeight(height);
+    }
+    // Save a reference to the node
+    ref.current = node;
+  }, []);
 
   injectStore(currentLocale);
   const isLoading = useAppSelector(getIsGlobalLoading);
@@ -146,14 +154,6 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   useEffect(() => {
     setLoading(false);
   }, [selectedAccount]);
-
-  useEffect(() => {
-    console.log('******* REF', ref);
-    // if (ref && ref?.current) {
-    //   // setHeight(ref?.current);
-    //   console.log('**********' + height);
-    // }
-  }, [ref]);
 
   return (
     <ThemeProvider theme={theme as DefaultTheme}>
@@ -173,7 +173,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                         <SidebarShortcut></SidebarShortcut>
                         <Sidebar />
                         <Layout>
-                          <Topbar ref={ref} />
+                          <Topbar ref={setRef} />
                           <Content className="content-layout">{children}</Content>
                         </Layout>
                         <SidebarRanking></SidebarRanking>
