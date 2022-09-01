@@ -65,15 +65,27 @@ const rewrites = () => {
 	return [
 		{
 			source: "/oauth2/confirmation",
-			destination: "http://accounts.localhost:3000/oauth2/confirmation", // will change in the next commit
+			destination: `${process.env.NEXT_PUBLIC_LIXI_OAUTH2}/oauth2/confirmation`,
 		},
 		{
 			source: "/info",
-			destination: "http://accounts.localhost:3000/info", // will change in the next commit
+			destination: `${process.env.NEXT_PUBLIC_LIXI_OAUTH2}/info`,
 		},
 		{
 			source: "/auth/login",
-			destination: "http://accounts.localhost:3000/auth/login", // will change in the next commit
+			destination: `${process.env.NEXT_PUBLIC_LIXI_OAUTH2}/auth/login`,
+		},
+		{
+			source: "/oauth2/token",
+			destination: `${process.env.NEXT_PUBLIC_LIXI_OAUTH2}/oauth2/token`,
+		},
+		{
+			source: "/auth/verify_user",
+			destination: `${process.env.NEXT_PUBLIC_LIXI_OAUTH2}/auth/verify_user`,
+		},
+		{
+			source: "/user_signup/v1/email_no_verified",
+			destination: `${process.env.NEXT_PUBLIC_LIXI_OAUTH2}/user_signup/v1/email_no_verified`,
 		},
 	];
 };

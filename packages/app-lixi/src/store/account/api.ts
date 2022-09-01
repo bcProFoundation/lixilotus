@@ -6,8 +6,8 @@ import {
 } from '@bcpros/lixi-models';
 import { AccountDto, CreateAccountCommand, ImportAccountCommand } from '@bcpros/lixi-models';
 import { PatchAccountCommand } from '@bcpros/lixi-models/src/lib/account';
-import axiosClient, { axiosAuthClient } from '@utils/axiosClient';
-import axios from 'axios';
+import axiosClient from '@utils/axiosClient';
+import getOauth2URL from '@utils/oauth2';
 
 const accountApi = {
   getById(id: number): Promise<AccountDto> {
@@ -82,7 +82,7 @@ const accountApi = {
   },
   registerViaEmailNoVerified(data: RegisterViaEmailNoVerifiedCommand): Promise<any> {
     const url = '/user_signup/v1/email_no_verified';
-    return axiosAuthClient
+    return axiosClient
       .post(url, data)
       .then(response => {
         return response.data as any;
@@ -94,12 +94,10 @@ const accountApi = {
   },
   loginViaEmail(data: LoginViaEmailCommand): Promise<any> {
     const url = '/auth/login';
-    // will change in the next commit
-    const redirectURL =
-      '/oauth2/confirmation?client_id=0485a20d-74d5-46ea-80ac-51a603319d19&scope=openid%20roles&redirect_uri=https%3A%2F%2Flixilotus.test%2Fcallback&response_type=code';
+    const redirectURL = getOauth2URL();
 
-    return axiosAuthClient
-      .post('https://lixilotus.test/auth/login', { ...data, redirect: redirectURL }) // will change in the next commit
+    return axiosClient
+      .post(url, { ...data, redirect: redirectURL })
       .then(response => {
         return response.data;
       })
@@ -111,7 +109,7 @@ const accountApi = {
   verifyEmail(data: string): Promise<any> {
     const url = '/auth/verify_user';
 
-    return axiosAuthClient
+    return axiosClient
       .post(url, { username: data })
       .then(res => {
         return res.data;

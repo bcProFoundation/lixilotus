@@ -44,7 +44,6 @@
     "react-intl-universal": "^2.5.3",
     "react-redux": "^7.2.8",
     "react-share": "^4.4.0",
-    "react-simple-oauth2-login": "^0.5.3",
     "react-swipe-to-delete-ios": "^2.0.71",
     "react-web-share": "^1.1.5",
     "react-window": "^1.8.6",

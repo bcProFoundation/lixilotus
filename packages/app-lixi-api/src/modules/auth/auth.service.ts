@@ -88,12 +88,12 @@ export class AuthService {
 
   public async getAccessToken(code: string): Promise<any> {
     try {
-      const res = await axios.post('http://accounts.localhost:4210/oauth2/token', {
+      const res = await axios.post(`${process.env.BASE_URL}/oauth2/token`, {
         grant_type: 'authorization_code',
         code: code,
-        redirect_uri: 'https://lixilotus.test/callback',
+        redirect_uri: `${process.env.BASE_URL}/callback`,
         client_id: process.env.LIXILOTUS_CLIENT_ID,
-        scope: 'openid roles email'
+        scope: 'openid email'
       });
 
       return res.data;

@@ -10,7 +10,7 @@ const CallbackPage = ({ statusCode }) => {
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res, query }) => {
   const authCode = query.code;
-  const url = `api/auth/get-token`;
+  const url = `/api/auth/get-token`;
   let statusCode = 200;
   if (authCode) {
     await axiosClient

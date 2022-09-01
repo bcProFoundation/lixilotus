@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react';
 import { Statistic } from 'antd';
+import { useRouter } from 'next/router';
 
 const { Countdown } = Statistic;
 
 const CallbackComponent = props => {
   const { statusCode } = props;
   const TIMEOUT = 5000;
+  const router = useRouter();
 
   useEffect(() => {
     setTimeout(() => {
-      window.close();
+      router.push('/');
     }, TIMEOUT);
   }, []);
   return (
@@ -17,7 +19,7 @@ const CallbackComponent = props => {
       {statusCode == 200 ? (
         <>
           <h1>Login successfully!</h1>
-          <Countdown title="Tab closing in: " value={Date.now() + TIMEOUT} format="s" />
+          <Countdown title="Redirecting in: " value={Date.now() + TIMEOUT} format="s" />
         </>
       ) : (
         <>

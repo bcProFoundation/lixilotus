@@ -479,7 +479,6 @@ function* loginViaEmailSaga(action: PayloadAction<LoginViaEmailCommand>) {
 
 function* loginViaEmailSuccessSaga(action: PayloadAction<any>) {
   yield put(hideLoading(loginViaEmail.type));
-  console.log(action.payload);
   yield put(
     showToast('success', {
       message: 'Success',
