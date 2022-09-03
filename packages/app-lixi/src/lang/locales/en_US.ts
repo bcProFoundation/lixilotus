@@ -100,6 +100,11 @@ export default {
   'account.verificationCodeRequired': 'Verification code is required',
   'account.verificationCodeSent': 'Verification code has been sent to <b>{email}</b>. Please check your inbox !',
   'account.transactionHistory': 'Transaction History',
+  'account.loginSuccess': 'Login sucessfully!',
+  'account.loginFailed': 'Login failed',
+  'account.registerEmailSuccess': 'Register via email success!',
+  'account.registerEmailFailed': 'Register via email failed',
+  'account.verifiedEmailFailed': 'Email is not verified',
 
   /* 03.Lixi */
   'lixi.sub-lixi': 'Sub-lixi',

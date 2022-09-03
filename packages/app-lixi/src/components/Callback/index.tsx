@@ -1,29 +1,31 @@
 import React, { useEffect } from 'react';
 import { Statistic } from 'antd';
 import { useRouter } from 'next/router';
-
-const { Countdown } = Statistic;
+import { showToast } from '@store/toast/actions';
+import { useAppDispatch } from '@store/hooks';
+import intl from 'react-intl-universal';
 
 const CallbackComponent = props => {
   const { statusCode } = props;
-  const TIMEOUT = 5000;
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
-    setTimeout(() => {
+    if (statusCode && statusCode == 200) {
+      dispatch(
+        showToast('success', {
+          message: intl.get('account.loginSuccess'),
+          duration: 5
+        })
+      );
       router.push('/');
-    }, TIMEOUT);
+    }
   }, []);
   return (
     <>
-      {statusCode == 200 ? (
+      {statusCode != 200 && (
         <>
-          <h1>Login successfully!</h1>
-          <Countdown title="Redirecting in: " value={Date.now() + TIMEOUT} format="s" />
-        </>
-      ) : (
-        <>
-          <h1>No authorization code found</h1>
+          <h1>Login failed</h1>
         </>
       )}
     </>

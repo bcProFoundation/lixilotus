@@ -434,16 +434,8 @@ function* refreshLixiListSilentSaga(action: PayloadAction<number>) {
 
 function* registerViaEmailNoVerifiedSaga(action: PayloadAction<RegisterViaEmailNoVerifiedCommand>) {
   yield put(showLoading(registerViaEmailNoVerified.type));
-  const { email } = action.payload;
   try {
     const data = yield call(accountApi.registerViaEmailNoVerified, action.payload);
-    yield put(
-      showToast('success', {
-        message: 'Success',
-        description: 'Register complete!',
-        duration: 5
-      })
-    );
     yield put(registerViaEmailNoVerifiedSuccess(data));
   } catch (err) {
     yield put(registerViaEmailNoVerifiedFailure(err));
@@ -452,11 +444,17 @@ function* registerViaEmailNoVerifiedSaga(action: PayloadAction<RegisterViaEmailN
 
 function* registerViaEmailSuccessNoVerifiedSaga(action: PayloadAction<any>) {
   yield put(hideLoading(registerViaEmailNoVerified.type));
-  console.log(action.payload);
+  yield put(
+    showToast('success', {
+      message: 'Success',
+      description: intl.get('account.registerEmailSuccess'),
+      duration: 5
+    })
+  );
 }
 
 function* registerViaEmailFailureNoVerifiedSaga(action: PayloadAction<any>) {
-  const message = action.payload.message ?? intl.get('account.unableToRefresh'); // just placeholder
+  const message = action.payload.message ?? intl.get('account.registerEmailFailed');
   yield put(
     showToast('error', {
       message: 'Error',
@@ -479,18 +477,11 @@ function* loginViaEmailSaga(action: PayloadAction<LoginViaEmailCommand>) {
 
 function* loginViaEmailSuccessSaga(action: PayloadAction<any>) {
   yield put(hideLoading(loginViaEmail.type));
-  yield put(
-    showToast('success', {
-      message: 'Success',
-      description: 'Login success!',
-      duration: 5
-    })
-  );
   yield put(push(`${action.payload.path}`));
 }
 
 function* loginViaEmailFailureSaga(action: PayloadAction<any>) {
-  const message = action.payload.message ?? intl.get('account.unableToRefresh'); // just placeholder
+  const message = action.payload.message ?? intl.get('account.loginFailed');
   yield put(
     showToast('error', {
       message: 'Error',
@@ -517,7 +508,7 @@ function* verifyEmailSuccessSaga(action: PayloadAction<any>) {
 }
 
 function* verifyEmailFailureSaga(action: PayloadAction<any>) {
-  const message = action.payload.message ?? intl.get('account.unableToRefresh'); // just placeholder
+  const message = action.payload.message ?? intl.get('account.verifiedEmailFailed');
   yield put(
     showToast('error', {
       message: 'Error',

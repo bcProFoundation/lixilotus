@@ -85,20 +85,4 @@ export class AuthService {
 
     throw new Error('Invalid account');
   }
-
-  public async getAccessToken(code: string): Promise<any> {
-    try {
-      const res = await axios.post(`${process.env.BASE_URL}/oauth2/token`, {
-        grant_type: 'authorization_code',
-        code: code,
-        redirect_uri: `${process.env.BASE_URL}/callback`,
-        client_id: process.env.LIXILOTUS_CLIENT_ID,
-        scope: 'openid email'
-      });
-
-      return res.data;
-    } catch (err: any) {
-      throw new Error(err);
-    }
-  }
 }

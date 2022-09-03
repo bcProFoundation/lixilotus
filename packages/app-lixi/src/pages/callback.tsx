@@ -10,17 +10,27 @@ const CallbackPage = ({ statusCode }) => {
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res, query }) => {
   const authCode = query.code;
-  const url = `/api/auth/get-token`;
+  const url = `/oauth2/token`;
   let statusCode = 200;
   if (authCode) {
     await axiosClient
-      .post(url, { authCode })
+      .post(url, {
+        grant_type: 'authorization_code',
+        code: authCode,
+        redirect_uri: process.env.NEXT_PUBLIC_LIXI_CALLBACK,
+        client_id: process.env.NEXT_LIXI_CLIENT_ID,
+        client_secret: process.env.NEXT_LIXI_CLIENT_SECRET,
+        scope: 'openid email'
+      })
       .then(response => {
-        setCookie('access_token', response.data.access_token, {
+        const { access_token, expires_in } = response.data;
+        setCookie('access_token', access_token, {
+          httpOnly: true,
+          sameSite: 'strict',
+          path: '/',
           req,
           res,
-          maxAge: 60 * 6 * 24,
-          httpOnly: true
+          maxAge: expires_in
         });
       })
       .catch(err => {

@@ -99,6 +99,11 @@ export default {
   'account.verificationCodeRequired': 'Vui lòng nhập mã xác thực',
   'account.verificationCodeSent': 'Mã xác thực đã được gửi tới <b>{email}</b>. Vui lòng kiểm tra email của bạn !',
   'account.transactionHistory': 'Lịch sử giao dịch',
+  'account.loginSuccess': 'Đăng nhập thành công!',
+  'account.loginFailed': 'Đăng nhập thất bại',
+  'account.registerEmailSuccess': 'Đăng kí qua email thành công!',
+  'account.registerEmailFailed': 'Đăng kí qua email thất bại',
+  'account.verifiedEmailFailed': 'Email không hợp lệ',
 
   /* 03.Lixi */
   'lixi.sub-lixi': 'Bao lì xì phụ',
