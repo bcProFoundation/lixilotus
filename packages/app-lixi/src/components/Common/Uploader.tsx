@@ -11,6 +11,7 @@ import { useAppDispatch } from '@store/hooks';
 import { setUpload, removeUpload } from '@store/account/actions';
 import axiosClient from '@utils/axiosClient';
 import { UPLOAD_API } from '@bcpros/lixi-models/constants';
+import _ from 'lodash';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -34,7 +35,7 @@ const StyledContainer = styled.div`
   padding: 10px;
 `;
 
-export const Uploader = props => {
+export const Uploader = (props: { type: string | Blob; buttonType?: string; isIcon: boolean, showUploadList: boolean }) => {
   const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
@@ -44,10 +45,10 @@ export const Uploader = props => {
   const uploadButton = (
     <StyledButton
       disabled={loading}
-      type="primary"
+      type={!_.isEmpty(props.buttonType) ? props.buttonType : "primary"}
       size="middle"
       loading={loading}
-      icon={<UploadOutlined style={{ color: loading ? 'gray' : 'white' }} />}
+      icon={props.isIcon ? <UploadOutlined style={{ color: loading ? 'gray' : 'white' }} /> : null}
     >
       {loading ? intl.get('lixi.uploadingText') : intl.get('lixi.uploadText')}
     </StyledButton>
@@ -156,6 +157,7 @@ export const Uploader = props => {
         progress={customProgress}
         customRequest={uploadImage}
         onRemove={() => dispatch(removeUpload({ type: props.type }))}
+        showUploadList={props.showUploadList}
       >
         {uploadButton}
       </Upload>

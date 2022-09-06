@@ -1,4 +1,4 @@
-import { Button, Checkbox, Col, Collapse, DatePicker, Form, Input, Modal, Radio, RadioChangeEvent, Row, Space, Tooltip } from 'antd';
+import { Button, Checkbox, Col, Collapse, DatePicker, Form, Input, List, Modal, Radio, RadioChangeEvent, Row, Space, Tooltip } from 'antd';
 import _, { range } from 'lodash';
 import isEmpty from 'lodash.isempty';
 import moment from 'moment';
@@ -24,7 +24,7 @@ import {
   StyledCollapse
 } from '@bcpros/lixi-components/components/Common/StyledCollapse';
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
-import { countries, UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
+import { countries, UPLOAD_BUTTON_TYPE, UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
 import { Account } from '@bcpros/lixi-models/lib/account';
 import { ClaimType, GenerateLixiCommand, LixiType, LotteryAddress } from '@bcpros/lixi-models/lib/lixi';
 import CountrySelectDropdown from '@components/Common/CountrySelectDropdown';
@@ -37,6 +37,7 @@ import { CreateLixiConfirmationModalProps } from './CreateLixiConfirmationModal'
 import { StyledUploader } from '@components/Common/Uploader';
 
 const { Panel } = Collapse;
+const baseUrl = process.env.NEXT_PUBLIC_LIXI_API;
 
 // const LotteryInput = styled(Input)`
 //   .ant-input-group-addon {
@@ -53,7 +54,7 @@ const StyledDivider = styled.h3`
 `;
 
 const Title = styled.h1`
-  display: flex
+  display: flex;
   height: 32px;
   font-family: 'Roboto';
   font-style: normal;
@@ -591,6 +592,13 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
     }
   };
 
+  const showImage = value => {
+    setNewEnvelopeId(value);
+    const envelope = envelopes.find(item => item.id === value)
+    const src = baseUrl + 'api/' + envelope.thumbnail;
+    return src as string;
+  }
+
   const selectClaimType = () => {
     if (claimType == ClaimType.Single) {
       return (
@@ -935,17 +943,20 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
                 <br />
                 <span> OR </span>
                 <br />
-                <StyledUploader type={UPLOAD_TYPES.ENVELOPE} />
-
+                <StyledUploader type={UPLOAD_TYPES.ENVELOPE} isIcon={false} buttonType={UPLOAD_BUTTON_TYPE.link} showUploadList={false} />
               </Col>
               <Col span={6} pull={18}>
-                <img style={{
-                  position: 'absolute',
-                  width: '110px',
-                  height: '110px',
-                  left: '16px',
-                  top: '16px',
-                }}></img>
+                <img
+                  src={!newEnvelopeId && !envelopeUpload ? '/images/lotus_logo.png' :
+                    (newEnvelopeId && !envelopeUpload) && baseUrl + 'api/' + envelopes.find(item => item.id === newEnvelopeId).thumbnail ||
+                    envelopeUpload && envelopeUpload.url}
+                  style={{
+                    position: 'absolute',
+                    width: '110px',
+                    height: '110px',
+                    left: '16px',
+                    top: '16px',
+                  }}></img>
               </Col>
             </Row>
           </Envelope>
@@ -962,7 +973,7 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
       }} onClick={() => handleSubmitCreateLixi()} disabled={!createLixiFormDataIsValid}>
         {intl.get('account.createLixi')}
       </SmartButton>
-      <Modal title="Are you sure to down vote shop?" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+      <Modal visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
         <EnvelopeCarousel envelopes={envelopes} handleChangeEnvelope={handleChangeEnvelope} />
       </Modal>
     </>
