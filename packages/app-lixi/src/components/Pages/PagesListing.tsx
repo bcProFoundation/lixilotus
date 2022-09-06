@@ -197,20 +197,6 @@ const PagesListing: React.FC = () => {
 
   return (
     <>
-      <Menu
-        style={{ border: 'none', position: 'relative', marginBottom: '1rem' }}
-        mode="horizontal"
-        defaultSelectedKeys={['day']}
-        onClick={onClickMenu}
-      >
-        <Menu.Item key="day">24h</Menu.Item>
-        <Menu.Item key="week">Week</Menu.Item>
-        <Menu.Item key="month">Month</Menu.Item>
-        <Menu.Item key="year">Year</Menu.Item>
-        <Menu.Item style={{ position: 'absolute', right: '0' }} key="filter" icon={<FilterOutlined />}>
-          Filter
-        </Menu.Item>
-      </Menu>
       <List
         itemLayout="vertical"
         size="large"

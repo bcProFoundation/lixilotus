@@ -3,19 +3,11 @@ import { FieldNumberOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 
 const { Sider } = Layout;
-let HeightHeader;
-if (typeof window !== 'undefined') {
-  // Client-side-only code
-  HeightHeader = (window.document.querySelector('.ant-layout-header')?.clientHeight || 64) + 'px';
-} else {
-  HeightHeader = '64px';
-}
 
 const RankingSideBar = styled(Sider)`
   position: fixed !important;
   height: 100vh;
   right: 0;
-  top: ${HeightHeader};
   max-width: inherit !important;
   background: #fff;
   border: 1px solid #e0e0e0;
@@ -28,6 +20,7 @@ const RankingSideBar = styled(Sider)`
     align-items: flex-start;
     h3 {
       align-self: center;
+      font-weight: 600;
     }
   }
   @media (max-width: 1000px) {
@@ -44,9 +37,9 @@ const RankingSideBar = styled(Sider)`
   }
 `;
 
-const SidebarRanking = () => {
+const SidebarRanking = ({ heightHeader }) => {
   return (
-    <RankingSideBar>
+    <RankingSideBar style={{ top: heightHeader }}>
       <h3>Ranking</h3>
       <p>
         <FieldNumberOutlined />

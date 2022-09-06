@@ -1,6 +1,6 @@
-import React, { Ref, RefAttributes, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import React, { useEffect } from 'react';
 import { BellTwoTone, MenuOutlined, CloseCircleOutlined } from '@ant-design/icons';
-import { Space, Menu, Popover, Badge, Comment } from 'antd';
+import { Space, Popover, Badge, Comment } from 'antd';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { toggleCollapsedSideNav } from '@store/settings/actions';
 import { getNavCollapsed } from '@store/settings/selectors';
@@ -10,7 +10,6 @@ import { getSelectedAccount } from '@store/account/selectors';
 import { fetchNotifications, startChannel, stopChannel } from '@store/notification/actions';
 import { getAllNotifications } from '@store/notification/selectors';
 import { Account, NotificationDto as Notification } from '@bcpros/lixi-models';
-import { connect } from 'socket.io-client';
 import SwipeToDelete from 'react-swipe-to-delete-ios';
 import moment from 'moment';
 import { isMobile } from 'react-device-detect';

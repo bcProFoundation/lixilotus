@@ -2,7 +2,7 @@ import { Layout, Spin } from 'antd';
 import intl from 'react-intl-universal';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { Ref, useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
@@ -29,7 +29,6 @@ import { getIsGlobalLoading } from 'src/store/loading/selectors';
 import { injectStore } from 'src/utils/axiosClient';
 import SidebarRanking from '@containers/Sidebar/SideBarRanking';
 import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
-import { Header } from 'antd/lib/layout/layout';
 const { Content } = Layout;
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
@@ -170,13 +169,13 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                   <>
                     <AppContainer>
                       <Layout>
-                        <SidebarShortcut></SidebarShortcut>
+                        <SidebarShortcut heightHeader={height}></SidebarShortcut>
                         <Sidebar />
                         <Layout>
                           <Topbar ref={setRef} />
                           <Content className="content-layout">{children}</Content>
                         </Layout>
-                        <SidebarRanking></SidebarRanking>
+                        <SidebarRanking heightHeader={height}></SidebarRanking>
                       </Layout>
                     </AppContainer>
                     <Footer>

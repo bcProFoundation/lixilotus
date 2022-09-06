@@ -5,20 +5,15 @@ import React from 'react';
 import Link from 'next/link';
 
 const { Sider } = Layout;
-let HeightHeader;
-if (typeof window !== 'undefined') {
-  // Client-side-only code
-  HeightHeader = (window.document.querySelector('.ant-layout-header')?.clientHeight || 63) + 'px';
-} else {
-  HeightHeader = '63px';
-}
 
 const ItemAccess = ({ icon, text, href }: { icon: React.FC; text: string; href: string }) => (
   <Link href={href}>
-    <Space className="item-access">
-      {React.createElement(icon)}
-      <span className="text-item">{text}</span>
-    </Space>
+    <a>
+      <Space className="item-access">
+        {React.createElement(icon)}
+        <span className="text-item">{text}</span>
+      </Space>
+    </a>
   </Link>
 );
 
@@ -26,7 +21,6 @@ const ShortcutSideBar = styled(Sider)`
   position: fixed !important;
   height: 100vh;
   left: 0;
-  top: ${HeightHeader};
   max-width: inherit !important;
   background: #fff;
   border: 1px solid #e0e0e0;
@@ -39,6 +33,7 @@ const ShortcutSideBar = styled(Sider)`
     align-items: flex-start;
     h3 {
       align-self: center;
+      font-weight: 600;
     }
   }
   .item-access {
@@ -46,6 +41,7 @@ const ShortcutSideBar = styled(Sider)`
     cursor: pointer;
     .anticon {
       font-size: 25px;
+      color: var(--color-primary);
     }
     .text-item {
       font-weight: 600;
@@ -65,9 +61,9 @@ const ShortcutSideBar = styled(Sider)`
   }
 `;
 
-const SidebarShortcut = () => {
+const SidebarShortcut = ({ heightHeader }) => {
   return (
-    <ShortcutSideBar>
+    <ShortcutSideBar style={{ top: heightHeader }}>
       <h3>Quick Access</h3>
       <ItemAccess icon={SendOutlined} text={'Send Lotus'} key="send-lotus" href={'https://sendlotus.com'} />
       <ItemAccess icon={EditOutlined} text={'Register Pack'} key="register-pack" href={'/admin/pack-register'} />
