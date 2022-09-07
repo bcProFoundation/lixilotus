@@ -22,7 +22,8 @@ const CountrySelect = styled(Select)`
   flex-grow: 0;
 
   .ant-select-selector {
-    border: 0px solid #3b3b4d !impotant;
+    border: none !important;
+    padding: 0px !important;
   }
 
   .ant-select-selection-item {

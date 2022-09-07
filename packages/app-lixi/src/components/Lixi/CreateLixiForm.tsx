@@ -939,11 +939,25 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
             <Row>
               <Col span={18} push={6} style={{ padding: '35px 0px 35px 0px' }}>
                 {/* <Button type="link" onClick={}> */}
-                <Button onClick={showModal} type="link" > Select from our library </Button>
+                <Button
+                  onClick={showModal}
+                  type="link"
+                  style={{
+                    fontFamily: 'Roboto',
+                    fontStyle: 'normal',
+                    fontWeight: '400',
+                    fontSize: '14px',
+                    lineHeight: '20px',
+                    alignItems: 'center',
+                    color: '#9E2A9C',
+                    flex: 'none',
+                    order: '0',
+                    flexGrow: '0'
+                  }}> {intl.get('lixi.envelopesSelect')} </Button>
                 <br />
-                <span> OR </span>
+                <span> {intl.get('or')} </span>
                 <br />
-                <StyledUploader type={UPLOAD_TYPES.ENVELOPE} isIcon={false} buttonType={UPLOAD_BUTTON_TYPE.link} showUploadList={false} />
+                <StyledUploader type={UPLOAD_TYPES.ENVELOPE} isIcon={false} buttonName={intl.get('lixi.browser')} buttonType={UPLOAD_BUTTON_TYPE.link} showUploadList={false} />
               </Col>
               <Col span={6} pull={18}>
                 <img
@@ -973,9 +987,68 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
       }} onClick={() => handleSubmitCreateLixi()} disabled={!createLixiFormDataIsValid}>
         {intl.get('account.createLixi')}
       </SmartButton>
-      <Modal visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+      <Modal
+        closable={false}
+        visible={isModalVisible}
+        width={400}
+        style={{
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+          padding: '0px',
+          background: '#FFFBFF',
+          border: '1px solid rgba(128, 116, 124, 0.12)',
+          boxShadow: '0px 0px 12px rgba(0, 0, 0, 0.12)',
+          borderRadius: '12px'
+        }}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        footer={[
+          <Button
+            style={{
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: '10px 24px',
+              gap: '10px',
+              width: '67px',
+              height: '40px',
+              background: '#9E2A9C',
+              color: '#FFFFFF',
+              borderRadius: '16px',
+              flex: 'none',
+              order: '0',
+              flexGrow: '0',
+              border: 'none'
+            }}
+            key={intl.get('cancel')}
+            onClick={handleCancel} >
+            {intl.get('cancel')}
+          </Button>,
+          <Button
+            style={{
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: '10px 24px',
+              gap: '10px',
+              width: '67px',
+              height: '40px',
+              background: '#9E2A9C',
+              color: '#FFFFFF',
+              borderRadius: '16px',
+              flex: 'none',
+              order: '0',
+              flexGrow: '0',
+              border: 'none'
+            }}
+            key="Ok"
+            type="primary"
+            onClick={handleOk}>
+            Ok
+          </Button>
+        ]}>
         <EnvelopeCarousel envelopes={envelopes} handleChangeEnvelope={handleChangeEnvelope} />
-      </Modal>
+      </Modal >
     </>
 
   )

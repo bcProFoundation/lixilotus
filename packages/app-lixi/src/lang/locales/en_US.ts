@@ -14,6 +14,10 @@ Table of Contents
 */
 
 export default {
+  /* 00. special*/
+  'or': 'Or',
+  'cancel': 'Cancel',
+
   /* 01.General */
   'general.home': 'Home',
   'general.accounts': 'Accounts',
@@ -153,9 +157,11 @@ export default {
   'lixi.fileUploadError': 'Error uploading to server',
   'lixi.fileUploadSuccess': 'Upload Successfully',
   'lixi.uploadDividerText': 'Custom Enevelope',
+  'lixi.browser': 'Browser',
   'lixi.uploadText': 'Upload',
   'lixi.uploadingText': 'Uploading...',
   'lixi.previewFileFailed': 'Cannot preview file',
+  'lixi.envelopesSelect': 'Select from our library',
   'lixi.renameLixi': 'Rename Lixi',
   'lixi.enterNewLixiName': 'Enter new lixi name',
   'lixi.lixiLengthError': 'Lixi name must be a string between 1 and 24 characters long',

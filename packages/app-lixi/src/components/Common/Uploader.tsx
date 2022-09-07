@@ -25,6 +25,15 @@ const StyledButton = styled(Button)`
   font-size: 17px;
   border-radius: 3px;
   border: none;
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  align-items: center;
+  color: rgb(158, 42, 156);
+  flex: 0 0 auto;
+  order: 0;
 
   :disabled {
     color: gray;
@@ -32,10 +41,10 @@ const StyledButton = styled(Button)`
 `;
 
 const StyledContainer = styled.div`
-  padding: 10px;
+  padding: 0px;
 `;
 
-export const Uploader = (props: { type: string | Blob; buttonType?: string; isIcon: boolean, showUploadList: boolean }) => {
+export const Uploader = (props: { type: string | Blob; buttonName?: string; buttonType?: string; isIcon: boolean, showUploadList: boolean }) => {
   const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
@@ -50,7 +59,7 @@ export const Uploader = (props: { type: string | Blob; buttonType?: string; isIc
       loading={loading}
       icon={props.isIcon ? <UploadOutlined style={{ color: loading ? 'gray' : 'white' }} /> : null}
     >
-      {loading ? intl.get('lixi.uploadingText') : intl.get('lixi.uploadText')}
+      {!_.isEmpty(props.buttonName) ? props.buttonName : loading ? intl.get('lixi.uploadingText') : intl.get('lixi.uploadText')}
     </StyledButton>
   );
 

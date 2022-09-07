@@ -14,6 +14,10 @@ Table of Contents
 */
 
 export default {
+  /* 00. special*/
+  'or': 'Hoặc',
+  'cancel': 'Hủy bỏ',
+
   /* 01.General */
   'general.home': 'Nhà',
   'general.accounts': 'Tài khoản',
@@ -152,9 +156,11 @@ export default {
   'lixi.fileUploadError': 'Lỗi khi tải thiệp lên server',
   'lixi.fileUploadSuccess': 'Tải thiệp lên thành công',
   'lixi.uploadDividerText': 'Thiệp tự chọn',
+  'lixi.browser': 'Chọn ảnh từ thiết bị',
   'lixi.uploadText': 'Đăng thiệp',
   'lixi.uploadingText': 'Đang tải...',
   'lixi.previewFileFailed': 'Không thể xem trước file',
+  'lixi.envelopesSelect': 'Chọn từ mẫu có sẵn',
   'lixi.renameLixi': 'Đổi tên Lì xi',
   'lixi.enterNewLixiName': 'Nhập tên mới cho Lì xì',
   'lixi.lixiLengthError': 'Tên Lì xì phải là một chuỗi dài từ 1 đến 24 ký tự',
