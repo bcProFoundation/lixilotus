@@ -5,12 +5,12 @@ export const UPLOAD_TYPES = {
 };
 
 export const UPLOAD_BUTTON_TYPE = {
-  primary: 'primary',
-  link: 'link',
-  text: 'text',
-  default: 'default',
-  ghost: 'ghost',
-  dashed: 'dashed'
+  PRIMARY: 'primary',
+  LINK: 'link',
+  TEXT: 'text',
+  DEFAULT: 'default',
+  GHOST: 'ghost',
+  DASHED: 'dashed'
 }
 
 export const UPLOAD_API = '/api/uploads';

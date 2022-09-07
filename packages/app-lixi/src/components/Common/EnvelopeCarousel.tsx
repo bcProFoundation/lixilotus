@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 const baseUrl = process.env.NEXT_PUBLIC_LIXI_API;
 
-export interface EnvelopeCarouselPros {
+export interface EnvelopeCarouselProps {
   className?: string;
   envelopes: Envelope[];
   handleChangeEnvelope: Function;
@@ -44,7 +44,7 @@ const carouselSettings = {
   ]
 };
 
-const EnvelopeCarousel = (props: EnvelopeCarouselPros) => {
+const EnvelopeCarousel = (props: EnvelopeCarouselProps) => {
   const { className, envelopes, handleChangeEnvelope } = props;
   const [selectedEnvelopeId, setSelectedEnvelopeId] = useState(0);
 

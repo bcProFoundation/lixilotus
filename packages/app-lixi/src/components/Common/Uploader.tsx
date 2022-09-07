@@ -44,7 +44,15 @@ const StyledContainer = styled.div`
   padding: 0px;
 `;
 
-export const Uploader = (props: { type: string | Blob; buttonName?: string; buttonType?: string; isIcon: boolean, showUploadList: boolean }) => {
+type UploaderProps = {
+  type: string | Blob;
+  buttonName?: string;
+  buttonType?: string;
+  isIcon: boolean;
+  showUploadList: boolean;
+}
+
+export const Uploader = ({ type, buttonName, buttonType, isIcon, showUploadList }: UploaderProps) => {
   const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
@@ -54,12 +62,12 @@ export const Uploader = (props: { type: string | Blob; buttonName?: string; butt
   const uploadButton = (
     <StyledButton
       disabled={loading}
-      type={!_.isEmpty(props.buttonType) ? props.buttonType : "primary"}
+      type={!_.isEmpty(buttonType) ? buttonType : "primary"}
       size="middle"
       loading={loading}
-      icon={props.isIcon ? <UploadOutlined style={{ color: loading ? 'gray' : 'white' }} /> : null}
+      icon={isIcon ? <UploadOutlined style={{ color: loading ? 'gray' : 'white' }} /> : null}
     >
-      {!_.isEmpty(props.buttonName) ? props.buttonName : loading ? intl.get('lixi.uploadingText') : intl.get('lixi.uploadText')}
+      {!_.isEmpty(buttonName) ? buttonName : loading ? intl.get('lixi.uploadingText') : intl.get('lixi.uploadText')}
     </StyledButton>
   );
 
@@ -132,7 +140,7 @@ export const Uploader = (props: { type: string | Blob; buttonName?: string; butt
     const formData = new FormData();
 
     formData.append('file', file);
-    formData.append('type', props.type);
+    formData.append('type', type);
     const config = {
       headers: { 'content-type': 'multipart/form-data' },
       withCredentials: true,
@@ -144,7 +152,7 @@ export const Uploader = (props: { type: string | Blob; buttonName?: string; butt
     await axiosClient
       .post(url, formData, config)
       .then(response => {
-        return onSuccess(dispatch(setUpload({ upload: response.data, type: props.type })));
+        return onSuccess(dispatch(setUpload({ upload: response.data, type: type })));
       })
       .catch(err => {
         const { response } = err;
@@ -165,8 +173,8 @@ export const Uploader = (props: { type: string | Blob; buttonName?: string; butt
         accept="image/png, image/gif, image/jpeg"
         progress={customProgress}
         customRequest={uploadImage}
-        onRemove={() => dispatch(removeUpload({ type: props.type }))}
-        showUploadList={props.showUploadList}
+        onRemove={() => dispatch(removeUpload({ type: type }))}
+        showUploadList={showUploadList}
       >
         {uploadButton}
       </Upload>

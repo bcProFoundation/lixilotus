@@ -592,13 +592,6 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
     }
   };
 
-  const showImage = value => {
-    setNewEnvelopeId(value);
-    const envelope = envelopes.find(item => item.id === value)
-    const src = baseUrl + 'api/' + envelope.thumbnail;
-    return src as string;
-  }
-
   const selectClaimType = () => {
     if (claimType == ClaimType.Single) {
       return (
@@ -957,7 +950,7 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
                 <br />
                 <span> {intl.get('or')} </span>
                 <br />
-                <StyledUploader type={UPLOAD_TYPES.ENVELOPE} isIcon={false} buttonName={intl.get('lixi.browser')} buttonType={UPLOAD_BUTTON_TYPE.link} showUploadList={false} />
+                <StyledUploader type={UPLOAD_TYPES.ENVELOPE} isIcon={false} buttonName={intl.get('lixi.browser')} buttonType={UPLOAD_BUTTON_TYPE.LINK} showUploadList={false} />
               </Col>
               <Col span={6} pull={18}>
                 <img
@@ -1052,31 +1045,6 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
     </>
 
   )
-  //     {/* Lixi envelope */ }
-  // {/* <Form.Item>
-  //           <AntdFormWrapper>
-  //             <EnvelopeCarousel envelopes={envelopes} handleChangeEnvelope={handleChangeEnvelope} />
-  //           </AntdFormWrapper>
-  //         </Form.Item> */}
-  // {/* Custom Envelope */ }
-  // {/* <Form.Item>
-  //           <StyledDivider>
-  //             <span style={{ backgroundColor: '#FFF', padding: '0 10px' }}>
-  //               {intl.get('lixi.uploadDividerText')}
-  //             </span>
-  //           </StyledDivider>
-  //           <StyledUploader type={UPLOAD_TYPES.ENVELOPE} />
-  //         </Form.Item>
-  //         <hr /> */}
-  // {/* Message */ }
-  // {/* <Form.Item>
-  //       <TextArea
-  //         placeholder={intl.get('account.lixiMessage')}
-  //         name="envelopeMessage"
-  //         value={newEnvelopeMessage}
-  //         onChange={e => handleEnvelopeMessageInput(e)}
-  //       />
-  //     </Form.Item> */}
 };
 
 export default CreateLixiForm;
