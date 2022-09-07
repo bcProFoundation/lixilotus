@@ -1,4 +1,4 @@
-import { Checkbox, Collapse, DatePicker, Form, Input, Radio, RadioChangeEvent, Tooltip } from 'antd';
+import { Checkbox, Collapse, DatePicker, Form, Input, Radio, RadioChangeEvent, Select, Tooltip } from 'antd';
 import _, { range } from 'lodash';
 import isEmpty from 'lodash.isempty';
 import moment from 'moment';
@@ -11,7 +11,7 @@ import { openModal } from 'src/store/modal/actions';
 import { showToast } from 'src/store/toast/actions';
 import styled from 'styled-components';
 
-import { DollarOutlined, PlusSquareOutlined } from '@ant-design/icons';
+import { DollarOutlined, PlusSquareOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import {
   AntdFormWrapper,
   FormItemCharityAddressInput,
@@ -26,7 +26,7 @@ import {
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import { countries, UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
 import { Account } from '@bcpros/lixi-models/lib/account';
-import { ClaimType, GenerateLixiCommand, LixiType, LotteryAddress } from '@bcpros/lixi-models/lib/lixi';
+import { ClaimType, GenerateLixiCommand, LixiType, LotteryAddress, NetworkType } from '@bcpros/lixi-models/lib/lixi';
 import CountrySelectDropdown from '@components/Common/CountrySelectDropdown';
 import EnvelopeCarousel from '@components/Common/EnvelopeCarousel';
 import { getEnvelopeUpload } from '@store/account/selectors';
@@ -37,6 +37,7 @@ import { CreateLixiConfirmationModalProps } from './CreateLixiConfirmationModal'
 import { StyledUploader } from '@components/Common/Uploader';
 
 const { Panel } = Collapse;
+const { Option } = Select;
 
 const LotteryInput = styled(Input)`
   .ant-input-group-addon {
@@ -125,6 +126,8 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
 
   // New FamilyFriendly
   const [isFamilyFriendly, setIsFamilyFriendlyLixi] = useState<boolean>(false);
+  const [newNetworkType, setNewNetworkType] = useState('');
+  const [newNetworkTypeIsValid, setNewNetworkTypeIsValid] = useState(true);
 
   // New isNFTEnabled
   const [isNFTEnabled, setIsNFTEnabledLixi] = useState<boolean>(false);
@@ -248,6 +251,13 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
     setNewCountryLixi(value);
     if (value && !isEmpty(value)) {
       setNewCountryLixiIsValid(true);
+    }
+  };
+
+  const handleChangeNetworkType = (value, e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewNetworkType(value);
+    if (value && !isEmpty(value)) {
+      setNewNetworkTypeIsValid(true);
     }
   };
 
@@ -407,7 +417,8 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
       upload: envelopeUpload,
       staffAddress: newStaffAddress,
       charityAddress: newCharityAddress,
-      joinLotteryProgram: joinLotteryProgram
+      joinLotteryProgram: joinLotteryProgram,
+      networkType: newNetworkType
     };
 
     const createLixiModalProps: CreateLixiConfirmationModalProps = {
@@ -433,6 +444,7 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
       newStaffAddress,
       newCharityAddress,
       joinLotteryProgram,
+      newNetworkType,
       onOkAction: generateLixi(command)
     };
     dispatch(openModal('CreateLixiConfirmationModal', createLixiModalProps));
@@ -754,6 +766,30 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
                       <Checkbox value={isFamilyFriendly} onChange={e => handleFamilyFriendly(e)}>
                         {intl.get('account.familyFriendly')}
                       </Checkbox>
+
+                      <Select defaultValue={intl.get('NetworkType.SingleIP')} onChange={handleChangeNetworkType}>
+                        <Option value={NetworkType.SingleIP}>
+                          {intl.get('NetworkType.SingleIP')}
+                          &nbsp;
+                          <Tooltip title={intl.get('NetworkType.SingleIPInfo')}>
+                            <QuestionCircleOutlined />
+                          </Tooltip>
+                        </Option>
+                        <Option value={NetworkType.FamilyFriendly}>
+                          {intl.get('NetworkType.FamilyFriendly')}
+                          &nbsp;
+                          <Tooltip title={intl.get('NetworkType.FamilyFriendlyInfo')}>
+                            <QuestionCircleOutlined />
+                          </Tooltip>
+                        </Option>
+                        <Option value={NetworkType.NoWifiRestriction}>
+                          {intl.get('NetworkType.NoWifiRestriction')}
+                          &nbsp;
+                          <Tooltip title={intl.get('NetworkType.NoWifiRestrictionInfo')}>
+                            <QuestionCircleOutlined />
+                          </Tooltip>
+                        </Option>
+                      </Select>
                       {/* {ClaimType.OneTime === claimType && (
                         <Checkbox value={isNFTEnabled} onChange={e => handleNFTEnabled(e)}>
                           {intl.get('lixi.isNFTEnabled')}

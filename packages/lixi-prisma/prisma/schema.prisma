@@ -164,6 +164,7 @@ model Lixi {
   distributions        LixiDistribution[]
   uploadDetail         UploadDetail?
   uploadDetailId       String?            @map("upload_detail_id")
+  networkType          String             @default("Single IP") @map("netword_type")
 
   @@map("lixi")
 }

@@ -188,6 +188,12 @@ export default {
   'lixi.lotteryAddressCheck': 'Xác nhận',
   'lixi.addressCopied': 'địa chỉ đã được sao chép.',
   'lixi.redeemLixi': 'Nhận lì xì',
+  'NetworkType.SingleIP': 'Một địa chỉ duy nhất',
+  'NetworkType.FamilyFriendly': 'Gia đình thân thiêt',
+  'NetworkType.NoWifiRestriction': 'Không giới hạn',
+  'NetworkType.SingleIPInfo': 'Chỉ một người dùng có thể nhận Lixi trong mạng wifi',
+  'NetworkType.FamilyFriendlyInfo': 'Tối đa người dùng có thể nhận Lixi trong mạng wifi',
+  'NetworkType.NoWifiRestrictionInfo': 'Không giới hạn người dùng có thể nhận Lixi trong mạng wifi',
 
   /* 04.Claim */
   'claim.claim': 'Nhận Lì xì',

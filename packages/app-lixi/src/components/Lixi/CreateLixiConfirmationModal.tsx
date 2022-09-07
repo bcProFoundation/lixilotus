@@ -33,6 +33,7 @@ export type CreateLixiConfirmationModalProps = {
   newStaffAddress: string | null;
   newCharityAddress: string | null;
   joinLotteryProgram: boolean;
+  newNetworkType: string;
   onOkAction?: AnyAction;
 };
 
@@ -63,7 +64,8 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
     newEnvelopeId,
     newStaffAddress,
     newCharityAddress,
-    joinLotteryProgram
+    joinLotteryProgram,
+    newNetworkType
   } = props;
 
   const distributions = _.filter([newStaffAddress, newCharityAddress], address => {

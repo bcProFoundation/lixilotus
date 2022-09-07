@@ -23,6 +23,7 @@ export interface GenerateLixiCommand {
   expiryAt?: string;
   activationAt?: string;
   country?: string;
+  networkType?: string;
   isFamilyFriendly: boolean;
   isNFTEnabled: boolean;
   envelopeId: Nullable<number>;
@@ -53,6 +54,7 @@ export interface CreateLixiCommand {
   expiryAt?: Date;
   activationAt?: Date;
   country?: string;
+  networkType?: string;
   isFamilyFriendly: boolean;
   isNFTEnabled: boolean;
   password: string;
@@ -85,6 +87,7 @@ export interface LixiDto {
   expiryAt?: Date;
   activationAt?: Date;
   country?: string;
+  networkType?: string;
   isFamilyFriendly?: boolean;
   balance?: number;
   address: string;
@@ -128,6 +131,7 @@ export interface Lixi {
   expiryAt?: Date;
   activationAt?: Nullable<Date>;
   country?: string;
+  networkType?: string;
   isFamilyFriendly: boolean;
   balance?: number;
   address: string;
@@ -207,6 +211,12 @@ export interface DownloadExportedLixiCommand {
   lixiId: number;
   fileName: string;
   mnemonicHash: string;
+}
+
+export enum NetworkType {
+  SingleIP = 'Single IP',
+  FamilyFriendly = 'Family Friendly',
+  NoWifiRestriction = 'No Wifi Restriction'
 }
 
 export const LotteryAddress = 'lotus_16PSJM2jboGWYzs71usSip5hFhGTAyUw4nt3GS43u';
