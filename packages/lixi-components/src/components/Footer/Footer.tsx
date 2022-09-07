@@ -16,6 +16,8 @@ const Footer = styled.div`
     border: 0;
     position: absolute;
     transform: translate(0, 20%);
+    z-index: 999;
+    position: fixed;
   }
   border-top: 1px solid ${props => props.theme.wallet.borders.color};
 `;
