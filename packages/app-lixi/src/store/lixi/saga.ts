@@ -171,7 +171,7 @@ function* fetchInitialSubLixiesSaga(action: PayloadAction<number>) {
   }
 }
 
-function* fetchInitialSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) { }
+function* fetchInitialSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) {}
 
 function* fetchInitialSubLixiesFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? intl.get('lixi.unableGetChildLixi');
@@ -197,7 +197,7 @@ function* fetchMoreSubLixiesSaga(action: PayloadAction<{ parentId: number; start
   }
 }
 
-function* fetchMoreSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) { }
+function* fetchMoreSubLixiesSuccessSaga(action: PayloadAction<Lixi[]>) {}
 
 function* fetchMoreSubLixiesFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? intl.get('lixi.unableCreateChildLixi');

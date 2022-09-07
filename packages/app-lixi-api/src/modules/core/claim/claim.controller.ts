@@ -43,7 +43,7 @@ export class ClaimController {
     @Inject('xpijs') private XPI: BCHJS,
     private readonly config: ConfigService,
     private readonly lixiNftService: LixiNftService
-  ) { }
+  ) {}
 
   @Get(':id')
   async getEnvelope(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<ViewClaimDto> {
@@ -172,17 +172,17 @@ export class ClaimController {
             if (countClaimAddress.length > 0 || countIpaddress >= 5) {
               const limitRedemptions = await i18n.t('claim.messages.limitRedemptions');
               throw new VError(limitRedemptions);
-            };
+            }
           case NetworkType.NoWifiRestriction:
             if (countClaimAddress.length > 0) {
               const limitRedemptions = await i18n.t('claim.messages.limitRedemptions');
               throw new VError(limitRedemptions);
-            };
+            }
           default:
             if (countClaimAddress.length > 0 || countIpaddress > 0) {
               const limitRedemptions = await i18n.t('claim.messages.limitRedemptions');
               throw new VError(limitRedemptions);
-            };
+            }
         }
 
         // isFamilyFriendly == true
@@ -518,17 +518,17 @@ export class ClaimController {
             if (countClaimAddress.length > 0 || countIpaddress >= 5) {
               const limitRedemptions = await i18n.t('claim.messages.limitRedemptions');
               throw new VError(limitRedemptions);
-            };
+            }
           case NetworkType.NoWifiRestriction:
             if (countClaimAddress.length > 0) {
               const limitRedemptions = await i18n.t('claim.messages.limitRedemptions');
               throw new VError(limitRedemptions);
-            };
+            }
           default:
             if (countClaimAddress.length > 0 || countIpaddress > 0) {
               const limitRedemptions = await i18n.t('claim.messages.limitRedemptions');
               throw new VError(limitRedemptions);
-            };
+            }
         }
 
         // isFamilyFriendly == true
