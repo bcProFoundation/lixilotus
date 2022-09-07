@@ -75,7 +75,7 @@ const EnvelopeCarousel = (props: EnvelopeCarouselProps) => {
                     lineHeight: '160px',
                     textAlign: 'center',
                     border: isActive ? 'solid 2px var(--color-primary)' : 'none',
-                    padding: isActive ? '9px 7px' : '7px 5px',
+                    padding: isActive ? '9px 7px' : '7px 5px'
                   }}
                   src={baseUrl + 'api/' + item.thumbnail}
                   onClick={() => onCarouselItemClick(item)}

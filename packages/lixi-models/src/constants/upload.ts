@@ -11,6 +11,6 @@ export const UPLOAD_BUTTON_TYPE = {
   DEFAULT: 'default',
   GHOST: 'ghost',
   DASHED: 'dashed'
-}
+};
 
 export const UPLOAD_API = '/api/uploads';

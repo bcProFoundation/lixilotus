@@ -40,7 +40,7 @@ const CountrySelect = styled(Select)`
     order: 2;
     flex-grow: 1;
   }
-`
+`;
 
 export interface CountrySelectDropdownProps {
   countries: { id: string; name: string }[];
@@ -57,24 +57,22 @@ const CountrySelectDropdown = (props: CountrySelectDropdownProps) => {
       defaultValue={defaultValue}
       onSelect={(value, event) => handleChangeCountry(value, event)}
     >
-      {
-        countries.map(country => {
-          return (
-            <Option
-              key={country.id}
-              value={country.id}
-              style={{
-                alignItems: 'center'
-              }}
-            >
-              {intl.formatMessage({
-                id: `country.${country.id}`
-              })}
-            </Option>
-          );
-        })
-      }
-    </CountrySelect >
+      {countries.map(country => {
+        return (
+          <Option
+            key={country.id}
+            value={country.id}
+            style={{
+              alignItems: 'center'
+            }}
+          >
+            {intl.formatMessage({
+              id: `country.${country.id}`
+            })}
+          </Option>
+        );
+      })}
+    </CountrySelect>
   );
 };
 
