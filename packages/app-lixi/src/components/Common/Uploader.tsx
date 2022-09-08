@@ -11,6 +11,7 @@ import { useAppDispatch } from '@store/hooks';
 import { setUpload, removeUpload } from '@store/account/actions';
 import axiosClient from '@utils/axiosClient';
 import { UPLOAD_API } from '@bcpros/lixi-models/constants';
+import _ from 'lodash';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -24,6 +25,15 @@ const StyledButton = styled(Button)`
   font-size: 17px;
   border-radius: 3px;
   border: none;
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  align-items: center;
+  color: rgb(158, 42, 156);
+  flex: 0 0 auto;
+  order: 0;
 
   :disabled {
     color: gray;
@@ -31,10 +41,18 @@ const StyledButton = styled(Button)`
 `;
 
 const StyledContainer = styled.div`
-  padding: 10px;
+  padding: 0px;
 `;
 
-export const Uploader = props => {
+type UploaderProps = {
+  type: string | Blob;
+  buttonName?: string;
+  buttonType?: string;
+  isIcon: boolean;
+  showUploadList: boolean;
+};
+
+export const Uploader = ({ type, buttonName, buttonType, isIcon, showUploadList }: UploaderProps) => {
   const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
@@ -44,12 +62,12 @@ export const Uploader = props => {
   const uploadButton = (
     <StyledButton
       disabled={loading}
-      type="primary"
+      type={!_.isEmpty(buttonType) ? buttonType : 'primary'}
       size="middle"
       loading={loading}
-      icon={<UploadOutlined style={{ color: loading ? 'gray' : 'white' }} />}
+      icon={isIcon ? <UploadOutlined style={{ color: loading ? 'gray' : 'white' }} /> : null}
     >
-      {loading ? intl.get('lixi.uploadingText') : intl.get('lixi.uploadText')}
+      {!_.isEmpty(buttonName) ? buttonName : loading ? intl.get('lixi.uploadingText') : intl.get('lixi.uploadText')}
     </StyledButton>
   );
 
@@ -122,7 +140,7 @@ export const Uploader = props => {
     const formData = new FormData();
 
     formData.append('file', file);
-    formData.append('type', props.type);
+    formData.append('type', type);
     const config = {
       headers: { 'content-type': 'multipart/form-data' },
       withCredentials: true,
@@ -134,7 +152,7 @@ export const Uploader = props => {
     await axiosClient
       .post(url, formData, config)
       .then(response => {
-        return onSuccess(dispatch(setUpload({ upload: response.data, type: props.type })));
+        return onSuccess(dispatch(setUpload({ upload: response.data, type: type })));
       })
       .catch(err => {
         const { response } = err;
@@ -155,7 +173,8 @@ export const Uploader = props => {
         accept="image/png, image/gif, image/jpeg"
         progress={customProgress}
         customRequest={uploadImage}
-        onRemove={() => dispatch(removeUpload({ type: props.type }))}
+        onRemove={() => dispatch(removeUpload({ type: type }))}
+        showUploadList={showUploadList}
       >
         {uploadButton}
       </Upload>
