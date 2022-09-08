@@ -15,8 +15,8 @@ Table of Contents
 
 export default {
   /* 00. special*/
-  'or': 'Hoặc',
-  'cancel': 'Hủy bỏ',
+  or: 'Hoặc',
+  cancel: 'Hủy bỏ',
 
   /* 01.General */
   'general.home': 'Nhà',
@@ -106,7 +106,7 @@ export default {
   'lixi.budget': 'Ngân sách',
   'lixi.balance': 'Số dư',
   'account.country': 'Quốc gia áp dụng',
-  'account.envelope': "Hình ảnh",
+  'account.envelope': 'Hình ảnh',
 
   /* 03.Lixi */
   'lixi.createLixi': 'Tạo lixi mới',

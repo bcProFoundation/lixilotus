@@ -15,8 +15,8 @@ Table of Contents
 
 export default {
   /* 00. special*/
-  'or': 'Or',
-  'cancel': 'Cancel',
+  or: 'Or',
+  cancel: 'Cancel',
 
   /* 01.General */
   'general.home': 'Home',
@@ -107,7 +107,7 @@ export default {
   'account.budget': 'Budget',
   'account.balance': 'Balance',
   'account.country': 'Applying country',
-  'account.envelope': "Image",
+  'account.envelope': 'Image',
 
   /* 03.Lixi */
   'lixi.createLixi': 'Add new lixi',
