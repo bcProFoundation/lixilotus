@@ -11,6 +11,9 @@ import { fetchAllPages, setSelectedPage } from '@store/page/action';
 import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
 import { push } from 'connected-next-router';
 import _ from 'lodash';
+import { FixedSizeList } from 'react-window';
+import InfiniteLoader from 'react-window-infinite-loader';
+import AutoSizer from 'react-virtualized-auto-sizer';
 import moment from 'moment';
 
 const CardContainer = styled.div`
@@ -195,65 +198,81 @@ const PagesListing: React.FC = () => {
     dispatch(push(`/page/${id}`));
   };
 
-  return (
-    <>
-      <List
-        itemLayout="vertical"
-        size="large"
-        pagination={{
-          onChange: page => {
-            console.log(page);
-          },
-          pageSize: 3
+  const isItemLoaded = (index: number) => {
+    return index < lists.length && !_.isNil(lists[index]);
+  };
+
+  const PageListItem = ({ index, style, data }) => {
+    const item = data[index];
+    return (
+      <List.Item
+        style={{
+          marginBottom: '1rem',
+          borderRadius: '24px',
+          boxShadow: '0px 1px 2px rgb(0 0 0 / 4%), 0px 2px 6px 2px rgb(0 0 0 / 8%)',
+          background: 'white',
+          padding: '0',
+          border: '1px solid #e0e0e0',
+          flexDirection: 'column',
+          ...style
         }}
-        dataSource={lists}
-        renderItem={item => (
-          <List.Item
-            style={{
-              marginBottom: '1rem',
-              borderRadius: '24px',
-              boxShadow: '0px 1px 2px rgb(0 0 0 / 4%), 0px 2px 6px 2px rgb(0 0 0 / 8%)',
-              background: 'white',
-              padding: '0',
-              border: '1px solid #e0e0e0'
-            }}
-            key={item.title}
-          >
-            <CardContainer>
-              <CardHeader onClick={() => routerShopDetail(item.id)}>
-                <div className="info-user">
-                  <img style={{ borderRadius: '50%' }} src={item.avatar} width="24px" height="24px" alt="" />
-                  <span className="name-title">{item.title}</span>
-                </div>
-                <span className="time-created">{moment(item.createdAt).fromNow()}</span>
-              </CardHeader>
-              <Content>
-                <p className="description-post">{item.description}</p>
-                <img className="image-cover" src={item.cover} alt="" />
-                <GroupIconText className="num-react">
-                  <IconText icon={LikeOutlined} text={item.upVote} key="list-vertical-like-o" dataItem={item} />
-                  <IconText
-                    icon={DislikeOutlined}
-                    text={item.downVote}
-                    key="list-vertical-dis-like-o"
-                    dataItem={item}
-                  />
-                </GroupIconText>
-              </Content>
-            </CardContainer>
-            <ActionBar>
-              <GroupIconText>
-                <IconText icon={LikeOutlined} text={'Vote Up'} key="list-vertical-like-o" dataItem={item} />
-                <IconText icon={DislikeOutlined} text={'Vote Down'} key="list-vertical-dis-like-o" dataItem={item} />
-                <IconText icon={CommentOutlined} text={'Comment'} key="list-vertical-comment-o" dataItem={item} />
-              </GroupIconText>
-              {/* <Button type="primary" onClick={item => onLixiClick(item)}>
+        key={item.title}
+      >
+        <CardContainer>
+          <CardHeader onClick={() => routerShopDetail(item.id)}>
+            <div className="info-user">
+              <img style={{ borderRadius: '50%' }} src={item.avatar} width="24px" height="24px" alt="" />
+              <span className="name-title">{item.title}</span>
+            </div>
+            <span className="time-created">{moment(item.createdAt).fromNow()}</span>
+          </CardHeader>
+          <Content>
+            <p className="description-post">{item.description}</p>
+            <img className="image-cover" src={item.cover} alt="" />
+            <GroupIconText className="num-react">
+              <IconText icon={LikeOutlined} text={item.upVote} key="list-vertical-like-o" dataItem={item} />
+              <IconText icon={DislikeOutlined} text={item.downVote} key="list-vertical-dis-like-o" dataItem={item} />
+            </GroupIconText>
+          </Content>
+        </CardContainer>
+        <ActionBar>
+          <GroupIconText>
+            <IconText icon={LikeOutlined} text={'Vote Up'} key="list-vertical-like-o" dataItem={item} />
+            <IconText icon={DislikeOutlined} text={'Vote Down'} key="list-vertical-dis-like-o" dataItem={item} />
+            <IconText icon={CommentOutlined} text={'Comment'} key="list-vertical-comment-o" dataItem={item} />
+          </GroupIconText>
+          {/* <Button type="primary" onClick={item => onLixiClick(item)}>
                 lixi
               </Button> */}
-            </ActionBar>
-          </List.Item>
-        )}
-      />
+        </ActionBar>
+      </List.Item>
+    );
+  };
+
+  return (
+    <>
+      <div className={'listing'} style={{ height: '100vh' }}>
+        <AutoSizer>
+          {({ height, width }) => (
+            <InfiniteLoader isItemLoaded={isItemLoaded} itemCount={lists.length}>
+              {({ onItemsRendered, ref }) => (
+                <FixedSizeList
+                  className="List"
+                  height={height}
+                  width={width}
+                  itemSize={width}
+                  itemCount={lists.length}
+                  itemData={lists}
+                  onItemsRendered={onItemsRendered}
+                  ref={ref}
+                >
+                  {PageListItem}
+                </FixedSizeList>
+              )}
+            </InfiniteLoader>
+          )}
+        </AutoSizer>
+      </div>
 
       <Modal title="Are you sure to down vote shop?" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
         <p>Some contents...</p>
