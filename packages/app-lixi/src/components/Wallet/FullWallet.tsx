@@ -110,6 +110,7 @@ const FullWalletWrapper = styled.div`
   border: 1px solid #e0e0e0;
   border-top-left-radius: 24px;
   border-top-right-radius: 24px;
+  margin-top: 80px;
   @media (max-width: 768px) {
     border: none;
   }
