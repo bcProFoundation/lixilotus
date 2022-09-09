@@ -15,6 +15,7 @@ import { FixedSizeList } from 'react-window';
 import InfiniteLoader from 'react-window-infinite-loader';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import moment from 'moment';
+import { useInfinitePagesQuery } from '@store/page/useInfinitePagesQuery';
 
 const CardContainer = styled.div`
   display: flex;
@@ -88,10 +89,15 @@ const PagesListing: React.FC = () => {
   const selectedPageId = useAppSelector(getSelectedPageId);
   const pageLists = useAppSelector(getAllPages);
   const [isShowQrCode, setIsShowQrCode] = useState(false);
-  const [lists, setLists] = useState([]);
+  // const [lists, setLists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [balanceAccount, setBalanceAccount] = useState(0);
+
+  const { data, totalCount } = useInfinitePagesQuery({
+    first: 1,
+    last: undefined
+  }, false);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -106,9 +112,9 @@ const PagesListing: React.FC = () => {
   };
 
   useEffect(() => {
-    dispatch(fetchAllPages());
-    const tempList = mapPagesList(_.cloneDeep(pageLists));
-    setLists([...tempList]);
+    // dispatch(fetchAllPages());
+    // const tempList = mapPagesList(_.cloneDeep(pageLists));
+    // setLists([...tempList]);
     // check balance account
     XPI.Electrumx.balance(selectedAccount?.address)
       .then(result => {
@@ -153,10 +159,9 @@ const PagesListing: React.FC = () => {
 
   const upVoteShop = dataItem => {
     if (selectedAccount && balanceAccount !== 0) {
-      lists.forEach(item => {
-        if (item.title === dataItem.title) item.upVote += 1;
-      });
-      setLists([...lists]);
+      // data.forEach(item => {
+      //   if (item.title === dataItem.title) item.upVote += 1;
+      // });
       message.info(`Successful up vote shop`);
     } else {
       message.info(`Please register account to up vote`);
@@ -165,10 +170,9 @@ const PagesListing: React.FC = () => {
 
   const downVoteShop = dataItem => {
     if (selectedAccount && balanceAccount !== 0) {
-      lists.forEach(item => {
-        if (item.title === dataItem.title) item.downVote += 1;
-      });
-      setLists([...lists]);
+      // lists.forEach(item => {
+      //   if (item.title === dataItem.title) item.downVote += 1;
+      // });
       message.info(`Successful down vote shop`);
     } else {
       message.info(`Please register account to up vote`);
@@ -181,8 +185,6 @@ const PagesListing: React.FC = () => {
 
   const onClickMenu: MenuProps['onClick'] = e => {
     if (e.key === 'filter') {
-      let tempLists = lists.sort((firstItem, secondItem) => firstItem.upVote - secondItem.upVote);
-      setLists([...tempLists]);
     }
     if (e.key === 'week') {
       dispatch(setSelectedPage('testPage'));
@@ -199,11 +201,12 @@ const PagesListing: React.FC = () => {
   };
 
   const isItemLoaded = (index: number) => {
-    return index < lists.length && !_.isNil(lists[index]);
+    return index < data.length && !_.isNil(data[index]);
   };
 
   const PageListItem = ({ index, style, data }) => {
     const item = data[index];
+    if (!item) return null;
     return (
       <List.Item
         style={{
@@ -221,17 +224,17 @@ const PagesListing: React.FC = () => {
         <CardContainer>
           <CardHeader onClick={() => routerShopDetail(item.id)}>
             <div className="info-user">
-              <img style={{ borderRadius: '50%' }} src={item.avatar} width="24px" height="24px" alt="" />
+              <img style={{ borderRadius: '50%' }} src={item?.avatar} width="24px" height="24px" alt="" />
               <span className="name-title">{item.title}</span>
             </div>
             <span className="time-created">{moment(item.createdAt).fromNow()}</span>
           </CardHeader>
           <Content>
             <p className="description-post">{item.description}</p>
-            <img className="image-cover" src={item.cover} alt="" />
+            <img className="image-cover" src={item?.cover} alt="" />
             <GroupIconText className="num-react">
-              <IconText icon={LikeOutlined} text={item.upVote} key="list-vertical-like-o" dataItem={item} />
-              <IconText icon={DislikeOutlined} text={item.downVote} key="list-vertical-dis-like-o" dataItem={item} />
+              <IconText icon={LikeOutlined} text={item?.upVote} key="list-vertical-like-o" dataItem={item} />
+              <IconText icon={DislikeOutlined} text={item?.downVote} key="list-vertical-dis-like-o" dataItem={item} />
             </GroupIconText>
           </Content>
         </CardContainer>
@@ -254,15 +257,18 @@ const PagesListing: React.FC = () => {
       <div className={'listing'} style={{ height: '100vh' }}>
         <AutoSizer>
           {({ height, width }) => (
-            <InfiniteLoader isItemLoaded={isItemLoaded} itemCount={lists.length}>
+            <InfiniteLoader
+              isItemLoaded={isItemLoaded}
+              loadMoreItems={() => { }}
+              itemCount={totalCount} >
               {({ onItemsRendered, ref }) => (
                 <FixedSizeList
                   className="List"
                   height={height}
                   width={width}
                   itemSize={width}
-                  itemCount={lists.length}
-                  itemData={lists}
+                  itemCount={totalCount}
+                  itemData={data}
                   onItemsRendered={onItemsRendered}
                   ref={ref}
                 >

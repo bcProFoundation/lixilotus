@@ -33,9 +33,11 @@ export type Mutation = {
   updatePage: Page;
 };
 
+
 export type MutationCreatePageArgs = {
   data: CreatePageInput;
 };
+
 
 export type MutationUpdatePageArgs = {
   data: UpdatePageInput;
@@ -109,6 +111,7 @@ export type Query = {
   page: Page;
 };
 
+
 export type QueryAllPagesArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
@@ -118,6 +121,7 @@ export type QueryAllPagesArgs = {
   query?: InputMaybe<Scalars['String']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type QueryPageArgs = {
   id: Scalars['String'];
