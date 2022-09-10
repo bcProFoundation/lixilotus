@@ -236,58 +236,48 @@ const PagesListing: React.FC = () => {
       <List.Item
         style={{
           marginBottom: '1rem',
-              borderRadius: '24px',
-              boxShadow: '0px 2px 10px rgb(0 0 0 / 5%)',
-              background: 'white',
-              padding: '0',
-              border: 'none'
+          borderRadius: '24px',
+          boxShadow: '0px 2px 10px rgb(0 0 0 / 5%)',
+          background: 'white',
+          padding: '0',
+          border: 'none',
           ...style
         }}
         key={item.title}
       >
         <CardContainer>
-              <CardHeader onClick={() => routerShopDetail(item.id)}>
-                <InfoCardUser
-                  imgUrl={null}
-                  name={'Nguyen Tanh'}
-                  title={moment(item.createdAt).fromNow().toString()}
-                ></InfoCardUser>
-                <img src="/images/three-dot-ico.svg" alt="" />
-              </CardHeader>
-              <Content>
-                <p className="description-post">{item.description}</p>
-                <img className="image-cover" src={item.cover} alt="" />
-              </Content>
-            </CardContainer>
+          <CardHeader onClick={() => routerShopDetail(item.id)}>
+            <InfoCardUser
+              imgUrl={null}
+              name={'Nguyen Tanh'}
+              title={moment(item.createdAt).fromNow().toString()}
+            ></InfoCardUser>
+            <img src="/images/three-dot-ico.svg" alt="" />
+          </CardHeader>
+          <Content>
+            <p className="description-post">{item.description}</p>
+            <img className="image-cover" src={item.cover} alt="" />
+          </Content>
+        </CardContainer>
         <ActionBar>
-              <GroupIconText>
-                <IconText text={item.upVote} imgUrl="/images/up-ico.svg" key="list-vertical-like-o" dataItem={item} />
-                <IconText
-                  text={item.downVote}
-                  imgUrl="/images/down-ico.svg"
-                  key="list-vertical-like-o"
-                  dataItem={item}
-                />
-                <IconText
-                  imgUrl="/images/comment-ico.svg"
-                  text="0 Comments"
-                  key="list-vertical-like-o"
-                  dataItem={item}
-                />
-                <IconText imgUrl="/images/share-ico.svg" text="Share" key="list-vertical-like-o" dataItem={item} />
-              </GroupIconText>
+          <GroupIconText>
+            <IconText text={item.upVote} imgUrl="/images/up-ico.svg" key="list-vertical-like-o" dataItem={item} />
+            <IconText text={item.downVote} imgUrl="/images/down-ico.svg" key="list-vertical-like-o" dataItem={item} />
+            <IconText imgUrl="/images/comment-ico.svg" text="0 Comments" key="list-vertical-like-o" dataItem={item} />
+            <IconText imgUrl="/images/share-ico.svg" text="Share" key="list-vertical-like-o" dataItem={item} />
+          </GroupIconText>
 
-              <Button type="primary" onClick={item => onLixiClick(item)}>
-                Send tip
-              </Button>
-            </ActionBar>
+          <Button type="primary" onClick={item => onLixiClick(item)}>
+            Send tip
+          </Button>
+        </ActionBar>
       </List.Item>
     );
   };
 
   return (
     <>
-    <SearchBox></SearchBox>
+      <SearchBox></SearchBox>
       <CreatePostCard></CreatePostCard>
       <Menu
         style={{
