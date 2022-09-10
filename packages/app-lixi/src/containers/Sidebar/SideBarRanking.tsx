@@ -26,7 +26,7 @@ const RankingSideBar = styled(Sider)`
     justify-content: flex-start;
     align-items: flex-start;
   }
-  @media (max-width: 1000px) {
+  @media (max-width: 768px) {
     display: none;
   }
   @media (min-width: 1001px) {

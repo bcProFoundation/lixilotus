@@ -171,7 +171,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                       <SidebarShortcut></SidebarShortcut>
                       <Sidebar />
                       <Layout>
-                        {/* <Topbar ref={setRef} /> */}
+                        <Topbar ref={setRef} />
                         <Content className="content-layout">{children}</Content>
                       </Layout>
                       <SidebarRanking></SidebarRanking>

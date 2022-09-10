@@ -6,6 +6,7 @@ import {
   RightOutlined,
   SendOutlined,
   SettingOutlined,
+  ShopOutlined,
   WalletOutlined
 } from '@ant-design/icons';
 import styled from 'styled-components';
@@ -72,6 +73,9 @@ const CointainerAccess = styled.div`
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    @media (min-width: 768px) and (max-width: 1000px) {
+      padding: 0 1rem 1rem 1rem !important;
+    }
   }
 `;
 
@@ -117,7 +121,7 @@ const ShortcutSideBar = styled(Sider)`
   max-width: inherit !important;
   background: var(--bg-color-light-theme);
 
-  @media (max-width: 1000px) {
+  @media (max-width: 768px) {
     display: none;
   }
   @media (min-width: 1001px) {
@@ -165,7 +169,9 @@ const SidebarShortcut = () => {
           <StyledLogo>
             <img width="120px" src="/images/lixilotus-logo.svg" alt="lixilotus" />
           </StyledLogo>
-          <ItemAccess icon={HomeOutlined} text={'Home'} active={true} key="send-lotus" href={'https://sendlotus.com'} />
+          <ItemAccess icon={HomeOutlined} text={'Home'} active={true} key="send-lotus" href={'/'} />
+          <ItemAccess icon={WalletOutlined} text={'Accounts'} active={false} key="wallet-lotus" href={'/wallet'} />
+          <ItemAccess icon={SendOutlined} text={'Send'} active={false} key="send" href={'/send'} />
           <ItemAccess
             icon={EditOutlined}
             text={'Register Pack'}
@@ -173,8 +179,6 @@ const SidebarShortcut = () => {
             key="register-pack"
             href={'/admin/pack-register'}
           />
-          <ItemAccess icon={WalletOutlined} text={'Accounts'} active={false} key="wallet-lotus" href={'/wallet'} />
-          <ItemAccess icon={SendOutlined} text={'Send'} active={false} key="send" href={'/send'} />
           <ItemAccess
             icon={PlusCircleOutlined}
             text={'Create Page'}
@@ -183,6 +187,20 @@ const SidebarShortcut = () => {
             href={'/page/create'}
           />
           <ItemAccess icon={SettingOutlined} text={'Setting'} active={false} key="setting" href={'/admin/settings'} />
+          <ItemAccess
+            icon={SendOutlined}
+            text={'Send Lotus'}
+            active={false}
+            key="send-lotus"
+            href={'https://sendlotus.com'}
+          />
+          <ItemAccess
+            icon={ShopOutlined}
+            text={'Lotusia Shop'}
+            active={false}
+            key="send-lotus"
+            href={'https://lotusia.shop/'}
+          />
         </div>
       </CointainerAccess>
       <CointainerWallet>
