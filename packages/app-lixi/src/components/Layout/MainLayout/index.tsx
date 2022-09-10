@@ -35,7 +35,8 @@ export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
 
 const LixiApp = styled.div`
   text-align: center;
-  font-family: 'Gilroy', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   background-color: ${props => props.theme.app.background};
 `;
 
@@ -47,6 +48,10 @@ const AppBody = styled.div`
   min-height: 100vh;
   background-image: ${props => props.theme.app.gradient};
   background-attachment: fixed;
+  @media (min-width: 1366px) {
+    max-width: 1366px;
+    margin: auto;
+  }
 `;
 
 export const AppContainer = styled.div`
@@ -57,9 +62,6 @@ export const AppContainer = styled.div`
   padding: 10px 30px 120px 30px;
   overflow: hidden;
   background: ${props => props.theme.wallet.background};
-  -webkit-box-shadow: 0px 0px 24px 1px ${props => props.theme.wallet.shadow};
-  -moz-box-shadow: 0px 0px 24px 1px ${props => props.theme.wallet.shadow};
-  box-shadow: 0px 0px 24px 1px ${props => props.theme.wallet.shadow};
   @media (max-width: 768px) {
     width: 100%;
     -webkit-box-shadow: none;
@@ -71,7 +73,7 @@ export const AppContainer = styled.div`
     background: #fffbff;
     padding: 0;
     .content-layout {
-      margin-top: 80px;
+      // margin-top: 80px;
       z-index: 1;
     }
   }
@@ -163,22 +165,19 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
             <Layout>
               <AppBody>
                 <ModalManager />
-                {!selectedAccount ? (
-                  <OnboardingComponent></OnboardingComponent>
-                ) : (
-                  <>
-                    <AppContainer>
+                <>
+                  <AppContainer>
+                    <Layout>
+                      <SidebarShortcut></SidebarShortcut>
+                      <Sidebar />
                       <Layout>
-                        <SidebarShortcut heightHeader={height}></SidebarShortcut>
-                        <Sidebar />
-                        <Layout>
-                          <Topbar ref={setRef} />
-                          <Content className="content-layout">{children}</Content>
-                        </Layout>
-                        <SidebarRanking heightHeader={height}></SidebarRanking>
+                        {/* <Topbar ref={setRef} /> */}
+                        <Content className="content-layout">{children}</Content>
                       </Layout>
-                    </AppContainer>
-                    <Footer>
+                      <SidebarRanking></SidebarRanking>
+                    </Layout>
+                  </AppContainer>
+                  {/* <Footer>
                       <Link href="/" passHref>
                         <NavButton active={selectedKey === '/'}>
                           <HomeOutlined />
@@ -209,9 +208,8 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                           {intl.get('general.settings')}
                         </NavButton>
                       </Link>
-                    </Footer>
-                  </>
-                )}
+                    </Footer> */}
+                </>
               </AppBody>
             </Layout>
           </LixiApp>
