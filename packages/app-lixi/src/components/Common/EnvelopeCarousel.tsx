@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 const baseUrl = process.env.NEXT_PUBLIC_LIXI_API;
 
-export interface EnvelopeCarouselPros {
+export interface EnvelopeCarouselProps {
   className?: string;
   envelopes: Envelope[];
   handleChangeEnvelope: Function;
@@ -12,6 +12,7 @@ export interface EnvelopeCarouselPros {
 
 const carouselSettings = {
   dots: false,
+  rows: 2,
   infinite: true,
   speed: 500,
   slidesToShow: 3,
@@ -43,7 +44,7 @@ const carouselSettings = {
   ]
 };
 
-const EnvelopeCarousel = (props: EnvelopeCarouselPros) => {
+const EnvelopeCarousel = (props: EnvelopeCarouselProps) => {
   const { className, envelopes, handleChangeEnvelope } = props;
   const [selectedEnvelopeId, setSelectedEnvelopeId] = useState(0);
 
@@ -74,8 +75,7 @@ const EnvelopeCarousel = (props: EnvelopeCarouselPros) => {
                     lineHeight: '160px',
                     textAlign: 'center',
                     border: isActive ? 'solid 2px var(--color-primary)' : 'none',
-                    padding: isActive ? '1px' : '0',
-                    boxShadow: 'rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px'
+                    padding: isActive ? '9px 7px' : '7px 5px'
                   }}
                   src={baseUrl + 'api/' + item.thumbnail}
                   onClick={() => onCarouselItemClick(item)}

@@ -2,7 +2,7 @@ import { Layout, Spin } from 'antd';
 import intl from 'react-intl-universal';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
@@ -27,8 +27,9 @@ import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
 import { loadLocale } from '@store/settings/actions';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
 import { injectStore } from 'src/utils/axiosClient';
-
-const { Content, Sider, Header } = Layout;
+import SidebarRanking from '@containers/Sidebar/SideBarRanking';
+import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
+const { Content } = Layout;
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
 
@@ -69,6 +70,10 @@ export const AppContainer = styled.div`
     width: 100%;
     background: #fffbff;
     padding: 0;
+    .content-layout {
+      margin-top: 80px;
+      z-index: 1;
+    }
   }
 `;
 
@@ -122,6 +127,17 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   const currentLocale = useAppSelector(getCurrentLocale);
   const intlInitDone = useAppSelector(getIntlInitStatus);
   const dispatch = useAppDispatch();
+  const [height, setHeight] = useState(0);
+  const ref = useRef(null);
+  const setRef = useCallback(node => {
+    if (node && node.clientHeight) {
+      // Check if a node is actually passed. Otherwise node would be null.
+      const height = node.clientHeight;
+      setHeight(height);
+    }
+    // Save a reference to the node
+    ref.current = node;
+  }, []);
 
   injectStore(currentLocale);
   const isLoading = useAppSelector(getIsGlobalLoading);
@@ -153,11 +169,13 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                   <>
                     <AppContainer>
                       <Layout>
+                        <SidebarShortcut heightHeader={height}></SidebarShortcut>
                         <Sidebar />
                         <Layout>
-                          <Topbar />
-                          <Content>{children}</Content>
+                          <Topbar ref={setRef} />
+                          <Content className="content-layout">{children}</Content>
                         </Layout>
+                        <SidebarRanking heightHeader={height}></SidebarRanking>
                       </Layout>
                     </AppContainer>
                     <Footer>
