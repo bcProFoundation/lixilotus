@@ -291,6 +291,7 @@ const StyledTopbar = styled(Topbar)`
   }
 
   @media (min-width: 768px) {
+    display: none;
     padding: 1rem 2rem;
     position: fixed;
     z-index: 999;
