@@ -1,4 +1,20 @@
-import { Checkbox, Collapse, DatePicker, Form, Input, Radio, RadioChangeEvent, Select, Tooltip } from 'antd';
+import {
+  Button,
+  Checkbox,
+  Col,
+  Collapse,
+  DatePicker,
+  Form,
+  Input,
+  List,
+  Modal,
+  Radio,
+  RadioChangeEvent,
+  Row,
+  Select,
+  Space,
+  Tooltip
+} from 'antd';
 import _, { range } from 'lodash';
 import isEmpty from 'lodash.isempty';
 import moment from 'moment';
@@ -24,7 +40,7 @@ import {
   StyledCollapse
 } from '@bcpros/lixi-components/components/Common/StyledCollapse';
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
-import { countries, UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
+import { countries, UPLOAD_BUTTON_TYPE, UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
 import { Account } from '@bcpros/lixi-models/lib/account';
 import { ClaimType, GenerateLixiCommand, LixiType, LotteryAddress, NetworkType } from '@bcpros/lixi-models/lib/lixi';
 import CountrySelectDropdown from '@components/Common/CountrySelectDropdown';
@@ -37,13 +53,14 @@ import { CreateLixiConfirmationModalProps } from './CreateLixiConfirmationModal'
 import { StyledUploader } from '@components/Common/Uploader';
 
 const { Panel } = Collapse;
+const baseUrl = process.env.NEXT_PUBLIC_LIXI_API;
 const { Option } = Select;
 
-const LotteryInput = styled(Input)`
-  .ant-input-group-addon {
-    width: 52px;
-  }
-`;
+// const LotteryInput = styled(Input)`
+//   .ant-input-group-addon {
+//     width: 52px;
+//   }
+// `;
 
 const StyledDivider = styled.h3`
   width: 100%;
@@ -51,6 +68,125 @@ const StyledDivider = styled.h3`
   border-bottom: 1px solid #000;
   line-height: 0.1em;
   margin: 10px 0 20px;
+`;
+
+const Title = styled.h1`
+  display: flex;
+  height: 32px;
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 32px;
+  text-align: center;
+  color: #1e1a1d;
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+`;
+
+const CreateForm = styled(Form)`
+  .ant-form-item-label {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.4px;
+    color: #4e444b;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+  }
+
+  .ant-radio-group {
+    display: flex;
+
+    .ant-radio-wrapper {
+      font-family: 'Roboto';
+      font-style: normal;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 24px;
+      display: flex;
+      align-items: center;
+      letter-spacing: 0.5px;
+      color: #1e1a1d;
+      flex: none;
+      order: 0;
+      flex-grow: 0;
+    }
+  }
+
+  .ant-form-vertical .ant-form-item .ant-form-item-control {
+    display: flex;
+  }
+
+  .ant-checkbox-wrapper {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.5px;
+    color: #4e444b;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+  }
+
+  .ant-picker.ant-picker-large {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 16px 12px;
+    gap: 16px;
+    width: 343px;
+    height: 56px;
+    background: #ffffff;
+    border: 1px solid #80747c;
+    border-radius: 8px;
+    flex: none;
+    order: 1;
+    align-self: stretch;
+    flex-grow: 0;
+  }
+`;
+
+const CreateInput = styled(Input)`
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 16px;
+  gap: 16px;
+  width: 100%;
+  height: 56px;
+  background: #ffffff;
+  border: 1px solid #80747c;
+  border-radius: 8px;
+  flex: none;
+  order: 1;
+  align-self: stretch;
+  flex-grow: 0;
+`;
+
+const Envelope = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+  height: 142px;
+  background: #ffffff;
+  border: 1px dashed #4e444b;
+  border-radius: 16px;
+  flex: none;
+  order: 1;
+  align-self: stretch;
+  flex-grow: 0;
 `;
 
 type CreateLixiFormProps = {
@@ -61,16 +197,30 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
   const dispatch = useAppDispatch();
   const envelopes = useAppSelector(getAllEnvelopes);
   const envelopeUpload = useAppSelector(getEnvelopeUpload);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const { XPI, Wallet } = React.useContext(AppContext);
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
 
   // New Lixi name
   const [newLixiName, setNewLixiName] = useState('');
   const [newLixiNameIsValid, setNewLixiNameIsValid] = useState<boolean | null>(null);
 
-  // LixiType && ClaimType
+  // LixiType && ClaimType && NetworkType
   const [lixiType, setLixiType] = useState<number>(LixiType.Random);
   const [claimType, setClaimType] = useState<number>(ClaimType.Single);
+  const [networkType, setNetworkType] = useState<string>(NetworkType.SingleIP);
 
   // New lixi balance number
   const [newLixiAmount, setNewLixiAmount] = useState('');
@@ -105,6 +255,7 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
   const [newCountryLixiIsValid, setNewCountryLixiIsValid] = useState(true);
 
   // New max redemption number
+  const [checkMaxClaim, setCheckMaxClaim] = useState<boolean>(false);
   const [newMaxClaim, setNewMaxClaimLixi] = useState('');
   const [newMaxClaimLixiIsValid, setNewMaxClaimLixiIsValid] = useState(true);
 
@@ -126,8 +277,6 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
 
   // New FamilyFriendly
   const [isFamilyFriendly, setIsFamilyFriendlyLixi] = useState<boolean>(false);
-  const [newNetworkType, setNewNetworkType] = useState('');
-  const [newNetworkTypeIsValid, setNewNetworkTypeIsValid] = useState(true);
 
   // New isNFTEnabled
   const [isNFTEnabled, setIsNFTEnabledLixi] = useState<boolean>(false);
@@ -255,10 +404,7 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
   };
 
   const handleChangeNetworkType = (value, e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewNetworkType(value);
-    if (value && !isEmpty(value)) {
-      setNewNetworkTypeIsValid(true);
-    }
+    setNetworkType(value);
   };
 
   const handleChangeEnvelope = (value: number) => {
@@ -304,6 +450,11 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
 
   const handleNewActivatedTimeInput = value => {
     setNewActivatedAtLixi(value._d.toString());
+  };
+
+  const handleMaxClaim = e => {
+    const value = e.target.checked;
+    setCheckMaxClaim(value);
   };
 
   const handleFamilyFriendly = e => {
@@ -355,7 +506,7 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
               <Form.Item>
                 <Tooltip title={intl.get('lixi.loterryAddress')}>
                   <div>
-                    <LotteryInput
+                    <CreateInput
                       disabled
                       prefix={<DollarOutlined />}
                       name="loterryAddress"
@@ -418,7 +569,7 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
       staffAddress: newStaffAddress,
       charityAddress: newCharityAddress,
       joinLotteryProgram: joinLotteryProgram,
-      networkType: newNetworkType
+      networkType: networkType
     };
 
     const createLixiModalProps: CreateLixiConfirmationModalProps = {
@@ -444,7 +595,7 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
       newStaffAddress,
       newCharityAddress,
       joinLotteryProgram,
-      newNetworkType,
+      networkType,
       onOkAction: generateLixi(command)
     };
     dispatch(openModal('CreateLixiConfirmationModal', createLixiModalProps));
@@ -463,36 +614,38 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
       setActivatedAtLixiIsValid(true);
     }
   };
+
   const selectClaimType = () => {
     if (claimType == ClaimType.Single) {
       return (
-        <Form.Item>
+        <Form.Item label={intl.get('lixi.claimType')}>
           <Radio.Group value={lixiType} onChange={handleChangeLixiType}>
-            <Radio value={LixiType.Random}>{intl.get('account.random')}</Radio>
             <Radio value={LixiType.Fixed}>{intl.get('account.fixed')}</Radio>
-            <Radio value={LixiType.Divided}>{intl.get('account.divided')}</Radio>
+            <Radio value={LixiType.Random}>
+              {intl.get('account.random')}{' '}
+              <Tooltip title={intl.get('account.random')}>
+                {' '}
+                <QuestionCircleOutlined />
+              </Tooltip>
+            </Radio>
+            <Radio value={LixiType.Divided}>
+              {intl.get('account.divided')}{' '}
+              <Tooltip title={intl.get('account.divided')}>
+                {' '}
+                <QuestionCircleOutlined />
+              </Tooltip>
+            </Radio>
           </Radio.Group>
         </Form.Item>
       );
     } else {
       return (
         <>
-          <Form.Item>
+          <Form.Item label={intl.get('lixi.claimType')}>
             <Radio.Group value={lixiType} onChange={handleChangeLixiType}>
               <Radio value={LixiType.Random}>{intl.get('account.random')}</Radio>
               <Radio value={LixiType.Equal}>{intl.get('account.equal')}</Radio>
             </Radio.Group>
-          </Form.Item>
-          <Form.Item>
-            <Input
-              addonBefore={intl.get('account.sub-lixi')}
-              type="number"
-              value={newNumberOfSubLixi}
-              placeholder={intl.get('account.numberOfSubLixi')}
-              name="equalValue"
-              onChange={e => handleNewNumberOfSubLixi(e)}
-              onWheel={e => e.currentTarget.blur()}
-            />
           </Form.Item>
         </>
       );
@@ -505,19 +658,16 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
       case LixiType.Fixed:
         return (
           <>
-            <Form.Item>
-              <Input.Group compact>
-                <Input
-                  addonBefore={intl.get('account.fixed')}
-                  type="number"
-                  step={1 / 10 ** currency.cashDecimals}
-                  value={newLixiFixedValue}
-                  placeholder={intl.get('account.defaultValueToGive')}
-                  name="fixedValue"
-                  onChange={e => handleChangeFixedValue(e)}
-                  onWheel={e => e.currentTarget.blur()}
-                ></Input>
-              </Input.Group>
+            <Form.Item label={intl.get('account.eachClaim')}>
+              <CreateInput
+                type="number"
+                step={1 / 10 ** currency.cashDecimals}
+                value={newLixiFixedValue}
+                name="fixedValue"
+                onChange={e => handleChangeFixedValue(e)}
+                onWheel={e => e.currentTarget.blur()}
+                suffix={currency.ticker}
+              />
             </Form.Item>
           </>
         );
@@ -525,19 +675,18 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
       case LixiType.Divided:
         return (
           <>
-            <Form.Item>
-              <Input.Group compact>
-                <Input
-                  addonBefore={intl.get('account.divided')}
-                  type="number"
-                  step={1 / 10 ** currency.cashDecimals}
-                  value={newLixiDividedValue}
-                  placeholder={intl.get('account.dividedNumber')}
-                  name="dividedValue"
-                  onChange={e => handleChangeDividedValue(e)}
-                  onWheel={e => e.currentTarget.blur()}
-                ></Input>
-              </Input.Group>
+            <Form.Item label={intl.get('account.eachClaim')}>
+              <CreateInput
+                prefix="1 / "
+                suffix={intl.get('account.balance')}
+                type="number"
+                step={1 / 10 ** currency.cashDecimals}
+                value={newLixiDividedValue}
+                placeholder={intl.get('account.dividedNumber')}
+                name="dividedValue"
+                onChange={e => handleChangeDividedValue(e)}
+                onWheel={e => e.currentTarget.blur()}
+              ></CreateInput>
             </Form.Item>
           </>
         );
@@ -548,31 +697,35 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
       default:
         return (
           <>
-            <Form.Item>
-              <Input
-                addonBefore={intl.get('account.min')}
-                id="min"
-                onWheel={e => e.currentTarget.blur()}
-                type="number"
-                step={1 / 10 ** currency.cashDecimals}
-                placeholder={intl.get('account.minValueToGive')}
-                name="minValue"
-                value={newLixiMinValue}
-                onChange={e => handleChangeMinValue(e)}
-              ></Input>
-            </Form.Item>
-            <Form.Item>
-              <Input
-                addonBefore={intl.get('account.max')}
-                type="number"
-                step={1 / 10 ** currency.cashDecimals}
-                placeholder={intl.get('account.maxValueToGive')}
-                name="maxValue"
-                value={newLixiMaxValue}
-                onChange={e => handleChangeMaxValue(e)}
-                onWheel={e => e.currentTarget.blur()}
-              ></Input>
-            </Form.Item>
+            <Row gutter={[8, 8]}>
+              <Col span={12}>
+                <Form.Item label={intl.get('account.min')}>
+                  <CreateInput
+                    id="min"
+                    onWheel={e => e.currentTarget.blur()}
+                    type="number"
+                    step={1 / 10 ** currency.cashDecimals}
+                    name="minValue"
+                    value={newLixiMinValue}
+                    onChange={e => handleChangeMinValue(e)}
+                    suffix={currency.ticker}
+                  ></CreateInput>
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item label={intl.get('account.max')}>
+                  <CreateInput
+                    type="number"
+                    step={1 / 10 ** currency.cashDecimals}
+                    name="maxValue"
+                    value={newLixiMaxValue}
+                    onChange={e => handleChangeMaxValue(e)}
+                    onWheel={e => e.currentTarget.blur()}
+                    suffix={currency.ticker}
+                  ></CreateInput>
+                </Form.Item>
+              </Col>
+            </Row>
           </>
         );
     }
@@ -667,146 +820,313 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
 
   return (
     <>
-      <LixiCollapse
-        accordion
-        collapsible={disabled ? 'disabled' : 'header'}
-        disabled={disabled}
+      <Title>{intl.get('lixi.createLixi')}</Title>
+      <CreateForm layout="vertical">
+        <Form.Item label={intl.get('lixi.claimType')}>
+          <Radio.Group value={claimType} onChange={handleChangeClaimType}>
+            <Space direction="vertical">
+              <Radio value={ClaimType.Single}>
+                {intl.get('account.singleCode')}
+                &nbsp;
+                <Tooltip title={intl.get('lixi.claimType')}>
+                  <QuestionCircleOutlined />
+                </Tooltip>
+              </Radio>
+              <Radio value={ClaimType.OneTime}>
+                {intl.get('account.oneTimeCode')}
+                &nbsp;
+                <Tooltip title={intl.get('lixi.claimType')}>
+                  <QuestionCircleOutlined />
+                </Tooltip>
+              </Radio>
+            </Space>
+          </Radio.Group>
+        </Form.Item>
+
+        {claimType == ClaimType.Single ? (
+          <Form.Item label={intl.get('lixi.claimType')}>
+            <Radio.Group value={lixiType} onChange={handleChangeLixiType}>
+              <Space direction="vertical">
+                <Radio value={LixiType.Fixed}>{intl.get('account.fixed')}</Radio>
+                <Radio value={LixiType.Random}>
+                  {intl.get('account.random')}{' '}
+                  <Tooltip title={intl.get('account.random')}>
+                    {' '}
+                    <QuestionCircleOutlined />
+                  </Tooltip>
+                </Radio>
+                <Radio value={LixiType.Divided}>
+                  {intl.get('account.divided')}{' '}
+                  <Tooltip title={intl.get('account.divided')}>
+                    {' '}
+                    <QuestionCircleOutlined />
+                  </Tooltip>
+                </Radio>
+              </Space>
+            </Radio.Group>
+          </Form.Item>
+        ) : (
+          <Form.Item label={intl.get('lixi.claimType')}>
+            <Radio.Group value={lixiType} onChange={handleChangeLixiType}>
+              <Space direction="vertical">
+                <Radio value={LixiType.Random}>{intl.get('account.random')}</Radio>
+                <Radio value={LixiType.Equal}>{intl.get('account.equal')}</Radio>
+              </Space>
+            </Radio.Group>
+          </Form.Item>
+        )}
+
+        <Form.Item className="lixiName" label={intl.get('lixi.name')} required>
+          <CreateInput name="lixiName" value={newLixiName} onChange={e => handleNewLixiNameInput(e)} />
+        </Form.Item>
+
+        <Form.Item label={intl.get('account.budget')} required={claimType == ClaimType.OneTime}>
+          <CreateInput
+            name="lixiAmount"
+            value={newLixiAmount}
+            onChange={e => handleNewLixiAmountInput(e)}
+            suffix={currency.ticker}
+          />
+        </Form.Item>
+
+        {selectLixiType()}
+        {claimType == ClaimType.OneTime && (
+          <Form.Item label={intl.get('account.numberOfSubLixi')}>
+            <CreateInput
+              type="number"
+              step={1}
+              value={newNumberOfSubLixi}
+              name="numberOfSubLixi"
+              onChange={e => handleNewNumberOfSubLixi(e)}
+              onWheel={e => e.currentTarget.blur()}
+            />
+          </Form.Item>
+        )}
+
+        <Form.Item>
+          <Checkbox value={checkMaxClaim} onChange={e => handleMaxClaim(e)}>
+            {intl.get('account.checkMaxClaim')}
+          </Checkbox>
+          {checkMaxClaim === true && (
+            <Form.Item label={intl.get('account.maxClaim')} required>
+              <CreateInput
+                type="number"
+                name="lixiMaxClaim"
+                value={newMaxClaim}
+                onChange={e => handleNewMaxClaimInput(e)}
+                onWheel={e => e.currentTarget.blur()}
+              />
+            </Form.Item>
+          )}
+        </Form.Item>
+
+        <Form.Item label={intl.get('account.validityFrom')}>
+          <DatePicker
+            placeholder={intl.get('account.activatedTime')}
+            name="lixiActivatedAt"
+            disabledDate={current => disabledDate(current)}
+            disabledTime={current => disabledDateTime(current)}
+            showTime={{
+              format: 'HH:mm'
+            }}
+            format="YYYY-MM-DD HH:mm"
+            size={'large'}
+            style={{
+              width: '100%'
+            }}
+            onSelect={handleNewActivatedTimeInput}
+            onOk={onActivatedOk}
+          />
+        </Form.Item>
+
+        <Form.Item label={intl.get('account.validityTo')}>
+          <DatePicker
+            placeholder={intl.get('account.expiryTime')}
+            name="lixiExpiryAt"
+            disabledDate={current => disabledDate(current)}
+            disabledTime={current => disabledDateTime(current)}
+            showTime={{
+              format: 'HH:mm'
+            }}
+            format="YYYY-MM-DD HH:mm"
+            size={'large'}
+            style={{
+              width: '100%'
+            }}
+            onSelect={handleNewExpityTimeInput}
+            onOk={onOk}
+          />
+        </Form.Item>
+
+        <Form.Item label={intl.get('account.country')}>
+          <CountrySelectDropdown
+            countries={countries}
+            defaultValue={newCountryLixi ? newCountryLixi : intl.get('account.allCountry')}
+            handleChangeCountry={handleChangeCountry}
+          />
+        </Form.Item>
+
+        <Form.Item label={intl.get('account.envelope')}>
+          <Envelope>
+            <Row>
+              <Col span={18} push={6} style={{ padding: '35px 0px 35px 0px' }}>
+                {/* <Button type="link" onClick={}> */}
+                <Button
+                  onClick={showModal}
+                  type="link"
+                  style={{
+                    fontFamily: 'Roboto',
+                    fontStyle: 'normal',
+                    fontWeight: '400',
+                    fontSize: '14px',
+                    lineHeight: '20px',
+                    alignItems: 'center',
+                    color: '#9E2A9C',
+                    flex: 'none',
+                    order: '0',
+                    flexGrow: '0'
+                  }}
+                >
+                  {' '}
+                  {intl.get('lixi.envelopesSelect')}{' '}
+                </Button>
+                <br />
+                <span> {intl.get('or')} </span>
+                <br />
+                <StyledUploader
+                  type={UPLOAD_TYPES.ENVELOPE}
+                  isIcon={false}
+                  buttonName={intl.get('lixi.browser')}
+                  buttonType={UPLOAD_BUTTON_TYPE.LINK}
+                  showUploadList={false}
+                />
+              </Col>
+              <Col span={6} pull={18}>
+                <img
+                  src={
+                    !newEnvelopeId && !envelopeUpload
+                      ? '/images/lotus_logo.png'
+                      : (newEnvelopeId &&
+                          !envelopeUpload &&
+                          baseUrl + 'api/' + envelopes.find(item => item.id === newEnvelopeId).thumbnail) ||
+                        (envelopeUpload && envelopeUpload.url)
+                  }
+                  style={{
+                    position: 'absolute',
+                    width: '110px',
+                    height: '110px',
+                    left: '16px',
+                    top: '16px'
+                  }}
+                ></img>
+              </Col>
+            </Row>
+          </Envelope>
+        </Form.Item>
+
+        <Form.Item>
+          <Select defaultValue={intl.get('NetworkType.SingleIP')} onChange={handleChangeNetworkType}>
+            <Option value={NetworkType.SingleIP}>
+              {intl.get('NetworkType.SingleIP')}
+              &nbsp;
+              <Tooltip title={intl.get('NetworkType.SingleIPInfo')}>
+                <QuestionCircleOutlined />
+              </Tooltip>
+            </Option>
+            <Option value={NetworkType.FamilyFriendly}>
+              {intl.get('NetworkType.FamilyFriendly')}
+              &nbsp;
+              <Tooltip title={intl.get('NetworkType.FamilyFriendlyInfo')}>
+                <QuestionCircleOutlined />
+              </Tooltip>
+            </Option>
+            <Option value={NetworkType.NoWifiRestriction}>
+              {intl.get('NetworkType.NoWifiRestriction')}
+              &nbsp;
+              <Tooltip title={intl.get('NetworkType.NoWifiRestrictionInfo')}>
+                <QuestionCircleOutlined />
+              </Tooltip>
+            </Option>
+          </Select>
+        </Form.Item>
+      </CreateForm>
+      <SmartButton
         style={{
-          marginBottom: '24px'
+          width: '247px',
+          height: '40px',
+          padding: '10px 24px',
+          gap: '8px'
         }}
+        onClick={() => handleSubmitCreateLixi()}
+        disabled={!createLixiFormDataIsValid}
       >
-        <Panel header={intl.get('account.createLixi')} key="1">
-          <AntdFormWrapper>
-            <Form
-              size="small"
-              style={{
-                width: 'auto'
-              }}
-            >
-              {/* Name */}
-              <Form.Item validateStatus={newLixiNameIsValid === null || newLixiNameIsValid ? '' : 'error'}>
-                <Input
-                  addonBefore={intl.get('lixi.name')}
-                  placeholder={intl.get('account.enterLixiName')}
-                  name="lixiName"
-                  value={newLixiName}
-                  onChange={e => handleNewLixiNameInput(e)}
-                />
-              </Form.Item>
-
-              {/* select type claim */}
-              <Form.Item>
-                <Radio.Group buttonStyle="solid" size="large" value={claimType} onChange={handleChangeClaimType}>
-                  <Radio.Button value={ClaimType.Single}>{intl.get('account.singleCode')}</Radio.Button>
-                  <Radio.Button value={ClaimType.OneTime}>{intl.get('account.oneTimeCode')}</Radio.Button>
-                </Radio.Group>
-              </Form.Item>
-              {selectClaimType()}
-              <Form.Item>
-                <Input
-                  type="number"
-                  addonBefore={intl.get('account.amount')}
-                  placeholder={intl.get('account.enterLixiBalance')}
-                  name="lixiAmount"
-                  value={newLixiAmount}
-                  onChange={e => handleNewLixiAmountInput(e)}
-                  onWheel={e => e.currentTarget.blur()}
-                />
-              </Form.Item>
-              {selectLixiType()}
-              {/* Lixi envelope */}
-              <Form.Item>
-                <AntdFormWrapper>
-                  <EnvelopeCarousel envelopes={envelopes} handleChangeEnvelope={handleChangeEnvelope} />
-                </AntdFormWrapper>
-              </Form.Item>
-              {/* Custom Envelope */}
-              <Form.Item>
-                <StyledDivider>
-                  <span style={{ backgroundColor: '#FFF', padding: '0 10px' }}>
-                    {intl.get('lixi.uploadDividerText')}
-                  </span>
-                </StyledDivider>
-                <StyledUploader type={UPLOAD_TYPES.ENVELOPE} />
-              </Form.Item>
-              <hr />
-              {/* Message */}
-              <Form.Item>
-                <TextArea
-                  placeholder={intl.get('account.lixiMessage')}
-                  name="envelopeMessage"
-                  value={newEnvelopeMessage}
-                  onChange={e => handleEnvelopeMessageInput(e)}
-                />
-              </Form.Item>
-
-              {/* Lixi country */}
-              <Form.Item>
-                <AntdFormWrapper>
-                  <CountrySelectDropdown
-                    countries={countries}
-                    defaultValue={newCountryLixi ? newCountryLixi : intl.get('account.allCountry')}
-                    handleChangeCountry={handleChangeCountry}
-                  />
-                </AntdFormWrapper>
-              </Form.Item>
-
-              {/* Advanced */}
-              <Form.Item>
-                <AdvancedCollapse>
-                  <Panel header={intl.get('account.advance')} key="2">
-                    {/* Max Claim and Expity Time */}
-                    {advanceOptions()}
-
-                    {/* Lottery Program */}
-                    {ClaimType.OneTime === claimType && <Form.Item>{lotterProgram()}</Form.Item>}
-
-                    {/* Family Friendly */}
-                    <Form.Item>
-                      <Checkbox value={isFamilyFriendly} onChange={e => handleFamilyFriendly(e)}>
-                        {intl.get('account.familyFriendly')}
-                      </Checkbox>
-
-                      <Select defaultValue={intl.get('NetworkType.SingleIP')} onChange={handleChangeNetworkType}>
-                        <Option value={NetworkType.SingleIP}>
-                          {intl.get('NetworkType.SingleIP')}
-                          &nbsp;
-                          <Tooltip title={intl.get('NetworkType.SingleIPInfo')}>
-                            <QuestionCircleOutlined />
-                          </Tooltip>
-                        </Option>
-                        <Option value={NetworkType.FamilyFriendly}>
-                          {intl.get('NetworkType.FamilyFriendly')}
-                          &nbsp;
-                          <Tooltip title={intl.get('NetworkType.FamilyFriendlyInfo')}>
-                            <QuestionCircleOutlined />
-                          </Tooltip>
-                        </Option>
-                        <Option value={NetworkType.NoWifiRestriction}>
-                          {intl.get('NetworkType.NoWifiRestriction')}
-                          &nbsp;
-                          <Tooltip title={intl.get('NetworkType.NoWifiRestrictionInfo')}>
-                            <QuestionCircleOutlined />
-                          </Tooltip>
-                        </Option>
-                      </Select>
-                      {/* {ClaimType.OneTime === claimType && (
-                        <Checkbox value={isNFTEnabled} onChange={e => handleNFTEnabled(e)}>
-                          {intl.get('lixi.isNFTEnabled')}
-                        </Checkbox>
-                      )} */}
-                    </Form.Item>
-                  </Panel>
-                </AdvancedCollapse>
-              </Form.Item>
-            </Form>
-          </AntdFormWrapper>
-          <SmartButton onClick={() => handleSubmitCreateLixi()} disabled={!createLixiFormDataIsValid}>
-            <PlusSquareOutlined />
-            &nbsp;{intl.get('account.createLixi')}
-          </SmartButton>
-        </Panel>
-      </LixiCollapse>
+        {intl.get('account.createLixi')}
+      </SmartButton>
+      <Modal
+        closable={false}
+        visible={isModalVisible}
+        width={400}
+        style={{
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+          padding: '0px',
+          background: '#FFFBFF',
+          border: '1px solid rgba(128, 116, 124, 0.12)',
+          boxShadow: '0px 0px 12px rgba(0, 0, 0, 0.12)',
+          borderRadius: '12px'
+        }}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        footer={[
+          <Button
+            style={{
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: '10px 24px',
+              gap: '10px',
+              width: '67px',
+              height: '40px',
+              background: '#9E2A9C',
+              color: '#FFFFFF',
+              borderRadius: '16px',
+              flex: 'none',
+              order: '0',
+              flexGrow: '0',
+              border: 'none'
+            }}
+            key={intl.get('cancel')}
+            onClick={handleCancel}
+          >
+            {intl.get('cancel')}
+          </Button>,
+          <Button
+            style={{
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: '10px 24px',
+              gap: '10px',
+              width: '67px',
+              height: '40px',
+              background: '#9E2A9C',
+              color: '#FFFFFF',
+              borderRadius: '16px',
+              flex: 'none',
+              order: '0',
+              flexGrow: '0',
+              border: 'none'
+            }}
+            key="Ok"
+            type="primary"
+            onClick={handleOk}
+          >
+            Ok
+          </Button>
+        ]}
+      >
+        <EnvelopeCarousel envelopes={envelopes} handleChangeEnvelope={handleChangeEnvelope} />
+      </Modal>
     </>
   );
 };

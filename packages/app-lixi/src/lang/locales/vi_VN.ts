@@ -14,6 +14,10 @@ Table of Contents
 */
 
 export default {
+  /* 00. special*/
+  'special.or': 'Hoặc',
+  'special.cancel': 'Hủy bỏ',
+
   /* 01.General */
   'general.home': 'Nhà',
   'general.accounts': 'Tài khoản',
@@ -43,6 +47,7 @@ export default {
   'account.fixed': 'Cố định',
   'account.divided': 'Giảm dần',
   'account.equal': 'Chia đều',
+  'account.eachClaim': 'Mệnh giá mỗi lần nhận',
   'account.perPack': 'SL mỗi gói',
   'account.numberLixiPerPackage': 'Số lượng bao lì xì phụ trong mỗi gói ',
   'account.numberOfSubLixi': 'Số lượng bao Lì xì phụ',
@@ -52,12 +57,15 @@ export default {
   'account.max': 'Đến',
   'account.minValueToGive': 'Từ',
   'account.maxValueToGive': 'Đến',
-  'account.maxClaim': 'Số lượt Lì xì',
+  'account.checkMaxClaim': 'Giới hạn số lượng lì xì',
+  'account.maxClaim': 'Số lượng phiên bản',
   'account.enterMaxClaimNumber': 'Nhập số lượt Lì xì',
   'account.minStaking': 'Số lượng stake tối thiểu',
   'account.enterMinStaking': 'Nhập số lượng stake tối thiểu',
   'account.expiryTime': 'Thời hạn nhận Lì xì',
   'account.activatedTime': 'Thời gian kích hoạt Lì xì',
+  'account.validityFrom': 'Hiệu lực từ',
+  'account.validityTo': 'Hiệu lực đến',
   'account.createLixi': 'Tạo Lì xì',
   'account.enterLixiName': 'Nhập tên Lì xì của bạn',
   'account.enterLixiBalance': 'Nhập số dư ban đầu Lì xì của bạn',
@@ -95,8 +103,13 @@ export default {
   'account.matchPassword': 'Mật khẩu phải trùng',
   'account.repeatPassword': 'Vui lòng nhập lại mật khẩu ',
   'account.transactionHistory': 'Lịch sử giao dịch',
+  'lixi.budget': 'Ngân sách',
+  'lixi.balance': 'Số dư',
+  'account.country': 'Quốc gia áp dụng',
+  'account.envelope': 'Hình ảnh',
 
   /* 03.Lixi */
+  'lixi.createLixi': 'Tạo lixi mới',
   'lixi.sub-lixi': 'Bao lì xì phụ',
   'lixi.dividedBy': 'Chia cho',
   'lixi.fundGiveFixed': 'Loại Lì xì: Cố định',
@@ -118,10 +131,12 @@ export default {
   'lixi.expireAt': 'Hến hạn vào:',
   'lixi.activatedAt': 'Kích hoạt vào:',
   'lixi.settingConfirm': 'Hãy xác nhận thông tin Lì xì của bạn.',
-  'lixi.name': 'Tên:',
+  'lixi.name': 'Tên của lixi',
   'lixi.fundForAccount': 'Chi từ tài khoản:',
   'lixi.optionFamilyFriendly': 'Tùy chọn: Gia đình cùng nhận Lì xì"',
   'lixi.optional': 'Tùy chọn',
+  'lixi.optionalNetworkType': 'Tùy chọn: {networkType}',
+
   'lixi.lixiInfo': 'Thông tin Lì xì {lixiName}',
   'lixi.claimType': 'Loại Lì xì',
   'lixi.type': 'Loại',
@@ -143,9 +158,11 @@ export default {
   'lixi.fileUploadError': 'Lỗi khi tải thiệp lên server',
   'lixi.fileUploadSuccess': 'Tải thiệp lên thành công',
   'lixi.uploadDividerText': 'Thiệp tự chọn',
+  'lixi.browser': 'Chọn ảnh từ thiết bị',
   'lixi.uploadText': 'Đăng thiệp',
   'lixi.uploadingText': 'Đang tải...',
   'lixi.previewFileFailed': 'Không thể xem trước file',
+  'lixi.envelopesSelect': 'Chọn từ mẫu có sẵn',
   'lixi.renameLixi': 'Đổi tên Lì xi',
   'lixi.enterNewLixiName': 'Nhập tên mới cho Lì xì',
   'lixi.lixiLengthError': 'Tên Lì xì phải là một chuỗi dài từ 1 đến 24 ký tự',

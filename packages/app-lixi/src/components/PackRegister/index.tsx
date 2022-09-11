@@ -11,6 +11,7 @@ import { getSelectedAccount } from '@store/account/selectors';
 import { Account } from '@bcpros/lixi-models/src/lib/account';
 import { registerLixiPack, registerLixiPackFailure } from '@store/lixi/actions';
 import { RegisterLixiPackCommand } from '@bcpros/lixi-models';
+import { WrapperPage } from '@components/Settings';
 
 const RegisterComponent: React.FC = () => {
   const isLoading = useAppSelector(getIsGlobalLoading);
@@ -47,44 +48,47 @@ const RegisterComponent: React.FC = () => {
 
   return (
     <>
-      <Row
-        style={{
-          display: 'flex'
-        }}
-      >
-        <Col span={24}>
-          <Spin spinning={isLoading} indicator={CashLoadingIcon}>
-            <Form
-              style={{
-                width: 'auto'
-              }}
-            >
-              <FormItemClaimCodeXpiInput
-                loadWithCameraOpen={false}
-                onScan={result =>
-                  handleClaimCodeChange({
-                    target: {
-                      name: 'claimCode',
-                      value: result
-                    }
-                  })
-                }
-                inputProps={{
-                  onChange: e => handleClaimCodeChange(e),
-                  value: currentClaimCode
-                }}
-              ></FormItemClaimCodeXpiInput>
-              <div
+      <WrapperPage>
+        <Row
+          style={{
+            display: 'flex'
+          }}
+        >
+          <Col span={24}>
+            <Spin spinning={isLoading} indicator={CashLoadingIcon}>
+              <h3 style={{ marginBottom: '1rem', textTransform: 'uppercase' }}>Register Pack</h3>
+              <Form
                 style={{
-                  paddingTop: '12px'
+                  width: 'auto'
                 }}
               >
-                <PrimaryButton onClick={handleOnClick}>{intl.get('register.register')}</PrimaryButton>
-              </div>
-            </Form>
-          </Spin>
-        </Col>
-      </Row>
+                <FormItemClaimCodeXpiInput
+                  loadWithCameraOpen={false}
+                  onScan={result =>
+                    handleClaimCodeChange({
+                      target: {
+                        name: 'claimCode',
+                        value: result
+                      }
+                    })
+                  }
+                  inputProps={{
+                    onChange: e => handleClaimCodeChange(e),
+                    value: currentClaimCode
+                  }}
+                ></FormItemClaimCodeXpiInput>
+                <div
+                  style={{
+                    paddingTop: '12px'
+                  }}
+                >
+                  <PrimaryButton onClick={handleOnClick}>{intl.get('register.register')}</PrimaryButton>
+                </div>
+              </Form>
+            </Spin>
+          </Col>
+        </Row>
+      </WrapperPage>
     </>
   );
 };
