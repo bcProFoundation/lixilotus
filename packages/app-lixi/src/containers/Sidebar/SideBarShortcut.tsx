@@ -1,5 +1,6 @@
 import { Layout, Space } from 'antd';
 import {
+  DownOutlined,
   EditOutlined,
   HomeOutlined,
   PlusCircleOutlined,
@@ -10,15 +11,17 @@ import {
   WalletOutlined
 } from '@ant-design/icons';
 import styled from 'styled-components';
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import classNames from 'classnames';
 import { useAppSelector } from '@store/hooks';
-import { getSelectedAccount } from '@store/account/selectors';
+import { getAllAccounts, getSelectedAccount } from '@store/account/selectors';
 import { Logged } from './SideBarRanking';
 import { fromSmallestDenomination } from '@utils/cashMethods';
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
+import { useRouter } from 'next/router';
+import { Account } from '@bcpros/lixi-models';
 
 const { Sider } = Layout;
 
@@ -161,6 +164,10 @@ const StyledLogged = styled(Logged)`
 
 const SidebarShortcut = () => {
   const selectedAccount = useAppSelector(getSelectedAccount);
+  const savedAccounts: Account[] = useAppSelector(getAllAccounts);
+  const [isCollapse, setIsCollapse] = useState(false);
+  const router = useRouter();
+  const selectedKey = router.pathname ?? '';
 
   return (
     <ShortcutSideBar>
@@ -169,24 +176,36 @@ const SidebarShortcut = () => {
           <StyledLogo>
             <img width="120px" src="/images/lixilotus-logo.svg" alt="lixilotus" />
           </StyledLogo>
-          <ItemAccess icon={HomeOutlined} text={'Home'} active={true} key="send-lotus" href={'/'} />
-          <ItemAccess icon={WalletOutlined} text={'Accounts'} active={false} key="wallet-lotus" href={'/wallet'} />
-          <ItemAccess icon={SendOutlined} text={'Send'} active={false} key="send" href={'/send'} />
+          <ItemAccess icon={HomeOutlined} text={'Home'} active={selectedKey === '/'} key="send-lotus" href={'/'} />
+          <ItemAccess
+            icon={WalletOutlined}
+            text={'Accounts'}
+            active={selectedKey === '/wallet'}
+            key="wallet-lotus"
+            href={'/wallet'}
+          />
+          <ItemAccess icon={SendOutlined} text={'Send'} active={selectedKey === '/send'} key="send" href={'/send'} />
           <ItemAccess
             icon={EditOutlined}
             text={'Register Pack'}
-            active={false}
+            active={selectedKey === '/admin/pack-register'}
             key="register-pack"
             href={'/admin/pack-register'}
           />
           <ItemAccess
             icon={PlusCircleOutlined}
             text={'Create Page'}
-            active={false}
+            active={selectedKey === '/page/create'}
             key="create-page"
             href={'/page/create'}
           />
-          <ItemAccess icon={SettingOutlined} text={'Setting'} active={false} key="setting" href={'/admin/settings'} />
+          <ItemAccess
+            icon={SettingOutlined}
+            text={'Setting'}
+            active={selectedKey === '/admin/settings'}
+            key="setting"
+            href={'/admin/settings'}
+          />
           <ItemAccess
             icon={SendOutlined}
             text={'Send Lotus'}
@@ -206,23 +225,25 @@ const SidebarShortcut = () => {
       <CointainerWallet>
         <div className="header-box-wallet">
           <h3>Wallet</h3>
-          <RightOutlined />
+          {!isCollapse && <RightOutlined onClick={() => setIsCollapse(!isCollapse)} />}
+          {isCollapse && <DownOutlined onClick={() => setIsCollapse(!isCollapse)} />}
         </div>
         {!selectedAccount && <div className="content-box-wallet">Please Login to access this feature</div>}
-        {selectedAccount && (
-          <StyledLogged>
-            <div className="account-logged">
-              <img src="/images/xpi.svg" alt="" />
-              <span>{selectedAccount?.name || ''}</span>
-            </div>
-            <div className="balance">
-              <BalanceHeader
-                balance={fromSmallestDenomination(selectedAccount?.balance ?? 0)}
-                ticker={currency.ticker}
-              />
-            </div>
-          </StyledLogged>
-        )}
+        {savedAccounts &&
+          savedAccounts.map(
+            acc =>
+              isCollapse && (
+                <StyledLogged>
+                  <div className="account-logged">
+                    <img src="/images/xpi.svg" alt="" />
+                    <span>{acc?.name || ''}</span>
+                  </div>
+                  <div className="balance">
+                    <BalanceHeader balance={fromSmallestDenomination(acc?.balance ?? 0)} ticker={currency.ticker} />
+                  </div>
+                </StyledLogged>
+              )
+          )}
       </CointainerWallet>
     </ShortcutSideBar>
   );
