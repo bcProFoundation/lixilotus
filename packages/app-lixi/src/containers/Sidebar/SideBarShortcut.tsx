@@ -25,7 +25,17 @@ import { Account } from '@bcpros/lixi-models';
 
 const { Sider } = Layout;
 
-const ItemAccess = ({ icon, text, href, active }: { icon: React.FC; text: string; href: string; active: boolean }) => (
+export const ItemAccess = ({
+  icon,
+  text,
+  href,
+  active
+}: {
+  icon: React.FC;
+  text: string;
+  href: string;
+  active: boolean;
+}) => (
   <Link href={href}>
     <a>
       <Space className={'item-access'}>
@@ -36,7 +46,7 @@ const ItemAccess = ({ icon, text, href, active }: { icon: React.FC; text: string
   </Link>
 );
 
-const CointainerAccess = styled.div`
+export const CointainerAccess = styled.div`
   background: #fff;
   box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
   border-radius: 20px;

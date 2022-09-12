@@ -61,6 +61,10 @@ const NavBarHeader = styled(Header)`
     font-size: 24px;
     color: var(--color-primary);
   }
+  @media (max-width: 768px) {
+    padding: 0;
+    width: 100%;
+  }
 }
 `;
 
