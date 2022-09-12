@@ -30,6 +30,7 @@ import {
 import * as _ from 'lodash';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { JwtAuthGuard } from 'src/modules/auth/jwtauth.guard';
+import { AuthenticationGuard } from 'src/modules/auth/guards/auth.guard';
 import { VError } from 'verror';
 import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase58Str, hashMnemonic } from '../../../utils/encryptionMethods';
 import { PrismaService } from '../../prisma/prisma.service';
@@ -444,5 +445,11 @@ export class AccountController {
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
+  }
+
+  @Get('/test') // just for testing, will delete in the next commit
+  @UseGuards(AuthenticationGuard)
+  async test() {
+    return '*Authorized*';
   }
 }

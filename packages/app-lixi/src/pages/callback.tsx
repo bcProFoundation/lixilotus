@@ -23,8 +23,8 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, query }
         scope: 'openid email'
       })
       .then(response => {
-        const { access_token, expires_in } = response.data;
-        setCookie('access_token', access_token, {
+        const { expires_in, id_token } = response.data;
+        setCookie('access_token', id_token, {
           httpOnly: true,
           sameSite: 'strict',
           path: '/',

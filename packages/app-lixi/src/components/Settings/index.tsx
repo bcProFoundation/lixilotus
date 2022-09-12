@@ -24,6 +24,7 @@ import { RenameAccountModalProps } from './RenameAccountModal';
 import { setInitIntlStatus, updateLocale } from '@store/settings/actions';
 import { getCurrentLocale } from '@store/settings/selectors';
 import getOauth2URL from '@utils/oauth2';
+import axios from 'axios';
 
 const { Panel } = Collapse;
 
@@ -236,12 +237,9 @@ const Settings: React.FC = () => {
     });
   }
 
-  const onSuccess = response => {
-    console.log(response);
-  };
-
-  const onFailure = response => {
-    console.log(response);
+  const testAuthorized = async () => {
+    const res = await axios.get('https://lixilotus.test/api/accounts/test'); // just for testing, will delete in the next commit
+    console.log(res);
   };
 
   return (
@@ -355,6 +353,7 @@ const Settings: React.FC = () => {
               </AntdFormWrapper>
               <StyledSpacer />
               <Button href={getOauth2URL()}>Login</Button>
+              <Button onClick={() => testAuthorized()}>Testing Authorized</Button>
             </>
           )}
         </Spin>
