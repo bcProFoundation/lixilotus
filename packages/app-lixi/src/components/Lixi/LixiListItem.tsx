@@ -18,7 +18,7 @@ import { currency } from '@components/Common/Ticker';
 import { getAllSubLixies } from '@store/lixi/selectors';
 import { openModal } from '@store/modal/actions';
 import { fromSmallestDenomination } from '@utils/cashMethods';
-import { Button, Col, Dropdown, Menu, Row } from 'antd';
+import { Button, Col, Dropdown, Menu, Row, Tag } from 'antd';
 import intl from 'react-intl-universal';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
@@ -256,7 +256,7 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
         <Row>
           <Col span={10}>Status</Col>
           <Col span={8} offset={3}>
-            {lixi.status}
+            <Tag color={lixi.status === 'active' ? '#108ee9' : '##f50'}>{lixi.status}</Tag>
           </Col>
         </Row>
       </Wrapper>

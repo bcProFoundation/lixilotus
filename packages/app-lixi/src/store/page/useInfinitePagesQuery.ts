@@ -41,7 +41,7 @@ export function useInfinitePagesQuery(params: PaginationArgs) {
     try {
       isNextDone.current = false;
       await trigger({
-        ...params,
+        ...params
       });
     } catch (e) {
     } finally {
