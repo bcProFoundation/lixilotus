@@ -26,6 +26,7 @@ import { WalletService } from 'src/modules/wallet/wallet.service';
 import { aesGcmDecrypt, base58ToNumber } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
 import { PrismaService } from '../../prisma/prisma.service';
+import { NetworkType } from '../../../../../lixi-models/src/lib/lixi';
 
 const PRIVATE_KEY = 'AIzaSyCFY2D4NRLjDTpJfk0jjJNADalSceqC4qs';
 const SITE_KEY = '6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb';
@@ -42,7 +43,7 @@ export class ClaimController {
     @Inject('xpijs') private XPI: BCHJS,
     private readonly config: ConfigService,
     private readonly lixiNftService: LixiNftService
-  ) {}
+  ) { }
 
   @Get(':id')
   async getEnvelope(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<ViewClaimDto> {
@@ -165,19 +166,23 @@ export class ClaimController {
           }
         });
 
-        // isFamilyFriendly == true
-        if (lixi?.isFamilyFriendly) {
-          if (countClaimAddress.length > 0 || countIpaddress >= 5) {
-            const limitRedemptions = await i18n.t('claim.messages.limitRedemptions');
-            throw new VError(limitRedemptions);
-          }
-        }
-        // isFamilyFriendly == false
-        else {
-          if (countClaimAddress.length > 0 || countIpaddress > 0) {
-            const limitRedemptions = await i18n.t('claim.messages.limitRedemptions');
-            throw new VError(limitRedemptions);
-          }
+        const networkType = lixi?.networkType as string;
+        switch (networkType) {
+          case NetworkType.FamilyFriendly:
+            if (countClaimAddress.length > 0 || countIpaddress >= 5) {
+              const limitRedemptions = await i18n.t('claim.messages.limitRedemptions');
+              throw new VError(limitRedemptions);
+            }
+          case NetworkType.NoWifiRestriction:
+            if (countClaimAddress.length > 0) {
+              const limitRedemptions = await i18n.t('claim.messages.limitRedemptions');
+              throw new VError(limitRedemptions);
+            }
+          default:
+            if (countClaimAddress.length > 0 || countIpaddress > 0) {
+              const limitRedemptions = await i18n.t('claim.messages.limitRedemptions');
+              throw new VError(limitRedemptions);
+            }
         }
 
         if (process.env.NODE_ENV !== 'development' && claimApi.captchaToken !== 'isAbcpay') {
@@ -492,19 +497,23 @@ export class ClaimController {
           }
         });
 
-        // isFamilyFriendly == true
-        if (lixi?.isFamilyFriendly) {
-          if (countClaimAddress.length > 0 || countIpaddress >= 5) {
-            const limitRedemptions = await i18n.t('claim.messages.limitRedemptions');
-            throw new VError(limitRedemptions);
-          }
-        }
-        // isFamilyFriendly == false
-        else {
-          if (countClaimAddress.length > 0 || countIpaddress > 0) {
-            const limitRedemptions = await i18n.t('claim.messages.limitRedemptions');
-            throw new VError(limitRedemptions);
-          }
+        const networkType = lixi?.networkType as string;
+        switch (networkType) {
+          case NetworkType.FamilyFriendly:
+            if (countClaimAddress.length > 0 || countIpaddress >= 5) {
+              const limitRedemptions = await i18n.t('claim.messages.limitRedemptions');
+              throw new VError(limitRedemptions);
+            }
+          case NetworkType.NoWifiRestriction:
+            if (countClaimAddress.length > 0) {
+              const limitRedemptions = await i18n.t('claim.messages.limitRedemptions');
+              throw new VError(limitRedemptions);
+            }
+          default:
+            if (countClaimAddress.length > 0 || countIpaddress > 0) {
+              const limitRedemptions = await i18n.t('claim.messages.limitRedemptions');
+              throw new VError(limitRedemptions);
+            }
         }
 
         if (!lixi) {
