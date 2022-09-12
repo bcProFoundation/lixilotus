@@ -181,6 +181,13 @@ const SidebarShortcut = () => {
           />
           <ItemAccess
             icon={PlusCircleOutlined}
+            text={'Create Lixi'}
+            active={false}
+            key="create-lixi"
+            href={'/admin/create'}
+          />
+          <ItemAccess
+            icon={PlusCircleOutlined}
             text={'Create Page'}
             active={false}
             key="create-page"
