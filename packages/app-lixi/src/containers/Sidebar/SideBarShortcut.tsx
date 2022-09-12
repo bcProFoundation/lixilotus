@@ -2,6 +2,7 @@ import { Layout, Space } from 'antd';
 import {
   DownOutlined,
   EditOutlined,
+  GiftOutlined,
   HomeOutlined,
   PlusCircleOutlined,
   RightOutlined,
@@ -193,6 +194,13 @@ const SidebarShortcut = () => {
             active={selectedKey === '/wallet'}
             key="wallet-lotus"
             href={'/wallet'}
+          />
+          <ItemAccess
+            icon={GiftOutlined}
+            text={'Lixi'}
+            active={selectedKey === '/admin/lixi'}
+            key="send"
+            href={'/admin/lixi'}
           />
           <ItemAccess icon={SendOutlined} text={'Send'} active={selectedKey === '/send'} key="send" href={'/send'} />
           <ItemAccess

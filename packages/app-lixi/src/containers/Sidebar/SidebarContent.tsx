@@ -5,6 +5,7 @@ import { getNavCollapsed } from '@store/settings/selectors';
 import { toggleCollapsedSideNav } from '@store/settings/actions';
 import {
   EditOutlined,
+  GiftOutlined,
   HomeOutlined,
   PlusCircleOutlined,
   SendOutlined,
@@ -49,6 +50,13 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
             active={selectedKey === '/wallet'}
             key="wallet-lotus"
             href={'/wallet'}
+          />
+          <ItemAccess
+            icon={GiftOutlined}
+            text={'Lixi'}
+            active={selectedKey === '/admin/lixi'}
+            key="send"
+            href={'/admin/lixi'}
           />
           <ItemAccess icon={SendOutlined} text={'Send'} active={selectedKey === '/send'} key="send" href={'/send'} />
           <ItemAccess
