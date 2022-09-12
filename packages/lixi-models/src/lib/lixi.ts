@@ -214,9 +214,9 @@ export interface DownloadExportedLixiCommand {
 }
 
 export enum NetworkType {
-  SingleIP = 'Single IP',
-  FamilyFriendly = 'Family Friendly',
-  NoWifiRestriction = 'No Wifi Restriction'
+  SingleIP = 'single-ip',
+  FamilyFriendly = 'family-friendly',
+  NoWifiRestriction = 'no-wifi-restriction'
 }
 
 export const LotteryAddress = 'lotus_16PSJM2jboGWYzs71usSip5hFhGTAyUw4nt3GS43u';
