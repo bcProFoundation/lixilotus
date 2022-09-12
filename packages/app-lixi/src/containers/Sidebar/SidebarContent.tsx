@@ -1,11 +1,20 @@
-import { Menu } from 'antd';
-import Link from 'next/link';
 import styled from 'styled-components';
-import intl from 'react-intl-universal';
 import SidebarLogo from './SidebarLogo';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getNavCollapsed } from '@store/settings/selectors';
 import { toggleCollapsedSideNav } from '@store/settings/actions';
+import {
+  EditOutlined,
+  GiftOutlined,
+  HomeOutlined,
+  PlusCircleOutlined,
+  SendOutlined,
+  SettingOutlined,
+  ShopOutlined,
+  WalletOutlined
+} from '@ant-design/icons';
+import { CointainerAccess, ItemAccess } from './SideBarShortcut';
+import { useRouter } from 'next/router';
 
 type SidebarContentProps = {
   className?: string;
@@ -13,21 +22,17 @@ type SidebarContentProps = {
   setSidebarCollapsed: Function;
 };
 
-const MenuCustom = styled(Menu)`
-  border-right: none !important;
-
-  .ant-menu-title-content {
-    font-size: 24px;
-  }
-
-  .anticon {
-    font-size: 28px;
-  }
+const StyledCointainerAccess = styled(CointainerAccess)`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 `;
 
 const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: SidebarContentProps) => {
   const dispatch = useAppDispatch();
   const navCollapsed = useAppSelector(getNavCollapsed);
+  const router = useRouter();
+  const selectedKey = router.pathname ?? '';
 
   const handleOnClick = () => {
     dispatch(toggleCollapsedSideNav(!navCollapsed));
@@ -37,69 +42,59 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
     <>
       <SidebarLogo sidebarCollapsed={sidebarCollapsed} setSidebarCollapsed={setSidebarCollapsed} />
       <div className="lixi-sidebar-content">
-        <MenuCustom
-          className={className}
-          // defaultOpenKeys={[defaultOpenKeys]}
-          // selectedKeys={[selectedKeys]}
-          mode="inline"
-        >
-          {/* <Menu.Item key='main/mobile-card'>
-            <Link href='/mobile-card' passHref>
-              <a>
-                <ShopOutlined />
-                <span>Mobile Card</span>
-              </a>
-            </Link>
-          </Menu.Item> */}
-          <Menu.Item key="main/mobile-card">
-            <Link href="https://sendlotus.com">
-              <a target="_blank">
-                <img
-                  src="/images/lotus-logo-small.png"
-                  alt="lotus"
-                  style={{ width: '20px', marginBottom: '5px', marginRight: '10px' }}
-                />
-                <span>Send Lotus</span>
-              </a>
-            </Link>
-          </Menu.Item>
-          <Menu.Item>
-            <Link href="/admin/pack-register">
-              <a onClick={handleOnClick}>
-                <img
-                  src="/images/lotus-logo-small.png"
-                  alt="lotus"
-                  style={{ width: '20px', marginBottom: '5px', marginRight: '10px' }}
-                />
-                <span>{intl.get('general.registerPack')}</span>
-              </a>
-            </Link>
-          </Menu.Item>
-          <Menu.Item>
-            <Link href="/wallet">
-              <a onClick={handleOnClick}>
-                <img
-                  src="/images/lotus-logo-small.png"
-                  alt="lotus"
-                  style={{ width: '20px', marginBottom: '5px', marginRight: '10px' }}
-                />
-                <span>Wallet</span>
-              </a>
-            </Link>
-          </Menu.Item>
-          <Menu.Item>
-            <Link href="/send">
-              <a onClick={handleOnClick}>
-                <img
-                  src="/images/lotus-logo-small.png"
-                  alt="lotus"
-                  style={{ width: '20px', marginBottom: '5px', marginRight: '10px' }}
-                />
-                <span>Send</span>
-              </a>
-            </Link>
-          </Menu.Item>
-        </MenuCustom>
+        <StyledCointainerAccess className={className} onClick={handleOnClick}>
+          <ItemAccess icon={HomeOutlined} text={'Home'} active={selectedKey === '/'} key="send-lotus" href={'/'} />
+          <ItemAccess
+            icon={WalletOutlined}
+            text={'Accounts'}
+            active={selectedKey === '/wallet'}
+            key="wallet-lotus"
+            href={'/wallet'}
+          />
+          <ItemAccess
+            icon={GiftOutlined}
+            text={'Lixi'}
+            active={selectedKey === '/admin/lixi'}
+            key="send"
+            href={'/admin/lixi'}
+          />
+          <ItemAccess icon={SendOutlined} text={'Send'} active={selectedKey === '/send'} key="send" href={'/send'} />
+          <ItemAccess
+            icon={EditOutlined}
+            text={'Register Pack'}
+            active={selectedKey === '/admin/pack-register'}
+            key="register-pack"
+            href={'/admin/pack-register'}
+          />
+          <ItemAccess
+            icon={PlusCircleOutlined}
+            text={'Create Page'}
+            active={selectedKey === '/page/create'}
+            key="create-page"
+            href={'/page/create'}
+          />
+          <ItemAccess
+            icon={SettingOutlined}
+            text={'Setting'}
+            active={selectedKey === '/admin/settings'}
+            key="setting"
+            href={'/admin/settings'}
+          />
+          <ItemAccess
+            icon={SendOutlined}
+            text={'Send Lotus'}
+            active={false}
+            key="send-lotus"
+            href={'https://sendlotus.com'}
+          />
+          <ItemAccess
+            icon={ShopOutlined}
+            text={'Lotusia Shop'}
+            active={false}
+            key="send-lotus"
+            href={'https://lotusia.shop/'}
+          />
+        </StyledCointainerAccess>
       </div>
     </>
   );
