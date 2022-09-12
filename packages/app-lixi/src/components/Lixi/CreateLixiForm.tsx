@@ -11,6 +11,7 @@ import {
   Radio,
   RadioChangeEvent,
   Row,
+  Select,
   Space,
   Tooltip
 } from 'antd';
@@ -41,7 +42,7 @@ import {
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import { countries, UPLOAD_BUTTON_TYPE, UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
 import { Account } from '@bcpros/lixi-models/lib/account';
-import { ClaimType, GenerateLixiCommand, LixiType, LotteryAddress } from '@bcpros/lixi-models/lib/lixi';
+import { ClaimType, GenerateLixiCommand, LixiType, LotteryAddress, NetworkType } from '@bcpros/lixi-models/lib/lixi';
 import CountrySelectDropdown from '@components/Common/CountrySelectDropdown';
 import EnvelopeCarousel from '@components/Common/EnvelopeCarousel';
 import { getEnvelopeUpload } from '@store/account/selectors';
@@ -53,6 +54,7 @@ import { StyledUploader } from '@components/Common/Uploader';
 
 const { Panel } = Collapse;
 const baseUrl = process.env.NEXT_PUBLIC_LIXI_API;
+const { Option } = Select;
 
 // const LotteryInput = styled(Input)`
 //   .ant-input-group-addon {
@@ -215,9 +217,10 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
   const [newLixiName, setNewLixiName] = useState('');
   const [newLixiNameIsValid, setNewLixiNameIsValid] = useState<boolean | null>(null);
 
-  // LixiType && ClaimType
+  // LixiType && ClaimType && NetworkType
   const [lixiType, setLixiType] = useState<number>(LixiType.Random);
   const [claimType, setClaimType] = useState<number>(ClaimType.Single);
+  const [networkType, setNetworkType] = useState<string>(NetworkType.SingleIP);
 
   // New lixi balance number
   const [newLixiAmount, setNewLixiAmount] = useState('');
@@ -400,6 +403,10 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
     }
   };
 
+  const handleChangeNetworkType = (value, e: React.ChangeEvent<HTMLInputElement>) => {
+    setNetworkType(value);
+  };
+
   const handleChangeEnvelope = (value: number) => {
     setNewEnvelopeId(value);
   };
@@ -561,7 +568,8 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
       upload: envelopeUpload,
       staffAddress: newStaffAddress,
       charityAddress: newCharityAddress,
-      joinLotteryProgram: joinLotteryProgram
+      joinLotteryProgram: joinLotteryProgram,
+      networkType: networkType
     };
 
     const createLixiModalProps: CreateLixiConfirmationModalProps = {
@@ -587,6 +595,7 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
       newStaffAddress,
       newCharityAddress,
       joinLotteryProgram,
+      networkType,
       onOkAction: generateLixi(command)
     };
     dispatch(openModal('CreateLixiConfirmationModal', createLixiModalProps));
@@ -1013,6 +1022,32 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
               </Col>
             </Row>
           </Envelope>
+        </Form.Item>
+
+        <Form.Item>
+          <Select defaultValue={intl.get('NetworkType.SingleIP')} onChange={handleChangeNetworkType}>
+            <Option value={NetworkType.SingleIP}>
+              {intl.get('NetworkType.SingleIP')}
+              &nbsp;
+              <Tooltip title={intl.get('NetworkType.SingleIPInfo')}>
+                <QuestionCircleOutlined />
+              </Tooltip>
+            </Option>
+            <Option value={NetworkType.FamilyFriendly}>
+              {intl.get('NetworkType.FamilyFriendly')}
+              &nbsp;
+              <Tooltip title={intl.get('NetworkType.FamilyFriendlyInfo')}>
+                <QuestionCircleOutlined />
+              </Tooltip>
+            </Option>
+            <Option value={NetworkType.NoWifiRestriction}>
+              {intl.get('NetworkType.NoWifiRestriction')}
+              &nbsp;
+              <Tooltip title={intl.get('NetworkType.NoWifiRestrictionInfo')}>
+                <QuestionCircleOutlined />
+              </Tooltip>
+            </Option>
+          </Select>
         </Form.Item>
       </CreateForm>
       <SmartButton
