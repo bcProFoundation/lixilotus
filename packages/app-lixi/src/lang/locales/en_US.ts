@@ -136,7 +136,7 @@ export default {
   'lixi.fundForAccount': 'Fund for the account:',
   'lixi.optionFamilyFriendly': 'Option: Family Friendly',
   'lixi.optional': 'Optional',
-  'lixi.optionalNetworkType': 'Optional: {networkType}',
+  'lixi.networkType': 'Network Type: {networkType}',
   'lixi.lixiInfo': 'Lixi info for {lixiName}',
   'lixi.claimType': 'Claim Type',
   'lixi.type': 'Type',

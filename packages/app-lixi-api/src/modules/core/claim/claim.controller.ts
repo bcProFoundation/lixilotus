@@ -43,7 +43,7 @@ export class ClaimController {
     @Inject('xpijs') private XPI: BCHJS,
     private readonly config: ConfigService,
     private readonly lixiNftService: LixiNftService
-  ) {}
+  ) { }
 
   @Get(':id')
   async getEnvelope(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<ViewClaimDto> {
@@ -184,21 +184,6 @@ export class ClaimController {
               throw new VError(limitRedemptions);
             }
         }
-
-        // isFamilyFriendly == true
-        // if (lixi?.isFamilyFriendly) {
-        //   if (countClaimAddress.length > 0 || countIpaddress >= 5) {
-        //     const limitRedemptions = await i18n.t('claim.messages.limitRedemptions');
-        //     throw new VError(limitRedemptions);
-        //   }
-        // }
-        // // isFamilyFriendly == false
-        // else {
-        //   if (countClaimAddress.length > 0 || countIpaddress > 0) {
-        //     const limitRedemptions = await i18n.t('claim.messages.limitRedemptions');
-        //     throw new VError(limitRedemptions);
-        //   }
-        // }
 
         if (process.env.NODE_ENV !== 'development' && claimApi.captchaToken !== 'isAbcpay') {
           await checkingCaptcha();
@@ -530,21 +515,6 @@ export class ClaimController {
               throw new VError(limitRedemptions);
             }
         }
-
-        // isFamilyFriendly == true
-        // if (lixi?.isFamilyFriendly) {
-        //   if (countClaimAddress.length > 0 || countIpaddress >= 5) {
-        //     const limitRedemptions = await i18n.t('claim.messages.limitRedemptions');
-        //     throw new VError(limitRedemptions);
-        //   }
-        // }
-        // // isFamilyFriendly == false
-        // else {
-        //   if (countClaimAddress.length > 0 || countIpaddress > 0) {
-        //     const limitRedemptions = await i18n.t('claim.messages.limitRedemptions');
-        //     throw new VError(limitRedemptions);
-        //   }
-        // }
 
         if (!lixi) {
           const unableClaimLixi = await i18n.t('claim.messages.unableClaimLixi');

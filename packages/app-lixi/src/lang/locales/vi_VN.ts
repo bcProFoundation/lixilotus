@@ -135,8 +135,7 @@ export default {
   'lixi.fundForAccount': 'Chi từ tài khoản:',
   'lixi.optionFamilyFriendly': 'Tùy chọn: Gia đình cùng nhận Lì xì"',
   'lixi.optional': 'Tùy chọn',
-  'lixi.optionalNetworkType': 'Tùy chọn: {networkType}',
-
+  'lixi.networkType': 'Dạng kết nối: {networkType}',
   'lixi.lixiInfo': 'Thông tin Lì xì {lixiName}',
   'lixi.claimType': 'Loại Lì xì',
   'lixi.type': 'Loại',

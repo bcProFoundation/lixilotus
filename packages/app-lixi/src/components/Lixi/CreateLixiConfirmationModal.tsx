@@ -270,7 +270,7 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
         {formatActivationDate()}
         {formatExpireDate()}
         <LixiParamLabel>
-          {networkType ? intl.get('lixi.optionalNetworkType', { networkType: networkType }) : ''}
+          {intl.get('lixi.networkType', { networkType: networkType })}
         </LixiParamLabel>
         <br />
         <LixiParamLabel>{isNFTEnabled ? intl.get('lixi.optionNFTEnabled') : ''}</LixiParamLabel>
