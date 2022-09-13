@@ -4,7 +4,6 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { passportJwtSecret } from 'jwks-rsa';
 import { xor } from 'lodash';
 import { Request as RequestType } from 'express';
-// import { JwtPayload } from './interfaces/jwt-payload.interface';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -14,7 +13,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         cache: true,
         rateLimit: true,
         jwksRequestsPerMinute: 5,
-        jwksUri: `http://accounts.localhost:3000/.well-known/jwks` // will change in the next commit
+        jwksUri: `${process.env.LIXI_OAUTH2_URL}/.well-known/jwks`
       }),
 
       jwtFromRequest: ExtractJwt.fromExtractors([JwtStrategy.extractJWT, ExtractJwt.fromAuthHeaderAsBearerToken()])
@@ -23,7 +22,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   private static extractJWT(req: RequestType): string | null {
     if (req.cookies && 'access_token' in req.cookies && req.cookies.access_token.length > 0) {
-      console.log(req.cookies.access_token);
       return req.cookies.access_token;
     }
 
@@ -31,7 +29,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    console.log(payload);
     // if (xor(payload.scope.split(' '), ['openid', 'profile', 'email']).length > 0) {
     //   throw new UnauthorizedException('JWT does not possess the requires scope (`openid profile email`).');
     // }

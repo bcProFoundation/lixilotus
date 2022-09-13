@@ -237,11 +237,6 @@ const Settings: React.FC = () => {
     });
   }
 
-  const testAuthorized = async () => {
-    const res = await axios.get('https://lixilotus.test/api/accounts/test'); // just for testing, will delete in the next commit
-    console.log(res);
-  };
-
   return (
     <>
       <WrapperPage>
@@ -353,7 +348,6 @@ const Settings: React.FC = () => {
               </AntdFormWrapper>
               <StyledSpacer />
               <Button href={getOauth2URL()}>Login</Button>
-              <Button onClick={() => testAuthorized()}>Testing Authorized</Button>
             </>
           )}
         </Spin>
