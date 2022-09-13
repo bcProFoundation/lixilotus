@@ -6,6 +6,7 @@ import {
   fromSmallestDenomination,
   LixiType,
   LotteryAddress,
+  NetworkType,
   toSmallestDenomination,
   ViewClaimDto
 } from '@bcpros/lixi-models';
@@ -26,7 +27,6 @@ import { WalletService } from 'src/modules/wallet/wallet.service';
 import { aesGcmDecrypt, base58ToNumber } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
 import { PrismaService } from '../../prisma/prisma.service';
-import { NetworkType } from '../../../../../lixi-models/src/lib/lixi';
 
 const PRIVATE_KEY = 'AIzaSyCFY2D4NRLjDTpJfk0jjJNADalSceqC4qs';
 const SITE_KEY = '6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb';
