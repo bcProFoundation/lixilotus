@@ -395,16 +395,16 @@ const Lixi: React.FC = () => {
   const columns =
     selectedLixi && selectedLixi.numberLixiPerPackage
       ? [
-          { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
-          { title: intl.get('claim.claimCode'), dataIndex: 'claimCode', width: 150 },
-          { title: intl.get('general.amount'), dataIndex: 'amount', width: 85 },
-          { title: intl.get('lixi.package'), dataIndex: 'packageId' }
-        ]
+        { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
+        { title: intl.get('claim.claimCode'), dataIndex: 'claimCode', width: 150 },
+        { title: intl.get('general.amount'), dataIndex: 'amount', width: 85 },
+        { title: intl.get('lixi.package'), dataIndex: 'packageId' }
+      ]
       : [
-          { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
-          { title: intl.get('claim.claimCode'), dataIndex: 'claimCode' },
-          { title: intl.get('general.amount'), dataIndex: 'amount' }
-        ];
+        { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
+        { title: intl.get('claim.claimCode'), dataIndex: 'claimCode' },
+        { title: intl.get('general.amount'), dataIndex: 'amount' }
+      ];
   const prefixClaimCode = 'lixi';
 
   const subLixiesDataSource = subLixies.map((item, i) => {

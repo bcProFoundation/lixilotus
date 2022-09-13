@@ -86,6 +86,8 @@ const Title = styled.h1`
 `;
 
 const CreateForm = styled(Form)`
+  text-align: center;
+
   .ant-form-item-label {
     font-family: 'Roboto';
     font-style: normal;
@@ -111,7 +113,7 @@ const CreateForm = styled(Form)`
       font-size: 16px;
       line-height: 24px;
       display: flex;
-      align-items: center;
+      align-items: baseline;
       letter-spacing: 0.5px;
       color: #1e1a1d;
       flex: none;
@@ -131,7 +133,7 @@ const CreateForm = styled(Form)`
     font-size: 16px;
     line-height: 24px;
     display: flex;
-    align-items: center;
+    align-items: baseline;
     letter-spacing: 0.5px;
     color: #4e444b;
     flex: none;
@@ -164,7 +166,6 @@ const CreateInput = styled(Input)`
   flex-direction: row;
   align-items: center;
   padding: 16px;
-  gap: 16px;
   width: 100%;
   height: 56px;
   background: #ffffff;
@@ -187,6 +188,44 @@ const Envelope = styled.div`
   order: 1;
   align-self: stretch;
   flex-grow: 0;
+`;
+
+const NetworkSelect = styled(Select)`
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 16px 12px;
+  gap: 16px;
+  width: 100%
+  height: 56px;
+  background: #FFFFFF;
+  border: 1px solid #80747C;
+  border-radius: 8px;
+  flex: none;
+  order: 1;
+  align-self: stretch;
+  flex-grow: 0;
+
+  .ant-select-selector {
+    border: none !important;
+    padding: 0px !important;
+  }
+
+  .ant-select-selection-item {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.5px;
+    color: #1E1A1D;
+    flex: none;
+    order: 2;
+    flex-grow: 1;
+  }
 `;
 
 type CreateLixiFormProps = {
@@ -966,66 +1005,8 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
           />
         </Form.Item>
 
-        <Form.Item label={intl.get('account.envelope')}>
-          <Envelope>
-            <Row>
-              <Col span={18} push={6} style={{ padding: '35px 0px 35px 0px' }}>
-                {/* <Button type="link" onClick={}> */}
-                <Button
-                  onClick={showModal}
-                  type="link"
-                  style={{
-                    fontFamily: 'Roboto',
-                    fontStyle: 'normal',
-                    fontWeight: '400',
-                    fontSize: '14px',
-                    lineHeight: '20px',
-                    alignItems: 'center',
-                    color: '#9E2A9C',
-                    flex: 'none',
-                    order: '0',
-                    flexGrow: '0'
-                  }}
-                >
-                  {' '}
-                  {intl.get('lixi.envelopesSelect')}{' '}
-                </Button>
-                <br />
-                <span> {intl.get('or')} </span>
-                <br />
-                <StyledUploader
-                  type={UPLOAD_TYPES.ENVELOPE}
-                  isIcon={false}
-                  buttonName={intl.get('lixi.browser')}
-                  buttonType={UPLOAD_BUTTON_TYPE.LINK}
-                  showUploadList={false}
-                />
-              </Col>
-              <Col span={6} pull={18}>
-                <img
-                  src={
-                    !newEnvelopeId && !envelopeUpload
-                      ? '/images/lotus_logo.png'
-                      : (newEnvelopeId &&
-                          !envelopeUpload &&
-                          baseUrl + 'api/' + envelopes.find(item => item.id === newEnvelopeId).thumbnail) ||
-                        (envelopeUpload && envelopeUpload.url)
-                  }
-                  style={{
-                    position: 'absolute',
-                    width: '110px',
-                    height: '110px',
-                    left: '16px',
-                    top: '16px'
-                  }}
-                ></img>
-              </Col>
-            </Row>
-          </Envelope>
-        </Form.Item>
-
-        <Form.Item>
-          <Select defaultValue={intl.get('NetworkType.SingleIP')} onChange={handleChangeNetworkType}>
+        <Form.Item label={intl.get('lixi.networkTypeSelect')}>
+          <NetworkSelect defaultValue={intl.get('NetworkType.SingleIP')} onChange={handleChangeNetworkType}>
             <Option value={NetworkType.SingleIP}>
               {intl.get('NetworkType.SingleIP')}
               &nbsp;
@@ -1047,21 +1028,95 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
                 <QuestionCircleOutlined />
               </Tooltip>
             </Option>
-          </Select>
+          </NetworkSelect>
         </Form.Item>
+
+
+        <Form.Item label={intl.get('account.envelope')}>
+          <Envelope>
+            <Row>
+              <Col span={18} push={6} style={{ padding: '35px 0px 35px 0px' }}>
+                {/* <Button type="link" onClick={}> */}
+                <Button
+                  onClick={showModal}
+                  type="link"
+                  style={{
+                    fontFamily: 'Roboto',
+                    fontStyle: 'normal',
+                    fontWeight: '400',
+                    fontSize: '14px',
+                    lineHeight: '20px',
+                    alignItems: 'center',
+                    textAlign: 'center',
+                    color: '#9E2A9C',
+                    flex: 'none',
+                    order: '0',
+                    flexGrow: '0'
+                  }}
+                >
+                  {' '}
+                  {intl.get('lixi.envelopesSelect')}{' '}
+                </Button>
+                <br />
+                <span style={{
+                  fontFamily: 'Roboto',
+                  fontStyle: 'normal',
+                  fontWeight: '400',
+                  fontSize: '12px',
+                  lineHeight: '16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  textAlign: 'center',
+                  letterSpacing: '0.4px',
+                  color: 'rgba(30, 26, 29, 0.38)',
+                  justifyContent: 'center'
+                }}>
+                  {intl.get('special.or')} </span>
+                <StyledUploader
+                  type={UPLOAD_TYPES.ENVELOPE}
+                  isIcon={false}
+                  buttonName={intl.get('lixi.browser')}
+                  buttonType={UPLOAD_BUTTON_TYPE.LINK}
+                  showUploadList={false}
+                />
+              </Col>
+              <Col span={6} pull={18}>
+                <img
+                  src={
+                    !newEnvelopeId && !envelopeUpload
+                      ? '/images/lotus_logo.png'
+                      : (newEnvelopeId &&
+                        !envelopeUpload &&
+                        baseUrl + 'api/' + envelopes.find(item => item.id === newEnvelopeId).thumbnail) ||
+                      (envelopeUpload && envelopeUpload.url)
+                  }
+                  style={{
+                    position: 'absolute',
+                    width: '110px',
+                    height: '110px',
+                    left: '16px',
+                    top: '16px'
+                  }}
+                ></img>
+              </Col>
+            </Row>
+          </Envelope>
+        </Form.Item>
+
+        <SmartButton
+          style={{
+            width: '247px',
+            height: '40px',
+            padding: '10px 24px',
+            gap: '8px'
+          }}
+          onClick={() => handleSubmitCreateLixi()}
+          disabled={!createLixiFormDataIsValid}
+        >
+          {intl.get('account.createLixi')}
+        </SmartButton>
       </CreateForm>
-      <SmartButton
-        style={{
-          width: '247px',
-          height: '40px',
-          padding: '10px 24px',
-          gap: '8px'
-        }}
-        onClick={() => handleSubmitCreateLixi()}
-        disabled={!createLixiFormDataIsValid}
-      >
-        {intl.get('account.createLixi')}
-      </SmartButton>
+
       <Modal
         closable={false}
         visible={isModalVisible}
@@ -1077,53 +1132,6 @@ const CreateLixiForm = ({ account, disabled }: CreateLixiFormProps) => {
         }}
         onOk={handleOk}
         onCancel={handleCancel}
-        footer={[
-          <Button
-            style={{
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              padding: '10px 24px',
-              gap: '10px',
-              width: '67px',
-              height: '40px',
-              background: '#9E2A9C',
-              color: '#FFFFFF',
-              borderRadius: '16px',
-              flex: 'none',
-              order: '0',
-              flexGrow: '0',
-              border: 'none'
-            }}
-            key={intl.get('cancel')}
-            onClick={handleCancel}
-          >
-            {intl.get('cancel')}
-          </Button>,
-          <Button
-            style={{
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              padding: '10px 24px',
-              gap: '10px',
-              width: '67px',
-              height: '40px',
-              background: '#9E2A9C',
-              color: '#FFFFFF',
-              borderRadius: '16px',
-              flex: 'none',
-              order: '0',
-              flexGrow: '0',
-              border: 'none'
-            }}
-            key="Ok"
-            type="primary"
-            onClick={handleOk}
-          >
-            Ok
-          </Button>
-        ]}
       >
         <EnvelopeCarousel envelopes={envelopes} handleChangeEnvelope={handleChangeEnvelope} />
       </Modal>

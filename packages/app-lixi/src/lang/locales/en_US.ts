@@ -205,6 +205,7 @@ export default {
   'lixi.lotteryAddressCheck': 'Confirm',
   'lixi.addressCopied': 'The address has been copied.',
   'lixi.redeemLixi': 'Redeem lixi',
+  'lixi.networkTypeSelect': 'Network Type',
   'NetworkType.SingleIP': 'Single IP',
   'NetworkType.FamilyFriendly': 'Family Friendly',
   'NetworkType.NoWifiRestriction': 'No Wifi Restriction',

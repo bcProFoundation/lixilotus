@@ -1,11 +1,15 @@
 import { SearchOutlined } from '@ant-design/icons';
 import ClaimComponent from '@components/Claim';
-import { List, message } from 'antd';
+import { Button, List, message, Modal } from 'antd';
 import VirtualList from 'rc-virtual-list';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import WalletInfoComponent from './WalletInfo';
 import intl from 'react-intl-universal';
+import PrimaryButton from '@bcpros/lixi-components/components/Common/PrimaryButton';
+import CreateLixiForm from '@components/Lixi/CreateLixiForm';
+import { useAppSelector } from '@store/hooks';
+import { getSelectedAccount } from '@store/account/selectors';
 
 interface UserItem {
   email: string;
@@ -116,7 +120,10 @@ const FullWalletWrapper = styled.div`
 `;
 
 const FullWalletComponent: React.FC = () => {
+  const selectedAccount = useAppSelector(getSelectedAccount);
+
   const [data, setData] = useState<UserItem[]>([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const appendData = () => {
     fetch(fakeDataUrl)
@@ -136,11 +143,43 @@ const FullWalletComponent: React.FC = () => {
       appendData();
     }
   };
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
+
   return (
     <>
       <FullWalletWrapper>
         <WalletInfoComponent />
         <ClaimComponent isClaimFromAccount={true}></ClaimComponent>
+        <Button
+          onClick={showModal}
+          type="link"
+          style={{
+            fontFamily: 'Roboto',
+            fontStyle: 'normal',
+            fontWeight: '650',
+            fontSize: '14px',
+            lineHeight: '20px',
+            alignItems: 'center',
+            color: '#9E2A9C',
+            flex: 'none',
+            order: '0',
+            flexGrow: '0'
+          }}
+        >
+          {' '}
+          {intl.get('account.createLixi')}{' '}
+        </Button>
         <TransactionHistory>
           <div className="header-transaction">
             {intl.get('account.transactionHistory')}
@@ -178,6 +217,25 @@ const FullWalletComponent: React.FC = () => {
           </div>
         </TransactionHistory>
       </FullWalletWrapper>
+
+      <Modal
+        closable={false}
+        visible={isModalVisible}
+        width={550}
+        style={{
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+          padding: '0px',
+          background: '#FFFBFF',
+          border: '1px solid rgba(128, 116, 124, 0.12)',
+          boxShadow: '0px 0px 12px rgba(0, 0, 0, 0.12)',
+          borderRadius: '12px'
+        }}
+        onCancel={handleCancel}
+        footer={null}
+      >
+        <CreateLixiForm account={selectedAccount} />
+      </Modal>
     </>
   );
 };

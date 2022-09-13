@@ -204,6 +204,7 @@ export default {
   'lixi.lotteryAddressCheck': 'Xác nhận',
   'lixi.addressCopied': 'địa chỉ đã được sao chép.',
   'lixi.redeemLixi': 'Nhận lì xì',
+  'lixi.networkTypeSelect': 'Dạng kết nối',
   'NetworkType.SingleIP': 'Một địa chỉ duy nhất',
   'NetworkType.FamilyFriendly': 'Gia đình thân thiêt',
   'NetworkType.NoWifiRestriction': 'Không giới hạn',
