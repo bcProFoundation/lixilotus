@@ -15,8 +15,8 @@ Table of Contents
 
 export default {
   /* 00. special*/
-  or: 'Or',
-  cancel: 'Cancel',
+  'special.or': 'Or',
+  'special.cancel': 'Cancel',
 
   /* 01.General */
   'general.home': 'Home',
@@ -136,6 +136,7 @@ export default {
   'lixi.fundForAccount': 'Fund for the account:',
   'lixi.optionFamilyFriendly': 'Option: Family Friendly',
   'lixi.optional': 'Optional',
+  'lixi.networkType': 'Network Type: {networkType}',
   'lixi.lixiInfo': 'Lixi info for {lixiName}',
   'lixi.claimType': 'Claim Type',
   'lixi.type': 'Type',
@@ -204,6 +205,12 @@ export default {
   'lixi.lotteryAddressCheck': 'Confirm',
   'lixi.addressCopied': 'The address has been copied.',
   'lixi.redeemLixi': 'Redeem lixi',
+  'NetworkType.SingleIP': 'Single IP',
+  'NetworkType.FamilyFriendly': 'Family Friendly',
+  'NetworkType.NoWifiRestriction': 'No Wifi Restriction',
+  'NetworkType.SingleIPInfo': 'Only one user can claim Lixi under the wifi network',
+  'NetworkType.FamilyFriendlyInfo': 'Max 5 users can claim Lixi under the wifi network',
+  'NetworkType.NoWifiRestrictionInfo': 'Unlimited user can claim Lixi under the wifi network',
 
   /* 04.Claim */
   'claim.claim': 'Claim',

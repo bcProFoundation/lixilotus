@@ -338,7 +338,7 @@ const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
                   placeholder={intl.get('page.state')}
                   optionFilterProp="children"
                   filterOption={(input, option) =>
-                    (option!.children as unknown as string).toLocaleLowerCase().includes(input)
+                    (option!.children as unknown as string).toLowerCase().includes(input.toLowerCase())
                   }
                   filterSort={(optionA, optionB) =>
                     (optionA!.children as unknown as string)
