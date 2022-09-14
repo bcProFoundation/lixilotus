@@ -33,6 +33,7 @@ export type CreateLixiConfirmationModalProps = {
   newStaffAddress: string | null;
   newCharityAddress: string | null;
   joinLotteryProgram: boolean;
+  networkType: string;
   onOkAction?: AnyAction;
 };
 
@@ -63,7 +64,8 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
     newEnvelopeId,
     newStaffAddress,
     newCharityAddress,
-    joinLotteryProgram
+    joinLotteryProgram,
+    networkType
   } = props;
 
   const distributions = _.filter([newStaffAddress, newCharityAddress], address => {
@@ -267,7 +269,9 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
         {confirmMinStaking()}
         {formatActivationDate()}
         {formatExpireDate()}
-        <LixiParamLabel>{isFamilyFriendly ? intl.get('lixi.optionFamilyFriendly') : ''}</LixiParamLabel>
+        <LixiParamLabel>
+          {intl.get('lixi.networkType', { networkType: networkType })}
+        </LixiParamLabel>
         <br />
         <LixiParamLabel>{isNFTEnabled ? intl.get('lixi.optionNFTEnabled') : ''}</LixiParamLabel>
         {/* Note */}

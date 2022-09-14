@@ -48,8 +48,8 @@ type UploaderProps = {
   type: string | Blob;
   buttonName?: string;
   buttonType?: string;
-  isIcon: boolean;
-  showUploadList: boolean;
+  isIcon?: boolean;
+  showUploadList?: boolean;
 };
 
 export const Uploader = ({ type, buttonName, buttonType, isIcon, showUploadList }: UploaderProps) => {
@@ -58,6 +58,7 @@ export const Uploader = ({ type, buttonName, buttonType, isIcon, showUploadList 
   const [previewTitle, setPreviewTitle] = useState('');
   const [previewVisible, setPreviewVisible] = useState(false);
   const dispatch = useAppDispatch();
+  const uploadButtonType = (buttonType ?? 'primary') as ButtonType;
 
   const uploadButton = (
     <StyledButton

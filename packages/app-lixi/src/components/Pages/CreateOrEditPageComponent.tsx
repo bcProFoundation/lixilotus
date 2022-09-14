@@ -17,6 +17,7 @@ import Image from 'next/image';
 import { CreatePageInput, UpdatePageInput, Page } from 'src/generated/types.generated';
 import { useCreatePageMutation, useUpdatePageMutation } from '@store/page/pages.generated';
 import { useRouter } from 'next/router';
+import { WrapperPage } from '@components/Settings';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -252,80 +253,219 @@ const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
 
   return (
     <>
-      <h3>{isEditPage ? intl.get('page.editPage') : intl.get('page.createNewPage')}</h3>
+      <WrapperPage>
+        <h3>{isEditPage ? intl.get('page.editPage') : intl.get('page.createNewPage')}</h3>
 
-      {!selectedPage ? (
-        // Create Page
-        <Form
-          labelCol={{ span: 5 }}
-          wrapperCol={{ span: 24 }}
-          layout="horizontal"
-          initialValues={{ disabled: componentDisabled }}
-          onValuesChange={onFormLayoutChange}
-        >
-          <Form.Item
-            name="name"
-            label={intl.get('page.name')}
-            rules={[{ required: true, message: intl.get('page.inputName') }]}
+        {!selectedPage ? (
+          // Create Page
+          <Form
+            labelCol={{ span: 5 }}
+            wrapperCol={{ span: 24 }}
+            layout="horizontal"
+            initialValues={{ disabled: componentDisabled }}
+            onValuesChange={onFormLayoutChange}
           >
-            <Input defaultValue={newPageName} onChange={e => handleNewPageNameInput(e)} />
-          </Form.Item>
-          <Form.Item
-            name="title"
-            label={intl.get('page.title')}
-            rules={[{ required: true, message: intl.get('page.inputTitle') }]}
-          >
-            <Input onChange={e => handleNewPageTitleInput(e)} />
-          </Form.Item>
-          <Form.Item name="walletAddress" label={intl.get('page.walletAddress')}>
-            <Input defaultValue={selectedAccount.address} disabled />
-          </Form.Item>
-          <Form.Item
-            name="avatar"
-            label={intl.get('page.avatar')}
-            valuePropName="fileList"
-            getValueFromEvent={normFile}
-          >
-            <StyledUploader type={UPLOAD_TYPES.PAGE_AVATAR} />
-          </Form.Item>
-          <Form.Item name="cover" label={intl.get('page.cover')} valuePropName="fileList" getValueFromEvent={normFile}>
-            <StyledUploader type={UPLOAD_TYPES.PAGE_COVER} />
-          </Form.Item>
-          <Form.Item name="website" label={intl.get('page.website')}>
-            <Input onChange={e => handleNewPageWebsiteInput(e)} />
-          </Form.Item>
-          <Form.Item label={intl.get('page.description')}>
-            <TextArea onChange={e => handleNewPageDescriptionInput(e)} rows={4} />
-          </Form.Item>
-
-          {/* Country */}
-          <Form.Item>
-            <Select
-              showSearch
-              onChange={handleChangeCountry}
-              style={{ width: 200 }}
-              placeholder={intl.get('page.country')}
-              optionFilterProp="children"
-              filterOption={(input, option) =>
-                (option!.children as unknown as string).toLocaleLowerCase().includes(input)
-              }
-              filterSort={(optionA, optionB) =>
-                (optionA!.children as unknown as string)
-                  .toLowerCase()
-                  .localeCompare((optionB!.children as unknown as string).toLowerCase())
-              }
+            <Form.Item
+              name="name"
+              label={intl.get('page.name')}
+              rules={[{ required: true, message: intl.get('page.inputName') }]}
             >
-              {countries.map(country => (
-                <Option key={country.id}>{country.name}</Option>
-              ))}
-            </Select>
-          </Form.Item>
+              <Input defaultValue={newPageName} onChange={e => handleNewPageNameInput(e)} />
+            </Form.Item>
+            <Form.Item
+              name="title"
+              label={intl.get('page.title')}
+              rules={[{ required: true, message: intl.get('page.inputTitle') }]}
+            >
+              <Input onChange={e => handleNewPageTitleInput(e)} />
+            </Form.Item>
+            <Form.Item name="walletAddress" label={intl.get('page.walletAddress')}>
+              <Input defaultValue={selectedAccount.address} disabled />
+            </Form.Item>
+            <Form.Item
+              name="avatar"
+              label={intl.get('page.avatar')}
+              valuePropName="fileList"
+              getValueFromEvent={normFile}
+            >
+              <StyledUploader type={UPLOAD_TYPES.PAGE_AVATAR} />
+            </Form.Item>
+            <Form.Item
+              name="cover"
+              label={intl.get('page.cover')}
+              valuePropName="fileList"
+              getValueFromEvent={normFile}
+            >
+              <StyledUploader type={UPLOAD_TYPES.PAGE_COVER} />
+            </Form.Item>
+            <Form.Item name="website" label={intl.get('page.website')}>
+              <Input onChange={e => handleNewPageWebsiteInput(e)} />
+            </Form.Item>
+            <Form.Item label={intl.get('page.description')}>
+              <TextArea onChange={e => handleNewPageDescriptionInput(e)} rows={4} />
+            </Form.Item>
 
-          {/* State */}
-          {newPageCountry != '' && (
+            {/* Country */}
             <Form.Item>
               <Select
                 showSearch
+                onChange={handleChangeCountry}
+                style={{ width: 200 }}
+                placeholder={intl.get('page.country')}
+                optionFilterProp="children"
+                filterOption={(input, option) =>
+                  (option!.children as unknown as string).toLocaleLowerCase().includes(input)
+                }
+                filterSort={(optionA, optionB) =>
+                  (optionA!.children as unknown as string)
+                    .toLowerCase()
+                    .localeCompare((optionB!.children as unknown as string).toLowerCase())
+                }
+              >
+                {countries.map(country => (
+                  <Option key={country.id}>{country.name}</Option>
+                ))}
+              </Select>
+            </Form.Item>
+
+            {/* State */}
+            {newPageCountry != '' && (
+              <Form.Item>
+                <Select
+                  showSearch
+                  onChange={handleChangeState}
+                  style={{ width: 200 }}
+                  placeholder={intl.get('page.state')}
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>
+                    (option!.children as unknown as string).toLowerCase().includes(input.toLowerCase())
+                  }
+                  filterSort={(optionA, optionB) =>
+                    (optionA!.children as unknown as string)
+                      .toLowerCase()
+                      .localeCompare((optionB!.children as unknown as string).toLowerCase())
+                  }
+                >
+                  {states.map(state => (
+                    <Option key={state.id}>{state.name}</Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            )}
+
+            <Form.Item>
+              <Input
+                addonBefore={intl.get('page.address')}
+                value={newPageAddress}
+                onChange={e => handleNewPageAddressInput(e)}
+              />
+            </Form.Item>
+
+            <Form.Item wrapperCol={{ offset: 0, span: 24 }}>
+              <Button
+                type="primary"
+                htmlType="submit"
+                onClick={handleOnCreateNewPage}
+                disabled={!createPageFormDataIsValid}
+              >
+                {intl.get('page.createPage')}
+              </Button>
+            </Form.Item>
+          </Form>
+        ) : (
+          // Edit Page
+          <Form
+            labelCol={{ span: 5 }}
+            wrapperCol={{ span: 24 }}
+            layout="horizontal"
+            initialValues={{ disabled: componentDisabled }}
+            onValuesChange={onFormLayoutChange}
+          >
+            <Form.Item name="name">
+              <Input
+                addonBefore={intl.get('page.name')}
+                defaultValue={selectedPage.name}
+                value={selectedPage.name}
+                onChange={e => handleNewPageNameInput(e)}
+              />
+            </Form.Item>
+            <Form.Item name="title">
+              <Input
+                addonBefore={intl.get('page.title')}
+                defaultValue={selectedPage.title}
+                onChange={e => handleNewPageTitleInput(e)}
+              />
+            </Form.Item>
+            <Form.Item name="walletAddress">
+              <Input addonBefore={intl.get('page.walletAddress')} defaultValue={selectedAccount.address} disabled />
+            </Form.Item>
+            <Form.Item
+              name="avatar"
+              label={intl.get('page.avatar')}
+              valuePropName="fileList"
+              getValueFromEvent={normFile}
+            >
+              {selectedPage.avatar && (
+                <Image src={(selectedPage.avatar as any).upload.url} width="150px" height="150px" />
+              )}
+              <StyledUploader type={UPLOAD_TYPES.PAGE_AVATAR} />
+            </Form.Item>
+            <Form.Item
+              name="cover"
+              label={intl.get('page.cover')}
+              valuePropName="fileList"
+              getValueFromEvent={normFile}
+            >
+              {selectedPage.cover && (
+                <Image src={(selectedPage.cover as any).upload.url} width="150px" height="150px" />
+              )}
+              <StyledUploader type={UPLOAD_TYPES.PAGE_COVER} />
+            </Form.Item>
+            <Form.Item name="website">
+              <Input
+                addonBefore={intl.get('page.website')}
+                defaultValue={selectedPage.website}
+                value={selectedPage.website}
+                onChange={e => handleNewPageWebsiteInput(e)}
+              />
+            </Form.Item>
+            <Form.Item label={intl.get('page.description')}>
+              <TextArea
+                defaultValue={selectedPage.description}
+                onChange={e => handleNewPageDescriptionInput(e)}
+                rows={4}
+              />
+            </Form.Item>
+
+            {/* Country */}
+            <Form.Item>
+              <Select
+                showSearch
+                defaultValue={selectedPage.country}
+                onChange={handleChangeCountry}
+                style={{ width: 200 }}
+                placeholder={intl.get('page.country')}
+                optionFilterProp="children"
+                filterOption={(input, option) =>
+                  (option!.children as unknown as string).toLocaleLowerCase().includes(input)
+                }
+                filterSort={(optionA, optionB) =>
+                  (optionA!.children as unknown as string)
+                    .toLowerCase()
+                    .localeCompare((optionB!.children as unknown as string).toLowerCase())
+                }
+              >
+                {countries.map(country => (
+                  <Option key={country.id}>{country.name}</Option>
+                ))}
+              </Select>
+            </Form.Item>
+
+            {/* State */}
+            <Form.Item>
+              <Select
+                showSearch
+                defaultValue={selectedPage.state}
                 onChange={handleChangeState}
                 style={{ width: 200 }}
                 placeholder={intl.get('page.state')}
@@ -344,148 +484,23 @@ const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
                 ))}
               </Select>
             </Form.Item>
-          )}
 
-          <Form.Item>
-            <Input
-              addonBefore={intl.get('page.address')}
-              value={newPageAddress}
-              onChange={e => handleNewPageAddressInput(e)}
-            />
-          </Form.Item>
+            <Form.Item>
+              <Input
+                addonBefore={intl.get('page.address')}
+                defaultValue={selectedPage.address}
+                onChange={e => handleNewPageAddressInput(e)}
+              />
+            </Form.Item>
 
-          <Form.Item wrapperCol={{ offset: 0, span: 24 }}>
-            <Button
-              type="primary"
-              htmlType="submit"
-              onClick={handleOnCreateNewPage}
-              disabled={!createPageFormDataIsValid}
-            >
-              {intl.get('page.createPage')}
-            </Button>
-          </Form.Item>
-        </Form>
-      ) : (
-        // Edit Page
-        <Form
-          labelCol={{ span: 5 }}
-          wrapperCol={{ span: 24 }}
-          layout="horizontal"
-          initialValues={{ disabled: componentDisabled }}
-          onValuesChange={onFormLayoutChange}
-        >
-          <Form.Item name="name">
-            <Input
-              addonBefore={intl.get('page.name')}
-              defaultValue={selectedPage.name}
-              value={selectedPage.name}
-              onChange={e => handleNewPageNameInput(e)}
-            />
-          </Form.Item>
-          <Form.Item name="title">
-            <Input
-              addonBefore={intl.get('page.title')}
-              defaultValue={selectedPage.title}
-              onChange={e => handleNewPageTitleInput(e)}
-            />
-          </Form.Item>
-          <Form.Item name="walletAddress">
-            <Input addonBefore={intl.get('page.walletAddress')} defaultValue={selectedAccount.address} disabled />
-          </Form.Item>
-          <Form.Item
-            name="avatar"
-            label={intl.get('page.avatar')}
-            valuePropName="fileList"
-            getValueFromEvent={normFile}
-          >
-            {selectedPage.avatar && (
-              <Image src={(selectedPage.avatar as any).upload.url} width="150px" height="150px" />
-            )}
-            <StyledUploader type={UPLOAD_TYPES.PAGE_AVATAR} />
-          </Form.Item>
-          <Form.Item name="cover" label={intl.get('page.cover')} valuePropName="fileList" getValueFromEvent={normFile}>
-            {selectedPage.cover && <Image src={(selectedPage.cover as any).upload.url} width="150px" height="150px" />}
-            <StyledUploader type={UPLOAD_TYPES.PAGE_COVER} />
-          </Form.Item>
-          <Form.Item name="website">
-            <Input
-              addonBefore={intl.get('page.website')}
-              defaultValue={selectedPage.website}
-              value={selectedPage.website}
-              onChange={e => handleNewPageWebsiteInput(e)}
-            />
-          </Form.Item>
-          <Form.Item label={intl.get('page.description')}>
-            <TextArea
-              defaultValue={selectedPage.description}
-              onChange={e => handleNewPageDescriptionInput(e)}
-              rows={4}
-            />
-          </Form.Item>
-
-          {/* Country */}
-          <Form.Item>
-            <Select
-              showSearch
-              defaultValue={selectedPage.country}
-              onChange={handleChangeCountry}
-              style={{ width: 200 }}
-              placeholder={intl.get('page.country')}
-              optionFilterProp="children"
-              filterOption={(input, option) =>
-                (option!.children as unknown as string).toLocaleLowerCase().includes(input)
-              }
-              filterSort={(optionA, optionB) =>
-                (optionA!.children as unknown as string)
-                  .toLowerCase()
-                  .localeCompare((optionB!.children as unknown as string).toLowerCase())
-              }
-            >
-              {countries.map(country => (
-                <Option key={country.id}>{country.name}</Option>
-              ))}
-            </Select>
-          </Form.Item>
-
-          {/* State */}
-          <Form.Item>
-            <Select
-              showSearch
-              defaultValue={selectedPage.state}
-              onChange={handleChangeState}
-              style={{ width: 200 }}
-              placeholder={intl.get('page.state')}
-              optionFilterProp="children"
-              filterOption={(input, option) =>
-                (option!.children as unknown as string).toLocaleLowerCase().includes(input)
-              }
-              filterSort={(optionA, optionB) =>
-                (optionA!.children as unknown as string)
-                  .toLowerCase()
-                  .localeCompare((optionB!.children as unknown as string).toLowerCase())
-              }
-            >
-              {states.map(state => (
-                <Option key={state.id}>{state.name}</Option>
-              ))}
-            </Select>
-          </Form.Item>
-
-          <Form.Item>
-            <Input
-              addonBefore={intl.get('page.address')}
-              defaultValue={selectedPage.address}
-              onChange={e => handleNewPageAddressInput(e)}
-            />
-          </Form.Item>
-
-          <Form.Item wrapperCol={{ offset: 0, span: 24 }}>
-            <Button type="primary" htmlType="submit" onClick={handleOnEditPage}>
-              {intl.get('page.editPage')}
-            </Button>
-          </Form.Item>
-        </Form>
-      )}
+            <Form.Item wrapperCol={{ offset: 0, span: 24 }}>
+              <Button type="primary" htmlType="submit" onClick={handleOnEditPage}>
+                {intl.get('page.editPage')}
+              </Button>
+            </Form.Item>
+          </Form>
+        )}
+      </WrapperPage>
     </>
   );
 };

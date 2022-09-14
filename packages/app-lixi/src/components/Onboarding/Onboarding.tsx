@@ -19,10 +19,10 @@ export const LotusLogo = styled.img`
 
 export const LixiTextLogo = styled.img`
   width: 250px;
-  margin-left: 40px;
+  margin-left: 0;
   @media (max-width: 768px) {
     width: 190px;
-    margin-left: 20px;
+    margin-left: 0;
   }
 `;
 
@@ -40,14 +40,12 @@ export const WelcomeLink = styled.a`
 `;
 
 export const Onboarding = styled.div`
-  position: relative;
-  width: 500px;
-  min-height: 100vh;
   padding: 10px 30px 20px 30px;
   background: #fff;
-  -webkit-box-shadow: 0px 0px 24px 1px rgb(0 0 0);
-  -moz-box-shadow: 0px 0px 24px 1px rgba(0, 0, 0, 1);
-  box-shadow: 0px 0px 24px 1px rgb(0 0 0);
+  -webkit-box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
+  -moz-box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
+  box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
+  border-radius: 20px;
 `;
 
 const OnboardingComponent: React.FC = () => {

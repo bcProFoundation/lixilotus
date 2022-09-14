@@ -9,14 +9,16 @@ import {
   ArchiveLixiCommand,
   ClaimType,
   Lixi,
+  LixiType,
   RenameLixiCommand,
   UnarchiveLixiCommand,
   WithdrawLixiCommand
 } from '@bcpros/lixi-models/lib/lixi';
+import { currency } from '@components/Common/Ticker';
 import { getAllSubLixies } from '@store/lixi/selectors';
 import { openModal } from '@store/modal/actions';
 import { fromSmallestDenomination } from '@utils/cashMethods';
-import { Button, Dropdown, Menu } from 'antd';
+import { Button, Col, Dropdown, Menu, Row, Tag } from 'antd';
 import intl from 'react-intl-universal';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
@@ -70,14 +72,14 @@ const BalanceAndTicker = styled.div`
 `;
 
 const Wrapper = styled.div`
-  display: flex;
+  display: block;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 25px;
-  border-radius: 3px;
-  margin-bottom: 3px;
-  box-shadow: ${props => props.theme.listItem.boxShadow};
-  border: 1px solid ${props => props.theme.listItem.border};
+  padding: 8px 15px 15px 15px;
+  border-radius: 15px;
+  margin-bottom: 15px;
+  text-align: left;
+  border: 1px solid ${props => props.theme.listItem.border}!important;
 
   :hover {
     border-color: ${props => props.theme.listItem.hoverBorder};
@@ -94,6 +96,13 @@ const MoreIcon = styled(Button)`
   :focus {
     background-color: rgb(224, 224, 224);
   }
+`;
+
+const LixiNameStyled = styled(Col)`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid ${props => props.theme.listItem.border}!important;
 `;
 
 type LixiListItemProps = {
@@ -170,28 +179,88 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
     }
   };
 
+  const typeLixi = () => {
+    switch (lixi?.lixiType) {
+      case LixiType.Fixed:
+        return (
+          <>
+            {intl.get('account.fixed')} {lixi.fixedValue} {currency.ticker}
+          </>
+        );
+      case LixiType.Divided:
+        return (
+          <>
+            {intl.get('lixi.dividedBy')} {lixi.dividedValue}{' '}
+          </>
+        );
+      case LixiType.Equal:
+        return (
+          <>
+            {intl.get('account.equal')} {lixi.amount / lixi.numberOfSubLixi} {currency.ticker}
+          </>
+        );
+      default:
+        return (
+          <>
+            {intl.get('account.random')} {lixi?.minValue}-{lixi?.maxValue} {currency.ticker}
+          </>
+        );
+    }
+  };
+
   return (
-    <Wrapper onClick={e => handleSelectLixi(lixi.id)}>
-      <LixiIcon>{getLixiStatusIcon(lixi.status)}</LixiIcon>
-      <BalanceAndTicker>
-        <strong>{lixi.name}</strong>
-        <br />
-        {lixi.claimType == ClaimType.Single ? (
-          <span>
-            ({lixi.claimedNum}) {fromSmallestDenomination(lixi.totalClaim)}/{fromSmallestDenomination(lixi.balance)}{' '}
-            {intl.get('lixi.remainingXPI')}
-          </span>
-        ) : (
-          <span>
-            ({lixi.claimCount}/{lixi.numberOfSubLixi}) {fromSmallestDenomination(lixi.subLixiTotalClaim).toFixed(2)} /{' '}
-            {lixi.subLixiBalance != undefined ? lixi.subLixiBalance.toFixed(2) : 0.0} {intl.get('lixi.remainingXPI')}
-          </span>
-        )}
-      </BalanceAndTicker>
-      <Dropdown trigger={['click']} overlay={<Menu onClick={e => handleClickMenu(e)}>{menus}</Menu>}>
-        <MoreIcon onClick={e => e.stopPropagation()} icon={<MoreOutlined />} size="large"></MoreIcon>
-      </Dropdown>
-    </Wrapper>
+    <>
+      <Wrapper>
+        <Row>
+          <LixiNameStyled span={24}>
+            <strong>{lixi.name}</strong>
+            <Dropdown trigger={['click']} overlay={<Menu onClick={e => handleClickMenu(e)}>{menus}</Menu>}>
+              <MoreIcon onClick={e => e.stopPropagation()} icon={<MoreOutlined />} size="large"></MoreIcon>
+            </Dropdown>
+          </LixiNameStyled>
+        </Row>
+        <Row>
+          <Col span={10}>Budget</Col>
+          <Col span={8} offset={3}>
+            {lixi.amount} XPI
+          </Col>
+        </Row>
+        <Row>
+          <Col span={10}>Type of code</Col>
+          <Col span={8} offset={3}>
+            {lixi.claimType == ClaimType.Single ? 'Single' : 'One-Time Codes'}
+          </Col>
+        </Row>
+        <Row>
+          <Col span={10}>Value per redeem</Col>
+          <Col span={8} offset={3}>
+            {typeLixi()}
+          </Col>
+        </Row>
+        <Row>
+          <Col span={10}>Redeemmed</Col>
+          <Col span={8} offset={3}>
+            {lixi.claimedNum} XPI
+          </Col>
+        </Row>
+        <Row>
+          <Col span={10}>Remaining</Col>
+          <Col span={8} offset={3}>
+            {lixi.claimType == ClaimType.Single ? (
+              <span>{fromSmallestDenomination(lixi.balance)} XPI</span>
+            ) : (
+              <span>{lixi.subLixiBalance != undefined ? lixi.subLixiBalance.toFixed(2) : 0.0} XPI</span>
+            )}
+          </Col>
+        </Row>
+        <Row>
+          <Col span={10}>Status</Col>
+          <Col span={8} offset={3}>
+            <Tag color={lixi.status === 'active' ? '#108ee9' : '##f50'}>{lixi.status}</Tag>
+          </Col>
+        </Row>
+      </Wrapper>
+    </>
   );
 };
 
