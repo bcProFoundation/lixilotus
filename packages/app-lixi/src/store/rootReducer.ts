@@ -23,6 +23,7 @@ import { PageState } from './page/state';
 import { pageReducer } from './page/reducer';
 import { countryReducer, stateReducer } from './country/reducer';
 import { CountriesState, StatesState } from './country/state';
+import { api as pagesApi } from './page/pages.generated';
 
 const persistConfig = {
   key: 'root',
@@ -102,6 +103,7 @@ export const appReducer = combineReducers({
   error: errorReducer,
   countries: persistReducer(countryPersistConfig, countryReducer),
   states: persistReducer(statePersistConfig, stateReducer),
+  [pagesApi.reducerPath]: pagesApi.reducer,
   // This is use for useReduxEffect
   // Should be always at the end
   action: actionReducer

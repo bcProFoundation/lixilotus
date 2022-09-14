@@ -10,7 +10,7 @@ import {
   getPage,
   getPageSuccess
 } from './action';
-import { Page } from '@bcpros/lixi-models/src';
+import { Page } from 'src/generated/types.generated';
 
 export const pageAdapter = createEntityAdapter<Page>({});
 

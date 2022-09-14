@@ -1,5 +1,5 @@
 import { CommentOutlined, DislikeOutlined, FilterOutlined, LikeOutlined } from '@ant-design/icons';
-import { List, Menu, MenuProps, message, Modal, Space } from 'antd';
+import { Button, List, Menu, MenuProps, message, Modal, Space } from 'antd';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import React from 'react';
@@ -11,11 +11,19 @@ import { fetchAllPages, setSelectedPage } from '@store/page/action';
 import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
 import { push } from 'connected-next-router';
 import _ from 'lodash';
+import { FixedSizeList } from 'react-window';
+import InfiniteLoader from 'react-window-infinite-loader';
+import AutoSizer from 'react-virtualized-auto-sizer';
+import moment from 'moment';
+import CreatePostCard from '@components/Common/CreatePostCard';
+import SearchBox from '@components/Common/SearchBox';
+import InfoCardUser from '@components/Common/InfoCardUser';
 
 const CardContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 1rem 4rem 0 4rem;
+  padding: 20px;
+  width: 100%;
   @media (max-width: 768px) {
     padding: 1rem 1rem 0 1rem;
   }
@@ -33,6 +41,9 @@ const CardHeader = styled.div`
   }
   .time-created {
     font-size: 12px;
+  }
+  img {
+    width: 24px;
   }
 `;
 
@@ -55,24 +66,35 @@ const Content = styled.div`
 const ActionBar = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  button {
+    margin-right: 1rem;
+    border-radius: 20px;
+  }
 `;
 
 const GroupIconText = styled.div`
+  display: flex;
+  border: none;
   width: 100%;
-  padding: 1rem;
-  border-top: 1px solid #e0e0e0;
+  padding: 1rem 0 1rem 1rem;
+  width: 424px;
   &.num-react {
     padding: 1rem 0;
     border: none;
     text-align: left;
   }
   .ant-space {
-    margin-right: 2rem;
+    margin-right: 1rem;
   }
-  @media (max-width: 768px) {
-    .ant-space {
-      margin-right: 1rem;
-    }
+  @media (max-width: 960px) {
+    width: 210px;
+  }
+  @media (min-width: 960px) {
+    width: 380px;
+  }
+  img {
+    width: 18px;
   }
 `;
 
@@ -140,9 +162,20 @@ const PagesListing: React.FC = () => {
     return lists;
   };
 
-  const IconText = ({ icon, text, dataItem }: { icon: React.FC; text: string; dataItem: any }) => (
+  const IconText = ({
+    icon,
+    text,
+    dataItem,
+    imgUrl
+  }: {
+    icon?: React.FC;
+    text?: string;
+    dataItem: any;
+    imgUrl?: string;
+  }) => (
     <Space onClick={e => (icon === LikeOutlined ? upVoteShop(dataItem) : downVoteShop(dataItem))}>
-      {React.createElement(icon)}
+      {icon && React.createElement(icon)}
+      {imgUrl && React.createElement('img', { src: imgUrl }, null)}
       {text}
     </Space>
   );
@@ -194,79 +227,107 @@ const PagesListing: React.FC = () => {
     dispatch(push(`/page/${id}`));
   };
 
+  const isItemLoaded = (index: number) => {
+    return index < lists.length && !_.isNil(lists[index]);
+  };
+
+  const PageListItem = ({ index, style, data }) => {
+    const item = data[index];
+    return (
+      <List.Item
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: 'fit-content !important',
+          marginBottom: '1rem',
+          borderRadius: '24px',
+          boxShadow: '0px 2px 10px rgb(0 0 0 / 5%)',
+          background: 'white',
+          padding: '0',
+          border: 'none',
+          ...style
+        }}
+        key={item.title}
+      >
+        <CardContainer>
+          <CardHeader onClick={() => routerShopDetail(item.id)}>
+            <InfoCardUser
+              imgUrl={null}
+              name={'Nguyen Tanh'}
+              title={moment(item.createdAt).fromNow().toString()}
+            ></InfoCardUser>
+            <img src="/images/three-dot-ico.svg" alt="" />
+          </CardHeader>
+          <Content>
+            <p className="description-post">{item.description}</p>
+            <img className="image-cover" src={item.cover} alt="" />
+          </Content>
+        </CardContainer>
+        <ActionBar>
+          <GroupIconText>
+            <IconText text={item.upVote} imgUrl="/images/up-ico.svg" key="list-vertical-like-o" dataItem={item} />
+            <IconText text={item.downVote} imgUrl="/images/down-ico.svg" key="list-vertical-like-o" dataItem={item} />
+            <IconText imgUrl="/images/comment-ico.svg" text="0 Comments" key="list-vertical-like-o" dataItem={item} />
+            <IconText imgUrl="/images/share-ico.svg" text="Share" key="list-vertical-like-o" dataItem={item} />
+          </GroupIconText>
+
+          <Button type="primary" onClick={item => onLixiClick(item)}>
+            Send tip
+          </Button>
+        </ActionBar>
+      </List.Item>
+    );
+  };
+
   return (
     <>
+      <SearchBox></SearchBox>
+      <CreatePostCard></CreatePostCard>
       <Menu
-        style={{ border: 'none', position: 'relative', marginBottom: '1rem' }}
+        style={{
+          border: 'none',
+          position: 'relative',
+          marginBottom: '1rem',
+          background: 'var(--bg-color-light-theme)'
+        }}
         mode="horizontal"
         defaultSelectedKeys={['day']}
         onClick={onClickMenu}
       >
-        <Menu.Item key="day">24h</Menu.Item>
-        <Menu.Item key="week">Week</Menu.Item>
-        <Menu.Item key="month">Month</Menu.Item>
-        <Menu.Item key="year">Year</Menu.Item>
-        <Menu.Item style={{ position: 'absolute', right: '0' }} key="filter" icon={<FilterOutlined />}>
-          Filter
+        <Menu.Item key="day">All</Menu.Item>
+        <Menu.Item key="week">Friend</Menu.Item>
+        <Menu.Item key="month">Trending</Menu.Item>
+        <Menu.Item key="year">Experience</Menu.Item>
+        <Menu.Item
+          style={{ position: 'absolute', right: '0', fontWeight: '600' }}
+          key="filter"
+          icon={<FilterOutlined />}
+        >
+          Latest
         </Menu.Item>
       </Menu>
-      <List
-        itemLayout="vertical"
-        size="large"
-        pagination={{
-          onChange: page => {
-            console.log(page);
-          },
-          pageSize: 3
-        }}
-        dataSource={lists}
-        renderItem={item => (
-          <List.Item
-            style={{
-              marginBottom: '1rem',
-              borderRadius: '24px',
-              boxShadow: '0px 1px 2px rgb(0 0 0 / 4%), 0px 2px 6px 2px rgb(0 0 0 / 8%)',
-              background: 'white',
-              padding: '0',
-              border: '1px solid #e0e0e0'
-            }}
-            key={item.title}
-          >
-            <CardContainer>
-              <CardHeader onClick={() => routerShopDetail(item.id)}>
-                <div className="info-user">
-                  <img style={{ borderRadius: '50%' }} src={item.avatar} width="24px" height="24px" alt="" />
-                  <span className="name-title">{item.title}</span>
-                </div>
-                <span className="time-created">18 hour ago</span>
-              </CardHeader>
-              <Content>
-                <p className="description-post">{item.description}</p>
-                <img className="image-cover" src={item.cover} alt="" />
-                <GroupIconText className="num-react">
-                  <IconText icon={LikeOutlined} text={item.upVote} key="list-vertical-like-o" dataItem={item} />
-                  <IconText
-                    icon={DislikeOutlined}
-                    text={item.downVote}
-                    key="list-vertical-dis-like-o"
-                    dataItem={item}
-                  />
-                </GroupIconText>
-              </Content>
-            </CardContainer>
-            <ActionBar>
-              <GroupIconText>
-                <IconText icon={LikeOutlined} text={'Vote Up'} key="list-vertical-like-o" dataItem={item} />
-                <IconText icon={DislikeOutlined} text={'Vote Down'} key="list-vertical-dis-like-o" dataItem={item} />
-                <IconText icon={CommentOutlined} text={'Comment'} key="list-vertical-comment-o" dataItem={item} />
-              </GroupIconText>
-              {/* <Button type="primary" onClick={item => onLixiClick(item)}>
-                lixi
-              </Button> */}
-            </ActionBar>
-          </List.Item>
-        )}
-      />
+      <div className={'listing'} style={{ height: '100vh' }}>
+        <AutoSizer>
+          {({ height, width }) => (
+            <InfiniteLoader isItemLoaded={isItemLoaded} itemCount={lists.length}>
+              {({ onItemsRendered, ref }) => (
+                <FixedSizeList
+                  className="List"
+                  height={height}
+                  width={width}
+                  itemSize={width}
+                  itemCount={lists.length}
+                  itemData={lists}
+                  onItemsRendered={onItemsRendered}
+                  ref={ref}
+                >
+                  {PageListItem}
+                </FixedSizeList>
+              )}
+            </InfiniteLoader>
+          )}
+        </AutoSizer>
+      </div>
 
       <Modal title="Are you sure to down vote shop?" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
         <p>Some contents...</p>

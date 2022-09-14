@@ -113,6 +113,7 @@ function* generateLixiSaga(action: PayloadAction<GenerateLixiCommand>) {
     numberLixiPerPackage: Number(command.numberLixiPerPackage),
     minStaking: Number(command.minStaking),
     country: command && command.country ? command.country : undefined,
+    networkType: command.networkType,
     isFamilyFriendly: command.isFamilyFriendly,
     isNFTEnabled: command.isNFTEnabled,
     password: password,

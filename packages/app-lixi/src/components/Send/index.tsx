@@ -24,6 +24,7 @@ import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
 import { ZeroBalanceHeader } from '@bcpros/lixi-components/components/Common/Atoms';
 import styled from 'styled-components';
 import { createSharedKey, encrypt } from '@utils/encryption';
+import { WrapperPage } from '@components/Settings';
 
 const StyledCheckbox = styled(Checkbox)`
   .ant-checkbox-inner {
@@ -375,126 +376,128 @@ const SendComponent: React.FC = () => {
           })}
         </p>
       </Modal>
-      {!balance ? (
-        <ZeroBalanceHeader>
-          {intl.get('zeroBalanceHeader.noBalance', { ticker: currency.ticker })}
-          <br />
-          {intl.get('zeroBalanceHeader.deposit')}
-        </ZeroBalanceHeader>
-      ) : (
-        <>
-          <WalletLabel name={wallet?.name ?? ''} />
-          <BalanceHeader balance={balance || 0} ticker={currency.ticker} />
-        </>
-      )}
+      <WrapperPage>
+        {!balance ? (
+          <ZeroBalanceHeader>
+            {intl.get('zeroBalanceHeader.noBalance', { ticker: currency.ticker })}
+            <br />
+            {intl.get('zeroBalanceHeader.deposit')}
+          </ZeroBalanceHeader>
+        ) : (
+          <>
+            <WalletLabel name={wallet?.name ?? ''} />
+            <BalanceHeader balance={balance || 0} ticker={currency.ticker} />
+          </>
+        )}
 
-      {/* <Row type="flex"> */}
-      <Row>
-        <Col span={24}>
-          <Form
-            style={{
-              width: 'auto'
-            }}
-          >
-            {recipientPubKeyWarning && (
-              <Alert
+        {/* <Row type="flex"> */}
+        <Row>
+          <Col span={24}>
+            <Form
+              style={{
+                width: 'auto'
+              }}
+            >
+              {recipientPubKeyWarning && (
+                <Alert
+                  style={{
+                    margin: '0 0 10px 0'
+                  }}
+                  message={recipientPubKeyWarning}
+                  type="warning"
+                  showIcon
+                />
+              )}
+              <FormItemWithQRCodeAddon
                 style={{
                   margin: '0 0 10px 0'
                 }}
-                message={recipientPubKeyWarning}
-                type="warning"
-                showIcon
-              />
-            )}
-            <FormItemWithQRCodeAddon
-              style={{
-                margin: '0 0 10px 0'
-              }}
-              loadWithCameraOpen={false}
-              validateStatus={sendXpiAddressError ? 'error' : ''}
-              help={sendXpiAddressError ? sendXpiAddressError : ''}
-              onScan={result =>
-                handleAddressChange({
-                  target: {
-                    name: 'address',
-                    value: result
-                  }
-                })
-              }
-              inputProps={{
-                placeholder: `${currency.ticker} Address`,
-                name: 'address',
-                onChange: e => handleAddressChange(e),
-                required: true,
-                value: formData.address
-              }}
-            ></FormItemWithQRCodeAddon>
-            {sendOnlyMessageCheckbox}
+                loadWithCameraOpen={false}
+                validateStatus={sendXpiAddressError ? 'error' : ''}
+                help={sendXpiAddressError ? sendXpiAddressError : ''}
+                onScan={result =>
+                  handleAddressChange({
+                    target: {
+                      name: 'address',
+                      value: result
+                    }
+                  })
+                }
+                inputProps={{
+                  placeholder: `${currency.ticker} Address`,
+                  name: 'address',
+                  onChange: e => handleAddressChange(e),
+                  required: true,
+                  value: formData.address
+                }}
+              ></FormItemWithQRCodeAddon>
+              {sendOnlyMessageCheckbox}
 
-            <SendXpiInput
-              style={{
-                margin: '0 0 10px 0'
-              }}
-              validateStatus={sendXpiAmountError ? 'error' : ''}
-              help={sendXpiAmountError ? sendXpiAmountError : ''}
-              onMax={() => onMax()}
-              inputProps={{
-                name: 'value',
-                dollar: selectedCurrency === 'USD' ? 1 : 0,
-                placeholder: 'Amount',
-                onChange: e => handleBchAmountChange(e),
-                required: true,
-                value: formData.value
-              }}
-              selectProps={{
-                value: selectedCurrency,
-                disabled: queryStringText !== null,
-                onChange: e => handleSelectedCurrencyChange(e)
-              }}
-              activeFiatCode={''}
-            ></SendXpiInput>
-            {/* OP_RETURN message */}
-            <OpReturnMessageInput
-              style={{
-                margin: '0 0 25px 0'
-              }}
-              placeholder={intl.get('send.optionalPrivateMessage')}
-              disabled={isOpReturnMsgDisabled}
-              value={
-                opReturnMsg
-                  ? isEncryptedOptionalOpReturnMsg
-                    ? opReturnMsg.substring(0, currency.opReturn.encryptedMsgByteLimit)
-                    : opReturnMsg
-                  : ''
-              }
-              onChange={msg => setOpReturnMsg(msg)}
-              maxByteLength={computeOpReturnMsgMaxByteLength()}
-              labelTop={null}
-              labelBottom={null}
-            />
-            {/* END OF OP_RETURN message */}
-            <div>
-              {!balance || sendXpiAmountError || sendXpiAddressError ? (
-                <PrimaryButton>Send</PrimaryButton>
-              ) : (
-                <>
-                  {txInfoFromUrl ? (
-                    <PrimaryButton onClick={() => showModal()}>Send</PrimaryButton>
-                  ) : (
-                    <PrimaryButton onClick={() => submit()}>Send</PrimaryButton>
-                  )}
-                </>
-              )}
-            </div>
-            {queryStringText && (
-              <Alert
-                message={intl.get('send.queryString', { queryStringText, currency: currency.ticker })}
-                type="warning"
+              <SendXpiInput
+                style={{
+                  margin: '0 0 10px 0'
+                }}
+                validateStatus={sendXpiAmountError ? 'error' : ''}
+                help={sendXpiAmountError ? sendXpiAmountError : ''}
+                onMax={() => onMax()}
+                inputProps={{
+                  name: 'value',
+                  dollar: selectedCurrency === 'USD' ? 1 : 0,
+                  placeholder: 'Amount',
+                  onChange: e => handleBchAmountChange(e),
+                  required: true,
+                  value: formData.value
+                }}
+                selectProps={{
+                  value: selectedCurrency,
+                  disabled: queryStringText !== null,
+                  onChange: e => handleSelectedCurrencyChange(e)
+                }}
+                activeFiatCode={''}
+              ></SendXpiInput>
+              {/* OP_RETURN message */}
+              <OpReturnMessageInput
+                style={{
+                  margin: '0 0 25px 0'
+                }}
+                placeholder={intl.get('send.optionalPrivateMessage')}
+                disabled={isOpReturnMsgDisabled}
+                value={
+                  opReturnMsg
+                    ? isEncryptedOptionalOpReturnMsg
+                      ? opReturnMsg.substring(0, currency.opReturn.encryptedMsgByteLimit)
+                      : opReturnMsg
+                    : ''
+                }
+                onChange={msg => setOpReturnMsg(msg)}
+                maxByteLength={computeOpReturnMsgMaxByteLength()}
+                labelTop={null}
+                labelBottom={null}
               />
-            )}
-          </Form>
-        </Col>
-      </Row>
+              {/* END OF OP_RETURN message */}
+              <div>
+                {!balance || sendXpiAmountError || sendXpiAddressError ? (
+                  <PrimaryButton>Send</PrimaryButton>
+                ) : (
+                  <>
+                    {txInfoFromUrl ? (
+                      <PrimaryButton onClick={() => showModal()}>Send</PrimaryButton>
+                    ) : (
+                      <PrimaryButton onClick={() => submit()}>Send</PrimaryButton>
+                    )}
+                  </>
+                )}
+              </div>
+              {queryStringText && (
+                <Alert
+                  message={intl.get('send.queryString', { queryStringText, currency: currency.ticker })}
+                  type="warning"
+                />
+              )}
+            </Form>
+          </Col>
+        </Row>
+      </WrapperPage>
     </>
   );
 };

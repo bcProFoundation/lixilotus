@@ -1,24 +1,14 @@
 import { Layout, Spin } from 'antd';
-import intl from 'react-intl-universal';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 
-import {
-  GiftOutlined,
-  HomeOutlined,
-  LoadingOutlined,
-  SettingOutlined,
-  UserOutlined,
-  WalletOutlined
-} from '@ant-design/icons';
-import { Footer, NavButton } from '@bcpros/lixi-components/components';
+import { LeftOutlined, LoadingOutlined } from '@ant-design/icons';
 
 import ModalManager from '../../Common/ModalManager';
-import OnboardingComponent from '../../Onboarding/Onboarding';
 import { GlobalStyle } from './GlobalStyle';
 import { theme } from './theme';
 import Sidebar from '@containers/Sidebar';
@@ -27,14 +17,18 @@ import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
 import { loadLocale } from '@store/settings/actions';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
 import { injectStore } from 'src/utils/axiosClient';
-
-const { Content, Sider, Header } = Layout;
+import SidebarRanking from '@containers/Sidebar/SideBarRanking';
+import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
+import { Header } from 'antd/lib/layout/layout';
+import { navBarHeaderList } from '@bcpros/lixi-models/constants';
+const { Content } = Layout;
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
 
 const LixiApp = styled.div`
   text-align: center;
-  font-family: 'Gilroy', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   background-color: ${props => props.theme.app.background};
 `;
 
@@ -46,6 +40,47 @@ const AppBody = styled.div`
   min-height: 100vh;
   background-image: ${props => props.theme.app.gradient};
   background-attachment: fixed;
+  @media (min-width: 1366px) {
+    max-width: 1366px;
+    margin: auto;
+  }
+`;
+
+const NavBarHeader = styled(Header)`
+  padding: 2rem 2rem 1rem 2rem;
+  height: auto;
+  line-height: initial;
+  display: flex;
+  align-items: center;
+  border-radius: 20px;
+  box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
+  width: 88%;
+  margin: auto;
+  margin-bottom: 1rem;
+  .anticon {
+    font-size: 24px;
+    color: var(--color-primary);
+  }
+  @media (max-width: 768px) {
+    padding: 0;
+    width: 100%;
+  }
+}
+`;
+
+const PathDirection = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-left: 1rem;
+  h2 {
+    font-weight: 600;
+    text-transform: capitalize;
+    color: var(--color-primary);
+  }
+  .sub-title {
+    text-transform: capitalize;
+  }
 `;
 
 export const AppContainer = styled.div`
@@ -56,9 +91,6 @@ export const AppContainer = styled.div`
   padding: 10px 30px 120px 30px;
   overflow: hidden;
   background: ${props => props.theme.wallet.background};
-  -webkit-box-shadow: 0px 0px 24px 1px ${props => props.theme.wallet.shadow};
-  -moz-box-shadow: 0px 0px 24px 1px ${props => props.theme.wallet.shadow};
-  box-shadow: 0px 0px 24px 1px ${props => props.theme.wallet.shadow};
   @media (max-width: 768px) {
     width: 100%;
     -webkit-box-shadow: none;
@@ -69,6 +101,10 @@ export const AppContainer = styled.div`
     width: 100%;
     background: #fffbff;
     padding: 0;
+    .content-layout {
+      // margin-top: 80px;
+      z-index: 1;
+    }
   }
 `;
 
@@ -122,17 +158,39 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   const currentLocale = useAppSelector(getCurrentLocale);
   const intlInitDone = useAppSelector(getIntlInitStatus);
   const dispatch = useAppDispatch();
+  const [height, setHeight] = useState(0);
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [navBarTitle, setNavBarTitle] = useState('');
+  const [navBarSubTitle, setNavBarSubTitle] = useState('');
+  const selectedKey = router.pathname ?? '';
+  const ref = useRef(null);
+  const setRef = useCallback(node => {
+    if (node && node.clientHeight) {
+      // Check if a node is actually passed. Otherwise node would be null.
+      const height = node.clientHeight;
+      setHeight(height);
+    }
+    // Save a reference to the node
+    ref.current = node;
+  }, []);
 
   injectStore(currentLocale);
   const isLoading = useAppSelector(getIsGlobalLoading);
 
+  const getNamePathDirection = () => {
+    const itemSelect = navBarHeaderList.find(item => item.path === selectedKey) || null;
+    setNavBarTitle(itemSelect?.name || '');
+    setNavBarSubTitle(itemSelect?.subTitle || '');
+  };
+
+  useEffect(() => {
+    getNamePathDirection();
+  }, [selectedKey]);
+
   useEffect(() => {
     dispatch(loadLocale(currentLocale));
   }, [currentLocale]);
-
-  const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  const selectedKey = router.pathname ?? '';
 
   useEffect(() => {
     setLoading(false);
@@ -147,53 +205,30 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
             <Layout>
               <AppBody>
                 <ModalManager />
-                {!selectedAccount ? (
-                  <OnboardingComponent></OnboardingComponent>
-                ) : (
-                  <>
-                    <AppContainer>
+                <>
+                  <AppContainer>
+                    <Layout>
+                      <SidebarShortcut></SidebarShortcut>
+                      <Sidebar />
                       <Layout>
-                        <Sidebar />
-                        <Layout>
-                          <Topbar />
-                          <Content>{children}</Content>
-                        </Layout>
+                        <Topbar ref={setRef} />
+                        {selectedKey !== '/' && (
+                          <NavBarHeader>
+                            <Link href="/" passHref>
+                              <LeftOutlined />
+                            </Link>
+                            <PathDirection>
+                              <h2>{navBarTitle}</h2>
+                              <p className="sub-title">{navBarSubTitle}</p>
+                            </PathDirection>
+                          </NavBarHeader>
+                        )}
+                        <Content className="content-layout">{children}</Content>
                       </Layout>
-                    </AppContainer>
-                    <Footer>
-                      <Link href="/" passHref>
-                        <NavButton active={selectedKey === '/'}>
-                          <HomeOutlined />
-                          {intl.get('general.home')}
-                        </NavButton>
-                      </Link>
-                      <Link href="/admin/accounts" passHref>
-                        <NavButton active={selectedKey === '/admin/accounts'}>
-                          <UserOutlined />
-                          {intl.get('general.accounts')}
-                        </NavButton>
-                      </Link>
-                      <Link href="/admin/lixi" passHref>
-                        <NavButton active={selectedKey === '/admin/lixi'}>
-                          <WalletOutlined />
-                          {intl.get('general.lixi')}
-                        </NavButton>
-                      </Link>
-                      <Link href="/admin/claim" passHref>
-                        <NavButton active={selectedKey === '/admin/claim'}>
-                          <GiftOutlined />
-                          {intl.get('general.claim')}
-                        </NavButton>
-                      </Link>
-                      <Link href="/admin/settings" passHref>
-                        <NavButton active={selectedKey === '/admin/settings'}>
-                          <SettingOutlined />
-                          {intl.get('general.settings')}
-                        </NavButton>
-                      </Link>
-                    </Footer>
-                  </>
-                )}
+                      <SidebarRanking></SidebarRanking>
+                    </Layout>
+                  </AppContainer>
+                </>
               </AppBody>
             </Layout>
           </LixiApp>
