@@ -24,6 +24,7 @@ const CardContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: 20px;
+  width: 100%;
   @media (max-width: 768px) {
     padding: 1rem 1rem 0 1rem;
   }
@@ -241,6 +242,9 @@ const PagesListing: React.FC = () => {
     return (
       <List.Item
         style={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: 'fit-content !important',
           marginBottom: '1rem',
           borderRadius: '24px',
           boxShadow: '0px 2px 10px rgb(0 0 0 / 5%)',
