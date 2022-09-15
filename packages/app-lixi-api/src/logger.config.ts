@@ -35,10 +35,10 @@ if (nodeEnv !== 'development') {
 if (nodeEnv === 'local') {
   const logConsoleWinstonTransport = new winston.transports.Console({
     format: winston.format.combine(
-      winston.format.timestamp({ format: "DD/MM/YYYY HH:mm:ss" }),
+      winston.format.timestamp({ format: 'DD/MM/YYYY HH:mm:ss' }),
       format.splat(),
       format.simple()
-    ),
+    )
   });
   allTransports.push(logConsoleWinstonTransport);
 }

@@ -112,10 +112,13 @@ const PagesListing: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [balanceAccount, setBalanceAccount] = useState(0);
 
-  const { data, totalCount } = useInfinitePagesQuery({
-    first: 2,
-    last: undefined
-  }, false);
+  const { data, totalCount } = useInfinitePagesQuery(
+    {
+      first: 2,
+      last: undefined
+    },
+    false
+  );
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -312,10 +315,7 @@ const PagesListing: React.FC = () => {
       <div className={'listing'} style={{ height: '100vh' }}>
         <AutoSizer>
           {({ height, width }) => (
-            <InfiniteLoader
-              isItemLoaded={isItemLoaded}
-              loadMoreItems={() => { }}
-              itemCount={totalCount} >
+            <InfiniteLoader isItemLoaded={isItemLoaded} loadMoreItems={() => {}} itemCount={totalCount}>
               {({ onItemsRendered, ref }) => (
                 <FixedSizeList
                   className="List"

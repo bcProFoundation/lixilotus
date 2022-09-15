@@ -29,7 +29,8 @@ import {
 
 import * as _ from 'lodash';
 import { I18n, I18nContext } from 'nestjs-i18n';
-import { JwtAuthGuard } from 'src/modules/auth/jwtauth.guard';
+import { JwtAuthGuard } from 'src/modules/auth/guards/jwtauth.guard';
+import { JWTOAuth2Guard } from 'src/modules/auth/guards/jwt-oauth2.guard';
 import { VError } from 'verror';
 import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase58Str, hashMnemonic } from '../../../utils/encryptionMethods';
 import { PrismaService } from '../../prisma/prisma.service';

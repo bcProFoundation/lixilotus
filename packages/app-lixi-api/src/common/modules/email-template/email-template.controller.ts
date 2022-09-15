@@ -1,6 +1,6 @@
 import { Controller, Logger, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/modules/auth/jwtauth.guard';
+import { JwtAuthGuard } from 'src/modules/auth/guards/jwtauth.guard';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 
 @ApiTags('email-templates')

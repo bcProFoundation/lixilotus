@@ -1,10 +1,19 @@
 import {
-  Account, CreatePageInput, Page, PageConnection, PageOrder, PaginationArgs, UpdatePageInput
+  Page,
+  PaginationArgs,
+  PageOrder,
+  PageConnection,
+  CreatePageInput,
+  Account,
+  UpdatePageInput
 } from '@bcpros/lixi-models';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
-import { Logger, UseGuards } from '@nestjs/common';
+import { ExecutionContext, Logger, Request, UseGuards } from '@nestjs/common';
 import {
-  Args, Mutation,
+  Args,
+  Context,
+  GqlExecutionContext,
+  Mutation,
   Parent,
   Query,
   ResolveField,
@@ -12,22 +21,17 @@ import {
   Subscription
 } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
-import * as _ from 'lodash';
-import { I18n, I18nService } from 'nestjs-i18n';
-import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
-import { GqlJwtAuthGuard } from '../auth/gql-jwtauth.guard';
 import { PrismaService } from '../prisma/prisma.service';
+import * as _ from 'lodash';
+import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
+import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
+import { I18n, I18nService } from 'nestjs-i18n';
 
 const pubSub = new PubSub();
 
 @Resolver(() => Page)
 export class PageResolver {
-
-  constructor(
-    private logger: Logger,
-    private prisma: PrismaService,
-    @I18n() private i18n: I18nService
-  ) { }
+  constructor(private logger: Logger, private prisma: PrismaService, @I18n() private i18n: I18nService) {}
 
   @Subscription(() => Page)
   pageCreated() {
@@ -59,13 +63,15 @@ export class PageResolver {
       paginationArgs =>
         this.prisma.page.findMany({
           include: {
-            pageAccount: true,
+            pageAccount: true
           },
           where: {
-            OR: !query ? undefined : {
-              title: { contains: query || '' },
-              name: { contains: query || '' }
-            }
+            OR: !query
+              ? undefined
+              : {
+                  title: { contains: query || '' },
+                  name: { contains: query || '' }
+                }
           },
           orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
           ...paginationArgs
@@ -73,47 +79,50 @@ export class PageResolver {
       () =>
         this.prisma.page.count({
           where: {
-            OR: !query ? undefined : {
-              title: { contains: query || '' },
-              name: { contains: query || '' }
-            }
+            OR: !query
+              ? undefined
+              : {
+                  title: { contains: query || '' },
+                  name: { contains: query || '' }
+                }
           }
         }),
       { first, last, before, after }
     );
 
     return result;
-
   }
 
   @ResolveField('avatar', () => String)
   async avatar(@Parent() page: Page) {
-
-    const uploadDetail = await this.prisma.page.findUnique({
-      where: {
-        id: page.id
-      },
-    }).avatar({
-      include: {
-        upload: true
-      }
-    });
+    const uploadDetail = await this.prisma.page
+      .findUnique({
+        where: {
+          id: page.id
+        }
+      })
+      .avatar({
+        include: {
+          upload: true
+        }
+      });
 
     return uploadDetail && uploadDetail.upload ? uploadDetail.upload.url : null;
   }
 
   @ResolveField('cover', () => String)
   async cover(@Parent() page: Page) {
-
-    const uploadDetail = await this.prisma.page.findUnique({
-      where: {
-        id: page.id
-      },
-    }).cover({
-      include: {
-        upload: true
-      }
-    });
+    const uploadDetail = await this.prisma.page
+      .findUnique({
+        where: {
+          id: page.id
+        }
+      })
+      .cover({
+        include: {
+          upload: true
+        }
+      });
 
     return uploadDetail && uploadDetail.upload ? uploadDetail.upload.url : null;
   }
@@ -128,18 +137,18 @@ export class PageResolver {
 
     const uploadAvatarDetail = data.avatar
       ? await this.prisma.uploadDetail.findFirst({
-        where: {
-          uploadId: data.avatar
-        }
-      })
+          where: {
+            uploadId: data.avatar
+          }
+        })
       : undefined;
 
     const uploadCoverDetail = data.cover
       ? await this.prisma.uploadDetail.findFirst({
-        where: {
-          uploadId: data.cover
-        }
-      })
+          where: {
+            uploadId: data.cover
+          }
+        })
       : undefined;
 
     const createdPage = await this.prisma.page.create({
@@ -166,18 +175,18 @@ export class PageResolver {
 
     const uploadAvatarDetail = data.avatar
       ? await this.prisma.uploadDetail.findFirst({
-        where: {
-          uploadId: data.avatar
-        }
-      })
+          where: {
+            uploadId: data.avatar
+          }
+        })
       : undefined;
 
     const uploadCoverDetail = data.cover
       ? await this.prisma.uploadDetail.findFirst({
-        where: {
-          uploadId: data.cover
-        }
-      })
+          where: {
+            uploadId: data.cover
+          }
+        })
       : undefined;
 
     const updatedPage = await this.prisma.page.update({

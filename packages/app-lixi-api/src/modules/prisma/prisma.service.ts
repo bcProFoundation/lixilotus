@@ -3,9 +3,7 @@ import { PrismaClient } from '@bcpros/lixi-prisma';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
-  constructor(
-    private logger: Logger
-  ) {
+  constructor(private logger: Logger) {
     super();
     // super({
     //   log: [

@@ -1,17 +1,4 @@
-import {
-  Collapse,
-  Descriptions,
-  message,
-  Tabs,
-  Input,
-  Button,
-  Row,
-  Col,
-  Modal,
-  Typography,
-  Checkbox,
-  List
-} from 'antd';
+import { Collapse, Descriptions, message, Input, Button, Row, Col, Modal, Typography, Checkbox } from 'antd';
 import { saveAs } from 'file-saver';
 import { toPng } from 'html-to-image';
 import * as _ from 'lodash';
@@ -31,7 +18,6 @@ import {
 import { AppContext } from 'src/store/store';
 import { showToast } from 'src/store/toast/actions';
 import styled from 'styled-components';
-
 import {
   CaretRightOutlined,
   CopyOutlined,
@@ -56,7 +42,6 @@ import { currency } from '@components/Common/Ticker';
 import { getSelectedAccount } from '@store/account/selectors';
 import { getAllSubLixies, getLoadMoreSubLixiesStartId } from '@store/lixi/selectors';
 import { fromSmallestDenomination, toSmallestDenomination } from '@utils/cashMethods';
-
 import { ClaimType } from '../../../../lixi-models/src/lib/lixi';
 import lixiLogo from '../../assets/images/lixi_logo.svg';
 import { exportSubLixies } from '../../store/lixi/actions';
@@ -85,7 +70,6 @@ const Copied = styled.div<CopiedProps>`
     padding: 20px 0;
   }
 `;
-
 const StyledSearchLixi = styled(Input)`
   border-radius: 5px;
 `;
@@ -140,7 +124,6 @@ const StyledCol = styled(Col)`
 
 const { Panel } = Collapse;
 const { Text } = Typography;
-
 const Lixi: React.FC = () => {
   const dispatch = useAppDispatch();
   const ContextValue = React.useContext(AppContext);
@@ -513,5 +496,4 @@ const Lixi: React.FC = () => {
     </>
   );
 };
-
 export default Lixi;

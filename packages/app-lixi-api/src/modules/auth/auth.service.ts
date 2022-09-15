@@ -7,6 +7,7 @@ import { VError } from 'verror';
 // import * as wif from 'wif';
 import { hashMnemonic } from '../../utils/encryptionMethods';
 import { WalletService } from '../wallet/wallet.service';
+import axios from 'axios';
 const wif = require('wif');
 
 @Injectable()

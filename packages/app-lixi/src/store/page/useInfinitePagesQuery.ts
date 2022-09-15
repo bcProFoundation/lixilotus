@@ -48,10 +48,7 @@ export function useInfinitePagesQuery(
     // Not success next result
     if (!nextResult.isSuccess) return;
 
-    if (
-      isBaseReady.current &&
-      nextResult.data
-    ) {
+    if (isBaseReady.current && nextResult.data) {
       next.current = nextResult.data?.allPages?.pageInfo?.endCursor;
 
       const newItems = nextResult.data.allPages.edges.map(item => item.node);
@@ -62,12 +59,7 @@ export function useInfinitePagesQuery(
   }, [nextResult]);
 
   const fetchNext = async () => {
-    if (
-      !isBaseReady.current ||
-      !isNextDone.current ||
-      next.current === undefined ||
-      next.current === null
-    ) return;
+    if (!isBaseReady.current || !isNextDone.current || next.current === undefined || next.current === null) return;
 
     try {
       isNextDone.current = false;
