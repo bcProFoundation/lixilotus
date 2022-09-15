@@ -38,6 +38,7 @@ export function useInfinitePagesQuery(
     console.log(baseResult);
     if (baseResult?.data?.allPages) {
       isBaseReady.current = true;
+      setCombinedData(baseResult.data.allPages.edges.map(item => item.node));
       fetchAll && fetchNext();
     }
   }, [baseResult]);
@@ -47,15 +48,26 @@ export function useInfinitePagesQuery(
     // Not success next result
     if (!nextResult.isSuccess) return;
 
-    if (isBaseReady.current && nextResult.data && nextResult.data?.allPages?.pageInfo?.endCursor) {
+    if (
+      isBaseReady.current &&
+      nextResult.data
+    ) {
       next.current = nextResult.data?.allPages?.pageInfo?.endCursor;
 
-      const newItems = nextResult.data.allPages.edges;
+      const newItems = nextResult.data.allPages.edges.map(item => item.node);
+      if (newItems && newItems.length) {
+        setCombinedData(currentItems => [...currentItems, ...newItems]);
+      }
     }
   }, [nextResult]);
 
   const fetchNext = async () => {
-    if (!isBaseReady.current || !isNextDone.current || next.current === undefined || next.current === null) return;
+    if (
+      !isBaseReady.current ||
+      !isNextDone.current ||
+      next.current === undefined ||
+      next.current === null
+    ) return;
 
     try {
       isNextDone.current = false;
@@ -77,7 +89,7 @@ export function useInfinitePagesQuery(
   };
 
   return {
-    data: baseResult.data?.allPages.edges ?? [],
+    data: combinedData ?? [],
     totalCount: baseResult?.data?.allPages?.totalCount ?? 0,
     error: baseResult?.error,
     isError: baseResult?.isError,

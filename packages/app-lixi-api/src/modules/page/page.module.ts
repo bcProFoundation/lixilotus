@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Logger } from '@nestjs/common';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
 import { AuthModule } from '../auth/auth.module';
 import { AuthService } from '../auth/auth.service';
@@ -10,7 +10,7 @@ import { PageResolver } from './page.resolver';
 @Module({
   imports: [AuthModule],
   controllers: [PageController],
-  providers: [PageResolver],
+  providers: [PageResolver, Logger],
   exports: []
 })
-export class PageModule {}
+export class PageModule { }

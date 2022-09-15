@@ -1,4 +1,4 @@
-import { WinstonModule } from 'nest-winston';
+import { WinstonModule, utilities as nestWinstonModuleUtilities } from 'nest-winston';
 import winston, { format } from 'winston';
 import LogzioWinstonTransport from 'winston-logzio';
 import 'winston-daily-rotate-file';
@@ -32,18 +32,16 @@ if (nodeEnv !== 'development') {
   allTransports.push(logzioWinstonTransport);
 }
 
-export const formatTimestamp = (date: Date): string =>
-  `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date
-    .getDate()
-    .toString()
-    .padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date
-    .getMinutes()
-    .toString()
-    .padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}.${date
-    .getMilliseconds()
-    .toString()
-    // .padEnd(3, '0')} ${timezone}`;
-    .padEnd(3, '0')}`;
+if (nodeEnv === 'local') {
+  const logConsoleWinstonTransport = new winston.transports.Console({
+    format: winston.format.combine(
+      winston.format.timestamp({ format: "DD/MM/YYYY HH:mm:ss" }),
+      format.splat(),
+      format.simple()
+    ),
+  });
+  allTransports.push(logConsoleWinstonTransport);
+}
 
 // export const timestamp = () => formatTimestamp(new Date());
 
@@ -52,6 +50,7 @@ export const loggerConfig = WinstonModule.createLogger({
   exceptionHandlers: [new winston.transports.File({ filename: 'exceptions.log', dirname: './logs' })],
   exitOnError: false,
   format: combine(
+    format.splat(),
     verrorFormat({ stack: true }), // log the full stack
     timestamp(), // get the time stamp part of the full log message
     format.prettyPrint(),
