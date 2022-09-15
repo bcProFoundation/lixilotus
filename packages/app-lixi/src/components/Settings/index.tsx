@@ -1,4 +1,4 @@
-import { Alert, Collapse, Form, Input, Spin } from 'antd';
+import { Alert, Button, Collapse, Form, Input, Spin } from 'antd';
 import intl from 'react-intl-universal';
 import * as _ from 'lodash';
 import React, { useEffect, useState } from 'react';
@@ -19,11 +19,12 @@ import { AntdFormWrapper, LanguageSelectDropdown } from '@components/Common/Enha
 import PrimaryButton, { SecondaryButton, SmartButton } from '@components/Common/PrimaryButton';
 import { StyledCollapse } from '@components/Common/StyledCollapse';
 import { StyledSpacer } from '@components/Common/StyledSpacer';
-
 import { DeleteAccountModalProps } from './DeleteAccountModal';
 import { RenameAccountModalProps } from './RenameAccountModal';
 import { setInitIntlStatus, updateLocale } from '@store/settings/actions';
 import { getCurrentLocale } from '@store/settings/selectors';
+import getOauth2URL from '@utils/oauth2';
+import axios from 'axios';
 
 const { Panel } = Collapse;
 
@@ -346,6 +347,7 @@ const Settings: React.FC = () => {
                 />
               </AntdFormWrapper>
               <StyledSpacer />
+              <Button href={getOauth2URL()}>Login</Button>
             </>
           )}
         </Spin>
