@@ -1,7 +1,13 @@
-import { DeleteAccountCommand, RenameAccountCommand } from '@bcpros/lixi-models';
+import {
+  DeleteAccountCommand,
+  RenameAccountCommand,
+  RegisterViaEmailNoVerifiedCommand,
+  LoginViaEmailCommand
+} from '@bcpros/lixi-models';
 import { AccountDto, CreateAccountCommand, ImportAccountCommand } from '@bcpros/lixi-models';
 import { PatchAccountCommand } from '@bcpros/lixi-models/src/lib/account';
 import axiosClient from '@utils/axiosClient';
+import getOauth2URL from '@utils/oauth2';
 
 const accountApi = {
   getById(id: number): Promise<AccountDto> {
@@ -68,6 +74,45 @@ const accountApi = {
       .post(url, { mnemonic })
       .then(response => {
         return response.data as string;
+      })
+      .catch(err => {
+        const { response } = err;
+        throw response?.data ?? err ?? 'Network Error';
+      });
+  },
+  registerViaEmailNoVerified(data: RegisterViaEmailNoVerifiedCommand): Promise<any> {
+    const url = '/user_signup/v1/email_no_verified';
+    return axiosClient
+      .post(url, data)
+      .then(response => {
+        return response.data as any;
+      })
+      .catch(err => {
+        const { response } = err;
+        throw response?.data ?? err ?? 'Network Error';
+      });
+  },
+  loginViaEmail(data: LoginViaEmailCommand): Promise<any> {
+    const url = '/auth/login';
+    const redirectURL = getOauth2URL();
+
+    return axiosClient
+      .post(url, { ...data, redirect: redirectURL })
+      .then(response => {
+        return response.data;
+      })
+      .catch(err => {
+        const { response } = err;
+        throw response?.data ?? err ?? 'Network Error';
+      });
+  },
+  verifyEmail(data: string): Promise<any> {
+    const url = '/auth/verify_user';
+
+    return axiosClient
+      .post(url, { username: data })
+      .then(res => {
+        return res.data;
       })
       .catch(err => {
         const { response } = err;

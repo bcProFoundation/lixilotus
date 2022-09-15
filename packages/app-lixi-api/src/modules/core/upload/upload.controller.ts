@@ -23,7 +23,7 @@ import { join } from 'path';
 import { extname } from 'path';
 import fs from 'fs';
 import sharp from 'sharp';
-import { JwtAuthGuard } from 'src/modules/auth/jwtauth.guard';
+import { JwtAuthGuard } from 'src/modules/auth/guards/jwtauth.guard';
 import { hexSha256 } from 'src/utils/encryptionMethods';
 import { Upload as UploadDb } from '@prisma/client';
 import { FastifyRequest } from 'fastify';

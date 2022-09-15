@@ -104,17 +104,18 @@ export class ExportSubLixiesProcessor extends WorkerHost {
       childrenApiResult.push(childResult);
     }
     const parser = new Parser({
-      fields: ['name', 'claimCode', 'amount', 'package']
+      fields: ['id', 'name', 'claimCode', 'amount', 'package']
     });
-    const csvData: any[] = childrenApiResult.map(item => {
+    const csvData = childrenApiResult.map(item => {
       return {
+        id: item.id,
         name: item.name,
         claimCode: item.claimCode,
         amount: item.amount,
         package: item.packageId ? numberToBase58(item.packageId) : ''
       };
     });
-    const csv = parser.parse(childrenApiResult);
+    const csv = parser.parse(csvData);
     const dir = './public/download/';
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir);
