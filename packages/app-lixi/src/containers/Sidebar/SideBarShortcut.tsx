@@ -187,7 +187,7 @@ const SidebarShortcut = () => {
           <StyledLogo>
             <img width="120px" src="/images/lixilotus-logo.svg" alt="lixilotus" />
           </StyledLogo>
-          <ItemAccess icon={HomeOutlined} text={'Home'} active={selectedKey === '/'} key="send-lotus" href={'/'} />
+          <ItemAccess icon={HomeOutlined} text={'Home'} active={selectedKey === '/'} key="home" href={'/'} />
           <ItemAccess
             icon={WalletOutlined}
             text={'Accounts'}
@@ -199,7 +199,7 @@ const SidebarShortcut = () => {
             icon={GiftOutlined}
             text={'Lixi'}
             active={selectedKey === '/admin/lixi'}
-            key="send"
+            key="lixi"
             href={'/admin/lixi'}
           />
           <ItemAccess icon={SendOutlined} text={'Send'} active={selectedKey === '/send'} key="send" href={'/send'} />
@@ -242,7 +242,7 @@ const SidebarShortcut = () => {
             icon={ShopOutlined}
             text={'Lotusia Shop'}
             active={false}
-            key="send-lotus"
+            key="lotussia-shop"
             href={'https://lotusia.shop/'}
           />
         </div>

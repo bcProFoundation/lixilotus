@@ -35,7 +35,6 @@ export function useInfinitePagesQuery(
   // Base result
   useEffect(() => {
     next.current = baseResult.data?.allPages?.pageInfo?.endCursor;
-    console.log(baseResult);
     if (baseResult?.data?.allPages) {
       isBaseReady.current = true;
       setCombinedData(baseResult.data.allPages.edges.map(item => item.node));
@@ -46,14 +45,16 @@ export function useInfinitePagesQuery(
   // When there're next results
   useEffect(() => {
     // Not success next result
-    if (!nextResult.isSuccess) return;
+    if (!nextResult.isSuccess || nextResult.isFetching || nextResult.isLoading) return;
 
     if (isBaseReady.current && nextResult.data) {
       next.current = nextResult.data?.allPages?.pageInfo?.endCursor;
 
       const newItems = nextResult.data.allPages.edges.map(item => item.node);
       if (newItems && newItems.length) {
-        setCombinedData(currentItems => [...currentItems, ...newItems]);
+        setCombinedData(currentItems => {
+          return [...currentItems, ...newItems];
+        });
       }
     }
   }, [nextResult]);
@@ -70,7 +71,7 @@ export function useInfinitePagesQuery(
     } catch (e) {
     } finally {
       isNextDone.current = true;
-      fetchNext();
+      fetchAll && fetchNext();
     }
   };
 
