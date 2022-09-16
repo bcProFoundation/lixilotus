@@ -2,27 +2,28 @@ import React from 'react';
 import { Form, Input, Button } from 'antd';
 import intl from 'react-intl-universal';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
-import { Login } from '@bcpros/lixi-models/lib/auth';
+import { useAppDispatch } from '@store/hooks';
+import { verifyEmail } from '@store/account/actions';
+import { LoginViaEmailCommand } from '@bcpros/lixi-models';
 
 const LoginComponent = () => {
   const {
     handleSubmit,
     formState: { errors },
     control
-  } = useForm<Login>();
-
-  const onSubmit: SubmitHandler<Login> = data => {
-    console.log(data);
+  } = useForm<LoginViaEmailCommand>();
+  const dispatch = useAppDispatch();
+  const onSubmit: SubmitHandler<LoginViaEmailCommand> = data => {
+    dispatch(verifyEmail(data));
   };
 
   return (
     <>
       <h1>Login</h1>
-
       <Form labelCol={{ span: 7 }} wrapperCol={{ span: 24 }} layout="horizontal">
-        <Form.Item name="email" label="Email">
+        <Form.Item name="username" label="Email">
           <Controller
-            name="email"
+            name="username"
             control={control}
             rules={{
               required: {
@@ -39,8 +40,7 @@ const LoginComponent = () => {
             )}
           />
         </Form.Item>
-        <p>{errors.email && errors.email.message}</p>
-
+        <p>{errors.username && errors.username.message}</p>
         <Form.Item name="password" label="Password">
           <Controller
             name="password"
@@ -57,7 +57,6 @@ const LoginComponent = () => {
           />
         </Form.Item>
         <p>{errors.password && errors.password.message}</p>
-
         <Button type="primary" onClick={handleSubmit(onSubmit)}>
           {intl.get('account.login')}
         </Button>

@@ -51,3 +51,15 @@ export interface AccountDto {
   language?: string;
   page?: Nullable<Page>;
 }
+
+export interface RegisterViaEmailNoVerifiedCommand {
+  email: string;
+  name: string;
+  password: string;
+  confirmPassword: string;
+}
+
+export interface LoginViaEmailCommand {
+  username: string;
+  password: string;
+}

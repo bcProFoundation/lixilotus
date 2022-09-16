@@ -53,7 +53,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { createReadStream } from 'fs';
 import { join } from 'path';
-import { JwtAuthGuard } from 'src/modules/auth/jwtauth.guard';
+import { JwtAuthGuard } from 'src/modules/auth/guards/jwtauth.guard';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import moment from 'moment';
 import { extname } from 'path';
