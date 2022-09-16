@@ -22,7 +22,7 @@ import {
 import { PubSub } from 'graphql-subscriptions';
 import { PrismaService } from '../prisma/prisma.service';
 import * as _ from 'lodash';
-import { GqlJwtAuthGuard } from '../auth/gql-jwtauth.guard';
+import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
 import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
 import { I18n, I18nService } from 'nestjs-i18n';
 

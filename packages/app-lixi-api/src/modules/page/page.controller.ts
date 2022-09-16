@@ -25,7 +25,7 @@ import { I18n, I18nContext, I18nService } from 'nestjs-i18n';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
 import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
 import { VError } from 'verror';
-import { JwtAuthGuard } from '../auth/jwtauth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwtauth.guard';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Controller('pages')

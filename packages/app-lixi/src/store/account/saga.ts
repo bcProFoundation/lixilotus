@@ -5,7 +5,9 @@ import {
   DeleteAccountCommand,
   ImportAccountCommand,
   Lixi,
-  RenameAccountCommand
+  RenameAccountCommand,
+  RegisterViaEmailNoVerifiedCommand,
+  LoginViaEmailCommand
 } from '@bcpros/lixi-models';
 import BCHJS from '@bcpros/xpi-js';
 import { PayloadAction } from '@reduxjs/toolkit';
@@ -53,9 +55,19 @@ import {
   silentLogin,
   silentLoginFailure,
   silentLoginSuccess,
-  refreshLixiListSilent
+  refreshLixiListSilent,
+  loginViaEmail,
+  loginViaEmailSuccess,
+  loginViaEmailFailure,
+  registerViaEmailNoVerified,
+  registerViaEmailNoVerifiedSuccess,
+  registerViaEmailNoVerifiedFailure,
+  verifyEmail,
+  verifyEmailSuccess,
+  verifyEmailFailure
 } from './actions';
 import { getAccountById, getSelectedAccount } from './selectors';
+import { push } from 'connected-next-router';
 
 /**
  * Generate a account with random encryption password
@@ -420,6 +432,93 @@ function* refreshLixiListSilentSaga(action: PayloadAction<number>) {
   } catch (err) {}
 }
 
+function* registerViaEmailNoVerifiedSaga(action: PayloadAction<RegisterViaEmailNoVerifiedCommand>) {
+  yield put(showLoading(registerViaEmailNoVerified.type));
+  try {
+    const data = yield call(accountApi.registerViaEmailNoVerified, action.payload);
+    yield put(registerViaEmailNoVerifiedSuccess(data));
+  } catch (err) {
+    yield put(registerViaEmailNoVerifiedFailure(err));
+  }
+}
+
+function* registerViaEmailSuccessNoVerifiedSaga(action: PayloadAction<any>) {
+  yield put(hideLoading(registerViaEmailNoVerified.type));
+  yield put(
+    showToast('success', {
+      message: 'Success',
+      description: intl.get('account.registerEmailSuccess'),
+      duration: 5
+    })
+  );
+}
+
+function* registerViaEmailFailureNoVerifiedSaga(action: PayloadAction<any>) {
+  const message = action.payload.message ?? intl.get('account.registerEmailFailed');
+  yield put(
+    showToast('error', {
+      message: 'Error',
+      description: message,
+      duration: 5
+    })
+  );
+  yield put(hideLoading(registerViaEmailNoVerified.type));
+}
+
+function* loginViaEmailSaga(action: PayloadAction<LoginViaEmailCommand>) {
+  yield put(showLoading(loginViaEmail.type));
+  try {
+    const data = yield call(accountApi.loginViaEmail, action.payload);
+    yield put(loginViaEmailSuccess(data));
+  } catch (err) {
+    yield put(loginViaEmailFailure(err));
+  }
+}
+
+function* loginViaEmailSuccessSaga(action: PayloadAction<any>) {
+  yield put(hideLoading(loginViaEmail.type));
+  yield put(push(`${action.payload.path}`));
+}
+
+function* loginViaEmailFailureSaga(action: PayloadAction<any>) {
+  const message = action.payload.message ?? intl.get('account.loginFailed');
+  yield put(
+    showToast('error', {
+      message: 'Error',
+      description: message,
+      duration: 5
+    })
+  );
+  yield put(hideLoading(loginViaEmail.type));
+}
+
+function* verifyEmailSaga(action: PayloadAction<LoginViaEmailCommand>) {
+  yield put(showLoading(verifyEmail.type));
+  try {
+    yield call(accountApi.verifyEmail, action.payload.username);
+    yield put(verifyEmailSuccess(action.payload));
+  } catch (err) {
+    yield put(verifyEmailFailure(err));
+  }
+}
+
+function* verifyEmailSuccessSaga(action: PayloadAction<any>) {
+  yield put(hideLoading(verifyEmail.type));
+  yield put(loginViaEmail(action.payload));
+}
+
+function* verifyEmailFailureSaga(action: PayloadAction<any>) {
+  const message = action.payload.message ?? intl.get('account.verifiedEmailFailed');
+  yield put(
+    showToast('error', {
+      message: 'Error',
+      description: message,
+      duration: 5
+    })
+  );
+  yield put(hideLoading(loginViaEmail.type));
+}
+
 function* watchGenerateAccount() {
   yield takeLatest(generateAccount.type, generateAccountSaga);
 }
@@ -530,6 +629,36 @@ function* watchRefreshLixiListSilent() {
   yield takeLatest(refreshLixiListSilent.type, refreshLixiListSilentSaga);
 }
 
+function* watchRegisterViaEmailNoVerified() {
+  yield takeLatest(registerViaEmailNoVerified.type, registerViaEmailNoVerifiedSaga);
+}
+function* watchRegisterViaEmailNoVerifiedSuccess() {
+  yield takeLatest(registerViaEmailNoVerifiedSuccess.type, registerViaEmailSuccessNoVerifiedSaga);
+}
+function* watchRegisterViaEmailNoVerifiedFailure() {
+  yield takeLatest(registerViaEmailNoVerifiedFailure.type, registerViaEmailFailureNoVerifiedSaga);
+}
+
+function* watchloginViaEmail() {
+  yield takeLatest(loginViaEmail.type, loginViaEmailSaga);
+}
+function* watchloginViaEmailSuccess() {
+  yield takeLatest(loginViaEmailSuccess.type, loginViaEmailSuccessSaga);
+}
+function* watchloginViaEmailFailure() {
+  yield takeLatest(loginViaEmailFailure.type, loginViaEmailFailureSaga);
+}
+
+function* watchVerifyEmailEmail() {
+  yield takeLatest(verifyEmail.type, verifyEmailSaga);
+}
+function* watchVerifyEmailSuccess() {
+  yield takeLatest(verifyEmailSuccess.type, verifyEmailSuccessSaga);
+}
+function* watchVerifyEmailFailure() {
+  yield takeLatest(verifyEmailFailure.type, verifyEmailFailureSaga);
+}
+
 function* silentLoginSaga(action: PayloadAction<string>) {
   const mnemonic = action.payload;
   try {
@@ -590,6 +719,15 @@ export default function* accountSaga() {
     fork(watchDeleteAccountSuccess),
     fork(watchDeleteAccountFailure),
     fork(watchSilentLogin),
-    fork(watchSilentLoginSuccess)
+    fork(watchSilentLoginSuccess),
+    fork(watchRegisterViaEmailNoVerified),
+    fork(watchRegisterViaEmailNoVerifiedSuccess),
+    fork(watchRegisterViaEmailNoVerifiedFailure),
+    fork(watchloginViaEmail),
+    fork(watchloginViaEmailSuccess),
+    fork(watchloginViaEmailFailure),
+    fork(watchVerifyEmailEmail),
+    fork(watchVerifyEmailSuccess),
+    fork(watchVerifyEmailFailure)
   ]);
 }

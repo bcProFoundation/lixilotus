@@ -2,7 +2,7 @@ import { Body, Controller, Get, HttpException, HttpStatus, Post, Request, Res, U
 import { FastifyReply, FastifyRequest } from 'fastify';
 import VError from 'verror';
 import { AuthService } from './auth.service';
-import { JwtAuthGuard } from './jwtauth.guard';
+import { JwtAuthGuard } from './guards/jwtauth.guard';
 
 @Controller('auth')
 export class AuthController {

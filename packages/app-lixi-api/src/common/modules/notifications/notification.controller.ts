@@ -17,7 +17,7 @@ import { Account } from '@prisma/client';
 import { FastifyRequest } from 'fastify';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
-import { JwtAuthGuard } from 'src/modules/auth/jwtauth.guard';
+import { JwtAuthGuard } from 'src/modules/auth/guards/jwtauth.guard';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { VError } from 'verror';
 

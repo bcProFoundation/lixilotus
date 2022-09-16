@@ -22,26 +22,18 @@ import intl from 'react-intl-universal';
 import { getAllClaims } from 'src/store/claim/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { fetchMoreSubLixies, getLixi, refreshLixi, setLixiBalance } from 'src/store/lixi/actions';
-import {
-  getHasMoreSubLixies,
-  getLixiesBySelectedAccount,
-  getSelectedLixi,
-  getSelectedLixiId
-} from 'src/store/lixi/selectors';
+import { getHasMoreSubLixies, getSelectedLixi, getSelectedLixiId } from 'src/store/lixi/selectors';
 import { AppContext } from 'src/store/store';
 import { showToast } from 'src/store/toast/actions';
 import styled from 'styled-components';
-
 import {
   CaretRightOutlined,
   CopyOutlined,
   DownloadOutlined,
   ExclamationCircleOutlined,
   ExportOutlined,
-  FilterOutlined,
   LoadingOutlined,
-  ReloadOutlined,
-  SearchOutlined
+  ReloadOutlined
 } from '@ant-design/icons';
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import { SmartButton } from '@bcpros/lixi-components/components/Common/PrimaryButton';
@@ -56,13 +48,11 @@ import { currency } from '@components/Common/Ticker';
 import { getSelectedAccount } from '@store/account/selectors';
 import { getAllSubLixies, getLoadMoreSubLixiesStartId } from '@store/lixi/selectors';
 import { fromSmallestDenomination, toSmallestDenomination } from '@utils/cashMethods';
-
 import { ClaimType } from '../../../../lixi-models/src/lib/lixi';
 import lixiLogo from '../../assets/images/lixi_logo.svg';
 import { exportSubLixies } from '../../store/lixi/actions';
 import VirtualTable from './SubLixiListScroll';
 import { numberToBase58 } from '@utils/encryptionMethods';
-import LixiList from './LixiList';
 
 type CopiedProps = {
   style?: React.CSSProperties;
@@ -618,6 +608,40 @@ const Lixi: React.FC = () => {
             collapsible={selectedLixi.status == 'active' ? 'header' : 'disabled'}
             expandIcon={({ isActive }) => getLixiPanelDetailsIcon(selectedLixi.status, isActive)}
           >
+            <Descriptions.Item label={intl.get('lixi.claimType')} key="desc.claimtype">
+              {selectedLixi.claimType == ClaimType.Single ? 'Single' : 'One-Time Codes'}
+            </Descriptions.Item>
+            <Descriptions.Item label={intl.get('lixi.type')} key="desc.type">
+              {typeLixi()}
+            </Descriptions.Item>
+            <Descriptions.Item label={intl.get('lixi.totalClaimed')} key="desc.totalclaimed">
+              {selectedLixi.claimType == ClaimType.Single
+                ? fromSmallestDenomination(selectedLixi?.totalClaim) ?? 0
+                : fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim')).toFixed(2)}{' '}
+              {currency.ticker}
+            </Descriptions.Item>
+            <Descriptions.Item label={intl.get('lixi.remainingLixi')} key="desc.claim">
+              {showRedemption()}
+            </Descriptions.Item>
+            {selectedLixi.envelopeMessage && (
+              <Descriptions.Item label={intl.get('lixi.message')}>{selectedLixi?.envelopeMessage}</Descriptions.Item>
+            )}
+            {showCountry()}
+            {showMinStaking()}
+            {formatActivationDate()}
+            {formatDate()}
+            {showIsFamilyFriendly()}
+            {showIsNFTEnabled()}
+            {showDistributions()}
+            {showLottery()}
+          </Descriptions>
+
+          {/* Lixi details */}
+          {/* <StyledCollapse
+            style={{ marginBottom: '20px' }}
+            collapsible={selectedLixi.status == 'active' ? 'header' : 'disabled'}
+            expandIcon={({ isActive }) => getLixiPanelDetailsIcon(selectedLixi.status, isActive)}
+          >
             <Panel header={intl.get('lixi.lixiDetail')} key="panel-1">
               {selectedLixi.claimType == ClaimType.Single ? (
                 <>
@@ -643,42 +667,49 @@ const Lixi: React.FC = () => {
                 </>
               )}
             </Panel>
-          </StyledCollapse> */}
+          </StyledCollapse >  */}
 
           {/* Copy ClaimCode or Export Lixi*/}
           {/* {selectedLixi.claimType == ClaimType.Single ? (
-            <CopyToClipboard
-              style={{
-                display: 'inline-block',
-                width: '100%',
-                position: 'relative'
-              }}
-              text={`${prefixClaimCode}_${selectedLixi.claimCode}`}
-              onCopy={handleOnCopyClaimCode}
-            >
-              <div style={{ position: 'relative', paddingTop: '20px' }} onClick={handleOnClickClaimCode}>
-                <Copied style={{ display: claimCodeVisible ? undefined : 'none' }}>
-                  Copied <br />
-                  <span style={{ fontSize: '32px' }}>{`${prefixClaimCode}_${selectedLixi.claimCode}`}</span>
-                </Copied>
-                <SmartButton>
-                  <CopyOutlined /> {intl.get('lixi.copyClaim')}
-                </SmartButton>
-              </div>
-            </CopyToClipboard>
-          ) : (
-            <>
-              <SmartButton disabled={selectedLixi.status == 'pending'} onClick={() => handleExportLixi()}>
-                <ExportOutlined /> {intl.get('lixi.exportLixi')}
-              </SmartButton>
-            </>
-          )}
+          </StyledCollapse>
 
-          <SmartButton onClick={() => handleRefeshLixi()}>
+          {/* Copy ClaimCode or Export Lixi*/}
+          {/* {
+            selectedLixi.claimType == ClaimType.Single ? (
+              <CopyToClipboard
+                style={{
+                  display: 'inline-block',
+                  width: '100%',
+                  position: 'relative'
+                }}
+                text={`${prefixClaimCode}_${selectedLixi.claimCode}`}
+                onCopy={handleOnCopyClaimCode}
+              >
+                <div style={{ position: 'relative', paddingTop: '20px' }} onClick={handleOnClickClaimCode}>
+                  <Copied style={{ display: claimCodeVisible ? undefined : 'none' }}>
+                    Copied <br />
+                    <span style={{ fontSize: '32px' }}>{`${prefixClaimCode}_${selectedLixi.claimCode}`}</span>
+                  </Copied>
+                  <SmartButton>
+                    <CopyOutlined /> {intl.get('lixi.copyClaim')}
+                  </SmartButton>
+                </div>
+              </CopyToClipboard>
+            ) : (
+              <>
+                <SmartButton disabled={selectedLixi.status == 'pending'} onClick={() => handleExportLixi()}>
+                  <ExportOutlined /> {intl.get('lixi.exportLixi')}
+                </SmartButton>
+              </>
+            )
+          } */}
+
+          {/* Reload Lixi */}
+          {/* <SmartButton onClick={() => handleRefeshLixi()}>
             <ReloadOutlined /> {intl.get('lixi.refreshLixi')}
           </SmartButton>
 
-          <ClaimList claims={allClaimsCurrentLixi} /> */}
+          <ClaimList claims={allClaimsCurrentLixi} />  */}
         </>
       ) : (
         intl.get('lixi.noLixiSelected')
@@ -686,5 +717,4 @@ const Lixi: React.FC = () => {
     </>
   );
 };
-
 export default Lixi;
