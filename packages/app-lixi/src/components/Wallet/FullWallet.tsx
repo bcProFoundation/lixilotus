@@ -6,10 +6,12 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import WalletInfoComponent from './WalletInfo';
 import intl from 'react-intl-universal';
-import PrimaryButton from '@bcpros/lixi-components/components/Common/PrimaryButton';
-import CreateLixiForm from '@components/Lixi/CreateLixiForm';
-import { useAppSelector } from '@store/hooks';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getSelectedAccount } from '@store/account/selectors';
+import { openModal } from '@store/modal/actions';
+import { Account } from '@bcpros/lixi-models';
+import { CreateLixiFormProps } from '@components/Lixi/CreateLixiForm';
+import ModalManager from '@components/Common/ModalManager';
 
 interface UserItem {
   email: string;
@@ -120,10 +122,10 @@ const FullWalletWrapper = styled.div`
 `;
 
 const FullWalletComponent: React.FC = () => {
+  const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
 
   const [data, setData] = useState<UserItem[]>([]);
-  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const appendData = () => {
     fetch(fakeDataUrl)
@@ -144,16 +146,13 @@ const FullWalletComponent: React.FC = () => {
     }
   };
 
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
+  const showCreateLixiModal = (account: Account) => {
+    const CreateLixiForm: CreateLixiFormProps = {
+      account: account,
+      // onOkAction: generateLixi()
+    }
 
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
+    dispatch(openModal('CreateLixiModal', CreateLixiForm));
   };
 
   return (
@@ -161,9 +160,11 @@ const FullWalletComponent: React.FC = () => {
       <FullWalletWrapper>
         <WalletInfoComponent />
         <ClaimComponent isClaimFromAccount={true}></ClaimComponent>
+        <ModalManager />
+
         <Button
-          onClick={showModal}
-          type="link"
+          onClick={() => showCreateLixiModal(selectedAccount as Account)}
+          // type="link"
           style={{
             fontFamily: 'Roboto',
             fontStyle: 'normal',
@@ -217,25 +218,6 @@ const FullWalletComponent: React.FC = () => {
           </div>
         </TransactionHistory>
       </FullWalletWrapper>
-
-      <Modal
-        closable={false}
-        visible={isModalVisible}
-        width={550}
-        style={{
-          flexDirection: 'column',
-          alignItems: 'flex-start',
-          padding: '0px',
-          background: '#FFFBFF',
-          border: '1px solid rgba(128, 116, 124, 0.12)',
-          boxShadow: '0px 0px 12px rgba(0, 0, 0, 0.12)',
-          borderRadius: '12px'
-        }}
-        onCancel={handleCancel}
-        footer={null}
-      >
-        <CreateLixiForm account={selectedAccount} />
-      </Modal>
     </>
   );
 };
