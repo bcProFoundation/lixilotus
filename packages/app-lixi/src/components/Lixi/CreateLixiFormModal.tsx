@@ -189,11 +189,14 @@ const Envelope = styled.div`
   flex-grow: 0;
 `;
 
-type CreateLixiFormProps = {
+type CreateLixiFormModalProps = {
   account?: Account;
 } & React.HTMLProps<HTMLElement>;
 
-const CreateLixiForm: React.FC<CreateLixiFormProps> = ({ account, disabled }: CreateLixiFormProps) => {
+export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
+  account,
+  disabled
+}: CreateLixiFormModalProps) => {
   const dispatch = useAppDispatch();
   const envelopes = useAppSelector(getAllEnvelopes);
   const envelopeUpload = useAppSelector(getEnvelopeUpload);
@@ -1138,7 +1141,6 @@ const CreateLixiForm: React.FC<CreateLixiFormProps> = ({ account, disabled }: Cr
   );
 };
 
-export default CreateLixiForm;
 function setClaimXpiAddressError(error: string | boolean) {
   throw new Error('Function not implemented.');
 }

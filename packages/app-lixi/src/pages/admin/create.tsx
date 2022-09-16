@@ -11,11 +11,11 @@ const LixiPage = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(openModal('CreateLixiForm', { account: selectedAccount }));
+    dispatch(openModal('CreateLixiFormModal', { account: selectedAccount }));
   }, []);
 
   const crateLixiBtn = () => {
-    dispatch(openModal('CreateLixiForm', { account: selectedAccount }));
+    dispatch(openModal('CreateLixiFormModal', { account: selectedAccount }));
   };
   return (
     <WrapperPage>

@@ -220,7 +220,7 @@ const SidebarShortcut = () => {
             active={false}
             key="create-lixi"
             onClickItem={() => {
-              dispatch(openModal('CreateLixiForm', { account: selectedAccount }));
+              dispatch(openModal('CreateLixiFormModal', { account: selectedAccount }));
             }}
             href={'/admin/create'}
           />

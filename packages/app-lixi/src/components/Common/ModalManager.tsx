@@ -5,14 +5,14 @@ import { RenameAccountModal } from '../Settings/RenameAccountModal';
 import { RenameLixiModal } from '../Lixi/RenameLixiModal';
 import { DeleteAccountModal } from '../Settings/DeleteAccountModal';
 import { CreateLixiConfirmationModal } from '../Lixi/CreateLixiConfirmationModal';
-import CreateLixiForm from '../Lixi/CreateLixiForm';
+import { CreateLixiFormModal } from '../Lixi/CreateLixiFormModal';
 
 const modalComponentLookupTable = {
   CreateLixiConfirmationModal,
   RenameAccountModal,
   DeleteAccountModal,
   RenameLixiModal,
-  CreateLixiForm
+  CreateLixiFormModal
 };
 
 const ModalManager = () => {
