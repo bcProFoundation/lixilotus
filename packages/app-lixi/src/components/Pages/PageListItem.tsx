@@ -1,17 +1,45 @@
-import { LikeOutlined } from '@ant-design/icons';
+import CommentComponent, { CommentItem, Editor } from '@components/Common/Comment';
 import InfoCardUser from '@components/Common/InfoCardUser';
-import { Button, List, message, Space } from 'antd';
+import { Avatar, Button, Comment, List, message, Space } from 'antd';
 import { push } from 'connected-next-router';
+import _ from 'lodash';
 import moment from 'moment';
-import React from 'react';
+import React, { useState } from 'react';
 import { useAppDispatch } from 'src/store/hooks';
 import styled from 'styled-components';
-import _ from 'lodash';
+
+const IconText = ({
+  icon,
+  text,
+  dataItem,
+  imgUrl,
+  onClickIcon
+}: {
+  icon?: React.FC;
+  text?: string;
+  dataItem: any;
+  imgUrl?: string;
+  onClickIcon: () => void;
+}) => (
+  <Space onClick={onClickIcon}>
+    {icon && React.createElement(icon)}
+    {imgUrl && React.createElement('img', { src: imgUrl }, null)}
+    {text}
+  </Space>
+);
+
+export const CommentList = ({ comments }: { comments: CommentItem[] }) => (
+  <List
+    style={{ width: '100%' }}
+    dataSource={comments}
+    itemLayout="horizontal"
+    renderItem={item => <CommentComponent data={item}></CommentComponent>}
+  />
+);
 
 const CardContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 20px;
   width: 100%;
   @media (max-width: 768px) {
     padding: 1rem 1rem 0 1rem;
@@ -90,6 +118,11 @@ const GroupIconText = styled.div`
 const PageListItem = ({ index, style, data }) => {
   const dispatch = useAppDispatch();
 
+  const [isCollapseComment, setIsCollapseComment] = useState(false);
+  const [comments, setComments] = useState<CommentItem[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+  const [value, setValue] = useState('');
+
   if (_.isNil(index)) console.log('index is nil: ', index);
   if (_.isNil(index)) return;
 
@@ -105,7 +138,28 @@ const PageListItem = ({ index, style, data }) => {
     // showModal();
   };
 
-  const upVoteShop = dataItem => {
+  const handleSubmit = (values: any) => {
+    console.log(values);
+    if (!values.comment) return;
+
+    setSubmitting(true);
+
+    setTimeout(() => {
+      setSubmitting(false);
+      setValue('');
+      setComments([
+        ...comments,
+        {
+          author: 'Han Solo',
+          avatar: 'https://joeschmoe.io/api/v1/random',
+          content: <p>{values.comment}</p>,
+          datetime: moment('2016-11-22').fromNow()
+        }
+      ]);
+    }, 1000);
+  };
+
+  const upVotePage = dataItem => {
     // if (selectedAccount && balanceAccount !== 0) {
     // data.forEach(item => {
     //   if (item.title === dataItem.title) item.upVote += 1;
@@ -116,7 +170,7 @@ const PageListItem = ({ index, style, data }) => {
     // }
   };
 
-  const downVoteShop = dataItem => {
+  const downVotePage = dataItem => {
     // if (selectedAccount && balanceAccount !== 0) {
     // lists.forEach(item => {
     //   if (item.title === dataItem.title) item.downVote += 1;
@@ -126,24 +180,6 @@ const PageListItem = ({ index, style, data }) => {
     message.info(`Please register account to up vote`);
     // }
   };
-
-  const IconText = ({
-    icon,
-    text,
-    dataItem,
-    imgUrl
-  }: {
-    icon?: React.FC;
-    text?: string;
-    dataItem: any;
-    imgUrl?: string;
-  }) => (
-    <Space onClick={e => (icon === LikeOutlined ? upVoteShop(dataItem) : downVoteShop(dataItem))}>
-      {icon && React.createElement(icon)}
-      {imgUrl && React.createElement('img', { src: imgUrl }, null)}
-      {text}
-    </Space>
-  );
 
   return (
     <div style={style}>
@@ -182,24 +218,30 @@ const PageListItem = ({ index, style, data }) => {
               imgUrl="/images/up-ico.svg"
               key={`list-vertical-upvote-o-${item.id}`}
               dataItem={item}
+              onClickIcon={() => upVotePage(item)}
             />
             <IconText
               text={item.downVote}
               imgUrl="/images/down-ico.svg"
               key={`list-vertical-downvote-o-${item.id}`}
               dataItem={item}
+              onClickIcon={() => downVotePage(item)}
             />
             <IconText
               imgUrl="/images/comment-ico.svg"
               text="0 Comments"
               key={`list-vertical-comment-o-${item.id}`}
               dataItem={item}
+              onClickIcon={() => {
+                setIsCollapseComment(!isCollapseComment);
+              }}
             />
             <IconText
               imgUrl="/images/share-ico.svg"
               text="Share"
               key={`list-vertical-share-o-${item.id}`}
               dataItem={item}
+              onClickIcon={() => {}}
             />
           </GroupIconText>
 
@@ -207,6 +249,15 @@ const PageListItem = ({ index, style, data }) => {
             Send tip
           </Button>
         </ActionBar>
+        {isCollapseComment && (
+          <Comment
+            style={{ width: '100%', textAlign: 'left' }}
+            avatar={<Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />}
+            content={<Editor onSubmit={handleSubmit} submitting={submitting} />}
+          />
+        )}
+
+        {isCollapseComment && comments.length > 0 && <CommentList comments={comments} />}
       </List.Item>
     </div>
   );

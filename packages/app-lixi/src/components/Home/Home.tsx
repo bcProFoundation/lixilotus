@@ -3,7 +3,6 @@ import intl from 'react-intl-universal';
 import { ThemedWalletOutlined } from '@bcpros/lixi-components/components/Common/CustomIcons';
 import { SmartButton } from '@components/Common/PrimaryButton';
 import { StyledSpacer } from '@components/Common/StyledSpacer';
-import CreateLixiForm from '@components/Lixi/CreateLixiForm';
 import LixiList from '@components/Lixi/LixiList';
 import { getAccount, refreshLixiList, refreshLixiListSilent } from '@store/account/actions';
 import { Tabs } from 'antd';
@@ -81,7 +80,6 @@ const Home: React.FC = () => {
         <ThemedWalletOutlined /> {intl.get('account.manageLixi')}
       </h2>
 
-      <CreateLixiForm account={selectedAccount} />
       <SmartButton onClick={() => refreshList()}>
         <ReloadOutlined /> {intl.get('account.refreshLixiList')}
       </SmartButton>

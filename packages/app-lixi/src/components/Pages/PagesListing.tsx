@@ -1,5 +1,5 @@
 import { CommentOutlined, DislikeOutlined, FilterOutlined, LikeOutlined } from '@ant-design/icons';
-import { Button, List, Menu, MenuProps, message, Modal, Space } from 'antd';
+import { Avatar, Button, Comment, Input, List, Menu, MenuProps, message, Modal, Space } from 'antd';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import React from 'react';
@@ -23,7 +23,7 @@ import PageListItem from './PageListItem';
 
 type PagesListingProps = {
   className?: string;
-}
+};
 
 const PagesListing: React.FC<PagesListingProps> = ({ className }: PagesListingProps) => {
   const ContextValue = React.useContext(AppContext);
@@ -36,13 +36,20 @@ const PagesListing: React.FC<PagesListingProps> = ({ className }: PagesListingPr
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [balanceAccount, setBalanceAccount] = useState(0);
 
-  const {
-    data,
-    totalCount,
-    fetchNext,
-    hasNext,
-    isFetching
-  } = useInfinitePagesQuery(
+  const menuItems = [
+    { label: 'All', key: 'all' },
+    { label: 'Friend', key: 'friend' },
+    {
+      label: 'Trending',
+      key: 'trending'
+    },
+    {
+      label: 'Experiance',
+      key: 'experiance'
+    }
+  ];
+
+  const { data, totalCount, fetchNext, hasNext, isFetching } = useInfinitePagesQuery(
     {
       first: 2,
       last: undefined
@@ -95,7 +102,7 @@ const PagesListing: React.FC<PagesListingProps> = ({ className }: PagesListingPr
     if (hasNext && !isFetching) {
       fetchNext();
     }
-  }
+  };
 
   return (
     <div className={className}>
@@ -109,34 +116,18 @@ const PagesListing: React.FC<PagesListingProps> = ({ className }: PagesListingPr
           background: 'var(--bg-color-light-theme)'
         }}
         mode="horizontal"
-        defaultSelectedKeys={['day']}
+        defaultSelectedKeys={['all']}
         onClick={onClickMenu}
-      >
-        <Menu.Item key="day">All</Menu.Item>
-        <Menu.Item key="week">Friend</Menu.Item>
-        <Menu.Item key="month">Trending</Menu.Item>
-        <Menu.Item key="year">Experience</Menu.Item>
-        <Menu.Item
-          style={{ position: 'absolute', right: '0', fontWeight: '600' }}
-          key="filter"
-          icon={<FilterOutlined />}
-        >
-          Latest
-        </Menu.Item>
-      </Menu>
+        items={menuItems}
+      ></Menu>
       <div className={'listing'} style={{ height: '100vh' }}>
         <AutoSizer>
           {({ height, width }) => (
-            <List
-              itemLayout="vertical"
-              size="large">
-              <InfiniteLoader
-                isItemLoaded={isItemLoaded}
-                loadMoreItems={loadMoreItems}
-                itemCount={totalCount}>
+            <List itemLayout="vertical" size="large">
+              <InfiniteLoader isItemLoaded={isItemLoaded} loadMoreItems={loadMoreItems} itemCount={totalCount}>
                 {({ onItemsRendered, ref }) => (
                   <FixedSizeList
-                    className="listing"
+                    className="infinite-listing"
                     height={height}
                     width={width}
                     itemSize={500}
@@ -166,25 +157,26 @@ const PagesListing: React.FC<PagesListingProps> = ({ className }: PagesListingPr
 };
 
 const StyledPagesListing = styled(PagesListing)`
-  .listing {
+  .infinite-listing {
     scrollbar-width: thin;
-  scrollbar-color: transparent transparent;
+    scrollbar-color: transparent transparent;
 
-  &::-webkit-scrollbar {
-    width: 1px;
-  }
+    &::-webkit-scrollbar {
+      width: 1px;
+    }
 
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
 
-  &::-webkit-scrollbar-thumb {
-    background-color: transparent;
-  }
+    &::-webkit-scrollbar-thumb {
+      background-color: transparent;
+    }
 
-  .no-scrollbars::-webkit-scrollbar {
-  display: none;  /* Safari and Chrome */
+    .no-scrollbars::-webkit-scrollbar {
+      display: none; /* Safari and Chrome */
+    }
   }
-}`
+`;
 
 export default StyledPagesListing;

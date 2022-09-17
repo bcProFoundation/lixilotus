@@ -73,7 +73,6 @@ const Copied = styled.div<CopiedProps>`
 const StyledSearchLixi = styled(Input)`
   border-radius: 5px;
 `;
-
 const StyledFilterButton = styled(Button)`
   background: white;
   border-color: black;

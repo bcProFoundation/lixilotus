@@ -15,7 +15,6 @@ import styled from 'styled-components';
 import React, { useState } from 'react';
 import Link from 'next/link';
 import classNames from 'classnames';
-import { useAppSelector } from '@store/hooks';
 import { getAllAccounts, getSelectedAccount } from '@store/account/selectors';
 import { Logged } from './SideBarRanking';
 import { fromSmallestDenomination } from '@utils/cashMethods';
@@ -23,6 +22,8 @@ import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHead
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import { useRouter } from 'next/router';
 import { Account } from '@bcpros/lixi-models';
+import { openModal } from '@store/modal/actions';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 
 const { Sider } = Layout;
 
@@ -30,14 +31,16 @@ export const ItemAccess = ({
   icon,
   text,
   href,
-  active
+  active,
+  onClickItem
 }: {
   icon: React.FC;
   text: string;
-  href: string;
+  href?: string;
   active: boolean;
+  onClickItem?: () => void;
 }) => (
-  <Link href={href}>
+  <Link onClick={onClickItem} href={href}>
     <a>
       <Space className={'item-access'}>
         <div className={classNames('icon-item', { 'active-item-access': active })}>{React.createElement(icon)}</div>
@@ -174,6 +177,7 @@ const StyledLogged = styled(Logged)`
 `;
 
 const SidebarShortcut = () => {
+  const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
   const savedAccounts: Account[] = useAppSelector(getAllAccounts);
   const [isCollapse, setIsCollapse] = useState(false);
@@ -215,6 +219,9 @@ const SidebarShortcut = () => {
             text={'Create Lixi'}
             active={false}
             key="create-lixi"
+            onClickItem={() => {
+              dispatch(openModal('CreateLixiFormModal', { account: selectedAccount }));
+            }}
             href={'/admin/create'}
           />
           <ItemAccess
@@ -242,7 +249,7 @@ const SidebarShortcut = () => {
             icon={ShopOutlined}
             text={'Lotusia Shop'}
             active={false}
-            key="lotussia-shop"
+            key="lotusia-shop"
             href={'https://lotusia.shop/'}
           />
         </div>
