@@ -201,7 +201,7 @@ const PageListItem = ({ index, style, data }) => {
           <CardHeader onClick={() => routerShopDetail(item.id)}>
             <InfoCardUser
               imgUrl={item.avatar}
-              name={'Nguyen Tanh'}
+              name={item.name}
               title={moment(item.createdAt).fromNow().toString()}
             ></InfoCardUser>
             <img src="/images/three-dot-ico.svg" alt="" />

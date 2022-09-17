@@ -50,8 +50,7 @@ const PagesListing: React.FC<PagesListingProps> = ({ className }: PagesListingPr
 
   const { data, totalCount, fetchNext, hasNext, isFetching } = useInfinitePagesQuery(
     {
-      first: 2,
-      last: undefined
+      first: 2
     },
     false
   );
@@ -67,7 +66,6 @@ const PagesListing: React.FC<PagesListingProps> = ({ className }: PagesListingPr
   const handleCancel = () => {
     setIsModalVisible(false);
   };
-
 
   useEffect(() => {
     XPI.Electrumx.balance(selectedAccount?.address)

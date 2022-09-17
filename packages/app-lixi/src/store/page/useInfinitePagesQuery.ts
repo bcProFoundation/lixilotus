@@ -1,7 +1,7 @@
 import { PaginationArgs } from '@bcpros/lixi-models';
 import { useEffect, useRef, useState } from 'react';
 import { Page, PageOrder } from 'src/generated/types.generated';
-import { useLazyPagesQuery, usePagesQuery } from './pages.generated';
+import { useLazyPagesQuery, usePagesQuery } from './pages.api';
 
 export interface PageListParams {
   skip?: number;
