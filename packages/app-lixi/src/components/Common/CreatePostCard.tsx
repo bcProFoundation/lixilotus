@@ -1,11 +1,11 @@
+import React, { useState, useRef } from 'react';
 import { PlusCircleOutlined } from '@ant-design/icons';
-import { Avatar, Modal } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
-import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import SunEditorCore from 'suneditor/src/lib/core';
 import dynamic from 'next/dynamic';
 import 'suneditor/dist/css/suneditor.min.css'; // Import Sun Editor's CSS File
+import { Avatar, Modal } from 'antd';
 
 const SunEditor = dynamic(() => import('suneditor-react'), {
   ssr: false
