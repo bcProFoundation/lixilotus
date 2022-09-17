@@ -1,4 +1,3 @@
-import { Layout, Space } from 'antd';
 import {
   DownOutlined,
   EditOutlined,
@@ -11,20 +10,20 @@ import {
   ShopOutlined,
   WalletOutlined
 } from '@ant-design/icons';
-import styled from 'styled-components';
-import React, { useState } from 'react';
-import Link from 'next/link';
-import classNames from 'classnames';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { getAllAccounts, getSelectedAccount } from '@store/account/selectors';
-import { Logged } from './SideBarRanking';
-import { fromSmallestDenomination } from '@utils/cashMethods';
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
-import { useRouter } from 'next/router';
 import { Account } from '@bcpros/lixi-models';
-import { openModal } from '@store/modal/actions';
+import { getAllAccounts, getSelectedAccount } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { openModal } from '@store/modal/actions';
+import { fromSmallestDenomination } from '@utils/cashMethods';
+import { Layout, Space } from 'antd';
+import classNames from 'classnames';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { Logged } from './SideBarRanking';
 
 const { Sider } = Layout;
 

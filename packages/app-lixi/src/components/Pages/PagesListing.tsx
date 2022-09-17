@@ -31,14 +31,9 @@ const PagesListing: React.FC<PagesListingProps> = ({ className }: PagesListingPr
   const { XPI, Wallet } = ContextValue;
   const selectedAccount = useAppSelector(getSelectedAccount);
   const [isShowQrCode, setIsShowQrCode] = useState(false);
-  // const [lists, setLists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [balanceAccount, setBalanceAccount] = useState(0);
-  const [isCollapseComment, setIsCollapseComment] = useState(false);
-  const [comments, setComments] = useState<CommentItem[]>([]);
-  const [submitting, setSubmitting] = useState(false);
-  const [value, setValue] = useState('');
 
   const menuItems = [
     { label: 'All', key: 'all' },
