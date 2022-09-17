@@ -166,7 +166,7 @@ export const PageDocument = `
 }
     ${PageFieldsFragmentDoc}`;
 export const PagesDocument = `
-    query Pages($after: String, $before: String, $first: Int = 20, $last: Int = 20, $orderBy: PageOrder, $query: String, $skip: Int) {
+    query Pages($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PageOrder, $query: String, $skip: Int) {
   allPages(
     after: $after
     before: $before

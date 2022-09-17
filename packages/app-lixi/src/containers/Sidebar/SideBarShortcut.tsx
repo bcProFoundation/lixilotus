@@ -24,6 +24,7 @@ import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import { useRouter } from 'next/router';
 import { Account } from '@bcpros/lixi-models';
 import { openModal } from '@store/modal/actions';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 
 const { Sider } = Layout;
 

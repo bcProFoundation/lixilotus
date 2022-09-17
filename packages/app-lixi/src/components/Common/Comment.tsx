@@ -3,7 +3,7 @@ import { Avatar, Button, Comment, Form, Input, Tooltip } from 'antd';
 import { DislikeFilled, DislikeOutlined, LikeFilled, LikeOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import moment from 'moment';
-import { CommentList } from '@components/Pages/PagesListing';
+import { CommentList } from '@components/Pages/PageListItem';
 
 const { TextArea } = Input;
 
