@@ -14,6 +14,7 @@ import {
   Context,
   GqlExecutionContext,
   Mutation,
+  Parent,
   Query,
   ResolveField,
   Resolver,
@@ -30,9 +31,7 @@ const pubSub = new PubSub();
 
 @Resolver(() => Page)
 export class PageResolver {
-  private logger: Logger = new Logger(this.constructor.name);
-
-  constructor(private prisma: PrismaService, @I18n() private i18n: I18nService) {}
+  constructor(private logger: Logger, private prisma: PrismaService, @I18n() private i18n: I18nService) {}
 
   @Subscription(() => Page)
   pageCreated() {
@@ -41,12 +40,11 @@ export class PageResolver {
 
   @Query(() => Page)
   async page(@Args('id', { type: () => String }) id: string) {
-    return this.prisma.page.findUnique({
-      where: { id: id },
-      include: {
-        parent: true
-      }
+    const result = await this.prisma.page.findUnique({
+      where: { id: id }
     });
+
+    return result;
   }
 
   @Query(() => PageConnection)
@@ -62,30 +60,71 @@ export class PageResolver {
     orderBy: PageOrder
   ) {
     const result = await findManyCursorConnection(
-      args =>
+      paginationArgs =>
         this.prisma.page.findMany({
-          include: { pageAccount: true },
+          include: {
+            pageAccount: true
+          },
           where: {
-            OR: {
-              title: { contains: query || '' },
-              name: { contains: query || '' }
-            }
+            OR: !query
+              ? undefined
+              : {
+                  title: { contains: query || '' },
+                  name: { contains: query || '' }
+                }
           },
           orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
-          ...args
+          ...paginationArgs
         }),
       () =>
         this.prisma.page.count({
           where: {
-            OR: {
-              title: { contains: query || '' },
-              name: { contains: query || '' }
-            }
+            OR: !query
+              ? undefined
+              : {
+                  title: { contains: query || '' },
+                  name: { contains: query || '' }
+                }
           }
         }),
       { first, last, before, after }
     );
+
     return result;
+  }
+
+  @ResolveField('avatar', () => String)
+  async avatar(@Parent() page: Page) {
+    const uploadDetail = await this.prisma.page
+      .findUnique({
+        where: {
+          id: page.id
+        }
+      })
+      .avatar({
+        include: {
+          upload: true
+        }
+      });
+
+    return uploadDetail && uploadDetail.upload ? uploadDetail.upload.url : null;
+  }
+
+  @ResolveField('cover', () => String)
+  async cover(@Parent() page: Page) {
+    const uploadDetail = await this.prisma.page
+      .findUnique({
+        where: {
+          id: page.id
+        }
+      })
+      .cover({
+        include: {
+          upload: true
+        }
+      });
+
+    return uploadDetail && uploadDetail.upload ? uploadDetail.upload.url : null;
   }
 
   @UseGuards(GqlJwtAuthGuard)

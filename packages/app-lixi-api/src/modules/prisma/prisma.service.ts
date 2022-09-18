@@ -1,9 +1,9 @@
-import { INestApplication, Injectable, OnModuleInit } from '@nestjs/common';
+import { INestApplication, Injectable, OnModuleInit, Logger } from '@nestjs/common';
 import { PrismaClient } from '@bcpros/lixi-prisma';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
-  constructor() {
+  constructor(private logger: Logger) {
     super();
     // super({
     //   log: [
@@ -17,11 +17,11 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
   }
 
   async onModuleInit() {
-    // this.$on<any>('query', async (e: any) => {
-    //   console.log('Query: ' + e.query)
-    //   console.log('Params: ' + e.params)
-    //   console.log('Duration: ' + e.duration + 'ms')
-    // });
+    this.$on<any>('query', async (e: any) => {
+      // this.logger.log('Query: ' + e.query)
+      // this.logger.log('Params: ' + e.params)
+      // this.logger.log('Duration: ' + e.duration + 'ms')
+    });
 
     await this.$connect();
   }
