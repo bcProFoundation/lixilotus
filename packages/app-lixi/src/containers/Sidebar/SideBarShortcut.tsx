@@ -23,6 +23,7 @@ import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHead
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import { useRouter } from 'next/router';
 import { Account } from '@bcpros/lixi-models';
+import ScanBarcode from '@bcpros/lixi-components/components/Common/ScanBarcode'
 
 const { Sider } = Layout;
 
@@ -245,6 +246,7 @@ const SidebarShortcut = () => {
             key="send-lotus"
             href={'https://lotusia.shop/'}
           />
+          <ScanBarcode loadWithCameraOpen={false} onScan={()=>{}} id={Date.now().toString()} />
         </div>
       </CointainerAccess>
       <CointainerWallet>

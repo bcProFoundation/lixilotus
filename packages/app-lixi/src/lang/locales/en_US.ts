@@ -32,6 +32,9 @@ export default {
   'general.scanQRCode': 'Scan QR code',
   'general.scanQRCodeError':
     'Error in QR scanner. Please ensure your camera is not in use. Due to Apple restrictions on third-party browsers, you must use Safari browser for QR code scanning on an iPhone.',
+  'general.scanBarcode': 'Scan Barcode',
+  'general.scanBarcodeError':
+    'Error in Barcode scanner. Please ensure your camera is not in use. Due to Apple restrictions on third-party browsers, you must use Safari browser for barcode scanning on an iPhone.',
   'general.num': 'Num',
   'general.amount': 'Amount',
 

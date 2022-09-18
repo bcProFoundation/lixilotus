@@ -15,6 +15,7 @@ import {
 } from '@ant-design/icons';
 import { CointainerAccess, ItemAccess } from './SideBarShortcut';
 import { useRouter } from 'next/router';
+import ScanBarcode from '@bcpros/lixi-components/components/Common/ScanBarcode'
 
 type SidebarContentProps = {
   className?: string;
@@ -94,6 +95,7 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
             key="send-lotus"
             href={'https://lotusia.shop/'}
           />
+          <ScanBarcode loadWithCameraOpen={false} onScan={()=>{}} id={Date.now().toString()} />
         </StyledCointainerAccess>
       </div>
     </>

@@ -32,6 +32,9 @@ export default {
   'general.scanQRCode': 'Quét mã QR',
   'general.scanQRCodeError':
     'Lỗi trong lúc quét mã QR. Vui lòng đảm bảo rằng máy ảnh của bạn đang không sử dụng vào mục đích khác. Do các yêu cầu giới hạn của Apple với các trình duyệt thứ ba, bạn phải sử dụng trình duyệt của Safari để quét mã QR từ điện thoại iPhone.',
+  'general.scanBarcode': 'Scan Barcode',
+  'general.scanBarcodeError':
+    'Lỗi trong lúc quét mã Barcode. Vui lòng đảm bảo rằng máy ảnh của bạn đang không sử dụng vào mục đích khác. Do các yêu cầu giới hạn của Apple với các trình duyệt thứ ba, bạn phải sử dụng trình duyệt của Safari để quét mã barcode từ điện thoại iPhone.',
   'general.num': 'STT',
   'general.amount': 'Số dư',
 
