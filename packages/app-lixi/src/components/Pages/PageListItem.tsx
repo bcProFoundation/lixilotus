@@ -115,7 +115,7 @@ const GroupIconText = styled.div`
   }
 `;
 
-const PageListItem = ({ index, style, data }) => {
+const PageListItem = ({ index, item }) => {
   const dispatch = useAppDispatch();
 
   const [isCollapseComment, setIsCollapseComment] = useState(false);
@@ -123,10 +123,6 @@ const PageListItem = ({ index, style, data }) => {
   const [submitting, setSubmitting] = useState(false);
   const [value, setValue] = useState('');
 
-  if (_.isNil(index)) console.log('index is nil: ', index);
-  if (_.isNil(index)) return;
-
-  const item = data[index];
   if (!item) return null;
 
   const routerShopDetail = id => {
@@ -182,7 +178,7 @@ const PageListItem = ({ index, style, data }) => {
   };
 
   return (
-    <div style={style}>
+    <div>
       <List.Item
         style={{
           display: 'flex',
