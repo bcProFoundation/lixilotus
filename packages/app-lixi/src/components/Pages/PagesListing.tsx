@@ -1,6 +1,6 @@
 import { CommentOutlined, DislikeOutlined, FilterOutlined, LikeOutlined } from '@ant-design/icons';
 import { Avatar, Button, Comment, Input, List, Menu, MenuProps, message, Modal, Space } from 'antd';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import React from 'react';
 import { AppContext } from '@store/store';
@@ -20,6 +20,9 @@ import CreatePostCard from '@components/Common/CreatePostCard';
 import SearchBox from '@components/Common/SearchBox';
 import InfoCardUser from '@components/Common/InfoCardUser';
 import PageListItem from './PageListItem';
+import DynamicList, { createCache } from 'react-window-dynamic-list';
+
+const cache = createCache();
 
 type PagesListingProps = {
   className?: string;
@@ -35,6 +38,7 @@ const PagesListing: React.FC<PagesListingProps> = ({ className }: PagesListingPr
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [balanceAccount, setBalanceAccount] = useState(0);
 
+  const listRef = useRef();
   const menuItems = [
     { label: 'All', key: 'all' },
     { label: 'Friend', key: 'friend' },
@@ -123,20 +127,22 @@ const PagesListing: React.FC<PagesListingProps> = ({ className }: PagesListingPr
           {({ height, width }) => (
             <List itemLayout="vertical" size="large">
               <InfiniteLoader isItemLoaded={isItemLoaded} loadMoreItems={loadMoreItems} itemCount={totalCount}>
-                {({ onItemsRendered, ref }) => (
-                  <FixedSizeList
-                    className="infinite-listing"
-                    height={height}
-                    width={width}
-                    itemSize={500}
-                    itemCount={totalCount}
-                    itemData={data}
-                    onItemsRendered={onItemsRendered}
-                    ref={ref}
-                  >
-                    {PageListItem}
-                  </FixedSizeList>
-                )}
+                {({ onItemsRendered, ref }) => {
+                  ref(listRef);
+                  return (
+                    <DynamicList
+                      cache={cache}
+                      className="infinite-listing"
+                      height={height}
+                      width={width}
+                      data={data}
+                      onItemsRendered={onItemsRendered}
+                      ref={listRef}
+                    >
+                      {PageListItem}
+                    </DynamicList>
+                  )
+                }}
               </InfiniteLoader>
             </List>
           )}

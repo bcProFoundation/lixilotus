@@ -48,6 +48,7 @@
     "react-virtualized-auto-sizer": "^1.0.6",
     "react-web-share": "^1.1.5",
     "react-window": "^1.8.6",
+    "react-window-dynamic-list": "^2.4.2",
     "react-window-infinite-loader": "^1.0.8",
     "redux": "^4.2.0",
     "redux-persist": "^6.0.0",
