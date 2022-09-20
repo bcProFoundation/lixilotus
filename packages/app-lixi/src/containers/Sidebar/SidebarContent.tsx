@@ -43,7 +43,7 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
       <SidebarLogo sidebarCollapsed={sidebarCollapsed} setSidebarCollapsed={setSidebarCollapsed} />
       <div className="lixi-sidebar-content">
         <StyledCointainerAccess className={className} onClick={handleOnClick}>
-          <ItemAccess icon={HomeOutlined} text={'Home'} active={selectedKey === '/'} key="send-lotus" href={'/'} />
+          <ItemAccess icon={HomeOutlined} text={'Home'} active={selectedKey === '/'} key="home" href={'/'} />
           <ItemAccess
             icon={WalletOutlined}
             text={'Accounts'}
@@ -55,7 +55,7 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
             icon={GiftOutlined}
             text={'Lixi'}
             active={selectedKey === '/admin/lixi'}
-            key="send"
+            key="lixi"
             href={'/admin/lixi'}
           />
           <ItemAccess icon={SendOutlined} text={'Send'} active={selectedKey === '/send'} key="send" href={'/send'} />
@@ -91,7 +91,7 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
             icon={ShopOutlined}
             text={'Lotusia Shop'}
             active={false}
-            key="send-lotus"
+            key="lotusia-shop"
             href={'https://lotusia.shop/'}
           />
         </StyledCointainerAccess>

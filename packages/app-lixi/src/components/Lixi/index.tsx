@@ -1,7 +1,7 @@
 import {
   Collapse,
   Descriptions,
-  message, Image, Progress,
+  message, Input, Button, Row, Col, Modal, Typography, Checkbox, Image, Progress,
   Tabs,
   Input,
   Button,
@@ -22,7 +22,12 @@ import intl from 'react-intl-universal';
 import { getAllClaims } from 'src/store/claim/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { fetchMoreSubLixies, getLixi, refreshLixi, setLixiBalance } from 'src/store/lixi/actions';
-import { getHasMoreSubLixies, getSelectedLixi, getSelectedLixiId } from 'src/store/lixi/selectors';
+import {
+  getHasMoreSubLixies,
+  getLixiesBySelectedAccount,
+  getSelectedLixi,
+  getSelectedLixiId
+} from 'src/store/lixi/selectors';
 import { AppContext } from 'src/store/store';
 import { showToast } from 'src/store/toast/actions';
 import styled from 'styled-components';
@@ -32,8 +37,10 @@ import {
   DownloadOutlined,
   ExclamationCircleOutlined,
   ExportOutlined,
+  FilterOutlined,
   LoadingOutlined,
-  ReloadOutlined
+  ReloadOutlined,
+  SearchOutlined
 } from '@ant-design/icons';
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import { SmartButton } from '@bcpros/lixi-components/components/Common/PrimaryButton';
@@ -53,6 +60,7 @@ import lixiLogo from '../../assets/images/lixi_logo.svg';
 import { exportSubLixies } from '../../store/lixi/actions';
 import VirtualTable from './SubLixiListScroll';
 import { numberToBase58 } from '@utils/encryptionMethods';
+import LixiList from './LixiList';
 
 type CopiedProps = {
   style?: React.CSSProperties;
@@ -168,7 +176,6 @@ const Text = styled.p`
 `;
 
 const { Panel } = Collapse;
-
 const Lixi: React.FC = () => {
   const dispatch = useAppDispatch();
   const ContextValue = React.useContext(AppContext);
