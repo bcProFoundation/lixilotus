@@ -50,7 +50,7 @@ code {
   display: none;
 }
 
-.List {
+.listing {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none;
   &::-webkit-scrollbar {
@@ -61,13 +61,27 @@ code {
 .custom-modal-editor {
   width: 80% !important;
   .ant-modal-content {
+    border-radius: 20px;
     text-align: center;
     .ant-modal-header {
-      padding-bottom: 0;
+      border-radius: 20px;
+      padding: 2rem 0;
       border-bottom: 0;
       .ant-modal-title {
         font-size: 18px;
         font-weight: 600;
+      }
+    }
+    .ant-modal-body {
+      text-align: left;
+      form {
+        display: flex;
+        flex-direction: column;
+        input {
+          width: 100px;
+          margin-top: 2rem;
+          align-self: flex-end;
+        }
       }
     }
   }
