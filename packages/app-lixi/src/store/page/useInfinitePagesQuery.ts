@@ -34,6 +34,7 @@ export function useInfinitePagesQuery(
 
   // Base result
   useEffect(() => {
+    console.log('baseResult: ', baseResult);
     next.current = baseResult.data?.allPages?.pageInfo?.endCursor;
     if (baseResult?.data?.allPages) {
       isBaseReady.current = true;
@@ -45,10 +46,15 @@ export function useInfinitePagesQuery(
   // When there're next results
   useEffect(() => {
     // Not success next result
-    if (!nextResult.isSuccess || nextResult.isFetching || nextResult.isLoading) return;
+    if (!nextResult.isSuccess) return;
 
-    if (isBaseReady.current && nextResult.data) {
-      next.current = nextResult.data?.allPages?.pageInfo?.endCursor;
+    if (
+      isBaseReady.current &&
+      nextResult.data &&
+      nextResult.data.allPages.pageInfo &&
+      nextResult.data.allPages.pageInfo.endCursor != next.current
+    ) {
+      next.current = nextResult.data.allPages.pageInfo.endCursor;
 
       const newItems = nextResult.data.allPages.edges.map(item => item.node);
       if (newItems && newItems.length) {
@@ -60,7 +66,9 @@ export function useInfinitePagesQuery(
   }, [nextResult]);
 
   const fetchNext = async () => {
-    if (!isBaseReady.current || !isNextDone.current || next.current === undefined || next.current === null) return;
+    if (!isBaseReady.current || !isNextDone.current || next.current === undefined || next.current === null) {
+      return;
+    }
 
     try {
       isNextDone.current = false;
@@ -78,7 +86,7 @@ export function useInfinitePagesQuery(
   const refetch = async () => {
     isBaseReady.current = false;
     next.current = null; // restart
-    await baseResult.refetch(); // resatrt with a whole new refetching
+    await baseResult.refetch(); // restart with a whole new refetching
   };
 
   return {

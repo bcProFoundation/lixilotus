@@ -1,24 +1,15 @@
-import { CommentOutlined, DislikeOutlined, FilterOutlined, LikeOutlined } from '@ant-design/icons';
-import { Avatar, Button, Comment, Input, List, Menu, MenuProps, message, Modal, Space } from 'antd';
-import { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import React from 'react';
-import { AppContext } from '@store/store';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { getSelectedAccount } from '@store/account/selectors';
-import { getAllPages, getSelectedPageId } from '@store/page/selectors';
-import { fetchAllPages, setSelectedPage } from '@store/page/action';
 import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
-import { push } from 'connected-next-router';
-import _ from 'lodash';
-import { FixedSizeList } from 'react-window';
-import InfiniteLoader from 'react-window-infinite-loader';
-import AutoSizer from 'react-virtualized-auto-sizer';
-import moment from 'moment';
-import { useInfinitePagesQuery } from '@store/page/useInfinitePagesQuery';
 import CreatePostCard from '@components/Common/CreatePostCard';
 import SearchBox from '@components/Common/SearchBox';
-import InfoCardUser from '@components/Common/InfoCardUser';
+import { getSelectedAccount } from '@store/account/selectors';
+import { setSelectedPage } from '@store/page/action';
+import { useInfinitePagesQuery } from '@store/page/useInfinitePagesQuery';
+import { AppContext } from '@store/store';
+import { Menu, MenuProps, Modal } from 'antd';
+import _ from 'lodash';
+import React, { useEffect, useRef, useState } from 'react';
+import { Virtuoso } from 'react-virtuoso';
+import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import PageListItem from './PageListItem';
 
 type PagesListingProps = {
@@ -35,6 +26,7 @@ const PagesListing: React.FC<PagesListingProps> = ({ className }: PagesListingPr
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [balanceAccount, setBalanceAccount] = useState(0);
 
+  const listRef = useRef();
   const menuItems = [
     { label: 'All', key: 'all' },
     { label: 'Friend', key: 'friend' },
@@ -48,9 +40,9 @@ const PagesListing: React.FC<PagesListingProps> = ({ className }: PagesListingPr
     }
   ];
 
-  const { data, totalCount, fetchNext, hasNext, isFetching } = useInfinitePagesQuery(
+  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext } = useInfinitePagesQuery(
     {
-      first: 2
+      first: 10
     },
     false
   );
@@ -99,6 +91,8 @@ const PagesListing: React.FC<PagesListingProps> = ({ className }: PagesListingPr
   const loadMoreItems = () => {
     if (hasNext && !isFetching) {
       fetchNext();
+    } else if (hasNext) {
+      fetchNext();
     }
   };
 
@@ -118,29 +112,33 @@ const PagesListing: React.FC<PagesListingProps> = ({ className }: PagesListingPr
         onClick={onClickMenu}
         items={menuItems}
       ></Menu>
+
       <div className={'listing'} style={{ height: '100vh' }}>
-        <AutoSizer>
-          {({ height, width }) => (
-            <List itemLayout="vertical" size="large">
-              <InfiniteLoader isItemLoaded={isItemLoaded} loadMoreItems={loadMoreItems} itemCount={totalCount}>
-                {({ onItemsRendered, ref }) => (
-                  <FixedSizeList
-                    className="infinite-listing"
-                    height={height}
-                    width={width}
-                    itemSize={500}
-                    itemCount={totalCount}
-                    itemData={data}
-                    onItemsRendered={onItemsRendered}
-                    ref={ref}
-                  >
-                    {PageListItem}
-                  </FixedSizeList>
-                )}
-              </InfiniteLoader>
-            </List>
-          )}
-        </AutoSizer>
+        <Virtuoso
+          className={'listing'}
+          style={{ height: '100%' }}
+          data={data}
+          endReached={loadMoreItems}
+          overscan={900}
+          itemContent={(index, item) => {
+            return <PageListItem index={index} item={item} />;
+          }}
+          totalCount={totalCount}
+          components={{
+            Footer: () => {
+              return (
+                <div
+                  style={{
+                    padding: '1rem',
+                    textAlign: 'center'
+                  }}
+                >
+                  end reached
+                </div>
+              );
+            }
+          }}
+        />
       </div>
 
       <Modal title="Are you sure to down vote shop?" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
@@ -154,27 +152,4 @@ const PagesListing: React.FC<PagesListingProps> = ({ className }: PagesListingPr
   );
 };
 
-const StyledPagesListing = styled(PagesListing)`
-  .infinite-listing {
-    scrollbar-width: thin;
-    scrollbar-color: transparent transparent;
-
-    &::-webkit-scrollbar {
-      width: 1px;
-    }
-
-    &::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background-color: transparent;
-    }
-
-    .no-scrollbars::-webkit-scrollbar {
-      display: none; /* Safari and Chrome */
-    }
-  }
-`;
-
-export default StyledPagesListing;
+export default PagesListing;
