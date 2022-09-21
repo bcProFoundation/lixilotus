@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "lixi" ADD COLUMN     "min_staking" DOUBLE PRECISION NOT NULL DEFAULT 0;

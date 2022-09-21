@@ -1,11 +1,11 @@
-import React, { useState, useRef } from 'react';
 import { PlusCircleOutlined } from '@ant-design/icons';
+import { Avatar, Form, Modal } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import SunEditorCore from 'suneditor/src/lib/core';
 import dynamic from 'next/dynamic';
 import 'suneditor/dist/css/suneditor.min.css'; // Import Sun Editor's CSS File
-import { Avatar, Modal } from 'antd';
 
 const SunEditor = dynamic(() => import('suneditor-react'), {
   ssr: false
@@ -40,23 +40,22 @@ const CreateCardContainer = styled.div`
 
 const CreatePostCard = () => {
   const [enableEditor, setEnableEditor] = useState(false);
-  const editor = useRef<SunEditorCore>();
+  const sunEditor = useRef<SunEditorCore>();
+  const [valueEditor, setValue] = useState(null);
 
-  const getSunEditorInstance = (sunEditor: SunEditorCore) => {
-    editor.current = sunEditor;
+  const getSunEditorInstance = (sunEditorCore: SunEditorCore) => {
+    sunEditor.current = sunEditorCore;
   };
 
   const configEditor = {
     rtl: false,
     katex: 'window.katex',
-    imageGalleryUrl: 'https://etyswjpn79.execute-api.ap-northeast-1.amazonaws.com/suneditor-demo',
     videoFileInput: false,
     tabDisable: false,
     height: '50vh',
+    placeholder: 'Type...',
     buttonList: [
       [
-        'undo',
-        'redo',
         'font',
         'fontSize',
         'formatBlock',
@@ -69,44 +68,28 @@ const CreatePostCard = () => {
         'subscript',
         'superscript',
         'fontColor',
-        'hiliteColor',
-        'textStyle',
-        'removeFormat',
-        'outdent',
-        'indent',
         'align',
-        'horizontalRule',
-        'list',
         'lineHeight',
-        'table',
         'link',
         'image',
         'video',
         'audio',
-        'math',
-        'imageGallery',
         'fullScreen',
-        'showBlocks',
-        'codeView',
-        'preview',
-        'print',
-        'save',
-        'template'
+        'codeView'
       ]
     ]
   };
   const handleSaveEditor = contents => {
+    setValue(contents);
     setEnableEditor(false);
-    console.log('Save done', contents);
   };
 
-  const handleLeaveEditor = () => {
-    setEnableEditor(!enableEditor);
-    console.log('Move out');
-  };
-
-  const handleDrop = event => {
-    console.log(event); //Get the drop event
+  const handleSubmit = event => {
+    const valueInput = sunEditor.current.getContents(true);
+    setValue(valueInput);
+    setEnableEditor(false);
+    console.log(valueInput);
+    event.preventDefault();
   };
 
   return (
@@ -130,18 +113,20 @@ const CreatePostCard = () => {
             className="custom-modal-editor"
             title="Create Post"
             visible={enableEditor}
-            okText="Create Post"
-            onOk={() => setEnableEditor(false)}
+            footer={null}
             onCancel={() => setEnableEditor(false)}
           >
-            <p>Create your own post</p>
-            <SunEditor
-              width="100%"
-              placeholder="Please type here..."
-              hide={!enableEditor}
-              onSave={handleSaveEditor}
-              setOptions={configEditor}
-            />
+            <form onSubmit={handleSubmit}>
+              <SunEditor
+                getSunEditorInstance={getSunEditorInstance}
+                width="100%"
+                placeholder="Please type here..."
+                hide={!enableEditor}
+                onSave={handleSaveEditor}
+                setOptions={configEditor}
+              />
+              <input type="submit" value="Create Post" />
+            </form>
           </Modal>
         </WrapEditor>
       )}
