@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
-import { Alert, Modal } from 'antd';
+import { Alert, Select, Modal, Space } from 'antd';
 import { BrowserCodeReader } from '@zxing/browser';
-import { BrowserMultiFormatReader, DecodeHintType } from '@zxing/library';
+import { BrowserMultiFormatReader, DecodeHintType, BarcodeFormat } from '@zxing/library';
 import { ThemedQrcodeOutlined } from './CustomIcons';
-import { isValidLotusPrefix } from './Ticker';
 import { Result } from '@zxing/library';
 import _ from 'lodash';
+import { InfoCircleTwoTone } from '@ant-design/icons';
 
 const StyledScanQRCode = styled.span`
   display: block;
@@ -28,144 +28,135 @@ const QRPreview = styled.video`
 `;
 
 type ScanBarcodeProps = {
-   loadWithCameraOpen: boolean;
-   onScan: Function;
-   id: string;
+  loadWithCameraOpen: boolean;
+  onScan: Function;
+  id: string;
 };
 const ScanBarcode = (props: ScanBarcodeProps) => {
-   const { loadWithCameraOpen, onScan, id, ...otherProps } = props;
-   const [visible, setVisible] = useState(loadWithCameraOpen);
-   const [error, setError] = useState(false);
-   // Use these states to debug video errors on mobile
-   // Note: iOS chrome/brave/firefox does not support accessing camera, will throw error
-   // iOS users can use safari
-   // todo only show scanner with safari
-   //const [mobileError, setMobileError] = useState(false);
-   //const [mobileErrorMsg, setMobileErrorMsg] = useState(false);
-   const [activeCodeReader, setActiveCodeReader] = useState<BrowserMultiFormatReader>();
-   const [lixiValue, setLixiValue] = useState<string | undefined>(undefined);
+  const { loadWithCameraOpen, onScan, id, ...otherProps } = props;
+  const [visible, setVisible] = useState(loadWithCameraOpen);
+  const [error, setError] = useState(false);
+  // Use these states to debug video errors on mobile
+  // Note: iOS chrome/brave/firefox does not support accessing camera, will throw error
+  // iOS users can use safari
+  // todo only show scanner with safari
+  //const [mobileError, setMobileError] = useState(false);
+  //const [mobileErrorMsg, setMobileErrorMsg] = useState(false);
+  const [activeCodeReader, setActiveCodeReader] = useState<BrowserMultiFormatReader>();
+  const [lixiValue, setLixiValue] = useState<string | undefined>(undefined);
+  const [errorMsg, setErrorMsg] = useState<string>();
+  const [videoInputDevices, setVideoInputDevices] = useState<any[]>();
 
-   const teardownCodeReader = (codeReader: BrowserMultiFormatReader) => {
-      if (codeReader !== undefined) {
-         codeReader.reset();
+  const setupCodeReader = () => {
+    var hints = new Map();
+    const formats = [BarcodeFormat.UPC_A];
+    hints.set(DecodeHintType.ASSUME_GS1, true);
+    hints.set(DecodeHintType.TRY_HARDER, true);
+    hints.set(DecodeHintType.POSSIBLE_FORMATS, formats);
+    const codeReader = new BrowserMultiFormatReader(hints);
+    setActiveCodeReader(codeReader);
+  };
+
+  const setupVideoSource = () => {
+    BrowserCodeReader.listVideoInputDevices().then(videoInputDevices => {
+      if (videoInputDevices.length >= 1) {
+        setVideoInputDevices(videoInputDevices);
       }
-   };
+    });
+  };
 
-   const parseContent = (content: string) => {
-      let type = 'unknown';
-      let values: { address?: string; lixi?: string } = {};
+  const scanForBarcode = async videoSource => {
+    try {
+      activeCodeReader?.reset();
 
-      // If what scanner reads from QR code begins with 'bitcoincash:' or 'simpleledger:' or their successor prefixes
-      if (isValidLotusPrefix(content)) {
-         type = 'address';
-         values = { address: content };
-      } else {
-         type = 'claimCode';
-         values = { lixi: content };
-      }
-      return { type, values };
-   };
+      const previewElem = document.querySelector('#test-area-qr-code-webcam-' + id);
+      await activeCodeReader!.decodeFromVideoDevice(videoSource, previewElem as any, (content: Result, controls) => {
+        if (!_.isNil(content) && content.getText()) {
+          const result = content.getText();
+          setLixiValue(result);
+          onScan(result);
+        }
+      });
+    } catch (err) {
+      console.log(intl.get('general.QRScannerError'));
+      console.log(err);
+      console.log(JSON.stringify((err as any).message));
+      setErrorMsg(JSON.stringify((err as any).message));
+      //setMobileErrorMsg(JSON.stringify(err.message));
+      setError(err as any);
+      activeCodeReader?.reset();
+    }
+  };
 
-   const setupCodeReader = () => {
-      var hints = new Map();
-      hints.set(DecodeHintType.ASSUME_GS1, true)
-      hints.set(DecodeHintType.TRY_HARDER, true)
-      const codeReader = new BrowserMultiFormatReader(hints);
-      setActiveCodeReader(codeReader);
-   }
+  useEffect(() => {
+    setupCodeReader();
+    setupVideoSource();
+  }, []);
 
-   const scanForBarcode = async () => {
-      try {
-         // Need to execute this before you can decode input
-         const videoInputDevices = await BrowserCodeReader.listVideoInputDevices();
-         //setMobileError(JSON.stringify(videoInputDevices));
+  useEffect(() => {
+    if (!visible) {
+      setError(false);
+      // Stop the camera if user closes modal
+      activeCodeReader && activeCodeReader.reset();
+    }
+  }, [visible]);
 
-         // choose your media device (webcam, frontal camera, back camera, etc.)
-         // TODO implement if necessary
-         // const selectedDeviceId = videoInputDevices[0].deviceId;
+  const onChangeVideoSource = value => {
+    scanForBarcode(value);
+  };
 
-         //const previewElem = document.querySelector("#test-area-qr-code-webcam");
-         const selectedDeviceId = videoInputDevices[0].deviceId;
-
-         const previewElem = document.querySelector('#test-area-qr-code-webcam-' + id);
-         await activeCodeReader!.decodeFromVideoDevice(
-            selectedDeviceId,
-            previewElem as any,
-            (content: Result, controls) => {
-               if (!_.isNil(content) && content.getText()) {
-                  const result = parseContent(content.getText());
-                  setLixiValue(result.values.lixi);
-                  onScan(result.values.lixi);
-               }
-            },
-         );
-      } catch (err) {
-         console.log(intl.get('general.QRScannerError'));
-         console.log(err);
-         console.log(JSON.stringify((err as any).message));
-         //setMobileErrorMsg(JSON.stringify(err.message));
-         setError(err as any);
-         teardownCodeReader(activeCodeReader!);
-      }
-   };
-
-   useEffect(() => {
-      setupCodeReader();
-   }, []);
-
-   useEffect(() => {
-      if (!visible) {
-         setError(false);
-         // Stop the camera if user closes modal
-         if (activeCodeReader !== undefined) {
-            teardownCodeReader(activeCodeReader!);
-         }
-      } else {
-         scanForBarcode();
-      }
-   }, [visible])
-
-   return (
-      <>
-         <StyledScanQRCode {...otherProps} onClick={() => setVisible(!visible)}>
-            <ThemedQrcodeOutlined />
-         </StyledScanQRCode>
-         <StyledModal
-            title={intl.get('general.scanBarcode')}
-            visible={visible}
-            onCancel={() => {
-               setVisible(false);
-               teardownCodeReader(activeCodeReader!);
-            }}
-            destroyOnClose={true}
-            footer={
-               <>
-                  <h2>{lixiValue}</h2>
-               </>
-            }
-         >
-            {visible ? (
-               <div>
-                  {error ? (
-                     <>
-                        <Alert
-                           message="Error"
-                           description={intl.get('general.scanBarcodeError')}
-                           type="error"
-                           showIcon
-                           style={{ textAlign: 'left' }}
-                        />
-                     </>
-                  ) : (
-                     <>
-                        <QRPreview id={`test-area-qr-code-webcam-${id}`} />
-                     </>
-                  )}
-               </div>
-            ) : null}
-         </StyledModal>
-      </>
-   );
+  return (
+    <>
+      <StyledScanQRCode {...otherProps} onClick={() => setVisible(!visible)}>
+        <ThemedQrcodeOutlined />
+      </StyledScanQRCode>
+      <StyledModal
+        title={
+          <>
+            <h3>{intl.get('general.scanBarcode')}</h3>
+            <Select id="videoSourceSelect" onChange={onChangeVideoSource} placeholder="Please choose camera">
+              {videoInputDevices &&
+                videoInputDevices.map(input => {
+                  return <option value={input.deviceId}>{input.label}</option>;
+                })}
+            </Select>
+            <div>
+              <InfoCircleTwoTone style={{ fontSize: '13px', marginRight: '5px' }} />
+              <span style={{ fontSize: '13px' }}>Try switching camera when its not working properly</span>
+            </div>
+          </>
+        }
+        visible={visible}
+        onCancel={() => setVisible(false)}
+        destroyOnClose={true}
+        footer={
+          <>
+            <h2>{lixiValue}</h2>
+          </>
+        }
+      >
+        {visible ? (
+          <div>
+            {error ? (
+              <>
+                <Alert
+                  message="Error"
+                  description={errorMsg ? errorMsg : intl.get('general.scanBarcodeError')}
+                  type="error"
+                  showIcon
+                  style={{ textAlign: 'left' }}
+                />
+              </>
+            ) : (
+              <>
+                <QRPreview id={`test-area-qr-code-webcam-${id}`} />
+              </>
+            )}
+          </div>
+        ) : null}
+      </StyledModal>
+    </>
+  );
 };
 
 export default ScanBarcode;
