@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "upload" ALTER COLUMN "type" SET DATA TYPE VARCHAR(15);
