@@ -1,16 +1,6 @@
 import {
-  Collapse,
-  Descriptions,
-  message, Input, Button, Row, Col, Modal, Typography, Checkbox, Image, Progress,
-  Tabs,
-  Input,
-  Button,
-  Row,
-  Col,
-  Modal,
-  Typography,
-  Checkbox,
-  List
+  Button, Checkbox, Col, Collapse, Descriptions, Form, Image, Input, List, message, Modal,
+  Progress, Row, Tabs, Typography
 } from 'antd';
 import { saveAs } from 'file-saver';
 import { toPng } from 'html-to-image';
@@ -23,29 +13,22 @@ import { getAllClaims } from 'src/store/claim/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { fetchMoreSubLixies, getLixi, refreshLixi, setLixiBalance } from 'src/store/lixi/actions';
 import {
-  getHasMoreSubLixies,
-  getLixiesBySelectedAccount,
-  getSelectedLixi,
-  getSelectedLixiId
+  getHasMoreSubLixies, getLixiesBySelectedAccount, getSelectedLixi, getSelectedLixiId
 } from 'src/store/lixi/selectors';
 import { AppContext } from 'src/store/store';
 import { showToast } from 'src/store/toast/actions';
 import styled from 'styled-components';
+
+import { green, red } from '@ant-design/colors';
 import {
-  CaretRightOutlined,
-  CopyOutlined,
-  DownloadOutlined,
-  ExclamationCircleOutlined,
-  ExportOutlined,
-  FilterOutlined,
-  LoadingOutlined,
-  ReloadOutlined,
+  CaretRightOutlined, CopyOutlined, DownloadOutlined, EditOutlined, ExclamationCircleOutlined,
+  ExportOutlined, FilterOutlined, LoadingOutlined, QuestionCircleOutlined, ReloadOutlined,
   SearchOutlined
 } from '@ant-design/icons';
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import { SmartButton } from '@bcpros/lixi-components/components/Common/PrimaryButton';
 import { QRClaimCode } from '@bcpros/lixi-components/components/Common/QRClaimCode';
-import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
+import QRCode, { FormattedWalletAddress } from '@bcpros/lixi-components/components/Common/QRCode';
 import { StyledCollapse } from '@bcpros/lixi-components/components/Common/StyledCollapse';
 import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
 import { countries } from '@bcpros/lixi-models/constants/countries';
@@ -55,12 +38,13 @@ import { currency } from '@components/Common/Ticker';
 import { getSelectedAccount } from '@store/account/selectors';
 import { getAllSubLixies, getLoadMoreSubLixiesStartId } from '@store/lixi/selectors';
 import { fromSmallestDenomination, toSmallestDenomination } from '@utils/cashMethods';
+import { numberToBase58 } from '@utils/encryptionMethods';
+
 import { ClaimType } from '../../../../lixi-models/src/lib/lixi';
 import lixiLogo from '../../assets/images/lixi_logo.svg';
 import { exportSubLixies } from '../../store/lixi/actions';
-import VirtualTable from './SubLixiListScroll';
-import { numberToBase58 } from '@utils/encryptionMethods';
 import LixiList from './LixiList';
+import VirtualTable from './SubLixiListScroll';
 
 type CopiedProps = {
   style?: React.CSSProperties;
@@ -95,72 +79,58 @@ const LabelHeader = styled.h4`
   display: flex;
   align-items: center;
   color: #333333;
-`;
-const CardContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 1rem 4rem 0 4rem;
-  @media (max-width: 768px) {
-    padding: 1rem 1rem 0 1rem;
-  }
+  margin-bottom: unset;
 `;
 
 const InfoCard = styled.div`
   box-sizing: border-box;
-  position: absolute;
-  width: 92%;
-  height: 483px;
-  left: 16px;
-  top: 155px;
+  position: inherit;
+  width: 100%;
+  height: 392px;
   background: #ffffff;
   border: 1px solid #e0e0e0;
   border-radius: 24px;
 
   img {
     border-radius: 16px;
+    height: 80px;
+    width: 80px;
   }
 
   .ant-descriptions-item-label {
-    font-family: 'Roboto';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 12px;
-    line-height: 16px;
-    color: #828282;
-    flex: none;
-    order: 0;
-    flex-grow: 0;
-  }
-
-  .ant-descriptions-item-content {
+    border-right: none;
+    width: 140px;
     font-family: 'Roboto';
     font-style: normal;
     font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    color: rgba(30, 26, 29, 0.38);
+    background: #ffffff;
+
+    padding: 5px 16px;
+  }
+
+  .ant-descriptions-item-content {
+    display: flex;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
     font-size: 16px;
     line-height: 24px;
-    display: flex;
-    align-items: center;
-    letter-spacing: 0.15px;
-    color: #333333;
-    flex: none;
-    order: 1;
-    flex-grow: 0;
+    letter-spacing: 0.5px;
+    color: #1E1A1D;
   }
-`;
 
-const LixiStatus = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  padding: 2px 8px;
-  gap: 10px;
-  position: absolute;
-  width: 53px;
-  height: 28px;
-  left: 119px;
-  top: 59px;
-  background: #ffeedc;
-  border-radius: 8px;
+  .ant-descriptions-bordered {
+    .ant-descriptions-view {
+      border: none;
+    }
+
+    .ant-descriptions-row {
+      border-bottom: none;
+    }
+  }
 `;
 
 const Text = styled.p`
@@ -173,6 +143,25 @@ const Text = styled.p`
   line-height: 24px;
   display: flex;
   color: #333333;
+`;
+
+const StyledQRCode = styled.div`
+  flex: 1 auto;
+  text-align: right;
+  opacity: 0.7;
+  padding: 20px 20px;
+  #borderedQRCode {
+    @media (max-width: 768px) {
+      border-radius: 18px;
+      width: 120px;
+      height: 120px;
+    }
+    @media (min-width: 768px) {
+      border-radius: 18px;
+      width: 120px;
+      height: 120px;
+    }
+  }
 `;
 
 const { Panel } = Collapse;
@@ -437,14 +426,15 @@ const Lixi: React.FC = () => {
     selectedLixi && selectedLixi.numberLixiPerPackage
       ? [
         { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
-        { title: intl.get('claim.claimCode'), dataIndex: 'claimCode', width: 150 },
-        { title: intl.get('general.amount'), dataIndex: 'amount', width: 85 },
+        { title: 'code', dataIndex: 'claimCode', width: 150 },
+        { title: 'Value redeem (XPI)', dataIndex: 'amount', width: 85 },
         { title: intl.get('lixi.package'), dataIndex: 'packageId' }
       ]
       : [
         { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
-        { title: intl.get('claim.claimCode'), dataIndex: 'claimCode' },
-        { title: intl.get('general.amount'), dataIndex: 'amount' }
+        { title: 'code', dataIndex: 'claimCode' },
+        { title: 'Value redeem (XPI)', dataIndex: 'amount' },
+        { title: 'Statusses', dataIndex: 'isClaimed' },
       ];
   const prefixClaimCode = 'lixi';
 
@@ -459,6 +449,7 @@ const Lixi: React.FC = () => {
         </CopyToClipboard>
       ),
       amount: item.isClaimed ? 0 : item.amount == 0 ? 0 : item.amount.toFixed(2),
+      isClaimed: item.isClaimed,
       packageId: item.packageId ? numberToBase58(item.packageId) : ''
     };
   });
@@ -480,76 +471,362 @@ const Lixi: React.FC = () => {
     }
   };
 
+  const detailLixi = () => {
+    switch (selectedLixi.claimType) {
+      case ClaimType.Single:
+        return (
+          <Descriptions
+            column={1}
+            bordered
+            size='small'
+            style={{
+              padding: '0 0 20px 0',
+              color: 'rgb(23,23,31)'
+            }}
+          >
+            <Descriptions.Item label={intl.get('lixi.type')} key="desc.claimtype">
+              Single Code
+            </Descriptions.Item>
+            <Descriptions.Item label={intl.get('lixi.rules')} key="desc.rules">
+              {typeLixi()}
+            </Descriptions.Item>
+            <Descriptions.Item label={intl.get('lixi.valuePerClaim')} key="desc.valuePerClaim">
+              {rulesLixi()}
+            </Descriptions.Item>
+            <Descriptions.Item label={intl.get('lixi.validity')} key="desc.validity">
+              {formatValidityDate()}
+            </Descriptions.Item>
+            <Descriptions.Item label={intl.get('lixi.validCountries')} key="desc.country">
+              {countries.find(country => country.id === selectedLixi?.country)?.name ?? intl.get('lixi.allCountries')}
+            </Descriptions.Item>
+          </Descriptions>
+        );
+      case ClaimType.OneTime:
+        return (
+          <Descriptions
+            column={1}
+            bordered
+            size='small'
+            style={{
+              padding: '0 0 20px 0',
+              color: 'rgb(23,23,31)'
+            }}
+          >
+            <Descriptions.Item label={intl.get('account.budget')} key="desc.budget">
+              {selectedLixi.amount} {currency.ticker}
+            </Descriptions.Item>
+            <Descriptions.Item label={intl.get('lixi.type')} key="desc.claimtype">
+              One-time Codes
+            </Descriptions.Item>
+            <Descriptions.Item label={intl.get('lixi.rules')} key="desc.rules">
+              {typeLixi()}
+            </Descriptions.Item>
+            <Descriptions.Item label={intl.get('lixi.valuePerClaim')} key="desc.valuePerClaim">
+              {rulesLixi()}
+            </Descriptions.Item>
+            <Descriptions.Item label={intl.get('lixi.validity')} key="desc.validity">
+              {formatValidityDate()}
+            </Descriptions.Item>
+            <Descriptions.Item label={intl.get('lixi.validCountries')} key="desc.country">
+              {countries.find(country => country.id === selectedLixi?.country)?.name ?? intl.get('lixi.allCountries')}
+            </Descriptions.Item>
+          </Descriptions>
+        );
+    }
+  }
+
+  const overviewLixi = () => {
+    switch (selectedLixi.claimType) {
+      case ClaimType.Single:
+        return (
+          <>
+            <LabelHeader>{intl.get('lixi.detail')} &nbsp; <QuestionCircleOutlined /></LabelHeader>
+            <InfoCard style={{ height: 'fit-content' }}>
+              <div>
+                <Row>
+                  {/* Balance - USD príce */}
+                  <Col span={18} push={3}>
+                    <Text
+                      style={{
+                        fontSize: '14px',
+                        position: 'absolute',
+                        width: '90%',
+                        left: '119px',
+                        top: '16px',
+                        color: 'rgba(30, 26, 29, 0.38)'
+                      }}
+                    >
+                      {intl.get('lixi.balance')}
+                    </Text>
+
+                    <Text
+                      style={{
+                        fontSize: '22px',
+                        position: 'absolute',
+                        width: '90%',
+                        left: '119px',
+                        top: '52px',
+                        color: '#1E1A1D'
+                      }}
+                    >
+                      {fromSmallestDenomination(selectedLixi?.balance) ?? 0} {currency.ticker}
+                    </Text>
+
+                    {/* USD price */}
+                  </Col>
+
+                  {/* QR code */}
+                  <Col span={6} pull={18}>
+                    <StyledQRCode>
+                      <QRCode address={selectedAccount?.address} isAccountPage={true} />
+                    </StyledQRCode>
+                    <FormattedWalletAddress address={selectedAccount?.address} isAccountPage={true}></FormattedWalletAddress>
+                  </Col>
+                </Row>
+              </div>
+            </InfoCard>
+
+            <LabelHeader>Claim code </LabelHeader>
+            <InfoCard style={{ height: 'fit-content' }}>
+              <div>
+                <Row>
+                  {/* Balance - USD príce */}
+                  <Col span={18} push={3}>
+                    <Text
+                      style={{
+                        fontSize: '14px',
+                        position: 'absolute',
+                        width: '90%',
+                        left: '119px',
+                        top: '16px',
+                        color: 'rgba(30, 26, 29, 0.38)'
+                      }}
+                    >
+                      Claimed
+                    </Text>
+
+                    <Text
+                      style={{
+                        fontSize: '22px',
+                        position: 'absolute',
+                        width: '90%',
+                        left: '119px',
+                        top: '52px',
+                        color: '#1E1A1D'
+                      }}
+                    >
+                      {fromSmallestDenomination(selectedLixi?.totalClaim) ?? 0} {currency.ticker}
+                    </Text>
+                  </Col>
+
+                  {/* QR code */}
+                  <Col span={6} pull={18}>
+                    <StyledQRCode>
+                      <QRCode address={selectedLixi.claimCode} isAccountPage={true} />
+                    </StyledQRCode>
+                    <FormattedWalletAddress address={selectedLixi.address} isAccountPage={true}></FormattedWalletAddress>
+                  </Col>
+                </Row>
+              </div>
+            </InfoCard>
+          </>
+        );
+
+      case ClaimType.OneTime:
+        return (
+          <>
+            <LabelHeader>{intl.get('lixi.overview')}</LabelHeader>
+            <InfoCard style={{ height: '160px' }}>
+              <Row>
+                <Col span={12}>
+                  <Text
+                    style={{
+                      position: 'absolute',
+                      width: '90%',
+                      left: '16px',
+                      top: '16px',
+                      color: 'rgba(30, 26, 29, 0.38)',
+                      alignItems: 'baseline'
+                    }}
+                  >
+                    <div style={{
+                      width: '12px',
+                      height: '12px',
+                      background: 'rgb(82, 196, 26)',
+                      borderRadius: '4px'
+                    }}
+                    />
+                    &nbsp; Claimed
+                  </Text>
+
+                  <Text
+                    style={{
+                      position: 'absolute',
+                      width: '90%',
+                      left: '36px',
+                      top: '40px',
+                      color: '#1E1A1D'
+                    }}
+                  >
+                    {fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim'))} {currency.ticker}
+                  </Text>
+
+                  <Text
+                    style={{
+                      position: 'absolute',
+                      width: '90%',
+                      left: '16px',
+                      top: '92px',
+                      color: 'rgba(30, 26, 29, 0.38)',
+                      alignItems: 'baseline'
+                    }}
+                  >
+                    <div style={{
+                      width: '12px',
+                      height: '12px',
+                      background: '#E37100',
+                      borderRadius: '4px'
+                    }}
+                    />
+                    &nbsp; Remaining
+                  </Text>
+
+                  <Text
+                    style={{
+                      position: 'absolute',
+                      width: '90%',
+                      left: '36px',
+                      top: '116px',
+                      color: '#1E1A1D'
+                    }}
+                  >
+                    {fromSmallestDenomination(_.sumBy(subLixies, 'balance'))} {currency.ticker}
+                  </Text>
+
+                </Col>
+                <Col span={12}>
+                  <Progress
+                    showInfo={false}
+                    type="circle"
+                    strokeColor='#E37100'
+                    percent={100}
+                    success={{
+                      percent: fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim')) / fromSmallestDenomination(_.sumBy(subLixies, 'balance'))
+                    }}
+                    style={{ paddingTop: '12.5px', paddingRight: '16px' }}
+                  />
+                </Col>
+              </Row>
+            </InfoCard>
+          </>
+        );
+    }
+  }
+
   return (
     <>
       {selectedLixi && selectedLixi.address ? (
         <>
-          <LabelHeader>{intl.get('lixi.GeneralInfo')}</LabelHeader>
-          <CardContainer>
-            <InfoCard className='GeneralInfo'>
-              <img
-                src={selectedLixi.envelope ? selectedLixi.envelope.image : '/images/lixi_logo.svg'}
-                style={{
-                  position: 'absolute',
-                  borderRadius: '50%',
-                  width: '80px',
-                  height: '80px',
-                  left: '16px',
-                  top: '16px',
-                  display: 'flex'
-                }}
-              />
-              <Text
-                style={{
-                  position: 'absolute',
-                  width: '136px',
-                  height: '24px',
-                  left: '119px',
-                  top: '30px'
-                }}
-              >
-                {selectedLixi?.name ?? ''}
-              </Text>
-              <LixiStatus className="lixi-status">
-                <Text style={{ position: 'absolute', color: '#EE9809' }}>{selectedLixi.status}</Text>
-              </LixiStatus>
+          <Form>
+            <LabelHeader>{intl.get('lixi.detail')}</LabelHeader>
+            <InfoCard>
+              {/* Image, name, status lixi */}
+              <div style={{
+                height: '100px',
+                fontFamily: 'Roboto',
+                fontStyle: 'normal',
+                fontWeight: '400',
+                fontSize: '16px',
+                lineHeight: '24px',
+              }}>
+                <Row>
+                  {/* name + status lixi */}
+                  <Col span={18} push={1}>
+                    <Text
+                      style={{
+                        position: 'absolute',
+                        width: '90%',
+                        left: '119px',
+                        top: '16px',
+                        color: 'rgba(30, 26, 29, 0.38)'
+                      }}
+                    >
+                      {intl.get('lixi.name')}
+                    </Text>
 
-              <Descriptions
-                column={1}
-                style={{
-                  padding: '129px 0 20px 0',
-                }}
-              >
-                <Descriptions.Item label={intl.get('lixi.balance')} key="desc.balance">
-                  {selectedLixi.claimType == ClaimType.Single
-                    ? fromSmallestDenomination(selectedLixi?.balance) ?? 0
-                    : _.sumBy(subLixies, 'amount').toFixed(2) + fromSmallestDenomination(selectedLixi?.balance)}{' '}
-                  {currency.ticker}
-                </Descriptions.Item>
-                <Descriptions.Item label={intl.get('lixi.claimType')} key="desc.claimType">
-                  {selectedLixi.claimType == ClaimType.Single ? 'Single' : 'One-Time Codes'}
-                </Descriptions.Item>
-                <Descriptions.Item label={intl.get('lixi.type')} key="desc.type">
-                  {typeLixi()}
-                </Descriptions.Item>
-                <Descriptions.Item label={intl.get('lixi.rules')} key="desc.rules">
-                  {rulesLixi()}
-                </Descriptions.Item>
-                <Descriptions.Item label={intl.get('lixi.remainingLixi')} key="desc.claim">
-                  {showRedemption()}
-                </Descriptions.Item>
-                <Descriptions.Item label={intl.get('lixi.activatedAt')} key="desc.activatedat">
-                  {formatValidityDate()}
-                </Descriptions.Item>
-                <Descriptions.Item label={intl.get('lixi.country')} key="desc.country">
-                  {countries.find(country => country.id === selectedLixi?.country)?.name ?? 'All of countries'}
-                </Descriptions.Item>
-              </Descriptions>
+                    <Text
+                      style={{
+                        position: 'absolute',
+                        width: '90%',
+                        left: '119px',
+                        top: '40px',
+                        alignItems: 'center',
+                      }}
+                    >
+                      {selectedLixi?.name ?? ''} &nbsp; <EditOutlined />
+                    </Text>
+
+                    <Text style={{
+                      position: 'absolute',
+                      color: '#FFFFFF',
+                      background: '#E37100',
+                      padding: '4px 8px',
+                      borderRadius: '8px',
+                      alignItems: 'center',
+                      fontFamily: 'Roboto',
+                      fontStyle: 'normal',
+                      fontWeight: '400',
+                      fontSize: '14px',
+                      top: '68px',
+                      left: '119px',
+                    }}>
+                      {selectedLixi.status}
+                    </Text>
+                  </Col>
+
+                  {/* img lixi */}
+                  <Col span={4} pull={18}>
+                    <img
+                      src={selectedLixi.envelope ? selectedLixi.envelope.image : '/images/lixi_logo.svg'}
+                      style={{
+                        position: 'absolute',
+                        borderRadius: '50%',
+                        width: '80px',
+                        height: '80px',
+                        left: '16px',
+                        top: '16px',
+                        display: 'flex'
+                      }}
+                    />
+                  </Col>
+                </Row>
+              </div>
+
+              {/* archive + withdraw */}
+
+
+              {/* Detail */}
+              {detailLixi()}
             </InfoCard>
-          </CardContainer>
 
+            {/* Address or Overview */}
+            {overviewLixi()}
 
-          <LabelHeader>Redeem overview</LabelHeader>
+            {/* Claim report */}
+            <LabelHeader>Claim report</LabelHeader>
+            {/* <ClaimList claims={allClaimsCurrentLixi} /> */}
+
+            <VirtualTable
+              columns={columns}
+              dataSource={subLixiesDataSource}
+              scroll={{ y: subLixiesDataSource.length * 54 <= 270 ? subLixiesDataSource.length * 54 : 270 }}
+            />
+            {hasMoreSubLixies && (
+              <SmartButton onClick={() => showMoreSubLixies()}>{intl.get('lixi.loadmore')}</SmartButton>
+            )}
+
+          </Form>
+
           {/* <InfoCard className='claim-overview'>
             <Progress
               type="circle"
@@ -720,7 +997,8 @@ const Lixi: React.FC = () => {
         </>
       ) : (
         intl.get('lixi.noLixiSelected')
-      )}
+      )
+      }
     </>
   );
 };

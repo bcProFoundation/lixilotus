@@ -137,6 +137,8 @@ export default {
   'lixi.package': 'Package',
   'lixi.maxClaim': 'Max Redemption: {newMaxClaim}',
   'lixi.country': 'Country: ',
+  'lixi.validCountries': 'Valid Countries',
+  'lixi.allCountries': 'All of countries',
   'lixi.minStake': 'Minimum Staking: {newMinStaking}',
   'lixi.expireAt': 'Expiry at:',
   'lixi.activatedAt': 'Activate at:',
@@ -148,7 +150,7 @@ export default {
   'lixi.networkType': 'Network Type: {networkType}',
   'lixi.lixiInfo': 'Lixi info for {lixiName}',
   'lixi.claimType': 'Claim Type',
-  'lixi.type': 'Type',
+  'lixi.type': 'Type of code',
   'lixi.rules': 'Rules',
   'lixi.totalClaimed': 'Total Claimed',
   'lixi.remainingLixi': 'Remaining Lixi',
@@ -221,8 +223,12 @@ export default {
   'NetworkType.SingleIPInfo': 'Only one user can claim Lixi under the wifi network',
   'NetworkType.FamilyFriendlyInfo': 'Max 5 users can claim Lixi under the wifi network',
   'NetworkType.NoWifiRestrictionInfo': 'Unlimited user can claim Lixi under the wifi network',
-  'lixi.GeneralInfo': 'General information',
+  'lixi.detail': 'Details of lixi',
   'lixi.balance': 'Balance',
+  'lixi.valuePerClaim': 'Value per claim',
+  'lixi.validity': 'Validity',
+
+  'lixi.overview': 'Overview',
 
   /* 04.Claim */
   'claim.claim': 'Claim',

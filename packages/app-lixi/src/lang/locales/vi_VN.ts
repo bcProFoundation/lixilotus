@@ -136,6 +136,8 @@ export default {
   'lixi.package': 'Package',
   'lixi.maxClaim': 'Số lần nhận tối đa: {newMaxClaim}',
   'lixi.country': 'Quốc gia: ',
+  'lixi.validCountries': 'Các quốc gia hợp lệ',
+  'lixi.allCountries': 'Tất cả các quốc gia',
   'lixi.minStake': 'Số lần trữ tới thiểu: {newMinStaking}',
   'lixi.expireAt': 'Hến hạn vào:',
   'lixi.activatedAt': 'Kích hoạt vào:',
@@ -220,8 +222,12 @@ export default {
   'NetworkType.SingleIPInfo': 'Chỉ một người dùng có thể nhận Lixi trong mạng wifi',
   'NetworkType.FamilyFriendlyInfo': 'Tối đa người dùng có thể nhận Lixi trong mạng wifi',
   'NetworkType.NoWifiRestrictionInfo': 'Không giới hạn người dùng có thể nhận Lixi trong mạng wifi',
-  'lixi.GeneralInfo': 'Thông tin chung',
+  'lixi.detail': 'Chi tiết lì xì',
   'lixi.balance': 'Số dư',
+  'lixi.valuePerClaim': 'Giá trị mỗi lần nhận',
+  'lixi.validity': 'Hiệu lực',
+
+  'lixi.overview': 'Tổng quan',
 
   /* 04.Claim */
   'claim.claim': 'Nhận Lì xì',
