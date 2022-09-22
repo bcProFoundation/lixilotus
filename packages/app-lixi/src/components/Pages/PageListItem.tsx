@@ -40,6 +40,7 @@ export const CommentList = ({ comments }: { comments: CommentItem[] }) => (
 const CardContainer = styled.div`
   display: flex;
   flex-direction: column;
+  padding: 1rem;
   width: 100%;
   @media (max-width: 768px) {
     padding: 1rem 1rem 0 1rem;
@@ -84,6 +85,7 @@ const ActionBar = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
   button {
     margin-right: 1rem;
     border-radius: 20px;
