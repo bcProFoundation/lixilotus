@@ -31,6 +31,8 @@ export type Mutation = {
   __typename?: 'Mutation';
   createPage: Page;
   updatePage: Page;
+  createPost: Post;
+  updatePost: Post;
 };
 
 export type MutationCreatePageArgs = {
@@ -126,6 +128,7 @@ export type QueryPageArgs = {
 export type Subscription = {
   __typename?: 'Subscription';
   pageCreated: Page;
+  postCreated: Post;
 };
 
 export type UpdatePageInput = {
@@ -140,4 +143,108 @@ export type UpdatePageInput = {
   state?: InputMaybe<Scalars['String']>;
   title?: InputMaybe<Scalars['String']>;
   website?: InputMaybe<Scalars['String']>;
+};
+
+export type CreatePostInput = {
+  cover: Scalars['String'];
+  content: Scalars['String'];
+  pageId: InputMaybe<Scalars['String']>;
+  title: Scalars['String'];
+};
+
+// export type PostMutation = {
+//   __typename?: 'Mutation';
+//   createPost: Post;
+//   updatePost: Post;
+// };
+
+export type MutationCreatePostArgs = {
+  data: CreatePostInput;
+};
+
+export type MutationUpdatePostArgs = {
+  data: UpdatePostInput;
+};
+
+export type Post = {
+  __typename?: 'Post';
+  content?: Maybe<Scalars['String']>;
+  cover?: Maybe<Scalars['String']>;
+  /** Identifies the date and time when the object was created. */
+  createdAt: Scalars['DateTime'];
+  title: Scalars['String'];
+  id: Scalars['ID'];
+  postAccountId: Scalars['Int'];
+  page?: Maybe<Page>;
+  pageId?: Maybe<Scalars['String']>;
+  state?: Maybe<Scalars['String']>;
+  /** Identifies the date and time when the object was last updated. */
+  updatedAt: Scalars['DateTime'];
+};
+
+export type PostConnection = {
+  __typename?: 'PostConnection';
+  edges?: Maybe<Array<PostEdge>>;
+  postInfo: PostInfo;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type PostEdge = {
+  __typename?: 'PostEdge';
+  cursor: Scalars['String'];
+  node: Post;
+};
+
+export type PostInfo = {
+  __typename?: 'PostInfo';
+  endCursor?: Maybe<Scalars['String']>;
+  hasNextPost: Scalars['Boolean'];
+  hasPreviousPost: Scalars['Boolean'];
+  startCursor?: Maybe<Scalars['String']>;
+};
+
+export type PostOrder = {
+  direction: OrderDirection;
+  field: PostOrderField;
+};
+
+/** Properties by which post connections can be ordered. */
+export enum PostOrderField {
+  CreatedAt = 'createdAt',
+  Id = 'id',
+  Name = 'name',
+  Title = 'title',
+  UpdatedAt = 'updatedAt'
+}
+
+export type PostQuery = {
+  __typename?: 'Query';
+  allPosts: PostConnection;
+  post: Post;
+};
+
+export type QueryAllPostsArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<PostOrder>;
+  query?: InputMaybe<Scalars['String']>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryPostArgs = {
+  id: Scalars['String'];
+};
+
+// export type Subscription = {
+//   __typename?: 'Subscription';
+//   postCreated: Post;
+// };
+
+export type UpdatePostInput = {
+  cover?: InputMaybe<Scalars['String']>;
+  content?: InputMaybe<Scalars['String']>;
+  id: Scalars['ID'];
+  title?: InputMaybe<Scalars['String']>;
 };
