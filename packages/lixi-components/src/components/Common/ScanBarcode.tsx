@@ -98,6 +98,7 @@ const ScanBarcode = (props: ScanBarcodeProps) => {
       setError(false);
       // Stop the camera if user closes modal
       activeCodeReader && activeCodeReader.reset();
+      setLixiValue(undefined);
     }
   }, [visible]);
 
@@ -117,7 +118,7 @@ const ScanBarcode = (props: ScanBarcodeProps) => {
             <Select id="videoSourceSelect" onChange={onChangeVideoSource} placeholder="Please choose camera">
               {videoInputDevices &&
                 videoInputDevices.map(input => {
-                  return <option value={input.deviceId}>{input.label}</option>;
+                  return <Select.Option value={input.deviceId}>{input.label}</Select.Option>;
                 })}
             </Select>
             <div>

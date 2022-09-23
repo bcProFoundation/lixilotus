@@ -15,7 +15,10 @@ import {
 } from '@ant-design/icons';
 import { CointainerAccess, ItemAccess } from './SideBarShortcut';
 import { useRouter } from 'next/router';
-import ScanBarcode from '@bcpros/lixi-components/components/Common/ScanBarcode'
+import ScanBarcode from '@bcpros/lixi-components/components/Common/ScanBarcode';
+import axiosClient from '@utils/axiosClient';
+import { message } from 'antd';
+import intl from 'react-intl-universal';
 
 type SidebarContentProps = {
   className?: string;
@@ -34,9 +37,26 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
   const navCollapsed = useAppSelector(getNavCollapsed);
   const router = useRouter();
   const selectedKey = router.pathname ?? '';
+  let pastScan;
 
   const handleOnClick = () => {
     dispatch(toggleCollapsedSideNav(!navCollapsed));
+  };
+
+  const onScan = async (result: string) => {
+    if (pastScan !== result) {
+      pastScan = result;
+
+      await axiosClient
+        .post('api/lixies/check-valid', { lixiBarcode: result })
+        .then(res => {
+          message.success(res.data);
+        })
+        .catch(err => {
+          const { response } = err;
+          message.error(response.data ? response.data.message : intl.get('lixi.unableGetLixi'));
+        });
+    }
   };
 
   return (
@@ -95,7 +115,7 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
             key="lotusia-shop"
             href={'https://lotusia.shop/'}
           />
-          <ScanBarcode loadWithCameraOpen={false} onScan={()=>{}} id={Date.now().toString()} />
+          <ScanBarcode loadWithCameraOpen={false} onScan={onScan} id={Date.now().toString()} />
         </StyledCointainerAccess>
       </div>
     </>

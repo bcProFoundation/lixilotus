@@ -112,7 +112,8 @@ export class ExportSubLixiesProcessor extends WorkerHost {
         name: item.name,
         claimCode: item.claimCode,
         amount: item.amount,
-        package: item.packageId ? numberToBase58(item.packageId) : ''
+        package: item.packageId ? numberToBase58(item.packageId) : '',
+        barcode: item.id?.toString().padStart(11, '0')
       };
     });
     const csv = parser.parse(csvData);
