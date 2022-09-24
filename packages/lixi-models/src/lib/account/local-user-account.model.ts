@@ -7,3 +7,8 @@ export class LocalUserAccount {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export class RenameLocalUserAccountCommand {
+  name: string;
+  address: string;
+}

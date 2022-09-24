@@ -1,9 +1,9 @@
 import { Account, LocalUserAccount } from '@bcpros/lixi-models';
 import { createEntityAdapter, createReducer, isAnyOf, Update } from '@reduxjs/toolkit';
-import { setLocalUserAccount } from './actions';
+import { generateLocalUserAccount, setLocalUserAccount } from './actions';
 import { LocalUserAccountsState } from './state';
 
-export const accountsAdapter = createEntityAdapter<LocalUserAccount>({
+export const localAccountsAdapter = createEntityAdapter<LocalUserAccount>({
   selectId: (account) => account.address,
   sortComparer: (a, b) => {
     if (a === b) return 0;
@@ -12,7 +12,7 @@ export const accountsAdapter = createEntityAdapter<LocalUserAccount>({
   }
 });
 
-const initialState: LocalUserAccountsState = accountsAdapter.getInitialState({
+const initialState: LocalUserAccountsState = localAccountsAdapter.getInitialState({
   selectedId: null,
 });
 
@@ -20,7 +20,7 @@ export const localUserAccountReducer = createReducer(initialState, builder => {
   builder
     .addCase(setLocalUserAccount, (state, action) => {
       const account = action.payload;
-      accountsAdapter.upsertOne(state, account);
+      localAccountsAdapter.upsertOne(state, account);
       state.selectedId = account.address ?? null;
     })
 });

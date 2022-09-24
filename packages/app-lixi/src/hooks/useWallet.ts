@@ -2,9 +2,6 @@ import BCHJS from '@bcpros/xpi-js';
 import { Lixi } from '@bcpros/lixi-models';
 import { useState } from 'react';
 
-type UseWalletResult = {
-}
-
 /* eslint-disable react-hooks/exhaustive-deps */
 const useWallet = (XPI: BCHJS) => {
   const getWalletDetails = async mnemonic => {

@@ -35,24 +35,26 @@ import { setLocalUserAccount } from './actions';
 function* generateLocalUserAccountSaga(action: PayloadAction) {
   const XPI: BCHJS = yield getContext('XPI');
   const Wallet = yield getContext('Wallet');
-  const { address } = await Wallet.getWalletDetails();
+
   const lang = 'english';
   const Bip39128BitMnemonic = XPI.Mnemonic.generate(128, XPI.Mnemonic.wordLists()[lang]);
 
+  const { xAddress } = yield call(Wallet.getWalletDetails, Bip39128BitMnemonic);
+
   const locale: string | undefined = yield select(getCurrentLocale);
+
+  const name = xAddress.slice(12, 17);
 
   const account: LocalUserAccount = {
     mnemonic: Bip39128BitMnemonic,
     language: locale,
-    address: address as string,
+    address: xAddress as string,
+    balance: 0,
+    name,
+    createdAt: new Date(),
+    updatedAt: new Date()
   };
 
-  yield put(setLocalUserAccount(account));
-}
-
-
-function* postAccountSuccessSaga(action: PayloadAction<Account>) {
-  const account = action.payload;
   yield put(
     showToast('success', {
       message: 'Success',
@@ -60,95 +62,59 @@ function* postAccountSuccessSaga(action: PayloadAction<Account>) {
       duration: 5
     })
   );
-  yield put(setAccount(account));
-  yield put(hideLoading(postAccount.type));
+
+  yield put(setLocalUserAccount(account));
 }
 
-function* postAccountFailureSaga(action: PayloadAction<string>) {
-  const message = action.payload ?? intl.get('account.unableToCreateServer');
-  yield put(
-    showToast('error', {
-      message: 'Error',
-      description: message,
-      duration: 5
-    })
-  );
-  yield put(hideLoading(postAccount.type));
-}
 
-function* importAccountSaga(action: PayloadAction<string>) {
+function* importLocalUserAccountSaga(action: PayloadAction<string>) {
   try {
     const mnemonic: string = action.payload;
 
-    // Hash mnemonic and use it as an id in the database
-    const mnemonicUtf8 = new TextEncoder().encode(mnemonic); // encode mnemonic as UTF-8
-    const mnemonicHashBuffer = yield call([crypto.subtle, crypto.subtle.digest], 'SHA-256', mnemonicUtf8); // hash the mnemonic
-    const mnemonicHash = Buffer.from(new Uint8Array(mnemonicHashBuffer)).toString('hex');
+    const Wallet = yield getContext('Wallet');
 
     const locale = yield select(getCurrentLocale);
 
-    const command: ImportAccountCommand = {
-      mnemonic,
-      mnemonicHash,
-      language: locale
-    };
+    const isMnemonicValid = yield call(Wallet.validateMnemonic, mnemonic);
 
-    const data: AccountDto = yield call(accountApi.import, command);
+    if (isMnemonicValid) {
+      const { xAddress } = yield call(Wallet.getWalletDetails, mnemonic);
 
-    // Merge back to action payload
-    const account = { ...data } as Account;
+      const name = xAddress.slice(12, 17);
 
-    let lixies: Lixi[] = [];
+      const account: LocalUserAccount = {
+        mnemonic,
+        language: locale,
+        address: xAddress as string,
+        balance: 0,
+        name,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
 
-    try {
-      const lixiesData = (yield call(lixiApi.getByAccountId, account.id)) as Lixi[];
-      if (lixiesData && lixiesData.length > 0) {
-        for (const item of lixiesData) {
-          // Calculate the claim code
-          const encodedId = numberToBase58(item.id);
-          const claimPart = yield call(aesGcmDecrypt, item.encryptedClaimCode, command.mnemonic);
-          const lixi: Lixi = {
-            ...item,
-            claimCode: claimPart + encodedId
-          };
-          lixies.push(lixi);
-        }
-      }
-    } catch (err) {
-      // The mnemonic is new and currently not existed in the database
+      yield put(
+        showToast('success', {
+          message: 'Success',
+          description: intl.get('account.accountImportSuccess'),
+          duration: 5
+        })
+      );
+
+      yield put(setLocalUserAccount(account));
     }
-    account.mnemonic = mnemonic;
-    yield put(importAccountSuccess({ account: account, lixies: lixies }));
-  } catch (err) {
-    const message = (err as Error).message ?? intl.get('account.unableToImport');
-    yield put(importAccountFailure(message));
+  }
+  catch (err) {
+    const message = action.payload ?? intl.get('account.unableToImport');
+    yield put(
+      showToast('error', {
+        message: 'Error',
+        description: message,
+        duration: 5
+      })
+    );
   }
 }
 
-function* importAccountSuccessSaga(action: PayloadAction<{ account: Account; lixies: Lixi[] }>) {
-  yield put(
-    showToast('success', {
-      message: 'Success',
-      description: intl.get('account.accountImportSuccess'),
-      duration: 5
-    })
-  );
-  const account = yield select(getAccountById(action.payload.account.id));
-  yield put(hideLoading(importAccount.type));
-  yield putResolve(silentLogin(action.payload.account.mnemonic));
-}
-
-function* importAccountFailureSaga(action: PayloadAction<string>) {
-  const message = action.payload ?? intl.get('account.unableToImport');
-  yield put(
-    showToast('error', {
-      message: 'Error',
-      description: message,
-      duration: 5
-    })
-  );
-  yield put(hideLoading(importAccount.type));
-}
 
 function* selectAccountSaga(action: PayloadAction<number>) {
   try {
@@ -165,23 +131,6 @@ function* selectAccountSaga(action: PayloadAction<number>) {
   }
 }
 
-function* selectAccountSuccessSaga(action: PayloadAction<{ account: Account; lixies: Lixi[] }>) {
-  const account = yield select(getAccountById(action.payload.account.id));
-  yield putResolve(silentLogin(account.mnemonic));
-  yield put(hideLoading(selectAccount.type));
-}
-
-function* selectAccountFailureSaga(action: PayloadAction<string>) {
-  const message = action.payload ?? intl.get('account.unableToSelect');
-  yield put(
-    showToast('error', {
-      message: 'Error',
-      description: message,
-      duration: 5
-    })
-  );
-  yield put(hideLoading(selectAccount.type));
-}
 
 function* setAccountSaga(action: PayloadAction<Account>) {
   yield put(setAccountSuccess({ ...action.payload }));
@@ -227,9 +176,9 @@ function* renameAccountFailureSaga(action: PayloadAction<string>) {
   yield put(hideLoading(renameAccount.type));
 }
 
-function* changeAccountLocaleSaga(action: PayloadAction<ChangeAccountLocaleCommand>) {
+function* changeLocalUserAccountLocaleSaga(action: PayloadAction<ChangeAccountLocaleCommand>) {
   try {
-    yield put(showLoading(changeAccountLocale.type));
+    yield put(showLoading(changeLocalUserAccountLocale.type));
     const { id } = action.payload;
     const patchAccountCommand: PatchAccountCommand = {
       id: action.payload.id,
@@ -335,95 +284,9 @@ function* refreshLixiListSilentSaga(action: PayloadAction<number>) {
   } catch (err) { }
 }
 
-function* registerViaEmailNoVerifiedSaga(action: PayloadAction<RegisterViaEmailNoVerifiedCommand>) {
-  yield put(showLoading(registerViaEmailNoVerified.type));
-  try {
-    const data = yield call(accountApi.registerViaEmailNoVerified, action.payload);
-    yield put(registerViaEmailNoVerifiedSuccess(data));
-  } catch (err) {
-    yield put(registerViaEmailNoVerifiedFailure(err));
-  }
-}
 
-function* registerViaEmailSuccessNoVerifiedSaga(action: PayloadAction<any>) {
-  yield put(hideLoading(registerViaEmailNoVerified.type));
-  yield put(
-    showToast('success', {
-      message: 'Success',
-      description: intl.get('account.registerEmailSuccess'),
-      duration: 5
-    })
-  );
-}
-
-function* registerViaEmailFailureNoVerifiedSaga(action: PayloadAction<any>) {
-  const message = action.payload.message ?? intl.get('account.registerEmailFailed');
-  yield put(
-    showToast('error', {
-      message: 'Error',
-      description: message,
-      duration: 5
-    })
-  );
-  yield put(hideLoading(registerViaEmailNoVerified.type));
-}
-
-function* loginViaEmailSaga(action: PayloadAction<LoginViaEmailCommand>) {
-  yield put(showLoading(loginViaEmail.type));
-  try {
-    const data = yield call(accountApi.loginViaEmail, action.payload);
-    yield put(loginViaEmailSuccess(data));
-  } catch (err) {
-    yield put(loginViaEmailFailure(err));
-  }
-}
-
-function* loginViaEmailSuccessSaga(action: PayloadAction<any>) {
-  yield put(hideLoading(loginViaEmail.type));
-  yield put(push(`${action.payload.path}`));
-}
-
-function* loginViaEmailFailureSaga(action: PayloadAction<any>) {
-  const message = action.payload.message ?? intl.get('account.loginFailed');
-  yield put(
-    showToast('error', {
-      message: 'Error',
-      description: message,
-      duration: 5
-    })
-  );
-  yield put(hideLoading(loginViaEmail.type));
-}
-
-function* verifyEmailSaga(action: PayloadAction<LoginViaEmailCommand>) {
-  yield put(showLoading(verifyEmail.type));
-  try {
-    yield call(accountApi.verifyEmail, action.payload.username);
-    yield put(verifyEmailSuccess(action.payload));
-  } catch (err) {
-    yield put(verifyEmailFailure(err));
-  }
-}
-
-function* verifyEmailSuccessSaga(action: PayloadAction<any>) {
-  yield put(hideLoading(verifyEmail.type));
-  yield put(loginViaEmail(action.payload));
-}
-
-function* verifyEmailFailureSaga(action: PayloadAction<any>) {
-  const message = action.payload.message ?? intl.get('account.verifiedEmailFailed');
-  yield put(
-    showToast('error', {
-      message: 'Error',
-      description: message,
-      duration: 5
-    })
-  );
-  yield put(hideLoading(loginViaEmail.type));
-}
-
-function* watchGenerateAccount() {
-  yield takeLatest(generateAccount.type, generateAccountSaga);
+function* watchGenerateLocalUserAccount() {
+  yield takeLatest(generateLocalUseAccount.type, generateLocalUserAccountSaga);
 }
 
 function* watchGetAccount() {
@@ -573,24 +436,6 @@ function* silentLoginSaga(action: PayloadAction<string>) {
   }
 }
 
-function* silentLoginSuccessSaga(action: PayloadAction) {
-  const account = yield select(getSelectedAccount);
-  yield put(
-    fetchNotifications({
-      accountId: account.id,
-      mnemonichHash: account.mnemonicHash
-    })
-  );
-}
-
-function* watchSilentLogin() {
-  yield takeLatest(silentLogin.type, silentLoginSaga);
-}
-
-function* watchSilentLoginSuccess() {
-  yield takeLatest(silentLoginSuccess.type, silentLoginSuccessSaga);
-}
-
 export default function* accountSaga() {
   yield all([
     fork(watchGenerateAccount),
@@ -598,39 +443,6 @@ export default function* accountSaga() {
     fork(watchGetAccountSuccess),
     fork(watchGetAccountFailure),
     fork(watchPostAccount),
-    fork(watchPostAccountSuccess),
-    fork(watchPostAccountFailure),
-    fork(watchImportAccount),
-    fork(watchImportAccountSuccess),
-    fork(watchImportAccountFailure),
-    fork(watchSelectAccount),
-    fork(watchSelectAccountSuccess),
-    fork(watchSelectAccountFailure),
-    fork(watchSetAccount),
-    fork(watchSetAccountSuccess),
-    fork(watchRefreshLixiList),
-    fork(watchRefreshLixiListSuccess),
-    fork(watchRefreshLixiListFailure),
-    fork(watchRefreshLixiListSilent),
-    fork(watchRenameAccount),
-    fork(watchRenameAccountSuccess),
-    fork(watchRenameAccountFailure),
-    fork(watchChangeAccountLocale),
-    fork(watchChangeAccountLocaleSuccessSaga),
-    fork(watchChangeAccountLocaleFailureSaga),
-    fork(watchDeleteAccount),
-    fork(watchDeleteAccountSuccess),
-    fork(watchDeleteAccountFailure),
-    fork(watchSilentLogin),
-    fork(watchSilentLoginSuccess),
-    fork(watchRegisterViaEmailNoVerified),
-    fork(watchRegisterViaEmailNoVerifiedSuccess),
-    fork(watchRegisterViaEmailNoVerifiedFailure),
-    fork(watchloginViaEmail),
-    fork(watchloginViaEmailSuccess),
-    fork(watchloginViaEmailFailure),
-    fork(watchVerifyEmailEmail),
-    fork(watchVerifyEmailSuccess),
-    fork(watchVerifyEmailFailure)
+
   ]);
 }
