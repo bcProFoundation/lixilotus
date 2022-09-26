@@ -86,8 +86,6 @@ const Title = styled.h1`
 `;
 
 const CreateForm = styled(Form)`
-
-
   .ant-form-item-label {
     font-family: 'Roboto';
     font-style: normal;
