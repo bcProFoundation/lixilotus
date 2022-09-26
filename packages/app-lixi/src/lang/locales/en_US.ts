@@ -32,6 +32,9 @@ export default {
   'general.scanQRCode': 'Scan QR code',
   'general.scanQRCodeError':
     'Error in QR scanner. Please ensure your camera is not in use. Due to Apple restrictions on third-party browsers, you must use Safari browser for QR code scanning on an iPhone.',
+  'general.scanBarcode': 'Scan Barcode',
+  'general.scanBarcodeError':
+    'Error in Barcode scanner. Please ensure your camera is not in use. Due to Apple restrictions on third-party browsers, you must use Safari browser for barcode scanning on an iPhone.',
   'general.num': 'Num',
   'general.amount': 'Amount',
 
@@ -97,17 +100,27 @@ export default {
   'account.accountImportSuccess': 'The account has been imported successfully.',
   'account.login': 'Sign In',
   'account.register': 'Register',
+  'account.verify': 'Verify',
   'account.emailRequired': ' Email is required',
   'account.passwordRequired': 'Password is required',
   'account.invalidEmail': 'Invalid email address',
   'account.invalidPassword': 'Invalid password',
   'account.matchPassword': 'Password must match',
   'account.repeatPassword': 'Repeat password',
+  'account.nameRequired': 'Username is required',
+  'account.verificationCodeRequired': 'Verification code is required',
+  'account.verificationCodeSent': 'Verification code has been sent to <b>{email}</b>. Please check your inbox !',
   'account.transactionHistory': 'Transaction History',
+  'account.loginSuccess': 'Login sucessfully!',
+  'account.loginFailed': 'Login failed',
+  'account.registerEmailSuccess': 'Register via email success!',
+  'account.registerEmailFailed': 'Register via email failed',
+  'account.verifiedEmailFailed': 'Email is not verified',
   'account.budget': 'Budget',
   'account.balance': 'Balance',
   'account.country': 'Applying country',
   'account.envelope': 'Image',
+  'account.networkType': 'Network Type',
 
   /* 03.Lixi */
   'lixi.createLixi': 'Add new lixi',

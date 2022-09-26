@@ -32,6 +32,9 @@ export default {
   'general.scanQRCode': 'Quét mã QR',
   'general.scanQRCodeError':
     'Lỗi trong lúc quét mã QR. Vui lòng đảm bảo rằng máy ảnh của bạn đang không sử dụng vào mục đích khác. Do các yêu cầu giới hạn của Apple với các trình duyệt thứ ba, bạn phải sử dụng trình duyệt của Safari để quét mã QR từ điện thoại iPhone.',
+  'general.scanBarcode': 'Scan Barcode',
+  'general.scanBarcodeError':
+    'Lỗi trong lúc quét mã Barcode. Vui lòng đảm bảo rằng máy ảnh của bạn đang không sử dụng vào mục đích khác. Do các yêu cầu giới hạn của Apple với các trình duyệt thứ ba, bạn phải sử dụng trình duyệt của Safari để quét mã barcode từ điện thoại iPhone.',
   'general.num': 'STT',
   'general.amount': 'Số dư',
 
@@ -96,17 +99,27 @@ export default {
   'account.accountChangeLocaleSuccess': 'Ngôn ngữ được cập nhật thành {language}.',
   'account.login': 'Đăng nhập',
   'account.register': 'Đăng ký',
+  'account.verify': 'Xác thực',
   'account.emailRequired': ' Vui lòng nhập email',
   'account.passwordRequired': 'Vui lòng nhập mật khẩu',
   'account.invalidEmail': 'Email không hợp lệ',
   'account.invalidPassword': 'Mật khẩu không hợp lệ',
   'account.matchPassword': 'Mật khẩu phải trùng',
   'account.repeatPassword': 'Vui lòng nhập lại mật khẩu ',
+  'account.nameRequired': 'Vui lòng nhập tên đăng nhập',
+  'account.verificationCodeRequired': 'Vui lòng nhập mã xác thực',
+  'account.verificationCodeSent': 'Mã xác thực đã được gửi tới <b>{email}</b>. Vui lòng kiểm tra email của bạn !',
   'account.transactionHistory': 'Lịch sử giao dịch',
+  'account.loginSuccess': 'Đăng nhập thành công!',
+  'account.loginFailed': 'Đăng nhập thất bại',
+  'account.registerEmailSuccess': 'Đăng kí qua email thành công!',
+  'account.registerEmailFailed': 'Đăng kí qua email thất bại',
+  'account.verifiedEmailFailed': 'Email không hợp lệ',
   'account.budget': 'Ngân sách',
   'account.balance': 'Số dư',
   'account.country': 'Quốc gia áp dụng',
   'account.envelope': 'Hình ảnh',
+  'account.networkType': 'Kiểu kết nối',
 
   /* 03.Lixi */
   'lixi.createLixi': 'Tạo lixi mới',

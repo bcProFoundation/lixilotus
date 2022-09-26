@@ -1,17 +1,4 @@
-import {
-  Collapse,
-  Descriptions,
-  message,
-  Tabs,
-  Input,
-  Button,
-  Row,
-  Col,
-  Modal,
-  Typography,
-  Checkbox,
-  List
-} from 'antd';
+import { Collapse, Descriptions, message, Input, Button, Row, Col, Modal, Typography, Checkbox } from 'antd';
 import { saveAs } from 'file-saver';
 import { toPng } from 'html-to-image';
 import * as _ from 'lodash';
@@ -31,7 +18,6 @@ import {
 import { AppContext } from 'src/store/store';
 import { showToast } from 'src/store/toast/actions';
 import styled from 'styled-components';
-
 import {
   CaretRightOutlined,
   CopyOutlined,
@@ -56,13 +42,13 @@ import { currency } from '@components/Common/Ticker';
 import { getSelectedAccount } from '@store/account/selectors';
 import { getAllSubLixies, getLoadMoreSubLixiesStartId } from '@store/lixi/selectors';
 import { fromSmallestDenomination, toSmallestDenomination } from '@utils/cashMethods';
-
 import { ClaimType } from '../../../../lixi-models/src/lib/lixi';
 import lixiLogo from '../../assets/images/lixi_logo.svg';
 import { exportSubLixies } from '../../store/lixi/actions';
 import VirtualTable from './SubLixiListScroll';
 import { numberToBase58 } from '@utils/encryptionMethods';
 import LixiList from './LixiList';
+import { WrapperPage } from '@components/Settings';
 
 type CopiedProps = {
   style?: React.CSSProperties;
@@ -85,17 +71,14 @@ const Copied = styled.div<CopiedProps>`
     padding: 20px 0;
   }
 `;
-
 const StyledSearchLixi = styled(Input)`
   border-radius: 5px;
 `;
-
 const StyledFilterButton = styled(Button)`
   background: white;
   border-color: black;
   border-radius: 5px;
 `;
-
 const StyledFilterModal = styled(Modal)`
   position: absolute;
   top: auto;
@@ -140,7 +123,6 @@ const StyledCol = styled(Col)`
 
 const { Panel } = Collapse;
 const { Text } = Typography;
-
 const Lixi: React.FC = () => {
   const dispatch = useAppDispatch();
   const ContextValue = React.useContext(AppContext);
@@ -452,66 +434,67 @@ const Lixi: React.FC = () => {
 
   return (
     <>
-      <Row>
-        <Col span={21}>
-          <StyledSearchLixi placeholder="Search lixi" suffix={<SearchOutlined />} />
-        </Col>
-        <Col span={2} offset={1}>
-          <StyledFilterButton onClick={showFilterModal} type="primary" icon={<FilterOutlined />}></StyledFilterButton>
-          <StyledFilterModal
-            title="Filter"
-            width={'100%'}
-            visible={isModalVisible}
-            onOk={() => setModalVisible(false)}
-            okText={'Apply'}
-            onCancel={() => setModalVisible(false)}
-            cancelText={'Reset'}
-            maskClosable={true}
-            closable={false}
-          >
-            <Row>
-              <StyledCol span={24}>
-                <Text type="secondary">Type of code</Text>
-              </StyledCol>
-              {typeOfCodeOptions.map((item, index) => {
-                return (
-                  <StyledCol span={24}>
-                    <Checkbox>{item}</Checkbox>
-                  </StyledCol>
-                );
-              })}
-              <StyledCol span={24}>
-                <Text type="secondary">Value per redeem</Text>
-              </StyledCol>
-              {valuePerRedeemOptions.map((item, index) => {
-                return index !== 2 ? (
-                  <StyledCol span={12}>
-                    <Checkbox>{item}</Checkbox>
-                  </StyledCol>
-                ) : (
-                  <StyledCol span={24}>
-                    <Checkbox>{item}</Checkbox>
-                  </StyledCol>
-                );
-              })}
-              <StyledCol span={24}>
-                <Text type="secondary">Status</Text>
-              </StyledCol>
-              {statusOptions.map((item, index) => {
-                return (
-                  <StyledCol span={12}>
-                    <Checkbox>{item}</Checkbox>
-                  </StyledCol>
-                );
-              })}
-            </Row>
-          </StyledFilterModal>
-        </Col>
-      </Row>
+      <WrapperPage>
+        <Row>
+          <Col span={21}>
+            <StyledSearchLixi placeholder="Search lixi" suffix={<SearchOutlined />} />
+          </Col>
+          <Col span={2} offset={1}>
+            <StyledFilterButton onClick={showFilterModal} type="primary" icon={<FilterOutlined />}></StyledFilterButton>
+            <StyledFilterModal
+              title="Filter"
+              width={'100%'}
+              visible={isModalVisible}
+              onOk={() => setModalVisible(false)}
+              okText={'Apply'}
+              onCancel={() => setModalVisible(false)}
+              cancelText={'Reset'}
+              maskClosable={true}
+              closable={false}
+            >
+              <Row>
+                <StyledCol span={24}>
+                  <Text type="secondary">Type of code</Text>
+                </StyledCol>
+                {typeOfCodeOptions.map((item, index) => {
+                  return (
+                    <StyledCol span={24}>
+                      <Checkbox>{item}</Checkbox>
+                    </StyledCol>
+                  );
+                })}
+                <StyledCol span={24}>
+                  <Text type="secondary">Value per redeem</Text>
+                </StyledCol>
+                {valuePerRedeemOptions.map((item, index) => {
+                  return index !== 2 ? (
+                    <StyledCol span={12}>
+                      <Checkbox>{item}</Checkbox>
+                    </StyledCol>
+                  ) : (
+                    <StyledCol span={24}>
+                      <Checkbox>{item}</Checkbox>
+                    </StyledCol>
+                  );
+                })}
+                <StyledCol span={24}>
+                  <Text type="secondary">Status</Text>
+                </StyledCol>
+                {statusOptions.map((item, index) => {
+                  return (
+                    <StyledCol span={12}>
+                      <Checkbox>{item}</Checkbox>
+                    </StyledCol>
+                  );
+                })}
+              </Row>
+            </StyledFilterModal>
+          </Col>
+        </Row>
 
-      {lixies.length > 0 && <LixiList lixies={lixies} />}
+        {lixies.length > 0 && <LixiList lixies={lixies} />}
+      </WrapperPage>
     </>
   );
 };
-
 export default Lixi;

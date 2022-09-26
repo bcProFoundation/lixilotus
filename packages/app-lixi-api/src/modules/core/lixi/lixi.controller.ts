@@ -53,7 +53,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { createReadStream } from 'fs';
 import { join } from 'path';
-import { JwtAuthGuard } from 'src/modules/auth/jwtauth.guard';
+import { JwtAuthGuard } from 'src/modules/auth/guards/jwtauth.guard';
 import { FastifyRequest, FastifyReply } from 'fastify';
 import moment from 'moment';
 import { extname } from 'path';
@@ -927,6 +927,43 @@ export class LixiController {
       } else {
         const unableToDownloadLixi = await i18n.t('lixi.messages.unableToDownloadLixi');
         const error = new VError.WError(err as Error, unableToDownloadLixi);
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  }
+
+  @Post('check-valid')
+  async checkLixiBarcode(@Body() body: any, @I18n() i18n: I18nContext) {
+    try {
+      const { lixiBarcode } = body;
+
+      const id = parseInt(lixiBarcode.slice(0, -1), 10);
+
+      const lixi = await this.prisma.lixi.findUnique({
+        where: {
+          id: _.toSafeInteger(id)
+        }
+      });
+
+      if (!lixi) {
+        const lixiNotExist = await i18n.t('lixi.messages.lixiNotExist');
+        throw new VError(lixiNotExist);
+      }
+
+      if (lixi.isClaimed) {
+        const lixiClaimed = await i18n.t('lixi.messages.lixiClaimed');
+        throw new VError(lixiClaimed);
+      }
+
+      const lixiValid = await i18n.t('lixi.messages.lixiValid');
+
+      return lixiValid;
+    } catch (err) {
+      if (err instanceof VError) {
+        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      } else {
+        const unableToFindLixi = await i18n.t('lixi.messages.couldNotFindLixi');
+        const error = new VError.WError(err as Error, unableToFindLixi);
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }

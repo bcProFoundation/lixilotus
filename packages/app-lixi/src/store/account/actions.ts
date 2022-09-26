@@ -5,7 +5,9 @@ import {
   RenameAccountCommand,
   Lixi,
   ChangeAccountLocaleCommand,
-  Upload
+  Upload,
+  RegisterViaEmailNoVerifiedCommand,
+  LoginViaEmailCommand
 } from '@bcpros/lixi-models';
 import { createAction } from '@reduxjs/toolkit';
 
@@ -49,3 +51,14 @@ export const silentLoginSuccess = createAction('account/silentLoginSuccess');
 export const silentLoginFailure = createAction('account/silentLoginFailure');
 export const setUpload = createAction<{ upload: Upload; type: any }>('account/setUpload');
 export const removeUpload = createAction<{ type: any }>('account/removeUpload');
+export const loginViaEmail = createAction<LoginViaEmailCommand>('account/loginViaEmail');
+export const loginViaEmailSuccess = createAction<any>('account/loginViaEmailSuccess');
+export const loginViaEmailFailure = createAction<any>('account/loginViaEmailFailure');
+export const registerViaEmailNoVerified = createAction<RegisterViaEmailNoVerifiedCommand>(
+  'account/registerViaEmailNoVerified'
+);
+export const registerViaEmailNoVerifiedSuccess = createAction<any>('account/registerViaEmailNoVerifiedSuccess');
+export const registerViaEmailNoVerifiedFailure = createAction<any>('account/registerViaEmailNoVerifiedFailure');
+export const verifyEmail = createAction<LoginViaEmailCommand>('account/verifyEmail');
+export const verifyEmailSuccess = createAction<any>('account/verifyEmailSuccess');
+export const verifyEmailFailure = createAction<any>('account/verifyEmailFailure');
