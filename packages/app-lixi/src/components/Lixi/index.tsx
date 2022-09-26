@@ -11,7 +11,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import intl from 'react-intl-universal';
 import { getAllClaims } from 'src/store/claim/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { fetchMoreSubLixies, getLixi, refreshLixi, setLixiBalance } from 'src/store/lixi/actions';
+import { fetchMoreSubLixies, getLixi, refreshLixi, renameLixi, setLixiBalance } from 'src/store/lixi/actions';
 import {
   getHasMoreSubLixies, getLixiesBySelectedAccount, getSelectedLixi, getSelectedLixiId
 } from 'src/store/lixi/selectors';
@@ -32,7 +32,7 @@ import QRCode, { FormattedWalletAddress } from '@bcpros/lixi-components/componen
 import { StyledCollapse } from '@bcpros/lixi-components/components/Common/StyledCollapse';
 import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
 import { countries } from '@bcpros/lixi-models/constants/countries';
-import { LixiType, LotteryAddress } from '@bcpros/lixi-models/lib/lixi';
+import { LixiType, LotteryAddress, RenameLixiCommand } from '@bcpros/lixi-models/lib/lixi';
 import ClaimList from '@components/Claim/ClaimList';
 import { currency } from '@components/Common/Ticker';
 import { getSelectedAccount } from '@store/account/selectors';
@@ -45,6 +45,8 @@ import lixiLogo from '../../assets/images/lixi_logo.svg';
 import { exportSubLixies } from '../../store/lixi/actions';
 import LixiList from './LixiList';
 import VirtualTable from './SubLixiListScroll';
+import { RenameLixiModalProps } from './RenameLixiModal';
+import { openModal } from '@store/modal/actions';
 
 type CopiedProps = {
   style?: React.CSSProperties;
@@ -423,19 +425,12 @@ const Lixi: React.FC = () => {
   };
 
   const columns =
-    selectedLixi && selectedLixi.numberLixiPerPackage
-      ? [
-        { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
-        { title: 'code', dataIndex: 'claimCode', width: 150 },
-        { title: 'Value redeem (XPI)', dataIndex: 'amount', width: 85 },
-        { title: intl.get('lixi.package'), dataIndex: 'packageId' }
-      ]
-      : [
-        { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
-        { title: 'code', dataIndex: 'claimCode' },
-        { title: 'Value redeem (XPI)', dataIndex: 'amount' },
-        { title: 'Statusses', dataIndex: 'isClaimed' },
-      ];
+    [
+      { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
+      { title: 'code', dataIndex: 'claimCode' },
+      { title: 'Value redeem (XPI)', dataIndex: 'amount' },
+      { title: 'Statusses', dataIndex: 'isClaimed' },
+    ];
   const prefixClaimCode = 'lixi';
 
   const subLixiesDataSource = subLixies.map((item, i) => {
@@ -469,6 +464,21 @@ const Lixi: React.FC = () => {
       default:
         return <CaretRightOutlined rotate={isPanelOpen ? 90 : 0} />;
     }
+  };
+
+  const showPopulatedRenameLixiModal = e => {
+    e.domEvent;
+    const command: RenameLixiCommand = {
+      id: selectedLixi.id,
+      name: selectedLixi.name,
+      mnemonic: selectedAccount?.mnemonic,
+      mnemonicHash: selectedAccount?.mnemonicHash
+    };
+    const renameLixiModalProps: RenameLixiModalProps = {
+      lixi: selectedLixi,
+      onOkAction: renameLixi(command)
+    };
+    dispatch(openModal('RenameLixiModal', renameLixiModalProps));
   };
 
   const detailLixi = () => {
@@ -631,7 +641,6 @@ const Lixi: React.FC = () => {
             </InfoCard>
           </>
         );
-
       case ClaimType.OneTime:
         return (
           <>
@@ -754,6 +763,7 @@ const Lixi: React.FC = () => {
                       {intl.get('lixi.name')}
                     </Text>
 
+                    {/* Name */}
                     <Text
                       style={{
                         position: 'absolute',
@@ -763,13 +773,13 @@ const Lixi: React.FC = () => {
                         alignItems: 'center',
                       }}
                     >
-                      {selectedLixi?.name ?? ''} &nbsp; <EditOutlined />
+                      {selectedLixi?.name ?? ''} &nbsp; <EditOutlined onClick={e => showPopulatedRenameLixiModal(e)} />
                     </Text>
 
+                    {/* Status */}
                     <Text style={{
                       position: 'absolute',
                       color: '#FFFFFF',
-                      background: '#E37100',
                       padding: '4px 8px',
                       borderRadius: '8px',
                       alignItems: 'center',
@@ -779,6 +789,7 @@ const Lixi: React.FC = () => {
                       fontSize: '14px',
                       top: '68px',
                       left: '119px',
+                      background: '#BA1A1A'
                     }}>
                       {selectedLixi.status}
                     </Text>
