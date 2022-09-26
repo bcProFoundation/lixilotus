@@ -120,7 +120,7 @@ declare module 'styled-components' {
       item: {
         icon: string;
         title: string;
-      },
+      };
       background: string;
     };
   }

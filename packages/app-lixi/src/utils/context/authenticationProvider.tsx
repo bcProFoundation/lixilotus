@@ -8,7 +8,5 @@ export const AuthenticationProvider = ({ children }) => {
   const authentication = useWebAuthentication();
   // const authentication = {} as any;
 
-  return <AuthenticationContext.Provider value={authentication}>
-    {children}
-  </AuthenticationContext.Provider>;
+  return <AuthenticationContext.Provider value={authentication}>{children}</AuthenticationContext.Provider>;
 };
