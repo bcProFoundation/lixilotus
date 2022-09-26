@@ -13,17 +13,20 @@ import {
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import { Account } from '@bcpros/lixi-models';
+import ScanBarcode from '@bcpros/lixi-components/components/Common/ScanBarcode';
 import { getAllAccounts, getSelectedAccount } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { openModal } from '@store/modal/actions';
 import { fromSmallestDenomination } from '@utils/cashMethods';
-import { Layout, Space } from 'antd';
+import { Layout, message, Space } from 'antd';
 import classNames from 'classnames';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Logged } from './SideBarRanking';
+import axiosClient from '@utils/axiosClient';
+import intl from 'react-intl-universal';
 
 const { Sider } = Layout;
 
@@ -183,6 +186,23 @@ const SidebarShortcut = () => {
   const [isCollapse, setIsCollapse] = useState(false);
   const router = useRouter();
   const selectedKey = router.pathname ?? '';
+  let pastScan;
+
+  const onScan = async (result: string) => {
+    if (pastScan !== result) {
+      pastScan = result;
+
+      await axiosClient
+        .post('api/lixies/check-valid', { lixiBarcode: result })
+        .then(res => {
+          message.success(res.data);
+        })
+        .catch(err => {
+          const { response } = err;
+          message.error(response.data.message ? response.data.message : intl.get('lixi.unableGetLixi'));
+        });
+    }
+  };
 
   return (
     <ShortcutSideBar>
@@ -252,6 +272,7 @@ const SidebarShortcut = () => {
             key="lotusia-shop"
             href={'https://lotusia.shop/'}
           />
+          <ScanBarcode loadWithCameraOpen={false} onScan={onScan} id={Date.now().toString()} />
         </div>
       </CointainerAccess>
       <CointainerWallet>
