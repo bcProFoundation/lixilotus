@@ -1,37 +1,23 @@
 import { createSelector } from 'reselect';
 import { RootState } from '../store';
-import { accountsAdapter } from './reducer';
+import { localAccountsAdapter } from './reducer';
 import { LocalUserAccountsState } from './state';
 
-const { selectAll, selectEntities, selectIds, selectTotal } = accountsAdapter.getSelectors();
+const { selectAll, selectEntities, selectIds, selectTotal } = localAccountsAdapter.getSelectors();
 
-export const getAllAccounts = createSelector((state: RootState) => state.accounts, selectAll);
+export const getAllLocalUserAccounts = createSelector((state: RootState) => state.accounts, selectAll);
 
-export const getAllAccountsEntities = createSelector((state: RootState) => state.accounts, selectEntities);
+export const getAllLocalUserAccountsEntities = createSelector((state: RootState) => state.accounts, selectEntities);
 
-export const getSelectedAccountId = createSelector(
-  (state: RootState) => state.accounts,
-  (accounts: AccountsState) => accounts.selectedId
+export const getSelectedLocalUserAccountId = createSelector(
+  (state: RootState) => state.localAccounts,
+  (accounts: LocalUserAccountsState) => accounts.selectedId
 );
 
 export const getSelectedAccount = createSelector(
-  (state: RootState) => state.accounts,
-  (accounts: AccountsState) => (accounts.selectedId ? accounts.entities[accounts.selectedId] : undefined)
+  (state: RootState) => state.localAccounts,
+  (accounts: LocalUserAccountsState) => (accounts.selectedId ? accounts.entities[accounts.selectedId] : undefined)
 );
 
-export const getAccountById = (id: number) => createSelector(getAllAccountsEntities, accounts => accounts?.[id]);
-
-export const getEnvelopeUpload = createSelector(
-  (state: RootState) => state.accounts,
-  (accounts: AccountsState) => accounts.envelopeUpload
-);
-
-export const getPageCoverUpload = createSelector(
-  (state: RootState) => state.accounts,
-  (accounts: AccountsState) => accounts.pageCoverUpload
-);
-
-export const getPageAvatarUpload = createSelector(
-  (state: RootState) => state.accounts,
-  (accounts: AccountsState) => accounts.pageAvatarUpload
-);
+export const getAccountById = (id: string) =>
+  createSelector(getAllLocalUserAccountsEntities, accounts => accounts?.[id]);

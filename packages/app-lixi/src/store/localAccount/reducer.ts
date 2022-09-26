@@ -4,7 +4,7 @@ import { generateLocalUserAccount, setLocalUserAccount } from './actions';
 import { LocalUserAccountsState } from './state';
 
 export const localAccountsAdapter = createEntityAdapter<LocalUserAccount>({
-  selectId: (account) => account.address,
+  selectId: account => account.address,
   sortComparer: (a, b) => {
     if (a === b) return 0;
     else if (a > b) return 1;
@@ -13,14 +13,13 @@ export const localAccountsAdapter = createEntityAdapter<LocalUserAccount>({
 });
 
 const initialState: LocalUserAccountsState = localAccountsAdapter.getInitialState({
-  selectedId: null,
+  selectedId: null
 });
 
 export const localUserAccountReducer = createReducer(initialState, builder => {
-  builder
-    .addCase(setLocalUserAccount, (state, action) => {
-      const account = action.payload;
-      localAccountsAdapter.upsertOne(state, account);
-      state.selectedId = account.address ?? null;
-    })
+  builder.addCase(setLocalUserAccount, (state, action) => {
+    const account = action.payload;
+    localAccountsAdapter.upsertOne(state, account);
+    state.selectedId = account.address ?? null;
+  });
 });

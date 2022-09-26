@@ -241,6 +241,9 @@ export default {
 
   /* 05.Settings */
   'settings.languages': 'Languages',
+  'settings.general': 'General Settings',
+  'settings.lockApp': 'Lock App',
+  'settings.notSupported': 'Not Supported',
   'settings.backupAccount': 'Backup your account',
   'settings.manageAccounts': 'Manage Accounts',
   'settings.newAccount': 'New Account',

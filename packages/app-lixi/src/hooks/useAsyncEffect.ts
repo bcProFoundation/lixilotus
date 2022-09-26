@@ -1,7 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
-const noop = () => { };
+const noop = () => {};
 
 type GeneratorReturnValueType = void | (() => void);
 
@@ -13,10 +13,7 @@ function* cast<T>(input: Promise<T>): Generator<Promise<T>, T> {
 
 export const useAsyncEffect = (
   createGenerator: (
-    setCancelHandler: (
-      onCancel?: null | (() => void),
-      onCancelError?: null | ((err: Error) => void)
-    ) => void,
+    setCancelHandler: (onCancel?: null | (() => void), onCancelError?: null | ((err: Error) => void)) => void,
     cast: <T>(promise: Promise<T>) => Generator<Promise<T>, T>
   ) => Iterator<unknown, GeneratorReturnValueType>,
   deps?: React.DependencyList
@@ -31,13 +28,10 @@ export const useAsyncEffect = (
     let isCanceled = false;
     let onCancel = noop;
     let onCancelError = noop as (err: Error) => void;
-    const generator = generatorRef.current(
-      (cancelHandler, cancelErrorHandler) => {
-        onCancel = cancelHandler || noop;
-        onCancelError = cancelErrorHandler || noop;
-      },
-      cast
-    );
+    const generator = generatorRef.current((cancelHandler, cancelErrorHandler) => {
+      onCancel = cancelHandler || noop;
+      onCancelError = cancelErrorHandler || noop;
+    }, cast);
     let cleanupHandler = noop;
 
     const run = async () => {
@@ -47,9 +41,7 @@ export const useAsyncEffect = (
 
       do {
         try {
-          result = !lastError
-            ? generator.next(result.value)
-            : generator.throw(lastError);
+          result = !lastError ? generator.next(result.value) : generator.throw(lastError);
           lastError = undefined;
 
           if (result.value && result.value.then) {

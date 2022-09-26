@@ -242,6 +242,9 @@ export default {
 
   /* 05.Settings */
   'settings.languages': 'Ngôn ngữ',
+  'settings.general': 'Thiết lập chung',
+  'settings.lockApp': 'Khóa ứng dụng',
+  'settings.notSupported': 'Không hỗ trợ',
   'settings.backupAccount': 'Sao lưu tài khoản của bạn',
   'settings.manageAccounts': 'Quản lý tài khoản',
   'settings.newAccount': 'Tạo tài khoản mới',

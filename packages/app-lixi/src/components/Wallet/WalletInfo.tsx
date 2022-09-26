@@ -12,7 +12,7 @@ import { Form, Input } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { AppContext } from 'src/store/store';
+import { WalletContext } from 'src/store/store';
 import styled from 'styled-components';
 import { Account, RenameAccountCommand } from '@bcpros/lixi-models';
 import { RenameAccountModalProps } from '@components/Settings/RenameAccountModal';
@@ -104,7 +104,7 @@ const urlFiatRate = 'https://aws-dev.abcpay.cash/bws/api/v3/fiatrates/xpi';
 
 const WalletInfoComponent: React.FC = () => {
   const isServer = () => typeof window === 'undefined';
-  const ContextValue = React.useContext(AppContext);
+  const ContextValue = React.useContext(WalletContext);
   const { XPI, Wallet } = ContextValue;
   const [formData, setFormData] = useState({
     dirty: true,

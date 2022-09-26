@@ -94,6 +94,7 @@ declare module 'styled-components' {
         backgroundImage: string;
         color: string;
         hoverShadow: string;
+        disabledOverlay: string;
       };
       secondary: {
         background: string;
@@ -113,6 +114,13 @@ declare module 'styled-components' {
     };
     footerBackground: string;
     tab: {
+      background: string;
+    };
+    generalSettings: {
+      item: {
+        icon: string;
+        title: string;
+      },
       background: string;
     };
   }

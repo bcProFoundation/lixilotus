@@ -1,20 +1,16 @@
 import '../styles/style.less';
 
 // import '../styles/globals.css';
-import App, { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import React, { createContext, FC } from 'react';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import { END } from 'redux-saga';
 
 import MainLayout from '@components/Layout/MainLayout';
 
+import { AuthenticationProvider, WalletProvider } from '@utils/context';
 import { ConnectedRouter } from 'connected-next-router';
-import { AppContext, SagaStore, Wallet, wrapper, XPI } from '../store/store';
-import { loadGetInitialProps } from 'next/dist/shared/lib/utils';
-import { AuthenticationContext } from 'src/context/authenticationProvider';
+import { wrapper } from '../store/store';
 
 const PersistGateServer = (props: any) => {
   return props.children;
@@ -36,20 +32,25 @@ const LixiApp = ({ Component, ...rest }) => {
 
   return (
     <Provider store={store}>
-      <AppContext.Provider value={{ XPI, Wallet }}>
-        <Layout className="lixi-app-layout">
-          <Head>
-            <title>LixiLotus</title>
-            <meta name="viewport" content="width=device-width, initial-scale=1" />
-            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
-          </Head>
-          <ConnectedRouter>
-            <PersistGate persistor={store.__persistor} loading={<div>Loading</div>}>
-              <Component {...props.pageProps} router={router} />
-            </PersistGate>
-          </ConnectedRouter>
-        </Layout>
-      </AppContext.Provider>
+      <WalletProvider>
+        <AuthenticationProvider>
+          <Layout className="lixi-app-layout">
+            <Head>
+              <title>LixiLotus</title>
+              <meta name="viewport" content="width=device-width, initial-scale=1" />
+              <link
+                rel="stylesheet"
+                href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+              />
+            </Head>
+            <ConnectedRouter>
+              <PersistGate persistor={store.__persistor} loading={<div>Loading</div>}>
+                <Component {...props.pageProps} router={router} />
+              </PersistGate>
+            </ConnectedRouter>
+          </Layout>
+        </AuthenticationProvider>
+      </WalletProvider>
     </Provider>
   );
 };
