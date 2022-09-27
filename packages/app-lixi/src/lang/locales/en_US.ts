@@ -37,6 +37,8 @@ export default {
     'Error in Barcode scanner. Please ensure your camera is not in use. Due to Apple restrictions on third-party browsers, you must use Safari browser for barcode scanning on an iPhone.',
   'general.num': 'Num',
   'general.amount': 'Amount',
+  'general.chooseCamera': 'Please choose camera',
+  'general.chooseCameraTip': 'Try switching camera when its not working properly',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
@@ -254,6 +256,9 @@ export default {
 
   /* 05.Settings */
   'settings.languages': 'Languages',
+  'settings.general': 'General Settings',
+  'settings.lockApp': 'Lock App',
+  'settings.notSupported': 'Not Supported',
   'settings.backupAccount': 'Backup your account',
   'settings.manageAccounts': 'Manage Accounts',
   'settings.newAccount': 'New Account',

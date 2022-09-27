@@ -15,7 +15,7 @@ import { fetchMoreSubLixies, getLixi, refreshLixi, renameLixi, setLixiBalance } 
 import {
   getHasMoreSubLixies, getLixiesBySelectedAccount, getSelectedLixi, getSelectedLixiId
 } from 'src/store/lixi/selectors';
-import { AppContext } from 'src/store/store';
+import { WalletContext } from 'src/store/store';
 import { showToast } from 'src/store/toast/actions';
 import styled from 'styled-components';
 
@@ -187,7 +187,7 @@ const StyledQRCode = styled.div`
 const { Panel } = Collapse;
 const Lixi: React.FC = () => {
   const dispatch = useAppDispatch();
-  const ContextValue = React.useContext(AppContext);
+  const ContextValue = React.useContext(WalletContext);
   const { XPI, Wallet } = ContextValue;
   const selectedAccount = useAppSelector(getSelectedAccount);
   const selectedLixiId = useAppSelector(getSelectedLixiId);

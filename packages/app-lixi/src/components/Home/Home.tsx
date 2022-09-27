@@ -12,7 +12,7 @@ import { getSelectedAccount } from 'src/store/account/selectors';
 import { getEnvelopes } from 'src/store/envelope/actions';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getLixiesBySelectedAccount } from 'src/store/lixi/selectors';
-import { AppContext } from 'src/store/store';
+import { WalletContext } from 'src/store/store';
 import styled from 'styled-components';
 import WalletInfoComponent from '@components/Wallet/WalletInfo';
 import Link from 'next/link';
@@ -43,7 +43,7 @@ const StyledTabs = styled(Tabs)`
 `;
 
 const Home: React.FC = () => {
-  const ContextValue = React.useContext(AppContext);
+  const ContextValue = React.useContext(WalletContext);
 
   const dispatch = useAppDispatch();
   const lixies = useAppSelector(getLixiesBySelectedAccount);
