@@ -873,13 +873,12 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
     <>
       <Modal
         className='custom-create-lixi-modal'
-        title={'Create Lixi Form'}
+        title={intl.get('lixi.createLixi')}
         visible={true}
         onCancel={handleOnCancel}
         footer={null}
         style={{ top: '0 !important' }}
       >
-        <Title>{intl.get('lixi.createLixi')}</Title>
         <CreateForm layout="vertical">
           <Form.Item label={intl.get('lixi.claimType')}>
             <Radio.Group value={claimType} onChange={handleChangeClaimType}>

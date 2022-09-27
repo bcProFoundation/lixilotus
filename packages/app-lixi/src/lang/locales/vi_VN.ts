@@ -123,6 +123,7 @@ export default {
 
   /* 03.Lixi */
   'lixi.createLixi': 'Tạo lixi mới',
+  'lixi.sectionCreateLixi': 'Tạo lixi mới',
   'lixi.sub-lixi': 'Bao lì xì phụ',
   'lixi.dividedBy': 'Chia cho',
   'lixi.fundGiveFixed': 'Loại Lì xì: Cố định',
