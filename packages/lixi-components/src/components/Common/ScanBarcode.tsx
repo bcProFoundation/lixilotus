@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
-import { Alert, Select, Modal, Space } from 'antd';
+import { Alert, Select, Modal } from 'antd';
 import { BrowserCodeReader } from '@zxing/browser';
 import { BrowserMultiFormatReader, DecodeHintType, BarcodeFormat } from '@zxing/library';
-import { ThemedQrcodeOutlined } from './CustomIcons';
 import { Result } from '@zxing/library';
 import _ from 'lodash';
 import { InfoCircleTwoTone } from '@ant-design/icons';
@@ -109,13 +108,17 @@ const ScanBarcode = (props: ScanBarcodeProps) => {
   return (
     <>
       <StyledScanQRCode {...otherProps} onClick={() => setVisible(!visible)}>
-        <ThemedQrcodeOutlined />
+        <span>{intl.get('general.scanBarcode')}</span>
       </StyledScanQRCode>
       <StyledModal
         title={
           <>
             <h3>{intl.get('general.scanBarcode')}</h3>
-            <Select id="videoSourceSelect" onChange={onChangeVideoSource} placeholder="Please choose camera">
+            <Select
+              id="videoSourceSelect"
+              onChange={onChangeVideoSource}
+              placeholder={intl.get('general.chooseCamera')}
+            >
               {videoInputDevices &&
                 videoInputDevices.map(input => {
                   return <Select.Option value={input.deviceId}>{input.label}</Select.Option>;
@@ -123,7 +126,7 @@ const ScanBarcode = (props: ScanBarcodeProps) => {
             </Select>
             <div>
               <InfoCircleTwoTone style={{ fontSize: '13px', marginRight: '5px' }} />
-              <span style={{ fontSize: '13px' }}>Try switching camera when its not working properly</span>
+              <span style={{ fontSize: '13px' }}>{intl.get('general.chooseCameraTip')}</span>
             </div>
           </>
         }
