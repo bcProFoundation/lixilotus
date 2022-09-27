@@ -21,6 +21,7 @@ import SidebarRanking from '@containers/Sidebar/SideBarRanking';
 import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
 import { Header } from 'antd/lib/layout/layout';
 import { navBarHeaderList } from '@bcpros/lixi-models/constants';
+import DeviceProtectableComponentWrapper from '@components/Authentication/DeviceProtectableComponentWrapper';
 const { Content } = Layout;
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;

@@ -46,7 +46,7 @@ import { ClaimType, GenerateLixiCommand, LixiType, LotteryAddress, NetworkType }
 import CountrySelectDropdown from '@components/Common/CountrySelectDropdown';
 import EnvelopeCarousel from '@components/Common/EnvelopeCarousel';
 import { getEnvelopeUpload } from '@store/account/selectors';
-import { AppContext } from '@store/store';
+import { WalletContext } from '@store/store';
 import { isValidAmountInput } from '@utils/validation';
 import TextArea from 'antd/lib/input/TextArea';
 import { CreateLixiConfirmationModalProps } from './CreateLixiConfirmationModal';
@@ -245,7 +245,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
   const envelopeUpload = useAppSelector(getEnvelopeUpload);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const { XPI, Wallet } = React.useContext(AppContext);
+  const { XPI, Wallet } = React.useContext(WalletContext);
 
   const showModal = () => {
     setIsModalVisible(true);

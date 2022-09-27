@@ -86,7 +86,8 @@ export const theme: DefaultTheme = {
     primary: {
       backgroundImage: 'linear-gradient(270deg,#6f2dbd 0%, #CD0BC3 100%)',
       color: '#fff',
-      hoverShadow: '0px 3px 10px -5px rgba(0, 0, 0, 0.75)'
+      hoverShadow: '0px 3px 10px -5px rgba(0, 0, 0, 0.75)',
+      disabledOverlay: 'rgba(255, 255, 255, 0.5)'
     },
     secondary: {
       background: '#e9eaed',
@@ -107,6 +108,13 @@ export const theme: DefaultTheme = {
   footerBackground: '#fff',
   tab: {
     background: '#ffffff'
+  },
+  generalSettings: {
+    item: {
+      icon: '#949494',
+      title: '#949494'
+    },
+    background: '#fff'
   }
 };
 
