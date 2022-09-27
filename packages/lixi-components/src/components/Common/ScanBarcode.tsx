@@ -108,13 +108,17 @@ const ScanBarcode = (props: ScanBarcodeProps) => {
   return (
     <>
       <StyledScanQRCode {...otherProps} onClick={() => setVisible(!visible)}>
-        <span>Scan Barcode</span>
+        <span>{intl.get('general.scanBarcode')}</span>
       </StyledScanQRCode>
       <StyledModal
         title={
           <>
             <h3>{intl.get('general.scanBarcode')}</h3>
-            <Select id="videoSourceSelect" onChange={onChangeVideoSource} placeholder="Please choose camera">
+            <Select
+              id="videoSourceSelect"
+              onChange={onChangeVideoSource}
+              placeholder={intl.get('general.chooseCamera')}
+            >
               {videoInputDevices &&
                 videoInputDevices.map(input => {
                   return <Select.Option value={input.deviceId}>{input.label}</Select.Option>;
@@ -122,7 +126,7 @@ const ScanBarcode = (props: ScanBarcodeProps) => {
             </Select>
             <div>
               <InfoCircleTwoTone style={{ fontSize: '13px', marginRight: '5px' }} />
-              <span style={{ fontSize: '13px' }}>Try switching camera when its not working properly</span>
+              <span style={{ fontSize: '13px' }}>{intl.get('general.chooseCameraTip')}</span>
             </div>
           </>
         }
