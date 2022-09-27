@@ -229,8 +229,9 @@ export default {
   'lixi.balance': 'Số dư',
   'lixi.valuePerClaim': 'Giá trị mỗi lần nhận',
   'lixi.validity': 'Hiệu lực',
-
   'lixi.overview': 'Tổng quan',
+  'lixi.archive': 'Lưu trữ',
+  'lixi.withdraw': 'Rút tiền',
 
   /* 04.Claim */
   'claim.claim': 'Nhận Lì xì',

@@ -230,8 +230,9 @@ export default {
   'lixi.balance': 'Balance',
   'lixi.valuePerClaim': 'Value per claim',
   'lixi.validity': 'Validity',
-
   'lixi.overview': 'Overview',
+  'lixi.archive': 'Archive',
+  'lixi.withdraw': 'Withdraw',
 
   /* 04.Claim */
   'claim.claim': 'Claim',

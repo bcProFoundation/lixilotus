@@ -88,7 +88,7 @@ const InfoCard = styled.div`
   box-sizing: border-box;
   position: inherit;
   width: 100%;
-  height: 392px;
+  height: fit-content;
   background: #ffffff;
   border: 1px solid #e0e0e0;
   border-radius: 24px;
@@ -147,11 +147,29 @@ const Text = styled.p`
   color: #333333;
 `;
 
+const StyleButton = styled(Button)`
+  color: #9E2A9C;
+  background: #ffffff;
+  margin-right: 20px;
+  font-weight: 500;
+
+  :active {
+    background: #ffffff !important;
+  }
+
+  :hover {
+    background: #ffffff !important;
+  }
+
+  :focus {
+    background: #ffffff !important;
+  }
+`
+
 const StyledQRCode = styled.div`
   flex: 1 auto;
   text-align: right;
   opacity: 0.7;
-  padding: 20px 20px;
   #borderedQRCode {
     @media (max-width: 768px) {
       border-radius: 18px;
@@ -481,6 +499,59 @@ const Lixi: React.FC = () => {
     dispatch(openModal('RenameLixiModal', renameLixiModalProps));
   };
 
+  const infoLixi = () => {
+    return (
+      <Descriptions
+        column={1}
+        bordered
+        size='small'
+        style={{
+          paddingTop: '1%',
+          color: 'rgb(23,23,31)'
+        }}
+      >
+        <Descriptions.Item key="desc.avatar"
+          label={
+            <img
+              src={selectedLixi.envelope ? selectedLixi.envelope.image : '/images/lixi_logo.svg'}
+              style={{
+                borderRadius: '50%',
+                width: '80px',
+                height: '80px',
+                display: 'flex'
+              }}
+            />
+          }
+          style={{ borderTopLeftRadius: '24px' }}
+        >
+          <Text style={{ color: 'rgba(30, 26, 29, 0.38)' }}>
+            {intl.get('lixi.name')}
+          </Text>
+          <br />
+          <Text style={{ alignItems: 'center' }}>
+            {selectedLixi?.name ?? ''} &nbsp; <EditOutlined onClick={e => showPopulatedRenameLixiModal(e)} />
+          </Text>
+          <br />
+          <Text style={{
+            color: '#FFFFFF',
+            padding: '4px 8px',
+            borderRadius: '8px',
+            alignItems: 'center',
+            fontWeight: '400',
+            fontSize: '14px',
+            background: '#BA1A1A'
+          }}>
+            {selectedLixi.status}
+          </Text>
+        </Descriptions.Item>
+        <Descriptions.Item key="desc.button">
+          <StyleButton shape="round" >{intl.get('lixi.archive')}</StyleButton>
+          <StyleButton shape="round">{intl.get('lixi.withdraw')}</StyleButton>
+        </Descriptions.Item>
+      </Descriptions>
+    );
+  }
+
   const detailLixi = () => {
     switch (selectedLixi.claimType) {
       case ClaimType.Single:
@@ -490,7 +561,7 @@ const Lixi: React.FC = () => {
             bordered
             size='small'
             style={{
-              padding: '0 0 20px 0',
+              paddingBottom: '1%',
               color: 'rgb(23,23,31)'
             }}
           >
@@ -506,7 +577,7 @@ const Lixi: React.FC = () => {
             <Descriptions.Item label={intl.get('lixi.validity')} key="desc.validity">
               {formatValidityDate()}
             </Descriptions.Item>
-            <Descriptions.Item label={intl.get('lixi.validCountries')} key="desc.country">
+            <Descriptions.Item label={intl.get('lixi.validCountries')} key="desc.country" style={{ borderBottomLeftRadius: '24px' }}>
               {countries.find(country => country.id === selectedLixi?.country)?.name ?? intl.get('lixi.allCountries')}
             </Descriptions.Item>
           </Descriptions>
@@ -552,92 +623,62 @@ const Lixi: React.FC = () => {
           <>
             <LabelHeader>{intl.get('lixi.detail')} &nbsp; <QuestionCircleOutlined /></LabelHeader>
             <InfoCard style={{ height: 'fit-content' }}>
-              <div>
-                <Row>
-                  {/* Balance - USD príce */}
-                  <Col span={18} push={3}>
-                    <Text
-                      style={{
-                        fontSize: '14px',
-                        position: 'absolute',
-                        width: '90%',
-                        left: '119px',
-                        top: '16px',
-                        color: 'rgba(30, 26, 29, 0.38)'
-                      }}
-                    >
-                      {intl.get('lixi.balance')}
-                    </Text>
+              <Descriptions column={1} bordered size='small'
+                style={{
+                  paddingTop: '1%',
+                  color: 'rgb(23,23,31)'
+                }}
+              >
+                <Descriptions.Item key="desc.balance"
+                  label={
+                    <>
+                      <StyledQRCode>
+                        <QRCode address={selectedAccount?.address} isAccountPage={true} />
+                      </StyledQRCode>
+                      <FormattedWalletAddress address={selectedAccount?.address} isAccountPage={true} />
+                    </>
 
-                    <Text
-                      style={{
-                        fontSize: '22px',
-                        position: 'absolute',
-                        width: '90%',
-                        left: '119px',
-                        top: '52px',
-                        color: '#1E1A1D'
-                      }}
-                    >
-                      {fromSmallestDenomination(selectedLixi?.balance) ?? 0} {currency.ticker}
-                    </Text>
-
-                    {/* USD price */}
-                  </Col>
-
-                  {/* QR code */}
-                  <Col span={6} pull={18}>
-                    <StyledQRCode>
-                      <QRCode address={selectedAccount?.address} isAccountPage={true} />
-                    </StyledQRCode>
-                    <FormattedWalletAddress address={selectedAccount?.address} isAccountPage={true}></FormattedWalletAddress>
-                  </Col>
-                </Row>
-              </div>
+                  }
+                >
+                  <Text style={{ fontSize: '14px', color: 'rgba(30, 26, 29, 0.38)' }}>
+                    {intl.get('lixi.balance')}
+                  </Text>
+                  <br />
+                  <Text style={{ fontSize: '22px', color: '#1E1A1D' }}>
+                    {fromSmallestDenomination(selectedLixi?.balance) ?? 0} {currency.ticker}
+                  </Text>
+                </Descriptions.Item>
+              </Descriptions>
             </InfoCard>
 
             <LabelHeader>Claim code </LabelHeader>
             <InfoCard style={{ height: 'fit-content' }}>
-              <div>
-                <Row>
-                  {/* Balance - USD príce */}
-                  <Col span={18} push={3}>
-                    <Text
-                      style={{
-                        fontSize: '14px',
-                        position: 'absolute',
-                        width: '90%',
-                        left: '119px',
-                        top: '16px',
-                        color: 'rgba(30, 26, 29, 0.38)'
-                      }}
-                    >
-                      Claimed
-                    </Text>
+              <Descriptions column={1} bordered size='small'
+                style={{
+                  paddingTop: '1%',
+                  color: 'rgb(23,23,31)'
+                }}
+              >
+                <Descriptions.Item key="desc.balance"
+                  label={
+                    <>
+                      <StyledQRCode>
+                        <QRCode address={selectedLixi.claimCode} isAccountPage={true} />
+                      </StyledQRCode>
+                      <FormattedWalletAddress address={selectedLixi.address} isAccountPage={true} />
+                    </>
 
-                    <Text
-                      style={{
-                        fontSize: '22px',
-                        position: 'absolute',
-                        width: '90%',
-                        left: '119px',
-                        top: '52px',
-                        color: '#1E1A1D'
-                      }}
-                    >
-                      {fromSmallestDenomination(selectedLixi?.totalClaim) ?? 0} {currency.ticker}
-                    </Text>
-                  </Col>
-
-                  {/* QR code */}
-                  <Col span={6} pull={18}>
-                    <StyledQRCode>
-                      <QRCode address={selectedLixi.claimCode} isAccountPage={true} />
-                    </StyledQRCode>
-                    <FormattedWalletAddress address={selectedLixi.address} isAccountPage={true}></FormattedWalletAddress>
-                  </Col>
-                </Row>
-              </div>
+                  }
+                >
+                  <Text style={{ fontSize: '14px', color: 'rgba(30, 26, 29, 0.38)' }}>
+                    Claimed
+                  </Text>
+                  <br />
+                  <Text style={{ fontSize: '22px', color: '#1E1A1D' }}>
+                    {fromSmallestDenomination(selectedLixi?.totalClaim) ?? 0} {currency.ticker}
+                  </Text>
+                </Descriptions.Item>
+              </Descriptions>
             </InfoCard>
           </>
         );
@@ -740,81 +781,7 @@ const Lixi: React.FC = () => {
             <LabelHeader>{intl.get('lixi.detail')}</LabelHeader>
             <InfoCard>
               {/* Image, name, status lixi */}
-              <div style={{
-                height: '100px',
-                fontFamily: 'Roboto',
-                fontStyle: 'normal',
-                fontWeight: '400',
-                fontSize: '16px',
-                lineHeight: '24px',
-              }}>
-                <Row>
-                  {/* name + status lixi */}
-                  <Col span={18} push={1}>
-                    <Text
-                      style={{
-                        position: 'absolute',
-                        width: '90%',
-                        left: '119px',
-                        top: '16px',
-                        color: 'rgba(30, 26, 29, 0.38)'
-                      }}
-                    >
-                      {intl.get('lixi.name')}
-                    </Text>
-
-                    {/* Name */}
-                    <Text
-                      style={{
-                        position: 'absolute',
-                        width: '90%',
-                        left: '119px',
-                        top: '40px',
-                        alignItems: 'center',
-                      }}
-                    >
-                      {selectedLixi?.name ?? ''} &nbsp; <EditOutlined onClick={e => showPopulatedRenameLixiModal(e)} />
-                    </Text>
-
-                    {/* Status */}
-                    <Text style={{
-                      position: 'absolute',
-                      color: '#FFFFFF',
-                      padding: '4px 8px',
-                      borderRadius: '8px',
-                      alignItems: 'center',
-                      fontFamily: 'Roboto',
-                      fontStyle: 'normal',
-                      fontWeight: '400',
-                      fontSize: '14px',
-                      top: '68px',
-                      left: '119px',
-                      background: '#BA1A1A'
-                    }}>
-                      {selectedLixi.status}
-                    </Text>
-                  </Col>
-
-                  {/* img lixi */}
-                  <Col span={4} pull={18}>
-                    <img
-                      src={selectedLixi.envelope ? selectedLixi.envelope.image : '/images/lixi_logo.svg'}
-                      style={{
-                        position: 'absolute',
-                        borderRadius: '50%',
-                        width: '80px',
-                        height: '80px',
-                        left: '16px',
-                        top: '16px',
-                        display: 'flex'
-                      }}
-                    />
-                  </Col>
-                </Row>
-              </div>
-
-              {/* archive + withdraw */}
-
+              {infoLixi()}
 
               {/* Detail */}
               {detailLixi()}
