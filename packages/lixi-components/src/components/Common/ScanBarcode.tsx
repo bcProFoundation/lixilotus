@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
-import { Alert, Select, Modal, Space } from 'antd';
+import { Alert, Select, Modal } from 'antd';
 import { BrowserCodeReader } from '@zxing/browser';
 import { BrowserMultiFormatReader, DecodeHintType, BarcodeFormat } from '@zxing/library';
-import { ThemedQrcodeOutlined } from './CustomIcons';
 import { Result } from '@zxing/library';
 import _ from 'lodash';
 import { InfoCircleTwoTone } from '@ant-design/icons';
@@ -109,7 +108,7 @@ const ScanBarcode = (props: ScanBarcodeProps) => {
   return (
     <>
       <StyledScanQRCode {...otherProps} onClick={() => setVisible(!visible)}>
-        <ThemedQrcodeOutlined />
+        <span>Scan Barcode</span>
       </StyledScanQRCode>
       <StyledModal
         title={
