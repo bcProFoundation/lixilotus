@@ -11,9 +11,10 @@ import {
   SendOutlined,
   SettingOutlined,
   ShopOutlined,
-  WalletOutlined
+  WalletOutlined,
+  BarcodeOutlined
 } from '@ant-design/icons';
-import { CointainerAccess, ItemAccess } from './SideBarShortcut';
+import { CointainerAccess, ItemAccess, ItemAccessBarcode } from './SideBarShortcut';
 import { useRouter } from 'next/router';
 import ScanBarcode from '@bcpros/lixi-components/components/Common/ScanBarcode';
 import axiosClient from '@utils/axiosClient';
@@ -115,7 +116,12 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
             key="lotusia-shop"
             href={'https://lotusia.shop/'}
           />
-          <ScanBarcode loadWithCameraOpen={false} onScan={onScan} id={Date.now().toString()} />
+          <ItemAccessBarcode
+            icon={BarcodeOutlined}
+            key="scan-barcode"
+            active={false}
+            component={<ScanBarcode loadWithCameraOpen={false} onScan={onScan} id={Date.now().toString()} />}
+          />
         </StyledCointainerAccess>
       </div>
     </>

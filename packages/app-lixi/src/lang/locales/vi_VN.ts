@@ -32,11 +32,13 @@ export default {
   'general.scanQRCode': 'Quét mã QR',
   'general.scanQRCodeError':
     'Lỗi trong lúc quét mã QR. Vui lòng đảm bảo rằng máy ảnh của bạn đang không sử dụng vào mục đích khác. Do các yêu cầu giới hạn của Apple với các trình duyệt thứ ba, bạn phải sử dụng trình duyệt của Safari để quét mã QR từ điện thoại iPhone.',
-  'general.scanBarcode': 'Scan Barcode',
+  'general.scanBarcode': 'Quét mã vạch',
   'general.scanBarcodeError':
     'Lỗi trong lúc quét mã Barcode. Vui lòng đảm bảo rằng máy ảnh của bạn đang không sử dụng vào mục đích khác. Do các yêu cầu giới hạn của Apple với các trình duyệt thứ ba, bạn phải sử dụng trình duyệt của Safari để quét mã barcode từ điện thoại iPhone.',
   'general.num': 'STT',
   'general.amount': 'Số dư',
+  'general.chooseCamera': 'Chọn camera',
+  'general.chooseCameraTip': 'Thử đổi camera nếu quét không thành công',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',
@@ -245,6 +247,9 @@ export default {
 
   /* 05.Settings */
   'settings.languages': 'Ngôn ngữ',
+  'settings.general': 'Thiết lập chung',
+  'settings.lockApp': 'Khóa ứng dụng',
+  'settings.notSupported': 'Không hỗ trợ',
   'settings.backupAccount': 'Sao lưu tài khoản của bạn',
   'settings.manageAccounts': 'Quản lý tài khoản',
   'settings.newAccount': 'Tạo tài khoản mới',

@@ -8,7 +8,8 @@ import {
   SendOutlined,
   SettingOutlined,
   ShopOutlined,
-  WalletOutlined
+  WalletOutlined,
+  BarcodeOutlined
 } from '@ant-design/icons';
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
@@ -48,6 +49,25 @@ export const ItemAccess = ({
       <Space className={'item-access'}>
         <div className={classNames('icon-item', { 'active-item-access': active })}>{React.createElement(icon)}</div>
         <span className="text-item">{text}</span>
+      </Space>
+    </a>
+  </Link>
+);
+
+export const ItemAccessBarcode = ({
+  icon,
+  component,
+  active
+}: {
+  icon: React.FC;
+  component: JSX.Element;
+  active: boolean;
+}) => (
+  <Link href="">
+    <a>
+      <Space className={'item-access'}>
+        <div className={classNames('icon-item', { 'active-item-access': active })}>{React.createElement(icon)}</div>
+        <span className="text-item">{component}</span>
       </Space>
     </a>
   </Link>
@@ -272,7 +292,12 @@ const SidebarShortcut = () => {
             key="lotusia-shop"
             href={'https://lotusia.shop/'}
           />
-          <ScanBarcode loadWithCameraOpen={false} onScan={onScan} id={Date.now().toString()} />
+          <ItemAccessBarcode
+            icon={BarcodeOutlined}
+            key="scan-barcode"
+            active={false}
+            component={<ScanBarcode loadWithCameraOpen={false} onScan={onScan} id={Date.now().toString()} />}
+          />
         </div>
       </CointainerAccess>
       <CointainerWallet>
