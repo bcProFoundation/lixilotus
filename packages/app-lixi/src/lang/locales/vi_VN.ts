@@ -117,13 +117,15 @@ export default {
   'account.registerEmailSuccess': 'Đăng kí qua email thành công!',
   'account.registerEmailFailed': 'Đăng kí qua email thất bại',
   'account.verifiedEmailFailed': 'Email không hợp lệ',
-  'lixi.budget': 'Ngân sách',
-  'lixi.balance': 'Số dư',
+  'account.budget': 'Ngân sách',
+  'account.balance': 'Số dư',
   'account.country': 'Quốc gia áp dụng',
   'account.envelope': 'Hình ảnh',
+  'account.networkType': 'Kiểu kết nối',
 
   /* 03.Lixi */
   'lixi.createLixi': 'Tạo lixi mới',
+  'lixi.sectionCreateLixi': 'Tạo lixi mới',
   'lixi.sub-lixi': 'Bao lì xì phụ',
   'lixi.dividedBy': 'Chia cho',
   'lixi.fundGiveFixed': 'Loại Lì xì: Cố định',
