@@ -136,10 +136,10 @@ const LixiList = ({ lixies }: LixiListProps) => {
             onOk={() => setModalVisible(false)}
             onCancel={() => setModalVisible(false)}
             footer={[
-              <Button className='btnReset' onClick={() => setModalVisible(false)}>
+              <Button className="btnReset" onClick={() => setModalVisible(false)}>
                 Reset
               </Button>,
-              <Button className='btnApply' onClick={handleApplyFilter}>
+              <Button className="btnApply" onClick={handleApplyFilter}>
                 Apply
               </Button>
             ]}

@@ -871,7 +871,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
   return (
     <>
       <Modal
-        className='custom-create-lixi-modal'
+        className="custom-create-lixi-modal"
         title={intl.get('lixi.createLixi')}
         visible={true}
         onCancel={handleOnCancel}
@@ -1064,9 +1064,9 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
                       !newEnvelopeId && !envelopeUpload
                         ? '/images/lotus_logo.png'
                         : (newEnvelopeId &&
-                          !envelopeUpload &&
-                          baseUrl + 'api/' + envelopes.find(item => item.id === newEnvelopeId).thumbnail) ||
-                        (envelopeUpload && envelopeUpload.url)
+                            !envelopeUpload &&
+                            baseUrl + 'api/' + envelopes.find(item => item.id === newEnvelopeId).thumbnail) ||
+                          (envelopeUpload && envelopeUpload.url)
                     }
                     style={{
                       position: 'absolute',
