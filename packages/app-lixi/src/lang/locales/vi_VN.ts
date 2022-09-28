@@ -233,6 +233,7 @@ export default {
   'lixi.validity': 'Hiệu lực',
   'lixi.overview': 'Tổng quan',
   'lixi.archive': 'Lưu trữ',
+  'lixi.unarchive': 'Hủy lưu trữ',
   'lixi.withdraw': 'Rút tiền',
 
   /* 04.Claim */

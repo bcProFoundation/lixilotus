@@ -11,7 +11,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import intl from 'react-intl-universal';
 import { getAllClaims } from 'src/store/claim/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { fetchMoreSubLixies, getLixi, refreshLixi, renameLixi, setLixiBalance } from 'src/store/lixi/actions';
+import { archiveLixi, fetchMoreSubLixies, getLixi, refreshLixi, renameLixi, setLixiBalance, unarchiveLixi, withdrawLixi } from 'src/store/lixi/actions';
 import {
   getHasMoreSubLixies, getLixiesBySelectedAccount, getSelectedLixi, getSelectedLixiId
 } from 'src/store/lixi/selectors';
@@ -32,7 +32,7 @@ import QRCode, { FormattedWalletAddress } from '@bcpros/lixi-components/componen
 import { StyledCollapse } from '@bcpros/lixi-components/components/Common/StyledCollapse';
 import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
 import { countries } from '@bcpros/lixi-models/constants/countries';
-import { LixiType, LotteryAddress, RenameLixiCommand } from '@bcpros/lixi-models/lib/lixi';
+import { ArchiveLixiCommand, LixiType, LotteryAddress, RenameLixiCommand, UnarchiveLixiCommand, WithdrawLixiCommand } from '@bcpros/lixi-models/lib/lixi';
 import ClaimList from '@components/Claim/ClaimList';
 import { currency } from '@components/Common/Ticker';
 import { getSelectedAccount } from '@store/account/selectors';
@@ -499,6 +499,24 @@ const Lixi: React.FC = () => {
     dispatch(openModal('RenameLixiModal', renameLixiModalProps));
   };
 
+  const postLixiData = {
+    id: selectedLixi.id,
+    mnemonic: selectedAccount?.mnemonic,
+    mnemonicHash: selectedAccount?.mnemonicHash
+  };
+
+  const archiveButton = () => {
+    if (selectedLixi.status == 'active') {
+      return dispatch(archiveLixi(postLixiData as ArchiveLixiCommand));
+    } else {
+      return dispatch(unarchiveLixi(postLixiData as UnarchiveLixiCommand));
+    }
+  };
+
+  const withdrawButton = () => {
+    return dispatch(withdrawLixi(postLixiData as WithdrawLixiCommand));
+  };
+
   const infoLixi = () => {
     return (
       <Descriptions
@@ -545,8 +563,8 @@ const Lixi: React.FC = () => {
           </Text>
         </Descriptions.Item>
         <Descriptions.Item key="desc.button">
-          <StyleButton shape="round" >{intl.get('lixi.archive')}</StyleButton>
-          <StyleButton shape="round">{intl.get('lixi.withdraw')}</StyleButton>
+          <StyleButton shape="round" onClick={archiveButton}>{selectedLixi.status == 'active' ? intl.get('lixi.archive') : intl.get('lixi.unarchive')}</StyleButton>
+          <StyleButton shape="round" onClick={withdrawButton}>{intl.get('lixi.withdraw')}</StyleButton>
         </Descriptions.Item>
       </Descriptions>
     );
@@ -637,8 +655,8 @@ const Lixi: React.FC = () => {
                       </StyledQRCode>
                       <FormattedWalletAddress address={selectedAccount?.address} isAccountPage={true} />
                     </>
-
                   }
+                  style={{ borderTopLeftRadius: '24px', borderBottomLeftRadius: '24px' }}
                 >
                   <Text style={{ fontSize: '14px', color: 'rgba(30, 26, 29, 0.38)' }}>
                     {intl.get('lixi.balance')}
@@ -665,10 +683,11 @@ const Lixi: React.FC = () => {
                       <StyledQRCode>
                         <QRCode address={selectedLixi.claimCode} isAccountPage={true} />
                       </StyledQRCode>
-                      <FormattedWalletAddress address={selectedLixi.address} isAccountPage={true} />
+                      {selectedLixi.claimCode}
+                      {/* <FormattedWalletAddress address={selectedLixi.claimCode} isAccountPage={true} /> */}
                     </>
-
                   }
+                  style={{ borderTopLeftRadius: '24px', borderBottomLeftRadius: '24px' }}
                 >
                   <Text style={{ fontSize: '14px', color: 'rgba(30, 26, 29, 0.38)' }}>
                     Claimed

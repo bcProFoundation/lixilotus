@@ -234,6 +234,7 @@ export default {
   'lixi.validity': 'Validity',
   'lixi.overview': 'Overview',
   'lixi.archive': 'Archive',
+  'lixi.unarchive': 'Unarchive',
   'lixi.withdraw': 'Withdraw',
 
   /* 04.Claim */
