@@ -1,30 +1,39 @@
-import { Alert, Button, Collapse, Form, Input, Spin } from 'antd';
-import intl from 'react-intl-universal';
+import { Alert, Button, Collapse, Form, Input, Spin, Switch, Tag } from 'antd';
 import * as _ from 'lodash';
 import React, { useEffect, useState } from 'react';
+import intl from 'react-intl-universal';
 import { deleteAccount, generateAccount, importAccount, renameAccount, selectAccount } from 'src/store/account/actions';
 import { getAllAccounts, getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
 import { openModal } from 'src/store/modal/actions';
-import { AppContext } from 'src/store/store';
+import { WalletContext } from 'src/store/store';
 import styled from 'styled-components';
-
-import { CashLoadingIcon, ThemedDollarOutlined } from '@bcpros/lixi-components/components/Common/CustomIcons';
-import { Account, DeleteAccountCommand, RenameAccountCommand } from '@bcpros/lixi-models';
-import { CopyOutlined, ImportOutlined, LockOutlined, PlusSquareOutlined, WalletOutlined } from '@ant-design/icons';
+import {
+  CheckOutlined,
+  CloseOutlined,
+  CopyOutlined,
+  ExclamationCircleFilled,
+  ImportOutlined,
+  LockFilled,
+  LockOutlined,
+  PlusSquareOutlined,
+  WalletOutlined
+} from '@ant-design/icons';
 import Edit from '@assets/icons/edit.svg';
 import Trashcan from '@assets/icons/trashcan.svg';
+import { CashLoadingIcon, ThemedSettingOutlined } from '@bcpros/lixi-components/components/Common/CustomIcons';
+import { Account, DeleteAccountCommand, RenameAccountCommand } from '@bcpros/lixi-models';
 import { AntdFormWrapper, LanguageSelectDropdown } from '@components/Common/EnhancedInputs';
 import PrimaryButton, { SecondaryButton, SmartButton } from '@components/Common/PrimaryButton';
 import { StyledCollapse } from '@components/Common/StyledCollapse';
 import { StyledSpacer } from '@components/Common/StyledSpacer';
-import { DeleteAccountModalProps } from './DeleteAccountModal';
-import { RenameAccountModalProps } from './RenameAccountModal';
 import { setInitIntlStatus, updateLocale } from '@store/settings/actions';
 import { getCurrentLocale } from '@store/settings/selectors';
+import { AuthenticationContext } from '@utils/context';
 import getOauth2URL from '@utils/oauth2';
-import axios from 'axios';
+import { DeleteAccountModalProps } from './DeleteAccountModal';
+import { RenameAccountModalProps } from './RenameAccountModal';
 
 const { Panel } = Collapse;
 
@@ -148,8 +157,30 @@ export const WrapperPage = styled.div`
   box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
 `;
 
+const GeneralSettingsItem = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  .title {
+    color: ${props => props.theme.generalSettings.item.title};
+  }
+  .anticon {
+    color: ${props => props.theme.generalSettings.item.icon};
+  }
+  .ant-switch {
+    background-color: ${props => props.theme.generalSettings.item.icon};
+    .anticon {
+      color: ${props => props.theme.generalSettings.background};
+    }
+  }
+  .ant-switch-checked {
+    background-color: ${props => props.theme.primary};
+  }
+`;
+
 const Settings: React.FC = () => {
-  const ContextValue = React.useContext(AppContext);
+  const ContextValue = React.useContext(WalletContext);
+  const authenticationContextValue = React.useContext(AuthenticationContext);
   const { Wallet } = ContextValue;
 
   const isLoading = useAppSelector(getIsGlobalLoading);
@@ -213,6 +244,22 @@ const Settings: React.FC = () => {
     dispatch(setInitIntlStatus(false));
     dispatch(updateLocale(locales));
   }
+
+  const handleAppLockToggle = (checked, e) => {
+    if (checked) {
+      // if there is an existing credential, that means user has registered
+      // simply turn on the Authentication Required flag
+      if (authenticationContextValue.credentialId) {
+        authenticationContextValue.turnOnAuthentication();
+      } else {
+        // there is no existing credential, that means user has not registered
+        // user need to register
+        authenticationContextValue.signUp();
+      }
+    } else {
+      authenticationContextValue.turnOffAuthentication();
+    }
+  };
 
   async function submit() {
     setFormData({
@@ -347,7 +394,33 @@ const Settings: React.FC = () => {
                 />
               </AntdFormWrapper>
               <StyledSpacer />
-              <Button href={getOauth2URL()}>Login</Button>
+              <h2>
+                <ThemedSettingOutlined /> {intl.get('settings.general')}
+              </h2>
+              <GeneralSettingsItem>
+                <div className="title">
+                  <LockFilled /> {intl.get('settings.lockApp')}
+                </div>
+                {authenticationContextValue ? (
+                  <Switch
+                    size="small"
+                    checkedChildren={<CheckOutlined />}
+                    unCheckedChildren={<CloseOutlined />}
+                    checked={
+                      authenticationContextValue.isAuthenticationRequired && authenticationContextValue.credentialId
+                        ? true
+                        : false
+                    }
+                    // checked={false}
+                    onChange={handleAppLockToggle}
+                  />
+                ) : (
+                  <Tag color="warning" icon={<ExclamationCircleFilled />}>
+                    {intl.get('settings.notSupported')}
+                  </Tag>
+                )}
+              </GeneralSettingsItem>
+              <StyledSpacer />[<Button href={getOauth2URL()}>Login</Button>
             </>
           )}
         </Spin>

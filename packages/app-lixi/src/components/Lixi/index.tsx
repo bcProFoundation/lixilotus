@@ -9,8 +9,13 @@ import intl from 'react-intl-universal';
 import { getAllClaims } from 'src/store/claim/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { fetchMoreSubLixies, getLixi, refreshLixi, setLixiBalance } from 'src/store/lixi/actions';
-import { getHasMoreSubLixies, getSelectedLixi, getSelectedLixiId } from 'src/store/lixi/selectors';
-import { AppContext } from 'src/store/store';
+import {
+  getHasMoreSubLixies,
+  getLixiesBySelectedAccount,
+  getSelectedLixi,
+  getSelectedLixiId
+} from 'src/store/lixi/selectors';
+import { WalletContext } from 'src/store/store';
 import { showToast } from 'src/store/toast/actions';
 import styled from 'styled-components';
 import {
@@ -65,7 +70,7 @@ const Copied = styled.div<CopiedProps>`
 const { Panel } = Collapse;
 const Lixi: React.FC = () => {
   const dispatch = useAppDispatch();
-  const ContextValue = React.useContext(AppContext);
+  const ContextValue = React.useContext(WalletContext);
   const { XPI, Wallet } = ContextValue;
   const selectedAccount = useAppSelector(getSelectedAccount);
   const selectedLixiId = useAppSelector(getSelectedLixiId);

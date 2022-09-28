@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import { Alert, Modal } from 'antd';
@@ -43,13 +43,12 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
   //const [mobileError, setMobileError] = useState(false);
   //const [mobileErrorMsg, setMobileErrorMsg] = useState(false);
   const [activeCodeReader, setActiveCodeReader] = useState<BrowserQRCodeReader | null>(null);
+  const [controls, setControls] = useState<any>(null);
 
-  const teardownCodeReader = codeReader => {
+  const teardownCodeReader = (codeReader: BrowserQRCodeReader) => {
     if (codeReader !== null) {
-      codeReader.reset && codeReader.reset();
-      codeReader.stop && codeReader.stop();
-      codeReader = null;
-      setActiveCodeReader(codeReader);
+      controls.stop();
+      setActiveCodeReader(null);
     }
   };
 
@@ -94,7 +93,6 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
           // you can also use controls API in this scope like the controls
           // returned from the method.
           if (!_.isNil(content) && content.getText()) {
-            controls.stop();
             const result = parseContent(content.getText());
             // stop scanning and fill form if it's an address
             if (result.type === 'address') {
@@ -111,6 +109,7 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
           }
         }
       );
+      setControls(controls);
     } catch (err) {
       console.log(intl.get('general.QRScannerError'));
       console.log(err);
@@ -121,7 +120,7 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!visible) {
       setError(false);
       // Stop the camera if user closes modal
@@ -143,6 +142,7 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
         title={intl.get('general.scanQRCode')}
         visible={visible}
         onCancel={() => setVisible(false)}
+        destroyOnClose={true}
         footer={null}
       >
         {visible ? (
@@ -158,7 +158,7 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
                 />
               </>
             ) : (
-              <QRPreview id={`test-area-qr-code-webcam-${id}`}></QRPreview>
+              <QRPreview id={`test-area-qr-code-webcam-${id}`} />
             )}
           </div>
         ) : null}

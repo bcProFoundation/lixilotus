@@ -6,7 +6,7 @@ import { ExclamationCircleOutlined, ImportOutlined, LockOutlined, PlusSquareOutl
 import { Form, Input, Modal } from 'antd';
 import { useState } from 'react';
 import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
-import { AppContext } from 'src/store/store';
+import { WalletContext } from 'src/store/store';
 import { useAppDispatch } from 'src/store/hooks';
 import { generateAccount, importAccount } from 'src/store/account/actions';
 
@@ -49,7 +49,7 @@ export const Onboarding = styled.div`
 `;
 
 const OnboardingComponent: React.FC = () => {
-  const ContextValue = React.useContext(AppContext);
+  const ContextValue = React.useContext(WalletContext);
   const { /*createWallet*/ Wallet } = ContextValue;
   const [formData, setFormData] = useState({
     dirty: true,

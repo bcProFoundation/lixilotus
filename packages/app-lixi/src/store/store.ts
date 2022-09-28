@@ -1,16 +1,16 @@
-import { configureStore, ThunkAction, Action, Store, AnyAction, combineReducers } from '@reduxjs/toolkit';
-import createSagaMiddleware, { Task } from '@redux-saga/core';
-import { createContext } from 'react';
-import { PersistConfig, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
-import rootSaga from './rootSaga';
-import useXPI from '@hooks/useXPI';
-import useWallet from '@hooks/useWallet';
-import rootReducer, { serverReducer } from './rootReducer';
 import BCHJS from '@bcpros/xpi-js';
-import { createRouterMiddleware, initialRouterState, routerReducer } from 'connected-next-router';
-import { Context, createWrapper, HYDRATE } from 'next-redux-wrapper';
+import useWallet from '@hooks/useWallet';
+import useXPI from '@hooks/useXPI';
+import createSagaMiddleware, { Task } from '@redux-saga/core';
+import { Action, configureStore, Store, ThunkAction } from '@reduxjs/toolkit';
+import { createRouterMiddleware, initialRouterState } from 'connected-next-router';
+import { Context, createWrapper } from 'next-redux-wrapper';
 import { Router } from 'next/router';
+import { createContext } from 'react';
+import { FLUSH, PAUSE, PERSIST, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
 import { api as pagesApi } from './page/pages.generated';
+import rootReducer, { serverReducer } from './rootReducer';
+import rootSaga from './rootSaga';
 
 export interface SagaStore extends Store {
   __sagaTask: Task;
@@ -20,7 +20,7 @@ const { getXPI } = useXPI();
 export const XPI: BCHJS = getXPI(0);
 export const Wallet = useWallet(XPI);
 
-export const AppContext = createContext({ XPI, Wallet });
+export const WalletContext = createContext({ XPI, Wallet });
 
 const makeStore = (context: Context) => {
   const isServer = typeof window === 'undefined';
