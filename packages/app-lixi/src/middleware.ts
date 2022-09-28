@@ -3,8 +3,22 @@ import type { NextRequest } from 'next/server';
 import { getIronSession } from 'iron-session/edge';
 import { sessionOptions } from './models/session';
 
+function shouldExclude(request: NextRequest) {
+  const path = request.nextUrl.pathname;
+
+  return (
+    path.startsWith('/api') || //  exclude all API routes
+    path.startsWith('/static') || // exclude static files
+    path.includes('.') // exclude all files in the public folder
+  );
+}
+
 export const middleware = async (req: NextRequest) => {
   const res = NextResponse.next();
+
+  if (shouldExclude(req)) {
+    return res;
+  }
 
   const { pathname } = req.nextUrl;
 
@@ -12,13 +26,14 @@ export const middleware = async (req: NextRequest) => {
 
   const { localUser } = session;
 
-  if (pathname == '/onboarding' && !localUser) {
-    return NextResponse.next();
+  if (pathname == '/onboarding' && session && (localUser == undefined || localUser == null)) {
+    return res;
   }
 
-  if (localUser?.isLocalLoggedIn !== true) {
-    // unauthorized to see pages inside admin/
-    return NextResponse.redirect(new URL('/onboarding', req.url)); // redirect to /unauthorized page
+  if (!localUser) {
+    const url = req.nextUrl.clone();
+    url.pathname = '/onboarding';
+    return NextResponse.redirect(url);
   }
 
   return res;
