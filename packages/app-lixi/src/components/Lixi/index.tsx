@@ -1,6 +1,19 @@
 import {
-  Button, Checkbox, Col, Collapse, Descriptions, Form, Image, Input, List, message, Modal,
-  Progress, Row, Tabs, Typography
+  Button,
+  Checkbox,
+  Col,
+  Collapse,
+  Descriptions,
+  Form,
+  Image,
+  Input,
+  List,
+  message,
+  Modal,
+  Progress,
+  Row,
+  Tabs,
+  Typography
 } from 'antd';
 import { saveAs } from 'file-saver';
 import { toPng } from 'html-to-image';
@@ -11,9 +24,21 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import intl from 'react-intl-universal';
 import { getAllClaims } from 'src/store/claim/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { archiveLixi, fetchMoreSubLixies, getLixi, refreshLixi, renameLixi, setLixiBalance, unarchiveLixi, withdrawLixi } from 'src/store/lixi/actions';
 import {
-  getHasMoreSubLixies, getLixiesBySelectedAccount, getSelectedLixi, getSelectedLixiId
+  archiveLixi,
+  fetchMoreSubLixies,
+  getLixi,
+  refreshLixi,
+  renameLixi,
+  setLixiBalance,
+  unarchiveLixi,
+  withdrawLixi
+} from 'src/store/lixi/actions';
+import {
+  getHasMoreSubLixies,
+  getLixiesBySelectedAccount,
+  getSelectedLixi,
+  getSelectedLixiId
 } from 'src/store/lixi/selectors';
 import { WalletContext } from 'src/store/store';
 import { showToast } from 'src/store/toast/actions';
@@ -21,8 +46,16 @@ import styled from 'styled-components';
 
 import { green, red } from '@ant-design/colors';
 import {
-  CaretRightOutlined, CopyOutlined, DownloadOutlined, EditOutlined, ExclamationCircleOutlined,
-  ExportOutlined, FilterOutlined, LoadingOutlined, QuestionCircleOutlined, ReloadOutlined,
+  CaretRightOutlined,
+  CopyOutlined,
+  DownloadOutlined,
+  EditOutlined,
+  ExclamationCircleOutlined,
+  ExportOutlined,
+  FilterOutlined,
+  LoadingOutlined,
+  QuestionCircleOutlined,
+  ReloadOutlined,
   SearchOutlined
 } from '@ant-design/icons';
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
@@ -32,7 +65,14 @@ import QRCode, { FormattedWalletAddress } from '@bcpros/lixi-components/componen
 import { StyledCollapse } from '@bcpros/lixi-components/components/Common/StyledCollapse';
 import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
 import { countries } from '@bcpros/lixi-models/constants/countries';
-import { ArchiveLixiCommand, LixiType, LotteryAddress, RenameLixiCommand, UnarchiveLixiCommand, WithdrawLixiCommand } from '@bcpros/lixi-models/lib/lixi';
+import {
+  ArchiveLixiCommand,
+  LixiType,
+  LotteryAddress,
+  RenameLixiCommand,
+  UnarchiveLixiCommand,
+  WithdrawLixiCommand
+} from '@bcpros/lixi-models/lib/lixi';
 import ClaimList from '@components/Claim/ClaimList';
 import { currency } from '@components/Common/Ticker';
 import { getSelectedAccount } from '@store/account/selectors';
@@ -120,7 +160,7 @@ const InfoCard = styled.div`
     font-size: 16px;
     line-height: 24px;
     letter-spacing: 0.5px;
-    color: #1E1A1D;
+    color: #1e1a1d;
   }
 
   .ant-descriptions-bordered {
@@ -147,7 +187,7 @@ const Text = styled.p`
 `;
 
 const StyleButton = styled(Button)`
-  color: #9E2A9C;
+  color: #9e2a9c;
   background: #ffffff;
   margin-right: 20px;
   font-weight: 500;
@@ -163,7 +203,7 @@ const StyleButton = styled(Button)`
   :focus {
     background: #ffffff !important;
   }
-`
+`;
 
 const StyledQRCode = styled.div`
   flex: 1 auto;
@@ -366,9 +406,9 @@ const Lixi: React.FC = () => {
     const activeAt = selectedLixi.activationAt;
     const expiryAt = selectedLixi.expiryAt;
     switch (true) {
-      case (!_.isEmpty(activeAt) && _.isEmpty(expiryAt)):
+      case !_.isEmpty(activeAt) && _.isEmpty(expiryAt):
         return <>{moment(activeAt).format('YYYY-MM-DD HH:mm')} - 'N/A'</>;
-      case (_.isEmpty(activeAt) && !_.isEmpty(expiryAt)):
+      case _.isEmpty(activeAt) && !_.isEmpty(expiryAt):
         return <>'N/A' - {moment(expiryAt).format('YYYY-MM-DD HH:mm')}</>;
       case (!_.isEmpty(activeAt) && !_.isEmpty(expiryAt)):
         return <>{moment(activeAt).format('YYYY-MM-DD HH:mm')} - <br /> {moment(expiryAt).format('YYYY-MM-DD HH:mm')}</>;
@@ -441,13 +481,12 @@ const Lixi: React.FC = () => {
     );
   };
 
-  const columns =
-    [
-      { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
-      { title: 'code', dataIndex: 'claimCode' },
-      { title: 'Value redeem (XPI)', dataIndex: 'amount' },
-      { title: 'Statusses', dataIndex: 'isClaimed' },
-    ];
+  const columns = [
+    { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
+    { title: 'Code', dataIndex: 'claimCode' },
+    { title: 'Value redeem (XPI)', dataIndex: 'amount' },
+    { title: 'Statusses', dataIndex: 'isClaimed' }
+  ];
   const prefixClaimCode = 'lixi';
 
   const subLixiesDataSource = subLixies.map((item, i) => {
@@ -461,28 +500,33 @@ const Lixi: React.FC = () => {
         </CopyToClipboard>
       ),
       amount: item.isClaimed ? 0 : item.amount == 0 ? 0 : item.amount.toFixed(2),
-      isClaimed: item.isClaimed ?
-        <Text style={{
-          color: '#FFFFFF',
-          padding: '4px 8px',
-          borderRadius: '8px',
-          fontWeight: '400',
-          fontSize: '14px',
-          background: '#598300'
-        }}>
+      isClaimed: item.isClaimed ? (
+        <Text
+          style={{
+            color: '#FFFFFF',
+            padding: '4px 8px',
+            borderRadius: '8px',
+            fontWeight: '400',
+            fontSize: '14px',
+            background: '#598300'
+          }}
+        >
           Redeemed
         </Text>
-        :
-        <Text style={{
-          color: '#FFFFFF',
-          padding: '4px 8px',
-          borderRadius: '8px',
-          fontWeight: '400',
-          fontSize: '14px',
-          background: '#E37100'
-        }}>
+      ) : (
+        <Text
+          style={{
+            color: '#FFFFFF',
+            padding: '4px 8px',
+            borderRadius: '8px',
+            fontWeight: '400',
+            fontSize: '14px',
+            background: '#E37100'
+          }}
+        >
           Remaining
-        </Text>,
+        </Text>
+      )
     };
   });
 
@@ -541,13 +585,14 @@ const Lixi: React.FC = () => {
       <Descriptions
         column={1}
         bordered
-        size='small'
+        size="small"
         style={{
           paddingTop: '1%',
           color: 'rgb(23,23,31)'
         }}
       >
-        <Descriptions.Item key="desc.avatar"
+        <Descriptions.Item
+          key="desc.avatar"
           label={
             <img
               src={selectedLixi.envelope ? selectedLixi.envelope.image : '/images/lixi_logo.svg'}
@@ -561,33 +606,37 @@ const Lixi: React.FC = () => {
           }
           style={{ borderTopLeftRadius: '24px' }}
         >
-          <Text style={{ color: 'rgba(30, 26, 29, 0.38)' }}>
-            {intl.get('lixi.name')}
-          </Text>
+          <Text style={{ color: 'rgba(30, 26, 29, 0.38)' }}>{intl.get('lixi.name')}</Text>
           <br />
           <Text style={{ alignItems: 'center' }}>
             {selectedLixi?.name ?? ''} &nbsp; <EditOutlined onClick={e => showPopulatedRenameLixiModal(e)} />
           </Text>
           <br />
-          <Text style={{
-            color: '#FFFFFF',
-            padding: '4px 8px',
-            borderRadius: '8px',
-            alignItems: 'center',
-            fontWeight: '400',
-            fontSize: '14px',
-            background: '#BA1A1A'
-          }}>
+          <Text
+            style={{
+              color: '#FFFFFF',
+              padding: '4px 8px',
+              borderRadius: '8px',
+              alignItems: 'center',
+              fontWeight: '400',
+              fontSize: '14px',
+              background: '#BA1A1A'
+            }}
+          >
             {selectedLixi.status}
           </Text>
         </Descriptions.Item>
         <Descriptions.Item key="desc.button">
-          <StyleButton shape="round" onClick={archiveButton}>{selectedLixi.status == 'active' ? intl.get('lixi.archive') : intl.get('lixi.unarchive')}</StyleButton>
-          <StyleButton shape="round" onClick={withdrawButton}>{intl.get('lixi.withdraw')}</StyleButton>
+          <StyleButton shape="round" onClick={archiveButton}>
+            {selectedLixi.status == 'active' ? intl.get('lixi.archive') : intl.get('lixi.unarchive')}
+          </StyleButton>
+          <StyleButton shape="round" onClick={withdrawButton}>
+            {intl.get('lixi.withdraw')}
+          </StyleButton>
         </Descriptions.Item>
       </Descriptions>
     );
-  }
+  };
 
   const detailLixi = () => {
     switch (selectedLixi.claimType) {
@@ -596,7 +645,7 @@ const Lixi: React.FC = () => {
           <Descriptions
             column={1}
             bordered
-            size='small'
+            size="small"
             style={{
               paddingBottom: '1%',
               color: 'rgb(23,23,31)'
@@ -624,7 +673,7 @@ const Lixi: React.FC = () => {
           <Descriptions
             column={1}
             bordered
-            size='small'
+            size="small"
             style={{
               padding: '0 0 20px 0',
               color: 'rgb(23,23,31)'
@@ -651,22 +700,28 @@ const Lixi: React.FC = () => {
           </Descriptions>
         );
     }
-  }
+  };
 
   const overviewLixi = () => {
     switch (selectedLixi.claimType) {
       case ClaimType.Single:
         return (
           <>
-            <LabelHeader>{intl.get('lixi.detail')} &nbsp; <QuestionCircleOutlined /></LabelHeader>
+            <LabelHeader>
+              {intl.get('lixi.detail')} &nbsp; <QuestionCircleOutlined />
+            </LabelHeader>
             <InfoCard style={{ height: 'fit-content' }}>
-              <Descriptions column={1} bordered size='small'
+              <Descriptions
+                column={1}
+                bordered
+                size="small"
                 style={{
                   paddingTop: '1%',
                   color: 'rgb(23,23,31)'
                 }}
               >
-                <Descriptions.Item key="desc.balance"
+                <Descriptions.Item
+                  key="desc.balance"
                   label={
                     <>
                       <StyledQRCode>
@@ -677,9 +732,7 @@ const Lixi: React.FC = () => {
                   }
                   style={{ borderTopLeftRadius: '24px', borderBottomLeftRadius: '24px' }}
                 >
-                  <Text style={{ fontSize: '14px', color: 'rgba(30, 26, 29, 0.38)' }}>
-                    {intl.get('lixi.balance')}
-                  </Text>
+                  <Text style={{ fontSize: '14px', color: 'rgba(30, 26, 29, 0.38)' }}>{intl.get('lixi.balance')}</Text>
                   <br />
                   <Text style={{ fontSize: '22px', color: '#1E1A1D' }}>
                     {fromSmallestDenomination(selectedLixi?.balance) ?? 0} {currency.ticker}
@@ -690,13 +743,17 @@ const Lixi: React.FC = () => {
 
             <LabelHeader>Claim code </LabelHeader>
             <InfoCard style={{ height: 'fit-content' }}>
-              <Descriptions column={1} bordered size='small'
+              <Descriptions
+                column={1}
+                bordered
+                size="small"
                 style={{
                   paddingTop: '1%',
                   color: 'rgb(23,23,31)'
                 }}
               >
-                <Descriptions.Item key="desc.balance"
+                <Descriptions.Item
+                  key="desc.balance"
                   label={
                     <>
                       <StyledQRCode>
@@ -708,9 +765,7 @@ const Lixi: React.FC = () => {
                   }
                   style={{ borderTopLeftRadius: '24px', borderBottomLeftRadius: '24px' }}
                 >
-                  <Text style={{ fontSize: '14px', color: 'rgba(30, 26, 29, 0.38)' }}>
-                    Claimed
-                  </Text>
+                  <Text style={{ fontSize: '14px', color: 'rgba(30, 26, 29, 0.38)' }}>Claimed</Text>
                   <br />
                   <Text style={{ fontSize: '22px', color: '#1E1A1D' }}>
                     {fromSmallestDenomination(selectedLixi?.totalClaim) ?? 0} {currency.ticker}
@@ -725,23 +780,28 @@ const Lixi: React.FC = () => {
           <>
             <LabelHeader>{intl.get('lixi.overview')}</LabelHeader>
             <InfoCard style={{ height: 'fit-content' }}>
-              <Descriptions column={1} bordered size='small'
+              <Descriptions
+                column={1}
+                bordered
+                size="small"
                 style={{
                   color: 'rgb(23,23,31)'
                 }}
               >
-                <Descriptions.Item key="desc.overview"
+                <Descriptions.Item
+                  key="desc.overview"
                   label={
                     <>
                       <Text style={{ color: 'rgba(30, 26, 29, 0.38)', alignItems: 'baseline' }}>
-                        <div style={{
-                          width: '12px',
-                          height: '12px',
-                          background: 'rgb(82, 196, 26)',
-                          borderRadius: '4px'
-                        }} />
-                        &nbsp;
-                        Claimed
+                        <div
+                          style={{
+                            width: '12px',
+                            height: '12px',
+                            background: 'rgb(82, 196, 26)',
+                            borderRadius: '4px'
+                          }}
+                        />
+                        &nbsp; Claimed
                       </Text>
                       <br />
                       <Text style={{ color: '#1E1A1D', paddingBottom: '24px' }}>
@@ -750,14 +810,15 @@ const Lixi: React.FC = () => {
                       <br />
                       <br />
                       <Text style={{ color: 'rgba(30, 26, 29, 0.38)', alignItems: 'baseline' }}>
-                        <div style={{
-                          width: '12px',
-                          height: '12px',
-                          background: '#E37100',
-                          borderRadius: '4px'
-                        }} />
-                        &nbsp;
-                        Remaining
+                        <div
+                          style={{
+                            width: '12px',
+                            height: '12px',
+                            background: '#E37100',
+                            borderRadius: '4px'
+                          }}
+                        />
+                        &nbsp; Remaining
                       </Text>
                       <br />
                       <Text style={{ color: '#1E1A1D' }}>
@@ -770,10 +831,13 @@ const Lixi: React.FC = () => {
                   <Progress
                     showInfo={false}
                     type="circle"
-                    strokeColor='#E37100'
+                    strokeColor="#E37100"
                     percent={100}
                     success={{
-                      percent: fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim')) / (fromSmallestDenomination(_.sumBy(subLixies, 'amount')) + fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim')))
+                      percent:
+                        fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim')) /
+                        (fromSmallestDenomination(_.sumBy(subLixies, 'amount')) +
+                          fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim')))
                     }}
                     style={{ paddingTop: '12.5px' }}
                   />
@@ -783,7 +847,7 @@ const Lixi: React.FC = () => {
           </>
         );
     }
-  }
+  };
 
   return (
     <>
@@ -814,7 +878,6 @@ const Lixi: React.FC = () => {
             {hasMoreSubLixies && (
               <SmartButton onClick={() => showMoreSubLixies()}>{intl.get('lixi.loadmore')}</SmartButton>
             )}
-
           </Form>
 
           {/* Reload Lixi */}
@@ -822,8 +885,9 @@ const Lixi: React.FC = () => {
             <ReloadOutlined /> {intl.get('lixi.refreshLixi')}
           </SmartButton> */}
         </>
-      ) : (<></>)
-      }
+      ) : (
+        <></>
+      )}
     </>
   );
 };
