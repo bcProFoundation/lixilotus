@@ -169,7 +169,6 @@ const CreateInput = styled(Input)`
   flex-direction: row;
   align-items: center;
   padding: 16px;
-  gap: 16px;
   width: 100%;
   height: 56px;
   background: #ffffff;
