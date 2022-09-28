@@ -136,10 +136,10 @@ const LixiList = ({ lixies }: LixiListProps) => {
             onOk={() => setModalVisible(false)}
             onCancel={() => setModalVisible(false)}
             footer={[
-              <Button className="btnReset" onClick={() => setModalVisible(false)}>
+              <Button className='btnReset' onClick={() => setModalVisible(false)}>
                 Reset
               </Button>,
-              <Button className="btnApply" onClick={handleApplyFilter}>
+              <Button className='btnApply' onClick={handleApplyFilter}>
                 Apply
               </Button>
             ]}
@@ -175,15 +175,15 @@ const LixiList = ({ lixies }: LixiListProps) => {
                 </Row>
               </StyledCheckboxGroup>
               <StyledCol span={24}>
-                <Text type="secondary">Status</Text>
+                <Text type="secondary">{intl.get('lixi.status')}</Text>
               </StyledCol>
               <StyledCheckboxGroup onChange={getSelectedStatus}>
                 <Row>
                   <StyledCol span={12}>
-                    <Checkbox value="active">Active</Checkbox>
+                    <Checkbox value="active">{intl.get('lixi.active')}</Checkbox>
                   </StyledCol>
                   <StyledCol span={12}>
-                    <Checkbox value="locked">Archived</Checkbox>
+                    <Checkbox value="locked">{intl.get('lixi.archived')}</Checkbox>
                   </StyledCol>
                 </Row>
               </StyledCheckboxGroup>
@@ -193,7 +193,7 @@ const LixiList = ({ lixies }: LixiListProps) => {
       </Row>
       <Spin spinning={isLoading} indicator={CashLoadingIcon}>
         <div style={{ paddingTop: '20px' }}>
-          {lixies && lixies.length > 0 && lixies && lixies.map(item => <LixiListItem key={item.id} lixi={item} />)}
+          {lixies && lixies.length > 0 && lixies.map(item => <LixiListItem key={item.id} lixi={item} />)}
         </div>
       </Spin>
     </>
