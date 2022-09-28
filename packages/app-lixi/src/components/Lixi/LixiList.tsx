@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { FilterOutlined, SearchOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
+import intl from 'react-intl-universal';
 
 const { Text } = Typography;
 
@@ -58,13 +59,13 @@ const StyledFilterModal = styled(Modal)`
     align-items: center;
     padding-bottom 20px;
 
-    #btnReset {
+    .btnReset {
       border: none;
       color: #9E2A9C;
       font-size: 17px;
     }
 
-    #btnApply {
+    .btnApply {
       color: #fff;
       background-color: #9E2A9C;
       padding: 24px 30px;
@@ -135,25 +136,25 @@ const LixiList = ({ lixies }: LixiListProps) => {
             onOk={() => setModalVisible(false)}
             onCancel={() => setModalVisible(false)}
             footer={[
-              <Button id="btnReset" onClick={() => setModalVisible(false)}>
+              <Button className="btnReset" onClick={() => setModalVisible(false)}>
                 Reset
               </Button>,
-              <Button id="btnApply" onClick={handleApplyFilter}>
+              <Button className="btnApply" onClick={handleApplyFilter}>
                 Apply
               </Button>
             ]}
           >
             <Row>
               <StyledCol span={24}>
-                <Text type="secondary">Type of code</Text>
+                <Text type="secondary">{intl.get('lixi.claimType')}</Text>
               </StyledCol>
               <StyledCheckboxGroup onChange={getSelectedClaimType}>
                 <Row>
                   <StyledCol span={24}>
-                    <Checkbox value="0">Single code</Checkbox>
+                    <Checkbox value="0">{intl.get('account.singleCode')}</Checkbox>
                   </StyledCol>
                   <StyledCol span={24}>
-                    <Checkbox value="1">One-time codes</Checkbox>
+                    <Checkbox value="1">{intl.get('account.oneTimeCode')}</Checkbox>
                   </StyledCol>
                 </Row>
               </StyledCheckboxGroup>
@@ -163,13 +164,13 @@ const LixiList = ({ lixies }: LixiListProps) => {
               <StyledCheckboxGroup onChange={getSelectedLixiType}>
                 <Row>
                   <StyledCol span={12}>
-                    <Checkbox value="0">Equal</Checkbox>
+                    <Checkbox value="0">{intl.get('account.equal')}</Checkbox>
                   </StyledCol>
                   <StyledCol span={12}>
-                    <Checkbox value="1">Random</Checkbox>
+                    <Checkbox value="1">{intl.get('account.random')}</Checkbox>
                   </StyledCol>
                   <StyledCol span={12}>
-                    <Checkbox value="2">Divided</Checkbox>
+                    <Checkbox value="2">{intl.get('account.divided')}</Checkbox>
                   </StyledCol>
                 </Row>
               </StyledCheckboxGroup>
