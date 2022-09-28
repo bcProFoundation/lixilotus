@@ -121,9 +121,11 @@ export default {
   'account.balance': 'Số dư',
   'account.country': 'Quốc gia áp dụng',
   'account.envelope': 'Hình ảnh',
+  'account.networkType': 'Kiểu kết nối',
 
   /* 03.Lixi */
   'lixi.createLixi': 'Tạo lixi mới',
+  'lixi.sectionCreateLixi': 'Tạo lixi mới',
   'lixi.sub-lixi': 'Bao lì xì phụ',
   'lixi.dividedBy': 'Chia cho',
   'lixi.fundGiveFixed': 'Loại Lì xì: Cố định',
@@ -221,6 +223,9 @@ export default {
   'lixi.lotteryAddressCheck': 'Xác nhận',
   'lixi.addressCopied': 'địa chỉ đã được sao chép.',
   'lixi.redeemLixi': 'Nhận lì xì',
+  'lixi.status': 'Trạng thái',
+  'lixi.active': 'Hoạt động',
+  'lixi.archived': 'Đã khoá',
   'NetworkType.SingleIP': 'Một địa chỉ duy nhất',
   'NetworkType.FamilyFriendly': 'Gia đình thân thiêt',
   'NetworkType.NoWifiRestriction': 'Không giới hạn',

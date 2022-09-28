@@ -7,6 +7,8 @@ import LixiListItem from './LixiListItem';
 import styled from 'styled-components';
 import { FilterOutlined, SearchOutlined } from '@ant-design/icons';
 import { useState } from 'react';
+import { CheckboxValueType } from 'antd/lib/checkbox/Group';
+import intl from 'react-intl-universal';
 
 const { Text } = Typography;
 
@@ -54,12 +56,34 @@ const StyledFilterModal = styled(Modal)`
     border-top: none;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    padding-bottom 20px;
+
+    .btnReset {
+      border: none;
+      color: #9E2A9C;
+      font-size: 17px;
+    }
+
+    .btnApply {
+      color: #fff;
+      background-color: #9E2A9C;
+      padding: 24px 30px;
+      font-size: 17px;
+      display: flex;
+      align-items: center;
+      border-radius: 20px;
+    }
   }
 `;
 
 const StyledCol = styled(Col)`
   padding-top: 10px;
   padding-bottom: 10px;
+`;
+
+const StyledCheckboxGroup = styled(Checkbox.Group)`
+  width: 100%;
 `;
 
 type LixiListProps = {
@@ -70,12 +94,30 @@ const LixiList = ({ lixies }: LixiListProps) => {
   const isLoading = useAppSelector(getIsGlobalLoading);
   const [isModalVisible, setModalVisible] = useState(false);
 
-  const typeOfCodeOptions = ['Single code', 'One-time codes'];
-  const valuePerRedeemOptions = ['Equal', 'Random', 'Divided'];
-  const statusOptions = ['Waiting', 'Running', 'Ended', 'Archived'];
+  const [isChecked, setChecked] = useState(false);
 
   const showFilterModal = () => {
     setModalVisible(true);
+  };
+
+  let selectedFilterList = {};
+
+  const getSelectedClaimType = (checkedClaimTypeValues: CheckboxValueType[]) => {
+    selectedFilterList['checkedClaimTypeValues'] = [...checkedClaimTypeValues];
+  };
+  const getSelectedLixiType = (checkedLixiTypeValues: CheckboxValueType[]) => {
+    selectedFilterList['checkedLixiTypeValues'] = [...checkedLixiTypeValues];
+  };
+  const getSelectedStatus = (checkedStatusValues: CheckboxValueType[]) => {
+    selectedFilterList['checkedStatusValues'] = [...checkedStatusValues];
+  };
+
+  const handleApplyFilter = () => {
+    lixies = lixies.filter(item => {
+      if ('checkedStatusValues' in selectedFilterList && item.status == selectedFilterList['checkedStatusValues']) {
+      }
+    });
+    setModalVisible(false);
   };
 
   return (
@@ -90,48 +132,61 @@ const LixiList = ({ lixies }: LixiListProps) => {
             title="Filter"
             width={'100%'}
             visible={isModalVisible}
-            onOk={() => setModalVisible(false)}
-            okText={'Apply'}
-            onCancel={() => setModalVisible(false)}
-            cancelText={'Reset'}
-            maskClosable={true}
             closable={false}
+            onOk={() => setModalVisible(false)}
+            onCancel={() => setModalVisible(false)}
+            footer={[
+              <Button className='btnReset' onClick={() => setModalVisible(false)}>
+                Reset
+              </Button>,
+              <Button className='btnApply' onClick={handleApplyFilter}>
+                Apply
+              </Button>
+            ]}
           >
             <Row>
               <StyledCol span={24}>
-                <Text type="secondary">Type of code</Text>
+                <Text type="secondary">{intl.get('lixi.claimType')}</Text>
               </StyledCol>
-              {typeOfCodeOptions.map((item, index) => {
-                return (
+              <StyledCheckboxGroup onChange={getSelectedClaimType}>
+                <Row>
                   <StyledCol span={24}>
-                    <Checkbox>{item}</Checkbox>
+                    <Checkbox value="0">{intl.get('account.singleCode')}</Checkbox>
                   </StyledCol>
-                );
-              })}
+                  <StyledCol span={24}>
+                    <Checkbox value="1">{intl.get('account.oneTimeCode')}</Checkbox>
+                  </StyledCol>
+                </Row>
+              </StyledCheckboxGroup>
               <StyledCol span={24}>
                 <Text type="secondary">Value per redeem</Text>
               </StyledCol>
-              {valuePerRedeemOptions.map((item, index) => {
-                return index !== 2 ? (
+              <StyledCheckboxGroup onChange={getSelectedLixiType}>
+                <Row>
                   <StyledCol span={12}>
-                    <Checkbox>{item}</Checkbox>
+                    <Checkbox value="0">{intl.get('account.equal')}</Checkbox>
                   </StyledCol>
-                ) : (
-                  <StyledCol span={24}>
-                    <Checkbox>{item}</Checkbox>
+                  <StyledCol span={12}>
+                    <Checkbox value="1">{intl.get('account.random')}</Checkbox>
                   </StyledCol>
-                );
-              })}
+                  <StyledCol span={12}>
+                    <Checkbox value="2">{intl.get('account.divided')}</Checkbox>
+                  </StyledCol>
+                </Row>
+              </StyledCheckboxGroup>
               <StyledCol span={24}>
-                <Text type="secondary">Status</Text>
+                <Text type="secondary">{intl.get('lixi.status')}</Text>
               </StyledCol>
-              {statusOptions.map((item, index) => {
-                return (
+              <StyledCheckboxGroup onChange={getSelectedStatus}>
+                <Row>
                   <StyledCol span={12}>
-                    <Checkbox>{item}</Checkbox>
+                    <Checkbox value="active">{intl.get('lixi.active')}</Checkbox>
                   </StyledCol>
-                );
-              })}
+                  <StyledCol span={12}>
+                    <Checkbox value="locked">{intl.get('lixi.archived')}</Checkbox>
+                  </StyledCol>
+                </Row>
+              </StyledCheckboxGroup>
             </Row>
           </StyledFilterModal>
         </Col>

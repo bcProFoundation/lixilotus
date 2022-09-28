@@ -122,9 +122,11 @@ export default {
   'account.balance': 'Balance',
   'account.country': 'Applying country',
   'account.envelope': 'Image',
+  'account.networkType': 'Network Type',
 
   /* 03.Lixi */
   'lixi.createLixi': 'Add new lixi',
+  'lixi.sectionCreateLixi': 'Section create new lixi',
   'lixi.sub-lixi': 'Sub-lixi',
   'lixi.dividedBy': 'Divided by',
   'lixi.fundGiveFixed': 'The fund giving is fixed',
@@ -222,6 +224,9 @@ export default {
   'lixi.lotteryAddressCheck': 'Confirm',
   'lixi.addressCopied': 'The address has been copied.',
   'lixi.redeemLixi': 'Redeem lixi',
+  'lixi.status': 'Status',
+  'lixi.active': 'Active',
+  'lixi.archived': 'Archived',
   'NetworkType.SingleIP': 'Single IP',
   'NetworkType.FamilyFriendly': 'Family Friendly',
   'NetworkType.NoWifiRestriction': 'No Wifi Restriction',
