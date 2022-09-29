@@ -93,7 +93,7 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
           />
           <ItemAccess
             icon={PlusCircleOutlined}
-            text={'Create Lixi'}
+            text={intl.get('account.createLixi')}
             active={false}
             key="create-lixi"
             onClickItem={() => {
