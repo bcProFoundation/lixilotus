@@ -15,6 +15,8 @@ import {
 } from '@ant-design/icons';
 import { CointainerAccess, ItemAccess } from './SideBarShortcut';
 import { useRouter } from 'next/router';
+import { openModal } from '@store/modal/actions';
+import { getSelectedAccount } from '@store/account/selectors';
 
 type SidebarContentProps = {
   className?: string;
@@ -33,6 +35,7 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
   const navCollapsed = useAppSelector(getNavCollapsed);
   const router = useRouter();
   const selectedKey = router.pathname ?? '';
+  const selectedAccount = useAppSelector(getSelectedAccount);
 
   const handleOnClick = () => {
     dispatch(toggleCollapsedSideNav(!navCollapsed));
@@ -65,6 +68,16 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
             active={selectedKey === '/admin/pack-register'}
             key="register-pack"
             href={'/admin/pack-register'}
+          />
+          <ItemAccess
+            icon={PlusCircleOutlined}
+            text={'Create Lixi'}
+            active={false}
+            key="create-lixi"
+            onClickItem={() => {
+              dispatch(openModal('CreateLixiFormModal', { account: selectedAccount }));
+            }}
+            href={'/admin/create'}
           />
           <ItemAccess
             icon={PlusCircleOutlined}
