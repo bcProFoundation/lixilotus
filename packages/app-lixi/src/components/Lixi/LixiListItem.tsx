@@ -24,6 +24,7 @@ import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import {
   archiveLixi,
+  exportSubLixies,
   refreshLixiSilent,
   renameLixi,
   selectLixi,
@@ -131,12 +132,17 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
 
   const subLixiById = allSubLixies.filter(item => item.parentId == lixi.id);
 
-  let options = ['Withdraw', 'Rename'];
+  let options = ['Withdraw', 'Rename', 'Export'];
   lixi.status === 'locked' ? options.unshift('Unarchive') : options.unshift('Archive');
 
   const postLixiData = {
     id: lixi.id,
     mnemonic: selectedAccount?.mnemonic,
+    mnemonicHash: selectedAccount?.mnemonicHash
+  };
+
+  const exportLixiData = {
+    id: lixi.id,
     mnemonicHash: selectedAccount?.mnemonicHash
   };
 
@@ -167,6 +173,8 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
         return dispatch(withdrawLixi(postLixiData as WithdrawLixiCommand));
       case 'Rename':
         return showPopulatedRenameLixiModal(lixi as Lixi);
+      case 'Export':
+        return dispatch(exportSubLixies(exportLixiData));
     }
   };
 

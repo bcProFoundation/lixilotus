@@ -706,6 +706,11 @@ const Lixi: React.FC = () => {
           <StyleButton shape="round" onClick={withdrawButton}>
             {intl.get('lixi.withdraw')}
           </StyleButton>
+          {selectedLixi.claimType == ClaimType.OneTime &&
+            <StyleButton shape="round" onClick={() => handleExportLixi()}>
+              {intl.get('lixi.exportLixi')}
+            </StyleButton>
+          }
         </Descriptions.Item>
       </Descriptions>
     );
@@ -981,9 +986,9 @@ const Lixi: React.FC = () => {
           </Form>
 
           {/* Reload Lixi */}
-          {/* <SmartButton onClick={() => handleRefeshLixi()}>
+          <SmartButton onClick={() => handleRefeshLixi()}>
             <ReloadOutlined /> {intl.get('lixi.refreshLixi')}
-          </SmartButton> */}
+          </SmartButton>
         </>
       ) : (
         intl.get('lixi.noLixiSelected')
