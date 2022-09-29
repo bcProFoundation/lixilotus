@@ -10,9 +10,12 @@ body::-webkit-scrollbar {
 
 /* Hide scrollbar for IE, Edge and Firefox */
 body {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
+
 /* Hide up and down arros on input type="number" */
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
@@ -51,8 +54,10 @@ code {
 }
 
 .listing {
-  -ms-overflow-style: none; /* IE and Edge */
+  -ms-overflow-style: none;
+  /* IE and Edge */
   scrollbar-width: none;
+
   &::-webkit-scrollbar {
     display: none;
   }
@@ -64,20 +69,25 @@ code {
   .ant-modal-content {
     border-radius: 20px;
     text-align: center;
+
     .ant-modal-header {
       border-radius: 20px;
       padding: 2rem 0;
       border-bottom: 0;
+
       .ant-modal-title {
         font-size: 18px;
         font-weight: 600;
       }
     }
+
     .ant-modal-body {
       text-align: left;
+
       form {
         display: flex;
         flex-direction: column;
+
         input {
           width: 100px;
           margin-top: 2rem;
@@ -91,6 +101,7 @@ code {
       }
     }
   }
+
   .ant-modal-footer {
     border-top: 0;
   }
@@ -178,4 +189,15 @@ code {
   --color-info-dark: #5476eb;
 
   --border-item-dark: #e9eaed;
+}
+
+
+.ant-modal {
+  &&.custom-create-lixi-modal {
+    top: 0px !important;
+
+    .ant-modal-body {
+      text-align: center;
+    }
+  }
 }

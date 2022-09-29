@@ -32,8 +32,13 @@ export default {
   'general.scanQRCode': 'Scan QR code',
   'general.scanQRCodeError':
     'Error in QR scanner. Please ensure your camera is not in use. Due to Apple restrictions on third-party browsers, you must use Safari browser for QR code scanning on an iPhone.',
+  'general.scanBarcode': 'Scan Barcode',
+  'general.scanBarcodeError':
+    'Error in Barcode scanner. Please ensure your camera is not in use. Due to Apple restrictions on third-party browsers, you must use Safari browser for barcode scanning on an iPhone.',
   'general.num': 'Num',
   'general.amount': 'Amount',
+  'general.chooseCamera': 'Please choose camera',
+  'general.chooseCameraTip': 'Try switching camera when its not working properly',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
@@ -117,9 +122,11 @@ export default {
   'account.balance': 'Balance',
   'account.country': 'Applying country',
   'account.envelope': 'Image',
+  'account.networkType': 'Network Type',
 
   /* 03.Lixi */
   'lixi.createLixi': 'Add new lixi',
+  'lixi.sectionCreateLixi': 'Section create new lixi',
   'lixi.sub-lixi': 'Sub-lixi',
   'lixi.dividedBy': 'Divided by',
   'lixi.fundGiveFixed': 'The fund giving is fixed',
@@ -137,6 +144,8 @@ export default {
   'lixi.package': 'Package',
   'lixi.maxClaim': 'Max Redemption: {newMaxClaim}',
   'lixi.country': 'Country: ',
+  'lixi.validCountries': 'Valid Countries',
+  'lixi.allCountries': 'All of countries',
   'lixi.minStake': 'Minimum Staking: {newMinStaking}',
   'lixi.expireAt': 'Expiry at:',
   'lixi.activatedAt': 'Activate at:',
@@ -148,7 +157,8 @@ export default {
   'lixi.networkType': 'Network Type: {networkType}',
   'lixi.lixiInfo': 'Lixi info for {lixiName}',
   'lixi.claimType': 'Claim Type',
-  'lixi.type': 'Type',
+  'lixi.type': 'Type of code',
+  'lixi.rules': 'Rules',
   'lixi.totalClaimed': 'Total Claimed',
   'lixi.remainingLixi': 'Remaining Lixi',
   'lixi.remainingXPI': 'XPI Remaining',
@@ -214,12 +224,23 @@ export default {
   'lixi.lotteryAddressCheck': 'Confirm',
   'lixi.addressCopied': 'The address has been copied.',
   'lixi.redeemLixi': 'Redeem lixi',
+  'lixi.status': 'Status',
+  'lixi.active': 'Active',
+  'lixi.archived': 'Archived',
   'NetworkType.SingleIP': 'Single IP',
   'NetworkType.FamilyFriendly': 'Family Friendly',
   'NetworkType.NoWifiRestriction': 'No Wifi Restriction',
   'NetworkType.SingleIPInfo': 'Only one user can claim Lixi under the wifi network',
   'NetworkType.FamilyFriendlyInfo': 'Max 5 users can claim Lixi under the wifi network',
   'NetworkType.NoWifiRestrictionInfo': 'Unlimited user can claim Lixi under the wifi network',
+  'lixi.detail': 'Details of lixi',
+  'lixi.balance': 'Balance',
+  'lixi.valuePerClaim': 'Value per claim',
+  'lixi.validity': 'Validity',
+  'lixi.overview': 'Overview',
+  'lixi.archive': 'Archive',
+  'lixi.unarchive': 'Unarchive',
+  'lixi.withdraw': 'Withdraw',
 
   /* 04.Claim */
   'claim.claim': 'Claim',
@@ -241,6 +262,9 @@ export default {
 
   /* 05.Settings */
   'settings.languages': 'Languages',
+  'settings.general': 'General Settings',
+  'settings.lockApp': 'Lock App',
+  'settings.notSupported': 'Not Supported',
   'settings.backupAccount': 'Backup your account',
   'settings.manageAccounts': 'Manage Accounts',
   'settings.newAccount': 'New Account',

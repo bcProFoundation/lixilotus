@@ -24,11 +24,19 @@ import { pageReducer } from './page/reducer';
 import { countryReducer, stateReducer } from './country/reducer';
 import { CountriesState, StatesState } from './country/state';
 import { api as pagesApi } from './page/pages.generated';
+import { LocalUserAccountsState } from './localAccount/state';
+import { localAccountsAdapter, localUserAccountReducer } from './localAccount/reducer';
 
 const persistConfig = {
   key: 'root',
   storage: storage,
   blacklist: ['accounts']
+};
+
+const localAccountPersistConfig: PersistConfig<LocalUserAccountsState> = {
+  key: 'localAccounts',
+  storage: storage,
+  blacklist: []
 };
 
 const accountPersistConfig: PersistConfig<AccountsState> = {
@@ -71,6 +79,7 @@ const statePersistConfig: PersistConfig<StatesState> = {
 export const serverReducer = combineReducers({
   router: routerReducer,
   accounts: accountReducer,
+  localAccounts: localUserAccountReducer,
   lixies: lixiReducer,
   claims: claimReducer,
   envelopes: envelopeReducer,
@@ -91,6 +100,7 @@ export const serverReducer = combineReducers({
 export const appReducer = combineReducers({
   router: routerReducer,
   accounts: persistReducer(accountPersistConfig, accountReducer),
+  localAccounts: persistReducer(localAccountPersistConfig, localUserAccountReducer),
   lixies: persistReducer(lixiPersistConfig, lixiReducer),
   claims: persistReducer(claimsPersistConfig, claimReducer),
   settings: persistReducer(settingsPersistConfig, settingsReducer),
