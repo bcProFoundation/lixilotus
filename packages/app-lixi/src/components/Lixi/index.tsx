@@ -481,7 +481,21 @@ const Lixi: React.FC = () => {
     );
   };
 
-  const columns = [
+  const singleCodeColumns = [
+    { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
+    { title: 'Value redeem (XPI)', dataIndex: 'amount' },
+    { title: 'Time of claim', dataIndex: 'createAt' }
+  ];
+
+  const claimReportSingleCode = allClaimsCurrentLixi.map((item, i) => {
+    return {
+      num: i + 1,
+      amount: item.amount.toFixed(2),
+      createAt: item.createdAt
+    };
+  });
+
+  const onetimeCodeColumns = [
     { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
     { title: 'Code', dataIndex: 'claimCode' },
     { title: 'Value redeem (XPI)', dataIndex: 'amount' },
@@ -499,7 +513,7 @@ const Lixi: React.FC = () => {
           </div>
         </CopyToClipboard>
       ),
-      amount: item.isClaimed ? 0 : item.amount == 0 ? 0 : item.amount.toFixed(2),
+      amount: item.amount.toFixed(2),
       isClaimed: item.isClaimed ? (
         <Text
           style={{
@@ -781,9 +795,10 @@ const Lixi: React.FC = () => {
                 bordered
                 size="small"
                 style={{
-                  paddingTop: '1%',
+                  padding: '1% 0%',
                   color: 'rgb(23,23,31)'
                 }}
+                contentStyle={{ display: 'table-cell' }}
               >
                 <Descriptions.Item
                   key="desc.balance"
@@ -802,6 +817,8 @@ const Lixi: React.FC = () => {
                   <Text style={{ fontSize: '22px', color: '#1E1A1D' }}>
                     {fromSmallestDenomination(selectedLixi?.balance) ?? 0} {currency.ticker}
                   </Text>
+                  <br />
+                  {/* Convert XPI to USD */}
                 </Descriptions.Item>
               </Descriptions>
             </InfoCard>
@@ -813,9 +830,10 @@ const Lixi: React.FC = () => {
                 bordered
                 size="small"
                 style={{
-                  paddingTop: '1%',
+                  padding: '1% 0%',
                   color: 'rgb(23,23,31)'
                 }}
+                contentStyle={{ display: 'table-cell' }}
               >
                 <Descriptions.Item
                   key="desc.balance"
@@ -918,13 +936,17 @@ const Lixi: React.FC = () => {
     switch (selectedLixi.claimType) {
       case ClaimType.Single:
         return (
-          <ClaimList claims={allClaimsCurrentLixi} />
+          <VirtualTable
+            columns={singleCodeColumns}
+            dataSource={claimReportSingleCode}
+            scroll={{ y: claimReportSingleCode.length * 54 <= 270 ? claimReportSingleCode.length * 54 : 270 }}
+          />
         );
       case ClaimType.OneTime:
         return (
           <>
             <VirtualTable
-              columns={columns}
+              columns={onetimeCodeColumns}
               dataSource={subLixiesDataSource}
               scroll={{ y: subLixiesDataSource.length * 54 <= 270 ? subLixiesDataSource.length * 54 : 270 }}
             />
