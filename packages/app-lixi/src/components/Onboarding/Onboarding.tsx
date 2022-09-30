@@ -1,14 +1,13 @@
-import styled from 'styled-components';
-import React from 'react';
-import intl from 'react-intl-universal';
-import PrimaryButton, { SecondaryButton, SmartButton } from '@components/Common/PrimaryButton';
 import { ExclamationCircleOutlined, ImportOutlined, LockOutlined, PlusSquareOutlined } from '@ant-design/icons';
-import { Form, Input, Modal } from 'antd';
-import { useState } from 'react';
 import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
-import { WalletContext } from 'src/store/store';
+import PrimaryButton, { SecondaryButton, SmartButton } from '@components/Common/PrimaryButton';
+import { generateLocalUserAccount, importLocalUserAccount } from '@store/localAccount';
+import { Form, Input, Modal } from 'antd';
+import React, { useState } from 'react';
+import intl from 'react-intl-universal';
 import { useAppDispatch } from 'src/store/hooks';
-import { generateAccount, importAccount } from 'src/store/account/actions';
+import { WalletContext } from 'src/store/store';
+import styled from 'styled-components';
 
 export const LotusLogo = styled.img`
   width: 70px;
@@ -70,7 +69,7 @@ const OnboardingComponent: React.FC = () => {
       cancelText: intl.get('onboarding.cancel'),
       centered: true,
       onOk() {
-        dispatch(generateAccount());
+        dispatch(generateLocalUserAccount());
       },
       onCancel() {
         console.log('Cancel');
@@ -103,7 +102,7 @@ const OnboardingComponent: React.FC = () => {
       return;
     }
 
-    dispatch(importAccount(formData.mnemonic));
+    dispatch(importLocalUserAccount(formData.mnemonic));
   }
 
   return (

@@ -8,6 +8,7 @@ import { AccountDto, CreateAccountCommand, ImportAccountCommand } from '@bcpros/
 import { PatchAccountCommand } from '@bcpros/lixi-models/src/lib/account';
 import axiosClient from '@utils/axiosClient';
 import getOauth2URL from '@utils/oauth2';
+import { LocalUser } from 'src/models/localUser';
 
 const accountApi = {
   getById(id: number): Promise<AccountDto> {
@@ -62,7 +63,7 @@ const accountApi = {
     const url = `/api/accounts/${id}`;
     return axiosClient
       .delete(url, { data: data })
-      .then(response => {})
+      .then(response => { })
       .catch(err => {
         const { response } = err;
         throw response?.data ?? err ?? 'Network Error';
@@ -111,6 +112,18 @@ const accountApi = {
 
     return axiosClient
       .post(url, { username: data })
+      .then(res => {
+        return res.data;
+      })
+      .catch(err => {
+        const { response } = err;
+        throw response?.data ?? err ?? 'Network Error';
+      });
+  },
+  localLogin(localUser: LocalUser): Promise<any> {
+    const url = '/api/local-login';
+    return axiosClient
+      .post(url, localUser)
       .then(res => {
         return res.data;
       })

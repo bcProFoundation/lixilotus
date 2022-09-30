@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { END } from 'redux-saga';
 import { SagaStore, wrapper } from '@store/store';
 import { getSelectedLocalUserAccount } from '../store/localAccount/selectors';
@@ -6,9 +6,43 @@ import { useAppSelector } from '@store/hooks';
 import OnboardingComponent from '@components/Onboarding/Onboarding';
 import { withIronSessionSsr } from 'iron-session/next';
 import { sessionOptions } from 'src/models/session';
+import accountApi from '@store/account/api';
+import { LocalUser } from 'src/models/localUser';
+import Router from 'next/router';
 
-const OnboardingPage = () => {
+type OnboardingProps = {
+  isMobile: boolean;
+  localUser: LocalUser;
+}
+
+const OnboardingPage = ({ isMobile, localUser }: OnboardingProps) => {
+
   const selectedLocalAccount = useAppSelector(getSelectedLocalUserAccount);
+
+  if (
+    selectedLocalAccount &&
+    localUser &&
+    selectedLocalAccount.address == localUser.id &&
+    localUser.isLocalLoggedIn === true
+  ) {
+    Router.push('/');
+  }
+
+  useEffect(() => {
+    if (selectedLocalAccount &&
+      !localUser) {
+      // Local local with nextjs api route
+      const newLocalUser: LocalUser = {
+        name: selectedLocalAccount.name,
+        id: selectedLocalAccount.address,
+        address: selectedLocalAccount.address
+      };
+      accountApi.localLogin(newLocalUser).then(() => {
+        Router.push('/');
+      });
+
+    }
+  }, [selectedLocalAccount, localUser])
 
   return <OnboardingComponent />;
 };
