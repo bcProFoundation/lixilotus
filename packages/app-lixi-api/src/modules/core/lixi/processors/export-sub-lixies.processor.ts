@@ -104,7 +104,7 @@ export class ExportSubLixiesProcessor extends WorkerHost {
       childrenApiResult.push(childResult);
     }
     const parser = new Parser({
-      fields: ['id', 'name', 'claimCode', 'amount', 'package']
+      excelStrings: true
     });
     const csvData = childrenApiResult.map(item => {
       return {
