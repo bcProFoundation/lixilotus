@@ -18,12 +18,13 @@ import { currency } from '@components/Common/Ticker';
 import { getAllSubLixies } from '@store/lixi/selectors';
 import { openModal } from '@store/modal/actions';
 import { fromSmallestDenomination } from '@utils/cashMethods';
-import { Button, Col, Dropdown, Menu, Row, Tag } from 'antd';
+import { Button, Col, Dropdown, Menu, Row, Tag, Typography } from 'antd';
 import intl from 'react-intl-universal';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import {
   archiveLixi,
+  exportSubLixies,
   refreshLixiSilent,
   renameLixi,
   selectLixi,
@@ -32,6 +33,8 @@ import {
 } from 'src/store/lixi/actions';
 import styled, { DefaultTheme } from 'styled-components';
 import { RenameLixiModalProps } from './RenameLixiModal';
+
+const { Text } = Typography;
 
 const LixiIcon = styled.div`
   height: 32px;
@@ -105,6 +108,10 @@ const LixiNameStyled = styled(Col)`
   border-bottom: 1px solid ${props => props.theme.listItem.border}!important;
 `;
 
+const StyledRow = styled(Row)`
+  padding: 10px 0px;
+`;
+
 type LixiListItemProps = {
   className?: string;
   lixi: Lixi;
@@ -125,12 +132,17 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
 
   const subLixiById = allSubLixies.filter(item => item.parentId == lixi.id);
 
-  let options = ['Withdraw', 'Rename'];
+  let options = ['Withdraw', 'Rename', 'Export'];
   lixi.status === 'locked' ? options.unshift('Unarchive') : options.unshift('Archive');
 
   const postLixiData = {
     id: lixi.id,
     mnemonic: selectedAccount?.mnemonic,
+    mnemonicHash: selectedAccount?.mnemonicHash
+  };
+
+  const exportLixiData = {
+    id: lixi.id,
     mnemonicHash: selectedAccount?.mnemonicHash
   };
 
@@ -161,6 +173,8 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
         return dispatch(withdrawLixi(postLixiData as WithdrawLixiCommand));
       case 'Rename':
         return showPopulatedRenameLixiModal(lixi as Lixi);
+      case 'Export':
+        return dispatch(exportSubLixies(exportLixiData));
     }
   };
 
@@ -210,7 +224,7 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
 
   return (
     <>
-      <Wrapper>
+      <Wrapper onClick={e => handleSelectLixi(lixi.id)}>
         <Row>
           <LixiNameStyled span={24}>
             <strong>{lixi.name}</strong>
@@ -219,46 +233,58 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
             </Dropdown>
           </LixiNameStyled>
         </Row>
-        <Row>
-          <Col span={10}>Budget</Col>
-          <Col span={8} offset={3}>
+        <StyledRow>
+          <Col span={10}>
+            <Text type="secondary">Budget</Text>
+          </Col>
+          <Col span={11} offset={3}>
             {lixi.amount} XPI
           </Col>
-        </Row>
-        <Row>
-          <Col span={10}>Type of code</Col>
-          <Col span={8} offset={3}>
+        </StyledRow>
+        <StyledRow>
+          <Col span={10}>
+            <Text type="secondary">Type of code</Text>
+          </Col>
+          <Col span={11} offset={3}>
             {lixi.claimType == ClaimType.Single ? 'Single' : 'One-Time Codes'}
           </Col>
-        </Row>
-        <Row>
-          <Col span={10}>Value per redeem</Col>
-          <Col span={8} offset={3}>
+        </StyledRow>
+        <StyledRow>
+          <Col span={10}>
+            <Text type="secondary">Value per redeem</Text>
+          </Col>
+          <Col span={11} offset={3}>
             {typeLixi()}
           </Col>
-        </Row>
-        <Row>
-          <Col span={10}>Redeemmed</Col>
-          <Col span={8} offset={3}>
+        </StyledRow>
+        <StyledRow>
+          <Col span={10}>
+            <Text type="secondary">Redeemmed</Text>
+          </Col>
+          <Col span={11} offset={3}>
             {lixi.claimedNum} XPI
           </Col>
-        </Row>
-        <Row>
-          <Col span={10}>Remaining</Col>
-          <Col span={8} offset={3}>
+        </StyledRow>
+        <StyledRow>
+          <Col span={10}>
+            <Text type="secondary">Remaining</Text>
+          </Col>
+          <Col span={11} offset={3}>
             {lixi.claimType == ClaimType.Single ? (
               <span>{fromSmallestDenomination(lixi.balance)} XPI</span>
             ) : (
               <span>{lixi.subLixiBalance != undefined ? lixi.subLixiBalance.toFixed(2) : 0.0} XPI</span>
             )}
           </Col>
-        </Row>
-        <Row>
-          <Col span={10}>Status</Col>
-          <Col span={8} offset={3}>
+        </StyledRow>
+        <StyledRow>
+          <Col span={10}>
+            <Text type="secondary">Status</Text>
+          </Col>
+          <Col span={11} offset={3}>
             <Tag color={lixi.status === 'active' ? '#108ee9' : '##f50'}>{lixi.status}</Tag>
           </Col>
-        </Row>
+        </StyledRow>
       </Wrapper>
     </>
   );

@@ -59,12 +59,11 @@ export const Uploader = ({ type, buttonName, buttonType, isIcon, showUploadList 
   const [previewTitle, setPreviewTitle] = useState('');
   const [previewVisible, setPreviewVisible] = useState(false);
   const dispatch = useAppDispatch();
-  const uploadButtonType = (buttonType ?? 'primary') as ButtonType;
 
   const uploadButton = (
     <StyledButton
       disabled={loading}
-      type={uploadButtonType}
+      type={!_.isEmpty(buttonType) ? (buttonType as ButtonType) : 'primary'}
       size="middle"
       loading={loading}
       icon={isIcon ? <UploadOutlined style={{ color: loading ? 'gray' : 'white' }} /> : null}
