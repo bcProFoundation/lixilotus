@@ -121,7 +121,11 @@ const ScanBarcode = (props: ScanBarcodeProps) => {
             >
               {videoInputDevices &&
                 videoInputDevices.map(input => {
-                  return <Select.Option value={input.deviceId}>{input.label}</Select.Option>;
+                  return (
+                    <Select.Option key={input.deviceId} value={input.deviceId}>
+                      {input.label}
+                    </Select.Option>
+                  );
                 })}
             </Select>
             <div>

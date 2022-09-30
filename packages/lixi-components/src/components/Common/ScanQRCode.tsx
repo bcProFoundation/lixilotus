@@ -47,7 +47,7 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
 
   const teardownCodeReader = (codeReader: BrowserQRCodeReader) => {
     if (codeReader !== null) {
-      controls.stop();
+      controls && controls.stop();
       setActiveCodeReader(null);
     }
   };
@@ -88,7 +88,7 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
       const controls = await codeReader.decodeFromVideoDevice(
         selectedDeviceId,
         previewElem as any,
-        (content: Result, error, controls) => {
+        (content, error, controls) => {
           // use the result and error values to choose your actions
           // you can also use controls API in this scope like the controls
           // returned from the method.
@@ -97,11 +97,13 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
             // stop scanning and fill form if it's an address
             if (result.type === 'address') {
               // Hide the scanner
+              controls.stop();
               setVisible(false);
               onScan(result.values.address);
               return teardownCodeReader(codeReader);
             } else if (result.type === 'claimCode') {
               // Hide the scanner
+              controls.stop();
               setVisible(false);
               onScan(result.values.lixi);
               return teardownCodeReader(codeReader);
