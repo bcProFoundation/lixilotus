@@ -4,7 +4,7 @@ import { ThemedWalletOutlined } from '@bcpros/lixi-components/components/Common/
 import { SmartButton } from '@components/Common/PrimaryButton';
 import { StyledSpacer } from '@components/Common/StyledSpacer';
 import LixiList from '@components/Lixi/LixiList';
-import { getAccount, refreshLixiList, refreshLixiListSilent } from '@store/account/actions';
+import { getAccount, refreshLixiList, refreshLixiListSilent, silentLogin } from '@store/account/actions';
 import { Tabs } from 'antd';
 import moment from 'moment';
 import React, { useEffect } from 'react';
@@ -54,6 +54,7 @@ const Home: React.FC = () => {
     dispatch(getEnvelopes());
     if (selectedAccount) {
       dispatch(getAccount(selectedAccount.id));
+      dispatch(silentLogin(selectedAccount.mnemonic));
       dispatch(refreshLixiListSilent(selectedAccount?.id));
     }
   }, []);

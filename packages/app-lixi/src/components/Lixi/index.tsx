@@ -338,13 +338,27 @@ const Lixi: React.FC = () => {
   const rulesLixi = () => {
     switch (selectedLixi?.lixiType) {
       case LixiType.Fixed:
-        return <> {selectedLixi.fixedValue} {currency.ticker} </>;
+        return (
+          <>
+            {' '}
+            {selectedLixi.fixedValue} {currency.ticker}{' '}
+          </>
+        );
       case LixiType.Divided:
         return <> {selectedLixi.dividedValue} </>;
       case LixiType.Equal:
-        return <> {selectedLixi.amount / selectedLixi.numberOfSubLixi} {currency.ticker} </>;
+        return (
+          <>
+            {' '}
+            {selectedLixi.amount / selectedLixi.numberOfSubLixi} {currency.ticker}{' '}
+          </>
+        );
       default:
-        return <>{selectedLixi?.minValue}-{selectedLixi?.maxValue} {currency.ticker}</>;
+        return (
+          <>
+            {selectedLixi?.minValue}-{selectedLixi?.maxValue} {currency.ticker}
+          </>
+        );
     }
   };
 
@@ -410,8 +424,12 @@ const Lixi: React.FC = () => {
         return <>{moment(activeAt).format('YYYY-MM-DD HH:mm')} - 'N/A'</>;
       case _.isEmpty(activeAt) && !_.isEmpty(expiryAt):
         return <>'N/A' - {moment(expiryAt).format('YYYY-MM-DD HH:mm')}</>;
-      case (!_.isEmpty(activeAt) && !_.isEmpty(expiryAt)):
-        return <>{moment(activeAt).format('YYYY-MM-DD HH:mm')} - <br /> {moment(expiryAt).format('YYYY-MM-DD HH:mm')}</>;
+      case !_.isEmpty(activeAt) && !_.isEmpty(expiryAt):
+        return (
+          <>
+            {moment(activeAt).format('YYYY-MM-DD HH:mm')} - <br /> {moment(expiryAt).format('YYYY-MM-DD HH:mm')}
+          </>
+        );
       default:
         return <>'N/A' - 'N/A'</>;
     }
