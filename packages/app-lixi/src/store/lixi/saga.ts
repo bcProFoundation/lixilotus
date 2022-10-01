@@ -369,7 +369,7 @@ function* refreshLixiSilentSaga(action: PayloadAction<number>) {
 
 function* setLixiSaga(action: PayloadAction<Lixi>) {
   const lixi: any = action.payload;
-  yield put(push('/admin/lixi'));
+  yield put(push(`/lixi/${lixi.id}`));
   yield put(refreshLixiSilent(lixi.id));
 }
 
@@ -390,11 +390,11 @@ function* selectLixiSaga(action: PayloadAction<number>) {
   }
 }
 
-function* selectLixiSuccessSaga(action: PayloadAction<Lixi>) {
-  const lixi = action.payload;
+function* selectLixiSuccessSaga(action: PayloadAction<any>) {
+  const { lixi } = action.payload;
   yield put(refreshLixiSilent(lixi.id));
   yield put(hideLoading(selectLixi.type));
-  yield put(push('/admin/lixi'));
+  yield put(push(`/lixi/${lixi.id}`));
 }
 
 function* selectLixiFailureSaga(action: PayloadAction<string>) {
