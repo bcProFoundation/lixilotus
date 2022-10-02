@@ -46,15 +46,15 @@ import { ClaimType, GenerateLixiCommand, LixiType, LotteryAddress, NetworkType }
 import CountrySelectDropdown from '@components/Common/CountrySelectDropdown';
 import EnvelopeCarousel from '@components/Common/EnvelopeCarousel';
 import { getEnvelopeUpload } from '@store/account/selectors';
-import { AppContext } from '@store/store';
+import { WalletContext } from '@store/store';
 import { isValidAmountInput } from '@utils/validation';
 import TextArea from 'antd/lib/input/TextArea';
 import { CreateLixiConfirmationModalProps } from './CreateLixiConfirmationModal';
 import { StyledUploader } from '@components/Common/Uploader';
 
 const { Panel } = Collapse;
-const baseUrl = process.env.NEXT_PUBLIC_LIXI_API;
 const { Option } = Select;
+const baseUrl = process.env.NEXT_PUBLIC_LIXI_API;
 
 // const LotteryInput = styled(Input)`
 //   .ant-input-group-addon {
@@ -111,7 +111,7 @@ const CreateForm = styled(Form)`
       font-size: 16px;
       line-height: 24px;
       display: flex;
-      align-items: center;
+      align-items: baseline !important;
       letter-spacing: 0.5px;
       color: #1e1a1d;
       flex: none;
@@ -137,6 +137,11 @@ const CreateForm = styled(Form)`
     flex: none;
     order: 1;
     flex-grow: 0;
+    align-items: baseline !important;
+
+    .ant-checkbox-inner {
+      background: #ffffff;
+    }
   }
 
   .ant-picker.ant-picker-large {
@@ -164,7 +169,6 @@ const CreateInput = styled(Input)`
   flex-direction: row;
   align-items: center;
   padding: 16px;
-  gap: 16px;
   width: 100%;
   height: 56px;
   background: #ffffff;
@@ -189,6 +193,44 @@ const Envelope = styled.div`
   flex-grow: 0;
 `;
 
+const NetworkSelect = styled(Select)`
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 16px 12px;
+  gap: 16px;
+  width: 100%
+  height: 56px;
+  background: #FFFFFF;
+  border: 1px solid #80747C;
+  border-radius: 8px;
+  flex: none;
+  order: 1;
+  align-self: stretch;
+  flex-grow: 0;
+
+  .ant-select-selector {
+    border: none !important;
+    padding: 0px !important;
+  }
+
+  .ant-select-selection-item {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.5px;
+    color: #1E1A1D;
+    flex: none;
+    order: 2;
+    flex-grow: 1;
+  }
+`;
+
 type CreateLixiFormModalProps = {
   account?: Account;
 } & React.HTMLProps<HTMLElement>;
@@ -202,7 +244,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
   const envelopeUpload = useAppSelector(getEnvelopeUpload);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const { XPI, Wallet } = React.useContext(AppContext);
+  const { XPI, Wallet } = React.useContext(WalletContext);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -828,8 +870,14 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
 
   return (
     <>
-      <Modal title={'Create Lixi Form'} visible={true} onCancel={handleOnCancel} footer={null}>
-        <Title>{intl.get('lixi.createLixi')}</Title>
+      <Modal
+        className="custom-create-lixi-modal"
+        title={intl.get('lixi.createLixi')}
+        visible={true}
+        onCancel={handleOnCancel}
+        footer={null}
+        style={{ top: '0 !important' }}
+      >
         <CreateForm layout="vertical">
           <Form.Item label={intl.get('lixi.claimType')}>
             <Radio.Group value={claimType} onChange={handleChangeClaimType}>
@@ -978,7 +1026,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
           <Form.Item label={intl.get('account.envelope')}>
             <Envelope>
               <Row>
-                <Col span={18} push={6} style={{ padding: '35px 0px 35px 0px' }}>
+                <Col span={18} push={6} style={{ padding: '35px 0px 35px 0px', textAlign: 'center' }}>
                   {/* <Button type="link" onClick={}> */}
                   <Button
                     onClick={showModal}
@@ -1000,7 +1048,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
                     {intl.get('lixi.envelopesSelect')}{' '}
                   </Button>
                   <br />
-                  <span> {intl.get('or')} </span>
+                  <span> {intl.get('special.or')} </span>
                   <br />
                   <StyledUploader
                     type={UPLOAD_TYPES.ENVELOPE}
@@ -1033,8 +1081,8 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
             </Envelope>
           </Form.Item>
 
-          <Form.Item>
-            <Select defaultValue={intl.get('NetworkType.SingleIP')} onChange={handleChangeNetworkType}>
+          <Form.Item label={intl.get('account.networkType')}>
+            <NetworkSelect defaultValue={intl.get('NetworkType.SingleIP')} onChange={handleChangeNetworkType}>
               <Option value={NetworkType.SingleIP}>
                 {intl.get('NetworkType.SingleIP')}
                 &nbsp;
@@ -1056,7 +1104,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
                   <QuestionCircleOutlined />
                 </Tooltip>
               </Option>
-            </Select>
+            </NetworkSelect>
           </Form.Item>
         </CreateForm>
         <SmartButton
@@ -1072,6 +1120,8 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
           {intl.get('account.createLixi')}
         </SmartButton>
       </Modal>
+
+      {/* Envelope modal */}
       <Modal
         closable={false}
         visible={isModalVisible}

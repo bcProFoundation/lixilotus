@@ -4,7 +4,7 @@ import { ThemedWalletOutlined } from '@bcpros/lixi-components/components/Common/
 import { SmartButton } from '@components/Common/PrimaryButton';
 import { StyledSpacer } from '@components/Common/StyledSpacer';
 import LixiList from '@components/Lixi/LixiList';
-import { getAccount, refreshLixiList, refreshLixiListSilent } from '@store/account/actions';
+import { getAccount, refreshLixiList, refreshLixiListSilent, silentLogin } from '@store/account/actions';
 import { Tabs } from 'antd';
 import moment from 'moment';
 import React, { useEffect } from 'react';
@@ -12,7 +12,7 @@ import { getSelectedAccount } from 'src/store/account/selectors';
 import { getEnvelopes } from 'src/store/envelope/actions';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getLixiesBySelectedAccount } from 'src/store/lixi/selectors';
-import { AppContext } from 'src/store/store';
+import { WalletContext } from 'src/store/store';
 import styled from 'styled-components';
 import WalletInfoComponent from '@components/Wallet/WalletInfo';
 import Link from 'next/link';
@@ -43,7 +43,7 @@ const StyledTabs = styled(Tabs)`
 `;
 
 const Home: React.FC = () => {
-  const ContextValue = React.useContext(AppContext);
+  const ContextValue = React.useContext(WalletContext);
 
   const dispatch = useAppDispatch();
   const lixies = useAppSelector(getLixiesBySelectedAccount);
@@ -54,6 +54,7 @@ const Home: React.FC = () => {
     dispatch(getEnvelopes());
     if (selectedAccount) {
       dispatch(getAccount(selectedAccount.id));
+      dispatch(silentLogin(selectedAccount.mnemonic));
       dispatch(refreshLixiListSilent(selectedAccount?.id));
     }
   }, []);

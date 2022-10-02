@@ -9,7 +9,7 @@ import {
 } from '@bcpros/lixi-components/components/Common/EnhancedInputs';
 import { currency } from '@components/Common/Ticker';
 import { shouldRejectAmountInput } from '@utils/validation';
-import { AppContext } from '@store/store';
+import { WalletContext } from '@store/store';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getSelectedAccount } from '@store/account/selectors';
 import { SendXpiInput } from '@bcpros/lixi-components/components/Common/EnhancedInputs';
@@ -47,7 +47,7 @@ const StyledCheckbox = styled(Checkbox)`
 // Note jestBCH is only used for unit tests; BCHJS must be mocked for jest
 const SendComponent: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { XPI, Wallet } = React.useContext(AppContext);
+  const { XPI, Wallet } = React.useContext(WalletContext);
   const wallet = useAppSelector(getSelectedAccount);
   const currentAddress = wallet?.address;
   const walletState = getWalletState(wallet);

@@ -8,22 +8,26 @@ import {
   SendOutlined,
   SettingOutlined,
   ShopOutlined,
-  WalletOutlined
+  WalletOutlined,
+  BarcodeOutlined
 } from '@ant-design/icons';
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import { Account } from '@bcpros/lixi-models';
+import ScanBarcode from '@bcpros/lixi-components/components/Common/ScanBarcode';
 import { getAllAccounts, getSelectedAccount } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { openModal } from '@store/modal/actions';
 import { fromSmallestDenomination } from '@utils/cashMethods';
-import { Layout, Space } from 'antd';
+import { Layout, message, Space } from 'antd';
 import classNames from 'classnames';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Logged } from './SideBarRanking';
+import axiosClient from '@utils/axiosClient';
+import intl from 'react-intl-universal';
 
 const { Sider } = Layout;
 
@@ -45,6 +49,25 @@ export const ItemAccess = ({
       <Space className={'item-access'}>
         <div className={classNames('icon-item', { 'active-item-access': active })}>{React.createElement(icon)}</div>
         <span className="text-item">{text}</span>
+      </Space>
+    </a>
+  </Link>
+);
+
+export const ItemAccessBarcode = ({
+  icon,
+  component,
+  active
+}: {
+  icon: React.FC;
+  component: JSX.Element;
+  active: boolean;
+}) => (
+  <Link href="">
+    <a>
+      <Space className={'item-access'}>
+        <div className={classNames('icon-item', { 'active-item-access': active })}>{React.createElement(icon)}</div>
+        <span className="text-item">{component}</span>
       </Space>
     </a>
   </Link>
@@ -183,6 +206,23 @@ const SidebarShortcut = () => {
   const [isCollapse, setIsCollapse] = useState(false);
   const router = useRouter();
   const selectedKey = router.pathname ?? '';
+  let pastScan;
+
+  const onScan = async (result: string) => {
+    if (pastScan !== result) {
+      pastScan = result;
+
+      await axiosClient
+        .post('api/lixies/check-valid', { lixiBarcode: result })
+        .then(res => {
+          message.success(res.data);
+        })
+        .catch(err => {
+          const { response } = err;
+          message.error(response.data.message ? response.data.message : intl.get('lixi.unableGetLixi'));
+        });
+    }
+  };
 
   return (
     <ShortcutSideBar>
@@ -202,9 +242,9 @@ const SidebarShortcut = () => {
           <ItemAccess
             icon={GiftOutlined}
             text={'Lixi'}
-            active={selectedKey === '/admin/lixi'}
+            active={selectedKey === '/admin/lixies'}
             key="lixi"
-            href={'/admin/lixi'}
+            href={'/admin/lixies'}
           />
           <ItemAccess icon={SendOutlined} text={'Send'} active={selectedKey === '/send'} key="send" href={'/send'} />
           <ItemAccess
@@ -251,6 +291,12 @@ const SidebarShortcut = () => {
             active={false}
             key="lotusia-shop"
             href={'https://lotusia.shop/'}
+          />
+          <ItemAccessBarcode
+            icon={BarcodeOutlined}
+            key="scan-barcode"
+            active={false}
+            component={<ScanBarcode loadWithCameraOpen={false} onScan={onScan} id={Date.now().toString()} />}
           />
         </div>
       </CointainerAccess>

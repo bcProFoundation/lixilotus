@@ -11,10 +11,17 @@ import {
   SendOutlined,
   SettingOutlined,
   ShopOutlined,
-  WalletOutlined
+  WalletOutlined,
+  BarcodeOutlined
 } from '@ant-design/icons';
-import { CointainerAccess, ItemAccess } from './SideBarShortcut';
+import { CointainerAccess, ItemAccess, ItemAccessBarcode } from './SideBarShortcut';
 import { useRouter } from 'next/router';
+import { openModal } from '@store/modal/actions';
+import { getSelectedAccount } from '@store/account/selectors';
+import ScanBarcode from '@bcpros/lixi-components/components/Common/ScanBarcode';
+import axiosClient from '@utils/axiosClient';
+import { message } from 'antd';
+import intl from 'react-intl-universal';
 
 type SidebarContentProps = {
   className?: string;
@@ -33,9 +40,27 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
   const navCollapsed = useAppSelector(getNavCollapsed);
   const router = useRouter();
   const selectedKey = router.pathname ?? '';
+  const selectedAccount = useAppSelector(getSelectedAccount);
+  let pastScan;
 
   const handleOnClick = () => {
     dispatch(toggleCollapsedSideNav(!navCollapsed));
+  };
+
+  const onScan = async (result: string) => {
+    if (pastScan !== result) {
+      pastScan = result;
+
+      await axiosClient
+        .post('api/lixies/check-valid', { lixiBarcode: result })
+        .then(res => {
+          message.success(res.data);
+        })
+        .catch(err => {
+          const { response } = err;
+          message.error(response.data ? response.data.message : intl.get('lixi.unableGetLixi'));
+        });
+    }
   };
 
   return (
@@ -54,9 +79,9 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
           <ItemAccess
             icon={GiftOutlined}
             text={'Lixi'}
-            active={selectedKey === '/admin/lixi'}
+            active={selectedKey === '/admin/lixies'}
             key="lixi"
-            href={'/admin/lixi'}
+            href={'/admin/lixies'}
           />
           <ItemAccess icon={SendOutlined} text={'Send'} active={selectedKey === '/send'} key="send" href={'/send'} />
           <ItemAccess
@@ -65,6 +90,16 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
             active={selectedKey === '/admin/pack-register'}
             key="register-pack"
             href={'/admin/pack-register'}
+          />
+          <ItemAccess
+            icon={PlusCircleOutlined}
+            text={intl.get('account.createLixi')}
+            active={false}
+            key="create-lixi"
+            onClickItem={() => {
+              dispatch(openModal('CreateLixiFormModal', { account: selectedAccount }));
+            }}
+            href={'/admin/create'}
           />
           <ItemAccess
             icon={PlusCircleOutlined}
@@ -93,6 +128,12 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
             active={false}
             key="lotusia-shop"
             href={'https://lotusia.shop/'}
+          />
+          <ItemAccessBarcode
+            icon={BarcodeOutlined}
+            key="scan-barcode"
+            active={false}
+            component={<ScanBarcode loadWithCameraOpen={false} onScan={onScan} id={Date.now().toString()} />}
           />
         </StyledCointainerAccess>
       </div>

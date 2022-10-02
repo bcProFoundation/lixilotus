@@ -4,7 +4,7 @@ import SearchBox from '@components/Common/SearchBox';
 import { getSelectedAccount } from '@store/account/selectors';
 import { setSelectedPage } from '@store/page/action';
 import { useInfinitePagesQuery } from '@store/page/useInfinitePagesQuery';
-import { AppContext } from '@store/store';
+import { WalletContext } from '@store/store';
 import { Menu, MenuProps, Modal } from 'antd';
 import _ from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
@@ -17,7 +17,7 @@ type PagesListingProps = {
 };
 
 const PagesListing: React.FC<PagesListingProps> = ({ className }: PagesListingProps) => {
-  const ContextValue = React.useContext(AppContext);
+  const ContextValue = React.useContext(WalletContext);
   const dispatch = useAppDispatch();
   const { XPI, Wallet } = ContextValue;
   const selectedAccount = useAppSelector(getSelectedAccount);
