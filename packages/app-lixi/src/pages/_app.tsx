@@ -8,7 +8,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 
 import MainLayout from '@components/Layout/MainLayout';
 
-import { AuthenticationProvider, WalletProvider } from '@utils/context';
+import { AuthenticationProvider, WalletProvider } from 'src/context';
 import { ConnectedRouter } from 'connected-next-router';
 import { wrapper } from '../store/store';
 

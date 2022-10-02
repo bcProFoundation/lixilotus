@@ -1,11 +1,13 @@
 import { LocalUserAccount } from '@bcpros/lixi-models';
 import BCHJS from '@bcpros/xpi-js';
 import { PayloadAction } from '@reduxjs/toolkit';
+import accountApi from '@store/account/api';
 import { getCurrentLocale } from '@store/settings/selectors';
 import intl from 'react-intl-universal';
 import { all, call, fork, getContext, put, select, takeLatest } from 'redux-saga/effects';
+import { LocalUser } from 'src/models/localUser';
 import { showToast } from '../toast/actions';
-import { generateLocalUserAccount, setLocalUserAccount } from './actions';
+import { generateLocalUserAccount, importLocalUserAccount, setLocalUserAccount, silentLocalLogin, silentLocalLoginFailure, silentLocalLoginSuccess } from './actions';
 
 /**
  * Generate a account with random encryption password
@@ -92,10 +94,33 @@ function* importLocalUserAccountSaga(action: PayloadAction<string>) {
   }
 }
 
+function* silentLocalLoginSaga(action: PayloadAction<LocalUser>) {
+  try {
+    const localUser = action.payload;
+    yield call(accountApi.localLogin, localUser);
+    yield put(silentLocalLoginSuccess(localUser));
+
+  } catch (err) {
+    yield put(silentLocalLoginFailure());
+  }
+}
+
 function* watchGenerateLocalUserAccount() {
   yield takeLatest(generateLocalUserAccount.type, generateLocalUserAccountSaga);
 }
 
+function* watchImportLocalUserAccount() {
+  yield takeLatest(importLocalUserAccount.type, importLocalUserAccountSaga);
+}
+
+function* watchSilentLocalLogin() {
+  yield takeLatest(silentLocalLogin.type, silentLocalLoginSaga);
+}
+
 export default function* accountSaga() {
-  yield all([fork(watchGenerateLocalUserAccount)]);
+  yield all([
+    fork(watchGenerateLocalUserAccount),
+    fork(watchImportLocalUserAccount),
+    fork(watchSilentLocalLogin)
+  ]);
 }
