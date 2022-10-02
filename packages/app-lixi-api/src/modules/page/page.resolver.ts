@@ -8,24 +8,15 @@ import {
   UpdatePageInput
 } from '@bcpros/lixi-models';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
-import { ExecutionContext, Logger, Request, UseGuards } from '@nestjs/common';
-import {
-  Args,
-  Context,
-  GqlExecutionContext,
-  Mutation,
-  Parent,
-  Query,
-  ResolveField,
-  Resolver,
-  Subscription
-} from '@nestjs/graphql';
+import { HttpException, HttpStatus, Logger, UseGuards } from '@nestjs/common';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
 import { PrismaService } from '../prisma/prisma.service';
 import * as _ from 'lodash';
 import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
 import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
 import { I18n, I18nService } from 'nestjs-i18n';
+import VError from 'verror';
 
 const pubSub = new PubSub();
 
@@ -89,7 +80,6 @@ export class PageResolver {
         }),
       { first, last, before, after }
     );
-
     return result;
   }
 
@@ -130,9 +120,10 @@ export class PageResolver {
   @UseGuards(GqlJwtAuthGuard)
   @Mutation(() => Page)
   async createPage(@PageAccountEntity() account: Account, @Args('data') data: CreatePageInput) {
-    if (!account) {
+    if (account) {
       const couldNotFindAccount = await this.i18n.t('page.messages.couldNotFindAccount');
-      throw new Error(couldNotFindAccount);
+      var error = new VError.WError(couldNotFindAccount);
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     const uploadAvatarDetail = data.avatar
@@ -170,7 +161,7 @@ export class PageResolver {
   async updatePage(@PageAccountEntity() account: Account, @Args('data') data: UpdatePageInput) {
     if (!account) {
       const couldNotFindAccount = await this.i18n.t('page.messages.couldNotFindAccount');
-      throw new Error(couldNotFindAccount);
+      throw new VError.WError(couldNotFindAccount);
     }
 
     const uploadAvatarDetail = data.avatar
