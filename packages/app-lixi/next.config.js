@@ -87,6 +87,10 @@ const rewrites = () => {
 			source: "/user_signup/v1/email_no_verified",
 			destination: `${process.env.NEXT_PUBLIC_LIXI_OAUTH2}/user_signup/v1/email_no_verified`,
 		},
+		{
+			source: "/_api/:path*",
+			destination: "/api/:path*"
+		}
 	];
 };
 

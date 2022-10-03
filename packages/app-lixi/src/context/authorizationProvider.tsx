@@ -1,25 +1,40 @@
-import { createContext } from 'react';
+import { getSelectedAccount } from '@store/account/selectors';
+import { useAppSelector } from '@store/hooks';
+import { createContext, useCallback } from 'react';
+import { shallowEqual } from 'react-redux';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
-const noop = () => { };
+const noop = () => {};
 
 export type AuthorizationValue = {
-  authorized: boolean,
+  authorized: boolean;
+  anonymous: boolean;
   userAccountId?: number;
   alert: () => void;
-}
+};
 
 const defaultAuthorizationValue: AuthorizationValue = {
   authorized: false,
+  anonymous: true,
   alert: noop
-}
+};
 
 export const AuthorizationContext = createContext<AuthorizationValue>(defaultAuthorizationValue);
 
 export const AuthorizationProvider = ({ children }) => {
-  // useWebAuthentication returns null if Web Authn is not supported
-  // const authentication = useWebAuthentication();
-  // const authentication = {} as any;
+  const selectedAccount = useAppSelector(getSelectedAccount, shallowEqual);
+  const authorized = selectedAccount ? true : false;
+  const anonymous = !authorized;
+  const userAccountId = selectedAccount && selectedAccount.id ? selectedAccount.id : undefined;
 
-  return <AuthorizationContext.Provider value={defaultAuthorizationValue}>{children}</AuthorizationContext.Provider>;
+  const alert = useCallback(() => {
+    // Alert not have permission here
+    console.log('no permission');
+  }, []);
+
+  return (
+    <AuthorizationContext.Provider value={{ authorized, anonymous, userAccountId, alert }}>
+      {children}
+    </AuthorizationContext.Provider>
+  );
 };

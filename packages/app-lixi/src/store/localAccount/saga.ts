@@ -1,13 +1,20 @@
 import { LocalUserAccount } from '@bcpros/lixi-models';
 import BCHJS from '@bcpros/xpi-js';
 import { PayloadAction } from '@reduxjs/toolkit';
-import accountApi from '@store/account/api';
 import { getCurrentLocale } from '@store/settings/selectors';
 import intl from 'react-intl-universal';
 import { all, call, fork, getContext, put, select, takeLatest } from 'redux-saga/effects';
 import { LocalUser } from 'src/models/localUser';
 import { showToast } from '../toast/actions';
-import { generateLocalUserAccount, importLocalUserAccount, setLocalUserAccount, silentLocalLogin, silentLocalLoginFailure, silentLocalLoginSuccess } from './actions';
+import {
+  generateLocalUserAccount,
+  importLocalUserAccount,
+  setLocalUserAccount,
+  silentLocalLogin,
+  silentLocalLoginFailure,
+  silentLocalLoginSuccess
+} from './actions';
+import localAccountApi from './api';
 
 /**
  * Generate a account with random encryption password
@@ -45,6 +52,13 @@ function* generateLocalUserAccountSaga(action: PayloadAction) {
   );
 
   yield put(setLocalUserAccount(account));
+
+  const localUser: LocalUser = {
+    id: account.address,
+    address: account.address,
+    name: account.name
+  };
+  yield put(silentLocalLogin(localUser));
 }
 
 function* importLocalUserAccountSaga(action: PayloadAction<string>) {
@@ -81,6 +95,13 @@ function* importLocalUserAccountSaga(action: PayloadAction<string>) {
       );
 
       yield put(setLocalUserAccount(account));
+
+      const localUser: LocalUser = {
+        id: account.address,
+        address: account.address,
+        name: account.name
+      };
+      yield put(silentLocalLogin(localUser));
     }
   } catch (err) {
     const message = action.payload ?? intl.get('account.unableToImport');
@@ -97,9 +118,8 @@ function* importLocalUserAccountSaga(action: PayloadAction<string>) {
 function* silentLocalLoginSaga(action: PayloadAction<LocalUser>) {
   try {
     const localUser = action.payload;
-    yield call(accountApi.localLogin, localUser);
+    yield call(localAccountApi.localLogin, localUser);
     yield put(silentLocalLoginSuccess(localUser));
-
   } catch (err) {
     yield put(silentLocalLoginFailure());
   }
@@ -118,9 +138,5 @@ function* watchSilentLocalLogin() {
 }
 
 export default function* accountSaga() {
-  yield all([
-    fork(watchGenerateLocalUserAccount),
-    fork(watchImportLocalUserAccount),
-    fork(watchSilentLocalLogin)
-  ]);
+  yield all([fork(watchGenerateLocalUserAccount), fork(watchImportLocalUserAccount), fork(watchSilentLocalLogin)]);
 }

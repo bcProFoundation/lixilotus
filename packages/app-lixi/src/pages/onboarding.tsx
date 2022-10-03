@@ -1,48 +1,52 @@
-import React, { useEffect } from 'react';
-import { END } from 'redux-saga';
-import { SagaStore, wrapper } from '@store/store';
-import { getSelectedLocalUserAccount } from '../store/localAccount/selectors';
-import { useAppSelector } from '@store/hooks';
+import { LocalUserAccount } from '@bcpros/lixi-models';
 import OnboardingComponent from '@components/Onboarding/Onboarding';
+import { getSelectedAccount } from '@store/account/selectors';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { setLocalUserAccount, silentLocalLogin } from '@store/localAccount';
+import { SagaStore, wrapper } from '@store/store';
 import { withIronSessionSsr } from 'iron-session/next';
-import { sessionOptions } from 'src/models/session';
-import accountApi from '@store/account/api';
-import { LocalUser } from 'src/models/localUser';
 import Router from 'next/router';
+import { useEffect } from 'react';
+import { END } from 'redux-saga';
+import { LocalUser } from 'src/models/localUser';
+import { sessionOptions } from 'src/models/session';
 
 type OnboardingProps = {
   isMobile: boolean;
   localUser: LocalUser;
-}
+};
 
 const OnboardingPage = ({ isMobile, localUser }: OnboardingProps) => {
+  const dispatch = useAppDispatch();
+  const selectedAccount = useAppSelector(getSelectedAccount);
 
-  const selectedLocalAccount = useAppSelector(getSelectedLocalUserAccount);
-
-  if (
-    selectedLocalAccount &&
-    localUser &&
-    selectedLocalAccount.address == localUser.id &&
-    localUser.isLocalLoggedIn === true
-  ) {
+  if (selectedAccount && localUser && selectedAccount.address == localUser.id && localUser.isLocalLoggedIn === true) {
     Router.push('/');
   }
 
   useEffect(() => {
-    if (selectedLocalAccount &&
-      !localUser) {
+    if (selectedAccount && !localUser) {
       // Local local with nextjs api route
-      const newLocalUser: LocalUser = {
-        name: selectedLocalAccount.name,
-        id: selectedLocalAccount.address,
-        address: selectedLocalAccount.address
+      const localAccount: LocalUserAccount = {
+        mnemonic: selectedAccount.mnemonic,
+        language: selectedAccount.language,
+        address: selectedAccount.address,
+        balance: selectedAccount.balance,
+        name: selectedAccount.name,
+        createdAt: selectedAccount.createdAt,
+        updatedAt: selectedAccount.updatedAt
       };
-      accountApi.localLogin(newLocalUser).then(() => {
-        Router.push('/');
-      });
+      dispatch(setLocalUserAccount(localAccount));
 
+      const localUser: LocalUser = {
+        id: localAccount.address,
+        address: localAccount.address,
+        name: localAccount.name
+      };
+      dispatch(silentLocalLogin(localUser));
+      Router.push('/');
     }
-  }, [selectedLocalAccount, localUser])
+  }, [selectedAccount, localUser]);
 
   return <OnboardingComponent />;
 };

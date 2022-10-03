@@ -7,7 +7,10 @@ const { selectAll, selectEntities, selectIds, selectTotal } = localAccountsAdapt
 
 export const getAllLocalUserAccounts = createSelector((state: RootState) => state.localAccounts, selectAll);
 
-export const getAllLocalUserAccountsEntities = createSelector((state: RootState) => state.localAccounts, selectEntities);
+export const getAllLocalUserAccountsEntities = createSelector(
+  (state: RootState) => state.localAccounts,
+  selectEntities
+);
 
 export const getSelectedLocalUserAccountId = createSelector(
   (state: RootState) => state.localAccounts,

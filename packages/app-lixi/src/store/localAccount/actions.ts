@@ -20,12 +20,6 @@ export const changeLocalUserAccountLocaleSuccess = createAction<LocalUserAccount
 export const changeLocalUserAccountLocaleFailure = createAction<string>(
   'localUserAccount/changeLocalUserAccountLocaleFailure'
 );
-export const silentLocalLogin = createAction<LocalUser>(
-  'localUserAccount/siclentLocalLogin'
-);
-export const silentLocalLoginSuccess = createAction<LocalUser>(
-  'localUserAccount/siclentLocalLoginSuccess'
-);
-export const silentLocalLoginFailure = createAction<string>(
-  'localUserAccount/siclentLocalLoginFailure'
-);
+export const silentLocalLogin = createAction<LocalUser>('localUserAccount/silentLocalLogin');
+export const silentLocalLoginSuccess = createAction<LocalUser>('localUserAccount/silentLocalLoginSuccess');
+export const silentLocalLoginFailure = createAction<string>('localUserAccount/silentLocalLoginFailure');

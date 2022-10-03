@@ -1,7 +1,7 @@
 import { ExclamationCircleOutlined, ImportOutlined, LockOutlined, PlusSquareOutlined } from '@ant-design/icons';
 import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
 import PrimaryButton, { SecondaryButton, SmartButton } from '@components/Common/PrimaryButton';
-import { generateLocalUserAccount, importLocalUserAccount } from '@store/localAccount';
+import { generateAccount, importAccount } from '@store/account/actions';
 import { Form, Input, Modal } from 'antd';
 import React, { useState } from 'react';
 import intl from 'react-intl-universal';
@@ -69,7 +69,7 @@ const OnboardingComponent: React.FC = () => {
       cancelText: intl.get('onboarding.cancel'),
       centered: true,
       onOk() {
-        dispatch(generateLocalUserAccount());
+        dispatch(generateAccount());
       },
       onCancel() {
         console.log('Cancel');
@@ -102,7 +102,7 @@ const OnboardingComponent: React.FC = () => {
       return;
     }
 
-    dispatch(importLocalUserAccount(formData.mnemonic));
+    dispatch(importAccount(formData.mnemonic));
   }
 
   return (
