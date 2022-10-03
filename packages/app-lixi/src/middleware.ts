@@ -7,7 +7,7 @@ function shouldExclude(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
   return (
-    path.startsWith('/api') || //  exclude all API routes
+    path.startsWith('/_api') || //  exclude all API routes
     path.startsWith('/static') || // exclude static files
     path.includes('.') // exclude all files in the public folder
   );
@@ -41,5 +41,5 @@ export const middleware = async (req: NextRequest) => {
 
 // See "Matching Paths" below to learn more
 export const config = {
-  matcher: ['/((?!api|static|favicon.ico).*)']
+  matcher: ['/((?!_api|static|favicon.ico).*)']
 };
