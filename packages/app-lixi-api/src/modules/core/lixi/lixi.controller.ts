@@ -137,53 +137,6 @@ export class LixiController {
     }
   }
 
-  @Get(':id/no-secret')
-  async getLixiNoSecret(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<any> {
-    try {
-      const lixi = await this.prisma.lixi.findUnique({
-        where: {
-          id: _.toSafeInteger(id)
-        },
-        include: {
-          envelope: true,
-          distributions: true
-        }
-      });
-
-      if (!lixi) {
-        const lixiNotExist = await i18n.t('lixi.messages.lixiNotExist');
-        throw new VError(lixiNotExist);
-      }
-
-      const balance: number = await this.xpiWallet.getBalance(lixi.address);
-
-      let resultApi: any;
-      resultApi = _.omit(
-        {
-          ...lixi,
-          activationAt: lixi.activationAt ? lixi.activationAt.toISOString() : null,
-          isClaimed: lixi.isClaimed,
-          balance: balance,
-          totalClaim: Number(lixi.totalClaim),
-          envelope: lixi.envelope,
-          distributions: lixi.distributions
-        } as unknown as LixiDto,
-        'encryptedXPriv',
-        'encryptedClaimCode'
-      );
-
-      return resultApi;
-    } catch (err: unknown) {
-      if (err instanceof VError) {
-        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
-      } else {
-        const unableToGetLixi = await i18n.t('lixi.messages.unableToGetLixi');
-        const error = new VError.WError(err as Error, unableToGetLixi);
-        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
-    }
-  }
-
   @Get(':id/children')
   async getSubLixi(
     @Param('id') id: string,
