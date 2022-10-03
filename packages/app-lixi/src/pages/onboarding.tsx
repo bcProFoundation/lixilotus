@@ -7,9 +7,11 @@ import { SagaStore, wrapper } from '@store/store';
 import { withIronSessionSsr } from 'iron-session/next';
 import Router from 'next/router';
 import { useEffect } from 'react';
+import { getSelectorsByUserAgent } from 'react-device-detect';
 import { END } from 'redux-saga';
 import { LocalUser } from 'src/models/localUser';
 import { sessionOptions } from 'src/models/session';
+
 
 type OnboardingProps = {
   isMobile: boolean;
@@ -61,13 +63,8 @@ export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) 
 
     let isMobile = false;
     if (typeof window === 'undefined' && headers['user-agent']) {
-      const UAParser = eval('require("ua-parser-js")');
-      const parser = new UAParser();
-      const device = parser.setUA(headers['user-agent']).getDevice();
-
-      if (device.type === 'mobile') {
-        isMobile = true;
-      }
+      const userAgent = req ? req.headers['user-agent'] : '';
+      isMobile = getSelectorsByUserAgent(userAgent).isMobile;
     }
 
     const localUser = req.session.localUser;
