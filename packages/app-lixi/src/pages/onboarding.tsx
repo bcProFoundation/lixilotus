@@ -12,7 +12,6 @@ import { END } from 'redux-saga';
 import { LocalUser } from 'src/models/localUser';
 import { sessionOptions } from 'src/models/session';
 
-
 type OnboardingProps = {
   isMobile: boolean;
   localUser: LocalUser;

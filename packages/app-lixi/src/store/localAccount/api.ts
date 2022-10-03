@@ -3,7 +3,7 @@ import { LocalUser } from 'src/models/localUser';
 
 const localAccountApi = {
   localLogin(localUser: LocalUser): Promise<any> {
-    const url = '/api/local-login';
+    const url = '/_api/local-login';
     return axiosClient
       .post(url, localUser)
       .then(res => {

@@ -47,13 +47,6 @@ server {
     proxy_set_header X-Forwarded-Proto $scheme;
   }
 
-  location /_api/local-login {
-    proxy_pass http://localhost:3000;
-    proxy_set_header Host $host;
-    proxy_set_header X-Forwarded-For $remote_addr;
-    proxy_set_header X-Forwarded-Proto $scheme;
-  }
-
   location /_next/webpack-hmr {
     proxy_pass http://localhost:3000/_next/webpack-hmr;
     proxy_http_version 1.1;
