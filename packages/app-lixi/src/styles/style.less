@@ -191,13 +191,61 @@ code {
   --border-item-dark: #e9eaed;
 }
 
-
 .ant-modal {
   &&.custom-create-lixi-modal {
     top: 0px !important;
 
     .ant-modal-body {
       text-align: center;
+    }
+  }
+}
+
+// custom default btn
+.ant-btn-primary {
+  background: var(--color-primary);
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: 0.1px;
+  // padding: 10px 24px;
+  border-radius: 16px;
+  height: fit-content;
+  &:disabled {
+    background-color: rgba(30, 26, 29, 0.12);
+    color: rgba(30, 26, 29, 0.38);
+    border-color: transparent;
+    &:hover {
+      background: rgba(30, 26, 29, 0.12);
+      border-color: transparent;
+    }
+  }
+
+  &.outline-btn {
+    color: var(--color-primary);
+    background: #ffffff;
+    border: 1px solid #80747d;
+    &:hover {
+      background: rgba(158, 42, 156, 0.08);
+    }
+    &:disabled {
+      background-color: #fff;
+      border: 1px solid rgba(30, 26, 29, 0.38);
+      color: rgba(30, 26, 29, 0.38);
+    }
+  }
+
+  &.no-border-btn {
+    color: var(--color-primary);
+    background: #ffffff;
+    border: 0;
+    &:hover {
+      background: rgba(158, 42, 156, 0.08);
+    }
+    &:disabled {
+      background-color: #fff;
+      border: 0;
+      color: rgba(30, 26, 29, 0.38);
     }
   }
 }

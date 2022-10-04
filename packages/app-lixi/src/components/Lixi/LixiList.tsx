@@ -16,19 +16,7 @@ import { openModal } from '@store/modal/actions';
 
 const { Text } = Typography;
 
-const CreateLixiBtn = styled(Button)`
-  background: #ffd7f6;
-  border-radius: 16px;
-
-  &:hover {
-    background: #ffd7f6;
-  }
-
-  &:focus {
-    border: 2px solid #9e2a9c;
-    box-shadow: 0px 0px 4px rgba(148, 31, 147, 0.5);
-  }
-`;
+const CreateLixiBtn = styled(Button)``;
 
 const StyledSearchLixi = styled(Input)`
   border-radius: 5px;
@@ -165,7 +153,7 @@ const LixiList = ({ lixies }: LixiListProps) => {
         <>
           <Row>
             <Col span={3}>
-              <CreateLixiBtn shape="round" onClick={createLixiBtn}>
+              <CreateLixiBtn type="primary" className="outline-btn" onClick={createLixiBtn}>
                 New lixi
               </CreateLixiBtn>
             </Col>
