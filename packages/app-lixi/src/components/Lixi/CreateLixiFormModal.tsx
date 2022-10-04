@@ -1064,9 +1064,9 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
                       !newEnvelopeId && !envelopeUpload
                         ? '/images/lotus_logo.png'
                         : (newEnvelopeId &&
-                            !envelopeUpload &&
-                            baseUrl + 'api/' + envelopes.find(item => item.id === newEnvelopeId).thumbnail) ||
-                          (envelopeUpload && envelopeUpload.url)
+                          !envelopeUpload &&
+                          baseUrl + 'api/' + envelopes.find(item => item.id === newEnvelopeId).thumbnail) ||
+                        (envelopeUpload && envelopeUpload.url)
                     }
                     style={{
                       position: 'absolute',
