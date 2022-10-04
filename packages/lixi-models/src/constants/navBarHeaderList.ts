@@ -28,10 +28,5 @@ export const navBarHeaderList = [
     name: 'Lixi',
     subTitle: 'Manage Lixi',
     path: '/admin/lixies'
-  },
-  {
-    name: 'Create Lixi',
-    subTitle: 'Create Lixi',
-    path: '/admin/create'
   }
 ];
