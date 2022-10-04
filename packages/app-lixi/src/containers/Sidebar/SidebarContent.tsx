@@ -16,6 +16,8 @@ import {
 } from '@ant-design/icons';
 import { CointainerAccess, ItemAccess, ItemAccessBarcode } from './SideBarShortcut';
 import { useRouter } from 'next/router';
+import { openModal } from '@store/modal/actions';
+import { getSelectedAccount } from '@store/account/selectors';
 import ScanBarcode from '@bcpros/lixi-components/components/Common/ScanBarcode';
 import axiosClient from '@utils/axiosClient';
 import { message } from 'antd';
@@ -38,6 +40,7 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
   const navCollapsed = useAppSelector(getNavCollapsed);
   const router = useRouter();
   const selectedKey = router.pathname ?? '';
+  const selectedAccount = useAppSelector(getSelectedAccount);
   let pastScan;
 
   const handleOnClick = () => {
@@ -76,9 +79,9 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
           <ItemAccess
             icon={GiftOutlined}
             text={'Lixi'}
-            active={selectedKey === '/admin/lixies'}
+            active={selectedKey === '/lixies'}
             key="lixi"
-            href={'/admin/lixies'}
+            href={'/lixies'}
           />
           <ItemAccess icon={SendOutlined} text={'Send'} active={selectedKey === '/send'} key="send" href={'/send'} />
           <ItemAccess
@@ -87,6 +90,16 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
             active={selectedKey === '/admin/pack-register'}
             key="register-pack"
             href={'/admin/pack-register'}
+          />
+          <ItemAccess
+            icon={PlusCircleOutlined}
+            text={intl.get('account.createLixi')}
+            active={false}
+            key="create-lixi"
+            onClickItem={() => {
+              dispatch(openModal('CreateLixiFormModal', { account: selectedAccount }));
+            }}
+            href={'/admin/create'}
           />
           <ItemAccess
             icon={PlusCircleOutlined}

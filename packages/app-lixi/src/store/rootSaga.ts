@@ -1,6 +1,7 @@
 import { all } from 'redux-saga/effects';
 
 import accountSaga from './account/saga';
+import localAccountSaga from './localAccount/saga';
 import lixiSaga from './lixi/saga';
 import claimSaga from './claim/saga';
 import envelopeSaga from './envelope/saga';
@@ -14,6 +15,7 @@ import countrySaga from './country/saga';
 export default function* rootSaga() {
   yield all([
     accountSaga(),
+    localAccountSaga(),
     lixiSaga(),
     sendSaga(),
     claimSaga(),

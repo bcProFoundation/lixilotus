@@ -1,14 +1,13 @@
-import styled from 'styled-components';
-import React from 'react';
-import intl from 'react-intl-universal';
-import PrimaryButton, { SecondaryButton, SmartButton } from '@components/Common/PrimaryButton';
 import { ExclamationCircleOutlined, ImportOutlined, LockOutlined, PlusSquareOutlined } from '@ant-design/icons';
-import { Form, Input, Modal } from 'antd';
-import { useState } from 'react';
 import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
-import { WalletContext } from 'src/store/store';
+import PrimaryButton, { SecondaryButton, SmartButton } from '@components/Common/PrimaryButton';
+import { generateAccount, importAccount } from '@store/account/actions';
+import { Form, Input, Modal } from 'antd';
+import React, { useState } from 'react';
+import intl from 'react-intl-universal';
 import { useAppDispatch } from 'src/store/hooks';
-import { generateAccount, importAccount } from 'src/store/account/actions';
+import { WalletContext } from 'src/store/store';
+import styled from 'styled-components';
 
 export const LotusLogo = styled.img`
   width: 70px;

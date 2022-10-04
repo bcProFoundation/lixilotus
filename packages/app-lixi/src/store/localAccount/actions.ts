@@ -1,15 +1,11 @@
 import { LocalUserAccount, RenameAccountCommand, Lixi, ChangeAccountLocaleCommand } from '@bcpros/lixi-models';
 import { createAction } from '@reduxjs/toolkit';
+import { LocalUser } from 'src/models/localUser';
 
 export const generateLocalUserAccount = createAction('localUserAccount/generateLocalUserAccount');
 export const setLocalUserAccount = createAction<LocalUserAccount>('localUserAccount/setLocalUserAccount');
-export const setLocalUserAccountSuccess = createAction<LocalUserAccount>('localUserAccount/setLocalUserAccountSuccess');
 export const selectLocalUserAccount = createAction<number>('localUserAccount/selectLocalUserAccount');
 export const importLocalUserAccount = createAction<string>('localUserAccount/importLocalUserAccount');
-export const importLocalUserAccountSuccess = createAction<{ account: LocalUserAccount; lixies: Lixi[] }>(
-  'localUserAccount/importLocalUserAccountSuccess'
-);
-export const importLocalUserAccountFailure = createAction<string>('localUserAccount/importLocalUserAccountFailure');
 export const renameLocalUserAccount = createAction<RenameAccountCommand>('localUserAccount/renameLocalUserAccount');
 export const renameLocalUserAccountSuccess = createAction<LocalUserAccount>(
   'localUserAccount/renameLocalUserAccountSuccess'
@@ -24,6 +20,6 @@ export const changeLocalUserAccountLocaleSuccess = createAction<LocalUserAccount
 export const changeLocalUserAccountLocaleFailure = createAction<string>(
   'localUserAccount/changeLocalUserAccountLocaleFailure'
 );
-// export const deleteLocalUserAccount = createAction<DeleteAccountCommand>('localUserAccount/deleteLocalUserAccount');
-export const deleteLocalUserAccountSuccess = createAction<number>('localUserAccount/deleteLocalUserAccountSuccess');
-export const deleteLocalUserAccountFailure = createAction<string>('localUserAccount/deleteLocalUserAccountFailure');
+export const silentLocalLogin = createAction<LocalUser>('localUserAccount/silentLocalLogin');
+export const silentLocalLoginSuccess = createAction<LocalUser>('localUserAccount/silentLocalLoginSuccess');
+export const silentLocalLoginFailure = createAction<string>('localUserAccount/silentLocalLoginFailure');
