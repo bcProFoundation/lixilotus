@@ -504,8 +504,7 @@ const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
         </WrapperPage>
       ) : (
         intl.get('page.selectAccountFirst')
-      )
-      }
+      )}
     </>
   );
 };

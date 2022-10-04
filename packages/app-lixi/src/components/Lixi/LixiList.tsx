@@ -17,18 +17,18 @@ import { openModal } from '@store/modal/actions';
 const { Text } = Typography;
 
 const CreateLixiBtn = styled(Button)`
-  background: #FFD7F6;
+  background: #ffd7f6;
   border-radius: 16px;
 
   &:hover {
-    background: #FFD7F6;
+    background: #ffd7f6;
   }
 
   &:focus {
-    border: 2px solid #9E2A9C;
+    border: 2px solid #9e2a9c;
     box-shadow: 0px 0px 4px rgba(148, 31, 147, 0.5);
   }
-`
+`;
 
 const StyledSearchLixi = styled(Input)`
   border-radius: 5px;
@@ -165,7 +165,9 @@ const LixiList = ({ lixies }: LixiListProps) => {
         <>
           <Row>
             <Col span={3}>
-              <CreateLixiBtn shape="round" onClick={createLixiBtn}>New lixi</CreateLixiBtn>
+              <CreateLixiBtn shape="round" onClick={createLixiBtn}>
+                New lixi
+              </CreateLixiBtn>
             </Col>
             <Col span={16} offset={1}>
               <StyledSearchLixi placeholder="Search lixi" suffix={<SearchOutlined />} />
@@ -248,7 +250,6 @@ const LixiList = ({ lixies }: LixiListProps) => {
       ) : (
         intl.get('account.selectLixiFirst')
       )}
-
     </>
   );
 };
