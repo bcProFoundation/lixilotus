@@ -235,7 +235,7 @@ const Lixi = props => {
   const selectedLixiRedux = useAppSelector(getSelectedLixi);
   const selectedLixiIdRedux = useAppSelector(getSelectedLixiId);
   const selectedLixiId = lixi.id ? selectedLixiIdRedux : lixi;
-  const selectedLixi = lixi ? selectedLixiRedux : lixi ;
+  const selectedLixi = lixi ? selectedLixiRedux : lixi;
   const allClaimsCurrentLixi = useAppSelector(getAllClaims);
   const [claimCodeVisible, setClaimCodeVisible] = useState(false);
   const qrPanelRef = React.useRef(null);
@@ -618,7 +618,7 @@ const Lixi = props => {
   };
 
   const statusLixi = () => {
-    if (moment().isAfter(selectedLixi.expiryAt)) {
+    if ((lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim) || moment().isAfter(lixi.expiryAt) || selectedLixi.status == 'failed') {
       return (
         <Text
           style={{
