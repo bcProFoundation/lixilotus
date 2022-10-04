@@ -20,8 +20,9 @@ import { openModal } from '@store/modal/actions';
 import { getSelectedAccount } from '@store/account/selectors';
 import ScanBarcode from '@bcpros/lixi-components/components/Common/ScanBarcode';
 import axiosClient from '@utils/axiosClient';
-import { message } from 'antd';
+import { Button, message, Space } from 'antd';
 import intl from 'react-intl-universal';
+import { CreateLixiFormModal } from '@components/Lixi/CreateLixiFormModal';
 
 type SidebarContentProps = {
   className?: string;
@@ -90,16 +91,6 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
             active={selectedKey === '/admin/pack-register'}
             key="register-pack"
             href={'/admin/pack-register'}
-          />
-          <ItemAccess
-            icon={PlusCircleOutlined}
-            text={intl.get('account.createLixi')}
-            active={false}
-            key="create-lixi"
-            onClickItem={() => {
-              dispatch(openModal('CreateLixiFormModal', { account: selectedAccount }));
-            }}
-            href={'/admin/create'}
           />
           <ItemAccess
             icon={PlusCircleOutlined}
