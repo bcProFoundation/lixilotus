@@ -243,9 +243,9 @@ const SidebarShortcut = () => {
           <ItemAccess
             icon={GiftOutlined}
             text={'Lixi'}
-            active={selectedKey === '/admin/lixies'}
+            active={selectedKey === '/lixies'}
             key="lixi"
-            href={'/admin/lixies'}
+            href={'/lixies'}
           />
           <ItemAccess icon={SendOutlined} text={'Send'} active={selectedKey === '/send'} key="send" href={'/send'} />
           <ItemAccess

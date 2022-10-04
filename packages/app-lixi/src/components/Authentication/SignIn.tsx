@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Modal, Spin } from 'antd';
 import styled from 'styled-components';
-import { AuthenticationContext } from '@utils/context';
+import { AuthenticationContext } from 'src/context';
 import PrimaryButton from '@components/Common/PrimaryButton';
 import FingerprintSVG from '@assets/icons/fingerprint-solid.svg';
 import { ThemedLockOutlined } from '@bcpros/lixi-components/components/Common/CustomIcons';

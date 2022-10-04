@@ -7,7 +7,8 @@ import {
   Lixi,
   RenameAccountCommand,
   RegisterViaEmailNoVerifiedCommand,
-  LoginViaEmailCommand
+  LoginViaEmailCommand,
+  LocalUserAccount
 } from '@bcpros/lixi-models';
 import BCHJS from '@bcpros/xpi-js';
 import { PayloadAction } from '@reduxjs/toolkit';
@@ -68,6 +69,7 @@ import {
 } from './actions';
 import { getAccountById, getSelectedAccount } from './selectors';
 import { push } from 'connected-next-router';
+import { setLocalUserAccount } from '@store/localAccount';
 
 /**
  * Generate a account with random encryption password
@@ -231,6 +233,7 @@ function* importAccountSuccessSaga(action: PayloadAction<{ account: Account; lix
     })
   );
   const account = yield select(getAccountById(action.payload.account.id));
+  yield put(setAccount(account));
   yield put(hideLoading(importAccount.type));
   yield putResolve(silentLogin(action.payload.account.mnemonic));
 }
@@ -264,6 +267,16 @@ function* selectAccountSaga(action: PayloadAction<number>) {
 
 function* selectAccountSuccessSaga(action: PayloadAction<{ account: Account; lixies: Lixi[] }>) {
   const account = yield select(getAccountById(action.payload.account.id));
+  const localAccount: LocalUserAccount = {
+    mnemonic: account.mnemonic,
+    language: account.language,
+    address: account.address,
+    balance: account.balance,
+    name: account.name,
+    createdAt: account.createdAt,
+    updatedAt: account.updatedAt
+  };
+  yield put(setLocalUserAccount(localAccount));
   yield putResolve(silentLogin(account.mnemonic));
   yield put(hideLoading(selectAccount.type));
 }
@@ -286,6 +299,16 @@ function* setAccountSaga(action: PayloadAction<Account>) {
 
 function* setAccountSuccessSaga(action: PayloadAction<Account>) {
   const account = yield select(getAccountById(action.payload.id));
+  const localAccount: LocalUserAccount = {
+    mnemonic: account.mnemonic,
+    language: account.language,
+    address: account.address,
+    balance: account.balance,
+    name: account.name,
+    createdAt: account.createdAt,
+    updatedAt: account.updatedAt
+  };
+  yield put(setLocalUserAccount(localAccount));
   yield putResolve(silentLogin(account.mnemonic));
 }
 
