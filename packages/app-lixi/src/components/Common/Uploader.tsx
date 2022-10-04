@@ -32,7 +32,6 @@ const StyledButton = styled(Button)`
   font-size: 14px;
   line-height: 20px;
   align-items: center;
-  color: rgb(158, 42, 156);
   flex: 0 0 auto;
   order: 0;
 
