@@ -22,7 +22,7 @@ const pubSub = new PubSub();
 
 @Resolver(() => Page)
 export class PageResolver {
-  constructor(private logger: Logger, private prisma: PrismaService, @I18n() private i18n: I18nService) { }
+  constructor(private logger: Logger, private prisma: PrismaService, @I18n() private i18n: I18nService) {}
 
   @Subscription(() => Page)
   pageCreated() {
@@ -60,9 +60,9 @@ export class PageResolver {
             OR: !query
               ? undefined
               : {
-                title: { contains: query || '' },
-                name: { contains: query || '' }
-              }
+                  title: { contains: query || '' },
+                  name: { contains: query || '' }
+                }
           },
           orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
           ...paginationArgs
@@ -73,9 +73,9 @@ export class PageResolver {
             OR: !query
               ? undefined
               : {
-                title: { contains: query || '' },
-                name: { contains: query || '' }
-              }
+                  title: { contains: query || '' },
+                  name: { contains: query || '' }
+                }
           }
         }),
       { first, last, before, after }
@@ -128,18 +128,18 @@ export class PageResolver {
 
     const uploadAvatarDetail = data.avatar
       ? await this.prisma.uploadDetail.findFirst({
-        where: {
-          uploadId: data.avatar
-        }
-      })
+          where: {
+            uploadId: data.avatar
+          }
+        })
       : undefined;
 
     const uploadCoverDetail = data.cover
       ? await this.prisma.uploadDetail.findFirst({
-        where: {
-          uploadId: data.cover
-        }
-      })
+          where: {
+            uploadId: data.cover
+          }
+        })
       : undefined;
 
     const createdPage = await this.prisma.page.create({
@@ -166,18 +166,18 @@ export class PageResolver {
 
     const uploadAvatarDetail = data.avatar
       ? await this.prisma.uploadDetail.findFirst({
-        where: {
-          uploadId: data.avatar
-        }
-      })
+          where: {
+            uploadId: data.avatar
+          }
+        })
       : undefined;
 
     const uploadCoverDetail = data.cover
       ? await this.prisma.uploadDetail.findFirst({
-        where: {
-          uploadId: data.cover
-        }
-      })
+          where: {
+            uploadId: data.cover
+          }
+        })
       : undefined;
 
     const updatedPage = await this.prisma.page.update({

@@ -26,13 +26,13 @@ export const middleware = async (req: NextRequest) => {
 
   const { localUser } = session;
 
-  if (pathname == '/onboarding' && session && (localUser == undefined || localUser == null)) {
+  if (pathname == '/' && session && (localUser == undefined || localUser == null)) {
     return res;
   }
 
   if (!localUser) {
     const url = req.nextUrl.clone();
-    url.pathname = '/onboarding';
+    url.pathname = '/';
     return NextResponse.redirect(url);
   }
 
