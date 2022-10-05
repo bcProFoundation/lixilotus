@@ -87,16 +87,22 @@ const Title = styled.h1`
 
 const CreateForm = styled(Form)`
   &.form-parent {
-    display: flex;
+    display: block;
+
+    @media (min-width: 768px) {
+      display: flex;
+    }
   }
 
   &.form-child {
+    width: 100%;
+    padding: 0px;
+
     @media (min-width: 768px) {
       width: 33%;
       padding: 0px 10px;
     }
   }
-  
 
   .ant-form-item-label {
     font-family: 'Roboto';
@@ -317,6 +323,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
   const [newMaxClaimLixiIsValid, setNewMaxClaimLixiIsValid] = useState(true);
 
   // New Lixi Packages Value
+  const [checkPackage, setCheckPackage] = useState<boolean>(false);
   const [newNumberLixiPerPackage, setNewNumberLixiPerPackage] = useState('');
   const [newPackageIsValid, setNewPackageIsValid] = useState(true);
 
@@ -381,25 +388,16 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
 
   // Only enable CreateLixi button if all form entries are valid
   let createLixiFormDataIsValid =
-    (newLixiNameIsValid &&
-      newMaxClaimLixiIsValid &&
-      newPackageIsValid &&
-      newExpiryAtLixiIsValid &&
-      account &&
-      newActivatedAtLixiIsValid &&
-      ((claimType == ClaimType.OneTime &&
-        lixiType == LixiType.Random &&
-        newSubLixiIsValid &&
-        newLixiAmountValueIsValid &&
-        newLixiMinValueIsValid &&
-        newLixiMaxValueIsValid) ||
-        (lixiType == LixiType.Equal && newSubLixiIsValid && newLixiAmountValueIsValid))) ||
+    (newLixiNameIsValid && newMaxClaimLixiIsValid && newPackageIsValid && newExpiryAtLixiIsValid && account && newActivatedAtLixiIsValid) &&
+    (claimType == ClaimType.OneTime &&
+      (lixiType == LixiType.Random && newSubLixiIsValid && newLixiAmountValueIsValid && newLixiMinValueIsValid && newLixiMaxValueIsValid) ||
+      (lixiType == LixiType.Equal && newSubLixiIsValid && newLixiAmountValueIsValid)
+    ) ||
     (claimType == ClaimType.Single &&
-      lixiType == LixiType.Random &&
-      newLixiMinValueIsValid &&
-      newLixiMaxValueIsValid) ||
-    (lixiType == LixiType.Fixed && newLixiFixedValueIsValid) ||
-    (lixiType == LixiType.Divided && newLixiDividedValueIsValid);
+      (lixiType == LixiType.Random && newLixiMinValueIsValid && newLixiMaxValueIsValid) ||
+      (lixiType == LixiType.Fixed && newLixiFixedValueIsValid) ||
+      (lixiType == LixiType.Divided && newLixiDividedValueIsValid)
+    );
 
   const handleChangeClaimType = (e: RadioChangeEvent) => {
     const { value } = e.target;
@@ -512,6 +510,11 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
   const handleMaxClaim = e => {
     const value = e.target.checked;
     setCheckMaxClaim(value);
+  };
+
+  const handlePackage = e => {
+    const value = e.target.checked;
+    setCheckPackage(value);
   };
 
   const handleFamilyFriendly = e => {
@@ -793,6 +796,48 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
     }
   };
 
+  const maxClaimAndPackage = () => {
+    if (claimType == ClaimType.Single) {
+      return (
+        <Form.Item validateStatus={newMaxClaimLixiIsValid === null || newMaxClaimLixiIsValid ? '' : 'error'}>
+          <Checkbox value={checkMaxClaim} onChange={e => handleMaxClaim(e)}>
+            {intl.get('account.checkMaxClaim')}
+          </Checkbox>
+          {checkMaxClaim === true && (
+            <Form.Item label={intl.get('account.maxClaim')} required>
+              <CreateInput
+                type="number"
+                name="lixiMaxClaim"
+                value={newMaxClaim}
+                onChange={e => handleNewMaxClaimInput(e)}
+                onWheel={e => e.currentTarget.blur()}
+              />
+            </Form.Item>
+          )}
+        </Form.Item>
+      );
+    } else {
+      return (
+        <Form.Item validateStatus={newPackageIsValid === null || newPackageIsValid ? '' : 'error'}>
+          <Checkbox value={checkPackage} onChange={e => handlePackage(e)}>
+            {intl.get('account.numberLixiPerPackage')}
+          </Checkbox>
+          {checkPackage === true && (
+            <Form.Item label={intl.get('account.perPack')} required>
+              <CreateInput
+                type="number"
+                name="package"
+                value={newNumberLixiPerPackage}
+                onChange={e => handleNewNumberLixiPerPackage(e)}
+                onWheel={e => e.currentTarget.blur()}
+              />
+            </Form.Item>
+          )}
+        </Form.Item>
+      );
+    }
+  }
+
   const advanceOptions = () => {
     return (
       <>
@@ -976,22 +1021,8 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
               </Form.Item>
             )}
 
-            <Form.Item>
-              <Checkbox value={checkMaxClaim} onChange={e => handleMaxClaim(e)}>
-                {intl.get('account.checkMaxClaim')}
-              </Checkbox>
-              {checkMaxClaim === true && (
-                <Form.Item label={intl.get('account.maxClaim')} required>
-                  <CreateInput
-                    type="number"
-                    name="lixiMaxClaim"
-                    value={newMaxClaim}
-                    onChange={e => handleNewMaxClaimInput(e)}
-                    onWheel={e => e.currentTarget.blur()}
-                  />
-                </Form.Item>
-              )}
-            </Form.Item>
+            {maxClaimAndPackage()}
+
           </CreateForm>
 
           <CreateForm className='form-child' layout="vertical" >
@@ -1127,9 +1158,14 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
           </CreateForm>
         </CreateForm>
 
-        <SmartButton onClick={() => handleSubmitCreateLixi()} disabled={!createLixiFormDataIsValid}>
+        <Button
+          type='primary'
+          className='create-btn'
+          onClick={() => handleSubmitCreateLixi()} disabled={!createLixiFormDataIsValid}
+          style={{ width: '143px' }}
+        >
           {intl.get('account.createLixi')}
-        </SmartButton>
+        </Button>
       </Modal>
 
       {/* Envelope modal */}
