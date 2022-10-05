@@ -57,8 +57,9 @@ const SmartButton = styled.button`
   ${({ disabled = false, ...props }) =>
     disabled === true
       ? `
+                cursor: no-drop;
                 background-image: 'none';
-                color: ${props.theme.buttons.secondary.color};
+                color: rgba(30, 26, 29, 0.38);;
                 background: ${props.theme.buttons.secondary.background};
                 :hover {
                     -webkit-box-shadow: 0px 3px 10px -5px rgba(0, 0, 0, 0.75);
