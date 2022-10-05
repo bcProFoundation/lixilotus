@@ -66,6 +66,7 @@ code {
 .custom-modal-editor {
   width: 80% !important;
   top: 2rem;
+
   .ant-modal-content {
     border-radius: 20px;
     text-align: center;
@@ -92,6 +93,7 @@ code {
           width: 100px;
           margin-top: 2rem;
           align-self: flex-end;
+
           &.input-import {
             width: 100%;
             margin-top: 0.5rem;
@@ -109,19 +111,23 @@ code {
   .ant-tabs-nav {
     .ant-tabs-nav-wrap {
       justify-content: center;
+
       .ant-tabs-tab {
         font-size: 17px !important;
         font-weight: 600;
         padding: 1rem 3rem !important;
+
         &:last-child {
           margin-left: 4rem;
         }
       }
     }
+
     &::before {
       border: 0 !important;
     }
   }
+
   @media (max-width: 768px) {
     width: 100% !important;
     height: 100% !important;
@@ -130,6 +136,7 @@ code {
     border-radius: 0;
     padding: 0;
     margin: 0;
+
     .ant-modal-content {
       border-radius: 0;
       height: 100%;
@@ -193,7 +200,19 @@ code {
 
 .ant-modal {
   &&.custom-create-lixi-modal {
-    top: 0px !important;
+    // vertical-align: middle;
+
+    // @media (max-width: 768px) {
+    //   top: 0px !important;
+    // }
+
+    // .ant-modal-content {
+    //   width: 1240px;
+
+    //   @media (max-width: 768px) {
+    //     width: 400px;
+    //   }
+    // }
 
     .ant-modal-body {
       text-align: center;
@@ -211,10 +230,12 @@ code {
   // padding: 10px 24px;
   border-radius: 16px;
   height: fit-content;
+
   &:disabled {
     background-color: rgba(30, 26, 29, 0.12);
     color: rgba(30, 26, 29, 0.38);
     border-color: transparent;
+
     &:hover {
       background: rgba(30, 26, 29, 0.12);
       border-color: transparent;
@@ -225,9 +246,11 @@ code {
     color: var(--color-primary);
     background: #ffffff;
     border: 1px solid #80747d;
+
     &:hover {
       background: rgba(158, 42, 156, 0.08);
     }
+
     &:disabled {
       background-color: #fff;
       border: 1px solid rgba(30, 26, 29, 0.38);
@@ -239,9 +262,11 @@ code {
     color: var(--color-primary);
     background: #ffffff;
     border: 0;
+
     &:hover {
       background: rgba(158, 42, 156, 0.08);
     }
+
     &:disabled {
       background-color: #fff;
       border: 0;
