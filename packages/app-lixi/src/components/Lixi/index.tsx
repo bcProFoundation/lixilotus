@@ -224,13 +224,18 @@ const StyledQRCode = styled.div`
 `;
 
 const { Panel } = Collapse;
-const Lixi: React.FC = () => {
+const Lixi = props => {
+  const { lixi } = props;
   const dispatch = useAppDispatch();
   const ContextValue = React.useContext(WalletContext);
   const { XPI, Wallet } = ContextValue;
   const selectedAccount = useAppSelector(getSelectedAccount);
-  const selectedLixiId = useAppSelector(getSelectedLixiId);
-  const selectedLixi = useAppSelector(getSelectedLixi);
+  // const selectedLixiId = useAppSelector(getSelectedLixiId);
+  // const selectedLixi = useAppSelector(getSelectedLixi);
+  const selectedLixiRedux = useAppSelector(getSelectedLixi);
+  const selectedLixiIdRedux = useAppSelector(getSelectedLixiId);
+  const selectedLixiId = lixi.id ? selectedLixiIdRedux : lixi;
+  const selectedLixi = lixi ? selectedLixiRedux : lixi ;
   const allClaimsCurrentLixi = useAppSelector(getAllClaims);
   const [claimCodeVisible, setClaimCodeVisible] = useState(false);
   const qrPanelRef = React.useRef(null);
@@ -243,11 +248,11 @@ const Lixi: React.FC = () => {
 
   const [loadings, setLoadings] = useState<boolean[]>([]);
 
-  useEffect(() => {
-    if (selectedLixi) {
-      dispatch(getLixi(selectedLixi.id));
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (selectedLixi) {
+  //     dispatch(selectLixi(selectedLixiId));
+  //   }
+  // }, [selectLixi]);
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -724,11 +729,11 @@ const Lixi: React.FC = () => {
           <StyleButton shape="round" onClick={withdrawButton}>
             {intl.get('lixi.withdraw')}
           </StyleButton>
-          {selectedLixi.claimType == ClaimType.OneTime &&
+          {selectedLixi.claimType == ClaimType.OneTime && (
             <StyleButton shape="round" onClick={() => handleExportLixi()}>
               {intl.get('lixi.exportLixi')}
             </StyleButton>
-          }
+          )}
         </Descriptions.Item>
       </Descriptions>
     );
@@ -979,7 +984,7 @@ const Lixi: React.FC = () => {
           </>
         );
     }
-  }
+  };
 
   return (
     <>

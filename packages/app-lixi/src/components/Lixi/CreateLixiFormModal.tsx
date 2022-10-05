@@ -1107,16 +1107,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
             </NetworkSelect>
           </Form.Item>
         </CreateForm>
-        <SmartButton
-          style={{
-            width: '247px',
-            height: '40px',
-            padding: '10px 24px',
-            gap: '8px'
-          }}
-          onClick={() => handleSubmitCreateLixi()}
-          disabled={!createLixiFormDataIsValid}
-        >
+        <SmartButton onClick={() => handleSubmitCreateLixi()} disabled={!createLixiFormDataIsValid}>
           {intl.get('account.createLixi')}
         </SmartButton>
       </Modal>

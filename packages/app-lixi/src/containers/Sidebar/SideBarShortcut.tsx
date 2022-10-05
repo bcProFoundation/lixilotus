@@ -19,15 +19,16 @@ import { getAllAccounts, getSelectedAccount } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { openModal } from '@store/modal/actions';
 import { fromSmallestDenomination } from '@utils/cashMethods';
-import { Layout, message, Space } from 'antd';
+import { Button, Layout, message, Space } from 'antd';
 import classNames from 'classnames';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Logged } from './SideBarRanking';
 import axiosClient from '@utils/axiosClient';
 import intl from 'react-intl-universal';
+import { CreateLixiFormModal } from '@components/Lixi/CreateLixiFormModal';
 
 const { Sider } = Layout;
 
@@ -242,9 +243,9 @@ const SidebarShortcut = () => {
           <ItemAccess
             icon={GiftOutlined}
             text={'Lixi'}
-            active={selectedKey === '/admin/lixies'}
+            active={selectedKey === '/lixies'}
             key="lixi"
-            href={'/admin/lixies'}
+            href={'/lixies'}
           />
           <ItemAccess icon={SendOutlined} text={'Send'} active={selectedKey === '/send'} key="send" href={'/send'} />
           <ItemAccess
@@ -253,16 +254,6 @@ const SidebarShortcut = () => {
             active={selectedKey === '/admin/pack-register'}
             key="register-pack"
             href={'/admin/pack-register'}
-          />
-          <ItemAccess
-            icon={PlusCircleOutlined}
-            text={'Create Lixi'}
-            active={false}
-            key="create-lixi"
-            onClickItem={() => {
-              dispatch(openModal('CreateLixiFormModal', { account: selectedAccount }));
-            }}
-            href={'/admin/create'}
           />
           <ItemAccess
             icon={PlusCircleOutlined}
