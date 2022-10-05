@@ -17,6 +17,9 @@ import { PageModule } from './modules/page/page.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { WalletModule } from './modules/wallet/wallet.module';
 import { GraphQLError, GraphQLFormattedError } from 'graphql';
+import { APP_FILTER } from '@nestjs/core';
+import { HttpExceptionFilter } from './middlewares/exception.filter';
+import { GqlHttpExceptionFilter } from './middlewares/gql.exception.filter';
 
 //enabled serving multiple static for fastify
 type FastifyServeStaticModuleOptions = ServeStaticModuleOptions & {
@@ -96,7 +99,17 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
     PageModule
   ],
   controllers: [],
-  providers: [Logger]
+  providers: [
+    Logger,
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter
+    },
+    {
+      provide: APP_FILTER,
+      useClass: GqlHttpExceptionFilter
+    }
+  ]
 })
 export class AppModule implements OnApplicationShutdown {
   onApplicationShutdown(signal: string) {
