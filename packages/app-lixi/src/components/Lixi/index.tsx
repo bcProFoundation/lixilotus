@@ -235,7 +235,7 @@ const Lixi = props => {
   const selectedLixiRedux = useAppSelector(getSelectedLixi);
   const selectedLixiIdRedux = useAppSelector(getSelectedLixiId);
   const selectedLixiId = lixi.id ? selectedLixiIdRedux : lixi;
-  const selectedLixi = lixi ? selectedLixiRedux : lixi ;
+  const selectedLixi = lixi ? selectedLixiRedux : lixi;
   const allClaimsCurrentLixi = useAppSelector(getAllClaims);
   const [claimCodeVisible, setClaimCodeVisible] = useState(false);
   const qrPanelRef = React.useRef(null);
