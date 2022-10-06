@@ -86,21 +86,6 @@ const Title = styled.h1`
 `;
 
 const CreateForm = styled(Form)`
-  .ant-form-item-label {
-    font-family: 'Roboto';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 12px;
-    line-height: 16px;
-    display: flex;
-    align-items: center;
-    letter-spacing: 0.4px;
-    color: #4e444b;
-    flex: none;
-    order: 0;
-    flex-grow: 0;
-  }
-
   .ant-radio-group {
     display: flex;
 
@@ -143,24 +128,6 @@ const CreateForm = styled(Form)`
       background: #ffffff;
     }
   }
-
-  .ant-picker.ant-picker-large {
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 16px 12px;
-    gap: 16px;
-    width: 343px;
-    height: 56px;
-    background: #ffffff;
-    border: 1px solid #80747c;
-    border-radius: 8px;
-    flex: none;
-    order: 1;
-    align-self: stretch;
-    flex-grow: 0;
-  }
 `;
 
 const CreateInput = styled(Input)`
@@ -172,7 +139,7 @@ const CreateInput = styled(Input)`
   width: 100%;
   height: 56px;
   background: #ffffff;
-  border: 1px solid #80747c;
+  border: 1px solid var(--border-color-base);
   border-radius: 8px;
   flex: none;
   order: 1;
@@ -203,7 +170,7 @@ const NetworkSelect = styled(Select)`
   width: 100%
   height: 56px;
   background: #FFFFFF;
-  border: 1px solid #80747C;
+  border: 1px solid var(--border-color-base);
   border-radius: 8px;
   flex: none;
   order: 1;
@@ -965,7 +932,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
               {intl.get('account.checkMaxClaim')}
             </Checkbox>
             {checkMaxClaim === true && (
-              <Form.Item label={intl.get('account.maxClaim')} required>
+              <Form.Item style={{ marginBottom: '0' }} label={intl.get('account.maxClaim')} required>
                 <CreateInput
                   type="number"
                   name="lixiMaxClaim"
