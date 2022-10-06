@@ -618,7 +618,11 @@ const Lixi = props => {
   };
 
   const statusLixi = () => {
-    if (moment().isAfter(selectedLixi.expiryAt)) {
+    if (
+      (lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim) ||
+      moment().isAfter(lixi.expiryAt) ||
+      selectedLixi.status == 'failed'
+    ) {
       return (
         <Text
           style={{
