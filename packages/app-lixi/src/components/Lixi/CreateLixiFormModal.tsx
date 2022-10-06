@@ -388,16 +388,25 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
 
   // Only enable CreateLixi button if all form entries are valid
   let createLixiFormDataIsValid =
-    (newLixiNameIsValid && newMaxClaimLixiIsValid && newPackageIsValid && newExpiryAtLixiIsValid && account && newActivatedAtLixiIsValid) &&
-    (claimType == ClaimType.OneTime &&
-      (lixiType == LixiType.Random && newSubLixiIsValid && newLixiAmountValueIsValid && newLixiMinValueIsValid && newLixiMaxValueIsValid) ||
-      (lixiType == LixiType.Equal && newSubLixiIsValid && newLixiAmountValueIsValid)
-    ) ||
+    (newLixiNameIsValid &&
+      newMaxClaimLixiIsValid &&
+      newPackageIsValid &&
+      newExpiryAtLixiIsValid &&
+      account &&
+      newActivatedAtLixiIsValid &&
+      ((claimType == ClaimType.OneTime &&
+        lixiType == LixiType.Random &&
+        newSubLixiIsValid &&
+        newLixiAmountValueIsValid &&
+        newLixiMinValueIsValid &&
+        newLixiMaxValueIsValid) ||
+        (lixiType == LixiType.Equal && newSubLixiIsValid && newLixiAmountValueIsValid))) ||
     (claimType == ClaimType.Single &&
-      (lixiType == LixiType.Random && newLixiMinValueIsValid && newLixiMaxValueIsValid) ||
-      (lixiType == LixiType.Fixed && newLixiFixedValueIsValid) ||
-      (lixiType == LixiType.Divided && newLixiDividedValueIsValid)
-    );
+      lixiType == LixiType.Random &&
+      newLixiMinValueIsValid &&
+      newLixiMaxValueIsValid) ||
+    (lixiType == LixiType.Fixed && newLixiFixedValueIsValid) ||
+    (lixiType == LixiType.Divided && newLixiDividedValueIsValid);
 
   const handleChangeClaimType = (e: RadioChangeEvent) => {
     const { value } = e.target;
@@ -836,7 +845,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
         </Form.Item>
       );
     }
-  }
+  };
 
   const advanceOptions = () => {
     return (
@@ -936,8 +945,8 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
         footer={null}
         style={{ top: '0 !important' }}
       >
-        <CreateForm className='form-parent'>
-          <CreateForm className='form-child' layout="vertical" >
+        <CreateForm className="form-parent">
+          <CreateForm className="form-child" layout="vertical">
             <Form.Item label={intl.get('lixi.claimType')}>
               <Radio.Group value={claimType} onChange={handleChangeClaimType}>
                 <Space direction="vertical">
@@ -993,7 +1002,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
             )}
           </CreateForm>
 
-          <CreateForm className='form-child' layout="vertical" >
+          <CreateForm className="form-child" layout="vertical">
             <Form.Item className="lixiName" label={intl.get('lixi.name')} required>
               <CreateInput name="lixiName" value={newLixiName} onChange={e => handleNewLixiNameInput(e)} />
             </Form.Item>
@@ -1022,10 +1031,9 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
             )}
 
             {maxClaimAndPackage()}
-
           </CreateForm>
 
-          <CreateForm className='form-child' layout="vertical" >
+          <CreateForm className="form-child" layout="vertical">
             <Form.Item label={intl.get('account.validityFrom')}>
               <DatePicker
                 placeholder={intl.get('account.activatedTime')}
@@ -1113,9 +1121,9 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
                         !newEnvelopeId && !envelopeUpload
                           ? '/images/lotus_logo.png'
                           : (newEnvelopeId &&
-                            !envelopeUpload &&
-                            baseUrl + 'api/' + envelopes.find(item => item.id === newEnvelopeId).thumbnail) ||
-                          (envelopeUpload && envelopeUpload.url)
+                              !envelopeUpload &&
+                              baseUrl + 'api/' + envelopes.find(item => item.id === newEnvelopeId).thumbnail) ||
+                            (envelopeUpload && envelopeUpload.url)
                       }
                       style={{
                         position: 'absolute',
@@ -1159,9 +1167,10 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
         </CreateForm>
 
         <Button
-          type='primary'
-          className='create-btn'
-          onClick={() => handleSubmitCreateLixi()} disabled={!createLixiFormDataIsValid}
+          type="primary"
+          className="create-btn"
+          onClick={() => handleSubmitCreateLixi()}
+          disabled={!createLixiFormDataIsValid}
           style={{ width: '143px' }}
         >
           {intl.get('account.createLixi')}

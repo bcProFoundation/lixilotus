@@ -4,5 +4,5 @@ import { RootState } from '../store';
 
 export const getIsBootstrapped = createSelector(
   (state: RootState) => state._persist,
-  (state: PersistState) => state && state.rehydrated ? state.rehydrated : false
+  (state: PersistState) => (state && state.rehydrated ? state.rehydrated : false)
 );
