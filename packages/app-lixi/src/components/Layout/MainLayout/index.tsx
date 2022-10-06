@@ -226,7 +226,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                         )}
                         <Content className="content-layout">{children}</Content>
                       </Layout>
-                      <SidebarRanking></SidebarRanking>
+                      {selectedKey !== '/lixies' && <SidebarRanking></SidebarRanking>}
                     </Layout>
                   </AppContainer>
                 </>

@@ -161,24 +161,6 @@ const CreateForm = styled(Form)`
       background: #ffffff;
     }
   }
-
-  .ant-picker.ant-picker-large {
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 16px 12px;
-    gap: 16px;
-    width: 343px;
-    height: 56px;
-    background: #ffffff;
-    border: 1px solid #80747c;
-    border-radius: 8px;
-    flex: none;
-    order: 1;
-    align-self: stretch;
-    flex-grow: 0;
-  }
 `;
 
 const CreateInput = styled(Input)`
@@ -190,7 +172,7 @@ const CreateInput = styled(Input)`
   width: 100%;
   height: 56px;
   background: #ffffff;
-  border: 1px solid #80747c;
+  border: 1px solid var(--border-color-base);
   border-radius: 8px;
   flex: none;
   order: 1;
@@ -221,7 +203,7 @@ const NetworkSelect = styled(Select)`
   width: 100%
   height: 56px;
   background: #FFFFFF;
-  border: 1px solid #80747C;
+  border: 1px solid var(--border-color-base);
   border-radius: 8px;
   flex: none;
   order: 1;
