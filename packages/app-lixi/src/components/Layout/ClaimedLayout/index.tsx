@@ -155,7 +155,7 @@ const ClaimedLayout: React.FC = ({ children }: ClaimedLayoutProps) => {
                       {intl.get('general.accounts')}
                     </NavButton>
                   </Link>
-                  <Link href="/lixies" passHref>
+                  <Link href="/lixi" passHref>
                     <NavButton active={false}>
                       <WalletOutlined />
                       {intl.get('general.lixi')}

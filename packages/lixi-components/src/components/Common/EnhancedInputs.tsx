@@ -29,6 +29,7 @@ export const AntdFormCss = css`
     height: 50px;
   }
   .ant-input-affix-wrapper {
+    padding: 4px 11px;
     background-color: ${props => props.theme.forms.selectionBackground};
     border: 1px solid ${props => props.theme.wallet.borders.color} !important;
   }
@@ -148,7 +149,12 @@ export const SendXpiInput = ({ onMax, inputProps, selectProps, activeFiatCode, .
   });
 
   const CurrencySelect = (
-    <Select defaultValue={currency.ticker} className="select-after" style={{ width: '25%' }} {...selectProps}>
+    <Select
+      defaultValue={currency.ticker}
+      className="select-after"
+      style={{ width: '25%', padding: '0', border: '0' }}
+      {...selectProps}
+    >
       {currencyOptions}
     </Select>
   );
