@@ -222,6 +222,7 @@ export default {
   'lixi.charityAddress': 'Charity Address',
   'lixi.lotteryAddress': 'Lottery Address',
   'lixi.lotteryAddressCheck': 'Confirm',
+  'lixi.registrantAddress': "Registrant's Address",
   'lixi.addressCopied': 'The address has been copied.',
   'lixi.redeemLixi': 'Redeem lixi',
   'lixi.status': 'Status',

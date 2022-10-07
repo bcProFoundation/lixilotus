@@ -14,6 +14,7 @@ import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
 import { Body, Controller, Get, Headers, HttpException, HttpStatus, Inject, Logger, Param, Post } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Info } from '@nestjs/graphql';
 import axios from 'axios';
 import BigNumber from 'bignumber.js';
 import geoip from 'geoip-country';
@@ -43,7 +44,7 @@ export class ClaimController {
     @Inject('xpijs') private XPI: BCHJS,
     private readonly config: ConfigService,
     private readonly lixiNftService: LixiNftService
-  ) {}
+  ) { }
 
   @Get(':id')
   async getEnvelope(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<ViewClaimDto> {
@@ -157,6 +158,9 @@ export class ClaimController {
         const lixi = await this.prisma.lixi.findUnique({
           where: {
             id: lixiId
+          },
+          include: {
+            package: true
           }
         });
 
@@ -269,6 +273,7 @@ export class ClaimController {
 
         let numberOfDistributions = 1;
         let satoshisToSend;
+        if (lixi.package?.registrant) { return numberOfDistributions++; }
         if (parentLixi && parentLixi.claimType == ClaimType.OneTime) {
           numberOfDistributions = parentLixi.joinLotteryProgram
             ? parentLixi.distributions.length + 2
@@ -301,12 +306,37 @@ export class ClaimController {
         const amountSats = Math.floor(satoshisToSend.toNumber());
 
         let outputs: { address: string; amountSat: number }[] = [];
-        outputs = [
-          {
-            address: claimApi.claimAddress,
-            amountSat: amountSats
-          }
-        ];
+        console.log("numberOfDistributions: ", numberOfDistributions);
+
+        // registrant
+        if (!_.isNil(lixi.package?.registrant)) {
+          outputs = [
+            {
+              address: claimApi.claimAddress,
+              amountSat: amountSats / 2
+            }
+          ];
+
+          outputs.push({
+            address: lixi.package?.registrant as string,
+            amountSat: amountSats / 2
+          });
+        } else {
+          outputs = [
+            {
+              address: claimApi.claimAddress,
+              amountSat: amountSats
+            }
+          ];
+        }
+        // outputs = [
+        //   {
+        //     address: claimApi.claimAddress,
+        //     amountSat: amountSats
+        //   }
+        // ];
+
+        // distributions
         if (parentLixi && parentLixi.claimType == ClaimType.OneTime && parentLixi?.distributions) {
           _.map(parentLixi.distributions, item => {
             outputs.push({
@@ -321,6 +351,7 @@ export class ClaimController {
             amountSat: amountSats
           });
         }
+
 
         if (!utxoStore || (!(utxoStore as any).bchUtxos && !(utxoStore as any).nullUtxos)) {
           const utxoEmpty = await i18n.t('claim.messages.utxoEmpty');

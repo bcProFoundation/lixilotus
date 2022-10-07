@@ -43,7 +43,7 @@ export class AccountController {
     private prisma: PrismaService,
     private readonly walletService: WalletService,
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet
-  ) {}
+  ) { }
 
   @Get(':id')
   async getAccount(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<AccountDto> {

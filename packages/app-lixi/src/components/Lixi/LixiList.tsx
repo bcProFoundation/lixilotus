@@ -23,6 +23,7 @@ const StyledSearchLixi = styled(Input)`
 `;
 
 const StyledButton = styled(Button)`
+  height: 32px;  
   background: white;
   border-color: black;
   border-radius: 5px;
@@ -161,7 +162,7 @@ const LixiList = ({ lixies }: LixiListProps) => {
               <StyledSearchLixi placeholder="Search lixi" suffix={<SearchOutlined />} />
             </Col>
             <Col span={1} offset={1}>
-              <StyledButton onClick={showFilterModal} type="primary" icon={<FilterOutlined />}></StyledButton>
+              <StyledButton className="outline-btn" onClick={showFilterModal} type="primary" icon={<FilterOutlined />}></StyledButton>
               <StyledFilterModal
                 title="Filter"
                 width={'100%'}
@@ -225,7 +226,7 @@ const LixiList = ({ lixies }: LixiListProps) => {
               </StyledFilterModal>
             </Col>
             <Col span={1} offset={1}>
-              <StyledButton onClick={refreshList} type="primary" icon={<ReloadOutlined />}></StyledButton>
+              <StyledButton className="outline-btn" onClick={refreshList} type="primary" icon={<ReloadOutlined />}></StyledButton>
             </Col>
           </Row>
 

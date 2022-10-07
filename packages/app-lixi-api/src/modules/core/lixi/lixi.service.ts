@@ -31,7 +31,7 @@ export class LixiService {
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
     @InjectQueue(CREATE_SUB_LIXIES_QUEUE) private lixiQueue: Queue,
     @I18n() private i18n: I18nService
-  ) {}
+  ) { }
 
   /**
    * @param derivationIndex The derivation index of the lixi
@@ -54,10 +54,10 @@ export class LixiService {
     const encryptedClaimCode = await aesGcmEncrypt(command.password, secret);
     const uploadDetail = command.uploadId
       ? await this.prisma.uploadDetail.findFirst({
-          where: {
-            uploadId: command.uploadId
-          }
-        })
+        where: {
+          uploadId: command.uploadId
+        }
+      })
       : undefined;
 
     // Prepare data to insert into the database
@@ -146,10 +146,10 @@ export class LixiService {
     const encryptedClaimCode = await aesGcmEncrypt(command.password, secret);
     const uploadDetail = command.uploadId
       ? await this.prisma.uploadDetail.findFirst({
-          where: {
-            uploadId: command.uploadId
-          }
-        })
+        where: {
+          uploadId: command.uploadId
+        }
+      })
       : undefined;
 
     // Prepare data to insert into the database
