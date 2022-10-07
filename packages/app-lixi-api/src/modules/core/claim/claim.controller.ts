@@ -273,9 +273,7 @@ export class ClaimController {
 
         let numberOfDistributions = 1;
         let satoshisToSend;
-        if (lixi.package?.registrant) {
-          return numberOfDistributions++;
-        }
+        !_.isNil(lixi.package?.registrant) && numberOfDistributions++;
         if (parentLixi && parentLixi.claimType == ClaimType.OneTime) {
           numberOfDistributions = parentLixi.joinLotteryProgram
             ? parentLixi.distributions.length + 2
@@ -311,26 +309,23 @@ export class ClaimController {
         console.log('numberOfDistributions: ', numberOfDistributions);
 
         // registrant
-        if (!_.isNil(lixi.package?.registrant)) {
-          outputs = [
-            {
-              address: claimApi.claimAddress,
-              amountSat: amountSats / 2
-            }
-          ];
-
-          outputs.push({
-            address: lixi.package?.registrant as string,
-            amountSat: amountSats / 2
-          });
-        } else {
-          outputs = [
-            {
-              address: claimApi.claimAddress,
-              amountSat: amountSats
-            }
-          ];
-        }
+        !_.isNil(lixi.package?.registrant)
+          ? outputs.push(
+              {
+                address: claimApi.claimAddress,
+                amountSat: amountSats / 2
+              },
+              {
+                address: lixi.package?.registrant as unknown as string,
+                amountSat: amountSats / 2
+              }
+            )
+          : (outputs = [
+              {
+                address: claimApi.claimAddress,
+                amountSat: amountSats
+              }
+            ]);
         // outputs = [
         //   {
         //     address: claimApi.claimAddress,
