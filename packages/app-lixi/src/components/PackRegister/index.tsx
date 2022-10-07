@@ -4,7 +4,10 @@ import React, { useState } from 'react';
 import { Row, Col, Form, Spin } from 'antd';
 import PrimaryButton from '@bcpros/lixi-components/components/Common/PrimaryButton';
 import { CashLoadingIcon } from '@bcpros/lixi-components/components/Common/CustomIcons';
-import { FormItemClaimCodeXpiInput, FormItemRegistrantAddressInput } from '@bcpros/lixi-components/components/Common/EnhancedInputs';
+import {
+  FormItemClaimCodeXpiInput,
+  FormItemRegistrantAddressInput
+} from '@bcpros/lixi-components/components/Common/EnhancedInputs';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
 import { getSelectedAccount } from '@store/account/selectors';

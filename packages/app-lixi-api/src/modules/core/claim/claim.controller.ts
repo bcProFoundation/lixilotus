@@ -44,7 +44,7 @@ export class ClaimController {
     @Inject('xpijs') private XPI: BCHJS,
     private readonly config: ConfigService,
     private readonly lixiNftService: LixiNftService
-  ) { }
+  ) {}
 
   @Get(':id')
   async getEnvelope(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<ViewClaimDto> {
@@ -273,7 +273,9 @@ export class ClaimController {
 
         let numberOfDistributions = 1;
         let satoshisToSend;
-        if (lixi.package?.registrant) { return numberOfDistributions++; }
+        if (lixi.package?.registrant) {
+          return numberOfDistributions++;
+        }
         if (parentLixi && parentLixi.claimType == ClaimType.OneTime) {
           numberOfDistributions = parentLixi.joinLotteryProgram
             ? parentLixi.distributions.length + 2
@@ -306,7 +308,7 @@ export class ClaimController {
         const amountSats = Math.floor(satoshisToSend.toNumber());
 
         let outputs: { address: string; amountSat: number }[] = [];
-        console.log("numberOfDistributions: ", numberOfDistributions);
+        console.log('numberOfDistributions: ', numberOfDistributions);
 
         // registrant
         if (!_.isNil(lixi.package?.registrant)) {
@@ -351,7 +353,6 @@ export class ClaimController {
             amountSat: amountSats
           });
         }
-
 
         if (!utxoStore || (!(utxoStore as any).bchUtxos && !(utxoStore as any).nullUtxos)) {
           const utxoEmpty = await i18n.t('claim.messages.utxoEmpty');
