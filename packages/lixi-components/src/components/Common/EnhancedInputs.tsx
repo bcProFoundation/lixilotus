@@ -6,7 +6,7 @@ import styled, { css } from 'styled-components';
 import ScanQRCode from './ScanQRCode';
 // import useBCH from '@hooks/useBCH';
 import { currency } from './Ticker';
-import { HeartOutlined, LockOutlined, TeamOutlined } from '@ant-design/icons';
+import { HeartOutlined, LockOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
 import UploadQRCode from './UploadQRCode';
 
 export const AntdFormCss = css`
@@ -328,6 +328,36 @@ export const FormItemCharityAddressInput = (props: FormItemCharityAddressInputPr
             <>
               <StyledScanQRCode loadWithCameraOpen={loadWithCameraOpen} onScan={onScan} id={Date.now().toString()} />
               <UploadQRCode onScan={onScan} codeType="charityAddress" />
+            </>
+          }
+          required
+          {...inputProps}
+        />
+      </Form.Item>
+    </AntdFormWrapper>
+  );
+};
+
+type FormItemRegistrantAddressInputProps = {
+  onScan: Function;
+  loadWithCameraOpen: boolean;
+  inputProps: InputProps;
+} & FormItemProps;
+
+export const FormItemRegistrantAddressInput = (props: FormItemRegistrantAddressInputProps) => {
+  const { onScan, loadWithCameraOpen, inputProps, ...otherProps } = props;
+  return (
+    <AntdFormWrapper {...otherProps}>
+      <Form.Item {...otherProps}>
+        <Input
+          prefix={<UserOutlined />}
+          placeholder={intl.get('lixi.registrantAddress')}
+          name="registrantAddress"
+          autoComplete="off"
+          addonAfter={
+            <>
+              <StyledScanQRCode loadWithCameraOpen={loadWithCameraOpen} onScan={onScan} id={Date.now().toString()} />
+              <UploadQRCode onScan={onScan} codeType="registrantAddress" />
             </>
           }
           required

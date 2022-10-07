@@ -221,6 +221,7 @@ export default {
   'lixi.charityAddress': 'Địa chỉ ví từ thiện',
   'lixi.lotteryAddress': 'Địa chỉ ví xổ số',
   'lixi.lotteryAddressCheck': 'Xác nhận',
+  'lixi.registrantAddress': 'Địa chỉ người đăng ký',
   'lixi.addressCopied': 'địa chỉ đã được sao chép.',
   'lixi.redeemLixi': 'Nhận lì xì',
   'lixi.status': 'Trạng thái',
