@@ -328,8 +328,7 @@ export class LixiController {
       const lixiId = _.toSafeInteger(base58ToNumber(encodedLixiId));
       const lixi = await this.prisma.lixi.findFirst({
         where: {
-          id: lixiId,
-          accountId: account.id
+          id: lixiId
         }
       });
 
@@ -350,7 +349,18 @@ export class LixiController {
               updatedAt: new Date()
             }
           });
-          if (lixiList.count > 0) {
+
+          const packageRegistrant = await this.prisma.package.update({
+            where: {
+              id: lixi.packageId as number
+            },
+            data: {
+              updatedAt: new Date(),
+              registrant: command.registrant
+            }
+          });
+
+          if (lixiList.count > 0 && !_.isNil(packageRegistrant)) {
             // if having lixilist update => return true noti update successfully
             return true;
           } else {

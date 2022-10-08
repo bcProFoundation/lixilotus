@@ -513,8 +513,8 @@ const Lixi = props => {
   const claimReportSingleCode = allClaimsCurrentLixi.map((item, i) => {
     return {
       num: i + 1,
-      amount: item.amount.toFixed(2),
-      createAt: item.createdAt
+      amount: fromSmallestDenomination(item.amount),
+      createAt: moment(item.createdAt).format('YYYY-MM-DD HH:mm')
     };
   });
 
@@ -536,7 +536,7 @@ const Lixi = props => {
           </div>
         </CopyToClipboard>
       ),
-      amount: item.amount.toFixed(2),
+      amount: item.amount != 0 ? item.amount : fromSmallestDenomination(item.totalClaim),
       isClaimed: item.isClaimed ? (
         <Text
           style={{
@@ -937,7 +937,7 @@ const Lixi = props => {
                       </Text>
                       <br />
                       <Text style={{ color: '#1E1A1D' }}>
-                        {fromSmallestDenomination(_.sumBy(subLixies, 'amount')) ?? '0'} {currency.ticker}
+                        {_.sumBy(subLixies, 'amount').toFixed(2) ?? '0'} {currency.ticker}
                       </Text>
                     </>
                   }
@@ -947,12 +947,14 @@ const Lixi = props => {
                     showInfo={false}
                     type="circle"
                     strokeColor="#E37100"
-                    percent={100}
+                    strokeLinecap="butt"
+                    percent={
+                      (_.sumBy(subLixies, 'amount') + fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim'))) * 100
+                    }
                     success={{
                       percent:
-                        fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim')) /
-                        (fromSmallestDenomination(_.sumBy(subLixies, 'amount')) +
-                          fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim')))
+                        (fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim')) * 100) /
+                        (_.sumBy(subLixies, 'amount') + fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim')))
                     }}
                     style={{ paddingTop: '12.5px' }}
                   />

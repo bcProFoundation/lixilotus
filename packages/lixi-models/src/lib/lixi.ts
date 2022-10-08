@@ -158,6 +158,7 @@ export interface Lixi {
 export interface RegisterLixiPackCommand {
   claimCode: string;
   account: Account;
+  registrant: string;
 }
 
 export interface UnarchiveLixiCommand {
