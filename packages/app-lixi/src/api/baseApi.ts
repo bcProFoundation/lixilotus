@@ -8,7 +8,14 @@ export const client = new GraphQLClient('/graphql', {
 
 export const api = createApi({
   baseQuery: graphqlRequestBaseQuery({
-    client
+    client,
+    customErrors: ({ name, stack, response }) => {
+      return {
+        name,
+        message: response?.errors[0]?.message,
+        stack
+      };
+    }
   }),
   endpoints: () => ({})
 });
