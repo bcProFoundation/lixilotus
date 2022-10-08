@@ -87,6 +87,27 @@ enum PageOrderField {
   updatedAt
 }
 
+type Post {
+  content: String!
+  cover: String
+
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  id: ID!
+  page: Page
+  pageAccountId: Int!
+  pageId: String
+  title: String!
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
+}
+
+type PostEdge {
+  cursor: String!
+  node: Post!
+}
+
 type Query {
   allPages(after: String, before: String, first: Int, last: Int, orderBy: PageOrder, query: String, skip: Int): PageConnection!
   page(id: String!): Page!
