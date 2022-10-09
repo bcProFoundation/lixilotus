@@ -35,7 +35,7 @@ export default {
   'general.scanBarcode': 'Scan Barcode',
   'general.scanBarcodeError':
     'Error in Barcode scanner. Please ensure your camera is not in use. Due to Apple restrictions on third-party browsers, you must use Safari browser for barcode scanning on an iPhone.',
-  'general.num': 'Num',
+  'general.num': 'No.',
   'general.amount': 'Amount',
   'general.chooseCamera': 'Please choose camera',
   'general.chooseCameraTip': 'Try switching camera when its not working properly',

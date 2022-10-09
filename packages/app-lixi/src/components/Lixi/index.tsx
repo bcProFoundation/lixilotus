@@ -79,7 +79,7 @@ import { getSelectedAccount } from '@store/account/selectors';
 import { getAllSubLixies, getLoadMoreSubLixiesStartId } from '@store/lixi/selectors';
 import { fromSmallestDenomination, toSmallestDenomination } from '@utils/cashMethods';
 import { numberToBase58 } from '@utils/encryptionMethods';
-
+import SubLixiList from './SubLixiList';
 import { ClaimType } from '../../../../lixi-models/src/lib/lixi';
 import lixiLogo from '../../assets/images/lixi_logo.svg';
 import { exportSubLixies } from '../../store/lixi/actions';
@@ -235,7 +235,7 @@ const Lixi = props => {
   const selectedLixiRedux = useAppSelector(getSelectedLixi);
   const selectedLixiIdRedux = useAppSelector(getSelectedLixiId);
   const selectedLixiId = lixi.id ? selectedLixiIdRedux : lixi;
-  const selectedLixi = lixi ? selectedLixiRedux : lixi ;
+  const selectedLixi = lixi ? selectedLixiRedux : lixi;
   const allClaimsCurrentLixi = useAppSelector(getAllClaims);
   const [claimCodeVisible, setClaimCodeVisible] = useState(false);
   const qrPanelRef = React.useRef(null);
@@ -521,8 +521,8 @@ const Lixi = props => {
   const onetimeCodeColumns = [
     { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
     { title: 'Code', dataIndex: 'claimCode' },
-    { title: 'Value redeem (XPI)', dataIndex: 'amount' },
-    { title: 'Statusses', dataIndex: 'isClaimed' }
+    { title: `${intl.get('general.amount')} (XPI)`, dataIndex: 'amount' },
+    { title: intl.get('lixi.status'), dataIndex: 'isClaimed' }
   ];
   const prefixClaimCode = 'lixi';
 
@@ -973,14 +973,7 @@ const Lixi = props => {
       case ClaimType.OneTime:
         return (
           <>
-            <VirtualTable
-              columns={onetimeCodeColumns}
-              dataSource={subLixiesDataSource}
-              scroll={{ y: subLixiesDataSource.length * 54 <= 270 ? subLixiesDataSource.length * 54 : 270 }}
-            />
-            {hasMoreSubLixies && (
-              <SmartButton onClick={() => showMoreSubLixies()}>{intl.get('lixi.loadmore')}</SmartButton>
-            )}
+            <SubLixiList dataSource={subLixies} columns={onetimeCodeColumns} loadMore={() => showMoreSubLixies()} />
           </>
         );
     }
