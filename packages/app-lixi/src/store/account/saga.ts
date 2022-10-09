@@ -69,7 +69,8 @@ import {
 } from './actions';
 import { getAccountById, getSelectedAccount } from './selectors';
 import { push } from 'connected-next-router';
-import { setLocalUserAccount } from '@store/localAccount';
+import { setLocalUserAccount, silentLocalLogin } from '@store/localAccount';
+import { LocalUser } from 'src/models/localUser';
 
 /**
  * Generate a account with random encryption password
@@ -701,6 +702,14 @@ function* silentLoginSuccessSaga(action: PayloadAction) {
       mnemonichHash: account.mnemonicHash
     })
   );
+
+  // If server login then we also local-login
+  const localUser: LocalUser = {
+    id: account.address,
+    address: account.address,
+    name: account.name
+  };
+  yield put(silentLocalLogin(localUser));
 }
 
 function* watchSilentLogin() {

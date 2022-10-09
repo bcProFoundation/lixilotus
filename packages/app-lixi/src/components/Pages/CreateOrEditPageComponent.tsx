@@ -34,11 +34,11 @@ const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
 
   const [
     createPageTrigger,
-    { isLoading: isLoadingCreatePage, isSuccess: isSuccessCreatePage, isError: isErrorCreatePage }
+    { isLoading: isLoadingCreatePage, isSuccess: isSuccessCreatePage, isError: isErrorCreatePage, error: errorOnCreate }
   ] = useCreatePageMutation();
   const [
     updatePageTrigger,
-    { isLoading: isLoadingUpdatePage, isSuccess: isSuccessUpdatePage, isError: isErrorUpdatePage }
+    { isLoading: isLoadingUpdatePage, isSuccess: isSuccessUpdatePage, isError: isErrorUpdatePage, error: errorOnUpdate }
   ] = useUpdatePageMutation();
 
   useEffect(() => {
@@ -202,7 +202,7 @@ const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
         router.push(`/page/${pageCreated.createPage.id}`);
       }
     } catch (error) {
-      const message = intl.get('page.unableCreatePageServer');
+      const message = errorOnCreate?.message ?? intl.get('page.unableCreatePageServer');
 
       dispatch(
         showToast('error', {
@@ -239,7 +239,7 @@ const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
       );
       dispatch(setPage({ ...pageUpdated.updatePage }));
     } catch (error) {
-      const message = intl.get('page.unableUpdatePage');
+      const message = errorOnUpdate?.message ?? intl.get('page.unableUpdatePage');
 
       dispatch(
         showToast('error', {
@@ -259,13 +259,7 @@ const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
 
           {!selectedPage ? (
             // Create Page
-            <Form
-              labelCol={{ span: 5 }}
-              wrapperCol={{ span: 24 }}
-              layout="horizontal"
-              initialValues={{ disabled: componentDisabled }}
-              onValuesChange={onFormLayoutChange}
-            >
+            <Form layout="vertical" initialValues={{ disabled: componentDisabled }} onValuesChange={onFormLayoutChange}>
               <Form.Item
                 name="name"
                 label={intl.get('page.name')}
@@ -307,11 +301,10 @@ const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
               </Form.Item>
 
               {/* Country */}
-              <Form.Item>
+              <Form.Item label={intl.get('page.countryName')}>
                 <Select
                   showSearch
                   onChange={handleChangeCountry}
-                  style={{ width: 200 }}
                   placeholder={intl.get('page.country')}
                   optionFilterProp="children"
                   filterOption={(input, option) =>
@@ -331,11 +324,10 @@ const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
 
               {/* State */}
               {newPageCountry != '' && (
-                <Form.Item>
+                <Form.Item label={intl.get('page.stateName')}>
                   <Select
                     showSearch
                     onChange={handleChangeState}
-                    style={{ width: 200 }}
                     placeholder={intl.get('page.state')}
                     optionFilterProp="children"
                     filterOption={(input, option) =>
@@ -354,12 +346,8 @@ const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
                 </Form.Item>
               )}
 
-              <Form.Item>
-                <Input
-                  addonBefore={intl.get('page.address')}
-                  value={newPageAddress}
-                  onChange={e => handleNewPageAddressInput(e)}
-                />
+              <Form.Item label={intl.get('page.address')}>
+                <Input value={newPageAddress} onChange={e => handleNewPageAddressInput(e)} />
               </Form.Item>
 
               <Form.Item wrapperCol={{ offset: 0, span: 24 }}>
@@ -375,13 +363,7 @@ const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
             </Form>
           ) : (
             // Edit Page
-            <Form
-              labelCol={{ span: 5 }}
-              wrapperCol={{ span: 24 }}
-              layout="horizontal"
-              initialValues={{ disabled: componentDisabled }}
-              onValuesChange={onFormLayoutChange}
-            >
+            <Form layout="vertical" initialValues={{ disabled: componentDisabled }} onValuesChange={onFormLayoutChange}>
               <Form.Item name="name">
                 <Input
                   addonBefore={intl.get('page.name')}
@@ -439,12 +421,11 @@ const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
               </Form.Item>
 
               {/* Country */}
-              <Form.Item>
+              <Form.Item label={intl.get('page.countryName')}>
                 <Select
                   showSearch
                   defaultValue={selectedPage.country}
                   onChange={handleChangeCountry}
-                  style={{ width: 200 }}
                   placeholder={intl.get('page.country')}
                   optionFilterProp="children"
                   filterOption={(input, option) =>
@@ -463,12 +444,11 @@ const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
               </Form.Item>
 
               {/* State */}
-              <Form.Item>
+              <Form.Item label={intl.get('page.stateName')}>
                 <Select
                   showSearch
                   defaultValue={selectedPage.state}
                   onChange={handleChangeState}
-                  style={{ width: 200 }}
                   placeholder={intl.get('page.state')}
                   optionFilterProp="children"
                   filterOption={(input, option) =>

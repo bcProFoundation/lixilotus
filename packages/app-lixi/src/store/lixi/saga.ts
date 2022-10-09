@@ -258,11 +258,9 @@ function* registerLixiPackSaga(action: PayloadAction<any>) {
 }
 
 function* registerLixiPackSuccessSaga(action: PayloadAction<Account>) {
-  const account: Account = action.payload;
   Modal.success({
     content: intl.get('lixi.registerSuccess')
   });
-  yield put(refreshLixiListSilent(account));
   yield put(hideLoading(registerLixiPack.type));
 }
 

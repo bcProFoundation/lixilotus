@@ -7,9 +7,7 @@ import fastifyHelmet from '@fastify/helmet';
 import fastifyCsrf from '@fastify/csrf-protection';
 import { AppModule } from './app.module';
 import { RedisIoAdapter } from './common/adapters/redis-io.adapter';
-import { HttpExceptionFilter } from './middlewares/exception.filter';
 import { PrismaService } from './modules/prisma/prisma.service';
-import multipart from '@fastify/multipart';
 import 'winston-daily-rotate-file';
 import loggerConfig from './logger.config';
 import { join } from 'path';
@@ -37,7 +35,6 @@ async function bootstrap() {
   });
 
   app.setGlobalPrefix('api');
-  app.useGlobalFilters(new HttpExceptionFilter());
 
   process.on('uncaughtException', function (err) {
     console.log(err);
