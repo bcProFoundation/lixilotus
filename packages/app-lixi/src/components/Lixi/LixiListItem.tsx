@@ -112,6 +112,11 @@ const StyledRow = styled(Row)`
   padding: 10px 0px;
 `;
 
+const StyledTag = styled(Tag)`
+  padding: 3px 10px;
+  border-radius: 30px;
+`;
+
 type LixiListItemProps = {
   className?: string;
   lixi: Lixi;
@@ -282,7 +287,7 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
             <Text type="secondary">Status</Text>
           </Col>
           <Col span={11} offset={3}>
-            <Tag color={lixi.status === 'active' ? '#108ee9' : '##f50'}>{lixi.status}</Tag>
+            <StyledTag color={lixi.status === 'active' ? '#108ee9' : '#74546f'}>{lixi.status}</StyledTag>
           </Col>
         </StyledRow>
       </Wrapper>
