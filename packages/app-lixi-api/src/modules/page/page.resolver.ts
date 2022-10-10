@@ -122,7 +122,7 @@ export class PageResolver {
   @UseGuards(GqlJwtAuthGuard)
   @Mutation(() => Page)
   async createPage(@PageAccountEntity() account: Account, @Args('data') data: CreatePageInput) {
-    if (account) {
+    if (!account) {
       const couldNotFindAccount = await this.i18n.t('page.messages.couldNotFindAccount');
       const error = new VError.WError(couldNotFindAccount);
       throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
