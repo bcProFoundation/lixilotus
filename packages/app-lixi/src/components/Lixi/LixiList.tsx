@@ -13,6 +13,7 @@ import _ from 'lodash';
 import { refreshLixiList } from '@store/account/actions';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { openModal } from '@store/modal/actions';
+import { getEnvelopes } from 'src/store/envelope/actions';
 
 const { Text } = Typography;
 
@@ -103,8 +104,11 @@ const LixiList = ({ lixies }: LixiListProps) => {
   const isLoading = useAppSelector(getIsGlobalLoading);
   const [isModalVisible, setModalVisible] = useState(false);
   const [isChecked, setChecked] = useState(false);
+  const [queryLixi, setQueryLixi] = useState('');
+  const [searchLixiParams] = useState(['name', 'amount', 'claimedNum', 'status']);
 
   useEffect(() => {
+    dispatch(getEnvelopes());
     if (selectedAccount) {
       dispatch(refreshLixiList(selectedAccount.id));
     }
@@ -148,6 +152,20 @@ const LixiList = ({ lixies }: LixiListProps) => {
     dispatch(refreshLixiList(selectedAccount.id));
   };
 
+  const searchLixi = lixies => {
+    return lixies.filter(lixi => {
+      if (lixi.name == '') {
+        searchLixiParams.some(newItem => {
+          return lixi[newItem].toString().toLowerCase().indexOf(queryLixi.toLowerCase()) > -1;
+        });
+      } else {
+        return searchLixiParams.some(newItem => {
+          return lixi[newItem].toString().toLowerCase().indexOf(queryLixi.toLowerCase()) > -1;
+        });
+      }
+    });
+  };
+
   return (
     <>
       {selectedAccount ? (
@@ -159,7 +177,12 @@ const LixiList = ({ lixies }: LixiListProps) => {
               </CreateLixiBtn>
             </Col>
             <Col span={16} offset={1}>
-              <StyledSearchLixi placeholder="Search lixi" suffix={<SearchOutlined />} />
+              <StyledSearchLixi
+                placeholder="Search lixi"
+                value={queryLixi}
+                onChange={e => setQueryLixi(e.target.value)}
+                suffix={<SearchOutlined />}
+              />
             </Col>
             <Col span={1} offset={1}>
               <StyledButton
@@ -242,7 +265,11 @@ const LixiList = ({ lixies }: LixiListProps) => {
 
           <Spin spinning={isLoading} indicator={CashLoadingIcon}>
             <div style={{ paddingTop: '20px' }}>
-              {lixies && lixies.length > 0 && lixies.map(item => <LixiListItem key={item.id} lixi={item} />)}
+              {/* {lixies && lixies.length > 0 && lixies.map(item => <LixiListItem key={item.id} lixi={item} />)} */}
+
+              {lixies &&
+                lixies.length > 0 &&
+                searchLixi(lixies).map(item => <LixiListItem key={item.id} lixi={item} />)}
             </div>
           </Spin>
         </>

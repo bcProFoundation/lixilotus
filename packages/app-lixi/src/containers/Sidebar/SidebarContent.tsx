@@ -77,13 +77,7 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
             key="wallet-lotus"
             href={'/wallet'}
           />
-          <ItemAccess
-            icon={GiftOutlined}
-            text={'Lixi'}
-            active={selectedKey === '/lixies'}
-            key="lixi"
-            href={'/lixies'}
-          />
+          <ItemAccess icon={GiftOutlined} text={'Lixi'} active={selectedKey === '/lixi'} key="lixi" href={'/lixi'} />
           <ItemAccess icon={SendOutlined} text={'Send'} active={selectedKey === '/send'} key="send" href={'/send'} />
           <ItemAccess
             icon={EditOutlined}

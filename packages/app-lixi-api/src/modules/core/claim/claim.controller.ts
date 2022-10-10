@@ -44,7 +44,7 @@ export class ClaimController {
     @Inject('xpijs') private XPI: BCHJS,
     private readonly config: ConfigService,
     private readonly lixiNftService: LixiNftService
-  ) {}
+  ) { }
 
   @Get(':id')
   async getEnvelope(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<ViewClaimDto> {
@@ -160,7 +160,8 @@ export class ClaimController {
             id: lixiId
           },
           include: {
-            package: true
+            package: true,
+            uploadDetail: true
           }
         });
 
@@ -311,21 +312,21 @@ export class ClaimController {
         // registrant
         !_.isNil(lixi.package?.registrant)
           ? outputs.push(
-              {
-                address: claimApi.claimAddress,
-                amountSat: amountSats / 2
-              },
-              {
-                address: lixi.package?.registrant as unknown as string,
-                amountSat: amountSats / 2
-              }
-            )
+            {
+              address: claimApi.claimAddress,
+              amountSat: amountSats / 2
+            },
+            {
+              address: lixi.package?.registrant as unknown as string,
+              amountSat: amountSats / 2
+            }
+          )
           : (outputs = [
-              {
-                address: claimApi.claimAddress,
-                amountSat: amountSats
-              }
-            ]);
+            {
+              address: claimApi.claimAddress,
+              amountSat: amountSats
+            }
+          ]);
         // outputs = [
         //   {
         //     address: claimApi.claimAddress,
@@ -445,11 +446,22 @@ export class ClaimController {
             throw new VError(unableClaim);
           }
 
+          let image, thumbnail;
+          if (lixi.uploadDetail) {
+            const upload = await this.prisma.upload.findFirst({
+              where: {
+                id: lixi.uploadDetail.uploadId
+              }
+            })
+            image = upload?.url;
+            thumbnail = upload?.url.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+          }
+
           let result: ViewClaimDto = {
             id: claimId,
             lixiId: claim.lixiId,
-            image: claim.lixi.envelope?.image ?? '',
-            thumbnail: claim.lixi.envelope?.thumbnail ?? '',
+            image: image ? image : claim.lixi.envelope?.image || '',
+            thumbnail: thumbnail ? thumbnail : claim.lixi.envelope?.thumbnail || '',
             amount: Number(claim.amount),
             message: claim.lixi.envelopeMessage,
             nftTokenId: claim.nftTokenId,
