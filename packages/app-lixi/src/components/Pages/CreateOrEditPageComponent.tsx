@@ -34,11 +34,11 @@ const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
 
   const [
     createPageTrigger,
-    { isLoading: isLoadingCreatePage, isSuccess: isSuccessCreatePage, isError: isErrorCreatePage }
+    { isLoading: isLoadingCreatePage, isSuccess: isSuccessCreatePage, isError: isErrorCreatePage, error: errorOnCreate }
   ] = useCreatePageMutation();
   const [
     updatePageTrigger,
-    { isLoading: isLoadingUpdatePage, isSuccess: isSuccessUpdatePage, isError: isErrorUpdatePage }
+    { isLoading: isLoadingUpdatePage, isSuccess: isSuccessUpdatePage, isError: isErrorUpdatePage, error: errorOnUpdate }
   ] = useUpdatePageMutation();
 
   useEffect(() => {
@@ -202,7 +202,7 @@ const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
         router.push(`/page/${pageCreated.createPage.id}`);
       }
     } catch (error) {
-      const message = intl.get('page.unableCreatePageServer');
+      const message = errorOnCreate?.message ?? intl.get('page.unableCreatePageServer');
 
       dispatch(
         showToast('error', {
@@ -239,7 +239,7 @@ const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
       );
       dispatch(setPage({ ...pageUpdated.updatePage }));
     } catch (error) {
-      const message = intl.get('page.unableUpdatePage');
+      const message = errorOnUpdate?.message ?? intl.get('page.unableUpdatePage');
 
       dispatch(
         showToast('error', {
