@@ -1,4 +1,3 @@
-import { message } from 'antd';
 import { ArgumentsHost, Catch, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { GqlArgumentsHost, GqlExceptionFilter } from '@nestjs/graphql';
 import { I18n, I18nService } from 'nestjs-i18n';
