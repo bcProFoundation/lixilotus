@@ -53,12 +53,6 @@ function* generateLocalUserAccountSaga(action: PayloadAction) {
 
   yield put(setLocalUserAccount(account));
 
-  const localUser: LocalUser = {
-    id: account.address,
-    address: account.address,
-    name: account.name
-  };
-  yield put(silentLocalLogin(localUser));
 }
 
 function* importLocalUserAccountSaga(action: PayloadAction<string>) {
@@ -96,12 +90,6 @@ function* importLocalUserAccountSaga(action: PayloadAction<string>) {
 
       yield put(setLocalUserAccount(account));
 
-      const localUser: LocalUser = {
-        id: account.address,
-        address: account.address,
-        name: account.name
-      };
-      yield put(silentLocalLogin(localUser));
     }
   } catch (err) {
     const message = action.payload ?? intl.get('account.unableToImport');
@@ -113,6 +101,16 @@ function* importLocalUserAccountSaga(action: PayloadAction<string>) {
       })
     );
   }
+}
+
+function* setLocalUserAccountSaga(action: PayloadAction<LocalUserAccount>) {
+  const account = action.payload;
+  const localUser: LocalUser = {
+    id: account.address,
+    address: account.address,
+    name: account.name
+  };
+  yield put(silentLocalLogin(localUser));
 }
 
 function* silentLocalLoginSaga(action: PayloadAction<LocalUser>) {
@@ -133,10 +131,19 @@ function* watchImportLocalUserAccount() {
   yield takeLatest(importLocalUserAccount.type, importLocalUserAccountSaga);
 }
 
+function* watchSetLocalUserAccountSaga() {
+  yield takeLatest(setLocalUserAccount.type, setLocalUserAccountSaga);
+}
+
 function* watchSilentLocalLogin() {
   yield takeLatest(silentLocalLogin.type, silentLocalLoginSaga);
 }
 
 export default function* accountSaga() {
-  yield all([fork(watchGenerateLocalUserAccount), fork(watchImportLocalUserAccount), fork(watchSilentLocalLogin)]);
+  yield all([
+    fork(watchGenerateLocalUserAccount),
+    fork(watchImportLocalUserAccount),
+    fork(watchSetLocalUserAccountSaga),
+    fork(watchSilentLocalLogin)
+  ]);
 }

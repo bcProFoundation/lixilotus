@@ -1,21 +1,20 @@
 import ReloadOutlined, { CheckCircleOutlined, InboxOutlined } from '@ant-design/icons';
-import intl from 'react-intl-universal';
 import { ThemedWalletOutlined } from '@bcpros/lixi-components/components/Common/CustomIcons';
 import { SmartButton } from '@components/Common/PrimaryButton';
 import { StyledSpacer } from '@components/Common/StyledSpacer';
 import LixiList from '@components/Lixi/LixiList';
+import WalletInfoComponent from '@components/Wallet/WalletInfo';
 import { getAccount, refreshLixiList, refreshLixiListSilent, silentLogin } from '@store/account/actions';
+import { getPageBySelectedAccount } from '@store/page/selectors';
 import { Tabs } from 'antd';
 import moment from 'moment';
+import Link from 'next/link';
 import React, { useEffect } from 'react';
+import intl from 'react-intl-universal';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getLixiesBySelectedAccount } from 'src/store/lixi/selectors';
-import { WalletContext } from 'src/store/store';
 import styled from 'styled-components';
-import WalletInfoComponent from '@components/Wallet/WalletInfo';
-import Link from 'next/link';
-import { getPageBySelectedAccount } from '@store/page/selectors';
 
 const { TabPane } = Tabs;
 const StyledTabs = styled(Tabs)`
@@ -41,8 +40,7 @@ const StyledTabs = styled(Tabs)`
   }
 `;
 
-const Home: React.FC = () => {
-  const ContextValue = React.useContext(WalletContext);
+const Account: React.FC = () => {
 
   const dispatch = useAppDispatch();
   const lixies = useAppSelector(getLixiesBySelectedAccount);
@@ -126,4 +124,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default Account;

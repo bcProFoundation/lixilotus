@@ -1,9 +1,9 @@
+import Account from '@components/Account';
 import React from 'react';
 
-import Home from '@components/Home/Home';
 
 const AccountPage = () => {
-  return <Home />;
+  return <Account />;
 };
 
 export default AccountPage;

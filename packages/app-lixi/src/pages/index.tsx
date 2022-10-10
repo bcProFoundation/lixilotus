@@ -1,18 +1,17 @@
+import { LocalUserAccount } from '@bcpros/lixi-models';
 import PagesListing from '@components/Pages/PagesListing';
+import { generateAccount, silentLogin } from '@store/account/actions';
 import { getSelectedAccount } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { setLocalUserAccount, silentLocalLogin } from '@store/localAccount';
+import { getIsBootstrapped } from '@store/persistor/selectors';
 import { SagaStore, wrapper } from '@store/store';
 import { withIronSessionSsr } from 'iron-session/next';
+import { useEffect } from 'react';
 import { getSelectorsByUserAgent } from 'react-device-detect';
 import { END } from 'redux-saga';
 import { LocalUser } from 'src/models/localUser';
 import { sessionOptions } from 'src/models/session';
-import { useEffect } from 'react';
-import { LocalUserAccount } from '@bcpros/lixi-models';
-import { setLocalUserAccount, silentLocalLogin } from '@store/localAccount';
-import Router from 'next/router';
-import { getIsBootstrapped } from '@store/persistor/selectors';
-import { generateAccount } from '@store/account/actions';
 
 type HomePageProps = {
   isMobile: boolean;
@@ -41,14 +40,10 @@ const HomePage = ({ isMobile, localUser }: HomePageProps) => {
           createdAt: selectedAccount.createdAt,
           updatedAt: selectedAccount.updatedAt
         };
-        dispatch(setLocalUserAccount(localAccount));
-
-        const localUser: LocalUser = {
-          id: localAccount.address,
-          address: localAccount.address,
-          name: localAccount.name
-        };
-        dispatch(silentLocalLogin(localUser));
+        dispatch(setLocalUserAccount(localAccount)); // and local-login
+        dispatch(silentLogin(selectedAccount.mnemonic));
+      } else if (selectedAccount) {
+        dispatch(silentLogin(selectedAccount.mnemonic));
       }
     }
   }, [selectedAccount, localUser, isHydrated]);
