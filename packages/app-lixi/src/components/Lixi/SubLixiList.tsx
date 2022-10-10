@@ -1,14 +1,10 @@
-import { message } from 'antd';
-import * as _ from 'lodash';
-import ResizeObserver from 'rc-resize-observer';
-import React, { useEffect, useRef, useState } from 'react';
-import { VariableSizeGrid as Grid } from 'react-window';
-import styled from 'styled-components';
-import { TableVirtuoso } from 'react-virtuoso';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import intl from 'react-intl-universal';
 import { CopyOutlined } from '@ant-design/icons';
+import { message } from 'antd';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { isMobile } from 'react-device-detect';
+import intl from 'react-intl-universal';
+import { TableVirtuoso } from 'react-virtuoso';
+import styled from 'styled-components';
 
 const StyledTable = styled.div`
   height: 35vh;
