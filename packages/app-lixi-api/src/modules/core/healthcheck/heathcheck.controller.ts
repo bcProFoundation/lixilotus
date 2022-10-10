@@ -11,6 +11,7 @@ export class HeathController {
   async check(): Promise<any> {
     const defaultHost = process.env.REDIS_HOST || 'localhost';
     const defaultPort = parseInt(process.env.REDIS_PORT!) || 6379;
+    const version = process.env.npm_package_version;
 
     const existedRedeems = await this.prisma.$queryRaw`SELECT 1`;
     if (!existedRedeems) {
@@ -31,6 +32,9 @@ export class HeathController {
       throw new HttpException('Redis is shuting down', HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    return { status: true };
+    return {
+      status: true,
+      npmVersion: version
+    };
   }
 }

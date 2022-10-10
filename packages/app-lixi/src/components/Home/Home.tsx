@@ -9,7 +9,6 @@ import { Tabs } from 'antd';
 import moment from 'moment';
 import React, { useEffect } from 'react';
 import { getSelectedAccount } from 'src/store/account/selectors';
-import { getEnvelopes } from 'src/store/envelope/actions';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getLixiesBySelectedAccount } from 'src/store/lixi/selectors';
 import { WalletContext } from 'src/store/store';
@@ -51,7 +50,6 @@ const Home: React.FC = () => {
   const selectedPage = useAppSelector(getPageBySelectedAccount);
 
   useEffect(() => {
-    dispatch(getEnvelopes());
     if (selectedAccount) {
       dispatch(getAccount(selectedAccount.id));
       dispatch(silentLogin(selectedAccount.mnemonic));

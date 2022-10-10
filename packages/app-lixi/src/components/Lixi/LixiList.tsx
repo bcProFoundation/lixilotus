@@ -13,6 +13,7 @@ import _ from 'lodash';
 import { refreshLixiList } from '@store/account/actions';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { openModal } from '@store/modal/actions';
+import { getEnvelopes } from 'src/store/envelope/actions';
 
 const { Text } = Typography;
 
@@ -105,6 +106,7 @@ const LixiList = ({ lixies }: LixiListProps) => {
   const [isChecked, setChecked] = useState(false);
 
   useEffect(() => {
+    dispatch(getEnvelopes());
     if (selectedAccount) {
       dispatch(refreshLixiList(selectedAccount.id));
     }
