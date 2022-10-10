@@ -41,7 +41,6 @@ const StyledTabs = styled(Tabs)`
 `;
 
 const Account: React.FC = () => {
-
   const dispatch = useAppDispatch();
   const lixies = useAppSelector(getLixiesBySelectedAccount);
   const selectedAccount = useAppSelector(getSelectedAccount);

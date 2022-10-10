@@ -52,7 +52,6 @@ function* generateLocalUserAccountSaga(action: PayloadAction) {
   );
 
   yield put(setLocalUserAccount(account));
-
 }
 
 function* importLocalUserAccountSaga(action: PayloadAction<string>) {
@@ -89,7 +88,6 @@ function* importLocalUserAccountSaga(action: PayloadAction<string>) {
       );
 
       yield put(setLocalUserAccount(account));
-
     }
   } catch (err) {
     const message = action.payload ?? intl.get('account.unableToImport');
