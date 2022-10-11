@@ -335,6 +335,28 @@ export class LixiController {
       if (!lixi) {
         const lixiNotExist = await i18n.t('lixi.messages.lixiNotExist');
         throw new VError(lixiNotExist);
+      }
+
+      if (lixi?.claimType === ClaimType.Single) {
+        const unableToRegister = await i18n.t('lixi.messages.unableToRegister');
+        throw new VError(unableToRegister);
+      }
+
+      if (_.isNil(lixi.packageId)) {
+        const packageUpdate = await this.prisma.package.create({
+          data: {
+            registrant: command.registrant
+          }
+        });
+
+        await this.prisma.lixi.updateMany({
+          where: {
+            parentId: lixi.parentId
+          },
+          data: {
+            packageId: packageUpdate.id
+          }
+        });
       } else {
         if (lixi.inventoryStatus === 'registered') {
           // if already register => ignore and return success

@@ -21,6 +21,7 @@
     "fileNameNotExist": "Tên file không tồn tại",
     "lixiPackNotRegister": "Không thể đăng ký pack Lì xì",
     "lixiClaimed": "Lì xì đã được nhận",
-    "lixiValid": "Lì xì còn hiệu lực"
+    "lixiValid": "Lì xì còn hiệu lực",
+    "unableToRegister": "Không thể đăng ký với Single-Code"
   }
 }
