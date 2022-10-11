@@ -66,7 +66,6 @@ const NavBarHeader = styled(Header)`
     padding: 0;
     width: 100%;
   }
-}
 `;
 
 const PathDirection = styled.div`
@@ -207,28 +206,30 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
               <AppBody>
                 <ModalManager />
                 <>
-                  <AppContainer>
-                    <Layout>
-                      <SidebarShortcut></SidebarShortcut>
-                      <Sidebar />
+                  <DeviceProtectableComponentWrapper>
+                    <AppContainer>
                       <Layout>
-                        <Topbar ref={setRef} />
-                        {selectedKey !== '/' && (
-                          <NavBarHeader>
-                            <Link href="/" passHref>
-                              <LeftOutlined />
-                            </Link>
-                            <PathDirection>
-                              <h2>{navBarTitle}</h2>
-                              <p className="sub-title">{navBarSubTitle}</p>
-                            </PathDirection>
-                          </NavBarHeader>
-                        )}
-                        <Content className="content-layout">{children}</Content>
+                        <SidebarShortcut></SidebarShortcut>
+                        <Sidebar />
+                        <Layout>
+                          <Topbar ref={setRef} />
+                          {selectedKey !== '/' && (
+                            <NavBarHeader>
+                              <Link href="/" passHref>
+                                <LeftOutlined />
+                              </Link>
+                              <PathDirection>
+                                <h2>{navBarTitle}</h2>
+                                <p className="sub-title">{navBarSubTitle}</p>
+                              </PathDirection>
+                            </NavBarHeader>
+                          )}
+                          <Content className="content-layout">{children}</Content>
+                        </Layout>
+                        {selectedKey !== '/lixies' && <SidebarRanking></SidebarRanking>}
                       </Layout>
-                      {selectedKey !== '/lixies' && <SidebarRanking></SidebarRanking>}
-                    </Layout>
-                  </AppContainer>
+                    </AppContainer>
+                  </DeviceProtectableComponentWrapper>
                 </>
               </AppBody>
             </Layout>
