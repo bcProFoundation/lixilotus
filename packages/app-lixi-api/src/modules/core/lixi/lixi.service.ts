@@ -305,12 +305,9 @@ export class LixiService {
       // Start to process from the start of each chunk
       const startDerivationIndexForChunk = startDerivationIndex + chunkIndex * chunkSize;
 
-      let createdPackage;
-      if (command.numberLixiPerPackage) {
-        createdPackage = await this.prisma.package.create({
-          data: {}
-        });
-      }
+      let createdPackage = await this.prisma.package.create({
+        data: {}
+      });
 
       // Create the child job data
       const childJobData: CreateSubLixiesChunkJobData = {
@@ -322,7 +319,7 @@ export class LixiService {
         command: command,
         fundingAddress: account.address,
         accountSecret: secret,
-        packageId: command.numberLixiPerPackage && createdPackage?.id ? createdPackage?.id : undefined
+        packageId: createdPackage?.id
       };
 
       const childJob: FlowJob = {
