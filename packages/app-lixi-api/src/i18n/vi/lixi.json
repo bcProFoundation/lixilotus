@@ -22,6 +22,7 @@
     "lixiPackNotRegister": "Không thể đăng ký pack Lì xì",
     "lixiClaimed": "Lì xì đã được nhận",
     "lixiValid": "Lì xì còn hiệu lực",
-    "unableToRegister": "Không thể đăng ký với Single-Code"
+    "unableToRegister": "Không thể đăng ký với Single-Code",
+    "haveNotAccess": "Bạn không có quyền truy cập"
   }
 }

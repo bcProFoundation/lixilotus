@@ -22,6 +22,7 @@
     "lixiPackNotRegister": "Unable to register lixi pack",
     "lixiClaimed": "Lixi already claimed",
     "lixiValid": "Lixi is still valid",
-    "unableToRegister": "Unable to register with Single-Code"
+    "unableToRegister": "Unable to register with Single-Code",
+    "haveNotAccess": "You have not permission to access"
   }
 }

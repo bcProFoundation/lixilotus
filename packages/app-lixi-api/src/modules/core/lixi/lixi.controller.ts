@@ -337,6 +337,11 @@ export class LixiController {
         throw new VError(lixiNotExist);
       }
 
+      if (lixi.accountId != account.id) {
+        const haveNotAccess = await i18n.t('lixi.messages.haveNotAccess');
+        throw new VError(haveNotAccess);
+      }
+
       if (lixi?.claimType === ClaimType.Single) {
         const unableToRegister = await i18n.t('lixi.messages.unableToRegister');
         throw new VError(unableToRegister);
