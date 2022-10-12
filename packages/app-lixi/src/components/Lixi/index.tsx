@@ -568,7 +568,7 @@ const Lixi = props => {
   });
 
   const showMoreSubLixies = () => {
-    if(hasMoreSubLixies){
+    if (hasMoreSubLixies) {
       dispatch(fetchMoreSubLixies({ parentId: selectedLixi.id, startId: loadMoreStartId }));
     }
   };
