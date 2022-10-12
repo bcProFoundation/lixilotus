@@ -1,4 +1,4 @@
-import { ConsoleLogger, Logger, Module, OnApplicationShutdown } from '@nestjs/common';
+import { Logger, Module, OnApplicationShutdown } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { MercuriusDriver, MercuriusDriverConfig } from '@nestjs/mercurius';
@@ -19,7 +19,6 @@ import { WalletModule } from './modules/wallet/wallet.module';
 import { GraphQLError, GraphQLFormattedError } from 'graphql';
 import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from './middlewares/exception.filter';
-import { GqlHttpExceptionFilter } from './middlewares/gql.exception.filter';
 
 //enabled serving multiple static for fastify
 type FastifyServeStaticModuleOptions = ServeStaticModuleOptions & {
@@ -104,10 +103,6 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter
-    },
-    {
-      provide: APP_FILTER,
-      useClass: GqlHttpExceptionFilter
     }
   ]
 })

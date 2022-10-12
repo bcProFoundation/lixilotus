@@ -63,9 +63,32 @@ code {
   }
 }
 
+.ant-modal-content {
+  .ant-modal-header {
+    background: var(--bg-color-light-theme);
+    border-top-right-radius: 2rem;
+    border-top-left-radius: 2rem;
+    padding: 24px 32px;
+    border-bottom: 0;
+    .ant-modal-title {
+      color: var(--text-color-on-background);
+      font-weight: 400;
+      font-size: 28px;
+      line-height: 36px;
+    }
+  }
+  .ant-modal-body {
+    background: var(--bg-color-light-theme);
+    border-bottom-right-radius: 2rem;
+    border-bottom-left-radius: 2rem;
+    padding: 24px;
+  }
+}
+
 .custom-modal-editor {
   width: 80% !important;
   top: 2rem;
+
   .ant-modal-content {
     border-radius: 20px;
     text-align: center;
@@ -92,6 +115,7 @@ code {
           width: 100px;
           margin-top: 2rem;
           align-self: flex-end;
+
           &.input-import {
             width: 100%;
             margin-top: 0.5rem;
@@ -109,19 +133,23 @@ code {
   .ant-tabs-nav {
     .ant-tabs-nav-wrap {
       justify-content: center;
+
       .ant-tabs-tab {
         font-size: 17px !important;
         font-weight: 600;
         padding: 1rem 3rem !important;
+
         &:last-child {
           margin-left: 4rem;
         }
       }
     }
+
     &::before {
       border: 0 !important;
     }
   }
+
   @media (max-width: 768px) {
     width: 100% !important;
     height: 100% !important;
@@ -130,6 +158,7 @@ code {
     border-radius: 0;
     padding: 0;
     margin: 0;
+
     .ant-modal-content {
       border-radius: 0;
       height: 100%;
@@ -151,7 +180,7 @@ code {
 
 @media (min-width: 768px) {
   .ant-layout-content {
-    width: 88%;
+    width: 100%;
     align-self: center;
     background: var(--bg-color-light-theme);
   }
@@ -175,7 +204,7 @@ code {
   --bg-color-light-theme: #fffbff;
 
   // Text color
-  --text-color: #1e1a1d;
+  --text-color-on-background: #1e1a1d;
   --text-color-1: rgba(30, 26, 29, 0.38);
 
   // Boder color
@@ -195,10 +224,28 @@ code {
 
 .ant-modal {
   &&.custom-create-lixi-modal {
-    top: 0px !important;
+    vertical-align: middle;
+    width: 1240px;
+
+    @media (max-width: 768px) {
+      width: 400px !important;
+      top: 0px !important;
+    }
 
     .ant-modal-body {
-      text-align: center;
+      text-align: end;
+
+      @media (max-width: 768px) {
+        text-align: center;
+      }
+
+      .create-btn {
+        margin-right: 2%;
+
+        @media (max-width: 768px) {
+          margin-right: 0;
+        }
+      }
     }
   }
 }
@@ -213,10 +260,12 @@ code {
   // padding: 10px 24px;
   border-radius: 16px;
   height: fit-content;
+
   &:disabled {
     background-color: rgba(30, 26, 29, 0.12);
     color: rgba(30, 26, 29, 0.38);
     border-color: transparent;
+
     &:hover {
       background: rgba(30, 26, 29, 0.12);
       border-color: transparent;
@@ -227,9 +276,11 @@ code {
     color: var(--color-primary);
     background: #ffffff;
     border: 1px solid #80747d;
+
     &:hover {
       background: rgba(158, 42, 156, 0.08);
     }
+
     &:disabled {
       background-color: #fff;
       border: 1px solid rgba(30, 26, 29, 0.38);
@@ -241,9 +292,11 @@ code {
     color: var(--color-primary);
     background: #ffffff;
     border: 0;
+
     &:hover {
       background: rgba(158, 42, 156, 0.08);
     }
+
     &:disabled {
       background-color: #fff;
       border: 0;
@@ -257,6 +310,7 @@ code {
   .ant-form-item-label {
     text-align: left;
     padding: 0;
+
     label {
       margin-bottom: 4px;
       letter-spacing: 0.4px;
@@ -266,6 +320,7 @@ code {
       color: #4e444b;
     }
   }
+
   .ant-form-item-control {
     .ant-form-item-control-input-content {
       input,
@@ -279,17 +334,20 @@ code {
         background: #fff;
         border: 2px solid var(--border-color-base);
         border-radius: 8px;
+
         &:hover {
           background: #fff;
           border: 2px solid var(--color-primary);
           box-shadow: 0px 0px 4px rgba(148, 31, 147, 0.5);
         }
+
         &:focus {
           background: #fff;
           border: 2px solid var(--color-primary);
           box-shadow: 0px 0px 4px rgba(148, 31, 147, 0.5);
         }
       }
+
       .ant-input-affix-wrapper,
       .ant-picker,
       .ant-select {
@@ -297,59 +355,98 @@ code {
         background: #fff;
         padding: 9px 1rem;
         border-radius: 8px;
+
         input {
           border-radius: 0;
           background: transparent;
           padding: 0;
           border: 0;
+
           &:hover {
             border: 0;
             box-shadow: none;
           }
+
           &:focus {
             border: 0;
             box-shadow: none;
           }
         }
+
         &:hover {
           background: #fff;
           border: 2px solid var(--color-primary);
           box-shadow: 0px 0px 4px rgba(148, 31, 147, 0.5);
         }
+
         &:focus {
           background: #fff;
           border: 2px solid var(--color-primary);
           box-shadow: 0px 0px 4px rgba(148, 31, 147, 0.5);
         }
+
         .ant-select-selector {
           background: #fff;
           text-align: left;
           border: 0;
           padding: 0;
+
           &:hover {
             background: #fff;
             border: 0;
             box-shadow: none;
           }
+
           &:focus {
             background: #fff;
             border: 0;
             box-shadow: none;
           }
         }
+
         .ant-input-prefix {
           margin-right: 1rem;
         }
+
         .ant-input-suffix {
           margin-left: 1rem;
         }
+
         &:not(:last-child) {
           border-top-right-radius: 0 !important;
           border-bottom-right-radius: 0 !important;
         }
+
         &:not(:first-child) {
           border-top-left-radius: 0 !important;
           border-bottom-left-radius: 0 !important;
+        }
+      }
+    }
+  }
+}
+
+.ant-table-container {
+  table {
+    tr {
+      th {
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 20px;
+        border-color: rgba(128, 116, 124, 0.12);
+        padding: 12px 16px;
+      }
+      td {
+        border-color: rgba(128, 116, 124, 0.12);
+      }
+      &:first-child {
+        th {
+          &:first-child {
+            border-top-left-radius: 16px !important;
+          }
+          &:last-child {
+            border-top-right-radius: 16px !important;
+          }
         }
       }
     }

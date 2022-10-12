@@ -328,14 +328,40 @@ export class LixiController {
       const lixiId = _.toSafeInteger(base58ToNumber(encodedLixiId));
       const lixi = await this.prisma.lixi.findFirst({
         where: {
-          id: lixiId,
-          accountId: account.id
+          id: lixiId
         }
       });
 
       if (!lixi) {
         const lixiNotExist = await i18n.t('lixi.messages.lixiNotExist');
         throw new VError(lixiNotExist);
+      }
+
+      if (lixi.accountId != account.id) {
+        const haveNotAccess = await i18n.t('lixi.messages.haveNotAccess');
+        throw new VError(haveNotAccess);
+      }
+
+      if (lixi?.claimType === ClaimType.Single) {
+        const unableToRegister = await i18n.t('lixi.messages.unableToRegister');
+        throw new VError(unableToRegister);
+      }
+
+      if (_.isNil(lixi.packageId)) {
+        const packageUpdate = await this.prisma.package.create({
+          data: {
+            registrant: command.registrant
+          }
+        });
+
+        await this.prisma.lixi.updateMany({
+          where: {
+            parentId: lixi.parentId
+          },
+          data: {
+            packageId: packageUpdate.id
+          }
+        });
       } else {
         if (lixi.inventoryStatus === 'registered') {
           // if already register => ignore and return success
@@ -350,7 +376,18 @@ export class LixiController {
               updatedAt: new Date()
             }
           });
-          if (lixiList.count > 0) {
+
+          const packageRegistrant = await this.prisma.package.update({
+            where: {
+              id: lixi.packageId as number
+            },
+            data: {
+              updatedAt: new Date(),
+              registrant: command.registrant
+            }
+          });
+
+          if (lixiList.count > 0 && !_.isNil(packageRegistrant)) {
             // if having lixilist update => return true noti update successfully
             return true;
           } else {

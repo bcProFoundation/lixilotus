@@ -14,7 +14,7 @@ const { Sider } = Layout;
 
 const RankingSideBar = styled(Sider)`
   height: 50vh;
-  right: 20px;
+  right: 2rem;
   max-width: inherit !important;
   background: var(--bg-color-light-theme);
   border-radius: 20px;

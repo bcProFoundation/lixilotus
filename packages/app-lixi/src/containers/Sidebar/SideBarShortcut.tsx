@@ -147,6 +147,7 @@ const CointainerWallet = styled.div`
     justify-content: space-between;
     align-items: baseline;
     h3 {
+      margin: 0;
       font-weight: 600;
     }
     .anticon {
@@ -158,7 +159,7 @@ const CointainerWallet = styled.div`
 
 const ShortcutSideBar = styled(Sider)`
   height: 60vh;
-  left: 20px;
+  left: 2rem;
   max-width: inherit !important;
   background: var(--bg-color-light-theme);
 
@@ -240,13 +241,7 @@ const SidebarShortcut = () => {
             key="wallet-lotus"
             href={'/wallet'}
           />
-          <ItemAccess
-            icon={GiftOutlined}
-            text={'Lixi'}
-            active={selectedKey === '/lixies'}
-            key="lixi"
-            href={'/lixies'}
-          />
+          <ItemAccess icon={GiftOutlined} text={'Lixi'} active={selectedKey === '/lixi'} key="lixi" href={'/lixi'} />
           <ItemAccess icon={SendOutlined} text={'Send'} active={selectedKey === '/send'} key="send" href={'/send'} />
           <ItemAccess
             icon={EditOutlined}

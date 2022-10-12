@@ -79,7 +79,7 @@ import { getSelectedAccount } from '@store/account/selectors';
 import { getAllSubLixies, getLoadMoreSubLixiesStartId } from '@store/lixi/selectors';
 import { fromSmallestDenomination, toSmallestDenomination } from '@utils/cashMethods';
 import { numberToBase58 } from '@utils/encryptionMethods';
-
+import SubLixiList from './SubLixiList';
 import { ClaimType } from '../../../../lixi-models/src/lib/lixi';
 import lixiLogo from '../../assets/images/lixi_logo.svg';
 import { exportSubLixies } from '../../store/lixi/actions';
@@ -513,16 +513,16 @@ const Lixi = props => {
   const claimReportSingleCode = allClaimsCurrentLixi.map((item, i) => {
     return {
       num: i + 1,
-      amount: item.amount.toFixed(2),
-      createAt: item.createdAt
+      amount: fromSmallestDenomination(item.amount),
+      createAt: moment(item.createdAt).format('YYYY-MM-DD HH:mm')
     };
   });
 
   const onetimeCodeColumns = [
     { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
     { title: 'Code', dataIndex: 'claimCode' },
-    { title: 'Value redeem (XPI)', dataIndex: 'amount' },
-    { title: 'Statusses', dataIndex: 'isClaimed' }
+    { title: `${intl.get('general.amount')} (XPI)`, dataIndex: 'amount' },
+    { title: intl.get('lixi.status'), dataIndex: 'isClaimed' }
   ];
   const prefixClaimCode = 'lixi';
 
@@ -536,7 +536,7 @@ const Lixi = props => {
           </div>
         </CopyToClipboard>
       ),
-      amount: item.amount.toFixed(2),
+      amount: item.amount != 0 ? item.amount : fromSmallestDenomination(item.totalClaim),
       isClaimed: item.isClaimed ? (
         <Text
           style={{
@@ -568,7 +568,9 @@ const Lixi = props => {
   });
 
   const showMoreSubLixies = () => {
-    dispatch(fetchMoreSubLixies({ parentId: selectedLixi.id, startId: loadMoreStartId }));
+    if (hasMoreSubLixies) {
+      dispatch(fetchMoreSubLixies({ parentId: selectedLixi.id, startId: loadMoreStartId }));
+    }
   };
 
   const getLixiPanelDetailsIcon = (status: string, isPanelOpen: boolean) => {
@@ -618,7 +620,11 @@ const Lixi = props => {
   };
 
   const statusLixi = () => {
-    if (moment().isAfter(selectedLixi.expiryAt)) {
+    if (
+      (lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim) ||
+      moment().isAfter(lixi.expiryAt) ||
+      selectedLixi.status == 'failed'
+    ) {
       return (
         <Text
           style={{
@@ -933,7 +939,7 @@ const Lixi = props => {
                       </Text>
                       <br />
                       <Text style={{ color: '#1E1A1D' }}>
-                        {fromSmallestDenomination(_.sumBy(subLixies, 'amount')) ?? '0'} {currency.ticker}
+                        {_.sumBy(subLixies, 'amount').toFixed(2) ?? '0'} {currency.ticker}
                       </Text>
                     </>
                   }
@@ -943,12 +949,14 @@ const Lixi = props => {
                     showInfo={false}
                     type="circle"
                     strokeColor="#E37100"
-                    percent={100}
+                    strokeLinecap="butt"
+                    percent={
+                      (_.sumBy(subLixies, 'amount') + fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim'))) * 100
+                    }
                     success={{
                       percent:
-                        fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim')) /
-                        (fromSmallestDenomination(_.sumBy(subLixies, 'amount')) +
-                          fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim')))
+                        (fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim')) * 100) /
+                        (_.sumBy(subLixies, 'amount') + fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim')))
                     }}
                     style={{ paddingTop: '12.5px' }}
                   />
@@ -973,14 +981,7 @@ const Lixi = props => {
       case ClaimType.OneTime:
         return (
           <>
-            <VirtualTable
-              columns={onetimeCodeColumns}
-              dataSource={subLixiesDataSource}
-              scroll={{ y: subLixiesDataSource.length * 54 <= 270 ? subLixiesDataSource.length * 54 : 270 }}
-            />
-            {hasMoreSubLixies && (
-              <SmartButton onClick={() => showMoreSubLixies()}>{intl.get('lixi.loadmore')}</SmartButton>
-            )}
+            <SubLixiList dataSource={subLixies} columns={onetimeCodeColumns} loadMore={() => showMoreSubLixies()} />
           </>
         );
     }

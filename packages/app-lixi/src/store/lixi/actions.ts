@@ -54,9 +54,8 @@ export const fetchMoreSubLixies = createAction<{ parentId: number; startId: numb
 export const fetchMoreSubLixiesSuccess = createAction<PaginationResult<Lixi>>('lixi/fetchMoreSubLixiesSuccess');
 export const fetchMoreSubLixiesFailure = createAction<String>('lixi/fetchMoreSubLixiesFailure');
 export const exportSubLixies = createAction<ExportLixiCommand>('lixi/exportSubLixies');
-export const exportSubLixiesSuccess = createAction<{ fileName: string; lixiId: number; mnemonicHash: string }>(
-  'lixi/exportSubLixiesSuccess'
-);
+export const exportSubLixiesSuccess =
+  createAction<{ fileName: string; lixiId: number; mnemonicHash: string }>('lixi/exportSubLixiesSuccess');
 export const exportSubLixiesFailure = createAction<string>('lixi/exportSubLixiesFailure');
 export const downloadExportedLixi = createAction<DownloadExportedLixiCommand>('lixi/downloadExportedLixi');
 export const downloadExportedLixiSuccess = createAction<any>('lixi/downloadExportedLixiSuccess');

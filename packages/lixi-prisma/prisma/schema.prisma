@@ -217,10 +217,11 @@ model Envelope {
 }
 
 model Package {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
-  lixi      Lixi[]
+  id         Int      @id @default(autoincrement())
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt  DateTime @default(now()) @map("updated_at") @db.Timestamptz
+  lixi       Lixi[]
+  registrant String?  @map("registrant")
 
   @@map("package")
 }
