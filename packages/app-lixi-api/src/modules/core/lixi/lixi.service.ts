@@ -288,10 +288,10 @@ export class LixiService {
     const xpiAllowanceEachChunk = command.amount / numberOfChunks;
 
     // Check the number of distributions
-    const additionalDistributionsNum = parentLixi && parentLixi.distributions ? parentLixi.distributions.length : 0;
+    const additionalDistributionsNum = parentLixi.distributions ? parentLixi.distributions.length : 0;
     const numberOfDistributions = parentLixi.joinLotteryProgram
-      ? additionalDistributionsNum + 2
-      : additionalDistributionsNum + 1;
+      ? additionalDistributionsNum + 1
+      : additionalDistributionsNum;
 
     // Decrypt the account secret
     const secret = await aesGcmDecrypt(account.encryptedSecret, command.mnemonic);
@@ -321,6 +321,8 @@ export class LixiService {
         accountSecret: secret,
         packageId: createdPackage?.id
       };
+
+      console.log('numberOfSubLixiInChunk: ', numberOfSubLixiInChunk);
 
       const childJob: FlowJob = {
         name: LIXI_JOB_NAMES.CREATE_SUB_LIXIES_CHUNK,

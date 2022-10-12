@@ -167,7 +167,7 @@ export class CreateSubLixiesProcessor extends WorkerHost {
           }
           xpiAllowance -= xpiRandom;
         } else if (command.lixiType == LixiType.Equal) {
-          xpiToSend = xpiAllowance / Number(command.numberOfSubLixi);
+          xpiToSend = xpiAllowance / numberOfSubLixiInChunk;
           if (xpiToSend <= 0) {
             throw new Error('Incorrect number to send');
           }
