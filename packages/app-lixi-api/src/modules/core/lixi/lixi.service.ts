@@ -322,8 +322,6 @@ export class LixiService {
         packageId: createdPackage?.id
       };
 
-      console.log('numberOfSubLixiInChunk: ', numberOfSubLixiInChunk);
-
       const childJob: FlowJob = {
         name: LIXI_JOB_NAMES.CREATE_SUB_LIXIES_CHUNK,
         data: childJobData,
