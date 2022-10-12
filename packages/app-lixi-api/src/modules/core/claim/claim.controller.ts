@@ -190,7 +190,7 @@ export class ClaimController {
             }
         }
 
-        if (process.env.NODE_ENV !== 'development' && claimApi.captchaToken !== 'isAbcpay') {
+        if (process.env.NODE_ENV === 'production' && claimApi.captchaToken !== 'isAbcpay') {
           await checkingCaptcha();
           const geolocation = geoip.lookup(ip);
           const country = countries.find(country => country.id === lixi?.country);
@@ -326,12 +326,6 @@ export class ClaimController {
                 amountSat: amountSats
               }
             ]);
-        // outputs = [
-        //   {
-        //     address: claimApi.claimAddress,
-        //     amountSat: amountSats
-        //   }
-        // ];
 
         // distributions
         if (parentLixi && parentLixi.claimType == ClaimType.OneTime && parentLixi?.distributions) {

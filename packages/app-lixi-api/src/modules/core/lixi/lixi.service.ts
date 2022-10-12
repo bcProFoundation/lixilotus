@@ -221,7 +221,7 @@ export class LixiService {
         });
       }
 
-      if (distributions) {
+      if (distributions && distributions.length > 0) {
         await prisma.lixiDistribution.createMany({
           data: distributions
         });
@@ -284,9 +284,6 @@ export class LixiService {
       throw new Error('Must create at least a sub lixi');
     }
 
-    // The amount should be funded from the account
-    const xpiAllowanceEachChunk = command.amount / numberOfChunks;
-
     // Check the number of distributions
     const additionalDistributionsNum = parentLixi.distributions ? parentLixi.distributions.length : 0;
     const numberOfDistributions = parentLixi.joinLotteryProgram
@@ -302,6 +299,7 @@ export class LixiService {
       const numberOfSubLixiInChunk =
         chunkIndex < numberOfChunks - 1 ? chunkSize : (command.numberOfSubLixi as number) - chunkIndex * chunkSize;
 
+      const xpiAllowanceInChunk = (numberOfSubLixiInChunk * command.amount) / (command.numberOfSubLixi as number);
       // Start to process from the start of each chunk
       const startDerivationIndexForChunk = startDerivationIndex + chunkIndex * chunkSize;
 
@@ -314,7 +312,7 @@ export class LixiService {
         numberOfSubLixiInChunk: numberOfSubLixiInChunk,
         numberOfDistributions,
         startDerivationIndexForChunk: startDerivationIndexForChunk,
-        xpiAllowance: xpiAllowanceEachChunk,
+        xpiAllowance: xpiAllowanceInChunk,
         parentId: parentLixiId,
         command: command,
         fundingAddress: account.address,
