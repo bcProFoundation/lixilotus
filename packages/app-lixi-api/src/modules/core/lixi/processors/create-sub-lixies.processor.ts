@@ -84,15 +84,12 @@ export class CreateSubLixiesProcessor extends WorkerHost {
     const txFee = Math.ceil(this.XPI.BitcoinCash.getByteCount({ P2PKH: 1 }, { P2PKH: outputsNum }) * 2.01);
 
     // Preparing receive address and amount
-    let receivingSubLixies = _.filter(
-      subLixiesToInsert.map(item => {
-        return {
-          address: item.address,
-          amountXpi: item.amount * numberOfDistributions
-        };
-      }),
-      item => item.amountXpi !== 0
-    );
+    let receivingSubLixies = await subLixiesToInsert.map(item => {
+      return {
+        address: item.address,
+        amountXpi: item.amount * outputsNum
+      };
+    });
 
     // Add the fee for each sub lixi transaction
     receivingSubLixies = _.map(receivingSubLixies, item => {
