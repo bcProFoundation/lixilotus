@@ -44,7 +44,7 @@ export class ClaimController {
     @Inject('xpijs') private XPI: BCHJS,
     private readonly config: ConfigService,
     private readonly lixiNftService: LixiNftService
-  ) { }
+  ) {}
 
   @Get(':id')
   async getEnvelope(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<ViewClaimDto> {
@@ -190,7 +190,7 @@ export class ClaimController {
             }
         }
 
-        if (process.env.NODE_ENV !== 'development' && claimApi.captchaToken !== 'isAbcpay') {
+        if (process.env.NODE_ENV === 'production' && claimApi.captchaToken !== 'isAbcpay') {
           await checkingCaptcha();
           const geolocation = geoip.lookup(ip);
           const country = countries.find(country => country.id === lixi?.country);
@@ -307,32 +307,25 @@ export class ClaimController {
         const amountSats = Math.floor(satoshisToSend.toNumber());
 
         let outputs: { address: string; amountSat: number }[] = [];
-        console.log('numberOfDistributions: ', numberOfDistributions);
 
         // registrant
         !_.isNil(lixi.package?.registrant)
           ? outputs.push(
-            {
-              address: claimApi.claimAddress,
-              amountSat: amountSats / 2
-            },
-            {
-              address: lixi.package?.registrant as unknown as string,
-              amountSat: amountSats / 2
-            }
-          )
+              {
+                address: claimApi.claimAddress,
+                amountSat: amountSats / 2
+              },
+              {
+                address: lixi.package?.registrant as unknown as string,
+                amountSat: amountSats / 2
+              }
+            )
           : (outputs = [
-            {
-              address: claimApi.claimAddress,
-              amountSat: amountSats
-            }
-          ]);
-        // outputs = [
-        //   {
-        //     address: claimApi.claimAddress,
-        //     amountSat: amountSats
-        //   }
-        // ];
+              {
+                address: claimApi.claimAddress,
+                amountSat: amountSats
+              }
+            ]);
 
         // distributions
         if (parentLixi && parentLixi.claimType == ClaimType.OneTime && parentLixi?.distributions) {
@@ -419,8 +412,7 @@ export class ClaimController {
             data: {
               totalClaim: lixi.totalClaim + BigInt(amountSats),
               claimedNum: lixi.claimedNum + 1,
-              isClaimed: lixi.claimType == ClaimType.OneTime ? true : false,
-              amount: lixi.claimType == ClaimType.OneTime ? 0 : lixi.amount
+              isClaimed: lixi.claimType == ClaimType.OneTime ? true : false
             }
           });
 
@@ -452,7 +444,7 @@ export class ClaimController {
               where: {
                 id: lixi.uploadDetail.uploadId
               }
-            })
+            });
             image = upload?.url;
             thumbnail = upload?.url.replace(/(\.[\w\d_-]+)$/i, '-200$1');
           }

@@ -568,7 +568,9 @@ const Lixi = props => {
   });
 
   const showMoreSubLixies = () => {
-    dispatch(fetchMoreSubLixies({ parentId: selectedLixi.id, startId: loadMoreStartId }));
+    if (hasMoreSubLixies) {
+      dispatch(fetchMoreSubLixies({ parentId: selectedLixi.id, startId: loadMoreStartId }));
+    }
   };
 
   const getLixiPanelDetailsIcon = (status: string, isPanelOpen: boolean) => {

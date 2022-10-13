@@ -21,6 +21,8 @@
     "fileNameNotExist": "File name not exist",
     "lixiPackNotRegister": "Unable to register lixi pack",
     "lixiClaimed": "Lixi already claimed",
-    "lixiValid": "Lixi is still valid"
+    "lixiValid": "Lixi is still valid",
+    "unableToRegister": "Unable to register with Single-Code",
+    "haveNotAccess": "You don't have permission to access"
   }
 }

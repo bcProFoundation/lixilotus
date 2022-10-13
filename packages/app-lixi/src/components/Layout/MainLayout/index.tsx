@@ -41,10 +41,6 @@ const AppBody = styled.div`
   min-height: 100vh;
   background-image: ${props => props.theme.app.gradient};
   background-attachment: fixed;
-  @media (min-width: 1366px) {
-    max-width: 1366px;
-    margin: auto;
-  }
 `;
 
 const NavBarHeader = styled(Header)`
@@ -55,8 +51,7 @@ const NavBarHeader = styled(Header)`
   align-items: center;
   border-radius: 20px;
   box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
-  width: 88%;
-  margin: auto;
+  width: 100%;
   margin-bottom: 1rem;
   .anticon {
     font-size: 24px;
@@ -104,6 +99,14 @@ export const AppContainer = styled.div`
     .content-layout {
       // margin-top: 80px;
       z-index: 1;
+    }
+  }
+  .ant-layout.ant-layout-has-sider {
+    gap: 4rem;
+  }
+  .main-section-layout {
+    @media (max-width: 768px) {
+      padding-right: 0 !important;
     }
   }
 `;
@@ -208,7 +211,10 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                 <>
                   <DeviceProtectableComponentWrapper>
                     <AppContainer>
-                      <Layout>
+                      <Layout
+                        className="main-section-layout"
+                        style={{ paddingRight: selectedKey === '/lixi' ? '2rem' : '0' }}
+                      >
                         <SidebarShortcut></SidebarShortcut>
                         <Sidebar />
                         <Layout>
@@ -226,7 +232,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                           )}
                           <Content className="content-layout">{children}</Content>
                         </Layout>
-                        {selectedKey !== '/lixies' && <SidebarRanking></SidebarRanking>}
+                        {selectedKey !== '/lixi' && <SidebarRanking></SidebarRanking>}
                       </Layout>
                     </AppContainer>
                   </DeviceProtectableComponentWrapper>
