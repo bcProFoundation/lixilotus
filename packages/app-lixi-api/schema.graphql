@@ -15,6 +15,13 @@ input CreatePageInput {
   website: String!
 }
 
+input CreatePostInput {
+  content: String
+  cover: String!
+  pageId: String!
+  title: String!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -22,7 +29,9 @@ scalar DateTime
 
 type Mutation {
   createPage(data: CreatePageInput!): Page!
+  createPost(data: CreatePostInput!): Post!
   updatePage(data: UpdatePageInput!): Page!
+  updatePost(data: UpdatePostInput!): Post!
 }
 
 """
@@ -58,6 +67,7 @@ type Page {
 type PageConnection {
   edges: [PageEdge!]
   pageInfo: PageInfo!
+  postInfo: PostInfo!
   totalCount: Int
 }
 
@@ -103,18 +113,49 @@ type Post {
   updatedAt: DateTime!
 }
 
+type PostConnection {
+  edges: [PostEdge!]
+  pageInfo: PageInfo!
+  postInfo: PostInfo!
+  totalCount: Int
+}
+
 type PostEdge {
   cursor: String!
   node: Post!
 }
 
+type PostInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
+
+input PostOrder {
+  direction: OrderDirection!
+  field: PostOrderField!
+}
+
+"""Properties by which post connections can be ordered."""
+enum PostOrderField {
+  content
+  createdAt
+  id
+  title
+  updatedAt
+}
+
 type Query {
   allPages(after: String, before: String, first: Int, last: Int, orderBy: PageOrder, query: String, skip: Int): PageConnection!
+  allPosts(after: String, before: String, first: Int, last: Int, orderBy: PostOrder, query: String, skip: Int): PostConnection!
   page(id: String!): Page!
+  post(id: String!): Post!
 }
 
 type Subscription {
   pageCreated: Page!
+  postCreated: Post!
 }
 
 input UpdatePageInput {
@@ -129,4 +170,11 @@ input UpdatePageInput {
   state: String
   title: String
   website: String
+}
+
+input UpdatePostInput {
+  content: String!
+  cover: String!
+  id: ID!
+  title: String!
 }

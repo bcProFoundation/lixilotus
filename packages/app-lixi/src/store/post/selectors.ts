@@ -1,4 +1,3 @@
-import { Page } from '@bcpros/lixi-models';
 import { createSelector } from 'reselect';
 import { RootState } from '../store';
 import { postAdapter } from './reducer';
@@ -9,11 +8,11 @@ const selectSelectedAccount = createSelector(selectAccounts, state => state.sele
 
 const { selectAll, selectEntities, selectIds, selectTotal } = postAdapter.getSelectors();
 
-export const getAllPages = createSelector((state: RootState) => state.posts, selectAll);
+export const getAllPosts = createSelector((state: RootState) => state.posts, selectAll);
 
-export const getAllPagesEntities = createSelector((state: RootState) => state.posts, selectEntities);
+export const getAllPostsEntities = createSelector((state: RootState) => state.posts, selectEntities);
 
-export const getSelectedPageId = createSelector(
+export const getSelectedPostId = createSelector(
   (state: RootState) => state.posts,
   (state: PostState) => state.selectedId as string
 );
@@ -23,8 +22,8 @@ export const postsByAccountId = createSelector(
   (state: PostState) => state.postsByAccountId
 );
 
-export const getPageById = (id: string) => createSelector(getAllPagesEntities, posts => posts?.[id]);
+export const getPostById = (id: string) => createSelector(getAllPostsEntities, posts => posts?.[id]);
 
-export const getPageBySelectedAccount = createSelector([selectSelectedAccount, getAllPages], (accountId, posts) =>
-  posts.find(post => post.postAccountId === accountId)
+export const getPostBySelectedAccount = createSelector([selectSelectedAccount, getAllPosts], (accountId, posts) =>
+  posts.find(post => post?.pageAccountId === accountId)
 );
