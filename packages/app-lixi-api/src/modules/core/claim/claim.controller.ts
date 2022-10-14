@@ -44,7 +44,7 @@ export class ClaimController {
     @Inject('xpijs') private XPI: BCHJS,
     private readonly config: ConfigService,
     private readonly lixiNftService: LixiNftService
-  ) {}
+  ) { }
 
   @Get(':id')
   async getEnvelope(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<ViewClaimDto> {
@@ -311,21 +311,21 @@ export class ClaimController {
         // registrant
         !_.isNil(lixi.package?.registrant)
           ? outputs.push(
-              {
-                address: claimApi.claimAddress,
-                amountSat: amountSats / 2
-              },
-              {
-                address: lixi.package?.registrant as unknown as string,
-                amountSat: amountSats / 2
-              }
-            )
+            {
+              address: claimApi.claimAddress,
+              amountSat: amountSats / 2
+            },
+            {
+              address: lixi.package?.registrant as unknown as string,
+              amountSat: amountSats / 2
+            }
+          )
           : (outputs = [
-              {
-                address: claimApi.claimAddress,
-                amountSat: amountSats
-              }
-            ]);
+            {
+              address: claimApi.claimAddress,
+              amountSat: amountSats
+            }
+          ]);
 
         // distributions
         if (parentLixi && parentLixi.claimType == ClaimType.OneTime && parentLixi?.distributions) {
@@ -439,14 +439,35 @@ export class ClaimController {
           }
 
           let image, thumbnail;
-          if (lixi.uploadDetail) {
-            const upload = await this.prisma.upload.findFirst({
+
+          if (lixi.parentId) {
+            const parentLixi = await this.prisma.lixi.findFirst({
               where: {
-                id: lixi.uploadDetail.uploadId
+                id: lixi.parentId
+              },
+              include: {
+                uploadDetail: true
               }
-            });
-            image = upload?.url;
-            thumbnail = upload?.url.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+            })
+            if (parentLixi!.uploadDetail) {
+              const upload = await this.prisma.upload.findFirst({
+                where: {
+                  id: parentLixi!.uploadDetail.uploadId
+                }
+              });
+              image = upload?.url;
+              thumbnail = upload?.url.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+            }
+          } else {
+            if (lixi.uploadDetail) {
+              const upload = await this.prisma.upload.findFirst({
+                where: {
+                  id: lixi.uploadDetail.uploadId
+                }
+              });
+              image = upload?.url;
+              thumbnail = upload?.url.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+            }
           }
 
           let result: ViewClaimDto = {

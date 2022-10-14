@@ -26,7 +26,7 @@ const StyledTableHead = styled.th`
 const StyledTableData = styled.td`
   border-bottom: 1px solid #e0e0e0;
   padding: 18px;
-  width: 165px;
+  width: 300px;
 `;
 
 const SubLixiList = props => {
