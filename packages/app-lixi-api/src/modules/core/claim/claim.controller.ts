@@ -448,7 +448,7 @@ export class ClaimController {
               include: {
                 uploadDetail: true
               }
-            })
+            });
             if (parentLixi!.uploadDetail) {
               const upload = await this.prisma.upload.findFirst({
                 where: {

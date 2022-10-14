@@ -179,8 +179,6 @@ const LixiList = ({ lixies }: LixiListProps) => {
     setListMapData(newListLixiType);
   };
 
-  console.log(lixies);
-
   const mapActionLixi = lixi => {
     let actionLixi = null;
     let defaultActionLixi = ['Withdraw', 'Rename', 'Export'];
