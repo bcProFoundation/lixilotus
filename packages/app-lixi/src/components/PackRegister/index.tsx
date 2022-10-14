@@ -50,7 +50,6 @@ const RegisterComponent: React.FC = () => {
       dispatch(registerLixiPack(dataApi));
       setCurrentClaimCode('');
     }
-    
   }
 
   const handleClaimCodeChange = e => {

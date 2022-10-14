@@ -503,7 +503,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
     setCheckMaxClaim(value);
   };
 
-  const handlePackage = e => {
+  const handleCheckPackageChange = e => {
     const value = e.target.checked;
     setCheckPackage(value);
   };
@@ -619,7 +619,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
       numberOfSubLixi: newNumberOfSubLixi,
       envelopeId: newEnvelopeId,
       envelopeMessage: newEnvelopeMessage,
-      checkPackage: checkPackage,
+      shouldGroupToPackage: checkPackage,
       numberLixiPerPackage: newNumberLixiPerPackage,
       upload: envelopeUpload,
       staffAddress: newStaffAddress,
@@ -638,7 +638,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
       newActivatedAt,
       newLixiAmount,
       newNumberOfSubLixi,
-      checkPackage,
+      shouldGroupToPackage: checkPackage,
       newNumberLixiPerPackage,
       newLixiMinValue,
       newLixiMaxValue,
@@ -812,7 +812,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
     } else {
       return (
         <Form.Item validateStatus={newPackageIsValid === null || newPackageIsValid ? '' : 'error'}>
-          <Checkbox value={checkPackage} onChange={e => handlePackage(e)}>
+          <Checkbox value={checkPackage} onChange={e => handleCheckPackageChange(e)}>
             {intl.get('account.numberLixiPerPackage')}
           </Checkbox>
           {checkPackage === true && (
