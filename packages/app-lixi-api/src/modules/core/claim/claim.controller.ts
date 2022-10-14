@@ -44,7 +44,7 @@ export class ClaimController {
     @Inject('xpijs') private XPI: BCHJS,
     private readonly config: ConfigService,
     private readonly lixiNftService: LixiNftService
-  ) { }
+  ) {}
 
   @Get(':id')
   async getEnvelope(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<ViewClaimDto> {
@@ -273,14 +273,18 @@ export class ClaimController {
         const xpiBalance = fromSmallestDenomination(balance);
 
         let numberOfDistributions = 1;
+        let addRegistered = 1;
         let satoshisToSend;
-        !_.isNil(lixi.package?.registrant) && numberOfDistributions++;
+        !_.isNil(lixi.package?.registrant) && (addRegistered += numberOfDistributions);
         if (parentLixi && parentLixi.claimType == ClaimType.OneTime) {
           numberOfDistributions = parentLixi.joinLotteryProgram
             ? parentLixi.distributions.length + 2
             : parentLixi.distributions.length + 1;
 
-          const xpiValue = lixi.amount;
+          const totalAmountBeforeRegister = lixi.amount * numberOfDistributions;
+          const amountFundingRegistered = totalAmountBeforeRegister / addRegistered;
+
+          const xpiValue = amountFundingRegistered;
           satoshisToSend = toSmallestDenomination(new BigNumber(xpiValue));
         } else if (lixi.lixiType == LixiType.Random) {
           const maxXpiValue = xpiBalance < lixi.maxValue ? xpiBalance : lixi.maxValue;
@@ -311,21 +315,21 @@ export class ClaimController {
         // registrant
         !_.isNil(lixi.package?.registrant)
           ? outputs.push(
-            {
-              address: claimApi.claimAddress,
-              amountSat: amountSats / 2
-            },
-            {
-              address: lixi.package?.registrant as unknown as string,
-              amountSat: amountSats / 2
-            }
-          )
+              {
+                address: claimApi.claimAddress,
+                amountSat: amountSats
+              },
+              {
+                address: lixi.package?.registrant as unknown as string,
+                amountSat: amountSats
+              }
+            )
           : (outputs = [
-            {
-              address: claimApi.claimAddress,
-              amountSat: amountSats
-            }
-          ]);
+              {
+                address: claimApi.claimAddress,
+                amountSat: amountSats
+              }
+            ]);
 
         // distributions
         if (parentLixi && parentLixi.claimType == ClaimType.OneTime && parentLixi?.distributions) {
