@@ -443,14 +443,35 @@ export class ClaimController {
           }
 
           let image, thumbnail;
-          if (lixi.uploadDetail) {
-            const upload = await this.prisma.upload.findFirst({
+
+          if (lixi.parentId) {
+            const parentLixi = await this.prisma.lixi.findFirst({
               where: {
-                id: lixi.uploadDetail.uploadId
+                id: lixi.parentId
+              },
+              include: {
+                uploadDetail: true
               }
             });
-            image = upload?.url;
-            thumbnail = upload?.url.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+            if (parentLixi!.uploadDetail) {
+              const upload = await this.prisma.upload.findFirst({
+                where: {
+                  id: parentLixi!.uploadDetail.uploadId
+                }
+              });
+              image = upload?.url;
+              thumbnail = upload?.url.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+            }
+          } else {
+            if (lixi.uploadDetail) {
+              const upload = await this.prisma.upload.findFirst({
+                where: {
+                  id: lixi.uploadDetail.uploadId
+                }
+              });
+              image = upload?.url;
+              thumbnail = upload?.url.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+            }
           }
 
           let result: ViewClaimDto = {
