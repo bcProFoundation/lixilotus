@@ -79,7 +79,7 @@ import { getSelectedAccount } from '@store/account/selectors';
 import { getAllSubLixies, getLoadMoreSubLixiesStartId } from '@store/lixi/selectors';
 import { fromSmallestDenomination, toSmallestDenomination } from '@utils/cashMethods';
 import { numberToBase58 } from '@utils/encryptionMethods';
-
+import SubLixiList from './SubLixiList';
 import { ClaimType } from '../../../../lixi-models/src/lib/lixi';
 import lixiLogo from '../../assets/images/lixi_logo.svg';
 import { exportSubLixies } from '../../store/lixi/actions';
@@ -518,57 +518,17 @@ const Lixi = props => {
     };
   });
 
-  const onetimeCodeColumns = [
+  const oneTimeCodeColumns = [
     { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
     { title: 'Code', dataIndex: 'claimCode' },
-    { title: 'Value redeem (XPI)', dataIndex: 'amount' },
-    { title: 'Statusses', dataIndex: 'isClaimed' }
+    { title: `${intl.get('general.amount')} (XPI)`, dataIndex: 'amount' },
+    { title: intl.get('lixi.status'), dataIndex: 'isClaimed' }
   ];
-  const prefixClaimCode = 'lixi';
-
-  const subLixiesDataSource = subLixies.map((item, i) => {
-    return {
-      num: i + 1,
-      claimCode: (
-        <CopyToClipboard text={`${prefixClaimCode}_${item.claimCode}`} onCopy={handleOnCopyClaimCode}>
-          <div>
-            <CopyOutlined /> {`${prefixClaimCode}_${item.claimCode}`}
-          </div>
-        </CopyToClipboard>
-      ),
-      amount: item.amount != 0 ? item.amount : fromSmallestDenomination(item.totalClaim),
-      isClaimed: item.isClaimed ? (
-        <Text
-          style={{
-            color: '#FFFFFF',
-            padding: '4px 8px',
-            borderRadius: '8px',
-            fontWeight: '400',
-            fontSize: '14px',
-            background: '#598300'
-          }}
-        >
-          Redeemed
-        </Text>
-      ) : (
-        <Text
-          style={{
-            color: '#FFFFFF',
-            padding: '4px 8px',
-            borderRadius: '8px',
-            fontWeight: '400',
-            fontSize: '14px',
-            background: '#E37100'
-          }}
-        >
-          Remaining
-        </Text>
-      )
-    };
-  });
 
   const showMoreSubLixies = () => {
-    dispatch(fetchMoreSubLixies({ parentId: selectedLixi.id, startId: loadMoreStartId }));
+    if (hasMoreSubLixies) {
+      dispatch(fetchMoreSubLixies({ parentId: selectedLixi.id, startId: loadMoreStartId }));
+    }
   };
 
   const getLixiPanelDetailsIcon = (status: string, isPanelOpen: boolean) => {
@@ -977,18 +937,13 @@ const Lixi = props => {
           />
         );
       case ClaimType.OneTime:
-        return (
-          <>
-            <VirtualTable
-              columns={onetimeCodeColumns}
-              dataSource={subLixiesDataSource}
-              scroll={{ y: subLixiesDataSource.length * 54 <= 270 ? subLixiesDataSource.length * 54 : 270 }}
-            />
-            {hasMoreSubLixies && (
-              <SmartButton onClick={() => showMoreSubLixies()}>{intl.get('lixi.loadmore')}</SmartButton>
-            )}
-          </>
-        );
+        const lixiStatus =
+          selectedLixi.status === 'pending' ? (
+            <LoadingOutlined />
+          ) : (
+            <SubLixiList dataSource={subLixies} columns={oneTimeCodeColumns} loadMore={() => showMoreSubLixies()} />
+          );
+        return lixiStatus;
     }
   };
 

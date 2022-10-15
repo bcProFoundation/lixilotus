@@ -28,6 +28,7 @@ export interface GenerateLixiCommand {
   isNFTEnabled: boolean;
   envelopeId: Nullable<number>;
   envelopeMessage: string;
+  shouldGroupToPackage: boolean;
   numberLixiPerPackage?: Nullable<string>;
   upload: Upload;
   staffAddress?: string;
