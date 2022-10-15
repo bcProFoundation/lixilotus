@@ -273,14 +273,18 @@ export class ClaimController {
         const xpiBalance = fromSmallestDenomination(balance);
 
         let numberOfDistributions = 1;
+        let addRegistered = 1;
         let satoshisToSend;
-        !_.isNil(lixi.package?.registrant) && numberOfDistributions++;
+        !_.isNil(lixi.package?.registrant) && (addRegistered += numberOfDistributions);
         if (parentLixi && parentLixi.claimType == ClaimType.OneTime) {
           numberOfDistributions = parentLixi.joinLotteryProgram
             ? parentLixi.distributions.length + 2
             : parentLixi.distributions.length + 1;
 
-          const xpiValue = lixi.amount;
+          const totalAmountBeforeRegister = lixi.amount * numberOfDistributions;
+          const amountFundingRegistered = totalAmountBeforeRegister / addRegistered;
+
+          const xpiValue = amountFundingRegistered;
           satoshisToSend = toSmallestDenomination(new BigNumber(xpiValue));
         } else if (lixi.lixiType == LixiType.Random) {
           const maxXpiValue = xpiBalance < lixi.maxValue ? xpiBalance : lixi.maxValue;
@@ -313,11 +317,11 @@ export class ClaimController {
           ? outputs.push(
               {
                 address: claimApi.claimAddress,
-                amountSat: amountSats / 2
+                amountSat: amountSats
               },
               {
                 address: lixi.package?.registrant as unknown as string,
-                amountSat: amountSats / 2
+                amountSat: amountSats
               }
             )
           : (outputs = [
@@ -439,14 +443,35 @@ export class ClaimController {
           }
 
           let image, thumbnail;
-          if (lixi.uploadDetail) {
-            const upload = await this.prisma.upload.findFirst({
+
+          if (lixi.parentId) {
+            const parentLixi = await this.prisma.lixi.findFirst({
               where: {
-                id: lixi.uploadDetail.uploadId
+                id: lixi.parentId
+              },
+              include: {
+                uploadDetail: true
               }
             });
-            image = upload?.url;
-            thumbnail = upload?.url.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+            if (parentLixi!.uploadDetail) {
+              const upload = await this.prisma.upload.findFirst({
+                where: {
+                  id: parentLixi!.uploadDetail.uploadId
+                }
+              });
+              image = upload?.url;
+              thumbnail = upload?.url.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+            }
+          } else {
+            if (lixi.uploadDetail) {
+              const upload = await this.prisma.upload.findFirst({
+                where: {
+                  id: lixi.uploadDetail.uploadId
+                }
+              });
+              image = upload?.url;
+              thumbnail = upload?.url.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+            }
           }
 
           let result: ViewClaimDto = {

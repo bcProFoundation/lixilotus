@@ -518,54 +518,12 @@ const Lixi = props => {
     };
   });
 
-  const onetimeCodeColumns = [
+  const oneTimeCodeColumns = [
     { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
     { title: 'Code', dataIndex: 'claimCode' },
     { title: `${intl.get('general.amount')} (XPI)`, dataIndex: 'amount' },
     { title: intl.get('lixi.status'), dataIndex: 'isClaimed' }
   ];
-  const prefixClaimCode = 'lixi';
-
-  const subLixiesDataSource = subLixies.map((item, i) => {
-    return {
-      num: i + 1,
-      claimCode: (
-        <CopyToClipboard text={`${prefixClaimCode}_${item.claimCode}`} onCopy={handleOnCopyClaimCode}>
-          <div>
-            <CopyOutlined /> {`${prefixClaimCode}_${item.claimCode}`}
-          </div>
-        </CopyToClipboard>
-      ),
-      amount: item.amount != 0 ? item.amount : fromSmallestDenomination(item.totalClaim),
-      isClaimed: item.isClaimed ? (
-        <Text
-          style={{
-            color: '#FFFFFF',
-            padding: '4px 8px',
-            borderRadius: '8px',
-            fontWeight: '400',
-            fontSize: '14px',
-            background: '#598300'
-          }}
-        >
-          Redeemed
-        </Text>
-      ) : (
-        <Text
-          style={{
-            color: '#FFFFFF',
-            padding: '4px 8px',
-            borderRadius: '8px',
-            fontWeight: '400',
-            fontSize: '14px',
-            background: '#E37100'
-          }}
-        >
-          Remaining
-        </Text>
-      )
-    };
-  });
 
   const showMoreSubLixies = () => {
     if (hasMoreSubLixies) {
@@ -979,11 +937,13 @@ const Lixi = props => {
           />
         );
       case ClaimType.OneTime:
-        return (
-          <>
-            <SubLixiList dataSource={subLixies} columns={onetimeCodeColumns} loadMore={() => showMoreSubLixies()} />
-          </>
-        );
+        const lixiStatus =
+          selectedLixi.status === 'pending' ? (
+            <LoadingOutlined />
+          ) : (
+            <SubLixiList dataSource={subLixies} columns={oneTimeCodeColumns} loadMore={() => showMoreSubLixies()} />
+          );
+        return lixiStatus;
     }
   };
 

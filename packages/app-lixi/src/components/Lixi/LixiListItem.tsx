@@ -136,7 +136,7 @@ export const typeLixi = lixi => {
     case LixiType.Equal:
       return (
         <>
-          {intl.get('account.equal')} {lixi.amount / lixi.numberOfSubLixi} {currency.ticker}
+          {intl.get('account.equal')} {(lixi.subLixiBalance / lixi.numberOfSubLixi).toFixed(2)} {currency.ticker}
         </>
       );
     default:

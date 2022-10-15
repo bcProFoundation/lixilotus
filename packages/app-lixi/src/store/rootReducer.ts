@@ -30,7 +30,7 @@ import { localAccountsAdapter, localUserAccountReducer } from './localAccount/re
 const persistConfig = {
   key: 'root',
   storage: storage('lixi-indexeddb'),
-  blacklist: ['accounts']
+  blacklist: ['accounts', 'router']
 };
 
 const localAccountPersistConfig: PersistConfig<LocalUserAccountsState> = {

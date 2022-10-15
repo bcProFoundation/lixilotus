@@ -211,13 +211,13 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                 <>
                   <DeviceProtectableComponentWrapper>
                     <AppContainer>
-                      <Layout
-                        className="main-section-layout"
-                        style={{ paddingRight: selectedKey === '/lixi' ? '2rem' : '0' }}
-                      >
+                      <Layout>
                         <SidebarShortcut></SidebarShortcut>
                         <Sidebar />
-                        <Layout>
+                        <Layout
+                          className="main-section-layout"
+                          style={{ paddingRight: selectedKey === '/lixi' ? '2rem' : '0' }}
+                        >
                           <Topbar ref={setRef} />
                           {selectedKey !== '/' && (
                             <NavBarHeader>
