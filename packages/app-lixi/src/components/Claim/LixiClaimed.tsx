@@ -137,7 +137,7 @@ const LixiClaimed = ({ className, claim, isMobile }: LixiClaimProps) => {
   const slug = numberToBase58(claim.id);
 
   const shareUrl = `${baseUrl}claimed/${slug}`;
-
+  //
   const ShareSocialDropdown = (
     <Popover content={() => popOverContent(shareUrl)}>
       <ClaimButton>
@@ -153,7 +153,7 @@ const LixiClaimed = ({ className, claim, isMobile }: LixiClaimProps) => {
         url: shareUrl,
         title: 'LixiLotus'
       }}
-      onClick={() => {}}
+      onClick={() => { }}
     >
       <ClaimButton>
         <ShareAltOutlined /> Share
