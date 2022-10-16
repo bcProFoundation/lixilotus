@@ -21,7 +21,7 @@ const LixiApp = ({ Component, ...rest }) => {
 
   const Layout = Component.Layout || MainLayout;
 
-  const router = useRouter();
+  // const router = useRouter();
 
   // const isServer = () => typeof window === 'undefined';
 
@@ -46,7 +46,7 @@ const LixiApp = ({ Component, ...rest }) => {
               </Head>
               <ConnectedRouter>
                 <PersistGate persistor={store.__persistor} loading={<div>Loading</div>}>
-                  <Component {...props.pageProps} router={router} />
+                  <Component {...props.pageProps} />
                 </PersistGate>
               </ConnectedRouter>
             </Layout>
