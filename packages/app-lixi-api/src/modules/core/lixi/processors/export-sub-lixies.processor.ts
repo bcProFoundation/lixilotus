@@ -81,10 +81,15 @@ export class ExportSubLixiesProcessor extends WorkerHost {
         this.logger.error(err);
         continue;
       }
+
       childrenApiResult.push(childResult);
     }
+
+    const fields = ['id', 'name', 'claimCode', 'amount', 'package', 'barcode'];
+
     const parser = new Parser({
-      excelStrings: true
+      fields,
+      quote: ''
     });
     const csvData = childrenApiResult.map(item => {
       return {
@@ -96,7 +101,10 @@ export class ExportSubLixiesProcessor extends WorkerHost {
         barcode: item.id?.toString().padStart(11, '0')
       };
     });
+
     const csv = parser.parse(csvData);
+
+    this.logger.log(JSON.stringify(csv));
     const dir = './public/download/';
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir);
