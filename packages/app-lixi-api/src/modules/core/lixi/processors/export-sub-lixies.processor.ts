@@ -95,7 +95,7 @@ export class ExportSubLixiesProcessor extends WorkerHost {
       return {
         id: item.id,
         name: item.name,
-        claimCode: item.claimCode,
+        claimCode: `lixi_${item.claimCode}`,
         amount: item.amount,
         package: item.packageId ? numberToBase58(item.packageId) : '',
         barcode: item.id?.toString().padStart(11, '0')
