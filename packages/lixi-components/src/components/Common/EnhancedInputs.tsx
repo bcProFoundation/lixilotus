@@ -61,6 +61,7 @@ export const AntdFormCss = css`
     text-align: left;
     color: ${props => props.theme.forms.text};
     font-weight: bold;
+    padding-left: 10px;
   }
   .ant-form-item-has-error .ant-input-group-addon {
     color: ${props => props.theme.forms.error} !important;
@@ -163,7 +164,7 @@ export const SendXpiInput = ({ onMax, inputProps, selectProps, activeFiatCode, .
       <Form.Item {...otherProps}>
         <Input.Group compact>
           <Input
-            style={{ width: '58%', textAlign: 'left' }}
+            style={{ width: '58%', textAlign: 'left', padding: '4px' }}
             type="number"
             step={inputProps.dollar === 1 ? 0.01 : 1 / 10 ** currency.cashDecimals}
             prefix={
