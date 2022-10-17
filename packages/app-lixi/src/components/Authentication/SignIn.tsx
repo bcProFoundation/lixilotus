@@ -7,6 +7,7 @@ import FingerprintSVG from '@assets/icons/fingerprint-solid.svg';
 import { ThemedLockOutlined } from '@bcpros/lixi-components/components/Common/CustomIcons';
 
 const StyledSignIn = styled.div`
+  padding: 10px 30px 120px;
   h2 {
     color: ${props => props.theme.wallet.text.primary};
     font-size: 25px;

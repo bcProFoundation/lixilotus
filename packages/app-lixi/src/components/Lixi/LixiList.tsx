@@ -122,8 +122,8 @@ interface LixiType {
   name: string;
   type: string;
   value: any;
-  budget: number;
-  redeemed: number;
+  budget: string | number;
+  redeemed: string | number;
   remaining: string | number;
   status: string;
 }
@@ -161,14 +161,17 @@ const LixiList = ({ lixies }: LixiListProps) => {
         name: lixi.name,
         type: lixi.claimType == ClaimType.Single ? 'Single Code' : 'One-Time Codes',
         value: typeLixi(lixi),
-        redeemed: lixi.claimedNum,
+        redeemed:
+          lixi.claimType == ClaimType.Single
+            ? fromSmallestDenomination(lixi.totalClaim)
+            : fromSmallestDenomination(lixi.subLixiTotalClaim),
         remaining:
           lixi.claimType == ClaimType.Single
             ? fromSmallestDenomination(lixi.balance)
             : lixi.subLixiBalance != undefined
-            ? lixi.subLixiBalance.toFixed(2)
+            ? lixi.subLixiBalance - fromSmallestDenomination(lixi.subLixiTotalClaim)
             : 0.0,
-        budget: lixi.amount,
+        budget: lixi.claimType == ClaimType.Single ? lixi.amount : lixi.subLixiBalance,
         status: lixi.status
       };
       newListLixiType.push(objLixiType);

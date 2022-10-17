@@ -65,6 +65,17 @@ export const AppContainer = styled.div`
     width: 100%;
     background: var(--bg-color-light-theme);
     padding: 0;
+    .content-layout {
+      z-index: 1;
+    }
+  }
+  .ant-layout.ant-layout-has-sider {
+    gap: 4rem;
+  }
+  .main-section-layout {
+    @media (max-width: 768px) {
+      padding-right: 0 !important;
+    }
   }
 `;
 
@@ -136,44 +147,12 @@ const ClaimedLayout: React.FC = ({ children }: ClaimedLayoutProps) => {
                 <AppContainer>
                   <Layout>
                     <Sidebar />
-                    <Layout>
+                    <Layout className="main-section-layout">
                       <Topbar />
-                      <Content>{children}</Content>
+                      <Content className="content-layout">{children}</Content>
                     </Layout>
                   </Layout>
                 </AppContainer>
-                <Footer>
-                  <Link href="/" passHref>
-                    <NavButton active={false}>
-                      <HomeOutlined />
-                      {intl.get('general.home')}
-                    </NavButton>
-                  </Link>
-                  <Link href="/admin/accounts" passHref>
-                    <NavButton active={false}>
-                      <UserOutlined />
-                      {intl.get('general.accounts')}
-                    </NavButton>
-                  </Link>
-                  <Link href="/lixi" passHref>
-                    <NavButton active={false}>
-                      <WalletOutlined />
-                      {intl.get('general.lixi')}
-                    </NavButton>
-                  </Link>
-                  <Link href="/admin/claim" passHref>
-                    <NavButton active={true}>
-                      <GiftOutlined />
-                      {intl.get('general.claim')}
-                    </NavButton>
-                  </Link>
-                  <Link href="/admin/settings" passHref>
-                    <NavButton active={false}>
-                      <SettingOutlined />
-                      {intl.get('general.settings')}
-                    </NavButton>
-                  </Link>
-                </Footer>
               </AppBody>
             </Layout>
           </LixiApp>

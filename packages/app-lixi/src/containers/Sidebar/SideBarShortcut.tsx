@@ -266,10 +266,10 @@ const SidebarShortcut = () => {
           />
           <ItemAccess
             icon={SettingOutlined}
-            text={'Setting'}
-            active={selectedKey === '/admin/settings'}
-            key="setting"
-            href={'/admin/settings'}
+            text={'Settings'}
+            active={selectedKey === '/settings'}
+            key="settings"
+            href={'/settings'}
           />
           <ItemAccess
             icon={SendOutlined}

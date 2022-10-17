@@ -277,7 +277,7 @@ export class LixiService {
     // If users input the amount means that the lixi need to be prefund
     const isPrefund = !!command.amount;
 
-    const chunkSize = command.numberLixiPerPackage ? command.numberLixiPerPackage : defaultLixiChunkSize; // number of output per
+    const chunkSize = command.numberLixiPerPackage ? command.numberLixiPerPackage : defaultLixiChunkSize;
     const numberOfChunks = Math.ceil((command.numberOfSubLixi as number) / chunkSize);
 
     if (numberOfChunks === 0) {

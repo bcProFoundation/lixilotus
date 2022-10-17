@@ -36,8 +36,8 @@ const useDeviceAuthentication = () => {
   const [userId, setUserId] = useState(Date.now().toString(16));
   const [loading, setLoading] = useState<boolean>(true);
 
-  const publicKeyCredentialCreationOptionsRef = useRef<PublicKeyCredentialCreationOptions>(null);
-  const publickKeyRequestOptionsRef = useRef<PublicKeyCredentialRequestOptions>(null);
+  // const publicKeyCredentialCreationOptionsRef = useRef<PublicKeyCredentialCreationOptions>(null);
+  // const publickKeyRequestOptionsRef = useRef<PublicKeyCredentialRequestOptions>(null);
 
   const loadAuthenticationConfigFromLocalStorage = async () => {
     // try to load authentication configuration from local storage
@@ -109,66 +109,64 @@ const useDeviceAuthentication = () => {
     })();
   }, [isAuthenticationRequired, credentialId]);
 
-  // options for PublicKeyCredentialCreation
-  if (typeof window !== 'undefined' && _.isNil(publicKeyCredentialCreationOptionsRef.current)) {
-    publicKeyCredentialCreationOptionsRef.current = {
-      // hardcode for now
-      // consider generating random string and then verifying it against the reponse from authenticator
-      challenge: Uint8Array.from('cashtab-wallet-for-ecash', c => c.charCodeAt(0)),
-      rp: {
-        name: currency.name,
-        id: document.domain
-      },
-      user: {
-        id: Uint8Array.from(userId, c => c.charCodeAt(0)),
-        name: `Local User`,
-        displayName: 'Local User'
-      },
-      pubKeyCredParams: [
-        { alg: -7, type: 'public-key' },
-        { alg: -35, type: 'public-key' },
-        { alg: -36, type: 'public-key' },
-        { alg: -257, type: 'public-key' },
-        { alg: -258, type: 'public-key' },
-        { alg: -259, type: 'public-key' },
-        { alg: -37, type: 'public-key' },
-        { alg: -38, type: 'public-key' },
-        { alg: -39, type: 'public-key' },
-        { alg: -8, type: 'public-key' }
-      ],
-      authenticatorSelection: {
-        userVerification: 'required',
-        authenticatorAttachment: 'platform',
-        requireResidentKey: false
-      },
-      timeout: 60000,
-      attestation: 'none',
-      excludeCredentials: [],
-      extensions: {}
-    };
-  }
+  const publicKeyCredentialCreationOptions: PublicKeyCredentialCreationOptions =
+    typeof window !== 'undefined'
+      ? {
+        // hardcode for now
+        // consider generating random string and then verifying it against the reponse from authenticator
+        challenge: Uint8Array.from('lixilotus-wallet-for-lotus', c => c.charCodeAt(0)),
+        rp: {
+          name: currency.name,
+          id: document.domain
+        },
+        user: {
+          id: Uint8Array.from(userId, c => c.charCodeAt(0)),
+          name: `Local User`,
+          displayName: 'Local User'
+        },
+        pubKeyCredParams: [
+          { alg: -7, type: 'public-key' },
+          { alg: -35, type: 'public-key' },
+          { alg: -36, type: 'public-key' },
+          { alg: -257, type: 'public-key' },
+          { alg: -258, type: 'public-key' },
+          { alg: -259, type: 'public-key' },
+          { alg: -37, type: 'public-key' },
+          { alg: -38, type: 'public-key' },
+          { alg: -39, type: 'public-key' },
+          { alg: -8, type: 'public-key' }
+        ],
+        authenticatorSelection: {
+          userVerification: 'required',
+          authenticatorAttachment: 'platform',
+          requireResidentKey: false
+        },
+        timeout: 60000,
+        attestation: 'none',
+        excludeCredentials: [],
+        extensions: {}
+      }
+      : null;
 
-  // options for PublicKeyCredentialRequest
-  if (typeof window !== 'undefined' && _.isNil(publickKeyRequestOptionsRef.current)) {
-    publickKeyRequestOptionsRef.current = {
-      // hardcode for now
-      // consider generating random string and then verifying it against the reponse from authenticator
-      challenge: Uint8Array.from('cashtab-wallet-for-ecash', c => c.charCodeAt(0)),
-      timeout: 60000,
-      // rpId: document.domain,
-      allowCredentials: [
-        {
-          type: 'public-key',
-          // the credentialId is stored as base64
-          // need to convert it to ArrayBuffer
-          id: convertBase64ToArrayBuffer(credentialId),
-          transports: ['internal']
-        }
-      ],
-      userVerification: 'required',
-      extensions: {}
-    };
-  }
+  const publickKeyRequestOptions: PublicKeyCredentialRequestOptions =
+    typeof window !== 'undefined'
+      ? {
+        challenge: Uint8Array.from('lixilotus-wallet-for-lotus', c => c.charCodeAt(0)),
+        timeout: 60000,
+        // rpId: document.domain,
+        allowCredentials: [
+          {
+            type: 'public-key',
+            // the credentialId is stored as base64
+            // need to convert it to ArrayBuffer
+            id: convertBase64ToArrayBuffer(credentialId),
+            transports: ['internal']
+          }
+        ],
+        userVerification: 'required',
+        extensions: {}
+      }
+      : null;
 
   const authentication = {
     isAuthenticationRequired,
@@ -191,8 +189,9 @@ const useDeviceAuthentication = () => {
     signUp: async () => {
       try {
         const publicKeyCredential = await navigator.credentials.create({
-          publicKey: publicKeyCredentialCreationOptionsRef.current
+          publicKey: publicKeyCredentialCreationOptions
         });
+
         if (publicKeyCredential) {
           // convert the rawId from ArrayBuffer to base64 String
           const base64Id = convertArrayBufferToBase64((publicKeyCredential as any).rawId);
@@ -210,7 +209,7 @@ const useDeviceAuthentication = () => {
     signIn: async () => {
       try {
         const assertion = await navigator.credentials.get({
-          publicKey: publickKeyRequestOptionsRef.current
+          publicKey: publickKeyRequestOptions
         });
         if (assertion) {
           // convert rawId from ArrayBuffer to base64 String

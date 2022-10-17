@@ -20,14 +20,9 @@ export const navBarHeaderList = [
     path: '/page/create'
   },
   {
-    name: 'Create Post',
-    subTitle: 'Create Post',
-    path: '/post/create'
-  },
-  {
-    name: 'Setting',
+    name: 'Settings',
     subTitle: 'Set Privacy and Notification settings',
-    path: '/admin/settings'
+    path: '/settings'
   },
   {
     name: 'Lixi',

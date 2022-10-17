@@ -39,7 +39,6 @@ const AppBody = styled.div`
   justify-content: center;
   width: 100%;
   min-height: 100vh;
-  background-image: ${props => props.theme.app.gradient};
   background-attachment: fixed;
 `;
 
@@ -61,7 +60,6 @@ const NavBarHeader = styled(Header)`
     padding: 0;
     width: 100%;
   }
-}
 `;
 
 const PathDirection = styled.div`
@@ -210,31 +208,33 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
               <AppBody>
                 <ModalManager />
                 <>
-                  <AppContainer>
-                    <Layout>
-                      <SidebarShortcut></SidebarShortcut>
-                      <Sidebar />
-                      <Layout
-                        className="main-section-layout"
-                        style={{ paddingRight: selectedKey === '/lixi' ? '2rem' : '0' }}
-                      >
-                        <Topbar ref={setRef} />
-                        {selectedKey !== '/' && (
-                          <NavBarHeader>
-                            <Link href="/" passHref>
-                              <LeftOutlined />
-                            </Link>
-                            <PathDirection>
-                              <h2>{navBarTitle}</h2>
-                              <p className="sub-title">{navBarSubTitle}</p>
-                            </PathDirection>
-                          </NavBarHeader>
-                        )}
-                        <Content className="content-layout">{children}</Content>
+                  <DeviceProtectableComponentWrapper>
+                    <AppContainer>
+                      <Layout>
+                        <SidebarShortcut></SidebarShortcut>
+                        <Sidebar />
+                        <Layout
+                          className="main-section-layout"
+                          style={{ paddingRight: selectedKey === '/lixi' ? '2rem' : '0' }}
+                        >
+                          <Topbar ref={setRef} />
+                          {selectedKey !== '/' && (
+                            <NavBarHeader>
+                              <Link href="/" passHref>
+                                <LeftOutlined />
+                              </Link>
+                              <PathDirection>
+                                <h2>{navBarTitle}</h2>
+                                <p className="sub-title">{navBarSubTitle}</p>
+                              </PathDirection>
+                            </NavBarHeader>
+                          )}
+                          <Content className="content-layout">{children}</Content>
+                        </Layout>
+                        {selectedKey !== '/lixi' && <SidebarRanking></SidebarRanking>}
                       </Layout>
-                      {selectedKey !== '/lixi' && <SidebarRanking></SidebarRanking>}
-                    </Layout>
-                  </AppContainer>
+                    </AppContainer>
+                  </DeviceProtectableComponentWrapper>
                 </>
               </AppBody>
             </Layout>
