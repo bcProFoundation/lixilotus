@@ -6,7 +6,7 @@ import { HttpExceptionFilter } from './exception.filter';
 
 @Catch()
 export class GqlHttpExceptionFilter implements GqlExceptionFilter {
-  constructor(@I18n() private i18n: I18nService) { }
+  constructor(@I18n() private i18n: I18nService) {}
   private logger: Logger = new Logger(HttpExceptionFilter.name);
 
   async catch(exception: any, host: ArgumentsHost): Promise<any> {
