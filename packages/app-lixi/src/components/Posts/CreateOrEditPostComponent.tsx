@@ -48,26 +48,12 @@ const CreateOrEditPostComponent = ({ isEditPost }: PostEditProps) => {
   const states = useAppSelector(getAllStates);
   const cover = useAppSelector(getPostCoverUpload);
 
-  // New post name
-  const [newPostName, setNewPostName] = useState('');
-  const [newPostNameIsValid, setNewPostNameIsValid] = useState(true);
-
   // New post title
   const [newPostTitle, setNewPostTitle] = useState('');
   const [newPostTitleIsValid, setNewPostTitleIsValid] = useState(true);
 
   const [newPostContent, setNewPostContent] = useState('');
   const [newPostContentIsValid, setNewPostContentIsValid] = useState(true);
-
-
-  // New post handle id
-  const [newPostHandleId, setNewPostHandleId] = useState('');
-  const [newPostHandleIdIsValid, setNewPostHandleIdIsValid] = useState(true);
-
-  // New post parent id
-  const [newPostParentId, setNewPostParentId] = useState('');
-  const [newPostParentIdIsValid, setNewPostParentIdIsValid] = useState(true);
-
 
   // New post cover
   const [newPostCover, setNewPostCover] = useState('');
@@ -78,11 +64,6 @@ const CreateOrEditPostComponent = ({ isEditPost }: PostEditProps) => {
     setComponentDisabled(disabled);
   };
 
-  const handleNewPostNameInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setNewPostName(value);
-    setNewPostNameIsValid(true);
-  };
   const handleNewPostTitleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewPostTitle(value);
@@ -101,7 +82,6 @@ const CreateOrEditPostComponent = ({ isEditPost }: PostEditProps) => {
     setNewPostContentIsValid(true);
   };
 
-
   const normFile = (e: any) => {
     if (Array.isArray(e)) {
       return e;
@@ -110,7 +90,7 @@ const CreateOrEditPostComponent = ({ isEditPost }: PostEditProps) => {
   };
 
   // Only enable CreateLixi button if all form entries are valid
-  let createPostFormDataIsValid = newPostName && newPostTitle;
+  let createPostFormDataIsValid = newPostTitle && newPostContent;
 
   const handleOnCreateNewPost = async () => {
     if (!createPostFormDataIsValid && !selectedAccount.id) {
@@ -140,7 +120,7 @@ const CreateOrEditPostComponent = ({ isEditPost }: PostEditProps) => {
             duration: 5
           })
         );
-        const data = { pageAccountId: 0 }
+        const data = { pageAccountId: 0 };
         dispatch(setPost({ ...data, ...postCreated.createPost }));
         router.push(`/post/${postCreated.createPost.id}`);
       }
@@ -174,7 +154,7 @@ const CreateOrEditPostComponent = ({ isEditPost }: PostEditProps) => {
           duration: 5
         })
       );
-      const data = { pageAccountId: 0 }
+      const data = { pageAccountId: 0 };
 
       dispatch(setPost({ ...data, ...postUpdated.updatePost }));
     } catch (error) {
@@ -200,13 +180,6 @@ const CreateOrEditPostComponent = ({ isEditPost }: PostEditProps) => {
             // Create Post
             <Form layout="vertical" initialValues={{ disabled: componentDisabled }} onValuesChange={onFormLayoutChange}>
               <Form.Item
-                name="name"
-                label={intl.get('post.name')}
-                rules={[{ required: true, message: intl.get('post.inputName') }]}
-              >
-                <Input defaultValue={newPostName} onChange={e => handleNewPostNameInput(e)} />
-              </Form.Item>
-              <Form.Item
                 name="title"
                 label={intl.get('post.title')}
                 rules={[{ required: true, message: intl.get('post.inputTitle') }]}
@@ -214,11 +187,7 @@ const CreateOrEditPostComponent = ({ isEditPost }: PostEditProps) => {
                 <Input onChange={e => handleNewPostTitleInput(e)} />
               </Form.Item>
               <Form.Item label={intl.get('post.content')}>
-                <TextArea
-                  defaultValue={selectedPost.content}
-                  onChange={e => handleNewPostContentInput(e)}
-                  rows={4}
-                />
+                <TextArea defaultValue={selectedPost?.content} onChange={e => handleNewPostContentInput(e)} rows={4} />
               </Form.Item>
               <Form.Item
                 name="cover"
@@ -250,9 +219,7 @@ const CreateOrEditPostComponent = ({ isEditPost }: PostEditProps) => {
                   onChange={e => handleNewPostTitleInput(e)}
                 />
               </Form.Item>
-              <Form.Item name="walletAddress">
-                <Input addonBefore={intl.get('post.walletAddress')} defaultValue={selectedAccount.address} disabled />
-              </Form.Item>
+
               <Form.Item
                 name="cover"
                 label={intl.get('post.cover')}
@@ -266,13 +233,8 @@ const CreateOrEditPostComponent = ({ isEditPost }: PostEditProps) => {
               </Form.Item>
 
               <Form.Item label={intl.get('post.content')}>
-                <TextArea
-                  defaultValue={selectedPost.content}
-                  onChange={e => handleNewPostContentInput(e)}
-                  rows={4}
-                />
+                <TextArea defaultValue={selectedPost?.content} onChange={e => handleNewPostContentInput(e)} rows={4} />
               </Form.Item>
-
 
               <Form.Item wrapperCol={{ offset: 0, span: 24 }}>
                 <Button type="primary" htmlType="submit" onClick={handleOnEditPost}>

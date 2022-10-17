@@ -101,7 +101,6 @@ export class PostResolver {
       data: {
         ..._.omit(data, ['title', 'content', 'pageId']),
         postAccount: { connect: { id: account.id } },
-        page: { connect: { id: page.id } },
         cover: { connect: uploadCoverDetail ? { id: uploadCoverDetail.id } : undefined }
       }
     });

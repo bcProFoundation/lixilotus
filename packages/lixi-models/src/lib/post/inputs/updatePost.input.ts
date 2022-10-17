@@ -1,5 +1,5 @@
 import { Field, ID, InputType } from '@nestjs/graphql';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 
 @InputType()
 export class UpdatePostInput {
@@ -7,15 +7,15 @@ export class UpdatePostInput {
   @Field(() => ID)
   id: string;
 
-  @Field(() => String)
-  @IsNotEmpty()
+  @Field(() => String, { nullable: true })
+  @IsOptional()
   title: string;
 
   @IsNotEmpty()
   @Field(() => String)
   content: string;
 
-  @IsNotEmpty()
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
+  @IsOptional()
   cover: string;
 }

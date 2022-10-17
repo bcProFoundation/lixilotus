@@ -16,10 +16,10 @@ input CreatePageInput {
 }
 
 input CreatePostInput {
-  content: String
-  cover: String!
-  pageId: String!
-  title: String!
+  content: String!
+  cover: String
+  pageId: String
+  title: String
 }
 
 """
@@ -174,7 +174,7 @@ input UpdatePageInput {
 
 input UpdatePostInput {
   content: String!
-  cover: String!
+  cover: String
   id: ID!
-  title: String!
+  title: String
 }

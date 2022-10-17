@@ -26,6 +26,8 @@ import { CountriesState, StatesState } from './country/state';
 import { api as pagesApi } from './page/pages.generated';
 import { LocalUserAccountsState } from './localAccount/state';
 import { localAccountsAdapter, localUserAccountReducer } from './localAccount/reducer';
+import { postReducer } from './post/reducer';
+import { PostState } from './post/state';
 
 const persistConfig = {
   key: 'root',
@@ -60,6 +62,11 @@ const shopPersistConfig: PersistConfig<PageState> = {
   storage: storage('lixi-indexeddb')
 };
 
+const postPersistConfig: PersistConfig<PostState> = {
+  key: 'posts',
+  storage: storage('lixi-indexeddb')
+};
+
 const settingsPersistConfig: PersistConfig<SettingsState> = {
   key: 'settings',
   storage: storage('lixi-indexeddb'),
@@ -90,6 +97,7 @@ export const serverReducer = combineReducers({
   settings: settingsReducer,
   notifications: notificationReducer,
   pages: pageReducer,
+  posts: postReducer,
   countries: countryReducer,
   states: stateReducer,
   // This is use for useReduxEffect
@@ -105,6 +113,7 @@ export const appReducer = combineReducers({
   claims: persistReducer(claimsPersistConfig, claimReducer),
   settings: persistReducer(settingsPersistConfig, settingsReducer),
   pages: persistReducer(shopPersistConfig, pageReducer),
+  posts: persistReducer(postPersistConfig, postReducer),
   notifications: notificationReducer,
   envelopes: envelopeReducer,
   loading: loadingReducer,
