@@ -6,7 +6,7 @@ import { HttpExceptionFilter } from './exception.filter';
 
 @Catch()
 export class GqlHttpExceptionFilter implements GqlExceptionFilter {
-  constructor(@I18n() private i18n: I18nService) {}
+  constructor(@I18n() private i18n: I18nService) { }
   private logger: Logger = new Logger(HttpExceptionFilter.name);
 
   async catch(exception: any, host: ArgumentsHost): Promise<any> {
@@ -25,9 +25,9 @@ export class GqlHttpExceptionFilter implements GqlExceptionFilter {
     this.logger.error(error);
     let err = error;
     while (err && (err as any).cause) {
-      err = (err as any).cause();
-      const logStack = err.stack ? ` - stack: ${err.stack} ` : '';
+      const logStack = err?.stack ? ` - stack: ${err?.stack} ` : '';
       this.logger.error(err.message + logStack);
+      err = (err as any).cause();
     }
 
     const devErrorResponse: any = {

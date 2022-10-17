@@ -19,9 +19,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
     this.logger.error(error);
     let err = error;
     while (err && (err as any).cause) {
-      err = (err as any).cause();
-      const logStack = err.stack ? ` - stack: ${err.stack} ` : '';
+      const logStack = err?.stack ? ` - stack: ${err?.stack} ` : '';
       this.logger.error(err.message + logStack);
+      err = (err as any).cause();
     }
 
     const devErrorResponse: any = {
