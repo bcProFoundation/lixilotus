@@ -406,7 +406,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
     setNewLixiAmountValueIsValid(isValidAmountInput(value));
     setNewLixiAmount(value);
 
-    if (claimType == ClaimType.OneTime && value && value != '0' && !isEmpty(value)) {
+    if (claimType == ClaimType.OneTime && value && Number(value) > 0 && !isEmpty(value)) {
       setNewLixiAmountValueIsValid(true);
     } else {
       setNewLixiAmountValueIsValid(false);
@@ -417,35 +417,71 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
     const { value } = e.target;
     setNewSubLixiIsValid(isValidAmountInput(value) && Number(value) !== 0);
     setNewNumberOfSubLixi(value);
+
+    if (value && Number(value) > 0 && !isEmpty(value)) {
+      setNewSubLixiIsValid(true);
+    } else {
+      setNewSubLixiIsValid(false);
+    }
   };
 
   const handleChangeMinValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewLixiMinValueIsValid(isValidAmountInput(value));
     setNewLixiMinValue(value);
+
+    if (value && Number(value) > 0 && !isEmpty(value)) {
+      setNewLixiMinValueIsValid(true);
+    } else {
+      setNewLixiMinValueIsValid(false);
+    }
   };
   const handleChangeMaxValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewLixiMaxValueIsValid(isValidAmountInput(value) && Number(value) !== 0);
     setNewLixiMaxValue(value);
+
+    if (value && Number(value) > 0 && !isEmpty(value)) {
+      setNewLixiMaxValueIsValid(true);
+    } else {
+      setNewLixiMaxValueIsValid(false);
+    }
   };
 
   const handleChangeFixedValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewLixiFixedValueIsValid(isValidAmountInput(value));
     setNewLixiFixedValue(value);
+
+    if (value && Number(value) > 0 && !isEmpty(value)) {
+      setNewLixiFixedValueIsValid(true);
+    } else {
+      setNewLixiFixedValueIsValid(false);
+    }
   };
 
   const handleChangeDividedValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewLixiDividedValueIsValid(isValidAmountInput(value));
     setNewLixiDividedValue(value);
+
+    if (value && Number(value) > 0 && !isEmpty(value)) {
+      setNewLixiDividedValueIsValid(true);
+    } else {
+      setNewLixiDividedValueIsValid(false);
+    }
   };
 
   const handleNewNumberLixiPerPackage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewPackageIsValid(isValidAmountInput(value));
     setNewNumberLixiPerPackage(value);
+
+    if (value && Number(value) > 0 && !isEmpty(value)) {
+      setNewPackageIsValid(true);
+    } else {
+      setNewPackageIsValid(false);
+    }
   };
 
   const handleChangeCountry = (value, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1009,6 +1045,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
             >
               <CreateInput
                 name="lixiAmount"
+                type="number"
                 value={newLixiAmount}
                 onChange={e => handleNewLixiAmountInput(e)}
                 suffix={currency.ticker}
