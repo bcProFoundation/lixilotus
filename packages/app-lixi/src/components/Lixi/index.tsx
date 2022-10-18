@@ -880,7 +880,7 @@ const Lixi = props => {
                       </Text>
                       <br />
                       <Text style={{ color: '#1E1A1D', paddingBottom: '24px' }}>
-                        {fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim'))} {currency.ticker}
+                        {selectedLixi.subLixiTotalClaim.toFixed(2)} {currency.ticker}
                       </Text>
                       <br />
                       <br />
@@ -897,7 +897,7 @@ const Lixi = props => {
                       </Text>
                       <br />
                       <Text style={{ color: '#1E1A1D' }}>
-                        {_.sumBy(subLixies, 'amount').toFixed(2) ?? '0'} {currency.ticker}
+                        {(selectedLixi.subLixiBalance - selectedLixi.subLixiTotalClaim).toFixed(2)} {currency.ticker}
                       </Text>
                     </>
                   }
@@ -908,13 +908,9 @@ const Lixi = props => {
                     type="circle"
                     strokeColor="#E37100"
                     strokeLinecap="butt"
-                    percent={
-                      (_.sumBy(subLixies, 'amount') + fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim'))) * 100
-                    }
+                    percent={100}
                     success={{
-                      percent:
-                        (fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim')) * 100) /
-                        (_.sumBy(subLixies, 'amount') + fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim')))
+                      percent: (selectedLixi.subLixiTotalClaim * 100) / selectedLixi.subLixiBalance
                     }}
                     style={{ paddingTop: '12.5px' }}
                   />
@@ -954,6 +950,8 @@ const Lixi = props => {
           <Form>
             <LabelHeader>{intl.get('lixi.detail')}</LabelHeader>
             <InfoCard>
+              {console.log('selectedLixi: ', selectedLixi)}
+
               {/* Image, name, status lixi */}
               {infoLixi()}
 

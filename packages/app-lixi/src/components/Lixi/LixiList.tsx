@@ -164,14 +164,14 @@ const LixiList = ({ lixies }: LixiListProps) => {
         redeemed:
           lixi.claimType == ClaimType.Single
             ? fromSmallestDenomination(lixi.totalClaim)
-            : fromSmallestDenomination(lixi.subLixiTotalClaim),
+            : lixi.subLixiTotalClaim.toFixed(2),
         remaining:
           lixi.claimType == ClaimType.Single
             ? fromSmallestDenomination(lixi.balance)
             : lixi.subLixiBalance != undefined
-            ? lixi.subLixiBalance - fromSmallestDenomination(lixi.subLixiTotalClaim)
+            ? (lixi.subLixiBalance - lixi.subLixiTotalClaim).toFixed(2)
             : 0.0,
-        budget: lixi.claimType == ClaimType.Single ? lixi.amount : lixi.subLixiBalance,
+        budget: lixi.claimType == ClaimType.Single ? lixi.amount : lixi.subLixiBalance.toFixed(3),
         status: lixi.status
       };
       newListLixiType.push(objLixiType);

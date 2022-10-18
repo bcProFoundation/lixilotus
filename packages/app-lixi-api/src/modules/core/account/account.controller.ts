@@ -36,6 +36,7 @@ import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase58Str, hashMnemonic } f
 import { PrismaService } from '../../prisma/prisma.service';
 import { WalletService } from '../../wallet/wallet.service';
 import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
+import { fromSmallestDenomination } from '../../../../../lixi-models/src/utils/cashMethods';
 
 @Controller('accounts')
 export class AccountController {
@@ -383,7 +384,7 @@ export class AccountController {
           maxClaim: Number(item.maxClaim),
           claimedNum: Number(item.claimedNum),
           claimCount: claimCount,
-          subLixiTotalClaim: _.isNaN(subLixiTotalClaim) ? 0 : subLixiTotalClaim,
+          subLixiTotalClaim: _.isNaN(subLixiTotalClaim) ? 0 : fromSmallestDenomination(subLixiTotalClaim),
           subLixiBalance: _.isNaN(subLixiBalance) ? 0 : subLixiBalance
         } as unknown as Lixi;
       });
