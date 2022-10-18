@@ -950,8 +950,6 @@ const Lixi = props => {
           <Form>
             <LabelHeader>{intl.get('lixi.detail')}</LabelHeader>
             <InfoCard>
-              {console.log('selectedLixi: ', selectedLixi)}
-
               {/* Image, name, status lixi */}
               {infoLixi()}
 
