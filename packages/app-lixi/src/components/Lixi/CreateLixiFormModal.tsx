@@ -405,6 +405,12 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
     const { value } = e.target;
     setNewLixiAmountValueIsValid(isValidAmountInput(value));
     setNewLixiAmount(value);
+
+    if (claimType == ClaimType.OneTime && value && value != '0' && !isEmpty(value)) {
+      setNewLixiAmountValueIsValid(true);
+    } else {
+      setNewLixiAmountValueIsValid(false);
+    }
   };
 
   const handleNewNumberOfSubLixi = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -987,11 +993,20 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
           </CreateForm>
 
           <CreateForm className="form-child" layout="vertical">
-            <Form.Item className="lixiName" label={intl.get('lixi.name')} required>
+            <Form.Item
+              className="lixiName"
+              label={intl.get('lixi.name')}
+              required
+              validateStatus={newLixiNameIsValid === null || newLixiNameIsValid ? '' : 'error'}
+            >
               <CreateInput name="lixiName" value={newLixiName} onChange={e => handleNewLixiNameInput(e)} />
             </Form.Item>
 
-            <Form.Item label={intl.get('account.budget')} required={claimType == ClaimType.OneTime}>
+            <Form.Item
+              label={intl.get('account.budget')}
+              required={claimType == ClaimType.OneTime}
+              validateStatus={newLixiAmountValueIsValid === null || newLixiAmountValueIsValid ? '' : 'error'}
+            >
               <CreateInput
                 name="lixiAmount"
                 value={newLixiAmount}
