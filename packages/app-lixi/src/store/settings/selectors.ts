@@ -16,3 +16,8 @@ export const getIntlInitStatus = createSelector(
   (state: RootState) => state.settings,
   (state: SettingsState) => state.initIntlStatus
 );
+
+export const getWebAuthnConfig = createSelector(
+  (state: RootState) => state.settings,
+  (state: SettingsState) => state.webAuthnConfig
+);
