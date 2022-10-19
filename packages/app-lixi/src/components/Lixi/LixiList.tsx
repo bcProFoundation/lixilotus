@@ -135,7 +135,7 @@ const LixiList = ({ lixies }: LixiListProps) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [isChecked, setChecked] = useState(false);
   const [queryLixi, setQueryLixi] = useState('');
-  const [searchLixiParams] = useState(['name', 'amount', 'claimedNum', 'status']);
+  const [searchLixiParams] = useState(['name', 'status']);
   const [listMapData, setListMapData] = useState([]);
 
   useEffect(() => {
@@ -159,7 +159,7 @@ const LixiList = ({ lixies }: LixiListProps) => {
       let objLixiType: LixiType = {
         id: lixi.id,
         name: lixi.name,
-        type: lixi.claimType == ClaimType.Single ? 'Single Code' : 'One-Time Codes',
+        type: lixi.claimType == ClaimType.Single ? intl.get('account.singleCode') : intl.get('account.oneTimeCode'),
         value: typeLixi(lixi),
         redeemed:
           lixi.claimType == ClaimType.Single
@@ -221,7 +221,7 @@ const LixiList = ({ lixies }: LixiListProps) => {
     dispatch(refreshLixiList(selectedAccount.id));
   };
 
-  const searchLixi = lixies => {
+  const searchLixi = (lixies: Lixi[]) => {
     return lixies.filter(lixi => {
       if (lixi.name == '') {
         searchLixiParams.some(newItem => {
@@ -294,12 +294,12 @@ const LixiList = ({ lixies }: LixiListProps) => {
       key: 'type',
       filters: [
         {
-          text: 'Single Code',
-          value: 'Single Code'
+          text: intl.get('account.singleCode'),
+          value: intl.get('account.singleCode')
         },
         {
-          text: 'One-time codes',
-          value: 'One-Time Codes'
+          text: intl.get('account.oneTimeCode'),
+          value: intl.get('account.oneTimeCode')
         }
       ],
       onFilter: (value: string, record) => record.type.indexOf(value) === 0
@@ -375,12 +375,12 @@ const LixiList = ({ lixies }: LixiListProps) => {
       {selectedAccount ? (
         <>
           <Row>
-            <Col span={3}>
+            <Col xs={7} md={4}>
               <CreateLixiBtn type="primary" className="outline-btn" onClick={createLixiBtn}>
                 New lixi
               </CreateLixiBtn>
             </Col>
-            <Col span={16} offset={1}>
+            <Col xs={11} md={16}>
               <StyledSearchLixi
                 placeholder="Search lixi"
                 value={queryLixi}
@@ -388,7 +388,7 @@ const LixiList = ({ lixies }: LixiListProps) => {
                 suffix={<SearchOutlined />}
               />
             </Col>
-            <Col span={1} offset={1}>
+            <Col xs={3} md={2}>
               <StyledButton
                 className="outline-btn"
                 onClick={showFilterModal}
@@ -457,7 +457,7 @@ const LixiList = ({ lixies }: LixiListProps) => {
                 </Row>
               </StyledFilterModal>
             </Col>
-            <Col span={1} offset={1}>
+            <Col xs={3} md={2}>
               <StyledButton
                 className="outline-btn"
                 onClick={refreshList}
@@ -475,7 +475,7 @@ const LixiList = ({ lixies }: LixiListProps) => {
               <StyledTable
                 className="display-table"
                 columns={columns}
-                dataSource={listMapData}
+                dataSource={searchLixi(listMapData)}
                 onRow={(lixi, rowIndex) => {
                   return {
                     onClick: e => {
