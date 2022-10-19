@@ -15,9 +15,7 @@ const ClaimPage = props => {
   const slug = numberToBase58(claim.id);
   const canonicalUrl = process.env.NEXT_PUBLIC_LIXI_URL + `claimed/${slug}`;
 
-  const imageUrl = claim?.image
-    ? process.env.NEXT_PUBLIC_LIXI_API + 'api/' + claim?.image
-    : process.env.NEXT_PUBLIC_LIXI_API + 'api/images/default.png';
+  const imageUrl = claim?.image ? claim?.image : process.env.NEXT_PUBLIC_LIXI_API + 'api/images/default.png';
 
   return (
     <>

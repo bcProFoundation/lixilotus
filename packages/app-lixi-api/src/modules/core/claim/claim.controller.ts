@@ -47,7 +47,7 @@ export class ClaimController {
   ) {}
 
   @Get(':id')
-  async getEnvelope(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<ViewClaimDto> {
+  async getClaim(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<ViewClaimDto> {
     try {
       const claim = await this.prisma.claim.findUnique({
         where: {
@@ -66,11 +66,53 @@ export class ClaimController {
         throw new VError(claimDoesNotExist);
       }
 
+      const lixi = await this.prisma.lixi.findUnique({
+        where: {
+          id: claim.lixiId
+        },
+        include: {
+          package: true,
+          uploadDetail: true
+        }
+      });
+
+      let image, thumbnail;
+
+      if (lixi?.parentId) {
+        const parentLixi = await this.prisma.lixi.findFirst({
+          where: {
+            id: lixi.parentId
+          },
+          include: {
+            uploadDetail: true
+          }
+        });
+        if (parentLixi!.uploadDetail) {
+          const upload = await this.prisma.upload.findFirst({
+            where: {
+              id: parentLixi!.uploadDetail.uploadId
+            }
+          });
+          image = upload?.url;
+          thumbnail = upload?.url.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+        }
+      } else {
+        if (lixi?.uploadDetail) {
+          const upload = await this.prisma.upload.findFirst({
+            where: {
+              id: lixi.uploadDetail.uploadId
+            }
+          });
+          image = upload?.url;
+          thumbnail = upload?.url.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+        }
+      }
+
       let result: ViewClaimDto = {
         id: claim.id,
         lixiId: claim.lixiId,
-        image: claim.lixi.envelope?.image ?? '',
-        thumbnail: claim.lixi.envelope?.thumbnail ?? '',
+        image: image ? image : claim.lixi.envelope?.image || '',
+        thumbnail: thumbnail ? thumbnail : claim.lixi.envelope?.thumbnail || '',
         amount: Number(claim.amount),
         message: claim.lixi.envelopeMessage,
         nftTokenId: claim.nftTokenId,
