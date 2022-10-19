@@ -1,6 +1,7 @@
 import React from 'react';
 
 import ProfileDetail from '@components/Profile/ProfileDetail';
+import DeviceProtectableComponentWrapper from '@components/Authentication/DeviceProtectableComponentWrapper';
 
 const WalletPage = () => {
   const page = {
@@ -39,7 +40,13 @@ const WalletPage = () => {
       }
     }
   };
-  return <ProfileDetail isMobile={false} page={page} />;
+  return (
+    <>
+      <DeviceProtectableComponentWrapper>
+        <ProfileDetail isMobile={false} page={page} />;
+      </DeviceProtectableComponentWrapper>
+    </>
+  );
 };
 
 export default WalletPage;

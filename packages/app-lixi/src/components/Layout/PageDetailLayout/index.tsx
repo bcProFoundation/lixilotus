@@ -211,29 +211,27 @@ const PageDetailLayout: React.FC = (props: PageDetailsLayoutProps) => {
               <AppBody>
                 <ModalManager />
                 <>
-                  <DeviceProtectableComponentWrapper>
-                    <AppContainer>
-                      <Layout>
-                        <SidebarShortcut></SidebarShortcut>
-                        <Sidebar />
-                        <Layout className="main-section-layout" style={{ paddingRight: '2rem' }}>
-                          <Topbar ref={setRef} />
-                          {selectedKey !== '/' && (
-                            <NavBarHeader>
-                              <Link href="/" passHref>
-                                <LeftOutlined />
-                              </Link>
-                              <PathDirection>
-                                <h2>{navBarTitle}</h2>
-                                <p className="sub-title">{navBarSubTitle}</p>
-                              </PathDirection>
-                            </NavBarHeader>
-                          )}
-                          <Content className="content-layout">{children}</Content>
-                        </Layout>
+                  <AppContainer>
+                    <Layout>
+                      <SidebarShortcut></SidebarShortcut>
+                      <Sidebar />
+                      <Layout className="main-section-layout" style={{ paddingRight: '2rem' }}>
+                        <Topbar ref={setRef} />
+                        {selectedKey !== '/' && (
+                          <NavBarHeader>
+                            <Link href="/" passHref>
+                              <LeftOutlined />
+                            </Link>
+                            <PathDirection>
+                              <h2>{navBarTitle}</h2>
+                              <p className="sub-title">{navBarSubTitle}</p>
+                            </PathDirection>
+                          </NavBarHeader>
+                        )}
+                        <Content className="content-layout">{children}</Content>
                       </Layout>
-                    </AppContainer>
-                  </DeviceProtectableComponentWrapper>
+                    </Layout>
+                  </AppContainer>
                 </>
               </AppBody>
             </Layout>

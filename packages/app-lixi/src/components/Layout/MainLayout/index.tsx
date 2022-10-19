@@ -8,20 +8,19 @@ import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 
 import { LeftOutlined, LoadingOutlined } from '@ant-design/icons';
 
+import { navBarHeaderList } from '@bcpros/lixi-models/constants';
+import Sidebar from '@containers/Sidebar';
+import SidebarRanking from '@containers/Sidebar/SideBarRanking';
+import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
+import Topbar from '@containers/Topbar';
+import { loadLocale } from '@store/settings/actions';
+import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
+import { Header } from 'antd/lib/layout/layout';
+import { getIsGlobalLoading } from 'src/store/loading/selectors';
+import { injectStore } from 'src/utils/axiosClient';
 import ModalManager from '../../Common/ModalManager';
 import { GlobalStyle } from './GlobalStyle';
 import { theme } from './theme';
-import Sidebar from '@containers/Sidebar';
-import Topbar from '@containers/Topbar';
-import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
-import { loadLocale } from '@store/settings/actions';
-import { getIsGlobalLoading } from 'src/store/loading/selectors';
-import { injectStore } from 'src/utils/axiosClient';
-import SidebarRanking from '@containers/Sidebar/SideBarRanking';
-import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
-import { Header } from 'antd/lib/layout/layout';
-import { navBarHeaderList } from '@bcpros/lixi-models/constants';
-import DeviceProtectableComponentWrapper from '@components/Authentication/DeviceProtectableComponentWrapper';
 const { Content } = Layout;
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
@@ -208,33 +207,31 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
               <AppBody>
                 <ModalManager />
                 <>
-                  <DeviceProtectableComponentWrapper>
-                    <AppContainer>
-                      <Layout>
-                        <SidebarShortcut></SidebarShortcut>
-                        <Sidebar />
-                        <Layout
-                          className="main-section-layout"
-                          style={{ paddingRight: selectedKey === '/profile' ? '2rem' : '0' }}
-                        >
-                          <Topbar ref={setRef} />
-                          {selectedKey !== '/' && (
-                            <NavBarHeader>
-                              <Link href="/" passHref>
-                                <LeftOutlined />
-                              </Link>
-                              <PathDirection>
-                                <h2>{navBarTitle}</h2>
-                                <p className="sub-title">{navBarSubTitle}</p>
-                              </PathDirection>
-                            </NavBarHeader>
-                          )}
-                          <Content className="content-layout">{children}</Content>
-                        </Layout>
-                        {selectedKey !== '/profile' && <SidebarRanking></SidebarRanking>}
+                  <AppContainer>
+                    <Layout>
+                      <SidebarShortcut></SidebarShortcut>
+                      <Sidebar />
+                      <Layout
+                        className="main-section-layout"
+                        style={{ paddingRight: selectedKey === '/profile' ? '2rem' : '0' }}
+                      >
+                        <Topbar ref={setRef} />
+                        {selectedKey !== '/' && (
+                          <NavBarHeader>
+                            <Link href="/" passHref>
+                              <LeftOutlined />
+                            </Link>
+                            <PathDirection>
+                              <h2>{navBarTitle}</h2>
+                              <p className="sub-title">{navBarSubTitle}</p>
+                            </PathDirection>
+                          </NavBarHeader>
+                        )}
+                        <Content className="content-layout">{children}</Content>
                       </Layout>
-                    </AppContainer>
-                  </DeviceProtectableComponentWrapper>
+                      {selectedKey !== '/profile' && <SidebarRanking></SidebarRanking>}
+                    </Layout>
+                  </AppContainer>
                 </>
               </AppBody>
             </Layout>
