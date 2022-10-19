@@ -191,7 +191,6 @@ const PageDetailLayout: React.FC = (props: PageDetailsLayoutProps) => {
   }, [currentLocale]);
 
   const getNamePathDirection = () => {
-    console.log('ahihi', children);
     const itemSelect = navBarHeaderList.find(item => selectedKey.includes(item.path)) || null;
     setNavBarTitle(itemSelect?.name || '');
     setNavBarSubTitle(itemSelect?.subTitle || '');
