@@ -4,7 +4,10 @@ import React, { useState } from 'react';
 import { Row, Col, Form, Spin } from 'antd';
 import PrimaryButton from '@bcpros/lixi-components/components/Common/PrimaryButton';
 import { CashLoadingIcon } from '@bcpros/lixi-components/components/Common/CustomIcons';
-import { FormItemClaimCodeXpiInput } from '@bcpros/lixi-components/components/Common/EnhancedInputs';
+import {
+  FormItemClaimCodeXpiInput,
+  FormItemRegistrantAddressInput
+} from '@bcpros/lixi-components/components/Common/EnhancedInputs';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
 import { getSelectedAccount } from '@store/account/selectors';
@@ -14,10 +17,12 @@ import { RegisterLixiPackCommand } from '@bcpros/lixi-models';
 import { WrapperPage } from '@components/Settings';
 
 const RegisterComponent: React.FC = () => {
+  const selectedAccount: Account | undefined = useAppSelector(getSelectedAccount);
   const isLoading = useAppSelector(getIsGlobalLoading);
   const dispatch = useAppDispatch();
+
   const [currentClaimCode, setCurrentClaimCode] = useState('');
-  const selectedAccount: Account | undefined = useAppSelector(getSelectedAccount);
+  const [newRegistrantAddress, setNewRegistrantAddress] = useState('');
 
   const handleOnClick = e => {
     e.preventDefault();
@@ -31,19 +36,32 @@ const RegisterComponent: React.FC = () => {
       const claimCode = currentClaimCode.match('(?<=lixi_).*')[0];
       const dataApi: RegisterLixiPackCommand = {
         claimCode,
-        account: selectedAccount
+        account: selectedAccount,
+        registrant: newRegistrantAddress
       };
       dispatch(registerLixiPack(dataApi));
+      setCurrentClaimCode('');
     } else {
-      dispatch(registerLixiPackFailure());
+      const dataApi: RegisterLixiPackCommand = {
+        claimCode: currentClaimCode,
+        account: selectedAccount,
+        registrant: newRegistrantAddress
+      };
+      dispatch(registerLixiPack(dataApi));
+      setCurrentClaimCode('');
     }
-    setCurrentClaimCode('');
   }
 
   const handleClaimCodeChange = e => {
     const { value, name } = e.target;
     let claimCode: string = _.trim(value);
     setCurrentClaimCode(claimCode);
+  };
+
+  const handleRegistrantAddressChange = e => {
+    const { value, name } = e.target;
+    let registrantAddress: string = _.trim(value);
+    setNewRegistrantAddress(registrantAddress);
   };
 
   return (
@@ -77,6 +95,21 @@ const RegisterComponent: React.FC = () => {
                     value: currentClaimCode
                   }}
                 ></FormItemClaimCodeXpiInput>
+                <FormItemRegistrantAddressInput
+                  loadWithCameraOpen={false}
+                  onScan={result =>
+                    handleRegistrantAddressChange({
+                      target: {
+                        name: 'registrantAddress',
+                        value: result
+                      }
+                    })
+                  }
+                  inputProps={{
+                    onChange: e => handleRegistrantAddressChange(e),
+                    value: newRegistrantAddress
+                  }}
+                ></FormItemRegistrantAddressInput>
                 <div
                   style={{
                     paddingTop: '12px'

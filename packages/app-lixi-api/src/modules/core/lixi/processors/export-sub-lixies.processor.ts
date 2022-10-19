@@ -59,26 +59,6 @@ export class ExportSubLixiesProcessor extends WorkerHost {
       }
     });
 
-    if (lixi?.numberLixiPerPackage) {
-      const packIdes: (number | null)[] = [];
-      subLixies
-        .map(item => item.packageId)
-        .filter(element => (packIdes.includes(element) ? '' : packIdes.push(element)));
-      const packages = await this.prisma.package.findMany({
-        where: {
-          id: { in: packIdes as unknown as number }
-        }
-      });
-
-      // const res:any = subLixies.map(lixi => packages.find(pack => pack.id === lixi.packageId) || lixi);
-
-      const res = subLixies.map((item, i) => {
-        if (item.id === packages[i].id) {
-          return Object.assign({}, item, packages[i]);
-        }
-      });
-    }
-
     const childrenApiResult: LixiDto[] = [];
 
     for (let item of subLixies) {
@@ -101,22 +81,30 @@ export class ExportSubLixiesProcessor extends WorkerHost {
         this.logger.error(err);
         continue;
       }
+
       childrenApiResult.push(childResult);
     }
+
+    const fields = ['id', 'name', 'claimCode', 'amount', 'package', 'barcode'];
+
     const parser = new Parser({
-      fields: ['id', 'name', 'claimCode', 'amount', 'package']
+      fields,
+      quote: ''
     });
     const csvData = childrenApiResult.map(item => {
       return {
         id: item.id,
         name: item.name,
-        claimCode: item.claimCode,
+        claimCode: `lixi_${item.claimCode}`,
         amount: item.amount,
         package: item.packageId ? numberToBase58(item.packageId) : '',
         barcode: item.id?.toString().padStart(11, '0')
       };
     });
+
     const csv = parser.parse(csvData);
+
+    this.logger.log(JSON.stringify(csv));
     const dir = './public/download/';
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir);

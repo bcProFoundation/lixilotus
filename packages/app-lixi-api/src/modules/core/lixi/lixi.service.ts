@@ -221,7 +221,7 @@ export class LixiService {
         });
       }
 
-      if (distributions) {
+      if (distributions && distributions.length > 0) {
         await prisma.lixiDistribution.createMany({
           data: distributions
         });
@@ -277,21 +277,18 @@ export class LixiService {
     // If users input the amount means that the lixi need to be prefund
     const isPrefund = !!command.amount;
 
-    const chunkSize = command.numberLixiPerPackage ? command.numberLixiPerPackage : defaultLixiChunkSize; // number of output per
+    const chunkSize = command.numberLixiPerPackage ? command.numberLixiPerPackage : defaultLixiChunkSize;
     const numberOfChunks = Math.ceil((command.numberOfSubLixi as number) / chunkSize);
 
     if (numberOfChunks === 0) {
       throw new Error('Must create at least a sub lixi');
     }
 
-    // The amount should be funded from the account
-    const xpiAllowanceEachChunk = command.amount / numberOfChunks;
-
     // Check the number of distributions
-    const additionalDistributionsNum = parentLixi && parentLixi.distributions ? parentLixi.distributions.length : 0;
+    const additionalDistributionsNum = parentLixi.distributions ? parentLixi.distributions.length : 0;
     const numberOfDistributions = parentLixi.joinLotteryProgram
-      ? additionalDistributionsNum + 2
-      : additionalDistributionsNum + 1;
+      ? additionalDistributionsNum + 1
+      : additionalDistributionsNum;
 
     // Decrypt the account secret
     const secret = await aesGcmDecrypt(account.encryptedSecret, command.mnemonic);
@@ -302,27 +299,25 @@ export class LixiService {
       const numberOfSubLixiInChunk =
         chunkIndex < numberOfChunks - 1 ? chunkSize : (command.numberOfSubLixi as number) - chunkIndex * chunkSize;
 
+      const xpiAllowanceInChunk = (numberOfSubLixiInChunk * command.amount) / (command.numberOfSubLixi as number);
       // Start to process from the start of each chunk
       const startDerivationIndexForChunk = startDerivationIndex + chunkIndex * chunkSize;
 
-      let createdPackage;
-      if (command.numberLixiPerPackage) {
-        createdPackage = await this.prisma.package.create({
-          data: {}
-        });
-      }
+      let createdPackage = await this.prisma.package.create({
+        data: {}
+      });
 
       // Create the child job data
       const childJobData: CreateSubLixiesChunkJobData = {
         numberOfSubLixiInChunk: numberOfSubLixiInChunk,
         numberOfDistributions,
         startDerivationIndexForChunk: startDerivationIndexForChunk,
-        xpiAllowance: xpiAllowanceEachChunk,
+        xpiAllowance: xpiAllowanceInChunk,
         parentId: parentLixiId,
         command: command,
         fundingAddress: account.address,
         accountSecret: secret,
-        packageId: command.numberLixiPerPackage && createdPackage?.id ? createdPackage?.id : undefined
+        packageId: createdPackage?.id
       };
 
       const childJob: FlowJob = {

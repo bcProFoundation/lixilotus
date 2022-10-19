@@ -30,7 +30,7 @@ import { StyledCollapse } from '@components/Common/StyledCollapse';
 import { StyledSpacer } from '@components/Common/StyledSpacer';
 import { setInitIntlStatus, updateLocale } from '@store/settings/actions';
 import { getCurrentLocale } from '@store/settings/selectors';
-import { AuthenticationContext } from '@utils/context';
+import { AuthenticationContext } from 'src/context';
 import getOauth2URL from '@utils/oauth2';
 import { DeleteAccountModalProps } from './DeleteAccountModal';
 import { RenameAccountModalProps } from './RenameAccountModal';

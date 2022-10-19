@@ -110,7 +110,7 @@ function* generateLixiSaga(action: PayloadAction<GenerateLixiCommand>) {
     dividedValue: Number(command.dividedValue),
     amount: Number(command.amount),
     numberOfSubLixi: Number(command.numberOfSubLixi),
-    numberLixiPerPackage: Number(command.numberLixiPerPackage),
+    numberLixiPerPackage: command.shouldGroupToPackage ? Number(command.numberLixiPerPackage) : undefined,
     minStaking: Number(command.minStaking),
     country: command && command.country ? command.country : undefined,
     networkType: command.networkType,
@@ -258,11 +258,9 @@ function* registerLixiPackSaga(action: PayloadAction<any>) {
 }
 
 function* registerLixiPackSuccessSaga(action: PayloadAction<Account>) {
-  const account: Account = action.payload;
   Modal.success({
     content: intl.get('lixi.registerSuccess')
   });
-  yield put(refreshLixiListSilent(account));
   yield put(hideLoading(registerLixiPack.type));
 }
 
@@ -369,7 +367,7 @@ function* refreshLixiSilentSaga(action: PayloadAction<number>) {
 
 function* setLixiSaga(action: PayloadAction<Lixi>) {
   const lixi: any = action.payload;
-  yield put(push('/admin/lixi'));
+  yield put(push(`/lixi/${lixi.id}`));
   yield put(refreshLixiSilent(lixi.id));
 }
 
@@ -390,11 +388,11 @@ function* selectLixiSaga(action: PayloadAction<number>) {
   }
 }
 
-function* selectLixiSuccessSaga(action: PayloadAction<Lixi>) {
-  const lixi = action.payload;
+function* selectLixiSuccessSaga(action: PayloadAction<any>) {
+  const { lixi } = action.payload;
   yield put(refreshLixiSilent(lixi.id));
   yield put(hideLoading(selectLixi.type));
-  yield put(push('/admin/lixi'));
+  yield put(push(`/lixi/${lixi.id}`));
 }
 
 function* selectLixiFailureSaga(action: PayloadAction<string>) {
@@ -621,8 +619,7 @@ function* downloadExportedLixiSuccessSaga(action: PayloadAction<any>) {
   var timestamp = moment().format('YYYYMMDD_HHmmss');
   const fileName = `${name}_SubLixiList_${timestamp}.csv`;
 
-  const result = data.replace(/['"]+/g, '');
-  var blob = new Blob([result], { type: 'text/csv;charset=utf-8' });
+  var blob = new Blob([data], { type: 'text/csv' });
   saveAs(blob, fileName);
 
   yield put(hideLoading(downloadExportedLixi.type));

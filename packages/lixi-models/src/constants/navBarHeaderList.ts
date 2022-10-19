@@ -20,18 +20,13 @@ export const navBarHeaderList = [
     path: '/page/create'
   },
   {
-    name: 'Setting',
+    name: 'Settings',
     subTitle: 'Set Privacy and Notification settings',
-    path: '/admin/settings'
+    path: '/settings'
   },
   {
     name: 'Lixi',
     subTitle: 'Manage Lixi',
-    path: '/admin/lixi'
-  },
-  {
-    name: 'Create Lixi',
-    subTitle: 'Create Lixi',
-    path: '/admin/create'
+    path: '/lixi'
   }
 ];

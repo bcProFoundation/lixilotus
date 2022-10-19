@@ -1,4 +1,4 @@
-import { ConsoleLogger, Logger, Module, OnApplicationShutdown } from '@nestjs/common';
+import { Logger, Module, OnApplicationShutdown } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { MercuriusDriver, MercuriusDriverConfig } from '@nestjs/mercurius';
@@ -17,6 +17,8 @@ import { PageModule } from './modules/page/page.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { WalletModule } from './modules/wallet/wallet.module';
 import { GraphQLError, GraphQLFormattedError } from 'graphql';
+import { APP_FILTER } from '@nestjs/core';
+import { HttpExceptionFilter } from './middlewares/exception.filter';
 
 //enabled serving multiple static for fastify
 type FastifyServeStaticModuleOptions = ServeStaticModuleOptions & {
@@ -96,7 +98,13 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
     PageModule
   ],
   controllers: [],
-  providers: [Logger]
+  providers: [
+    Logger,
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter
+    }
+  ]
 })
 export class AppModule implements OnApplicationShutdown {
   onApplicationShutdown(signal: string) {

@@ -16,10 +16,13 @@ import {
 } from '@ant-design/icons';
 import { CointainerAccess, ItemAccess, ItemAccessBarcode } from './SideBarShortcut';
 import { useRouter } from 'next/router';
+import { openModal } from '@store/modal/actions';
+import { getSelectedAccount } from '@store/account/selectors';
 import ScanBarcode from '@bcpros/lixi-components/components/Common/ScanBarcode';
 import axiosClient from '@utils/axiosClient';
-import { message } from 'antd';
+import { Button, message, Space } from 'antd';
 import intl from 'react-intl-universal';
+import { CreateLixiFormModal } from '@components/Lixi/CreateLixiFormModal';
 
 type SidebarContentProps = {
   className?: string;
@@ -38,6 +41,7 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
   const navCollapsed = useAppSelector(getNavCollapsed);
   const router = useRouter();
   const selectedKey = router.pathname ?? '';
+  const selectedAccount = useAppSelector(getSelectedAccount);
   let pastScan;
 
   const handleOnClick = () => {
@@ -73,13 +77,7 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
             key="wallet-lotus"
             href={'/wallet'}
           />
-          <ItemAccess
-            icon={GiftOutlined}
-            text={'Lixi'}
-            active={selectedKey === '/admin/lixies'}
-            key="lixi"
-            href={'/admin/lixies'}
-          />
+          <ItemAccess icon={GiftOutlined} text={'Lixi'} active={selectedKey === '/lixi'} key="lixi" href={'/lixi'} />
           <ItemAccess icon={SendOutlined} text={'Send'} active={selectedKey === '/send'} key="send" href={'/send'} />
           <ItemAccess
             icon={EditOutlined}
@@ -97,10 +95,10 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
           />
           <ItemAccess
             icon={SettingOutlined}
-            text={'Setting'}
-            active={selectedKey === '/admin/settings'}
-            key="setting"
-            href={'/admin/settings'}
+            text={'Settings'}
+            active={selectedKey === '/settings'}
+            key="settings"
+            href={'/settings'}
           />
           <ItemAccess
             icon={SendOutlined}

@@ -6,6 +6,9 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import WalletInfoComponent from './WalletInfo';
 import intl from 'react-intl-universal';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { getSelectedAccount } from '@store/account/selectors';
+import { silentLogin } from '@store/account/actions';
 
 interface UserItem {
   email: string;
@@ -116,7 +119,10 @@ const FullWalletWrapper = styled.div`
 `;
 
 const FullWalletComponent: React.FC = () => {
+  const dispatch = useAppDispatch();
   const [data, setData] = useState<UserItem[]>([]);
+
+  const selectedAccount = useAppSelector(getSelectedAccount);
 
   const appendData = () => {
     fetch(fakeDataUrl)
@@ -128,6 +134,9 @@ const FullWalletComponent: React.FC = () => {
   };
 
   useEffect(() => {
+    if (selectedAccount) {
+      dispatch(silentLogin(selectedAccount.mnemonic));
+    }
     appendData();
   }, []);
 

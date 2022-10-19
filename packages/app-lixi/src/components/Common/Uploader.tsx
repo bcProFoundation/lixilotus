@@ -12,6 +12,7 @@ import { setUpload, removeUpload } from '@store/account/actions';
 import axiosClient from '@utils/axiosClient';
 import { UPLOAD_API } from '@bcpros/lixi-models/constants';
 import _ from 'lodash';
+import { ButtonType } from 'antd/lib/button';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -31,7 +32,6 @@ const StyledButton = styled(Button)`
   font-size: 14px;
   line-height: 20px;
   align-items: center;
-  color: rgb(158, 42, 156);
   flex: 0 0 auto;
   order: 0;
 
@@ -58,12 +58,11 @@ export const Uploader = ({ type, buttonName, buttonType, isIcon, showUploadList 
   const [previewTitle, setPreviewTitle] = useState('');
   const [previewVisible, setPreviewVisible] = useState(false);
   const dispatch = useAppDispatch();
-  const uploadButtonType = (buttonType ?? 'primary') as ButtonType;
 
   const uploadButton = (
     <StyledButton
       disabled={loading}
-      type={!_.isEmpty(buttonType) ? buttonType : 'primary'}
+      type={!_.isEmpty(buttonType) ? (buttonType as ButtonType) : 'primary'}
       size="middle"
       loading={loading}
       icon={isIcon ? <UploadOutlined style={{ color: loading ? 'gray' : 'white' }} /> : null}

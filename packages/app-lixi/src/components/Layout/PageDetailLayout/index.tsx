@@ -156,7 +156,7 @@ const PageDetailLayout: React.FC = (props: PageDetailsLayoutProps) => {
                       {intl.get('general.accounts')}
                     </NavButton>
                   </Link>
-                  <Link href="/admin/lixi" passHref>
+                  <Link href="/lixi" passHref>
                     <NavButton active={false}>
                       <WalletOutlined />
                       {intl.get('general.lixi')}

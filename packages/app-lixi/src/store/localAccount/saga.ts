@@ -4,8 +4,17 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { getCurrentLocale } from '@store/settings/selectors';
 import intl from 'react-intl-universal';
 import { all, call, fork, getContext, put, select, takeLatest } from 'redux-saga/effects';
+import { LocalUser } from 'src/models/localUser';
 import { showToast } from '../toast/actions';
-import { generateLocalUserAccount, setLocalUserAccount } from './actions';
+import {
+  generateLocalUserAccount,
+  importLocalUserAccount,
+  setLocalUserAccount,
+  silentLocalLogin,
+  silentLocalLoginFailure,
+  silentLocalLoginSuccess
+} from './actions';
+import localAccountApi from './api';
 
 /**
  * Generate a account with random encryption password
@@ -92,10 +101,47 @@ function* importLocalUserAccountSaga(action: PayloadAction<string>) {
   }
 }
 
+function* setLocalUserAccountSaga(action: PayloadAction<LocalUserAccount>) {
+  const account = action.payload;
+  const localUser: LocalUser = {
+    id: account.address,
+    address: account.address,
+    name: account.name
+  };
+  yield put(silentLocalLogin(localUser));
+}
+
+function* silentLocalLoginSaga(action: PayloadAction<LocalUser>) {
+  try {
+    const localUser = action.payload;
+    yield call(localAccountApi.localLogin, localUser);
+    yield put(silentLocalLoginSuccess(localUser));
+  } catch (err) {
+    yield put(silentLocalLoginFailure());
+  }
+}
+
 function* watchGenerateLocalUserAccount() {
   yield takeLatest(generateLocalUserAccount.type, generateLocalUserAccountSaga);
 }
 
+function* watchImportLocalUserAccount() {
+  yield takeLatest(importLocalUserAccount.type, importLocalUserAccountSaga);
+}
+
+function* watchSetLocalUserAccountSaga() {
+  yield takeLatest(setLocalUserAccount.type, setLocalUserAccountSaga);
+}
+
+function* watchSilentLocalLogin() {
+  yield takeLatest(silentLocalLogin.type, silentLocalLoginSaga);
+}
+
 export default function* accountSaga() {
-  yield all([fork(watchGenerateLocalUserAccount)]);
+  yield all([
+    fork(watchGenerateLocalUserAccount),
+    fork(watchImportLocalUserAccount),
+    fork(watchSetLocalUserAccountSaga),
+    fork(watchSilentLocalLogin)
+  ]);
 }

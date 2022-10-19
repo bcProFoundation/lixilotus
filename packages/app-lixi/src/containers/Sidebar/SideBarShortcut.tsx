@@ -19,15 +19,16 @@ import { getAllAccounts, getSelectedAccount } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { openModal } from '@store/modal/actions';
 import { fromSmallestDenomination } from '@utils/cashMethods';
-import { Layout, message, Space } from 'antd';
+import { Button, Layout, message, Space } from 'antd';
 import classNames from 'classnames';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Logged } from './SideBarRanking';
 import axiosClient from '@utils/axiosClient';
 import intl from 'react-intl-universal';
+import { CreateLixiFormModal } from '@components/Lixi/CreateLixiFormModal';
 
 const { Sider } = Layout;
 
@@ -146,6 +147,7 @@ const CointainerWallet = styled.div`
     justify-content: space-between;
     align-items: baseline;
     h3 {
+      margin: 0;
       font-weight: 600;
     }
     .anticon {
@@ -157,7 +159,7 @@ const CointainerWallet = styled.div`
 
 const ShortcutSideBar = styled(Sider)`
   height: 60vh;
-  left: 20px;
+  left: 2rem;
   max-width: inherit !important;
   background: var(--bg-color-light-theme);
 
@@ -239,13 +241,7 @@ const SidebarShortcut = () => {
             key="wallet-lotus"
             href={'/wallet'}
           />
-          <ItemAccess
-            icon={GiftOutlined}
-            text={'Lixi'}
-            active={selectedKey === '/admin/lixies'}
-            key="lixi"
-            href={'/admin/lixies'}
-          />
+          <ItemAccess icon={GiftOutlined} text={'Lixi'} active={selectedKey === '/lixi'} key="lixi" href={'/lixi'} />
           <ItemAccess icon={SendOutlined} text={'Send'} active={selectedKey === '/send'} key="send" href={'/send'} />
           <ItemAccess
             icon={EditOutlined}
@@ -256,16 +252,6 @@ const SidebarShortcut = () => {
           />
           <ItemAccess
             icon={PlusCircleOutlined}
-            text={'Create Lixi'}
-            active={false}
-            key="create-lixi"
-            onClickItem={() => {
-              dispatch(openModal('CreateLixiFormModal', { account: selectedAccount }));
-            }}
-            href={'/admin/create'}
-          />
-          <ItemAccess
-            icon={PlusCircleOutlined}
             text={'Create Page'}
             active={selectedKey === '/page/create'}
             key="create-page"
@@ -273,10 +259,10 @@ const SidebarShortcut = () => {
           />
           <ItemAccess
             icon={SettingOutlined}
-            text={'Setting'}
-            active={selectedKey === '/admin/settings'}
-            key="setting"
-            href={'/admin/settings'}
+            text={'Settings'}
+            active={selectedKey === '/settings'}
+            key="settings"
+            href={'/settings'}
           />
           <ItemAccess
             icon={SendOutlined}

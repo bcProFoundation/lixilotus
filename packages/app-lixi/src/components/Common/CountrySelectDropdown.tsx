@@ -14,7 +14,7 @@ const CountrySelect = styled(Select)`
   width: 100%
   height: 56px;
   background: #FFFFFF;
-  border: 1px solid #80747C;
+  border: 1px solid var(--border-color-base);
   border-radius: 8px;
   flex: none;
   order: 1;

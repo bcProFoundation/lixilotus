@@ -79,7 +79,7 @@ import { getSelectedAccount } from '@store/account/selectors';
 import { getAllSubLixies, getLoadMoreSubLixiesStartId } from '@store/lixi/selectors';
 import { fromSmallestDenomination, toSmallestDenomination } from '@utils/cashMethods';
 import { numberToBase58 } from '@utils/encryptionMethods';
-
+import SubLixiList from './SubLixiList';
 import { ClaimType } from '../../../../lixi-models/src/lib/lixi';
 import lixiLogo from '../../assets/images/lixi_logo.svg';
 import { exportSubLixies } from '../../store/lixi/actions';
@@ -224,13 +224,18 @@ const StyledQRCode = styled.div`
 `;
 
 const { Panel } = Collapse;
-const Lixi: React.FC = () => {
+const Lixi = props => {
+  const { lixi } = props;
   const dispatch = useAppDispatch();
   const ContextValue = React.useContext(WalletContext);
   const { XPI, Wallet } = ContextValue;
   const selectedAccount = useAppSelector(getSelectedAccount);
-  const selectedLixiId = useAppSelector(getSelectedLixiId);
-  const selectedLixi = useAppSelector(getSelectedLixi);
+  // const selectedLixiId = useAppSelector(getSelectedLixiId);
+  // const selectedLixi = useAppSelector(getSelectedLixi);
+  const selectedLixiRedux = useAppSelector(getSelectedLixi);
+  const selectedLixiIdRedux = useAppSelector(getSelectedLixiId);
+  const selectedLixiId = lixi.id ? selectedLixiIdRedux : lixi;
+  const selectedLixi = lixi ? selectedLixiRedux : lixi;
   const allClaimsCurrentLixi = useAppSelector(getAllClaims);
   const [claimCodeVisible, setClaimCodeVisible] = useState(false);
   const qrPanelRef = React.useRef(null);
@@ -243,11 +248,11 @@ const Lixi: React.FC = () => {
 
   const [loadings, setLoadings] = useState<boolean[]>([]);
 
-  useEffect(() => {
-    if (selectedLixi) {
-      dispatch(getLixi(selectedLixi.id));
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (selectedLixi) {
+  //     dispatch(selectLixi(selectedLixiId));
+  //   }
+  // }, [selectLixi]);
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -544,8 +549,17 @@ const Lixi: React.FC = () => {
     };
   });
 
+  const oneTimeCodeColumns = [
+    { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
+    { title: 'Code', dataIndex: 'claimCode' },
+    { title: `${intl.get('general.amount')} (XPI)`, dataIndex: 'amount' },
+    { title: intl.get('lixi.status'), dataIndex: 'isClaimed' }
+  ];
+
   const showMoreSubLixies = () => {
-    dispatch(fetchMoreSubLixies({ parentId: selectedLixi.id, startId: loadMoreStartId }));
+    if (hasMoreSubLixies) {
+      dispatch(fetchMoreSubLixies({ parentId: selectedLixi.id, startId: loadMoreStartId }));
+    }
   };
 
   const getLixiPanelDetailsIcon = (status: string, isPanelOpen: boolean) => {
@@ -893,7 +907,7 @@ const Lixi: React.FC = () => {
                       </Text>
                       <br />
                       <Text style={{ color: '#1E1A1D', paddingBottom: '24px' }}>
-                        {fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim'))} {currency.ticker}
+                        {selectedLixi.subLixiTotalClaim.toFixed(2)} {currency.ticker}
                       </Text>
                       <br />
                       <br />
@@ -910,7 +924,7 @@ const Lixi: React.FC = () => {
                       </Text>
                       <br />
                       <Text style={{ color: '#1E1A1D' }}>
-                        {fromSmallestDenomination(_.sumBy(subLixies, 'amount')) ?? '0'} {currency.ticker}
+                        {(selectedLixi.subLixiBalance - selectedLixi.subLixiTotalClaim).toFixed(2)} {currency.ticker}
                       </Text>
                     </>
                   }
@@ -920,12 +934,10 @@ const Lixi: React.FC = () => {
                     showInfo={false}
                     type="circle"
                     strokeColor="#E37100"
+                    strokeLinecap="butt"
                     percent={100}
                     success={{
-                      percent:
-                        fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim')) /
-                        (fromSmallestDenomination(_.sumBy(subLixies, 'amount')) +
-                          fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim')))
+                      percent: (selectedLixi.subLixiTotalClaim * 100) / selectedLixi.subLixiBalance
                     }}
                     style={{ paddingTop: '12.5px' }}
                   />
@@ -948,20 +960,15 @@ const Lixi: React.FC = () => {
           />
         );
       case ClaimType.OneTime:
-        return (
-          <>
-            <VirtualTable
-              columns={onetimeCodeColumns}
-              dataSource={subLixiesDataSource}
-              scroll={{ y: subLixiesDataSource.length * 54 <= 270 ? subLixiesDataSource.length * 54 : 270 }}
-            />
-            {hasMoreSubLixies && (
-              <SmartButton onClick={() => showMoreSubLixies()}>{intl.get('lixi.loadmore')}</SmartButton>
-            )}
-          </>
-        );
+        const lixiStatus =
+          selectedLixi.status === 'pending' ? (
+            <LoadingOutlined />
+          ) : (
+            <SubLixiList dataSource={subLixies} columns={oneTimeCodeColumns} loadMore={() => showMoreSubLixies()} />
+          );
+        return lixiStatus;
     }
-  }
+  };
 
   return (
     <>
