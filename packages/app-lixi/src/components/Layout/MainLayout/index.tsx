@@ -215,7 +215,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                         <Sidebar />
                         <Layout
                           className="main-section-layout"
-                          style={{ paddingRight: selectedKey === '/lixi' ? '2rem' : '0' }}
+                          style={{ paddingRight: selectedKey === '/profile' ? '2rem' : '0' }}
                         >
                           <Topbar ref={setRef} />
                           {selectedKey !== '/' && (
@@ -231,7 +231,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                           )}
                           <Content className="content-layout">{children}</Content>
                         </Layout>
-                        {selectedKey !== '/lixi' && <SidebarRanking></SidebarRanking>}
+                        {selectedKey !== '/profile' && <SidebarRanking></SidebarRanking>}
                       </Layout>
                     </AppContainer>
                   </DeviceProtectableComponentWrapper>

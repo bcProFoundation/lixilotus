@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import intl from 'react-intl-universal';
 import { Layout, Spin } from 'antd';
 import Link from 'next/link';
@@ -7,6 +7,7 @@ import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 import {
   GiftOutlined,
   HomeOutlined,
+  LeftOutlined,
   LoadingOutlined,
   SettingOutlined,
   UserOutlined,
@@ -23,6 +24,11 @@ import { loadLocale } from '@store/settings/actions';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
 import { injectStore } from 'src/utils/axiosClient';
+import DeviceProtectableComponentWrapper from '@components/Authentication/DeviceProtectableComponentWrapper';
+import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
+import SidebarRanking from '@containers/Sidebar/SideBarRanking';
+import { useRouter } from 'next/router';
+import { navBarHeaderList } from '@bcpros/lixi-models/constants';
 
 const { Content, Sider, Header } = Layout;
 
@@ -30,7 +36,8 @@ export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
 
 const LixiApp = styled.div`
   text-align: center;
-  font-family: 'Gilroy', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   background-color: ${props => props.theme.app.background};
 `;
 
@@ -40,8 +47,42 @@ const AppBody = styled.div`
   justify-content: center;
   width: 100%;
   min-height: 100vh;
-  background-image: ${props => props.theme.app.gradient};
   background-attachment: fixed;
+`;
+
+const NavBarHeader = styled(Header)`
+  padding: 2rem 2rem 1rem 2rem;
+  height: auto;
+  line-height: initial;
+  display: flex;
+  align-items: center;
+  border-radius: 20px;
+  box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
+  width: 100%;
+  margin-bottom: 1rem;
+  .anticon {
+    font-size: 24px;
+    color: var(--color-primary);
+  }
+  @media (max-width: 768px) {
+    padding: 0;
+    width: 100%;
+  }
+`;
+
+const PathDirection = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-left: 1rem;
+  h2 {
+    font-weight: 600;
+    text-transform: capitalize;
+    color: var(--color-primary);
+  }
+  .sub-title {
+    text-transform: capitalize;
+  }
 `;
 
 export const AppContainer = styled.div`
@@ -52,9 +93,6 @@ export const AppContainer = styled.div`
   padding: 10px 30px 120px 30px;
   overflow: hidden;
   background: ${props => props.theme.wallet.background};
-  -webkit-box-shadow: 0px 0px 24px 1px ${props => props.theme.wallet.shadow};
-  -moz-box-shadow: 0px 0px 24px 1px ${props => props.theme.wallet.shadow};
-  box-shadow: 0px 0px 24px 1px ${props => props.theme.wallet.shadow};
   @media (max-width: 768px) {
     width: 100%;
     -webkit-box-shadow: none;
@@ -63,8 +101,20 @@ export const AppContainer = styled.div`
   }
   @media (min-width: 768px) {
     width: 100%;
-    background: var(--bg-color-light-theme);
+    background: #fffbff;
     padding: 0;
+    .content-layout {
+      // margin-top: 80px;
+      z-index: 1;
+    }
+  }
+  .ant-layout.ant-layout-has-sider {
+    gap: 4rem;
+  }
+  .main-section-layout {
+    @media (max-width: 768px) {
+      padding-right: 0 !important;
+    }
   }
 `;
 
@@ -118,12 +168,38 @@ const PageDetailLayout: React.FC = (props: PageDetailsLayoutProps) => {
   const currentLocale = useAppSelector(getCurrentLocale);
   const intlInitDone = useAppSelector(getIntlInitStatus);
   const dispatch = useAppDispatch();
+  const router = useRouter();
+  const [height, setHeight] = useState(0);
+  const selectedKey = router.pathname ?? '';
+  const [navBarTitle, setNavBarTitle] = useState('');
+  const [navBarSubTitle, setNavBarSubTitle] = useState('');
+  const ref = useRef(null);
+  const setRef = useCallback(node => {
+    if (node && node.clientHeight) {
+      // Check if a node is actually passed. Otherwise node would be null.
+      const height = node.clientHeight;
+      setHeight(height);
+    }
+    // Save a reference to the node
+    ref.current = node;
+  }, []);
 
   injectStore(currentLocale);
 
   useEffect(() => {
     dispatch(loadLocale(currentLocale));
   }, [currentLocale]);
+
+  const getNamePathDirection = () => {
+    console.log('ahihi', children);
+    const itemSelect = navBarHeaderList.find(item => selectedKey.includes(item.path)) || null;
+    setNavBarTitle(itemSelect?.name || '');
+    setNavBarSubTitle(itemSelect?.subTitle || '');
+  };
+
+  useEffect(() => {
+    getNamePathDirection();
+  }, [selectedKey]);
 
   return (
     <ThemeProvider theme={theme as DefaultTheme}>
@@ -134,47 +210,31 @@ const PageDetailLayout: React.FC = (props: PageDetailsLayoutProps) => {
             <Layout>
               <AppBody>
                 <ModalManager />
-                <AppContainer>
-                  <Layout>
-                    <Sidebar />
-                    <Layout>
-                      <Topbar />
-                      <Content>{children}</Content>
-                    </Layout>
-                  </Layout>
-                </AppContainer>
-                <Footer>
-                  <Link href="/" passHref>
-                    <NavButton active={false}>
-                      <HomeOutlined />
-                      {intl.get('general.home')}
-                    </NavButton>
-                  </Link>
-                  <Link href="/admin/accounts" passHref>
-                    <NavButton active={false}>
-                      <UserOutlined />
-                      {intl.get('general.accounts')}
-                    </NavButton>
-                  </Link>
-                  <Link href="/lixi" passHref>
-                    <NavButton active={false}>
-                      <WalletOutlined />
-                      {intl.get('general.lixi')}
-                    </NavButton>
-                  </Link>
-                  <Link href="/admin/claim" passHref>
-                    <NavButton active={false}>
-                      <GiftOutlined />
-                      {intl.get('general.claim')}
-                    </NavButton>
-                  </Link>
-                  <Link href="/admin/settings" passHref>
-                    <NavButton active={false}>
-                      <SettingOutlined />
-                      {intl.get('general.settings')}
-                    </NavButton>
-                  </Link>
-                </Footer>
+                <>
+                  <DeviceProtectableComponentWrapper>
+                    <AppContainer>
+                      <Layout>
+                        <SidebarShortcut></SidebarShortcut>
+                        <Sidebar />
+                        <Layout className="main-section-layout" style={{ paddingRight: '2rem' }}>
+                          <Topbar ref={setRef} />
+                          {selectedKey !== '/' && (
+                            <NavBarHeader>
+                              <Link href="/" passHref>
+                                <LeftOutlined />
+                              </Link>
+                              <PathDirection>
+                                <h2>{navBarTitle}</h2>
+                                <p className="sub-title">{navBarSubTitle}</p>
+                              </PathDirection>
+                            </NavBarHeader>
+                          )}
+                          <Content className="content-layout">{children}</Content>
+                        </Layout>
+                      </Layout>
+                    </AppContainer>
+                  </DeviceProtectableComponentWrapper>
+                </>
               </AppBody>
             </Layout>
           </LixiApp>
