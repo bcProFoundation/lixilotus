@@ -98,6 +98,7 @@ export const AppContainer = styled.div`
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
+    padding: 0;
   }
   @media (min-width: 768px) {
     width: 100%;

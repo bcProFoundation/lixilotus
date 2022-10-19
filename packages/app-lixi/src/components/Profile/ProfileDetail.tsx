@@ -59,6 +59,10 @@ const ProfileCardHeader = styled.div`
     height: 350px;
     border-top-right-radius: 20px;
     border-top-left-radius: 20px;
+    @media (max-width: 768px) {
+      border-radius: 0;
+      height: 200px;
+    }
   }
   .info-profile {
     display: flex;
@@ -78,6 +82,9 @@ const ProfileCardHeader = styled.div`
         width: 150px;
         height: 150px;
         border-radius: 50%;
+      }
+      @media (max-width: 768px) {
+        left: auto;
       }
       .btn-upload-avatar {
         cursor: pointer;
@@ -100,6 +107,16 @@ const ProfileCardHeader = styled.div`
     .title-profile {
       margin-left: calc(160px + 48px);
       text-align: left;
+      @media (max-width: 768px) {
+        margin-left: 0;
+        margin-top: 4rem;
+        text-align: center;
+      }
+    }
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: center;
+      padding-right: 0;
     }
   }
   .menu {
@@ -116,10 +133,16 @@ const ProfileContentContainer = styled.div`
   display: flex;
   gap: 1rem;
   margin-top: 1rem;
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const LegacyProfile = styled.div`
   max-width: 35%;
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
 `;
 
 const AboutBox = styled.div`
@@ -156,6 +179,9 @@ const PictureBox = styled.div`
     img {
       width: 110px;
       height: 110px;
+      @media (max-width: 768px) {
+        width: 95%;
+      }
     }
   }
 `;
@@ -180,6 +206,9 @@ const FriendBox = styled.div`
         width: 110px;
         height: 110px;
         border-radius: 50%;
+        @media (max-width: 768px) {
+          width: 95%;
+        }
       }
       p {
         margin: 0;
