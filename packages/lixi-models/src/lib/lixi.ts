@@ -102,7 +102,6 @@ export interface LixiDto {
   envelopeId: Nullable<number>;
   envelopeMessage: string;
   envelope?: Nullable<Envelope>;
-  claimCount?: number;
   subLixiTotalClaim?: number;
   subLixiBalance?: number;
   isNFTEnabled: boolean;
@@ -146,7 +145,6 @@ export interface Lixi {
   envelopeId: Nullable<number>;
   envelopeMessage: string;
   envelope?: Nullable<Envelope>;
-  claimCount?: number;
   subLixiTotalClaim?: number;
   subLixiBalance?: number;
   isNFTEnabled: boolean;
