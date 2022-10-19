@@ -4,6 +4,7 @@ import {
   ClaimType,
   CreateLixiCommand,
   ExportLixiCommand,
+  fromSmallestDenomination,
   LixiDto,
   PaginationResult,
   PostLixiResponseDto,
@@ -100,6 +101,19 @@ export class LixiController {
 
       const balance: number = await this.xpiWallet.getBalance(lixi.address);
 
+      const subLixies = await this.prisma.lixi.aggregate({
+        _sum: {
+          amount: true,
+          totalClaim: true
+        },
+        where: {
+          parentId: lixi.id
+        }
+      });
+
+      const subLixiBalance = subLixies._sum.amount;
+      const subLixiTotalClaim = fromSmallestDenomination(Number(subLixies._sum.totalClaim));
+
       let resultApi: any;
       resultApi = _.omit(
         {
@@ -109,7 +123,9 @@ export class LixiController {
           balance: balance,
           totalClaim: Number(lixi.totalClaim),
           envelope: lixi.envelope,
-          distributions: lixi.distributions
+          distributions: lixi.distributions,
+          subLixiBalance: subLixiBalance,
+          subLixiTotalClaim: subLixiTotalClaim
         } as unknown as LixiDto,
         'encryptedXPriv',
         'encryptedClaimCode'
@@ -341,10 +357,25 @@ export class LixiController {
         const haveNotAccess = await i18n.t('lixi.messages.haveNotAccess');
         throw new VError(haveNotAccess);
       }
-
       if (lixi?.claimType === ClaimType.Single) {
         const unableToRegister = await i18n.t('lixi.messages.unableToRegister');
         throw new VError(unableToRegister);
+      }
+
+      let parentLixi = await this.prisma.lixi.findUnique({
+        where: {
+          id: lixi.parentId as number
+        },
+        include: {
+          distributions: true
+        }
+      });
+
+      let numberOfDistributions!: number;
+      if (parentLixi) {
+        numberOfDistributions = parentLixi?.joinLotteryProgram
+          ? parentLixi.distributions.length + 2
+          : parentLixi.distributions.length + 1;
       }
 
       if (_.isNil(lixi.packageId)) {
@@ -367,7 +398,27 @@ export class LixiController {
           // if already register => ignore and return success
           return true;
         } else {
-          const lixiList = await this.prisma.lixi.updateMany({
+          const distributionAddRegister = numberOfDistributions + 1;
+
+          const lixiListFind = await this.prisma.lixi.findMany({
+            where: {
+              packageId: lixi.packageId
+            }
+          });
+
+          lixiListFind.map(lixi => {
+            const totalAmountBeforeRegister = lixi.amount * numberOfDistributions;
+            const amountFundingRegistered = totalAmountBeforeRegister / distributionAddRegister;
+
+            return {
+              ...lixi,
+              amount: amountFundingRegistered,
+              inventoryStatus: 'registered',
+              updatedAt: new Date()
+            };
+          });
+
+          const lixiListUpdate = await this.prisma.lixi.updateMany({
             where: {
               packageId: lixi.packageId
             },
@@ -387,8 +438,8 @@ export class LixiController {
             }
           });
 
-          if (lixiList.count > 0 && !_.isNil(packageRegistrant)) {
-            // if having lixilist update => return true noti update successfully
+          if (lixiListUpdate.count > 0 && !_.isNil(packageRegistrant)) {
+            // if having lixiListUpdate update => return true noti update successfully
             return true;
           } else {
             // count === 0 => don't have any data to update
