@@ -198,7 +198,7 @@ const PageListItem = ({ index, item }) => {
         <CardContainer>
           <CardHeader onClick={() => routerShopDetail(item.id)}>
             <InfoCardUser
-              imgUrl={item.avatar}
+              imgUrl={item.avatar || '/images/default-cover.jpg'}
               name={item.name}
               title={moment(item.createdAt).fromNow().toString()}
             ></InfoCardUser>
@@ -206,7 +206,7 @@ const PageListItem = ({ index, item }) => {
           </CardHeader>
           <Content>
             <p className="description-post">{item.description}</p>
-            <img className="image-cover" src={item.cover} alt="" />
+            <img className="image-cover" src={item.cover || '/images/default-cover.jpg'} alt="" />
           </Content>
         </CardContainer>
         <ActionBar>
