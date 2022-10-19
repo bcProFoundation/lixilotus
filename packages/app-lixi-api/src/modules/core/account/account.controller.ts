@@ -358,19 +358,27 @@ export class AccountController {
         }
       });
 
+      const lixiesIds = lixies.map(item => item.id);
       const results = lixies.map(async item => {
-        const subLixies = await this.prisma.lixi.aggregate({
+        const subLixies = await this.prisma.lixi.groupBy({
           _sum: {
             amount: true,
             totalClaim: true
           },
           where: {
-            parentId: item.id
-          }
+            parentId: { in: lixiesIds }
+          },
+          by: ['parentId']
         });
 
-        const subLixiBalance = subLixies._sum.amount;
-        const subLixiTotalClaim = fromSmallestDenomination(Number(subLixies._sum.totalClaim));
+        let subLixiBalance = 0;
+        let subLixiTotalClaim = 0;
+        subLixies.map(subLixi => {
+          if (subLixi.parentId == item.id) {
+            subLixiBalance = Number(subLixi._sum.amount);
+            subLixiTotalClaim = fromSmallestDenomination(Number(subLixi._sum.totalClaim));
+          }
+        });
 
         return {
           ...item,
@@ -378,7 +386,7 @@ export class AccountController {
           lixiType: Number(item.lixiType),
           maxClaim: Number(item.maxClaim),
           claimedNum: Number(item.claimedNum),
-          subLixiTotalClaim: _.isNaN(subLixiTotalClaim) ? 0 : fromSmallestDenomination(subLixiTotalClaim),
+          subLixiTotalClaim: _.isNaN(subLixiTotalClaim) ? 0 : subLixiTotalClaim,
           subLixiBalance: _.isNaN(subLixiBalance) ? 0 : subLixiBalance
         } as unknown as Lixi;
       });
