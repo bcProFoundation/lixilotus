@@ -4,6 +4,7 @@ import {
   ClaimType,
   CreateLixiCommand,
   ExportLixiCommand,
+  fromSmallestDenomination,
   LixiDto,
   PaginationResult,
   PostLixiResponseDto,
@@ -58,7 +59,6 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import moment from 'moment';
 import { extname } from 'path';
 import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
-import { fromSmallestDenomination } from '../../../../../lixi-models/src/utils/cashMethods';
 
 @Controller('lixies')
 @UseInterceptors(ClassSerializerInterceptor)
@@ -101,17 +101,18 @@ export class LixiController {
 
       const balance: number = await this.xpiWallet.getBalance(lixi.address);
 
-      let subLixies;
-      let subLixiBalance;
-      let subLixiTotalClaim;
-      subLixies = await this.prisma.lixi.findMany({
+      const subLixies = await this.prisma.lixi.aggregate({
+        _sum: {
+          amount: true,
+          totalClaim: true
+        },
         where: {
           parentId: lixi.id
         }
       });
 
-      subLixiBalance = _.sumBy(subLixies, 'amount');
-      subLixiTotalClaim = fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim'));
+      const subLixiBalance = subLixies._sum.amount;
+      const subLixiTotalClaim = fromSmallestDenomination(Number(subLixies._sum.totalClaim));
 
       let resultApi: any;
       resultApi = _.omit(

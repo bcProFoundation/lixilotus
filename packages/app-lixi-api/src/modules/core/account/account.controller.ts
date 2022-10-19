@@ -24,7 +24,8 @@ import {
   Lixi,
   NotificationDto,
   PatchAccountCommand,
-  Account
+  Account,
+  fromSmallestDenomination
 } from '@bcpros/lixi-models';
 
 import * as _ from 'lodash';
@@ -36,7 +37,6 @@ import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase58Str, hashMnemonic } f
 import { PrismaService } from '../../prisma/prisma.service';
 import { WalletService } from '../../wallet/wallet.service';
 import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
-import { fromSmallestDenomination } from '../../../../../lixi-models/src/utils/cashMethods';
 
 @Controller('accounts')
 export class AccountController {
@@ -358,24 +358,19 @@ export class AccountController {
         }
       });
 
-      const lixiesIds = lixies.map(item => item.id);
-      subLixies = await this.prisma.lixi.findMany({
-        where: {
-          parentId: { in: lixiesIds }
-        }
-      });
-
-      const results = lixies.map(item => {
-        let claimCount = 0;
-        let subLixiTotalClaim = 0;
-        let subLixiBalance = 0;
-        for (const sub of subLixies) {
-          if (item.id == sub.parentId) {
-            sub.isClaimed ? claimCount++ : claimCount;
-            subLixiTotalClaim += Number(sub.totalClaim);
-            subLixiBalance += Number(sub.amount);
+      const results = lixies.map(async item => {
+        const subLixies = await this.prisma.lixi.aggregate({
+          _sum: {
+            amount: true,
+            totalClaim: true
+          },
+          where: {
+            parentId: item.id
           }
-        }
+        });
+
+        const subLixiBalance = subLixies._sum.amount;
+        const subLixiTotalClaim = fromSmallestDenomination(Number(subLixies._sum.totalClaim));
 
         return {
           ...item,
@@ -383,7 +378,6 @@ export class AccountController {
           lixiType: Number(item.lixiType),
           maxClaim: Number(item.maxClaim),
           claimedNum: Number(item.claimedNum),
-          claimCount: claimCount,
           subLixiTotalClaim: _.isNaN(subLixiTotalClaim) ? 0 : fromSmallestDenomination(subLixiTotalClaim),
           subLixiBalance: _.isNaN(subLixiBalance) ? 0 : subLixiBalance
         } as unknown as Lixi;
