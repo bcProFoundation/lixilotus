@@ -108,7 +108,6 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
   const [pageDetailData, setPageDetailData] = useState<any>(page);
 
   const CommentContainer = styled.div`
-    padding: 0 1rem;
     .comment-item {
       text-align: left;
       border: 0 !important;
@@ -123,7 +122,6 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
   const PageCardDetail = styled.div`
     display: flex;
     justify-content: space-between;
-    padding: 0 1rem;
     .info-page {
       display: flex;
       img {
@@ -137,14 +135,14 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
   const PageContentDetail = styled.div``;
 
   const StyledContainerPageDetail = styled.div`
-    padding: 1rem 0;
-    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.04), 0px 2px 6px 2px rgba(0, 0, 0, 0.08);
-    border-radius: 5px;
+    padding: 20px 30px;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
     .reaction-container {
       display: flex;
       justify-content: space-between;
       padding: 0.5rem;
-      margin: 0 1rem;
       border: 1px solid #c5c5c5;
       border-left: 0;
       border-right: 0;
@@ -161,7 +159,7 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
     }
 
     .input-comment {
-      padding: 1rem 1rem 0 1rem;
+      padding: 1rem 0 0 0;
     }
   `;
 
