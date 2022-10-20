@@ -140,7 +140,6 @@ enum PostOrderField {
   content
   createdAt
   id
-  title
   updatedAt
 }
 

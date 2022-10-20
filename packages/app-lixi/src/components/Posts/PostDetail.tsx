@@ -223,7 +223,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
         url: shareUrl,
         title: 'LixiLotus'
       }}
-      onClick={() => { }}
+      onClick={() => {}}
     >
       <ShareButton>
         <ShareAltOutlined /> Share

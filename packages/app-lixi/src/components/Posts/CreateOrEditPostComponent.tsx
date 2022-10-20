@@ -193,7 +193,6 @@ const CreateOrEditPostComponent = ({ isEditPost }: PostEditProps) => {
           ) : (
             // Edit Post
             <Form layout="vertical" initialValues={{ disabled: componentDisabled }} onValuesChange={onFormLayoutChange}>
-
               <Form.Item
                 name="cover"
                 label={intl.get('post.cover')}

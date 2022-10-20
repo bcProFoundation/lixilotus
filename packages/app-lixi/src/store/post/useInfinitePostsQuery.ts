@@ -17,7 +17,6 @@ export interface PageListBody {
   next: string;
 }
 
-
 export function useInfinitePostsQuery(
   params: PaginationArgs,
   fetchAll: boolean = false // if `true`: auto do next fetches to get all notes at once

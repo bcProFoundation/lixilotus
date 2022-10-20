@@ -5,12 +5,12 @@ import Link from 'next/link';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 
 import {
-    GiftOutlined,
-    HomeOutlined,
-    LoadingOutlined,
-    SettingOutlined,
-    UserOutlined,
-    WalletOutlined
+  GiftOutlined,
+  HomeOutlined,
+  LoadingOutlined,
+  SettingOutlined,
+  UserOutlined,
+  WalletOutlined
 } from '@ant-design/icons';
 import { Footer, NavButton } from '@bcpros/lixi-components/components';
 
@@ -113,75 +113,75 @@ export const LixiTextLogo = styled.img`
 type PostDetailsLayoutProps = React.PropsWithChildren<{}>;
 
 const PostDetailLayout: React.FC = (props: PostDetailsLayoutProps) => {
-    const { children } = props;
-    const [loading, setLoading] = useState(false);
-    const currentLocale = useAppSelector(getCurrentLocale);
-    const intlInitDone = useAppSelector(getIntlInitStatus);
-    const dispatch = useAppDispatch();
+  const { children } = props;
+  const [loading, setLoading] = useState(false);
+  const currentLocale = useAppSelector(getCurrentLocale);
+  const intlInitDone = useAppSelector(getIntlInitStatus);
+  const dispatch = useAppDispatch();
 
-    injectStore(currentLocale);
+  injectStore(currentLocale);
 
-    useEffect(() => {
-        dispatch(loadLocale(currentLocale));
-    }, [currentLocale]);
+  useEffect(() => {
+    dispatch(loadLocale(currentLocale));
+  }, [currentLocale]);
 
-    return (
-        <ThemeProvider theme={theme as DefaultTheme}>
-            <GlobalStyle />
-            {intlInitDone && (
-                <Spin spinning={loading} indicator={LoadingIcon}>
-                    <LixiApp>
-                        <Layout>
-                            <AppBody>
-                                <ModalManager />
-                                <AppContainer>
-                                    <Layout>
-                                        <Sidebar />
-                                        <Layout>
-                                            <Topbar />
-                                            <Content>{children}</Content>
-                                        </Layout>
-                                    </Layout>
-                                </AppContainer>
-                                <Footer>
-                                    <Link href="/" passHref>
-                                        <NavButton active={false}>
-                                            <HomeOutlined />
-                                            {intl.get('general.home')}
-                                        </NavButton>
-                                    </Link>
-                                    <Link href="/admin/accounts" passHref>
-                                        <NavButton active={false}>
-                                            <UserOutlined />
-                                            {intl.get('general.accounts')}
-                                        </NavButton>
-                                    </Link>
-                                    <Link href="/lixies" passHref>
-                                        <NavButton active={false}>
-                                            <WalletOutlined />
-                                            {intl.get('general.lixi')}
-                                        </NavButton>
-                                    </Link>
-                                    <Link href="/admin/claim" passHref>
-                                        <NavButton active={false}>
-                                            <GiftOutlined />
-                                            {intl.get('general.claim')}
-                                        </NavButton>
-                                    </Link>
-                                    <Link href="/admin/settings" passHref>
-                                        <NavButton active={false}>
-                                            <SettingOutlined />
-                                            {intl.get('general.settings')}
-                                        </NavButton>
-                                    </Link>
-                                </Footer>
-                            </AppBody>
-                        </Layout>
-                    </LixiApp>
-                </Spin>
-            )}
-        </ThemeProvider>
-    );
+  return (
+    <ThemeProvider theme={theme as DefaultTheme}>
+      <GlobalStyle />
+      {intlInitDone && (
+        <Spin spinning={loading} indicator={LoadingIcon}>
+          <LixiApp>
+            <Layout>
+              <AppBody>
+                <ModalManager />
+                <AppContainer>
+                  <Layout>
+                    <Sidebar />
+                    <Layout>
+                      <Topbar />
+                      <Content>{children}</Content>
+                    </Layout>
+                  </Layout>
+                </AppContainer>
+                <Footer>
+                  <Link href="/" passHref>
+                    <NavButton active={false}>
+                      <HomeOutlined />
+                      {intl.get('general.home')}
+                    </NavButton>
+                  </Link>
+                  <Link href="/admin/accounts" passHref>
+                    <NavButton active={false}>
+                      <UserOutlined />
+                      {intl.get('general.accounts')}
+                    </NavButton>
+                  </Link>
+                  <Link href="/lixies" passHref>
+                    <NavButton active={false}>
+                      <WalletOutlined />
+                      {intl.get('general.lixi')}
+                    </NavButton>
+                  </Link>
+                  <Link href="/admin/claim" passHref>
+                    <NavButton active={false}>
+                      <GiftOutlined />
+                      {intl.get('general.claim')}
+                    </NavButton>
+                  </Link>
+                  <Link href="/admin/settings" passHref>
+                    <NavButton active={false}>
+                      <SettingOutlined />
+                      {intl.get('general.settings')}
+                    </NavButton>
+                  </Link>
+                </Footer>
+              </AppBody>
+            </Layout>
+          </LixiApp>
+        </Spin>
+      )}
+    </ThemeProvider>
+  );
 };
 
 export default PostDetailLayout;

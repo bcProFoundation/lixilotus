@@ -239,7 +239,7 @@ const PostListItem = ({ index, item }) => {
               text="Share"
               key={`list-vertical-share-o-${item.id}`}
               dataItem={item}
-              onClickIcon={() => { }}
+              onClickIcon={() => {}}
             />
           </GroupIconText>
 

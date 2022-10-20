@@ -14,4 +14,4 @@ import { PostResolver } from './post.resolver';
   providers: [PageResolver, Logger, PostResolver],
   exports: []
 })
-export class PageModule { }
+export class PageModule {}
