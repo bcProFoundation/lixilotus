@@ -216,7 +216,7 @@ const PageHome = () => {
         {listsPage && listsPage.length > 0 && (
           <ToolboxBar>
             <SearchBox></SearchBox>
-            <Link href="/page/edit" passHref>
+            <Link href="/page/create" passHref>
               <Button type="primary" className="outline-btn">
                 Create your page
               </Button>
@@ -233,7 +233,7 @@ const PageHome = () => {
                   A Page is a space where people can publicly connect with your business, personal brand or
                   organisation. You can do things such as showcase products and services, collect donations{' '}
                 </p>
-                <Link href="/page/edit" passHref>
+                <Link href="/page/create" passHref>
                   <Button type="primary" className="outline-btn">
                     Create your page
                   </Button>
