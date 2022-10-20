@@ -31,7 +31,6 @@ export type CreatePostInput = {
   content: Scalars['String'];
   cover?: InputMaybe<Scalars['String']>;
   pageId?: InputMaybe<Scalars['String']>;
-  title?: InputMaybe<Scalars['String']>;
 };
 
 export type Mutation = {
@@ -131,7 +130,6 @@ export type Post = {
   page?: Maybe<Page>;
   pageAccountId: Scalars['Int'];
   pageId?: Maybe<Scalars['String']>;
-  title: Scalars['String'];
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
 };
@@ -220,17 +218,17 @@ export type UpdatePageInput = {
   country?: InputMaybe<Scalars['String']>;
   cover?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
+  title: Scalars['String'];
   id: Scalars['ID'];
   name?: InputMaybe<Scalars['String']>;
   parentId?: InputMaybe<Scalars['String']>;
   state?: InputMaybe<Scalars['String']>;
-  title?: InputMaybe<Scalars['String']>;
   website?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdatePostInput = {
   content: Scalars['String'];
-  cover: Scalars['String'];
+  cover?: InputMaybe<Scalars['String']>;
   id: Scalars['ID'];
-  title: Scalars['String'];
+  title?: InputMaybe<Scalars['String']>;
 };

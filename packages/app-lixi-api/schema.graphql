@@ -19,7 +19,6 @@ input CreatePostInput {
   content: String!
   cover: String
   pageId: String
-  title: String
 }
 
 """
@@ -107,7 +106,6 @@ type Post {
   page: Page
   pageAccountId: Int!
   pageId: String
-  title: String!
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
@@ -168,7 +166,6 @@ input UpdatePageInput {
   name: String
   parentId: String
   state: String
-  title: String
   website: String
 }
 

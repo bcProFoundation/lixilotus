@@ -24,7 +24,7 @@ const pubSub = new PubSub();
 export class PostResolver {
   private logger: Logger = new Logger(this.constructor.name);
 
-  constructor(private prisma: PrismaService, @I18n() private i18n: I18nService) {}
+  constructor(private prisma: PrismaService, @I18n() private i18n: I18nService) { }
 
   @Subscription(() => Post)
   postCreated() {
@@ -56,7 +56,6 @@ export class PostResolver {
           include: { postAccount: true },
           where: {
             OR: {
-              title: { contains: query || '' },
               pageId: { contains: query || '' }
             }
           },
@@ -67,7 +66,6 @@ export class PostResolver {
         this.prisma.post.count({
           where: {
             OR: {
-              title: { contains: query || '' },
               pageId: { contains: query || '' }
             }
           }
@@ -91,15 +89,15 @@ export class PostResolver {
 
     const uploadCoverDetail = data.cover
       ? await this.prisma.uploadDetail.findFirst({
-          where: {
-            uploadId: data.cover
-          }
-        })
+        where: {
+          uploadId: data.cover
+        }
+      })
       : undefined;
 
     const createdPost = await this.prisma.post.create({
       data: {
-        ..._.omit(data, ['title', 'content', 'pageId']),
+        ..._.omit(data, ['content', 'pageId']),
         postAccount: { connect: { id: account.id } },
         cover: { connect: uploadCoverDetail ? { id: uploadCoverDetail.id } : undefined }
       }
@@ -119,10 +117,10 @@ export class PostResolver {
 
     const uploadCoverDetail = data.cover
       ? await this.prisma.uploadDetail.findFirst({
-          where: {
-            uploadId: data.cover
-          }
-        })
+        where: {
+          uploadId: data.cover
+        }
+      })
       : undefined;
 
     const updatedPost = await this.prisma.post.update({

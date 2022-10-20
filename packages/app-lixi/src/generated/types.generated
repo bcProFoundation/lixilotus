@@ -28,11 +28,11 @@ export type Page = {
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
   description: Scalars['String'];
+  title: Scalars['String'];
   id: Scalars['ID'];
   name: Scalars['String'];
   pageAccountId: Scalars['Int'];
   parentId?: Maybe<Scalars['String']>;
-  title: Scalars['String'];
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
   website: Scalars['String'];

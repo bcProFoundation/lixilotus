@@ -17,9 +17,6 @@ export class Post {
 
   pageAccount: Account;
 
-  @Field(() => String)
-  title: string;
-
   @Field(() => String, { nullable: true })
   cover: string;
 

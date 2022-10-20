@@ -5,12 +5,6 @@ export class UpdatePostCommand {
   id: string;
 
   @IsNotEmpty()
-  name: string;
-
-  @IsNotEmpty()
-  title: string;
-
-  @IsNotEmpty()
   content: string;
 
   cover?: string;

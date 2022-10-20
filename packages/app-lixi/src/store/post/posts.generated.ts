@@ -18,7 +18,7 @@ export type PostQueryVariables = Types.Exact<{
 }>;
 
 
-export type PostQuery = { __typename?: 'Query', post: { __typename?: 'Post', id: string, title: string, content: string, cover?: string | null, createdAt: any, updatedAt: any } };
+export type PostQuery = { __typename?: 'Query', post: { __typename?: 'Post', id: string, content: string, cover?: string | null, createdAt: any, updatedAt: any } };
 
 export type PostsQueryVariables = Types.Exact<{
   after?: Types.InputMaybe<Types.Scalars['String']>;
@@ -31,28 +31,27 @@ export type PostsQueryVariables = Types.Exact<{
 }>;
 
 
-export type PostsQuery = { __typename?: 'Query', allPosts: { __typename?: 'PostConnection', totalCount?: number | null, edges?: Array<{ __typename?: 'PostEdge', cursor: string, node: { __typename?: 'Post', id: string, title: string, content: string, cover?: string | null, createdAt: any, updatedAt: any } }> | null, postInfo: { __typename?: 'PostInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } } };
+export type PostsQuery = { __typename?: 'Query', allPosts: { __typename?: 'PostConnection', totalCount?: number | null, edges?: Array<{ __typename?: 'PostEdge', cursor: string, node: { __typename?: 'Post', id: string, content: string, cover?: string | null, createdAt: any, updatedAt: any } }> | null, postInfo: { __typename?: 'PostInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } } };
 
-export type PostFieldsFragment = { __typename?: 'Post', id: string, title: string, content: string, cover?: string | null, createdAt: any, updatedAt: any };
+export type PostFieldsFragment = { __typename?: 'Post', id: string, content: string, cover?: string | null, createdAt: any, updatedAt: any };
 
 export type CreatePostMutationVariables = Types.Exact<{
   input: Types.CreatePostInput;
 }>;
 
 
-export type CreatePostMutation = { __typename?: 'Mutation', createPost: { __typename?: 'Post', id: string, title: string, content: string, cover?: string | null, createdAt: any, updatedAt: any } };
+export type CreatePostMutation = { __typename?: 'Mutation', createPost: { __typename?: 'Post', id: string, content: string, cover?: string | null, createdAt: any, updatedAt: any } };
 
 export type UpdatePostMutationVariables = Types.Exact<{
   input: Types.UpdatePostInput;
 }>;
 
 
-export type UpdatePostMutation = { __typename?: 'Mutation', updatePost: { __typename?: 'Post', id: string, title: string, content: string, cover?: string | null, createdAt: any, updatedAt: any } };
+export type UpdatePostMutation = { __typename?: 'Mutation', updatePost: { __typename?: 'Post', id: string, content: string, cover?: string | null, createdAt: any, updatedAt: any } };
 
 export const PostFieldsFragmentDoc = `
     fragment PostFields on Post {
   id
-  title
   content
   cover
   createdAt

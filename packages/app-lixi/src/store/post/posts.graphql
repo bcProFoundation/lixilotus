@@ -32,7 +32,6 @@ query Posts(
 
 fragment PostFields on Post {
   id
-  title
   content
   cover
   createdAt

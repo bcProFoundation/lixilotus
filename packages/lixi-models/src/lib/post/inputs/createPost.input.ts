@@ -3,10 +3,6 @@ import { IsNotEmpty, IsOptional } from 'class-validator';
 
 @InputType()
 export class CreatePostInput {
-  @Field(() => String, { nullable: true })
-  @IsOptional()
-  title: string;
-
   @Field(() => String)
   @IsNotEmpty()
   content: string;

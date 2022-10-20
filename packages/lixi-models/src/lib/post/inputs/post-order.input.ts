@@ -7,7 +7,6 @@ export enum PostOrderField {
   createdAt = 'createdAt',
   updatedAt = 'updatedAt',
   content = 'content',
-  title = 'title'
 }
 
 registerEnumType(PostOrderField, {

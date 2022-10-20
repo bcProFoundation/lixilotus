@@ -104,7 +104,6 @@ model Post {
   postAccountId  Int           @map("post_account_id")
   page           Page?         @relation(fields: [pageId], references: [id])
   pageId         String?       @map("page_id")
-  title          String        @default("") @map("title") @db.VarChar(255)
   cover          UploadDetail? @relation("PostCover")
   content        String        @default("")
   createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz

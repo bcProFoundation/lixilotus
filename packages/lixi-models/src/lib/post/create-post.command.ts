@@ -2,18 +2,19 @@ import { IsNotEmpty } from 'class-validator';
 
 export class CreatePostCommand {
   @IsNotEmpty()
-  title: string;
-  @IsNotEmpty()
   content: string;
-  @IsNotEmpty()
-  pageId: string;
+  pageId?: string;
   cover?: string;
 }
 
 export class EditPostCommand {
+  @IsNotEmpty()
   id: string;
-  pageId: string;
-  title: string;
+
+  pageId?: string;
+
+  @IsNotEmpty()
   content: string;
+
   cover?: string;
 }
