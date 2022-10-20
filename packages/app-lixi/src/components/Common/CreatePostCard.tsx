@@ -1,12 +1,18 @@
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { Avatar, Form, Modal, Tabs } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
+import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import intl from 'react-intl-universal';
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import SunEditorCore from 'suneditor/src/lib/core';
 import dynamic from 'next/dynamic';
 import 'suneditor/dist/css/suneditor.min.css'; // Import Sun Editor's CSS File
+import { CreatePostInput, UpdatePostInput, Post } from 'src/generated/types.generated';
+import { showToast } from '@store/toast/actions';
+import { setPost } from '@store/post/action';
 import { Embed, SocialsEnum } from './Embed';
+import { useCreatePostMutation } from '@store/post/posts.generated';
 type ErrorType = 'unsupported' | 'invalid';
 
 const regex = {
@@ -58,6 +64,7 @@ const CreateCardContainer = styled.div`
 `;
 
 const CreatePostCard = () => {
+  const dispatch = useAppDispatch();
   const [url, setUrl] = useState<string>('');
 
   const [social, setSocial] = useState<SocialsEnum>();
@@ -75,6 +82,11 @@ const CreatePostCard = () => {
     { label: 'Create ', key: 'create', children: 'Content Create' }, // remember to pass the key prop
     { label: 'Import', key: 'import', children: 'Content Import' }
   ];
+
+  const [
+    createPostTrigger,
+    { isLoading: isLoadingCreatePost, isSuccess: isSuccessCreatePost, isError: isErrorCreatePost }
+  ] = useCreatePostMutation();
 
   const configEditor = {
     rtl: false,
@@ -188,8 +200,48 @@ const CreatePostCard = () => {
   const handleSubmitEditor = event => {
     if (url) {
       console.log(url);
+    } else {
+      const valueInput = sunEditor.current.getContents(true);
+      setValue(valueInput);
+      setEnableEditor(false);
+      console.log(valueInput);
+      handleOnCreateNewPost(valueInput);
     }
     event.preventDefault();
+  };
+
+  const handleOnCreateNewPost = async newPostContent => {
+    if (newPostContent) {
+      const createPostInput: CreatePostInput = {
+        cover: '',
+        content: newPostContent,
+        pageId: ''
+      };
+
+      try {
+        if (createPostInput) {
+          const postCreated = await createPostTrigger({ input: createPostInput }).unwrap();
+          dispatch(
+            showToast('success', {
+              message: 'Success',
+              description: intl.get('post.createPostSuccessful'),
+              duration: 5
+            })
+          );
+          const data = { pageAccountId: 0 };
+          dispatch(setPost({ ...data, ...postCreated.createPost }));
+        }
+      } catch (error) {
+        const message = intl.get('post.unableCreatePostServer');
+        dispatch(
+          showToast('error', {
+            message: 'Error',
+            description: message,
+            duration: 5
+          })
+        );
+      }
+    }
   };
 
   return (

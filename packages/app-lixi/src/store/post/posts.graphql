@@ -1,0 +1,51 @@
+# import PostOrder from '/packages/app-lixi-api/schema.graphql'
+# import PostInfoFields from '../../graphql/fragments/post-info-fields.fragment.graphql'
+
+query Post($id: String!) {
+  post(id: $id) {
+    ...PostFields
+  }
+}
+
+query Posts(
+  $after: String
+  $before: String
+  $first: Int = 20
+  $last: Int = 20
+  $orderBy: PostOrder
+  $query: String
+  $skip: Int
+) {
+  allPosts(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, query: $query, skip: $skip) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...PostFields
+      }
+    }
+    postInfo {
+      ...PostInfoFields
+    }
+  }
+}
+
+fragment PostFields on Post {
+  id
+  content
+  cover
+  createdAt
+  updatedAt
+}
+
+mutation createPost($input: CreatePostInput!) {
+  createPost(data: $input) {
+    ...PostFields
+  }
+}
+
+mutation updatePost($input: UpdatePostInput!) {
+  updatePost(data: $input) {
+    ...PostFields
+  }
+}

@@ -11,10 +11,6 @@ export class UpdatePageInput {
   @Field(() => String, { nullable: true })
   name: string;
 
-  @IsOptional()
-  @Field(() => String, { nullable: true })
-  title?: string;
-
   @Field(() => String, { nullable: true })
   description?: string;
 

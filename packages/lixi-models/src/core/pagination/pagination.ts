@@ -2,6 +2,7 @@ import { Type } from '@nestjs/common';
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 import { PageInfo } from './page-info.model';
+import { PostInfo } from './post-info.model';
 
 interface IEdgeType<TItem> {
   cursor: string;
@@ -13,6 +14,7 @@ export interface IPaginatedType<TItem> {
   // nodes: T[];
   totalCount: number;
   pageInfo: PageInfo;
+  postInfo: PostInfo;
 }
 
 export function Paginated<TItem>(classRef: Type<TItem>): Type<IPaginatedType<TItem>> {
@@ -37,6 +39,9 @@ export function Paginated<TItem>(classRef: Type<TItem>): Type<IPaginatedType<TIt
 
     @Field(() => PageInfo)
     pageInfo: PageInfo;
+
+    @Field(() => PostInfo)
+    postInfo: PostInfo;
   }
   return PaginatedType as Type<IPaginatedType<TItem>>;
 }
