@@ -198,7 +198,7 @@ const PageListItem = ({ index, item }) => {
         <CardContainer>
           <CardHeader onClick={() => routerShopDetail(item.id)}>
             <InfoCardUser
-              imgUrl={item.avatar || '/images/default-cover.jpg'}
+              imgUrl={item.avatar || '/images/default-avatar.jpg'}
               name={item.name}
               title={moment(item.createdAt).fromNow().toString()}
             ></InfoCardUser>
