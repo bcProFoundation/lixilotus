@@ -39,6 +39,7 @@ export default {
   'general.amount': 'Amount',
   'general.chooseCamera': 'Please choose camera',
   'general.chooseCameraTip': 'Try switching camera when its not working properly',
+  'general.notification': 'Notifications',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',

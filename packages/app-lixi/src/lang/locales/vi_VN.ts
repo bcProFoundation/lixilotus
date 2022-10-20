@@ -39,6 +39,7 @@ export default {
   'general.amount': 'Số dư',
   'general.chooseCamera': 'Chọn camera',
   'general.chooseCameraTip': 'Thử đổi camera nếu quét không thành công',
+  'general.notification': 'Thông báo',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',

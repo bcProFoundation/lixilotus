@@ -9,6 +9,8 @@ import { BellTwoTone } from '@ant-design/icons';
 import { getAllNotifications } from '@store/notification/selectors';
 import { fetchNotifications } from '@store/notification/actions';
 import Link from 'next/link';
+import NotificationPopup, { StyledPopover } from '@components/NotificationPopup';
+import intl from 'react-intl-universal';
 
 const { Sider } = Layout;
 
@@ -176,14 +178,22 @@ const SidebarRanking = () => {
           </Logged>
         )}
         {selectedAccount && (
-          <StyledBadge
-            count={notifications.length}
-            overflowCount={9}
-            offset={[notifications.length < 10 ? 0 : 5, 25]}
-            color="var(--color-primary)"
+          <StyledPopover
+            content={NotificationPopup(notifications, selectedAccount)}
+            placement="bottomRight"
+            getPopupContainer={trigger => trigger}
+            trigger={notifications.length != 0 ? 'click' : ''}
+            title={intl.get('general.notification')}
           >
-            <StyledBell twoToneColor="#6f2dbd" />
-          </StyledBadge>
+            <StyledBadge
+              count={notifications.length}
+              overflowCount={9}
+              offset={[notifications.length < 10 ? 0 : 5, 25]}
+              color="var(--color-primary)"
+            >
+              <StyledBell twoToneColor="#6f2dbd" />
+            </StyledBadge>
+        </StyledPopover>
         )}
       </div>
       <div className="right-bar">
