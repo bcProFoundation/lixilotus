@@ -225,7 +225,7 @@ const PageHome = () => {
         )}
         <YourPageContainer>
           <h2>Your page</h2>
-          {selectedPage && (
+          {!selectedPage && (
             <BlankPage>
               <img src="/images/page-blank.svg" alt="" />
               <div>
@@ -241,7 +241,7 @@ const PageHome = () => {
               </div>
             </BlankPage>
           )}
-          {!selectedPage && (
+          {selectedPage && (
             <ListCard>
               <CardPageItem item={mapPageItem(selectedPage)} onClickItem={() => {}}></CardPageItem>
             </ListCard>
