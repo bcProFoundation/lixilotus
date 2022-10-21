@@ -235,6 +235,13 @@ const SidebarShortcut = () => {
           </StyledLogo>
           <ItemAccess icon={HomeOutlined} text={'Home'} active={selectedKey === '/'} key="home" href={'/'} />
           <ItemAccess
+            icon={ShopOutlined}
+            text={'Page'}
+            active={selectedKey.includes('/page')}
+            key="page-feed"
+            href={'/page/feed'}
+          />
+          <ItemAccess
             icon={WalletOutlined}
             text={'Accounts'}
             active={selectedKey === '/wallet'}
