@@ -10,7 +10,7 @@ import {
   ShareAltOutlined,
   UpOutlined
 } from '@ant-design/icons';
-import { Button, Input, Menu, message, Popover, Space } from 'antd';
+import { Button, Input, Menu, message, Popover, Space, Tabs } from 'antd';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
@@ -119,20 +119,11 @@ const ProfileCardHeader = styled.div`
       padding-right: 0;
     }
   }
-  .menu {
-    padding: 1rem 0;
-    border-top: 1px solid rgba(128, 116, 124, 0.12);
-    background: white;
-    box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
-    border-bottom-right-radius: 20px;
-    border-bottom-left-radius: 20px;
-  }
 `;
 
 const ProfileContentContainer = styled.div`
   display: flex;
   gap: 1rem;
-  margin-top: 1rem;
   @media (max-width: 768px) {
     flex-direction: column;
   }
@@ -216,6 +207,11 @@ const FriendBox = styled.div`
         letter-spacing: 0.4px;
         font-size: 12px;
         line-height: 24px;
+        width: 110px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
       }
     }
   }
@@ -246,6 +242,34 @@ const StyledSpace = styled(Space)`
   }
 `;
 
+const StyledMenu = styled(Tabs)`
+  .ant-tabs-nav {
+    box-shadow: rgb(0 0 0 / 5%) 0px 2px 10px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    padding: 1rem 24px;
+    border-top: 1px solid rgba(128, 116, 124, 0.12);
+    background: white;
+    border-bottom: 0;
+  }
+  .ant-tabs-tabpane {
+    gap: 1rem;
+    display: flex;
+    flex-direction: row;
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
+  }
+  &.ant-tabs {
+    width: 100vw;
+  }
+  .ant-tabs-nav {
+    &::before {
+      content: none;
+    }
+  }
+`;
+
 const SubAbout = ({
   icon,
   text,
@@ -272,18 +296,7 @@ const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
   const [pageDetailData, setPageDetailData] = useState<any>(page);
   const [listsFriend, setListsFriend] = useState<any>([]);
   const [listsPicture, setListsPicture] = useState<any>([]);
-  const menuItems = [
-    {
-      label: 'About',
-      key: 'about'
-    },
-    { label: 'Post', key: 'post' },
-    { label: 'Friend', key: 'friend' },
-    {
-      label: 'Photo',
-      key: 'photo'
-    }
-  ];
+
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext } = useInfinitePagesQuery(
     {
       first: 10
@@ -364,159 +377,160 @@ const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
               </Button>
             </div>
           </div>
-          <div className="line-driver"></div>
-          <div className="menu">
-            <Menu
-              style={{
-                border: 'none',
-                position: 'relative',
-                marginBottom: '1rem'
-              }}
-              mode="horizontal"
-              defaultSelectedKeys={['about']}
-              items={menuItems}
-            ></Menu>
-          </div>
         </ProfileCardHeader>
         <ProfileContentContainer>
-          <LegacyProfile>
-            <AboutBox>
-              <h3>About</h3>
-              {pageDetailData && !pageDetailData.description && (
-                <div className="blank-about">
-                  <img src="/images/about-blank.svg" alt="" />
-                  <p>Let people know more about you (description, hobbies, address...</p>
-                  <Button type="primary" className="outline-btn">
-                    Update info
-                  </Button>
-                </div>
-              )}
-              <div className="about-content">
-                <SubAbout
-                  dataItem={pageDetailData?.description}
-                  onClickIcon={() => {}}
-                  icon={InfoCircleOutlined}
-                  text={pageDetailData?.description}
-                />
-                <SubAbout
-                  dataItem={pageDetailData?.address}
-                  onClickIcon={() => {}}
-                  icon={CompassOutlined}
-                  text={pageDetailData?.address}
-                />
-                <SubAbout
-                  dataItem={pageDetailData?.website}
-                  onClickIcon={() => {}}
-                  icon={HomeOutlined}
-                  text={pageDetailData?.website}
-                />
-                <Button type="primary" className="outline-btn">
-                  Edit your profile
-                </Button>
-              </div>
-            </AboutBox>
-            <PictureBox>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <h3>Pictures</h3>
-                {listsPicture && listsPicture.length > 0 && (
-                  <Button type="primary" className="no-border-btn" style={{ padding: '0' }}>
-                    See all
-                  </Button>
-                )}
-              </div>
-              {listsPicture && listsPicture.length < 0 && (
-                <div className="blank-picture">
-                  <img src="/images/photo-blank.svg" alt="" />
-                  <p>Photos uploaded in posts, or posts that have tag of your name</p>
-                  <Button type="primary" className="outline-btn">
-                    Update picture
-                  </Button>
-                </div>
-              )}
-              <div className="picture-content">
-                {listsPicture &&
-                  listsPicture.length > 0 &&
-                  listsPicture.map((item: any, index: number) => {
-                    if (index < 9) return <img key={item.id} src={item.download_url} alt={item.author} />;
-                  })}
-              </div>
-            </PictureBox>
-            <FriendBox>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <div>
-                  <h3>Friends</h3>
-                  <p style={{ margin: '0', fontSize: '13px', letterSpacing: '0.5px', color: 'rgba(30, 26, 29, 0.6)' }}>
-                    {listsFriend.length > 0 ? listsFriend.length + ' friends' : ''}
-                  </p>
-                </div>
-                {listsFriend && listsFriend.length > 0 && (
-                  <Button type="primary" className="no-border-btn" style={{ padding: '0' }}>
-                    See all
-                  </Button>
-                )}
-              </div>
-              {listsFriend && listsFriend.length < 0 && (
-                <div className="blank-friend">
-                  <img src="/images/friend-blank.svg" alt="" />
-                  <p>Connect with people you know in LixiLotus.</p>
-                  <Button type="primary" className="outline-btn">
-                    Discover LixiLotus social network
-                  </Button>
-                </div>
-              )}
-              {listsFriend && listsFriend.length > 0 && (
-                <div className="friend-content">
-                  {listsFriend.map((item: any, index: number) => {
-                    if (index < 9)
-                      return (
-                        <div key={item.id} className="friend-item">
-                          <img src={item.download_url} alt="" />
-                          <p>{item.author}</p>
-                        </div>
-                      );
-                  })}
-                </div>
-              )}
-            </FriendBox>
-          </LegacyProfile>
-          <ContentTimeline>
-            <SearchBox></SearchBox>
-            <CreatePostCard></CreatePostCard>
-            <Timeline>
-              {/* <div className="blank-timeline">
+          <StyledMenu defaultActiveKey="post">
+            <Tabs.TabPane tab="Post" key="post">
+              <LegacyProfile>
+                <AboutBox>
+                  <h3>About</h3>
+                  {pageDetailData && !pageDetailData.description && (
+                    <div className="blank-about">
+                      <img src="/images/about-blank.svg" alt="" />
+                      <p>Let people know more about you (description, hobbies, address...</p>
+                      <Button type="primary" className="outline-btn">
+                        Update info
+                      </Button>
+                    </div>
+                  )}
+                  <div className="about-content">
+                    <SubAbout
+                      dataItem={pageDetailData?.description}
+                      onClickIcon={() => {}}
+                      icon={InfoCircleOutlined}
+                      text={pageDetailData?.description}
+                    />
+                    <SubAbout
+                      dataItem={pageDetailData?.address}
+                      onClickIcon={() => {}}
+                      icon={CompassOutlined}
+                      text={pageDetailData?.address}
+                    />
+                    <SubAbout
+                      dataItem={pageDetailData?.website}
+                      onClickIcon={() => {}}
+                      icon={HomeOutlined}
+                      text={pageDetailData?.website}
+                    />
+                    <Button type="primary" className="outline-btn">
+                      Edit your profile
+                    </Button>
+                  </div>
+                </AboutBox>
+                <PictureBox>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <h3>Pictures</h3>
+                    {listsPicture && listsPicture.length > 0 && (
+                      <Button type="primary" className="no-border-btn" style={{ padding: '0' }}>
+                        See all
+                      </Button>
+                    )}
+                  </div>
+                  {listsPicture && listsPicture.length < 0 && (
+                    <div className="blank-picture">
+                      <img src="/images/photo-blank.svg" alt="" />
+                      <p>Photos uploaded in posts, or posts that have tag of your name</p>
+                      <Button type="primary" className="outline-btn">
+                        Update picture
+                      </Button>
+                    </div>
+                  )}
+                  <div className="picture-content">
+                    {listsPicture &&
+                      listsPicture.length > 0 &&
+                      listsPicture.map((item: any, index: number) => {
+                        if (index < 9) return <img key={item.id} src={item.download_url} alt={item.author} />;
+                      })}
+                  </div>
+                </PictureBox>
+                <FriendBox>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <div>
+                      <h3>Friends</h3>
+                      <p
+                        style={{
+                          margin: '0',
+                          fontSize: '13px',
+                          letterSpacing: '0.5px',
+                          color: 'rgba(30, 26, 29, 0.6)'
+                        }}
+                      >
+                        {listsFriend.length > 0 ? listsFriend.length + ' friends' : ''}
+                      </p>
+                    </div>
+                    {listsFriend && listsFriend.length > 0 && (
+                      <Button type="primary" className="no-border-btn" style={{ padding: '0' }}>
+                        See all
+                      </Button>
+                    )}
+                  </div>
+                  {listsFriend && listsFriend.length < 0 && (
+                    <div className="blank-friend">
+                      <img src="/images/friend-blank.svg" alt="" />
+                      <p>Connect with people you know in LixiLotus.</p>
+                      <Button type="primary" className="outline-btn">
+                        Discover LixiLotus social network
+                      </Button>
+                    </div>
+                  )}
+                  {listsFriend && listsFriend.length > 0 && (
+                    <div className="friend-content">
+                      {listsFriend.map((item: any, index: number) => {
+                        if (index < 9)
+                          return (
+                            <div key={item.id} className="friend-item">
+                              <img src={item.download_url} alt="" />
+                              <p>{item.author}</p>
+                            </div>
+                          );
+                      })}
+                    </div>
+                  )}
+                </FriendBox>
+              </LegacyProfile>
+              <ContentTimeline>
+                <SearchBox></SearchBox>
+                <CreatePostCard></CreatePostCard>
+                <Timeline>
+                  {/* <div className="blank-timeline">
                 <img className="time-line-blank" src="/images/time-line-blank.svg" alt="" />
                 <p>Sharing your thinking</p>
                 <Button type="primary">Create your post</Button>
               </div> */}
-              <div className={'listing'} style={{ height: '100vh' }}>
-                <Virtuoso
-                  className={'listing'}
-                  style={{ height: '100%' }}
-                  data={data}
-                  endReached={loadMoreItems}
-                  overscan={900}
-                  itemContent={(index, item) => {
-                    return <PageListItem index={index} item={item} />;
-                  }}
-                  totalCount={totalCount}
-                  components={{
-                    Footer: () => {
-                      return (
-                        <div
-                          style={{
-                            padding: '1rem',
-                            textAlign: 'center'
-                          }}
-                        >
-                          end reached
-                        </div>
-                      );
-                    }
-                  }}
-                />
-              </div>
-            </Timeline>
-          </ContentTimeline>
+                  <div className={'listing'} style={{ height: '100vh' }}>
+                    <Virtuoso
+                      className={'listing'}
+                      style={{ height: '100%' }}
+                      data={data}
+                      endReached={loadMoreItems}
+                      overscan={900}
+                      itemContent={(index, item) => {
+                        return <PageListItem index={index} item={item} />;
+                      }}
+                      totalCount={totalCount}
+                      components={{
+                        Footer: () => {
+                          return (
+                            <div
+                              style={{
+                                padding: '1rem',
+                                textAlign: 'center'
+                              }}
+                            >
+                              end reached
+                            </div>
+                          );
+                        }
+                      }}
+                    />
+                  </div>
+                </Timeline>
+              </ContentTimeline>
+            </Tabs.TabPane>
+            <Tabs.TabPane tab="About" key="about"></Tabs.TabPane>
+            <Tabs.TabPane tab="Friend" key="friend"></Tabs.TabPane>
+            <Tabs.TabPane tab="Picture" key="picture"></Tabs.TabPane>
+          </StyledMenu>
         </ProfileContentContainer>
       </StyledContainerProfileDetail>
     </>

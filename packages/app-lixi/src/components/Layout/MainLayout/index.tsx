@@ -90,6 +90,9 @@ export const AppContainer = styled.div`
     -moz-box-shadow: none;
     box-shadow: none;
   }
+  @media (max-width: 396px) {
+    padding: 0;
+  }
   @media (min-width: 768px) {
     width: 100%;
     background: #fffbff;
