@@ -5,19 +5,22 @@ import {
   DeleteAccountCommand,
   ImportAccountCommand,
   Lixi,
-  RenameAccountCommand,
-  RegisterViaEmailNoVerifiedCommand,
+  LocalUserAccount,
   LoginViaEmailCommand,
-  LocalUserAccount
+  RegisterViaEmailNoVerifiedCommand,
+  RenameAccountCommand
 } from '@bcpros/lixi-models';
-import BCHJS from '@bcpros/xpi-js';
 import { PayloadAction } from '@reduxjs/toolkit';
+import { setLocalUserAccount, silentLocalLogin } from '@store/localAccount';
 import { fetchNotifications } from '@store/notification/actions';
 import { getCurrentLocale } from '@store/settings/selectors';
 import { aesGcmDecrypt, aesGcmEncrypt, numberToBase58 } from '@utils/encryptionMethods';
 import { Modal } from 'antd';
+import { push } from 'connected-next-router';
 import intl from 'react-intl-universal';
-import { all, call, fork, getContext, put, putResolve, select, takeLatest } from 'redux-saga/effects';
+import { all, call, fork, put, putResolve, select, takeLatest } from 'redux-saga/effects';
+import { callConfig } from '@context/index';
+import { LocalUser } from 'src/models/localUser';
 import { ChangeAccountLocaleCommand } from '../../../../lixi-models/build/module/lib/account/account.dto.d';
 import { PatchAccountCommand } from '../../../../lixi-models/src/lib/account/account.dto';
 import accountApi from '../account/api';
@@ -38,13 +41,20 @@ import {
   importAccount,
   importAccountFailure,
   importAccountSuccess,
+  loginViaEmail,
+  loginViaEmailFailure,
+  loginViaEmailSuccess,
   postAccount,
   postAccountFailure,
   postAccountSuccess,
   refreshLixiList,
   refreshLixiListFailure,
-  refreshLixiListSuccess,
+  refreshLixiListSilent,
   refreshLixiListSilentSuccess,
+  refreshLixiListSuccess,
+  registerViaEmailNoVerified,
+  registerViaEmailNoVerifiedFailure,
+  registerViaEmailNoVerifiedSuccess,
   renameAccount,
   renameAccountFailure,
   renameAccountSuccess,
@@ -56,28 +66,18 @@ import {
   silentLogin,
   silentLoginFailure,
   silentLoginSuccess,
-  refreshLixiListSilent,
-  loginViaEmail,
-  loginViaEmailSuccess,
-  loginViaEmailFailure,
-  registerViaEmailNoVerified,
-  registerViaEmailNoVerifiedSuccess,
-  registerViaEmailNoVerifiedFailure,
   verifyEmail,
-  verifyEmailSuccess,
-  verifyEmailFailure
+  verifyEmailFailure,
+  verifyEmailSuccess
 } from './actions';
 import { getAccountById, getSelectedAccount } from './selectors';
-import { push } from 'connected-next-router';
-import { setLocalUserAccount, silentLocalLogin } from '@store/localAccount';
-import { LocalUser } from 'src/models/localUser';
 
 /**
  * Generate a account with random encryption password
  * @param action The data to needed generate a account
  */
 function* generateAccountSaga(action: PayloadAction) {
-  const XPI: BCHJS = yield getContext('XPI');
+  const { XPI } = callConfig.call.walletContext;
   const lang = 'english';
   const Bip39128BitMnemonic = XPI.Mnemonic.generate(128, XPI.Mnemonic.wordLists()[lang]);
 

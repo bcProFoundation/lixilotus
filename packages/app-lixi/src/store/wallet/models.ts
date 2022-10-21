@@ -6,6 +6,7 @@ export interface WalletAddressInfo {
   legacyAddress: string;
   publicKey: string;
   xAddress: string;
+  keyPair: any;
 }
 
 export interface WalletDetail {

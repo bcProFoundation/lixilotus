@@ -7,21 +7,23 @@ import useInterval from './useInterval';
 import { useAppSelector } from '@store/hooks';
 import { getWalletState } from '@store/wallet';
 import { RootState } from '@store/store';
+import { WalletContextValue } from '@context/index';
 
 const chronik = new ChronikClient('https://chronik.fabien.cash');
 
 /* eslint-disable react-hooks/exhaustive-deps */
-const useWallet = (XPI: BCHJS) => {
+const useWallet = () => {
   // @todo: use constant
-  // const [walletRefreshInterval, setWalletRefreshInterval] = useState(5000);
+  // and consider to move to redux the neccessary variable
+  const [walletRefreshInterval, setWalletRefreshInterval] = useState(5000);
 
-  // const [chronikWebsocket, setChronikWebsocket] = useState(null);
-  // const [hasUpdated, setHasUpdated] = useState<boolean>(false);
+  const [chronikWebsocket, setChronikWebsocket] = useState(null);
+  const [hasUpdated, setHasUpdated] = useState<boolean>(false);
 
-  // const [apiIndex, setApiIndex] = useState(0);
+  const [apiIndex, setApiIndex] = useState(0);
 
   const { getXPI } = useXPI();
-  // const [XPI, setXPI] = useState(getXPI(apiIndex));
+  const [XPI, setXPI] = useState(getXPI(apiIndex));
 
   // const walletState = useAppSelector((state: RootState) => state.wallet);
 
@@ -96,10 +98,11 @@ const useWallet = (XPI: BCHJS) => {
   // }, walletRefreshInterval);
 
   return {
+    XPI,
     deriveAccount,
     getWalletDetails,
     validateMnemonic
-  } as const;
+  } as WalletContextValue;
 };
 
 export default useWallet;

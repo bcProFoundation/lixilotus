@@ -37,8 +37,8 @@ export default function useXPI() {
     let ConstructedSlpWallet;
 
     ConstructedSlpWallet = new SlpWallet('', {
-      restURL: getRestUrl(apiIndex),
-      hdPath: "m/44'/10605'/0'/0/0"
+      restURL: getRestUrl(apiIndex)
+      // hdPath: "m/44'/10605'/0'/0/0"
     });
     return ConstructedSlpWallet.bchjs as BCHJS;
   };
@@ -47,8 +47,7 @@ export default function useXPI() {
     let ConstructedSlpWallet;
 
     ConstructedSlpWallet = new SlpWallet('', {
-      restURL: getRestUrl(apiIndex),
-      hdPath: "m/44'/10605'/0'/0/0"
+      restURL: getRestUrl(apiIndex)
     });
     return ConstructedSlpWallet;
   };
