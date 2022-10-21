@@ -6,6 +6,16 @@ import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import intl from 'react-intl-universal';
 
+type TxHistoryResponse = {
+  success: boolean;
+  transactions: TxHistoryTransaction[];
+};
+
+type TxHistoryTransaction = {
+  height: number;
+  tx_hash: string;
+};
+
 export default function useXPI() {
   const SEND_XPI_ERRORS = {
     INSUFFICIENT_FUNDS: 0,
@@ -305,6 +315,94 @@ export default function useXPI() {
       throw err;
     }
   };
+
+  //   const flattenTransactions = (
+  //     txHistory: TxHistoryTransaction[],
+  //     txCount: number = currency.txHistoryCount,
+  // ) => {
+  //     /*
+  //         Convert txHistory, format
+  //         [{address: '', transactions: [{height: '', tx_hash: ''}, ...{}]}, {}, {}]
+
+  //         to flatTxHistory
+  //         [{txid: '', blockheight: '', address: ''}]
+  //         sorted by blockheight, newest transactions to oldest transactions
+  //     */
+  //     let flatTxHistory = [];
+  //     let includedTxids = [];
+  //     for (let i = 0; i < txHistory.length; i += 1) {
+  //         const { address, transactions } = txHistory[i];
+  //         for (let j = transactions.length - 1; j >= 0; j -= 1) {
+  //             let flatTx = {};
+  //             flatTx.address = address;
+  //             // If tx is unconfirmed, give arbitrarily high blockheight
+  //             flatTx.height =
+  //                 transactions[j].height <= 0
+  //                     ? 10000000
+  //                     : transactions[j].height;
+  //             flatTx.txid = transactions[j].tx_hash;
+  //             // Only add this tx if the same transaction is not already in the array
+  //             // This edge case can happen with older wallets, txs can be on multiple paths
+  //             if (!includedTxids.includes(flatTx.txid)) {
+  //                 includedTxids.push(flatTx.txid);
+  //                 flatTxHistory.push(flatTx);
+  //             }
+  //         }
+  //     }
+
+  //     // Sort with most recent transaction at index 0
+  //     flatTxHistory.sort((a, b) => b.height - a.height);
+  //     // Only return 10
+
+  //     return flatTxHistory.splice(0, txCount);
+  // };
+
+  //   const getTxHistory = async (XPI: BCHJS, addresses: string[]) {
+  //     let txHistoryResponse: TxHistoryResponse;
+  //       try {
+  //           txHistoryResponse = await XPI.Electrumx.transactions(addresses);
+
+  //           if (txHistoryResponse.success && txHistoryResponse.transactions) {
+  //               return txHistoryResponse.transactions;
+  //           } else {
+  //               // eslint-disable-next-line no-throw-literal
+  //               throw new Error('Error in getTxHistory');
+  //           }
+  //       } catch (err) {
+  //           console.log(`Error in BCH.Electrumx.transactions(addresses):`);
+  //           console.log(err);
+  //           return err;
+  //       }
+  //   }
+
+  //   const getTxData = async (BCH, txHistory, publicKeys, wallet) => {
+  //     // Flatten tx history
+  //     let flatTxs = flattenTransactions(txHistory);
+
+  //     // Build array of promises to get tx data for all 10 transactions
+  //     let txDataPromises = [];
+  //     for (let i = 0; i < flatTxs.length; i += 1) {
+  //         const txDataPromise = await getTxDataWithPassThrough(
+  //             BCH,
+  //             flatTxs[i],
+  //         );
+  //         txDataPromises.push(txDataPromise);
+  //     }
+
+  //     // Get txData for the 10 most recent transactions
+  //     let txDataPromiseResponse;
+  //     try {
+  //         txDataPromiseResponse = await Promise.all(txDataPromises);
+
+  //         const parsed = parseTxData(BCH, txDataPromiseResponse, publicKeys, wallet);
+
+  //         return parsed;
+  //     } catch (err) {
+  //         console.log(`Error in Promise.all(txDataPromises):`);
+  //         console.log(err);
+  //         return err;
+  //     }
+  // };
 
   return {
     getXPI,
