@@ -17,7 +17,7 @@ import * as _ from 'lodash';
 import intl from 'react-intl-universal';
 import { generateAccount, importAccount, selectAccount } from '@store/account/actions';
 import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
-import { WalletContext } from '@store/store';
+import { WalletContext } from '@context/index';
 import { useRouter } from 'next/router';
 
 const { Sider } = Layout;
@@ -250,8 +250,7 @@ const StyledModal = styled(Modal)`
 `;
 
 const SidebarRanking = () => {
-  const ContextValue = React.useContext(WalletContext);
-  const { Wallet } = ContextValue;
+  const Wallet = React.useContext(WalletContext);
   const router = useRouter();
   const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
