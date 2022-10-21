@@ -16,7 +16,6 @@ import { downloadExportedLixi } from '@store/lixi/actions';
 import { Account, NotificationDto as Notification } from '@bcpros/lixi-models';
 import moment from 'moment';
 import * as _ from 'lodash';
-import intl from 'react-intl-universal';
 import { generateAccount, importAccount, selectAccount } from '@store/account/actions';
 import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
 import { WalletContext } from '@context/index';
