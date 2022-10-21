@@ -157,6 +157,13 @@ export const WrapperPage = styled.div`
   box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
 `;
 
+export const WrapperPost = styled.div`
+  padding: 20px 30px;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
+`;
+
 const GeneralSettingsItem = styled.div`
   display: flex;
   align-items: center;

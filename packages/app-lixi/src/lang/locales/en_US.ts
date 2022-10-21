@@ -384,5 +384,37 @@ export default {
 
   /* 14.Country */
   'country.unablegetCountries': 'Unable to get countries',
-  'country.unablegetStates': 'Unable to get states'
+  'country.unablegetStates': 'Unable to get states',
+
+  /* 15.Page */
+  'post.createNewPage': 'Create new post',
+  'post.createPost': 'Create post',
+  'post.editPage': 'Edit post',
+  'post.name': 'Name',
+  'post.inputName': 'Please input name',
+  'post.title': 'Title',
+  'post.titleShared': 'Please input title',
+  'post.inputTitle': 'Please input title',
+  'post.walletAddress': 'Wallet address',
+  'post.avatar': 'Avatar',
+  'post.cover': 'Cover',
+  'post.upload': 'Click to upload',
+  'post.website': 'Website',
+  'post.description': 'Description',
+  'post.countryName': 'Country',
+  'post.country': 'Search to select country',
+  'post.stateName': 'State',
+  'post.state': 'Search to select state',
+  'post.address': 'Address',
+  'post.inputAddress': 'Please input address',
+  'post.couldNotpostPost': 'Could not create post',
+  'post.createPostSuccessful': 'Create post successful',
+  'post.unableCreatePostServer': 'Unable to create post on server',
+  'post.updatePageSuccessful': 'Update the post successful',
+  'post.errorWhenCreatePage': "There's an error happens when create new Page",
+  'post.copyToClipboard': 'Link copied to clipboard',
+  'post.unableCreatePost': 'Unable to create post.',
+  'post.unableUpdatePost': 'Unable to update the post.',
+  'post.selectAccountFirst': 'Please Select an account first before creating post',
+  'post.content': 'Content'
 };

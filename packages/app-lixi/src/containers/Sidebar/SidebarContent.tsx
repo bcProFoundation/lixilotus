@@ -94,6 +94,13 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
             href={'/page/create'}
           />
           <ItemAccess
+            icon={PlusCircleOutlined}
+            text={'Create Post'}
+            active={selectedKey === '/post/create'}
+            key="create-post"
+            href={'/post/create'}
+          />
+          <ItemAccess
             icon={SettingOutlined}
             text={'Settings'}
             active={selectedKey === '/settings'}

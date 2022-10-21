@@ -29,7 +29,9 @@ export const FacebookEmbed: React.FC<FacebookPostEmbedProps> = props => {
     if (props?.url && props.url.includes(URLFB)) {
       const arrUrl = props.url.split(' ');
       const src = arrUrl.find(item => item.includes('src'));
-      setEmbedSrc(src.slice(5, -1));
+      if (src) {
+        setEmbedSrc(src.slice(5, -1));
+      }
       setLoading(false);
     }
   };

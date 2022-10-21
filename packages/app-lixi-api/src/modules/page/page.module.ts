@@ -4,13 +4,14 @@ import { AuthModule } from '../auth/auth.module';
 import { AuthService } from '../auth/auth.service';
 import { PageController } from './page.controller';
 import { PageResolver } from './page.resolver';
+import { PostResolver } from './post.resolver';
 // import { LixiNftController } from './lixinft.controller';
 // import { LixiNftService } from './lixinft.service';
 
 @Module({
   imports: [AuthModule],
   controllers: [PageController],
-  providers: [PageResolver, Logger],
+  providers: [PageResolver, Logger, PostResolver],
   exports: []
 })
 export class PageModule {}

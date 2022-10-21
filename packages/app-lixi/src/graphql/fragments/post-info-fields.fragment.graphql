@@ -1,0 +1,6 @@
+fragment PostInfoFields on PostInfo {
+  endCursor
+  hasNextPage
+  hasPreviousPage
+  startCursor
+}

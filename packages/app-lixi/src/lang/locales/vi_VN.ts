@@ -387,5 +387,35 @@ export default {
 
   /* 14.Country */
   'country.unablegetCountries': 'Không thể tải quốc gia',
-  'country.unablegetStates': 'Không thể tải tỉnh thành'
+  'country.unablegetStates': 'Không thể tải tỉnh thành',
+
+  /* 15.Post */
+  'post.createNewPage': 'tạo bài viết mới',
+  'post.createPage': 'tạo bài viết',
+  'post.editPage': 'Sửa bài viết',
+  'post.name': 'Tên',
+  'post.inputName': 'Vui lòng nhập tên',
+  'post.title': 'Tiêu đề',
+  'post.titleShared': 'Please input title',
+  'post.inputTitle': 'Vui lòng nhập tiêu đề',
+  'post.walletAddress': 'Địa chỉ ví',
+  'post.avatar': 'Ảnh đại diện',
+  'post.cover': 'Ảnh bìa',
+  'post.upload': 'Tải lên',
+  'post.description': 'Mô tả',
+  'post.countryName': 'Quốc gia',
+  'post.country': 'Tìm kiếm quốc gia',
+  'post.stateName': 'Tỉnh thành',
+  'post.state': 'Tìm kiếm tỉnh thành',
+  'post.address': 'Địa chỉ',
+  'post.inputAddress': 'Vui lòng nhập địa chỉ',
+  'post.couldNotpostPage': 'Tạo bài viết không thành công',
+  'post.createPageSuccessful': 'Bài viết đã tạo thành công',
+  'post.updatePostSuccessful': 'Bài viết đã được cập nhật thành công',
+  'post.unableCreatePostServer': 'Không thể kết nối server tạo bài viết',
+  'post.errorWhenCreatePost': 'Đã có lỗi xảy ra khi tạo mới bài viết',
+  'post.copyToClipboard': 'Liên kết đã được sao chép',
+  'post.unableCreatePost': 'Không thể tạo bài viết.',
+  'post.unableUpdatePost': 'Không thể sửa bài viết.',
+  'post.selectAccountFirst': 'Hãy chọn một tài khoản trước khi tạo bài viết'
 };

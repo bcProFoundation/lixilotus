@@ -34,7 +34,7 @@ export class HeathController {
 
     return {
       status: true,
-      npmVersion: version
+      version: version
     };
   }
 }
