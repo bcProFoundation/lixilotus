@@ -4,7 +4,7 @@ import SearchBox from '@components/Common/SearchBox';
 import { getSelectedAccount } from '@store/account/selectors';
 import { setSelectedPost } from '@store/post/action';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
-import { WalletContext } from '@store/store';
+import { WalletContext } from '@context/index';
 import { Menu, MenuProps, Modal } from 'antd';
 import _ from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
@@ -17,9 +17,9 @@ type PostsListingProps = {
 };
 
 const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingProps) => {
-  const ContextValue = React.useContext(WalletContext);
+  const Wallet = React.useContext(WalletContext);
+  const { XPI } = Wallet;
   const dispatch = useAppDispatch();
-  const { XPI, Wallet } = ContextValue;
   const selectedAccount = useAppSelector(getSelectedAccount);
   const [isShowQrCode, setIsShowQrCode] = useState(false);
   const [loading, setLoading] = useState(true);

@@ -26,6 +26,9 @@
       "@store/*": [
         "src/store/*"
       ],
+      "@context/*": [
+        "src/context/*"
+      ],
       "@bcpros/lixi-components/*": [
         "../../packages/lixi-components/src/*"
       ],

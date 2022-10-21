@@ -13,13 +13,13 @@ import { parseAddress } from '@utils/addressMethods';
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { postClaim, saveClaimAddress, saveClaimCode } from 'src/store/claim/actions';
-import { WalletContext } from 'src/store/store';
 import { CreateClaimDto } from '@bcpros/lixi-models/lib/claim';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
 import { getCurrentAddress, getCurrentClaimCode } from 'src/store/claim/selectors';
 import { useSelector } from 'react-redux';
 import { getSelectedAccount } from '@store/account/selectors';
 import styled from 'styled-components';
+import { WalletContext } from '@context/index';
 
 const SITE_KEY = '6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb';
 
@@ -70,7 +70,8 @@ const RedeemCodeBox = styled.div`
 const ClaimComponent = ({ isClaimFromAccount }) => {
   const isLoading = useAppSelector(getIsGlobalLoading);
 
-  const { XPI } = React.useContext(WalletContext);
+  const Wallet = React.useContext(WalletContext);
+  const { XPI } = Wallet;
 
   const dispatch = useAppDispatch();
 

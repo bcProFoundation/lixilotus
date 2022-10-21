@@ -6,7 +6,6 @@ export const AuthenticationContext = createContext<DeviceAuthenticationValue | u
 export const AuthenticationProvider = ({ children }) => {
   // useWebAuthentication returns null if Web Authn is not supported
   const authentication = useWebAuthentication();
-  // const authentication = {} as any;
 
   return <AuthenticationContext.Provider value={authentication}>{children}</AuthenticationContext.Provider>;
 };

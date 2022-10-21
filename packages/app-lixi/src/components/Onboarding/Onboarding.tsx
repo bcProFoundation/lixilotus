@@ -6,7 +6,7 @@ import { Form, Input, Modal } from 'antd';
 import React, { useState } from 'react';
 import intl from 'react-intl-universal';
 import { useAppDispatch } from 'src/store/hooks';
-import { WalletContext } from 'src/store/store';
+import { WalletContext } from '@context/index';
 import styled from 'styled-components';
 
 export const LotusLogo = styled.img`
@@ -48,8 +48,7 @@ export const Onboarding = styled.div`
 `;
 
 const OnboardingComponent: React.FC = () => {
-  const ContextValue = React.useContext(WalletContext);
-  const { /*createWallet*/ Wallet } = ContextValue;
+  const Wallet = React.useContext(WalletContext);
   const [formData, setFormData] = useState({
     dirty: true,
     mnemonic: ''
