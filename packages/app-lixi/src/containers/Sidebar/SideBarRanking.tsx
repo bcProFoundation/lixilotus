@@ -11,6 +11,7 @@ import { fetchNotifications } from '@store/notification/actions';
 import Link from 'next/link';
 import NotificationPopup, { StyledPopover } from '@components/NotificationPopup';
 import intl from 'react-intl-universal';
+import { useRouter } from 'next/router';
 
 const { Sider } = Layout;
 
@@ -145,6 +146,7 @@ const SidebarRanking = () => {
   const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
   const notifications = useAppSelector(getAllNotifications);
+  const router = useRouter();
 
   useEffect(() => {
     if (selectedAccount) {
@@ -182,7 +184,7 @@ const SidebarRanking = () => {
             content={NotificationPopup(notifications, selectedAccount)}
             placement="bottomRight"
             getPopupContainer={trigger => trigger}
-            trigger={notifications.length != 0 ? 'click' : ''}
+            trigger={notifications.length != 0 && router.pathname !== '/notifications' ? 'click' : ''}
             title={intl.get('general.notification')}
           >
             <StyledBadge
