@@ -193,7 +193,7 @@ const SidebarRanking = () => {
             >
               <StyledBell twoToneColor="#6f2dbd" />
             </StyledBadge>
-        </StyledPopover>
+          </StyledPopover>
         )}
       </div>
       <div className="right-bar">

@@ -38,5 +38,10 @@ export const navBarHeaderList = [
     name: 'Page',
     subTitle: 'Manage Page',
     path: '/page'
+  },
+  {
+    name: 'Notifications',
+    subTitle: 'Manage Notifications',
+    path: '/notifications'
   }
 ];
