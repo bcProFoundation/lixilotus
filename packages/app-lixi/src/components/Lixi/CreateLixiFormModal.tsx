@@ -269,7 +269,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
 
   // New lixi balance number
   const [newLixiAmount, setNewLixiAmount] = useState('');
-  const [newLixiAmountValueIsValid, setNewLixiAmountValueIsValid] = useState(true);
+  const [newLixiAmountValueIsValid, setNewLixiAmountValueIsValid] = useState(false);
 
   // New Lixi sub Value
   const [newNumberOfSubLixi, setNewNumberOfSubLixi] = useState('');
@@ -403,7 +403,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
 
   const handleNewLixiAmountInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    setNewLixiAmountValueIsValid(isValidAmountInput(value));
+    setNewLixiAmountValueIsValid(isValidAmountInput(value) && Number(value) > 0);
     setNewLixiAmount(value);
 
     if (claimType == ClaimType.OneTime && value && Number(value) > 0 && !isEmpty(value)) {
