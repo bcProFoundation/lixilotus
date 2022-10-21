@@ -27,18 +27,34 @@ export type CreatePageInput = {
   website: Scalars['String'];
 };
 
+export type CreatePostInput = {
+  content: Scalars['String'];
+  cover?: InputMaybe<Scalars['String']>;
+  pageId?: InputMaybe<Scalars['String']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createPage: Page;
+  createPost: Post;
   updatePage: Page;
+  updatePost: Post;
 };
 
 export type MutationCreatePageArgs = {
   data: CreatePageInput;
 };
 
+export type MutationCreatePostArgs = {
+  data: CreatePostInput;
+};
+
 export type MutationUpdatePageArgs = {
   data: UpdatePageInput;
+};
+
+export type MutationUpdatePostArgs = {
+  data: UpdatePostInput;
 };
 
 /** Possible directions in which to order a list of items when provided an `orderBy` argument. */
@@ -72,6 +88,7 @@ export type PageConnection = {
   __typename?: 'PageConnection';
   edges?: Maybe<Array<PageEdge>>;
   pageInfo: PageInfo;
+  postInfo: PostInfo;
   totalCount?: Maybe<Scalars['Int']>;
 };
 
@@ -103,10 +120,62 @@ export enum PageOrderField {
   UpdatedAt = 'updatedAt'
 }
 
+export type Post = {
+  __typename?: 'Post';
+  content: Scalars['String'];
+  cover?: Maybe<Scalars['String']>;
+  /** Identifies the date and time when the object was created. */
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  page?: Maybe<Page>;
+  pageAccountId: Scalars['Int'];
+  pageId?: Maybe<Scalars['String']>;
+  /** Identifies the date and time when the object was last updated. */
+  updatedAt: Scalars['DateTime'];
+};
+
+export type PostConnection = {
+  __typename?: 'PostConnection';
+  edges?: Maybe<Array<PostEdge>>;
+  pageInfo: PageInfo;
+  postInfo: PostInfo;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type PostEdge = {
+  __typename?: 'PostEdge';
+  cursor: Scalars['String'];
+  node: Post;
+};
+
+export type PostInfo = {
+  __typename?: 'PostInfo';
+  endCursor?: Maybe<Scalars['String']>;
+  hasNextPage: Scalars['Boolean'];
+  hasPreviousPage: Scalars['Boolean'];
+  startCursor?: Maybe<Scalars['String']>;
+};
+
+export type PostOrder = {
+  direction: OrderDirection;
+  field: PostOrderField;
+};
+
+/** Properties by which post connections can be ordered. */
+export enum PostOrderField {
+  Content = 'content',
+  CreatedAt = 'createdAt',
+  Id = 'id',
+  Title = 'title',
+  UpdatedAt = 'updatedAt'
+}
+
 export type Query = {
   __typename?: 'Query';
   allPages: PageConnection;
+  allPosts: PostConnection;
   page: Page;
+  post: Post;
 };
 
 export type QueryAllPagesArgs = {
@@ -119,13 +188,28 @@ export type QueryAllPagesArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
+export type QueryAllPostsArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<PostOrder>;
+  query?: InputMaybe<Scalars['String']>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
 export type QueryPageArgs = {
+  id: Scalars['String'];
+};
+
+export type QueryPostArgs = {
   id: Scalars['String'];
 };
 
 export type Subscription = {
   __typename?: 'Subscription';
   pageCreated: Page;
+  postCreated: Post;
 };
 
 export type UpdatePageInput = {
@@ -134,10 +218,17 @@ export type UpdatePageInput = {
   country?: InputMaybe<Scalars['String']>;
   cover?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
+  title: Scalars['String'];
   id: Scalars['ID'];
   name?: InputMaybe<Scalars['String']>;
   parentId?: InputMaybe<Scalars['String']>;
   state?: InputMaybe<Scalars['String']>;
-  title?: InputMaybe<Scalars['String']>;
   website?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdatePostInput = {
+  content: Scalars['String'];
+  cover?: InputMaybe<Scalars['String']>;
+  id: Scalars['ID'];
+  title?: InputMaybe<Scalars['String']>;
 };

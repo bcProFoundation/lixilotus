@@ -235,6 +235,13 @@ const SidebarShortcut = () => {
           </StyledLogo>
           <ItemAccess icon={HomeOutlined} text={'Home'} active={selectedKey === '/'} key="home" href={'/'} />
           <ItemAccess
+            icon={ShopOutlined}
+            text={'Page'}
+            active={selectedKey.includes('/page')}
+            key="page-feed"
+            href={'/page/feed'}
+          />
+          <ItemAccess
             icon={WalletOutlined}
             text={'Accounts'}
             active={selectedKey === '/wallet'}
@@ -256,6 +263,13 @@ const SidebarShortcut = () => {
             active={selectedKey === '/page/create'}
             key="create-page"
             href={'/page/create'}
+          />
+          <ItemAccess
+            icon={PlusCircleOutlined}
+            text={'Create Post'}
+            active={selectedKey === '/post/create'}
+            key="create-post"
+            href={'/post/create'}
           />
           <ItemAccess
             icon={SettingOutlined}

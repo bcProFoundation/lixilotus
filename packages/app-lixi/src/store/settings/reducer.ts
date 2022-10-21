@@ -1,11 +1,12 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { setInitIntlStatus, toggleCollapsedSideNav, updateLocale } from './actions';
+import { saveWebAuthnConfig, setInitIntlStatus, toggleCollapsedSideNav, updateLocale } from './actions';
 import { SettingsState } from './state';
 
 const initialState: SettingsState = {
   navCollapsed: true,
   locale: 'en',
-  initIntlStatus: false
+  initIntlStatus: false,
+  webAuthnConfig: null
 };
 
 export const settingsReducer = createReducer(initialState, builder => {
@@ -18,5 +19,8 @@ export const settingsReducer = createReducer(initialState, builder => {
     })
     .addCase(setInitIntlStatus, (state, action) => {
       state.initIntlStatus = action.payload;
+    })
+    .addCase(saveWebAuthnConfig, (state, action) => {
+      state.webAuthnConfig = action.payload;
     });
 });

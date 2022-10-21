@@ -28,5 +28,25 @@ export const navBarHeaderList = [
     name: 'Lixi',
     subTitle: 'Manage Lixi',
     path: '/lixi'
+  },
+  {
+    name: 'Profile',
+    subTitle: 'Manage Info',
+    path: '/profile'
+  },
+  {
+    name: 'Page',
+    subTitle: 'Manage Page',
+    path: '/page'
+  },
+  {
+    name: 'Pages',
+    subTitle: 'Discover and connect with businesses on LixiLotus',
+    path: '/page/feed'
+  },
+  {
+    name: 'Pages',
+    subTitle: 'Change information your page',
+    path: '/page/edit'
   }
 ];

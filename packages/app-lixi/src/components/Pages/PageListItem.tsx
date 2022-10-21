@@ -1,3 +1,4 @@
+import { DislikeOutlined, FireOutlined, LikeOutlined } from '@ant-design/icons';
 import CommentComponent, { CommentItem, Editor } from '@components/Common/Comment';
 import InfoCardUser from '@components/Common/InfoCardUser';
 import { Avatar, Button, Comment, List, message, Space } from 'antd';
@@ -86,6 +87,7 @@ const ActionBar = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  padding-bottom: 1rem;
   button {
     margin-right: 1rem;
     border-radius: 20px;
@@ -96,8 +98,10 @@ const GroupIconText = styled.div`
   display: flex;
   border: none;
   width: 100%;
-  padding: 1rem 0 1rem 1rem;
-  width: 424px;
+  padding-left: 1rem;
+  display: grid;
+  width: 100%;
+  grid-template-columns: auto auto auto auto;
   &.num-react {
     padding: 1rem 0;
     border: none;
@@ -106,14 +110,27 @@ const GroupIconText = styled.div`
   .ant-space {
     margin-right: 1rem;
   }
-  @media (max-width: 960px) {
-    width: 210px;
-  }
-  @media (min-width: 960px) {
-    width: 380px;
-  }
   img {
     width: 18px;
+  }
+`;
+
+const CountBar = styled.div`
+  display: grid;
+  grid-template-columns: 70% 15% 15%;
+  margin-top: 1rem;
+  border-bottom: 1px solid rgba(128, 116, 124, 0.12);
+  padding-bottom: 1rem;
+}
+  .ant-space-item {
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.25px;
+    color: rgba(30, 26, 29, 0.6);
+    img {
+      width: 15px;
+      height: 15px;
+    }
   }
 `;
 
@@ -198,7 +215,7 @@ const PageListItem = ({ index, item }) => {
         <CardContainer>
           <CardHeader onClick={() => routerShopDetail(item.id)}>
             <InfoCardUser
-              imgUrl={item.avatar}
+              imgUrl={item.avatar || '/images/default-avatar.jpg'}
               name={item.name}
               title={moment(item.createdAt).fromNow().toString()}
             ></InfoCardUser>
@@ -206,28 +223,54 @@ const PageListItem = ({ index, item }) => {
           </CardHeader>
           <Content>
             <p className="description-post">{item.description}</p>
-            <img className="image-cover" src={item.cover} alt="" />
+            <img className="image-cover" src={item.cover || '/images/default-cover.jpg'} alt="" />
           </Content>
+          <CountBar>
+            <IconText
+              text={Math.floor(Math.random() * 100).toString() + ' XPI'}
+              icon={FireOutlined}
+              key={`burn-lotus-${item.id}`}
+              dataItem={item}
+              onClickIcon={() => upVotePage(item)}
+            />
+            <IconText
+              imgUrl="/images/comment-ico.svg"
+              text={Math.floor(Math.random() * 10).toString() + ' comments'}
+              key={`list-vertical-comment-o-${item.id}`}
+              dataItem={item}
+              onClickIcon={() => {
+                setIsCollapseComment(!isCollapseComment);
+              }}
+            />
+            <IconText
+              imgUrl="/images/share-ico.svg"
+              text={Math.floor(Math.random() * 10).toString() + ' shares'}
+              key={`list-vertical-share-o-${item.id}`}
+              dataItem={item}
+              onClickIcon={() => {}}
+            />
+          </CountBar>
+          <div className="line"></div>
         </CardContainer>
         <ActionBar>
           <GroupIconText>
             <IconText
-              text={item.upVote}
-              imgUrl="/images/up-ico.svg"
+              text={'Vote up'}
+              icon={LikeOutlined}
               key={`list-vertical-upvote-o-${item.id}`}
               dataItem={item}
               onClickIcon={() => upVotePage(item)}
             />
             <IconText
-              text={item.downVote}
-              imgUrl="/images/down-ico.svg"
+              text={'Vote down'}
+              icon={DislikeOutlined}
               key={`list-vertical-downvote-o-${item.id}`}
               dataItem={item}
               onClickIcon={() => downVotePage(item)}
             />
             <IconText
               imgUrl="/images/comment-ico.svg"
-              text="0 Comments"
+              text="Comments"
               key={`list-vertical-comment-o-${item.id}`}
               dataItem={item}
               onClickIcon={() => {
@@ -243,7 +286,7 @@ const PageListItem = ({ index, item }) => {
             />
           </GroupIconText>
 
-          <Button type="primary" onClick={item => onLixiClick(item)}>
+          <Button type="primary" className="outline-btn" onClick={item => onLixiClick(item)}>
             Send tip
           </Button>
         </ActionBar>
