@@ -319,6 +319,8 @@ export default {
   'notification.unableToFetch': 'Không thể tải thông báo.',
   'notification.unableToDelete': 'Không thể xóa thông báo.',
   'notification.unableToRead': 'Không thể đọc thông báo.',
+  'notification.earlier': 'Trước đó',
+  'notification.readAll': 'Xem tất cả',
 
   /* 10.NFT */
   'lixinft.unableToMint': 'Không thể tạo NFT',

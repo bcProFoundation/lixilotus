@@ -285,18 +285,6 @@ const SidebarRanking = () => {
     setOtherAccounts(_.filter(savedAccounts, acc => acc.id !== selectedAccount?.id));
   }, [savedAccounts]);
 
-  const handleDelete = (account: Account, notificationId: string) => {
-    dispatch(deleteNotification({ mnemonichHash: account.mnemonicHash, notificationId }));
-  };
-
-  const handleRead = (account: Account, notification: Notification) => {
-    dispatch(readNotification({ mnemonichHash: account.mnemonicHash, notificationId: notification.id }));
-    if (notification.notificationTypeId === 3) {
-      const { parentId, mnemonicHash, fileName } = notification.additionalData as any;
-      dispatch(downloadExportedLixi({ lixiId: parentId, mnemonicHash, fileName }));
-    }
-  };
-
   const showModal = () => {
     setOpen(true);
   };
@@ -375,118 +363,42 @@ const SidebarRanking = () => {
 
       {router?.pathname !== '/wallet' && (
         <div className="right-bar">
-          {!isShowNotification && (
-            <div>
-              <div className="menu">
-                <div className="menu-item active-item">
-                  <img src="/images/trend-ico.svg" alt="" />
-                </div>
-                <div className="menu-item">
-                  <img src="/images/x-ico.svg" alt="" />
-                </div>
-                <div className="menu-item">
-                  <img src="/images/tag-ico.svg" alt="" />
-                </div>
+          <div>
+            <div className="menu">
+              <div className="menu-item active-item">
+                <img src="/images/trend-ico.svg" alt="" />
               </div>
-              <div className="content">
-                <h3>Trending Experience</h3>
-                <div>
-                  <InfoCardUser imgUrl={null} name={'Nguyen Tanh'} title={'@ericson'}></InfoCardUser>
-                  <img src="/images/three-dot-ico.svg" alt="" />
-                </div>
-                <div>
-                  <InfoCardUser imgUrl={null} name={'Binh Vo'} title={'@kensaurús'}></InfoCardUser>
-                  <img src="/images/three-dot-ico.svg" alt="" />
-                </div>
-                <div>
-                  <InfoCardUser imgUrl={null} name={'Tan Vu'} title={'@talkyorn'}></InfoCardUser>
-                  <img src="/images/three-dot-ico.svg" alt="" />
-                </div>
-                <div>
-                  <InfoCardUser imgUrl={null} name={'Viet Tran'} title={'@vince8x'}></InfoCardUser>
-                  <img src="/images/three-dot-ico.svg" alt="" />
-                </div>
-                <div>
-                  <InfoCardUser imgUrl={null} name={'Nghia Cao'} title={'@nghiacc'}></InfoCardUser>
-                  <img src="/images/three-dot-ico.svg" alt="" />
-                </div>
+              <div className="menu-item">
+                <img src="/images/x-ico.svg" alt="" />
+              </div>
+              <div className="menu-item">
+                <img src="/images/tag-ico.svg" alt="" />
               </div>
             </div>
-          )}
-
-          {isShowNotification && (
-            <div className="notification-container">
-              {notifications && notifications.length > 0 && (
-                <>
-                  {notifications.map(notification => (
-                    <>
-                      {isShowNotification ? (
-                        <div onClick={() => handleRead(selectedAccount, notification)}>
-                          <StyledSwipeToDelete
-                            key={notification.id}
-                            onDelete={() => handleDelete(selectedAccount, notification.id)}
-                            deleteColor="var(--color-primary)"
-                          >
-                            <StyledComment
-                              key={notification.id}
-                              style={{
-                                backgroundColor: notification.readAt == null ? '#eceff5' : '#fff',
-                                borderRadius: '0px'
-                              }}
-                              author={
-                                <StyledAuthor>
-                                  <StyledTextLeft></StyledTextLeft>
-                                  <StyledTextRight>
-                                    {moment(notification.createdAt).local().format('MMMM Do YYYY, h:mm a')}
-                                  </StyledTextRight>
-                                </StyledAuthor>
-                              }
-                              content={
-                                <div style={{ fontWeight: notification.readAt != null ? 'normal' : 'bold' }}>
-                                  {notification.message}
-                                </div>
-                              }
-                            />
-                          </StyledSwipeToDelete>
-                        </div>
-                      ) : (
-                        <StyledComment
-                          key={notification.id}
-                          style={{
-                            borderRadius: '10px',
-                            backgroundColor: notification.readAt == null ? '#eceff5' : '#fff',
-                            marginBottom: '5px'
-                          }}
-                          author={
-                            <StyledAuthor>
-                              <StyledTextLeft></StyledTextLeft>
-                              <StyledTextRight>
-                                {moment(notification.createdAt).local().format('MMMM Do YYYY, h:mm a')}
-                              </StyledTextRight>
-                            </StyledAuthor>
-                          }
-                          content={
-                            <Space>
-                              <div
-                                style={{
-                                  fontWeight: notification.readAt != null ? 'normal' : 'bold',
-                                  cursor: 'pointer'
-                                }}
-                                onClick={() => handleRead(selectedAccount, notification)}
-                              >
-                                {notification.message}
-                              </div>
-                              <CloseCircleOutlined onClick={() => handleDelete(selectedAccount, notification.id)} />
-                            </Space>
-                          }
-                        />
-                      )}
-                    </>
-                  ))}
-                </>
-              )}
+            <div className="content">
+              <h3>Trending Experience</h3>
+              <div>
+                <InfoCardUser imgUrl={null} name={'Nguyen Tanh'} title={'@ericson'}></InfoCardUser>
+                <img src="/images/three-dot-ico.svg" alt="" />
+              </div>
+              <div>
+                <InfoCardUser imgUrl={null} name={'Binh Vo'} title={'@kensaurús'}></InfoCardUser>
+                <img src="/images/three-dot-ico.svg" alt="" />
+              </div>
+              <div>
+                <InfoCardUser imgUrl={null} name={'Tan Vu'} title={'@talkyorn'}></InfoCardUser>
+                <img src="/images/three-dot-ico.svg" alt="" />
+              </div>
+              <div>
+                <InfoCardUser imgUrl={null} name={'Viet Tran'} title={'@vince8x'}></InfoCardUser>
+                <img src="/images/three-dot-ico.svg" alt="" />
+              </div>
+              <div>
+                <InfoCardUser imgUrl={null} name={'Nghia Cao'} title={'@nghiacc'}></InfoCardUser>
+                <img src="/images/three-dot-ico.svg" alt="" />
+              </div>
             </div>
-          )}
+          </div>
         </div>
       )}
 

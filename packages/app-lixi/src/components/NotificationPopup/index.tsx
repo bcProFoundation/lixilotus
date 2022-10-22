@@ -9,11 +9,13 @@ import moment from 'moment';
 import { isMobile } from 'react-device-detect';
 import { deleteNotification, readNotification } from '@store/notification/actions';
 import { downloadExportedLixi } from '@store/lixi/actions';
+import { useRouter } from 'next/router';
+import intl from 'react-intl-universal';
 
 export type NotificationMenuProps = {
-   notifications: Notification[];
-   className?: string;
- };
+  notifications: Notification[];
+  className?: string;
+};
 
 export const StyledPopover = styled(Popover)`
   .ant-popover {
@@ -85,7 +87,7 @@ const StyledAuthor = styled.div`
   font-size: 14px;
   color: black;
   display: inline-block;
-  width: 310px;
+  width: 300px;
 
   &:hover {
     color: black;
@@ -108,87 +110,110 @@ const StyledSwipeToDelete = styled(SwipeToDelete)`
   --rstdiHeight: 100% !important;
 `;
 
+const StyledHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const StyledReadAll = styled.div`
+  cursor: pointer;
+  color: ${props => props.theme.primary};
+  padding-left: 10px;
+  padding-right: 10px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    background-color: #eceff5 !important;
+  }
+`;
+
 const NotificationPopup = (notifications: Notification[], account: Account) => {
-   const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
+  const router = useRouter();
 
-   const handleDelete = (account: Account, notificationId: string) => {
-      dispatch(deleteNotification({ mnemonichHash: account.mnemonicHash, notificationId }));
-   };
+  const handleDelete = (account: Account, notificationId: string) => {
+    dispatch(deleteNotification({ mnemonichHash: account.mnemonicHash, notificationId }));
+  };
 
-   const handleRead = (account: Account, notification: Notification) => {
-      dispatch(readNotification({ mnemonichHash: account.mnemonicHash, notificationId: notification.id }));
-      if (notification.notificationTypeId === 3) {
-         const { parentId, mnemonicHash, fileName } = notification.additionalData as any;
-         dispatch(downloadExportedLixi({ lixiId: parentId, mnemonicHash, fileName }));
-      }
-   };
+  const handleRead = (account: Account, notification: Notification) => {
+    dispatch(readNotification({ mnemonichHash: account.mnemonicHash, notificationId: notification.id }));
+    if (notification.notificationTypeId === 3) {
+      const { parentId, mnemonicHash, fileName } = notification.additionalData as any;
+      dispatch(downloadExportedLixi({ lixiId: parentId, mnemonicHash, fileName }));
+    }
+  };
 
-   return (
-      notifications &&
-      notifications.length > 0 && (
-         <>
-         {notifications.map(notification => (
-            <>
-               {isMobile ? (
-               <div onClick={() => handleRead(account, notification)}>
-                  <StyledSwipeToDelete
-                     key={notification.id}
-                     onDelete={() => handleDelete(account, notification.id)}
-                     deleteColor="var(--color-primary)"
-                  >
-                     <StyledComment
-                     key={notification.id}
-                     style={{ backgroundColor: notification.readAt == null ? '#eceff5' : '#fff', borderRadius: '0px' }}
-                     author={
-                        <StyledAuthor>
-                           <StyledTextLeft></StyledTextLeft>
-                           <StyledTextRight>
-                           {moment(notification.createdAt).local().format('MMMM Do YYYY, h:mm a')}
-                           </StyledTextRight>
-                        </StyledAuthor>
-                     }
-                     content={
-                        <div style={{ fontWeight: notification.readAt != null ? 'normal' : 'bold' }}>
-                           {notification.message}
-                        </div>
-                     }
-                     />
-                  </StyledSwipeToDelete>
-               </div>
-               ) : (
-               <StyledComment
+  return (
+    <>
+      <StyledHeader>
+        <h1 style={{ fontSize: '18px', margin: '0px' }}>{intl.get('notification.earlier')}</h1>
+        <StyledReadAll onClick={() => router.push('/notifications')}>{intl.get('notification.readAll')}</StyledReadAll>
+      </StyledHeader>
+      {notifications &&
+        notifications.length > 0 &&
+        notifications.map(notification => (
+          <>
+            {isMobile ? (
+              <div onClick={() => handleRead(account, notification)}>
+                <StyledSwipeToDelete
                   key={notification.id}
-                  style={{
-                     borderRadius: '10px',
-                     backgroundColor: notification.readAt == null ? '#eceff5' : '#fff',
-                     marginBottom: '5px'
-                  }}
-                  author={
-                     <StyledAuthor>
-                     <StyledTextLeft></StyledTextLeft>
-                     <StyledTextRight>
-                        {moment(notification.createdAt).local().format('MMMM Do YYYY, h:mm a')}
-                     </StyledTextRight>
-                     </StyledAuthor>
-                  }
-                  content={
-                     <Space>
-                     <div
-                        style={{ fontWeight: notification.readAt != null ? 'normal' : 'bold', cursor: 'pointer' }}
-                        onClick={() => handleRead(account, notification)}
-                     >
+                  onDelete={() => handleDelete(account, notification.id)}
+                  deleteColor="var(--color-primary)"
+                >
+                  <StyledComment
+                    key={notification.id}
+                    style={{ backgroundColor: notification.readAt == null ? '#eceff5' : '#fff', borderRadius: '0px' }}
+                    author={
+                      <StyledAuthor>
+                        <StyledTextLeft></StyledTextLeft>
+                        <StyledTextRight>
+                          {moment(notification.createdAt).local().format('MMMM Do YYYY, h:mm a')}
+                        </StyledTextRight>
+                      </StyledAuthor>
+                    }
+                    content={
+                      <div style={{ fontWeight: notification.readAt != null ? 'normal' : 'bold' }}>
                         {notification.message}
-                     </div>
-                     <CloseCircleOutlined onClick={() => handleDelete(account, notification.id)} />
-                     </Space>
-                  }
-               />
-               )}
-            </>
-         ))}
-         </>
-      )
-   );
+                      </div>
+                    }
+                  />
+                </StyledSwipeToDelete>
+              </div>
+            ) : (
+              <StyledComment
+                key={notification.id}
+                style={{
+                  borderRadius: '10px',
+                  backgroundColor: notification.readAt == null ? '#eceff5' : '#fff',
+                  marginBottom: '5px'
+                }}
+                author={
+                  <StyledAuthor>
+                    <StyledTextLeft></StyledTextLeft>
+                    <StyledTextRight>
+                      {moment(notification.createdAt).local().format('MMMM Do YYYY, h:mm a')}
+                    </StyledTextRight>
+                  </StyledAuthor>
+                }
+                content={
+                  <Space>
+                    <div
+                      style={{ fontWeight: notification.readAt != null ? 'normal' : 'bold', cursor: 'pointer' }}
+                      onClick={() => handleRead(account, notification)}
+                    >
+                      {notification.message}
+                    </div>
+                    <CloseCircleOutlined onClick={() => handleDelete(account, notification.id)} />
+                  </Space>
+                }
+              />
+            )}
+          </>
+        ))}
+    </>
+  );
 };
 
-export default NotificationPopup
+export default NotificationPopup;
