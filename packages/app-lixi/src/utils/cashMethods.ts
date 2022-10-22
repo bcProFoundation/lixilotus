@@ -123,3 +123,31 @@ export const getWalletState = wallet => {
     balance: fromSmallestDenomination(wallet?.balance || 0)
   };
 };
+
+export const getHashArrayFromWallet = wallet => {
+  // If the wallet has wallet.Path1899.hash160, it's migrated and will have all of them
+  // Return false for an umigrated wallet
+  const hash160Array =
+    wallet && wallet.Path10605 && 'hash160' in wallet.Path10605
+      ? [
+        wallet.Path10605.hash160,
+        wallet.Path899.hash160,
+        wallet.Path1899.hash160,
+      ]
+      : false;
+  return hash160Array;
+};
+
+export const isActiveWebsocket = ws => {
+  // Return true if websocket is connected and subscribed
+  // Otherwise return false
+  return (
+    ws !== null &&
+    ws &&
+    '_ws' in ws &&
+    'readyState' in ws._ws &&
+    ws._ws.readyState === 1 &&
+    '_subs' in ws &&
+    ws._subs.length > 0
+  );
+};

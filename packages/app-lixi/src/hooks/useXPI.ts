@@ -3,6 +3,7 @@ import { fromSmallestDenomination, toSmallestDenomination } from '@bcpros/lixi-m
 import SlpWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
 import BigNumber from 'bignumber.js';
+import { ChronikClient } from 'chronik-client';
 import _ from 'lodash';
 import intl from 'react-intl-universal';
 
@@ -315,93 +316,77 @@ export default function useXPI() {
     }
   };
 
-  //   const flattenTransactions = (
-  //     txHistory: TxHistoryTransaction[],
-  //     txCount: number = currency.txHistoryCount,
-  // ) => {
-  //     /*
-  //         Convert txHistory, format
-  //         [{address: '', transactions: [{height: '', tx_hash: ''}, ...{}]}, {}, {}]
+  const getRecipientPublicKey = async (
+    XPI: BCHJS,
+    chronik: ChronikClient,
+    recipientAddress: string,
+    optionalMockPubKeyResponse = false,
+  ) => {
+    // Necessary because jest can't mock
+    // chronikTxHistoryAtAddress = await chronik.script('p2pkh', recipientAddressHash160).history(/*page=*/ 0, /*page_size=*/ 10);
+    if (optionalMockPubKeyResponse) {
+      return optionalMockPubKeyResponse;
+    }
 
-  //         to flatTxHistory
-  //         [{txid: '', blockheight: '', address: ''}]
-  //         sorted by blockheight, newest transactions to oldest transactions
-  //     */
-  //     let flatTxHistory = [];
-  //     let includedTxids = [];
-  //     for (let i = 0; i < txHistory.length; i += 1) {
-  //         const { address, transactions } = txHistory[i];
-  //         for (let j = transactions.length - 1; j >= 0; j -= 1) {
-  //             let flatTx = {};
-  //             flatTx.address = address;
-  //             // If tx is unconfirmed, give arbitrarily high blockheight
-  //             flatTx.height =
-  //                 transactions[j].height <= 0
-  //                     ? 10000000
-  //                     : transactions[j].height;
-  //             flatTx.txid = transactions[j].tx_hash;
-  //             // Only add this tx if the same transaction is not already in the array
-  //             // This edge case can happen with older wallets, txs can be on multiple paths
-  //             if (!includedTxids.includes(flatTx.txid)) {
-  //                 includedTxids.push(flatTx.txid);
-  //                 flatTxHistory.push(flatTx);
-  //             }
-  //         }
-  //     }
+    // get hash160 of address
+    let recipientAddressHash160: string;
+    try {
+      recipientAddressHash160 = XPI.Address.toHash160(recipientAddress);
+    } catch (err) {
+      console.log(
+        `Error determining XPI.Address.toHash160(${recipientAddress} in getRecipientPublicKey())`,
+        err,
+      );
+      throw new Error(
+        `Error determining XPI.Address.toHash160(${recipientAddress} in getRecipientPublicKey())`,
+      );
+    }
 
-  //     // Sort with most recent transaction at index 0
-  //     flatTxHistory.sort((a, b) => b.height - a.height);
-  //     // Only return 10
+    let chronikTxHistoryAtAddress;
+    try {
+      // Get 20 txs. If no outgoing txs in those 20 txs, just don't send the tx
+      chronikTxHistoryAtAddress = await chronik
+        .script('p2pkh', recipientAddressHash160)
+        .history(/*page=*/ 0, /*page_size=*/ 20);
+    } catch (err) {
+      console.log(
+        `Error getting await chronik.script('p2pkh', ${recipientAddressHash160}).history();`,
+        err,
+      );
+      throw new Error(
+        'Error fetching tx history to parse for public key',
+      );
+    }
+    let recipientPubKeyChronik;
 
-  //     return flatTxHistory.splice(0, txCount);
-  // };
-
-  //   const getTxHistory = async (XPI: BCHJS, addresses: string[]) {
-  //     let txHistoryResponse: TxHistoryResponse;
-  //       try {
-  //           txHistoryResponse = await XPI.Electrumx.transactions(addresses);
-
-  //           if (txHistoryResponse.success && txHistoryResponse.transactions) {
-  //               return txHistoryResponse.transactions;
-  //           } else {
-  //               // eslint-disable-next-line no-throw-literal
-  //               throw new Error('Error in getTxHistory');
-  //           }
-  //       } catch (err) {
-  //           console.log(`Error in BCH.Electrumx.transactions(addresses):`);
-  //           console.log(err);
-  //           return err;
-  //       }
-  //   }
-
-  //   const getTxData = async (BCH, txHistory, publicKeys, wallet) => {
-  //     // Flatten tx history
-  //     let flatTxs = flattenTransactions(txHistory);
-
-  //     // Build array of promises to get tx data for all 10 transactions
-  //     let txDataPromises = [];
-  //     for (let i = 0; i < flatTxs.length; i += 1) {
-  //         const txDataPromise = await getTxDataWithPassThrough(
-  //             BCH,
-  //             flatTxs[i],
-  //         );
-  //         txDataPromises.push(txDataPromise);
-  //     }
-
-  //     // Get txData for the 10 most recent transactions
-  //     let txDataPromiseResponse;
-  //     try {
-  //         txDataPromiseResponse = await Promise.all(txDataPromises);
-
-  //         const parsed = parseTxData(BCH, txDataPromiseResponse, publicKeys, wallet);
-
-  //         return parsed;
-  //     } catch (err) {
-  //         console.log(`Error in Promise.all(txDataPromises):`);
-  //         console.log(err);
-  //         return err;
-  //     }
-  // };
+    // Iterate over tx history to find an outgoing tx
+    for (let i = 0; i < chronikTxHistoryAtAddress.txs.length; i += 1) {
+      const { inputs } = chronikTxHistoryAtAddress.txs[i];
+      for (let j = 0; j < inputs.length; j += 1) {
+        const thisInput = inputs[j];
+        const thisInputSendingHash160 = thisInput.outputScript;
+        if (thisInputSendingHash160.includes(recipientAddressHash160)) {
+          // Then this is an outgoing tx, you can get the public key from this tx
+          // Get the public key
+          try {
+            recipientPubKeyChronik =
+              chronikTxHistoryAtAddress.txs[i].inputs[
+                j
+              ].inputScript.slice(-66);
+          } catch (err) {
+            throw new Error(
+              'Cannot send an encrypted message to a wallet with no outgoing transactions',
+            );
+          }
+          return recipientPubKeyChronik;
+        }
+      }
+    }
+    // You get here if you find no outgoing txs in the chronik tx history
+    throw new Error(
+      'Cannot send an encrypted message to a wallet with no outgoing transactions in the last 20 txs',
+    );
+  };
 
   return {
     getXPI,
@@ -409,6 +394,7 @@ export default function useXPI() {
     calcFee,
     getXPIWallet,
     sendAmount,
-    sendXpi
+    sendXpi,
+    getRecipientPublicKey
   };
 }

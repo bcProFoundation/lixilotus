@@ -84,7 +84,7 @@ const StyledFilterModal = styled(Modal)`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-bottom 20px;
+    padding-bottom: 20px;
 
     .btnReset {
       border: none;
@@ -169,8 +169,8 @@ const LixiList = ({ lixies }: LixiListProps) => {
           lixi.claimType == ClaimType.Single
             ? fromSmallestDenomination(lixi.balance)
             : lixi.subLixiBalance != undefined
-            ? (lixi.subLixiBalance - lixi.subLixiTotalClaim).toFixed(2)
-            : 0.0,
+              ? (lixi.subLixiBalance - lixi.subLixiTotalClaim).toFixed(2)
+              : 0.0,
         budget: lixi.claimType == ClaimType.Single ? lixi.amount : lixi.subLixiBalance.toFixed(3),
         status: lixi.status
       };
