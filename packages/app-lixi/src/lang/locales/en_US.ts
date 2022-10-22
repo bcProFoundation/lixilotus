@@ -39,6 +39,7 @@ export default {
   'general.amount': 'Amount',
   'general.chooseCamera': 'Please choose camera',
   'general.chooseCameraTip': 'Try switching camera when its not working properly',
+  'general.notification': 'Notifications',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
@@ -316,6 +317,8 @@ export default {
   'notification.unableToFetch': 'Unable to fetch the notification.',
   'notification.unableToDelete': 'Unable to delete the notification.',
   'notification.unableToRead': 'Unable to read the notification.',
+  'notification.earlier': 'Earlier',
+  'notification.readAll': 'Read all',
 
   /* 10.NFT */
   'lixinft.unableToMint': 'Unable to mint the lixi NFT',

@@ -171,7 +171,7 @@ const LixiList = ({ lixies }: LixiListProps) => {
             : lixi.subLixiBalance != undefined
             ? (lixi.subLixiBalance - lixi.subLixiTotalClaim).toFixed(2)
             : 0.0,
-        budget: lixi.claimType == ClaimType.Single ? lixi.amount : lixi.subLixiBalance.toFixed(3),
+        budget: lixi.claimType == ClaimType.Single ? lixi.amount : lixi.subLixiBalance || 0.0,
         status: lixi.status
       };
       newListLixiType.push(objLixiType);

@@ -425,7 +425,7 @@ const Settings: React.FC = () => {
                   </Tag>
                 )}
               </GeneralSettingsItem>
-              <StyledSpacer />[<Button href={getOauth2URL()}>Login</Button>
+              <StyledSpacer /><Button href={getOauth2URL()}>Login</Button>
             </>
           )}
         </Spin>
