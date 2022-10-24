@@ -1,4 +1,5 @@
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
+import { WalletState } from '@store/wallet';
 import BigNumber from 'bignumber.js';
 // import cashaddr from 'ecashaddrjs';
 
@@ -124,7 +125,7 @@ export const getWalletState = wallet => {
   };
 };
 
-export const getHashArrayFromWallet = wallet => {
+export const getHashArrayFromWallet = (wallet: WalletState): string[] => {
   // If the wallet has wallet.Path1899.hash160, it's migrated and will have all of them
   // Return false for an umigrated wallet
   const hash160Array =
@@ -134,7 +135,7 @@ export const getHashArrayFromWallet = wallet => {
         wallet.Path899.hash160,
         wallet.Path1899.hash160,
       ]
-      : false;
+      : [];
   return hash160Array;
 };
 

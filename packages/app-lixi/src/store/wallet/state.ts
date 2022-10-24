@@ -1,7 +1,7 @@
-import { WalletAddressInfo, WalletDetail } from './models';
+import { WalletAddressInfo, WalletStatus } from './models';
 
 export interface WalletState {
-  walletDetail: WalletDetail;
+  walletStatus: WalletStatus;
   Path899: WalletAddressInfo;
   Path1899: WalletAddressInfo;
   Path10605: WalletAddressInfo;

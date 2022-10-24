@@ -1,9 +1,9 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { updateWalletState } from './actions';
+import { writeWalletStatus } from './actions';
 import { WalletState } from './state';
 
 const initialState: WalletState = {
-  walletDetail: null,
+  walletStatus: null,
   Path899: null,
   Path1899: null,
   Path10605: null,
@@ -12,7 +12,7 @@ const initialState: WalletState = {
 };
 
 export const walletStateReducer = createReducer(initialState, builder => {
-  builder.addCase(updateWalletState, (state, action) => {
-    state = action.payload;
+  builder.addCase(writeWalletStatus, (state, action) => {
+    state.walletStatus = action.payload;
   });
 });

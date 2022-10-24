@@ -9,7 +9,7 @@ export interface WalletAddressInfo {
   keyPair: any;
 }
 
-export interface WalletDetail {
+export interface WalletStatus {
   balances: {
     totalBalance: number;
     totalBalanceInSatoshis: number;
@@ -17,7 +17,4 @@ export interface WalletDetail {
   parsedTxHistory: any[];
   utxos: any[];
   name: string;
-  Path899: WalletAddressInfo;
-  Path1899: WalletAddressInfo;
-  Path10605: WalletAddressInfo;
 }

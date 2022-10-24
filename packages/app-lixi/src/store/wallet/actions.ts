@@ -1,4 +1,4 @@
 import { createAction } from '@reduxjs/toolkit';
-import { WalletState } from './state';
+import { WalletStatus } from './models';
 
-export const updateWalletState = createAction<WalletState>('wallet/updateWalletState');
+export const writeWalletStatus = createAction<WalletStatus>('wallet/writeWalletStatus');

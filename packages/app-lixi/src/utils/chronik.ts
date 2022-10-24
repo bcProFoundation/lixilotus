@@ -2,7 +2,6 @@ import { ChronikClient } from "chronik-client";
 import BCHJS from '@bcpros/xpi-js';
 import BigNumber from 'bignumber.js';
 import { currency } from "@bcpros/lixi-models";
-import { getHashArrayFromWallet } from "./cashMethods";
 
 export interface Hash160AndAddress {
   address: string;
@@ -13,7 +12,7 @@ export interface Hash160AndAddress {
 Note: chronik.script('p2pkh', hash160).utxos(); is not readily mockable in jest
 Hence it is necessary to keep this out of any functions that require unit testing
 */
-export const getUtxosSingleHashChronik = async (chronik: ChronikClient, hash160: string) => {
+export const getUtxosSingleHashChronik = async (chronik: ChronikClient, hash160: string): Promise<Array<Utxo>> => {
   // Get utxos at a single address, which chronik takes in as a hash160
   let utxos;
   try {
@@ -39,7 +38,7 @@ export const getUtxosSingleHashChronik = async (chronik: ChronikClient, hash160:
 };
 
 
-export const returnGetUtxosChronikPromise = (chronik: ChronikClient, hash160AndAddressObj: Hash160AndAddress) => {
+export const returnGetUtxosChronikPromise = (chronik: ChronikClient, hash160AndAddressObj: Hash160AndAddress): Promise<Array<Utxo>> => {
   /*
       Chronik thinks in hash160s, but people and wallets think in addresses
       Add the address to each utxo
@@ -60,7 +59,7 @@ export const returnGetUtxosChronikPromise = (chronik: ChronikClient, hash160AndA
   });
 };
 
-export const getUtxosChronik = async (chronik: ChronikClient, hash160sMappedToAddresses: Array<Hash160AndAddress>) => {
+export const getUtxosChronik = async (chronik: ChronikClient, hash160sMappedToAddresses: Array<Hash160AndAddress>): Promise<Array<Utxo>> => {
   /* 
       Chronik only accepts utxo requests for one address at a time
       Construct an array of promises for each address
@@ -155,8 +154,8 @@ export const returnGetTxHistoryChronikPromise = (
   });
 };
 
-export const parseChronikTx = (XPI: BCHJS, tx, wallet, tokenInfoById) => {
-  const walletHash160s = getHashArrayFromWallet(wallet);
+export const parseChronikTx = (XPI: BCHJS, tx, wallet, tokenInfoById: { [key: string]: TokenInfo }) => {
+  const walletHash160s: string[] = getHashArrayFromWallet(wallet);
   const { inputs, outputs } = tx;
   // Assign defaults
   let incoming = true;
@@ -519,7 +518,7 @@ export const getTxHistoryChronik = async (
   // Combine them all and sort by blockheight and firstSeen
   // Add all the info cashtab needs to make them useful
 
-  const hash160AndAddressObjArray = [
+  const hash160AndAddressObjArray: Hash160AndAddress[] = [
     {
       address: wallet.Path145.cashAddress,
       hash160: wallet.Path145.hash160,
@@ -560,7 +559,7 @@ export const getTxHistoryChronik = async (
   for (let i = 0; i < sortedTxHistoryArray.length; i += 1) {
     const sortedTx = sortedTxHistoryArray[i];
     // Add token genesis info so parsing function can calculate amount by decimals
-    sortedTx.parsed = parseChronikTx(BCH, sortedTx, wallet, tokenInfoById);
+    sortedTx.parsed = parseChronikTx(XPI, sortedTx, wallet, tokenInfoById);
     // Check to see if this tx was a token tx with uncached tokenInfoById
     if (
       sortedTx.parsed.isEtokenTx &&
