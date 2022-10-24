@@ -164,7 +164,9 @@ const LixiList = ({ lixies }: LixiListProps) => {
         redeemed:
           lixi.claimType == ClaimType.Single
             ? fromSmallestDenomination(lixi.totalClaim)
-            : lixi.subLixiTotalClaim.toFixed(2),
+            : lixi.subLixiTotalClaim != undefined
+            ? lixi.subLixiTotalClaim.toFixed(2)
+            : 0.0,
         remaining:
           lixi.claimType == ClaimType.Single
             ? fromSmallestDenomination(lixi.balance)

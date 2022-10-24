@@ -43,6 +43,7 @@ import { WalletContext } from '@context/walletProvider';
 import { getEnvelopeUpload } from '@store/account/selectors';
 import { isValidAmountInput } from '@utils/validation';
 import { CreateLixiConfirmationModalProps } from './CreateLixiConfirmationModal';
+import { fromSmallestDenomination } from '@utils/cashMethods';
 
 const { Panel } = Collapse;
 const { Option } = Select;
@@ -237,6 +238,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const Wallet = React.useContext(WalletContext);
+  const txFee = Math.ceil(Wallet.XPI.BitcoinCash.getByteCount({ P2PKH: 1 }, { P2PKH: 1 }) * 2.01); //satoshi
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -261,7 +263,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
 
   // New lixi balance number
   const [newLixiAmount, setNewLixiAmount] = useState('');
-  const [newLixiAmountValueIsValid, setNewLixiAmountValueIsValid] = useState(false);
+  const [newLixiAmountValueIsValid, setNewLixiAmountValueIsValid] = useState(true);
 
   // New Lixi sub Value
   const [newNumberOfSubLixi, setNewNumberOfSubLixi] = useState('');
@@ -377,10 +379,11 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
         (lixiType == LixiType.Equal && newSubLixiIsValid && newLixiAmountValueIsValid))) ||
     (claimType == ClaimType.Single &&
       lixiType == LixiType.Random &&
+      newLixiAmountValueIsValid &&
       newLixiMinValueIsValid &&
       newLixiMaxValueIsValid) ||
-    (lixiType == LixiType.Fixed && newLixiFixedValueIsValid) ||
-    (lixiType == LixiType.Divided && newLixiDividedValueIsValid);
+    (lixiType == LixiType.Fixed && newLixiAmountValueIsValid && newLixiFixedValueIsValid) ||
+    (lixiType == LixiType.Divided && newLixiAmountValueIsValid && newLixiDividedValueIsValid);
 
   const handleChangeClaimType = (e: RadioChangeEvent) => {
     const { value } = e.target;
@@ -395,10 +398,18 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
 
   const handleNewLixiAmountInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    setNewLixiAmountValueIsValid(isValidAmountInput(value) && Number(value) > 0);
     setNewLixiAmount(value);
 
-    if (claimType == ClaimType.OneTime && value && Number(value) > 0 && !isEmpty(value)) {
+    if (
+      (claimType == ClaimType.Single && isEmpty(value)) ||
+      (claimType == ClaimType.Single &&
+        Number(value) > 0 &&
+        fromSmallestDenomination(account.balance) >= Number(value) + fromSmallestDenomination(txFee)) ||
+      (claimType == ClaimType.OneTime &&
+        Number(value) > 0 &&
+        fromSmallestDenomination(account.balance) >=
+        Number(value) + fromSmallestDenomination(txFee) * Number(newNumberOfSubLixi))
+    ) {
       setNewLixiAmountValueIsValid(true);
     } else {
       setNewLixiAmountValueIsValid(false);
@@ -954,6 +965,22 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
 
   return (
     <>
+      {console.log('account: ', fromSmallestDenomination(account.balance))}
+      {console.log('Calc Single: ', Number(newLixiAmount) + fromSmallestDenomination(txFee))}
+      {console.log(
+        'Boolean Single: ',
+        fromSmallestDenomination(account.balance) >= Number(newLixiAmount) + fromSmallestDenomination(txFee)
+      )}
+      {console.log(
+        'Calc One-time: ',
+        Number(newLixiAmount) + fromSmallestDenomination(txFee) * Number(newNumberOfSubLixi)
+      )}
+      {console.log(
+        'Boolean One-time: ',
+        fromSmallestDenomination(account.balance) >=
+        Number(newLixiAmount) + fromSmallestDenomination(txFee) * Number(newNumberOfSubLixi)
+      )}
+
       <Modal
         width={1240}
         className="custom-create-lixi-modal"
@@ -1032,7 +1059,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
 
             <Form.Item
               label={intl.get('account.budget')}
-              required={claimType == ClaimType.OneTime}
+              required={claimType == ClaimType.OneTime} //|| claimType == ClaimType.Single && Number(newLixiAmount) <= 0}
               validateStatus={newLixiAmountValueIsValid === null || newLixiAmountValueIsValid ? '' : 'error'}
             >
               <CreateInput
@@ -1149,9 +1176,9 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
                         !newEnvelopeId && !envelopeUpload
                           ? '/images/lotus_logo.png'
                           : (newEnvelopeId &&
-                              !envelopeUpload &&
-                              baseUrl + 'api/' + envelopes.find(item => item.id === newEnvelopeId).thumbnail) ||
-                            (envelopeUpload && envelopeUpload.url)
+                            !envelopeUpload &&
+                            baseUrl + 'api/' + envelopes.find(item => item.id === newEnvelopeId).thumbnail) ||
+                          (envelopeUpload && envelopeUpload.url)
                       }
                       style={{
                         position: 'absolute',
