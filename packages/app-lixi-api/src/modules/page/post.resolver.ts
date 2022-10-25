@@ -24,7 +24,7 @@ const pubSub = new PubSub();
 export class PostResolver {
   private logger: Logger = new Logger(this.constructor.name);
 
-  constructor(private prisma: PrismaService, @I18n() private i18n: I18nService) {}
+  constructor(private prisma: PrismaService, @I18n() private i18n: I18nService) { }
 
   @Subscription(() => Post)
   postCreated() {
@@ -79,7 +79,6 @@ export class PostResolver {
   @Mutation(() => Post)
   async createPost(
     @PostAccountEntity() account: Account,
-    @PostAccountEntity() page: Page,
     @Args('data') data: CreatePostInput
   ) {
     if (!account) {
@@ -87,21 +86,25 @@ export class PostResolver {
       throw new Error(couldNotFindAccount);
     }
 
+    if (data.pageId) {
+
+    }
+
     const uploadCoverDetail = data.cover
       ? await this.prisma.uploadDetail.findFirst({
-          where: {
-            uploadId: data.cover
-          }
-        })
+        where: {
+          uploadId: data.cover
+        }
+      })
       : undefined;
-
-    const createdPost = await this.prisma.post.create({
+    const dataSave = {
       data: {
-        ..._.omit(data, ['content', 'pageId']),
+        content: data.content,
         postAccount: { connect: { id: account.id } },
         cover: { connect: uploadCoverDetail ? { id: uploadCoverDetail.id } : undefined }
       }
-    });
+    }
+    const createdPost = await this.prisma.post.create(dataSave);
 
     pubSub.publish('postCreated', { postCreated: createdPost });
     return createdPost;
@@ -117,10 +120,10 @@ export class PostResolver {
 
     const uploadCoverDetail = data.cover
       ? await this.prisma.uploadDetail.findFirst({
-          where: {
-            uploadId: data.cover
-          }
-        })
+        where: {
+          uploadId: data.cover
+        }
+      })
       : undefined;
 
     const updatedPost = await this.prisma.post.update({
