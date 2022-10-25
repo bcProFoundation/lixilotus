@@ -34,6 +34,7 @@ import { AuthenticationContext } from '@context/index';
 import getOauth2URL from '@utils/oauth2';
 import { DeleteAccountModalProps } from './DeleteAccountModal';
 import { RenameAccountModalProps } from './RenameAccountModal';
+import axios from 'axios';
 
 const { Panel } = Collapse;
 
@@ -206,6 +207,17 @@ const Settings: React.FC = () => {
   useEffect(() => {
     setOtherAccounts(_.filter(savedAccounts, acc => acc.id !== selectedAccount?.id));
   }, [savedAccounts]);
+
+  useEffect(() => {
+    if (otherAccounts.length <= 0) {
+      localLogout();
+    }
+  }, [otherAccounts]);
+
+  const localLogout = async () => {
+    const url = '/_api/local-logout';
+    await axios.post(url);
+  };
 
   const currentLocale = useAppSelector(getCurrentLocale);
 
@@ -425,7 +437,8 @@ const Settings: React.FC = () => {
                   </Tag>
                 )}
               </GeneralSettingsItem>
-              <StyledSpacer /><Button href={getOauth2URL()}>Login</Button>
+              <StyledSpacer />
+              <Button href={getOauth2URL()}>Login</Button>
             </>
           )}
         </Spin>

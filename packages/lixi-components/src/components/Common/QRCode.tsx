@@ -166,7 +166,7 @@ export const FormattedWalletAddress = ({ address, isAccountPage }) => {
       )}
       {!isAccountPage && address.slice(prefixLength + trimLength, -trimLength)}
       {isAccountPage && <CopyOutlined />}
-      <AddressHighlightTrim>{address.slice(-trimLength)}</AddressHighlightTrim>
+      <AddressHighlightTrim>{address ? address.slice(-trimLength) : 'lotus_0x00000000000000'}</AddressHighlightTrim>
     </>
   );
 };
