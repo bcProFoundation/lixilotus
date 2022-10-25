@@ -28,7 +28,7 @@ const useWallet = () => {
   const [apiIndex, setApiIndex] = useState(0);
 
   const { getXPI } = useXPI();
-  const [XPI, setXPI] = useState(getXPI(apiIndex));
+  const [XPI, setXPI] = useState<BCHJS>(getXPI(apiIndex));
 
   // const walletState = useAppSelector((state: RootState) => state.wallet);
   const dispatch = useAppDispatch();
@@ -251,6 +251,7 @@ const useWallet = () => {
 
   return {
     XPI,
+    chronik,
     deriveAccount,
     getWalletDetails,
     validateMnemonic

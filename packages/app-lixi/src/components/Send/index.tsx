@@ -48,7 +48,7 @@ const StyledCheckbox = styled(Checkbox)`
 const SendComponent: React.FC = () => {
   const dispatch = useAppDispatch();
   const Wallet = React.useContext(WalletContext);
-  const { XPI } = Wallet;
+  const { XPI, chronik } = Wallet;
   const wallet = useAppSelector(getSelectedAccount);
   const currentAddress = wallet?.address;
   const walletState = getWalletState(wallet);
@@ -119,7 +119,7 @@ const SendComponent: React.FC = () => {
     return encryptedMsg;
   };
 
-  const { getRestUrl, calcFee, sendXpi } = useXPI();
+  const { getRecipientPublicKey, calcFee, sendXpi } = useXPI();
 
   async function submit() {
     setFormData({
@@ -211,18 +211,7 @@ const SendComponent: React.FC = () => {
   const fetchRecipientPublicKey = async recipientAddress => {
     let recipientPubKey;
     try {
-      // see https://api.fullstack.cash/docs/#api-Encryption-Get_encryption_key_for_bch_address
-      // if successful, returns
-      // {
-      //   success: true,
-      //   publicKey: hex string
-      // }
-      // if Address only has incoming transaction but NO outgoing transaction, returns
-      // {
-      //   success: false,
-      //   publicKey: "not found"
-      // }
-      recipientPubKey = await XPI.encryption.getPubKey(recipientAddress);
+      recipientPubKey = await getRecipientPublicKey(XPI, chronik, recipientAddress);
     } catch (err) {
       console.log(`SendBCH.handleAddressChange() error: ` + err);
       recipientPubKey = {
@@ -230,19 +219,19 @@ const SendComponent: React.FC = () => {
         error: 'fetch error - exception thrown'
       };
     }
-    const { success, publicKey } = recipientPubKey;
-    if (success) {
-      setRecipientPubKeyHex(publicKey);
+    if (recipientPubKey) {
+      setRecipientPubKeyHex(recipientPubKey);
       setIsOpReturnMsgDisabled(false);
       setRecipientPubKeyWarning('');
     } else {
       setRecipientPubKeyHex('');
       setIsOpReturnMsgDisabled(true);
-      if (publicKey && publicKey === 'not found') {
-        setRecipientPubKeyWarning(intl.get('send.addressNoOutgoingTrans'));
-      } else {
-        setRecipientPubKeyWarning(intl.get('send.newAddress'));
-      }
+      setRecipientPubKeyWarning(intl.get('send.addressNoOutgoingTrans'));
+      // if (recipientPubKey && recipientPubKey === 'not found') {
+      //   setRecipientPubKeyWarning(intl.get('send.addressNoOutgoingTrans'));
+      // } else {
+      //   setRecipientPubKeyWarning(intl.get('send.newAddress'));
+      // }
     }
   };
 

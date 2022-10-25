@@ -1,3 +1,5 @@
+import { Utxo } from "chronik-client";
+
 export interface WalletAddressInfo {
   cashAddress: string;
   fundingAddress: string;
@@ -15,6 +17,10 @@ export interface WalletStatus {
     totalBalanceInSatoshis: number;
   };
   parsedTxHistory: any[];
-  utxos: any[];
+  slpBalancesAndUtxos: {
+    nonSlpUtxos: Array<Utxo>;
+    slpUtxos: Array<any>
+  }
+  utxos: Utxo[];
   name: string;
 }

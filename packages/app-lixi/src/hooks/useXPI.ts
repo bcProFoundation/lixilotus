@@ -3,28 +3,12 @@ import { fromSmallestDenomination, toSmallestDenomination } from '@bcpros/lixi-m
 import SlpWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
 import BigNumber from 'bignumber.js';
-import { ChronikClient } from 'chronik-client';
+import { ChronikClient, TxHistoryPage } from 'chronik-client';
 import _ from 'lodash';
 import intl from 'react-intl-universal';
 
-type TxHistoryResponse = {
-  success: boolean;
-  transactions: TxHistoryTransaction[];
-};
-
-type TxHistoryTransaction = {
-  height: number;
-  tx_hash: string;
-};
-
 export default function useXPI() {
-  const SEND_XPI_ERRORS = {
-    INSUFFICIENT_FUNDS: 0,
-    NETWORK_ERROR: 1,
-    INSUFFICIENT_PRIORITY: 66, // ~insufficient fee
-    DOUBLE_SPENDING: 18,
-    MAX_UNCONFIRMED_TXS: 64
-  };
+
   const getRestUrl = (apiIndex = 0) => {
     const apiString: string =
       process.env.NEXT_PUBLIC_NETWORK === `mainnet`
@@ -321,7 +305,7 @@ export default function useXPI() {
     chronik: ChronikClient,
     recipientAddress: string,
     optionalMockPubKeyResponse = false,
-  ) => {
+  ): Promise<string | boolean> => {
     // Necessary because jest can't mock
     // chronikTxHistoryAtAddress = await chronik.script('p2pkh', recipientAddressHash160).history(/*page=*/ 0, /*page_size=*/ 10);
     if (optionalMockPubKeyResponse) {
@@ -342,7 +326,7 @@ export default function useXPI() {
       );
     }
 
-    let chronikTxHistoryAtAddress;
+    let chronikTxHistoryAtAddress: TxHistoryPage
     try {
       // Get 20 txs. If no outgoing txs in those 20 txs, just don't send the tx
       chronikTxHistoryAtAddress = await chronik
@@ -396,5 +380,5 @@ export default function useXPI() {
     sendAmount,
     sendXpi,
     getRecipientPublicKey
-  };
+  } as const;
 }

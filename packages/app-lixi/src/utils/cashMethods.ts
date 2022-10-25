@@ -1,6 +1,7 @@
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import { WalletState } from '@store/wallet';
 import BigNumber from 'bignumber.js';
+import { createSharedKey, decrypt } from './encryption';
 // import cashaddr from 'ecashaddrjs';
 
 export const fromLegacyDecimals = (amount, cashDecimals = currency.cashDecimals) => {
@@ -164,7 +165,7 @@ export const isActiveWebsocket = ws => {
   );
 };
 
-export function parseOpReturn(hexStr: string) {
+export function parseOpReturn(hexStr: string): Array<any> | false {
   if (
     !hexStr ||
     typeof hexStr !== 'string' ||
@@ -209,10 +210,16 @@ export function parseOpReturn(hexStr: string) {
       i === 0 &&
       message === currency.opReturn.appPrefixesHex.lotusChat
     ) {
-      // add the extracted Cashtab prefix to array
+      // add the extracted Sendlotus prefix to array
+      resultArray[i] = currency.opReturn.appPrefixesHex.lotusChat;
+    } else if (
+      i === 0 &&
+      message === currency.opReturn.appPrefixesHex.lotusChatEncrypted
+    ) {
+      // add the Sendlotus encryption prefix to array
       resultArray[i] = currency.opReturn.appPrefixesHex.lotusChatEncrypted;
     } else {
-      // this is either an external message or a subsequent cashtab message loop to extract the message
+      // this is either an external message or a subsequent sendlotus message loop to extract the message
       resultArray[i] = message;
     }
 
@@ -222,4 +229,21 @@ export function parseOpReturn(hexStr: string) {
   }
 
   return resultArray;
+}
+
+export const decryptOpReturnMsg = async (opReturnMsg: string, privateKeyWIF: string, publicKeyHex: string) => {
+  try {
+    const sharedKey = createSharedKey(privateKeyWIF, publicKeyHex);
+    const decryptedMsg = decrypt(sharedKey, Uint8Array.from(Buffer.from(opReturnMsg, 'hex')));
+    return {
+      success: true,
+      decryptedMsg
+    }
+  } catch (error) {
+    console.log("DECRYPTION ERROR", error);
+    return {
+      success: false,
+      error
+    }
+  }
 }

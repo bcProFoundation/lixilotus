@@ -4,7 +4,7 @@ import BCHJS from '@bcpros/xpi-js';
 import BigNumber from 'bignumber.js';
 import { currency } from "@bcpros/lixi-models";
 import { WalletState } from "@store/wallet";
-import { convertToEncryptStruct, getHashArrayFromWallet, getUtxoWif, parseOpReturn } from "./cashMethods";
+import { getHashArrayFromWallet, getUtxoWif, parseOpReturn } from "./cashMethods";
 
 export interface Hash160AndAddress {
   address: string;
@@ -243,6 +243,10 @@ export const parseChronikTx = async (XPI: BCHJS, tx: Tx, wallet: WalletState) =>
       }
     }
   }
+
+  let senderAddress: string;
+
+
   // Iterate over outputs to get the amount sent
   for (let i = 0; i < outputs.length; i += 1) {
     const thisOutput = outputs[i];
@@ -257,7 +261,7 @@ export const parseChronikTx = async (XPI: BCHJS, tx: Tx, wallet: WalletState) =>
 
       if (!parsedOpReturnArray) {
         console.log(
-          'useBCH.parsedTxData() error: parsed array is empty',
+          'parseChronikTx() error: parsed array is empty',
         );
         break;
       }
@@ -299,7 +303,7 @@ export const parseChronikTx = async (XPI: BCHJS, tx: Tx, wallet: WalletState) =>
         let otherPublicKey;
         try {
           const theOtherAddress = incoming ? senderAddress : destinationAddress;
-          otherPublicKey = await XPI.encryption.getPubKey(theOtherAddress);
+          // otherPublicKey = await XPI.encryption.getPubKey(theOtherAddress);
         } catch (error) {
           opReturnMessage = 'Cannot retrieve Public Key'
         }
@@ -428,67 +432,15 @@ export const parseChronikTx = async (XPI: BCHJS, tx: Tx, wallet: WalletState) =>
   // Convert from BigNumber to string
   xecAmount = xecAmount.toString();
 
-  // Get decimal info for correct etokenAmount
-  let genesisInfo = {};
-
-  if (isEtokenTx) {
-    // Get token genesis info from cache
-    let decimals = 0;
-    try {
-      genesisInfo = tokenInfoById[tx.slpTxData.slpMeta.tokenId];
-      if (typeof genesisInfo !== 'undefined') {
-        genesisInfo.success = true;
-        decimals = genesisInfo.decimals;
-        etokenAmount = etokenAmount.shiftedBy(-1 * decimals);
-      } else {
-        genesisInfo = { success: false };
-      }
-    } catch (err) {
-      console.log(
-        `Error getting token info from cache in parseChronikTx`,
-        err,
-      );
-      // To keep this function synchronous, do not get this info from the API if it is not in cache
-      // Instead, return a flag so that useWallet.js knows and can fetch this info + add it to cache
-      genesisInfo = { success: false };
-    }
-  }
-  etokenAmount = etokenAmount.toString();
-
   // Convert opReturnMessage to string
   opReturnMessage = Buffer.from(opReturnMessage).toString();
 
-  // Return eToken specific fields if eToken tx
-  if (isEtokenTx) {
-    const { slpMeta } = tx.slpTxData;
-    return {
-      incoming,
-      xecAmount,
-      originatingHash160,
-      isEtokenTx,
-      etokenAmount,
-      isTokenBurn,
-      slpMeta,
-      genesisInfo,
-      airdropFlag,
-      airdropTokenId,
-      opReturnMessage: '',
-      isCashtabMessage,
-      isEncryptedMessage,
-      decryptionSuccess,
-      replyAddress,
-    };
-  }
-  // Otherwise do not include these fields
   return {
     incoming,
-    xecAmount,
+    xpiAmount,
     originatingHash160,
-    isEtokenTx,
-    airdropFlag,
-    airdropTokenId,
     opReturnMessage,
-    isCashtabMessage,
+    isLotusMessage,
     isEncryptedMessage,
     decryptionSuccess,
     replyAddress,

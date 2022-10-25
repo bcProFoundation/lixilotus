@@ -2,9 +2,11 @@ import BCHJS from '@bcpros/xpi-js';
 import { createContext } from 'react';
 import useWallet from '@hooks/useWallet';
 import { WalletAddressInfo } from '@store/wallet';
+import { ChronikClient } from 'chronik-client';
 
 export type WalletContextValue = {
   XPI: BCHJS;
+  chronik: ChronikClient,
   getWalletDetails: (string) => Promise<WalletAddressInfo>;
   validateMnemonic: (string) => boolean;
 };
