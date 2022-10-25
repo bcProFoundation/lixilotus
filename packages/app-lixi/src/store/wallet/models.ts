@@ -13,14 +13,12 @@ export interface WalletAddressInfo {
 
 export interface WalletStatus {
   balances: {
-    totalBalance: number;
-    totalBalanceInSatoshis: number;
+    totalBalance: string;
+    totalBalanceInSatoshis: string;
   };
   parsedTxHistory: any[];
   slpBalancesAndUtxos: {
     nonSlpUtxos: Array<Utxo>;
-    slpUtxos: Array<any>
   }
   utxos: Utxo[];
-  name: string;
 }

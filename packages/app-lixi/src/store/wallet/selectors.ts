@@ -1,18 +1,18 @@
 import { useAppSelector } from '@store/hooks';
 import { createSelector } from 'reselect';
 import { RootState } from '../store';
-import { WalletDetail } from './models';
+import { WalletStatus } from './models';
 import { WalletState } from './state';
 
-export const getWalletState = useAppSelector((state: RootState) => state.wallet);
+export const getWalletState = (state: RootState): WalletState => state.wallet;
 
-export const getWalletDetail = createSelector(
+export const getWalletStatus = createSelector(
   (state: RootState) => state.wallet,
-  (state: WalletState) => state.walletDetail
+  (state: WalletState) => state.walletStatus
 );
 
-export const getWalletBalance = createSelector(getWalletDetail, (state: WalletDetail) => state.balances);
+export const getWalletBalance = createSelector(getWalletStatus, (state: WalletStatus) => state.balances);
 
-export const getWalletParsedTxHistory = createSelector(getWalletDetail, (state: WalletDetail) => state.parsedTxHistory);
+export const getWalletParsedTxHistory = createSelector(getWalletStatus, (state: WalletStatus) => state.parsedTxHistory);
 
-export const getWalletUtxos = createSelector(getWalletDetail, (state: WalletDetail) => state.utxos);
+export const getWalletUtxos = createSelector(getWalletStatus, (state: WalletStatus) => state.utxos);

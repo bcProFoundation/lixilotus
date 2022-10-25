@@ -1,6 +1,7 @@
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import { WalletState } from '@store/wallet';
 import BigNumber from 'bignumber.js';
+import { Utxo } from 'chronik-client';
 import { createSharedKey, decrypt } from './encryption';
 // import cashaddr from 'ecashaddrjs';
 
@@ -95,6 +96,18 @@ export const normalizeBalance = slpBalancesAndUtxos => {
   return {
     totalBalanceInSatoshis,
     totalBalance: fromSmallestDenomination(totalBalanceInSatoshis)
+  };
+};
+
+export const getWalletBalanceFromUtxos = (nonSlpUtxos: Utxo[]) => {
+  const totalBalanceInSatoshis = nonSlpUtxos.reduce(
+    (previousBalance, utxo) =>
+      previousBalance.plus(new BigNumber(utxo.value)),
+    new BigNumber(0),
+  );
+  return {
+    totalBalanceInSatoshis: totalBalanceInSatoshis.toString(),
+    totalBalance: fromSmallestDenomination(totalBalanceInSatoshis).toString(),
   };
 };
 
