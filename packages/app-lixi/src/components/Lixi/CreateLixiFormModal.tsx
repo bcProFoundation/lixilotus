@@ -408,7 +408,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
       (claimType == ClaimType.OneTime &&
         Number(value) > 0 &&
         fromSmallestDenomination(account.balance) >=
-        Number(value) + fromSmallestDenomination(txFee) * Number(newNumberOfSubLixi))
+          Number(value) + fromSmallestDenomination(txFee) * Number(newNumberOfSubLixi))
     ) {
       setNewLixiAmountValueIsValid(true);
     } else {
@@ -965,22 +965,6 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
 
   return (
     <>
-      {console.log('account: ', fromSmallestDenomination(account.balance))}
-      {console.log('Calc Single: ', Number(newLixiAmount) + fromSmallestDenomination(txFee))}
-      {console.log(
-        'Boolean Single: ',
-        fromSmallestDenomination(account.balance) >= Number(newLixiAmount) + fromSmallestDenomination(txFee)
-      )}
-      {console.log(
-        'Calc One-time: ',
-        Number(newLixiAmount) + fromSmallestDenomination(txFee) * Number(newNumberOfSubLixi)
-      )}
-      {console.log(
-        'Boolean One-time: ',
-        fromSmallestDenomination(account.balance) >=
-        Number(newLixiAmount) + fromSmallestDenomination(txFee) * Number(newNumberOfSubLixi)
-      )}
-
       <Modal
         width={1240}
         className="custom-create-lixi-modal"
@@ -1176,9 +1160,9 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
                         !newEnvelopeId && !envelopeUpload
                           ? '/images/lotus_logo.png'
                           : (newEnvelopeId &&
-                            !envelopeUpload &&
-                            baseUrl + 'api/' + envelopes.find(item => item.id === newEnvelopeId).thumbnail) ||
-                          (envelopeUpload && envelopeUpload.url)
+                              !envelopeUpload &&
+                              baseUrl + 'api/' + envelopes.find(item => item.id === newEnvelopeId).thumbnail) ||
+                            (envelopeUpload && envelopeUpload.url)
                       }
                       style={{
                         position: 'absolute',
