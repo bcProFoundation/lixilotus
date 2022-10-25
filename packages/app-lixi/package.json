@@ -61,7 +61,8 @@
     "styled-components": "^5.3.5",
     "suneditor": "^2.43.14",
     "suneditor-react": "^3.4.1",
-    "ua-parser-js": "^1.0.2"
+    "ua-parser-js": "^1.0.2",
+    "wif": "^2.0.6"
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^12.1.5",

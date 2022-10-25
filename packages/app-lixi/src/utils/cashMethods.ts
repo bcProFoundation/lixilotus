@@ -125,6 +125,17 @@ export const getWalletState = wallet => {
   };
 };
 
+export const getUtxoWif = (utxo, wallet: WalletState) => {
+  if (!wallet) {
+    throw new Error('Invalid wallet parameter');
+  }
+  const accounts = [wallet.Path10605, wallet.Path899, wallet.Path1899];
+  const wif = accounts
+    .filter(acc => acc.xAddress === utxo.address)
+    .pop().fundingWif;
+  return wif;
+};
+
 export const getHashArrayFromWallet = (wallet: WalletState): string[] => {
   // If the wallet has wallet.Path1899.hash160, it's migrated and will have all of them
   // Return false for an umigrated wallet
@@ -152,3 +163,63 @@ export const isActiveWebsocket = ws => {
     ws._subs.length > 0
   );
 };
+
+export function parseOpReturn(hexStr: string) {
+  if (
+    !hexStr ||
+    typeof hexStr !== 'string' ||
+    hexStr.substring(0, 2) !== currency.opReturn.opReturnPrefixHex
+  ) {
+    return false;
+  }
+
+  hexStr = hexStr.slice(2); // remove the first byte i.e. 6a
+  /*
+     * @Return: resultArray is structured as follows:
+     *  resultArray[0] is the transaction type i.e. eToken prefix, sendlotus prefix, external message itself if unrecognized prefix
+     *  resultArray[1] is the actual sendlotus message or the 2nd part of an external message
+     *  resultArray[2 - n] are the additional messages for future protcols
+     */
+  let resultArray = [];
+  let message = '';
+  let hexStrLength = hexStr.length;
+
+  for (let i = 0; hexStrLength !== 0; i++) {
+    // part 1: check the preceding byte value for the subsequent message
+    let byteValue = hexStr.substring(0, 2);
+    let msgByteSize = 0;
+    if (byteValue === currency.opReturn.opPushDataOne) {
+      // if this byte is 4c then the next byte is the message byte size - retrieve the message byte size only
+      msgByteSize = parseInt(hexStr.substring(2, 4), 16); // hex base 16 to decimal base 10
+      hexStr = hexStr.slice(4); // strip the 4c + message byte size info
+    } else {
+      // take the byte as the message byte size
+      msgByteSize = parseInt(hexStr.substring(0, 2), 16); // hex base 16 to decimal base 10
+      hexStr = hexStr.slice(2); // strip the message byte size info
+    }
+
+    // part 2: parse the subsequent message based on bytesize
+    const msgCharLength = 2 * msgByteSize;
+    message = hexStr.substring(0, msgCharLength);
+    if (i === 0 && message === currency.opReturn.appPrefixesHex.eToken) {
+      // add the extracted eToken prefix to array then exit loop
+      resultArray[i] = currency.opReturn.appPrefixesHex.eToken;
+      break;
+    } else if (
+      i === 0 &&
+      message === currency.opReturn.appPrefixesHex.lotusChat
+    ) {
+      // add the extracted Cashtab prefix to array
+      resultArray[i] = currency.opReturn.appPrefixesHex.lotusChatEncrypted;
+    } else {
+      // this is either an external message or a subsequent cashtab message loop to extract the message
+      resultArray[i] = message;
+    }
+
+    // strip out the parsed message
+    hexStr = hexStr.slice(msgCharLength);
+    hexStrLength = hexStr.length;
+  }
+
+  return resultArray;
+}

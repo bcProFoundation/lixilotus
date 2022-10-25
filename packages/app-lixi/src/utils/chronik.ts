@@ -1,7 +1,10 @@
-import { ChronikClient } from "chronik-client";
+import { ChronikClient, Tx, TxHistoryPage, Utxo } from "chronik-client";
+import wif from 'wif';
 import BCHJS from '@bcpros/xpi-js';
 import BigNumber from 'bignumber.js';
 import { currency } from "@bcpros/lixi-models";
+import { WalletState } from "@store/wallet";
+import { convertToEncryptStruct, getHashArrayFromWallet, getUtxoWif, parseOpReturn } from "./cashMethods";
 
 export interface Hash160AndAddress {
   address: string;
@@ -48,7 +51,7 @@ export const returnGetUtxosChronikPromise = (chronik: ChronikClient, hash160AndA
       result => {
         for (let i = 0; i < result.length; i += 1) {
           const thisUtxo = result[i];
-          thisUtxo.address = hash160AndAddressObj.address;
+          (thisUtxo as any).address = hash160AndAddressObj.address;
         }
         resolve(result);
       },
@@ -80,6 +83,27 @@ export const getUtxosChronik = async (chronik: ChronikClient, hash160sMappedToAd
   return flatUtxos;
 };
 
+export const organizeUtxosByType = (chronikUtxos: Array<Utxo>): { nonSlpUtxos: Array<Utxo> } => {
+  /* 
+  
+  Convert chronik utxos (returned by getUtxosChronik function, above) to match 
+  shape of existing slpBalancesAndUtxos object
+  
+  */
+
+  const nonSlpUtxos = [];
+  for (let i = 0; i < chronikUtxos.length; i += 1) {
+    // Construct nonSlpUtxos and slpUtxos arrays
+    const thisUtxo = chronikUtxos[i];
+    if (typeof thisUtxo.slpToken !== 'undefined') {
+    } else {
+      nonSlpUtxos.push(thisUtxo);
+    }
+  }
+
+  return { nonSlpUtxos };
+};
+
 export const flattenChronikTxHistory = txHistoryOfAllAddresses => {
   // Create an array of all txs
 
@@ -92,6 +116,7 @@ export const flattenChronikTxHistory = txHistoryOfAllAddresses => {
   return flatTxHistoryArray;
 };
 
+// @todo
 export const sortAndTrimChronikTxHistory = (
   flatTxHistoryArray,
   txHistoryCount,
@@ -133,8 +158,8 @@ export const sortAndTrimChronikTxHistory = (
 
 export const returnGetTxHistoryChronikPromise = (
   chronik: ChronikClient,
-  hash160AndAddressObj,
-) => {
+  hash160AndAddressObj: Hash160AndAddress,
+): Promise<TxHistoryPage> => {
   /*
       Chronik thinks in hash160s, but people and wallets think in addresses
       Add the address to each utxo
@@ -154,31 +179,20 @@ export const returnGetTxHistoryChronikPromise = (
   });
 };
 
-export const parseChronikTx = (XPI: BCHJS, tx, wallet, tokenInfoById: { [key: string]: TokenInfo }) => {
+export const parseChronikTx = async (XPI: BCHJS, tx: Tx, wallet: WalletState) => {
   const walletHash160s: string[] = getHashArrayFromWallet(wallet);
   const { inputs, outputs } = tx;
   // Assign defaults
   let incoming = true;
-  let xecAmount = new BigNumber(0);
+  let xpiAmount = new BigNumber(0);
   let originatingHash160 = '';
   let etokenAmount = new BigNumber(0);
   let isTokenBurn = false;
-  const isEtokenTx = 'slpTxData' in tx && typeof tx.slpTxData !== 'undefined';
-  const isGenesisTx =
-    isEtokenTx &&
-    tx.slpTxData.slpMeta &&
-    tx.slpTxData.slpMeta.txType &&
-    tx.slpTxData.slpMeta.txType === 'GENESIS';
-  if (isGenesisTx) {
-    console.log(`${tx.txid} isGenesisTx`);
-  }
 
   // Initialize required variables
   let substring = '';
-  let airdropFlag = false;
-  let airdropTokenId = '';
-  let opReturnMessage = '';
-  let isCashtabMessage = false;
+  let opReturnMessage: Buffer | string;
+  let isLotusMessage = false;
   let isEncryptedMessage = false;
   let decryptionSuccess = false;
   let replyAddress = '';
@@ -187,28 +201,7 @@ export const parseChronikTx = (XPI: BCHJS, tx, wallet, tokenInfoById: { [key: st
   for (let i = 0; i < inputs.length; i += 1) {
     const thisInput = inputs[i];
     const thisInputSendingHash160 = thisInput.outputScript;
-    // If this is an etoken tx, check for token burn
-    if (
-      isEtokenTx &&
-      typeof thisInput.slpBurn !== 'undefined' &&
-      thisInput.slpBurn.token &&
-      thisInput.slpBurn.token.amount &&
-      thisInput.slpBurn.token.amount !== '0'
-    ) {
-      // Assume that any eToken tx with a burn is a burn tx
-      isTokenBurn = true;
-      try {
-        const thisEtokenBurnAmount = new BigNumber(
-          thisInput.slpBurn.token.amount,
-        );
-        // Need to know the total output amount to compare to total input amount and tell if this is a burn transaction
-        etokenAmount = etokenAmount.plus(thisEtokenBurnAmount);
-      } catch (err) {
-        // do nothing
-        // If this happens, the burn amount will render wrong in tx history because we don't have the info in chronik
-        // This is acceptable
-      }
-    }
+
     /* 
     
     Assume the first input is the originating address
@@ -230,21 +223,22 @@ export const parseChronikTx = (XPI: BCHJS, tx, wallet, tokenInfoById: { [key: st
       );
 
       let replyAddressBchFormat =
-        BCH.Address.hash160ToCash(originatingHash160);
+        XPI.Address.hash160ToCash(originatingHash160);
 
-      const { type, hash } = cashaddr.decode(replyAddressBchFormat);
-      replyAddress = cashaddr.encode('ecash', type, hash);
+      replyAddress = XPI.Address.toXAddress(replyAddressBchFormat);
+
     } catch (err) {
       console.log(`err from ${originatingHash160}`, err);
       // If the transaction is nonstandard, don't worry about a reply address for now
       originatingHash160 = 'N/A';
     }
+
     for (let j = 0; j < walletHash160s.length; j += 1) {
       const thisWalletHash160 = walletHash160s[j];
       if (thisInputSendingHash160.includes(thisWalletHash160)) {
         // Then this is an outgoing tx
         incoming = false;
-        // Break out of this for loop once you know this is an incoming tx
+        // Break out of this for loop once you know this is an outgoing tx
         break;
       }
     }
@@ -261,10 +255,6 @@ export const parseChronikTx = (XPI: BCHJS, tx, wallet, tokenInfoById: { [key: st
       let hex = thisOutputReceivedAtHash160;
       let parsedOpReturnArray = parseOpReturn(hex);
 
-      // Exactly copying lines 177-293 of useBCH.js
-      // Differences
-      // 1 - patched ecies not async error
-      // 2 - Removed if loop for tx being token, as this is handled elsewhere here
       if (!parsedOpReturnArray) {
         console.log(
           'useBCH.parsedTxData() error: parsed array is empty',
@@ -275,27 +265,14 @@ export const parseChronikTx = (XPI: BCHJS, tx, wallet, tokenInfoById: { [key: st
       let message = '';
       let txType = parsedOpReturnArray[0];
 
-      if (txType === currency.opReturn.appPrefixesHex.airdrop) {
-        // this is to facilitate special Cashtab-specific cases of airdrop txs, both with and without msgs
-        // The UI via Tx.js can check this airdropFlag attribute in the parsedTx object to conditionally render airdrop-specific formatting if it's true
-        airdropFlag = true;
-        // index 0 is drop prefix, 1 is the token Id, 2 is msg prefix, 3 is msg
-        airdropTokenId = parsedOpReturnArray[1];
-        txType = parsedOpReturnArray[2];
-
-        // remove the first two elements of airdrop prefix and token id from array so the array parsing logic below can remain unchanged
-        parsedOpReturnArray.splice(0, 2);
-        // index 0 now becomes msg prefix, 1 becomes the msg
-      }
-
-      if (txType === currency.opReturn.appPrefixesHex.cashtab) {
-        // this is a Cashtab message
+      if (txType === currency.opReturn.appPrefixesHex.lotusChat) {
+        // this is a sendlotus message
         try {
           opReturnMessage = Buffer.from(
             parsedOpReturnArray[1],
             'hex',
           );
-          isCashtabMessage = true;
+          isLotusMessage = true;
         } catch (err) {
           // soft error if an unexpected or invalid cashtab hex is encountered
           opReturnMessage = '';
@@ -305,33 +282,43 @@ export const parseChronikTx = (XPI: BCHJS, tx, wallet, tokenInfoById: { [key: st
           );
         }
       } else if (
-        txType === currency.opReturn.appPrefixesHex.cashtabEncrypted
+        txType === currency.opReturn.appPrefixesHex.lotusChatEncrypted
       ) {
-        if (!incoming) {
-          // outgoing encrypted messages currently can not be decrypted by sender's wallet since the message is encrypted with the recipient's pub key
-          opReturnMessage =
-            'Only the message recipient can view this';
-          isCashtabMessage = true;
-          isEncryptedMessage = true;
-          continue; // skip to next output hex
-        }
-        // this is an encrypted Cashtab message
+        isLotusMessage = true;
+        isEncryptedMessage = true;
         let msgString = parsedOpReturnArray[1];
+
+        // To decrypt the message, we need
+        //  Our private key
+        //  The message
+        //  The other end's public key
+        //      - incoming tx: get public key from the tx's first input
+        //      - outgoing tx:  make api call to get the public key from the recipient's address
+        //          If this api call has been made earlier when we tried to send an encrypted message
+        //          the result should be in the cache.
+        let otherPublicKey;
+        try {
+          const theOtherAddress = incoming ? senderAddress : destinationAddress;
+          otherPublicKey = await XPI.encryption.getPubKey(theOtherAddress);
+        } catch (error) {
+          opReturnMessage = 'Cannot retrieve Public Key'
+        }
+
         let fundingWif, privateKeyObj, privateKeyBuff;
         if (
           wallet &&
-          wallet.state &&
-          wallet.state.slpBalancesAndUtxos &&
-          wallet.state.slpBalancesAndUtxos.nonSlpUtxos[0]
+          wallet.walletStatus &&
+          wallet.walletStatus.slpBalancesAndUtxos &&
+          wallet.walletStatus.slpBalancesAndUtxos.nonSlpUtxos[0]
         ) {
           fundingWif = getUtxoWif(
-            wallet.state.slpBalancesAndUtxos.nonSlpUtxos[0],
+            wallet.walletStatus.slpBalancesAndUtxos.nonSlpUtxos[0],
             wallet,
           );
           privateKeyObj = wif.decode(fundingWif);
           privateKeyBuff = privateKeyObj.privateKey;
           if (!privateKeyBuff) {
-            isCashtabMessage = true;
+            isLotusMessage = true;
             isEncryptedMessage = true;
             opReturnMessage = 'Private key extraction error';
             continue; // skip to next output hex without triggering an API error
@@ -361,7 +348,7 @@ export const parseChronikTx = (XPI: BCHJS, tx, wallet, tokenInfoById: { [key: st
           );
           decryptedMessage = 'Unable to decrypt this message';
         }
-        isCashtabMessage = true;
+        isLotusMessage = true;
         isEncryptedMessage = true;
         opReturnMessage = decryptedMessage;
       } else {
@@ -511,8 +498,7 @@ export const parseChronikTx = (XPI: BCHJS, tx, wallet, tokenInfoById: { [key: st
 export const getTxHistoryChronik = async (
   chronik: ChronikClient,
   XPI: BCHJS,
-  wallet,
-  tokenInfoById,
+  wallet: WalletState,
 ) => {
   // Create array of promises to get chronik history for each address
   // Combine them all and sort by blockheight and firstSeen
@@ -520,12 +506,12 @@ export const getTxHistoryChronik = async (
 
   const hash160AndAddressObjArray: Hash160AndAddress[] = [
     {
-      address: wallet.Path145.cashAddress,
-      hash160: wallet.Path145.hash160,
+      address: wallet.Path10605.xAddress,
+      hash160: wallet.Path10605.hash160,
     },
     {
-      address: wallet.Path245.cashAddress,
-      hash160: wallet.Path245.hash160,
+      address: wallet.Path899.xAddress,
+      hash160: wallet.Path899.hash160,
     },
     {
       address: wallet.Path1899.cashAddress,
@@ -533,7 +519,7 @@ export const getTxHistoryChronik = async (
     },
   ];
 
-  let txHistoryPromises = [];
+  let txHistoryPromises: Array<Promise<TxHistoryPage>> = [];
   for (let i = 0; i < hash160AndAddressObjArray.length; i += 1) {
     const txHistoryPromise = returnGetTxHistoryChronikPromise(
       chronik,
@@ -555,86 +541,14 @@ export const getTxHistoryChronik = async (
 
   // Parse txs
   const chronikTxHistory = [];
-  const uncachedTokenIds = [];
   for (let i = 0; i < sortedTxHistoryArray.length; i += 1) {
     const sortedTx = sortedTxHistoryArray[i];
     // Add token genesis info so parsing function can calculate amount by decimals
-    sortedTx.parsed = parseChronikTx(XPI, sortedTx, wallet, tokenInfoById);
-    // Check to see if this tx was a token tx with uncached tokenInfoById
-    if (
-      sortedTx.parsed.isEtokenTx &&
-      sortedTx.parsed.genesisInfo &&
-      !sortedTx.parsed.genesisInfo.success
-    ) {
-      // Only add if the token id is not already in uncachedTokenIds
-      const uncachedTokenId = sortedTx.parsed.slpMeta.tokenId;
-      if (!uncachedTokenIds.includes(uncachedTokenId))
-        uncachedTokenIds.push(uncachedTokenId);
-    }
+    sortedTx.parsed = parseChronikTx(XPI, sortedTx, wallet);
     chronikTxHistory.push(sortedTx);
-  }
-
-  const txHistoryNewTokensToCache = uncachedTokenIds.length > 0;
-
-  if (!txHistoryNewTokensToCache) {
-    // This will almost always be the case
-    // Edge case to find uncached token info in tx history that was not caught in processing utxos
-    // Requires performing transactions in one wallet, then loading the same wallet in another browser later
-    return {
-      chronikTxHistory,
-      txHistoryUpdatedTokenInfoById: tokenInfoById,
-      txHistoryNewTokensToCache,
-    };
-  }
-
-  // Iterate over uncachedTokenIds to get genesis info and add to cache
-  const getTokenInfoPromises = [];
-  for (let i = 0; i < uncachedTokenIds.length; i += 1) {
-    const thisTokenId = uncachedTokenIds[i];
-
-    const thisTokenInfoPromise = returnGetTokenInfoChronikPromise(
-      chronik,
-      thisTokenId,
-    );
-    getTokenInfoPromises.push(thisTokenInfoPromise);
-  }
-
-  // Get all the token info you need
-  let tokenInfoArray = [];
-  try {
-    tokenInfoArray = await Promise.all(getTokenInfoPromises);
-  } catch (err) {
-    console.log(
-      `Error in Promise.all(getTokenInfoPromises) in getTxHistoryChronik`,
-      err,
-    );
-  }
-
-  // Add the token info you received from those API calls to
-  // your token info cache object, cachedTokenInfoByTokenId
-
-  const txHistoryUpdatedTokenInfoById = tokenInfoById;
-  for (let i = 0; i < tokenInfoArray.length; i += 1) {
-    /* tokenInfoArray is an array of objects that look like
-    {
-        "tokenTicker": "ST",
-        "tokenName": "ST",
-        "tokenDocumentUrl": "developer.bitcoin.com",
-        "tokenDocumentHash": "",
-        "decimals": 0,
-        "tokenId": "bf24d955f59351e738ecd905966606a6837e478e1982943d724eab10caad82fd"
-    }
-    */
-
-    const thisTokenInfo = tokenInfoArray[i];
-    const thisTokenId = thisTokenInfo.tokenId;
-    // Add this entry to updatedTokenInfoById
-    txHistoryUpdatedTokenInfoById[thisTokenId] = thisTokenInfo;
   }
 
   return {
     chronikTxHistory,
-    txHistoryUpdatedTokenInfoById,
-    txHistoryNewTokensToCache,
   };
 };
