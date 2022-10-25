@@ -289,9 +289,7 @@ function* postLixiSuccessSaga(action: PayloadAction<Lixi>) {
       })
     );
     yield put(removeUpload({ type: UPLOAD_TYPES.ENVELOPE }));
-    yield put(setLixi(lixi));
-    yield put(hideLoading(postLixi.type));
-    yield put(refreshLixiListSilent(lixi.accountId));
+    yield put(selectLixi(lixi.id));
   } catch (error) {
     const message = intl.get('lixi.errorWhenCreateLixi');
     yield put(postLixiFailure(message));
@@ -381,7 +379,7 @@ function* selectLixiSaga(action: PayloadAction<number>) {
     const claimResult: PaginationResult<Claim> = yield call(claimApi.getByLixiId, lixiId);
     const claims = (claimResult.data ?? []) as Claim[];
     yield put(selectLixiSuccess({ lixi: lixi, claims: claims }));
-    yield put(fetchInitialSubLixies(lixi.id));
+    if (lixi.numberOfSubLixi > 0 && lixi.numberOfSubLixi) yield put(fetchInitialSubLixies(lixi.id));
   } catch (err) {
     const message = (err as Error).message ?? intl.get('lixi.unableSelect');
     yield put(selectLixiFailure(message));
