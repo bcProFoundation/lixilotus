@@ -6,7 +6,6 @@ import {
   DatePicker,
   Form,
   Input,
-  List,
   Modal,
   Radio,
   RadioChangeEvent,
@@ -27,30 +26,23 @@ import { closeModal, openModal } from 'src/store/modal/actions';
 import { showToast } from 'src/store/toast/actions';
 import styled from 'styled-components';
 
-import { DollarOutlined, PlusSquareOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import { DollarOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import {
-  AntdFormWrapper,
   FormItemCharityAddressInput,
   FormItemStaffAddressInput
 } from '@bcpros/lixi-components/components/Common/EnhancedInputs';
-import { SmartButton } from '@bcpros/lixi-components/components/Common/PrimaryButton';
-import {
-  AdvancedCollapse,
-  LixiCollapse,
-  StyledCollapse
-} from '@bcpros/lixi-components/components/Common/StyledCollapse';
+import { StyledCollapse } from '@bcpros/lixi-components/components/Common/StyledCollapse';
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import { countries, UPLOAD_BUTTON_TYPE, UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
 import { Account } from '@bcpros/lixi-models/lib/account';
 import { ClaimType, GenerateLixiCommand, LixiType, LotteryAddress, NetworkType } from '@bcpros/lixi-models/lib/lixi';
 import CountrySelectDropdown from '@components/Common/CountrySelectDropdown';
 import EnvelopeCarousel from '@components/Common/EnvelopeCarousel';
-import { getEnvelopeUpload } from '@store/account/selectors';
-import { WalletContext } from '@store/store';
-import { isValidAmountInput } from '@utils/validation';
-import TextArea from 'antd/lib/input/TextArea';
-import { CreateLixiConfirmationModalProps } from './CreateLixiConfirmationModal';
 import { StyledUploader } from '@components/Common/Uploader';
+import { WalletContext } from '@context/walletProvider';
+import { getEnvelopeUpload } from '@store/account/selectors';
+import { isValidAmountInput } from '@utils/validation';
+import { CreateLixiConfirmationModalProps } from './CreateLixiConfirmationModal';
 
 const { Panel } = Collapse;
 const { Option } = Select;
@@ -244,7 +236,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
   const envelopeUpload = useAppSelector(getEnvelopeUpload);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const { XPI, Wallet } = React.useContext(WalletContext);
+  const Wallet = React.useContext(WalletContext);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -269,7 +261,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
 
   // New lixi balance number
   const [newLixiAmount, setNewLixiAmount] = useState('');
-  const [newLixiAmountValueIsValid, setNewLixiAmountValueIsValid] = useState(true);
+  const [newLixiAmountValueIsValid, setNewLixiAmountValueIsValid] = useState(false);
 
   // New Lixi sub Value
   const [newNumberOfSubLixi, setNewNumberOfSubLixi] = useState('');
@@ -403,7 +395,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
 
   const handleNewLixiAmountInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    setNewLixiAmountValueIsValid(isValidAmountInput(value));
+    setNewLixiAmountValueIsValid(isValidAmountInput(value) && Number(value) > 0);
     setNewLixiAmount(value);
 
     if (claimType == ClaimType.OneTime && value && Number(value) > 0 && !isEmpty(value)) {

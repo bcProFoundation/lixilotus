@@ -37,12 +37,12 @@ export const getSelectedLixiId = createSelector(
 export const getLixiById = (id: number) => createSelector(getAllLixiesEntities, lixies => lixies?.[id]);
 
 export const getLixiesBySelectedAccount = createSelector([selectSelectedAccount, getAllLixies], (accountId, lixies) =>
-  lixies.filter(lixi => lixi.accountId === accountId && _.isNil(lixi.parentId))
+  lixies.filter(lixi => lixi && lixi.accountId === accountId && _.isNil(lixi.parentId))
 );
 
 export const getSelectedLixi = createSelector(
   [getLixiesBySelectedAccount, getSelectedLixiId],
-  (lixies: Lixi[], selectedLixiId: number) => lixies.find(lixi => lixi.id === selectedLixiId)
+  (lixies: Lixi[], selectedLixiId: number) => lixies.find(lixi => !_.isNil(lixi) && lixi.id === selectedLixiId)
 );
 
 export const getAllSubLixies = createSelector((state: RootState) => state.lixies.subLixies, selectAllSubLixies);

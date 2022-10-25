@@ -6,7 +6,7 @@ export enum PostOrderField {
   id = 'id',
   createdAt = 'createdAt',
   updatedAt = 'updatedAt',
-  content = 'content',
+  content = 'content'
 }
 
 registerEnumType(PostOrderField, {

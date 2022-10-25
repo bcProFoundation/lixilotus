@@ -40,6 +40,11 @@ export const navBarHeaderList = [
     path: '/page'
   },
   {
+    name: 'Notifications',
+    subTitle: 'Manage Notifications',
+    path: '/notifications',
+  },
+  {
     name: 'Pages',
     subTitle: 'Discover and connect with businesses on LixiLotus',
     path: '/page/feed'

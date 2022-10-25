@@ -39,6 +39,7 @@ export default {
   'general.amount': 'Số dư',
   'general.chooseCamera': 'Chọn camera',
   'general.chooseCameraTip': 'Thử đổi camera nếu quét không thành công',
+  'general.notification': 'Thông báo',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',
@@ -318,6 +319,8 @@ export default {
   'notification.unableToFetch': 'Không thể tải thông báo.',
   'notification.unableToDelete': 'Không thể xóa thông báo.',
   'notification.unableToRead': 'Không thể đọc thông báo.',
+  'notification.earlier': 'Trước đó',
+  'notification.readAll': 'Xem tất cả',
 
   /* 10.NFT */
   'lixinft.unableToMint': 'Không thể tạo NFT',

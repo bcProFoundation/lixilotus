@@ -3,7 +3,8 @@ import BCHJS from '@bcpros/xpi-js';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { getCurrentLocale } from '@store/settings/selectors';
 import intl from 'react-intl-universal';
-import { all, call, fork, getContext, put, select, takeLatest } from 'redux-saga/effects';
+import { all, call, fork, put, select, takeLatest } from 'redux-saga/effects';
+import { callConfig } from '@context/index';
 import { LocalUser } from 'src/models/localUser';
 import { showToast } from '../toast/actions';
 import {
@@ -21,8 +22,8 @@ import localAccountApi from './api';
  * @param action The data to needed generate a account
  */
 function* generateLocalUserAccountSaga(action: PayloadAction) {
-  const XPI: BCHJS = yield getContext('XPI');
-  const Wallet = yield getContext('Wallet');
+  const Wallet = callConfig.call.walletContext;
+  const { XPI } = Wallet;
 
   const lang = 'english';
   const Bip39128BitMnemonic = XPI.Mnemonic.generate(128, XPI.Mnemonic.wordLists()[lang]);
@@ -58,11 +59,11 @@ function* importLocalUserAccountSaga(action: PayloadAction<string>) {
   try {
     const mnemonic: string = action.payload;
 
-    const Wallet = yield getContext('Wallet');
+    const Wallet = callConfig.call.walletContext;
 
     const locale = yield select(getCurrentLocale);
 
-    const isMnemonicValid = yield call(Wallet.validateMnemonic, mnemonic);
+    const isMnemonicValid = Wallet.validateMnemonic(mnemonic);
 
     if (isMnemonicValid) {
       const { xAddress } = yield call(Wallet.getWalletDetails, mnemonic);

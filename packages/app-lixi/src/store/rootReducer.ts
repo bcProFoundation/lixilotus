@@ -28,11 +28,18 @@ import { LocalUserAccountsState } from './localAccount/state';
 import { localAccountsAdapter, localUserAccountReducer } from './localAccount/reducer';
 import { postReducer } from './post/reducer';
 import { PostState } from './post/state';
+import { walletStateReducer } from './wallet/reducer';
 
 const persistConfig = {
   key: 'root',
   storage: storage('lixi-indexeddb'),
   blacklist: ['accounts', 'router', 'modal']
+};
+
+const walletPersistConfig = {
+  key: 'wallet',
+  storage: storage('lixi-indexeddb'),
+  blacklist: []
 };
 
 const localAccountPersistConfig: PersistConfig<LocalUserAccountsState> = {
@@ -85,6 +92,7 @@ const statePersistConfig: PersistConfig<StatesState> = {
 
 export const serverReducer = combineReducers({
   router: routerReducer,
+  wallet: walletStateReducer,
   accounts: accountReducer,
   localAccounts: localUserAccountReducer,
   lixies: lixiReducer,
@@ -107,6 +115,7 @@ export const serverReducer = combineReducers({
 
 export const appReducer = combineReducers({
   router: routerReducer,
+  wallet: persistReducer(walletPersistConfig, walletStateReducer),
   accounts: persistReducer(accountPersistConfig, accountReducer),
   localAccounts: persistReducer(localAccountPersistConfig, localUserAccountReducer),
   lixies: persistReducer(lixiPersistConfig, lixiReducer),

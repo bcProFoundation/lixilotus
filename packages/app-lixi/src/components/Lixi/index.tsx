@@ -1,20 +1,5 @@
-import {
-  Button,
-  Checkbox,
-  Col,
-  Collapse,
-  Descriptions,
-  Form,
-  Image,
-  Input,
-  List,
-  message,
-  Modal,
-  Progress,
-  Row,
-  Tabs,
-  Typography
-} from 'antd';
+import { WalletContext } from '@context/index';
+import { Button, Collapse, Descriptions, Form, message, Progress } from 'antd';
 import { saveAs } from 'file-saver';
 import { toPng } from 'html-to-image';
 import * as _ from 'lodash';
@@ -27,43 +12,27 @@ import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import {
   archiveLixi,
   fetchMoreSubLixies,
-  getLixi,
   refreshLixi,
   renameLixi,
   setLixiBalance,
   unarchiveLixi,
   withdrawLixi
 } from 'src/store/lixi/actions';
-import {
-  getHasMoreSubLixies,
-  getLixiesBySelectedAccount,
-  getSelectedLixi,
-  getSelectedLixiId
-} from 'src/store/lixi/selectors';
-import { WalletContext } from 'src/store/store';
+import { getHasMoreSubLixies, getSelectedLixi, getSelectedLixiId } from 'src/store/lixi/selectors';
 import { showToast } from 'src/store/toast/actions';
 import styled from 'styled-components';
 
-import { green, red } from '@ant-design/colors';
 import {
   CaretRightOutlined,
   CopyOutlined,
-  DownloadOutlined,
   EditOutlined,
   ExclamationCircleOutlined,
-  ExportOutlined,
-  FilterOutlined,
   LoadingOutlined,
   QuestionCircleOutlined,
-  ReloadOutlined,
-  SearchOutlined
+  ReloadOutlined
 } from '@ant-design/icons';
-import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import { SmartButton } from '@bcpros/lixi-components/components/Common/PrimaryButton';
-import { QRClaimCode } from '@bcpros/lixi-components/components/Common/QRClaimCode';
 import QRCode, { FormattedWalletAddress } from '@bcpros/lixi-components/components/Common/QRCode';
-import { StyledCollapse } from '@bcpros/lixi-components/components/Common/StyledCollapse';
-import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
 import { countries } from '@bcpros/lixi-models/constants/countries';
 import {
   ArchiveLixiCommand,
@@ -73,19 +42,16 @@ import {
   UnarchiveLixiCommand,
   WithdrawLixiCommand
 } from '@bcpros/lixi-models/lib/lixi';
-import ClaimList from '@components/Claim/ClaimList';
 import { currency } from '@components/Common/Ticker';
 import { getSelectedAccount } from '@store/account/selectors';
 import { getAllSubLixies, getLoadMoreSubLixiesStartId } from '@store/lixi/selectors';
-import { fromSmallestDenomination, toSmallestDenomination } from '@utils/cashMethods';
-import { numberToBase58 } from '@utils/encryptionMethods';
-import SubLixiList from './SubLixiList';
-import { ClaimType } from '../../../../lixi-models/src/lib/lixi';
-import lixiLogo from '../../assets/images/lixi_logo.svg';
-import { exportSubLixies } from '../../store/lixi/actions';
-import VirtualTable from './SubLixiListScroll';
-import { RenameLixiModalProps } from './RenameLixiModal';
 import { openModal } from '@store/modal/actions';
+import { fromSmallestDenomination } from '@utils/cashMethods';
+import { ClaimType } from '../../../../lixi-models/src/lib/lixi';
+import { exportSubLixies } from '../../store/lixi/actions';
+import { RenameLixiModalProps } from './RenameLixiModal';
+import SubLixiList from './SubLixiList';
+import VirtualTable from './SubLixiListScroll';
 
 type CopiedProps = {
   style?: React.CSSProperties;
@@ -227,8 +193,8 @@ const { Panel } = Collapse;
 const Lixi = props => {
   const { lixi } = props;
   const dispatch = useAppDispatch();
-  const ContextValue = React.useContext(WalletContext);
-  const { XPI, Wallet } = ContextValue;
+  const Wallet = React.useContext(WalletContext);
+  const { XPI } = Wallet;
   const selectedAccount = useAppSelector(getSelectedAccount);
   // const selectedLixiId = useAppSelector(getSelectedLixiId);
   // const selectedLixi = useAppSelector(getSelectedLixi);
