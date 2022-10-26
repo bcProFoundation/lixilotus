@@ -235,6 +235,7 @@ export default {
   'NetworkType.FamilyFriendlyInfo': 'Tối đa người dùng có thể nhận Lixi trong mạng wifi',
   'NetworkType.NoWifiRestrictionInfo': 'Không giới hạn người dùng có thể nhận Lixi trong mạng wifi',
   'lixi.detail': 'Chi tiết lì xì',
+  'lixi.accountLixi': 'tài khoản của lì xì',
   'lixi.balance': 'Số dư',
   'lixi.valuePerClaim': 'Giá trị mỗi lần nhận',
   'lixi.validity': 'Hiệu lực',

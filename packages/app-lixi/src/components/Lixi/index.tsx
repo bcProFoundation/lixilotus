@@ -52,6 +52,7 @@ import { exportSubLixies } from '../../store/lixi/actions';
 import { RenameLixiModalProps } from './RenameLixiModal';
 import SubLixiList from './SubLixiList';
 import VirtualTable from './SubLixiListScroll';
+import useWindowDimensions from '@hooks/useWindowDimensions';
 
 type CopiedProps = {
   style?: React.CSSProperties;
@@ -89,19 +90,58 @@ const LabelHeader = styled.h4`
   margin-bottom: unset;
 `;
 
+const DescriptionsCustom = styled(Descriptions)`
+  .ant-descriptions-view {
+    border: none;
+  }
+  .ant-descriptions-item-content {
+    border: none;
+    padding-left: 0px;
+    @media (max-width: 768px) {
+      padding-right: 0px;
+    }
+  }
+  .ant-descriptions-row {
+    border: none;
+  }
+`;
+
 const InfoCard = styled.div`
   box-sizing: border-box;
   position: inherit;
   width: 100%;
-  height: fit-content;
   background: #ffffff;
   border: 1px solid #e0e0e0;
   border-radius: 24px;
+  height: fit-content;
+  @media (min-width: 768px) {
+    height: 315px;
+  }
 
   img {
     border-radius: 16px;
     height: 80px;
     width: 80px;
+  }
+
+  .lixi-detail {
+    .ant-descriptions-item-content:last-child {
+      justify-content: end !important;
+    }
+  }
+  &.overview {
+    .ant-descriptions-view {
+      height: 100% !important;
+      > table {
+        height: 100% !important;
+      }
+
+      .ant-descriptions-item-content {
+        height: 100% !important;
+        justify-content: center;
+        flex-direction: column;
+      }
+    }
   }
 
   .ant-descriptions-item-label {
@@ -114,7 +154,6 @@ const InfoCard = styled.div`
     line-height: 20px;
     color: rgba(30, 26, 29, 0.38);
     background: #ffffff;
-
     padding: 5px 16px;
   }
 
@@ -127,16 +166,19 @@ const InfoCard = styled.div`
     line-height: 24px;
     letter-spacing: 0.5px;
     color: #1e1a1d;
+    border: none !important;
+    padding-left: 16px;
+
+    @media (min-width: 768px) {
+      padding: 4px 16px !important;
+    }
   }
 
-  .ant-descriptions-bordered {
-    .ant-descriptions-view {
-      border: none;
-    }
-
-    .ant-descriptions-row {
-      border-bottom: none;
-    }
+  .ant-descriptions-view {
+    border: none !important;
+  }
+  .ant-descriptions-row {
+    border: none !important;
   }
 `;
 
@@ -173,18 +215,18 @@ const StyleButton = styled(Button)`
 
 const StyledQRCode = styled.div`
   flex: 1 auto;
-  text-align: right;
+  text-align: unset;
   opacity: 0.7;
   #borderedQRCode {
     @media (max-width: 768px) {
       border-radius: 18px;
-      width: 120px;
-      height: 120px;
+      width: 126px;
+      height: 126px;
     }
     @media (min-width: 768px) {
       border-radius: 18px;
-      width: 120px;
-      height: 120px;
+      width: 77px;
+      height: 77px;
     }
   }
 `;
@@ -213,6 +255,8 @@ const Lixi = props => {
   subLixies = _.sortBy(subLixies, ['isClaimed', 'packageId']);
 
   const [loadings, setLoadings] = useState<boolean[]>([]);
+  const { width } = useWindowDimensions();
+  const [isMobileDetailLixi, setIsMobileDetailLixi] = useState(false);
 
   // useEffect(() => {
   //   if (selectedLixi) {
@@ -237,6 +281,11 @@ const Lixi = props => {
       return clearInterval(id);
     };
   }, []);
+
+  useEffect(() => {
+    const isMobileDetail = width < 768 ? true : false;
+    setIsMobileDetailLixi(isMobileDetail);
+  }, [width]);
 
   const handleRefeshLixi = () => {
     if (!(selectedLixi && selectedLixiId)) {
@@ -381,7 +430,7 @@ const Lixi = props => {
         return <>{moment(activeAt).format('YYYY-MM-DD HH:mm')} - 'N/A'</>;
       case _.isEmpty(activeAt) && !_.isEmpty(expiryAt):
         return <>'N/A' - {moment(expiryAt).format('YYYY-MM-DD HH:mm')}</>;
-      case (!_.isEmpty(activeAt) && !_.isEmpty(expiryAt)):
+      case !_.isEmpty(activeAt) && !_.isEmpty(expiryAt):
         return <>{moment(activeAt).format('YYYY-MM-DD HH:mm')} - <br /> {moment(expiryAt).format('YYYY-MM-DD HH:mm')}</>;
       default:
         return <>'N/A' - 'N/A'</>;
@@ -648,7 +697,8 @@ const Lixi = props => {
   const infoLixi = () => {
     return (
       <Descriptions
-        column={1}
+        className={isMobileDetailLixi ? '' : 'lixi-detail'}
+        column={isMobileDetailLixi ? 1 : 2}
         bordered
         size="small"
         style={{
@@ -686,11 +736,11 @@ const Lixi = props => {
           <StyleButton shape="round" onClick={withdrawButton}>
             {intl.get('lixi.withdraw')}
           </StyleButton>
-          {selectedLixi.claimType == ClaimType.OneTime &&
+          {selectedLixi.claimType == ClaimType.OneTime && (
             <StyleButton shape="round" onClick={() => handleExportLixi()}>
               {intl.get('lixi.exportLixi')}
             </StyleButton>
-          }
+          )}
         </Descriptions.Item>
       </Descriptions>
     );
@@ -701,8 +751,9 @@ const Lixi = props => {
       case ClaimType.Single:
         return (
           <Descriptions
-            column={1}
-            bordered
+            column={isMobileDetailLixi ? 1 : 3}
+            bordered={isMobileDetailLixi ? true : false}
+            layout={isMobileDetailLixi ? 'horizontal' : 'vertical'}
             size="small"
             style={{
               paddingBottom: '1%',
@@ -728,13 +779,17 @@ const Lixi = props => {
             >
               {countries.find(country => country.id === selectedLixi?.country)?.name ?? intl.get('lixi.allCountries')}
             </Descriptions.Item>
+            <Descriptions.Item>
+              <Button type="link">view more</Button>
+            </Descriptions.Item>
           </Descriptions>
         );
       case ClaimType.OneTime:
         return (
           <Descriptions
-            column={1}
-            bordered
+            column={isMobileDetailLixi ? 1 : 4}
+            bordered={isMobileDetailLixi ? true : false}
+            layout={isMobileDetailLixi ? 'horizontal' : 'vertical'}
             size="small"
             style={{
               padding: '0 0 20px 0',
@@ -753,13 +808,19 @@ const Lixi = props => {
             <Descriptions.Item label={intl.get('lixi.valuePerClaim')} key="desc.valuePerClaim">
               {rulesLixi()}
             </Descriptions.Item>
+            <Descriptions.Item label={intl.get('account.numberLixiPerPackage')} key="desc.valuePerClaim">
+              {_.isNil(selectedLixi.numberLixiPerPackage) ? '1' : selectedLixi.numberLixiPerPackage}{' '}
+              {intl.get('account.perPack')}
+            </Descriptions.Item>
             <Descriptions.Item label={intl.get('lixi.validity')} key="desc.validity">
               {formatValidityDate()}
             </Descriptions.Item>
             <Descriptions.Item label={intl.get('lixi.validCountries')} key="desc.country">
               {countries.find(country => country.id === selectedLixi?.country)?.name ?? intl.get('lixi.allCountries')}
             </Descriptions.Item>
-
+            <Descriptions.Item>
+              <Button type="link">view more</Button>
+            </Descriptions.Item>
             {/* View more */}
           </Descriptions>
         );
@@ -772,7 +833,7 @@ const Lixi = props => {
         return (
           <>
             <LabelHeader>
-              {intl.get('lixi.detail')} &nbsp; <QuestionCircleOutlined />
+              {intl.get('lixi.accountLixi')} &nbsp; <QuestionCircleOutlined />
             </LabelHeader>
             <InfoCard style={{ height: 'fit-content' }}>
               <Descriptions
@@ -847,13 +908,16 @@ const Lixi = props => {
         return (
           <>
             <LabelHeader>{intl.get('lixi.overview')}</LabelHeader>
-            <InfoCard style={{ height: 'fit-content' }}>
+            <InfoCard className="overview">
               <Descriptions
                 column={1}
                 bordered
                 size="small"
                 style={{
-                  color: 'rgb(23,23,31)'
+                  color: 'rgb(23,23,31)',
+                  height: '100%',
+                  flexDirection: 'column',
+                  justifyContent: 'center'
                 }}
               >
                 <Descriptions.Item
@@ -941,17 +1005,29 @@ const Lixi = props => {
       {selectedLixi && selectedLixi.address ? (
         <>
           <Form>
-            <LabelHeader>{intl.get('lixi.detail')}</LabelHeader>
-            <InfoCard>
-              {/* Image, name, status lixi */}
-              {infoLixi()}
+            <DescriptionsCustom
+              bordered
+              style={{ width: '100%' }}
+              layout={isMobileDetailLixi ? 'vertical' : 'horizontal'}
+            >
+              <Descriptions.Item>
+                <>
+                  <LabelHeader>{intl.get('lixi.detail')}</LabelHeader>
+                  <InfoCard>
+                    {/* Image, name, status lixi */}
+                    {infoLixi()}
 
-              {/* Detail */}
-              {detailLixi()}
-            </InfoCard>
+                    {/* Detail */}
+                    {detailLixi()}
+                  </InfoCard>
+                </>
+              </Descriptions.Item>
 
-            {/* Address or Overview */}
-            {overviewLixi()}
+              <Descriptions.Item>
+                {/* Address or Overview */}
+                {overviewLixi()}
+              </Descriptions.Item>
+            </DescriptionsCustom>
 
             {/* Claim report */}
             <LabelHeader>Claim report</LabelHeader>

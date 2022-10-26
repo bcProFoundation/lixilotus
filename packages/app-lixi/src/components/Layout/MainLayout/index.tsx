@@ -168,6 +168,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   const [navBarTitle, setNavBarTitle] = useState('');
   const [navBarSubTitle, setNavBarSubTitle] = useState('');
   const selectedKey = router.pathname ?? '';
+  const disableSideBarRanking = ['lixi', 'profile'];
   const ref = useRef(null);
   const setRef = useCallback(node => {
     if (node && node.clientHeight) {
@@ -216,7 +217,9 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                       <Sidebar />
                       <Layout
                         className="main-section-layout"
-                        style={{ paddingRight: selectedKey === '/profile' ? '2rem' : '0' }}
+                        style={{
+                          paddingRight: disableSideBarRanking.some(item => selectedKey.includes(item)) ? '2rem' : '0'
+                        }}
                       >
                         <Topbar ref={setRef} />
                         {selectedKey !== '/' && (
@@ -232,7 +235,9 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                         )}
                         <Content className="content-layout">{children}</Content>
                       </Layout>
-                      {selectedKey !== '/profile' && <SidebarRanking></SidebarRanking>}
+                      {!disableSideBarRanking.some(item => selectedKey.includes(item)) && (
+                        <SidebarRanking></SidebarRanking>
+                      )}
                     </Layout>
                   </AppContainer>
                 </>
