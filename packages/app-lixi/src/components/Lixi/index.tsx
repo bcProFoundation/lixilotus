@@ -358,13 +358,27 @@ const Lixi = props => {
   const rulesLixi = () => {
     switch (selectedLixi?.lixiType) {
       case LixiType.Fixed:
-        return <> {selectedLixi.fixedValue} {currency.ticker} </>;
+        return (
+          <>
+            {' '}
+            {selectedLixi.fixedValue} {currency.ticker}{' '}
+          </>
+        );
       case LixiType.Divided:
         return <> {selectedLixi.dividedValue} </>;
       case LixiType.Equal:
-        return <> {selectedLixi.amount / selectedLixi.numberOfSubLixi} {currency.ticker} </>;
+        return (
+          <>
+            {' '}
+            {selectedLixi.amount / selectedLixi.numberOfSubLixi} {currency.ticker}{' '}
+          </>
+        );
       default:
-        return <>{selectedLixi?.minValue}-{selectedLixi?.maxValue} {currency.ticker}</>;
+        return (
+          <>
+            {selectedLixi?.minValue}-{selectedLixi?.maxValue} {currency.ticker}
+          </>
+        );
     }
   };
 
@@ -431,7 +445,11 @@ const Lixi = props => {
       case _.isEmpty(activeAt) && !_.isEmpty(expiryAt):
         return <>'N/A' - {moment(expiryAt).format('YYYY-MM-DD HH:mm')}</>;
       case !_.isEmpty(activeAt) && !_.isEmpty(expiryAt):
-        return <>{moment(activeAt).format('YYYY-MM-DD HH:mm')} - <br /> {moment(expiryAt).format('YYYY-MM-DD HH:mm')}</>;
+        return (
+          <>
+            {moment(activeAt).format('YYYY-MM-DD HH:mm')} - <br /> {moment(expiryAt).format('YYYY-MM-DD HH:mm')}
+          </>
+        );
       default:
         return <>'N/A' - 'N/A'</>;
     }
@@ -510,57 +528,8 @@ const Lixi = props => {
   const claimReportSingleCode = allClaimsCurrentLixi.map((item, i) => {
     return {
       num: i + 1,
-      amount: item.amount.toFixed(2),
-      createAt: item.createdAt
-    };
-  });
-
-  const onetimeCodeColumns = [
-    { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
-    { title: 'Code', dataIndex: 'claimCode' },
-    { title: 'Value redeem (XPI)', dataIndex: 'amount' },
-    { title: 'Statusses', dataIndex: 'isClaimed' }
-  ];
-  const prefixClaimCode = 'lixi';
-
-  const subLixiesDataSource = subLixies.map((item, i) => {
-    return {
-      num: i + 1,
-      claimCode: (
-        <CopyToClipboard text={`${prefixClaimCode}_${item.claimCode}`} onCopy={handleOnCopyClaimCode}>
-          <div>
-            <CopyOutlined /> {`${prefixClaimCode}_${item.claimCode}`}
-          </div>
-        </CopyToClipboard>
-      ),
-      amount: item.amount.toFixed(2),
-      isClaimed: item.isClaimed ? (
-        <Text
-          style={{
-            color: '#FFFFFF',
-            padding: '4px 8px',
-            borderRadius: '8px',
-            fontWeight: '400',
-            fontSize: '14px',
-            background: '#598300'
-          }}
-        >
-          Redeemed
-        </Text>
-      ) : (
-        <Text
-          style={{
-            color: '#FFFFFF',
-            padding: '4px 8px',
-            borderRadius: '8px',
-            fontWeight: '400',
-            fontSize: '14px',
-            background: '#E37100'
-          }}
-        >
-          Remaining
-        </Text>
-      )
+      amount: fromSmallestDenomination(item.amount),
+      createAt: moment(item.createdAt).format('YYYY-MM-DD HH:mm')
     };
   });
 
@@ -637,7 +606,7 @@ const Lixi = props => {
             background: '#74546F'
           }}
         >
-          Ended
+          {intl.get('general.ended')}
         </Text>
       );
     } else {
@@ -655,7 +624,7 @@ const Lixi = props => {
                 background: '#2F80ED'
               }}
             >
-              Running
+              {intl.get('general.running')}
             </Text>
           );
         case 'pending':
@@ -671,7 +640,7 @@ const Lixi = props => {
                 background: '#E37100'
               }}
             >
-              Waiting
+              {intl.get('general.waiting')}
             </Text>
           );
         case 'locked':
@@ -687,7 +656,7 @@ const Lixi = props => {
                 background: '#BA1A1A'
               }}
             >
-              Archived
+              {intl.get('lixi.archived')}
             </Text>
           );
       }
@@ -761,7 +730,7 @@ const Lixi = props => {
             }}
           >
             <Descriptions.Item label={intl.get('lixi.type')} key="desc.claimtype">
-              Single Code
+              {intl.get('account.singleCode')}
             </Descriptions.Item>
             <Descriptions.Item label={intl.get('lixi.rules')} key="desc.rules">
               {typeLixi()}
@@ -780,7 +749,7 @@ const Lixi = props => {
               {countries.find(country => country.id === selectedLixi?.country)?.name ?? intl.get('lixi.allCountries')}
             </Descriptions.Item>
             <Descriptions.Item>
-              <Button type="link">view more</Button>
+              <Button type="link">{intl.get('general.viewmore')}</Button>
             </Descriptions.Item>
           </Descriptions>
         );
@@ -800,7 +769,7 @@ const Lixi = props => {
               {selectedLixi.amount} {currency.ticker}
             </Descriptions.Item>
             <Descriptions.Item label={intl.get('lixi.type')} key="desc.claimtype">
-              One-time Codes
+              {intl.get('account.oneTimeCode')}
             </Descriptions.Item>
             <Descriptions.Item label={intl.get('lixi.rules')} key="desc.rules">
               {typeLixi()}
@@ -808,9 +777,8 @@ const Lixi = props => {
             <Descriptions.Item label={intl.get('lixi.valuePerClaim')} key="desc.valuePerClaim">
               {rulesLixi()}
             </Descriptions.Item>
-            <Descriptions.Item label={intl.get('account.numberLixiPerPackage')} key="desc.valuePerClaim">
-              {_.isNil(selectedLixi.numberLixiPerPackage) ? '1' : selectedLixi.numberLixiPerPackage}{' '}
-              {intl.get('account.perPack')}
+            <Descriptions.Item label={intl.get('account.perPack')} key="desc.valuePerClaim">
+              {selectedLixi.numberLixiPerPackage} {intl.get('account.lixiForPack')}
             </Descriptions.Item>
             <Descriptions.Item label={intl.get('lixi.validity')} key="desc.validity">
               {formatValidityDate()}
@@ -819,7 +787,7 @@ const Lixi = props => {
               {countries.find(country => country.id === selectedLixi?.country)?.name ?? intl.get('lixi.allCountries')}
             </Descriptions.Item>
             <Descriptions.Item>
-              <Button type="link">view more</Button>
+              <Button type="link">{intl.get('general.viewmore')}</Button>
             </Descriptions.Item>
             {/* View more */}
           </Descriptions>
@@ -869,7 +837,7 @@ const Lixi = props => {
               </Descriptions>
             </InfoCard>
 
-            <LabelHeader>Claim code </LabelHeader>
+            <LabelHeader>{intl.get('claim.claimCode')}</LabelHeader>
             <InfoCard style={{ height: 'fit-content' }}>
               <Descriptions
                 column={1}
@@ -894,7 +862,7 @@ const Lixi = props => {
                   }
                   style={{ borderTopLeftRadius: '24px', borderBottomLeftRadius: '24px' }}
                 >
-                  <Text style={{ fontSize: '14px', color: 'rgba(30, 26, 29, 0.38)' }}>Claimed</Text>
+                  <Text style={{ fontSize: '14px', color: 'rgba(30, 26, 29, 0.38)' }}>{intl.get('lixi.claimed')}</Text>
                   <br />
                   <Text style={{ fontSize: '22px', color: '#1E1A1D' }}>
                     {fromSmallestDenomination(selectedLixi?.totalClaim) ?? 0} {currency.ticker}
@@ -933,7 +901,7 @@ const Lixi = props => {
                             borderRadius: '4px'
                           }}
                         />
-                        &nbsp; Claimed
+                        &nbsp; {intl.get('lixi.claimed')}
                       </Text>
                       <br />
                       <Text style={{ color: '#1E1A1D', paddingBottom: '24px' }}>
@@ -950,7 +918,7 @@ const Lixi = props => {
                             borderRadius: '4px'
                           }}
                         />
-                        &nbsp; Remaining
+                        &nbsp; {intl.get('lixi.remaining')}
                       </Text>
                       <br />
                       <Text style={{ color: '#1E1A1D' }}>
@@ -1030,7 +998,7 @@ const Lixi = props => {
             </DescriptionsCustom>
 
             {/* Claim report */}
-            <LabelHeader>Claim report</LabelHeader>
+            <LabelHeader>{intl.get('claim.claimReport')}</LabelHeader>
             {claimReport()}
           </Form>
 

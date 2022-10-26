@@ -40,6 +40,10 @@ export default {
   'general.chooseCamera': 'Please choose camera',
   'general.chooseCameraTip': 'Try switching camera when its not working properly',
   'general.notification': 'Notifications',
+  'general.viewmore': 'View more',
+  'general.ended': 'Ended',
+  'general.running': 'Running',
+  'general.waiting': 'Waiting',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
@@ -55,6 +59,7 @@ export default {
   'account.equal': 'Equal',
   'account.eachClaim': 'Value of each claim',
   'account.perPack': 'Per pack',
+  'account.lixiForPack': 'lixi/package',
   'account.numberLixiPerPackage': 'number of sub lixi per package',
   'account.numberOfSubLixi': 'Number of codes',
   'account.defaultValueToGive': 'Default value to give',
@@ -161,7 +166,7 @@ export default {
   'lixi.type': 'Type of code',
   'lixi.rules': 'Rules',
   'lixi.totalClaimed': 'Total Claimed',
-  'lixi.remainingLixi': 'Remaining Lixi',
+  'lixi.remaining': 'Remaining',
   'lixi.remainingXPI': 'XPI Remaining',
   'lixi.message': 'Message',
   'lixi.loadmore': 'Load More',
@@ -244,9 +249,11 @@ export default {
   'lixi.archive': 'Archive',
   'lixi.unarchive': 'Unarchive',
   'lixi.withdraw': 'Withdraw',
+  'lixi.claimed': 'Claimed',
 
   /* 04.Claim */
   'claim.claim': 'Claim',
+  'claim.claimReport': 'Claim Report',
   'claim.titleShared': 'Lixi Program sent you a small gift!',
   'claim.copyToClipboard': 'Link copied to clipboard',
   'claim.youClaimedLixi': 'You have claimed lixi',
