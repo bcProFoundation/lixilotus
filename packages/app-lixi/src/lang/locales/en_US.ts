@@ -256,7 +256,7 @@ export default {
   'claim.claimReport': 'Claim Report',
   'claim.titleShared': 'Lixi Program sent you a small gift!',
   'claim.copyToClipboard': 'Link copied to clipboard',
-  'claim.youClaimedLixi': 'You have claimed lixi',
+  'claim.youClaimedLixi': 'Successful claim',
   'claim.addressNotValid': 'Destination is not a valid {ticker} address',
   'claim.invalidAddress': 'Invalid {ticker} address',
   'claim.tickerAddress': '{ticker} Address',

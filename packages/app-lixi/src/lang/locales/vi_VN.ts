@@ -255,7 +255,7 @@ export default {
   'claim.claimReport': 'Danh sách đã nhận lì xì',
   'claim.titleShared': 'Lì xì gửi đến bạn một món quà nhỏ!',
   'claim.copyToClipboard': 'Liên kết đã được sao chép',
-  'claim.youClaimedLixi': 'bạn vừa nhận được Lì xì',
+  'claim.youClaimedLixi': 'Nhận lì xì thành công',
   'claim.addressNotValid': 'Địa chỉ {ticker} không hợp lệ',
   'claim.invalidAddress': 'Địa chỉ {ticker} không hợp lệ',
   'claim.tickerAddress': 'Địa chỉ {ticker}',

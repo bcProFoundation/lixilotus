@@ -53,5 +53,10 @@ export const navBarHeaderList = [
     name: 'Pages',
     subTitle: 'Change information your page',
     path: '/page/edit'
+  },
+  {
+    name: 'Claimed',
+    subTitle: `Detail of claimed`,
+    path: '/claimed/'
   }
 ];

@@ -1,19 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import intl from 'react-intl-universal';
 import { Layout, Spin } from 'antd';
 import Link from 'next/link';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 
-import {
-  GiftOutlined,
-  HomeOutlined,
-  LeftOutlined,
-  LoadingOutlined,
-  SettingOutlined,
-  UserOutlined,
-  WalletOutlined
-} from '@ant-design/icons';
-import { Footer, NavButton } from '@bcpros/lixi-components/components';
+import { LeftOutlined, LoadingOutlined } from '@ant-design/icons';
 
 import ModalManager from '../../Common/ModalManager';
 import { GlobalStyle } from '../MainLayout/GlobalStyle';
@@ -24,9 +14,7 @@ import { loadLocale } from '@store/settings/actions';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
 import { injectStore } from 'src/utils/axiosClient';
-import DeviceProtectableComponentWrapper from '@components/Authentication/DeviceProtectableComponentWrapper';
 import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
-import SidebarRanking from '@containers/Sidebar/SideBarRanking';
 import { useRouter } from 'next/router';
 import { navBarHeaderList } from '@bcpros/lixi-models/constants';
 
@@ -116,48 +104,6 @@ export const AppContainer = styled.div`
     @media (max-width: 768px) {
       padding-right: 0 !important;
     }
-  }
-`;
-
-export const HeaderContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start !important;
-  width: 100%;
-  padding: 10px 0 15px;
-  margin-bottom: 20px;
-  justify-content: space-between;
-  border-bottom: 1px solid ${props => props.theme.wallet.borders.color};
-
-  a {
-    color: ${props => props.theme.wallet.text.secondary};
-
-    :hover {
-      color: ${props => props.theme.primary};
-    }
-  }
-
-  @media (max-width: 768px) {
-    a {
-      font-size: 12px;
-    }
-    padding: 20px 0 20px;
-  }
-`;
-
-export const LotusLogo = styled.img`
-  width: 70px;
-  @media (max-width: 768px) {
-    width: 50px;
-  }
-`;
-
-export const LixiTextLogo = styled.img`
-  width: 250px;
-  margin-left: 40px;
-  @media (max-width: 768px) {
-    width: 190px;
-    margin-left: 20px;
   }
 `;
 
