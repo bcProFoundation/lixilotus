@@ -52,6 +52,7 @@ import { exportSubLixies } from '../../store/lixi/actions';
 import { RenameLixiModalProps } from './RenameLixiModal';
 import SubLixiList from './SubLixiList';
 import VirtualTable from './SubLixiListScroll';
+import useWindowDimensions from '@hooks/useWindowDimensions';
 
 type CopiedProps = {
   style?: React.CSSProperties;
@@ -89,19 +90,58 @@ const LabelHeader = styled.h4`
   margin-bottom: unset;
 `;
 
+const DescriptionsCustom = styled(Descriptions)`
+  .ant-descriptions-view {
+    border: none;
+  }
+  .ant-descriptions-item-content {
+    border: none;
+    padding-left: 0px;
+    @media (max-width: 768px) {
+      padding-right: 0px;
+    }
+  }
+  .ant-descriptions-row {
+    border: none;
+  }
+`;
+
 const InfoCard = styled.div`
   box-sizing: border-box;
   position: inherit;
   width: 100%;
-  height: fit-content;
   background: #ffffff;
   border: 1px solid #e0e0e0;
   border-radius: 24px;
+  height: fit-content;
+  @media (min-width: 768px) {
+    height: 315px;
+  }
 
   img {
     border-radius: 16px;
     height: 80px;
     width: 80px;
+  }
+
+  .lixi-detail {
+    .ant-descriptions-item-content:last-child {
+      justify-content: end !important;
+    }
+  }
+  &.overview {
+    .ant-descriptions-view {
+      height: 100% !important;
+      > table {
+        height: 100% !important;
+      }
+
+      .ant-descriptions-item-content {
+        height: 100% !important;
+        justify-content: center;
+        flex-direction: column;
+      }
+    }
   }
 
   .ant-descriptions-item-label {
@@ -114,7 +154,6 @@ const InfoCard = styled.div`
     line-height: 20px;
     color: rgba(30, 26, 29, 0.38);
     background: #ffffff;
-
     padding: 5px 16px;
   }
 
@@ -127,16 +166,19 @@ const InfoCard = styled.div`
     line-height: 24px;
     letter-spacing: 0.5px;
     color: #1e1a1d;
+    border: none !important;
+    padding-left: 16px;
+
+    @media (min-width: 768px) {
+      padding: 4px 16px !important;
+    }
   }
 
-  .ant-descriptions-bordered {
-    .ant-descriptions-view {
-      border: none;
-    }
-
-    .ant-descriptions-row {
-      border-bottom: none;
-    }
+  .ant-descriptions-view {
+    border: none !important;
+  }
+  .ant-descriptions-row {
+    border: none !important;
   }
 `;
 
@@ -173,18 +215,18 @@ const StyleButton = styled(Button)`
 
 const StyledQRCode = styled.div`
   flex: 1 auto;
-  text-align: right;
+  text-align: unset;
   opacity: 0.7;
   #borderedQRCode {
     @media (max-width: 768px) {
       border-radius: 18px;
-      width: 120px;
-      height: 120px;
+      width: 126px;
+      height: 126px;
     }
     @media (min-width: 768px) {
       border-radius: 18px;
-      width: 120px;
-      height: 120px;
+      width: 77px;
+      height: 77px;
     }
   }
 `;
@@ -213,6 +255,8 @@ const Lixi = props => {
   subLixies = _.sortBy(subLixies, ['isClaimed', 'packageId']);
 
   const [loadings, setLoadings] = useState<boolean[]>([]);
+  const { width } = useWindowDimensions();
+  const [isMobileDetailLixi, setIsMobileDetailLixi] = useState(false);
 
   // useEffect(() => {
   //   if (selectedLixi) {
@@ -237,6 +281,11 @@ const Lixi = props => {
       return clearInterval(id);
     };
   }, []);
+
+  useEffect(() => {
+    const isMobileDetail = width < 768 ? true : false;
+    setIsMobileDetailLixi(isMobileDetail);
+  }, [width]);
 
   const handleRefeshLixi = () => {
     if (!(selectedLixi && selectedLixiId)) {
@@ -544,11 +593,7 @@ const Lixi = props => {
   };
 
   const statusLixi = () => {
-    if (
-      (lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim) ||
-      moment().isAfter(lixi.expiryAt) ||
-      selectedLixi.status == 'failed'
-    ) {
+    if (moment().isAfter(selectedLixi.expiryAt)) {
       return (
         <Text
           style={{
@@ -561,7 +606,7 @@ const Lixi = props => {
             background: '#74546F'
           }}
         >
-          Ended
+          {intl.get('general.ended')}
         </Text>
       );
     } else {
@@ -579,7 +624,7 @@ const Lixi = props => {
                 background: '#2F80ED'
               }}
             >
-              Running
+              {intl.get('general.running')}
             </Text>
           );
         case 'pending':
@@ -595,7 +640,7 @@ const Lixi = props => {
                 background: '#E37100'
               }}
             >
-              Waiting
+              {intl.get('general.waiting')}
             </Text>
           );
         case 'locked':
@@ -611,7 +656,7 @@ const Lixi = props => {
                 background: '#BA1A1A'
               }}
             >
-              Archived
+              {intl.get('lixi.archived')}
             </Text>
           );
       }
@@ -621,7 +666,8 @@ const Lixi = props => {
   const infoLixi = () => {
     return (
       <Descriptions
-        column={1}
+        className={isMobileDetailLixi ? '' : 'lixi-detail'}
+        column={isMobileDetailLixi ? 1 : 2}
         bordered
         size="small"
         style={{
@@ -674,8 +720,9 @@ const Lixi = props => {
       case ClaimType.Single:
         return (
           <Descriptions
-            column={1}
-            bordered
+            column={isMobileDetailLixi ? 1 : 3}
+            bordered={isMobileDetailLixi ? true : false}
+            layout={isMobileDetailLixi ? 'horizontal' : 'vertical'}
             size="small"
             style={{
               paddingBottom: '1%',
@@ -683,7 +730,7 @@ const Lixi = props => {
             }}
           >
             <Descriptions.Item label={intl.get('lixi.type')} key="desc.claimtype">
-              Single Code
+              {intl.get('account.singleCode')}
             </Descriptions.Item>
             <Descriptions.Item label={intl.get('lixi.rules')} key="desc.rules">
               {typeLixi()}
@@ -701,13 +748,17 @@ const Lixi = props => {
             >
               {countries.find(country => country.id === selectedLixi?.country)?.name ?? intl.get('lixi.allCountries')}
             </Descriptions.Item>
+            <Descriptions.Item>
+              <Button type="link">{intl.get('general.viewmore')}</Button>
+            </Descriptions.Item>
           </Descriptions>
         );
       case ClaimType.OneTime:
         return (
           <Descriptions
-            column={1}
-            bordered
+            column={isMobileDetailLixi ? 1 : 4}
+            bordered={isMobileDetailLixi ? true : false}
+            layout={isMobileDetailLixi ? 'horizontal' : 'vertical'}
             size="small"
             style={{
               padding: '0 0 20px 0',
@@ -718,7 +769,7 @@ const Lixi = props => {
               {selectedLixi.amount} {currency.ticker}
             </Descriptions.Item>
             <Descriptions.Item label={intl.get('lixi.type')} key="desc.claimtype">
-              One-time Codes
+              {intl.get('account.oneTimeCode')}
             </Descriptions.Item>
             <Descriptions.Item label={intl.get('lixi.rules')} key="desc.rules">
               {typeLixi()}
@@ -726,13 +777,18 @@ const Lixi = props => {
             <Descriptions.Item label={intl.get('lixi.valuePerClaim')} key="desc.valuePerClaim">
               {rulesLixi()}
             </Descriptions.Item>
+            <Descriptions.Item label={intl.get('account.perPack')} key="desc.valuePerClaim">
+              {selectedLixi.numberLixiPerPackage} {intl.get('account.lixiForPack')}
+            </Descriptions.Item>
             <Descriptions.Item label={intl.get('lixi.validity')} key="desc.validity">
               {formatValidityDate()}
             </Descriptions.Item>
             <Descriptions.Item label={intl.get('lixi.validCountries')} key="desc.country">
               {countries.find(country => country.id === selectedLixi?.country)?.name ?? intl.get('lixi.allCountries')}
             </Descriptions.Item>
-
+            <Descriptions.Item>
+              <Button type="link">{intl.get('general.viewmore')}</Button>
+            </Descriptions.Item>
             {/* View more */}
           </Descriptions>
         );
@@ -745,7 +801,7 @@ const Lixi = props => {
         return (
           <>
             <LabelHeader>
-              {intl.get('lixi.detail')} &nbsp; <QuestionCircleOutlined />
+              {intl.get('lixi.accountLixi')} &nbsp; <QuestionCircleOutlined />
             </LabelHeader>
             <InfoCard style={{ height: 'fit-content' }}>
               <Descriptions
@@ -781,7 +837,7 @@ const Lixi = props => {
               </Descriptions>
             </InfoCard>
 
-            <LabelHeader>Claim code </LabelHeader>
+            <LabelHeader>{intl.get('claim.claimCode')}</LabelHeader>
             <InfoCard style={{ height: 'fit-content' }}>
               <Descriptions
                 column={1}
@@ -806,7 +862,7 @@ const Lixi = props => {
                   }
                   style={{ borderTopLeftRadius: '24px', borderBottomLeftRadius: '24px' }}
                 >
-                  <Text style={{ fontSize: '14px', color: 'rgba(30, 26, 29, 0.38)' }}>Claimed</Text>
+                  <Text style={{ fontSize: '14px', color: 'rgba(30, 26, 29, 0.38)' }}>{intl.get('lixi.claimed')}</Text>
                   <br />
                   <Text style={{ fontSize: '22px', color: '#1E1A1D' }}>
                     {fromSmallestDenomination(selectedLixi?.totalClaim) ?? 0} {currency.ticker}
@@ -820,13 +876,16 @@ const Lixi = props => {
         return (
           <>
             <LabelHeader>{intl.get('lixi.overview')}</LabelHeader>
-            <InfoCard style={{ height: 'fit-content' }}>
+            <InfoCard className="overview">
               <Descriptions
                 column={1}
                 bordered
                 size="small"
                 style={{
-                  color: 'rgb(23,23,31)'
+                  color: 'rgb(23,23,31)',
+                  height: '100%',
+                  flexDirection: 'column',
+                  justifyContent: 'center'
                 }}
               >
                 <Descriptions.Item
@@ -842,7 +901,7 @@ const Lixi = props => {
                             borderRadius: '4px'
                           }}
                         />
-                        &nbsp; Claimed
+                        &nbsp; {intl.get('lixi.claimed')}
                       </Text>
                       <br />
                       <Text style={{ color: '#1E1A1D', paddingBottom: '24px' }}>
@@ -859,7 +918,7 @@ const Lixi = props => {
                             borderRadius: '4px'
                           }}
                         />
-                        &nbsp; Remaining
+                        &nbsp; {intl.get('lixi.remaining')}
                       </Text>
                       <br />
                       <Text style={{ color: '#1E1A1D' }}>
@@ -914,20 +973,32 @@ const Lixi = props => {
       {selectedLixi && selectedLixi.address ? (
         <>
           <Form>
-            <LabelHeader>{intl.get('lixi.detail')}</LabelHeader>
-            <InfoCard>
-              {/* Image, name, status lixi */}
-              {infoLixi()}
+            <DescriptionsCustom
+              bordered
+              style={{ width: '100%' }}
+              layout={isMobileDetailLixi ? 'vertical' : 'horizontal'}
+            >
+              <Descriptions.Item>
+                <>
+                  <LabelHeader>{intl.get('lixi.detail')}</LabelHeader>
+                  <InfoCard>
+                    {/* Image, name, status lixi */}
+                    {infoLixi()}
 
-              {/* Detail */}
-              {detailLixi()}
-            </InfoCard>
+                    {/* Detail */}
+                    {detailLixi()}
+                  </InfoCard>
+                </>
+              </Descriptions.Item>
 
-            {/* Address or Overview */}
-            {overviewLixi()}
+              <Descriptions.Item>
+                {/* Address or Overview */}
+                {overviewLixi()}
+              </Descriptions.Item>
+            </DescriptionsCustom>
 
             {/* Claim report */}
-            <LabelHeader>Claim report</LabelHeader>
+            <LabelHeader>{intl.get('claim.claimReport')}</LabelHeader>
             {claimReport()}
           </Form>
 
