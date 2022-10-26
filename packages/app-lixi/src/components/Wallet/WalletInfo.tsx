@@ -115,10 +115,8 @@ const WalletInfoComponent: React.FC = () => {
   const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
   const [isLoadBalanceError, setIsLoadBalanceError] = useState(false);
-  const [amountFiatCoin, setAmountFiatCoin] = useState('');
 
   useEffect(() => {
-    fetchFiatRate();
     const id = setInterval(() => {
       XPI.Electrumx.balance(selectedAccount?.address)
         .then(result => {
@@ -133,17 +131,6 @@ const WalletInfoComponent: React.FC = () => {
     }, 10000);
     return () => clearInterval(id);
   }, []);
-
-  const fetchFiatRate = () => {
-    fetch(urlFiatRate)
-      .then(res => res.json())
-      .then(body => {
-        const fiatRateUsd = body.find(item => item.code === 'USD') || 0;
-        const rateUsd = fiatRateUsd?.rate;
-        const resultAmount = fromSmallestDenomination(selectedAccount?.balance ?? 0) * rateUsd;
-        setAmountFiatCoin(decimalFormatBalance(resultAmount));
-      });
-  };
 
   const decimalFormatBalance = balance => {
     if (Number(balance) < 10) {
@@ -205,7 +192,6 @@ const WalletInfoComponent: React.FC = () => {
           </div>
           <StyledBalanceHeader>
             <BalanceHeader balance={fromSmallestDenomination(selectedAccount?.balance ?? 0)} ticker={currency.ticker} />
-            <p className="iso-amount">~ {amountFiatCoin} USD</p>
           </StyledBalanceHeader>
         </WalletCard>
         {!isServer() && selectedAccount?.address && (
