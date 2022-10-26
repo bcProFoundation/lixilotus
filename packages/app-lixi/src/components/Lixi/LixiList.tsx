@@ -162,16 +162,12 @@ const LixiList = ({ lixies }: LixiListProps) => {
         name: lixi.name,
         type: lixi.claimType == ClaimType.Single ? intl.get('account.singleCode') : intl.get('account.oneTimeCode'),
         value: typeLixi(lixi),
-        redeemed:
-          lixi.claimType == ClaimType.Single
-            ? fromSmallestDenomination(lixi.totalClaim)
-            : lixi.subLixiTotalClaim.toFixed(2),
-        remaining:
-          lixi.claimType == ClaimType.Single
-            ? fromSmallestDenomination(lixi.balance)
-            : lixi.subLixiBalance != undefined
-            ? (lixi.subLixiBalance - lixi.subLixiTotalClaim).toFixed(2)
-            : 0.0,
+        redeemed: _.isNil(lixi.subLixiTotalClaim)
+          ? fromSmallestDenomination(lixi.totalClaim)
+          : lixi.subLixiTotalClaim.toFixed(2),
+        remaining: _.isNil(lixi.subLixiBalance)
+          ? fromSmallestDenomination(lixi.balance)
+          : (lixi.subLixiBalance - lixi.subLixiTotalClaim).toFixed(2),
         budget: lixi.claimType == ClaimType.Single ? lixi.amount : lixi.subLixiBalance || 0.0,
         status: lixi.status,
         claimType: lixi.claimType
