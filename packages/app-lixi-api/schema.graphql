@@ -66,7 +66,6 @@ type Page {
 type PageConnection {
   edges: [PageEdge!]
   pageInfo: PageInfo!
-  postInfo: PostInfo!
   totalCount: Int
 }
 
@@ -114,20 +113,12 @@ type Post {
 type PostConnection {
   edges: [PostEdge!]
   pageInfo: PageInfo!
-  postInfo: PostInfo!
   totalCount: Int
 }
 
 type PostEdge {
   cursor: String!
   node: Post!
-}
-
-type PostInfo {
-  endCursor: String
-  hasNextPage: Boolean!
-  hasPreviousPage: Boolean!
-  startCursor: String
 }
 
 input PostOrder {

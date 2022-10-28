@@ -1,5 +1,6 @@
 # import PostOrder from '/packages/app-lixi-api/schema.graphql'
-# import PostInfoFields from '../../graphql/fragments/post-info-fields.fragment.graphql'
+# import PageInfoFields from '../../graphql/fragments/page-info-fields.fragment.graphql'
+
 
 query Post($id: String!) {
   post(id: $id) {
@@ -11,7 +12,7 @@ query Posts(
   $after: String
   $before: String
   $first: Int = 20
-  $last: Int = 20
+  $last: Int
   $orderBy: PostOrder
   $query: String
   $skip: Int
@@ -24,8 +25,8 @@ query Posts(
         ...PostFields
       }
     }
-    postInfo {
-      ...PostInfoFields
+    pageInfo {
+      ...PageInfoFields
     }
   }
 }

@@ -218,7 +218,6 @@ const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
     const updatePageInput: UpdatePageInput = {
       id: selectedPage.id,
       name: _.isEmpty(newPageName) ? selectedPage?.name : newPageName,
-      title: _.isEmpty(newPageTitle) ? selectedPage?.title : newPageTitle,
       description: _.isEmpty(newPageDescription) ? selectedPage?.description : newPageDescription,
       website: _.isEmpty(newPageWebsite) ? selectedPage?.website : newPageWebsite,
       country: _.isEmpty(newPageCountry) ? selectedPage?.country : newPageCountry,
