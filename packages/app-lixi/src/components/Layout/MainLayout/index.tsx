@@ -56,7 +56,7 @@ const NavBarHeader = styled(Header)`
     color: var(--color-primary);
   }
   @media (max-width: 768px) {
-    padding: 0;
+    padding: 8px;
     width: 100%;
   }
 `;
@@ -88,15 +88,15 @@ export const AppContainer = styled.div`
     width: 100%;
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
-    box-shadow: none;
+    padding: 0 16px;
+    padding: ;
   }
-  @media (max-width: 396px) {
-    padding: 0;
+  @media (max-width: 420px) {
+    padding: 0 8px;
   }
   @media (min-width: 768px) {
     width: 100%;
     background: #fffbff;
-    padding: 0;
     .content-layout {
       // margin-top: 80px;
       z-index: 1;

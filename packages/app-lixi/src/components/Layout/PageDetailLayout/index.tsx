@@ -53,7 +53,7 @@ const NavBarHeader = styled(Header)`
     color: var(--color-primary);
   }
   @media (max-width: 768px) {
-    padding: 0;
+    padding: 8px;
     width: 100%;
   }
 `;
@@ -81,12 +81,15 @@ export const AppContainer = styled.div`
   padding: 10px 30px 120px 30px;
   overflow: hidden;
   background: ${props => props.theme.wallet.background};
+  @media (max-width: 420px) {
+    padding: 0 8px;
+  }
   @media (max-width: 768px) {
     width: 100%;
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
-    padding: 0;
+    padding: 0 16px;
   }
   @media (min-width: 768px) {
     width: 100%;
