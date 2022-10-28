@@ -202,7 +202,6 @@ const PostListItem = ({ index, item }) => {
               name={item.name}
               title={moment(item.createdAt).fromNow().toString()}
             ></InfoCardUser>
-            <img src="/images/three-dot-ico.svg" alt="" />
           </CardHeader>
           <Content>
             <p className="description-post">{item.description}</p>

@@ -1,11 +1,12 @@
 import { DislikeOutlined, FireOutlined, LikeOutlined } from '@ant-design/icons';
 import CommentComponent, { CommentItem, Editor } from '@components/Common/Comment';
 import InfoCardUser from '@components/Common/InfoCardUser';
+import useWindowDimensions from '@hooks/useWindowDimensions';
 import { Avatar, Button, Comment, List, message, Space } from 'antd';
 import { push } from 'connected-next-router';
 import _ from 'lodash';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppDispatch } from 'src/store/hooks';
 import styled from 'styled-components';
 
@@ -92,6 +93,9 @@ const ActionBar = styled.div`
     margin-right: 1rem;
     border-radius: 20px;
   }
+  @media (max-width: 768px) {
+    padding: 0.5rem 0;
+  }
 `;
 
 const GroupIconText = styled.div`
@@ -141,6 +145,14 @@ const PageListItem = ({ index, item }) => {
   const [comments, setComments] = useState<CommentItem[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [value, setValue] = useState('');
+  const [isMobileScreen, setIsMobileScreen] = useState(false);
+
+  const { width } = useWindowDimensions();
+
+  useEffect(() => {
+    let isMobile = width < 768 ? true : false;
+    setIsMobileScreen(isMobile);
+  }, [width]);
 
   if (!item) return null;
 
@@ -219,7 +231,6 @@ const PageListItem = ({ index, item }) => {
               name={item.name}
               title={moment(item.createdAt).fromNow().toString()}
             ></InfoCardUser>
-            <img src="/images/three-dot-ico.svg" alt="" />
           </CardHeader>
           <Content>
             <p className="description-post">{item.description}</p>
@@ -235,7 +246,7 @@ const PageListItem = ({ index, item }) => {
             />
             <IconText
               imgUrl="/images/comment-ico.svg"
-              text={Math.floor(Math.random() * 10).toString() + ' comments'}
+              text={Math.floor(Math.random() * 10).toString()}
               key={`list-vertical-comment-o-${item.id}`}
               dataItem={item}
               onClickIcon={() => {
@@ -244,7 +255,7 @@ const PageListItem = ({ index, item }) => {
             />
             <IconText
               imgUrl="/images/share-ico.svg"
-              text={Math.floor(Math.random() * 10).toString() + ' shares'}
+              text={Math.floor(Math.random() * 10).toString()}
               key={`list-vertical-share-o-${item.id}`}
               dataItem={item}
               onClickIcon={() => {}}
@@ -255,14 +266,14 @@ const PageListItem = ({ index, item }) => {
         <ActionBar>
           <GroupIconText>
             <IconText
-              text={'Vote up'}
+              text={!isMobileScreen ? 'Vote up' : ''}
               icon={LikeOutlined}
               key={`list-vertical-upvote-o-${item.id}`}
               dataItem={item}
               onClickIcon={() => upVotePage(item)}
             />
             <IconText
-              text={'Vote down'}
+              text={!isMobileScreen ? 'Vote down' : ''}
               icon={DislikeOutlined}
               key={`list-vertical-downvote-o-${item.id}`}
               dataItem={item}

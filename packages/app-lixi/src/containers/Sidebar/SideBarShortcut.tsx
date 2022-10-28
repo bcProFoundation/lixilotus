@@ -249,21 +249,6 @@ const SidebarShortcut = () => {
             href={'/wallet'}
           />
           <ItemAccess icon={GiftOutlined} text={'Lixi'} active={selectedKey === '/lixi'} key="lixi" href={'/lixi'} />
-          <ItemAccess icon={SendOutlined} text={'Send'} active={selectedKey === '/send'} key="send" href={'/send'} />
-          <ItemAccess
-            icon={EditOutlined}
-            text={'Register Pack'}
-            active={selectedKey === '/admin/pack-register'}
-            key="register-pack"
-            href={'/admin/pack-register'}
-          />
-          <ItemAccess
-            icon={PlusCircleOutlined}
-            text={'Create Page'}
-            active={selectedKey === '/page/create'}
-            key="create-page"
-            href={'/page/create'}
-          />
           <ItemAccess
             icon={SettingOutlined}
             text={'Settings'}

@@ -25,6 +25,7 @@ import {
   WithdrawLixiCommand
 } from '@bcpros/lixi-models/lib/lixi';
 import { RenameLixiModalProps } from './RenameLixiModal';
+import { useRouter } from 'next/router';
 
 const { Text } = Typography;
 
@@ -38,11 +39,19 @@ const StyledTable = styled(Table)`
 
 const CreateLixiBtn = styled(Button)``;
 
+const RegisterPackBtn = styled(Button)`
+  margin-left: 1rem;
+`;
+
 const StyledSearchLixi = styled(Input)`
   border-radius: 5px;
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 
 const StyledButton = styled(Button)`
+  min-width: 32px;
   height: 32px;
   background: white;
   border-color: black;
@@ -113,6 +122,29 @@ const StyledCheckboxGroup = styled(Checkbox.Group)`
   width: 100%;
 `;
 
+const ActionBarLixi = styled.div`
+  display: flex;
+  gap: 16px;
+  .action-bar {
+    display: flex;
+    justify-content: end;
+    width: 45%;
+    @media (max-width: 768px) {
+      justify-content: space-between;
+      width: 100%;
+    }
+  }
+  .filter-area {
+    display: none;
+    @media (max-width: 768px) {
+      display: block;
+    }
+  }
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+`;
+
 type LixiListProps = {
   lixies: Lixi[];
 };
@@ -131,6 +163,7 @@ interface LixiType {
 
 const LixiList = ({ lixies }: LixiListProps) => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const selectedAccount = useAppSelector(getSelectedAccount);
   const isLoading = useAppSelector(getIsGlobalLoading);
   const [isModalVisible, setModalVisible] = useState(false);
@@ -185,9 +218,11 @@ const LixiList = ({ lixies }: LixiListProps) => {
 
     return (
       <>
-        {defaultActionLixi.map(option => <Menu.Item key={option}>{option}</Menu.Item>)}
+        {defaultActionLixi.map(option => (
+          <Menu.Item key={option}>{option}</Menu.Item>
+        ))}
       </>
-    )
+    );
   };
 
   let selectedFilterList = {};
@@ -210,6 +245,10 @@ const LixiList = ({ lixies }: LixiListProps) => {
 
   const createLixiBtn = () => {
     dispatch(openModal('CreateLixiFormModal', { account: selectedAccount }));
+  };
+
+  const registerPackBtn = () => {
+    router.push('/admin/pack-register');
   };
 
   const handleApplyFilter = () => {
@@ -377,98 +416,100 @@ const LixiList = ({ lixies }: LixiListProps) => {
     <>
       {selectedAccount ? (
         <>
-          <Row>
-            <Col xs={7} md={4}>
-              <CreateLixiBtn type="primary" className="outline-btn" onClick={createLixiBtn}>
-                New lixi
-              </CreateLixiBtn>
-            </Col>
-            <Col xs={11} md={16}>
-              <StyledSearchLixi
-                placeholder="Search lixi"
-                value={queryLixi}
-                onChange={e => setQueryLixi(e.target.value)}
-                suffix={<SearchOutlined />}
-              />
-            </Col>
-            <Col xs={3} md={2}>
-              <StyledButton
-                className="outline-btn"
-                onClick={showFilterModal}
-                type="primary"
-                icon={<FilterOutlined />}
-              ></StyledButton>
-              <StyledFilterModal
-                title="Filter"
-                width={'100%'}
-                visible={isModalVisible}
-                closable={false}
-                onOk={() => setModalVisible(false)}
-                onCancel={() => setModalVisible(false)}
-                footer={[
-                  <Button key='btnReset' className="btnReset" onClick={() => setModalVisible(false)}>
-                    Reset
-                  </Button>,
-                  <Button key='btnApply' className="btnApply" onClick={handleApplyFilter}>
-                    Apply
-                  </Button>
-                ]}
-              >
-                <Row>
-                  <StyledCol span={24}>
-                    <Text type="secondary">{intl.get('lixi.claimType')}</Text>
-                  </StyledCol>
-                  <StyledCheckboxGroup onChange={getSelectedClaimType}>
-                    <Row>
-                      <StyledCol span={24}>
-                        <Checkbox value="0">{intl.get('account.singleCode')}</Checkbox>
-                      </StyledCol>
-                      <StyledCol span={24}>
-                        <Checkbox value="1">{intl.get('account.oneTimeCode')}</Checkbox>
-                      </StyledCol>
-                    </Row>
-                  </StyledCheckboxGroup>
-                  <StyledCol span={24}>
-                    <Text type="secondary">Value per redeem</Text>
-                  </StyledCol>
-                  <StyledCheckboxGroup onChange={getSelectedLixiType}>
-                    <Row>
-                      <StyledCol span={12}>
-                        <Checkbox value="0">{intl.get('account.equal')}</Checkbox>
-                      </StyledCol>
-                      <StyledCol span={12}>
-                        <Checkbox value="1">{intl.get('account.random')}</Checkbox>
-                      </StyledCol>
-                      <StyledCol span={12}>
-                        <Checkbox value="2">{intl.get('account.divided')}</Checkbox>
-                      </StyledCol>
-                    </Row>
-                  </StyledCheckboxGroup>
-                  <StyledCol span={24}>
-                    <Text type="secondary">{intl.get('lixi.status')}</Text>
-                  </StyledCol>
-                  <StyledCheckboxGroup onChange={getSelectedStatus}>
-                    <Row>
-                      <StyledCol span={12}>
-                        <Checkbox value="active">{intl.get('lixi.active')}</Checkbox>
-                      </StyledCol>
-                      <StyledCol span={12}>
-                        <Checkbox value="locked">{intl.get('lixi.archived')}</Checkbox>
-                      </StyledCol>
-                    </Row>
-                  </StyledCheckboxGroup>
-                </Row>
-              </StyledFilterModal>
-            </Col>
-            <Col xs={3} md={2}>
-              <StyledButton
-                className="outline-btn"
-                onClick={refreshList}
-                type="primary"
-                icon={<ReloadOutlined />}
-              ></StyledButton>
-            </Col>
-          </Row>
+          <ActionBarLixi>
+            <StyledSearchLixi
+              placeholder="Search lixi"
+              value={queryLixi}
+              onChange={e => setQueryLixi(e.target.value)}
+              suffix={<SearchOutlined />}
+            />
+            <div className="action-bar">
+              <div className="btn-area">
+                <CreateLixiBtn type="primary" className="outline-btn" onClick={createLixiBtn}>
+                  Create new lixi
+                </CreateLixiBtn>
+                <RegisterPackBtn type="primary" className="outline-btn" onClick={registerPackBtn}>
+                  Regester pack
+                </RegisterPackBtn>
+              </div>
+              <div className="filter-area">
+                <StyledButton
+                  className="outline-btn"
+                  onClick={showFilterModal}
+                  type="primary"
+                  icon={<FilterOutlined />}
+                ></StyledButton>
+                <StyledFilterModal
+                  title="Filter"
+                  width={'100%'}
+                  visible={isModalVisible}
+                  closable={false}
+                  onOk={() => setModalVisible(false)}
+                  onCancel={() => setModalVisible(false)}
+                  footer={[
+                    <Button key="btnReset" className="btnReset" onClick={() => setModalVisible(false)}>
+                      Reset
+                    </Button>,
+                    <Button key="btnApply" className="btnApply" onClick={handleApplyFilter}>
+                      Apply
+                    </Button>
+                  ]}
+                >
+                  <Row>
+                    <StyledCol span={24}>
+                      <Text type="secondary">{intl.get('lixi.claimType')}</Text>
+                    </StyledCol>
+                    <StyledCheckboxGroup onChange={getSelectedClaimType}>
+                      <Row>
+                        <StyledCol span={24}>
+                          <Checkbox value="0">{intl.get('account.singleCode')}</Checkbox>
+                        </StyledCol>
+                        <StyledCol span={24}>
+                          <Checkbox value="1">{intl.get('account.oneTimeCode')}</Checkbox>
+                        </StyledCol>
+                      </Row>
+                    </StyledCheckboxGroup>
+                    <StyledCol span={24}>
+                      <Text type="secondary">Value per redeem</Text>
+                    </StyledCol>
+                    <StyledCheckboxGroup onChange={getSelectedLixiType}>
+                      <Row>
+                        <StyledCol span={12}>
+                          <Checkbox value="0">{intl.get('account.equal')}</Checkbox>
+                        </StyledCol>
+                        <StyledCol span={12}>
+                          <Checkbox value="1">{intl.get('account.random')}</Checkbox>
+                        </StyledCol>
+                        <StyledCol span={12}>
+                          <Checkbox value="2">{intl.get('account.divided')}</Checkbox>
+                        </StyledCol>
+                      </Row>
+                    </StyledCheckboxGroup>
+                    <StyledCol span={24}>
+                      <Text type="secondary">{intl.get('lixi.status')}</Text>
+                    </StyledCol>
+                    <StyledCheckboxGroup onChange={getSelectedStatus}>
+                      <Row>
+                        <StyledCol span={12}>
+                          <Checkbox value="active">{intl.get('lixi.active')}</Checkbox>
+                        </StyledCol>
+                        <StyledCol span={12}>
+                          <Checkbox value="locked">{intl.get('lixi.archived')}</Checkbox>
+                        </StyledCol>
+                      </Row>
+                    </StyledCheckboxGroup>
+                  </Row>
+                </StyledFilterModal>
+                <StyledButton
+                  className="outline-btn"
+                  style={{ marginLeft: '1rem' }}
+                  onClick={refreshList}
+                  type="primary"
+                  icon={<ReloadOutlined />}
+                ></StyledButton>
+              </div>
+            </div>
+          </ActionBarLixi>
 
           <Spin spinning={isLoading} indicator={CashLoadingIcon}>
             <div style={{ paddingTop: '20px' }}>

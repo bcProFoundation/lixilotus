@@ -1,11 +1,11 @@
-import { Badge, Button, Comment, Form, Input, Layout, Modal, Space } from 'antd';
+import { Badge, Button, Comment, Form, Input, Layout, Modal, Space, Tabs } from 'antd';
 import styled from 'styled-components';
 import InfoCardUser from '@components/Common/InfoCardUser';
 import { SmartButton } from '@components/Common/PrimaryButton';
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getAllAccounts, getSelectedAccount } from '@store/account/selectors';
-import { BellTwoTone, CloseCircleOutlined, LockOutlined } from '@ant-design/icons';
+import { BellTwoTone, LockOutlined, NumberOutlined, ShopOutlined, UserOutlined } from '@ant-design/icons';
 import { getAllNotifications } from '@store/notification/selectors';
 import { deleteNotification, fetchNotifications, readNotification } from '@store/notification/actions';
 import Link from 'next/link';
@@ -73,38 +73,15 @@ const RankingSideBar = styled(Sider)`
       padding: 5px;
       font-size: 14px;
     }
+    @media (max-width: 1000px) {
+      padding: 2rem 1rem 1rem 1rem !important;
+    }
   }
 
   .right-bar {
     width: 100%;
-    .menu {
-      display: flex;
-      .menu-item {
-        margin-right: 1rem;
-        padding: 5px;
-        img {
-          width: 24px;
-        }
-        &.active-item {
-          background-color: rgb(255, 210, 77);
-          border-radius: 8px;
-        }
-      }
-    }
     .content {
-      margin-top: 2rem;
-      > div {
-        background: #fff;
-        padding: 20px;
-        margin-bottom: 8px;
-        border-radius: 20px;
-        box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
-        display: flex;
-        justify-content: space-between;
-        img {
-          width: 24px;
-        }
-      }
+      text-align: left;
       h3 {
         font-size: 18px;
         text-align: left;
@@ -135,6 +112,11 @@ export const Logged = styled.div`
     background: var(--bg-color-light-theme);
     border-radius: 20px;
   }
+  @media (max-width: 1000px) {
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+  }
 `;
 
 const StyledBell = styled(BellTwoTone)`
@@ -146,8 +128,11 @@ const StyledBell = styled(BellTwoTone)`
 
 const StyledBadge = styled(Badge)`
   position: absolute;
-  top: 2rem;
+  top: 26px;
   right: 2rem;
+  @media (max-width: 1000px) {
+    right: 1rem;
+  }
 `;
 
 const ManageAccounts = styled.div`
@@ -247,6 +232,36 @@ const StyledModal = styled(Modal)`
     p {
       color: rgba(30, 26, 29, 0.38);
     }
+  }
+`;
+
+const StyledTabs = styled(Tabs)`
+  .ant-tabs-nav {
+    .ant-tabs-nav-wrap {
+      justify-content: center;
+      .ant-tabs-nav-list {
+        gap: 1rem;
+      }
+    }
+    &::before {
+      content: none;
+    }
+  }
+  .ant-tabs-tab {
+    background: none !important;
+    border: 0 !important;
+    .ant-tabs-tab-btn {
+      color: #12130f;
+    }
+    &.ant-tabs-tab-active {
+      background: #ffd24d !important;
+      border-radius: 16px !important;
+    }
+  }
+  .anticon {
+    color: #12130f;
+    margin: 0;
+    font-size: 22px;
   }
 `;
 
@@ -364,40 +379,62 @@ const SidebarRanking = () => {
       {router?.pathname !== '/wallet' && (
         <div className="right-bar">
           <div>
-            <div className="menu">
-              <div className="menu-item active-item">
-                <img src="/images/trend-ico.svg" alt="" />
-              </div>
-              <div className="menu-item">
-                <img src="/images/x-ico.svg" alt="" />
-              </div>
-              <div className="menu-item">
-                <img src="/images/tag-ico.svg" alt="" />
-              </div>
-            </div>
-            <div className="content">
-              <h3>Trending Experience</h3>
-              <div>
-                <InfoCardUser imgUrl={null} name={'Nguyen Tanh'} title={'@ericson'}></InfoCardUser>
-                <img src="/images/three-dot-ico.svg" alt="" />
-              </div>
-              <div>
-                <InfoCardUser imgUrl={null} name={'Binh Vo'} title={'@kensaurús'}></InfoCardUser>
-                <img src="/images/three-dot-ico.svg" alt="" />
-              </div>
-              <div>
-                <InfoCardUser imgUrl={null} name={'Tan Vu'} title={'@talkyorn'}></InfoCardUser>
-                <img src="/images/three-dot-ico.svg" alt="" />
-              </div>
-              <div>
-                <InfoCardUser imgUrl={null} name={'Viet Tran'} title={'@vince8x'}></InfoCardUser>
-                <img src="/images/three-dot-ico.svg" alt="" />
-              </div>
-              <div>
-                <InfoCardUser imgUrl={null} name={'Nghia Cao'} title={'@nghiacc'}></InfoCardUser>
-                <img src="/images/three-dot-ico.svg" alt="" />
-              </div>
-            </div>
+            <StyledTabs type="card">
+              <Tabs.TabPane tab={<UserOutlined />} key="people">
+                <div className="content">
+                  <h3>Trending Experience</h3>
+                  <InfoCardUser type="card" imgUrl={null} name={'Nghia Cao'} title={'@nghiacc'}></InfoCardUser>
+                  <InfoCardUser type="card" imgUrl={null} name={'Binh Vo'} title={'@kensaurus'}></InfoCardUser>
+                  <InfoCardUser type="card" imgUrl={null} name={'Viet Tran'} title={'@vince8x'}></InfoCardUser>
+                  <InfoCardUser type="card" imgUrl={null} name={'Tan Vu'} title={'@talkyorn'}></InfoCardUser>
+                  <InfoCardUser type="card" imgUrl={null} name={'Nguyen Tanh'} title={'@ericson'}></InfoCardUser>
+                </div>
+              </Tabs.TabPane>
+              <Tabs.TabPane tab={<ShopOutlined />} key="page">
+                <div className="content">
+                  <h3>Top Pages</h3>
+                  <InfoCardUser
+                    type="card"
+                    imgUrl={'/images/default-avatar.jpg'}
+                    name={'LotusiaShop'}
+                    title={'@lotusia'}
+                  ></InfoCardUser>
+                  <InfoCardUser
+                    type="card"
+                    imgUrl={'/images/default-avatar.jpg'}
+                    name={'GrammaLu'}
+                    title={'@grammalu'}
+                  ></InfoCardUser>
+                  <InfoCardUser
+                    type="card"
+                    imgUrl={'/images/default-avatar.jpg'}
+                    name={'Mabustore'}
+                    title={'@mabu'}
+                  ></InfoCardUser>
+                  <InfoCardUser
+                    type="card"
+                    imgUrl={'/images/default-avatar.jpg'}
+                    name={'Minminstore'}
+                    title={'@minmin'}
+                  ></InfoCardUser>
+                  <InfoCardUser
+                    type="card"
+                    imgUrl={'/images/default-avatar.jpg'}
+                    name={'Apple'}
+                    title={'@apple'}
+                  ></InfoCardUser>
+                </div>
+              </Tabs.TabPane>
+              <Tabs.TabPane tab={<NumberOutlined />} key="tag">
+                <div className="content">
+                  <h3>Trending HashTag</h3>
+                  <p>#GiveLotus</p>
+                  <p>#LixiLotus</p>
+                  <p>#Love</p>
+                  <p>#Heart</p>
+                </div>
+              </Tabs.TabPane>
+            </StyledTabs>
           </div>
         </div>
       )}
