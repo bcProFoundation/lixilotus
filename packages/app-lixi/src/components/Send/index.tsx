@@ -141,7 +141,8 @@ const SendComponent: React.FC = () => {
       return;
     }
     try {
-      const { keyPair, fundingWif } = await Wallet.getWalletDetails(wallet.mnemonic);
+      const { Path10605 } = await Wallet.getWalletDetails(wallet.mnemonic);
+      const { keyPair, fundingWif } = Path10605;
       let encryptedOpReturnMsg = undefined;
       if (opReturnMsg && typeof opReturnMsg !== 'undefined' && opReturnMsg.trim() !== '' && recipientPubKeyHex) {
         try {

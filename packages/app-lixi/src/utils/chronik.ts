@@ -1,14 +1,20 @@
+import { currency } from "@bcpros/lixi-models";
+import BCHJS from '@bcpros/xpi-js';
+import { WalletState } from "@store/wallet";
+import BigNumber from 'bignumber.js';
 import { ChronikClient, Tx, TxHistoryPage, Utxo } from "chronik-client";
 import wif from 'wif';
-import BCHJS from '@bcpros/xpi-js';
-import BigNumber from 'bignumber.js';
-import { currency } from "@bcpros/lixi-models";
-import { WalletState } from "@store/wallet";
 import { getHashArrayFromWallet, getUtxoWif, parseOpReturn } from "./cashMethods";
 
 export interface Hash160AndAddress {
   address: string;
   hash160: string;
+};
+
+const getWalletPathsFromWalletState = (wallet: WalletState) => {
+  return Object.entries(wallet.entities).map(([key, value]) => {
+    return value;
+  });
 };
 
 /* 
@@ -41,7 +47,7 @@ export const getUtxosSingleHashChronik = async (chronik: ChronikClient, hash160:
 };
 
 
-export const returnGetUtxosChronikPromise = (chronik: ChronikClient, hash160AndAddressObj: Hash160AndAddress): Promise<Array<Utxo>> => {
+export const returnGetUtxosChronikPromise = (chronik: ChronikClient, hash160AndAddressObj: Hash160AndAddress): Promise<Array<Utxo & { address: string }>> => {
   /*
       Chronik thinks in hash160s, but people and wallets think in addresses
       Add the address to each utxo
@@ -53,7 +59,7 @@ export const returnGetUtxosChronikPromise = (chronik: ChronikClient, hash160AndA
           const thisUtxo = result[i];
           (thisUtxo as any).address = hash160AndAddressObj.address;
         }
-        resolve(result);
+        resolve(result as Array<Utxo & { address: string }>);
       },
       err => {
         reject(err);
@@ -62,13 +68,13 @@ export const returnGetUtxosChronikPromise = (chronik: ChronikClient, hash160AndA
   });
 };
 
-export const getUtxosChronik = async (chronik: ChronikClient, hash160sMappedToAddresses: Array<Hash160AndAddress>): Promise<Array<Utxo>> => {
+export const getUtxosChronik = async (chronik: ChronikClient, hash160sMappedToAddresses: Array<Hash160AndAddress>): Promise<Array<Utxo & { address: string }>> => {
   /* 
       Chronik only accepts utxo requests for one address at a time
       Construct an array of promises for each address
       Note: Chronik requires the hash160 of an address for this request
   */
-  const chronikUtxoPromises = [];
+  const chronikUtxoPromises: Array<Promise<Array<Utxo & { address: string }>>> = [];
   for (let i = 0; i < hash160sMappedToAddresses.length; i += 1) {
     const thisPromise = returnGetUtxosChronikPromise(
       chronik,
@@ -83,7 +89,7 @@ export const getUtxosChronik = async (chronik: ChronikClient, hash160sMappedToAd
   return flatUtxos;
 };
 
-export const organizeUtxosByType = (chronikUtxos: Array<Utxo>): { nonSlpUtxos: Array<Utxo> } => {
+export const organizeUtxosByType = (chronikUtxos: Array<Utxo & { address: string }>): { nonSlpUtxos: Array<Utxo & { address: string }> } => {
   /* 
   
   Convert chronik utxos (returned by getUtxosChronik function, above) to match 
@@ -186,8 +192,6 @@ export const parseChronikTx = async (XPI: BCHJS, tx: Tx, wallet: WalletState) =>
   let incoming = true;
   let xpiAmount = new BigNumber(0);
   let originatingHash160 = '';
-  let etokenAmount = new BigNumber(0);
-  let isTokenBurn = false;
 
   // Initialize required variables
   let substring = '';
@@ -315,9 +319,10 @@ export const parseChronikTx = async (XPI: BCHJS, tx: Tx, wallet: WalletState) =>
           wallet.walletStatus.slpBalancesAndUtxos &&
           wallet.walletStatus.slpBalancesAndUtxos.nonSlpUtxos[0]
         ) {
+          const walletPaths = getWalletPathsFromWalletState(wallet);
           fundingWif = getUtxoWif(
             wallet.walletStatus.slpBalancesAndUtxos.nonSlpUtxos[0],
-            wallet,
+            walletPaths,
           );
           privateKeyObj = wif.decode(fundingWif);
           privateKeyBuff = privateKeyObj.privateKey;
@@ -384,60 +389,30 @@ export const parseChronikTx = async (XPI: BCHJS, tx: Tx, wallet: WalletState) =>
         // If incoming tx, this is amount received by the user's wallet
         // if outgoing tx (incoming === false), then this is a change amount
         const thisOutputAmount = new BigNumber(thisOutput.value);
-        xecAmount = incoming
-          ? xecAmount.plus(thisOutputAmount)
-          : xecAmount.minus(thisOutputAmount);
-
-        // Parse token qty if token tx
-        // Note: edge case this is a token tx that sends XEC to Cashtab recipient but token somewhere else
-        if (isEtokenTx && !isTokenBurn) {
-          try {
-            const thisEtokenAmount = new BigNumber(
-              thisOutput.slpToken.amount,
-            );
-
-            etokenAmount =
-              incoming || isGenesisTx
-                ? etokenAmount.plus(thisEtokenAmount)
-                : etokenAmount.minus(thisEtokenAmount);
-          } catch (err) {
-            // edge case described above; in this case there is zero eToken value for this Cashtab recipient, so add 0
-            etokenAmount.plus(new BigNumber(0));
-          }
-        }
+        xpiAmount = incoming
+          ? xpiAmount.plus(thisOutputAmount)
+          : xpiAmount.minus(thisOutputAmount);
       }
     }
     // Output amounts not at your wallet are sent amounts if !incoming
-    // Exception for eToken genesis transactions
     if (!incoming) {
       const thisOutputAmount = new BigNumber(thisOutput.value);
-      xecAmount = xecAmount.plus(thisOutputAmount);
-      if (isEtokenTx && !isGenesisTx && !isTokenBurn) {
-        try {
-          const thisEtokenAmount = new BigNumber(
-            thisOutput.slpToken.amount,
-          );
-          etokenAmount = etokenAmount.plus(thisEtokenAmount);
-        } catch (err) {
-          // NB the edge case described above cannot exist in an outgoing tx
-          // because the eTokens sent originated from this wallet
-        }
-      }
+      xpiAmount = xpiAmount.plus(thisOutputAmount);
     }
   }
 
-  // Convert from sats to XEC
-  xecAmount = xecAmount.shiftedBy(-1 * currency.cashDecimals);
+  // Convert from sats to XPI
+  xpiAmount = xpiAmount.shiftedBy(-1 * currency.cashDecimals);
 
   // Convert from BigNumber to string
-  xecAmount = xecAmount.toString();
+  const xpiAmountString = xpiAmount.toString();
 
   // Convert opReturnMessage to string
   opReturnMessage = Buffer.from(opReturnMessage).toString();
 
   return {
     incoming,
-    xpiAmount,
+    xpiAmount: xpiAmountString,
     originatingHash160,
     opReturnMessage,
     isLotusMessage,
@@ -455,21 +430,14 @@ export const getTxHistoryChronik = async (
   // Create array of promises to get chronik history for each address
   // Combine them all and sort by blockheight and firstSeen
   // Add all the info cashtab needs to make them useful
+  const walletPaths = getWalletPathsFromWalletState(wallet);
 
-  const hash160AndAddressObjArray: Hash160AndAddress[] = [
-    {
-      address: wallet.Path10605.xAddress,
-      hash160: wallet.Path10605.hash160,
-    },
-    {
-      address: wallet.Path899.xAddress,
-      hash160: wallet.Path899.hash160,
-    },
-    {
-      address: wallet.Path1899.cashAddress,
-      hash160: wallet.Path1899.hash160,
-    },
-  ];
+  const hash160AndAddressObjArray: Hash160AndAddress[] = walletPaths.map(item => {
+    return {
+      address: item.xAddress,
+      hash160: item.hash160,
+    }
+  });
 
   let txHistoryPromises: Array<Promise<TxHistoryPage>> = [];
   for (let i = 0; i < hash160AndAddressObjArray.length; i += 1) {

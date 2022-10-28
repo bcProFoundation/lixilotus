@@ -1,10 +1,9 @@
-import { WalletAddressInfo, WalletStatus } from './models';
-
-export interface WalletState {
-  walletStatus: WalletStatus;
-  Path899: WalletAddressInfo;
-  Path1899: WalletAddressInfo;
-  Path10605: WalletAddressInfo;
-  name: string;
+import { WalletPathAddressInfo, WalletStatus } from './models';
+import { EntityState } from '@reduxjs/toolkit';
+export interface WalletState extends EntityState<WalletPathAddressInfo> {
+  selectedWalletPath?: Nullable<string>;
+  walletStatus?: WalletStatus;
   mnemonic: string;
+  walletRefreshInterval: number;
+  walletHasUpdated: boolean;
 }

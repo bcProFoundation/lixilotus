@@ -5,7 +5,7 @@ import { ChronikClient, SubscribeMsg, Tx } from 'chronik-client';
 import useXPI from './useXPI';
 import useInterval from './useInterval';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { getWalletState, WalletState, WalletStatus } from '@store/wallet';
+import { getAllWalletPaths, getWaletRefreshInterval, getWalletHasUpdated, getWalletState, setWalletHasUpdated, setWalletRefreshInterval, WalletDetail, WalletPathAddressInfo, WalletState, WalletStatus } from '@store/wallet';
 import { RootState } from '@store/store';
 import { WalletContextValue } from '@context/index';
 import { getHashArrayFromWallet, getWalletBalanceFromUtxos } from '@utils/cashMethods';
@@ -13,17 +13,16 @@ import _ from 'lodash';
 import { getTxHistoryChronik, getUtxosChronik, Hash160AndAddress, organizeUtxosByType, parseChronikTx } from '@utils/chronik';
 
 const chronik = new ChronikClient('https://chronik.fabien.cash');
-const websocketDisconnectedRefreshInterval = 5000;
 const websocketConnectedRefreshInterval = 10000;
 
 /* eslint-disable react-hooks/exhaustive-deps */
 const useWallet = () => {
   // @todo: use constant
   // and consider to move to redux the neccessary variable
-  const [walletRefreshInterval, setWalletRefreshInterval] = useState(5000);
+
 
   const [chronikWebsocket, setChronikWebsocket] = useState(null);
-  const [hasUpdated, setHasUpdated] = useState<boolean>(false);
+  // const [hasUpdated, setHasUpdated] = useState<boolean>(false);
 
   const [loading, setLoading] = useState(true);
   const [apiError, setApiError] = useState(false);
@@ -33,6 +32,9 @@ const useWallet = () => {
   const [XPI, setXPI] = useState<BCHJS>(getXPI(apiIndex));
 
   const walletState = useAppSelector(getWalletState);
+  const walletRefreshInterval = useAppSelector(getWaletRefreshInterval);
+  const walletHasUpdated = useAppSelector(getWalletHasUpdated);
+  const allWalletPaths = useAppSelector(getAllWalletPaths);
   const dispatch = useAppDispatch();
 
   // If you catch API errors, call this function
@@ -69,7 +71,7 @@ const useWallet = () => {
     // If you are at the "end" of the array, use the first one
   };
 
-  const getWalletDetails = async mnemonic => {
+  const getWalletPathDetails = async (mnemonic: string, paths: string[]): Promise<WalletPathAddressInfo[]> => {
     const NETWORK = process.env.NEXT_PUBLIC_NETWORK;
     const rootSeedBuffer = await XPI.Mnemonic.toSeed(mnemonic);
     let masterHDNode;
@@ -80,12 +82,16 @@ const useWallet = () => {
       masterHDNode = XPI.HDNode.fromSeed(rootSeedBuffer, 'testnet');
     }
 
-    const Path10605 = await deriveAccount(XPI, {
-      masterHDNode,
-      path: "m/44'/10605'/0'/0/0"
-    });
+    let walletPaths: WalletPathAddressInfo[] = [];
+    for (const path of paths) {
+      const walletPath = await deriveAccount(XPI, {
+        masterHDNode,
+        path: path
+      });
+      walletPaths.push(walletPath);
+    }
 
-    return Path10605;
+    return walletPaths;
   };
 
   const deriveAccount = async (XPI: BCHJS, { masterHDNode, path }) => {
@@ -97,6 +103,7 @@ const useWallet = () => {
     const keyPair = XPI.HDNode.toKeyPair(node);
     const publicKey = XPI.HDNode.toPublicKey(node).toString('hex');
     return {
+      path,
       xAddress,
       cashAddress,
       slpAddress,
@@ -145,7 +152,7 @@ const useWallet = () => {
 
     // If you see a tx from your subscribed addresses added to the mempool, then the wallet utxo set has changed
     // Update it
-    setWalletRefreshInterval(10);
+    dispatch(setWalletRefreshInterval(10));
 
     // get txid info
     const txid = msg.txid;
@@ -171,7 +178,7 @@ const useWallet = () => {
   // Chronik websockets
   const initializeWebsocket = async (wallet: WalletState) => {
     console.log(
-      `Initializing websocket connection for wallet ${wallet.name}`,
+      `Initializing websocket connection for wallet ${wallet}`,
     );
 
     const hash160Array = getHashArrayFromWallet(wallet);
@@ -276,29 +283,21 @@ const useWallet = () => {
     // Check if walletRefreshInterval is set to 10, i.e. this was called by websocket tx detection
     // If walletRefreshInterval is 10, set it back to the usual refresh rate
     if (walletRefreshInterval === 10) {
-      setWalletRefreshInterval(
+      dispatch(setWalletRefreshInterval(
         websocketConnectedRefreshInterval,
-      );
+      ));
     }
     try {
       if (!wallet) {
         return;
       }
 
-      const hash160AndAddressObjArray: Hash160AndAddress[] = [
-        {
-          address: wallet.Path10605.xAddress,
-          hash160: wallet.Path10605.hash160,
-        },
-        {
-          address: wallet.Path899.xAddress,
-          hash160: wallet.Path899.hash160,
-        },
-        {
-          address: wallet.Path1899.xAddress,
-          hash160: wallet.Path1899.hash160,
-        },
-      ];
+      const hash160AndAddressObjArray: Hash160AndAddress[] = allWalletPaths.map(item => {
+        return {
+          address: item.xAddress,
+          hash160: item.hash160,
+        }
+      });
 
       // Check that server is live
       try {
@@ -350,8 +349,8 @@ const useWallet = () => {
     update(wallet)
       .finally(() => {
         setLoading(false);
-        if (!hasUpdated) {
-          setHasUpdated(true);
+        if (!walletHasUpdated) {
+          dispatch(setWalletHasUpdated(true));
         }
       });
   }, walletRefreshInterval);
@@ -371,7 +370,7 @@ const useWallet = () => {
     XPI,
     chronik,
     deriveAccount,
-    getWalletDetails,
+    getWalletPathDetails,
     validateMnemonic
   } as WalletContextValue;
 };

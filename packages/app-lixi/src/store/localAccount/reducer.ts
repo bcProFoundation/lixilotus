@@ -1,6 +1,6 @@
-import { Account, LocalUserAccount } from '@bcpros/lixi-models';
-import { createEntityAdapter, createReducer, isAnyOf, Update } from '@reduxjs/toolkit';
-import { generateLocalUserAccount, setLocalUserAccount } from './actions';
+import { LocalUserAccount } from '@bcpros/lixi-models';
+import { createEntityAdapter, createReducer } from '@reduxjs/toolkit';
+import { setLocalUserAccount } from './actions';
 import { LocalUserAccountsState } from './state';
 
 export const localAccountsAdapter = createEntityAdapter<LocalUserAccount>({

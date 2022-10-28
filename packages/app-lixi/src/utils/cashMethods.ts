@@ -1,5 +1,5 @@
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
-import { WalletState } from '@store/wallet';
+import { WalletPathAddressInfo, WalletState } from '@store/wallet';
 import BigNumber from 'bignumber.js';
 import { Utxo } from 'chronik-client';
 import { createSharedKey, decrypt } from './encryption';
@@ -139,28 +139,23 @@ export const getWalletState = wallet => {
   };
 };
 
-export const getUtxoWif = (utxo, wallet: WalletState) => {
-  if (!wallet) {
+export const getUtxoWif = (utxo: Utxo & { address: string }, walltPaths: Array<WalletPathAddressInfo>) => {
+  if (!walltPaths) {
     throw new Error('Invalid wallet parameter');
   }
-  const accounts = [wallet.Path10605, wallet.Path899, wallet.Path1899];
-  const wif = accounts
+  const wif = walltPaths
     .filter(acc => acc.xAddress === utxo.address)
     .pop().fundingWif;
   return wif;
 };
 
 export const getHashArrayFromWallet = (wallet: WalletState): string[] => {
-  // If the wallet has wallet.Path1899.hash160, it's migrated and will have all of them
-  // Return false for an umigrated wallet
-  const hash160Array =
-    wallet && wallet.Path10605 && 'hash160' in wallet.Path10605
-      ? [
-        wallet.Path10605.hash160,
-        wallet.Path899.hash160,
-        wallet.Path1899.hash160,
-      ]
-      : [];
+  if (!wallet || (!wallet?.entities)) {
+    return [];
+  }
+  const hash160Array = Object.entries(wallet.entities).map(([key, value]) => {
+    return value.hash160
+  });
   return hash160Array;
 };
 
