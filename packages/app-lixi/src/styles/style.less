@@ -260,6 +260,7 @@ code {
   letter-spacing: 0.1px;
   // padding: 10px 24px;
   border-radius: 16px;
+  min-height: 40px;
   height: fit-content;
 
   &:disabled {
@@ -356,7 +357,7 @@ code {
         background: #fff;
         padding: 9px 1rem;
         border-radius: 8px;
-
+        min-height: 56px;
         input {
           border-radius: 0;
           background: transparent;
@@ -429,6 +430,9 @@ code {
 
 .ant-table-container {
   table {
+    border: 1px solid rgba(128, 116, 124, 0.12);
+    box-shadow: 0px 0px 20px rgb(0 0 0 / 6%);
+    border-radius: 18px;
     tr {
       th {
         font-weight: 500;
@@ -451,5 +455,17 @@ code {
         }
       }
     }
+  }
+  .ant-table-cell {
+    border-bottom: 0;
+  }
+}
+
+.ant-table-filter-dropdown {
+  .ant-table-filter-dropdown-btns {
+    border-top: 0 !important;
+  }
+  .ant-btn {
+    min-height: fit-content !important;
   }
 }

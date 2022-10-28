@@ -1,4 +1,4 @@
-import LockOutlined, { EditOutlined } from '@ant-design/icons';
+import LockOutlined, { EditOutlined, SendOutlined } from '@ant-design/icons';
 import intl from 'react-intl-universal';
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import QRCode, { FormattedWalletAddress } from '@bcpros/lixi-components/components/Common/QRCode';
@@ -17,6 +17,7 @@ import styled from 'styled-components';
 import { Account, RenameAccountCommand } from '@bcpros/lixi-models';
 import { RenameAccountModalProps } from '@components/Settings/RenameAccountModal';
 import { openModal } from '@store/modal/actions';
+import { useRouter } from 'next/router';
 
 const CardContainer = styled.div`
   position: relative;
@@ -57,6 +58,15 @@ const StyledBalanceHeader = styled.div`
     font-size: 28px;
     color: #edeff0;
     margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    span {
+      font-size: 16px;
+      line-height: 24px;
+      letter-spacing: 0.5px;
+      color: rgba(237, 239, 240, 0.6);
+    }
   }
   .iso-amount {
     font-size: 16px;
@@ -84,6 +94,9 @@ const StyledQRCode = styled.div`
 `;
 
 const AddressWalletBar = styled.div`
+  display: flex;
+  justify-content: end;
+  align-items: center;
   opacity: 0.8;
   width: 100%;
   position: absolute;
@@ -100,10 +113,23 @@ const AddressWalletBar = styled.div`
   }
 `;
 
+const ButtonSend = styled.div`
+  cursor: pointer;
+  margin-right: 1rem;
+  font-size: 14px;
+  color: #edeff0;
+  font-weight: bold;
+  .anticon {
+    margin-right: 4px;
+    font-size: 16px;
+  }
+`;
+
 const urlFiatRate = 'https://aws-dev.abcpay.cash/bws/api/v3/fiatrates/xpi';
 
 const WalletInfoComponent: React.FC = () => {
   const isServer = () => typeof window === 'undefined';
+  const router = useRouter();
   const Wallet = React.useContext(WalletContext);
   const { XPI } = Wallet;
   const [formData, setFormData] = useState({
@@ -115,10 +141,8 @@ const WalletInfoComponent: React.FC = () => {
   const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
   const [isLoadBalanceError, setIsLoadBalanceError] = useState(false);
-  const [amountFiatCoin, setAmountFiatCoin] = useState('');
 
   useEffect(() => {
-    fetchFiatRate();
     const id = setInterval(() => {
       XPI.Electrumx.balance(selectedAccount?.address)
         .then(result => {
@@ -133,17 +157,6 @@ const WalletInfoComponent: React.FC = () => {
     }, 10000);
     return () => clearInterval(id);
   }, []);
-
-  const fetchFiatRate = () => {
-    fetch(urlFiatRate)
-      .then(res => res.json())
-      .then(body => {
-        const fiatRateUsd = body.find(item => item.code === 'USD') || 0;
-        const rateUsd = fiatRateUsd?.rate;
-        const resultAmount = fromSmallestDenomination(selectedAccount?.balance ?? 0) * rateUsd;
-        setAmountFiatCoin(decimalFormatBalance(resultAmount));
-      });
-  };
 
   const decimalFormatBalance = balance => {
     if (Number(balance) < 10) {
@@ -205,7 +218,6 @@ const WalletInfoComponent: React.FC = () => {
           </div>
           <StyledBalanceHeader>
             <BalanceHeader balance={fromSmallestDenomination(selectedAccount?.balance ?? 0)} ticker={currency.ticker} />
-            <p className="iso-amount">~ {amountFiatCoin} USD</p>
           </StyledBalanceHeader>
         </WalletCard>
         {!isServer() && selectedAccount?.address && (
@@ -214,6 +226,10 @@ const WalletInfoComponent: React.FC = () => {
           </StyledQRCode>
         )}
         <AddressWalletBar>
+          <ButtonSend onClick={() => router.push('/send')}>
+            <SendOutlined />
+            Send Lotus
+          </ButtonSend>
           <FormattedWalletAddress address={selectedAccount?.address} isAccountPage={true}></FormattedWalletAddress>
         </AddressWalletBar>
       </CardContainer>

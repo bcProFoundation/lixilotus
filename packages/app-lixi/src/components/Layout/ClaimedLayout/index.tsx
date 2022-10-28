@@ -1,18 +1,9 @@
-import React, { ReactNode, useEffect, useState } from 'react';
-import intl from 'react-intl-universal';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Layout, Spin } from 'antd';
 import Link from 'next/link';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 
-import {
-  GiftOutlined,
-  HomeOutlined,
-  LoadingOutlined,
-  SettingOutlined,
-  UserOutlined,
-  WalletOutlined
-} from '@ant-design/icons';
-import { Footer, NavButton } from '@bcpros/lixi-components/components';
+import { LeftOutlined, LoadingOutlined } from '@ant-design/icons';
 
 import ModalManager from '../../Common/ModalManager';
 import { GlobalStyle } from '../MainLayout/GlobalStyle';
@@ -23,6 +14,9 @@ import { loadLocale } from '@store/settings/actions';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
 import { injectStore } from 'src/utils/axiosClient';
+import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
+import { navBarHeaderList } from '@bcpros/lixi-models/constants';
+import { useRouter } from 'next/router';
 
 const { Content, Sider, Header } = Layout;
 
@@ -30,7 +24,8 @@ export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
 
 const LixiApp = styled.div`
   text-align: center;
-  font-family: 'Gilroy', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   background-color: ${props => props.theme.app.background};
 `;
 
@@ -40,8 +35,42 @@ const AppBody = styled.div`
   justify-content: center;
   width: 100%;
   min-height: 100vh;
-  background-image: ${props => props.theme.app.gradient};
   background-attachment: fixed;
+`;
+
+const NavBarHeader = styled(Header)`
+  padding: 2rem 2rem 1rem 2rem;
+  height: auto;
+  line-height: initial;
+  display: flex;
+  align-items: center;
+  border-radius: 20px;
+  box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
+  width: 100%;
+  margin-bottom: 1rem;
+  .anticon {
+    font-size: 24px;
+    color: var(--color-primary);
+  }
+  @media (max-width: 768px) {
+    padding: 8px;
+    width: 100%;
+  }
+`;
+
+const PathDirection = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-left: 1rem;
+  h2 {
+    font-weight: 600;
+    text-transform: capitalize;
+    color: var(--color-primary);
+  }
+  .sub-title {
+    text-transform: capitalize;
+  }
 `;
 
 export const AppContainer = styled.div`
@@ -52,20 +81,22 @@ export const AppContainer = styled.div`
   padding: 10px 30px 120px 30px;
   overflow: hidden;
   background: ${props => props.theme.wallet.background};
-  -webkit-box-shadow: 0px 0px 24px 1px ${props => props.theme.wallet.shadow};
-  -moz-box-shadow: 0px 0px 24px 1px ${props => props.theme.wallet.shadow};
-  box-shadow: 0px 0px 24px 1px ${props => props.theme.wallet.shadow};
+  @media (max-width: 420px) {
+    padding: 0 8px;
+  }
   @media (max-width: 768px) {
     width: 100%;
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
+    padding: 0 16px;
   }
   @media (min-width: 768px) {
     width: 100%;
-    background: var(--bg-color-light-theme);
+    background: #fffbff;
     padding: 0;
     .content-layout {
+      // margin-top: 80px;
       z-index: 1;
     }
   }
@@ -79,61 +110,46 @@ export const AppContainer = styled.div`
   }
 `;
 
-export const HeaderContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start !important;
-  width: 100%;
-  padding: 10px 0 15px;
-  margin-bottom: 20px;
-  justify-content: space-between;
-  border-bottom: 1px solid ${props => props.theme.wallet.borders.color};
-
-  a {
-    color: ${props => props.theme.wallet.text.secondary};
-
-    :hover {
-      color: ${props => props.theme.primary};
-    }
-  }
-
-  @media (max-width: 768px) {
-    a {
-      font-size: 12px;
-    }
-    padding: 20px 0 20px;
-  }
-`;
-
-export const LotusLogo = styled.img`
-  width: 70px;
-  @media (max-width: 768px) {
-    width: 50px;
-  }
-`;
-
-export const LixiTextLogo = styled.img`
-  width: 250px;
-  margin-left: 40px;
-  @media (max-width: 768px) {
-    width: 190px;
-    margin-left: 20px;
-  }
-`;
-
 type ClaimedLayoutProps = React.PropsWithChildren<{}>;
 
-const ClaimedLayout: React.FC = ({ children }: ClaimedLayoutProps) => {
+const ClaimedLayout: React.FC = (props: ClaimedLayoutProps) => {
+  const { children } = props;
+  const claimId = children[0][''];
   const [loading, setLoading] = useState(false);
-  const currentLocale: string = useAppSelector(getCurrentLocale);
+  const currentLocale = useAppSelector(getCurrentLocale);
   const intlInitDone = useAppSelector(getIntlInitStatus);
   const dispatch = useAppDispatch();
+  const router = useRouter();
+  const [height, setHeight] = useState(0);
+  const selectedKey = router.pathname ?? '';
+  const [navBarTitle, setNavBarTitle] = useState('');
+  const [navBarSubTitle, setNavBarSubTitle] = useState('');
+  const ref = useRef(null);
+  const setRef = useCallback(node => {
+    if (node && node.clientHeight) {
+      // Check if a node is actually passed. Otherwise node would be null.
+      const height = node.clientHeight;
+      setHeight(height);
+    }
+    // Save a reference to the node
+    ref.current = node;
+  }, []);
 
   injectStore(currentLocale);
 
   useEffect(() => {
     dispatch(loadLocale(currentLocale));
   }, [currentLocale]);
+
+  const getNamePathDirection = () => {
+    const itemSelect = navBarHeaderList.find(item => selectedKey.includes(item.path)) || null;
+    setNavBarTitle(itemSelect?.name || '');
+    setNavBarSubTitle(itemSelect?.subTitle || '');
+  };
+
+  useEffect(() => {
+    getNamePathDirection();
+  }, [selectedKey]);
 
   return (
     <ThemeProvider theme={theme as DefaultTheme}>
@@ -144,15 +160,29 @@ const ClaimedLayout: React.FC = ({ children }: ClaimedLayoutProps) => {
             <Layout>
               <AppBody>
                 <ModalManager />
-                <AppContainer>
-                  <Layout>
-                    <Sidebar />
-                    <Layout className="main-section-layout">
-                      <Topbar />
-                      <Content className="content-layout">{children}</Content>
+                <>
+                  <AppContainer>
+                    <Layout>
+                      <SidebarShortcut></SidebarShortcut>
+                      <Sidebar />
+                      <Layout className="main-section-layout" style={{ paddingRight: '2rem' }}>
+                        <Topbar ref={setRef} />
+                        {selectedKey !== '/' && (
+                          <NavBarHeader>
+                            <Link href="/" passHref>
+                              <LeftOutlined />
+                            </Link>
+                            <PathDirection>
+                              <h2>{navBarTitle}</h2>
+                              <p className="sub-title">{navBarSubTitle}</p>
+                            </PathDirection>
+                          </NavBarHeader>
+                        )}
+                        <Content className="content-layout">{children}</Content>
+                      </Layout>
                     </Layout>
-                  </Layout>
-                </AppContainer>
+                  </AppContainer>
+                </>
               </AppBody>
             </Layout>
           </LixiApp>

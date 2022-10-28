@@ -110,7 +110,7 @@ const TransactionHistory = styled.div`
 `;
 
 const FullWalletWrapper = styled.div`
-  background: #fff;
+  background: var(--bg-color-light-theme);
   border-radius: 20px;
   box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
   @media (max-width: 768px) {

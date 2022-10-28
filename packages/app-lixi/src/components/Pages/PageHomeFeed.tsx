@@ -13,6 +13,12 @@ const StyledPageFeed = styled.div`
     text-align: left;
     margin-bottom: 1rem;
   }
+  .ant-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
 `;
 
 const ToolboxBar = styled.div`

@@ -3,7 +3,6 @@ import { formatBalance } from '../../utils/cashMethods';
 import { BalanceHeaderWrap } from './Atoms';
 
 const UnitCoin = styled.span`
-  font-size: 16px;
   color: var(--color-primary);
 `;
 
