@@ -116,7 +116,8 @@ export class ClaimController {
         amount: Number(claim.amount),
         message: claim.lixi.envelopeMessage,
         nftTokenId: claim.nftTokenId,
-        nftTokenUrl: claim.nftTokenUrl
+        nftTokenUrl: claim.nftTokenUrl,
+        createDate: claim.createdAt
       };
       return result;
     } catch (err: unknown) {
