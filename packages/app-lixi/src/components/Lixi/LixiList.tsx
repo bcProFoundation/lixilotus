@@ -126,6 +126,7 @@ interface LixiType {
   redeemed: string | number;
   remaining: string | number;
   status: string;
+  claimType: ClaimType;
 }
 
 const LixiList = ({ lixies }: LixiListProps) => {
@@ -161,30 +162,32 @@ const LixiList = ({ lixies }: LixiListProps) => {
         name: lixi.name,
         type: lixi.claimType == ClaimType.Single ? intl.get('account.singleCode') : intl.get('account.oneTimeCode'),
         value: typeLixi(lixi),
-        redeemed:
-          lixi.claimType == ClaimType.Single
-            ? fromSmallestDenomination(lixi.totalClaim)
-            : lixi.subLixiTotalClaim.toFixed(2),
-        remaining:
-          lixi.claimType == ClaimType.Single
-            ? fromSmallestDenomination(lixi.balance)
-            : lixi.subLixiBalance != undefined
-              ? (lixi.subLixiBalance - lixi.subLixiTotalClaim).toFixed(2)
-              : 0.0,
-        budget: lixi.claimType == ClaimType.Single ? lixi.amount : lixi.subLixiBalance.toFixed(3),
-        status: lixi.status
+        redeemed: _.isNil(lixi.subLixiTotalClaim)
+          ? fromSmallestDenomination(lixi.totalClaim)
+          : lixi.subLixiTotalClaim.toFixed(2),
+        remaining: _.isNil(lixi.subLixiBalance)
+          ? fromSmallestDenomination(lixi.balance)
+          : (lixi.subLixiBalance - lixi.subLixiTotalClaim).toFixed(2),
+        budget: lixi.claimType == ClaimType.Single ? lixi.amount : lixi.subLixiBalance || 0.0,
+        status: lixi.status,
+        claimType: lixi.claimType
       };
       newListLixiType.push(objLixiType);
     });
     setListMapData(newListLixiType);
   };
 
-  const mapActionLixi = lixi => {
-    let actionLixi = null;
-    let defaultActionLixi = ['Withdraw', 'Rename', 'Export'];
+  const mapActionLixi = (lixi: Lixi) => {
+    let defaultActionLixi = ['Withdraw', 'Rename'];
+
     lixi.status === 'locked' ? defaultActionLixi.unshift('Unarchive') : defaultActionLixi.unshift('Archive');
-    actionLixi = defaultActionLixi.map(option => <Menu.Item key={option}>{option}</Menu.Item>);
-    return actionLixi;
+    lixi.claimType === ClaimType.OneTime && defaultActionLixi.push('Export');
+
+    return (
+      <>
+        {defaultActionLixi.map(option => <Menu.Item key={option}>{option}</Menu.Item>)}
+      </>
+    )
   };
 
   let selectedFilterList = {};
@@ -403,10 +406,10 @@ const LixiList = ({ lixies }: LixiListProps) => {
                 onOk={() => setModalVisible(false)}
                 onCancel={() => setModalVisible(false)}
                 footer={[
-                  <Button className="btnReset" onClick={() => setModalVisible(false)}>
+                  <Button key='btnReset' className="btnReset" onClick={() => setModalVisible(false)}>
                     Reset
                   </Button>,
-                  <Button className="btnApply" onClick={handleApplyFilter}>
+                  <Button key='btnApply' className="btnApply" onClick={handleApplyFilter}>
                     Apply
                   </Button>
                 ]}

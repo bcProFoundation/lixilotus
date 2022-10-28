@@ -39,6 +39,11 @@ export default {
   'general.amount': 'Số dư',
   'general.chooseCamera': 'Chọn camera',
   'general.chooseCameraTip': 'Thử đổi camera nếu quét không thành công',
+  'general.notification': 'Thông báo',
+  'general.viewmore': 'Xem thêm',
+  'general.ended': 'Đã kết thúc',
+  'general.running': 'Đang hoạt động',
+  'general.waiting': 'Vui lòng đợi',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',
@@ -54,6 +59,7 @@ export default {
   'account.equal': 'Chia đều',
   'account.eachClaim': 'Mệnh giá mỗi lần nhận',
   'account.perPack': 'SL mỗi gói',
+  'account.lixiForPack': 'lì xì/gói',
   'account.numberLixiPerPackage': 'Số lượng bao lì xì phụ trong mỗi gói ',
   'account.numberOfSubLixi': 'Số lượng bao Lì xì phụ',
   'account.defaultValueToGive': 'Tổng giá trị gửi tặng',
@@ -159,7 +165,7 @@ export default {
   'lixi.type': 'Loại mã',
   'lixi.rules': 'Mệnh giá',
   'lixi.totalClaimed': 'Lì xì đã nhận',
-  'lixi.remainingLixi': 'Lì xì còn lại',
+  'lixi.remaining': 'Còn lại',
   'lixi.remainingXPI': 'XPI còn lại',
   'lixi.message': 'Thông điệp',
   'lixi.loadmore': 'Xem thêm',
@@ -234,6 +240,7 @@ export default {
   'NetworkType.FamilyFriendlyInfo': 'Tối đa người dùng có thể nhận Lixi trong mạng wifi',
   'NetworkType.NoWifiRestrictionInfo': 'Không giới hạn người dùng có thể nhận Lixi trong mạng wifi',
   'lixi.detail': 'Chi tiết lì xì',
+  'lixi.accountLixi': 'tài khoản của lì xì',
   'lixi.balance': 'Số dư',
   'lixi.valuePerClaim': 'Giá trị mỗi lần nhận',
   'lixi.validity': 'Hiệu lực',
@@ -241,12 +248,14 @@ export default {
   'lixi.archive': 'Lưu trữ',
   'lixi.unarchive': 'Hủy lưu trữ',
   'lixi.withdraw': 'Rút tiền',
+  'lixi.claimed': 'Đã nhận',
 
   /* 04.Claim */
   'claim.claim': 'Nhận Lì xì',
+  'claim.claimReport': 'Danh sách đã nhận lì xì',
   'claim.titleShared': 'Lì xì gửi đến bạn một món quà nhỏ!',
   'claim.copyToClipboard': 'Liên kết đã được sao chép',
-  'claim.youClaimedLixi': 'bạn vừa nhận được Lì xì',
+  'claim.youClaimedLixi': 'Nhận lì xì thành công',
   'claim.addressNotValid': 'Địa chỉ {ticker} không hợp lệ',
   'claim.invalidAddress': 'Địa chỉ {ticker} không hợp lệ',
   'claim.tickerAddress': 'Địa chỉ {ticker}',
@@ -318,6 +327,8 @@ export default {
   'notification.unableToFetch': 'Không thể tải thông báo.',
   'notification.unableToDelete': 'Không thể xóa thông báo.',
   'notification.unableToRead': 'Không thể đọc thông báo.',
+  'notification.earlier': 'Trước đó',
+  'notification.readAll': 'Xem tất cả',
 
   /* 10.NFT */
   'lixinft.unableToMint': 'Không thể tạo NFT',

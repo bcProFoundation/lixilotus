@@ -39,6 +39,11 @@ export default {
   'general.amount': 'Amount',
   'general.chooseCamera': 'Please choose camera',
   'general.chooseCameraTip': 'Try switching camera when its not working properly',
+  'general.notification': 'Notifications',
+  'general.viewmore': 'View more',
+  'general.ended': 'Ended',
+  'general.running': 'Running',
+  'general.waiting': 'Waiting',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
@@ -54,6 +59,7 @@ export default {
   'account.equal': 'Equal',
   'account.eachClaim': 'Value of each claim',
   'account.perPack': 'Per pack',
+  'account.lixiForPack': 'lixi/package',
   'account.numberLixiPerPackage': 'number of sub lixi per package',
   'account.numberOfSubLixi': 'Number of codes',
   'account.defaultValueToGive': 'Default value to give',
@@ -160,7 +166,7 @@ export default {
   'lixi.type': 'Type of code',
   'lixi.rules': 'Rules',
   'lixi.totalClaimed': 'Total Claimed',
-  'lixi.remainingLixi': 'Remaining Lixi',
+  'lixi.remaining': 'Remaining',
   'lixi.remainingXPI': 'XPI Remaining',
   'lixi.message': 'Message',
   'lixi.loadmore': 'Load More',
@@ -235,6 +241,7 @@ export default {
   'NetworkType.FamilyFriendlyInfo': 'Max 5 users can claim Lixi under the wifi network',
   'NetworkType.NoWifiRestrictionInfo': 'Unlimited user can claim Lixi under the wifi network',
   'lixi.detail': 'Details of lixi',
+  'lixi.accountLixi': 'account of lixi ',
   'lixi.balance': 'Balance',
   'lixi.valuePerClaim': 'Value per claim',
   'lixi.validity': 'Validity',
@@ -242,12 +249,14 @@ export default {
   'lixi.archive': 'Archive',
   'lixi.unarchive': 'Unarchive',
   'lixi.withdraw': 'Withdraw',
+  'lixi.claimed': 'Claimed',
 
   /* 04.Claim */
   'claim.claim': 'Claim',
+  'claim.claimReport': 'Claim Report',
   'claim.titleShared': 'Lixi Program sent you a small gift!',
   'claim.copyToClipboard': 'Link copied to clipboard',
-  'claim.youClaimedLixi': 'You have claimed lixi',
+  'claim.youClaimedLixi': 'Successful claim',
   'claim.addressNotValid': 'Destination is not a valid {ticker} address',
   'claim.invalidAddress': 'Invalid {ticker} address',
   'claim.tickerAddress': '{ticker} Address',
@@ -316,6 +325,8 @@ export default {
   'notification.unableToFetch': 'Unable to fetch the notification.',
   'notification.unableToDelete': 'Unable to delete the notification.',
   'notification.unableToRead': 'Unable to read the notification.',
+  'notification.earlier': 'Earlier',
+  'notification.readAll': 'Read all',
 
   /* 10.NFT */
   'lixinft.unableToMint': 'Unable to mint the lixi NFT',
