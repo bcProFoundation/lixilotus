@@ -156,6 +156,7 @@ input UpdatePageInput {
   name: String
   parentId: String
   state: String
+  title: String!
   website: String
 }
 

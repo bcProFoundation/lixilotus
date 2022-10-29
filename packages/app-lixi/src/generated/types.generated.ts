@@ -211,6 +211,7 @@ export type UpdatePageInput = {
   name?: InputMaybe<Scalars['String']>;
   parentId?: InputMaybe<Scalars['String']>;
   state?: InputMaybe<Scalars['String']>;
+  title: Scalars['String'];
   website?: InputMaybe<Scalars['String']>;
 };
 
