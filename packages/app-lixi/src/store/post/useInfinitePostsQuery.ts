@@ -1,19 +1,19 @@
 import { PaginationArgs } from '@bcpros/lixi-models';
-import { useLazyPagesQuery, usePagesQuery } from '@store/page/pages.generated';
+import { useLazyPostsQuery, usePostsQuery } from '@store/post/posts.generated';
 import { useEffect, useRef, useState } from 'react';
-import { Page, PageOrder } from 'src/generated/types.generated';
+import { Post, PostOrder } from 'src/generated/types.generated';
 
-export interface PageListParams {
+export interface PostListParams {
   skip?: number;
   after?: string;
   before?: string;
   first?: number;
   last?: number;
-  orderBy?: PageOrder;
+  orderBy?: PostOrder;
   query?: string;
 }
-export interface PageListBody {
-  pages: Page[];
+export interface PostListBody {
+  posts: Post[];
   next: string;
 }
 
@@ -21,9 +21,9 @@ export function useInfinitePostsQuery(
   params: PaginationArgs,
   fetchAll: boolean = false // if `true`: auto do next fetches to get all notes at once
 ) {
-  const baseResult = usePagesQuery(params);
+  const baseResult = usePostsQuery(params);
 
-  const [trigger, nextResult] = useLazyPagesQuery();
+  const [trigger, nextResult] = useLazyPostsQuery();
   const [combinedData, setCombinedData] = useState([]);
 
   const isBaseReady = useRef(false);
@@ -35,10 +35,10 @@ export function useInfinitePostsQuery(
   // Base result
   useEffect(() => {
     console.log('baseResult: ', baseResult);
-    next.current = baseResult.data?.allPages?.pageInfo?.endCursor;
-    if (baseResult?.data?.allPages) {
+    next.current = baseResult.data?.allPosts?.pageInfo?.endCursor;
+    if (baseResult?.data?.allPosts) {
       isBaseReady.current = true;
-      setCombinedData(baseResult.data.allPages.edges.map(item => item.node));
+      setCombinedData(baseResult.data.allPosts.edges.map(item => item.node));
       fetchAll && fetchNext();
     }
   }, [baseResult]);
@@ -51,12 +51,12 @@ export function useInfinitePostsQuery(
     if (
       isBaseReady.current &&
       nextResult.data &&
-      nextResult.data.allPages.pageInfo &&
-      nextResult.data.allPages.pageInfo.endCursor != next.current
+      nextResult.data.allPosts.pageInfo &&
+      nextResult.data.allPosts.pageInfo.endCursor != next.current
     ) {
-      next.current = nextResult.data.allPages.pageInfo.endCursor;
+      next.current = nextResult.data.allPosts.pageInfo.endCursor;
 
-      const newItems = nextResult.data.allPages.edges.map(item => item.node);
+      const newItems = nextResult.data.allPosts.edges.map(item => item.node);
       if (newItems && newItems.length) {
         setCombinedData(currentItems => {
           return [...currentItems, ...newItems];
@@ -91,7 +91,7 @@ export function useInfinitePostsQuery(
 
   return {
     data: combinedData ?? [],
-    totalCount: baseResult?.data?.allPages?.totalCount ?? 0,
+    totalCount: baseResult?.data?.allPosts?.totalCount ?? 0,
     error: baseResult?.error,
     isError: baseResult?.isError,
     isLoading: baseResult?.isLoading,
@@ -99,7 +99,7 @@ export function useInfinitePostsQuery(
     errorNext: nextResult?.error,
     isErrorNext: nextResult?.isError,
     isFetchingNext: nextResult?.isFetching,
-    hasNext: baseResult.data?.allPages?.pageInfo?.endCursor !== undefined,
+    hasNext: baseResult.data?.allPosts?.pageInfo?.endCursor !== undefined,
     fetchNext,
     refetch
   };

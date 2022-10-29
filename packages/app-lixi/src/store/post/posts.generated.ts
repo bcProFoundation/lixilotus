@@ -11,7 +11,7 @@
 
 import * as Types from '../../generated/types.generated';
 
-import { PostInfoFieldsFragmentDoc } from '../../graphql/fragments/post-info-fields.fragment.generated';
+import { PageInfoFieldsFragmentDoc } from '../../graphql/fragments/page-info-fields.fragment.generated';
 import { api } from 'src/api/baseApi';
 export type PostQueryVariables = Types.Exact<{
   id: Types.Scalars['String'];
@@ -42,8 +42,8 @@ export type PostsQuery = {
       cursor: string;
       node: { __typename?: 'Post'; id: string; content: string; cover?: string | null; createdAt: any; updatedAt: any };
     }> | null;
-    postInfo: {
-      __typename?: 'PostInfo';
+    pageInfo: {
+      __typename?: 'PageInfo';
       endCursor?: string | null;
       hasNextPage: boolean;
       hasPreviousPage: boolean;
@@ -110,7 +110,7 @@ export const PostDocument = `
 }
     ${PostFieldsFragmentDoc}`;
 export const PostsDocument = `
-    query Posts($after: String, $before: String, $first: Int = 20, $last: Int = 20, $orderBy: PostOrder, $query: String, $skip: Int) {
+    query Posts($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $query: String, $skip: Int) {
   allPosts(
     after: $after
     before: $before
@@ -127,13 +127,13 @@ export const PostsDocument = `
         ...PostFields
       }
     }
-    postInfo {
-      ...PostInfoFields
+    pageInfo {
+      ...PageInfoFields
     }
   }
 }
     ${PostFieldsFragmentDoc}
-${PostInfoFieldsFragmentDoc}`;
+${PageInfoFieldsFragmentDoc}`;
 export const CreatePostDocument = `
     mutation createPost($input: CreatePostInput!) {
   createPost(data: $input) {

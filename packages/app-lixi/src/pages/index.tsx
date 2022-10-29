@@ -1,4 +1,5 @@
 import { LocalUserAccount } from '@bcpros/lixi-models';
+import PostsListing from '@components/Posts/PostsListing';
 import PagesListing from '@components/Pages/PagesListing';
 import { generateAccount, silentLogin } from '@store/account/actions';
 import { getSelectedAccount } from '@store/account/selectors';
@@ -48,7 +49,7 @@ const HomePage = ({ isMobile, localUser }: HomePageProps) => {
     }
   }, [selectedAccount, localUser, isHydrated]);
 
-  return <PagesListing />;
+  return <PostsListing />;
 };
 
 export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) =>
