@@ -200,12 +200,12 @@ export const parseChronikTx = async (XPI: BCHJS, tx: Tx, wallet: WalletState) =>
   let isEncryptedMessage = false;
   let decryptionSuccess = false;
   let replyAddress = '';
+  let destinationAddress = '';
 
   // Iterate over inputs to see if this is an incoming tx (incoming === true)
   for (let i = 0; i < inputs.length; i += 1) {
     const thisInput = inputs[i];
     const thisInputSendingHash160 = thisInput.outputScript;
-
     /* 
     
     Assume the first input is the originating address
@@ -247,9 +247,6 @@ export const parseChronikTx = async (XPI: BCHJS, tx: Tx, wallet: WalletState) =>
       }
     }
   }
-
-  let senderAddress: string;
-
 
   // Iterate over outputs to get the amount sent
   for (let i = 0; i < outputs.length; i += 1) {
@@ -306,7 +303,7 @@ export const parseChronikTx = async (XPI: BCHJS, tx: Tx, wallet: WalletState) =>
         //          the result should be in the cache.
         let otherPublicKey;
         try {
-          const theOtherAddress = incoming ? senderAddress : destinationAddress;
+          const theOtherAddress = incoming ? replyAddress : destinationAddress;
           // otherPublicKey = await XPI.encryption.getPubKey(theOtherAddress);
         } catch (error) {
           opReturnMessage = 'Cannot retrieve Public Key'

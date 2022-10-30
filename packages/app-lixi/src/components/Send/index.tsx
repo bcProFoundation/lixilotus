@@ -25,6 +25,7 @@ import { ZeroBalanceHeader } from '@bcpros/lixi-components/components/Common/Ato
 import styled from 'styled-components';
 import { createSharedKey, encrypt } from '@utils/encryption';
 import { WrapperPage } from '@components/Settings';
+import { getWalletPathAddressInfoByPath } from '@store/wallet';
 
 const StyledCheckbox = styled(Checkbox)`
   .ant-checkbox-inner {
@@ -76,6 +77,9 @@ const SendComponent: React.FC = () => {
   const [opReturnMsg, setOpReturnMsg] = useState('');
   const [recipientPubKeyWarning, setRecipientPubKeyWarning] = useState('');
   const [recipientPubKeyHex, setRecipientPubKeyHex] = useState('');
+
+  const defaultPath = "m/44'/10605'/0'/0/0";
+  const Path10605 = useAppSelector(getWalletPathAddressInfoByPath(defaultPath));
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -141,7 +145,6 @@ const SendComponent: React.FC = () => {
       return;
     }
     try {
-      const { Path10605 } = await Wallet.getWalletDetails(wallet.mnemonic);
       const { keyPair, fundingWif } = Path10605;
       let encryptedOpReturnMsg = undefined;
       if (opReturnMsg && typeof opReturnMsg !== 'undefined' && opReturnMsg.trim() !== '' && recipientPubKeyHex) {

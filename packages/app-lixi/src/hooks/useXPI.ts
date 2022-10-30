@@ -23,7 +23,6 @@ export default function useXPI() {
 
     ConstructedSlpWallet = new SlpWallet('', {
       restURL: getRestUrl(apiIndex)
-      // hdPath: "m/44'/10605'/0'/0/0"
     });
     return ConstructedSlpWallet.bchjs as BCHJS;
   };
@@ -331,7 +330,7 @@ export default function useXPI() {
       // Get 20 txs. If no outgoing txs in those 20 txs, just don't send the tx
       chronikTxHistoryAtAddress = await chronik
         .script('p2pkh', recipientAddressHash160)
-        .history(/*page=*/ 0, /*page_size=*/ 20);
+        .history(/*page=*/ 0, /*page_size=*/ 40);
     } catch (err) {
       console.log(
         `Error getting await chronik.script('p2pkh', ${recipientAddressHash160}).history();`,

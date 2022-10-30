@@ -1,9 +1,5 @@
 import { Utxo } from "chronik-client";
 
-export interface WalletDetail {
-  Path10605: WalletPathAddressInfo;
-  mnemonic: string;
-}
 export interface WalletPathAddressInfo {
   path: string;
   cashAddress: string;

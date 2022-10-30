@@ -5,7 +5,7 @@ import { ChronikClient, SubscribeMsg, Tx } from 'chronik-client';
 import useXPI from './useXPI';
 import useInterval from './useInterval';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { getAllWalletPaths, getWaletRefreshInterval, getWalletHasUpdated, getWalletState, setWalletHasUpdated, setWalletRefreshInterval, WalletDetail, WalletPathAddressInfo, WalletState, WalletStatus } from '@store/wallet';
+import { getAllWalletPaths, getWaletRefreshInterval, getWalletHasUpdated, getWalletState, setWalletHasUpdated, setWalletRefreshInterval, WalletPathAddressInfo, WalletState, WalletStatus } from '@store/wallet';
 import { RootState } from '@store/store';
 import { WalletContextValue } from '@context/index';
 import { getHashArrayFromWallet, getWalletBalanceFromUtxos } from '@utils/cashMethods';

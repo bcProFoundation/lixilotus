@@ -12,6 +12,11 @@ export const getAllWalletPaths = createSelector(getWalletState, selectAll);
 
 export const getAllWalletPathsEntities = createSelector(getWalletState, selectEntities);
 
+export const getWalletPathAddressInfoByPath = (path: string) => createSelector(
+  getAllWalletPathsEntities,
+  paths => paths?.[path]
+);
+
 export const getWalletStatus = createSelector(
   getWalletState,
   (state: WalletState) => state.walletStatus
