@@ -35,8 +35,8 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       key: 'trending'
     },
     {
-      label: 'Experiance',
-      key: 'experiance'
+      label: 'Experiences',
+      key: 'experiences'
     }
   ];
 

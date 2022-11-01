@@ -88,7 +88,6 @@ export type PageConnection = {
   __typename?: 'PageConnection';
   edges?: Maybe<Array<PageEdge>>;
   pageInfo: PageInfo;
-  postInfo: PostInfo;
   totalCount?: Maybe<Scalars['Int']>;
 };
 
@@ -138,7 +137,6 @@ export type PostConnection = {
   __typename?: 'PostConnection';
   edges?: Maybe<Array<PostEdge>>;
   pageInfo: PageInfo;
-  postInfo: PostInfo;
   totalCount?: Maybe<Scalars['Int']>;
 };
 
@@ -146,14 +144,6 @@ export type PostEdge = {
   __typename?: 'PostEdge';
   cursor: Scalars['String'];
   node: Post;
-};
-
-export type PostInfo = {
-  __typename?: 'PostInfo';
-  endCursor?: Maybe<Scalars['String']>;
-  hasNextPage: Scalars['Boolean'];
-  hasPreviousPage: Scalars['Boolean'];
-  startCursor?: Maybe<Scalars['String']>;
 };
 
 export type PostOrder = {
@@ -166,7 +156,6 @@ export enum PostOrderField {
   Content = 'content',
   CreatedAt = 'createdAt',
   Id = 'id',
-  Title = 'title',
   UpdatedAt = 'updatedAt'
 }
 
@@ -218,11 +207,11 @@ export type UpdatePageInput = {
   country?: InputMaybe<Scalars['String']>;
   cover?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
-  title: Scalars['String'];
   id: Scalars['ID'];
   name?: InputMaybe<Scalars['String']>;
   parentId?: InputMaybe<Scalars['String']>;
   state?: InputMaybe<Scalars['String']>;
+  title: Scalars['String'];
   website?: InputMaybe<Scalars['String']>;
 };
 

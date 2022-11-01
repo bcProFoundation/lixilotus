@@ -1,62 +1,64 @@
+import intl from 'react-intl-universal';
+
 export const navBarHeaderList = [
   {
-    name: 'Accounts',
-    subTitle: 'Manage Accounts',
+    name: intl.get('general.accounts'),
+    subTitle: intl.get('general.manageAccounts'),
     path: '/wallet'
   },
   {
-    name: 'Send',
-    subTitle: 'Send Lotus',
+    name: intl.get('general.send'),
+    subTitle: intl.get('general.sendLotus'),
     path: '/send'
   },
   {
-    name: 'Register Pack',
-    subTitle: 'Register Pack',
+    name: intl.get('general.registerPack'),
+    subTitle: intl.get('general.registerPack'),
     path: '/admin/pack-register'
   },
   {
-    name: 'Create Page',
-    subTitle: 'Create Page',
+    name: intl.get('general.createPage'),
+    subTitle: intl.get('general.createPage'),
     path: '/page/create'
   },
   {
-    name: 'Settings',
-    subTitle: 'Set Privacy and Notification settings',
+    name: intl.get('general.settings'),
+    subTitle: intl.get('general.subtitleSettings'),
     path: '/settings'
   },
   {
-    name: 'Lixi',
-    subTitle: 'Manage Lixi',
+    name: intl.get('general.lixi'),
+    subTitle: intl.get('manageLixi'),
     path: '/lixi'
   },
   {
-    name: 'Profile',
-    subTitle: 'Manage Info',
+    name: intl.get('general.profile'),
+    subTitle: intl.get('general.manageInfo'),
     path: '/profile'
   },
   {
-    name: 'Page',
-    subTitle: 'Manage Page',
+    name: intl.get('general.page'),
+    subTitle: intl.get('general.managePage'),
     path: '/page'
   },
   {
-    name: 'Notifications',
-    subTitle: 'Manage Notifications',
-    path: '/notifications',
+    name: intl.get('general.notifications'),
+    subTitle: intl.get('general.manageNotifications'),
+    path: '/notifications'
   },
   {
-    name: 'Pages',
-    subTitle: 'Discover and connect with businesses on LixiLotus',
+    name: intl.get('general.pages'),
+    subTitle: intl.get('general.feedPage'),
     path: '/page/feed'
   },
   {
-    name: 'Pages',
-    subTitle: 'Change information your page',
+    name: intl.get('general.pages'),
+    subTitle: intl.get('general.subTitleEditPage'),
     path: '/page/edit'
   },
   {
-    name: 'Claimed',
-    subTitle: `Detail of claimed`,
+    name: intl.get('general.claimed'),
+    subTitle: intl.get('general.subTitleClaimed'),
     path: '/claimed/'
   }
 ];
