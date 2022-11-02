@@ -65,6 +65,7 @@ export const currency = {
       lotusChat: '02020202',
       lotusChatEncrypted: '03030303'
     },
+    opReturnPrefixDec: '106',
     encryptedMsgByteLimit: 206,
     unencryptedMsgByteLimit: 215
   }

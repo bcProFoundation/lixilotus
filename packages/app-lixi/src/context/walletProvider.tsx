@@ -14,7 +14,7 @@ export type WalletContextValue = {
 export const WalletContext = createContext<WalletContextValue | null>(null);
 
 export const WalletProvider = ({ children }) => {
-  const Wallet = useWallet();
+  const wallet = useWallet();
 
-  return <WalletContext.Provider value={Wallet}>{children}</WalletContext.Provider>;
+  return <WalletContext.Provider value={wallet}>{children}</WalletContext.Provider>;
 };

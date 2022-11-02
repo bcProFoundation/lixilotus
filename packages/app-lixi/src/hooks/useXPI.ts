@@ -2,8 +2,11 @@ import { currency } from '@bcpros/lixi-models/constants/ticker';
 import { fromSmallestDenomination, toSmallestDenomination } from '@bcpros/lixi-models/utils/cashMethods';
 import SlpWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
+import { WalletContextValue } from '@context/walletProvider';
+import { encryptOpReturnMsg, fromXpiToSatoshis, parseXpiSendValue } from '@utils/cashMethods';
+import { getRecipientPublicKey } from '@utils/chronik';
 import BigNumber from 'bignumber.js';
-import { ChronikClient, TxHistoryPage } from 'chronik-client';
+import { ChronikClient, TxHistoryPage, Utxo } from 'chronik-client';
 import _ from 'lodash';
 import intl from 'react-intl-universal';
 
@@ -167,28 +170,54 @@ export default function useXPI() {
   };
 
   const sendXpi = async (
+    XPI: BCHJS,
+    chronik: ChronikClient,
+    wallet: WalletContextValue,
+    utxos: Array<Utxo>,
+    feeInSatsPerByte: number,
     sourceAddress: string,
-    utxos,
-    inputKeyPair,
-    destinationAddress,
-    sendAmount,
-    feeInSatsPerByte,
-    optionalOpReturnMsg,
-    encryptionFlag
+    optionalOpReturnMsg: string,
+    isOneToMany: boolean,
+    destinationAddressAndValueArray: Array<string>,
+    destinationAddress: string,
+    sendAmount: string,
+    encryptionFlag: boolean,
+    fundingWif: string,
   ) => {
     try {
-      if (!sendAmount) {
-        return null;
-      }
-      const XPI = getXPI();
-      const XPIWallet = getXPIWallet();
-      const sourceBalance: number = await XPIWallet.getBalance(sourceAddress);
 
-      // throw new Error(intl.get('send.insufficientFund'));
-      if (sourceBalance === 0) {
-        throw new Error(intl.get('send.insufficientFund'));
+      let txBuilder = new XPI.TransactionBuilder();
+
+      // parse the input value of XPIs to send
+      const value = parseXpiSendValue(
+        isOneToMany,
+        sendAmount,
+        destinationAddressAndValueArray,
+      );
+
+      const satoshisToSend = fromXpiToSatoshis(value);
+
+      // Throw validation error if fromXecToSatoshis returns false
+      if (!satoshisToSend) {
+        const error = new Error(
+          `Invalid decimal places for send amount`,
+        );
+        throw error;
       }
-      const value = new BigNumber(sendAmount);
+
+      // if the user has opted to encrypt this message
+      if (encryptionFlag) {
+        // get the pub key for the recipient address
+        let recipientPubKey = await getRecipientPublicKey(
+          XPI,
+          chronik,
+          destinationAddress,
+        );
+
+        if (recipientPubKey) {
+          const encryptedData = encryptOpReturnMsg(fundingWif, recipientPubKey, optionalOpReturnMsg);
+        }
+      }
 
       // If user is attempting to send less than minimum accepted by the backend
       if (value.lt(new BigNumber(fromSmallestDenomination(currency.dustSats).toString()))) {
@@ -199,7 +228,6 @@ export default function useXPI() {
       const inputUtxos = [];
       const transactionBuilder: any = new XPI.TransactionBuilder();
 
-      const satoshisToSend = toSmallestDenomination(value);
 
       // Throw validation error if toSmallestDenomination returns false
       if (!satoshisToSend) {
@@ -299,77 +327,7 @@ export default function useXPI() {
     }
   };
 
-  const getRecipientPublicKey = async (
-    XPI: BCHJS,
-    chronik: ChronikClient,
-    recipientAddress: string,
-    optionalMockPubKeyResponse = false,
-  ): Promise<string | boolean> => {
-    // Necessary because jest can't mock
-    // chronikTxHistoryAtAddress = await chronik.script('p2pkh', recipientAddressHash160).history(/*page=*/ 0, /*page_size=*/ 10);
-    if (optionalMockPubKeyResponse) {
-      return optionalMockPubKeyResponse;
-    }
 
-    // get hash160 of address
-    let recipientAddressHash160: string;
-    try {
-      recipientAddressHash160 = XPI.Address.toHash160(recipientAddress);
-    } catch (err) {
-      console.log(
-        `Error determining XPI.Address.toHash160(${recipientAddress} in getRecipientPublicKey())`,
-        err,
-      );
-      throw new Error(
-        `Error determining XPI.Address.toHash160(${recipientAddress} in getRecipientPublicKey())`,
-      );
-    }
-
-    let chronikTxHistoryAtAddress: TxHistoryPage
-    try {
-      // Get 20 txs. If no outgoing txs in those 20 txs, just don't send the tx
-      chronikTxHistoryAtAddress = await chronik
-        .script('p2pkh', recipientAddressHash160)
-        .history(/*page=*/ 0, /*page_size=*/ 40);
-    } catch (err) {
-      console.log(
-        `Error getting await chronik.script('p2pkh', ${recipientAddressHash160}).history();`,
-        err,
-      );
-      throw new Error(
-        'Error fetching tx history to parse for public key',
-      );
-    }
-    let recipientPubKeyChronik;
-
-    // Iterate over tx history to find an outgoing tx
-    for (let i = 0; i < chronikTxHistoryAtAddress.txs.length; i += 1) {
-      const { inputs } = chronikTxHistoryAtAddress.txs[i];
-      for (let j = 0; j < inputs.length; j += 1) {
-        const thisInput = inputs[j];
-        const thisInputSendingHash160 = thisInput.outputScript;
-        if (thisInputSendingHash160.includes(recipientAddressHash160)) {
-          // Then this is an outgoing tx, you can get the public key from this tx
-          // Get the public key
-          try {
-            recipientPubKeyChronik =
-              chronikTxHistoryAtAddress.txs[i].inputs[
-                j
-              ].inputScript.slice(-66);
-          } catch (err) {
-            throw new Error(
-              'Cannot send an encrypted message to a wallet with no outgoing transactions',
-            );
-          }
-          return recipientPubKeyChronik;
-        }
-      }
-    }
-    // You get here if you find no outgoing txs in the chronik tx history
-    throw new Error(
-      'Cannot send an encrypted message to a wallet with no outgoing transactions in the last 20 txs',
-    );
-  };
 
   return {
     getXPI,
@@ -377,7 +335,6 @@ export default function useXPI() {
     calcFee,
     getXPIWallet,
     sendAmount,
-    sendXpi,
-    getRecipientPublicKey
+    sendXpi
   } as const;
 }

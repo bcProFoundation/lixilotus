@@ -1,16 +1,15 @@
 import BCHJS from '@bcpros/xpi-js';
-import { currency, Lixi } from '@bcpros/lixi-models';
-import { useEffect, useState } from 'react';
-import { ChronikClient, SubscribeMsg, Tx } from 'chronik-client';
-import useXPI from './useXPI';
-import useInterval from './useInterval';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { getAllWalletPaths, getWaletRefreshInterval, getWalletHasUpdated, getWalletState, setWalletHasUpdated, setWalletRefreshInterval, WalletPathAddressInfo, WalletState, WalletStatus } from '@store/wallet';
-import { RootState } from '@store/store';
 import { WalletContextValue } from '@context/index';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { xpiReceivedNotificationWebSocket } from '@store/notification/actions';
+import { getAllWalletPaths, getWaletRefreshInterval, getWalletHasUpdated, getWalletState, setWalletHasUpdated, setWalletRefreshInterval, WalletPathAddressInfo, WalletState, WalletStatus } from '@store/wallet';
 import { getHashArrayFromWallet, getWalletBalanceFromUtxos } from '@utils/cashMethods';
-import _ from 'lodash';
 import { getTxHistoryChronik, getUtxosChronik, Hash160AndAddress, organizeUtxosByType, parseChronikTx } from '@utils/chronik';
+import { ChronikClient, SubscribeMsg, Tx } from 'chronik-client';
+import _ from 'lodash';
+import { useEffect, useState } from 'react';
+import useInterval from './useInterval';
+import useXPI from './useXPI';
 
 const chronik = new ChronikClient('https://chronik.fabien.cash');
 const websocketConnectedRefreshInterval = 10000;
@@ -168,11 +167,17 @@ const useWallet = () => {
     }
 
     // parse tx for notification
-    const parsedChronikTx = parseChronikTx(
+    const parsedChronikTx = await parseChronikTx(
       XPI,
+      chronik,
       incomingTxDetails,
       wallet
     );
+
+    if (parsedChronikTx.incoming) {
+      // Notification
+      dispatch(xpiReceivedNotificationWebSocket(parsedChronikTx.xpiAmount));
+    }
   }
 
   // Chronik websockets

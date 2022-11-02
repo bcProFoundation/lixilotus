@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { AccountDto as Account, NotificationDto } from '@bcpros/lixi-models';
 import { all, call, cancelled, fork, put, select, take, takeLatest } from '@redux-saga/core/effects';
 import intl from 'react-intl-universal';
@@ -6,6 +7,11 @@ import { getSelectedAccount } from '@store/account/selectors';
 import { eventChannel } from 'redux-saga';
 import { delay, race } from 'redux-saga/effects';
 import io, { Socket } from 'socket.io-client';
+import { isMobile } from 'react-device-detect';
+import BigNumber from 'bignumber.js';
+import { CashReceivedNotificationIcon } from '@bcpros/lixi-components/components/Common/CustomIcons';
+import Paragraph from 'antd/lib/typography/Paragraph';
+import { currency } from '@components/Common/Ticker';
 import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
 import {
@@ -24,10 +30,31 @@ import {
   deleteNotificationFailure,
   readNotification,
   readNotificationSuccess,
-  readNotificationFailure
+  readNotificationFailure,
+  xpiReceivedNotificationWebSocket
 } from './actions';
 import notificationApi from './api';
 import { downloadExportedLixi, refreshLixi, refreshLixiSilent } from '../lixi/actions';
+import { notification } from 'antd';
+import { ArgsProps } from 'antd/lib/notification';
+
+
+
+const getDeviceNotificationStyle = () => {
+  if (isMobile) {
+    const notificationStyle = {
+      width: '100%',
+      marginTop: '10%',
+    };
+    return notificationStyle;
+  }
+  if (!isMobile) {
+    const notificationStyle = {
+      width: '100%',
+    };
+    return notificationStyle;
+  }
+};
 
 let socket: Socket;
 const baseUrl = process.env.NEXT_PUBLIC_LIXI_API ? process.env.NEXT_PUBLIC_LIXI_API : 'https://lixilotus.com/';
@@ -287,6 +314,29 @@ function* receiveNotificationSaga(action: PayloadAction<NotificationDto>) {
   }
 }
 
+function* xpiReceivedNotificationWebSocketSaga(action: PayloadAction<string>) {
+  const xpiAmount = new BigNumber(action.payload);
+  const notificationStyle = getDeviceNotificationStyle();
+  const config: ArgsProps = {
+    message: 'Lotus received',
+    description: (
+      <>
+        <Paragraph>
+          + {xpiAmount.toLocaleString()} {currency.ticker}{' '}
+        </Paragraph>
+      </>
+    ),
+    duration: 3,
+    icon: <CashReceivedNotificationIcon />,
+    style: notificationStyle,
+  };
+  notification.success(config);
+}
+
+function* watchXpiReceivedNotificationWebSocketSaga() {
+  yield takeLatest(xpiReceivedNotificationWebSocket.type, xpiReceivedNotificationWebSocketSaga);
+}
+
 export default function* notificationSaga() {
   if (typeof window === 'undefined') {
     yield all([
@@ -312,7 +362,8 @@ export default function* notificationSaga() {
       fork(watchDeleteNotificationFailure),
       fork(watchReadNotification),
       fork(watchReadNotificationSuccess),
-      fork(watchReadNotificationFailure)
+      fork(watchReadNotificationFailure),
+      fork(watchXpiReceivedNotificationWebSocketSaga)
     ]);
   }
 }

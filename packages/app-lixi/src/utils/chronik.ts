@@ -1,10 +1,9 @@
 import { currency } from "@bcpros/lixi-models";
 import BCHJS from '@bcpros/xpi-js';
-import { WalletState } from "@store/wallet";
+import { walletAdapter, WalletState } from "@store/wallet";
 import BigNumber from 'bignumber.js';
 import { ChronikClient, Tx, TxHistoryPage, Utxo } from "chronik-client";
-import wif from 'wif';
-import { getHashArrayFromWallet, getUtxoWif, parseOpReturn } from "./cashMethods";
+import { decryptOpReturnMsg, getHashArrayFromWallet, getUtxoWif, parseOpReturn } from "./cashMethods";
 
 export interface Hash160AndAddress {
   address: string;
@@ -185,7 +184,83 @@ export const returnGetTxHistoryChronikPromise = (
   });
 };
 
-export const parseChronikTx = async (XPI: BCHJS, tx: Tx, wallet: WalletState) => {
+export const getRecipientPublicKey = async (
+  XPI: BCHJS,
+  chronik: ChronikClient,
+  recipientAddress: string,
+  optionalMockPubKeyResponse: string | false = false,
+): Promise<string | false> => {
+  // Necessary because jest can't mock
+  // chronikTxHistoryAtAddress = await chronik.script('p2pkh', recipientAddressHash160).history(/*page=*/ 0, /*page_size=*/ 10);
+  if (optionalMockPubKeyResponse) {
+    return optionalMockPubKeyResponse;
+  }
+
+  // get hash160 of address
+  let recipientAddressHash160: string;
+  try {
+    recipientAddressHash160 = XPI.Address.toHash160(recipientAddress);
+  } catch (err) {
+    console.log(
+      `Error determining XPI.Address.toHash160(${recipientAddress} in getRecipientPublicKey())`,
+      err,
+    );
+    throw new Error(
+      `Error determining XPI.Address.toHash160(${recipientAddress} in getRecipientPublicKey())`,
+    );
+  }
+
+  let chronikTxHistoryAtAddress: TxHistoryPage
+  try {
+    // Get 20 txs. If no outgoing txs in those 20 txs, just don't send the tx
+    chronikTxHistoryAtAddress = await chronik
+      .script('p2pkh', recipientAddressHash160)
+      .history(/*page=*/ 0, /*page_size=*/ 40);
+  } catch (err) {
+    console.log(
+      `Error getting await chronik.script('p2pkh', ${recipientAddressHash160}).history();`,
+      err,
+    );
+    throw new Error(
+      'Error fetching tx history to parse for public key',
+    );
+  }
+  let recipientPubKeyChronik;
+
+  // Iterate over tx history to find an outgoing tx
+  for (let i = 0; i < chronikTxHistoryAtAddress.txs.length; i += 1) {
+    const { inputs } = chronikTxHistoryAtAddress.txs[i];
+    for (let j = 0; j < inputs.length; j += 1) {
+      const thisInput = inputs[j];
+      const thisInputSendingHash160 = thisInput.outputScript;
+      if (thisInputSendingHash160.includes(recipientAddressHash160)) {
+        // Then this is an outgoing tx, you can get the public key from this tx
+        // Get the public key
+        try {
+          recipientPubKeyChronik =
+            chronikTxHistoryAtAddress.txs[i].inputs[
+              j
+            ].inputScript.slice(-66);
+        } catch (err) {
+          throw new Error(
+            'Cannot send an encrypted message to a wallet with no outgoing transactions',
+          );
+        }
+        return recipientPubKeyChronik;
+      }
+    }
+  }
+  // You get here if you find no outgoing txs in the chronik tx history
+  throw new Error(
+    'Cannot send an encrypted message to a wallet with no outgoing transactions in the last 20 txs',
+  );
+};
+
+export const parseChronikTx = async (
+  XPI: BCHJS,
+  chronik: ChronikClient,
+  tx: Tx,
+  wallet: WalletState) => {
   const walletHash160s: string[] = getHashArrayFromWallet(wallet);
   const { inputs, outputs } = tx;
   // Assign defaults
@@ -194,12 +269,12 @@ export const parseChronikTx = async (XPI: BCHJS, tx: Tx, wallet: WalletState) =>
   let originatingHash160 = '';
 
   // Initialize required variables
-  let substring = '';
+  let messageHex: string = '';
   let opReturnMessage: Buffer | string;
   let isLotusMessage = false;
   let isEncryptedMessage = false;
   let decryptionSuccess = false;
-  let replyAddress = '';
+  let replyAddress = ''; // or senderAddress
   let destinationAddress = '';
 
   // Iterate over inputs to see if this is an incoming tx (incoming === true)
@@ -237,6 +312,7 @@ export const parseChronikTx = async (XPI: BCHJS, tx: Tx, wallet: WalletState) =>
       originatingHash160 = 'N/A';
     }
 
+    // Incoming transaction means that all inputs are not from current addresses
     for (let j = 0; j < walletHash160s.length; j += 1) {
       const thisWalletHash160 = walletHash160s[j];
       if (thisInputSendingHash160.includes(thisWalletHash160)) {
@@ -247,6 +323,7 @@ export const parseChronikTx = async (XPI: BCHJS, tx: Tx, wallet: WalletState) =>
       }
     }
   }
+
 
   // Iterate over outputs to get the amount sent
   for (let i = 0; i < outputs.length; i += 1) {
@@ -267,17 +344,18 @@ export const parseChronikTx = async (XPI: BCHJS, tx: Tx, wallet: WalletState) =>
         break;
       }
 
-      let message = '';
+
       let txType = parsedOpReturnArray[0];
 
       if (txType === currency.opReturn.appPrefixesHex.lotusChat) {
         // this is a sendlotus message
         try {
-          opReturnMessage = Buffer.from(
-            parsedOpReturnArray[1],
-            'hex',
-          );
+          messageHex = parsedOpReturnArray[1];
           isLotusMessage = true;
+          opReturnMessage = Buffer.from(
+            messageHex,
+            'hex',
+          ).toString();
         } catch (err) {
           // soft error if an unexpected or invalid cashtab hex is encountered
           opReturnMessage = '';
@@ -291,91 +369,15 @@ export const parseChronikTx = async (XPI: BCHJS, tx: Tx, wallet: WalletState) =>
       ) {
         isLotusMessage = true;
         isEncryptedMessage = true;
-        let msgString = parsedOpReturnArray[1];
-
-        // To decrypt the message, we need
-        //  Our private key
-        //  The message
-        //  The other end's public key
-        //      - incoming tx: get public key from the tx's first input
-        //      - outgoing tx:  make api call to get the public key from the recipient's address
-        //          If this api call has been made earlier when we tried to send an encrypted message
-        //          the result should be in the cache.
-        let otherPublicKey;
-        try {
-          const theOtherAddress = incoming ? replyAddress : destinationAddress;
-          // otherPublicKey = await XPI.encryption.getPubKey(theOtherAddress);
-        } catch (error) {
-          opReturnMessage = 'Cannot retrieve Public Key'
-        }
-
-        let fundingWif, privateKeyObj, privateKeyBuff;
-        if (
-          wallet &&
-          wallet.walletStatus &&
-          wallet.walletStatus.slpBalancesAndUtxos &&
-          wallet.walletStatus.slpBalancesAndUtxos.nonSlpUtxos[0]
-        ) {
-          const walletPaths = getWalletPathsFromWalletState(wallet);
-          fundingWif = getUtxoWif(
-            wallet.walletStatus.slpBalancesAndUtxos.nonSlpUtxos[0],
-            walletPaths,
-          );
-          privateKeyObj = wif.decode(fundingWif);
-          privateKeyBuff = privateKeyObj.privateKey;
-          if (!privateKeyBuff) {
-            isLotusMessage = true;
-            isEncryptedMessage = true;
-            opReturnMessage = 'Private key extraction error';
-            continue; // skip to next output hex without triggering an API error
-          }
-        } else {
-          break;
-        }
-
-        let structData;
-        let decryptedMessage;
-
-        try {
-          // Convert the hex encoded message to a buffer
-          const msgBuf = Buffer.from(msgString, 'hex');
-
-          // Convert the bufer into a structured object.
-          structData = convertToEncryptStruct(msgBuf);
-
-          decryptedMessage = ecies.decrypt(
-            privateKeyBuff,
-            structData,
-          );
-          decryptionSuccess = true;
-        } catch (err) {
-          console.log(
-            'useBCH.parsedTxData() decryption error: ' + err,
-          );
-          decryptedMessage = 'Unable to decrypt this message';
-        }
-        isLotusMessage = true;
-        isEncryptedMessage = true;
-        opReturnMessage = decryptedMessage;
+        messageHex = parsedOpReturnArray[1];
       } else {
         // this is an externally generated message
-        message = txType; // index 0 is the message content in this instance
+        messageHex = txType; // index 0 is the message content in this instance
 
         // if there are more than one part to the external message
         const arrayLength = parsedOpReturnArray.length;
         for (let i = 1; i < arrayLength; i++) {
-          message = message + parsedOpReturnArray[i];
-        }
-
-        try {
-          opReturnMessage = Buffer.from(message, 'hex');
-        } catch (err) {
-          // soft error if an unexpected or invalid cashtab hex is encountered
-          opReturnMessage = '';
-          console.log(
-            'useBCH.parsedTxData() error: invalid external msg hex: ' +
-            substring,
-          );
+          messageHex = messageHex + parsedOpReturnArray[i];
         }
       }
     }
@@ -395,6 +397,8 @@ export const parseChronikTx = async (XPI: BCHJS, tx: Tx, wallet: WalletState) =>
     if (!incoming) {
       const thisOutputAmount = new BigNumber(thisOutput.value);
       xpiAmount = xpiAmount.plus(thisOutputAmount);
+      const legacyDestinationAddress = XPI.Address.fromOutputScript(thisOutput.outputScript);
+      destinationAddress = XPI.Address.toXAddress(legacyDestinationAddress);
     }
   }
 
@@ -404,8 +408,34 @@ export const parseChronikTx = async (XPI: BCHJS, tx: Tx, wallet: WalletState) =>
   // Convert from BigNumber to string
   const xpiAmountString = xpiAmount.toString();
 
-  // Convert opReturnMessage to string
-  opReturnMessage = Buffer.from(opReturnMessage).toString();
+  // Convert messageHex to string
+  // @todo: get the destination or reply public key from cache
+  const theOtherAddress = incoming ? replyAddress : destinationAddress;
+  const otherPublicKey = await getRecipientPublicKey(XPI, chronik, theOtherAddress) as string;
+  if (
+    isLotusMessage &&
+    isEncryptedMessage &&
+    otherPublicKey &&
+    wallet &&
+    wallet.walletStatus &&
+    wallet.walletStatus.slpBalancesAndUtxos &&
+    wallet.walletStatus.slpBalancesAndUtxos.nonSlpUtxos[0]
+  ) {
+    const { selectAll } = walletAdapter.getSelectors();
+    const allWalletPaths = selectAll(wallet);
+    const fundingWif = getUtxoWif(
+      wallet.walletStatus.slpBalancesAndUtxos.nonSlpUtxos[0],
+      allWalletPaths,
+    );
+    const decryption = await decryptOpReturnMsg(messageHex, fundingWif, otherPublicKey);
+    if (decryption.success) {
+      opReturnMessage = Buffer.from(decryption.decryptedMsg).toString();
+      decryptionSuccess = true;
+    } else {
+      console.log(decryption.error);
+      opReturnMessage = 'Error in decrypting message!'
+    }
+  }
 
   return {
     incoming,
@@ -461,7 +491,7 @@ export const getTxHistoryChronik = async (
   for (let i = 0; i < sortedTxHistoryArray.length; i += 1) {
     const sortedTx = sortedTxHistoryArray[i];
     // Add token genesis info so parsing function can calculate amount by decimals
-    sortedTx.parsed = parseChronikTx(XPI, sortedTx, wallet);
+    sortedTx.parsed = parseChronikTx(XPI, chronik, sortedTx, wallet);
     chronikTxHistory.push(sortedTx);
   }
 

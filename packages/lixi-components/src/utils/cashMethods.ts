@@ -50,36 +50,6 @@ export const formatBalance = x => {
   }
 };
 
-// export const batchArray = (inputArray, batchSize) => {
-//     // take an array of n elements, return an array of arrays each of length batchSize
-
-//     const batchedArray = [];
-//     for (let i = 0; i < inputArray.length; i += batchSize) {
-//         const tempArray = inputArray.slice(i, i + batchSize);
-//         batchedArray.push(tempArray);
-//     }
-//     return batchedArray;
-// };
-
-export const loadStoredWallet = walletStateFromStorage => {
-  // Accept cached tokens array that does not save BigNumber type of BigNumbers
-  // Return array with BigNumbers converted
-  // See BigNumber.js api for how to create a BigNumber object from an object
-  // https://mikemcl.github.io/bignumber.js/
-  const liveWalletState = walletStateFromStorage;
-  const { slpBalancesAndUtxos, tokens } = liveWalletState;
-  for (let i = 0; i < tokens.length; i += 1) {
-    const thisTokenBalance = tokens[i].balance;
-    thisTokenBalance._isBigNumber = true;
-    tokens[i].balance = new BigNumber(thisTokenBalance);
-  }
-
-  // Also confirm balance is correct
-  // Necessary step in case currency.decimals changed since last startup
-  const balancesRebased = normalizeBalance(slpBalancesAndUtxos);
-  liveWalletState.balances = balancesRebased;
-  return liveWalletState;
-};
 
 export const normalizeBalance = slpBalancesAndUtxos => {
   const totalBalanceInSatoshis = slpBalancesAndUtxos.nonSlpUtxos.reduce(

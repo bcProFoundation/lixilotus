@@ -23,9 +23,10 @@ import { getDustXPI, getWalletState } from '@utils/cashMethods';
 import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
 import { ZeroBalanceHeader } from '@bcpros/lixi-components/components/Common/Atoms';
 import styled from 'styled-components';
-import { createSharedKey, encrypt } from '@utils/encryption';
+
 import { WrapperPage } from '@components/Settings';
 import { getWalletPathAddressInfoByPath } from '@store/wallet';
+import { getRecipientPublicKey } from '@utils/chronik';
 
 const StyledCheckbox = styled(Checkbox)`
   .ant-checkbox-inner {
@@ -110,20 +111,9 @@ const SendComponent: React.FC = () => {
     setIsModalVisible(false);
   };
 
-  const encryptOpReturnMsg = (privateKeyWIF, recipientPubKeyHex, plainTextMsg) => {
-    let encryptedMsg;
-    try {
-      const sharedKey = createSharedKey(privateKeyWIF, recipientPubKeyHex);
-      encryptedMsg = encrypt(sharedKey, Uint8Array.from(Buffer.from(plainTextMsg)));
-    } catch (err) {
-      console.log(`SendBCH.encryptOpReturnMsg() error: ` + err);
-      throw err;
-    }
 
-    return encryptedMsg;
-  };
 
-  const { getRecipientPublicKey, calcFee, sendXpi } = useXPI();
+  const { calcFee, sendXpi } = useXPI();
 
   async function submit() {
     setFormData({
@@ -213,15 +203,12 @@ const SendComponent: React.FC = () => {
   }
 
   const fetchRecipientPublicKey = async recipientAddress => {
-    let recipientPubKey;
+    let recipientPubKey: string | boolean;
     try {
       recipientPubKey = await getRecipientPublicKey(XPI, chronik, recipientAddress);
     } catch (err) {
       console.log(`SendBCH.handleAddressChange() error: ` + err);
-      recipientPubKey = {
-        success: false,
-        error: 'fetch error - exception thrown'
-      };
+      recipientPubKey = false;
     }
     if (recipientPubKey) {
       setRecipientPubKeyHex(recipientPubKey);
@@ -231,11 +218,6 @@ const SendComponent: React.FC = () => {
       setRecipientPubKeyHex('');
       setIsOpReturnMsgDisabled(true);
       setRecipientPubKeyWarning(intl.get('send.addressNoOutgoingTrans'));
-      // if (recipientPubKey && recipientPubKey === 'not found') {
-      //   setRecipientPubKeyWarning(intl.get('send.addressNoOutgoingTrans'));
-      // } else {
-      //   setRecipientPubKeyWarning(intl.get('send.newAddress'));
-      // }
     }
   };
 
