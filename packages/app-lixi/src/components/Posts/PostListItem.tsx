@@ -71,7 +71,7 @@ const Content = styled.div`
   .description-post {
     text-align: left;
     display: -webkit-box;
-    // -webkit-line-clamp: 3;
+    -webkit-line-clamp: 6;
     -webkit-box-orient: vertical;
     white-space: break-spaces;
     text-overflow: ellipsis;
