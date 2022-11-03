@@ -16,7 +16,7 @@ import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
 import { injectStore } from 'src/utils/axiosClient';
 import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
 import { useRouter } from 'next/router';
-import { navBarHeaderList } from '@bcpros/lixi-models/constants';
+import { navBarHeaderList } from '@components/Common/navBarHeaderList';
 
 const { Content, Sider, Header } = Layout;
 

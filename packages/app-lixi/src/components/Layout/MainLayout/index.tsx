@@ -8,7 +8,7 @@ import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 
 import { LeftOutlined, LoadingOutlined } from '@ant-design/icons';
 
-import { navBarHeaderList } from '@bcpros/lixi-models/constants';
+import { navBarHeaderList } from '@components/Common/navBarHeaderList';
 import Sidebar from '@containers/Sidebar';
 import SidebarRanking from '@containers/Sidebar/SideBarRanking';
 import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
