@@ -9,6 +9,7 @@ import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 import { LeftOutlined, LoadingOutlined } from '@ant-design/icons';
 
 import { navBarHeaderList } from '@components/Common/navBarHeaderList';
+import intl from 'react-intl-universal';
 import Sidebar from '@containers/Sidebar';
 import SidebarRanking from '@containers/Sidebar/SideBarRanking';
 import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
@@ -228,8 +229,8 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                               <LeftOutlined />
                             </Link>
                             <PathDirection>
-                              <h2>{navBarTitle}</h2>
-                              <p className="sub-title">{navBarSubTitle}</p>
+                              <h2>{navBarTitle.length > 0 ? intl.get(navBarTitle) : ''}</h2>
+                              <p className="sub-title">{navBarSubTitle.length > 0 ? intl.get(navBarSubTitle) : ''}</p>
                             </PathDirection>
                           </NavBarHeader>
                         )}

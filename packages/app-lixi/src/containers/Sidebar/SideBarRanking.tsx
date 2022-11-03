@@ -362,7 +362,7 @@ const SidebarRanking = () => {
             placement="bottomRight"
             getPopupContainer={trigger => trigger}
             trigger={notifications.length != 0 && router.pathname !== '/notifications' ? 'click' : ''}
-            title={intl.get('general.notification')}
+            title={intl.get('general.notifications')}
           >
             <StyledBadge
               count={notifications.length}
