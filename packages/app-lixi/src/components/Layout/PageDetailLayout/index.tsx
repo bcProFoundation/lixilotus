@@ -16,7 +16,8 @@ import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
 import { injectStore } from 'src/utils/axiosClient';
 import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
 import { useRouter } from 'next/router';
-import { navBarHeaderList } from '@bcpros/lixi-models/constants';
+import { navBarHeaderList } from '@components/Common/navBarHeaderList';
+import intl from 'react-intl-universal';
 
 const { Content, Sider, Header } = Layout;
 
@@ -172,8 +173,8 @@ const PageDetailLayout: React.FC = (props: PageDetailsLayoutProps) => {
                               <LeftOutlined />
                             </Link>
                             <PathDirection>
-                              <h2>{navBarTitle}</h2>
-                              <p className="sub-title">{navBarSubTitle}</p>
+                              <h2>{navBarTitle.length > 0 ? intl.get(navBarTitle) : ''}</h2>
+                              <p className="sub-title">{navBarSubTitle.length > 0 ? intl.get(navBarSubTitle) : ''}</p>
                             </PathDirection>
                           </NavBarHeader>
                         )}

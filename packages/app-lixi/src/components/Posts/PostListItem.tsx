@@ -5,8 +5,10 @@ import { push } from 'connected-next-router';
 import _ from 'lodash';
 import moment from 'moment';
 import React, { useState } from 'react';
+import ReactHtmlParser from 'react-html-parser';
 import { useAppDispatch } from 'src/store/hooks';
 import styled from 'styled-components';
+import { Post } from '@bcpros/lixi-models';
 
 const IconText = ({
   icon,
@@ -33,7 +35,7 @@ export const CommentList = ({ comments }: { comments: CommentItem[] }) => (
     style={{ width: '100%' }}
     dataSource={comments}
     itemLayout="horizontal"
-    renderItem={item => <CommentComponent data={item}></CommentComponent>}
+    renderItem={postComment => <CommentComponent data={postComment} />}
   />
 );
 
@@ -69,11 +71,18 @@ const Content = styled.div`
   .description-post {
     text-align: left;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 6;
     -webkit-box-orient: vertical;
     white-space: break-spaces;
     text-overflow: ellipsis;
     overflow: hidden;
+    img {
+      max-height: 250px;
+      width: 100%;
+    }
+    p {
+      margin: 0;
+    }
   }
   .image-cover {
     width: 100%;
@@ -119,13 +128,13 @@ const GroupIconText = styled.div`
 
 const PostListItem = ({ index, item }) => {
   const dispatch = useAppDispatch();
-
+  const post: Post = item;
   const [isCollapseComment, setIsCollapseComment] = useState(false);
   const [comments, setComments] = useState<CommentItem[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [value, setValue] = useState('');
 
-  if (!item) return null;
+  if (!post) return null;
 
   const routerShopDetail = id => {
     dispatch(push(`/post/${id}`));
@@ -193,19 +202,19 @@ const PostListItem = ({ index, item }) => {
           padding: '0',
           border: 'none'
         }}
-        key={item.id}
+        key={post.id}
       >
         <CardContainer>
-          <CardHeader onClick={() => routerShopDetail(item.id)}>
+          <CardHeader onClick={() => routerShopDetail(post.id)}>
             <InfoCardUser
               imgUrl={item.avatar}
-              name={item.name}
-              title={moment(item.createdAt).fromNow().toString()}
+              name={post.pageAccount ? post.pageAccount.address : 'Anonymous'}
+              title={moment(post.createdAt).fromNow().toString()}
             ></InfoCardUser>
           </CardHeader>
           <Content>
-            <p className="description-post">{item.description}</p>
-            <img className="image-cover" src={item.cover} alt="" />
+            <div className="description-post">{ReactHtmlParser(post?.content)}</div>
+            <img className="image-cover" src={post.cover} alt="" />
           </Content>
         </CardContainer>
         <ActionBar>

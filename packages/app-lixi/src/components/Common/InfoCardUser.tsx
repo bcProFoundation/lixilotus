@@ -42,11 +42,13 @@ const InfoCardUserContainer = styled.div`
   background: #fff;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   &.card {
     padding: 20px;
     margin-bottom: 8px;
     border-radius: 20px;
     box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
+    align-items: initial;
     .avatar-ico {
       width: 30px;
       height: 30px;

@@ -13,6 +13,8 @@ import { showToast } from '@store/toast/actions';
 import { setPost } from '@store/post/action';
 import { Embed, SocialsEnum } from './Embed';
 import { useCreatePostMutation } from '@store/post/posts.generated';
+import { Uploader } from './Uploader';
+import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
 type ErrorType = 'unsupported' | 'invalid';
 
 const regex = {
@@ -61,6 +63,11 @@ const CreateCardContainer = styled.div`
       color: #7342cc;
     }
   }
+`;
+
+const StyledUploader = styled.div`
+  position: absolute;
+  bottom: 24px;
 `;
 
 const CreatePostCard = () => {
@@ -112,8 +119,6 @@ const CreatePostCard = () => {
         'align',
         'lineHeight',
         'link',
-        'image',
-        'video',
         'audio',
         'fullScreen',
         'codeView'
@@ -244,6 +249,11 @@ const CreatePostCard = () => {
     }
   };
 
+  const handleImageUploadBefore = () => {
+    alert("Please upload picture by 'Upload' button");
+    return;
+  };
+
   return (
     <>
       {!enableEditor && (
@@ -278,7 +288,12 @@ const CreatePostCard = () => {
                     hide={!enableEditor}
                     onSave={handleSaveEditor}
                     setOptions={configEditor}
+                    onImageUploadBefore={handleImageUploadBefore}
                   />
+                  {/* TODO: Upload image for post */}
+                  <StyledUploader>
+                    <Uploader type={UPLOAD_TYPES.PAGE_AVATAR} />
+                  </StyledUploader>
                   <input type="submit" value="Create Post" />
                 </form>
               </Tabs.TabPane>

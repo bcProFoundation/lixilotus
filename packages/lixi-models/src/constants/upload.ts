@@ -1,7 +1,8 @@
 export const UPLOAD_TYPES = {
   ENVELOPE: 'envelope',
   PAGE_COVER: 'page_cover',
-  PAGE_AVATAR: 'page_avatar'
+  PAGE_AVATAR: 'page_avatar',
+  POST: 'post'
 };
 
 export const UPLOAD_BUTTON_TYPE = {
