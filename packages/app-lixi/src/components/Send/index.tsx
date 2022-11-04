@@ -25,7 +25,7 @@ import { ZeroBalanceHeader } from '@bcpros/lixi-components/components/Common/Ato
 import styled from 'styled-components';
 
 import { WrapperPage } from '@components/Settings';
-import { getWalletPathAddressInfoByPath } from '@store/wallet';
+import { getAllWalletPaths, getAllWalletPathsEntities, getSlpBalancesAndUtxos, getWalletPathAddressInfoByPath } from '@store/wallet';
 import { getRecipientPublicKey } from '@utils/chronik';
 
 const StyledCheckbox = styled(Checkbox)`
@@ -80,7 +80,8 @@ const SendComponent: React.FC = () => {
   const [recipientPubKeyHex, setRecipientPubKeyHex] = useState('');
 
   const defaultPath = "m/44'/10605'/0'/0/0";
-  const Path10605 = useAppSelector(getWalletPathAddressInfoByPath(defaultPath));
+  const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
+  const walletPaths = useAppSelector(getAllWalletPaths);
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -111,8 +112,6 @@ const SendComponent: React.FC = () => {
     setIsModalVisible(false);
   };
 
-
-
   const { calcFee, sendXpi } = useXPI();
 
   async function submit() {
@@ -135,26 +134,18 @@ const SendComponent: React.FC = () => {
       return;
     }
     try {
-      const { keyPair, fundingWif } = Path10605;
-      let encryptedOpReturnMsg = undefined;
-      if (opReturnMsg && typeof opReturnMsg !== 'undefined' && opReturnMsg.trim() !== '' && recipientPubKeyHex) {
-        try {
-          encryptedOpReturnMsg = encryptOpReturnMsg(fundingWif, recipientPubKeyHex, opReturnMsg);
-        } catch (error) {
-          notification.error({
-            message: 'Error',
-            description: intl.get('send.canNotEncryptMessage'),
-            duration: 5
-          });
-          console.log(error);
-          return;
-        }
-      }
 
       const utxos = await XPI.Utxo.get(currentAddress);
       const utxoStore = utxos[0];
       const utxosStore = (utxoStore as any).bchUtxos.concat((utxoStore as any).nullUtxos);
       const link = sendXpi(
+        XPI,
+        chronik,
+        walletPaths,
+        slpBalancesAndUtxos.nonSlpUtxos,
+        currency.defaultFee,
+        opReturnMsg,
+        true, // indicate send mode is one to many
         currentAddress,
         utxosStore,
         keyPair,

@@ -1,4 +1,4 @@
-import { Utxo } from "chronik-client";
+import { Utxo } from 'chronik-client';
 
 export interface WalletPathAddressInfo {
   path: string;
@@ -20,6 +20,6 @@ export interface WalletStatus {
   parsedTxHistory: any[];
   slpBalancesAndUtxos: {
     nonSlpUtxos: Array<Utxo & { address: string }>;
-  }
+  };
   utxos: Array<Utxo & { address: string }>;
 }

@@ -3,7 +3,17 @@ import { fromSmallestDenomination, toSmallestDenomination } from '@bcpros/lixi-m
 import SlpWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
 import { WalletContextValue } from '@context/walletProvider';
-import { encryptOpReturnMsg, fromXpiToSatoshis, parseXpiSendValue } from '@utils/cashMethods';
+import { WalletPathAddressInfo, WalletState } from '@store/wallet';
+import {
+  encryptOpReturnMsg,
+  fromXpiToSatoshis,
+  generateOpReturnScript,
+  generateTxInput,
+  generateTxOutput,
+  getChangeAddressFromInputUtxos,
+  parseXpiSendValue,
+  signAndBuildTx
+} from '@utils/cashMethods';
 import { getRecipientPublicKey } from '@utils/chronik';
 import BigNumber from 'bignumber.js';
 import { ChronikClient, TxHistoryPage, Utxo } from 'chronik-client';
@@ -11,7 +21,6 @@ import _ from 'lodash';
 import intl from 'react-intl-universal';
 
 export default function useXPI() {
-
   const getRestUrl = (apiIndex = 0) => {
     const apiString: string =
       process.env.NEXT_PUBLIC_NETWORK === `mainnet`
@@ -172,8 +181,8 @@ export default function useXPI() {
   const sendXpi = async (
     XPI: BCHJS,
     chronik: ChronikClient,
-    wallet: WalletContextValue,
-    utxos: Array<Utxo>,
+    walletPaths: WalletPathAddressInfo[],
+    utxos: Array<Utxo & { address: string }>,
     feeInSatsPerByte: number,
     sourceAddress: string,
     optionalOpReturnMsg: string,
@@ -182,137 +191,99 @@ export default function useXPI() {
     destinationAddress: string,
     sendAmount: string,
     encryptionFlag: boolean,
-    fundingWif: string,
+    fundingWif: string
   ) => {
     try {
-
       let txBuilder = new XPI.TransactionBuilder();
 
       // parse the input value of XPIs to send
-      const value = parseXpiSendValue(
-        isOneToMany,
-        sendAmount,
-        destinationAddressAndValueArray,
-      );
+      const value = parseXpiSendValue(isOneToMany, sendAmount, destinationAddressAndValueArray);
 
       const satoshisToSend = fromXpiToSatoshis(value);
 
       // Throw validation error if fromXecToSatoshis returns false
       if (!satoshisToSend) {
-        const error = new Error(
-          `Invalid decimal places for send amount`,
-        );
+        const error = new Error(`Invalid decimal places for send amount`);
         throw error;
       }
 
+      let encryptedEj: Uint8Array; // serialized encryption data object
+
       // if the user has opted to encrypt this message
       if (encryptionFlag) {
-        // get the pub key for the recipient address
-        let recipientPubKey = await getRecipientPublicKey(
-          XPI,
-          chronik,
-          destinationAddress,
-        );
-
-        if (recipientPubKey) {
-          const encryptedData = encryptOpReturnMsg(fundingWif, recipientPubKey, optionalOpReturnMsg);
+        try {
+          // get the pub key for the recipient address
+          let recipientPubKey = await getRecipientPublicKey(XPI, chronik, destinationAddress);
+          // if the API can't find a pub key, it is due to the wallet having no outbound tx
+          if (!recipientPubKey) {
+            throw new Error('Cannot send an encrypted message to a wallet with no outgoing transactions');
+          }
+          if (recipientPubKey) {
+            encryptedEj = encryptOpReturnMsg(fundingWif, recipientPubKey, optionalOpReturnMsg);
+          }
+        } catch (err) {
+          console.log(`sendXpi() encryption error.`);
+          throw err;
         }
       }
 
-      // If user is attempting to send less than minimum accepted by the backend
-      if (value.lt(new BigNumber(fromSmallestDenomination(currency.dustSats).toString()))) {
-        // Throw the same error given by the backend attempting to broadcast such a tx
-        throw new Error('dust');
-      }
-
-      const inputUtxos = [];
-      const transactionBuilder: any = new XPI.TransactionBuilder();
-
-
-      // Throw validation error if toSmallestDenomination returns false
-      if (!satoshisToSend) {
-        throw new Error(intl.get('send.invalidDecimalPlaces'));
-      }
-
-      if (satoshisToSend.lt(currency.dustSats)) {
-        throw new Error(intl.get('send.sendAmountSmallerThanDust'));
-      }
-
-      let script;
-      let opReturnBuffer;
       // Start of building the OP_RETURN output.
-      // only build the OP_RETURN output if the user supplied it
-      if (optionalOpReturnMsg && typeof optionalOpReturnMsg !== 'undefined') {
-        if (encryptionFlag) {
-          // build the OP_RETURN script with the encryption prefix
-          script = [
-            XPI.Script.opcodes.OP_RETURN, // 6a
-            Buffer.from(currency.opReturn.appPrefixesHex.lotusChatEncrypted, 'hex'), // 03030303
-            Buffer.from(optionalOpReturnMsg)
-          ];
-        } else {
-          // this is un-encrypted message
-          script = [
-            XPI.Script.opcodes.OP_RETURN, // 6a
-            Buffer.from(currency.opReturn.appPrefixesHex.lotusChat, 'hex'), // 02020202
-            Buffer.from(optionalOpReturnMsg)
-          ];
+      // Only build the OP_RETURN output if the user supplied it
+      if (optionalOpReturnMsg && typeof optionalOpReturnMsg !== 'undefined' && optionalOpReturnMsg.trim() !== '') {
+        const opReturnData = generateOpReturnScript(XPI, optionalOpReturnMsg, encryptionFlag, encryptedEj);
+        txBuilder.addOutput(opReturnData, 0);
+      }
+
+      // generate the tx inputs and add to txBuilder instance
+      // returns the updated txBuilder, txFee, totalInputUtxoValue and inputUtxos
+      let txInputObj = generateTxInput(
+        XPI,
+        isOneToMany,
+        utxos,
+        txBuilder,
+        destinationAddressAndValueArray,
+        satoshisToSend,
+        feeInSatsPerByte
+      );
+
+      const changeAddress = getChangeAddressFromInputUtxos(XPI, txInputObj.inputUtxos);
+
+      txBuilder = txInputObj.txBuilder; // update the local txBuilder with the generated tx inputs
+
+      // generate the tx outputs and add to txBuilder instance
+      // returns the updated txBuilder
+      const txOutputObj = generateTxOutput(
+        XPI,
+        isOneToMany,
+        value,
+        satoshisToSend,
+        txInputObj.totalInputUtxoValue,
+        destinationAddress,
+        destinationAddressAndValueArray,
+        changeAddress,
+        txInputObj.txFee,
+        txBuilder
+      );
+      txBuilder = txOutputObj; // update the local txBuilder with the generated tx outputs
+
+      // sign the collated inputUtxos and build the raw tx hex
+      // returns the raw tx hex string
+      const rawTxHex = signAndBuildTx(XPI, txInputObj.inputUtxos, txBuilder, walletPaths);
+
+      // Broadcast transaction to the network via the chronik client
+      let broadcastResponse;
+      try {
+        broadcastResponse = await chronik.broadcastTx(rawTxHex);
+        if (!broadcastResponse) {
+          throw new Error('Empty chronik broadcast response');
         }
-        opReturnBuffer = XPI.Script.encode(script);
-        transactionBuilder.addOutput(opReturnBuffer, 0);
-      }
-      // End of building the OP_RETURN output.
-
-      let originalAmount = new BigNumber(0);
-      let txFee = 0;
-      for (let i = 0; i < utxos.length; i++) {
-        const utxo = utxos[i];
-        originalAmount = originalAmount.plus(utxo.value);
-        const vout = utxo.vout;
-        const txid = utxo.txid;
-        // add input with txid and index of vout
-        transactionBuilder.addInput(txid, vout);
-
-        inputUtxos.push(utxo);
-        const opReturnLength = opReturnBuffer ? opReturnBuffer.length : 0;
-        txFee = calcFee(XPI, inputUtxos, 2, feeInSatsPerByte, opReturnLength);
-
-        if (originalAmount.minus(satoshisToSend).minus(txFee).gte(0)) {
-          break;
-        }
-      }
-      console.log(satoshisToSend);
-      console.log(txFee);
-
-      // amount to send back to the remainder address.
-      const remainder = originalAmount.minus(satoshisToSend).minus(txFee);
-
-      if (remainder.lt(0)) {
-        throw new Error(intl.get('send.insufficientFund'));
+      } catch (err) {
+        console.log('Error broadcasting tx to chronik client');
+        throw err;
       }
 
-      // add output w/ address and amount to send
-      transactionBuilder.addOutput(destinationAddress, parseInt(toSmallestDenomination(value).toString()));
-
-      if (remainder.gte(new BigNumber(currency.dustSats))) {
-        transactionBuilder.addOutput(sourceAddress, parseInt(remainder.toString()));
-      }
-
-      // Sign the transactions with the HD node.
-      for (let i = 0; i < inputUtxos.length; i++) {
-        const utxo = inputUtxos[i];
-        transactionBuilder.sign(i, inputKeyPair, undefined, transactionBuilder.hashTypes.SIGHASH_ALL, utxo.value);
-      }
-
-      // build tx
-      const tx = transactionBuilder.build();
-      // output rawhex
-      const hex = tx.toHex();
-
-      // Broadcast transaction to the network
-      const data = await XPI.RawTransactions.sendRawTransaction([hex]);
-
-      return data;
+      // return the explorer link for the broadcasted tx
+      return `${currency.blockExplorerUrl}/tx/${broadcastResponse.txid}`;
     } catch (err) {
       if (err.error === 'insufficient priority (code 66)') {
         err = new Error(intl.get('send.insufficientPriority'));
@@ -326,8 +297,6 @@ export default function useXPI() {
       throw err;
     }
   };
-
-
 
   return {
     getXPI,

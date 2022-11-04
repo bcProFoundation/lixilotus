@@ -6,7 +6,7 @@ import { createContext } from 'react';
 
 export type WalletContextValue = {
   XPI: BCHJS;
-  chronik: ChronikClient,
+  chronik: ChronikClient;
   getWalletPathDetails: (mnemonic: string, paths: string[]) => Promise<WalletPathAddressInfo[]>;
   validateMnemonic: (mnemonic: string) => boolean;
 };

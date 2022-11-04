@@ -50,7 +50,6 @@ export const formatBalance = x => {
   }
 };
 
-
 export const normalizeBalance = slpBalancesAndUtxos => {
   const totalBalanceInSatoshis = slpBalancesAndUtxos.nonSlpUtxos.reduce(
     (previousBalance, utxo) => previousBalance + utxo.value,

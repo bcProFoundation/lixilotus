@@ -16,15 +16,19 @@ const initialState: WalletState = walletAdapter.getInitialState({
 });
 
 export const walletStateReducer = createReducer(initialState, builder => {
-  builder.addCase(writeWalletStatus, (state, action) => {
-    state.walletStatus = action.payload;
-  }).addCase(activateWalletSuccess, (state, action) => {
-    const { walletPaths, mnemonic } = action.payload;
-    walletAdapter.setAll(state, walletPaths);
-    state.mnemonic = mnemonic;
-  }).addCase(setWalletRefreshInterval, (state, action) => {
-    state.walletRefreshInterval = action.payload;
-  }).addCase(setWalletHasUpdated, (state, action) => {
-    state.walletHasUpdated = action.payload;
-  })
+  builder
+    .addCase(writeWalletStatus, (state, action) => {
+      state.walletStatus = action.payload;
+    })
+    .addCase(activateWalletSuccess, (state, action) => {
+      const { walletPaths, mnemonic } = action.payload;
+      walletAdapter.setAll(state, walletPaths);
+      state.mnemonic = mnemonic;
+    })
+    .addCase(setWalletRefreshInterval, (state, action) => {
+      state.walletRefreshInterval = action.payload;
+    })
+    .addCase(setWalletHasUpdated, (state, action) => {
+      state.walletHasUpdated = action.payload;
+    });
 });

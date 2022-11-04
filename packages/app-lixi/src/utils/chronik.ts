@@ -1,14 +1,14 @@
-import { currency } from "@bcpros/lixi-models";
+import { currency } from '@bcpros/lixi-models';
 import BCHJS from '@bcpros/xpi-js';
-import { walletAdapter, WalletState } from "@store/wallet";
+import { walletAdapter, WalletState } from '@store/wallet';
 import BigNumber from 'bignumber.js';
-import { ChronikClient, Tx, TxHistoryPage, Utxo } from "chronik-client";
-import { decryptOpReturnMsg, getHashArrayFromWallet, getUtxoWif, parseOpReturn } from "./cashMethods";
+import { ChronikClient, Tx, TxHistoryPage, Utxo } from 'chronik-client';
+import { decryptOpReturnMsg, getHashArrayFromWallet, getUtxoWif, parseOpReturn } from './cashMethods';
 
 export interface Hash160AndAddress {
   address: string;
   hash160: string;
-};
+}
 
 const getWalletPathsFromWalletState = (wallet: WalletState) => {
   return Object.entries(wallet.entities).map(([key, value]) => {
@@ -45,8 +45,10 @@ export const getUtxosSingleHashChronik = async (chronik: ChronikClient, hash160:
   }
 };
 
-
-export const returnGetUtxosChronikPromise = (chronik: ChronikClient, hash160AndAddressObj: Hash160AndAddress): Promise<Array<Utxo & { address: string }>> => {
+export const returnGetUtxosChronikPromise = (
+  chronik: ChronikClient,
+  hash160AndAddressObj: Hash160AndAddress
+): Promise<Array<Utxo & { address: string }>> => {
   /*
       Chronik thinks in hash160s, but people and wallets think in addresses
       Add the address to each utxo
@@ -62,12 +64,15 @@ export const returnGetUtxosChronikPromise = (chronik: ChronikClient, hash160AndA
       },
       err => {
         reject(err);
-      },
+      }
     );
   });
 };
 
-export const getUtxosChronik = async (chronik: ChronikClient, hash160sMappedToAddresses: Array<Hash160AndAddress>): Promise<Array<Utxo & { address: string }>> => {
+export const getUtxosChronik = async (
+  chronik: ChronikClient,
+  hash160sMappedToAddresses: Array<Hash160AndAddress>
+): Promise<Array<Utxo & { address: string }>> => {
   /* 
       Chronik only accepts utxo requests for one address at a time
       Construct an array of promises for each address
@@ -75,10 +80,7 @@ export const getUtxosChronik = async (chronik: ChronikClient, hash160sMappedToAd
   */
   const chronikUtxoPromises: Array<Promise<Array<Utxo & { address: string }>>> = [];
   for (let i = 0; i < hash160sMappedToAddresses.length; i += 1) {
-    const thisPromise = returnGetUtxosChronikPromise(
-      chronik,
-      hash160sMappedToAddresses[i],
-    );
+    const thisPromise = returnGetUtxosChronikPromise(chronik, hash160sMappedToAddresses[i]);
     chronikUtxoPromises.push(thisPromise);
   }
   const allUtxos = await Promise.all(chronikUtxoPromises);
@@ -88,12 +90,12 @@ export const getUtxosChronik = async (chronik: ChronikClient, hash160sMappedToAd
   return flatUtxos;
 };
 
-export const organizeUtxosByType = (chronikUtxos: Array<Utxo & { address: string }>): { nonSlpUtxos: Array<Utxo & { address: string }> } => {
+export const organizeUtxosByType = (
+  chronikUtxos: Array<Utxo & { address: string }>
+): { nonSlpUtxos: Array<Utxo & { address: string }> } => {
   /* 
-  
   Convert chronik utxos (returned by getUtxosChronik function, above) to match 
   shape of existing slpBalancesAndUtxos object
-  
   */
 
   const nonSlpUtxos = [];
@@ -122,10 +124,7 @@ export const flattenChronikTxHistory = txHistoryOfAllAddresses => {
 };
 
 // @todo
-export const sortAndTrimChronikTxHistory = (
-  flatTxHistoryArray,
-  txHistoryCount,
-) => {
+export const sortAndTrimChronikTxHistory = (flatTxHistoryArray, txHistoryCount) => {
   // Isolate unconfirmed txs
   // In chronik, unconfirmed txs have an `undefined` block key
   const unconfirmedTxs = [];
@@ -144,26 +143,21 @@ export const sortAndTrimChronikTxHistory = (
       // We want more recent blocks i.e. higher blockheights to have earlier array indices
       b.block.height - a.block.height ||
       // For blocks with the same height, we want more recent timeFirstSeen i.e. higher timeFirstSeen to have earlier array indices
-      b.timeFirstSeen - a.timeFirstSeen,
+      b.timeFirstSeen - a.timeFirstSeen
   );
   // Sort unconfirmed txs by timeFirstSeen
-  const sortedUnconfirmedTxHistoryArray = unconfirmedTxs.sort(
-    (a, b) => b.timeFirstSeen - a.timeFirstSeen,
-  );
+  const sortedUnconfirmedTxHistoryArray = unconfirmedTxs.sort((a, b) => b.timeFirstSeen - a.timeFirstSeen);
   // The unconfirmed txs are more recent, so they should be inserted into an array before the confirmed txs
-  const sortedChronikTxHistoryArray = sortedUnconfirmedTxHistoryArray.concat(
-    sortedConfirmedTxHistoryArray,
-  );
+  const sortedChronikTxHistoryArray = sortedUnconfirmedTxHistoryArray.concat(sortedConfirmedTxHistoryArray);
 
-  const trimmedAndSortedChronikTxHistoryArray =
-    sortedChronikTxHistoryArray.splice(0, txHistoryCount);
+  const trimmedAndSortedChronikTxHistoryArray = sortedChronikTxHistoryArray.splice(0, txHistoryCount);
 
   return trimmedAndSortedChronikTxHistoryArray;
 };
 
 export const returnGetTxHistoryChronikPromise = (
   chronik: ChronikClient,
-  hash160AndAddressObj: Hash160AndAddress,
+  hash160AndAddressObj: Hash160AndAddress
 ): Promise<TxHistoryPage> => {
   /*
       Chronik thinks in hash160s, but people and wallets think in addresses
@@ -179,7 +173,7 @@ export const returnGetTxHistoryChronikPromise = (
         },
         err => {
           reject(err);
-        },
+        }
       );
   });
 };
@@ -188,7 +182,7 @@ export const getRecipientPublicKey = async (
   XPI: BCHJS,
   chronik: ChronikClient,
   recipientAddress: string,
-  optionalMockPubKeyResponse: string | false = false,
+  optionalMockPubKeyResponse: string | false = false
 ): Promise<string | false> => {
   // Necessary because jest can't mock
   // chronikTxHistoryAtAddress = await chronik.script('p2pkh', recipientAddressHash160).history(/*page=*/ 0, /*page_size=*/ 10);
@@ -201,29 +195,19 @@ export const getRecipientPublicKey = async (
   try {
     recipientAddressHash160 = XPI.Address.toHash160(recipientAddress);
   } catch (err) {
-    console.log(
-      `Error determining XPI.Address.toHash160(${recipientAddress} in getRecipientPublicKey())`,
-      err,
-    );
-    throw new Error(
-      `Error determining XPI.Address.toHash160(${recipientAddress} in getRecipientPublicKey())`,
-    );
+    console.log(`Error determining XPI.Address.toHash160(${recipientAddress} in getRecipientPublicKey())`, err);
+    throw new Error(`Error determining XPI.Address.toHash160(${recipientAddress} in getRecipientPublicKey())`);
   }
 
-  let chronikTxHistoryAtAddress: TxHistoryPage
+  let chronikTxHistoryAtAddress: TxHistoryPage;
   try {
     // Get 20 txs. If no outgoing txs in those 20 txs, just don't send the tx
     chronikTxHistoryAtAddress = await chronik
       .script('p2pkh', recipientAddressHash160)
       .history(/*page=*/ 0, /*page_size=*/ 40);
   } catch (err) {
-    console.log(
-      `Error getting await chronik.script('p2pkh', ${recipientAddressHash160}).history();`,
-      err,
-    );
-    throw new Error(
-      'Error fetching tx history to parse for public key',
-    );
+    console.log(`Error getting await chronik.script('p2pkh', ${recipientAddressHash160}).history();`, err);
+    throw new Error('Error fetching tx history to parse for public key');
   }
   let recipientPubKeyChronik;
 
@@ -237,30 +221,19 @@ export const getRecipientPublicKey = async (
         // Then this is an outgoing tx, you can get the public key from this tx
         // Get the public key
         try {
-          recipientPubKeyChronik =
-            chronikTxHistoryAtAddress.txs[i].inputs[
-              j
-            ].inputScript.slice(-66);
+          recipientPubKeyChronik = chronikTxHistoryAtAddress.txs[i].inputs[j].inputScript.slice(-66);
         } catch (err) {
-          throw new Error(
-            'Cannot send an encrypted message to a wallet with no outgoing transactions',
-          );
+          throw new Error('Cannot send an encrypted message to a wallet with no outgoing transactions');
         }
         return recipientPubKeyChronik;
       }
     }
   }
   // You get here if you find no outgoing txs in the chronik tx history
-  throw new Error(
-    'Cannot send an encrypted message to a wallet with no outgoing transactions in the last 20 txs',
-  );
+  throw new Error('Cannot send an encrypted message to a wallet with no outgoing transactions in the last 20 txs');
 };
 
-export const parseChronikTx = async (
-  XPI: BCHJS,
-  chronik: ChronikClient,
-  tx: Tx,
-  wallet: WalletState) => {
+export const parseChronikTx = async (XPI: BCHJS, chronik: ChronikClient, tx: Tx, wallet: WalletState) => {
   const walletHash160s: string[] = getHashArrayFromWallet(wallet);
   const { inputs, outputs } = tx;
   // Assign defaults
@@ -298,14 +271,12 @@ export const parseChronikTx = async (
     try {
       originatingHash160 = thisInputSendingHash160.substring(
         thisInputSendingHash160.indexOf('76a914') + '76a914'.length,
-        thisInputSendingHash160.lastIndexOf('88ac'),
+        thisInputSendingHash160.lastIndexOf('88ac')
       );
 
-      let replyAddressBchFormat =
-        XPI.Address.hash160ToCash(originatingHash160);
+      let replyAddressBchFormat = XPI.Address.hash160ToCash(originatingHash160);
 
       replyAddress = XPI.Address.toXAddress(replyAddressBchFormat);
-
     } catch (err) {
       console.log(`err from ${originatingHash160}`, err);
       // If the transaction is nonstandard, don't worry about a reply address for now
@@ -324,26 +295,19 @@ export const parseChronikTx = async (
     }
   }
 
-
   // Iterate over outputs to get the amount sent
   for (let i = 0; i < outputs.length; i += 1) {
     const thisOutput = outputs[i];
     const thisOutputReceivedAtHash160 = thisOutput.outputScript;
     // Check for OP_RETURN msg
-    if (
-      thisOutput.value === '0' &&
-      typeof thisOutput.slpToken === 'undefined'
-    ) {
+    if (thisOutput.value === '0' && typeof thisOutput.slpToken === 'undefined') {
       let hex = thisOutputReceivedAtHash160;
       let parsedOpReturnArray = parseOpReturn(hex);
 
       if (!parsedOpReturnArray) {
-        console.log(
-          'parseChronikTx() error: parsed array is empty',
-        );
+        console.log('parseChronikTx() error: parsed array is empty');
         break;
       }
-
 
       let txType = parsedOpReturnArray[0];
 
@@ -352,21 +316,13 @@ export const parseChronikTx = async (
         try {
           messageHex = parsedOpReturnArray[1];
           isLotusMessage = true;
-          opReturnMessage = Buffer.from(
-            messageHex,
-            'hex',
-          ).toString();
+          opReturnMessage = Buffer.from(messageHex, 'hex').toString();
         } catch (err) {
           // soft error if an unexpected or invalid cashtab hex is encountered
           opReturnMessage = '';
-          console.log(
-            'useBCH.parsedTxData() error: invalid cashtab msg hex: ' +
-            parsedOpReturnArray[1],
-          );
+          console.log('useBCH.parsedTxData() error: invalid cashtab msg hex: ' + parsedOpReturnArray[1]);
         }
-      } else if (
-        txType === currency.opReturn.appPrefixesHex.lotusChatEncrypted
-      ) {
+      } else if (txType === currency.opReturn.appPrefixesHex.lotusChatEncrypted) {
         isLotusMessage = true;
         isEncryptedMessage = true;
         messageHex = parsedOpReturnArray[1];
@@ -388,9 +344,7 @@ export const parseChronikTx = async (
         // If incoming tx, this is amount received by the user's wallet
         // if outgoing tx (incoming === false), then this is a change amount
         const thisOutputAmount = new BigNumber(thisOutput.value);
-        xpiAmount = incoming
-          ? xpiAmount.plus(thisOutputAmount)
-          : xpiAmount.minus(thisOutputAmount);
+        xpiAmount = incoming ? xpiAmount.plus(thisOutputAmount) : xpiAmount.minus(thisOutputAmount);
       }
     }
     // Output amounts not at your wallet are sent amounts if !incoming
@@ -411,7 +365,7 @@ export const parseChronikTx = async (
   // Convert messageHex to string
   // @todo: get the destination or reply public key from cache
   const theOtherAddress = incoming ? replyAddress : destinationAddress;
-  const otherPublicKey = await getRecipientPublicKey(XPI, chronik, theOtherAddress) as string;
+  const otherPublicKey = (await getRecipientPublicKey(XPI, chronik, theOtherAddress)) as string;
   if (
     isLotusMessage &&
     isEncryptedMessage &&
@@ -423,17 +377,14 @@ export const parseChronikTx = async (
   ) {
     const { selectAll } = walletAdapter.getSelectors();
     const allWalletPaths = selectAll(wallet);
-    const fundingWif = getUtxoWif(
-      wallet.walletStatus.slpBalancesAndUtxos.nonSlpUtxos[0],
-      allWalletPaths,
-    );
+    const fundingWif = getUtxoWif(wallet.walletStatus.slpBalancesAndUtxos.nonSlpUtxos[0], allWalletPaths);
     const decryption = await decryptOpReturnMsg(messageHex, fundingWif, otherPublicKey);
     if (decryption.success) {
       opReturnMessage = Buffer.from(decryption.decryptedMsg).toString();
       decryptionSuccess = true;
     } else {
       console.log(decryption.error);
-      opReturnMessage = 'Error in decrypting message!'
+      opReturnMessage = 'Error in decrypting message!';
     }
   }
 
@@ -445,15 +396,11 @@ export const parseChronikTx = async (
     isLotusMessage,
     isEncryptedMessage,
     decryptionSuccess,
-    replyAddress,
+    replyAddress
   };
 };
 
-export const getTxHistoryChronik = async (
-  chronik: ChronikClient,
-  XPI: BCHJS,
-  wallet: WalletState,
-) => {
+export const getTxHistoryChronik = async (chronik: ChronikClient, XPI: BCHJS, wallet: WalletState) => {
   // Create array of promises to get chronik history for each address
   // Combine them all and sort by blockheight and firstSeen
   // Add all the info cashtab needs to make them useful
@@ -462,16 +409,13 @@ export const getTxHistoryChronik = async (
   const hash160AndAddressObjArray: Hash160AndAddress[] = walletPaths.map(item => {
     return {
       address: item.xAddress,
-      hash160: item.hash160,
-    }
+      hash160: item.hash160
+    };
   });
 
   let txHistoryPromises: Array<Promise<TxHistoryPage>> = [];
   for (let i = 0; i < hash160AndAddressObjArray.length; i += 1) {
-    const txHistoryPromise = returnGetTxHistoryChronikPromise(
-      chronik,
-      hash160AndAddressObjArray[i],
-    );
+    const txHistoryPromise = returnGetTxHistoryChronikPromise(chronik, hash160AndAddressObjArray[i]);
     txHistoryPromises.push(txHistoryPromise);
   }
   let txHistoryOfAllAddresses;
@@ -481,10 +425,7 @@ export const getTxHistoryChronik = async (
     console.log(`Error in Promise.all(txHistoryPromises)`, err);
   }
   const flatTxHistoryArray = flattenChronikTxHistory(txHistoryOfAllAddresses);
-  const sortedTxHistoryArray = sortAndTrimChronikTxHistory(
-    flatTxHistoryArray,
-    currency.txHistoryCount,
-  );
+  const sortedTxHistoryArray = sortAndTrimChronikTxHistory(flatTxHistoryArray, currency.txHistoryCount);
 
   // Parse txs
   const chronikTxHistory = [];
@@ -496,6 +437,6 @@ export const getTxHistoryChronik = async (
   }
 
   return {
-    chronikTxHistory,
+    chronikTxHistory
   };
 };

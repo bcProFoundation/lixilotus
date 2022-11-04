@@ -2,14 +2,8 @@ import { LocalUserAccount } from '@bcpros/lixi-models';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects';
 import { LocalUser } from 'src/models/localUser';
-import {
-  setLocalUserAccount,
-  silentLocalLogin,
-  silentLocalLoginFailure,
-  silentLocalLoginSuccess
-} from './actions';
+import { setLocalUserAccount, silentLocalLogin, silentLocalLoginFailure, silentLocalLoginSuccess } from './actions';
 import localAccountApi from './api';
-
 
 function* setLocalUserAccountSaga(action: PayloadAction<LocalUserAccount>) {
   const account = action.payload;
@@ -40,8 +34,5 @@ function* watchSilentLocalLogin() {
 }
 
 export default function* accountSaga() {
-  yield all([
-    fork(watchSetLocalUserAccountSaga),
-    fork(watchSilentLocalLogin)
-  ]);
+  yield all([fork(watchSetLocalUserAccountSaga), fork(watchSilentLocalLogin)]);
 }

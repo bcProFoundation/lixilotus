@@ -1,15 +1,15 @@
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import BCHJS from '@bcpros/xpi-js';
+import { WalletContextValue } from '@context/walletProvider';
 import { WalletPathAddressInfo, WalletState } from '@store/wallet';
 import BigNumber from 'bignumber.js';
-import { Utxo } from "chronik-client";
+import { Utxo } from 'chronik-client';
 import { createSharedKey, encrypt, decrypt } from './encryption';
-
 
 export type TxInputObj = {
   txBuilder: any;
   totalInputUtxoValue: BigNumber;
-  inputUtxos: Array<Utxo>;
+  inputUtxos: Array<Utxo & { address: string }>;
   txFee: number;
 };
 
@@ -29,8 +29,6 @@ export const fromSmallestDenomination = (amount, cashDecimals = currency.cashDec
   return amountInBaseUnits.toNumber();
 };
 
-
-
 export const toSmallestDenomination = (sendAmount: BigNumber, cashDecimals = currency.cashDecimals) => {
   // Replace the BCH.toSatoshi method with an equivalent function that works for arbitrary decimal places
   // Example, for an 8 decimal place currency like Bitcoin
@@ -48,10 +46,7 @@ export const toSmallestDenomination = (sendAmount: BigNumber, cashDecimals = cur
   return sendAmountSmallestDenomination;
 };
 
-export const fromXpiToSatoshis = (
-  sendAmount: BigNumber,
-  cashDecimals = currency.cashDecimals,
-): BigNumber | false => {
+export const fromXpiToSatoshis = (sendAmount: BigNumber, cashDecimals = currency.cashDecimals): BigNumber | false => {
   const isValidSendAmount = BigNumber.isBigNumber(sendAmount) && sendAmount.dp() <= cashDecimals;
   if (!isValidSendAmount) {
     return false;
@@ -61,10 +56,7 @@ export const fromXpiToSatoshis = (
   return sendAmountSmallestDenomination;
 };
 
-export const fromSatoshisToXpi = (
-  amount,
-  cashDecimals = currency.cashDecimals,
-): BigNumber => {
+export const fromSatoshisToXpi = (amount, cashDecimals = currency.cashDecimals): BigNumber => {
   const amountBig = new BigNumber(amount);
   const multiplier = new BigNumber(10 ** (-1 * cashDecimals));
   const amountInBaseUnits = amountBig.times(multiplier);
@@ -81,22 +73,14 @@ export const parseXpiSendValue = (
   try {
     if (isOneToMany) {
       // this is a one to many transaction
-      if (
-        !destinationAddressAndValueArray ||
-        !destinationAddressAndValueArray.length
-      ) {
+      if (!destinationAddressAndValueArray || !destinationAddressAndValueArray.length) {
         throw new Error('Invalid destinationAddressAndValueArray');
       }
       const arrayLength = destinationAddressAndValueArray.length;
       for (let i = 0; i < arrayLength; i++) {
         // add the total value being sent in this array of recipients
         // each array row is: 'eCash address, send value'
-        value = BigNumber.sum(
-          value,
-          new BigNumber(
-            destinationAddressAndValueArray[i].split(',')[1],
-          ),
-        );
+        value = BigNumber.sum(value, new BigNumber(destinationAddressAndValueArray[i].split(',')[1]));
       }
     } else {
       // this is a one to one XEC transaction then check singleSendValue
@@ -109,11 +93,7 @@ export const parseXpiSendValue = (
       value = new BigNumber(singleSendValue);
     }
     // If user is attempting to send an aggregate value that is less than minimum accepted by the backend
-    if (
-      value.lt(
-        new BigNumber(fromSmallestDenomination(currency.dustSats).toString()),
-      )
-    ) {
+    if (value.lt(new BigNumber(fromSmallestDenomination(currency.dustSats).toString()))) {
       // Throw the same error given by the backend attempting to broadcast such a tx
       throw new Error('dust');
     }
@@ -163,7 +143,7 @@ export const calcFee = (
 
   let opReturnOutputByteLength = opReturnLength;
   if (opReturnLength) {
-    opReturnOutputByteLength += (8 + 1);
+    opReturnOutputByteLength += 8 + 1;
   }
   const txFee = Math.ceil(satoshisPerByte * (byteCount + opReturnOutputByteLength));
   return txFee;
@@ -172,11 +152,11 @@ export const calcFee = (
 export const generateTxInput = (
   BCH: BCHJS,
   isOneToMany: boolean,
-  utxos: Array<Utxo>,
+  utxos: Array<Utxo & { address: string }>,
   txBuilder: any,
   destinationAddressAndValueArray: Array<string>,
   satoshisToSend,
-  feeInSatsPerByte,
+  feeInSatsPerByte
 ): TxInputObj => {
   const inputUtxos = [];
   let txFee = 0;
@@ -195,9 +175,7 @@ export const generateTxInput = (
 
     // A normal tx will have 2 outputs, destination and change
     // A one to many tx will have n outputs + 1 change output, where n is the number of recipients
-    const txOutputs = isOneToMany
-      ? destinationAddressAndValueArray.length + 1
-      : 2;
+    const txOutputs = isOneToMany ? destinationAddressAndValueArray.length + 1 : 2;
     for (let i = 0; i < utxos.length; i++) {
       const utxo = utxos[i];
       totalInputUtxoValue = totalInputUtxoValue.plus(utxo.value);
@@ -222,7 +200,7 @@ export const generateTxInput = (
     totalInputUtxoValue,
     inputUtxos,
     txFee
-  }
+  };
 
   return txInputObj;
 };
@@ -237,7 +215,7 @@ export const generateTxOutput = (
   destinationAddressAndValueArray: Nullable<Array<string>>,
   changeAddress: Nullable<string>,
   txFee: number,
-  txBuilder: any,
+  txBuilder: any
 ) => {
   try {
     if (
@@ -254,9 +232,7 @@ export const generateTxOutput = (
     }
 
     // amount to send back to the remainder address.
-    const remainder = new BigNumber(totalInputUtxoValue)
-      .minus(satoshisToSend)
-      .minus(txFee);
+    const remainder = new BigNumber(totalInputUtxoValue).minus(satoshisToSend).minus(txFee);
     if (remainder.lt(0)) {
       throw new Error(`Insufficient funds`);
     }
@@ -266,22 +242,13 @@ export const generateTxOutput = (
       let arrayLength = destinationAddressAndValueArray.length;
       for (let i = 0; i < arrayLength; i++) {
         // add each send tx from the array as an output
-        let outputAddress =
-          destinationAddressAndValueArray[i].split(',')[0];
-        let outputValue = new BigNumber(
-          destinationAddressAndValueArray[i].split(',')[1],
-        );
-        txBuilder.addOutput(
-          outputAddress,
-          parseInt(fromXpiToSatoshis(outputValue).toString()),
-        );
+        let outputAddress = destinationAddressAndValueArray[i].split(',')[0];
+        let outputValue = new BigNumber(destinationAddressAndValueArray[i].split(',')[1]);
+        txBuilder.addOutput(outputAddress, parseInt(fromXpiToSatoshis(outputValue).toString()));
       }
     } else {
       // for one to one mode, add output w/ single address and amount to send
-      txBuilder.addOutput(
-        destinationAddress,
-        parseInt(fromXpiToSatoshis(singleSendValue).toString()),
-      );
+      txBuilder.addOutput(destinationAddress, parseInt(fromXpiToSatoshis(singleSendValue).toString()));
     }
 
     // if a remainder exists, return to change address as the final output
@@ -296,6 +263,56 @@ export const generateTxOutput = (
   return txBuilder;
 };
 
+export const signUtxosByAddress = (
+  XPI: BCHJS,
+  inputUtxos: Array<Utxo & { address: string }>,
+  walletPaths: WalletPathAddressInfo[],
+  txBuilder
+) => {
+  for (let i = 0; i < inputUtxos.length; i++) {
+    const utxo = inputUtxos[i];
+    const utxoEcPair = XPI.ECPair.fromWIF(walletPaths.filter(path => path.xAddress === utxo.address).pop().fundingWif);
+
+    txBuilder.sign(i, utxoEcPair, undefined, txBuilder.hashTypes.SIGHASH_ALL, parseInt(utxo.value));
+  }
+
+  return txBuilder;
+};
+
+export const signAndBuildTx = (
+  XPI: BCHJS,
+  inputUtxos: Array<Utxo & { address: string }>,
+  txBuilder: any,
+  walletPaths: WalletPathAddressInfo[]
+) => {
+  if (
+    !XPI ||
+    !inputUtxos ||
+    inputUtxos.length === 0 ||
+    !txBuilder ||
+    !walletPaths ||
+    walletPaths.length === 0 ||
+    // txBuilder.transaction.tx.ins is empty until the inputUtxos are signed
+    txBuilder.transaction.tx.outs.length === 0
+  ) {
+    throw new Error('Invalid buildTx parameter');
+  }
+
+  // Sign each XEC UTXO being consumed and refresh transactionBuilder
+  txBuilder = signUtxosByAddress(XPI, inputUtxos, walletPaths, txBuilder);
+
+  let hex;
+  try {
+    // build tx
+    const tx = txBuilder.build();
+    // output rawhex
+    hex = tx.toHex();
+  } catch (err) {
+    throw new Error('Transaction build failed');
+  }
+  return hex;
+};
+
 /*
  * Generates an OP_RETURN script to reflect the various send XPI permutations
  * involving messaging, encryption.
@@ -306,12 +323,10 @@ export const generateOpReturnScript = (
   XPI: BCHJS,
   optionalOpReturnMsg: string,
   encryptionFlag: boolean,
+  encryptedEj: Uint8Array
 ): Buffer => {
   // encrypted mesage is mandatory when encryptionFlag is true
-  if (
-    !XPI ||
-    (encryptionFlag && !optionalOpReturnMsg)
-  ) {
+  if (!XPI || (encryptionFlag && !optionalOpReturnMsg)) {
     throw new Error('Invalid OP RETURN script input');
   }
 
@@ -322,24 +337,15 @@ export const generateOpReturnScript = (
       // if the user has opted to encrypt this message
       script = [
         XPI.Script.opcodes.OP_RETURN, // 6a
-        Buffer.from(
-          currency.opReturn.appPrefixesHex.lotusChatEncrypted,
-          'hex',
-        ), // 03030303
-        Buffer.from(optionalOpReturnMsg),
+        Buffer.from(currency.opReturn.appPrefixesHex.lotusChatEncrypted, 'hex'), // 03030303
+        Buffer.from(encryptedEj)
       ];
-
-      // add the encrypted message to script
-      script.push(Buffer.from(optionalOpReturnMsg));
     } else if (optionalOpReturnMsg) {
       // this is an un-encrypted message
       script = [
         XPI.Script.opcodes.OP_RETURN, // 6a
-        Buffer.from(
-          currency.opReturn.appPrefixesHex.lotusChat,
-          'hex',
-        ), // 02020202
-        Buffer.from(optionalOpReturnMsg),
+        Buffer.from(currency.opReturn.appPrefixesHex.lotusChat, 'hex'), // 02020202
+        Buffer.from(optionalOpReturnMsg)
       ];
     }
     const data: Buffer = XPI.Script.encode(script);
@@ -348,13 +354,9 @@ export const generateOpReturnScript = (
     console.log('Error in generateOpReturnScript(): ' + err);
     throw err;
   }
-
 };
 
-export const getChangeAddressFromInputUtxos = (
-  XPI: BCHJS,
-  inputUtxos: Array<Utxo & { address: string }>
-): string => {
+export const getChangeAddressFromInputUtxos = (XPI: BCHJS, inputUtxos: Array<Utxo & { address: string }>): string => {
   if (!XPI || !inputUtxos) {
     throw new Error('Invalid getChangeAddressFromWallet input parameter');
   }
@@ -407,13 +409,12 @@ export const normalizeBalance = slpBalancesAndUtxos => {
 
 export const getWalletBalanceFromUtxos = (nonSlpUtxos: Utxo[]) => {
   const totalBalanceInSatoshis = nonSlpUtxos.reduce(
-    (previousBalance, utxo) =>
-      previousBalance.plus(new BigNumber(utxo.value)),
-    new BigNumber(0),
+    (previousBalance, utxo) => previousBalance.plus(new BigNumber(utxo.value)),
+    new BigNumber(0)
   );
   return {
     totalBalanceInSatoshis: totalBalanceInSatoshis.toString(),
-    totalBalance: fromSmallestDenomination(totalBalanceInSatoshis).toString(),
+    totalBalance: fromSmallestDenomination(totalBalanceInSatoshis).toString()
   };
 };
 
@@ -449,18 +450,16 @@ export const getUtxoWif = (utxo: Utxo & { address: string }, walltPaths: Array<W
   if (!walltPaths) {
     throw new Error('Invalid wallet parameter');
   }
-  const wif = walltPaths
-    .filter(acc => acc.xAddress === utxo.address)
-    .pop().fundingWif;
+  const wif = walltPaths.filter(acc => acc.xAddress === utxo.address).pop().fundingWif;
   return wif;
 };
 
 export const getHashArrayFromWallet = (wallet: WalletState): string[] => {
-  if (!wallet || (!wallet?.entities)) {
+  if (!wallet || !wallet?.entities) {
     return [];
   }
   const hash160Array = Object.entries(wallet.entities).map(([key, value]) => {
-    return value.hash160
+    return value.hash160;
   });
   return hash160Array;
 };
@@ -485,21 +484,17 @@ export const isActiveWebsocket = ws => {
  * @returns Array contains transaction type and message's hex
  */
 export function parseOpReturn(hexStr: string): Array<string> | false {
-  if (
-    !hexStr ||
-    typeof hexStr !== 'string' ||
-    hexStr.substring(0, 2) !== currency.opReturn.opReturnPrefixHex
-  ) {
+  if (!hexStr || typeof hexStr !== 'string' || hexStr.substring(0, 2) !== currency.opReturn.opReturnPrefixHex) {
     return false;
   }
 
   hexStr = hexStr.slice(2); // remove the first byte i.e. 6a
   /*
-     * @Return: resultArray is structured as follows:
-     *  resultArray[0] is the transaction type i.e. eToken prefix, sendlotus prefix, external message itself if unrecognized prefix
-     *  resultArray[1] is the actual sendlotus message or the 2nd part of an external message
-     *  resultArray[2 - n] are the additional messages for future protcols
-     */
+   * @Return: resultArray is structured as follows:
+   *  resultArray[0] is the transaction type i.e. eToken prefix, sendlotus prefix, external message itself if unrecognized prefix
+   *  resultArray[1] is the actual sendlotus message or the 2nd part of an external message
+   *  resultArray[2 - n] are the additional messages for future protcols
+   */
   let resultArray = [];
   let message = '';
   let hexStrLength = hexStr.length;
@@ -525,16 +520,10 @@ export function parseOpReturn(hexStr: string): Array<string> | false {
       // add the extracted eToken prefix to array then exit loop
       resultArray[i] = currency.opReturn.appPrefixesHex.eToken;
       break;
-    } else if (
-      i === 0 &&
-      message === currency.opReturn.appPrefixesHex.lotusChat
-    ) {
+    } else if (i === 0 && message === currency.opReturn.appPrefixesHex.lotusChat) {
       // add the extracted Sendlotus prefix to array
       resultArray[i] = currency.opReturn.appPrefixesHex.lotusChat;
-    } else if (
-      i === 0 &&
-      message === currency.opReturn.appPrefixesHex.lotusChatEncrypted
-    ) {
+    } else if (i === 0 && message === currency.opReturn.appPrefixesHex.lotusChatEncrypted) {
       // add the Sendlotus encryption prefix to array
       resultArray[i] = currency.opReturn.appPrefixesHex.lotusChatEncrypted;
     } else {
@@ -550,13 +539,17 @@ export function parseOpReturn(hexStr: string): Array<string> | false {
   return resultArray;
 }
 
-export const encryptOpReturnMsg = (privateKeyWIF: string, recipientPubKeyHex: string, plainTextMsg: string): Uint8Array => {
+export const encryptOpReturnMsg = (
+  privateKeyWIF: string,
+  recipientPubKeyHex: string,
+  plainTextMsg: string
+): Uint8Array => {
   let encryptedMsg;
   try {
     const sharedKey = createSharedKey(privateKeyWIF, recipientPubKeyHex);
     encryptedMsg = encrypt(sharedKey, Uint8Array.from(Buffer.from(plainTextMsg)));
   } catch (error) {
-    console.log("ENCRYPTION ERROR", error);
+    console.log('ENCRYPTION ERROR', error);
     throw error;
   }
 
@@ -570,12 +563,12 @@ export const decryptOpReturnMsg = async (opReturnMsgHex: string, privateKeyWIF: 
     return {
       success: true,
       decryptedMsg
-    }
+    };
   } catch (error) {
-    console.log("DECRYPTION ERROR", error);
+    console.log('DECRYPTION ERROR', error);
     return {
       success: false,
       error
-    }
+    };
   }
-}
+};

@@ -97,13 +97,13 @@ const StyledFilterModal = styled(Modal)`
 
     .btnReset {
       border: none;
-      color: #9E2A9C;
+      color: #9e2a9c;
       font-size: 17px;
     }
 
     .btnApply {
       color: #fff;
-      background-color: #9E2A9C;
+      background-color: #9e2a9c;
       padding: 24px 30px;
       font-size: 17px;
       display: flex;

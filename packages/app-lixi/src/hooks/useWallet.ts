@@ -2,9 +2,25 @@ import BCHJS from '@bcpros/xpi-js';
 import { WalletContextValue } from '@context/index';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { xpiReceivedNotificationWebSocket } from '@store/notification/actions';
-import { getAllWalletPaths, getWaletRefreshInterval, getWalletHasUpdated, getWalletState, setWalletHasUpdated, setWalletRefreshInterval, WalletPathAddressInfo, WalletState, WalletStatus } from '@store/wallet';
+import {
+  getAllWalletPaths,
+  getWaletRefreshInterval,
+  getWalletHasUpdated,
+  getWalletState,
+  setWalletHasUpdated,
+  setWalletRefreshInterval,
+  WalletPathAddressInfo,
+  WalletState,
+  WalletStatus
+} from '@store/wallet';
 import { getHashArrayFromWallet, getWalletBalanceFromUtxos } from '@utils/cashMethods';
-import { getTxHistoryChronik, getUtxosChronik, Hash160AndAddress, organizeUtxosByType, parseChronikTx } from '@utils/chronik';
+import {
+  getTxHistoryChronik,
+  getUtxosChronik,
+  Hash160AndAddress,
+  organizeUtxosByType,
+  parseChronikTx
+} from '@utils/chronik';
 import { ChronikClient, SubscribeMsg, Tx } from 'chronik-client';
 import _ from 'lodash';
 import { useEffect, useState } from 'react';
@@ -18,7 +34,6 @@ const websocketConnectedRefreshInterval = 10000;
 const useWallet = () => {
   // @todo: use constant
   // and consider to move to redux the neccessary variable
-
 
   const [chronikWebsocket, setChronikWebsocket] = useState(null);
   // const [hasUpdated, setHasUpdated] = useState<boolean>(false);
@@ -48,15 +63,11 @@ const useWallet = () => {
     console.log(`Current selection: ${apiIndex}`);
     // If only one, exit
     if (apiArray.length === 0) {
-      console.log(
-        `There are no backup APIs, you are stuck with this error`,
-      );
+      console.log(`There are no backup APIs, you are stuck with this error`);
       return;
     } else if (currentApiIndex < apiArray.length - 1) {
       currentApiIndex += 1;
-      console.log(
-        `Incrementing API index from ${apiIndex} to ${currentApiIndex}`,
-      );
+      console.log(`Incrementing API index from ${apiIndex} to ${currentApiIndex}`);
     } else {
       // Otherwise use the first option again
       console.log(`Retrying first API index`);
@@ -134,7 +145,7 @@ const useWallet = () => {
 
   const writeWalletStatus = async (newStatus: WalletStatus) => {
     dispatch(writeWalletStatus(newStatus));
-  }
+  };
 
   // Parse chronik ws message for incoming tx notifications
   const processChronikWsMsg = async (msg: SubscribeMsg, wallet: WalletState) => {
@@ -160,31 +171,21 @@ const useWallet = () => {
       incomingTxDetails = await chronik.tx(txid);
     } catch (err) {
       // In this case, no notification
-      return console.log(
-        `Error in chronik.tx(${txid} while processing an incoming websocket tx`,
-        err,
-      );
+      return console.log(`Error in chronik.tx(${txid} while processing an incoming websocket tx`, err);
     }
 
     // parse tx for notification
-    const parsedChronikTx = await parseChronikTx(
-      XPI,
-      chronik,
-      incomingTxDetails,
-      wallet
-    );
+    const parsedChronikTx = await parseChronikTx(XPI, chronik, incomingTxDetails, wallet);
 
     if (parsedChronikTx.incoming) {
       // Notification
       dispatch(xpiReceivedNotificationWebSocket(parsedChronikTx.xpiAmount));
     }
-  }
+  };
 
   // Chronik websockets
   const initializeWebsocket = async (wallet: WalletState) => {
-    console.log(
-      `Initializing websocket connection for wallet ${wallet}`,
-    );
+    console.log(`Initializing websocket connection for wallet ${wallet}`);
 
     const hash160Array = getHashArrayFromWallet(wallet);
     if (!wallet || _.isNil(hash160Array) || !_.isEmpty(hash160Array)) {
@@ -200,21 +201,15 @@ const useWallet = () => {
         },
         onReconnect: e => {
           // Fired before a reconnect attempt is made:
-          console.log(
-            'Reconnecting websocket, disconnection cause: ',
-            e,
-          );
+          console.log('Reconnecting websocket, disconnection cause: ', e);
         },
         onConnect: e => {
           console.log(`Chronik websocket connected`, e);
           console.log(
-            `Websocket connected, adjusting wallet refresh interval to ${websocketConnectedRefreshInterval / 1000
-            }s`,
+            `Websocket connected, adjusting wallet refresh interval to ${websocketConnectedRefreshInterval / 1000}s`
           );
-          setWalletRefreshInterval(
-            websocketConnectedRefreshInterval,
-          );
-        },
+          setWalletRefreshInterval(websocketConnectedRefreshInterval);
+        }
       });
 
       // Wait for websocket to be connected:
@@ -239,11 +234,9 @@ const useWallet = () => {
     if (previousWebsocketSubscriptions.length === 0) {
       activeSubscriptionsMatchActiveWallet = false;
     } else {
-      const subscribedHash160Array = previousWebsocketSubscriptions.map(
-        function (subscription) {
-          return subscription.scriptPayload;
-        },
-      );
+      const subscribedHash160Array = previousWebsocketSubscriptions.map(function (subscription) {
+        return subscription.scriptPayload;
+      });
       // Confirm that websocket is subscribed to every address in wallet hash160Array
       for (let i = 0; i < hash160Array.length; i += 1) {
         if (!subscribedHash160Array.includes(hash160Array[i])) {
@@ -260,14 +253,10 @@ const useWallet = () => {
     }
 
     // Unsubscribe to any active subscriptions
-    console.log(
-      `previousWebsocketSubscriptions`,
-      previousWebsocketSubscriptions,
-    );
+    console.log(`previousWebsocketSubscriptions`, previousWebsocketSubscriptions);
     if (previousWebsocketSubscriptions.length > 0) {
       for (let i = 0; i < previousWebsocketSubscriptions.length; i += 1) {
-        const unsubHash160 =
-          previousWebsocketSubscriptions[i].scriptPayload;
+        const unsubHash160 = previousWebsocketSubscriptions[i].scriptPayload;
         ws.unsubscribe('p2pkh', unsubHash160);
         console.log(`ws.unsubscribe('p2pkh', ${unsubHash160})`);
       }
@@ -281,16 +270,13 @@ const useWallet = () => {
 
     // Put connected websocket in state
     return setChronikWebsocket(ws);
-
-  }
+  };
 
   const update = async (wallet: WalletState) => {
     // Check if walletRefreshInterval is set to 10, i.e. this was called by websocket tx detection
     // If walletRefreshInterval is 10, set it back to the usual refresh rate
     if (walletRefreshInterval === 10) {
-      dispatch(setWalletRefreshInterval(
-        websocketConnectedRefreshInterval,
-      ));
+      dispatch(setWalletRefreshInterval(websocketConnectedRefreshInterval));
     }
     try {
       if (!wallet) {
@@ -300,25 +286,19 @@ const useWallet = () => {
       const hash160AndAddressObjArray: Hash160AndAddress[] = allWalletPaths.map(item => {
         return {
           address: item.xAddress,
-          hash160: item.hash160,
-        }
+          hash160: item.hash160
+        };
       });
 
       // Check that server is live
       try {
         await XPI.Blockchain.getBlockCount();
       } catch (err) {
-        console.log(
-          `Error in BCH.Blockchain.getBlockCount, the full node is likely down`,
-          err,
-        );
+        console.log(`Error in BCH.Blockchain.getBlockCount, the full node is likely down`, err);
         throw new Error(`Node unavailable`);
       }
 
-      const chronikUtxos = await getUtxosChronik(
-        chronik,
-        hash160AndAddressObjArray,
-      );
+      const chronikUtxos = await getUtxosChronik(chronik, hash160AndAddressObjArray);
 
       const { nonSlpUtxos } = organizeUtxosByType(chronikUtxos);
 
@@ -327,15 +307,14 @@ const useWallet = () => {
       const newWalletStatus: WalletStatus = {
         balances: getWalletBalanceFromUtxos(nonSlpUtxos),
         slpBalancesAndUtxos: {
-          nonSlpUtxos,
+          nonSlpUtxos
         },
         parsedTxHistory: chronikTxHistory,
-        utxos: chronikUtxos,
+        utxos: chronikUtxos
       };
       dispatch(writeWalletStatus(newWalletStatus));
 
       setApiError(false);
-
     } catch (error) {
       console.log(`Error in update({wallet})`);
       console.log(error);
@@ -346,18 +325,17 @@ const useWallet = () => {
       console.log(`Trying next API...`);
       tryNextAPI();
     }
-  }
+  };
 
   // Update wallet according to defined interval
   useInterval(async () => {
     const wallet = walletState;
-    update(wallet)
-      .finally(() => {
-        setLoading(false);
-        if (!walletHasUpdated) {
-          dispatch(setWalletHasUpdated(true));
-        }
-      });
+    update(wallet).finally(() => {
+      setLoading(false);
+      if (!walletHasUpdated) {
+        dispatch(setWalletHasUpdated(true));
+      }
+    });
   }, walletRefreshInterval);
 
   /*

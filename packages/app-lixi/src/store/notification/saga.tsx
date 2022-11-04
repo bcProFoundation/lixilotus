@@ -38,19 +38,17 @@ import { downloadExportedLixi, refreshLixi, refreshLixiSilent } from '../lixi/ac
 import { notification } from 'antd';
 import { ArgsProps } from 'antd/lib/notification';
 
-
-
 const getDeviceNotificationStyle = () => {
   if (isMobile) {
     const notificationStyle = {
       width: '100%',
-      marginTop: '10%',
+      marginTop: '10%'
     };
     return notificationStyle;
   }
   if (!isMobile) {
     const notificationStyle = {
-      width: '100%',
+      width: '100%'
     };
     return notificationStyle;
   }
@@ -328,7 +326,7 @@ function* xpiReceivedNotificationWebSocketSaga(action: PayloadAction<string>) {
     ),
     duration: 3,
     icon: <CashReceivedNotificationIcon />,
-    style: notificationStyle,
+    style: notificationStyle
   };
   notification.success(config);
 }

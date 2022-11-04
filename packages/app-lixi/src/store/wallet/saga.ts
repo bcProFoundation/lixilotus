@@ -11,22 +11,21 @@ function* activateWalletSaga(action: PayloadAction<string>) {
     const defaultPath = "m/44'/10605'/0'/0/0";
     const walletPaths: WalletPathAddressInfo[] = yield call(Wallet.getWalletPathDetails, mnemonic, [defaultPath]);
 
-    yield put(activateWalletSuccess({
-      walletPaths,
-      mnemonic
-    }));
+    yield put(
+      activateWalletSuccess({
+        walletPaths,
+        mnemonic
+      })
+    );
   } catch (err) {
     yield put(activateWalletFailure(JSON.stringify(err)));
   }
-
 }
 
 function* watchActivateWalletSaga() {
-  yield takeLatest(activateWallet.type, activateWalletSaga)
+  yield takeLatest(activateWallet.type, activateWalletSaga);
 }
 
 export default function* walletSaga() {
-  yield all([
-    fork(watchActivateWalletSaga)
-  ]);
+  yield all([fork(watchActivateWalletSaga)]);
 }
