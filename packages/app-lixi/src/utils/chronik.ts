@@ -1,5 +1,5 @@
-import { currency } from '@bcpros/lixi-models';
 import BCHJS from '@bcpros/xpi-js';
+import { currency } from '@components/Common/Ticker';
 import { walletAdapter, WalletState } from '@store/wallet';
 import BigNumber from 'bignumber.js';
 import { ChronikClient, Tx, TxHistoryPage, Utxo } from 'chronik-client';
@@ -432,7 +432,7 @@ export const getTxHistoryChronik = async (chronik: ChronikClient, XPI: BCHJS, wa
   for (let i = 0; i < sortedTxHistoryArray.length; i += 1) {
     const sortedTx = sortedTxHistoryArray[i];
     // Add token genesis info so parsing function can calculate amount by decimals
-    sortedTx.parsed = parseChronikTx(XPI, chronik, sortedTx, wallet);
+    sortedTx.parsed = await parseChronikTx(XPI, chronik, sortedTx, wallet);
     chronikTxHistory.push(sortedTx);
   }
 

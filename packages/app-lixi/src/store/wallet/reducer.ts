@@ -9,7 +9,17 @@ export const walletAdapter = createEntityAdapter<WalletPathAddressInfo>({
 
 const initialState: WalletState = walletAdapter.getInitialState({
   selectedWalletPath: null,
-  walletStatus: null,
+  walletStatus: {
+    balances: {
+      totalBalance: '0',
+      totalBalanceInSatoshis: '0'
+    },
+    parsedTxHistory: [],
+    slpBalancesAndUtxos: {
+      nonSlpUtxos: []
+    },
+    utxos: []
+  },
   mnemonic: '',
   walletRefreshInterval: 5000,
   walletHasUpdated: false
@@ -24,6 +34,7 @@ export const walletStateReducer = createReducer(initialState, builder => {
       const { walletPaths, mnemonic } = action.payload;
       walletAdapter.setAll(state, walletPaths);
       state.mnemonic = mnemonic;
+      state.walletHasUpdated = false;
     })
     .addCase(setWalletRefreshInterval, (state, action) => {
       state.walletRefreshInterval = action.payload;

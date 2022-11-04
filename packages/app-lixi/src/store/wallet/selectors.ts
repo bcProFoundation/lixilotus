@@ -28,11 +28,12 @@ export const getWalletBalances = createSelector(getWalletStatus, (state: WalletS
 
 export const getWalletParsedTxHistory = createSelector(getWalletStatus, (state: WalletStatus) => state.parsedTxHistory);
 
-export const getSlpBalancesAndUtxos = createSelector(
-  getWalletStatus,
-  (state: WalletStatus) => state.slpBalancesAndUtxos
+export const getSlpBalancesAndUtxos = createSelector(getWalletStatus, (state: WalletStatus) =>
+  state && state.slpBalancesAndUtxos ? state.slpBalancesAndUtxos : null
 );
 
-export const getWalletUtxos = createSelector(getWalletStatus, (state: WalletStatus) => state.utxos);
+export const getWalletUtxos = createSelector(getWalletStatus, (state: WalletStatus) =>
+  state && state.utxos ? state.utxos : []
+);
 
 export const getWalletMnemonic = createSelector(getWalletState, (state: WalletState) => state.mnemonic);

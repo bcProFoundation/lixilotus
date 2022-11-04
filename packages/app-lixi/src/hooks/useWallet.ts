@@ -7,11 +7,13 @@ import {
   getWaletRefreshInterval,
   getWalletHasUpdated,
   getWalletState,
+  getWalletUtxos,
   setWalletHasUpdated,
   setWalletRefreshInterval,
   WalletPathAddressInfo,
   WalletState,
-  WalletStatus
+  WalletStatus,
+  writeWalletStatus
 } from '@store/wallet';
 import { getHashArrayFromWallet, getWalletBalanceFromUtxos } from '@utils/cashMethods';
 import {
@@ -21,13 +23,13 @@ import {
   organizeUtxosByType,
   parseChronikTx
 } from '@utils/chronik';
-import { ChronikClient, SubscribeMsg, Tx } from 'chronik-client';
-import _ from 'lodash';
+import { ChronikClient, SubscribeMsg, Tx, Utxo } from 'chronik-client';
+import _, { isEqual } from 'lodash';
 import { useEffect, useState } from 'react';
 import useInterval from './useInterval';
 import useXPI from './useXPI';
 
-const chronik = new ChronikClient('https://chronik.fabien.cash');
+const chronik = new ChronikClient('https://chronik.be.cash/xpi');
 const websocketConnectedRefreshInterval = 10000;
 
 /* eslint-disable react-hooks/exhaustive-deps */
@@ -49,6 +51,7 @@ const useWallet = () => {
   const walletRefreshInterval = useAppSelector(getWaletRefreshInterval);
   const walletHasUpdated = useAppSelector(getWalletHasUpdated);
   const allWalletPaths = useAppSelector(getAllWalletPaths);
+  const walletUtxos = useAppSelector(getWalletUtxos);
   const dispatch = useAppDispatch();
 
   // If you catch API errors, call this function
@@ -110,7 +113,6 @@ const useWallet = () => {
     const hash160 = XPI.Address.toHash160(cashAddress);
     const slpAddress = XPI.SLP.Address.toSLPAddress(cashAddress);
     const xAddress = XPI.HDNode.toXAddress(node);
-    const keyPair = XPI.HDNode.toKeyPair(node);
     const publicKey = XPI.HDNode.toPublicKey(node).toString('hex');
     return {
       path,
@@ -121,7 +123,6 @@ const useWallet = () => {
       fundingWif: XPI.HDNode.toWIF(node),
       fundingAddress: XPI.SLP.Address.toSLPAddress(cashAddress),
       legacyAddress: XPI.SLP.Address.toLegacyAddress(cashAddress),
-      keyPair,
       publicKey
     };
   };
@@ -143,8 +144,33 @@ const useWallet = () => {
     }
   };
 
-  const writeWalletStatus = async (newStatus: WalletStatus) => {
-    dispatch(writeWalletStatus(newStatus));
+  const haveUtxosChanged = (utxos: Utxo[], previousUtxos: Utxo[]) => {
+    // Relevant points for this array comparing exercise
+    // https://stackoverflow.com/questions/13757109/triple-equal-signs-return-false-for-arrays-in-javascript-why
+    // https://stackoverflow.com/questions/7837456/how-to-compare-arrays-in-javascript
+
+    // If this is initial state
+    if (utxos === null) {
+      // Then make sure to get slpBalancesAndUtxos
+      return true;
+    }
+    // If this is the first time the wallet received utxos
+    if (typeof utxos === 'undefined') {
+      // Then they have certainly changed
+      return true;
+    }
+    if (typeof previousUtxos === 'undefined') {
+      return true;
+    }
+    // return true for empty array, since this means you definitely do not want to skip the next API call
+    if (utxos && utxos.length === 0) {
+      return true;
+    }
+
+    // If wallet is valid, compare what exists in written wallet state instead of former api call
+    let utxosToCompare = previousUtxos;
+    // Compare utxo sets
+    return !isEqual(utxos, utxosToCompare);
   };
 
   // Parse chronik ws message for incoming tx notifications
@@ -188,7 +214,7 @@ const useWallet = () => {
     console.log(`Initializing websocket connection for wallet ${wallet}`);
 
     const hash160Array = getHashArrayFromWallet(wallet);
-    if (!wallet || _.isNil(hash160Array) || !_.isEmpty(hash160Array)) {
+    if (!wallet || hash160Array) {
       return setChronikWebsocket(null);
     }
 
@@ -300,8 +326,20 @@ const useWallet = () => {
 
       const chronikUtxos = await getUtxosChronik(chronik, hash160AndAddressObjArray);
 
-      const { nonSlpUtxos } = organizeUtxosByType(chronikUtxos);
+      // Need to call wToUpdateith wallet as a parameter rather than trusting it is in state, otherwise can sometimes get wallet=false from haveUtxosChanged
+      const utxosHaveChanged = haveUtxosChanged(chronikUtxos, walletUtxos);
 
+      // If the utxo set has not changed,
+      if (!utxosHaveChanged) {
+        // remove api error here; otherwise it will remain if recovering from a rate
+        // limit error with an unchanged utxo set
+        setApiError(false);
+        // then wallet.state has not changed and does not need to be updated
+        //console.timeEnd("update");
+        return;
+      }
+
+      const { nonSlpUtxos } = organizeUtxosByType(chronikUtxos);
       const { chronikTxHistory } = await getTxHistoryChronik(chronik, XPI, wallet);
 
       const newWalletStatus: WalletStatus = {
@@ -330,6 +368,7 @@ const useWallet = () => {
   // Update wallet according to defined interval
   useInterval(async () => {
     const wallet = walletState;
+    setLoading(false);
     update(wallet).finally(() => {
       setLoading(false);
       if (!walletHasUpdated) {

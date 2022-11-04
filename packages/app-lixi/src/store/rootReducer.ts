@@ -33,7 +33,7 @@ import { walletStateReducer } from './wallet/reducer';
 const persistConfig = {
   key: 'root',
   storage: storage('lixi-indexeddb'),
-  blacklist: ['accounts', 'router', 'modal']
+  blacklist: ['accounts', 'router', 'modal', 'wallet']
 };
 
 const walletPersistConfig = {
@@ -51,7 +51,8 @@ const localAccountPersistConfig: PersistConfig<LocalUserAccountsState> = {
 const accountPersistConfig: PersistConfig<AccountsState> = {
   key: 'accounts',
   storage: storage('lixi-indexeddb'),
-  blacklist: [`envelopeUpload`, 'pageCoverUpload', 'pageAvatarUpload']
+  blacklist: [`envelopeUpload`, 'pageCoverUpload', 'pageAvatarUpload'],
+  timeout: 0
 };
 
 const lixiPersistConfig: PersistConfig<LixiesState> = {

@@ -9,7 +9,6 @@ export interface WalletPathAddressInfo {
   legacyAddress: string;
   publicKey: string;
   xAddress: string;
-  keyPair: any;
 }
 
 export interface WalletStatus {

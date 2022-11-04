@@ -1,25 +1,23 @@
-import { Badge, Button, Comment, Form, Input, Layout, Modal, Space, Tabs } from 'antd';
-import styled from 'styled-components';
+import { BellTwoTone, LockOutlined, NumberOutlined, ShopOutlined, UserOutlined } from '@ant-design/icons';
+import { Account } from '@bcpros/lixi-models';
+import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
 import InfoCardUser from '@components/Common/InfoCardUser';
 import { SmartButton } from '@components/Common/PrimaryButton';
-import React, { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { getAllAccounts, getSelectedAccount } from '@store/account/selectors';
-import { BellTwoTone, LockOutlined, NumberOutlined, ShopOutlined, UserOutlined } from '@ant-design/icons';
-import { getAllNotifications } from '@store/notification/selectors';
-import { deleteNotification, fetchNotifications, readNotification } from '@store/notification/actions';
-import Link from 'next/link';
 import NotificationPopup, { StyledPopover } from '@components/NotificationPopup';
+import { WalletContext } from '@context/index';
+import { generateAccount, importAccount, selectAccount } from '@store/account/actions';
+import { getAllAccounts, getSelectedAccount } from '@store/account/selectors';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { fetchNotifications } from '@store/notification/actions';
+import { getAllNotifications } from '@store/notification/selectors';
+import { Badge, Button, Comment, Form, Input, Layout, Modal, Tabs } from 'antd';
+import * as _ from 'lodash';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 import intl from 'react-intl-universal';
 import SwipeToDelete from 'react-swipe-to-delete-ios';
-import { downloadExportedLixi } from '@store/lixi/actions';
-import { Account, NotificationDto as Notification } from '@bcpros/lixi-models';
-import moment from 'moment';
-import * as _ from 'lodash';
-import { generateAccount, importAccount, selectAccount } from '@store/account/actions';
-import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
-import { WalletContext } from '@context/index';
-import { useRouter } from 'next/router';
+import styled from 'styled-components';
 
 const { Sider } = Layout;
 
@@ -175,13 +173,6 @@ const ManageAccounts = styled.div`
   }
 `;
 
-// const StyledBell = styled(BellTwoTone)`
-//   font-size: 22px;
-//   position: relative;
-//   top: 7px;
-//   cursor: pointer;
-// `;
-
 const StyledComment = styled(Comment)`
   border-radius: 5px;
   border-bottom: 1px solid #e8e8e8;
@@ -266,9 +257,9 @@ const StyledTabs = styled(Tabs)`
 `;
 
 const SidebarRanking = () => {
-  const Wallet = React.useContext(WalletContext);
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const Wallet = React.useContext(WalletContext);
   const selectedAccount = useAppSelector(getSelectedAccount);
   const notifications = useAppSelector(getAllNotifications);
   const [isSeemore, setIsSeemore] = useState<boolean>(false);
@@ -282,6 +273,7 @@ const SidebarRanking = () => {
     dirty: true,
     mnemonic: ''
   });
+  const { validateMnemonic } = Wallet;
 
   const [form] = Form.useForm();
 
@@ -331,7 +323,7 @@ const SidebarRanking = () => {
 
     // Validate mnemonic on change
     // Import button should be disabled unless mnemonic is valid
-    setIsValidMnemonic(Wallet.validateMnemonic(value));
+    setIsValidMnemonic(validateMnemonic(value));
 
     setFormData(p => ({ ...p, [name]: value }));
   };
