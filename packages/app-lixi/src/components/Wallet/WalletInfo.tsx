@@ -6,7 +6,7 @@ import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
 import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
 import { SmartButton } from '@components/Common/PrimaryButton';
-import { importAccount, renameAccount, setAccountBalance } from '@store/account/actions';
+import { importAccount, renameAccount } from '@store/account/actions';
 import { fromSmallestDenomination } from '@utils/cashMethods';
 import { Form, Input } from 'antd';
 import React, { useEffect, useState } from 'react';
@@ -141,22 +141,6 @@ const WalletInfoComponent: React.FC = () => {
   const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
   const [isLoadBalanceError, setIsLoadBalanceError] = useState(false);
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      XPI.Electrumx.balance(selectedAccount?.address)
-        .then(result => {
-          if (result && result.balance) {
-            const balance = result.balance.confirmed + result.balance.unconfirmed;
-            dispatch(setAccountBalance(balance ?? 0));
-          }
-        })
-        .catch(e => {
-          setIsLoadBalanceError(true);
-        });
-    }, 10000);
-    return () => clearInterval(id);
-  }, []);
 
   const decimalFormatBalance = balance => {
     if (Number(balance) < 10) {

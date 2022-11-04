@@ -184,7 +184,6 @@ export default function useXPI() {
     walletPaths: WalletPathAddressInfo[],
     utxos: Array<Utxo & { address: string }>,
     feeInSatsPerByte: number,
-    sourceAddress: string,
     optionalOpReturnMsg: string,
     isOneToMany: boolean,
     destinationAddressAndValueArray: Array<string>,

@@ -20,6 +20,7 @@ export const currency = {
   txHistoryCount: 5,
   hydrateUtxoBatchSize: 20,
   defaultSettings: { fiatCurrency: 'usd' },
+  notificationDurationShort: 3,
   opReturn: {
     opReturnPrefixHex: '6a',
     opReturnAppPrefixLengthHex: '04',

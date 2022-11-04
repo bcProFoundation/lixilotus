@@ -1,32 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import intl from 'react-intl-universal';
-import { Form, notification, message, Modal, Alert, Checkbox } from 'antd';
-import { Row, Col } from 'antd';
-import PrimaryButton from '@components/Common/PrimaryButton';
+import { ZeroBalanceHeader } from '@bcpros/lixi-components/components/Common/Atoms';
+import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import {
   FormItemWithQRCodeAddon,
-  OpReturnMessageInput
+  OpReturnMessageInput,
+  SendXpiInput
 } from '@bcpros/lixi-components/components/Common/EnhancedInputs';
-import { currency } from '@components/Common/Ticker';
-import { shouldRejectAmountInput } from '@utils/validation';
-import { WalletContext } from '@context/index';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { getSelectedAccount } from '@store/account/selectors';
-import { SendXpiInput } from '@bcpros/lixi-components/components/Common/EnhancedInputs';
-import _ from 'lodash';
-import { parseAddress } from '@utils/addressMethods';
-import useXPI from '@hooks/useXPI';
-import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
-import { sendXPIFailure, sendXPISuccess } from '@store/send/actions';
-import { setAccountBalance } from '@store/account/actions';
-import { getDustXPI, getWalletState } from '@utils/cashMethods';
 import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
-import { ZeroBalanceHeader } from '@bcpros/lixi-components/components/Common/Atoms';
+import PrimaryButton from '@components/Common/PrimaryButton';
+import { currency } from '@components/Common/Ticker';
+import { WalletContext } from '@context/index';
+import useXPI from '@hooks/useXPI';
+import { getSelectedAccount } from '@store/account/selectors';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { sendXPIFailure, sendXPISuccess } from '@store/send/actions';
+import { parseAddress } from '@utils/addressMethods';
+import { getDustXPI, getUtxoWif, getWalletState } from '@utils/cashMethods';
+import { shouldRejectAmountInput } from '@utils/validation';
+import { Alert, Checkbox, Col, Form, message, Modal, Row } from 'antd';
+import _ from 'lodash';
+import React, { useEffect, useState } from 'react';
+import intl from 'react-intl-universal';
 import styled from 'styled-components';
 
 import { WrapperPage } from '@components/Settings';
-import { getAllWalletPaths, getAllWalletPathsEntities, getSlpBalancesAndUtxos, getWalletPathAddressInfoByPath } from '@store/wallet';
+import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
 import { getRecipientPublicKey } from '@utils/chronik';
+import { sendXpiNotification } from '@store/notification/actions';
 
 const StyledCheckbox = styled(Checkbox)`
   .ant-checkbox-inner {
@@ -83,22 +82,6 @@ const SendComponent: React.FC = () => {
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
 
-  useEffect(() => {
-    const id = setInterval(() => {
-      XPI.Electrumx.balance(wallet?.address)
-        .then(result => {
-          if (result && result.balance) {
-            const balance = result.balance.confirmed + result.balance.unconfirmed;
-            dispatch(setAccountBalance(balance ?? 0));
-          }
-        })
-        .catch(e => {
-          setIsLoadBalanceError(true);
-        });
-    }, 10000);
-    return () => clearInterval(id);
-  }, []);
-
   const showModal = () => {
     setIsModalVisible(true);
   };
@@ -134,47 +117,23 @@ const SendComponent: React.FC = () => {
       return;
     }
     try {
+      const fundingWif = getUtxoWif(slpBalancesAndUtxos.nonSlpUtxos[0], walletPaths);
 
-      const utxos = await XPI.Utxo.get(currentAddress);
-      const utxoStore = utxos[0];
-      const utxosStore = (utxoStore as any).bchUtxos.concat((utxoStore as any).nullUtxos);
-      const link = sendXpi(
+      const link = await sendXpi(
         XPI,
         chronik,
         walletPaths,
         slpBalancesAndUtxos.nonSlpUtxos,
         currency.defaultFee,
         opReturnMsg,
-        true, // indicate send mode is one to many
-        currentAddress,
-        utxosStore,
-        keyPair,
+        false, // indicate send mode is one to one
+        null,
         cleanAddress,
-        formData.value,
-        2.01,
-        encryptedOpReturnMsg,
-        isEncryptedOptionalOpReturnMsg
+        value,
+        isEncryptedOptionalOpReturnMsg,
+        fundingWif
       );
-      link.then(
-        res => {
-          dispatch(sendXPISuccess(wallet.id));
-          XPI.Electrumx.balance(wallet?.address)
-            .then(result => {
-              if (result && result.balance) {
-                const balance = result.balance.confirmed + result.balance.unconfirmed;
-                dispatch(setAccountBalance(balance ?? 0));
-              }
-            })
-            .catch(e => {
-              setIsLoadBalanceError(true);
-            });
-        },
-        err => {
-          dispatch(sendXPIFailure((err as Error).message));
-        }
-      );
-      if (link) {
-      }
+      dispatch(sendXpiNotification(link));
     } catch (e) {
       let message;
       if (!e.error && !e.message) {
