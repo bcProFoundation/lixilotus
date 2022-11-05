@@ -38,7 +38,6 @@ const useWallet = () => {
   // and consider to move to redux the neccessary variable
 
   const [chronikWebsocket, setChronikWebsocket] = useState(null);
-  // const [hasUpdated, setHasUpdated] = useState<boolean>(false);
 
   const [loading, setLoading] = useState(true);
   const [apiError, setApiError] = useState(false);
@@ -214,13 +213,14 @@ const useWallet = () => {
     console.log(`Initializing websocket connection for wallet ${wallet}`);
 
     const hash160Array = getHashArrayFromWallet(wallet);
-    if (!wallet || hash160Array) {
+    if (!wallet || !hash160Array) {
       return setChronikWebsocket(null);
     }
 
     // Initialize if not in state
     let ws = chronikWebsocket;
     if (ws === null) {
+      console.log('start connect websocket');
       ws = chronik.ws({
         onMessage: (msg: SubscribeMsg) => {
           processChronikWsMsg(msg, wallet);
@@ -235,6 +235,9 @@ const useWallet = () => {
             `Websocket connected, adjusting wallet refresh interval to ${websocketConnectedRefreshInterval / 1000}s`
           );
           setWalletRefreshInterval(websocketConnectedRefreshInterval);
+        },
+        onError: e => {
+          console.log('error', e);
         }
       });
 
@@ -330,6 +333,7 @@ const useWallet = () => {
       const utxosHaveChanged = haveUtxosChanged(chronikUtxos, walletUtxos);
 
       // If the utxo set has not changed,
+      console.log('utxosHaveChanged', utxosHaveChanged);
       if (!utxosHaveChanged) {
         // remove api error here; otherwise it will remain if recovering from a rate
         // limit error with an unchanged utxo set

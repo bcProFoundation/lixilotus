@@ -1,4 +1,5 @@
-import { Utxo } from 'chronik-client';
+import { ParsedChronikTx } from '@utils/chronik';
+import { Tx, Utxo } from 'chronik-client';
 
 export interface WalletPathAddressInfo {
   path: string;
@@ -16,7 +17,7 @@ export interface WalletStatus {
     totalBalance: string;
     totalBalanceInSatoshis: string;
   };
-  parsedTxHistory: any[];
+  parsedTxHistory: Array<Tx & { parsed: ParsedChronikTx }>;
   slpBalancesAndUtxos: {
     nonSlpUtxos: Array<Utxo & { address: string }>;
   };

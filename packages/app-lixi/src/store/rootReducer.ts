@@ -39,13 +39,11 @@ const persistConfig = {
 const walletPersistConfig = {
   key: 'wallet',
   storage: storage('lixi-indexeddb'),
-  blacklist: []
 };
 
 const localAccountPersistConfig: PersistConfig<LocalUserAccountsState> = {
   key: 'localAccounts',
   storage: storage('lixi-indexeddb'),
-  blacklist: []
 };
 
 const accountPersistConfig: PersistConfig<AccountsState> = {

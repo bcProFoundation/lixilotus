@@ -10,6 +10,18 @@ export interface Hash160AndAddress {
   hash160: string;
 }
 
+export interface ParsedChronikTx {
+  incoming: boolean;
+  xpiAmount: string;
+  originatingHash160: string;
+  opReturnMessage: string | Buffer;
+  isLotusMessage: boolean;
+  isEncryptedMessage: boolean;
+  decryptionSuccess: boolean;
+  replyAddress: string;
+  destinationAddress: string;
+}
+
 const getWalletPathsFromWalletState = (wallet: WalletState) => {
   return Object.entries(wallet.entities).map(([key, value]) => {
     return value;
@@ -111,10 +123,10 @@ export const organizeUtxosByType = (
   return { nonSlpUtxos };
 };
 
-export const flattenChronikTxHistory = txHistoryOfAllAddresses => {
+export const flattenChronikTxHistory = (txHistoryOfAllAddresses: TxHistoryPage[]): Tx[] => {
   // Create an array of all txs
 
-  let flatTxHistoryArray = [];
+  let flatTxHistoryArray: Tx[] = [];
   for (let i = 0; i < txHistoryOfAllAddresses.length; i += 1) {
     const txHistoryResponseOfThisAddress = txHistoryOfAllAddresses[i];
     const txHistoryOfThisAddress = txHistoryResponseOfThisAddress.txs;
@@ -124,7 +136,7 @@ export const flattenChronikTxHistory = txHistoryOfAllAddresses => {
 };
 
 // @todo
-export const sortAndTrimChronikTxHistory = (flatTxHistoryArray, txHistoryCount) => {
+export const sortAndTrimChronikTxHistory = (flatTxHistoryArray: Tx[], txHistoryCount: number): Tx[] => {
   // Isolate unconfirmed txs
   // In chronik, unconfirmed txs have an `undefined` block key
   const unconfirmedTxs = [];
@@ -233,7 +245,7 @@ export const getRecipientPublicKey = async (
   throw new Error('Cannot send an encrypted message to a wallet with no outgoing transactions in the last 20 txs');
 };
 
-export const parseChronikTx = async (XPI: BCHJS, chronik: ChronikClient, tx: Tx, wallet: WalletState) => {
+export const parseChronikTx = async (XPI: BCHJS, chronik: ChronikClient, tx: Tx, wallet: WalletState): Promise<ParsedChronikTx> => {
   const walletHash160s: string[] = getHashArrayFromWallet(wallet);
   const { inputs, outputs } = tx;
   // Assign defaults
@@ -351,7 +363,10 @@ export const parseChronikTx = async (XPI: BCHJS, chronik: ChronikClient, tx: Tx,
     if (!incoming) {
       const thisOutputAmount = new BigNumber(thisOutput.value);
       xpiAmount = xpiAmount.plus(thisOutputAmount);
+      console.log('xpiAmount', xpiAmount);
+      console.log('thisOutput.outputScript', thisOutput.outputScript);
       const legacyDestinationAddress = XPI.Address.fromOutputScript(thisOutput.outputScript);
+
       destinationAddress = XPI.Address.toXAddress(legacyDestinationAddress);
     }
   }
@@ -363,7 +378,6 @@ export const parseChronikTx = async (XPI: BCHJS, chronik: ChronikClient, tx: Tx,
   const xpiAmountString = xpiAmount.toString();
 
   // Convert messageHex to string
-  // @todo: get the destination or reply public key from cache
   const theOtherAddress = incoming ? replyAddress : destinationAddress;
   const otherPublicKey = (await getRecipientPublicKey(XPI, chronik, theOtherAddress)) as string;
   if (
@@ -388,7 +402,7 @@ export const parseChronikTx = async (XPI: BCHJS, chronik: ChronikClient, tx: Tx,
     }
   }
 
-  return {
+  const parsedTx: ParsedChronikTx = {
     incoming,
     xpiAmount: xpiAmountString,
     originatingHash160,
@@ -396,11 +410,13 @@ export const parseChronikTx = async (XPI: BCHJS, chronik: ChronikClient, tx: Tx,
     isLotusMessage,
     isEncryptedMessage,
     decryptionSuccess,
-    replyAddress
+    replyAddress,
+    destinationAddress
   };
+  return parsedTx;
 };
 
-export const getTxHistoryChronik = async (chronik: ChronikClient, XPI: BCHJS, wallet: WalletState) => {
+export const getTxHistoryChronik = async (chronik: ChronikClient, XPI: BCHJS, wallet: WalletState): Promise<{ chronikTxHistory: Array<Tx & { parsed: ParsedChronikTx }> }> => {
   // Create array of promises to get chronik history for each address
   // Combine them all and sort by blockheight and firstSeen
   // Add all the info cashtab needs to make them useful
@@ -428,12 +444,12 @@ export const getTxHistoryChronik = async (chronik: ChronikClient, XPI: BCHJS, wa
   const sortedTxHistoryArray = sortAndTrimChronikTxHistory(flatTxHistoryArray, currency.txHistoryCount);
 
   // Parse txs
-  const chronikTxHistory = [];
+  const chronikTxHistory: Array<Tx & { parsed: ParsedChronikTx }> = [];
   for (let i = 0; i < sortedTxHistoryArray.length; i += 1) {
-    const sortedTx = sortedTxHistoryArray[i];
+    const sortedTx: any = sortedTxHistoryArray[i];
     // Add token genesis info so parsing function can calculate amount by decimals
     sortedTx.parsed = await parseChronikTx(XPI, chronik, sortedTx, wallet);
-    chronikTxHistory.push(sortedTx);
+    chronikTxHistory.push(sortedTx as Tx & { parsed: ParsedChronikTx });
   }
 
   return {

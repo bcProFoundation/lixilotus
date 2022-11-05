@@ -37,3 +37,8 @@ export const getWalletUtxos = createSelector(getWalletStatus, (state: WalletStat
 );
 
 export const getWalletMnemonic = createSelector(getWalletState, (state: WalletState) => state.mnemonic);
+
+export const getSelectedWalletPath = createSelector(
+  getWalletState,
+  (state: WalletState) => (state && state.selectedWalletPath ? state.entities[state.selectedWalletPath] : null)
+);

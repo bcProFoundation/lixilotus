@@ -18,6 +18,7 @@ import { Account, RenameAccountCommand } from '@bcpros/lixi-models';
 import { RenameAccountModalProps } from '@components/Settings/RenameAccountModal';
 import { openModal } from '@store/modal/actions';
 import { useRouter } from 'next/router';
+import { getSelectedWalletPath, getWalletStatus } from '@store/wallet';
 
 const CardContainer = styled.div`
   position: relative;
@@ -139,7 +140,9 @@ const WalletInfoComponent: React.FC = () => {
   const [isValidMnemonic, setIsValidMnemonic] = useState(false);
   const [seedInput, openSeedInput] = useState(false);
   const dispatch = useAppDispatch();
+  const walletStatus = useAppSelector(getWalletStatus);
   const selectedAccount = useAppSelector(getSelectedAccount);
+  const selectedWalletPath = useAppSelector(getSelectedWalletPath);
   const [isLoadBalanceError, setIsLoadBalanceError] = useState(false);
 
   const decimalFormatBalance = balance => {
@@ -201,12 +204,12 @@ const WalletInfoComponent: React.FC = () => {
             />
           </div>
           <StyledBalanceHeader>
-            <BalanceHeader balance={fromSmallestDenomination(selectedAccount?.balance ?? 0)} ticker={currency.ticker} />
+            <BalanceHeader balance={fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis ?? 0)} ticker={currency.ticker} />
           </StyledBalanceHeader>
         </WalletCard>
-        {!isServer() && selectedAccount?.address && (
+        {!isServer() && selectedWalletPath && selectedWalletPath?.xAddress && (
           <StyledQRCode>
-            <QRCode address={selectedAccount?.address} isAccountPage={true} />
+            <QRCode address={selectedWalletPath?.xAddress} isAccountPage={true} />
           </StyledQRCode>
         )}
         <AddressWalletBar>
@@ -214,7 +217,7 @@ const WalletInfoComponent: React.FC = () => {
             <SendOutlined />
             Send Lotus
           </ButtonSend>
-          <FormattedWalletAddress address={selectedAccount?.address} isAccountPage={true}></FormattedWalletAddress>
+          <FormattedWalletAddress address={selectedWalletPath?.xAddress} isAccountPage={true}></FormattedWalletAddress>
         </AddressWalletBar>
       </CardContainer>
 

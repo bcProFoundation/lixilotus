@@ -23,7 +23,7 @@ import intl from 'react-intl-universal';
 import styled from 'styled-components';
 
 import { WrapperPage } from '@components/Settings';
-import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
+import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletBalances } from '@store/wallet';
 import { getRecipientPublicKey } from '@utils/chronik';
 import { sendXpiNotification } from '@store/notification/actions';
 
@@ -52,10 +52,7 @@ const SendComponent: React.FC = () => {
   const { XPI, chronik } = Wallet;
   const wallet = useAppSelector(getSelectedAccount);
   const currentAddress = wallet?.address;
-  const walletState = getWalletState(wallet);
-  const { balance } = walletState;
 
-  const [isLoadBalanceError, setIsLoadBalanceError] = useState(false);
   const [formData, setFormData] = useState({
     dirty: true,
     value: '',
@@ -78,7 +75,7 @@ const SendComponent: React.FC = () => {
   const [recipientPubKeyWarning, setRecipientPubKeyWarning] = useState('');
   const [recipientPubKeyHex, setRecipientPubKeyHex] = useState('');
 
-  const defaultPath = "m/44'/10605'/0'/0/0";
+  const walletBalances = useAppSelector(getWalletBalances);
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
 
@@ -236,7 +233,7 @@ const SendComponent: React.FC = () => {
   const handleBchAmountChange = e => {
     const { value, name } = e.target;
     let bchValue = value;
-    const error = shouldRejectAmountInput(bchValue, balance);
+    const error = shouldRejectAmountInput(bchValue, walletBalances.totalBalance);
     setSendXpiAmountError(error);
 
     setFormData(p => ({
@@ -256,7 +253,7 @@ const SendComponent: React.FC = () => {
       const utxosStore = (utxoStore as any).bchUtxos.concat((utxoStore as any).nullUtxos);
       const txFeeSats = calcFee(XPI, utxosStore);
       const txFeeBch = txFeeSats / 10 ** currency.cashDecimals;
-      let value = balance - txFeeBch >= 0 ? (balance - txFeeBch).toFixed(currency.cashDecimals) : 0;
+      let value = _.toNumber(walletBalances.totalBalance) - txFeeBch >= 0 ? (_.toNumber(walletBalances.totalBalance) - txFeeBch).toFixed(currency.cashDecimals) : 0;
       value = value.toString();
       setFormData({
         ...formData,
@@ -303,7 +300,7 @@ const SendComponent: React.FC = () => {
         </p>
       </Modal>
       <WrapperPage>
-        {!balance ? (
+        {!walletBalances ? (
           <ZeroBalanceHeader>
             {intl.get('zeroBalanceHeader.noBalance', { ticker: currency.ticker })}
             <br />
@@ -312,7 +309,7 @@ const SendComponent: React.FC = () => {
         ) : (
           <>
             <WalletLabel name={wallet?.name ?? ''} />
-            <BalanceHeader balance={balance || 0} ticker={currency.ticker} />
+            <BalanceHeader balance={walletBalances.totalBalance || 0} ticker={currency.ticker} />
           </>
         )}
 
@@ -402,7 +399,7 @@ const SendComponent: React.FC = () => {
               />
               {/* END OF OP_RETURN message */}
               <div>
-                {!balance || sendXpiAmountError || sendXpiAddressError ? (
+                {!walletBalances || sendXpiAmountError || sendXpiAddressError ? (
                   <PrimaryButton>Send</PrimaryButton>
                 ) : (
                   <>

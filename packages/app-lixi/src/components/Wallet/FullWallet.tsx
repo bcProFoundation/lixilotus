@@ -9,6 +9,10 @@ import intl from 'react-intl-universal';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getSelectedAccount } from '@store/account/selectors';
 import { silentLogin } from '@store/account/actions';
+import { getWalletParsedTxHistory } from '@store/wallet';
+import { ParsedChronikTx } from '@utils/chronik';
+import { Tx } from 'chronik-client';
+import { formatDate } from '@utils/formatting';
 
 interface UserItem {
   email: string;
@@ -26,7 +30,6 @@ interface UserItem {
   };
 }
 
-const fakeDataUrl = 'https://randomuser.me/api/?results=20&inc=name,gender,email,nat,picture&noinfo';
 const ContainerHeight = 400;
 
 const TransactionHistory = styled.div`
@@ -120,31 +123,16 @@ const FullWalletWrapper = styled.div`
 
 const FullWalletComponent: React.FC = () => {
   const dispatch = useAppDispatch();
-  const [data, setData] = useState<UserItem[]>([]);
 
   const selectedAccount = useAppSelector(getSelectedAccount);
 
-  const appendData = () => {
-    fetch(fakeDataUrl)
-      .then(res => res.json())
-      .then(body => {
-        setData(data.concat(body.results));
-        message.success(`${body.results.length} more items loaded!`);
-      });
-  };
-
-  useEffect(() => {
-    if (selectedAccount) {
-      dispatch(silentLogin(selectedAccount.mnemonic));
-    }
-    appendData();
-  }, []);
+  const walletParsedHistory = useAppSelector(getWalletParsedTxHistory);
 
   const onScroll = (e: React.UIEvent<HTMLElement, UIEvent>) => {
     if (e.currentTarget.scrollHeight - e.currentTarget.scrollTop === ContainerHeight) {
-      appendData();
     }
   };
+
   return (
     <>
       <FullWalletWrapper>
@@ -158,30 +146,40 @@ const FullWalletComponent: React.FC = () => {
           <div className="content-transaction">
             <h3 className="tx-history-header">Recent</h3>
             <List>
-              <VirtualList data={data} height={ContainerHeight} itemHeight={47} itemKey="email" onScroll={onScroll}>
-                {(item: UserItem) => (
-                  <List.Item key={item.email}>
-                    <List.Item.Meta
-                      title={
-                        <a className={item.name.last.includes('n') ? 'amount increase' : 'amount decrease'}>
-                          {item.name.last.includes('n')
-                            ? '+ ' + Math.random() * 999 + 'XPI'
-                            : '- ' + Math.random() * 999 + 'XPI'}
-                        </a>
-                      }
-                      description={
-                        <div className="tx-transaction">
-                          <p className="tx-action">To: {item.name.last}</p>
-                          <p className="tx-memo">Happy birthday to you!</p>
-                        </div>
-                      }
-                    />
-                    <div className="tx-info">
-                      <div className="tx-status">Complete</div>
-                      <p className="tx-date">08/05/2022</p>
-                    </div>
-                  </List.Item>
-                )}
+              <VirtualList data={walletParsedHistory} height={ContainerHeight} itemHeight={47} itemKey="email" onScroll={onScroll}>
+                {(item: Tx & { parsed: ParsedChronikTx }) => {
+                  let memo = '';
+                  if (item.parsed.isLotusMessage) {
+                    if (item.parsed.isEncryptedMessage && item.parsed.decryptionSuccess) {
+                      memo = item.parsed.opReturnMessage.toString();
+                    } else {
+                      memo = item.parsed.opReturnMessage.toString();
+                    }
+                  }
+                  return (
+                    <List.Item key={item.txid}>
+                      <List.Item.Meta
+                        title={
+                          <a className={item.parsed.incoming ? 'amount increase' : 'amount decrease'}>
+                            {item.parsed.incoming
+                              ? '+ ' + item.parsed.xpiAmount + 'XPI'
+                              : '- ' + item.parsed.xpiAmount + 'XPI'}
+                          </a>
+                        }
+                        description={
+                          <div className="tx-transaction">
+                            <p className="tx-action">{item.parsed.incoming ? `From: ${item.parsed.replyAddress}` : `To: ${item.parsed.destinationAddress}`}</p>
+                            <p className="tx-memo">{memo}</p>
+                          </div>
+                        }
+                      />
+                      <div className="tx-info">
+                        <div className="tx-status"></div>
+                        <p className="tx-date">{formatDate(item.timeFirstSeen)}</p>
+                      </div>
+                    </List.Item>
+                  )
+                }}
               </VirtualList>
             </List>
           </div>

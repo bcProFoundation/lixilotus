@@ -14,7 +14,8 @@ function* activateWalletSaga(action: PayloadAction<string>) {
     yield put(
       activateWalletSuccess({
         walletPaths,
-        mnemonic
+        mnemonic,
+        selectPath: defaultPath
       })
     );
   } catch (err) {

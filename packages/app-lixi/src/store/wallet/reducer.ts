@@ -31,10 +31,11 @@ export const walletStateReducer = createReducer(initialState, builder => {
       state.walletStatus = action.payload;
     })
     .addCase(activateWalletSuccess, (state, action) => {
-      const { walletPaths, mnemonic } = action.payload;
+      const { walletPaths, mnemonic, selectPath } = action.payload;
       walletAdapter.setAll(state, walletPaths);
       state.mnemonic = mnemonic;
       state.walletHasUpdated = false;
+      state.selectedWalletPath = selectPath;
     })
     .addCase(setWalletRefreshInterval, (state, action) => {
       state.walletRefreshInterval = action.payload;

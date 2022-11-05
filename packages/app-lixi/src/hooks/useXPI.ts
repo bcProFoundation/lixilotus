@@ -1,9 +1,7 @@
 import { currency } from '@bcpros/lixi-models/constants/ticker';
-import { fromSmallestDenomination, toSmallestDenomination } from '@bcpros/lixi-models/utils/cashMethods';
 import SlpWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
-import { WalletContextValue } from '@context/walletProvider';
-import { WalletPathAddressInfo, WalletState } from '@store/wallet';
+import { WalletPathAddressInfo } from '@store/wallet';
 import {
   encryptOpReturnMsg,
   fromXpiToSatoshis,
@@ -15,9 +13,7 @@ import {
   signAndBuildTx
 } from '@utils/cashMethods';
 import { getRecipientPublicKey } from '@utils/chronik';
-import BigNumber from 'bignumber.js';
-import { ChronikClient, TxHistoryPage, Utxo } from 'chronik-client';
-import _ from 'lodash';
+import { ChronikClient, Utxo } from 'chronik-client';
 import intl from 'react-intl-universal';
 
 export default function useXPI() {
@@ -102,7 +98,7 @@ export default function useXPI() {
       let encryptedEj: Uint8Array; // serialized encryption data object
 
       // if the user has opted to encrypt this message
-      if (encryptionFlag) {
+      if (encryptionFlag && optionalOpReturnMsg) {
         try {
           // get the pub key for the recipient address
           let recipientPubKey = await getRecipientPublicKey(XPI, chronik, destinationAddress);

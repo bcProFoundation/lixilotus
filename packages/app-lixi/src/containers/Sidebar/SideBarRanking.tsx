@@ -289,7 +289,7 @@ const SidebarRanking = () => {
   }, []);
 
   useEffect(() => {
-    setOtherAccounts(_.filter(savedAccounts, acc => acc.id !== selectedAccount?.id));
+    setOtherAccounts(_.filter(savedAccounts, acc => acc && acc.id !== selectedAccount?.id));
   }, [savedAccounts]);
 
   const showModal = () => {

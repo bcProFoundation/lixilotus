@@ -27,8 +27,6 @@ export const middleware = async (req: NextRequest) => {
 
   const { localUser } = session;
 
-  console.log('middleware:', localUser);
-
   if (pathname == '/' && session && (localUser == undefined || localUser == null)) {
     return res;
   }

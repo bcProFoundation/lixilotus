@@ -58,8 +58,8 @@ const makeStore = (context: Context) => {
         process.env.NODE_ENV === 'production'
           ? false
           : {
-              actionsBlacklist: ['lixi/setLixiBalance', 'account/setAccountBalance']
-            },
+            actionsBlacklist: ['wallet/writeWalletStatus']
+          },
       preloadedState: initialState
     });
 
