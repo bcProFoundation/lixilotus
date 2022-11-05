@@ -13,7 +13,7 @@ import { showToast } from '@store/toast/actions';
 import { setPost } from '@store/post/action';
 import { Embed, SocialsEnum } from './Embed';
 import { useCreatePostMutation } from '@store/post/posts.generated';
-import { Uploader } from './Uploader';
+import { StyledMultiUploader } from './Uploader/MultiUploader';
 import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
 type ErrorType = 'unsupported' | 'invalid';
 
@@ -292,7 +292,7 @@ const CreatePostCard = () => {
                   />
                   {/* TODO: Upload image for post */}
                   <StyledUploader>
-                    <Uploader type={UPLOAD_TYPES.POST} />
+                    <StyledMultiUploader type={UPLOAD_TYPES.POST} showUploadList={true} />
                   </StyledUploader>
                   <input type="submit" value="Create Post" />
                 </form>

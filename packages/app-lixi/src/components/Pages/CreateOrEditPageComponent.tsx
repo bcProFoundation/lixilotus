@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getAllCountries, getAllStates } from '@store/country/selectors';
 import { setPage } from '@store/page/action';
 import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
-import { StyledUploader } from '@components/Common/Uploader';
+import { StyledUploader } from '@components/Common/Uploader/Uploader';
 import { showToast } from '@store/toast/actions';
 import { getCountries, getStates } from '../../store/country/actions';
 import { getPageCoverUpload, getPageAvatarUpload } from 'src/store/account/selectors';
