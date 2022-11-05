@@ -13,8 +13,15 @@ export class Post {
   content: string;
 
   @Field(() => Number)
+  postAccountId: number;
+
+  @Field(() => Account)
+  postAccount: Account;
+
+  @Field(() => Number)
   pageAccountId: number;
 
+  @Field(() => Account)
   pageAccount: Account;
 
   @Field(() => String, { nullable: true })

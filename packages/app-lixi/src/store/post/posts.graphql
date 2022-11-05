@@ -35,6 +35,16 @@ fragment PostFields on Post {
   id
   content
   cover
+  postAccount {
+    address
+    id
+    name
+  }
+  pageAccount {
+    address
+    id
+    name
+  }
   createdAt
   updatedAt
 }

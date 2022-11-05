@@ -2,6 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Account {
+  address: String!
+  id: ID!
+  name: String!
+}
+
 input CreatePageInput {
   address: String!
   avatar: String!
@@ -103,8 +109,11 @@ type Post {
   createdAt: DateTime!
   id: ID!
   page: Page
+  pageAccount: Account!
   pageAccountId: Int!
   pageId: String
+  postAccount: Account!
+  postAccountId: Int!
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!

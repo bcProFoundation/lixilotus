@@ -233,8 +233,8 @@ const CreatePostCard = () => {
               duration: 5
             })
           );
-          const data = { pageAccountId: 0 };
-          dispatch(setPost({ ...data, ...postCreated.createPost }));
+          // const data = { postAccountId: 0, pageAccountId: 0 };
+          // dispatch(setPost({ ...data, ...postCreated.createPost }));
         }
       } catch (error) {
         const message = intl.get('post.unableCreatePostServer');
@@ -292,7 +292,7 @@ const CreatePostCard = () => {
                   />
                   {/* TODO: Upload image for post */}
                   <StyledUploader>
-                    <Uploader type={UPLOAD_TYPES.PAGE_AVATAR} />
+                    <Uploader type={UPLOAD_TYPES.POST} />
                   </StyledUploader>
                   <input type="submit" value="Create Post" />
                 </form>

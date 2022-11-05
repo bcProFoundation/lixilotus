@@ -14,6 +14,13 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type Account = {
+  __typename?: 'Account';
+  address: Scalars['String'];
+  id: Scalars['ID'];
+  name: Scalars['String'];
+};
+
 export type CreatePageInput = {
   address: Scalars['String'];
   avatar: Scalars['String'];
@@ -127,8 +134,11 @@ export type Post = {
   createdAt: Scalars['DateTime'];
   id: Scalars['ID'];
   page?: Maybe<Page>;
+  pageAccount: Account;
   pageAccountId: Scalars['Int'];
   pageId?: Maybe<Scalars['String']>;
+  postAccount: Account;
+  postAccountId: Scalars['Int'];
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
 };
