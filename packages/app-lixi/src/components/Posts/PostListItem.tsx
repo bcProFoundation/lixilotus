@@ -5,6 +5,7 @@ import { push } from 'connected-next-router';
 import _ from 'lodash';
 import moment from 'moment';
 import React, { useState } from 'react';
+import ReactHtmlParser from 'react-html-parser';
 import { useAppDispatch } from 'src/store/hooks';
 import styled from 'styled-components';
 import { Post } from '@bcpros/lixi-models';
@@ -70,11 +71,18 @@ const Content = styled.div`
   .description-post {
     text-align: left;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 6;
     -webkit-box-orient: vertical;
     white-space: break-spaces;
     text-overflow: ellipsis;
     overflow: hidden;
+    img {
+      max-height: 250px;
+      width: 100%;
+    }
+    p {
+      margin: 0;
+    }
   }
   .image-cover {
     width: 100%;
@@ -205,7 +213,7 @@ const PostListItem = ({ index, item }) => {
             ></InfoCardUser>
           </CardHeader>
           <Content>
-            <p className="description-post">{post.content}</p>
+            <div className="description-post">{ReactHtmlParser(post?.content)}</div>
             <img className="image-cover" src={post.cover} alt="" />
           </Content>
         </CardContainer>
