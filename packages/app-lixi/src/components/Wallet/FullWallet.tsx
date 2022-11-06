@@ -168,8 +168,8 @@ const FullWalletComponent: React.FC = () => {
                         title={
                           <a className={item.parsed.incoming ? 'amount increase' : 'amount decrease'}>
                             {item.parsed.incoming
-                              ? '+ ' + item.parsed.xpiAmount + 'XPI'
-                              : '- ' + item.parsed.xpiAmount + 'XPI'}
+                              ? '+ ' + item.parsed.xpiAmount + ' XPI'
+                              : '- ' + item.parsed.xpiAmount + ' XPI'}
                           </a>
                         }
                         description={

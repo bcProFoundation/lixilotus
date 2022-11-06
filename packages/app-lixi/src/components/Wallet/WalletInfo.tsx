@@ -218,7 +218,7 @@ const WalletInfoComponent: React.FC = () => {
         <AddressWalletBar>
           <ButtonSend onClick={() => router.push('/send')}>
             <SendOutlined />
-            Send Lotus
+            {intl.get('general.send')}
           </ButtonSend>
           <FormattedWalletAddress address={selectedWalletPath?.xAddress} isAccountPage={true}></FormattedWalletAddress>
         </AddressWalletBar>
