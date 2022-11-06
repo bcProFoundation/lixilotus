@@ -1,30 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import intl from 'react-intl-universal';
-import { Form, notification, message, Modal, Alert, Checkbox } from 'antd';
-import { Row, Col } from 'antd';
-import PrimaryButton from '@components/Common/PrimaryButton';
+import { ZeroBalanceHeader } from '@bcpros/lixi-components/components/Common/Atoms';
+import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import {
   FormItemWithQRCodeAddon,
-  OpReturnMessageInput
+  OpReturnMessageInput,
+  SendXpiInput
 } from '@bcpros/lixi-components/components/Common/EnhancedInputs';
-import { currency } from '@components/Common/Ticker';
-import { shouldRejectAmountInput } from '@utils/validation';
-import { WalletContext } from '@context/index';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { getSelectedAccount } from '@store/account/selectors';
-import { SendXpiInput } from '@bcpros/lixi-components/components/Common/EnhancedInputs';
-import _ from 'lodash';
-import { parseAddress } from '@utils/addressMethods';
-import useXPI from '@hooks/useXPI';
-import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
-import { sendXPIFailure, sendXPISuccess } from '@store/send/actions';
-import { setAccountBalance } from '@store/account/actions';
-import { getDustXPI, getWalletState } from '@utils/cashMethods';
 import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
-import { ZeroBalanceHeader } from '@bcpros/lixi-components/components/Common/Atoms';
+import PrimaryButton from '@components/Common/PrimaryButton';
+import { currency } from '@components/Common/Ticker';
+import { WalletContext } from '@context/index';
+import useXPI from '@hooks/useXPI';
+import { getSelectedAccount } from '@store/account/selectors';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { sendXPIFailure, sendXPISuccess } from '@store/send/actions';
+import { parseAddress } from '@utils/addressMethods';
+import { getDustXPI, getUtxoWif, getWalletState } from '@utils/cashMethods';
+import { shouldRejectAmountInput } from '@utils/validation';
+import { Alert, Checkbox, Col, Form, message, Modal, Row } from 'antd';
+import _ from 'lodash';
+import React, { useEffect, useState } from 'react';
+import intl from 'react-intl-universal';
 import styled from 'styled-components';
-import { createSharedKey, encrypt } from '@utils/encryption';
+
 import { WrapperPage } from '@components/Settings';
+import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletBalances } from '@store/wallet';
+import { getRecipientPublicKey } from '@utils/chronik';
+import { sendXpiNotification } from '@store/notification/actions';
 
 const StyledCheckbox = styled(Checkbox)`
   .ant-checkbox-inner {
@@ -48,13 +49,10 @@ const StyledCheckbox = styled(Checkbox)`
 const SendComponent: React.FC = () => {
   const dispatch = useAppDispatch();
   const Wallet = React.useContext(WalletContext);
-  const { XPI } = Wallet;
+  const { XPI, chronik } = Wallet;
   const wallet = useAppSelector(getSelectedAccount);
   const currentAddress = wallet?.address;
-  const walletState = getWalletState(wallet);
-  const { balance } = walletState;
 
-  const [isLoadBalanceError, setIsLoadBalanceError] = useState(false);
   const [formData, setFormData] = useState({
     dirty: true,
     value: '',
@@ -77,21 +75,9 @@ const SendComponent: React.FC = () => {
   const [recipientPubKeyWarning, setRecipientPubKeyWarning] = useState('');
   const [recipientPubKeyHex, setRecipientPubKeyHex] = useState('');
 
-  useEffect(() => {
-    const id = setInterval(() => {
-      XPI.Electrumx.balance(wallet?.address)
-        .then(result => {
-          if (result && result.balance) {
-            const balance = result.balance.confirmed + result.balance.unconfirmed;
-            dispatch(setAccountBalance(balance ?? 0));
-          }
-        })
-        .catch(e => {
-          setIsLoadBalanceError(true);
-        });
-    }, 10000);
-    return () => clearInterval(id);
-  }, []);
+  const walletBalances = useAppSelector(getWalletBalances);
+  const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
+  const walletPaths = useAppSelector(getAllWalletPaths);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -106,20 +92,7 @@ const SendComponent: React.FC = () => {
     setIsModalVisible(false);
   };
 
-  const encryptOpReturnMsg = (privateKeyWIF, recipientPubKeyHex, plainTextMsg) => {
-    let encryptedMsg;
-    try {
-      const sharedKey = createSharedKey(privateKeyWIF, recipientPubKeyHex);
-      encryptedMsg = encrypt(sharedKey, Uint8Array.from(Buffer.from(plainTextMsg)));
-    } catch (err) {
-      console.log(`SendBCH.encryptOpReturnMsg() error: ` + err);
-      throw err;
-    }
-
-    return encryptedMsg;
-  };
-
-  const { getRestUrl, calcFee, sendXpi } = useXPI();
+  const { calcFee, sendXpi } = useXPI();
 
   async function submit() {
     setFormData({
@@ -141,55 +114,23 @@ const SendComponent: React.FC = () => {
       return;
     }
     try {
-      const { keyPair, fundingWif } = await Wallet.getWalletDetails(wallet.mnemonic);
-      let encryptedOpReturnMsg = undefined;
-      if (opReturnMsg && typeof opReturnMsg !== 'undefined' && opReturnMsg.trim() !== '' && recipientPubKeyHex) {
-        try {
-          encryptedOpReturnMsg = encryptOpReturnMsg(fundingWif, recipientPubKeyHex, opReturnMsg);
-        } catch (error) {
-          notification.error({
-            message: 'Error',
-            description: intl.get('send.canNotEncryptMessage'),
-            duration: 5
-          });
-          console.log(error);
-          return;
-        }
-      }
+      const fundingWif = getUtxoWif(slpBalancesAndUtxos.nonSlpUtxos[0], walletPaths);
 
-      const utxos = await XPI.Utxo.get(currentAddress);
-      const utxoStore = utxos[0];
-      const utxosStore = (utxoStore as any).bchUtxos.concat((utxoStore as any).nullUtxos);
-      const link = sendXpi(
-        currentAddress,
-        utxosStore,
-        keyPair,
+      const link = await sendXpi(
+        XPI,
+        chronik,
+        walletPaths,
+        slpBalancesAndUtxos.nonSlpUtxos,
+        currency.defaultFee,
+        opReturnMsg,
+        false, // indicate send mode is one to one
+        null,
         cleanAddress,
-        formData.value,
-        2.01,
-        encryptedOpReturnMsg,
-        isEncryptedOptionalOpReturnMsg
+        value,
+        isEncryptedOptionalOpReturnMsg,
+        fundingWif
       );
-      link.then(
-        res => {
-          dispatch(sendXPISuccess(wallet.id));
-          XPI.Electrumx.balance(wallet?.address)
-            .then(result => {
-              if (result && result.balance) {
-                const balance = result.balance.confirmed + result.balance.unconfirmed;
-                dispatch(setAccountBalance(balance ?? 0));
-              }
-            })
-            .catch(e => {
-              setIsLoadBalanceError(true);
-            });
-        },
-        err => {
-          dispatch(sendXPIFailure((err as Error).message));
-        }
-      );
-      if (link) {
-      }
+      dispatch(sendXpiNotification(link));
     } catch (e) {
       let message;
       if (!e.error && !e.message) {
@@ -209,40 +150,21 @@ const SendComponent: React.FC = () => {
   }
 
   const fetchRecipientPublicKey = async recipientAddress => {
-    let recipientPubKey;
+    let recipientPubKey: string | boolean;
     try {
-      // see https://api.fullstack.cash/docs/#api-Encryption-Get_encryption_key_for_bch_address
-      // if successful, returns
-      // {
-      //   success: true,
-      //   publicKey: hex string
-      // }
-      // if Address only has incoming transaction but NO outgoing transaction, returns
-      // {
-      //   success: false,
-      //   publicKey: "not found"
-      // }
-      recipientPubKey = await XPI.encryption.getPubKey(recipientAddress);
+      recipientPubKey = await getRecipientPublicKey(XPI, chronik, recipientAddress);
     } catch (err) {
       console.log(`SendBCH.handleAddressChange() error: ` + err);
-      recipientPubKey = {
-        success: false,
-        error: 'fetch error - exception thrown'
-      };
+      recipientPubKey = false;
     }
-    const { success, publicKey } = recipientPubKey;
-    if (success) {
-      setRecipientPubKeyHex(publicKey);
+    if (recipientPubKey) {
+      setRecipientPubKeyHex(recipientPubKey);
       setIsOpReturnMsgDisabled(false);
       setRecipientPubKeyWarning('');
     } else {
       setRecipientPubKeyHex('');
       setIsOpReturnMsgDisabled(true);
-      if (publicKey && publicKey === 'not found') {
-        setRecipientPubKeyWarning(intl.get('send.addressNoOutgoingTrans'));
-      } else {
-        setRecipientPubKeyWarning(intl.get('send.newAddress'));
-      }
+      setRecipientPubKeyWarning(intl.get('send.addressNoOutgoingTrans'));
     }
   };
 
@@ -311,7 +233,7 @@ const SendComponent: React.FC = () => {
   const handleBchAmountChange = e => {
     const { value, name } = e.target;
     let bchValue = value;
-    const error = shouldRejectAmountInput(bchValue, balance);
+    const error = shouldRejectAmountInput(bchValue, walletBalances.totalBalance);
     setSendXpiAmountError(error);
 
     setFormData(p => ({
@@ -331,7 +253,10 @@ const SendComponent: React.FC = () => {
       const utxosStore = (utxoStore as any).bchUtxos.concat((utxoStore as any).nullUtxos);
       const txFeeSats = calcFee(XPI, utxosStore);
       const txFeeBch = txFeeSats / 10 ** currency.cashDecimals;
-      let value = balance - txFeeBch >= 0 ? (balance - txFeeBch).toFixed(currency.cashDecimals) : 0;
+      let value =
+        _.toNumber(walletBalances.totalBalance) - txFeeBch >= 0
+          ? (_.toNumber(walletBalances.totalBalance) - txFeeBch).toFixed(currency.cashDecimals)
+          : 0;
       value = value.toString();
       setFormData({
         ...formData,
@@ -378,7 +303,7 @@ const SendComponent: React.FC = () => {
         </p>
       </Modal>
       <WrapperPage>
-        {!balance ? (
+        {!walletBalances ? (
           <ZeroBalanceHeader>
             {intl.get('zeroBalanceHeader.noBalance', { ticker: currency.ticker })}
             <br />
@@ -387,7 +312,7 @@ const SendComponent: React.FC = () => {
         ) : (
           <>
             <WalletLabel name={wallet?.name ?? ''} />
-            <BalanceHeader balance={balance || 0} ticker={currency.ticker} />
+            <BalanceHeader balance={walletBalances.totalBalance || 0} ticker={currency.ticker} />
           </>
         )}
 
@@ -477,7 +402,7 @@ const SendComponent: React.FC = () => {
               />
               {/* END OF OP_RETURN message */}
               <div>
-                {!balance || sendXpiAmountError || sendXpiAddressError ? (
+                {!walletBalances || sendXpiAmountError || sendXpiAddressError ? (
                   <PrimaryButton>Send</PrimaryButton>
                 ) : (
                   <>

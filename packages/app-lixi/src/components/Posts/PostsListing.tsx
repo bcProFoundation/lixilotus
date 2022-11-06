@@ -59,19 +59,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     setIsModalVisible(false);
   };
 
-  useEffect(() => {
-    XPI.Electrumx.balance(selectedAccount?.address)
-      .then(result => {
-        if (result && result.balance) {
-          const balance = result.balance.confirmed + result.balance.unconfirmed;
-          setBalanceAccount(balance);
-        }
-      })
-      .catch(e => {
-        setBalanceAccount(0);
-      });
-  }, []);
-
   const onChange = (checked: boolean) => {
     setLoading(!checked);
   };

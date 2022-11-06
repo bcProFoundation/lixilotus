@@ -6,7 +6,7 @@ import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
 import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
 import { SmartButton } from '@components/Common/PrimaryButton';
-import { importAccount, renameAccount, setAccountBalance } from '@store/account/actions';
+import { importAccount, renameAccount } from '@store/account/actions';
 import { fromSmallestDenomination } from '@utils/cashMethods';
 import { Form, Input } from 'antd';
 import React, { useEffect, useState } from 'react';
@@ -18,6 +18,7 @@ import { Account, RenameAccountCommand } from '@bcpros/lixi-models';
 import { RenameAccountModalProps } from '@components/Settings/RenameAccountModal';
 import { openModal } from '@store/modal/actions';
 import { useRouter } from 'next/router';
+import { getSelectedWalletPath, getWalletStatus } from '@store/wallet';
 
 const CardContainer = styled.div`
   position: relative;
@@ -139,24 +140,10 @@ const WalletInfoComponent: React.FC = () => {
   const [isValidMnemonic, setIsValidMnemonic] = useState(false);
   const [seedInput, openSeedInput] = useState(false);
   const dispatch = useAppDispatch();
+  const walletStatus = useAppSelector(getWalletStatus);
   const selectedAccount = useAppSelector(getSelectedAccount);
+  const selectedWalletPath = useAppSelector(getSelectedWalletPath);
   const [isLoadBalanceError, setIsLoadBalanceError] = useState(false);
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      XPI.Electrumx.balance(selectedAccount?.address)
-        .then(result => {
-          if (result && result.balance) {
-            const balance = result.balance.confirmed + result.balance.unconfirmed;
-            dispatch(setAccountBalance(balance ?? 0));
-          }
-        })
-        .catch(e => {
-          setIsLoadBalanceError(true);
-        });
-    }, 10000);
-    return () => clearInterval(id);
-  }, []);
 
   const decimalFormatBalance = balance => {
     if (Number(balance) < 10) {
@@ -217,12 +204,15 @@ const WalletInfoComponent: React.FC = () => {
             />
           </div>
           <StyledBalanceHeader>
-            <BalanceHeader balance={fromSmallestDenomination(selectedAccount?.balance ?? 0)} ticker={currency.ticker} />
+            <BalanceHeader
+              balance={fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis ?? 0)}
+              ticker={currency.ticker}
+            />
           </StyledBalanceHeader>
         </WalletCard>
-        {!isServer() && selectedAccount?.address && (
+        {!isServer() && selectedWalletPath && selectedWalletPath?.xAddress && (
           <StyledQRCode>
-            <QRCode address={selectedAccount?.address} isAccountPage={true} />
+            <QRCode address={selectedWalletPath?.xAddress} isAccountPage={true} />
           </StyledQRCode>
         )}
         <AddressWalletBar>
@@ -230,7 +220,7 @@ const WalletInfoComponent: React.FC = () => {
             <SendOutlined />
             Send Lotus
           </ButtonSend>
-          <FormattedWalletAddress address={selectedAccount?.address} isAccountPage={true}></FormattedWalletAddress>
+          <FormattedWalletAddress address={selectedWalletPath?.xAddress} isAccountPage={true}></FormattedWalletAddress>
         </AddressWalletBar>
       </CardContainer>
 

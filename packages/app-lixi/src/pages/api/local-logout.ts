@@ -1,6 +1,5 @@
 import { withIronSessionApiRoute } from 'iron-session/next';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { LocalUser } from 'src/models/localUser';
 import { sessionOptions } from 'src/models/session';
 
 async function localLogoutRoute(req: NextApiRequest, res: NextApiResponse) {
@@ -8,6 +7,8 @@ async function localLogoutRoute(req: NextApiRequest, res: NextApiResponse) {
     // Process a POST request
 
     req.session.localUser = null;
+
+    console.log('logout session:', req.session);
     await req.session.save();
 
     res.send({ ok: true });

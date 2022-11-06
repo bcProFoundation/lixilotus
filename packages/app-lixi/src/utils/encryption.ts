@@ -31,7 +31,7 @@ const publicKeyToBuffer = pubKey => {
 
 // privateKey: WIF string,
 // publicKey: hex string,
-const createSharedKey = (privateKeyWIF, publicKeyHex: string) => {
+const createSharedKey = (privateKeyWIF: string, publicKeyHex: string): Buffer => {
   const publicKeyObj = PublicKey.fromBuffer(Buffer.from(publicKeyHex, 'hex'));
   const privateKeyObj = PrivateKey.fromWIF(privateKeyWIF);
 
@@ -45,7 +45,7 @@ const createSharedKey = (privateKeyWIF, publicKeyHex: string) => {
 // Todo: Later should remove node-forge
 // return a Promise
 // sharedKey: Buffer, plainText: Uint8Array
-const encrypt = (sharedKey, plainText) => {
+const encrypt = (sharedKey: Buffer, plainText: Uint8Array) => {
   // Split shared key
   const iv = forge.util.createBuffer(sharedKey.slice(0, 16));
   const key = forge.util.createBuffer(sharedKey.slice(16));
@@ -63,7 +63,7 @@ const encrypt = (sharedKey, plainText) => {
 
 // return a Promise
 // sharedKey: Buffer, plainText: Uint8Array
-const decrypt = (sharedKey, cipherText) => {
+const decrypt = (sharedKey: Buffer, cipherText: Uint8Array) => {
   // Split shared key
   const iv = forge.util.createBuffer(sharedKey.slice(0, 16));
   const key = forge.util.createBuffer(sharedKey.slice(16));

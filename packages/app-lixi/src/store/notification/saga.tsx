@@ -1,33 +1,58 @@
+import { CashReceivedNotificationIcon } from '@bcpros/lixi-components/components/Common/CustomIcons';
 import { AccountDto as Account, NotificationDto } from '@bcpros/lixi-models';
+import { currency } from '@components/Common/Ticker';
 import { all, call, cancelled, fork, put, select, take, takeLatest } from '@redux-saga/core/effects';
-import intl from 'react-intl-universal';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { getSelectedAccount } from '@store/account/selectors';
+import { notification } from 'antd';
+import { ArgsProps } from 'antd/lib/notification';
+import Paragraph from 'antd/lib/typography/Paragraph';
+import BigNumber from 'bignumber.js';
+import { isMobile } from 'react-device-detect';
+import intl from 'react-intl-universal';
 import { eventChannel } from 'redux-saga';
 import { delay, race } from 'redux-saga/effects';
 import io, { Socket } from 'socket.io-client';
+import { downloadExportedLixi, refreshLixiSilent } from '../lixi/actions';
 import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
 import {
   channelOff,
   channelOn,
+  deleteNotification,
+  deleteNotificationFailure,
+  deleteNotificationSuccess,
   fetchNotifications,
   fetchNotificationsFailure,
   fetchNotificationsSuccess,
+  readNotification,
+  readNotificationFailure,
+  readNotificationSuccess,
   receiveNotification,
+  sendXpiNotification,
   serverOff,
   serverOn,
   startChannel,
   stopChannel,
-  deleteNotification,
-  deleteNotificationSuccess,
-  deleteNotificationFailure,
-  readNotification,
-  readNotificationSuccess,
-  readNotificationFailure
+  xpiReceivedNotificationWebSocket
 } from './actions';
 import notificationApi from './api';
-import { downloadExportedLixi, refreshLixi, refreshLixiSilent } from '../lixi/actions';
+
+const getDeviceNotificationStyle = () => {
+  if (isMobile) {
+    const notificationStyle = {
+      width: '100%',
+      marginTop: '10%'
+    };
+    return notificationStyle;
+  }
+  if (!isMobile) {
+    const notificationStyle = {
+      width: '100%'
+    };
+    return notificationStyle;
+  }
+};
 
 let socket: Socket;
 const baseUrl = process.env.NEXT_PUBLIC_LIXI_API ? process.env.NEXT_PUBLIC_LIXI_API : 'https://lixilotus.com/';
@@ -287,6 +312,49 @@ function* receiveNotificationSaga(action: PayloadAction<NotificationDto>) {
   }
 }
 
+function* sendXpiNotificationSaga(action: PayloadAction<string>) {
+  const link = action.payload;
+  const notificationStyle = getDeviceNotificationStyle();
+  notification.success({
+    message: 'Success',
+    description: (
+      <a href={link} target="_blank" rel="noopener noreferrer">
+        <Paragraph>Transaction successful. Click to view in block explorer.</Paragraph>
+      </a>
+    ),
+    duration: currency.notificationDurationShort,
+    icon: <CashReceivedNotificationIcon />,
+    style: notificationStyle
+  });
+}
+
+function* xpiReceivedNotificationWebSocketSaga(action: PayloadAction<string>) {
+  const xpiAmount = new BigNumber(action.payload);
+  const notificationStyle = getDeviceNotificationStyle();
+  const config: ArgsProps = {
+    message: 'Lotus received',
+    description: (
+      <>
+        <Paragraph>
+          + {xpiAmount.toLocaleString()} {currency.ticker}{' '}
+        </Paragraph>
+      </>
+    ),
+    duration: currency.notificationDurationShort,
+    icon: <CashReceivedNotificationIcon />,
+    style: notificationStyle
+  };
+  notification.success(config);
+}
+
+function* watchSendXpiNotificationSaga() {
+  yield takeLatest(sendXpiNotification.type, sendXpiNotificationSaga);
+}
+
+function* watchXpiReceivedNotificationWebSocketSaga() {
+  yield takeLatest(xpiReceivedNotificationWebSocket.type, xpiReceivedNotificationWebSocketSaga);
+}
+
 export default function* notificationSaga() {
   if (typeof window === 'undefined') {
     yield all([
@@ -312,7 +380,9 @@ export default function* notificationSaga() {
       fork(watchDeleteNotificationFailure),
       fork(watchReadNotification),
       fork(watchReadNotificationSuccess),
-      fork(watchReadNotificationFailure)
+      fork(watchReadNotificationFailure),
+      fork(watchSendXpiNotificationSaga),
+      fork(watchXpiReceivedNotificationWebSocketSaga)
     ]);
   }
 }

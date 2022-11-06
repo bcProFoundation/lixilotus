@@ -17,3 +17,6 @@ export const channelOff = createAction('notification/channelOff');
 export const serverOn = createAction('notification/serverOn');
 export const serverOff = createAction('notification/serverOff');
 export const receiveNotification = createAction<NotificationDto>('notification/receiveNotification');
+
+export const sendXpiNotification = createAction<string>('notification/sendXpiNotification');
+export const xpiReceivedNotificationWebSocket = createAction<string>('notification/xpiReceivedNotificationWebSocket');

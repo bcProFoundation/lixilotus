@@ -17,7 +17,7 @@ export const currency = {
   tokenLogo: '/images/logo_secondary.png',
   tokenPrefixes: ['etoken'],
   tokenIconsUrl: '', //https://tokens.bitcoin.com/32 for BCH SLP
-  txHistoryCount: 5,
+  txHistoryCount: 20,
   hydrateUtxoBatchSize: 20,
   defaultSettings: { fiatCurrency: 'usd' },
   settingsValidation: {
@@ -65,6 +65,7 @@ export const currency = {
       lotusChat: '02020202',
       lotusChatEncrypted: '03030303'
     },
+    opReturnPrefixDec: '106',
     encryptedMsgByteLimit: 206,
     unencryptedMsgByteLimit: 215
   }
