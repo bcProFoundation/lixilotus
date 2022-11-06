@@ -38,12 +38,12 @@ const persistConfig = {
 
 const walletPersistConfig = {
   key: 'wallet',
-  storage: storage('lixi-indexeddb'),
+  storage: storage('lixi-indexeddb')
 };
 
 const localAccountPersistConfig: PersistConfig<LocalUserAccountsState> = {
   key: 'localAccounts',
-  storage: storage('lixi-indexeddb'),
+  storage: storage('lixi-indexeddb')
 };
 
 const accountPersistConfig: PersistConfig<AccountsState> = {

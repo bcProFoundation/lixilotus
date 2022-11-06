@@ -253,7 +253,10 @@ const SendComponent: React.FC = () => {
       const utxosStore = (utxoStore as any).bchUtxos.concat((utxoStore as any).nullUtxos);
       const txFeeSats = calcFee(XPI, utxosStore);
       const txFeeBch = txFeeSats / 10 ** currency.cashDecimals;
-      let value = _.toNumber(walletBalances.totalBalance) - txFeeBch >= 0 ? (_.toNumber(walletBalances.totalBalance) - txFeeBch).toFixed(currency.cashDecimals) : 0;
+      let value =
+        _.toNumber(walletBalances.totalBalance) - txFeeBch >= 0
+          ? (_.toNumber(walletBalances.totalBalance) - txFeeBch).toFixed(currency.cashDecimals)
+          : 0;
       value = value.toString();
       setFormData({
         ...formData,

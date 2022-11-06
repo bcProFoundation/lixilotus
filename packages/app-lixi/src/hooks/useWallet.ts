@@ -202,7 +202,7 @@ const useWallet = () => {
     // parse tx for notification
     const parsedChronikTx = await parseChronikTx(XPI, chronik, incomingTxDetails, wallet);
 
-    if (parsedChronikTx.incoming) {
+    if (parsedChronikTx && parsedChronikTx.incoming) {
       // Notification
       dispatch(xpiReceivedNotificationWebSocket(parsedChronikTx.xpiAmount));
     }
@@ -333,7 +333,6 @@ const useWallet = () => {
       const utxosHaveChanged = haveUtxosChanged(chronikUtxos, walletUtxos);
 
       // If the utxo set has not changed,
-      console.log('utxosHaveChanged', utxosHaveChanged);
       if (!utxosHaveChanged) {
         // remove api error here; otherwise it will remain if recovering from a rate
         // limit error with an unchanged utxo set
@@ -365,7 +364,7 @@ const useWallet = () => {
       //console.timeEnd("update");
       // Try another endpoint
       console.log(`Trying next API...`);
-      tryNextAPI();
+      // tryNextAPI();
     }
   };
 

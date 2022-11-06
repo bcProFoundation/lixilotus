@@ -146,14 +146,20 @@ const FullWalletComponent: React.FC = () => {
           <div className="content-transaction">
             <h3 className="tx-history-header">Recent</h3>
             <List>
-              <VirtualList data={walletParsedHistory} height={ContainerHeight} itemHeight={47} itemKey="email" onScroll={onScroll}>
+              <VirtualList
+                data={walletParsedHistory}
+                height={ContainerHeight}
+                itemHeight={47}
+                itemKey="email"
+                onScroll={onScroll}
+              >
                 {(item: Tx & { parsed: ParsedChronikTx }) => {
                   let memo = '';
                   if (item.parsed.isLotusMessage) {
                     if (item.parsed.isEncryptedMessage && item.parsed.decryptionSuccess) {
-                      memo = item.parsed.opReturnMessage.toString();
+                      memo = item.parsed.opReturnMessage ?? '';
                     } else {
-                      memo = item.parsed.opReturnMessage.toString();
+                      memo = item.parsed.opReturnMessage ?? '';
                     }
                   }
                   return (
@@ -168,7 +174,11 @@ const FullWalletComponent: React.FC = () => {
                         }
                         description={
                           <div className="tx-transaction">
-                            <p className="tx-action">{item.parsed.incoming ? `From: ${item.parsed.replyAddress}` : `To: ${item.parsed.destinationAddress}`}</p>
+                            <p className="tx-action">
+                              {item.parsed.incoming
+                                ? `From: ${item.parsed.replyAddress}`
+                                : `To: ${item.parsed.destinationAddress}`}
+                            </p>
                             <p className="tx-memo">{memo}</p>
                           </div>
                         }
@@ -178,7 +188,7 @@ const FullWalletComponent: React.FC = () => {
                         <p className="tx-date">{formatDate(item.timeFirstSeen)}</p>
                       </div>
                     </List.Item>
-                  )
+                  );
                 }}
               </VirtualList>
             </List>

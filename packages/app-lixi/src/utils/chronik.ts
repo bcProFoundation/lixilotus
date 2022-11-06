@@ -14,7 +14,7 @@ export interface ParsedChronikTx {
   incoming: boolean;
   xpiAmount: string;
   originatingHash160: string;
-  opReturnMessage: string | Buffer;
+  opReturnMessage: string;
   isLotusMessage: boolean;
   isEncryptedMessage: boolean;
   decryptionSuccess: boolean;
@@ -208,7 +208,7 @@ export const getRecipientPublicKey = async (
     recipientAddressHash160 = XPI.Address.toHash160(recipientAddress);
   } catch (err) {
     console.log(`Error determining XPI.Address.toHash160(${recipientAddress} in getRecipientPublicKey())`, err);
-    throw new Error(`Error determining XPI.Address.toHash160(${recipientAddress} in getRecipientPublicKey())`);
+    // throw new Error(`Error determining XPI.Address.toHash160(${recipientAddress} in getRecipientPublicKey())`);
   }
 
   let chronikTxHistoryAtAddress: TxHistoryPage;
@@ -216,11 +216,12 @@ export const getRecipientPublicKey = async (
     // Get 20 txs. If no outgoing txs in those 20 txs, just don't send the tx
     chronikTxHistoryAtAddress = await chronik
       .script('p2pkh', recipientAddressHash160)
-      .history(/*page=*/ 0, /*page_size=*/ 40);
+      .history(/*page=*/ 0, /*page_size=*/ 20);
   } catch (err) {
     console.log(`Error getting await chronik.script('p2pkh', ${recipientAddressHash160}).history();`, err);
     throw new Error('Error fetching tx history to parse for public key');
   }
+
   let recipientPubKeyChronik;
 
   // Iterate over tx history to find an outgoing tx
@@ -245,7 +246,12 @@ export const getRecipientPublicKey = async (
   throw new Error('Cannot send an encrypted message to a wallet with no outgoing transactions in the last 20 txs');
 };
 
-export const parseChronikTx = async (XPI: BCHJS, chronik: ChronikClient, tx: Tx, wallet: WalletState): Promise<ParsedChronikTx> => {
+export const parseChronikTx = async (
+  XPI: BCHJS,
+  chronik: ChronikClient,
+  tx: Tx,
+  wallet: WalletState
+): Promise<ParsedChronikTx> => {
   const walletHash160s: string[] = getHashArrayFromWallet(wallet);
   const { inputs, outputs } = tx;
   // Assign defaults
@@ -255,7 +261,7 @@ export const parseChronikTx = async (XPI: BCHJS, chronik: ChronikClient, tx: Tx,
 
   // Initialize required variables
   let messageHex: string = '';
-  let opReturnMessage: Buffer | string;
+  let opReturnMessage: string;
   let isLotusMessage = false;
   let isEncryptedMessage = false;
   let decryptionSuccess = false;
@@ -363,11 +369,13 @@ export const parseChronikTx = async (XPI: BCHJS, chronik: ChronikClient, tx: Tx,
     if (!incoming) {
       const thisOutputAmount = new BigNumber(thisOutput.value);
       xpiAmount = xpiAmount.plus(thisOutputAmount);
-      console.log('xpiAmount', xpiAmount);
-      console.log('thisOutput.outputScript', thisOutput.outputScript);
-      const legacyDestinationAddress = XPI.Address.fromOutputScript(thisOutput.outputScript);
-
-      destinationAddress = XPI.Address.toXAddress(legacyDestinationAddress);
+      try {
+        if (!destinationAddress) {
+          // Assumpt the destination address is the first output
+          const legacyDestinationAddress = XPI.Address.fromOutputScript(Buffer.from(thisOutput.outputScript, 'hex'));
+          destinationAddress = XPI.Address.toXAddress(legacyDestinationAddress);
+        }
+      } catch (err) {}
     }
   }
 
@@ -379,10 +387,11 @@ export const parseChronikTx = async (XPI: BCHJS, chronik: ChronikClient, tx: Tx,
 
   // Convert messageHex to string
   const theOtherAddress = incoming ? replyAddress : destinationAddress;
-  const otherPublicKey = (await getRecipientPublicKey(XPI, chronik, theOtherAddress)) as string;
+  const otherPublicKey = await getRecipientPublicKey(XPI, chronik, theOtherAddress);
   if (
     isLotusMessage &&
     isEncryptedMessage &&
+    theOtherAddress &&
     otherPublicKey &&
     wallet &&
     wallet.walletStatus &&
@@ -390,14 +399,15 @@ export const parseChronikTx = async (XPI: BCHJS, chronik: ChronikClient, tx: Tx,
     wallet.walletStatus.slpBalancesAndUtxos.nonSlpUtxos[0]
   ) {
     const { selectAll } = walletAdapter.getSelectors();
+    // const allWalletPaths = Object.values(wallet.entities);
     const allWalletPaths = selectAll(wallet);
     const fundingWif = getUtxoWif(wallet.walletStatus.slpBalancesAndUtxos.nonSlpUtxos[0], allWalletPaths);
     const decryption = await decryptOpReturnMsg(messageHex, fundingWif, otherPublicKey);
+
     if (decryption.success) {
-      opReturnMessage = Buffer.from(decryption.decryptedMsg).toString();
+      opReturnMessage = Buffer.from(decryption.decryptedMsg).toString('utf8');
       decryptionSuccess = true;
     } else {
-      console.log(decryption.error);
       opReturnMessage = 'Error in decrypting message!';
     }
   }
@@ -416,7 +426,11 @@ export const parseChronikTx = async (XPI: BCHJS, chronik: ChronikClient, tx: Tx,
   return parsedTx;
 };
 
-export const getTxHistoryChronik = async (chronik: ChronikClient, XPI: BCHJS, wallet: WalletState): Promise<{ chronikTxHistory: Array<Tx & { parsed: ParsedChronikTx }> }> => {
+export const getTxHistoryChronik = async (
+  chronik: ChronikClient,
+  XPI: BCHJS,
+  wallet: WalletState
+): Promise<{ chronikTxHistory: Array<Tx & { parsed: ParsedChronikTx }> }> => {
   // Create array of promises to get chronik history for each address
   // Combine them all and sort by blockheight and firstSeen
   // Add all the info cashtab needs to make them useful

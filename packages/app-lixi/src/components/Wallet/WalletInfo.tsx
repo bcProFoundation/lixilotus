@@ -204,7 +204,10 @@ const WalletInfoComponent: React.FC = () => {
             />
           </div>
           <StyledBalanceHeader>
-            <BalanceHeader balance={fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis ?? 0)} ticker={currency.ticker} />
+            <BalanceHeader
+              balance={fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis ?? 0)}
+              ticker={currency.ticker}
+            />
           </StyledBalanceHeader>
         </WalletCard>
         {!isServer() && selectedWalletPath && selectedWalletPath?.xAddress && (
