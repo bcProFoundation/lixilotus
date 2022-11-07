@@ -30,10 +30,11 @@ import { FileInterceptor } from '@webundsoehne/nest-fastify-file-upload';
 import { MulterFile } from '@webundsoehne/nest-fastify-file-upload/dist/interfaces/multer-options.interface';
 import { Account } from '@bcpros/lixi-models';
 import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
+import { UploadService } from './upload.service';
 
 @Controller('uploads')
 export class UploadFilesController {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService, private uploadService: UploadService) {}
 
   @Get('/:id?')
   async getImage(
@@ -59,6 +60,19 @@ export class UploadFilesController {
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
+  }
+
+  @Post('/s3')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes('multipart/form-data')
+  async uploadS3(@UploadedFile('file') file: MulterFile) {
+    const buffer = file.buffer;
+    const originalName = file.originalname.replace(/\.[^/.]+$/, '');
+    const uploaded = await this.uploadService.uploadPublicFile(buffer, originalName, file.mimetype);
+
+    console.log(uploaded);
+
+    return uploaded;
   }
 
   @Post('/')

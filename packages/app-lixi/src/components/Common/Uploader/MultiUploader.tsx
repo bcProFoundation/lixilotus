@@ -135,13 +135,14 @@ export const MultiUploader = ({ type, buttonName, buttonType, isIcon, showUpload
   };
 
   const handleRemove = data => {
+    //TODO: fix crash when upload fail
     const { upload } = data.response.payload;
     dispatch(removeUpload({ type: type, id: upload.id }));
   };
 
   const uploadImage = async options => {
     const { onSuccess, onError, file, onProgress } = options;
-    const url = UPLOAD_API;
+    const url = '/api/uploads/s3';
     const formData = new FormData();
 
     formData.append('file', file);

@@ -24,7 +24,7 @@ import { ExportSubLixiesEventsListener } from './lixi/processors/export-sub-lixi
 import { ExportSubLixiesProcessor } from './lixi/processors/export-sub-lixies.processor';
 import { WithdrawSubLixiesEventsListener } from './lixi/processors/withdraw-sub-lixies.eventslistener';
 import { WithdrawSubLixiesProcessor } from './lixi/processors/withdraw-sub-lixies.processor';
-
+import { UploadService } from './upload/upload.service';
 import { ConfigService } from '@nestjs/config';
 import cors from 'cors';
 const baseCorsConfig = cors({
@@ -95,6 +95,7 @@ const baseCorsConfig = cors({
   ],
   providers: [
     LixiService,
+    UploadService,
     CreateSubLixiesProcessor,
     CreateSubLixiesEventsListener,
     WithdrawSubLixiesProcessor,
@@ -104,6 +105,7 @@ const baseCorsConfig = cors({
   ],
   exports: [
     LixiService,
+    UploadService,
     CreateSubLixiesProcessor,
     CreateSubLixiesEventsListener,
     WithdrawSubLixiesProcessor,
