@@ -94,10 +94,10 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
           />
           <ItemAccess
             icon={SendOutlined}
-            text={'Send Lotus'}
-            active={false}
-            key="send-lotus"
-            href={'https://sendlotus.com'}
+            text={'Send'}
+            active={selectedKey === '/send'}
+            key="send"
+            href={'/send'}
           />
           <ItemAccess
             icon={ShopOutlined}

@@ -71,6 +71,7 @@ import {
   verifyEmailSuccess
 } from './actions';
 import { getAccountById, getSelectedAccount } from './selectors';
+import { activateWallet } from '@store/wallet';
 
 /**
  * Generate a account with random encryption password
@@ -709,6 +710,7 @@ function* silentLoginSuccessSaga(action: PayloadAction) {
     address: account.address,
     name: account.name
   };
+  yield put(activateWallet(account.mnemonic));
   yield put(silentLocalLogin(localUser));
 }
 

@@ -37,7 +37,6 @@ export const changeAccountLocaleFailure = createAction<string>('account/changeAc
 export const deleteAccount = createAction<DeleteAccountCommand>('account/deleteAccount');
 export const deleteAccountSuccess = createAction<number>('account/deleteAccountSuccess');
 export const deleteAccountFailure = createAction<string>('account/deleteAccountFailure');
-export const setAccountBalance = createAction<number>('account/setAccountBalance');
 export const refreshLixiList = createAction<any>('lixi/refreshLixiList');
 export const refreshLixiListSuccess = createAction<{ account: Account; lixies: Lixi[] }>('lixi/refreshLixiListSuccess');
 export const refreshLixiListFailure = createAction<string>('lixi/refreshLixiListFailure');

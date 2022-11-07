@@ -13,6 +13,8 @@ import { getSelectorsByUserAgent } from 'react-device-detect';
 import { END } from 'redux-saga';
 import { LocalUser } from 'src/models/localUser';
 import { sessionOptions } from 'src/models/session';
+import axios from 'axios';
+import { useRouter } from 'next/router';
 
 type HomePageProps = {
   isMobile: boolean;
@@ -20,12 +22,19 @@ type HomePageProps = {
 };
 
 const HomePage = ({ isMobile, localUser }: HomePageProps) => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
   const isHydrated = useAppSelector(getIsBootstrapped);
 
+  const localLogout = async () => {
+    const url = '/_api/local-logout';
+    await axios.post(url);
+  };
+
   useEffect(() => {
     if (isHydrated) {
+      console.log('localUser:', localUser);
       // Only check the user if the redux state is already hydrated
       if (!selectedAccount && !localUser) {
         // There's no account, need to create an account for user
@@ -45,6 +54,8 @@ const HomePage = ({ isMobile, localUser }: HomePageProps) => {
         dispatch(silentLogin(selectedAccount.mnemonic));
       } else if (selectedAccount) {
         dispatch(silentLogin(selectedAccount.mnemonic));
+      } else if (localUser) {
+        localLogout();
       }
     }
   }, [selectedAccount, localUser, isHydrated]);

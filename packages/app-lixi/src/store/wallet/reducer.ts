@@ -1,18 +1,46 @@
-import { createReducer } from '@reduxjs/toolkit';
-import { updateWalletState } from './actions';
+import { createEntityAdapter, createReducer } from '@reduxjs/toolkit';
+import { activateWalletSuccess, setWalletHasUpdated, setWalletRefreshInterval, writeWalletStatus } from './actions';
+import { WalletPathAddressInfo } from './models';
 import { WalletState } from './state';
 
-const initialState: WalletState = {
-  walletDetail: null,
-  Path899: null,
-  Path1899: null,
-  Path10605: null,
-  name: '',
-  mnemonic: ''
-};
+export const walletAdapter = createEntityAdapter<WalletPathAddressInfo>({
+  selectId: wallet => wallet.path
+});
+
+const initialState: WalletState = walletAdapter.getInitialState({
+  selectedWalletPath: null,
+  walletStatus: {
+    balances: {
+      totalBalance: '0',
+      totalBalanceInSatoshis: '0'
+    },
+    parsedTxHistory: [],
+    slpBalancesAndUtxos: {
+      nonSlpUtxos: []
+    },
+    utxos: []
+  },
+  mnemonic: '',
+  walletRefreshInterval: 5000,
+  walletHasUpdated: false
+});
 
 export const walletStateReducer = createReducer(initialState, builder => {
-  builder.addCase(updateWalletState, (state, action) => {
-    state = action.payload;
-  });
+  builder
+    .addCase(writeWalletStatus, (state, action) => {
+      state.walletStatus = action.payload;
+    })
+    .addCase(activateWalletSuccess, (state, action) => {
+      const { walletPaths, mnemonic, selectPath } = action.payload;
+      walletAdapter.setAll(state, walletPaths);
+      state.mnemonic = mnemonic;
+      state.walletHasUpdated = false;
+      state.selectedWalletPath = selectPath;
+    })
+    .addCase(setWalletRefreshInterval, (state, action) => {
+      state.walletRefreshInterval = action.payload;
+    })
+    .addCase(setWalletHasUpdated, (state, action) => {
+      state.walletHasUpdated = action.payload;
+    });
 });

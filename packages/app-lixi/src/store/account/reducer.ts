@@ -7,7 +7,6 @@ import {
   renameAccountSuccess,
   selectAccountSuccess,
   setAccount,
-  setAccountBalance,
   refreshLixiListSuccess,
   setUpload,
   removeUpload,
@@ -61,18 +60,6 @@ export const accountReducer = createReducer(initialState, builder => {
     })
     .addCase(deleteAccountSuccess, (state, action) => {
       accountsAdapter.removeOne(state, action.payload);
-    })
-    .addCase(setAccountBalance, (state, action) => {
-      const selectedId = state.selectedId;
-      if (selectedId) {
-        const updateAccount: Update<Account> = {
-          id: selectedId,
-          changes: {
-            balance: action.payload
-          }
-        };
-        accountsAdapter.updateOne(state, updateAccount);
-      }
     })
     .addCase(setUpload, (state, action) => {
       const { type, upload } = action.payload;

@@ -1,18 +1,43 @@
-import { useAppSelector } from '@store/hooks';
 import { createSelector } from 'reselect';
 import { RootState } from '../store';
-import { WalletDetail } from './models';
+import { WalletStatus } from './models';
+import { walletAdapter } from './reducer';
 import { WalletState } from './state';
 
-export const getWalletState = useAppSelector((state: RootState) => state.wallet);
+const { selectAll, selectEntities, selectIds, selectTotal } = walletAdapter.getSelectors();
 
-export const getWalletDetail = createSelector(
-  (state: RootState) => state.wallet,
-  (state: WalletState) => state.walletDetail
+export const getWalletState = (state: RootState): WalletState => state.wallet;
+
+export const getAllWalletPaths = createSelector(getWalletState, selectAll);
+
+export const getAllWalletPathsEntities = createSelector(getWalletState, selectEntities);
+
+export const getWalletPathAddressInfoByPath = (path: string) =>
+  createSelector(getAllWalletPathsEntities, paths => paths?.[path]);
+
+export const getWalletStatus = createSelector(getWalletState, (state: WalletState) => state.walletStatus);
+
+export const getWaletRefreshInterval = createSelector(
+  getWalletState,
+  (state: WalletState) => state.walletRefreshInterval
 );
 
-export const getWalletBalance = createSelector(getWalletDetail, (state: WalletDetail) => state.balances);
+export const getWalletHasUpdated = createSelector(getWalletState, (state: WalletState) => state.walletHasUpdated);
 
-export const getWalletParsedTxHistory = createSelector(getWalletDetail, (state: WalletDetail) => state.parsedTxHistory);
+export const getWalletBalances = createSelector(getWalletStatus, (state: WalletStatus) => state.balances);
 
-export const getWalletUtxos = createSelector(getWalletDetail, (state: WalletDetail) => state.utxos);
+export const getWalletParsedTxHistory = createSelector(getWalletStatus, (state: WalletStatus) => state.parsedTxHistory);
+
+export const getSlpBalancesAndUtxos = createSelector(getWalletStatus, (state: WalletStatus) =>
+  state && state.slpBalancesAndUtxos ? state.slpBalancesAndUtxos : null
+);
+
+export const getWalletUtxos = createSelector(getWalletStatus, (state: WalletStatus) =>
+  state && state.utxos ? state.utxos : []
+);
+
+export const getWalletMnemonic = createSelector(getWalletState, (state: WalletState) => state.mnemonic);
+
+export const getSelectedWalletPath = createSelector(getWalletState, (state: WalletState) =>
+  state && state.selectedWalletPath ? state.entities[state.selectedWalletPath] : null
+);

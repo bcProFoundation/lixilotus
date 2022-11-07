@@ -254,33 +254,8 @@ const Lixi = props => {
 
   subLixies = _.sortBy(subLixies, ['isClaimed', 'packageId']);
 
-  const [loadings, setLoadings] = useState<boolean[]>([]);
   const { width } = useWindowDimensions();
   const [isMobileDetailLixi, setIsMobileDetailLixi] = useState(false);
-
-  // useEffect(() => {
-  //   if (selectedLixi) {
-  //     dispatch(selectLixi(selectedLixiId));
-  //   }
-  // }, [selectLixi]);
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      XPI.Electrumx.balance(selectedLixi?.address)
-        .then(result => {
-          if (result && result.balance) {
-            const balance = result.balance.confirmed + result.balance.unconfirmed;
-            dispatch(setLixiBalance(balance ?? 0));
-          }
-        })
-        .catch(e => {
-          setIsLoadBalanceError(true);
-        });
-    }, 10000);
-    return () => {
-      return clearInterval(id);
-    };
-  }, []);
 
   useEffect(() => {
     const isMobileDetail = width < 768 ? true : false;

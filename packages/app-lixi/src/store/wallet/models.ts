@@ -1,4 +1,8 @@
-export interface WalletAddressInfo {
+import { ParsedChronikTx } from '@utils/chronik';
+import { Tx, Utxo } from 'chronik-client';
+
+export interface WalletPathAddressInfo {
+  path: string;
   cashAddress: string;
   fundingAddress: string;
   fundingWif: string;
@@ -6,18 +10,16 @@ export interface WalletAddressInfo {
   legacyAddress: string;
   publicKey: string;
   xAddress: string;
-  keyPair: any;
 }
 
-export interface WalletDetail {
+export interface WalletStatus {
   balances: {
-    totalBalance: number;
-    totalBalanceInSatoshis: number;
+    totalBalance: string;
+    totalBalanceInSatoshis: string;
   };
-  parsedTxHistory: any[];
-  utxos: any[];
-  name: string;
-  Path899: WalletAddressInfo;
-  Path1899: WalletAddressInfo;
-  Path10605: WalletAddressInfo;
+  parsedTxHistory: Array<Tx & { parsed: ParsedChronikTx }>;
+  slpBalancesAndUtxos: {
+    nonSlpUtxos: Array<Utxo & { address: string }>;
+  };
+  utxos: Array<Utxo & { address: string }>;
 }
