@@ -268,13 +268,7 @@ const SidebarShortcut = () => {
             key="settings"
             href={'/settings'}
           />
-          <ItemAccess
-            icon={SendOutlined}
-            text={intl.get('general.sendLotus')}
-            active={false}
-            key="send-lotus"
-            href={'https://sendlotus.com'}
-          />
+          <ItemAccess icon={SendOutlined} text={'Send'} active={selectedKey === '/send'} key="send" href={'/send'} />
           <ItemAccess
             icon={ShopOutlined}
             text={intl.get('general.lotusiaShop')}

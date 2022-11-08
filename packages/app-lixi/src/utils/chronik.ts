@@ -272,29 +272,10 @@ export const parseChronikTx = async (
   for (let i = 0; i < inputs.length; i += 1) {
     const thisInput = inputs[i];
     const thisInputSendingHash160 = thisInput.outputScript;
-    /* 
-    
-    Assume the first input is the originating address
-    
-    https://en.bitcoin.it/wiki/Script for reference
-    
-    Assume standard pay-to-pubkey-hash tx        
-    scriptPubKey: OP_DUP OP_HASH160 <pubKeyHash> OP_EQUALVERIFY OP_CHECKSIG
-    76 + a9 + 14 = OP_DUP + OP_HASH160 + 14 Bytes to push
-    88 + ac = OP_EQUALVERIFY + OP_CHECKSIG
 
-    So, the hash160 we want will be in between '76a914' and '88ac'
-    ...most of the time ;)
-    */
     try {
-      originatingHash160 = thisInputSendingHash160.substring(
-        thisInputSendingHash160.indexOf('76a914') + '76a914'.length,
-        thisInputSendingHash160.lastIndexOf('88ac')
-      );
-
-      let replyAddressBchFormat = XPI.Address.hash160ToCash(originatingHash160);
-
-      replyAddress = XPI.Address.toXAddress(replyAddressBchFormat);
+      const legacyReplyAddress = XPI.Address.fromOutputScript(Buffer.from(thisInput.outputScript, 'hex'));
+      replyAddress = XPI.Address.toXAddress(legacyReplyAddress);
     } catch (err) {
       console.log(`err from ${originatingHash160}`, err);
       // If the transaction is nonstandard, don't worry about a reply address for now
@@ -375,7 +356,7 @@ export const parseChronikTx = async (
           const legacyDestinationAddress = XPI.Address.fromOutputScript(Buffer.from(thisOutput.outputScript, 'hex'));
           destinationAddress = XPI.Address.toXAddress(legacyDestinationAddress);
         }
-      } catch (err) { }
+      } catch (err) {}
     }
   }
 
@@ -390,8 +371,7 @@ export const parseChronikTx = async (
   let otherPublicKey;
   try {
     otherPublicKey = await getRecipientPublicKey(XPI, chronik, theOtherAddress);
-  } catch (err) {
-  }
+  } catch (err) {}
 
   if (
     isLotusMessage &&
