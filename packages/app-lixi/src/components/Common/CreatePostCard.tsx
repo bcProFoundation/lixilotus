@@ -32,7 +32,7 @@ const styles = {
 };
 
 const Editor = (props: PlateProps<MyValue>) => (
-  <Plate onChange={value => console.log('NEWVALUE', value)} {...props}>
+  <Plate {...props}>
     <MarkBalloonToolbar />
   </Plate>
 );
@@ -237,8 +237,6 @@ const CreatePostCard = () => {
     if (url) {
       console.log(url);
     } else {
-      // const valueInput = sunEditor.current.getContents(true);
-      // setValue(valueInput);
       const valueInput = valueEditor;
       setEnableEditor(false);
       console.log(valueInput);
@@ -313,15 +311,6 @@ const CreatePostCard = () => {
             <Tabs defaultActiveKey="1">
               <Tabs.TabPane tab="Create" key="create">
                 <form onSubmit={handleSubmitEditor}>
-                  {/* <SunEditor
-                    getSunEditorInstance={getSunEditorInstance}
-                    width="100%"
-                    placeholder="Please type here..."
-                    hide={!enableEditor}
-                    onSave={handleSaveEditor}
-                    setOptions={configEditor}
-                    onImageUploadBefore={handleImageUploadBefore}
-                  /> */}
                   <PlateProvider<MyValue>
                     plugins={imagePlugins}
                     initialValue={null}

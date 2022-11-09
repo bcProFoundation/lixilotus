@@ -3,8 +3,6 @@
 import { jsx } from '@udecode/plate-test-utils';
 import { mapNodeId } from './mapNodeId';
 
-jsx;
-
 export const basicElementsValue: any = mapNodeId(
   <fragment>
     <hh1>🧱 Elements</hh1>
