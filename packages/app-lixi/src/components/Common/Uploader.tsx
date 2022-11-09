@@ -13,6 +13,8 @@ import axiosClient from '@utils/axiosClient';
 import { UPLOAD_API } from '@bcpros/lixi-models/constants';
 import _ from 'lodash';
 import { ButtonType } from 'antd/lib/button';
+import { insertImage } from '@udecode/plate';
+import { useMyPlateEditorRef } from './Plate/plateTypes';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -38,6 +40,19 @@ const StyledButton = styled(Button)`
   :disabled {
     color: gray;
   }
+
+  &.clear-btn {
+    padding: 0 5px;
+    &:hover {
+      background: transparent;
+    }
+    span {
+      color: #000;
+      &:hover {
+        color: #06c;
+      }
+    }
+  }
 `;
 
 const StyledContainer = styled.div`
@@ -49,23 +64,26 @@ type UploaderProps = {
   buttonName?: string;
   buttonType?: string;
   isIcon?: boolean;
+  icon?: any;
   showUploadList?: boolean;
 };
 
-export const Uploader = ({ type, buttonName, buttonType, isIcon, showUploadList }: UploaderProps) => {
+export const Uploader = ({ type, buttonName, buttonType, isIcon, showUploadList, icon }: UploaderProps) => {
   const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
   const [previewVisible, setPreviewVisible] = useState(false);
   const dispatch = useAppDispatch();
 
+  const editor = useMyPlateEditorRef();
   const uploadButton = (
     <StyledButton
+      className={buttonType == 'text' ? 'clear-btn' : ''}
       disabled={loading}
       type={!_.isEmpty(buttonType) ? (buttonType as ButtonType) : 'primary'}
       size="middle"
       loading={loading}
-      icon={isIcon ? <UploadOutlined style={{ color: loading ? 'gray' : 'white' }} /> : null}
+      icon={isIcon && icon ? icon : <UploadOutlined style={{ color: loading ? 'gray' : 'white' }} />}
     >
       {!_.isEmpty(buttonName) ? buttonName : loading ? intl.get('lixi.uploadingText') : intl.get('lixi.uploadText')}
     </StyledButton>
@@ -152,6 +170,7 @@ export const Uploader = ({ type, buttonName, buttonType, isIcon, showUploadList 
     await axiosClient
       .post(url, formData, config)
       .then(response => {
+        insertImage(editor, response?.data?.url || null);
         return onSuccess(dispatch(setUpload({ upload: response.data, type: type })));
       })
       .catch(err => {
