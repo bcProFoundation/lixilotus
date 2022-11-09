@@ -94,7 +94,7 @@ export class ClaimController {
             }
           });
           image = upload?.url;
-          thumbnail = upload?.url.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+          thumbnail = upload?.url?.replace(/(\.[\w\d_-]+)$/i, '-200$1');
         }
       } else {
         if (lixi?.uploadDetail) {
@@ -104,7 +104,7 @@ export class ClaimController {
             }
           });
           image = upload?.url;
-          thumbnail = upload?.url.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+          thumbnail = upload?.url?.replace(/(\.[\w\d_-]+)$/i, '-200$1');
         }
       }
 
@@ -503,7 +503,7 @@ export class ClaimController {
                 }
               });
               image = upload?.url;
-              thumbnail = upload?.url.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+              thumbnail = upload?.url?.replace(/(\.[\w\d_-]+)$/i, '-200$1');
             }
           } else {
             if (lixi.uploadDetail) {
@@ -513,7 +513,7 @@ export class ClaimController {
                 }
               });
               image = upload?.url;
-              thumbnail = upload?.url.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+              thumbnail = upload?.url?.replace(/(\.[\w\d_-]+)$/i, '-200$1');
             }
           }
 

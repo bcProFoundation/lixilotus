@@ -31,6 +31,7 @@ import { MulterFile } from '@webundsoehne/nest-fastify-file-upload/dist/interfac
 import { Account } from '@bcpros/lixi-models';
 import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
 import { UploadService } from './upload.service';
+import { PostAccountEntity } from 'src/decorators/postAccount.decorator';
 
 @Controller('uploads')
 export class UploadFilesController {
@@ -63,16 +64,61 @@ export class UploadFilesController {
   }
 
   @Post('/s3')
+  @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file'))
   @ApiConsumes('multipart/form-data')
-  async uploadS3(@UploadedFile('file') file: MulterFile) {
-    const buffer = file.buffer;
-    const originalName = file.originalname.replace(/\.[^/.]+$/, '');
-    const uploaded = await this.uploadService.uploadPublicFile(buffer, originalName, file.mimetype);
+  async uploadS3(
+    @UploadedFile('file') file: MulterFile,
+    @PostAccountEntity() account: Account,
+    @I18n() i18n: I18nContext,
+    @Body() body: any
+  ) {
+    try {
+      const { type } = body;
+      if (!account) {
+        const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
+        throw new Error(couldNotFindAccount);
+      }
 
-    console.log(uploaded);
+      const bucket = process.env.AWS_PUBLIC_BUCKET_NAME;
+      const buffer = file.buffer;
+      const originalName = file.originalname.replace(/\.[^/.]+$/, '');
+      const fileExtension = extname(file.originalname);
 
-    return uploaded;
+      const { Key } = await this.uploadService.uploadS3(buffer, fileExtension, bucket);
+
+      const uploadToInsert = {
+        originalFilename: originalName,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        sha: Key,
+        extension: fileExtension,
+        type: type,
+        bucket: bucket
+      };
+
+      const resultImage: UploadDb = await this.prisma.upload.create({
+        data: uploadToInsert
+      });
+
+      await this.prisma.uploadDetail.create({
+        data: {
+          account: { connect: { id: account.id } },
+          upload: { connect: { id: resultImage.id } }
+        }
+      });
+
+      return resultImage;
+    } catch (err) {
+      console.log(err);
+      if (err instanceof VError) {
+        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      } else {
+        const unableToUpload = await i18n.t('lixi.messages.unableToUpload');
+        const error = new VError.WError(err as Error, unableToUpload);
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
   }
 
   @Post('/')

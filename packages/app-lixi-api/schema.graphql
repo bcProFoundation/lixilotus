@@ -23,8 +23,9 @@ input CreatePageInput {
 
 input CreatePostInput {
   content: String!
-  cover: String
+  pageAccountId: Int
   pageId: String
+  uploadCovers: [String!]
 }
 
 """
@@ -103,7 +104,6 @@ enum PageOrderField {
 
 type Post {
   content: String!
-  cover: String
 
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
@@ -117,6 +117,7 @@ type Post {
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
+  uploadCovers: [String!]
 }
 
 type PostConnection {

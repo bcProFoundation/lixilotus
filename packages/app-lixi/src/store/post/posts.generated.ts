@@ -23,7 +23,7 @@ export type PostQuery = {
     __typename?: 'Post';
     id: string;
     content: string;
-    cover?: string | null;
+    uploadCovers?: Array<string> | null;
     createdAt: any;
     updatedAt: any;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -53,7 +53,7 @@ export type PostsQuery = {
         __typename?: 'Post';
         id: string;
         content: string;
-        cover?: string | null;
+        uploadCovers?: Array<string> | null;
         createdAt: any;
         updatedAt: any;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -74,7 +74,7 @@ export type PostFieldsFragment = {
   __typename?: 'Post';
   id: string;
   content: string;
-  cover?: string | null;
+  uploadCovers?: Array<string> | null;
   createdAt: any;
   updatedAt: any;
   postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -91,7 +91,7 @@ export type CreatePostMutation = {
     __typename?: 'Post';
     id: string;
     content: string;
-    cover?: string | null;
+    uploadCovers?: Array<string> | null;
     createdAt: any;
     updatedAt: any;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -109,7 +109,7 @@ export type UpdatePostMutation = {
     __typename?: 'Post';
     id: string;
     content: string;
-    cover?: string | null;
+    uploadCovers?: Array<string> | null;
     createdAt: any;
     updatedAt: any;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -121,7 +121,7 @@ export const PostFieldsFragmentDoc = `
     fragment PostFields on Post {
   id
   content
-  cover
+  uploadCovers
   postAccount {
     address
     id

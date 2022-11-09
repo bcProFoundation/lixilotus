@@ -88,10 +88,10 @@ export class PostResolver {
     if (data.pageId) {
     }
 
-    const uploadCoverDetail = data.cover
+    const uploadCoverDetail = data.uploadCovers
       ? await this.prisma.uploadDetail.findFirst({
           where: {
-            uploadId: data.cover
+            uploadId: data.uploadCovers
           }
         })
       : undefined;

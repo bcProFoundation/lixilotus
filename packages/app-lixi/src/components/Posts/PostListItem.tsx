@@ -214,7 +214,7 @@ const PostListItem = ({ index, item }) => {
           </CardHeader>
           <Content>
             <div className="description-post">{ReactHtmlParser(post?.content)}</div>
-            <img className="image-cover" src={post.cover} alt="" />
+            <img className="image-cover" src={post.uploadCovers} alt="" />
           </Content>
         </CardContainer>
         <ActionBar>

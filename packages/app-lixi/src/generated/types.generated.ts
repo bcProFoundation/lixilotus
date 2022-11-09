@@ -36,8 +36,9 @@ export type CreatePageInput = {
 
 export type CreatePostInput = {
   content: Scalars['String'];
-  cover?: InputMaybe<Scalars['String']>;
+  pageAccountId?: InputMaybe<Scalars['Int']>;
   pageId?: InputMaybe<Scalars['String']>;
+  uploadCovers?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type Mutation = {
@@ -129,7 +130,6 @@ export enum PageOrderField {
 export type Post = {
   __typename?: 'Post';
   content: Scalars['String'];
-  cover?: Maybe<Scalars['String']>;
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
   id: Scalars['ID'];
@@ -141,6 +141,7 @@ export type Post = {
   postAccountId: Scalars['Int'];
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
+  uploadCovers?: Maybe<Array<Scalars['String']>>;
 };
 
 export type PostConnection = {

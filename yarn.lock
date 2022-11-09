@@ -1377,6 +1377,13 @@
     varuint-bitcoin "^1.0.4"
     wif "^2.0.1"
 
+"@bcpros/coininfo@^5.2.1":
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/@bcpros/coininfo/-/coininfo-5.2.1.tgz#674192aa91d9187f215ebb185fca9d29fda2dfd0"
+  integrity sha512-tPrLuji/1Azb7EWHt1G9XQQ7tnuhXKcZLvJuRJViVrDrU8JK0CyVh7Qa1U8O+7gRVRkGEEbIvzJJ6i8ICuBxzw==
+  dependencies:
+    safe-buffer "^5.1.1"
+
 "@bcpros/lixi-prisma@latest":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@bcpros/lixi-prisma/-/lixi-prisma-0.0.1.tgz#b268ee6e35b71aef68b031dee1f22545240801dd"
@@ -1393,6 +1400,57 @@
     apidoc "^0.25.0"
     bch-donation "^1.1.1"
     crypto-js "^4.0.0"
+
+"@bcpros/minimal-xpi-slp-wallet@^3.0.12":
+  version "3.0.12"
+  resolved "https://registry.yarnpkg.com/@bcpros/minimal-xpi-slp-wallet/-/minimal-xpi-slp-wallet-3.0.12.tgz#bfa280c244848f3e72d4471adf19f3e49c928943"
+  integrity sha512-GI/7IsJ/r7LOERp61CIhzOQ1YTAtqFT+djxKSjHnu4TMdkbv2l9HY6zd/DIiNZ8TNdp6cIwqTh5qP96vZc1/hw==
+  dependencies:
+    "@bcpros/xpi-js" "^4.0.11"
+    apidoc "^0.25.0"
+    bch-donation "^1.1.1"
+    crypto-js "^4.0.0"
+
+"@bcpros/xaddress@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@bcpros/xaddress/-/xaddress-0.1.1.tgz#fd88ed274c0e4754faff3a4830850094c5130ae7"
+  integrity sha512-sxwSOSTnP5jaNt2lcydgMPa+ibOIJB62f2KY/FUAlOqcDf3Dl5QBHZUQnxNE/NNXIVor6/IAEgps6N9+IYMX6w==
+  dependencies:
+    bs58 "^4.0.1"
+    crypto "^1.0.1"
+
+"@bcpros/xpi-js@^4.0.11":
+  version "4.0.11"
+  resolved "https://registry.yarnpkg.com/@bcpros/xpi-js/-/xpi-js-4.0.11.tgz#41897c4c30786f9260f0f5e936e2aadec0777a59"
+  integrity sha512-IgoAD02SSpxqvJ/XIrU2AYxLJQyIPMQlGk7lvZ4WUHvPmuCCLGbYeX+hFbYO0Ya3+USENjFK7pE1s6KvIOIw/Q==
+  dependencies:
+    "@bcpros/bitcoincashjs-lib" "^1.0.1"
+    "@bcpros/coininfo" "^5.2.1"
+    "@bcpros/xaddress" "^0.1.1"
+    "@psf/bip21" "^2.0.1"
+    "@psf/bip32-utils" "^1.0.0"
+    "@psf/bitcoincash-ops" "^2.0.0"
+    "@uppy/core" "^1.10.4"
+    "@uppy/tus" "^1.5.12"
+    axios "^0.21.1"
+    bc-bip68 "^1.0.5"
+    bchaddrjs-slp "^0.2.5"
+    bigi "^1.4.2"
+    bignumber.js "^9.0.1"
+    bip-schnorr "^0.3.0"
+    bip38 "^2.0.2"
+    bip39 "^3.0.2"
+    bip66 "^1.1.5"
+    bitcoinjs-message "^2.0.0"
+    bs58 "^4.0.1"
+    cashaddrjs "^0.3.3"
+    ini "^1.3.8"
+    randombytes "^2.0.6"
+    safe-buffer "^5.1.2"
+    satoshi-bitcoin "^1.0.4"
+    slp-mdm "0.0.6"
+    slp-parser "0.0.4"
+    wif "^2.0.6"
 
 "@bcpros/xpi-js@^4.0.6":
   version "4.0.6"
@@ -9805,6 +9863,11 @@ bignumber.js@9.0.1, bignumber.js@^9.0.0:
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.0.1.tgz#8d7ba124c882bfd8e43260c67475518d0689e4e5"
   integrity sha512-IdZR9mh6ahOBv/hYGiXyVuyCetmGJhtYkqLBpTStdhEGjegpPlUawydyaF3pbIOFynJTpllEs+NP+CS9jKFLjA==
 
+bignumber.js@^9.0.1:
+  version "9.1.0"
+  resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.1.0.tgz#8d340146107fe3a6cb8d40699643c302e8773b62"
+  integrity sha512-4LwHK4nfDOraBCtst+wOWIHbu1vhvAPJK8g8nROd4iuc3PSEjWif/qwbkh8jwCJz6yDBvtU4KPynETgrfh7y3A==
+
 bin-links@^3.0.0:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/bin-links/-/bin-links-3.0.2.tgz#5c40f14b0742faa2ae952caa76b4a29090befcbb"
@@ -11757,6 +11820,11 @@ crypto-random-string@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/crypto-random-string/-/crypto-random-string-2.0.0.tgz#ef2a7a966ec11083388369baa02ebead229b30d5"
   integrity sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==
+
+crypto@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/crypto/-/crypto-1.0.1.tgz#2af1b7cad8175d24c8a1b0778255794a21803037"
+  integrity sha512-VxBKmeNcqQdiUQUW2Tzq0t377b54N2bMtXO/qiLa+6eRRmmC4qT3D4OnTGoT/U6O9aklQ/jTwbOtRMTTY8G0Ig==
 
 css-blank-pseudo@^3.0.3:
   version "3.0.3"

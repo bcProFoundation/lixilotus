@@ -217,7 +217,7 @@ const CreatePostCard = () => {
 
   const handleOnCreateNewPost = async newPostContent => {
     if (newPostContent) {
-      const createPostInput: CreatePostInput = {
+      const createPostInput: any = {
         cover: '',
         content: newPostContent,
         pageId: ''
