@@ -1,7 +1,7 @@
-import { PlusCircleOutlined } from '@ant-design/icons';
+import { FileImageOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { Avatar, Form, Modal, Tabs } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import { useAppDispatch } from 'src/store/hooks';
 import intl from 'react-intl-universal';
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
@@ -15,6 +15,29 @@ import { Embed, SocialsEnum } from './Embed';
 import { useCreatePostMutation } from '@store/post/posts.generated';
 import { StyledMultiUploader } from './Uploader/MultiUploader';
 import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
+import { Plate, PlateProps, PlateProvider } from '@udecode/plate-core';
+import { MyValue, useMyPlateEditorRef } from '@components/Common/Plate/plateTypes';
+import { imagePlugins } from '@components/Common/Plate/Plugin/imagePlugins';
+import { Toolbar } from '@components/Common/Plate/Toolbar';
+import { BasicElementToolbarButtons } from '@components/Common/Plate/BasicElementToolbarButtons';
+import { BasicMarkToolbarButtons } from '@components/Common/Plate/BasicMarkToolbarButtons';
+import { MarkBalloonToolbar } from '@components/Common/Plate/MarkBalloonToolbar';
+import { serializeHtml } from '@udecode/plate';
+import { editableProps } from './Plate/editableProps';
+import { Uploader } from './Uploader/Uploader';
+
+const styles = {
+  wrapper: {
+    // display: 'flex'
+  }
+};
+
+const Editor = (props: PlateProps<MyValue>) => (
+  <Plate {...props}>
+    <MarkBalloonToolbar />
+  </Plate>
+);
+
 type ErrorType = 'unsupported' | 'invalid';
 
 const regex = {
@@ -83,6 +106,15 @@ const CreatePostCard = () => {
 
   const getSunEditorInstance = (sunEditorCore: SunEditorCore) => {
     sunEditor.current = sunEditorCore;
+  };
+
+  const Serialized = () => {
+    const editor = useMyPlateEditorRef();
+    const html = serializeHtml(editor, {
+      nodes: editor.children
+    });
+    setValue(html);
+    return null;
   };
 
   const items = [
@@ -206,8 +238,7 @@ const CreatePostCard = () => {
     if (url) {
       console.log(url);
     } else {
-      const valueInput = sunEditor.current.getContents(true);
-      setValue(valueInput);
+      const valueInput = valueEditor;
       setEnableEditor(false);
       console.log(valueInput);
       handleOnCreateNewPost(valueInput);
@@ -281,15 +312,28 @@ const CreatePostCard = () => {
             <Tabs defaultActiveKey="1">
               <Tabs.TabPane tab="Create" key="create">
                 <form onSubmit={handleSubmitEditor}>
-                  <SunEditor
-                    getSunEditorInstance={getSunEditorInstance}
-                    width="100%"
-                    placeholder="Please type here..."
-                    hide={!enableEditor}
-                    onSave={handleSaveEditor}
-                    setOptions={configEditor}
-                    onImageUploadBefore={handleImageUploadBefore}
-                  />
+                  <PlateProvider<MyValue>
+                    plugins={imagePlugins}
+                    initialValue={null}
+                    onChange={value => setValue(value)}
+                  >
+                    <Toolbar>
+                      <BasicElementToolbarButtons />
+                      <BasicMarkToolbarButtons />
+                      <Uploader
+                        type={UPLOAD_TYPES.PAGE_AVATAR}
+                        isIcon={true}
+                        icon={<FileImageOutlined />}
+                        buttonName=" "
+                        buttonType="text"
+                      />
+                    </Toolbar>
+
+                    <div style={styles.wrapper}>
+                      <Editor editableProps={editableProps} />
+                    </div>
+                    <Serialized />
+                  </PlateProvider>
                   {/* TODO: Upload image for post */}
                   <StyledUploader>
                     <StyledMultiUploader type={UPLOAD_TYPES.POST} showUploadList={true} />

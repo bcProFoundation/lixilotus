@@ -92,13 +92,7 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
             key="settings"
             href={'/settings'}
           />
-          <ItemAccess
-            icon={SendOutlined}
-            text={'Send'}
-            active={selectedKey === '/send'}
-            key="send"
-            href={'/send'}
-          />
+          <ItemAccess icon={SendOutlined} text={'Send'} active={selectedKey === '/send'} key="send" href={'/send'} />
           <ItemAccess
             icon={ShopOutlined}
             text={'Lotusia Shop'}

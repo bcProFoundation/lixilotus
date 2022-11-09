@@ -79,7 +79,7 @@ const YourPageContainer = styled.div`
 
 const ListCard = styled.div`
   display: grid;
-  grid-template-columns: 25% 25% 25% 25%;
+  grid-template-columns: auto auto auto auto;
   grid-gap: 10px;
   @media (max-width: 768px) {
     grid-template-columns: auto auto;
@@ -89,7 +89,7 @@ const ListCard = styled.div`
 const StyledCardPage = styled.div`
   max-width: 290px;
   .cover-img {
-    width: 285px;
+    width: 100%;
     height: 150px;
     border-top-right-radius: 20px;
     border-top-left-radius: 20px;
