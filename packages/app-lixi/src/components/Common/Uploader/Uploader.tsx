@@ -14,7 +14,7 @@ import { UPLOAD_API } from '@bcpros/lixi-models/constants';
 import _ from 'lodash';
 import { ButtonType } from 'antd/lib/button';
 import { insertImage } from '@udecode/plate';
-import { useMyPlateEditorRef } from './Plate/plateTypes';
+import { useMyPlateEditorRef } from '../Plate/plateTypes';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
