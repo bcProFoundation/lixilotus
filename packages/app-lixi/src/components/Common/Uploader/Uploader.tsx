@@ -42,7 +42,7 @@ const StyledButton = styled(Button)`
   }
 
   &.clear-btn {
-    padding: 0 5px;
+    padding: 0 0 0 5px;
     &:hover {
       background: transparent;
     }

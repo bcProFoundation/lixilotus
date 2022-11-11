@@ -26,6 +26,7 @@ import { serializeHtml } from '@udecode/plate';
 import { editableProps } from './Plate/editableProps';
 import { Uploader } from './Uploader/Uploader';
 import { useEditorState } from '@udecode/plate';
+import { EmojiElementToolbarButtons } from './Plate/EmojiToolbarButtons';
 
 const styles = {
   wrapper: {
@@ -331,6 +332,7 @@ const CreatePostCard = () => {
                         buttonType="text"
                         showUploadList={false}
                       />
+                      <EmojiElementToolbarButtons />
                     </Toolbar>
 
                     <div style={styles.wrapper}>
