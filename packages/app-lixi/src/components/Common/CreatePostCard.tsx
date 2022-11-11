@@ -24,6 +24,7 @@ import { BasicMarkToolbarButtons } from '@components/Common/Plate/BasicMarkToolb
 import { MarkBalloonToolbar } from '@components/Common/Plate/MarkBalloonToolbar';
 import { serializeHtml } from '@udecode/plate';
 import { editableProps } from './Plate/editableProps';
+import { EmojiElementToolbarButtons } from './Plate/EmojiToolbarButtons';
 
 const styles = {
   wrapper: {
@@ -326,6 +327,7 @@ const CreatePostCard = () => {
                         buttonName=" "
                         buttonType="text"
                       />
+                      <EmojiElementToolbarButtons />
                     </Toolbar>
 
                     <div style={styles.wrapper}>
