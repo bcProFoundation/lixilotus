@@ -13,7 +13,7 @@ import { showToast } from '@store/toast/actions';
 import { setPost } from '@store/post/action';
 import { Embed, SocialsEnum } from './Embed';
 import { useCreatePostMutation } from '@store/post/posts.generated';
-import { StyledMultiUploader } from './Uploader/MultiUploader';
+import { MultiUploader, StyledMultiUploader } from './Uploader/MultiUploader';
 import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
 import { Plate, PlateProps, PlateProvider } from '@udecode/plate-core';
 import { MyValue, useMyPlateEditorRef } from '@components/Common/Plate/plateTypes';
@@ -25,6 +25,7 @@ import { MarkBalloonToolbar } from '@components/Common/Plate/MarkBalloonToolbar'
 import { serializeHtml } from '@udecode/plate';
 import { editableProps } from './Plate/editableProps';
 import { Uploader } from './Uploader/Uploader';
+import { useEditorState } from '@udecode/plate';
 
 const styles = {
   wrapper: {
@@ -32,11 +33,13 @@ const styles = {
   }
 };
 
-const Editor = (props: PlateProps<MyValue>) => (
-  <Plate {...props}>
-    <MarkBalloonToolbar />
-  </Plate>
-);
+const Editor = (props: PlateProps<MyValue>) => {
+  return (
+    <Plate {...props} id="mainPlate">
+      <MarkBalloonToolbar />
+    </Plate>
+  );
+};
 
 type ErrorType = 'unsupported' | 'invalid';
 
@@ -96,7 +99,6 @@ const StyledUploader = styled.div`
 const CreatePostCard = () => {
   const dispatch = useAppDispatch();
   const [url, setUrl] = useState<string>('');
-
   const [social, setSocial] = useState<SocialsEnum>();
   const [postId, setPostId] = useState<string>();
   const [error, setError] = useState<ErrorType | null>(null);
@@ -316,16 +318,18 @@ const CreatePostCard = () => {
                     plugins={imagePlugins}
                     initialValue={null}
                     onChange={value => setValue(value)}
+                    id="mainPlate"
                   >
                     <Toolbar>
                       <BasicElementToolbarButtons />
                       <BasicMarkToolbarButtons />
                       <Uploader
-                        type={UPLOAD_TYPES.PAGE_AVATAR}
+                        type={UPLOAD_TYPES.POST}
                         isIcon={true}
                         icon={<FileImageOutlined />}
                         buttonName=" "
                         buttonType="text"
+                        showUploadList={false}
                       />
                     </Toolbar>
 
@@ -334,10 +338,6 @@ const CreatePostCard = () => {
                     </div>
                     <Serialized />
                   </PlateProvider>
-                  {/* TODO: Upload image for post */}
-                  <StyledUploader>
-                    <StyledMultiUploader type={UPLOAD_TYPES.POST} showUploadList={true} />
-                  </StyledUploader>
                   <input type="submit" value="Create Post" />
                 </form>
               </Tabs.TabPane>
