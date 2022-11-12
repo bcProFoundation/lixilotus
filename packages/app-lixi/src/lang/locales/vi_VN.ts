@@ -61,6 +61,8 @@ export default {
   'general.feedPage': 'Khám phá và kết nối với các doanh nghiệp trên LixiLotus',
   'general.subTitleEditPage': 'Thay đổi thông tin trang của bạn',
   'general.subTitleClaimed': 'Chi tiết lì xì đâ nhận',
+  'general.404': 'Không tìm thấy trang này',
+  'general.goBackToHome': 'Trở về trang chủ',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',

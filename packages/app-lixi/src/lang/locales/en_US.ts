@@ -61,6 +61,8 @@ export default {
   'general.feedPage': 'Discover and connect with businesses on LixiLotus',
   'general.subTitleEditPage': 'Change information your page',
   'general.subTitleClaimed': 'Detail of claimed',
+  'general.404': 'Page not found',
+  'general.goBackToHome': 'Go back to Homepage',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
