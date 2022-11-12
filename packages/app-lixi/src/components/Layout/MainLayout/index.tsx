@@ -164,10 +164,9 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   const intlInitDone = useAppSelector(getIntlInitStatus);
   const dispatch = useAppDispatch();
   const [height, setHeight] = useState(0);
-  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [navBarTitle, setNavBarTitle] = useState('');
-  const [navBarSubTitle, setNavBarSubTitle] = useState('');
+  const router = useRouter()
   const selectedKey = router.pathname ?? '';
   const disableSideBarRanking = ['lixi', 'profile'];
   const ref = useRef(null);
@@ -187,7 +186,6 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   const getNamePathDirection = () => {
     const itemSelect = navBarHeaderList.find(item => item.path === selectedKey) || null;
     setNavBarTitle(itemSelect?.name || '');
-    setNavBarSubTitle(itemSelect?.subTitle || '');
   };
 
   useEffect(() => {
@@ -226,11 +224,10 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                         {selectedKey !== '/' && (
                           <NavBarHeader>
                             <Link href="/" passHref>
-                              <LeftOutlined />
+                              <LeftOutlined onClick={() => router.back()} />
                             </Link>
                             <PathDirection>
                               <h2>{navBarTitle.length > 0 ? intl.get(navBarTitle) : ''}</h2>
-                              <p className="sub-title">{navBarSubTitle.length > 0 ? intl.get(navBarSubTitle) : ''}</p>
                             </PathDirection>
                           </NavBarHeader>
                         )}
