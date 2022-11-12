@@ -124,7 +124,6 @@ const ClaimedLayout: React.FC = (props: ClaimedLayoutProps) => {
   const [height, setHeight] = useState(0);
   const selectedKey = router.pathname ?? '';
   const [navBarTitle, setNavBarTitle] = useState('');
-  const [navBarSubTitle, setNavBarSubTitle] = useState('');
   const ref = useRef(null);
   const setRef = useCallback(node => {
     if (node && node.clientHeight) {
@@ -144,8 +143,6 @@ const ClaimedLayout: React.FC = (props: ClaimedLayoutProps) => {
 
   const getNamePathDirection = () => {
     const itemSelect = navBarHeaderList.find(item => selectedKey.includes(item.path)) || null;
-    setNavBarTitle(itemSelect?.name || '');
-    setNavBarSubTitle(itemSelect?.subTitle || '');
   };
 
   useEffect(() => {
@@ -171,11 +168,10 @@ const ClaimedLayout: React.FC = (props: ClaimedLayoutProps) => {
                         {selectedKey !== '/' && (
                           <NavBarHeader>
                             <Link href="/" passHref>
-                              <LeftOutlined />
+                              <LeftOutlined onClick={() => router.back()} />
                             </Link>
                             <PathDirection>
                               <h2>{navBarTitle.length > 0 ? intl.get(navBarTitle) : ''}</h2>
-                              <p className="sub-title">{navBarSubTitle.length > 0 ? intl.get(navBarSubTitle) : ''}</p>
                             </PathDirection>
                           </NavBarHeader>
                         )}
