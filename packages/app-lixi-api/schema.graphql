@@ -37,7 +37,6 @@ type Mutation {
   createPage(data: CreatePageInput!): Page!
   createPost(data: CreatePostInput!): Post!
   updatePage(data: UpdatePageInput!): Page!
-  updatePost(data: UpdatePostInput!): Post!
 }
 
 """
@@ -168,11 +167,4 @@ input UpdatePageInput {
   state: String
   title: String!
   website: String
-}
-
-input UpdatePostInput {
-  content: String!
-  cover: String
-  id: ID!
-  title: String
 }

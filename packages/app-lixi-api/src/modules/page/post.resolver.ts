@@ -10,7 +10,7 @@ import {
 } from '@bcpros/lixi-models';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
 import { ExecutionContext, Logger, Request, UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver, Subscription, ResolveField, Parent } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
 import { PrismaService } from '../prisma/prisma.service';
 import * as _ from 'lodash';
@@ -53,7 +53,7 @@ export class PostResolver {
     const result = await findManyCursorConnection(
       args =>
         this.prisma.post.findMany({
-          include: { postAccount: true },
+          include: { postAccount: true, uploadedCovers: true },
           where: {
             OR: !query
               ? undefined
@@ -85,56 +85,94 @@ export class PostResolver {
       throw new Error(couldNotFindAccount);
     }
 
-    if (data.pageId) {
+    const { uploadCovers, pageId, content } = data;
+    let uploadDetailIds: any = [];
+
+    if (pageId) {
     }
 
-    const uploadCoverDetail = data.uploadCovers
-      ? await this.prisma.uploadDetail.findFirst({
+    if (uploadCovers.length > 0) {
+      const promises = uploadCovers.map(async upload => {
+        const uploadDetail = await this.prisma.uploadDetail.findFirst({
           where: {
-            uploadId: data.uploadCovers
+            uploadId: upload
           }
-        })
-      : undefined;
-    const dataSave = {
+        });
+
+        return uploadDetail;
+      });
+
+      uploadDetailIds = await Promise.all(promises);
+    }
+
+    const postToSave = {
       data: {
-        content: data.content,
+        content: content,
         postAccount: { connect: { id: account.id } },
-        cover: { connect: uploadCoverDetail ? { id: uploadCoverDetail.id } : undefined }
+        uploadedCovers: {
+          connect: uploadDetailIds.map((uploadDetail: any) => {
+            return {
+              id: uploadDetail.id
+            };
+          })
+        }
       }
     };
-    const createdPost = await this.prisma.post.create(dataSave);
+    const createdPost = await this.prisma.post.create(postToSave);
 
     pubSub.publish('postCreated', { postCreated: createdPost });
     return createdPost;
   }
 
-  @UseGuards(GqlJwtAuthGuard)
-  @Mutation(() => Post)
-  async updatePost(@PostAccountEntity() account: Account, @Args('data') data: UpdatePostInput) {
-    if (!account) {
-      const couldNotFindAccount = await this.i18n.t('post.messages.couldNotFindAccount');
-      throw new Error(couldNotFindAccount);
-    }
-
-    const uploadCoverDetail = data.cover
-      ? await this.prisma.uploadDetail.findFirst({
-          where: {
-            uploadId: data.cover
-          }
-        })
-      : undefined;
-
-    const updatedPost = await this.prisma.post.update({
+  @ResolveField('postAccount', () => Account)
+  async postAccount(@Parent() post: Post) {
+    const account = this.prisma.account.findFirst({
       where: {
-        id: data.id
-      },
-      data: {
-        ...data,
-        cover: { connect: uploadCoverDetail ? { id: uploadCoverDetail.id } : undefined }
+        id: post.postAccountId
       }
     });
 
-    pubSub.publish('postUpdated', { postUpdated: updatedPost });
-    return updatedPost;
+    return account;
   }
+
+  @ResolveField('pageAccount', () => Account)
+  async pageAccount(@Parent() post: Post) {
+    const account = this.prisma.account.findFirst({
+      where: {
+        id: post.pageAccountId
+      }
+    });
+
+    return account;
+  }
+
+  // @UseGuards(GqlJwtAuthGuard)
+  // @Mutation(() => Post)
+  // async updatePost(@PostAccountEntity() account: Account, @Args('data') data: UpdatePostInput) {
+  //   if (!account) {
+  //     const couldNotFindAccount = await this.i18n.t('post.messages.couldNotFindAccount');
+  //     throw new Error(couldNotFindAccount);
+  //   }
+
+  //   const uploadCoverDetail = data.cover
+  //     ? await this.prisma.uploadDetail.findFirst({
+  //       where: {
+  //         uploadId: data.cover
+  //       }
+  //     })
+  //     : undefined;
+
+  //   const updatedPost = await this.prisma.post.update({
+  //     where: {
+  //       id: data.id
+  //     },
+  //     data: {
+  //       ...data,
+  //       uploadedCovers: { connect: uploadCoverDetail ? { id: uploadCoverDetail.id } : undefined }
+  //     }
+  //   });
+
+  //   pubSub.publish('postUpdated', { postUpdated: updatedPost });
+  //   return updatedPost;
+  // }
 }

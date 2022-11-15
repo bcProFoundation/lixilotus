@@ -1,7 +1,7 @@
 import { FileImageOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { Avatar, Form, Modal, Tabs } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
-import { useAppDispatch } from 'src/store/hooks';
+import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import intl from 'react-intl-universal';
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
@@ -25,8 +25,9 @@ import { MarkBalloonToolbar } from '@components/Common/Plate/MarkBalloonToolbar'
 import { serializeHtml } from '@udecode/plate';
 import { editableProps } from './Plate/editableProps';
 import { Uploader } from './Uploader/Uploader';
-import { useEditorState } from '@udecode/plate';
 import { EmojiElementToolbarButtons } from './Plate/EmojiToolbarButtons';
+import { getPostCoverUploads } from '@store/account/selectors';
+import { getPageById } from '@store/page/selectors';
 
 const styles = {
   wrapper: {
@@ -36,7 +37,7 @@ const styles = {
 
 const Editor = (props: PlateProps<MyValue>) => {
   return (
-    <Plate {...props} id="mainPlate">
+    <Plate {...props} id="main">
       <MarkBalloonToolbar />
     </Plate>
   );
@@ -106,6 +107,7 @@ const CreatePostCard = () => {
   const [enableEditor, setEnableEditor] = useState(false);
   const sunEditor = useRef<SunEditorCore>();
   const [valueEditor, setValue] = useState(null);
+  const postCoverUploads = useAppSelector(getPostCoverUploads);
 
   const getSunEditorInstance = (sunEditorCore: SunEditorCore) => {
     sunEditor.current = sunEditorCore;
@@ -237,39 +239,43 @@ const CreatePostCard = () => {
     event.preventDefault();
   };
 
-  const handleSubmitEditor = event => {
+  const handleSubmitEditor = async event => {
+    event.preventDefault();
     if (url) {
       console.log(url);
     } else {
-      const valueInput = valueEditor;
       setEnableEditor(false);
-      console.log(valueInput);
-      handleOnCreateNewPost(valueInput);
+
+      const content = valueEditor;
+
+      console.log(content);
+      await handleCreateNewPost(content);
     }
-    event.preventDefault();
   };
 
-  const handleOnCreateNewPost = async newPostContent => {
-    if (newPostContent) {
-      const createPostInput: any = {
-        cover: '',
-        content: newPostContent,
+  const handleCreateNewPost = async content => {
+    if (content) {
+      const createPostInput: CreatePostInput = {
+        uploadCovers: postCoverUploads.map(upload => upload.id),
+        content: content,
         pageId: ''
       };
 
       try {
-        if (createPostInput) {
-          const postCreated = await createPostTrigger({ input: createPostInput }).unwrap();
-          dispatch(
-            showToast('success', {
-              message: 'Success',
-              description: intl.get('post.createPostSuccessful'),
-              duration: 5
-            })
-          );
-          // const data = { postAccountId: 0, pageAccountId: 0 };
-          // dispatch(setPost({ ...data, ...postCreated.createPost }));
-        }
+        // if (createPostInput) {
+
+        //   // const data = { postAccountId: 0, pageAccountId: 0 };
+        //   // dispatch(setPost({ ...data, ...postCreated.createPost }));
+        // }
+
+        const postCreated = await createPostTrigger({ input: createPostInput }).unwrap();
+        dispatch(
+          showToast('success', {
+            message: 'Success',
+            description: intl.get('post.createPostSuccessful'),
+            duration: 5
+          })
+        );
       } catch (error) {
         const message = intl.get('post.unableCreatePostServer');
         dispatch(
@@ -319,7 +325,7 @@ const CreatePostCard = () => {
                     plugins={imagePlugins}
                     initialValue={null}
                     onChange={value => setValue(value)}
-                    id="mainPlate"
+                    id="main"
                   >
                     <Toolbar>
                       <BasicElementToolbarButtons />

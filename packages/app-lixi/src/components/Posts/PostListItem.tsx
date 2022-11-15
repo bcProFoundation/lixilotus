@@ -188,6 +188,8 @@ const PostListItem = ({ index, item }) => {
     // }
   };
 
+  console.log(post);
+
   return (
     <div>
       <List.Item
@@ -214,7 +216,7 @@ const PostListItem = ({ index, item }) => {
           </CardHeader>
           <Content>
             <div className="description-post">{ReactHtmlParser(post?.content)}</div>
-            <img className="image-cover" src={post.uploadCovers} alt="" />
+            {/* <img className="image-cover" src={post.uploadCovers} alt="" /> */}
           </Content>
         </CardContainer>
         <ActionBar>

@@ -25,7 +25,7 @@ export class Post {
   pageAccount?: Account;
 
   @Field(() => [String], { nullable: true })
-  uploadCovers: string;
+  uploadCovers: [string];
 
   @Field(() => Page, { nullable: true })
   page?: Page;
