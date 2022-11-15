@@ -1,0 +1,5 @@
+{
+  "messages": {
+    "postNotExist": "The index does not exist in the database."
+  }
+}

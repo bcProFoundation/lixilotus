@@ -1,6 +1,7 @@
 import {
   Post,
   PaginationArgs,
+  PaginationSearchArgs,
   PostOrder,
   PostConnection,
   CreatePostInput,
@@ -9,7 +10,7 @@ import {
   Page
 } from '@bcpros/lixi-models';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
-import { ExecutionContext, Logger, Request, UseGuards } from '@nestjs/common';
+import { ExecutionContext, HttpException, HttpStatus, Logger, Request, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
 import { PrismaService } from '../prisma/prisma.service';
@@ -17,12 +18,14 @@ import * as _ from 'lodash';
 import { PostAccountEntity } from 'src/decorators/postAccount.decorator';
 import { I18n, I18nService } from 'nestjs-i18n';
 import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
-
+import { MeiliSearch } from 'meilisearch';
+import VError from 'verror';
 const pubSub = new PubSub();
 
 @Resolver(() => Post)
 export class PostResolver {
   private logger: Logger = new Logger(this.constructor.name);
+  private meiliSearch = new MeiliSearch({ host: 'http://127.0.0.1:7700', apiKey: 'masterKey' });
 
   constructor(private prisma: PrismaService, @I18n() private i18n: I18nService) {}
 
@@ -77,6 +80,42 @@ export class PostResolver {
     return result;
   }
 
+  @Query(() => PostConnection)
+  async searchPosts(
+    @Args() { first, skip }: PaginationArgs,
+    @Args({ name: 'query', type: () => String, nullable: true })
+    query: string,
+    @Args({
+      name: 'orderBy',
+      type: () => PostOrder,
+      nullable: true
+    })
+    orderBy: PostOrder
+  ) {
+    try {
+      const postsIndex = await this.meiliSearch.index('posts').getRawInfo();
+      if (!postsIndex) {
+        const postNotExist = await this.i18n.t('post.messages.postNotExist');
+        throw Error(postNotExist);
+      }
+
+      const postsDocsList = await this.meiliSearch.index('posts').search(query);
+      console.log('postsDocsList: ', postsDocsList);
+
+      const postsDocsIDs = postsDocsList.hits.map(post => post.id);
+      const result = await this.prisma.post.findMany({
+        where: {
+          id: { in: postsDocsIDs }
+        }
+      });
+      return result;
+    } catch (err) {
+      if (err instanceof VError) {
+        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  }
+
   @UseGuards(GqlJwtAuthGuard)
   @Mutation(() => Post)
   async createPost(@PostAccountEntity() account: Account, @Args('data') data: CreatePostInput) {
@@ -104,6 +143,12 @@ export class PostResolver {
     };
     const createdPost = await this.prisma.post.create(dataSave);
 
+    const postsIndex = await this.meiliSearch.index('posts').getRawInfo();
+    if (!postsIndex) {
+      await this.meiliSearch.createIndex('posts', { primaryKey: 'id' });
+    }
+
+    await this.meiliSearch.index('posts').addDocuments([{ createdPost }]);
     pubSub.publish('postCreated', { postCreated: createdPost });
     return createdPost;
   }

@@ -1,6 +1,7 @@
 import { EditPostCommand } from '@bcpros/lixi-models';
 import { CreatePostCommand } from '@bcpros/lixi-models/src';
 import axiosClient from '@utils/axiosClient';
+import { searchPost } from './action';
 
 const postApi = {
   post(data: CreatePostCommand): Promise<any> {
@@ -41,6 +42,18 @@ const postApi = {
   },
   getDetailPost(id: string): Promise<any> {
     const url = `/api/posts/${id}`;
+    return axiosClient
+      .get(url)
+      .then(response => {
+        return response.data as any;
+      })
+      .catch(err => {
+        const { response } = err;
+        throw response?.data ?? err ?? 'Network Error';
+      });
+  },
+  searchPost(query: string): Promise<any> {
+    const url = `/api/posts/search?q=${query}`;
     return axiosClient
       .get(url)
       .then(response => {

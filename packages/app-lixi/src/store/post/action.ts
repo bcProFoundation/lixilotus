@@ -18,3 +18,6 @@ export const getPostFailure = createAction<string>('page/getPostFailure');
 export const editPost = createAction<EditPostCommand>('posts/editPost');
 export const editPostSuccess = createAction<any>('posts/editPostSuccess');
 export const editPostFailure = createAction<string>('posts/editPostFailure');
+export const searchPost = createAction<string>('posts/searchPost');
+export const searchPostSuccess = createAction<Post>('posts/searchPostSuccess');
+export const searchPostFailure = createAction<string>('posts/searchPostFailure');

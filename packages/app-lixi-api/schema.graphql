@@ -139,6 +139,7 @@ type Query {
   allPosts(after: String, before: String, first: Int, last: Int, orderBy: PostOrder, query: String, skip: Int): PostConnection!
   page(id: String!): Page!
   post(id: String!): Post!
+  searchPosts(after: String, before: String, first: Int, last: Int, orderBy: PostOrder, query: String, skip: Int): PostConnection!
 }
 
 type Subscription {

@@ -21500,6 +21500,13 @@ mediaquery-text@^1.2.0:
   dependencies:
     cssom "^0.5.0"
 
+meilisearch@^0.29.0:
+  version "0.29.0"
+  resolved "https://registry.yarnpkg.com/meilisearch/-/meilisearch-0.29.0.tgz#1bfe6e7a2598f2abde6cfa818edec103b6eebfb1"
+  integrity sha512-E+n4Xm7CgAQzPU7V3MWfYoyA6PrIY1dq9IC4djb2PvF5rb7EN/VqhAM1vIa3b5aE+rC85biPpe2Bji7ntOT98w==
+  dependencies:
+    cross-fetch "^3.1.5"
+
 memdown@^1.0.0:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/memdown/-/memdown-1.4.1.tgz#b4e4e192174664ffbae41361aa500f3119efe215"
@@ -22671,6 +22678,11 @@ nestjs-i18n@^9.1.5:
     iterare "^1.2.1"
     js-yaml "^4.1.0"
     string-format "^2.0.0"
+
+nestjs-meilisearch@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/nestjs-meilisearch/-/nestjs-meilisearch-2.1.2.tgz#fdef16431ee5f7710218dd5c4499fafc560be7f9"
+  integrity sha512-hjJ/UjF328YfT5z6qGYRQKQsncBhRoeM2lx30Xpl3FNmpfbkGd/PSH3JC2dGI4eENFgoJ4cS3/tjvvuERQL3qQ==
 
 netmask@^2.0.2:
   version "2.0.2"

@@ -28,6 +28,17 @@ query Posts(
     pageInfo {
       ...PageInfoFields
     }
+  },
+  searchPosts(query: $query, first: $first, skip: $skip) {
+    totalCount
+    edges {
+      node {
+        ...PostFields
+      }
+    }
+    pageInfo {
+    ...PageInfoFields
+    }
   }
 }
 
