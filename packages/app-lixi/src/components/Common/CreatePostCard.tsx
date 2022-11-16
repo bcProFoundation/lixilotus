@@ -28,6 +28,8 @@ import { Uploader } from './Uploader/Uploader';
 import { EmojiElementToolbarButtons } from './Plate/EmojiToolbarButtons';
 import { getPostCoverUploads } from '@store/account/selectors';
 import { getPageById } from '@store/page/selectors';
+import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
+import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 
 const styles = {
   wrapper: {
@@ -112,6 +114,17 @@ const CreatePostCard = () => {
   const getSunEditorInstance = (sunEditorCore: SunEditorCore) => {
     sunEditor.current = sunEditorCore;
   };
+
+  const { refetch } = useInfinitePostsQuery(
+    {
+      first: 10,
+      orderBy: {
+        direction: OrderDirection.Desc,
+        field: PostOrderField.UpdatedAt
+      }
+    },
+    false
+  );
 
   const Serialized = () => {
     const editor = useMyPlateEditorRef();
@@ -247,8 +260,6 @@ const CreatePostCard = () => {
       setEnableEditor(false);
 
       const content = valueEditor;
-
-      console.log(content);
       await handleCreateNewPost(content);
     }
   };
@@ -268,14 +279,19 @@ const CreatePostCard = () => {
         //   // dispatch(setPost({ ...data, ...postCreated.createPost }));
         // }
 
-        const postCreated = await createPostTrigger({ input: createPostInput }).unwrap();
-        dispatch(
-          showToast('success', {
-            message: 'Success',
-            description: intl.get('post.createPostSuccessful'),
-            duration: 5
-          })
-        );
+        await createPostTrigger({ input: createPostInput })
+          .unwrap()
+          .then(payload => {
+            dispatch(
+              showToast('success', {
+                message: 'Success',
+                description: intl.get('post.createPostSuccessful'),
+                duration: 5
+              })
+            );
+
+            refetch();
+          });
       } catch (error) {
         const message = intl.get('post.unableCreatePostServer');
         dispatch(

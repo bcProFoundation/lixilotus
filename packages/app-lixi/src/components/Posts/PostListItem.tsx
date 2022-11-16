@@ -188,8 +188,6 @@ const PostListItem = ({ index, item }) => {
     // }
   };
 
-  console.log(post);
-
   return (
     <div>
       <List.Item

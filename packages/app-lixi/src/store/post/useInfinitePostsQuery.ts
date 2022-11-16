@@ -1,14 +1,9 @@
 import { PaginationArgs } from '@bcpros/lixi-models';
 import { useLazyPostsQuery, usePostsQuery } from '@store/post/posts.generated';
 import { useEffect, useRef, useState } from 'react';
-import { OrderDirection, Post, PostOrder, PostOrderField } from 'src/generated/types.generated';
+import { Post, PostOrder } from 'src/generated/types.generated';
 
-export interface PostListParams {
-  skip?: number;
-  after?: string;
-  before?: string;
-  first?: number;
-  last?: number;
+export interface PostListParams extends PaginationArgs {
   orderBy?: PostOrder;
   query?: string;
 }
@@ -18,16 +13,10 @@ export interface PostListBody {
 }
 
 export function useInfinitePostsQuery(
-  params: PaginationArgs,
+  params: PostListParams,
   fetchAll: boolean = false // if `true`: auto do next fetches to get all notes at once
 ) {
-  const baseResult = usePostsQuery({
-    ...params,
-    orderBy: {
-      direction: OrderDirection.Desc,
-      field: PostOrderField.CreatedAt
-    }
-  });
+  const baseResult = usePostsQuery(params);
 
   const [trigger, nextResult] = useLazyPostsQuery();
   const [combinedData, setCombinedData] = useState([]);

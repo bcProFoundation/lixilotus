@@ -11,14 +11,16 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import PostListItem from './PostListItem';
+import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
+import { Skeleton } from 'antd';
 
 type PostsListingProps = {
   className?: string;
 };
 
 const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingProps) => {
-  const Wallet = React.useContext(WalletContext);
-  const { XPI } = Wallet;
+  // const Wallet = React.useContext(WalletContext);
+  // const { XPI } = Wallet;
   const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
   const [isShowQrCode, setIsShowQrCode] = useState(false);
@@ -40,12 +42,20 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     }
   ];
 
-  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext } = useInfinitePostsQuery(
+  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsQuery(
     {
-      first: 10
+      first: 10,
+      orderBy: {
+        direction: OrderDirection.Desc,
+        field: PostOrderField.UpdatedAt
+      }
     },
     false
   );
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -106,7 +116,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
           style={{ height: '100%' }}
           data={data}
           endReached={loadMoreItems}
-          overscan={900}
+          overscan={500}
           itemContent={(index, item) => {
             return <PostListItem index={index} item={item} />;
           }}
@@ -120,7 +130,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
                     textAlign: 'center'
                   }}
                 >
-                  end reached
+                  {isFetchingNext ? <Skeleton avatar active /> : "It's so empty here..."}
                 </div>
               );
             }
