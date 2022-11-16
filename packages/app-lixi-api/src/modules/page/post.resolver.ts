@@ -53,7 +53,7 @@ export class PostResolver {
     const result = await findManyCursorConnection(
       args =>
         this.prisma.post.findMany({
-          include: { postAccount: true, uploadedCovers: true },
+          include: { postAccount: true },
           where: {
             OR: !query
               ? undefined
@@ -175,33 +175,30 @@ export class PostResolver {
     return account;
   }
 
-  // @UseGuards(GqlJwtAuthGuard)
-  // @Mutation(() => Post)
-  // async updatePost(@PostAccountEntity() account: Account, @Args('data') data: UpdatePostInput) {
-  //   if (!account) {
-  //     const couldNotFindAccount = await this.i18n.t('post.messages.couldNotFindAccount');
-  //     throw new Error(couldNotFindAccount);
-  //   }
-
-  //   const uploadCoverDetail = data.cover
-  //     ? await this.prisma.uploadDetail.findFirst({
-  //       where: {
-  //         uploadId: data.cover
-  //       }
-  //     })
-  //     : undefined;
-
-  //   const updatedPost = await this.prisma.post.update({
-  //     where: {
-  //       id: data.id
-  //     },
-  //     data: {
-  //       ...data,
-  //       uploadedCovers: { connect: uploadCoverDetail ? { id: uploadCoverDetail.id } : undefined }
-  //     }
-  //   });
-
-  //   pubSub.publish('postUpdated', { postUpdated: updatedPost });
-  //   return updatedPost;
-  // }
+  @UseGuards(GqlJwtAuthGuard)
+  @Mutation(() => Post)
+  async updatePost(@PostAccountEntity() account: Account, @Args('data') data: UpdatePostInput) {
+    // if (!account) {
+    //   const couldNotFindAccount = await this.i18n.t('post.messages.couldNotFindAccount');
+    //   throw new Error(couldNotFindAccount);
+    // }
+    // const uploadCoverDetail = data.cover
+    //   ? await this.prisma.uploadDetail.findFirst({
+    //     where: {
+    //       uploadId: data.cover
+    //     }
+    //   })
+    //   : undefined;
+    // const updatedPost = await this.prisma.post.update({
+    //   where: {
+    //     id: data.id
+    //   },
+    //   data: {
+    //     ...data,
+    //     uploadedCovers: { connect: uploadCoverDetail ? { id: uploadCoverDetail.id } : undefined }
+    //   }
+    // });
+    // pubSub.publish('postUpdated', { postUpdated: updatedPost });
+    // return updatedPost;
+  }
 }
