@@ -17,6 +17,7 @@ export default {
   /* 00. special*/
   'special.or': 'Or',
   'special.cancel': 'Cancel',
+  'special.copy': 'Copy',
 
   /* 01.General */
   'general.home': 'Home',

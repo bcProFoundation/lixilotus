@@ -53,6 +53,8 @@ import { RenameLixiModalProps } from './RenameLixiModal';
 import SubLixiList from './SubLixiList';
 import VirtualTable from './SubLixiListScroll';
 import useWindowDimensions from '@hooks/useWindowDimensions';
+import { QRCodeModal } from '@components/Common/QRCodeModal';
+import { QRCodeModal_Types } from '@bcpros/lixi-models/src/constants';
 
 type CopiedProps = {
   style?: React.CSSProperties;
@@ -794,7 +796,7 @@ const Lixi = props => {
                   label={
                     <>
                       <StyledQRCode>
-                        <QRCode address={selectedAccount?.address} isAccountPage={true} />
+                        <QRCodeModal address={selectedAccount?.address} type={QRCodeModal_Types.address} />
                       </StyledQRCode>
                       <FormattedWalletAddress address={selectedAccount?.address} isAccountPage={true} />
                     </>
@@ -829,7 +831,7 @@ const Lixi = props => {
                   label={
                     <>
                       <StyledQRCode>
-                        <QRCode address={selectedLixi.claimCode} isAccountPage={true} />
+                        <QRCodeModal address={selectedLixi.claimCode} type={QRCodeModal_Types.claimCode} />
                       </StyledQRCode>
                       {selectedLixi.claimCode}
                       {/* <FormattedWalletAddress address={selectedLixi.claimCode} isAccountPage={true} /> */}
