@@ -47,6 +47,7 @@ const CardContainer = styled.div`
   @media (max-width: 768px) {
     padding: 1rem 1rem 0 1rem;
   }
+  cursor: pointer;
 `;
 
 const CardHeader = styled.div`
@@ -136,7 +137,7 @@ const PostListItem = ({ index, item }) => {
 
   if (!post) return null;
 
-  const routerShopDetail = id => {
+  const routerPostDetail = id => {
     dispatch(push(`/post/${id}`));
   };
 
@@ -204,8 +205,8 @@ const PostListItem = ({ index, item }) => {
         }}
         key={post.id}
       >
-        <CardContainer>
-          <CardHeader onClick={() => routerShopDetail(post.id)}>
+        <CardContainer onClick={() => routerPostDetail(post.id)}>
+          <CardHeader>
             <InfoCardUser
               imgUrl={item.avatar}
               name={(post.pageAccount ? post.pageAccount.name : post.postAccount.name) || 'Anonymous'}

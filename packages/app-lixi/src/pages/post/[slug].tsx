@@ -7,31 +7,40 @@ import React from 'react';
 import { END } from 'redux-saga';
 import { getSelectorsByUserAgent } from 'react-device-detect';
 import PostDetailLayout from '@components/Layout/PostDetailLayout';
+import { usePostQuery } from '@store/post/posts.generated';
 
-const PostDetailPost = props => {
-  const { post, isMobile } = props;
-  const canonicalUrl = process.env.NEXT_PUBLIC_LIXI_URL + `posts/${post.id}`;
+const PostDetailPage = props => {
+  const { postId, isMobile } = props;
+  const canonicalUrl = process.env.NEXT_PUBLIC_LIXI_URL + `posts/${postId}`;
+  let currentPost;
+
+  const { currentData, isSuccess } = usePostQuery({ id: postId });
+  if (isSuccess) currentPost = currentData.post;
 
   return (
     <>
-      <NextSeo
-        title="Lixi Program"
-        description="The lixi program send you a small gift ."
-        canonical={canonicalUrl}
-        openGraph={{
-          url: canonicalUrl,
-          title: 'LixiLotus',
-          description: post.description ?? 'LixiLotus allow you to giveaway your Lotus effortlessly',
-          images: [{ url: '' }],
-          site_name: 'LixiLotus'
-        }}
-        twitter={{
-          handle: '@handle',
-          site: '@site',
-          cardType: 'summary_large_image'
-        }}
-      />
-      <PostDetail post={post} isMobile={isMobile} />
+      {isSuccess && (
+        <>
+          <NextSeo
+            title="Lixi Program"
+            description="The lixi program send you a small gift ."
+            canonical={canonicalUrl}
+            openGraph={{
+              url: canonicalUrl,
+              title: 'LixiLotus',
+              description: currentPost.content ?? 'LixiLotus allow you to giveaway your Lotus effortlessly',
+              images: [{ url: '' }],
+              site_name: 'LixiLotus'
+            }}
+            twitter={{
+              handle: '@handle',
+              site: '@site',
+              cardType: 'summary_large_image'
+            }}
+          />
+          <PostDetail post={currentPost} isMobile={isMobile} />
+        </>
+      )}
     </>
   );
 };
@@ -47,18 +56,14 @@ export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) 
   const slug: string = _.isArray(context.params.slug) ? context.params.slug[0] : context.params.slug;
   const postId: string = slug;
 
-  const post = await postApi.getDetailPost(postId).then(data => {
-    return data;
-  });
-
   return {
     props: {
-      post,
+      postId,
       isMobile
     }
   };
 });
 
-PostDetailPost.Layout = ({ children }) => <PostDetailLayout children={children} />;
+PostDetailPage.Layout = ({ children }) => <PostDetailLayout children={children} />;
 
-export default PostDetailPost;
+export default PostDetailPage;
