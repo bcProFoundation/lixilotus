@@ -17,6 +17,7 @@ export default {
   /* 00. special*/
   'special.or': 'Hoặc',
   'special.cancel': 'Hủy bỏ',
+  'special.copy': 'Sao chép',
 
   /* 01.General */
   'general.home': 'Nhà',
