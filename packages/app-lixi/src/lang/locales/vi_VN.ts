@@ -61,7 +61,8 @@ export default {
   'general.feedPage': 'Khám phá và kết nối với các doanh nghiệp trên LixiLotus',
   'general.subTitleEditPage': 'Thay đổi thông tin trang của bạn',
   'general.subTitleClaimed': 'Chi tiết lì xì đâ nhận',
-  'general.404': 'Không tìm thấy trang này',
+  'general.notFoundTitle': 'Opp! Không tìm thấy trang',
+  'general.notFoundDescription': 'Xin lỗi, Chúng tôi không thể tìm thấy trang bạn đang tìm',
   'general.goBackToHome': 'Trở về trang chủ',
 
   /* 02.Account */
