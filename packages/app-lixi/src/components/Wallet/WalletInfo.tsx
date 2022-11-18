@@ -20,7 +20,7 @@ import { openModal } from '@store/modal/actions';
 import { useRouter } from 'next/router';
 import { getSelectedWalletPath, getWalletStatus } from '@store/wallet';
 import { QRCodeModal } from '@components/Common/QRCodeModal';
-import { QRCodeModal_Types } from '@bcpros/lixi-models/src';
+import { QRCodeModalType } from '@bcpros/lixi-models/constants';
 
 const CardContainer = styled.div`
   position: relative;
@@ -214,7 +214,7 @@ const WalletInfoComponent: React.FC = () => {
         </WalletCard>
         {!isServer() && selectedWalletPath && selectedWalletPath?.xAddress && (
           <StyledQRCode>
-            <QRCodeModal address={selectedWalletPath?.xAddress} type={QRCodeModal_Types.address} />
+            <QRCodeModal address={selectedWalletPath?.xAddress} type={QRCodeModalType.address} />
             {/* <QRCode address={selectedWalletPath?.xAddress} isAccountPage={true} /> */}
           </StyledQRCode>
         )}
