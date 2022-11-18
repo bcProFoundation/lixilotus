@@ -4,7 +4,8 @@ import { GraphQLClient } from 'graphql-request';
 import intl from 'react-intl-universal';
 
 export const client = new GraphQLClient('/graphql', {
-  credentials: 'include'
+  credentials: 'include',
+  cache: 'no-cache'
 });
 
 export const api = createApi({

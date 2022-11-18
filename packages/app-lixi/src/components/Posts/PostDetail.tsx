@@ -26,6 +26,8 @@ import {
 } from 'react-share';
 import { RWebShare } from 'react-web-share';
 import intl from 'react-intl-universal';
+import { Post } from 'src/generated/types.generated';
+import ReactHtmlParser from 'react-html-parser';
 
 const { Search } = Input;
 
@@ -104,7 +106,7 @@ type PostDetailProps = {
 const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
   const [listComment, setListComment] = useState([]);
-  const [postDetailData, setPostDetailData] = useState<any>(post);
+  const [postDetailData, setPostDetailData] = useState<Post>(post);
 
   const CommentContainer = styled.div`
     padding: 0 1rem;
@@ -184,15 +186,15 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   }, []);
 
   const onUpVotePost = () => {
-    let tempPost = postDetailData;
-    tempPost.upVote ? (tempPost.upVote += 1) : null;
-    setPostDetailData({ ...tempPost });
+    // let tempPost = postDetailData;
+    // tempPost.upVote ? (tempPost.upVote += 1) : null;
+    // setPostDetailData({ ...tempPost });
   };
 
   const onDownVotePost = () => {
-    let tempPost = postDetailData;
-    tempPost.upVote ? (tempPost.downVote += 1) : null;
-    setPostDetailData({ ...tempPost });
+    // let tempPost = postDetailData;
+    // tempPost.upVote ? (tempPost.downVote += 1) : null;
+    // setPostDetailData({ ...tempPost });
   };
 
   const onComment = (value: string) => {
@@ -236,10 +238,9 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       <StyledContainerPostDetail>
         <PostCardDetail>
           <div className="info-post">
-            <img style={{ marginRight: '1rem' }} src={postDetailData?.avatar?.upload?.url} alt="" />
+            <img style={{ marginRight: '1rem' }} src={'/images/xpi.svg'} alt="" />
             <div>
-              <h4 style={{ margin: '0' }}>{postDetailData.name}</h4>
-              <p>{postDetailData.title}</p>
+              <h4 style={{ margin: '0' }}>{postDetailData.postAccount.name}</h4>
             </div>
           </div>
           <div className="func-post">
@@ -247,8 +248,8 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           </div>
         </PostCardDetail>
         <PostContentDetail>
-          <img style={{ marginRight: '5px', width: '100%' }} src={postDetailData?.cover?.upload?.url} alt="" />
-          <p style={{ padding: '0 1rem', margin: '1rem 0' }}>{postDetailData.description}</p>
+          {/* <img style={{ marginRight: '5px', width: '100%' }} src={postDetailData?.cover?.upload?.url} alt="" /> */}
+          <p style={{ padding: '0 1rem', margin: '1rem 0' }}>{ReactHtmlParser(postDetailData.content)}</p>
           <div className="reaction-container">
             <div className="reaction-ico">
               <LikeOutlined onClick={onUpVotePost} />

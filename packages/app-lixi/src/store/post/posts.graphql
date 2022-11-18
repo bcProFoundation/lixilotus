@@ -34,7 +34,17 @@ query Posts(
 fragment PostFields on Post {
   id
   content
-  cover
+  uploadCovers
+  postAccount {
+    address
+    id
+    name
+  }
+  pageAccount {
+    address
+    id
+    name
+  }
   createdAt
   updatedAt
 }

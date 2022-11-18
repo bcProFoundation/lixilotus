@@ -93,8 +93,8 @@ export class ClaimController {
               id: parentLixi!.uploadDetail.uploadId
             }
           });
-          image = upload?.url;
-          thumbnail = upload?.url.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+          image = upload?.bucket ? `${process.env.AWS_ENDPOINT}/${upload.bucket}/${upload.sha}` : upload?.url;
+          thumbnail = upload?.url?.replace(/(\.[\w\d_-]+)$/i, '-200$1');
         }
       } else {
         if (lixi?.uploadDetail) {
@@ -103,8 +103,8 @@ export class ClaimController {
               id: lixi.uploadDetail.uploadId
             }
           });
-          image = upload?.url;
-          thumbnail = upload?.url.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+          image = upload?.bucket ? `${process.env.AWS_ENDPOINT}/${upload.bucket}/${upload.sha}` : upload?.url;
+          thumbnail = upload?.url?.replace(/(\.[\w\d_-]+)$/i, '-200$1');
         }
       }
 
@@ -502,8 +502,8 @@ export class ClaimController {
                   id: parentLixi!.uploadDetail.uploadId
                 }
               });
-              image = upload?.url;
-              thumbnail = upload?.url.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+              image = upload?.bucket ? `${process.env.AWS_ENDPOINT}/${upload.bucket}/${upload.sha}` : upload?.url;
+              thumbnail = upload?.url?.replace(/(\.[\w\d_-]+)$/i, '-200$1');
             }
           } else {
             if (lixi.uploadDetail) {
@@ -512,8 +512,8 @@ export class ClaimController {
                   id: lixi.uploadDetail.uploadId
                 }
               });
-              image = upload?.url;
-              thumbnail = upload?.url.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+              image = upload?.bucket ? `${process.env.AWS_ENDPOINT}/${upload.bucket}/${upload.sha}` : upload?.url;
+              thumbnail = upload?.url?.replace(/(\.[\w\d_-]+)$/i, '-200$1');
             }
           }
 

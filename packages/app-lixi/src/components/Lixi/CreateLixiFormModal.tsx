@@ -38,7 +38,7 @@ import { Account } from '@bcpros/lixi-models/lib/account';
 import { ClaimType, GenerateLixiCommand, LixiType, LotteryAddress, NetworkType } from '@bcpros/lixi-models/lib/lixi';
 import CountrySelectDropdown from '@components/Common/CountrySelectDropdown';
 import EnvelopeCarousel from '@components/Common/EnvelopeCarousel';
-import { StyledUploader } from '@components/Common/Uploader';
+import { StyledUploader } from '@components/Common/Uploader/Uploader';
 import { WalletContext } from '@context/walletProvider';
 import { getEnvelopeUpload } from '@store/account/selectors';
 import { isValidAmountInput } from '@utils/validation';
