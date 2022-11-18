@@ -1,4 +1,4 @@
-export const QRCodeModal_Types = {
+export const QRCodeModalType = {
   address: 'address',
   claimCode: 'claimCode'
 };
