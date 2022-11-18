@@ -149,7 +149,7 @@ export default {
   'account.networkType': 'Network Type',
 
   /* 03.Lixi */
-  'lixi.createLixi': 'Add new lixi',
+  'lixi.createLixi': 'Create new lixi',
   'lixi.sectionCreateLixi': 'Section create new lixi',
   'lixi.sub-lixi': 'Sub-lixi',
   'lixi.dividedBy': 'Divided by',
@@ -268,6 +268,8 @@ export default {
   'lixi.unarchive': 'Unarchive',
   'lixi.withdraw': 'Withdraw',
   'lixi.claimed': 'Claimed',
+  'lixi.budget': 'Budget',
+  'lixi.redeemed': 'Redeemed',
 
   /* 04.Claim */
   'claim.claim': 'Claim',
