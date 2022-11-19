@@ -7,6 +7,7 @@ import {
   getWaletRefreshInterval,
   getWalletHasUpdated,
   getWalletState,
+  getWalletStatus,
   getWalletUtxos,
   setWalletHasUpdated,
   setWalletRefreshInterval,
@@ -52,6 +53,7 @@ const useWallet = () => {
   const allWalletPaths = useAppSelector(getAllWalletPaths);
   const walletUtxos = useAppSelector(getWalletUtxos);
   const dispatch = useAppDispatch();
+  const walletStatus = useAppSelector(getWalletStatus);
 
   // If you catch API errors, call this function
   const tryNextAPI = () => {
@@ -353,7 +355,10 @@ const useWallet = () => {
         parsedTxHistory: chronikTxHistory,
         utxos: chronikUtxos
       };
-      dispatch(writeWalletStatus(newWalletStatus));
+
+      if (!_.isEqual(newWalletStatus, walletStatus)) {
+        dispatch(writeWalletStatus(newWalletStatus));
+      }
 
       setApiError(false);
     } catch (error) {
