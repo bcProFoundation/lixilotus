@@ -359,7 +359,9 @@ const useWallet = () => {
         utxos: chronikUtxos
       };
 
-      dispatch(writeWalletStatus(newWalletStatus));
+      if (!_.isEqual(newWalletStatus, walletStatus)) {
+        dispatch(writeWalletStatus(newWalletStatus));
+      }
 
       setApiError(false);
     } catch (error) {
@@ -377,9 +379,7 @@ const useWallet = () => {
   // Update wallet according to defined interval
   useInterval(async () => {
     const wallet = walletState;
-    setLoading(false);
     update(wallet).finally(() => {
-      setLoading(false);
       if (!walletHasUpdated) {
         dispatch(setWalletHasUpdated(true));
       }
