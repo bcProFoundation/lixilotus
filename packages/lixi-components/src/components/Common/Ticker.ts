@@ -1,7 +1,7 @@
 export const currency = {
   name: 'Lotus',
   ticker: 'XPI',
-  logo: '/images/logo_primary.png',
+  logo: '/images/lotus_logo.png',
   legacyPrefix: 'bitcoincash',
   prefixes: ['lotus'],
   coingeckoId: 'bitcoin-cash-abc-2',
