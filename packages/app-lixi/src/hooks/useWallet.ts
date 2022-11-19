@@ -170,8 +170,11 @@ const useWallet = () => {
 
     // If wallet is valid, compare what exists in written wallet state instead of former api call
     let utxosToCompare = previousUtxos;
+
+    const haveChanged = !_.isEqualWith(utxos, utxosToCompare, comparisonFunc);
+
     // Compare utxo sets
-    return !isEqual(utxos, utxosToCompare);
+    return haveChanged;
   };
 
   // Parse chronik ws message for incoming tx notifications
@@ -356,9 +359,7 @@ const useWallet = () => {
         utxos: chronikUtxos
       };
 
-      if (!_.isEqual(newWalletStatus, walletStatus)) {
-        dispatch(writeWalletStatus(newWalletStatus));
-      }
+      dispatch(writeWalletStatus(newWalletStatus));
 
       setApiError(false);
     } catch (error) {
@@ -384,6 +385,20 @@ const useWallet = () => {
       }
     });
   }, walletRefreshInterval);
+
+  const comparisonFunc = (a, b) => {
+    if (_.isArray(a) || _.isArray(b)) return;
+    if (!_.isObject(a) || !_.isObject(b)) return;
+
+    if (!_.includes(a, undefined) && !_.includes(b, undefined)) return;
+
+    // Call recursively, after filtering all undefined properties
+    return _.isEqualWith(
+      _.omitBy(a, value => value === undefined),
+      _.omitBy(b, value => value === undefined),
+      comparisonFunc
+    );
+  };
 
   /*
     Use wallet.mnemonic as the useEffect parameter here because we 
