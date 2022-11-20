@@ -147,6 +147,7 @@ const CointainerWallet = styled.div`
     justify-content: space-between;
     align-items: baseline;
     h3 {
+      margin: 0;
       font-weight: 600;
     }
     .anticon {
@@ -158,7 +159,7 @@ const CointainerWallet = styled.div`
 
 const ShortcutSideBar = styled(Sider)`
   height: 60vh;
-  left: 20px;
+  left: 2rem;
   max-width: inherit !important;
   background: var(--bg-color-light-theme);
 
@@ -232,47 +233,45 @@ const SidebarShortcut = () => {
           <StyledLogo>
             <img width="120px" src="/images/lixilotus-logo.svg" alt="lixilotus" />
           </StyledLogo>
-          <ItemAccess icon={HomeOutlined} text={'Home'} active={selectedKey === '/'} key="home" href={'/'} />
+          <ItemAccess
+            icon={HomeOutlined}
+            text={intl.get('general.home')}
+            active={selectedKey === '/'}
+            key="home"
+            href={'/'}
+          />
+          <ItemAccess
+            icon={ShopOutlined}
+            text={intl.get('general.page')}
+            active={selectedKey.includes('/page')}
+            key="page-feed"
+            href={'/page/feed'}
+          />
           <ItemAccess
             icon={WalletOutlined}
-            text={'Accounts'}
+            text={intl.get('general.accounts')}
             active={selectedKey === '/wallet'}
             key="wallet-lotus"
             href={'/wallet'}
           />
-          <ItemAccess icon={GiftOutlined} text={'Lixi'} active={selectedKey === '/lixi'} key="lixi" href={'/lixi'} />
-          <ItemAccess icon={SendOutlined} text={'Send'} active={selectedKey === '/send'} key="send" href={'/send'} />
           <ItemAccess
-            icon={EditOutlined}
-            text={'Register Pack'}
-            active={selectedKey === '/admin/pack-register'}
-            key="register-pack"
-            href={'/admin/pack-register'}
-          />
-          <ItemAccess
-            icon={PlusCircleOutlined}
-            text={'Create Page'}
-            active={selectedKey === '/page/create'}
-            key="create-page"
-            href={'/page/create'}
+            icon={GiftOutlined}
+            text={intl.get('general.lixi')}
+            active={selectedKey === '/lixi'}
+            key="lixi"
+            href={'/lixi'}
           />
           <ItemAccess
             icon={SettingOutlined}
-            text={'Setting'}
-            active={selectedKey === '/admin/settings'}
-            key="setting"
-            href={'/admin/settings'}
+            text={intl.get('general.settings')}
+            active={selectedKey === '/settings'}
+            key="settings"
+            href={'/settings'}
           />
-          <ItemAccess
-            icon={SendOutlined}
-            text={'Send Lotus'}
-            active={false}
-            key="send-lotus"
-            href={'https://sendlotus.com'}
-          />
+          <ItemAccess icon={SendOutlined} text={'Send'} active={selectedKey === '/send'} key="send" href={'/send'} />
           <ItemAccess
             icon={ShopOutlined}
-            text={'Lotusia Shop'}
+            text={intl.get('general.lotusiaShop')}
             active={false}
             key="lotusia-shop"
             href={'https://lotusia.shop/'}

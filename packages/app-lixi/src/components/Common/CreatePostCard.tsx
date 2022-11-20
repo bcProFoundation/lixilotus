@@ -1,12 +1,50 @@
-import { PlusCircleOutlined } from '@ant-design/icons';
+import { FileImageOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { Avatar, Form, Modal, Tabs } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
+import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import intl from 'react-intl-universal';
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import SunEditorCore from 'suneditor/src/lib/core';
 import dynamic from 'next/dynamic';
 import 'suneditor/dist/css/suneditor.min.css'; // Import Sun Editor's CSS File
+import { CreatePostInput, UpdatePostInput, Post } from 'src/generated/types.generated';
+import { showToast } from '@store/toast/actions';
+import { setPost } from '@store/post/action';
 import { Embed, SocialsEnum } from './Embed';
+import { useCreatePostMutation } from '@store/post/posts.generated';
+import { MultiUploader, StyledMultiUploader } from './Uploader/MultiUploader';
+import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
+import { Plate, PlateProps, PlateProvider } from '@udecode/plate-core';
+import { MyValue, useMyPlateEditorRef } from '@components/Common/Plate/plateTypes';
+import { imagePlugins } from '@components/Common/Plate/Plugin/imagePlugins';
+import { Toolbar } from '@components/Common/Plate/Toolbar';
+import { BasicElementToolbarButtons } from '@components/Common/Plate/BasicElementToolbarButtons';
+import { BasicMarkToolbarButtons } from '@components/Common/Plate/BasicMarkToolbarButtons';
+import { MarkBalloonToolbar } from '@components/Common/Plate/MarkBalloonToolbar';
+import { serializeHtml } from '@udecode/plate';
+import { editableProps } from './Plate/editableProps';
+import { Uploader } from './Uploader/Uploader';
+import { EmojiElementToolbarButtons } from './Plate/EmojiToolbarButtons';
+import { getPostCoverUploads } from '@store/account/selectors';
+import { getPageById } from '@store/page/selectors';
+import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
+import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
+
+const styles = {
+  wrapper: {
+    // display: 'flex'
+  }
+};
+
+const Editor = (props: PlateProps<MyValue>) => {
+  return (
+    <Plate {...props} id="main">
+      <MarkBalloonToolbar />
+    </Plate>
+  );
+};
+
 type ErrorType = 'unsupported' | 'invalid';
 
 const regex = {
@@ -35,7 +73,7 @@ const WrapEditor = styled.div``;
 const CreateCardContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 20px 30px;
+  padding: 1.5rem 1rem;
   background: #fff;
   border-radius: 20px;
   box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
@@ -57,24 +95,55 @@ const CreateCardContainer = styled.div`
   }
 `;
 
-const CreatePostCard = () => {
-  const [url, setUrl] = useState<string>('');
+const StyledUploader = styled.div`
+  position: absolute;
+  bottom: 24px;
+`;
 
+const CreatePostCard = () => {
+  const dispatch = useAppDispatch();
+  const [url, setUrl] = useState<string>('');
   const [social, setSocial] = useState<SocialsEnum>();
   const [postId, setPostId] = useState<string>();
   const [error, setError] = useState<ErrorType | null>(null);
   const [enableEditor, setEnableEditor] = useState(false);
   const sunEditor = useRef<SunEditorCore>();
   const [valueEditor, setValue] = useState(null);
+  const postCoverUploads = useAppSelector(getPostCoverUploads);
 
   const getSunEditorInstance = (sunEditorCore: SunEditorCore) => {
     sunEditor.current = sunEditorCore;
+  };
+
+  const { refetch } = useInfinitePostsQuery(
+    {
+      first: 10,
+      orderBy: {
+        direction: OrderDirection.Desc,
+        field: PostOrderField.UpdatedAt
+      }
+    },
+    false
+  );
+
+  const Serialized = () => {
+    const editor = useMyPlateEditorRef();
+    const html = serializeHtml(editor, {
+      nodes: editor.children
+    });
+    setValue(html);
+    return null;
   };
 
   const items = [
     { label: 'Create ', key: 'create', children: 'Content Create' }, // remember to pass the key prop
     { label: 'Import', key: 'import', children: 'Content Import' }
   ];
+
+  const [
+    createPostTrigger,
+    { isLoading: isLoadingCreatePost, isSuccess: isSuccessCreatePost, isError: isErrorCreatePost }
+  ] = useCreatePostMutation();
 
   const configEditor = {
     rtl: false,
@@ -100,8 +169,6 @@ const CreatePostCard = () => {
         'align',
         'lineHeight',
         'link',
-        'image',
-        'video',
         'audio',
         'fullScreen',
         'codeView'
@@ -185,11 +252,62 @@ const CreatePostCard = () => {
     event.preventDefault();
   };
 
-  const handleSubmitEditor = event => {
+  const handleSubmitEditor = async event => {
+    event.preventDefault();
     if (url) {
       console.log(url);
+    } else {
+      setEnableEditor(false);
+
+      const content = valueEditor;
+      await handleCreateNewPost(content);
     }
-    event.preventDefault();
+  };
+
+  const handleCreateNewPost = async content => {
+    if (content) {
+      const createPostInput: CreatePostInput = {
+        uploadCovers: postCoverUploads.map(upload => upload.id),
+        content: content,
+        pageId: ''
+      };
+
+      try {
+        // if (createPostInput) {
+
+        //   // const data = { postAccountId: 0, pageAccountId: 0 };
+        //   // dispatch(setPost({ ...data, ...postCreated.createPost }));
+        // }
+
+        await createPostTrigger({ input: createPostInput })
+          .unwrap()
+          .then(payload => {
+            dispatch(
+              showToast('success', {
+                message: 'Success',
+                description: intl.get('post.createPostSuccessful'),
+                duration: 5
+              })
+            );
+
+            refetch();
+          });
+      } catch (error) {
+        const message = intl.get('post.unableCreatePostServer');
+        dispatch(
+          showToast('error', {
+            message: 'Error',
+            description: message,
+            duration: 5
+          })
+        );
+      }
+    }
+  };
+
+  const handleImageUploadBefore = () => {
+    alert("Please upload picture by 'Upload' button");
+    return;
   };
 
   return (
@@ -219,14 +337,31 @@ const CreatePostCard = () => {
             <Tabs defaultActiveKey="1">
               <Tabs.TabPane tab="Create" key="create">
                 <form onSubmit={handleSubmitEditor}>
-                  <SunEditor
-                    getSunEditorInstance={getSunEditorInstance}
-                    width="100%"
-                    placeholder="Please type here..."
-                    hide={!enableEditor}
-                    onSave={handleSaveEditor}
-                    setOptions={configEditor}
-                  />
+                  <PlateProvider<MyValue>
+                    plugins={imagePlugins}
+                    initialValue={null}
+                    onChange={value => setValue(value)}
+                    id="main"
+                  >
+                    <Toolbar>
+                      <BasicElementToolbarButtons />
+                      <BasicMarkToolbarButtons />
+                      <Uploader
+                        type={UPLOAD_TYPES.POST}
+                        isIcon={true}
+                        icon={<FileImageOutlined />}
+                        buttonName=" "
+                        buttonType="text"
+                        showUploadList={false}
+                      />
+                      <EmojiElementToolbarButtons />
+                    </Toolbar>
+
+                    <div style={styles.wrapper}>
+                      <Editor editableProps={editableProps} />
+                    </div>
+                    <Serialized />
+                  </PlateProvider>
                   <input type="submit" value="Create Post" />
                 </form>
               </Tabs.TabPane>

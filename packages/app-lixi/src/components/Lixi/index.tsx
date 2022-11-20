@@ -1,20 +1,5 @@
-import {
-  Button,
-  Checkbox,
-  Col,
-  Collapse,
-  Descriptions,
-  Form,
-  Image,
-  Input,
-  List,
-  message,
-  Modal,
-  Progress,
-  Row,
-  Tabs,
-  Typography
-} from 'antd';
+import { WalletContext } from '@context/index';
+import { Button, Collapse, Descriptions, Form, message, Progress } from 'antd';
 import { saveAs } from 'file-saver';
 import { toPng } from 'html-to-image';
 import * as _ from 'lodash';
@@ -27,43 +12,27 @@ import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import {
   archiveLixi,
   fetchMoreSubLixies,
-  getLixi,
   refreshLixi,
   renameLixi,
   setLixiBalance,
   unarchiveLixi,
   withdrawLixi
 } from 'src/store/lixi/actions';
-import {
-  getHasMoreSubLixies,
-  getLixiesBySelectedAccount,
-  getSelectedLixi,
-  getSelectedLixiId
-} from 'src/store/lixi/selectors';
-import { WalletContext } from 'src/store/store';
+import { getHasMoreSubLixies, getSelectedLixi, getSelectedLixiId } from 'src/store/lixi/selectors';
 import { showToast } from 'src/store/toast/actions';
 import styled from 'styled-components';
 
-import { green, red } from '@ant-design/colors';
 import {
   CaretRightOutlined,
   CopyOutlined,
-  DownloadOutlined,
   EditOutlined,
   ExclamationCircleOutlined,
-  ExportOutlined,
-  FilterOutlined,
   LoadingOutlined,
   QuestionCircleOutlined,
-  ReloadOutlined,
-  SearchOutlined
+  ReloadOutlined
 } from '@ant-design/icons';
-import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import { SmartButton } from '@bcpros/lixi-components/components/Common/PrimaryButton';
-import { QRClaimCode } from '@bcpros/lixi-components/components/Common/QRClaimCode';
 import QRCode, { FormattedWalletAddress } from '@bcpros/lixi-components/components/Common/QRCode';
-import { StyledCollapse } from '@bcpros/lixi-components/components/Common/StyledCollapse';
-import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
 import { countries } from '@bcpros/lixi-models/constants/countries';
 import {
   ArchiveLixiCommand,
@@ -73,19 +42,19 @@ import {
   UnarchiveLixiCommand,
   WithdrawLixiCommand
 } from '@bcpros/lixi-models/lib/lixi';
-import ClaimList from '@components/Claim/ClaimList';
 import { currency } from '@components/Common/Ticker';
 import { getSelectedAccount } from '@store/account/selectors';
 import { getAllSubLixies, getLoadMoreSubLixiesStartId } from '@store/lixi/selectors';
-import { fromSmallestDenomination, toSmallestDenomination } from '@utils/cashMethods';
-import { numberToBase58 } from '@utils/encryptionMethods';
-
-import { ClaimType } from '../../../../lixi-models/src/lib/lixi';
-import lixiLogo from '../../assets/images/lixi_logo.svg';
-import { exportSubLixies } from '../../store/lixi/actions';
-import VirtualTable from './SubLixiListScroll';
-import { RenameLixiModalProps } from './RenameLixiModal';
 import { openModal } from '@store/modal/actions';
+import { fromSmallestDenomination } from '@utils/cashMethods';
+import { ClaimType } from '@bcpros/lixi-models/lib/lixi';
+import { exportSubLixies } from 'src/store/lixi/actions';
+import { RenameLixiModalProps } from './RenameLixiModal';
+import SubLixiList from './SubLixiList';
+import VirtualTable from './SubLixiListScroll';
+import useWindowDimensions from '@hooks/useWindowDimensions';
+import { QRCodeModal } from '@components/Common/QRCodeModal';
+import { QRCodeModalType } from '@bcpros/lixi-models/constants';
 
 type CopiedProps = {
   style?: React.CSSProperties;
@@ -123,19 +92,58 @@ const LabelHeader = styled.h4`
   margin-bottom: unset;
 `;
 
+const DescriptionsCustom = styled(Descriptions)`
+  .ant-descriptions-view {
+    border: none;
+  }
+  .ant-descriptions-item-content {
+    border: none;
+    padding-left: 0px;
+    @media (max-width: 768px) {
+      padding-right: 0px;
+    }
+  }
+  .ant-descriptions-row {
+    border: none;
+  }
+`;
+
 const InfoCard = styled.div`
   box-sizing: border-box;
   position: inherit;
   width: 100%;
-  height: fit-content;
   background: #ffffff;
   border: 1px solid #e0e0e0;
   border-radius: 24px;
+  height: fit-content;
+  @media (min-width: 768px) {
+    height: 315px;
+  }
 
   img {
     border-radius: 16px;
     height: 80px;
     width: 80px;
+  }
+
+  .lixi-detail {
+    .ant-descriptions-item-content:last-child {
+      justify-content: end !important;
+    }
+  }
+  &.overview {
+    .ant-descriptions-view {
+      height: 100% !important;
+      > table {
+        height: 100% !important;
+      }
+
+      .ant-descriptions-item-content {
+        height: 100% !important;
+        justify-content: center;
+        flex-direction: column;
+      }
+    }
   }
 
   .ant-descriptions-item-label {
@@ -148,7 +156,6 @@ const InfoCard = styled.div`
     line-height: 20px;
     color: rgba(30, 26, 29, 0.38);
     background: #ffffff;
-
     padding: 5px 16px;
   }
 
@@ -161,16 +168,19 @@ const InfoCard = styled.div`
     line-height: 24px;
     letter-spacing: 0.5px;
     color: #1e1a1d;
+    border: none !important;
+    padding-left: 16px;
+
+    @media (min-width: 768px) {
+      padding: 4px 16px !important;
+    }
   }
 
-  .ant-descriptions-bordered {
-    .ant-descriptions-view {
-      border: none;
-    }
-
-    .ant-descriptions-row {
-      border-bottom: none;
-    }
+  .ant-descriptions-view {
+    border: none !important;
+  }
+  .ant-descriptions-row {
+    border: none !important;
   }
 `;
 
@@ -207,18 +217,18 @@ const StyleButton = styled(Button)`
 
 const StyledQRCode = styled.div`
   flex: 1 auto;
-  text-align: right;
+  text-align: unset;
   opacity: 0.7;
   #borderedQRCode {
     @media (max-width: 768px) {
       border-radius: 18px;
-      width: 120px;
-      height: 120px;
+      width: 126px;
+      height: 126px;
     }
     @media (min-width: 768px) {
       border-radius: 18px;
-      width: 120px;
-      height: 120px;
+      width: 77px;
+      height: 77px;
     }
   }
 `;
@@ -227,8 +237,8 @@ const { Panel } = Collapse;
 const Lixi = props => {
   const { lixi } = props;
   const dispatch = useAppDispatch();
-  const ContextValue = React.useContext(WalletContext);
-  const { XPI, Wallet } = ContextValue;
+  const Wallet = React.useContext(WalletContext);
+  const { XPI } = Wallet;
   const selectedAccount = useAppSelector(getSelectedAccount);
   // const selectedLixiId = useAppSelector(getSelectedLixiId);
   // const selectedLixi = useAppSelector(getSelectedLixi);
@@ -246,31 +256,13 @@ const Lixi = props => {
 
   subLixies = _.sortBy(subLixies, ['isClaimed', 'packageId']);
 
-  const [loadings, setLoadings] = useState<boolean[]>([]);
-
-  // useEffect(() => {
-  //   if (selectedLixi) {
-  //     dispatch(selectLixi(selectedLixiId));
-  //   }
-  // }, [selectLixi]);
+  const { width } = useWindowDimensions();
+  const [isMobileDetailLixi, setIsMobileDetailLixi] = useState(false);
 
   useEffect(() => {
-    const id = setInterval(() => {
-      XPI.Electrumx.balance(selectedLixi?.address)
-        .then(result => {
-          if (result && result.balance) {
-            const balance = result.balance.confirmed + result.balance.unconfirmed;
-            dispatch(setLixiBalance(balance ?? 0));
-          }
-        })
-        .catch(e => {
-          setIsLoadBalanceError(true);
-        });
-    }, 10000);
-    return () => {
-      return clearInterval(id);
-    };
-  }, []);
+    const isMobileDetail = width < 768 ? true : false;
+    setIsMobileDetailLixi(isMobileDetail);
+  }, [width]);
 
   const handleRefeshLixi = () => {
     if (!(selectedLixi && selectedLixiId)) {
@@ -518,57 +510,17 @@ const Lixi = props => {
     };
   });
 
-  const onetimeCodeColumns = [
+  const oneTimeCodeColumns = [
     { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
     { title: 'Code', dataIndex: 'claimCode' },
-    { title: 'Value redeem (XPI)', dataIndex: 'amount' },
-    { title: 'Statusses', dataIndex: 'isClaimed' }
+    { title: `${intl.get('general.amount')} (XPI)`, dataIndex: 'amount' },
+    { title: intl.get('lixi.status'), dataIndex: 'isClaimed' }
   ];
-  const prefixClaimCode = 'lixi';
-
-  const subLixiesDataSource = subLixies.map((item, i) => {
-    return {
-      num: i + 1,
-      claimCode: (
-        <CopyToClipboard text={`${prefixClaimCode}_${item.claimCode}`} onCopy={handleOnCopyClaimCode}>
-          <div>
-            <CopyOutlined /> {`${prefixClaimCode}_${item.claimCode}`}
-          </div>
-        </CopyToClipboard>
-      ),
-      amount: item.amount != 0 ? item.amount : fromSmallestDenomination(item.totalClaim),
-      isClaimed: item.isClaimed ? (
-        <Text
-          style={{
-            color: '#FFFFFF',
-            padding: '4px 8px',
-            borderRadius: '8px',
-            fontWeight: '400',
-            fontSize: '14px',
-            background: '#598300'
-          }}
-        >
-          Redeemed
-        </Text>
-      ) : (
-        <Text
-          style={{
-            color: '#FFFFFF',
-            padding: '4px 8px',
-            borderRadius: '8px',
-            fontWeight: '400',
-            fontSize: '14px',
-            background: '#E37100'
-          }}
-        >
-          Remaining
-        </Text>
-      )
-    };
-  });
 
   const showMoreSubLixies = () => {
-    dispatch(fetchMoreSubLixies({ parentId: selectedLixi.id, startId: loadMoreStartId }));
+    if (hasMoreSubLixies) {
+      dispatch(fetchMoreSubLixies({ parentId: selectedLixi.id, startId: loadMoreStartId }));
+    }
   };
 
   const getLixiPanelDetailsIcon = (status: string, isPanelOpen: boolean) => {
@@ -618,11 +570,7 @@ const Lixi = props => {
   };
 
   const statusLixi = () => {
-    if (
-      (lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim) ||
-      moment().isAfter(lixi.expiryAt) ||
-      selectedLixi.status == 'failed'
-    ) {
+    if (moment().isAfter(selectedLixi.expiryAt)) {
       return (
         <Text
           style={{
@@ -635,7 +583,7 @@ const Lixi = props => {
             background: '#74546F'
           }}
         >
-          Ended
+          {intl.get('general.ended')}
         </Text>
       );
     } else {
@@ -653,7 +601,7 @@ const Lixi = props => {
                 background: '#2F80ED'
               }}
             >
-              Running
+              {intl.get('general.running')}
             </Text>
           );
         case 'pending':
@@ -669,7 +617,7 @@ const Lixi = props => {
                 background: '#E37100'
               }}
             >
-              Waiting
+              {intl.get('general.waiting')}
             </Text>
           );
         case 'locked':
@@ -685,7 +633,7 @@ const Lixi = props => {
                 background: '#BA1A1A'
               }}
             >
-              Archived
+              {intl.get('lixi.archived')}
             </Text>
           );
       }
@@ -695,7 +643,8 @@ const Lixi = props => {
   const infoLixi = () => {
     return (
       <Descriptions
-        column={1}
+        className={isMobileDetailLixi ? '' : 'lixi-detail'}
+        column={isMobileDetailLixi ? 1 : 2}
         bordered
         size="small"
         style={{
@@ -748,8 +697,9 @@ const Lixi = props => {
       case ClaimType.Single:
         return (
           <Descriptions
-            column={1}
-            bordered
+            column={isMobileDetailLixi ? 1 : 3}
+            bordered={isMobileDetailLixi ? true : false}
+            layout={isMobileDetailLixi ? 'horizontal' : 'vertical'}
             size="small"
             style={{
               paddingBottom: '1%',
@@ -757,7 +707,7 @@ const Lixi = props => {
             }}
           >
             <Descriptions.Item label={intl.get('lixi.type')} key="desc.claimtype">
-              Single Code
+              {intl.get('account.singleCode')}
             </Descriptions.Item>
             <Descriptions.Item label={intl.get('lixi.rules')} key="desc.rules">
               {typeLixi()}
@@ -775,13 +725,17 @@ const Lixi = props => {
             >
               {countries.find(country => country.id === selectedLixi?.country)?.name ?? intl.get('lixi.allCountries')}
             </Descriptions.Item>
+            <Descriptions.Item>
+              <Button type="link">{intl.get('general.viewmore')}</Button>
+            </Descriptions.Item>
           </Descriptions>
         );
       case ClaimType.OneTime:
         return (
           <Descriptions
-            column={1}
-            bordered
+            column={isMobileDetailLixi ? 1 : 4}
+            bordered={isMobileDetailLixi ? true : false}
+            layout={isMobileDetailLixi ? 'horizontal' : 'vertical'}
             size="small"
             style={{
               padding: '0 0 20px 0',
@@ -792,7 +746,7 @@ const Lixi = props => {
               {selectedLixi.amount} {currency.ticker}
             </Descriptions.Item>
             <Descriptions.Item label={intl.get('lixi.type')} key="desc.claimtype">
-              One-time Codes
+              {intl.get('account.oneTimeCode')}
             </Descriptions.Item>
             <Descriptions.Item label={intl.get('lixi.rules')} key="desc.rules">
               {typeLixi()}
@@ -800,13 +754,18 @@ const Lixi = props => {
             <Descriptions.Item label={intl.get('lixi.valuePerClaim')} key="desc.valuePerClaim">
               {rulesLixi()}
             </Descriptions.Item>
+            <Descriptions.Item label={intl.get('account.perPack')} key="desc.valuePerClaim">
+              {selectedLixi.numberLixiPerPackage} {intl.get('account.lixiForPack')}
+            </Descriptions.Item>
             <Descriptions.Item label={intl.get('lixi.validity')} key="desc.validity">
               {formatValidityDate()}
             </Descriptions.Item>
             <Descriptions.Item label={intl.get('lixi.validCountries')} key="desc.country">
               {countries.find(country => country.id === selectedLixi?.country)?.name ?? intl.get('lixi.allCountries')}
             </Descriptions.Item>
-
+            <Descriptions.Item>
+              <Button type="link">{intl.get('general.viewmore')}</Button>
+            </Descriptions.Item>
             {/* View more */}
           </Descriptions>
         );
@@ -819,7 +778,7 @@ const Lixi = props => {
         return (
           <>
             <LabelHeader>
-              {intl.get('lixi.detail')} &nbsp; <QuestionCircleOutlined />
+              {intl.get('lixi.accountLixi')} &nbsp; <QuestionCircleOutlined />
             </LabelHeader>
             <InfoCard style={{ height: 'fit-content' }}>
               <Descriptions
@@ -837,7 +796,7 @@ const Lixi = props => {
                   label={
                     <>
                       <StyledQRCode>
-                        <QRCode address={selectedAccount?.address} isAccountPage={true} />
+                        <QRCodeModal address={selectedAccount?.address} type={QRCodeModalType.address} />
                       </StyledQRCode>
                       <FormattedWalletAddress address={selectedAccount?.address} isAccountPage={true} />
                     </>
@@ -855,7 +814,7 @@ const Lixi = props => {
               </Descriptions>
             </InfoCard>
 
-            <LabelHeader>Claim code </LabelHeader>
+            <LabelHeader>{intl.get('claim.claimCode')}</LabelHeader>
             <InfoCard style={{ height: 'fit-content' }}>
               <Descriptions
                 column={1}
@@ -872,7 +831,7 @@ const Lixi = props => {
                   label={
                     <>
                       <StyledQRCode>
-                        <QRCode address={selectedLixi.claimCode} isAccountPage={true} />
+                        <QRCodeModal address={selectedLixi.claimCode} type={QRCodeModalType.claimCode} />
                       </StyledQRCode>
                       {selectedLixi.claimCode}
                       {/* <FormattedWalletAddress address={selectedLixi.claimCode} isAccountPage={true} /> */}
@@ -880,7 +839,7 @@ const Lixi = props => {
                   }
                   style={{ borderTopLeftRadius: '24px', borderBottomLeftRadius: '24px' }}
                 >
-                  <Text style={{ fontSize: '14px', color: 'rgba(30, 26, 29, 0.38)' }}>Claimed</Text>
+                  <Text style={{ fontSize: '14px', color: 'rgba(30, 26, 29, 0.38)' }}>{intl.get('lixi.claimed')}</Text>
                   <br />
                   <Text style={{ fontSize: '22px', color: '#1E1A1D' }}>
                     {fromSmallestDenomination(selectedLixi?.totalClaim) ?? 0} {currency.ticker}
@@ -894,13 +853,16 @@ const Lixi = props => {
         return (
           <>
             <LabelHeader>{intl.get('lixi.overview')}</LabelHeader>
-            <InfoCard style={{ height: 'fit-content' }}>
+            <InfoCard className="overview">
               <Descriptions
                 column={1}
                 bordered
                 size="small"
                 style={{
-                  color: 'rgb(23,23,31)'
+                  color: 'rgb(23,23,31)',
+                  height: '100%',
+                  flexDirection: 'column',
+                  justifyContent: 'center'
                 }}
               >
                 <Descriptions.Item
@@ -916,11 +878,11 @@ const Lixi = props => {
                             borderRadius: '4px'
                           }}
                         />
-                        &nbsp; Claimed
+                        &nbsp; {intl.get('lixi.claimed')}
                       </Text>
                       <br />
                       <Text style={{ color: '#1E1A1D', paddingBottom: '24px' }}>
-                        {fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim'))} {currency.ticker}
+                        {selectedLixi.subLixiTotalClaim.toFixed(2)} {currency.ticker}
                       </Text>
                       <br />
                       <br />
@@ -933,11 +895,11 @@ const Lixi = props => {
                             borderRadius: '4px'
                           }}
                         />
-                        &nbsp; Remaining
+                        &nbsp; {intl.get('lixi.remaining')}
                       </Text>
                       <br />
                       <Text style={{ color: '#1E1A1D' }}>
-                        {_.sumBy(subLixies, 'amount').toFixed(2) ?? '0'} {currency.ticker}
+                        {(selectedLixi.subLixiBalance - selectedLixi.subLixiTotalClaim).toFixed(2)} {currency.ticker}
                       </Text>
                     </>
                   }
@@ -948,13 +910,9 @@ const Lixi = props => {
                     type="circle"
                     strokeColor="#E37100"
                     strokeLinecap="butt"
-                    percent={
-                      (_.sumBy(subLixies, 'amount') + fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim'))) * 100
-                    }
+                    percent={100}
                     success={{
-                      percent:
-                        (fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim')) * 100) /
-                        (_.sumBy(subLixies, 'amount') + fromSmallestDenomination(_.sumBy(subLixies, 'totalClaim')))
+                      percent: (selectedLixi.subLixiTotalClaim * 100) / selectedLixi.subLixiBalance
                     }}
                     style={{ paddingTop: '12.5px' }}
                   />
@@ -977,18 +935,13 @@ const Lixi = props => {
           />
         );
       case ClaimType.OneTime:
-        return (
-          <>
-            <VirtualTable
-              columns={onetimeCodeColumns}
-              dataSource={subLixiesDataSource}
-              scroll={{ y: subLixiesDataSource.length * 54 <= 270 ? subLixiesDataSource.length * 54 : 270 }}
-            />
-            {hasMoreSubLixies && (
-              <SmartButton onClick={() => showMoreSubLixies()}>{intl.get('lixi.loadmore')}</SmartButton>
-            )}
-          </>
-        );
+        const lixiStatus =
+          selectedLixi.status === 'pending' ? (
+            <LoadingOutlined />
+          ) : (
+            <SubLixiList dataSource={subLixies} columns={oneTimeCodeColumns} loadMore={() => showMoreSubLixies()} />
+          );
+        return lixiStatus;
     }
   };
 
@@ -997,20 +950,32 @@ const Lixi = props => {
       {selectedLixi && selectedLixi.address ? (
         <>
           <Form>
-            <LabelHeader>{intl.get('lixi.detail')}</LabelHeader>
-            <InfoCard>
-              {/* Image, name, status lixi */}
-              {infoLixi()}
+            <DescriptionsCustom
+              bordered
+              style={{ width: '100%' }}
+              layout={isMobileDetailLixi ? 'vertical' : 'horizontal'}
+            >
+              <Descriptions.Item>
+                <>
+                  <LabelHeader>{intl.get('lixi.detail')}</LabelHeader>
+                  <InfoCard>
+                    {/* Image, name, status lixi */}
+                    {infoLixi()}
 
-              {/* Detail */}
-              {detailLixi()}
-            </InfoCard>
+                    {/* Detail */}
+                    {detailLixi()}
+                  </InfoCard>
+                </>
+              </Descriptions.Item>
 
-            {/* Address or Overview */}
-            {overviewLixi()}
+              <Descriptions.Item>
+                {/* Address or Overview */}
+                {overviewLixi()}
+              </Descriptions.Item>
+            </DescriptionsCustom>
 
             {/* Claim report */}
-            <LabelHeader>Claim report</LabelHeader>
+            <LabelHeader>{intl.get('claim.claimReport')}</LabelHeader>
             {claimReport()}
           </Form>
 

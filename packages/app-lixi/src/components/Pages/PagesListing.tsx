@@ -4,7 +4,7 @@ import SearchBox from '@components/Common/SearchBox';
 import { getSelectedAccount } from '@store/account/selectors';
 import { setSelectedPage } from '@store/page/action';
 import { useInfinitePagesQuery } from '@store/page/useInfinitePagesQuery';
-import { WalletContext } from '@store/store';
+import { WalletContext } from '@context/index';
 import { Menu, MenuProps, Modal } from 'antd';
 import _ from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
@@ -17,9 +17,9 @@ type PagesListingProps = {
 };
 
 const PagesListing: React.FC<PagesListingProps> = ({ className }: PagesListingProps) => {
-  const ContextValue = React.useContext(WalletContext);
+  const Wallet = React.useContext(WalletContext);
+  const { XPI } = Wallet;
   const dispatch = useAppDispatch();
-  const { XPI, Wallet } = ContextValue;
   const selectedAccount = useAppSelector(getSelectedAccount);
   const [isShowQrCode, setIsShowQrCode] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -58,19 +58,6 @@ const PagesListing: React.FC<PagesListingProps> = ({ className }: PagesListingPr
   const handleCancel = () => {
     setIsModalVisible(false);
   };
-
-  useEffect(() => {
-    XPI.Electrumx.balance(selectedAccount?.address)
-      .then(result => {
-        if (result && result.balance) {
-          const balance = result.balance.confirmed + result.balance.unconfirmed;
-          setBalanceAccount(balance);
-        }
-      })
-      .catch(e => {
-        setBalanceAccount(0);
-      });
-  }, []);
 
   const onChange = (checked: boolean) => {
     setLoading(!checked);

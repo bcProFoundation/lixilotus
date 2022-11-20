@@ -1,4 +1,4 @@
-import { ConsoleLogger, Logger, Module, OnApplicationShutdown } from '@nestjs/common';
+import { Logger, Module, OnApplicationShutdown } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { MercuriusDriver, MercuriusDriverConfig } from '@nestjs/mercurius';
@@ -19,7 +19,7 @@ import { WalletModule } from './modules/wallet/wallet.module';
 import { GraphQLError, GraphQLFormattedError } from 'graphql';
 import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from './middlewares/exception.filter';
-import { GqlHttpExceptionFilter } from './middlewares/gql.exception.filter';
+import { S3Module } from 'nestjs-s3';
 
 //enabled serving multiple static for fastify
 type FastifyServeStaticModuleOptions = ServeStaticModuleOptions & {
@@ -96,7 +96,18 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
     LixiNftModule,
     CoreModule,
     NotificationModule,
-    PageModule
+    PageModule,
+    S3Module.forRootAsync({
+      useFactory: () => ({
+        config: {
+          accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+          endpoint: process.env.AWS_ENDPOINT,
+          s3ForcePathStyle: true,
+          signatureVersion: 'v4'
+        }
+      })
+    })
   ],
   controllers: [],
   providers: [
@@ -104,10 +115,6 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
     {
       provide: APP_FILTER,
       useClass: HttpExceptionFilter
-    },
-    {
-      provide: APP_FILTER,
-      useClass: GqlHttpExceptionFilter
     }
   ]
 })

@@ -1,6 +1,6 @@
 import { AnyAction, combineReducers } from '@reduxjs/toolkit';
 import { persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+import storage from 'redux-persist-indexeddb-storage';
 import { PersistConfig } from 'redux-persist';
 import { routerReducer } from 'connected-next-router';
 import { loadingReducer } from './loading/reducer';
@@ -26,58 +26,72 @@ import { CountriesState, StatesState } from './country/state';
 import { api as pagesApi } from './page/pages.generated';
 import { LocalUserAccountsState } from './localAccount/state';
 import { localAccountsAdapter, localUserAccountReducer } from './localAccount/reducer';
+import { postReducer } from './post/reducer';
+import { PostState } from './post/state';
+import { walletStateReducer } from './wallet/reducer';
 
 const persistConfig = {
   key: 'root',
-  storage: storage,
-  blacklist: ['accounts']
+  storage: storage('lixi-indexeddb'),
+  blacklist: ['accounts', 'router', 'modal', 'wallet']
+};
+
+const walletPersistConfig = {
+  key: 'wallet',
+  storage: storage('lixi-indexeddb')
 };
 
 const localAccountPersistConfig: PersistConfig<LocalUserAccountsState> = {
   key: 'localAccounts',
-  storage: storage,
-  blacklist: []
+  storage: storage('lixi-indexeddb')
 };
 
 const accountPersistConfig: PersistConfig<AccountsState> = {
   key: 'accounts',
-  storage: storage,
-  blacklist: [`envelopeUpload`, 'pageCoverUpload', 'pageAvatarUpload']
+  storage: storage('lixi-indexeddb'),
+  blacklist: [`envelopeUpload`, 'pageCoverUpload', 'pageAvatarUpload', 'postCoverUploads'],
+  timeout: 0
 };
 
 const lixiPersistConfig: PersistConfig<LixiesState> = {
   key: 'lixies',
-  storage: storage
+  storage: storage('lixi-indexeddb')
 };
 
 const claimsPersistConfig: PersistConfig<ClaimsState> = {
   key: 'claims',
-  storage: storage
+  storage: storage('lixi-indexeddb')
 };
 
 const shopPersistConfig: PersistConfig<PageState> = {
   key: 'pages',
-  storage: storage
+  storage: storage('lixi-indexeddb')
+};
+
+const postPersistConfig: PersistConfig<PostState> = {
+  key: 'posts',
+  storage: storage('lixi-indexeddb')
 };
 
 const settingsPersistConfig: PersistConfig<SettingsState> = {
   key: 'settings',
-  storage: storage,
+  storage: storage('lixi-indexeddb'),
   whitelist: ['locale']
 };
 
 const countryPersistConfig: PersistConfig<CountriesState> = {
   key: 'countries',
-  storage: storage
+  storage: storage('lixi-indexeddb')
 };
 
 const statePersistConfig: PersistConfig<StatesState> = {
   key: 'states',
-  storage: storage
+  storage: storage('lixi-indexeddb')
 };
 
 export const serverReducer = combineReducers({
   router: routerReducer,
+  wallet: walletStateReducer,
   accounts: accountReducer,
   localAccounts: localUserAccountReducer,
   lixies: lixiReducer,
@@ -90,6 +104,7 @@ export const serverReducer = combineReducers({
   settings: settingsReducer,
   notifications: notificationReducer,
   pages: pageReducer,
+  posts: postReducer,
   countries: countryReducer,
   states: stateReducer,
   // This is use for useReduxEffect
@@ -99,12 +114,14 @@ export const serverReducer = combineReducers({
 
 export const appReducer = combineReducers({
   router: routerReducer,
+  wallet: persistReducer(walletPersistConfig, walletStateReducer),
   accounts: persistReducer(accountPersistConfig, accountReducer),
   localAccounts: persistReducer(localAccountPersistConfig, localUserAccountReducer),
   lixies: persistReducer(lixiPersistConfig, lixiReducer),
   claims: persistReducer(claimsPersistConfig, claimReducer),
   settings: persistReducer(settingsPersistConfig, settingsReducer),
   pages: persistReducer(shopPersistConfig, pageReducer),
+  posts: persistReducer(postPersistConfig, postReducer),
   notifications: notificationReducer,
   envelopes: envelopeReducer,
   loading: loadingReducer,

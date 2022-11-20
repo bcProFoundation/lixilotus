@@ -7,7 +7,6 @@ import {
   renameAccountSuccess,
   selectAccountSuccess,
   setAccount,
-  setAccountBalance,
   refreshLixiListSuccess,
   setUpload,
   removeUpload,
@@ -22,7 +21,8 @@ const initialState: AccountsState = accountsAdapter.getInitialState({
   lixiIdsById: {},
   envelopeUpload: null,
   pageAvatarUpload: null,
-  pageCoverUpload: null
+  pageCoverUpload: null,
+  postCoverUploads: []
 });
 
 export const accountReducer = createReducer(initialState, builder => {
@@ -61,18 +61,6 @@ export const accountReducer = createReducer(initialState, builder => {
     .addCase(deleteAccountSuccess, (state, action) => {
       accountsAdapter.removeOne(state, action.payload);
     })
-    .addCase(setAccountBalance, (state, action) => {
-      const selectedId = state.selectedId;
-      if (selectedId) {
-        const updateAccount: Update<Account> = {
-          id: selectedId,
-          changes: {
-            balance: action.payload
-          }
-        };
-        accountsAdapter.updateOne(state, updateAccount);
-      }
-    })
     .addCase(setUpload, (state, action) => {
       const { type, upload } = action.payload;
 
@@ -86,10 +74,13 @@ export const accountReducer = createReducer(initialState, builder => {
         case UPLOAD_TYPES.PAGE_COVER:
           state.pageCoverUpload = upload;
           break;
+        case UPLOAD_TYPES.POST:
+          state.postCoverUploads.push(upload);
+          break;
       }
     })
     .addCase(removeUpload, (state, action) => {
-      const { type } = action.payload;
+      const { type, id } = action.payload;
 
       switch (type) {
         case UPLOAD_TYPES.ENVELOPE:
@@ -100,6 +91,11 @@ export const accountReducer = createReducer(initialState, builder => {
           break;
         case UPLOAD_TYPES.PAGE_COVER:
           state.pageCoverUpload = null;
+          break;
+        case UPLOAD_TYPES.POST:
+          state.postCoverUploads = state.postCoverUploads.filter(image => {
+            return image.id !== id;
+          });
           break;
       }
     })

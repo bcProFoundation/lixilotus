@@ -19,7 +19,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     this.logger.error(error);
     let err = error;
     while (err && (err as any).cause) {
-      const logStack = err.stack ? ` - stack: ${err.stack} ` : '';
+      const logStack = err?.stack ? ` - stack: ${err?.stack} ` : '';
       this.logger.error(err.message + logStack);
       err = (err as any).cause();
     }
@@ -42,6 +42,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
       `error at request method: ${request.method} request url${request.url}`,
       JSON.stringify(devErrorResponse)
     );
-    response.code(statusCode).send(process.env.NODE_ENV === 'development' ? devErrorResponse : prodErrorResponse);
+    response
+      .code(statusCode)
+      .send(
+        process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'local'
+          ? devErrorResponse
+          : prodErrorResponse
+      );
   }
 }

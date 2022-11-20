@@ -7,6 +7,7 @@ import React from 'react';
 import { END } from 'redux-saga';
 import { getSelectorsByUserAgent } from 'react-device-detect';
 import PageDetailLayout from '@components/Layout/PageDetailLayout';
+import ProfileDetail from '@components/Profile/ProfileDetail';
 
 const PageDetailPage = props => {
   const { page, isMobile } = props;
@@ -31,7 +32,7 @@ const PageDetailPage = props => {
           cardType: 'summary_large_image'
         }}
       />
-      <PageDetail page={page} isMobile={isMobile} />
+      <ProfileDetail page={page} isMobile={isMobile} />
     </>
   );
 };

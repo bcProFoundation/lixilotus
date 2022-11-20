@@ -7,7 +7,7 @@ import { getAllAccounts, getSelectedAccount } from 'src/store/account/selectors'
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
 import { openModal } from 'src/store/modal/actions';
-import { WalletContext } from 'src/store/store';
+import { WalletContext } from '@context/index';
 import styled from 'styled-components';
 import {
   CheckOutlined,
@@ -30,10 +30,11 @@ import { StyledCollapse } from '@components/Common/StyledCollapse';
 import { StyledSpacer } from '@components/Common/StyledSpacer';
 import { setInitIntlStatus, updateLocale } from '@store/settings/actions';
 import { getCurrentLocale } from '@store/settings/selectors';
-import { AuthenticationContext } from 'src/context';
+import { AuthenticationContext } from '@context/index';
 import getOauth2URL from '@utils/oauth2';
 import { DeleteAccountModalProps } from './DeleteAccountModal';
 import { RenameAccountModalProps } from './RenameAccountModal';
+import axios from 'axios';
 
 const { Panel } = Collapse;
 
@@ -157,6 +158,13 @@ export const WrapperPage = styled.div`
   box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
 `;
 
+export const WrapperPost = styled.div`
+  padding: 20px 30px;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
+`;
+
 const GeneralSettingsItem = styled.div`
   display: flex;
   align-items: center;
@@ -179,10 +187,8 @@ const GeneralSettingsItem = styled.div`
 `;
 
 const Settings: React.FC = () => {
-  const ContextValue = React.useContext(WalletContext);
+  const Wallet = React.useContext(WalletContext);
   const authenticationContextValue = React.useContext(AuthenticationContext);
-  const { Wallet } = ContextValue;
-
   const isLoading = useAppSelector(getIsGlobalLoading);
   const [seedInput, openSeedInput] = useState(false);
   const [isValidMnemonic, setIsValidMnemonic] = useState<boolean | null>(null);
@@ -201,6 +207,17 @@ const Settings: React.FC = () => {
   useEffect(() => {
     setOtherAccounts(_.filter(savedAccounts, acc => acc.id !== selectedAccount?.id));
   }, [savedAccounts]);
+
+  useEffect(() => {
+    if (otherAccounts.length <= 0) {
+      localLogout();
+    }
+  }, [otherAccounts]);
+
+  const localLogout = async () => {
+    const url = '/_api/local-logout';
+    await axios.post(url);
+  };
 
   const currentLocale = useAppSelector(getCurrentLocale);
 
@@ -420,7 +437,8 @@ const Settings: React.FC = () => {
                   </Tag>
                 )}
               </GeneralSettingsItem>
-              <StyledSpacer />[<Button href={getOauth2URL()}>Login</Button>
+              <StyledSpacer />
+              <Button href={getOauth2URL()}>Login</Button>
             </>
           )}
         </Spin>

@@ -6,7 +6,6 @@ import {
   DatePicker,
   Form,
   Input,
-  List,
   Modal,
   Radio,
   RadioChangeEvent,
@@ -27,30 +26,24 @@ import { closeModal, openModal } from 'src/store/modal/actions';
 import { showToast } from 'src/store/toast/actions';
 import styled from 'styled-components';
 
-import { DollarOutlined, PlusSquareOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import { DollarOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import {
-  AntdFormWrapper,
   FormItemCharityAddressInput,
   FormItemStaffAddressInput
 } from '@bcpros/lixi-components/components/Common/EnhancedInputs';
-import { SmartButton } from '@bcpros/lixi-components/components/Common/PrimaryButton';
-import {
-  AdvancedCollapse,
-  LixiCollapse,
-  StyledCollapse
-} from '@bcpros/lixi-components/components/Common/StyledCollapse';
+import { StyledCollapse } from '@bcpros/lixi-components/components/Common/StyledCollapse';
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import { countries, UPLOAD_BUTTON_TYPE, UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
 import { Account } from '@bcpros/lixi-models/lib/account';
 import { ClaimType, GenerateLixiCommand, LixiType, LotteryAddress, NetworkType } from '@bcpros/lixi-models/lib/lixi';
 import CountrySelectDropdown from '@components/Common/CountrySelectDropdown';
 import EnvelopeCarousel from '@components/Common/EnvelopeCarousel';
+import { StyledUploader } from '@components/Common/Uploader/Uploader';
+import { WalletContext } from '@context/walletProvider';
 import { getEnvelopeUpload } from '@store/account/selectors';
-import { WalletContext } from '@store/store';
 import { isValidAmountInput } from '@utils/validation';
-import TextArea from 'antd/lib/input/TextArea';
 import { CreateLixiConfirmationModalProps } from './CreateLixiConfirmationModal';
-import { StyledUploader } from '@components/Common/Uploader';
+import { fromSmallestDenomination } from '@utils/cashMethods';
 
 const { Panel } = Collapse;
 const { Option } = Select;
@@ -244,7 +237,8 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
   const envelopeUpload = useAppSelector(getEnvelopeUpload);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const { XPI, Wallet } = React.useContext(WalletContext);
+  const Wallet = React.useContext(WalletContext);
+  const txFee = Math.ceil(Wallet.XPI.BitcoinCash.getByteCount({ P2PKH: 1 }, { P2PKH: 1 }) * 2.01); //satoshi
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -385,10 +379,11 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
         (lixiType == LixiType.Equal && newSubLixiIsValid && newLixiAmountValueIsValid))) ||
     (claimType == ClaimType.Single &&
       lixiType == LixiType.Random &&
+      newLixiAmountValueIsValid &&
       newLixiMinValueIsValid &&
       newLixiMaxValueIsValid) ||
-    (lixiType == LixiType.Fixed && newLixiFixedValueIsValid) ||
-    (lixiType == LixiType.Divided && newLixiDividedValueIsValid);
+    (lixiType == LixiType.Fixed && newLixiAmountValueIsValid && newLixiFixedValueIsValid) ||
+    (lixiType == LixiType.Divided && newLixiAmountValueIsValid && newLixiDividedValueIsValid);
 
   const handleChangeClaimType = (e: RadioChangeEvent) => {
     const { value } = e.target;
@@ -403,43 +398,93 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
 
   const handleNewLixiAmountInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    setNewLixiAmountValueIsValid(isValidAmountInput(value));
     setNewLixiAmount(value);
+
+    if (
+      (claimType == ClaimType.Single && isEmpty(value)) ||
+      (claimType == ClaimType.Single &&
+        Number(value) > 0 &&
+        fromSmallestDenomination(account.balance) >= Number(value) + fromSmallestDenomination(txFee)) ||
+      (claimType == ClaimType.OneTime &&
+        Number(value) > 0 &&
+        fromSmallestDenomination(account.balance) >=
+          Number(value) + fromSmallestDenomination(txFee) * Number(newNumberOfSubLixi))
+    ) {
+      setNewLixiAmountValueIsValid(true);
+    } else {
+      setNewLixiAmountValueIsValid(false);
+    }
   };
 
   const handleNewNumberOfSubLixi = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewSubLixiIsValid(isValidAmountInput(value) && Number(value) !== 0);
     setNewNumberOfSubLixi(value);
+
+    if (value && Number(value) > 0 && !isEmpty(value)) {
+      setNewSubLixiIsValid(true);
+    } else {
+      setNewSubLixiIsValid(false);
+    }
   };
 
   const handleChangeMinValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewLixiMinValueIsValid(isValidAmountInput(value));
     setNewLixiMinValue(value);
+
+    if (value && Number(value) > 0 && !isEmpty(value)) {
+      setNewLixiMinValueIsValid(true);
+    } else {
+      setNewLixiMinValueIsValid(false);
+    }
   };
   const handleChangeMaxValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewLixiMaxValueIsValid(isValidAmountInput(value) && Number(value) !== 0);
     setNewLixiMaxValue(value);
+
+    if (value && Number(value) > 0 && !isEmpty(value)) {
+      setNewLixiMaxValueIsValid(true);
+    } else {
+      setNewLixiMaxValueIsValid(false);
+    }
   };
 
   const handleChangeFixedValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewLixiFixedValueIsValid(isValidAmountInput(value));
     setNewLixiFixedValue(value);
+
+    if (value && Number(value) > 0 && !isEmpty(value)) {
+      setNewLixiFixedValueIsValid(true);
+    } else {
+      setNewLixiFixedValueIsValid(false);
+    }
   };
 
   const handleChangeDividedValue = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewLixiDividedValueIsValid(isValidAmountInput(value));
     setNewLixiDividedValue(value);
+
+    if (value && Number(value) > 0 && !isEmpty(value)) {
+      setNewLixiDividedValueIsValid(true);
+    } else {
+      setNewLixiDividedValueIsValid(false);
+    }
   };
 
   const handleNewNumberLixiPerPackage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setNewPackageIsValid(isValidAmountInput(value));
     setNewNumberLixiPerPackage(value);
+
+    if (value && Number(value) > 0 && !isEmpty(value)) {
+      setNewPackageIsValid(true);
+    } else {
+      setNewPackageIsValid(false);
+    }
   };
 
   const handleChangeCountry = (value, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -503,7 +548,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
     setCheckMaxClaim(value);
   };
 
-  const handlePackage = e => {
+  const handleCheckPackageChange = e => {
     const value = e.target.checked;
     setCheckPackage(value);
   };
@@ -619,6 +664,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
       numberOfSubLixi: newNumberOfSubLixi,
       envelopeId: newEnvelopeId,
       envelopeMessage: newEnvelopeMessage,
+      shouldGroupToPackage: checkPackage,
       numberLixiPerPackage: newNumberLixiPerPackage,
       upload: envelopeUpload,
       staffAddress: newStaffAddress,
@@ -637,6 +683,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
       newActivatedAt,
       newLixiAmount,
       newNumberOfSubLixi,
+      shouldGroupToPackage: checkPackage,
       newNumberLixiPerPackage,
       newLixiMinValue,
       newLixiMaxValue,
@@ -810,7 +857,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
     } else {
       return (
         <Form.Item validateStatus={newPackageIsValid === null || newPackageIsValid ? '' : 'error'}>
-          <Checkbox value={checkPackage} onChange={e => handlePackage(e)}>
+          <Checkbox value={checkPackage} onChange={e => handleCheckPackageChange(e)}>
             {intl.get('account.numberLixiPerPackage')}
           </Checkbox>
           {checkPackage === true && (
@@ -985,13 +1032,23 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
           </CreateForm>
 
           <CreateForm className="form-child" layout="vertical">
-            <Form.Item className="lixiName" label={intl.get('lixi.name')} required>
+            <Form.Item
+              className="lixiName"
+              label={intl.get('lixi.name')}
+              required
+              validateStatus={newLixiNameIsValid === null || newLixiNameIsValid ? '' : 'error'}
+            >
               <CreateInput name="lixiName" value={newLixiName} onChange={e => handleNewLixiNameInput(e)} />
             </Form.Item>
 
-            <Form.Item label={intl.get('account.budget')} required={claimType == ClaimType.OneTime}>
+            <Form.Item
+              label={intl.get('account.budget')}
+              required={claimType == ClaimType.OneTime} //|| claimType == ClaimType.Single && Number(newLixiAmount) <= 0}
+              validateStatus={newLixiAmountValueIsValid === null || newLixiAmountValueIsValid ? '' : 'error'}
+            >
               <CreateInput
                 name="lixiAmount"
+                type="number"
                 value={newLixiAmount}
                 onChange={e => handleNewLixiAmountInput(e)}
                 suffix={currency.ticker}

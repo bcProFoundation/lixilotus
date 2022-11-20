@@ -47,7 +47,7 @@ export class ClaimController {
   ) {}
 
   @Get(':id')
-  async getEnvelope(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<ViewClaimDto> {
+  async getClaim(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<ViewClaimDto> {
     try {
       const claim = await this.prisma.claim.findUnique({
         where: {
@@ -66,15 +66,58 @@ export class ClaimController {
         throw new VError(claimDoesNotExist);
       }
 
+      const lixi = await this.prisma.lixi.findUnique({
+        where: {
+          id: claim.lixiId
+        },
+        include: {
+          package: true,
+          uploadDetail: true
+        }
+      });
+
+      let image, thumbnail;
+
+      if (lixi?.parentId) {
+        const parentLixi = await this.prisma.lixi.findFirst({
+          where: {
+            id: lixi.parentId
+          },
+          include: {
+            uploadDetail: true
+          }
+        });
+        if (parentLixi!.uploadDetail) {
+          const upload = await this.prisma.upload.findFirst({
+            where: {
+              id: parentLixi!.uploadDetail.uploadId
+            }
+          });
+          image = upload?.bucket ? `${process.env.AWS_ENDPOINT}/${upload.bucket}/${upload.sha}` : upload?.url;
+          thumbnail = upload?.url?.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+        }
+      } else {
+        if (lixi?.uploadDetail) {
+          const upload = await this.prisma.upload.findFirst({
+            where: {
+              id: lixi.uploadDetail.uploadId
+            }
+          });
+          image = upload?.bucket ? `${process.env.AWS_ENDPOINT}/${upload.bucket}/${upload.sha}` : upload?.url;
+          thumbnail = upload?.url?.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+        }
+      }
+
       let result: ViewClaimDto = {
         id: claim.id,
         lixiId: claim.lixiId,
-        image: claim.lixi.envelope?.image ?? '',
-        thumbnail: claim.lixi.envelope?.thumbnail ?? '',
+        image: image ? image : claim.lixi.envelope?.image || '',
+        thumbnail: thumbnail ? thumbnail : claim.lixi.envelope?.thumbnail || '',
         amount: Number(claim.amount),
         message: claim.lixi.envelopeMessage,
         nftTokenId: claim.nftTokenId,
-        nftTokenUrl: claim.nftTokenUrl
+        nftTokenUrl: claim.nftTokenUrl,
+        createDate: claim.createdAt
       };
       return result;
     } catch (err: unknown) {
@@ -160,7 +203,8 @@ export class ClaimController {
             id: lixiId
           },
           include: {
-            package: true
+            package: true,
+            uploadDetail: true
           }
         });
 
@@ -189,7 +233,7 @@ export class ClaimController {
             }
         }
 
-        if (process.env.NODE_ENV !== 'development' && claimApi.captchaToken !== 'isAbcpay') {
+        if (process.env.NODE_ENV === 'production' && claimApi.captchaToken !== 'isAbcpay') {
           await checkingCaptcha();
           const geolocation = geoip.lookup(ip);
           const country = countries.find(country => country.id === lixi?.country);
@@ -272,14 +316,18 @@ export class ClaimController {
         const xpiBalance = fromSmallestDenomination(balance);
 
         let numberOfDistributions = 1;
+        let addRegistered = 1;
         let satoshisToSend;
-        !_.isNil(lixi.package?.registrant) && numberOfDistributions++;
+        !_.isNil(lixi.package?.registrant) && (addRegistered += numberOfDistributions);
         if (parentLixi && parentLixi.claimType == ClaimType.OneTime) {
           numberOfDistributions = parentLixi.joinLotteryProgram
             ? parentLixi.distributions.length + 2
             : parentLixi.distributions.length + 1;
 
-          const xpiValue = lixi.amount;
+          const totalAmountBeforeRegister = lixi.amount * numberOfDistributions;
+          const amountFundingRegistered = totalAmountBeforeRegister / addRegistered;
+
+          const xpiValue = amountFundingRegistered;
           satoshisToSend = toSmallestDenomination(new BigNumber(xpiValue));
         } else if (lixi.lixiType == LixiType.Random) {
           const maxXpiValue = xpiBalance < lixi.maxValue ? xpiBalance : lixi.maxValue;
@@ -306,18 +354,17 @@ export class ClaimController {
         const amountSats = Math.floor(satoshisToSend.toNumber());
 
         let outputs: { address: string; amountSat: number }[] = [];
-        console.log('numberOfDistributions: ', numberOfDistributions);
 
         // registrant
         !_.isNil(lixi.package?.registrant)
           ? outputs.push(
               {
                 address: claimApi.claimAddress,
-                amountSat: amountSats / 2
+                amountSat: amountSats
               },
               {
                 address: lixi.package?.registrant as unknown as string,
-                amountSat: amountSats / 2
+                amountSat: amountSats
               }
             )
           : (outputs = [
@@ -326,12 +373,6 @@ export class ClaimController {
                 amountSat: amountSats
               }
             ]);
-        // outputs = [
-        //   {
-        //     address: claimApi.claimAddress,
-        //     amountSat: amountSats
-        //   }
-        // ];
 
         // distributions
         if (parentLixi && parentLixi.claimType == ClaimType.OneTime && parentLixi?.distributions) {
@@ -418,8 +459,7 @@ export class ClaimController {
             data: {
               totalClaim: lixi.totalClaim + BigInt(amountSats),
               claimedNum: lixi.claimedNum + 1,
-              isClaimed: lixi.claimType == ClaimType.OneTime ? true : false,
-              amount: lixi.claimType == ClaimType.OneTime ? 0 : lixi.amount
+              isClaimed: lixi.claimType == ClaimType.OneTime ? true : false
             }
           });
 
@@ -445,11 +485,43 @@ export class ClaimController {
             throw new VError(unableClaim);
           }
 
+          let image, thumbnail;
+
+          if (lixi.parentId) {
+            const parentLixi = await this.prisma.lixi.findFirst({
+              where: {
+                id: lixi.parentId
+              },
+              include: {
+                uploadDetail: true
+              }
+            });
+            if (parentLixi!.uploadDetail) {
+              const upload = await this.prisma.upload.findFirst({
+                where: {
+                  id: parentLixi!.uploadDetail.uploadId
+                }
+              });
+              image = upload?.bucket ? `${process.env.AWS_ENDPOINT}/${upload.bucket}/${upload.sha}` : upload?.url;
+              thumbnail = upload?.url?.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+            }
+          } else {
+            if (lixi.uploadDetail) {
+              const upload = await this.prisma.upload.findFirst({
+                where: {
+                  id: lixi.uploadDetail.uploadId
+                }
+              });
+              image = upload?.bucket ? `${process.env.AWS_ENDPOINT}/${upload.bucket}/${upload.sha}` : upload?.url;
+              thumbnail = upload?.url?.replace(/(\.[\w\d_-]+)$/i, '-200$1');
+            }
+          }
+
           let result: ViewClaimDto = {
             id: claimId,
             lixiId: claim.lixiId,
-            image: claim.lixi.envelope?.image ?? '',
-            thumbnail: claim.lixi.envelope?.thumbnail ?? '',
+            image: image ? image : claim.lixi.envelope?.image || '',
+            thumbnail: thumbnail ? thumbnail : claim.lixi.envelope?.thumbnail || '',
             amount: Number(claim.amount),
             message: claim.lixi.envelopeMessage,
             nftTokenId: claim.nftTokenId,

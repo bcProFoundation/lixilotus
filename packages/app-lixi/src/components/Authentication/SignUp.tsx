@@ -1,11 +1,12 @@
 import React, { useContext } from 'react';
 import { Modal } from 'antd';
 import styled from 'styled-components';
-import { AuthenticationContext } from 'src/context';
+import { AuthenticationContext } from '@context/index';
 import PrimaryButton, { SecondaryButton } from '@components/Common/PrimaryButton';
 import { ThemedLockOutlined } from '@bcpros/lixi-components/components/Common/CustomIcons';
 
 const StyledSignUp = styled.div`
+  padding: 10px 30px 120px;
   h2 {
     color: ${props => props.theme.wallet.text.primary};
     font-size: 25px;

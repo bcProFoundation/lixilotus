@@ -16,20 +16,10 @@ export interface SagaStore extends Store {
   __sagaTask: Task;
 }
 
-const { getXPI } = useXPI();
-export const XPI: BCHJS = getXPI(0);
-export const Wallet = useWallet(XPI);
-
-export const WalletContext = createContext({ XPI, Wallet });
-
 const makeStore = (context: Context) => {
   const isServer = typeof window === 'undefined';
 
   const sagaMiddleware = createSagaMiddleware({
-    context: {
-      XPI,
-      Wallet
-    },
     onError: (error: Error, { sagaStack: string }) => {
       console.log(error);
     }
@@ -68,7 +58,7 @@ const makeStore = (context: Context) => {
         process.env.NODE_ENV === 'production'
           ? false
           : {
-              actionsBlacklist: ['lixi/setLixiBalance', 'account/setAccountBalance']
+              actionsBlacklist: ['wallet/writeWalletStatus']
             },
       preloadedState: initialState
     });

@@ -71,48 +71,28 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
         <StyledCointainerAccess className={className} onClick={handleOnClick}>
           <ItemAccess icon={HomeOutlined} text={'Home'} active={selectedKey === '/'} key="home" href={'/'} />
           <ItemAccess
+            icon={ShopOutlined}
+            text={'Page'}
+            active={selectedKey.includes('/page')}
+            key="page-feed"
+            href={'/page/feed'}
+          />
+          <ItemAccess
             icon={WalletOutlined}
             text={'Accounts'}
             active={selectedKey === '/wallet'}
             key="wallet-lotus"
             href={'/wallet'}
           />
-          <ItemAccess
-            icon={GiftOutlined}
-            text={'Lixi'}
-            active={selectedKey === '/lixies'}
-            key="lixi"
-            href={'/lixies'}
-          />
-          <ItemAccess icon={SendOutlined} text={'Send'} active={selectedKey === '/send'} key="send" href={'/send'} />
-          <ItemAccess
-            icon={EditOutlined}
-            text={'Register Pack'}
-            active={selectedKey === '/admin/pack-register'}
-            key="register-pack"
-            href={'/admin/pack-register'}
-          />
-          <ItemAccess
-            icon={PlusCircleOutlined}
-            text={'Create Page'}
-            active={selectedKey === '/page/create'}
-            key="create-page"
-            href={'/page/create'}
-          />
+          <ItemAccess icon={GiftOutlined} text={'Lixi'} active={selectedKey === '/lixi'} key="lixi" href={'/lixi'} />
           <ItemAccess
             icon={SettingOutlined}
-            text={'Setting'}
-            active={selectedKey === '/admin/settings'}
-            key="setting"
-            href={'/admin/settings'}
+            text={'Settings'}
+            active={selectedKey === '/settings'}
+            key="settings"
+            href={'/settings'}
           />
-          <ItemAccess
-            icon={SendOutlined}
-            text={'Send Lotus'}
-            active={false}
-            key="send-lotus"
-            href={'https://sendlotus.com'}
-          />
+          <ItemAccess icon={SendOutlined} text={'Send'} active={selectedKey === '/send'} key="send" href={'/send'} />
           <ItemAccess
             icon={ShopOutlined}
             text={'Lotusia Shop'}

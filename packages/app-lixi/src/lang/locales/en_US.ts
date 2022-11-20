@@ -17,6 +17,7 @@ export default {
   /* 00. special*/
   'special.or': 'Or',
   'special.cancel': 'Cancel',
+  'special.copy': 'Copy',
 
   /* 01.General */
   'general.home': 'Home',
@@ -35,10 +36,32 @@ export default {
   'general.scanBarcode': 'Scan Barcode',
   'general.scanBarcodeError':
     'Error in Barcode scanner. Please ensure your camera is not in use. Due to Apple restrictions on third-party browsers, you must use Safari browser for barcode scanning on an iPhone.',
-  'general.num': 'Num',
+  'general.num': 'No.',
   'general.amount': 'Amount',
   'general.chooseCamera': 'Please choose camera',
   'general.chooseCameraTip': 'Try switching camera when its not working properly',
+  'general.notifications': 'Notifications',
+  'general.viewmore': 'View more',
+  'general.ended': 'Ended',
+  'general.running': 'Running',
+  'general.waiting': 'Waiting',
+  'general.page': 'Page',
+  'general.sendLotus': 'Send Lotus',
+  'general.lotusiaShop': 'Lotusia Shop',
+  'general.send': 'Send',
+  'general.createPage': 'Create Page',
+  'general.pages': 'Pages',
+  'general.profile': 'Profile',
+  'general.claimed': 'claimed',
+  'general.manageAccounts': 'Manage Accounts',
+  'general.subTitleSettings': 'Set Privacy and Notification settings',
+  'general.manageLixi': 'Manage Lixi',
+  'general.manageInfo': 'Manage Info',
+  'general.managePage': 'Manage Page',
+  'general.manageNotifications': 'Manage Notifications',
+  'general.feedPage': 'Discover and connect with businesses on LixiLotus',
+  'general.subTitleEditPage': 'Change information your page',
+  'general.subTitleClaimed': 'Detail of claimed',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
@@ -54,6 +77,7 @@ export default {
   'account.equal': 'Equal',
   'account.eachClaim': 'Value of each claim',
   'account.perPack': 'Per pack',
+  'account.lixiForPack': 'lixi/package',
   'account.numberLixiPerPackage': 'number of sub lixi per package',
   'account.numberOfSubLixi': 'Number of codes',
   'account.defaultValueToGive': 'Default value to give',
@@ -125,7 +149,7 @@ export default {
   'account.networkType': 'Network Type',
 
   /* 03.Lixi */
-  'lixi.createLixi': 'Add new lixi',
+  'lixi.createLixi': 'Create new lixi',
   'lixi.sectionCreateLixi': 'Section create new lixi',
   'lixi.sub-lixi': 'Sub-lixi',
   'lixi.dividedBy': 'Divided by',
@@ -160,7 +184,7 @@ export default {
   'lixi.type': 'Type of code',
   'lixi.rules': 'Rules',
   'lixi.totalClaimed': 'Total Claimed',
-  'lixi.remainingLixi': 'Remaining Lixi',
+  'lixi.remaining': 'Remaining',
   'lixi.remainingXPI': 'XPI Remaining',
   'lixi.message': 'Message',
   'lixi.loadmore': 'Load More',
@@ -235,6 +259,7 @@ export default {
   'NetworkType.FamilyFriendlyInfo': 'Max 5 users can claim Lixi under the wifi network',
   'NetworkType.NoWifiRestrictionInfo': 'Unlimited user can claim Lixi under the wifi network',
   'lixi.detail': 'Details of lixi',
+  'lixi.accountLixi': 'account of lixi ',
   'lixi.balance': 'Balance',
   'lixi.valuePerClaim': 'Value per claim',
   'lixi.validity': 'Validity',
@@ -242,12 +267,16 @@ export default {
   'lixi.archive': 'Archive',
   'lixi.unarchive': 'Unarchive',
   'lixi.withdraw': 'Withdraw',
+  'lixi.claimed': 'Claimed',
+  'lixi.budget': 'Budget',
+  'lixi.redeemed': 'Redeemed',
 
   /* 04.Claim */
   'claim.claim': 'Claim',
+  'claim.claimReport': 'Claim Report',
   'claim.titleShared': 'Lixi Program sent you a small gift!',
   'claim.copyToClipboard': 'Link copied to clipboard',
-  'claim.youClaimedLixi': 'You have claimed lixi',
+  'claim.youClaimedLixi': 'Successful claim',
   'claim.addressNotValid': 'Destination is not a valid {ticker} address',
   'claim.invalidAddress': 'Invalid {ticker} address',
   'claim.tickerAddress': '{ticker} Address',
@@ -316,6 +345,8 @@ export default {
   'notification.unableToFetch': 'Unable to fetch the notification.',
   'notification.unableToDelete': 'Unable to delete the notification.',
   'notification.unableToRead': 'Unable to read the notification.',
+  'notification.earlier': 'Earlier',
+  'notification.readAll': 'Read all',
 
   /* 10.NFT */
   'lixinft.unableToMint': 'Unable to mint the lixi NFT',
@@ -383,5 +414,37 @@ export default {
 
   /* 14.Country */
   'country.unablegetCountries': 'Unable to get countries',
-  'country.unablegetStates': 'Unable to get states'
+  'country.unablegetStates': 'Unable to get states',
+
+  /* 15.Page */
+  'post.createNewPage': 'Create new post',
+  'post.createPost': 'Create post',
+  'post.editPage': 'Edit post',
+  'post.name': 'Name',
+  'post.inputName': 'Please input name',
+  'post.title': 'Title',
+  'post.titleShared': 'Please input title',
+  'post.inputTitle': 'Please input title',
+  'post.walletAddress': 'Wallet address',
+  'post.avatar': 'Avatar',
+  'post.cover': 'Cover',
+  'post.upload': 'Click to upload',
+  'post.website': 'Website',
+  'post.description': 'Description',
+  'post.countryName': 'Country',
+  'post.country': 'Search to select country',
+  'post.stateName': 'State',
+  'post.state': 'Search to select state',
+  'post.address': 'Address',
+  'post.inputAddress': 'Please input address',
+  'post.couldNotpostPost': 'Could not create post',
+  'post.createPostSuccessful': 'Create post successful',
+  'post.unableCreatePostServer': 'Unable to create post on server',
+  'post.updatePageSuccessful': 'Update the post successful',
+  'post.errorWhenCreatePage': "There's an error happens when create new Page",
+  'post.copyToClipboard': 'Link copied to clipboard',
+  'post.unableCreatePost': 'Unable to create post.',
+  'post.unableUpdatePost': 'Unable to update the post.',
+  'post.selectAccountFirst': 'Please Select an account first before creating post',
+  'post.content': 'Content'
 };

@@ -9,15 +9,15 @@ import React from 'react';
 import { END } from 'redux-saga';
 import { getSelectorsByUserAgent } from 'react-device-detect';
 import ClaimedLayout from '@components/Layout/ClaimedLayout';
+import lixiApi from '@store/lixi/api';
+import { LixiDto } from '@bcpros/lixi-models';
 
 const ClaimPage = props => {
-  const { claim, isMobile } = props;
+  const { claim, isMobile, lixi } = props;
   const slug = numberToBase58(claim.id);
   const canonicalUrl = process.env.NEXT_PUBLIC_LIXI_URL + `claimed/${slug}`;
 
-  const imageUrl = claim?.image
-    ? process.env.NEXT_PUBLIC_LIXI_API + 'api/' + claim?.image
-    : process.env.NEXT_PUBLIC_LIXI_API + 'api/images/default.png';
+  const imageUrl = claim?.image ? claim?.image : process.env.NEXT_PUBLIC_LIXI_API + 'api/images/default.png';
 
   return (
     <>
@@ -38,7 +38,7 @@ const ClaimPage = props => {
           cardType: 'summary_large_image'
         }}
       />
-      <LixiClaimed claim={claim} isMobile={isMobile} />
+      <LixiClaimed claim={claim} isMobile={isMobile} lixi={lixi} />
     </>
   );
 };
@@ -56,10 +56,13 @@ export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) 
 
   const claim: ViewClaimDto = await claimApi.getById(claimId);
 
+  const lixi: LixiDto = await lixiApi.getById(claim.lixiId);
+
   return {
     props: {
       claim,
-      isMobile
+      isMobile,
+      lixi
     }
   };
 });

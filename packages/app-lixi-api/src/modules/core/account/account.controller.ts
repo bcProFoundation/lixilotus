@@ -24,7 +24,8 @@ import {
   Lixi,
   NotificationDto,
   PatchAccountCommand,
-  Account
+  Account,
+  fromSmallestDenomination
 } from '@bcpros/lixi-models';
 
 import * as _ from 'lodash';
@@ -358,23 +359,26 @@ export class AccountController {
       });
 
       const lixiesIds = lixies.map(item => item.id);
-      subLixies = await this.prisma.lixi.findMany({
-        where: {
-          parentId: { in: lixiesIds }
-        }
-      });
+      const results = lixies.map(async item => {
+        const subLixies = await this.prisma.lixi.groupBy({
+          _sum: {
+            amount: true,
+            totalClaim: true
+          },
+          where: {
+            parentId: { in: lixiesIds }
+          },
+          by: ['parentId']
+        });
 
-      const results = lixies.map(item => {
-        let claimCount = 0;
-        let subLixiTotalClaim = 0;
         let subLixiBalance = 0;
-        for (const sub of subLixies) {
-          if (item.id == sub.parentId) {
-            sub.isClaimed ? claimCount++ : claimCount;
-            subLixiTotalClaim += Number(sub.totalClaim);
-            subLixiBalance += Number(sub.amount);
+        let subLixiTotalClaim = 0;
+        subLixies.map(subLixi => {
+          if (subLixi.parentId == item.id) {
+            subLixiBalance = Number(subLixi._sum.amount);
+            subLixiTotalClaim = fromSmallestDenomination(Number(subLixi._sum.totalClaim));
           }
-        }
+        });
 
         return {
           ...item,
@@ -382,7 +386,6 @@ export class AccountController {
           lixiType: Number(item.lixiType),
           maxClaim: Number(item.maxClaim),
           claimedNum: Number(item.claimedNum),
-          claimCount: claimCount,
           subLixiTotalClaim: _.isNaN(subLixiTotalClaim) ? 0 : subLixiTotalClaim,
           subLixiBalance: _.isNaN(subLixiBalance) ? 0 : subLixiBalance
         } as unknown as Lixi;

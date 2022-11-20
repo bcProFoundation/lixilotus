@@ -87,9 +87,12 @@ const Wrapper = styled.div`
   :hover {
     border-color: ${props => props.theme.listItem.hoverBorder};
   }
+  @media (min-width: 768px) {
+    display: none;
+  }
 `;
 
-const MoreIcon = styled(Button)`
+export const MoreIcon = styled(Button)`
   background-color: white;
   border: 0;
 
@@ -111,6 +114,39 @@ const LixiNameStyled = styled(Col)`
 const StyledRow = styled(Row)`
   padding: 10px 0px;
 `;
+
+const StyledTag = styled(Tag)`
+  padding: 3px 10px;
+  border-radius: 30px;
+`;
+export const typeLixi = lixi => {
+  switch (lixi?.lixiType) {
+    case LixiType.Fixed:
+      return (
+        <>
+          {intl.get('account.fixed')} {lixi.fixedValue} {currency.ticker}
+        </>
+      );
+    case LixiType.Divided:
+      return (
+        <>
+          {intl.get('lixi.dividedBy')} {lixi.dividedValue}{' '}
+        </>
+      );
+    case LixiType.Equal:
+      return (
+        <>
+          {intl.get('account.equal')} {(lixi.subLixiBalance / lixi.numberOfSubLixi).toFixed(2)} {currency.ticker}
+        </>
+      );
+    default:
+      return (
+        <>
+          {intl.get('account.random')} {lixi?.minValue}-{lixi?.maxValue} {currency.ticker}
+        </>
+      );
+  }
+};
 
 type LixiListItemProps = {
   className?: string;
@@ -193,35 +229,6 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
     }
   };
 
-  const typeLixi = () => {
-    switch (lixi?.lixiType) {
-      case LixiType.Fixed:
-        return (
-          <>
-            {intl.get('account.fixed')} {lixi.fixedValue} {currency.ticker}
-          </>
-        );
-      case LixiType.Divided:
-        return (
-          <>
-            {intl.get('lixi.dividedBy')} {lixi.dividedValue}{' '}
-          </>
-        );
-      case LixiType.Equal:
-        return (
-          <>
-            {intl.get('account.equal')} {lixi.amount / lixi.numberOfSubLixi} {currency.ticker}
-          </>
-        );
-      default:
-        return (
-          <>
-            {intl.get('account.random')} {lixi?.minValue}-{lixi?.maxValue} {currency.ticker}
-          </>
-        );
-    }
-  };
-
   return (
     <>
       <Wrapper onClick={e => handleSelectLixi(lixi.id)}>
@@ -254,7 +261,7 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
             <Text type="secondary">Value per redeem</Text>
           </Col>
           <Col span={11} offset={3}>
-            {typeLixi()}
+            {typeLixi(lixi)}
           </Col>
         </StyledRow>
         <StyledRow>
@@ -282,7 +289,7 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
             <Text type="secondary">Status</Text>
           </Col>
           <Col span={11} offset={3}>
-            <Tag color={lixi.status === 'active' ? '#108ee9' : '##f50'}>{lixi.status}</Tag>
+            <StyledTag color={lixi.status === 'active' ? '#108ee9' : '#74546f'}>{lixi.status}</StyledTag>
           </Col>
         </StyledRow>
       </Wrapper>

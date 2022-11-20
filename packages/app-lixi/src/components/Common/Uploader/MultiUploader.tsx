@@ -13,6 +13,8 @@ import axiosClient from '@utils/axiosClient';
 import { UPLOAD_API } from '@bcpros/lixi-models/constants';
 import _ from 'lodash';
 import { ButtonType } from 'antd/lib/button';
+import { insertImage } from '@udecode/plate';
+import { useMyPlateEditorRef } from '../Plate/plateTypes';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -50,22 +52,25 @@ type UploaderProps = {
   buttonType?: string;
   isIcon?: boolean;
   showUploadList?: boolean;
+  icon?: any;
 };
 
-export const Uploader = ({ type, buttonName, buttonType, isIcon, showUploadList }: UploaderProps) => {
+export const MultiUploader = ({ type, buttonName, buttonType, isIcon, showUploadList, icon }: UploaderProps) => {
   const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
   const [previewVisible, setPreviewVisible] = useState(false);
   const dispatch = useAppDispatch();
 
+  const editor = useMyPlateEditorRef();
   const uploadButton = (
     <StyledButton
+      className={buttonType == 'text' ? 'clear-btn' : ''}
       disabled={loading}
       type={!_.isEmpty(buttonType) ? (buttonType as ButtonType) : 'primary'}
       size="middle"
       loading={loading}
-      icon={isIcon ? <UploadOutlined style={{ color: loading ? 'gray' : 'white' }} /> : null}
+      icon={isIcon && icon ? icon : <UploadOutlined style={{ color: loading ? 'gray' : 'white' }} />}
     >
       {!_.isEmpty(buttonName) ? buttonName : loading ? intl.get('lixi.uploadingText') : intl.get('lixi.uploadText')}
     </StyledButton>
@@ -134,9 +139,15 @@ export const Uploader = ({ type, buttonName, buttonType, isIcon, showUploadList 
     }
   };
 
+  const handleRemove = data => {
+    //TODO: fix crash when upload fail
+    const { upload } = data.response.payload;
+    dispatch(removeUpload({ type: type, id: upload.id }));
+  };
+
   const uploadImage = async options => {
     const { onSuccess, onError, file, onProgress } = options;
-    const url = UPLOAD_API;
+    const url = '/api/uploads/s3';
     const formData = new FormData();
 
     formData.append('file', file);
@@ -152,6 +163,10 @@ export const Uploader = ({ type, buttonName, buttonType, isIcon, showUploadList 
     await axiosClient
       .post(url, formData, config)
       .then(response => {
+        const { data } = response;
+        const url = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${data.bucket}/${data.sha}`;
+
+        insertImage(editor, url || null);
         return onSuccess(dispatch(setUpload({ upload: response.data, type: type })));
       })
       .catch(err => {
@@ -163,17 +178,15 @@ export const Uploader = ({ type, buttonName, buttonType, isIcon, showUploadList 
   return (
     <StyledContainer>
       <Upload
-        name="image-uploader"
-        listType="picture"
-        className="page-image-uploader"
-        maxCount={1}
+        name="images-uploader"
+        className="post-image-uploader"
         beforeUpload={beforeUpload}
         onChange={handleChange}
         onPreview={handlePreview}
         accept="image/png, image/gif, image/jpeg"
         progress={customProgress}
         customRequest={uploadImage}
-        onRemove={() => dispatch(removeUpload({ type: type }))}
+        onRemove={handleRemove}
         showUploadList={showUploadList}
       >
         {uploadButton}
@@ -187,7 +200,7 @@ export const Uploader = ({ type, buttonName, buttonType, isIcon, showUploadList 
   );
 };
 
-export const StyledUploader = styled(Uploader)`
+export const StyledMultiUploader = styled(MultiUploader)`
   .ant-upload.ant-upload-select-picture-card {
     background-color: white;
   }

@@ -1,6 +1,13 @@
+import { Field, ID, ObjectType } from '@nestjs/graphql';
+
+@ObjectType()
 export class Account {
+  @Field(() => ID)
   id: number;
+
+  @Field(() => String)
   name: string;
+
   mnemonic: string;
   encryptedMnemonic: string;
   encryptedSecret: string;
@@ -8,7 +15,10 @@ export class Account {
   createdAt?: Date;
   updatedAt?: Date;
   mnemonicHash: string;
+
+  @Field(() => String)
   address: string;
+
   balance?: number;
   language?: string;
 }

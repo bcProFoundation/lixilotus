@@ -2,7 +2,7 @@ import { SaveOutlined, ShareAltOutlined, LinkOutlined } from '@ant-design/icons'
 import intl from 'react-intl-universal';
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
-import { ViewClaimDto } from '@bcpros/lixi-models';
+import { ViewClaimDto, LixiDto } from '@bcpros/lixi-models';
 import { fromSmallestDenomination } from '@utils/cashMethods';
 import { numberToBase58 } from '@utils/encryptionMethods';
 import { Image, Popover, Button, message } from 'antd';
@@ -22,36 +22,18 @@ import {
 } from 'react-share';
 import { RWebShare } from 'react-web-share';
 import styled from 'styled-components';
+import moment from 'moment';
 
 const imageBrowserDownload = imageUri => {
   const filename = 'claim' + Date.now() + '.png';
   saveAs(imageUri, filename);
 };
 
-const ClaimButton = styled.button`
-  border: none;
-  color: ${props => props.theme.buttons.primary.color};
-  background-image: ${props => props.theme.buttons.primary.backgroundImage};
-  transition: all 0.5s ease;
-  width: 35%;
-  font-size: 16px;
-  background-size: 200% auto;
-  padding: 10px 0;
-  border-radius: 4px;
-  margin-bottom: 20px;
-  cursor: pointer;
-  :hover {
-    background-position: right center;
-    -webkit-box-shadow: ${props => props.theme.buttons.primary.hoverShadow};
-    -moz-box-shadow: ${props => props.theme.buttons.primary.hoverShadow};
-    box-shadow: ${props => props.theme.buttons.primary.hoverShadow};
-  }
-  svg {
-    fill: ${props => props.theme.buttons.primary.color};
-  }
-  @media (max-width: 768px) {
-    font-size: 16px;
-    padding: 10px 5px;
+const ClaimButton = styled(Button)`
+  color: #4e444b !important;
+  .anticon {
+    color: #4e444b;
+    font-size: 17px;
   }
 `;
 
@@ -118,6 +100,30 @@ const StyledSocialSharePanel = styled(SocialSharePanel)`
   }
 `;
 
+const InfoLixi = styled.div`
+  .label {
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.25px;
+    color: rgba(30, 26, 29, 0.6);
+    margin-bottom: 4px;
+  }
+  .claim-name,
+  .time-claim {
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.25px;
+    color: #1e1a1d;
+  }
+`;
+
+const StyledWalletLabel = styled(WalletLabel)`
+  font-size: 22px;
+  line-height: 28px;
+  color: #4e444b;
+  margin-bottom: 0.5rem;
+`;
+
 const popOverContent = shareUrl => {
   return <StyledSocialSharePanel shareUrl={shareUrl} />;
 };
@@ -126,21 +132,22 @@ type LixiClaimProps = {
   className?: string;
   claim: ViewClaimDto;
   isMobile: boolean;
+  lixi: LixiDto;
 };
 
-const LixiClaimed = ({ className, claim, isMobile }: LixiClaimProps) => {
+const LixiClaimed = ({ className, claim, isMobile, lixi }: LixiClaimProps) => {
   const baseApiUrl = process.env.NEXT_PUBLIC_LIXI_API;
   const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
 
-  const imageUrl = claim?.image ? baseApiUrl + 'api/' + claim?.image : baseApiUrl + 'api/' + 'images/default.png';
+  const imageUrl = claim?.image ? claim?.image : baseApiUrl + 'api/' + 'images/default.png';
 
   const slug = numberToBase58(claim.id);
 
   const shareUrl = `${baseUrl}claimed/${slug}`;
-
+  //
   const ShareSocialDropdown = (
     <Popover content={() => popOverContent(shareUrl)}>
-      <ClaimButton>
+      <ClaimButton type="primary" className="no-border-btn">
         <ShareAltOutlined /> Share
       </ClaimButton>
     </Popover>
@@ -155,7 +162,7 @@ const LixiClaimed = ({ className, claim, isMobile }: LixiClaimProps) => {
       }}
       onClick={() => {}}
     >
-      <ClaimButton>
+      <ClaimButton type="primary" className="no-border-btn">
         <ShareAltOutlined /> Share
       </ClaimButton>
     </RWebShare>
@@ -165,19 +172,25 @@ const LixiClaimed = ({ className, claim, isMobile }: LixiClaimProps) => {
     <div className={className}>
       {claim && claim.amount && (
         <>
-          <WalletLabel name={intl.get('claim.youClaimedLixi')} />
+          <StyledWalletLabel name={intl.get('claim.youClaimedLixi')} />
           <BalanceHeader balance={fromSmallestDenomination(claim.amount)} ticker="XPI" />
+          <InfoLixi>
+            <div style={{ marginTop: '2rem', marginBottom: '1rem' }}>
+              <p className="label">Lixi name</p>
+              <p className="claim-name">{lixi?.name}</p>
+            </div>
+            <div style={{ marginBottom: '2rem' }}>
+              <p className="label">Claimed time:</p>
+              <p className="time-claim">{moment(claim?.createDate).format('DD/MM/YYYY, HH:mm:ss') || 'Invalid time'}</p>
+            </div>
+          </InfoLixi>
           <Image src={imageUrl} alt="lixi" />
-          <h3>{claim.message}</h3>
-
           <div
             style={{
-              display: 'flex',
-              justifyContent: 'space-around',
-              paddingTop: '20px'
+              paddingTop: '2rem'
             }}
           >
-            <ClaimButton onClick={() => imageBrowserDownload(imageUrl)}>
+            <ClaimButton type="primary" className="no-border-btn" onClick={() => imageBrowserDownload(imageUrl)}>
               <SaveOutlined /> Save
             </ClaimButton>
             {isMobile ? ShareSocialButton : ShareSocialDropdown}
@@ -189,6 +202,11 @@ const LixiClaimed = ({ className, claim, isMobile }: LixiClaimProps) => {
 };
 
 const Container = styled(LixiClaimed)`
+  background: #ffffff;
+  box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
+  border-radius: 24px;
+  padding: 2rem;
+  margin-bottom: 2rem;
   .ant-modal,
   .ant-modal-content {
     height: 100vh !important;
@@ -196,6 +214,10 @@ const Container = styled(LixiClaimed)`
   }
   .ant-modal-body {
     height: calc(100vh - 110px) !important;
+  }
+  @media (max-width: 768px) {
+    padding: 0;
+    box-shadow: none;
   }
 `;
 

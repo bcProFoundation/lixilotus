@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { AuthorizationContext } from 'src/context';
+import { AuthorizationContext } from '@context/authorizationProvider';
 
 type BaseAction = {
   onClick: (...args: any) => void;

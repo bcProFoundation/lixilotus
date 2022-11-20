@@ -8,20 +8,20 @@ import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 
 import { LeftOutlined, LoadingOutlined } from '@ant-design/icons';
 
+import { navBarHeaderList } from '@components/Common/navBarHeaderList';
+import intl from 'react-intl-universal';
+import Sidebar from '@containers/Sidebar';
+import SidebarRanking from '@containers/Sidebar/SideBarRanking';
+import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
+import Topbar from '@containers/Topbar';
+import { loadLocale } from '@store/settings/actions';
+import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
+import { Header } from 'antd/lib/layout/layout';
+import { getIsGlobalLoading } from 'src/store/loading/selectors';
+import { injectStore } from 'src/utils/axiosClient';
 import ModalManager from '../../Common/ModalManager';
 import { GlobalStyle } from './GlobalStyle';
 import { theme } from './theme';
-import Sidebar from '@containers/Sidebar';
-import Topbar from '@containers/Topbar';
-import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
-import { loadLocale } from '@store/settings/actions';
-import { getIsGlobalLoading } from 'src/store/loading/selectors';
-import { injectStore } from 'src/utils/axiosClient';
-import SidebarRanking from '@containers/Sidebar/SideBarRanking';
-import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
-import { Header } from 'antd/lib/layout/layout';
-import { navBarHeaderList } from '@bcpros/lixi-models/constants';
-import DeviceProtectableComponentWrapper from '@components/Authentication/DeviceProtectableComponentWrapper';
 const { Content } = Layout;
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
@@ -39,12 +39,7 @@ const AppBody = styled.div`
   justify-content: center;
   width: 100%;
   min-height: 100vh;
-  background-image: ${props => props.theme.app.gradient};
   background-attachment: fixed;
-  @media (min-width: 1366px) {
-    max-width: 1366px;
-    margin: auto;
-  }
 `;
 
 const NavBarHeader = styled(Header)`
@@ -55,18 +50,16 @@ const NavBarHeader = styled(Header)`
   align-items: center;
   border-radius: 20px;
   box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
-  width: 88%;
-  margin: auto;
+  width: 100%;
   margin-bottom: 1rem;
   .anticon {
     font-size: 24px;
     color: var(--color-primary);
   }
   @media (max-width: 768px) {
-    padding: 0;
+    padding: 8px;
     width: 100%;
   }
-}
 `;
 
 const PathDirection = styled.div`
@@ -96,15 +89,26 @@ export const AppContainer = styled.div`
     width: 100%;
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
-    box-shadow: none;
+    padding: 0 16px;
+    padding: ;
+  }
+  @media (max-width: 420px) {
+    padding: 0 8px;
   }
   @media (min-width: 768px) {
     width: 100%;
     background: #fffbff;
-    padding: 0;
     .content-layout {
       // margin-top: 80px;
       z-index: 1;
+    }
+  }
+  .ant-layout.ant-layout-has-sider {
+    gap: 4rem;
+  }
+  .main-section-layout {
+    @media (max-width: 768px) {
+      padding-right: 0 !important;
     }
   }
 `;
@@ -160,11 +164,11 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   const intlInitDone = useAppSelector(getIntlInitStatus);
   const dispatch = useAppDispatch();
   const [height, setHeight] = useState(0);
-  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [navBarTitle, setNavBarTitle] = useState('');
-  const [navBarSubTitle, setNavBarSubTitle] = useState('');
+  const router = useRouter()
   const selectedKey = router.pathname ?? '';
+  const disableSideBarRanking = ['lixi', 'profile'];
   const ref = useRef(null);
   const setRef = useCallback(node => {
     if (node && node.clientHeight) {
@@ -182,7 +186,6 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   const getNamePathDirection = () => {
     const itemSelect = navBarHeaderList.find(item => item.path === selectedKey) || null;
     setNavBarTitle(itemSelect?.name || '');
-    setNavBarSubTitle(itemSelect?.subTitle || '');
   };
 
   useEffect(() => {
@@ -211,22 +214,28 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                     <Layout>
                       <SidebarShortcut></SidebarShortcut>
                       <Sidebar />
-                      <Layout>
+                      <Layout
+                        className="main-section-layout"
+                        style={{
+                          paddingRight: disableSideBarRanking.some(item => selectedKey.includes(item)) ? '2rem' : '0'
+                        }}
+                      >
                         <Topbar ref={setRef} />
                         {selectedKey !== '/' && (
                           <NavBarHeader>
                             <Link href="/" passHref>
-                              <LeftOutlined />
+                              <LeftOutlined onClick={() => router.back()} />
                             </Link>
                             <PathDirection>
-                              <h2>{navBarTitle}</h2>
-                              <p className="sub-title">{navBarSubTitle}</p>
+                              <h2>{navBarTitle.length > 0 ? intl.get(navBarTitle) : ''}</h2>
                             </PathDirection>
                           </NavBarHeader>
                         )}
                         <Content className="content-layout">{children}</Content>
                       </Layout>
-                      {selectedKey !== '/lixies' && <SidebarRanking></SidebarRanking>}
+                      {!disableSideBarRanking.some(item => selectedKey.includes(item)) && (
+                        <SidebarRanking></SidebarRanking>
+                      )}
                     </Layout>
                   </AppContainer>
                 </>

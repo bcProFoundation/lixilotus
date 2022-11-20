@@ -2,6 +2,12 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Account {
+  address: String!
+  id: ID!
+  name: String!
+}
+
 input CreatePageInput {
   address: String!
   avatar: String!
@@ -15,6 +21,13 @@ input CreatePageInput {
   website: String!
 }
 
+input CreatePostInput {
+  content: String!
+  pageAccountId: Int
+  pageId: String
+  uploadCovers: [String!]
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -22,7 +35,9 @@ scalar DateTime
 
 type Mutation {
   createPage(data: CreatePageInput!): Page!
+  createPost(data: CreatePostInput!): Post!
   updatePage(data: UpdatePageInput!): Page!
+  updatePost(data: UpdatePostInput!): Post!
 }
 
 """
@@ -87,13 +102,58 @@ enum PageOrderField {
   updatedAt
 }
 
+type Post {
+  content: String!
+
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  id: ID!
+  page: Page
+  pageAccount: Account!
+  pageAccountId: Int!
+  pageId: String
+  postAccount: Account!
+  postAccountId: Int!
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
+  uploadCovers: [String!]
+}
+
+type PostConnection {
+  edges: [PostEdge!]
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+type PostEdge {
+  cursor: String!
+  node: Post!
+}
+
+input PostOrder {
+  direction: OrderDirection!
+  field: PostOrderField!
+}
+
+"""Properties by which post connections can be ordered."""
+enum PostOrderField {
+  content
+  createdAt
+  id
+  updatedAt
+}
+
 type Query {
   allPages(after: String, before: String, first: Int, last: Int, orderBy: PageOrder, query: String, skip: Int): PageConnection!
+  allPosts(after: String, before: String, first: Int, last: Int, orderBy: PostOrder, query: String, skip: Int): PostConnection!
   page(id: String!): Page!
+  post(id: String!): Post!
 }
 
 type Subscription {
   pageCreated: Page!
+  postCreated: Post!
 }
 
 input UpdatePageInput {
@@ -106,6 +166,13 @@ input UpdatePageInput {
   name: String
   parentId: String
   state: String
-  title: String
+  title: String!
   website: String
+}
+
+input UpdatePostInput {
+  content: String!
+  cover: String
+  id: ID!
+  title: String
 }

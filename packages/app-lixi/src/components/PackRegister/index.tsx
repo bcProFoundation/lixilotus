@@ -40,10 +40,16 @@ const RegisterComponent: React.FC = () => {
         registrant: newRegistrantAddress
       };
       dispatch(registerLixiPack(dataApi));
+      setCurrentClaimCode('');
     } else {
-      dispatch(registerLixiPackFailure());
+      const dataApi: RegisterLixiPackCommand = {
+        claimCode: currentClaimCode,
+        account: selectedAccount,
+        registrant: newRegistrantAddress
+      };
+      dispatch(registerLixiPack(dataApi));
+      setCurrentClaimCode('');
     }
-    setCurrentClaimCode('');
   }
 
   const handleClaimCodeChange = e => {

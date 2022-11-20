@@ -15,7 +15,7 @@ import { currency } from './Ticker';
 export const CashLoadingIcon = <LoadingOutlined className="cashLoadingIcon" />;
 
 export const CashReceivedNotificationIcon = () => (
-  <Image height={'33px'} width={'30px'} src={currency.logo} preview={false} />
+  <Image height={'35px'} width={'35px'} src={currency.logo} preview={false} />
 );
 export const TokenReceivedNotificationIcon = () => (
   <Image src={currency.tokenLogo} height={'33px'} width={'30px'} preview={false} />
