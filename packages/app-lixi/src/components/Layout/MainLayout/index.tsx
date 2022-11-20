@@ -166,9 +166,8 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   const [height, setHeight] = useState(0);
   const [loading, setLoading] = useState(true);
   const [navBarTitle, setNavBarTitle] = useState('');
-  const router = useRouter()
+  const router = useRouter();
   const selectedKey = router.pathname ?? '';
-  const isNotFoundPage = router.pathname?.includes('404');
   const disableSideBarRanking = ['lixi', 'profile'];
   const ref = useRef(null);
   const setRef = useCallback(node => {
@@ -212,7 +211,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                 <ModalManager />
                 <>
                   <AppContainer>
-                    {!isNotFoundPage ? <Layout>
+                    <Layout>
                       <SidebarShortcut></SidebarShortcut>
                       <Sidebar />
                       <Layout
@@ -237,17 +236,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                       {!disableSideBarRanking.some(item => selectedKey.includes(item)) && (
                         <SidebarRanking></SidebarRanking>
                       )}
-                    </Layout> :
-                      <Layout>
-                        <Layout
-                          className="main-section-layout"
-                          style={{
-                            paddingRight: disableSideBarRanking.some(item => selectedKey.includes(item)) ? '2rem' : '0'
-                          }}
-                        >
-                          <Content className="content-layout">{children}</Content>
-                        </Layout>
-                      </Layout>}
+                    </Layout>
                   </AppContainer>
                 </>
               </AppBody>
