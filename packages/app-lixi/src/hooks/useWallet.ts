@@ -29,6 +29,7 @@ import _, { isEqual } from 'lodash';
 import { useEffect, useState } from 'react';
 import useInterval from './useInterval';
 import useXPI from './useXPI';
+import isEqualIgnoreUndefined from '@utils/comparision';
 
 const chronik = new ChronikClient('https://chronik.be.cash/xpi');
 const websocketConnectedRefreshInterval = 10000;
@@ -171,7 +172,7 @@ const useWallet = () => {
     // If wallet is valid, compare what exists in written wallet state instead of former api call
     let utxosToCompare = previousUtxos;
 
-    const haveChanged = !_.isEqualWith(utxos, utxosToCompare, comparisonFunc);
+    const haveChanged = !_.isEqualWith(utxos, utxosToCompare, isEqualIgnoreUndefined);
 
     // Compare utxo sets
     return haveChanged;
@@ -385,20 +386,6 @@ const useWallet = () => {
       }
     });
   }, walletRefreshInterval);
-
-  const comparisonFunc = (a, b) => {
-    if (_.isArray(a) || _.isArray(b)) return;
-    if (!_.isObject(a) || !_.isObject(b)) return;
-
-    if (!_.includes(a, undefined) && !_.includes(b, undefined)) return;
-
-    // Call recursively, after filtering all undefined properties
-    return _.isEqualWith(
-      _.omitBy(a, value => value === undefined),
-      _.omitBy(b, value => value === undefined),
-      comparisonFunc
-    );
-  };
 
   /*
     Use wallet.mnemonic as the useEffect parameter here because we 
