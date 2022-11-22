@@ -99,7 +99,12 @@ export class PageResolver {
         }
       });
 
-    return uploadDetail && uploadDetail.upload ? uploadDetail.upload.url : null;
+    if (_.isNil(uploadDetail)) return null;
+
+    const { upload } = uploadDetail;
+    const url = upload.bucket ? `${process.env.AWS_ENDPOINT}/${upload.bucket}/${upload.sha}` : upload.url;
+
+    return url;
   }
 
   @ResolveField('cover', () => String)
@@ -116,7 +121,12 @@ export class PageResolver {
         }
       });
 
-    return uploadDetail && uploadDetail.upload ? uploadDetail.upload.url : null;
+    if (_.isNil(uploadDetail)) return null;
+
+    const { upload } = uploadDetail;
+    const url = upload.bucket ? `${process.env.AWS_ENDPOINT}/${upload.bucket}/${upload.sha}` : upload.url;
+
+    return url;
   }
 
   @UseGuards(GqlJwtAuthGuard)

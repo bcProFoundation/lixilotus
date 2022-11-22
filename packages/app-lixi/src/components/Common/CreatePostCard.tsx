@@ -1,7 +1,7 @@
 import { FileImageOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { Avatar, Form, Modal, Tabs } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
-import { useAppDispatch } from 'src/store/hooks';
+import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import intl from 'react-intl-universal';
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
@@ -13,7 +13,7 @@ import { showToast } from '@store/toast/actions';
 import { setPost } from '@store/post/action';
 import { Embed, SocialsEnum } from './Embed';
 import { useCreatePostMutation } from '@store/post/posts.generated';
-import { Uploader } from './Uploader';
+import { MultiUploader, StyledMultiUploader } from './Uploader/MultiUploader';
 import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
 import { Plate, PlateProps, PlateProvider } from '@udecode/plate-core';
 import { MyValue, useMyPlateEditorRef } from '@components/Common/Plate/plateTypes';
@@ -24,7 +24,12 @@ import { BasicMarkToolbarButtons } from '@components/Common/Plate/BasicMarkToolb
 import { MarkBalloonToolbar } from '@components/Common/Plate/MarkBalloonToolbar';
 import { serializeHtml } from '@udecode/plate';
 import { editableProps } from './Plate/editableProps';
+import { Uploader } from './Uploader/Uploader';
 import { EmojiElementToolbarButtons } from './Plate/EmojiToolbarButtons';
+import { getPostCoverUploads } from '@store/account/selectors';
+import { getPageById } from '@store/page/selectors';
+import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
+import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 
 const styles = {
   wrapper: {
@@ -32,11 +37,13 @@ const styles = {
   }
 };
 
-const Editor = (props: PlateProps<MyValue>) => (
-  <Plate {...props}>
-    <MarkBalloonToolbar />
-  </Plate>
-);
+const Editor = (props: PlateProps<MyValue>) => {
+  return (
+    <Plate {...props} id="main">
+      <MarkBalloonToolbar />
+    </Plate>
+  );
+};
 
 type ErrorType = 'unsupported' | 'invalid';
 
@@ -96,17 +103,28 @@ const StyledUploader = styled.div`
 const CreatePostCard = () => {
   const dispatch = useAppDispatch();
   const [url, setUrl] = useState<string>('');
-
   const [social, setSocial] = useState<SocialsEnum>();
   const [postId, setPostId] = useState<string>();
   const [error, setError] = useState<ErrorType | null>(null);
   const [enableEditor, setEnableEditor] = useState(false);
   const sunEditor = useRef<SunEditorCore>();
   const [valueEditor, setValue] = useState(null);
+  const postCoverUploads = useAppSelector(getPostCoverUploads);
 
   const getSunEditorInstance = (sunEditorCore: SunEditorCore) => {
     sunEditor.current = sunEditorCore;
   };
+
+  const { refetch } = useInfinitePostsQuery(
+    {
+      first: 10,
+      orderBy: {
+        direction: OrderDirection.Desc,
+        field: PostOrderField.UpdatedAt
+      }
+    },
+    false
+  );
 
   const Serialized = () => {
     const editor = useMyPlateEditorRef();
@@ -234,39 +252,46 @@ const CreatePostCard = () => {
     event.preventDefault();
   };
 
-  const handleSubmitEditor = event => {
+  const handleSubmitEditor = async event => {
+    event.preventDefault();
     if (url) {
       console.log(url);
     } else {
-      const valueInput = valueEditor;
       setEnableEditor(false);
-      console.log(valueInput);
-      handleOnCreateNewPost(valueInput);
+
+      const content = valueEditor;
+      await handleCreateNewPost(content);
     }
-    event.preventDefault();
   };
 
-  const handleOnCreateNewPost = async newPostContent => {
-    if (newPostContent) {
+  const handleCreateNewPost = async content => {
+    if (content) {
       const createPostInput: CreatePostInput = {
-        cover: '',
-        content: newPostContent,
+        uploadCovers: postCoverUploads.map(upload => upload.id),
+        content: content,
         pageId: ''
       };
 
       try {
-        if (createPostInput) {
-          const postCreated = await createPostTrigger({ input: createPostInput }).unwrap();
-          dispatch(
-            showToast('success', {
-              message: 'Success',
-              description: intl.get('post.createPostSuccessful'),
-              duration: 5
-            })
-          );
-          const data = { pageAccountId: 0 };
-          dispatch(setPost({ ...data, ...postCreated.createPost }));
-        }
+        // if (createPostInput) {
+
+        //   // const data = { postAccountId: 0, pageAccountId: 0 };
+        //   // dispatch(setPost({ ...data, ...postCreated.createPost }));
+        // }
+
+        await createPostTrigger({ input: createPostInput })
+          .unwrap()
+          .then(payload => {
+            dispatch(
+              showToast('success', {
+                message: 'Success',
+                description: intl.get('post.createPostSuccessful'),
+                duration: 5
+              })
+            );
+
+            refetch();
+          });
       } catch (error) {
         const message = intl.get('post.unableCreatePostServer');
         dispatch(
@@ -316,16 +341,18 @@ const CreatePostCard = () => {
                     plugins={imagePlugins}
                     initialValue={null}
                     onChange={value => setValue(value)}
+                    id="main"
                   >
                     <Toolbar>
                       <BasicElementToolbarButtons />
                       <BasicMarkToolbarButtons />
                       <Uploader
-                        type={UPLOAD_TYPES.PAGE_AVATAR}
+                        type={UPLOAD_TYPES.POST}
                         isIcon={true}
                         icon={<FileImageOutlined />}
                         buttonName=" "
                         buttonType="text"
+                        showUploadList={false}
                       />
                       <EmojiElementToolbarButtons />
                     </Toolbar>
@@ -335,7 +362,6 @@ const CreatePostCard = () => {
                     </div>
                     <Serialized />
                   </PlateProvider>
-                  {/* TODO: Upload image for post */}
                   <input type="submit" value="Create Post" />
                 </form>
               </Tabs.TabPane>

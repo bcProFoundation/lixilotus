@@ -323,7 +323,7 @@ const LixiList = ({ lixies }: LixiListProps) => {
 
   const columns: ColumnsType<LixiType> = [
     {
-      title: 'Name',
+      title: intl.get('lixi.name'),
       dataIndex: 'name',
       key: 'name',
       onFilter: (value: string, record) => record.name.indexOf(value) === 0,
@@ -331,7 +331,7 @@ const LixiList = ({ lixies }: LixiListProps) => {
       sortDirections: ['descend']
     },
     {
-      title: 'Type of code',
+      title: intl.get('lixi.type'),
       dataIndex: 'type',
       key: 'type',
       filters: [
@@ -347,27 +347,27 @@ const LixiList = ({ lixies }: LixiListProps) => {
       onFilter: (value: string, record) => record.type.indexOf(value) === 0
     },
     {
-      title: 'Value per redeem',
+      title: intl.get('lixi.valuePerClaim'),
       dataIndex: 'value',
       key: 'value'
     },
     {
-      title: 'Budget (XPI)',
+      title: intl.get('lixi.budget') + ' (XPI)',
       dataIndex: 'budget',
       key: 'budget'
     },
     {
-      title: 'Redeemed (XPI)',
+      title: intl.get('lixi.redeemed') + ' (XPI)',
       dataIndex: 'redeemed',
       key: 'redeemed'
     },
     {
-      title: 'Remaining (XPI)',
+      title: intl.get('lixi.remaining') + ' (XPI)',
       dataIndex: 'remaining',
       key: 'remaining'
     },
     {
-      title: 'Status',
+      title: intl.get('lixi.status'),
       key: 'status',
       dataIndex: 'status',
       render: (_, { status }) => (
@@ -426,10 +426,10 @@ const LixiList = ({ lixies }: LixiListProps) => {
             <div className="action-bar">
               <div className="btn-area">
                 <CreateLixiBtn type="primary" className="outline-btn" onClick={createLixiBtn}>
-                  Create new lixi
+                  {intl.get('lixi.createLixi')}
                 </CreateLixiBtn>
                 <RegisterPackBtn type="primary" className="outline-btn" onClick={registerPackBtn}>
-                  Regester pack
+                  {intl.get('general.registerPack')}
                 </RegisterPackBtn>
               </div>
               <div className="filter-area">

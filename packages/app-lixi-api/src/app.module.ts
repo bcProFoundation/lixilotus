@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { MercuriusDriver, MercuriusDriverConfig } from '@nestjs/mercurius';
 import { ServeStaticModule, ServeStaticModuleOptions } from '@nestjs/serve-static';
+import { MeiliSearchModule } from 'nestjs-meilisearch';
 import { EthersModule } from 'nestjs-ethers';
 import { FastifyRequest } from 'fastify';
 import { AcceptLanguageResolver, HeaderResolver, I18nModule } from 'nestjs-i18n';
@@ -19,6 +20,7 @@ import { WalletModule } from './modules/wallet/wallet.module';
 import { GraphQLError, GraphQLFormattedError } from 'graphql';
 import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from './middlewares/exception.filter';
+import { S3Module } from 'nestjs-s3';
 
 //enabled serving multiple static for fastify
 type FastifyServeStaticModuleOptions = ServeStaticModuleOptions & {
@@ -90,12 +92,27 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
         };
       }
     }),
+    MeiliSearchModule.forRoot({
+      host: 'http://127.0.0.1:7700',
+      apiKey: 'masterKey',
+    }),
     WalletModule,
     AuthModule,
     LixiNftModule,
     CoreModule,
     NotificationModule,
-    PageModule
+    PageModule,
+    S3Module.forRootAsync({
+      useFactory: () => ({
+        config: {
+          accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+          secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+          endpoint: process.env.AWS_ENDPOINT,
+          s3ForcePathStyle: true,
+          signatureVersion: 'v4'
+        }
+      })
+    })
   ],
   controllers: [],
   providers: [

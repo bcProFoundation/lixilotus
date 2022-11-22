@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getAllCountries, getAllStates } from '@store/country/selectors';
 import { setPage } from '@store/page/action';
 import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
-import { StyledUploader } from '@components/Common/Uploader';
+import { StyledUploader } from '@components/Common/Uploader/Uploader';
 import { showToast } from '@store/toast/actions';
 import { getCountries, getStates } from '../../store/country/actions';
 import { getPageCoverUpload, getPageAvatarUpload } from 'src/store/account/selectors';
@@ -28,7 +28,7 @@ type PageEditProps = {
 const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
   const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
-  const selectedPage = useAppSelector(getPageBySelectedAccount);
+  const selectedPage: Page = useAppSelector(getPageBySelectedAccount);
 
   const router = useRouter();
 
@@ -251,6 +251,8 @@ const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
     }
   };
 
+  console.log(selectedPage);
+
   return (
     <>
       {selectedAccount && selectedAccount.address ? (
@@ -389,7 +391,7 @@ const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
                 getValueFromEvent={normFile}
               >
                 {selectedPage.avatar && (
-                  <Image src={(selectedPage.avatar as any).upload.url} width="150px" height="150px" />
+                  <Image src={(selectedPage.avatar as any).upload.url} width="150px" height="150px" alt="page-avatar" />
                 )}
                 <StyledUploader type={UPLOAD_TYPES.PAGE_AVATAR} />
               </Form.Item>
@@ -400,7 +402,7 @@ const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
                 getValueFromEvent={normFile}
               >
                 {selectedPage.cover && (
-                  <Image src={(selectedPage.cover as any).upload.url} width="150px" height="150px" />
+                  <Image src={(selectedPage.cover as any).upload.url} width="150px" height="150px" alt="page-cover" />
                 )}
                 <StyledUploader type={UPLOAD_TYPES.PAGE_COVER} />
               </Form.Item>

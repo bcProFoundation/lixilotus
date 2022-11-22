@@ -99,16 +99,16 @@ model Page {
 }
 
 model Post {
-  id             String        @id @default(cuid())
-  postAccount    Account       @relation(fields: [postAccountId], references: [id])
-  postAccountId  Int           @map("post_account_id")
-  page           Page?         @relation(fields: [pageId], references: [id])
-  pageId         String?       @map("page_id")
-  cover          UploadDetail? @relation("PostCover")
-  content        String        @default("")
-  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt      DateTime      @default(now()) @map("updated_at") @db.Timestamptz
-  uploadDetailId String?
+  id             String         @id @default(cuid())
+  postAccount    Account        @relation(fields: [postAccountId], references: [id])
+  postAccountId  Int            @map("post_account_id")
+  page           Page?          @relation(fields: [pageId], references: [id])
+  pageId         String?        @map("page_id")
+  content        String         @default("")
+  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt      DateTime       @default(now()) @map("updated_at") @db.Timestamptz
+  uploadedCovers UploadDetail[] @relation("PostCover")
+  uploadDetailId String[]
 
   @@map("post")
 }
@@ -284,10 +284,10 @@ model Notification {
 model Upload {
   id               String        @id @default(uuid())
   originalFilename String        @map("original_filename") @db.VarChar
-  fileSize         Int           @map("file_size")
+  fileSize         Int?          @map("file_size")
   width            Int?
   height           Int?
-  url              String        @db.VarChar
+  url              String?       @db.VarChar
   createdAt        DateTime      @map("created_at") @db.Timestamptz
   updatedAt        DateTime      @map("updated_at") @db.Timestamptz
   sha              String?       @unique
@@ -296,6 +296,7 @@ model Upload {
   thumbnailHeight  Int?          @map("thumbnail_height")
   type             String?       @db.VarChar(15)
   uploadDetail     UploadDetail?
+  bucket           String?
 
   @@map("upload")
 }
@@ -430,7 +431,7 @@ model UploadDetail {
   pageAvatar   Page?   @relation("PageAvatar", fields: [pageAvatarId], references: [id])
   pageAvatarId String? @unique @map("page_avatar_id")
   postCover    Post?   @relation("PostCover", fields: [postCoverId], references: [id])
-  postCoverId  String? @unique @map("post_cover_id")
+  postCoverId  String? @map("post_cover_id")
 
   @@map("upload_detail")
 }

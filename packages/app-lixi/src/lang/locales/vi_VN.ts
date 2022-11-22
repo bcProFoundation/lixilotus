@@ -17,6 +17,7 @@ export default {
   /* 00. special*/
   'special.or': 'Hoặc',
   'special.cancel': 'Hủy bỏ',
+  'special.copy': 'Sao chép',
 
   /* 01.General */
   'general.home': 'Nhà',
@@ -266,6 +267,8 @@ export default {
   'lixi.unarchive': 'Hủy lưu trữ',
   'lixi.withdraw': 'Rút tiền',
   'lixi.claimed': 'Đã nhận',
+  'lixi.budget': 'Ngân sách',
+  'lixi.redeemed': 'Đã nhận',
 
   /* 04.Claim */
   'claim.claim': 'Nhận Lì xì',

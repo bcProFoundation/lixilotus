@@ -13,12 +13,19 @@ export class Post {
   content: string;
 
   @Field(() => Number)
-  pageAccountId: number;
+  postAccountId: number;
 
-  pageAccount: Account;
+  @Field(() => Account)
+  postAccount: Account;
 
-  @Field(() => String, { nullable: true })
-  cover: string;
+  @Field(() => Number)
+  pageAccountId?: number;
+
+  @Field(() => Account)
+  pageAccount?: Account;
+
+  @Field(() => [String], { nullable: true })
+  uploadCovers: [string];
 
   @Field(() => Page, { nullable: true })
   page?: Page;

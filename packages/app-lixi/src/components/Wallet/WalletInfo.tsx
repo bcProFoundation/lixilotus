@@ -19,6 +19,8 @@ import { RenameAccountModalProps } from '@components/Settings/RenameAccountModal
 import { openModal } from '@store/modal/actions';
 import { useRouter } from 'next/router';
 import { getSelectedWalletPath, getWalletStatus } from '@store/wallet';
+import { QRCodeModal } from '@components/Common/QRCodeModal';
+import { QRCodeModalType } from '@bcpros/lixi-models/constants';
 
 const CardContainer = styled.div`
   position: relative;
@@ -212,7 +214,8 @@ const WalletInfoComponent: React.FC = () => {
         </WalletCard>
         {!isServer() && selectedWalletPath && selectedWalletPath?.xAddress && (
           <StyledQRCode>
-            <QRCode address={selectedWalletPath?.xAddress} isAccountPage={true} />
+            <QRCodeModal address={selectedWalletPath?.xAddress} type={QRCodeModalType.address} />
+            {/* <QRCode address={selectedWalletPath?.xAddress} isAccountPage={true} /> */}
           </StyledQRCode>
         )}
         <AddressWalletBar>

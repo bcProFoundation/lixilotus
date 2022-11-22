@@ -162,14 +162,18 @@ type CardPageItem = {
   avatar?: string;
 };
 
-const CardPageItem = ({ item, onClickItem }: { item?: CardPageItem; onClickItem: (id) => void }) => (
-  <StyledCardPage onClick={() => onClickItem(item.id)}>
+const CardPageItem = ({ item, onClickItem }: { item?: CardPageItem; onClickItem?: (id) => void }) => (
+  <StyledCardPage onClick={() => onClickItem(item.id)} key={item.id}>
     <div className="container-img">
-      <img className="cover-img" src={item.cover || '/images/default-cover.jpg'} alt="" />
+      <picture>
+        <img className="cover-img" src={item.cover || '/images/default-cover.jpg'} alt="cover-img" />
+      </picture>
     </div>
     <div className="info-profile">
       <div className="wrapper-avatar">
-        <img className="avatar-img" src={item.avatar || '/images/default-avatar.jpg'} alt="" />
+        <picture>
+          <img className="avatar-img" src={item.avatar || '/images/default-avatar.jpg'} alt="avatar-img" />
+        </picture>
       </div>
       <div className="title-profile">
         <h3 className="page-name">{item.name}</h3>
@@ -249,7 +253,7 @@ const PageHome = () => {
           )}
           {selectedPage && (
             <ListCard>
-              <CardPageItem item={mapPageItem(selectedPage)} onClickItem={() => {}}></CardPageItem>
+              <CardPageItem item={mapPageItem(selectedPage)} />
             </ListCard>
           )}
         </YourPageContainer>

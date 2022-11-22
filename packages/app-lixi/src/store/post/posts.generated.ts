@@ -19,7 +19,16 @@ export type PostQueryVariables = Types.Exact<{
 
 export type PostQuery = {
   __typename?: 'Query';
-  post: { __typename?: 'Post'; id: string; content: string; cover?: string | null; createdAt: any; updatedAt: any };
+  post: {
+    __typename?: 'Post';
+    id: string;
+    content: string;
+    uploadCovers?: Array<string> | null;
+    createdAt: any;
+    updatedAt: any;
+    postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+    pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+  };
 };
 
 export type PostsQueryVariables = Types.Exact<{
@@ -40,7 +49,16 @@ export type PostsQuery = {
     edges?: Array<{
       __typename?: 'PostEdge';
       cursor: string;
-      node: { __typename?: 'Post'; id: string; content: string; cover?: string | null; createdAt: any; updatedAt: any };
+      node: {
+        __typename?: 'Post';
+        id: string;
+        content: string;
+        uploadCovers?: Array<string> | null;
+        createdAt: any;
+        updatedAt: any;
+        postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+        pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+      };
     }> | null;
     pageInfo: {
       __typename?: 'PageInfo';
@@ -71,9 +89,11 @@ export type PostFieldsFragment = {
   __typename?: 'Post';
   id: string;
   content: string;
-  cover?: string | null;
+  uploadCovers?: Array<string> | null;
   createdAt: any;
   updatedAt: any;
+  postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+  pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
 };
 
 export type CreatePostMutationVariables = Types.Exact<{
@@ -86,9 +106,11 @@ export type CreatePostMutation = {
     __typename?: 'Post';
     id: string;
     content: string;
-    cover?: string | null;
+    uploadCovers?: Array<string> | null;
     createdAt: any;
     updatedAt: any;
+    postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+    pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
   };
 };
 
@@ -102,9 +124,11 @@ export type UpdatePostMutation = {
     __typename?: 'Post';
     id: string;
     content: string;
-    cover?: string | null;
+    uploadCovers?: Array<string> | null;
     createdAt: any;
     updatedAt: any;
+    postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+    pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
   };
 };
 
@@ -112,7 +136,17 @@ export const PostFieldsFragmentDoc = `
     fragment PostFields on Post {
   id
   content
-  cover
+  uploadCovers
+  postAccount {
+    address
+    id
+    name
+  }
+  pageAccount {
+    address
+    id
+    name
+  }
   createdAt
   updatedAt
 }

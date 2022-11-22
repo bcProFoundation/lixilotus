@@ -10,4 +10,5 @@ export interface AccountsState extends EntityState<Account> {
   envelopeUpload: Upload;
   pageCoverUpload: Upload;
   pageAvatarUpload: Upload;
+  postCoverUploads: Upload[];
 }
