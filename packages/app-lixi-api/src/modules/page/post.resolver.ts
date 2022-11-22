@@ -50,6 +50,7 @@ export class PostResolver {
     })
     orderBy: PostOrder
   ) {
+    console.log(query);
     const result = await findManyCursorConnection(
       args =>
         this.prisma.post.findMany({
@@ -110,9 +111,6 @@ export class PostResolver {
       });
     }
 
-    if (pageId) {
-    }
-
     //Query the imgShas from the database, if there is then add to UploadDetailsIds
     if (imgShas.length > 0) {
       const promises = imgShas.map(async (sha: string) => {
@@ -144,6 +142,9 @@ export class PostResolver {
                   };
                 })
               : undefined
+        },
+        page: {
+          connect: pageId ? { id: pageId } : undefined
         }
       }
     };

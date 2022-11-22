@@ -17,8 +17,10 @@ import moment from 'moment';
 import SearchBox from '@components/Common/SearchBox';
 import CreatePostCard from '@components/Common/CreatePostCard';
 import { Virtuoso } from 'react-virtuoso';
-import { useInfinitePagesQuery } from '@store/page/useInfinitePagesQuery';
-import PageListItem from '@components/Pages/PageListItem';
+import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
+import PostListItem from '@components/Posts/PostListItem';
+import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
+import { GraphQLClient, gql } from 'graphql-request';
 import axios from 'axios';
 
 type PageDetailProps = {
@@ -292,14 +294,17 @@ const SubAbout = ({
 
 const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
   const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
-  const slug = page.id;
   const [pageDetailData, setPageDetailData] = useState<any>(page);
   const [listsFriend, setListsFriend] = useState<any>([]);
   const [listsPicture, setListsPicture] = useState<any>([]);
 
-  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext } = useInfinitePagesQuery(
+  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsQuery(
     {
-      first: 10
+      first: 10,
+      orderBy: {
+        direction: OrderDirection.Desc,
+        field: PostOrderField.UpdatedAt
+      }
     },
     false
   );
@@ -310,6 +315,10 @@ const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
 
   useEffect(() => {
     fetchListPicture();
+  }, []);
+
+  useEffect(() => {
+    refetch();
   }, []);
 
   const fetchListFriend = () => {
@@ -349,15 +358,13 @@ const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
       <StyledContainerProfileDetail>
         <ProfileCardHeader>
           <div className="container-img">
-            <img className="cover-img" src={pageDetailData?.cover?.upload?.url || '/images/default-cover.jpg'} alt="" />
+            <img className="cover-img" src={pageDetailData.cover || '/images/default-cover.jpg'} alt="" />
           </div>
           <div className="info-profile">
             <div className="wrapper-avatar">
-              <img
-                className="avatar-img"
-                src={pageDetailData?.avatar?.upload?.url || '/images/default-avatar.jpg'}
-                alt=""
-              />
+              <picture>
+                <img className="avatar-img" src={pageDetailData.avatar || '/images/default-avatar.jpg'} alt="" />
+              </picture>
               <div className="btn-upload-avatar">
                 <CameraOutlined />
               </div>
@@ -489,8 +496,8 @@ const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
                 </FriendBox>
               </LegacyProfile>
               <ContentTimeline>
-                <SearchBox></SearchBox>
-                <CreatePostCard></CreatePostCard>
+                <SearchBox />
+                <CreatePostCard pageId={page.id} />
                 <Timeline>
                   {/* <div className="blank-timeline">
                 <img className="time-line-blank" src="/images/time-line-blank.svg" alt="" />
@@ -505,7 +512,7 @@ const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
                       endReached={loadMoreItems}
                       overscan={900}
                       itemContent={(index, item) => {
-                        return <PageListItem index={index} item={item} />;
+                        return <PostListItem index={index} item={item} />;
                       }}
                       totalCount={totalCount}
                       components={{

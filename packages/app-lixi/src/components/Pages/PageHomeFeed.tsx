@@ -190,7 +190,7 @@ const PageHome = () => {
   const [listsPage, setListsPage] = useState<any>([]);
   const dispatch = useAppDispatch();
 
-  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext } = useInfinitePagesQuery(
+  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePagesQuery(
     {
       first: 10
     },
@@ -208,8 +208,8 @@ const PageHome = () => {
     let newItemObj: CardPageItem = {
       id: pageItem?.id,
       name: pageItem?.name,
-      avatar: pageItem?.avatar?.upload?.url || pageItem?.avatar,
-      cover: pageItem?.cover?.upload?.url || pageItem?.cover,
+      avatar: pageItem?.avatar,
+      cover: pageItem?.cover,
       subText: Math.floor(Math.random() * 100).toString(),
       category: 'Food & Drink'
     };
@@ -219,6 +219,10 @@ const PageHome = () => {
   const routerPageDetail = id => {
     dispatch(push(`/page/${id}`));
   };
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   return (
     <>
@@ -264,9 +268,7 @@ const PageHome = () => {
               listsPage.length > 0 &&
               listsPage.map((item: any, index: number) => {
                 if (index < 9)
-                  return (
-                    <CardPageItem item={mapPageItem(item)} onClickItem={id => routerPageDetail(id)}></CardPageItem>
-                  );
+                  return <CardPageItem item={mapPageItem(item)} onClickItem={id => routerPageDetail(id)} />;
               })}
           </ListCard>
         </PagesContainer>

@@ -100,7 +100,7 @@ const StyledUploader = styled.div`
   bottom: 24px;
 `;
 
-const CreatePostCard = () => {
+const CreatePostCard = props => {
   const dispatch = useAppDispatch();
   const [url, setUrl] = useState<string>('');
   const [social, setSocial] = useState<SocialsEnum>();
@@ -110,6 +110,7 @@ const CreatePostCard = () => {
   const sunEditor = useRef<SunEditorCore>();
   const [valueEditor, setValue] = useState(null);
   const postCoverUploads = useAppSelector(getPostCoverUploads);
+  const { pageId } = props;
 
   const getSunEditorInstance = (sunEditorCore: SunEditorCore) => {
     sunEditor.current = sunEditorCore;
@@ -269,7 +270,7 @@ const CreatePostCard = () => {
       const createPostInput: CreatePostInput = {
         uploadCovers: postCoverUploads.map(upload => upload.id),
         content: content,
-        pageId: ''
+        pageId: pageId || undefined
       };
 
       try {
@@ -346,7 +347,7 @@ const CreatePostCard = () => {
                     <Toolbar>
                       <BasicElementToolbarButtons />
                       <BasicMarkToolbarButtons />
-                      <Uploader
+                      <MultiUploader
                         type={UPLOAD_TYPES.POST}
                         isIcon={true}
                         icon={<FileImageOutlined />}

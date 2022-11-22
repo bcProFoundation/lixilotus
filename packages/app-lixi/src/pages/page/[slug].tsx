@@ -8,31 +8,40 @@ import { END } from 'redux-saga';
 import { getSelectorsByUserAgent } from 'react-device-detect';
 import PageDetailLayout from '@components/Layout/PageDetailLayout';
 import ProfileDetail from '@components/Profile/ProfileDetail';
+import { usePageQuery } from '@store/page/pages.generated';
 
 const PageDetailPage = props => {
-  const { page, isMobile } = props;
-  const canonicalUrl = process.env.NEXT_PUBLIC_LIXI_URL + `pages/${page.id}`;
+  const { pageId, isMobile } = props;
+  const canonicalUrl = process.env.NEXT_PUBLIC_LIXI_URL + `pages/${pageId}`;
+  let currentPage;
+
+  const { currentData, isSuccess } = usePageQuery({ id: pageId });
+  if (isSuccess) currentPage = currentData.page;
 
   return (
     <>
-      <NextSeo
-        title="Lixi Program"
-        description="The lixi program send you a small gift ."
-        canonical={canonicalUrl}
-        openGraph={{
-          url: canonicalUrl,
-          title: 'LixiLotus',
-          description: page.description ?? 'LixiLotus allow you to giveaway your Lotus effortlessly',
-          images: [{ url: '' }],
-          site_name: 'LixiLotus'
-        }}
-        twitter={{
-          handle: '@handle',
-          site: '@site',
-          cardType: 'summary_large_image'
-        }}
-      />
-      <ProfileDetail page={page} isMobile={isMobile} />
+      {isSuccess && (
+        <>
+          <NextSeo
+            title="Lixi Program"
+            description="The lixi program send you a small gift ."
+            canonical={canonicalUrl}
+            openGraph={{
+              url: canonicalUrl,
+              title: 'LixiLotus',
+              description: currentPage.description || 'LixiLotus allow you to giveaway your Lotus effortlessly',
+              images: [{ url: '' }],
+              site_name: 'LixiLotus'
+            }}
+            twitter={{
+              handle: '@handle',
+              site: '@site',
+              cardType: 'summary_large_image'
+            }}
+          />
+          <ProfileDetail page={currentPage} isMobile={isMobile} />
+        </>
+      )}
     </>
   );
 };
@@ -48,13 +57,9 @@ export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) 
   const slug: string = _.isArray(context.params.slug) ? context.params.slug[0] : context.params.slug;
   const pageId: string = slug;
 
-  const page = await pageApi.getDetailPage(pageId).then(data => {
-    return data;
-  });
-
   return {
     props: {
-      page,
+      pageId,
       isMobile
     }
   };
