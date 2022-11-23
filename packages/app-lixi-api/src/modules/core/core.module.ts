@@ -4,6 +4,7 @@ import IORedis from 'ioredis';
 import * as _ from 'lodash';
 import { NotificationModule } from 'src/common/modules/notifications/notification.module';
 import { AuthModule } from '../auth/auth.module';
+import { ChronikModule } from '../../common/modules/chronik/chronik.module';
 import { LixiNftModule } from '../nft/lixinft.module';
 import { AccountController } from './account/account.controller';
 import { ClaimController } from './claim/claim.controller';
@@ -80,6 +81,16 @@ const baseCorsConfig = cors({
         }
       }
     ),
+    ChronikModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        const chronikUrl = config.get<string>('CHRONIK_URL') || 'https://chronik.be.cash';
+        return {
+          host: chronikUrl,
+          networks: ['xec', 'xpi']
+        };
+      }
+    }),
     AuthModule,
     NotificationModule,
     LixiNftModule
