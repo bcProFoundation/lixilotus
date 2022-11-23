@@ -166,7 +166,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   const [height, setHeight] = useState(0);
   const [loading, setLoading] = useState(true);
   const [navBarTitle, setNavBarTitle] = useState('');
-  const router = useRouter()
+  const router = useRouter();
   const selectedKey = router.pathname ?? '';
   const disableSideBarRanking = ['lixi', 'profile'];
   const ref = useRef(null);
