@@ -173,7 +173,7 @@ const CreatePostCard = props => {
 
   const handleSubmit = event => {
     event.preventDefault();
-    
+
     const valueInput = sunEditor.current.getContents(true);
     setValue(valueInput);
     setEnableEditor(false);

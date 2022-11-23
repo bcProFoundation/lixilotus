@@ -83,7 +83,6 @@ export class PostResolver {
     })
     orderBy: PostOrder
   ) {
-    console.log(id);
     const result = await findManyCursorConnection(
       args =>
         this.prisma.post.findMany({

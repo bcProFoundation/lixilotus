@@ -189,6 +189,18 @@ const PostListItem = ({ index, item }) => {
     // }
   };
 
+  const showUsername = () => {
+    if (post.page) {
+      if (post.postAccount.id == post.pageAccount.id) {
+        return post.page.name;
+      } else {
+        return post.postAccount.name;
+      }
+    }
+
+    return post.postAccount.name;
+  };
+
   return (
     <div>
       <List.Item
@@ -209,7 +221,7 @@ const PostListItem = ({ index, item }) => {
           <CardHeader>
             <InfoCardUser
               imgUrl={post.page ? post.page.avatar : ''}
-              name={(post.page ? post.page.name : post.postAccount.name) || 'Anonymous'}
+              name={showUsername() || 'Anonymous'}
               title={moment(post.createdAt).fromNow().toString()}
             ></InfoCardUser>
           </CardHeader>
