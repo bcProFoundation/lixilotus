@@ -1,13 +1,15 @@
-import { Controller, Get, HttpException, HttpStatus, Param } from '@nestjs/common';
-import * as _ from 'lodash';
 import { Country, State } from '@bcpros/lixi-models';
+import { Controller, Get, Headers, HttpException, HttpStatus, Param } from '@nestjs/common';
+import geoip from 'geoip-country';
+import * as _ from 'lodash';
+import { I18n, I18nContext } from 'nestjs-i18n';
+import { ReqSocket } from 'src/decorators/req.socket.decorator';
 import { VError } from 'verror';
 import { PrismaService } from '../../prisma/prisma.service';
-import { I18n, I18nContext } from 'nestjs-i18n';
 
 @Controller('countries')
 export class CountryController {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   @Get()
   async getCountries(@I18n() i18n: I18nContext): Promise<Country[]> {
@@ -40,6 +42,24 @@ export class CountryController {
         const error = new VError.WError(err as Error, unableToGetLixi);
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
+    }
+  }
+
+  @Get('ipaddr')
+  async getCountryFromIpAddress(
+    @Headers('x-forwarded-for') headerIp: string,
+    @ReqSocket() socket: any,
+  ): Promise<any> {
+    try {
+      const ip = (headerIp || socket.remoteAddress) as string;
+      console.log(ip);
+      const geolocation = geoip.lookup(ip);
+      if (geolocation) {
+        return geolocation?.country;
+      }
+      throw Error('Unable to detect ip address');
+    } catch (err) {
+      throw err;
     }
   }
 }
