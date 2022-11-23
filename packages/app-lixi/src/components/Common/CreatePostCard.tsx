@@ -30,6 +30,7 @@ import { getPostCoverUploads } from '@store/account/selectors';
 import { getPageById } from '@store/page/selectors';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
+import _ from 'lodash';
 
 const styles = {
   wrapper: {
@@ -116,17 +117,6 @@ const CreatePostCard = props => {
     sunEditor.current = sunEditorCore;
   };
 
-  const { refetch } = useInfinitePostsQuery(
-    {
-      first: 10,
-      orderBy: {
-        direction: OrderDirection.Desc,
-        field: PostOrderField.UpdatedAt
-      }
-    },
-    false
-  );
-
   const Serialized = () => {
     const editor = useMyPlateEditorRef();
     const html = serializeHtml(editor, {
@@ -182,11 +172,12 @@ const CreatePostCard = props => {
   };
 
   const handleSubmit = event => {
+    event.preventDefault();
+    
     const valueInput = sunEditor.current.getContents(true);
     setValue(valueInput);
     setEnableEditor(false);
     console.log(valueInput);
-    event.preventDefault();
   };
 
   const handleUrlChange = (event): void => {
@@ -266,7 +257,7 @@ const CreatePostCard = props => {
   };
 
   const handleCreateNewPost = async content => {
-    if (content) {
+    if (content !== '' || !_.isNil(content)) {
       const createPostInput: CreatePostInput = {
         uploadCovers: postCoverUploads.map(upload => upload.id),
         content: content,
@@ -290,8 +281,9 @@ const CreatePostCard = props => {
                 duration: 5
               })
             );
-
-            refetch();
+          })
+          .finally(() => {
+            props.refetch();
           });
       } catch (error) {
         const message = intl.get('post.unableCreatePostServer');

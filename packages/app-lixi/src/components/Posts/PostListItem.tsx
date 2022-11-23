@@ -208,8 +208,8 @@ const PostListItem = ({ index, item }) => {
         <CardContainer onClick={() => routerPostDetail(post.id)}>
           <CardHeader>
             <InfoCardUser
-              imgUrl={item.avatar}
-              name={(post.pageAccount ? post.pageAccount.name : post.postAccount.name) || 'Anonymous'}
+              imgUrl={post.page ? post.page.avatar : ''}
+              name={(post.page ? post.page.name : post.postAccount.name) || 'Anonymous'}
               title={moment(post.createdAt).fromNow().toString()}
             ></InfoCardUser>
           </CardHeader>

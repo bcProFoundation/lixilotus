@@ -174,6 +174,7 @@ export type Query = {
   __typename?: 'Query';
   allPages: PageConnection;
   allPosts: PostConnection;
+  allPostsById: PostConnection;
   page: Page;
   post: Post;
 };
@@ -195,6 +196,16 @@ export type QueryAllPostsArgs = {
   last?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<PostOrder>;
   query?: InputMaybe<Scalars['String']>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryAllPostsByIdArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  id?: InputMaybe<Scalars['String']>;
+  last?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<PostOrder>;
   skip?: InputMaybe<Scalars['Int']>;
 };
 

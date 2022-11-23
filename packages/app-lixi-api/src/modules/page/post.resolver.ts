@@ -50,17 +50,12 @@ export class PostResolver {
     })
     orderBy: PostOrder
   ) {
-    console.log(query);
     const result = await findManyCursorConnection(
       args =>
         this.prisma.post.findMany({
           include: { postAccount: true },
           where: {
-            OR: !query
-              ? undefined
-              : {
-                  content: { contains: query || '' }
-                }
+            page: null
           },
           orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
           ...args
@@ -68,9 +63,41 @@ export class PostResolver {
       () =>
         this.prisma.post.count({
           where: {
-            OR: {
-              pageId: { contains: query || '' }
-            }
+            page: null
+          }
+        }),
+      { first, last, before, after }
+    );
+    return result;
+  }
+
+  @Query(() => PostConnection)
+  async allPostsById(
+    @Args() { after, before, first, last }: PaginationArgs,
+    @Args({ name: 'id', type: () => String, nullable: true })
+    id: string,
+    @Args({
+      name: 'orderBy',
+      type: () => PostOrder,
+      nullable: true
+    })
+    orderBy: PostOrder
+  ) {
+    console.log(id);
+    const result = await findManyCursorConnection(
+      args =>
+        this.prisma.post.findMany({
+          include: { postAccount: true },
+          where: {
+            pageId: id
+          },
+          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+          ...args
+        }),
+      () =>
+        this.prisma.post.count({
+          where: {
+            pageId: id
           }
         }),
       { first, last, before, after }
@@ -174,6 +201,20 @@ export class PostResolver {
     });
 
     return account;
+  }
+
+  @ResolveField('page', () => Page)
+  async page(@Parent() post: Post) {
+    if (post.pageId) {
+      const page = this.prisma.page.findFirst({
+        where: {
+          id: post.pageId
+        }
+      });
+
+      return page;
+    }
+    return null;
   }
 
   @UseGuards(GqlJwtAuthGuard)

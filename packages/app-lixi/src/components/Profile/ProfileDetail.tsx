@@ -17,7 +17,7 @@ import moment from 'moment';
 import SearchBox from '@components/Common/SearchBox';
 import CreatePostCard from '@components/Common/CreatePostCard';
 import { Virtuoso } from 'react-virtuoso';
-import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
+import { useInfinitePostsByIdQuery } from '@store/post/useInfinitePostsByIdQuery';
 import PostListItem from '@components/Posts/PostListItem';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import { GraphQLClient, gql } from 'graphql-request';
@@ -298,13 +298,14 @@ const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
   const [listsFriend, setListsFriend] = useState<any>([]);
   const [listsPicture, setListsPicture] = useState<any>([]);
 
-  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsQuery(
+  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByIdQuery(
     {
       first: 10,
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt
-      }
+      },
+      id: page.id
     },
     false
   );
@@ -497,7 +498,7 @@ const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
               </LegacyProfile>
               <ContentTimeline>
                 <SearchBox />
-                <CreatePostCard pageId={page.id} />
+                <CreatePostCard pageId={page.id} refetch={() => refetch()} />
                 <Timeline>
                   {/* <div className="blank-timeline">
                 <img className="time-line-blank" src="/images/time-line-blank.svg" alt="" />
