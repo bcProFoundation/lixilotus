@@ -1,4 +1,5 @@
 import { Button, Input, InputRef, Modal, Space, Table } from 'antd';
+import intl from 'react-intl-universal';
 import type { ColumnsType } from 'antd/es/table';
 import _ from 'lodash';
 import moment from 'moment';
@@ -237,7 +238,7 @@ const TokensListing: React.FC = () => {
               dispatch(
                 showToast('error', {
                   message: 'Error',
-                  description: 'TokenID not found',
+                  description: intl.get('token.tokenIdNotFound'),
                   duration: 5
                 })
               );
@@ -245,7 +246,7 @@ const TokensListing: React.FC = () => {
               dispatch(
                 showToast('error', {
                   message: 'Error',
-                  description: 'TokenID invalid',
+                  description: intl.get('token.tokenIdInvalid'),
                   duration: 5
                 })
               );
@@ -255,7 +256,7 @@ const TokensListing: React.FC = () => {
         dispatch(
           showToast('info', {
             message: 'Info',
-            description: 'Please type tokenId...',
+            description: intl.get('token.inputTokenId'),
             duration: 2
           })
         );
@@ -284,7 +285,7 @@ const TokensListing: React.FC = () => {
             </PathDirection>
           </div>
           <Button type="primary" className="outline-btn" onClick={() => setIsModalVisible(!isModalVisible)}>
-            Import Token
+            {intl.get('token.importToken')}
           </Button>
         </NavBarHeader>
       </StyledNavBarHeader>
@@ -298,13 +299,13 @@ const TokensListing: React.FC = () => {
       </StyledTokensListing>
 
       <Modal
-        title="Import Token"
+        title={intl.get('token.importToken')}
         visible={isModalVisible}
         onOk={addTokenbyId}
         onCancel={() => setIsModalVisible(!isModalVisible)}
         cancelButtonProps={{ type: 'primary' }}
       >
-        <Input value={valueInput} placeholder="Input tokenId..." onChange={e => handleInputTokenId(e)} />
+        <Input value={valueInput} placeholder={intl.get('token.inputTokenId')} onChange={e => handleInputTokenId(e)} />
       </Modal>
     </>
   );

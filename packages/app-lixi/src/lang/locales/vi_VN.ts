@@ -448,5 +448,18 @@ export default {
   'post.copyToClipboard': 'Liên kết đã được sao chép',
   'post.unableCreatePost': 'Không thể tạo bài viết.',
   'post.unableUpdatePost': 'Không thể sửa bài viết.',
-  'post.selectAccountFirst': 'Hãy chọn một tài khoản trước khi tạo bài viết'
+  'post.selectAccountFirst': 'Hãy chọn một tài khoản trước khi tạo bài viết',
+
+  /* 16.Token */
+  'token.importToken': 'Thêm token',
+  'token.couldNotpostToken': 'Không thể tạo token',
+  'token.createTokenSuccessful': 'Tạo token thành công',
+  'token.unableCreateTokenServer': 'Không thể kết nối server tạo token',
+  'token.errorWhenCreateToken': 'Đã có lỗi xảy ra khi tạo mới token',
+  'token.couldNotFindToken': 'Không thể tìm thấy token',
+  'token.unableCreateToken': 'Không thể tạo token',
+  'token.unableSelect': 'Không thể chọn token',
+  'token.inputTokenId': 'Nhập tokenId',
+  'token.tokenIdNotFound': 'TokenID không tồn tại',
+  'token.tokenIdInvalid': 'TokenID không đúng'
 };

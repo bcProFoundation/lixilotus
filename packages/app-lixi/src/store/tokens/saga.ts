@@ -43,7 +43,7 @@ function* postTokenSaga(action: PayloadAction<any>) {
 
     yield put(postTokenSuccess(data));
   } catch (err) {
-    const message = (err as Error).message ?? intl.get('Token.couldNotpostToken');
+    const message = (err as Error).message ?? intl.get('token.couldNotpostToken');
     yield put(postTokenFailure(message));
   }
 }
@@ -56,20 +56,20 @@ function* postTokenSuccessSaga(action: PayloadAction<any>) {
     yield put(
       showToast('success', {
         message: 'Success',
-        description: intl.get('Token.createTokenSuccessful'),
+        description: intl.get('token.createTokenSuccessful'),
         duration: 5
       })
     );
     // yield put(setToken(Token));
     yield put(hideLoading(postToken.type));
   } catch (error) {
-    const message = intl.get('Token.errorWhenCreateToken');
+    const message = intl.get('token.errorWhenCreateToken');
     yield put(postTokenFailure(message));
   }
 }
 
 function* postTokenFailureSaga(action: PayloadAction<string>) {
-  const message = action.payload ?? intl.get('Token.unableCreateTokenServer');
+  const message = action.payload ?? intl.get('token.unableCreateTokenServer');
   yield put(
     showToast('error', {
       message: 'Error',
@@ -86,7 +86,7 @@ function* getTokenSaga(action: PayloadAction<string>) {
     const data = yield call(TokenApi.getTokenById, id);
     yield put(getTokenSuccess(data));
   } catch (err) {
-    const message = (err as Error).message ?? intl.get('Token.unableSelect');
+    const message = (err as Error).message ?? intl.get('token.unableSelect');
     yield put(getTokenFailure(message));
   }
 }
@@ -96,19 +96,19 @@ function* getTokenSuccessSaga(action: PayloadAction<string>) {
     yield put(
       showToast('success', {
         message: 'Success',
-        description: intl.get('Token.createTokenSuccessful'),
+        description: intl.get('token.createTokenSuccessful'),
         duration: 5
       })
     );
     yield put(hideLoading(getToken.type));
   } catch (error) {
-    const message = intl.get('Token.errorWhenCreateToken');
+    const message = intl.get('token.errorWhenCreateToken');
     yield put(getTokenFailure(message));
   }
 }
 
 function* getTokenFailureSaga(action: PayloadAction<string>) {
-  const message = action.payload ?? intl.get('lixi.unableSelect');
+  const message = action.payload ?? intl.get('token.unableSelect');
   yield put(
     showToast('error', {
       message: 'Error',
@@ -126,12 +126,12 @@ function* fetchAllTokensSaga() {
     const data: any = yield call(TokenApi.getAllTokens);
 
     if (_.isNil(data)) {
-      throw new Error(intl.get('Token.couldNotFindToken'));
+      throw new Error(intl.get('token.couldNotFindToken'));
     }
 
     yield put(fetchAllTokensSuccess(data));
   } catch (err) {
-    const message = (err as Error).message ?? intl.get('lixi.couldNotpostToken');
+    const message = (err as Error).message ?? intl.get('token.couldNotpostToken');
     yield put(fetchAllTokensFailure(message));
   }
 }
