@@ -209,7 +209,7 @@ const PostListItem = ({ index, item }) => {
           <CardHeader>
             <InfoCardUser
               imgUrl={item.avatar}
-              name={(post.pageAccount ? post.pageAccount.name : post.postAccount.name) || 'Anonymous'}
+              name={(post?.pageAccount ? post?.pageAccount?.name : post?.postAccount?.name) || 'Anonymous'}
               title={moment(post.createdAt).fromNow().toString()}
             ></InfoCardUser>
           </CardHeader>
