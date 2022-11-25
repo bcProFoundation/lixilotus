@@ -26,6 +26,7 @@ input CreatePostInput {
   pageAccountId: Int
   pageId: String
   uploadCovers: [String!]
+  tokenId: String
 }
 
 """
@@ -114,6 +115,8 @@ type Post {
   pageId: String
   postAccount: Account!
   postAccountId: Int!
+  token: Token
+  tokenId: String
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
@@ -154,6 +157,31 @@ type Query {
 type Subscription {
   pageCreated: Page!
   postCreated: Post!
+}
+
+type Token {
+  """Identifies the date and time when the object was last comments."""
+  comments: DateTime!
+
+  """Identifies the date and time when the object was created."""
+  createdDate: DateTime!
+  decimals: Int!
+  id: ID!
+  initialTokenQuantity: String
+  lotusBurnDown: String
+  lotusBurnUp: String
+  name: String!
+  ticker: String!
+  tokenDocumentUrl: String
+  tokenId: String!
+  tokenType: String!
+  totalBurned: String
+  totalMinted: String
+}
+
+type TokenEdge {
+  cursor: String!
+  node: Token!
 }
 
 input UpdatePageInput {

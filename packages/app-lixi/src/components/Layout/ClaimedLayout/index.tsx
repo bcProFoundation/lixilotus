@@ -103,8 +103,10 @@ export const AppContainer = styled.div`
   }
   .ant-layout.ant-layout-has-sider {
     gap: 4rem;
+    justify-content: center;
   }
   .main-section-layout {
+    max-width: 680px;
     @media (max-width: 768px) {
       padding-right: 0 !important;
     }

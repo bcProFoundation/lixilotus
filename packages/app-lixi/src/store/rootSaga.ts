@@ -13,6 +13,7 @@ import pageSaga from './page/saga';
 import countrySaga from './country/saga';
 import walletSaga from './wallet/saga';
 import postSaga from './post/saga';
+import TokenSaga from './tokens/saga';
 
 export default function* rootSaga() {
   yield all([
@@ -28,6 +29,7 @@ export default function* rootSaga() {
     notificationSaga(),
     pageSaga(),
     postSaga(),
-    countrySaga()
+    countrySaga(),
+    TokenSaga()
   ]);
 }

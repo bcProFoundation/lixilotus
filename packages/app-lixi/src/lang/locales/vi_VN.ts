@@ -20,6 +20,7 @@ export default {
   'special.copy': 'Sao chép',
 
   /* 01.General */
+  'general.tokens': 'Tokens',
   'general.home': 'Nhà',
   'general.accounts': 'Tài khoản',
   'general.lixi': 'Lì xì',

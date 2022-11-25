@@ -20,6 +20,7 @@ export default {
   'special.copy': 'Copy',
 
   /* 01.General */
+  'general.tokens': 'Tokens',
   'general.home': 'Home',
   'general.accounts': 'Accounts',
   'general.lixi': 'Lixi',
