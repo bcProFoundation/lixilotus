@@ -1,4 +1,4 @@
-import { createEntityAdapter, createReducer, Update } from '@reduxjs/toolkit';
+import { createEntityAdapter, createReducer } from '@reduxjs/toolkit';
 import { TokenState } from './state';
 import { fetchAllTokensSuccess, getTokenSuccess, postTokenSuccess, setSelectedTokenId } from './action';
 import { Token } from '@bcpros/lixi-models';
@@ -18,14 +18,6 @@ export const tokenReducer = createReducer(initialState, builder => {
     })
     .addCase(getTokenSuccess, (state, action) => {
       const tokenInfo = action.payload;
-      // state.getTokenById = token;
-      // const updateToken: Update<Token> = {
-      //   id: token.id,
-      //   changes: {
-      //     ...token
-      //   }
-      // };
-      // tokenAdapter.updateOne(state, updateToken);
       state.getTokenById = tokenInfo;
     })
     .addCase(fetchAllTokensSuccess, (state, action) => {
@@ -35,14 +27,4 @@ export const tokenReducer = createReducer(initialState, builder => {
       const tokenInfo = action.payload;
       state.selectedTokenId = tokenInfo;
     });
-  // .addCase(setPage, (state, action) => {
-  //   const page: any = action.payload;
-  //   state.selectedId = page.id ?? {};
-  // })
-  // .addCase(setSelectedPage, (state, action) => {
-  //   state.selectedId = action.payload;
-  // })
-  // .addCase(setPagesByAccountId, (state, action) => {
-  //   state.pagesByAccountId = action.payload;
-  // })
 });

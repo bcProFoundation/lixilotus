@@ -15,6 +15,7 @@ import { useRouter } from 'next/router';
 import { ColumnType } from 'antd/lib/table';
 import { FilterConfirmProps } from 'antd/lib/table/interface';
 import Highlighter from 'react-highlight-words';
+import { Token } from '@bcpros/lixi-models';
 const chronikClient = new ChronikClient('https://chronik.be.cash/xec');
 
 interface TokenInfoType {
@@ -53,7 +54,6 @@ const StyledNavBarHeader = styled.div`
 const TokensListing: React.FC = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const [tokensList, setTokensList] = useState<Array<any>>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [valueInput, setValueInput] = useState('');
   const [searchText, setSearchText] = useState('');
@@ -63,7 +63,6 @@ const TokensListing: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchAllTokens());
-    setTokensList([...tokenList]);
   }, []);
 
   const getColumnSearchProps = (dataIndex: any): ColumnType<any> => ({
@@ -133,7 +132,7 @@ const TokensListing: React.FC = () => {
       )
   });
 
-  const columns: ColumnsType<TokenInfoType> = [
+  const columns: ColumnsType<Token> = [
     {
       title: 'Ticker',
       dataIndex: 'ticker',
@@ -230,8 +229,6 @@ const TokensListing: React.FC = () => {
           .token(valueInput)
           .then(rs => {
             const token = mapTokenInfo(rs) || null;
-            dispatch(fetchAllTokens());
-            setTokensList([...tokenList]);
             setValueInput('');
             dispatch(postToken(token));
           })
@@ -295,8 +292,8 @@ const TokensListing: React.FC = () => {
         <Table
           className="table-tokens"
           columns={columns}
-          dataSource={tokensList}
-          pagination={tokensList.length >= 30 ? {} : false}
+          dataSource={tokenList}
+          pagination={tokenList.length >= 30 ? {} : false}
         />
       </StyledTokensListing>
 
