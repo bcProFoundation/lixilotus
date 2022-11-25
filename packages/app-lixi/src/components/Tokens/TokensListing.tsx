@@ -138,12 +138,14 @@ const TokensListing: React.FC = () => {
       title: 'Ticker',
       dataIndex: 'ticker',
       key: 'ticker',
+      // fixed: 'left',
       ...getColumnSearchProps('ticker')
     },
     {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
+      // fixed: 'left',
       ...getColumnSearchProps('name')
     },
     {
@@ -166,6 +168,7 @@ const TokensListing: React.FC = () => {
     {
       title: 'Action',
       key: 'action',
+      // fixed: 'right',
       render: (_, record) => (
         <Space size="middle">
           <Button type="primary" className="outline-btn" icon={<FireOutlined />} onClick={() => burnToken()}>
@@ -291,6 +294,7 @@ const TokensListing: React.FC = () => {
       </StyledNavBarHeader>
       <StyledTokensListing>
         <Table
+          scroll={{ x: true }}
           className="table-tokens"
           columns={columns}
           dataSource={tokenList}
