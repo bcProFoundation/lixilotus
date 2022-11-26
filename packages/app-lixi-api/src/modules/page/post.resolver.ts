@@ -72,7 +72,7 @@ export class PostResolver {
   }
 
   @Query(() => PostConnection)
-  async allPostsById(
+  async allPostsByPageId(
     @Args() { after, before, first, last }: PaginationArgs,
     @Args({ name: 'id', type: () => String, nullable: true })
     id: string,

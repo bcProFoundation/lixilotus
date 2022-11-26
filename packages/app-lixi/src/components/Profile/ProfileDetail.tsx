@@ -17,7 +17,7 @@ import moment from 'moment';
 import SearchBox from '@components/Common/SearchBox';
 import CreatePostCard from '@components/Common/CreatePostCard';
 import { Virtuoso } from 'react-virtuoso';
-import { useInfinitePostsByIdQuery } from '@store/post/useInfinitePostsByIdQuery';
+import { useInfinitePostsByPageIdQuery } from '@store/post/useInfinitePostsByPageIdQuery';
 import PostListItem from '@components/Posts/PostListItem';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import { GraphQLClient, gql } from 'graphql-request';
@@ -298,7 +298,7 @@ const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
   const [listsFriend, setListsFriend] = useState<any>([]);
   const [listsPicture, setListsPicture] = useState<any>([]);
 
-  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByIdQuery(
+  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByPageIdQuery(
     {
       first: 10,
       orderBy: {

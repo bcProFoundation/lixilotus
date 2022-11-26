@@ -1,6 +1,7 @@
 import React from 'react';
 import { formatHTML } from './formatHTML';
 
+// TODO: Will remove in later editor's update
 export const HighlightHTML = ({ code }: { code: string }) => (
   <div>
     {/* {({ className, style, tokens, getLineProps, getTokenProps }) => (

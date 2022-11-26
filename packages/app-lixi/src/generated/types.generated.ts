@@ -174,7 +174,7 @@ export type Query = {
   __typename?: 'Query';
   allPages: PageConnection;
   allPosts: PostConnection;
-  allPostsById: PostConnection;
+  allPostsByPageId: PostConnection;
   page: Page;
   post: Post;
 };
@@ -199,7 +199,7 @@ export type QueryAllPostsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
-export type QueryAllPostsByIdArgs = {
+export type QueryAllPostsByPageIdArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;

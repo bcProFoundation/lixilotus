@@ -31,7 +31,7 @@ query Posts(
   }
 }
 
-query PostsById(
+query PostsByPageId(
   $after: String
   $before: String
   $first: Int = 20
@@ -40,7 +40,7 @@ query PostsById(
   $id: String
   $skip: Int
 ) {
-  allPostsById(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, id: $id, skip: $skip) {
+  allPostsByPageId(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, id: $id, skip: $skip) {
     totalCount
     edges {
       cursor

@@ -9,7 +9,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 
 @Controller('countries')
 export class CountryController {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   @Get()
   async getCountries(@I18n() i18n: I18nContext): Promise<Country[]> {
@@ -46,10 +46,7 @@ export class CountryController {
   }
 
   @Get('ipaddr')
-  async getCountryFromIpAddress(
-    @Headers('x-forwarded-for') headerIp: string,
-    @ReqSocket() socket: any,
-  ): Promise<any> {
+  async getCountryFromIpAddress(@Headers('x-forwarded-for') headerIp: string, @ReqSocket() socket: any): Promise<any> {
     try {
       const ip = (headerIp || socket.remoteAddress) as string;
       console.log(ip);

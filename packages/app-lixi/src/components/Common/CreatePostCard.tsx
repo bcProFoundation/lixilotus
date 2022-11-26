@@ -106,7 +106,12 @@ const StyledUploader = styled.div`
   bottom: 24px;
 `;
 
-const CreatePostCard = props => {
+type CreatePostCardProp = {
+  pageId?: string;
+  refetch?: () => void;
+};
+
+const CreatePostCard = (props: CreatePostCardProp) => {
   const dispatch = useAppDispatch();
   const [url, setUrl] = useState<string>('');
   const [social, setSocial] = useState<SocialsEnum>();
@@ -120,15 +125,6 @@ const CreatePostCard = props => {
 
   const getSunEditorInstance = (sunEditorCore: SunEditorCore) => {
     sunEditor.current = sunEditorCore;
-  };
-
-  const Serialized = () => {
-    const editor = useMyPlateEditorRef();
-    const html = serializeHtml(editor, {
-      nodes: editor.children
-    });
-    setValue(html);
-    return null;
   };
 
   const items = [

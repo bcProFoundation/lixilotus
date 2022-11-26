@@ -72,7 +72,7 @@ export type PostsQuery = {
   };
 };
 
-export type PostsByIdQueryVariables = Types.Exact<{
+export type PostsByPageIdQueryVariables = Types.Exact<{
   after?: Types.InputMaybe<Types.Scalars['String']>;
   before?: Types.InputMaybe<Types.Scalars['String']>;
   first?: Types.InputMaybe<Types.Scalars['Int']>;
@@ -82,9 +82,9 @@ export type PostsByIdQueryVariables = Types.Exact<{
   skip?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
-export type PostsByIdQuery = {
+export type PostsByPageIdQuery = {
   __typename?: 'Query';
-  allPostsById: {
+  allPostsByPageId: {
     __typename?: 'PostConnection';
     totalCount?: number | null;
     edges?: Array<{
@@ -218,9 +218,9 @@ export const PostsDocument = `
 }
     ${PostFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
-export const PostsByIdDocument = `
-    query PostsById($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $id: String, $skip: Int) {
-  allPostsById(
+export const PostsByPageIdDocument = `
+    query PostsByPageId($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $id: String, $skip: Int) {
+  allPostsByPageId(
     after: $after
     before: $before
     first: $first
@@ -266,8 +266,8 @@ const injectedRtkApi = api.injectEndpoints({
     Posts: build.query<PostsQuery, PostsQueryVariables | void>({
       query: variables => ({ document: PostsDocument, variables })
     }),
-    PostsById: build.query<PostsByIdQuery, PostsByIdQueryVariables | void>({
-      query: variables => ({ document: PostsByIdDocument, variables })
+    PostsByPageId: build.query<PostsByPageIdQuery, PostsByPageIdQueryVariables | void>({
+      query: variables => ({ document: PostsByPageIdDocument, variables })
     }),
     createPost: build.mutation<CreatePostMutation, CreatePostMutationVariables>({
       query: variables => ({ document: CreatePostDocument, variables })
@@ -284,8 +284,8 @@ export const {
   useLazyPostQuery,
   usePostsQuery,
   useLazyPostsQuery,
-  usePostsByIdQuery,
-  useLazyPostsByIdQuery,
+  usePostsByPageIdQuery,
+  useLazyPostsByPageIdQuery,
   useCreatePostMutation,
   useUpdatePostMutation
 } = injectedRtkApi;
