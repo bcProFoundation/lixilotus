@@ -103,8 +103,10 @@ export const AppContainer = styled.div`
   }
   .ant-layout.ant-layout-has-sider {
     gap: 4rem;
+    justify-content: center;
   }
   .main-section-layout {
+    max-width: 680px;
     @media (max-width: 768px) {
       padding-right: 0 !important;
     }
@@ -163,9 +165,12 @@ const PageDetailLayout: React.FC = (props: PageDetailsLayoutProps) => {
                     <Layout>
                       <SidebarShortcut></SidebarShortcut>
                       <Sidebar />
-                      <Layout className="main-section-layout" style={{ paddingRight: '2rem' }}>
+                      <Layout
+                        className="main-section-layout"
+                        style={{ paddingRight: '2rem', maxWidth: '100%', marginTop: '2rem' }}
+                      >
                         <Topbar ref={setRef} />
-                        {selectedKey !== '/' && (
+                        {/* {selectedKey !== '/' && (
                           <NavBarHeader>
                             <Link href="/" passHref>
                               <LeftOutlined onClick={() => router.back()} />
@@ -174,7 +179,7 @@ const PageDetailLayout: React.FC = (props: PageDetailsLayoutProps) => {
                               <h2>{navBarTitle.length > 0 ? intl.get(navBarTitle) : ''}</h2>
                             </PathDirection>
                           </NavBarHeader>
-                        )}
+                        )} */}
                         <Content className="content-layout">{children}</Content>
                       </Layout>
                     </Layout>

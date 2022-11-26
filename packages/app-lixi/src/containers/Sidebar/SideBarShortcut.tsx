@@ -9,7 +9,8 @@ import {
   SettingOutlined,
   ShopOutlined,
   WalletOutlined,
-  BarcodeOutlined
+  BarcodeOutlined,
+  TagOutlined
 } from '@ant-design/icons';
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
@@ -246,6 +247,13 @@ const SidebarShortcut = () => {
             active={selectedKey.includes('/page')}
             key="page-feed"
             href={'/page/feed'}
+          />
+          <ItemAccess
+            icon={TagOutlined}
+            text={intl.get('general.tokens')}
+            active={selectedKey.includes('/tokens')}
+            key="tokens-feed"
+            href={'/tokens/listing'}
           />
           <ItemAccess
             icon={WalletOutlined}
