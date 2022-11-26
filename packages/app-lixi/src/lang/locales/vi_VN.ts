@@ -386,8 +386,8 @@ export default {
   'zeroBalanceHeader.deposit': 'Hãy nạp thêm vào tài khoản để có thể sử dụng tính năng giao dịch',
 
   /* 13.Page */
-  'page.createNewPage': 'tạo trang mới',
-  'page.createPage': 'tạo trang',
+  'page.createNewPage': 'Tạo trang mới',
+  'page.createPage': 'Tạo trang',
   'page.editPage': 'Sửa trang',
   'page.name': 'Tên',
   'page.inputName': 'Vui lòng nhập tên',

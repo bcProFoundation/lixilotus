@@ -70,7 +70,9 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
       <InfoCardUserContainer className={type === 'card' ? 'card' : ''}>
         <CardUser>
           <div className="card-container">
-            <img className="avatar-ico" src={imgUrl ? imgUrl : '/images/xpi.svg'} alt="" />
+            <picture>
+              <img className="avatar-ico" src={imgUrl ? imgUrl : '/images/xpi.svg'} alt="" />
+            </picture>
             <div className="card-info">
               <h4 className="name">{name}</h4>
               <p className="title">{title}</p>
