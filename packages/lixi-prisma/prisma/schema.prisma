@@ -108,7 +108,6 @@ model Post {
   createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz
   updatedAt      DateTime       @default(now()) @map("updated_at") @db.Timestamptz
   uploadedCovers UploadDetail[] @relation("PostCover")
-  uploadDetailId String[]
 
   @@map("post")
 }
@@ -430,8 +429,8 @@ model UploadDetail {
   pageCoverId  String? @unique @map("page_cover_id")
   pageAvatar   Page?   @relation("PageAvatar", fields: [pageAvatarId], references: [id])
   pageAvatarId String? @unique @map("page_avatar_id")
-  postCover    Post?   @relation("PostCover", fields: [postCoverId], references: [id])
-  postCoverId  String? @map("post_cover_id")
+  post         Post?   @relation("PostCover", fields: [postId], references: [id])
+  postId       String? @map("post_cover_id")
 
   @@map("upload_detail")
 }

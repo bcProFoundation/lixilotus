@@ -13,8 +13,6 @@ import axiosClient from '@utils/axiosClient';
 import { UPLOAD_API_S3 } from '@bcpros/lixi-models/constants';
 import _ from 'lodash';
 import { ButtonType } from 'antd/lib/button';
-import { insertImage } from '@udecode/plate';
-import { useMyPlateEditorRef } from '../Plate/plateTypes';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -75,7 +73,6 @@ export const Uploader = ({ type, buttonName, buttonType, isIcon, showUploadList,
   const [previewVisible, setPreviewVisible] = useState(false);
   const dispatch = useAppDispatch();
 
-  const editor = useMyPlateEditorRef();
   const uploadButton = (
     <StyledButton
       className={buttonType == 'text' ? 'clear-btn' : ''}
@@ -153,9 +150,10 @@ export const Uploader = ({ type, buttonName, buttonType, isIcon, showUploadList,
   };
 
   const handleRemove = data => {
-    //TODO: fix crash when upload fail
-    const { upload } = data.response.payload;
-    dispatch(removeUpload({ type: type, id: upload.id }));
+    if (data.response.payload) {
+      const { upload } = data.response.payload;
+      dispatch(removeUpload({ type: type, id: upload.id }));
+    }
   };
 
   const uploadImage = async options => {
@@ -177,9 +175,7 @@ export const Uploader = ({ type, buttonName, buttonType, isIcon, showUploadList,
       .post(url, formData, config)
       .then(response => {
         const { data } = response;
-        const url = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${data.bucket}/${data.sha}`;
-        insertImage(editor, url || null);
-        return onSuccess(dispatch(setUpload({ upload: response.data, type: type })));
+        return onSuccess(dispatch(setUpload({ upload: data, type: type })));
       })
       .catch(err => {
         const { response } = err;
