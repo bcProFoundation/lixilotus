@@ -87,6 +87,7 @@ model Token {
   lotusBurnDown        String        @default("0") @map("lotusBurnDown")
   initialTokenQuantity String        @default("") @map("initialTokenQuantity")
   comments             DateTime?     @default(now()) @map("comments") @db.Timestamptz
+  createdAt            DateTime      @default(now()) @map("createdAt") @db.Timestamptz
   createdDate          DateTime      @default(now()) @map("createdDate") @db.Timestamptz
   posts                Post[]
 

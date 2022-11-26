@@ -28,7 +28,7 @@ import { WithdrawSubLixiesProcessor } from './lixi/processors/withdraw-sub-lixie
 import { UploadService } from './upload/upload.service';
 import { ConfigService } from '@nestjs/config';
 import cors from 'cors';
-import { TokensController } from './tokens/tokens.controller';
+import { TokenController } from './tokens/token.controller';
 const baseCorsConfig = cors({
   origin: process.env.BASE_URL ?? ''
 });
@@ -104,7 +104,7 @@ const baseCorsConfig = cors({
     HeathController,
     UploadFilesController,
     CountryController,
-    TokensController
+    TokenController
   ],
   providers: [
     LixiService,

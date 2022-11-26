@@ -8,9 +8,9 @@ const selectSelectedAccount = createSelector(selectAccounts, state => state.sele
 
 const { selectAll, selectEntities, selectIds, selectTotal } = tokenAdapter.getSelectors();
 
-export const getAllTokens = createSelector((state: RootState) => state.tokens, selectAll);
+export const selectTokens = createSelector((state: RootState) => state.tokens, selectAll);
 
-export const getSelectedTokenId = createSelector(
+export const getSelectedToken = createSelector(
   (state: RootState) => state.tokens,
   (state: TokenState) => state.selectedTokenId as object
 );

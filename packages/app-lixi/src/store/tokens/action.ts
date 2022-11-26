@@ -9,4 +9,4 @@ export const postTokenFailure = createAction<string>('tokens/postTokenFailure');
 export const getToken = createAction<string>('tokens/getToken');
 export const getTokenSuccess = createAction<any>('tokens/getTokenSuccess');
 export const getTokenFailure = createAction<string>('tokens/getTokenFailure');
-export const setSelectedTokenId = createAction<any>('tokens/setSelectedTokenId');
+export const selectToken = createAction<any>('tokens/selectToken');

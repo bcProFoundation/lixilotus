@@ -1,6 +1,6 @@
 import { createEntityAdapter, createReducer } from '@reduxjs/toolkit';
 import { TokenState } from './state';
-import { fetchAllTokensSuccess, getTokenSuccess, postTokenSuccess, setSelectedTokenId } from './action';
+import { fetchAllTokensSuccess, getTokenSuccess, postTokenSuccess, selectToken } from './action';
 import { Token } from '@bcpros/lixi-models';
 
 export const tokenAdapter = createEntityAdapter<Token>({});
@@ -23,7 +23,7 @@ export const tokenReducer = createReducer(initialState, builder => {
     .addCase(fetchAllTokensSuccess, (state, action) => {
       tokenAdapter.setAll(state, action.payload);
     })
-    .addCase(setSelectedTokenId, (state, action) => {
+    .addCase(selectToken, (state, action) => {
       const tokenInfo = action.payload;
       state.selectedTokenId = tokenInfo;
     });

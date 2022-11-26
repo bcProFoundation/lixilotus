@@ -1,18 +1,6 @@
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
-import {
-  Body,
-  Controller,
-  Get,
-  HttpException,
-  HttpStatus,
-  Inject,
-  Param,
-  Post,
-} from '@nestjs/common';
-import { Token as TokenDb } from '@prisma/client';
-import {
-  TokenDto
-} from '@bcpros/lixi-models';
+import { Body, Controller, Get, HttpException, HttpStatus, Inject, Param, Post } from '@nestjs/common';
+import { CreateTokenCommand, TokenDto } from '@bcpros/lixi-models';
 
 import * as _ from 'lodash';
 import { I18n, I18nContext } from 'nestjs-i18n';
@@ -21,7 +9,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { WalletService } from '../../wallet/wallet.service';
 
 @Controller('tokens')
-export class TokensController {
+export class TokenController {
   constructor(
     private prisma: PrismaService,
     private readonly walletService: WalletService,
@@ -57,11 +45,6 @@ export class TokensController {
   async getAllTokenInfo(@I18n() i18n: I18nContext): Promise<any> {
     try {
       const tokensList = await this.prisma.token.findMany();
-      if (tokensList.length === 0) {
-        const tokenIsEmpty = await i18n.t('token.messages.tokenIsEmpty');
-        const error = new VError.WError(tokenIsEmpty);
-        return error;
-      }
       return tokensList;
     } catch (err: unknown) {
       if (err instanceof VError) {
@@ -75,7 +58,7 @@ export class TokensController {
   }
 
   @Post()
-  async createToken(@Body() command: TokenDb, @I18n() i18n: I18nContext): Promise<TokenDto> {
+  async createToken(@Body() command: CreateTokenCommand, @I18n() i18n: I18nContext): Promise<TokenDto> {
     if (command) {
       try {
         const tokenToInsert = {
@@ -90,6 +73,7 @@ export class TokensController {
           totalBurned: command.totalBurned,
           totalMinted: command.totalMinted,
           createdDate: command?.createdDate || undefined,
+          createdAt: undefined,
           comments: command?.comments || undefined
         };
 

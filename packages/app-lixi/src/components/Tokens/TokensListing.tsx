@@ -8,7 +8,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { ChronikClient } from 'chronik-client';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { fetchAllTokens, getAllTokens, postToken, setSelectedTokenId } from '@store/tokens';
+import { fetchAllTokens, selectTokens, postToken, selectToken } from '@store/tokens';
 import { showToast } from '@store/toast/actions';
 import { NavBarHeader, PathDirection } from '@components/Layout/MainLayout';
 import { FilterOutlined, FireOutlined, LeftOutlined, SearchOutlined, SyncOutlined } from '@ant-design/icons';
@@ -16,24 +16,8 @@ import { useRouter } from 'next/router';
 import { ColumnType } from 'antd/lib/table';
 import { FilterConfirmProps } from 'antd/lib/table/interface';
 import Highlighter from 'react-highlight-words';
-import { Token } from '@bcpros/lixi-models';
+import { CreateTokenCommand, Token } from '@bcpros/lixi-models';
 const chronikClient = new ChronikClient('https://chronik.be.cash/xec');
-
-interface TokenInfoType {
-  tokenId: string;
-  tokenDocumentUrl: string;
-  tokenType: string;
-  name: string;
-  ticker: string;
-  decimals: number;
-  totalBurned: string;
-  totalMinted: string;
-  initialTokenQuantity: string;
-  createdDate: string;
-  comments: string;
-  lotusBurnUp?: string;
-  lotusBurnDown?: string;
-}
 
 const StyledTokensListing = styled.div``;
 
@@ -60,7 +44,7 @@ const TokensListing: React.FC = () => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
-  const tokenList = useAppSelector(getAllTokens);
+  const tokenList = useAppSelector(selectTokens);
 
   useEffect(() => {
     dispatch(fetchAllTokens());
@@ -196,11 +180,11 @@ const TokensListing: React.FC = () => {
   };
 
   const handleNavigateToken = token => {
-    dispatch(setSelectedTokenId(token));
+    dispatch(selectToken(token));
   };
 
   const mapTokenInfo = token => {
-    const tokenInfo: TokenInfoType = {
+    const tokenInfo: CreateTokenCommand = {
       tokenId: token?.slpTxData?.slpMeta?.tokenId,
       tokenDocumentUrl: token?.slpTxData?.genesisInfo?.tokenDocumentUrl,
       tokenType: token?.slpTxData?.slpMeta?.tokenType,

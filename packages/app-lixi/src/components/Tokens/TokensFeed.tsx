@@ -10,7 +10,7 @@ import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
 import { Virtuoso } from 'react-virtuoso';
 import PostListItem from '@components/Posts/PostListItem';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { getSelectedTokenId } from '@store/tokens';
+import { getSelectedToken } from '@store/tokens';
 
 interface DataType {
   key: string;
@@ -83,7 +83,7 @@ const BannerTicker = styled.div`
 
 const TokensFeed: React.FC = () => {
   const dispatch = useAppDispatch();
-  const tokenInfo = useAppSelector(getSelectedTokenId);
+  const tokenInfo = useAppSelector(getSelectedToken);
   console.log('TOKEN INFO', tokenInfo);
 
   useEffect(() => {
