@@ -148,6 +148,7 @@ export default {
   'account.country': 'Applying country',
   'account.envelope': 'Image',
   'account.networkType': 'Network Type',
+  'account.recent': 'Recent',
 
   /* 03.Lixi */
   'lixi.createLixi': 'Create new lixi',
