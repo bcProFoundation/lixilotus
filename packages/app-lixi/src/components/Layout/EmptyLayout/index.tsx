@@ -96,64 +96,59 @@ export const AppContainer = styled.div`
 type EmptyLayoutProps = React.PropsWithChildren<{}>;
 
 const EmptyLayout: React.FC = (props: EmptyLayoutProps) => {
-	const { children } = props;
-	const [loading, setLoading] = useState(false);
-	const currentLocale = useAppSelector(getCurrentLocale);
-	const intlInitDone = useAppSelector(getIntlInitStatus);
-	const dispatch = useAppDispatch();
-	const router = useRouter();
-	const [height, setHeight] = useState(0);
-	const selectedKey = router.pathname ?? '';
-	const ref = useRef(null);
-	const setRef = useCallback(node => {
-		if (node && node.clientHeight) {
-			// Check if a node is actually passed. Otherwise node would be null.
-			const height = node.clientHeight;
-			setHeight(height);
-		}
-		// Save a reference to the node
-		ref.current = node;
-	}, []);
+    const { children } = props;
+    const [loading, setLoading] = useState(false);
+    const currentLocale = useAppSelector(getCurrentLocale);
+    const intlInitDone = useAppSelector(getIntlInitStatus);
+    const dispatch = useAppDispatch();
+    const router = useRouter();
+    const [height, setHeight] = useState(0);
+    const selectedKey = router.pathname ?? '';
+    const ref = useRef(null);
+    const setRef = useCallback(node => {
+        if (node && node.clientHeight) {
+            const height = node.clientHeight;
+            setHeight(height);
+        }
+        ref.current = node;
+    }, []);
 
-	injectStore(currentLocale);
+    injectStore(currentLocale);
 
-	useEffect(() => {
-		dispatch(loadLocale(currentLocale));
-	}, [currentLocale]);
+    useEffect(() => {
+        dispatch(loadLocale(currentLocale));
+    }, [currentLocale]);
 
-	const getNamePathDirection = () => {
-		const itemSelect = navBarHeaderList.find(item => selectedKey.includes(item.path)) || null;
-	};
+    const getNamePathDirection = () => {
+        const itemSelect = navBarHeaderList.find(item => selectedKey.includes(item.path)) || null;
+    };
 
-	useEffect(() => {
-		getNamePathDirection();
-	}, [selectedKey]);
+    useEffect(() => {
+        getNamePathDirection();
+    }, [selectedKey]);
 
-	return (
-		<ThemeProvider theme={theme as DefaultTheme}>
-			<GlobalStyle />
-			{intlInitDone && (
-				<Spin spinning={loading} indicator={LoadingIcon}>
-					<LixiApp>
-						<Layout>
-							<AppBody>
-								<ModalManager />
-								<>
-									<AppContainer>
-										<Layout>
-											<Layout className="main-section-layout" style={{ paddingRight: '2rem' }}>
-												<Content className="content-layout">{children}</Content>
-											</Layout>
-										</Layout>
-									</AppContainer>
-								</>
-							</AppBody>
-						</Layout>
-					</LixiApp>
-				</Spin>
-			)}
-		</ThemeProvider>
-	);
+    return (
+        <ThemeProvider theme={theme as DefaultTheme}>
+            <GlobalStyle />
+            {intlInitDone && (
+                <Spin spinning={loading} indicator={LoadingIcon}>
+                    <LixiApp>
+                        <Layout>
+                            <AppBody>
+                                <AppContainer>
+                                    <Layout>
+                                        <Layout className="main-section-layout" style={{ paddingRight: '2rem' }}>
+                                            <Content className="content-layout">{children}</Content>
+                                        </Layout>
+                                    </Layout>
+                                </AppContainer>
+                            </AppBody>
+                        </Layout>
+                    </LixiApp>
+                </Spin>
+            )}
+        </ThemeProvider>
+    );
 };
 
 export default EmptyLayout;
