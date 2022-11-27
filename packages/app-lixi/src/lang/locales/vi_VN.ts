@@ -148,6 +148,7 @@ export default {
   'account.envelope': 'Hình ảnh',
   'account.networkType': 'Kiểu kết nối',
   'account.recent': 'Gần đây',
+  'account.reply': 'Trả lời',
 
   /* 03.Lixi */
   'lixi.createLixi': 'Tạo lixi mới',

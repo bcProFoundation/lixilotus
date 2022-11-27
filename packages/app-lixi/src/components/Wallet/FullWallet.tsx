@@ -1,6 +1,6 @@
 import { SearchOutlined } from '@ant-design/icons';
 import ClaimComponent from '@components/Claim';
-import { List } from 'antd';
+import { Button, List } from 'antd';
 import VirtualList from 'rc-virtual-list';
 import React from 'react';
 import styled from 'styled-components';
@@ -15,6 +15,7 @@ import { formatDate } from '@utils/formatting';
 import _ from 'lodash';
 import { getCurrentLocale } from '@store/settings/selectors';
 import { FormattedTxAddress } from '@components/Common/FormattedWalletAddress';
+import Link from 'next/link';
 
 interface UserItem {
   email: string;
@@ -204,6 +205,18 @@ const FullWalletComponent: React.FC = () => {
                             <div className="tx-info">
                               <div className="tx-status"></div>
                               <p className="tx-date">{formatDate(item.timeFirstSeen)}</p>
+                              {item.parsed.incoming && (
+                                <Link
+                                  href={{
+                                    pathname: '/send',
+                                    query: { replyAddress: item.parsed.replyAddress }
+                                  }}
+                                >
+                                  <Button size="small" type="text">
+                                    {intl.get('account.reply')}
+                                  </Button>
+                                </Link>
+                              )}
                             </div>
                           </List.Item>
                         );
