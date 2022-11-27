@@ -4,12 +4,12 @@ import { Order } from '../../../core';
 
 export enum TokenOrderField {
   id = 'id',
-  createdDate = 'createdAt',
+  createdDate = 'createdAt'
 }
 
 registerEnumType(TokenOrderField, {
   name: 'TokenOrderField',
-  description: 'Properties by which token connections can be ordered.',
+  description: 'Properties by which token connections can be ordered.'
 });
 
 @InputType()
