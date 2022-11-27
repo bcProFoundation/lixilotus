@@ -42,13 +42,13 @@ export class Token {
   initialTokenQuantity: string;
 
   @Field(() => Date, {
-    description: 'Identifies the date and time when the object was created.',
+    description: 'Identifies the date and time when the object was created.'
   })
   createdDate: Date;
 
   @Field(() => Date, {
-    description:
-      'Identifies the date and time when the object was last comments.',
+    description: 'Identifies the date and time when the object was last comments.',
+    nullable: true
   })
   comments: Date;
 }

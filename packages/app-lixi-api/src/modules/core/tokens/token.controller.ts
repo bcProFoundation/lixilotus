@@ -7,6 +7,7 @@ import { I18n, I18nContext } from 'nestjs-i18n';
 import { VError } from 'verror';
 import { PrismaService } from '../../prisma/prisma.service';
 import { WalletService } from '../../wallet/wallet.service';
+import { Token as TokenDb } from '@prisma/client';
 
 @Controller('tokens')
 export class TokenController {
@@ -62,7 +63,6 @@ export class TokenController {
     if (command) {
       try {
         const tokenToInsert = {
-          id: undefined,
           tokenId: command.tokenId,
           name: command.name,
           ticker: command.ticker,
@@ -72,16 +72,15 @@ export class TokenController {
           tokenDocumentUrl: command.tokenDocumentUrl,
           totalBurned: command.totalBurned,
           totalMinted: command.totalMinted,
-          createdDate: command?.createdDate || undefined,
-          createdAt: undefined,
-          comments: command?.comments || undefined
-        };
+          createdDate: command?.createdDate || new Date(),
+          comments: command?.comments ?? new Date()
+        } as TokenDb;
 
         const createdToken = await this.prisma.token.create({
           data: tokenToInsert
         });
 
-        const resultApi: TokenDto = createdToken;
+        const resultApi: TokenDto = { ...createdToken };
 
         return resultApi;
       } catch (err) {
