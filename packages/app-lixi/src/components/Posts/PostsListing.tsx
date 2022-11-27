@@ -138,7 +138,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   return (
     <div className={className}>
       <SearchBox></SearchBox>
-      <CreatePostCard></CreatePostCard>
+      <CreatePostCard refetch={() => refetch()} />
       <Menu
         style={{
           border: 'none',

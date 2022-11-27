@@ -10,7 +10,7 @@ export * from './utils/paginationResult';
 export * from './constants';
 export * from './lib/package';
 export * from './lib/distribution';
-export * from './lib/page';
+export * from './lib/token';
 export * from './lib/post';
 export * from './lib/upload';
 export * from './lib/country';

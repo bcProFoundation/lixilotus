@@ -393,7 +393,12 @@ const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
                 {selectedPage.avatar && (
                   <Image src={(selectedPage.avatar as any).upload.url} width="150px" height="150px" alt="page-avatar" />
                 )}
-                <StyledUploader type={UPLOAD_TYPES.PAGE_AVATAR} />
+                <StyledUploader
+                  type={UPLOAD_TYPES.PAGE_AVATAR}
+                  buttonName=" "
+                  buttonType="text"
+                  showUploadList={false}
+                />
               </Form.Item>
               <Form.Item
                 name="cover"

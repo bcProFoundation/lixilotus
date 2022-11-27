@@ -147,6 +147,7 @@ enum PostOrderField {
 type Query {
   allPages(after: String, before: String, first: Int, last: Int, orderBy: PageOrder, query: String, skip: Int): PageConnection!
   allPosts(after: String, before: String, first: Int, last: Int, orderBy: PostOrder, query: String, skip: Int): PostConnection!
+  allPostsByPageId(after: String, before: String, first: Int, id: String, last: Int, orderBy: PostOrder, skip: Int): PostConnection!
   page(id: String!): Page!
   post(id: String!): Post!
 }
@@ -154,6 +155,31 @@ type Query {
 type Subscription {
   pageCreated: Page!
   postCreated: Post!
+}
+
+type Token {
+  """Identifies the date and time when the object was last comments."""
+  comments: DateTime!
+
+  """Identifies the date and time when the object was created."""
+  createdDate: DateTime!
+  decimals: Int!
+  id: ID!
+  initialTokenQuantity: String
+  lotusBurnDown: String
+  lotusBurnUp: String
+  name: String!
+  ticker: String!
+  tokenDocumentUrl: String
+  tokenId: String!
+  tokenType: String!
+  totalBurned: String
+  totalMinted: String
+}
+
+type TokenEdge {
+  cursor: String!
+  node: Token!
 }
 
 input UpdatePageInput {

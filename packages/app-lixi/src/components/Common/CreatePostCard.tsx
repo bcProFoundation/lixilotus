@@ -30,6 +30,9 @@ import { getPostCoverUploads } from '@store/account/selectors';
 import { getPageById } from '@store/page/selectors';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
+import _ from 'lodash';
+import Editor from './Editor';
+import { usePlateSelectors } from '@udecode/plate-core';
 
 const styles = {
   wrapper: {
@@ -37,13 +40,13 @@ const styles = {
   }
 };
 
-const Editor = (props: PlateProps<MyValue>) => {
-  return (
-    <Plate {...props} id="main">
-      <MarkBalloonToolbar />
-    </Plate>
-  );
-};
+// const Editor = (props: PlateProps<MyValue>) => {
+//   return (
+//     <Plate {...props} id="main">
+//       <MarkBalloonToolbar />
+//     </Plate>
+//   );
+// };
 
 type ErrorType = 'unsupported' | 'invalid';
 
@@ -68,7 +71,10 @@ const SunEditor = dynamic(() => import('suneditor-react'), {
   ssr: false
 });
 
-const WrapEditor = styled.div``;
+const WrapEditor = styled.div`
+  position: relative;
+  z-index: -2;
+`;
 
 const CreateCardContainer = styled.div`
   display: flex;
@@ -100,7 +106,12 @@ const StyledUploader = styled.div`
   bottom: 24px;
 `;
 
-const CreatePostCard = () => {
+type CreatePostCardProp = {
+  pageId?: string;
+  refetch?: () => void;
+};
+
+const CreatePostCard = (props: CreatePostCardProp) => {
   const dispatch = useAppDispatch();
   const [url, setUrl] = useState<string>('');
   const [social, setSocial] = useState<SocialsEnum>();
@@ -110,29 +121,10 @@ const CreatePostCard = () => {
   const sunEditor = useRef<SunEditorCore>();
   const [valueEditor, setValue] = useState(null);
   const postCoverUploads = useAppSelector(getPostCoverUploads);
+  const { pageId } = props;
 
   const getSunEditorInstance = (sunEditorCore: SunEditorCore) => {
     sunEditor.current = sunEditorCore;
-  };
-
-  const { refetch } = useInfinitePostsQuery(
-    {
-      first: 10,
-      orderBy: {
-        direction: OrderDirection.Desc,
-        field: PostOrderField.UpdatedAt
-      }
-    },
-    false
-  );
-
-  const Serialized = () => {
-    const editor = useMyPlateEditorRef();
-    const html = serializeHtml(editor, {
-      nodes: editor.children
-    });
-    setValue(html);
-    return null;
   };
 
   const items = [
@@ -181,11 +173,12 @@ const CreatePostCard = () => {
   };
 
   const handleSubmit = event => {
+    event.preventDefault();
+
     const valueInput = sunEditor.current.getContents(true);
     setValue(valueInput);
     setEnableEditor(false);
     console.log(valueInput);
-    event.preventDefault();
   };
 
   const handleUrlChange = (event): void => {
@@ -252,24 +245,22 @@ const CreatePostCard = () => {
     event.preventDefault();
   };
 
-  const handleSubmitEditor = async event => {
-    event.preventDefault();
+  const handleSubmitEditor = async value => {
     if (url) {
       console.log(url);
     } else {
       setEnableEditor(false);
 
-      const content = valueEditor;
-      await handleCreateNewPost(content);
+      await handleCreateNewPost(value);
     }
   };
 
   const handleCreateNewPost = async content => {
-    if (content) {
+    if (content !== '' || !_.isNil(content)) {
       const createPostInput: CreatePostInput = {
         uploadCovers: postCoverUploads.map(upload => upload.id),
         content: content,
-        pageId: ''
+        pageId: pageId || undefined
       };
 
       try {
@@ -289,8 +280,9 @@ const CreatePostCard = () => {
                 duration: 5
               })
             );
-
-            refetch();
+          })
+          .finally(() => {
+            props.refetch();
           });
       } catch (error) {
         const message = intl.get('post.unableCreatePostServer');
@@ -312,77 +304,47 @@ const CreatePostCard = () => {
 
   return (
     <>
-      {!enableEditor && (
-        <CreateCardContainer onClick={() => setEnableEditor(!enableEditor)}>
-          <div className="avatar">
-            <Avatar size={50} style={{ color: '#fff', backgroundColor: '#bdbdbd' }}>
-              ER
-            </Avatar>
-            <TextArea bordered={false} placeholder="What's on your mind?" autoSize={{ minRows: 1, maxRows: 2 }} />
-          </div>
-          <div className="btn-create">
-            <PlusCircleOutlined />
-          </div>
-        </CreateCardContainer>
-      )}
-      {enableEditor && (
-        <WrapEditor>
-          <Modal
-            className="custom-modal-editor"
-            title="Create Post"
-            visible={enableEditor}
-            footer={null}
-            onCancel={() => setEnableEditor(false)}
-          >
-            <Tabs defaultActiveKey="1">
-              <Tabs.TabPane tab="Create" key="create">
-                <form onSubmit={handleSubmitEditor}>
-                  <PlateProvider<MyValue>
-                    plugins={imagePlugins}
-                    initialValue={null}
-                    onChange={value => setValue(value)}
-                    id="main"
-                  >
-                    <Toolbar>
-                      <BasicElementToolbarButtons />
-                      <BasicMarkToolbarButtons />
-                      <Uploader
-                        type={UPLOAD_TYPES.POST}
-                        isIcon={true}
-                        icon={<FileImageOutlined />}
-                        buttonName=" "
-                        buttonType="text"
-                        showUploadList={false}
-                      />
-                      <EmojiElementToolbarButtons />
-                    </Toolbar>
-
-                    <div style={styles.wrapper}>
-                      <Editor editableProps={editableProps} />
-                    </div>
-                    <Serialized />
-                  </PlateProvider>
-                  <input type="submit" value="Create Post" />
-                </form>
-              </Tabs.TabPane>
-              <Tabs.TabPane tab="Import" key="import">
-                <form onSubmit={handleSubmit}>
-                  <label>Link to post</label>
-                  <input className="input-import" placeholder="Please type link..." onChange={handleUrlChange} />
-                </form>
-                {!error && social && postId && (
-                  <div>
-                    <h3 style={{ marginTop: '2rem' }}>Post Preview</h3>
-                    <Preview>
-                      <Embed social={social} postId={postId} url={url} onError={handleOnError} onLoad={handleOnLoad} />
-                    </Preview>
-                  </div>
-                )}
-              </Tabs.TabPane>
-            </Tabs>
-          </Modal>
-        </WrapEditor>
-      )}
+      <CreateCardContainer onClick={() => setEnableEditor(!enableEditor)}>
+        <div className="avatar">
+          <Avatar size={50} style={{ color: '#fff', backgroundColor: '#bdbdbd' }}>
+            ER
+          </Avatar>
+          <TextArea bordered={false} placeholder="What's on your mind?" autoSize={{ minRows: 1, maxRows: 2 }} />
+        </div>
+        <div className="btn-create">
+          <PlusCircleOutlined />
+        </div>
+      </CreateCardContainer>
+      <WrapEditor>
+        <Modal
+          className="custom-modal-editor"
+          title="Create Post"
+          visible={enableEditor}
+          footer={null}
+          onCancel={() => setEnableEditor(false)}
+          destroyOnClose={true}
+        >
+          <Tabs defaultActiveKey="1">
+            <Tabs.TabPane tab="Create" key="create">
+              <Editor onSubmitPost={handleSubmitEditor} />
+            </Tabs.TabPane>
+            <Tabs.TabPane tab="Import" key="import">
+              <form onSubmit={handleSubmit}>
+                <label>Link to post</label>
+                <input className="input-import" placeholder="Please type link..." onChange={handleUrlChange} />
+              </form>
+              {!error && social && postId && (
+                <div>
+                  <h3 style={{ marginTop: '2rem' }}>Post Preview</h3>
+                  <Preview>
+                    <Embed social={social} postId={postId} url={url} onError={handleOnError} onLoad={handleOnLoad} />
+                  </Preview>
+                </div>
+              )}
+            </Tabs.TabPane>
+          </Tabs>
+        </Modal>
+      </WrapEditor>
     </>
   );
 };

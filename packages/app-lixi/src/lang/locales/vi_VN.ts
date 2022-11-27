@@ -20,6 +20,7 @@ export default {
   'special.copy': 'Sao chép',
 
   /* 01.General */
+  'general.tokens': 'Tokens',
   'general.home': 'Nhà',
   'general.accounts': 'Tài khoản',
   'general.lixi': 'Lì xì',
@@ -385,8 +386,8 @@ export default {
   'zeroBalanceHeader.deposit': 'Hãy nạp thêm vào tài khoản để có thể sử dụng tính năng giao dịch',
 
   /* 13.Page */
-  'page.createNewPage': 'tạo trang mới',
-  'page.createPage': 'tạo trang',
+  'page.createNewPage': 'Tạo trang mới',
+  'page.createPage': 'Tạo trang',
   'page.editPage': 'Sửa trang',
   'page.name': 'Tên',
   'page.inputName': 'Vui lòng nhập tên',
@@ -447,5 +448,18 @@ export default {
   'post.copyToClipboard': 'Liên kết đã được sao chép',
   'post.unableCreatePost': 'Không thể tạo bài viết.',
   'post.unableUpdatePost': 'Không thể sửa bài viết.',
-  'post.selectAccountFirst': 'Hãy chọn một tài khoản trước khi tạo bài viết'
+  'post.selectAccountFirst': 'Hãy chọn một tài khoản trước khi tạo bài viết',
+
+  /* 16.Token */
+  'token.importToken': 'Thêm token',
+  'token.couldNotpostToken': 'Không thể tạo token',
+  'token.createTokenSuccessful': 'Tạo token thành công',
+  'token.unableCreateTokenServer': 'Không thể kết nối server tạo token',
+  'token.errorWhenCreateToken': 'Đã có lỗi xảy ra khi tạo mới token',
+  'token.couldNotFindToken': 'Không thể tìm thấy token',
+  'token.unableCreateToken': 'Không thể tạo token',
+  'token.unableSelect': 'Không thể chọn token',
+  'token.inputTokenId': 'Nhập tokenId',
+  'token.tokenIdNotFound': 'TokenID không tồn tại',
+  'token.tokenIdInvalid': 'TokenID không đúng'
 };

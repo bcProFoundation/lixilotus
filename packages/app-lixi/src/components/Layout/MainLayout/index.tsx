@@ -42,7 +42,7 @@ const AppBody = styled.div`
   background-attachment: fixed;
 `;
 
-const NavBarHeader = styled(Header)`
+export const NavBarHeader = styled(Header)`
   padding: 2rem 2rem 1rem 2rem;
   height: auto;
   line-height: initial;
@@ -62,7 +62,7 @@ const NavBarHeader = styled(Header)`
   }
 `;
 
-const PathDirection = styled.div`
+export const PathDirection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -105,8 +105,10 @@ export const AppContainer = styled.div`
   }
   .ant-layout.ant-layout-has-sider {
     gap: 4rem;
+    justify-content: center;
   }
   .main-section-layout {
+    max-width: 680px;
     @media (max-width: 768px) {
       padding-right: 0 !important;
     }
@@ -217,7 +219,8 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                       <Layout
                         className="main-section-layout"
                         style={{
-                          paddingRight: disableSideBarRanking.some(item => selectedKey.includes(item)) ? '2rem' : '0'
+                          paddingRight: disableSideBarRanking.some(item => selectedKey.includes(item)) ? '2rem' : '0',
+                          maxWidth: disableSideBarRanking.some(item => selectedKey.includes(item)) ? '100%' : ''
                         }}
                       >
                         <Topbar ref={setRef} />

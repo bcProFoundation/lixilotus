@@ -29,6 +29,7 @@ import { WithdrawSubLixiesEventsListener } from './lixi/processors/withdraw-sub-
 import { WithdrawSubLixiesProcessor } from './lixi/processors/withdraw-sub-lixies.processor';
 import { UploadFilesController } from './upload/upload.controller';
 import { UploadService } from './upload/upload.service';
+import { TokenController } from './tokens/token.controller';
 const baseCorsConfig = cors({
   origin: process.env.BASE_URL ?? ''
 });
@@ -103,6 +104,7 @@ const baseCorsConfig = cors({
     EnvelopeController,
     HeathController,
     UploadFilesController,
+    TokenController,
     CountryController,
     BurnController
   ],

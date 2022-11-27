@@ -182,6 +182,18 @@ const PostListItem = ({ index, item, burnForPost }: PostListItemProps) => {
     burnForPost(false, dataItem.id);
   };
 
+  const showUsername = () => {
+    if (post.page) {
+      if (post.postAccount.id == post.pageAccount.id) {
+        return post.page.name;
+      } else {
+        return post.postAccount.name;
+      }
+    }
+
+    return post.postAccount.name;
+  };
+
   return (
     <div>
       <List.Item
@@ -201,8 +213,8 @@ const PostListItem = ({ index, item, burnForPost }: PostListItemProps) => {
         <CardContainer onClick={() => routerPostDetail(post.id)}>
           <CardHeader>
             <InfoCardUser
-              imgUrl={item?.avatar}
-              name={(post.pageAccount ? post.pageAccount.name : post.postAccount.name) || 'Anonymous'}
+              imgUrl={item.avatar}
+              name={showUsername() || 'Anonymous'}
               title={moment(post.createdAt).fromNow().toString()}
             ></InfoCardUser>
           </CardHeader>
