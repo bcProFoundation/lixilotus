@@ -1,7 +1,6 @@
-import { Controller, Get, HttpException, HttpStatus, Param } from '@nestjs/common';
-import * as _ from 'lodash';
-import { PrismaService } from '../../prisma/prisma.service';
+import { Controller, Get, HttpException, HttpStatus } from '@nestjs/common';
 import Redis from 'ioredis';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @Controller('healthcheck')
 export class HeathController {

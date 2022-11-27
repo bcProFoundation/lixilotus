@@ -12,7 +12,8 @@ import {
   SettingOutlined,
   ShopOutlined,
   WalletOutlined,
-  BarcodeOutlined
+  BarcodeOutlined,
+  TagOutlined
 } from '@ant-design/icons';
 import { CointainerAccess, ItemAccess, ItemAccessBarcode } from './SideBarShortcut';
 import { useRouter } from 'next/router';
@@ -76,6 +77,13 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
             active={selectedKey.includes('/page')}
             key="page-feed"
             href={'/page/feed'}
+          />
+          <ItemAccess
+            icon={TagOutlined}
+            text={intl.get('general.tokens')}
+            active={selectedKey.includes('/tokens')}
+            key="tokens-feed"
+            href={'/tokens/listing'}
           />
           <ItemAccess
             icon={WalletOutlined}

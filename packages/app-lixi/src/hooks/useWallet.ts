@@ -7,6 +7,7 @@ import {
   getWaletRefreshInterval,
   getWalletHasUpdated,
   getWalletState,
+  getWalletStatus,
   getWalletUtxos,
   setWalletHasUpdated,
   setWalletRefreshInterval,
@@ -28,6 +29,7 @@ import _, { isEqual } from 'lodash';
 import { useEffect, useState } from 'react';
 import useInterval from './useInterval';
 import useXPI from './useXPI';
+import isEqualIgnoreUndefined from '@utils/comparision';
 
 const chronik = new ChronikClient('https://chronik.be.cash/xpi');
 const websocketConnectedRefreshInterval = 10000;
@@ -52,6 +54,7 @@ const useWallet = () => {
   const allWalletPaths = useAppSelector(getAllWalletPaths);
   const walletUtxos = useAppSelector(getWalletUtxos);
   const dispatch = useAppDispatch();
+  const walletStatus = useAppSelector(getWalletStatus);
 
   // If you catch API errors, call this function
   const tryNextAPI = () => {
@@ -168,8 +171,11 @@ const useWallet = () => {
 
     // If wallet is valid, compare what exists in written wallet state instead of former api call
     let utxosToCompare = previousUtxos;
+
+    const haveChanged = !_.isEqualWith(utxos, utxosToCompare, isEqualIgnoreUndefined);
+
     // Compare utxo sets
-    return !isEqual(utxos, utxosToCompare);
+    return haveChanged;
   };
 
   // Parse chronik ws message for incoming tx notifications
@@ -353,7 +359,10 @@ const useWallet = () => {
         parsedTxHistory: chronikTxHistory,
         utxos: chronikUtxos
       };
-      dispatch(writeWalletStatus(newWalletStatus));
+
+      if (!_.isEqual(newWalletStatus, walletStatus)) {
+        dispatch(writeWalletStatus(newWalletStatus));
+      }
 
       setApiError(false);
     } catch (error) {
@@ -371,9 +380,7 @@ const useWallet = () => {
   // Update wallet according to defined interval
   useInterval(async () => {
     const wallet = walletState;
-    setLoading(false);
     update(wallet).finally(() => {
-      setLoading(false);
       if (!walletHasUpdated) {
         dispatch(setWalletHasUpdated(true));
       }

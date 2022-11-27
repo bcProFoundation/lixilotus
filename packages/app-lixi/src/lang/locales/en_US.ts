@@ -20,6 +20,7 @@ export default {
   'special.copy': 'Copy',
 
   /* 01.General */
+  'general.tokens': 'Tokens',
   'general.home': 'Home',
   'general.accounts': 'Accounts',
   'general.lixi': 'Lixi',
@@ -446,5 +447,18 @@ export default {
   'post.unableCreatePost': 'Unable to create post.',
   'post.unableUpdatePost': 'Unable to update the post.',
   'post.selectAccountFirst': 'Please Select an account first before creating post',
-  'post.content': 'Content'
+  'post.content': 'Content',
+
+  /* 16.Token */
+  'token.importToken': 'Import token',
+  'token.couldNotpostToken': 'Could not create token',
+  'token.createTokenSuccessful': 'Create token successful',
+  'token.unableCreateTokenServer': 'Unable to create token on server',
+  'token.errorWhenCreateToken': "There's an error happens when create new Token",
+  'token.couldNotFindToken': 'Could not find tokens',
+  'token.unableCreateToken': 'Unable to create token.',
+  'token.unableSelect': 'Unable to select token',
+  'token.inputTokenId': 'Input tokenId',
+  'token.tokenIdNotFound': 'TokenID not found',
+  'token.tokenIdInvalid': 'TokenID invalid'
 };

@@ -10,7 +10,7 @@ import { isMobile } from 'react-device-detect';
 import { useAppDispatch } from '@store/hooks';
 import { setUpload, removeUpload } from '@store/account/actions';
 import axiosClient from '@utils/axiosClient';
-import { UPLOAD_API } from '@bcpros/lixi-models/constants';
+import { UPLOAD_API_S3 } from '@bcpros/lixi-models/constants';
 import _ from 'lodash';
 import { ButtonType } from 'antd/lib/button';
 import { insertImage } from '@udecode/plate';
@@ -39,6 +39,19 @@ const StyledButton = styled(Button)`
 
   :disabled {
     color: gray;
+  }
+
+  &.clear-btn {
+    padding: 0 0 0 5px;
+    &:hover {
+      background: transparent;
+    }
+    span {
+      color: #000;
+      &:hover {
+        color: #06c;
+      }
+    }
   }
 `;
 
@@ -139,15 +152,9 @@ export const MultiUploader = ({ type, buttonName, buttonType, isIcon, showUpload
     }
   };
 
-  const handleRemove = data => {
-    //TODO: fix crash when upload fail
-    const { upload } = data.response.payload;
-    dispatch(removeUpload({ type: type, id: upload.id }));
-  };
-
   const uploadImage = async options => {
     const { onSuccess, onError, file, onProgress } = options;
-    const url = '/api/uploads/s3';
+    const url = UPLOAD_API_S3;
     const formData = new FormData();
 
     formData.append('file', file);
@@ -186,7 +193,6 @@ export const MultiUploader = ({ type, buttonName, buttonType, isIcon, showUpload
         accept="image/png, image/gif, image/jpeg"
         progress={customProgress}
         customRequest={uploadImage}
-        onRemove={handleRemove}
         showUploadList={showUploadList}
       >
         {uploadButton}
