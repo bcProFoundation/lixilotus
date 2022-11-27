@@ -8,7 +8,8 @@ import React, { useState } from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import { useAppDispatch } from 'src/store/hooks';
 import styled from 'styled-components';
-import { Post } from '@bcpros/lixi-models';
+import { BurnCommand, BurnType, Post } from '@bcpros/lixi-models';
+import { PostQuery, PostsQuery } from '@store/post/posts.generated';
 
 const IconText = ({
   icon,
@@ -127,9 +128,17 @@ const GroupIconText = styled.div`
   }
 `;
 
-const PostListItem = ({ index, item }) => {
+type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
+
+type PostListItemProps = {
+  index: number;
+  item: PostItem;
+  burnForPost: (isUpVote: boolean, postId: string) => void;
+}
+
+const PostListItem = ({ index, item, burnForPost }: PostListItemProps) => {
   const dispatch = useAppDispatch();
-  const post: Post = item;
+  const post: PostItem = item;
   const [isCollapseComment, setIsCollapseComment] = useState(false);
   const [comments, setComments] = useState<CommentItem[]>([]);
   const [submitting, setSubmitting] = useState(false);
@@ -142,8 +151,6 @@ const PostListItem = ({ index, item }) => {
   };
 
   const onLixiClick = item => {
-    // setIsShowQrCode(true);
-    // showModal();
   };
 
   const handleSubmit = (values: any) => {
@@ -168,25 +175,11 @@ const PostListItem = ({ index, item }) => {
   };
 
   const upVotePost = dataItem => {
-    // if (selectedAccount && balanceAccount !== 0) {
-    // data.forEach(item => {
-    //   if (item.title === dataItem.title) item.upVote += 1;
-    // });
-    message.info(`Successful up vote shop`);
-    // } else {
-    message.info(`Please register account to up vote`);
-    // }
+    burnForPost(false, dataItem.id);
   };
 
   const downVotePost = dataItem => {
-    // if (selectedAccount && balanceAccount !== 0) {
-    // lists.forEach(item => {
-    //   if (item.title === dataItem.title) item.downVote += 1;
-    // });
-    message.info(`Successful down vote shop`);
-    // } else {
-    message.info(`Please register account to up vote`);
-    // }
+    burnForPost(false, dataItem.id);
   };
 
   return (
@@ -208,7 +201,7 @@ const PostListItem = ({ index, item }) => {
         <CardContainer onClick={() => routerPostDetail(post.id)}>
           <CardHeader>
             <InfoCardUser
-              imgUrl={item.avatar}
+              imgUrl={item?.avatar}
               name={(post.pageAccount ? post.pageAccount.name : post.postAccount.name) || 'Anonymous'}
               title={moment(post.createdAt).fromNow().toString()}
             ></InfoCardUser>
@@ -221,14 +214,14 @@ const PostListItem = ({ index, item }) => {
         <ActionBar>
           <GroupIconText>
             <IconText
-              text={item.upVote}
+              text={'upVote'}
               imgUrl="/images/up-ico.svg"
               key={`list-vertical-upvote-o-${item.id}`}
               dataItem={item}
               onClickIcon={() => upVotePost(item)}
             />
             <IconText
-              text={item.downVote}
+              text={'downVote'}
               imgUrl="/images/down-ico.svg"
               key={`list-vertical-downvote-o-${item.id}`}
               dataItem={item}
@@ -248,7 +241,7 @@ const PostListItem = ({ index, item }) => {
               text="Share"
               key={`list-vertical-share-o-${item.id}`}
               dataItem={item}
-              onClickIcon={() => {}}
+              onClickIcon={() => { }}
             />
           </GroupIconText>
 

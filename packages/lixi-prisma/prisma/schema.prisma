@@ -435,3 +435,14 @@ model UploadDetail {
 
   @@map("upload_detail")
 }
+
+model Burn {
+  id          String    @id @default(cuid())
+  txid        String
+  burnType    Boolean   @map("burn_type")
+  burnForType Int       @map("burn_for_type")
+  burnedBy    Bytes     @map("burned_by")
+  burnForId   String    @map("burned_for_id")
+  createdAt   DateTime? @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime? @map("updated_at") @db.Timestamptz(6)
+}

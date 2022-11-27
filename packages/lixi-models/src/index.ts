@@ -14,3 +14,4 @@ export * from './lib/page';
 export * from './lib/post';
 export * from './lib/upload';
 export * from './lib/country';
+export * from './lib/burn';

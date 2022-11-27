@@ -1,7 +1,7 @@
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
-import BigNumber from 'bignumber.js';
-import _ from 'lodash';
+import { BurnForType, BurnType } from '@bcpros/lixi-models';
 import BCHJS from '@bcpros/xpi-js';
+import BigNumber from 'bignumber.js';
 
 const OP_0: number = 0x00;
 const OP_16: number = 0x60;
@@ -10,18 +10,6 @@ const OP_PUSHDATA1: number = 0x4c;
 const OP_PUSHDATA2: number = 0x4d;
 const OP_PUSHDATA4: number = 0x4e;
 
-export enum BurnType {
-  Up = 1,
-  Down = 0
-}
-
-export enum BurnForType {
-  Page = 0x5f01,
-  Post = 0x5f02,
-  Comment = 0x5f03,
-  Account = 0x5f04,
-  Token = 0x5f05
-}
 
 export interface ParseBurnResult {
   version: number;
@@ -206,10 +194,10 @@ export const parseBurnOutput = (scriptpubkey: Buffer | string): ParseBurnResult 
       PARSE_CHECK(lokadIdStr.length !== 4, 'lokad id wrong size');
       PARSE_CHECK(
         lokadIdStr[0] !== 'L'.charCodeAt(0) ||
-          lokadIdStr[1] !== 'I'.charCodeAt(0) ||
-          lokadIdStr[2] !== 'X'.charCodeAt(0) ||
-          lokadIdStr[3] !== 'I'.charCodeAt(0) ||
-          lokadIdStr[4] !== 0x00,
+        lokadIdStr[1] !== 'I'.charCodeAt(0) ||
+        lokadIdStr[2] !== 'X'.charCodeAt(0) ||
+        lokadIdStr[3] !== 'I'.charCodeAt(0) ||
+        lokadIdStr[4] !== 0x00,
         'LIXI not in first chunk'
       );
     }
@@ -262,7 +250,7 @@ export const parseBurnOutput = (scriptpubkey: Buffer | string): ParseBurnResult 
   return result;
 };
 
-export const generateBurnOutput = (
+export const generateBurnTxOutput = (
   XPI: BCHJS,
   satoshisToBurn: BigNumber,
   burnType: boolean,

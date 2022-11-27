@@ -29,7 +29,6 @@ export function useInfinitePostsQuery(
 
   // Base result
   useEffect(() => {
-    console.log('baseResult: ', baseResult);
     next.current = baseResult.data?.allPosts?.pageInfo?.endCursor;
     if (baseResult?.data?.allPosts) {
       isBaseReady.current = true;

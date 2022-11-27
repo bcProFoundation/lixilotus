@@ -1,4 +1,4 @@
-import { CreatePostCommand, EditPostCommand } from '@bcpros/lixi-models/src';
+import { BurnCommand, CreatePostCommand, EditPostCommand } from '@bcpros/lixi-models';
 import { createAction } from '@reduxjs/toolkit';
 import { Post } from 'src/generated/types.generated';
 
@@ -18,3 +18,7 @@ export const getPostFailure = createAction<string>('page/getPostFailure');
 export const editPost = createAction<EditPostCommand>('posts/editPost');
 export const editPostSuccess = createAction<any>('posts/editPostSuccess');
 export const editPostFailure = createAction<string>('posts/editPostFailure');
+
+export const burnForPost = createAction<BurnCommand>('post/burnForPost');
+export const burnForPostSuccess = createAction<any>('post/burnForPostSuccess');
+export const burnForPostFailure = createAction<string>('post/burnForPostFailure');

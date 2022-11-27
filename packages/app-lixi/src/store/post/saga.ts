@@ -20,11 +20,15 @@ import {
   getPostFailure,
   getPostSuccess,
   setPost,
-  setPostsByAccountId
-} from './action';
-import { CreatePostCommand } from '@bcpros/lixi-models/src';
+  setPostsByAccountId,
+  burnForPost,
+  burnForPostSuccess,
+  burnForPostFailure
+} from './actions';
+import { CreatePostCommand, BurnCommand } from '@bcpros/lixi-models';
 import postApi from './api';
 import { AccountDto, EditPostCommand, Post } from '@bcpros/lixi-models';
+import burnApi from '@store/burn/api';
 
 const call: any = Effects.call;
 /**
@@ -212,10 +216,37 @@ function* fetchAllPostsSaga() {
 }
 
 function* fetchAllPostsSuccessSaga(action: any) {
-  yield put(hideLoading(fetchAllPosts.type));
 }
 
 function* fetchAllPostsFailureSaga(action: any) {
+}
+
+function* burnForPostSaga(action: PayloadAction<BurnCommand>) {
+  try {
+    const command = action.payload;
+
+    const dataApi: BurnCommand = {
+      ...command
+    };
+
+    const data = yield call(burnApi.post, dataApi);
+
+    if (_.isNil(data) || _.isNil(data.id)) {
+      throw new Error(intl.get('post.unableToBurnForPost'));
+    }
+
+    yield put(burnForPostSuccess(data));
+  } catch (err) {
+    const message = (err as Error).message ?? intl.get('post.unableToBurnForPost');
+    yield put(burnForPostFailure(message));
+  }
+}
+
+function* burnForPostSuccessSaga(action: any) {
+  yield put(hideLoading(burnForPost.type));
+}
+
+function* burnForPostFailureSaga(action: any) {
   yield put(hideLoading(fetchAllPosts.type));
 }
 
@@ -270,6 +301,18 @@ function* watchGetPostFailure() {
   yield takeLatest(getPostFailure.type, getPostFailureSaga);
 }
 
+function* watchBurnForPost() {
+  yield takeLatest(burnForPost.type, burnForPostSaga);
+}
+
+function* watchBurnForPostSuccess() {
+  yield takeLatest(burnForPostSuccess.type, burnForPostSuccessSaga);
+}
+
+function* watchBurnForPostFailure() {
+  yield takeLatest(burnForPostFailure.type, burnForPostFailureSaga);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchPostPost),
@@ -284,6 +327,9 @@ export default function* postSaga() {
     fork(watchEditPostFailure),
     fork(watchEditPostSuccess),
     fork(watchGetPost),
-    fork(watchGetPostFailure)
+    fork(watchGetPostFailure),
+    fork(watchBurnForPost),
+    fork(watchBurnForPostSuccess),
+    fork(watchBurnForPostFailure)
   ]);
 }

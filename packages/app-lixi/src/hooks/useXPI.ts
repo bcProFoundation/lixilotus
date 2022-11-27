@@ -1,3 +1,4 @@
+import { BurnForType, BurnType } from '@bcpros/lixi-models';
 import { currency } from '@bcpros/lixi-models/constants/ticker';
 import SlpWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
@@ -12,7 +13,9 @@ import {
   parseXpiSendValue,
   signAndBuildTx
 } from '@utils/cashMethods';
+import { generateBurnOutput } from '@utils/opReturnBurn';
 import { getRecipientPublicKey } from '@utils/chronik';
+import BigNumber from 'bignumber.js';
 import { ChronikClient, Utxo } from 'chronik-client';
 import intl from 'react-intl-universal';
 
@@ -186,10 +189,67 @@ export default function useXPI() {
     }
   };
 
+  const burnXpi = async (
+    XPI: BCHJS,
+    walletPaths: WalletPathAddressInfo[],
+    utxos: Array<Utxo & { address: string }>,
+    feeInSatsPerByte: number,
+    burnType: BurnType,
+    burnForType: BurnForType,
+    burnedBy: string | Buffer,
+    burnForId: string,
+    burnAmount: string
+  ): Promise<string> => {
+    let txBuilder = new XPI.TransactionBuilder();
+
+    const satoshisToBurn = fromXpiToSatoshis(new BigNumber(burnAmount));
+
+    // Throw validation error if fromXecToSatoshis returns false
+    if (!satoshisToBurn) {
+      const error = new Error(`Invalid burn amount`);
+      throw error;
+    }
+
+    // generate the tx inputs and add to txBuilder instance
+    // returns the updated txBuilder, txFee, totalInputUtxoValue and inputUtxos
+    let txInputObj = generateTxInput(
+      XPI,
+      false,
+      utxos,
+      txBuilder,
+      null,
+      satoshisToBurn,
+      feeInSatsPerByte
+    );
+    const changeAddress = getChangeAddressFromInputUtxos(XPI, txInputObj.inputUtxos);
+
+    // generate the tx outputs with burn output
+    // and add to txBuilder instance
+    // returns the updated txBuilder
+    const txOutputObj = generateBurnOutput(
+      XPI,
+      satoshisToBurn,
+      burnType,
+      burnForType,
+      burnedBy,
+      burnForId,
+      txInputObj.totalInputUtxoValue,
+      changeAddress,
+      txInputObj.txFee,
+      txBuilder
+    );
+    txBuilder = txOutputObj; // update the local txBuilder with the generated tx outputs
+
+    const rawTxHex: string = signAndBuildTx(XPI, txInputObj.inputUtxos, txBuilder, walletPaths);
+
+    return rawTxHex;
+  }
+
   return {
     getXPI,
     getRestUrl,
     calcFee,
-    sendXpi
+    sendXpi,
+    burnXpi
   } as const;
 }

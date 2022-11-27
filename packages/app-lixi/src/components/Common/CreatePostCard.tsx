@@ -10,7 +10,7 @@ import dynamic from 'next/dynamic';
 import 'suneditor/dist/css/suneditor.min.css'; // Import Sun Editor's CSS File
 import { CreatePostInput, UpdatePostInput, Post } from 'src/generated/types.generated';
 import { showToast } from '@store/toast/actions';
-import { setPost } from '@store/post/action';
+import { setPost } from '@store/post/actions';
 import { Embed, SocialsEnum } from './Embed';
 import { useCreatePostMutation } from '@store/post/posts.generated';
 import { MultiUploader, StyledMultiUploader } from './Uploader/MultiUploader';

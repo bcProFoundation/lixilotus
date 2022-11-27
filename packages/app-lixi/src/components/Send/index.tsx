@@ -8,24 +8,23 @@ import {
 import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
 import PrimaryButton from '@components/Common/PrimaryButton';
 import { currency } from '@components/Common/Ticker';
+import { WrapperPage } from '@components/Settings';
 import { WalletContext } from '@context/index';
 import useXPI from '@hooks/useXPI';
 import { getSelectedAccount } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { sendXPIFailure, sendXPISuccess } from '@store/send/actions';
+import { sendXpiNotification } from '@store/notification/actions';
+import { sendXPIFailure } from '@store/send/actions';
+import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletBalances } from '@store/wallet';
 import { parseAddress } from '@utils/addressMethods';
-import { getDustXPI, getUtxoWif, getWalletState } from '@utils/cashMethods';
+import { getDustXPI, getUtxoWif } from '@utils/cashMethods';
+import { getRecipientPublicKey } from '@utils/chronik';
 import { shouldRejectAmountInput } from '@utils/validation';
 import { Alert, Checkbox, Col, Form, message, Modal, Row } from 'antd';
 import _ from 'lodash';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
-
-import { WrapperPage } from '@components/Settings';
-import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletBalances } from '@store/wallet';
-import { getRecipientPublicKey } from '@utils/chronik';
-import { sendXpiNotification } from '@store/notification/actions';
 
 const StyledCheckbox = styled(Checkbox)`
   .ant-checkbox-inner {

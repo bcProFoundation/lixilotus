@@ -1,34 +1,41 @@
 import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
+import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models';
 import CreatePostCard from '@components/Common/CreatePostCard';
 import SearchBox from '@components/Common/SearchBox';
-import { getSelectedAccount } from '@store/account/selectors';
-import { setSelectedPost } from '@store/post/action';
-import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
+import { currency } from '@components/Common/Ticker';
 import { WalletContext } from '@context/index';
-import { Menu, MenuProps, Modal } from 'antd';
+import useXPI from '@hooks/useXPI';
+import { getSelectedAccount } from '@store/account/selectors';
+import { burnForPost, setSelectedPost } from '@store/post/actions';
+import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
+import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletBalances } from '@store/wallet';
+import { Menu, MenuProps, Modal, Skeleton } from 'antd';
 import _ from 'lodash';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
+import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import PostListItem from './PostListItem';
-import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
-import { Skeleton } from 'antd';
 
 type PostsListingProps = {
   className?: string;
 };
 
 const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingProps) => {
-  // const Wallet = React.useContext(WalletContext);
-  // const { XPI } = Wallet;
+  const Wallet = React.useContext(WalletContext);
+  const { XPI, chronik } = Wallet;
+  const { burnXpi } = useXPI();
+
   const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
   const [isShowQrCode, setIsShowQrCode] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [balanceAccount, setBalanceAccount] = useState(0);
 
-  const listRef = useRef();
+  const walletBalances = useAppSelector(getWalletBalances);
+  const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
+  const walletPaths = useAppSelector(getAllWalletPaths);
+
   const menuItems = [
     { label: 'All', key: 'all' },
     { label: 'Friend', key: 'friend' },
@@ -93,6 +100,41 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     }
   };
 
+  const handleBurnForPost = async (isUpVote: boolean, postId: string) => {
+    try {
+      const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
+      const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
+      const { fundingWif, hash160 } = currentWalletPath;
+      const burnType = isUpVote ? BurnType.Up : BurnType.Down;
+      const burnedBy = hash160;
+      const burnForId = postId;
+
+      const txHex = await burnXpi(
+        XPI,
+        walletPaths,
+        slpBalancesAndUtxos.nonSlpUtxos,
+        currency.defaultFee,
+        burnType,
+        BurnForType.Post,
+        burnedBy,
+        burnForId,
+        "0.1"
+      )
+
+      const burnCommand: BurnCommand = {
+        txHex,
+        burnType,
+        burnForType: BurnForType.Post,
+        burnedBy,
+        burnForId
+      }
+
+      dispatch(burnForPost(burnCommand));
+    } catch (e) {
+      throw new Error('Unable to burn for post');
+    }
+  }
+
   return (
     <div className={className}>
       <SearchBox></SearchBox>
@@ -118,7 +160,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
           endReached={loadMoreItems}
           overscan={500}
           itemContent={(index, item) => {
-            return <PostListItem index={index} item={item} />;
+            return <PostListItem index={index} item={item} burnForPost={handleBurnForPost} />;
           }}
           totalCount={totalCount}
           components={{
