@@ -1,10 +1,9 @@
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import BCHJS from '@bcpros/xpi-js';
-import { WalletContextValue } from '@context/walletProvider';
 import { WalletPathAddressInfo, WalletState } from '@store/wallet';
 import BigNumber from 'bignumber.js';
 import { Utxo } from 'chronik-client';
-import { createSharedKey, encrypt, decrypt } from './encryption';
+import { createSharedKey, decrypt, encrypt } from './encryption';
 
 export type TxInputObj = {
   txBuilder: any;

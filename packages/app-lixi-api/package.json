@@ -63,6 +63,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "config": "^3.3.7",
+    "chronik-client": "^0.8.1",
     "fastify-multer": "^2.0.3",
     "file-system": "^2.2.2",
     "geoip-country": "^4.0.116",

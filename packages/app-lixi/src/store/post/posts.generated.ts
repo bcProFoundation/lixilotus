@@ -28,6 +28,7 @@ export type PostQuery = {
     updatedAt: any;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
     pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+    page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
   };
 };
 
@@ -58,6 +59,47 @@ export type PostsQuery = {
         updatedAt: any;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+        page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+      };
+    }> | null;
+    pageInfo: {
+      __typename?: 'PageInfo';
+      endCursor?: string | null;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: string | null;
+    };
+  };
+};
+
+export type PostsByPageIdQueryVariables = Types.Exact<{
+  after?: Types.InputMaybe<Types.Scalars['String']>;
+  before?: Types.InputMaybe<Types.Scalars['String']>;
+  first?: Types.InputMaybe<Types.Scalars['Int']>;
+  last?: Types.InputMaybe<Types.Scalars['Int']>;
+  orderBy?: Types.InputMaybe<Types.PostOrder>;
+  id?: Types.InputMaybe<Types.Scalars['String']>;
+  skip?: Types.InputMaybe<Types.Scalars['Int']>;
+}>;
+
+export type PostsByPageIdQuery = {
+  __typename?: 'Query';
+  allPostsByPageId: {
+    __typename?: 'PostConnection';
+    totalCount?: number | null;
+    edges?: Array<{
+      __typename?: 'PostEdge';
+      cursor: string;
+      node: {
+        __typename?: 'Post';
+        id: string;
+        content: string;
+        uploadCovers?: Array<string> | null;
+        createdAt: any;
+        updatedAt: any;
+        postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+        pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+        page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
       };
     }> | null;
     pageInfo: {
@@ -94,6 +136,7 @@ export type PostFieldsFragment = {
   updatedAt: any;
   postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
   pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+  page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
 };
 
 export type CreatePostMutationVariables = Types.Exact<{
@@ -111,6 +154,7 @@ export type CreatePostMutation = {
     updatedAt: any;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
     pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+    page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
   };
 };
 
@@ -129,6 +173,7 @@ export type UpdatePostMutation = {
     updatedAt: any;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
     pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+    page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
   };
 };
 
@@ -146,6 +191,11 @@ export const PostFieldsFragmentDoc = `
     address
     id
     name
+  }
+  page {
+    avatar
+    name
+    id
   }
   createdAt
   updatedAt
@@ -194,6 +244,31 @@ export const PostsDocument = `
 }
     ${PostFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
+export const PostsByPageIdDocument = `
+    query PostsByPageId($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $id: String, $skip: Int) {
+  allPostsByPageId(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    id: $id
+    skip: $skip
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...PostFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+    ${PostFieldsFragmentDoc}
+${PageInfoFieldsFragmentDoc}`;
 export const CreatePostDocument = `
     mutation createPost($input: CreatePostInput!) {
   createPost(data: $input) {
@@ -217,6 +292,9 @@ const injectedRtkApi = api.injectEndpoints({
     Posts: build.query<PostsQuery, PostsQueryVariables | void>({
       query: variables => ({ document: PostsDocument, variables })
     }),
+    PostsByPageId: build.query<PostsByPageIdQuery, PostsByPageIdQueryVariables | void>({
+      query: variables => ({ document: PostsByPageIdDocument, variables })
+    }),
     createPost: build.mutation<CreatePostMutation, CreatePostMutationVariables>({
       query: variables => ({ document: CreatePostDocument, variables })
     }),
@@ -232,6 +310,8 @@ export const {
   useLazyPostQuery,
   usePostsQuery,
   useLazyPostsQuery,
+  usePostsByPageIdQuery,
+  useLazyPostsByPageIdQuery,
   useCreatePostMutation,
   useUpdatePostMutation
 } = injectedRtkApi;

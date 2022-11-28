@@ -29,6 +29,7 @@ import { localAccountsAdapter, localUserAccountReducer } from './localAccount/re
 import { postReducer } from './post/reducer';
 import { PostState } from './post/state';
 import { walletStateReducer } from './wallet/reducer';
+import { tokenReducer, TokenState } from './tokens';
 
 const persistConfig = {
   key: 'root',
@@ -68,6 +69,11 @@ const shopPersistConfig: PersistConfig<PageState> = {
   storage: storage('lixi-indexeddb')
 };
 
+const tokenPersistConfig: PersistConfig<TokenState> = {
+  key: 'tokens',
+  storage: storage('lixi-indexeddb')
+};
+
 const postPersistConfig: PersistConfig<PostState> = {
   key: 'posts',
   storage: storage('lixi-indexeddb')
@@ -104,6 +110,7 @@ export const serverReducer = combineReducers({
   settings: settingsReducer,
   notifications: notificationReducer,
   pages: pageReducer,
+  tokens: tokenReducer,
   posts: postReducer,
   countries: countryReducer,
   states: stateReducer,
@@ -121,6 +128,7 @@ export const appReducer = combineReducers({
   claims: persistReducer(claimsPersistConfig, claimReducer),
   settings: persistReducer(settingsPersistConfig, settingsReducer),
   pages: persistReducer(shopPersistConfig, pageReducer),
+  tokens: persistReducer(tokenPersistConfig, tokenReducer),
   posts: persistReducer(postPersistConfig, postReducer),
   notifications: notificationReducer,
   envelopes: envelopeReducer,

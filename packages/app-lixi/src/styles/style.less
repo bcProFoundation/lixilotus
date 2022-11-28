@@ -459,10 +459,32 @@ code {
           }
         }
       }
+      &:last-child {
+        td {
+          border-color: transparent;
+        }
+      }
     }
   }
   .ant-table-cell {
     border-bottom: 0;
+  }
+}
+
+.table-tokens {
+  .ant-table-container {
+    table {
+      tr {
+        &:last-child {
+          td {
+            border-color: transparent;
+          }
+        }
+      }
+    }
+    .ant-table-cell {
+      border-bottom: 1px solid rgba(128, 116, 124, 0.12);
+    }
   }
 }
 

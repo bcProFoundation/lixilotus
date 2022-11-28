@@ -46,5 +46,9 @@ export const navBarHeaderList = [
   {
     name: 'general.claimed',
     path: '/claimed/'
+  },
+  {
+    name: 'general.tokens',
+    path: '/tokens/'
   }
 ];
