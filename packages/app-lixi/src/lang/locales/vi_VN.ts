@@ -147,6 +147,10 @@ export default {
   'account.country': 'Quốc gia áp dụng',
   'account.envelope': 'Hình ảnh',
   'account.networkType': 'Kiểu kết nối',
+  'account.recent': 'Gần đây',
+  'account.reply': 'Trả lời',
+  'account.from': 'Nhận từ',
+  'account.to': 'Gửi đến',
 
   /* 03.Lixi */
   'lixi.createLixi': 'Tạo lixi mới',
