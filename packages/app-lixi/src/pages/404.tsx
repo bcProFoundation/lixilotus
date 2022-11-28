@@ -5,7 +5,7 @@ import intl from 'react-intl-universal';
 import EmptyLayout from '@components/Layout/EmptyLayout';
 
 const FourOhFourComponent = () => {
-    const FourOhFour = styled.div`
+  const FourOhFour = styled.div`
     background: var(--bg-color-light-theme);
     .container {
       font-family: sans-serif;
@@ -34,22 +34,22 @@ const FourOhFourComponent = () => {
       }
     }
   `;
-    return (
-        <FourOhFour>
-            <div className="container">
-                <img src="/images/404.png" alt="404" />
-                <h1>{intl.get('general.notFoundTitle')}</h1>
-                <h3>{intl.get('general.notFoundDescription')}</h3>
-                <Button className="button" type="primary" onClick={() => window.open('/', '_self')}>
-                    {intl.get('general.goBackToHome')}
-                </Button>
-            </div>
-        </FourOhFour>
-    );
+  return (
+    <FourOhFour>
+      <div className="container">
+        <img src="/images/404.png" alt="404" />
+        <h1>{intl.get('general.notFoundTitle')}</h1>
+        <h3>{intl.get('general.notFoundDescription')}</h3>
+        <Button className="button" type="primary" onClick={() => window.open('/', '_self')}>
+          {intl.get('general.goBackToHome')}
+        </Button>
+      </div>
+    </FourOhFour>
+  );
 };
 
 const FourOhFourPage = () => {
-    return <FourOhFourComponent />;
+  return <FourOhFourComponent />;
 };
 
 FourOhFourPage.Layout = ({ children }) => <EmptyLayout children={children} />;
