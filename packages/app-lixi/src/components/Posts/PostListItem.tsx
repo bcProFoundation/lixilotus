@@ -1,15 +1,22 @@
+
+import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
 import CommentComponent, { CommentItem, Editor } from '@components/Common/Comment';
 import InfoCardUser from '@components/Common/InfoCardUser';
-import { Avatar, Button, Comment, List, message, Space } from 'antd';
+import { currency } from '@components/Common/Ticker';
+import { WalletContext } from '@context/walletProvider';
+import useXPI from '@hooks/useXPI';
+import { burnForUpDownVote } from '@store/burn/actions';
+import { PostsQuery } from '@store/post/posts.generated';
+import { showToast } from '@store/toast/actions';
+import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
+import { Avatar, Button, Comment, List, Space } from 'antd';
 import { push } from 'connected-next-router';
-import _ from 'lodash';
 import moment from 'moment';
 import React, { useState } from 'react';
 import ReactHtmlParser from 'react-html-parser';
-import { useAppDispatch } from 'src/store/hooks';
+import intl from 'react-intl-universal';
+import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled from 'styled-components';
-import { BurnCommand, BurnType, Post } from '@bcpros/lixi-models';
-import { PostQuery, PostsQuery } from '@store/post/posts.generated';
 
 const IconText = ({
   icon,
@@ -133,16 +140,21 @@ type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 type PostListItemProps = {
   index: number;
   item: PostItem;
-  burnForPost: (isUpVote: boolean, postId: string) => void;
 }
 
-const PostListItem = ({ index, item, burnForPost }: PostListItemProps) => {
+const PostListItem = ({ index, item }: PostListItemProps) => {
   const dispatch = useAppDispatch();
   const post: PostItem = item;
   const [isCollapseComment, setIsCollapseComment] = useState(false);
   const [comments, setComments] = useState<CommentItem[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [value, setValue] = useState('');
+
+  const Wallet = React.useContext(WalletContext);
+  const { XPI, chronik } = Wallet;
+  const { burnXpi } = useXPI();
+  const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
+  const walletPaths = useAppSelector(getAllWalletPaths);
 
   if (!post) return null;
 
@@ -175,12 +187,56 @@ const PostListItem = ({ index, item, burnForPost }: PostListItemProps) => {
   };
 
   const upVotePost = dataItem => {
-    burnForPost(false, dataItem.id);
+    handleBurnForPost(true, dataItem.id);
   };
 
   const downVotePost = dataItem => {
-    burnForPost(false, dataItem.id);
+    handleBurnForPost(false, dataItem.id);
   };
+
+  const handleBurnForPost = async (isUpVote: boolean, postId: string) => {
+    try {
+
+      if (slpBalancesAndUtxos.nonSlpUtxos.length == 0) {
+        throw new Error('Insufficient funds');
+      }
+      const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
+      const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
+      const { fundingWif, hash160 } = currentWalletPath;
+      const burnType = isUpVote ? BurnType.Up : BurnType.Down;
+      const burnedBy = hash160;
+      const burnForId = postId;
+
+      const txHex = await burnXpi(
+        XPI,
+        walletPaths,
+        slpBalancesAndUtxos.nonSlpUtxos,
+        currency.defaultFee,
+        burnType,
+        BurnForType.Post,
+        burnedBy,
+        burnForId,
+        "0.1"
+      )
+
+      const burnCommand: BurnCommand = {
+        txHex,
+        burnType,
+        burnForType: BurnForType.Post,
+        burnedBy,
+        burnForId
+      }
+
+      dispatch(burnForUpDownVote(burnCommand));
+    } catch (e) {
+      dispatch(
+        showToast('error', {
+          message: intl.get('post.unableToBurn'),
+          duration: 5
+        })
+      );
+    }
+  }
 
   const showUsername = () => {
     if (post.page) {
@@ -213,7 +269,7 @@ const PostListItem = ({ index, item, burnForPost }: PostListItemProps) => {
         <CardContainer onClick={() => routerPostDetail(post.id)}>
           <CardHeader>
             <InfoCardUser
-              imgUrl={item.avatar}
+              imgUrl={item?.page?.avatar}
               name={showUsername() || 'Anonymous'}
               title={moment(post.createdAt).fromNow().toString()}
             ></InfoCardUser>

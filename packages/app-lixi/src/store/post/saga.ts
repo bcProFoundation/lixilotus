@@ -1,8 +1,9 @@
-import * as _ from 'lodash';
-import * as Effects from 'redux-saga/effects';
-import intl from 'react-intl-universal';
+import { CreatePostCommand, EditPostCommand } from '@bcpros/lixi-models';
 import { all, fork, put, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
+import * as _ from 'lodash';
+import intl from 'react-intl-universal';
+import * as Effects from 'redux-saga/effects';
 import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
 import {
@@ -11,24 +12,13 @@ import {
   editPostSuccess,
   fetchAllPosts,
   fetchAllPostsFailure,
-  fetchAllPostsSuccess,
-  getPostsByAccountId,
-  postPost,
+  fetchAllPostsSuccess, getPost,
+  getPostFailure, getPostsByAccountId, getPostSuccess, postPost,
   postPostFailure,
-  postPostSuccess,
-  getPost,
-  getPostFailure,
-  getPostSuccess,
-  setPost,
-  setPostsByAccountId,
-  burnForPost,
-  burnForPostSuccess,
-  burnForPostFailure
+  postPostSuccess, setPost,
+  setPostsByAccountId
 } from './actions';
-import { CreatePostCommand, BurnCommand } from '@bcpros/lixi-models';
 import postApi from './api';
-import { AccountDto, EditPostCommand, Post } from '@bcpros/lixi-models';
-import burnApi from '@store/burn/api';
 
 const call: any = Effects.call;
 /**
@@ -190,7 +180,6 @@ function* getPostsByAccountIdSaga(action: PayloadAction<number>) {
       throw new Error(intl.get('lixi.unableCreateLixi'));
     }
 
-    // yield put(postPostSuccess(data));
     yield put(setPostsByAccountId(data));
   } catch (err) {
     const message = (err as Error).message ?? intl.get('lixi.couldNotpostPost');
@@ -219,35 +208,6 @@ function* fetchAllPostsSuccessSaga(action: any) {
 }
 
 function* fetchAllPostsFailureSaga(action: any) {
-}
-
-function* burnForPostSaga(action: PayloadAction<BurnCommand>) {
-  try {
-    const command = action.payload;
-
-    const dataApi: BurnCommand = {
-      ...command
-    };
-
-    const data = yield call(burnApi.post, dataApi);
-
-    if (_.isNil(data) || _.isNil(data.id)) {
-      throw new Error(intl.get('post.unableToBurnForPost'));
-    }
-
-    yield put(burnForPostSuccess(data));
-  } catch (err) {
-    const message = (err as Error).message ?? intl.get('post.unableToBurnForPost');
-    yield put(burnForPostFailure(message));
-  }
-}
-
-function* burnForPostSuccessSaga(action: any) {
-  yield put(hideLoading(burnForPost.type));
-}
-
-function* burnForPostFailureSaga(action: any) {
-  yield put(hideLoading(fetchAllPosts.type));
 }
 
 function* watchPostPost() {
@@ -301,17 +261,6 @@ function* watchGetPostFailure() {
   yield takeLatest(getPostFailure.type, getPostFailureSaga);
 }
 
-function* watchBurnForPost() {
-  yield takeLatest(burnForPost.type, burnForPostSaga);
-}
-
-function* watchBurnForPostSuccess() {
-  yield takeLatest(burnForPostSuccess.type, burnForPostSuccessSaga);
-}
-
-function* watchBurnForPostFailure() {
-  yield takeLatest(burnForPostFailure.type, burnForPostFailureSaga);
-}
 
 export default function* postSaga() {
   yield all([
@@ -327,9 +276,6 @@ export default function* postSaga() {
     fork(watchEditPostFailure),
     fork(watchEditPostSuccess),
     fork(watchGetPost),
-    fork(watchGetPostFailure),
-    fork(watchBurnForPost),
-    fork(watchBurnForPostSuccess),
-    fork(watchBurnForPostFailure)
+    fork(watchGetPostFailure)
   ]);
 }

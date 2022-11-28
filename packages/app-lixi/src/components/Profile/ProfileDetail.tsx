@@ -1,27 +1,19 @@
 import {
   CameraOutlined,
-  CompassOutlined,
-  DislikeOutlined,
-  EditOutlined,
+  CompassOutlined, EditOutlined,
   HomeOutlined,
-  InfoCircleOutlined,
-  LikeOutlined,
-  LinkOutlined,
-  ShareAltOutlined,
-  UpOutlined
+  InfoCircleOutlined
 } from '@ant-design/icons';
-import { Button, Input, Menu, message, Popover, Space, Tabs } from 'antd';
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import moment from 'moment';
-import SearchBox from '@components/Common/SearchBox';
 import CreatePostCard from '@components/Common/CreatePostCard';
-import { Virtuoso } from 'react-virtuoso';
-import { useInfinitePostsByPageIdQuery } from '@store/post/useInfinitePostsByPageIdQuery';
+import SearchBox from '@components/Common/SearchBox';
 import PostListItem from '@components/Posts/PostListItem';
-import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
-import { GraphQLClient, gql } from 'graphql-request';
+import { useInfinitePostsByPageIdQuery } from '@store/post/useInfinitePostsByPageIdQuery';
+import { Button, Space, Tabs } from 'antd';
 import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { Virtuoso } from 'react-virtuoso';
+import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
+import styled from 'styled-components';
 
 type PageDetailProps = {
   page: any;
@@ -404,19 +396,19 @@ const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
                   <div className="about-content">
                     <SubAbout
                       dataItem={pageDetailData?.description}
-                      onClickIcon={() => {}}
+                      onClickIcon={() => { }}
                       icon={InfoCircleOutlined}
                       text={pageDetailData?.description}
                     />
                     <SubAbout
                       dataItem={pageDetailData?.address}
-                      onClickIcon={() => {}}
+                      onClickIcon={() => { }}
                       icon={CompassOutlined}
                       text={pageDetailData?.address}
                     />
                     <SubAbout
                       dataItem={pageDetailData?.website}
-                      onClickIcon={() => {}}
+                      onClickIcon={() => { }}
                       icon={HomeOutlined}
                       text={pageDetailData?.website}
                     />

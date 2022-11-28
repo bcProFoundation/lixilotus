@@ -180,7 +180,7 @@ function* watchGetTokenFailure() {
   yield takeLatest(getTokenFailure.type, getTokenFailureSaga);
 }
 
-export default function* TokenSaga() {
+export default function* tokenSaga() {
   yield all([
     fork(watchPostToken),
     fork(watchPostTokenFailure),

@@ -448,6 +448,7 @@ export default {
   'post.unableUpdatePost': 'Unable to update the post.',
   'post.selectAccountFirst': 'Please Select an account first before creating post',
   'post.content': 'Content',
+  'post.unableToBurn': 'Unable to burn for the post',
 
   /* 16.Token */
   'token.importToken': 'Import token',

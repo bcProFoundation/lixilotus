@@ -13,8 +13,8 @@ import {
   parseXpiSendValue,
   signAndBuildTx
 } from '@utils/cashMethods';
-import { generateBurnOutput } from '@utils/opReturnBurn';
 import { getRecipientPublicKey } from '@utils/chronik';
+import { generateBurnTxOutput } from '@utils/opReturnBurn';
 import BigNumber from 'bignumber.js';
 import { ChronikClient, Utxo } from 'chronik-client';
 import intl from 'react-intl-universal';
@@ -226,7 +226,7 @@ export default function useXPI() {
     // generate the tx outputs with burn output
     // and add to txBuilder instance
     // returns the updated txBuilder
-    const txOutputObj = generateBurnOutput(
+    const txOutputObj = generateBurnTxOutput(
       XPI,
       satoshisToBurn,
       burnType,

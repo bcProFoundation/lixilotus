@@ -159,7 +159,7 @@ type Subscription {
 
 type Token {
   """Identifies the date and time when the object was last comments."""
-  comments: DateTime!
+  comments: DateTime
 
   """Identifies the date and time when the object was created."""
   createdDate: DateTime!

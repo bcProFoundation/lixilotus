@@ -13,7 +13,8 @@ import pageSaga from './page/saga';
 import countrySaga from './country/saga';
 import walletSaga from './wallet/saga';
 import postSaga from './post/saga';
-import TokenSaga from './tokens/saga';
+import tokenSaga from './tokens/saga';
+import burnSaga from './burn/saga';
 
 export default function* rootSaga() {
   yield all([
@@ -30,6 +31,7 @@ export default function* rootSaga() {
     pageSaga(),
     postSaga(),
     countrySaga(),
-    TokenSaga()
+    tokenSaga(),
+    burnSaga()
   ]);
 }

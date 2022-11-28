@@ -1,5 +1,4 @@
-import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
-import { BurnForType, BurnType } from '@bcpros/lixi-models';
+import { BurnForType, BurnType, currency } from '@bcpros/lixi-models';
 import BCHJS from '@bcpros/xpi-js';
 import BigNumber from 'bignumber.js';
 
@@ -191,7 +190,7 @@ export const parseBurnOutput = (scriptpubkey: Buffer | string): ParseBurnResult 
 
     if (chunks.length === 1) {
       const lokadIdStr = chunks[0];
-      PARSE_CHECK(lokadIdStr.length !== 4, 'lokad id wrong size');
+      PARSE_CHECK(lokadIdStr.length !== 5, 'lokad id wrong size');
       PARSE_CHECK(
         lokadIdStr[0] !== 'L'.charCodeAt(0) ||
         lokadIdStr[1] !== 'I'.charCodeAt(0) ||
