@@ -10,6 +10,6 @@ export class CreateTokenCommand {
   lotusBurnUp?: string;
   lotusBurnDown?: string;
   decimals: number;
-  comments?: String;
-  createdDate: String;
+  comments?: Nullable<Date>;
+  createdDate: Date;
 }

@@ -11,7 +11,7 @@ export class TokenDto {
   lotusBurnUp?: string;
   lotusBurnDown?: string;
   decimals: number;
-  comments?: Date;
+  comments?: Nullable<Date>;
   createdDate: Date;
 
   constructor(partial: Partial<TokenDto>) {
