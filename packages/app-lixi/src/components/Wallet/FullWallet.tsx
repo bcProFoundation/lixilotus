@@ -16,6 +16,7 @@ import _ from 'lodash';
 import { getCurrentLocale } from '@store/settings/selectors';
 import { FormattedTxAddress } from '@components/Common/FormattedWalletAddress';
 import Link from 'next/link';
+import Reply from '@assets/icons/reply.svg';
 
 interface UserItem {
   email: string;
@@ -182,14 +183,14 @@ const FullWalletComponent: React.FC = () => {
                                   <p className="tx-action">
                                     {item.parsed.incoming ? (
                                       <p>
-                                        From:{' '}
+                                        {intl.get('account.from')}:{' '}
                                         {item.parsed.replyAddress && (
                                           <FormattedTxAddress address={item.parsed.replyAddress.slice(-trimLength)} />
                                         )}
                                       </p>
                                     ) : (
                                       <p>
-                                        To:{' '}
+                                        {intl.get('account.to')}:{' '}
                                         {item.parsed.destinationAddress && (
                                           <FormattedTxAddress
                                             address={item.parsed.destinationAddress.slice(-trimLength)}
@@ -213,7 +214,9 @@ const FullWalletComponent: React.FC = () => {
                                   }}
                                 >
                                   <Button size="small" type="text">
-                                    {intl.get('account.reply')}
+                                    <p>
+                                      <Reply /> {intl.get('account.reply')}
+                                    </p>
                                   </Button>
                                 </Link>
                               )}

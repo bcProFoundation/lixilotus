@@ -150,6 +150,8 @@ export default {
   'account.networkType': 'Network Type',
   'account.recent': 'Recent',
   'account.reply': 'Reply',
+  'account.from': 'From',
+  'account.to': 'To',
 
   /* 03.Lixi */
   'lixi.createLixi': 'Create new lixi',
