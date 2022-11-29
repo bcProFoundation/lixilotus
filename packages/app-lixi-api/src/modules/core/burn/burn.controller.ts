@@ -31,19 +31,61 @@ export class BurnController {
       const { scriptPubKey, value } = txData['vout'][0];
       const parseResult = parseBurnOutput(scriptPubKey.hex);
 
-      const testScript = generateBurnOpReturnScript(
-        0x01, true, BurnForType.Post, '22d04d2588f8270de54b1edbd19768756734602b', 'claz8iluk0068pwtwx8bn1bhl'
-      );
-      return parseResult;
-    } catch (err) {
-      if (err instanceof VError) {
-        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
-      } else {
-        const unableToUpdateLixi = await this.i18n.t('burn.messages.unableToBurn');
-        const error = new VError.WError(err as Error, unableToUpdateLixi);
-        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      // Compare parse result with the command
+      if (
+        command.burnForId !== parseResult.burnForId ||
+        command.burnForType !== parseResult.burnForType ||
+        command.burnType !== parseResult.burnType ||
+        command.burnedBy !== parseResult.burnedBy
+      ) {
+        throw new Error('Unable to burn');
+      }
+
+      const savedBurn = await this.prisma.$transaction(async prisma => {
+        const broadcastResponse = await this.chronik.broadcastTx(command.txHex);
+        const { txid } = broadcastResponse;
+        const burnRecordToInsert = {
+          txid,
+          burnType: parseResult.burnType ? true : false,
+          burnForType: parseResult.burnForType,
+          burnedBy: Buffer.from(parseResult.burnedBy, 'hex'),
+          burnForId: parseResult.burnForId
+        }
+        const createdBurn = prisma.burn.create({
+          data: burnRecordToInsert
+        })
+        return createdBurn;
+      });
+
+      if (savedBurn) {
+        if (command.burnForType === BurnForType.Post) {
+          const post = await this.prisma.post.findFirst({
+            where: {
+              id: command.burnForId
+            }
+          });
+
+          await this.prisma.post.update({
+            where: {
+              id: command.burnForId
+            },
+            data {
+
+          }
+          })
       }
     }
 
+      return parseResult;
+  } catch(err) {
+    if (err instanceof VError) {
+      throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+    } else {
+      const unableToUpdateLixi = await this.i18n.t('burn.messages.unableToBurn');
+      const error = new VError.WError(err as Error, unableToUpdateLixi);
+      throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
+
+}
 }

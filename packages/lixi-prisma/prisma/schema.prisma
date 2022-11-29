@@ -74,21 +74,21 @@ model Handle {
 // }
 
 model Token {
-  id                   String        @id @default(cuid())
-  tokenId              String        @unique @map("tokenId")
-  tokenType            String        @default("") @map("tokenType") @db.VarChar(255)
-  name                 String        @default("") @map("name") @db.VarChar(255)
-  ticker               String        @default("") @map("ticker") @db.VarChar(255)
-  decimals             Int           @map("decimals")
-  tokenDocumentUrl     String        @default("") @map("tokenDocumentUrl") @db.VarChar(1000)
-  totalBurned          String        @default("") @map("totalBurned")
-  totalMinted          String        @default("") @map("totalMinted")
-  lotusBurnUp          String        @default("0") @map("lotusBurnUp")
-  lotusBurnDown        String        @default("0") @map("lotusBurnDown")
-  initialTokenQuantity String        @default("") @map("initialTokenQuantity")
-  comments             DateTime?     @default(now()) @map("comments") @db.Timestamptz
-  createdAt            DateTime      @default(now()) @map("createdAt") @db.Timestamptz
-  createdDate          DateTime      @default(now()) @map("createdDate") @db.Timestamptz
+  id                   String    @id @default(cuid())
+  tokenId              String    @unique @map("tokenId")
+  tokenType            String    @default("") @map("tokenType") @db.VarChar(255)
+  name                 String    @default("") @map("name") @db.VarChar(255)
+  ticker               String    @default("") @map("ticker") @db.VarChar(255)
+  decimals             Int       @map("decimals")
+  tokenDocumentUrl     String    @default("") @map("tokenDocumentUrl") @db.VarChar(1000)
+  totalBurned          String    @default("") @map("totalBurned")
+  totalMinted          String    @default("") @map("totalMinted")
+  lotusBurnUp          String    @default("0") @map("lotusBurnUp")
+  lotusBurnDown        String    @default("0") @map("lotusBurnDown")
+  initialTokenQuantity String    @default("") @map("initialTokenQuantity")
+  comments             DateTime? @default(now()) @map("comments") @db.Timestamptz
+  createdAt            DateTime  @default(now()) @map("createdAt") @db.Timestamptz
+  createdDate          DateTime  @default(now()) @map("createdDate") @db.Timestamptz
   posts                Post[]
 
   @@map("token")
@@ -125,12 +125,14 @@ model Post {
   postAccountId  Int            @map("post_account_id")
   page           Page?          @relation(fields: [pageId], references: [id])
   pageId         String?        @map("page_id")
-  token          Token?        @relation(fields: [tokenId], references: [id])
-  tokenId        String?       @map("token_id")
+  token          Token?         @relation(fields: [tokenId], references: [id])
+  tokenId        String?        @map("token_id")
   content        String         @default("")
   createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz
   updatedAt      DateTime       @default(now()) @map("updated_at") @db.Timestamptz
   uploadedCovers UploadDetail[] @relation("PostCover")
+  lotusBurnUp    BigInt         @default(0) @map("lotus_burn_up")
+  lotusBurnDown  BigInt         @default(0) @map("lotus_burn_down")
 
   @@map("post")
 }

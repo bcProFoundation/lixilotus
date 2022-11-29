@@ -14,14 +14,14 @@ export interface ParseBurnResult {
   version: number;
   burnType: BurnType;
   burnForType: BurnForType;
-  burnedBy: Buffer;
+  burnedBy: string;
   burnForId: string;
 }
 
 export const pushdata = (buf: Buffer | Uint8Array): Buffer => {
   if (buf.length === 0) {
     return Buffer.from([OP_PUSHDATA1, 0x00]);
-  } else if (buf.length < OP_PUSHDATA4) {
+  } else if (buf.length < OP_PUSHDATA1) {
     return Buffer.concat([Buffer.from([buf.length]), buf]);
   } else if (buf.length < 0xff) {
     return Buffer.concat([Buffer.from([OP_PUSHDATA1, buf.length]), buf]);
@@ -73,13 +73,15 @@ export const generateBurnOpReturnScript = (
     burnedBy = Buffer.from(burnedBy, 'hex');
   }
 
+  const burnForTypeBn = new BigNumber(burnForType);
+
   const buf = Buffer.concat([
     Buffer.from([0x6a]), // OP_RETURN
     pushdata(Buffer.from('LIXI\0')),
     pushdata(Buffer.from([version])), // versionType
     pushdata(Buffer.from('BURN')),
     pushdata(Buffer.from([burnType ? 1 : 0])),
-    pushdata(Buffer.from([burnForType])),
+    pushdata(BNToInt64BE(burnForTypeBn)),
     pushdata(burnedBy),
     pushdata(Buffer.from(burnForId))
   ]);
@@ -230,11 +232,11 @@ export const parseBurnOutput = (scriptpubkey: Buffer | string): ParseBurnResult 
 
   CHECK_NEXT();
   const burnForTypeBuf = itObj.reverse();
-  PARSE_CHECK(burnForTypeBuf.length !== 1 && burnForTypeBuf.length !== 2, 'burnFor type length must be 1 or 2');
+  PARSE_CHECK(burnForTypeBuf.length !== 8, 'burnForType length must be 8');
   const burnForType: number = bufferToBigNumber().toNumber();
 
   CHECK_NEXT();
-  const burnedBy = itObj;
+  const burnedBy = itObj.toString('hex');
 
   CHECK_NEXT();
   const burnForId = itObj.toString();
