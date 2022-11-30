@@ -63,6 +63,9 @@ export default {
   'general.feedPage': 'Discover and connect with businesses on LixiLotus',
   'general.subTitleEditPage': 'Change information your page',
   'general.subTitleClaimed': 'Detail of claimed',
+  'general.notFoundTitle': 'Opp! Page not found',
+  'general.notFoundDescription': 'Sorry, we can’t find the page you’re looking for.',
+  'general.goBackToHome': 'Go back',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
@@ -148,6 +151,10 @@ export default {
   'account.country': 'Applying country',
   'account.envelope': 'Image',
   'account.networkType': 'Network Type',
+  'account.recent': 'Recent',
+  'account.reply': 'Reply',
+  'account.from': 'From',
+  'account.to': 'To',
 
   /* 03.Lixi */
   'lixi.createLixi': 'Create new lixi',

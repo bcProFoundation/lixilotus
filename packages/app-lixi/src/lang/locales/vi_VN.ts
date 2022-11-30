@@ -63,6 +63,9 @@ export default {
   'general.feedPage': 'Khám phá và kết nối với các doanh nghiệp trên LixiLotus',
   'general.subTitleEditPage': 'Thay đổi thông tin trang của bạn',
   'general.subTitleClaimed': 'Chi tiết lì xì đâ nhận',
+  'general.notFoundTitle': 'Opp! Không tìm thấy trang',
+  'general.notFoundDescription': 'Xin lỗi, Chúng tôi không thể tìm thấy trang bạn đang tìm',
+  'general.goBackToHome': 'Trở về trang chủ',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',
@@ -147,6 +150,10 @@ export default {
   'account.country': 'Quốc gia áp dụng',
   'account.envelope': 'Hình ảnh',
   'account.networkType': 'Kiểu kết nối',
+  'account.recent': 'Gần đây',
+  'account.reply': 'Trả lời',
+  'account.from': 'Nhận từ',
+  'account.to': 'Gửi đến',
 
   /* 03.Lixi */
   'lixi.createLixi': 'Tạo lixi mới',
