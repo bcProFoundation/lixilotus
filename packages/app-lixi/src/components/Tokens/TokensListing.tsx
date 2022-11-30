@@ -1,4 +1,4 @@
-import { Button, Input, InputRef, Modal, Space, Table } from 'antd';
+import { Button, Input, InputRef, Modal, Space, Table, Form } from 'antd';
 import intl from 'react-intl-universal';
 import type { ColumnsType } from 'antd/es/table';
 import _ from 'lodash';
@@ -6,7 +6,6 @@ import moment from 'moment';
 import Link from 'next/link';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { ChronikClient } from 'chronik-client';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { fetchAllTokens, selectTokens, postToken, selectToken } from '@store/tokens';
 import { showToast } from '@store/toast/actions';
@@ -17,7 +16,7 @@ import { ColumnType } from 'antd/lib/table';
 import { FilterConfirmProps } from 'antd/lib/table/interface';
 import Highlighter from 'react-highlight-words';
 import { CreateTokenCommand, Token } from '@bcpros/lixi-models';
-const chronikClient = new ChronikClient('https://chronik.be.cash/xec');
+import { useForm, Controller } from 'react-hook-form';
 
 const StyledTokensListing = styled.div``;
 
@@ -45,6 +44,11 @@ const TokensListing: React.FC = () => {
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
   const tokenList = useAppSelector(selectTokens);
+  const {
+    handleSubmit,
+    formState: { errors },
+    control
+  } = useForm();
 
   useEffect(() => {
     dispatch(fetchAllTokens());
@@ -111,7 +115,7 @@ const TokensListing: React.FC = () => {
           textToHighlight={text ? text.toString() : ''}
         />
       ) : (
-        <Link href="/tokens/feed" passHref>
+        <Link href="/token/feed" passHref>
           <a onClick={() => handleNavigateToken(record)}>{text}</a>
         </Link>
       )
@@ -210,53 +214,9 @@ const TokensListing: React.FC = () => {
     );
   };
 
-  const addTokenbyId = async () => {
-    try {
-      if (valueInput) {
-        await chronikClient
-          .token(valueInput)
-          .then(rs => {
-            const token = mapTokenInfo(rs) || null;
-            setValueInput('');
-            dispatch(postToken(token));
-          })
-          .catch(err => {
-            if (err.message.includes('Token txid not found')) {
-              dispatch(
-                showToast('error', {
-                  message: 'Error',
-                  description: intl.get('token.tokenIdNotFound'),
-                  duration: 5
-                })
-              );
-            } else {
-              dispatch(
-                showToast('error', {
-                  message: 'Error',
-                  description: intl.get('token.tokenIdInvalid'),
-                  duration: 5
-                })
-              );
-            }
-          });
-      } else {
-        dispatch(
-          showToast('info', {
-            message: 'Info',
-            description: intl.get('token.inputTokenId'),
-            duration: 2
-          })
-        );
-      }
-    } catch (error) {
-      dispatch(
-        showToast('error', {
-          message: 'Error',
-          description: error,
-          duration: 5
-        })
-      );
-    }
+  const addTokenbyId = async data => {
+    dispatch(postToken(data.tokenId));
+    setIsModalVisible(false);
   };
 
   return (
@@ -278,7 +238,6 @@ const TokensListing: React.FC = () => {
       </StyledNavBarHeader>
       <StyledTokensListing>
         <Table
-          scroll={{ x: true }}
           className="table-tokens"
           columns={columns}
           dataSource={tokenList}
@@ -289,11 +248,29 @@ const TokensListing: React.FC = () => {
       <Modal
         title={intl.get('token.importToken')}
         visible={isModalVisible}
-        onOk={addTokenbyId}
+        onOk={handleSubmit(addTokenbyId)}
         onCancel={() => setIsModalVisible(!isModalVisible)}
         cancelButtonProps={{ type: 'primary' }}
+        destroyOnClose={true}
       >
-        <Input value={valueInput} placeholder={intl.get('token.inputTokenId')} onChange={e => handleInputTokenId(e)} />
+        <Form>
+          <Form.Item name="tokenId">
+            <Controller
+              name="tokenId"
+              control={control}
+              rules={{
+                required: {
+                  value: true,
+                  message: intl.get('token.tokenIdNotFound')
+                }
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+                <Input onChange={onChange} onBlur={onBlur} value={value} placeholder={intl.get('token.inputTokenId')} />
+              )}
+            />
+          </Form.Item>
+          <p>{errors.tokenId && errors.tokenId.message}</p>
+        </Form>
       </Modal>
     </>
   );

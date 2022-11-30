@@ -6,10 +6,11 @@ import type { ColumnsType } from 'antd/es/table';
 import _ from 'lodash';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
+import { useInfinitePostsByTokenIdQuery } from '@store/post/useInfinitePostsByTokenIdQuery';
 import { Virtuoso } from 'react-virtuoso';
 import PostListItem from '@components/Posts/PostListItem';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import { getSelectedToken } from '@store/tokens';
 
 interface DataType {
@@ -89,43 +90,19 @@ const TokensFeed: React.FC = () => {
   useEffect(() => {
     // dispatch(fetchAllTokens–());
     // setTokensList([...tokenList]);
+    refetch();
   }, []);
-
-  const columns: ColumnsType<DataType> = [
-    {
-      title: 'Ticker',
-      dataIndex: 'ticker',
-      key: 'ticker',
-      render: text => <a>{text}</a>
-    },
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-      render: text => <a>{text}</a>
-    },
-    {
-      title: 'Burn XPI',
-      dataIndex: 'burn',
-      key: 'burn'
-    },
-    {
-      title: 'Comments',
-      dataIndex: 'comments',
-      key: 'comments'
-    },
-    {
-      title: 'Created',
-      dataIndex: 'created',
-      key: 'created'
-    }
-  ];
 
   let options = ['Withdraw', 'Rename', 'Export'];
 
-  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext } = useInfinitePostsQuery(
+  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByTokenIdQuery(
     {
-      first: 10
+      first: 10,
+      orderBy: {
+        direction: OrderDirection.Desc,
+        field: PostOrderField.UpdatedAt
+      },
+      id: tokenInfo.id
     },
     false
   );
@@ -149,7 +126,9 @@ const TokensFeed: React.FC = () => {
     <StyledTokensFeed>
       <BannerTicker>
         <div className="avatar-ticker">
-          <img src="/images/xpi.svg" alt="" />
+          <picture>
+            <img src="/images/xpi.svg" alt="" />
+          </picture>
         </div>
         <div className="info-ticker">
           <h4 className="title-ticker">{tokenInfo['ticker']}</h4>
@@ -166,8 +145,8 @@ const TokensFeed: React.FC = () => {
         </div>
       </BannerTicker>
 
-      <CreatePostCard></CreatePostCard>
-      <SearchBox></SearchBox>
+      <CreatePostCard tokenId={tokenInfo.id} refetch={() => refetch()} />
+      <SearchBox />
 
       <div className="content">
         <Tabs defaultActiveKey="1">

@@ -190,6 +190,10 @@ const PostListItem = ({ index, item }) => {
   };
 
   const showUsername = () => {
+    if (_.isNil(post.postAccount)) {
+      return 'Anonymous';
+    }
+
     if (post.page) {
       if (post.postAccount.id == post.pageAccount.id) {
         return post.page.name;
@@ -221,7 +225,7 @@ const PostListItem = ({ index, item }) => {
           <CardHeader>
             <InfoCardUser
               imgUrl={post.page ? post.page.avatar : ''}
-              name={showUsername() || 'Anonymous'}
+              name={showUsername()}
               title={moment(post.createdAt).fromNow().toString()}
             ></InfoCardUser>
           </CardHeader>

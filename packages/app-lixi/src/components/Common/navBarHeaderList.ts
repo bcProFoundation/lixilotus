@@ -49,6 +49,6 @@ export const navBarHeaderList = [
   },
   {
     name: 'general.tokens',
-    path: '/tokens/'
+    path: '/token'
   }
 ];

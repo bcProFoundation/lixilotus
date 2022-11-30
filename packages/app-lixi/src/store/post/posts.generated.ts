@@ -112,6 +112,46 @@ export type PostsByPageIdQuery = {
   };
 };
 
+export type PostsByTokenIdQueryVariables = Types.Exact<{
+  after?: Types.InputMaybe<Types.Scalars['String']>;
+  before?: Types.InputMaybe<Types.Scalars['String']>;
+  first?: Types.InputMaybe<Types.Scalars['Int']>;
+  last?: Types.InputMaybe<Types.Scalars['Int']>;
+  orderBy?: Types.InputMaybe<Types.PostOrder>;
+  id?: Types.InputMaybe<Types.Scalars['String']>;
+  skip?: Types.InputMaybe<Types.Scalars['Int']>;
+}>;
+
+export type PostsByTokenIdQuery = {
+  __typename?: 'Query';
+  allPostsByTokenId: {
+    __typename?: 'PostConnection';
+    totalCount?: number | null;
+    edges?: Array<{
+      __typename?: 'PostEdge';
+      cursor: string;
+      node: {
+        __typename?: 'Post';
+        id: string;
+        content: string;
+        uploadCovers?: Array<string> | null;
+        createdAt: any;
+        updatedAt: any;
+        postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+        pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+        page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+      };
+    }> | null;
+    pageInfo: {
+      __typename?: 'PageInfo';
+      endCursor?: string | null;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: string | null;
+    };
+  };
+};
+
 export type PostFieldsFragment = {
   __typename?: 'Post';
   id: string;
@@ -243,6 +283,31 @@ export const PostsByPageIdDocument = `
 }
     ${PostFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
+export const PostsByTokenIdDocument = `
+    query PostsByTokenId($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $id: String, $skip: Int) {
+  allPostsByTokenId(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    id: $id
+    skip: $skip
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...PostFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+    ${PostFieldsFragmentDoc}
+${PageInfoFieldsFragmentDoc}`;
 export const CreatePostDocument = `
     mutation createPost($input: CreatePostInput!) {
   createPost(data: $input) {
@@ -269,6 +334,9 @@ const injectedRtkApi = api.injectEndpoints({
     PostsByPageId: build.query<PostsByPageIdQuery, PostsByPageIdQueryVariables | void>({
       query: variables => ({ document: PostsByPageIdDocument, variables })
     }),
+    PostsByTokenId: build.query<PostsByTokenIdQuery, PostsByTokenIdQueryVariables | void>({
+      query: variables => ({ document: PostsByTokenIdDocument, variables })
+    }),
     createPost: build.mutation<CreatePostMutation, CreatePostMutationVariables>({
       query: variables => ({ document: CreatePostDocument, variables })
     }),
@@ -286,6 +354,8 @@ export const {
   useLazyPostsQuery,
   usePostsByPageIdQuery,
   useLazyPostsByPageIdQuery,
+  usePostsByTokenIdQuery,
+  useLazyPostsByTokenIdQuery,
   useCreatePostMutation,
   useUpdatePostMutation
 } = injectedRtkApi;
