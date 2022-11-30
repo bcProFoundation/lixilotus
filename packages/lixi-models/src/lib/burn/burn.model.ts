@@ -1,5 +1,13 @@
+import { Decimal } from "@prisma/client/runtime";
+
 export class Burn {
+  id: string;
   txid: string;
+  burnType: BurnType;
+  burnForType: BurnForType;
+  burnedBy: string;
+  burnForId: string;
+  burnedValue: Decimal;
 }
 
 export enum BurnType {

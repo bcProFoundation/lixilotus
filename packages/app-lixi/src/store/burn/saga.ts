@@ -30,6 +30,7 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
 }
 
 function* burnForUpDownVoteSuccessSaga(action: any) {
+
   yield put(hideLoading(burnForUpDownVote.type));
 }
 

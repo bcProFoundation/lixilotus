@@ -114,6 +114,8 @@ model Page {
   address       String        @default("") @map("address")
   createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz
   updatedAt     DateTime      @default(now()) @map("updated_at") @db.Timestamptz
+  lotusBurnUp   Decimal       @default(0.0) @map("lotus_burn_up")
+  lotusBurnDown Decimal       @default(0.0) @map("lotus_burn_down")
   posts         Post[]
 
   @@map("page")
@@ -131,8 +133,8 @@ model Post {
   createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz
   updatedAt      DateTime       @default(now()) @map("updated_at") @db.Timestamptz
   uploadedCovers UploadDetail[] @relation("PostCover")
-  lotusBurnUp    Decimal        @default(0) @map("lotus_burn_up")
-  lotusBurnDown  Decimal        @default(0) @map("lotus_burn_down")
+  lotusBurnUp    Decimal        @default(0.0) @map("lotus_burn_up")
+  lotusBurnDown  Decimal        @default(0.0) @map("lotus_burn_down")
 
   @@map("post")
 }
@@ -467,6 +469,7 @@ model Burn {
   burnForType Int       @map("burn_for_type")
   burnedBy    Bytes     @map("burned_by")
   burnForId   String    @map("burned_for_id")
+  burnedValue Decimal   @default(0) @map("burned_value")
   createdAt   DateTime? @map("created_at") @db.Timestamptz(6)
   updatedAt   DateTime? @map("updated_at") @db.Timestamptz(6)
 }

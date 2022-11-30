@@ -287,5 +287,5 @@ export const {
   usePostsByPageIdQuery,
   useLazyPostsByPageIdQuery,
   useCreatePostMutation,
-  useUpdatePostMutation
+  useUpdatePostMutation,
 } = injectedRtkApi;
