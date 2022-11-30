@@ -131,8 +131,8 @@ model Post {
   createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz
   updatedAt      DateTime       @default(now()) @map("updated_at") @db.Timestamptz
   uploadedCovers UploadDetail[] @relation("PostCover")
-  lotusBurnUp    BigInt         @default(0) @map("lotus_burn_up")
-  lotusBurnDown  BigInt         @default(0) @map("lotus_burn_down")
+  lotusBurnUp    Decimal        @default(0) @map("lotus_burn_up")
+  lotusBurnDown  Decimal        @default(0) @map("lotus_burn_down")
 
   @@map("post")
 }

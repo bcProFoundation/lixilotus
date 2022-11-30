@@ -65,13 +65,15 @@ export class BurnController {
             }
           });
 
-          await this.prisma.post.update({
-            where: {
-              id: command.burnForId
-            },
-            data {
+          const lotusBurnUp =
 
-          }
+            await this.prisma.post.update({
+              where: {
+                id: command.burnForId
+              },
+              data {
+
+            }
           })
       }
     }

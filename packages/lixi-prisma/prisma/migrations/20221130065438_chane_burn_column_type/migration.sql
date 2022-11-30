@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "post" ALTER COLUMN "lotus_burn_down" SET DEFAULT 0,
+ALTER COLUMN "lotus_burn_down" SET DATA TYPE DECIMAL(65,30),
+ALTER COLUMN "lotus_burn_up" SET DEFAULT 0,
+ALTER COLUMN "lotus_burn_up" SET DATA TYPE DECIMAL(65,30);
