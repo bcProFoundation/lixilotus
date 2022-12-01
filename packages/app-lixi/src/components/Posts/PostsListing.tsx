@@ -93,51 +93,52 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     }
   };
 
-  return (
-    <div className={className}>
-      <SearchBox></SearchBox>
-      <CreatePostCard refetch={() => refetch()} />
-      <Menu
-        style={{
-          border: 'none',
-          position: 'relative',
-          marginBottom: '1rem',
-          background: 'var(--bg-color-light-theme)'
-        }}
-        mode="horizontal"
-        defaultSelectedKeys={['all']}
-        onClick={onClickMenu}
-        items={menuItems}
-      ></Menu>
-
-      <div className={'listing'} style={{ height: '100vh' }}>
-        <Virtuoso
-          className={'listing'}
-          style={{ height: '100%' }}
-          data={data}
-          endReached={loadMoreItems}
-          overscan={500}
-          itemContent={(index, item) => {
-            return <PostListItem index={index} item={item} />;
+  const Header = () => {
+    return (
+      <div>
+        <SearchBox></SearchBox>
+        <CreatePostCard refetch={() => refetch()} />
+        <Menu
+          style={{
+            border: 'none',
+            position: 'relative',
+            marginBottom: '1rem',
+            background: 'var(--bg-color-light-theme)'
           }}
-          totalCount={totalCount}
-          components={{
-            Footer: () => {
-              return (
-                <div
-                  style={{
-                    padding: '1rem',
-                    textAlign: 'center'
-                  }}
-                >
-                  {isFetchingNext ? <Skeleton avatar active /> : "It's so empty here..."}
-                </div>
-              );
-            }
-          }}
-        />
+          mode="horizontal"
+          defaultSelectedKeys={['all']}
+          onClick={onClickMenu}
+          items={menuItems}
+        ></Menu>
       </div>
+    );
+  };
 
+  const Footer = () => {
+    return (
+      <div
+        style={{
+          padding: '1rem 2rem 2rem 2rem',
+          textAlign: 'center'
+        }}
+      >
+        {isFetchingNext ? <Skeleton avatar active /> : "It's so empty here..."}
+      </div>
+    );
+  };
+
+  return (
+    <div>
+      <Virtuoso
+        style={{ height: '100vh', paddingBottom: '2rem' }}
+        data={data}
+        endReached={loadMoreItems}
+        overscan={500}
+        itemContent={(index, item) => {
+          return <PostListItem index={index} item={item} />;
+        }}
+        components={{ Header, Footer }}
+      />
       <Modal title="Are you sure to down vote shop?" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
         <p>Some contents...</p>
       </Modal>

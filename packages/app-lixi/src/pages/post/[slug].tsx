@@ -1,13 +1,12 @@
 import PostDetail from '@components/Posts/PostDetail';
 import { SagaStore, wrapper } from '@store/store';
 import _ from 'lodash';
-import postApi from '@store/post/api';
 import { NextSeo } from 'next-seo';
 import React from 'react';
 import { END } from 'redux-saga';
 import { getSelectorsByUserAgent } from 'react-device-detect';
-import PostDetailLayout from '@components/Layout/PostDetailLayout';
 import { usePostQuery } from '@store/post/posts.generated';
+import MainLayout from '@components/Layout/MainLayout';
 
 const PostDetailPage = props => {
   const { postId, isMobile } = props;
@@ -64,6 +63,6 @@ export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) 
   };
 });
 
-PostDetailPage.Layout = ({ children }) => <PostDetailLayout children={children} />;
+PostDetailPage.Layout = ({ children }) => <MainLayout children={children} />;
 
 export default PostDetailPage;

@@ -74,7 +74,6 @@ const Content = styled.div`
     display: -webkit-box;
     -webkit-line-clamp: 6;
     -webkit-box-orient: vertical;
-    white-space: break-spaces;
     text-overflow: ellipsis;
     overflow: hidden;
     img {
@@ -195,14 +194,14 @@ const PostListItem = ({ index, item }) => {
     }
 
     if (post.page) {
-      if (post.postAccount.id == post.pageAccount.id) {
-        return post.page.name;
+      if (post?.postAccount?.id == post.pageAccount?.id) {
+        return post?.page?.name;
       } else {
-        return post.postAccount.name;
+        return post?.postAccount?.name;
       }
     }
 
-    return post.postAccount.name;
+    return post?.postAccount?.name;
   };
 
   return (
@@ -212,7 +211,7 @@ const PostListItem = ({ index, item }) => {
           display: 'flex',
           flexDirection: 'column',
           height: 'fit-content !important',
-          marginBottom: '1rem',
+          margin: '2px 2px 1rem 2px',
           borderRadius: '24px',
           boxShadow: '0px 2px 10px rgb(0 0 0 / 5%)',
           background: 'white',

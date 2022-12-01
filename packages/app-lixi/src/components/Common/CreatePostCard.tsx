@@ -84,7 +84,7 @@ const CreateCardContainer = styled.div`
   border-radius: 20px;
   box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
   align-items: center;
-  margin: 1rem 0;
+  margin: 1rem 2px;
   .avatar {
     flex: 2 auto;
     display: flex;
