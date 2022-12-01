@@ -15,7 +15,7 @@ import { useRouter } from 'next/router';
 import { ColumnType } from 'antd/lib/table';
 import { FilterConfirmProps } from 'antd/lib/table/interface';
 import Highlighter from 'react-highlight-words';
-import { CreateTokenCommand, Token } from '@bcpros/lixi-models';
+import { Token } from '@bcpros/lixi-models';
 import { useForm, Controller } from 'react-hook-form';
 
 const StyledTokensListing = styled.div``;
@@ -185,23 +185,6 @@ const TokensListing: React.FC = () => {
 
   const handleNavigateToken = token => {
     dispatch(selectToken(token));
-  };
-
-  const mapTokenInfo = token => {
-    const tokenInfo: CreateTokenCommand = {
-      tokenId: token?.slpTxData?.slpMeta?.tokenId,
-      tokenDocumentUrl: token?.slpTxData?.genesisInfo?.tokenDocumentUrl,
-      tokenType: token?.slpTxData?.slpMeta?.tokenType,
-      name: token?.slpTxData?.genesisInfo?.tokenName,
-      ticker: token?.slpTxData?.genesisInfo?.tokenTicker,
-      createdDate: moment(token?.block?.timestamp, 'X').toDate(),
-      comments: moment().toDate(),
-      decimals: token?.slpTxData?.genesisInfo?.decimals,
-      initialTokenQuantity: token?.initialTokenQuantity,
-      totalBurned: token?.tokenStats?.totalBurned,
-      totalMinted: token?.tokenStats?.totalMinted
-    };
-    return tokenInfo;
   };
 
   const burnToken = () => {
