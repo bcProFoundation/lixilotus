@@ -7,10 +7,9 @@ import { PageResolver } from './page.resolver';
 import { PostResolver } from './post.resolver';
 // import { LixiNftController } from './lixinft.controller';
 // import { LixiNftService } from './lixinft.service';
-import { MeiliSearch } from 'meilisearch';
 
 @Module({
-  imports: [AuthModule, MeiliSearch],
+  imports: [AuthModule],
   controllers: [PageController],
   providers: [PageResolver, Logger, PostResolver],
   exports: []

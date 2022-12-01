@@ -234,6 +234,32 @@ export type Subscription = {
   postCreated: Post;
 };
 
+export type Token = {
+  __typename?: 'Token';
+  /** Identifies the date and time when the object was last comments. */
+  comments?: Maybe<Scalars['DateTime']>;
+  /** Identifies the date and time when the object was created. */
+  createdDate: Scalars['DateTime'];
+  decimals: Scalars['Int'];
+  id: Scalars['ID'];
+  initialTokenQuantity?: Maybe<Scalars['String']>;
+  lotusBurnDown?: Maybe<Scalars['String']>;
+  lotusBurnUp?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  ticker: Scalars['String'];
+  tokenDocumentUrl?: Maybe<Scalars['String']>;
+  tokenId: Scalars['String'];
+  tokenType: Scalars['String'];
+  totalBurned?: Maybe<Scalars['String']>;
+  totalMinted?: Maybe<Scalars['String']>;
+};
+
+export type TokenEdge = {
+  __typename?: 'TokenEdge';
+  cursor: Scalars['String'];
+  node: Token;
+};
+
 export type UpdatePageInput = {
   address?: InputMaybe<Scalars['String']>;
   avatar?: InputMaybe<Scalars['String']>;

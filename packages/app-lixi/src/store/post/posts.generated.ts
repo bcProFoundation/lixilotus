@@ -70,6 +70,31 @@ export type PostsQuery = {
       startCursor?: string | null;
     };
   };
+  searchPosts: {
+    __typename?: 'PostConnection';
+    totalCount?: number | null;
+    edges?: Array<{
+      __typename?: 'PostEdge';
+      node: {
+        __typename?: 'Post';
+        id: string;
+        content: string;
+        uploadCovers?: Array<string> | null;
+        createdAt: any;
+        updatedAt: any;
+        postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+        pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+        page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+      };
+    }> | null;
+    pageInfo: {
+      __typename?: 'PageInfo';
+      endCursor?: string | null;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: string | null;
+    };
+  };
 };
 
 export type PostsByPageIdQueryVariables = Types.Exact<{
@@ -101,21 +126,6 @@ export type PostsByPageIdQuery = {
         pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
       };
-    }> | null;
-    pageInfo: {
-      __typename?: 'PageInfo';
-      endCursor?: string | null;
-      hasNextPage: boolean;
-      hasPreviousPage: boolean;
-      startCursor?: string | null;
-    };
-  };
-  searchPosts: {
-    __typename?: 'PostConnection';
-    totalCount?: number | null;
-    edges?: Array<{
-      __typename?: 'PostEdge';
-      node: { __typename?: 'Post'; id: string; content: string; cover?: string | null; createdAt: any; updatedAt: any };
     }> | null;
     pageInfo: {
       __typename?: 'PageInfo';

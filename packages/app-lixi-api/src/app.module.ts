@@ -93,8 +93,8 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
       }
     }),
     MeiliSearchModule.forRoot({
-      host: 'http://127.0.0.1:7700',
-      apiKey: 'masterKey'
+      host: 'http://localhost:7700',
+      apiKey: process.env.MEILISEARCH_MASTER_KEY
     }),
     WalletModule,
     AuthModule,
