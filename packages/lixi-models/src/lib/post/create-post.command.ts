@@ -4,6 +4,7 @@ export class CreatePostCommand {
   @IsNotEmpty()
   content: string;
   pageId?: string;
+  tokenId?: string;
   cover?: string;
 }
 

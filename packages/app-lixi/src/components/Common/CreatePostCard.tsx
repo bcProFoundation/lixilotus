@@ -108,6 +108,7 @@ const StyledUploader = styled.div`
 
 type CreatePostCardProp = {
   pageId?: string;
+  tokenId?: string;
   refetch?: () => void;
 };
 
@@ -121,7 +122,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
   const sunEditor = useRef<SunEditorCore>();
   const [valueEditor, setValue] = useState(null);
   const postCoverUploads = useAppSelector(getPostCoverUploads);
-  const { pageId } = props;
+  const { pageId, tokenId } = props;
 
   const getSunEditorInstance = (sunEditorCore: SunEditorCore) => {
     sunEditor.current = sunEditorCore;
@@ -260,7 +261,8 @@ const CreatePostCard = (props: CreatePostCardProp) => {
       const createPostInput: CreatePostInput = {
         uploadCovers: postCoverUploads.map(upload => upload.id),
         content: content,
-        pageId: pageId || undefined
+        pageId: pageId || undefined,
+        tokenId: tokenId || undefined
       };
 
       try {

@@ -38,6 +38,7 @@ export type CreatePostInput = {
   content: Scalars['String'];
   pageAccountId?: InputMaybe<Scalars['Int']>;
   pageId?: InputMaybe<Scalars['String']>;
+  tokenId?: InputMaybe<Scalars['String']>;
   uploadCovers?: InputMaybe<Array<Scalars['String']>>;
 };
 
@@ -175,6 +176,7 @@ export type Query = {
   allPages: PageConnection;
   allPosts: PostConnection;
   allPostsByPageId: PostConnection;
+  allPostsByTokenId: PostConnection;
   page: Page;
   post: Post;
 };
@@ -209,6 +211,16 @@ export type QueryAllPostsByPageIdArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
+export type QueryAllPostsByTokenIdArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  id?: InputMaybe<Scalars['String']>;
+  last?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<PostOrder>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
 export type QueryPageArgs = {
   id: Scalars['String'];
 };
@@ -221,6 +233,32 @@ export type Subscription = {
   __typename?: 'Subscription';
   pageCreated: Page;
   postCreated: Post;
+};
+
+export type Token = {
+  __typename?: 'Token';
+  /** Identifies the date and time when the object was last comments. */
+  comments?: Maybe<Scalars['DateTime']>;
+  /** Identifies the date and time when the object was created. */
+  createdDate: Scalars['DateTime'];
+  decimals: Scalars['Int'];
+  id: Scalars['ID'];
+  initialTokenQuantity?: Maybe<Scalars['String']>;
+  lotusBurnDown?: Maybe<Scalars['String']>;
+  lotusBurnUp?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  ticker: Scalars['String'];
+  tokenDocumentUrl?: Maybe<Scalars['String']>;
+  tokenId: Scalars['String'];
+  tokenType: Scalars['String'];
+  totalBurned?: Maybe<Scalars['String']>;
+  totalMinted?: Maybe<Scalars['String']>;
+};
+
+export type TokenEdge = {
+  __typename?: 'TokenEdge';
+  cursor: Scalars['String'];
+  node: Token;
 };
 
 export type UpdatePageInput = {

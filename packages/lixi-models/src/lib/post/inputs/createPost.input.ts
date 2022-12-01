@@ -13,6 +13,10 @@ export class CreatePostInput {
   @Field(() => String, { nullable: true })
   pageId?: Nullable<string>;
 
+  @IsOptional()
+  @Field(() => String, { nullable: true })
+  tokenId?: Nullable<string>;
+
   @Field(() => [String], { nullable: true })
   @IsOptional()
   uploadCovers: [string];
