@@ -1,18 +1,22 @@
 import { SearchOutlined } from '@ant-design/icons';
 import ClaimComponent from '@components/Claim';
-import { List, message } from 'antd';
+import { Button, List } from 'antd';
 import VirtualList from 'rc-virtual-list';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import WalletInfoComponent from './WalletInfo';
 import intl from 'react-intl-universal';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getSelectedAccount } from '@store/account/selectors';
-import { silentLogin } from '@store/account/actions';
 import { getWalletParsedTxHistory } from '@store/wallet';
 import { ParsedChronikTx } from '@utils/chronik';
 import { Tx } from 'chronik-client';
 import { formatDate } from '@utils/formatting';
+import _ from 'lodash';
+import { getCurrentLocale } from '@store/settings/selectors';
+import { FormattedTxAddress } from '@components/Common/FormattedWalletAddress';
+import Link from 'next/link';
+import Reply from '@assets/icons/reply.svg';
 
 interface UserItem {
   email: string;
@@ -30,8 +34,6 @@ interface UserItem {
   };
 }
 
-const ContainerHeight = 400;
-
 const TransactionHistory = styled.div`
   background: #fff;
   padding: 0 2rem;
@@ -46,6 +48,8 @@ const TransactionHistory = styled.div`
     }
   }
   .content-transaction {
+    height: 400px;
+    overflow: scroll;
     .tx-history-header {
       text-align: left;
       color: rgba(28, 55, 69, 0.6);
@@ -122,16 +126,21 @@ const FullWalletWrapper = styled.div`
 `;
 
 const FullWalletComponent: React.FC = () => {
+  const trimLength = 8;
   const dispatch = useAppDispatch();
 
   const selectedAccount = useAppSelector(getSelectedAccount);
+  const currentLocale = useAppSelector(getCurrentLocale);
 
   const walletParsedHistory = useAppSelector(getWalletParsedTxHistory);
-
-  const onScroll = (e: React.UIEvent<HTMLElement, UIEvent>) => {
-    if (e.currentTarget.scrollHeight - e.currentTarget.scrollTop === ContainerHeight) {
-    }
-  };
+  const orderedWalletParsedHistory = _.orderBy(walletParsedHistory, x => x.timeFirstSeen, 'desc');
+  const walletParsedHistoryGroupByDate = _.groupBy(orderedWalletParsedHistory, item => {
+    const currentMonth = new Date().getMonth();
+    const dateTime = new Date(formatDate(item.timeFirstSeen));
+    if (currentMonth == dateTime.getMonth()) return intl.get('account.recent');
+    const month = dateTime.toLocaleString('en', { month: 'long' });
+    return month + ' ' + dateTime.getFullYear();
+  });
 
   return (
     <>
@@ -144,54 +153,82 @@ const FullWalletComponent: React.FC = () => {
             <SearchOutlined />
           </div>
           <div className="content-transaction">
-            <h3 className="tx-history-header">Recent</h3>
-            <List>
-              <VirtualList
-                data={walletParsedHistory}
-                height={ContainerHeight}
-                itemHeight={47}
-                itemKey="email"
-                onScroll={onScroll}
-              >
-                {(item: Tx & { parsed: ParsedChronikTx }) => {
-                  let memo = '';
-                  if (item.parsed.isLotusMessage) {
-                    if (item.parsed.isEncryptedMessage && item.parsed.decryptionSuccess) {
-                      memo = item.parsed.opReturnMessage ?? '';
-                    } else {
-                      memo = item.parsed.opReturnMessage ?? '';
-                    }
-                  }
-                  return (
-                    <List.Item key={item.txid}>
-                      <List.Item.Meta
-                        title={
-                          <a className={item.parsed.incoming ? 'amount increase' : 'amount decrease'}>
-                            {item.parsed.incoming
-                              ? '+ ' + item.parsed.xpiAmount + ' XPI'
-                              : '- ' + item.parsed.xpiAmount + ' XPI'}
-                          </a>
+            {Object.keys(walletParsedHistoryGroupByDate).map(index => {
+              return (
+                <>
+                  <h3 className="tx-history-header">{index}</h3>
+                  <List>
+                    <VirtualList data={walletParsedHistoryGroupByDate[index]} itemHeight={47} itemKey="email">
+                      {(item: Tx & { parsed: ParsedChronikTx }) => {
+                        let memo = '';
+                        if (item.parsed.isLotusMessage) {
+                          if (item.parsed.isEncryptedMessage && item.parsed.decryptionSuccess) {
+                            memo = item.parsed.opReturnMessage ?? '';
+                          } else {
+                            memo = item.parsed.opReturnMessage ?? '';
+                          }
                         }
-                        description={
-                          <div className="tx-transaction">
-                            <p className="tx-action">
-                              {item.parsed.incoming
-                                ? `From: ${item.parsed.replyAddress}`
-                                : `To: ${item.parsed.destinationAddress}`}
-                            </p>
-                            <p className="tx-memo">{memo}</p>
-                          </div>
-                        }
-                      />
-                      <div className="tx-info">
-                        <div className="tx-status"></div>
-                        <p className="tx-date">{formatDate(item.timeFirstSeen)}</p>
-                      </div>
-                    </List.Item>
-                  );
-                }}
-              </VirtualList>
-            </List>
+                        return (
+                          <List.Item key={item.txid}>
+                            <List.Item.Meta
+                              title={
+                                <a className={item.parsed.incoming ? 'amount increase' : 'amount decrease'}>
+                                  {item.parsed.incoming
+                                    ? '+ ' + item.parsed.xpiAmount + ' XPI'
+                                    : '- ' + item.parsed.xpiAmount + ' XPI'}
+                                </a>
+                              }
+                              description={
+                                <div className="tx-transaction">
+                                  <p className="tx-action">
+                                    {item.parsed.incoming ? (
+                                      <p>
+                                        {intl.get('account.from')}:{' '}
+                                        {item.parsed.replyAddress && (
+                                          <FormattedTxAddress address={item.parsed.replyAddress.slice(-trimLength)} />
+                                        )}
+                                      </p>
+                                    ) : (
+                                      <p>
+                                        {intl.get('account.to')}:{' '}
+                                        {item.parsed.destinationAddress && (
+                                          <FormattedTxAddress
+                                            address={item.parsed.destinationAddress.slice(-trimLength)}
+                                          />
+                                        )}
+                                      </p>
+                                    )}
+                                  </p>
+                                  <p className="tx-memo">{memo}</p>
+                                </div>
+                              }
+                            />
+                            <div className="tx-info">
+                              <div className="tx-status"></div>
+                              <p className="tx-date">{formatDate(item.timeFirstSeen)}</p>
+                              {item.parsed.incoming && (
+                                <Link
+                                  href={{
+                                    pathname: '/send',
+                                    query: { replyAddress: item.parsed.replyAddress }
+                                  }}
+                                >
+                                  <Button size="small" type="text">
+                                    <p>
+                                      <Reply /> {intl.get('account.reply')}
+                                    </p>
+                                  </Button>
+                                </Link>
+                              )}
+                            </div>
+                          </List.Item>
+                        );
+                      }}
+                    </VirtualList>
+                  </List>
+                </>
+              );
+            })}
           </div>
         </TransactionHistory>
       </FullWalletWrapper>
