@@ -12,10 +12,15 @@ import {
   editPostSuccess,
   fetchAllPosts,
   fetchAllPostsFailure,
-  fetchAllPostsSuccess, getPost,
-  getPostFailure, getPostsByAccountId, getPostSuccess, postPost,
+  fetchAllPostsSuccess,
+  getPost,
+  getPostFailure,
+  getPostsByAccountId,
+  getPostSuccess,
+  postPost,
   postPostFailure,
-  postPostSuccess, setPost,
+  postPostSuccess,
+  setPost,
   setPostsByAccountId
 } from './actions';
 import postApi from './api';
@@ -204,11 +209,9 @@ function* fetchAllPostsSaga() {
   }
 }
 
-function* fetchAllPostsSuccessSaga(action: any) {
-}
+function* fetchAllPostsSuccessSaga(action: any) {}
 
-function* fetchAllPostsFailureSaga(action: any) {
-}
+function* fetchAllPostsFailureSaga(action: any) {}
 
 function* watchPostPost() {
   yield takeLatest(postPost.type, postPostSaga);
@@ -260,7 +263,6 @@ function* watchGetPost() {
 function* watchGetPostFailure() {
   yield takeLatest(getPostFailure.type, getPostFailureSaga);
 }
-
 
 export default function* postSaga() {
   yield all([

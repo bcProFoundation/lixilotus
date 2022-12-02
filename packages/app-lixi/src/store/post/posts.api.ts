@@ -28,5 +28,5 @@ export const {
   usePostsByPageIdQuery,
   useLazyPostsByPageIdQuery,
   useCreatePostMutation,
-  useUpdatePostMutation,
+  useUpdatePostMutation
 } = enhancedApi;

@@ -1,5 +1,5 @@
-import { BurnCommand } from "@bcpros/lixi-models";
-import axiosClient from "@utils/axiosClient";
+import { BurnCommand } from '@bcpros/lixi-models';
+import axiosClient from '@utils/axiosClient';
 
 const burnApi = {
   post(data: BurnCommand): Promise<any> {
@@ -14,6 +14,6 @@ const burnApi = {
         throw response?.data ?? err ?? 'Network Error';
       });
   }
-}
+};
 
 export default burnApi;

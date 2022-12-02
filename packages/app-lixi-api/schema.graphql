@@ -108,6 +108,8 @@ type Post {
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
   id: ID!
+  lotusBurnDown: Float!
+  lotusBurnUp: Float!
   page: Page
   pageAccount: Account!
   pageAccountId: Int!

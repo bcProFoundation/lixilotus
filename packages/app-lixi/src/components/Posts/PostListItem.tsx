@@ -1,4 +1,3 @@
-
 import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
 import CommentComponent, { CommentItem, Editor } from '@components/Common/Comment';
 import InfoCardUser from '@components/Common/InfoCardUser';
@@ -140,7 +139,7 @@ type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 type PostListItemProps = {
   index: number;
   item: PostItem;
-}
+};
 
 const PostListItem = ({ index, item }: PostListItemProps) => {
   const dispatch = useAppDispatch();
@@ -162,8 +161,7 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
     dispatch(push(`/post/${id}`));
   };
 
-  const onLixiClick = item => {
-  };
+  const onLixiClick = item => {};
 
   const handleSubmit = (values: any) => {
     console.log(values);
@@ -196,7 +194,6 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
 
   const handleBurnForPost = async (isUpVote: boolean, postId: string) => {
     try {
-
       if (slpBalancesAndUtxos.nonSlpUtxos.length == 0) {
         throw new Error('Insufficient funds');
       }
@@ -216,8 +213,8 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
         BurnForType.Post,
         burnedBy,
         burnForId,
-        "0.1"
-      )
+        '0.1'
+      );
 
       const burnCommand: BurnCommand = {
         txHex,
@@ -225,7 +222,7 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
         burnForType: BurnForType.Post,
         burnedBy,
         burnForId
-      }
+      };
 
       dispatch(burnForUpDownVote(burnCommand));
     } catch (e) {
@@ -236,7 +233,7 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
         })
       );
     }
-  }
+  };
 
   const showUsername = () => {
     if (post.page) {
@@ -309,7 +306,7 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
               text="Share"
               key={`list-vertical-share-o-${item.id}`}
               dataItem={item}
-              onClickIcon={() => { }}
+              onClickIcon={() => {}}
             />
           </GroupIconText>
 

@@ -1,8 +1,5 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType, Float } from '@nestjs/graphql';
 import { IsOptional } from 'class-validator';
-import { Type, Transform } from 'class-transformer';
-import { Decimal } from '@prisma/client/runtime';
-import { GraphQLDecimal, transformToDecimal } from '../../graphql/decimal.scalar';
 import { Account } from '../account';
 import { Page } from '../page';
 
@@ -36,15 +33,11 @@ export class Post {
   @Field(() => String, { nullable: true })
   pageId?: Nullable<string>;
 
-  @Field(() => GraphQLDecimal)
-  @Type(() => Object)
-  @Transform(transformToDecimal)
-  lotusBurnUp: Decimal
+  @Field(() => Float)
+  lotusBurnUp: number
 
-  @Field(() => GraphQLDecimal)
-  @Type(() => Object)
-  @Transform(transformToDecimal)
-  lotusBurnDown: Decimal
+  @Field(() => Float)
+  lotusBurnDown: number
 
   @Field(() => Date, {
     description: 'Identifies the date and time when the object was created.'

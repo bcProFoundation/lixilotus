@@ -20,7 +20,6 @@ type PostsListingProps = {
 };
 
 const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingProps) => {
-
   const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
   const [isShowQrCode, setIsShowQrCode] = useState(false);
@@ -90,8 +89,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       fetchNext();
     }
   };
-
-
 
   return (
     <div className={className}>

@@ -50,7 +50,8 @@ export class BurnController {
           burnType: parseResult.burnType ? true : false,
           burnForType: parseResult.burnForType,
           burnedBy: Buffer.from(parseResult.burnedBy, 'hex'),
-          burnForId: parseResult.burnForId
+          burnForId: parseResult.burnForId,
+          burnedValue: value
         }
         const createdBurn = prisma.burn.create({
           data: burnRecordToInsert
@@ -66,14 +67,14 @@ export class BurnController {
             }
           });
 
-          let lotusBurnUp = post?.lotusBurnUp ?? new Prisma.Decimal(0);
-          let lotusBurnDown = post?.lotusBurnDown ?? new Prisma.Decimal(0);
-          const xpiValue = fromSmallestDenomination(value);
+          let lotusBurnUp = post?.lotusBurnUp ?? 0;
+          let lotusBurnDown = post?.lotusBurnDown ?? 0;
+          const xpiValue = value;
 
           if (command.burnType == BurnType.Up) {
-            lotusBurnUp = lotusBurnUp.add(new Prisma.Decimal(xpiValue));
+            lotusBurnUp = lotusBurnUp + xpiValue;
           } else {
-            lotusBurnDown = lotusBurnDown.add(new Prisma.Decimal(xpiValue));
+            lotusBurnDown = lotusBurnDown + xpiValue;
           }
 
           await this.prisma.post.update({

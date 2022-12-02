@@ -49,17 +49,21 @@ export type Mutation = {
   updatePost: Post;
 };
 
+
 export type MutationCreatePageArgs = {
   data: CreatePageInput;
 };
+
 
 export type MutationCreatePostArgs = {
   data: CreatePostInput;
 };
 
+
 export type MutationUpdatePageArgs = {
   data: UpdatePageInput;
 };
+
 
 export type MutationUpdatePostArgs = {
   data: UpdatePostInput;
@@ -133,6 +137,8 @@ export type Post = {
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
   id: Scalars['ID'];
+  lotusBurnDown: Scalars['Float'];
+  lotusBurnUp: Scalars['Float'];
   page?: Maybe<Page>;
   pageAccount: Account;
   pageAccountId: Scalars['Int'];
@@ -179,6 +185,7 @@ export type Query = {
   post: Post;
 };
 
+
 export type QueryAllPagesArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
@@ -188,6 +195,7 @@ export type QueryAllPagesArgs = {
   query?: InputMaybe<Scalars['String']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type QueryAllPostsArgs = {
   after?: InputMaybe<Scalars['String']>;
@@ -199,6 +207,7 @@ export type QueryAllPostsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
+
 export type QueryAllPostsByPageIdArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
@@ -209,9 +218,11 @@ export type QueryAllPostsByPageIdArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
+
 export type QueryPageArgs = {
   id: Scalars['String'];
 };
+
 
 export type QueryPostArgs = {
   id: Scalars['String'];
@@ -221,6 +232,32 @@ export type Subscription = {
   __typename?: 'Subscription';
   pageCreated: Page;
   postCreated: Post;
+};
+
+export type Token = {
+  __typename?: 'Token';
+  /** Identifies the date and time when the object was last comments. */
+  comments?: Maybe<Scalars['DateTime']>;
+  /** Identifies the date and time when the object was created. */
+  createdDate: Scalars['DateTime'];
+  decimals: Scalars['Int'];
+  id: Scalars['ID'];
+  initialTokenQuantity?: Maybe<Scalars['String']>;
+  lotusBurnDown?: Maybe<Scalars['String']>;
+  lotusBurnUp?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  ticker: Scalars['String'];
+  tokenDocumentUrl?: Maybe<Scalars['String']>;
+  tokenId: Scalars['String'];
+  tokenType: Scalars['String'];
+  totalBurned?: Maybe<Scalars['String']>;
+  totalMinted?: Maybe<Scalars['String']>;
+};
+
+export type TokenEdge = {
+  __typename?: 'TokenEdge';
+  cursor: Scalars['String'];
+  node: Token;
 };
 
 export type UpdatePageInput = {

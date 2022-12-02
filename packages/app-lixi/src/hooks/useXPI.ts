@@ -212,15 +212,7 @@ export default function useXPI() {
 
     // generate the tx inputs and add to txBuilder instance
     // returns the updated txBuilder, txFee, totalInputUtxoValue and inputUtxos
-    let txInputObj = generateTxInput(
-      XPI,
-      false,
-      utxos,
-      txBuilder,
-      null,
-      satoshisToBurn,
-      feeInSatsPerByte
-    );
+    let txInputObj = generateTxInput(XPI, false, utxos, txBuilder, null, satoshisToBurn, feeInSatsPerByte);
     const changeAddress = getChangeAddressFromInputUtxos(XPI, txInputObj.inputUtxos);
 
     // generate the tx outputs with burn output
@@ -243,7 +235,7 @@ export default function useXPI() {
     const rawTxHex: string = signAndBuildTx(XPI, txInputObj.inputUtxos, txBuilder, walletPaths);
 
     return rawTxHex;
-  }
+  };
 
   return {
     getXPI,
