@@ -11,6 +11,7 @@ import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
 import { formatBalance } from '@utils/cashMethods';
 import { Avatar, Button, Comment, List, Space } from 'antd';
 import { push } from 'connected-next-router';
+import _ from 'lodash';
 import moment from 'moment';
 import React, { useState } from 'react';
 import ReactHtmlParser from 'react-html-parser';
@@ -233,18 +234,6 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
         })
       );
     }
-  };
-
-  const showUsername = () => {
-    if (post.page) {
-      if (post.postAccount.id == post.pageAccount.id) {
-        return post.page.name;
-      } else {
-        return post.postAccount.name;
-      }
-    }
-
-    return post.postAccount.name;
   };
 
   const showUsername = () => {

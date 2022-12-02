@@ -1,3 +1,4 @@
+import { Button, Input, InputRef, Modal, Space, Table, Form } from 'antd';
 import intl from 'react-intl-universal';
 import type { ColumnsType } from 'antd/es/table';
 import _ from 'lodash';
@@ -5,7 +6,6 @@ import moment from 'moment';
 import Link from 'next/link';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { ChronikClient } from 'chronik-client';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { fetchAllTokens, selectTokens, postToken, selectToken } from '@store/tokens';
 import { showToast } from '@store/toast/actions';
@@ -115,6 +115,7 @@ const TokensListing: React.FC = () => {
           textToHighlight={text ? text.toString() : ''}
         />
       ) : (
+        <Link href="/token/feed" passHref>
           <a onClick={() => handleNavigateToken(record)}>{text}</a>
         </Link>
       )
@@ -186,23 +187,6 @@ const TokensListing: React.FC = () => {
     dispatch(selectToken(token));
   };
 
-  const mapTokenInfo = token => {
-    const tokenInfo: CreateTokenCommand = {
-      tokenId: token?.slpTxData?.slpMeta?.tokenId,
-      tokenDocumentUrl: token?.slpTxData?.genesisInfo?.tokenDocumentUrl,
-      tokenType: token?.slpTxData?.slpMeta?.tokenType,
-      name: token?.slpTxData?.genesisInfo?.tokenName,
-      ticker: token?.slpTxData?.genesisInfo?.tokenTicker,
-      createdDate: moment(token?.block?.timestamp, 'X').toDate(),
-      comments: moment().toDate(),
-      decimals: token?.slpTxData?.genesisInfo?.decimals,
-      initialTokenQuantity: token?.initialTokenQuantity,
-      totalBurned: token?.tokenStats?.totalBurned,
-      totalMinted: token?.tokenStats?.totalMinted
-    };
-    return tokenInfo;
-  };
-
   const burnToken = () => {
     dispatch(
       showToast('info', {
@@ -213,50 +197,9 @@ const TokensListing: React.FC = () => {
     );
   };
 
-    try {
-      if (valueInput) {
-        await chronikClient
-          .token(valueInput)
-          .then(rs => {
-            const token = mapTokenInfo(rs) || null;
-            setValueInput('');
-          .catch(err => {
-            if (err.message.includes('Token txid not found')) {
-              dispatch(
-                showToast('error', {
-                  message: 'Error',
-                  description: intl.get('token.tokenIdNotFound'),
-                  duration: 5
-                })
-              );
-            } else {
-              dispatch(
-                showToast('error', {
-                  message: 'Error',
-                  description: intl.get('token.tokenIdInvalid'),
-                  duration: 5
-                })
-              );
-            }
-          });
-      } else {
-        dispatch(
-          showToast('info', {
-            message: 'Info',
-            description: intl.get('token.inputTokenId'),
-            duration: 2
-          })
-        );
-      }
-    } catch (error) {
-      dispatch(
-        showToast('error', {
-          message: 'Error',
-          description: error,
-          duration: 5
-        })
-      );
-    }
+  const addTokenbyId = async data => {
+    dispatch(postToken(data.tokenId));
+    setIsModalVisible(false);
   };
 
   return (
@@ -278,7 +221,6 @@ const TokensListing: React.FC = () => {
       </StyledNavBarHeader>
       <StyledTokensListing>
         <Table
-          scroll={{ x: true }}
           className="table-tokens"
           columns={columns}
           dataSource={tokenList}
@@ -289,6 +231,7 @@ const TokensListing: React.FC = () => {
       <Modal
         title={intl.get('token.importToken')}
         visible={isModalVisible}
+        onOk={handleSubmit(addTokenbyId)}
         onCancel={() => setIsModalVisible(!isModalVisible)}
         cancelButtonProps={{ type: 'primary' }}
         destroyOnClose={true}
@@ -305,6 +248,7 @@ const TokensListing: React.FC = () => {
                 }
               }}
               render={({ field: { onChange, onBlur, value } }) => (
+                <Input onChange={onChange} onBlur={onBlur} value={value} placeholder={intl.get('token.inputTokenId')} />
               )}
             />
           </Form.Item>

@@ -182,50 +182,51 @@ export class PostResolver {
       imgShas = imgSources.map((sha: string) => {
         return /[^/]*$/.exec(sha)![0];
       });
-    //Query the imgShas from the database, if there is then add to UploadDetailsIds
-    if (imgShas.length > 0) {
-      const promises = imgShas.map(async (sha: string) => {
-        const upload = await this.prisma.upload.findFirst({
-          where: {
-            sha: sha
-          },
-          include: {
-            uploadDetail: true
-          }
+      //Query the imgShas from the database, if there is then add to UploadDetailsIds
+      if (imgShas.length > 0) {
+        const promises = imgShas.map(async (sha: string) => {
+          const upload = await this.prisma.upload.findFirst({
+            where: {
+              sha: sha
+            },
+            include: {
+              uploadDetail: true
+            }
+          });
+
+          return upload && upload?.uploadDetail?.id;
         });
 
-        return upload && upload?.uploadDetail?.id;
-      });
-
-      uploadDetailIds = await Promise.all(promises);
-    }
-
-    const postToSave = {
-      data: {
-        content: content,
-        postAccount: { connect: { id: account.id } },
-        uploadedCovers: {
-          connect:
-            uploadDetailIds.length > 0
-              ? uploadDetailIds.map((uploadDetail: any) => {
-                  return {
-                    id: uploadDetail
-                  };
-                })
-              : undefined
-        },
-        page: {
-          connect: pageId ? { id: pageId } : undefined
-        },
-        token: {
-          connect: tokenId ? { id: tokenId } : undefined
-        }
+        uploadDetailIds = await Promise.all(promises);
       }
-    };
-    const createdPost = await this.prisma.post.create(postToSave);
 
-    pubSub.publish('postCreated', { postCreated: createdPost });
-    return createdPost;
+      const postToSave = {
+        data: {
+          content: content,
+          postAccount: { connect: { id: account.id } },
+          uploadedCovers: {
+            connect:
+              uploadDetailIds.length > 0
+                ? uploadDetailIds.map((uploadDetail: any) => {
+                    return {
+                      id: uploadDetail
+                    };
+                  })
+                : undefined
+          },
+          page: {
+            connect: pageId ? { id: pageId } : undefined
+          },
+          token: {
+            connect: tokenId ? { id: tokenId } : undefined
+          }
+        }
+      };
+      const createdPost = await this.prisma.post.create(postToSave);
+
+      pubSub.publish('postCreated', { postCreated: createdPost });
+      return createdPost;
+    }
   }
 
   @ResolveField('postAccount', () => Account)
@@ -262,32 +263,5 @@ export class PostResolver {
       return page;
     }
     return null;
-  }
-
-  @UseGuards(GqlJwtAuthGuard)
-  @Mutation(() => Post)
-  async updatePost(@PostAccountEntity() account: Account, @Args('data') data: UpdatePostInput) {
-    // if (!account) {
-    //   const couldNotFindAccount = await this.i18n.t('post.messages.couldNotFindAccount');
-    //   throw new Error(couldNotFindAccount);
-    // }
-    // const uploadCoverDetail = data.cover
-    //   ? await this.prisma.uploadDetail.findFirst({
-    //     where: {
-    //       uploadId: data.cover
-    //     }
-    //   })
-    //   : undefined;
-    // const updatedPost = await this.prisma.post.update({
-    //   where: {
-    //     id: data.id
-    //   },
-    //   data: {
-    //     ...data,
-    //     uploadedCovers: { connect: uploadCoverDetail ? { id: uploadCoverDetail.id } : undefined }
-    //   }
-    // });
-    // pubSub.publish('postUpdated', { postUpdated: updatedPost });
-    // return updatedPost;
   }
 }

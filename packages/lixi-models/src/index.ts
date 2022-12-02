@@ -1,5 +1,4 @@
 export * from './core';
-export * from './graphql/decimal.scalar';
 export * from './lib/account';
 export * from './lib/envelope';
 export * from './lib/lixi';
