@@ -1,4 +1,3 @@
-import { Button, Input, InputRef, Modal, Space, Table } from 'antd';
 import intl from 'react-intl-universal';
 import type { ColumnsType } from 'antd/es/table';
 import _ from 'lodash';
@@ -16,8 +15,8 @@ import { useRouter } from 'next/router';
 import { ColumnType } from 'antd/lib/table';
 import { FilterConfirmProps } from 'antd/lib/table/interface';
 import Highlighter from 'react-highlight-words';
-import { CreateTokenCommand, Token } from '@bcpros/lixi-models';
-const chronikClient = new ChronikClient('https://chronik.be.cash/xec');
+import { Token } from '@bcpros/lixi-models';
+import { useForm, Controller } from 'react-hook-form';
 
 const StyledTokensListing = styled.div``;
 
@@ -45,6 +44,11 @@ const TokensListing: React.FC = () => {
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
   const tokenList = useAppSelector(selectTokens);
+  const {
+    handleSubmit,
+    formState: { errors },
+    control
+  } = useForm();
 
   useEffect(() => {
     dispatch(fetchAllTokens());
@@ -111,7 +115,6 @@ const TokensListing: React.FC = () => {
           textToHighlight={text ? text.toString() : ''}
         />
       ) : (
-        <Link href="/tokens/feed" passHref>
           <a onClick={() => handleNavigateToken(record)}>{text}</a>
         </Link>
       )
@@ -210,7 +213,6 @@ const TokensListing: React.FC = () => {
     );
   };
 
-  const addTokenbyId = async () => {
     try {
       if (valueInput) {
         await chronikClient
@@ -218,8 +220,6 @@ const TokensListing: React.FC = () => {
           .then(rs => {
             const token = mapTokenInfo(rs) || null;
             setValueInput('');
-            dispatch(postToken(token));
-          })
           .catch(err => {
             if (err.message.includes('Token txid not found')) {
               dispatch(
@@ -289,11 +289,27 @@ const TokensListing: React.FC = () => {
       <Modal
         title={intl.get('token.importToken')}
         visible={isModalVisible}
-        onOk={addTokenbyId}
         onCancel={() => setIsModalVisible(!isModalVisible)}
         cancelButtonProps={{ type: 'primary' }}
+        destroyOnClose={true}
       >
-        <Input value={valueInput} placeholder={intl.get('token.inputTokenId')} onChange={e => handleInputTokenId(e)} />
+        <Form>
+          <Form.Item name="tokenId">
+            <Controller
+              name="tokenId"
+              control={control}
+              rules={{
+                required: {
+                  value: true,
+                  message: intl.get('token.tokenIdNotFound')
+                }
+              }}
+              render={({ field: { onChange, onBlur, value } }) => (
+              )}
+            />
+          </Form.Item>
+          <p>{errors.tokenId && errors.tokenId.message}</p>
+        </Form>
       </Modal>
     </>
   );

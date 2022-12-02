@@ -54,6 +54,29 @@ query PostsByPageId(
   }
 }
 
+query PostsByTokenId(
+  $after: String
+  $before: String
+  $first: Int = 20
+  $last: Int
+  $orderBy: PostOrder
+  $id: String
+  $skip: Int
+) {
+  allPostsByTokenId(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, id: $id, skip: $skip) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...PostFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+
 fragment PostFields on Post {
   id
   content

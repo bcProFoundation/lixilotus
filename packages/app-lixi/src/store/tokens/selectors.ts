@@ -1,3 +1,4 @@
+import { Token } from '@bcpros/lixi-models';
 import { createSelector } from 'reselect';
 import { RootState } from '../store';
 import { tokenAdapter } from './reducer';
@@ -12,5 +13,5 @@ export const selectTokens = createSelector((state: RootState) => state.tokens, s
 
 export const getSelectedToken = createSelector(
   (state: RootState) => state.tokens,
-  (state: TokenState) => state.selectedTokenId as object
+  (state: TokenState) => state.selectedTokenId as Token
 );

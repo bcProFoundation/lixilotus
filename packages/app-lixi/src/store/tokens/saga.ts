@@ -25,17 +25,13 @@ const call: any = Effects.call;
  * @param action The data to needed generate a Token
  */
 
-function* postTokenSaga(action: PayloadAction<any>) {
+function* postTokenSaga(action: PayloadAction<string>) {
   try {
-    const command = action.payload;
+    const tokenId = action.payload;
 
     yield put(showLoading(postToken.type));
 
-    const dataApi: any = {
-      ...command
-    };
-
-    const data: TokenDto = yield call(TokenApi.post, dataApi);
+    const data: TokenDto = yield call(TokenApi.post, tokenId);
 
     if (_.isNil(data) || _.isNil(data.id)) {
       throw new Error('Unable Create Token');

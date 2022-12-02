@@ -31,7 +31,7 @@ export default function* rootSaga() {
     pageSaga(),
     postSaga(),
     countrySaga(),
-    tokenSaga(),
+    TokenSaga(),
     burnSaga()
   ]);
 }

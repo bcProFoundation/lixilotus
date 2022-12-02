@@ -3,7 +3,7 @@ import { createAction } from '@reduxjs/toolkit';
 export const fetchAllTokens = createAction('tokens/fetchAllToken');
 export const fetchAllTokensSuccess = createAction<any>('tokens/fetchAllTokensSuccess');
 export const fetchAllTokensFailure = createAction<any>('tokens/fetchAllTokensFailure');
-export const postToken = createAction<any>('tokens/postToken');
+export const postToken = createAction<string>('tokens/postToken');
 export const postTokenSuccess = createAction<any>('tokens/postTokenSuccess');
 export const postTokenFailure = createAction<string>('tokens/postTokenFailure');
 export const getToken = createAction<string>('tokens/getToken');

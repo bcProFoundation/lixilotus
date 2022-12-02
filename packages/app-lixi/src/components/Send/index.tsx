@@ -52,10 +52,14 @@ const SendComponent: React.FC = () => {
   const wallet = useAppSelector(getSelectedAccount);
   const currentAddress = wallet?.address;
 
+  const search = window.location.search;
+  const params = new URLSearchParams(search);
+  const replyAddress = params.get('replyAddress');
+
   const [formData, setFormData] = useState({
     dirty: true,
     value: '',
-    address: ''
+    address: replyAddress ?? ''
   });
   const [queryStringText, setQueryStringText] = useState(null);
   const [sendXpiAddressError, setSendXpiAddressError] = useState('');

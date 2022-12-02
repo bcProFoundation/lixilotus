@@ -7,8 +7,10 @@ import { Button, Space, Tabs } from 'antd';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
+import { useInfinitePagesQuery } from '@store/page/useInfinitePagesQuery';
+import PageListItem from '@components/Pages/PageListItem';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
-import styled from 'styled-components';
+import { GraphQLClient, gql } from 'graphql-request';
 
 type PageDetailProps = {
   page: any;

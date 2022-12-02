@@ -50,5 +50,5 @@ export class Token {
     description: 'Identifies the date and time when the object was last comments.',
     nullable: true
   })
-  comments: Date;
+  comments?: Date;
 }

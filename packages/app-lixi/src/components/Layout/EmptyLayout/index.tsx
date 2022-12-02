@@ -1,15 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Layout, Spin } from 'antd';
+import { Button, Layout, Spin } from 'antd';
 import Link from 'next/link';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 
 import { LeftOutlined, LoadingOutlined } from '@ant-design/icons';
 
-import ModalManager from '../../Common/ModalManager';
-import { GlobalStyle } from '../MainLayout/GlobalStyle';
-import { theme } from '../MainLayout/theme';
-import Sidebar from '@containers/Sidebar';
-import Topbar from '@containers/Topbar';
 import { loadLocale } from '@store/settings/actions';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
@@ -18,7 +13,9 @@ import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
 import { navBarHeaderList } from '@components/Common/navBarHeaderList';
 import { useRouter } from 'next/router';
 import intl from 'react-intl-universal';
-
+import { GlobalStyle } from '@components/Layout/MainLayout/GlobalStyle';
+import ModalManager from '@components/Common/ModalManager';
+import { theme } from '@components/Layout/MainLayout/theme';
 const { Content, Sider, Header } = Layout;
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
@@ -59,21 +56,6 @@ const NavBarHeader = styled(Header)`
   }
 `;
 
-const PathDirection = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-left: 1rem;
-  h2 {
-    font-weight: 600;
-    text-transform: capitalize;
-    color: var(--color-primary);
-  }
-  .sub-title {
-    text-transform: capitalize;
-  }
-`;
-
 export const AppContainer = styled.div`
   position: relative;
   width: 500px;
@@ -104,21 +86,18 @@ export const AppContainer = styled.div`
   }
   .ant-layout.ant-layout-has-sider {
     gap: 4rem;
-    justify-content: center;
   }
   .main-section-layout {
-    max-width: 680px;
     @media (max-width: 768px) {
       padding-right: 0 !important;
     }
   }
 `;
 
-type ClaimedLayoutProps = React.PropsWithChildren<{}>;
+type EmptyLayoutProps = React.PropsWithChildren<{}>;
 
-const ClaimedLayout: React.FC = (props: ClaimedLayoutProps) => {
+const EmptyLayout: React.FC = (props: EmptyLayoutProps) => {
   const { children } = props;
-  const claimId = children[0][''];
   const [loading, setLoading] = useState(false);
   const currentLocale = useAppSelector(getCurrentLocale);
   const intlInitDone = useAppSelector(getIntlInitStatus);
@@ -126,15 +105,12 @@ const ClaimedLayout: React.FC = (props: ClaimedLayoutProps) => {
   const router = useRouter();
   const [height, setHeight] = useState(0);
   const selectedKey = router.pathname ?? '';
-  const [navBarTitle, setNavBarTitle] = useState('');
   const ref = useRef(null);
   const setRef = useCallback(node => {
     if (node && node.clientHeight) {
-      // Check if a node is actually passed. Otherwise node would be null.
       const height = node.clientHeight;
       setHeight(height);
     }
-    // Save a reference to the node
     ref.current = node;
   }, []);
 
@@ -160,29 +136,13 @@ const ClaimedLayout: React.FC = (props: ClaimedLayoutProps) => {
           <LixiApp>
             <Layout>
               <AppBody>
-                <ModalManager />
-                <>
-                  <AppContainer>
-                    <Layout>
-                      <SidebarShortcut></SidebarShortcut>
-                      <Sidebar />
-                      <Layout className="main-section-layout" style={{ paddingRight: '2rem' }}>
-                        <Topbar ref={setRef} />
-                        {selectedKey !== '/' && (
-                          <NavBarHeader>
-                            <Link href="/" passHref>
-                              <LeftOutlined onClick={() => router.back()} />
-                            </Link>
-                            <PathDirection>
-                              <h2>{navBarTitle.length > 0 ? intl.get(navBarTitle) : ''}</h2>
-                            </PathDirection>
-                          </NavBarHeader>
-                        )}
-                        <Content className="content-layout">{children}</Content>
-                      </Layout>
+                <AppContainer>
+                  <Layout>
+                    <Layout className="main-section-layout" style={{ paddingRight: '2rem' }}>
+                      <Content className="content-layout">{children}</Content>
                     </Layout>
-                  </AppContainer>
-                </>
+                  </Layout>
+                </AppContainer>
               </AppBody>
             </Layout>
           </LixiApp>
@@ -192,4 +152,4 @@ const ClaimedLayout: React.FC = (props: ClaimedLayoutProps) => {
   );
 };
 
-export default ClaimedLayout;
+export default EmptyLayout;
