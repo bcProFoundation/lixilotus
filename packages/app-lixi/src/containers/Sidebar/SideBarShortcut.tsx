@@ -122,6 +122,7 @@ export const CointainerAccess = styled.div`
 `;
 
 const StyledLogo = styled.div`
+  cursor: pointer;
   ::before {
     left: 0;
     top: 46px;
@@ -232,7 +233,9 @@ const SidebarShortcut = () => {
       <CointainerAccess>
         <div className="wrapper">
           <StyledLogo>
-            <img width="120px" src="/images/lixilotus-logo.svg" alt="lixilotus" />
+            <Link href="/" passHref>
+              <img width="120px" src="/images/lixilotus-logo.svg" alt="lixilotus" />
+            </Link>
           </StyledLogo>
           <ItemAccess
             icon={HomeOutlined}
