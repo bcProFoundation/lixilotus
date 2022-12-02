@@ -4,7 +4,7 @@ const enhancedApi = api.enhanceEndpoints({
   addTagTypes: ['Post'],
   endpoints: {
     Posts: {
-      providesTags: ['Post']
+      providesTags: (allPosts, error, arg) => ['Post']
     },
     Post: {
       providesTags: ['Post']

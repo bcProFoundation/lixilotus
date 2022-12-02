@@ -1,4 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
+
 import { BurnForType, BurnType } from './burn.model';
 
 export class BurnCommand {
@@ -16,5 +17,4 @@ export class BurnCommand {
 
   @IsNotEmpty()
   burnForId: string;
-
 }

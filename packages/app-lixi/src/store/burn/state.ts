@@ -1,4 +1,4 @@
-import { Burn } from "@bcpros/lixi-models";
+import { Burn } from '@bcpros/lixi-models';
 
 export interface BurnState {
   latestBurnForPost: Burn;

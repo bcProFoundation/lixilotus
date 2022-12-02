@@ -8,6 +8,7 @@ import { burnForUpDownVote } from '@store/burn/actions';
 import { PostsQuery } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
+import { formatBalance } from '@utils/cashMethods';
 import { Avatar, Button, Comment, List, Space } from 'antd';
 import { push } from 'connected-next-router';
 import moment from 'moment';
@@ -279,14 +280,14 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
         <ActionBar>
           <GroupIconText>
             <IconText
-              text={'upVote'}
+              text={`${formatBalance(post?.lotusBurnUp ?? 0)}`}
               imgUrl="/images/up-ico.svg"
               key={`list-vertical-upvote-o-${item.id}`}
               dataItem={item}
               onClickIcon={() => upVotePost(item)}
             />
             <IconText
-              text={'downVote'}
+              text={`${formatBalance(post?.lotusBurnDown ?? 0)}`}
               imgUrl="/images/down-ico.svg"
               key={`list-vertical-downvote-o-${item.id}`}
               dataItem={item}

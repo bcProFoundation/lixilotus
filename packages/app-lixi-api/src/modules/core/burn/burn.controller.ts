@@ -17,13 +17,10 @@ export class BurnController {
     @I18n() private i18n: I18nService,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS
-  ) {
-  }
+  ) {}
 
   @Post()
-  async burn(
-    @Body() command: BurnCommand
-  ): Promise<Burn> {
+  async burn(@Body() command: BurnCommand): Promise<Burn> {
     try {
       const txData: any = await this.XPI.RawTransactions.decodeRawTransaction(command.txHex);
       if (!txData) {
@@ -52,10 +49,10 @@ export class BurnController {
           burnedBy: Buffer.from(parseResult.burnedBy, 'hex'),
           burnForId: parseResult.burnForId,
           burnedValue: value
-        }
+        };
         const createdBurn = prisma.burn.create({
           data: burnRecordToInsert
-        })
+        });
         return createdBurn;
       });
 
@@ -92,7 +89,7 @@ export class BurnController {
       const result: Burn = {
         ...savedBurn,
         burnType: savedBurn.burnType ? BurnType.Up : BurnType.Down,
-        burnedBy: savedBurn.burnedBy.toString('hex'),
+        burnedBy: savedBurn.burnedBy.toString('hex')
       };
 
       return result;
@@ -105,6 +102,5 @@ export class BurnController {
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }
-
   }
 }

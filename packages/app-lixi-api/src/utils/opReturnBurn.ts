@@ -9,7 +9,6 @@ const OP_PUSHDATA1: number = 0x4c;
 const OP_PUSHDATA2: number = 0x4d;
 const OP_PUSHDATA4: number = 0x4e;
 
-
 export interface ParseBurnResult {
   version: number;
   burnType: BurnType;
@@ -195,10 +194,10 @@ export const parseBurnOutput = (scriptpubkey: Buffer | string): ParseBurnResult 
       PARSE_CHECK(lokadIdStr.length !== 5, 'lokad id wrong size');
       PARSE_CHECK(
         lokadIdStr[0] !== 'L'.charCodeAt(0) ||
-        lokadIdStr[1] !== 'I'.charCodeAt(0) ||
-        lokadIdStr[2] !== 'X'.charCodeAt(0) ||
-        lokadIdStr[3] !== 'I'.charCodeAt(0) ||
-        lokadIdStr[4] !== 0x00,
+          lokadIdStr[1] !== 'I'.charCodeAt(0) ||
+          lokadIdStr[2] !== 'X'.charCodeAt(0) ||
+          lokadIdStr[3] !== 'I'.charCodeAt(0) ||
+          lokadIdStr[4] !== 0x00,
         'LIXI not in first chunk'
       );
     }
@@ -274,7 +273,13 @@ export const generateBurnTxOutput = (
       throw new Error(`Insufficient funds`);
     }
 
-    const burnOutputScript = generateBurnOpReturnScript(0x01, burnType ? true : false, burnForType, burnedBy, burnForId);
+    const burnOutputScript = generateBurnOpReturnScript(
+      0x01,
+      burnType ? true : false,
+      burnForType,
+      burnedBy,
+      burnForId
+    );
     txBuilder.addOutput(burnOutputScript, parseInt(satoshisToBurn.toString()));
 
     // if a remainder exists, return to change address as the final output

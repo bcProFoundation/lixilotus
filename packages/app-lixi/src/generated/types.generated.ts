@@ -49,21 +49,17 @@ export type Mutation = {
   updatePost: Post;
 };
 
-
 export type MutationCreatePageArgs = {
   data: CreatePageInput;
 };
-
 
 export type MutationCreatePostArgs = {
   data: CreatePostInput;
 };
 
-
 export type MutationUpdatePageArgs = {
   data: UpdatePageInput;
 };
-
 
 export type MutationUpdatePostArgs = {
   data: UpdatePostInput;
@@ -185,7 +181,6 @@ export type Query = {
   post: Post;
 };
 
-
 export type QueryAllPagesArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
@@ -195,7 +190,6 @@ export type QueryAllPagesArgs = {
   query?: InputMaybe<Scalars['String']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
-
 
 export type QueryAllPostsArgs = {
   after?: InputMaybe<Scalars['String']>;
@@ -207,7 +201,6 @@ export type QueryAllPostsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
-
 export type QueryAllPostsByPageIdArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
@@ -218,11 +211,9 @@ export type QueryAllPostsByPageIdArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
-
 export type QueryPageArgs = {
   id: Scalars['String'];
 };
-
 
 export type QueryPostArgs = {
   id: Scalars['String'];

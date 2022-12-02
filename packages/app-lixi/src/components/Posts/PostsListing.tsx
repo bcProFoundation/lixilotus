@@ -60,9 +60,18 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     (async () => {
       if (latestBurnForPost) {
         const post = await queryPostTrigger({ id: latestBurnForPost.burnForId });
-        dispatch(postApi.util.updateQueryData('Post', { id: latestBurnForPost.burnForId }, (draft) => {
-          Object.assign(draft, post);
-        }));
+        console.log('post', post);
+        dispatch(
+          postApi.util.updateQueryData('Posts', undefined, draft => {
+            const postToUpdate = draft.allPosts.edges.find(item => item.node.id === latestBurnForPost.burnForId);
+            if (postToUpdate) {
+              console.log('update post');
+              postToUpdate.node = post.data.post;
+            }
+          })
+        );
+        postApi.util.invalidateTags(['Post']);
+        refetch();
       }
     })();
   }, [latestBurnForPost]);

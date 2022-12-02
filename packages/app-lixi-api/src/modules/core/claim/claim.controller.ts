@@ -43,7 +43,7 @@ export class ClaimController {
     @Inject('xpijs') private XPI: BCHJS,
     private readonly config: ConfigService,
     private readonly lixiNftService: LixiNftService
-  ) { }
+  ) {}
 
   @Get(':id')
   async getClaim(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<ViewClaimDto> {
@@ -357,21 +357,21 @@ export class ClaimController {
         // registrant
         !_.isNil(lixi.package?.registrant)
           ? outputs.push(
-            {
-              address: claimApi.claimAddress,
-              amountSat: amountSats
-            },
-            {
-              address: lixi.package?.registrant as unknown as string,
-              amountSat: amountSats
-            }
-          )
+              {
+                address: claimApi.claimAddress,
+                amountSat: amountSats
+              },
+              {
+                address: lixi.package?.registrant as unknown as string,
+                amountSat: amountSats
+              }
+            )
           : (outputs = [
-            {
-              address: claimApi.claimAddress,
-              amountSat: amountSats
-            }
-          ]);
+              {
+                address: claimApi.claimAddress,
+                amountSat: amountSats
+              }
+            ]);
 
         // distributions
         if (parentLixi && parentLixi.claimType == ClaimType.OneTime && parentLixi?.distributions) {
