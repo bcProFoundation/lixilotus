@@ -1,12 +1,11 @@
 import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
 import CreatePostCard from '@components/Common/CreatePostCard';
 import SearchBox from '@components/Common/SearchBox';
-import { WalletContext } from '@context/index';
-import useXPI from '@hooks/useXPI';
 import { getSelectedAccount } from '@store/account/selectors';
+import { getLatestBurnForPost } from '@store/burn';
 import { setSelectedPost } from '@store/post/actions';
+import { api as postApi, useLazyPostQuery } from '@store/post/posts.api';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
-import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletBalances } from '@store/wallet';
 import { Menu, MenuProps, Modal, Skeleton } from 'antd';
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
@@ -25,6 +24,9 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const [isShowQrCode, setIsShowQrCode] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const [queryPostTrigger, queryPostResult] = useLazyPostQuery();
+  const latestBurnForPost = useAppSelector(getLatestBurnForPost);
 
   const menuItems = [
     { label: 'All', key: 'all' },
@@ -53,6 +55,17 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   useEffect(() => {
     refetch();
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      if (latestBurnForPost) {
+        const post = await queryPostTrigger({ id: latestBurnForPost.burnForId });
+        dispatch(postApi.util.updateQueryData('Post', { id: latestBurnForPost.burnForId }, (draft) => {
+          Object.assign(draft, post);
+        }));
+      }
+    })();
+  }, [latestBurnForPost]);
 
   const showModal = () => {
     setIsModalVisible(true);
