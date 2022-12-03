@@ -9,6 +9,15 @@ import React, { useEffect, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import styled from 'styled-components';
+import moment from 'moment';
+import SearchBox from '@components/Common/SearchBox';
+import CreatePostCard from '@components/Common/CreatePostCard';
+import { Virtuoso } from 'react-virtuoso';
+import { useInfinitePostsByPageIdQuery } from '@store/post/useInfinitePostsByPageIdQuery';
+import PostListItem from '@components/Posts/PostListItem';
+import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
+import { GraphQLClient, gql } from 'graphql-request';
+import axios from 'axios';
 
 type PageDetailProps = {
   page: any;

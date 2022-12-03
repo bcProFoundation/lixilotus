@@ -199,7 +199,6 @@ export class PostResolver {
 
         uploadDetailIds = await Promise.all(promises);
       }
-
       const postToSave = {
         data: {
           content: content,
@@ -227,6 +226,33 @@ export class PostResolver {
       pubSub.publish('postCreated', { postCreated: createdPost });
       return createdPost;
     }
+
+    const postToSave = {
+      data: {
+        content: content,
+        postAccount: { connect: { id: account.id } },
+        uploadedCovers: {
+          connect:
+            uploadDetailIds.length > 0
+              ? uploadDetailIds.map((uploadDetail: any) => {
+                  return {
+                    id: uploadDetail
+                  };
+                })
+              : undefined
+        },
+        page: {
+          connect: pageId ? { id: pageId } : undefined
+        },
+        token: {
+          connect: tokenId ? { id: tokenId } : undefined
+        }
+      }
+    };
+    const createdPost = await this.prisma.post.create(postToSave);
+
+    pubSub.publish('postCreated', { postCreated: createdPost });
+    return createdPost;
   }
 
   @ResolveField('postAccount', () => Account)
@@ -263,5 +289,7 @@ export class PostResolver {
       return page;
     }
     return null;
+  }
+
   }
 }

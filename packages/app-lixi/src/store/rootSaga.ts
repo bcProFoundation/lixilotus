@@ -33,5 +33,6 @@ export default function* rootSaga() {
     countrySaga(),
     tokenSaga(),
     burnSaga()
+    TokenSaga()
   ]);
 }

@@ -19,7 +19,7 @@ export default {
   'special.cancel': 'Cancel',
   'special.copy': 'Copy',
 
-  /* 01.General */
+  /* 01.General */w
   'general.tokens': 'Tokens',
   'general.home': 'Home',
   'general.accounts': 'Accounts',
