@@ -12,6 +12,7 @@ import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import { getSelectedToken } from '@store/tokens';
 import { useInfinitePostsByTokenIdQuery } from '@store/post/useInfinitePostsByTokenIdQuery';
+import { formatBalance } from '@utils/cashMethods';
 
 const StyledTokensFeed = styled.div`
   .content {
@@ -126,7 +127,7 @@ const TokensFeed: React.FC = () => {
           <div className="score-ticker">
             <span className="burn-index">
               <FireOutlined />{' '}
-              {(parseInt(tokenInfo['lotusBurnDown']) + parseInt(tokenInfo['lotusBurnUp']) || 0) + ' XPI'}
+              {formatBalance(tokenInfo.lotusBurnDown + tokenInfo.lotusBurnUp) + ' XPI'}
             </span>
           </div>
         </div>

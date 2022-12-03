@@ -1,22 +1,28 @@
-import { Button, Input, InputRef, Modal, Space, Table, Form } from 'antd';
-import intl from 'react-intl-universal';
-import type { ColumnsType } from 'antd/es/table';
-import _ from 'lodash';
-import moment from 'moment';
-import Link from 'next/link';
-import React, { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { fetchAllTokens, selectTokens, postToken, selectToken } from '@store/tokens';
-import { showToast } from '@store/toast/actions';
-import { NavBarHeader, PathDirection } from '@components/Layout/MainLayout';
 import { FilterOutlined, FireOutlined, LeftOutlined, SearchOutlined, SyncOutlined } from '@ant-design/icons';
-import { useRouter } from 'next/router';
+import { Token } from '@bcpros/lixi-models';
+import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
+import { currency } from '@components/Common/Ticker';
+import { NavBarHeader, PathDirection } from '@components/Layout/MainLayout';
+import { WalletContext } from '@context/walletProvider';
+import useXPI from '@hooks/useXPI';
+import { burnForUpDownVote } from '@store/burn';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { showToast } from '@store/toast/actions';
+import { fetchAllTokens, postToken, selectToken, selectTokens } from '@store/tokens';
+import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
+import { formatBalance } from '@utils/cashMethods';
+import { Button, Form, Input, InputRef, Modal, Space, Table } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
 import { ColumnType } from 'antd/lib/table';
 import { FilterConfirmProps } from 'antd/lib/table/interface';
+import moment from 'moment';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React, { useEffect, useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
-import { Token } from '@bcpros/lixi-models';
-import { useForm, Controller } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
+import intl from 'react-intl-universal';
+import styled from 'styled-components';
 
 const StyledTokensListing = styled.div``;
 
@@ -44,6 +50,13 @@ const TokensListing: React.FC = () => {
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
   const tokenList = useAppSelector(selectTokens);
+
+  const Wallet = React.useContext(WalletContext);
+  const { XPI, chronik } = Wallet;
+  const { burnXpi } = useXPI();
+  const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
+  const walletPaths = useAppSelector(getAllWalletPaths);
+
   const {
     handleSubmit,
     formState: { errors },
@@ -139,9 +152,8 @@ const TokensListing: React.FC = () => {
     {
       title: 'Burn XPI',
       key: 'lotusBurn',
-      sorter: (a, b) =>
-        parseInt(a.lotusBurnUp) + parseInt(a.lotusBurnDown) - (parseInt(b.lotusBurnUp) + parseInt(b.lotusBurnDown)),
-      render: (_, record) => parseInt(record.lotusBurnUp) + parseInt(record.lotusBurnDown) || 0
+      sorter: (a, b) => a.lotusBurnUp + a.lotusBurnDown - (b.lotusBurnUp + b.lotusBurnDown),
+      render: (_, record) => formatBalance(record.lotusBurnUp + record.lotusBurnDown)
     },
     {
       title: 'Comments',
@@ -159,7 +171,7 @@ const TokensListing: React.FC = () => {
       // fixed: 'right',
       render: (_, record) => (
         <Space size="middle">
-          <Button type="primary" className="outline-btn" icon={<FireOutlined />} onClick={() => burnToken()}>
+          <Button type="primary" className="outline-btn" icon={<FireOutlined />} onClick={() => burnToken(record.id)}>
             Burn
           </Button>
         </Space>
@@ -187,14 +199,51 @@ const TokensListing: React.FC = () => {
     dispatch(selectToken(token));
   };
 
-  const burnToken = () => {
-    dispatch(
-      showToast('info', {
-        message: 'Info',
-        description: 'Feature is coming soon...',
-        duration: 3
-      })
-    );
+  const handleBurnForToken = async (isUpVote: boolean, tokenId: string) => {
+    try {
+      if (slpBalancesAndUtxos.nonSlpUtxos.length == 0) {
+        throw new Error('Insufficient funds');
+      }
+      const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
+      const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
+      const { fundingWif, hash160 } = currentWalletPath;
+      const burnType = isUpVote ? BurnType.Up : BurnType.Down;
+      const burnedBy = hash160;
+      const burnForId = tokenId;
+
+      const txHex = await burnXpi(
+        XPI,
+        walletPaths,
+        slpBalancesAndUtxos.nonSlpUtxos,
+        currency.defaultFee,
+        burnType,
+        BurnForType.Token,
+        burnedBy,
+        burnForId,
+        '1'
+      );
+
+      const burnCommand: BurnCommand = {
+        txHex,
+        burnType,
+        burnForType: BurnForType.Token,
+        burnedBy,
+        burnForId
+      };
+
+      dispatch(burnForUpDownVote(burnCommand));
+    } catch (e) {
+      dispatch(
+        showToast('error', {
+          message: intl.get('post.unableToBurn'),
+          duration: 5
+        })
+      );
+    }
+  };
+
+  const burnToken = (id: string) => {
+    handleBurnForToken(true, id);
   };
 
   const addTokenbyId = async data => {
