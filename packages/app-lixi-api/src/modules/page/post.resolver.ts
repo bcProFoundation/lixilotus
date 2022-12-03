@@ -182,49 +182,24 @@ export class PostResolver {
       imgShas = imgSources.map((sha: string) => {
         return /[^/]*$/.exec(sha)![0];
       });
-      //Query the imgShas from the database, if there is then add to UploadDetailsIds
-      if (imgShas.length > 0) {
-        const promises = imgShas.map(async (sha: string) => {
-          const upload = await this.prisma.upload.findFirst({
-            where: {
-              sha: sha
-            },
-            include: {
-              uploadDetail: true
-            }
-          });
+    }
 
-          return upload && upload?.uploadDetail?.id;
+    //Query the imgShas from the database, if there is then add to UploadDetailsIds
+    if (imgShas.length > 0) {
+      const promises = imgShas.map(async (sha: string) => {
+        const upload = await this.prisma.upload.findFirst({
+          where: {
+            sha: sha
+          },
+          include: {
+            uploadDetail: true
+          }
         });
 
-        uploadDetailIds = await Promise.all(promises);
-      }
-      const postToSave = {
-        data: {
-          content: content,
-          postAccount: { connect: { id: account.id } },
-          uploadedCovers: {
-            connect:
-              uploadDetailIds.length > 0
-                ? uploadDetailIds.map((uploadDetail: any) => {
-                    return {
-                      id: uploadDetail
-                    };
-                  })
-                : undefined
-          },
-          page: {
-            connect: pageId ? { id: pageId } : undefined
-          },
-          token: {
-            connect: tokenId ? { id: tokenId } : undefined
-          }
-        }
-      };
-      const createdPost = await this.prisma.post.create(postToSave);
+        return upload && upload?.uploadDetail?.id;
+      });
 
-      pubSub.publish('postCreated', { postCreated: createdPost });
-      return createdPost;
+      uploadDetailIds = await Promise.all(promises);
     }
 
     const postToSave = {
@@ -289,7 +264,5 @@ export class PostResolver {
       return page;
     }
     return null;
-  }
-
   }
 }

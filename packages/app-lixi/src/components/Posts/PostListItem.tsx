@@ -252,22 +252,6 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
     return post?.postAccount?.name;
   };
 
-  const showUsername = () => {
-    if (_.isNil(post.postAccount)) {
-      return 'Anonymous';
-    }
-
-    if (post.page) {
-      if (post?.postAccount?.id == post.pageAccount?.id) {
-        return post?.page?.name;
-      } else {
-        return post?.postAccount?.name;
-      }
-    }
-
-    return post?.postAccount?.name;
-  };
-
   return (
     <div>
       <List.Item
