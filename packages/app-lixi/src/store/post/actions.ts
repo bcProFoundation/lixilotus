@@ -1,4 +1,4 @@
-import { CreatePostCommand, EditPostCommand } from '@bcpros/lixi-models/src';
+import { CreatePostCommand, EditPostCommand } from '@bcpros/lixi-models';
 import { createAction } from '@reduxjs/toolkit';
 import { Post } from 'src/generated/types.generated';
 

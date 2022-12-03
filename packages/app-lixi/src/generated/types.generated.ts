@@ -134,6 +134,8 @@ export type Post = {
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
   id: Scalars['ID'];
+  lotusBurnDown: Scalars['Float'];
+  lotusBurnUp: Scalars['Float'];
   page?: Maybe<Page>;
   pageAccount: Account;
   pageAccountId: Scalars['Int'];

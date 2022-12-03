@@ -6,22 +6,13 @@ import type { ColumnsType } from 'antd/es/table';
 import _ from 'lodash';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { useInfinitePostsByTokenIdQuery } from '@store/post/useInfinitePostsByTokenIdQuery';
 import { Virtuoso } from 'react-virtuoso';
 import PostListItem from '@components/Posts/PostListItem';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import { getSelectedToken } from '@store/tokens';
-
-interface DataType {
-  key: string;
-  name: string;
-  ticker: string;
-  burn: number;
-  comments: string;
-  created: string;
-  tags: string[];
-}
+import { useInfinitePostsByTokenIdQuery } from '@store/post/useInfinitePostsByTokenIdQuery';
+import { formatBalance } from '@utils/cashMethods';
 
 const StyledTokensFeed = styled.div`
   .content {
@@ -135,12 +126,8 @@ const TokensFeed: React.FC = () => {
           <p className="title-name">{tokenInfo['name']}</p>
           <div className="score-ticker">
             <span className="burn-index">
-              <FireOutlined />{' '}
-              {(parseInt(tokenInfo['lotusBurnDown']) + parseInt(tokenInfo['lotusBurnUp']) || 0) + ' XPI'}
+              <FireOutlined /> {formatBalance(tokenInfo.lotusBurnDown + tokenInfo.lotusBurnUp) + ' XPI'}
             </span>
-            {/* <span className="comments-index">
-              <CommentOutlined /> 0 comments
-            </span> */}
           </div>
         </div>
       </BannerTicker>

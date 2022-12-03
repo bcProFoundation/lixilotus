@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
 import { IsOptional } from 'class-validator';
 
 import { Account } from '../account';
@@ -33,6 +33,12 @@ export class Post {
   @IsOptional()
   @Field(() => String, { nullable: true })
   pageId?: Nullable<string>;
+
+  @Field(() => Float)
+  lotusBurnUp: number;
+
+  @Field(() => Float)
+  lotusBurnDown: number;
 
   @Field(() => Date, {
     description: 'Identifies the date and time when the object was created.'

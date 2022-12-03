@@ -8,8 +8,8 @@ export class TokenDto {
   totalBurned: string;
   totalMinted: string;
   initialTokenQuantity: string;
-  lotusBurnUp?: string;
-  lotusBurnDown?: string;
+  lotusBurnUp: number;
+  lotusBurnDown: number;
   decimals: number;
   comments?: Nullable<Date>;
   createdDate: Date;

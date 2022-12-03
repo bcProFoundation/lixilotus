@@ -1,8 +1,3 @@
-import { Modal } from 'antd';
-import { push } from 'connected-next-router';
-import * as _ from 'lodash';
-import * as Effects from 'redux-saga/effects';
-import intl from 'react-intl-universal';
 import {
   Account,
   AccountDto,
@@ -12,25 +7,41 @@ import {
   PostLixiResponseDto,
   RegisterLixiPackCommand
 } from '@bcpros/lixi-models';
+import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
 import {
+  ArchiveLixiCommand,
   CreateLixiCommand,
+  DownloadExportedLixiCommand,
   GenerateLixiCommand,
   Lixi,
   LixiDto,
-  ArchiveLixiCommand,
   RenameLixiCommand,
   UnarchiveLixiCommand,
-  WithdrawLixiCommand,
-  DownloadExportedLixiCommand
+  WithdrawLixiCommand
 } from '@bcpros/lixi-models/lib/lixi';
 import { all, fork, put, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
+import { removeUpload } from '@store/account/actions';
 import { getAccountById } from '@store/account/selectors';
 import { generateRandomBase58Str } from '@utils/encryptionMethods';
+import { Modal } from 'antd';
+import { push } from 'connected-next-router';
+import { saveAs } from 'file-saver';
+import * as _ from 'lodash';
+import moment from 'moment';
+import intl from 'react-intl-universal';
+import * as Effects from 'redux-saga/effects';
+import { select } from 'redux-saga/effects';
 import claimApi from '../claim/api';
 import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
 import {
+  archiveLixi,
+  archiveLixiFailure,
+  archiveLixiSuccess,
+  downloadExportedLixi,
+  downloadExportedLixiFailure,
+  downloadExportedLixiSuccess,
   exportSubLixies,
   exportSubLixiesFailure,
   exportSubLixiesSuccess,
@@ -44,15 +55,18 @@ import {
   getLixi,
   getLixiFailure,
   getLixiSuccess,
-  archiveLixi,
-  archiveLixiFailure,
-  archiveLixiSuccess,
   postLixi,
   postLixiFailure,
   postLixiSuccess,
   refreshLixi,
   refreshLixiFailure,
+  refreshLixiSilent,
+  refreshLixiSilentFailure,
+  refreshLixiSilentSuccess,
   refreshLixiSuccess,
+  registerLixiPack,
+  registerLixiPackFailure,
+  registerLixiPackSuccess,
   renameLixi,
   renameLixiFailure,
   renameLixiSuccess,
@@ -65,25 +79,10 @@ import {
   unarchiveLixiSuccess,
   withdrawLixi,
   withdrawLixiFailure,
-  withdrawLixiSuccess,
-  downloadExportedLixi,
-  downloadExportedLixiFailure,
-  downloadExportedLixiSuccess,
-  refreshLixiSilentSuccess,
-  refreshLixiSilentFailure,
-  registerLixiPack,
-  registerLixiPackSuccess,
-  registerLixiPackFailure
+  withdrawLixiSuccess
 } from './actions';
 import lixiApi from './api';
 import { getLixiById } from './selectors';
-import { select } from 'redux-saga/effects';
-import { saveAs } from 'file-saver';
-import moment from 'moment';
-import { refreshLixiSilent } from './actions';
-import { refreshLixiListSilent } from '@store/account/actions';
-import { removeUpload } from '@store/account/actions';
-import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
 
 const call: any = Effects.call;
 /**

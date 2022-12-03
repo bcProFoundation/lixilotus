@@ -7,6 +7,7 @@ import { loadingReducer } from './loading/reducer';
 import { errorReducer } from './error/reducer';
 import { toastReducer } from './toast/reducer';
 import { actionReducer } from './action/reducer';
+import { burnReducer } from './burn/reducer';
 import { accountReducer } from './account/reducer';
 import { envelopeReducer } from './envelope/reducer';
 import { lixiReducer } from './lixi/reducer';
@@ -23,7 +24,8 @@ import { PageState } from './page/state';
 import { pageReducer } from './page/reducer';
 import { countryReducer, stateReducer } from './country/reducer';
 import { CountriesState, StatesState } from './country/state';
-import { api as pagesApi } from './page/pages.generated';
+import { api as pagesApi } from './page/pages.api';
+import { api as postsApi } from './post/posts.api';
 import { LocalUserAccountsState } from './localAccount/state';
 import { localAccountsAdapter, localUserAccountReducer } from './localAccount/reducer';
 import { postReducer } from './post/reducer';
@@ -114,6 +116,7 @@ export const serverReducer = combineReducers({
   posts: postReducer,
   countries: countryReducer,
   states: stateReducer,
+  burn: burnReducer,
   // This is use for useReduxEffect
   // Should be always at the end
   action: actionReducer
@@ -138,7 +141,9 @@ export const appReducer = combineReducers({
   error: errorReducer,
   countries: persistReducer(countryPersistConfig, countryReducer),
   states: persistReducer(statePersistConfig, stateReducer),
+  burn: burnReducer,
   [pagesApi.reducerPath]: pagesApi.reducer,
+  [postsApi.reducerPath]: postsApi.reducer,
   // This is use for useReduxEffect
   // Should be always at the end
   action: actionReducer

@@ -14,7 +14,6 @@ import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
 import { Body, Controller, Get, Headers, HttpException, HttpStatus, Inject, Logger, Param, Post } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Info } from '@nestjs/graphql';
 import axios from 'axios';
 import BigNumber from 'bignumber.js';
 import geoip from 'geoip-country';
