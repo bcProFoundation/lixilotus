@@ -92,9 +92,11 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
         };
       }
     }),
-    MeiliSearchModule.forRoot({
-      host: 'http://localhost:7700',
-      apiKey: process.env.MEILISEARCH_MASTER_KEY
+    MeiliSearchModule.forRootAsync({
+      useFactory: () => ({
+        host: process.env.MEILISEARCH_HOST!,
+        apiKey: process.env.MEILISEARCH_MASTER_KEY
+      })
     }),
     WalletModule,
     AuthModule,

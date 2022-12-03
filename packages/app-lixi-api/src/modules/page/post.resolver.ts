@@ -28,7 +28,7 @@ import {
   UseGuards
 } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
-
+import { MeiliService } from './meili.service';
 import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -42,6 +42,7 @@ export class PostResolver {
   constructor(
     private prisma: PrismaService,
     @InjectMeiliSearch() private readonly meiliSearch: MeiliSearch,
+    private meiliService: MeiliService,
     @I18n() private i18n: I18nService
   ) {}
 
@@ -123,41 +124,41 @@ export class PostResolver {
     return result;
   }
 
-  @Query(() => PostConnection)
-  async searchPosts(
-    @Args() { first, skip }: PaginationArgs,
-    @Args({ name: 'query', type: () => String, nullable: true })
-    query: string,
-    @Args({
-      name: 'orderBy',
-      type: () => PostOrder,
-      nullable: true
-    })
-    orderBy: PostOrder
-  ) {
-    try {
-      const postsIndex = await this.meiliSearch.index('posts').getRawInfo();
-      if (!postsIndex) {
-        const postNotExist = await this.i18n.t('post.messages.postNotExist');
-        throw Error(postNotExist);
-      }
+  // @Query(() => PostConnection)
+  // async searchPosts(
+  //   @Args() { first, skip }: PaginationArgs,
+  //   @Args({ name: 'query', type: () => String, nullable: true })
+  //   query: string,
+  //   @Args({
+  //     name: 'orderBy',
+  //     type: () => PostOrder,
+  //     nullable: true
+  //   })
+  //   orderBy: PostOrder
+  // ) {
+  //   try {
+  //     const postsIndex = await this.meiliSearch.index('posts').getRawInfo();
+  //     if (!postsIndex) {
+  //       const postNotExist = await this.i18n.t('post.messages.postNotExist');
+  //       throw Error(postNotExist);
+  //     }
 
-      const postsDocsList = await this.meiliSearch.index('posts').search(query);
-      console.log('postsDocsList: ', postsDocsList);
+  //     const postsDocsList = await this.meiliSearch.index('posts').search(query);
+  //     console.log('postsDocsList: ', postsDocsList);
 
-      const postsDocsIDs = postsDocsList.hits.map(post => post.id);
-      const result = await this.prisma.post.findMany({
-        where: {
-          id: { in: postsDocsIDs }
-        }
-      });
-      return result;
-    } catch (err) {
-      if (err instanceof VError) {
-        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
-      }
-    }
-  }
+  //     const postsDocsIDs = postsDocsList.hits.map(post => post.id);
+  //     const result = await this.prisma.post.findMany({
+  //       where: {
+  //         id: { in: postsDocsIDs }
+  //       }
+  //     });
+  //     return result;
+  //   } catch (err) {
+  //     if (err instanceof VError) {
+  //       throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+  //     }
+  //   }
+  // }
 
   @UseGuards(GqlJwtAuthGuard)
   @Mutation(() => Post)
@@ -229,14 +230,35 @@ export class PostResolver {
         }
       }
     };
-    const createdPost = await this.prisma.post.create(postToSave);
+    const createdPost = await this.prisma.post.create({
+      ...postToSave,
+      include: {
+        page: {
+          select: {
+            address: true,
+            name: true
+          }
+        },
+        token: {
+          select: {
+            name: true
+          }
+        },
+        postAccount: {
+          select: {
+            name: true,
+            address: true
+          }
+        }
+      }
+    });
 
-    const postsIndex = await this.meiliSearch.index('posts').getRawInfo();
-    if (!postsIndex) {
-      await this.meiliSearch.createIndex('posts', { primaryKey: 'id' });
-    }
+    await this.meiliService.add(
+      'posts',
+      _.omit(createdPost, ['postAccountId', 'pageId', 'tokenId', 'id']),
+      createdPost.id
+    );
 
-    await this.meiliSearch.index('posts').addDocuments([{ createdPost }]);
     pubSub.publish('postCreated', { postCreated: createdPost });
     return createdPost;
   }

@@ -177,7 +177,6 @@ export type Query = {
   allPostsByPageId: PostConnection;
   page: Page;
   post: Post;
-  searchPosts: PostConnection;
 };
 
 export type QueryAllPagesArgs = {
@@ -216,16 +215,6 @@ export type QueryPageArgs = {
 
 export type QueryPostArgs = {
   id: Scalars['String'];
-};
-
-export type QuerySearchPostsArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<PostOrder>;
-  query?: InputMaybe<Scalars['String']>;
-  skip?: InputMaybe<Scalars['Int']>;
 };
 
 export type Subscription = {

@@ -1,0 +1,41 @@
+import { Injectable, Logger } from '@nestjs/common';
+import { I18n, I18nService } from 'nestjs-i18n';
+import { InjectMeiliSearch } from 'nestjs-meilisearch';
+import { MeiliSearch, EnqueuedTask, Document } from 'meilisearch';
+
+@Injectable()
+export class MeiliService {
+  private logger: Logger = new Logger(MeiliService.name);
+
+  constructor(@I18n() private i18n: I18nService, @InjectMeiliSearch() private readonly meiliSearch: MeiliSearch) {}
+
+  /**
+   * Add document to the index
+   * @param index The specific index
+   * @param document The document you want to add
+   * @param documentId The document id
+   */
+  public async add(index: string, document: any, documentId: string) {
+    await this.meiliSearch
+      .index(index)
+      .addDocuments([{ ...document, primaryId: documentId }], { primaryKey: 'primaryId' });
+  }
+
+  /**
+   * Update document at the specify index
+   * @param index The specific index
+   * @param document The document you want to update
+   */
+  public async update(index: string, documents: Array<Document<any>>): Promise<EnqueuedTask> {
+    return await this.meiliSearch.index(index).updateDocuments(documents);
+  }
+
+  /**
+   * Delete document at the specify index
+   * @param index The specific index
+   * @param documentId The document id you want to delete
+   */
+  public async delete(index: string, documentId: string): Promise<EnqueuedTask> {
+    return await this.meiliSearch.index(index).deleteDocument(documentId);
+  }
+}

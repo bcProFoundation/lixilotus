@@ -29,17 +29,17 @@ query Posts(
       ...PageInfoFields
     }
   },
-  searchPosts(query: $query, first: $first, skip: $skip) {
-    totalCount
-    edges {
-      node {
-        ...PostFields
-      }
-    }
-    pageInfo {
-    ...PageInfoFields
-    }
-  }
+  # searchPosts(query: $query, first: $first, skip: $skip) {
+  #   totalCount
+  #   edges {
+  #     node {
+  #       ...PostFields
+  #     }
+  #   }
+  #   pageInfo {
+  #   ...PageInfoFields
+  #   }
+  # }
 }
 
 query PostsByPageId(
