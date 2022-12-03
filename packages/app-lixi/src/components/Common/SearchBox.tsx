@@ -8,6 +8,7 @@ const SearchBox = () => {
     display: flex;
     justify-content: space-between;
     padding: 1rem;
+    margin: 2px;
     background: #fff;
     border-radius: 20px;
     box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);

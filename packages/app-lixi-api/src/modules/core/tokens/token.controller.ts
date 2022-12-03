@@ -1,20 +1,23 @@
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import { Body, Controller, Get, HttpException, HttpStatus, Inject, Param, Post } from '@nestjs/common';
-import { CreateTokenCommand, TokenDto } from '@bcpros/lixi-models';
-
+import { TokenDto } from '@bcpros/lixi-models';
 import * as _ from 'lodash';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { VError } from 'verror';
 import { PrismaService } from '../../prisma/prisma.service';
 import { WalletService } from '../../wallet/wallet.service';
 import { Token as TokenDb } from '@prisma/client';
+import { InjectChronikClient } from 'src/common/modules/chronik/chronik.decorators';
+import { ChronikClient } from 'chronik-client';
+import moment from 'moment';
 
 @Controller('tokens')
 export class TokenController {
   constructor(
     private prisma: PrismaService,
     private readonly walletService: WalletService,
-    @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet
+    @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
+    @InjectChronikClient('xec') private chronik: ChronikClient
   ) {}
 
   @Get(':id')
@@ -59,21 +62,33 @@ export class TokenController {
   }
 
   @Post()
-  async createToken(@Body() command: CreateTokenCommand, @I18n() i18n: I18nContext): Promise<TokenDto> {
-    if (command) {
+  async createToken(@Body() tokenId: string, @I18n() i18n: I18nContext): Promise<TokenDto> {
+    if (tokenId) {
       try {
+        const tokenExist = await this.prisma.token.findUnique({
+          where: {
+            tokenId: tokenId
+          }
+        });
+
+        if (tokenExist) {
+          throw new VError('Token already exist');
+        }
+
+        const token = await this.chronik.token(tokenId);
+
         const tokenToInsert = {
-          tokenId: command.tokenId,
-          name: command.name,
-          ticker: command.ticker,
-          decimals: command.decimals,
-          initialTokenQuantity: command.initialTokenQuantity,
-          tokenType: command.tokenType,
-          tokenDocumentUrl: command.tokenDocumentUrl,
-          totalBurned: command.totalBurned,
-          totalMinted: command.totalMinted,
-          createdDate: command?.createdDate || new Date(),
-          comments: command?.comments ?? new Date()
+          tokenId: tokenId,
+          name: token?.slpTxData?.genesisInfo?.tokenName,
+          ticker: token?.slpTxData?.genesisInfo?.tokenTicker,
+          decimals: token?.slpTxData?.genesisInfo?.decimals,
+          initialTokenQuantity: token?.initialTokenQuantity,
+          tokenType: token?.slpTxData?.slpMeta?.tokenType,
+          tokenDocumentUrl: token?.slpTxData?.genesisInfo?.tokenDocumentUrl,
+          totalBurned: token?.tokenStats?.totalBurned,
+          totalMinted: token?.tokenStats?.totalMinted,
+          createdDate: moment(token?.block?.timestamp, 'X').toDate(),
+          comments: moment().toDate()
         } as TokenDb;
 
         const createdToken = await this.prisma.token.create({

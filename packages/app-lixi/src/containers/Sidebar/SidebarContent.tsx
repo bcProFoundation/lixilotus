@@ -81,9 +81,9 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
           <ItemAccess
             icon={TagOutlined}
             text={intl.get('general.tokens')}
-            active={selectedKey.includes('/tokens')}
+            active={selectedKey.includes('/token')}
             key="tokens-feed"
-            href={'/tokens/listing'}
+            href={'/token/listing'}
           />
           <ItemAccess
             icon={WalletOutlined}

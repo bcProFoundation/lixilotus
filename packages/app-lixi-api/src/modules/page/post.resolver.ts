@@ -44,7 +44,7 @@ export class PostResolver {
     @InjectMeiliSearch() private readonly meiliSearch: MeiliSearch,
     private meiliService: MeiliService,
     @I18n() private i18n: I18nService
-  ) {}
+  ) { }
 
   @Subscription(() => Post)
   postCreated() {
@@ -75,7 +75,14 @@ export class PostResolver {
         this.prisma.post.findMany({
           include: { postAccount: true },
           where: {
-            page: null
+            AND: [
+              {
+                page: null
+              },
+              {
+                token: null
+              }
+            ]
           },
           orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
           ...args
@@ -83,7 +90,14 @@ export class PostResolver {
       () =>
         this.prisma.post.count({
           where: {
-            page: null
+            AND: [
+              {
+                page: null
+              },
+              {
+                token: null
+              }
+            ]
           }
         }),
       { first, last, before, after }
@@ -159,6 +173,38 @@ export class PostResolver {
   //     }
   //   }
   // }
+  @Query(() => PostConnection)
+  async allPostsByTokenId(
+    @Args() { after, before, first, last }: PaginationArgs,
+    @Args({ name: 'id', type: () => String, nullable: true })
+    id: string,
+    @Args({
+      name: 'orderBy',
+      type: () => PostOrder,
+      nullable: true
+    })
+    orderBy: PostOrder
+  ) {
+    const result = await findManyCursorConnection(
+      args =>
+        this.prisma.post.findMany({
+          include: { postAccount: true },
+          where: {
+            tokenId: id
+          },
+          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+          ...args
+        }),
+      () =>
+        this.prisma.post.count({
+          where: {
+            tokenId: id
+          }
+        }),
+      { first, last, before, after }
+    );
+    return result;
+  }
 
   @UseGuards(GqlJwtAuthGuard)
   @Mutation(() => Post)
@@ -168,7 +214,7 @@ export class PostResolver {
       throw new Error(couldNotFindAccount);
     }
 
-    const { uploadCovers, pageId, content } = data;
+    const { uploadCovers, pageId, content, tokenId } = data;
 
     //Because of the current implementation of editor, the following code will
     //extract img tag fromt the content and query it from database
@@ -219,14 +265,17 @@ export class PostResolver {
           connect:
             uploadDetailIds.length > 0
               ? uploadDetailIds.map((uploadDetail: any) => {
-                  return {
-                    id: uploadDetail
-                  };
-                })
+                return {
+                  id: uploadDetail
+                };
+              })
               : undefined
         },
         page: {
           connect: pageId ? { id: pageId } : undefined
+        },
+        token: {
+          connect: tokenId ? { id: tokenId } : undefined
         }
       }
     };

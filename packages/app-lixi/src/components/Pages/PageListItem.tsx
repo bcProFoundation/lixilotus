@@ -73,7 +73,6 @@ const Content = styled.div`
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
-    white-space: break-spaces;
     text-overflow: ellipsis;
     overflow: hidden;
   }
@@ -215,7 +214,7 @@ const PageListItem = ({ index, item }) => {
           display: 'flex',
           flexDirection: 'column',
           height: 'fit-content !important',
-          marginBottom: '1rem',
+          margin: '2px 2px 1rem 2px',
           borderRadius: '24px',
           boxShadow: '0px 2px 10px rgb(0 0 0 / 5%)',
           background: 'white',

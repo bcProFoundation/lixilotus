@@ -38,6 +38,7 @@ export type CreatePostInput = {
   content: Scalars['String'];
   pageAccountId?: InputMaybe<Scalars['Int']>;
   pageId?: InputMaybe<Scalars['String']>;
+  tokenId?: InputMaybe<Scalars['String']>;
   uploadCovers?: InputMaybe<Array<Scalars['String']>>;
 };
 
@@ -175,6 +176,7 @@ export type Query = {
   allPages: PageConnection;
   allPosts: PostConnection;
   allPostsByPageId: PostConnection;
+  allPostsByTokenId: PostConnection;
   page: Page;
   post: Post;
 };
@@ -200,6 +202,16 @@ export type QueryAllPostsArgs = {
 };
 
 export type QueryAllPostsByPageIdArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  id?: InputMaybe<Scalars['String']>;
+  last?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<PostOrder>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryAllPostsByTokenIdArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
