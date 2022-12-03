@@ -259,13 +259,6 @@ const SidebarShortcut = () => {
             href={'/token/listing'}
           />
           <ItemAccess
-            icon={TagOutlined}
-            text={intl.get('general.tokens')}
-            active={selectedKey.includes('/tokens')}
-            key="tokens-feed"
-            href={'/tokens/listing'}
-          />
-          <ItemAccess
             icon={WalletOutlined}
             text={intl.get('general.accounts')}
             active={selectedKey === '/wallet'}

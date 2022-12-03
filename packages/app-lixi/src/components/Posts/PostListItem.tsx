@@ -162,7 +162,7 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
     dispatch(push(`/post/${id}`));
   };
 
-  const onLixiClick = item => { };
+  const onLixiClick = item => {};
 
   const handleSubmit = (values: any) => {
     console.log(values);
@@ -311,7 +311,7 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
               text="Share"
               key={`list-vertical-share-o-${item.id}`}
               dataItem={item}
-              onClickIcon={() => { }}
+              onClickIcon={() => {}}
             />
           </GroupIconText>
 

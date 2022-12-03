@@ -126,8 +126,7 @@ const TokensFeed: React.FC = () => {
           <p className="title-name">{tokenInfo['name']}</p>
           <div className="score-ticker">
             <span className="burn-index">
-              <FireOutlined />{' '}
-              {formatBalance(tokenInfo.lotusBurnDown + tokenInfo.lotusBurnUp) + ' XPI'}
+              <FireOutlined /> {formatBalance(tokenInfo.lotusBurnDown + tokenInfo.lotusBurnUp) + ' XPI'}
             </span>
           </div>
         </div>

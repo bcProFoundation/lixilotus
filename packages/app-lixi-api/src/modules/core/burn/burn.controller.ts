@@ -83,6 +83,32 @@ export class BurnController {
               lotusBurnUp
             }
           });
+        } else if (command.burnForType === BurnForType.Token) {
+          const token = await this.prisma.token.findFirst({
+            where: {
+              id: command.burnForId
+            }
+          });
+
+          let lotusBurnUp = token?.lotusBurnUp ?? 0;
+          let lotusBurnDown = token?.lotusBurnDown ?? 0;
+          const xpiValue = value;
+
+          if (command.burnType == BurnType.Up) {
+            lotusBurnUp = lotusBurnUp + xpiValue;
+          } else {
+            lotusBurnDown = lotusBurnDown + xpiValue;
+          }
+
+          await this.prisma.token.update({
+            where: {
+              id: command.burnForId
+            },
+            data: {
+              lotusBurnDown,
+              lotusBurnUp
+            }
+          });
         }
       }
 
