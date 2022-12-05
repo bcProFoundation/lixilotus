@@ -176,6 +176,7 @@ export type Query = {
   allPages: PageConnection;
   allPosts: PostConnection;
   allPostsByPageId: PostConnection;
+  allPostsBySearch: PostConnection;
   allPostsByTokenId: PostConnection;
   page: Page;
   post: Post;
@@ -208,6 +209,16 @@ export type QueryAllPostsByPageIdArgs = {
   id?: InputMaybe<Scalars['String']>;
   last?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<PostOrder>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryAllPostsBySearchArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<PostOrder>;
+  query?: InputMaybe<Scalars['String']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
 

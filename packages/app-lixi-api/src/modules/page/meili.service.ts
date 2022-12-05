@@ -1,13 +1,20 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { I18n, I18nService } from 'nestjs-i18n';
 import { InjectMeiliSearch } from 'nestjs-meilisearch';
 import { MeiliSearch, EnqueuedTask, Document } from 'meilisearch';
+import { POSTS } from './constants/meili.constants';
 
 @Injectable()
-export class MeiliService {
+export class MeiliService implements OnModuleInit {
   private logger: Logger = new Logger(MeiliService.name);
 
   constructor(@I18n() private i18n: I18nService, @InjectMeiliSearch() private readonly meiliSearch: MeiliSearch) {}
+
+  async onModuleInit() {
+    await this.meiliSearch.index(POSTS).updateSettings({
+      searchableAttributes: ['content', 'postAccount.name']
+    });
+  }
 
   /**
    * Add document to the index
@@ -21,7 +28,7 @@ export class MeiliService {
       .addDocuments([{ ...document, primaryId: documentId }], { primaryKey: 'primaryId' });
   }
 
-  /**
+  /**P
    * Update document at the specify index
    * @param index The specific index
    * @param document The document you want to update
@@ -37,5 +44,13 @@ export class MeiliService {
    */
   public async delete(index: string, documentId: string): Promise<EnqueuedTask> {
     return await this.meiliSearch.index(index).deleteDocument(documentId);
+  }
+
+  public async searchByQueryHits(index: string, query: string) {
+    return (await this.meiliSearch.index(index).search(query)).hits;
+  }
+
+  public async searchByQueryEstimatedTotalHits(index: string, query: string) {
+    return (await this.meiliSearch.index(index).search(query)).estimatedTotalHits;
   }
 }

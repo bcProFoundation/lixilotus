@@ -3,7 +3,7 @@ import CreatePostCard from '@components/Common/CreatePostCard';
 import SearchBox from '@components/Common/SearchBox';
 import { getSelectedAccount } from '@store/account/selectors';
 import { setSelectedPost } from '@store/post/action';
-import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
+import { useInfinitePostsBySearchQuery } from '@store/post/useInfinitePostsBySearchQuery';
 import { WalletContext } from '@context/index';
 import { Menu, MenuProps, Modal } from 'antd';
 import _ from 'lodash';
@@ -42,13 +42,10 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     }
   ];
 
-  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsQuery(
+  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsBySearchQuery(
     {
       first: 10,
-      orderBy: {
-        direction: OrderDirection.Desc,
-        field: PostOrderField.UpdatedAt
-      }
+      query: 'post'
     },
     false
   );

@@ -31,6 +31,7 @@ import { Args, Mutation, Parent, Query, ResolveField, Resolver, Subscription } f
 import { MeiliService } from './meili.service';
 import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
 import { PrismaService } from '../prisma/prisma.service';
+import { POSTS } from './constants/meili.constants';
 
 const pubSub = new PubSub();
 
@@ -39,12 +40,7 @@ const pubSub = new PubSub();
 export class PostResolver {
   private logger: Logger = new Logger(this.constructor.name);
 
-  constructor(
-    private prisma: PrismaService,
-    @InjectMeiliSearch() private readonly meiliSearch: MeiliSearch,
-    private meiliService: MeiliService,
-    @I18n() private i18n: I18nService
-  ) { }
+  constructor(private prisma: PrismaService, private meiliService: MeiliService, @I18n() private i18n: I18nService) {}
 
   @Subscription(() => Post)
   postCreated() {
@@ -138,41 +134,28 @@ export class PostResolver {
     return result;
   }
 
-  // @Query(() => PostConnection)
-  // async searchPosts(
-  //   @Args() { first, skip }: PaginationArgs,
-  //   @Args({ name: 'query', type: () => String, nullable: true })
-  //   query: string,
-  //   @Args({
-  //     name: 'orderBy',
-  //     type: () => PostOrder,
-  //     nullable: true
-  //   })
-  //   orderBy: PostOrder
-  // ) {
-  //   try {
-  //     const postsIndex = await this.meiliSearch.index('posts').getRawInfo();
-  //     if (!postsIndex) {
-  //       const postNotExist = await this.i18n.t('post.messages.postNotExist');
-  //       throw Error(postNotExist);
-  //     }
+  @Query(() => PostConnection)
+  async allPostsBySearch(
+    @Args() { after, before, first, last }: PaginationArgs,
+    @Args({ name: 'query', type: () => String, nullable: true })
+    query: string,
+    @Args({
+      name: 'orderBy',
+      type: () => PostOrder,
+      nullable: true
+    })
+    orderBy: PostOrder
+  ) {
+    // const {estimatedTotalHits, } = this.meiliService.searchByQuery(POSTS, query);
+    const result = await findManyCursorConnection(
+      args => this.meiliService.searchByQueryHits(POSTS, query),
+      () => this.meiliService.searchByQueryEstimatedTotalHits(POSTS, query),
+      { first, last, before, after }
+    );
 
-  //     const postsDocsList = await this.meiliSearch.index('posts').search(query);
-  //     console.log('postsDocsList: ', postsDocsList);
+    return result;
+  }
 
-  //     const postsDocsIDs = postsDocsList.hits.map(post => post.id);
-  //     const result = await this.prisma.post.findMany({
-  //       where: {
-  //         id: { in: postsDocsIDs }
-  //       }
-  //     });
-  //     return result;
-  //   } catch (err) {
-  //     if (err instanceof VError) {
-  //       throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
-  //     }
-  //   }
-  // }
   @Query(() => PostConnection)
   async allPostsByTokenId(
     @Args() { after, before, first, last }: PaginationArgs,
@@ -265,10 +248,10 @@ export class PostResolver {
           connect:
             uploadDetailIds.length > 0
               ? uploadDetailIds.map((uploadDetail: any) => {
-                return {
-                  id: uploadDetail
-                };
-              })
+                  return {
+                    id: uploadDetail
+                  };
+                })
               : undefined
         },
         page: {
@@ -303,7 +286,7 @@ export class PostResolver {
     });
 
     await this.meiliService.add(
-      'posts',
+      POSTS,
       _.omit(createdPost, ['postAccountId', 'pageId', 'tokenId', 'id']),
       createdPost.id
     );
