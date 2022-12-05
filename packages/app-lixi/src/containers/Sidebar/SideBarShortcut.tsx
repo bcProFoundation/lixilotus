@@ -160,7 +160,8 @@ const CointainerWallet = styled.div`
 `;
 
 const ShortcutSideBar = styled(Sider)`
-  height: 60vh;
+  height: 100vh;
+  overflow: auto;
   left: 2rem;
   max-width: inherit !important;
   background: var(--bg-color-light-theme);

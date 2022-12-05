@@ -57,7 +57,12 @@ const Editor = props => {
         </Plate>
       </PlateProvider>
 
-      <Button type="primary" className="outline-btn" onClick={() => handleCreateClick()} style={{ marginTop: '70px' }}>
+      <Button
+        type="primary"
+        className=""
+        onClick={() => handleCreateClick()}
+        style={{ float: 'right', marginTop: '70px' }}
+      >
         Create Post
       </Button>
     </>
