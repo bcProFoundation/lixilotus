@@ -189,11 +189,6 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
     setShowMore(false);
   };
 
-  const onLixiClick = item => {
-    // setIsShowQrCode(true);
-    // showModal();
-  };
-
   const onLixiClick = item => {};
 
   const handleSubmit = (values: any) => {
