@@ -10,6 +10,7 @@ export class TokenDto {
   initialTokenQuantity: string;
   lotusBurnUp: number;
   lotusBurnDown: number;
+  lotusBurnScore: number;
   decimals: number;
   comments?: Nullable<Date>;
   createdDate: Date;

@@ -47,7 +47,6 @@ export type Mutation = {
   createPage: Page;
   createPost: Post;
   updatePage: Page;
-  updatePost: Post;
 };
 
 export type MutationCreatePageArgs = {
@@ -60,10 +59,6 @@ export type MutationCreatePostArgs = {
 
 export type MutationUpdatePageArgs = {
   data: UpdatePageInput;
-};
-
-export type MutationUpdatePostArgs = {
-  data: UpdatePostInput;
 };
 
 /** Possible directions in which to order a list of items when provided an `orderBy` argument. */
@@ -82,6 +77,9 @@ export type Page = {
   createdAt: Scalars['DateTime'];
   description: Scalars['String'];
   id: Scalars['ID'];
+  lotusBurnDown: Scalars['Float'];
+  lotusBurnScore: Scalars['Float'];
+  lotusBurnUp: Scalars['Float'];
   name: Scalars['String'];
   pageAccountId: Scalars['Int'];
   parent?: Maybe<Page>;
@@ -123,6 +121,7 @@ export type PageOrder = {
 export enum PageOrderField {
   CreatedAt = 'createdAt',
   Id = 'id',
+  LotusBurnScore = 'lotusBurnScore',
   Name = 'name',
   Title = 'title',
   UpdatedAt = 'updatedAt'
@@ -135,6 +134,7 @@ export type Post = {
   createdAt: Scalars['DateTime'];
   id: Scalars['ID'];
   lotusBurnDown: Scalars['Float'];
+  lotusBurnScore: Scalars['Float'];
   lotusBurnUp: Scalars['Float'];
   page?: Maybe<Page>;
   pageAccount: Account;
@@ -170,6 +170,7 @@ export enum PostOrderField {
   Content = 'content',
   CreatedAt = 'createdAt',
   Id = 'id',
+  LotusBurnScore = 'lotusBurnScore',
   UpdatedAt = 'updatedAt'
 }
 
@@ -246,8 +247,9 @@ export type Token = {
   decimals: Scalars['Int'];
   id: Scalars['ID'];
   initialTokenQuantity?: Maybe<Scalars['String']>;
-  lotusBurnDown?: Maybe<Scalars['String']>;
-  lotusBurnUp?: Maybe<Scalars['String']>;
+  lotusBurnDown: Scalars['Float'];
+  lotusBurnScore: Scalars['Float'];
+  lotusBurnUp: Scalars['Float'];
   name: Scalars['String'];
   ticker: Scalars['String'];
   tokenDocumentUrl?: Maybe<Scalars['String']>;
@@ -275,11 +277,4 @@ export type UpdatePageInput = {
   state?: InputMaybe<Scalars['String']>;
   title: Scalars['String'];
   website?: InputMaybe<Scalars['String']>;
-};
-
-export type UpdatePostInput = {
-  content: Scalars['String'];
-  cover?: InputMaybe<Scalars['String']>;
-  id: Scalars['ID'];
-  title?: InputMaybe<Scalars['String']>;
 };

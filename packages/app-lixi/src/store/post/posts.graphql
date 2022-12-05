@@ -1,7 +1,6 @@
 # import PostOrder from '/packages/app-lixi-api/schema.graphql'
 # import PageInfoFields from '../../graphql/fragments/page-info-fields.fragment.graphql'
 
-
 query Post($id: String!) {
   post(id: $id) {
     ...PostFields
@@ -40,7 +39,15 @@ query PostsByPageId(
   $id: String
   $skip: Int
 ) {
-  allPostsByPageId(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, id: $id, skip: $skip) {
+  allPostsByPageId(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    id: $id
+    skip: $skip
+  ) {
     totalCount
     edges {
       cursor
@@ -63,7 +70,15 @@ query PostsByTokenId(
   $id: String
   $skip: Int
 ) {
-  allPostsByTokenId(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, id: $id, skip: $skip) {
+  allPostsByTokenId(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    id: $id
+    skip: $skip
+  ) {
     totalCount
     edges {
       cursor
@@ -98,18 +113,13 @@ fragment PostFields on Post {
   }
   lotusBurnUp
   lotusBurnDown
+  lotusBurnScore
   createdAt
   updatedAt
 }
 
 mutation createPost($input: CreatePostInput!) {
   createPost(data: $input) {
-    ...PostFields
-  }
-}
-
-mutation updatePost($input: UpdatePostInput!) {
-  updatePost(data: $input) {
     ...PostFields
   }
 }

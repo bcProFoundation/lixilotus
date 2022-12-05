@@ -26,6 +26,7 @@ export type PostQuery = {
     uploadCovers?: Array<string> | null;
     lotusBurnUp: number;
     lotusBurnDown: number;
+    lotusBurnScore: number;
     createdAt: any;
     updatedAt: any;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -59,6 +60,7 @@ export type PostsQuery = {
         uploadCovers?: Array<string> | null;
         lotusBurnUp: number;
         lotusBurnDown: number;
+        lotusBurnScore: number;
         createdAt: any;
         updatedAt: any;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -99,6 +101,9 @@ export type PostsByPageIdQuery = {
         id: string;
         content: string;
         uploadCovers?: Array<string> | null;
+        lotusBurnUp: number;
+        lotusBurnDown: number;
+        lotusBurnScore: number;
         createdAt: any;
         updatedAt: any;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -139,6 +144,9 @@ export type PostsByTokenIdQuery = {
         id: string;
         content: string;
         uploadCovers?: Array<string> | null;
+        lotusBurnUp: number;
+        lotusBurnDown: number;
+        lotusBurnScore: number;
         createdAt: any;
         updatedAt: any;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -163,6 +171,7 @@ export type PostFieldsFragment = {
   uploadCovers?: Array<string> | null;
   lotusBurnUp: number;
   lotusBurnDown: number;
+  lotusBurnScore: number;
   createdAt: any;
   updatedAt: any;
   postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -183,27 +192,7 @@ export type CreatePostMutation = {
     uploadCovers?: Array<string> | null;
     lotusBurnUp: number;
     lotusBurnDown: number;
-    createdAt: any;
-    updatedAt: any;
-    postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
-    pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
-    page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-  };
-};
-
-export type UpdatePostMutationVariables = Types.Exact<{
-  input: Types.UpdatePostInput;
-}>;
-
-export type UpdatePostMutation = {
-  __typename?: 'Mutation';
-  updatePost: {
-    __typename?: 'Post';
-    id: string;
-    content: string;
-    uploadCovers?: Array<string> | null;
-    lotusBurnUp: number;
-    lotusBurnDown: number;
+    lotusBurnScore: number;
     createdAt: any;
     updatedAt: any;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -234,6 +223,7 @@ export const PostFieldsFragmentDoc = `
   }
   lotusBurnUp
   lotusBurnDown
+  lotusBurnScore
   createdAt
   updatedAt
 }
@@ -327,13 +317,6 @@ export const CreatePostDocument = `
   }
 }
     ${PostFieldsFragmentDoc}`;
-export const UpdatePostDocument = `
-    mutation updatePost($input: UpdatePostInput!) {
-  updatePost(data: $input) {
-    ...PostFields
-  }
-}
-    ${PostFieldsFragmentDoc}`;
 
 const injectedRtkApi = api.injectEndpoints({
   endpoints: build => ({
@@ -351,9 +334,6 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     createPost: build.mutation<CreatePostMutation, CreatePostMutationVariables>({
       query: variables => ({ document: CreatePostDocument, variables })
-    }),
-    updatePost: build.mutation<UpdatePostMutation, UpdatePostMutationVariables>({
-      query: variables => ({ document: UpdatePostDocument, variables })
     })
   })
 });
@@ -368,6 +348,5 @@ export const {
   useLazyPostsByPageIdQuery,
   usePostsByTokenIdQuery,
   useLazyPostsByTokenIdQuery,
-  useCreatePostMutation,
-  useUpdatePostMutation
+  useCreatePostMutation
 } = injectedRtkApi;

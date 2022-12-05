@@ -41,6 +41,9 @@ fragment PageFields on Page {
   parentId
   address
   website
+  lotusBurnUp
+  lotusBurnDown
+  lotusBurnScore
   createdAt
   updatedAt
 }

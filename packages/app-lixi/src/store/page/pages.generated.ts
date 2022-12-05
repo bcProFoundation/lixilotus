@@ -31,6 +31,9 @@ export type PageQuery = {
     parentId?: string | null;
     address?: string | null;
     website?: string | null;
+    lotusBurnUp: number;
+    lotusBurnDown: number;
+    lotusBurnScore: number;
     createdAt: any;
     updatedAt: any;
   };
@@ -66,6 +69,9 @@ export type PagesQuery = {
         parentId?: string | null;
         address?: string | null;
         website?: string | null;
+        lotusBurnUp: number;
+        lotusBurnDown: number;
+        lotusBurnScore: number;
         createdAt: any;
         updatedAt: any;
       };
@@ -92,6 +98,9 @@ export type PageFieldsFragment = {
   parentId?: string | null;
   address?: string | null;
   website?: string | null;
+  lotusBurnUp: number;
+  lotusBurnDown: number;
+  lotusBurnScore: number;
   createdAt: any;
   updatedAt: any;
 };
@@ -114,6 +123,9 @@ export type CreatePageMutation = {
     parentId?: string | null;
     address?: string | null;
     website?: string | null;
+    lotusBurnUp: number;
+    lotusBurnDown: number;
+    lotusBurnScore: number;
     createdAt: any;
     updatedAt: any;
   };
@@ -137,6 +149,9 @@ export type UpdatePageMutation = {
     parentId?: string | null;
     address?: string | null;
     website?: string | null;
+    lotusBurnUp: number;
+    lotusBurnDown: number;
+    lotusBurnScore: number;
     createdAt: any;
     updatedAt: any;
   };
@@ -154,6 +169,9 @@ export const PageFieldsFragmentDoc = `
   parentId
   address
   website
+  lotusBurnUp
+  lotusBurnDown
+  lotusBurnScore
   createdAt
   updatedAt
 }

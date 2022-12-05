@@ -40,6 +40,9 @@ export class Post {
   @Field(() => Float)
   lotusBurnDown: number;
 
+  @Field(() => Float)
+  lotusBurnScore: number;
+
   @Field(() => Date, {
     description: 'Identifies the date and time when the object was created.'
   })
