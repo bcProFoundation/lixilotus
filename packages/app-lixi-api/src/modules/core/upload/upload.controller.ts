@@ -31,6 +31,7 @@ import { MulterFile } from '@webundsoehne/nest-fastify-file-upload/dist/interfac
 import { Account } from '@bcpros/lixi-models';
 import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
 import { UploadService } from './upload.service';
+import _ from 'lodash';
 import { PostAccountEntity } from 'src/decorators/postAccount.decorator';
 
 @Controller('uploads')
@@ -107,6 +108,8 @@ export class UploadFilesController {
           upload: { connect: { id: resultImage.id } }
         }
       });
+
+      Object.assign(resultImage, { awsEndpoint: process.env.AWS_ENDPOINT });
 
       return resultImage;
     } catch (err) {
