@@ -9,7 +9,7 @@ import {
   setPost,
   getPost,
   getPostSuccess
-} from './action';
+} from './actions';
 import { Post } from 'src/generated/types.generated';
 
 export const postAdapter = createEntityAdapter<Post>({});

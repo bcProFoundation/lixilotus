@@ -34,6 +34,10 @@
   "engines": {
     "node": ">=10"
   },
+  "peerDependencies": {
+    "@prisma/client": ">=3.9",
+    "graphql": ">=16"
+  },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.19.0",
     "@typescript-eslint/parser": "^5.19.0",

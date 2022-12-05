@@ -1,9 +1,9 @@
-import { createEntityAdapter, createReducer } from '@reduxjs/toolkit';
+import { createEntityAdapter, createReducer, Update } from '@reduxjs/toolkit';
 import { TokenState } from './state';
-import { fetchAllTokensSuccess, getTokenSuccess, postTokenSuccess, selectToken } from './action';
+import { burnForTokenSuccess, fetchAllTokensSuccess, getTokenSuccess, postTokenSuccess, selectToken } from './action';
 import { Token } from '@bcpros/lixi-models';
 
-export const tokenAdapter = createEntityAdapter<Token>({});
+export const tokenAdapter = createEntityAdapter<Token>();
 
 const initialState: TokenState = tokenAdapter.getInitialState({
   selectedTokenId: {},
@@ -26,5 +26,21 @@ export const tokenReducer = createReducer(initialState, builder => {
     .addCase(selectToken, (state, action) => {
       const tokenInfo = action.payload;
       state.selectedTokenId = tokenInfo;
+    })
+    .addCase(burnForTokenSuccess, (state, action) => {
+      const { id, burnUp, burnDown } = action.payload;
+      const token = state.entities[id];
+      if (token) {
+        const newLotusBurnUp = token.lotusBurnUp + burnUp;
+        const newLotusBurnDown = token.lotusBurnDown + burnDown;
+        const changes: Update<Token> = {
+          id: id,
+          changes: {
+            lotusBurnUp: newLotusBurnUp,
+            lotusBurnDown: newLotusBurnDown
+          }
+        };
+        tokenAdapter.updateOne(state, changes);
+      }
     });
 });

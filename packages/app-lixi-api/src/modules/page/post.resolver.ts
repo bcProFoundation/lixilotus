@@ -330,31 +330,4 @@ export class PostResolver {
     }
     return null;
   }
-
-  @UseGuards(GqlJwtAuthGuard)
-  @Mutation(() => Post)
-  async updatePost(@PostAccountEntity() account: Account, @Args('data') data: UpdatePostInput) {
-    // if (!account) {
-    //   const couldNotFindAccount = await this.i18n.t('post.messages.couldNotFindAccount');
-    //   throw new Error(couldNotFindAccount);
-    // }
-    // const uploadCoverDetail = data.cover
-    //   ? await this.prisma.uploadDetail.findFirst({
-    //     where: {
-    //       uploadId: data.cover
-    //     }
-    //   })
-    //   : undefined;
-    // const updatedPost = await this.prisma.post.update({
-    //   where: {
-    //     id: data.id
-    //   },
-    //   data: {
-    //     ...data,
-    //     uploadedCovers: { connect: uploadCoverDetail ? { id: uploadCoverDetail.id } : undefined }
-    //   }
-    // });
-    // pubSub.publish('postUpdated', { postUpdated: updatedPost });
-    // return updatedPost;
-  }
 }

@@ -1,8 +1,9 @@
-import * as _ from 'lodash';
-import * as Effects from 'redux-saga/effects';
-import intl from 'react-intl-universal';
+import { CreatePostCommand, EditPostCommand } from '@bcpros/lixi-models';
 import { all, fork, put, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
+import * as _ from 'lodash';
+import intl from 'react-intl-universal';
+import * as Effects from 'redux-saga/effects';
 import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
 import {
@@ -12,22 +13,20 @@ import {
   fetchAllPosts,
   fetchAllPostsFailure,
   fetchAllPostsSuccess,
+  getPost,
+  getPostFailure,
   getPostsByAccountId,
+  getPostSuccess,
   postPost,
   postPostFailure,
   postPostSuccess,
-  getPost,
-  getPostFailure,
-  getPostSuccess,
   setPost,
   setPostsByAccountId,
   searchPost,
-  searchPostFailure
-} from './action';
-import { CreatePostCommand } from '@bcpros/lixi-models/src';
+  searchPostFailure,
+  searchPostSuccess
+} from './actions';
 import postApi from './api';
-import { AccountDto, EditPostCommand, Post } from '@bcpros/lixi-models';
-import { searchPostSuccess } from './action';
 
 const call: any = Effects.call;
 /**
@@ -189,7 +188,6 @@ function* getPostsByAccountIdSaga(action: PayloadAction<number>) {
       throw new Error(intl.get('lixi.unableCreateLixi'));
     }
 
-    // yield put(postPostSuccess(data));
     yield put(setPostsByAccountId(data));
   } catch (err) {
     const message = (err as Error).message ?? intl.get('lixi.couldNotpostPost');
@@ -214,13 +212,9 @@ function* fetchAllPostsSaga() {
   }
 }
 
-function* fetchAllPostsSuccessSaga(action: any) {
-  yield put(hideLoading(fetchAllPosts.type));
-}
+function* fetchAllPostsSuccessSaga(action: any) { }
 
-function* fetchAllPostsFailureSaga(action: any) {
-  yield put(hideLoading(fetchAllPosts.type));
-}
+function* fetchAllPostsFailureSaga(action: any) { }
 
 function* searchPostSaga(action: PayloadAction<string>) {
   try {

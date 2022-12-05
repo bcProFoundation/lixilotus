@@ -1,14 +1,23 @@
+import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
 import CommentComponent, { CommentItem, Editor } from '@components/Common/Comment';
 import InfoCardUser from '@components/Common/InfoCardUser';
-import { Avatar, Button, Comment, List, message, Space } from 'antd';
+import { currency } from '@components/Common/Ticker';
+import { WalletContext } from '@context/walletProvider';
+import useXPI from '@hooks/useXPI';
+import { burnForUpDownVote } from '@store/burn/actions';
+import { PostsQuery } from '@store/post/posts.generated';
+import { showToast } from '@store/toast/actions';
+import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
+import { formatBalance } from '@utils/cashMethods';
+import { Avatar, Button, Comment, List, Space } from 'antd';
 import { push } from 'connected-next-router';
 import _ from 'lodash';
 import moment from 'moment';
 import React, { useState } from 'react';
 import ReactHtmlParser from 'react-html-parser';
-import { useAppDispatch } from 'src/store/hooks';
+import intl from 'react-intl-universal';
+import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled from 'styled-components';
-import { Post } from '@bcpros/lixi-models';
 
 const IconText = ({
   icon,
@@ -126,13 +135,26 @@ const GroupIconText = styled.div`
   }
 `;
 
-const PostListItem = ({ index, item }) => {
+type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
+
+type PostListItemProps = {
+  index: number;
+  item: PostItem;
+};
+
+const PostListItem = ({ index, item }: PostListItemProps) => {
   const dispatch = useAppDispatch();
-  const post: Post = item;
+  const post: PostItem = item;
   const [isCollapseComment, setIsCollapseComment] = useState(false);
   const [comments, setComments] = useState<CommentItem[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [value, setValue] = useState('');
+
+  const Wallet = React.useContext(WalletContext);
+  const { XPI, chronik } = Wallet;
+  const { burnXpi } = useXPI();
+  const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
+  const walletPaths = useAppSelector(getAllWalletPaths);
 
   if (!post) return null;
 
@@ -140,10 +162,7 @@ const PostListItem = ({ index, item }) => {
     dispatch(push(`/post/${id}`));
   };
 
-  const onLixiClick = item => {
-    // setIsShowQrCode(true);
-    // showModal();
-  };
+  const onLixiClick = item => {};
 
   const handleSubmit = (values: any) => {
     console.log(values);
@@ -167,25 +186,54 @@ const PostListItem = ({ index, item }) => {
   };
 
   const upVotePost = dataItem => {
-    // if (selectedAccount && balanceAccount !== 0) {
-    // data.forEach(item => {
-    //   if (item.title === dataItem.title) item.upVote += 1;
-    // });
-    message.info(`Successful up vote shop`);
-    // } else {
-    message.info(`Please register account to up vote`);
-    // }
+    handleBurnForPost(true, dataItem.id);
   };
 
   const downVotePost = dataItem => {
-    // if (selectedAccount && balanceAccount !== 0) {
-    // lists.forEach(item => {
-    //   if (item.title === dataItem.title) item.downVote += 1;
-    // });
-    message.info(`Successful down vote shop`);
-    // } else {
-    message.info(`Please register account to up vote`);
-    // }
+    handleBurnForPost(false, dataItem.id);
+  };
+
+  const handleBurnForPost = async (isUpVote: boolean, postId: string) => {
+    try {
+      if (slpBalancesAndUtxos.nonSlpUtxos.length == 0) {
+        throw new Error('Insufficient funds');
+      }
+      const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
+      const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
+      const { fundingWif, hash160 } = currentWalletPath;
+      const burnType = isUpVote ? BurnType.Up : BurnType.Down;
+      const burnedBy = hash160;
+      const burnForId = postId;
+
+      const txHex = await burnXpi(
+        XPI,
+        walletPaths,
+        slpBalancesAndUtxos.nonSlpUtxos,
+        currency.defaultFee,
+        burnType,
+        BurnForType.Post,
+        burnedBy,
+        burnForId,
+        '1'
+      );
+
+      const burnCommand: BurnCommand = {
+        txHex,
+        burnType,
+        burnForType: BurnForType.Post,
+        burnedBy,
+        burnForId
+      };
+
+      dispatch(burnForUpDownVote(burnCommand));
+    } catch (e) {
+      dispatch(
+        showToast('error', {
+          message: intl.get('post.unableToBurn'),
+          duration: 5
+        })
+      );
+    }
   };
 
   const showUsername = () => {
@@ -236,14 +284,14 @@ const PostListItem = ({ index, item }) => {
         <ActionBar>
           <GroupIconText>
             <IconText
-              text={item.upVote}
+              text={`${formatBalance(post?.lotusBurnUp ?? 0)}`}
               imgUrl="/images/up-ico.svg"
               key={`list-vertical-upvote-o-${item.id}`}
               dataItem={item}
               onClickIcon={() => upVotePost(item)}
             />
             <IconText
-              text={item.downVote}
+              text={`${formatBalance(post?.lotusBurnDown ?? 0)}`}
               imgUrl="/images/down-ico.svg"
               key={`list-vertical-downvote-o-${item.id}`}
               dataItem={item}

@@ -83,8 +83,8 @@ model Token {
   tokenDocumentUrl     String    @default("") @map("token_document_url") @db.VarChar(1000)
   totalBurned          String    @default("") @map("total_burned")
   totalMinted          String    @default("") @map("total_minted")
-  lotusBurnUp          String    @default("0") @map("lotus_burn_up")
-  lotusBurnDown        String    @default("0") @map("lotus_burn_down")
+  lotusBurnUp          Float     @default(0.0) @map("lotus_burn_up")
+  lotusBurnDown        Float     @default(0.0) @map("lotus_burn_down")
   initialTokenQuantity String    @default("") @map("initial_token_quantity")
   comments             DateTime? @default(now()) @map("comments") @db.Timestamptz
   createdAt            DateTime  @default(now()) @map("created_at") @db.Timestamptz
@@ -114,6 +114,8 @@ model Page {
   address       String        @default("") @map("address")
   createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz
   updatedAt     DateTime      @default(now()) @map("updated_at") @db.Timestamptz
+  lotusBurnUp   Float         @default(0.0) @map("lotus_burn_up")
+  lotusBurnDown Float         @default(0.0) @map("lotus_burn_down")
   posts         Post[]
 
   @@map("page")
@@ -131,6 +133,8 @@ model Post {
   createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz
   updatedAt      DateTime       @default(now()) @map("updated_at") @db.Timestamptz
   uploadedCovers UploadDetail[] @relation("PostCover")
+  lotusBurnUp    Float          @default(0.0) @map("lotus_burn_up")
+  lotusBurnDown  Float          @default(0.0) @map("lotus_burn_down")
 
   @@map("post")
 }
@@ -456,4 +460,16 @@ model UploadDetail {
   postId       String? @map("post_cover_id")
 
   @@map("upload_detail")
+}
+
+model Burn {
+  id          String    @id @default(cuid())
+  txid        String
+  burnType    Boolean   @map("burn_type")
+  burnForType Int       @map("burn_for_type")
+  burnedBy    Bytes     @map("burned_by")
+  burnForId   String    @map("burned_for_id")
+  burnedValue Float     @default(0) @map("burned_value")
+  createdAt   DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
 }

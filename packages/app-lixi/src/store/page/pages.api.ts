@@ -18,6 +18,8 @@ const enhancedApi = api.enhanceEndpoints({
   }
 });
 
+export { enhancedApi as api };
+
 export const {
   usePageQuery,
   useLazyPageQuery,

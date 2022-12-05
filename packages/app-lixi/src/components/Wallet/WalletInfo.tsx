@@ -145,7 +145,6 @@ const WalletInfoComponent: React.FC = () => {
   const walletStatus = useAppSelector(getWalletStatus);
   const selectedAccount = useAppSelector(getSelectedAccount);
   const selectedWalletPath = useAppSelector(getSelectedWalletPath);
-  const [isLoadBalanceError, setIsLoadBalanceError] = useState(false);
 
   const decimalFormatBalance = balance => {
     if (Number(balance) < 10) {

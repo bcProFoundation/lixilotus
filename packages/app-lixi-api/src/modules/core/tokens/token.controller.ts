@@ -1,6 +1,7 @@
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import { Body, Controller, Get, HttpException, HttpStatus, Inject, Param, Post } from '@nestjs/common';
 import { TokenDto } from '@bcpros/lixi-models';
+
 import * as _ from 'lodash';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { VError } from 'verror';

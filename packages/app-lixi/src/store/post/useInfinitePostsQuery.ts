@@ -1,5 +1,5 @@
 import { PaginationArgs } from '@bcpros/lixi-models';
-import { useLazyPostsQuery, usePostsQuery } from '@store/post/posts.generated';
+import { useLazyPostsQuery, usePostsQuery } from '@store/post/posts.api';
 import { useEffect, useRef, useState } from 'react';
 import { Post, PostOrder } from 'src/generated/types.generated';
 
@@ -29,7 +29,6 @@ export function useInfinitePostsQuery(
 
   // Base result
   useEffect(() => {
-    console.log('baseResult: ', baseResult);
     next.current = baseResult.data?.allPosts?.pageInfo?.endCursor;
     if (baseResult?.data?.allPosts) {
       isBaseReady.current = true;

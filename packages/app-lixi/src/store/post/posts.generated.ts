@@ -24,6 +24,8 @@ export type PostQuery = {
     id: string;
     content: string;
     uploadCovers?: Array<string> | null;
+    lotusBurnUp: number;
+    lotusBurnDown: number;
     createdAt: any;
     updatedAt: any;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -55,6 +57,8 @@ export type PostsQuery = {
         id: string;
         content: string;
         uploadCovers?: Array<string> | null;
+        lotusBurnUp: number;
+        lotusBurnDown: number;
         createdAt: any;
         updatedAt: any;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -197,6 +201,8 @@ export type PostFieldsFragment = {
   id: string;
   content: string;
   uploadCovers?: Array<string> | null;
+  lotusBurnUp: number;
+  lotusBurnDown: number;
   createdAt: any;
   updatedAt: any;
   postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -215,6 +221,8 @@ export type CreatePostMutation = {
     id: string;
     content: string;
     uploadCovers?: Array<string> | null;
+    lotusBurnUp: number;
+    lotusBurnDown: number;
     createdAt: any;
     updatedAt: any;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -234,6 +242,8 @@ export type UpdatePostMutation = {
     id: string;
     content: string;
     uploadCovers?: Array<string> | null;
+    lotusBurnUp: number;
+    lotusBurnDown: number;
     createdAt: any;
     updatedAt: any;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -262,6 +272,8 @@ export const PostFieldsFragmentDoc = `
     name
     id
   }
+  lotusBurnUp
+  lotusBurnDown
   createdAt
   updatedAt
 }

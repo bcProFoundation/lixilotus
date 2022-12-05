@@ -1,20 +1,19 @@
 import { LocalUserAccount } from '@bcpros/lixi-models';
 import PostsListing from '@components/Posts/PostsListing';
-import PagesListing from '@components/Pages/PagesListing';
 import { generateAccount, silentLogin } from '@store/account/actions';
 import { getSelectedAccount } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { setLocalUserAccount, silentLocalLogin } from '@store/localAccount';
+import { setLocalUserAccount } from '@store/localAccount';
 import { getIsBootstrapped } from '@store/persistor/selectors';
 import { SagaStore, wrapper } from '@store/store';
+import axios from 'axios';
 import { withIronSessionSsr } from 'iron-session/next';
+import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { getSelectorsByUserAgent } from 'react-device-detect';
 import { END } from 'redux-saga';
 import { LocalUser } from 'src/models/localUser';
 import { sessionOptions } from 'src/models/session';
-import axios from 'axios';
-import { useRouter } from 'next/router';
 
 type HomePageProps = {
   isMobile: boolean;

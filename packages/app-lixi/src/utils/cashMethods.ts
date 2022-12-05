@@ -149,7 +149,7 @@ export const calcFee = (
 };
 
 export const generateTxInput = (
-  BCH: BCHJS,
+  XPI: BCHJS,
   isOneToMany: boolean,
   utxos: Array<Utxo & { address: string }>,
   txBuilder: any,
@@ -162,7 +162,7 @@ export const generateTxInput = (
   let totalInputUtxoValue = new BigNumber(0);
   try {
     if (
-      !BCH ||
+      !XPI ||
       (isOneToMany && !destinationAddressAndValueArray) ||
       !utxos ||
       !txBuilder ||
@@ -283,7 +283,7 @@ export const signAndBuildTx = (
   inputUtxos: Array<Utxo & { address: string }>,
   txBuilder: any,
   walletPaths: WalletPathAddressInfo[]
-) => {
+): string => {
   if (
     !XPI ||
     !inputUtxos ||

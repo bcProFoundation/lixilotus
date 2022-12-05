@@ -8,7 +8,8 @@ import { Context, createWrapper } from 'next-redux-wrapper';
 import { Router } from 'next/router';
 import { createContext } from 'react';
 import { FLUSH, PAUSE, PERSIST, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
-import { api as pagesApi } from './page/pages.generated';
+import { api as pagesApi } from './page/pages.api';
+import { api as postsApi } from './post/posts.api';
 import rootReducer, { serverReducer } from './rootReducer';
 import rootSaga from './rootSaga';
 
@@ -52,6 +53,7 @@ const makeStore = (context: Context) => {
           }
         })
           .concat(pagesApi.middleware)
+          .concat(postsApi.middleware)
           .concat(sagaMiddleware, routerMiddleware);
       },
       devTools:

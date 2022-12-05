@@ -119,6 +119,8 @@ fragment PostFields on Post {
     name
     id
   }
+  lotusBurnUp
+  lotusBurnDown
   createdAt
   updatedAt
 }
