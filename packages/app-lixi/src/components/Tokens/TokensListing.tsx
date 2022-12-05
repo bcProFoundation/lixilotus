@@ -165,6 +165,7 @@ const TokensListing: React.FC = () => {
       title: 'Burn XPI',
       key: 'lotusBurn',
       sorter: (a, b) => a.lotusBurnUp + a.lotusBurnDown - (b.lotusBurnUp + b.lotusBurnDown),
+      defaultSortOrder: 'descend',
       render: (_, record) => formatBalance(record.lotusBurnUp + record.lotusBurnDown)
     },
     {
