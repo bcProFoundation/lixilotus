@@ -13,10 +13,28 @@ import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import PostListItem from './PostListItem';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import { Skeleton } from 'antd';
+import styled from 'styled-components';
 
 type PostsListingProps = {
   className?: string;
 };
+
+const StyledPostsListing = styled.div`
+  .custom-list {
+    // -ms-overflow-style: none;
+    // scrollbar-width: none;
+    // position: absolute;
+    // right: 0;
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-image: linear-gradient(180deg, #d0368a 0%, #708ad4 99%);
+      box-shadow: inset 2px 2px 5px 0 rgba(#fff, 0.5);
+      border-radius: 100px;
+    }
+  }
+`;
 
 const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingProps) => {
   // const Wallet = React.useContext(WalletContext);
@@ -128,8 +146,9 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   };
 
   return (
-    <div>
+    <StyledPostsListing>
       <Virtuoso
+        className="custom-list"
         style={{ height: '100vh', paddingBottom: '2rem' }}
         data={data}
         endReached={loadMoreItems}
@@ -146,7 +165,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       <Modal title="Qr code to claim lotus" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
         {isShowQrCode && selectedAccount?.address && <QRCode address={selectedAccount?.address} />}
       </Modal>
-    </div>
+    </StyledPostsListing>
   );
 };
 

@@ -22,7 +22,8 @@ import styled from 'styled-components';
 const { Sider } = Layout;
 
 const RankingSideBar = styled(Sider)`
-  height: 50vh;
+  height: 100vh;
+  overflow: auto;
   right: 2rem;
   max-width: inherit !important;
   background: var(--bg-color-light-theme);

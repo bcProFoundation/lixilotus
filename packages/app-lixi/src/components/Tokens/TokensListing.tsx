@@ -223,6 +223,7 @@ const TokensListing: React.FC = () => {
         <Table
           className="table-tokens"
           columns={columns}
+          scroll={{ x: true }}
           dataSource={tokenList}
           pagination={tokenList.length >= 30 ? {} : false}
         />

@@ -4,7 +4,7 @@ import { Avatar, Button, Comment, List, message, Space } from 'antd';
 import { push } from 'connected-next-router';
 import _ from 'lodash';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import { useAppDispatch } from 'src/store/hooks';
 import styled from 'styled-components';
@@ -71,17 +71,22 @@ const CardHeader = styled.div`
 const Content = styled.div`
   .description-post {
     text-align: left;
-    display: -webkit-box;
-    -webkit-line-clamp: 6;
-    -webkit-box-orient: vertical;
-    text-overflow: ellipsis;
-    overflow: hidden;
     img {
       max-height: 250px;
       width: 100%;
     }
     p {
       margin: 0;
+    }
+    &.seeMore {
+      display: block !important;
+    }
+    &.seeLess {
+      display: -webkit-box;
+      -webkit-line-clamp: 6;
+      -webkit-box-orient: vertical;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
   }
   .image-cover {
@@ -133,11 +138,33 @@ const PostListItem = ({ index, item }) => {
   const [comments, setComments] = useState<CommentItem[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [value, setValue] = useState('');
+  const [isShowMore, setIsShowMore] = useState(false);
+  const ref = useRef<HTMLDivElement | null>(null);
 
   if (!post) return null;
 
   const routerPostDetail = id => {
     dispatch(push(`/post/${id}`));
+  };
+
+  useEffect(() => {
+    loadPost();
+  }, []);
+
+  const loadPost = () => {
+    const descPost = ref?.current.querySelector('.description-post');
+    if (descPost.clientHeight > 130) {
+      descPost.classList.add('seeLess');
+      setIsShowMore(true);
+    } else {
+      setIsShowMore(false);
+    }
+  };
+
+  const seeMorePost = () => {
+    const a = ref?.current.querySelector('.description-post');
+    a.classList.add('seeMore');
+    setIsShowMore(false);
   };
 
   const onLixiClick = item => {
@@ -219,8 +246,9 @@ const PostListItem = ({ index, item }) => {
           border: 'none'
         }}
         key={post.id}
+        ref={ref}
       >
-        <CardContainer onClick={() => routerPostDetail(post.id)}>
+        <CardContainer>
           <CardHeader>
             <InfoCardUser
               imgUrl={post.page ? post.page.avatar : ''}
@@ -230,6 +258,11 @@ const PostListItem = ({ index, item }) => {
           </CardHeader>
           <Content>
             <div className="description-post">{ReactHtmlParser(post?.content)}</div>
+            {isShowMore && (
+              <p style={{ textAlign: 'left', color: 'var(--color-primary)' }} onClick={() => seeMorePost()}>
+                See more...
+              </p>
+            )}
             {/* <img className="image-cover" src={post.uploadCovers} alt="" /> */}
           </Content>
         </CardContainer>
