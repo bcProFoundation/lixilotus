@@ -87,10 +87,10 @@ const Content = styled.div`
     p {
       margin: 0;
     }
-    &.seeMore {
+    &.show-more {
       display: block !important;
     }
-    &.seeLess {
+    &.show-less {
       display: -webkit-box;
       -webkit-line-clamp: 6;
       -webkit-box-orient: vertical;
@@ -154,7 +154,7 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
   const [comments, setComments] = useState<CommentItem[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [value, setValue] = useState('');
-  const [isShowMore, setIsShowMore] = useState(false);
+  const [showMore, setShowMore] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
 
   const Wallet = React.useContext(WalletContext);
@@ -176,17 +176,17 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
   const loadPost = () => {
     const descPost = ref?.current.querySelector('.description-post');
     if (descPost.clientHeight > 130) {
-      descPost.classList.add('seeLess');
-      setIsShowMore(true);
+      descPost.classList.add('show-less');
+      setShowMore(true);
     } else {
-      setIsShowMore(false);
+      setShowMore(false);
     }
   };
 
-  const seeMorePost = () => {
-    const a = ref?.current.querySelector('.description-post');
-    a.classList.add('seeMore');
-    setIsShowMore(false);
+  const showMoreHandle = () => {
+    const descPostDom = ref?.current.querySelector('.description-post');
+    descPostDom.classList.add('show-more');
+    setShowMore(false);
   };
 
   const onLixiClick = item => {
@@ -311,9 +311,9 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
           </CardHeader>
           <Content>
             <div className="description-post">{ReactHtmlParser(post?.content)}</div>
-            {isShowMore && (
-              <p style={{ textAlign: 'left', color: 'var(--color-primary)' }} onClick={() => seeMorePost()}>
-                See more...
+            {showMore && (
+              <p style={{ textAlign: 'left', color: 'var(--color-primary)' }} onClick={() => showMoreHandle()}>
+                Show more...
               </p>
             )}
             {/* <img className="image-cover" src={post.uploadCovers} alt="" /> */}
