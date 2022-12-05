@@ -7,7 +7,8 @@ export enum PageOrderField {
   createdAt = 'createdAt',
   updatedAt = 'updatedAt',
   name = 'name',
-  title = 'title'
+  title = 'title',
+  lotusBurnScore = 'lotusBurnScore'
 }
 
 registerEnumType(PageOrderField, {

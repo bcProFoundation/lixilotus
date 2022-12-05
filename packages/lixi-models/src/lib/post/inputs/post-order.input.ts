@@ -4,6 +4,7 @@ import { Order } from '../../../core';
 
 export enum PostOrderField {
   id = 'id',
+  lotusBurnScore = 'lotusBurnScore',
   createdAt = 'createdAt',
   updatedAt = 'updatedAt',
   content = 'content'

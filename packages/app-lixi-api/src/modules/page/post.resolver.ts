@@ -1,13 +1,4 @@
-import {
-  Post,
-  PaginationArgs,
-  PostOrder,
-  PostConnection,
-  CreatePostInput,
-  Account,
-  UpdatePostInput,
-  Page
-} from '@bcpros/lixi-models';
+import { Post, PaginationArgs, PostOrder, PostConnection, CreatePostInput, Account, Page } from '@bcpros/lixi-models';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
 import { ExecutionContext, Logger, Request, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver, Subscription, ResolveField, Parent } from '@nestjs/graphql';
@@ -61,6 +52,11 @@ export class PostResolver {
               },
               {
                 token: null
+              },
+              {
+                lotusBurnScore: {
+                  gte: 0
+                }
               }
             ]
           },
@@ -76,6 +72,11 @@ export class PostResolver {
               },
               {
                 token: null
+              },
+              {
+                lotusBurnScore: {
+                  gte: 0
+                }
               }
             ]
           }
