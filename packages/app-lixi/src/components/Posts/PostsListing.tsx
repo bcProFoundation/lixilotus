@@ -13,8 +13,6 @@ import { Virtuoso } from 'react-virtuoso';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import PostListItem from './PostListItem';
-import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
-import { Skeleton } from 'antd';
 import styled from 'styled-components';
 
 type PostsListingProps = {
