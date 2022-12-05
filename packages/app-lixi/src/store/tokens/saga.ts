@@ -39,7 +39,6 @@ function* postTokenSaga(action: PayloadAction<string>) {
 
     yield put(postTokenSuccess(data));
   } catch (err) {
-    console.log(err);
     const message = (err as Error).message ?? intl.get('token.couldNotpostToken');
     yield put(postTokenFailure(message));
   }
@@ -177,7 +176,7 @@ function* watchGetTokenFailure() {
   yield takeLatest(getTokenFailure.type, getTokenFailureSaga);
 }
 
-export default function* TokenSaga() {
+export default function* tokenSaga() {
   yield all([
     fork(watchPostToken),
     fork(watchPostTokenFailure),

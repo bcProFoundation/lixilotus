@@ -2,13 +2,15 @@ import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
 import CreatePostCard from '@components/Common/CreatePostCard';
 import SearchBox from '@components/Common/SearchBox';
 import { getSelectedAccount } from '@store/account/selectors';
-import { setSelectedPost } from '@store/post/action';
+import { getLatestBurnForPost } from '@store/burn';
+import { setSelectedPost } from '@store/post/actions';
+import { api as postApi, useLazyPostQuery } from '@store/post/posts.api';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
-import { WalletContext } from '@context/index';
-import { Menu, MenuProps, Modal } from 'antd';
+import { Menu, MenuProps, Modal, Skeleton } from 'antd';
 import _ from 'lodash';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
+import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import PostListItem from './PostListItem';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
@@ -37,16 +39,15 @@ const StyledPostsListing = styled.div`
 `;
 
 const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingProps) => {
-  // const Wallet = React.useContext(WalletContext);
-  // const { XPI } = Wallet;
   const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
   const [isShowQrCode, setIsShowQrCode] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [balanceAccount, setBalanceAccount] = useState(0);
 
-  const listRef = useRef();
+  const [queryPostTrigger, queryPostResult] = useLazyPostQuery();
+  const latestBurnForPost = useAppSelector(getLatestBurnForPost);
+
   const menuItems = [
     { label: 'All', key: 'all' },
     { label: 'Friend', key: 'friend' },
@@ -74,6 +75,26 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   useEffect(() => {
     refetch();
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      if (latestBurnForPost) {
+        const post = await queryPostTrigger({ id: latestBurnForPost.burnForId });
+        console.log('post', post);
+        dispatch(
+          postApi.util.updateQueryData('Posts', undefined, draft => {
+            const postToUpdate = draft.allPosts.edges.find(item => item.node.id === latestBurnForPost.burnForId);
+            if (postToUpdate) {
+              console.log('update post');
+              postToUpdate.node = post.data.post;
+            }
+          })
+        );
+        postApi.util.invalidateTags(['Post']);
+        refetch();
+      }
+    })();
+  }, [latestBurnForPost]);
 
   const showModal = () => {
     setIsModalVisible(true);

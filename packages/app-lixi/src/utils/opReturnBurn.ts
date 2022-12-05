@@ -1,7 +1,7 @@
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
-import BigNumber from 'bignumber.js';
-import _ from 'lodash';
+import { BurnForType, BurnType } from '@bcpros/lixi-models';
 import BCHJS from '@bcpros/xpi-js';
+import BigNumber from 'bignumber.js';
 
 const OP_0: number = 0x00;
 const OP_16: number = 0x60;
@@ -10,24 +10,11 @@ const OP_PUSHDATA1: number = 0x4c;
 const OP_PUSHDATA2: number = 0x4d;
 const OP_PUSHDATA4: number = 0x4e;
 
-export enum BurnType {
-  Up = 1,
-  Down = 0
-}
-
-export enum BurnForType {
-  Page = 0x5f01,
-  Post = 0x5f02,
-  Comment = 0x5f03,
-  Account = 0x5f04,
-  Token = 0x5f05
-}
-
 export interface ParseBurnResult {
   version: number;
   burnType: BurnType;
   burnForType: BurnForType;
-  burnedBy: Buffer;
+  burnedBy: string;
   burnForId: string;
 }
 
@@ -80,11 +67,13 @@ export const generateBurnOpReturnScript = (
   }
 
   if (typeof burnedBy === 'string') {
-    if (!burnedBy.match(/^[0-9a-fA-F]{64}$/)) {
+    if (!burnedBy.match(/^[0-9a-fA-F]{40}$/)) {
       throw new Error('burnedBy must be hex');
     }
     burnedBy = Buffer.from(burnedBy, 'hex');
   }
+
+  const burnForTypeBn = new BigNumber(burnForType);
 
   const buf = Buffer.concat([
     Buffer.from([0x6a]), // OP_RETURN
@@ -92,7 +81,7 @@ export const generateBurnOpReturnScript = (
     pushdata(Buffer.from([version])), // versionType
     pushdata(Buffer.from('BURN')),
     pushdata(Buffer.from([burnType ? 1 : 0])),
-    pushdata(Buffer.from([burnForType])),
+    pushdata(BNToInt64BE(burnForTypeBn)),
     pushdata(burnedBy),
     pushdata(Buffer.from(burnForId))
   ]);
@@ -247,7 +236,7 @@ export const parseBurnOutput = (scriptpubkey: Buffer | string): ParseBurnResult 
   const burnForType: number = bufferToBigNumber().toNumber();
 
   CHECK_NEXT();
-  const burnedBy = itObj;
+  const burnedBy = itObj.toString('hex');
 
   CHECK_NEXT();
   const burnForId = itObj.toString();
@@ -262,10 +251,10 @@ export const parseBurnOutput = (scriptpubkey: Buffer | string): ParseBurnResult 
   return result;
 };
 
-export const generateBurnOutput = (
+export const generateBurnTxOutput = (
   XPI: BCHJS,
   satoshisToBurn: BigNumber,
-  burnType: boolean,
+  burnType: BurnType,
   burnForType: BurnForType,
   burnedBy: string | Buffer,
   burnForId: string,
@@ -285,8 +274,14 @@ export const generateBurnOutput = (
       throw new Error(`Insufficient funds`);
     }
 
-    const burnOutputScript = generateBurnOpReturnScript(0x01, burnType, burnForType, burnedBy, burnForId);
-    txBuilder.addOutput(burnOutputScript, satoshisToBurn);
+    const burnOutputScript = generateBurnOpReturnScript(
+      0x01,
+      burnType ? true : false,
+      burnForType,
+      burnedBy,
+      burnForId
+    );
+    txBuilder.addOutput(burnOutputScript, parseInt(satoshisToBurn.toString()));
 
     // if a remainder exists, return to change address as the final output
     if (remainder.gte(new BigNumber(currency.dustSats))) {

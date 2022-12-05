@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
 import { IsOptional } from 'class-validator';
 
 @ObjectType()
@@ -31,12 +31,12 @@ export class Token {
   decimals: number;
 
   @IsOptional()
-  @Field(() => String, { nullable: true })
-  lotusBurnUp?: Nullable<string>;
+  @Field(() => Float)
+  lotusBurnUp: number;
 
   @IsOptional()
-  @Field(() => String, { nullable: true })
-  lotusBurnDown?: string;
+  @Field(() => Float)
+  lotusBurnDown: number;
 
   @Field(() => String, { nullable: true })
   initialTokenQuantity: string;

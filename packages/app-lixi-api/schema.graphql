@@ -38,7 +38,6 @@ type Mutation {
   createPage(data: CreatePageInput!): Page!
   createPost(data: CreatePostInput!): Post!
   updatePage(data: UpdatePageInput!): Page!
-  updatePost(data: UpdatePostInput!): Post!
 }
 
 """
@@ -109,6 +108,8 @@ type Post {
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
   id: ID!
+  lotusBurnDown: Float!
+  lotusBurnUp: Float!
   page: Page
   pageAccount: Account!
   pageAccountId: Int!
@@ -168,8 +169,8 @@ type Token {
   decimals: Int!
   id: ID!
   initialTokenQuantity: String
-  lotusBurnDown: String
-  lotusBurnUp: String
+  lotusBurnDown: Float!
+  lotusBurnUp: Float!
   name: String!
   ticker: String!
   tokenDocumentUrl: String
@@ -196,11 +197,4 @@ input UpdatePageInput {
   state: String
   title: String!
   website: String
-}
-
-input UpdatePostInput {
-  content: String!
-  cover: String
-  id: ID!
-  title: String
 }
