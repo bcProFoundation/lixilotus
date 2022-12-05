@@ -171,7 +171,7 @@ export const MultiUploader = ({ type, buttonName, buttonType, isIcon, showUpload
       .post(url, formData, config)
       .then(response => {
         const { data } = response;
-        const url = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${data.bucket}/${data.sha}`;
+        const url = `${data.awsEndpoint}/${data.bucket}/${data.sha}`;
 
         insertImage(editor, url || null);
         return onSuccess(dispatch(setUpload({ upload: response.data, type: type })));
