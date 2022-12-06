@@ -6,13 +6,14 @@ import { PageController } from './page.controller';
 import { PageResolver } from './page.resolver';
 import { PostResolver } from './post.resolver';
 import { MeiliService } from './meili.service';
+import { PostService } from './post.service';
 // import { LixiNftController } from './lixinft.controller';
 // import { LixiNftService } from './lixinft.service';
 
 @Module({
   imports: [AuthModule],
   controllers: [PageController],
-  providers: [PageResolver, Logger, PostResolver, MeiliService],
-  exports: [MeiliService]
+  providers: [PageResolver, Logger, PostResolver, MeiliService, PostService],
+  exports: [MeiliService, PostService]
 })
 export class PageModule {}

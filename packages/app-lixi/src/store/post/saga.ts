@@ -212,9 +212,9 @@ function* fetchAllPostsSaga() {
   }
 }
 
-function* fetchAllPostsSuccessSaga(action: any) { }
+function* fetchAllPostsSuccessSaga(action: any) {}
 
-function* fetchAllPostsFailureSaga(action: any) { }
+function* fetchAllPostsFailureSaga(action: any) {}
 
 function* searchPostSaga(action: PayloadAction<string>) {
   try {

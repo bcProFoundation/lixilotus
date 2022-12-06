@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react';
 import { Post, PostOrder } from 'src/generated/types.generated';
 
 export interface PostListParams extends PaginationArgs {
-  orderBy?: PostOrder;
   query?: string;
 }
 export interface PostListBody {
@@ -86,7 +85,6 @@ export function useInfinitePostsBySearchQuery(
 
   return {
     data: combinedData ?? [],
-    totalCount: baseResult?.data?.allPostsBySearch?.totalCount ?? 0,
     error: baseResult?.error,
     isError: baseResult?.isError,
     isLoading: baseResult?.isLoading,

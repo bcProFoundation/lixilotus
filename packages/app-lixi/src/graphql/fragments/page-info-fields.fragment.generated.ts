@@ -19,8 +19,24 @@ export type PageInfoFieldsFragment = {
   startCursor?: string | null;
 };
 
+export type PostMeiliPageInfoFieldsFragment = {
+  __typename?: 'PostMeiliPageInfo';
+  endCursor?: string | null;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+  startCursor?: string | null;
+};
+
 export const PageInfoFieldsFragmentDoc = `
     fragment PageInfoFields on PageInfo {
+  endCursor
+  hasNextPage
+  hasPreviousPage
+  startCursor
+}
+    `;
+export const PostMeiliPageInfoFieldsFragmentDoc = `
+    fragment PostMeiliPageInfoFields on PostMeiliPageInfo {
   endCursor
   hasNextPage
   hasPreviousPage

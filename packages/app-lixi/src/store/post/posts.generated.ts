@@ -11,7 +11,10 @@
 
 import * as Types from '../../generated/types.generated';
 
-import { PageInfoFieldsFragmentDoc } from '../../graphql/fragments/page-info-fields.fragment.generated';
+import {
+  PageInfoFieldsFragmentDoc,
+  PostMeiliPageInfoFieldsFragmentDoc
+} from '../../graphql/fragments/page-info-fields.fragment.generated';
 import { api } from 'src/api/baseApi';
 export type PostQueryVariables = Types.Exact<{
   id: Types.Scalars['String'];
@@ -169,38 +172,36 @@ export type PostsBySearchQueryVariables = Types.Exact<{
   before?: Types.InputMaybe<Types.Scalars['String']>;
   first?: Types.InputMaybe<Types.Scalars['Int']>;
   last?: Types.InputMaybe<Types.Scalars['Int']>;
-  orderBy?: Types.InputMaybe<Types.PostOrder>;
   query?: Types.InputMaybe<Types.Scalars['String']>;
-  skip?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
 export type PostsBySearchQuery = {
   __typename?: 'Query';
   allPostsBySearch: {
-    __typename?: 'PostConnection';
-    totalCount?: number | null;
+    __typename?: 'PostResponse';
     edges?: Array<{
-      __typename?: 'PostEdge';
-      cursor: string;
-      node: {
+      __typename?: 'PostMeiliEdge';
+      cursor?: string | null;
+      node?: {
         __typename?: 'Post';
         id: string;
         content: string;
         uploadCovers?: Array<string> | null;
-        createdAt: any;
-        updatedAt: any;
+        lotusBurnUp: number;
+        lotusBurnDown: number;
+        lotusBurnScore: number;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-      };
+      } | null;
     }> | null;
-    pageInfo: {
-      __typename?: 'PageInfo';
+    pageInfo?: {
+      __typename?: 'PostMeiliPageInfo';
       endCursor?: string | null;
       hasNextPage: boolean;
       hasPreviousPage: boolean;
       startCursor?: string | null;
-    };
+    } | null;
   };
 };
 
@@ -214,6 +215,19 @@ export type PostFieldsFragment = {
   lotusBurnScore: number;
   createdAt: any;
   updatedAt: any;
+  postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+  pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+  page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+};
+
+export type PostMeiliFieldsFragment = {
+  __typename?: 'Post';
+  id: string;
+  content: string;
+  uploadCovers?: Array<string> | null;
+  lotusBurnUp: number;
+  lotusBurnDown: number;
+  lotusBurnScore: number;
   postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
   pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
   page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
@@ -266,6 +280,31 @@ export const PostFieldsFragmentDoc = `
   lotusBurnScore
   createdAt
   updatedAt
+}
+    `;
+export const PostMeiliFieldsFragmentDoc = `
+    fragment PostMeiliFields on Post {
+  id
+  content
+  uploadCovers
+  postAccount {
+    address
+    id
+    name
+  }
+  pageAccount {
+    address
+    id
+    name
+  }
+  page {
+    avatar
+    name
+    id
+  }
+  lotusBurnUp
+  lotusBurnDown
+  lotusBurnScore
 }
     `;
 export const PostDocument = `
@@ -351,30 +390,27 @@ export const PostsByTokenIdDocument = `
     ${PostFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
 export const PostsBySearchDocument = `
-    query PostsBySearch($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $query: String, $skip: Int) {
+    query PostsBySearch($after: String, $before: String, $first: Int, $last: Int, $query: String) {
   allPostsBySearch(
     after: $after
     before: $before
     first: $first
     last: $last
-    orderBy: $orderBy
     query: $query
-    skip: $skip
   ) {
-    totalCount
     edges {
       cursor
       node {
-        ...PostFields
+        ...PostMeiliFields
       }
     }
     pageInfo {
-      ...PageInfoFields
+      ...PostMeiliPageInfoFields
     }
   }
 }
-    ${PostFieldsFragmentDoc}
-${PageInfoFieldsFragmentDoc}`;
+    ${PostMeiliFieldsFragmentDoc}
+${PostMeiliPageInfoFieldsFragmentDoc}`;
 export const CreatePostDocument = `
     mutation createPost($input: CreatePostInput!) {
   createPost(data: $input) {
@@ -418,5 +454,5 @@ export const {
   useLazyPostsByTokenIdQuery,
   usePostsBySearchQuery,
   useLazyPostsBySearchQuery,
-  useCreatePostMutation,
+  useCreatePostMutation
 } = injectedRtkApi;

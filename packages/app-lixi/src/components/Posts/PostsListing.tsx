@@ -61,10 +61,10 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     }
   ];
 
-  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsBySearchQuery(
+  //TODO: Implemment search bar
+  const { data, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsBySearchQuery(
     {
-      first: 10,
-      query: 'post'
+      query: 'ngày'
     },
     false
   );

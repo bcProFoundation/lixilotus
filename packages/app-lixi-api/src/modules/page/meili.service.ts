@@ -12,7 +12,8 @@ export class MeiliService implements OnModuleInit {
 
   async onModuleInit() {
     await this.meiliSearch.index(POSTS).updateSettings({
-      searchableAttributes: ['content', 'postAccount.name']
+      searchableAttributes: ['content', 'postAccount.name'],
+      displayedAttributes: ['*']
     });
   }
 
@@ -46,8 +47,20 @@ export class MeiliService implements OnModuleInit {
     return await this.meiliSearch.index(index).deleteDocument(documentId);
   }
 
-  public async searchByQueryHits(index: string, query: string) {
-    return (await this.meiliSearch.index(index).search(query)).hits;
+  public async searchByQueryHits(index: string, query: string, offset: number, limit: number) {
+    console.log(offset);
+    console.log(limit);
+    const hits = await this.meiliSearch
+      .index(index)
+      .search(query, {
+        offset: offset,
+        limit: limit
+      })
+      .then(res => {
+        return res.hits;
+      });
+    console.log(hits);
+    return hits;
   }
 
   public async searchByQueryEstimatedTotalHits(index: string, query: string) {

@@ -22,6 +22,10 @@ import { MeiliService } from './meili.service';
 import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
 import { PrismaService } from '../prisma/prisma.service';
 import { POSTS } from './constants/meili.constants';
+import ConnectionArgs, { getPagingParameters } from '../../common/connection.args';
+import { connectionFromArraySlice } from '../../common/arrayConnection';
+import PostResponse from 'src/common/post.response';
+import { PostService } from './post.service';
 
 const pubSub = new PubSub();
 
@@ -30,7 +34,12 @@ const pubSub = new PubSub();
 export class PostResolver {
   private logger: Logger = new Logger(this.constructor.name);
 
-  constructor(private prisma: PrismaService, private meiliService: MeiliService, @I18n() private i18n: I18nService) { }
+  constructor(
+    private prisma: PrismaService,
+    private meiliService: MeiliService,
+    @I18n() private i18n: I18nService,
+    private postService: PostService
+  ) {}
 
   @Subscription(() => Post)
   postCreated() {
@@ -134,26 +143,19 @@ export class PostResolver {
     return result;
   }
 
-  @Query(() => PostConnection)
+  @Query(() => PostResponse, { name: 'allPostsBySearch' })
   async allPostsBySearch(
-    @Args() { after, before, first, last }: PaginationArgs,
+    @Args() args: ConnectionArgs,
     @Args({ name: 'query', type: () => String, nullable: true })
-    query: string,
-    @Args({
-      name: 'orderBy',
-      type: () => PostOrder,
-      nullable: true
-    })
-    orderBy: PostOrder
-  ) {
-    // const {estimatedTotalHits, } = this.meiliService.searchByQuery(POSTS, query);
-    const result = await findManyCursorConnection(
-      args => this.meiliService.searchByQueryHits(POSTS, query),
-      () => this.meiliService.searchByQueryEstimatedTotalHits(POSTS, query),
-      { first, last, before, after }
-    );
-
-    return result;
+    query: string
+  ): Promise<PostResponse> {
+    const { limit, offset } = getPagingParameters(args);
+    const [posts, count] = await this.postService.findAll(limit!, offset!, query);
+    console.log(posts, count);
+    return connectionFromArraySlice(posts, args, {
+      arrayLength: count,
+      sliceStart: offset || 0
+    });
   }
 
   @Query(() => PostConnection)
@@ -248,10 +250,10 @@ export class PostResolver {
           connect:
             uploadDetailIds.length > 0
               ? uploadDetailIds.map((uploadDetail: any) => {
-                return {
-                  id: uploadDetail
-                };
-              })
+                  return {
+                    id: uploadDetail
+                  };
+                })
               : undefined
         },
         page: {
@@ -285,11 +287,9 @@ export class PostResolver {
       }
     });
 
-    await this.meiliService.add(
-      POSTS,
-      _.omit(createdPost, ['postAccountId', 'pageId', 'tokenId', 'id']),
-      createdPost.id
-    );
+    //TODO: Strip html from content before adding to meilisearch
+
+    await this.meiliService.add(POSTS, _.omit(createdPost, ['postAccountId', 'pageId', 'tokenId']), createdPost.id);
 
     pubSub.publish('postCreated', { postCreated: createdPost });
     return createdPost;
