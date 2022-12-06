@@ -1,38 +1,20 @@
-import { FileImageOutlined, PlusCircleOutlined } from '@ant-design/icons';
-import { Avatar, Form, Modal, Tabs } from 'antd';
-import TextArea from 'antd/lib/input/TextArea';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import intl from 'react-intl-universal';
-import React, { useRef, useState } from 'react';
-import styled from 'styled-components';
-import SunEditorCore from 'suneditor/src/lib/core';
-import dynamic from 'next/dynamic';
-import 'suneditor/dist/css/suneditor.min.css'; // Import Sun Editor's CSS File
-import { CreatePostInput, UpdatePostInput, Post } from 'src/generated/types.generated';
-import { showToast } from '@store/toast/actions';
-import { setPost } from '@store/post/actions';
-import { Embed, SocialsEnum } from './Embed';
-import { useCreatePostMutation } from '@store/post/posts.generated';
-import { MultiUploader, StyledMultiUploader } from './Uploader/MultiUploader';
-import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
-import { Plate, PlateProps, PlateProvider } from '@udecode/plate-core';
-import { MyValue, useMyPlateEditorRef } from '@components/Common/Plate/plateTypes';
-import { imagePlugins } from '@components/Common/Plate/Plugin/imagePlugins';
-import { Toolbar } from '@components/Common/Plate/Toolbar';
-import { BasicElementToolbarButtons } from '@components/Common/Plate/BasicElementToolbarButtons';
-import { BasicMarkToolbarButtons } from '@components/Common/Plate/BasicMarkToolbarButtons';
-import { MarkBalloonToolbar } from '@components/Common/Plate/MarkBalloonToolbar';
-import { serializeHtml } from '@udecode/plate';
-import { editableProps } from './Plate/editableProps';
-import { Uploader } from './Uploader/Uploader';
-import { EmojiElementToolbarButtons } from './Plate/EmojiToolbarButtons';
+import { PlusCircleOutlined } from '@ant-design/icons';
 import { getPostCoverUploads } from '@store/account/selectors';
-import { getPageById } from '@store/page/selectors';
-import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
-import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
+import { useCreatePostMutation } from '@store/post/posts.generated';
+import { showToast } from '@store/toast/actions';
+import { Avatar, Modal, Tabs } from 'antd';
+import TextArea from 'antd/lib/input/TextArea';
 import _ from 'lodash';
+import dynamic from 'next/dynamic';
+import { useRef, useState } from 'react';
+import intl from 'react-intl-universal';
+import { CreatePostInput } from 'src/generated/types.generated';
+import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import styled from 'styled-components';
+import 'suneditor/dist/css/suneditor.min.css'; // Import Sun Editor's CSS File
+import SunEditorCore from 'suneditor/src/lib/core';
 import Editor from './Editor';
-import { usePlateSelectors } from '@udecode/plate-core';
+import { Embed, SocialsEnum } from './Embed';
 
 const styles = {
   wrapper: {

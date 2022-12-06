@@ -165,6 +165,7 @@ const TokensListing: React.FC = () => {
       title: 'Burn XPI',
       key: 'lotusBurn',
       sorter: (a, b) => a.lotusBurnUp + a.lotusBurnDown - (b.lotusBurnUp + b.lotusBurnDown),
+      defaultSortOrder: 'descend',
       render: (_, record) => formatBalance(record.lotusBurnUp + record.lotusBurnDown)
     },
     {
@@ -284,6 +285,7 @@ const TokensListing: React.FC = () => {
         <Table
           className="table-tokens"
           columns={columns}
+          scroll={{ x: true }}
           dataSource={tokenList}
           pagination={tokenList.length >= 30 ? {} : false}
         />

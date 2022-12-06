@@ -73,6 +73,7 @@ export class BurnController {
           } else {
             lotusBurnDown = lotusBurnDown + xpiValue;
           }
+          const lotusBurnScore = lotusBurnUp - lotusBurnDown;
 
           await this.prisma.post.update({
             where: {
@@ -80,7 +81,8 @@ export class BurnController {
             },
             data: {
               lotusBurnDown,
-              lotusBurnUp
+              lotusBurnUp,
+              lotusBurnScore
             }
           });
         } else if (command.burnForType === BurnForType.Token) {
@@ -99,6 +101,7 @@ export class BurnController {
           } else {
             lotusBurnDown = lotusBurnDown + xpiValue;
           }
+          const lotusBurnScore = lotusBurnUp - lotusBurnDown;
 
           await this.prisma.token.update({
             where: {
@@ -106,7 +109,8 @@ export class BurnController {
             },
             data: {
               lotusBurnDown,
-              lotusBurnUp
+              lotusBurnUp,
+              lotusBurnScore
             }
           });
         }

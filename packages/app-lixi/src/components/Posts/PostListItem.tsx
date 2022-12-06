@@ -13,7 +13,7 @@ import { Avatar, Button, Comment, List, Space } from 'antd';
 import { push } from 'connected-next-router';
 import _ from 'lodash';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import intl from 'react-intl-universal';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
@@ -80,17 +80,22 @@ const CardHeader = styled.div`
 const Content = styled.div`
   .description-post {
     text-align: left;
-    display: -webkit-box;
-    -webkit-line-clamp: 6;
-    -webkit-box-orient: vertical;
-    text-overflow: ellipsis;
-    overflow: hidden;
     img {
       max-height: 250px;
       width: 100%;
     }
     p {
       margin: 0;
+    }
+    &.show-more {
+      display: block !important;
+    }
+    &.show-less {
+      display: -webkit-box;
+      -webkit-line-clamp: 6;
+      -webkit-box-orient: vertical;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
   }
   .image-cover {
@@ -149,6 +154,8 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
   const [comments, setComments] = useState<CommentItem[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [value, setValue] = useState('');
+  const [showMore, setShowMore] = useState(false);
+  const ref = useRef<HTMLDivElement | null>(null);
 
   const Wallet = React.useContext(WalletContext);
   const { XPI, chronik } = Wallet;
@@ -160,6 +167,26 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
 
   const routerPostDetail = id => {
     dispatch(push(`/post/${id}`));
+  };
+
+  useEffect(() => {
+    loadPost();
+  }, []);
+
+  const loadPost = () => {
+    const descPost = ref?.current.querySelector('.description-post');
+    if (descPost.clientHeight > 130) {
+      descPost.classList.add('show-less');
+      setShowMore(true);
+    } else {
+      setShowMore(false);
+    }
+  };
+
+  const showMoreHandle = () => {
+    const descPostDom = ref?.current.querySelector('.description-post');
+    descPostDom.classList.add('show-more');
+    setShowMore(false);
   };
 
   const onLixiClick = item => {};
@@ -267,8 +294,9 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
           border: 'none'
         }}
         key={post.id}
+        ref={ref}
       >
-        <CardContainer onClick={() => routerPostDetail(post.id)}>
+        <CardContainer>
           <CardHeader>
             <InfoCardUser
               imgUrl={post.page ? post.page.avatar : ''}
@@ -278,6 +306,11 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
           </CardHeader>
           <Content>
             <div className="description-post">{ReactHtmlParser(post?.content)}</div>
+            {showMore && (
+              <p style={{ textAlign: 'left', color: 'var(--color-primary)' }} onClick={() => showMoreHandle()}>
+                Show more...
+              </p>
+            )}
             {/* <img className="image-cover" src={post.uploadCovers} alt="" /> */}
           </Content>
         </CardContainer>

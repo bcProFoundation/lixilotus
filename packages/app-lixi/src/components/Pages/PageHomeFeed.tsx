@@ -9,6 +9,9 @@ import Link from 'next/link';
 import { push } from 'connected-next-router';
 
 const StyledPageFeed = styled.div`
+  padding-bottom: 4rem;
+  overflow: auto;
+  height: 100vh;
   h2 {
     text-align: left;
     margin-bottom: 1rem;

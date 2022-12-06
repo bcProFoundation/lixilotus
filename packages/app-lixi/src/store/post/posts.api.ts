@@ -11,9 +11,6 @@ const enhancedApi = api.enhanceEndpoints({
     },
     createPost: {
       invalidatesTags: ['Post']
-    },
-    updatePost: {
-      invalidatesTags: ['Post']
     }
   }
 });
@@ -27,6 +24,5 @@ export const {
   useLazyPostsQuery,
   usePostsByPageIdQuery,
   useLazyPostsByPageIdQuery,
-  useCreatePostMutation,
-  useUpdatePostMutation
+  useCreatePostMutation
 } = enhancedApi;

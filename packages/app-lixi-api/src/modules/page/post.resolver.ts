@@ -5,17 +5,7 @@ import { MeiliSearch } from 'meilisearch';
 import { I18n, I18nService } from 'nestjs-i18n';
 import { PostAccountEntity } from 'src/decorators/postAccount.decorator';
 import VError from 'verror';
-
-import {
-  Account,
-  CreatePostInput,
-  Page,
-  PaginationArgs,
-  Post,
-  PostConnection,
-  PostOrder,
-  UpdatePostInput
-} from '@bcpros/lixi-models';
+import { Post, PaginationArgs, PostOrder, PostConnection, CreatePostInput, Account, Page } from '@bcpros/lixi-models';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
 import {
   ExecutionContext,
@@ -40,7 +30,7 @@ const pubSub = new PubSub();
 export class PostResolver {
   private logger: Logger = new Logger(this.constructor.name);
 
-  constructor(private prisma: PrismaService, private meiliService: MeiliService, @I18n() private i18n: I18nService) {}
+  constructor(private prisma: PrismaService, private meiliService: MeiliService, @I18n() private i18n: I18nService) { }
 
   @Subscription(() => Post)
   postCreated() {
@@ -77,6 +67,11 @@ export class PostResolver {
               },
               {
                 token: null
+              },
+              {
+                lotusBurnScore: {
+                  gte: 0
+                }
               }
             ]
           },
@@ -92,6 +87,11 @@ export class PostResolver {
               },
               {
                 token: null
+              },
+              {
+                lotusBurnScore: {
+                  gte: 0
+                }
               }
             ]
           }
@@ -248,10 +248,10 @@ export class PostResolver {
           connect:
             uploadDetailIds.length > 0
               ? uploadDetailIds.map((uploadDetail: any) => {
-                  return {
-                    id: uploadDetail
-                  };
-                })
+                return {
+                  id: uploadDetail
+                };
+              })
               : undefined
         },
         page: {

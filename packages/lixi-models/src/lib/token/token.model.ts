@@ -38,6 +38,10 @@ export class Token {
   @Field(() => Float)
   lotusBurnDown: number;
 
+  @IsOptional()
+  @Field(() => Float)
+  lotusBurnScore: number;
+
   @Field(() => String, { nullable: true })
   initialTokenQuantity: string;
 

@@ -115,6 +115,13 @@ export const AppContainer = styled.div`
     @media (max-width: 768px) {
       padding-right: 0 !important;
     }
+    @media (max-width: 420px) {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
   }
 `;
 

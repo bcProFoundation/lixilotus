@@ -58,6 +58,9 @@ type Page {
   createdAt: DateTime!
   description: String!
   id: ID!
+  lotusBurnDown: Float!
+  lotusBurnScore: Float!
+  lotusBurnUp: Float!
   name: String!
   pageAccountId: Int!
   parent: Page
@@ -97,6 +100,7 @@ input PageOrder {
 enum PageOrderField {
   createdAt
   id
+  lotusBurnScore
   name
   title
   updatedAt
@@ -109,6 +113,7 @@ type Post {
   createdAt: DateTime!
   id: ID!
   lotusBurnDown: Float!
+  lotusBurnScore: Float!
   lotusBurnUp: Float!
   page: Page
   pageAccount: Account!
@@ -143,6 +148,7 @@ enum PostOrderField {
   content
   createdAt
   id
+  lotusBurnScore
   updatedAt
 }
 
@@ -171,6 +177,7 @@ type Token {
   id: ID!
   initialTokenQuantity: String
   lotusBurnDown: Float!
+  lotusBurnScore: Float!
   lotusBurnUp: Float!
   name: String!
   ticker: String!
