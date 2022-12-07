@@ -22,7 +22,7 @@ import { getRecipientPublicKey } from '@utils/chronik';
 import { shouldRejectAmountInput } from '@utils/validation';
 import { Alert, Checkbox, Col, Form, message, Modal, Row } from 'antd';
 import _ from 'lodash';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
 
@@ -52,15 +52,12 @@ const SendComponent: React.FC = () => {
   const wallet = useAppSelector(getSelectedAccount);
   const currentAddress = wallet?.address;
 
-  const search = window.location.search;
-  const params = new URLSearchParams(search);
-  const replyAddress = params.get('replyAddress');
-
   const [formData, setFormData] = useState({
     dirty: true,
     value: '',
-    address: replyAddress ?? ''
+    address: ''
   });
+
   const [queryStringText, setQueryStringText] = useState(null);
   const [sendXpiAddressError, setSendXpiAddressError] = useState('');
   const [sendXpiAmountError, setSendXpiAmountError] = useState('');
@@ -81,6 +78,19 @@ const SendComponent: React.FC = () => {
   const walletBalances = useAppSelector(getWalletBalances);
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
+
+  useEffect(() => {
+    const search = window.location.search;
+    const params = new URLSearchParams(search);
+    const replyAddress = params.get('replyAddress');
+    setFormData({
+      ...formData,
+      address: replyAddress ?? ''
+    });
+    if (replyAddress) {
+      fetchRecipientPublicKey(replyAddress);
+    }
+  }, []);
 
   const showModal = () => {
     setIsModalVisible(true);
