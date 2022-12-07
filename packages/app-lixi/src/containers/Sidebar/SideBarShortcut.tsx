@@ -165,7 +165,22 @@ const ShortcutSideBar = styled(Sider)`
   left: 2rem;
   max-width: inherit !important;
   background: var(--bg-color-light-theme);
-
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+  &.show-scroll {
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-image: linear-gradient(180deg, #d0368a 0%, #708ad4 99%) !important;
+      box-shadow: inset 2px 2px 5px 0 rgba(#fff, 0.5);
+      border-radius: 100px;
+    }
+  }
   @media (max-width: 768px) {
     display: none;
   }
@@ -229,8 +244,16 @@ const SidebarShortcut = () => {
     }
   };
 
+  const triggerSrollbar = e => {
+    const domScroll = document.querySelector('#short-cut-sidebar');
+    domScroll.classList.add('show-scroll');
+    setTimeout(() => {
+      domScroll.classList.remove('show-scroll');
+    }, 700);
+  };
+
   return (
-    <ShortcutSideBar>
+    <ShortcutSideBar id="short-cut-sidebar" onScroll={e => triggerSrollbar(e)}>
       <CointainerAccess>
         <div className="wrapper">
           <StyledLogo>

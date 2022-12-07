@@ -90,7 +90,7 @@ export const AppContainer = styled.div`
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     box-shadow: none;
-    padding: 0 16px;
+    padding: 0 8px;
   }
   @media (min-width: 768px) {
     width: 100%;
@@ -107,6 +107,8 @@ export const AppContainer = styled.div`
   }
   .main-section-layout {
     max-width: 680px;
+    height: 100vh;
+    overflow-y: auto;
     @media (max-width: 768px) {
       padding-right: 0 !important;
     }
@@ -167,19 +169,9 @@ const PageDetailLayout: React.FC = (props: PageDetailsLayoutProps) => {
                       <Sidebar />
                       <Layout
                         className="main-section-layout"
-                        style={{ paddingRight: '2rem', maxWidth: '100%', marginTop: '2rem' }}
+                        style={{ paddingRight: '2rem', maxWidth: '100%', marginTop: '8px' }}
                       >
                         <Topbar ref={setRef} />
-                        {/* {selectedKey !== '/' && (
-                          <NavBarHeader>
-                            <Link href="/" passHref>
-                              <LeftOutlined onClick={() => router.back()} />
-                            </Link>
-                            <PathDirection>
-                              <h2>{navBarTitle.length > 0 ? intl.get(navBarTitle) : ''}</h2>
-                            </PathDirection>
-                          </NavBarHeader>
-                        )} */}
                         <Content className="content-layout">{children}</Content>
                       </Layout>
                     </Layout>
