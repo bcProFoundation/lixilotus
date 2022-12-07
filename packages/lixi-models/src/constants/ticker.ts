@@ -13,7 +13,7 @@ export const currency = {
   tokenName: 'eToken',
   tokenTicker: 'eToken',
   tokenPrefixes: ['etoken'],
-  tokenIconsUrl: '', //https://tokens.bitcoin.com/32 for BCH SLP
+  tokenIconsUrl: 'https://etoken-icons.s3.us-west-2.amazonaws.com',
   txHistoryCount: 20,
   hydrateUtxoBatchSize: 20,
   defaultSettings: { fiatCurrency: 'usd' },

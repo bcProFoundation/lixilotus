@@ -1,18 +1,18 @@
-import { CommentOutlined, DownOutlined, FireOutlined, UserOutlined } from '@ant-design/icons';
+import { DownOutlined, FireOutlined } from '@ant-design/icons';
 import CreatePostCard from '@components/Common/CreatePostCard';
 import SearchBox from '@components/Common/SearchBox';
-import { Button, Dropdown, Menu, MenuProps, message, Space, Table, Tabs, Tag } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
-import _ from 'lodash';
-import React, { useEffect } from 'react';
-import styled from 'styled-components';
-import { Virtuoso } from 'react-virtuoso';
+import { currency } from '@components/Common/Ticker';
 import PostListItem from '@components/Posts/PostListItem';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
-import { getSelectedToken } from '@store/tokens';
 import { useInfinitePostsByTokenIdQuery } from '@store/post/useInfinitePostsByTokenIdQuery';
+import { getSelectedToken } from '@store/tokens';
 import { formatBalance } from '@utils/cashMethods';
+import { Button, Dropdown, Image, Menu, MenuProps, message, Space, Tabs } from 'antd';
+import makeBlockie from 'ethereum-blockies-base64';
+import React, { useEffect } from 'react';
+import { Virtuoso } from 'react-virtuoso';
+import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
+import styled from 'styled-components';
 
 const StyledTokensFeed = styled.div`
   .content {
@@ -117,9 +117,13 @@ const TokensFeed: React.FC = () => {
     <StyledTokensFeed>
       <BannerTicker>
         <div className="avatar-ticker">
-          <picture>
-            <img src="/images/xpi.svg" alt="" />
-          </picture>
+          <Image
+            width={120}
+            height={120}
+            src={`${currency.tokenIconsUrl}/128/${tokenInfo.tokenId}.png`}
+            fallback={makeBlockie(tokenInfo.id)}
+            preview={false}
+          />
         </div>
         <div className="info-ticker">
           <h4 className="title-ticker">{tokenInfo['ticker']}</h4>
@@ -132,7 +136,7 @@ const TokensFeed: React.FC = () => {
         </div>
       </BannerTicker>
 
-      <CreatePostCard tokenId={tokenInfo.id} refetch={() => refetch()} />
+      <CreatePostCard tokenId={tokenInfo.tokenId} refetch={() => refetch()} />
       <SearchBox />
 
       <div className="content">

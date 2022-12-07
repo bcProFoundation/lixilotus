@@ -36,6 +36,7 @@
     "connected-next-router": "^4.1.1",
     "cookies-next": "^2.1.1",
     "emoji-picker-react": "^4.4.4",
+    "ethereum-blockies-base64": "^1.0.2",
     "file-saver": "^2.0.5",
     "html-to-image": "^1.9.0",
     "iron-session": "^6.2.1",
