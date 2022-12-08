@@ -22,8 +22,8 @@ import { MeiliService } from './meili.service';
 import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
 import { PrismaService } from '../prisma/prisma.service';
 import { POSTS } from './constants/meili.constants';
-import ConnectionArgs, { getPagingParameters } from '../../common/connection.args';
-import { connectionFromArraySlice } from '../../common/arrayConnection';
+import ConnectionArgs, { getPagingParameters } from '../../common/custom-graphql-relay/connection.args';
+import { connectionFromArraySlice } from '../../common/custom-graphql-relay/arrayConnection';
 import PostResponse from 'src/common/post.response';
 import { PostService } from './post.service';
 
@@ -151,7 +151,6 @@ export class PostResolver {
   ): Promise<PostResponse> {
     const { limit, offset } = getPagingParameters(args);
     const [posts, count] = await this.postService.findAll(limit!, offset!, query);
-    console.log(posts, count);
     return connectionFromArraySlice(posts, args, {
       arrayLength: count,
       sliceStart: offset || 0
@@ -287,7 +286,7 @@ export class PostResolver {
       }
     });
 
-    //TODO: Strip html from content before adding to meilisearch
+    //TODO: Strip html from content before adding to meilisearch. Do later with new editor
 
     await this.meiliService.add(POSTS, _.omit(createdPost, ['postAccountId', 'pageId', 'tokenId']), createdPost.id);
 

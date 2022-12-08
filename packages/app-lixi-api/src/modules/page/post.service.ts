@@ -10,13 +10,6 @@ export class PostService {
   async findAll(limit: number, offset: number, query = ''): Promise<any> {
     const count = await this.meiliService.searchByQueryEstimatedTotalHits(POSTS, query);
     const posts = await this.meiliService.searchByQueryHits(POSTS, query, limit, offset);
-    //  const teams = await this.teamModel
-    //    .find({
-    //      teamName: { $regex: query, $options: 'i' },
-    //    })
-    //    .skip(offset)
-    //    .limit(limit)
-    //    .exec();
     return [posts, count];
   }
 }

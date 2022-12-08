@@ -48,8 +48,6 @@ export class MeiliService implements OnModuleInit {
   }
 
   public async searchByQueryHits(index: string, query: string, offset: number, limit: number) {
-    console.log(offset);
-    console.log(limit);
     const hits = await this.meiliSearch
       .index(index)
       .search(query, {
@@ -59,7 +57,6 @@ export class MeiliService implements OnModuleInit {
       .then(res => {
         return res.hits;
       });
-    console.log(hits);
     return hits;
   }
 

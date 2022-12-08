@@ -16,6 +16,7 @@ import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import PostListItem from './PostListItem';
 import styled from 'styled-components';
+import intl from 'react-intl-universal';
 
 type PostsListingProps = {
   className?: string;
@@ -36,6 +37,27 @@ const StyledPostsListing = styled.div`
       border-radius: 100px;
     }
   }
+
+  .custom-query-list {
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-image: linear-gradient(180deg, #d0368a 0%, #708ad4 99%);
+      box-shadow: inset 2px 2px 5px 0 rgba(#fff, 0.5);
+      border-radius: 100px;
+    }
+    animation: fadeInAnimation 0.75s;
+  }
+
+  @keyframes fadeInAnimation {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 `;
 
 const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingProps) => {
@@ -44,7 +66,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const [isShowQrCode, setIsShowQrCode] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
-
+  const [searchValue, setSearchValue] = useState<string | null>(null);
   const [queryPostTrigger, queryPostResult] = useLazyPostQuery();
   const latestBurnForPost = useAppSelector(getLatestBurnForPost);
 
@@ -61,42 +83,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     }
   ];
 
-  //TODO: Implemment search bar
-  const { data, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsBySearchQuery(
-    {
-      query: 'ngày'
-    },
-    false
-  );
-
-  useEffect(() => {
-    refetch();
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      if (latestBurnForPost) {
-        const post = await queryPostTrigger({ id: latestBurnForPost.burnForId });
-        console.log('post', post);
-        dispatch(
-          postApi.util.updateQueryData('Posts', undefined, draft => {
-            const postToUpdate = draft.allPosts.edges.find(item => item.node.id === latestBurnForPost.burnForId);
-            if (postToUpdate) {
-              console.log('update post');
-              postToUpdate.node = post.data.post;
-            }
-          })
-        );
-        postApi.util.invalidateTags(['Post']);
-        refetch();
-      }
-    })();
-  }, [latestBurnForPost]);
-
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
-
   const handleOk = () => {
     setIsModalVisible(false);
   };
@@ -105,21 +91,63 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     setIsModalVisible(false);
   };
 
-  const onChange = (checked: boolean) => {
-    setLoading(!checked);
+  //#region QueryVirtuoso
+  const { queryData, fetchNextQuery, hasNextQuery, isQueryFetching, isFetchingQueryNext } =
+    useInfinitePostsBySearchQuery(
+      {
+        query: searchValue
+      },
+      false
+    );
+
+  const loadMoreQueryItems = () => {
+    if (hasNextQuery && !isQueryFetching) {
+      fetchNextQuery();
+    } else if (hasNextQuery) {
+      fetchNextQuery();
+    }
   };
 
-  const onClickMenu: MenuProps['onClick'] = e => {
-    if (e.key === 'filter') {
-    }
-    if (e.key === 'week') {
-      dispatch(setSelectedPost('testPost'));
-    }
+  const searchPost = value => {
+    setSearchValue(value);
   };
 
-  const isItemLoaded = (index: number) => {
-    return index < data.length && !_.isNil(data[index]);
+  const QueryHeader = () => {
+    return (
+      <div>
+        <SearchBox searchPost={searchPost} value={searchValue} />
+        <h1 style={{ textAlign: 'left', fontSize: '20px' }}>
+          {intl.get('general.searchResults', { text: searchValue })}
+        </h1>
+      </div>
+    );
   };
+
+  const QueryFooter = () => {
+    return (
+      <div
+        style={{
+          padding: '1rem 2rem 2rem 2rem',
+          textAlign: 'center'
+        }}
+      >
+        {isFetchingQueryNext ? <Skeleton avatar active /> : "It's so empty here..."}
+      </div>
+    );
+  };
+  //#endregion
+
+  //#region Normal Virtuoso
+  const { data, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsQuery(
+    {
+      first: 10,
+      orderBy: {
+        direction: OrderDirection.Desc,
+        field: PostOrderField.UpdatedAt
+      }
+    },
+    false
+  );
 
   const loadMoreItems = () => {
     if (hasNext && !isFetching) {
@@ -132,7 +160,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const Header = () => {
     return (
       <div>
-        <SearchBox></SearchBox>
+        <SearchBox searchPost={searchPost} value={searchValue} />
         <CreatePostCard refetch={() => refetch()} />
         <Menu
           style={{
@@ -162,20 +190,67 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       </div>
     );
   };
+  //#endregion
+
+  useEffect(() => {
+    refetch();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      if (latestBurnForPost) {
+        const post = await queryPostTrigger({ id: latestBurnForPost.burnForId });
+        console.log('post', post);
+        dispatch(
+          postApi.util.updateQueryData('Posts', undefined, draft => {
+            const postToUpdate = draft.allPosts.edges.find(item => item.node.id === latestBurnForPost.burnForId);
+            if (postToUpdate) {
+              console.log('update post');
+              postToUpdate.node = post.data.post;
+            }
+          })
+        );
+        postApi.util.invalidateTags(['Post']);
+        refetch();
+      }
+    })();
+  }, [latestBurnForPost]);
+
+  const onClickMenu: MenuProps['onClick'] = e => {
+    if (e.key === 'filter') {
+    }
+    if (e.key === 'week') {
+      dispatch(setSelectedPost('testPost'));
+    }
+  };
 
   return (
     <StyledPostsListing>
-      <Virtuoso
-        className="custom-list"
-        style={{ height: '100vh', paddingBottom: '2rem' }}
-        data={data}
-        endReached={loadMoreItems}
-        overscan={500}
-        itemContent={(index, item) => {
-          return <PostListItem index={index} item={item} />;
-        }}
-        components={{ Header, Footer }}
-      />
+      {!searchValue ? (
+        <Virtuoso
+          className="custom-list"
+          style={{ height: '100vh', paddingBottom: '2rem' }}
+          data={data}
+          endReached={loadMoreItems}
+          overscan={500}
+          itemContent={(index, item) => {
+            return <PostListItem index={index} item={item} />;
+          }}
+          components={{ Header, Footer }}
+        />
+      ) : (
+        <Virtuoso
+          className="custom-query-list"
+          style={{ height: '100vh', paddingBottom: '2rem' }}
+          data={queryData}
+          endReached={loadMoreQueryItems}
+          overscan={500}
+          itemContent={(index, item) => {
+            return <PostListItem index={index} item={item} />;
+          }}
+          components={{ Header: QueryHeader, Footer: QueryFooter }}
+        />
+      )}
       <Modal title="Are you sure to down vote shop?" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
         <p>Some contents...</p>
       </Modal>

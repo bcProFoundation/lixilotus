@@ -33,7 +33,7 @@ export function useInfinitePostsBySearchQuery(
     if (baseResult?.data?.allPostsBySearch) {
       isBaseReady.current = true;
       setCombinedData(baseResult.data.allPostsBySearch.edges.map(item => item.node));
-      fetchAll && fetchNext();
+      fetchAll && fetchNextQuery();
     }
   }, [baseResult]);
 
@@ -59,7 +59,7 @@ export function useInfinitePostsBySearchQuery(
     }
   }, [nextResult]);
 
-  const fetchNext = async () => {
+  const fetchNextQuery = async () => {
     if (!isBaseReady.current || !isNextDone.current || next.current === undefined || next.current === null) {
       return;
     }
@@ -73,27 +73,27 @@ export function useInfinitePostsBySearchQuery(
     } catch (e) {
     } finally {
       isNextDone.current = true;
-      fetchAll && fetchNext();
+      fetchAll && fetchNextQuery();
     }
   };
 
-  const refetch = async () => {
+  const refetchQuery = async () => {
     isBaseReady.current = false;
     next.current = null; // restart
     await baseResult.refetch(); // restart with a whole new refetching
   };
 
   return {
-    data: combinedData ?? [],
-    error: baseResult?.error,
-    isError: baseResult?.isError,
-    isLoading: baseResult?.isLoading,
-    isFetching: baseResult?.isFetching || nextResult?.isFetching,
-    errorNext: nextResult?.error,
-    isErrorNext: nextResult?.isError,
-    isFetchingNext: nextResult?.isFetching,
-    hasNext: baseResult.data?.allPostsBySearch?.pageInfo?.endCursor !== undefined,
-    fetchNext,
-    refetch
+    queryData: combinedData ?? [],
+    queryError: baseResult?.error,
+    isQueryError: baseResult?.isError,
+    isQueryLoading: baseResult?.isLoading,
+    isQueryFetching: baseResult?.isFetching || nextResult?.isFetching,
+    errorQueryNext: nextResult?.error,
+    isErrorQueryNext: nextResult?.isError,
+    isFetchingQueryNext: nextResult?.isFetching,
+    hasNextQuery: baseResult.data?.allPostsBySearch?.pageInfo?.endCursor !== undefined,
+    fetchNextQuery,
+    refetchQuery
   };
 }

@@ -66,6 +66,7 @@ export default {
   'general.notFoundTitle': 'Opp! Page not found',
   'general.notFoundDescription': 'Sorry, we can’t find the page you’re looking for.',
   'general.goBackToHome': 'Go back',
+  'general.searchResults': 'Search results for "{text}"',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
