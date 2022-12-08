@@ -346,7 +346,7 @@ const SidebarRanking = () => {
   };
 
   const triggerSrollbar = e => {
-    const domScroll = document.querySelector('#short-cut-ranking');
+    const domScroll = document.querySelector('#ranking-sidebar');
     domScroll.classList.add('show-scroll');
     setTimeout(() => {
       domScroll.classList.remove('show-scroll');
@@ -354,7 +354,7 @@ const SidebarRanking = () => {
   };
 
   return (
-    <RankingSideBar id="short-cut-ranking" onScroll={e => triggerSrollbar(e)}>
+    <RankingSideBar id="ranking-sidebar" onScroll={e => triggerSrollbar(e)}>
       <div className="login-session">
         <InfoCardUser imgUrl={null} name={'Anonymous'} title={'@anonymous'}></InfoCardUser>
         {!selectedAccount && (

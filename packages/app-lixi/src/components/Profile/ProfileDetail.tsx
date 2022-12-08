@@ -394,16 +394,12 @@ const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
       <StyledContainerProfileDetail>
         <ProfileCardHeader>
           <div className="container-img">
-            <img className="cover-img" src={'https://' + pageDetailData.cover || '/images/default-cover.jpg'} alt="" />
+            <img className="cover-img" src={pageDetailData.cover || '/images/default-cover.jpg'} alt="" />
           </div>
           <div className="info-profile">
             <div className="wrapper-avatar">
               <picture>
-                <img
-                  className="avatar-img"
-                  src={'https://' + pageDetailData.avatar || '/images/default-avatar.jpg'}
-                  alt=""
-                />
+                <img className="avatar-img" src={pageDetailData.avatar || '/images/default-avatar.jpg'} alt="" />
               </picture>
               {selectedAccountId == pageDetailData?.pageAccountId && (
                 <div className="btn-upload-avatar" onClick={navigateEditPage}>

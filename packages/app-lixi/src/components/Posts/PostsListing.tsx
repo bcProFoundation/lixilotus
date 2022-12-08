@@ -20,7 +20,7 @@ type PostsListingProps = {
 };
 
 const StyledPostsListing = styled.div`
-  #list-virtuso {
+  #list-virtuoso {
     &::-webkit-scrollbar {
       width: 5px;
     }
@@ -135,7 +135,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   };
 
   const triggerSrollbar = e => {
-    const domScroll = document.querySelector('#list-virtuso');
+    const domScroll = document.querySelector('#list-virtuoso');
     domScroll.classList.add('show-scroll');
     setTimeout(() => {
       domScroll.classList.remove('show-scroll');
@@ -179,7 +179,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   return (
     <StyledPostsListing>
       <Virtuoso
-        id="list-virtuso"
+        id="list-virtuoso"
         onScroll={e => triggerSrollbar(e)}
         style={{ height: '100vh', paddingBottom: '2rem' }}
         data={data}
