@@ -39,7 +39,7 @@ const PageDetailPage = props => {
               cardType: 'summary_large_image'
             }}
           />
-          <ProfileDetail page={currentPage} isMobile={isMobile} />
+          <PageDetail page={currentPage} isMobile={isMobile} />
         </>
       )}
     </>

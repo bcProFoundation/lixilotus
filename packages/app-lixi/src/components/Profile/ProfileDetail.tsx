@@ -321,6 +321,7 @@ const SubAbout = ({
   </StyledSpace>
 );
 
+//TODO: Change page to user
 const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
   const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
   const router = useRouter();
@@ -329,6 +330,7 @@ const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
   const [listsFriend, setListsFriend] = useState<any>([]);
   const [listsPicture, setListsPicture] = useState<any>([]);
 
+  //TODO: Implement useInfinitePostsByUserIdQuery
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByPageIdQuery(
     {
       first: 10,

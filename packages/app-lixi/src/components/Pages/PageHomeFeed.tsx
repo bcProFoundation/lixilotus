@@ -260,7 +260,7 @@ const PageHome = () => {
           )}
           {selectedPage && (
             <ListCard>
-              <CardPageItem item={mapPageItem(selectedPage)} />
+              <CardPageItem item={mapPageItem(selectedPage)} onClickItem={id => routerPageDetail(id)} />
             </ListCard>
           )}
         </YourPageContainer>
