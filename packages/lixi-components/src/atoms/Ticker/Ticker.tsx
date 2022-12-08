@@ -16,7 +16,7 @@ const Ticker = {
   tokenTicker: 'eToken',
   tokenLogo: tokenLogo,
   tokenPrefix: 'etoken:',
-  tokenIconsUrl: '', //https://tokens.bitcoin.com/32 for BCH SLP
+  tokenIconsUrl: 'https://etoken-icons.s3.us-west-2.amazonaws.com',
   useBlockchainWs: false
 };
 

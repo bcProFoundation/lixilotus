@@ -24,7 +24,7 @@ import { Button, Layout, message, Space } from 'antd';
 import classNames from 'classnames';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { Logged } from './SideBarRanking';
 import axiosClient from '@utils/axiosClient';
@@ -165,7 +165,22 @@ const ShortcutSideBar = styled(Sider)`
   left: 2rem;
   max-width: inherit !important;
   background: var(--bg-color-light-theme);
-
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+  &.show-scroll {
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-image: linear-gradient(180deg, #d0368a 0%, #708ad4 99%) !important;
+      box-shadow: inset 2px 2px 5px 0 rgba(#fff, 0.5);
+      border-radius: 100px;
+    }
+  }
   @media (max-width: 768px) {
     display: none;
   }
@@ -205,6 +220,7 @@ const StyledLogged = styled(Logged)`
 `;
 
 const SidebarShortcut = () => {
+  const refSidebarShortcut = useRef<HTMLDivElement | null>(null);
   const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
   const savedAccounts: Account[] = useAppSelector(getAllAccounts);
@@ -229,8 +245,16 @@ const SidebarShortcut = () => {
     }
   };
 
+  const triggerSrollbar = e => {
+    const sidebarShortcutNode = refSidebarShortcut.current;
+    sidebarShortcutNode.classList.add('show-scroll');
+    setTimeout(() => {
+      sidebarShortcutNode.classList.remove('show-scroll');
+    }, 700);
+  };
+
   return (
-    <ShortcutSideBar>
+    <ShortcutSideBar id="short-cut-sidebar" ref={refSidebarShortcut} onScroll={e => triggerSrollbar(e)}>
       <CointainerAccess>
         <div className="wrapper">
           <StyledLogo>

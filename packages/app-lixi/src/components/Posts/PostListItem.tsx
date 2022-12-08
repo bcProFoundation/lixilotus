@@ -80,6 +80,7 @@ const CardHeader = styled.div`
 const Content = styled.div`
   .description-post {
     text-align: left;
+    word-break: break-word;
     img {
       max-height: 250px;
       width: 100%;
@@ -89,12 +90,11 @@ const Content = styled.div`
     }
     &.show-more {
       display: block !important;
+      height: fit-content !important;
+      overflow: none !important;
     }
     &.show-less {
-      display: -webkit-box;
-      -webkit-line-clamp: 6;
-      -webkit-box-orient: vertical;
-      text-overflow: ellipsis;
+      height: 130px;
       overflow: hidden;
     }
   }
@@ -330,7 +330,8 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
               dataItem={item}
               onClickIcon={() => downVotePost(item)}
             />
-            <IconText
+            {/* TODO: complete next Release */}
+            {/* <IconText
               imgUrl="/images/comment-ico.svg"
               text="0 Comments"
               key={`list-vertical-comment-o-${item.id}`}
@@ -345,7 +346,7 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
               key={`list-vertical-share-o-${item.id}`}
               dataItem={item}
               onClickIcon={() => {}}
-            />
+            /> */}
           </GroupIconText>
 
           <Button type="primary" onClick={item => onLixiClick(item)}>

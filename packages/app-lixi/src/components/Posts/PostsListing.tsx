@@ -10,7 +10,7 @@ import { api as postApi, useLazyPostQuery } from '@store/post/posts.api';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
 import { Menu, MenuProps, Modal, Skeleton } from 'antd';
 import _ from 'lodash';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
@@ -23,18 +23,22 @@ type PostsListingProps = {
 };
 
 const StyledPostsListing = styled.div`
-  .custom-list {
-    // -ms-overflow-style: none;
-    // scrollbar-width: none;
-    // position: absolute;
-    // right: 0;
+  #list-virtuoso {
     &::-webkit-scrollbar {
       width: 5px;
     }
-    ::-webkit-scrollbar-thumb {
-      background-image: linear-gradient(180deg, #d0368a 0%, #708ad4 99%);
-      box-shadow: inset 2px 2px 5px 0 rgba(#fff, 0.5);
-      border-radius: 100px;
+    &::-webkit-scrollbar-thumb {
+      background: transparent;
+    }
+    &.show-scroll {
+      &::-webkit-scrollbar {
+        width: 5px;
+      }
+      &::-webkit-scrollbar-thumb {
+        background-image: linear-gradient(180deg, #d0368a 0%, #708ad4 99%) !important;
+        box-shadow: inset 2px 2px 5px 0 rgba(#fff, 0.5);
+        border-radius: 100px;
+      }
     }
   }
 
@@ -42,10 +46,18 @@ const StyledPostsListing = styled.div`
     &::-webkit-scrollbar {
       width: 5px;
     }
-    ::-webkit-scrollbar-thumb {
-      background-image: linear-gradient(180deg, #d0368a 0%, #708ad4 99%);
-      box-shadow: inset 2px 2px 5px 0 rgba(#fff, 0.5);
-      border-radius: 100px;
+    &::-webkit-scrollbar-thumb {
+      background: transparent;
+    }
+    &.show-scroll {
+      &::-webkit-scrollbar {
+        width: 5px;
+      }
+      &::-webkit-scrollbar-thumb {
+        background-image: linear-gradient(180deg, #d0368a 0%, #708ad4 99%) !important;
+        box-shadow: inset 2px 2px 5px 0 rgba(#fff, 0.5);
+        border-radius: 100px;
+      }
     }
     animation: fadeInAnimation 0.75s;
   }
@@ -67,6 +79,8 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchValue, setSearchValue] = useState<string | null>(null);
+  const refPostsListing = useRef<HTMLDivElement | null>(null);
+
   const [queryPostTrigger, queryPostResult] = useLazyPostQuery();
   const latestBurnForPost = useAppSelector(getLatestBurnForPost);
 
@@ -157,6 +171,14 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     }
   };
 
+  const triggerSrollbar = e => {
+    const virtuosoNode = refPostsListing.current.querySelector('#list-virtuoso') || null;
+    virtuosoNode.classList.add('show-scroll');
+    setTimeout(() => {
+      virtuosoNode.classList.remove('show-scroll');
+    }, 700);
+  };
+
   const Header = () => {
     return (
       <div>
@@ -225,10 +247,11 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   };
 
   return (
-    <StyledPostsListing>
+    <StyledPostsListing ref={refPostsListing}>
       {!searchValue ? (
         <Virtuoso
-          className="custom-list"
+          id="list-virtuoso"
+          onScroll={e => triggerSrollbar(e)}
           style={{ height: '100vh', paddingBottom: '2rem' }}
           data={data}
           endReached={loadMoreItems}
