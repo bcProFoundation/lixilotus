@@ -796,9 +796,9 @@ const Lixi = props => {
                   label={
                     <>
                       <StyledQRCode>
-                        <QRCodeModal address={selectedAccount?.address} type={QRCodeModalType.address} />
+                        <QRCodeModal address={selectedLixi.address} type={QRCodeModalType.address} />
                       </StyledQRCode>
-                      <FormattedWalletAddress address={selectedAccount?.address} isAccountPage={true} />
+                      <FormattedWalletAddress address={selectedLixi.address} isAccountPage={true} />
                     </>
                   }
                   style={{ borderTopLeftRadius: '24px', borderBottomLeftRadius: '24px' }}
@@ -831,9 +831,9 @@ const Lixi = props => {
                   label={
                     <>
                       <StyledQRCode>
-                        <QRCodeModal address={selectedLixi.claimCode} type={QRCodeModalType.claimCode} />
+                        <QRCodeModal address={'lixi_' + selectedLixi.claimCode} type={QRCodeModalType.claimCode} />
                       </StyledQRCode>
-                      {selectedLixi.claimCode}
+                      lixi_{selectedLixi.claimCode}
                       {/* <FormattedWalletAddress address={selectedLixi.claimCode} isAccountPage={true} /> */}
                     </>
                   }
