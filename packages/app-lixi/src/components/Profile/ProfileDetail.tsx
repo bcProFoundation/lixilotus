@@ -2,9 +2,12 @@ import { CameraOutlined, CompassOutlined, EditOutlined, HomeOutlined, InfoCircle
 import CreatePostCard from '@components/Common/CreatePostCard';
 import SearchBox from '@components/Common/SearchBox';
 import PostListItem from '@components/Posts/PostListItem';
+import { getSelectedAccountId } from '@store/account/selectors';
+import { useAppSelector } from '@store/hooks';
 import { useInfinitePostsByPageIdQuery } from '@store/post/useInfinitePostsByPageIdQuery';
 import { Button, Space, Tabs } from 'antd';
 import axios from 'axios';
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
@@ -18,6 +21,7 @@ type PageDetailProps = {
 const StyledContainerProfileDetail = styled.div`
   background: var(--bg-color-light-theme);
   border-radius: 20px;
+  padding-bottom: 3rem;
   .reaction-container {
     display: flex;
     justify-content: space-between;
@@ -101,6 +105,22 @@ const ProfileCardHeader = styled.div`
         margin-top: 4rem;
         text-align: center;
       }
+      h2 {
+        font-weight: 600;
+        margin-bottom: 0;
+      }
+    }
+    .action-profile {
+      @media (max-width: 1001px) {
+        max-width: 160px;
+        text-align: center;
+        button {
+          margin-bottom: 4px;
+        }
+      }
+      @media (max-width: 426px) {
+        display: none;
+      }
     }
     @media (max-width: 768px) {
       flex-direction: column;
@@ -140,6 +160,9 @@ const AboutBox = styled.div`
     display: flex;
     flex-direction: column;
   }
+  @media (max-width: 426px) {
+    margin: 0 4px 1rem 4px;
+  }
 `;
 
 const PictureBox = styled.div`
@@ -163,6 +186,14 @@ const PictureBox = styled.div`
         width: 95%;
       }
     }
+  }
+  .blank-picture {
+    img {
+      width: 100%;
+    }
+  }
+  @media (max-width: 426px) {
+    margin: 0 4px 1rem 4px;
   }
 `;
 
@@ -203,6 +234,18 @@ const FriendBox = styled.div`
       }
     }
   }
+  .blank-friend {
+    img {
+      width: 100%;
+    }
+    button {
+      width: 100%;
+      white-space: break-spaces;
+    }
+  }
+  @media (max-width: 426px) {
+    margin: 0 4px 1rem 4px;
+  }
 `;
 
 const ContentTimeline = styled.div`
@@ -222,7 +265,7 @@ const Timeline = styled.div`
 const StyledSpace = styled(Space)`
   margin-bottom: 1rem;
   .ant-space-item {
-    height: 18px;
+    height: fit-content;
     .anticon {
       font-size: 18px;
       color: rgba(30, 26, 29, 0.38);
@@ -280,6 +323,8 @@ const SubAbout = ({
 
 const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
   const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
+  const router = useRouter();
+  const selectedAccountId = useAppSelector(getSelectedAccountId);
   const [pageDetailData, setPageDetailData] = useState<any>(page);
   const [listsFriend, setListsFriend] = useState<any>([]);
   const [listsPicture, setListsPicture] = useState<any>([]);
@@ -297,11 +342,11 @@ const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
   );
 
   useEffect(() => {
-    fetchListFriend();
+    // fetchListFriend();
   }, []);
 
   useEffect(() => {
-    fetchListPicture();
+    // fetchListPicture();
   }, []);
 
   useEffect(() => {
@@ -340,6 +385,10 @@ const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
     }
   };
 
+  const navigateEditPage = () => {
+    router.push('/page/edit');
+  };
+
   return (
     <>
       <StyledContainerProfileDetail>
@@ -352,24 +401,33 @@ const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
               <picture>
                 <img className="avatar-img" src={pageDetailData.avatar || '/images/default-avatar.jpg'} alt="" />
               </picture>
-              <div className="btn-upload-avatar">
-                <CameraOutlined />
-              </div>
+              {selectedAccountId == pageDetailData?.pageAccountId && (
+                <div className="btn-upload-avatar" onClick={navigateEditPage}>
+                  <CameraOutlined />
+                </div>
+              )}
             </div>
             <div className="title-profile">
-              <h3>{pageDetailData.name}</h3>
+              <h2>{pageDetailData.name}</h2>
               <p>{pageDetailData.title}</p>
             </div>
-            <div>
-              <Button style={{ marginRight: '1rem' }} type="primary" className="outline-btn">
-                <EditOutlined />
-                Edit profile
-              </Button>
-              <Button type="primary" className="outline-btn">
-                <CameraOutlined />
-                Edit cover photo
-              </Button>
-            </div>
+            {selectedAccountId == pageDetailData?.pageAccountId && (
+              <div className="action-profile">
+                <Button
+                  style={{ marginRight: '1rem' }}
+                  type="primary"
+                  className="outline-btn"
+                  onClick={navigateEditPage}
+                >
+                  <EditOutlined />
+                  Edit profile
+                </Button>
+                <Button type="primary" className="outline-btn" onClick={navigateEditPage}>
+                  <CameraOutlined />
+                  Edit cover photo
+                </Button>
+              </div>
+            )}
           </div>
         </ProfileCardHeader>
         <ProfileContentContainer>
@@ -406,9 +464,11 @@ const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
                       icon={HomeOutlined}
                       text={pageDetailData?.website}
                     />
-                    <Button type="primary" className="outline-btn">
-                      Edit your profile
-                    </Button>
+                    {selectedAccountId == pageDetailData?.pageAccountId && (
+                      <Button type="primary" className="outline-btn" onClick={navigateEditPage}>
+                        Edit your profile
+                      </Button>
+                    )}
                   </div>
                 </AboutBox>
                 <PictureBox>
@@ -420,7 +480,7 @@ const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
                       </Button>
                     )}
                   </div>
-                  {listsPicture && listsPicture.length < 0 && (
+                  {listsPicture && listsPicture.length == 0 && (
                     <div className="blank-picture">
                       <img src="/images/photo-blank.svg" alt="" />
                       <p>Photos uploaded in posts, or posts that have tag of your name</p>
@@ -429,13 +489,13 @@ const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
                       </Button>
                     </div>
                   )}
-                  <div className="picture-content">
-                    {listsPicture &&
-                      listsPicture.length > 0 &&
-                      listsPicture.map((item: any, index: number) => {
+                  {listsPicture && listsPicture.length > 0 && (
+                    <div className="picture-content">
+                      {listsPicture.map((item: any, index: number) => {
                         if (index < 9) return <img key={item.id} src={item.download_url} alt={item.author} />;
                       })}
-                  </div>
+                    </div>
+                  )}
                 </PictureBox>
                 <FriendBox>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -458,7 +518,7 @@ const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
                       </Button>
                     )}
                   </div>
-                  {listsFriend && listsFriend.length < 0 && (
+                  {listsFriend && listsFriend.length == 0 && (
                     <div className="blank-friend">
                       <img src="/images/friend-blank.svg" alt="" />
                       <p>Connect with people you know in LixiLotus.</p>
@@ -486,11 +546,12 @@ const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
                 <SearchBox />
                 <CreatePostCard pageId={page.id} refetch={() => refetch()} />
                 <Timeline>
-                  {/* <div className="blank-timeline">
-                <img className="time-line-blank" src="/images/time-line-blank.svg" alt="" />
-                <p>Sharing your thinking</p>
-                <Button type="primary">Create your post</Button>
-              </div> */}
+                  {data.length == 0 && (
+                    <div className="blank-timeline">
+                      <img className="time-line-blank" src="/images/time-line-blank.svg" alt="" />
+                      <p>Sharing your thinking</p>
+                    </div>
+                  )}
                   <div className={'listing'} style={{ height: '100vh' }}>
                     <Virtuoso
                       className={'listing'}

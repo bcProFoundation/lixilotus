@@ -14,7 +14,7 @@ import { Badge, Button, Comment, Form, Input, Layout, Modal, Tabs } from 'antd';
 import * as _ from 'lodash';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import intl from 'react-intl-universal';
 import SwipeToDelete from 'react-swipe-to-delete-ios';
 import styled from 'styled-components';
@@ -30,6 +30,22 @@ const RankingSideBar = styled(Sider)`
   border-radius: 20px;
   padding-bottom: 2rem;
   position: relative;
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+  &.show-scroll {
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-image: linear-gradient(180deg, #d0368a 0%, #708ad4 99%) !important;
+      box-shadow: inset 2px 2px 5px 0 rgba(#fff, 0.5);
+      border-radius: 100px;
+    }
+  }
   .ant-layout-sider-children {
     display: flex;
     flex-direction: column;
@@ -265,6 +281,7 @@ const SidebarRanking = () => {
   const notifications = useAppSelector(getAllNotifications);
   const [isSeemore, setIsSeemore] = useState<boolean>(false);
   const [otherAccounts, setOtherAccounts] = useState<Account[]>([]);
+  const refSidebarRanking = useRef<HTMLDivElement | null>(null);
   const savedAccounts: Account[] = useAppSelector(getAllAccounts);
   const [isShowNotification, setIsShowNotification] = useState<boolean>(false);
 
@@ -329,8 +346,16 @@ const SidebarRanking = () => {
     setFormData(p => ({ ...p, [name]: value }));
   };
 
+  const triggerSrollbar = e => {
+    const sidebarRankingNode = refSidebarRanking.current;
+    sidebarRankingNode.classList.add('show-scroll');
+    setTimeout(() => {
+      sidebarRankingNode.classList.remove('show-scroll');
+    }, 700);
+  };
+
   return (
-    <RankingSideBar>
+    <RankingSideBar id="ranking-sidebar" ref={refSidebarRanking} onScroll={e => triggerSrollbar(e)}>
       <div className="login-session">
         <InfoCardUser imgUrl={null} name={'Anonymous'} title={'@anonymous'}></InfoCardUser>
         {!selectedAccount && (
