@@ -169,13 +169,13 @@ const CardPageItem = ({ item, onClickItem }: { item?: CardPageItem; onClickItem?
   <StyledCardPage onClick={() => onClickItem(item.id)} key={item.id}>
     <div className="container-img">
       <picture>
-        <img className="cover-img" src={'https://' + item.cover || '/images/default-cover.jpg'} alt="cover-img" />
+        <img className="cover-img" src={item.cover || '/images/default-cover.jpg'} alt="cover-img" />
       </picture>
     </div>
     <div className="info-profile">
       <div className="wrapper-avatar">
         <picture>
-          <img className="avatar-img" src={'https://' + item.avatar || '/images/default-avatar.jpg'} alt="avatar-img" />
+          <img className="avatar-img" src={item.avatar || '/images/default-avatar.jpg'} alt="avatar-img" />
         </picture>
       </div>
       <div className="title-profile">
