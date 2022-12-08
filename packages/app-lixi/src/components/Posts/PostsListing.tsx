@@ -8,7 +8,7 @@ import { api as postApi, useLazyPostQuery } from '@store/post/posts.api';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
 import { Menu, MenuProps, Modal, Skeleton } from 'antd';
 import _ from 'lodash';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
@@ -46,6 +46,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const [isShowQrCode, setIsShowQrCode] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const refPostsListing = useRef<HTMLDivElement | null>(null);
 
   const [queryPostTrigger, queryPostResult] = useLazyPostQuery();
   const latestBurnForPost = useAppSelector(getLatestBurnForPost);
@@ -135,10 +136,10 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   };
 
   const triggerSrollbar = e => {
-    const domScroll = document.querySelector('#list-virtuoso');
-    domScroll.classList.add('show-scroll');
+    const virtuosoNode = refPostsListing.current.querySelector('#list-virtuoso') || null;
+    virtuosoNode.classList.add('show-scroll');
     setTimeout(() => {
-      domScroll.classList.remove('show-scroll');
+      virtuosoNode.classList.remove('show-scroll');
     }, 700);
   };
 
@@ -177,7 +178,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   };
 
   return (
-    <StyledPostsListing>
+    <StyledPostsListing ref={refPostsListing}>
       <Virtuoso
         id="list-virtuoso"
         onScroll={e => triggerSrollbar(e)}
