@@ -56,6 +56,7 @@ export const FacebookEmbed: React.FC<FacebookPostEmbedProps> = props => {
             style={{ border: 'none' }}
             scrolling="yes"
             sandbox="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+            loading="lazy"
           />
         </div>
       )}

@@ -85,6 +85,7 @@ export const RedditEmbed: React.FC<RedditPostEmbedProps> = props => {
             width="100%"
             height="560"
             scrolling="yes"
+            loading="lazy"
           />
         </div>
       )}
