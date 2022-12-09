@@ -61,6 +61,37 @@ query PostsByPageId(
   }
 }
 
+query PostsByUserId(
+  $after: String
+  $before: String
+  $first: Int = 20
+  $last: Int
+  $orderBy: PostOrder
+  $id: String
+  $skip: Int
+) {
+  allPostsByUserId(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    id: $id
+    skip: $skip
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...PostFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+
 query PostsByTokenId(
   $after: String
   $before: String
@@ -110,6 +141,10 @@ fragment PostFields on Post {
     avatar
     name
     id
+  }
+  token {
+    id
+    name
   }
   lotusBurnUp
   lotusBurnDown

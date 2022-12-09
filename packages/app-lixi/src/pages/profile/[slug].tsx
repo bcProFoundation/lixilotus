@@ -37,7 +37,7 @@ const ProfileDetailPage = props => {
           cardType: 'summary_large_image'
         }}
       />
-      <ProfileDetail page={user} isMobile={isMobile} />
+      <ProfileDetail user={user} isMobile={isMobile} />
     </>
   );
 };
