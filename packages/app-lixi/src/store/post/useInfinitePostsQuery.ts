@@ -1,7 +1,10 @@
 import { PaginationArgs } from '@bcpros/lixi-models';
-import { useLazyPostsQuery, usePostsQuery } from '@store/post/posts.api';
+import { useLazyPostsQuery, usePostsQuery, api as postApi } from '@store/post/posts.api';
 import { useEffect, useRef, useState } from 'react';
 import { Post, PostOrder } from 'src/generated/types.generated';
+import _ from 'lodash';
+import { PostQuery } from './posts.generated';
+import { useAppDispatch } from '@store/hooks';
 
 export interface PostListParams extends PaginationArgs {
   orderBy?: PostOrder;
@@ -16,10 +19,14 @@ export function useInfinitePostsQuery(
   params: PostListParams,
   fetchAll: boolean = false // if `true`: auto do next fetches to get all notes at once
 ) {
+  const dispatch = useAppDispatch();
   const baseResult = usePostsQuery(params);
 
-  const [trigger, nextResult] = useLazyPostsQuery();
+  const [trigger, nextResult, lastPromiseInfo] = useLazyPostsQuery();
+  const [queryUpdatedTrigger, queryUpdatedResult] = useLazyPostsQuery();
   const [combinedData, setCombinedData] = useState([]);
+
+  const cursorMapping = useRef({});
 
   const isBaseReady = useRef(false);
   const isNextDone = useRef(true);
@@ -32,6 +39,9 @@ export function useInfinitePostsQuery(
     next.current = baseResult.data?.allPosts?.pageInfo?.endCursor;
     if (baseResult?.data?.allPosts) {
       isBaseReady.current = true;
+      _.map(baseResult.data.allPosts.edges, item => {
+        cursorMapping.current[item.node.id] = params;
+      });
       setCombinedData(baseResult.data.allPosts.edges.map(item => item.node));
       fetchAll && fetchNext();
     }
@@ -52,12 +62,61 @@ export function useInfinitePostsQuery(
 
       const newItems = nextResult.data.allPosts.edges.map(item => item.node);
       if (newItems && newItems.length) {
+        _.map(newItems, item => {
+          cursorMapping.current[item.id] = lastPromiseInfo.lastArg;
+        });
         setCombinedData(currentItems => {
           return [...currentItems, ...newItems];
         });
       }
     }
   }, [nextResult]);
+
+  useEffect(() => {
+    if (!queryUpdatedResult.isSuccess) return;
+    if (
+      isBaseReady.current &&
+      queryUpdatedResult.data &&
+      queryUpdatedResult.data.allPosts.pageInfo &&
+      queryUpdatedResult.data.allPosts.pageInfo.endCursor != next.current
+    ) {
+      next.current = nextResult.data.allPosts.pageInfo.endCursor;
+
+      const updatedItems = queryUpdatedResult.data.allPosts.edges.map(item => item.node);
+      const updatedItemsDict = _.keyBy(updatedItems, 'id');
+
+      if (updatedItems && updatedItems.length) {
+        setCombinedData(currentItems => {
+          return currentItems.map(item =>
+            updatedItemsDict[item.id] ? { ...item, ...updatedItemsDict[item.id] } : item
+          );
+        });
+      }
+    }
+  }, [queryUpdatedResult]);
+
+  const updatePost = async (post: PostQuery['post']) => {
+    const params = cursorMapping.current[post.id];
+    if (params) {
+      dispatch(
+        postApi.util.updateQueryData('Posts', params, draft => {
+          const postToUpdate = draft.allPosts.edges.find(item => item.node.id === post.id);
+          if (postToUpdate) {
+            postToUpdate.node = post;
+          }
+        })
+      );
+      fetchParams(params);
+    }
+  };
+
+  const fetchParams = async (params: PostListParams) => {
+    if (!isBaseReady.current) return;
+    try {
+      await queryUpdatedTrigger(params);
+    } catch (e) {}
+    queryUpdatedTrigger(params);
+  };
 
   const fetchNext = async () => {
     if (!isBaseReady.current || !isNextDone.current || next.current === undefined || next.current === null) {
@@ -89,12 +148,13 @@ export function useInfinitePostsQuery(
     error: baseResult?.error,
     isError: baseResult?.isError,
     isLoading: baseResult?.isLoading,
-    isFetching: baseResult?.isFetching || nextResult?.isFetching,
+    isFetching: baseResult?.isFetching || nextResult?.isFetching || queryUpdatedResult.isFetching,
     errorNext: nextResult?.error,
     isErrorNext: nextResult?.isError,
     isFetchingNext: nextResult?.isFetching,
     hasNext: baseResult.data?.allPosts?.pageInfo?.endCursor !== undefined,
     fetchNext,
-    refetch
+    refetch,
+    updatePost
   };
 }
