@@ -185,7 +185,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         style={{ height: '100vh', paddingBottom: '2rem' }}
         data={data}
         endReached={loadMoreItems}
-        overscan={500}
+        overscan={15000}
         itemContent={(index, item) => {
           return <PostListItem index={index} item={item} />;
         }}
