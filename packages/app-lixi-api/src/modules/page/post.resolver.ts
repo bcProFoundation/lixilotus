@@ -259,7 +259,7 @@ export class PostResolver {
           connect: pageId ? { id: pageId } : undefined
         },
         token: {
-          connect: tokenId ? { id: tokenId } : undefined
+          connect: tokenId ? { tokenId: tokenId } : undefined
         }
       }
     };

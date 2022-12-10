@@ -2,7 +2,7 @@ import { PlusCircleOutlined } from '@ant-design/icons';
 import { getPostCoverUploads } from '@store/account/selectors';
 import { useCreatePostMutation } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
-import { Avatar, Modal, Tabs } from 'antd';
+import { Avatar, Button, Modal, Tabs } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import _ from 'lodash';
 import dynamic from 'next/dynamic';
@@ -104,6 +104,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
   const sunEditor = useRef<SunEditorCore>();
   const [valueEditor, setValue] = useState(null);
   const postCoverUploads = useAppSelector(getPostCoverUploads);
+  const [importValue, setImportValue] = useState(null);
   const { pageId, tokenId } = props;
 
   const getSunEditorInstance = (sunEditorCore: SunEditorCore) => {
@@ -211,9 +212,10 @@ const CreatePostCard = (props: CreatePostCardProp) => {
     setError('unsupported');
   };
 
-  const handleOnLoad = () => {
-    // onChange(url);
-    console.log('handleOnLoad');
+  const handleOnLoad = (content, social) => {
+    if (content) {
+      setImportValue(content);
+    }
   };
 
   const handleOnError = () => {
@@ -318,11 +320,25 @@ const CreatePostCard = (props: CreatePostCardProp) => {
                 <input className="input-import" placeholder="Please type link..." onChange={handleUrlChange} />
               </form>
               {!error && social && postId && (
-                <div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
                   <h3 style={{ marginTop: '2rem' }}>Post Preview</h3>
                   <Preview>
-                    <Embed social={social} postId={postId} url={url} onError={handleOnError} onLoad={handleOnLoad} />
+                    <Embed
+                      social={social}
+                      postId={postId}
+                      url={url}
+                      onError={handleOnError}
+                      onLoad={e => handleOnLoad(e, social)}
+                    />
                   </Preview>
+                  <Button
+                    style={{ marginTop: '1rem', alignSelf: 'end' }}
+                    type="primary"
+                    disabled={importValue ? false : true}
+                    onClick={() => handleCreateNewPost(importValue)}
+                  >
+                    Create Post
+                  </Button>
                 </div>
               )}
             </Tabs.TabPane>

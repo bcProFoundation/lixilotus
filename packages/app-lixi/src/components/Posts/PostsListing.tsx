@@ -97,6 +97,28 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     }
   ];
 
+  // useEffect(() => {
+  //   refetch();
+  // }, []);
+
+  useEffect(() => {
+    (async () => {
+      if (latestBurnForPost) {
+        const post = await queryPostTrigger({ id: latestBurnForPost.burnForId });
+        if (post) {
+          // Unsubcribe immediately
+          await queryPostTrigger({ id: latestBurnForPost.burnForId }).unsubscribe();
+          // get the query params of current post id
+          await updatePost(post.data.post);
+        }
+      }
+    })();
+  }, [latestBurnForPost]);
+
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
+
   const handleOk = () => {
     setIsModalVisible(false);
   };
@@ -152,16 +174,33 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   //#endregion
 
   //#region Normal Virtuoso
-  const { data, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsQuery(
-    {
-      first: 10,
-      orderBy: {
-        direction: OrderDirection.Desc,
-        field: PostOrderField.UpdatedAt
-      }
-    },
-    false
-  );
+  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch, updatePost } =
+    useInfinitePostsQuery(
+      {
+        first: 20,
+        orderBy: {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.UpdatedAt
+        }
+      },
+      false
+    );
+
+  const onChange = (checked: boolean) => {
+    setLoading(!checked);
+  };
+
+  const onClickMenu: MenuProps['onClick'] = e => {
+    if (e.key === 'filter') {
+    }
+    if (e.key === 'week') {
+      dispatch(setSelectedPost('testPost'));
+    }
+  };
+
+  const isItemLoaded = (index: number) => {
+    return index < data.length && !_.isNil(data[index]);
+  };
 
   const loadMoreItems = () => {
     if (hasNext && !isFetching) {
@@ -238,14 +277,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     })();
   }, [latestBurnForPost]);
 
-  const onClickMenu: MenuProps['onClick'] = e => {
-    if (e.key === 'filter') {
-    }
-    if (e.key === 'week') {
-      dispatch(setSelectedPost('testPost'));
-    }
-  };
-
   return (
     <StyledPostsListing ref={refPostsListing}>
       {!searchValue ? (
@@ -255,7 +286,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
           style={{ height: '100vh', paddingBottom: '2rem' }}
           data={data}
           endReached={loadMoreItems}
-          overscan={500}
+          overscan={15000}
           itemContent={(index, item) => {
             return <PostListItem index={index} item={item} />;
           }}
