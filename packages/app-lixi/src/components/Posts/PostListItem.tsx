@@ -329,6 +329,7 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
               address={post.postAccount ? post.postAccount.address : undefined}
               page={post.page ? post.page : undefined}
               token={post.token ? post.token : undefined}
+              activatePostLocation={true}
             ></InfoCardUser>
           </CardHeader>
           <Content>

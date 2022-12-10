@@ -12,6 +12,7 @@ type InfoCardProps = {
   address?: string;
   page?: any;
   token?: any;
+  activatePostLocation?: boolean;
   onClick?: () => void;
 };
 
@@ -74,7 +75,7 @@ const Action = styled.div`
 `;
 
 const InfoCardUser: React.FC<InfoCardProps> = props => {
-  const { imgUrl, name, title, type, onClick, address, token, page } = props;
+  const { imgUrl, name, title, type, onClick, address, token, page, activatePostLocation } = props;
   const history = useRouter();
 
   const postLocation = () => {
@@ -103,7 +104,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
               </h4>
               <p className="title">
                 {title}
-                <span style={{ marginLeft: '5px', fontSize: '13px' }}>{postLocation()}</span>
+                <span style={{ marginLeft: '5px', fontSize: '13px' }}>{activatePostLocation && postLocation()}</span>
               </p>
             </div>
           </div>
