@@ -56,7 +56,6 @@ const CardContainer = styled.div`
   @media (max-width: 768px) {
     padding: 1rem 1rem 0 1rem;
   }
-  cursor: pointer;
 `;
 
 const CardHeader = styled.div`
@@ -327,6 +326,10 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
               imgUrl={post.page ? post.page.avatar : ''}
               name={showUsername()}
               title={moment(post.createdAt).fromNow().toString()}
+              address={post.postAccount ? post.postAccount.address : undefined}
+              page={post.page ? post.page : undefined}
+              token={post.token ? post.token : undefined}
+              activatePostLocation={true}
             ></InfoCardUser>
           </CardHeader>
           <Content>

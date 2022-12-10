@@ -23,6 +23,18 @@ const accountApi = {
         throw response?.data ?? err ?? 'Network Error';
       });
   },
+  getByAddress(address: string) {
+    const url = `/api/accounts/address/${address}`;
+    return axiosClient
+      .get(url)
+      .then(response => {
+        return response.data;
+      })
+      .catch(err => {
+        const { response } = err;
+        throw response?.data ?? err ?? 'Network Error';
+      });
+  },
   post(data: CreateAccountCommand): Promise<AccountDto> {
     const url = '/api/accounts';
     return axiosClient
