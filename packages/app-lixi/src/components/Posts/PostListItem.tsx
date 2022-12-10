@@ -84,6 +84,31 @@ const Content = styled.div`
       max-height: 250px;
       width: 100%;
     }
+    iframe {
+      width: 100% !important;
+      &#twitter-widget-0 {
+        height: 750px !important;
+        @media (min-width: 960px) {
+          width: 550px !important;
+          margin: auto !important;
+        }
+        @media (max-width: 960px) {
+          height: 620px !important;
+        }
+      }
+      &#reddit-embed {
+        height: 500px !important;
+        @media (max-width: 960px) {
+          height: 450px !important;
+        }
+      }
+      &#facebook-embed {
+        height: 700px !important;
+        @media (max-width: 960px) {
+          height: 580px !important;
+        }
+      }
+    }
     p {
       margin: 0;
     }

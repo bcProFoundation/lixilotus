@@ -1,13 +1,13 @@
 import { api } from './posts.generated';
 
 const enhancedApi = api.enhanceEndpoints({
-  addTagTypes: ['Post'],
+  addTagTypes: ['Post', 'Posts'],
   endpoints: {
     Posts: {
-      providesTags: (allPosts, error, arg) => ['Post']
+      providesTags: (allPosts, error, arg) => ['Posts']
     },
     Post: {
-      providesTags: ['Post']
+      providesTags: (result, error, arg) => ['Post']
     },
     createPost: {
       invalidatesTags: ['Post']

@@ -51,7 +51,7 @@ export const TweetEmbed: React.FC<TwitterTweetEmbedProps> = props => {
       return;
     }
 
-    twitter.widgets.createTweet(tweetId, ref?.current, options).then((element: any) => {
+    twitter.widgets.createTweet(tweetId, ref?.current, options).then((element: HTMLDivElement) => {
       setLoading(false);
 
       if (!element) {
@@ -60,7 +60,7 @@ export const TweetEmbed: React.FC<TwitterTweetEmbedProps> = props => {
         setError(true);
         onError && onError();
       } else {
-        onLoad && onLoad(element);
+        onLoad && onLoad(element?.innerHTML);
       }
     });
   };
