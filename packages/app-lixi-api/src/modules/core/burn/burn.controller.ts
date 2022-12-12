@@ -8,6 +8,7 @@ import { InjectChronikClient } from 'src/common/modules/chronik/chronik.decorato
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { parseBurnOutput } from 'src/utils/opReturnBurn';
 import { VError } from 'verror';
+import _ from 'lodash';
 
 @Controller('burn')
 export class BurnController {
@@ -34,7 +35,8 @@ export class BurnController {
         command.burnForId !== parseResult.burnForId ||
         command.burnForType !== parseResult.burnForType ||
         command.burnType !== parseResult.burnType ||
-        command.burnedBy !== parseResult.burnedBy
+        command.burnedBy !== parseResult.burnedBy ||
+        _.toNumber(command.burnValue) != value
       ) {
         throw new Error('Unable to burn');
       }

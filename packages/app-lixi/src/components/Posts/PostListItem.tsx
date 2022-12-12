@@ -251,10 +251,12 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
       }
       const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
       const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
-      const { fundingWif, hash160 } = currentWalletPath;
+      const { hash160 } = currentWalletPath;
       const burnType = isUpVote ? BurnType.Up : BurnType.Down;
       const burnedBy = hash160;
       const burnForId = postId;
+
+      const burnValue = '1';
 
       const txHex = await burnXpi(
         XPI,
@@ -265,7 +267,7 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
         BurnForType.Post,
         burnedBy,
         burnForId,
-        '1'
+        burnValue
       );
 
       const burnCommand: BurnCommand = {
@@ -273,7 +275,8 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
         burnType,
         burnForType: BurnForType.Post,
         burnedBy,
-        burnForId
+        burnForId,
+        burnValue
       };
 
       dispatch(burnForUpDownVote(burnCommand));

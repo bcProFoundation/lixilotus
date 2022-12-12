@@ -349,9 +349,9 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
     // fetchListPicture();
   }, []);
 
-  useEffect(() => {
-    refetch();
-  }, []);
+  // useEffect(() => {
+  //   refetch();
+  // }, []);
 
   const fetchListFriend = () => {
     return axios
