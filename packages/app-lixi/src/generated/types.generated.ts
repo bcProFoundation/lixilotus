@@ -142,8 +142,8 @@ export type Post = {
   pageId?: Maybe<Scalars['String']>;
   postAccount: Account;
   postAccountId: Scalars['Int'];
-  token: Token;
-  tokenId: Scalars['String'];
+  token?: Maybe<Token>;
+  tokenId?: Maybe<Scalars['String']>;
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
   uploadCovers?: Maybe<Array<Scalars['String']>>;
