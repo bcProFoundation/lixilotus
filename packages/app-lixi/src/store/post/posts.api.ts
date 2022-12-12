@@ -1,10 +1,28 @@
-import { api } from './posts.generated';
+import { createEntityAdapter, EntityState } from '@reduxjs/toolkit';
+import { PageInfo } from 'src/generated/types.generated';
+import { api, PostsQuery, PostQuery } from './posts.generated';
+
+export interface PostApiState extends EntityState<PostQuery['post']> {
+  pageInfo: PageInfo;
+  totalCount: number;
+}
 
 const enhancedApi = api.enhanceEndpoints({
-  addTagTypes: ['Post', 'Posts'],
+  addTagTypes: ['Post'],
   endpoints: {
     Posts: {
-      providesTags: (allPosts, error, arg) => ['Posts']
+      serializeQueryArgs({ queryArgs }) {
+        if (queryArgs) {
+          const { orderBy, ...otherArgs } = queryArgs;
+          return orderBy;
+        }
+        return { queryArgs };
+      },
+      merge(currentCacheData, responseData) {
+        currentCacheData.allPosts.edges.push(...responseData.allPosts.edges);
+        currentCacheData.allPosts.pageInfo = responseData.allPosts.pageInfo;
+        currentCacheData.allPosts.totalCount = responseData.allPosts.totalCount;
+      }
     },
     Post: {
       providesTags: (result, error, arg) => ['Post']

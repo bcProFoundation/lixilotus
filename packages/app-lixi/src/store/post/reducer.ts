@@ -10,25 +10,28 @@ import {
   getPost,
   getPostSuccess
 } from './actions';
-import { Post } from 'src/generated/types.generated';
+import { PostQuery } from './posts.generated';
 
-export const postAdapter = createEntityAdapter<Post>({});
+export const postAdapter = createEntityAdapter<PostQuery['post']>({
+  selectId: post => post.id,
+  sortComparer: (a, b) => b.createdAt - a.createdAt
+});
 
 const initialState: PostState = postAdapter.getInitialState({
   selectedId: '',
-  postsByAccountId: []
+  postsByAccountId: [1, 2, 3]
 });
 
 export const postReducer = createReducer(initialState, builder => {
   builder
     .addCase(postPostSuccess, (state, action) => {
       const post: any = action.payload;
-      postAdapter.upsertOne(state, post as Post);
+      postAdapter.upsertOne(state, post as PostQuery['post']);
     })
     .addCase(getPostSuccess, (state, action) => {
       const post = action.payload;
       state.selectedId = post.id;
-      const updatePost: Update<Post> = {
+      const updatePost: Update<PostQuery['post']> = {
         id: post.id,
         changes: {
           ...post
@@ -51,7 +54,7 @@ export const postReducer = createReducer(initialState, builder => {
     })
     .addCase(editPostSuccess, (state, action) => {
       const post = action.payload;
-      const updatePost: Update<Post> = {
+      const updatePost: Update<PostQuery['post']> = {
         id: post.id,
         changes: {
           ...post

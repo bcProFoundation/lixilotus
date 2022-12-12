@@ -17,4 +17,7 @@ export class BurnCommand {
 
   @IsNotEmpty()
   burnForId: string;
+
+  @IsNotEmpty()
+  burnValue: string;
 }
