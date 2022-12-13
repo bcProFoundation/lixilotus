@@ -79,7 +79,7 @@ export const AppContainer = styled.div`
   width: 500px;
   background-color: ${props => props.theme.footerBackground};
   min-height: 100vh;
-  padding: 10px 30px;
+  padding: 10px 16px;
   height: 100vh;
   overflow: hidden;
   background: ${props => props.theme.wallet.background};
