@@ -1,4 +1,13 @@
-import { Post, PaginationArgs, PostOrder, PostConnection, CreatePostInput, Account, Page } from '@bcpros/lixi-models';
+import {
+  Post,
+  PaginationArgs,
+  PostOrder,
+  PostConnection,
+  CreatePostInput,
+  Account,
+  Page,
+  Token
+} from '@bcpros/lixi-models';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
 import { ExecutionContext, Logger, Request, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver, Subscription, ResolveField, Parent } from '@nestjs/graphql';
@@ -152,6 +161,39 @@ export class PostResolver {
     return result;
   }
 
+  @Query(() => PostConnection)
+  async allPostsByUserId(
+    @Args() { after, before, first, last }: PaginationArgs,
+    @Args({ name: 'id', type: () => String, nullable: true })
+    id: string,
+    @Args({
+      name: 'orderBy',
+      type: () => PostOrder,
+      nullable: true
+    })
+    orderBy: PostOrder
+  ) {
+    const result = await findManyCursorConnection(
+      args =>
+        this.prisma.post.findMany({
+          include: { postAccount: true },
+          where: {
+            postAccountId: _.toSafeInteger(id)
+          },
+          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+          ...args
+        }),
+      () =>
+        this.prisma.post.count({
+          where: {
+            postAccountId: _.toSafeInteger(id)
+          }
+        }),
+      { first, last, before, after }
+    );
+    return result;
+  }
+
   @UseGuards(GqlJwtAuthGuard)
   @Mutation(() => Post)
   async createPost(@PostAccountEntity() account: Account, @Args('data') data: CreatePostInput) {
@@ -221,7 +263,7 @@ export class PostResolver {
           connect: pageId ? { id: pageId } : undefined
         },
         token: {
-          connect: tokenId ? { id: tokenId } : undefined
+          connect: tokenId ? { tokenId: tokenId } : undefined
         }
       }
     };
@@ -263,6 +305,20 @@ export class PostResolver {
       });
 
       return page;
+    }
+    return null;
+  }
+
+  @ResolveField('token', () => Token)
+  async token(@Parent() post: Post) {
+    if (post.tokenId) {
+      const token = this.prisma.token.findFirst({
+        where: {
+          id: post.tokenId
+        }
+      });
+
+      return token;
     }
     return null;
   }

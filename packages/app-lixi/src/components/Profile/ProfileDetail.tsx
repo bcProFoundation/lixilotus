@@ -4,7 +4,7 @@ import SearchBox from '@components/Common/SearchBox';
 import PostListItem from '@components/Posts/PostListItem';
 import { getSelectedAccountId } from '@store/account/selectors';
 import { useAppSelector } from '@store/hooks';
-import { useInfinitePostsByPageIdQuery } from '@store/post/useInfinitePostsByPageIdQuery';
+import { useInfinitePostsByUserIdQuery } from '@store/post/useInfinitePostsByUserIdQuery';
 import { Button, Space, Tabs } from 'antd';
 import axios from 'axios';
 import { useRouter } from 'next/router';
@@ -13,8 +13,8 @@ import { Virtuoso } from 'react-virtuoso';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import styled from 'styled-components';
 
-type PageDetailProps = {
-  page: any;
+type UserDetailProps = {
+  user: any;
   isMobile: boolean;
 };
 
@@ -321,22 +321,23 @@ const SubAbout = ({
   </StyledSpace>
 );
 
-const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
+const ProfileDetail = ({ user, isMobile }: UserDetailProps) => {
   const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
   const router = useRouter();
   const selectedAccountId = useAppSelector(getSelectedAccountId);
-  const [pageDetailData, setPageDetailData] = useState<any>(page);
+  const [userDetailData, setUserDetailData] = useState<any>(user);
   const [listsFriend, setListsFriend] = useState<any>([]);
   const [listsPicture, setListsPicture] = useState<any>([]);
 
-  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByPageIdQuery(
+  //TODO: Implement useInfinitePostsByUserIdQuery
+  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByUserIdQuery(
     {
       first: 10,
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt
       },
-      id: page.id
+      id: user.id.toString()
     },
     false
   );
@@ -386,7 +387,7 @@ const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
   };
 
   const navigateEditPage = () => {
-    router.push('/page/edit');
+    // router.push('/page/edit');
   };
 
   return (
@@ -394,24 +395,23 @@ const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
       <StyledContainerProfileDetail>
         <ProfileCardHeader>
           <div className="container-img">
-            <img className="cover-img" src={pageDetailData.cover || '/images/default-cover.jpg'} alt="" />
+            <img className="cover-img" src={userDetailData.cover || '/images/default-cover.jpg'} alt="" />
           </div>
           <div className="info-profile">
             <div className="wrapper-avatar">
               <picture>
-                <img className="avatar-img" src={pageDetailData.avatar || '/images/default-avatar.jpg'} alt="" />
+                <img className="avatar-img" src={userDetailData.avatar || '/images/default-avatar.jpg'} alt="" />
               </picture>
-              {selectedAccountId == pageDetailData?.pageAccountId && (
+              {selectedAccountId == userDetailData.id && (
                 <div className="btn-upload-avatar" onClick={navigateEditPage}>
                   <CameraOutlined />
                 </div>
               )}
             </div>
             <div className="title-profile">
-              <h2>{pageDetailData.name}</h2>
-              <p>{pageDetailData.title}</p>
+              <h2>{userDetailData.name}</h2>
             </div>
-            {selectedAccountId == pageDetailData?.pageAccountId && (
+            {selectedAccountId == userDetailData.id && (
               <div className="action-profile">
                 <Button
                   style={{ marginRight: '1rem' }}
@@ -436,7 +436,7 @@ const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
               <LegacyProfile>
                 <AboutBox>
                   <h3>About</h3>
-                  {pageDetailData && !pageDetailData.description && (
+                  {userDetailData && (
                     <div className="blank-about">
                       <img src="/images/about-blank.svg" alt="" />
                       <p>Let people know more about you (description, hobbies, address...</p>
@@ -447,24 +447,12 @@ const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
                   )}
                   <div className="about-content">
                     <SubAbout
-                      dataItem={pageDetailData?.description}
-                      onClickIcon={() => {}}
-                      icon={InfoCircleOutlined}
-                      text={pageDetailData?.description}
-                    />
-                    <SubAbout
-                      dataItem={pageDetailData?.address}
+                      dataItem={userDetailData?.address}
                       onClickIcon={() => {}}
                       icon={CompassOutlined}
-                      text={pageDetailData?.address}
+                      text={userDetailData?.address}
                     />
-                    <SubAbout
-                      dataItem={pageDetailData?.website}
-                      onClickIcon={() => {}}
-                      icon={HomeOutlined}
-                      text={pageDetailData?.website}
-                    />
-                    {selectedAccountId == pageDetailData?.pageAccountId && (
+                    {selectedAccountId == userDetailData.id && (
                       <Button type="primary" className="outline-btn" onClick={navigateEditPage}>
                         Edit your profile
                       </Button>
@@ -544,7 +532,7 @@ const ProfileDetail = ({ page, isMobile }: PageDetailProps) => {
               </LegacyProfile>
               <ContentTimeline>
                 <SearchBox />
-                <CreatePostCard pageId={page.id} refetch={() => refetch()} />
+                <CreatePostCard refetch={() => refetch()} />
                 <Timeline>
                   {data.length == 0 && (
                     <div className="blank-timeline">

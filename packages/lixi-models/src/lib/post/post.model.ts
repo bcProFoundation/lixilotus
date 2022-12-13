@@ -3,6 +3,7 @@ import { IsOptional } from 'class-validator';
 
 import { Account } from '../account';
 import { Page } from '../page';
+import { Token } from '../token';
 
 @ObjectType()
 export class Post {
@@ -23,6 +24,12 @@ export class Post {
 
   @Field(() => Account)
   pageAccount?: Account;
+
+  @Field(() => String, { nullable: true })
+  tokenId?: string;
+
+  @Field(() => Token, { nullable: true })
+  token?: Token;
 
   @Field(() => [String], { nullable: true })
   uploadCovers: [string];

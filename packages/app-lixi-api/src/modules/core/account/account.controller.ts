@@ -82,6 +82,37 @@ export class AccountController {
     }
   }
 
+  @Get('address/:id')
+  async getAccountViaAddress(@Param('id') address: string, @I18n() i18n: I18nContext) {
+    try {
+      const account = await this.prisma.account.findFirst({
+        where: {
+          address: address
+        },
+        include: {
+          page: true,
+          uploadDetail: true
+        }
+      });
+      if (!account) {
+        const accountNotExistMessage = await i18n.t('account.messages.accountNotExist');
+        throw new VError(accountNotExistMessage);
+      }
+
+      const result = _.omit(account, 'encryptedMnemonic', 'encryptedSecret', 'mnemonicHash', 'notifications');
+
+      return result;
+    } catch (err: unknown) {
+      if (err instanceof VError) {
+        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      } else {
+        const unableGetAccountMessage = await i18n.t('account.messages.unableGetAccount');
+        const error = new VError.WError(err as Error, unableGetAccountMessage);
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  }
+
   @Post('import')
   async import(@Body() importAccountCommand: ImportAccountCommand, @I18n() i18n: I18nContext): Promise<AccountDto> {
     const { mnemonic } = importAccountCommand;

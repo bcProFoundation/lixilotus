@@ -66,7 +66,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsQuery(
     {
-      first: 10,
+      first: 20,
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt
@@ -74,30 +74,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     },
     false
   );
-
-  useEffect(() => {
-    refetch();
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      if (latestBurnForPost) {
-        const post = await queryPostTrigger({ id: latestBurnForPost.burnForId });
-        console.log('post', post);
-        dispatch(
-          postApi.util.updateQueryData('Posts', undefined, draft => {
-            const postToUpdate = draft.allPosts.edges.find(item => item.node.id === latestBurnForPost.burnForId);
-            if (postToUpdate) {
-              console.log('update post');
-              postToUpdate.node = post.data.post;
-            }
-          })
-        );
-        postApi.util.invalidateTags(['Post']);
-        refetch();
-      }
-    })();
-  }, [latestBurnForPost]);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -185,7 +161,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         style={{ height: '100vh', paddingBottom: '2rem' }}
         data={data}
         endReached={loadMoreItems}
-        overscan={500}
+        overscan={15000}
         itemContent={(index, item) => {
           return <PostListItem index={index} item={item} />;
         }}

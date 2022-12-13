@@ -23,7 +23,3 @@ export const postsByAccountId = createSelector(
 );
 
 export const getPostById = (id: string) => createSelector(getAllPostsEntities, posts => posts?.[id]);
-
-export const getPostBySelectedAccount = createSelector([selectSelectedAccount, getAllPosts], (accountId, posts) =>
-  posts.find(post => post?.pageAccountId === accountId)
-);

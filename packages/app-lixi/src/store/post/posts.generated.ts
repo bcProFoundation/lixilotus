@@ -32,6 +32,7 @@ export type PostQuery = {
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
     pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
     page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+    token?: { __typename?: 'Token'; id: string; name: string } | null;
   };
 };
 
@@ -66,6 +67,7 @@ export type PostsQuery = {
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+        token?: { __typename?: 'Token'; id: string; name: string } | null;
       };
     }> | null;
     pageInfo: {
@@ -109,6 +111,51 @@ export type PostsByPageIdQuery = {
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+        token?: { __typename?: 'Token'; id: string; name: string } | null;
+      };
+    }> | null;
+    pageInfo: {
+      __typename?: 'PageInfo';
+      endCursor?: string | null;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: string | null;
+    };
+  };
+};
+
+export type PostsByUserIdQueryVariables = Types.Exact<{
+  after?: Types.InputMaybe<Types.Scalars['String']>;
+  before?: Types.InputMaybe<Types.Scalars['String']>;
+  first?: Types.InputMaybe<Types.Scalars['Int']>;
+  last?: Types.InputMaybe<Types.Scalars['Int']>;
+  orderBy?: Types.InputMaybe<Types.PostOrder>;
+  id?: Types.InputMaybe<Types.Scalars['String']>;
+  skip?: Types.InputMaybe<Types.Scalars['Int']>;
+}>;
+
+export type PostsByUserIdQuery = {
+  __typename?: 'Query';
+  allPostsByUserId: {
+    __typename?: 'PostConnection';
+    totalCount?: number | null;
+    edges?: Array<{
+      __typename?: 'PostEdge';
+      cursor: string;
+      node: {
+        __typename?: 'Post';
+        id: string;
+        content: string;
+        uploadCovers?: Array<string> | null;
+        lotusBurnUp: number;
+        lotusBurnDown: number;
+        lotusBurnScore: number;
+        createdAt: any;
+        updatedAt: any;
+        postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+        pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+        page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+        token?: { __typename?: 'Token'; id: string; name: string } | null;
       };
     }> | null;
     pageInfo: {
@@ -152,6 +199,7 @@ export type PostsByTokenIdQuery = {
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+        token?: { __typename?: 'Token'; id: string; name: string } | null;
       };
     }> | null;
     pageInfo: {
@@ -177,6 +225,7 @@ export type PostFieldsFragment = {
   postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
   pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
   page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+  token?: { __typename?: 'Token'; id: string; name: string } | null;
 };
 
 export type CreatePostMutationVariables = Types.Exact<{
@@ -198,6 +247,7 @@ export type CreatePostMutation = {
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
     pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
     page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+    token?: { __typename?: 'Token'; id: string; name: string } | null;
   };
 };
 
@@ -220,6 +270,10 @@ export const PostFieldsFragmentDoc = `
     avatar
     name
     id
+  }
+  token {
+    id
+    name
   }
   lotusBurnUp
   lotusBurnDown
@@ -263,6 +317,31 @@ ${PageInfoFieldsFragmentDoc}`;
 export const PostsByPageIdDocument = `
     query PostsByPageId($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $id: String, $skip: Int) {
   allPostsByPageId(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    id: $id
+    skip: $skip
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...PostFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+    ${PostFieldsFragmentDoc}
+${PageInfoFieldsFragmentDoc}`;
+export const PostsByUserIdDocument = `
+    query PostsByUserId($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $id: String, $skip: Int) {
+  allPostsByUserId(
     after: $after
     before: $before
     first: $first
@@ -329,6 +408,9 @@ const injectedRtkApi = api.injectEndpoints({
     PostsByPageId: build.query<PostsByPageIdQuery, PostsByPageIdQueryVariables | void>({
       query: variables => ({ document: PostsByPageIdDocument, variables })
     }),
+    PostsByUserId: build.query<PostsByUserIdQuery, PostsByUserIdQueryVariables | void>({
+      query: variables => ({ document: PostsByUserIdDocument, variables })
+    }),
     PostsByTokenId: build.query<PostsByTokenIdQuery, PostsByTokenIdQueryVariables | void>({
       query: variables => ({ document: PostsByTokenIdDocument, variables })
     }),
@@ -346,6 +428,8 @@ export const {
   useLazyPostsQuery,
   usePostsByPageIdQuery,
   useLazyPostsByPageIdQuery,
+  usePostsByUserIdQuery,
+  useLazyPostsByUserIdQuery,
   usePostsByTokenIdQuery,
   useLazyPostsByTokenIdQuery,
   useCreatePostMutation

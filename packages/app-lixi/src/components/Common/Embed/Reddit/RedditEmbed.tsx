@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 export const generateRedditEmbedUrl = (url: string): string => {
   if (url.length === 0) return url;
@@ -27,6 +27,7 @@ export interface RedditPostEmbedProps {
 export const RedditEmbed: React.FC<RedditPostEmbedProps> = props => {
   const { url } = props;
 
+  const ref = useRef<HTMLDivElement | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const embedUrl = generateRedditEmbedUrl(props.url);
@@ -43,13 +44,16 @@ export const RedditEmbed: React.FC<RedditPostEmbedProps> = props => {
   const loadPost = (props): AbortController => {
     setLoading(true);
     setError(false);
-
     const abortController = new AbortController();
 
     fetch(`${postUrl}.json`, { signal: abortController.signal })
       .then(res => {
         if (res.status < 300) {
-          props.onLoad && props.onLoad(res);
+          setTimeout(() => {
+            if (ref?.current?.innerHTML) {
+              props.onLoad(ref.current.innerHTML);
+            }
+          }, 500);
         } else {
           setError(true);
           props.onError && props.onError();
@@ -71,16 +75,19 @@ export const RedditEmbed: React.FC<RedditPostEmbedProps> = props => {
       {loading && <React.Fragment>{props.placeholder}</React.Fragment>}
       {error && <React.Fragment>Could not load post!</React.Fragment>}
       {!loading && !error && (
-        <iframe
-          id="reddit-embed"
-          title="Reddit preview"
-          src={embedUrl}
-          sandbox="allow-scripts allow-same-origin allow-popups"
-          style={{ border: 'none' }}
-          width="780"
-          height="560"
-          scrolling="yes"
-        />
+        <div ref={ref}>
+          <iframe
+            id="reddit-embed"
+            title="Reddit preview"
+            src={embedUrl}
+            sandbox="allow-scripts allow-same-origin allow-popups"
+            style={{ border: 'none' }}
+            width="100%"
+            height="560"
+            scrolling="yes"
+            loading="lazy"
+          />
+        </div>
       )}
     </React.Fragment>
   );

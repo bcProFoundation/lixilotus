@@ -25,7 +25,7 @@ type EmbedProps = {
   postId: string;
   showError?: boolean;
   onError?: () => void;
-  onLoad?: () => void;
+  onLoad?: (e, social?) => void;
   onClick?: () => void;
 };
 
@@ -81,18 +81,18 @@ export const Embed: React.FC<EmbedProps> = props => {
               tweetId={postId}
               options={{ height: 560 }}
               placeholder={<Spin />}
-              onLoad={onLoad}
+              onLoad={e => onLoad(e, social)}
               onError={onError}
             />
           </div>
         )}
 
         {social === SocialsEnum.REDDIT && (
-          <RedditEmbed url={url} placeholder={<Spin />} onLoad={onLoad} onError={onError} />
+          <RedditEmbed url={url} placeholder={<Spin />} onLoad={e => onLoad(e, social)} onError={onError} />
         )}
 
         {social === SocialsEnum.FACEBOOK && (
-          <FacebookEmbed url={url} placeholder={<Spin />} onLoad={onLoad} onError={onError} />
+          <FacebookEmbed url={url} placeholder={<Spin />} onLoad={e => onLoad(e, social)} onError={onError} />
         )}
       </div>
     </CointainerEmbed>

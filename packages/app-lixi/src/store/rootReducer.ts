@@ -36,7 +36,7 @@ import { tokenReducer, TokenState } from './tokens';
 const persistConfig = {
   key: 'root',
   storage: storage('lixi-indexeddb'),
-  blacklist: ['accounts', 'router', 'modal', 'wallet', 'api', 'root']
+  blacklist: ['accounts', 'router', 'modal', 'wallet', 'api', 'root', 'posts', 'tokens', 'pages']
 };
 
 const walletPersistConfig = {
@@ -68,16 +68,6 @@ const claimsPersistConfig: PersistConfig<ClaimsState> = {
 
 const shopPersistConfig: PersistConfig<PageState> = {
   key: 'pages',
-  storage: storage('lixi-indexeddb')
-};
-
-const tokenPersistConfig: PersistConfig<TokenState> = {
-  key: 'tokens',
-  storage: storage('lixi-indexeddb')
-};
-
-const postPersistConfig: PersistConfig<PostState> = {
-  key: 'posts',
   storage: storage('lixi-indexeddb')
 };
 
@@ -113,7 +103,6 @@ export const serverReducer = combineReducers({
   notifications: notificationReducer,
   pages: pageReducer,
   tokens: tokenReducer,
-  posts: postReducer,
   countries: countryReducer,
   states: stateReducer,
   burn: burnReducer,
@@ -131,8 +120,7 @@ export const appReducer = combineReducers({
   claims: persistReducer(claimsPersistConfig, claimReducer),
   settings: persistReducer(settingsPersistConfig, settingsReducer),
   pages: persistReducer(shopPersistConfig, pageReducer),
-  tokens: persistReducer(tokenPersistConfig, tokenReducer),
-  posts: persistReducer(postPersistConfig, postReducer),
+  tokens: tokenReducer,
   notifications: notificationReducer,
   envelopes: envelopeReducer,
   loading: loadingReducer,

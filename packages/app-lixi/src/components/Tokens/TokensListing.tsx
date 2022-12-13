@@ -224,6 +224,7 @@ const TokensListing: React.FC = () => {
       const burnedBy = hash160;
       const burnForId = tokenId;
 
+      const burnValue = '1';
       const txHex = await burnXpi(
         XPI,
         walletPaths,
@@ -233,7 +234,7 @@ const TokensListing: React.FC = () => {
         BurnForType.Token,
         burnedBy,
         burnForId,
-        '1'
+        burnValue
       );
 
       const burnCommand: BurnCommand = {
@@ -241,7 +242,8 @@ const TokensListing: React.FC = () => {
         burnType,
         burnForType: BurnForType.Token,
         burnedBy,
-        burnForId
+        burnForId,
+        burnValue
       };
 
       dispatch(burnForUpDownVote(burnCommand));

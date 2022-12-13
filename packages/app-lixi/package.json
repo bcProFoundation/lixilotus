@@ -22,7 +22,7 @@
     "@bcpros/lixi-prisma": "latest",
     "@bcpros/minimal-xpi-slp-wallet": "^3.0.12",
     "@fortawesome/fontawesome-free": "^6.1.1",
-    "@reduxjs/toolkit": "^1.8.2",
+    "@reduxjs/toolkit": "^1.9.1",
     "@udecode/plate": "^18.8.1",
     "@udecode/plate-basic-elements": "^18.7.0",
     "@udecode/plate-core": "^18.7.0",
