@@ -47,6 +47,9 @@ const Preview = styled.div`
   padding: 30px;
   margin-top: 2rem;
   box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
+  iframe {
+    width: 100% !important;
+  }
 `;
 
 const SunEditor = dynamic(() => import('suneditor-react'), {
