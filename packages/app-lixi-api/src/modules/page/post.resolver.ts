@@ -162,7 +162,9 @@ export class PostResolver {
   }
 
   @Query(() => PostConnection)
+  @UseGuards(GqlJwtAuthGuard)
   async allPostsByUserId(
+    @PostAccountEntity() account: Account,
     @Args() { after, before, first, last }: PaginationArgs,
     @Args({ name: 'id', type: () => String, nullable: true })
     id: string,
@@ -173,24 +175,64 @@ export class PostResolver {
     })
     orderBy: PostOrder
   ) {
-    const result = await findManyCursorConnection(
-      args =>
-        this.prisma.post.findMany({
-          include: { postAccount: true },
-          where: {
-            postAccountId: _.toSafeInteger(id)
-          },
-          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
-          ...args
-        }),
-      () =>
-        this.prisma.post.count({
-          where: {
-            postAccountId: _.toSafeInteger(id)
-          }
-        }),
-      { first, last, before, after }
-    );
+    let result;
+    if (account.id === _.toSafeInteger(id)) {
+      result = await findManyCursorConnection(
+        args =>
+          this.prisma.post.findMany({
+            include: { postAccount: true },
+            where: {
+              postAccountId: _.toSafeInteger(id)
+            },
+            orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+            ...args
+          }),
+        () =>
+          this.prisma.post.count({
+            where: {
+              postAccountId: _.toSafeInteger(id)
+            }
+          }),
+        { first, last, before, after }
+      );
+    } else {
+      result = await findManyCursorConnection(
+        args =>
+          this.prisma.post.findMany({
+            include: { postAccount: true },
+            where: {
+              AND: [
+                {
+                  postAccountId: _.toSafeInteger(id)
+                },
+                {
+                  lotusBurnScore: {
+                    gte: 0
+                  }
+                }
+              ]
+            },
+            orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+            ...args
+          }),
+        () =>
+          this.prisma.post.count({
+            where: {
+              AND: [
+                {
+                  postAccountId: _.toSafeInteger(id)
+                },
+                {
+                  lotusBurnScore: {
+                    gte: 0
+                  }
+                }
+              ]
+            }
+          }),
+        { first, last, before, after }
+      );
+    }
     return result;
   }
 
