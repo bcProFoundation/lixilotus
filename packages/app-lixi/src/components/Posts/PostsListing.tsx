@@ -66,7 +66,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsQuery(
     {
-      first: 2,
+      first: 20,
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt

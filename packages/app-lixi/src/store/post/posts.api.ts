@@ -11,6 +11,7 @@ const enhancedApi = api.enhanceEndpoints({
   addTagTypes: ['Post'],
   endpoints: {
     Posts: {
+      keepUnusedDataFor: 120,
       serializeQueryArgs({ queryArgs }) {
         if (queryArgs) {
           const { orderBy, ...otherArgs } = queryArgs;
