@@ -97,23 +97,16 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     }
   ];
 
-  // useEffect(() => {
-  //   refetch();
-  // }, []);
-
-  useEffect(() => {
-    (async () => {
-      if (latestBurnForPost) {
-        const post = await queryPostTrigger({ id: latestBurnForPost.burnForId });
-        if (post) {
-          // Unsubcribe immediately
-          await queryPostTrigger({ id: latestBurnForPost.burnForId }).unsubscribe();
-          // get the query params of current post id
-          await updatePost(post.data.post);
-        }
+  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsQuery(
+    {
+      first: 20,
+      orderBy: {
+        direction: OrderDirection.Desc,
+        field: PostOrderField.UpdatedAt
       }
-    })();
-  }, [latestBurnForPost]);
+    },
+    false
+  );
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -174,17 +167,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   //#endregion
 
   //#region Normal Virtuoso
-  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch, updatePost } =
-    useInfinitePostsQuery(
-      {
-        first: 20,
-        orderBy: {
-          direction: OrderDirection.Desc,
-          field: PostOrderField.UpdatedAt
-        }
-      },
-      false
-    );
 
   const onChange = (checked: boolean) => {
     setLoading(!checked);

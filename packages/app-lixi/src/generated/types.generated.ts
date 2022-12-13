@@ -142,6 +142,8 @@ export type Post = {
   pageId?: Maybe<Scalars['String']>;
   postAccount: Account;
   postAccountId: Scalars['Int'];
+  token?: Maybe<Token>;
+  tokenId?: Maybe<Scalars['String']>;
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
   uploadCovers?: Maybe<Array<Scalars['String']>>;
@@ -201,6 +203,7 @@ export type Query = {
   allPostsByPageId: PostConnection;
   allPostsBySearch: PostResponse;
   allPostsByTokenId: PostConnection;
+  allPostsByUserId: PostConnection;
   page: Page;
   post: Post;
 };
@@ -244,6 +247,16 @@ export type QueryAllPostsBySearchArgs = {
 };
 
 export type QueryAllPostsByTokenIdArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  id?: InputMaybe<Scalars['String']>;
+  last?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<PostOrder>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryAllPostsByUserIdArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;

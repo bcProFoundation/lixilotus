@@ -159,11 +159,6 @@ const PageListItem = ({ index, item }) => {
     dispatch(push(`/page/${id}`));
   };
 
-  const onLixiClick = item => {
-    // setIsShowQrCode(true);
-    // showModal();
-  };
-
   const handleSubmit = (values: any) => {
     console.log(values);
     if (!values.comment) return;
@@ -295,10 +290,6 @@ const PageListItem = ({ index, item }) => {
               onClickIcon={() => {}}
             />
           </GroupIconText>
-
-          <Button type="primary" className="outline-btn" onClick={item => onLixiClick(item)}>
-            Send tip
-          </Button>
         </ActionBar>
         {isCollapseComment && (
           <Comment

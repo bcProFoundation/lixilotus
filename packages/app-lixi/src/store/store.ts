@@ -3,6 +3,7 @@ import useWallet from '@hooks/useWallet';
 import useXPI from '@hooks/useXPI';
 import createSagaMiddleware, { Task } from '@redux-saga/core';
 import { Action, configureStore, Store, ThunkAction } from '@reduxjs/toolkit';
+import { setupListeners } from '@reduxjs/toolkit/dist/query';
 import { createRouterMiddleware, initialRouterState } from 'connected-next-router';
 import { Context, createWrapper } from 'next-redux-wrapper';
 import { Router } from 'next/router';
@@ -64,6 +65,7 @@ const makeStore = (context: Context) => {
             },
       preloadedState: initialState
     });
+    setupListeners(store.dispatch);
 
     (store as any).__persistor = persistStore(store);
   }

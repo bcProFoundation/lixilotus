@@ -1,312 +1,595 @@
-import {
-  DashOutlined,
-  DislikeOutlined,
-  LikeOutlined,
-  LinkOutlined,
-  ShareAltOutlined,
-  SmallDashOutlined,
-  UpOutlined
-} from '@ant-design/icons';
-import { Avatar, Button, Input, List, message, Popover } from 'antd';
+import { CameraOutlined, CompassOutlined, EditOutlined, HomeOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import CreatePostCard from '@components/Common/CreatePostCard';
+import SearchBox from '@components/Common/SearchBox';
+import PostListItem from '@components/Posts/PostListItem';
+import { getSelectedAccountId } from '@store/account/selectors';
+import { useAppSelector } from '@store/hooks';
+import { useInfinitePostsByPageIdQuery } from '@store/post/useInfinitePostsByPageIdQuery';
+import { Button, Space, Tabs } from 'antd';
+import axios from 'axios';
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
+import { Virtuoso } from 'react-virtuoso';
+import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import styled from 'styled-components';
-import moment from 'moment';
-
-import {
-  FacebookIcon,
-  FacebookMessengerIcon,
-  FacebookMessengerShareButton,
-  FacebookShareButton,
-  TelegramIcon,
-  TelegramShareButton,
-  TwitterIcon,
-  TwitterShareButton,
-  WhatsappIcon,
-  WhatsappShareButton
-} from 'react-share';
-import { RWebShare } from 'react-web-share';
-import intl from 'react-intl-universal';
-import { PageDto } from '@bcpros/lixi-models';
-
-const { Search } = Input;
-
-type SocialSharePanelProps = {
-  className?: string;
-  shareUrl: string;
-};
-
-const SocialSharePanel = ({ className, shareUrl }: SocialSharePanelProps): JSX.Element => {
-  const title = intl.get('page.titleShared');
-  return (
-    <div className={className}>
-      <div className="socialshare-network">
-        <FacebookShareButton url={shareUrl} quote={title} className="socialshare-button">
-          <FacebookIcon size={32} round />
-        </FacebookShareButton>
-      </div>
-
-      <div className="socialshare-network">
-        <FacebookMessengerShareButton url={shareUrl} appId="521270401588372" className="socialshare-button">
-          <FacebookMessengerIcon size={32} round />
-        </FacebookMessengerShareButton>
-      </div>
-
-      <div className="socialshare-network">
-        <TwitterShareButton url={shareUrl} title={title} className="socialshare">
-          <TwitterIcon size={32} round />
-        </TwitterShareButton>
-      </div>
-
-      <div className="socialshare-network">
-        <TelegramShareButton url={shareUrl} title={title} className="socialshare-button">
-          <TelegramIcon size={32} round />
-        </TelegramShareButton>
-      </div>
-
-      <div className="socialshare-network">
-        <WhatsappShareButton url={shareUrl} title={title} separator=":: " className="socialshare-button">
-          <WhatsappIcon size={32} round />
-        </WhatsappShareButton>
-      </div>
-
-      <div className="socialshare-network">
-        <Button
-          type="primary"
-          shape="circle"
-          icon={<LinkOutlined style={{ color: 'white', fontSize: '20px' }} />}
-          onClick={() => {
-            navigator.clipboard.writeText(window.location.href);
-            message.success(intl.get('page.copyToClipboard'));
-          }}
-        />
-      </div>
-    </div>
-  );
-};
-
-const StyledSocialSharePanel = styled(SocialSharePanel)`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  .socialshare-network {
-    padding: 10px 4px;
-  }
-`;
-
-const popOverContent = shareUrl => {
-  return <StyledSocialSharePanel shareUrl={shareUrl} />;
-};
 
 type PageDetailProps = {
-  page: PageDto;
+  page: any;
   isMobile: boolean;
 };
 
-const PageDetail = ({ page, isMobile }: PageDetailProps) => {
-  const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
-  const [listComment, setListComment] = useState([]);
-  const [pageDetailData, setPageDetailData] = useState<any>(page);
-
-  const CommentContainer = styled.div`
-    .comment-item {
-      text-align: left;
-      border: 0 !important;
-    }
-  `;
-
-  const ActionComment = styled.div`
-    margin-left: 12%;
-    font-size: 13px;
-  `;
-
-  const PageCardDetail = styled.div`
+const StyledContainerProfileDetail = styled.div`
+  background: var(--bg-color-light-theme);
+  border-radius: 20px;
+  padding-bottom: 3rem;
+  .reaction-container {
     display: flex;
     justify-content: space-between;
-    .info-page {
-      display: flex;
-      img {
-        width: 35px;
-        height: 35px;
+    padding: 0.5rem;
+    border: 1px solid #c5c5c5;
+    border-left: 0;
+    border-right: 0;
+  }
+
+  .comment-item-meta {
+    margin-bottom: 0.5rem;
+    .ant-list-item-meta-avatar {
+      margin-top: 3%;
+    }
+    .ant-list-item-meta-title {
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  .input-comment {
+    padding: 1rem 0 0 0;
+  }
+`;
+
+const ProfileCardHeader = styled.div`
+  .cover-img {
+    width: 100%;
+    height: 350px;
+    border-top-right-radius: 20px;
+    border-top-left-radius: 20px;
+    @media (max-width: 768px) {
+      border-radius: 0;
+      height: 200px;
+    }
+  }
+  .info-profile {
+    display: flex;
+    position: relative;
+    justify-content: space-between;
+    align-items: end;
+    padding: 1rem 2rem 1rem 0;
+    background: #fff;
+    .wrapper-avatar {
+      left: 2rem;
+      top: -90px;
+      position: absolute;
+      padding: 5px;
+      background: #fff;
+      border-radius: 50%;
+      .avatar-img {
+        width: 150px;
+        height: 150px;
         border-radius: 50%;
       }
-    }
-  `;
-
-  const PageContentDetail = styled.div``;
-
-  const StyledContainerPageDetail = styled.div`
-    padding: 20px 30px;
-    background: #fff;
-    border-radius: 20px;
-    box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
-    .reaction-container {
-      display: flex;
-      justify-content: space-between;
-      padding: 0.5rem;
-      border: 1px solid #c5c5c5;
-      border-left: 0;
-      border-right: 0;
-    }
-
-    .comment-item-meta {
-      margin-bottom: 0.5rem;
-      .ant-list-item-meta-avatar {
-        margin-top: 3%;
+      @media (max-width: 768px) {
+        left: auto;
       }
-      .ant-list-item-meta-title {
-        margin-bottom: 0.5rem;
+      .btn-upload-avatar {
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 35px;
+        height: 35px;
+        position: absolute;
+        border-radius: 50%;
+        bottom: 5%;
+        right: 5%;
+        background: linear-gradient(0deg, rgba(158, 42, 156, 0.08), rgba(158, 42, 156, 0.08)), #fffbff;
+        .anticon {
+          font-size: 20px;
+          color: var(--color-primary);
+        }
       }
     }
-
-    .input-comment {
-      padding: 1rem 0 0 0;
+    .title-profile {
+      margin-left: calc(160px + 48px);
+      text-align: left;
+      @media (max-width: 768px) {
+        margin-left: 0;
+        margin-top: 4rem;
+        text-align: center;
+      }
+      h2 {
+        font-weight: 600;
+        margin-bottom: 0;
+      }
     }
-  `;
+    .action-profile {
+      @media (max-width: 1001px) {
+        max-width: 160px;
+        text-align: center;
+        button {
+          margin-bottom: 4px;
+        }
+      }
+      @media (max-width: 426px) {
+        display: none;
+      }
+    }
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: center;
+      padding-right: 0;
+    }
+  }
+`;
 
-  const ShareButton = styled.span`
-    margin-left: 10px;
-  `;
+const ProfileContentContainer = styled.div`
+  display: flex;
+  gap: 1rem;
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+`;
+
+const LegacyProfile = styled.div`
+  max-width: 35%;
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
+`;
+
+const AboutBox = styled.div`
+  background: #ffffff;
+  box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
+  border-radius: 24px;
+  margin-bottom: 1rem;
+  padding: 24px;
+  h3 {
+    text-align: left;
+  }
+  .about-content {
+    padding: 1rem 0;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+  }
+  @media (max-width: 426px) {
+    margin: 0 4px 1rem 4px;
+  }
+`;
+
+const PictureBox = styled.div`
+  background: #ffffff;
+  box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
+  border-radius: 24px;
+  margin-bottom: 1rem;
+  padding: 24px;
+  h3 {
+    text-align: left;
+  }
+  .picture-content {
+    padding: 1rem 0;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-gap: 10px;
+    img {
+      width: 110px;
+      height: 110px;
+      @media (max-width: 768px) {
+        width: 95%;
+      }
+    }
+  }
+  .blank-picture {
+    img {
+      width: 100%;
+    }
+  }
+  @media (max-width: 426px) {
+    margin: 0 4px 1rem 4px;
+  }
+`;
+
+const FriendBox = styled.div`
+  background: #ffffff;
+  box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
+  border-radius: 24px;
+  margin-bottom: 1rem;
+  padding: 24px;
+  h3 {
+    text-align: left;
+  }
+  .friend-content {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-column-gaps: 10px;
+    grid-row-gap: 1rem;
+    padding: 1rem 0;
+    .friend-item {
+      img {
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        @media (max-width: 768px) {
+          width: 95%;
+        }
+      }
+      p {
+        margin: 0;
+        color: #4e444b;
+        letter-spacing: 0.4px;
+        font-size: 12px;
+        line-height: 24px;
+        width: 110px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+    }
+  }
+  .blank-friend {
+    img {
+      width: 100%;
+    }
+    button {
+      width: 100%;
+      white-space: break-spaces;
+    }
+  }
+  @media (max-width: 426px) {
+    margin: 0 4px 1rem 4px;
+  }
+`;
+
+const ContentTimeline = styled.div`
+  width: 100%;
+`;
+
+const Timeline = styled.div`
+  border-radius: 24px;
+  width: 100%;
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+  .time-line-blank {
+    width: 100%;
+  }
+`;
+
+const StyledSpace = styled(Space)`
+  margin-bottom: 1rem;
+  .ant-space-item {
+    height: fit-content;
+    .anticon {
+      font-size: 18px;
+      color: rgba(30, 26, 29, 0.38);
+    }
+  }
+`;
+
+const StyledMenu = styled(Tabs)`
+  .ant-tabs-nav {
+    box-shadow: rgb(0 0 0 / 5%) 0px 2px 10px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    padding: 1rem 24px;
+    border-top: 1px solid rgba(128, 116, 124, 0.12);
+    background: white;
+    border-bottom: 0;
+  }
+  .ant-tabs-tabpane {
+    gap: 1rem;
+    display: flex;
+    flex-direction: row;
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
+  }
+  &.ant-tabs {
+    width: 100vw;
+  }
+  .ant-tabs-nav {
+    &::before {
+      content: none;
+    }
+  }
+`;
+
+const SubAbout = ({
+  icon,
+  text,
+  dataItem,
+  imgUrl,
+  onClickIcon
+}: {
+  icon?: React.FC;
+  text?: string;
+  dataItem?: any;
+  imgUrl?: string;
+  onClickIcon: () => void;
+}) => (
+  <StyledSpace onClick={onClickIcon}>
+    {icon && React.createElement(icon)}
+    {imgUrl && React.createElement('img', { src: imgUrl }, null)}
+    {text}
+  </StyledSpace>
+);
+
+const PageDetail = ({ page, isMobile }: PageDetailProps) => {
+  const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
+  const router = useRouter();
+  const selectedAccountId = useAppSelector(getSelectedAccountId);
+  const [pageDetailData, setPageDetailData] = useState<any>(page);
+  const [listsFriend, setListsFriend] = useState<any>([]);
+  const [listsPicture, setListsPicture] = useState<any>([]);
+
+  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByPageIdQuery(
+    {
+      first: 10,
+      orderBy: {
+        direction: OrderDirection.Desc,
+        field: PostOrderField.UpdatedAt
+      },
+      id: page.id
+    },
+    false
+  );
 
   useEffect(() => {
-    const dataListComment = [
-      {
-        name: 'Kensaurus',
-        comment: `I'm so glad I ordered this pizza - it tastes great`
-      },
-      {
-        name: 'Eric Son',
-        comment: 'Wow, this pasta salad is amazing!'
-      }
-    ];
-
-    setListComment([...dataListComment]);
+    // fetchListFriend();
   }, []);
 
-  const onUpVotePage = () => {
-    let tempPage = pageDetailData;
-    tempPage.upVote ? (tempPage.upVote += 1) : null;
-    setPageDetailData({ ...tempPage });
+  useEffect(() => {
+    // fetchListPicture();
+  }, []);
+
+  // useEffect(() => {
+  //   refetch();
+  // }, []);
+
+  const fetchListFriend = () => {
+    return axios
+      .get('https://picsum.photos/v2/list?page=1&limit=10', {
+        headers: {
+          'Access-Control-Allow-Origin': '*'
+        }
+      })
+      .then(response => {
+        setListsFriend(response.data);
+      });
   };
 
-  const onDownVotePage = () => {
-    let tempPage = pageDetailData;
-    tempPage.upVote ? (tempPage.downVote += 1) : null;
-    setPageDetailData({ ...tempPage });
+  const fetchListPicture = () => {
+    return axios
+      .get('https://picsum.photos/v2/list?page=2&limit=20', {
+        headers: {
+          'Access-Control-Allow-Origin': '*'
+        }
+      })
+      .then(response => {
+        setListsPicture(response.data);
+      });
   };
 
-  const onComment = (value: string) => {
-    let objTemp = {
-      name: 'Vince',
-      comment: value
-    };
-    listComment.push(objTemp);
-    setListComment([...listComment]);
+  const loadMoreItems = () => {
+    if (hasNext && !isFetching) {
+      fetchNext();
+    } else if (hasNext) {
+      fetchNext();
+    }
   };
 
-  const slug = page.id;
-
-  const shareUrl = `${baseUrl}page/${slug}`;
-
-  const ShareSocialDropdown = (
-    <Popover content={() => popOverContent(shareUrl)}>
-      <ShareButton>
-        <ShareAltOutlined /> Share
-      </ShareButton>
-    </Popover>
-  );
-
-  const ShareSocialButton = (
-    <RWebShare
-      data={{
-        text: intl.get('page.titleShared'),
-        url: shareUrl,
-        title: 'LixiLotus'
-      }}
-      onClick={() => {}}
-    >
-      <ShareButton>
-        <ShareAltOutlined /> Share
-      </ShareButton>
-    </RWebShare>
-  );
+  const navigateEditPage = () => {
+    router.push('/page/edit');
+  };
 
   return (
     <>
-      <StyledContainerPageDetail>
-        <PageCardDetail>
-          <div className="info-page">
-            <img style={{ marginRight: '1rem' }} src={pageDetailData?.avatar?.upload?.url} alt="" />
-            <div>
-              <h4 style={{ margin: '0' }}>{pageDetailData.name}</h4>
+      <StyledContainerProfileDetail>
+        <ProfileCardHeader>
+          <div className="container-img">
+            <img className="cover-img" src={pageDetailData.cover || '/images/default-cover.jpg'} alt="" />
+          </div>
+          <div className="info-profile">
+            <div className="wrapper-avatar">
+              <picture>
+                <img className="avatar-img" src={pageDetailData.avatar || '/images/default-avatar.jpg'} alt="" />
+              </picture>
+              {selectedAccountId == pageDetailData?.pageAccountId && (
+                <div className="btn-upload-avatar" onClick={navigateEditPage}>
+                  <CameraOutlined />
+                </div>
+              )}
+            </div>
+            <div className="title-profile">
+              <h2>{pageDetailData.name}</h2>
               <p>{pageDetailData.title}</p>
             </div>
-          </div>
-          <div className="func-page">
-            <span>{moment(pageDetailData.createdAt).fromNow()}</span>
-          </div>
-        </PageCardDetail>
-        <PageContentDetail>
-          <img style={{ marginRight: '5px', width: '100%' }} src={pageDetailData?.cover?.upload?.url} alt="" />
-          <p style={{ padding: '0 1rem', margin: '1rem 0' }}>{pageDetailData.description}</p>
-          <div className="reaction-container">
-            <div className="reaction-ico">
-              <LikeOutlined onClick={onUpVotePage} />
-              <span style={{ marginLeft: '5px', marginRight: '10px' }}>{Math.floor(Math.random() * 100)}</span>
-              <DislikeOutlined onClick={onDownVotePage} />
-              <span style={{ marginLeft: '5px' }}>{Math.floor(Math.random() * 100)}</span>
-            </div>
-            <div className="reaction-func">
-              <span>{listComment.length}</span>&nbsp;
-              <span>Comments</span>&nbsp;
-              <UpOutlined />
-              {isMobile ? ShareSocialButton : ShareSocialDropdown}
-            </div>
-          </div>
-        </PageContentDetail>
-
-        <CommentContainer>
-          <List
-            itemLayout="vertical"
-            dataSource={listComment}
-            renderItem={item => (
-              <List.Item className="comment-item">
-                <List.Item.Meta
-                  className="comment-item-meta"
-                  avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
-                  title={<a href="https://ant.design">{item.name}</a>}
-                  description={item.comment}
-                />
-                <ActionComment className="action-comment">
-                  <span>Like</span>
-                  <span style={{ margin: '0 1rem' }}>Reply</span>
-                  <span>5mins</span>
-                </ActionComment>
-              </List.Item>
+            {selectedAccountId == pageDetailData?.pageAccountId && (
+              <div className="action-profile">
+                <Button
+                  style={{ marginRight: '1rem' }}
+                  type="primary"
+                  className="outline-btn"
+                  onClick={navigateEditPage}
+                >
+                  <EditOutlined />
+                  Edit profile
+                </Button>
+                <Button type="primary" className="outline-btn" onClick={navigateEditPage}>
+                  <CameraOutlined />
+                  Edit cover photo
+                </Button>
+              </div>
             )}
-          />
-        </CommentContainer>
-        <Search
-          className="input-comment"
-          placeholder="Input your comment..."
-          enterButton="Comment"
-          size="large"
-          suffix={<DashOutlined />}
-          onSearch={onComment}
-        />
-      </StyledContainerPageDetail>
+          </div>
+        </ProfileCardHeader>
+        <ProfileContentContainer>
+          <StyledMenu defaultActiveKey="post">
+            <Tabs.TabPane tab="Post" key="post">
+              <LegacyProfile>
+                <AboutBox>
+                  <h3>About</h3>
+                  {pageDetailData && !pageDetailData.description && (
+                    <div className="blank-about">
+                      <img src="/images/about-blank.svg" alt="" />
+                      <p>Let people know more about you (description, hobbies, address...</p>
+                      <Button type="primary" className="outline-btn">
+                        Update info
+                      </Button>
+                    </div>
+                  )}
+                  <div className="about-content">
+                    <SubAbout
+                      dataItem={pageDetailData?.description}
+                      onClickIcon={() => {}}
+                      icon={InfoCircleOutlined}
+                      text={pageDetailData?.description}
+                    />
+                    <SubAbout
+                      dataItem={pageDetailData?.address}
+                      onClickIcon={() => {}}
+                      icon={CompassOutlined}
+                      text={pageDetailData?.address}
+                    />
+                    <SubAbout
+                      dataItem={pageDetailData?.website}
+                      onClickIcon={() => {}}
+                      icon={HomeOutlined}
+                      text={pageDetailData?.website}
+                    />
+                    {selectedAccountId == pageDetailData?.pageAccountId && (
+                      <Button type="primary" className="outline-btn" onClick={navigateEditPage}>
+                        Edit your profile
+                      </Button>
+                    )}
+                  </div>
+                </AboutBox>
+                <PictureBox>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <h3>Pictures</h3>
+                    {listsPicture && listsPicture.length > 0 && (
+                      <Button type="primary" className="no-border-btn" style={{ padding: '0' }}>
+                        See all
+                      </Button>
+                    )}
+                  </div>
+                  {listsPicture && listsPicture.length == 0 && (
+                    <div className="blank-picture">
+                      <img src="/images/photo-blank.svg" alt="" />
+                      <p>Photos uploaded in posts, or posts that have tag of your name</p>
+                      <Button type="primary" className="outline-btn">
+                        Update picture
+                      </Button>
+                    </div>
+                  )}
+                  {listsPicture && listsPicture.length > 0 && (
+                    <div className="picture-content">
+                      {listsPicture.map((item: any, index: number) => {
+                        if (index < 9) return <img key={item.id} src={item.download_url} alt={item.author} />;
+                      })}
+                    </div>
+                  )}
+                </PictureBox>
+                <FriendBox>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <div>
+                      <h3>Friends</h3>
+                      <p
+                        style={{
+                          margin: '0',
+                          fontSize: '13px',
+                          letterSpacing: '0.5px',
+                          color: 'rgba(30, 26, 29, 0.6)'
+                        }}
+                      >
+                        {listsFriend.length > 0 ? listsFriend.length + ' friends' : ''}
+                      </p>
+                    </div>
+                    {listsFriend && listsFriend.length > 0 && (
+                      <Button type="primary" className="no-border-btn" style={{ padding: '0' }}>
+                        See all
+                      </Button>
+                    )}
+                  </div>
+                  {listsFriend && listsFriend.length == 0 && (
+                    <div className="blank-friend">
+                      <img src="/images/friend-blank.svg" alt="" />
+                      <p>Connect with people you know in LixiLotus.</p>
+                      <Button type="primary" className="outline-btn">
+                        Discover LixiLotus social network
+                      </Button>
+                    </div>
+                  )}
+                  {listsFriend && listsFriend.length > 0 && (
+                    <div className="friend-content">
+                      {listsFriend.map((item: any, index: number) => {
+                        if (index < 9)
+                          return (
+                            <div key={item.id} className="friend-item">
+                              <img src={item.download_url} alt="" />
+                              <p>{item.author}</p>
+                            </div>
+                          );
+                      })}
+                    </div>
+                  )}
+                </FriendBox>
+              </LegacyProfile>
+              <ContentTimeline>
+                <SearchBox />
+                <CreatePostCard pageId={page.id} refetch={() => refetch()} />
+                <Timeline>
+                  {data.length == 0 && (
+                    <div className="blank-timeline">
+                      <img className="time-line-blank" src="/images/time-line-blank.svg" alt="" />
+                      <p>Sharing your thinking</p>
+                    </div>
+                  )}
+                  <div className={'listing'} style={{ height: '100vh' }}>
+                    <Virtuoso
+                      className={'listing'}
+                      style={{ height: '100%' }}
+                      data={data}
+                      endReached={loadMoreItems}
+                      overscan={900}
+                      itemContent={(index, item) => {
+                        return <PostListItem index={index} item={item} />;
+                      }}
+                      totalCount={totalCount}
+                      components={{
+                        Footer: () => {
+                          return (
+                            <div
+                              style={{
+                                padding: '1rem',
+                                textAlign: 'center'
+                              }}
+                            >
+                              end reached
+                            </div>
+                          );
+                        }
+                      }}
+                    />
+                  </div>
+                </Timeline>
+              </ContentTimeline>
+            </Tabs.TabPane>
+            <Tabs.TabPane tab="About" key="about"></Tabs.TabPane>
+            <Tabs.TabPane tab="Friend" key="friend"></Tabs.TabPane>
+            <Tabs.TabPane tab="Picture" key="picture"></Tabs.TabPane>
+          </StyledMenu>
+        </ProfileContentContainer>
+      </StyledContainerProfileDetail>
     </>
   );
 };
 
-const Container = styled(PageDetail)`
-  .ant-modal,
-  .ant-modal-content {
-    height: 100vh !important;
-    top: 0 !important;
-  }
-  .ant-modal-body {
-    height: calc(100vh - 110px) !important;
-  }
-`;
-
-export default Container;
+export default PageDetail;

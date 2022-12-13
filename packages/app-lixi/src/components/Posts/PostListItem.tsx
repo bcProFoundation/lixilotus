@@ -56,7 +56,6 @@ const CardContainer = styled.div`
   @media (max-width: 768px) {
     padding: 1rem 1rem 0 1rem;
   }
-  cursor: pointer;
 `;
 
 const CardHeader = styled.div`
@@ -190,10 +189,6 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
 
   if (!post) return null;
 
-  const routerPostDetail = id => {
-    dispatch(push(`/post/${id}`));
-  };
-
   useEffect(() => {
     loadPost();
   }, []);
@@ -213,8 +208,6 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
     descPostDom.classList.add('show-more');
     setShowMore(false);
   };
-
-  const onLixiClick = item => {};
 
   const handleSubmit = (values: any) => {
     console.log(values);
@@ -237,25 +230,27 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
     }, 1000);
   };
 
-  const upVotePost = dataItem => {
-    handleBurnForPost(true, dataItem.id);
+  const upVotePost = (dataItem: PostItem) => {
+    handleBurnForPost(true, dataItem);
   };
 
-  const downVotePost = dataItem => {
-    handleBurnForPost(false, dataItem.id);
+  const downVotePost = (dataItem: PostItem) => {
+    handleBurnForPost(false, dataItem);
   };
 
-  const handleBurnForPost = async (isUpVote: boolean, postId: string) => {
+  const handleBurnForPost = async (isUpVote: boolean, post: PostItem) => {
     try {
       if (slpBalancesAndUtxos.nonSlpUtxos.length == 0) {
         throw new Error('Insufficient funds');
       }
       const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
       const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
-      const { fundingWif, hash160 } = currentWalletPath;
+      const { hash160, xAddress } = currentWalletPath;
       const burnType = isUpVote ? BurnType.Up : BurnType.Down;
       const burnedBy = hash160;
-      const burnForId = postId;
+      const burnForId = post.id;
+      const burnValue = '1';
+      const tipToAddress = post?.postAccount?.address ?? undefined;
 
       const txHex = await burnXpi(
         XPI,
@@ -266,7 +261,8 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
         BurnForType.Post,
         burnedBy,
         burnForId,
-        '1'
+        burnValue,
+        tipToAddress
       );
 
       const burnCommand: BurnCommand = {
@@ -274,7 +270,9 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
         burnType,
         burnForType: BurnForType.Post,
         burnedBy,
-        burnForId
+        burnForId,
+        burnValue,
+        tipToAddress: xAddress
       };
 
       dispatch(burnForUpDownVote(burnCommand));
@@ -327,6 +325,10 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
               imgUrl={post.page ? post.page.avatar : ''}
               name={showUsername()}
               title={moment(post.createdAt).fromNow().toString()}
+              address={post.postAccount ? post.postAccount.address : undefined}
+              page={post.page ? post.page : undefined}
+              token={post.token ? post.token : undefined}
+              activatePostLocation={true}
             ></InfoCardUser>
           </CardHeader>
           <Content>
@@ -373,10 +375,6 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
               onClickIcon={() => {}}
             /> */}
           </GroupIconText>
-
-          <Button type="primary" onClick={item => onLixiClick(item)}>
-            Send tip
-          </Button>
         </ActionBar>
         {isCollapseComment && (
           <Comment

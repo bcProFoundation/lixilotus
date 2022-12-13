@@ -17,4 +17,9 @@ export class BurnCommand {
 
   @IsNotEmpty()
   burnForId: string;
+
+  @IsNotEmpty()
+  burnValue: string;
+
+  tipToAddress?: string;
 }

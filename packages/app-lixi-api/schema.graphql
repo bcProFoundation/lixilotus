@@ -121,6 +121,8 @@ type Post {
   pageId: String
   postAccount: Account!
   postAccountId: Int!
+  token: Token
+  tokenId: String
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
@@ -188,6 +190,7 @@ type Query {
     query: String
   ): PostResponse!
   allPostsByTokenId(after: String, before: String, first: Int, id: String, last: Int, orderBy: PostOrder, skip: Int): PostConnection!
+  allPostsByUserId(after: String, before: String, first: Int, id: String, last: Int, orderBy: PostOrder, skip: Int): PostConnection!
   page(id: String!): Page!
   post(id: String!): Post!
 }
