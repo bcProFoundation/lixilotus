@@ -148,6 +148,13 @@ const TokensListing: React.FC = () => {
 
   const columns: ColumnsType<Token> = [
     {
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+      // fixed: 'left',
+      render: (id: string) => '...' + id.substring(id.length-8).toUpperCase()
+    },
+    {
       title: 'Ticker',
       dataIndex: 'ticker',
       key: 'ticker',
