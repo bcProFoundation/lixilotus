@@ -309,6 +309,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
           footer={null}
           onCancel={() => setEnableEditor(false)}
           destroyOnClose={true}
+          maskClosable={false}
         >
           <Tabs defaultActiveKey="1">
             <Tabs.TabPane tab="Create" key="create">
