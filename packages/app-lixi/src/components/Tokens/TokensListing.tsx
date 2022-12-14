@@ -1,4 +1,11 @@
-import Icon, { CopyOutlined, FilterOutlined, FireOutlined, LeftOutlined, SearchOutlined, SyncOutlined } from '@ant-design/icons';
+import Icon, {
+  CopyOutlined,
+  FilterOutlined,
+  FireOutlined,
+  LeftOutlined,
+  SearchOutlined,
+  SyncOutlined
+} from '@ant-design/icons';
 import { Token } from '@bcpros/lixi-models';
 import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { currency } from '@components/Common/Ticker';
@@ -25,7 +32,7 @@ import { Controller, useForm } from 'react-hook-form';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import makeBlockie from 'ethereum-blockies-base64';
-import burnSvg from '../../assets/icons/burn.svg'
+import BurnSvg from '@assets/icons/burn.svg';
 
 const StyledTokensListing = styled.div``;
 
@@ -181,7 +188,7 @@ const TokensListing: React.FC = () => {
       // fixed: 'left',
       render: (_, token) => (
         <CopyToClipboard text={token.tokenId} onCopy={() => handleOnCopy(token.tokenId)}>
-          <p style={{marginTop: '0px', marginBottom: '0px'}}>
+          <p style={{ marginTop: '0px', marginBottom: '0px' }}>
             ...{token.tokenId.substring(token.tokenId.length - 8).slice(0, 4)}
             <b>{token.tokenId.substring(token.tokenId.length - 4)}</b>
             &nbsp; <CopyOutlined style={{ fontSize: '14px', color: 'rgba(30, 26, 29, 0.6)' }} />
@@ -226,7 +233,13 @@ const TokensListing: React.FC = () => {
       // fixed: 'right',
       render: (_, record) => (
         <Space size="middle">
-          <Button type="text" className="outline-btn" icon={<Icon component={burnSvg} style={{fontSize: '27px'}}/>} onClick={() => burnToken(record.id)}/>
+          <Button
+            type="text"
+            className="outline-btn"
+            icon={BurnSvg}
+            style={{ fontSize: '27px' }}
+            onClick={() => burnToken(record.id)}
+          />
         </Space>
       )
     }
