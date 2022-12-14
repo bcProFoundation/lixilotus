@@ -176,7 +176,7 @@ const TokensListing: React.FC = () => {
       )
     },
     {
-      title: 'Short ID',
+      title: intl.get('label.shortId'),
       key: 'id',
       // fixed: 'left',
       render: (_, token) => (
@@ -190,38 +190,38 @@ const TokensListing: React.FC = () => {
       )
     },
     {
-      title: 'Ticker',
+      title: intl.get('label.ticker'),
       dataIndex: 'ticker',
       key: 'ticker',
       // fixed: 'left',
       ...getColumnSearchProps('ticker')
     },
     {
-      title: 'Name',
+      title: intl.get('label.name'),
       dataIndex: 'name',
       key: 'name',
       // fixed: 'left',
       ...getColumnSearchProps('name')
     },
     {
-      title: 'Burn XPI',
+      title: intl.get('label.burnXPI'),
       key: 'lotusBurn',
       sorter: (a, b) => a.lotusBurnUp + a.lotusBurnDown - (b.lotusBurnUp + b.lotusBurnDown),
       defaultSortOrder: 'descend',
       render: (_, record) => formatBalance(record.lotusBurnUp + record.lotusBurnDown)
     },
     {
-      title: 'Comments',
+      title: intl.get('label.comment'),
       key: 'comments',
       render: (_, record) => moment(record.comments).format('DD-MM-YYYY HH:mm')
     },
     {
-      title: 'Created',
+      title: intl.get('label.created'),
       key: 'createdDate',
       render: (_, record) => moment(record.createdDate).format('DD-MM-YYYY HH:mm')
     },
     {
-      title: 'Action',
+      title: intl.get('label.action'),
       key: 'action',
       // fixed: 'right',
       render: (_, record) => (

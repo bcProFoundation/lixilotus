@@ -18,6 +18,13 @@ export default {
   'special.or': 'Hoặc',
   'special.cancel': 'Hủy bỏ',
   'special.copy': 'Sao chép',
+  'label.shortId': 'Id rút gọn',
+  'label.ticker': 'Mã',
+  'label.name': 'Tên',
+  'label.burnXPI': 'Đốt XPI',
+  'label.comment': 'Bình luận',
+  'label.created': 'Khởi tạo',
+  'label.action': 'Hành động',
 
   /* 01.General */
   'general.tokens': 'Tokens',
@@ -467,8 +474,8 @@ export default {
   'token.couldNotFindToken': 'Không thể tìm thấy token',
   'token.unableCreateToken': 'Không thể tạo token',
   'token.unableSelect': 'Không thể chọn token',
-  'token.inputTokenId': 'Nhập tokenId',
-  'token.tokenIdNotFound': 'TokenID không tồn tại',
-  'token.tokenIdInvalid': 'TokenID không đúng',
-  'token.copyId': 'Token ID đã được sao chép.'
+  'token.inputTokenId': 'Nhập token Id',
+  'token.tokenIdNotFound': 'Token Id không tồn tại',
+  'token.tokenIdInvalid': 'Token Id không hợp lệ',
+  'token.copyId': 'Token Id đã được sao chép.'
 };
