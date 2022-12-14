@@ -14,6 +14,7 @@ import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import PostListItem from './PostListItem';
 import styled from 'styled-components';
+import CustomInfiniteScroll from '@components/Common/CustomInfiniteScroll';
 
 type PostsListingProps = {
   className?: string;
@@ -66,7 +67,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsQuery(
     {
-      first: 20,
+      first: 5,
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt
@@ -114,9 +115,9 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const triggerSrollbar = e => {
     const virtuosoNode = refPostsListing.current.querySelector('#list-virtuoso') || null;
     virtuosoNode.classList.add('show-scroll');
-    setTimeout(() => {
-      virtuosoNode.classList.remove('show-scroll');
-    }, 700);
+    // setTimeout(() => {
+    //   virtuosoNode.classList.remove('show-scroll');
+    // }, 700);
   };
 
   const Header = () => {
@@ -161,7 +162,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         style={{ height: '100vh', paddingBottom: '2rem' }}
         data={data}
         endReached={loadMoreItems}
-        overscan={15000}
+        overscan={500}
         itemContent={(index, item) => {
           return <PostListItem index={index} item={item} />;
         }}

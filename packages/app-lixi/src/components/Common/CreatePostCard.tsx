@@ -2,7 +2,7 @@ import { PlusCircleOutlined } from '@ant-design/icons';
 import { getPostCoverUploads } from '@store/account/selectors';
 import { useCreatePostMutation } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
-import { Avatar, Button, Modal, Tabs } from 'antd';
+import { Avatar, Button, Input, Modal, Tabs } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import _ from 'lodash';
 import dynamic from 'next/dynamic';
@@ -298,7 +298,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
           <Avatar size={50} style={{ color: '#fff', backgroundColor: '#bdbdbd' }}>
             ER
           </Avatar>
-          <TextArea bordered={false} placeholder="What's on your mind?" autoSize={{ minRows: 1, maxRows: 2 }} />
+          <Input bordered={false} placeholder="What's on your mind?" />
         </div>
         <div className="btn-create">
           <PlusCircleOutlined />
