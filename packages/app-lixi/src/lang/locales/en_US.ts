@@ -18,6 +18,13 @@ export default {
   'special.or': 'Or',
   'special.cancel': 'Cancel',
   'special.copy': 'Copy',
+  'label.shortId': 'Short Id',
+  'label.ticker': 'Ticker',
+  'label.name': 'Name',
+  'label.burnXPI': 'Burn XPI',
+  'label.comment': 'Comments',
+  'label.created': 'Created',
+  'label.action': 'Action',
 
   /* 01.General */
   'general.tokens': 'Tokens',
@@ -466,7 +473,8 @@ export default {
   'token.couldNotFindToken': 'Could not find tokens',
   'token.unableCreateToken': 'Unable to create token.',
   'token.unableSelect': 'Unable to select token',
-  'token.inputTokenId': 'Input tokenId',
-  'token.tokenIdNotFound': 'TokenID not found',
-  'token.tokenIdInvalid': 'TokenID invalid'
+  'token.inputTokenId': 'Input token Id',
+  'token.tokenIdNotFound': 'Token ID not found',
+  'token.tokenIdInvalid': 'Token ID invalid',
+  'token.copyId': 'The token Id has been copied.',
 };

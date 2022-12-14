@@ -1,4 +1,4 @@
-import { FilterOutlined, FireOutlined, LeftOutlined, SearchOutlined, SyncOutlined } from '@ant-design/icons';
+import Icon, { CopyOutlined, FilterOutlined, FireOutlined, LeftOutlined, SearchOutlined, SyncOutlined } from '@ant-design/icons';
 import { Token } from '@bcpros/lixi-models';
 import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { currency } from '@components/Common/Ticker';
@@ -11,7 +11,7 @@ import { showToast } from '@store/toast/actions';
 import { burnForTokenSuccess, fetchAllTokens, postToken, selectToken, selectTokens } from '@store/tokens';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
 import { formatBalance } from '@utils/cashMethods';
-import { Button, Form, Input, InputRef, Modal, Space, Table } from 'antd';
+import { Button, Form, Image, Input, InputRef, message, Modal, notification, Space, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { ColumnType } from 'antd/lib/table';
 import { FilterConfirmProps } from 'antd/lib/table/interface';
@@ -19,10 +19,13 @@ import moment from 'moment';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Highlighter from 'react-highlight-words';
 import { Controller, useForm } from 'react-hook-form';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
+import makeBlockie from 'ethereum-blockies-base64';
+import burnSvg from '../../assets/icons/burn.svg'
 
 const StyledTokensListing = styled.div``;
 
@@ -146,54 +149,84 @@ const TokensListing: React.FC = () => {
       )
   });
 
+  const handleOnCopy = (id: string) => {
+    notification.info({
+      message: intl.get('token.copyId'),
+      description: id,
+      placement: 'top'
+    });
+  };
+
   const columns: ColumnsType<Token> = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      // fixed: 'left',
-      render: (id: string) => '...' + id.substring(id.length-8).toUpperCase()
+      key: 'image',
+      className: 'token-img',
+      render: (_, token) => (
+        // eslint-disable-next-line react/jsx-no-undef, @next/next/no-img-element
+        <Image
+          width={32}
+          height={32}
+          src={`${currency.tokenIconsUrl}/32/${token.tokenId}.png`}
+          fallback={makeBlockie(token.id)}
+          preview={false}
+          style={{
+            borderRadius: '50%'
+          }}
+        />
+      )
     },
     {
-      title: 'Ticker',
+      title: intl.get('label.shortId'),
+      key: 'id',
+      // fixed: 'left',
+      render: (_, token) => (
+        <CopyToClipboard text={token.tokenId} onCopy={() => handleOnCopy(token.tokenId)}>
+          <p style={{marginTop: '0px', marginBottom: '0px'}}>
+            ...{token.tokenId.substring(token.tokenId.length - 8).slice(0, 4)}
+            <b>{token.tokenId.substring(token.tokenId.length - 4)}</b>
+            &nbsp; <CopyOutlined style={{ fontSize: '14px', color: 'rgba(30, 26, 29, 0.6)' }} />
+          </p>
+        </CopyToClipboard>
+      )
+    },
+    {
+      title: intl.get('label.ticker'),
       dataIndex: 'ticker',
       key: 'ticker',
       // fixed: 'left',
       ...getColumnSearchProps('ticker')
     },
     {
-      title: 'Name',
+      title: intl.get('label.name'),
       dataIndex: 'name',
       key: 'name',
       // fixed: 'left',
       ...getColumnSearchProps('name')
     },
     {
-      title: 'Burn XPI',
+      title: intl.get('label.burnXPI'),
       key: 'lotusBurn',
       sorter: (a, b) => a.lotusBurnUp + a.lotusBurnDown - (b.lotusBurnUp + b.lotusBurnDown),
       defaultSortOrder: 'descend',
       render: (_, record) => formatBalance(record.lotusBurnUp + record.lotusBurnDown)
     },
     {
-      title: 'Comments',
+      title: intl.get('label.comment'),
       key: 'comments',
       render: (_, record) => moment(record.comments).format('DD-MM-YYYY HH:mm')
     },
     {
-      title: 'Created',
+      title: intl.get('label.created'),
       key: 'createdDate',
       render: (_, record) => moment(record.createdDate).format('DD-MM-YYYY HH:mm')
     },
     {
-      title: 'Action',
+      title: intl.get('label.action'),
       key: 'action',
       // fixed: 'right',
       render: (_, record) => (
         <Space size="middle">
-          <Button type="primary" className="outline-btn" icon={<FireOutlined />} onClick={() => burnToken(record.id)}>
-            Burn
-          </Button>
+          <Button type="text" className="outline-btn" icon={<Icon component={burnSvg} style={{fontSize: '27px'}}/>} onClick={() => burnToken(record.id)}/>
         </Space>
       )
     }
