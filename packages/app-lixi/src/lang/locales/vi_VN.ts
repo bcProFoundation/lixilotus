@@ -469,5 +469,6 @@ export default {
   'token.unableSelect': 'Không thể chọn token',
   'token.inputTokenId': 'Nhập tokenId',
   'token.tokenIdNotFound': 'TokenID không tồn tại',
-  'token.tokenIdInvalid': 'TokenID không đúng'
+  'token.tokenIdInvalid': 'TokenID không đúng',
+  'token.copyId': 'Token ID đã được sao chép.'
 };

@@ -468,5 +468,6 @@ export default {
   'token.unableSelect': 'Unable to select token',
   'token.inputTokenId': 'Input tokenId',
   'token.tokenIdNotFound': 'TokenID not found',
-  'token.tokenIdInvalid': 'TokenID invalid'
+  'token.tokenIdInvalid': 'TokenID invalid',
+  'token.copyId': 'The token ID has been copied.'
 };
