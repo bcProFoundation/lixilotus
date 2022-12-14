@@ -18,6 +18,7 @@ import { FilterConfirmProps } from 'antd/lib/table/interface';
 import moment from 'moment';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import Texty from 'rc-texty';
 import React, { useEffect, useRef, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Highlighter from 'react-highlight-words';
@@ -25,7 +26,7 @@ import { Controller, useForm } from 'react-hook-form';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import makeBlockie from 'ethereum-blockies-base64';
-import burnSvg from '../../assets/icons/burn.svg'
+import BurnSvg from '@assets/icons/burn.svg';
 
 const StyledTokensListing = styled.div``;
 
@@ -44,6 +45,29 @@ const StyledNavBarHeader = styled.div`
   }
 `;
 
+const Grid = styled.div`
+  .Burns{
+    cursor: pointer;
+  }
+  .Burns .goUp{
+    display: inline-flex;
+    opacity: 0;
+    transform: translate3d(0, -20px, 0);
+    transition: 0.1s ease-in-out;
+  }
+  .Burns .waitDown{
+    display: inline-flex;
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+  }
+  .Burns .initial{
+    display: inline-flex;
+    opacity: 1;
+    transform: translate3d(0, 0px, 0);
+    transition: 0.1s ease-in-out;
+  }
+`
+
 const TokensListing: React.FC = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -51,6 +75,9 @@ const TokensListing: React.FC = () => {
   const [valueInput, setValueInput] = useState('');
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
+  const [burns, setBurns] = useState(0);
+  const [animationBurns, setAnimationBurns] = useState('initial');
+
   const searchInput = useRef<InputRef>(null);
   const tokenList = useAppSelector(selectTokens);
 
@@ -60,7 +87,7 @@ const TokensListing: React.FC = () => {
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const latestBurnForToken = useAppSelector(getLatestBurnForToken);
-
+  
   const {
     handleSubmit,
     formState: { errors },
@@ -157,6 +184,13 @@ const TokensListing: React.FC = () => {
     });
   };
 
+  const handleBurns = (tokenBurn) => {
+    setTimeout(() => setAnimationBurns('goUp'), 0);
+    setTimeout(() => tokenBurn, 100);
+    setTimeout(() => setAnimationBurns('waitDown'), 100);
+    setTimeout(() => setAnimationBurns('initial'), 200);
+  }
+
   const columns: ColumnsType<Token> = [
     {
       key: 'image',
@@ -208,7 +242,16 @@ const TokensListing: React.FC = () => {
       key: 'lotusBurn',
       sorter: (a, b) => a.lotusBurnUp + a.lotusBurnDown - (b.lotusBurnUp + b.lotusBurnDown),
       defaultSortOrder: 'descend',
-      render: (_, record) => formatBalance(record.lotusBurnUp + record.lotusBurnDown)
+      render: (_, record) => (
+        // <Texty type='bottom' mode='sync'>
+        //   {formatBalance(record.lotusBurnUp + record.lotusBurnDown)}
+        // </Texty>
+        <div className='Grid'>
+          <div className='Burns' onClick = {()=>handleBurns(formatBalance(record.lotusBurnUp + record.lotusBurnDown))}>
+            <span className={animationBurns}>{formatBalance(record.lotusBurnUp + record.lotusBurnDown)}</span>
+          </div>
+        </div>
+      )
     },
     {
       title: intl.get('label.comment'),
@@ -226,7 +269,7 @@ const TokensListing: React.FC = () => {
       // fixed: 'right',
       render: (_, record) => (
         <Space size="middle">
-          <Button type="text" className="outline-btn" icon={<Icon component={burnSvg} style={{fontSize: '27px'}}/>} onClick={() => burnToken(record.id)}/>
+          <Button type="text" className="outline-btn" icon={<BurnSvg/>} onClick={() => burnToken(record.id)}/>
         </Space>
       )
     }
@@ -264,7 +307,7 @@ const TokensListing: React.FC = () => {
       const burnedBy = hash160;
       const burnForId = tokenId;
 
-      const burnValue = '1';
+      const burnValue = '0.01';
       const txHex = await burnXpi(
         XPI,
         walletPaths,
