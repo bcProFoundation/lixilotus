@@ -236,7 +236,7 @@ const TokensListing: React.FC = () => {
           <Button
             type="text"
             className="outline-btn"
-            icon={BurnSvg}
+            icon={<BurnSvg />}
             style={{ fontSize: '27px' }}
             onClick={() => burnToken(record.id)}
           />
