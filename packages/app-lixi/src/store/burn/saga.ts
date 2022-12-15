@@ -9,6 +9,7 @@ import * as _ from 'lodash';
 import intl from 'react-intl-universal';
 import { put } from 'redux-saga/effects';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
+import { D } from 'styled-icons/crypto';
 import { hideLoading } from '../loading/actions';
 import { burnForUpDownVote, burnForUpDownVoteFailure, burnForUpDownVoteSuccess } from './actions';
 import burnApi from './api';
@@ -34,7 +35,8 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
 
     patches = yield put(
       postApi.util.updateQueryData('Posts', params, draft => {
-        const postToUpdate = draft.allPosts.edges.find(item => item.node.id === command.burnForId);
+        const postToUpdateIndex = draft.allPosts.edges.findIndex(item => item.node.id === command.burnForId);
+        const postToUpdate = draft.allPosts.edges[postToUpdateIndex];
         if (postToUpdate) {
           let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
           let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
@@ -50,6 +52,10 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
             lotusBurnDown,
             lotusBurnScore
           };
+          if (lotusBurnScore < 0) {
+            draft.allPosts.edges.splice(postToUpdateIndex, 1);
+            draft.allPosts.totalCount = draft.allPosts.totalCount - 1;
+          }
         }
       })
     );

@@ -1,14 +1,14 @@
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { getPostCoverUploads } from '@store/account/selectors';
-import { useCreatePostMutation } from '@store/post/posts.generated';
+import { api as postApi, useCreatePostMutation } from '@store/post/posts.api';
 import { showToast } from '@store/toast/actions';
-import { Avatar, Button, Modal, Tabs } from 'antd';
+import { Avatar, Button, Input, Modal, Tabs } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
 import _ from 'lodash';
 import dynamic from 'next/dynamic';
-import { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import intl from 'react-intl-universal';
-import { CreatePostInput } from 'src/generated/types.generated';
+import { CreatePostInput, OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled from 'styled-components';
 import 'suneditor/dist/css/suneditor.min.css'; // Import Sun Editor's CSS File
@@ -47,6 +47,9 @@ const Preview = styled.div`
   padding: 30px;
   margin-top: 2rem;
   box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
+  iframe {
+    width: 100% !important;
+  }
 `;
 
 const SunEditor = dynamic(() => import('suneditor-react'), {
@@ -231,6 +234,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
   };
 
   const handleSubmitEditor = async value => {
+    console.log('handleSubmitEditor');
     if (url) {
       console.log(url);
     } else {
@@ -241,6 +245,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
   };
 
   const handleCreateNewPost = async content => {
+    console.log('handleCreateNewPost');
     if (content !== '' || !_.isNil(content)) {
       const createPostInput: CreatePostInput = {
         uploadCovers: postCoverUploads.map(upload => upload.id),
@@ -250,26 +255,31 @@ const CreatePostCard = (props: CreatePostCardProp) => {
       };
 
       try {
-        // if (createPostInput) {
-
-        //   // const data = { postAccountId: 0, pageAccountId: 0 };
-        //   // dispatch(setPost({ ...data, ...postCreated.createPost }));
-        // }
-
-        await createPostTrigger({ input: createPostInput })
-          .unwrap()
-          .then(payload => {
-            dispatch(
-              showToast('success', {
-                message: 'Success',
-                description: intl.get('post.createPostSuccessful'),
-                duration: 5
-              })
-            );
+        const result = await createPostTrigger({ input: createPostInput }).unwrap();
+        const params = {
+          orderBy: {
+            direction: OrderDirection.Desc,
+            field: PostOrderField.UpdatedAt
+          }
+        };
+        const patchResult = dispatch(
+          postApi.util.updateQueryData('Posts', params, draft => {
+            draft.allPosts.edges.unshift({
+              cursor: result.createPost.id,
+              node: {
+                ...result.createPost
+              }
+            });
+            draft.allPosts.totalCount = draft.allPosts.totalCount + 1;
           })
-          .finally(() => {
-            props.refetch();
-          });
+        );
+        dispatch(
+          showToast('success', {
+            message: 'Success',
+            description: intl.get('post.createPostSuccessful'),
+            duration: 5
+          })
+        );
       } catch (error) {
         const message = intl.get('post.unableCreatePostServer');
         dispatch(
@@ -295,7 +305,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
           <Avatar size={50} style={{ color: '#fff', backgroundColor: '#bdbdbd' }}>
             ER
           </Avatar>
-          <TextArea bordered={false} placeholder="What's on your mind?" autoSize={{ minRows: 1, maxRows: 2 }} />
+          <Input bordered={false} placeholder="What's on your mind?" />
         </div>
         <div className="btn-create">
           <PlusCircleOutlined />
@@ -309,6 +319,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
           footer={null}
           onCancel={() => setEnableEditor(false)}
           destroyOnClose={true}
+          maskClosable={false}
         >
           <Tabs defaultActiveKey="1">
             <Tabs.TabPane tab="Create" key="create">
@@ -349,4 +360,4 @@ const CreatePostCard = (props: CreatePostCardProp) => {
   );
 };
 
-export default CreatePostCard;
+export default React.memo(CreatePostCard);

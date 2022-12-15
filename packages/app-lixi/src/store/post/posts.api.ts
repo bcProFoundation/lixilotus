@@ -1,6 +1,8 @@
-import { createEntityAdapter, EntityState } from '@reduxjs/toolkit';
-import { PageInfo } from 'src/generated/types.generated';
-import { api, PostsQuery, PostQuery } from './posts.generated';
+import { EntityState } from '@reduxjs/toolkit';
+import { showToast } from '@store/toast/actions';
+import intl from 'react-intl-universal';
+import { OrderDirection, PageInfo, PostOrderField } from 'src/generated/types.generated';
+import { api, PostQuery } from './posts.generated';
 
 export interface PostApiState extends EntityState<PostQuery['post']> {
   pageInfo: PageInfo;
@@ -11,7 +13,7 @@ const enhancedApi = api.enhanceEndpoints({
   addTagTypes: ['Post'],
   endpoints: {
     Posts: {
-      keepUnusedDataFor: 120,
+      providesTags: (result, error, arg) => ['Post'],
       serializeQueryArgs({ queryArgs }) {
         if (queryArgs) {
           const { orderBy, ...otherArgs } = queryArgs;

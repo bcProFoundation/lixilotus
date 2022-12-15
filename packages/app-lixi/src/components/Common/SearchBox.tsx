@@ -44,7 +44,6 @@ const SearchBox = props => {
         <div className="btn-search">
           <SearchOutlined />
         </div>
-
         <Controller
           name="search"
           control={control}

@@ -34,6 +34,7 @@ html,
 body {
   max-width: 100%;
   overflow-x: hidden;
+  height: auto;
 }
 
 body {
@@ -102,6 +103,7 @@ code {
       padding: 2rem 0;
       border-bottom: 0;
       padding-bottom: 0;
+      background: transparent !important;
 
       .ant-modal-title {
         font-size: 18px;
@@ -112,6 +114,7 @@ code {
     .ant-modal-body {
       text-align: left;
       padding-top: 0;
+      background: transparent !important;
 
       form {
         display: flex;
@@ -167,7 +170,14 @@ code {
 
     .ant-modal-content {
       border-radius: 0;
+      width: 100% !important;
       height: 100%;
+    }
+  }
+
+  @media (max-width: 426px) {
+    .ant-modal-content {
+      width: 100% !important;
     }
   }
 }
