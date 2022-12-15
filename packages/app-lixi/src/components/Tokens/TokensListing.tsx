@@ -1,4 +1,11 @@
-import Icon, { CopyOutlined, FilterOutlined, FireOutlined, LeftOutlined, SearchOutlined, SyncOutlined } from '@ant-design/icons';
+import Icon, {
+  CopyOutlined,
+  FilterOutlined,
+  FireOutlined,
+  LeftOutlined,
+  SearchOutlined,
+  SyncOutlined
+} from '@ant-design/icons';
 import { Token } from '@bcpros/lixi-models';
 import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { currency } from '@components/Common/Ticker';
@@ -18,7 +25,6 @@ import { FilterConfirmProps } from 'antd/lib/table/interface';
 import moment from 'moment';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import Texty from 'rc-texty';
 import React, { useEffect, useRef, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Highlighter from 'react-highlight-words';
@@ -27,6 +33,7 @@ import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import makeBlockie from 'ethereum-blockies-base64';
 import BurnSvg from '@assets/icons/burn.svg';
+import { Counter } from '@components/Common/Counter';
 
 const StyledTokensListing = styled.div``;
 
@@ -75,8 +82,6 @@ const TokensListing: React.FC = () => {
   const [valueInput, setValueInput] = useState('');
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
-  const [burns, setBurns] = useState(0);
-  const [animationBurns, setAnimationBurns] = useState('initial');
 
   const searchInput = useRef<InputRef>(null);
   const tokenList = useAppSelector(selectTokens);
@@ -184,13 +189,6 @@ const TokensListing: React.FC = () => {
     });
   };
 
-  const handleBurns = (tokenBurn) => {
-    setTimeout(() => setAnimationBurns('goUp'), 0);
-    setTimeout(() => tokenBurn, 100);
-    setTimeout(() => setAnimationBurns('waitDown'), 100);
-    setTimeout(() => setAnimationBurns('initial'), 200);
-  }
-
   const columns: ColumnsType<Token> = [
     {
       key: 'image',
@@ -215,8 +213,8 @@ const TokensListing: React.FC = () => {
       // fixed: 'left',
       render: (_, token) => (
         <CopyToClipboard text={token.tokenId} onCopy={() => handleOnCopy(token.tokenId)}>
-          <p style={{marginTop: '0px', marginBottom: '0px'}}>
-            ...{token.tokenId.substring(token.tokenId.length - 8).slice(0, 4)}
+          <p style={{ marginTop: '0px', marginBottom: '0px' }}>
+            {token.tokenId.substring(token.tokenId.length - 8).slice(0, 4)}
             <b>{token.tokenId.substring(token.tokenId.length - 4)}</b>
             &nbsp; <CopyOutlined style={{ fontSize: '14px', color: 'rgba(30, 26, 29, 0.6)' }} />
           </p>
@@ -242,16 +240,7 @@ const TokensListing: React.FC = () => {
       key: 'lotusBurn',
       sorter: (a, b) => a.lotusBurnUp + a.lotusBurnDown - (b.lotusBurnUp + b.lotusBurnDown),
       defaultSortOrder: 'descend',
-      render: (_, record) => (
-        // <Texty type='bottom' mode='sync'>
-        //   {formatBalance(record.lotusBurnUp + record.lotusBurnDown)}
-        // </Texty>
-        <div className='Grid'>
-          <div className='Burns' onClick = {()=>handleBurns(formatBalance(record.lotusBurnUp + record.lotusBurnDown))}>
-            <span className={animationBurns}>{formatBalance(record.lotusBurnUp + record.lotusBurnDown)}</span>
-          </div>
-        </div>
-      )
+      render:  (_, record) => <Counter num={formatBalance(record.lotusBurnUp + record.lotusBurnDown)}/>
     },
     {
       title: intl.get('label.comment'),
@@ -269,7 +258,13 @@ const TokensListing: React.FC = () => {
       // fixed: 'right',
       render: (_, record) => (
         <Space size="middle">
-          <Button type="text" className="outline-btn" icon={<BurnSvg/>} onClick={() => burnToken(record.id)}/>
+          <Button
+            type="text"
+            className="outline-btn"
+            icon={<BurnSvg/>}
+            style={{ fontSize: '27px' }}
+            onClick={() => burnToken(record.id)}
+          />
         </Space>
       )
     }
