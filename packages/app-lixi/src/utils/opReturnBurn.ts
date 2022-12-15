@@ -106,7 +106,6 @@ export const generateBurnTxOutput = (
     throw new Error('Invalid tx input parameters');
   }
 
-  console.log('tipToAddress', tipToAddress);
   const satoshisToTip = satoshisToBurn.multipliedBy(0.04);
 
   let remainder: BigNumber;
@@ -119,8 +118,6 @@ export const generateBurnTxOutput = (
     } else {
       remainder = new BigNumber(totalInputUtxoValue).minus(satoshisToBurn).minus(txFee);
     }
-
-    console.log('remainder', remainder);
 
     if (remainder.lt(0)) {
       throw new Error(`Insufficient funds`);

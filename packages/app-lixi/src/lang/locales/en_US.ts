@@ -476,5 +476,5 @@ export default {
   'token.inputTokenId': 'Input token Id',
   'token.tokenIdNotFound': 'Token ID not found',
   'token.tokenIdInvalid': 'Token ID invalid',
-  'token.copyId': 'The token Id has been copied.',
+  'token.copyId': 'The token Id has been copied.'
 };

@@ -93,7 +93,7 @@ export function useInfinitePostsQuery(
     errorNext: nextResult?.error,
     isErrorNext: nextResult?.isError,
     isFetchingNext: nextResult?.isFetching,
-    hasNext: baseResult.data?.allPosts?.pageInfo?.endCursor !== undefined,
+    hasNext: baseResult.data?.allPosts?.pageInfo?.endCursor !== null,
     fetchNext,
     refetch
   };

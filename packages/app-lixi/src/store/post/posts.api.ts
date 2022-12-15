@@ -1,6 +1,8 @@
-import { createEntityAdapter, EntityState } from '@reduxjs/toolkit';
-import { PageInfo, OrderDirection, PostOrderField } from 'src/generated/types.generated';
-import { api, PostsQuery, PostQuery } from './posts.generated';
+import { EntityState } from '@reduxjs/toolkit';
+import { showToast } from '@store/toast/actions';
+import intl from 'react-intl-universal';
+import { OrderDirection, PageInfo, PostOrderField } from 'src/generated/types.generated';
+import { api, PostQuery } from './posts.generated';
 
 export interface PostApiState extends EntityState<PostQuery['post']> {
   pageInfo: PageInfo;
@@ -29,30 +31,7 @@ const enhancedApi = api.enhanceEndpoints({
       providesTags: (result, error, arg) => ['Post']
     },
     createPost: {
-      invalidatesTags: ['Post'],
-      async onQueryStarted({ input }, { dispatch, queryFulfilled }) {
-        try {
-          const params = {
-            first: 20,
-            orderBy: {
-              direction: OrderDirection.Desc,
-              field: PostOrderField.UpdatedAt
-            }
-          };
-          const { data: createdPost } = await queryFulfilled;
-          const patchResult = dispatch(
-            api.util.updateQueryData('Posts', params, draft => {
-              draft.allPosts.edges.unshift({
-                cursor: createdPost.createPost.id,
-                node: {
-                  ...createdPost.createPost
-                }
-              });
-              draft.allPosts.totalCount = draft.allPosts.totalCount + 1;
-            })
-          );
-        } catch {}
-      }
+      invalidatesTags: ['Post']
     }
   }
 });

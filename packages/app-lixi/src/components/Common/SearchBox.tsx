@@ -2,6 +2,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import TextArea from 'antd/lib/input/TextArea';
 import React from 'react';
 import styled from 'styled-components';
+import { Input } from 'antd';
 
 const SearchBox = () => {
   const SearchBoxContainer = styled.div`
@@ -26,11 +27,7 @@ const SearchBox = () => {
         <div className="btn-search">
           <SearchOutlined />
         </div>
-        <TextArea
-          bordered={false}
-          placeholder="Search for people, topics, or experiences"
-          autoSize={{ minRows: 1, maxRows: 2 }}
-        />
+        <Input bordered={false} placeholder="Search for people, topics, or experiences" />
       </SearchBoxContainer>
     </>
   );
