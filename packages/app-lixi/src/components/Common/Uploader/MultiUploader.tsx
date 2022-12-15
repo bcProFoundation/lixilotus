@@ -106,17 +106,17 @@ export const MultiUploader = ({ type, buttonName, buttonType, isIcon, showUpload
     const isJPG = file.type === 'image/jpeg';
     const isPNG = file.type === 'image/png';
     const isGIF = file.type === 'image/gif';
-    const isLt5M = file.size / 1024 / 1024 < 5;
+    const isLt10M = file.size / 1024 / 1024 < 10;
 
     if (!isJPG && !isPNG && !isGIF) {
       message.error(intl.get('lixi.fileTypeError'));
     }
 
-    if (!isLt5M) {
+    if (!isLt10M) {
       message.error(intl.get('lixi.fileSizeError'));
     }
 
-    return (isJPG || isPNG || isGIF) && isLt5M;
+    return (isJPG || isPNG || isGIF) && isLt10M;
   };
 
   const handleCancel = () => setPreviewVisible(false);
