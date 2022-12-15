@@ -23,7 +23,7 @@ const { Sider } = Layout;
 
 const RankingSideBar = styled(Sider)`
   height: 100vh;
-  overflow: auto;
+  overflow: visible;
   right: 2rem;
   max-width: inherit !important;
   background: var(--bg-color-light-theme);
@@ -188,48 +188,6 @@ const ManageAccounts = styled.div`
       height: 40px;
     }
   }
-`;
-
-const StyledComment = styled(Comment)`
-  border-radius: 5px;
-  border-bottom: 1px solid #e8e8e8;
-  padding: 5px;
-
-  &:hover {
-    background-color: #eceff5;
-  }
-
-  .ant-comment-inner {
-    padding: 0px;
-    color: black;
-  }
-`;
-
-const StyledAuthor = styled.div`
-  font-size: 14px;
-  color: black;
-  display: inline-block;
-  width: 310px;
-
-  &:hover {
-    color: black;
-  }
-`;
-
-const StyledTextLeft = styled.span`
-  float: left;
-  font-size: 16px;
-  font-weight: bold;
-`;
-
-const StyledTextRight = styled.span`
-  float: right;
-  font-size: 10px;
-  font-style: italic;
-`;
-
-const StyledSwipeToDelete = styled(SwipeToDelete)`
-  --rstdiHeight: 100% !important;
 `;
 
 const StyledModal = styled(Modal)`
