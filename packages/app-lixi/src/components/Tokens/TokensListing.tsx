@@ -52,29 +52,6 @@ const StyledNavBarHeader = styled.div`
   }
 `;
 
-const Grid = styled.div`
-  .Burns{
-    cursor: pointer;
-  }
-  .Burns .goUp{
-    display: inline-flex;
-    opacity: 0;
-    transform: translate3d(0, -20px, 0);
-    transition: 0.1s ease-in-out;
-  }
-  .Burns .waitDown{
-    display: inline-flex;
-    opacity: 0;
-    transform: translate3d(0, 20px, 0);
-  }
-  .Burns .initial{
-    display: inline-flex;
-    opacity: 1;
-    transform: translate3d(0, 0px, 0);
-    transition: 0.1s ease-in-out;
-  }
-`
-
 const TokensListing: React.FC = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -92,7 +69,7 @@ const TokensListing: React.FC = () => {
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const latestBurnForToken = useAppSelector(getLatestBurnForToken);
-  
+
   const {
     handleSubmit,
     formState: { errors },
@@ -240,7 +217,7 @@ const TokensListing: React.FC = () => {
       key: 'lotusBurn',
       sorter: (a, b) => a.lotusBurnUp + a.lotusBurnDown - (b.lotusBurnUp + b.lotusBurnDown),
       defaultSortOrder: 'descend',
-      render:  (_, record) => <Counter num={formatBalance(record.lotusBurnUp + record.lotusBurnDown)}/>
+      render: (_, record) => <Counter num={formatBalance(record.lotusBurnUp + record.lotusBurnDown)} />
     },
     {
       title: intl.get('label.comment'),
@@ -261,7 +238,7 @@ const TokensListing: React.FC = () => {
           <Button
             type="text"
             className="outline-btn"
-            icon={<BurnSvg/>}
+            icon={<BurnSvg />}
             style={{ fontSize: '27px' }}
             onClick={() => burnToken(record.id)}
           />
