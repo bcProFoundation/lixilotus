@@ -1,4 +1,5 @@
 import { PlusCircleOutlined } from '@ant-design/icons';
+import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
 import { getPostCoverUploads } from '@store/account/selectors';
 import { api as postApi, useCreatePostMutation } from '@store/post/posts.api';
 import { showToast } from '@store/toast/actions';
@@ -254,15 +255,16 @@ const CreatePostCard = (props: CreatePostCardProp) => {
         tokenId: tokenId || undefined
       };
 
+      const params = {
+        orderBy: {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.UpdatedAt
+        }
+      };
+      let patches: PatchCollection;
       try {
         const result = await createPostTrigger({ input: createPostInput }).unwrap();
-        const params = {
-          orderBy: {
-            direction: OrderDirection.Desc,
-            field: PostOrderField.UpdatedAt
-          }
-        };
-        const patchResult = dispatch(
+        const patches = dispatch(
           postApi.util.updateQueryData('Posts', params, draft => {
             draft.allPosts.edges.unshift({
               cursor: result.createPost.id,
@@ -282,6 +284,9 @@ const CreatePostCard = (props: CreatePostCardProp) => {
         );
       } catch (error) {
         const message = intl.get('post.unableCreatePostServer');
+        if (patches) {
+          dispatch(postApi.util.patchQueryData('Posts', params, patches.inversePatches));
+        }
         dispatch(
           showToast('error', {
             message: 'Error',

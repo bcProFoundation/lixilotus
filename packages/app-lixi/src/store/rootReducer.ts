@@ -36,7 +36,22 @@ import { tokenReducer, TokenState } from './tokens';
 const persistConfig = {
   key: 'root',
   storage: storage('lixi-indexeddb'),
-  blacklist: ['accounts', 'router', 'modal', 'wallet', 'api', 'root', 'posts', 'tokens', 'pages']
+  blacklist: [
+    'accounts',
+    'localAccounts',
+    'lixies',
+    'claims',
+    'pages',
+    'settings',
+    'countries',
+    'states',
+    'router',
+    'modal',
+    'wallet',
+    'api',
+    'posts',
+    'tokens'
+  ]
 };
 
 const walletPersistConfig = {
@@ -139,14 +154,16 @@ export const appReducer = combineReducers({
 
 const reducer = (state, action: AnyAction) => {
   if (action.type === HYDRATE) {
+    const { api: _ignore_and_let_RTK_handle_this, router, ...hydrate } = action.payload;
     const nextState = {
-      ...state // use previous state
+      ...state, // use previous state
       // ...action.payload, // apply delta from hydration
+      ...hydrate
     };
-    if (typeof window !== 'undefined' && state?.router) {
-      // preserve router value on client side navigation
-      nextState.router = state.router;
-    }
+    // if (typeof window !== 'undefined' && state?.router) {
+    //   // preserve router value on client side navigation
+    //   nextState.router = state.router;
+    // }
     return nextState;
   } else {
     return appReducer(state, action);

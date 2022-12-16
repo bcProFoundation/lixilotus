@@ -40,21 +40,28 @@ export function useInfinitePostsQuery(
   const next = useRef<null | string | undefined>(null);
 
   const data = useMemo(() => {
-    return selectAll(combinedData);
+    console.log('combinedData:', combinedData);
+    const result = selectAll(combinedData);
+    console.log('result', result);
+    return result;
   }, [combinedData]);
 
   // Base result
   useEffect(() => {
+    console.log('baseResult:', baseResult);
     next.current = baseResult.data?.allPosts?.pageInfo?.endCursor;
     if (baseResult?.data?.allPosts) {
       isBaseReady.current = true;
 
-      setCombinedData(
-        postsAdapter.setAll(
-          combinedData,
-          baseResult.data.allPosts.edges.map(item => item.node)
-        )
+      const baseResultParse = baseResult.data.allPosts.edges.map(item => item.node);
+      console.log('baseResultParse', baseResultParse);
+      const adapterSetAll = postsAdapter.setAll(
+        combinedData,
+        baseResult.data.allPosts.edges.map(item => item.node)
       );
+      console.log('adapterSetAll', adapterSetAll);
+
+      setCombinedData(adapterSetAll);
       fetchAll && fetchNext();
     }
   }, [baseResult]);

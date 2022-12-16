@@ -21,7 +21,9 @@ const enhancedApi = api.enhanceEndpoints({
         }
         return { queryArgs };
       },
+
       merge(currentCacheData, responseData) {
+        console.log('merge:', currentCacheData);
         currentCacheData.allPosts.edges.push(...responseData.allPosts.edges);
         currentCacheData.allPosts.pageInfo = responseData.allPosts.pageInfo;
         currentCacheData.allPosts.totalCount = responseData.allPosts.totalCount;
@@ -30,9 +32,7 @@ const enhancedApi = api.enhanceEndpoints({
     Post: {
       providesTags: (result, error, arg) => ['Post']
     },
-    createPost: {
-      invalidatesTags: ['Post']
-    }
+    createPost: {}
   }
 });
 

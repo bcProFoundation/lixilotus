@@ -1,5 +1,6 @@
 import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
 import CommentComponent, { CommentItem, Editor } from '@components/Common/Comment';
+import { Counter } from '@components/Common/Counter';
 import InfoCardUser from '@components/Common/InfoCardUser';
 import { currency } from '@components/Common/Ticker';
 import { WalletContext } from '@context/walletProvider';
@@ -19,15 +20,15 @@ import intl from 'react-intl-universal';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled from 'styled-components';
 
-const IconText = ({
+const IconBurn = ({
   icon,
-  text,
+  burnValue,
   dataItem,
   imgUrl,
   onClickIcon
 }: {
   icon?: React.FC;
-  text?: string;
+  burnValue?: number;
   dataItem: any;
   imgUrl?: string;
   onClickIcon: () => void;
@@ -35,7 +36,7 @@ const IconText = ({
   <Space onClick={onClickIcon}>
     {icon && React.createElement(icon)}
     {imgUrl && React.createElement('img', { src: imgUrl }, null)}
-    {text}
+    <Counter num={burnValue ?? 0} />
   </Space>
 );
 
@@ -343,15 +344,15 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
         </CardContainer>
         <ActionBar>
           <GroupIconText>
-            <IconText
-              text={`${formatBalance(post?.lotusBurnUp ?? 0)}`}
+            <IconBurn
+              burnValue={formatBalance(post?.lotusBurnUp ?? 0)}
               imgUrl="/images/up-ico.svg"
               key={`list-vertical-upvote-o-${item.id}`}
               dataItem={item}
               onClickIcon={() => upVotePost(item)}
             />
-            <IconText
-              text={`${formatBalance(post?.lotusBurnDown ?? 0)}`}
+            <IconBurn
+              burnValue={formatBalance(post?.lotusBurnDown ?? 0)}
               imgUrl="/images/down-ico.svg"
               key={`list-vertical-downvote-o-${item.id}`}
               dataItem={item}
