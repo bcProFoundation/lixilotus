@@ -2,21 +2,21 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 export const GridDiv = styled.div`
-  .Count {
+  .count {
     cursor: pointer;
   }
-  .Count .goUp {
+  .count .goUp {
     display: inline-flex;
     opacity: 0;
     transform: translate3d(0, -20px, 0);
     transition: 0.1s ease-in-out;
   }
-  .Count .waitDown {
+  .count .waitDown {
     display: inline-flex;
     opacity: 0;
     transform: translate3d(0, 20px, 0);
   }
-  .Count .initial {
+  .count .initial {
     display: inline-flex;
     opacity: 1;
     transform: translate3d(0, 0px, 0);
@@ -42,8 +42,8 @@ export const Counter = (props: CounterProps) => {
   });
 
   return (
-    <GridDiv className="Grid">
-      <div className="Count">
+    <GridDiv className="grid">
+      <div className="count">
         <span className={animationCounter}>{count}</span>
       </div>
     </GridDiv>

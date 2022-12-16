@@ -279,7 +279,7 @@ const TokensListing: React.FC = () => {
       const burnedBy = hash160;
       const burnForId = tokenId;
 
-      const burnValue = '0.01';
+      const burnValue = '1';
       const txHex = await burnXpi(
         XPI,
         walletPaths,
