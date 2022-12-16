@@ -26,7 +26,7 @@ import { hexSha256 } from 'src/utils/encryptionMethods';
 import { Upload as UploadDb } from '@prisma/client';
 import { FastifyRequest } from 'fastify';
 import { PrismaService } from '../../prisma/prisma.service';
-import { FileInterceptor } from '@webundsoehne/nest-fastify-file-upload';
+import { FileInterceptor, FilesInterceptor } from '@webundsoehne/nest-fastify-file-upload';
 import { MulterFile } from '@webundsoehne/nest-fastify-file-upload/dist/interfaces/multer-options.interface';
 import { Account } from '@bcpros/lixi-models';
 import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
@@ -112,6 +112,77 @@ export class UploadFilesController {
       Object.assign(resultImage, { awsEndpoint: process.env.AWS_ENDPOINT });
 
       return resultImage;
+    } catch (err) {
+      console.log(err);
+      if (err instanceof VError) {
+        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      } else {
+        const unableToUpload = await i18n.t('lixi.messages.unableToUpload');
+        const error = new VError.WError(err as Error, unableToUpload);
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  }
+
+  @Post('/s3-multiple')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FilesInterceptor('file'))
+  @ApiConsumes('multipart/form-data')
+  async uploadS3Multiple(
+    @UploadedFile('files') files: Array<Express.Multer.File>,
+    @PostAccountEntity() account: Account,
+    @I18n() i18n: I18nContext,
+    @Body() body: any
+  ) {
+    try {
+      const { type } = body;
+      if (!account) {
+        const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
+        throw new Error(couldNotFindAccount);
+      }
+
+      const bucket = process.env.AWS_PUBLIC_BUCKET_NAME;
+      let uploads = [];
+
+      const promises = files.map(async (file: MulterFile) => {
+        const buffer = file.buffer;
+        const originalName = file.originalname.replace(/\.[^/.]+$/, '');
+        const fileExtension = extname(file.originalname);
+        const { Key } = await this.uploadService.uploadS3(buffer, fileExtension, bucket);
+
+        return {
+          originalFilename: originalName,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          sha: Key,
+          extension: fileExtension,
+          type: type,
+          bucket: bucket
+        };
+      });
+
+      uploads = await Promise.all(promises);
+
+      //Bypass because prisma doesn't return records after create many
+      //https://github.com/prisma/prisma/issues/8131
+      const resultImages = await this.prisma.$transaction(
+        uploads.map(upload => this.prisma.upload.create({ data: upload }))
+      );
+
+      await this.prisma.$transaction(
+        resultImages.map(image =>
+          this.prisma.uploadDetail.create({
+            data: {
+              account: { connect: { id: account.id } },
+              upload: { connect: { id: image.id } }
+            }
+          })
+        )
+      );
+
+      // Object.assign(resultImage, { awsEndpoint: process.env.AWS_ENDPOINT });
+
+      return resultImages;
     } catch (err) {
       console.log(err);
       if (err instanceof VError) {
