@@ -6,7 +6,8 @@ import {
   CreatePostInput,
   Account,
   Page,
-  Token
+  Token,
+  Upload
 } from '@bcpros/lixi-models';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
 import { ExecutionContext, Logger, Request, UseGuards } from '@nestjs/common';
@@ -363,5 +364,24 @@ export class PostResolver {
       return token;
     }
     return null;
+  }
+
+  @ResolveField()
+  async uploads(@Parent() post: Post) {
+    const uploads = this.prisma.uploadDetail.findMany({
+      where: {
+        postId: post.id
+      },
+      include: {
+        upload: {
+          select: {
+            id: true,
+            sha: true,
+            bucket: true
+          }
+        }
+      }
+    });
+    return uploads;
   }
 }

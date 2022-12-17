@@ -126,7 +126,7 @@ export class UploadFilesController {
 
   @Post('/s3-multiple')
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FilesInterceptor('file'))
+  @UseInterceptors(FilesInterceptor('files'))
   @ApiConsumes('multipart/form-data')
   async uploadS3Multiple(
     @UploadedFile('files') files: Array<Express.Multer.File>,

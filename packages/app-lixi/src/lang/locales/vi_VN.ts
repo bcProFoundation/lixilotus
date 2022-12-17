@@ -211,7 +211,7 @@ export default {
   'lixi.exportLixi': 'Export Lixi',
   'lixi.noLixiSelected': 'Chọn ít nhất một Lì xì',
   'lixi.fileTypeError': 'Bạn chỉ có thể tải lên tệp JPG/PNG/GIF !',
-  'lixi.fileSizeError': 'Hình ảnh phải nhỏ hơn 5MB!',
+  'lixi.fileSizeError': 'Hình ảnh phải nhỏ hơn 10MB!',
   'lixi.fileUploadError': 'Lỗi khi tải thiệp lên server',
   'lixi.fileUploadSuccess': 'Tải thiệp lên thành công',
   'lixi.uploadDividerText': 'Thiệp tự chọn',

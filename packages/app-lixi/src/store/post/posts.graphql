@@ -126,7 +126,14 @@ query PostsByTokenId(
 fragment PostFields on Post {
   id
   content
-  uploadCovers
+  uploads {
+    id
+    upload {
+      id
+      sha
+      bucket
+    }
+  }
   postAccount {
     address
     id
