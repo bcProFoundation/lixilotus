@@ -23,7 +23,6 @@ const enhancedApi = api.enhanceEndpoints({
       },
 
       merge(currentCacheData, responseData) {
-        console.log('merge:', currentCacheData);
         currentCacheData.allPosts.edges.push(...responseData.allPosts.edges);
         currentCacheData.allPosts.pageInfo = responseData.allPosts.pageInfo;
         currentCacheData.allPosts.totalCount = responseData.allPosts.totalCount;
