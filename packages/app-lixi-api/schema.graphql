@@ -126,7 +126,7 @@ type Post {
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
-  uploadCovers: [String!]
+  uploads: [UploadDetail!]
 }
 
 type PostConnection {
@@ -207,4 +207,15 @@ input UpdatePageInput {
   state: String
   title: String!
   website: String
+}
+
+type Upload {
+  bucket: String
+  id: ID!
+  sha: String!
+}
+
+type UploadDetail {
+  id: ID!
+  upload: Upload!
 }

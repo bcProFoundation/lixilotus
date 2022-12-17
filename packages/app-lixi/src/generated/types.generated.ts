@@ -146,7 +146,7 @@ export type Post = {
   tokenId?: Maybe<Scalars['String']>;
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
-  uploadCovers?: Maybe<Array<Scalars['String']>>;
+  uploads?: Maybe<Array<UploadDetail>>;
 };
 
 export type PostConnection = {
@@ -290,4 +290,17 @@ export type UpdatePageInput = {
   state?: InputMaybe<Scalars['String']>;
   title: Scalars['String'];
   website?: InputMaybe<Scalars['String']>;
+};
+
+export type Upload = {
+  __typename?: 'Upload';
+  bucket?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  sha: Scalars['String'];
+};
+
+export type UploadDetail = {
+  __typename?: 'UploadDetail';
+  id: Scalars['ID'];
+  upload: Upload;
 };
