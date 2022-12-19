@@ -2,6 +2,7 @@ import { PlusCircleOutlined } from '@ant-design/icons';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
 import { getPostCoverUploads } from '@store/account/selectors';
 import { api as postApi, useCreatePostMutation } from '@store/post/posts.api';
+import { CreatePostMutation, PostsByPageIdDocument } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
 import { Avatar, Button, Input, Modal, Tabs } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
@@ -95,6 +96,7 @@ const StyledUploader = styled.div`
 type CreatePostCardProp = {
   pageId?: string;
   tokenId?: string;
+  userId?: string;
   refetch?: () => void;
 };
 
@@ -245,6 +247,48 @@ const CreatePostCard = (props: CreatePostCardProp) => {
     }
   };
 
+  const updatePost = async (tag: string, params, result: CreatePostMutation, pageId?: string, tokenId?: string) => {
+    switch (tag) {
+      case 'PostsByPageId':
+        return dispatch(
+          postApi.util.updateQueryData('PostsByPageId', { ...params, id: pageId }, draft => {
+            console.log(draft);
+            draft.allPostsByPageId.edges.unshift({
+              cursor: result.createPost.id,
+              node: {
+                ...result.createPost
+              }
+            });
+            draft.allPostsByPageId.totalCount = draft.allPostsByPageId.totalCount + 1;
+          })
+        );
+      case 'PostsByTokenId':
+        return dispatch(
+          postApi.util.updateQueryData('PostsByTokenId', { ...params, id: tokenId }, draft => {
+            draft.allPostsByTokenId.edges.unshift({
+              cursor: result.createPost.id,
+              node: {
+                ...result.createPost
+              }
+            });
+            draft.allPostsByTokenId.totalCount = draft.allPostsByTokenId.totalCount + 1;
+          })
+        );
+      default:
+        return dispatch(
+          postApi.util.updateQueryData('Posts', params, draft => {
+            draft.allPosts.edges.unshift({
+              cursor: result.createPost.id,
+              node: {
+                ...result.createPost
+              }
+            });
+            draft.allPosts.totalCount = draft.allPosts.totalCount + 1;
+          })
+        );
+    }
+  };
+
   const handleCreateNewPost = async content => {
     console.log('handleCreateNewPost');
     if (content !== '' || !_.isNil(content)) {
@@ -264,17 +308,17 @@ const CreatePostCard = (props: CreatePostCardProp) => {
       let patches: PatchCollection;
       try {
         const result = await createPostTrigger({ input: createPostInput }).unwrap();
-        const patches = dispatch(
-          postApi.util.updateQueryData('Posts', params, draft => {
-            draft.allPosts.edges.unshift({
-              cursor: result.createPost.id,
-              node: {
-                ...result.createPost
-              }
-            });
-            draft.allPosts.totalCount = draft.allPosts.totalCount + 1;
-          })
-        );
+        let tag: string;
+
+        if (_.isNil(pageId) && _.isNil(tokenId)) {
+          tag = 'Posts';
+        } else if (pageId) {
+          tag = 'PostsByPageId';
+        } else if (tokenId) {
+          tag = 'PostsByTokenId';
+        }
+
+        const patches = updatePost(tag, params, result, pageId, tokenId);
         dispatch(
           showToast('success', {
             message: 'Success',

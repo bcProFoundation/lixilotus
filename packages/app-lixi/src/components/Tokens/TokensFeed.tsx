@@ -78,12 +78,6 @@ const TokensFeed: React.FC = () => {
   const tokenInfo = useAppSelector(getSelectedToken);
   console.log('TOKEN INFO', tokenInfo);
 
-  useEffect(() => {
-    // dispatch(fetchAllTokens–());
-    // setTokensList([...tokenList]);
-    refetch();
-  }, []);
-
   let options = ['Withdraw', 'Rename', 'Export'];
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByTokenIdQuery(

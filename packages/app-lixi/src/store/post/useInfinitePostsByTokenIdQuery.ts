@@ -1,7 +1,18 @@
 import { PaginationArgs } from '@bcpros/lixi-models';
 import { useLazyPostsByTokenIdQuery, usePostsByTokenIdQuery } from '@store/post/posts.generated';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { Post, PostOrder } from 'src/generated/types.generated';
+import _ from 'lodash';
+import { PostQuery } from './posts.generated';
+import { useAppDispatch } from '@store/hooks';
+import { createEntityAdapter } from '@reduxjs/toolkit';
+
+const postsAdapter = createEntityAdapter<PostQuery['post']>({
+  selectId: post => post.id,
+  sortComparer: (a, b) => b.createdAt - a.createdAt
+});
+
+const { selectAll, selectEntities, selectIds, selectTotal } = postsAdapter.getSelectors();
 
 export interface PostListByIdParams extends PaginationArgs {
   orderBy?: PostOrder;
@@ -19,7 +30,7 @@ export function useInfinitePostsByTokenIdQuery(
   const baseResult = usePostsByTokenIdQuery(params);
 
   const [trigger, nextResult] = useLazyPostsByTokenIdQuery();
-  const [combinedData, setCombinedData] = useState([]);
+  const [combinedData, setCombinedData] = useState(postsAdapter.getInitialState({}));
 
   const isBaseReady = useRef(false);
   const isNextDone = useRef(true);
@@ -27,38 +38,27 @@ export function useInfinitePostsByTokenIdQuery(
   // next: starts with a null, fetching ended with an undefined cursor
   const next = useRef<null | string | undefined>(null);
 
+  const data = useMemo(() => {
+    const result = selectAll(combinedData);
+    return result;
+  }, [combinedData]);
+
   // Base result
   useEffect(() => {
-    console.log('baseResult: ', baseResult);
     next.current = baseResult.data?.allPostsByTokenId?.pageInfo?.endCursor;
     if (baseResult?.data?.allPostsByTokenId) {
       isBaseReady.current = true;
-      setCombinedData(baseResult.data.allPostsByTokenId.edges.map(item => item.node));
+
+      const baseResultParse = baseResult.data.allPostsByTokenId.edges.map(item => item.node);
+      const adapterSetAll = postsAdapter.setAll(
+        combinedData,
+        baseResult.data.allPostsByTokenId.edges.map(item => item.node)
+      );
+
+      setCombinedData(adapterSetAll);
       fetchAll && fetchNext();
     }
   }, [baseResult]);
-
-  // When there're next results
-  useEffect(() => {
-    // Not success next result
-    if (!nextResult.isSuccess) return;
-
-    if (
-      isBaseReady.current &&
-      nextResult.data &&
-      nextResult.data.allPostsByTokenId.pageInfo &&
-      nextResult.data.allPostsByTokenId.pageInfo.endCursor != next.current
-    ) {
-      next.current = nextResult.data.allPostsByTokenId.pageInfo.endCursor;
-
-      const newItems = nextResult.data.allPostsByTokenId.edges.map(item => item.node);
-      if (newItems && newItems.length) {
-        setCombinedData(currentItems => {
-          return [...currentItems, ...newItems];
-        });
-      }
-    }
-  }, [nextResult]);
 
   const fetchNext = async () => {
     if (!isBaseReady.current || !isNextDone.current || next.current === undefined || next.current === null) {
@@ -85,7 +85,7 @@ export function useInfinitePostsByTokenIdQuery(
   };
 
   return {
-    data: combinedData ?? [],
+    data: data ?? [],
     totalCount: baseResult?.data?.allPostsByTokenId?.totalCount ?? 0,
     error: baseResult?.error,
     isError: baseResult?.isError,
