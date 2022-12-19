@@ -246,7 +246,6 @@ const CreatePostCard = (props: CreatePostCardProp) => {
   };
 
   const handleCreateNewPost = async content => {
-    console.log('handleCreateNewPost');
     if (content !== '' || !_.isNil(content)) {
       const createPostInput: CreatePostInput = {
         uploadCovers: postCoverUploads.map(upload => upload.id),
@@ -264,7 +263,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
       let patches: PatchCollection;
       try {
         const result = await createPostTrigger({ input: createPostInput }).unwrap();
-        const patches = dispatch(
+        patches = dispatch(
           postApi.util.updateQueryData('Posts', params, draft => {
             draft.allPosts.edges.unshift({
               cursor: result.createPost.id,

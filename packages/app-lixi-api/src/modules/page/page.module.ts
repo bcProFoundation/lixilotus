@@ -1,7 +1,6 @@
-import { Module, Logger } from '@nestjs/common';
-import { NotificationService } from 'src/common/modules/notifications/notification.service';
+import { Logger, Module } from '@nestjs/common';
 import { AuthModule } from '../auth/auth.module';
-import { AuthService } from '../auth/auth.service';
+import { CommentResolver } from './comment.resolver';
 import { PageController } from './page.controller';
 import { PageResolver } from './page.resolver';
 import { PostResolver } from './post.resolver';
@@ -11,7 +10,7 @@ import { PostResolver } from './post.resolver';
 @Module({
   imports: [AuthModule],
   controllers: [PageController],
-  providers: [PageResolver, Logger, PostResolver],
+  providers: [PageResolver, Logger, PostResolver, CommentResolver],
   exports: []
 })
 export class PageModule {}

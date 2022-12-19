@@ -1,0 +1,62 @@
+# import CommentOrder from '/packages/app-lixi-api/schema.graphql'
+# import PageInfoFields from '../../graphql/fragments/page-info-fields.fragment.graphql'
+
+query Comment($id: String!) {
+  comment(id: $id) {
+    ...CommentFields
+  }
+}
+
+query CommentsToPostId(
+  $after: String
+  $before: String
+  $first: Int = 20
+  $last: Int
+  $orderBy: CommentOrder
+  $id: String
+  $skip: Int
+) {
+  allCommentsToPostId(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    id: $id
+    skip: $skip
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...CommentFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+
+fragment CommentFields on Comment {
+  id
+  commentText
+  commentAccount {
+    address
+    id
+    name
+  }
+  commentByPublicKey
+  commentToId
+  lotusBurnUp
+  lotusBurnDown
+  lotusBurnScore
+  createdAt
+  updatedAt
+}
+
+mutation createComment($input: CreateCommentInput!) {
+  createComment(data: $input) {
+    ...CommentFields
+  }
+}

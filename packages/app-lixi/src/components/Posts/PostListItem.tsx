@@ -10,8 +10,7 @@ import { PostsQuery } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
 import { formatBalance } from '@utils/cashMethods';
-import { Avatar, Button, Comment, List, Space } from 'antd';
-import { push } from 'connected-next-router';
+import { Avatar, Comment, List, Space } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
@@ -191,10 +190,6 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
   if (!post) return null;
 
   useEffect(() => {
-    loadPost();
-  }, []);
-
-  const loadPost = () => {
     const descPost = ref?.current.querySelector('.description-post');
     if (descPost.clientHeight > 130) {
       descPost.classList.add('show-less');
@@ -202,7 +197,7 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
     } else {
       setShowMore(false);
     }
-  };
+  }, []);
 
   const showMoreHandle = () => {
     const descPostDom = ref?.current.querySelector('.description-post');

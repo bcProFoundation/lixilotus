@@ -11,14 +11,12 @@ import MainLayout from '@components/Layout/MainLayout';
 const PostDetailPage = props => {
   const { postId, isMobile } = props;
   const canonicalUrl = process.env.NEXT_PUBLIC_LIXI_URL + `posts/${postId}`;
-  let currentPost;
 
-  const { currentData, isSuccess } = usePostQuery({ id: postId });
-  if (isSuccess) currentPost = currentData.post;
+  const postQuery = usePostQuery({ id: postId });
 
   return (
     <>
-      {isSuccess && (
+      {postQuery && postQuery.isSuccess && (
         <>
           <NextSeo
             title="Lixi Program"
@@ -27,7 +25,7 @@ const PostDetailPage = props => {
             openGraph={{
               url: canonicalUrl,
               title: 'LixiLotus',
-              description: currentPost.content ?? 'LixiLotus allow you to giveaway your Lotus effortlessly',
+              description: postQuery.data.post.content ?? 'LixiLotus allow you to giveaway your Lotus effortlessly',
               images: [{ url: '' }],
               site_name: 'LixiLotus'
             }}
@@ -37,7 +35,7 @@ const PostDetailPage = props => {
               cardType: 'summary_large_image'
             }}
           />
-          <PostDetail post={currentPost} isMobile={isMobile} />
+          <PostDetail post={postQuery.data.post} isMobile={isMobile} />
         </>
       )}
     </>

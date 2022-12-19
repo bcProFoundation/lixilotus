@@ -21,7 +21,6 @@ const enhancedApi = api.enhanceEndpoints({
         }
         return { queryArgs };
       },
-
       merge(currentCacheData, responseData) {
         currentCacheData.allPosts.edges.push(...responseData.allPosts.edges);
         currentCacheData.allPosts.pageInfo = responseData.allPosts.pageInfo;
