@@ -213,7 +213,7 @@ export default {
   'lixi.exportLixi': 'Export Lixi',
   'lixi.noLixiSelected': 'No lixi is selected',
   'lixi.fileTypeError': 'You can only upload JPG/PNG/GIF file!',
-  'lixi.fileSizeError': 'Image must smaller than 5MB!',
+  'lixi.fileSizeError': 'Image must smaller than 10MB!',
   'lixi.fileUploadError': 'Error uploading to server',
   'lixi.fileUploadSuccess': 'Upload Successfully',
   'lixi.uploadDividerText': 'Custom Enevelope',

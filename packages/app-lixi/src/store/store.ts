@@ -61,7 +61,7 @@ const makeStore = (context: Context) => {
         process.env.NODE_ENV === 'production'
           ? false
           : {
-              actionsBlacklist: ['wallet/writeWalletStatus']
+              actionsDenylist: ['wallet/writeWalletStatus']
             },
       preloadedState: initialState
     });

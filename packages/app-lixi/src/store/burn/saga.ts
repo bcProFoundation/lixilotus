@@ -37,7 +37,9 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
       postApi.util.updateQueryData('Posts', params, draft => {
         const postToUpdateIndex = draft.allPosts.edges.findIndex(item => item.node.id === command.burnForId);
         const postToUpdate = draft.allPosts.edges[postToUpdateIndex];
-        if (postToUpdate) {
+        console.log('postToUpdateIndex', postToUpdateIndex);
+        console.log('postToUpdate', postToUpdate);
+        if (postToUpdateIndex >= 0) {
           let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
           let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
           if (command.burnType == BurnType.Up) {
@@ -46,12 +48,9 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
             lotusBurnDown = lotusBurnDown + burnValue;
           }
           const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-          postToUpdate.node = {
-            ...postToUpdate.node,
-            lotusBurnUp,
-            lotusBurnDown,
-            lotusBurnScore
-          };
+          draft.allPosts.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
+          draft.allPosts.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
+          draft.allPosts.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
           if (lotusBurnScore < 0) {
             draft.allPosts.edges.splice(postToUpdateIndex, 1);
             draft.allPosts.totalCount = draft.allPosts.totalCount - 1;

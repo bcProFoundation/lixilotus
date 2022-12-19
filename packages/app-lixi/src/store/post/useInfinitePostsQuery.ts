@@ -40,7 +40,8 @@ export function useInfinitePostsQuery(
   const next = useRef<null | string | undefined>(null);
 
   const data = useMemo(() => {
-    return selectAll(combinedData);
+    const result = selectAll(combinedData);
+    return result;
   }, [combinedData]);
 
   // Base result
@@ -49,12 +50,13 @@ export function useInfinitePostsQuery(
     if (baseResult?.data?.allPosts) {
       isBaseReady.current = true;
 
-      setCombinedData(
-        postsAdapter.setAll(
-          combinedData,
-          baseResult.data.allPosts.edges.map(item => item.node)
-        )
+      const baseResultParse = baseResult.data.allPosts.edges.map(item => item.node);
+      const adapterSetAll = postsAdapter.setAll(
+        combinedData,
+        baseResult.data.allPosts.edges.map(item => item.node)
       );
+
+      setCombinedData(adapterSetAll);
       fetchAll && fetchNext();
     }
   }, [baseResult]);

@@ -33,6 +33,7 @@ import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import makeBlockie from 'ethereum-blockies-base64';
 import BurnSvg from '@assets/icons/burn.svg';
+import { Counter } from '@components/Common/Counter';
 
 const StyledTokensListing = styled.div``;
 
@@ -58,6 +59,7 @@ const TokensListing: React.FC = () => {
   const [valueInput, setValueInput] = useState('');
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
+
   const searchInput = useRef<InputRef>(null);
   const tokenList = useAppSelector(selectTokens);
 
@@ -189,7 +191,7 @@ const TokensListing: React.FC = () => {
       render: (_, token) => (
         <CopyToClipboard text={token.tokenId} onCopy={() => handleOnCopy(token.tokenId)}>
           <p style={{ marginTop: '0px', marginBottom: '0px' }}>
-            ...{token.tokenId.substring(token.tokenId.length - 8).slice(0, 4)}
+            {token.tokenId.substring(token.tokenId.length - 8).slice(0, 4)}
             <b>{token.tokenId.substring(token.tokenId.length - 4)}</b>
             &nbsp; <CopyOutlined style={{ fontSize: '14px', color: 'rgba(30, 26, 29, 0.6)' }} />
           </p>
@@ -215,7 +217,7 @@ const TokensListing: React.FC = () => {
       key: 'lotusBurn',
       sorter: (a, b) => a.lotusBurnUp + a.lotusBurnDown - (b.lotusBurnUp + b.lotusBurnDown),
       defaultSortOrder: 'descend',
-      render: (_, record) => formatBalance(record.lotusBurnUp + record.lotusBurnDown)
+      render: (_, record) => <Counter num={formatBalance(record.lotusBurnUp + record.lotusBurnDown)} />
     },
     {
       title: intl.get('label.comment'),
@@ -236,7 +238,7 @@ const TokensListing: React.FC = () => {
           <Button
             type="text"
             className="outline-btn"
-            icon={BurnSvg}
+            icon={<BurnSvg />}
             style={{ fontSize: '27px' }}
             onClick={() => burnToken(record.id)}
           />
