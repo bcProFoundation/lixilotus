@@ -15,10 +15,11 @@ import { burnForUpDownVote, burnForUpDownVoteFailure, burnForUpDownVoteSuccess }
 import burnApi from './api';
 
 function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
-  let patches: PatchCollection;
-  try {
-    const command = action.payload;
+  let patches, patch: PatchCollection;
 
+  const command = action.payload;
+  const { burnForId: postId } = command;
+  try {
     const dataApi: BurnCommand = {
       ...command
     };
@@ -37,8 +38,6 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
       postApi.util.updateQueryData('Posts', params, draft => {
         const postToUpdateIndex = draft.allPosts.edges.findIndex(item => item.node.id === command.burnForId);
         const postToUpdate = draft.allPosts.edges[postToUpdateIndex];
-        console.log('postToUpdateIndex', postToUpdateIndex);
-        console.log('postToUpdate', postToUpdate);
         if (postToUpdateIndex >= 0) {
           let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
           let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
@@ -56,6 +55,22 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
             draft.allPosts.totalCount = draft.allPosts.totalCount - 1;
           }
         }
+      })
+    );
+
+    patch = yield put(
+      postApi.util.updateQueryData('Post', { id: command.burnForId }, draft => {
+        let lotusBurnUp = draft?.post?.lotusBurnUp ?? 0;
+        let lotusBurnDown = draft?.post?.lotusBurnDown ?? 0;
+        if (command.burnType == BurnType.Up) {
+          lotusBurnUp = lotusBurnUp + burnValue;
+        } else {
+          lotusBurnDown = lotusBurnDown + burnValue;
+        }
+        const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+        draft.post.lotusBurnUp = lotusBurnUp;
+        draft.post.lotusBurnDown = lotusBurnDown;
+        draft.post.lotusBurnScore = lotusBurnScore;
       })
     );
 
@@ -77,6 +92,7 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
     };
     if (patches) {
       yield put(postApi.util.patchQueryData('Posts', params, patches.inversePatches));
+      yield put(postApi.util.patchQueryData('Post', { id: postId }, patch.inversePatches));
     }
   }
 }
