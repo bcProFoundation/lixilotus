@@ -12,8 +12,9 @@ import React, { useRef } from 'react';
 import intl from 'react-intl-universal';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled from 'styled-components';
-
+import _ from 'lodash';
 import { CommentQuery } from '@store/comment/comments.generated';
+import { useRouter } from 'next/router';
 
 const ActionComment = styled.div`
   margin-left: 12%;
@@ -50,6 +51,7 @@ type CommentListItemProps = {
 const CommentListItem = ({ index, item }: CommentListItemProps) => {
   const dispatch = useAppDispatch();
 
+  const history = useRouter();
   const ref = useRef<HTMLDivElement | null>(null);
 
   const Wallet = React.useContext(WalletContext);
@@ -114,13 +116,23 @@ const CommentListItem = ({ index, item }: CommentListItemProps) => {
     }
   };
 
+  const showUsername = () => {
+    if (_.isNil(item?.commentAccount)) {
+      return 'Anonymous';
+    }
+
+    return item?.commentAccount?.name;
+  };
+
   return (
     <div>
       <List.Item key={item.id} ref={ref}>
         <List.Item.Meta
           className="comment-item-meta"
-          avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
-          title={<a href="https://ant.design">{item.commentAccount.name}</a>}
+          avatar={
+            <Avatar src="/images/xpi.svg" onClick={() => history.push(`/profile/${item.commentAccount.address}`)} />
+          }
+          title={<a href={`/profile/${item.commentAccount.address}`}>{showUsername()}</a>}
           description={item.commentText}
         />
         <ActionComment className="action-comment">

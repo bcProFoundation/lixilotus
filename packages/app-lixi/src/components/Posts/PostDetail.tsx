@@ -6,7 +6,7 @@ import { WalletContext } from '@context/walletProvider';
 import useXPI from '@hooks/useXPI';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
 import { burnForUpDownVote } from '@store/burn/actions';
-import { useCreateCommentMutation, api as commentApi } from '@store/comment/comments.api';
+import { useCreateCommentMutation, api as commentsApi } from '@store/comment/comments.api';
 import { useInfiniteCommentsToPostIdQuery } from '@store/comment/useInfiniteCommentsToPostIdQuery';
 import { PostsQuery } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
@@ -290,30 +290,36 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
 
       const params = {
         orderBy: {
-          direction: OrderDirection.Desc,
+          direction: OrderDirection.Asc,
           field: CommentOrderField.UpdatedAt
-        },
-        id: post.id
+        }
       };
 
       let patches: PatchCollection;
       try {
         const result = await createCommentTrigger({ input: createCommentInput }).unwrap();
         patches = dispatch(
-          commentApi.util.updateQueryData('CommentsToPostId', params, draft => {
-            draft.allCommentsToPostId.edges.unshift({
-              cursor: result.createComment.id,
-              node: {
-                ...result.createComment
-              }
-            });
-            draft.allCommentsToPostId.totalCount = draft.allCommentsToPostId.totalCount + 1;
-          })
+          commentsApi.util.updateQueryData(
+            'CommentsToPostId',
+            { id: createCommentInput.commentToId, ...params },
+            draft => {
+              console.log(draft);
+              draft.allCommentsToPostId.edges.unshift({
+                cursor: result.createComment.id,
+                node: {
+                  ...result.createComment
+                }
+              });
+              draft.allCommentsToPostId.totalCount = draft.allCommentsToPostId.totalCount + 1;
+            }
+          )
         );
+        console.log('patches', patches);
       } catch (error) {
-        const message = intl.get('post.unableCreatePostServer');
+        console.log('error', error);
+        const message = intl.get('comment.unableCreateComment');
         if (patches) {
-          dispatch(commentApi.util.patchQueryData('CommentsToPostId', params, patches.inversePatches));
+          dispatch(commentsApi.util.patchQueryData('CommentsToPostId', params, patches.inversePatches));
         }
         dispatch(
           showToast('error', {
@@ -395,6 +401,15 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           </div>
         </PostContentDetail>
 
+        <Search
+          className="input-comment"
+          placeholder="Input your comment..."
+          enterButton="Comment"
+          size="large"
+          suffix={<DashOutlined />}
+          onSearch={handleCreateNewComment}
+        />
+
         <CommentContainer>
           <Virtuoso
             id="list-comment-virtuoso"
@@ -407,14 +422,6 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
             }}
           />
         </CommentContainer>
-        <Search
-          className="input-comment"
-          placeholder="Input your comment..."
-          enterButton="Comment"
-          size="large"
-          suffix={<DashOutlined />}
-          onSearch={handleCreateNewComment}
-        />
       </StyledContainerPostDetail>
     </>
   );

@@ -27,7 +27,6 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
 
     patches = yield put(updatePostBurnValue(command));
 
-
     const data: Burn = yield call(burnApi.post, dataApi);
 
     if (_.isNil(data) || _.isNil(data.id)) {
