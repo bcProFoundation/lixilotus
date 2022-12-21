@@ -2,6 +2,7 @@ import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext
 import { $generateHtmlFromNodes } from '@lexical/html';
 import { Button } from 'antd';
 import React, { useEffect } from 'react';
+import intl from 'react-intl-universal';
 
 // Lexical React plugins are React components, which makes them
 // highly composable. Furthermore, you can lazy load plugins if
@@ -28,8 +29,13 @@ const CustomButtonSubmitPlugin = props => {
 
   return (
     <>
-      <Button className="EditorLexical_submit" type="primary" onClick={handleClick}>
-        POST
+      <Button
+        style={{ textTransform: 'uppercase' }}
+        className="EditorLexical_submit"
+        type="primary"
+        onClick={handleClick}
+      >
+        {intl.get('general.post')}
       </Button>
     </>
   );
