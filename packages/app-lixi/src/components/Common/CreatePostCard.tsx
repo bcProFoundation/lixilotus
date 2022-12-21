@@ -16,6 +16,7 @@ import 'suneditor/dist/css/suneditor.min.css'; // Import Sun Editor's CSS File
 import SunEditorCore from 'suneditor/src/lib/core';
 import Editor from './Editor';
 import { Embed, SocialsEnum } from './Embed';
+import EditorLexical from './Lexical/EditorLexical';
 
 const styles = {
   wrapper: {
@@ -328,7 +329,8 @@ const CreatePostCard = (props: CreatePostCardProp) => {
         >
           <Tabs defaultActiveKey="1">
             <Tabs.TabPane tab="Create" key="create">
-              <Editor onSubmitPost={handleSubmitEditor} />
+              {/* <Editor onSubmitPost={handleSubmitEditor} /> */}
+              <EditorLexical onSubmit={value => handleCreateNewPost(value)} />
             </Tabs.TabPane>
             <Tabs.TabPane tab="Import" key="import">
               <form onSubmit={handleSubmit}>
