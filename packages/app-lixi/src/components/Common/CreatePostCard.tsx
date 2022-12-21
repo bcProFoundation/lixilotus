@@ -170,7 +170,6 @@ const CreatePostCard = (props: CreatePostCardProp) => {
     const valueInput = sunEditor.current.getContents(true);
     setValue(valueInput);
     setEnableEditor(false);
-    console.log(valueInput);
   };
 
   const handleUrlChange = (event): void => {

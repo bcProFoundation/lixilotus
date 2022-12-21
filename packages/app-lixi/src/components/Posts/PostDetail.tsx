@@ -314,9 +314,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
             }
           )
         );
-        console.log('patches', patches);
       } catch (error) {
-        console.log('error', error);
         const message = intl.get('comment.unableCreateComment');
         if (patches) {
           dispatch(commentsApi.util.patchQueryData('CommentsToPostId', params, patches.inversePatches));
@@ -351,7 +349,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
         url: shareUrl,
         title: 'LixiLotus'
       }}
-      onClick={() => {}}
+      onClick={() => { }}
     >
       <ShareButton>
         <ShareAltOutlined /> Share
