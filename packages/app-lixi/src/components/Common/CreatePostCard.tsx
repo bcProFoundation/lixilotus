@@ -16,6 +16,7 @@ import styled from 'styled-components';
 import 'suneditor/dist/css/suneditor.min.css'; // Import Sun Editor's CSS File
 import SunEditorCore from 'suneditor/src/lib/core';
 import Editor from './Editor';
+import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { Embed, SocialsEnum } from './Embed';
 
 const styles = {
@@ -311,11 +312,11 @@ const CreatePostCard = (props: CreatePostCardProp) => {
         let tag: string;
 
         if (_.isNil(pageId) && _.isNil(tokenId)) {
-          tag = 'Posts';
+          tag = PostsQueryTag.Posts;
         } else if (pageId) {
-          tag = 'PostsByPageId';
+          tag = PostsQueryTag.PostsByPageId;
         } else if (tokenId) {
-          tag = 'PostsByTokenId';
+          tag = PostsQueryTag.PostsByTokenId;
         }
 
         const patches = updatePost(tag, params, result, pageId, tokenId);
