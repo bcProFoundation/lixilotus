@@ -11,8 +11,9 @@ import { put } from 'redux-saga/effects';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import { D } from 'styled-icons/crypto';
 import { hideLoading } from '../loading/actions';
-import { burnForUpDownVote, burnForUpDownVoteFailure, burnForUpDownVoteSuccess } from './actions';
+import { burnForUpDownVote, burnForUpDownVoteFailure, burnForUpDownVoteSuccess, updatePostBurnValue } from './actions';
 import burnApi from './api';
+import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 
 function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
   let patches, patch: PatchCollection;
@@ -24,55 +25,8 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
       ...command
     };
 
-    // @todo: better control the params for search/others
-    const params = {
-      orderBy: {
-        direction: OrderDirection.Desc,
-        field: PostOrderField.UpdatedAt
-      }
-    };
+    patches = yield put(updatePostBurnValue(command));
 
-    let burnValue = _.toNumber(command.burnValue);
-
-    patches = yield put(
-      postApi.util.updateQueryData('Posts', params, draft => {
-        const postToUpdateIndex = draft.allPosts.edges.findIndex(item => item.node.id === command.burnForId);
-        const postToUpdate = draft.allPosts.edges[postToUpdateIndex];
-        if (postToUpdateIndex >= 0) {
-          let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
-          let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
-          if (command.burnType == BurnType.Up) {
-            lotusBurnUp = lotusBurnUp + burnValue;
-          } else {
-            lotusBurnDown = lotusBurnDown + burnValue;
-          }
-          const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-          draft.allPosts.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
-          draft.allPosts.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
-          draft.allPosts.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
-          if (lotusBurnScore < 0) {
-            draft.allPosts.edges.splice(postToUpdateIndex, 1);
-            draft.allPosts.totalCount = draft.allPosts.totalCount - 1;
-          }
-        }
-      })
-    );
-
-    patch = yield put(
-      postApi.util.updateQueryData('Post', { id: command.burnForId }, draft => {
-        let lotusBurnUp = draft?.post?.lotusBurnUp ?? 0;
-        let lotusBurnDown = draft?.post?.lotusBurnDown ?? 0;
-        if (command.burnType == BurnType.Up) {
-          lotusBurnUp = lotusBurnUp + burnValue;
-        } else {
-          lotusBurnDown = lotusBurnDown + burnValue;
-        }
-        const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-        draft.post.lotusBurnUp = lotusBurnUp;
-        draft.post.lotusBurnDown = lotusBurnDown;
-        draft.post.lotusBurnScore = lotusBurnScore;
-      })
-    );
 
     const data: Burn = yield call(burnApi.post, dataApi);
 
@@ -111,6 +65,93 @@ function* burnForUpDownVoteFailureSaga(action: PayloadAction<string>) {
   yield put(hideLoading(burnForUpDownVote.type));
 }
 
+function* updatePostBurnValueSaga(action: PayloadAction<BurnCommand>) {
+  const command = action.payload;
+  // @todo: better control the params for search/others
+  const params = {
+    orderBy: {
+      direction: OrderDirection.Desc,
+      field: PostOrderField.UpdatedAt
+    }
+  };
+
+  let burnValue = _.toNumber(command.burnValue);
+  switch (command.postQueryTag) {
+    case PostsQueryTag.PostsByPageId:
+      return yield put(
+        postApi.util.updateQueryData('PostsByPageId', { ...params, id: command.pageId }, draft => {
+          const postToUpdateIndex = draft.allPostsByPageId.edges.findIndex(item => item.node.id === command.burnForId);
+          const postToUpdate = draft.allPostsByPageId.edges[postToUpdateIndex];
+          if (postToUpdateIndex >= 0) {
+            let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
+            let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+            if (command.burnType == BurnType.Up) {
+              lotusBurnUp = lotusBurnUp + burnValue;
+            } else {
+              lotusBurnDown = lotusBurnDown + burnValue;
+            }
+            const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+            draft.allPostsByPageId.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
+            draft.allPostsByPageId.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
+            draft.allPostsByPageId.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
+            if (lotusBurnScore < 0) {
+              draft.allPostsByPageId.edges.splice(postToUpdateIndex, 1);
+              draft.allPostsByPageId.totalCount = draft.allPostsByPageId.totalCount - 1;
+            }
+          }
+        })
+      );
+    case PostsQueryTag.PostsByTokenId:
+      return yield put(
+        postApi.util.updateQueryData('PostsByTokenId', { ...params, id: command.tokenId }, draft => {
+          const postToUpdateIndex = draft.allPostsByTokenId.edges.findIndex(item => item.node.id === command.burnForId);
+          const postToUpdate = draft.allPostsByTokenId.edges[postToUpdateIndex];
+          if (postToUpdateIndex >= 0) {
+            let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
+            let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+            if (command.burnType == BurnType.Up) {
+              lotusBurnUp = lotusBurnUp + burnValue;
+            } else {
+              lotusBurnDown = lotusBurnDown + burnValue;
+            }
+            const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+            draft.allPostsByTokenId.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
+            draft.allPostsByTokenId.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
+            draft.allPostsByTokenId.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
+            if (lotusBurnScore < 0) {
+              draft.allPostsByTokenId.edges.splice(postToUpdateIndex, 1);
+              draft.allPostsByTokenId.totalCount = draft.allPostsByTokenId.totalCount - 1;
+            }
+          }
+        })
+      );
+    default:
+      return yield put(
+        postApi.util.updateQueryData('Posts', params, draft => {
+          const postToUpdateIndex = draft.allPosts.edges.findIndex(item => item.node.id === command.burnForId);
+          const postToUpdate = draft.allPosts.edges[postToUpdateIndex];
+          if (postToUpdateIndex >= 0) {
+            let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
+            let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+            if (command.burnType == BurnType.Up) {
+              lotusBurnUp = lotusBurnUp + burnValue;
+            } else {
+              lotusBurnDown = lotusBurnDown + burnValue;
+            }
+            const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+            draft.allPosts.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
+            draft.allPosts.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
+            draft.allPosts.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
+            if (lotusBurnScore < 0) {
+              draft.allPosts.edges.splice(postToUpdateIndex, 1);
+              draft.allPosts.totalCount = draft.allPosts.totalCount - 1;
+            }
+          }
+        })
+      );
+  }
+}
+
 function* watchBurnForUpDownVote() {
   yield takeLatest(burnForUpDownVote.type, burnForUpDownVoteSaga);
 }
@@ -123,6 +164,15 @@ function* watchBurnForUpDownVoteFailure() {
   yield takeLatest(burnForUpDownVoteFailure.type, burnForUpDownVoteFailureSaga);
 }
 
+function* watchUpdatePostBurnValueSaga() {
+  yield takeLatest(updatePostBurnValue.type, updatePostBurnValueSaga);
+}
+
 export default function* burnSaga() {
-  yield all([fork(watchBurnForUpDownVote), fork(watchBurnForUpDownVoteSuccess), fork(watchBurnForUpDownVoteFailure)]);
+  yield all([
+    fork(watchBurnForUpDownVote),
+    fork(watchBurnForUpDownVoteSuccess),
+    fork(watchBurnForUpDownVoteFailure),
+    fork(watchUpdatePostBurnValueSaga)
+  ]);
 }

@@ -73,6 +73,7 @@ export default {
   'general.notFoundTitle': 'Opp! Page not found',
   'general.notFoundDescription': 'Sorry, we can’t find the page you’re looking for.',
   'general.goBackToHome': 'Go back',
+  'general.post': 'Post',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
