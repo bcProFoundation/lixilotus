@@ -79,8 +79,6 @@ function* updatePostBurnValueSaga(action: PayloadAction<BurnCommand>) {
         postApi.util.updateQueryData('PostsByPageId', { ...params, id: command.pageId }, draft => {
           const postToUpdateIndex = draft.allPostsByPageId.edges.findIndex(item => item.node.id === command.burnForId);
           const postToUpdate = draft.allPostsByPageId.edges[postToUpdateIndex];
-          console.log('postToUpdateIndex', postToUpdateIndex);
-          console.log('postToUpdate', postToUpdate);
           if (postToUpdateIndex >= 0) {
             let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
             let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
@@ -105,8 +103,6 @@ function* updatePostBurnValueSaga(action: PayloadAction<BurnCommand>) {
         postApi.util.updateQueryData('PostsByTokenId', { ...params, id: command.tokenId }, draft => {
           const postToUpdateIndex = draft.allPostsByTokenId.edges.findIndex(item => item.node.id === command.burnForId);
           const postToUpdate = draft.allPostsByTokenId.edges[postToUpdateIndex];
-          console.log('postToUpdateIndex', postToUpdateIndex);
-          console.log('postToUpdate', postToUpdate);
           if (postToUpdateIndex >= 0) {
             let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
             let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
@@ -131,8 +127,6 @@ function* updatePostBurnValueSaga(action: PayloadAction<BurnCommand>) {
         postApi.util.updateQueryData('Posts', params, draft => {
           const postToUpdateIndex = draft.allPosts.edges.findIndex(item => item.node.id === command.burnForId);
           const postToUpdate = draft.allPosts.edges[postToUpdateIndex];
-          console.log('postToUpdateIndex', postToUpdateIndex);
-          console.log('postToUpdate', postToUpdate);
           if (postToUpdateIndex >= 0) {
             let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
             let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
