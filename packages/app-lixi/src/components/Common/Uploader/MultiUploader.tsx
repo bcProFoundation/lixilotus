@@ -10,11 +10,13 @@ import { isMobile } from 'react-device-detect';
 import { useAppDispatch } from '@store/hooks';
 import { setUpload, removeUpload } from '@store/account/actions';
 import axiosClient from '@utils/axiosClient';
-import { UPLOAD_API_S3 } from '@bcpros/lixi-models/constants';
+import { UPLOAD_API_S3_MULTIPLE } from '@bcpros/lixi-models/constants';
 import _ from 'lodash';
 import { ButtonType } from 'antd/lib/button';
 import { insertImage } from '@udecode/plate';
 import { useMyPlateEditorRef } from '../Plate/plateTypes';
+
+const { Dragger } = Upload;
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -154,11 +156,12 @@ export const MultiUploader = ({ type, buttonName, buttonType, isIcon, showUpload
 
   const uploadImage = async options => {
     const { onSuccess, onError, file, onProgress } = options;
-    const url = UPLOAD_API_S3;
+    const url = UPLOAD_API_S3_MULTIPLE;
     const formData = new FormData();
 
-    formData.append('file', file);
+    formData.append('files', file);
     formData.append('type', type);
+
     const config = {
       headers: { 'content-type': 'multipart/form-data' },
       withCredentials: true,
@@ -173,7 +176,6 @@ export const MultiUploader = ({ type, buttonName, buttonType, isIcon, showUpload
         const { data } = response;
         const url = `${data.awsEndpoint}/${data.bucket}/${data.sha}`;
 
-        insertImage(editor, url || null);
         return onSuccess(dispatch(setUpload({ upload: response.data, type: type })));
       })
       .catch(err => {
@@ -184,7 +186,7 @@ export const MultiUploader = ({ type, buttonName, buttonType, isIcon, showUpload
 
   return (
     <StyledContainer>
-      <Upload
+      <Dragger
         name="images-uploader"
         className="post-image-uploader"
         beforeUpload={beforeUpload}
@@ -194,14 +196,17 @@ export const MultiUploader = ({ type, buttonName, buttonType, isIcon, showUpload
         progress={customProgress}
         customRequest={uploadImage}
         showUploadList={showUploadList}
+        multiple={true}
       >
+        <p className="ant-upload-drag-icon">
+        </p>
+        <p className="ant-upload-text">Click or drag file to this area to upload</p>
+        <p className="ant-upload-hint">
+          Support for a single or bulk upload. Strictly prohibit from uploading company data or other
+          band files
+        </p>
         {uploadButton}
-      </Upload>
-      <Modal visible={previewVisible} title={previewTitle} footer={null} onCancel={handleCancel}>
-        <div style={{ width: '100%', height: '50vh', position: isMobile ? 'initial' : 'relative' }}>
-          <Image alt="custom-upload" layout="fill" quality={100} src={previewImage} />
-        </div>
-      </Modal>
+      </Dragger>
     </StyledContainer>
   );
 };
