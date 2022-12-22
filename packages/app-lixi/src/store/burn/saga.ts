@@ -11,7 +11,7 @@ import { put, select } from 'redux-saga/effects';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import { D } from 'styled-icons/crypto';
 import { hideLoading } from '../loading/actions';
-import { burnForUpDownVote, burnForUpDownVoteFailure, burnForUpDownVoteSuccess, updatePostBurnValue, counterFailure, counterSuccess } from './actions';
+import { burnForUpDownVote, burnForUpDownVoteFailure, burnForUpDownVoteSuccess, updatePostBurnValue } from './actions';
 import burnApi from './api';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 
@@ -36,7 +36,7 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
       }
       yield put(burnForToken({id: command.burnForId, burnUp: lotusBurnUp, burnDown: lotusBurnDown}))
     }
-    
+
     patches = yield put(updatePostBurnValue(command));
 
     const data: Burn = yield call(burnApi.post, dataApi);
