@@ -4,7 +4,11 @@ import { IsNotEmpty, IsOptional } from 'class-validator';
 export class CreatePostInput {
   @Field(() => String)
   @IsNotEmpty()
-  content: string;
+  htmlContent: string;
+
+  @Field(() => String)
+  @IsNotEmpty()
+  pureContent: string;
 
   @Field(() => Number, { nullable: true })
   pageAccountId?: number;
