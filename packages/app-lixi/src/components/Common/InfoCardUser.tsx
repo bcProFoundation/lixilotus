@@ -50,7 +50,6 @@ const InfoCardUserContainer = styled.div`
   padding: 0;
   box-shadow: none;
   margin: 0;
-  background: #fff;
   display: flex;
   justify-content: space-between;
   align-items: center;

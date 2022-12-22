@@ -30,7 +30,7 @@ const IconBurn = ({
 }: {
   icon?: React.FC;
   burnValue?: number;
-  dataItem: any;
+  dataItem: CommentQuery['comment'];
   imgUrl?: string;
   onClickIcon: () => void;
 }) => (
