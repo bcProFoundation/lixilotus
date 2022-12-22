@@ -329,7 +329,6 @@ const ProfileDetail = ({ user, isMobile }: UserDetailProps) => {
   const [listsFriend, setListsFriend] = useState<any>([]);
   const [listsPicture, setListsPicture] = useState<any>([]);
 
-  //TODO: Implement useInfinitePostsByUserIdQuery
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByUserIdQuery(
     {
       first: 10,
@@ -348,10 +347,6 @@ const ProfileDetail = ({ user, isMobile }: UserDetailProps) => {
 
   useEffect(() => {
     // fetchListPicture();
-  }, []);
-
-  useEffect(() => {
-    refetch();
   }, []);
 
   const fetchListFriend = () => {
@@ -532,7 +527,6 @@ const ProfileDetail = ({ user, isMobile }: UserDetailProps) => {
               </LegacyProfile>
               <ContentTimeline>
                 <SearchBox />
-                <CreatePostCard refetch={() => refetch()} />
                 <Timeline>
                   {data.length == 0 && (
                     <div className="blank-timeline">

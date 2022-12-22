@@ -19,6 +19,7 @@ import ReactHtmlParser from 'react-html-parser';
 import intl from 'react-intl-universal';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled from 'styled-components';
+import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 
 const IconBurn = ({
   icon,
@@ -252,6 +253,15 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
       const burnForId = post.id;
       const burnValue = '1';
       const tipToAddress = post?.postAccount?.address ?? undefined;
+      let tag: string;
+
+      if (_.isNil(post.page) && _.isNil(post.token)) {
+        tag = PostsQueryTag.Posts;
+      } else if (post.page) {
+        tag = PostsQueryTag.PostsByPageId;
+      } else if (post.token) {
+        tag = PostsQueryTag.PostsByTokenId;
+      }
 
       const txHex = await burnXpi(
         XPI,
@@ -273,7 +283,10 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
         burnedBy,
         burnForId,
         burnValue,
-        tipToAddress: xAddress
+        tipToAddress: xAddress,
+        postQueryTag: tag,
+        pageId: post.page?.id,
+        tokenId: post.token?.id
       };
 
       dispatch(burnForUpDownVote(burnCommand));

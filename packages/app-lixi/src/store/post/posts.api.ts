@@ -28,6 +28,38 @@ const enhancedApi = api.enhanceEndpoints({
         currentCacheData.allPosts.totalCount = responseData.allPosts.totalCount;
       }
     },
+    PostsByPageId: {
+      providesTags: (result, error, arg) => ['Post'],
+      serializeQueryArgs({ queryArgs }) {
+        if (queryArgs) {
+          const { orderBy, id, ...otherArgs } = queryArgs;
+          return { orderBy, id };
+        }
+        return { queryArgs };
+      },
+
+      merge(currentCacheData, responseData) {
+        currentCacheData.allPostsByPageId.edges.push(...responseData.allPostsByPageId.edges);
+        currentCacheData.allPostsByPageId.pageInfo = responseData.allPostsByPageId.pageInfo;
+        currentCacheData.allPostsByPageId.totalCount = responseData.allPostsByPageId.totalCount;
+      }
+    },
+    PostsByTokenId: {
+      providesTags: (result, error, arg) => ['Post'],
+      serializeQueryArgs({ queryArgs }) {
+        if (queryArgs) {
+          const { orderBy, id, ...otherArgs } = queryArgs;
+          return { orderBy, id };
+        }
+        return { queryArgs };
+      },
+
+      merge(currentCacheData, responseData) {
+        currentCacheData.allPostsByTokenId.edges.push(...responseData.allPostsByTokenId.edges);
+        currentCacheData.allPostsByTokenId.pageInfo = responseData.allPostsByTokenId.pageInfo;
+        currentCacheData.allPostsByTokenId.totalCount = responseData.allPostsByTokenId.totalCount;
+      }
+    },
     Post: {
       providesTags: (result, error, arg) => ['Post']
     },
@@ -44,5 +76,9 @@ export const {
   useLazyPostsQuery,
   usePostsByPageIdQuery,
   useLazyPostsByPageIdQuery,
+  usePostsByTokenIdQuery,
+  useLazyPostsByTokenIdQuery,
+  usePostsByUserIdQuery,
+  useLazyPostsByUserIdQuery,
   useCreatePostMutation
 } = enhancedApi;

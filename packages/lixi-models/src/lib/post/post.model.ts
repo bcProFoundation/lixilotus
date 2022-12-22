@@ -4,6 +4,7 @@ import { IsOptional } from 'class-validator';
 import { Account } from '../account';
 import { Page } from '../page';
 import { Token } from '../token';
+import { UploadDetail } from '../upload';
 
 @ObjectType()
 export class Post {
@@ -31,8 +32,8 @@ export class Post {
   @Field(() => Token, { nullable: true })
   token?: Token;
 
-  @Field(() => [String], { nullable: true })
-  uploadCovers: [string];
+  @Field(() => [UploadDetail], { nullable: true })
+  uploads: [UploadDetail];
 
   @Field(() => Page, { nullable: true })
   page?: Page;
