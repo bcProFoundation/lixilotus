@@ -21,5 +21,11 @@ export class BurnCommand {
   @IsNotEmpty()
   burnValue: string;
 
+  postQueryTag?: string;
+
+  pageId?: string;
+
+  tokenId?: string;
+
   tipToAddress?: string;
 }
