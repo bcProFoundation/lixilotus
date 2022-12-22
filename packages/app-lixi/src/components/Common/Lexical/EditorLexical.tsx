@@ -26,6 +26,7 @@ import styled from 'styled-components';
 const StyledEditorLexical = styled.div`
   display: flex;
   flex-direction: column;
+  position: relative;
 
   // Customine Editor Lexical
   .EditorLexical_container {
@@ -42,6 +43,7 @@ const StyledEditorLexical = styled.div`
     outline: 0;
     padding: 8px 8px;
     min-height: calc(100% - 16px);
+    margin-bottom: 24px;
   }
 
   .EditorLexical_hashtag {
@@ -66,12 +68,15 @@ const StyledEditorLexical = styled.div`
   .EditorLexical_action {
     display: flex;
     align-items: center;
-    justify-content: end;
+    justify-content: start;
   }
 
   .EditorLexical_submit {
     width: fit-content;
     align-self: flex-end;
+    min-width: 140px;
+    position: absolute;
+    bottom: 0;
   }
 `;
 
@@ -111,7 +116,7 @@ const EditorLexical = props => {
               <MultiUploader
                 type={UPLOAD_TYPES.POST}
                 isIcon={true}
-                icon={<PictureOutlined />}
+                icon={'/images/ico-picture.svg'}
                 buttonName=" "
                 buttonType="text"
                 showUploadList={false}

@@ -98,16 +98,24 @@ code {
     width: 60% !important;
     margin: auto;
 
+    .ant-modal-close {
+      top: 1rem;
+    }
+
     .ant-modal-header {
       border-radius: 20px;
-      padding: 2rem 0;
+      padding: 24px;
       border-bottom: 0;
       padding-bottom: 0;
       background: transparent !important;
 
       .ant-modal-title {
-        font-size: 18px;
-        font-weight: 600;
+        text-align: left;
+        margin-bottom: 24px;
+        font-weight: 400;
+        font-size: 24px;
+        line-height: 28px;
+        color: #1e1a1d;
       }
     }
 
@@ -523,4 +531,51 @@ code {
 // Customine Editor Lexical
 .EditorLexical_hashtag {
   background: #ffd7f6;
+}
+
+// Customine popover
+.popover-more {
+  top: 500px !important;
+  .ant-popover-content {
+    .ant-popover-arrow {
+      display: none;
+    }
+    .ant-popover-inner {
+      min-width: 280px;
+      border-radius: 24px;
+      .ant-popover-inner-content {
+        background: #fffbff;
+        box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.12);
+        border-radius: 24px;
+        .popover-content-more {
+          display: flex;
+          flex-direction: column;
+          .item-access {
+            margin-bottom: 2rem;
+            flex-direction: row !important;
+            align-items: center;
+            cursor: pointer;
+            gap: 0 !important;
+            .anticon {
+              font-size: 25px;
+              color: #12130f;
+            }
+            .icon-item {
+              padding: 6px;
+              &.active-item-access {
+                background: #ffd24d;
+                border-radius: 8px;
+              }
+            }
+            .text-item {
+              font-size: 16px;
+              font-weight: 400;
+              letter-spacing: 0.5px;
+              color: #4e444b;
+            }
+          }
+        }
+      }
+    }
+  }
 }

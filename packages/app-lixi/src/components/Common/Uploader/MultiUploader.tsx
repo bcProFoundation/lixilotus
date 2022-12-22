@@ -82,7 +82,7 @@ export const MultiUploader = ({ type, buttonName, buttonType, isIcon, showUpload
       type={!_.isEmpty(buttonType) ? (buttonType as ButtonType) : 'primary'}
       size="middle"
       loading={loading}
-      icon={isIcon && icon ? icon : <UploadOutlined style={{ color: loading ? 'gray' : 'white' }} />}
+      icon={isIcon && icon ? <img src={icon} /> : <UploadOutlined style={{ color: loading ? 'gray' : 'white' }} />}
     >
       {!_.isEmpty(buttonName) ? buttonName : loading ? intl.get('lixi.uploadingText') : intl.get('lixi.uploadText')}
     </StyledButton>
