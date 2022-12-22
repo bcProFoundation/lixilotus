@@ -1,6 +1,6 @@
-import { PlusCircleOutlined } from '@ant-design/icons';
+import { PlusCircleOutlined, GlobalOutlined } from '@ant-design/icons';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
-import { getPostCoverUploads } from '@store/account/selectors';
+import { getPostCoverUploads, getSelectedAccount } from '@store/account/selectors';
 import { api as postApi, useCreatePostMutation } from '@store/post/posts.api';
 import { CreatePostMutation, PostsByPageIdDocument } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
@@ -71,9 +71,8 @@ const CreateCardContainer = styled.div`
   padding: 1.5rem 1rem;
   background: #fff;
   border-radius: 20px;
-  box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
   align-items: center;
-  margin: 1rem 2px;
+  margin: 1rem 0;
   .avatar {
     flex: 2 auto;
     display: flex;
@@ -95,6 +94,39 @@ const StyledUploader = styled.div`
   bottom: 24px;
 `;
 
+const UserCreate = styled.div`
+  .user-create-post {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 24px;
+    .user-info {
+      .title-user {
+        margin: 0;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 24px;
+        letter-spacing: 0.15px;
+        color: var(--text-color-on-background);
+      }
+      .btn-select {
+        background: rgba(128, 116, 124, 0.12);
+        border-radius: 8px;
+        padding: 0 8px;
+        border: none;
+        margin-top: 4px;
+        span {
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 20px;
+          letter-spacing: 0.25px;
+          color: #4e444b;
+        }
+      }
+    }
+  }
+`;
+
 type CreatePostCardProp = {
   pageId?: string;
   tokenId?: string;
@@ -114,6 +146,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
   const postCoverUploads = useAppSelector(getPostCoverUploads);
   const [importValue, setImportValue] = useState(null);
   const { pageId, tokenId } = props;
+  const selectedAccount = useAppSelector(getSelectedAccount);
 
   const getSunEditorInstance = (sunEditorCore: SunEditorCore) => {
     sunEditor.current = sunEditorCore;
@@ -355,8 +388,8 @@ const CreatePostCard = (props: CreatePostCardProp) => {
     <>
       <CreateCardContainer onClick={() => setEnableEditor(!enableEditor)}>
         <div className="avatar">
-          <Avatar size={50} style={{ color: '#fff', backgroundColor: '#bdbdbd' }}>
-            ER
+          <Avatar src="images/anonymous-ava.svg" size={50} style={{ color: '#fff', backgroundColor: '#bdbdbd' }}>
+            {/* ER */}
           </Avatar>
           <Input bordered={false} placeholder="What's on your mind?" />
         </div>
@@ -373,9 +406,23 @@ const CreatePostCard = (props: CreatePostCardProp) => {
           onCancel={() => setEnableEditor(false)}
           maskClosable={false}
         >
-          <Tabs defaultActiveKey="1">
+          <>
+            <UserCreate>
+              <div className="user-create-post">
+                <img src="/images/xpi.svg" alt="" />
+                <div className="user-info">
+                  <p className="title-user">{selectedAccount.name}</p>
+                  <Button className="btn-select">
+                    Public <GlobalOutlined />
+                  </Button>
+                </div>
+              </div>
+              <EditorLexical onSubmit={value => handleCreateNewPost(value)} />
+            </UserCreate>
+          </>
+          {/* <Tabs defaultActiveKey="1">
             <Tabs.TabPane tab="Create" key="create">
-              {/* <Editor onSubmitPost={handleSubmitEditor} /> */}
+              <Editor onSubmitPost={handleSubmitEditor} />
               <EditorLexical onSubmit={value => handleCreateNewPost(value)} />
             </Tabs.TabPane>
             <Tabs.TabPane tab="Import" key="import">
@@ -406,7 +453,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
                 </div>
               )}
             </Tabs.TabPane>
-          </Tabs>
+          </Tabs> */}
         </Modal>
       </WrapEditor>
     </>

@@ -28,12 +28,13 @@ const EmojiToolbarButtonsLexical: React.FC = () => {
   return (
     <>
       <div
+        style={{ marginRight: '1rem' }}
         onClick={() => {
           setIsShowEmojiPicker(!isShowEmojiPicker);
           setIsModalVisible(!isModalVisible);
         }}
       >
-        <BlockToolbarButton icon={<Emoji />} type={''} />
+        <BlockToolbarButton icon={<img src="/images/ico-emoji.svg" />} type={''} />
       </div>
       <Modal
         onCancel={() => setIsModalVisible(!isModalVisible)}

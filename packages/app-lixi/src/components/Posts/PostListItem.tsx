@@ -21,6 +21,8 @@ import styled from 'styled-components';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { useRouter } from 'next/router';
 
+const URL_SERVER_IMAGE = 'https://s3.us-west-001.backblazeb2.com';
+
 const IconBurn = ({
   icon,
   burnValue,
@@ -127,6 +129,12 @@ const Content = styled.div`
   .image-cover {
     width: 100%;
     max-height: 300px;
+  }
+  .images-post {
+    margin-top: 1rem;
+    img {
+      margin-bottom: 1rem;
+    }
   }
 `;
 
@@ -353,9 +361,25 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
           ></InfoCardUser>
         </CardHeader>
         <Content>
-          <div className="description-post">{ReactHtmlParser(post?.content)}</div>
+          <div className="description-post">
+            {ReactHtmlParser(post?.content)}
+            <div className="images-post">
+              {item.uploads.length != 0 &&
+                item.uploads.map(item => {
+                  const imageUrl = URL_SERVER_IMAGE + '/' + item.upload.bucket + '/' + item.upload.sha;
+                  return (
+                    <>
+                      <img width={'100%'} src={imageUrl} />
+                    </>
+                  );
+                })}
+            </div>
+          </div>
           {showMore && (
-            <p style={{ textAlign: 'left', color: 'var(--color-primary)' }} onClick={e => showMoreHandle(e)}>
+            <p
+              style={{ textAlign: 'left', color: 'var(--color-primary)', marginBottom: '0' }}
+              onClick={e => showMoreHandle(e)}
+            >
               Show more...
             </p>
           )}
