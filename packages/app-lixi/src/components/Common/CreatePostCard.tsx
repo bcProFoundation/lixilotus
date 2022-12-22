@@ -290,11 +290,13 @@ const CreatePostCard = (props: CreatePostCardProp) => {
     }
   };
 
-  const handleCreateNewPost = async content => {
-    if (content !== '' || !_.isNil(content)) {
+  const handleCreateNewPost = async ({ htmlContent, pureContent }) => {
+    console.log('handleCreateNewPost');
+    if (htmlContent !== '' || !_.isNil(htmlContent)) {
       const createPostInput: CreatePostInput = {
         uploadCovers: postCoverUploads.map(upload => upload.id),
-        content: content,
+        htmlContent: htmlContent,
+        pureContent: pureContent,
         pageId: pageId || undefined,
         tokenId: tokenId || undefined
       };
@@ -326,6 +328,8 @@ const CreatePostCard = (props: CreatePostCardProp) => {
             duration: 5
           })
         );
+
+        setEnableEditor(false);
       } catch (error) {
         const message = intl.get('post.unableCreatePostServer');
         if (patches) {
@@ -367,7 +371,6 @@ const CreatePostCard = (props: CreatePostCardProp) => {
           visible={enableEditor}
           footer={null}
           onCancel={() => setEnableEditor(false)}
-          destroyOnClose={true}
           maskClosable={false}
         >
           <Tabs defaultActiveKey="1">

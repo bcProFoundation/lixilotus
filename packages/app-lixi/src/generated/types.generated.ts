@@ -86,9 +86,10 @@ export type CreatePageInput = {
 };
 
 export type CreatePostInput = {
-  content: Scalars['String'];
+  htmlContent: Scalars['String'];
   pageAccountId?: InputMaybe<Scalars['Int']>;
   pageId?: InputMaybe<Scalars['String']>;
+  pureContent: Scalars['String'];
   tokenId?: InputMaybe<Scalars['String']>;
   uploadCovers?: InputMaybe<Array<Scalars['String']>>;
 };

@@ -72,9 +72,10 @@ input CreatePageInput {
 }
 
 input CreatePostInput {
-  content: String!
+  htmlContent: String!
   pageAccountId: Int
   pageId: String
+  pureContent: String!
   tokenId: String
   uploadCovers: [String!]
 }

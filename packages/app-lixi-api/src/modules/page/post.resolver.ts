@@ -245,7 +245,7 @@ export class PostResolver {
       throw new Error(couldNotFindAccount);
     }
 
-    const { uploadCovers, pageId, content, tokenId } = data;
+    const { uploadCovers, pageId, htmlContent, tokenId } = data;
 
     //Because of the current implementation of editor, the following code will
     //extract img tag fromt the content and query it from database
@@ -256,7 +256,7 @@ export class PostResolver {
     let imgShas: string[] = [];
 
     //Look up for the img tag
-    const imgTags = content.match(/<img [^>]*src="[^"]*"[^>]*>/gm);
+    const imgTags = htmlContent.match(/<img [^>]*src="[^"]*"[^>]*>/gm);
 
     //If there is img tag, extract the src field from it
     if (imgTags !== null) {
@@ -290,7 +290,7 @@ export class PostResolver {
 
     const postToSave = {
       data: {
-        content: content,
+        content: htmlContent,
         postAccount: { connect: { id: account.id } },
         uploadedCovers: {
           connect:
