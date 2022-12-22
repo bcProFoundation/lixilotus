@@ -1,5 +1,5 @@
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import {$getRoot} from 'lexical';
+import { $getRoot } from 'lexical';
 import { $generateHtmlFromNodes } from '@lexical/html';
 import { Button } from 'antd';
 import React, { useEffect } from 'react';
@@ -23,15 +23,13 @@ const CustomButtonSubmitPlugin = props => {
       //   const jsonString = JSON.stringify(editorState);
       //   console.log('jsonString', jsonString);
 
-      const stringifiedEditorState = JSON.stringify(
-        editor.getEditorState().toJSON(),
-      );
+      const stringifiedEditorState = JSON.stringify(editor.getEditorState().toJSON());
       const parsedEditorState = editor.parseEditorState(stringifiedEditorState);
-      
+
       const editorStateTextString = parsedEditorState.read(() => $getRoot().getTextContent());
 
       const htmlString = $generateHtmlFromNodes(editor, null);
-      props.onSubmit({htmlContent: htmlString, pureContent: editorStateTextString});
+      props.onSubmit({ htmlContent: htmlString, pureContent: editorStateTextString });
     });
   };
 

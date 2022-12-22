@@ -246,11 +246,12 @@ const CreatePostCard = (props: CreatePostCardProp) => {
     }
   };
 
-  const handleCreateNewPost = async ({htmlContent, pureContent}) => {
+  const handleCreateNewPost = async ({ htmlContent, pureContent }) => {
     if (htmlContent !== '' || !_.isNil(htmlContent)) {
       const createPostInput: CreatePostInput = {
         uploadCovers: postCoverUploads.map(upload => upload.id),
-        content: htmlContent,
+        htmlContent: htmlContent,
+        pureContent: pureContent,
         pageId: pageId || undefined,
         tokenId: tokenId || undefined
       };

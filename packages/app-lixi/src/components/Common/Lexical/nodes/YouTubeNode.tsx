@@ -6,20 +6,10 @@
  *
  */
 
-import type {
-  EditorConfig,
-  ElementFormatType,
-  LexicalEditor,
-  LexicalNode,
-  NodeKey,
-  Spread,
-} from 'lexical';
+import type { EditorConfig, ElementFormatType, LexicalEditor, LexicalNode, NodeKey, Spread } from 'lexical';
 
-import {BlockWithAlignableContents} from '@lexical/react/LexicalBlockWithAlignableContents';
-import {
-  DecoratorBlockNode,
-  SerializedDecoratorBlockNode,
-} from '@lexical/react/LexicalDecoratorBlockNode';
+import { BlockWithAlignableContents } from '@lexical/react/LexicalBlockWithAlignableContents';
+import { DecoratorBlockNode, SerializedDecoratorBlockNode } from '@lexical/react/LexicalDecoratorBlockNode';
 import * as React from 'react';
 
 type YouTubeComponentProps = Readonly<{
@@ -32,17 +22,9 @@ type YouTubeComponentProps = Readonly<{
   videoID: string;
 }>;
 
-function YouTubeComponent({
-  className,
-  format,
-  nodeKey,
-  videoID,
-}: YouTubeComponentProps) {
+function YouTubeComponent({ className, format, nodeKey, videoID }: YouTubeComponentProps) {
   return (
-    <BlockWithAlignableContents
-      className={className}
-      format={format}
-      nodeKey={nodeKey}>
+    <BlockWithAlignableContents className={className} format={format} nodeKey={nodeKey}>
       <iframe
         width="560"
         height="315"
@@ -87,7 +69,7 @@ export class YouTubeNode extends DecoratorBlockNode {
       ...super.exportJSON(),
       type: 'youtube',
       version: 1,
-      videoID: this.__id,
+      videoID: this.__id
     };
   }
 
@@ -104,10 +86,7 @@ export class YouTubeNode extends DecoratorBlockNode {
     return this.__id;
   }
 
-  getTextContent(
-    _includeInert?: boolean | undefined,
-    _includeDirectionless?: false | undefined,
-  ): string {
+  getTextContent(_includeInert?: boolean | undefined, _includeDirectionless?: false | undefined): string {
     return `https://www.youtube.com/watch?v=${this.__id}`;
   }
 
@@ -115,15 +94,10 @@ export class YouTubeNode extends DecoratorBlockNode {
     const embedBlockTheme = config.theme.embedBlock || {};
     const className = {
       base: embedBlockTheme.base || '',
-      focus: embedBlockTheme.focus || '',
+      focus: embedBlockTheme.focus || ''
     };
     return (
-      <YouTubeComponent
-        className={className}
-        format={this.__format}
-        nodeKey={this.getKey()}
-        videoID={this.__id}
-      />
+      <YouTubeComponent className={className} format={this.__format} nodeKey={this.getKey()} videoID={this.__id} />
     );
   }
 
@@ -136,8 +110,6 @@ export function $createYouTubeNode(videoID: string): YouTubeNode {
   return new YouTubeNode(videoID);
 }
 
-export function $isYouTubeNode(
-  node: YouTubeNode | LexicalNode | null | undefined,
-): node is YouTubeNode {
+export function $isYouTubeNode(node: YouTubeNode | LexicalNode | null | undefined): node is YouTubeNode {
   return node instanceof YouTubeNode;
 }

@@ -13,10 +13,7 @@ import axiosClient from '@utils/axiosClient';
 import { UPLOAD_API_S3_MULTIPLE } from '@bcpros/lixi-models/constants';
 import _ from 'lodash';
 import { ButtonType } from 'antd/lib/button';
-import { insertImage } from '@udecode/plate';
 import { useMyPlateEditorRef } from '../Plate/plateTypes';
-
-const { Dragger } = Upload;
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -174,9 +171,8 @@ export const MultiUploader = ({ type, buttonName, buttonType, isIcon, showUpload
       .post(url, formData, config)
       .then(response => {
         const { data } = response;
-        const url = `${data.awsEndpoint}/${data.bucket}/${data.sha}`;
 
-        return onSuccess(dispatch(setUpload({ upload: response.data, type: type })));
+        return onSuccess(dispatch(setUpload({ upload: data, type: type })));
       })
       .catch(err => {
         const { response } = err;
@@ -186,7 +182,7 @@ export const MultiUploader = ({ type, buttonName, buttonType, isIcon, showUpload
 
   return (
     <StyledContainer>
-      <Dragger
+      <Upload
         name="images-uploader"
         className="post-image-uploader"
         beforeUpload={beforeUpload}
@@ -198,15 +194,8 @@ export const MultiUploader = ({ type, buttonName, buttonType, isIcon, showUpload
         showUploadList={showUploadList}
         multiple={true}
       >
-        <p className="ant-upload-drag-icon">
-        </p>
-        <p className="ant-upload-text">Click or drag file to this area to upload</p>
-        <p className="ant-upload-hint">
-          Support for a single or bulk upload. Strictly prohibit from uploading company data or other
-          band files
-        </p>
         {uploadButton}
-      </Dragger>
+      </Upload>
     </StyledContainer>
   );
 };
