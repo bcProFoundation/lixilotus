@@ -69,6 +69,7 @@ const TokensListing: React.FC = () => {
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const latestBurnForToken = useAppSelector(getLatestBurnForToken);
+  const burnValue = '0.01';
 
   const {
     handleSubmit,
@@ -217,7 +218,7 @@ const TokensListing: React.FC = () => {
       key: 'lotusBurn',
       sorter: (a, b) => a.lotusBurnUp + a.lotusBurnDown - (b.lotusBurnUp + b.lotusBurnDown),
       defaultSortOrder: 'descend',
-      render: (_, record) => <Counter num={formatBalance(record.lotusBurnUp + record.lotusBurnDown)} />
+      render: (_, record) => <Counter num={formatBalance(record.lotusBurnUp + record.lotusBurnDown)} /> // increase={burnValue}
     },
     {
       title: intl.get('label.comment'),
@@ -279,7 +280,6 @@ const TokensListing: React.FC = () => {
       const burnedBy = hash160;
       const burnForId = tokenId;
 
-      const burnValue = '1';
       const txHex = await burnXpi(
         XPI,
         walletPaths,
