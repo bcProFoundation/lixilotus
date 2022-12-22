@@ -115,7 +115,7 @@ const TokensFeed: React.FC = () => {
             width={120}
             height={120}
             src={`${currency.tokenIconsUrl}/128/${tokenInfo.tokenId}.png`}
-            fallback={makeBlockie(tokenInfo.id)}
+            fallback={makeBlockie(tokenInfo?.tokenId ?? '')}
             preview={false}
           />
         </div>

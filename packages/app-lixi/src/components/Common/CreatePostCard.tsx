@@ -413,7 +413,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
                   <div className="user-create-post">
                     <img src="/images/xpi.svg" alt="" />
                     <div className="user-info">
-                      <p className="title-user">{selectedAccount.name}</p>
+                      <p className="title-user">{selectedAccount?.name}</p>
                       <Button className="btn-select">
                         Public <GlobalOutlined />
                       </Button>
