@@ -1162,7 +1162,8 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
                           : (newEnvelopeId &&
                               !envelopeUpload &&
                               baseUrl + 'api/' + envelopes.find(item => item.id === newEnvelopeId).thumbnail) ||
-                            (envelopeUpload && envelopeUpload.url)
+                            (envelopeUpload &&
+                              `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${envelopeUpload.bucket}/${envelopeUpload.sha}`)
                       }
                       style={{
                         position: 'absolute',
