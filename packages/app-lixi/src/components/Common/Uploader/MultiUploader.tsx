@@ -172,7 +172,11 @@ export const MultiUploader = ({ type, buttonName, buttonType, isIcon, showUpload
       .then(response => {
         const { data } = response;
 
-        return onSuccess(dispatch(setUpload({ upload: data, type: type })));
+        return onSuccess(
+          data.map(image => {
+            dispatch(setUpload({ upload: image, type: type }));
+          })
+        );
       })
       .catch(err => {
         const { response } = err;
