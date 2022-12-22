@@ -1,17 +1,23 @@
-import {
-  DashOutlined,
-  DislikeOutlined,
-  LikeOutlined,
-  LinkOutlined,
-  ShareAltOutlined,
-  SmallDashOutlined,
-  UpOutlined
-} from '@ant-design/icons';
-import { Avatar, Button, Input, List, message, Popover } from 'antd';
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import { DashOutlined, LinkOutlined, ShareAltOutlined, UpOutlined } from '@ant-design/icons';
+import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
+import { Counter } from '@components/Common/Counter';
+import { currency } from '@components/Common/Ticker';
+import { WalletContext } from '@context/walletProvider';
+import useXPI from '@hooks/useXPI';
+import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
+import { burnForUpDownVote } from '@store/burn/actions';
+import { useCreateCommentMutation, api as commentsApi } from '@store/comment/comments.api';
+import { useInfiniteCommentsToPostIdQuery } from '@store/comment/useInfiniteCommentsToPostIdQuery';
+import { PostsQuery } from '@store/post/posts.generated';
+import { showToast } from '@store/toast/actions';
+import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
+import { formatBalance } from '@utils/cashMethods';
+import { Button, Input, message, Popover, Space } from 'antd';
+import _ from 'lodash';
 import moment from 'moment';
-
+import React, { useRef } from 'react';
+import ReactHtmlParser from 'react-html-parser';
+import intl from 'react-intl-universal';
 import {
   FacebookIcon,
   FacebookMessengerIcon,
@@ -24,12 +30,36 @@ import {
   WhatsappIcon,
   WhatsappShareButton
 } from 'react-share';
+import { Virtuoso } from 'react-virtuoso';
 import { RWebShare } from 'react-web-share';
-import intl from 'react-intl-universal';
-import { Post } from 'src/generated/types.generated';
-import ReactHtmlParser from 'react-html-parser';
+import { CommentOrderField, CreateCommentInput, OrderDirection } from 'src/generated/types.generated';
+import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import styled from 'styled-components';
+import CommentListItem from './CommentListItem';
+
+type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 
 const { Search } = Input;
+
+const IconBurn = ({
+  icon,
+  burnValue,
+  dataItem,
+  imgUrl,
+  onClickIcon
+}: {
+  icon?: React.FC;
+  burnValue?: number;
+  dataItem: any;
+  imgUrl?: string;
+  onClickIcon: () => void;
+}) => (
+  <Space onClick={onClickIcon}>
+    {icon && React.createElement(icon)}
+    {imgUrl && React.createElement('img', { src: imgUrl }, null)}
+    <Counter num={burnValue ?? 0} />
+  </Space>
+);
 
 type SocialSharePanelProps = {
   className?: string;
@@ -99,14 +129,92 @@ const popOverContent = shareUrl => {
 };
 
 type PostDetailProps = {
-  post: any;
+  post: PostItem;
   isMobile: boolean;
 };
 
 const PostDetail = ({ post, isMobile }: PostDetailProps) => {
+  const dispatch = useAppDispatch();
   const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
-  const [listComment, setListComment] = useState([]);
-  const [postDetailData, setPostDetailData] = useState<Post>(post);
+  const refCommentsListing = useRef<HTMLDivElement | null>(null);
+  const Wallet = React.useContext(WalletContext);
+  const { XPI } = Wallet;
+  const { burnXpi } = useXPI();
+  const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
+  const walletPaths = useAppSelector(getAllWalletPaths);
+
+  const { data, totalCount, fetchNext, hasNext, isFetching } = useInfiniteCommentsToPostIdQuery(
+    {
+      first: 20,
+      orderBy: {
+        direction: OrderDirection.Asc,
+        field: CommentOrderField.UpdatedAt
+      },
+      id: post.id
+    },
+    false
+  );
+
+  const [
+    createCommentTrigger,
+    { isLoading: isLoadingCreatePost, isSuccess: isSuccessCreatePost, isError: isErrorCreatePost }
+  ] = useCreateCommentMutation();
+
+  const upVotePost = (dataItem: PostItem) => {
+    handleBurnForPost(true, dataItem);
+  };
+
+  const downVotePost = (dataItem: PostItem) => {
+    handleBurnForPost(false, dataItem);
+  };
+
+  const handleBurnForPost = async (isUpVote: boolean, post: PostItem) => {
+    try {
+      if (slpBalancesAndUtxos.nonSlpUtxos.length == 0) {
+        throw new Error('Insufficient funds');
+      }
+      const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
+      const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
+      const { hash160, xAddress } = currentWalletPath;
+      const burnType = isUpVote ? BurnType.Up : BurnType.Down;
+      const burnedBy = hash160;
+      const burnForId = post.id;
+      const burnValue = '1';
+      const tipToAddress = post?.postAccount?.address ?? undefined;
+
+      const txHex = await burnXpi(
+        XPI,
+        walletPaths,
+        slpBalancesAndUtxos.nonSlpUtxos,
+        currency.defaultFee,
+        burnType,
+        BurnForType.Post,
+        burnedBy,
+        burnForId,
+        burnValue,
+        tipToAddress
+      );
+
+      const burnCommand: BurnCommand = {
+        txHex,
+        burnType,
+        burnForType: BurnForType.Post,
+        burnedBy,
+        burnForId,
+        burnValue,
+        tipToAddress: xAddress
+      };
+
+      dispatch(burnForUpDownVote(burnCommand));
+    } catch (e) {
+      dispatch(
+        showToast('error', {
+          message: intl.get('post.unableToBurn'),
+          duration: 3
+        })
+      );
+    }
+  };
 
   const CommentContainer = styled.div`
     padding: 0 1rem;
@@ -114,11 +222,6 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       text-align: left;
       border: 0 !important;
     }
-  `;
-
-  const ActionComment = styled.div`
-    margin-left: 12%;
-    font-size: 13px;
   `;
 
   const PostCardDetail = styled.div`
@@ -170,40 +273,61 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     margin-left: 10px;
   `;
 
-  useEffect(() => {
-    const dataListComment = [
-      {
-        name: 'Kensaurus',
-        comment: `I'm so glad I ordered this pizza - it tastes great`
-      },
-      {
-        name: 'Eric Son',
-        comment: 'Wow, this pasta salad is amazing!'
+  const loadMoreComments = () => {
+    if (hasNext && !isFetching) {
+      fetchNext();
+    } else if (hasNext) {
+      fetchNext();
+    }
+  };
+
+  const handleCreateNewComment = async (text: string) => {
+    if (text !== '' || !_.isNil(text)) {
+      const createCommentInput: CreateCommentInput = {
+        commentText: text,
+        commentToId: post.id
+      };
+
+      const params = {
+        orderBy: {
+          direction: OrderDirection.Asc,
+          field: CommentOrderField.UpdatedAt
+        }
+      };
+
+      let patches: PatchCollection;
+      try {
+        const result = await createCommentTrigger({ input: createCommentInput }).unwrap();
+        patches = dispatch(
+          commentsApi.util.updateQueryData(
+            'CommentsToPostId',
+            { id: createCommentInput.commentToId, ...params },
+            draft => {
+              console.log(draft);
+              draft.allCommentsToPostId.edges.unshift({
+                cursor: result.createComment.id,
+                node: {
+                  ...result.createComment
+                }
+              });
+              draft.allCommentsToPostId.totalCount = draft.allCommentsToPostId.totalCount + 1;
+            }
+          )
+        );
+      } catch (error) {
+        const message = intl.get('comment.unableCreateComment');
+        if (patches) {
+          dispatch(commentsApi.util.patchQueryData('CommentsToPostId', params, patches.inversePatches));
+        }
+        dispatch(
+          showToast('error', {
+            message: 'Error',
+            description: message,
+            duration: 3
+          })
+        );
       }
-    ];
-
-    setListComment([...dataListComment]);
-  }, []);
-
-  const onUpVotePost = () => {
-    // let tempPost = postDetailData;
-    // tempPost.upVote ? (tempPost.upVote += 1) : null;
-    // setPostDetailData({ ...tempPost });
-  };
-
-  const onDownVotePost = () => {
-    // let tempPost = postDetailData;
-    // tempPost.upVote ? (tempPost.downVote += 1) : null;
-    // setPostDetailData({ ...tempPost });
-  };
-
-  const onComment = (value: string) => {
-    let objTemp = {
-      name: 'Vince',
-      comment: value
-    };
-    listComment.push(objTemp);
-    setListComment([...listComment]);
+    }
   };
 
   const slug = post.id;
@@ -240,25 +364,34 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           <div className="info-post">
             <img style={{ marginRight: '1rem' }} src={'/images/xpi.svg'} alt="" />
             <div>
-              <h4 style={{ margin: '0' }}>{postDetailData.postAccount.name}</h4>
+              <h4 style={{ margin: '0' }}>{post.postAccount.name}</h4>
             </div>
           </div>
           <div className="func-post">
-            <span>{moment(postDetailData.createdAt).fromNow()}</span>
+            <span>{moment(post.createdAt).fromNow()}</span>
           </div>
         </PostCardDetail>
         <PostContentDetail>
-          {/* <img style={{ marginRight: '5px', width: '100%' }} src={postDetailData?.cover?.upload?.url} alt="" /> */}
-          <p style={{ padding: '0 1rem', margin: '1rem 0' }}>{ReactHtmlParser(postDetailData.content)}</p>
+          <p style={{ padding: '0 1rem', margin: '1rem 0' }}>{ReactHtmlParser(post.content)}</p>
           <div className="reaction-container">
             <div className="reaction-ico">
-              <LikeOutlined onClick={onUpVotePost} />
-              <span style={{ marginLeft: '5px', marginRight: '10px' }}>{Math.floor(Math.random() * 100)}</span>
-              <DislikeOutlined onClick={onDownVotePost} />
-              <span style={{ marginLeft: '5px' }}>{Math.floor(Math.random() * 100)}</span>
+              <IconBurn
+                burnValue={formatBalance(post?.lotusBurnUp ?? 0)}
+                imgUrl="/images/up-ico.svg"
+                key={`list-vertical-upvote-o-${post.id}`}
+                dataItem={post}
+                onClickIcon={() => upVotePost(post)}
+              />
+              <IconBurn
+                burnValue={formatBalance(post?.lotusBurnDown ?? 0)}
+                imgUrl="/images/down-ico.svg"
+                key={`list-vertical-downvote-o-${post.id}`}
+                dataItem={post}
+                onClickIcon={() => downVotePost(post)}
+              />
             </div>
             <div className="reaction-func">
-              <span>{listComment.length}</span>&nbsp;
+              <span>{totalCount}</span>&nbsp;
               <span>Comments</span>&nbsp;
               <UpOutlined />
               {isMobile ? ShareSocialButton : ShareSocialDropdown}
@@ -266,35 +399,27 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           </div>
         </PostContentDetail>
 
-        <CommentContainer>
-          <List
-            itemLayout="vertical"
-            dataSource={listComment}
-            renderItem={item => (
-              <List.Item className="comment-item">
-                <List.Item.Meta
-                  className="comment-item-meta"
-                  avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
-                  title={<a href="https://ant.design">{item.name}</a>}
-                  description={item.comment}
-                />
-                <ActionComment className="action-comment">
-                  <span>Like</span>
-                  <span style={{ margin: '0 1rem' }}>Reply</span>
-                  <span>5mins</span>
-                </ActionComment>
-              </List.Item>
-            )}
-          />
-        </CommentContainer>
         <Search
           className="input-comment"
           placeholder="Input your comment..."
           enterButton="Comment"
           size="large"
           suffix={<DashOutlined />}
-          onSearch={onComment}
+          onSearch={handleCreateNewComment}
         />
+
+        <CommentContainer>
+          <Virtuoso
+            id="list-comment-virtuoso"
+            data={data}
+            style={{ height: '100vh', paddingBottom: '2rem' }}
+            endReached={loadMoreComments}
+            overscan={500}
+            itemContent={(index, item) => {
+              return <CommentListItem index={index} item={item} />;
+            }}
+          />
+        </CommentContainer>
       </StyledContainerPostDetail>
     </>
   );

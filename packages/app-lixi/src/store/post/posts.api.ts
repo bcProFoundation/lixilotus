@@ -1,7 +1,5 @@
 import { EntityState } from '@reduxjs/toolkit';
-import { showToast } from '@store/toast/actions';
-import intl from 'react-intl-universal';
-import { OrderDirection, PageInfo, PostOrderField } from 'src/generated/types.generated';
+import { PageInfo } from 'src/generated/types.generated';
 import { api, PostQuery } from './posts.generated';
 
 export interface PostApiState extends EntityState<PostQuery['post']> {
@@ -21,7 +19,6 @@ const enhancedApi = api.enhanceEndpoints({
         }
         return { queryArgs };
       },
-
       merge(currentCacheData, responseData) {
         currentCacheData.allPosts.edges.push(...responseData.allPosts.edges);
         currentCacheData.allPosts.pageInfo = responseData.allPosts.pageInfo;

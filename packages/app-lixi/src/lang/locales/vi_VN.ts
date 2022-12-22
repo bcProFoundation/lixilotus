@@ -478,5 +478,8 @@ export default {
   'token.inputTokenId': 'Nhập token Id',
   'token.tokenIdNotFound': 'Token Id không tồn tại',
   'token.tokenIdInvalid': 'Token Id không hợp lệ',
-  'token.copyId': 'Token Id đã được sao chép.'
+  'token.copyId': 'Token Id đã được sao chép.',
+
+  /* 17. Comment */
+  'comment.unableCreateComment': 'Không thể tạo bình luận'
 };

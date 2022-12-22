@@ -16,8 +16,10 @@ import burnApi from './api';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 
 function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
-  let patches: PatchCollection;
+  let patches, patch: PatchCollection;
+
   const command = action.payload;
+  const { burnForId: postId } = command;
   let burnValue = _.toNumber(command.burnValue);
 
   try {
@@ -68,6 +70,7 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
     };
     if (patches) {
       yield put(postApi.util.patchQueryData('Posts', params, patches.inversePatches));
+      yield put(postApi.util.patchQueryData('Post', { id: postId }, patch.inversePatches));
     }
   }
 }
