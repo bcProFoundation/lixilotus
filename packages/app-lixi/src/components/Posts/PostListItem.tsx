@@ -178,7 +178,7 @@ const PostListItemContainer = styled(List.Item)`
   border: none;
   &:hover {
     background: #f7f7f7;
-  } 
+  }
 `;
 
 type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
@@ -248,7 +248,7 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
 
   const handlePostClick = () => {
     router.push(`/post/${post.id}`);
-  }
+  };
 
   const upVotePost = (e: React.MouseEvent<HTMLElement>, dataItem: PostItem) => {
     e.preventDefault();
@@ -339,11 +339,7 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
   };
 
   return (
-    <PostListItemContainer
-      key={post.id}
-      ref={ref}
-      onClick={handlePostClick}
-    >
+    <PostListItemContainer key={post.id} ref={ref} onClick={handlePostClick}>
       <CardContainer>
         <CardHeader>
           <InfoCardUser
@@ -359,7 +355,7 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
         <Content>
           <div className="description-post">{ReactHtmlParser(post?.content)}</div>
           {showMore && (
-            <p style={{ textAlign: 'left', color: 'var(--color-primary)' }} onClick={(e) => showMoreHandle(e)}>
+            <p style={{ textAlign: 'left', color: 'var(--color-primary)' }} onClick={e => showMoreHandle(e)}>
               Show more...
             </p>
           )}
@@ -373,14 +369,14 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
             imgUrl="/images/up-ico.svg"
             key={`list-vertical-upvote-o-${item.id}`}
             dataItem={item}
-            onClickIcon={(e) => upVotePost(e, item)}
+            onClickIcon={e => upVotePost(e, item)}
           />
           <IconBurn
             burnValue={formatBalance(post?.lotusBurnDown ?? 0)}
             imgUrl="/images/down-ico.svg"
             key={`list-vertical-downvote-o-${item.id}`}
             dataItem={item}
-            onClickIcon={(e) => downVotePost(e, item)}
+            onClickIcon={e => downVotePost(e, item)}
           />
           {/* TODO: complete next Release */}
           {/* <IconText
@@ -410,7 +406,7 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
       )}
 
       {isCollapseComment && comments.length > 0 && <CommentList comments={comments} />}
-    </PostListItemContainer >
+    </PostListItemContainer>
   );
 };
 
