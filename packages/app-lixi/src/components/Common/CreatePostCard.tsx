@@ -407,53 +407,51 @@ const CreatePostCard = (props: CreatePostCardProp) => {
           maskClosable={false}
         >
           <>
-            <UserCreate>
-              <div className="user-create-post">
-                <img src="/images/xpi.svg" alt="" />
-                <div className="user-info">
-                  <p className="title-user">{selectedAccount.name}</p>
-                  <Button className="btn-select">
-                    Public <GlobalOutlined />
-                  </Button>
-                </div>
-              </div>
-              <EditorLexical onSubmit={value => handleCreateNewPost(value)} />
-            </UserCreate>
+            <Tabs defaultActiveKey="1">
+              <Tabs.TabPane tab="Create" key="create">
+                <UserCreate>
+                  <div className="user-create-post">
+                    <img src="/images/xpi.svg" alt="" />
+                    <div className="user-info">
+                      <p className="title-user">{selectedAccount.name}</p>
+                      <Button className="btn-select">
+                        Public <GlobalOutlined />
+                      </Button>
+                    </div>
+                  </div>
+                  <EditorLexical onSubmit={value => handleCreateNewPost(value)} />
+                </UserCreate>
+              </Tabs.TabPane>
+              <Tabs.TabPane tab="Import" key="import">
+                <form onSubmit={handleSubmit}>
+                  <label>Link to post</label>
+                  <input className="input-import" placeholder="Please type link..." onChange={handleUrlChange} />
+                </form>
+                {!error && social && postId && (
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <h3 style={{ marginTop: '2rem' }}>Post Preview</h3>
+                    <Preview>
+                      <Embed
+                        social={social}
+                        postId={postId}
+                        url={url}
+                        onError={handleOnError}
+                        onLoad={e => handleOnLoad(e, social)}
+                      />
+                    </Preview>
+                    <Button
+                      style={{ marginTop: '1rem', alignSelf: 'end' }}
+                      type="primary"
+                      disabled={importValue ? false : true}
+                      onClick={() => handleCreateNewPost(importValue)}
+                    >
+                      Create Post
+                    </Button>
+                  </div>
+                )}
+              </Tabs.TabPane>
+            </Tabs>
           </>
-          {/* <Tabs defaultActiveKey="1">
-            <Tabs.TabPane tab="Create" key="create">
-              <Editor onSubmitPost={handleSubmitEditor} />
-              <EditorLexical onSubmit={value => handleCreateNewPost(value)} />
-            </Tabs.TabPane>
-            <Tabs.TabPane tab="Import" key="import">
-              <form onSubmit={handleSubmit}>
-                <label>Link to post</label>
-                <input className="input-import" placeholder="Please type link..." onChange={handleUrlChange} />
-              </form>
-              {!error && social && postId && (
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <h3 style={{ marginTop: '2rem' }}>Post Preview</h3>
-                  <Preview>
-                    <Embed
-                      social={social}
-                      postId={postId}
-                      url={url}
-                      onError={handleOnError}
-                      onLoad={e => handleOnLoad(e, social)}
-                    />
-                  </Preview>
-                  <Button
-                    style={{ marginTop: '1rem', alignSelf: 'end' }}
-                    type="primary"
-                    disabled={importValue ? false : true}
-                    onClick={() => handleCreateNewPost(importValue)}
-                  >
-                    Create Post
-                  </Button>
-                </div>
-              )}
-            </Tabs.TabPane>
-          </Tabs> */}
         </Modal>
       </WrapEditor>
     </>
