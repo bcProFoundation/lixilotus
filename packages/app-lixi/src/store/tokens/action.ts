@@ -16,3 +16,6 @@ export const burnForToken = createAction<{ id: string; burnUp: number; burnDown:
 export const burnForTokenSuccess = createAction<{ id: string; burnUp: number; burnDown: number }>(
   'tokens/burnForTokenSuccess'
 );
+export const burnForTokenFailure = createAction<{ id: string; burnUp: number; burnDown: number }>(
+  'tokens/burnForTokenFailure'
+);

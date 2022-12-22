@@ -4,7 +4,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
 import { api as postApi } from '@store/post/posts.api';
 import { showToast } from '@store/toast/actions';
-import { burnForToken, getTokenById } from '@store/tokens';
+import { burnForToken, burnForTokenFailure, getTokenById } from '@store/tokens';
 import * as _ from 'lodash';
 import intl from 'react-intl-universal';
 import { put, select } from 'redux-saga/effects';
@@ -17,14 +17,14 @@ import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 
 function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
   let patches: PatchCollection;
-  try {
-    const command = action.payload;
+  const command = action.payload;
+  let burnValue = _.toNumber(command.burnValue);
 
+  try {
     const dataApi: BurnCommand = {
       ...command
     };
 
-    let burnValue = _.toNumber(command.burnValue);
     if (command.burnForType === BurnForType.Token) {
       const tokenToBurn = yield select(getTokenById(command.burnForId))
       let lotusBurnUp:number = tokenToBurn.lotusBurnUp ?? 0;
@@ -48,6 +48,17 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
     yield put(burnForUpDownVoteSuccess(data));
   } catch (err) {
     const message = (err as Error).message ?? intl.get('post.unableToBurnForPost');
+    if (command.burnForType === BurnForType.Token) {
+      const tokenToBurn = yield select(getTokenById(command.burnForId))
+      let lotusBurnUp:number = tokenToBurn.lotusBurnUp ?? 0;
+      let lotusBurnDown:number = tokenToBurn.lotusBurnDown ?? 0;
+      if (command.burnType == BurnType.Up) {
+        lotusBurnUp = burnValue;
+      } else {
+        lotusBurnDown = burnValue;
+      }
+      yield put(burnForTokenFailure({id: command.burnForId, burnUp: lotusBurnUp, burnDown: lotusBurnDown}))
+    }
     yield put(burnForUpDownVoteFailure(message));
     const params = {
       orderBy: {
