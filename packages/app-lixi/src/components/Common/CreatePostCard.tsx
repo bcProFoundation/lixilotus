@@ -253,6 +253,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
       case 'PostsByPageId':
         return dispatch(
           postApi.util.updateQueryData('PostsByPageId', { ...params, id: pageId }, draft => {
+            console.log(draft);
             draft.allPostsByPageId.edges.unshift({
               cursor: result.createPost.id,
               node: {

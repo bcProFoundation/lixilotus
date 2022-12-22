@@ -6,10 +6,20 @@
  *
  */
 
-import type { EditorConfig, ElementFormatType, LexicalEditor, LexicalNode, NodeKey, Spread } from 'lexical';
+import type {
+  EditorConfig,
+  ElementFormatType,
+  LexicalEditor,
+  LexicalNode,
+  NodeKey,
+  Spread,
+} from 'lexical';
 
-import { BlockWithAlignableContents } from '@lexical/react/LexicalBlockWithAlignableContents';
-import { DecoratorBlockNode, SerializedDecoratorBlockNode } from '@lexical/react/LexicalDecoratorBlockNode';
+import {BlockWithAlignableContents} from '@lexical/react/LexicalBlockWithAlignableContents';
+import {
+  DecoratorBlockNode,
+  SerializedDecoratorBlockNode,
+} from '@lexical/react/LexicalDecoratorBlockNode';
 import * as React from 'react';
 
 type FigmaComponentProps = Readonly<{
@@ -22,9 +32,17 @@ type FigmaComponentProps = Readonly<{
   documentID: string;
 }>;
 
-function FigmaComponent({ className, format, nodeKey, documentID }: FigmaComponentProps) {
+function FigmaComponent({
+  className,
+  format,
+  nodeKey,
+  documentID,
+}: FigmaComponentProps) {
   return (
-    <BlockWithAlignableContents className={className} format={format} nodeKey={nodeKey}>
+    <BlockWithAlignableContents
+      className={className}
+      format={format}
+      nodeKey={nodeKey}>
       <iframe
         width="560"
         height="315"
@@ -67,7 +85,7 @@ export class FigmaNode extends DecoratorBlockNode {
       ...super.exportJSON(),
       documentID: this.__id,
       type: 'figma',
-      version: 1
+      version: 1,
     };
   }
 
@@ -84,7 +102,10 @@ export class FigmaNode extends DecoratorBlockNode {
     return this.__id;
   }
 
-  getTextContent(_includeInert?: boolean | undefined, _includeDirectionless?: false | undefined): string {
+  getTextContent(
+    _includeInert?: boolean | undefined,
+    _includeDirectionless?: false | undefined,
+  ): string {
     return `https://www.figma.com/file/${this.__id}`;
   }
 
@@ -92,10 +113,15 @@ export class FigmaNode extends DecoratorBlockNode {
     const embedBlockTheme = config.theme.embedBlock || {};
     const className = {
       base: embedBlockTheme.base || '',
-      focus: embedBlockTheme.focus || ''
+      focus: embedBlockTheme.focus || '',
     };
     return (
-      <FigmaComponent className={className} format={this.__format} nodeKey={this.getKey()} documentID={this.__id} />
+      <FigmaComponent
+        className={className}
+        format={this.__format}
+        nodeKey={this.getKey()}
+        documentID={this.__id}
+      />
     );
   }
 
@@ -108,6 +134,8 @@ export function $createFigmaNode(documentID: string): FigmaNode {
   return new FigmaNode(documentID);
 }
 
-export function $isFigmaNode(node: FigmaNode | LexicalNode | null | undefined): node is FigmaNode {
+export function $isFigmaNode(
+  node: FigmaNode | LexicalNode | null | undefined,
+): node is FigmaNode {
   return node instanceof FigmaNode;
 }

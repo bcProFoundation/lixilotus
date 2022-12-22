@@ -6,7 +6,7 @@
  *
  */
 
-import { AutoLinkPlugin } from '@lexical/react/LexicalAutoLinkPlugin';
+import {AutoLinkPlugin} from '@lexical/react/LexicalAutoLinkPlugin';
 import * as React from 'react';
 
 const URL_MATCHER =
@@ -26,7 +26,7 @@ const MATCHERS = [
       index: match.index,
       length: fullMatch.length,
       text: fullMatch,
-      url: fullMatch.startsWith('http') ? fullMatch : `https://${fullMatch}`
+      url: fullMatch.startsWith('http') ? fullMatch : `https://${fullMatch}`,
     };
   },
   (text: string) => {
@@ -36,10 +36,10 @@ const MATCHERS = [
         index: match.index,
         length: match[0].length,
         text: match[0],
-        url: `mailto:${match[0]}`
+        url: `mailto:${match[0]}`,
       }
     );
-  }
+  },
 ];
 
 export default function LexicalAutoLinkPlugin(): JSX.Element {

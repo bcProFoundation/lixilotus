@@ -19,7 +19,11 @@ export default [
     aliases: ['grinning'],
     tags: ['smile', 'happy'],
     unicode_version: '6.1',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😃',
@@ -28,7 +32,11 @@ export default [
     aliases: ['smiley'],
     tags: ['happy', 'joy', 'haha'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😄',
@@ -37,7 +45,11 @@ export default [
     aliases: ['smile'],
     tags: ['happy', 'joy', 'laugh', 'pleased'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😁',
@@ -46,7 +58,11 @@ export default [
     aliases: ['grin'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😆',
@@ -55,7 +71,11 @@ export default [
     aliases: ['laughing', 'satisfied'],
     tags: ['happy', 'haha'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😅',
@@ -64,7 +84,11 @@ export default [
     aliases: ['sweat_smile'],
     tags: ['hot'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🤣',
@@ -73,7 +97,11 @@ export default [
     aliases: ['rofl'],
     tags: ['lol', 'laughing'],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '😂',
@@ -82,7 +110,11 @@ export default [
     aliases: ['joy'],
     tags: ['tears'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🙂',
@@ -91,7 +123,11 @@ export default [
     aliases: ['slightly_smiling_face'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🙃',
@@ -100,7 +136,11 @@ export default [
     aliases: ['upside_down_face'],
     tags: [],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '😉',
@@ -109,7 +149,11 @@ export default [
     aliases: ['wink'],
     tags: ['flirt'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😊',
@@ -118,7 +162,11 @@ export default [
     aliases: ['blush'],
     tags: ['proud'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😇',
@@ -127,7 +175,11 @@ export default [
     aliases: ['innocent'],
     tags: ['angel'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🥰',
@@ -136,7 +188,11 @@ export default [
     aliases: ['smiling_face_with_three_hearts'],
     tags: ['love'],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '😍',
@@ -145,7 +201,11 @@ export default [
     aliases: ['heart_eyes'],
     tags: ['love', 'crush'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🤩',
@@ -154,7 +214,11 @@ export default [
     aliases: ['star_struck'],
     tags: ['eyes'],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '😘',
@@ -163,7 +227,11 @@ export default [
     aliases: ['kissing_heart'],
     tags: ['flirt'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😗',
@@ -172,7 +240,11 @@ export default [
     aliases: ['kissing'],
     tags: [],
     unicode_version: '6.1',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '☺️',
@@ -181,7 +253,11 @@ export default [
     aliases: ['relaxed'],
     tags: ['blush', 'pleased'],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😚',
@@ -190,7 +266,11 @@ export default [
     aliases: ['kissing_closed_eyes'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😙',
@@ -199,7 +279,11 @@ export default [
     aliases: ['kissing_smiling_eyes'],
     tags: [],
     unicode_version: '6.1',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🥲',
@@ -208,7 +292,11 @@ export default [
     aliases: ['smiling_face_with_tear'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '😋',
@@ -217,7 +305,11 @@ export default [
     aliases: ['yum'],
     tags: ['tongue', 'lick'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😛',
@@ -226,7 +318,11 @@ export default [
     aliases: ['stuck_out_tongue'],
     tags: [],
     unicode_version: '6.1',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😜',
@@ -235,7 +331,11 @@ export default [
     aliases: ['stuck_out_tongue_winking_eye'],
     tags: ['prank', 'silly'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🤪',
@@ -244,7 +344,11 @@ export default [
     aliases: ['zany_face'],
     tags: ['goofy', 'wacky'],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '😝',
@@ -253,7 +357,11 @@ export default [
     aliases: ['stuck_out_tongue_closed_eyes'],
     tags: ['prank'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🤑',
@@ -262,7 +370,11 @@ export default [
     aliases: ['money_mouth_face'],
     tags: ['rich'],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🤗',
@@ -271,7 +383,11 @@ export default [
     aliases: ['hugs'],
     tags: [],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🤭',
@@ -280,7 +396,11 @@ export default [
     aliases: ['hand_over_mouth'],
     tags: ['quiet', 'whoops'],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🤫',
@@ -289,7 +409,11 @@ export default [
     aliases: ['shushing_face'],
     tags: ['silence', 'quiet'],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🤔',
@@ -298,7 +422,11 @@ export default [
     aliases: ['thinking'],
     tags: [],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🤐',
@@ -307,7 +435,11 @@ export default [
     aliases: ['zipper_mouth_face'],
     tags: ['silence', 'hush'],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🤨',
@@ -316,7 +448,11 @@ export default [
     aliases: ['raised_eyebrow'],
     tags: ['suspicious'],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '😐',
@@ -325,7 +461,11 @@ export default [
     aliases: ['neutral_face'],
     tags: ['meh'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😑',
@@ -334,7 +474,11 @@ export default [
     aliases: ['expressionless'],
     tags: [],
     unicode_version: '6.1',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😶',
@@ -343,7 +487,11 @@ export default [
     aliases: ['no_mouth'],
     tags: ['mute', 'silence'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😶‍🌫️',
@@ -352,7 +500,11 @@ export default [
     aliases: ['face_in_clouds'],
     tags: [],
     unicode_version: '13.1',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '😏',
@@ -361,7 +513,11 @@ export default [
     aliases: ['smirk'],
     tags: ['smug'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😒',
@@ -370,7 +526,11 @@ export default [
     aliases: ['unamused'],
     tags: ['meh'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🙄',
@@ -379,7 +539,11 @@ export default [
     aliases: ['roll_eyes'],
     tags: [],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '😬',
@@ -388,7 +552,11 @@ export default [
     aliases: ['grimacing'],
     tags: [],
     unicode_version: '6.1',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😮‍💨',
@@ -397,7 +565,11 @@ export default [
     aliases: ['face_exhaling'],
     tags: [],
     unicode_version: '13.1',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🤥',
@@ -406,7 +578,11 @@ export default [
     aliases: ['lying_face'],
     tags: ['liar'],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '😌',
@@ -415,7 +591,11 @@ export default [
     aliases: ['relieved'],
     tags: ['whew'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😔',
@@ -424,7 +604,11 @@ export default [
     aliases: ['pensive'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😪',
@@ -433,7 +617,11 @@ export default [
     aliases: ['sleepy'],
     tags: ['tired'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🤤',
@@ -442,7 +630,11 @@ export default [
     aliases: ['drooling_face'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '😴',
@@ -451,7 +643,11 @@ export default [
     aliases: ['sleeping'],
     tags: ['zzz'],
     unicode_version: '6.1',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😷',
@@ -460,7 +656,11 @@ export default [
     aliases: ['mask'],
     tags: ['sick', 'ill'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🤒',
@@ -469,7 +669,11 @@ export default [
     aliases: ['face_with_thermometer'],
     tags: ['sick'],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🤕',
@@ -478,7 +682,11 @@ export default [
     aliases: ['face_with_head_bandage'],
     tags: ['hurt'],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🤢',
@@ -487,7 +695,11 @@ export default [
     aliases: ['nauseated_face'],
     tags: ['sick', 'barf', 'disgusted'],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🤮',
@@ -496,7 +708,11 @@ export default [
     aliases: ['vomiting_face'],
     tags: ['barf', 'sick'],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🤧',
@@ -505,7 +721,11 @@ export default [
     aliases: ['sneezing_face'],
     tags: ['achoo', 'sick'],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🥵',
@@ -514,7 +734,11 @@ export default [
     aliases: ['hot_face'],
     tags: ['heat', 'sweating'],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🥶',
@@ -523,7 +747,11 @@ export default [
     aliases: ['cold_face'],
     tags: ['freezing', 'ice'],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🥴',
@@ -532,7 +760,11 @@ export default [
     aliases: ['woozy_face'],
     tags: ['groggy'],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '😵',
@@ -541,7 +773,11 @@ export default [
     aliases: ['dizzy_face'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😵‍💫',
@@ -550,7 +786,11 @@ export default [
     aliases: ['face_with_spiral_eyes'],
     tags: [],
     unicode_version: '13.1',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🤯',
@@ -559,7 +799,11 @@ export default [
     aliases: ['exploding_head'],
     tags: ['mind', 'blown'],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🤠',
@@ -568,7 +812,11 @@ export default [
     aliases: ['cowboy_hat_face'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🥳',
@@ -577,7 +825,11 @@ export default [
     aliases: ['partying_face'],
     tags: ['celebration', 'birthday'],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🥸',
@@ -586,7 +838,11 @@ export default [
     aliases: ['disguised_face'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '😎',
@@ -595,7 +851,11 @@ export default [
     aliases: ['sunglasses'],
     tags: ['cool'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🤓',
@@ -604,7 +864,11 @@ export default [
     aliases: ['nerd_face'],
     tags: ['geek', 'glasses'],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🧐',
@@ -613,7 +877,11 @@ export default [
     aliases: ['monocle_face'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '😕',
@@ -622,7 +890,11 @@ export default [
     aliases: ['confused'],
     tags: [],
     unicode_version: '6.1',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😟',
@@ -631,7 +903,11 @@ export default [
     aliases: ['worried'],
     tags: ['nervous'],
     unicode_version: '6.1',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🙁',
@@ -640,7 +916,11 @@ export default [
     aliases: ['slightly_frowning_face'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '☹️',
@@ -649,7 +929,11 @@ export default [
     aliases: ['frowning_face'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '😮',
@@ -658,7 +942,11 @@ export default [
     aliases: ['open_mouth'],
     tags: ['surprise', 'impressed', 'wow'],
     unicode_version: '6.1',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😯',
@@ -667,7 +955,11 @@ export default [
     aliases: ['hushed'],
     tags: ['silence', 'speechless'],
     unicode_version: '6.1',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😲',
@@ -676,7 +968,11 @@ export default [
     aliases: ['astonished'],
     tags: ['amazed', 'gasp'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😳',
@@ -685,7 +981,11 @@ export default [
     aliases: ['flushed'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🥺',
@@ -694,7 +994,11 @@ export default [
     aliases: ['pleading_face'],
     tags: ['puppy', 'eyes'],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '😦',
@@ -703,7 +1007,11 @@ export default [
     aliases: ['frowning'],
     tags: [],
     unicode_version: '6.1',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😧',
@@ -712,7 +1020,11 @@ export default [
     aliases: ['anguished'],
     tags: ['stunned'],
     unicode_version: '6.1',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😨',
@@ -721,7 +1033,11 @@ export default [
     aliases: ['fearful'],
     tags: ['scared', 'shocked', 'oops'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😰',
@@ -730,7 +1046,11 @@ export default [
     aliases: ['cold_sweat'],
     tags: ['nervous'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😥',
@@ -739,7 +1059,11 @@ export default [
     aliases: ['disappointed_relieved'],
     tags: ['phew', 'sweat', 'nervous'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😢',
@@ -748,7 +1072,11 @@ export default [
     aliases: ['cry'],
     tags: ['sad', 'tear'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😭',
@@ -757,7 +1085,11 @@ export default [
     aliases: ['sob'],
     tags: ['sad', 'cry', 'bawling'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😱',
@@ -766,7 +1098,11 @@ export default [
     aliases: ['scream'],
     tags: ['horror', 'shocked'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😖',
@@ -775,7 +1111,11 @@ export default [
     aliases: ['confounded'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😣',
@@ -784,7 +1124,11 @@ export default [
     aliases: ['persevere'],
     tags: ['struggling'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😞',
@@ -793,7 +1137,11 @@ export default [
     aliases: ['disappointed'],
     tags: ['sad'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😓',
@@ -802,7 +1150,11 @@ export default [
     aliases: ['sweat'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😩',
@@ -811,7 +1163,11 @@ export default [
     aliases: ['weary'],
     tags: ['tired'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😫',
@@ -820,7 +1176,11 @@ export default [
     aliases: ['tired_face'],
     tags: ['upset', 'whine'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🥱',
@@ -829,7 +1189,11 @@ export default [
     aliases: ['yawning_face'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '😤',
@@ -838,7 +1202,11 @@ export default [
     aliases: ['triumph'],
     tags: ['smug'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😡',
@@ -847,7 +1215,11 @@ export default [
     aliases: ['rage', 'pout'],
     tags: ['angry'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😠',
@@ -856,7 +1228,11 @@ export default [
     aliases: ['angry'],
     tags: ['mad', 'annoyed'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🤬',
@@ -865,7 +1241,11 @@ export default [
     aliases: ['cursing_face'],
     tags: ['foul'],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '😈',
@@ -874,7 +1254,11 @@ export default [
     aliases: ['smiling_imp'],
     tags: ['devil', 'evil', 'horns'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '👿',
@@ -883,7 +1267,11 @@ export default [
     aliases: ['imp'],
     tags: ['angry', 'devil', 'evil', 'horns'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💀',
@@ -892,7 +1280,11 @@ export default [
     aliases: ['skull'],
     tags: ['dead', 'danger', 'poison'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '☠️',
@@ -901,7 +1293,11 @@ export default [
     aliases: ['skull_and_crossbones'],
     tags: ['danger', 'pirate'],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '💩',
@@ -910,7 +1306,11 @@ export default [
     aliases: ['hankey', 'poop', 'shit'],
     tags: ['crap'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🤡',
@@ -919,7 +1319,11 @@ export default [
     aliases: ['clown_face'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '👹',
@@ -928,7 +1332,11 @@ export default [
     aliases: ['japanese_ogre'],
     tags: ['monster'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '👺',
@@ -937,7 +1345,11 @@ export default [
     aliases: ['japanese_goblin'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '👻',
@@ -946,7 +1358,11 @@ export default [
     aliases: ['ghost'],
     tags: ['halloween'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '👽',
@@ -955,7 +1371,11 @@ export default [
     aliases: ['alien'],
     tags: ['ufo'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '👾',
@@ -964,7 +1384,11 @@ export default [
     aliases: ['space_invader'],
     tags: ['game', 'retro'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🤖',
@@ -973,7 +1397,11 @@ export default [
     aliases: ['robot'],
     tags: [],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '😺',
@@ -982,7 +1410,11 @@ export default [
     aliases: ['smiley_cat'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😸',
@@ -991,7 +1423,11 @@ export default [
     aliases: ['smile_cat'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😹',
@@ -1000,7 +1436,11 @@ export default [
     aliases: ['joy_cat'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😻',
@@ -1009,7 +1449,11 @@ export default [
     aliases: ['heart_eyes_cat'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😼',
@@ -1018,7 +1462,11 @@ export default [
     aliases: ['smirk_cat'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😽',
@@ -1027,7 +1475,11 @@ export default [
     aliases: ['kissing_cat'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🙀',
@@ -1036,7 +1488,11 @@ export default [
     aliases: ['scream_cat'],
     tags: ['horror'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😿',
@@ -1045,7 +1501,11 @@ export default [
     aliases: ['crying_cat_face'],
     tags: ['sad', 'tear'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '😾',
@@ -1054,7 +1514,11 @@ export default [
     aliases: ['pouting_cat'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🙈',
@@ -1063,7 +1527,11 @@ export default [
     aliases: ['see_no_evil'],
     tags: ['monkey', 'blind', 'ignore'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🙉',
@@ -1072,7 +1540,11 @@ export default [
     aliases: ['hear_no_evil'],
     tags: ['monkey', 'deaf'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🙊',
@@ -1081,7 +1553,11 @@ export default [
     aliases: ['speak_no_evil'],
     tags: ['monkey', 'mute', 'hush'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💋',
@@ -1090,7 +1566,11 @@ export default [
     aliases: ['kiss'],
     tags: ['lipstick'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💌',
@@ -1099,7 +1579,11 @@ export default [
     aliases: ['love_letter'],
     tags: ['email', 'envelope'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💘',
@@ -1108,7 +1592,11 @@ export default [
     aliases: ['cupid'],
     tags: ['love', 'heart'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💝',
@@ -1117,7 +1605,11 @@ export default [
     aliases: ['gift_heart'],
     tags: ['chocolates'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💖',
@@ -1126,7 +1618,11 @@ export default [
     aliases: ['sparkling_heart'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💗',
@@ -1135,7 +1631,11 @@ export default [
     aliases: ['heartpulse'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💓',
@@ -1144,7 +1644,11 @@ export default [
     aliases: ['heartbeat'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💞',
@@ -1153,7 +1657,11 @@ export default [
     aliases: ['revolving_hearts'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💕',
@@ -1162,7 +1670,11 @@ export default [
     aliases: ['two_hearts'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💟',
@@ -1171,7 +1683,11 @@ export default [
     aliases: ['heart_decoration'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '❣️',
@@ -1180,7 +1696,11 @@ export default [
     aliases: ['heavy_heart_exclamation'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '💔',
@@ -1189,7 +1709,11 @@ export default [
     aliases: ['broken_heart'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '❤️‍🔥',
@@ -1198,7 +1722,11 @@ export default [
     aliases: ['heart_on_fire'],
     tags: [],
     unicode_version: '13.1',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '❤️‍🩹',
@@ -1207,7 +1735,11 @@ export default [
     aliases: ['mending_heart'],
     tags: [],
     unicode_version: '13.1',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '❤️',
@@ -1216,7 +1748,11 @@ export default [
     aliases: ['heart'],
     tags: ['love'],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🧡',
@@ -1225,7 +1761,11 @@ export default [
     aliases: ['orange_heart'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '💛',
@@ -1234,7 +1774,11 @@ export default [
     aliases: ['yellow_heart'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💚',
@@ -1243,7 +1787,11 @@ export default [
     aliases: ['green_heart'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💙',
@@ -1252,7 +1800,11 @@ export default [
     aliases: ['blue_heart'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💜',
@@ -1261,7 +1813,11 @@ export default [
     aliases: ['purple_heart'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🤎',
@@ -1270,7 +1826,11 @@ export default [
     aliases: ['brown_heart'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🖤',
@@ -1279,7 +1839,11 @@ export default [
     aliases: ['black_heart'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🤍',
@@ -1288,7 +1852,11 @@ export default [
     aliases: ['white_heart'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '💯',
@@ -1297,7 +1865,11 @@ export default [
     aliases: ['100'],
     tags: ['score', 'perfect'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💢',
@@ -1306,7 +1878,11 @@ export default [
     aliases: ['anger'],
     tags: ['angry'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💥',
@@ -1315,7 +1891,11 @@ export default [
     aliases: ['boom', 'collision'],
     tags: ['explode'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💫',
@@ -1324,7 +1904,11 @@ export default [
     aliases: ['dizzy'],
     tags: ['star'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💦',
@@ -1333,7 +1917,11 @@ export default [
     aliases: ['sweat_drops'],
     tags: ['water', 'workout'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💨',
@@ -1342,7 +1930,11 @@ export default [
     aliases: ['dash'],
     tags: ['wind', 'blow', 'fast'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕳️',
@@ -1351,7 +1943,11 @@ export default [
     aliases: ['hole'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '💣',
@@ -1360,7 +1956,11 @@ export default [
     aliases: ['bomb'],
     tags: ['boom'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💬',
@@ -1369,7 +1969,11 @@ export default [
     aliases: ['speech_balloon'],
     tags: ['comment'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '👁️‍🗨️',
@@ -1378,7 +1982,11 @@ export default [
     aliases: ['eye_speech_bubble'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🗨️',
@@ -1387,7 +1995,11 @@ export default [
     aliases: ['left_speech_bubble'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🗯️',
@@ -1396,7 +2008,11 @@ export default [
     aliases: ['right_anger_bubble'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '💭',
@@ -1405,7 +2021,11 @@ export default [
     aliases: ['thought_balloon'],
     tags: ['thinking'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💤',
@@ -1414,7 +2034,11 @@ export default [
     aliases: ['zzz'],
     tags: ['sleeping'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '👋',
@@ -1424,7 +2048,11 @@ export default [
     tags: ['goodbye'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤚',
@@ -1434,7 +2062,11 @@ export default [
     tags: [],
     unicode_version: '9.0',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🖐️',
@@ -1444,7 +2076,11 @@ export default [
     tags: [],
     unicode_version: '7.0',
     ios_version: '9.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '✋',
@@ -1454,7 +2090,11 @@ export default [
     tags: ['highfive', 'stop'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🖖',
@@ -1464,7 +2104,11 @@ export default [
     tags: ['prosper', 'spock'],
     unicode_version: '7.0',
     ios_version: '8.3',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👌',
@@ -1474,7 +2118,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤌',
@@ -1484,7 +2132,11 @@ export default [
     tags: [],
     unicode_version: '13.0',
     ios_version: '14.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤏',
@@ -1494,7 +2146,11 @@ export default [
     tags: [],
     unicode_version: '12.0',
     ios_version: '13.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '✌️',
@@ -1504,7 +2160,11 @@ export default [
     tags: ['victory', 'peace'],
     unicode_version: '',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤞',
@@ -1514,7 +2174,11 @@ export default [
     tags: ['luck', 'hopeful'],
     unicode_version: '9.0',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤟',
@@ -1524,7 +2188,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤘',
@@ -1534,7 +2202,11 @@ export default [
     tags: [],
     unicode_version: '8.0',
     ios_version: '9.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤙',
@@ -1544,7 +2216,11 @@ export default [
     tags: [],
     unicode_version: '9.0',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👈',
@@ -1554,7 +2230,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👉',
@@ -1564,7 +2244,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👆',
@@ -1574,7 +2258,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🖕',
@@ -1584,7 +2272,11 @@ export default [
     tags: [],
     unicode_version: '7.0',
     ios_version: '9.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👇',
@@ -1594,7 +2286,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '☝️',
@@ -1604,7 +2300,11 @@ export default [
     tags: [],
     unicode_version: '',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👍',
@@ -1614,7 +2314,11 @@ export default [
     tags: ['approve', 'ok'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👎',
@@ -1624,7 +2328,11 @@ export default [
     tags: ['disapprove', 'bury'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '✊',
@@ -1634,7 +2342,11 @@ export default [
     tags: ['power'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👊',
@@ -1644,7 +2356,11 @@ export default [
     tags: ['attack'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤛',
@@ -1654,7 +2370,11 @@ export default [
     tags: [],
     unicode_version: '9.0',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤜',
@@ -1664,7 +2384,11 @@ export default [
     tags: [],
     unicode_version: '9.0',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👏',
@@ -1674,7 +2398,11 @@ export default [
     tags: ['praise', 'applause'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🙌',
@@ -1684,7 +2412,11 @@ export default [
     tags: ['hooray'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👐',
@@ -1694,7 +2426,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤲',
@@ -1704,7 +2440,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤝',
@@ -1713,7 +2453,11 @@ export default [
     aliases: ['handshake'],
     tags: ['deal'],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🙏',
@@ -1723,7 +2467,11 @@ export default [
     tags: ['please', 'hope', 'wish'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '✍️',
@@ -1733,7 +2481,11 @@ export default [
     tags: [],
     unicode_version: '',
     ios_version: '9.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '💅',
@@ -1743,7 +2495,11 @@ export default [
     tags: ['beauty', 'manicure'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤳',
@@ -1753,7 +2509,11 @@ export default [
     tags: [],
     unicode_version: '9.0',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '💪',
@@ -1763,7 +2523,11 @@ export default [
     tags: ['flex', 'bicep', 'strong', 'workout'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🦾',
@@ -1772,7 +2536,11 @@ export default [
     aliases: ['mechanical_arm'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🦿',
@@ -1781,7 +2549,11 @@ export default [
     aliases: ['mechanical_leg'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🦵',
@@ -1791,7 +2563,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🦶',
@@ -1801,7 +2577,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👂',
@@ -1811,7 +2591,11 @@ export default [
     tags: ['hear', 'sound', 'listen'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🦻',
@@ -1821,7 +2605,11 @@ export default [
     tags: [],
     unicode_version: '12.0',
     ios_version: '13.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👃',
@@ -1831,7 +2619,11 @@ export default [
     tags: ['smell'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧠',
@@ -1840,7 +2632,11 @@ export default [
     aliases: ['brain'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🫀',
@@ -1849,7 +2645,11 @@ export default [
     aliases: ['anatomical_heart'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🫁',
@@ -1858,7 +2658,11 @@ export default [
     aliases: ['lungs'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🦷',
@@ -1867,7 +2671,11 @@ export default [
     aliases: ['tooth'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🦴',
@@ -1876,7 +2684,11 @@ export default [
     aliases: ['bone'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '👀',
@@ -1885,7 +2697,11 @@ export default [
     aliases: ['eyes'],
     tags: ['look', 'see', 'watch'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '👁️',
@@ -1894,7 +2710,11 @@ export default [
     aliases: ['eye'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '👅',
@@ -1903,7 +2723,11 @@ export default [
     aliases: ['tongue'],
     tags: ['taste'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '👄',
@@ -1912,7 +2736,11 @@ export default [
     aliases: ['lips'],
     tags: ['kiss'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '👶',
@@ -1922,7 +2750,11 @@ export default [
     tags: ['child', 'newborn'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧒',
@@ -1932,7 +2764,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👦',
@@ -1942,7 +2778,11 @@ export default [
     tags: ['child'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👧',
@@ -1952,7 +2792,11 @@ export default [
     tags: ['child'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧑',
@@ -1962,7 +2806,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👱',
@@ -1972,7 +2820,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👨',
@@ -1982,7 +2834,11 @@ export default [
     tags: ['mustache', 'father', 'dad'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧔',
@@ -1992,7 +2848,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧔‍♂️',
@@ -2002,7 +2862,11 @@ export default [
     tags: [],
     unicode_version: '13.1',
     ios_version: '14.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧔‍♀️',
@@ -2012,7 +2876,11 @@ export default [
     tags: [],
     unicode_version: '13.1',
     ios_version: '14.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👨‍🦰',
@@ -2022,7 +2890,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👨‍🦱',
@@ -2032,7 +2904,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👨‍🦳',
@@ -2042,7 +2918,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👨‍🦲',
@@ -2052,7 +2932,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩',
@@ -2062,7 +2946,11 @@ export default [
     tags: ['girls'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩‍🦰',
@@ -2072,7 +2960,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧑‍🦰',
@@ -2082,7 +2974,11 @@ export default [
     tags: [],
     unicode_version: '12.1',
     ios_version: '13.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩‍🦱',
@@ -2092,7 +2988,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧑‍🦱',
@@ -2102,7 +3002,11 @@ export default [
     tags: [],
     unicode_version: '12.1',
     ios_version: '13.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩‍🦳',
@@ -2112,7 +3016,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧑‍🦳',
@@ -2122,7 +3030,11 @@ export default [
     tags: [],
     unicode_version: '12.1',
     ios_version: '13.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩‍🦲',
@@ -2132,7 +3044,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧑‍🦲',
@@ -2142,7 +3058,11 @@ export default [
     tags: [],
     unicode_version: '12.1',
     ios_version: '13.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👱‍♀️',
@@ -2152,7 +3072,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '10.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👱‍♂️',
@@ -2162,7 +3086,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧓',
@@ -2172,7 +3100,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👴',
@@ -2182,7 +3114,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👵',
@@ -2192,7 +3128,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🙍',
@@ -2202,7 +3142,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🙍‍♂️',
@@ -2212,7 +3156,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '10.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🙍‍♀️',
@@ -2222,7 +3170,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🙎',
@@ -2232,7 +3184,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🙎‍♂️',
@@ -2242,7 +3198,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '10.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🙎‍♀️',
@@ -2252,7 +3212,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🙅',
@@ -2262,7 +3226,11 @@ export default [
     tags: ['stop', 'halt', 'denied'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🙅‍♂️',
@@ -2272,7 +3240,11 @@ export default [
     tags: ['stop', 'halt', 'denied'],
     unicode_version: '6.0',
     ios_version: '10.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🙅‍♀️',
@@ -2282,7 +3254,11 @@ export default [
     tags: ['stop', 'halt', 'denied'],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🙆',
@@ -2292,7 +3268,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🙆‍♂️',
@@ -2302,7 +3282,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '10.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🙆‍♀️',
@@ -2312,7 +3296,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '💁',
@@ -2322,7 +3310,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '💁‍♂️',
@@ -2332,7 +3324,11 @@ export default [
     tags: ['information'],
     unicode_version: '6.0',
     ios_version: '10.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '💁‍♀️',
@@ -2342,7 +3338,11 @@ export default [
     tags: ['information'],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🙋',
@@ -2352,7 +3352,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🙋‍♂️',
@@ -2362,7 +3366,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '10.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🙋‍♀️',
@@ -2372,7 +3380,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧏',
@@ -2382,7 +3394,11 @@ export default [
     tags: [],
     unicode_version: '12.0',
     ios_version: '13.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧏‍♂️',
@@ -2392,7 +3408,11 @@ export default [
     tags: [],
     unicode_version: '12.0',
     ios_version: '13.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧏‍♀️',
@@ -2402,7 +3422,11 @@ export default [
     tags: [],
     unicode_version: '12.0',
     ios_version: '13.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🙇',
@@ -2412,7 +3436,11 @@ export default [
     tags: ['respect', 'thanks'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🙇‍♂️',
@@ -2422,7 +3450,11 @@ export default [
     tags: ['respect', 'thanks'],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🙇‍♀️',
@@ -2432,7 +3464,11 @@ export default [
     tags: ['respect', 'thanks'],
     unicode_version: '6.0',
     ios_version: '10.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤦',
@@ -2442,7 +3478,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤦‍♂️',
@@ -2452,7 +3492,11 @@ export default [
     tags: [],
     unicode_version: '9.0',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤦‍♀️',
@@ -2462,7 +3506,11 @@ export default [
     tags: [],
     unicode_version: '9.0',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤷',
@@ -2472,7 +3520,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤷‍♂️',
@@ -2482,7 +3534,11 @@ export default [
     tags: [],
     unicode_version: '9.0',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤷‍♀️',
@@ -2492,7 +3548,11 @@ export default [
     tags: [],
     unicode_version: '9.0',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧑‍⚕️',
@@ -2502,7 +3562,11 @@ export default [
     tags: [],
     unicode_version: '12.1',
     ios_version: '13.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👨‍⚕️',
@@ -2512,7 +3576,11 @@ export default [
     tags: ['doctor', 'nurse'],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩‍⚕️',
@@ -2522,7 +3590,11 @@ export default [
     tags: ['doctor', 'nurse'],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧑‍🎓',
@@ -2532,7 +3604,11 @@ export default [
     tags: [],
     unicode_version: '12.1',
     ios_version: '13.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👨‍🎓',
@@ -2542,7 +3618,11 @@ export default [
     tags: ['graduation'],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩‍🎓',
@@ -2552,7 +3632,11 @@ export default [
     tags: ['graduation'],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧑‍🏫',
@@ -2562,7 +3646,11 @@ export default [
     tags: [],
     unicode_version: '12.1',
     ios_version: '13.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👨‍🏫',
@@ -2572,7 +3660,11 @@ export default [
     tags: ['school', 'professor'],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩‍🏫',
@@ -2582,7 +3674,11 @@ export default [
     tags: ['school', 'professor'],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧑‍⚖️',
@@ -2592,7 +3688,11 @@ export default [
     tags: [],
     unicode_version: '12.1',
     ios_version: '13.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👨‍⚖️',
@@ -2602,7 +3702,11 @@ export default [
     tags: ['justice'],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩‍⚖️',
@@ -2612,7 +3716,11 @@ export default [
     tags: ['justice'],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧑‍🌾',
@@ -2622,7 +3730,11 @@ export default [
     tags: [],
     unicode_version: '12.1',
     ios_version: '13.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👨‍🌾',
@@ -2632,7 +3744,11 @@ export default [
     tags: [],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩‍🌾',
@@ -2642,7 +3758,11 @@ export default [
     tags: [],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧑‍🍳',
@@ -2652,7 +3772,11 @@ export default [
     tags: [],
     unicode_version: '12.1',
     ios_version: '13.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👨‍🍳',
@@ -2662,7 +3786,11 @@ export default [
     tags: ['chef'],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩‍🍳',
@@ -2672,7 +3800,11 @@ export default [
     tags: ['chef'],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧑‍🔧',
@@ -2682,7 +3814,11 @@ export default [
     tags: [],
     unicode_version: '12.1',
     ios_version: '13.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👨‍🔧',
@@ -2692,7 +3828,11 @@ export default [
     tags: [],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩‍🔧',
@@ -2702,7 +3842,11 @@ export default [
     tags: [],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧑‍🏭',
@@ -2712,7 +3856,11 @@ export default [
     tags: [],
     unicode_version: '12.1',
     ios_version: '13.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👨‍🏭',
@@ -2722,7 +3870,11 @@ export default [
     tags: [],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩‍🏭',
@@ -2732,7 +3884,11 @@ export default [
     tags: [],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧑‍💼',
@@ -2742,7 +3898,11 @@ export default [
     tags: [],
     unicode_version: '12.1',
     ios_version: '13.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👨‍💼',
@@ -2752,7 +3912,11 @@ export default [
     tags: ['business'],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩‍💼',
@@ -2762,7 +3926,11 @@ export default [
     tags: ['business'],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧑‍🔬',
@@ -2772,7 +3940,11 @@ export default [
     tags: [],
     unicode_version: '12.1',
     ios_version: '13.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👨‍🔬',
@@ -2782,7 +3954,11 @@ export default [
     tags: ['research'],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩‍🔬',
@@ -2792,7 +3968,11 @@ export default [
     tags: ['research'],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧑‍💻',
@@ -2802,7 +3982,11 @@ export default [
     tags: [],
     unicode_version: '12.1',
     ios_version: '13.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👨‍💻',
@@ -2812,7 +3996,11 @@ export default [
     tags: ['coder'],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩‍💻',
@@ -2822,7 +4010,11 @@ export default [
     tags: ['coder'],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧑‍🎤',
@@ -2832,7 +4024,11 @@ export default [
     tags: [],
     unicode_version: '12.1',
     ios_version: '13.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👨‍🎤',
@@ -2842,7 +4038,11 @@ export default [
     tags: ['rockstar'],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩‍🎤',
@@ -2852,7 +4052,11 @@ export default [
     tags: ['rockstar'],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧑‍🎨',
@@ -2862,7 +4066,11 @@ export default [
     tags: [],
     unicode_version: '12.1',
     ios_version: '13.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👨‍🎨',
@@ -2872,7 +4080,11 @@ export default [
     tags: ['painter'],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩‍🎨',
@@ -2882,7 +4094,11 @@ export default [
     tags: ['painter'],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧑‍✈️',
@@ -2892,7 +4108,11 @@ export default [
     tags: [],
     unicode_version: '12.1',
     ios_version: '13.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👨‍✈️',
@@ -2902,7 +4122,11 @@ export default [
     tags: [],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩‍✈️',
@@ -2912,7 +4136,11 @@ export default [
     tags: [],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧑‍🚀',
@@ -2922,7 +4150,11 @@ export default [
     tags: [],
     unicode_version: '12.1',
     ios_version: '13.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👨‍🚀',
@@ -2932,7 +4164,11 @@ export default [
     tags: ['space'],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩‍🚀',
@@ -2942,7 +4178,11 @@ export default [
     tags: ['space'],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧑‍🚒',
@@ -2952,7 +4192,11 @@ export default [
     tags: [],
     unicode_version: '12.1',
     ios_version: '13.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👨‍🚒',
@@ -2962,7 +4206,11 @@ export default [
     tags: [],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩‍🚒',
@@ -2972,7 +4220,11 @@ export default [
     tags: [],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👮',
@@ -2982,7 +4234,11 @@ export default [
     tags: ['law'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👮‍♂️',
@@ -2992,7 +4248,11 @@ export default [
     tags: ['law', 'cop'],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👮‍♀️',
@@ -3002,7 +4262,11 @@ export default [
     tags: ['law', 'cop'],
     unicode_version: '6.0',
     ios_version: '10.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🕵️',
@@ -3012,7 +4276,11 @@ export default [
     tags: ['sleuth'],
     unicode_version: '7.0',
     ios_version: '9.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🕵️‍♂️',
@@ -3022,7 +4290,11 @@ export default [
     tags: ['sleuth'],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🕵️‍♀️',
@@ -3032,7 +4304,11 @@ export default [
     tags: ['sleuth'],
     unicode_version: '6.0',
     ios_version: '10.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '💂',
@@ -3042,7 +4318,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '💂‍♂️',
@@ -3052,7 +4332,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '💂‍♀️',
@@ -3062,7 +4346,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '10.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🥷',
@@ -3072,7 +4360,11 @@ export default [
     tags: [],
     unicode_version: '13.0',
     ios_version: '14.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👷',
@@ -3082,7 +4374,11 @@ export default [
     tags: ['helmet'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👷‍♂️',
@@ -3092,7 +4388,11 @@ export default [
     tags: ['helmet'],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👷‍♀️',
@@ -3102,7 +4402,11 @@ export default [
     tags: ['helmet'],
     unicode_version: '6.0',
     ios_version: '10.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤴',
@@ -3112,7 +4416,11 @@ export default [
     tags: ['crown', 'royal'],
     unicode_version: '9.0',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👸',
@@ -3122,7 +4430,11 @@ export default [
     tags: ['crown', 'royal'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👳',
@@ -3132,7 +4444,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👳‍♂️',
@@ -3142,7 +4458,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👳‍♀️',
@@ -3152,7 +4472,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '10.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👲',
@@ -3162,7 +4486,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧕',
@@ -3172,7 +4500,11 @@ export default [
     tags: ['hijab'],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤵',
@@ -3182,7 +4514,11 @@ export default [
     tags: ['groom', 'marriage', 'wedding'],
     unicode_version: '9.0',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤵‍♂️',
@@ -3192,7 +4528,11 @@ export default [
     tags: [],
     unicode_version: '13.0',
     ios_version: '14.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤵‍♀️',
@@ -3202,7 +4542,11 @@ export default [
     tags: [],
     unicode_version: '13.0',
     ios_version: '14.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👰',
@@ -3212,7 +4556,11 @@ export default [
     tags: ['marriage', 'wedding'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👰‍♂️',
@@ -3222,7 +4570,11 @@ export default [
     tags: [],
     unicode_version: '13.0',
     ios_version: '14.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👰‍♀️',
@@ -3232,7 +4584,11 @@ export default [
     tags: [],
     unicode_version: '13.0',
     ios_version: '14.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤰',
@@ -3242,7 +4598,11 @@ export default [
     tags: [],
     unicode_version: '9.0',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤱',
@@ -3252,7 +4612,11 @@ export default [
     tags: ['nursing'],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩‍🍼',
@@ -3262,7 +4626,11 @@ export default [
     tags: [],
     unicode_version: '13.0',
     ios_version: '14.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👨‍🍼',
@@ -3272,7 +4640,11 @@ export default [
     tags: [],
     unicode_version: '13.0',
     ios_version: '14.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧑‍🍼',
@@ -3282,7 +4654,11 @@ export default [
     tags: [],
     unicode_version: '13.0',
     ios_version: '14.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👼',
@@ -3292,7 +4668,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🎅',
@@ -3302,7 +4682,11 @@ export default [
     tags: ['christmas'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤶',
@@ -3312,7 +4696,11 @@ export default [
     tags: ['santa'],
     unicode_version: '9.0',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧑‍🎄',
@@ -3322,7 +4710,11 @@ export default [
     tags: [],
     unicode_version: '13.0',
     ios_version: '14.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🦸',
@@ -3332,7 +4724,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🦸‍♂️',
@@ -3342,7 +4738,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🦸‍♀️',
@@ -3352,7 +4752,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🦹',
@@ -3362,7 +4766,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🦹‍♂️',
@@ -3372,7 +4780,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🦹‍♀️',
@@ -3382,7 +4794,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧙',
@@ -3392,7 +4808,11 @@ export default [
     tags: ['wizard'],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧙‍♂️',
@@ -3402,7 +4822,11 @@ export default [
     tags: ['wizard'],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧙‍♀️',
@@ -3412,7 +4836,11 @@ export default [
     tags: ['wizard'],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧚',
@@ -3422,7 +4850,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧚‍♂️',
@@ -3432,7 +4864,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧚‍♀️',
@@ -3442,7 +4878,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧛',
@@ -3452,7 +4892,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧛‍♂️',
@@ -3462,7 +4906,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧛‍♀️',
@@ -3472,7 +4920,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧜',
@@ -3482,7 +4934,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧜‍♂️',
@@ -3492,7 +4948,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧜‍♀️',
@@ -3502,7 +4962,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧝',
@@ -3512,7 +4976,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧝‍♂️',
@@ -3522,7 +4990,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧝‍♀️',
@@ -3532,7 +5004,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧞',
@@ -3541,7 +5017,11 @@ export default [
     aliases: ['genie'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🧞‍♂️',
@@ -3550,7 +5030,11 @@ export default [
     aliases: ['genie_man'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🧞‍♀️',
@@ -3559,7 +5043,11 @@ export default [
     aliases: ['genie_woman'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🧟',
@@ -3568,7 +5056,11 @@ export default [
     aliases: ['zombie'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🧟‍♂️',
@@ -3577,7 +5069,11 @@ export default [
     aliases: ['zombie_man'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🧟‍♀️',
@@ -3586,7 +5082,11 @@ export default [
     aliases: ['zombie_woman'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '💆',
@@ -3596,7 +5096,11 @@ export default [
     tags: ['spa'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '💆‍♂️',
@@ -3606,7 +5110,11 @@ export default [
     tags: ['spa'],
     unicode_version: '6.0',
     ios_version: '10.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '💆‍♀️',
@@ -3616,7 +5124,11 @@ export default [
     tags: ['spa'],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '💇',
@@ -3626,7 +5138,11 @@ export default [
     tags: ['beauty'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '💇‍♂️',
@@ -3636,7 +5152,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '10.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '💇‍♀️',
@@ -3646,7 +5166,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🚶',
@@ -3656,7 +5180,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🚶‍♂️',
@@ -3666,7 +5194,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🚶‍♀️',
@@ -3676,7 +5208,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '10.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧍',
@@ -3686,7 +5222,11 @@ export default [
     tags: [],
     unicode_version: '12.0',
     ios_version: '13.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧍‍♂️',
@@ -3696,7 +5236,11 @@ export default [
     tags: [],
     unicode_version: '12.0',
     ios_version: '13.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧍‍♀️',
@@ -3706,7 +5250,11 @@ export default [
     tags: [],
     unicode_version: '12.0',
     ios_version: '13.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧎',
@@ -3716,7 +5264,11 @@ export default [
     tags: [],
     unicode_version: '12.0',
     ios_version: '13.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧎‍♂️',
@@ -3726,7 +5278,11 @@ export default [
     tags: [],
     unicode_version: '12.0',
     ios_version: '13.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧎‍♀️',
@@ -3736,7 +5292,11 @@ export default [
     tags: [],
     unicode_version: '12.0',
     ios_version: '13.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧑‍🦯',
@@ -3746,7 +5306,11 @@ export default [
     tags: [],
     unicode_version: '12.1',
     ios_version: '13.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👨‍🦯',
@@ -3756,7 +5320,11 @@ export default [
     tags: [],
     unicode_version: '12.0',
     ios_version: '13.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩‍🦯',
@@ -3766,7 +5334,11 @@ export default [
     tags: [],
     unicode_version: '12.0',
     ios_version: '13.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧑‍🦼',
@@ -3776,7 +5348,11 @@ export default [
     tags: [],
     unicode_version: '12.1',
     ios_version: '13.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👨‍🦼',
@@ -3786,7 +5362,11 @@ export default [
     tags: [],
     unicode_version: '12.0',
     ios_version: '13.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩‍🦼',
@@ -3796,7 +5376,11 @@ export default [
     tags: [],
     unicode_version: '12.0',
     ios_version: '13.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧑‍🦽',
@@ -3806,7 +5390,11 @@ export default [
     tags: [],
     unicode_version: '12.1',
     ios_version: '13.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👨‍🦽',
@@ -3816,7 +5404,11 @@ export default [
     tags: [],
     unicode_version: '12.0',
     ios_version: '13.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩‍🦽',
@@ -3826,7 +5418,11 @@ export default [
     tags: [],
     unicode_version: '12.0',
     ios_version: '13.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🏃',
@@ -3836,7 +5432,11 @@ export default [
     tags: ['exercise', 'workout', 'marathon'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🏃‍♂️',
@@ -3846,7 +5446,11 @@ export default [
     tags: ['exercise', 'workout', 'marathon'],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🏃‍♀️',
@@ -3856,7 +5460,11 @@ export default [
     tags: ['exercise', 'workout', 'marathon'],
     unicode_version: '6.0',
     ios_version: '10.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '💃',
@@ -3866,7 +5474,11 @@ export default [
     tags: ['dress'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🕺',
@@ -3876,7 +5488,11 @@ export default [
     tags: ['dancer'],
     unicode_version: '9.0',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🕴️',
@@ -3886,7 +5502,11 @@ export default [
     tags: [],
     unicode_version: '7.0',
     ios_version: '9.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👯',
@@ -3895,7 +5515,11 @@ export default [
     aliases: ['dancers'],
     tags: ['bunny'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '👯‍♂️',
@@ -3904,7 +5528,11 @@ export default [
     aliases: ['dancing_men'],
     tags: ['bunny'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '10.0'
+=======
+    ios_version: '10.0',
+>>>>>>> master
   },
   {
     emoji: '👯‍♀️',
@@ -3913,7 +5541,11 @@ export default [
     aliases: ['dancing_women'],
     tags: ['bunny'],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🧖',
@@ -3923,7 +5555,11 @@ export default [
     tags: ['steamy'],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧖‍♂️',
@@ -3933,7 +5569,11 @@ export default [
     tags: ['steamy'],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧖‍♀️',
@@ -3943,7 +5583,11 @@ export default [
     tags: ['steamy'],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧗',
@@ -3953,7 +5597,11 @@ export default [
     tags: ['bouldering'],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧗‍♂️',
@@ -3963,7 +5611,11 @@ export default [
     tags: ['bouldering'],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧗‍♀️',
@@ -3973,7 +5625,11 @@ export default [
     tags: ['bouldering'],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤺',
@@ -3982,7 +5638,11 @@ export default [
     aliases: ['person_fencing'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🏇',
@@ -3992,7 +5652,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '⛷️',
@@ -4001,7 +5665,11 @@ export default [
     aliases: ['skier'],
     tags: [],
     unicode_version: '5.2',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🏂',
@@ -4011,7 +5679,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🏌️',
@@ -4021,7 +5693,11 @@ export default [
     tags: [],
     unicode_version: '7.0',
     ios_version: '9.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🏌️‍♂️',
@@ -4031,7 +5707,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🏌️‍♀️',
@@ -4041,7 +5721,11 @@ export default [
     tags: [],
     unicode_version: '',
     ios_version: '10.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🏄',
@@ -4051,7 +5735,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🏄‍♂️',
@@ -4061,7 +5749,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🏄‍♀️',
@@ -4071,7 +5763,11 @@ export default [
     tags: [],
     unicode_version: '7.0',
     ios_version: '10.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🚣',
@@ -4081,7 +5777,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🚣‍♂️',
@@ -4091,7 +5791,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🚣‍♀️',
@@ -4101,7 +5805,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '10.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🏊',
@@ -4111,7 +5819,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🏊‍♂️',
@@ -4121,7 +5833,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🏊‍♀️',
@@ -4131,7 +5847,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '10.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '⛹️',
@@ -4141,7 +5861,11 @@ export default [
     tags: ['basketball'],
     unicode_version: '5.2',
     ios_version: '9.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '⛹️‍♂️',
@@ -4151,7 +5875,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '⛹️‍♀️',
@@ -4161,7 +5889,11 @@ export default [
     tags: [],
     unicode_version: '7.0',
     ios_version: '10.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🏋️',
@@ -4171,7 +5903,11 @@ export default [
     tags: ['gym', 'workout'],
     unicode_version: '7.0',
     ios_version: '9.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🏋️‍♂️',
@@ -4181,7 +5917,11 @@ export default [
     tags: ['gym', 'workout'],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🏋️‍♀️',
@@ -4191,7 +5931,11 @@ export default [
     tags: ['gym', 'workout'],
     unicode_version: '6.0',
     ios_version: '10.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🚴',
@@ -4201,7 +5945,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🚴‍♂️',
@@ -4211,7 +5959,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🚴‍♀️',
@@ -4221,7 +5973,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '10.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🚵',
@@ -4231,7 +5987,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🚵‍♂️',
@@ -4241,7 +6001,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🚵‍♀️',
@@ -4251,7 +6015,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '10.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤸',
@@ -4261,7 +6029,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤸‍♂️',
@@ -4271,7 +6043,11 @@ export default [
     tags: [],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤸‍♀️',
@@ -4281,7 +6057,11 @@ export default [
     tags: [],
     unicode_version: '',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤼',
@@ -4290,7 +6070,11 @@ export default [
     aliases: ['wrestling'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🤼‍♂️',
@@ -4299,7 +6083,11 @@ export default [
     aliases: ['men_wrestling'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🤼‍♀️',
@@ -4308,7 +6096,11 @@ export default [
     aliases: ['women_wrestling'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🤽',
@@ -4318,7 +6110,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤽‍♂️',
@@ -4328,7 +6124,11 @@ export default [
     tags: [],
     unicode_version: '9.0',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤽‍♀️',
@@ -4338,7 +6138,11 @@ export default [
     tags: [],
     unicode_version: '9.0',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤾',
@@ -4348,7 +6152,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤾‍♂️',
@@ -4358,7 +6166,11 @@ export default [
     tags: [],
     unicode_version: '9.0',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤾‍♀️',
@@ -4368,7 +6180,11 @@ export default [
     tags: [],
     unicode_version: '9.0',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤹',
@@ -4378,7 +6194,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤹‍♂️',
@@ -4388,7 +6208,11 @@ export default [
     tags: [],
     unicode_version: '9.0',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🤹‍♀️',
@@ -4398,7 +6222,11 @@ export default [
     tags: [],
     unicode_version: '9.0',
     ios_version: '10.2',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧘',
@@ -4408,7 +6236,11 @@ export default [
     tags: ['meditation'],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧘‍♂️',
@@ -4418,7 +6250,11 @@ export default [
     tags: ['meditation'],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧘‍♀️',
@@ -4428,7 +6264,11 @@ export default [
     tags: ['meditation'],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🛀',
@@ -4438,7 +6278,11 @@ export default [
     tags: ['shower'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🛌',
@@ -4448,7 +6292,11 @@ export default [
     tags: [],
     unicode_version: '7.0',
     ios_version: '9.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '🧑‍🤝‍🧑',
@@ -4458,7 +6306,11 @@ export default [
     tags: ['couple', 'date'],
     unicode_version: '12.0',
     ios_version: '13.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👭',
@@ -4468,7 +6320,11 @@ export default [
     tags: ['couple', 'date'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👫',
@@ -4478,7 +6334,11 @@ export default [
     tags: ['date'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👬',
@@ -4488,7 +6348,11 @@ export default [
     tags: ['couple', 'date'],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '💏',
@@ -4498,7 +6362,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩‍❤️‍💋‍👨',
@@ -4508,7 +6376,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👨‍❤️‍💋‍👨',
@@ -4518,7 +6390,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '8.3',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩‍❤️‍💋‍👩',
@@ -4528,7 +6404,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '8.3',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '💑',
@@ -4538,7 +6418,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '6.0',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩‍❤️‍👨',
@@ -4548,7 +6432,11 @@ export default [
     tags: [],
     unicode_version: '11.0',
     ios_version: '12.1',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👨‍❤️‍👨',
@@ -4558,7 +6446,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '8.3',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👩‍❤️‍👩',
@@ -4568,7 +6460,11 @@ export default [
     tags: [],
     unicode_version: '6.0',
     ios_version: '8.3',
+<<<<<<< HEAD
     skin_tones: true
+=======
+    skin_tones: true,
+>>>>>>> master
   },
   {
     emoji: '👪',
@@ -4577,7 +6473,11 @@ export default [
     aliases: ['family'],
     tags: ['home', 'parents', 'child'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '👨‍👩‍👦',
@@ -4586,7 +6486,11 @@ export default [
     aliases: ['family_man_woman_boy'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '👨‍👩‍👧',
@@ -4595,7 +6499,11 @@ export default [
     aliases: ['family_man_woman_girl'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '👨‍👩‍👧‍👦',
@@ -4604,7 +6512,11 @@ export default [
     aliases: ['family_man_woman_girl_boy'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '👨‍👩‍👦‍👦',
@@ -4613,7 +6525,11 @@ export default [
     aliases: ['family_man_woman_boy_boy'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '👨‍👩‍👧‍👧',
@@ -4622,7 +6538,11 @@ export default [
     aliases: ['family_man_woman_girl_girl'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '👨‍👨‍👦',
@@ -4631,7 +6551,11 @@ export default [
     aliases: ['family_man_man_boy'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '👨‍👨‍👧',
@@ -4640,7 +6564,11 @@ export default [
     aliases: ['family_man_man_girl'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '👨‍👨‍👧‍👦',
@@ -4649,7 +6577,11 @@ export default [
     aliases: ['family_man_man_girl_boy'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '👨‍👨‍👦‍👦',
@@ -4658,7 +6590,11 @@ export default [
     aliases: ['family_man_man_boy_boy'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '👨‍👨‍👧‍👧',
@@ -4667,7 +6603,11 @@ export default [
     aliases: ['family_man_man_girl_girl'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '👩‍👩‍👦',
@@ -4676,7 +6616,11 @@ export default [
     aliases: ['family_woman_woman_boy'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '👩‍👩‍👧',
@@ -4685,7 +6629,11 @@ export default [
     aliases: ['family_woman_woman_girl'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '👩‍👩‍👧‍👦',
@@ -4694,7 +6642,11 @@ export default [
     aliases: ['family_woman_woman_girl_boy'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '👩‍👩‍👦‍👦',
@@ -4703,7 +6655,11 @@ export default [
     aliases: ['family_woman_woman_boy_boy'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '👩‍👩‍👧‍👧',
@@ -4712,7 +6668,11 @@ export default [
     aliases: ['family_woman_woman_girl_girl'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '👨‍👦',
@@ -4721,7 +6681,11 @@ export default [
     aliases: ['family_man_boy'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '10.0'
+=======
+    ios_version: '10.0',
+>>>>>>> master
   },
   {
     emoji: '👨‍👦‍👦',
@@ -4730,7 +6694,11 @@ export default [
     aliases: ['family_man_boy_boy'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '10.0'
+=======
+    ios_version: '10.0',
+>>>>>>> master
   },
   {
     emoji: '👨‍👧',
@@ -4739,7 +6707,11 @@ export default [
     aliases: ['family_man_girl'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '10.0'
+=======
+    ios_version: '10.0',
+>>>>>>> master
   },
   {
     emoji: '👨‍👧‍👦',
@@ -4748,7 +6720,11 @@ export default [
     aliases: ['family_man_girl_boy'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '10.0'
+=======
+    ios_version: '10.0',
+>>>>>>> master
   },
   {
     emoji: '👨‍👧‍👧',
@@ -4757,7 +6733,11 @@ export default [
     aliases: ['family_man_girl_girl'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '10.0'
+=======
+    ios_version: '10.0',
+>>>>>>> master
   },
   {
     emoji: '👩‍👦',
@@ -4766,7 +6746,11 @@ export default [
     aliases: ['family_woman_boy'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '10.0'
+=======
+    ios_version: '10.0',
+>>>>>>> master
   },
   {
     emoji: '👩‍👦‍👦',
@@ -4775,7 +6759,11 @@ export default [
     aliases: ['family_woman_boy_boy'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '10.0'
+=======
+    ios_version: '10.0',
+>>>>>>> master
   },
   {
     emoji: '👩‍👧',
@@ -4784,7 +6772,11 @@ export default [
     aliases: ['family_woman_girl'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '10.0'
+=======
+    ios_version: '10.0',
+>>>>>>> master
   },
   {
     emoji: '👩‍👧‍👦',
@@ -4793,7 +6785,11 @@ export default [
     aliases: ['family_woman_girl_boy'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '10.0'
+=======
+    ios_version: '10.0',
+>>>>>>> master
   },
   {
     emoji: '👩‍👧‍👧',
@@ -4802,7 +6798,11 @@ export default [
     aliases: ['family_woman_girl_girl'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '10.0'
+=======
+    ios_version: '10.0',
+>>>>>>> master
   },
   {
     emoji: '🗣️',
@@ -4811,7 +6811,11 @@ export default [
     aliases: ['speaking_head'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '👤',
@@ -4820,7 +6824,11 @@ export default [
     aliases: ['bust_in_silhouette'],
     tags: ['user'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '👥',
@@ -4829,7 +6837,11 @@ export default [
     aliases: ['busts_in_silhouette'],
     tags: ['users', 'group', 'team'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🫂',
@@ -4838,7 +6850,11 @@ export default [
     aliases: ['people_hugging'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '👣',
@@ -4847,7 +6863,11 @@ export default [
     aliases: ['footprints'],
     tags: ['feet', 'tracks'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐵',
@@ -4856,7 +6876,11 @@ export default [
     aliases: ['monkey_face'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐒',
@@ -4865,7 +6889,11 @@ export default [
     aliases: ['monkey'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🦍',
@@ -4874,7 +6902,11 @@ export default [
     aliases: ['gorilla'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🦧',
@@ -4883,7 +6915,11 @@ export default [
     aliases: ['orangutan'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🐶',
@@ -4892,7 +6928,11 @@ export default [
     aliases: ['dog'],
     tags: ['pet'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐕',
@@ -4901,7 +6941,11 @@ export default [
     aliases: ['dog2'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🦮',
@@ -4910,7 +6954,11 @@ export default [
     aliases: ['guide_dog'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🐕‍🦺',
@@ -4919,7 +6967,11 @@ export default [
     aliases: ['service_dog'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🐩',
@@ -4928,7 +6980,11 @@ export default [
     aliases: ['poodle'],
     tags: ['dog'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐺',
@@ -4937,7 +6993,11 @@ export default [
     aliases: ['wolf'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🦊',
@@ -4946,7 +7006,11 @@ export default [
     aliases: ['fox_face'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🦝',
@@ -4955,7 +7019,11 @@ export default [
     aliases: ['raccoon'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🐱',
@@ -4964,7 +7032,11 @@ export default [
     aliases: ['cat'],
     tags: ['pet'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐈',
@@ -4973,7 +7045,11 @@ export default [
     aliases: ['cat2'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐈‍⬛',
@@ -4982,7 +7058,11 @@ export default [
     aliases: ['black_cat'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🦁',
@@ -4991,7 +7071,11 @@ export default [
     aliases: ['lion'],
     tags: [],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🐯',
@@ -5000,7 +7084,11 @@ export default [
     aliases: ['tiger'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐅',
@@ -5009,7 +7097,11 @@ export default [
     aliases: ['tiger2'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐆',
@@ -5018,7 +7110,11 @@ export default [
     aliases: ['leopard'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐴',
@@ -5027,7 +7123,11 @@ export default [
     aliases: ['horse'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐎',
@@ -5036,7 +7136,11 @@ export default [
     aliases: ['racehorse'],
     tags: ['speed'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🦄',
@@ -5045,7 +7149,11 @@ export default [
     aliases: ['unicorn'],
     tags: [],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🦓',
@@ -5054,7 +7162,11 @@ export default [
     aliases: ['zebra'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🦌',
@@ -5063,7 +7175,11 @@ export default [
     aliases: ['deer'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🦬',
@@ -5072,7 +7188,11 @@ export default [
     aliases: ['bison'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🐮',
@@ -5081,7 +7201,11 @@ export default [
     aliases: ['cow'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐂',
@@ -5090,7 +7214,11 @@ export default [
     aliases: ['ox'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐃',
@@ -5099,7 +7227,11 @@ export default [
     aliases: ['water_buffalo'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐄',
@@ -5108,7 +7240,11 @@ export default [
     aliases: ['cow2'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐷',
@@ -5117,7 +7253,11 @@ export default [
     aliases: ['pig'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐖',
@@ -5126,7 +7266,11 @@ export default [
     aliases: ['pig2'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐗',
@@ -5135,7 +7279,11 @@ export default [
     aliases: ['boar'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐽',
@@ -5144,7 +7292,11 @@ export default [
     aliases: ['pig_nose'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐏',
@@ -5153,7 +7305,11 @@ export default [
     aliases: ['ram'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐑',
@@ -5162,7 +7318,11 @@ export default [
     aliases: ['sheep'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐐',
@@ -5171,7 +7331,11 @@ export default [
     aliases: ['goat'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐪',
@@ -5180,7 +7344,11 @@ export default [
     aliases: ['dromedary_camel'],
     tags: ['desert'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐫',
@@ -5189,7 +7357,11 @@ export default [
     aliases: ['camel'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🦙',
@@ -5198,7 +7370,11 @@ export default [
     aliases: ['llama'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🦒',
@@ -5207,7 +7383,11 @@ export default [
     aliases: ['giraffe'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🐘',
@@ -5216,7 +7396,11 @@ export default [
     aliases: ['elephant'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🦣',
@@ -5225,7 +7409,11 @@ export default [
     aliases: ['mammoth'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🦏',
@@ -5234,7 +7422,11 @@ export default [
     aliases: ['rhinoceros'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🦛',
@@ -5243,7 +7435,11 @@ export default [
     aliases: ['hippopotamus'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🐭',
@@ -5252,7 +7448,11 @@ export default [
     aliases: ['mouse'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐁',
@@ -5261,7 +7461,11 @@ export default [
     aliases: ['mouse2'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐀',
@@ -5270,7 +7474,11 @@ export default [
     aliases: ['rat'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐹',
@@ -5279,7 +7487,11 @@ export default [
     aliases: ['hamster'],
     tags: ['pet'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐰',
@@ -5288,7 +7500,11 @@ export default [
     aliases: ['rabbit'],
     tags: ['bunny'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐇',
@@ -5297,7 +7513,11 @@ export default [
     aliases: ['rabbit2'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐿️',
@@ -5306,7 +7526,11 @@ export default [
     aliases: ['chipmunk'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🦫',
@@ -5315,7 +7539,11 @@ export default [
     aliases: ['beaver'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🦔',
@@ -5324,7 +7552,11 @@ export default [
     aliases: ['hedgehog'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🦇',
@@ -5333,7 +7565,11 @@ export default [
     aliases: ['bat'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🐻',
@@ -5342,7 +7578,11 @@ export default [
     aliases: ['bear'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐻‍❄️',
@@ -5351,7 +7591,11 @@ export default [
     aliases: ['polar_bear'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🐨',
@@ -5360,7 +7604,11 @@ export default [
     aliases: ['koala'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐼',
@@ -5369,7 +7617,11 @@ export default [
     aliases: ['panda_face'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🦥',
@@ -5378,7 +7630,11 @@ export default [
     aliases: ['sloth'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🦦',
@@ -5387,7 +7643,11 @@ export default [
     aliases: ['otter'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🦨',
@@ -5396,7 +7656,11 @@ export default [
     aliases: ['skunk'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🦘',
@@ -5405,7 +7669,11 @@ export default [
     aliases: ['kangaroo'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🦡',
@@ -5414,7 +7682,11 @@ export default [
     aliases: ['badger'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🐾',
@@ -5423,7 +7695,11 @@ export default [
     aliases: ['feet', 'paw_prints'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🦃',
@@ -5432,7 +7708,11 @@ export default [
     aliases: ['turkey'],
     tags: ['thanksgiving'],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🐔',
@@ -5441,7 +7721,11 @@ export default [
     aliases: ['chicken'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐓',
@@ -5450,7 +7734,11 @@ export default [
     aliases: ['rooster'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐣',
@@ -5459,7 +7747,11 @@ export default [
     aliases: ['hatching_chick'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐤',
@@ -5468,7 +7760,11 @@ export default [
     aliases: ['baby_chick'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐥',
@@ -5477,7 +7773,11 @@ export default [
     aliases: ['hatched_chick'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐦',
@@ -5486,7 +7786,11 @@ export default [
     aliases: ['bird'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐧',
@@ -5495,7 +7799,11 @@ export default [
     aliases: ['penguin'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕊️',
@@ -5504,7 +7812,11 @@ export default [
     aliases: ['dove'],
     tags: ['peace'],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🦅',
@@ -5513,7 +7825,11 @@ export default [
     aliases: ['eagle'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🦆',
@@ -5522,7 +7838,11 @@ export default [
     aliases: ['duck'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🦢',
@@ -5531,7 +7851,11 @@ export default [
     aliases: ['swan'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🦉',
@@ -5540,7 +7864,11 @@ export default [
     aliases: ['owl'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🦤',
@@ -5549,7 +7877,11 @@ export default [
     aliases: ['dodo'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🪶',
@@ -5558,7 +7890,11 @@ export default [
     aliases: ['feather'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🦩',
@@ -5567,7 +7903,11 @@ export default [
     aliases: ['flamingo'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🦚',
@@ -5576,7 +7916,11 @@ export default [
     aliases: ['peacock'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🦜',
@@ -5585,7 +7929,11 @@ export default [
     aliases: ['parrot'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🐸',
@@ -5594,7 +7942,11 @@ export default [
     aliases: ['frog'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐊',
@@ -5603,7 +7955,11 @@ export default [
     aliases: ['crocodile'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐢',
@@ -5612,7 +7968,11 @@ export default [
     aliases: ['turtle'],
     tags: ['slow'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🦎',
@@ -5621,7 +7981,11 @@ export default [
     aliases: ['lizard'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🐍',
@@ -5630,7 +7994,11 @@ export default [
     aliases: ['snake'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐲',
@@ -5639,7 +8007,11 @@ export default [
     aliases: ['dragon_face'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐉',
@@ -5648,7 +8020,11 @@ export default [
     aliases: ['dragon'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🦕',
@@ -5657,7 +8033,11 @@ export default [
     aliases: ['sauropod'],
     tags: ['dinosaur'],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🦖',
@@ -5666,7 +8046,11 @@ export default [
     aliases: ['t-rex'],
     tags: ['dinosaur'],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🐳',
@@ -5675,7 +8059,11 @@ export default [
     aliases: ['whale'],
     tags: ['sea'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐋',
@@ -5684,7 +8072,11 @@ export default [
     aliases: ['whale2'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐬',
@@ -5693,7 +8085,11 @@ export default [
     aliases: ['dolphin', 'flipper'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🦭',
@@ -5702,7 +8098,11 @@ export default [
     aliases: ['seal'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🐟',
@@ -5711,7 +8111,11 @@ export default [
     aliases: ['fish'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐠',
@@ -5720,7 +8124,11 @@ export default [
     aliases: ['tropical_fish'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐡',
@@ -5729,7 +8137,11 @@ export default [
     aliases: ['blowfish'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🦈',
@@ -5738,7 +8150,11 @@ export default [
     aliases: ['shark'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🐙',
@@ -5747,7 +8163,11 @@ export default [
     aliases: ['octopus'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐚',
@@ -5756,7 +8176,11 @@ export default [
     aliases: ['shell'],
     tags: ['sea', 'beach'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐌',
@@ -5765,7 +8189,11 @@ export default [
     aliases: ['snail'],
     tags: ['slow'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🦋',
@@ -5774,7 +8202,11 @@ export default [
     aliases: ['butterfly'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🐛',
@@ -5783,7 +8215,11 @@ export default [
     aliases: ['bug'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐜',
@@ -5792,7 +8228,11 @@ export default [
     aliases: ['ant'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🐝',
@@ -5801,7 +8241,11 @@ export default [
     aliases: ['bee', 'honeybee'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🪲',
@@ -5810,7 +8254,11 @@ export default [
     aliases: ['beetle'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🐞',
@@ -5819,7 +8267,11 @@ export default [
     aliases: ['lady_beetle'],
     tags: ['bug'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🦗',
@@ -5828,7 +8280,11 @@ export default [
     aliases: ['cricket'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🪳',
@@ -5837,7 +8293,11 @@ export default [
     aliases: ['cockroach'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🕷️',
@@ -5846,7 +8306,11 @@ export default [
     aliases: ['spider'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🕸️',
@@ -5855,7 +8319,11 @@ export default [
     aliases: ['spider_web'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🦂',
@@ -5864,7 +8332,11 @@ export default [
     aliases: ['scorpion'],
     tags: [],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🦟',
@@ -5873,7 +8345,11 @@ export default [
     aliases: ['mosquito'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🪰',
@@ -5882,7 +8358,11 @@ export default [
     aliases: ['fly'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🪱',
@@ -5891,7 +8371,11 @@ export default [
     aliases: ['worm'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🦠',
@@ -5900,7 +8384,11 @@ export default [
     aliases: ['microbe'],
     tags: ['germ'],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '💐',
@@ -5909,7 +8397,11 @@ export default [
     aliases: ['bouquet'],
     tags: ['flowers'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌸',
@@ -5918,7 +8410,11 @@ export default [
     aliases: ['cherry_blossom'],
     tags: ['flower', 'spring'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💮',
@@ -5927,7 +8423,11 @@ export default [
     aliases: ['white_flower'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🏵️',
@@ -5936,7 +8436,11 @@ export default [
     aliases: ['rosette'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🌹',
@@ -5945,7 +8449,11 @@ export default [
     aliases: ['rose'],
     tags: ['flower'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🥀',
@@ -5954,7 +8462,11 @@ export default [
     aliases: ['wilted_flower'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🌺',
@@ -5963,7 +8475,11 @@ export default [
     aliases: ['hibiscus'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌻',
@@ -5972,7 +8488,11 @@ export default [
     aliases: ['sunflower'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌼',
@@ -5981,7 +8501,11 @@ export default [
     aliases: ['blossom'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌷',
@@ -5990,7 +8514,11 @@ export default [
     aliases: ['tulip'],
     tags: ['flower'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌱',
@@ -5999,7 +8527,11 @@ export default [
     aliases: ['seedling'],
     tags: ['plant'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🪴',
@@ -6008,7 +8540,11 @@ export default [
     aliases: ['potted_plant'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🌲',
@@ -6017,7 +8553,11 @@ export default [
     aliases: ['evergreen_tree'],
     tags: ['wood'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌳',
@@ -6026,7 +8566,11 @@ export default [
     aliases: ['deciduous_tree'],
     tags: ['wood'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌴',
@@ -6035,7 +8579,11 @@ export default [
     aliases: ['palm_tree'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌵',
@@ -6044,7 +8592,11 @@ export default [
     aliases: ['cactus'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌾',
@@ -6053,7 +8605,11 @@ export default [
     aliases: ['ear_of_rice'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌿',
@@ -6062,7 +8618,11 @@ export default [
     aliases: ['herb'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '☘️',
@@ -6071,7 +8631,11 @@ export default [
     aliases: ['shamrock'],
     tags: [],
     unicode_version: '4.1',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🍀',
@@ -6080,7 +8644,11 @@ export default [
     aliases: ['four_leaf_clover'],
     tags: ['luck'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍁',
@@ -6089,7 +8657,11 @@ export default [
     aliases: ['maple_leaf'],
     tags: ['canada'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍂',
@@ -6098,7 +8670,11 @@ export default [
     aliases: ['fallen_leaf'],
     tags: ['autumn'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍃',
@@ -6107,7 +8683,11 @@ export default [
     aliases: ['leaves'],
     tags: ['leaf'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍇',
@@ -6116,7 +8696,11 @@ export default [
     aliases: ['grapes'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍈',
@@ -6125,7 +8709,11 @@ export default [
     aliases: ['melon'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍉',
@@ -6134,7 +8722,11 @@ export default [
     aliases: ['watermelon'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍊',
@@ -6143,7 +8735,11 @@ export default [
     aliases: ['tangerine', 'orange', 'mandarin'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍋',
@@ -6152,7 +8748,11 @@ export default [
     aliases: ['lemon'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍌',
@@ -6161,7 +8761,11 @@ export default [
     aliases: ['banana'],
     tags: ['fruit'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍍',
@@ -6170,7 +8774,11 @@ export default [
     aliases: ['pineapple'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🥭',
@@ -6179,7 +8787,11 @@ export default [
     aliases: ['mango'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🍎',
@@ -6188,7 +8800,11 @@ export default [
     aliases: ['apple'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍏',
@@ -6197,7 +8813,11 @@ export default [
     aliases: ['green_apple'],
     tags: ['fruit'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍐',
@@ -6206,7 +8826,11 @@ export default [
     aliases: ['pear'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍑',
@@ -6215,7 +8839,11 @@ export default [
     aliases: ['peach'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍒',
@@ -6224,7 +8852,11 @@ export default [
     aliases: ['cherries'],
     tags: ['fruit'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍓',
@@ -6233,7 +8865,11 @@ export default [
     aliases: ['strawberry'],
     tags: ['fruit'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🫐',
@@ -6242,7 +8878,11 @@ export default [
     aliases: ['blueberries'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🥝',
@@ -6251,7 +8891,11 @@ export default [
     aliases: ['kiwi_fruit'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🍅',
@@ -6260,7 +8904,11 @@ export default [
     aliases: ['tomato'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🫒',
@@ -6269,7 +8917,11 @@ export default [
     aliases: ['olive'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🥥',
@@ -6278,7 +8930,11 @@ export default [
     aliases: ['coconut'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🥑',
@@ -6287,7 +8943,11 @@ export default [
     aliases: ['avocado'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🍆',
@@ -6296,7 +8956,11 @@ export default [
     aliases: ['eggplant'],
     tags: ['aubergine'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🥔',
@@ -6305,7 +8969,11 @@ export default [
     aliases: ['potato'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🥕',
@@ -6314,7 +8982,11 @@ export default [
     aliases: ['carrot'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🌽',
@@ -6323,7 +8995,11 @@ export default [
     aliases: ['corn'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌶️',
@@ -6332,7 +9008,11 @@ export default [
     aliases: ['hot_pepper'],
     tags: ['spicy'],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🫑',
@@ -6341,7 +9021,11 @@ export default [
     aliases: ['bell_pepper'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🥒',
@@ -6350,7 +9034,11 @@ export default [
     aliases: ['cucumber'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🥬',
@@ -6359,7 +9047,11 @@ export default [
     aliases: ['leafy_green'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🥦',
@@ -6368,7 +9060,11 @@ export default [
     aliases: ['broccoli'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🧄',
@@ -6377,7 +9073,11 @@ export default [
     aliases: ['garlic'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🧅',
@@ -6386,7 +9086,11 @@ export default [
     aliases: ['onion'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🍄',
@@ -6395,7 +9099,11 @@ export default [
     aliases: ['mushroom'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🥜',
@@ -6404,7 +9112,11 @@ export default [
     aliases: ['peanuts'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🌰',
@@ -6413,7 +9125,11 @@ export default [
     aliases: ['chestnut'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍞',
@@ -6422,7 +9138,11 @@ export default [
     aliases: ['bread'],
     tags: ['toast'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🥐',
@@ -6431,7 +9151,11 @@ export default [
     aliases: ['croissant'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🥖',
@@ -6440,7 +9164,11 @@ export default [
     aliases: ['baguette_bread'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🫓',
@@ -6449,7 +9177,11 @@ export default [
     aliases: ['flatbread'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🥨',
@@ -6458,7 +9190,11 @@ export default [
     aliases: ['pretzel'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🥯',
@@ -6467,7 +9203,11 @@ export default [
     aliases: ['bagel'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🥞',
@@ -6476,7 +9216,11 @@ export default [
     aliases: ['pancakes'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🧇',
@@ -6485,7 +9229,11 @@ export default [
     aliases: ['waffle'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🧀',
@@ -6494,7 +9242,11 @@ export default [
     aliases: ['cheese'],
     tags: [],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🍖',
@@ -6503,7 +9255,11 @@ export default [
     aliases: ['meat_on_bone'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍗',
@@ -6512,7 +9268,11 @@ export default [
     aliases: ['poultry_leg'],
     tags: ['meat', 'chicken'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🥩',
@@ -6521,7 +9281,11 @@ export default [
     aliases: ['cut_of_meat'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🥓',
@@ -6530,7 +9294,11 @@ export default [
     aliases: ['bacon'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🍔',
@@ -6539,7 +9307,11 @@ export default [
     aliases: ['hamburger'],
     tags: ['burger'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍟',
@@ -6548,7 +9320,11 @@ export default [
     aliases: ['fries'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍕',
@@ -6557,7 +9333,11 @@ export default [
     aliases: ['pizza'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌭',
@@ -6566,7 +9346,11 @@ export default [
     aliases: ['hotdog'],
     tags: [],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🥪',
@@ -6575,7 +9359,11 @@ export default [
     aliases: ['sandwich'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🌮',
@@ -6584,7 +9372,11 @@ export default [
     aliases: ['taco'],
     tags: [],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🌯',
@@ -6593,7 +9385,11 @@ export default [
     aliases: ['burrito'],
     tags: [],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🫔',
@@ -6602,7 +9398,11 @@ export default [
     aliases: ['tamale'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🥙',
@@ -6611,7 +9411,11 @@ export default [
     aliases: ['stuffed_flatbread'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🧆',
@@ -6620,7 +9424,11 @@ export default [
     aliases: ['falafel'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🥚',
@@ -6629,7 +9437,11 @@ export default [
     aliases: ['egg'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🍳',
@@ -6638,7 +9450,11 @@ export default [
     aliases: ['fried_egg'],
     tags: ['breakfast'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🥘',
@@ -6647,7 +9463,11 @@ export default [
     aliases: ['shallow_pan_of_food'],
     tags: ['paella', 'curry'],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🍲',
@@ -6656,7 +9476,11 @@ export default [
     aliases: ['stew'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🫕',
@@ -6665,7 +9489,11 @@ export default [
     aliases: ['fondue'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🥣',
@@ -6674,7 +9502,11 @@ export default [
     aliases: ['bowl_with_spoon'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🥗',
@@ -6683,7 +9515,11 @@ export default [
     aliases: ['green_salad'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🍿',
@@ -6692,7 +9528,11 @@ export default [
     aliases: ['popcorn'],
     tags: [],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🧈',
@@ -6701,7 +9541,11 @@ export default [
     aliases: ['butter'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🧂',
@@ -6710,7 +9554,11 @@ export default [
     aliases: ['salt'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🥫',
@@ -6719,7 +9567,11 @@ export default [
     aliases: ['canned_food'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🍱',
@@ -6728,7 +9580,11 @@ export default [
     aliases: ['bento'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍘',
@@ -6737,7 +9593,11 @@ export default [
     aliases: ['rice_cracker'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍙',
@@ -6746,7 +9606,11 @@ export default [
     aliases: ['rice_ball'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍚',
@@ -6755,7 +9619,11 @@ export default [
     aliases: ['rice'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍛',
@@ -6764,7 +9632,11 @@ export default [
     aliases: ['curry'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍜',
@@ -6773,7 +9645,11 @@ export default [
     aliases: ['ramen'],
     tags: ['noodle'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍝',
@@ -6782,7 +9658,11 @@ export default [
     aliases: ['spaghetti'],
     tags: ['pasta'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍠',
@@ -6791,7 +9671,11 @@ export default [
     aliases: ['sweet_potato'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍢',
@@ -6800,7 +9684,11 @@ export default [
     aliases: ['oden'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍣',
@@ -6809,7 +9697,11 @@ export default [
     aliases: ['sushi'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍤',
@@ -6818,7 +9710,11 @@ export default [
     aliases: ['fried_shrimp'],
     tags: ['tempura'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍥',
@@ -6827,7 +9723,11 @@ export default [
     aliases: ['fish_cake'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🥮',
@@ -6836,7 +9736,11 @@ export default [
     aliases: ['moon_cake'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🍡',
@@ -6845,7 +9749,11 @@ export default [
     aliases: ['dango'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🥟',
@@ -6854,7 +9762,11 @@ export default [
     aliases: ['dumpling'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🥠',
@@ -6863,7 +9775,11 @@ export default [
     aliases: ['fortune_cookie'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🥡',
@@ -6872,7 +9788,11 @@ export default [
     aliases: ['takeout_box'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🦀',
@@ -6881,7 +9801,11 @@ export default [
     aliases: ['crab'],
     tags: [],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🦞',
@@ -6890,7 +9814,11 @@ export default [
     aliases: ['lobster'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🦐',
@@ -6899,7 +9827,11 @@ export default [
     aliases: ['shrimp'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🦑',
@@ -6908,7 +9840,11 @@ export default [
     aliases: ['squid'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🦪',
@@ -6917,7 +9853,11 @@ export default [
     aliases: ['oyster'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🍦',
@@ -6926,7 +9866,11 @@ export default [
     aliases: ['icecream'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍧',
@@ -6935,7 +9879,11 @@ export default [
     aliases: ['shaved_ice'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍨',
@@ -6944,7 +9892,11 @@ export default [
     aliases: ['ice_cream'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍩',
@@ -6953,7 +9905,11 @@ export default [
     aliases: ['doughnut'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍪',
@@ -6962,7 +9918,11 @@ export default [
     aliases: ['cookie'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎂',
@@ -6971,7 +9931,11 @@ export default [
     aliases: ['birthday'],
     tags: ['party'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍰',
@@ -6980,7 +9944,11 @@ export default [
     aliases: ['cake'],
     tags: ['dessert'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🧁',
@@ -6989,7 +9957,11 @@ export default [
     aliases: ['cupcake'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🥧',
@@ -6998,7 +9970,11 @@ export default [
     aliases: ['pie'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🍫',
@@ -7007,7 +9983,11 @@ export default [
     aliases: ['chocolate_bar'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍬',
@@ -7016,7 +9996,11 @@ export default [
     aliases: ['candy'],
     tags: ['sweet'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍭',
@@ -7025,7 +10009,11 @@ export default [
     aliases: ['lollipop'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍮',
@@ -7034,7 +10022,11 @@ export default [
     aliases: ['custard'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍯',
@@ -7043,7 +10035,11 @@ export default [
     aliases: ['honey_pot'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍼',
@@ -7052,7 +10048,11 @@ export default [
     aliases: ['baby_bottle'],
     tags: ['milk'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🥛',
@@ -7061,7 +10061,11 @@ export default [
     aliases: ['milk_glass'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '☕',
@@ -7070,7 +10074,11 @@ export default [
     aliases: ['coffee'],
     tags: ['cafe', 'espresso'],
     unicode_version: '4.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🫖',
@@ -7079,7 +10087,11 @@ export default [
     aliases: ['teapot'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🍵',
@@ -7088,7 +10100,11 @@ export default [
     aliases: ['tea'],
     tags: ['green', 'breakfast'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍶',
@@ -7097,7 +10113,11 @@ export default [
     aliases: ['sake'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍾',
@@ -7106,7 +10126,11 @@ export default [
     aliases: ['champagne'],
     tags: ['bottle', 'bubbly', 'celebration'],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🍷',
@@ -7115,7 +10139,11 @@ export default [
     aliases: ['wine_glass'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍸',
@@ -7124,7 +10152,11 @@ export default [
     aliases: ['cocktail'],
     tags: ['drink'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍹',
@@ -7133,7 +10165,11 @@ export default [
     aliases: ['tropical_drink'],
     tags: ['summer', 'vacation'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍺',
@@ -7142,7 +10178,11 @@ export default [
     aliases: ['beer'],
     tags: ['drink'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🍻',
@@ -7151,7 +10191,11 @@ export default [
     aliases: ['beers'],
     tags: ['drinks'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🥂',
@@ -7160,7 +10204,11 @@ export default [
     aliases: ['clinking_glasses'],
     tags: ['cheers', 'toast'],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🥃',
@@ -7169,7 +10217,11 @@ export default [
     aliases: ['tumbler_glass'],
     tags: ['whisky'],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🥤',
@@ -7178,7 +10230,11 @@ export default [
     aliases: ['cup_with_straw'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🧋',
@@ -7187,7 +10243,11 @@ export default [
     aliases: ['bubble_tea'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🧃',
@@ -7196,7 +10256,11 @@ export default [
     aliases: ['beverage_box'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🧉',
@@ -7205,7 +10269,11 @@ export default [
     aliases: ['mate'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🧊',
@@ -7214,7 +10282,11 @@ export default [
     aliases: ['ice_cube'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🥢',
@@ -7223,7 +10295,11 @@ export default [
     aliases: ['chopsticks'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🍽️',
@@ -7232,7 +10308,11 @@ export default [
     aliases: ['plate_with_cutlery'],
     tags: ['dining', 'dinner'],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🍴',
@@ -7241,7 +10321,11 @@ export default [
     aliases: ['fork_and_knife'],
     tags: ['cutlery'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🥄',
@@ -7250,7 +10334,11 @@ export default [
     aliases: ['spoon'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🔪',
@@ -7259,7 +10347,11 @@ export default [
     aliases: ['hocho', 'knife'],
     tags: ['cut', 'chop'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🏺',
@@ -7268,7 +10360,11 @@ export default [
     aliases: ['amphora'],
     tags: [],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🌍',
@@ -7277,7 +10373,11 @@ export default [
     aliases: ['earth_africa'],
     tags: ['globe', 'world', 'international'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌎',
@@ -7286,7 +10386,11 @@ export default [
     aliases: ['earth_americas'],
     tags: ['globe', 'world', 'international'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌏',
@@ -7295,7 +10399,11 @@ export default [
     aliases: ['earth_asia'],
     tags: ['globe', 'world', 'international'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌐',
@@ -7304,7 +10412,11 @@ export default [
     aliases: ['globe_with_meridians'],
     tags: ['world', 'global', 'international'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🗺️',
@@ -7313,7 +10425,11 @@ export default [
     aliases: ['world_map'],
     tags: ['travel'],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🗾',
@@ -7322,7 +10438,11 @@ export default [
     aliases: ['japan'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🧭',
@@ -7331,7 +10451,11 @@ export default [
     aliases: ['compass'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🏔️',
@@ -7340,7 +10464,11 @@ export default [
     aliases: ['mountain_snow'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '⛰️',
@@ -7349,7 +10477,11 @@ export default [
     aliases: ['mountain'],
     tags: [],
     unicode_version: '5.2',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🌋',
@@ -7358,7 +10490,11 @@ export default [
     aliases: ['volcano'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🗻',
@@ -7367,7 +10503,11 @@ export default [
     aliases: ['mount_fuji'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🏕️',
@@ -7376,7 +10516,11 @@ export default [
     aliases: ['camping'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🏖️',
@@ -7385,7 +10529,11 @@ export default [
     aliases: ['beach_umbrella'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🏜️',
@@ -7394,7 +10542,11 @@ export default [
     aliases: ['desert'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🏝️',
@@ -7403,7 +10555,11 @@ export default [
     aliases: ['desert_island'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🏞️',
@@ -7412,7 +10568,11 @@ export default [
     aliases: ['national_park'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🏟️',
@@ -7421,7 +10581,11 @@ export default [
     aliases: ['stadium'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🏛️',
@@ -7430,7 +10594,11 @@ export default [
     aliases: ['classical_building'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🏗️',
@@ -7439,7 +10607,11 @@ export default [
     aliases: ['building_construction'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🧱',
@@ -7448,7 +10620,11 @@ export default [
     aliases: ['bricks'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🪨',
@@ -7457,7 +10633,11 @@ export default [
     aliases: ['rock'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🪵',
@@ -7466,7 +10646,11 @@ export default [
     aliases: ['wood'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🛖',
@@ -7475,7 +10659,11 @@ export default [
     aliases: ['hut'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🏘️',
@@ -7484,7 +10672,11 @@ export default [
     aliases: ['houses'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🏚️',
@@ -7493,7 +10685,11 @@ export default [
     aliases: ['derelict_house'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🏠',
@@ -7502,7 +10698,11 @@ export default [
     aliases: ['house'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🏡',
@@ -7511,7 +10711,11 @@ export default [
     aliases: ['house_with_garden'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🏢',
@@ -7520,7 +10724,11 @@ export default [
     aliases: ['office'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🏣',
@@ -7529,7 +10737,11 @@ export default [
     aliases: ['post_office'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🏤',
@@ -7538,7 +10750,11 @@ export default [
     aliases: ['european_post_office'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🏥',
@@ -7547,7 +10763,11 @@ export default [
     aliases: ['hospital'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🏦',
@@ -7556,7 +10776,11 @@ export default [
     aliases: ['bank'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🏨',
@@ -7565,7 +10789,11 @@ export default [
     aliases: ['hotel'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🏩',
@@ -7574,7 +10802,11 @@ export default [
     aliases: ['love_hotel'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🏪',
@@ -7583,7 +10815,11 @@ export default [
     aliases: ['convenience_store'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🏫',
@@ -7592,7 +10828,11 @@ export default [
     aliases: ['school'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🏬',
@@ -7601,7 +10841,11 @@ export default [
     aliases: ['department_store'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🏭',
@@ -7610,7 +10854,11 @@ export default [
     aliases: ['factory'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🏯',
@@ -7619,7 +10867,11 @@ export default [
     aliases: ['japanese_castle'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🏰',
@@ -7628,7 +10880,11 @@ export default [
     aliases: ['european_castle'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💒',
@@ -7637,7 +10893,11 @@ export default [
     aliases: ['wedding'],
     tags: ['marriage'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🗼',
@@ -7646,7 +10906,11 @@ export default [
     aliases: ['tokyo_tower'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🗽',
@@ -7655,7 +10919,11 @@ export default [
     aliases: ['statue_of_liberty'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⛪',
@@ -7664,7 +10932,11 @@ export default [
     aliases: ['church'],
     tags: [],
     unicode_version: '5.2',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕌',
@@ -7673,7 +10945,11 @@ export default [
     aliases: ['mosque'],
     tags: [],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🛕',
@@ -7682,7 +10958,11 @@ export default [
     aliases: ['hindu_temple'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🕍',
@@ -7691,7 +10971,11 @@ export default [
     aliases: ['synagogue'],
     tags: [],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '⛩️',
@@ -7700,7 +10984,11 @@ export default [
     aliases: ['shinto_shrine'],
     tags: [],
     unicode_version: '5.2',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🕋',
@@ -7709,7 +10997,11 @@ export default [
     aliases: ['kaaba'],
     tags: [],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '⛲',
@@ -7718,7 +11010,11 @@ export default [
     aliases: ['fountain'],
     tags: [],
     unicode_version: '5.2',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⛺',
@@ -7727,7 +11023,11 @@ export default [
     aliases: ['tent'],
     tags: ['camping'],
     unicode_version: '5.2',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌁',
@@ -7736,7 +11036,11 @@ export default [
     aliases: ['foggy'],
     tags: ['karl'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌃',
@@ -7745,7 +11049,11 @@ export default [
     aliases: ['night_with_stars'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🏙️',
@@ -7754,7 +11062,11 @@ export default [
     aliases: ['cityscape'],
     tags: ['skyline'],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🌄',
@@ -7763,7 +11075,11 @@ export default [
     aliases: ['sunrise_over_mountains'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌅',
@@ -7772,7 +11088,11 @@ export default [
     aliases: ['sunrise'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌆',
@@ -7781,7 +11101,11 @@ export default [
     aliases: ['city_sunset'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌇',
@@ -7790,7 +11114,11 @@ export default [
     aliases: ['city_sunrise'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌉',
@@ -7799,7 +11127,11 @@ export default [
     aliases: ['bridge_at_night'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '♨️',
@@ -7808,7 +11140,11 @@ export default [
     aliases: ['hotsprings'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎠',
@@ -7817,7 +11153,11 @@ export default [
     aliases: ['carousel_horse'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎡',
@@ -7826,7 +11166,11 @@ export default [
     aliases: ['ferris_wheel'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎢',
@@ -7835,7 +11179,11 @@ export default [
     aliases: ['roller_coaster'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💈',
@@ -7844,7 +11192,11 @@ export default [
     aliases: ['barber'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎪',
@@ -7853,7 +11205,11 @@ export default [
     aliases: ['circus_tent'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚂',
@@ -7862,7 +11218,11 @@ export default [
     aliases: ['steam_locomotive'],
     tags: ['train'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚃',
@@ -7871,7 +11231,11 @@ export default [
     aliases: ['railway_car'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚄',
@@ -7880,7 +11244,11 @@ export default [
     aliases: ['bullettrain_side'],
     tags: ['train'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚅',
@@ -7889,7 +11257,11 @@ export default [
     aliases: ['bullettrain_front'],
     tags: ['train'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚆',
@@ -7898,7 +11270,11 @@ export default [
     aliases: ['train2'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚇',
@@ -7907,7 +11283,11 @@ export default [
     aliases: ['metro'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚈',
@@ -7916,7 +11296,11 @@ export default [
     aliases: ['light_rail'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚉',
@@ -7925,7 +11309,11 @@ export default [
     aliases: ['station'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚊',
@@ -7934,7 +11322,11 @@ export default [
     aliases: ['tram'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚝',
@@ -7943,7 +11335,11 @@ export default [
     aliases: ['monorail'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚞',
@@ -7952,7 +11348,11 @@ export default [
     aliases: ['mountain_railway'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚋',
@@ -7961,7 +11361,11 @@ export default [
     aliases: ['train'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚌',
@@ -7970,7 +11374,11 @@ export default [
     aliases: ['bus'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚍',
@@ -7979,7 +11387,11 @@ export default [
     aliases: ['oncoming_bus'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚎',
@@ -7988,7 +11400,11 @@ export default [
     aliases: ['trolleybus'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚐',
@@ -7997,7 +11413,11 @@ export default [
     aliases: ['minibus'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚑',
@@ -8006,7 +11426,11 @@ export default [
     aliases: ['ambulance'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚒',
@@ -8015,7 +11439,11 @@ export default [
     aliases: ['fire_engine'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚓',
@@ -8024,7 +11452,11 @@ export default [
     aliases: ['police_car'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚔',
@@ -8033,7 +11465,11 @@ export default [
     aliases: ['oncoming_police_car'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚕',
@@ -8042,7 +11478,11 @@ export default [
     aliases: ['taxi'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚖',
@@ -8051,7 +11491,11 @@ export default [
     aliases: ['oncoming_taxi'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚗',
@@ -8060,7 +11504,11 @@ export default [
     aliases: ['car', 'red_car'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚘',
@@ -8069,7 +11517,11 @@ export default [
     aliases: ['oncoming_automobile'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚙',
@@ -8078,7 +11530,11 @@ export default [
     aliases: ['blue_car'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🛻',
@@ -8087,7 +11543,11 @@ export default [
     aliases: ['pickup_truck'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🚚',
@@ -8096,7 +11556,11 @@ export default [
     aliases: ['truck'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚛',
@@ -8105,7 +11569,11 @@ export default [
     aliases: ['articulated_lorry'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚜',
@@ -8114,7 +11582,11 @@ export default [
     aliases: ['tractor'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🏎️',
@@ -8123,7 +11595,11 @@ export default [
     aliases: ['racing_car'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🏍️',
@@ -8132,7 +11608,11 @@ export default [
     aliases: ['motorcycle'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🛵',
@@ -8141,7 +11621,11 @@ export default [
     aliases: ['motor_scooter'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🦽',
@@ -8150,7 +11634,11 @@ export default [
     aliases: ['manual_wheelchair'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🦼',
@@ -8159,7 +11647,11 @@ export default [
     aliases: ['motorized_wheelchair'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🛺',
@@ -8168,7 +11660,11 @@ export default [
     aliases: ['auto_rickshaw'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🚲',
@@ -8177,7 +11673,11 @@ export default [
     aliases: ['bike'],
     tags: ['bicycle'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🛴',
@@ -8186,7 +11686,11 @@ export default [
     aliases: ['kick_scooter'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🛹',
@@ -8195,7 +11699,11 @@ export default [
     aliases: ['skateboard'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🛼',
@@ -8204,7 +11712,11 @@ export default [
     aliases: ['roller_skate'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🚏',
@@ -8213,7 +11725,11 @@ export default [
     aliases: ['busstop'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🛣️',
@@ -8222,7 +11738,11 @@ export default [
     aliases: ['motorway'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🛤️',
@@ -8231,7 +11751,11 @@ export default [
     aliases: ['railway_track'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🛢️',
@@ -8240,7 +11764,11 @@ export default [
     aliases: ['oil_drum'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '⛽',
@@ -8249,7 +11777,11 @@ export default [
     aliases: ['fuelpump'],
     tags: [],
     unicode_version: '5.2',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚨',
@@ -8258,7 +11790,11 @@ export default [
     aliases: ['rotating_light'],
     tags: ['911', 'emergency'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚥',
@@ -8267,7 +11803,11 @@ export default [
     aliases: ['traffic_light'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚦',
@@ -8276,7 +11816,11 @@ export default [
     aliases: ['vertical_traffic_light'],
     tags: ['semaphore'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🛑',
@@ -8285,7 +11829,11 @@ export default [
     aliases: ['stop_sign'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🚧',
@@ -8294,7 +11842,11 @@ export default [
     aliases: ['construction'],
     tags: ['wip'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⚓',
@@ -8303,7 +11855,11 @@ export default [
     aliases: ['anchor'],
     tags: ['ship'],
     unicode_version: '4.1',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⛵',
@@ -8312,7 +11868,11 @@ export default [
     aliases: ['boat', 'sailboat'],
     tags: [],
     unicode_version: '5.2',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🛶',
@@ -8321,7 +11881,11 @@ export default [
     aliases: ['canoe'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🚤',
@@ -8330,7 +11894,11 @@ export default [
     aliases: ['speedboat'],
     tags: ['ship'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🛳️',
@@ -8339,7 +11907,11 @@ export default [
     aliases: ['passenger_ship'],
     tags: ['cruise'],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '⛴️',
@@ -8348,7 +11920,11 @@ export default [
     aliases: ['ferry'],
     tags: [],
     unicode_version: '5.2',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🛥️',
@@ -8357,7 +11933,11 @@ export default [
     aliases: ['motor_boat'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🚢',
@@ -8366,7 +11946,11 @@ export default [
     aliases: ['ship'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '✈️',
@@ -8375,7 +11959,11 @@ export default [
     aliases: ['airplane'],
     tags: ['flight'],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🛩️',
@@ -8384,7 +11972,11 @@ export default [
     aliases: ['small_airplane'],
     tags: ['flight'],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🛫',
@@ -8393,7 +11985,11 @@ export default [
     aliases: ['flight_departure'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🛬',
@@ -8402,7 +11998,11 @@ export default [
     aliases: ['flight_arrival'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🪂',
@@ -8411,7 +12011,11 @@ export default [
     aliases: ['parachute'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '💺',
@@ -8420,7 +12024,11 @@ export default [
     aliases: ['seat'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚁',
@@ -8429,7 +12037,11 @@ export default [
     aliases: ['helicopter'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚟',
@@ -8438,7 +12050,11 @@ export default [
     aliases: ['suspension_railway'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚠',
@@ -8447,7 +12063,11 @@ export default [
     aliases: ['mountain_cableway'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚡',
@@ -8456,7 +12076,11 @@ export default [
     aliases: ['aerial_tramway'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🛰️',
@@ -8465,7 +12089,11 @@ export default [
     aliases: ['artificial_satellite'],
     tags: ['orbit', 'space'],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🚀',
@@ -8474,7 +12102,11 @@ export default [
     aliases: ['rocket'],
     tags: ['ship', 'launch'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🛸',
@@ -8483,7 +12115,11 @@ export default [
     aliases: ['flying_saucer'],
     tags: ['ufo'],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🛎️',
@@ -8492,7 +12128,11 @@ export default [
     aliases: ['bellhop_bell'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🧳',
@@ -8501,7 +12141,11 @@ export default [
     aliases: ['luggage'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '⌛',
@@ -8510,7 +12154,11 @@ export default [
     aliases: ['hourglass'],
     tags: ['time'],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⏳',
@@ -8519,7 +12167,11 @@ export default [
     aliases: ['hourglass_flowing_sand'],
     tags: ['time'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⌚',
@@ -8528,7 +12180,11 @@ export default [
     aliases: ['watch'],
     tags: ['time'],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⏰',
@@ -8537,7 +12193,11 @@ export default [
     aliases: ['alarm_clock'],
     tags: ['morning'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⏱️',
@@ -8546,7 +12206,11 @@ export default [
     aliases: ['stopwatch'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '⏲️',
@@ -8555,7 +12219,11 @@ export default [
     aliases: ['timer_clock'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🕰️',
@@ -8564,7 +12232,11 @@ export default [
     aliases: ['mantelpiece_clock'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🕛',
@@ -8573,7 +12245,11 @@ export default [
     aliases: ['clock12'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕧',
@@ -8582,7 +12258,11 @@ export default [
     aliases: ['clock1230'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕐',
@@ -8591,7 +12271,11 @@ export default [
     aliases: ['clock1'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕜',
@@ -8600,7 +12284,11 @@ export default [
     aliases: ['clock130'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕑',
@@ -8609,7 +12297,11 @@ export default [
     aliases: ['clock2'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕝',
@@ -8618,7 +12310,11 @@ export default [
     aliases: ['clock230'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕒',
@@ -8627,7 +12323,11 @@ export default [
     aliases: ['clock3'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕞',
@@ -8636,7 +12336,11 @@ export default [
     aliases: ['clock330'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕓',
@@ -8645,7 +12349,11 @@ export default [
     aliases: ['clock4'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕟',
@@ -8654,7 +12362,11 @@ export default [
     aliases: ['clock430'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕔',
@@ -8663,7 +12375,11 @@ export default [
     aliases: ['clock5'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕠',
@@ -8672,7 +12388,11 @@ export default [
     aliases: ['clock530'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕕',
@@ -8681,7 +12401,11 @@ export default [
     aliases: ['clock6'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕡',
@@ -8690,7 +12414,11 @@ export default [
     aliases: ['clock630'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕖',
@@ -8699,7 +12427,11 @@ export default [
     aliases: ['clock7'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕢',
@@ -8708,7 +12440,11 @@ export default [
     aliases: ['clock730'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕗',
@@ -8717,7 +12453,11 @@ export default [
     aliases: ['clock8'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕣',
@@ -8726,7 +12466,11 @@ export default [
     aliases: ['clock830'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕘',
@@ -8735,7 +12479,11 @@ export default [
     aliases: ['clock9'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕤',
@@ -8744,7 +12492,11 @@ export default [
     aliases: ['clock930'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕙',
@@ -8753,7 +12505,11 @@ export default [
     aliases: ['clock10'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕥',
@@ -8762,7 +12518,11 @@ export default [
     aliases: ['clock1030'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕚',
@@ -8771,7 +12531,11 @@ export default [
     aliases: ['clock11'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕦',
@@ -8780,7 +12544,11 @@ export default [
     aliases: ['clock1130'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌑',
@@ -8789,7 +12557,11 @@ export default [
     aliases: ['new_moon'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌒',
@@ -8798,7 +12570,11 @@ export default [
     aliases: ['waxing_crescent_moon'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌓',
@@ -8807,7 +12583,11 @@ export default [
     aliases: ['first_quarter_moon'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌔',
@@ -8816,7 +12596,11 @@ export default [
     aliases: ['moon', 'waxing_gibbous_moon'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌕',
@@ -8825,7 +12609,11 @@ export default [
     aliases: ['full_moon'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌖',
@@ -8834,7 +12622,11 @@ export default [
     aliases: ['waning_gibbous_moon'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌗',
@@ -8843,7 +12635,11 @@ export default [
     aliases: ['last_quarter_moon'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌘',
@@ -8852,7 +12648,11 @@ export default [
     aliases: ['waning_crescent_moon'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌙',
@@ -8861,7 +12661,11 @@ export default [
     aliases: ['crescent_moon'],
     tags: ['night'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌚',
@@ -8870,7 +12674,11 @@ export default [
     aliases: ['new_moon_with_face'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌛',
@@ -8879,7 +12687,11 @@ export default [
     aliases: ['first_quarter_moon_with_face'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌜',
@@ -8888,7 +12700,11 @@ export default [
     aliases: ['last_quarter_moon_with_face'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌡️',
@@ -8897,7 +12713,11 @@ export default [
     aliases: ['thermometer'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '☀️',
@@ -8906,7 +12726,11 @@ export default [
     aliases: ['sunny'],
     tags: ['weather'],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌝',
@@ -8915,7 +12739,11 @@ export default [
     aliases: ['full_moon_with_face'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌞',
@@ -8924,7 +12752,11 @@ export default [
     aliases: ['sun_with_face'],
     tags: ['summer'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🪐',
@@ -8933,7 +12765,11 @@ export default [
     aliases: ['ringed_planet'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '⭐',
@@ -8942,7 +12778,11 @@ export default [
     aliases: ['star'],
     tags: [],
     unicode_version: '5.1',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌟',
@@ -8951,7 +12791,11 @@ export default [
     aliases: ['star2'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌠',
@@ -8960,7 +12804,11 @@ export default [
     aliases: ['stars'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌌',
@@ -8969,7 +12817,11 @@ export default [
     aliases: ['milky_way'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '☁️',
@@ -8978,7 +12830,11 @@ export default [
     aliases: ['cloud'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⛅',
@@ -8987,7 +12843,11 @@ export default [
     aliases: ['partly_sunny'],
     tags: ['weather', 'cloud'],
     unicode_version: '5.2',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⛈️',
@@ -8996,7 +12856,11 @@ export default [
     aliases: ['cloud_with_lightning_and_rain'],
     tags: [],
     unicode_version: '5.2',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🌤️',
@@ -9005,7 +12869,11 @@ export default [
     aliases: ['sun_behind_small_cloud'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🌥️',
@@ -9014,7 +12882,11 @@ export default [
     aliases: ['sun_behind_large_cloud'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🌦️',
@@ -9023,7 +12895,11 @@ export default [
     aliases: ['sun_behind_rain_cloud'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🌧️',
@@ -9032,7 +12908,11 @@ export default [
     aliases: ['cloud_with_rain'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🌨️',
@@ -9041,7 +12921,11 @@ export default [
     aliases: ['cloud_with_snow'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🌩️',
@@ -9050,7 +12934,11 @@ export default [
     aliases: ['cloud_with_lightning'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🌪️',
@@ -9059,7 +12947,11 @@ export default [
     aliases: ['tornado'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🌫️',
@@ -9068,7 +12960,11 @@ export default [
     aliases: ['fog'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🌬️',
@@ -9077,7 +12973,11 @@ export default [
     aliases: ['wind_face'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🌀',
@@ -9086,7 +12986,11 @@ export default [
     aliases: ['cyclone'],
     tags: ['swirl'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌈',
@@ -9095,7 +12999,11 @@ export default [
     aliases: ['rainbow'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌂',
@@ -9104,7 +13012,11 @@ export default [
     aliases: ['closed_umbrella'],
     tags: ['weather', 'rain'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '☂️',
@@ -9113,7 +13025,11 @@ export default [
     aliases: ['open_umbrella'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '☔',
@@ -9122,7 +13038,11 @@ export default [
     aliases: ['umbrella'],
     tags: ['rain', 'weather'],
     unicode_version: '4.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⛱️',
@@ -9131,7 +13051,11 @@ export default [
     aliases: ['parasol_on_ground'],
     tags: ['beach_umbrella'],
     unicode_version: '5.2',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '⚡',
@@ -9140,7 +13064,11 @@ export default [
     aliases: ['zap'],
     tags: ['lightning', 'thunder'],
     unicode_version: '4.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '❄️',
@@ -9149,7 +13077,11 @@ export default [
     aliases: ['snowflake'],
     tags: ['winter', 'cold', 'weather'],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '☃️',
@@ -9158,7 +13090,11 @@ export default [
     aliases: ['snowman_with_snow'],
     tags: ['winter', 'christmas'],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '⛄',
@@ -9167,7 +13103,11 @@ export default [
     aliases: ['snowman'],
     tags: ['winter'],
     unicode_version: '5.2',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '☄️',
@@ -9176,7 +13116,11 @@ export default [
     aliases: ['comet'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🔥',
@@ -9185,7 +13129,11 @@ export default [
     aliases: ['fire'],
     tags: ['burn'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💧',
@@ -9194,7 +13142,11 @@ export default [
     aliases: ['droplet'],
     tags: ['water'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🌊',
@@ -9203,7 +13155,11 @@ export default [
     aliases: ['ocean'],
     tags: ['sea'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎃',
@@ -9212,7 +13168,11 @@ export default [
     aliases: ['jack_o_lantern'],
     tags: ['halloween'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎄',
@@ -9221,7 +13181,11 @@ export default [
     aliases: ['christmas_tree'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎆',
@@ -9230,7 +13194,11 @@ export default [
     aliases: ['fireworks'],
     tags: ['festival', 'celebration'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎇',
@@ -9239,7 +13207,11 @@ export default [
     aliases: ['sparkler'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🧨',
@@ -9248,7 +13220,11 @@ export default [
     aliases: ['firecracker'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '✨',
@@ -9257,7 +13233,11 @@ export default [
     aliases: ['sparkles'],
     tags: ['shiny'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎈',
@@ -9266,7 +13246,11 @@ export default [
     aliases: ['balloon'],
     tags: ['party', 'birthday'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎉',
@@ -9275,7 +13259,11 @@ export default [
     aliases: ['tada'],
     tags: ['hooray', 'party'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎊',
@@ -9284,7 +13272,11 @@ export default [
     aliases: ['confetti_ball'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎋',
@@ -9293,7 +13285,11 @@ export default [
     aliases: ['tanabata_tree'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎍',
@@ -9302,7 +13298,11 @@ export default [
     aliases: ['bamboo'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎎',
@@ -9311,7 +13311,11 @@ export default [
     aliases: ['dolls'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎏',
@@ -9320,7 +13324,11 @@ export default [
     aliases: ['flags'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎐',
@@ -9329,7 +13337,11 @@ export default [
     aliases: ['wind_chime'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎑',
@@ -9338,7 +13350,11 @@ export default [
     aliases: ['rice_scene'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🧧',
@@ -9347,7 +13363,11 @@ export default [
     aliases: ['red_envelope'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🎀',
@@ -9356,7 +13376,11 @@ export default [
     aliases: ['ribbon'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎁',
@@ -9365,7 +13389,11 @@ export default [
     aliases: ['gift'],
     tags: ['present', 'birthday', 'christmas'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎗️',
@@ -9374,7 +13402,11 @@ export default [
     aliases: ['reminder_ribbon'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🎟️',
@@ -9383,7 +13415,11 @@ export default [
     aliases: ['tickets'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🎫',
@@ -9392,7 +13428,11 @@ export default [
     aliases: ['ticket'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎖️',
@@ -9401,7 +13441,11 @@ export default [
     aliases: ['medal_military'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🏆',
@@ -9410,7 +13454,11 @@ export default [
     aliases: ['trophy'],
     tags: ['award', 'contest', 'winner'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🏅',
@@ -9419,7 +13467,11 @@ export default [
     aliases: ['medal_sports'],
     tags: ['gold', 'winner'],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🥇',
@@ -9428,7 +13480,11 @@ export default [
     aliases: ['1st_place_medal'],
     tags: ['gold'],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🥈',
@@ -9437,7 +13493,11 @@ export default [
     aliases: ['2nd_place_medal'],
     tags: ['silver'],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🥉',
@@ -9446,7 +13506,11 @@ export default [
     aliases: ['3rd_place_medal'],
     tags: ['bronze'],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '⚽',
@@ -9455,7 +13519,11 @@ export default [
     aliases: ['soccer'],
     tags: ['sports'],
     unicode_version: '5.2',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⚾',
@@ -9464,7 +13532,11 @@ export default [
     aliases: ['baseball'],
     tags: ['sports'],
     unicode_version: '5.2',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🥎',
@@ -9473,7 +13545,11 @@ export default [
     aliases: ['softball'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🏀',
@@ -9482,7 +13558,11 @@ export default [
     aliases: ['basketball'],
     tags: ['sports'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🏐',
@@ -9491,7 +13571,11 @@ export default [
     aliases: ['volleyball'],
     tags: [],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🏈',
@@ -9500,7 +13584,11 @@ export default [
     aliases: ['football'],
     tags: ['sports'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🏉',
@@ -9509,7 +13597,11 @@ export default [
     aliases: ['rugby_football'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎾',
@@ -9518,7 +13610,11 @@ export default [
     aliases: ['tennis'],
     tags: ['sports'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🥏',
@@ -9527,7 +13623,11 @@ export default [
     aliases: ['flying_disc'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🎳',
@@ -9536,7 +13636,11 @@ export default [
     aliases: ['bowling'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🏏',
@@ -9545,7 +13649,11 @@ export default [
     aliases: ['cricket_game'],
     tags: [],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🏑',
@@ -9554,7 +13662,11 @@ export default [
     aliases: ['field_hockey'],
     tags: [],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🏒',
@@ -9563,7 +13675,11 @@ export default [
     aliases: ['ice_hockey'],
     tags: [],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🥍',
@@ -9572,7 +13688,11 @@ export default [
     aliases: ['lacrosse'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🏓',
@@ -9581,7 +13701,11 @@ export default [
     aliases: ['ping_pong'],
     tags: [],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🏸',
@@ -9590,7 +13714,11 @@ export default [
     aliases: ['badminton'],
     tags: [],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🥊',
@@ -9599,7 +13727,11 @@ export default [
     aliases: ['boxing_glove'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🥋',
@@ -9608,7 +13740,11 @@ export default [
     aliases: ['martial_arts_uniform'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🥅',
@@ -9617,7 +13753,11 @@ export default [
     aliases: ['goal_net'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '⛳',
@@ -9626,7 +13766,11 @@ export default [
     aliases: ['golf'],
     tags: [],
     unicode_version: '5.2',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⛸️',
@@ -9635,7 +13779,11 @@ export default [
     aliases: ['ice_skate'],
     tags: ['skating'],
     unicode_version: '5.2',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🎣',
@@ -9644,7 +13792,11 @@ export default [
     aliases: ['fishing_pole_and_fish'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🤿',
@@ -9653,7 +13805,11 @@ export default [
     aliases: ['diving_mask'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🎽',
@@ -9662,7 +13818,11 @@ export default [
     aliases: ['running_shirt_with_sash'],
     tags: ['marathon'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎿',
@@ -9671,7 +13831,11 @@ export default [
     aliases: ['ski'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🛷',
@@ -9680,7 +13844,11 @@ export default [
     aliases: ['sled'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🥌',
@@ -9689,7 +13857,11 @@ export default [
     aliases: ['curling_stone'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🎯',
@@ -9698,7 +13870,11 @@ export default [
     aliases: ['dart'],
     tags: ['target'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🪀',
@@ -9707,7 +13883,11 @@ export default [
     aliases: ['yo_yo'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🪁',
@@ -9716,7 +13896,11 @@ export default [
     aliases: ['kite'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🎱',
@@ -9725,7 +13909,11 @@ export default [
     aliases: ['8ball'],
     tags: ['pool', 'billiards'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔮',
@@ -9734,7 +13922,11 @@ export default [
     aliases: ['crystal_ball'],
     tags: ['fortune'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🪄',
@@ -9743,7 +13935,11 @@ export default [
     aliases: ['magic_wand'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🧿',
@@ -9752,7 +13948,11 @@ export default [
     aliases: ['nazar_amulet'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🎮',
@@ -9761,7 +13961,11 @@ export default [
     aliases: ['video_game'],
     tags: ['play', 'controller', 'console'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕹️',
@@ -9770,7 +13974,11 @@ export default [
     aliases: ['joystick'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🎰',
@@ -9779,7 +13987,11 @@ export default [
     aliases: ['slot_machine'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎲',
@@ -9788,7 +14000,11 @@ export default [
     aliases: ['game_die'],
     tags: ['dice', 'gambling'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🧩',
@@ -9797,7 +14013,11 @@ export default [
     aliases: ['jigsaw'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🧸',
@@ -9806,7 +14026,11 @@ export default [
     aliases: ['teddy_bear'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🪅',
@@ -9815,7 +14039,11 @@ export default [
     aliases: ['pinata'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🪆',
@@ -9824,7 +14052,11 @@ export default [
     aliases: ['nesting_dolls'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '♠️',
@@ -9833,7 +14065,11 @@ export default [
     aliases: ['spades'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '♥️',
@@ -9842,7 +14078,11 @@ export default [
     aliases: ['hearts'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '♦️',
@@ -9851,7 +14091,11 @@ export default [
     aliases: ['diamonds'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '♣️',
@@ -9860,7 +14104,11 @@ export default [
     aliases: ['clubs'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '♟️',
@@ -9869,7 +14117,11 @@ export default [
     aliases: ['chess_pawn'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🃏',
@@ -9878,7 +14130,11 @@ export default [
     aliases: ['black_joker'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🀄',
@@ -9887,7 +14143,11 @@ export default [
     aliases: ['mahjong'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎴',
@@ -9896,7 +14156,11 @@ export default [
     aliases: ['flower_playing_cards'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎭',
@@ -9905,7 +14169,11 @@ export default [
     aliases: ['performing_arts'],
     tags: ['theater', 'drama'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🖼️',
@@ -9914,7 +14182,11 @@ export default [
     aliases: ['framed_picture'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🎨',
@@ -9923,7 +14195,11 @@ export default [
     aliases: ['art'],
     tags: ['design', 'paint'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🧵',
@@ -9932,7 +14208,11 @@ export default [
     aliases: ['thread'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🪡',
@@ -9941,7 +14221,11 @@ export default [
     aliases: ['sewing_needle'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🧶',
@@ -9950,7 +14234,11 @@ export default [
     aliases: ['yarn'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🪢',
@@ -9959,7 +14247,11 @@ export default [
     aliases: ['knot'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '👓',
@@ -9968,7 +14260,11 @@ export default [
     aliases: ['eyeglasses'],
     tags: ['glasses'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕶️',
@@ -9977,7 +14273,11 @@ export default [
     aliases: ['dark_sunglasses'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🥽',
@@ -9986,7 +14286,11 @@ export default [
     aliases: ['goggles'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🥼',
@@ -9995,7 +14299,11 @@ export default [
     aliases: ['lab_coat'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🦺',
@@ -10004,7 +14312,11 @@ export default [
     aliases: ['safety_vest'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '👔',
@@ -10013,7 +14325,11 @@ export default [
     aliases: ['necktie'],
     tags: ['shirt', 'formal'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '👕',
@@ -10022,7 +14338,11 @@ export default [
     aliases: ['shirt', 'tshirt'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '👖',
@@ -10031,7 +14351,11 @@ export default [
     aliases: ['jeans'],
     tags: ['pants'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🧣',
@@ -10040,7 +14364,11 @@ export default [
     aliases: ['scarf'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🧤',
@@ -10049,7 +14377,11 @@ export default [
     aliases: ['gloves'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🧥',
@@ -10058,7 +14390,11 @@ export default [
     aliases: ['coat'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🧦',
@@ -10067,7 +14403,11 @@ export default [
     aliases: ['socks'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '👗',
@@ -10076,7 +14416,11 @@ export default [
     aliases: ['dress'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '👘',
@@ -10085,7 +14429,11 @@ export default [
     aliases: ['kimono'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🥻',
@@ -10094,7 +14442,11 @@ export default [
     aliases: ['sari'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🩱',
@@ -10103,7 +14455,11 @@ export default [
     aliases: ['one_piece_swimsuit'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🩲',
@@ -10112,7 +14468,11 @@ export default [
     aliases: ['swim_brief'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🩳',
@@ -10121,7 +14481,11 @@ export default [
     aliases: ['shorts'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '👙',
@@ -10130,7 +14494,11 @@ export default [
     aliases: ['bikini'],
     tags: ['beach'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '👚',
@@ -10139,7 +14507,11 @@ export default [
     aliases: ['womans_clothes'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '👛',
@@ -10148,7 +14520,11 @@ export default [
     aliases: ['purse'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '👜',
@@ -10157,7 +14533,11 @@ export default [
     aliases: ['handbag'],
     tags: ['bag'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '👝',
@@ -10166,7 +14546,11 @@ export default [
     aliases: ['pouch'],
     tags: ['bag'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🛍️',
@@ -10175,7 +14559,11 @@ export default [
     aliases: ['shopping'],
     tags: ['bags'],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🎒',
@@ -10184,7 +14572,11 @@ export default [
     aliases: ['school_satchel'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🩴',
@@ -10193,7 +14585,11 @@ export default [
     aliases: ['thong_sandal'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '👞',
@@ -10202,7 +14598,11 @@ export default [
     aliases: ['mans_shoe', 'shoe'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '👟',
@@ -10211,7 +14611,11 @@ export default [
     aliases: ['athletic_shoe'],
     tags: ['sneaker', 'sport', 'running'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🥾',
@@ -10220,7 +14624,11 @@ export default [
     aliases: ['hiking_boot'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🥿',
@@ -10229,7 +14637,11 @@ export default [
     aliases: ['flat_shoe'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '👠',
@@ -10238,7 +14650,11 @@ export default [
     aliases: ['high_heel'],
     tags: ['shoe'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '👡',
@@ -10247,7 +14663,11 @@ export default [
     aliases: ['sandal'],
     tags: ['shoe'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🩰',
@@ -10256,7 +14676,11 @@ export default [
     aliases: ['ballet_shoes'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '👢',
@@ -10265,7 +14689,11 @@ export default [
     aliases: ['boot'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '👑',
@@ -10274,7 +14702,11 @@ export default [
     aliases: ['crown'],
     tags: ['king', 'queen', 'royal'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '👒',
@@ -10283,7 +14715,11 @@ export default [
     aliases: ['womans_hat'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎩',
@@ -10292,7 +14728,11 @@ export default [
     aliases: ['tophat'],
     tags: ['hat', 'classy'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎓',
@@ -10301,7 +14741,11 @@ export default [
     aliases: ['mortar_board'],
     tags: ['education', 'college', 'university', 'graduation'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🧢',
@@ -10310,7 +14754,11 @@ export default [
     aliases: ['billed_cap'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🪖',
@@ -10319,7 +14767,11 @@ export default [
     aliases: ['military_helmet'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '⛑️',
@@ -10328,7 +14780,11 @@ export default [
     aliases: ['rescue_worker_helmet'],
     tags: [],
     unicode_version: '5.2',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '📿',
@@ -10337,7 +14793,11 @@ export default [
     aliases: ['prayer_beads'],
     tags: [],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '💄',
@@ -10346,7 +14806,11 @@ export default [
     aliases: ['lipstick'],
     tags: ['makeup'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💍',
@@ -10355,7 +14819,11 @@ export default [
     aliases: ['ring'],
     tags: ['wedding', 'marriage', 'engaged'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💎',
@@ -10364,7 +14832,11 @@ export default [
     aliases: ['gem'],
     tags: ['diamond'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔇',
@@ -10373,7 +14845,11 @@ export default [
     aliases: ['mute'],
     tags: ['sound', 'volume'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔈',
@@ -10382,7 +14858,11 @@ export default [
     aliases: ['speaker'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔉',
@@ -10391,7 +14871,11 @@ export default [
     aliases: ['sound'],
     tags: ['volume'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔊',
@@ -10400,7 +14884,11 @@ export default [
     aliases: ['loud_sound'],
     tags: ['volume'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📢',
@@ -10409,7 +14897,11 @@ export default [
     aliases: ['loudspeaker'],
     tags: ['announcement'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📣',
@@ -10418,7 +14910,11 @@ export default [
     aliases: ['mega'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📯',
@@ -10427,7 +14923,11 @@ export default [
     aliases: ['postal_horn'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔔',
@@ -10436,7 +14936,11 @@ export default [
     aliases: ['bell'],
     tags: ['sound', 'notification'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔕',
@@ -10445,7 +14949,11 @@ export default [
     aliases: ['no_bell'],
     tags: ['volume', 'off'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎼',
@@ -10454,7 +14962,11 @@ export default [
     aliases: ['musical_score'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎵',
@@ -10463,7 +14975,11 @@ export default [
     aliases: ['musical_note'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎶',
@@ -10472,7 +14988,11 @@ export default [
     aliases: ['notes'],
     tags: ['music'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎙️',
@@ -10481,7 +15001,11 @@ export default [
     aliases: ['studio_microphone'],
     tags: ['podcast'],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🎚️',
@@ -10490,7 +15014,11 @@ export default [
     aliases: ['level_slider'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🎛️',
@@ -10499,7 +15027,11 @@ export default [
     aliases: ['control_knobs'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🎤',
@@ -10508,7 +15040,11 @@ export default [
     aliases: ['microphone'],
     tags: ['sing'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎧',
@@ -10517,7 +15053,11 @@ export default [
     aliases: ['headphones'],
     tags: ['music', 'earphones'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📻',
@@ -10526,7 +15066,11 @@ export default [
     aliases: ['radio'],
     tags: ['podcast'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎷',
@@ -10535,7 +15079,11 @@ export default [
     aliases: ['saxophone'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🪗',
@@ -10544,7 +15092,11 @@ export default [
     aliases: ['accordion'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🎸',
@@ -10553,7 +15105,11 @@ export default [
     aliases: ['guitar'],
     tags: ['rock'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎹',
@@ -10562,7 +15118,11 @@ export default [
     aliases: ['musical_keyboard'],
     tags: ['piano'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎺',
@@ -10571,7 +15131,11 @@ export default [
     aliases: ['trumpet'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎻',
@@ -10580,7 +15144,11 @@ export default [
     aliases: ['violin'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🪕',
@@ -10589,7 +15157,11 @@ export default [
     aliases: ['banjo'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🥁',
@@ -10598,7 +15170,11 @@ export default [
     aliases: ['drum'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🪘',
@@ -10607,7 +15183,11 @@ export default [
     aliases: ['long_drum'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '📱',
@@ -10616,7 +15196,11 @@ export default [
     aliases: ['iphone'],
     tags: ['smartphone', 'mobile'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📲',
@@ -10625,7 +15209,11 @@ export default [
     aliases: ['calling'],
     tags: ['call', 'incoming'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '☎️',
@@ -10634,7 +15222,11 @@ export default [
     aliases: ['phone', 'telephone'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📞',
@@ -10643,7 +15235,11 @@ export default [
     aliases: ['telephone_receiver'],
     tags: ['phone', 'call'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📟',
@@ -10652,7 +15248,11 @@ export default [
     aliases: ['pager'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📠',
@@ -10661,7 +15261,11 @@ export default [
     aliases: ['fax'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔋',
@@ -10670,7 +15274,11 @@ export default [
     aliases: ['battery'],
     tags: ['power'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔌',
@@ -10679,7 +15287,11 @@ export default [
     aliases: ['electric_plug'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💻',
@@ -10688,7 +15300,11 @@ export default [
     aliases: ['computer'],
     tags: ['desktop', 'screen'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🖥️',
@@ -10697,7 +15313,11 @@ export default [
     aliases: ['desktop_computer'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🖨️',
@@ -10706,7 +15326,11 @@ export default [
     aliases: ['printer'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '⌨️',
@@ -10715,7 +15339,11 @@ export default [
     aliases: ['keyboard'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🖱️',
@@ -10724,7 +15352,11 @@ export default [
     aliases: ['computer_mouse'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🖲️',
@@ -10733,7 +15365,11 @@ export default [
     aliases: ['trackball'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '💽',
@@ -10742,7 +15378,11 @@ export default [
     aliases: ['minidisc'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💾',
@@ -10751,7 +15391,11 @@ export default [
     aliases: ['floppy_disk'],
     tags: ['save'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💿',
@@ -10760,7 +15404,11 @@ export default [
     aliases: ['cd'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📀',
@@ -10769,7 +15417,11 @@ export default [
     aliases: ['dvd'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🧮',
@@ -10778,7 +15430,11 @@ export default [
     aliases: ['abacus'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🎥',
@@ -10787,7 +15443,11 @@ export default [
     aliases: ['movie_camera'],
     tags: ['film', 'video'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎞️',
@@ -10796,7 +15456,11 @@ export default [
     aliases: ['film_strip'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '📽️',
@@ -10805,7 +15469,11 @@ export default [
     aliases: ['film_projector'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🎬',
@@ -10814,7 +15482,11 @@ export default [
     aliases: ['clapper'],
     tags: ['film'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📺',
@@ -10823,7 +15495,11 @@ export default [
     aliases: ['tv'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📷',
@@ -10832,7 +15508,11 @@ export default [
     aliases: ['camera'],
     tags: ['photo'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📸',
@@ -10841,7 +15521,11 @@ export default [
     aliases: ['camera_flash'],
     tags: ['photo'],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '📹',
@@ -10850,7 +15534,11 @@ export default [
     aliases: ['video_camera'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📼',
@@ -10859,7 +15547,11 @@ export default [
     aliases: ['vhs'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔍',
@@ -10868,7 +15560,11 @@ export default [
     aliases: ['mag'],
     tags: ['search', 'zoom'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔎',
@@ -10877,7 +15573,11 @@ export default [
     aliases: ['mag_right'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🕯️',
@@ -10886,7 +15586,11 @@ export default [
     aliases: ['candle'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '💡',
@@ -10895,7 +15599,11 @@ export default [
     aliases: ['bulb'],
     tags: ['idea', 'light'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔦',
@@ -10904,7 +15612,11 @@ export default [
     aliases: ['flashlight'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🏮',
@@ -10913,7 +15625,11 @@ export default [
     aliases: ['izakaya_lantern', 'lantern'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🪔',
@@ -10922,7 +15638,11 @@ export default [
     aliases: ['diya_lamp'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '📔',
@@ -10931,7 +15651,11 @@ export default [
     aliases: ['notebook_with_decorative_cover'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📕',
@@ -10940,7 +15664,11 @@ export default [
     aliases: ['closed_book'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📖',
@@ -10949,7 +15677,11 @@ export default [
     aliases: ['book', 'open_book'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📗',
@@ -10958,7 +15690,11 @@ export default [
     aliases: ['green_book'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📘',
@@ -10967,7 +15703,11 @@ export default [
     aliases: ['blue_book'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📙',
@@ -10976,7 +15716,11 @@ export default [
     aliases: ['orange_book'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📚',
@@ -10985,7 +15729,11 @@ export default [
     aliases: ['books'],
     tags: ['library'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📓',
@@ -10994,7 +15742,11 @@ export default [
     aliases: ['notebook'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📒',
@@ -11003,7 +15755,11 @@ export default [
     aliases: ['ledger'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📃',
@@ -11012,7 +15768,11 @@ export default [
     aliases: ['page_with_curl'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📜',
@@ -11021,7 +15781,11 @@ export default [
     aliases: ['scroll'],
     tags: ['document'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📄',
@@ -11030,7 +15794,11 @@ export default [
     aliases: ['page_facing_up'],
     tags: ['document'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📰',
@@ -11039,7 +15807,11 @@ export default [
     aliases: ['newspaper'],
     tags: ['press'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🗞️',
@@ -11048,7 +15820,11 @@ export default [
     aliases: ['newspaper_roll'],
     tags: ['press'],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '📑',
@@ -11057,7 +15833,11 @@ export default [
     aliases: ['bookmark_tabs'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔖',
@@ -11066,7 +15846,11 @@ export default [
     aliases: ['bookmark'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🏷️',
@@ -11075,7 +15859,11 @@ export default [
     aliases: ['label'],
     tags: ['tag'],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '💰',
@@ -11084,7 +15872,11 @@ export default [
     aliases: ['moneybag'],
     tags: ['dollar', 'cream'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🪙',
@@ -11093,7 +15885,11 @@ export default [
     aliases: ['coin'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '💴',
@@ -11102,7 +15898,11 @@ export default [
     aliases: ['yen'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💵',
@@ -11111,7 +15911,11 @@ export default [
     aliases: ['dollar'],
     tags: ['money'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💶',
@@ -11120,7 +15924,11 @@ export default [
     aliases: ['euro'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💷',
@@ -11129,7 +15937,11 @@ export default [
     aliases: ['pound'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💸',
@@ -11138,7 +15950,11 @@ export default [
     aliases: ['money_with_wings'],
     tags: ['dollar'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💳',
@@ -11147,7 +15963,11 @@ export default [
     aliases: ['credit_card'],
     tags: ['subscription'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🧾',
@@ -11156,7 +15976,11 @@ export default [
     aliases: ['receipt'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '💹',
@@ -11165,7 +15989,11 @@ export default [
     aliases: ['chart'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '✉️',
@@ -11174,7 +16002,11 @@ export default [
     aliases: ['envelope'],
     tags: ['letter', 'email'],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📧',
@@ -11183,7 +16015,11 @@ export default [
     aliases: ['email', 'e-mail'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📨',
@@ -11192,7 +16028,11 @@ export default [
     aliases: ['incoming_envelope'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📩',
@@ -11201,7 +16041,11 @@ export default [
     aliases: ['envelope_with_arrow'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📤',
@@ -11210,7 +16054,11 @@ export default [
     aliases: ['outbox_tray'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📥',
@@ -11219,7 +16067,11 @@ export default [
     aliases: ['inbox_tray'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📦',
@@ -11228,7 +16080,11 @@ export default [
     aliases: ['package'],
     tags: ['shipping'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📫',
@@ -11237,7 +16093,11 @@ export default [
     aliases: ['mailbox'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📪',
@@ -11246,7 +16106,11 @@ export default [
     aliases: ['mailbox_closed'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📬',
@@ -11255,7 +16119,11 @@ export default [
     aliases: ['mailbox_with_mail'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📭',
@@ -11264,7 +16132,11 @@ export default [
     aliases: ['mailbox_with_no_mail'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📮',
@@ -11273,7 +16145,11 @@ export default [
     aliases: ['postbox'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🗳️',
@@ -11282,7 +16158,11 @@ export default [
     aliases: ['ballot_box'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '✏️',
@@ -11291,7 +16171,11 @@ export default [
     aliases: ['pencil2'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '✒️',
@@ -11300,7 +16184,11 @@ export default [
     aliases: ['black_nib'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🖋️',
@@ -11309,7 +16197,11 @@ export default [
     aliases: ['fountain_pen'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🖊️',
@@ -11318,7 +16210,11 @@ export default [
     aliases: ['pen'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🖌️',
@@ -11327,7 +16223,11 @@ export default [
     aliases: ['paintbrush'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🖍️',
@@ -11336,7 +16236,11 @@ export default [
     aliases: ['crayon'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '📝',
@@ -11345,7 +16249,11 @@ export default [
     aliases: ['memo', 'pencil'],
     tags: ['document', 'note'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💼',
@@ -11354,7 +16262,11 @@ export default [
     aliases: ['briefcase'],
     tags: ['business'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📁',
@@ -11363,7 +16275,11 @@ export default [
     aliases: ['file_folder'],
     tags: ['directory'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📂',
@@ -11372,7 +16288,11 @@ export default [
     aliases: ['open_file_folder'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🗂️',
@@ -11381,7 +16301,11 @@ export default [
     aliases: ['card_index_dividers'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '📅',
@@ -11390,7 +16314,11 @@ export default [
     aliases: ['date'],
     tags: ['calendar', 'schedule'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📆',
@@ -11399,7 +16327,11 @@ export default [
     aliases: ['calendar'],
     tags: ['schedule'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🗒️',
@@ -11408,7 +16340,11 @@ export default [
     aliases: ['spiral_notepad'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🗓️',
@@ -11417,7 +16353,11 @@ export default [
     aliases: ['spiral_calendar'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '📇',
@@ -11426,7 +16366,11 @@ export default [
     aliases: ['card_index'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📈',
@@ -11435,7 +16379,11 @@ export default [
     aliases: ['chart_with_upwards_trend'],
     tags: ['graph', 'metrics'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📉',
@@ -11444,7 +16392,11 @@ export default [
     aliases: ['chart_with_downwards_trend'],
     tags: ['graph', 'metrics'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📊',
@@ -11453,7 +16405,11 @@ export default [
     aliases: ['bar_chart'],
     tags: ['stats', 'metrics'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📋',
@@ -11462,7 +16418,11 @@ export default [
     aliases: ['clipboard'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📌',
@@ -11471,7 +16431,11 @@ export default [
     aliases: ['pushpin'],
     tags: ['location'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📍',
@@ -11480,7 +16444,11 @@ export default [
     aliases: ['round_pushpin'],
     tags: ['location'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📎',
@@ -11489,7 +16457,11 @@ export default [
     aliases: ['paperclip'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🖇️',
@@ -11498,7 +16470,11 @@ export default [
     aliases: ['paperclips'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '📏',
@@ -11507,7 +16483,11 @@ export default [
     aliases: ['straight_ruler'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📐',
@@ -11516,7 +16496,11 @@ export default [
     aliases: ['triangular_ruler'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '✂️',
@@ -11525,7 +16509,11 @@ export default [
     aliases: ['scissors'],
     tags: ['cut'],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🗃️',
@@ -11534,7 +16522,11 @@ export default [
     aliases: ['card_file_box'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🗄️',
@@ -11543,7 +16535,11 @@ export default [
     aliases: ['file_cabinet'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🗑️',
@@ -11552,7 +16548,11 @@ export default [
     aliases: ['wastebasket'],
     tags: ['trash'],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🔒',
@@ -11561,7 +16561,11 @@ export default [
     aliases: ['lock'],
     tags: ['security', 'private'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔓',
@@ -11570,7 +16574,11 @@ export default [
     aliases: ['unlock'],
     tags: ['security'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔏',
@@ -11579,7 +16587,11 @@ export default [
     aliases: ['lock_with_ink_pen'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔐',
@@ -11588,7 +16600,11 @@ export default [
     aliases: ['closed_lock_with_key'],
     tags: ['security'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔑',
@@ -11597,7 +16613,11 @@ export default [
     aliases: ['key'],
     tags: ['lock', 'password'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🗝️',
@@ -11606,7 +16626,11 @@ export default [
     aliases: ['old_key'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🔨',
@@ -11615,7 +16639,11 @@ export default [
     aliases: ['hammer'],
     tags: ['tool'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🪓',
@@ -11624,7 +16652,11 @@ export default [
     aliases: ['axe'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '⛏️',
@@ -11633,7 +16665,11 @@ export default [
     aliases: ['pick'],
     tags: [],
     unicode_version: '5.2',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '⚒️',
@@ -11642,7 +16678,11 @@ export default [
     aliases: ['hammer_and_pick'],
     tags: [],
     unicode_version: '4.1',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🛠️',
@@ -11651,7 +16691,11 @@ export default [
     aliases: ['hammer_and_wrench'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🗡️',
@@ -11660,7 +16704,11 @@ export default [
     aliases: ['dagger'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '⚔️',
@@ -11669,7 +16717,11 @@ export default [
     aliases: ['crossed_swords'],
     tags: [],
     unicode_version: '4.1',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🔫',
@@ -11678,7 +16730,11 @@ export default [
     aliases: ['gun'],
     tags: ['shoot', 'weapon'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🪃',
@@ -11687,7 +16743,11 @@ export default [
     aliases: ['boomerang'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🏹',
@@ -11696,7 +16756,11 @@ export default [
     aliases: ['bow_and_arrow'],
     tags: ['archery'],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🛡️',
@@ -11705,7 +16769,11 @@ export default [
     aliases: ['shield'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🪚',
@@ -11714,7 +16782,11 @@ export default [
     aliases: ['carpentry_saw'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🔧',
@@ -11723,7 +16795,11 @@ export default [
     aliases: ['wrench'],
     tags: ['tool'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🪛',
@@ -11732,7 +16808,11 @@ export default [
     aliases: ['screwdriver'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🔩',
@@ -11741,7 +16821,11 @@ export default [
     aliases: ['nut_and_bolt'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⚙️',
@@ -11750,7 +16834,11 @@ export default [
     aliases: ['gear'],
     tags: [],
     unicode_version: '4.1',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🗜️',
@@ -11759,7 +16847,11 @@ export default [
     aliases: ['clamp'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '⚖️',
@@ -11768,7 +16860,11 @@ export default [
     aliases: ['balance_scale'],
     tags: [],
     unicode_version: '4.1',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🦯',
@@ -11777,7 +16873,11 @@ export default [
     aliases: ['probing_cane'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🔗',
@@ -11786,7 +16886,11 @@ export default [
     aliases: ['link'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⛓️',
@@ -11795,7 +16899,11 @@ export default [
     aliases: ['chains'],
     tags: [],
     unicode_version: '5.2',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🪝',
@@ -11804,7 +16912,11 @@ export default [
     aliases: ['hook'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🧰',
@@ -11813,7 +16925,11 @@ export default [
     aliases: ['toolbox'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🧲',
@@ -11822,7 +16938,11 @@ export default [
     aliases: ['magnet'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🪜',
@@ -11831,7 +16951,11 @@ export default [
     aliases: ['ladder'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '⚗️',
@@ -11840,7 +16964,11 @@ export default [
     aliases: ['alembic'],
     tags: [],
     unicode_version: '4.1',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🧪',
@@ -11849,7 +16977,11 @@ export default [
     aliases: ['test_tube'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🧫',
@@ -11858,7 +16990,11 @@ export default [
     aliases: ['petri_dish'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🧬',
@@ -11867,7 +17003,11 @@ export default [
     aliases: ['dna'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🔬',
@@ -11876,7 +17016,11 @@ export default [
     aliases: ['microscope'],
     tags: ['science', 'laboratory', 'investigate'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔭',
@@ -11885,7 +17029,11 @@ export default [
     aliases: ['telescope'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📡',
@@ -11894,7 +17042,11 @@ export default [
     aliases: ['satellite'],
     tags: ['signal'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💉',
@@ -11903,7 +17055,11 @@ export default [
     aliases: ['syringe'],
     tags: ['health', 'hospital', 'needle'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🩸',
@@ -11912,7 +17068,11 @@ export default [
     aliases: ['drop_of_blood'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '💊',
@@ -11921,7 +17081,11 @@ export default [
     aliases: ['pill'],
     tags: ['health', 'medicine'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🩹',
@@ -11930,7 +17094,11 @@ export default [
     aliases: ['adhesive_bandage'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🩺',
@@ -11939,7 +17107,11 @@ export default [
     aliases: ['stethoscope'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🚪',
@@ -11948,7 +17120,11 @@ export default [
     aliases: ['door'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🛗',
@@ -11957,7 +17133,11 @@ export default [
     aliases: ['elevator'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🪞',
@@ -11966,7 +17146,11 @@ export default [
     aliases: ['mirror'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🪟',
@@ -11975,7 +17159,11 @@ export default [
     aliases: ['window'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🛏️',
@@ -11984,7 +17172,11 @@ export default [
     aliases: ['bed'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🛋️',
@@ -11993,7 +17185,11 @@ export default [
     aliases: ['couch_and_lamp'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🪑',
@@ -12002,7 +17198,11 @@ export default [
     aliases: ['chair'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🚽',
@@ -12011,7 +17211,11 @@ export default [
     aliases: ['toilet'],
     tags: ['wc'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🪠',
@@ -12020,7 +17224,11 @@ export default [
     aliases: ['plunger'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🚿',
@@ -12029,7 +17237,11 @@ export default [
     aliases: ['shower'],
     tags: ['bath'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🛁',
@@ -12038,7 +17250,11 @@ export default [
     aliases: ['bathtub'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🪤',
@@ -12047,7 +17263,11 @@ export default [
     aliases: ['mouse_trap'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🪒',
@@ -12056,7 +17276,11 @@ export default [
     aliases: ['razor'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🧴',
@@ -12065,7 +17289,11 @@ export default [
     aliases: ['lotion_bottle'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🧷',
@@ -12074,7 +17302,11 @@ export default [
     aliases: ['safety_pin'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🧹',
@@ -12083,7 +17315,11 @@ export default [
     aliases: ['broom'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🧺',
@@ -12092,7 +17328,11 @@ export default [
     aliases: ['basket'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🧻',
@@ -12101,7 +17341,11 @@ export default [
     aliases: ['roll_of_paper'],
     tags: ['toilet'],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🪣',
@@ -12110,7 +17354,11 @@ export default [
     aliases: ['bucket'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🧼',
@@ -12119,7 +17367,11 @@ export default [
     aliases: ['soap'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🪥',
@@ -12128,7 +17380,11 @@ export default [
     aliases: ['toothbrush'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🧽',
@@ -12137,7 +17393,11 @@ export default [
     aliases: ['sponge'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🧯',
@@ -12146,7 +17406,11 @@ export default [
     aliases: ['fire_extinguisher'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🛒',
@@ -12155,7 +17419,11 @@ export default [
     aliases: ['shopping_cart'],
     tags: [],
     unicode_version: '9.0',
+<<<<<<< HEAD
     ios_version: '10.2'
+=======
+    ios_version: '10.2',
+>>>>>>> master
   },
   {
     emoji: '🚬',
@@ -12164,7 +17432,11 @@ export default [
     aliases: ['smoking'],
     tags: ['cigarette'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⚰️',
@@ -12173,7 +17445,11 @@ export default [
     aliases: ['coffin'],
     tags: ['funeral'],
     unicode_version: '4.1',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🪦',
@@ -12182,7 +17458,11 @@ export default [
     aliases: ['headstone'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '⚱️',
@@ -12191,7 +17471,11 @@ export default [
     aliases: ['funeral_urn'],
     tags: [],
     unicode_version: '4.1',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🗿',
@@ -12200,7 +17484,11 @@ export default [
     aliases: ['moyai'],
     tags: ['stone'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🪧',
@@ -12209,7 +17497,11 @@ export default [
     aliases: ['placard'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🏧',
@@ -12218,7 +17510,11 @@ export default [
     aliases: ['atm'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚮',
@@ -12227,7 +17523,11 @@ export default [
     aliases: ['put_litter_in_its_place'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚰',
@@ -12236,7 +17536,11 @@ export default [
     aliases: ['potable_water'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '♿',
@@ -12245,7 +17549,11 @@ export default [
     aliases: ['wheelchair'],
     tags: ['accessibility'],
     unicode_version: '4.1',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚹',
@@ -12254,7 +17562,11 @@ export default [
     aliases: ['mens'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚺',
@@ -12263,7 +17575,11 @@ export default [
     aliases: ['womens'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚻',
@@ -12272,7 +17588,11 @@ export default [
     aliases: ['restroom'],
     tags: ['toilet'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚼',
@@ -12281,7 +17601,11 @@ export default [
     aliases: ['baby_symbol'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚾',
@@ -12290,7 +17614,11 @@ export default [
     aliases: ['wc'],
     tags: ['toilet', 'restroom'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🛂',
@@ -12299,7 +17627,11 @@ export default [
     aliases: ['passport_control'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🛃',
@@ -12308,7 +17640,11 @@ export default [
     aliases: ['customs'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🛄',
@@ -12317,7 +17653,11 @@ export default [
     aliases: ['baggage_claim'],
     tags: ['airport'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🛅',
@@ -12326,7 +17666,11 @@ export default [
     aliases: ['left_luggage'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⚠️',
@@ -12335,7 +17679,11 @@ export default [
     aliases: ['warning'],
     tags: ['wip'],
     unicode_version: '4.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚸',
@@ -12344,7 +17692,11 @@ export default [
     aliases: ['children_crossing'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⛔',
@@ -12353,7 +17705,11 @@ export default [
     aliases: ['no_entry'],
     tags: ['limit'],
     unicode_version: '5.2',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚫',
@@ -12362,7 +17718,11 @@ export default [
     aliases: ['no_entry_sign'],
     tags: ['block', 'forbidden'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚳',
@@ -12371,7 +17731,11 @@ export default [
     aliases: ['no_bicycles'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚭',
@@ -12380,7 +17744,11 @@ export default [
     aliases: ['no_smoking'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚯',
@@ -12389,7 +17757,11 @@ export default [
     aliases: ['do_not_litter'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚱',
@@ -12398,7 +17770,11 @@ export default [
     aliases: ['non-potable_water'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚷',
@@ -12407,7 +17783,11 @@ export default [
     aliases: ['no_pedestrians'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📵',
@@ -12416,7 +17796,11 @@ export default [
     aliases: ['no_mobile_phones'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔞',
@@ -12425,7 +17809,11 @@ export default [
     aliases: ['underage'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '☢️',
@@ -12434,7 +17822,11 @@ export default [
     aliases: ['radioactive'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '☣️',
@@ -12443,7 +17835,11 @@ export default [
     aliases: ['biohazard'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '⬆️',
@@ -12452,7 +17848,11 @@ export default [
     aliases: ['arrow_up'],
     tags: [],
     unicode_version: '4.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '↗️',
@@ -12461,7 +17861,11 @@ export default [
     aliases: ['arrow_upper_right'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '➡️',
@@ -12470,7 +17874,11 @@ export default [
     aliases: ['arrow_right'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '↘️',
@@ -12479,7 +17887,11 @@ export default [
     aliases: ['arrow_lower_right'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⬇️',
@@ -12488,7 +17900,11 @@ export default [
     aliases: ['arrow_down'],
     tags: [],
     unicode_version: '4.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '↙️',
@@ -12497,7 +17913,11 @@ export default [
     aliases: ['arrow_lower_left'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⬅️',
@@ -12506,7 +17926,11 @@ export default [
     aliases: ['arrow_left'],
     tags: [],
     unicode_version: '4.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '↖️',
@@ -12515,7 +17939,11 @@ export default [
     aliases: ['arrow_upper_left'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '↕️',
@@ -12524,7 +17952,11 @@ export default [
     aliases: ['arrow_up_down'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '↔️',
@@ -12533,7 +17965,11 @@ export default [
     aliases: ['left_right_arrow'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '↩️',
@@ -12542,7 +17978,11 @@ export default [
     aliases: ['leftwards_arrow_with_hook'],
     tags: ['return'],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '↪️',
@@ -12551,7 +17991,11 @@ export default [
     aliases: ['arrow_right_hook'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⤴️',
@@ -12560,7 +18004,11 @@ export default [
     aliases: ['arrow_heading_up'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⤵️',
@@ -12569,7 +18017,11 @@ export default [
     aliases: ['arrow_heading_down'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔃',
@@ -12578,7 +18030,11 @@ export default [
     aliases: ['arrows_clockwise'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔄',
@@ -12587,7 +18043,11 @@ export default [
     aliases: ['arrows_counterclockwise'],
     tags: ['sync'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔙',
@@ -12596,7 +18056,11 @@ export default [
     aliases: ['back'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔚',
@@ -12605,7 +18069,11 @@ export default [
     aliases: ['end'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔛',
@@ -12614,7 +18082,11 @@ export default [
     aliases: ['on'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔜',
@@ -12623,7 +18095,11 @@ export default [
     aliases: ['soon'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔝',
@@ -12632,7 +18108,11 @@ export default [
     aliases: ['top'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🛐',
@@ -12641,7 +18121,11 @@ export default [
     aliases: ['place_of_worship'],
     tags: [],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '⚛️',
@@ -12650,7 +18134,11 @@ export default [
     aliases: ['atom_symbol'],
     tags: [],
     unicode_version: '4.1',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🕉️',
@@ -12659,7 +18147,11 @@ export default [
     aliases: ['om'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '✡️',
@@ -12668,7 +18160,11 @@ export default [
     aliases: ['star_of_david'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '☸️',
@@ -12677,7 +18173,11 @@ export default [
     aliases: ['wheel_of_dharma'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '☯️',
@@ -12686,7 +18186,11 @@ export default [
     aliases: ['yin_yang'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '✝️',
@@ -12695,7 +18199,11 @@ export default [
     aliases: ['latin_cross'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '☦️',
@@ -12704,7 +18212,11 @@ export default [
     aliases: ['orthodox_cross'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '☪️',
@@ -12713,7 +18225,11 @@ export default [
     aliases: ['star_and_crescent'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '☮️',
@@ -12722,7 +18238,11 @@ export default [
     aliases: ['peace_symbol'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🕎',
@@ -12731,7 +18251,11 @@ export default [
     aliases: ['menorah'],
     tags: [],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🔯',
@@ -12740,7 +18264,11 @@ export default [
     aliases: ['six_pointed_star'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '♈',
@@ -12749,7 +18277,11 @@ export default [
     aliases: ['aries'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '♉',
@@ -12758,7 +18290,11 @@ export default [
     aliases: ['taurus'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '♊',
@@ -12767,7 +18303,11 @@ export default [
     aliases: ['gemini'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '♋',
@@ -12776,7 +18316,11 @@ export default [
     aliases: ['cancer'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '♌',
@@ -12785,7 +18329,11 @@ export default [
     aliases: ['leo'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '♍',
@@ -12794,7 +18342,11 @@ export default [
     aliases: ['virgo'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '♎',
@@ -12803,7 +18355,11 @@ export default [
     aliases: ['libra'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '♏',
@@ -12812,7 +18368,11 @@ export default [
     aliases: ['scorpius'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '♐',
@@ -12821,7 +18381,11 @@ export default [
     aliases: ['sagittarius'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '♑',
@@ -12830,7 +18394,11 @@ export default [
     aliases: ['capricorn'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '♒',
@@ -12839,7 +18407,11 @@ export default [
     aliases: ['aquarius'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '♓',
@@ -12848,7 +18420,11 @@ export default [
     aliases: ['pisces'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⛎',
@@ -12857,7 +18433,11 @@ export default [
     aliases: ['ophiuchus'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔀',
@@ -12866,7 +18446,11 @@ export default [
     aliases: ['twisted_rightwards_arrows'],
     tags: ['shuffle'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔁',
@@ -12875,7 +18459,11 @@ export default [
     aliases: ['repeat'],
     tags: ['loop'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔂',
@@ -12884,7 +18472,11 @@ export default [
     aliases: ['repeat_one'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '▶️',
@@ -12893,7 +18485,11 @@ export default [
     aliases: ['arrow_forward'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⏩',
@@ -12902,7 +18498,11 @@ export default [
     aliases: ['fast_forward'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⏭️',
@@ -12911,7 +18511,11 @@ export default [
     aliases: ['next_track_button'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '⏯️',
@@ -12920,7 +18524,11 @@ export default [
     aliases: ['play_or_pause_button'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '◀️',
@@ -12929,7 +18537,11 @@ export default [
     aliases: ['arrow_backward'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⏪',
@@ -12938,7 +18550,11 @@ export default [
     aliases: ['rewind'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⏮️',
@@ -12947,7 +18563,11 @@ export default [
     aliases: ['previous_track_button'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🔼',
@@ -12956,7 +18576,11 @@ export default [
     aliases: ['arrow_up_small'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⏫',
@@ -12965,7 +18589,11 @@ export default [
     aliases: ['arrow_double_up'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔽',
@@ -12974,7 +18602,11 @@ export default [
     aliases: ['arrow_down_small'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⏬',
@@ -12983,7 +18615,11 @@ export default [
     aliases: ['arrow_double_down'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⏸️',
@@ -12992,7 +18628,11 @@ export default [
     aliases: ['pause_button'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '⏹️',
@@ -13001,7 +18641,11 @@ export default [
     aliases: ['stop_button'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '⏺️',
@@ -13010,7 +18654,11 @@ export default [
     aliases: ['record_button'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '⏏️',
@@ -13019,7 +18667,11 @@ export default [
     aliases: ['eject_button'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🎦',
@@ -13028,7 +18680,11 @@ export default [
     aliases: ['cinema'],
     tags: ['film', 'movie'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔅',
@@ -13037,7 +18693,11 @@ export default [
     aliases: ['low_brightness'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔆',
@@ -13046,7 +18706,11 @@ export default [
     aliases: ['high_brightness'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📶',
@@ -13055,7 +18719,11 @@ export default [
     aliases: ['signal_strength'],
     tags: ['wifi'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📳',
@@ -13064,7 +18732,11 @@ export default [
     aliases: ['vibration_mode'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📴',
@@ -13073,7 +18745,11 @@ export default [
     aliases: ['mobile_phone_off'],
     tags: ['mute', 'off'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '♀️',
@@ -13082,7 +18758,11 @@ export default [
     aliases: ['female_sign'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '♂️',
@@ -13091,7 +18771,11 @@ export default [
     aliases: ['male_sign'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '⚧️',
@@ -13100,7 +18784,11 @@ export default [
     aliases: ['transgender_symbol'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '✖️',
@@ -13109,7 +18797,11 @@ export default [
     aliases: ['heavy_multiplication_x'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '➕',
@@ -13118,7 +18810,11 @@ export default [
     aliases: ['heavy_plus_sign'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '➖',
@@ -13127,7 +18823,11 @@ export default [
     aliases: ['heavy_minus_sign'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '➗',
@@ -13136,7 +18836,11 @@ export default [
     aliases: ['heavy_division_sign'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '♾️',
@@ -13145,7 +18849,11 @@ export default [
     aliases: ['infinity'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '‼️',
@@ -13154,7 +18862,11 @@ export default [
     aliases: ['bangbang'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⁉️',
@@ -13163,7 +18875,11 @@ export default [
     aliases: ['interrobang'],
     tags: [],
     unicode_version: '3.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '❓',
@@ -13172,7 +18888,11 @@ export default [
     aliases: ['question'],
     tags: ['confused'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '❔',
@@ -13181,7 +18901,11 @@ export default [
     aliases: ['grey_question'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '❕',
@@ -13190,7 +18914,11 @@ export default [
     aliases: ['grey_exclamation'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '❗',
@@ -13199,7 +18927,11 @@ export default [
     aliases: ['exclamation', 'heavy_exclamation_mark'],
     tags: ['bang'],
     unicode_version: '5.2',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '〰️',
@@ -13208,7 +18940,11 @@ export default [
     aliases: ['wavy_dash'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💱',
@@ -13217,7 +18953,11 @@ export default [
     aliases: ['currency_exchange'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💲',
@@ -13226,7 +18966,11 @@ export default [
     aliases: ['heavy_dollar_sign'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⚕️',
@@ -13235,7 +18979,11 @@ export default [
     aliases: ['medical_symbol'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '♻️',
@@ -13244,7 +18992,11 @@ export default [
     aliases: ['recycle'],
     tags: ['environment', 'green'],
     unicode_version: '3.2',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⚜️',
@@ -13253,7 +19005,11 @@ export default [
     aliases: ['fleur_de_lis'],
     tags: [],
     unicode_version: '4.1',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🔱',
@@ -13262,7 +19018,11 @@ export default [
     aliases: ['trident'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '📛',
@@ -13271,7 +19031,11 @@ export default [
     aliases: ['name_badge'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔰',
@@ -13280,7 +19044,11 @@ export default [
     aliases: ['beginner'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⭕',
@@ -13289,7 +19057,11 @@ export default [
     aliases: ['o'],
     tags: [],
     unicode_version: '5.2',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '✅',
@@ -13298,7 +19070,11 @@ export default [
     aliases: ['white_check_mark'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '☑️',
@@ -13307,7 +19083,11 @@ export default [
     aliases: ['ballot_box_with_check'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '✔️',
@@ -13316,7 +19096,11 @@ export default [
     aliases: ['heavy_check_mark'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '❌',
@@ -13325,7 +19109,11 @@ export default [
     aliases: ['x'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '❎',
@@ -13334,7 +19122,11 @@ export default [
     aliases: ['negative_squared_cross_mark'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '➰',
@@ -13343,7 +19135,11 @@ export default [
     aliases: ['curly_loop'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '➿',
@@ -13352,7 +19148,11 @@ export default [
     aliases: ['loop'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '〽️',
@@ -13361,7 +19161,11 @@ export default [
     aliases: ['part_alternation_mark'],
     tags: [],
     unicode_version: '3.2',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '✳️',
@@ -13370,7 +19174,11 @@ export default [
     aliases: ['eight_spoked_asterisk'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '✴️',
@@ -13379,7 +19187,11 @@ export default [
     aliases: ['eight_pointed_black_star'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '❇️',
@@ -13388,7 +19200,11 @@ export default [
     aliases: ['sparkle'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '©️',
@@ -13397,7 +19213,11 @@ export default [
     aliases: ['copyright'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '®️',
@@ -13406,7 +19226,11 @@ export default [
     aliases: ['registered'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '™️',
@@ -13415,7 +19239,11 @@ export default [
     aliases: ['tm'],
     tags: ['trademark'],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '#️⃣',
@@ -13424,7 +19252,11 @@ export default [
     aliases: ['hash'],
     tags: ['number'],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '*️⃣',
@@ -13433,7 +19265,11 @@ export default [
     aliases: ['asterisk'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '0️⃣',
@@ -13442,7 +19278,11 @@ export default [
     aliases: ['zero'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '1️⃣',
@@ -13451,7 +19291,11 @@ export default [
     aliases: ['one'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '2️⃣',
@@ -13460,7 +19304,11 @@ export default [
     aliases: ['two'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '3️⃣',
@@ -13469,7 +19317,11 @@ export default [
     aliases: ['three'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '4️⃣',
@@ -13478,7 +19330,11 @@ export default [
     aliases: ['four'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '5️⃣',
@@ -13487,7 +19343,11 @@ export default [
     aliases: ['five'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '6️⃣',
@@ -13496,7 +19356,11 @@ export default [
     aliases: ['six'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '7️⃣',
@@ -13505,7 +19369,11 @@ export default [
     aliases: ['seven'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '8️⃣',
@@ -13514,7 +19382,11 @@ export default [
     aliases: ['eight'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '9️⃣',
@@ -13523,7 +19395,11 @@ export default [
     aliases: ['nine'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔟',
@@ -13532,7 +19408,11 @@ export default [
     aliases: ['keycap_ten'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔠',
@@ -13541,7 +19421,11 @@ export default [
     aliases: ['capital_abcd'],
     tags: ['letters'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔡',
@@ -13550,7 +19434,11 @@ export default [
     aliases: ['abcd'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔢',
@@ -13559,7 +19447,11 @@ export default [
     aliases: ['1234'],
     tags: ['numbers'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔣',
@@ -13568,7 +19460,11 @@ export default [
     aliases: ['symbols'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔤',
@@ -13577,7 +19473,11 @@ export default [
     aliases: ['abc'],
     tags: ['alphabet'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🅰️',
@@ -13586,7 +19486,11 @@ export default [
     aliases: ['a'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🆎',
@@ -13595,7 +19499,11 @@ export default [
     aliases: ['ab'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🅱️',
@@ -13604,7 +19512,11 @@ export default [
     aliases: ['b'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🆑',
@@ -13613,7 +19525,11 @@ export default [
     aliases: ['cl'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🆒',
@@ -13622,7 +19538,11 @@ export default [
     aliases: ['cool'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🆓',
@@ -13631,7 +19551,11 @@ export default [
     aliases: ['free'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: 'ℹ️',
@@ -13640,7 +19564,11 @@ export default [
     aliases: ['information_source'],
     tags: [],
     unicode_version: '3.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🆔',
@@ -13649,7 +19577,11 @@ export default [
     aliases: ['id'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: 'Ⓜ️',
@@ -13658,7 +19590,11 @@ export default [
     aliases: ['m'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🆕',
@@ -13667,7 +19603,11 @@ export default [
     aliases: ['new'],
     tags: ['fresh'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🆖',
@@ -13676,7 +19616,11 @@ export default [
     aliases: ['ng'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🅾️',
@@ -13685,7 +19629,11 @@ export default [
     aliases: ['o2'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🆗',
@@ -13694,7 +19642,11 @@ export default [
     aliases: ['ok'],
     tags: ['yes'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🅿️',
@@ -13703,7 +19655,11 @@ export default [
     aliases: ['parking'],
     tags: [],
     unicode_version: '5.2',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🆘',
@@ -13712,7 +19668,11 @@ export default [
     aliases: ['sos'],
     tags: ['help', 'emergency'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🆙',
@@ -13721,7 +19681,11 @@ export default [
     aliases: ['up'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🆚',
@@ -13730,7 +19694,11 @@ export default [
     aliases: ['vs'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🈁',
@@ -13739,7 +19707,11 @@ export default [
     aliases: ['koko'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🈂️',
@@ -13748,7 +19720,11 @@ export default [
     aliases: ['sa'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🈷️',
@@ -13757,7 +19733,11 @@ export default [
     aliases: ['u6708'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🈶',
@@ -13766,7 +19746,11 @@ export default [
     aliases: ['u6709'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🈯',
@@ -13775,7 +19759,11 @@ export default [
     aliases: ['u6307'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🉐',
@@ -13784,7 +19772,11 @@ export default [
     aliases: ['ideograph_advantage'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🈹',
@@ -13793,7 +19785,11 @@ export default [
     aliases: ['u5272'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🈚',
@@ -13802,7 +19798,11 @@ export default [
     aliases: ['u7121'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🈲',
@@ -13811,7 +19811,11 @@ export default [
     aliases: ['u7981'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🉑',
@@ -13820,7 +19824,11 @@ export default [
     aliases: ['accept'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🈸',
@@ -13829,7 +19837,11 @@ export default [
     aliases: ['u7533'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🈴',
@@ -13838,7 +19850,11 @@ export default [
     aliases: ['u5408'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🈳',
@@ -13847,7 +19863,11 @@ export default [
     aliases: ['u7a7a'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '㊗️',
@@ -13856,7 +19876,11 @@ export default [
     aliases: ['congratulations'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '㊙️',
@@ -13865,7 +19889,11 @@ export default [
     aliases: ['secret'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🈺',
@@ -13874,7 +19902,11 @@ export default [
     aliases: ['u55b6'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🈵',
@@ -13883,7 +19915,11 @@ export default [
     aliases: ['u6e80'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔴',
@@ -13892,7 +19928,11 @@ export default [
     aliases: ['red_circle'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🟠',
@@ -13901,7 +19941,11 @@ export default [
     aliases: ['orange_circle'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🟡',
@@ -13910,7 +19954,11 @@ export default [
     aliases: ['yellow_circle'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🟢',
@@ -13919,7 +19967,11 @@ export default [
     aliases: ['green_circle'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🔵',
@@ -13928,7 +19980,11 @@ export default [
     aliases: ['large_blue_circle'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🟣',
@@ -13937,7 +19993,11 @@ export default [
     aliases: ['purple_circle'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🟤',
@@ -13946,7 +20006,11 @@ export default [
     aliases: ['brown_circle'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '⚫',
@@ -13955,7 +20019,11 @@ export default [
     aliases: ['black_circle'],
     tags: [],
     unicode_version: '4.1',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⚪',
@@ -13964,7 +20032,11 @@ export default [
     aliases: ['white_circle'],
     tags: [],
     unicode_version: '4.1',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🟥',
@@ -13973,7 +20045,11 @@ export default [
     aliases: ['red_square'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🟧',
@@ -13982,7 +20058,11 @@ export default [
     aliases: ['orange_square'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🟨',
@@ -13991,7 +20071,11 @@ export default [
     aliases: ['yellow_square'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🟩',
@@ -14000,7 +20084,11 @@ export default [
     aliases: ['green_square'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🟦',
@@ -14009,7 +20097,11 @@ export default [
     aliases: ['blue_square'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🟪',
@@ -14018,7 +20110,11 @@ export default [
     aliases: ['purple_square'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '🟫',
@@ -14027,7 +20123,11 @@ export default [
     aliases: ['brown_square'],
     tags: [],
     unicode_version: '12.0',
+<<<<<<< HEAD
     ios_version: '13.0'
+=======
+    ios_version: '13.0',
+>>>>>>> master
   },
   {
     emoji: '⬛',
@@ -14036,7 +20136,11 @@ export default [
     aliases: ['black_large_square'],
     tags: [],
     unicode_version: '5.1',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '⬜',
@@ -14045,7 +20149,11 @@ export default [
     aliases: ['white_large_square'],
     tags: [],
     unicode_version: '5.1',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '◼️',
@@ -14054,7 +20162,11 @@ export default [
     aliases: ['black_medium_square'],
     tags: [],
     unicode_version: '3.2',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '◻️',
@@ -14063,7 +20175,11 @@ export default [
     aliases: ['white_medium_square'],
     tags: [],
     unicode_version: '3.2',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '◾',
@@ -14072,7 +20188,11 @@ export default [
     aliases: ['black_medium_small_square'],
     tags: [],
     unicode_version: '3.2',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '◽',
@@ -14081,7 +20201,11 @@ export default [
     aliases: ['white_medium_small_square'],
     tags: [],
     unicode_version: '3.2',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '▪️',
@@ -14090,7 +20214,11 @@ export default [
     aliases: ['black_small_square'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '▫️',
@@ -14099,7 +20227,11 @@ export default [
     aliases: ['white_small_square'],
     tags: [],
     unicode_version: '',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔶',
@@ -14108,7 +20240,11 @@ export default [
     aliases: ['large_orange_diamond'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔷',
@@ -14117,7 +20253,11 @@ export default [
     aliases: ['large_blue_diamond'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔸',
@@ -14126,7 +20266,11 @@ export default [
     aliases: ['small_orange_diamond'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔹',
@@ -14135,7 +20279,11 @@ export default [
     aliases: ['small_blue_diamond'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔺',
@@ -14144,7 +20292,11 @@ export default [
     aliases: ['small_red_triangle'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔻',
@@ -14153,7 +20305,11 @@ export default [
     aliases: ['small_red_triangle_down'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '💠',
@@ -14162,7 +20318,11 @@ export default [
     aliases: ['diamond_shape_with_a_dot_inside'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔘',
@@ -14171,7 +20331,11 @@ export default [
     aliases: ['radio_button'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔳',
@@ -14180,7 +20344,11 @@ export default [
     aliases: ['white_square_button'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🔲',
@@ -14189,7 +20357,11 @@ export default [
     aliases: ['black_square_button'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🏁',
@@ -14198,7 +20370,11 @@ export default [
     aliases: ['checkered_flag'],
     tags: ['milestone', 'finish'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🚩',
@@ -14207,7 +20383,11 @@ export default [
     aliases: ['triangular_flag_on_post'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🎌',
@@ -14216,7 +20396,11 @@ export default [
     aliases: ['crossed_flags'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🏴',
@@ -14225,7 +20409,11 @@ export default [
     aliases: ['black_flag'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🏳️',
@@ -14234,7 +20422,11 @@ export default [
     aliases: ['white_flag'],
     tags: [],
     unicode_version: '7.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🏳️‍🌈',
@@ -14243,7 +20435,11 @@ export default [
     aliases: ['rainbow_flag'],
     tags: ['pride'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '10.0'
+=======
+    ios_version: '10.0',
+>>>>>>> master
   },
   {
     emoji: '🏳️‍⚧️',
@@ -14252,7 +20448,11 @@ export default [
     aliases: ['transgender_flag'],
     tags: [],
     unicode_version: '13.0',
+<<<<<<< HEAD
     ios_version: '14.0'
+=======
+    ios_version: '14.0',
+>>>>>>> master
   },
   {
     emoji: '🏴‍☠️',
@@ -14261,7 +20461,11 @@ export default [
     aliases: ['pirate_flag'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🇦🇨',
@@ -14270,7 +20474,11 @@ export default [
     aliases: ['ascension_island'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🇦🇩',
@@ -14279,7 +20487,11 @@ export default [
     aliases: ['andorra'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇦🇪',
@@ -14288,7 +20500,11 @@ export default [
     aliases: ['united_arab_emirates'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇦🇫',
@@ -14297,7 +20513,11 @@ export default [
     aliases: ['afghanistan'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇦🇬',
@@ -14306,7 +20526,11 @@ export default [
     aliases: ['antigua_barbuda'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇦🇮',
@@ -14315,7 +20539,11 @@ export default [
     aliases: ['anguilla'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇦🇱',
@@ -14324,7 +20552,11 @@ export default [
     aliases: ['albania'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇦🇲',
@@ -14333,7 +20565,11 @@ export default [
     aliases: ['armenia'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇦🇴',
@@ -14342,7 +20578,11 @@ export default [
     aliases: ['angola'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇦🇶',
@@ -14351,7 +20591,11 @@ export default [
     aliases: ['antarctica'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇦🇷',
@@ -14360,7 +20604,11 @@ export default [
     aliases: ['argentina'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇦🇸',
@@ -14369,7 +20617,11 @@ export default [
     aliases: ['american_samoa'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇦🇹',
@@ -14378,7 +20630,11 @@ export default [
     aliases: ['austria'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇦🇺',
@@ -14387,7 +20643,11 @@ export default [
     aliases: ['australia'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇦🇼',
@@ -14396,7 +20656,11 @@ export default [
     aliases: ['aruba'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇦🇽',
@@ -14405,7 +20669,11 @@ export default [
     aliases: ['aland_islands'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇦🇿',
@@ -14414,7 +20682,11 @@ export default [
     aliases: ['azerbaijan'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇧🇦',
@@ -14423,7 +20695,11 @@ export default [
     aliases: ['bosnia_herzegovina'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇧🇧',
@@ -14432,7 +20708,11 @@ export default [
     aliases: ['barbados'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇧🇩',
@@ -14441,7 +20721,11 @@ export default [
     aliases: ['bangladesh'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇧🇪',
@@ -14450,7 +20734,11 @@ export default [
     aliases: ['belgium'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇧🇫',
@@ -14459,7 +20747,11 @@ export default [
     aliases: ['burkina_faso'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇧🇬',
@@ -14468,7 +20760,11 @@ export default [
     aliases: ['bulgaria'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇧🇭',
@@ -14477,7 +20773,11 @@ export default [
     aliases: ['bahrain'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇧🇮',
@@ -14486,7 +20786,11 @@ export default [
     aliases: ['burundi'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇧🇯',
@@ -14495,7 +20799,11 @@ export default [
     aliases: ['benin'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇧🇱',
@@ -14504,7 +20812,11 @@ export default [
     aliases: ['st_barthelemy'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇧🇲',
@@ -14513,7 +20825,11 @@ export default [
     aliases: ['bermuda'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇧🇳',
@@ -14522,7 +20838,11 @@ export default [
     aliases: ['brunei'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇧🇴',
@@ -14531,7 +20851,11 @@ export default [
     aliases: ['bolivia'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇧🇶',
@@ -14540,7 +20864,11 @@ export default [
     aliases: ['caribbean_netherlands'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇧🇷',
@@ -14549,7 +20877,11 @@ export default [
     aliases: ['brazil'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇧🇸',
@@ -14558,7 +20890,11 @@ export default [
     aliases: ['bahamas'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇧🇹',
@@ -14567,7 +20903,11 @@ export default [
     aliases: ['bhutan'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇧🇻',
@@ -14576,7 +20916,11 @@ export default [
     aliases: ['bouvet_island'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🇧🇼',
@@ -14585,7 +20929,11 @@ export default [
     aliases: ['botswana'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇧🇾',
@@ -14594,7 +20942,11 @@ export default [
     aliases: ['belarus'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇧🇿',
@@ -14603,7 +20955,11 @@ export default [
     aliases: ['belize'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇨🇦',
@@ -14612,7 +20968,11 @@ export default [
     aliases: ['canada'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇨🇨',
@@ -14621,7 +20981,11 @@ export default [
     aliases: ['cocos_islands'],
     tags: ['keeling'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇨🇩',
@@ -14630,7 +20994,11 @@ export default [
     aliases: ['congo_kinshasa'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇨🇫',
@@ -14639,7 +21007,11 @@ export default [
     aliases: ['central_african_republic'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇨🇬',
@@ -14648,7 +21020,11 @@ export default [
     aliases: ['congo_brazzaville'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇨🇭',
@@ -14657,7 +21033,11 @@ export default [
     aliases: ['switzerland'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇨🇮',
@@ -14666,7 +21046,11 @@ export default [
     aliases: ['cote_divoire'],
     tags: ['ivory'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇨🇰',
@@ -14675,7 +21059,11 @@ export default [
     aliases: ['cook_islands'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇨🇱',
@@ -14684,7 +21072,11 @@ export default [
     aliases: ['chile'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇨🇲',
@@ -14693,7 +21085,11 @@ export default [
     aliases: ['cameroon'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇨🇳',
@@ -14702,7 +21098,11 @@ export default [
     aliases: ['cn'],
     tags: ['china'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🇨🇴',
@@ -14711,7 +21111,11 @@ export default [
     aliases: ['colombia'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇨🇵',
@@ -14720,7 +21124,11 @@ export default [
     aliases: ['clipperton_island'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🇨🇷',
@@ -14729,7 +21137,11 @@ export default [
     aliases: ['costa_rica'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇨🇺',
@@ -14738,7 +21150,11 @@ export default [
     aliases: ['cuba'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇨🇻',
@@ -14747,7 +21163,11 @@ export default [
     aliases: ['cape_verde'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇨🇼',
@@ -14756,7 +21176,11 @@ export default [
     aliases: ['curacao'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇨🇽',
@@ -14765,7 +21189,11 @@ export default [
     aliases: ['christmas_island'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇨🇾',
@@ -14774,7 +21202,11 @@ export default [
     aliases: ['cyprus'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇨🇿',
@@ -14783,7 +21215,11 @@ export default [
     aliases: ['czech_republic'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇩🇪',
@@ -14792,7 +21228,11 @@ export default [
     aliases: ['de'],
     tags: ['flag', 'germany'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🇩🇬',
@@ -14801,7 +21241,11 @@ export default [
     aliases: ['diego_garcia'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🇩🇯',
@@ -14810,7 +21254,11 @@ export default [
     aliases: ['djibouti'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇩🇰',
@@ -14819,7 +21267,11 @@ export default [
     aliases: ['denmark'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇩🇲',
@@ -14828,7 +21280,11 @@ export default [
     aliases: ['dominica'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇩🇴',
@@ -14837,7 +21293,11 @@ export default [
     aliases: ['dominican_republic'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇩🇿',
@@ -14846,7 +21306,11 @@ export default [
     aliases: ['algeria'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇪🇦',
@@ -14855,7 +21319,11 @@ export default [
     aliases: ['ceuta_melilla'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🇪🇨',
@@ -14864,7 +21332,11 @@ export default [
     aliases: ['ecuador'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇪🇪',
@@ -14873,7 +21345,11 @@ export default [
     aliases: ['estonia'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇪🇬',
@@ -14882,7 +21358,11 @@ export default [
     aliases: ['egypt'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇪🇭',
@@ -14891,7 +21371,11 @@ export default [
     aliases: ['western_sahara'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇪🇷',
@@ -14900,7 +21384,11 @@ export default [
     aliases: ['eritrea'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇪🇸',
@@ -14909,7 +21397,11 @@ export default [
     aliases: ['es'],
     tags: ['spain'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🇪🇹',
@@ -14918,7 +21410,11 @@ export default [
     aliases: ['ethiopia'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇪🇺',
@@ -14927,7 +21423,11 @@ export default [
     aliases: ['eu', 'european_union'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇫🇮',
@@ -14936,7 +21436,11 @@ export default [
     aliases: ['finland'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇫🇯',
@@ -14945,7 +21449,11 @@ export default [
     aliases: ['fiji'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇫🇰',
@@ -14954,7 +21462,11 @@ export default [
     aliases: ['falkland_islands'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇫🇲',
@@ -14963,7 +21475,11 @@ export default [
     aliases: ['micronesia'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇫🇴',
@@ -14972,7 +21488,11 @@ export default [
     aliases: ['faroe_islands'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇫🇷',
@@ -14981,7 +21501,11 @@ export default [
     aliases: ['fr'],
     tags: ['france', 'french'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🇬🇦',
@@ -14990,7 +21514,11 @@ export default [
     aliases: ['gabon'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇬🇧',
@@ -14999,7 +21527,11 @@ export default [
     aliases: ['gb', 'uk'],
     tags: ['flag', 'british'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🇬🇩',
@@ -15008,7 +21540,11 @@ export default [
     aliases: ['grenada'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇬🇪',
@@ -15017,7 +21553,11 @@ export default [
     aliases: ['georgia'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇬🇫',
@@ -15026,7 +21566,11 @@ export default [
     aliases: ['french_guiana'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇬🇬',
@@ -15035,7 +21579,11 @@ export default [
     aliases: ['guernsey'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇬🇭',
@@ -15044,7 +21592,11 @@ export default [
     aliases: ['ghana'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇬🇮',
@@ -15053,7 +21605,11 @@ export default [
     aliases: ['gibraltar'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇬🇱',
@@ -15062,7 +21618,11 @@ export default [
     aliases: ['greenland'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇬🇲',
@@ -15071,7 +21631,11 @@ export default [
     aliases: ['gambia'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇬🇳',
@@ -15080,7 +21644,11 @@ export default [
     aliases: ['guinea'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇬🇵',
@@ -15089,7 +21657,11 @@ export default [
     aliases: ['guadeloupe'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇬🇶',
@@ -15098,7 +21670,11 @@ export default [
     aliases: ['equatorial_guinea'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇬🇷',
@@ -15107,7 +21683,11 @@ export default [
     aliases: ['greece'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇬🇸',
@@ -15116,7 +21696,11 @@ export default [
     aliases: ['south_georgia_south_sandwich_islands'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇬🇹',
@@ -15125,7 +21709,11 @@ export default [
     aliases: ['guatemala'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇬🇺',
@@ -15134,7 +21722,11 @@ export default [
     aliases: ['guam'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇬🇼',
@@ -15143,7 +21735,11 @@ export default [
     aliases: ['guinea_bissau'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇬🇾',
@@ -15152,7 +21748,11 @@ export default [
     aliases: ['guyana'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇭🇰',
@@ -15161,7 +21761,11 @@ export default [
     aliases: ['hong_kong'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇭🇲',
@@ -15170,7 +21774,11 @@ export default [
     aliases: ['heard_mcdonald_islands'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🇭🇳',
@@ -15179,7 +21787,11 @@ export default [
     aliases: ['honduras'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇭🇷',
@@ -15188,7 +21800,11 @@ export default [
     aliases: ['croatia'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇭🇹',
@@ -15197,7 +21813,11 @@ export default [
     aliases: ['haiti'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇭🇺',
@@ -15206,7 +21826,11 @@ export default [
     aliases: ['hungary'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇮🇨',
@@ -15215,7 +21839,11 @@ export default [
     aliases: ['canary_islands'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇮🇩',
@@ -15224,7 +21852,11 @@ export default [
     aliases: ['indonesia'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇮🇪',
@@ -15233,7 +21865,11 @@ export default [
     aliases: ['ireland'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇮🇱',
@@ -15242,7 +21878,11 @@ export default [
     aliases: ['israel'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇮🇲',
@@ -15251,7 +21891,11 @@ export default [
     aliases: ['isle_of_man'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇮🇳',
@@ -15260,7 +21904,11 @@ export default [
     aliases: ['india'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇮🇴',
@@ -15269,7 +21917,11 @@ export default [
     aliases: ['british_indian_ocean_territory'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇮🇶',
@@ -15278,7 +21930,11 @@ export default [
     aliases: ['iraq'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇮🇷',
@@ -15287,7 +21943,11 @@ export default [
     aliases: ['iran'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇮🇸',
@@ -15296,7 +21956,11 @@ export default [
     aliases: ['iceland'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇮🇹',
@@ -15305,7 +21969,11 @@ export default [
     aliases: ['it'],
     tags: ['italy'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🇯🇪',
@@ -15314,7 +21982,11 @@ export default [
     aliases: ['jersey'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇯🇲',
@@ -15323,7 +21995,11 @@ export default [
     aliases: ['jamaica'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇯🇴',
@@ -15332,7 +22008,11 @@ export default [
     aliases: ['jordan'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇯🇵',
@@ -15341,7 +22021,11 @@ export default [
     aliases: ['jp'],
     tags: ['japan'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🇰🇪',
@@ -15350,7 +22034,11 @@ export default [
     aliases: ['kenya'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇰🇬',
@@ -15359,7 +22047,11 @@ export default [
     aliases: ['kyrgyzstan'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇰🇭',
@@ -15368,7 +22060,11 @@ export default [
     aliases: ['cambodia'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇰🇮',
@@ -15377,7 +22073,11 @@ export default [
     aliases: ['kiribati'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇰🇲',
@@ -15386,7 +22086,11 @@ export default [
     aliases: ['comoros'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇰🇳',
@@ -15395,7 +22099,11 @@ export default [
     aliases: ['st_kitts_nevis'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇰🇵',
@@ -15404,7 +22112,11 @@ export default [
     aliases: ['north_korea'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇰🇷',
@@ -15413,7 +22125,11 @@ export default [
     aliases: ['kr'],
     tags: ['korea'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🇰🇼',
@@ -15422,7 +22138,11 @@ export default [
     aliases: ['kuwait'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇰🇾',
@@ -15431,7 +22151,11 @@ export default [
     aliases: ['cayman_islands'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇰🇿',
@@ -15440,7 +22164,11 @@ export default [
     aliases: ['kazakhstan'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇱🇦',
@@ -15449,7 +22177,11 @@ export default [
     aliases: ['laos'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇱🇧',
@@ -15458,7 +22190,11 @@ export default [
     aliases: ['lebanon'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇱🇨',
@@ -15467,7 +22203,11 @@ export default [
     aliases: ['st_lucia'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇱🇮',
@@ -15476,7 +22216,11 @@ export default [
     aliases: ['liechtenstein'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇱🇰',
@@ -15485,7 +22229,11 @@ export default [
     aliases: ['sri_lanka'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇱🇷',
@@ -15494,7 +22242,11 @@ export default [
     aliases: ['liberia'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇱🇸',
@@ -15503,7 +22255,11 @@ export default [
     aliases: ['lesotho'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇱🇹',
@@ -15512,7 +22268,11 @@ export default [
     aliases: ['lithuania'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇱🇺',
@@ -15521,7 +22281,11 @@ export default [
     aliases: ['luxembourg'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇱🇻',
@@ -15530,7 +22294,11 @@ export default [
     aliases: ['latvia'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇱🇾',
@@ -15539,7 +22307,11 @@ export default [
     aliases: ['libya'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇲🇦',
@@ -15548,7 +22320,11 @@ export default [
     aliases: ['morocco'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇲🇨',
@@ -15557,7 +22333,11 @@ export default [
     aliases: ['monaco'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇲🇩',
@@ -15566,7 +22346,11 @@ export default [
     aliases: ['moldova'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇲🇪',
@@ -15575,7 +22359,11 @@ export default [
     aliases: ['montenegro'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇲🇫',
@@ -15584,7 +22372,11 @@ export default [
     aliases: ['st_martin'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🇲🇬',
@@ -15593,7 +22385,11 @@ export default [
     aliases: ['madagascar'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇲🇭',
@@ -15602,7 +22398,11 @@ export default [
     aliases: ['marshall_islands'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇲🇰',
@@ -15611,7 +22411,11 @@ export default [
     aliases: ['macedonia'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇲🇱',
@@ -15620,7 +22424,11 @@ export default [
     aliases: ['mali'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇲🇲',
@@ -15629,7 +22437,11 @@ export default [
     aliases: ['myanmar'],
     tags: ['burma'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇲🇳',
@@ -15638,7 +22450,11 @@ export default [
     aliases: ['mongolia'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇲🇴',
@@ -15647,7 +22463,11 @@ export default [
     aliases: ['macau'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇲🇵',
@@ -15656,7 +22476,11 @@ export default [
     aliases: ['northern_mariana_islands'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇲🇶',
@@ -15665,7 +22489,11 @@ export default [
     aliases: ['martinique'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇲🇷',
@@ -15674,7 +22502,11 @@ export default [
     aliases: ['mauritania'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇲🇸',
@@ -15683,7 +22515,11 @@ export default [
     aliases: ['montserrat'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇲🇹',
@@ -15692,7 +22528,11 @@ export default [
     aliases: ['malta'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇲🇺',
@@ -15701,7 +22541,11 @@ export default [
     aliases: ['mauritius'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇲🇻',
@@ -15710,7 +22554,11 @@ export default [
     aliases: ['maldives'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇲🇼',
@@ -15719,7 +22567,11 @@ export default [
     aliases: ['malawi'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇲🇽',
@@ -15728,7 +22580,11 @@ export default [
     aliases: ['mexico'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇲🇾',
@@ -15737,7 +22593,11 @@ export default [
     aliases: ['malaysia'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇲🇿',
@@ -15746,7 +22606,11 @@ export default [
     aliases: ['mozambique'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇳🇦',
@@ -15755,7 +22619,11 @@ export default [
     aliases: ['namibia'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇳🇨',
@@ -15764,7 +22632,11 @@ export default [
     aliases: ['new_caledonia'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇳🇪',
@@ -15773,7 +22645,11 @@ export default [
     aliases: ['niger'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇳🇫',
@@ -15782,7 +22658,11 @@ export default [
     aliases: ['norfolk_island'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇳🇬',
@@ -15791,7 +22671,11 @@ export default [
     aliases: ['nigeria'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇳🇮',
@@ -15800,7 +22684,11 @@ export default [
     aliases: ['nicaragua'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇳🇱',
@@ -15809,7 +22697,11 @@ export default [
     aliases: ['netherlands'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇳🇴',
@@ -15818,7 +22710,11 @@ export default [
     aliases: ['norway'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇳🇵',
@@ -15827,7 +22723,11 @@ export default [
     aliases: ['nepal'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇳🇷',
@@ -15836,7 +22736,11 @@ export default [
     aliases: ['nauru'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇳🇺',
@@ -15845,7 +22749,11 @@ export default [
     aliases: ['niue'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇳🇿',
@@ -15854,7 +22762,11 @@ export default [
     aliases: ['new_zealand'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇴🇲',
@@ -15863,7 +22775,11 @@ export default [
     aliases: ['oman'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇵🇦',
@@ -15872,7 +22788,11 @@ export default [
     aliases: ['panama'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇵🇪',
@@ -15881,7 +22801,11 @@ export default [
     aliases: ['peru'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇵🇫',
@@ -15890,7 +22814,11 @@ export default [
     aliases: ['french_polynesia'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇵🇬',
@@ -15899,7 +22827,11 @@ export default [
     aliases: ['papua_new_guinea'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇵🇭',
@@ -15908,7 +22840,11 @@ export default [
     aliases: ['philippines'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇵🇰',
@@ -15917,7 +22853,11 @@ export default [
     aliases: ['pakistan'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇵🇱',
@@ -15926,7 +22866,11 @@ export default [
     aliases: ['poland'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇵🇲',
@@ -15935,7 +22879,11 @@ export default [
     aliases: ['st_pierre_miquelon'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇵🇳',
@@ -15944,7 +22892,11 @@ export default [
     aliases: ['pitcairn_islands'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇵🇷',
@@ -15953,7 +22905,11 @@ export default [
     aliases: ['puerto_rico'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇵🇸',
@@ -15962,7 +22918,11 @@ export default [
     aliases: ['palestinian_territories'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇵🇹',
@@ -15971,7 +22931,11 @@ export default [
     aliases: ['portugal'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇵🇼',
@@ -15980,7 +22944,11 @@ export default [
     aliases: ['palau'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇵🇾',
@@ -15989,7 +22957,11 @@ export default [
     aliases: ['paraguay'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇶🇦',
@@ -15998,7 +22970,11 @@ export default [
     aliases: ['qatar'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇷🇪',
@@ -16007,7 +22983,11 @@ export default [
     aliases: ['reunion'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇷🇴',
@@ -16016,7 +22996,11 @@ export default [
     aliases: ['romania'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇷🇸',
@@ -16025,7 +23009,11 @@ export default [
     aliases: ['serbia'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇷🇺',
@@ -16034,7 +23022,11 @@ export default [
     aliases: ['ru'],
     tags: ['russia'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🇷🇼',
@@ -16043,7 +23035,11 @@ export default [
     aliases: ['rwanda'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇸🇦',
@@ -16052,7 +23048,11 @@ export default [
     aliases: ['saudi_arabia'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇸🇧',
@@ -16061,7 +23061,11 @@ export default [
     aliases: ['solomon_islands'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇸🇨',
@@ -16070,7 +23074,11 @@ export default [
     aliases: ['seychelles'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇸🇩',
@@ -16079,7 +23087,11 @@ export default [
     aliases: ['sudan'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇸🇪',
@@ -16088,7 +23100,11 @@ export default [
     aliases: ['sweden'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇸🇬',
@@ -16097,7 +23113,11 @@ export default [
     aliases: ['singapore'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇸🇭',
@@ -16106,7 +23126,11 @@ export default [
     aliases: ['st_helena'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇸🇮',
@@ -16115,7 +23139,11 @@ export default [
     aliases: ['slovenia'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇸🇯',
@@ -16124,7 +23152,11 @@ export default [
     aliases: ['svalbard_jan_mayen'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🇸🇰',
@@ -16133,7 +23165,11 @@ export default [
     aliases: ['slovakia'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇸🇱',
@@ -16142,7 +23178,11 @@ export default [
     aliases: ['sierra_leone'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇸🇲',
@@ -16151,7 +23191,11 @@ export default [
     aliases: ['san_marino'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇸🇳',
@@ -16160,7 +23204,11 @@ export default [
     aliases: ['senegal'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇸🇴',
@@ -16169,7 +23217,11 @@ export default [
     aliases: ['somalia'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇸🇷',
@@ -16178,7 +23230,11 @@ export default [
     aliases: ['suriname'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇸🇸',
@@ -16187,7 +23243,11 @@ export default [
     aliases: ['south_sudan'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇸🇹',
@@ -16196,7 +23256,11 @@ export default [
     aliases: ['sao_tome_principe'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇸🇻',
@@ -16205,7 +23269,11 @@ export default [
     aliases: ['el_salvador'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇸🇽',
@@ -16214,7 +23282,11 @@ export default [
     aliases: ['sint_maarten'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇸🇾',
@@ -16223,7 +23295,11 @@ export default [
     aliases: ['syria'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇸🇿',
@@ -16232,7 +23308,11 @@ export default [
     aliases: ['swaziland'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇹🇦',
@@ -16241,7 +23321,11 @@ export default [
     aliases: ['tristan_da_cunha'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🇹🇨',
@@ -16250,7 +23334,11 @@ export default [
     aliases: ['turks_caicos_islands'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇹🇩',
@@ -16259,7 +23347,11 @@ export default [
     aliases: ['chad'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇹🇫',
@@ -16268,7 +23360,11 @@ export default [
     aliases: ['french_southern_territories'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇹🇬',
@@ -16277,7 +23373,11 @@ export default [
     aliases: ['togo'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇹🇭',
@@ -16286,7 +23386,11 @@ export default [
     aliases: ['thailand'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇹🇯',
@@ -16295,7 +23399,11 @@ export default [
     aliases: ['tajikistan'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇹🇰',
@@ -16304,7 +23412,11 @@ export default [
     aliases: ['tokelau'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇹🇱',
@@ -16313,7 +23425,11 @@ export default [
     aliases: ['timor_leste'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇹🇲',
@@ -16322,7 +23438,11 @@ export default [
     aliases: ['turkmenistan'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇹🇳',
@@ -16331,7 +23451,11 @@ export default [
     aliases: ['tunisia'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇹🇴',
@@ -16340,7 +23464,11 @@ export default [
     aliases: ['tonga'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇹🇷',
@@ -16349,7 +23477,11 @@ export default [
     aliases: ['tr'],
     tags: ['turkey'],
     unicode_version: '8.0',
+<<<<<<< HEAD
     ios_version: '9.1'
+=======
+    ios_version: '9.1',
+>>>>>>> master
   },
   {
     emoji: '🇹🇹',
@@ -16358,7 +23490,11 @@ export default [
     aliases: ['trinidad_tobago'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇹🇻',
@@ -16367,7 +23503,11 @@ export default [
     aliases: ['tuvalu'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇹🇼',
@@ -16376,7 +23516,11 @@ export default [
     aliases: ['taiwan'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇹🇿',
@@ -16385,7 +23529,11 @@ export default [
     aliases: ['tanzania'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇺🇦',
@@ -16394,7 +23542,11 @@ export default [
     aliases: ['ukraine'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇺🇬',
@@ -16403,7 +23555,11 @@ export default [
     aliases: ['uganda'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇺🇲',
@@ -16412,7 +23568,11 @@ export default [
     aliases: ['us_outlying_islands'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🇺🇳',
@@ -16421,7 +23581,11 @@ export default [
     aliases: ['united_nations'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🇺🇸',
@@ -16430,7 +23594,11 @@ export default [
     aliases: ['us'],
     tags: ['flag', 'united', 'america'],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '6.0'
+=======
+    ios_version: '6.0',
+>>>>>>> master
   },
   {
     emoji: '🇺🇾',
@@ -16439,7 +23607,11 @@ export default [
     aliases: ['uruguay'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇺🇿',
@@ -16448,7 +23620,11 @@ export default [
     aliases: ['uzbekistan'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇻🇦',
@@ -16457,7 +23633,11 @@ export default [
     aliases: ['vatican_city'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇻🇨',
@@ -16466,7 +23646,11 @@ export default [
     aliases: ['st_vincent_grenadines'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇻🇪',
@@ -16475,7 +23659,11 @@ export default [
     aliases: ['venezuela'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇻🇬',
@@ -16484,7 +23672,11 @@ export default [
     aliases: ['british_virgin_islands'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇻🇮',
@@ -16493,7 +23685,11 @@ export default [
     aliases: ['us_virgin_islands'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇻🇳',
@@ -16502,7 +23698,11 @@ export default [
     aliases: ['vietnam'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇻🇺',
@@ -16511,7 +23711,11 @@ export default [
     aliases: ['vanuatu'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇼🇫',
@@ -16520,7 +23724,11 @@ export default [
     aliases: ['wallis_futuna'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇼🇸',
@@ -16529,7 +23737,11 @@ export default [
     aliases: ['samoa'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇽🇰',
@@ -16538,7 +23750,11 @@ export default [
     aliases: ['kosovo'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇾🇪',
@@ -16547,7 +23763,11 @@ export default [
     aliases: ['yemen'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇾🇹',
@@ -16556,7 +23776,11 @@ export default [
     aliases: ['mayotte'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '9.0'
+=======
+    ios_version: '9.0',
+>>>>>>> master
   },
   {
     emoji: '🇿🇦',
@@ -16565,7 +23789,11 @@ export default [
     aliases: ['south_africa'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇿🇲',
@@ -16574,7 +23802,11 @@ export default [
     aliases: ['zambia'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🇿🇼',
@@ -16583,7 +23815,11 @@ export default [
     aliases: ['zimbabwe'],
     tags: [],
     unicode_version: '6.0',
+<<<<<<< HEAD
     ios_version: '8.3'
+=======
+    ios_version: '8.3',
+>>>>>>> master
   },
   {
     emoji: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
@@ -16592,7 +23828,11 @@ export default [
     aliases: ['england'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🏴󠁧󠁢󠁳󠁣󠁴󠁿',
@@ -16601,7 +23841,11 @@ export default [
     aliases: ['scotland'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
+=======
+    ios_version: '12.1',
+>>>>>>> master
   },
   {
     emoji: '🏴󠁧󠁢󠁷󠁬󠁳󠁿',
@@ -16610,6 +23854,11 @@ export default [
     aliases: ['wales'],
     tags: [],
     unicode_version: '11.0',
+<<<<<<< HEAD
     ios_version: '12.1'
   }
+=======
+    ios_version: '12.1',
+  },
+>>>>>>> master
 ];
