@@ -1,19 +1,18 @@
 import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
 import CreatePostCard from '@components/Common/CreatePostCard';
-import SearchBox from '@components/Common/SearchBox';
 import { getSelectedAccount } from '@store/account/selectors';
 import { getLatestBurnForPost } from '@store/burn';
 import { setSelectedPost } from '@store/post/actions';
-import { api as postApi, useLazyPostQuery } from '@store/post/posts.api';
+import { useLazyPostQuery } from '@store/post/posts.api';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
 import { Menu, MenuProps, Modal, Skeleton } from 'antd';
 import _ from 'lodash';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import PostListItem from './PostListItem';
 import styled from 'styled-components';
+import PostListItem from './PostListItem';
 
 type PostsListingProps = {
   className?: string;
@@ -167,13 +166,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         }}
         components={{ Header, Footer }}
       />
-      <Modal title="Are you sure to down vote shop?" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-        <p>Some contents...</p>
-      </Modal>
-
-      <Modal title="Qr code to claim lotus" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-        {isShowQrCode && selectedAccount?.address && <QRCode address={selectedAccount?.address} />}
-      </Modal>
     </StyledPostsListing>
   );
 };

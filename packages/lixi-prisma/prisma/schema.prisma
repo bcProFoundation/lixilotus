@@ -138,8 +138,29 @@ model Post {
   lotusBurnUp    Float          @default(0.0) @map("lotus_burn_up")
   lotusBurnDown  Float          @default(0.0) @map("lotus_burn_down")
   lotusBurnScore Float          @default(0.0) @map("lotus_burn_score")
+  comments       Comment[]
 
   @@map("post")
+}
+
+model Comment {
+  id                 String   @id @default(cuid())
+  commentAccount     Account? @relation(fields: [commentAccountId], references: [id])
+  commentAccountId   Int?     @map("comment_account_id")
+  commentTo          Post     @relation(fields: [commentToId], references: [id])
+  commentByPublicKey String?  @map("comment_by_public_key")
+  commentToId        String   @map("comment_to_id")
+  commentText        String   @default("") @map("comment_text")
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime @default(now()) @map("updated_at") @db.Timestamptz
+  lotusBurnUp        Float    @default(0.0) @map("lotus_burn_up")
+  lotusBurnDown      Float    @default(0.0) @map("lotus_burn_down")
+  lotusBurnScore     Float    @default(0.0) @map("lotus_burn_score")
+
+  @@index([commentAccountId], map: "index_comment_on_account")
+  @@index([commentByPublicKey], map: "index_comment_by_public_key")
+  @@index([commentToId], map: "index_comment_on_post")
+  @@map("comment")
 }
 
 model Account {
@@ -158,6 +179,7 @@ model Account {
   uploadDetail      UploadDetail[]
   page              Page?
   posts             Post[]
+  comments          Comment[]
 
   @@index([mnemonicHash], type: Hash)
   @@map("account")

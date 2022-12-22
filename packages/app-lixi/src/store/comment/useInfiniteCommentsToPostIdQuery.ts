@@ -1,35 +1,29 @@
 import { PaginationArgs } from '@bcpros/lixi-models';
-import { useLazyPostsQuery, usePostsQuery, api as postApi } from '@store/post/posts.api';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { Post, PostOrder } from 'src/generated/types.generated';
-import _ from 'lodash';
-import { PostQuery } from './posts.generated';
 import { createEntityAdapter } from '@reduxjs/toolkit';
+import { useLazyCommentsToPostIdQuery, useCommentsToPostIdQuery, api as commentApi } from '@store/comment/comments.api';
+import { useEffect, useRef, useState, useMemo } from 'react';
+import { CommentOrder } from 'src/generated/types.generated';
+import { CommentQuery } from './comments.generated';
 
-const postsAdapter = createEntityAdapter<PostQuery['post']>({
+export interface CommentsByPostIdParams extends PaginationArgs {
+  orderBy: CommentOrder;
+  id: string;
+}
+
+const commentsAdapter = createEntityAdapter<CommentQuery['comment']>({
   selectId: post => post.id,
-  sortComparer: (a, b) => b.createdAt - a.createdAt
+  sortComparer: (a, b) => a.createdAt - b.createdAt
 });
+const { selectAll } = commentsAdapter.getSelectors();
 
-const { selectAll } = postsAdapter.getSelectors();
-
-export interface PostListParams extends PaginationArgs {
-  orderBy?: PostOrder;
-  query?: string;
-}
-export interface PostListBody {
-  posts: Post[];
-  next: string;
-}
-
-export function useInfinitePostsQuery(
-  params: PostListParams,
+export function useInfiniteCommentsToPostIdQuery(
+  params: CommentsByPostIdParams,
   fetchAll: boolean = false // if `true`: auto do next fetches to get all notes at once
 ) {
-  const baseResult = usePostsQuery(params);
+  const baseResult = useCommentsToPostIdQuery(params);
 
-  const [trigger, nextResult] = useLazyPostsQuery();
-  const [combinedData, setCombinedData] = useState(postsAdapter.getInitialState({}));
+  const [trigger, nextResult] = useLazyCommentsToPostIdQuery();
+  const [combinedData, setCombinedData] = useState(commentsAdapter.getInitialState({}));
 
   const isBaseReady = useRef(false);
   const isNextDone = useRef(true);
@@ -44,15 +38,14 @@ export function useInfinitePostsQuery(
 
   // Base result
   useEffect(() => {
-    next.current = baseResult.data?.allPosts?.pageInfo?.endCursor;
-    if (baseResult?.data?.allPosts) {
+    next.current = baseResult.data?.allCommentsToPostId?.pageInfo?.endCursor;
+    if (baseResult?.data?.allCommentsToPostId) {
       isBaseReady.current = true;
 
-      const adapterSetAll = postsAdapter.setAll(
+      const adapterSetAll = commentsAdapter.setAll(
         combinedData,
-        baseResult.data.allPosts.edges.map(item => item.node)
+        baseResult.data.allCommentsToPostId.edges.map(item => item.node)
       );
-
       setCombinedData(adapterSetAll);
       fetchAll && fetchNext();
     }
@@ -84,7 +77,7 @@ export function useInfinitePostsQuery(
 
   return {
     data: data ?? [],
-    totalCount: baseResult?.data?.allPosts?.totalCount ?? 0,
+    totalCount: baseResult?.data?.allCommentsToPostId?.totalCount ?? 0,
     error: baseResult?.error,
     isError: baseResult?.isError,
     isLoading: baseResult?.isLoading,
@@ -92,7 +85,7 @@ export function useInfinitePostsQuery(
     errorNext: nextResult?.error,
     isErrorNext: nextResult?.isError,
     isFetchingNext: nextResult?.isFetching,
-    hasNext: baseResult.data?.allPosts?.pageInfo?.endCursor !== null,
+    hasNext: baseResult.data?.allCommentsToPostId?.pageInfo?.endCursor !== undefined,
     fetchNext,
     refetch
   };

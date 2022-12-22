@@ -124,7 +124,6 @@ const CountBar = styled.div`
   margin-top: 1rem;
   border-bottom: 1px solid rgba(128, 116, 124, 0.12);
   padding-bottom: 1rem;
-}
   .ant-space-item {
     font-size: 14px;
     line-height: 20px;
