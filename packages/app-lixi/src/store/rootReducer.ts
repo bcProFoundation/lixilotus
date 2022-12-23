@@ -37,7 +37,7 @@ import { tokenReducer, TokenState } from './tokens';
 const persistConfig = {
   key: 'root',
   storage: storage('lixi-indexeddb'),
-  blacklist: ['accounts', 'router', 'modal', 'wallet', 'api', 'root', 'posts', 'tokens', 'pages']
+  blacklist: ['accounts', 'router', 'modal', 'wallet', 'api', 'root', 'posts', 'pages']
 };
 
 const walletPersistConfig = {
