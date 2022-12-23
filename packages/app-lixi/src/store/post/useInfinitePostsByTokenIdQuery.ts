@@ -27,9 +27,10 @@ export function useInfinitePostsByTokenIdQuery(
   params: PostListByIdParams,
   fetchAll: boolean = false // if `true`: auto do next fetches to get all notes at once
 ) {
+  const dispatch = useAppDispatch();
   const baseResult = usePostsByTokenIdQuery(params);
 
-  const [trigger, nextResult] = useLazyPostsByTokenIdQuery();
+  const [trigger, nextResult, lastPromiseInfo] = useLazyPostsByTokenIdQuery();
   const [combinedData, setCombinedData] = useState(postsAdapter.getInitialState({}));
 
   const isBaseReady = useRef(false);
@@ -94,7 +95,7 @@ export function useInfinitePostsByTokenIdQuery(
     errorNext: nextResult?.error,
     isErrorNext: nextResult?.isError,
     isFetchingNext: nextResult?.isFetching,
-    hasNext: baseResult.data?.allPostsByTokenId?.pageInfo?.endCursor !== undefined,
+    hasNext: baseResult.data?.allPostsByTokenId?.pageInfo?.endCursor !== null,
     fetchNext,
     refetch
   };

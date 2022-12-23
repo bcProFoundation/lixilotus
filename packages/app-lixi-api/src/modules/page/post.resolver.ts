@@ -245,7 +245,7 @@ export class PostResolver {
       throw new Error(couldNotFindAccount);
     }
 
-    const { uploadCovers, pageId, htmlContent, tokenId, pureContent } = data;
+    const { uploadCovers, pageId, htmlContent, tokenPrimaryId, pureContent } = data;
 
     let uploadDetailIds: any[] = [];
 
@@ -279,7 +279,7 @@ export class PostResolver {
           connect: pageId ? { id: pageId } : undefined
         },
         token: {
-          connect: tokenId ? { tokenId: tokenId } : undefined
+          connect: tokenPrimaryId ? { id: tokenPrimaryId } : undefined
         }
       }
     };
