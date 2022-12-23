@@ -130,7 +130,7 @@ const TokensFeed: React.FC = () => {
         </div>
       </BannerTicker>
 
-      <CreatePostCard tokenId={tokenInfo.tokenId} refetch={() => refetch()} />
+      <CreatePostCard tokenPrimaryId={tokenInfo.id} refetch={() => refetch()} />
       <SearchBox />
 
       <div className="content">

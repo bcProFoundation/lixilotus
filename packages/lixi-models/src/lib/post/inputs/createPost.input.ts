@@ -19,7 +19,7 @@ export class CreatePostInput {
 
   @IsOptional()
   @Field(() => String, { nullable: true })
-  tokenId?: Nullable<string>;
+  tokenPrimaryId?: Nullable<string>;
 
   @Field(() => [String], { nullable: true })
   @IsOptional()

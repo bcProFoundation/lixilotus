@@ -76,7 +76,7 @@ input CreatePostInput {
   pageAccountId: Int
   pageId: String
   pureContent: String!
-  tokenId: String
+  tokenPrimaryId: String
   uploadCovers: [String!]
 }
 

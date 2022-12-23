@@ -129,7 +129,7 @@ const UserCreate = styled.div`
 
 type CreatePostCardProp = {
   pageId?: string;
-  tokenId?: string;
+  tokenPrimaryId?: string;
   userId?: string;
   refetch?: () => void;
 };
@@ -145,7 +145,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
   const [valueEditor, setValue] = useState(null);
   const postCoverUploads = useAppSelector(getPostCoverUploads);
   const [importValue, setImportValue] = useState(null);
-  const { pageId, tokenId } = props;
+  const { pageId, tokenPrimaryId } = props;
   const selectedAccount = useAppSelector(getSelectedAccount);
 
   const getSunEditorInstance = (sunEditorCore: SunEditorCore) => {
@@ -281,7 +281,13 @@ const CreatePostCard = (props: CreatePostCardProp) => {
     }
   };
 
-  const updatePost = async (tag: string, params, result: CreatePostMutation, pageId?: string, tokenId?: string) => {
+  const updatePost = async (
+    tag: string,
+    params,
+    result: CreatePostMutation,
+    pageId?: string,
+    tokenPrimaryId?: string
+  ) => {
     switch (tag) {
       case 'PostsByPageId':
         return dispatch(
@@ -298,7 +304,8 @@ const CreatePostCard = (props: CreatePostCardProp) => {
         );
       case 'PostsByTokenId':
         return dispatch(
-          postApi.util.updateQueryData('PostsByTokenId', { ...params, id: tokenId }, draft => {
+          postApi.util.updateQueryData('PostsByTokenId', { ...params, id: tokenPrimaryId }, draft => {
+            console.log(draft);
             draft.allPostsByTokenId.edges.unshift({
               cursor: result.createPost.id,
               node: {
@@ -324,14 +331,13 @@ const CreatePostCard = (props: CreatePostCardProp) => {
   };
 
   const handleCreateNewPost = async ({ htmlContent, pureContent }) => {
-    console.log('handleCreateNewPost');
     if (htmlContent !== '' || !_.isNil(htmlContent)) {
       const createPostInput: CreatePostInput = {
         uploadCovers: postCoverUploads.map(upload => upload.id),
         htmlContent: htmlContent,
         pureContent: pureContent,
         pageId: pageId || undefined,
-        tokenId: tokenId || undefined
+        tokenPrimaryId: tokenPrimaryId || undefined
       };
 
       const params = {
@@ -345,15 +351,15 @@ const CreatePostCard = (props: CreatePostCardProp) => {
         const result = await createPostTrigger({ input: createPostInput }).unwrap();
         let tag: string;
 
-        if (_.isNil(pageId) && _.isNil(tokenId)) {
+        if (_.isNil(pageId) && _.isNil(tokenPrimaryId)) {
           tag = PostsQueryTag.Posts;
         } else if (pageId) {
           tag = PostsQueryTag.PostsByPageId;
-        } else if (tokenId) {
+        } else if (tokenPrimaryId) {
           tag = PostsQueryTag.PostsByTokenId;
         }
 
-        const patches = updatePost(tag, params, result, pageId, tokenId);
+        const patches = updatePost(tag, params, result, pageId, tokenPrimaryId);
         dispatch(
           showToast('success', {
             message: 'Success',
