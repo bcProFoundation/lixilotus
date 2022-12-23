@@ -42,7 +42,7 @@ export const Counter = (props: CounterProps) => {
     if (props.num != count) {
       setTimeout(() => setAnimationCounter('goUp'), 0);
       setTimeout(() => setCount(props.num), 100);
-      setTimeout(() => setAnimationCounter('waitDown'), 100); //counterStates == 'counterSuccess.type' ? 'waitDown' : 'reverted'
+      setTimeout(() => setAnimationCounter(count >= props.num ? 'waitDown' : 'reverted'), 100); //counterStates == 'counterSuccess.type' ? 'waitDown' : 'reverted'
       setTimeout(() => setAnimationCounter('initial'), 200);
     }
   });

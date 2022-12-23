@@ -28,15 +28,7 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
     };
 
     if (command.burnForType === BurnForType.Token) {
-      const tokenToBurn = yield select(getTokenById(command.burnForId))
-      let lotusBurnUp:number = tokenToBurn.lotusBurnUp ?? 0;
-      let lotusBurnDown:number = tokenToBurn.lotusBurnDown ?? 0;
-      if (command.burnType == BurnType.Up) {
-        lotusBurnUp = burnValue;
-      } else {
-        lotusBurnDown = burnValue;
-      }
-      yield put(burnForToken({id: command.burnForId, burnUp: lotusBurnUp, burnDown: lotusBurnDown}))
+      yield put(burnForToken({id: command.burnForId, burnType: command.burnType, burnUp: burnValue, burnDown: burnValue}))
     }
 
     patches = yield put(updatePostBurnValue(command));
@@ -51,15 +43,7 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
   } catch (err) {
     const message = (err as Error).message ?? intl.get('post.unableToBurnForPost');
     if (command.burnForType === BurnForType.Token) {
-      const tokenToBurn = yield select(getTokenById(command.burnForId))
-      let lotusBurnUp:number = tokenToBurn.lotusBurnUp ?? 0;
-      let lotusBurnDown:number = tokenToBurn.lotusBurnDown ?? 0;
-      if (command.burnType == BurnType.Up) {
-        lotusBurnUp = burnValue;
-      } else {
-        lotusBurnDown = burnValue;
-      }
-      yield put(burnForTokenFailure({id: command.burnForId, burnUp: lotusBurnUp, burnDown: lotusBurnDown}))
+      yield put(burnForTokenFailure({id: command.burnForId, burnType: command.burnType, burnUp: burnValue, burnDown: burnValue}))
     }
     yield put(burnForUpDownVoteFailure(message));
     const params = {

@@ -15,7 +15,7 @@ import useXPI from '@hooks/useXPI';
 import { burnForUpDownVote, getLatestBurnForToken } from '@store/burn';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { showToast } from '@store/toast/actions';
-import { burnForTokenSuccess, fetchAllTokens, postToken, selectToken, selectTokens } from '@store/tokens';
+import { burnForToken, fetchAllTokens, postToken, selectToken, selectTokens } from '@store/tokens';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
 import { formatBalance } from '@utils/cashMethods';
 import { Button, Form, Image, Input, InputRef, message, Modal, notification, Space, Table } from 'antd';
@@ -69,7 +69,7 @@ const TokensListing: React.FC = () => {
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const latestBurnForToken = useAppSelector(getLatestBurnForToken);
-  const burnValue = '0.01';
+  const burnValue = '1';
 
   const {
     handleSubmit,
@@ -88,7 +88,7 @@ const TokensListing: React.FC = () => {
         burnUp: latestBurnForToken.burnType === BurnType.Up ? latestBurnForToken.burnedValue : 0,
         burnDown: latestBurnForToken.burnType === BurnType.Down ? latestBurnForToken.burnedValue : 0
       };
-      dispatch(burnForTokenSuccess(burnForTokenPayload));
+      dispatch(burnForToken(burnForTokenPayload));
     }
   }, [latestBurnForToken]);
 
@@ -218,7 +218,7 @@ const TokensListing: React.FC = () => {
       key: 'lotusBurn',
       sorter: (a, b) => a.lotusBurnUp + a.lotusBurnDown - (b.lotusBurnUp + b.lotusBurnDown),
       defaultSortOrder: 'descend',
-      render: (_, record) => <Counter num={formatBalance(record.lotusBurnUp + record.lotusBurnDown)} /> // increase={burnValue}
+      render: (_, record) => <Counter num={formatBalance(record.lotusBurnUp + record.lotusBurnDown)} />
     },
     {
       title: intl.get('label.comment'),
