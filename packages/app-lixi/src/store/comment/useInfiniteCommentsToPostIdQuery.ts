@@ -4,6 +4,7 @@ import { useLazyCommentsToPostIdQuery, useCommentsToPostIdQuery, api as commentA
 import { useEffect, useRef, useState, useMemo } from 'react';
 import { CommentOrder } from 'src/generated/types.generated';
 import { CommentQuery } from './comments.generated';
+import moment from 'moment';
 
 export interface CommentsByPostIdParams extends PaginationArgs {
   orderBy: CommentOrder;
@@ -12,7 +13,11 @@ export interface CommentsByPostIdParams extends PaginationArgs {
 
 const commentsAdapter = createEntityAdapter<CommentQuery['comment']>({
   selectId: post => post.id,
-  sortComparer: (a, b) => a.createdAt - b.createdAt
+  sortComparer: (a, b) => {
+    const dateA = new Date(a.createdAt);
+    const dateB = new Date(b.createdAt);
+    return dateA.getTime() - dateB.getTime();
+  }
 });
 const { selectAll } = commentsAdapter.getSelectors();
 
@@ -33,7 +38,11 @@ export function useInfiniteCommentsToPostIdQuery(
 
   const data = useMemo(() => {
     const result = selectAll(combinedData);
-    return result;
+    return result.sort((a, b) => {
+      const dateA = new Date(a.createdAt);
+      const dateB = new Date(b.createdAt);
+      return dateA.getTime() - dateB.getTime();
+    });
   }, [combinedData]);
 
   // Base result

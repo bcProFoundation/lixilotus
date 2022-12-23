@@ -282,6 +282,9 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   };
 
   const handleCreateNewComment = async (text: string) => {
+    if (_.isNil(text) || _.isEmpty(text)) {
+      return;
+    }
     if (text !== '' || !_.isNil(text)) {
       const createCommentInput: CreateCommentInput = {
         commentText: text,
@@ -349,7 +352,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
         url: shareUrl,
         title: 'LixiLotus'
       }}
-      onClick={() => {}}
+      onClick={() => { }}
     >
       <ShareButton>
         <ShareAltOutlined /> Share
@@ -399,15 +402,6 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           </div>
         </PostContentDetail>
 
-        <Search
-          className="input-comment"
-          placeholder="Input your comment..."
-          enterButton="Comment"
-          size="large"
-          suffix={<DashOutlined />}
-          onSearch={handleCreateNewComment}
-        />
-
         <CommentContainer>
           <Virtuoso
             id="list-comment-virtuoso"
@@ -420,6 +414,14 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
             }}
           />
         </CommentContainer>
+        <Search
+          className="input-comment"
+          placeholder="Input your comment..."
+          enterButton="Comment"
+          size="large"
+          suffix={<DashOutlined />}
+          onSearch={handleCreateNewComment}
+        />
       </StyledContainerPostDetail>
     </>
   );
