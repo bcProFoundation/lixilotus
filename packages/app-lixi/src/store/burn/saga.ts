@@ -4,7 +4,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
 import { api as postApi } from '@store/post/posts.api';
 import { showToast } from '@store/toast/actions';
-import { burnForToken, burnForTokenFailure, getTokenById } from '@store/tokens';
+import { burnForToken, burnForTokenFailure, burnForTokenSucceses, getTokenById } from '@store/tokens';
 import * as _ from 'lodash';
 import intl from 'react-intl-universal';
 import { put, select } from 'redux-saga/effects';
@@ -28,12 +28,15 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
     };
 
     if (command.burnForType === BurnForType.Token) {
-      yield put(burnForToken({id: command.burnForId, burnType: command.burnType, burnUp: burnValue, burnDown: burnValue}))
+      yield put(burnForToken({id: command.burnForId, burnType: command.burnType, burnValue: burnValue}))
     }
 
     patches = yield put(updatePostBurnValue(command));
 
     const data: Burn = yield call(burnApi.post, dataApi);
+    if (command.burnForType === BurnForType.Token) {
+      yield put(burnForTokenSucceses())
+    }
 
     if (_.isNil(data) || _.isNil(data.id)) {
       throw new Error(intl.get('post.unableToBurnForPost'));
@@ -43,7 +46,7 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
   } catch (err) {
     const message = (err as Error).message ?? intl.get('post.unableToBurnForPost');
     if (command.burnForType === BurnForType.Token) {
-      yield put(burnForTokenFailure({id: command.burnForId, burnType: command.burnType, burnUp: burnValue, burnDown: burnValue}))
+      yield put(burnForTokenFailure({id: command.burnForId, burnType: command.burnType, burnValue: burnValue}))
     }
     yield put(burnForUpDownVoteFailure(message));
     const params = {

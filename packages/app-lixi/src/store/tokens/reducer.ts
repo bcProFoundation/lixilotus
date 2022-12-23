@@ -29,12 +29,12 @@ export const tokenReducer = createReducer(initialState, builder => {
       state.selectedTokenId = tokenInfo;
     })
     .addCase(burnForToken, (state, action) => {
-      const { id, burnType, burnUp, burnDown } = action.payload;
+      const { id, burnType, burnValue } = action.payload;
       const token = state.entities[id];
       if (token) {
-        let bunrUpValue = burnUp;
-        let bunrDownValue = burnDown;
-        burnType === BurnType.Up ? bunrDownValue = 0 : bunrUpValue = 0;
+        let bunrUpValue = 0;
+        let bunrDownValue = 0;
+        burnType === BurnType.Up ? bunrUpValue = burnValue: bunrDownValue = burnValue;
         const newLotusBurnUp = token.lotusBurnUp + bunrUpValue;
         const newLotusBurnDown = token.lotusBurnDown + bunrDownValue;
         const changes: Update<Token> = {
@@ -49,12 +49,12 @@ export const tokenReducer = createReducer(initialState, builder => {
       }
     })
     .addCase(burnForTokenFailure, (state, action) => {
-      const { id, burnType, burnUp, burnDown } = action.payload;
+      const { id, burnType, burnValue } = action.payload;
       const token = state.entities[id];
       if (token) {
-        let bunrUpValue = burnUp;
-        let bunrDownValue = burnDown;
-        burnType === BurnType.Up ? bunrDownValue = 0 : bunrUpValue = 0;
+        let bunrUpValue = 0;
+        let bunrDownValue = 0;
+        burnType === BurnType.Up ? bunrUpValue = burnValue: bunrDownValue = burnValue;
         const newLotusBurnUp = token.lotusBurnUp - bunrUpValue;
         const newLotusBurnDown = token.lotusBurnDown - bunrDownValue;
         const changes: Update<Token> = {

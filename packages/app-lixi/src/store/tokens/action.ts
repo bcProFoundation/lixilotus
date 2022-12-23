@@ -11,9 +11,10 @@ export const getToken = createAction<string>('tokens/getToken');
 export const getTokenSuccess = createAction<any>('tokens/getTokenSuccess');
 export const getTokenFailure = createAction<string>('tokens/getTokenFailure');
 export const selectToken = createAction<any>('tokens/selectToken');
-export const burnForToken = createAction<{ id: string; burnType?: BurnType; burnUp: number; burnDown: number }>(
+export const burnForToken = createAction<{ id: string; burnType?: BurnType; burnValue: number }>(
   'tokens/burnForToken'
 );
-export const burnForTokenFailure = createAction<{ id: string; burnType?: BurnType; burnUp: number; burnDown: number }>(
+export const burnForTokenSucceses = createAction('tokens/burnForTokenSucceses');
+export const burnForTokenFailure = createAction<{ id: string; burnType?: BurnType; burnValue: number }>(
   'tokens/burnForTokenFailure'
 );

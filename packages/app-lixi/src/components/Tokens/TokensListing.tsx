@@ -15,7 +15,7 @@ import useXPI from '@hooks/useXPI';
 import { burnForUpDownVote, getLatestBurnForToken } from '@store/burn';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { showToast } from '@store/toast/actions';
-import { burnForToken, fetchAllTokens, postToken, selectToken, selectTokens } from '@store/tokens';
+import { burnForToken, burnForTokenSucceses, fetchAllTokens, postToken, selectToken, selectTokens } from '@store/tokens';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
 import { formatBalance } from '@utils/cashMethods';
 import { Button, Form, Image, Input, InputRef, message, Modal, notification, Space, Table } from 'antd';
@@ -83,12 +83,7 @@ const TokensListing: React.FC = () => {
 
   useEffect(() => {
     if (latestBurnForToken) {
-      const burnForTokenPayload = {
-        id: latestBurnForToken.burnForId,
-        burnUp: latestBurnForToken.burnType === BurnType.Up ? latestBurnForToken.burnedValue : 0,
-        burnDown: latestBurnForToken.burnType === BurnType.Down ? latestBurnForToken.burnedValue : 0
-      };
-      dispatch(burnForToken(burnForTokenPayload));
+      dispatch(burnForTokenSucceses());
     }
   }, [latestBurnForToken]);
 
