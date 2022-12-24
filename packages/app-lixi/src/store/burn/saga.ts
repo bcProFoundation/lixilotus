@@ -1,13 +1,13 @@
-import { Burn, BurnCommand } from '@bcpros/lixi-models';
-import { BurnType } from '@bcpros/lixi-models/lib/burn';
+import { BurnType, Burn, BurnCommand, BurnForType } from '@bcpros/lixi-models/lib/burn';
 import { all, call, fork, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
 import { api as postApi } from '@store/post/posts.api';
 import { showToast } from '@store/toast/actions';
+import { burnForToken, burnForTokenFailure, burnForTokenSucceses, getTokenById } from '@store/tokens';
 import * as _ from 'lodash';
 import intl from 'react-intl-universal';
-import { put } from 'redux-saga/effects';
+import { put, select } from 'redux-saga/effects';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import { D } from 'styled-icons/crypto';
 import { hideLoading } from '../loading/actions';
@@ -20,14 +20,23 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
 
   const command = action.payload;
   const { burnForId: postId } = command;
+  let burnValue = _.toNumber(command.burnValue);
+
   try {
     const dataApi: BurnCommand = {
       ...command
     };
 
+    if (command.burnForType === BurnForType.Token) {
+      yield put(burnForToken({id: command.burnForId, burnType: command.burnType, burnValue: burnValue}))
+    }
+
     patches = yield put(updatePostBurnValue(command));
 
     const data: Burn = yield call(burnApi.post, dataApi);
+    if (command.burnForType === BurnForType.Token) {
+      yield put(burnForTokenSucceses())
+    }
 
     if (_.isNil(data) || _.isNil(data.id)) {
       throw new Error(intl.get('post.unableToBurnForPost'));
@@ -36,6 +45,9 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
     yield put(burnForUpDownVoteSuccess(data));
   } catch (err) {
     const message = (err as Error).message ?? intl.get('post.unableToBurnForPost');
+    if (command.burnForType === BurnForType.Token) {
+      yield put(burnForTokenFailure({id: command.burnForId, burnType: command.burnType, burnValue: burnValue}))
+    }
     yield put(burnForUpDownVoteFailure(message));
     const params = {
       orderBy: {
