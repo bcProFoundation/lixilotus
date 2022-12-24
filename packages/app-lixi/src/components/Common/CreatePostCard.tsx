@@ -1,7 +1,8 @@
-import { PlusCircleOutlined } from '@ant-design/icons';
+import { PlusCircleOutlined, GlobalOutlined } from '@ant-design/icons';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
-import { getPostCoverUploads } from '@store/account/selectors';
+import { getPostCoverUploads, getSelectedAccount } from '@store/account/selectors';
 import { api as postApi, useCreatePostMutation } from '@store/post/posts.api';
+import { CreatePostMutation, PostsByPageIdDocument } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
 import { Avatar, Button, Input, Modal, Tabs } from 'antd';
 import TextArea from 'antd/lib/input/TextArea';
@@ -15,7 +16,9 @@ import styled from 'styled-components';
 import 'suneditor/dist/css/suneditor.min.css'; // Import Sun Editor's CSS File
 import SunEditorCore from 'suneditor/src/lib/core';
 import Editor from './Editor';
+import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { Embed, SocialsEnum } from './Embed';
+import EditorLexical from './Lexical/EditorLexical';
 
 const styles = {
   wrapper: {
@@ -68,9 +71,8 @@ const CreateCardContainer = styled.div`
   padding: 1.5rem 1rem;
   background: #fff;
   border-radius: 20px;
-  box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
   align-items: center;
-  margin: 1rem 2px;
+  margin: 1rem 0;
   .avatar {
     flex: 2 auto;
     display: flex;
@@ -92,9 +94,43 @@ const StyledUploader = styled.div`
   bottom: 24px;
 `;
 
+const UserCreate = styled.div`
+  .user-create-post {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 24px;
+    .user-info {
+      .title-user {
+        margin: 0;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 24px;
+        letter-spacing: 0.15px;
+        color: var(--text-color-on-background);
+      }
+      .btn-select {
+        background: rgba(128, 116, 124, 0.12);
+        border-radius: 8px;
+        padding: 0 8px;
+        border: none;
+        margin-top: 4px;
+        span {
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 20px;
+          letter-spacing: 0.25px;
+          color: #4e444b;
+        }
+      }
+    }
+  }
+`;
+
 type CreatePostCardProp = {
   pageId?: string;
-  tokenId?: string;
+  tokenPrimaryId?: string;
+  userId?: string;
   refetch?: () => void;
 };
 
@@ -109,7 +145,8 @@ const CreatePostCard = (props: CreatePostCardProp) => {
   const [valueEditor, setValue] = useState(null);
   const postCoverUploads = useAppSelector(getPostCoverUploads);
   const [importValue, setImportValue] = useState(null);
-  const { pageId, tokenId } = props;
+  const { pageId, tokenPrimaryId } = props;
+  const selectedAccount = useAppSelector(getSelectedAccount);
 
   const getSunEditorInstance = (sunEditorCore: SunEditorCore) => {
     sunEditor.current = sunEditorCore;
@@ -166,7 +203,6 @@ const CreatePostCard = (props: CreatePostCardProp) => {
     const valueInput = sunEditor.current.getContents(true);
     setValue(valueInput);
     setEnableEditor(false);
-    console.log(valueInput);
   };
 
   const handleUrlChange = (event): void => {
@@ -245,14 +281,63 @@ const CreatePostCard = (props: CreatePostCardProp) => {
     }
   };
 
-  const handleCreateNewPost = async content => {
-    console.log('handleCreateNewPost');
-    if (content !== '' || !_.isNil(content)) {
+  const updatePost = async (
+    tag: string,
+    params,
+    result: CreatePostMutation,
+    pageId?: string,
+    tokenPrimaryId?: string
+  ) => {
+    switch (tag) {
+      case 'PostsByPageId':
+        return dispatch(
+          postApi.util.updateQueryData('PostsByPageId', { ...params, id: pageId }, draft => {
+            console.log(draft);
+            draft.allPostsByPageId.edges.unshift({
+              cursor: result.createPost.id,
+              node: {
+                ...result.createPost
+              }
+            });
+            draft.allPostsByPageId.totalCount = draft.allPostsByPageId.totalCount + 1;
+          })
+        );
+      case 'PostsByTokenId':
+        return dispatch(
+          postApi.util.updateQueryData('PostsByTokenId', { ...params, id: tokenPrimaryId }, draft => {
+            console.log(draft);
+            draft.allPostsByTokenId.edges.unshift({
+              cursor: result.createPost.id,
+              node: {
+                ...result.createPost
+              }
+            });
+            draft.allPostsByTokenId.totalCount = draft.allPostsByTokenId.totalCount + 1;
+          })
+        );
+      default:
+        return dispatch(
+          postApi.util.updateQueryData('Posts', params, draft => {
+            draft.allPosts.edges.unshift({
+              cursor: result.createPost.id,
+              node: {
+                ...result.createPost
+              }
+            });
+            draft.allPosts.totalCount = draft.allPosts.totalCount + 1;
+          })
+        );
+    }
+  };
+
+  const handleCreateNewPost = async ({ htmlContent, pureContent }) => {
+    if (htmlContent !== '' || !_.isNil(htmlContent)) {
       const createPostInput: CreatePostInput = {
         uploadCovers: postCoverUploads.map(upload => upload.id),
-        content: content,
+        htmlContent: htmlContent,
+        pureContent: pureContent,
         pageId: pageId || undefined,
-        tokenId: tokenId || undefined
+        tokenPrimaryId: tokenPrimaryId || undefined
       };
 
       const params = {
@@ -264,17 +349,17 @@ const CreatePostCard = (props: CreatePostCardProp) => {
       let patches: PatchCollection;
       try {
         const result = await createPostTrigger({ input: createPostInput }).unwrap();
-        const patches = dispatch(
-          postApi.util.updateQueryData('Posts', params, draft => {
-            draft.allPosts.edges.unshift({
-              cursor: result.createPost.id,
-              node: {
-                ...result.createPost
-              }
-            });
-            draft.allPosts.totalCount = draft.allPosts.totalCount + 1;
-          })
-        );
+        let tag: string;
+
+        if (_.isNil(pageId) && _.isNil(tokenPrimaryId)) {
+          tag = PostsQueryTag.Posts;
+        } else if (pageId) {
+          tag = PostsQueryTag.PostsByPageId;
+        } else if (tokenPrimaryId) {
+          tag = PostsQueryTag.PostsByTokenId;
+        }
+
+        const patches = updatePost(tag, params, result, pageId, tokenPrimaryId);
         dispatch(
           showToast('success', {
             message: 'Success',
@@ -282,6 +367,8 @@ const CreatePostCard = (props: CreatePostCardProp) => {
             duration: 5
           })
         );
+
+        setEnableEditor(false);
       } catch (error) {
         const message = intl.get('post.unableCreatePostServer');
         if (patches) {
@@ -307,8 +394,8 @@ const CreatePostCard = (props: CreatePostCardProp) => {
     <>
       <CreateCardContainer onClick={() => setEnableEditor(!enableEditor)}>
         <div className="avatar">
-          <Avatar size={50} style={{ color: '#fff', backgroundColor: '#bdbdbd' }}>
-            ER
+          <Avatar src="images/anonymous-ava.svg" size={50} style={{ color: '#fff', backgroundColor: '#bdbdbd' }}>
+            {/* ER */}
           </Avatar>
           <Input bordered={false} placeholder="What's on your mind?" />
         </div>
@@ -323,42 +410,54 @@ const CreatePostCard = (props: CreatePostCardProp) => {
           visible={enableEditor}
           footer={null}
           onCancel={() => setEnableEditor(false)}
-          destroyOnClose={true}
           maskClosable={false}
         >
-          <Tabs defaultActiveKey="1">
-            <Tabs.TabPane tab="Create" key="create">
-              <Editor onSubmitPost={handleSubmitEditor} />
-            </Tabs.TabPane>
-            <Tabs.TabPane tab="Import" key="import">
-              <form onSubmit={handleSubmit}>
-                <label>Link to post</label>
-                <input className="input-import" placeholder="Please type link..." onChange={handleUrlChange} />
-              </form>
-              {!error && social && postId && (
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <h3 style={{ marginTop: '2rem' }}>Post Preview</h3>
-                  <Preview>
-                    <Embed
-                      social={social}
-                      postId={postId}
-                      url={url}
-                      onError={handleOnError}
-                      onLoad={e => handleOnLoad(e, social)}
-                    />
-                  </Preview>
-                  <Button
-                    style={{ marginTop: '1rem', alignSelf: 'end' }}
-                    type="primary"
-                    disabled={importValue ? false : true}
-                    onClick={() => handleCreateNewPost(importValue)}
-                  >
-                    Create Post
-                  </Button>
-                </div>
-              )}
-            </Tabs.TabPane>
-          </Tabs>
+          <>
+            <Tabs defaultActiveKey="1">
+              <Tabs.TabPane tab="Create" key="create">
+                <UserCreate>
+                  <div className="user-create-post">
+                    <img src="/images/xpi.svg" alt="" />
+                    <div className="user-info">
+                      <p className="title-user">{selectedAccount?.name}</p>
+                      <Button className="btn-select">
+                        Public <GlobalOutlined />
+                      </Button>
+                    </div>
+                  </div>
+                  <EditorLexical onSubmit={value => handleCreateNewPost(value)} />
+                </UserCreate>
+              </Tabs.TabPane>
+              <Tabs.TabPane tab="Import" key="import">
+                <form onSubmit={handleSubmit}>
+                  <label>Link to post</label>
+                  <input className="input-import" placeholder="Please type link..." onChange={handleUrlChange} />
+                </form>
+                {!error && social && postId && (
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <h3 style={{ marginTop: '2rem' }}>Post Preview</h3>
+                    <Preview>
+                      <Embed
+                        social={social}
+                        postId={postId}
+                        url={url}
+                        onError={handleOnError}
+                        onLoad={e => handleOnLoad(e, social)}
+                      />
+                    </Preview>
+                    <Button
+                      style={{ marginTop: '1rem', alignSelf: 'end' }}
+                      type="primary"
+                      disabled={importValue ? false : true}
+                      onClick={() => handleCreateNewPost(importValue)}
+                    >
+                      Create Post
+                    </Button>
+                  </div>
+                )}
+              </Tabs.TabPane>
+            </Tabs>
+          </>
         </Modal>
       </WrapEditor>
     </>

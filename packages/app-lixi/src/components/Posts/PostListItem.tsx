@@ -10,8 +10,7 @@ import { PostsQuery } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
 import { formatBalance } from '@utils/cashMethods';
-import { Avatar, Button, Comment, List, Space } from 'antd';
-import { push } from 'connected-next-router';
+import { Avatar, Comment, List, Space } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
@@ -19,6 +18,10 @@ import ReactHtmlParser from 'react-html-parser';
 import intl from 'react-intl-universal';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled from 'styled-components';
+import { PostsQueryTag } from '@bcpros/lixi-models/constants';
+import { useRouter } from 'next/router';
+
+const URL_SERVER_IMAGE = 'https://s3.us-west-001.backblazeb2.com';
 
 const IconBurn = ({
   icon,
@@ -31,7 +34,7 @@ const IconBurn = ({
   burnValue?: number;
   dataItem: any;
   imgUrl?: string;
-  onClickIcon: () => void;
+  onClickIcon: (e) => void;
 }) => (
   <Space onClick={onClickIcon}>
     {icon && React.createElement(icon)}
@@ -127,6 +130,12 @@ const Content = styled.div`
     width: 100%;
     max-height: 300px;
   }
+  .images-post {
+    margin-top: 1rem;
+    img {
+      margin-bottom: 1rem;
+    }
+  }
 `;
 
 const ActionBar = styled.div`
@@ -165,6 +174,21 @@ const GroupIconText = styled.div`
   }
 `;
 
+const PostListItemContainer = styled(List.Item)`
+  display: flex;
+  flex-direction: column;
+  height: fit-content !important;
+  margin: 2px 2px 1rem 2px;
+  border-radius: 24px;
+  box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
+  background: white;
+  padding: 0;
+  border: none;
+  &:hover {
+    background: #f7f7f7;
+  }
+`;
+
 type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 
 type PostListItemProps = {
@@ -173,6 +197,7 @@ type PostListItemProps = {
 };
 
 const PostListItem = ({ index, item }: PostListItemProps) => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const post: PostItem = item;
   const [isCollapseComment, setIsCollapseComment] = useState(false);
@@ -191,10 +216,6 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
   if (!post) return null;
 
   useEffect(() => {
-    loadPost();
-  }, []);
-
-  const loadPost = () => {
     const descPost = ref?.current.querySelector('.description-post');
     if (descPost.clientHeight > 130) {
       descPost.classList.add('show-less');
@@ -202,9 +223,11 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
     } else {
       setShowMore(false);
     }
-  };
+  }, []);
 
-  const showMoreHandle = () => {
+  const showMoreHandle = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
     const descPostDom = ref?.current.querySelector('.description-post');
     descPostDom.classList.add('show-more');
     setShowMore(false);
@@ -231,11 +254,19 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
     }, 1000);
   };
 
-  const upVotePost = (dataItem: PostItem) => {
+  const handlePostClick = () => {
+    router.push(`/post/${post.id}`);
+  };
+
+  const upVotePost = (e: React.MouseEvent<HTMLElement>, dataItem: PostItem) => {
+    e.preventDefault();
+    e.stopPropagation();
     handleBurnForPost(true, dataItem);
   };
 
-  const downVotePost = (dataItem: PostItem) => {
+  const downVotePost = (e: React.MouseEvent<HTMLElement>, dataItem: PostItem) => {
+    e.preventDefault();
+    e.stopPropagation();
     handleBurnForPost(false, dataItem);
   };
 
@@ -252,6 +283,15 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
       const burnForId = post.id;
       const burnValue = '1';
       const tipToAddress = post?.postAccount?.address ?? undefined;
+      let tag: string;
+
+      if (_.isNil(post.page) && _.isNil(post.token)) {
+        tag = PostsQueryTag.Posts;
+      } else if (post.page) {
+        tag = PostsQueryTag.PostsByPageId;
+      } else if (post.token) {
+        tag = PostsQueryTag.PostsByTokenId;
+      }
 
       const txHex = await burnXpi(
         XPI,
@@ -273,7 +313,10 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
         burnedBy,
         burnForId,
         burnValue,
-        tipToAddress: xAddress
+        tipToAddress: xAddress,
+        postQueryTag: tag,
+        pageId: post.page?.id,
+        tokenId: post.token?.id
       };
 
       dispatch(burnForUpDownVote(burnCommand));
@@ -304,62 +347,63 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
   };
 
   return (
-    <div>
-      <List.Item
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          height: 'fit-content !important',
-          margin: '2px 2px 1rem 2px',
-          borderRadius: '24px',
-          boxShadow: '0px 2px 10px rgb(0 0 0 / 5%)',
-          background: 'white',
-          padding: '0',
-          border: 'none'
-        }}
-        key={post.id}
-        ref={ref}
-      >
-        <CardContainer>
-          <CardHeader>
-            <InfoCardUser
-              imgUrl={post.page ? post.page.avatar : ''}
-              name={showUsername()}
-              title={moment(post.createdAt).fromNow().toString()}
-              address={post.postAccount ? post.postAccount.address : undefined}
-              page={post.page ? post.page : undefined}
-              token={post.token ? post.token : undefined}
-              activatePostLocation={true}
-            ></InfoCardUser>
-          </CardHeader>
-          <Content>
-            <div className="description-post">{ReactHtmlParser(post?.content)}</div>
-            {showMore && (
-              <p style={{ textAlign: 'left', color: 'var(--color-primary)' }} onClick={() => showMoreHandle()}>
-                Show more...
-              </p>
-            )}
-            {/* <img className="image-cover" src={post.uploadCovers} alt="" /> */}
-          </Content>
-        </CardContainer>
-        <ActionBar>
-          <GroupIconText>
-            <IconBurn
-              burnValue={formatBalance(post?.lotusBurnUp ?? 0)}
-              imgUrl="/images/up-ico.svg"
-              key={`list-vertical-upvote-o-${item.id}`}
-              dataItem={item}
-              onClickIcon={() => upVotePost(item)}
-            />
-            <IconBurn
-              burnValue={formatBalance(post?.lotusBurnDown ?? 0)}
-              imgUrl="/images/down-ico.svg"
-              key={`list-vertical-downvote-o-${item.id}`}
-              dataItem={item}
-              onClickIcon={() => downVotePost(item)}
-            />
-            {/* TODO: complete next Release */}
-            {/* <IconText
+    <PostListItemContainer key={post.id} ref={ref} onClick={handlePostClick}>
+      <CardContainer>
+        <CardHeader>
+          <InfoCardUser
+            imgUrl={post.page ? post.page.avatar : ''}
+            name={showUsername()}
+            title={moment(post.createdAt).fromNow().toString()}
+            address={post.postAccount ? post.postAccount.address : undefined}
+            page={post.page ? post.page : undefined}
+            token={post.token ? post.token : undefined}
+            activatePostLocation={true}
+          ></InfoCardUser>
+        </CardHeader>
+        <Content>
+          <div className="description-post">
+            {ReactHtmlParser(post?.content)}
+            <div className="images-post">
+              {item.uploads.length != 0 &&
+                item.uploads.map(item => {
+                  const imageUrl = URL_SERVER_IMAGE + '/' + item.upload.bucket + '/' + item.upload.sha;
+                  return (
+                    <>
+                      <img width={'100%'} src={imageUrl} />
+                    </>
+                  );
+                })}
+            </div>
+          </div>
+          {showMore && (
+            <p
+              style={{ textAlign: 'left', color: 'var(--color-primary)', marginBottom: '0' }}
+              onClick={e => showMoreHandle(e)}
+            >
+              Show more...
+            </p>
+          )}
+          {/* <img className="image-cover" src={post.uploadCovers} alt="" /> */}
+        </Content>
+      </CardContainer>
+      <ActionBar>
+        <GroupIconText>
+          <IconBurn
+            burnValue={formatBalance(post?.lotusBurnUp ?? 0)}
+            imgUrl="/images/up-ico.svg"
+            key={`list-vertical-upvote-o-${item.id}`}
+            dataItem={item}
+            onClickIcon={e => upVotePost(e, item)}
+          />
+          <IconBurn
+            burnValue={formatBalance(post?.lotusBurnDown ?? 0)}
+            imgUrl="/images/down-ico.svg"
+            key={`list-vertical-downvote-o-${item.id}`}
+            dataItem={item}
+            onClickIcon={e => downVotePost(e, item)}
+          />
+          {/* TODO: complete next Release */}
+          {/* <IconText
               imgUrl="/images/comment-ico.svg"
               text="0 Comments"
               key={`list-vertical-comment-o-${item.id}`}
@@ -375,19 +419,18 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
               dataItem={item}
               onClickIcon={() => {}}
             /> */}
-          </GroupIconText>
-        </ActionBar>
-        {isCollapseComment && (
-          <Comment
-            style={{ width: '100%', textAlign: 'left' }}
-            avatar={<Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />}
-            content={<Editor onSubmit={handleSubmit} submitting={submitting} />}
-          />
-        )}
+        </GroupIconText>
+      </ActionBar>
+      {isCollapseComment && (
+        <Comment
+          style={{ width: '100%', textAlign: 'left' }}
+          avatar={<Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />}
+          content={<Editor onSubmit={handleSubmit} submitting={submitting} />}
+        />
+      )}
 
-        {isCollapseComment && comments.length > 0 && <CommentList comments={comments} />}
-      </List.Item>
-    </div>
+      {isCollapseComment && comments.length > 0 && <CommentList comments={comments} />}
+    </PostListItemContainer>
   );
 };
 

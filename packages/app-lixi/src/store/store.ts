@@ -1,14 +1,11 @@
-import BCHJS from '@bcpros/xpi-js';
-import useWallet from '@hooks/useWallet';
-import useXPI from '@hooks/useXPI';
 import createSagaMiddleware, { Task } from '@redux-saga/core';
 import { Action, configureStore, Store, ThunkAction } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/dist/query';
 import { createRouterMiddleware, initialRouterState } from 'connected-next-router';
 import { Context, createWrapper } from 'next-redux-wrapper';
 import { Router } from 'next/router';
-import { createContext } from 'react';
 import { FLUSH, PAUSE, PERSIST, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
+import { api as commentsApi } from './comment/comments.api';
 import { api as pagesApi } from './page/pages.api';
 import { api as postsApi } from './post/posts.api';
 import rootReducer, { serverReducer } from './rootReducer';
@@ -55,6 +52,7 @@ const makeStore = (context: Context) => {
         })
           .concat(pagesApi.middleware)
           .concat(postsApi.middleware)
+          .concat(commentsApi.middleware)
           .concat(sagaMiddleware, routerMiddleware);
       },
       devTools:

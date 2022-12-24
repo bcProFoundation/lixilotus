@@ -283,52 +283,25 @@ export class PostResolver {
       throw new Error(couldNotFindAccount);
     }
 
-    const { uploadCovers, pageId, content, tokenId } = data;
-
-    //Because of the current implementation of editor, the following code will
-    //extract img tag fromt the content and query it from database
-    //If match it will connect UploadDetail to the current post
+    const { uploadCovers, pageId, htmlContent, tokenPrimaryId, pureContent } = data;
 
     let uploadDetailIds: any[] = [];
-    let imgSources: string[] = [];
-    let imgShas: string[] = [];
 
-    //Look up for the img tag
-    const imgTags = content.match(/<img [^>]*src="[^"]*"[^>]*>/gm);
-
-    //If there is img tag, extract the src field from it
-    if (imgTags !== null) {
-      imgSources = imgTags.map(x => x.replace(/.*src="([^"]*)".*/, '$1'));
-    }
-
-    //After that, look for sha from url and add to array of sha, in this case imgShas
-    if (imgSources.length > 0) {
-      imgShas = imgSources.map((sha: string) => {
-        return /[^/]*$/.exec(sha)![0];
-      });
-    }
-
-    //Query the imgShas from the database, if there is then add to UploadDetailsIds
-    if (imgShas.length > 0) {
-      const promises = imgShas.map(async (sha: string) => {
-        const upload = await this.prisma.upload.findFirst({
-          where: {
-            sha: sha
-          },
-          include: {
-            uploadDetail: true
-          }
-        });
-
-        return upload && upload?.uploadDetail?.id;
+    const promises = uploadCovers.map(async (id: string) => {
+      const uploadDetails = await this.prisma.uploadDetail.findFirst({
+        where: {
+          uploadId: id
+        }
       });
 
-      uploadDetailIds = await Promise.all(promises);
-    }
+      return uploadDetails && uploadDetails.id;
+    });
+
+    uploadDetailIds = await Promise.all(promises);
 
     const postToSave = {
       data: {
-        content: content,
+        content: htmlContent,
         postAccount: { connect: { id: account.id } },
         uploadedCovers: {
           connect:
@@ -344,7 +317,7 @@ export class PostResolver {
           connect: pageId ? { id: pageId } : undefined
         },
         token: {
-          connect: tokenId ? { tokenId: tokenId } : undefined
+          connect: tokenPrimaryId ? { id: tokenPrimaryId } : undefined
         }
       }
     };

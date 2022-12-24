@@ -1,6 +1,5 @@
 import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
 import CreatePostCard from '@components/Common/CreatePostCard';
-import SearchBox from '@components/Common/SearchBox';
 import { getSelectedAccount } from '@store/account/selectors';
 import { setSelectedPost } from '@store/post/actions';
 import { useInfinitePostsBySearchQuery } from '@store/post/useInfinitePostsBySearchQuery';
@@ -10,13 +9,14 @@ import { api as postApi, useLazyPostQuery } from '@store/post/posts.api';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
 import { Menu, MenuProps, Modal, Skeleton } from 'antd';
 import _ from 'lodash';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import PostListItem from './PostListItem';
 import styled from 'styled-components';
+import SearchBox from '../Common/SearchBox';
 import intl from 'react-intl-universal';
+import PostListItem from './PostListItem';
 
 type PostsListingProps = {
   className?: string;

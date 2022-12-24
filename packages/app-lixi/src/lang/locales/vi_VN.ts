@@ -74,6 +74,7 @@ export default {
   'general.notFoundDescription': 'Xin lỗi, Chúng tôi không thể tìm thấy trang bạn đang tìm',
   'general.goBackToHome': 'Trở về trang chủ',
   'general.searchResults': 'Kết quả tìm kiếm của "{text}"',
+  'general.post': 'Đăng',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',
@@ -478,5 +479,8 @@ export default {
   'token.inputTokenId': 'Nhập token Id',
   'token.tokenIdNotFound': 'Token Id không tồn tại',
   'token.tokenIdInvalid': 'Token Id không hợp lệ',
-  'token.copyId': 'Token Id đã được sao chép.'
+  'token.copyId': 'Token Id đã được sao chép.',
+
+  /* 17. Comment */
+  'comment.unableCreateComment': 'Không thể tạo bình luận'
 };

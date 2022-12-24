@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Post, PostOrder } from 'src/generated/types.generated';
 import _ from 'lodash';
 import { PostQuery } from './posts.generated';
-import { useAppDispatch } from '@store/hooks';
 import { createEntityAdapter } from '@reduxjs/toolkit';
 
 const postsAdapter = createEntityAdapter<PostQuery['post']>({
@@ -12,7 +11,7 @@ const postsAdapter = createEntityAdapter<PostQuery['post']>({
   sortComparer: (a, b) => b.createdAt - a.createdAt
 });
 
-const { selectAll, selectEntities, selectIds, selectTotal } = postsAdapter.getSelectors();
+const { selectAll } = postsAdapter.getSelectors();
 
 export interface PostListParams extends PaginationArgs {
   orderBy?: PostOrder;
@@ -27,10 +26,9 @@ export function useInfinitePostsQuery(
   params: PostListParams,
   fetchAll: boolean = false // if `true`: auto do next fetches to get all notes at once
 ) {
-  const dispatch = useAppDispatch();
   const baseResult = usePostsQuery(params);
 
-  const [trigger, nextResult, lastPromiseInfo] = useLazyPostsQuery();
+  const [trigger, nextResult] = useLazyPostsQuery();
   const [combinedData, setCombinedData] = useState(postsAdapter.getInitialState({}));
 
   const isBaseReady = useRef(false);
@@ -50,7 +48,6 @@ export function useInfinitePostsQuery(
     if (baseResult?.data?.allPosts) {
       isBaseReady.current = true;
 
-      const baseResultParse = baseResult.data.allPosts.edges.map(item => item.node);
       const adapterSetAll = postsAdapter.setAll(
         combinedData,
         baseResult.data.allPosts.edges.map(item => item.node)

@@ -74,6 +74,7 @@ export default {
   'general.notFoundDescription': 'Sorry, we can’t find the page you’re looking for.',
   'general.goBackToHome': 'Go back',
   'general.searchResults': 'Search results for "{text}"',
+  'general.post': 'Post',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
@@ -477,5 +478,8 @@ export default {
   'token.inputTokenId': 'Input token Id',
   'token.tokenIdNotFound': 'Token ID not found',
   'token.tokenIdInvalid': 'Token ID invalid',
-  'token.copyId': 'The token Id has been copied.'
+  'token.copyId': 'The token Id has been copied.',
+
+  /* 17. Comment */
+  'comment.unableCreateComment': 'Unable to create comment'
 };

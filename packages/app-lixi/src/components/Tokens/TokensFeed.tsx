@@ -78,12 +78,6 @@ const TokensFeed: React.FC = () => {
   const tokenInfo = useAppSelector(getSelectedToken);
   console.log('TOKEN INFO', tokenInfo);
 
-  useEffect(() => {
-    // dispatch(fetchAllTokens–());
-    // setTokensList([...tokenList]);
-    refetch();
-  }, []);
-
   let options = ['Withdraw', 'Rename', 'Export'];
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByTokenIdQuery(
@@ -121,7 +115,7 @@ const TokensFeed: React.FC = () => {
             width={120}
             height={120}
             src={`${currency.tokenIconsUrl}/128/${tokenInfo.tokenId}.png`}
-            fallback={makeBlockie(tokenInfo.id)}
+            fallback={makeBlockie(tokenInfo?.tokenId ?? '')}
             preview={false}
           />
         </div>
@@ -136,7 +130,7 @@ const TokensFeed: React.FC = () => {
         </div>
       </BannerTicker>
 
-      <CreatePostCard tokenId={tokenInfo.tokenId} refetch={() => refetch()} />
+      <CreatePostCard tokenPrimaryId={tokenInfo.id} refetch={() => refetch()} />
       <SearchBox />
 
       <div className="content">

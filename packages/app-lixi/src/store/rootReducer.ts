@@ -26,6 +26,7 @@ import { countryReducer, stateReducer } from './country/reducer';
 import { CountriesState, StatesState } from './country/state';
 import { api as pagesApi } from './page/pages.api';
 import { api as postsApi } from './post/posts.api';
+import { api as commentsApi } from './comment/comments.api';
 import { LocalUserAccountsState } from './localAccount/state';
 import { localAccountsAdapter, localUserAccountReducer } from './localAccount/reducer';
 import { postReducer } from './post/reducer';
@@ -36,7 +37,7 @@ import { tokenReducer, TokenState } from './tokens';
 const persistConfig = {
   key: 'root',
   storage: storage('lixi-indexeddb'),
-  blacklist: ['accounts', 'router', 'modal', 'wallet', 'api', 'root', 'posts', 'tokens', 'pages']
+  blacklist: ['accounts', 'router', 'modal', 'wallet', 'api', 'root', 'posts', 'pages']
 };
 
 const walletPersistConfig = {
@@ -132,6 +133,7 @@ export const appReducer = combineReducers({
   burn: burnReducer,
   [pagesApi.reducerPath]: pagesApi.reducer,
   [postsApi.reducerPath]: postsApi.reducer,
+  [commentsApi.reducerPath]: commentsApi.reducer,
   // This is use for useReduxEffect
   // Should be always at the end
   action: actionReducer

@@ -21,6 +21,57 @@ export type Account = {
   name: Scalars['String'];
 };
 
+export type Comment = {
+  __typename?: 'Comment';
+  commentAccount: Account;
+  commentAccountId?: Maybe<Scalars['Int']>;
+  commentByPublicKey?: Maybe<Scalars['String']>;
+  commentText: Scalars['String'];
+  commentTo: Post;
+  commentToId: Scalars['String'];
+  content: Scalars['String'];
+  /** Identifies the date and time when the object was created. */
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  lotusBurnDown: Scalars['Float'];
+  lotusBurnScore: Scalars['Float'];
+  lotusBurnUp: Scalars['Float'];
+  /** Identifies the date and time when the object was last updated. */
+  updatedAt: Scalars['DateTime'];
+};
+
+export type CommentConnection = {
+  __typename?: 'CommentConnection';
+  edges?: Maybe<Array<CommentEdge>>;
+  pageInfo: PageInfo;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type CommentEdge = {
+  __typename?: 'CommentEdge';
+  cursor: Scalars['String'];
+  node: Comment;
+};
+
+export type CommentOrder = {
+  direction: OrderDirection;
+  field: CommentOrderField;
+};
+
+/** Properties by which comment connections can be ordered. */
+export enum CommentOrderField {
+  CreatedAt = 'createdAt',
+  Id = 'id',
+  LotusBurnScore = 'lotusBurnScore',
+  UpdatedAt = 'updatedAt'
+}
+
+export type CreateCommentInput = {
+  commentByPublicKey?: InputMaybe<Scalars['String']>;
+  commentText: Scalars['String'];
+  commentToId: Scalars['String'];
+};
+
 export type CreatePageInput = {
   address: Scalars['String'];
   avatar: Scalars['String'];
@@ -35,18 +86,24 @@ export type CreatePageInput = {
 };
 
 export type CreatePostInput = {
-  content: Scalars['String'];
+  htmlContent: Scalars['String'];
   pageAccountId?: InputMaybe<Scalars['Int']>;
   pageId?: InputMaybe<Scalars['String']>;
-  tokenId?: InputMaybe<Scalars['String']>;
+  pureContent: Scalars['String'];
+  tokenPrimaryId?: InputMaybe<Scalars['String']>;
   uploadCovers?: InputMaybe<Array<Scalars['String']>>;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createComment: Comment;
   createPage: Page;
   createPost: Post;
   updatePage: Page;
+};
+
+export type MutationCreateCommentArgs = {
+  data: CreateCommentInput;
 };
 
 export type MutationCreatePageArgs = {
@@ -198,14 +255,26 @@ export type PostResponse = {
 
 export type Query = {
   __typename?: 'Query';
+  allCommentsToPostId: CommentConnection;
   allPages: PageConnection;
   allPosts: PostConnection;
   allPostsByPageId: PostConnection;
   allPostsBySearch: PostResponse;
   allPostsByTokenId: PostConnection;
   allPostsByUserId: PostConnection;
+  comment: Comment;
   page: Page;
   post: Post;
+};
+
+export type QueryAllCommentsToPostIdArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  id?: InputMaybe<Scalars['String']>;
+  last?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<CommentOrder>;
+  skip?: InputMaybe<Scalars['Int']>;
 };
 
 export type QueryAllPagesArgs = {
@@ -266,6 +335,10 @@ export type QueryAllPostsByUserIdArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
+export type QueryCommentArgs = {
+  id: Scalars['String'];
+};
+
 export type QueryPageArgs = {
   id: Scalars['String'];
 };
@@ -276,6 +349,7 @@ export type QueryPostArgs = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  commentCreated: Comment;
   pageCreated: Page;
   postCreated: Post;
 };
