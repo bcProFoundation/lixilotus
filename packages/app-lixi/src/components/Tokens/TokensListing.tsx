@@ -69,7 +69,7 @@ const TokensListing: React.FC = () => {
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const latestBurnForToken = useAppSelector(getLatestBurnForToken);
-  const burnValue = '0.01';
+  const burnValue = '1';
 
   const {
     handleSubmit,
