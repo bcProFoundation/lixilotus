@@ -69,7 +69,7 @@ const TokensListing: React.FC = () => {
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const latestBurnForToken = useAppSelector(getLatestBurnForToken);
-  const burnValue = '1';
+  const burnValue = '0.01';
 
   const {
     handleSubmit,
@@ -80,12 +80,6 @@ const TokensListing: React.FC = () => {
   useEffect(() => {
     dispatch(fetchAllTokens());
   }, []);
-
-  useEffect(() => {
-    if (latestBurnForToken) {
-      dispatch(burnForTokenSucceses());
-    }
-  }, [latestBurnForToken]);
 
   const getColumnSearchProps = (dataIndex: any): ColumnType<any> => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
