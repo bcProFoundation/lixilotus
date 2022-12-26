@@ -17,7 +17,7 @@ type StyledRawQRCodeProps = {
   includeMargin: boolean | null;
   imageSettings?: any;
 };
-const StyledRawQRCode: React.FC<StyledRawQRCodeProps> = styled(RawQRCode) <StyledRawQRCodeProps>`
+const StyledRawQRCode: React.FC<StyledRawQRCodeProps> = styled(RawQRCode)<StyledRawQRCodeProps>`
   cursor: pointer;
   border-radius: 23px;
   background: ${props => props.theme.qr.background};

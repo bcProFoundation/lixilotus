@@ -130,7 +130,7 @@ const CommentListItem = ({ index, item }: CommentListItemProps) => {
 
   return (
     <Comment
-      className='comment-item'
+      className="comment-item"
       actions={actions}
       author={<a href={`/profile/${item.commentAccount.address}`}>{showUsername()}</a>}
       avatar={<Avatar src="/images/xpi.svg" onClick={() => history.push(`/profile/${item.commentAccount.address}`)} />}
@@ -141,7 +141,7 @@ const CommentListItem = ({ index, item }: CommentListItemProps) => {
         </Tooltip>
       }
     />
-  )
-}
+  );
+};
 
 export default React.memo(CommentListItem);

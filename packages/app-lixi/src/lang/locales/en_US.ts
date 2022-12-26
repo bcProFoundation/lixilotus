@@ -485,5 +485,5 @@ export default {
 
   /* 17. Comment */
   'comment.unableCreateComment': 'Unable to create comment',
-  'comment.unableToBurn': 'Unable to burn for the comment',
+  'comment.unableToBurn': 'Unable to burn for the comment'
 };

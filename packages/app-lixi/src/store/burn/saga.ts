@@ -11,7 +11,13 @@ import intl from 'react-intl-universal';
 import { put, select } from 'redux-saga/effects';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import { hideLoading } from '../loading/actions';
-import { burnForUpDownVote, burnForUpDownVoteFailure, burnForUpDownVoteSuccess, updateCommentBurnValue, updatePostBurnValue } from './actions';
+import {
+  burnForUpDownVote,
+  burnForUpDownVoteFailure,
+  burnForUpDownVoteSuccess,
+  updateCommentBurnValue,
+  updatePostBurnValue
+} from './actions';
 import burnApi from './api';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 
@@ -28,7 +34,7 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
     };
 
     if (command.burnForType === BurnForType.Token) {
-      yield put(burnForToken({ id: command.burnForId, burnType: command.burnType, burnValue: burnValue }))
+      yield put(burnForToken({ id: command.burnForId, burnType: command.burnType, burnValue: burnValue }));
     } else if (command.burnForType === BurnForType.Post) {
       patches = yield put(updatePostBurnValue(command));
     } else if (command.burnForType === BurnForType.Comment) {
@@ -38,7 +44,7 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
     const data: Burn = yield call(burnApi.post, dataApi);
 
     if (command.burnForType === BurnForType.Token) {
-      yield put(burnForTokenSucceses())
+      yield put(burnForTokenSucceses());
     }
 
     if (_.isNil(data) || _.isNil(data.id)) {
@@ -50,7 +56,7 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
     let message;
     if (command.burnForType === BurnForType.Token) {
       message = (err as Error).message ?? intl.get('token.unableToBurn');
-      yield put(burnForTokenFailure({ id: command.burnForId, burnType: command.burnType, burnValue: burnValue }))
+      yield put(burnForTokenFailure({ id: command.burnForId, burnType: command.burnType, burnValue: burnValue }));
     } else if (command.burnForType === BurnForType.Post) {
       message = (err as Error).message ?? intl.get('post.unableToBurn');
       const params = {
@@ -98,7 +104,6 @@ function* updatePostBurnValueSaga(action: PayloadAction<BurnCommand>) {
   };
 
   let burnValue = _.toNumber(command.burnValue);
-
 
   switch (command.postQueryTag) {
     case PostsQueryTag.Post:
@@ -199,7 +204,9 @@ function* updateCommentBurnValueSaga(action: PayloadAction<BurnCommand>) {
 
   return yield put(
     commentApi.util.updateQueryData('CommentsToPostId', params, draft => {
-      const commentToUpdateIndex = draft.allCommentsToPostId.edges.findIndex(item => item.node.id === command.burnForId);
+      const commentToUpdateIndex = draft.allCommentsToPostId.edges.findIndex(
+        item => item.node.id === command.burnForId
+      );
       const commentToUpdate = draft.allCommentsToPostId.edges[commentToUpdateIndex];
       if (commentToUpdateIndex >= 0) {
         let lotusBurnUp = commentToUpdate?.node?.lotusBurnUp ?? 0;
