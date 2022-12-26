@@ -18,7 +18,4 @@ export const getSelectedToken = createSelector(
   (state: TokenState) => state.selectedTokenId as Token
 );
 
-export const getTokenById = (id: string) => createSelector(
-  getAllTokensEntities,
-  tokens => tokens?.[id]
-);
+export const getTokenById = (id: string) => createSelector(getAllTokensEntities, tokens => tokens?.[id]);

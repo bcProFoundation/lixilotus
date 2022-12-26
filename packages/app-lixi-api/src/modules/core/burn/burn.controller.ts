@@ -115,6 +115,34 @@ export class BurnController {
               lotusBurnScore
             }
           });
+        } else if (command.burnForType === BurnForType.Comment) {
+          const comment = await this.prisma.comment.findFirst({
+            where: {
+              id: command.burnForId
+            }
+          });
+
+          let lotusBurnUp = comment?.lotusBurnUp ?? 0;
+          let lotusBurnDown = comment?.lotusBurnDown ?? 0;
+          const xpiValue = value;
+
+          if (command.burnType == BurnType.Up) {
+            lotusBurnUp = lotusBurnUp + xpiValue;
+          } else {
+            lotusBurnDown = lotusBurnDown + xpiValue;
+          }
+          const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+
+          await this.prisma.comment.update({
+            where: {
+              id: command.burnForId
+            },
+            data: {
+              lotusBurnDown,
+              lotusBurnUp,
+              lotusBurnScore
+            }
+          });
         }
       }
 

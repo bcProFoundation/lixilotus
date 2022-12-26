@@ -1,6 +1,13 @@
 import { createEntityAdapter, createReducer, Update } from '@reduxjs/toolkit';
 import { TokenState } from './state';
-import { burnForToken, burnForTokenFailure, fetchAllTokensSuccess, getTokenSuccess, postTokenSuccess, selectToken } from './action';
+import {
+  burnForToken,
+  burnForTokenFailure,
+  fetchAllTokensSuccess,
+  getTokenSuccess,
+  postTokenSuccess,
+  selectToken
+} from './action';
 import { Token } from '@bcpros/lixi-models';
 import { BurnType } from '@bcpros/lixi-models/lib/burn';
 
@@ -34,7 +41,7 @@ export const tokenReducer = createReducer(initialState, builder => {
       if (token) {
         let bunrUpValue = 0;
         let bunrDownValue = 0;
-        burnType === BurnType.Up ? bunrUpValue = burnValue: bunrDownValue = burnValue;
+        burnType === BurnType.Up ? (bunrUpValue = burnValue) : (bunrDownValue = burnValue);
         const newLotusBurnUp = token.lotusBurnUp + bunrUpValue;
         const newLotusBurnDown = token.lotusBurnDown + bunrDownValue;
         const changes: Update<Token> = {
@@ -54,7 +61,7 @@ export const tokenReducer = createReducer(initialState, builder => {
       if (token) {
         let bunrUpValue = 0;
         let bunrDownValue = 0;
-        burnType === BurnType.Up ? bunrUpValue = burnValue: bunrDownValue = burnValue;
+        burnType === BurnType.Up ? (bunrUpValue = burnValue) : (bunrDownValue = burnValue);
         const newLotusBurnUp = token.lotusBurnUp - bunrUpValue;
         const newLotusBurnDown = token.lotusBurnDown - bunrDownValue;
         const changes: Update<Token> = {

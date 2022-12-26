@@ -25,7 +25,7 @@ import { pageReducer } from './page/reducer';
 import { countryReducer, stateReducer } from './country/reducer';
 import { CountriesState, StatesState } from './country/state';
 import { api as pagesApi } from './page/pages.api';
-import { api as postsApi } from './post/posts.api';
+import { api as postApi } from './post/posts.api';
 import { api as commentsApi } from './comment/comments.api';
 import { LocalUserAccountsState } from './localAccount/state';
 import { localAccountsAdapter, localUserAccountReducer } from './localAccount/reducer';
@@ -132,7 +132,7 @@ export const appReducer = combineReducers({
   states: persistReducer(statePersistConfig, stateReducer),
   burn: burnReducer,
   [pagesApi.reducerPath]: pagesApi.reducer,
-  [postsApi.reducerPath]: postsApi.reducer,
+  [postApi.reducerPath]: postApi.reducer,
   [commentsApi.reducerPath]: commentsApi.reducer,
   // This is use for useReduxEffect
   // Should be always at the end

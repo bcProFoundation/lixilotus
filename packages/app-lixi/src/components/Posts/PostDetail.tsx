@@ -1,4 +1,14 @@
-import { DashOutlined, LinkOutlined, ShareAltOutlined, UpOutlined } from '@ant-design/icons';
+import {
+  DashOutlined,
+  DislikeFilled,
+  DislikeOutlined,
+  LikeFilled,
+  LikeOutlined,
+  LinkOutlined,
+  ShareAltOutlined,
+  UpOutlined
+} from '@ant-design/icons';
+import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { Counter } from '@components/Common/Counter';
 import InfoCardUser from '@components/Common/InfoCardUser';
@@ -6,16 +16,18 @@ import { currency } from '@components/Common/Ticker';
 import { WalletContext } from '@context/walletProvider';
 import useXPI from '@hooks/useXPI';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
+import { getSelectedAccount } from '@store/account/selectors';
 import { burnForUpDownVote } from '@store/burn/actions';
-import { useCreateCommentMutation, api as commentsApi } from '@store/comment/comments.api';
+import { api as commentsApi, useCreateCommentMutation } from '@store/comment/comments.api';
 import { useInfiniteCommentsToPostIdQuery } from '@store/comment/useInfiniteCommentsToPostIdQuery';
 import { PostsQuery } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
 import { formatBalance } from '@utils/cashMethods';
-import { Button, Input, message, Popover, Space } from 'antd';
+import { Avatar, Button, Input, message, Popover, Space, Tooltip } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
+import { useRouter } from 'next/router';
 import React, { useRef } from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import intl from 'react-intl-universal';
@@ -138,6 +150,7 @@ type PostDetailProps = {
 
 const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const dispatch = useAppDispatch();
+  const history = useRouter();
   const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
   const refCommentsListing = useRef<HTMLDivElement | null>(null);
   const Wallet = React.useContext(WalletContext);
@@ -145,6 +158,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const { burnXpi } = useXPI();
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
+  const selectedAccount = useAppSelector(getSelectedAccount);
 
   const { data, totalCount, fetchNext, hasNext, isFetching } = useInfiniteCommentsToPostIdQuery(
     {
@@ -205,7 +219,8 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
         burnedBy,
         burnForId,
         burnValue,
-        tipToAddress: xAddress
+        tipToAddress: xAddress,
+        postQueryTag: PostsQueryTag.Post
       };
 
       dispatch(burnForUpDownVote(burnCommand));
@@ -225,6 +240,13 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       text-align: left;
       border: 0 !important;
     }
+  `;
+
+  const CommentInputContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-end;
   `;
 
   const PostCardDetail = styled.div`
@@ -332,7 +354,6 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
             'CommentsToPostId',
             { id: createCommentInput.commentToId, ...params },
             draft => {
-              console.log(draft);
               draft.allCommentsToPostId.edges.unshift({
                 cursor: result.createComment.id,
                 node: {
@@ -439,7 +460,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           <Virtuoso
             id="list-comment-virtuoso"
             data={data}
-            style={{ height: '100vh', paddingBottom: '2rem' }}
+            style={{ height: '65vh', paddingBottom: '2rem' }}
             endReached={loadMoreComments}
             overscan={500}
             itemContent={(index, item) => {
@@ -447,14 +468,17 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
             }}
           />
         </CommentContainer>
-        <Search
-          className="input-comment"
-          placeholder="Input your comment..."
-          enterButton="Comment"
-          size="large"
-          suffix={<DashOutlined />}
-          onSearch={handleCreateNewComment}
-        />
+        <CommentInputContainer>
+          <Avatar src="/images/xpi.svg" onClick={() => history.push(`/profile/${selectedAccount.address}`)} />
+          <Search
+            className="input-comment"
+            placeholder="Input your comment..."
+            enterButton="Comment"
+            size="large"
+            suffix={<DashOutlined />}
+            onSearch={handleCreateNewComment}
+          />
+        </CommentInputContainer>
       </StyledContainerPostDetail>
     </>
   );

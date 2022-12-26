@@ -74,6 +74,8 @@ export default {
   'general.notFoundDescription': 'Sorry, we can’t find the page you’re looking for.',
   'general.goBackToHome': 'Go back',
   'general.post': 'Post',
+  'general.burnUp': 'Burn up',
+  'general.burnDown': 'Burn down',
   'general.more': 'More',
 
   /* 02.Account */
@@ -479,7 +481,9 @@ export default {
   'token.tokenIdNotFound': 'Token ID not found',
   'token.tokenIdInvalid': 'Token ID invalid',
   'token.copyId': 'The token Id has been copied.',
+  'token.unableToBurn': 'Unable to burn for the token',
 
   /* 17. Comment */
-  'comment.unableCreateComment': 'Unable to create comment'
+  'comment.unableCreateComment': 'Unable to create comment',
+  'comment.unableToBurn': 'Unable to burn for the comment'
 };
