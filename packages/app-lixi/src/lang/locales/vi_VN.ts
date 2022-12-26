@@ -76,6 +76,7 @@ export default {
   'general.post': 'Đăng',
   'general.burnUp': 'Đốt lên',
   'general.burnDown': 'Đốt xuống',
+  'general.more': 'Thêm',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',

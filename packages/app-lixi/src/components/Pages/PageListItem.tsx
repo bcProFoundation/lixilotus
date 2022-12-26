@@ -77,8 +77,8 @@ const Content = styled.div`
     overflow: hidden;
   }
   .image-cover {
-    width: 100%;
-    max-height: 300px;
+    height: fit-content;
+    width: 50%;
   }
 `;
 
@@ -208,9 +208,8 @@ const PageListItem = ({ index, item }) => {
           display: 'flex',
           flexDirection: 'column',
           height: 'fit-content !important',
-          margin: '2px 2px 1rem 2px',
+          marginBottom: '1rem',
           borderRadius: '24px',
-          boxShadow: '0px 2px 10px rgb(0 0 0 / 5%)',
           background: 'white',
           padding: '0',
           border: 'none'

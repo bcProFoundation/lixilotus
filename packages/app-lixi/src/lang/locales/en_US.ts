@@ -76,6 +76,7 @@ export default {
   'general.post': 'Post',
   'general.burnUp': 'Burn up',
   'general.burnDown': 'Burn down',
+  'general.more': 'More',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',

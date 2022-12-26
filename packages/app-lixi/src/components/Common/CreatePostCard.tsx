@@ -413,20 +413,21 @@ const CreatePostCard = (props: CreatePostCardProp) => {
           maskClosable={false}
         >
           <>
-            <Tabs defaultActiveKey="1">
+            <UserCreate>
+              <div className="user-create-post">
+                <img src="/images/xpi.svg" alt="" />
+                <div className="user-info">
+                  <p className="title-user">{selectedAccount?.name}</p>
+                  <Button className="btn-select">
+                    Public <GlobalOutlined />
+                  </Button>
+                </div>
+              </div>
+              <EditorLexical onSubmit={value => handleCreateNewPost(value)} />
+            </UserCreate>
+            {/* TODO: import link  */}
+            {/* <Tabs defaultActiveKey="1">
               <Tabs.TabPane tab="Create" key="create">
-                <UserCreate>
-                  <div className="user-create-post">
-                    <img src="/images/xpi.svg" alt="" />
-                    <div className="user-info">
-                      <p className="title-user">{selectedAccount?.name}</p>
-                      <Button className="btn-select">
-                        Public <GlobalOutlined />
-                      </Button>
-                    </div>
-                  </div>
-                  <EditorLexical onSubmit={value => handleCreateNewPost(value)} />
-                </UserCreate>
               </Tabs.TabPane>
               <Tabs.TabPane tab="Import" key="import">
                 <form onSubmit={handleSubmit}>
@@ -456,7 +457,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
                   </div>
                 )}
               </Tabs.TabPane>
-            </Tabs>
+            </Tabs> */}
           </>
         </Modal>
       </WrapEditor>

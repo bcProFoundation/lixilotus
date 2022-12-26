@@ -11,6 +11,7 @@ import {
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { Counter } from '@components/Common/Counter';
+import InfoCardUser from '@components/Common/InfoCardUser';
 import { currency } from '@components/Common/Ticker';
 import { WalletContext } from '@context/walletProvider';
 import useXPI from '@hooks/useXPI';
@@ -49,6 +50,8 @@ import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled from 'styled-components';
 import CommentListItem from './CommentListItem';
 
+const URL_SERVER_IMAGE = 'https://s3.us-west-001.backblazeb2.com';
+
 type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 
 const { Search } = Input;
@@ -66,7 +69,7 @@ const IconBurn = ({
   imgUrl?: string;
   onClickIcon: () => void;
 }) => (
-  <Space onClick={onClickIcon}>
+  <Space onClick={onClickIcon} style={{ alignItems: 'end', marginRight: '1rem' }}>
     {icon && React.createElement(icon)}
     {imgUrl && React.createElement('img', { src: imgUrl }, null)}
     <Counter num={burnValue ?? 0} />
@@ -260,12 +263,35 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     }
   `;
 
-  const PostContentDetail = styled.div``;
+  const PostContentDetail = styled.div`
+    .images-post {
+      width: 100%;
+      padding: 1rem;
+      margin: 1rem 0;
+      box-sizing: border-box;
+      box-shadow: 0 3px 12px rgb(0 0 0 / 4%);
+      background: var(--bg-color-light-theme);
+      height: fit-content;
+      display: grid;
+      grid-template-columns: auto auto;
+      grid-template-rows: auto auto;
+      grid-column-gap: 1rem;
+      justify-items: center;
+      transition: 0.5s ease;
+      img {
+        margin-bottom: 1rem;
+        height: fit-content;
+        width: 80%;
+      }
+    }
+  `;
 
   const StyledContainerPostDetail = styled.div`
-    padding: 1rem 0;
-    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.04), 0px 2px 6px 2px rgba(0, 0, 0, 0.08);
     border-radius: 5px;
+    background: white;
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 1rem;
     .reaction-container {
       display: flex;
       justify-content: space-between;
@@ -384,43 +410,48 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   return (
     <>
       <StyledContainerPostDetail>
-        <PostCardDetail>
-          <div className="info-post">
-            <img style={{ marginRight: '1rem' }} src={'/images/xpi.svg'} alt="" />
-            <div>
-              <h4 style={{ margin: '0' }}>{post.postAccount.name}</h4>
-            </div>
-          </div>
-          <div className="func-post">
-            <span>{moment(post.createdAt).fromNow()}</span>
-          </div>
-        </PostCardDetail>
+        <InfoCardUser
+          imgUrl={post.page ? post.page.avatar : ''}
+          name={post.postAccount.name}
+          title={moment(post.createdAt).fromNow().toString()}
+          address={post.postAccount ? post.postAccount.address : undefined}
+          page={post.page ? post.page : undefined}
+          token={post.token ? post.token : undefined}
+          activatePostLocation={true}
+        ></InfoCardUser>
         <PostContentDetail>
           <p style={{ padding: '0 1rem', margin: '1rem 0' }}>{ReactHtmlParser(post.content)}</p>
+          <div style={{ display: post.uploads.length != 0 ? 'grid' : 'none' }} className="images-post">
+            {post.uploads.length != 0 &&
+              post.uploads.map((item, index) => {
+                const imageUrl = URL_SERVER_IMAGE + '/' + item.upload.bucket + '/' + item.upload.sha;
+                return (
+                  <>
+                    <img src={imageUrl} />
+                  </>
+                );
+              })}
+          </div>
           <div className="reaction-container">
             <div className="reaction-ico">
-              <span key={`post-up-vote-${post.id}`}>
-                <Tooltip title={intl.get('general.burnUp')}>
-                  <Space onClick={() => upVotePost(post)}>
-                    {post?.lotusBurnUp > 0 ? <LikeFilled /> : <LikeOutlined />}
-                    <Counter num={formatBalance(post?.lotusBurnUp ?? 0)} />
-                  </Space>
-                </Tooltip>
-              </span>
-              <span key={`post-down-vote-${post.id}`}>
-                <Tooltip title={intl.get('general.burnDown')}>
-                  <Space onClick={() => downVotePost(post)}>
-                    {post?.lotusBurnDown > 0 ? <DislikeFilled /> : <DislikeOutlined />}
-                    <Counter num={formatBalance(post?.lotusBurnDown ?? 0)} />
-                  </Space>
-                </Tooltip>
-              </span>
+              <IconBurn
+                burnValue={formatBalance(post?.lotusBurnUp ?? 0)}
+                imgUrl="/images/ico-burn-up.svg"
+                key={`list-vertical-upvote-o-${post.id}`}
+                dataItem={post}
+                onClickIcon={() => upVotePost(post)}
+              />
+              <IconBurn
+                burnValue={formatBalance(post?.lotusBurnDown ?? 0)}
+                imgUrl="/images/ico-burn-down.svg"
+                key={`list-vertical-downvote-o-${post.id}`}
+                dataItem={post}
+                onClickIcon={() => downVotePost(post)}
+              />
             </div>
             <div className="reaction-func">
               <span>{totalCount}</span>&nbsp;
-              <span>Comments</span>&nbsp;
-              <UpOutlined />
-              {isMobile ? ShareSocialButton : ShareSocialDropdown}
+              <img src="/images/ico-comments.svg" alt="" />
             </div>
           </div>
         </PostContentDetail>

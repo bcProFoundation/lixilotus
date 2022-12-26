@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { BellTwoTone, MenuOutlined } from '@ant-design/icons';
-import { Space, Badge } from 'antd';
+import { BellTwoTone, MenuOutlined, SearchOutlined } from '@ant-design/icons';
+import { Space, Badge, Button } from 'antd';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { toggleCollapsedSideNav } from '@store/settings/actions';
 import { getNavCollapsed } from '@store/settings/selectors';
@@ -8,24 +8,22 @@ import { Header } from 'antd/lib/layout/layout';
 import styled from 'styled-components';
 import { getSelectedAccount } from '@store/account/selectors';
 import { fetchNotifications, startChannel, stopChannel } from '@store/notification/actions';
-import { getAllNotifications } from '@store/notification/selectors';
-import { NotificationDto as Notification } from '@bcpros/lixi-models';
-import NotificationPopup, { StyledPopover } from '@components/NotificationPopup';
 
 export type TopbarProps = {
   className?: string;
 };
 
-export type NotificationMenuProps = {
-  notifications: Notification[];
-  className?: string;
-};
-
-const StyledBell = styled(BellTwoTone)`
-  font-size: 22px;
-  position: relative;
-  top: 7px;
-  cursor: pointer;
+const PathDirection = styled.div`
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  h3 {
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 40px;
+    color: #1e1a1d;
+    margin: 0;
+  }
 `;
 
 // eslint-disable-next-line react/display-name
@@ -33,7 +31,6 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   const dispatch = useAppDispatch();
   const navCollapsed = useAppSelector(getNavCollapsed);
   const selectedAccount = useAppSelector(getSelectedAccount);
-  const notifications = useAppSelector(getAllNotifications);
 
   useEffect(() => {
     if (selectedAccount) {
@@ -59,26 +56,13 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
 
   return (
     <Header ref={ref} className={className}>
-      <MenuOutlined className="collapse-menu" style={{ fontSize: '32px' }} onClick={handleMenuClick} />
-      <img width="120px" src="/images/lixilotus-logo.svg" alt="lixilotus" />
-      <Space direction="horizontal" size={25}>
-        <StyledPopover
-          content={NotificationPopup(notifications, selectedAccount)}
-          placement="bottomRight"
-          getPopupContainer={trigger => trigger}
-          trigger={notifications.length != 0 ? 'click' : ''}
-          title="Notifications"
-        >
-          <Badge
-            count={notifications.length}
-            overflowCount={9}
-            offset={[notifications.length < 10 ? 0 : 5, 25]}
-            color="var(--color-primary)"
-          >
-            <StyledBell twoToneColor="#6f2dbd" />
-          </Badge>
-        </StyledPopover>
-        <img src="/images/lotus-logo-small.png" alt="lotus" />
+      <PathDirection>
+        <MenuOutlined className="collapse-menu" style={{ fontSize: '32px' }} onClick={handleMenuClick} />
+        <h3>Home</h3>
+      </PathDirection>
+      <Space direction="horizontal" size={15}>
+        <Button type="text" icon={<SearchOutlined style={{ fontSize: '18px', color: '4E444B' }} />}></Button>
+        <img width={40} height={40} src="/images/anonymous-ava.svg" alt="lotus" />
       </Space>
     </Header>
   );
@@ -90,10 +74,8 @@ const StyledTopbar = styled(Topbar)`
   justify-content: space-between !important;
   width: 100%;
   padding: 10px 0 15px;
-  margin-bottom: 20px;
   justify-content: space-between;
-  border-bottom: 1px solid ${props => props.theme.wallet.borders.color};
-
+  background: ${props => props.theme.wallet.background};
   a {
     color: ${props => props.theme.wallet.text.secondary};
 
@@ -102,14 +84,14 @@ const StyledTopbar = styled(Topbar)`
     }
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 960px) {
     a {
       font-size: 12px;
     }
     padding: 20px 0 20px;
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: 960px) {
     display: none;
     padding: 1rem 2rem;
     position: fixed;
