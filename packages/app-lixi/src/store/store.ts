@@ -7,7 +7,7 @@ import { Router } from 'next/router';
 import { FLUSH, PAUSE, PERSIST, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
 import { api as commentsApi } from './comment/comments.api';
 import { api as pagesApi } from './page/pages.api';
-import { api as postsApi } from './post/posts.api';
+import { api as postApi } from './post/posts.api';
 import rootReducer, { serverReducer } from './rootReducer';
 import rootSaga from './rootSaga';
 
@@ -51,7 +51,7 @@ const makeStore = (context: Context) => {
           }
         })
           .concat(pagesApi.middleware)
-          .concat(postsApi.middleware)
+          .concat(postApi.middleware)
           .concat(commentsApi.middleware)
           .concat(sagaMiddleware, routerMiddleware);
       },

@@ -1,45 +1,23 @@
+import { DislikeFilled, DislikeOutlined, LikeFilled, LikeOutlined } from '@ant-design/icons';
 import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { Counter } from '@components/Common/Counter';
 import { currency } from '@components/Common/Ticker';
 import { WalletContext } from '@context/walletProvider';
 import useXPI from '@hooks/useXPI';
 import { burnForUpDownVote } from '@store/burn/actions';
+import { CommentQuery } from '@store/comment/comments.generated';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
 import { formatBalance } from '@utils/cashMethods';
-import { Avatar, List, Space } from 'antd';
+import { Avatar, Comment, Space, Tooltip } from 'antd';
+import _ from 'lodash';
+import moment from 'moment';
+import { useRouter } from 'next/router';
 import React, { useRef } from 'react';
 import intl from 'react-intl-universal';
+import { CommentOrderField, OrderDirection } from 'src/generated/types.generated';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled from 'styled-components';
-import _ from 'lodash';
-import { CommentQuery } from '@store/comment/comments.generated';
-import { useRouter } from 'next/router';
-
-const ActionComment = styled.div`
-  margin-left: 12%;
-  font-size: 13px;
-`;
-
-const IconBurn = ({
-  icon,
-  burnValue,
-  dataItem,
-  imgUrl,
-  onClickIcon
-}: {
-  icon?: React.FC;
-  burnValue?: number;
-  dataItem: CommentQuery['comment'];
-  imgUrl?: string;
-  onClickIcon: () => void;
-}) => (
-  <Space onClick={onClickIcon}>
-    {icon && React.createElement(icon)}
-    {imgUrl && React.createElement('img', { src: imgUrl }, null)}
-    <Counter num={burnValue ?? 0} />
-  </Space>
-);
 
 type CommentItem = CommentQuery['comment'];
 
@@ -102,7 +80,14 @@ const CommentListItem = ({ index, item }: CommentListItemProps) => {
         burnedBy,
         burnForId,
         burnValue,
-        tipToAddress: xAddress
+        tipToAddress: xAddress,
+        queryParams: {
+          id: comment.commentToId,
+          orderBy: {
+            direction: OrderDirection.Asc,
+            field: CommentOrderField.UpdatedAt
+          }
+        }
       };
 
       dispatch(burnForUpDownVote(burnCommand));
@@ -124,35 +109,38 @@ const CommentListItem = ({ index, item }: CommentListItemProps) => {
     return item?.commentAccount?.name;
   };
 
+  const actions = [
+    <span key={`comment-up-vote-${item.id}`}>
+      <Tooltip title={intl.get('general.burnUp')}>
+        <Space onClick={() => upVoteComment(item)}>
+          {item?.lotusBurnUp > 0 ? <LikeFilled /> : <LikeOutlined />}
+          <Counter num={formatBalance(item?.lotusBurnUp ?? 0)} />
+        </Space>
+      </Tooltip>
+    </span>,
+    <span key={`comment-down-vote-${item.id}`}>
+      <Tooltip title={intl.get('general.burnDown')}>
+        <Space onClick={() => downVoteComment(item)}>
+          {item?.lotusBurnDown > 0 ? <DislikeFilled /> : <DislikeOutlined />}
+          <Counter num={formatBalance(item?.lotusBurnDown ?? 0)} />
+        </Space>
+      </Tooltip>
+    </span>
+  ];
+
   return (
-    <div>
-      <List.Item key={item.id} ref={ref}>
-        <List.Item.Meta
-          className="comment-item-meta"
-          avatar={
-            <Avatar src="/images/xpi.svg" onClick={() => history.push(`/profile/${item.commentAccount.address}`)} />
-          }
-          title={<a href={`/profile/${item.commentAccount.address}`}>{showUsername()}</a>}
-          description={item.commentText}
-        />
-        <ActionComment className="action-comment">
-          <IconBurn
-            burnValue={formatBalance(item?.lotusBurnUp ?? 0)}
-            imgUrl="/images/up-ico.svg"
-            key={`list-vertical-upvote-o-${item.id}`}
-            dataItem={item}
-            onClickIcon={() => upVoteComment(item)}
-          />
-          <IconBurn
-            burnValue={formatBalance(item?.lotusBurnDown ?? 0)}
-            imgUrl="/images/down-ico.svg"
-            key={`list-vertical-downvote-o-${item.id}`}
-            dataItem={item}
-            onClickIcon={() => downVoteComment(item)}
-          />
-        </ActionComment>
-      </List.Item>
-    </div>
+    <Comment
+      className="comment-item"
+      actions={actions}
+      author={<a href={`/profile/${item.commentAccount.address}`}>{showUsername()}</a>}
+      avatar={<Avatar src="/images/xpi.svg" onClick={() => history.push(`/profile/${item.commentAccount.address}`)} />}
+      content={item.commentText}
+      datetime={
+        <Tooltip title={moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}>
+          <span>{moment().fromNow()}</span>
+        </Tooltip>
+      }
+    />
   );
 };
 

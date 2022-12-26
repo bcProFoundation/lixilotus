@@ -1,11 +1,11 @@
 import { Button, Descriptions, message, Modal } from 'antd';
 import RawQRCode from 'qrcode.react';
 import React, { useState } from 'react';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import intl from 'react-intl-universal';
 import styled from 'styled-components';
-import { CloseCircleOutlined, CopyOutlined } from '@ant-design/icons';
 import { currency } from './Ticker';
+import { openModal } from '@store/modal/actions';
+import { useAppDispatch } from '@store/hooks';
+import { QRCodeModalProps } from './QRCodeModalPopup';
 
 type StyledRawQRCodeProps = {
   level?: 'L' | 'M' | 'Q' | 'H' | undefined;
@@ -42,7 +42,7 @@ type QRCodeProps = {
   size?: number;
   logoImage?: string;
 };
-const QRCode = ({ address, size = 210, logoImage, ...otherProps }: QRCodeProps) => {
+export const QRCode = ({ address, size = 210, logoImage, ...otherProps }: QRCodeProps) => {
   return (
     <StyledRawQRCode
       {...otherProps}
@@ -65,78 +65,22 @@ const QRCode = ({ address, size = 210, logoImage, ...otherProps }: QRCodeProps) 
   );
 };
 
-type QRCodeModalProps = {
-  address: string;
-  type: string;
-  onClick?: Function;
-};
-
 export const QRCodeModal = ({ address, type, onClick = () => null }: QRCodeModalProps) => {
-  const StyledModel = styled(Modal)`
-    .ant-descriptions-bordered .ant-descriptions-view {
-      border: none;
-    }
-    .ant-modal-body {
-      border-radius: 20px !important;
-    }
+  const dispatch = useAppDispatch();
 
-    .ant-descriptions-bordered .ant-descriptions-item-label,
-    .ant-descriptions-bordered .ant-descriptions-item-content {
-      padding: 0px 24px;
-      border-right: none;
-    }
-  `;
-
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
-  const handleOnCopy = () => {
-    message.info(type == 'address' ? intl.get('lixi.addressCopied') : intl.get('claim.claimCodeCopied'));
+  const showBigModal = () => {
+    const qRCodeModalProps: QRCodeModalProps = {
+      address: address,
+      type: type
+    };
+    dispatch(openModal('QRCodeModalPopup', qRCodeModalProps));
   };
 
   return (
     <>
-      <div onClick={showModal}>
+      <div onClick={showBigModal}>
         <QRCode address={address} />
       </div>
-
-      <StyledModel
-        width={490}
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        closable={false}
-        footer={null}
-      >
-        <Descriptions bordered>
-          <Descriptions.Item label={<QRCode address={address} size={300} />}>
-            {/* <Button type='primary' onClick={handleCopy}> */}
-            <Button type="primary">
-              <CopyToClipboard text={address} onCopy={handleOnCopy}>
-                <div>
-                  <CopyOutlined style={{ fontSize: '24px', color: '#fff' }} />
-                  <br /> {intl.get('special.copy')}
-                </div>
-              </CopyToClipboard>
-            </Button>
-            <br />
-            <br />
-            <Button type="primary" onClick={handleCancel}>
-              <CloseCircleOutlined style={{ fontSize: '24px', color: '#fff' }} />
-              <br /> {intl.get('special.cancel')}
-            </Button>
-          </Descriptions.Item>
-        </Descriptions>
-      </StyledModel>
     </>
   );
 };

@@ -34,7 +34,7 @@ type SidebarContentProps = {
 const StyledCointainerAccess = styled(CointainerAccess)`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
 `;
 
 const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: SidebarContentProps) => {
@@ -70,49 +70,47 @@ const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: Si
       <SidebarLogo sidebarCollapsed={sidebarCollapsed} setSidebarCollapsed={setSidebarCollapsed} />
       <div className="lixi-sidebar-content">
         <StyledCointainerAccess className={className} onClick={handleOnClick}>
-          <ItemAccess icon={HomeOutlined} text={'Home'} active={selectedKey === '/'} key="home" href={'/'} />
           <ItemAccess
-            icon={ShopOutlined}
-            text={'Page'}
+            icon={'/images/ico-home.svg'}
+            text={intl.get('general.home')}
+            active={selectedKey === '/'}
+            key="home"
+            href={'/'}
+          />
+          <ItemAccess
+            icon={'/images/ico-page.svg'}
+            text={intl.get('general.page')}
             active={selectedKey.includes('/page')}
             key="page-feed"
             href={'/page/feed'}
           />
           <ItemAccess
-            icon={TagOutlined}
+            icon={'/images/ico-tokens.svg'}
             text={intl.get('general.tokens')}
             active={selectedKey.includes('/token')}
             key="tokens-feed"
             href={'/token/listing'}
           />
           <ItemAccess
-            icon={WalletOutlined}
-            text={'Accounts'}
+            icon={'/images/ico-account.svg'}
+            text={intl.get('general.accounts')}
             active={selectedKey === '/wallet'}
             key="wallet-lotus"
             href={'/wallet'}
           />
-          <ItemAccess icon={GiftOutlined} text={'Lixi'} active={selectedKey === '/lixi'} key="lixi" href={'/lixi'} />
           <ItemAccess
-            icon={SettingOutlined}
-            text={'Settings'}
+            icon={'/images/ico-lixi.svg'}
+            text={intl.get('general.lixi')}
+            active={selectedKey === '/lixi'}
+            key="lixi"
+            href={'/lixi'}
+          />
+          <ItemAccess
+            icon={'/images/ico-setting.svg'}
+            text={intl.get('general.settings')}
             active={selectedKey === '/settings'}
             key="settings"
             href={'/settings'}
-          />
-          <ItemAccess icon={SendOutlined} text={'Send'} active={selectedKey === '/send'} key="send" href={'/send'} />
-          <ItemAccess
-            icon={ShopOutlined}
-            text={'Lotusia Shop'}
-            active={false}
-            key="lotusia-shop"
-            href={'https://lotusia.shop/'}
-          />
-          <ItemAccessBarcode
-            icon={BarcodeOutlined}
-            key="scan-barcode"
-            active={false}
-            component={<ScanBarcode loadWithCameraOpen={false} onScan={onScan} id={Date.now().toString()} />}
           />
         </StyledCointainerAccess>
       </div>

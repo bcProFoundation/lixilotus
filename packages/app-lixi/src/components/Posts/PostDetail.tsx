@@ -1,20 +1,33 @@
-import { DashOutlined, LinkOutlined, ShareAltOutlined, UpOutlined } from '@ant-design/icons';
+import {
+  DashOutlined,
+  DislikeFilled,
+  DislikeOutlined,
+  LikeFilled,
+  LikeOutlined,
+  LinkOutlined,
+  ShareAltOutlined,
+  UpOutlined
+} from '@ant-design/icons';
+import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { Counter } from '@components/Common/Counter';
+import InfoCardUser from '@components/Common/InfoCardUser';
 import { currency } from '@components/Common/Ticker';
 import { WalletContext } from '@context/walletProvider';
 import useXPI from '@hooks/useXPI';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
+import { getSelectedAccount } from '@store/account/selectors';
 import { burnForUpDownVote } from '@store/burn/actions';
-import { useCreateCommentMutation, api as commentsApi } from '@store/comment/comments.api';
+import { api as commentsApi, useCreateCommentMutation } from '@store/comment/comments.api';
 import { useInfiniteCommentsToPostIdQuery } from '@store/comment/useInfiniteCommentsToPostIdQuery';
 import { PostsQuery } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
 import { formatBalance } from '@utils/cashMethods';
-import { Button, Input, message, Popover, Space } from 'antd';
+import { Avatar, Button, Input, message, Popover, Space, Tooltip } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
+import { useRouter } from 'next/router';
 import React, { useRef } from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import intl from 'react-intl-universal';
@@ -37,6 +50,8 @@ import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled from 'styled-components';
 import CommentListItem from './CommentListItem';
 
+const URL_SERVER_IMAGE = 'https://s3.us-west-001.backblazeb2.com';
+
 type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 
 const { Search } = Input;
@@ -54,7 +69,7 @@ const IconBurn = ({
   imgUrl?: string;
   onClickIcon: () => void;
 }) => (
-  <Space onClick={onClickIcon}>
+  <Space onClick={onClickIcon} style={{ alignItems: 'end', marginRight: '1rem' }}>
     {icon && React.createElement(icon)}
     {imgUrl && React.createElement('img', { src: imgUrl }, null)}
     <Counter num={burnValue ?? 0} />
@@ -135,6 +150,7 @@ type PostDetailProps = {
 
 const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const dispatch = useAppDispatch();
+  const history = useRouter();
   const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
   const refCommentsListing = useRef<HTMLDivElement | null>(null);
   const Wallet = React.useContext(WalletContext);
@@ -142,6 +158,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const { burnXpi } = useXPI();
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
+  const selectedAccount = useAppSelector(getSelectedAccount);
 
   const { data, totalCount, fetchNext, hasNext, isFetching } = useInfiniteCommentsToPostIdQuery(
     {
@@ -202,7 +219,8 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
         burnedBy,
         burnForId,
         burnValue,
-        tipToAddress: xAddress
+        tipToAddress: xAddress,
+        postQueryTag: PostsQueryTag.Post
       };
 
       dispatch(burnForUpDownVote(burnCommand));
@@ -224,6 +242,13 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     }
   `;
 
+  const CommentInputContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-end;
+  `;
+
   const PostCardDetail = styled.div`
     display: flex;
     justify-content: space-between;
@@ -238,12 +263,35 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     }
   `;
 
-  const PostContentDetail = styled.div``;
+  const PostContentDetail = styled.div`
+    .images-post {
+      width: 100%;
+      padding: 1rem;
+      margin: 1rem 0;
+      box-sizing: border-box;
+      box-shadow: 0 3px 12px rgb(0 0 0 / 4%);
+      background: var(--bg-color-light-theme);
+      height: fit-content;
+      display: grid;
+      grid-template-columns: auto auto;
+      grid-template-rows: auto auto;
+      grid-column-gap: 1rem;
+      justify-items: center;
+      transition: 0.5s ease;
+      img {
+        margin-bottom: 1rem;
+        height: fit-content;
+        width: 80%;
+      }
+    }
+  `;
 
   const StyledContainerPostDetail = styled.div`
-    padding: 1rem 0;
-    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.04), 0px 2px 6px 2px rgba(0, 0, 0, 0.08);
     border-radius: 5px;
+    background: white;
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 1rem;
     .reaction-container {
       display: flex;
       justify-content: space-between;
@@ -306,7 +354,6 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
             'CommentsToPostId',
             { id: createCommentInput.commentToId, ...params },
             draft => {
-              console.log(draft);
               draft.allCommentsToPostId.edges.unshift({
                 cursor: result.createComment.id,
                 node: {
@@ -363,31 +410,40 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   return (
     <>
       <StyledContainerPostDetail>
-        <PostCardDetail>
-          <div className="info-post">
-            <img style={{ marginRight: '1rem' }} src={'/images/xpi.svg'} alt="" />
-            <div>
-              <h4 style={{ margin: '0' }}>{post.postAccount.name}</h4>
-            </div>
-          </div>
-          <div className="func-post">
-            <span>{moment(post.createdAt).fromNow()}</span>
-          </div>
-        </PostCardDetail>
+        <InfoCardUser
+          imgUrl={post.page ? post.page.avatar : ''}
+          name={post.postAccount.name}
+          title={moment(post.createdAt).fromNow().toString()}
+          address={post.postAccount ? post.postAccount.address : undefined}
+          page={post.page ? post.page : undefined}
+          token={post.token ? post.token : undefined}
+          activatePostLocation={true}
+        ></InfoCardUser>
         <PostContentDetail>
           <p style={{ padding: '0 1rem', margin: '1rem 0' }}>{ReactHtmlParser(post.content)}</p>
+          <div style={{ display: post.uploads.length != 0 ? 'grid' : 'none' }} className="images-post">
+            {post.uploads.length != 0 &&
+              post.uploads.map((item, index) => {
+                const imageUrl = URL_SERVER_IMAGE + '/' + item.upload.bucket + '/' + item.upload.sha;
+                return (
+                  <>
+                    <img src={imageUrl} />
+                  </>
+                );
+              })}
+          </div>
           <div className="reaction-container">
             <div className="reaction-ico">
               <IconBurn
                 burnValue={formatBalance(post?.lotusBurnUp ?? 0)}
-                imgUrl="/images/up-ico.svg"
+                imgUrl="/images/ico-burn-up.svg"
                 key={`list-vertical-upvote-o-${post.id}`}
                 dataItem={post}
                 onClickIcon={() => upVotePost(post)}
               />
               <IconBurn
                 burnValue={formatBalance(post?.lotusBurnDown ?? 0)}
-                imgUrl="/images/down-ico.svg"
+                imgUrl="/images/ico-burn-down.svg"
                 key={`list-vertical-downvote-o-${post.id}`}
                 dataItem={post}
                 onClickIcon={() => downVotePost(post)}
@@ -395,9 +451,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
             </div>
             <div className="reaction-func">
               <span>{totalCount}</span>&nbsp;
-              <span>Comments</span>&nbsp;
-              <UpOutlined />
-              {isMobile ? ShareSocialButton : ShareSocialDropdown}
+              <img src="/images/ico-comments.svg" alt="" />
             </div>
           </div>
         </PostContentDetail>
@@ -406,7 +460,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           <Virtuoso
             id="list-comment-virtuoso"
             data={data}
-            style={{ height: '100vh', paddingBottom: '2rem' }}
+            style={{ height: '65vh', paddingBottom: '2rem' }}
             endReached={loadMoreComments}
             overscan={500}
             itemContent={(index, item) => {
@@ -414,14 +468,17 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
             }}
           />
         </CommentContainer>
-        <Search
-          className="input-comment"
-          placeholder="Input your comment..."
-          enterButton="Comment"
-          size="large"
-          suffix={<DashOutlined />}
-          onSearch={handleCreateNewComment}
-        />
+        <CommentInputContainer>
+          <Avatar src="/images/xpi.svg" onClick={() => history.push(`/profile/${selectedAccount.address}`)} />
+          <Search
+            className="input-comment"
+            placeholder="Input your comment..."
+            enterButton="Comment"
+            size="large"
+            suffix={<DashOutlined />}
+            onSearch={handleCreateNewComment}
+          />
+        </CommentInputContainer>
       </StyledContainerPostDetail>
     </>
   );

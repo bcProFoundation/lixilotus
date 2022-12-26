@@ -11,7 +11,11 @@ const { selectAll, selectEntities, selectIds, selectTotal } = tokenAdapter.getSe
 
 export const selectTokens = createSelector((state: RootState) => state.tokens, selectAll);
 
+export const getAllTokensEntities = createSelector((state: RootState) => state.tokens, selectEntities);
+
 export const getSelectedToken = createSelector(
   (state: RootState) => state.tokens,
   (state: TokenState) => state.selectedTokenId as Token
 );
+
+export const getTokenById = (id: string) => createSelector(getAllTokensEntities, tokens => tokens?.[id]);

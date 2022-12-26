@@ -28,15 +28,15 @@ const PagesListing: React.FC<PagesListingProps> = ({ className }: PagesListingPr
 
   const listRef = useRef();
   const menuItems = [
-    { label: 'All', key: 'all' },
-    { label: 'Friend', key: 'friend' },
+    { label: 'Top', key: 'top' },
+    { label: 'New', key: 'new' },
     {
-      label: 'Trending',
-      key: 'trending'
+      label: 'Follows',
+      key: 'follows'
     },
     {
-      label: 'Experiance',
-      key: 'experiance'
+      label: 'Hot discussion',
+      key: 'hotDiscussion'
     }
   ];
 

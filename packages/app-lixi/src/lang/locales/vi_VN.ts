@@ -75,6 +75,9 @@ export default {
   'general.goBackToHome': 'Trở về trang chủ',
   'general.searchResults': 'Kết quả tìm kiếm của "{text}"',
   'general.post': 'Đăng',
+  'general.burnUp': 'Đốt lên',
+  'general.burnDown': 'Đốt xuống',
+  'general.more': 'Thêm',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',
@@ -480,7 +483,9 @@ export default {
   'token.tokenIdNotFound': 'Token Id không tồn tại',
   'token.tokenIdInvalid': 'Token Id không hợp lệ',
   'token.copyId': 'Token Id đã được sao chép.',
+  'token.unableToBurn': 'Không thể đốt cho mã tiền',
 
   /* 17. Comment */
-  'comment.unableCreateComment': 'Không thể tạo bình luận'
+  'comment.unableCreateComment': 'Không thể tạo bình luận',
+  'comment.unableToBurn': 'Không thể đốt cho bình luận'
 };

@@ -6,13 +6,15 @@ import { RenameLixiModal } from '../Lixi/RenameLixiModal';
 import { DeleteAccountModal } from '../Settings/DeleteAccountModal';
 import { CreateLixiConfirmationModal } from '../Lixi/CreateLixiConfirmationModal';
 import { CreateLixiFormModal } from '../Lixi/CreateLixiFormModal';
+import { QRCodeModalPopup } from './QRCodeModalPopup';
 
 const modalComponentLookupTable = {
   CreateLixiConfirmationModal,
   RenameAccountModal,
   DeleteAccountModal,
   RenameLixiModal,
-  CreateLixiFormModal
+  CreateLixiFormModal,
+  QRCodeModalPopup
 };
 
 const ModalManager = () => {

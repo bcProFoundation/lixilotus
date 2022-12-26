@@ -209,10 +209,10 @@ const Settings: React.FC = () => {
   }, [savedAccounts]);
 
   useEffect(() => {
-    if (otherAccounts.length <= 0) {
+    if (otherAccounts.length <= 0 && !selectedAccount) {
       localLogout();
     }
-  }, [otherAccounts]);
+  }, [otherAccounts, selectedAccount]);
 
   const localLogout = async () => {
     const url = '/_api/local-logout';

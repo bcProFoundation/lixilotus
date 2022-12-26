@@ -72,6 +72,25 @@ const StyledPostsListing = styled.div`
   }
 `;
 
+const StyledHeader = styled.div`
+  .menu-post-listing {
+    .ant-menu-item {
+      .ant-menu-title-content {
+        color: rgba(30, 26, 29, 0.6);
+      }
+      &.ant-menu-item-selected {
+        .ant-menu-title-content {
+          color: #1e1a1d;
+          font-weight: 500;
+        }
+        &::after {
+          border-bottom: 2px solid #9e2a9c !important;
+        }
+      }
+    }
+  }
+`;
+
 const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingProps) => {
   const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
@@ -85,15 +104,15 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const latestBurnForPost = useAppSelector(getLatestBurnForPost);
 
   const menuItems = [
-    { label: 'All', key: 'all' },
-    { label: 'Friend', key: 'friend' },
+    { label: 'Top', key: 'top' },
+    { label: 'New', key: 'new' },
     {
-      label: 'Trending',
-      key: 'trending'
+      label: 'Follows',
+      key: 'follows'
     },
     {
-      label: 'Experiences',
-      key: 'experiences'
+      label: 'Hot discussion',
+      key: 'hotDiscussion'
     }
   ];
 
@@ -202,10 +221,11 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
 
   const Header = () => {
     return (
-      <div>
+      <StyledHeader>
         <SearchBox searchPost={searchPost} value={searchValue} />
         <CreatePostCard refetch={() => refetch()} />
         <Menu
+          className="menu-post-listing"
           style={{
             border: 'none',
             position: 'relative',
@@ -213,11 +233,11 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
             background: 'var(--bg-color-light-theme)'
           }}
           mode="horizontal"
-          defaultSelectedKeys={['all']}
+          defaultSelectedKeys={['top']}
           onClick={onClickMenu}
           items={menuItems}
         ></Menu>
-      </div>
+      </StyledHeader>
     );
   };
 
@@ -268,7 +288,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
           style={{ height: '100vh', paddingBottom: '2rem' }}
           data={data}
           endReached={loadMoreItems}
-          overscan={500}
+          overscan={3000}
           itemContent={(index, item) => {
             return <PostListItem index={index} item={item} />;
           }}
@@ -280,20 +300,13 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
           style={{ height: '100vh', paddingBottom: '2rem' }}
           data={queryData}
           endReached={loadMoreQueryItems}
-          overscan={500}
+          overscan={3000}
           itemContent={(index, item) => {
             return <PostListItem index={index} item={item} />;
           }}
           components={{ Header: QueryHeader, Footer: QueryFooter }}
         />
       )}
-      <Modal title="Are you sure to down vote shop?" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-        <p>Some contents...</p>
-      </Modal>
-
-      <Modal title="Qr code to claim lotus" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-        {isShowQrCode && selectedAccount?.address && <QRCode address={selectedAccount?.address} />}
-      </Modal>
     </StyledPostsListing>
   );
 };
