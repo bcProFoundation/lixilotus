@@ -18,7 +18,7 @@ export class BurnController {
     @I18n() private i18n: I18nService,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS
-  ) {}
+  ) { }
 
   @Post()
   async burn(@Body() command: BurnCommand): Promise<Burn> {
@@ -106,6 +106,34 @@ export class BurnController {
           const lotusBurnScore = lotusBurnUp - lotusBurnDown;
 
           await this.prisma.token.update({
+            where: {
+              id: command.burnForId
+            },
+            data: {
+              lotusBurnDown,
+              lotusBurnUp,
+              lotusBurnScore
+            }
+          });
+        } else if (command.burnForType === BurnForType.Comment) {
+          const comment = await this.prisma.comment.findFirst({
+            where: {
+              id: command.burnForId
+            }
+          });
+
+          let lotusBurnUp = comment?.lotusBurnUp ?? 0;
+          let lotusBurnDown = comment?.lotusBurnDown ?? 0;
+          const xpiValue = value;
+
+          if (command.burnType == BurnType.Up) {
+            lotusBurnUp = lotusBurnUp + xpiValue;
+          } else {
+            lotusBurnDown = lotusBurnDown + xpiValue;
+          }
+          const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+
+          await this.prisma.comment.update({
             where: {
               id: command.burnForId
             },

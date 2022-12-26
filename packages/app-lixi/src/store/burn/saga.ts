@@ -3,15 +3,15 @@ import { all, call, fork, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
 import { api as postApi } from '@store/post/posts.api';
+import { api as commentApi } from '@store/comment/comments.api';
 import { showToast } from '@store/toast/actions';
 import { burnForToken, burnForTokenFailure, burnForTokenSucceses, getTokenById } from '@store/tokens';
 import * as _ from 'lodash';
 import intl from 'react-intl-universal';
 import { put, select } from 'redux-saga/effects';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
-import { D } from 'styled-icons/crypto';
 import { hideLoading } from '../loading/actions';
-import { burnForUpDownVote, burnForUpDownVoteFailure, burnForUpDownVoteSuccess, updatePostBurnValue } from './actions';
+import { burnForUpDownVote, burnForUpDownVoteFailure, burnForUpDownVoteSuccess, updateCommentBurnValue, updatePostBurnValue } from './actions';
 import burnApi from './api';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 
@@ -19,7 +19,7 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
   let patches, patch: PatchCollection;
 
   const command = action.payload;
-  const { burnForId: postId } = command;
+  const { burnForId: postId, queryParams } = command;
   let burnValue = _.toNumber(command.burnValue);
 
   try {
@@ -28,12 +28,15 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
     };
 
     if (command.burnForType === BurnForType.Token) {
-      yield put(burnForToken({id: command.burnForId, burnType: command.burnType, burnValue: burnValue}))
+      yield put(burnForToken({ id: command.burnForId, burnType: command.burnType, burnValue: burnValue }))
+    } else if (command.burnForType === BurnForType.Post) {
+      patches = yield put(updatePostBurnValue(command));
+    } else if (command.burnForType === BurnForType.Comment) {
+      patches = yield put(updateCommentBurnValue(command));
     }
 
-    patches = yield put(updatePostBurnValue(command));
-
     const data: Burn = yield call(burnApi.post, dataApi);
+
     if (command.burnForType === BurnForType.Token) {
       yield put(burnForTokenSucceses())
     }
@@ -44,21 +47,29 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
 
     yield put(burnForUpDownVoteSuccess(data));
   } catch (err) {
-    const message = (err as Error).message ?? intl.get('post.unableToBurnForPost');
+    let message;
     if (command.burnForType === BurnForType.Token) {
-      yield put(burnForTokenFailure({id: command.burnForId, burnType: command.burnType, burnValue: burnValue}))
+      message = (err as Error).message ?? intl.get('token.unableToBurn');
+      yield put(burnForTokenFailure({ id: command.burnForId, burnType: command.burnType, burnValue: burnValue }))
+    } else if (command.burnForType === BurnForType.Post) {
+      message = (err as Error).message ?? intl.get('post.unableToBurn');
+      const params = {
+        orderBy: {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.UpdatedAt
+        }
+      };
+      if (patches) {
+        yield put(postApi.util.patchQueryData('Posts', params, patches.inversePatches));
+        yield put(postApi.util.patchQueryData('Post', { id: postId }, patch.inversePatches));
+      }
+    } else if (command.burnForType === BurnForType.Comment) {
+      message = (err as Error).message ?? intl.get('comment.unableToBurn');
+      if (patches) {
+        yield put(commentApi.util.patchQueryData('CommentsToPostId', queryParams, patches.inversePatches));
+      }
     }
     yield put(burnForUpDownVoteFailure(message));
-    const params = {
-      orderBy: {
-        direction: OrderDirection.Desc,
-        field: PostOrderField.UpdatedAt
-      }
-    };
-    if (patches) {
-      yield put(postApi.util.patchQueryData('Posts', params, patches.inversePatches));
-      yield put(postApi.util.patchQueryData('Post', { id: postId }, patch.inversePatches));
-    }
   }
 }
 
@@ -69,7 +80,7 @@ function* burnForUpDownVoteSuccessSaga(action: PayloadAction<Burn>) {
 function* burnForUpDownVoteFailureSaga(action: PayloadAction<string>) {
   yield put(
     showToast('error', {
-      message: intl.get('post.unableToBurn'),
+      message: action.payload,
       duration: 5
     })
   );
@@ -87,7 +98,25 @@ function* updatePostBurnValueSaga(action: PayloadAction<BurnCommand>) {
   };
 
   let burnValue = _.toNumber(command.burnValue);
+
+
   switch (command.postQueryTag) {
+    case PostsQueryTag.Post:
+      return yield put(
+        postApi.util.updateQueryData('Post', { id: command.burnForId }, draft => {
+          let lotusBurnUp = draft?.post?.lotusBurnUp ?? 0;
+          let lotusBurnDown = draft?.post?.lotusBurnDown ?? 0;
+          if (command.burnType == BurnType.Up) {
+            lotusBurnUp = lotusBurnUp + burnValue;
+          } else {
+            lotusBurnDown = lotusBurnDown + burnValue;
+          }
+          const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+          draft.post.lotusBurnUp = lotusBurnUp;
+          draft.post.lotusBurnDown = lotusBurnDown;
+          draft.post.lotusBurnScore = lotusBurnScore;
+        })
+      );
     case PostsQueryTag.PostsByPageId:
       return yield put(
         postApi.util.updateQueryData('PostsByPageId', { ...params, id: command.pageId }, draft => {
@@ -163,6 +192,36 @@ function* updatePostBurnValueSaga(action: PayloadAction<BurnCommand>) {
   }
 }
 
+function* updateCommentBurnValueSaga(action: PayloadAction<BurnCommand>) {
+  const command = action.payload;
+  const { queryParams: params } = command;
+  let burnValue = _.toNumber(command.burnValue);
+
+  return yield put(
+    commentApi.util.updateQueryData('CommentsToPostId', params, draft => {
+      const commentToUpdateIndex = draft.allCommentsToPostId.edges.findIndex(item => item.node.id === command.burnForId);
+      const commentToUpdate = draft.allCommentsToPostId.edges[commentToUpdateIndex];
+      if (commentToUpdateIndex >= 0) {
+        let lotusBurnUp = commentToUpdate?.node?.lotusBurnUp ?? 0;
+        let lotusBurnDown = commentToUpdate?.node?.lotusBurnDown ?? 0;
+        if (command.burnType == BurnType.Up) {
+          lotusBurnUp = lotusBurnUp + burnValue;
+        } else {
+          lotusBurnDown = lotusBurnDown + burnValue;
+        }
+        const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+        draft.allCommentsToPostId.edges[commentToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
+        draft.allCommentsToPostId.edges[commentToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
+        draft.allCommentsToPostId.edges[commentToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
+        if (lotusBurnScore < 0) {
+          draft.allCommentsToPostId.edges.splice(commentToUpdateIndex, 1);
+          draft.allCommentsToPostId.totalCount = draft.allCommentsToPostId.totalCount - 1;
+        }
+      }
+    })
+  );
+}
+
 function* watchBurnForUpDownVote() {
   yield takeLatest(burnForUpDownVote.type, burnForUpDownVoteSaga);
 }
@@ -179,11 +238,16 @@ function* watchUpdatePostBurnValueSaga() {
   yield takeLatest(updatePostBurnValue.type, updatePostBurnValueSaga);
 }
 
+function* watchUpdateCommentBurnValueSaga() {
+  yield takeLatest(updateCommentBurnValue.type, updateCommentBurnValueSaga);
+}
+
 export default function* burnSaga() {
   yield all([
     fork(watchBurnForUpDownVote),
     fork(watchBurnForUpDownVoteSuccess),
     fork(watchBurnForUpDownVoteFailure),
-    fork(watchUpdatePostBurnValueSaga)
+    fork(watchUpdatePostBurnValueSaga),
+    fork(watchUpdateCommentBurnValueSaga)
   ]);
 }
