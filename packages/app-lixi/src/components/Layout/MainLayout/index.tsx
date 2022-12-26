@@ -6,7 +6,7 @@ import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 
-import { LeftOutlined, LoadingOutlined } from '@ant-design/icons';
+import { LoadingOutlined } from '@ant-design/icons';
 
 import { navBarHeaderList } from '@components/Common/navBarHeaderList';
 import intl from 'react-intl-universal';
@@ -16,12 +16,13 @@ import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
 import Topbar from '@containers/Topbar';
 import { loadLocale } from '@store/settings/actions';
 import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
-import { Header } from 'antd/lib/layout/layout';
+import { Footer, Header } from 'antd/lib/layout/layout';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
 import { injectStore } from 'src/utils/axiosClient';
 import ModalManager from '../../Common/ModalManager';
 import { GlobalStyle } from './GlobalStyle';
 import { theme } from './theme';
+import { NavButton } from '@bcpros/lixi-components/components';
 const { Content } = Layout;
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
@@ -40,6 +41,19 @@ const AppBody = styled.div`
   width: 100%;
   min-height: 100vh;
   background-attachment: fixed;
+  .footer-mobile {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 0;
+    background: linear-gradient(0deg, rgba(158, 42, 156, 0.08), rgba(158, 42, 156, 0.08)), #fffbff;
+    display: flex;
+    justify-content: space-around;
+    display: none;
+    @media (max-width: 968px) {
+      display: flex;
+    }
+  }
 `;
 
 export const NavBarHeader = styled(Header)`
@@ -56,7 +70,7 @@ export const NavBarHeader = styled(Header)`
     font-size: 24px;
     color: var(--color-primary);
   }
-  @media (max-width: 768px) {
+  @media (max-width: 960px) {
     padding: 8px;
     width: 100%;
   }
@@ -79,48 +93,56 @@ export const PathDirection = styled.div`
 
 export const AppContainer = styled.div`
   position: relative;
-  width: 500px;
-  background-color: ${props => props.theme.footerBackground};
+  width: 100%;
   min-height: 100vh;
-  padding: 10px 16px;
   height: 100vh;
   overflow: hidden;
   background: ${props => props.theme.wallet.background};
-  @media (max-width: 768px) {
+  @media (max-width: 960px) {
     width: 100%;
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
     padding: 0 16px;
-    padding: ;
   }
   @media (max-width: 420px) {
     padding: 0 8px;
   }
-  @media (min-width: 768px) {
-    width: 100%;
-    background: #fffbff;
-    .content-layout {
-      // margin-top: 80px;
-      z-index: 1;
-    }
-  }
   .ant-layout.ant-layout-has-sider {
-    gap: 4rem;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: 15% 85%;
+    @media (max-width: 960px) {
+      grid-template-columns: 100%;
+    }
+    @media (min-width: 960px) and (max-width: 1000px) {
+      grid-template-columns: 31% 69%;
+    }
   }
   .main-section-layout {
-    max-width: 680px;
+    max-width: 820px;
+    min-width: 420px;
+    width: auto;
     height: 100vh;
     overflow-y: auto;
-    @media (max-width: 768px) {
-      padding-right: 0 !important;
+    @media (max-width: 960px) {
+      max-width: 100% !important;
     }
     @media (max-width: 420px) {
+      min-width: fit-content;
       -ms-overflow-style: none;
       scrollbar-width: none;
       &::-webkit-scrollbar {
         display: none;
       }
+    }
+  }
+  .container-content {
+    margin-left: 2rem;
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    justify-content: center;
+    @media (max-width: 960px) {
+      margin-left: 0;
     }
   }
 `;
@@ -131,7 +153,6 @@ export const HeaderContainer = styled.div`
   justify-content: flex-start !important;
   width: 100%;
   padding: 10px 0 15px;
-  margin-bottom: 20px;
   justify-content: space-between;
   border-bottom: 1px solid ${props => props.theme.wallet.borders.color};
 
@@ -143,17 +164,17 @@ export const HeaderContainer = styled.div`
     }
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 960px) {
     a {
       font-size: 12px;
     }
-    padding: 20px 0 20px;
+    padding: 1rem 0 1rem;
   }
 `;
 
 export const LotusLogo = styled.img`
   width: 70px;
-  @media (max-width: 768px) {
+  @media (max-width: 960px) {
     width: 50px;
   }
 `;
@@ -161,7 +182,7 @@ export const LotusLogo = styled.img`
 export const LixiTextLogo = styled.img`
   width: 250px;
   margin-left: 40px;
-  @media (max-width: 768px) {
+  @media (max-width: 960px) {
     width: 190px;
     margin-left: 20px;
   }
@@ -226,31 +247,49 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                     <Layout>
                       <SidebarShortcut></SidebarShortcut>
                       <Sidebar />
-                      <Layout
-                        className="main-section-layout"
-                        style={{
-                          paddingRight: disableSideBarRanking.some(item => selectedKey.includes(item)) ? '2rem' : '0',
-                          maxWidth: disableSideBarRanking.some(item => selectedKey.includes(item)) ? '100%' : ''
-                        }}
-                      >
-                        <Topbar ref={setRef} />
-                        {selectedKey !== '/' && (
-                          <NavBarHeader>
-                            <Link href="/" passHref>
-                              <LeftOutlined onClick={() => router.back()} />
-                            </Link>
-                            <PathDirection>
-                              <h2>{navBarTitle.length > 0 ? intl.get(navBarTitle) : ''}</h2>
-                            </PathDirection>
-                          </NavBarHeader>
+                      <div className="container-content">
+                        <Layout
+                          className="main-section-layout"
+                          style={{
+                            paddingRight: disableSideBarRanking.some(item => selectedKey.includes(item)) ? '2rem' : '0',
+                            maxWidth: disableSideBarRanking.some(item => selectedKey.includes(item)) ? '100%' : ''
+                          }}
+                        >
+                          <Topbar ref={setRef} />
+                          <Content className="content-layout">{children}</Content>
+                        </Layout>
+                        {!disableSideBarRanking.some(item => selectedKey.includes(item)) && (
+                          <SidebarRanking></SidebarRanking>
                         )}
-                        <Content className="content-layout">{children}</Content>
-                      </Layout>
-                      {!disableSideBarRanking.some(item => selectedKey.includes(item)) && (
-                        <SidebarRanking></SidebarRanking>
-                      )}
+                      </div>
                     </Layout>
                   </AppContainer>
+                  <Footer className="footer-mobile">
+                    <Link href="/" passHref>
+                      <NavButton active={false}>
+                        <img width={40} height={40} src="/images/ico-home.svg" alt="" />
+                        {intl.get('general.home')}
+                      </NavButton>
+                    </Link>
+                    <Link href="/page/feed" passHref>
+                      <NavButton active={false}>
+                        <img width={40} height={40} src="/images/ico-page.svg" alt="" />
+                        {intl.get('general.page')}
+                      </NavButton>
+                    </Link>
+                    <Link href="/token/listing" passHref>
+                      <NavButton active={false}>
+                        <img width={40} height={40} src="/images/ico-tokens.svg" alt="" />
+                        {intl.get('general.tokens')}
+                      </NavButton>
+                    </Link>
+                    <Link href="/admin/settings" passHref>
+                      <NavButton active={false}>
+                        <img width={40} height={40} src="/images/ico-notifications.svg" alt="" />
+                        {intl.get('general.notifications')}
+                      </NavButton>
+                    </Link>
+                  </Footer>
                 </>
               </AppBody>
             </Layout>

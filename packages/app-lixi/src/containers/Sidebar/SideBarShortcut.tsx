@@ -1,26 +1,7 @@
-import {
-  DownOutlined,
-  EditOutlined,
-  GiftOutlined,
-  HomeOutlined,
-  PlusCircleOutlined,
-  RightOutlined,
-  SendOutlined,
-  SettingOutlined,
-  ShopOutlined,
-  WalletOutlined,
-  BarcodeOutlined,
-  TagOutlined
-} from '@ant-design/icons';
-import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
-import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import { Account } from '@bcpros/lixi-models';
-import ScanBarcode from '@bcpros/lixi-components/components/Common/ScanBarcode';
 import { getAllAccounts, getSelectedAccount } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { openModal } from '@store/modal/actions';
-import { fromSmallestDenomination } from '@utils/cashMethods';
-import { Button, Layout, message, Space } from 'antd';
+import { Layout, message, Space, Modal, Popover, Button, Badge } from 'antd';
 import classNames from 'classnames';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -29,7 +10,9 @@ import styled from 'styled-components';
 import { Logged } from './SideBarRanking';
 import axiosClient from '@utils/axiosClient';
 import intl from 'react-intl-universal';
-import { CreateLixiFormModal } from '@components/Lixi/CreateLixiFormModal';
+import { getAllNotifications } from '@store/notification/selectors';
+import NotificationPopup, { StyledPopover } from '@components/NotificationPopup';
+import { fetchNotifications } from '@store/notification/actions';
 
 const { Sider } = Layout;
 
@@ -40,7 +23,7 @@ export const ItemAccess = ({
   active,
   onClickItem
 }: {
-  icon: React.FC;
+  icon: string;
   text: string;
   href?: string;
   active: boolean;
@@ -48,8 +31,10 @@ export const ItemAccess = ({
 }) => (
   <Link onClick={onClickItem} href={href}>
     <a>
-      <Space className={'item-access'}>
-        <div className={classNames('icon-item', { 'active-item-access': active })}>{React.createElement(icon)}</div>
+      <Space direction="vertical" className={'item-access'}>
+        <div className={classNames('icon-item', { 'active-item-access': active })}>
+          <img src={icon} />
+        </div>
         <span className="text-item">{text}</span>
       </Space>
     </a>
@@ -67,7 +52,7 @@ export const ItemAccessBarcode = ({
 }) => (
   <Link href="">
     <a>
-      <Space className={'item-access'}>
+      <Space direction="vertical" className={'item-access'}>
         <div className={classNames('icon-item', { 'active-item-access': active })}>{React.createElement(icon)}</div>
         <span className="text-item">{component}</span>
       </Space>
@@ -76,9 +61,9 @@ export const ItemAccessBarcode = ({
 );
 
 export const CointainerAccess = styled.div`
-  background: #fff;
-  box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
-  border-radius: 20px;
+  position: relative;
+  height: 100vh;
+  background: linear-gradient(0deg, rgba(158, 42, 156, 0.08), rgba(158, 42, 156, 0.08)), #fffbff;
   .ant-layout-sider-children {
     display: flex;
     flex-direction: column;
@@ -90,14 +75,14 @@ export const CointainerAccess = styled.div`
     }
   }
   .item-access {
-    margin: 8px 0;
+    margin-bottom: 2rem;
     cursor: pointer;
+    gap: 0 !important;
     .anticon {
       font-size: 25px;
       color: #12130f;
     }
     .icon-item {
-      margin-right: 1rem;
       padding: 6px;
       &.active-item-access {
         background: #ffd24d;
@@ -106,15 +91,20 @@ export const CointainerAccess = styled.div`
     }
     .text-item {
       font-size: 16px;
-      font-weight: 600;
-      color: #12130f;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      color: #4e444b;
     }
   }
   .wrapper {
-    padding: 0 2rem 2rem 2rem;
+    position: absolute;
+    padding: 0;
+    top: 0;
+    width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    background: linear-gradient(0deg, rgba(158, 42, 156, 0.08), rgba(158, 42, 156, 0.08)), #fffbff;
     @media (min-width: 768px) and (max-width: 1000px) {
       padding: 0 1rem 1rem 1rem !important;
     }
@@ -122,48 +112,18 @@ export const CointainerAccess = styled.div`
 `;
 
 const StyledLogo = styled.div`
+  margin: 2rem 0;
   cursor: pointer;
-  ::before {
-    left: 0;
-    top: 46px;
-    width: 10px;
-    height: 60px;
-    content: '';
-    position: absolute;
-    background: #7342cc;
-    border-radius: 0px 10px 10px 0px;
-  }
-  margin: 3rem 1rem 3rem 0;
-`;
-
-const CointainerWallet = styled.div`
-  margin-top: 20px;
-  border-radius: 20px;
-  border: none;
-  background: #fff;
-  padding: 2rem;
-  box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
-  text-align: left;
-  .header-box-wallet {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    h3 {
-      margin: 0;
-      font-weight: 600;
-    }
-    .anticon {
-      color: var(--color-primary);
-      font-size: 17px;
-    }
-  }
+  background: linear-gradient(0deg, rgba(158, 42, 156, 0.08), rgba(158, 42, 156, 0.08)), #fffbff;
 `;
 
 const ShortcutSideBar = styled(Sider)`
   height: 100vh;
+  flex: none !important;
+  max-width: 250px !important;
+  min-width: 220px !important;
+  width: auto !important;
   overflow: auto;
-  left: 2rem;
-  max-width: inherit !important;
   background: var(--bg-color-light-theme);
   &::-webkit-scrollbar {
     width: 5px;
@@ -181,42 +141,19 @@ const ShortcutSideBar = styled(Sider)`
       border-radius: 100px;
     }
   }
-  @media (max-width: 768px) {
+  @media (max-width: 960px) {
     display: none;
-  }
-  @media (min-width: 1001px) {
-    flex: none;
-    min-width: 290px !important;
-    width: 290px !important;
-  }
-  @media (min-width: 1366px) {
-    flex: none;
-    min-width: 312px !important;
-    width: 312px !important;
   }
 `;
 
-const StyledLogged = styled(Logged)`
-  .account-logged {
-    padding: 0;
-    span {
-      font-size: 16px;
-      text-transform: uppercase;
-      font-weight: 500;
-    }
-    img {
-      width: 34px;
-    }
-  }
-  .balance {
-    > div {
-      font-size: 16px;
-      font-weight: 500;
-      span {
-        color: var(--color-primary);
-      }
-    }
-  }
+const UserControl = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  margin-bottom: 2rem;
 `;
 
 const SidebarShortcut = () => {
@@ -225,8 +162,10 @@ const SidebarShortcut = () => {
   const selectedAccount = useAppSelector(getSelectedAccount);
   const savedAccounts: Account[] = useAppSelector(getAllAccounts);
   const [isCollapse, setIsCollapse] = useState(false);
+  const [showMore, setShowMore] = useState(false);
   const router = useRouter();
   const selectedKey = router.pathname ?? '';
+  const notifications = useAppSelector(getAllNotifications);
   let pastScan;
 
   const onScan = async (result: string) => {
@@ -245,6 +184,17 @@ const SidebarShortcut = () => {
     }
   };
 
+  useEffect(() => {
+    if (selectedAccount) {
+      dispatch(
+        fetchNotifications({
+          accountId: selectedAccount.id,
+          mnemonichHash: selectedAccount.mnemonicHash
+        })
+      );
+    }
+  }, []);
+
   const triggerSrollbar = e => {
     const sidebarShortcutNode = refSidebarShortcut.current;
     sidebarShortcutNode.classList.add('show-scroll');
@@ -253,97 +203,134 @@ const SidebarShortcut = () => {
     }, 700);
   };
 
+  const content = (
+    <div className="popover-content-more">
+      <ItemAccess
+        icon={'images/ico-lixi.svg'}
+        text={intl.get('general.lixi')}
+        active={selectedKey === '/lixi'}
+        key="lixi"
+        href={'/lixi'}
+      />
+      <ItemAccess
+        icon={'images/ico-setting.svg'}
+        text={intl.get('general.settings')}
+        active={selectedKey === '/settings'}
+        key="settings"
+        href={'/settings'}
+      />
+    </div>
+  );
+
   return (
-    <ShortcutSideBar id="short-cut-sidebar" ref={refSidebarShortcut} onScroll={e => triggerSrollbar(e)}>
-      <CointainerAccess>
-        <div className="wrapper">
-          <StyledLogo>
-            <Link href="/" passHref>
-              <img width="120px" src="/images/lixilotus-logo.svg" alt="lixilotus" />
-            </Link>
-          </StyledLogo>
-          <ItemAccess
-            icon={HomeOutlined}
-            text={intl.get('general.home')}
-            active={selectedKey === '/'}
-            key="home"
-            href={'/'}
-          />
-          <ItemAccess
-            icon={ShopOutlined}
-            text={intl.get('general.page')}
-            active={selectedKey.includes('/page')}
-            key="page-feed"
-            href={'/page/feed'}
-          />
-          <ItemAccess
-            icon={TagOutlined}
-            text={intl.get('general.tokens')}
-            active={selectedKey.includes('/token')}
-            key="tokens-feed"
-            href={'/token/listing'}
-          />
-          <ItemAccess
-            icon={WalletOutlined}
-            text={intl.get('general.accounts')}
-            active={selectedKey === '/wallet'}
-            key="wallet-lotus"
-            href={'/wallet'}
-          />
-          <ItemAccess
-            icon={GiftOutlined}
-            text={intl.get('general.lixi')}
-            active={selectedKey === '/lixi'}
-            key="lixi"
-            href={'/lixi'}
-          />
-          <ItemAccess
-            icon={SettingOutlined}
-            text={intl.get('general.settings')}
-            active={selectedKey === '/settings'}
-            key="settings"
-            href={'/settings'}
-          />
-          <ItemAccess icon={SendOutlined} text={'Send'} active={selectedKey === '/send'} key="send" href={'/send'} />
-          <ItemAccess
-            icon={ShopOutlined}
-            text={intl.get('general.lotusiaShop')}
-            active={false}
-            key="lotusia-shop"
-            href={'https://lotusia.shop/'}
-          />
-          <ItemAccessBarcode
-            icon={BarcodeOutlined}
-            key="scan-barcode"
-            active={false}
-            component={<ScanBarcode loadWithCameraOpen={false} onScan={onScan} id={Date.now().toString()} />}
-          />
-        </div>
-      </CointainerAccess>
-      <CointainerWallet>
-        <div className="header-box-wallet">
-          <h3>Wallet</h3>
-          {!isCollapse && <RightOutlined onClick={() => setIsCollapse(!isCollapse)} />}
-          {isCollapse && <DownOutlined onClick={() => setIsCollapse(!isCollapse)} />}
-        </div>
-        {!selectedAccount && <div className="content-box-wallet">Please Login to access this feature</div>}
-        {savedAccounts &&
-          savedAccounts.map(
-            acc =>
-              isCollapse && (
-                <StyledLogged>
-                  <div className="account-logged">
-                    <img src="/images/xpi.svg" alt="" />
-                    <span>{acc?.name || ''}</span>
-                  </div>
-                  <div className="balance">
-                    <BalanceHeader balance={fromSmallestDenomination(acc?.balance ?? 0)} ticker={currency.ticker} />
-                  </div>
-                </StyledLogged>
-              )
-          )}
-      </CointainerWallet>
-    </ShortcutSideBar>
+    <>
+      <ShortcutSideBar id="short-cut-sidebar" ref={refSidebarShortcut} onScroll={e => triggerSrollbar(e)}>
+        <CointainerAccess>
+          <div className="wrapper">
+            <StyledLogo>
+              <Link href="/" passHref>
+                <img width="120px" src="/images/lixilotus-logo.svg" alt="lixilotus" />
+              </Link>
+            </StyledLogo>
+            <ItemAccess
+              icon={'/images/ico-home.svg'}
+              text={intl.get('general.home')}
+              active={selectedKey === '/'}
+              key="home"
+              href={'/'}
+            />
+            <ItemAccess
+              icon={'/images/ico-page.svg'}
+              text={intl.get('general.page')}
+              active={selectedKey.includes('/page')}
+              key="page-feed"
+              href={'/page/feed'}
+            />
+            <ItemAccess
+              icon={'/images/ico-tokens.svg'}
+              text={intl.get('general.tokens')}
+              active={selectedKey.includes('/token')}
+              key="tokens-feed"
+              href={'/token/listing'}
+            />
+            <ItemAccess
+              icon={'/images/ico-account.svg'}
+              text={intl.get('general.accounts')}
+              active={selectedKey === '/wallet'}
+              key="wallet-lotus"
+              href={'/wallet'}
+            />
+            <ItemAccess
+              icon={'/images/ico-lixi.svg'}
+              text={intl.get('general.lixi')}
+              active={selectedKey === '/lixi'}
+              key="lixi"
+              href={'/lixi'}
+            />
+            <ItemAccess
+              icon={'/images/ico-setting.svg'}
+              text={intl.get('general.settings')}
+              active={selectedKey === '/settings'}
+              key="settings"
+              href={'/settings'}
+            />
+            {/* TODO: show more shortcut  */}
+            {/* {showMore && (
+              <>
+                <ItemAccess
+                  icon={'images/ico-lixi.svg'}
+                  text={intl.get('general.lixi')}
+                  active={selectedKey === '/lixi'}
+                  key="lixi"
+                  href={'/lixi'}
+                />
+                <ItemAccess
+                  icon={'images/ico-setting.svg'}
+                  text={intl.get('general.settings')}
+                  active={selectedKey === '/settings'}
+                  key="settings"
+                  href={'/settings'}
+                />
+              </>
+            )}
+            {!showMore && (
+              <>
+                <Popover overlayClassName="popover-more" placement="top" title={null} content={content} trigger="click">
+                  <Button type="text">
+                    <ItemAccess
+                      icon={'images/ico-more.svg'}
+                      text={intl.get('general.more')}
+                      active={selectedKey === '/more'}
+                      key="more"
+                      href={'/settings'}
+                    />
+                  </Button>
+                </Popover>
+              </>
+            )} */}
+          </div>
+          <UserControl>
+            <StyledPopover
+              content={NotificationPopup(notifications, selectedAccount)}
+              placement="bottomRight"
+              getPopupContainer={trigger => trigger}
+              trigger={notifications.length != 0 ? 'click' : ''}
+              title="Notifications"
+            >
+              <Badge
+                count={notifications.length}
+                overflowCount={9}
+                offset={[notifications.length < 10 ? 0 : 5, 25]}
+                color="var(--color-primary)"
+              >
+                <img style={{ marginBottom: '2rem' }} src="/images/ico-notifications.svg" alt="" />
+              </Badge>
+            </StyledPopover>
+            <img width={56} height={56} src="/images/anonymous-ava.svg" alt="" />
+          </UserControl>
+        </CointainerAccess>
+      </ShortcutSideBar>
+    </>
   );
 };
 export default SidebarShortcut;

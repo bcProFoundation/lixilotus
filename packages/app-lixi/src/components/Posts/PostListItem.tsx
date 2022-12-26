@@ -38,7 +38,7 @@ const IconBurn = ({
 }) => (
   <Space onClick={onClickIcon}>
     {icon && React.createElement(icon)}
-    {imgUrl && React.createElement('img', { src: imgUrl }, null)}
+    {imgUrl && React.createElement('img', { src: imgUrl, width: '32' }, null)}
     <Counter num={burnValue ?? 0} />
   </Space>
 );
@@ -84,10 +84,6 @@ const Content = styled.div`
   .description-post {
     text-align: left;
     word-break: break-word;
-    img {
-      max-height: 250px;
-      width: 100%;
-    }
     iframe {
       width: 100% !important;
       &#twitter-widget-0 {
@@ -122,8 +118,14 @@ const Content = styled.div`
       overflow: none !important;
     }
     &.show-less {
-      height: 130px;
+      white-space: normal;
       overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      line-clamp: 5;
+      -webkit-line-clamp: 5;
+      box-orient: vertical;
+      -webkit-box-orient: vertical;
     }
   }
   .image-cover {
@@ -131,9 +133,41 @@ const Content = styled.div`
     max-height: 300px;
   }
   .images-post {
+    width: 100%;
+    padding: 1rem;
     margin-top: 1rem;
+    box-sizing: border-box;
+    box-shadow: 0 3px 12px rgb(0 0 0 / 4%);
+    background: var(--bg-color-light-theme);
+    height: fit-content;
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
+    grid-column-gap: 1rem;
+    justify-items: center;
+    transition: 0.5s ease;
     img {
       margin-bottom: 1rem;
+      height: fit-content;
+      width: 80%;
+    }
+    .middle {
+      transition: 0.5s ease;
+      opacity: 0;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+      text-align: center;
+    }
+    &:hover {
+      img {
+        opacity: 0.9;
+      }
+      .middle {
+        opacity: 1;
+      }
     }
   }
 `;
@@ -162,6 +196,8 @@ const GroupIconText = styled.div`
   }
   .ant-space {
     margin-right: 1rem;
+    align-items: end;
+    gap: 0 !important;
   }
   @media (max-width: 960px) {
     width: 210px;
@@ -170,7 +206,8 @@ const GroupIconText = styled.div`
     width: 380px;
   }
   img {
-    width: 18px;
+    width: 32px;
+    height: 32px;
   }
 `;
 
@@ -180,12 +217,11 @@ const PostListItemContainer = styled(List.Item)`
   height: fit-content !important;
   margin: 2px 2px 1rem 2px;
   border-radius: 24px;
-  box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
   background: white;
   padding: 0;
   border: none;
   &:hover {
-    background: #f7f7f7;
+    // background: #f7f7f7;
   }
 `;
 
@@ -217,7 +253,7 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
 
   useEffect(() => {
     const descPost = ref?.current.querySelector('.description-post');
-    if (descPost.clientHeight > 130) {
+    if (descPost.clientHeight > 130 || item.uploads.length != 0) {
       descPost.classList.add('show-less');
       setShowMore(true);
     } else {
@@ -346,6 +382,18 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
     return post?.postAccount?.name;
   };
 
+  const gridPicture = items => {
+    let className = 'images-post';
+    if (items?.length != 0 && items?.length > 2) {
+      if (items?.length > 2) {
+        className += ' 2-row-picture';
+      } else {
+        className += ' 1-row-picture';
+      }
+    }
+    return 'images-post';
+  };
+
   return (
     <PostListItemContainer key={post.id} ref={ref} onClick={handlePostClick}>
       <CardContainer>
@@ -361,20 +409,7 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
           ></InfoCardUser>
         </CardHeader>
         <Content>
-          <div className="description-post">
-            {ReactHtmlParser(post?.content)}
-            <div className="images-post">
-              {item.uploads.length != 0 &&
-                item.uploads.map(item => {
-                  const imageUrl = URL_SERVER_IMAGE + '/' + item.upload.bucket + '/' + item.upload.sha;
-                  return (
-                    <>
-                      <img width={'100%'} src={imageUrl} />
-                    </>
-                  );
-                })}
-            </div>
-          </div>
+          <div className="description-post">{ReactHtmlParser(post?.content)}</div>
           {showMore && (
             <p
               style={{ textAlign: 'left', color: 'var(--color-primary)', marginBottom: '0' }}
@@ -383,21 +418,37 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
               Show more...
             </p>
           )}
-          {/* <img className="image-cover" src={post.uploadCovers} alt="" /> */}
+          {post.lotusBurnScore > 3 ||
+            (!showMore && (
+              <div style={{ display: item.uploads.length != 0 ? 'grid' : 'none' }} className="images-post">
+                {item.uploads.length != 0 &&
+                  item.uploads.map((item, index) => {
+                    while (index < 4) {
+                      const imageUrl = URL_SERVER_IMAGE + '/' + item.upload.bucket + '/' + item.upload.sha;
+                      return (
+                        <>
+                          <img src={imageUrl} />
+                          <div className="middle"></div>
+                        </>
+                      );
+                    }
+                  })}
+              </div>
+            ))}
         </Content>
       </CardContainer>
       <ActionBar>
         <GroupIconText>
           <IconBurn
             burnValue={formatBalance(post?.lotusBurnUp ?? 0)}
-            imgUrl="/images/up-ico.svg"
+            imgUrl="/images/ico-burn-up.svg"
             key={`list-vertical-upvote-o-${item.id}`}
             dataItem={item}
             onClickIcon={e => upVotePost(e, item)}
           />
           <IconBurn
             burnValue={formatBalance(post?.lotusBurnDown ?? 0)}
-            imgUrl="/images/down-ico.svg"
+            imgUrl="/images/ico-burn-down.svg"
             key={`list-vertical-downvote-o-${item.id}`}
             dataItem={item}
             onClickIcon={e => downVotePost(e, item)}
