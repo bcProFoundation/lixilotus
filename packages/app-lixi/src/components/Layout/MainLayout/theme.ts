@@ -15,7 +15,7 @@ export const theme: DefaultTheme = {
     gradient: 'linear-gradient(-225deg, #231557 0%, #44107A 29%, #FF1361 67%, #d38cad 100%)'
   },
   wallet: {
-    background: '#fff',
+    background: 'var(--bg-color-light-theme)',
     text: {
       primary: 'var(--color-primary)',
       secondary: '#6212f5'
@@ -60,9 +60,9 @@ export const theme: DefaultTheme = {
     selectionBackground: '#fff'
   },
   footer: {
-    background: '#fff',
+    background: 'linear-gradient(0deg, rgba(158, 42, 156, 0.08), rgba(158, 42, 156, 0.08)), #FFFBFF',
     navIconInactive: '#949494',
-    color: 'var(--text-color-1)'
+    color: '#4E444B'
   },
   icons: {
     outlined: 'var(--color-primary)',

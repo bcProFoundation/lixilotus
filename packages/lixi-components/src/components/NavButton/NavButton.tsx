@@ -14,6 +14,10 @@ export const NavButton: React.FC<INavButtonProps> = styled.button<INavButtonProp
   cursor: pointer;
   padding: 1rem 0;
   margin: 0 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   color: ${props => props.theme.footer.color};
   @media (max-width: 475px) {
     margin: 0 20px;
@@ -24,10 +28,7 @@ export const NavButton: React.FC<INavButtonProps> = styled.button<INavButtonProp
   @media (max-width: 350px) {
     margin: 0 8px;
   }
-  @media (min-width: 768px) {
-    padding: 0;
-  }
-  background-color: ${props => props.theme.footer.background};
+  background: ${props => props.theme.footer.background};
   border: none;
   font-size: 12px;
   font-weight: bold;

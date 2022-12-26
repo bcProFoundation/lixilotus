@@ -74,6 +74,7 @@ export default {
   'general.notFoundDescription': 'Xin lỗi, Chúng tôi không thể tìm thấy trang bạn đang tìm',
   'general.goBackToHome': 'Trở về trang chủ',
   'general.post': 'Đăng',
+  'general.more': 'Thêm',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',

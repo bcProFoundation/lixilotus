@@ -74,7 +74,6 @@ export const HeaderContainer = styled.div`
   justify-content: flex-start !important;
   width: 100%;
   padding: 10px 0 15px;
-  margin-bottom: 20px;
   justify-content: space-between;
   border-bottom: 1px solid ${props => props.theme.wallet.borders.color};
 

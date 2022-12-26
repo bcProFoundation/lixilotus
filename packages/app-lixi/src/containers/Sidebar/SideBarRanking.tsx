@@ -3,33 +3,52 @@ import { Account } from '@bcpros/lixi-models';
 import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
 import InfoCardUser from '@components/Common/InfoCardUser';
 import { SmartButton } from '@components/Common/PrimaryButton';
-import NotificationPopup, { StyledPopover } from '@components/NotificationPopup';
 import { WalletContext } from '@context/index';
 import { generateAccount, importAccount, selectAccount } from '@store/account/actions';
 import { getAllAccounts, getSelectedAccount } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { fetchNotifications } from '@store/notification/actions';
 import { getAllNotifications } from '@store/notification/selectors';
-import { Badge, Button, Comment, Form, Input, Layout, Modal, Tabs } from 'antd';
+import { Badge, Button, Space, Form, Input, Layout, Modal, Tabs } from 'antd';
 import * as _ from 'lodash';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import intl from 'react-intl-universal';
-import SwipeToDelete from 'react-swipe-to-delete-ios';
 import styled from 'styled-components';
+import { DownOutlined, UpOutlined } from '@ant-design/icons';
 
 const { Sider } = Layout;
+
+export const ShortcutItemAccess = ({
+  icon,
+  text,
+  href,
+  onClickItem
+}: {
+  icon: string;
+  text: string;
+  href?: string;
+  onClickItem?: () => void;
+}) => (
+  <Link onClick={onClickItem} href={href}>
+    <a>
+      <Space className={'item-access'}>
+        <img style={{ borderRadius: '50%' }} width={48} height={48} src={icon} alt="" />
+        <p style={{ margin: '0', color: '#000' }}>{text}</p>
+      </Space>
+    </a>
+  </Link>
+);
 
 const RankingSideBar = styled(Sider)`
   height: 100vh;
   overflow: visible;
-  right: 2rem;
-  max-width: inherit !important;
+  flex: none !important;
+  min-width: 270px !important;
+  max-width: 330px !important;
+  width: auto !important;
   background: var(--bg-color-light-theme);
-  border-radius: 20px;
-  padding-bottom: 2rem;
-  position: relative;
   &::-webkit-scrollbar {
     width: 5px;
   }
@@ -52,18 +71,12 @@ const RankingSideBar = styled(Sider)`
     justify-content: flex-start;
     align-items: flex-start;
   }
-  @media (max-width: 768px) {
+  @media (max-width: 960px) {
     display: none;
   }
-  @media (min-width: 1001px) {
-    flex: none;
-    min-width: 290px !important;
-    width: 290px !important;
-  }
-  @media (min-width: 1366px) {
-    flex: none;
-    min-width: 312px !important;
-    width: 312px !important;
+
+  @media (min-width: 960px) and (max-width: 1000px) {
+    width: 270px !important;
   }
 
   .login-session {
@@ -71,7 +84,6 @@ const RankingSideBar = styled(Sider)`
     width: 100%;
     padding: 2rem 2rem 1rem 2rem;
     border-radius: 20px;
-    box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
     margin-bottom: 2rem;
     &::before {
       top: 35px;
@@ -95,12 +107,31 @@ const RankingSideBar = styled(Sider)`
 
   .right-bar {
     width: 100%;
-    .content {
-      text-align: left;
-      h3 {
-        font-size: 18px;
+    .container-right-bar {
+      background: white;
+      border-radius: 24px;
+      padding: 24px 16px 1rem 24px;
+      &.your-shortcuts {
+        margin-bottom: 1rem;
+        margin-top: 1rem;
+        padding: 1rem;
+        .item-access {
+          gap: 1rem !important;
+          margin-bottom: 1rem;
+        }
+        .content {
+          h3 {
+            margin-bottom: 24px;
+          }
+        }
+      }
+      .content {
         text-align: left;
-        font-weight: 600;
+        h3 {
+          font-size: 18px;
+          text-align: left;
+          font-weight: 600;
+        }
       }
     }
   }
@@ -154,7 +185,6 @@ const ManageAccounts = styled.div`
   width: 100%;
   padding: 1rem 2rem;
   border-radius: 20px;
-  box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
   background: white;
   h2 {
     text-align: left;
@@ -220,8 +250,7 @@ const StyledTabs = styled(Tabs)`
       color: #12130f;
     }
     &.ant-tabs-tab-active {
-      background: #ffd24d !important;
-      border-radius: 16px !important;
+      border-bottom: 2px solid !important;
     }
   }
   .anticon {
@@ -242,6 +271,7 @@ const SidebarRanking = () => {
   const refSidebarRanking = useRef<HTMLDivElement | null>(null);
   const savedAccounts: Account[] = useAppSelector(getAllAccounts);
   const [isShowNotification, setIsShowNotification] = useState<boolean>(false);
+  const [isCollapse, setIsCollapse] = useState(false);
 
   const [open, setOpen] = useState(false);
   const [isValidMnemonic, setIsValidMnemonic] = useState<boolean | null>(null);
@@ -314,7 +344,8 @@ const SidebarRanking = () => {
 
   return (
     <RankingSideBar id="ranking-sidebar" ref={refSidebarRanking} onScroll={e => triggerSrollbar(e)}>
-      <div className="login-session">
+      {/* TODO: loggin-session */}
+      {/* <div className="login-session">
         <InfoCardUser imgUrl={null} name={'Anonymous'} title={'@anonymous'}></InfoCardUser>
         {!selectedAccount && (
           <Link href="/admin/register-account" passHref>
@@ -350,11 +381,34 @@ const SidebarRanking = () => {
             </StyledBadge>
           </StyledPopover>
         )}
+      </div> */}
+      <div className="right-bar">
+        <div className="container-right-bar your-shortcuts">
+          <div className="content">
+            <h3>Your shortcuts</h3>
+            <ShortcutItemAccess icon="/images/default-avatar.jpg" text="Cameron Williamson" href={'/'} />
+            <ShortcutItemAccess icon="/images/default-avatar.jpg" text="Cameron Williamson" href={'/'} />
+            <ShortcutItemAccess icon="/images/default-avatar.jpg" text="Cameron Williamson" href={'/'} />
+            <ShortcutItemAccess icon="/images/default-avatar.jpg" text="Cameron Williamson" href={'/'} />
+            <ShortcutItemAccess icon="/images/default-avatar.jpg" text="Cameron Williamson" href={'/'} />
+            {isCollapse && (
+              <>
+                <ShortcutItemAccess icon="/images/default-avatar.jpg" text="Cameron Williamson" href={'/'} />
+                <ShortcutItemAccess icon="/images/default-avatar.jpg" text="Cameron Williamson" href={'/'} />
+                <ShortcutItemAccess icon="/images/default-avatar.jpg" text="Cameron Williamson" href={'/'} />
+              </>
+            )}
+            <div style={{ textAlign: 'end' }}>
+              {!isCollapse && <DownOutlined onClick={() => setIsCollapse(!isCollapse)} />}
+              {isCollapse && <UpOutlined onClick={() => setIsCollapse(!isCollapse)} />}
+            </div>
+          </div>
+        </div>
       </div>
 
       {router?.pathname !== '/wallet' && (
         <div className="right-bar">
-          <div>
+          <div className="container-right-bar">
             <StyledTabs type="card">
               <Tabs.TabPane tab={<UserOutlined />} key="people">
                 <div className="content">
