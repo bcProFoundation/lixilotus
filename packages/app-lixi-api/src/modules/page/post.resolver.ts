@@ -161,7 +161,12 @@ export class PostResolver {
   ): Promise<PostResponse> {
     const { limit, offset } = getPagingParameters(args);
     const [posts, count] = await this.postService.findAll(limit!, offset!, query);
-    return connectionFromArraySlice(posts, args, {
+    const searchPosts = posts.map((post: any) => {
+      post.createdAt = new Date(post.createdAt);
+      post.updatedAt = new Date(post.updatedAt);
+      return post;
+    });
+    return connectionFromArraySlice(searchPosts, args, {
       arrayLength: count,
       sliceStart: offset || 0
     });
@@ -326,17 +331,20 @@ export class PostResolver {
       include: {
         page: {
           select: {
+            id: true,
             address: true,
             name: true
           }
         },
         token: {
           select: {
+            id: true,
             name: true
           }
         },
         postAccount: {
           select: {
+            id: true,
             name: true,
             address: true
           }
@@ -344,9 +352,11 @@ export class PostResolver {
       }
     });
 
-    //TODO: Strip html from content before adding to meilisearch. Do later with new editor
+    _.update(createdPost, 'content', () => {
+      return pureContent;
+    });
 
-    await this.meiliService.add(POSTS, _.omit(createdPost, ['postAccountId', 'pageId', 'tokenId']), createdPost.id);
+    await this.meiliService.add(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`, createdPost, createdPost.id);
 
     pubSub.publish('postCreated', { postCreated: createdPost });
     return createdPost;

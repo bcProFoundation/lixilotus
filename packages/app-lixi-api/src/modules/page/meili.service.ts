@@ -11,7 +11,7 @@ export class MeiliService implements OnModuleInit {
   constructor(@I18n() private i18n: I18nService, @InjectMeiliSearch() private readonly meiliSearch: MeiliSearch) {}
 
   async onModuleInit() {
-    await this.meiliSearch.index(POSTS).updateSettings({
+    await this.meiliSearch.index(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`).updateSettings({
       searchableAttributes: ['content', 'postAccount.name'],
       displayedAttributes: ['*']
     });

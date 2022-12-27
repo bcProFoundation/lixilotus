@@ -16,6 +16,7 @@ import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled from 'styled-components';
 import SearchBox from '../Common/SearchBox';
 import intl from 'react-intl-universal';
+import { LoadingOutlined } from '@ant-design/icons';
 import PostListItem from './PostListItem';
 
 type PostsListingProps = {
@@ -140,7 +141,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   };
 
   //#region QueryVirtuoso
-  const { queryData, fetchNextQuery, hasNextQuery, isQueryFetching, isFetchingQueryNext } =
+  const { queryData, fetchNextQuery, hasNextQuery, isQueryFetching, isFetchingQueryNext, isQueryLoading } =
     useInfinitePostsBySearchQuery(
       {
         query: searchValue
@@ -172,6 +173,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   };
 
   const QueryFooter = () => {
+    if (isQueryLoading) return null;
     return (
       <div
         style={{
@@ -302,7 +304,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
           endReached={loadMoreQueryItems}
           overscan={3000}
           itemContent={(index, item) => {
-            return <PostListItem index={index} item={item} />;
+            return !isQueryLoading ? <PostListItem index={index} item={item} /> : <LoadingOutlined />;
           }}
           components={{ Header: QueryHeader, Footer: QueryFooter }}
         />

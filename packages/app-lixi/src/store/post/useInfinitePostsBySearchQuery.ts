@@ -1,10 +1,22 @@
+import { useMemo } from 'react';
 import { PaginationArgs } from '@bcpros/lixi-models';
 import { useLazyPostsBySearchQuery, usePostsBySearchQuery } from '@store/post/posts.generated';
 import { useEffect, useRef, useState } from 'react';
 import { Post, PostOrder } from 'src/generated/types.generated';
+import _ from 'lodash';
+import { PostQuery } from './posts.generated';
+import { useAppDispatch } from '@store/hooks';
+import { createEntityAdapter } from '@reduxjs/toolkit';
+
+const postsAdapter = createEntityAdapter<PostQuery['post']>({
+  selectId: post => post.id,
+  sortComparer: (a, b) => b.createdAt - a.createdAt
+});
+
+const { selectAll, selectEntities, selectIds, selectTotal } = postsAdapter.getSelectors();
 
 export interface PostListParams extends PaginationArgs {
-  query?: string;
+  query: string;
 }
 export interface PostListBody {
   posts: Post[];
@@ -15,10 +27,11 @@ export function useInfinitePostsBySearchQuery(
   params: PostListParams,
   fetchAll: boolean = false // if `true`: auto do next fetches to get all notes at once
 ) {
-  const baseResult = usePostsBySearchQuery(params);
+  const dispatch = useAppDispatch();
+  const baseResult = usePostsBySearchQuery(params, { skip: params.query === null });
 
-  const [trigger, nextResult] = useLazyPostsBySearchQuery();
-  const [combinedData, setCombinedData] = useState([]);
+  const [trigger, nextResult, lastPromiseInfo] = useLazyPostsBySearchQuery();
+  const [combinedData, setCombinedData] = useState(postsAdapter.getInitialState({}));
 
   const isBaseReady = useRef(false);
   const isNextDone = useRef(true);
@@ -26,38 +39,27 @@ export function useInfinitePostsBySearchQuery(
   // next: starts with a null, fetching ended with an undefined cursor
   const next = useRef<null | string | undefined>(null);
 
+  const data = useMemo(() => {
+    const result = selectAll(combinedData);
+    return result;
+  }, [combinedData]);
+
   // Base result
   useEffect(() => {
-    console.log('baseResult: ', baseResult);
     next.current = baseResult.data?.allPostsBySearch?.pageInfo?.endCursor;
     if (baseResult?.data?.allPostsBySearch) {
       isBaseReady.current = true;
-      setCombinedData(baseResult.data.allPostsBySearch.edges.map(item => item.node));
+
+      const baseResultParse = baseResult.data.allPostsBySearch.edges.map(item => item.node);
+      const adapterSetAll = postsAdapter.setAll(
+        combinedData,
+        baseResult.data.allPostsBySearch.edges.map(item => item.node)
+      );
+
+      setCombinedData(adapterSetAll);
       fetchAll && fetchNextQuery();
     }
   }, [baseResult]);
-
-  // When there're next results
-  useEffect(() => {
-    // Not success next result
-    if (!nextResult.isSuccess) return;
-
-    if (
-      isBaseReady.current &&
-      nextResult.data &&
-      nextResult.data.allPostsBySearch.pageInfo &&
-      nextResult.data.allPostsBySearch.pageInfo.endCursor != next.current
-    ) {
-      next.current = nextResult.data.allPostsBySearch.pageInfo.endCursor;
-
-      const newItems = nextResult.data.allPostsBySearch.edges.map(item => item.node);
-      if (newItems && newItems.length) {
-        setCombinedData(currentItems => {
-          return [...currentItems, ...newItems];
-        });
-      }
-    }
-  }, [nextResult]);
 
   const fetchNextQuery = async () => {
     if (!isBaseReady.current || !isNextDone.current || next.current === undefined || next.current === null) {
@@ -84,7 +86,7 @@ export function useInfinitePostsBySearchQuery(
   };
 
   return {
-    queryData: combinedData ?? [],
+    queryData: data ?? [],
     queryError: baseResult?.error,
     isQueryError: baseResult?.isError,
     isQueryLoading: baseResult?.isLoading,

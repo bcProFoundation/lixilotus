@@ -254,10 +254,16 @@ export type PostsBySearchQuery = {
         __typename?: 'Post';
         id: string;
         content: string;
-        uploadCovers?: Array<string> | null;
         lotusBurnUp: number;
         lotusBurnDown: number;
         lotusBurnScore: number;
+        createdAt: any;
+        updatedAt: any;
+        uploads?: Array<{
+          __typename?: 'UploadDetail';
+          id: string;
+          upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+        }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
@@ -297,10 +303,16 @@ export type PostMeiliFieldsFragment = {
   __typename?: 'Post';
   id: string;
   content: string;
-  uploadCovers?: Array<string> | null;
   lotusBurnUp: number;
   lotusBurnDown: number;
   lotusBurnScore: number;
+  createdAt: any;
+  updatedAt: any;
+  uploads?: Array<{
+    __typename?: 'UploadDetail';
+    id: string;
+    upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+  }> | null;
   postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
   pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
   page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
@@ -375,7 +387,14 @@ export const PostMeiliFieldsFragmentDoc = `
     fragment PostMeiliFields on Post {
   id
   content
-  uploadCovers
+  uploads {
+    id
+    upload {
+      id
+      sha
+      bucket
+    }
+  }
   postAccount {
     address
     id
@@ -394,6 +413,8 @@ export const PostMeiliFieldsFragmentDoc = `
   lotusBurnUp
   lotusBurnDown
   lotusBurnScore
+  createdAt
+  updatedAt
 }
     `;
 export const PostDocument = `

@@ -8,8 +8,16 @@ export class PostService {
   constructor(private meiliService: MeiliService) {}
 
   async findAll(limit: number, offset: number, query = ''): Promise<any> {
-    const count = await this.meiliService.searchByQueryEstimatedTotalHits(POSTS, query);
-    const posts = await this.meiliService.searchByQueryHits(POSTS, query, limit, offset);
+    const count = await this.meiliService.searchByQueryEstimatedTotalHits(
+      `${process.env.MEILISEARCH_BUCKET}_${POSTS}`,
+      query
+    );
+    const posts = await this.meiliService.searchByQueryHits(
+      `${process.env.MEILISEARCH_BUCKET}_${POSTS}`,
+      query,
+      limit,
+      offset
+    );
     return [posts, count];
   }
 }

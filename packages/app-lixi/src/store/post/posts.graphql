@@ -184,7 +184,14 @@ fragment PostFields on Post {
 fragment PostMeiliFields on Post {
   id
   content
-  uploadCovers
+  uploads {
+    id
+    upload {
+      id
+      sha
+      bucket
+    }
+  }
   postAccount {
     address
     id
@@ -203,6 +210,8 @@ fragment PostMeiliFields on Post {
   lotusBurnUp
   lotusBurnDown
   lotusBurnScore
+  createdAt
+  updatedAt
 }
 
 mutation createPost($input: CreatePostInput!) {
