@@ -1,5 +1,5 @@
 import { BurnType, Burn, BurnCommand, BurnForType } from '@bcpros/lixi-models/lib/burn';
-import { all, call, fork, takeLatest } from '@redux-saga/core/effects';
+import { all, call, fork, takeLatest, take } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
 import { api as postApi } from '@store/post/posts.api';
@@ -8,16 +8,10 @@ import { showToast } from '@store/toast/actions';
 import { burnForToken, burnForTokenFailure, burnForTokenSucceses, getTokenById } from '@store/tokens';
 import * as _ from 'lodash';
 import intl from 'react-intl-universal';
-import { put, select } from 'redux-saga/effects';
+import { actionChannel, put, select } from 'redux-saga/effects';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import { hideLoading } from '../loading/actions';
-import {
-  burnForUpDownVote,
-  burnForUpDownVoteFailure,
-  burnForUpDownVoteSuccess,
-  updateCommentBurnValue,
-  updatePostBurnValue
-} from './actions';
+import { burnForUpDownVote, burnForUpDownVoteFailure, burnForUpDownVoteSuccess } from './actions';
 import burnApi from './api';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 
@@ -36,9 +30,9 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
     if (command.burnForType === BurnForType.Token) {
       yield put(burnForToken({ id: command.burnForId, burnType: command.burnType, burnValue: burnValue }));
     } else if (command.burnForType === BurnForType.Post) {
-      patches = yield put(updatePostBurnValue(command));
+      patches = yield updatePostBurnValue(action);
     } else if (command.burnForType === BurnForType.Comment) {
-      patches = yield put(updateCommentBurnValue(command));
+      patches = yield put(updateCommentBurnValue(action));
     }
 
     const data: Burn = yield call(burnApi.post, dataApi);
@@ -55,10 +49,10 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
   } catch (err) {
     let message;
     if (command.burnForType === BurnForType.Token) {
-      message = (err as Error).message ?? intl.get('token.unableToBurn');
+      message = (err as Error)?.message ?? intl.get('token.unableToBurn');
       yield put(burnForTokenFailure({ id: command.burnForId, burnType: command.burnType, burnValue: burnValue }));
     } else if (command.burnForType === BurnForType.Post) {
-      message = (err as Error).message ?? intl.get('post.unableToBurn');
+      message = (err as Error)?.message ?? intl.get('post.unableToBurn');
       const params = {
         orderBy: {
           direction: OrderDirection.Desc,
@@ -67,10 +61,12 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
       };
       if (patches) {
         yield put(postApi.util.patchQueryData('Posts', params, patches.inversePatches));
+      }
+      if (patch) {
         yield put(postApi.util.patchQueryData('Post', { id: postId }, patch.inversePatches));
       }
     } else if (command.burnForType === BurnForType.Comment) {
-      message = (err as Error).message ?? intl.get('comment.unableToBurn');
+      message = (err as Error)?.message ?? intl.get('comment.unableToBurn');
       if (patches) {
         yield put(commentApi.util.patchQueryData('CommentsToPostId', queryParams, patches.inversePatches));
       }
@@ -93,7 +89,7 @@ function* burnForUpDownVoteFailureSaga(action: PayloadAction<string>) {
   yield put(hideLoading(burnForUpDownVote.type));
 }
 
-function* updatePostBurnValueSaga(action: PayloadAction<BurnCommand>) {
+function* updatePostBurnValue(action: PayloadAction<BurnCommand>) {
   const command = action.payload;
   // @todo: better control the params for search/others
   const params = {
@@ -197,7 +193,7 @@ function* updatePostBurnValueSaga(action: PayloadAction<BurnCommand>) {
   }
 }
 
-function* updateCommentBurnValueSaga(action: PayloadAction<BurnCommand>) {
+function* updateCommentBurnValue(action: PayloadAction<BurnCommand>) {
   const command = action.payload;
   const { queryParams: params } = command;
   let burnValue = _.toNumber(command.burnValue);
@@ -241,20 +237,23 @@ function* watchBurnForUpDownVoteFailure() {
   yield takeLatest(burnForUpDownVoteFailure.type, burnForUpDownVoteFailureSaga);
 }
 
-function* watchUpdatePostBurnValueSaga() {
-  yield takeLatest(updatePostBurnValue.type, updatePostBurnValueSaga);
-}
+function* watchBurnForUpDownVoteChannel() {
+  // 1- Create a channel for request actions
+  const burnChannel = yield actionChannel(burnForUpDownVote.type);
+  while (true) {
+    // 2- take from the channel
 
-function* watchUpdateCommentBurnValueSaga() {
-  yield takeLatest(updateCommentBurnValue.type, updateCommentBurnValueSaga);
+    const action = yield take(burnChannel);
+
+    // 3- Note that we're using a blocking call
+    yield call(burnForUpDownVoteSaga, action);
+  }
 }
 
 export default function* burnSaga() {
   yield all([
-    fork(watchBurnForUpDownVote),
+    fork(watchBurnForUpDownVoteChannel),
     fork(watchBurnForUpDownVoteSuccess),
-    fork(watchBurnForUpDownVoteFailure),
-    fork(watchUpdatePostBurnValueSaga),
-    fork(watchUpdateCommentBurnValueSaga)
+    fork(watchBurnForUpDownVoteFailure)
   ]);
 }
