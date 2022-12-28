@@ -94,20 +94,8 @@ export const AppContainer = styled.div`
     padding: 0 8px;
   }
   .ant-layout.ant-layout-has-sider {
-    display: grid;
-    grid-template-columns: 15% 85%;
-    @media (max-width: 960px) {
-      grid-template-columns: 100%;
-    }
-    @media (min-width: 960px) and (max-width: 1050px) {
-      grid-template-columns: 23% 77%;
-    }
-    @media (min-width: 1050px) and (max-width: 1400px) {
-      grid-template-columns: 20% 78%;
-    }
-    @media (min-width: 1400px) and (max-width: 1500px) {
-      grid-template-columns: 20% 80%;
-    }
+    display: flex;
+    justify-content: space-between;
   }
   .main-section-layout {
     max-width: 820px;
@@ -128,15 +116,14 @@ export const AppContainer = styled.div`
     }
   }
   .container-content {
+    flex-grow: 1;
     display: flex;
     flex-direction: row;
     gap: 2rem;
     justify-content: center;
+    margin-left: 2rem;
     @media (max-width: 960px) {
       margin-left: 0 !important;
-    }
-    @media (max-width: 1400px) {
-      margin-left: 2rem;
     }
   }
 `;
@@ -246,7 +233,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                           className="main-section-layout"
                           style={{
                             paddingRight: disableSideBarRanking.some(item => selectedKey.includes(item)) ? '2rem' : '0',
-                            maxWidth: disableSideBarRanking.some(item => selectedKey.includes(item)) ? '98%' : ''
+                            maxWidth: disableSideBarRanking.some(item => selectedKey.includes(item)) ? '100%' : ''
                           }}
                         >
                           <Topbar ref={setRef} />

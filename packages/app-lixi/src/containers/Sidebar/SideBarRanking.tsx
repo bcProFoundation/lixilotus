@@ -75,12 +75,10 @@ const RankingSideBar = styled(Sider)`
   }
 
   @media (min-width: 960px) and (max-width: 1400px) {
-    width: 270px !important;
     max-width: 270px !important;
     min-width: 270px !important;
   }
   @media (min-width: 1400px) {
-    width: 330px !important;
     max-width: 330px !important;
     min-width: 330px !important;
   }

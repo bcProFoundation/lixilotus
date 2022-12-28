@@ -144,12 +144,10 @@ const ShortcutSideBar = styled(Sider)`
     display: none;
   }
   @media (min-width: 960px) and (max-width: 1400px) {
-    width: 220px !important;
     min-width: 220px !important;
     max-width: 220px !important;
   }
   @media (min-width: 1400px) {
-    width: 250px;
     min-width: 250px !important;
     max-width: 250px !important;
   }
