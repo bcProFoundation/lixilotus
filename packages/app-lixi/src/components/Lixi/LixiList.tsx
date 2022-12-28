@@ -26,6 +26,7 @@ import {
 } from '@bcpros/lixi-models/lib/lixi';
 import { RenameLixiModalProps } from './RenameLixiModal';
 import { useRouter } from 'next/router';
+import { WrapperPage } from '@components/Settings';
 
 const { Text } = Typography;
 
@@ -125,6 +126,7 @@ const StyledCheckboxGroup = styled(Checkbox.Group)`
 const ActionBarLixi = styled.div`
   display: flex;
   gap: 16px;
+  margin-top: 1rem;
   .action-bar {
     display: flex;
     justify-content: end;
