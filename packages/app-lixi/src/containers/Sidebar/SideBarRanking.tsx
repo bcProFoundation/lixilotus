@@ -17,6 +17,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import { useInfinitePagesQuery } from '@store/page/useInfinitePagesQuery';
 
 const { Sider } = Layout;
 
@@ -42,12 +43,10 @@ export const ShortcutItemAccess = ({
 );
 
 const RankingSideBar = styled(Sider)`
+  margin-top: 1rem;
   height: 100vh;
-  overflow: visible;
-  flex: none !important;
-  min-width: 270px !important;
-  max-width: 330px !important;
-  width: auto !important;
+  overflow: auto;
+  flex: auto !important;
   background: var(--bg-color-light-theme);
   &::-webkit-scrollbar {
     width: 5px;
@@ -75,8 +74,15 @@ const RankingSideBar = styled(Sider)`
     display: none;
   }
 
-  @media (min-width: 960px) and (max-width: 1000px) {
+  @media (min-width: 960px) and (max-width: 1400px) {
     width: 270px !important;
+    max-width: 270px !important;
+    min-width: 270px !important;
+  }
+  @media (min-width: 1400px) {
+    width: 330px !important;
+    max-width: 330px !important;
+    min-width: 330px !important;
   }
 
   .login-session {
@@ -113,8 +119,7 @@ const RankingSideBar = styled(Sider)`
       padding: 24px 16px 1rem 24px;
       &.your-shortcuts {
         margin-bottom: 1rem;
-        margin-top: 1rem;
-        padding: 1rem;
+        padding: 24px;
         .item-access {
           gap: 1rem !important;
           margin-bottom: 1rem;
@@ -127,10 +132,13 @@ const RankingSideBar = styled(Sider)`
       }
       .content {
         text-align: left;
+        display: flex;
+        flex-direction: column;
         h3 {
-          font-size: 18px;
-          text-align: left;
-          font-weight: 600;
+          font-weight: 400;
+          font-size: 22px;
+          line-height: 28px;
+          color: var(--text-color-on-background);
         }
       }
     }
@@ -236,27 +244,36 @@ const StyledTabs = styled(Tabs)`
     .ant-tabs-nav-wrap {
       justify-content: center;
       .ant-tabs-nav-list {
-        gap: 1rem;
+        gap: 2rem;
+        @media (max-width: 1400px) {
+          gap: 1rem;
+        }
       }
     }
     &::before {
       content: none;
     }
   }
+
+  .anticon {
+    color: rgba(30, 26, 29, 0.38);
+    margin: 0;
+    font-size: 32px;
+  }
+
   .ant-tabs-tab {
     background: none !important;
     border: 0 !important;
-    .ant-tabs-tab-btn {
-      color: #12130f;
+    padding: 8px 16px;
+    @media (max-width: 1400px) {
+      padding: 8px;
     }
     &.ant-tabs-tab-active {
       border-bottom: 2px solid !important;
+      .ant-tabs-tab-btn .anticon {
+        color: #12130f;
+      }
     }
-  }
-  .anticon {
-    color: #12130f;
-    margin: 0;
-    font-size: 22px;
   }
 `;
 
@@ -282,6 +299,15 @@ const SidebarRanking = () => {
   const { validateMnemonic } = Wallet;
 
   const [form] = Form.useForm();
+
+  const { data } = useInfinitePagesQuery(
+    {
+      first: 10
+    },
+    true
+  );
+
+  const randomShortCut = _.sampleSize(data, 5);
 
   useEffect(() => {
     if (selectedAccount) {
@@ -382,11 +408,20 @@ const SidebarRanking = () => {
           </StyledPopover>
         )}
       </div> */}
-      <div className="right-bar">
-        <div className="container-right-bar your-shortcuts">
-          <div className="content">
-            <h3>Your shortcuts</h3>
-            <ShortcutItemAccess icon="/images/default-avatar.jpg" text="Cameron Williamson" href={'/'} />
+      {router?.pathname !== '/wallet' && (
+        <div className="right-bar">
+          <div className="container-right-bar your-shortcuts">
+            <div className="content">
+              <h3>Your shortcuts</h3>
+              {randomShortCut &&
+                randomShortCut.map((item, index) => {
+                  return (
+                    <>
+                      <ShortcutItemAccess icon={item.avatar} text={item.name} href={`/page/${item.id}`} />
+                    </>
+                  );
+                })}
+              {/* <ShortcutItemAccess icon="/images/default-avatar.jpg" text="Cameron Williamson" href={'/'} />
             <ShortcutItemAccess icon="/images/default-avatar.jpg" text="Cameron Williamson" href={'/'} />
             <ShortcutItemAccess icon="/images/default-avatar.jpg" text="Cameron Williamson" href={'/'} />
             <ShortcutItemAccess icon="/images/default-avatar.jpg" text="Cameron Williamson" href={'/'} />
@@ -401,10 +436,11 @@ const SidebarRanking = () => {
             <div style={{ textAlign: 'end' }}>
               {!isCollapse && <DownOutlined onClick={() => setIsCollapse(!isCollapse)} />}
               {isCollapse && <UpOutlined onClick={() => setIsCollapse(!isCollapse)} />}
+            </div> */}
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {router?.pathname !== '/wallet' && (
         <div className="right-bar">
@@ -423,36 +459,19 @@ const SidebarRanking = () => {
               <Tabs.TabPane tab={<ShopOutlined />} key="page">
                 <div className="content">
                   <h3>Top Pages</h3>
-                  <InfoCardUser
-                    type="card"
-                    imgUrl={'/images/default-avatar.jpg'}
-                    name={'LotusiaShop'}
-                    title={'@lotusia'}
-                  ></InfoCardUser>
-                  <InfoCardUser
-                    type="card"
-                    imgUrl={'/images/default-avatar.jpg'}
-                    name={'GrammaLu'}
-                    title={'@grammalu'}
-                  ></InfoCardUser>
-                  <InfoCardUser
-                    type="card"
-                    imgUrl={'/images/default-avatar.jpg'}
-                    name={'Mabustore'}
-                    title={'@mabu'}
-                  ></InfoCardUser>
-                  <InfoCardUser
-                    type="card"
-                    imgUrl={'/images/default-avatar.jpg'}
-                    name={'Minminstore'}
-                    title={'@minmin'}
-                  ></InfoCardUser>
-                  <InfoCardUser
-                    type="card"
-                    imgUrl={'/images/default-avatar.jpg'}
-                    name={'Apple'}
-                    title={'@apple'}
-                  ></InfoCardUser>
+                  {randomShortCut &&
+                    randomShortCut.map((item, index) => {
+                      return (
+                        <>
+                          <InfoCardUser
+                            type="card"
+                            imgUrl={item.avatar}
+                            name={item.name}
+                            title={item.title}
+                          ></InfoCardUser>
+                        </>
+                      );
+                    })}
                 </div>
               </Tabs.TabPane>
               <Tabs.TabPane tab={<NumberOutlined />} key="tag">

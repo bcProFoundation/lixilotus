@@ -21,17 +21,19 @@ export const ItemAccess = ({
   text,
   href,
   active,
+  direction,
   onClickItem
 }: {
   icon: string;
   text: string;
   href?: string;
   active: boolean;
+  direction?: string;
   onClickItem?: () => void;
 }) => (
   <Link onClick={onClickItem} href={href}>
     <a>
-      <Space direction="vertical" className={'item-access'}>
+      <Space direction={direction === 'horizontal' ? 'horizontal' : 'vertical'} className={'item-access'}>
         <div className={classNames('icon-item', { 'active-item-access': active })}>
           <img src={icon} />
         </div>
@@ -120,9 +122,6 @@ const StyledLogo = styled.div`
 const ShortcutSideBar = styled(Sider)`
   height: 100vh;
   flex: none !important;
-  max-width: 250px !important;
-  min-width: 220px !important;
-  width: auto !important;
   overflow: auto;
   background: var(--bg-color-light-theme);
   &::-webkit-scrollbar {
@@ -144,6 +143,16 @@ const ShortcutSideBar = styled(Sider)`
   @media (max-width: 960px) {
     display: none;
   }
+  @media (min-width: 960px) and (max-width: 1400px) {
+    width: 220px !important;
+    min-width: 220px !important;
+    max-width: 220px !important;
+  }
+  @media (min-width: 1400px) {
+    width: 250px;
+    min-width: 250px !important;
+    max-width: 250px !important;
+  }
 `;
 
 const UserControl = styled.div`
@@ -164,7 +173,7 @@ const SidebarShortcut = () => {
   const [isCollapse, setIsCollapse] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const router = useRouter();
-  const selectedKey = router.pathname ?? '';
+  const currentPathName = router.pathname ?? '';
   const notifications = useAppSelector(getAllNotifications);
   let pastScan;
 
@@ -208,14 +217,14 @@ const SidebarShortcut = () => {
       <ItemAccess
         icon={'images/ico-lixi.svg'}
         text={intl.get('general.lixi')}
-        active={selectedKey === '/lixi'}
+        active={currentPathName === '/lixi'}
         key="lixi"
         href={'/lixi'}
       />
       <ItemAccess
         icon={'images/ico-setting.svg'}
         text={intl.get('general.settings')}
-        active={selectedKey === '/settings'}
+        active={currentPathName === '/settings'}
         key="settings"
         href={'/settings'}
       />
@@ -229,48 +238,48 @@ const SidebarShortcut = () => {
           <div className="wrapper">
             <StyledLogo>
               <Link href="/" passHref>
-                <img width="120px" src="/images/lixilotus-logo.svg" alt="lixilotus" />
+                <img width="137px" height="56px" src="/images/lixilotus-logo.svg" alt="lixilotus" />
               </Link>
             </StyledLogo>
             <ItemAccess
               icon={'/images/ico-home.svg'}
               text={intl.get('general.home')}
-              active={selectedKey === '/'}
+              active={currentPathName === '/'}
               key="home"
               href={'/'}
             />
             <ItemAccess
               icon={'/images/ico-page.svg'}
               text={intl.get('general.page')}
-              active={selectedKey.includes('/page')}
+              active={currentPathName.includes('/page')}
               key="page-feed"
               href={'/page/feed'}
             />
             <ItemAccess
               icon={'/images/ico-tokens.svg'}
               text={intl.get('general.tokens')}
-              active={selectedKey.includes('/token')}
+              active={currentPathName.includes('/token')}
               key="tokens-feed"
               href={'/token/listing'}
             />
             <ItemAccess
               icon={'/images/ico-account.svg'}
               text={intl.get('general.accounts')}
-              active={selectedKey === '/wallet'}
+              active={currentPathName === '/wallet'}
               key="wallet-lotus"
               href={'/wallet'}
             />
             <ItemAccess
               icon={'/images/ico-lixi.svg'}
               text={intl.get('general.lixi')}
-              active={selectedKey === '/lixi'}
+              active={currentPathName.includes('/lixi')}
               key="lixi"
               href={'/lixi'}
             />
             <ItemAccess
               icon={'/images/ico-setting.svg'}
               text={intl.get('general.settings')}
-              active={selectedKey === '/settings'}
+              active={currentPathName === '/settings'}
               key="settings"
               href={'/settings'}
             />
@@ -312,7 +321,7 @@ const SidebarShortcut = () => {
           <UserControl>
             <StyledPopover
               content={NotificationPopup(notifications, selectedAccount)}
-              placement="bottomRight"
+              placement="topLeft"
               getPopupContainer={trigger => trigger}
               trigger={notifications.length != 0 ? 'click' : ''}
               title="Notifications"

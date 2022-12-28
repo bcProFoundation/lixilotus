@@ -1,18 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import intl from 'react-intl-universal';
 import { Layout, Spin } from 'antd';
-import Link from 'next/link';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 
-import {
-  GiftOutlined,
-  HomeOutlined,
-  LoadingOutlined,
-  SettingOutlined,
-  UserOutlined,
-  WalletOutlined
-} from '@ant-design/icons';
-import { Footer, NavButton } from '@bcpros/lixi-components/components';
+import { LoadingOutlined } from '@ant-design/icons';
 
 import ModalManager from '../../Common/ModalManager';
 import { GlobalStyle } from '../MainLayout/GlobalStyle';
@@ -23,6 +13,7 @@ import { loadLocale } from '@store/settings/actions';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
 import { injectStore } from 'src/utils/axiosClient';
+import { Footer } from '@bcpros/lixi-components/components';
 
 const { Content, Sider, Header } = Layout;
 
@@ -142,38 +133,7 @@ const PostDetailLayout: React.FC = (props: PostDetailsLayoutProps) => {
                     </Layout>
                   </Layout>
                 </AppContainer>
-                <Footer>
-                  <Link href="/" passHref>
-                    <NavButton active={false}>
-                      <HomeOutlined />
-                      {intl.get('general.home')}
-                    </NavButton>
-                  </Link>
-                  <Link href="/admin/accounts" passHref>
-                    <NavButton active={false}>
-                      <UserOutlined />
-                      {intl.get('general.accounts')}
-                    </NavButton>
-                  </Link>
-                  <Link href="/lixies" passHref>
-                    <NavButton active={false}>
-                      <WalletOutlined />
-                      {intl.get('general.lixi')}
-                    </NavButton>
-                  </Link>
-                  <Link href="/admin/claim" passHref>
-                    <NavButton active={false}>
-                      <GiftOutlined />
-                      {intl.get('general.claim')}
-                    </NavButton>
-                  </Link>
-                  <Link href="/admin/settings" passHref>
-                    <NavButton active={false}>
-                      <SettingOutlined />
-                      {intl.get('general.settings')}
-                    </NavButton>
-                  </Link>
-                </Footer>
+                <Footer />
               </AppBody>
             </Layout>
           </LixiApp>

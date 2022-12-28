@@ -1,5 +1,4 @@
 import { Layout, Spin } from 'antd';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { getSelectedAccount } from 'src/store/account/selectors';
@@ -16,13 +15,13 @@ import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
 import Topbar from '@containers/Topbar';
 import { loadLocale } from '@store/settings/actions';
 import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
-import { Footer, Header } from 'antd/lib/layout/layout';
+import { Header } from 'antd/lib/layout/layout';
 import { getIsGlobalLoading } from 'src/store/loading/selectors';
 import { injectStore } from 'src/utils/axiosClient';
 import ModalManager from '../../Common/ModalManager';
 import { GlobalStyle } from './GlobalStyle';
 import { theme } from './theme';
-import { NavButton } from '@bcpros/lixi-components/components';
+import { Footer } from '@bcpros/lixi-components/components';
 const { Content } = Layout;
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
@@ -41,19 +40,6 @@ const AppBody = styled.div`
   width: 100%;
   min-height: 100vh;
   background-attachment: fixed;
-  .footer-mobile {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    padding: 0;
-    background: linear-gradient(0deg, rgba(158, 42, 156, 0.08), rgba(158, 42, 156, 0.08)), #fffbff;
-    display: flex;
-    justify-content: space-around;
-    display: none;
-    @media (max-width: 968px) {
-      display: flex;
-    }
-  }
 `;
 
 export const NavBarHeader = styled(Header)`
@@ -113,8 +99,14 @@ export const AppContainer = styled.div`
     @media (max-width: 960px) {
       grid-template-columns: 100%;
     }
-    @media (min-width: 960px) and (max-width: 1000px) {
-      grid-template-columns: 31% 69%;
+    @media (min-width: 960px) and (max-width: 1050px) {
+      grid-template-columns: 23% 77%;
+    }
+    @media (min-width: 1050px) and (max-width: 1400px) {
+      grid-template-columns: 20% 78%;
+    }
+    @media (min-width: 1400px) and (max-width: 1500px) {
+      grid-template-columns: 20% 80%;
     }
   }
   .main-section-layout {
@@ -136,13 +128,15 @@ export const AppContainer = styled.div`
     }
   }
   .container-content {
-    margin-left: 2rem;
     display: flex;
     flex-direction: row;
     gap: 2rem;
     justify-content: center;
     @media (max-width: 960px) {
-      margin-left: 0;
+      margin-left: 0 !important;
+    }
+    @media (max-width: 1400px) {
+      margin-left: 2rem;
     }
   }
 `;
@@ -252,7 +246,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                           className="main-section-layout"
                           style={{
                             paddingRight: disableSideBarRanking.some(item => selectedKey.includes(item)) ? '2rem' : '0',
-                            maxWidth: disableSideBarRanking.some(item => selectedKey.includes(item)) ? '100%' : ''
+                            maxWidth: disableSideBarRanking.some(item => selectedKey.includes(item)) ? '98%' : ''
                           }}
                         >
                           <Topbar ref={setRef} />
@@ -264,32 +258,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                       </div>
                     </Layout>
                   </AppContainer>
-                  <Footer className="footer-mobile">
-                    <Link href="/" passHref>
-                      <NavButton active={false}>
-                        <img width={40} height={40} src="/images/ico-home.svg" alt="" />
-                        {intl.get('general.home')}
-                      </NavButton>
-                    </Link>
-                    <Link href="/page/feed" passHref>
-                      <NavButton active={false}>
-                        <img width={40} height={40} src="/images/ico-page.svg" alt="" />
-                        {intl.get('general.page')}
-                      </NavButton>
-                    </Link>
-                    <Link href="/token/listing" passHref>
-                      <NavButton active={false}>
-                        <img width={40} height={40} src="/images/ico-tokens.svg" alt="" />
-                        {intl.get('general.tokens')}
-                      </NavButton>
-                    </Link>
-                    <Link href="/admin/settings" passHref>
-                      <NavButton active={false}>
-                        <img width={40} height={40} src="/images/ico-notifications.svg" alt="" />
-                        {intl.get('general.notifications')}
-                      </NavButton>
-                    </Link>
-                  </Footer>
+                  <Footer />
                 </>
               </AppBody>
             </Layout>
