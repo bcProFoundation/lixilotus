@@ -88,10 +88,7 @@ export const AppContainer = styled.div`
     width: 100%;
     -webkit-box-shadow: none;
     -moz-box-shadow: none;
-    padding: 0 16px;
-  }
-  @media (max-width: 420px) {
-    padding: 0 8px;
+    padding: 0 4px;
   }
   .ant-layout.ant-layout-has-sider {
     display: flex;
