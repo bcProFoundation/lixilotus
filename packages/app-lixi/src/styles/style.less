@@ -587,3 +587,41 @@ code {
     }
   }
 }
+
+// custom notifications popover
+.popover-notifications {
+  width: 350px;
+
+  .ant-popover-title {
+    font-weight: bold;
+    color: #fff;
+    border: none;
+    background: var(--color-primary);
+    border-radius: 5px 5px 0px 0px;
+  }
+
+  @media (max-width: 576px) {
+    .ant-popover-arrow {
+      right: 65px;
+    }
+  }
+
+  .ant-popover-arrow > .ant-popover-arrow-content::before {
+    background: var(--color-primary);
+  }
+
+  .ant-popover-inner {
+    background: #fff;
+    border-radius: 0px 0px 5px 5px;
+  }
+
+  .ant-popover-inner-content {
+    padding: 10px !important;
+    height: 300px !important;
+    overflow: auto;
+
+    #delete {
+      border-radius: 8px;
+    }
+  }
+}

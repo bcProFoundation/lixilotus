@@ -11,7 +11,7 @@ import { Logged } from './SideBarRanking';
 import axiosClient from '@utils/axiosClient';
 import intl from 'react-intl-universal';
 import { getAllNotifications } from '@store/notification/selectors';
-import NotificationPopup, { StyledPopover } from '@components/NotificationPopup';
+import NotificationPopup from '@components/NotificationPopup';
 import { fetchNotifications } from '@store/notification/actions';
 
 const { Sider } = Layout;
@@ -63,19 +63,11 @@ export const ItemAccessBarcode = ({
 );
 
 export const CointainerAccess = styled.div`
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   height: 100vh;
   background: linear-gradient(0deg, rgba(158, 42, 156, 0.08), rgba(158, 42, 156, 0.08)), #fffbff;
-  .ant-layout-sider-children {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    h3 {
-      align-self: center;
-      font-weight: 600;
-    }
-  }
   .item-access {
     margin-bottom: 2rem;
     cursor: pointer;
@@ -99,9 +91,9 @@ export const CointainerAccess = styled.div`
     }
   }
   .wrapper {
-    position: absolute;
+    // position: absolute;
     padding: 0;
-    top: 0;
+    // top: 0;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -157,8 +149,6 @@ const UserControl = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: absolute;
-  bottom: 0;
   width: 100%;
   margin-bottom: 2rem;
 `;
@@ -317,22 +307,22 @@ const SidebarShortcut = () => {
             )} */}
           </div>
           <UserControl>
-            <StyledPopover
+            <Popover
+              overlayClassName="popover-notifications"
+              placement="topRight"
+              title={'Notifications'}
               content={NotificationPopup(notifications, selectedAccount)}
-              placement="topLeft"
-              getPopupContainer={trigger => trigger}
               trigger={notifications.length != 0 ? 'click' : ''}
-              title="Notifications"
             >
               <Badge
                 count={notifications.length}
                 overflowCount={9}
-                offset={[notifications.length < 10 ? 0 : 5, 25]}
+                offset={[notifications.length < 10 ? 0 : 5, 8]}
                 color="var(--color-primary)"
               >
                 <img style={{ marginBottom: '2rem' }} src="/images/ico-notifications.svg" alt="" />
               </Badge>
-            </StyledPopover>
+            </Popover>
             <img width={56} height={56} src="/images/anonymous-ava.svg" alt="" />
           </UserControl>
         </CointainerAccess>
