@@ -70,12 +70,12 @@ const CommentListItem = ({ index, item, post }: CommentListItemProps) => {
           amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
         })
       };
-      // if (post?.pageAccount?.address) {
-      //   tipToAddresses.push({
-      //     address: post?.pageAccount?.address, 
-      //     amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
-      //   })
-      // };
+      if (post?.pageAccount?.address) {
+        tipToAddresses.push({
+          address: post?.pageAccount?.address, 
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
+        })
+      };
 
       const txHex = await burnXpi(
         XPI,
