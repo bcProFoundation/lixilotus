@@ -6,10 +6,12 @@ import { WalletContext } from '@context/walletProvider';
 import useXPI from '@hooks/useXPI';
 import { burnForUpDownVote } from '@store/burn/actions';
 import { CommentQuery } from '@store/comment/comments.generated';
+import { PostsQuery } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
-import { formatBalance } from '@utils/cashMethods';
+import { formatBalance, fromXpiToSatoshis } from '@utils/cashMethods';
 import { Avatar, Comment, Space, Tooltip } from 'antd';
+import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import moment from 'moment';
 import { useRouter } from 'next/router';
@@ -20,13 +22,15 @@ import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled from 'styled-components';
 
 type CommentItem = CommentQuery['comment'];
+type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 
 type CommentListItemProps = {
   index: number;
   item: CommentItem;
+  post: PostItem;
 };
 
-const CommentListItem = ({ index, item }: CommentListItemProps) => {
+const CommentListItem = ({ index, item, post }: CommentListItemProps) => {
   const dispatch = useAppDispatch();
 
   const history = useRouter();
@@ -58,7 +62,20 @@ const CommentListItem = ({ index, item }: CommentListItemProps) => {
       const burnedBy = hash160;
       const burnForId = comment.id;
       const burnValue = '1';
-      const tipToAddress = comment?.commentAccount?.address ?? undefined;
+      // const tipToAddress = comment?.commentAccount?.address ?? undefined;
+      const tipToAddresses:{address: string, amount: string}[] = [];
+      if (comment?.commentAccount?.address) {
+        tipToAddresses.push({
+          address: comment?.commentAccount?.address, 
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
+        })
+      };
+      // if (post?.pageAccount?.address) {
+      //   tipToAddresses.push({
+      //     address: post?.pageAccount?.address, 
+      //     amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
+      //   })
+      // };
 
       const txHex = await burnXpi(
         XPI,
@@ -70,7 +87,7 @@ const CommentListItem = ({ index, item }: CommentListItemProps) => {
         burnedBy,
         burnForId,
         burnValue,
-        tipToAddress
+        tipToAddresses
       );
 
       const burnCommand: BurnCommand = {
@@ -80,7 +97,7 @@ const CommentListItem = ({ index, item }: CommentListItemProps) => {
         burnedBy,
         burnForId,
         burnValue,
-        tipToAddress: xAddress,
+        tipToAddresses: tipToAddresses,
         queryParams: {
           id: comment.commentToId,
           orderBy: {

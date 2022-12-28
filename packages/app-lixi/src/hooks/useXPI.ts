@@ -199,7 +199,7 @@ export default function useXPI() {
     burnedBy: string | Buffer,
     burnForId: string,
     burnAmount: string,
-    tipToAddress?: string
+    tipToAddresses?: {address: string, amount: string}[]
   ): Promise<string> => {
     let txBuilder = new XPI.TransactionBuilder();
 
@@ -230,7 +230,7 @@ export default function useXPI() {
       changeAddress,
       txInputObj.txFee,
       txBuilder,
-      tipToAddress
+      tipToAddresses
     );
     txBuilder = txOutputObj; // update the local txBuilder with the generated tx outputs
 
