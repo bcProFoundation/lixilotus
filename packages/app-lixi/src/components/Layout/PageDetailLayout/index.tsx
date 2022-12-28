@@ -1,9 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Layout, Spin } from 'antd';
-import Link from 'next/link';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 
-import { LeftOutlined, LoadingOutlined } from '@ant-design/icons';
+import { LoadingOutlined } from '@ant-design/icons';
 
 import ModalManager from '../../Common/ModalManager';
 import { GlobalStyle } from '../MainLayout/GlobalStyle';
@@ -17,7 +16,7 @@ import { injectStore } from 'src/utils/axiosClient';
 import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
 import { useRouter } from 'next/router';
 import { navBarHeaderList } from '@components/Common/navBarHeaderList';
-import intl from 'react-intl-universal';
+import { Footer } from '@bcpros/lixi-components/components';
 
 const { Content, Sider, Header } = Layout;
 
@@ -176,6 +175,7 @@ const PageDetailLayout: React.FC = (props: PageDetailsLayoutProps) => {
                       </Layout>
                     </Layout>
                   </AppContainer>
+                  <Footer />
                 </>
               </AppBody>
             </Layout>

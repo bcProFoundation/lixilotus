@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useInfinitePagesQuery } from '@store/page/useInfinitePagesQuery';
-import { Button } from 'antd';
+import { Button, Skeleton } from 'antd';
 import SearchBox from '@components/Common/SearchBox';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getSelectedAccountId } from '@store/account/selectors';
 import Link from 'next/link';
 import { push } from 'connected-next-router';
+import { Virtuoso } from 'react-virtuoso';
 
 const StyledPageFeed = styled.div`
   padding-bottom: 4rem;
@@ -21,6 +22,22 @@ const StyledPageFeed = styled.div`
     align-items: center;
     justify-content: center;
     padding: 0;
+  }
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+  &.show-scroll {
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-image: linear-gradient(180deg, #d0368a 0%, #708ad4 99%) !important;
+      box-shadow: inset 2px 2px 5px 0 rgba(#fff, 0.5);
+      border-radius: 100px;
+    }
   }
 `;
 
@@ -80,14 +97,7 @@ const YourPageContainer = styled.div`
   margin-top: 1rem;
 `;
 
-const ListCard = styled.div`
-  display: grid;
-  grid-template-columns: auto auto auto auto;
-  grid-gap: 10px;
-  @media (max-width: 768px) {
-    grid-template-columns: auto auto;
-  }
-`;
+const ListCard = styled.div``;
 
 const StyledCardPage = styled.div`
   max-width: 290px;
@@ -156,6 +166,15 @@ const StyledCardPage = styled.div`
   }
 `;
 
+const ListContainer = styled.div`
+  display: grid !important;
+  grid-template-columns: auto auto auto auto !important;
+  grid-gap: 10px !important;
+  @media (max-width: 768px) {
+    grid-template-columns: auto auto !important;
+  }
+`;
+
 type CardPageItem = {
   id?: any;
   name?: string;
@@ -192,6 +211,7 @@ const PageHome = () => {
   const [selectedPage, setSelectedPage] = useState<any>();
   const [listsPage, setListsPage] = useState<any>([]);
   const dispatch = useAppDispatch();
+  const refPagesListing = useRef<HTMLDivElement | null>(null);
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePagesQuery(
     {
@@ -227,9 +247,38 @@ const PageHome = () => {
     refetch();
   }, []);
 
+  const loadMoreItems = () => {
+    if (hasNext && !isFetching) {
+      fetchNext();
+    } else if (hasNext) {
+      fetchNext();
+    }
+  };
+
+  const triggerSrollbar = e => {
+    const virtuosoNode = refPagesListing.current || null;
+    virtuosoNode.classList.add('show-scroll');
+    setTimeout(() => {
+      virtuosoNode.classList.remove('show-scroll');
+    }, 700);
+  };
+
+  const Footer = () => {
+    return (
+      <div
+        style={{
+          padding: '1rem 2rem 2rem 2rem',
+          textAlign: 'center'
+        }}
+      >
+        {isFetchingNext ? <Skeleton avatar active /> : "It's so empty here..."}
+      </div>
+    );
+  };
+
   return (
     <>
-      <StyledPageFeed>
+      <StyledPageFeed ref={refPagesListing} onScroll={e => triggerSrollbar(e)}>
         {listsPage && listsPage.length > 0 && (
           <ToolboxBar>
             <SearchBox></SearchBox>
@@ -267,12 +316,20 @@ const PageHome = () => {
         <PagesContainer>
           <h2>Discover</h2>
           <ListCard>
-            {listsPage &&
-              listsPage.length > 0 &&
-              listsPage.map((item: any, index: number) => {
-                if (index < 9)
+            {listsPage && listsPage.length > 0 && (
+              <Virtuoso
+                id="list-pages1"
+                style={{ height: '100vh', paddingBottom: '2rem' }}
+                data={data}
+                endReached={loadMoreItems}
+                useWindowScroll={true}
+                overscan={15000}
+                itemContent={(index, item) => {
                   return <CardPageItem item={mapPageItem(item)} onClickItem={id => routerPageDetail(id)} />;
-              })}
+                }}
+                components={{ Footer, List: ListContainer }}
+              />
+            )}
           </ListCard>
         </PagesContainer>
       </StyledPageFeed>

@@ -24,7 +24,7 @@ import { PostsQuery } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
 import { formatBalance, fromXpiToSatoshis } from '@utils/cashMethods';
-import { Avatar, Button, Input, message, Popover, Space, Tooltip } from 'antd';
+import { Avatar, Button, Image, Input, message, Popover, Space, Tooltip } from 'antd';
 import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import moment from 'moment';
@@ -284,7 +284,6 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       box-sizing: border-box;
       box-shadow: 0 3px 12px rgb(0 0 0 / 4%);
       background: var(--bg-color-light-theme);
-      height: fit-content;
       display: grid;
       grid-template-columns: auto auto;
       grid-template-rows: auto auto;
@@ -293,7 +292,6 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       transition: 0.5s ease;
       img {
         margin-bottom: 1rem;
-        height: fit-content;
         width: 80%;
       }
     }
@@ -440,7 +438,9 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
                 const imageUrl = URL_SERVER_IMAGE + '/' + item.upload.bucket + '/' + item.upload.sha;
                 return (
                   <>
-                    <img src={imageUrl} />
+                    <Image.PreviewGroup>
+                      <Image width={200} src={imageUrl} />
+                    </Image.PreviewGroup>
                   </>
                 );
               })}

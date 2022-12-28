@@ -8,6 +8,7 @@ import { Header } from 'antd/lib/layout/layout';
 import styled from 'styled-components';
 import { getSelectedAccount } from '@store/account/selectors';
 import { fetchNotifications, startChannel, stopChannel } from '@store/notification/actions';
+import { useRouter } from 'next/router';
 
 export type TopbarProps = {
   className?: string;
@@ -15,11 +16,13 @@ export type TopbarProps = {
 
 const PathDirection = styled.div`
   display: flex;
-  gap: 20px;
+  gap: 1rem;
   align-items: center;
   h3 {
+    text-transform: capitalize;
+
     font-weight: 400;
-    font-size: 32px;
+    font-size: 28px;
     line-height: 40px;
     color: #1e1a1d;
     margin: 0;
@@ -31,6 +34,9 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   const dispatch = useAppDispatch();
   const navCollapsed = useAppSelector(getNavCollapsed);
   const selectedAccount = useAppSelector(getSelectedAccount);
+  const router = useRouter();
+  const currentPathName = router.pathname ?? '';
+  const pathDirection = currentPathName.split('/', 2);
 
   useEffect(() => {
     if (selectedAccount) {
@@ -57,8 +63,9 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   return (
     <Header ref={ref} className={className}>
       <PathDirection>
-        <MenuOutlined className="collapse-menu" style={{ fontSize: '32px' }} onClick={handleMenuClick} />
-        <h3>Home</h3>
+        <img src="/images/ico-menu.svg" alt="" onClick={handleMenuClick} />
+        {currentPathName == '/' && <img width="98px" src="/images/lixilotus-logo.svg" alt="" />}
+        {pathDirection[1] != '' && <h3>{pathDirection[1]}</h3>}
       </PathDirection>
       <Space direction="horizontal" size={15}>
         <Button type="text" icon={<SearchOutlined style={{ fontSize: '18px', color: '4E444B' }} />}></Button>

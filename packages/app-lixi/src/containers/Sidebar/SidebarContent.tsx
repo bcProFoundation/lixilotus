@@ -1,119 +1,124 @@
 import styled from 'styled-components';
-import SidebarLogo from './SidebarLogo';
+import { ItemAccess } from './SideBarShortcut';
+import intl from 'react-intl-universal';
+import SidebarUserLogin from './SidebarUserLogin';
+import { ShortcutItemAccess } from './SideBarRanking';
+import { useState } from 'react';
+import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import { useInfinitePagesQuery } from '@store/page/useInfinitePagesQuery';
+import _ from 'lodash';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getNavCollapsed } from '@store/settings/selectors';
 import { toggleCollapsedSideNav } from '@store/settings/actions';
-import {
-  EditOutlined,
-  GiftOutlined,
-  HomeOutlined,
-  PlusCircleOutlined,
-  SendOutlined,
-  SettingOutlined,
-  ShopOutlined,
-  WalletOutlined,
-  BarcodeOutlined,
-  TagOutlined
-} from '@ant-design/icons';
-import { CointainerAccess, ItemAccess, ItemAccessBarcode } from './SideBarShortcut';
-import { useRouter } from 'next/router';
-import { openModal } from '@store/modal/actions';
-import { getSelectedAccount } from '@store/account/selectors';
-import ScanBarcode from '@bcpros/lixi-components/components/Common/ScanBarcode';
-import axiosClient from '@utils/axiosClient';
-import { Button, message, Space } from 'antd';
-import intl from 'react-intl-universal';
-import { CreateLixiFormModal } from '@components/Lixi/CreateLixiFormModal';
 
 type SidebarContentProps = {
   className?: string;
-  sidebarCollapsed: boolean;
-  setSidebarCollapsed: Function;
+  sidebarCollapsed?: boolean;
+  setSidebarCollapsed?: Function;
 };
 
-const StyledCointainerAccess = styled(CointainerAccess)`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+const ContainerSideBarContent = styled.div`
+  height: 100%;
+  text-align: left;
+  margin: 1rem 0;
 `;
 
-const SidebarContent = ({ className, sidebarCollapsed, setSidebarCollapsed }: SidebarContentProps) => {
+const StyledCointainerAccess = styled.div`
+  display: flex;
+  flex-direction: column;
+  .item-access {
+    gap: 1rem !important;
+    padding: 1rem 0;
+    .text-item {
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 24px;
+      letter-spacing: 0.5px;
+      color: #1e1a1d;
+    }
+  }
+`;
+
+const StyledCointainerShortcut = styled.div`
+  padding: 1rem 0;
+  margin: 1rem 0;
+  border-top: 1px solid rgba(128, 116, 124, 0.12);
+  border-bottom: 1px solid rgba(128, 116, 124, 0.12);
+  display: flex;
+  flex-direction: column;
+  h3 {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.15px;
+    color: var(--text-color-on-background);
+    margin-bottom: 1rem;
+  }
+  .item-access {
+    gap: 1rem !important;
+    padding-bottom: 1rem;
+  }
+`;
+
+const SidebarContent = ({ className }: SidebarContentProps) => {
   const dispatch = useAppDispatch();
+  const [isCollapse, setIsCollapse] = useState(false);
   const navCollapsed = useAppSelector(getNavCollapsed);
-  const router = useRouter();
-  const selectedKey = router.pathname ?? '';
-  const selectedAccount = useAppSelector(getSelectedAccount);
-  let pastScan;
+  const { data } = useInfinitePagesQuery(
+    {
+      first: 10
+    },
+    true
+  );
+
+  const randomShortCut = _.sampleSize(data, 5);
 
   const handleOnClick = () => {
     dispatch(toggleCollapsedSideNav(!navCollapsed));
   };
 
-  const onScan = async (result: string) => {
-    if (pastScan !== result) {
-      pastScan = result;
-
-      await axiosClient
-        .post('api/lixies/check-valid', { lixiBarcode: result })
-        .then(res => {
-          message.success(res.data);
-        })
-        .catch(err => {
-          const { response } = err;
-          message.error(response.data ? response.data.message : intl.get('lixi.unableGetLixi'));
-        });
-    }
-  };
-
   return (
     <>
-      <SidebarLogo sidebarCollapsed={sidebarCollapsed} setSidebarCollapsed={setSidebarCollapsed} />
-      <div className="lixi-sidebar-content">
-        <StyledCointainerAccess className={className} onClick={handleOnClick}>
-          <ItemAccess
-            icon={'/images/ico-home.svg'}
-            text={intl.get('general.home')}
-            active={selectedKey === '/'}
-            key="home"
-            href={'/'}
-          />
-          <ItemAccess
-            icon={'/images/ico-page.svg'}
-            text={intl.get('general.page')}
-            active={selectedKey.includes('/page')}
-            key="page-feed"
-            href={'/page/feed'}
-          />
-          <ItemAccess
-            icon={'/images/ico-tokens.svg'}
-            text={intl.get('general.tokens')}
-            active={selectedKey.includes('/token')}
-            key="tokens-feed"
-            href={'/token/listing'}
-          />
+      <ContainerSideBarContent onClick={handleOnClick}>
+        <SidebarUserLogin />
+        <StyledCointainerShortcut>
+          <h3>Your shortcuts</h3>
+          {randomShortCut &&
+            randomShortCut.map((item, index) => {
+              return (
+                <>
+                  <ShortcutItemAccess icon={item.avatar} text={item.name} href={`/page/${item.id}`} />
+                </>
+              );
+            })}
+        </StyledCointainerShortcut>
+        <StyledCointainerAccess>
           <ItemAccess
             icon={'/images/ico-account.svg'}
             text={intl.get('general.accounts')}
-            active={selectedKey === '/wallet'}
+            active={false}
             key="wallet-lotus"
             href={'/wallet'}
+            direction={'horizontal'}
           />
           <ItemAccess
             icon={'/images/ico-lixi.svg'}
             text={intl.get('general.lixi')}
-            active={selectedKey === '/lixi'}
+            active={false}
             key="lixi"
             href={'/lixi'}
+            direction={'horizontal'}
           />
           <ItemAccess
             icon={'/images/ico-setting.svg'}
             text={intl.get('general.settings')}
-            active={selectedKey === '/settings'}
+            active={false}
             key="settings"
             href={'/settings'}
+            direction={'horizontal'}
           />
         </StyledCointainerAccess>
-      </div>
+      </ContainerSideBarContent>
     </>
   );
 };
