@@ -199,7 +199,7 @@ export default function useXPI() {
     burnedBy: string | Buffer,
     burnForId: string,
     burnAmount: string,
-    tipToAddresses?: {address: string, amount: string}[]
+    tipToAddresses?: { address: string; amount: string }[]
   ): Promise<string> => {
     let txBuilder = new XPI.TransactionBuilder();
 

@@ -100,7 +100,7 @@ export const generateBurnTxOutput = (
   changeAddress: string,
   txFee: number,
   txBuilder: any,
-  tipToAddresseses?: {address: string, amount: string}[]
+  tipToAddresseses?: { address: string; amount: string }[]
 ) => {
   if (!XPI || !satoshisToBurn || !txFee || !txBuilder) {
     throw new Error('Invalid tx input parameters');
@@ -115,11 +115,14 @@ export const generateBurnTxOutput = (
       if (item.address === changeAddress) {
         remainder = new BigNumber(totalInputUtxoValue).minus(satoshisToBurn).minus(txFee);
       } else if (item.address) {
-        remainder = new BigNumber(totalInputUtxoValue).minus(satoshisToBurn).minus(satoshisToTip.multipliedBy(tipToAddresseses.length)).minus(txFee*tipToAddresseses.length);
+        remainder = new BigNumber(totalInputUtxoValue)
+          .minus(satoshisToBurn)
+          .minus(satoshisToTip.multipliedBy(tipToAddresseses.length))
+          .minus(txFee * tipToAddresseses.length);
       } else {
         remainder = new BigNumber(totalInputUtxoValue).minus(satoshisToBurn).minus(txFee);
       }
-    })      
+    });
 
     if (remainder.lt(0)) {
       throw new Error(`Insufficient funds`);
@@ -138,7 +141,7 @@ export const generateBurnTxOutput = (
       if (item.address && item.address !== changeAddress) {
         txBuilder.addOutput(item.address, parseInt(satoshisToTip.toString()));
       }
-    })
+    });
 
     // if a remainder exists, return to change address as the final output
     if (remainder.gte(new BigNumber(currency.dustSats))) {

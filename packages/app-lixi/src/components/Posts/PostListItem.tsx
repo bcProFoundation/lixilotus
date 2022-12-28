@@ -298,19 +298,19 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
       const burnedBy = hash160;
       const burnForId = post.id;
       const burnValue = '1';
-      const tipToAddresses:{address: string, amount: string}[] = [];
-      if (post?.postAccount?.address)  {
+      const tipToAddresses: { address: string; amount: string }[] = [];
+      if (post?.postAccount?.address) {
         tipToAddresses.push({
-          address: post?.postAccount?.address, 
+          address: post?.postAccount?.address,
           amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
-        })
-      };
-      if (post?.pageAccount?.address)  {
+        });
+      }
+      if (post?.pageAccount?.address) {
         tipToAddresses.push({
-          address: post?.pageAccount?.address, 
+          address: post?.pageAccount?.address,
           amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
-        })
-      };
+        });
+      }
       let tag: string;
 
       if (_.isNil(post.page) && _.isNil(post.token)) {
