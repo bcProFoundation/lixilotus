@@ -81,24 +81,8 @@ export const AppContainer = styled.div`
   height: 100vh;
   overflow: hidden;
   background: ${props => props.theme.wallet.background};
-  @media (max-width: 420px) {
-    padding: 0 8px;
-  }
-  @media (max-width: 768px) {
-    width: 100%;
-    -webkit-box-shadow: none;
-    -moz-box-shadow: none;
-    box-shadow: none;
-    padding: 0 8px;
-  }
-  @media (min-width: 768px) {
-    width: 100%;
-    background: #fffbff;
-    padding: 0;
-    .content-layout {
-      // margin-top: 80px;
-      z-index: 1;
-    }
+  @media (max-width: 960px) {
+    padding: 0 4px;
   }
   .ant-layout.ant-layout-has-sider {
     gap: 4rem;

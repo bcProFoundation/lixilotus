@@ -426,7 +426,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
                 return (
                   <>
                     <Image.PreviewGroup>
-                      <Image width={200} src={imageUrl} />
+                      <Image src={imageUrl} />
                     </Image.PreviewGroup>
                   </>
                 );

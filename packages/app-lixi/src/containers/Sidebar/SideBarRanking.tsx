@@ -35,7 +35,7 @@ export const ShortcutItemAccess = ({
   <Link onClick={onClickItem} href={href}>
     <a>
       <Space className={'item-access'}>
-        <img style={{ borderRadius: '50%' }} width={48} height={48} src={icon} alt="" />
+        <img style={{ borderRadius: '50%' }} width={48} height={48} src={icon ? icon : '/images/xpi.svg'} alt="" />
         <p style={{ margin: '0', color: '#000' }}>{text}</p>
       </Space>
     </a>

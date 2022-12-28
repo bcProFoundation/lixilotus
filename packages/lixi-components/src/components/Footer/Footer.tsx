@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 
 const StyledFooter = styled.div`
   border-top: 1px solid ${props => props.theme.wallet.borders.color};
-  position: absolute;
+  position: fixed;
   bottom: 0;
   width: 100%;
   padding: 0;
