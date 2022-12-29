@@ -152,6 +152,7 @@ const AWRow = styled.div`
 `;
 
 export const WrapperPage = styled.div`
+  margin-top: 1rem;
   padding: 20px 30px;
   background: #fff;
   border-radius: 20px;
