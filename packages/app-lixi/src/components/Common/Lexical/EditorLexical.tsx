@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
 import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
@@ -22,6 +22,9 @@ import { PictureOutlined } from '@ant-design/icons';
 import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
 import EmojiToolbarButtonsLexical from './plugins/EmojiToolbarButtonsLexical/EmojiToolbarButtonsLexical';
 import styled from 'styled-components';
+import LinkPlugin from './plugins/LinkPlugin';
+import ButtonLinkPlugin from './plugins/ButtonLinkPlugin';
+import FloatingLinkEditorPlugin from './plugins/FloatingLinkEditorPlugin';
 
 const StyledEditorLexical = styled.div`
   display: flex;
@@ -81,6 +84,14 @@ const StyledEditorLexical = styled.div`
 `;
 
 const EditorLexical = props => {
+  const [floatingAnchorElem, setFloatingAnchorElem] = useState<HTMLDivElement | null>(null);
+
+  const onRef = (_floatingAnchorElem: HTMLDivElement) => {
+    if (_floatingAnchorElem !== null) {
+      setFloatingAnchorElem(_floatingAnchorElem);
+    }
+  };
+
   const Placeholder = () => {
     return <div className="EditorLexical_placeholder">What do you think?...</div>;
   };
@@ -90,7 +101,11 @@ const EditorLexical = props => {
         <LexicalComposer initialConfig={editorConfig}>
           <div className="EditorLexical_container">
             <PlainTextPlugin
-              contentEditable={<ContentEditable className="EditorLexical_root" />}
+              contentEditable={
+                <div className="editor" ref={onRef}>
+                  <ContentEditable className="EditorLexical_root" />
+                </div>
+              }
               placeholder={Placeholder}
               ErrorBoundary={LexicalErrorBoundary}
             />
@@ -104,13 +119,18 @@ const EditorLexical = props => {
               }}
             /> */}
             {/* <TreeViewPlugin /> */}
-            {/* <TwitterPlugin /> */}
             <EmojisPlugin />
             <HistoryPlugin />
             <AutoLinkPlugin />
+            <LinkPlugin />
             <HashtagPlugin />
             <AutoEmbedPlugin />
             <MyCustomAutoFocusPlugin />
+            {floatingAnchorElem && (
+              <>
+                <FloatingLinkEditorPlugin anchorElem={floatingAnchorElem} />
+              </>
+            )}
             <div className="EditorLexical_action">
               <EmojiToolbarButtonsLexical />
               <MultiUploader
@@ -121,6 +141,8 @@ const EditorLexical = props => {
                 buttonType="text"
                 showUploadList={false}
               />
+              <ButtonLinkPlugin />
+              <TwitterPlugin />
             </div>
           </div>
           <CustomButtonSubmitPlugin onSubmit={value => props.onSubmit(value)} />

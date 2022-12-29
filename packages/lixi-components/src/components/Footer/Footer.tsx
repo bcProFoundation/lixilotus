@@ -57,7 +57,11 @@ const Footer: React.FC = () => {
         </Link>
         <Link href="/settings" passHref>
           <NavButton active={currentPathName == '/settings'}>
-            <img className="ico-img" src="/images/ico-setting.svg" alt="" />
+            <img
+              className="ico-img"
+              src={currentPathName == '/settings' ? '/images/ico-setting-active.svg' : '/images/ico-setting.svg'}
+              alt=""
+            />
             {intl.get('general.settings')}
           </NavButton>
         </Link>

@@ -19,17 +19,19 @@ const CustomButtonSubmitPlugin = props => {
 
   const handleClick = () => {
     editor.update(() => {
-      //   const editorState = editor.getEditorState();
-      //   const jsonString = JSON.stringify(editorState);
-      //   console.log('jsonString', jsonString);
+      // const editorState = editor.getEditorState();
+      // const jsonString = JSON.stringify(editorState);
+      // console.log('jsonString', jsonString);
 
       const stringifiedEditorState = JSON.stringify(editor.getEditorState().toJSON());
       const parsedEditorState = editor.parseEditorState(stringifiedEditorState);
 
       const editorStateTextString = parsedEditorState.read(() => $getRoot().getTextContent());
 
-      const htmlString = $generateHtmlFromNodes(editor, null);
-      props.onSubmit({ htmlContent: htmlString, pureContent: editorStateTextString });
+      // const htmlString = $generateHtmlFromNodes(editor, null);
+
+      const rootElementString = editor.getRootElement().innerHTML;
+      props.onSubmit({ htmlContent: rootElementString, pureContent: editorStateTextString });
     });
   };
 
