@@ -11,7 +11,7 @@ import { Logged } from './SideBarRanking';
 import axiosClient from '@utils/axiosClient';
 import intl from 'react-intl-universal';
 import { getAllNotifications } from '@store/notification/selectors';
-import NotificationPopup, { StyledPopover } from '@components/NotificationPopup';
+import NotificationPopup from '@components/NotificationPopup';
 import { fetchNotifications } from '@store/notification/actions';
 
 const { Sider } = Layout;
@@ -21,17 +21,19 @@ export const ItemAccess = ({
   text,
   href,
   active,
+  direction,
   onClickItem
 }: {
   icon: string;
   text: string;
   href?: string;
   active: boolean;
+  direction?: string;
   onClickItem?: () => void;
 }) => (
   <Link onClick={onClickItem} href={href}>
     <a>
-      <Space direction="vertical" className={'item-access'}>
+      <Space direction={direction === 'horizontal' ? 'horizontal' : 'vertical'} className={'item-access'}>
         <div className={classNames('icon-item', { 'active-item-access': active })}>
           <img src={icon} />
         </div>
@@ -61,19 +63,11 @@ export const ItemAccessBarcode = ({
 );
 
 export const CointainerAccess = styled.div`
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   height: 100vh;
   background: linear-gradient(0deg, rgba(158, 42, 156, 0.08), rgba(158, 42, 156, 0.08)), #fffbff;
-  .ant-layout-sider-children {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    h3 {
-      align-self: center;
-      font-weight: 600;
-    }
-  }
   .item-access {
     margin-bottom: 2rem;
     cursor: pointer;
@@ -97,9 +91,9 @@ export const CointainerAccess = styled.div`
     }
   }
   .wrapper {
-    position: absolute;
+    // position: absolute;
     padding: 0;
-    top: 0;
+    // top: 0;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -120,9 +114,6 @@ const StyledLogo = styled.div`
 const ShortcutSideBar = styled(Sider)`
   height: 100vh;
   flex: none !important;
-  max-width: 250px !important;
-  min-width: 220px !important;
-  width: auto !important;
   overflow: auto;
   background: var(--bg-color-light-theme);
   &::-webkit-scrollbar {
@@ -144,14 +135,20 @@ const ShortcutSideBar = styled(Sider)`
   @media (max-width: 960px) {
     display: none;
   }
+  @media (min-width: 960px) and (max-width: 1400px) {
+    min-width: 220px !important;
+    max-width: 220px !important;
+  }
+  @media (min-width: 1400px) {
+    min-width: 250px !important;
+    max-width: 250px !important;
+  }
 `;
 
 const UserControl = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: absolute;
-  bottom: 0;
   width: 100%;
   margin-bottom: 2rem;
 `;
@@ -164,7 +161,7 @@ const SidebarShortcut = () => {
   const [isCollapse, setIsCollapse] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const router = useRouter();
-  const selectedKey = router.pathname ?? '';
+  const currentPathName = router.pathname ?? '';
   const notifications = useAppSelector(getAllNotifications);
   let pastScan;
 
@@ -208,14 +205,14 @@ const SidebarShortcut = () => {
       <ItemAccess
         icon={'images/ico-lixi.svg'}
         text={intl.get('general.lixi')}
-        active={selectedKey === '/lixi'}
+        active={currentPathName === '/lixi'}
         key="lixi"
         href={'/lixi'}
       />
       <ItemAccess
         icon={'images/ico-setting.svg'}
         text={intl.get('general.settings')}
-        active={selectedKey === '/settings'}
+        active={currentPathName === '/settings'}
         key="settings"
         href={'/settings'}
       />
@@ -229,48 +226,48 @@ const SidebarShortcut = () => {
           <div className="wrapper">
             <StyledLogo>
               <Link href="/" passHref>
-                <img width="120px" src="/images/lixilotus-logo.svg" alt="lixilotus" />
+                <img width="137px" height="56px" src="/images/lixilotus-logo.svg" alt="lixilotus" />
               </Link>
             </StyledLogo>
             <ItemAccess
               icon={'/images/ico-home.svg'}
               text={intl.get('general.home')}
-              active={selectedKey === '/'}
+              active={currentPathName === '/'}
               key="home"
               href={'/'}
             />
             <ItemAccess
               icon={'/images/ico-page.svg'}
               text={intl.get('general.page')}
-              active={selectedKey.includes('/page')}
+              active={currentPathName.includes('/page')}
               key="page-feed"
               href={'/page/feed'}
             />
             <ItemAccess
               icon={'/images/ico-tokens.svg'}
               text={intl.get('general.tokens')}
-              active={selectedKey.includes('/token')}
+              active={currentPathName.includes('/token')}
               key="tokens-feed"
               href={'/token/listing'}
             />
             <ItemAccess
               icon={'/images/ico-account.svg'}
               text={intl.get('general.accounts')}
-              active={selectedKey === '/wallet'}
+              active={currentPathName === '/wallet'}
               key="wallet-lotus"
               href={'/wallet'}
             />
             <ItemAccess
               icon={'/images/ico-lixi.svg'}
               text={intl.get('general.lixi')}
-              active={selectedKey === '/lixi'}
+              active={currentPathName.includes('/lixi')}
               key="lixi"
               href={'/lixi'}
             />
             <ItemAccess
               icon={'/images/ico-setting.svg'}
               text={intl.get('general.settings')}
-              active={selectedKey === '/settings'}
+              active={currentPathName === '/settings'}
               key="settings"
               href={'/settings'}
             />
@@ -310,22 +307,22 @@ const SidebarShortcut = () => {
             )} */}
           </div>
           <UserControl>
-            <StyledPopover
+            <Popover
+              overlayClassName="popover-notifications"
+              placement="topRight"
+              title={'Notifications'}
               content={NotificationPopup(notifications, selectedAccount)}
-              placement="bottomRight"
-              getPopupContainer={trigger => trigger}
               trigger={notifications.length != 0 ? 'click' : ''}
-              title="Notifications"
             >
               <Badge
                 count={notifications.length}
                 overflowCount={9}
-                offset={[notifications.length < 10 ? 0 : 5, 25]}
+                offset={[notifications.length < 10 ? 0 : 5, 8]}
                 color="var(--color-primary)"
               >
                 <img style={{ marginBottom: '2rem' }} src="/images/ico-notifications.svg" alt="" />
               </Badge>
-            </StyledPopover>
+            </Popover>
             <img width={56} height={56} src="/images/anonymous-ava.svg" alt="" />
           </UserControl>
         </CointainerAccess>

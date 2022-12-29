@@ -139,8 +139,6 @@ const Content = styled.div`
     box-sizing: border-box;
     box-shadow: 0 3px 12px rgb(0 0 0 / 4%);
     background: var(--bg-color-light-theme);
-    height: fit-content;
-    display: grid;
     grid-template-columns: auto auto;
     grid-template-rows: auto auto;
     grid-column-gap: 1rem;
@@ -148,26 +146,7 @@ const Content = styled.div`
     transition: 0.5s ease;
     img {
       margin-bottom: 1rem;
-      height: fit-content;
       width: 80%;
-    }
-    .middle {
-      transition: 0.5s ease;
-      opacity: 0;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      -ms-transform: translate(-50%, -50%);
-      text-align: center;
-    }
-    &:hover {
-      img {
-        opacity: 0.9;
-      }
-      .middle {
-        opacity: 1;
-      }
     }
   }
 `;
@@ -382,18 +361,6 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
     return post?.postAccount?.name;
   };
 
-  const gridPicture = items => {
-    let className = 'images-post';
-    if (items?.length != 0 && items?.length > 2) {
-      if (items?.length > 2) {
-        className += ' 2-row-picture';
-      } else {
-        className += ' 1-row-picture';
-      }
-    }
-    return 'images-post';
-  };
-
   return (
     <PostListItemContainer key={post.id} ref={ref} onClick={handlePostClick}>
       <CardContainer>
@@ -428,7 +395,6 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
                       return (
                         <>
                           <img src={imageUrl} />
-                          <div className="middle"></div>
                         </>
                       );
                     }

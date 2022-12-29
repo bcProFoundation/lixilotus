@@ -21,7 +21,7 @@ export const StyledPopover = styled(Popover)`
   .ant-popover {
     width: 350px;
     position: relative;
-    left: -310px !important;
+    left: auto !important;
 
     @media (max-width: 768px) {
       top: 40px !important;

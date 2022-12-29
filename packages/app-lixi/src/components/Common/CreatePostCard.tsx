@@ -60,12 +60,27 @@ const SunEditor = dynamic(() => import('suneditor-react'), {
   ssr: false
 });
 
+const MobileCreatePost = styled.div`
+  display: none;
+  @media (max-width: 968px) {
+    display: block;
+    position: fixed;
+    right: 15px;
+    bottom: 90px;
+    .fab-btn {
+      padding: 16px;
+      background: #ffdbd1;
+      border-radius: 16px;
+    }
+  }
+`;
+
 const WrapEditor = styled.div`
   position: relative;
   z-index: -2;
 `;
 
-const CreateCardContainer = styled.div`
+const DesktopCreatePost = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 1.5rem 1rem;
@@ -87,11 +102,9 @@ const CreateCardContainer = styled.div`
       color: #7342cc;
     }
   }
-`;
-
-const StyledUploader = styled.div`
-  position: absolute;
-  bottom: 24px;
+  @media (max-width: 968px) {
+    display: none;
+  }
 `;
 
 const UserCreate = styled.div`
@@ -392,9 +405,9 @@ const CreatePostCard = (props: CreatePostCardProp) => {
 
   return (
     <>
-      <CreateCardContainer onClick={() => setEnableEditor(!enableEditor)}>
+      <DesktopCreatePost onClick={() => setEnableEditor(!enableEditor)}>
         <div className="avatar">
-          <Avatar src="images/anonymous-ava.svg" size={50} style={{ color: '#fff', backgroundColor: '#bdbdbd' }}>
+          <Avatar src="/images/anonymous-ava.svg" size={50} style={{ color: '#fff', backgroundColor: '#bdbdbd' }}>
             {/* ER */}
           </Avatar>
           <Input bordered={false} placeholder="What's on your mind?" />
@@ -402,7 +415,14 @@ const CreatePostCard = (props: CreatePostCardProp) => {
         <div className="btn-create">
           <PlusCircleOutlined />
         </div>
-      </CreateCardContainer>
+      </DesktopCreatePost>
+
+      <MobileCreatePost onClick={() => setEnableEditor(!enableEditor)}>
+        <div className="fab-btn">
+          <img src="/images/ico-create-post.svg" alt="" />
+        </div>
+      </MobileCreatePost>
+
       <WrapEditor>
         <Modal
           className="custom-modal-editor"
