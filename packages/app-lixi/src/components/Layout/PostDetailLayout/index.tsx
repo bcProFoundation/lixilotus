@@ -37,7 +37,7 @@ const AppBody = styled.div`
 
 export const AppContainer = styled.div`
   position: relative;
-  width: 500px;
+  width: 100%;
   background-color: ${props => props.theme.footerBackground};
   padding: 10px 16px;
   height: 100vh;
