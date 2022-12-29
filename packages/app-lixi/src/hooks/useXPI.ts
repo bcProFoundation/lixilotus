@@ -199,7 +199,7 @@ export default function useXPI() {
     burnedBy: string | Buffer,
     burnForId: string,
     burnAmount: string,
-    tipToAddress?: string
+    tipToAddresses?: { address: string; amount: string }[]
   ): Promise<string> => {
     let txBuilder = new XPI.TransactionBuilder();
 
@@ -213,7 +213,17 @@ export default function useXPI() {
 
     // generate the tx inputs and add to txBuilder instance
     // returns the updated txBuilder, txFee, totalInputUtxoValue and inputUtxos
-    let txInputObj = generateTxInput(XPI, false, utxos, txBuilder, null, satoshisToBurn, feeInSatsPerByte);
+    let destinationAddresses = tipToAddresses.map(item => item.address);
+    destinationAddresses.push('Burned Coins');
+    let txInputObj = generateTxInput(
+      XPI,
+      tipToAddresses ? true : false,
+      utxos,
+      txBuilder,
+      destinationAddresses ?? null,
+      satoshisToBurn,
+      feeInSatsPerByte
+    );
     const changeAddress = getChangeAddressFromInputUtxos(XPI, txInputObj.inputUtxos);
 
     // generate the tx outputs with burn output
@@ -221,6 +231,7 @@ export default function useXPI() {
     // returns the updated txBuilder
     const txOutputObj = generateBurnTxOutput(
       XPI,
+      feeInSatsPerByte,
       satoshisToBurn,
       burnType,
       burnForType,
@@ -230,7 +241,7 @@ export default function useXPI() {
       changeAddress,
       txInputObj.txFee,
       txBuilder,
-      tipToAddress
+      tipToAddresses
     );
     txBuilder = txOutputObj; // update the local txBuilder with the generated tx outputs
 

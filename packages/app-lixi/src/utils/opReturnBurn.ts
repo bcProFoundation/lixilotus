@@ -1,5 +1,5 @@
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
-import { BurnForType, BurnType } from '@bcpros/lixi-models';
+import { BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
 import BCHJS from '@bcpros/xpi-js';
 import BigNumber from 'bignumber.js';
 
@@ -91,6 +91,7 @@ export const generateBurnOpReturnScript = (
 
 export const generateBurnTxOutput = (
   XPI: BCHJS,
+  feeInSatsPerByte: number,
   satoshisToBurn: BigNumber,
   burnType: BurnType,
   burnForType: BurnForType,
@@ -100,28 +101,22 @@ export const generateBurnTxOutput = (
   changeAddress: string,
   txFee: number,
   txBuilder: any,
-  tipToAddress?: string
+  tipToAddresseses?: { address: string; amount: string }[]
 ) => {
   if (!XPI || !satoshisToBurn || !txFee || !txBuilder) {
     throw new Error('Invalid tx input parameters');
   }
 
   const satoshisToTip = satoshisToBurn.multipliedBy(0.04);
+  let remainder: BigNumber = new BigNumber(totalInputUtxoValue).minus(satoshisToBurn).minus(txFee);
 
-  let remainder: BigNumber;
   try {
     // amount to send back to the remainder address.
-    if (tipToAddress === changeAddress) {
-      remainder = new BigNumber(totalInputUtxoValue).minus(satoshisToBurn).minus(txFee);
-    } else if (tipToAddress) {
-      remainder = new BigNumber(totalInputUtxoValue).minus(satoshisToBurn).minus(satoshisToTip).minus(txFee);
-    } else {
-      remainder = new BigNumber(totalInputUtxoValue).minus(satoshisToBurn).minus(txFee);
-    }
-
-    if (remainder.lt(0)) {
-      throw new Error(`Insufficient funds`);
-    }
+    tipToAddresseses.map(item => {
+      if (item.address !== changeAddress) {
+        remainder = remainder.minus(satoshisToTip);
+      }
+    });
 
     const burnOutputScript = generateBurnOpReturnScript(
       0x01,
@@ -130,11 +125,21 @@ export const generateBurnTxOutput = (
       burnedBy,
       burnForId
     );
+
+    // Minus the op_return fee
+    remainder = remainder.minus(burnOutputScript.length * feeInSatsPerByte);
+
+    if (remainder.lt(0)) {
+      throw new Error(`Insufficient funds`);
+    }
+
     txBuilder.addOutput(burnOutputScript, parseInt(satoshisToBurn.toString()));
 
-    if (tipToAddress && tipToAddress !== changeAddress) {
-      txBuilder.addOutput(tipToAddress, parseInt(satoshisToTip.toString()));
-    }
+    tipToAddresseses.forEach(item => {
+      if (item.address && item.address !== changeAddress) {
+        txBuilder.addOutput(item.address, parseInt(satoshisToTip.toString()));
+      }
+    });
 
     // if a remainder exists, return to change address as the final output
     if (remainder.gte(new BigNumber(currency.dustSats))) {

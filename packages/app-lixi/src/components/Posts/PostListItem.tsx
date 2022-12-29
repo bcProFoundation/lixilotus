@@ -9,8 +9,9 @@ import { burnForUpDownVote } from '@store/burn/actions';
 import { PostsQuery } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
-import { formatBalance } from '@utils/cashMethods';
+import { formatBalance, fromXpiToSatoshis } from '@utils/cashMethods';
 import { Avatar, Comment, List, Space } from 'antd';
+import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
@@ -304,7 +305,19 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
       const burnedBy = hash160;
       const burnForId = post.id;
       const burnValue = '1';
-      const tipToAddress = post?.postAccount?.address ?? undefined;
+      const tipToAddresses: { address: string; amount: string }[] = [];
+      if (post?.postAccount?.address) {
+        tipToAddresses.push({
+          address: post?.postAccount?.address,
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
+        });
+      }
+      if (post?.pageAccount?.address) {
+        tipToAddresses.push({
+          address: post?.pageAccount?.address,
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
+        });
+      }
       let tag: string;
 
       if (_.isNil(post.page) && _.isNil(post.token)) {
@@ -325,7 +338,7 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
         burnedBy,
         burnForId,
         burnValue,
-        tipToAddress
+        tipToAddresses
       );
 
       const burnCommand: BurnCommand = {
@@ -335,7 +348,7 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
         burnedBy,
         burnForId,
         burnValue,
-        tipToAddress: xAddress,
+        tipToAddresses: tipToAddresses,
         postQueryTag: tag,
         pageId: post.page?.id,
         tokenId: post.token?.id
