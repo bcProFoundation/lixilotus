@@ -108,16 +108,14 @@ export const generateBurnTxOutput = (
 
   const satoshisToTip = satoshisToBurn.multipliedBy(0.04);
 
-  let remainder: BigNumber = new BigNumber(totalInputUtxoValue).minus(satoshisToBurn);
+  let remainder: BigNumber = new BigNumber(totalInputUtxoValue).minus(satoshisToBurn).minus(txFee);
   try {
     // amount to send back to the remainder address.
     tipToAddresseses.map(item => {
-      if (item.address === changeAddress) {
-        remainder = new BigNumber(remainder).minus(txFee);
-      } else if (item.address) {
-        remainder = new BigNumber(remainder).minus(satoshisToTip).minus(txFee);
+      if (item.address !== changeAddress) {
+        remainder = new BigNumber(remainder).minus(satoshisToTip);
       } else {
-        remainder = new BigNumber(remainder).minus(txFee);
+        remainder = new BigNumber(remainder);
       }
     });
 
