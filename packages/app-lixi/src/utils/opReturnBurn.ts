@@ -91,6 +91,7 @@ export const generateBurnOpReturnScript = (
 
 export const generateBurnTxOutput = (
   XPI: BCHJS,
+  feeInSatsPerByte: number,
   satoshisToBurn: BigNumber,
   burnType: BurnType,
   burnForType: BurnForType,
@@ -107,21 +108,15 @@ export const generateBurnTxOutput = (
   }
 
   const satoshisToTip = satoshisToBurn.multipliedBy(0.04);
-
   let remainder: BigNumber = new BigNumber(totalInputUtxoValue).minus(satoshisToBurn).minus(txFee);
+
   try {
     // amount to send back to the remainder address.
     tipToAddresseses.map(item => {
       if (item.address !== changeAddress) {
-        remainder = new BigNumber(remainder).minus(satoshisToTip);
-      } else {
-        remainder = new BigNumber(remainder);
+        remainder = remainder.minus(satoshisToTip);
       }
     });
-
-    if (remainder.lt(0)) {
-      throw new Error(`Insufficient funds`);
-    }
 
     const burnOutputScript = generateBurnOpReturnScript(
       0x01,
@@ -130,6 +125,14 @@ export const generateBurnTxOutput = (
       burnedBy,
       burnForId
     );
+
+    // Minus the op_return fee
+    remainder = remainder.minus(burnOutputScript.length * feeInSatsPerByte);
+
+    if (remainder.lt(0)) {
+      throw new Error(`Insufficient funds`);
+    }
+
     txBuilder.addOutput(burnOutputScript, parseInt(satoshisToBurn.toString()));
 
     tipToAddresseses.forEach(item => {
