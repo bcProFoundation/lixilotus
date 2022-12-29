@@ -209,9 +209,10 @@ type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 type PostListItemProps = {
   index: number;
   item: PostItem;
+  searchValue?: string;
 };
 
-const PostListItem = ({ index, item }: PostListItemProps) => {
+const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const post: PostItem = item;
@@ -361,6 +362,22 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
     return post?.postAccount?.name;
   };
 
+  //Highlighted is not perfect. Will fallthourgh in some cases
+  const Highlighted = ({ text = '', highlight = '' }) => {
+    if (!highlight.trim()) {
+      return <span>{text}</span>;
+    }
+    const regex = new RegExp(`(${_.escapeRegExp(highlight)})`, 'gi');
+    const parts = text.split(regex);
+    return (
+      <span>
+        {parts
+          .filter(part => part)
+          .map((part, i) => (regex.test(part) ? <b key={i}>{part}</b> : <span key={i}>{part}</span>))}
+      </span>
+    );
+  };
+
   return (
     <PostListItemContainer key={post.id} ref={ref} onClick={handlePostClick}>
       <CardContainer>
@@ -376,7 +393,13 @@ const PostListItem = ({ index, item }: PostListItemProps) => {
           ></InfoCardUser>
         </CardHeader>
         <Content>
-          <div className="description-post">{ReactHtmlParser(post?.content)}</div>
+          <div className="description-post">
+            {!_.isNil(searchValue) ? (
+              <Highlighted text={post.content} highlight={searchValue} />
+            ) : (
+              ReactHtmlParser(post?.content)
+            )}
+          </div>
           {showMore && (
             <p
               style={{ textAlign: 'left', color: 'var(--color-primary)', marginBottom: '0' }}

@@ -12,7 +12,7 @@ export class MeiliService implements OnModuleInit {
 
   async onModuleInit() {
     await this.meiliSearch.index(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`).updateSettings({
-      searchableAttributes: ['content', 'postAccount.name'],
+      searchableAttributes: ['content', 'postAccountName'],
       displayedAttributes: ['*']
     });
   }

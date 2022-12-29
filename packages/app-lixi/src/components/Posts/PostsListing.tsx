@@ -304,7 +304,11 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
           endReached={loadMoreQueryItems}
           overscan={3000}
           itemContent={(index, item) => {
-            return !isQueryLoading ? <PostListItem index={index} item={item} /> : <LoadingOutlined />;
+            return !isQueryLoading ? (
+              <PostListItem index={index} item={item} searchValue={searchValue} />
+            ) : (
+              <LoadingOutlined />
+            );
           }}
           components={{ Header: QueryHeader, Footer: QueryFooter }}
         />

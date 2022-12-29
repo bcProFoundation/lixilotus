@@ -161,11 +161,19 @@ export class PostResolver {
   ): Promise<PostResponse> {
     const { limit, offset } = getPagingParameters(args);
     const [posts, count] = await this.postService.findAll(limit!, offset!, query);
-    const searchPosts = posts.map((post: any) => {
-      post.createdAt = new Date(post.createdAt);
-      post.updatedAt = new Date(post.updatedAt);
-      return post;
+    const promises = posts.map(async (post: any) => {
+      const result = await this.prisma.post.findUnique({
+        where: {
+          id: post.id
+        }
+      });
+
+      result!.content = post.content;
+
+      return result;
     });
+    const searchPosts = await Promise.all(promises);
+
     return connectionFromArraySlice(searchPosts, args, {
       arrayLength: count,
       sliceStart: offset || 0
@@ -356,7 +364,15 @@ export class PostResolver {
       return pureContent;
     });
 
-    await this.meiliService.add(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`, createdPost, createdPost.id);
+    const indexedPost = {
+      id: createdPost.id,
+      content: pureContent,
+      postAccountName: createdPost.postAccount.name,
+      createdAt: createdPost.createdAt,
+      updatedAt: createdPost.updatedAt
+    };
+
+    await this.meiliService.add(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`, indexedPost, createdPost.id);
 
     pubSub.publish('postCreated', { postCreated: createdPost });
     return createdPost;
