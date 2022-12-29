@@ -264,6 +264,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   `;
 
   const PostContentDetail = styled.div`
+    text-align: left;
     .images-post {
       width: 100%;
       padding: 1rem;

@@ -5,7 +5,8 @@ const theme: EditorThemeClasses = {
   rtl: 'rtl',
   placeholder: 'EditorLexical_placeholder',
   paragraph: 'EditorLexical_paragraph',
-  hashtag: 'EditorLexical_hashtag'
+  hashtag: 'EditorLexical_hashtag',
+  tweet: 'EditorLexical_tweet'
 };
 
 export default theme;

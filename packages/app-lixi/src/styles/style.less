@@ -625,3 +625,26 @@ code {
     }
   }
 }
+
+// custom embed-tweet
+.embed-tweet {
+  .ant-modal-body {
+    display: flex;
+    flex-direction: column;
+    padding-top: 0;
+    .error-msg {
+      align-self: end;
+      margin: 0;
+      color: var(--color-danger);
+    }
+    button {
+      margin-top: 1rem;
+      width: 30%;
+      align-self: end;
+    }
+    input {
+      font-size: 15px;
+      padding: 8px;
+    }
+  }
+}

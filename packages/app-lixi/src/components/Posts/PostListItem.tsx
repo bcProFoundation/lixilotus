@@ -84,18 +84,25 @@ const Content = styled.div`
   .description-post {
     text-align: left;
     word-break: break-word;
-    iframe {
-      width: 100% !important;
-      &#twitter-widget-0 {
-        height: 750px !important;
-        @media (min-width: 960px) {
-          width: 550px !important;
-          margin: auto !important;
-        }
-        @media (max-width: 960px) {
-          height: 620px !important;
+    @media (max-width: 960px) {
+      div {
+        &[data-lexical-decorator='true'] > div > div {
+          width: 100% !important;
         }
       }
+    }
+    iframe {
+      width: 100% !important;
+      // &#twitter-widget-0 {
+      //   height: 750px !important;
+      //   @media (min-width: 960px) {
+      //     width: 550px !important;
+      //     margin: auto !important;
+      //   }
+      //   @media (max-width: 960px) {
+      //     height: 620px !important;
+      //   }
+      // }
       &#reddit-embed {
         height: 500px !important;
         @media (max-width: 960px) {
