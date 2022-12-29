@@ -53,7 +53,7 @@ export default {
   'general.ended': 'Ended',
   'general.running': 'Running',
   'general.waiting': 'Waiting',
-  'general.page': 'Page',
+  'general.page': 'Pages',
   'general.sendLotus': 'Send Lotus',
   'general.lotusiaShop': 'Lotusia Shop',
   'general.send': 'Send',
