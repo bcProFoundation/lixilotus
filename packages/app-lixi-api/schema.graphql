@@ -192,6 +192,18 @@ type PostEdge {
   node: Post!
 }
 
+type PostMeiliEdge {
+  cursor: String
+  node: Post
+}
+
+type PostMeiliPageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+}
+
 input PostOrder {
   direction: OrderDirection!
   field: PostOrderField!
@@ -206,11 +218,30 @@ enum PostOrderField {
   updatedAt
 }
 
+type PostResponse {
+  edges: [PostMeiliEdge!]
+  pageInfo: PostMeiliPageInfo
+}
+
 type Query {
   allCommentsToPostId(after: String, before: String, first: Int, id: String, last: Int, orderBy: CommentOrder, skip: Int): CommentConnection!
   allPages(after: String, before: String, first: Int, last: Int, orderBy: PageOrder, query: String, skip: Int): PageConnection!
   allPosts(after: String, before: String, first: Int, last: Int, orderBy: PostOrder, query: String, skip: Int): PostConnection!
   allPostsByPageId(after: String, before: String, first: Int, id: String, last: Int, orderBy: PostOrder, skip: Int): PostConnection!
+  allPostsBySearch(
+    """Paginate after opaque cursor"""
+    after: String
+
+    """Paginate before opaque cursor"""
+    before: String
+
+    """Paginate first"""
+    first: Int
+
+    """Paginate last"""
+    last: Int
+    query: String
+  ): PostResponse!
   allPostsByTokenId(after: String, before: String, first: Int, id: String, last: Int, orderBy: PostOrder, skip: Int): PostConnection!
   allPostsByUserId(after: String, before: String, first: Int, id: String, last: Int, orderBy: PostOrder, skip: Int): PostConnection!
   comment(id: String!): Comment!

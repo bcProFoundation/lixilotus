@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { MercuriusDriver, MercuriusDriverConfig } from '@nestjs/mercurius';
 import { ServeStaticModule, ServeStaticModuleOptions } from '@nestjs/serve-static';
+import { MeiliSearchModule } from 'nestjs-meilisearch';
 import { EthersModule } from 'nestjs-ethers';
 import { FastifyRequest } from 'fastify';
 import { AcceptLanguageResolver, HeaderResolver, I18nModule } from 'nestjs-i18n';
@@ -90,6 +91,12 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
           useDefaultProvider: false
         };
       }
+    }),
+    MeiliSearchModule.forRootAsync({
+      useFactory: () => ({
+        host: process.env.MEILISEARCH_HOST!,
+        apiKey: process.env.MEILISEARCH_MASTER_KEY
+      })
     }),
     WalletModule,
     AuthModule,

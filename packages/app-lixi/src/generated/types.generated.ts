@@ -219,6 +219,20 @@ export type PostEdge = {
   node: Post;
 };
 
+export type PostMeiliEdge = {
+  __typename?: 'PostMeiliEdge';
+  cursor?: Maybe<Scalars['String']>;
+  node?: Maybe<Post>;
+};
+
+export type PostMeiliPageInfo = {
+  __typename?: 'PostMeiliPageInfo';
+  endCursor?: Maybe<Scalars['String']>;
+  hasNextPage: Scalars['Boolean'];
+  hasPreviousPage: Scalars['Boolean'];
+  startCursor?: Maybe<Scalars['String']>;
+};
+
 export type PostOrder = {
   direction: OrderDirection;
   field: PostOrderField;
@@ -233,12 +247,19 @@ export enum PostOrderField {
   UpdatedAt = 'updatedAt'
 }
 
+export type PostResponse = {
+  __typename?: 'PostResponse';
+  edges?: Maybe<Array<PostMeiliEdge>>;
+  pageInfo?: Maybe<PostMeiliPageInfo>;
+};
+
 export type Query = {
   __typename?: 'Query';
   allCommentsToPostId: CommentConnection;
   allPages: PageConnection;
   allPosts: PostConnection;
   allPostsByPageId: PostConnection;
+  allPostsBySearch: PostResponse;
   allPostsByTokenId: PostConnection;
   allPostsByUserId: PostConnection;
   comment: Comment;
@@ -284,6 +305,14 @@ export type QueryAllPostsByPageIdArgs = {
   last?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<PostOrder>;
   skip?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryAllPostsBySearchArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  query?: InputMaybe<Scalars['String']>;
 };
 
 export type QueryAllPostsByTokenIdArgs = {

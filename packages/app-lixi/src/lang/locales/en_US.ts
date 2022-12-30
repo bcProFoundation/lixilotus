@@ -73,6 +73,7 @@ export default {
   'general.notFoundTitle': 'Opp! Page not found',
   'general.notFoundDescription': 'Sorry, we can’t find the page you’re looking for.',
   'general.goBackToHome': 'Go back',
+  'general.searchResults': 'Search results for "{text}"',
   'general.post': 'Post',
   'general.burnUp': 'Burn up',
   'general.burnDown': 'Burn down',

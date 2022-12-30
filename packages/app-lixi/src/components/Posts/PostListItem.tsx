@@ -217,9 +217,10 @@ type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 type PostListItemProps = {
   index: number;
   item: PostItem;
+  searchValue?: string;
 };
 
-const PostListItem = ({ index, item }: PostListItemProps) => {
+const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const post: PostItem = item;

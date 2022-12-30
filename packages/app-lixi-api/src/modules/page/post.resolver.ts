@@ -1,3 +1,10 @@
+import { PubSub } from 'graphql-subscriptions';
+import * as _ from 'lodash';
+import { InjectMeiliSearch } from 'nestjs-meilisearch';
+import { MeiliSearch } from 'meilisearch';
+import { I18n, I18nService } from 'nestjs-i18n';
+import { PostAccountEntity } from 'src/decorators/postAccount.decorator';
+import VError from 'verror';
 import {
   Post,
   PaginationArgs,
@@ -10,22 +17,33 @@ import {
   Upload
 } from '@bcpros/lixi-models';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
-import { ExecutionContext, Logger, Request, UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver, Subscription, ResolveField, Parent } from '@nestjs/graphql';
-import { PubSub } from 'graphql-subscriptions';
-import { PrismaService } from '../prisma/prisma.service';
-import * as _ from 'lodash';
-import { PostAccountEntity } from 'src/decorators/postAccount.decorator';
-import { I18n, I18nService } from 'nestjs-i18n';
+import {
+  ExecutionContext,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  Logger,
+  Request,
+  UseGuards
+} from '@nestjs/common';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
+import { MeiliService } from './meili.service';
 import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
+import { PrismaService } from '../prisma/prisma.service';
+import { POSTS } from './constants/meili.constants';
+import ConnectionArgs, { getPagingParameters } from '../../common/custom-graphql-relay/connection.args';
+import { connectionFromArraySlice } from '../../common/custom-graphql-relay/arrayConnection';
+import PostResponse from 'src/common/post.response';
 
 const pubSub = new PubSub();
 
+@Injectable()
 @Resolver(() => Post)
 export class PostResolver {
   private logger: Logger = new Logger(this.constructor.name);
 
-  constructor(private prisma: PrismaService, @I18n() private i18n: I18nService) {}
+  constructor(private prisma: PrismaService, private meiliService: MeiliService, @I18n() private i18n: I18nService) {}
 
   @Subscription(() => Post)
   postCreated() {
@@ -127,6 +145,40 @@ export class PostResolver {
       { first, last, before, after }
     );
     return result;
+  }
+
+  @Query(() => PostResponse, { name: 'allPostsBySearch' })
+  async allPostsBySearch(
+    @Args() args: ConnectionArgs,
+    @Args({ name: 'query', type: () => String, nullable: true })
+    query: string
+  ): Promise<PostResponse> {
+    const { limit, offset } = getPagingParameters(args);
+
+    const count = await this.meiliService.searchByQueryEstimatedTotalHits(
+      `${process.env.MEILISEARCH_BUCKET}_${POSTS}`,
+      query
+    );
+
+    const posts = await this.meiliService.searchByQueryHits(
+      `${process.env.MEILISEARCH_BUCKET}_${POSTS}`,
+      query,
+      offset!,
+      limit!
+    );
+
+    const postsId = _.map(posts, 'id');
+
+    const searchPosts = await this.prisma.post.findMany({
+      where: {
+        id: { in: postsId }
+      }
+    });
+
+    return connectionFromArraySlice(searchPosts, args, {
+      arrayLength: count,
+      sliceStart: offset || 0
+    });
   }
 
   @Query(() => PostConnection)
@@ -283,7 +335,45 @@ export class PostResolver {
         }
       }
     };
-    const createdPost = await this.prisma.post.create(postToSave);
+    const createdPost = await this.prisma.post.create({
+      ...postToSave,
+      include: {
+        page: {
+          select: {
+            id: true,
+            address: true,
+            name: true
+          }
+        },
+        token: {
+          select: {
+            id: true,
+            name: true
+          }
+        },
+        postAccount: {
+          select: {
+            id: true,
+            name: true,
+            address: true
+          }
+        }
+      }
+    });
+
+    _.update(createdPost, 'content', () => {
+      return pureContent;
+    });
+
+    const indexedPost = {
+      id: createdPost.id,
+      content: pureContent,
+      postAccountName: createdPost.postAccount.name,
+      createdAt: createdPost.createdAt,
+      updatedAt: createdPost.updatedAt
+    };
+
+    await this.meiliService.add(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`, indexedPost, createdPost.id);
 
     pubSub.publish('postCreated', { postCreated: createdPost });
     return createdPost;

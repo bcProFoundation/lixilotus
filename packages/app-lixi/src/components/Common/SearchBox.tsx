@@ -1,10 +1,15 @@
-import { SearchOutlined } from '@ant-design/icons';
-import TextArea from 'antd/lib/input/TextArea';
-import React from 'react';
-import styled from 'styled-components';
+import { SearchOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { Input } from 'antd';
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 
-const SearchBox = () => {
+const SearchBox = props => {
+  const { control, getValues, setValue } = useForm({
+    defaultValues: {
+      search: props.value ? props.value : null
+    }
+  });
   const SearchBoxContainer = styled.div`
     display: flex;
     justify-content: space-between;
@@ -21,13 +26,42 @@ const SearchBox = () => {
     }
   `;
 
+  const onPressEnter = e => {
+    const { value } = e.target;
+    if (e.key === 'Enter' && value !== '') {
+      props.searchPost(value);
+    }
+  };
+
+  const onDeleteText = () => {
+    setValue('search', '');
+    props.searchPost(null);
+  };
+
   return (
     <>
       <SearchBoxContainer>
         <div className="btn-search">
           <SearchOutlined />
         </div>
-        <Input bordered={false} placeholder="Search for people, topics, or experiences" />
+        <Controller
+          name="search"
+          control={control}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Input
+              bordered={false}
+              onChange={onChange}
+              onBlur={onBlur}
+              value={value}
+              placeholder="Search for posts"
+              onKeyDown={onPressEnter}
+              autoFocus={value}
+            />
+          )}
+        />
+        {getValues('search') && (
+          <CloseCircleOutlined style={{ fontSize: '18px', color: '#7342cc' }} onClick={() => onDeleteText()} />
+        )}
       </SearchBoxContainer>
     </>
   );

@@ -11,7 +11,10 @@
 
 import * as Types from '../../generated/types.generated';
 
-import { PageInfoFieldsFragmentDoc } from '../../graphql/fragments/page-info-fields.fragment.generated';
+import {
+  PageInfoFieldsFragmentDoc,
+  PostMeiliPageInfoFieldsFragmentDoc
+} from '../../graphql/fragments/page-info-fields.fragment.generated';
 import { api } from 'src/api/baseApi';
 export type PostQueryVariables = Types.Exact<{
   id: Types.Scalars['String'];
@@ -232,6 +235,50 @@ export type PostsByTokenIdQuery = {
   };
 };
 
+export type PostsBySearchQueryVariables = Types.Exact<{
+  after?: Types.InputMaybe<Types.Scalars['String']>;
+  before?: Types.InputMaybe<Types.Scalars['String']>;
+  first?: Types.InputMaybe<Types.Scalars['Int']>;
+  last?: Types.InputMaybe<Types.Scalars['Int']>;
+  query?: Types.InputMaybe<Types.Scalars['String']>;
+}>;
+
+export type PostsBySearchQuery = {
+  __typename?: 'Query';
+  allPostsBySearch: {
+    __typename?: 'PostResponse';
+    edges?: Array<{
+      __typename?: 'PostMeiliEdge';
+      cursor?: string | null;
+      node?: {
+        __typename?: 'Post';
+        id: string;
+        content: string;
+        lotusBurnUp: number;
+        lotusBurnDown: number;
+        lotusBurnScore: number;
+        createdAt: any;
+        updatedAt: any;
+        uploads?: Array<{
+          __typename?: 'UploadDetail';
+          id: string;
+          upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+        }> | null;
+        postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+        pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+        page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+      } | null;
+    }> | null;
+    pageInfo?: {
+      __typename?: 'PostMeiliPageInfo';
+      endCursor?: string | null;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: string | null;
+    } | null;
+  };
+};
+
 export type PostFieldsFragment = {
   __typename?: 'Post';
   id: string;
@@ -250,6 +297,25 @@ export type PostFieldsFragment = {
   pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
   page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
   token?: { __typename?: 'Token'; id: string; name: string } | null;
+};
+
+export type PostMeiliFieldsFragment = {
+  __typename?: 'Post';
+  id: string;
+  content: string;
+  lotusBurnUp: number;
+  lotusBurnDown: number;
+  lotusBurnScore: number;
+  createdAt: any;
+  updatedAt: any;
+  uploads?: Array<{
+    __typename?: 'UploadDetail';
+    id: string;
+    upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+  }> | null;
+  postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+  pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+  page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
 };
 
 export type CreatePostMutationVariables = Types.Exact<{
@@ -309,6 +375,40 @@ export const PostFieldsFragmentDoc = `
   token {
     id
     name
+  }
+  lotusBurnUp
+  lotusBurnDown
+  lotusBurnScore
+  createdAt
+  updatedAt
+}
+    `;
+export const PostMeiliFieldsFragmentDoc = `
+    fragment PostMeiliFields on Post {
+  id
+  content
+  uploads {
+    id
+    upload {
+      id
+      sha
+      bucket
+    }
+  }
+  postAccount {
+    address
+    id
+    name
+  }
+  pageAccount {
+    address
+    id
+    name
+  }
+  page {
+    avatar
+    name
+    id
   }
   lotusBurnUp
   lotusBurnDown
@@ -424,6 +524,28 @@ export const PostsByTokenIdDocument = `
 }
     ${PostFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
+export const PostsBySearchDocument = `
+    query PostsBySearch($after: String, $before: String, $first: Int, $last: Int, $query: String) {
+  allPostsBySearch(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    query: $query
+  ) {
+    edges {
+      cursor
+      node {
+        ...PostMeiliFields
+      }
+    }
+    pageInfo {
+      ...PostMeiliPageInfoFields
+    }
+  }
+}
+    ${PostMeiliFieldsFragmentDoc}
+${PostMeiliPageInfoFieldsFragmentDoc}`;
 export const CreatePostDocument = `
     mutation createPost($input: CreatePostInput!) {
   createPost(data: $input) {
@@ -449,6 +571,9 @@ const injectedRtkApi = api.injectEndpoints({
     PostsByTokenId: build.query<PostsByTokenIdQuery, PostsByTokenIdQueryVariables | void>({
       query: variables => ({ document: PostsByTokenIdDocument, variables })
     }),
+    PostsBySearch: build.query<PostsBySearchQuery, PostsBySearchQueryVariables | void>({
+      query: variables => ({ document: PostsBySearchDocument, variables })
+    }),
     createPost: build.mutation<CreatePostMutation, CreatePostMutationVariables>({
       query: variables => ({ document: CreatePostDocument, variables })
     })
@@ -467,5 +592,7 @@ export const {
   useLazyPostsByUserIdQuery,
   usePostsByTokenIdQuery,
   useLazyPostsByTokenIdQuery,
+  usePostsBySearchQuery,
+  useLazyPostsBySearchQuery,
   useCreatePostMutation
 } = injectedRtkApi;

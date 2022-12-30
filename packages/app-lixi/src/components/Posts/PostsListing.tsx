@@ -1,17 +1,22 @@
 import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
 import CreatePostCard from '@components/Common/CreatePostCard';
 import { getSelectedAccount } from '@store/account/selectors';
-import { getLatestBurnForPost } from '@store/burn';
 import { setSelectedPost } from '@store/post/actions';
-import { useLazyPostQuery } from '@store/post/posts.api';
+import { useInfinitePostsBySearchQuery } from '@store/post/useInfinitePostsBySearchQuery';
+import { WalletContext } from '@context/index';
+import { getLatestBurnForPost } from '@store/burn';
+import { api as postApi, useLazyPostQuery } from '@store/post/posts.api';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
 import { Menu, MenuProps, Modal, Skeleton } from 'antd';
 import _ from 'lodash';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled from 'styled-components';
+import SearchBox from '../Common/SearchBox';
+import intl from 'react-intl-universal';
+import { LoadingOutlined } from '@ant-design/icons';
 import PostListItem from './PostListItem';
 
 type PostsListingProps = {
@@ -35,6 +40,35 @@ const StyledPostsListing = styled.div`
         box-shadow: inset 2px 2px 5px 0 rgba(#fff, 0.5);
         border-radius: 100px;
       }
+    }
+  }
+
+  .custom-query-list {
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: transparent;
+    }
+    &.show-scroll {
+      &::-webkit-scrollbar {
+        width: 5px;
+      }
+      &::-webkit-scrollbar-thumb {
+        background-image: linear-gradient(180deg, #d0368a 0%, #708ad4 99%) !important;
+        box-shadow: inset 2px 2px 5px 0 rgba(#fff, 0.5);
+        border-radius: 100px;
+      }
+    }
+    animation: fadeInAnimation 0.75s;
+  }
+
+  @keyframes fadeInAnimation {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
     }
   }
 `;
@@ -64,6 +98,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const [isShowQrCode, setIsShowQrCode] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [searchValue, setSearchValue] = useState<string | null>(null);
   const refPostsListing = useRef<HTMLDivElement | null>(null);
 
   const [queryPostTrigger, queryPostResult] = useLazyPostQuery();
@@ -105,6 +140,56 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     setIsModalVisible(false);
   };
 
+  //#region QueryVirtuoso
+  const { queryData, fetchNextQuery, hasNextQuery, isQueryFetching, isFetchingQueryNext, isQueryLoading } =
+    useInfinitePostsBySearchQuery(
+      {
+        first: 20,
+        query: searchValue
+      },
+      false
+    );
+
+  const loadMoreQueryItems = () => {
+    if (hasNextQuery && !isQueryFetching) {
+      fetchNextQuery();
+    } else if (hasNextQuery) {
+      fetchNextQuery();
+    }
+  };
+
+  const searchPost = value => {
+    setSearchValue(value);
+  };
+
+  const QueryHeader = () => {
+    return (
+      <div>
+        <SearchBox searchPost={searchPost} value={searchValue} />
+        <h1 style={{ textAlign: 'left', fontSize: '20px' }}>
+          {intl.get('general.searchResults', { text: searchValue })}
+        </h1>
+      </div>
+    );
+  };
+
+  const QueryFooter = () => {
+    if (isQueryLoading) return null;
+    return (
+      <div
+        style={{
+          padding: '1rem 2rem 2rem 2rem',
+          textAlign: 'center'
+        }}
+      >
+        {isFetchingQueryNext ? <Skeleton avatar active /> : "It's so empty here..."}
+      </div>
+    );
+  };
+  //#endregion
+
+  //#region Normal Virtuoso
+
   const onChange = (checked: boolean) => {
     setLoading(!checked);
   };
@@ -140,8 +225,8 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const Header = () => {
     return (
       <StyledHeader>
-        {/* <SearchBox></SearchBox> */}
-        <CreatePostCard />
+        <SearchBox searchPost={searchPost} value={searchValue} />
+        <CreatePostCard refetch={() => refetch()} />
         <Menu
           className="menu-post-listing"
           style={{
@@ -171,21 +256,56 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       </div>
     );
   };
+  //#endregion
+
+  useEffect(() => {
+    (async () => {
+      if (latestBurnForPost) {
+        const post = await queryPostTrigger({ id: latestBurnForPost.burnForId });
+        console.log('post', post);
+        dispatch(
+          postApi.util.updateQueryData('Posts', undefined, draft => {
+            const postToUpdate = draft.allPosts.edges.find(item => item.node.id === latestBurnForPost.burnForId);
+            if (postToUpdate) {
+              console.log('update post');
+              postToUpdate.node = post.data.post;
+            }
+          })
+        );
+        postApi.util.invalidateTags(['Post']);
+        refetch();
+      }
+    })();
+  }, [latestBurnForPost]);
 
   return (
     <StyledPostsListing ref={refPostsListing}>
-      <Virtuoso
-        id="list-virtuoso"
-        onScroll={e => triggerSrollbar(e)}
-        style={{ height: '100vh', paddingBottom: '2rem' }}
-        data={data}
-        endReached={loadMoreItems}
-        overscan={3000}
-        itemContent={(index, item) => {
-          return <PostListItem index={index} item={item} />;
-        }}
-        components={{ Header, Footer }}
-      />
+      {!searchValue ? (
+        <Virtuoso
+          id="list-virtuoso"
+          onScroll={e => triggerSrollbar(e)}
+          style={{ height: '100vh', paddingBottom: '2rem' }}
+          data={data}
+          endReached={loadMoreItems}
+          overscan={3000}
+          itemContent={(index, item) => {
+            return <PostListItem index={index} item={item} />;
+          }}
+          components={{ Header, Footer }}
+        />
+      ) : (
+        <Virtuoso
+          className="custom-query-list"
+          style={{ height: '100vh', paddingBottom: '2rem' }}
+          data={queryData}
+          endReached={loadMoreQueryItems}
+          overscan={3000}
+          itemContent={(index, item) => {
+            return <PostListItem index={index} item={item} searchValue={searchValue} />;
+          }}
+          components={{ Header: QueryHeader, Footer: QueryFooter }}
+        />
+      )}
     </StyledPostsListing>
   );
 };

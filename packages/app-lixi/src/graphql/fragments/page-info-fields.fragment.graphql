@@ -4,3 +4,10 @@ fragment PageInfoFields on PageInfo {
   hasPreviousPage
   startCursor
 }
+
+fragment PostMeiliPageInfoFields on PostMeiliPageInfo {
+  endCursor
+  hasNextPage
+  hasPreviousPage
+  startCursor
+}

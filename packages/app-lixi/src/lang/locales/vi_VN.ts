@@ -73,6 +73,7 @@ export default {
   'general.notFoundTitle': 'Opp! Không tìm thấy trang',
   'general.notFoundDescription': 'Xin lỗi, Chúng tôi không thể tìm thấy trang bạn đang tìm',
   'general.goBackToHome': 'Trở về trang chủ',
+  'general.searchResults': 'Kết quả tìm kiếm của "{text}"',
   'general.post': 'Đăng',
   'general.burnUp': 'Đốt lên',
   'general.burnDown': 'Đốt xuống',

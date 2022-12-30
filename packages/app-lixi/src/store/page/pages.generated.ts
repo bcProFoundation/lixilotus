@@ -11,7 +11,10 @@
 
 import * as Types from '../../generated/types.generated';
 
-import { PageInfoFieldsFragmentDoc } from '../../graphql/fragments/page-info-fields.fragment.generated';
+import {
+  PageInfoFieldsFragmentDoc,
+  PostMeiliPageInfoFieldsFragmentDoc
+} from '../../graphql/fragments/page-info-fields.fragment.generated';
 import { api } from 'src/api/baseApi';
 export type PageQueryVariables = Types.Exact<{
   id: Types.Scalars['String'];
