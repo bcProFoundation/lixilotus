@@ -212,57 +212,34 @@ function FloatingLinkEditor({
 
   return (
     <StyledFloating ref={editorRef}>
-      {isEditMode ? (
-        <>
-          <div className="link-input">
-            <input
-              ref={inputRef}
-              value={linkUrl}
-              onChange={event => {
-                setLinkUrl(event.target.value);
-              }}
-              onKeyDown={event => {
-                if (event.key === 'Enter' || event.key === 'Escape') {
-                  event.preventDefault();
-                  if (lastSelection !== null) {
-                    if (linkUrl !== '') {
-                      editor.dispatchCommand(TOGGLE_LINK_COMMAND, sanitizeUrl(linkUrl));
-                    }
-                    setEditMode(false);
-                  }
+      <div className="link-input">
+        <input
+          ref={inputRef}
+          value={linkUrl}
+          onChange={event => {
+            setLinkUrl(event.target.value);
+          }}
+          onKeyDown={event => {
+            if (event.key === 'Enter') {
+              event.preventDefault();
+              if (lastSelection !== null) {
+                if (linkUrl !== '') {
+                  editor.dispatchCommand(TOGGLE_LINK_COMMAND, sanitizeUrl(linkUrl));
                 }
-              }}
-            />
-            <Button
-              type="text"
-              icon={<CheckOutlined />}
-              onMouseDown={event => event.preventDefault()}
-              onClick={() => {
-                setEditMode(false);
-              }}
-            />
-          </div>
-        </>
-      ) : (
-        <>
-          <div className="link-input">
-            <a href={linkUrl} target="_blank" rel="noopener noreferrer">
-              {linkUrl}
-            </a>
-            <Button
-              type="text"
-              icon={<EditOutlined />}
-              className="link-edit"
-              role="button"
-              tabIndex={0}
-              onMouseDown={event => event.preventDefault()}
-              onClick={() => {
-                setEditMode(true);
-              }}
-            />
-          </div>
-        </>
-      )}
+                editorRef.current.style.display = 'none';
+              }
+            }
+          }}
+        />
+        <Button
+          type="text"
+          icon={<CheckOutlined />}
+          onMouseDown={event => event.preventDefault()}
+          onClick={() => {
+            editorRef.current.style.display = 'none';
+          }}
+        />
+      </div>
     </StyledFloating>
   );
 }

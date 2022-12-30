@@ -25,6 +25,11 @@ import styled from 'styled-components';
 import LinkPlugin from './plugins/LinkPlugin';
 import ButtonLinkPlugin from './plugins/ButtonLinkPlugin';
 import FloatingLinkEditorPlugin from './plugins/FloatingLinkEditorPlugin';
+import { Image } from 'antd';
+import { useAppSelector } from '@store/hooks';
+import { getPostCoverUploads } from '@store/account/selectors';
+
+const URL_SERVER_IMAGE = 'https://s3.us-west-001.backblazeb2.com';
 
 const StyledEditorLexical = styled.div`
   display: flex;
@@ -81,10 +86,18 @@ const StyledEditorLexical = styled.div`
     position: absolute;
     bottom: 0;
   }
+
+  .EditorLexical_pictures {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 2rem;
+  }
 `;
 
 const EditorLexical = props => {
   const [floatingAnchorElem, setFloatingAnchorElem] = useState<HTMLDivElement | null>(null);
+  const postCoverUploads = useAppSelector(getPostCoverUploads);
 
   const onRef = (_floatingAnchorElem: HTMLDivElement) => {
     if (_floatingAnchorElem !== null) {
@@ -131,6 +144,18 @@ const EditorLexical = props => {
                 <FloatingLinkEditorPlugin anchorElem={floatingAnchorElem} />
               </>
             )}
+            <div className="EditorLexical_pictures">
+              <Image.PreviewGroup>
+                {postCoverUploads.map(item => {
+                  const imageUrl = URL_SERVER_IMAGE + '/' + item.bucket + '/' + item.sha;
+                  return (
+                    <>
+                      <Image width={200} src={imageUrl} />
+                    </>
+                  );
+                })}
+              </Image.PreviewGroup>
+            </div>
             <div className="EditorLexical_action">
               <EmojiToolbarButtonsLexical />
               <MultiUploader
