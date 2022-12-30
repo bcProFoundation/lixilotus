@@ -25,6 +25,20 @@ const enhancedApi = api.enhanceEndpoints({
         currentCacheData.allPosts.totalCount = responseData.allPosts.totalCount;
       }
     },
+    PostsBySearch: {
+      providesTags: (result, error, arg) => ['Post'],
+      serializeQueryArgs({ queryArgs }) {
+        if (queryArgs) {
+          const { query, ...otherArgs } = queryArgs;
+          return query;
+        }
+        return { queryArgs };
+      },
+      merge(currentCacheData, responseData) {
+        currentCacheData.allPostsBySearch.edges.push(...responseData.allPostsBySearch.edges);
+        currentCacheData.allPostsBySearch.pageInfo = responseData.allPostsBySearch.pageInfo;
+      }
+    },
     PostsByPageId: {
       providesTags: (result, error, arg) => ['Post'],
       serializeQueryArgs({ queryArgs }) {

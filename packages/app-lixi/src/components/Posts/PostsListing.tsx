@@ -144,6 +144,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const { queryData, fetchNextQuery, hasNextQuery, isQueryFetching, isFetchingQueryNext, isQueryLoading } =
     useInfinitePostsBySearchQuery(
       {
+        first: 20,
         query: searchValue
       },
       false
@@ -258,10 +259,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   //#endregion
 
   useEffect(() => {
-    refetch();
-  }, []);
-
-  useEffect(() => {
     (async () => {
       if (latestBurnForPost) {
         const post = await queryPostTrigger({ id: latestBurnForPost.burnForId });
@@ -304,11 +301,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
           endReached={loadMoreQueryItems}
           overscan={3000}
           itemContent={(index, item) => {
-            return !isQueryLoading ? (
-              <PostListItem index={index} item={item} searchValue={searchValue} />
-            ) : (
-              <LoadingOutlined />
-            );
+            return <PostListItem index={index} item={item} searchValue={searchValue} />;
           }}
           components={{ Header: QueryHeader, Footer: QueryFooter }}
         />

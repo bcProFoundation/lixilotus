@@ -35,7 +35,6 @@ import { POSTS } from './constants/meili.constants';
 import ConnectionArgs, { getPagingParameters } from '../../common/custom-graphql-relay/connection.args';
 import { connectionFromArraySlice } from '../../common/custom-graphql-relay/arrayConnection';
 import PostResponse from 'src/common/post.response';
-import { PostService } from './post.service';
 
 const pubSub = new PubSub();
 
@@ -44,12 +43,7 @@ const pubSub = new PubSub();
 export class PostResolver {
   private logger: Logger = new Logger(this.constructor.name);
 
-  constructor(
-    private prisma: PrismaService,
-    private meiliService: MeiliService,
-    @I18n() private i18n: I18nService,
-    private postService: PostService
-  ) {}
+  constructor(private prisma: PrismaService, private meiliService: MeiliService, @I18n() private i18n: I18nService) {}
 
   @Subscription(() => Post)
   postCreated() {
@@ -160,19 +154,26 @@ export class PostResolver {
     query: string
   ): Promise<PostResponse> {
     const { limit, offset } = getPagingParameters(args);
-    const [posts, count] = await this.postService.findAll(limit!, offset!, query);
-    const promises = posts.map(async (post: any) => {
-      const result = await this.prisma.post.findUnique({
-        where: {
-          id: post.id
-        }
-      });
 
-      result!.content = post.content;
+    const count = await this.meiliService.searchByQueryEstimatedTotalHits(
+      `${process.env.MEILISEARCH_BUCKET}_${POSTS}`,
+      query
+    );
 
-      return result;
+    const posts = await this.meiliService.searchByQueryHits(
+      `${process.env.MEILISEARCH_BUCKET}_${POSTS}`,
+      query,
+      offset!,
+      limit!
+    );
+
+    const postsId = _.map(posts, 'id');
+
+    const searchPosts = await this.prisma.post.findMany({
+      where: {
+        id: { in: postsId }
+      }
     });
-    const searchPosts = await Promise.all(promises);
 
     return connectionFromArraySlice(searchPosts, args, {
       arrayLength: count,

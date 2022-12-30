@@ -21,10 +21,7 @@ import {
   postPostFailure,
   postPostSuccess,
   setPost,
-  setPostsByAccountId,
-  searchPost,
-  searchPostFailure,
-  searchPostSuccess
+  setPostsByAccountId
 } from './actions';
 import postApi from './api';
 
@@ -216,30 +213,6 @@ function* fetchAllPostsSuccessSaga(action: any) {}
 
 function* fetchAllPostsFailureSaga(action: any) {}
 
-function* searchPostSaga(action: PayloadAction<string>) {
-  try {
-    yield put(showLoading(searchPost.type));
-    const query = action.payload;
-    const data: any = yield call(postApi.searchPost, query);
-    if (_.isNil(data)) {
-      throw new Error(intl.get('post.couldNotFindPost'));
-    }
-
-    yield put(searchPostSuccess(data));
-  } catch (err) {
-    const message = (err as Error).message ?? intl.get('');
-    yield put(searchPostFailure(message));
-  }
-}
-
-function* searchPostSuccessSaga(action: any) {
-  yield put(hideLoading(searchPostSuccess.type));
-}
-
-function* searchPostFailureSaga(action: any) {
-  yield put(hideLoading(searchPostFailure.type));
-}
-
 function* watchPostPost() {
   yield takeLatest(postPost.type, postPostSaga);
 }
@@ -291,18 +264,6 @@ function* watchGetPostFailure() {
   yield takeLatest(getPostFailure.type, getPostFailureSaga);
 }
 
-function* watchSearchPost() {
-  yield takeLatest(searchPost.type, searchPostSaga);
-}
-
-function* watchSearchPostSuccess() {
-  yield takeLatest(searchPostSuccess.type, searchPostSuccessSaga);
-}
-
-function* watchSearchPostFailure() {
-  yield takeLatest(searchPostFailure.type, searchPostFailureSaga);
-}
-
 export default function* postSaga() {
   yield all([
     fork(watchPostPost),
@@ -317,9 +278,6 @@ export default function* postSaga() {
     fork(watchEditPostFailure),
     fork(watchEditPostSuccess),
     fork(watchGetPost),
-    fork(watchGetPostFailure),
-    fork(watchSearchPost),
-    fork(watchSearchPostSuccess),
-    fork(watchSearchPostFailure)
+    fork(watchGetPostFailure)
   ]);
 }
