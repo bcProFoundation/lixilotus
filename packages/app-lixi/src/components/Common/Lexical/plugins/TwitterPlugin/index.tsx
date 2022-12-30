@@ -6,18 +6,60 @@
  *
  */
 
+import { TwitterOutlined } from '@ant-design/icons';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $insertNodeToNearestRoot } from '@lexical/utils';
-import { Button } from 'antd';
+import { Button, Input, Modal } from 'antd';
 import { COMMAND_PRIORITY_EDITOR, createCommand, LexicalCommand } from 'lexical';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { E } from 'styled-icons/fa-solid';
 
 import { $createTweetNode, TweetNode } from '../../nodes/TweetNode';
+
+const TwitterButton = styled(Button)`
+  span {
+    font-size: 30px;
+    color: #4e444b;
+  }
+`;
+
+const TwitterEmbedConfig = {
+  // e.g. Tweet or Google Map.
+  contentName: 'Tweet',
+
+  exampleUrl: 'https://twitter.com/jack/status/20',
+
+  // Icon for display.
+  icon: <i className="icon tweet" />,
+
+  // For extra searching.
+  keywords: ['tweet', 'twitter'],
+
+  // Determine if a given URL is a match and return url data.
+  parseUrl: (text: string) => {
+    const match = /^https:\/\/twitter\.com\/(#!\/)?(\w+)\/status(es)*\/(\d+)$/.exec(text);
+
+    if (match != null) {
+      return {
+        id: match[4],
+        url: match[0]
+      };
+    }
+
+    return null;
+  },
+
+  type: 'tweet'
+};
 
 export const INSERT_TWEET_COMMAND: LexicalCommand<string> = createCommand('INSERT_TWEET_COMMAND');
 
 const TwitterPlugin: React.FC = () => {
   const [editor] = useLexicalComposerContext();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [valueInput, setValueInput] = useState('');
+  const [errorTweet, setErrorTweet] = useState(false);
 
   useEffect(() => {
     if (!editor.hasNodes([TweetNode])) {
@@ -36,25 +78,56 @@ const TwitterPlugin: React.FC = () => {
     );
   }, [editor]);
 
-  const handleClick = () => {
-    // editor.registerCommand<string>(
-    //   INSERT_TWEET_COMMAND,
-    //   payload => {
-    //     const tweetNode = $createTweetNode('1603431188475138048');
-    //     $insertNodeToNearestRoot(tweetNode);
+  const handleClick = async urlText => {
+    let tweetObj = await TwitterEmbedConfig.parseUrl(urlText);
+    let tweetId = tweetObj && tweetObj?.id ? tweetObj?.id.toString() : '';
+    if (tweetId && tweetId.length === 19) {
+      editor.registerCommand<string>(
+        INSERT_TWEET_COMMAND,
+        payload => {
+          const tweetNode = $createTweetNode(tweetId);
+          $insertNodeToNearestRoot(tweetNode);
 
-    //     return true;
-    //   },
-    //   COMMAND_PRIORITY_EDITOR
-    // );
-    editor.dispatchCommand(INSERT_TWEET_COMMAND, '1603473737394884608');
+          return true;
+        },
+        COMMAND_PRIORITY_EDITOR
+      );
+      editor.dispatchCommand(INSERT_TWEET_COMMAND, tweetId);
+      setErrorTweet(false);
+      setIsModalOpen(false);
+      setValueInput('');
+    } else {
+      setErrorTweet(true);
+    }
+  };
+
+  const handleValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setValueInput(value);
   };
 
   return (
     <>
-      <Button type="primary" onClick={handleClick}>
-        Twitter
-      </Button>
+      <TwitterButton type="text" icon={<TwitterOutlined />} onClick={() => setIsModalOpen(true)}></TwitterButton>
+      <Modal
+        className="embed-tweet"
+        title="Embed Tweet"
+        visible={isModalOpen}
+        footer={null}
+        onCancel={() => setIsModalOpen(false)}
+      >
+        <Input
+          type="text"
+          placeholder="https://twitter.com/jack/status/20"
+          value={valueInput}
+          onChange={e => handleValueChange(e)}
+          status={errorTweet ? 'error' : ''}
+        />
+        {errorTweet && <p className="error-msg">Tweet url not correct</p>}
+        <Button disabled={!valueInput} type="primary" onClick={() => handleClick(valueInput)}>
+          Embed
+        </Button>
+      </Modal>
     </>
   );
 };

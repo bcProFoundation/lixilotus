@@ -75,6 +75,13 @@ const Content = styled.div`
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
     overflow: hidden;
+    @media (max-width: 960px) {
+      div {
+        &[data-lexical-decorator='true'] > div > div {
+          width: 100% !important;
+        }
+      }
+    }
   }
   .image-cover {
     height: fit-content;

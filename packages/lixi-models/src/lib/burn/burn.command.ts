@@ -27,7 +27,7 @@ export class BurnCommand {
 
   tokenId?: string;
 
-  tipToAddress?: string;
+  tipToAddresses?: { address: string; amount: string }[];
 
   // Params to patch rtk query data
   queryParams?: any;

@@ -23,8 +23,9 @@ import { useInfiniteCommentsToPostIdQuery } from '@store/comment/useInfiniteComm
 import { PostsQuery } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
-import { formatBalance } from '@utils/cashMethods';
-import { Button, Image, Input, message, Popover, Space, Avatar } from 'antd';
+import { formatBalance, fromXpiToSatoshis } from '@utils/cashMethods';
+import { Avatar, Button, Image, Input, message, Popover, Space, Tooltip } from 'antd';
+import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import moment from 'moment';
 import { useRouter } from 'next/router';
@@ -197,7 +198,19 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       const burnedBy = hash160;
       const burnForId = post.id;
       const burnValue = '1';
-      const tipToAddress = post?.postAccount?.address ?? undefined;
+      const tipToAddresses: { address: string; amount: string }[] = [];
+      if (post?.postAccount?.address) {
+        tipToAddresses.push({
+          address: post?.postAccount?.address,
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
+        });
+      }
+      if (post?.pageAccount?.address) {
+        tipToAddresses.push({
+          address: post?.pageAccount?.address,
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
+        });
+      }
 
       const txHex = await burnXpi(
         XPI,
@@ -209,7 +222,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
         burnedBy,
         burnForId,
         burnValue,
-        tipToAddress
+        tipToAddresses
       );
 
       const burnCommand: BurnCommand = {
@@ -219,7 +232,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
         burnedBy,
         burnForId,
         burnValue,
-        tipToAddress: xAddress,
+        tipToAddresses: tipToAddresses,
         postQueryTag: PostsQueryTag.Post
       };
 
@@ -264,6 +277,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   `;
 
   const PostContentDetail = styled.div`
+    text-align: left;
     .images-post {
       width: 100%;
       padding: 1rem;
@@ -464,7 +478,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
             endReached={loadMoreComments}
             overscan={500}
             itemContent={(index, item) => {
-              return <CommentListItem index={index} item={item} />;
+              return <CommentListItem index={index} item={item} post={post} />;
             }}
           />
         </CommentContainer>
