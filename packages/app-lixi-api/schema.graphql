@@ -225,6 +225,7 @@ type PostResponse {
 
 type Query {
   allCommentsToPostId(after: String, before: String, first: Int, id: String, last: Int, orderBy: CommentOrder, skip: Int): CommentConnection!
+  allOrphanPosts(after: String, before: String, first: Int, last: Int, orderBy: PostOrder, query: String, skip: Int): PostConnection!
   allPages(after: String, before: String, first: Int, last: Int, orderBy: PageOrder, query: String, skip: Int): PageConnection!
   allPosts(after: String, before: String, first: Int, last: Int, orderBy: PostOrder, query: String, skip: Int): PostConnection!
   allPostsByPageId(after: String, before: String, first: Int, id: String, last: Int, orderBy: PostOrder, skip: Int): PostConnection!

@@ -167,7 +167,7 @@ function* updatePostBurnValue(action: PayloadAction<BurnCommand>) {
         })
       );
     default:
-      return yield put(
+      return yield put([
         postApi.util.updateQueryData('Posts', params, draft => {
           const postToUpdateIndex = draft.allPosts.edges.findIndex(item => item.node.id === command.burnForId);
           const postToUpdate = draft.allPosts.edges[postToUpdateIndex];
@@ -188,8 +188,29 @@ function* updatePostBurnValue(action: PayloadAction<BurnCommand>) {
               draft.allPosts.totalCount = draft.allPosts.totalCount - 1;
             }
           }
+        }),
+        postApi.util.updateQueryData('OrphanPosts', params, draft => {
+          const postToUpdateIndex = draft.allOrphanPosts.edges.findIndex(item => item.node.id === command.burnForId);
+          const postToUpdate = draft.allOrphanPosts.edges[postToUpdateIndex];
+          if (postToUpdateIndex >= 0) {
+            let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
+            let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+            if (command.burnType == BurnType.Up) {
+              lotusBurnUp = lotusBurnUp + burnValue;
+            } else {
+              lotusBurnDown = lotusBurnDown + burnValue;
+            }
+            const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+            draft.allOrphanPosts.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
+            draft.allOrphanPosts.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
+            draft.allOrphanPosts.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
+            if (lotusBurnScore < 0) {
+              draft.allOrphanPosts.edges.splice(postToUpdateIndex, 1);
+              draft.allOrphanPosts.totalCount = draft.allOrphanPosts.totalCount - 1;
+            }
+          }
         })
-      );
+      ]);
   }
 }
 

@@ -302,7 +302,7 @@ const SidebarRanking = () => {
     {
       first: 10
     },
-    true
+    false
   );
 
   const randomShortCut = _.sampleSize(data, 5);

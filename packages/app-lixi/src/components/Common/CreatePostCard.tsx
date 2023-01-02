@@ -338,6 +338,15 @@ const CreatePostCard = (props: CreatePostCardProp) => {
               }
             });
             draft.allPosts.totalCount = draft.allPosts.totalCount + 1;
+          }),
+          postApi.util.updateQueryData('OrphanPosts', params, draft => {
+            draft.allOrphanPosts.edges.unshift({
+              cursor: result.createPost.id,
+              node: {
+                ...result.createPost
+              }
+            });
+            draft.allOrphanPosts.totalCount = draft.allOrphanPosts.totalCount + 1;
           })
         );
     }
