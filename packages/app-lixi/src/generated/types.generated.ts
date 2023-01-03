@@ -256,6 +256,7 @@ export type PostResponse = {
 export type Query = {
   __typename?: 'Query';
   allCommentsToPostId: CommentConnection;
+  allOrphanPosts: PostConnection;
   allPages: PageConnection;
   allPosts: PostConnection;
   allPostsByPageId: PostConnection;
@@ -274,6 +275,16 @@ export type QueryAllCommentsToPostIdArgs = {
   id?: InputMaybe<Scalars['String']>;
   last?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<CommentOrder>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryAllOrphanPostsArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<PostOrder>;
+  query?: InputMaybe<Scalars['String']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
 

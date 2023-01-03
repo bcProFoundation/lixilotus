@@ -1,13 +1,14 @@
 import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
 import CreatePostCard from '@components/Common/CreatePostCard';
 import { getSelectedAccount } from '@store/account/selectors';
-import { setSelectedPost } from '@store/post/actions';
 import { useInfinitePostsBySearchQuery } from '@store/post/useInfinitePostsBySearchQuery';
+import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
+import { useInfiniteOrphanPostsQuery } from '@store/post/useInfiniteOrphanPostsQuery';
+import { useInfinitePostsByPageIdQuery } from '@store/post/useInfinitePostsByPageIdQuery';
 import { WalletContext } from '@context/index';
 import { getLatestBurnForPost } from '@store/burn';
 import { api as postApi, useLazyPostQuery } from '@store/post/posts.api';
-import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
-import { Menu, MenuProps, Modal, Skeleton } from 'antd';
+import { Menu, MenuProps, Modal, Skeleton, Tabs } from 'antd';
 import _ from 'lodash';
 import React, { useRef, useState, useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
@@ -91,6 +92,19 @@ const StyledHeader = styled.div`
     }
   }
 `;
+const menuItems = [
+  { label: 'Top', key: 'top' },
+  { label: 'All', key: 'all' }
+  // { label: 'New', key: 'new' },
+  // {
+  //   label: 'Follows',
+  //   key: 'follows'
+  // },
+  // {
+  //   label: 'Hot discussion',
+  //   key: 'hotDiscussion'
+  // }
+];
 
 const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingProps) => {
   const dispatch = useAppDispatch();
@@ -100,22 +114,32 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchValue, setSearchValue] = useState<string | null>(null);
   const refPostsListing = useRef<HTMLDivElement | null>(null);
-
+  const [tab, setTab] = useState<any>('top');
   const [queryPostTrigger, queryPostResult] = useLazyPostQuery();
   const latestBurnForPost = useAppSelector(getLatestBurnForPost);
 
-  const menuItems = [
-    { label: 'Top', key: 'top' },
-    { label: 'New', key: 'new' },
+  const onClickMenu: MenuProps['onClick'] = e => {
+    setTab(e.key);
+  };
+
+  const {
+    data: orphanData,
+    totalCount: orphanTotalCount,
+    fetchNext: orphanFetchNext,
+    hasNext: orphanHasNext,
+    isFetching: orphanIsFetching,
+    isFetchingNext: orphanIsFetchingNext,
+    refetch: orphanRefetch
+  } = useInfiniteOrphanPostsQuery(
     {
-      label: 'Follows',
-      key: 'follows'
+      first: 20,
+      orderBy: {
+        direction: OrderDirection.Desc,
+        field: PostOrderField.UpdatedAt
+      }
     },
-    {
-      label: 'Hot discussion',
-      key: 'hotDiscussion'
-    }
-  ];
+    false
+  );
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsQuery(
     {
@@ -165,7 +189,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const QueryHeader = () => {
     return (
       <div>
-        <SearchBox searchPost={searchPost} value={searchValue} />
         <h1 style={{ textAlign: 'left', fontSize: '20px' }}>
           {intl.get('general.searchResults', { text: searchValue })}
         </h1>
@@ -189,28 +212,22 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   //#endregion
 
   //#region Normal Virtuoso
-
-  const onChange = (checked: boolean) => {
-    setLoading(!checked);
-  };
-
-  const onClickMenu: MenuProps['onClick'] = e => {
-    if (e.key === 'filter') {
-    }
-    if (e.key === 'week') {
-      dispatch(setSelectedPost('testPost'));
-    }
-  };
-
-  const isItemLoaded = (index: number) => {
-    return index < data.length && !_.isNil(data[index]);
-  };
-
   const loadMoreItems = () => {
-    if (hasNext && !isFetching) {
-      fetchNext();
-    } else if (hasNext) {
-      fetchNext();
+    switch (tab) {
+      case 'top':
+        if (orphanHasNext && !orphanIsFetching) {
+          orphanFetchNext();
+        } else if (orphanHasNext) {
+          orphanFetchNext();
+        }
+        return;
+      case 'all':
+        if (hasNext && !isFetching) {
+          fetchNext();
+        } else if (hasNext) {
+          fetchNext();
+        }
+        return;
     }
   };
 
@@ -222,11 +239,12 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     }, 700);
   };
 
+  //TODO: Data not consistent when change tab
   const Header = () => {
     return (
       <StyledHeader>
         <SearchBox searchPost={searchPost} value={searchValue} />
-        <CreatePostCard refetch={() => refetch()} />
+        <CreatePostCard />
         <Menu
           className="menu-post-listing"
           style={{
@@ -237,6 +255,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
           }}
           mode="horizontal"
           defaultSelectedKeys={['top']}
+          selectedKeys={tab}
           onClick={onClickMenu}
           items={menuItems}
         ></Menu>
@@ -252,7 +271,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
           textAlign: 'center'
         }}
       >
-        {isFetchingNext ? <Skeleton avatar active /> : "It's so empty here..."}
+        {isFetchingNext || orphanIsFetchingNext ? <Skeleton avatar active /> : "It's so empty here..."}
       </div>
     );
   };
@@ -270,6 +289,13 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
               console.log('update post');
               postToUpdate.node = post.data.post;
             }
+          }),
+          postApi.util.updateQueryData('OrphanPosts', undefined, draft => {
+            const postToUpdate = draft.allOrphanPosts.edges.find(item => item.node.id === latestBurnForPost.burnForId);
+            if (postToUpdate) {
+              console.log('update post');
+              postToUpdate.node = post.data.post;
+            }
           })
         );
         postApi.util.invalidateTags(['Post']);
@@ -278,21 +304,46 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     })();
   }, [latestBurnForPost]);
 
+  const showPosts = () => {
+    switch (tab) {
+      case 'top':
+        return (
+          <Virtuoso
+            id="list-virtuoso"
+            onScroll={e => triggerSrollbar(e)}
+            style={{ height: '100vh', paddingBottom: '2rem' }}
+            data={orphanData}
+            endReached={loadMoreItems}
+            overscan={3000}
+            itemContent={(index, item) => {
+              return <PostListItem index={index} item={item} />;
+            }}
+            components={{ Header, Footer }}
+          />
+        );
+      case 'all':
+        return (
+          <Virtuoso
+            id="list-virtuoso"
+            onScroll={e => triggerSrollbar(e)}
+            style={{ height: '100vh', paddingBottom: '2rem' }}
+            data={data}
+            endReached={loadMoreItems}
+            overscan={3000}
+            itemContent={(index, item) => {
+              return <PostListItem index={index} item={item} />;
+            }}
+            components={{ Header, Footer }}
+          />
+        );
+    }
+  };
+
+  //TODO: Data not consistent when change tab
   return (
     <StyledPostsListing ref={refPostsListing}>
       {!searchValue ? (
-        <Virtuoso
-          id="list-virtuoso"
-          onScroll={e => triggerSrollbar(e)}
-          style={{ height: '100vh', paddingBottom: '2rem' }}
-          data={data}
-          endReached={loadMoreItems}
-          overscan={3000}
-          itemContent={(index, item) => {
-            return <PostListItem index={index} item={item} />;
-          }}
-          components={{ Header, Footer }}
-        />
+        showPosts()
       ) : (
         <Virtuoso
           className="custom-query-list"

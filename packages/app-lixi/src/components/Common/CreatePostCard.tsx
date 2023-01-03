@@ -294,18 +294,22 @@ const CreatePostCard = (props: CreatePostCardProp) => {
     }
   };
 
-  const updatePost = async (
-    tag: string,
-    params,
-    result: CreatePostMutation,
-    pageId?: string,
-    tokenPrimaryId?: string
-  ) => {
+  const updatePost = (tag: string, params, result: CreatePostMutation, pageId?: string, tokenPrimaryId?: string) => {
+    dispatch(
+      postApi.util.updateQueryData('Posts', params, draft => {
+        draft.allPosts.edges.unshift({
+          cursor: result.createPost.id,
+          node: {
+            ...result.createPost
+          }
+        });
+        draft.allPosts.totalCount = draft.allPosts.totalCount + 1;
+      })
+    );
     switch (tag) {
       case 'PostsByPageId':
         return dispatch(
           postApi.util.updateQueryData('PostsByPageId', { ...params, id: pageId }, draft => {
-            console.log(draft);
             draft.allPostsByPageId.edges.unshift({
               cursor: result.createPost.id,
               node: {
@@ -318,7 +322,6 @@ const CreatePostCard = (props: CreatePostCardProp) => {
       case 'PostsByTokenId':
         return dispatch(
           postApi.util.updateQueryData('PostsByTokenId', { ...params, id: tokenPrimaryId }, draft => {
-            console.log(draft);
             draft.allPostsByTokenId.edges.unshift({
               cursor: result.createPost.id,
               node: {
@@ -326,18 +329,6 @@ const CreatePostCard = (props: CreatePostCardProp) => {
               }
             });
             draft.allPostsByTokenId.totalCount = draft.allPostsByTokenId.totalCount + 1;
-          })
-        );
-      default:
-        return dispatch(
-          postApi.util.updateQueryData('Posts', params, draft => {
-            draft.allPosts.edges.unshift({
-              cursor: result.createPost.id,
-              node: {
-                ...result.createPost
-              }
-            });
-            draft.allPosts.totalCount = draft.allPosts.totalCount + 1;
           })
         );
     }

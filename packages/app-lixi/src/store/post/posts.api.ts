@@ -25,6 +25,21 @@ const enhancedApi = api.enhanceEndpoints({
         currentCacheData.allPosts.totalCount = responseData.allPosts.totalCount;
       }
     },
+    OrphanPosts: {
+      providesTags: (result, error, arg) => ['Post'],
+      serializeQueryArgs({ queryArgs }) {
+        if (queryArgs) {
+          const { orderBy, ...otherArgs } = queryArgs;
+          return orderBy;
+        }
+        return { queryArgs };
+      },
+      merge(currentCacheData, responseData) {
+        currentCacheData.allOrphanPosts.edges.push(...responseData.allOrphanPosts.edges);
+        currentCacheData.allOrphanPosts.pageInfo = responseData.allOrphanPosts.pageInfo;
+        currentCacheData.allOrphanPosts.totalCount = responseData.allOrphanPosts.totalCount;
+      }
+    },
     PostsBySearch: {
       providesTags: (result, error, arg) => ['Post'],
       serializeQueryArgs({ queryArgs }) {
@@ -83,6 +98,8 @@ export { enhancedApi as api };
 export const {
   usePostQuery,
   useLazyPostQuery,
+  useOrphanPostsQuery,
+  useLazyOrphanPostsQuery,
   usePostsQuery,
   useLazyPostsQuery,
   usePostsByPageIdQuery,
