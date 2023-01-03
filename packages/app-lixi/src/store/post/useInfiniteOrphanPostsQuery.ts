@@ -42,8 +42,6 @@ export function useInfiniteOrphanPostsQuery(
     return result;
   }, [combinedData]);
 
-  console.log(data);
-
   // Base result
   useEffect(() => {
     next.current = baseResult.data?.allOrphanPosts?.pageInfo?.endCursor;

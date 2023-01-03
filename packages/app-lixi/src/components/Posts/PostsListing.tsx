@@ -92,6 +92,19 @@ const StyledHeader = styled.div`
     }
   }
 `;
+const menuItems = [
+  { label: 'Top', key: 'top' },
+  { label: 'All', key: 'all' }
+  // { label: 'New', key: 'new' },
+  // {
+  //   label: 'Follows',
+  //   key: 'follows'
+  // },
+  // {
+  //   label: 'Hot discussion',
+  //   key: 'hotDiscussion'
+  // }
+];
 
 const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingProps) => {
   const dispatch = useAppDispatch();
@@ -101,33 +114,12 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchValue, setSearchValue] = useState<string | null>(null);
   const refPostsListing = useRef<HTMLDivElement | null>(null);
-  const [posts, setPosts] = useState<any[]>();
-  const [tab, setTab] = useState<any>();
+  const [tab, setTab] = useState<any>('top');
   const [queryPostTrigger, queryPostResult] = useLazyPostQuery();
   const latestBurnForPost = useAppSelector(getLatestBurnForPost);
 
-  const menuItems = [
-    { label: 'Top', key: 'top' },
-    { label: 'All', key: 'all' },
-    { label: 'New', key: 'new' },
-    {
-      label: 'Follows',
-      key: 'follows'
-    },
-    {
-      label: 'Hot discussion',
-      key: 'hotDiscussion'
-    }
-  ];
-
   const onClickMenu: MenuProps['onClick'] = e => {
     setTab(e.key);
-    switch (e.key) {
-      case 'top':
-        return setPosts(orphanData);
-      case 'all':
-        return setPosts(data);
-    }
   };
 
   const {
@@ -159,12 +151,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     },
     false
   );
-
-  // console.log(orphanData);
-
-  useEffect(() => {
-    setPosts(data);
-  }, [data]);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -318,22 +304,46 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     })();
   }, [latestBurnForPost]);
 
+  const showPosts = () => {
+    switch (tab) {
+      case 'top':
+        return (
+          <Virtuoso
+            id="list-virtuoso"
+            onScroll={e => triggerSrollbar(e)}
+            style={{ height: '100vh', paddingBottom: '2rem' }}
+            data={orphanData}
+            endReached={loadMoreItems}
+            overscan={3000}
+            itemContent={(index, item) => {
+              return <PostListItem index={index} item={item} />;
+            }}
+            components={{ Header, Footer }}
+          />
+        );
+      case 'all':
+        return (
+          <Virtuoso
+            id="list-virtuoso"
+            onScroll={e => triggerSrollbar(e)}
+            style={{ height: '100vh', paddingBottom: '2rem' }}
+            data={data}
+            endReached={loadMoreItems}
+            overscan={3000}
+            itemContent={(index, item) => {
+              return <PostListItem index={index} item={item} />;
+            }}
+            components={{ Header, Footer }}
+          />
+        );
+    }
+  };
+
   //TODO: Data not consistent when change tab
   return (
     <StyledPostsListing ref={refPostsListing}>
       {!searchValue ? (
-        <Virtuoso
-          id="list-virtuoso"
-          onScroll={e => triggerSrollbar(e)}
-          style={{ height: '100vh', paddingBottom: '2rem' }}
-          data={posts}
-          endReached={loadMoreItems}
-          overscan={3000}
-          itemContent={(index, item) => {
-            return <PostListItem index={index} item={item} />;
-          }}
-          components={{ Header, Footer }}
-        />
+        showPosts()
       ) : (
         <Virtuoso
           className="custom-query-list"
