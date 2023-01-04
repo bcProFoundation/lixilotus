@@ -18,6 +18,7 @@ import { CreatePageInput, UpdatePageInput, Page } from 'src/generated/types.gene
 import { useCreatePageMutation, useUpdatePageMutation } from '@store/page/pages.generated';
 import { useRouter } from 'next/router';
 import { WrapperPage } from '@components/Settings';
+import styled from 'styled-components';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -25,6 +26,14 @@ type PageEditProps = {
   className?: string;
   isEditPage: boolean;
 };
+
+const TitlePage = styled.h3`
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 28px;
+  color: var(--text-color-on-background);
+`;
+
 const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
   const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
@@ -257,7 +266,7 @@ const CreateOrEditPageComponent = ({ isEditPage }: PageEditProps) => {
     <>
       {selectedAccount && selectedAccount.address ? (
         <WrapperPage>
-          <h3>{isEditPage ? intl.get('page.editPage') : intl.get('page.createNewPage')}</h3>
+          <TitlePage>{isEditPage ? intl.get('page.editPage') : intl.get('page.createNewPage')}</TitlePage>
 
           {!selectedPage ? (
             // Create Page

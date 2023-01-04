@@ -50,7 +50,6 @@ const Preview = styled.div`
   background: #fff;
   padding: 30px;
   margin-top: 2rem;
-  box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
   iframe {
     width: 100% !important;
   }
@@ -88,6 +87,7 @@ const DesktopCreatePost = styled.div`
   border-radius: 20px;
   align-items: center;
   margin: 1rem 0;
+  border: 1px solid var(--boder-item-light);
   .avatar {
     flex: 2 auto;
     display: flex;
@@ -101,6 +101,11 @@ const DesktopCreatePost = styled.div`
       font-size: 22px;
       color: #7342cc;
     }
+  }
+  input {
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: 0.5px;
   }
   @media (max-width: 968px) {
     display: none;
@@ -123,7 +128,7 @@ const UserCreate = styled.div`
         color: var(--text-color-on-background);
       }
       .btn-select {
-        background: rgba(128, 116, 124, 0.12);
+        background: var(--boder-item-light);
         border-radius: 8px;
         padding: 0 8px;
         border: none;

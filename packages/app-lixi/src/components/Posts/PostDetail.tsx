@@ -260,6 +260,9 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     flex-direction: row;
     justify-content: flex-start;
     align-items: flex-end;
+    position: fixed;
+    padding-right: 1rem;
+    bottom: 10%;
   `;
 
   const PostCardDetail = styled.div`

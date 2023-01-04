@@ -13,16 +13,24 @@ const SearchBox = props => {
   const SearchBoxContainer = styled.div`
     display: flex;
     justify-content: space-between;
-    padding: 1rem;
+    padding: 1rem !important;
     margin: 2px;
     background: #fff;
     border-radius: 20px;
-    box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
     align-items: center;
+    border: 1px solid var(--boder-item-light);
     .btn-search {
       .anticon {
         font-size: 24px;
       }
+    }
+    input {
+      font-size: 16px;
+      line-height: 24px;
+      letter-spacing: 0.5px;
+    }
+    @media (max-width: 968px) {
+      padding: 8px 1rem !important;
     }
   `;
 

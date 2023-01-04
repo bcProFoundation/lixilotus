@@ -6,9 +6,11 @@ import { Avatar, Button, Comment, List, message, Space } from 'antd';
 import { push } from 'connected-next-router';
 import _ from 'lodash';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useAppDispatch } from 'src/store/hooks';
 import styled from 'styled-components';
+
+const URL_SERVER_IMAGE = 'https://s3.us-west-001.backblazeb2.com';
 
 const IconText = ({
   icon,
@@ -70,11 +72,8 @@ const CardHeader = styled.div`
 const Content = styled.div`
   .description-post {
     text-align: left;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    word-break: break-word;
+    font-size: 16px;
     @media (max-width: 960px) {
       div {
         &[data-lexical-decorator='true'] > div > div {
@@ -82,10 +81,70 @@ const Content = styled.div`
         }
       }
     }
+    iframe {
+      width: 100% !important;
+      // &#twitter-widget-0 {
+      //   height: 750px !important;
+      //   @media (min-width: 960px) {
+      //     width: 550px !important;
+      //     margin: auto !important;
+      //   }
+      //   @media (max-width: 960px) {
+      //     height: 620px !important;
+      //   }
+      // }
+      &#reddit-embed {
+        height: 500px !important;
+        @media (max-width: 960px) {
+          height: 450px !important;
+        }
+      }
+      &#facebook-embed {
+        height: 700px !important;
+        @media (max-width: 960px) {
+          height: 580px !important;
+        }
+      }
+    }
+    p {
+      margin: 0;
+    }
+    &.show-more {
+      display: block !important;
+      height: fit-content !important;
+      overflow: none !important;
+    }
+    &.show-less {
+      white-space: normal;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      line-clamp: 5;
+      -webkit-line-clamp: 5;
+      box-orient: vertical;
+      -webkit-box-orient: vertical;
+    }
   }
   .image-cover {
-    height: fit-content;
-    width: 50%;
+    width: 100%;
+    max-height: 300px;
+  }
+  .images-post {
+    width: 100%;
+    padding: 1rem;
+    margin-top: 1rem;
+    box-sizing: border-box;
+    box-shadow: 0 3px 12px rgb(0 0 0 / 4%);
+    background: var(--bg-color-light-theme);
+    grid-template-columns: auto auto;
+    grid-template-rows: auto auto;
+    grid-column-gap: 1rem;
+    justify-items: center;
+    transition: 0.5s ease;
+    img {
+      margin-bottom: 1rem;
+      width: 80%;
+    }
   }
 `;
 
@@ -129,7 +188,7 @@ const CountBar = styled.div`
   display: grid;
   grid-template-columns: 70% 15% 15%;
   margin-top: 1rem;
-  border-bottom: 1px solid rgba(128, 116, 124, 0.12);
+  border-bottom: 1px solid var(--boder-item-light);
   padding-bottom: 1rem;
   .ant-space-item {
     font-size: 14px;
@@ -150,7 +209,9 @@ const PageListItem = ({ index, item }) => {
   const [comments, setComments] = useState<CommentItem[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [value, setValue] = useState('');
+  const [showMore, setShowMore] = useState(false);
   const [isMobileScreen, setIsMobileScreen] = useState(false);
+  const ref = useRef<HTMLDivElement | null>(null);
 
   const { width } = useWindowDimensions();
 
@@ -158,6 +219,24 @@ const PageListItem = ({ index, item }) => {
     let isMobile = width < 768 ? true : false;
     setIsMobileScreen(isMobile);
   }, [width]);
+
+  useEffect(() => {
+    const descPost = ref?.current.querySelector('.description-post');
+    if (descPost.clientHeight > 130 || item.uploads.length != 0) {
+      descPost.classList.add('show-less');
+      setShowMore(true);
+    } else {
+      setShowMore(false);
+    }
+  }, []);
+
+  const showMoreHandle = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const descPostDom = ref?.current.querySelector('.description-post');
+    descPostDom.classList.add('show-more');
+    setShowMore(false);
+  };
 
   if (!item) return null;
 
@@ -209,7 +288,7 @@ const PageListItem = ({ index, item }) => {
   };
 
   return (
-    <div>
+    <div ref={ref}>
       <List.Item
         style={{
           display: 'flex',
@@ -219,7 +298,7 @@ const PageListItem = ({ index, item }) => {
           borderRadius: '24px',
           background: 'white',
           padding: '0',
-          border: 'none'
+          border: '1px solid rgba(128, 116, 124, 0.12)'
         }}
         key={item.id}
       >
@@ -233,7 +312,30 @@ const PageListItem = ({ index, item }) => {
           </CardHeader>
           <Content>
             <p className="description-post">{item.description}</p>
-            <img className="image-cover" src={item.cover || '/images/default-cover.jpg'} alt="" />
+            {showMore && (
+              <p
+                style={{ textAlign: 'left', color: 'var(--color-primary)', marginBottom: '0' }}
+                onClick={e => showMoreHandle(e)}
+              >
+                Show more...
+              </p>
+            )}
+            {item.lotusBurnScore > 3 ||
+              (!showMore && (
+                <div style={{ display: item.uploads.length != 0 ? 'grid' : 'none' }} className="images-post">
+                  {item.uploads.length != 0 &&
+                    item.uploads.map((item, index) => {
+                      while (index < 4) {
+                        const imageUrl = URL_SERVER_IMAGE + '/' + item.upload.bucket + '/' + item.upload.sha;
+                        return (
+                          <>
+                            <img src={imageUrl} />
+                          </>
+                        );
+                      }
+                    })}
+                </div>
+              ))}
           </Content>
           <CountBar>
             <IconText

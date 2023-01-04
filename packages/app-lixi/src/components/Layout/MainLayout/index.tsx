@@ -22,14 +22,14 @@ import ModalManager from '../../Common/ModalManager';
 import { GlobalStyle } from './GlobalStyle';
 import { theme } from './theme';
 import { Footer } from '@bcpros/lixi-components/components';
+import { getAllNotifications } from '@store/notification/selectors';
+import { fetchNotifications } from '@store/notification/actions';
 const { Content } = Layout;
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
 
 const LixiApp = styled.div`
   text-align: center;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif,
-    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   background-color: ${props => props.theme.app.background};
 `;
 
@@ -49,7 +49,6 @@ export const NavBarHeader = styled(Header)`
   display: flex;
   align-items: center;
   border-radius: 20px;
-  box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
   width: 100%;
   margin-bottom: 1rem;
   .anticon {
@@ -181,6 +180,8 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   const selectedKey = router.pathname ?? '';
   const disableSideBarRanking = ['lixi', 'profile'];
   const ref = useRef(null);
+  const notifications = useAppSelector(getAllNotifications);
+
   const setRef = useCallback(node => {
     if (node && node.clientHeight) {
       // Check if a node is actually passed. Otherwise node would be null.
@@ -189,6 +190,17 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
     }
     // Save a reference to the node
     ref.current = node;
+  }, []);
+
+  useEffect(() => {
+    if (selectedAccount) {
+      dispatch(
+        fetchNotifications({
+          accountId: selectedAccount.id,
+          mnemonichHash: selectedAccount.mnemonicHash
+        })
+      );
+    }
   }, []);
 
   injectStore(currentLocale);
@@ -242,7 +254,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                       </div>
                     </Layout>
                   </AppContainer>
-                  <Footer />
+                  <Footer notifications={notifications} />
                 </>
               </AppBody>
             </Layout>

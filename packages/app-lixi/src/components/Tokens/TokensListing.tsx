@@ -45,17 +45,14 @@ import { Counter } from '@components/Common/Counter';
 const StyledTokensListing = styled.div``;
 
 const StyledNavBarHeader = styled.div`
-  header {
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem !important;
-  }
-  .path-name {
+  .navbar-token {
     display: flex;
-    align-items: center;
-    h2 {
-      margin: 0;
-    }
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  h2 {
+    font-size: 32px;
+    line-height: 40px;
   }
 `;
 
@@ -320,19 +317,12 @@ const TokensListing: React.FC = () => {
   return (
     <>
       <StyledNavBarHeader>
-        <NavBarHeader>
-          <div className="path-name">
-            <Link href="/" passHref>
-              <LeftOutlined onClick={() => router.back()} />
-            </Link>
-            <PathDirection>
-              <h2>Tokens</h2>
-            </PathDirection>
-          </div>
+        <div className="navbar-token">
+          <h2>Tokens</h2>
           <Button type="primary" className="outline-btn" onClick={() => setIsModalVisible(!isModalVisible)}>
             {intl.get('token.importToken')}
           </Button>
-        </NavBarHeader>
+        </div>
       </StyledNavBarHeader>
       <StyledTokensListing>
         <Table
@@ -345,6 +335,7 @@ const TokensListing: React.FC = () => {
       </StyledTokensListing>
 
       <Modal
+        className="modal-import-token"
         title={intl.get('token.importToken')}
         visible={isModalVisible}
         onOk={handleSubmit(addTokenbyId)}
@@ -353,7 +344,7 @@ const TokensListing: React.FC = () => {
         destroyOnClose={true}
       >
         <Form>
-          <Form.Item name="tokenId">
+          <Form.Item name="tokenId" style={{ marginBottom: '4px' }}>
             <Controller
               name="tokenId"
               control={control}
@@ -368,7 +359,7 @@ const TokensListing: React.FC = () => {
               )}
             />
           </Form.Item>
-          <p>{errors.tokenId && errors.tokenId.message}</p>
+          <p style={{ color: 'var(--color-danger)' }}>{errors.tokenId && errors.tokenId.message}</p>
         </Form>
       </Modal>
     </>

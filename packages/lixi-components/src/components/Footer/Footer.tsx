@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import intl from 'react-intl-universal';
 import { NavButton } from '../NavButton';
 import { useRouter } from 'next/router';
+import { Badge } from 'antd';
+import { useEffect } from 'react';
 
 const StyledFooter = styled.div`
   border-top: 1px solid ${props => props.theme.wallet.borders.color};
@@ -18,7 +20,7 @@ const StyledFooter = styled.div`
   }
 `;
 
-const Footer: React.FC = () => {
+const Footer = ({ notifications }: { notifications?: any }) => {
   const router = useRouter();
   const currentPathName = router.pathname ?? '';
 
@@ -55,14 +57,25 @@ const Footer: React.FC = () => {
             {intl.get('general.tokens')}
           </NavButton>
         </Link>
-        <Link href="/settings" passHref>
-          <NavButton active={currentPathName == '/settings'}>
-            <img
-              className="ico-img"
-              src={currentPathName == '/settings' ? '/images/ico-setting-active.svg' : '/images/ico-setting.svg'}
-              alt=""
-            />
-            {intl.get('general.settings')}
+        <Link href="/notifications" passHref>
+          <NavButton active={currentPathName == '/notifications'}>
+            <Badge
+              count={notifications?.length}
+              overflowCount={9}
+              offset={[notifications?.length < 10 ? 0 : 5, 8]}
+              color="var(--color-primary)"
+            >
+              <img
+                className="ico-img"
+                src={
+                  currentPathName == '/notifications'
+                    ? '/images/ico-notifications-active.svg'
+                    : '/images/ico-notifications.svg'
+                }
+                alt=""
+              />
+            </Badge>
+            {intl.get('general.notifications')}
           </NavButton>
         </Link>
       </StyledFooter>

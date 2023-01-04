@@ -29,7 +29,7 @@ type EmbedProps = {
   onClick?: () => void;
 };
 
-const CointainerEmbed = styled.div`
+const ContainerEmbed = styled.div`
   .root {
     text-align: center;
     width: 100%;
@@ -73,7 +73,7 @@ export const Embed: React.FC<EmbedProps> = props => {
   };
 
   return (
-    <CointainerEmbed>
+    <ContainerEmbed>
       <div className="root" onClick={handleClick}>
         {social === SocialsEnum.TWITTER && (
           <div className="embed">
@@ -95,6 +95,6 @@ export const Embed: React.FC<EmbedProps> = props => {
           <FacebookEmbed url={url} placeholder={<Spin />} onLoad={e => onLoad(e, social)} onError={onError} />
         )}
       </div>
-    </CointainerEmbed>
+    </ContainerEmbed>
   );
 };
