@@ -199,15 +199,15 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       const burnForId = post.id;
       const burnValue = '1';
       const tipToAddresses: { address: string; amount: string }[] = [];
-      if (post?.postAccount?.address) {
+      if (burnType && post?.postAccount?.address) {
         tipToAddresses.push({
           address: post?.postAccount?.address,
           amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
         });
       }
-      if (post?.pageAccount?.address) {
+      if (post?.page && post.page.address) {
         tipToAddresses.push({
-          address: post?.pageAccount?.address,
+          address: post.page.address,
           amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
         });
       }

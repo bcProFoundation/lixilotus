@@ -32,7 +32,7 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
     } else if (command.burnForType === BurnForType.Post) {
       patches = yield updatePostBurnValue(action);
     } else if (command.burnForType === BurnForType.Comment) {
-      patches = yield put(updateCommentBurnValue(action));
+      patches = yield updateCommentBurnValue(action);
     }
 
     const data: Burn = yield call(burnApi.post, dataApi);
