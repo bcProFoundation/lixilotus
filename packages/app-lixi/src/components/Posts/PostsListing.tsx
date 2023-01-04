@@ -25,6 +25,7 @@ type PostsListingProps = {
 };
 
 const StyledPostsListing = styled.div`
+  margin-top: 1rem;
   #list-virtuoso {
     &::-webkit-scrollbar {
       width: 5px;

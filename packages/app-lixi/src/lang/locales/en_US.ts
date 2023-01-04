@@ -30,7 +30,7 @@ export default {
   'general.tokens': 'Tokens',
   'general.home': 'Home',
   'general.accounts': 'Accounts',
-  'general.lixi': 'Lixi',
+  'general.lixi': 'Lixi management',
   'general.claim': 'Claim',
   'general.settings': 'Settings',
   'general.registerPack': 'Register Pack',
