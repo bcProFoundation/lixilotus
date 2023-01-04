@@ -77,7 +77,7 @@ export type PostsQuery = {
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount: { __typename?: 'Account'; address: string; id: string; name: string };
-        page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+        page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string; address: string } | null;
         token?: { __typename?: 'Token'; id: string; name: string } | null;
       };
     }> | null;

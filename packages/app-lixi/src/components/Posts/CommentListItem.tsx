@@ -64,15 +64,15 @@ const CommentListItem = ({ index, item, post }: CommentListItemProps) => {
       const burnValue = '1';
       // const tipToAddress = comment?.commentAccount?.address ?? undefined;
       const tipToAddresses: { address: string; amount: string }[] = [];
-      if (comment?.commentAccount?.address) {
+      if (burnType && post?.postAccount?.address) {
         tipToAddresses.push({
           address: comment?.commentAccount?.address,
           amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
         });
       }
-      if (post?.pageAccount?.address) {
+      if (post?.page && post.page.address) {
         tipToAddresses.push({
-          address: post?.pageAccount?.address,
+          address: post.page.address,
           amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
         });
       }
