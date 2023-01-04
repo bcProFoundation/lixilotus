@@ -80,6 +80,8 @@ export const ContainerAccess = styled.div`
     .icon-item {
       padding: 6px;
       &.active-item-access {
+        max-width: 50px;
+        margin: auto;
         background: #ffd24d;
         border-radius: 8px;
       }
