@@ -31,6 +31,9 @@ const CardUser = styled.div`
     .card-info {
       text-align: left;
       .name {
+        font-weight: 500;
+        font-size: 16px;
+        letter-spacing: 0.15px;
         margin: 0;
         &:hover {
           text-decoration: underline;
@@ -38,8 +41,9 @@ const CardUser = styled.div`
         }
       }
       .title {
+        letter-spacing: 0.25px;
         margin: 0;
-        color: #898888;
+        color: rgba(30, 26, 29, 0.38);
       }
     }
   }
@@ -66,7 +70,7 @@ const InfoCardUserContainer = styled.div`
 const Action = styled.div`
   cursor: pointer;
   img {
-    width: 24px;
+    width: 27px;
   }
 `;
 
@@ -106,7 +110,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
           </div>
         </CardUser>
         <Action onClick={onClick}>
-          <img src="/images/three-dot-ico.svg" alt="" />
+          <img src="/images/ico-more-vertical.svg" alt="" />
         </Action>
       </InfoCardUserContainer>
     </>

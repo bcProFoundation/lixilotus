@@ -78,6 +78,7 @@ const StyledHeader = styled.div`
   .menu-post-listing {
     .ant-menu-item {
       .ant-menu-title-content {
+        font-size: 16px;
         color: rgba(30, 26, 29, 0.6);
       }
       &.ant-menu-item-selected {

@@ -13,7 +13,7 @@ import { Space, Popover, Comment } from 'antd';
 
 const StyledComment = styled(Comment)`
   border-radius: 5px;
-  border-bottom: 1px solid #e8e8e8;
+  border: 1px solid var(--boder-item-light);
   padding: 5px;
 
   &:hover {

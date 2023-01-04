@@ -23,7 +23,7 @@ const ContainerSideBarContent = styled.div`
   margin: 1rem 0;
 `;
 
-const StyledCointainerAccess = styled.div`
+const StyledContainerAccess = styled.div`
   display: flex;
   flex-direction: column;
   .item-access {
@@ -39,11 +39,11 @@ const StyledCointainerAccess = styled.div`
   }
 `;
 
-const StyledCointainerShortcut = styled.div`
+const StyledContainerShortcut = styled.div`
   padding: 1rem 0;
   margin: 1rem 0;
-  border-top: 1px solid rgba(128, 116, 124, 0.12);
-  border-bottom: 1px solid rgba(128, 116, 124, 0.12);
+  border-top: 1px solid var(--boder-item-light);
+  border-bottom: 1px solid var(--boder-item-light);
   display: flex;
   flex-direction: column;
   h3 {
@@ -81,7 +81,7 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
     <>
       <ContainerSideBarContent onClick={handleOnClick}>
         <SidebarUserLogin />
-        <StyledCointainerShortcut>
+        <StyledContainerShortcut>
           <h3>Your shortcuts</h3>
           {randomShortCut &&
             randomShortCut.map((item, index) => {
@@ -91,8 +91,8 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
                 </>
               );
             })}
-        </StyledCointainerShortcut>
-        <StyledCointainerAccess>
+        </StyledContainerShortcut>
+        <StyledContainerAccess>
           <ItemAccess
             icon={'/images/ico-account.svg'}
             text={intl.get('general.accounts')}
@@ -117,7 +117,7 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
             href={'/settings'}
             direction={'horizontal'}
           />
-        </StyledCointainerAccess>
+        </StyledContainerAccess>
       </ContainerSideBarContent>
     </>
   );

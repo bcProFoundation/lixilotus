@@ -70,7 +70,7 @@ export const StyledPopover = styled(Popover)`
 
 const StyledComment = styled(Comment)`
   border-radius: 5px;
-  border-bottom: 1px solid #e8e8e8;
+  border: 1px solid var(--boder-item-light);
   padding: 5px;
 
   &:hover {
@@ -113,6 +113,7 @@ const StyledSwipeToDelete = styled(SwipeToDelete)`
 const StyledHeader = styled.div`
   display: flex;
   justify-content: space-between;
+  margin-bottom: 1rem;
 `;
 
 const StyledReadAll = styled.div`

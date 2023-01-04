@@ -85,6 +85,7 @@ const Content = styled.div`
   .description-post {
     text-align: left;
     word-break: break-word;
+    font-size: 16px;
     @media (max-width: 960px) {
       div {
         &[data-lexical-decorator='true'] > div > div {
@@ -207,6 +208,7 @@ const PostListItemContainer = styled(List.Item)`
   background: white;
   padding: 0;
   border: none;
+  border: 1px solid var(--boder-item-light);
   &:hover {
     // background: #f7f7f7;
   }

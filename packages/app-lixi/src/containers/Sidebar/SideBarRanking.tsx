@@ -36,7 +36,7 @@ export const ShortcutItemAccess = ({
     <a>
       <Space className={'item-access'}>
         <img style={{ borderRadius: '50%' }} width={48} height={48} src={icon ? icon : '/images/xpi.svg'} alt="" />
-        <p style={{ margin: '0', color: '#000' }}>{text}</p>
+        <p style={{ margin: '0', color: '#1E1A1D', fontSize: '16px', letterSpacing: '0.5px' }}>{text}</p>
       </Space>
     </a>
   </Link>
@@ -115,6 +115,7 @@ const RankingSideBar = styled(Sider)`
       background: white;
       border-radius: 24px;
       padding: 24px 16px 1rem 24px;
+      border: 1px solid var(--boder-item-light);
       &.your-shortcuts {
         margin-bottom: 1rem;
         padding: 24px;
@@ -192,14 +193,19 @@ const ManageAccounts = styled.div`
   padding: 1rem 2rem;
   border-radius: 20px;
   background: white;
+  border: 1px solid var(--boder-item-light);
   h2 {
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 28px;
+    color: #1e1a1d;
     text-align: left;
   }
   .sub-account {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid rgba(128, 116, 124, 0.12);
+    border-bottom: 1px solid var(--boder-item-light);
     padding: 1rem 0;
     .sub-account-info {
       text-align: left;
@@ -256,7 +262,7 @@ const StyledTabs = styled(Tabs)`
   .anticon {
     color: rgba(30, 26, 29, 0.38);
     margin: 0;
-    font-size: 32px;
+    font-size: 28px;
   }
 
   .ant-tabs-tab {

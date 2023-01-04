@@ -41,7 +41,7 @@ const BannerTicker = styled.div`
   gap: 2rem;
   padding: 2rem;
   background: linear-gradient(0deg, rgba(158, 42, 156, 0.14), rgba(158, 42, 156, 0.14)), #fffbff;
-  border: 1px solid rgba(128, 116, 124, 0.12);
+  border: 1px solid var(--boder-item-light);
   border-radius: 24px;
   .avatar-ticker {
     img {

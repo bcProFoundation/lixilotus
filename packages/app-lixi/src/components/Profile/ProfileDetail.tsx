@@ -147,9 +147,9 @@ const LegacyProfile = styled.div`
 
 const AboutBox = styled.div`
   background: #ffffff;
-  box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
   border-radius: 24px;
   margin-bottom: 1rem;
+  border: 1px solid var(--boder-item-light);
   padding: 24px;
   h3 {
     text-align: left;
@@ -167,9 +167,9 @@ const AboutBox = styled.div`
 
 const PictureBox = styled.div`
   background: #ffffff;
-  box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
   border-radius: 24px;
   margin-bottom: 1rem;
+  border: 1px solid var(--boder-item-light);
   padding: 24px;
   h3 {
     text-align: left;
@@ -199,10 +199,10 @@ const PictureBox = styled.div`
 
 const FriendBox = styled.div`
   background: #ffffff;
-  box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
   border-radius: 24px;
   margin-bottom: 1rem;
   padding: 24px;
+  border: 1px solid var(--boder-item-light);
   h3 {
     text-align: left;
   }
@@ -275,13 +275,11 @@ const StyledSpace = styled(Space)`
 
 const StyledMenu = styled(Tabs)`
   .ant-tabs-nav {
-    box-shadow: rgb(0 0 0 / 5%) 0px 2px 10px;
     border-bottom-right-radius: 20px;
     border-bottom-left-radius: 20px;
     padding: 1rem 24px;
-    border-top: 1px solid rgba(128, 116, 124, 0.12);
+    border: 1px solid var(--boder-item-light);
     background: white;
-    border-bottom: 0;
   }
   .ant-tabs-tabpane {
     gap: 1rem;

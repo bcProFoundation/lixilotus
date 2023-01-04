@@ -41,9 +41,6 @@ export const WelcomeLink = styled.a`
 export const Onboarding = styled.div`
   padding: 10px 30px 20px 30px;
   background: #fff;
-  -webkit-box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
-  -moz-box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
-  box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
   border-radius: 20px;
 `;
 
