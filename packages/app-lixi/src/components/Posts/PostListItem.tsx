@@ -85,6 +85,7 @@ const Content = styled.div`
   .description-post {
     text-align: left;
     word-break: break-word;
+    font-size: 16px;
     @media (max-width: 960px) {
       div {
         &[data-lexical-decorator='true'] > div > div {
@@ -207,6 +208,7 @@ const PostListItemContainer = styled(List.Item)`
   background: white;
   padding: 0;
   border: none;
+  border: 1px solid var(--boder-item-light);
   &:hover {
     // background: #f7f7f7;
   }
@@ -307,15 +309,15 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
       const burnForId = post.id;
       const burnValue = '1';
       const tipToAddresses: { address: string; amount: string }[] = [];
-      if (post?.postAccount?.address) {
+      if (burnType && post?.postAccount?.address) {
         tipToAddresses.push({
           address: post?.postAccount?.address,
           amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
         });
       }
-      if (post?.pageAccount?.address) {
+      if (post?.page && post.page.address) {
         tipToAddresses.push({
-          address: post?.pageAccount?.address,
+          address: post.page.address,
           amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
         });
       }

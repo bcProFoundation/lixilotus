@@ -17,6 +17,7 @@ import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
 import { useRouter } from 'next/router';
 import { navBarHeaderList } from '@components/Common/navBarHeaderList';
 import { Footer } from '@bcpros/lixi-components/components';
+import { getAllNotifications } from '@store/notification/selectors';
 
 const { Content, Sider, Header } = Layout;
 
@@ -24,8 +25,6 @@ export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
 
 const LixiApp = styled.div`
   text-align: center;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif,
-    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   background-color: ${props => props.theme.app.background};
 `;
 
@@ -45,7 +44,6 @@ const NavBarHeader = styled(Header)`
   display: flex;
   align-items: center;
   border-radius: 20px;
-  box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
   width: 100%;
   margin-bottom: 1rem;
   .anticon {
@@ -77,7 +75,6 @@ export const AppContainer = styled.div`
   position: relative;
   width: 100%;
   background-color: ${props => props.theme.footerBackground};
-  padding: 10px 16px;
   height: 100vh;
   overflow: hidden;
   background: ${props => props.theme.wallet.background};
@@ -111,6 +108,8 @@ const PageDetailLayout: React.FC = (props: PageDetailsLayoutProps) => {
   const selectedKey = router.pathname ?? '';
   const [navBarTitle, setNavBarTitle] = useState('');
   const ref = useRef(null);
+  const notifications = useAppSelector(getAllNotifications);
+
   const setRef = useCallback(node => {
     if (node && node.clientHeight) {
       // Check if a node is actually passed. Otherwise node would be null.
@@ -159,7 +158,7 @@ const PageDetailLayout: React.FC = (props: PageDetailsLayoutProps) => {
                       </Layout>
                     </Layout>
                   </AppContainer>
-                  <Footer />
+                  <Footer notifications={notifications} />
                 </>
               </AppBody>
             </Layout>

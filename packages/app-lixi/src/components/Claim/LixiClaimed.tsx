@@ -203,7 +203,6 @@ const LixiClaimed = ({ className, claim, isMobile, lixi }: LixiClaimProps) => {
 
 const Container = styled(LixiClaimed)`
   background: #ffffff;
-  box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
   border-radius: 24px;
   padding: 2rem;
   margin-bottom: 2rem;

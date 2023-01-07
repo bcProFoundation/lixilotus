@@ -41,29 +41,34 @@ const TransactionHistory = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
+    font-weight: 400;
     font-size: 22px;
-    font-weight: 600;
+    line-height: 28px;
+    color: #1e1a1d;
     span {
       font-size: 17px;
     }
   }
   .content-transaction {
+    margin-top: 1rem;
     height: 400px;
     overflow: scroll;
     .tx-history-header {
       text-align: left;
-      color: rgba(28, 55, 69, 0.6);
-      letter-spacing: 0.4px;
-      font-size: 11px;
       text-transform: uppercase;
       margin: 12px 0;
-      font-weight: 600;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 16px;
+      letter-spacing: 0.5px;
+      color: #4e444b;
     }
     .ant-list-item {
-      border: none;
-      background: #fafafb;
       padding: 1rem;
-      margin-bottom: 4px;
+      border: 1px solid rgba(128, 116, 124, 0.12) !important;
+      border-radius: 1rem;
+      background: #fff;
+      margin-bottom: 8px;
       .ant-list-item-meta-content {
         display: flex;
         flex-direction: column;

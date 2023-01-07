@@ -156,14 +156,13 @@ export const WrapperPage = styled.div`
   padding: 20px 30px;
   background: #fff;
   border-radius: 20px;
-  box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
+  border: 1px solid var(--boder-item-light);
 `;
 
 export const WrapperPost = styled.div`
   padding: 20px 30px;
   background: #fff;
   border-radius: 20px;
-  box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
 `;
 
 const GeneralSettingsItem = styled.div`

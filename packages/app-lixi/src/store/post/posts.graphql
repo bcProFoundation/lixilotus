@@ -28,7 +28,7 @@ query Posts(
     pageInfo {
       ...PageInfoFields
     }
-  },
+  }
 }
 
 query OrphanPosts(
@@ -147,13 +147,7 @@ query PostsByTokenId(
   }
 }
 
-query PostsBySearch(
-  $after: String
-  $before: String
-  $first: Int
-  $last: Int
-  $query: String
-) {
+query PostsBySearch($after: String, $before: String, $first: Int, $last: Int, $query: String) {
   allPostsBySearch(after: $after, before: $before, first: $first, last: $last, query: $query) {
     edges {
       cursor
@@ -192,6 +186,7 @@ fragment PostFields on Post {
     avatar
     name
     id
+    address
   }
   token {
     id

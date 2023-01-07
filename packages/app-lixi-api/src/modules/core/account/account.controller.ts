@@ -381,8 +381,6 @@ export class AccountController {
     const accountId = _.toSafeInteger(id);
     try {
       let lixies = [];
-      let subLixies: LixiDb[] = [];
-
       lixies = await this.prisma.lixi.findMany({
         where: {
           AND: [{ accountId: accountId }, { parentId: null }]
@@ -390,37 +388,39 @@ export class AccountController {
       });
 
       const lixiesIds = lixies.map(item => item.id);
-      const results = lixies.map(async item => {
-        const subLixies = await this.prisma.lixi.groupBy({
-          _sum: {
-            amount: true,
-            totalClaim: true
-          },
-          where: {
-            parentId: { in: lixiesIds }
-          },
-          by: ['parentId']
-        });
+      const results = await Promise.all(
+        lixies.map(async item => {
+          const subLixies = await this.prisma.lixi.groupBy({
+            _sum: {
+              amount: true,
+              totalClaim: true
+            },
+            where: {
+              parentId: { in: lixiesIds }
+            },
+            by: ['parentId']
+          });
 
-        let subLixiBalance = 0;
-        let subLixiTotalClaim = 0;
-        subLixies.map(subLixi => {
-          if (subLixi.parentId == item.id) {
-            subLixiBalance = Number(subLixi._sum.amount);
-            subLixiTotalClaim = fromSmallestDenomination(Number(subLixi._sum.totalClaim));
-          }
-        });
+          let subLixiBalance = 0;
+          let subLixiTotalClaim = 0;
+          subLixies.map(subLixi => {
+            if (subLixi.parentId == item.id) {
+              subLixiBalance = Number(subLixi._sum.amount);
+              subLixiTotalClaim = fromSmallestDenomination(Number(subLixi._sum.totalClaim));
+            }
+          });
 
-        return {
-          ...item,
-          totalClaim: Number(item.totalClaim),
-          lixiType: Number(item.lixiType),
-          maxClaim: Number(item.maxClaim),
-          claimedNum: Number(item.claimedNum),
-          subLixiTotalClaim: _.isNaN(subLixiTotalClaim) ? 0 : subLixiTotalClaim,
-          subLixiBalance: _.isNaN(subLixiBalance) ? 0 : subLixiBalance
-        } as unknown as Lixi;
-      });
+          return {
+            ...item,
+            totalClaim: Number(item.totalClaim),
+            lixiType: Number(item.lixiType),
+            maxClaim: Number(item.maxClaim),
+            claimedNum: Number(item.claimedNum),
+            subLixiTotalClaim: _.isNaN(subLixiTotalClaim) ? 0 : subLixiTotalClaim,
+            subLixiBalance: _.isNaN(subLixiBalance) ? 0 : subLixiBalance
+          } as unknown as Lixi;
+        })
+      );
 
       return results ?? [];
     } catch (err) {

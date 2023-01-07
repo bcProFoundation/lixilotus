@@ -30,7 +30,7 @@ export default {
   'general.tokens': 'Tokens',
   'general.home': 'Nhà',
   'general.accounts': 'Tài khoản',
-  'general.lixi': 'Lì xì',
+  'general.lixi': 'Quản lý lì xì',
   'general.claim': 'Nhận Lì xì',
   'general.settings': 'Cài đặt',
   'general.registerPack': 'Đăng ký Pack Lì xì',

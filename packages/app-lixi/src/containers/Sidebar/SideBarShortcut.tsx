@@ -62,12 +62,13 @@ export const ItemAccessBarcode = ({
   </Link>
 );
 
-export const CointainerAccess = styled.div`
+export const ContainerAccess = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: 100vh;
   background: linear-gradient(0deg, rgba(158, 42, 156, 0.08), rgba(158, 42, 156, 0.08)), #fffbff;
+  border-right: 1px solid #f4e3f4;
   .item-access {
     margin-bottom: 2rem;
     cursor: pointer;
@@ -79,6 +80,8 @@ export const CointainerAccess = styled.div`
     .icon-item {
       padding: 6px;
       &.active-item-access {
+        max-width: 50px;
+        margin: auto;
         background: #ffd24d;
         border-radius: 8px;
       }
@@ -222,7 +225,7 @@ const SidebarShortcut = () => {
   return (
     <>
       <ShortcutSideBar id="short-cut-sidebar" ref={refSidebarShortcut} onScroll={e => triggerSrollbar(e)}>
-        <CointainerAccess>
+        <ContainerAccess>
           <div className="wrapper">
             <StyledLogo>
               <Link href="/" passHref>
@@ -323,9 +326,11 @@ const SidebarShortcut = () => {
                 <img style={{ marginBottom: '2rem' }} src="/images/ico-notifications.svg" alt="" />
               </Badge>
             </Popover>
-            <img width={56} height={56} src="/images/anonymous-ava.svg" alt="" />
+            <Link href={'/wallet'}>
+              <img width={56} height={56} src="/images/anonymous-ava.svg" alt="" />
+            </Link>
           </UserControl>
-        </CointainerAccess>
+        </ContainerAccess>
       </ShortcutSideBar>
     </>
   );

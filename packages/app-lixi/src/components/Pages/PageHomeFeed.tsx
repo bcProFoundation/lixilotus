@@ -68,9 +68,10 @@ const ToolboxBar = styled.div`
 const BlankPage = styled.div`
 display: flex;
 background: #FFFFFF;
-border: 1px solid rgba(128, 116, 124, 0.12);
+border: 1px solid var(--boder-item-light);
 border-radius: 24px;
 padding: 2rem 3rem;
+
 img {
     border-radius: 20%;
 }
@@ -91,10 +92,22 @@ div {
 
 const PagesContainer = styled.div`
   margin-top: 1rem;
+  h2 {
+    font-size: 22px;
+  }
 `;
 
 const YourPageContainer = styled.div`
   margin-top: 1rem;
+  h2 {
+    font-size: 22px;
+  }
+  .sub-page {
+    font-weight: 400;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    color: rgba(30, 26, 29, 0.6);
+  }
 `;
 
 const ListCard = styled.div``;
@@ -122,7 +135,7 @@ const StyledCardPage = styled.div`
     padding-right: 0;
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
-    border: 1px solid rgba(128, 116, 124, 0.12);
+    border: 1px solid var(--boder-item-light);
     .wrapper-avatar {
       left: auto;
       top: -35px;
@@ -295,14 +308,12 @@ const PageHome = () => {
             <BlankPage>
               <img src="/images/page-blank.svg" alt="" />
               <div>
-                <p>
+                <p className="sub-page">
                   A Page is a space where people can publicly connect with your business, personal brand or
                   organisation. You can do things such as showcase products and services, collect donations{' '}
                 </p>
                 <Link href="/page/create" passHref>
-                  <Button type="primary" className="outline-btn">
-                    Create your page
-                  </Button>
+                  <Button type="primary">Create your page</Button>
                 </Link>
               </div>
             </BlankPage>

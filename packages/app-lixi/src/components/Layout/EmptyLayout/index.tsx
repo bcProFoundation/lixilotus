@@ -22,8 +22,6 @@ export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
 
 const LixiApp = styled.div`
   text-align: center;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif,
-    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   background-color: ${props => props.theme.app.background};
 `;
 
@@ -43,7 +41,6 @@ const NavBarHeader = styled(Header)`
   display: flex;
   align-items: center;
   border-radius: 20px;
-  box-shadow: 0px 2px 10px rgb(0 0 0 / 5%);
   width: 100%;
   margin-bottom: 1rem;
   .anticon {
@@ -61,7 +58,6 @@ export const AppContainer = styled.div`
   width: 100%;
   background-color: ${props => props.theme.footerBackground};
   min-height: 100vh;
-  padding: 10px 16px;
   height: 100vh;
   overflow: hidden;
   background: ${props => props.theme.wallet.background};
