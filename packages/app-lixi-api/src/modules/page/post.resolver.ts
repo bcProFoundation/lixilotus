@@ -505,11 +505,16 @@ export class PostResolver {
 
   @ResolveField('pageAccount', () => Account)
   async pageAccount(@Parent() post: Post) {
-    const account = this.prisma.account.findFirst({
-      where: {
-        id: post.pageAccountId
-      }
-    });
+    let account;
+    if (post.pageId) {
+      account = this.prisma.account.findFirst({
+        where: {
+          page: {
+            id: post.pageId
+          }
+        }
+      });
+    }
 
     return account;
   }

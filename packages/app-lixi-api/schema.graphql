@@ -168,8 +168,8 @@ type Post {
   lotusBurnScore: Float!
   lotusBurnUp: Float!
   page: Page
-  pageAccount: Account!
-  pageAccountId: Int!
+  pageAccount: Account
+  pageAccountId: Int
   pageId: String
   postAccount: Account!
   postAccountId: Int!
