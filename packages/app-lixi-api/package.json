@@ -23,7 +23,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "seed": "ts-node scripts/meilisearch/index.ts"
+    "indexing": "ts-node scripts/meilisearch/index.ts"
   },
   "dependencies": {
     "@bcpros/lixi-models": "^1.1.3",
