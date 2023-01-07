@@ -244,9 +244,10 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                             paddingRight: disableSideBarRanking.some(item => selectedKey.includes(item)) ? '2rem' : '0',
                             maxWidth: disableSideBarRanking.some(item => selectedKey.includes(item)) ? '100%' : ''
                           }}
+                          id="scrollableDiv"
                         >
                           <Topbar ref={setRef} />
-                          <Content className="content-layout">{children}</Content>
+                          {children}
                         </Layout>
                         {!disableSideBarRanking.some(item => selectedKey.includes(item)) && (
                           <SidebarRanking></SidebarRanking>

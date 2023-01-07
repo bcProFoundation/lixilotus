@@ -19,6 +19,7 @@ import SearchBox from '../Common/SearchBox';
 import intl from 'react-intl-universal';
 import { LoadingOutlined } from '@ant-design/icons';
 import PostListItem from './PostListItem';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 type PostsListingProps = {
   className?: string;
@@ -95,7 +96,7 @@ const StyledHeader = styled.div`
   }
 `;
 const menuItems = [
-  { label: 'Top', key: 'top' },
+  // { label: 'Top', key: 'top' },
   { label: 'All', key: 'all' }
   // { label: 'New', key: 'new' },
   // {
@@ -116,7 +117,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchValue, setSearchValue] = useState<string | null>(null);
   const refPostsListing = useRef<HTMLDivElement | null>(null);
-  const [tab, setTab] = useState<any>('top');
+  const [tab, setTab] = useState<any>('all');
   const [queryPostTrigger, queryPostResult] = useLazyPostQuery();
   const latestBurnForPost = useAppSelector(getLatestBurnForPost);
 
@@ -224,6 +225,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         }
         return;
       case 'all':
+        console.log(hasNext);
         if (hasNext && !isFetching) {
           fetchNext();
         } else if (hasNext) {
@@ -301,7 +303,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
           })
         );
         postApi.util.invalidateTags(['Post']);
-        refetch();
       }
     })();
   }, [latestBurnForPost]);
@@ -325,39 +326,66 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         );
       case 'all':
         return (
-          <Virtuoso
-            id="list-virtuoso"
-            onScroll={e => triggerSrollbar(e)}
-            style={{ height: '100vh', paddingBottom: '2rem' }}
-            data={data}
-            endReached={loadMoreItems}
-            overscan={3000}
-            itemContent={(index, item) => {
-              return <PostListItem index={index} item={item} />;
-            }}
-            components={{ Header, Footer }}
-          />
+          // Just in case for future usage
+          // <Virtuoso
+          //   id="list-virtuoso"
+          //   onScroll={e => triggerSrollbar(e)}
+          //   style={{ height: '100vh', paddingBottom: '2rem' }}
+          //   data={data}
+          //   endReached={loadMoreItems}
+          //   overscan={3000}
+          //   itemContent={(index, item) => {
+          //     return <PostListItem index={index} item={item} />;
+          //   }}
+          //   components={{ Header, Footer }}
+          // />
+          <React.Fragment>
+            <Header />
+            <InfiniteScroll
+              dataLength={data.length}
+              next={loadMoreItems}
+              hasMore={hasNext}
+              loader={<Skeleton avatar active />}
+              endMessage={
+                <p style={{ textAlign: 'center' }}>
+                  <b>{"It's so empty here..."}</b>
+                </p>
+              }
+              scrollableTarget="scrollableDiv"
+            >
+              {data.map((item, index) => {
+                return <PostListItem index={index} item={item} key={item.id} />;
+              })}
+            </InfiniteScroll>
+          </React.Fragment>
         );
     }
   };
 
-  //TODO: Data not consistent when change tab
   return (
     <StyledPostsListing ref={refPostsListing}>
       {!searchValue ? (
         showPosts()
       ) : (
-        <Virtuoso
-          className="custom-query-list"
-          style={{ height: '100vh', paddingBottom: '2rem' }}
-          data={queryData}
-          endReached={loadMoreQueryItems}
-          overscan={3000}
-          itemContent={(index, item) => {
-            return <PostListItem index={index} item={item} searchValue={searchValue} />;
-          }}
-          components={{ Header: QueryHeader, Footer: QueryFooter }}
-        />
+        <React.Fragment>
+          <QueryHeader />
+          <InfiniteScroll
+            dataLength={queryData.length}
+            next={loadMoreQueryItems}
+            hasMore={hasNextQuery}
+            loader={<Skeleton avatar active />}
+            endMessage={
+              <p style={{ textAlign: 'center' }}>
+                <b>{"It's so empty here..."}</b>
+              </p>
+            }
+            scrollableTarget="scrollableDiv"
+          >
+            {queryData.map((item, index) => {
+              return <PostListItem index={index} item={item} key={item.id} />;
+            })}
+          </InfiniteScroll>
+        </React.Fragment>
       )}
     </StyledPostsListing>
   );
