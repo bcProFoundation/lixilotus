@@ -28916,6 +28916,11 @@ string-similarity@^4.0.1:
   resolved "https://registry.yarnpkg.com/string-similarity/-/string-similarity-4.0.4.tgz#42d01ab0b34660ea8a018da8f56a3309bb8b2a5b"
   integrity sha512-/q/8Q4Bl4ZKAPjj8WerIBJWALKkaPRfrvhfF8k/B23i4nzrlRj2/go1m90In7nG/3XDSbOo0+pu6RvCTM9RGMQ==
 
+string-strip-html@^8.3.0:
+  version "8.4.0"
+  resolved "https://registry.yarnpkg.com/string-strip-html/-/string-strip-html-8.4.0.tgz#3baf7fc56ef566393077a6941e8ba13c91b43d0b"
+  integrity sha512-ajjEpk0V1G0+/RrX08I2pSj/kfsYU5wkUKWEKPQJXVQpdahZNSljiuWVqf8UgrB2E9DvFcougbl1gPwHzkuEDg==
+
 string-width@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-1.0.2.tgz#118bdf5b8cdc51a2a7e70d211e07e2b0b9b107d3"
