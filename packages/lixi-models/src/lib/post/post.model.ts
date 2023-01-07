@@ -20,10 +20,10 @@ export class Post {
   @Field(() => Account)
   postAccount: Account;
 
-  @Field(() => Number)
+  @Field(() => Number, { nullable: true })
   pageAccountId?: number;
 
-  @Field(() => Account)
+  @Field(() => Account, { nullable: true })
   pageAccount?: Account;
 
   @Field(() => String, { nullable: true })

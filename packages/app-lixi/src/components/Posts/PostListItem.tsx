@@ -21,6 +21,7 @@ import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled from 'styled-components';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { useRouter } from 'next/router';
+import { getSelectedAccount } from '@store/account/selectors';
 
 const URL_SERVER_IMAGE = 'https://s3.us-west-001.backblazeb2.com';
 
@@ -238,6 +239,7 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
   const { burnXpi } = useXPI();
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
+  const selectedAccount = useAppSelector(getSelectedAccount);
 
   if (!post) return null;
 
@@ -309,15 +311,15 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
       const burnForId = post.id;
       const burnValue = '1';
       const tipToAddresses: { address: string; amount: string }[] = [];
-      if (burnType && post?.postAccount?.address) {
+      if (burnType && post?.postAccount?.address && post?.postAccount?.address !== selectedAccount.address) {
         tipToAddresses.push({
           address: post?.postAccount?.address,
           amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
         });
       }
-      if (post?.page && post.page.address) {
+      if (post.pageAccount && post.pageAccount.address && post.pageAccount.address !== selectedAccount.address) {
         tipToAddresses.push({
-          address: post.page.address,
+          address: post.pageAccount.address,
           amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
         });
       }
