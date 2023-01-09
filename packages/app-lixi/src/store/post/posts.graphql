@@ -40,7 +40,15 @@ query OrphanPosts(
   $query: String
   $skip: Int
 ) {
-  allOrphanPosts(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, query: $query, skip: $skip) {
+  allOrphanPosts(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    query: $query
+    skip: $skip
+  ) {
     totalCount
     edges {
       cursor
@@ -51,7 +59,7 @@ query OrphanPosts(
     pageInfo {
       ...PageInfoFields
     }
-  },
+  }
 }
 
 query PostsByPageId(
@@ -186,7 +194,6 @@ fragment PostFields on Post {
     avatar
     name
     id
-    address
   }
   token {
     id

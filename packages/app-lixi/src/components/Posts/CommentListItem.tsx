@@ -4,6 +4,7 @@ import { Counter } from '@components/Common/Counter';
 import { currency } from '@components/Common/Ticker';
 import { WalletContext } from '@context/walletProvider';
 import useXPI from '@hooks/useXPI';
+import { getSelectedAccount } from '@store/account/selectors';
 import { burnForUpDownVote } from '@store/burn/actions';
 import { CommentQuery } from '@store/comment/comments.generated';
 import { PostsQuery } from '@store/post/posts.generated';
@@ -41,6 +42,7 @@ const CommentListItem = ({ index, item, post }: CommentListItemProps) => {
   const { burnXpi } = useXPI();
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
+  const selectedAccount = useAppSelector(getSelectedAccount);
 
   const upVoteComment = (dataItem: CommentItem) => {
     handleBurnForComment(true, dataItem);
@@ -64,15 +66,15 @@ const CommentListItem = ({ index, item, post }: CommentListItemProps) => {
       const burnValue = '1';
       // const tipToAddress = comment?.commentAccount?.address ?? undefined;
       const tipToAddresses: { address: string; amount: string }[] = [];
-      if (burnType && post?.postAccount?.address) {
+      if (burnType && post?.postAccount?.address && post?.postAccount?.address !== selectedAccount.address) {
         tipToAddresses.push({
           address: comment?.commentAccount?.address,
           amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
         });
       }
-      if (post?.page && post.page.address) {
+      if (post?.page && post.pageAccount.address && post?.pageAccount?.address !== selectedAccount.address) {
         tipToAddresses.push({
-          address: post.page.address,
+          address: post.pageAccount.address,
           amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
         });
       }

@@ -192,6 +192,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const QueryHeader = () => {
     return (
       <div>
+        <SearchBox searchPost={searchPost} value={searchValue} />
         <h1 style={{ textAlign: 'left', fontSize: '20px' }}>
           {intl.get('general.searchResults', { text: searchValue })}
         </h1>
