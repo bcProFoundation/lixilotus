@@ -72,7 +72,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
       <Space direction="horizontal" size={15}>
         {/* <Button type="text" icon={<SearchOutlined style={{ fontSize: '18px', color: '4E444B' }} />}></Button> */}
         <Link href={'/wallet'}>
-          <AvatarUser name={selectedAccount?.name} />
+          <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
         </Link>
       </Space>
     </Header>

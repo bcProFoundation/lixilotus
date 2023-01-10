@@ -16,13 +16,7 @@ type AvatarUserProps = {
 };
 
 export const AvatarUser = (props: AvatarUserProps) => {
-  const [name, setName] = useState('');
-  const [isMarginRight, setIsMarginRight] = useState(true);
-
-  useEffect(() => {
-    setName(props.name);
-    setIsMarginRight(props.isMarginRight);
-  }, [props.isMarginRight, props.name]);
+  const { name, isMarginRight } = props;
 
   const transformShortName = (name: string) => {
     let shortName = '';
