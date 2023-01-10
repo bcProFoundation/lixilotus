@@ -194,8 +194,8 @@ export type Post = {
   lotusBurnScore: Scalars['Float'];
   lotusBurnUp: Scalars['Float'];
   page?: Maybe<Page>;
-  pageAccount?: Maybe<Account>;
-  pageAccountId?: Maybe<Scalars['Int']>;
+  pageAccount: Account;
+  pageAccountId: Scalars['Int'];
   pageId?: Maybe<Scalars['String']>;
   postAccount: Account;
   postAccountId: Scalars['Int'];
