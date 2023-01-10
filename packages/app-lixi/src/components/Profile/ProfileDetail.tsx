@@ -108,6 +108,7 @@ const ProfileCardHeader = styled.div`
       h2 {
         font-weight: 600;
         margin-bottom: 0;
+        text-transform: capitalize;
       }
     }
     .action-profile {
@@ -395,16 +396,19 @@ const ProfileDetail = ({ user, isMobile }: UserDetailProps) => {
               <picture>
                 <img className="avatar-img" src={userDetailData.avatar || '/images/default-avatar.jpg'} alt="" />
               </picture>
-              {selectedAccountId == userDetailData.id && (
+              {/* TODO: implement in the future */}
+              {/* {selectedAccountId == userDetailData.id && (
                 <div className="btn-upload-avatar" onClick={navigateEditPage}>
                   <CameraOutlined />
                 </div>
-              )}
+              )} */}
             </div>
             <div className="title-profile">
               <h2>{userDetailData.name}</h2>
+              <p className="add">{userDetailData?.address.slice(6, 11) + '...' + userDetailData?.address.slice(-5)}</p>
             </div>
-            {selectedAccountId == userDetailData.id && (
+            {/* TODO: implement in the future */}
+            {/* {selectedAccountId == userDetailData.id && (
               <div className="action-profile">
                 <Button
                   style={{ marginRight: '1rem' }}
@@ -420,13 +424,14 @@ const ProfileDetail = ({ user, isMobile }: UserDetailProps) => {
                   Edit cover photo
                 </Button>
               </div>
-            )}
+            )} */}
           </div>
         </ProfileCardHeader>
         <ProfileContentContainer>
           <StyledMenu defaultActiveKey="post">
             <Tabs.TabPane tab="Post" key="post">
-              <LegacyProfile>
+              {/* TODO: implement in the future */}
+              {/* <LegacyProfile>
                 <AboutBox>
                   <h3>About</h3>
                   {userDetailData && (
@@ -522,7 +527,7 @@ const ProfileDetail = ({ user, isMobile }: UserDetailProps) => {
                     </div>
                   )}
                 </FriendBox>
-              </LegacyProfile>
+              </LegacyProfile> */}
               <ContentTimeline>
                 <SearchBox />
                 <Timeline>
@@ -562,9 +567,10 @@ const ProfileDetail = ({ user, isMobile }: UserDetailProps) => {
                 </Timeline>
               </ContentTimeline>
             </Tabs.TabPane>
-            <Tabs.TabPane tab="About" key="about"></Tabs.TabPane>
+            {/* TODO: implement in the future */}
+            {/* <Tabs.TabPane tab="About" key="about"></Tabs.TabPane>
             <Tabs.TabPane tab="Friend" key="friend"></Tabs.TabPane>
-            <Tabs.TabPane tab="Picture" key="picture"></Tabs.TabPane>
+            <Tabs.TabPane tab="Picture" key="picture"></Tabs.TabPane> */}
           </StyledMenu>
         </ProfileContentContainer>
       </StyledContainerProfileDetail>

@@ -28,7 +28,6 @@ const UnlockButton = styled(PrimaryButton)`
   }
 
   @media (max-width: 768px) {
-    font-size: 16px;
     padding: 15px 20px;
   }
 

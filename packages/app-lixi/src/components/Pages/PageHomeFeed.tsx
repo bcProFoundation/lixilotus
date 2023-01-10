@@ -104,7 +104,7 @@ const YourPageContainer = styled.div`
   }
   .sub-page {
     font-weight: 400;
-    font-size: 16px;
+    font-size: 14px;
     letter-spacing: 0.5px;
     color: rgba(30, 26, 29, 0.6);
   }
@@ -155,7 +155,7 @@ const StyledCardPage = styled.div`
       text-align: center;
       .page-name {
         font-weight: 500;
-        font-size: 16px;
+        font-size: 14px;
         line-height: 24px;
         letter-spacing: 0.15px;
         color: #1e1a1d;

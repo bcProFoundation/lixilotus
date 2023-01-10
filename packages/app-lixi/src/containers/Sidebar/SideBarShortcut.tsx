@@ -13,6 +13,7 @@ import intl from 'react-intl-universal';
 import { getAllNotifications } from '@store/notification/selectors';
 import NotificationPopup from '@components/NotificationPopup';
 import { fetchNotifications } from '@store/notification/actions';
+import { AvatarUser } from '@components/Common/AvatarUser';
 
 const { Sider } = Layout;
 
@@ -87,7 +88,7 @@ export const ContainerAccess = styled.div`
       }
     }
     .text-item {
-      font-size: 16px;
+      font-size: 14px;
       font-weight: 400;
       letter-spacing: 0.5px;
       color: #4e444b;
@@ -235,7 +236,7 @@ const SidebarShortcut = () => {
             <ItemAccess
               icon={'/images/ico-home.svg'}
               text={intl.get('general.home')}
-              active={currentPathName === '/'}
+              active={currentPathName === '/' || currentPathName.includes('/post')}
               key="home"
               href={'/'}
             />
@@ -327,7 +328,7 @@ const SidebarShortcut = () => {
               </Badge>
             </Popover>
             <Link href={'/wallet'}>
-              <img width={56} height={56} src="/images/anonymous-ava.svg" alt="" />
+              <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
             </Link>
           </UserControl>
         </ContainerAccess>

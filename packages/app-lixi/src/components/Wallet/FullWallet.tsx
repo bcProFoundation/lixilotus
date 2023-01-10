@@ -77,7 +77,7 @@ const TransactionHistory = styled.div`
           margin-bottom: 0;
         }
         .amount {
-          font-size: 16px;
+          font-size: 14px;
           &.increase {
             color: #37a372;
           }

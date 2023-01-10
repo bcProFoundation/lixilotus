@@ -10,6 +10,7 @@ import { getSelectedAccount } from '@store/account/selectors';
 import { fetchNotifications, startChannel, stopChannel } from '@store/notification/actions';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { AvatarUser } from '@components/Common/AvatarUser';
 
 export type TopbarProps = {
   className?: string;
@@ -71,7 +72,7 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
       <Space direction="horizontal" size={15}>
         {/* <Button type="text" icon={<SearchOutlined style={{ fontSize: '18px', color: '4E444B' }} />}></Button> */}
         <Link href={'/wallet'}>
-          <img width={40} height={40} src="/images/anonymous-ava.svg" alt="lotus" />
+          <AvatarUser name={selectedAccount?.name} />
         </Link>
       </Space>
     </Header>

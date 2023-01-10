@@ -131,7 +131,7 @@ const EditorLexical = props => {
                 });
               }}
             /> */}
-            {/* <TreeViewPlugin /> */}
+            <TreeViewPlugin />
             <EmojisPlugin />
             <HistoryPlugin />
             <AutoLinkPlugin />
@@ -150,7 +150,7 @@ const EditorLexical = props => {
                   const imageUrl = URL_SERVER_IMAGE + '/' + item.bucket + '/' + item.sha;
                   return (
                     <>
-                      <Image width={200} src={imageUrl} />
+                      <Image loading="lazy" width={200} src={imageUrl} />
                     </>
                   );
                 })}

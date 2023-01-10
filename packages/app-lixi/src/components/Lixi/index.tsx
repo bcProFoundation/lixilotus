@@ -164,7 +164,7 @@ const InfoCard = styled.div`
     font-family: 'Roboto';
     font-style: normal;
     font-weight: 400;
-    font-size: 16px;
+    font-size: 14px;
     line-height: 24px;
     letter-spacing: 0.5px;
     color: #1e1a1d;
@@ -190,7 +190,7 @@ const Text = styled.p`
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 500;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 24px;
   display: flex;
   color: #333333;

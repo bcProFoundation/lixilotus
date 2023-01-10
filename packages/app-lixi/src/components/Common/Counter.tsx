@@ -50,7 +50,15 @@ export const Counter = (props: CounterProps) => {
   return (
     <GridDiv className="grid">
       <div className="count">
-        <span className={animationCounter}>{count}</span>
+        <span style={{ fontSize: '13px' }} className={animationCounter}>
+          {count}
+        </span>
+        {count > 0 && (
+          <>
+            &nbsp;
+            <span style={{ fontSize: '10px' }}>XPI</span>
+          </>
+        )}
       </div>
     </GridDiv>
   );

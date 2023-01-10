@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 const AddressHighlightTrim = styled.span`
-  font-size: 14px;
   font-weight: bold;
 
   @media (max-width: 768px) {
