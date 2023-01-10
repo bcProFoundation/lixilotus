@@ -131,7 +131,7 @@ const EditorLexical = props => {
                 });
               }}
             /> */}
-            <TreeViewPlugin />
+            {/* <TreeViewPlugin /> */}
             <EmojisPlugin />
             <HistoryPlugin />
             <AutoLinkPlugin />
