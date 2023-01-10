@@ -22,7 +22,7 @@ const PrimaryButton = styled.button`
     fill: ${props => props.theme.buttons.primary.color};
   }
   @media (max-width: 768px) {
-    font-size: 16px;
+    font-size: 14px;
     padding: 15px 0;
   }
 `;
@@ -48,7 +48,7 @@ const SecondaryButton = styled.button`
     fill: ${props => props.theme.buttons.secondary.color};
   }
   @media (max-width: 768px) {
-    font-size: 16px;
+    font-size: 14px;
     padding: 12px 0;
   }
 `;
@@ -95,7 +95,7 @@ const SmartButton = styled.button`
   margin-bottom: 20px;
 
   @media (max-width: 768px) {
-    font-size: 16px;
+    font-size: 14px;
     padding: 12px 0;
   }
 `;

@@ -9,7 +9,7 @@ const ContainerUserLogin = styled.div``;
 const LoggedAsAnonymous = styled.div`
   .item-access {
     p {
-      font-size: 16px;
+      font-size: 14px;
       line-height: 24px;
       letter-spacing: 0.5px;
       color: rgba(30, 26, 29, 0.6) !important;

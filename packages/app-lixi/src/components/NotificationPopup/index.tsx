@@ -96,7 +96,7 @@ const StyledAuthor = styled.div`
 
 const StyledTextLeft = styled.span`
   float: left;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
 `;
 

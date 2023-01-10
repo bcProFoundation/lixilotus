@@ -23,6 +23,7 @@ export interface RenameAccountCommand {
   id: number;
   mnemonic: string;
   name: string;
+  isAutoNameGenerator?: boolean;
 }
 
 export interface PatchAccountCommand {

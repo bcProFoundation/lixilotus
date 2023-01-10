@@ -34,25 +34,6 @@ const AppBody = styled.div`
   background-attachment: fixed;
 `;
 
-const NavBarHeader = styled(Header)`
-  padding: 2rem 2rem 1rem 2rem;
-  height: auto;
-  line-height: initial;
-  display: flex;
-  align-items: center;
-  border-radius: 20px;
-  width: 100%;
-  margin-bottom: 1rem;
-  .anticon {
-    font-size: 24px;
-    color: var(--color-primary);
-  }
-  @media (max-width: 768px) {
-    padding: 8px;
-    width: 100%;
-  }
-`;
-
 export const AppContainer = styled.div`
   position: relative;
   width: 100%;

@@ -27,22 +27,20 @@ type PostsListingProps = {
 
 const StyledPostsListing = styled.div`
   margin-top: 1rem;
-  #list-virtuoso {
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+  &.show-scroll {
     &::-webkit-scrollbar {
       width: 5px;
     }
     &::-webkit-scrollbar-thumb {
-      background: transparent;
-    }
-    &.show-scroll {
-      &::-webkit-scrollbar {
-        width: 5px;
-      }
-      &::-webkit-scrollbar-thumb {
-        background-image: linear-gradient(180deg, #d0368a 0%, #708ad4 99%) !important;
-        box-shadow: inset 2px 2px 5px 0 rgba(#fff, 0.5);
-        border-radius: 100px;
-      }
+      background-image: linear-gradient(180deg, #d0368a 0%, #708ad4 99%) !important;
+      box-shadow: inset 2px 2px 5px 0 rgba(#fff, 0.5);
+      border-radius: 100px;
     }
   }
 
@@ -80,7 +78,7 @@ const StyledHeader = styled.div`
   .menu-post-listing {
     .ant-menu-item {
       .ant-menu-title-content {
-        font-size: 16px;
+        font-size: 14px;
         color: rgba(30, 26, 29, 0.6);
       }
       &.ant-menu-item-selected {

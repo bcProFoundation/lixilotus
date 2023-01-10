@@ -2,6 +2,7 @@ import {
   DashOutlined,
   DislikeFilled,
   DislikeOutlined,
+  LeftOutlined,
   LikeFilled,
   LikeOutlined,
   LinkOutlined,
@@ -13,6 +14,7 @@ import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn
 import { Counter } from '@components/Common/Counter';
 import InfoCardUser from '@components/Common/InfoCardUser';
 import { currency } from '@components/Common/Ticker';
+import { NavBarHeader, PathDirection } from '@components/Layout/MainLayout';
 import { WalletContext } from '@context/walletProvider';
 import useXPI from '@hooks/useXPI';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
@@ -25,9 +27,11 @@ import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
 import { formatBalance, fromXpiToSatoshis } from '@utils/cashMethods';
 import { Avatar, Button, Image, Input, message, Popover, Space, Tooltip } from 'antd';
+import { Header } from 'antd/lib/layout/layout';
 import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import moment from 'moment';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useRef } from 'react';
 import ReactHtmlParser from 'react-html-parser';
@@ -151,7 +155,7 @@ type PostDetailProps = {
 
 const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const dispatch = useAppDispatch();
-  const history = useRouter();
+  const router = useRouter();
   const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
   const refCommentsListing = useRef<HTMLDivElement | null>(null);
   const Wallet = React.useContext(WalletContext);
@@ -281,7 +285,16 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
 
   const PostContentDetail = styled.div`
     text-align: left;
+    .description-post {
+      margin: 1rem 0;
+      text-align: left;
+      word-break: break-word;
+      a {
+        cursor: pointer;
+      }
+    }
     .images-post {
+      cursor: pointer;
       width: 100%;
       padding: 1rem;
       margin: 1rem 0;
@@ -424,6 +437,12 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
 
   return (
     <>
+      <NavBarHeader onClick={() => router.back()}>
+        <LeftOutlined />
+        <PathDirection>
+          <h2>Post</h2>
+        </PathDirection>
+      </NavBarHeader>
       <StyledContainerPostDetail>
         <InfoCardUser
           imgUrl={post.page ? post.page.avatar : ''}
@@ -435,7 +454,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           activatePostLocation={true}
         ></InfoCardUser>
         <PostContentDetail>
-          <p style={{ padding: '0 1rem', margin: '1rem 0' }}>{ReactHtmlParser(post.content)}</p>
+          <p className="description-post">{ReactHtmlParser(post.content)}</p>
           <div style={{ display: post.uploads.length != 0 ? 'grid' : 'none' }} className="images-post">
             {post.uploads.length != 0 &&
               post.uploads.map((item, index) => {
@@ -443,7 +462,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
                 return (
                   <>
                     <Image.PreviewGroup>
-                      <Image src={imageUrl} />
+                      <Image loading="lazy" src={imageUrl} />
                     </Image.PreviewGroup>
                   </>
                 );
@@ -486,7 +505,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           />
         </CommentContainer>
         <CommentInputContainer>
-          <Avatar src="/images/xpi.svg" onClick={() => history.push(`/profile/${selectedAccount.address}`)} />
+          <Avatar src="/images/xpi.svg" onClick={() => router.push(`/profile/${selectedAccount.address}`)} />
           <Search
             className="input-comment"
             placeholder="Input your comment..."

@@ -83,6 +83,7 @@
     "suneditor": "^2.43.14",
     "suneditor-react": "^3.4.1",
     "ua-parser-js": "^1.0.2",
+    "unique-names-generator": "^4.7.1",
     "wif": "^2.0.6"
   },
   "devDependencies": {

@@ -1,6 +1,7 @@
 import { DislikeOutlined, FireOutlined, LikeOutlined } from '@ant-design/icons';
 import CommentComponent, { CommentItem, Editor } from '@components/Common/Comment';
 import InfoCardUser from '@components/Common/InfoCardUser';
+import { GroupIconText } from '@components/Posts/PostListItem';
 import useWindowDimensions from '@hooks/useWindowDimensions';
 import { Avatar, Button, Comment, List, message, Space } from 'antd';
 import { push } from 'connected-next-router';
@@ -44,17 +45,14 @@ export const CommentList = ({ comments }: { comments: CommentItem[] }) => (
 const CardContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 1rem;
+  padding: 1rem 1rem 0 1rem;
   width: 100%;
-  @media (max-width: 768px) {
-    padding: 1rem 1rem 0 1rem;
-  }
 `;
 
 const CardHeader = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 1rem;
   .info-user {
     .name-title {
       margin-left: 0.5rem;
@@ -73,7 +71,7 @@ const Content = styled.div`
   .description-post {
     text-align: left;
     word-break: break-word;
-    font-size: 16px;
+    cursor: pointer;
     @media (max-width: 960px) {
       div {
         &[data-lexical-decorator='true'] > div > div {
@@ -130,6 +128,7 @@ const Content = styled.div`
     max-height: 300px;
   }
   .images-post {
+    cursor: pointer;
     width: 100%;
     padding: 1rem;
     margin-top: 1rem;
@@ -150,37 +149,13 @@ const Content = styled.div`
 
 const ActionBar = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  padding: 1rem;
   width: 100%;
-  padding-bottom: 1rem;
   button {
     margin-right: 1rem;
     border-radius: 20px;
-  }
-  @media (max-width: 768px) {
-    padding: 0.5rem 0;
-  }
-`;
-
-const GroupIconText = styled.div`
-  display: flex;
-  border: none;
-  width: 100%;
-  padding-left: 1rem;
-  display: grid;
-  width: 100%;
-  grid-template-columns: auto auto auto auto;
-  &.num-react {
-    padding: 1rem 0;
-    border: none;
-    text-align: left;
-  }
-  .ant-space {
-    margin-right: 1rem;
-  }
-  img {
-    width: 18px;
   }
 `;
 
@@ -314,7 +289,7 @@ const PageListItem = ({ index, item }) => {
             <p className="description-post">{item.description}</p>
             {showMore && (
               <p
-                style={{ textAlign: 'left', color: 'var(--color-primary)', marginBottom: '0' }}
+                style={{ textAlign: 'left', color: 'var(--color-primary)', marginBottom: '0', cursor: 'pointer' }}
                 onClick={e => showMoreHandle(e)}
               >
                 Show more...
@@ -329,7 +304,7 @@ const PageListItem = ({ index, item }) => {
                         const imageUrl = URL_SERVER_IMAGE + '/' + item.upload.bucket + '/' + item.upload.sha;
                         return (
                           <>
-                            <img src={imageUrl} />
+                            <img loading="lazy" src={imageUrl} />
                           </>
                         );
                       }
@@ -364,40 +339,6 @@ const PageListItem = ({ index, item }) => {
           </CountBar>
           <div className="line"></div>
         </CardContainer>
-        <ActionBar>
-          <GroupIconText>
-            <IconText
-              text={!isMobileScreen ? 'Vote up' : ''}
-              icon={LikeOutlined}
-              key={`list-vertical-upvote-o-${item.id}`}
-              dataItem={item}
-              onClickIcon={() => upVotePage(item)}
-            />
-            <IconText
-              text={!isMobileScreen ? 'Vote down' : ''}
-              icon={DislikeOutlined}
-              key={`list-vertical-downvote-o-${item.id}`}
-              dataItem={item}
-              onClickIcon={() => downVotePage(item)}
-            />
-            <IconText
-              imgUrl="/images/comment-ico.svg"
-              text="Comments"
-              key={`list-vertical-comment-o-${item.id}`}
-              dataItem={item}
-              onClickIcon={() => {
-                setIsCollapseComment(!isCollapseComment);
-              }}
-            />
-            <IconText
-              imgUrl="/images/share-ico.svg"
-              text="Share"
-              key={`list-vertical-share-o-${item.id}`}
-              dataItem={item}
-              onClickIcon={() => {}}
-            />
-          </GroupIconText>
-        </ActionBar>
         {isCollapseComment && (
           <Comment
             style={{ width: '100%', textAlign: 'left' }}

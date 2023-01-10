@@ -28,7 +28,7 @@ export const LixiTextLogo = styled.img`
 export const WelcomeText = styled.p`
   color: ${props => props.theme.wallet.text.secondary};
   width: 100%;
-  font-size: 16px;
+  font-size: 14px;
   margin-bottom: 60px;
   text-align: center;
 `;

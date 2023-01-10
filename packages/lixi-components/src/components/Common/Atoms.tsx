@@ -32,7 +32,7 @@ export const BalanceHeaderFiatWrap = styled.div`
   margin-bottom: 20px;
   font-weight: bold;
   @media (max-width: 768px) {
-    font-size: 16px;
+    font-size: 14px;
   }
 `;
 

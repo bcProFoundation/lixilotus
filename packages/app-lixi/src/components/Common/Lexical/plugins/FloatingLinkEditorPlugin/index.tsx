@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import { $isAutoLinkNode, $isLinkNode, TOGGLE_LINK_COMMAND } from '@lexical/link';
+import { $isAutoLinkNode, $isLinkNode, TOGGLE_LINK_COMMAND, LinkNode } from '@lexical/link';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $findMatchingParent, mergeRegister } from '@lexical/utils';
 import {
@@ -210,6 +210,18 @@ function FloatingLinkEditor({
     }
   }, [isEditMode]);
 
+  const createNodeLink = (linkUrl: string, editor: LexicalEditor) => {
+    if (linkUrl !== '') {
+      editor.dispatchCommand(TOGGLE_LINK_COMMAND, sanitizeUrl(linkUrl));
+      editor.registerNodeTransform(LinkNode, linkNode => {
+        if (linkNode.getTarget() == null) {
+          linkNode.setTarget('_blank');
+        }
+      });
+    }
+    editorRef.current.style.display = 'none';
+  };
+
   return (
     <StyledFloating ref={editorRef}>
       <div className="link-input">
@@ -223,10 +235,7 @@ function FloatingLinkEditor({
             if (event.key === 'Enter') {
               event.preventDefault();
               if (lastSelection !== null) {
-                if (linkUrl !== '') {
-                  editor.dispatchCommand(TOGGLE_LINK_COMMAND, sanitizeUrl(linkUrl));
-                }
-                editorRef.current.style.display = 'none';
+                createNodeLink(linkUrl, editor);
               }
             }
           }}
@@ -236,7 +245,9 @@ function FloatingLinkEditor({
           icon={<CheckOutlined />}
           onMouseDown={event => event.preventDefault()}
           onClick={() => {
-            editorRef.current.style.display = 'none';
+            if (lastSelection !== null) {
+              createNodeLink(linkUrl, editor);
+            }
           }}
         />
       </div>

@@ -210,7 +210,7 @@ const ManageAccounts = styled.div`
     .sub-account-info {
       text-align: left;
       .name {
-        font-size: 16px;
+        font-size: 14px;
         line-height: 24px;
         letter-spacing: 0.5px;
         margin-bottom: 4px;

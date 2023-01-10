@@ -60,7 +60,6 @@ const RedeemCodeBox = styled.div`
     }
   }
   button {
-    font-size: 16px;
     padding: 8px 0;
     border-radius: 8px;
     margin-bottom: 0;

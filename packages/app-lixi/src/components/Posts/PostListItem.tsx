@@ -57,17 +57,14 @@ export const CommentList = ({ comments }: { comments: CommentItem[] }) => (
 const CardContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 1rem;
+  padding: 1rem 1rem 0 1rem;
   width: 100%;
-  @media (max-width: 768px) {
-    padding: 1rem 1rem 0 1rem;
-  }
 `;
 
 const CardHeader = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 1rem;
   .info-user {
     .name-title {
       margin-left: 0.5rem;
@@ -86,8 +83,8 @@ const Content = styled.div`
   .description-post {
     text-align: left;
     word-break: break-word;
-    font-size: 16px;
-    @media (max-width: 960px) {
+    cursor: pointer;
+    margin-bottom: 1rem @media (max-width: 960px) {
       div {
         &[data-lexical-decorator='true'] > div > div {
           width: 100% !important;
@@ -143,6 +140,7 @@ const Content = styled.div`
     max-height: 300px;
   }
   .images-post {
+    cursor: pointer;
     width: 100%;
     padding: 1rem;
     margin-top: 1rem;
@@ -163,8 +161,9 @@ const Content = styled.div`
 
 const ActionBar = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  padding: 1rem;
   width: 100%;
   button {
     margin-right: 1rem;
@@ -172,31 +171,28 @@ const ActionBar = styled.div`
   }
 `;
 
-const GroupIconText = styled.div`
-  display: flex;
-  border: none;
-  width: 100%;
-  padding: 1rem 0 1rem 1rem;
-  width: 424px;
+export const GroupIconText = styled.div`
   &.num-react {
     padding: 1rem 0;
     border: none;
     text-align: left;
   }
   .ant-space {
-    margin-right: 1rem;
+    margin-right: 2rem;
     align-items: end;
     gap: 0 !important;
-  }
-  @media (max-width: 960px) {
-    width: 210px;
-  }
-  @media (min-width: 960px) {
-    width: 380px;
+    cursor: pointer;
+    @media (max-width: 960px) {
+      margin-right: 1rem;
+    }
   }
   img {
     width: 32px;
     height: 32px;
+  }
+  .count {
+    color: rgba(30, 26, 29, 0.6);
+    font-size: 12px;
   }
 `;
 
@@ -282,8 +278,12 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
     }, 1000);
   };
 
-  const handlePostClick = () => {
-    router.push(`/post/${post.id}`);
+  const handlePostClick = e => {
+    if (e.target.parentElement.tagName === 'A') {
+      e.stopPropagation();
+    } else {
+      router.push(`/post/${post.id}`);
+    }
   };
 
   const upVotePost = (e: React.MouseEvent<HTMLElement>, dataItem: PostItem) => {
@@ -387,7 +387,7 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
   };
 
   return (
-    <PostListItemContainer key={post.id} ref={ref} onClick={handlePostClick}>
+    <PostListItemContainer key={post.id} ref={ref}>
       <CardContainer>
         <CardHeader>
           <InfoCardUser
@@ -400,11 +400,11 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
             activatePostLocation={true}
           ></InfoCardUser>
         </CardHeader>
-        <Content>
-          <div className="description-post">{ReactHtmlParser(post?.content)}</div>
+        <Content onClick={e => handlePostClick(e)}>
+          <p className="description-post">{ReactHtmlParser(post?.content)}</p>
           {showMore && (
             <p
-              style={{ textAlign: 'left', color: 'var(--color-primary)', marginBottom: '0' }}
+              style={{ textAlign: 'left', color: 'var(--color-primary)', marginBottom: '0', cursor: 'pointer' }}
               onClick={e => showMoreHandle(e)}
             >
               Show more...
@@ -419,7 +419,7 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
                       const imageUrl = URL_SERVER_IMAGE + '/' + item.upload.bucket + '/' + item.upload.sha;
                       return (
                         <>
-                          <img src={imageUrl} />
+                          <img loading="lazy" src={imageUrl} />
                         </>
                       );
                     }
@@ -445,22 +445,20 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
             onClickIcon={e => downVotePost(e, item)}
           />
           {/* TODO: complete next Release */}
-          {/* <IconText
-              imgUrl="/images/comment-ico.svg"
-              text="0 Comments"
-              key={`list-vertical-comment-o-${item.id}`}
-              dataItem={item}
-              onClickIcon={() => {
-                setIsCollapseComment(!isCollapseComment);
-              }}
-            />
-            <IconText
-              imgUrl="/images/share-ico.svg"
-              text="Share"
-              key={`list-vertical-share-o-${item.id}`}
-              dataItem={item}
-              onClickIcon={() => {}}
-            /> */}
+          {/* <IconBurn
+            burnValue={formatBalance(post?.lotusBurnDown ?? 0)}
+            imgUrl="/images/ico-comments.svg"
+            key={`list-vertical-comments-o-${item.id}`}
+            dataItem={item}
+            onClickIcon={e => downVotePost(e, item)}
+          />
+          <IconBurn
+            burnValue={formatBalance(post?.lotusBurnDown ?? 0)}
+            imgUrl="/images/ico-share.svg"
+            key={`list-vertical-share-o-${item.id}`}
+            dataItem={item}
+            onClickIcon={e => downVotePost(e, item)}
+          /> */}
         </GroupIconText>
       </ActionBar>
       {isCollapseComment && (
