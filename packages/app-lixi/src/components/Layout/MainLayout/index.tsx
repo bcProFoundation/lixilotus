@@ -103,6 +103,7 @@ export const AppContainer = styled.div`
       max-width: 100% !important;
     }
     @media (max-width: 420px) {
+      padding-right: 0px !important;
       min-width: fit-content;
       -ms-overflow-style: none;
       scrollbar-width: none;

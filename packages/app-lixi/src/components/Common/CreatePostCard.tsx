@@ -19,20 +19,7 @@ import Editor from './Editor';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { Embed, SocialsEnum } from './Embed';
 import EditorLexical from './Lexical/EditorLexical';
-
-const styles = {
-  wrapper: {
-    // display: 'flex'
-  }
-};
-
-// const Editor = (props: PlateProps<MyValue>) => {
-//   return (
-//     <Plate {...props} id="main">
-//       <MarkBalloonToolbar />
-//     </Plate>
-//   );
-// };
+import { removeAllUpload } from '@store/account/actions';
 
 type ErrorType = 'unsupported' | 'invalid';
 
@@ -288,17 +275,6 @@ const CreatePostCard = (props: CreatePostCardProp) => {
     event.preventDefault();
   };
 
-  const handleSubmitEditor = async value => {
-    console.log('handleSubmitEditor');
-    if (url) {
-      console.log(url);
-    } else {
-      setEnableEditor(false);
-
-      await handleCreateNewPost(value);
-    }
-  };
-
   const updatePost = (tag: string, params, result: CreatePostMutation, pageId?: string, tokenPrimaryId?: string) => {
     dispatch(
       postApi.util.updateQueryData('Posts', params, draft => {
@@ -378,6 +354,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
         );
 
         setEnableEditor(false);
+        dispatch(removeAllUpload());
       } catch (error) {
         const message = intl.get('post.unableCreatePostServer');
         if (patches) {
@@ -394,11 +371,6 @@ const CreatePostCard = (props: CreatePostCardProp) => {
     }
   };
 
-  const handleImageUploadBefore = () => {
-    alert("Please upload picture by 'Upload' button");
-    return;
-  };
-
   return (
     <>
       <DesktopCreatePost onClick={() => setEnableEditor(!enableEditor)}>
@@ -406,7 +378,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
           <Avatar src="/images/anonymous-ava.svg" size={50} style={{ color: '#fff', backgroundColor: '#bdbdbd' }}>
             {/* ER */}
           </Avatar>
-          <Input bordered={false} placeholder="What's on your mind?" />
+          <Input bordered={false} placeholder="What's on your mind?" value="" />
         </div>
         <div className="btn-create">
           <PlusCircleOutlined />
@@ -426,7 +398,6 @@ const CreatePostCard = (props: CreatePostCardProp) => {
           visible={enableEditor}
           footer={null}
           onCancel={() => setEnableEditor(false)}
-          maskClosable={false}
         >
           <>
             <UserCreate>
