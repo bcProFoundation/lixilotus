@@ -1,5 +1,6 @@
 import { DislikeFilled, DislikeOutlined, LikeFilled, LikeOutlined } from '@ant-design/icons';
 import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
+import { AvatarUser } from '@components/Common/AvatarUser';
 import { Counter } from '@components/Common/Counter';
 import { currency } from '@components/Common/Ticker';
 import { WalletContext } from '@context/walletProvider';
@@ -152,7 +153,11 @@ const CommentListItem = ({ index, item, post }: CommentListItemProps) => {
       className="comment-item"
       actions={actions}
       author={<a href={`/profile/${item.commentAccount.address}`}>{showUsername()}</a>}
-      avatar={<Avatar src="/images/xpi.svg" onClick={() => history.push(`/profile/${item.commentAccount.address}`)} />}
+      avatar={
+        <div onClick={() => history.push(`/profile/${item.commentAccount.address}`)}>
+          <AvatarUser name={item?.commentAccount?.name} isMarginRight={false} />
+        </div>
+      }
       content={item.commentText}
       datetime={
         <Tooltip title={moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}>

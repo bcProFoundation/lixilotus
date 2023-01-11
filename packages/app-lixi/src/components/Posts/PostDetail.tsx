@@ -11,6 +11,7 @@ import {
 } from '@ant-design/icons';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
+import { AvatarUser } from '@components/Common/AvatarUser';
 import { Counter } from '@components/Common/Counter';
 import InfoCardUser from '@components/Common/InfoCardUser';
 import { currency } from '@components/Common/Ticker';
@@ -26,7 +27,7 @@ import { PostsQuery } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
 import { formatBalance, fromXpiToSatoshis } from '@utils/cashMethods';
-import { Avatar, Button, Image, Input, message, Popover, Space, Tooltip } from 'antd';
+import { Avatar, Button, Image, Input, message, Popover, Skeleton, Space, Tooltip } from 'antd';
 import { Header } from 'antd/lib/layout/layout';
 import BigNumber from 'bignumber.js';
 import _ from 'lodash';
@@ -35,6 +36,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useRef } from 'react';
 import ReactHtmlParser from 'react-html-parser';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import intl from 'react-intl-universal';
 import {
   FacebookIcon,
@@ -74,7 +76,7 @@ const IconBurn = ({
   imgUrl?: string;
   onClickIcon: () => void;
 }) => (
-  <Space onClick={onClickIcon} style={{ alignItems: 'end', marginRight: '1rem' }}>
+  <Space onClick={onClickIcon} style={{ alignItems: 'end', marginRight: '1rem', gap: '4px !important' }}>
     {icon && React.createElement(icon)}
     {imgUrl && React.createElement('img', { src: imgUrl }, null)}
     <Counter num={burnValue ?? 0} />
@@ -252,10 +254,24 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   };
 
   const CommentContainer = styled.div`
-    padding: 0 1rem;
     .comment-item {
       text-align: left;
       border: 0 !important;
+      .ant-comment-inner {
+        padding: 16px 0 8px 0;
+        .ant-comment-avatar {
+          .ant-avatar {
+            width: 37px !important;
+            height: 37px !important;
+          }
+        }
+      }
+      .ant-comment-actions {
+        margin-top: 4px;
+      }
+      .ant-comment-content-author-name {
+        text-transform: capitalize;
+      }
     }
   `;
 
@@ -264,9 +280,27 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     flex-direction: row;
     justify-content: flex-start;
     align-items: flex-end;
-    position: fixed;
-    padding-right: 1rem;
-    bottom: 10%;
+    margin-top: 1rem;
+    gap: 1rem;
+    .ava-ico-cmt {
+      .ant-avatar {
+        width: 40px !important;
+        height: 40px !important;
+      }
+    }
+    .ant-input-affix-wrapper {
+      border-top-left-radius: 6px !important;
+      border-bottom-left-radius: 6px !important;
+      input {
+        font-size: 13px;
+      }
+    }
+    .ant-input-group-addon {
+      button {
+        border-top-right-radius: 6px !important;
+        border-bottom-right-radius: 6px !important;
+      }
+    }
   `;
 
   const PostCardDetail = styled.div`
@@ -320,14 +354,22 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     padding: 1rem;
     margin-top: 1rem;
     border-radius: 1rem;
+    @media (max-width: 960px) {
+      padding-bottom: 6rem;
+    }
     .reaction-container {
       display: flex;
       justify-content: space-between;
       padding: 0.5rem;
-      margin: 0 1rem;
       border: 1px solid #c5c5c5;
       border-left: 0;
       border-right: 0;
+      .ant-space {
+        gap: 4px !important;
+      }
+      .reaction-func {
+        color: rgba(30, 26, 29, 0.6);
+      }
     }
 
     .comment-item-meta {
@@ -338,10 +380,6 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       .ant-list-item-meta-title {
         margin-bottom: 0.5rem;
       }
-    }
-
-    .input-comment {
-      padding: 1rem 1rem 0 1rem;
     }
   `;
 
@@ -493,7 +531,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
         </PostContentDetail>
 
         <CommentContainer>
-          <Virtuoso
+          {/* <Virtuoso
             id="list-comment-virtuoso"
             data={data}
             style={{ height: '65vh', paddingBottom: '2rem' }}
@@ -502,10 +540,31 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
             itemContent={(index, item) => {
               return <CommentListItem index={index} item={item} post={post} />;
             }}
-          />
+          /> */}
+          <React.Fragment>
+            {/* <Header /> */}
+            <InfiniteScroll
+              dataLength={data.length}
+              next={loadMoreComments}
+              hasMore={hasNext}
+              loader={null}
+              // endMessage={
+              //   <p style={{ textAlign: 'center' }}>
+              //     <b>{"It's so empty here..."}</b>
+              //   </p>
+              // }
+              scrollableTarget="scrollableDiv"
+            >
+              {data.map((item, index) => {
+                return <CommentListItem index={index} item={item} post={post} />;
+              })}
+            </InfiniteScroll>
+          </React.Fragment>
         </CommentContainer>
         <CommentInputContainer>
-          <Avatar src="/images/xpi.svg" onClick={() => router.push(`/profile/${selectedAccount.address}`)} />
+          <div className="ava-ico-cmt" onClick={() => router.push(`/profile/${selectedAccount.address}`)}>
+            <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
+          </div>
           <Search
             className="input-comment"
             placeholder="Input your comment..."
@@ -513,6 +572,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
             size="large"
             suffix={<DashOutlined />}
             onSearch={handleCreateNewComment}
+            autoFocus={true}
           />
         </CommentInputContainer>
       </StyledContainerPostDetail>

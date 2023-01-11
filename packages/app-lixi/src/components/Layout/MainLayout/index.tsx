@@ -100,12 +100,12 @@ export const AppContainer = styled.div`
     height: 100vh;
     overflow-y: auto;
     @media (max-width: 960px) {
-      max-width: 100% !important;
+      max-width: 100%;
+      min-width: 100%;
+      width: 300px;
     }
     @media (max-width: 420px) {
       padding-right: 0px !important;
-      min-width: 100%;
-      width: 300px;
       -ms-overflow-style: none;
       scrollbar-width: none;
       &::-webkit-scrollbar {
