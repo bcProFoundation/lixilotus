@@ -18,6 +18,7 @@ import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
 import { navBarHeaderList } from '@components/Common/navBarHeaderList';
 import { useRouter } from 'next/router';
 import intl from 'react-intl-universal';
+import { NavBarHeader, PathDirection } from '../MainLayout';
 
 const { Content, Sider, Header } = Layout;
 
@@ -35,40 +36,6 @@ const AppBody = styled.div`
   width: 100%;
   min-height: 100vh;
   background-attachment: fixed;
-`;
-
-const NavBarHeader = styled(Header)`
-  padding: 2rem 2rem 1rem 2rem;
-  height: auto;
-  line-height: initial;
-  display: flex;
-  align-items: center;
-  border-radius: 20px;
-  width: 100%;
-  margin-bottom: 1rem;
-  .anticon {
-    font-size: 24px;
-    color: var(--color-primary);
-  }
-  @media (max-width: 768px) {
-    padding: 8px;
-    width: 100%;
-  }
-`;
-
-const PathDirection = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-left: 1rem;
-  h2 {
-    font-weight: 600;
-    text-transform: capitalize;
-    color: var(--color-primary);
-  }
-  .sub-title {
-    text-transform: capitalize;
-  }
 `;
 
 export const AppContainer = styled.div`
@@ -165,10 +132,8 @@ const ClaimedLayout: React.FC = (props: ClaimedLayoutProps) => {
                       <Layout className="main-section-layout" style={{ paddingRight: '2rem' }}>
                         <Topbar ref={setRef} />
                         {selectedKey !== '/' && (
-                          <NavBarHeader>
-                            <Link href="/" passHref>
-                              <LeftOutlined onClick={() => router.back()} />
-                            </Link>
+                          <NavBarHeader onClick={() => router.back()}>
+                            <LeftOutlined />
                             <PathDirection>
                               <h2>{navBarTitle.length > 0 ? intl.get(navBarTitle) : ''}</h2>
                             </PathDirection>

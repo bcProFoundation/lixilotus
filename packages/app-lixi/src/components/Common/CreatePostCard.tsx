@@ -20,6 +20,7 @@ import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { Embed, SocialsEnum } from './Embed';
 import EditorLexical from './Lexical/EditorLexical';
 import { removeAllUpload } from '@store/account/actions';
+import { AvatarUser } from './AvatarUser';
 
 type ErrorType = 'unsupported' | 'invalid';
 
@@ -90,7 +91,7 @@ const DesktopCreatePost = styled.div`
     }
   }
   input {
-    font-size: 16px;
+    font-size: 14px;
     line-height: 24px;
     letter-spacing: 0.5px;
   }
@@ -105,11 +106,15 @@ const UserCreate = styled.div`
     gap: 1rem;
     align-items: center;
     margin-bottom: 24px;
+    img {
+      width: 48px;
+      height: 48px;
+    }
     .user-info {
       .title-user {
         margin: 0;
         font-weight: 500;
-        font-size: 16px;
+        text-transform: capitalize;
         line-height: 24px;
         letter-spacing: 0.15px;
         color: var(--text-color-on-background);
@@ -122,10 +127,13 @@ const UserCreate = styled.div`
         margin-top: 4px;
         span {
           font-weight: 400;
-          font-size: 14px;
+          font-size: 12px;
           line-height: 20px;
           letter-spacing: 0.25px;
           color: #4e444b;
+          &.anticon {
+            font-size: 10px;
+          }
         }
       }
     }
@@ -375,9 +383,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
     <>
       <DesktopCreatePost onClick={() => setEnableEditor(!enableEditor)}>
         <div className="avatar">
-          <Avatar src="/images/anonymous-ava.svg" size={50} style={{ color: '#fff', backgroundColor: '#bdbdbd' }}>
-            {/* ER */}
-          </Avatar>
+          <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
           <Input bordered={false} placeholder="What's on your mind?" value="" />
         </div>
         <div className="btn-create">

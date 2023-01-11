@@ -40,6 +40,7 @@ body {
 body {
   margin: 0;
   font-family: 'Roboto';
+  font-size: 14px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -246,6 +247,7 @@ code {
   --color-info-dark: #5476eb;
 
   --border-item-dark: #e9eaed;
+  // --boder-item-light: none;
   --boder-item-light: rgba(128, 116, 124, 0.12);
 }
 
@@ -283,6 +285,10 @@ code {
 
 .ant-table {
   border-radius: 18px;
+}
+
+.ant-image-mask {
+  background: rgba(0, 0, 0, 0.03) !important;
 }
 
 // custom default btn
@@ -360,12 +366,11 @@ code {
 
   .ant-form-item-control {
     .ant-form-item-control-input-content {
-
       input,
       textarea {
         padding: 9px 1rem;
         font-weight: 400;
-        font-size: 16px;
+        font-size: 14px;
         line-height: 24px;
         letter-spacing: 0.5px;
         color: #4e444b;
@@ -601,7 +606,7 @@ code {
             }
 
             .text-item {
-              font-size: 16px;
+              font-size: 14px;
               font-weight: 400;
               letter-spacing: 0.5px;
               color: #4e444b;
@@ -631,7 +636,7 @@ code {
     }
   }
 
-  .ant-popover-arrow>.ant-popover-arrow-content::before {
+  .ant-popover-arrow > .ant-popover-arrow-content::before {
     background: var(--color-primary);
   }
 

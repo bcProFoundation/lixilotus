@@ -31,7 +31,7 @@ const StyledContainerAccess = styled.div`
     padding: 1rem 0;
     .text-item {
       font-weight: 400;
-      font-size: 16px;
+      font-size: 14px;
       line-height: 24px;
       letter-spacing: 0.5px;
       color: #1e1a1d;
@@ -48,7 +48,7 @@ const StyledContainerShortcut = styled.div`
   flex-direction: column;
   h3 {
     font-weight: 500;
-    font-size: 16px;
+    font-size: 14px;
     line-height: 24px;
     letter-spacing: 0.15px;
     color: var(--text-color-on-background);
@@ -80,8 +80,9 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
   return (
     <>
       <ContainerSideBarContent onClick={handleOnClick}>
-        <SidebarUserLogin />
-        <StyledContainerShortcut>
+        {/* TODO: Implement in the future */}
+        {/* <SidebarUserLogin /> */}
+        {/* <StyledContainerShortcut>
           <h3>Your shortcuts</h3>
           {randomShortCut &&
             randomShortCut.map((item, index) => {
@@ -91,16 +92,17 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
                 </>
               );
             })}
-        </StyledContainerShortcut>
+        </StyledContainerShortcut> */}
         <StyledContainerAccess>
-          <ItemAccess
+          {/* TODO: remove to footer mobile */}
+          {/* <ItemAccess
             icon={'/images/ico-account.svg'}
             text={intl.get('general.accounts')}
             active={false}
             key="wallet-lotus"
             href={'/wallet'}
             direction={'horizontal'}
-          />
+          /> */}
           <ItemAccess
             icon={'/images/ico-lixi.svg'}
             text={intl.get('general.lixi')}

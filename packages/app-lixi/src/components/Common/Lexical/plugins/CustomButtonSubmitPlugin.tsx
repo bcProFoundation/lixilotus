@@ -31,7 +31,7 @@ const CustomButtonSubmitPlugin = props => {
       // const htmlString = $generateHtmlFromNodes(editor, null);
 
       const rootElementString = editor.getRootElement().innerHTML;
-      props.onSubmit({ htmlContent: rootElementString, pureContent: editorStateTextString });
+      props.onSubmit({ htmlContent: rootElementString, pureContent: rootElementString });
     });
   };
 

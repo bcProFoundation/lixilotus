@@ -1,6 +1,6 @@
-import { LocalUserAccount } from '@bcpros/lixi-models';
+import { LocalUserAccount, RenameAccountCommand } from '@bcpros/lixi-models';
 import PostsListing from '@components/Posts/PostsListing';
-import { generateAccount, silentLogin } from '@store/account/actions';
+import { generateAccount, renameAccount, silentLogin } from '@store/account/actions';
 import { getSelectedAccount } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { setLocalUserAccount } from '@store/localAccount';

@@ -73,7 +73,7 @@ const StyledDenominationButton = styled(Radio.Button)`
   border: 1px solid ${props => props.theme.radio.secondary};
   border-radius: ${props => props.theme.radio.borderRadius};
   & > span {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
   }
 

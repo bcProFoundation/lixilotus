@@ -31,7 +31,7 @@ const BalanceBannerText = styled.div`
 const BalanceBannerAction = styled.button`
   color: ${props => props.theme.buttons.primary.color};
   background-image: ${props => props.theme.buttons.primary.backgroundImage};
-  font-size: 16px;
+  font-size: 14px;
   padding: 10px 10px 10px 10px;
   border-radius: 4px;
   min-width: 108px;

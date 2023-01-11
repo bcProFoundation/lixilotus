@@ -103,7 +103,7 @@ const CustomInput = styled.div<CustomInputProps>`
   span {
     font-weight: bold;
     color: ${props => props.theme.wallet.text.primary};
-    font-size: 16px;
+    font-size: 14px;
   }
   input {
     border: none;

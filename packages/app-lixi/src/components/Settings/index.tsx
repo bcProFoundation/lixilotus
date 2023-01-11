@@ -74,7 +74,7 @@ const SWName = styled.div`
   }
 
   h3 {
-    font-size: 16px;
+    font-size: 14px;
     color: ${props => props.theme.wallet.text.secondary};
     margin: 0;
     text-align: left;
@@ -128,7 +128,7 @@ const AWRow = styled.div`
   justify-content: space-between;
   margin-bottom: 6px;
   h3 {
-    font-size: 16px;
+    font-size: 14px;
     display: inline-block;
     color: ${props => props.theme.wallet.text.secondary};
     margin: 0;
@@ -139,7 +139,7 @@ const AWRow = styled.div`
     }
   }
   h4 {
-    font-size: 16px;
+    font-size: 14px;
     display: inline-block;
     color: ${props => props.theme.primary} !important;
     margin: 0;

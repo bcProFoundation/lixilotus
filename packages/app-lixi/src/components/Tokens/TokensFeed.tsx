@@ -62,7 +62,7 @@ const BannerTicker = styled.div`
     }
     .score-ticker {
       span {
-        font-size: 16px;
+        font-size: 14px;
         line-height: 28px;
         color: #4e444b;
         &.burn-index {

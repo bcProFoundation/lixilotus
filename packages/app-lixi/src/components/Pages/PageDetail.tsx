@@ -403,17 +403,19 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
               <picture>
                 <img className="avatar-img" src={pageDetailData.avatar || '/images/default-avatar.jpg'} alt="" />
               </picture>
-              {selectedAccountId == pageDetailData?.pageAccountId && (
+              {/* TODO: implement in the future */}
+              {/* {selectedAccountId == pageDetailData?.pageAccountId && (
                 <div className="btn-upload-avatar" onClick={navigateEditPage}>
                   <CameraOutlined />
                 </div>
-              )}
+              )} */}
             </div>
             <div className="title-profile">
               <h2>{pageDetailData.name}</h2>
               <p>{pageDetailData.title}</p>
             </div>
-            {selectedAccountId == pageDetailData?.pageAccountId && (
+            {/* TODO: implement in the future */}
+            {/* {selectedAccountId == pageDetailData?.pageAccountId && (
               <div className="action-profile">
                 <Button
                   style={{ marginRight: '1rem' }}
@@ -429,13 +431,14 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
                   Edit cover photo
                 </Button>
               </div>
-            )}
+            )} */}
           </div>
         </ProfileCardHeader>
         <ProfileContentContainer>
           <StyledMenu defaultActiveKey="post">
             <Tabs.TabPane tab="Post" key="post">
-              <LegacyProfile>
+              {/* TODO: implement in the future */}
+              {/* <LegacyProfile>
                 <AboutBox>
                   <h3>About</h3>
                   {pageDetailData && !pageDetailData.description && (
@@ -543,7 +546,7 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
                     </div>
                   )}
                 </FriendBox>
-              </LegacyProfile>
+              </LegacyProfile> */}
               <ContentTimeline>
                 <SearchBox />
                 <CreatePostCard pageId={page.id} refetch={() => refetch()} />
@@ -584,9 +587,50 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
                 </Timeline>
               </ContentTimeline>
             </Tabs.TabPane>
-            <Tabs.TabPane tab="About" key="about"></Tabs.TabPane>
-            <Tabs.TabPane tab="Friend" key="friend"></Tabs.TabPane>
-            <Tabs.TabPane tab="Picture" key="picture"></Tabs.TabPane>
+            <Tabs.TabPane tab="About" key="about">
+              <LegacyProfile>
+                <AboutBox>
+                  <h3>About</h3>
+                  {pageDetailData && !pageDetailData.description && (
+                    <div className="blank-about">
+                      <img src="/images/about-blank.svg" alt="" />
+                      <p>Let people know more about you (description, hobbies, address...</p>
+                      <Button type="primary" className="outline-btn">
+                        Update info
+                      </Button>
+                    </div>
+                  )}
+                  <div className="about-content">
+                    <SubAbout
+                      dataItem={pageDetailData?.description}
+                      onClickIcon={() => {}}
+                      icon={InfoCircleOutlined}
+                      text={pageDetailData?.description}
+                    />
+                    <SubAbout
+                      dataItem={pageDetailData?.address}
+                      onClickIcon={() => {}}
+                      icon={CompassOutlined}
+                      text={pageDetailData?.address}
+                    />
+                    <SubAbout
+                      dataItem={pageDetailData?.website}
+                      onClickIcon={() => {}}
+                      icon={HomeOutlined}
+                      text={pageDetailData?.website}
+                    />
+                    {/* {selectedAccountId == pageDetailData?.pageAccountId && (
+                      <Button type="primary" className="outline-btn" onClick={navigateEditPage}>
+                        Edit your profile
+                      </Button>
+                    )} */}
+                  </div>
+                </AboutBox>
+              </LegacyProfile>
+            </Tabs.TabPane>
+            {/* TODO: implement in the future */}
+            {/* <Tabs.TabPane tab="Friend" key="friend"></Tabs.TabPane>
+            <Tabs.TabPane tab="Picture" key="picture"></Tabs.TabPane> */}
           </StyledMenu>
         </ProfileContentContainer>
       </StyledContainerProfileDetail>
