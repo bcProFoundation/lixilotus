@@ -259,6 +259,12 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       border: 0 !important;
       .ant-comment-inner {
         padding: 16px 0 8px 0;
+        .ant-comment-avatar {
+          .ant-avatar {
+            width: 37px !important;
+            height: 37px !important;
+          }
+        }
       }
       .ant-comment-actions {
         margin-top: 4px;
