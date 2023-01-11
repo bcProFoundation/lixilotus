@@ -104,6 +104,14 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
             direction={'horizontal'}
           /> */}
           <ItemAccess
+            icon={'/images/ico-home.svg'}
+            text={intl.get('general.home')}
+            active={false}
+            key="home-lixi"
+            href={'/'}
+            direction={'horizontal'}
+          />
+          <ItemAccess
             icon={'/images/ico-lixi.svg'}
             text={intl.get('general.lixi')}
             active={false}
