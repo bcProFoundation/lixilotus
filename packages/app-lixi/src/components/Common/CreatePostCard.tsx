@@ -63,6 +63,7 @@ const SunEditor = dynamic(() => import('suneditor-react'), {
 const MobileCreatePost = styled.div`
   display: none;
   @media (max-width: 968px) {
+    z-index: 9;
     display: block;
     position: fixed;
     right: 15px;

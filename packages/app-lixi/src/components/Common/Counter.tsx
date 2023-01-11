@@ -4,6 +4,7 @@ import styled from 'styled-components';
 export const GridDiv = styled.div`
   .count {
     cursor: pointer;
+    color: rgba(30, 26, 29, 0.6);
   }
   .count .goUp {
     display: inline-flex;

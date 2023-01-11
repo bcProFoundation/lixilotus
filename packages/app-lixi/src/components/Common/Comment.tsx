@@ -43,6 +43,9 @@ export const StyledComment = styled(Comment)`
     background-color: rgba(246, 246, 246, 0.5);
     padding: 8px;
     border-radius: 5px;
+    .ant-comment-content-author-name {
+      text-transform: capitalize;
+    }
   }
   .ant-comment-actions {
     li {

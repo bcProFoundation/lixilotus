@@ -327,9 +327,9 @@ const SidebarShortcut = () => {
                 <img style={{ marginBottom: '2rem' }} src="/images/ico-notifications.svg" alt="" />
               </Badge>
             </Popover>
-            <Link href={'/wallet'}>
+            <div style={{ cursor: 'pointer' }} onClick={() => router.push(`/profile/${selectedAccount?.address}`)}>
               <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
-            </Link>
+            </div>
           </UserControl>
         </ContainerAccess>
       </ShortcutSideBar>
