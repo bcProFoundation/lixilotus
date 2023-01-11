@@ -72,6 +72,12 @@ import {
 } from './actions';
 import { getAccountById, getSelectedAccount } from './selectors';
 import { activateWallet } from '@store/wallet';
+import { uniqueNamesGenerator, Config, names } from 'unique-names-generator';
+
+const nameConfigGenerator: Config = {
+  dictionaries: [names, names],
+  separator: ' '
+};
 
 /**
  * Generate a account with random encryption password
@@ -154,6 +160,15 @@ function* postAccountSaga(action: PayloadAction<CreateAccountCommand>) {
 
 function* postAccountSuccessSaga(action: PayloadAction<Account>) {
   const account = action.payload;
+  if (account && account.address.includes(account.name)) {
+    const newNameGenerator = uniqueNamesGenerator(nameConfigGenerator);
+    const command: RenameAccountCommand = {
+      id: account.id,
+      mnemonic: account.mnemonic,
+      name: newNameGenerator
+    };
+    yield put(renameAccount(command));
+  }
   yield put(
     showToast('success', {
       message: 'Success',
@@ -235,6 +250,15 @@ function* importAccountSuccessSaga(action: PayloadAction<{ account: Account; lix
     })
   );
   const account = yield select(getAccountById(action.payload.account.id));
+  if (account && account.address.includes(account.name)) {
+    const newNameGenerator = uniqueNamesGenerator(nameConfigGenerator);
+    const command: RenameAccountCommand = {
+      id: account.id,
+      mnemonic: account.mnemonic,
+      name: newNameGenerator
+    };
+    yield put(renameAccount(command));
+  }
   yield put(setAccount(account));
   yield put(hideLoading(importAccount.type));
   yield putResolve(silentLogin(action.payload.account.mnemonic));
@@ -336,10 +360,13 @@ function* renameAccountSaga(action: PayloadAction<RenameAccountCommand>) {
 
 function* renameAccountSuccessSaga(action: PayloadAction<Account>) {
   const account = action.payload;
+  // Handle not show modal when change name auto generator
   yield put(hideLoading(renameAccount.type));
-  Modal.success({
-    content: intl.get('account.accountRenamedSuccess', { accountName: account.name })
-  });
+  if (account.address.includes(account.name)) {
+    Modal.success({
+      content: intl.get('account.accountRenamedSuccess', { accountName: account.name })
+    });
+  }
 }
 
 function* renameAccountFailureSaga(action: PayloadAction<string>) {

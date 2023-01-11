@@ -47,14 +47,14 @@ const Footer = ({ notifications }: { notifications?: any }) => {
             {intl.get('general.page')}
           </NavButton>
         </Link>
-        <Link href="/token/listing" passHref>
-          <NavButton active={currentPathName.includes('/token')}>
+        <Link href="/wallet" passHref>
+          <NavButton active={currentPathName.includes('/wallet')}>
             <img
               className="ico-img"
-              src={currentPathName.includes('/token') ? '/images/ico-tokens-active.svg' : '/images/ico-tokens.svg'}
+              src={currentPathName.includes('/wallet') ? '/images/ico-account.svg' : '/images/ico-account.svg'}
               alt=""
             />
-            {intl.get('general.tokens')}
+            {intl.get('general.accounts')}
           </NavButton>
         </Link>
         <Link href="/notifications" passHref>

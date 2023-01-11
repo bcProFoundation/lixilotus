@@ -100,7 +100,7 @@ const CompleteCover = styled.div`
 
 const WarningCover = styled.div`
   ${cover};
-  font-size: 16px;
+  font-size: 14px;
   border-color: ${colors.brand700};
   background-color: ${colors.brand500};
   cursor: pointer;

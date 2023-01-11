@@ -44,7 +44,7 @@ const WalletCard = styled.div`
     align-items: center;
     h4 {
       color: #edeff0;
-      font-size: 16px;
+      font-size: 14px;
       margin: 0 8px;
     }
     .edit-ico {
@@ -65,14 +65,14 @@ const StyledBalanceHeader = styled.div`
     align-items: center;
     gap: 5px;
     span {
-      font-size: 16px;
+      font-size: 14px;
       line-height: 24px;
       letter-spacing: 0.5px;
       color: rgba(237, 239, 240, 0.6);
     }
   }
   .iso-amount {
-    font-size: 16px;
+    font-size: 14px;
     color: rgba(237, 239, 240, 0.6);
     text-align: left;
   }
@@ -124,7 +124,7 @@ const ButtonSend = styled.div`
   font-weight: bold;
   .anticon {
     margin-right: 4px;
-    font-size: 16px;
+    font-size: 14px;
   }
 `;
 

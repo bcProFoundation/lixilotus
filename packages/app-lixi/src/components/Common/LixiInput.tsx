@@ -44,7 +44,7 @@ const LixiInput = (lixiInputProps?: LixiInputProps) => {
     .ant-input {
       padding: 9px 1rem;
       font-weight: 400;
-      font-size: 16px;
+      font-size: 14px;
       line-height: 24px;
       letter-spacing: 0.5px;
       color: #4e444b;

@@ -43,21 +43,20 @@ const AppBody = styled.div`
 `;
 
 export const NavBarHeader = styled(Header)`
-  padding: 2rem 2rem 1rem 2rem;
-  height: auto;
-  line-height: initial;
+  cursor: pointer;
+  width: 100%;
   display: flex;
   align-items: center;
+  padding: 1rem 0;
   border-radius: 20px;
-  width: 100%;
-  margin-bottom: 1rem;
+  background: transparent;
   .anticon {
-    font-size: 24px;
-    color: var(--color-primary);
+    font-size: 18px;
+    color: rgba(30, 26, 29, 0.6);
   }
   @media (max-width: 960px) {
-    padding: 8px;
     width: 100%;
+    padding: 8px;
   }
 `;
 
@@ -67,9 +66,10 @@ export const PathDirection = styled.div`
   align-items: flex-start;
   margin-left: 1rem;
   h2 {
-    font-weight: 600;
+    font-size: 24px;
+    margin: 0;
     text-transform: capitalize;
-    color: var(--color-primary);
+    color: #1e1a1d;
   }
   .sub-title {
     text-transform: capitalize;
@@ -103,7 +103,8 @@ export const AppContainer = styled.div`
       max-width: 100% !important;
     }
     @media (max-width: 420px) {
-      min-width: fit-content;
+      min-width: 100%;
+      width: 300px;
       -ms-overflow-style: none;
       scrollbar-width: none;
       &::-webkit-scrollbar {
@@ -244,13 +245,15 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                             paddingRight: disableSideBarRanking.some(item => selectedKey.includes(item)) ? '2rem' : '0',
                             maxWidth: disableSideBarRanking.some(item => selectedKey.includes(item)) ? '100%' : ''
                           }}
+                          id="scrollableDiv"
                         >
                           <Topbar ref={setRef} />
-                          <Content className="content-layout">{children}</Content>
+                          {children}
                         </Layout>
-                        {!disableSideBarRanking.some(item => selectedKey.includes(item)) && (
+                        {/* TODO: Implement SidebarRanking in future */}
+                        {/* {!disableSideBarRanking.some(item => selectedKey.includes(item)) && (
                           <SidebarRanking></SidebarRanking>
-                        )}
+                        )} */}
                       </div>
                     </Layout>
                   </AppContainer>

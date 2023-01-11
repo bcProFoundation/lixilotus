@@ -3,6 +3,8 @@ import { useRouter } from 'next/router';
 import styled from 'styled-components';
 
 import { GlobalOutlined, DollarOutlined, ShopOutlined } from '@ant-design/icons';
+import { Avatar } from 'antd';
+import { AvatarUser } from './AvatarUser';
 
 type InfoCardProps = {
   imgUrl: string;
@@ -22,25 +24,20 @@ const CardUser = styled.div`
   .card-container {
     display: flex;
     align-items: center;
-    img {
-      width: 35px;
-      height: 35px;
-      border-radius: 50%;
-      margin-right: 1rem;
-    }
     .card-info {
       text-align: left;
       .name {
         font-weight: 500;
-        font-size: 16px;
         letter-spacing: 0.15px;
         margin: 0;
+        text-transform: capitalize;
         &:hover {
           text-decoration: underline;
           cursor: pointer;
         }
       }
       .title {
+        font-size: 12px;
         letter-spacing: 0.25px;
         margin: 0;
         color: rgba(30, 26, 29, 0.38);
@@ -95,16 +92,14 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
       <InfoCardUserContainer className={type === 'card' ? 'card' : ''}>
         <CardUser>
           <div className="card-container">
-            <picture>
-              <img className="avatar-ico" src={imgUrl ? imgUrl : '/images/xpi.svg'} alt="" />
-            </picture>
+            <AvatarUser name={name} isMarginRight={true} />
             <div className="card-info">
               <h4 className="name" onClick={() => history.push(`/profile/${address}`)}>
                 {name}
               </h4>
               <p className="title">
                 {title}
-                <span style={{ marginLeft: '5px', fontSize: '13px' }}>{activatePostLocation && postLocation()}</span>
+                <span style={{ marginLeft: '4px', fontSize: '10px' }}>{activatePostLocation && postLocation()}</span>
               </p>
             </div>
           </div>

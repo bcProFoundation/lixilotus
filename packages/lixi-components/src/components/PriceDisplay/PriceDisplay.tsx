@@ -29,7 +29,7 @@ const Bottom = styled.div`
 
 const PriceText = styled.p`
   font-family: monospace;
-  font-size: 16px;
+  font-size: 14px;
   line-height: 12px;
   margin: 0;
   display: grid;

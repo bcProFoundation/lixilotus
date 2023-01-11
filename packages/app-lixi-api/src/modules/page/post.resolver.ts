@@ -483,7 +483,15 @@ export class PostResolver {
       content: pureContent,
       postAccountName: createdPost.postAccount.name,
       createdAt: createdPost.createdAt,
-      updatedAt: createdPost.updatedAt
+      updatedAt: createdPost.updatedAt,
+      page: {
+        id: createdPost.page?.id,
+        name: createdPost.page?.name
+      },
+      token: {
+        id: createdPost.token?.id,
+        name: createdPost.token?.name
+      }
     };
 
     await this.meiliService.add(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`, indexedPost, createdPost.id);

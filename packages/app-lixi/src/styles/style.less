@@ -40,6 +40,7 @@ body {
 body {
   margin: 0;
   font-family: 'Roboto';
+  font-size: 14px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -65,12 +66,14 @@ code {
 
 .ant-modal-content {
   border-radius: 20px;
+
   .ant-modal-header {
     background: var(--bg-color-light-theme);
     border-top-right-radius: 2rem;
     border-top-left-radius: 2rem;
     padding: 24px 32px;
     border-bottom: 0;
+
     .ant-modal-title {
       color: var(--text-color-on-background);
       font-weight: 400;
@@ -78,6 +81,7 @@ code {
       line-height: 36px;
     }
   }
+
   .ant-modal-body {
     background: var(--bg-color-light-theme);
     border-bottom-right-radius: 2rem;
@@ -243,6 +247,7 @@ code {
   --color-info-dark: #5476eb;
 
   --border-item-dark: #e9eaed;
+  // --boder-item-light: none;
   --boder-item-light: rgba(128, 116, 124, 0.12);
 }
 
@@ -280,6 +285,10 @@ code {
 
 .ant-table {
   border-radius: 18px;
+}
+
+.ant-image-mask {
+  background: rgba(0, 0, 0, 0.03) !important;
 }
 
 // custom default btn
@@ -326,6 +335,7 @@ code {
     background: #ffffff;
     border: 0;
     box-shadow: none;
+
     &:hover {
       background: rgba(158, 42, 156, 0.08);
     }
@@ -360,7 +370,7 @@ code {
       textarea {
         padding: 9px 1rem;
         font-weight: 400;
-        font-size: 16px;
+        font-size: 14px;
         line-height: 24px;
         letter-spacing: 0.5px;
         color: #4e444b;
@@ -389,6 +399,7 @@ code {
         padding: 9px 1rem;
         border-radius: 8px;
         min-height: 56px;
+
         input {
           border-radius: 0;
           background: transparent;
@@ -464,6 +475,7 @@ code {
     border: 1px solid var(--boder-item-light);
     box-shadow: 0px 0px 20px rgb(0 0 0 / 6%);
     border-radius: 18px;
+
     tr {
       th {
         font-weight: 500;
@@ -472,19 +484,23 @@ code {
         border-color: var(--boder-item-light);
         padding: 12px 16px;
       }
+
       td {
         border-color: var(--boder-item-light);
       }
+
       &:first-child {
         th {
           &:first-child {
             border-top-left-radius: 16px !important;
           }
+
           &:last-child {
             border-top-right-radius: 16px !important;
           }
         }
       }
+
       &:last-child {
         td {
           border-color: transparent;
@@ -492,6 +508,7 @@ code {
       }
     }
   }
+
   .ant-table-cell {
     border-bottom: 0;
   }
@@ -508,6 +525,7 @@ code {
         }
       }
     }
+
     .ant-table-cell {
       border-bottom: 1px solid var(--boder-item-light);
     }
@@ -518,6 +536,7 @@ code {
   .ant-table-filter-dropdown-btns {
     border-top: 0 !important;
   }
+
   .ant-btn {
     min-height: fit-content !important;
   }
@@ -527,9 +546,11 @@ code {
   .ant-modal-close {
     display: none !important;
   }
+
   .ant-modal-body {
     padding: 0;
     border-radius: 20px;
+
     aside {
       width: 100% !important;
     }
@@ -544,39 +565,48 @@ code {
 // Customine popover
 .popover-more {
   top: 500px !important;
+
   .ant-popover-content {
     .ant-popover-arrow {
       display: none;
     }
+
     .ant-popover-inner {
       min-width: 280px;
       border-radius: 24px;
+
       .ant-popover-inner-content {
         background: #fffbff;
         box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.12);
         border-radius: 24px;
+
         .popover-content-more {
           display: flex;
           flex-direction: column;
+
           .item-access {
             margin-bottom: 2rem;
             flex-direction: row !important;
             align-items: center;
             cursor: pointer;
             gap: 0 !important;
+
             .anticon {
               font-size: 25px;
               color: #12130f;
             }
+
             .icon-item {
               padding: 6px;
+
               &.active-item-access {
                 background: #ffd24d;
                 border-radius: 8px;
               }
             }
+
             .text-item {
-              font-size: 16px;
+              font-size: 14px;
               font-weight: 400;
               letter-spacing: 0.5px;
               color: #4e444b;
@@ -632,16 +662,19 @@ code {
     display: flex;
     flex-direction: column;
     padding-top: 0;
+
     .error-msg {
       align-self: end;
       margin: 0;
       color: var(--color-danger);
     }
+
     button {
       margin-top: 1rem;
       width: 30%;
       align-self: end;
     }
+
     input {
       font-size: 15px;
       padding: 8px;
