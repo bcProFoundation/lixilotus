@@ -487,5 +487,6 @@ export default {
 
   /* 17. Comment */
   'comment.unableCreateComment': 'Không thể tạo bình luận',
-  'comment.unableToBurn': 'Không thể đốt cho bình luận'
+  'comment.unableToBurn': 'Không thể đốt cho bình luận',
+  'comment.writeComment': 'Viết bình luận...'
 };

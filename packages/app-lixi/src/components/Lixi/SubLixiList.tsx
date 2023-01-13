@@ -26,7 +26,9 @@ const StyledTableHead = styled.th`
 const StyledTableData = styled.td`
   border-bottom: 1px solid #e0e0e0;
   padding: 18px;
-  width: 300px;
+  width: 2%;
+  display: table-cell;
+  background: white;
 `;
 
 const SubLixiList = props => {
@@ -90,15 +92,18 @@ const SubLixiList = props => {
     <StyledTable>
       <TableVirtuoso
         className="sub-lixi"
-        style={{ height: '100%' }}
+        style={{ height: '100%', borderCollapse: 'separate' }}
         data={subLixiesDataSource}
         overscan={200}
         endReached={loadMore}
+        components={{
+          Table: ({ style, ...props }) => <table {...props} style={{ ...style, borderCollapse: 'separate' }} />
+        }}
         fixedHeaderContent={() => (
           <tr>
             {columns.map(column => {
               return (
-                <StyledTableHead key={column.dataIndex} style={{ background: 'white' }}>
+                <StyledTableHead key={column.dataIndex} style={{ background: 'white', tableLayout: 'fixed' }}>
                   {column.title}
                 </StyledTableHead>
               );

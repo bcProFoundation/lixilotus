@@ -56,8 +56,7 @@ import { CommentOrderField, CreateCommentInput, OrderDirection } from 'src/gener
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled from 'styled-components';
 import CommentListItem from './CommentListItem';
-
-const URL_SERVER_IMAGE = 'https://s3.us-west-001.backblazeb2.com';
+import { useForm, Controller } from 'react-hook-form';
 
 type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 
@@ -157,6 +156,7 @@ type PostDetailProps = {
 
 const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const dispatch = useAppDispatch();
+  const { control, getValues, setValue, setFocus } = useForm();
   const router = useRouter();
   const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
   const refCommentsListing = useRef<HTMLDivElement | null>(null);
@@ -181,7 +181,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
 
   const [
     createCommentTrigger,
-    { isLoading: isLoadingCreatePost, isSuccess: isSuccessCreatePost, isError: isErrorCreatePost }
+    { isLoading: isLoadingCreateComment, isSuccess: isSuccessCreateComment, isError: isErrorCreateComment }
   ] = useCreateCommentMutation();
 
   const upVotePost = (dataItem: PostItem) => {
@@ -369,6 +369,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       }
       .reaction-func {
         color: rgba(30, 26, 29, 0.6);
+        cursor: pointer;
       }
     }
 
@@ -389,9 +390,13 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
 
   const loadMoreComments = () => {
     if (hasNext && !isFetching) {
-      fetchNext();
+      fetchNext().finally(() => {
+        setFocus('comment', { shouldSelect: true });
+      });
     } else if (hasNext) {
-      fetchNext();
+      fetchNext().finally(() => {
+        setFocus('comment', { shouldSelect: true });
+      });
     }
   };
 
@@ -443,6 +448,9 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           })
         );
       }
+
+      setFocus('comment', { shouldSelect: true });
+      setValue('comment', '');
     }
   };
 
@@ -496,7 +504,8 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           <div style={{ display: post.uploads.length != 0 ? 'grid' : 'none' }} className="images-post">
             {post.uploads.length != 0 &&
               post.uploads.map((item, index) => {
-                const imageUrl = URL_SERVER_IMAGE + '/' + item.upload.bucket + '/' + item.upload.sha;
+                const imageUrl =
+                  process.env.NEXT_PUBLIC_AWS_ENDPOINT + '/' + item.upload.bucket + '/' + item.upload.sha;
                 return (
                   <>
                     <Image.PreviewGroup>
@@ -525,54 +534,46 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
             </div>
             <div className="reaction-func">
               <span>{totalCount}</span>&nbsp;
-              <img src="/images/ico-comments.svg" alt="" />
+              <img src="/images/ico-comments.svg" alt="" onClick={() => setFocus('comment', { shouldSelect: true })} />
             </div>
           </div>
         </PostContentDetail>
 
         <CommentContainer>
-          {/* <Virtuoso
-            id="list-comment-virtuoso"
-            data={data}
-            style={{ height: '65vh', paddingBottom: '2rem' }}
-            endReached={loadMoreComments}
-            overscan={500}
-            itemContent={(index, item) => {
-              return <CommentListItem index={index} item={item} post={post} />;
-            }}
-          /> */}
-          <React.Fragment>
-            {/* <Header /> */}
-            <InfiniteScroll
-              dataLength={data.length}
-              next={loadMoreComments}
-              hasMore={hasNext}
-              loader={null}
-              // endMessage={
-              //   <p style={{ textAlign: 'center' }}>
-              //     <b>{"It's so empty here..."}</b>
-              //   </p>
-              // }
-              scrollableTarget="scrollableDiv"
-            >
-              {data.map((item, index) => {
-                return <CommentListItem index={index} item={item} post={post} />;
-              })}
-            </InfiniteScroll>
-          </React.Fragment>
+          <InfiniteScroll
+            dataLength={data.length}
+            next={loadMoreComments}
+            hasMore={hasNext}
+            loader={<Skeleton avatar active />}
+            scrollableTarget="scrollableDiv"
+          >
+            {data.map((item, index) => {
+              return <CommentListItem index={index} item={item} post={post} key={item.id} />;
+            })}
+          </InfiniteScroll>
         </CommentContainer>
         <CommentInputContainer>
           <div className="ava-ico-cmt" onClick={() => router.push(`/profile/${selectedAccount.address}`)}>
             <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
           </div>
-          <Search
-            className="input-comment"
-            placeholder="Input your comment..."
-            enterButton="Comment"
-            size="large"
-            suffix={<DashOutlined />}
-            onSearch={handleCreateNewComment}
-            autoFocus={true}
+          <Controller
+            name="comment"
+            control={control}
+            render={({ field: { onChange, onBlur, value, ref } }) => (
+              <Search
+                ref={ref}
+                className="input-comment"
+                placeholder={intl.get('comment.writeComment')}
+                enterButton="Comment"
+                onChange={onChange}
+                onBlur={onBlur}
+                value={value}
+                size="large"
+                suffix={<DashOutlined />}
+                onSearch={handleCreateNewComment}
+                loading={isLoadingCreateComment}
+              />
+            )}
           />
         </CommentInputContainer>
       </StyledContainerPostDetail>

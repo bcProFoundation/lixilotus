@@ -51,7 +51,7 @@ import { ClaimType } from '@bcpros/lixi-models/lib/lixi';
 import { exportSubLixies } from 'src/store/lixi/actions';
 import { RenameLixiModalProps } from './RenameLixiModal';
 import SubLixiList from './SubLixiList';
-import VirtualTable from './SubLixiListScroll';
+import LixiClaimedList from './LixiClaimedList';
 import useWindowDimensions from '@hooks/useWindowDimensions';
 import { QRCodeModal } from '@components/Common/QRCodeModal';
 import { QRCodeModalType } from '@bcpros/lixi-models/constants';
@@ -125,12 +125,6 @@ const InfoCard = styled.div`
     height: 80px;
     width: 80px;
   }
-
-  .lixi-detail {
-    .ant-descriptions-item-content:last-child {
-      justify-content: end !important;
-    }
-  }
   &.overview {
     .ant-descriptions-view {
       height: 100% !important;
@@ -185,8 +179,6 @@ const InfoCard = styled.div`
 `;
 
 const Text = styled.p`
-  position: absolute;
-  height: 24px;
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 500;
@@ -194,6 +186,7 @@ const Text = styled.p`
   line-height: 24px;
   display: flex;
   color: #333333;
+  margin: 0px;
 `;
 
 const StyleButton = styled(Button)`
@@ -498,15 +491,15 @@ const Lixi = props => {
 
   const singleCodeColumns = [
     { title: intl.get('general.num'), dataIndex: 'num', width: 70 },
-    { title: 'Value redeem (XPI)', dataIndex: 'amount' },
-    { title: 'Time of claim', dataIndex: 'createAt' }
+    { title: `${intl.get('general.amount')} (XPI)`, dataIndex: 'amount' },
+    { title: 'Time of claim', dataIndex: 'claimedAt' }
   ];
 
   const claimReportSingleCode = allClaimsCurrentLixi.map((item, i) => {
     return {
       num: i + 1,
       amount: fromSmallestDenomination(item.amount),
-      createAt: moment(item.createdAt).format('YYYY-MM-DD HH:mm')
+      claimedAt: moment(item.createdAt).format('YYYY-MM-DD HH:mm')
     };
   });
 
@@ -590,7 +583,7 @@ const Lixi = props => {
       switch (selectedLixi.status) {
         case 'active':
           return (
-            <Text
+            <p
               style={{
                 color: '#FFFFFF',
                 padding: '4px 8px',
@@ -602,11 +595,11 @@ const Lixi = props => {
               }}
             >
               {intl.get('general.running')}
-            </Text>
+            </p>
           );
         case 'pending':
           return (
-            <Text
+            <p
               style={{
                 color: '#FFFFFF',
                 padding: '4px 8px',
@@ -618,11 +611,11 @@ const Lixi = props => {
               }}
             >
               {intl.get('general.waiting')}
-            </Text>
+            </p>
           );
         case 'locked':
           return (
-            <Text
+            <p
               style={{
                 color: '#FFFFFF',
                 padding: '4px 8px',
@@ -634,7 +627,7 @@ const Lixi = props => {
               }}
             >
               {intl.get('lixi.archived')}
-            </Text>
+            </p>
           );
       }
     }
@@ -642,53 +635,53 @@ const Lixi = props => {
 
   const infoLixi = () => {
     return (
-      <Descriptions
-        className={isMobileDetailLixi ? '' : 'lixi-detail'}
-        column={isMobileDetailLixi ? 1 : 2}
-        bordered
-        size="small"
-        style={{
-          paddingTop: '1%',
-          color: 'rgb(23,23,31)'
-        }}
-      >
-        <Descriptions.Item
-          key="desc.avatar"
-          label={
-            <img
-              src={selectedLixi.envelope ? selectedLixi.envelope.image : '/images/lixi_logo.svg'}
-              style={{
-                borderRadius: '50%',
-                width: '80px',
-                height: '80px',
-                display: 'flex'
-              }}
-            />
-          }
-          style={{ borderTopLeftRadius: '24px' }}
+      <React.Fragment>
+        <Descriptions
+          className={isMobileDetailLixi ? '' : 'lixi-detail'}
+          column={isMobileDetailLixi ? 1 : 2}
+          bordered
+          size="small"
+          style={{
+            paddingTop: '1%',
+            color: 'rgb(23,23,31)'
+          }}
         >
-          <Text style={{ color: 'rgba(30, 26, 29, 0.38)' }}>{intl.get('lixi.name')}</Text>
-          <br />
-          <Text style={{ alignItems: 'center' }}>
-            {selectedLixi?.name ?? ''} &nbsp; <EditOutlined onClick={e => showPopulatedRenameLixiModal(e)} />
-          </Text>
-          <br />
-          {statusLixi()}
-        </Descriptions.Item>
-        <Descriptions.Item key="desc.button">
-          <StyleButton shape="round" onClick={archiveButton}>
-            {selectedLixi.status == 'active' ? intl.get('lixi.archive') : intl.get('lixi.unarchive')}
-          </StyleButton>
-          <StyleButton shape="round" onClick={withdrawButton}>
-            {intl.get('lixi.withdraw')}
-          </StyleButton>
-          {selectedLixi.claimType == ClaimType.OneTime && (
-            <StyleButton shape="round" onClick={() => handleExportLixi()}>
-              {intl.get('lixi.exportLixi')}
+          <Descriptions.Item
+            key="desc.avatar"
+            label={
+              <img
+                src={selectedLixi.envelope ? selectedLixi.envelope.image : '/images/lixi_logo.svg'}
+                style={{
+                  borderRadius: '50%',
+                  width: '80px',
+                  height: '80px',
+                  display: 'flex'
+                }}
+              />
+            }
+            style={{ borderRadius: '24px', textAlign: 'left' }}
+          >
+            <Text style={{ color: 'rgba(30, 26, 29, 0.38)' }}>{intl.get('lixi.name')}</Text>
+            <Text style={{ alignItems: 'center' }}>
+              {selectedLixi?.name ?? ''} &nbsp; <EditOutlined onClick={e => showPopulatedRenameLixiModal(e)} />
+            </Text>
+            {statusLixi()}
+          </Descriptions.Item>
+          <Descriptions.Item key="desc.button" style={{ justifyContent: 'center' }}>
+            <StyleButton shape="round" onClick={archiveButton}>
+              {selectedLixi.status == 'active' ? intl.get('lixi.archive') : intl.get('lixi.unarchive')}
             </StyleButton>
-          )}
-        </Descriptions.Item>
-      </Descriptions>
+            <StyleButton shape="round" onClick={withdrawButton}>
+              {intl.get('lixi.withdraw')}
+            </StyleButton>
+            {selectedLixi.claimType == ClaimType.OneTime && (
+              <StyleButton shape="round" onClick={() => handleExportLixi()}>
+                {intl.get('lixi.exportLixi')}
+              </StyleButton>
+            )}
+          </Descriptions.Item>
+        </Descriptions>
+      </React.Fragment>
     );
   };
 
@@ -804,12 +797,9 @@ const Lixi = props => {
                   style={{ borderTopLeftRadius: '24px', borderBottomLeftRadius: '24px' }}
                 >
                   <Text style={{ fontSize: '14px', color: 'rgba(30, 26, 29, 0.38)' }}>{intl.get('lixi.balance')}</Text>
-                  <br />
                   <Text style={{ fontSize: '22px', color: '#1E1A1D' }}>
                     {fromSmallestDenomination(selectedLixi?.balance) ?? 0} {currency.ticker}
                   </Text>
-                  <br />
-                  {/* Convert XPI to USD */}
                 </Descriptions.Item>
               </Descriptions>
             </InfoCard>
@@ -880,12 +870,9 @@ const Lixi = props => {
                         />
                         &nbsp; {intl.get('lixi.claimed')}
                       </Text>
-                      <br />
                       <Text style={{ color: '#1E1A1D', paddingBottom: '24px' }}>
                         {selectedLixi.subLixiTotalClaim.toFixed(2)} {currency.ticker}
                       </Text>
-                      <br />
-                      <br />
                       <Text style={{ color: 'rgba(30, 26, 29, 0.38)', alignItems: 'baseline' }}>
                         <div
                           style={{
@@ -897,7 +884,6 @@ const Lixi = props => {
                         />
                         &nbsp; {intl.get('lixi.remaining')}
                       </Text>
-                      <br />
                       <Text style={{ color: '#1E1A1D' }}>
                         {(selectedLixi.subLixiBalance - selectedLixi.subLixiTotalClaim).toFixed(2)} {currency.ticker}
                       </Text>
@@ -927,13 +913,13 @@ const Lixi = props => {
   const claimReport = () => {
     switch (selectedLixi.claimType) {
       case ClaimType.Single:
-        return (
-          <VirtualTable
-            columns={singleCodeColumns}
-            dataSource={claimReportSingleCode}
-            scroll={{ y: claimReportSingleCode.length * 54 <= 270 ? claimReportSingleCode.length * 54 : 270 }}
-          />
-        );
+        const lixiClaimedList =
+          claimReportSingleCode.length === 0 ? (
+            <b>No one has claimed yet</b>
+          ) : (
+            <LixiClaimedList dataSource={claimReportSingleCode} columns={singleCodeColumns} />
+          );
+        return lixiClaimedList;
       case ClaimType.OneTime:
         const lixiStatus =
           selectedLixi.status === 'pending' ? (

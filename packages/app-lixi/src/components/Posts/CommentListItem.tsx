@@ -161,7 +161,7 @@ const CommentListItem = ({ index, item, post }: CommentListItemProps) => {
       content={item.commentText}
       datetime={
         <Tooltip title={moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss')}>
-          <span>{moment().fromNow()}</span>
+          <span>{moment(item.createdAt).fromNow()}</span>
         </Tooltip>
       }
     />

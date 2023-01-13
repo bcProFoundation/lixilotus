@@ -50,6 +50,7 @@ export const silentLoginSuccess = createAction('account/silentLoginSuccess');
 export const silentLoginFailure = createAction('account/silentLoginFailure');
 export const setUpload = createAction<{ upload: Upload; type: any }>('account/setUpload');
 export const removeUpload = createAction<{ type: any; id?: string }>('account/removeUpload');
+export const removeAllUpload = createAction('account/removeAllUpload');
 export const loginViaEmail = createAction<LoginViaEmailCommand>('account/loginViaEmail');
 export const loginViaEmailSuccess = createAction<any>('account/loginViaEmailSuccess');
 export const loginViaEmailFailure = createAction<any>('account/loginViaEmailFailure');
