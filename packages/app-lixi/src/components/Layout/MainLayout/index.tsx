@@ -94,6 +94,7 @@ export const AppContainer = styled.div`
     justify-content: space-between;
   }
   .main-section-layout {
+    scroll-behavior: smooth;
     max-width: 820px;
     min-width: 420px;
     width: auto;

@@ -56,7 +56,7 @@ import { CommentOrderField, CreateCommentInput, OrderDirection } from 'src/gener
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled from 'styled-components';
 import CommentListItem from './CommentListItem';
-import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 
 type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 
@@ -156,7 +156,7 @@ type PostDetailProps = {
 
 const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const dispatch = useAppDispatch();
-  const { control, getValues, setValue } = useForm();
+  const { control, getValues, setValue, setFocus } = useForm();
   const router = useRouter();
   const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
   const refCommentsListing = useRef<HTMLDivElement | null>(null);
@@ -181,7 +181,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
 
   const [
     createCommentTrigger,
-    { isLoading: isLoadingCreatePost, isSuccess: isSuccessCreatePost, isError: isErrorCreatePost }
+    { isLoading: isLoadingCreateComment, isSuccess: isSuccessCreateComment, isError: isErrorCreateComment }
   ] = useCreateCommentMutation();
 
   const upVotePost = (dataItem: PostItem) => {
@@ -369,6 +369,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       }
       .reaction-func {
         color: rgba(30, 26, 29, 0.6);
+        cursor: pointer;
       }
     }
 
@@ -389,9 +390,13 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
 
   const loadMoreComments = () => {
     if (hasNext && !isFetching) {
-      fetchNext();
+      fetchNext().finally(() => {
+        setFocus('comment', { shouldSelect: true });
+      });
     } else if (hasNext) {
-      fetchNext();
+      fetchNext().finally(() => {
+        setFocus('comment', { shouldSelect: true });
+      });
     }
   };
 
@@ -443,6 +448,9 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           })
         );
       }
+
+      setFocus('comment', { shouldSelect: true });
+      setValue('comment', '');
     }
   };
 
@@ -472,13 +480,6 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       </ShareButton>
     </RWebShare>
   );
-
-  const onPressEnter = e => {
-    const { value } = e.target;
-    if (e.key === 'Enter' && value !== '') {
-      handleCreateNewComment(value);
-    }
-  };
 
   return (
     <>
@@ -533,7 +534,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
             </div>
             <div className="reaction-func">
               <span>{totalCount}</span>&nbsp;
-              <img src="/images/ico-comments.svg" alt="" />
+              <img src="/images/ico-comments.svg" alt="" onClick={() => setFocus('comment', { shouldSelect: true })} />
             </div>
           </div>
         </PostContentDetail>
@@ -543,7 +544,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
             dataLength={data.length}
             next={loadMoreComments}
             hasMore={hasNext}
-            loader={null}
+            loader={<Skeleton avatar active />}
             scrollableTarget="scrollableDiv"
           >
             {data.map((item, index) => {
@@ -555,22 +556,14 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           <div className="ava-ico-cmt" onClick={() => router.push(`/profile/${selectedAccount.address}`)}>
             <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
           </div>
-          {/* <Search
-            className="input-comment"
-            placeholder="Input your comment..."
-            enterButton="Comment"
-            size="large"
-            suffix={<DashOutlined />}
-            onSearch={handleCreateNewComment}
-            autoFocus={true}
-          /> */}
           <Controller
             name="comment"
             control={control}
-            render={({ field: { onChange, onBlur, value } }) => (
+            render={({ field: { onChange, onBlur, value, ref } }) => (
               <Search
+                ref={ref}
                 className="input-comment"
-                placeholder="Input your comment..."
+                placeholder={intl.get('comment.writeComment')}
                 enterButton="Comment"
                 onChange={onChange}
                 onBlur={onBlur}
@@ -578,8 +571,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
                 size="large"
                 suffix={<DashOutlined />}
                 onSearch={handleCreateNewComment}
-                onKeyDown={onPressEnter}
-                // autoFocus={true}
+                loading={isLoadingCreateComment}
               />
             )}
           />

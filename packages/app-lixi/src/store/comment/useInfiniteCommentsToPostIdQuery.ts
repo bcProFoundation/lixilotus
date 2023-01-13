@@ -94,7 +94,7 @@ export function useInfiniteCommentsToPostIdQuery(
     errorNext: nextResult?.error,
     isErrorNext: nextResult?.isError,
     isFetchingNext: nextResult?.isFetching,
-    hasNext: baseResult.data?.allCommentsToPostId?.pageInfo?.endCursor !== undefined,
+    hasNext: baseResult.data?.allCommentsToPostId?.pageInfo?.endCursor !== null,
     fetchNext,
     refetch
   };
