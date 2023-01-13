@@ -311,22 +311,19 @@ const SidebarShortcut = () => {
             )} */}
           </div>
           <UserControl>
-            <Popover
-              overlayClassName="popover-notifications"
-              placement="topRight"
-              title={'Notifications'}
-              content={NotificationPopup(notifications, selectedAccount)}
-              trigger={notifications.length != 0 ? 'click' : ''}
+            <Badge
+              count={notifications.length}
+              overflowCount={9}
+              offset={[notifications.length < 10 ? 0 : 5, 8]}
+              color="var(--color-primary)"
             >
-              <Badge
-                count={notifications.length}
-                overflowCount={9}
-                offset={[notifications.length < 10 ? 0 : 5, 8]}
-                color="var(--color-primary)"
-              >
-                <img style={{ marginBottom: '2rem' }} src="/images/ico-notifications.svg" alt="" />
-              </Badge>
-            </Popover>
+              <img
+                style={{ marginBottom: '2rem' }}
+                src="/images/ico-notifications.svg"
+                alt="ico-notifications"
+                onClick={() => router.push('/notifications')}
+              />
+            </Badge>
             <div style={{ cursor: 'pointer' }} onClick={() => router.push(`/profile/${selectedAccount?.address}`)}>
               <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
             </div>
