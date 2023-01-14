@@ -116,6 +116,8 @@ const StyledLogo = styled.div`
 `;
 
 const ShortcutSideBar = styled(Sider)`
+  position: sticky;
+  top: 0px;
   height: 100vh;
   flex: none !important;
   overflow: auto;

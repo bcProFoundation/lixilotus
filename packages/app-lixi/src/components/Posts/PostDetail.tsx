@@ -349,6 +349,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   `;
 
   const StyledContainerPostDetail = styled.div`
+    width: 100%;
     border-radius: 5px;
     background: white;
     padding: 1rem;
@@ -481,14 +482,15 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     </RWebShare>
   );
 
+  //TODO: Need to rework topbar
   return (
     <>
-      <NavBarHeader onClick={() => router.back()}>
+      {/* <NavBarHeader onClick={() => router.back()}>
         <LeftOutlined />
         <PathDirection>
           <h2>Post</h2>
         </PathDirection>
-      </NavBarHeader>
+      </NavBarHeader> */}
       <StyledContainerPostDetail>
         <InfoCardUser
           imgUrl={post.page ? post.page.avatar : ''}

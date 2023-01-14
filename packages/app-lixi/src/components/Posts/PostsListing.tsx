@@ -27,6 +27,7 @@ type PostsListingProps = {
 
 const StyledPostsListing = styled.div`
   margin-top: 1rem;
+  width: 100%;
   &::-webkit-scrollbar {
     width: 5px;
   }
