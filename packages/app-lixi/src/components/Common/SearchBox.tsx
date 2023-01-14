@@ -63,7 +63,6 @@ const SearchBox = props => {
               value={value}
               placeholder="Search for posts"
               onKeyDown={onPressEnter}
-              autoFocus={value}
             />
           )}
         />
