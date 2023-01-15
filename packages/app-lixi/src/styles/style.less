@@ -8,6 +8,10 @@ body::-webkit-scrollbar {
   display: none;
 }
 
+.grecaptcha-badge {
+  visibility: hidden;
+}
+
 /* Hide scrollbar for IE, Edge and Firefox */
 body {
   -ms-overflow-style: none;
@@ -366,6 +370,7 @@ code {
 
   .ant-form-item-control {
     .ant-form-item-control-input-content {
+
       input,
       textarea {
         padding: 9px 1rem;
@@ -636,7 +641,7 @@ code {
     }
   }
 
-  .ant-popover-arrow > .ant-popover-arrow-content::before {
+  .ant-popover-arrow>.ant-popover-arrow-content::before {
     background: var(--color-primary);
   }
 
