@@ -418,7 +418,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       if (text.trim().toLowerCase().split(' ')[0] === '/give') {
         try {
           if (!isNumeric(text.trim().split(' ')[1])) {
-            const error = new Error(`Syntax error. XPI to give can't be less than or equal to 0`);
+            const error = new Error(intl.get('send.syntaxError') as string);
             throw error;
           }
 

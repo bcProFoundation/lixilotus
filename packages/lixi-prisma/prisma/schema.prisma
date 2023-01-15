@@ -504,9 +504,9 @@ model GiveTip {
   id            String    @id @default(cuid())
   txid          String
   fromAddress   String    @map("from_address")
-  fromAccountId String    @map("from_account_id")
+  fromAccountId Int       @map("from_account_id")
   toAddress     String    @map("to_address")
-  toAccountId   String    @map("to_account_id")
+  toAccountId   Int       @map("to_account_id")
   comment       Comment   @relation(fields: [commentId], references: [id])
   commentId     String    @unique @map("comment_id")
   tipValue      Float     @map("tip_value")

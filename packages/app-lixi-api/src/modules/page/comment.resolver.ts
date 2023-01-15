@@ -141,9 +141,9 @@ export class CommentResolver {
           const transactionTip = {
             txid,
             fromAddress: account.address,
-            fromAccountId: account.name,
+            fromAccountId: account.id,
             toAddress: post?.postAccount.address as string,
-            toAccountId: post?.postAccount.name as string,
+            toAccountId: post?.postAccount.id as number,
             tipValue: value,
             commentId: createdComment.id
           };
