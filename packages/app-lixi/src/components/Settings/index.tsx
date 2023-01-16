@@ -157,6 +157,9 @@ export const WrapperPage = styled.div`
   background: #fff;
   border-radius: 20px;
   border: 1px solid var(--boder-item-light);
+  @media (max-width: 960px) {
+    padding-bottom: 5rem;
+  }
 `;
 
 export const WrapperPost = styled.div`
