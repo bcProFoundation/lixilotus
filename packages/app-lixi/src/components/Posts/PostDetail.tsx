@@ -349,13 +349,15 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   `;
 
   const StyledContainerPostDetail = styled.div`
+    width: 100%;
     border-radius: 5px;
     background: white;
-    padding: 1rem;
+    padding: 0rem 1rem 1rem 1rem;
     margin-top: 1rem;
+    height: max-content;
     border-radius: 1rem;
     @media (max-width: 960px) {
-      padding-bottom: 6rem;
+      padding-bottom: 9rem;
     }
     .reaction-container {
       display: flex;
@@ -481,15 +483,16 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     </RWebShare>
   );
 
+  //TODO: Need to rework topbar
   return (
     <>
-      <NavBarHeader onClick={() => router.back()}>
-        <LeftOutlined />
-        <PathDirection>
-          <h2>Post</h2>
-        </PathDirection>
-      </NavBarHeader>
       <StyledContainerPostDetail>
+        <NavBarHeader onClick={() => router.back()}>
+          <LeftOutlined />
+          <PathDirection>
+            <h2>Post</h2>
+          </PathDirection>
+        </NavBarHeader>
         <InfoCardUser
           imgUrl={post.page ? post.page.avatar : ''}
           name={post.postAccount.name}
