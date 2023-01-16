@@ -164,7 +164,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const refCommentsListing = useRef<HTMLDivElement | null>(null);
   const Wallet = React.useContext(WalletContext);
   const { XPI, chronik } = Wallet;
-  const { burnXpi, sendXpiRaw } = useXPI();
+  const { burnXpi, sendXpi } = useXPI();
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const selectedAccount = useAppSelector(getSelectedAccount);
@@ -423,17 +423,20 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           }
 
           const fundingWif = getUtxoWif(slpBalancesAndUtxos.nonSlpUtxos[0], walletPaths);
-          tipHex = await sendXpiRaw(
+          tipHex = await sendXpi(
             XPI,
             chronik,
             walletPaths,
             slpBalancesAndUtxos.nonSlpUtxos,
             currency.defaultFee,
+            text,
             false, // indicate send mode is one to one
             null,
             post.postAccount.address,
             text.trim().split(' ')[1],
-            fundingWif
+            isEncryptedOptionalOpReturnMsg,
+            fundingWif,
+            true
           );
         } catch (e) {
           const message = e.message || e.error || JSON.stringify(e);

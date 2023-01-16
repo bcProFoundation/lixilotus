@@ -196,85 +196,6 @@ export default function useXPI() {
     }
   };
 
-  const sendXpiRaw = async (
-    XPI: BCHJS,
-    chronik: ChronikClient,
-    walletPaths: WalletPathAddressInfo[],
-    utxos: Array<Utxo & { address: string }>,
-    feeInSatsPerByte: number,
-    isOneToMany: boolean,
-    destinationAddressAndValueArray: Array<string>,
-    destinationAddress: string,
-    sendAmount: string,
-    fundingWif: string
-  ) => {
-    try {
-      let txBuilder = new XPI.TransactionBuilder();
-
-      // parse the input value of XPIs to send
-      const value = parseXpiSendValue(isOneToMany, sendAmount, destinationAddressAndValueArray);
-
-      const satoshisToSend = fromXpiToSatoshis(value);
-
-      // Throw validation error if fromXecToSatoshis returns false
-      if (!satoshisToSend) {
-        const error = new Error(`Invalid decimal places for send amount`);
-        throw error;
-      }
-
-      let encryptedEj: Uint8Array; // serialized encryption data object
-
-      // generate the tx inputs and add to txBuilder instance
-      // returns the updated txBuilder, txFee, totalInputUtxoValue and inputUtxos
-      let txInputObj = generateTxInput(
-        XPI,
-        isOneToMany,
-        utxos,
-        txBuilder,
-        destinationAddressAndValueArray,
-        satoshisToSend,
-        feeInSatsPerByte
-      );
-
-      const changeAddress = getChangeAddressFromInputUtxos(XPI, txInputObj.inputUtxos);
-
-      txBuilder = txInputObj.txBuilder; // update the local txBuilder with the generated tx inputs
-
-      // generate the tx outputs and add to txBuilder instance
-      // returns the updated txBuilder
-      const txOutputObj = generateTxOutput(
-        XPI,
-        isOneToMany,
-        value,
-        satoshisToSend,
-        txInputObj.totalInputUtxoValue,
-        destinationAddress,
-        destinationAddressAndValueArray,
-        changeAddress,
-        txInputObj.txFee,
-        txBuilder
-      );
-      txBuilder = txOutputObj; // update the local txBuilder with the generated tx outputs
-
-      // sign the collated inputUtxos and build the raw tx hex
-      // returns the raw tx hex string
-      const rawTxHex = signAndBuildTx(XPI, txInputObj.inputUtxos, txBuilder, walletPaths);
-
-      return rawTxHex;
-    } catch (err) {
-      if (err.error === 'insufficient priority (code 66)') {
-        err = new Error(intl.get('send.insufficientPriority'));
-      } else if (err.error === 'txn-mempool-conflict (code 18)') {
-        err = new Error('txn-mempool-conflict');
-      } else if (err.error === 'Network Error') {
-        err = new Error(intl.get('send.networkError'));
-      } else if (err.error === 'too-long-mempool-chain, too many unconfirmed ancestors [limit: 25] (code 64)') {
-        err = new Error(intl.get('send.longMempoolChain'));
-      }
-      throw err;
-    }
-  };
-
   const burnXpi = async (
     XPI: BCHJS,
     walletPaths: WalletPathAddressInfo[],
@@ -341,7 +262,6 @@ export default function useXPI() {
     getRestUrl,
     calcFee,
     sendXpi,
-    sendXpiRaw,
     burnXpi
   } as const;
 }
