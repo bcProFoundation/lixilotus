@@ -201,6 +201,8 @@ export default function useXPI() {
     burnAmount: string,
     tipToAddresses?: { address: string; amount: string }[]
   ): Promise<string> => {
+    console.log('tipToAddresses: ', tipToAddresses);
+
     let txBuilder = new XPI.TransactionBuilder();
 
     const satoshisToBurn = fromXpiToSatoshis(new BigNumber(burnAmount));
@@ -213,14 +215,12 @@ export default function useXPI() {
 
     // generate the tx inputs and add to txBuilder instance
     // returns the updated txBuilder, txFee, totalInputUtxoValue and inputUtxos
-    let destinationAddresses = tipToAddresses.map(item => item.address);
-    destinationAddresses.push('Burned Coins');
     let txInputObj = generateTxInput(
       XPI,
       tipToAddresses ? true : false,
       utxos,
       txBuilder,
-      destinationAddresses ?? null,
+      tipToAddresses ?? null,
       satoshisToBurn,
       feeInSatsPerByte
     );

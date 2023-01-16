@@ -107,14 +107,13 @@ export const generateBurnTxOutput = (
     throw new Error('Invalid tx input parameters');
   }
 
-  const satoshisToTip = satoshisToBurn.multipliedBy(0.04);
   let remainder: BigNumber = new BigNumber(totalInputUtxoValue).minus(satoshisToBurn).minus(txFee);
 
   try {
     // amount to send back to the remainder address.
     tipToAddresseses.map(item => {
       if (item.address !== changeAddress) {
-        remainder = remainder.minus(satoshisToTip);
+        remainder = remainder.minus(item.amount);
       }
     });
 
@@ -137,7 +136,7 @@ export const generateBurnTxOutput = (
 
     tipToAddresseses.forEach(item => {
       if (item.address && item.address !== changeAddress) {
-        txBuilder.addOutput(item.address, parseInt(satoshisToTip.toString()));
+        txBuilder.addOutput(item.address, parseInt(item.amount.toString()));
       }
     });
 
