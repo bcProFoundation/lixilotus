@@ -29,8 +29,6 @@ import { Image } from 'antd';
 import { useAppSelector } from '@store/hooks';
 import { getPostCoverUploads } from '@store/account/selectors';
 
-const URL_SERVER_IMAGE = 'https://s3.us-west-001.backblazeb2.com';
-
 const StyledEditorLexical = styled.div`
   display: flex;
   flex-direction: column;
@@ -147,7 +145,7 @@ const EditorLexical = props => {
             <div className="EditorLexical_pictures">
               <Image.PreviewGroup>
                 {postCoverUploads.map(item => {
-                  const imageUrl = URL_SERVER_IMAGE + '/' + item.bucket + '/' + item.sha;
+                  const imageUrl = process.env.NEXT_PUBLIC_AWS_ENDPOINT + '/' + item.bucket + '/' + item.sha;
                   return (
                     <>
                       <Image loading="lazy" width={200} src={imageUrl} />

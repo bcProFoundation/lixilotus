@@ -92,7 +92,9 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
       <InfoCardUserContainer className={type === 'card' ? 'card' : ''}>
         <CardUser>
           <div className="card-container">
-            <AvatarUser name={name} isMarginRight={true} />
+            <div onClick={() => history.push(`/profile/${address}`)}>
+              <AvatarUser name={name} isMarginRight={true} />
+            </div>
             <div className="card-info">
               <h4 className="name" onClick={() => history.push(`/profile/${address}`)}>
                 {name}
