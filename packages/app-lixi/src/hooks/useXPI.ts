@@ -201,8 +201,6 @@ export default function useXPI() {
     burnAmount: string,
     tipToAddresses?: { address: string; amount: string }[]
   ): Promise<string> => {
-    console.log('tipToAddresses: ', tipToAddresses);
-
     let txBuilder = new XPI.TransactionBuilder();
 
     const satoshisToBurn = fromXpiToSatoshis(new BigNumber(burnAmount));

@@ -57,7 +57,6 @@ import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled from 'styled-components';
 import CommentListItem from './CommentListItem';
 import { useForm, Controller } from 'react-hook-form';
-import { P } from 'styled-icons/fa-solid';
 
 type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 
