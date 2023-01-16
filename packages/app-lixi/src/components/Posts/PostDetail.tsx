@@ -11,6 +11,7 @@ import {
 } from '@ant-design/icons';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
+import { AvatarUser } from '@components/Common/AvatarUser';
 import { Counter } from '@components/Common/Counter';
 import InfoCardUser from '@components/Common/InfoCardUser';
 import { currency } from '@components/Common/Ticker';
@@ -26,7 +27,7 @@ import { PostsQuery } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
 import { formatBalance, fromXpiToSatoshis } from '@utils/cashMethods';
-import { Avatar, Button, Image, Input, message, Popover, Space, Tooltip } from 'antd';
+import { Avatar, Button, Image, Input, message, Popover, Skeleton, Space, Tooltip } from 'antd';
 import { Header } from 'antd/lib/layout/layout';
 import BigNumber from 'bignumber.js';
 import _ from 'lodash';
@@ -35,6 +36,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useRef } from 'react';
 import ReactHtmlParser from 'react-html-parser';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import intl from 'react-intl-universal';
 import {
   FacebookIcon,
@@ -54,8 +56,7 @@ import { CommentOrderField, CreateCommentInput, OrderDirection } from 'src/gener
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled from 'styled-components';
 import CommentListItem from './CommentListItem';
-
-const URL_SERVER_IMAGE = 'https://s3.us-west-001.backblazeb2.com';
+import { useForm, Controller } from 'react-hook-form';
 
 type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 
@@ -74,7 +75,7 @@ const IconBurn = ({
   imgUrl?: string;
   onClickIcon: () => void;
 }) => (
-  <Space onClick={onClickIcon} style={{ alignItems: 'end', marginRight: '1rem' }}>
+  <Space onClick={onClickIcon} style={{ alignItems: 'end', marginRight: '1rem', gap: '4px !important' }}>
     {icon && React.createElement(icon)}
     {imgUrl && React.createElement('img', { src: imgUrl }, null)}
     <Counter num={burnValue ?? 0} />
@@ -155,6 +156,7 @@ type PostDetailProps = {
 
 const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const dispatch = useAppDispatch();
+  const { control, getValues, setValue, setFocus } = useForm();
   const router = useRouter();
   const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
   const refCommentsListing = useRef<HTMLDivElement | null>(null);
@@ -179,7 +181,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
 
   const [
     createCommentTrigger,
-    { isLoading: isLoadingCreatePost, isSuccess: isSuccessCreatePost, isError: isErrorCreatePost }
+    { isLoading: isLoadingCreateComment, isSuccess: isSuccessCreateComment, isError: isErrorCreateComment }
   ] = useCreateCommentMutation();
 
   const upVotePost = (dataItem: PostItem) => {
@@ -252,10 +254,24 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   };
 
   const CommentContainer = styled.div`
-    padding: 0 1rem;
     .comment-item {
       text-align: left;
       border: 0 !important;
+      .ant-comment-inner {
+        padding: 16px 0 8px 0;
+        .ant-comment-avatar {
+          .ant-avatar {
+            width: 37px !important;
+            height: 37px !important;
+          }
+        }
+      }
+      .ant-comment-actions {
+        margin-top: 4px;
+      }
+      .ant-comment-content-author-name {
+        text-transform: capitalize;
+      }
     }
   `;
 
@@ -264,9 +280,27 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     flex-direction: row;
     justify-content: flex-start;
     align-items: flex-end;
-    position: fixed;
-    padding-right: 1rem;
-    bottom: 10%;
+    margin-top: 1rem;
+    gap: 1rem;
+    .ava-ico-cmt {
+      .ant-avatar {
+        width: 40px !important;
+        height: 40px !important;
+      }
+    }
+    .ant-input-affix-wrapper {
+      border-top-left-radius: 6px !important;
+      border-bottom-left-radius: 6px !important;
+      input {
+        font-size: 13px;
+      }
+    }
+    .ant-input-group-addon {
+      button {
+        border-top-right-radius: 6px !important;
+        border-bottom-right-radius: 6px !important;
+      }
+    }
   `;
 
   const PostCardDetail = styled.div`
@@ -320,14 +354,23 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     padding: 1rem;
     margin-top: 1rem;
     border-radius: 1rem;
+    @media (max-width: 960px) {
+      padding-bottom: 6rem;
+    }
     .reaction-container {
       display: flex;
       justify-content: space-between;
       padding: 0.5rem;
-      margin: 0 1rem;
       border: 1px solid #c5c5c5;
       border-left: 0;
       border-right: 0;
+      .ant-space {
+        gap: 4px !important;
+      }
+      .reaction-func {
+        color: rgba(30, 26, 29, 0.6);
+        cursor: pointer;
+      }
     }
 
     .comment-item-meta {
@@ -339,10 +382,6 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
         margin-bottom: 0.5rem;
       }
     }
-
-    .input-comment {
-      padding: 1rem 1rem 0 1rem;
-    }
   `;
 
   const ShareButton = styled.span`
@@ -351,9 +390,13 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
 
   const loadMoreComments = () => {
     if (hasNext && !isFetching) {
-      fetchNext();
+      fetchNext().finally(() => {
+        setFocus('comment', { shouldSelect: true });
+      });
     } else if (hasNext) {
-      fetchNext();
+      fetchNext().finally(() => {
+        setFocus('comment', { shouldSelect: true });
+      });
     }
   };
 
@@ -405,6 +448,9 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           })
         );
       }
+
+      setFocus('comment', { shouldSelect: true });
+      setValue('comment', '');
     }
   };
 
@@ -458,7 +504,8 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           <div style={{ display: post.uploads.length != 0 ? 'grid' : 'none' }} className="images-post">
             {post.uploads.length != 0 &&
               post.uploads.map((item, index) => {
-                const imageUrl = URL_SERVER_IMAGE + '/' + item.upload.bucket + '/' + item.upload.sha;
+                const imageUrl =
+                  process.env.NEXT_PUBLIC_AWS_ENDPOINT + '/' + item.upload.bucket + '/' + item.upload.sha;
                 return (
                   <>
                     <Image.PreviewGroup>
@@ -487,32 +534,46 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
             </div>
             <div className="reaction-func">
               <span>{totalCount}</span>&nbsp;
-              <img src="/images/ico-comments.svg" alt="" />
+              <img src="/images/ico-comments.svg" alt="" onClick={() => setFocus('comment', { shouldSelect: true })} />
             </div>
           </div>
         </PostContentDetail>
 
         <CommentContainer>
-          <Virtuoso
-            id="list-comment-virtuoso"
-            data={data}
-            style={{ height: '65vh', paddingBottom: '2rem' }}
-            endReached={loadMoreComments}
-            overscan={500}
-            itemContent={(index, item) => {
-              return <CommentListItem index={index} item={item} post={post} />;
-            }}
-          />
+          <InfiniteScroll
+            dataLength={data.length}
+            next={loadMoreComments}
+            hasMore={hasNext}
+            loader={<Skeleton avatar active />}
+            scrollableTarget="scrollableDiv"
+          >
+            {data.map((item, index) => {
+              return <CommentListItem index={index} item={item} post={post} key={item.id} />;
+            })}
+          </InfiniteScroll>
         </CommentContainer>
         <CommentInputContainer>
-          <Avatar src="/images/xpi.svg" onClick={() => router.push(`/profile/${selectedAccount.address}`)} />
-          <Search
-            className="input-comment"
-            placeholder="Input your comment..."
-            enterButton="Comment"
-            size="large"
-            suffix={<DashOutlined />}
-            onSearch={handleCreateNewComment}
+          <div className="ava-ico-cmt" onClick={() => router.push(`/profile/${selectedAccount.address}`)}>
+            <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
+          </div>
+          <Controller
+            name="comment"
+            control={control}
+            render={({ field: { onChange, onBlur, value, ref } }) => (
+              <Search
+                ref={ref}
+                className="input-comment"
+                placeholder={intl.get('comment.writeComment')}
+                enterButton="Comment"
+                onChange={onChange}
+                onBlur={onBlur}
+                value={value}
+                size="large"
+                suffix={<DashOutlined />}
+                onSearch={handleCreateNewComment}
+                loading={isLoadingCreateComment}
+              />
+            )}
           />
         </CommentInputContainer>
       </StyledContainerPostDetail>

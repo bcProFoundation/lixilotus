@@ -71,9 +71,9 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
       </PathDirection>
       <Space direction="horizontal" size={15}>
         {/* <Button type="text" icon={<SearchOutlined style={{ fontSize: '18px', color: '4E444B' }} />}></Button> */}
-        <Link href={'/wallet'}>
+        <div style={{ cursor: 'pointer' }} onClick={() => router.push(`/profile/${selectedAccount?.address}`)}>
           <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
-        </Link>
+        </div>
       </Space>
     </Header>
   );

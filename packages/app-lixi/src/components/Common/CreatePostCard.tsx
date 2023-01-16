@@ -19,21 +19,8 @@ import Editor from './Editor';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { Embed, SocialsEnum } from './Embed';
 import EditorLexical from './Lexical/EditorLexical';
+import { removeAllUpload } from '@store/account/actions';
 import { AvatarUser } from './AvatarUser';
-
-const styles = {
-  wrapper: {
-    // display: 'flex'
-  }
-};
-
-// const Editor = (props: PlateProps<MyValue>) => {
-//   return (
-//     <Plate {...props} id="main">
-//       <MarkBalloonToolbar />
-//     </Plate>
-//   );
-// };
 
 type ErrorType = 'unsupported' | 'invalid';
 
@@ -63,6 +50,7 @@ const SunEditor = dynamic(() => import('suneditor-react'), {
 const MobileCreatePost = styled.div`
   display: none;
   @media (max-width: 968px) {
+    z-index: 9;
     display: block;
     position: fixed;
     right: 15px;
@@ -296,17 +284,6 @@ const CreatePostCard = (props: CreatePostCardProp) => {
     event.preventDefault();
   };
 
-  const handleSubmitEditor = async value => {
-    console.log('handleSubmitEditor');
-    if (url) {
-      console.log(url);
-    } else {
-      setEnableEditor(false);
-
-      await handleCreateNewPost(value);
-    }
-  };
-
   const updatePost = (tag: string, params, result: CreatePostMutation, pageId?: string, tokenPrimaryId?: string) => {
     dispatch(
       postApi.util.updateQueryData('Posts', params, draft => {
@@ -386,6 +363,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
         );
 
         setEnableEditor(false);
+        dispatch(removeAllUpload());
       } catch (error) {
         const message = intl.get('post.unableCreatePostServer');
         if (patches) {
@@ -402,17 +380,12 @@ const CreatePostCard = (props: CreatePostCardProp) => {
     }
   };
 
-  const handleImageUploadBefore = () => {
-    alert("Please upload picture by 'Upload' button");
-    return;
-  };
-
   return (
     <>
       <DesktopCreatePost onClick={() => setEnableEditor(!enableEditor)}>
         <div className="avatar">
           <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
-          <Input bordered={false} placeholder="What's on your mind?" />
+          <Input bordered={false} placeholder="What's on your mind?" value="" />
         </div>
         <div className="btn-create">
           <PlusCircleOutlined />
@@ -432,7 +405,6 @@ const CreatePostCard = (props: CreatePostCardProp) => {
           visible={enableEditor}
           footer={null}
           onCancel={() => setEnableEditor(false)}
-          maskClosable={false}
         >
           <>
             <UserCreate>

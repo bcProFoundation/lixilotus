@@ -10,6 +10,7 @@ import {
   refreshLixiListSuccess,
   setUpload,
   removeUpload,
+  removeAllUpload,
   refreshLixiListSilentSuccess
 } from './actions';
 import { AccountsState } from './state';
@@ -98,6 +99,9 @@ export const accountReducer = createReducer(initialState, builder => {
           });
           break;
       }
+    })
+    .addCase(removeAllUpload, (state, action) => {
+      state.postCoverUploads.length = 0;
     })
     .addMatcher(isAnyOf(refreshLixiListSuccess, refreshLixiListSilentSuccess), (state, action) => {
       const { account, lixies } = action.payload;

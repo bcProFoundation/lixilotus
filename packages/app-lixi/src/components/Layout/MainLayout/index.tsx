@@ -94,17 +94,19 @@ export const AppContainer = styled.div`
     justify-content: space-between;
   }
   .main-section-layout {
+    scroll-behavior: smooth;
     max-width: 820px;
     min-width: 420px;
     width: auto;
     height: 100vh;
     overflow-y: auto;
     @media (max-width: 960px) {
-      max-width: 100% !important;
-    }
-    @media (max-width: 420px) {
+      max-width: 100%;
       min-width: 100%;
       width: 300px;
+    }
+    @media (max-width: 420px) {
+      padding-right: 0px !important;
       -ms-overflow-style: none;
       scrollbar-width: none;
       &::-webkit-scrollbar {
