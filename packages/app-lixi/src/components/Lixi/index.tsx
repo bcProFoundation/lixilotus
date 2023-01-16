@@ -934,8 +934,8 @@ const Lixi = props => {
   return (
     <>
       {selectedLixi && selectedLixi.address ? (
-        <>
-          <Form>
+        <React.Fragment>
+          <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
             <DescriptionsCustom
               bordered
               style={{ width: '100%' }}
@@ -963,13 +963,13 @@ const Lixi = props => {
             {/* Claim report */}
             <LabelHeader>{intl.get('claim.claimReport')}</LabelHeader>
             {claimReport()}
-          </Form>
 
-          {/* Reload Lixi */}
-          <SmartButton onClick={() => handleRefeshLixi()}>
-            <ReloadOutlined /> {intl.get('lixi.refreshLixi')}
-          </SmartButton>
-        </>
+            {/* Reload Lixi */}
+            <SmartButton onClick={() => handleRefeshLixi()}>
+              <ReloadOutlined /> {intl.get('lixi.refreshLixi')}
+            </SmartButton>
+          </div>
+        </React.Fragment>
       ) : (
         intl.get('lixi.noLixiSelected')
       )}

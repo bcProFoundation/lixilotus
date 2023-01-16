@@ -24,7 +24,7 @@ import { theme } from './theme';
 import { Footer } from '@bcpros/lixi-components/components';
 import { getAllNotifications } from '@store/notification/selectors';
 import { fetchNotifications } from '@store/notification/actions';
-import SplashScreen from '@components/Common/SplashScreen';
+import DummySidebar from '@containers/Sidebar/DummySidebar';
 const { Content } = Layout;
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
@@ -41,6 +41,7 @@ const AppBody = styled.div`
   width: 100%;
   min-height: 100vh;
   background-attachment: fixed;
+  flex-direction: column;
 `;
 
 export const NavBarHeader = styled(Header)`
@@ -49,8 +50,9 @@ export const NavBarHeader = styled(Header)`
   display: flex;
   align-items: center;
   padding: 1rem 0;
-  border-radius: 20px;
   background: transparent;
+  border-bottom: 0.5px solid gray;
+  margin-bottom: 10px;
   .anticon {
     font-size: 18px;
     color: rgba(30, 26, 29, 0.6);
@@ -94,53 +96,31 @@ export const AppContainer = styled.div`
     display: flex;
     justify-content: space-between;
   }
-  .main-section-layout {
-    scroll-behavior: smooth;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: row;
-    gap: 2rem;
-    justify-content: center;
-    // max-width: 820px;
-    min-width: 420px;
-    width: auto;
-    height: 100vh;
-    overflow-y: auto;
-    @media (max-width: 960px) {
-      max-width: 100%;
-      min-width: 100%;
-      width: 300px;
-    }
-    @media (max-width: 420px) {
-      padding-right: 0px !important;
-      -ms-overflow-style: none;
-      &::-webkit-scrollbar {
-        display: none;
-      }
-    }
-  }
   .container-content {
     height: 100vh;
+    scroll-behavior: smooth;
     overflow-y: auto;
     overflow: scroll;
     flex-grow: 1;
     display: flex;
     flex-direction: row;
-    gap: 10rem;
+    gap: 12vw;
     justify-content: center;
     @media (max-width: 960px) {
       margin-left: 0 !important;
     }
 
-    ::-webkit-scrollbar {
-      -webkit-appearance: none;
-      width: 7px;
-    }
+    @media (min-width: 960px) {
+      ::-webkit-scrollbar {
+        -webkit-appearance: none;
+        width: 7px;
+      }
 
-    ::-webkit-scrollbar-thumb {
-      border-radius: 4px;
-      background-color: rgba(0, 0, 0, 0.5);
-      box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+      ::-webkit-scrollbar-thumb {
+        border-radius: 4px;
+        background-color: rgba(0, 0, 0, 0.5);
+        box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+      }
     }
   }
 `;
@@ -244,9 +224,6 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
     setLoading(false);
   }, [selectedAccount]);
 
-  //FIXME: Lixi page is broken
-  //FIXME: All topbar is broken. Need rework
-
   return (
     <ThemeProvider theme={theme as DefaultTheme}>
       <GlobalStyle />
@@ -256,36 +233,33 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
             <Layout>
               <AppBody>
                 <ModalManager />
-                <>
-                  <AppContainer>
-                    <Layout>
-                      <Sidebar />
-                      {/* Need to reimplement top bar */}
-                      {/* <Topbar ref={ref}/> */}
-                      <div className="container-content" id="scrollableDiv">
-                        {/* <Layout
-                        className="main-section-layout"
-                        style={{
-                          paddingRight: disableSideBarRanking.some(item => selectedKey.includes(item)) ? '2rem' : '0',
-                          maxWidth: disableSideBarRanking.some(item => selectedKey.includes(item)) ? '100%' : ''
-                        }}
-                        
-                      >
-                      </Layout> */}
-                        {/* TODO: Implement SidebarRanking in future */}
-                        {/* {!disableSideBarRanking.some(item => selectedKey.includes(item)) && (
-                        <SidebarRanking></SidebarRanking>
-                      )} */}
-                        {/* <Topbar ref={setRef} /> */}
-                        <SidebarShortcut />
-                        {children}
-                        {/* This below is just a dummy sidebar */}
-                        <SidebarShortcut />
-                      </div>
-                    </Layout>
-                  </AppContainer>
-                  <Footer notifications={notifications} />
-                </>
+                <AppContainer>
+                  <Sidebar />
+                  {/* Need to reimplement top bar */}
+                  {/* <Topbar ref={ref}/> */}
+                  <Topbar ref={setRef} />
+                  <div className="container-content" id="scrollableDiv">
+                    {/* <Layout
+                            className="main-section-layout"
+                            style={{
+                              paddingRight: disableSideBarRanking.some(item => selectedKey.includes(item)) ? '2rem' : '0',
+                              maxWidth: disableSideBarRanking.some(item => selectedKey.includes(item)) ? '100%' : ''
+                            }}
+                            
+                          >
+                          </Layout> 
+                        */}
+                    {/* TODO: Implement SidebarRanking in future */}
+                    {/* {!disableSideBarRanking.some(item => selectedKey.includes(item)) && (
+                          <SidebarRanking></SidebarRanking>
+                        )} */}
+                    <SidebarShortcut />
+                    {children}
+                    {/* This below is just a dummy sidebar */}
+                    <DummySidebar />
+                    <Footer notifications={notifications} />
+                  </div>
+                </AppContainer>
               </AppBody>
             </Layout>
           </LixiApp>
