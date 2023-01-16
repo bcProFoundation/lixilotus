@@ -11,8 +11,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useAppDispatch } from 'src/store/hooks';
 import styled from 'styled-components';
 
-const URL_SERVER_IMAGE = 'https://s3.us-west-001.backblazeb2.com';
-
 const IconText = ({
   icon,
   text,
@@ -301,7 +299,8 @@ const PageListItem = ({ index, item }) => {
                   {item.uploads.length != 0 &&
                     item.uploads.map((item, index) => {
                       while (index < 4) {
-                        const imageUrl = URL_SERVER_IMAGE + '/' + item.upload.bucket + '/' + item.upload.sha;
+                        const imageUrl =
+                          process.env.NEXT_PUBLIC_AWS_ENDPOINT + '/' + item.upload.bucket + '/' + item.upload.sha;
                         return (
                           <>
                             <img loading="lazy" src={imageUrl} />

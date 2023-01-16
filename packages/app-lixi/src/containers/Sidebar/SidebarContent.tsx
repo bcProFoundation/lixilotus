@@ -95,20 +95,20 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
         </StyledContainerShortcut> */}
         <StyledContainerAccess>
           {/* TODO: remove to footer mobile */}
-          {/* <ItemAccess
-            icon={'/images/ico-account.svg'}
-            text={intl.get('general.accounts')}
-            active={false}
-            key="wallet-lotus"
-            href={'/wallet'}
-            direction={'horizontal'}
-          /> */}
           <ItemAccess
             icon={'/images/ico-home.svg'}
             text={intl.get('general.home')}
             active={false}
             key="home-lixi"
             href={'/'}
+            direction={'horizontal'}
+          />
+          <ItemAccess
+            icon={'/images/ico-tokens.svg'}
+            text={intl.get('general.tokens')}
+            active={false}
+            key="tokens"
+            href={'/token/listing'}
             direction={'horizontal'}
           />
           <ItemAccess

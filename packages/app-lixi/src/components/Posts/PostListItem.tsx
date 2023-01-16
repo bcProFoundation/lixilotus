@@ -23,8 +23,6 @@ import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { useRouter } from 'next/router';
 import { getSelectedAccount } from '@store/account/selectors';
 
-const URL_SERVER_IMAGE = 'https://s3.us-west-001.backblazeb2.com';
-
 const IconBurn = ({
   icon,
   burnValue,
@@ -416,7 +414,8 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
                 {item.uploads.length != 0 &&
                   item.uploads.map((item, index) => {
                     while (index < 4) {
-                      const imageUrl = URL_SERVER_IMAGE + '/' + item.upload.bucket + '/' + item.upload.sha;
+                      const imageUrl =
+                        process.env.NEXT_PUBLIC_AWS_ENDPOINT + '/' + item.upload.bucket + '/' + item.upload.sha;
                       return (
                         <>
                           <img loading="lazy" src={imageUrl} />
