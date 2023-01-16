@@ -15,6 +15,7 @@ const StyledFooter = styled.div`
   background: ${props => props.theme.footer.background};
   justify-content: space-around;
   display: none;
+  z-index: 9999;
   @media (max-width: 968px) {
     display: flex;
   }

@@ -13,6 +13,7 @@ import { ConnectedRouter } from 'connected-next-router';
 import { wrapper } from '../store/store';
 import OutsideCallConsumer, { createCaller } from 'react-outside-call';
 import { Spin } from 'antd';
+import SplashScreen from '@components/Common/SplashScreen';
 
 const PersistGateServer = (props: any) => {
   return props.children;
@@ -48,14 +49,7 @@ const LixiApp = ({ Component, ...rest }) => {
                   />
                 </Head>
                 <ConnectedRouter>
-                  <PersistGate
-                    persistor={store.__persistor}
-                    loading={
-                      <div>
-                        <Spin />
-                      </div>
-                    }
-                  >
+                  <PersistGate persistor={store.__persistor} loading={<SplashScreen />}>
                     <Component {...props.pageProps} />
                   </PersistGate>
                 </ConnectedRouter>

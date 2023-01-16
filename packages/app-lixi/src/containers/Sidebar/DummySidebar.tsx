@@ -159,7 +159,8 @@ const UserControl = styled.div`
   margin-bottom: 2rem;
 `;
 
-const SidebarShortcut = () => {
+//This is just a dummy sidebar. Can be deleted
+const DummySidebar = () => {
   const refSidebarShortcut = useRef<HTMLDivElement | null>(null);
   const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
@@ -227,112 +228,8 @@ const SidebarShortcut = () => {
 
   return (
     <>
-      <ShortcutSideBar id="short-cut-sidebar" ref={refSidebarShortcut} onScroll={e => triggerSrollbar(e)}>
-        <ContainerAccess>
-          <div className="wrapper">
-            <StyledLogo>
-              <Link href="/" passHref>
-                <img width="137px" height="56px" src="/images/lixilotus-logo.svg" alt="lixilotus" />
-              </Link>
-            </StyledLogo>
-            <ItemAccess
-              icon={'/images/ico-home.svg'}
-              text={intl.get('general.home')}
-              active={currentPathName === '/' || currentPathName.includes('/post')}
-              key="home"
-              href={'/'}
-            />
-            <ItemAccess
-              icon={'/images/ico-page.svg'}
-              text={intl.get('general.page')}
-              active={currentPathName.includes('/page')}
-              key="page-feed"
-              href={'/page/feed'}
-            />
-            <ItemAccess
-              icon={'/images/ico-tokens.svg'}
-              text={intl.get('general.tokens')}
-              active={currentPathName.includes('/token')}
-              key="tokens-feed"
-              href={'/token/listing'}
-            />
-            <ItemAccess
-              icon={'/images/ico-account.svg'}
-              text={intl.get('general.accounts')}
-              active={currentPathName === '/wallet'}
-              key="wallet-lotus"
-              href={'/wallet'}
-            />
-            <ItemAccess
-              icon={'/images/ico-lixi.svg'}
-              text={intl.get('general.lixi')}
-              active={currentPathName.includes('/lixi')}
-              key="lixi"
-              href={'/lixi'}
-            />
-            <ItemAccess
-              icon={'/images/ico-setting.svg'}
-              text={intl.get('general.settings')}
-              active={currentPathName === '/settings'}
-              key="settings"
-              href={'/settings'}
-            />
-            {/* TODO: show more shortcut  */}
-            {/* {showMore && (
-              <>
-                <ItemAccess
-                  icon={'images/ico-lixi.svg'}
-                  text={intl.get('general.lixi')}
-                  active={selectedKey === '/lixi'}
-                  key="lixi"
-                  href={'/lixi'}
-                />
-                <ItemAccess
-                  icon={'images/ico-setting.svg'}
-                  text={intl.get('general.settings')}
-                  active={selectedKey === '/settings'}
-                  key="settings"
-                  href={'/settings'}
-                />
-              </>
-            )}
-            {!showMore && (
-              <>
-                <Popover overlayClassName="popover-more" placement="top" title={null} content={content} trigger="click">
-                  <Button type="text">
-                    <ItemAccess
-                      icon={'images/ico-more.svg'}
-                      text={intl.get('general.more')}
-                      active={selectedKey === '/more'}
-                      key="more"
-                      href={'/settings'}
-                    />
-                  </Button>
-                </Popover>
-              </>
-            )} */}
-          </div>
-          <UserControl>
-            <Badge
-              count={notifications.length}
-              overflowCount={9}
-              offset={[notifications.length < 10 ? 0 : 5, 8]}
-              color="var(--color-primary)"
-            >
-              <img
-                style={{ marginBottom: '2rem' }}
-                src="/images/ico-notifications.svg"
-                alt="ico-notifications"
-                onClick={() => router.push('/notifications')}
-              />
-            </Badge>
-            <div style={{ cursor: 'pointer' }} onClick={() => router.push(`/profile/${selectedAccount?.address}`)}>
-              <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
-            </div>
-          </UserControl>
-        </ContainerAccess>
-      </ShortcutSideBar>
+      <ShortcutSideBar id="short-cut-sidebar"></ShortcutSideBar>
     </>
   );
 };
-export default SidebarShortcut;
+export default DummySidebar;

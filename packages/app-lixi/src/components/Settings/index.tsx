@@ -152,11 +152,13 @@ const AWRow = styled.div`
 `;
 
 export const WrapperPage = styled.div`
+  width: 100%;
   margin-top: 1rem;
   padding: 20px 30px;
   background: #fff;
   border-radius: 20px;
   border: 1px solid var(--boder-item-light);
+  height: max-content;
   @media (max-width: 960px) {
     padding-bottom: 5rem;
   }
