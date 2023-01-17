@@ -82,7 +82,8 @@ export default function useXPI() {
     destinationAddress: string,
     sendAmount: string,
     encryptionFlag: boolean,
-    fundingWif: string
+    fundingWif: string,
+    returnHex?: boolean
   ) => {
     try {
       let txBuilder = new XPI.TransactionBuilder();
@@ -100,29 +101,31 @@ export default function useXPI() {
 
       let encryptedEj: Uint8Array; // serialized encryption data object
 
-      // if the user has opted to encrypt this message
-      if (encryptionFlag && optionalOpReturnMsg) {
-        try {
-          // get the pub key for the recipient address
-          let recipientPubKey = await getRecipientPublicKey(XPI, chronik, destinationAddress);
-          // if the API can't find a pub key, it is due to the wallet having no outbound tx
-          if (!recipientPubKey) {
-            throw new Error('Cannot send an encrypted message to a wallet with no outgoing transactions');
+      if (!returnHex) {
+        // if the user has opted to encrypt this message
+        if (encryptionFlag && optionalOpReturnMsg) {
+          try {
+            // get the pub key for the recipient address
+            let recipientPubKey = await getRecipientPublicKey(XPI, chronik, destinationAddress);
+            // if the API can't find a pub key, it is due to the wallet having no outbound tx
+            if (!recipientPubKey) {
+              throw new Error('Cannot send an encrypted message to a wallet with no outgoing transactions');
+            }
+            if (recipientPubKey) {
+              encryptedEj = encryptOpReturnMsg(fundingWif, recipientPubKey, optionalOpReturnMsg);
+            }
+          } catch (err) {
+            console.log(`sendXpi() encryption error.`);
+            throw err;
           }
-          if (recipientPubKey) {
-            encryptedEj = encryptOpReturnMsg(fundingWif, recipientPubKey, optionalOpReturnMsg);
-          }
-        } catch (err) {
-          console.log(`sendXpi() encryption error.`);
-          throw err;
         }
-      }
 
-      // Start of building the OP_RETURN output.
-      // Only build the OP_RETURN output if the user supplied it
-      if (optionalOpReturnMsg && typeof optionalOpReturnMsg !== 'undefined' && optionalOpReturnMsg.trim() !== '') {
-        const opReturnData = generateOpReturnScript(XPI, optionalOpReturnMsg, encryptionFlag, encryptedEj);
-        txBuilder.addOutput(opReturnData, 0);
+        // Start of building the OP_RETURN output.
+        // Only build the OP_RETURN output if the user supplied it
+        if (optionalOpReturnMsg && typeof optionalOpReturnMsg !== 'undefined' && optionalOpReturnMsg.trim() !== '') {
+          const opReturnData = generateOpReturnScript(XPI, optionalOpReturnMsg, encryptionFlag, encryptedEj);
+          txBuilder.addOutput(opReturnData, 0);
+        }
       }
 
       // generate the tx inputs and add to txBuilder instance
@@ -173,8 +176,12 @@ export default function useXPI() {
         throw err;
       }
 
-      // return the explorer link for the broadcasted tx
-      return `${currency.blockExplorerUrl}/tx/${broadcastResponse.txid}`;
+      if (returnHex) {
+        return rawTxHex;
+      } else {
+        // return the explorer link for the broadcasted tx
+        return `${currency.blockExplorerUrl}/tx/${broadcastResponse.txid}`;
+      }
     } catch (err) {
       if (err.error === 'insufficient priority (code 66)') {
         err = new Error(intl.get('send.insufficientPriority'));

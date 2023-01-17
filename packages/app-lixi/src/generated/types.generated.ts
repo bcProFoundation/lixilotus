@@ -70,6 +70,7 @@ export type CreateCommentInput = {
   commentByPublicKey?: InputMaybe<Scalars['String']>;
   commentText: Scalars['String'];
   commentToId: Scalars['String'];
+  tipHex?: InputMaybe<Scalars['String']>;
 };
 
 export type CreatePageInput = {

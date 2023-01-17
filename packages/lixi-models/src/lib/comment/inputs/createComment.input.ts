@@ -12,4 +12,8 @@ export class CreateCommentInput {
 
   @Field(() => String)
   commentToId: string;
+
+  @IsOptional()
+  @Field(() => String, { nullable: true })
+  tipHex?: Nullable<string>;
 }
