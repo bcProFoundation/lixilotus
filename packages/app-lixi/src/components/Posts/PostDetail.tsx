@@ -218,12 +218,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
         });
       }
 
-      if (post.page && selectedAccount.address == post.pageAccount.address) {
-        tipToAddresses = tipToAddresses.filter(
-          (value, index, self) =>
-            index === self.findIndex(t => t.address === value.address && t.address !== post.pageAccount.address)
-        );
-      }
+      tipToAddresses = tipToAddresses.filter(item => item.address != selectedAccount.address);
 
       const txHex = await burnXpi(
         XPI,
