@@ -156,6 +156,7 @@ model Comment {
   lotusBurnUp        Float    @default(0.0) @map("lotus_burn_up")
   lotusBurnDown      Float    @default(0.0) @map("lotus_burn_down")
   lotusBurnScore     Float    @default(0.0) @map("lotus_burn_score")
+  giveTip            GiveTip?
 
   @@index([commentAccountId], map: "index_comment_on_account")
   @@index([commentByPublicKey], map: "index_comment_by_public_key")
@@ -497,4 +498,19 @@ model Burn {
   burnedValue Float     @default(0) @map("burned_value")
   createdAt   DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt   DateTime? @default(now()) @map("updated_at") @db.Timestamptz(6)
+}
+
+model GiveTip {
+  id            String    @id @default(cuid())
+  txid          String
+  fromAddress   String    @map("from_address")
+  fromAccountId Int       @map("from_account_id")
+  toAddress     String    @map("to_address")
+  toAccountId   Int       @map("to_account_id")
+  comment       Comment   @relation(fields: [commentId], references: [id])
+  commentId     String    @unique @map("comment_id")
+  tipValue      Float     @map("tip_value")
+  createAt      DateTime? @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@map("give_tip")
 }

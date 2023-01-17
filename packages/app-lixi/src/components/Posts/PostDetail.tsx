@@ -24,17 +24,19 @@ import { burnForUpDownVote } from '@store/burn/actions';
 import { api as commentsApi, useCreateCommentMutation } from '@store/comment/comments.api';
 import { useInfiniteCommentsToPostIdQuery } from '@store/comment/useInfiniteCommentsToPostIdQuery';
 import { PostsQuery } from '@store/post/posts.generated';
+import { sendXPIFailure } from '@store/send/actions';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
-import { formatBalance, fromXpiToSatoshis } from '@utils/cashMethods';
+import { formatBalance, fromXpiToSatoshis, getUtxoWif } from '@utils/cashMethods';
 import { Avatar, Button, Image, Input, message, Popover, Skeleton, Space, Tooltip } from 'antd';
 import { Header } from 'antd/lib/layout/layout';
 import BigNumber from 'bignumber.js';
-import _ from 'lodash';
+import { ChronikClient } from 'chronik-client';
+import _, { isNil } from 'lodash';
 import moment from 'moment';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import intl from 'react-intl-universal';
@@ -161,11 +163,12 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
   const refCommentsListing = useRef<HTMLDivElement | null>(null);
   const Wallet = React.useContext(WalletContext);
-  const { XPI } = Wallet;
-  const { burnXpi } = useXPI();
+  const { XPI, chronik } = Wallet;
+  const { burnXpi, sendXpi } = useXPI();
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const selectedAccount = useAppSelector(getSelectedAccount);
+  const [isEncryptedOptionalOpReturnMsg, setIsEncryptedOptionalOpReturnMsg] = useState(true);
 
   const { data, totalCount, fetchNext, hasNext, isFetching } = useInfiniteCommentsToPostIdQuery(
     {
@@ -404,14 +407,51 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     }
   };
 
+  const isNumeric = (num: string) => {
+    num = num.replace(',', '.');
+    return !isNaN(num as unknown as number) && Number(num) > 0;
+  };
+
   const handleCreateNewComment = async (text: string) => {
     if (_.isNil(text) || _.isEmpty(text)) {
       return;
     }
+
     if (text !== '' || !_.isNil(text)) {
+      let tipHex;
+      if (text.trim().toLowerCase().split(' ')[0] === '/give') {
+        try {
+          if (!isNumeric(text.trim().split(' ')[1])) {
+            const error = new Error(intl.get('send.syntaxError') as string);
+            throw error;
+          }
+
+          const fundingWif = getUtxoWif(slpBalancesAndUtxos.nonSlpUtxos[0], walletPaths);
+          tipHex = await sendXpi(
+            XPI,
+            chronik,
+            walletPaths,
+            slpBalancesAndUtxos.nonSlpUtxos,
+            currency.defaultFee,
+            text,
+            false, // indicate send mode is one to one
+            null,
+            post.postAccount.address,
+            text.trim().split(' ')[1],
+            isEncryptedOptionalOpReturnMsg,
+            fundingWif,
+            true
+          );
+        } catch (e) {
+          const message = e.message || e.error || JSON.stringify(e);
+          dispatch(sendXPIFailure(message));
+        }
+      }
+
       const createCommentInput: CreateCommentInput = {
         commentText: text,
-        commentToId: post.id
+        commentToId: post.id,
+        tipHex: tipHex
       };
 
       const params = {
