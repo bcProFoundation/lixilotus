@@ -145,7 +145,7 @@ const EditorLexical = props => {
             <div className="EditorLexical_pictures">
               <Image.PreviewGroup>
                 {postCoverUploads.map(item => {
-                  const imageUrl = process.env.NEXT_PUBLIC_AWS_ENDPOINT + '/' + item.bucket + '/' + item.sha;
+                  const imageUrl = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${item.bucket}/${item.sha}`;
                   return (
                     <>
                       <Image loading="lazy" width={200} src={imageUrl} />
