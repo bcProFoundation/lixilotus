@@ -220,14 +220,12 @@ export default function useXPI() {
 
     // generate the tx inputs and add to txBuilder instance
     // returns the updated txBuilder, txFee, totalInputUtxoValue and inputUtxos
-    let destinationAddresses = tipToAddresses.map(item => item.address);
-    destinationAddresses.push('Burned Coins');
     let txInputObj = generateTxInput(
       XPI,
       tipToAddresses ? true : false,
       utxos,
       txBuilder,
-      destinationAddresses ?? null,
+      tipToAddresses ?? null,
       satoshisToBurn,
       feeInSatsPerByte
     );

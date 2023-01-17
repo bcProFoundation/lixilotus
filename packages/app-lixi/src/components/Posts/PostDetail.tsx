@@ -207,19 +207,21 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       const burnedBy = hash160;
       const burnForId = post.id;
       const burnValue = '1';
-      const tipToAddresses: { address: string; amount: string }[] = [];
-      if (burnType && post?.postAccount?.address && post?.postAccount?.address !== selectedAccount.address) {
+      let tipToAddresses: { address: string; amount: string }[] = [
+        {
+          address: post.page ? post.pageAccount.address : post.postAccount.address,
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
+        }
+      ];
+
+      if (burnType === BurnType.Up && selectedAccount.address !== post.postAccount.address) {
         tipToAddresses.push({
-          address: post?.postAccount?.address,
+          address: post.postAccount.address,
           amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
         });
       }
-      if (post.pageAccount && post.pageAccount.address && post.pageAccount.address !== selectedAccount.address) {
-        tipToAddresses.push({
-          address: post.pageAccount.address,
-          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
-        });
-      }
+
+      tipToAddresses = tipToAddresses.filter(item => item.address != selectedAccount.address);
 
       const txHex = await burnXpi(
         XPI,

@@ -153,7 +153,7 @@ export const generateTxInput = (
   isOneToMany: boolean,
   utxos: Array<Utxo & { address: string }>,
   txBuilder: any,
-  destinationAddressAndValueArray: Array<string>,
+  destinationAddressAndValueArray: Array<any>,
   satoshisToSend,
   feeInSatsPerByte
 ): TxInputObj => {
@@ -173,8 +173,8 @@ export const generateTxInput = (
     }
 
     // A normal tx will have 2 outputs, destination and change
-    // A one to many tx will have n outputs + 1 change output, where n is the number of recipients
-    const txOutputs = isOneToMany ? destinationAddressAndValueArray.length + 1 : 2;
+    // A one to many tx will have n outputs + 2 change output, where n is the number of recipients, 1 destination and 1 change
+    const txOutputs = isOneToMany ? destinationAddressAndValueArray.length + 2 : 2;
     for (let i = 0; i < utxos.length; i++) {
       const utxo = utxos[i];
       totalInputUtxoValue = totalInputUtxoValue.plus(utxo.value);
