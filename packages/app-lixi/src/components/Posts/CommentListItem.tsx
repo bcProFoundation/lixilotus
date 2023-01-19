@@ -67,7 +67,7 @@ const CommentListItem = ({ index, item, post }: CommentListItemProps) => {
       const burnValue = '1';
       let tipToAddresses: { address: string; amount: string }[] = [
         {
-          address: post.pageAccount.address,
+          address: post.page ? post.pageAccount.address : post.postAccount.address,
           amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
         }
       ];
