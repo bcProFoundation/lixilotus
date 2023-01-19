@@ -34,8 +34,10 @@ export class MeiliService implements OnModuleInit {
    * @param index The specific index
    * @param document The document you want to update
    */
-  public async update(index: string, documents: Array<Document<any>>): Promise<EnqueuedTask> {
-    return await this.meiliSearch.index(index).updateDocuments(documents);
+  public async update(index: string, documents: any, documentId: string): Promise<EnqueuedTask> {
+    return await this.meiliSearch
+      .index(index)
+      .updateDocuments([{ ...documents, primaryId: documentId }], { primaryKey: 'primaryId' });
   }
 
   /**

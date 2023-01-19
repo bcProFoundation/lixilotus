@@ -95,11 +95,18 @@ export type CreatePostInput = {
   uploadCovers?: InputMaybe<Array<Scalars['String']>>;
 };
 
+export type EditPostInput = {
+  htmlContent: Scalars['String'];
+  id: Scalars['ID'];
+  pureContent: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createComment: Comment;
   createPage: Page;
   createPost: Post;
+  editPost: Post;
   updatePage: Page;
 };
 
@@ -113,6 +120,10 @@ export type MutationCreatePageArgs = {
 
 export type MutationCreatePostArgs = {
   data: CreatePostInput;
+};
+
+export type MutationEditPostArgs = {
+  data: EditPostInput;
 };
 
 export type MutationUpdatePageArgs = {

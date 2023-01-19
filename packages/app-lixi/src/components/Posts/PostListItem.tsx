@@ -22,6 +22,8 @@ import styled from 'styled-components';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { useRouter } from 'next/router';
 import { getSelectedAccount } from '@store/account/selectors';
+import { openModal } from '@store/modal/actions';
+import { EditPostModalProps } from './EditPostModalPopup';
 
 const IconBurn = ({
   icon,
@@ -255,27 +257,6 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
     setShowMore(false);
   };
 
-  const handleSubmit = (values: any) => {
-    console.log(values);
-    if (!values.comment) return;
-
-    setSubmitting(true);
-
-    setTimeout(() => {
-      setSubmitting(false);
-      setValue('');
-      setComments([
-        ...comments,
-        {
-          author: 'Han Solo',
-          avatar: 'https://joeschmoe.io/api/v1/random',
-          content: <p>{values.comment}</p>,
-          datetime: moment('2016-11-22').fromNow()
-        }
-      ]);
-    }, 1000);
-  };
-
   const handlePostClick = e => {
     if (e.target.parentElement.tagName === 'A') {
       e.stopPropagation();
@@ -387,6 +368,15 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
     return post?.postAccount?.name;
   };
 
+  const editPost = () => {
+    const editPostProps: EditPostModalProps = {
+      postAccountAddress: post.postAccount.address,
+      content: post.content,
+      postId: post.id
+    };
+    dispatch(openModal('EditPostModalPopup', editPostProps));
+  };
+
   return (
     <PostListItemContainer key={post.id} ref={ref}>
       <CardContainer>
@@ -395,11 +385,13 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
             imgUrl={post.page ? post.page.avatar : ''}
             name={showUsername()}
             title={moment(post.createdAt).fromNow().toString()}
-            address={post.postAccount ? post.postAccount.address : undefined}
+            postAccountAddress={post.postAccount ? post.postAccount.address : undefined}
             page={post.page ? post.page : undefined}
             token={post.token ? post.token : undefined}
             activatePostLocation={true}
-          ></InfoCardUser>
+            onEditPostClick={editPost}
+            postEdited={post.createdAt !== post.updatedAt}
+          />
         </CardHeader>
         <Content onClick={e => handlePostClick(e)}>
           <p className="description-post">{ReactHtmlParser(post?.content)}</p>
@@ -463,10 +455,10 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
         </GroupIconText>
       </ActionBar>
       {isCollapseComment && (
-        <Comment
-          style={{ width: '100%', textAlign: 'left' }}
-          avatar={<Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />}
-          content={<Editor onSubmit={handleSubmit} submitting={submitting} />}
+        <div
+        // style={{ width: '100%', textAlign: 'left' }}
+        // avatar={<Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />}
+        // content={<Editor submitting={submitting} />}
         />
       )}
 

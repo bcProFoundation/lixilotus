@@ -86,10 +86,17 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+input EditPostInput {
+  htmlContent: String!
+  id: ID!
+  pureContent: String!
+}
+
 type Mutation {
   createComment(data: CreateCommentInput!): Comment!
   createPage(data: CreatePageInput!): Page!
   createPost(data: CreatePostInput!): Post!
+  editPost(data: EditPostInput!): Post!
   updatePage(data: UpdatePageInput!): Page!
 }
 

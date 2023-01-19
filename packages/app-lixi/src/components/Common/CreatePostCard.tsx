@@ -417,7 +417,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
                   </Button>
                 </div>
               </div>
-              <EditorLexical onSubmit={value => handleCreateNewPost(value)} />
+              <EditorLexical onSubmit={value => handleCreateNewPost(value)} loading={isLoadingCreatePost} />
             </UserCreate>
             {/* TODO: import link  */}
             {/* <Tabs defaultActiveKey="1">

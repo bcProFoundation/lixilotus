@@ -11,6 +11,7 @@ import {
   PostOrder,
   PostConnection,
   CreatePostInput,
+  EditPostInput,
   Account,
   Page,
   Token,
@@ -498,6 +499,38 @@ export class PostResolver {
 
     pubSub.publish('postCreated', { postCreated: createdPost });
     return createdPost;
+  }
+
+  @UseGuards(GqlJwtAuthGuard)
+  @Mutation(() => Post)
+  async editPost(@PostAccountEntity() account: Account, @Args('data') data: EditPostInput) {
+    if (!account) {
+      const couldNotFindAccount = await this.i18n.t('post.messages.couldNotFindAccount');
+      throw new Error(couldNotFindAccount);
+    }
+
+    const { id, htmlContent, pureContent } = data;
+
+    const updatedPost = await this.prisma.post.update({
+      where: {
+        id: id
+      },
+      data: {
+        content: htmlContent,
+        updatedAt: new Date()
+      }
+    });
+
+    const indexedPost = {
+      id: updatedPost.id,
+      content: pureContent,
+      updatedAt: updatedPost.updatedAt
+    };
+
+    await this.meiliService.update(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`, indexedPost, updatedPost.id);
+
+    pubSub.publish('postUpdated', { postUpdated: updatedPost });
+    return updatedPost;
   }
 
   @ResolveField('postAccount', () => Account)

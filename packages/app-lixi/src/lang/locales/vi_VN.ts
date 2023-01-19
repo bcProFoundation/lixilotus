@@ -403,7 +403,7 @@ export default {
   /* 12.Zero balance header */
   'zeroBalanceHeader.noBalance': 'Hiện tại bạn đang có {ticker} trong tài khoản',
   'zeroBalanceHeader.deposit': 'Hãy nạp thêm vào tài khoản để có thể sử dụng tính năng giao dịch',
-  'send.syntaxError' : "Syntax error. XPI to give can't be less than or equal to 0",
+  'send.syntaxError': "Syntax error. XPI to give can't be less than or equal to 0",
 
   /* 13.Page */
   'page.createNewPage': 'Tạo trang mới',
@@ -443,7 +443,8 @@ export default {
   /* 15.Post */
   'post.createNewPage': 'tạo bài viết mới',
   'post.createPage': 'tạo bài viết',
-  'post.editPage': 'Sửa bài viết',
+  'post.editPost': 'Sửa bài viết',
+  'post.edited': 'Đã chỉnh sửa',
   'post.name': 'Tên',
   'post.inputName': 'Vui lòng nhập tên',
   'post.title': 'Tiêu đề',
@@ -460,11 +461,10 @@ export default {
   'post.state': 'Tìm kiếm tỉnh thành',
   'post.address': 'Địa chỉ',
   'post.inputAddress': 'Vui lòng nhập địa chỉ',
-  'post.couldNotpostPage': 'Tạo bài viết không thành công',
-  'post.createPageSuccessful': 'Bài viết đã tạo thành công',
-  'post.updatePostSuccessful': 'Bài viết đã được cập nhật thành công',
-  'post.unableCreatePostServer': 'Không thể kết nối server tạo bài viết',
-  'post.errorWhenCreatePost': 'Đã có lỗi xảy ra khi tạo mới bài viết',
+  'post.createPostSuccessful': 'Tạo bài viết thành công',
+  'post.editPostSuccessful': 'Cập nhật bài viết thành công',
+  'post.unableCreatePostServer': 'Không thể tạo bài viết trên server',
+  'post.unableEditPostServer': 'Không thể cập nhật bài biết trên server',
   'post.copyToClipboard': 'Liên kết đã được sao chép',
   'post.unableCreatePost': 'Không thể tạo bài viết.',
   'post.unableUpdatePost': 'Không thể sửa bài viết.',

@@ -89,7 +89,8 @@ const enhancedApi = api.enhanceEndpoints({
     Post: {
       providesTags: (result, error, arg) => ['Post']
     },
-    createPost: {}
+    createPost: {},
+    editPost: {}
   }
 });
 
@@ -108,5 +109,6 @@ export const {
   useLazyPostsByTokenIdQuery,
   usePostsByUserIdQuery,
   useLazyPostsByUserIdQuery,
-  useCreatePostMutation
+  useCreatePostMutation,
+  useEditPostMutation
 } = enhancedApi;

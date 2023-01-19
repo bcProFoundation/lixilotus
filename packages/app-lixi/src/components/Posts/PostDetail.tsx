@@ -539,7 +539,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           imgUrl={post.page ? post.page.avatar : ''}
           name={post.postAccount.name}
           title={moment(post.createdAt).fromNow().toString()}
-          address={post.postAccount ? post.postAccount.address : undefined}
+          postAccountAddress={post.postAccount ? post.postAccount.address : undefined}
           page={post.page ? post.page : undefined}
           token={post.token ? post.token : undefined}
           activatePostLocation={true}
