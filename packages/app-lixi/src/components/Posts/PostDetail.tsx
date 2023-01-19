@@ -549,8 +549,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           <div style={{ display: post.uploads.length != 0 ? 'grid' : 'none' }} className="images-post">
             {post.uploads.length != 0 &&
               post.uploads.map((item, index) => {
-                const imageUrl =
-                  process.env.NEXT_PUBLIC_AWS_ENDPOINT + '/' + item.upload.bucket + '/' + item.upload.sha;
+                const imageUrl = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${item.upload.bucket}/${item.upload.sha}`;
                 return (
                   <>
                     <Image.PreviewGroup>

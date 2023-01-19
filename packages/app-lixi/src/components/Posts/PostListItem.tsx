@@ -310,7 +310,7 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
       const burnValue = '1';
       let tipToAddresses: { address: string; amount: string }[] = [
         {
-          address: post.pageAccount.address ?? post.postAccount.address,
+          address: post.page ? post.pageAccount.address : post.postAccount.address,
           amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
         }
       ];
@@ -323,7 +323,6 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
       }
 
       tipToAddresses = tipToAddresses.filter(item => item.address != selectedAccount.address);
-
 
       let tag: string;
 
@@ -418,8 +417,7 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
                 {item.uploads.length != 0 &&
                   item.uploads.map((item, index) => {
                     while (index < 4) {
-                      const imageUrl =
-                        process.env.NEXT_PUBLIC_AWS_ENDPOINT + '/' + item.upload.bucket + '/' + item.upload.sha;
+                      const imageUrl = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${item.upload.bucket}/${item.upload.sha}`;
                       return (
                         <>
                           <img loading="lazy" src={imageUrl} />

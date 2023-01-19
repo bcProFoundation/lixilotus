@@ -299,8 +299,7 @@ const PageListItem = ({ index, item }) => {
                   {item.uploads.length != 0 &&
                     item.uploads.map((item, index) => {
                       while (index < 4) {
-                        const imageUrl =
-                          process.env.NEXT_PUBLIC_AWS_ENDPOINT + '/' + item.upload.bucket + '/' + item.upload.sha;
+                        const imageUrl = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${item.upload.bucket}/${item.upload.sha}`;
                         return (
                           <>
                             <img loading="lazy" src={imageUrl} />
