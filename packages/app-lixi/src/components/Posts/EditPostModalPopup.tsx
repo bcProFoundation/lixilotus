@@ -126,25 +126,23 @@ export const EditPostModalPopup: React.FC<EditPostModalProps> = props => {
       footer={null}
       onCancel={() => dispatch(closeModal())}
     >
-      <>
-        <UserCreate>
-          <div className="user-create-post">
-            <img src="/images/xpi.svg" alt="" />
-            <div className="user-info">
-              <p className="title-user">{selectedAccount?.name}</p>
-              <Button className="btn-select">
-                Public <GlobalOutlined />
-              </Button>
-            </div>
+      <UserCreate>
+        <div className="user-create-post">
+          <img src="/images/xpi.svg" alt="" />
+          <div className="user-info">
+            <p className="title-user">{selectedAccount?.name}</p>
+            <Button className="btn-select">
+              Public <GlobalOutlined />
+            </Button>
           </div>
-          <EditorLexical
-            initialContent={props.content}
-            isEditMode={true}
-            onSubmit={value => handleEditPost(value)}
-            loading={isLoadingEditPost}
-          />
-        </UserCreate>
-      </>
+        </div>
+        <EditorLexical
+          initialContent={props.content}
+          isEditMode={true}
+          onSubmit={value => handleEditPost(value)}
+          loading={isLoadingEditPost}
+        />
+      </UserCreate>
     </Modal>
   );
 };
