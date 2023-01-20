@@ -393,13 +393,13 @@ export type CreatePostMutation = {
   };
 };
 
-export type EditPostMutationVariables = Types.Exact<{
-  input: Types.EditPostInput;
+export type UpdatePostMutationVariables = Types.Exact<{
+  input: Types.UpdatePostInput;
 }>;
 
-export type EditPostMutation = {
+export type UpdatePostMutation = {
   __typename?: 'Mutation';
-  editPost: {
+  updatePost: {
     __typename?: 'Post';
     id: string;
     content: string;
@@ -653,9 +653,9 @@ export const CreatePostDocument = `
   }
 }
     ${PostFieldsFragmentDoc}`;
-export const EditPostDocument = `
-    mutation editPost($input: EditPostInput!) {
-  editPost(data: $input) {
+export const UpdatePostDocument = `
+    mutation updatePost($input: UpdatePostInput!) {
+  updatePost(data: $input) {
     ...PostFields
   }
 }
@@ -687,8 +687,8 @@ const injectedRtkApi = api.injectEndpoints({
     createPost: build.mutation<CreatePostMutation, CreatePostMutationVariables>({
       query: variables => ({ document: CreatePostDocument, variables })
     }),
-    editPost: build.mutation<EditPostMutation, EditPostMutationVariables>({
-      query: variables => ({ document: EditPostDocument, variables })
+    updatePost: build.mutation<UpdatePostMutation, UpdatePostMutationVariables>({
+      query: variables => ({ document: UpdatePostDocument, variables })
     })
   })
 });
@@ -710,5 +710,5 @@ export const {
   usePostsBySearchQuery,
   useLazyPostsBySearchQuery,
   useCreatePostMutation,
-  useEditPostMutation
+  useUpdatePostMutation
 } = injectedRtkApi;

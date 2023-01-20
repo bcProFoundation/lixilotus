@@ -95,19 +95,13 @@ export type CreatePostInput = {
   uploadCovers?: InputMaybe<Array<Scalars['String']>>;
 };
 
-export type EditPostInput = {
-  htmlContent: Scalars['String'];
-  id: Scalars['ID'];
-  pureContent: Scalars['String'];
-};
-
 export type Mutation = {
   __typename?: 'Mutation';
   createComment: Comment;
   createPage: Page;
   createPost: Post;
-  editPost: Post;
   updatePage: Page;
+  updatePost: Post;
 };
 
 export type MutationCreateCommentArgs = {
@@ -122,12 +116,12 @@ export type MutationCreatePostArgs = {
   data: CreatePostInput;
 };
 
-export type MutationEditPostArgs = {
-  data: EditPostInput;
-};
-
 export type MutationUpdatePageArgs = {
   data: UpdatePageInput;
+};
+
+export type MutationUpdatePostArgs = {
+  data: UpdatePostInput;
 };
 
 /** Possible directions in which to order a list of items when provided an `orderBy` argument. */
@@ -416,6 +410,12 @@ export type UpdatePageInput = {
   state?: InputMaybe<Scalars['String']>;
   title: Scalars['String'];
   website?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdatePostInput = {
+  htmlContent: Scalars['String'];
+  id: Scalars['ID'];
+  pureContent: Scalars['String'];
 };
 
 export type Upload = {

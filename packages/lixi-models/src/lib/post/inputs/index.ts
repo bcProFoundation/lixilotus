@@ -1,3 +1,3 @@
 export * from './post-order.input';
-export * from './editPost.input';
+export * from './updatePost.input';
 export * from './createPost.input';

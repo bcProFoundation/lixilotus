@@ -245,8 +245,8 @@ mutation createPost($input: CreatePostInput!) {
   }
 }
 
-mutation editPost($input: EditPostInput!) {
-  editPost(data: $input) {
+mutation updatePost($input: UpdatePostInput!) {
+  updatePost(data: $input) {
     ...PostFields
   }
 }

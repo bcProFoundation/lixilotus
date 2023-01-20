@@ -8,10 +8,10 @@ import { GlobalOutlined } from '@ant-design/icons';
 import { getSelectedAccount } from '@store/account/selectors';
 import intl from 'react-intl-universal';
 import _ from 'lodash';
-import { useEditPostMutation, api as postApi } from '@store/post/posts.generated';
-import { EditPostInput, OrderDirection, PostOrderField } from 'src/generated/types.generated';
+import { useUpdatePostMutation, api as postApi } from '@store/post/posts.generated';
+import { UpdatePostInput, OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
-import { EditPostMutation } from '@store/post/posts.generated';
+import { UpdatePostMutation } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
 
 const UserCreate = styled.div`
@@ -64,16 +64,18 @@ export const EditPostModalPopup: React.FC<EditPostModalProps> = props => {
   const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
 
-  const [editPostTrigger, { isLoading: isLoadingEditPost, isSuccess: isSuccessEditPost, isError: isErrorEditPost }] =
-    useEditPostMutation();
+  const [
+    updatePostTrigger,
+    { isLoading: isLoadingUpdatePost, isSuccess: isSuccessUpdatePost, isError: isErrorUpdatePost }
+  ] = useUpdatePostMutation();
 
   const handleEditPost = async ({ htmlContent, pureContent }) => {
-    if (htmlContent === '' || _.isNil(htmlContent)) {
+    if (pureContent === '' || _.isNil(pureContent)) {
       return;
     }
 
     let patches: PatchCollection;
-    const editPostInput: EditPostInput = {
+    const editPostInput: UpdatePostInput = {
       htmlContent: htmlContent,
       pureContent: pureContent,
       id: props.postId
@@ -87,11 +89,11 @@ export const EditPostModalPopup: React.FC<EditPostModalProps> = props => {
     };
 
     try {
-      const result = await editPostTrigger({ input: editPostInput }).unwrap();
+      const result = await updatePostTrigger({ input: editPostInput }).unwrap();
       const patches = dispatch(
         postApi.util.updateQueryData('Posts', params, draft => {
-          const index = draft.allPosts.edges.findIndex(x => x.cursor === result.editPost.id);
-          draft.allPosts.edges[index].node.content = result.editPost.content;
+          const index = draft.allPosts.edges.findIndex(x => x.cursor === result.updatePost.id);
+          draft.allPosts.edges[index].node.content = result.updatePost.content;
         })
       );
 
@@ -140,7 +142,7 @@ export const EditPostModalPopup: React.FC<EditPostModalProps> = props => {
           initialContent={props.content}
           isEditMode={true}
           onSubmit={value => handleEditPost(value)}
-          loading={isLoadingEditPost}
+          loading={isLoadingUpdatePost}
         />
       </UserCreate>
     </Modal>

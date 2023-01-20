@@ -11,7 +11,7 @@ import {
   PostOrder,
   PostConnection,
   CreatePostInput,
-  EditPostInput,
+  UpdatePostInput,
   Account,
   Page,
   Token,
@@ -503,13 +503,31 @@ export class PostResolver {
 
   @UseGuards(GqlJwtAuthGuard)
   @Mutation(() => Post)
-  async editPost(@PostAccountEntity() account: Account, @Args('data') data: EditPostInput) {
+  async updatePost(@PostAccountEntity() account: Account, @Args('data') data: UpdatePostInput) {
     if (!account) {
       const couldNotFindAccount = await this.i18n.t('post.messages.couldNotFindAccount');
       throw new Error(couldNotFindAccount);
     }
 
     const { id, htmlContent, pureContent } = data;
+
+    const post = await this.prisma.post.findUnique({
+      where: {
+        id: id
+      },
+      include: {
+        postAccount: {
+          select: {
+            address: true
+          }
+        }
+      }
+    });
+
+    if (post?.postAccount.address !== account.address) {
+      const noPermissionToUpdate = await this.i18n.t('post.messages.noPermissionToUpdate');
+      throw new Error(noPermissionToUpdate);
+    }
 
     const updatedPost = await this.prisma.post.update({
       where: {

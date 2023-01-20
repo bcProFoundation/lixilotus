@@ -325,58 +325,60 @@ const CreatePostCard = (props: CreatePostCardProp) => {
   };
 
   const handleCreateNewPost = async ({ htmlContent, pureContent }) => {
-    if (htmlContent !== '' || !_.isNil(htmlContent)) {
-      const createPostInput: CreatePostInput = {
-        uploadCovers: postCoverUploads.map(upload => upload.id),
-        htmlContent: htmlContent,
-        pureContent: pureContent,
-        pageId: pageId || undefined,
-        tokenPrimaryId: tokenPrimaryId || undefined
-      };
+    if (pureContent === '' || _.isNil(pureContent)) {
+      return;
+    }
 
-      const params = {
-        orderBy: {
-          direction: OrderDirection.Desc,
-          field: PostOrderField.UpdatedAt
-        }
-      };
-      let patches: PatchCollection;
-      try {
-        const result = await createPostTrigger({ input: createPostInput }).unwrap();
-        let tag: string;
+    const createPostInput: CreatePostInput = {
+      uploadCovers: postCoverUploads.map(upload => upload.id),
+      htmlContent: htmlContent,
+      pureContent: pureContent,
+      pageId: pageId || undefined,
+      tokenPrimaryId: tokenPrimaryId || undefined
+    };
 
-        if (_.isNil(pageId) && _.isNil(tokenPrimaryId)) {
-          tag = PostsQueryTag.Posts;
-        } else if (pageId) {
-          tag = PostsQueryTag.PostsByPageId;
-        } else if (tokenPrimaryId) {
-          tag = PostsQueryTag.PostsByTokenId;
-        }
-
-        const patches = updatePost(tag, params, result, pageId, tokenPrimaryId);
-        dispatch(
-          showToast('success', {
-            message: 'Success',
-            description: intl.get('post.createPostSuccessful'),
-            duration: 5
-          })
-        );
-
-        setEnableEditor(false);
-        dispatch(removeAllUpload());
-      } catch (error) {
-        const message = intl.get('post.unableCreatePostServer');
-        if (patches) {
-          dispatch(postApi.util.patchQueryData('Posts', params, patches.inversePatches));
-        }
-        dispatch(
-          showToast('error', {
-            message: 'Error',
-            description: message,
-            duration: 5
-          })
-        );
+    const params = {
+      orderBy: {
+        direction: OrderDirection.Desc,
+        field: PostOrderField.UpdatedAt
       }
+    };
+    let patches: PatchCollection;
+    try {
+      const result = await createPostTrigger({ input: createPostInput }).unwrap();
+      let tag: string;
+
+      if (_.isNil(pageId) && _.isNil(tokenPrimaryId)) {
+        tag = PostsQueryTag.Posts;
+      } else if (pageId) {
+        tag = PostsQueryTag.PostsByPageId;
+      } else if (tokenPrimaryId) {
+        tag = PostsQueryTag.PostsByTokenId;
+      }
+
+      const patches = updatePost(tag, params, result, pageId, tokenPrimaryId);
+      dispatch(
+        showToast('success', {
+          message: 'Success',
+          description: intl.get('post.createPostSuccessful'),
+          duration: 5
+        })
+      );
+
+      setEnableEditor(false);
+      dispatch(removeAllUpload());
+    } catch (error) {
+      const message = intl.get('post.unableCreatePostServer');
+      if (patches) {
+        dispatch(postApi.util.patchQueryData('Posts', params, patches.inversePatches));
+      }
+      dispatch(
+        showToast('error', {
+          message: 'Error',
+          description: message,
+          duration: 5
+        })
+      );
     }
   };
 

@@ -1,5 +1,6 @@
 {
   "messages": {
-    "unableToBurnForPost": "Không thể đốt lotus cho bài viết."
+    "unableToBurnForPost": "Không thể đốt lotus cho bài viết.",
+    "noPermissionToUpdate": "Không có quyền cập nhật bài viết"
   }
 }
