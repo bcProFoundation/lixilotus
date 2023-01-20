@@ -397,7 +397,7 @@ export default {
   'send.queryString':
     'You are sending a transaction to an address including query parameters "{queryStringText}." Only the "amount" parameter, in units of {currency} satoshis, is currently supported.',
   'send.optionalPrivateMessage': 'Optional Private Message',
-  'send.syntaxError' : "Lỗi cú pháp. XPI để tặng không được nhỏ hơn hoặc bằng 0",
+  'send.syntaxError': 'Lỗi cú pháp. XPI để tặng không được nhỏ hơn hoặc bằng 0',
 
   /* 12.Zero balance header */
   'zeroBalanceHeader.noBalance': 'You currently have 0 {ticker}',
@@ -441,7 +441,8 @@ export default {
   /* 15.Page */
   'post.createNewPage': 'Create new post',
   'post.createPost': 'Create post',
-  'post.editPage': 'Edit post',
+  'post.editPost': 'Edit post',
+  'post.edited': 'Edited',
   'post.name': 'Name',
   'post.inputName': 'Please input name',
   'post.title': 'Title',
@@ -459,10 +460,10 @@ export default {
   'post.state': 'Search to select state',
   'post.address': 'Address',
   'post.inputAddress': 'Please input address',
-  'post.couldNotpostPost': 'Could not create post',
   'post.createPostSuccessful': 'Create post successful',
+  'post.editPostSuccessful': 'Update post successful',
   'post.unableCreatePostServer': 'Unable to create post on server',
-  'post.updatePageSuccessful': 'Update the post successful',
+  'post.unableEditPostServer': 'Unable to create post on server',
   'post.errorWhenCreatePage': "There's an error happens when create new Page",
   'post.copyToClipboard': 'Link copied to clipboard',
   'post.unableCreatePost': 'Unable to create post.',

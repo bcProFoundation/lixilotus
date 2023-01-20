@@ -393,6 +393,33 @@ export type CreatePostMutation = {
   };
 };
 
+export type UpdatePostMutationVariables = Types.Exact<{
+  input: Types.UpdatePostInput;
+}>;
+
+export type UpdatePostMutation = {
+  __typename?: 'Mutation';
+  updatePost: {
+    __typename?: 'Post';
+    id: string;
+    content: string;
+    lotusBurnUp: number;
+    lotusBurnDown: number;
+    lotusBurnScore: number;
+    createdAt: any;
+    updatedAt: any;
+    uploads?: Array<{
+      __typename?: 'UploadDetail';
+      id: string;
+      upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+    }> | null;
+    postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+    pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
+    page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+    token?: { __typename?: 'Token'; id: string; name: string } | null;
+  };
+};
+
 export const PostFieldsFragmentDoc = `
     fragment PostFields on Post {
   id
@@ -626,6 +653,13 @@ export const CreatePostDocument = `
   }
 }
     ${PostFieldsFragmentDoc}`;
+export const UpdatePostDocument = `
+    mutation updatePost($input: UpdatePostInput!) {
+  updatePost(data: $input) {
+    ...PostFields
+  }
+}
+    ${PostFieldsFragmentDoc}`;
 
 const injectedRtkApi = api.injectEndpoints({
   endpoints: build => ({
@@ -652,6 +686,9 @@ const injectedRtkApi = api.injectEndpoints({
     }),
     createPost: build.mutation<CreatePostMutation, CreatePostMutationVariables>({
       query: variables => ({ document: CreatePostDocument, variables })
+    }),
+    updatePost: build.mutation<UpdatePostMutation, UpdatePostMutationVariables>({
+      query: variables => ({ document: UpdatePostDocument, variables })
     })
   })
 });
@@ -672,5 +709,6 @@ export const {
   useLazyPostsByTokenIdQuery,
   usePostsBySearchQuery,
   useLazyPostsBySearchQuery,
-  useCreatePostMutation
+  useCreatePostMutation,
+  useUpdatePostMutation
 } = injectedRtkApi;

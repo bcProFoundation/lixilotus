@@ -1,6 +1,7 @@
 {
   "messages": {
     "postNotExist": "The index does not exist in the database.",
-    "unableToBurnForPost": "Unable to burn for the post."
+    "unableToBurnForPost": "Unable to burn for the post.",
+    "noPermissionToUpdate": "No perimission to update the post"
   }
 }

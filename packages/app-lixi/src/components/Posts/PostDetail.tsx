@@ -59,6 +59,8 @@ import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled from 'styled-components';
 import CommentListItem from './CommentListItem';
 import { useForm, Controller } from 'react-hook-form';
+import { openModal } from '@store/modal/actions';
+import { EditPostModalProps } from './EditPostModalPopup';
 
 type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 
@@ -525,7 +527,15 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     </RWebShare>
   );
 
-  //TODO: Need to rework topbar
+  const editPost = () => {
+    const editPostProps: EditPostModalProps = {
+      postAccountAddress: post.postAccount.address,
+      content: post.content,
+      postId: post.id
+    };
+    dispatch(openModal('EditPostModalPopup', editPostProps));
+  };
+
   return (
     <>
       <StyledContainerPostDetail>
@@ -539,10 +549,12 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           imgUrl={post.page ? post.page.avatar : ''}
           name={post.postAccount.name}
           title={moment(post.createdAt).fromNow().toString()}
-          address={post.postAccount ? post.postAccount.address : undefined}
+          postAccountAddress={post.postAccount ? post.postAccount.address : undefined}
           page={post.page ? post.page : undefined}
           token={post.token ? post.token : undefined}
           activatePostLocation={true}
+          onEditPostClick={editPost}
+          postEdited={post.createdAt !== post.updatedAt}
         ></InfoCardUser>
         <PostContentDetail>
           <p className="description-post">{ReactHtmlParser(post.content)}</p>

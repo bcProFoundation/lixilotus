@@ -31,21 +31,21 @@ const CustomButtonSubmitPlugin = props => {
       // const htmlString = $generateHtmlFromNodes(editor, null);
 
       const rootElementString = editor.getRootElement().innerHTML;
-      props.onSubmit({ htmlContent: rootElementString, pureContent: rootElementString });
+
+      props.onSubmit({ htmlContent: rootElementString, pureContent: editorStateTextString });
     });
   };
 
   return (
-    <>
-      <Button
-        style={{ textTransform: 'uppercase' }}
-        className="EditorLexical_submit"
-        type="primary"
-        onClick={handleClick}
-      >
-        {intl.get('general.post')}
-      </Button>
-    </>
+    <Button
+      style={{ textTransform: 'uppercase' }}
+      className="EditorLexical_submit"
+      type="primary"
+      onClick={handleClick}
+      loading={props.loading}
+    >
+      {intl.get('general.post')}
+    </Button>
   );
 };
 

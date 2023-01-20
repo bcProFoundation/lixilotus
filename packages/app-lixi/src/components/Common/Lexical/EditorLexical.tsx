@@ -29,6 +29,13 @@ import { Image } from 'antd';
 import { useAppSelector } from '@store/hooks';
 import { getPostCoverUploads } from '@store/account/selectors';
 
+export type EditorLexicalProps = {
+  initialContent?: string;
+  isEditMode?: boolean;
+  onSubmit?: (value) => void;
+  loading?: boolean;
+};
+
 const StyledEditorLexical = styled.div`
   display: flex;
   flex-direction: column;
@@ -93,7 +100,8 @@ const StyledEditorLexical = styled.div`
   }
 `;
 
-const EditorLexical = props => {
+const EditorLexical = (props: EditorLexicalProps) => {
+  const { initialContent, onSubmit, isEditMode, loading } = props;
   const [floatingAnchorElem, setFloatingAnchorElem] = useState<HTMLDivElement | null>(null);
   const postCoverUploads = useAppSelector(getPostCoverUploads);
 
@@ -136,7 +144,7 @@ const EditorLexical = props => {
             <LinkPlugin />
             <HashtagPlugin />
             <AutoEmbedPlugin />
-            <MyCustomAutoFocusPlugin />
+            <MyCustomAutoFocusPlugin initialContent={isEditMode ? initialContent : ''} />
             {floatingAnchorElem && (
               <>
                 <FloatingLinkEditorPlugin anchorElem={floatingAnchorElem} />
@@ -168,7 +176,7 @@ const EditorLexical = props => {
               <TwitterPlugin />
             </div>
           </div>
-          <CustomButtonSubmitPlugin onSubmit={value => props.onSubmit(value)} />
+          <CustomButtonSubmitPlugin onSubmit={value => onSubmit(value)} loading={loading} />
         </LexicalComposer>
       </StyledEditorLexical>
     </>

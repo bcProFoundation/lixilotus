@@ -101,6 +101,7 @@ export type Mutation = {
   createPage: Page;
   createPost: Post;
   updatePage: Page;
+  updatePost: Post;
 };
 
 export type MutationCreateCommentArgs = {
@@ -117,6 +118,10 @@ export type MutationCreatePostArgs = {
 
 export type MutationUpdatePageArgs = {
   data: UpdatePageInput;
+};
+
+export type MutationUpdatePostArgs = {
+  data: UpdatePostInput;
 };
 
 /** Possible directions in which to order a list of items when provided an `orderBy` argument. */
@@ -405,6 +410,12 @@ export type UpdatePageInput = {
   state?: InputMaybe<Scalars['String']>;
   title: Scalars['String'];
   website?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdatePostInput = {
+  htmlContent: Scalars['String'];
+  id: Scalars['ID'];
+  pureContent: Scalars['String'];
 };
 
 export type Upload = {

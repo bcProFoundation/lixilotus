@@ -91,6 +91,7 @@ type Mutation {
   createPage(data: CreatePageInput!): Page!
   createPost(data: CreatePostInput!): Post!
   updatePage(data: UpdatePageInput!): Page!
+  updatePost(data: UpdatePostInput!): Post!
 }
 
 """
@@ -295,6 +296,12 @@ input UpdatePageInput {
   state: String
   title: String!
   website: String
+}
+
+input UpdatePostInput {
+  htmlContent: String!
+  id: ID!
+  pureContent: String!
 }
 
 type Upload {
