@@ -134,7 +134,7 @@ export const generateBurnTxOutput = (
 
     txBuilder.addOutput(burnOutputScript, parseInt(satoshisToBurn.toString()));
 
-    tipToAddresseses.forEach(item => {
+    tipToAddresseses && tipToAddresseses.forEach(item => {
       if (item.address && item.address !== changeAddress) {
         txBuilder.addOutput(item.address, parseInt(item.amount.toString()));
       }

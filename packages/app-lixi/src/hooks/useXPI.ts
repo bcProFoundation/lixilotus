@@ -225,7 +225,7 @@ export default function useXPI() {
       tipToAddresses ? true : false,
       utxos,
       txBuilder,
-      tipToAddresses ?? null,
+      tipToAddresses ?? [],
       satoshisToBurn,
       feeInSatsPerByte
     );
@@ -246,7 +246,7 @@ export default function useXPI() {
       changeAddress,
       txInputObj.txFee,
       txBuilder,
-      tipToAddresses
+      tipToAddresses ?? []
     );
     txBuilder = txOutputObj; // update the local txBuilder with the generated tx outputs
 
