@@ -137,7 +137,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
         </CardUser>
         <Dropdown
           overlay={DropdownMenu}
-          trigger={[selectedAccount.address === postAccountAddress ? 'click' : 'contextMenu']}
+          trigger={[selectedAccount && selectedAccount.address === postAccountAddress ? 'click' : 'contextMenu']}
           arrow={{ pointAtCenter: true }}
           placement="bottomRight"
         >
