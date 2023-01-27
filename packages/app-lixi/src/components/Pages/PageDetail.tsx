@@ -3,8 +3,10 @@ import CreatePostCard from '@components/Common/CreatePostCard';
 import SearchBox from '@components/Common/SearchBox';
 import PostListItem from '@components/Posts/PostListItem';
 import { getSelectedAccountId } from '@store/account/selectors';
-import { useAppSelector } from '@store/hooks';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { openModal } from '@store/modal/actions';
 import { useInfinitePostsByPageIdQuery } from '@store/post/useInfinitePostsByPageIdQuery';
+import intl from 'react-intl-universal';
 import { Button, Space, Tabs } from 'antd';
 import axios from 'axios';
 import { useRouter } from 'next/router';
@@ -324,6 +326,7 @@ const SubAbout = ({
 );
 
 const PageDetail = ({ page, isMobile }: PageDetailProps) => {
+  const dispatch = useAppDispatch();
   const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
   const router = useRouter();
   const selectedAccountId = useAppSelector(getSelectedAccountId);
@@ -388,7 +391,7 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
   };
 
   const navigateEditPage = () => {
-    router.push('/page/edit');
+    dispatch(openModal('EditPageModal', { page: pageDetailData }));
   };
 
   return (
@@ -415,7 +418,8 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
               <p>{pageDetailData.title}</p>
             </div>
             {/* TODO: implement in the future */}
-            {/* {selectedAccountId == pageDetailData?.pageAccountId && (
+            {console.log('pageDetailData: ', pageDetailData)}
+            {selectedAccountId == pageDetailData?.pageAccountId && (
               <div className="action-profile">
                 <Button
                   style={{ marginRight: '1rem' }}
@@ -424,14 +428,14 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
                   onClick={navigateEditPage}
                 >
                   <EditOutlined />
-                  Edit profile
+                  {intl.get('page.editPage')}
                 </Button>
                 <Button type="primary" className="outline-btn" onClick={navigateEditPage}>
                   <CameraOutlined />
-                  Edit cover photo
+                  {intl.get('page.editCoverPhoto')}
                 </Button>
               </div>
-            )} */}
+            )}
           </div>
         </ProfileCardHeader>
         <ProfileContentContainer>

@@ -17,6 +17,9 @@ export class Page {
   name: string;
 
   @Field(() => String)
+  category: string;
+
+  @Field(() => String, { nullable: true })
   title: string;
 
   @Field(() => String)

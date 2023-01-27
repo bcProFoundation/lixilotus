@@ -7,17 +7,19 @@ export class CreatePageInput {
   @IsNotEmpty()
   name: string;
 
-  @IsNotEmpty()
   @Field(() => String)
-  title: string;
+  @IsNotEmpty()
+  category: string;
 
   @Field(() => String)
   description: string;
-
   @Field(() => String)
+  title?: string;
+
+  @Field(() => String, { nullable: true })
   avatar?: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   cover?: string;
 
   @Field(() => String, { nullable: true })

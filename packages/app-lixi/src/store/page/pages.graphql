@@ -35,6 +35,7 @@ fragment PageFields on Page {
   pageAccountId
   name
   title
+  category
   description
   avatar
   cover

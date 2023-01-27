@@ -27,7 +27,8 @@ export type PageQuery = {
     id: string;
     pageAccountId: number;
     name: string;
-    title: string;
+    title?: string | null;
+    category: string;
     description: string;
     avatar?: string | null;
     cover?: string | null;
@@ -65,7 +66,8 @@ export type PagesQuery = {
         id: string;
         pageAccountId: number;
         name: string;
-        title: string;
+        title?: string | null;
+        category: string;
         description: string;
         avatar?: string | null;
         cover?: string | null;
@@ -94,7 +96,8 @@ export type PageFieldsFragment = {
   id: string;
   pageAccountId: number;
   name: string;
-  title: string;
+  title?: string | null;
+  category: string;
   description: string;
   avatar?: string | null;
   cover?: string | null;
@@ -119,7 +122,8 @@ export type CreatePageMutation = {
     id: string;
     pageAccountId: number;
     name: string;
-    title: string;
+    title?: string | null;
+    category: string;
     description: string;
     avatar?: string | null;
     cover?: string | null;
@@ -145,7 +149,8 @@ export type UpdatePageMutation = {
     id: string;
     pageAccountId: number;
     name: string;
-    title: string;
+    title?: string | null;
+    category: string;
     description: string;
     avatar?: string | null;
     cover?: string | null;
@@ -166,6 +171,7 @@ export const PageFieldsFragmentDoc = `
   pageAccountId
   name
   title
+  category
   description
   avatar
   cover

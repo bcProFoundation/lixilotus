@@ -25,6 +25,14 @@ export default {
   'label.comment': 'Comments',
   'label.created': 'Created',
   'label.action': 'Action',
+  'text.createPage':
+    'A Page is a space where people can publicly connect with your business, personal brand or organisation. You can do things such as showcase products and services, collect donations.',
+  'text.createPageName':
+    'Use the name of your business, brand or organisation, or a name that explains what the Page is about.',
+  'text.createPageCategory':
+    'Choose a category that describes what type of business, organisation or topic the Page represents.',
+  'text.createPageDescription':
+    'Write about what your business does, the services that you provide or the purpose of the Page.',
 
   /* 01.General */
   'general.tokens': 'Tokens',
@@ -406,9 +414,15 @@ export default {
   /* 13.Page */
   'page.createNewPage': 'Create new page',
   'page.createPage': 'Create page',
-  'page.editPage': 'Edit page',
+  'page.yourPage': 'Your page',
+  'page.discover': 'Discover',
+  'page.createYourPage': 'Create your page',
+  'page.editPage': 'Edit profile',
+  'page.editCoverPhoto': 'Edit cover photo',
+  'page.updatePage': 'Update page’s information',
   'page.name': 'Name',
   'page.inputName': 'Please input name',
+  'page.category': 'Category',
   'page.title': 'Title',
   'page.titleShared': 'Please input title',
   'page.inputTitle': 'Please input title',
@@ -433,6 +447,7 @@ export default {
   'page.unableCreatePage': 'Unable to create page.',
   'page.unableUpdatePage': 'Unable to update the page.',
   'page.selectAccountFirst': 'Please Select an account first before creating page',
+  'category.foodAndDrink': 'Food & Drink',
 
   /* 14.Country */
   'country.unablegetCountries': 'Unable to get countries',

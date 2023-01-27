@@ -75,9 +75,10 @@ export type CreateCommentInput = {
 
 export type CreatePageInput = {
   address: Scalars['String'];
-  avatar: Scalars['String'];
+  avatar?: InputMaybe<Scalars['String']>;
+  category: Scalars['String'];
   country: Scalars['String'];
-  cover: Scalars['String'];
+  cover?: InputMaybe<Scalars['String']>;
   description: Scalars['String'];
   name: Scalars['String'];
   parentId?: InputMaybe<Scalars['String']>;
@@ -134,6 +135,7 @@ export type Page = {
   __typename?: 'Page';
   address?: Maybe<Scalars['String']>;
   avatar?: Maybe<Scalars['String']>;
+  category: Scalars['String'];
   country?: Maybe<Scalars['String']>;
   cover?: Maybe<Scalars['String']>;
   /** Identifies the date and time when the object was created. */
@@ -148,7 +150,7 @@ export type Page = {
   parent?: Maybe<Page>;
   parentId?: Maybe<Scalars['String']>;
   state?: Maybe<Scalars['String']>;
-  title: Scalars['String'];
+  title?: Maybe<Scalars['String']>;
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
   website?: Maybe<Scalars['String']>;
@@ -401,6 +403,7 @@ export type TokenEdge = {
 export type UpdatePageInput = {
   address?: InputMaybe<Scalars['String']>;
   avatar?: InputMaybe<Scalars['String']>;
+  category?: InputMaybe<Scalars['String']>;
   country?: InputMaybe<Scalars['String']>;
   cover?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
@@ -408,7 +411,7 @@ export type UpdatePageInput = {
   name?: InputMaybe<Scalars['String']>;
   parentId?: InputMaybe<Scalars['String']>;
   state?: InputMaybe<Scalars['String']>;
-  title: Scalars['String'];
+  title?: InputMaybe<Scalars['String']>;
   website?: InputMaybe<Scalars['String']>;
 };
 
