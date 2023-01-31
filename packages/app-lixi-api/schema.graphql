@@ -8,6 +8,13 @@ type Account {
   name: String!
 }
 
+type City {
+  country: Country!
+  id: ID!
+  name: String!
+  state: State!
+}
+
 type Comment {
   commentAccount: Account!
   commentAccountId: Int
@@ -52,6 +59,14 @@ enum CommentOrderField {
   updatedAt
 }
 
+type Country {
+  capital: String!
+  city: [City!]!
+  id: ID!
+  name: String!
+  state: [State!]!
+}
+
 input CreateCommentInput {
   commentByPublicKey: String
   commentText: String!
@@ -81,15 +96,39 @@ input CreatePostInput {
   uploadCovers: [String!]
 }
 
+input CreateWorshipInput {
+  latitude: Decimal
+  location: String
+  longitude: Decimal
+  worshipedAmount: Float!
+  worshipedPersonId: String!
+}
+
+input CreateWorshipedPersonInput {
+  avatar: String
+  cityId: String
+  countryId: String
+  dateOfBirth: String
+  dateOfDeath: String
+  name: String!
+  quote: String
+  stateId: String
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
 
+"""An arbitrary-precision Decimal type"""
+scalar Decimal
+
 type Mutation {
   createComment(data: CreateCommentInput!): Comment!
   createPage(data: CreatePageInput!): Page!
   createPost(data: CreatePostInput!): Post!
+  createWorship(data: CreateWorshipInput!): WorshipedPerson!
+  createWorshipedPerson(data: CreateWorshipedPersonInput!): WorshipedPerson!
   updatePage(data: UpdatePageInput!): Page!
   updatePost(data: UpdatePostInput!): Post!
 }
@@ -247,15 +286,25 @@ type Query {
   ): PostResponse!
   allPostsByTokenId(after: String, before: String, first: Int, id: String, last: Int, orderBy: PostOrder, skip: Int): PostConnection!
   allPostsByUserId(after: String, before: String, first: Int, id: String, last: Int, orderBy: PostOrder, skip: Int): PostConnection!
+  allWorshipedPerson(after: String, before: String, first: Int, last: Int, orderBy: WorshipedPersonOrder, query: String, skip: Int): WorshipedPersonConnection!
   comment(id: String!): Comment!
   page(id: String!): Page!
   post(id: String!): Post!
+  worshipedPerson(id: String!): WorshipedPerson!
+}
+
+type State {
+  city: [City!]!
+  country: City!
+  id: ID!
+  name: String!
 }
 
 type Subscription {
   commentCreated: Comment!
   pageCreated: Page!
   postCreated: Post!
+  worshipedPersonCreated: WorshipedPerson!
 }
 
 type Token {
@@ -313,4 +362,40 @@ type Upload {
 type UploadDetail {
   id: ID!
   upload: Upload!
+}
+
+type WorshipedPerson {
+  avatar: UploadDetail
+  city: City
+  country: Country
+  dateOfBirth: DateTime
+  dateOfDeath: DateTime
+  id: ID!
+  name: String!
+  quote: String
+  state: State
+}
+
+type WorshipedPersonConnection {
+  edges: [WorshipedPersonEdge!]
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+type WorshipedPersonEdge {
+  cursor: String!
+  node: WorshipedPerson!
+}
+
+input WorshipedPersonOrder {
+  direction: OrderDirection!
+  field: WorshipedPersonOrderField!
+}
+
+"""Properties by which worshiped person connections can be ordered."""
+enum WorshipedPersonOrderField {
+  createdAt
+  id
+  totalWorshipAmount
+  updatedAt
 }

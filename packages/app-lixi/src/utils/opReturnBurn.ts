@@ -134,11 +134,12 @@ export const generateBurnTxOutput = (
 
     txBuilder.addOutput(burnOutputScript, parseInt(satoshisToBurn.toString()));
 
-    tipToAddresseses && tipToAddresseses.forEach(item => {
-      if (item.address && item.address !== changeAddress) {
-        txBuilder.addOutput(item.address, parseInt(item.amount.toString()));
-      }
-    });
+    tipToAddresseses &&
+      tipToAddresseses.forEach(item => {
+        if (item.address && item.address !== changeAddress) {
+          txBuilder.addOutput(item.address, parseInt(item.amount.toString()));
+        }
+      });
 
     // if a remainder exists, return to change address as the final output
     if (remainder.gte(new BigNumber(currency.dustSats))) {

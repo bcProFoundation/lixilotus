@@ -33,5 +33,5 @@ export const getAllStates = createSelector((state: RootState) => state.states, s
 
 export const getAllStatesByCountry = (countryId: number) =>
   createSelector([selectSelectedCountry, getAllStates], (states: State[]) =>
-    states ? states.filter(state => state?.countryId === countryId) : []
+    states ? states.filter(state => state?.country.id === countryId) : []
   );
