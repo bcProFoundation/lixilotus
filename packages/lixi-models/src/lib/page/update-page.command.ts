@@ -8,7 +8,7 @@ export class UpdatePageCommand {
   name: string;
 
   @IsNotEmpty()
-  category: string;
+  categoryId: string;
 
   title?: string;
 

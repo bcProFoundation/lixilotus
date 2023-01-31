@@ -15,7 +15,7 @@ export class UpdatePageInput {
   name: string;
 
   @Field(() => String, { nullable: true })
-  category: string;
+  categoryId: string;
 
   @Field(() => String, { nullable: true })
   description?: string;
@@ -34,10 +34,10 @@ export class UpdatePageInput {
   website: string;
 
   @Field(() => String, { nullable: true })
-  country?: string;
+  countryId?: string;
 
   @Field(() => String, { nullable: true })
-  state?: string;
+  stateId?: string;
 
   @Field(() => String, { nullable: true })
   address?: string;

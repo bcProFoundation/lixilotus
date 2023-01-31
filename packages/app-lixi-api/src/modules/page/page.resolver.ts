@@ -138,29 +138,15 @@ export class PageResolver {
       throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    const uploadAvatarDetail = data.avatar
-      ? await this.prisma.uploadDetail.findFirst({
-          where: {
-            uploadId: data.avatar
-          }
-        })
-      : undefined;
-
-    const uploadCoverDetail = data.cover
-      ? await this.prisma.uploadDetail.findFirst({
-          where: {
-            uploadId: data.cover
-          }
-        })
-      : undefined;
-
     const createdPage = await this.prisma.page.create({
       data: {
-        ..._.omit(data, ['avatar', 'cover']),
+        ..._.omit(data, ['categoryId']),
         pageAccount: { connect: { id: account.id } },
-        avatar: { connect: uploadAvatarDetail ? { id: uploadAvatarDetail.id } : undefined },
-        cover: { connect: uploadCoverDetail ? { id: uploadCoverDetail.id } : undefined },
-        parentId: undefined
+        category: {
+          connect: {
+            id: Number(data.categoryId)
+          }
+        }
       }
     });
 
@@ -197,9 +183,30 @@ export class PageResolver {
         id: data.id
       },
       data: {
-        ...data,
+        ..._.omit(data, ['categoryId', 'countryId', 'stateId', 'parentId', 'avatar', 'cover']),
         avatar: { connect: uploadAvatarDetail ? { id: uploadAvatarDetail.id } : undefined },
-        cover: { connect: uploadCoverDetail ? { id: uploadCoverDetail.id } : undefined }
+        cover: { connect: uploadCoverDetail ? { id: uploadCoverDetail.id } : undefined },
+        category: {
+          connect: data.categoryId
+            ? {
+                id: Number(data.categoryId)
+              }
+            : undefined
+        },
+        country: {
+          connect: data.countryId
+            ? {
+                id: Number(data.countryId)
+              }
+            : undefined
+        },
+        state: {
+          connect: data.stateId
+            ? {
+                id: Number(data.stateId)
+              }
+            : undefined
+        }
       }
     });
 

@@ -16,3 +16,4 @@ export * from './lib/comment';
 export * from './lib/upload';
 export * from './lib/country';
 export * from './lib/burn';
+export * from './lib/category';
