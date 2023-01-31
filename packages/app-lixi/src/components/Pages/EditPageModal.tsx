@@ -6,36 +6,19 @@ import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { getAllCountries, getAllStates } from '@store/country/selectors';
 import { setPage } from '@store/page/action';
-import { categories, UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
 import { showToast } from '@store/toast/actions';
 import { getCountries, getStates } from '../../store/country/actions';
-import { getPageCoverUpload, getPageAvatarUpload } from 'src/store/account/selectors';
 import _ from 'lodash';
-import { getPageBySelectedAccount } from '@store/page/selectors';
 import Image from 'next/image';
 import { UpdatePageInput, Page } from 'src/generated/types.generated';
 import { useUpdatePageMutation } from '@store/page/pages.generated';
 import styled from 'styled-components';
 import { closeModal } from '@store/modal/actions';
 import { CreateForm } from '@components/Lixi/CreateLixiFormModal';
-import CategorySelectDropdown from '@components/Common/CategorySelectDropdown';
+import { getAllCategories } from '@store/category/selectors';
 
 const { TextArea } = Input;
 const { Option } = Select;
-
-const TextCustom = styled.p`
-  padding-left: 20px;
-  margin-top: 4px;
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 16px;
-  display: flex;
-  align-items: center;
-  letter-spacing: 0.4px;
-  color: #4e444b;
-`;
 
 type EditPageModalProps = {
   page: Page;
@@ -53,6 +36,7 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
   useEffect(() => {
     dispatch(getCountries());
   }, []);
+  const categories = useAppSelector(getAllCategories);
   const countries = useAppSelector(getAllCountries);
   const states = useAppSelector(getAllStates);
 
@@ -107,7 +91,7 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
     setNewPageNameIsValid(true);
   };
 
-  const handleChangeCategory = (value, e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeCategory = (value: string) => {
     setNewPageCategory(value);
     if (value && !isEmpty(value)) {
       setNewPageCategoryIsValid(true);
@@ -157,16 +141,14 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
     const updatePageInput: UpdatePageInput = {
       id: page.id,
       name: _.isEmpty(newPageName) ? page.name : newPageName,
-      category: _.isEmpty(newPageCategory) ? page.category : newPageCategory,
+      categoryId: _.isEmpty(newPageCategory) ? page.categoryId : newPageCategory,
       title: _.isEmpty(newPageTitle) ? page?.title : newPageTitle,
       description: _.isEmpty(newPageDescription) ? page?.description : newPageDescription,
       website: _.isEmpty(newPageWebsite) ? page?.website : newPageWebsite,
-      country: _.isEmpty(newPageCountry) ? page?.country : newPageCountry,
-      state: _.isEmpty(newPageState) ? page?.state : newPageState,
+      countryId: _.isEmpty(newPageCountry) ? page?.countryId : newPageCountry,
+      stateId: _.isEmpty(newPageState) ? page?.stateId : newPageState,
       address: _.isEmpty(newPageAddress) ? page?.address : newPageAddress
     };
-
-    console.log('updatePageInput: ', updatePageInput);
 
     try {
       const pageUpdated = await updatePageTrigger({ input: updatePageInput }).unwrap();
@@ -228,11 +210,27 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
               label={intl.get('page.category')}
               rules={[{ required: true, message: intl.get('page.selectCategory') }]}
             >
-              <CategorySelectDropdown
-                categories={categories}
-                defaultValue={page.category}
-                handleChangeCategory={handleChangeCategory}
-              />
+              <Select
+                className="select-after edit-page"
+                showSearch
+                defaultValue={page.categoryId}
+                onChange={handleChangeCategory}
+                placeholder={intl.get('page.category')}
+                optionFilterProp="children"
+                filterOption={(input, option) =>
+                  (option!.children as unknown as string).toLocaleLowerCase().includes(input)
+                }
+                filterSort={(optionA, optionB) =>
+                  (optionA!.children as unknown as string)
+                    .toLowerCase()
+                    .localeCompare((optionB!.children as unknown as string).toLowerCase())
+                }
+                style={{ width: '99%', textAlign: 'start' }}
+              >
+                {categories.map(pageCategory => (
+                  <Option key={pageCategory.id}>{intl.get('category.' + pageCategory.name)}</Option>
+                ))}
+              </Select>
             </Form.Item>
 
             <Form.Item name="title" label={intl.get('page.title')}>
@@ -240,12 +238,7 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
             </Form.Item>
 
             <Form.Item label={intl.get('page.description')}>
-              <TextArea
-                defaultValue={page.description}
-                value={page.description}
-                onChange={e => handleNewPageDescriptionInput(e)}
-                rows={4}
-              />
+              <TextArea defaultValue={page.description} onChange={e => handleNewPageDescriptionInput(e)} rows={4} />
             </Form.Item>
           </CreateForm>
 
@@ -261,7 +254,8 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
                   <Select
                     className="select-after edit-page"
                     showSearch
-                    defaultValue={page.country}
+                    defaultValue={String(page.countryId)}
+                    value={String(page.countryId)}
                     onChange={handleChangeCountry}
                     placeholder={intl.get('page.country')}
                     optionFilterProp="children"
@@ -284,7 +278,8 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
                   <Select
                     className="select-after edit-page"
                     showSearch
-                    defaultValue={page.state}
+                    defaultValue={String(page.stateId)}
+                    value={String(page.stateId)}
                     onChange={handleChangeState}
                     placeholder={intl.get('page.state')}
                     optionFilterProp="children"

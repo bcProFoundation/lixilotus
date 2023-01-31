@@ -5,7 +5,6 @@ import intl from 'react-intl-universal';
 import { getSelectedAccount } from 'src/store/account/selectors';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import { setPage } from '@store/page/action';
-import { categories } from '@bcpros/lixi-models/constants';
 import { showToast } from '@store/toast/actions';
 import { getCountries, getStates } from '../../store/country/actions';
 import { CreatePageInput } from 'src/generated/types.generated';
@@ -13,7 +12,8 @@ import { useCreatePageMutation } from '@store/page/pages.generated';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { closeModal } from '@store/modal/actions';
-import CategorySelectDropdown from '@components/Common/CategorySelectDropdown';
+import { getAllCategories } from '@store/category/selectors';
+import { getCategories } from '@store/category/actions';
 
 const { TextArea } = Input;
 const TextCustom = styled.p`
@@ -46,15 +46,16 @@ export const CreatePageModal: React.FC<CreatePageModalProps> = ({ accountId, dis
   ] = useCreatePageMutation();
 
   useEffect(() => {
-    dispatch(getCountries());
+    dispatch(getCategories());
   }, []);
+  const categories = useAppSelector(getAllCategories);
 
   // New page name
   const [newPageName, setNewPageName] = useState('');
   const [newPageNameIsValid, setNewPageNameIsValid] = useState(true);
 
   // New page category
-  const [newPageCategory, setNewPageCategory] = useState<string>(categories[0].id);
+  const [newPageCategory, setNewPageCategory] = useState('');
   const [newPageCategoryIsValid, setNewPageCategoryIsValid] = useState(true);
 
   // New page description
@@ -72,7 +73,7 @@ export const CreatePageModal: React.FC<CreatePageModalProps> = ({ accountId, dis
     setNewPageNameIsValid(true);
   };
 
-  const handleChangeCategory = (value, e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeCategory = (value: string) => {
     setNewPageCategory(value);
     if (value && !isEmpty(value)) {
       setNewPageCategoryIsValid(true);
@@ -101,14 +102,8 @@ export const CreatePageModal: React.FC<CreatePageModalProps> = ({ accountId, dis
 
     const createPageInput: CreatePageInput = {
       name: newPageName,
-      category: newPageCategory,
-      description: newPageDescription,
-      parentId: null,
-      address: '',
-      country: '',
-      state: '',
-      title: '',
-      website: ''
+      categoryId: newPageCategory,
+      description: newPageDescription
     };
 
     try {
@@ -174,11 +169,26 @@ export const CreatePageModal: React.FC<CreatePageModalProps> = ({ accountId, dis
               label={intl.get('page.category')}
               rules={[{ required: true, message: intl.get('page.selectCategory') }]}
             >
-              <CategorySelectDropdown
-                categories={categories}
-                defaultValue={categories[0].id}
-                handleChangeCategory={handleChangeCategory}
-              />
+              <Select
+                className="select-after edit-page"
+                showSearch
+                onChange={handleChangeCategory}
+                placeholder={intl.get('page.category')}
+                optionFilterProp="children"
+                filterOption={(input, option) =>
+                  (option!.children as unknown as string).toLocaleLowerCase().includes(input)
+                }
+                filterSort={(optionA, optionB) =>
+                  (optionA!.children as unknown as string)
+                    .toLowerCase()
+                    .localeCompare((optionB!.children as unknown as string).toLowerCase())
+                }
+                style={{ width: '99%', textAlign: 'start' }}
+              >
+                {categories.map(pageCategory => (
+                  <Option key={pageCategory.id}>{intl.get('category.' + pageCategory.name)}</Option>
+                ))}
+              </Select>
               <TextCustom>{intl.get('text.createPageCategory')}</TextCustom>
             </Form.Item>
 
