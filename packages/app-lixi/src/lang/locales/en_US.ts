@@ -447,7 +447,6 @@ export default {
   'page.unableCreatePage': 'Unable to create page.',
   'page.unableUpdatePage': 'Unable to update the page.',
   'page.selectAccountFirst': 'Please Select an account first before creating page',
-  'category.foodAndDrink': 'Food & Drink',
 
   /* 14.Country */
   'country.unablegetCountries': 'Unable to get countries',
@@ -505,5 +504,41 @@ export default {
   /* 17. Comment */
   'comment.unableCreateComment': 'Unable to create comment',
   'comment.unableToBurn': 'Unable to burn for the comment',
-  'comment.writeComment': 'Write a comment...'
+  'comment.writeComment': 'Write a comment...',
+
+  /* 18. Category */
+  'category.art': 'Art',
+  'category.crafts': 'Crafts',
+  'category.dance': 'Dance',
+  'category.film': 'Film',
+  'category.foodAndDrinks': 'Food And Drinks',
+  'category.games': 'Games',
+  'category.gardening': 'Gardening',
+  'category.houseDecor': 'House Decor',
+  'category.literature': 'Literature',
+  'category.music': 'Music',
+  'category.networking': 'Networking',
+  'category.party': 'Party',
+  'category.religion': 'Religion',
+  'category.shopping': 'Shopping',
+  'category.sports': 'Sports',
+  'category.theater': 'Theater',
+  'category.wellness': 'Wellness',
+  'category.carsAndVehicles': 'Cars And Vehicles',
+  'category.comedy': 'Comedy',
+  'category.economicsAndTrade': 'Economics And Trade',
+  'category.education': 'Education',
+  'category.entertainment': 'Entertainment',
+  'category.moviesAndAnimation': 'Movies And Animation',
+  'category.historyAndFacts': 'History And Facts',
+  'category.liveStyle': 'Live Style',
+  'category.natural': 'Natural',
+  'category.newsAndPolitics': 'News And Politics',
+  'category.peopleAndNations': 'People And Nations',
+  'category.petsAndAnimals': 'Pets And Animals',
+  'category.placesAndRegions': 'Places And Regions',
+  'category.scienceAndTechnology': 'Science And Technology',
+  'category.healthAndFitness': 'Health And Fitness',
+  'category.travelAndEvents': 'Travel And Events',
+  'category.other': 'Other'
 };
