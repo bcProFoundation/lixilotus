@@ -142,7 +142,7 @@ export const CreatePageModal: React.FC<CreatePageModalProps> = ({ accountId, dis
       {selectedAccount && selectedAccount.address ? (
         <Modal
           width={400}
-          className="custom-create-lixi-modal"
+          className="custom-create-page-modal"
           title={intl.get('page.createNewPage')}
           visible={true}
           onCancel={handleOnCancel}

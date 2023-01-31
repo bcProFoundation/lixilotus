@@ -182,7 +182,7 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
     <>
       <Modal
         width={1192}
-        className="custom-create-lixi-modal"
+        className="custom-edit-page-modal"
         title={intl.get('page.updatePage')}
         visible={true}
         onCancel={handleOnCancel}
@@ -202,7 +202,7 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
               label={intl.get('page.name')}
               rules={[{ required: true, message: intl.get('page.inputName') }]}
             >
-              <Input defaultValue={page.name} value={page.name} onChange={e => handleNewPageNameInput(e)} />
+              <Input defaultValue={page.name} onChange={e => handleNewPageNameInput(e)} />
             </Form.Item>
 
             <Form.Item
@@ -234,7 +234,7 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
             </Form.Item>
 
             <Form.Item name="title" label={intl.get('page.title')}>
-              <Input defaultValue={page.title} value={page.title} onChange={e => handleNewPageTitleInput(e)} />
+              <Input defaultValue={page.title} onChange={e => handleNewPageTitleInput(e)} />
             </Form.Item>
 
             <Form.Item label={intl.get('page.description')}>
@@ -255,7 +255,6 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
                     className="select-after edit-page"
                     showSearch
                     defaultValue={String(page.countryId)}
-                    value={String(page.countryId)}
                     onChange={handleChangeCountry}
                     placeholder={intl.get('page.country')}
                     optionFilterProp="children"
@@ -279,7 +278,6 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
                     className="select-after edit-page"
                     showSearch
                     defaultValue={String(page.stateId)}
-                    value={String(page.stateId)}
                     onChange={handleChangeState}
                     placeholder={intl.get('page.state')}
                     optionFilterProp="children"

@@ -394,6 +394,10 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
     dispatch(openModal('EditPageModal', { page: pageDetailData }));
   };
 
+  const uploadModal = (isAvatar: boolean) => {
+    dispatch(openModal('UploadAvatarCoverModal', { page: pageDetailData, isAvatar: isAvatar }));
+  };
+
   return (
     <>
       <StyledContainerProfileDetail>
@@ -407,11 +411,11 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
                 <img className="avatar-img" src={pageDetailData.avatar || '/images/default-avatar.jpg'} alt="" />
               </picture>
               {/* TODO: implement in the future */}
-              {/* {selectedAccountId == pageDetailData?.pageAccountId && (
-                <div className="btn-upload-avatar" onClick={navigateEditPage}>
+              {selectedAccountId == pageDetailData?.pageAccountId && (
+                <div className="btn-upload-avatar" onClick={() => uploadModal(true)}>
                   <CameraOutlined />
                 </div>
-              )} */}
+              )}
             </div>
             <div className="title-profile">
               <h2>{pageDetailData.name}</h2>
@@ -430,7 +434,7 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
                   <EditOutlined />
                   {intl.get('page.editPage')}
                 </Button>
-                <Button type="primary" className="outline-btn" onClick={navigateEditPage}>
+                <Button type="primary" className="outline-btn" onClick={() => uploadModal(false)}>
                   <CameraOutlined />
                   {intl.get('page.editCoverPhoto')}
                 </Button>

@@ -10,6 +10,7 @@ import { QRCodeModalPopup } from './QRCodeModalPopup';
 import { EditPostModalPopup } from '../Posts/EditPostModalPopup';
 import { CreatePageModal } from '@components/Pages/CreatePageModal';
 import { EditPageModal } from '@components/Pages/EditPageModal';
+import { UploadAvatarCoverModal } from './uploadImageModal';
 
 const modalComponentLookupTable = {
   CreateLixiConfirmationModal,
@@ -20,7 +21,8 @@ const modalComponentLookupTable = {
   QRCodeModalPopup,
   EditPostModalPopup,
   CreatePageModal,
-  EditPageModal
+  EditPageModal,
+  UploadAvatarCoverModal
 };
 
 const ModalManager = () => {
