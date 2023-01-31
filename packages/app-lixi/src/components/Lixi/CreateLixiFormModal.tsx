@@ -78,7 +78,7 @@ const Title = styled.h1`
   flex-grow: 0;
 `;
 
-const CreateForm = styled(Form)`
+export const CreateForm = styled(Form)`
   &.form-parent {
     display: block;
 
@@ -92,6 +92,9 @@ const CreateForm = styled(Form)`
     padding: 0px;
 
     @media (min-width: 768px) {
+      &.edit-page {
+        width: 50%;
+      }
       width: 33%;
       padding: 0px 10px;
     }

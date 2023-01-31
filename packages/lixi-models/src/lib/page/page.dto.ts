@@ -3,6 +3,7 @@ export class PageDto {
   pageAccountId: number;
   name: string;
   title: string;
+  categoryId: number;
   walletAddress: string;
   description: string;
   avatar: string;
@@ -10,8 +11,8 @@ export class PageDto {
   parentId?: Nullable<string>;
   address?: string;
   website: string;
-  country?: string;
-  state?: string;
+  countryId?: number;
+  stateId?: number;
   createdAt: Date;
   updatedAt: Date;
 

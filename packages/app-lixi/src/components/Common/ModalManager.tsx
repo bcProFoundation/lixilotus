@@ -8,6 +8,9 @@ import { CreateLixiConfirmationModal } from '../Lixi/CreateLixiConfirmationModal
 import { CreateLixiFormModal } from '../Lixi/CreateLixiFormModal';
 import { QRCodeModalPopup } from './QRCodeModalPopup';
 import { EditPostModalPopup } from '../Posts/EditPostModalPopup';
+import { CreatePageModal } from '@components/Pages/CreatePageModal';
+import { EditPageModal } from '@components/Pages/EditPageModal';
+import { UploadAvatarCoverModal } from './uploadImageModal';
 
 const modalComponentLookupTable = {
   CreateLixiConfirmationModal,
@@ -16,7 +19,10 @@ const modalComponentLookupTable = {
   RenameLixiModal,
   CreateLixiFormModal,
   QRCodeModalPopup,
-  EditPostModalPopup
+  EditPostModalPopup,
+  CreatePageModal,
+  EditPageModal,
+  UploadAvatarCoverModal
 };
 
 const ModalManager = () => {
