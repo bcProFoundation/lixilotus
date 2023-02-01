@@ -127,7 +127,7 @@ export type Page = {
   __typename?: 'Page';
   address?: Maybe<Scalars['String']>;
   avatar?: Maybe<Scalars['String']>;
-  categoryId: Scalars['String'];
+  categoryId?: Maybe<Scalars['String']>;
   countryId?: Maybe<Scalars['String']>;
   cover?: Maybe<Scalars['String']>;
   /** Identifies the date and time when the object was created. */

@@ -15,7 +15,7 @@ export class CategoryController {
       const result = categories as PageCategory[];
       return result;
     } catch (err: unknown) {
-      const unableGetEnvelope = await i18n.t('Category.messages.unableToGetCategories');
+      const unableGetEnvelope = await i18n.t('category.messages.unableToGetCategories');
       throw new HttpException(unableGetEnvelope, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }

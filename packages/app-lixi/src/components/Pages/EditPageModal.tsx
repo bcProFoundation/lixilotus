@@ -11,7 +11,7 @@ import { getCountries, getStates } from '../../store/country/actions';
 import _ from 'lodash';
 import Image from 'next/image';
 import { UpdatePageInput, Page } from 'src/generated/types.generated';
-import { useUpdatePageMutation } from '@store/page/pages.generated';
+import { api as pageApi, useUpdatePageMutation } from '@store/page/pages.generated';
 import styled from 'styled-components';
 import { closeModal } from '@store/modal/actions';
 import { CreateForm } from '@components/Lixi/CreateLixiFormModal';
@@ -254,7 +254,7 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
                   <Select
                     className="select-after edit-page"
                     showSearch
-                    defaultValue={String(page.countryId)}
+                    defaultValue={page.countryId}
                     onChange={handleChangeCountry}
                     placeholder={intl.get('page.country')}
                     optionFilterProp="children"
@@ -277,7 +277,7 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
                   <Select
                     className="select-after edit-page"
                     showSearch
-                    defaultValue={String(page.stateId)}
+                    defaultValue={page.stateId}
                     onChange={handleChangeState}
                     placeholder={intl.get('page.state')}
                     optionFilterProp="children"
