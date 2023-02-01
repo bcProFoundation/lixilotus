@@ -160,17 +160,6 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
         })
       );
       dispatch(setPage({ ...pageUpdated.updatePage }));
-      // dispatch(
-      //   pageApi.util.updateQueryData('Page', params, draft => {
-      //     draft.allPosts.edges.unshift({
-      //       cursor: result.createPost.id,
-      //       node: {
-      //         ...result.createPost
-      //       }
-      //     });
-      //     draft.allPosts.totalCount = draft.allPosts.totalCount + 1;
-      //   })
-      // );
       dispatch(closeModal());
     } catch (error) {
       const message = errorOnUpdate?.message ?? intl.get('page.unableUpdatePage');
