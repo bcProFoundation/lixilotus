@@ -16,7 +16,7 @@ export class Page {
   @Field(() => String)
   name: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   categoryId: string;
 
   @Field(() => String, { nullable: true })

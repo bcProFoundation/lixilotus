@@ -5,7 +5,7 @@ export class CreatePageCommand {
   name: string;
 
   @IsNotEmpty()
-  categoryId: string;
+  categoryId?: string;
 
   description: string;
   parentId?: string;
