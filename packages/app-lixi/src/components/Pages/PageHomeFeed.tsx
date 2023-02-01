@@ -245,9 +245,9 @@ const PageHome = () => {
   }, [data]);
 
   const getCategoryName = (item: number) => {
-    const categoryLang = categories.find(category => (category.id == item)).name
-    return intl.get('category.' + categoryLang)
-  }
+    const categoryLang = categories.find(category => category.id == item).name;
+    return intl.get('category.' + categoryLang);
+  };
 
   const mapPageItem = pageItem => {
     let newItemObj: CardPageItem = {

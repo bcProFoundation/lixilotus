@@ -7,7 +7,7 @@ export class CreatePageInput {
   @IsNotEmpty()
   name: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @IsNotEmpty()
   categoryId: string;
 

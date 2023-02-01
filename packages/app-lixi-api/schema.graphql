@@ -60,7 +60,7 @@ input CreateCommentInput {
 }
 
 input CreatePageInput {
-  categoryId: String!
+  categoryId: String
   description: String!
   name: String!
 }
@@ -98,7 +98,7 @@ enum OrderDirection {
 type Page {
   address: String
   avatar: String
-  categoryId: String!
+  categoryId: String
   countryId: String
   cover: String
 

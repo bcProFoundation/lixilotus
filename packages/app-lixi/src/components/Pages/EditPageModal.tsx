@@ -254,7 +254,7 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
                   <Select
                     className="select-after edit-page"
                     showSearch
-                    defaultValue={String(page.countryId)}
+                    defaultValue={page.countryId}
                     onChange={handleChangeCountry}
                     placeholder={intl.get('page.country')}
                     optionFilterProp="children"
@@ -277,7 +277,7 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
                   <Select
                     className="select-after edit-page"
                     showSearch
-                    defaultValue={String(page.stateId)}
+                    defaultValue={page.stateId}
                     onChange={handleChangeState}
                     placeholder={intl.get('page.state')}
                     optionFilterProp="children"
