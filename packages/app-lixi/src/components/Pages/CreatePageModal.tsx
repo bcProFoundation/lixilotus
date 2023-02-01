@@ -16,6 +16,8 @@ import { getAllCategories } from '@store/category/selectors';
 import { getCategories } from '@store/category/actions';
 
 const { TextArea } = Input;
+const { Option } = Select;
+
 const TextCustom = styled.p`
   padding-left: 20px;
   margin-top: 4px;
