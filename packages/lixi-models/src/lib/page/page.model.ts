@@ -17,6 +17,9 @@ export class Page {
   name: string;
 
   @Field(() => String)
+  categoryId: string;
+
+  @Field(() => String, { nullable: true })
   title: string;
 
   @Field(() => String)
@@ -61,8 +64,8 @@ export class Page {
   updatedAt: Date;
 
   @Field(() => String, { nullable: true })
-  country?: string;
+  countryId?: string;
 
   @Field(() => String, { nullable: true })
-  state?: string;
+  stateId?: string;
 }

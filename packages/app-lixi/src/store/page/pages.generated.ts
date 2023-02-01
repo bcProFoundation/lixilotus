@@ -27,11 +27,14 @@ export type PageQuery = {
     id: string;
     pageAccountId: number;
     name: string;
-    title: string;
+    title?: string | null;
+    categoryId: string;
     description: string;
     avatar?: string | null;
     cover?: string | null;
     parentId?: string | null;
+    countryId?: string | null;
+    stateId?: string | null;
     address?: string | null;
     website?: string | null;
     lotusBurnUp: number;
@@ -65,11 +68,14 @@ export type PagesQuery = {
         id: string;
         pageAccountId: number;
         name: string;
-        title: string;
+        title?: string | null;
+        categoryId: string;
         description: string;
         avatar?: string | null;
         cover?: string | null;
         parentId?: string | null;
+        countryId?: string | null;
+        stateId?: string | null;
         address?: string | null;
         website?: string | null;
         lotusBurnUp: number;
@@ -94,11 +100,14 @@ export type PageFieldsFragment = {
   id: string;
   pageAccountId: number;
   name: string;
-  title: string;
+  title?: string | null;
+  categoryId: string;
   description: string;
   avatar?: string | null;
   cover?: string | null;
   parentId?: string | null;
+  countryId?: string | null;
+  stateId?: string | null;
   address?: string | null;
   website?: string | null;
   lotusBurnUp: number;
@@ -119,11 +128,14 @@ export type CreatePageMutation = {
     id: string;
     pageAccountId: number;
     name: string;
-    title: string;
+    title?: string | null;
+    categoryId: string;
     description: string;
     avatar?: string | null;
     cover?: string | null;
     parentId?: string | null;
+    countryId?: string | null;
+    stateId?: string | null;
     address?: string | null;
     website?: string | null;
     lotusBurnUp: number;
@@ -145,11 +157,14 @@ export type UpdatePageMutation = {
     id: string;
     pageAccountId: number;
     name: string;
-    title: string;
+    title?: string | null;
+    categoryId: string;
     description: string;
     avatar?: string | null;
     cover?: string | null;
     parentId?: string | null;
+    countryId?: string | null;
+    stateId?: string | null;
     address?: string | null;
     website?: string | null;
     lotusBurnUp: number;
@@ -166,10 +181,13 @@ export const PageFieldsFragmentDoc = `
   pageAccountId
   name
   title
+  categoryId
   description
   avatar
   cover
   parentId
+  countryId
+  stateId
   address
   website
   lotusBurnUp

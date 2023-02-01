@@ -15,6 +15,7 @@ import walletSaga from './wallet/saga';
 import postSaga from './post/saga';
 import tokenSaga from './tokens/saga';
 import burnSaga from './burn/saga';
+import categorySaga from './category/saga';
 
 export default function* rootSaga() {
   yield all([
@@ -32,6 +33,7 @@ export default function* rootSaga() {
     postSaga(),
     countrySaga(),
     tokenSaga(),
-    burnSaga()
+    burnSaga(),
+    categorySaga()
   ]);
 }
