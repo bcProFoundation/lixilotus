@@ -161,6 +161,7 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
       );
       dispatch(setPage({ ...pageUpdated.updatePage }));
       dispatch(closeModal());
+      location.reload();
     } catch (error) {
       const message = errorOnUpdate?.message ?? intl.get('page.unableUpdatePage');
 
@@ -305,9 +306,12 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
           </CreateForm>
         </CreateForm>
 
-        <Button type="primary" htmlType="submit" onClick={handleOnEditPage}>
-          {intl.get('page.editPage')}
-        </Button>
+        <div style={{textAlign: 'end', marginRight: '10px'}}>
+          <Button type="primary" htmlType="submit" onClick={handleOnEditPage}>
+            {intl.get('page.editPage')}
+          </Button>
+        </div>
+
       </Modal>
     </>
   );
