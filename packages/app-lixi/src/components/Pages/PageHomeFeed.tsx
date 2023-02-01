@@ -10,6 +10,7 @@ import { push } from 'connected-next-router';
 import { Virtuoso } from 'react-virtuoso';
 import { openModal } from '@store/modal/actions';
 import intl from 'react-intl-universal';
+import { getAllCategories } from '@store/category/selectors';
 
 const StyledPageFeed = styled.div`
   padding-bottom: 4rem;
@@ -226,6 +227,7 @@ const PageHome = () => {
   const [selectedPage, setSelectedPage] = useState<any>();
   const [listsPage, setListsPage] = useState<any>([]);
   const dispatch = useAppDispatch();
+  const categories = useAppSelector(getAllCategories);
   const refPagesListing = useRef<HTMLDivElement | null>(null);
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePagesQuery(
@@ -242,6 +244,11 @@ const PageHome = () => {
     setSelectedPage(page || null);
   }, [data]);
 
+  const getCategoryName = (item: number) => {
+    const categoryLang = categories.find(category => (category.id == item)).name
+    return intl.get('category.' + categoryLang)
+  }
+
   const mapPageItem = pageItem => {
     let newItemObj: CardPageItem = {
       id: pageItem?.id,
@@ -249,7 +256,7 @@ const PageHome = () => {
       avatar: pageItem?.avatar,
       cover: pageItem?.cover,
       subText: Math.floor(Math.random() * 100).toString(),
-      category: pageItem.category ? pageItem.category : 'Food & Drink'
+      category: pageItem.categoryId ? getCategoryName(pageItem.categoryId) : 'Food & Drink'
     };
     return newItemObj;
   };
