@@ -33,8 +33,6 @@ import { postReducer } from './post/reducer';
 import { PostState } from './post/state';
 import { walletStateReducer } from './wallet/reducer';
 import { tokenReducer, TokenState } from './tokens';
-import { CategoriesState } from './category/state';
-import { categoryReducer } from './category/reducer';
 
 const persistConfig = {
   key: 'root',
@@ -90,11 +88,6 @@ const statePersistConfig: PersistConfig<StatesState> = {
   storage: storage('lixi-indexeddb')
 };
 
-const categoryPersistConfig: PersistConfig<CategoriesState> = {
-  key: 'categories',
-  storage: storage('lixi-indexeddb')
-};
-
 export const serverReducer = combineReducers({
   router: routerReducer,
   wallet: walletStateReducer,
@@ -113,7 +106,6 @@ export const serverReducer = combineReducers({
   tokens: tokenReducer,
   countries: countryReducer,
   states: stateReducer,
-  categories: categoryReducer,
   burn: burnReducer,
   // This is use for useReduxEffect
   // Should be always at the end
@@ -138,7 +130,6 @@ export const appReducer = combineReducers({
   error: errorReducer,
   countries: persistReducer(countryPersistConfig, countryReducer),
   states: persistReducer(statePersistConfig, stateReducer),
-  categories: persistReducer(categoryPersistConfig, categoryReducer),
   burn: burnReducer,
   [pagesApi.reducerPath]: pagesApi.reducer,
   [postApi.reducerPath]: postApi.reducer,

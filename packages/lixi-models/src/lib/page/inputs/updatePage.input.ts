@@ -7,15 +7,13 @@ export class UpdatePageInput {
   @Field(() => ID)
   id: string;
 
-  @Field(() => String, { nullable: true })
+  @IsNotEmpty()
+  @Field(() => String)
   title: string;
 
   @IsOptional()
   @Field(() => String, { nullable: true })
   name: string;
-
-  @Field(() => String, { nullable: true })
-  categoryId: string;
 
   @Field(() => String, { nullable: true })
   description?: string;
@@ -34,10 +32,10 @@ export class UpdatePageInput {
   website: string;
 
   @Field(() => String, { nullable: true })
-  countryId?: string;
+  country?: string;
 
   @Field(() => String, { nullable: true })
-  stateId?: string;
+  state?: string;
 
   @Field(() => String, { nullable: true })
   address?: string;

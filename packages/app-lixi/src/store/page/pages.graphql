@@ -35,13 +35,10 @@ fragment PageFields on Page {
   pageAccountId
   name
   title
-  categoryId
   description
   avatar
   cover
   parentId
-  countryId
-  stateId
   address
   website
   lotusBurnUp

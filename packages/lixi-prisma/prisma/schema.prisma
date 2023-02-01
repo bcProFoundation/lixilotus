@@ -95,24 +95,12 @@ model Token {
   @@map("token")
 }
 
-model Category {
-  id        Int      @id @default(autoincrement())
-  name      String   @default("") @map("name")
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
-  pages     Page[]
-
-  @@map("category")
-}
-
 model Page {
   id             String        @id @default(cuid())
   pageAccount    Account       @relation(fields: [pageAccountId], references: [id])
   pageAccountId  Int           @unique @map("page_account_id")
   name           String        @default("") @map("name") @db.VarChar(255)
   title          String        @default("") @map("title") @db.VarChar(255)
-  category       Category      @relation(fields: [categoryId], references: [id])
-  categoryId     Int           @map("category_id")
   description    String        @default("") @map("description") @db.VarChar(1000)
   children       Page[]        @relation("subPages")
   parent         Page?         @relation("subPages", fields: [parentId], references: [id])
@@ -122,10 +110,8 @@ model Page {
   website        String        @default("") @map("website")
   avatar         UploadDetail? @relation("PageAvatar")
   cover          UploadDetail? @relation("PageCover")
-  country        Country?      @relation(fields: [countryId], references: [id])
-  countryId      Int?          @map("country_id")
-  state          State?        @relation(fields: [stateId], references: [id])
-  stateId        Int?          @map("state_id")
+  country        String        @default("") @map("country")
+  state          String        @default("") @map("state")
   address        String        @default("") @map("address")
   createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz
   updatedAt      DateTime      @default(now()) @map("updated_at") @db.Timestamptz
@@ -441,7 +427,6 @@ model Country {
   state           State[]
   city            City[]
   worshipedPerson WorshipedPerson[]
-  pages           Page[]
 
   @@map("country")
 }
@@ -463,7 +448,6 @@ model State {
   country         Country           @relation(fields: [countryId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "country_region_final")
   city            City[]
   worshipedPerson WorshipedPerson[]
-  pages           Page[]
 
   @@index([countryId], map: "idx_158799_country_region")
   @@map("state")

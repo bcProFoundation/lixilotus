@@ -25,14 +25,6 @@ export default {
   'label.comment': 'Comments',
   'label.created': 'Created',
   'label.action': 'Action',
-  'text.createPage':
-    'A Page is a space where people can publicly connect with your business, personal brand or organisation. You can do things such as showcase products and services, collect donations.',
-  'text.createPageName':
-    'Use the name of your business, brand or organisation, or a name that explains what the Page is about.',
-  'text.createPageCategory':
-    'Choose a category that describes what type of business, organisation or topic the Page represents.',
-  'text.createPageDescription':
-    'Write about what your business does, the services that you provide or the purpose of the Page.',
 
   /* 01.General */
   'general.tokens': 'Tokens',
@@ -414,15 +406,9 @@ export default {
   /* 13.Page */
   'page.createNewPage': 'Create new page',
   'page.createPage': 'Create page',
-  'page.yourPage': 'Your page',
-  'page.discover': 'Discover',
-  'page.createYourPage': 'Create your page',
-  'page.editPage': 'Edit profile',
-  'page.editCoverPhoto': 'Edit cover photo',
-  'page.updatePage': 'Update page’s information',
+  'page.editPage': 'Edit page',
   'page.name': 'Name',
   'page.inputName': 'Please input name',
-  'page.category': 'Category',
   'page.title': 'Title',
   'page.titleShared': 'Please input title',
   'page.inputTitle': 'Please input title',
@@ -504,41 +490,5 @@ export default {
   /* 17. Comment */
   'comment.unableCreateComment': 'Unable to create comment',
   'comment.unableToBurn': 'Unable to burn for the comment',
-  'comment.writeComment': 'Write a comment...',
-
-  /* 18. Category */
-  'category.art': 'Art',
-  'category.crafts': 'Crafts',
-  'category.dance': 'Dance',
-  'category.film': 'Film',
-  'category.foodAndDrinks': 'Food And Drinks',
-  'category.games': 'Games',
-  'category.gardening': 'Gardening',
-  'category.houseDecor': 'House Decor',
-  'category.literature': 'Literature',
-  'category.music': 'Music',
-  'category.networking': 'Networking',
-  'category.party': 'Party',
-  'category.religion': 'Religion',
-  'category.shopping': 'Shopping',
-  'category.sports': 'Sports',
-  'category.theater': 'Theater',
-  'category.wellness': 'Wellness',
-  'category.carsAndVehicles': 'Cars And Vehicles',
-  'category.comedy': 'Comedy',
-  'category.economicsAndTrade': 'Economics And Trade',
-  'category.education': 'Education',
-  'category.entertainment': 'Entertainment',
-  'category.moviesAndAnimation': 'Movies And Animation',
-  'category.historyAndFacts': 'History And Facts',
-  'category.liveStyle': 'Live Style',
-  'category.natural': 'Natural',
-  'category.newsAndPolitics': 'News And Politics',
-  'category.peopleAndNations': 'People And Nations',
-  'category.petsAndAnimals': 'Pets And Animals',
-  'category.placesAndRegions': 'Places And Regions',
-  'category.scienceAndTechnology': 'Science And Technology',
-  'category.healthAndFitness': 'Health And Fitness',
-  'category.travelAndEvents': 'Travel And Events',
-  'category.other': 'Other'
+  'comment.writeComment': 'Write a comment...'
 };

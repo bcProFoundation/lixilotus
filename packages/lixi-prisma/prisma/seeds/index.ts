@@ -5,7 +5,6 @@ import { notificationTypeTranslations } from './notificationTypeTranslations';
 import { PrismaClient } from '@prisma/client';
 import { emailTemplates } from './emailTemplates';
 import { emailTemplateTranslations } from './emailTemplateTranslations';
-import { categories } from './categories';
 
 const prisma = new PrismaClient();
 
@@ -53,16 +52,6 @@ async function main() {
   const resultEmailTemplateTranslation = await prisma.$transaction(
     emailTemplateTranslations.map(translation => {
       return prisma.emailTemplateTranslation.upsert({
-        where: { id: translation.id },
-        update: {},
-        create: { ...translation }
-      });
-    })
-  );
-
-  const resultCategory = await prisma.$transaction(
-    categories.map(translation => {
-      return prisma.category.upsert({
         where: { id: translation.id },
         update: {},
         create: { ...translation }

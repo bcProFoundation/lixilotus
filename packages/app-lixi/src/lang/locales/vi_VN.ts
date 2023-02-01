@@ -25,13 +25,6 @@ export default {
   'label.comment': 'Bình luận',
   'label.created': 'Khởi tạo',
   'label.action': 'Hành động',
-  'text.createPage':
-    'Trang là không gian nơi mọi người có thể kết nối công khai với doanh nghiệp, thương hiệu cá nhân hoặc tổ chức của bạn. Bạn có thể làm những việc như giới thiệu sản phẩm và dịch vụ, quyên góp.',
-  'text.createPageName':
-    'Sử dụng tên doanh nghiệp, thương hiệu hoặc tổ chức của bạn hoặc tên giải thích nội dung của Trang.',
-  'text.createPageCategory': 'Chọn một danh mục mô tả loại hình kinh doanh, tổ chức hoặc chủ đề mà Trang đại diện.',
-  'text.createPageDescription':
-    'Viết về hoạt động kinh doanh của bạn, các dịch vụ bạn cung cấp hoặc mục đích của Trang.',
 
   /* 01.General */
   'general.tokens': 'Tokens',
@@ -415,15 +408,9 @@ export default {
   /* 13.Page */
   'page.createNewPage': 'Tạo trang mới',
   'page.createPage': 'Tạo trang',
-  'page.yourPage': 'Trang của bạn',
-  'page.discover': 'Khám phá',
-  'page.createYourPage': 'Tạo trang của bạn',
-  'page.editPage': 'Cập nhật trang',
-  'page.editCoverPhoto': 'Cập nhật ảnh bìa',
-  'page.updatePage': 'Cập nhật thông tin của trang',
+  'page.editPage': 'Sửa trang',
   'page.name': 'Tên',
   'page.inputName': 'Vui lòng nhập tên',
-  'page.category': 'Danh mục',
   'page.title': 'Tiêu đề',
   'page.titleShared': 'Please input title',
   'page.inputTitle': 'Vui lòng nhập tiêu đề',
@@ -448,7 +435,6 @@ export default {
   'page.unableCreatePage': 'Không thể tạo trang.',
   'page.unableUpdatePage': 'Không thể sửa trang.',
   'page.selectAccountFirst': 'Hãy chọn một tài khoản trước khi tạo trang',
-  'category.foodAndDrink': 'Đồ ăn và thức uống',
 
   /* 14.Country */
   'country.unablegetCountries': 'Không thể tải quốc gia',
@@ -503,41 +489,5 @@ export default {
   /* 17. Comment */
   'comment.unableCreateComment': 'Không thể tạo bình luận',
   'comment.unableToBurn': 'Không thể đốt cho bình luận',
-  'comment.writeComment': 'Viết bình luận...',
-
-  /* 18. Category */
-  'category.art': 'Mỹ thuật',
-  'category.crafts': 'Đồ thủ công',
-  'category.dance': 'Nhảy',
-  'category.film': 'Phim ảnh',
-  'category.foodAndDrinks': 'Đồ ăn thức uống',
-  'category.games': 'Trò chơi',
-  'category.gardening': 'làm vườn',
-  'category.houseDecor': 'trang trí nhà cửa',
-  'category.literature': 'Văn học',
-  'category.music': 'Âm nhạc',
-  'category.networking': 'mạng',
-  'category.party': 'Bữa tiệc',
-  'category.religion': 'Tôn giáo',
-  'category.shopping': 'Mua sắm',
-  'category.sports': 'Các môn thể thao',
-  'category.theater': 'Nhà hát',
-  'category.wellness': 'sức khỏe',
-  'category.carsAndVehicles': 'Ô tô và Xe cộ',
-  'category.comedy': 'Hài kịch',
-  'category.economicsAndTrade': 'Kinh tế và Thương mại',
-  'category.education': 'Giáo dục',
-  'category.entertainment': 'Sự giải trí',
-  'category.moviesAndAnimation': 'Phim và Hoạt hình',
-  'category.historyAndFacts': 'Lịch sử và sự kiện',
-  'category.liveStyle': 'Cách sống',
-  'category.natural': 'Thiên nhiên',
-  'category.newsAndPolitics': 'Thời sự và Chính trị',
-  'category.peopleAndNations': 'Con người và Quốc gia',
-  'category.petsAndAnimals': 'Vật nuôi',
-  'category.placesAndRegions': 'Địa điểm và Khu vực',
-  'category.scienceAndTechnology': 'Khoa học và Công nghệ',
-  'category.healthAndFitness': 'Sức khỏe và Thể hình',
-  'category.travelAndEvents': 'Du lịch và Sự kiện',
-  'category.other': 'Khác'
+  'comment.writeComment': 'Viết bình luận...'
 };

@@ -3,10 +3,8 @@ import CreatePostCard from '@components/Common/CreatePostCard';
 import SearchBox from '@components/Common/SearchBox';
 import PostListItem from '@components/Posts/PostListItem';
 import { getSelectedAccountId } from '@store/account/selectors';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { openModal } from '@store/modal/actions';
+import { useAppSelector } from '@store/hooks';
 import { useInfinitePostsByPageIdQuery } from '@store/post/useInfinitePostsByPageIdQuery';
-import intl from 'react-intl-universal';
 import { Button, Space, Tabs } from 'antd';
 import axios from 'axios';
 import { useRouter } from 'next/router';
@@ -326,7 +324,6 @@ const SubAbout = ({
 );
 
 const PageDetail = ({ page, isMobile }: PageDetailProps) => {
-  const dispatch = useAppDispatch();
   const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
   const router = useRouter();
   const selectedAccountId = useAppSelector(getSelectedAccountId);
@@ -391,11 +388,7 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
   };
 
   const navigateEditPage = () => {
-    dispatch(openModal('EditPageModal', { page: pageDetailData }));
-  };
-
-  const uploadModal = (isAvatar: boolean) => {
-    dispatch(openModal('UploadAvatarCoverModal', { page: pageDetailData, isAvatar: isAvatar }));
+    router.push('/page/edit');
   };
 
   return (
@@ -411,19 +404,18 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
                 <img className="avatar-img" src={pageDetailData.avatar || '/images/default-avatar.jpg'} alt="" />
               </picture>
               {/* TODO: implement in the future */}
-              {selectedAccountId == pageDetailData?.pageAccountId && (
-                <div className="btn-upload-avatar" onClick={() => uploadModal(true)}>
+              {/* {selectedAccountId == pageDetailData?.pageAccountId && (
+                <div className="btn-upload-avatar" onClick={navigateEditPage}>
                   <CameraOutlined />
                 </div>
-              )}
+              )} */}
             </div>
             <div className="title-profile">
               <h2>{pageDetailData.name}</h2>
               <p>{pageDetailData.title}</p>
             </div>
             {/* TODO: implement in the future */}
-            {console.log('pageDetailData: ', pageDetailData)}
-            {selectedAccountId == pageDetailData?.pageAccountId && (
+            {/* {selectedAccountId == pageDetailData?.pageAccountId && (
               <div className="action-profile">
                 <Button
                   style={{ marginRight: '1rem' }}
@@ -432,14 +424,14 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
                   onClick={navigateEditPage}
                 >
                   <EditOutlined />
-                  {intl.get('page.editPage')}
+                  Edit profile
                 </Button>
-                <Button type="primary" className="outline-btn" onClick={() => uploadModal(false)}>
+                <Button type="primary" className="outline-btn" onClick={navigateEditPage}>
                   <CameraOutlined />
-                  {intl.get('page.editCoverPhoto')}
+                  Edit cover photo
                 </Button>
               </div>
-            )}
+            )} */}
           </div>
         </ProfileCardHeader>
         <ProfileContentContainer>

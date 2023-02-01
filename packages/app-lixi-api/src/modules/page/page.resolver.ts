@@ -138,15 +138,29 @@ export class PageResolver {
       throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    const uploadAvatarDetail = data.avatar
+      ? await this.prisma.uploadDetail.findFirst({
+          where: {
+            uploadId: data.avatar
+          }
+        })
+      : undefined;
+
+    const uploadCoverDetail = data.cover
+      ? await this.prisma.uploadDetail.findFirst({
+          where: {
+            uploadId: data.cover
+          }
+        })
+      : undefined;
+
     const createdPage = await this.prisma.page.create({
       data: {
-        ..._.omit(data, ['categoryId']),
+        ..._.omit(data, ['avatar', 'cover']),
         pageAccount: { connect: { id: account.id } },
-        category: {
-          connect: {
-            id: Number(data.categoryId)
-          }
-        }
+        avatar: { connect: uploadAvatarDetail ? { id: uploadAvatarDetail.id } : undefined },
+        cover: { connect: uploadCoverDetail ? { id: uploadCoverDetail.id } : undefined },
+        parentId: undefined
       }
     });
 
@@ -183,30 +197,9 @@ export class PageResolver {
         id: data.id
       },
       data: {
-        ..._.omit(data, ['categoryId', 'countryId', 'stateId', 'parentId', 'avatar', 'cover']),
+        ...data,
         avatar: { connect: uploadAvatarDetail ? { id: uploadAvatarDetail.id } : undefined },
-        cover: { connect: uploadCoverDetail ? { id: uploadCoverDetail.id } : undefined },
-        category: {
-          connect: data.categoryId
-            ? {
-                id: Number(data.categoryId)
-              }
-            : undefined
-        },
-        country: {
-          connect: data.countryId
-            ? {
-                id: Number(data.countryId)
-              }
-            : undefined
-        },
-        state: {
-          connect: data.stateId
-            ? {
-                id: Number(data.stateId)
-              }
-            : undefined
-        }
+        cover: { connect: uploadCoverDetail ? { id: uploadCoverDetail.id } : undefined }
       }
     });
 

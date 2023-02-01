@@ -8,8 +8,6 @@ import { getSelectedAccountId } from '@store/account/selectors';
 import Link from 'next/link';
 import { push } from 'connected-next-router';
 import { Virtuoso } from 'react-virtuoso';
-import { openModal } from '@store/modal/actions';
-import intl from 'react-intl-universal';
 
 const StyledPageFeed = styled.div`
   padding-bottom: 4rem;
@@ -249,7 +247,7 @@ const PageHome = () => {
       avatar: pageItem?.avatar,
       cover: pageItem?.cover,
       subText: Math.floor(Math.random() * 100).toString(),
-      category: pageItem.category ? pageItem.category : 'Food & Drink'
+      category: 'Food & Drink'
     };
     return newItemObj;
   };
@@ -291,33 +289,32 @@ const PageHome = () => {
     );
   };
 
-  const createPageBtn = () => {
-    dispatch(openModal('CreatePageModal', { account: selectedAccountId }));
-  };
-
   return (
     <>
       <StyledPageFeed ref={refPagesListing} onScroll={e => triggerSrollbar(e)}>
         {listsPage && listsPage.length > 0 && (
           <ToolboxBar>
             <SearchBox></SearchBox>
-            {!selectedPage && (
-              <Button type="primary" className="outline-btn" onClick={createPageBtn}>
-                {intl.get('page.createYourPage')}
+            <Link href="/page/create" passHref>
+              <Button type="primary" className="outline-btn">
+                Create your page
               </Button>
-            )}
+            </Link>
           </ToolboxBar>
         )}
         <YourPageContainer>
-          <h2>{intl.get('page.yourPage')}</h2>
+          <h2>Your page</h2>
           {!selectedPage && (
             <BlankPage>
               <img src="/images/page-blank.svg" alt="" />
               <div>
-                <p className="sub-page">{intl.get('text.createPage')} </p>
-                <Button type="primary" className="outline-btn" onClick={createPageBtn}>
-                  {intl.get('page.createYourPage')}
-                </Button>
+                <p className="sub-page">
+                  A Page is a space where people can publicly connect with your business, personal brand or
+                  organisation. You can do things such as showcase products and services, collect donations{' '}
+                </p>
+                <Link href="/page/create" passHref>
+                  <Button type="primary">Create your page</Button>
+                </Link>
               </div>
             </BlankPage>
           )}
@@ -328,7 +325,7 @@ const PageHome = () => {
           )}
         </YourPageContainer>
         <PagesContainer>
-          <h2>{intl.get('page.discover')}</h2>
+          <h2>Discover</h2>
           <ListCard>
             {listsPage && listsPage.length > 0 && (
               <Virtuoso

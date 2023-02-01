@@ -75,9 +75,16 @@ input CreateCommentInput {
 }
 
 input CreatePageInput {
-  categoryId: String!
+  address: String!
+  avatar: String!
+  country: String!
+  cover: String!
   description: String!
   name: String!
+  parentId: String
+  state: String!
+  title: String!
+  website: String!
 }
 
 input CreatePostInput {
@@ -137,8 +144,7 @@ enum OrderDirection {
 type Page {
   address: String
   avatar: String
-  categoryId: String!
-  countryId: String
+  country: String
   cover: String
 
   """Identifies the date and time when the object was created."""
@@ -152,8 +158,8 @@ type Page {
   pageAccountId: Int!
   parent: Page
   parentId: String
-  stateId: String
-  title: String
+  state: String
+  title: String!
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
@@ -330,15 +336,14 @@ type TokenEdge {
 input UpdatePageInput {
   address: String
   avatar: String
-  categoryId: String
-  countryId: String
+  country: String
   cover: String
   description: String
   id: ID!
   name: String
   parentId: String
-  stateId: String
-  title: String
+  state: String
+  title: String!
   website: String
 }
 

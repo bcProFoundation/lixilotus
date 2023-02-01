@@ -5,23 +5,28 @@ export class CreatePageCommand {
   name: string;
 
   @IsNotEmpty()
-  categoryId: string;
+  title: string;
 
   description: string;
+  avatar?: string;
+  cover?: string;
   parentId?: string;
+  website: string;
+  country?: string;
+  state?: string;
+  address?: string;
 }
 
 export class EditPageCommand {
   id: string;
   name: string;
-  categoryId: string;
   title: string;
   description: string;
   avatar?: string;
   cover?: string;
   parentId?: string;
   website: string;
-  countryId?: string;
-  stateId?: string;
+  country?: string;
+  state?: string;
   address?: string;
 }
