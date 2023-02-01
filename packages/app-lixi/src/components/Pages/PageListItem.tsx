@@ -1,11 +1,10 @@
-import { DislikeOutlined, FireOutlined, LikeOutlined } from '@ant-design/icons';
+import { Comment } from '@ant-design/compatible';
+import { FireOutlined } from '@ant-design/icons';
 import CommentComponent, { CommentItem, Editor } from '@components/Common/Comment';
 import InfoCardUser from '@components/Common/InfoCardUser';
-import { GroupIconText } from '@components/Posts/PostListItem';
 import useWindowDimensions from '@hooks/useWindowDimensions';
-import { Avatar, Button, Comment, List, message, Space } from 'antd';
+import { Avatar, List, message, Space } from 'antd';
 import { push } from 'connected-next-router';
-import _ from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { useAppDispatch } from 'src/store/hooks';
@@ -332,7 +331,7 @@ const PageListItem = ({ index, item }) => {
               text={Math.floor(Math.random() * 10).toString()}
               key={`list-vertical-share-o-${item.id}`}
               dataItem={item}
-              onClickIcon={() => {}}
+              onClickIcon={() => { }}
             />
           </CountBar>
           <div className="line"></div>

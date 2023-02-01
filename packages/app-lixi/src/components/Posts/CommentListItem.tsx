@@ -1,3 +1,4 @@
+import { Comment } from '@ant-design/compatible';
 import { DislikeFilled, DislikeOutlined, LikeFilled, LikeOutlined } from '@ant-design/icons';
 import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { AvatarUser } from '@components/Common/AvatarUser';
@@ -12,7 +13,7 @@ import { PostsQuery } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
 import { formatBalance, fromXpiToSatoshis } from '@utils/cashMethods';
-import { Avatar, Comment, Space, Tooltip } from 'antd';
+import { Space, Tooltip } from 'antd';
 import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import moment from 'moment';
@@ -21,7 +22,6 @@ import React, { useRef } from 'react';
 import intl from 'react-intl-universal';
 import { CommentOrderField, OrderDirection } from 'src/generated/types.generated';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import styled from 'styled-components';
 
 type CommentItem = CommentQuery['comment'];
 type PostItem = PostsQuery['allPosts']['edges'][0]['node'];

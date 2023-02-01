@@ -22,7 +22,6 @@ import moment from 'moment';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { ReqSocket } from 'src/decorators/req.socket.decorator';
 import { LixiService } from 'src/modules/core/lixi/lixi.service';
-import { LixiNftService } from 'src/modules/nft/lixinft.service';
 import { WalletService } from 'src/modules/wallet/wallet.service';
 import { aesGcmDecrypt, base58ToNumber } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
@@ -41,9 +40,8 @@ export class ClaimController {
     private readonly lixiService: LixiService,
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
     @Inject('xpijs') private XPI: BCHJS,
-    private readonly config: ConfigService,
-    private readonly lixiNftService: LixiNftService
-  ) {}
+    private readonly config: ConfigService
+  ) { }
 
   @Get(':id')
   async getClaim(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<ViewClaimDto> {
@@ -357,21 +355,21 @@ export class ClaimController {
         // registrant
         !_.isNil(lixi.package?.registrant)
           ? outputs.push(
-              {
-                address: claimApi.claimAddress,
-                amountSat: amountSats
-              },
-              {
-                address: lixi.package?.registrant as unknown as string,
-                amountSat: amountSats
-              }
-            )
+            {
+              address: claimApi.claimAddress,
+              amountSat: amountSats
+            },
+            {
+              address: lixi.package?.registrant as unknown as string,
+              amountSat: amountSats
+            }
+          )
           : (outputs = [
-              {
-                address: claimApi.claimAddress,
-                amountSat: amountSats
-              }
-            ]);
+            {
+              address: claimApi.claimAddress,
+              amountSat: amountSats
+            }
+          ]);
 
         // distributions
         if (parentLixi && parentLixi.claimType == ClaimType.OneTime && parentLixi?.distributions) {
@@ -432,14 +430,7 @@ export class ClaimController {
           const txid = await this.XPI.RawTransactions.sendRawTransaction(hex);
           // const txid = await xpiWallet.send(outputs);
 
-          // Mint the NFT
-          let nftTokenUrl = '';
-          let nftTokenId = null;
-          const tokenBaseUrl = this.config.get<string>('TOKEN_BASE_URL');
-          if (lixi.isNFTEnabled && claimApi.nftReceiverAddress) {
-            nftTokenId = await this.lixiNftService.mintNFT(claimApi.nftReceiverAddress);
-            nftTokenUrl = `${tokenBaseUrl}nft/${nftTokenId}`;
-          }
+
 
           const createClaimOperation = this.prisma.claim.create({
             data: {
@@ -447,9 +438,7 @@ export class ClaimController {
               lixiId: lixi.id,
               transactionId: txid,
               claimAddress: claimApi.claimAddress,
-              amount: amountSats,
-              nftTokenId: nftTokenId,
-              nftTokenUrl: nftTokenUrl
+              amount: amountSats
             }
           });
 

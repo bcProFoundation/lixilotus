@@ -5,7 +5,7 @@ import { all, call, cancelled, fork, put, select, take, takeLatest } from '@redu
 import { PayloadAction } from '@reduxjs/toolkit';
 import { getSelectedAccount } from '@store/account/selectors';
 import { notification } from 'antd';
-import { ArgsProps } from 'antd/lib/notification';
+import { ArgsProps } from 'antd/lib/notification/interface';
 import Paragraph from 'antd/lib/typography/Paragraph';
 import BigNumber from 'bignumber.js';
 import { isMobile } from 'react-device-detect';
