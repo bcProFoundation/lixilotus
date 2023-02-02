@@ -27,6 +27,8 @@ fragment WorshipedPersonFields on WorshipedPerson {
     id
     name
   }
+  createdAt
+  updatedAt
 }
 
 query WorshipedPerson($id: String!) {
