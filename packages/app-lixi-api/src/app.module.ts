@@ -4,7 +4,6 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { MercuriusDriver, MercuriusDriverConfig } from '@nestjs/mercurius';
 import { ServeStaticModule, ServeStaticModuleOptions } from '@nestjs/serve-static';
 import { MeiliSearchModule } from 'nestjs-meilisearch';
-import { EthersModule } from 'nestjs-ethers';
 import { FastifyRequest } from 'fastify';
 import { AcceptLanguageResolver, HeaderResolver, I18nModule } from 'nestjs-i18n';
 import path, { join } from 'path';
@@ -13,7 +12,6 @@ import { GraphqlConfig } from './config/config.interface';
 import configuration from './config/configuration';
 import { AuthModule } from './modules/auth/auth.module';
 import { CoreModule } from './modules/core/core.module';
-import { LixiNftModule } from './modules/nft/lixinft.module';
 import { PageModule } from './modules/page/page.module';
 import { WorshipModule } from './modules/worship/worship.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
@@ -81,18 +79,6 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
       },
       resolvers: [{ use: HeaderResolver, options: ['lang'] }, AcceptLanguageResolver]
     }),
-    EthersModule.forRootAsync({
-      providers: [ConfigService],
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => {
-        const etherNetworkUrl = config.get<string>('ETHER_NETWORK_URL');
-        return {
-          network: { name: 'hardhat', chainId: 31337 },
-          custom: etherNetworkUrl,
-          useDefaultProvider: false
-        };
-      }
-    }),
     MeiliSearchModule.forRootAsync({
       useFactory: () => ({
         host: process.env.MEILISEARCH_HOST!,
@@ -101,7 +87,6 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
     }),
     WalletModule,
     AuthModule,
-    LixiNftModule,
     CoreModule,
     NotificationModule,
     PageModule,

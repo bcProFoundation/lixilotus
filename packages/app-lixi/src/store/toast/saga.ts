@@ -1,7 +1,7 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { all, fork, takeLatest } from '@redux-saga/core/effects';
 import { notification } from 'antd';
-import { ArgsProps } from 'antd/lib/notification';
+import { ArgsProps } from 'antd/lib/notification/interface';
 import { ToastType } from './state';
 import { showToast } from './actions';
 

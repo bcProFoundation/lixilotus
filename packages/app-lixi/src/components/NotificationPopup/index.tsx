@@ -1,6 +1,7 @@
 import React from 'react';
 import { CloseCircleOutlined } from '@ant-design/icons';
-import { Space, Popover, Comment } from 'antd';
+import { Space, Popover } from 'antd';
+import { Comment } from '@ant-design/compatible';
 import { useAppDispatch } from '@store/hooks';
 import styled from 'styled-components';
 import { Account, NotificationDto as Notification } from '@bcpros/lixi-models';

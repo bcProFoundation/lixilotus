@@ -86,9 +86,15 @@
     ]
   },
   "dependencies": {
+<<<<<<< HEAD
+    "@nestjs/mapped-types": "^1.1.0",
+    "class-validator": "^0.13.2",
+    "prisma-graphql-type-decimal": "^2.0.6",
+    "ts-morph": "^15.1.0"
+=======
     "@nestjs/mapped-types": "^1.2.0",
     "class-validator": "^0.14.0",
-    "ts-morph": "^17.0.1",
-    "prisma-graphql-type-decimal": "^2.0.6"
+    "ts-morph": "^17.0.1"
+>>>>>>> master
   }
 }

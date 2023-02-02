@@ -9,7 +9,8 @@ import styled from 'styled-components';
 import SwipeToDelete from 'react-swipe-to-delete-ios';
 import moment from 'moment';
 import { isMobile } from 'react-device-detect';
-import { Space, Popover, Comment } from 'antd';
+import { Space, Popover } from 'antd';
+import { Comment } from '@ant-design/compatible';
 
 const StyledComment = styled(Comment)`
   border-radius: 5px;

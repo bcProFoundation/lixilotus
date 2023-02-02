@@ -101,8 +101,11 @@ model Page {
   pageAccountId  Int           @unique @map("page_account_id")
   name           String        @default("") @map("name") @db.VarChar(255)
   title          String        @default("") @map("title") @db.VarChar(255)
+<<<<<<< HEAD
+=======
   category       Category?     @relation(fields: [categoryId], references: [id])
   categoryId     Int?          @map("category_id")
+>>>>>>> master
   description    String        @default("") @map("description") @db.VarChar(1000)
   children       Page[]        @relation("subPages")
   parent         Page?         @relation("subPages", fields: [parentId], references: [id])

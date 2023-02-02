@@ -75,9 +75,20 @@ input CreateCommentInput {
 }
 
 input CreatePageInput {
+<<<<<<< HEAD
+  address: String!
+  avatar: String!
+  country: String!
+  cover: String!
+=======
   categoryId: String
+>>>>>>> master
   description: String!
   name: String!
+  parentId: String
+  state: String!
+  title: String!
+  website: String!
 }
 
 input CreatePostInput {
@@ -137,8 +148,12 @@ enum OrderDirection {
 type Page {
   address: String
   avatar: String
+<<<<<<< HEAD
+  country: String
+=======
   categoryId: String
   countryId: String
+>>>>>>> master
   cover: String
 
   """Identifies the date and time when the object was created."""

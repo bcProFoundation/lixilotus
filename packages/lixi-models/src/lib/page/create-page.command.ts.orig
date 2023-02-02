@@ -5,7 +5,11 @@ export class CreatePageCommand {
   name: string;
 
   @IsNotEmpty()
+<<<<<<< HEAD
+  title: string;
+=======
   categoryId?: string;
+>>>>>>> master
 
   description: string;
   avatar?: string;

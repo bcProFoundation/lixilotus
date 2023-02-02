@@ -7,7 +7,6 @@ import * as _ from 'lodash';
 import { NotificationModule } from 'src/common/modules/notifications/notification.module';
 import { ChronikModule } from '../../common/modules/chronik/chronik.module';
 import { AuthModule } from '../auth/auth.module';
-import { LixiNftModule } from '../nft/lixinft.module';
 import { AccountController } from './account/account.controller';
 import { BurnController } from './burn/burn.controller';
 import { ClaimController } from './claim/claim.controller';
@@ -94,8 +93,7 @@ const baseCorsConfig = cors({
       }
     }),
     AuthModule,
-    NotificationModule,
-    LixiNftModule
+    NotificationModule
   ],
   controllers: [
     AccountController,

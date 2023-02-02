@@ -272,7 +272,7 @@ export class PostResolver {
     });
 
     return connectionFromArraySlice(searchPosts, args, {
-      arrayLength: count,
+      arrayLength: count || 0,
       sliceStart: offset || 0
     });
   }

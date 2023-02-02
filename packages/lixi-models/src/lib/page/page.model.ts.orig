@@ -16,10 +16,14 @@ export class Page {
   @Field(() => String)
   name: string;
 
+<<<<<<< HEAD
+  @Field(() => String)
+=======
   @Field(() => String, { nullable: true })
   categoryId: string;
 
   @Field(() => String, { nullable: true })
+>>>>>>> master
   title: string;
 
   @Field(() => String)

@@ -7,8 +7,12 @@ export class CreatePageInput {
   @IsNotEmpty()
   name: string;
 
+<<<<<<< HEAD
+=======
   @Field(() => String, { nullable: true })
+>>>>>>> master
   @IsNotEmpty()
+  @Field(() => String)
   title: string;
 
   @Field(() => String)

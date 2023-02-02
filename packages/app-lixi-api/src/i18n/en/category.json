@@ -1,0 +1,6 @@
+{
+  "messages": {
+    "categoryNotExist": "Danh mục không tồn tại trong cơ sở dữ liệu.",
+    "unableToGetCategories": "Không thể tải danh mục."
+  }
+}
