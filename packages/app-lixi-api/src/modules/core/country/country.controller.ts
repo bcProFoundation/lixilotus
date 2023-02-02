@@ -1,5 +1,5 @@
 import { Country, State } from '@bcpros/lixi-models';
-import { Controller, Get, Headers, HttpException, HttpStatus, Param } from '@nestjs/common';
+import { Controller, Get, Headers, HttpException, HttpStatus, Param, Query } from '@nestjs/common';
 import { Body } from '@nestjs/common/decorators';
 import geoip from 'geoip-country';
 import * as _ from 'lodash';
@@ -47,9 +47,12 @@ export class CountryController {
   }
 
   @Get(':id/cities')
-  async getCities(@Body() body: any, @I18n() i18n: I18nContext): Promise<any> {
+  async getCities(
+    @Query('countryId') countryId: number,
+    @Query('stateId') stateId: number,
+    @I18n() i18n: I18nContext
+  ): Promise<any> {
     try {
-      const { countryId, stateId } = body;
       const cities = await this.prisma.city.findMany({
         where: {
           AND: [
