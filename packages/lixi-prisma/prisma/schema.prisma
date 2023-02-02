@@ -95,6 +95,16 @@ model Token {
   @@map("token")
 }
 
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String   @default("") @map("name")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
+  pages     Page[]
+
+  @@map("category")
+}
+
 model Page {
   id             String        @id @default(cuid())
   pageAccount    Account       @relation(fields: [pageAccountId], references: [id])
