@@ -1,5 +1,6 @@
 import React, { createElement, useEffect, useState } from 'react';
-import { Avatar, Button, Comment, Form, Input, Tooltip } from 'antd';
+import { Avatar, Button, Form, Input, Tooltip } from 'antd';
+import { Comment } from '@ant-design/compatible';
 import { DislikeFilled, DislikeOutlined, LikeFilled, LikeOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import moment from 'moment';

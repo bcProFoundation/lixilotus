@@ -1,5 +1,5 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { AnyAction } from 'redux';
+import _ from 'lodash';
 import { showToast } from './actions';
 import { ToastState } from './state';
 
@@ -12,6 +12,6 @@ export const toastReducer = createReducer(initialState, builder => {
   builder.addCase(showToast, (state, action) => {
     const { type, config } = action.payload;
     state.type = type;
-    state.config = config;
+    state.config = (config as any)
   });
 });

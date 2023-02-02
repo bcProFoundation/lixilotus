@@ -22,7 +22,7 @@ import * as ReactDOM from 'react-dom';
 
 import useModal from '../../hooks/useModal';
 // import Button from '../../ui/Button';
-import { Avatar, Button, Comment, Form, Input, Tooltip } from 'antd';
+import { Avatar, Button } from 'antd';
 // import { DialogActions } from '../../ui/Dialog';
 import { INSERT_FIGMA_COMMAND } from '../FigmaPlugin';
 import { INSERT_TWEET_COMMAND } from '../TwitterPlugin';
@@ -310,27 +310,27 @@ export default function AutoEmbedPlugin(): JSX.Element {
         menuRenderFn={(anchorElementRef, { selectedIndex, options, selectOptionAndCleanUp, setHighlightedIndex }) =>
           anchorElementRef.current
             ? ReactDOM.createPortal(
-                <div
-                  className="typeahead-popover auto-embed-menu"
-                  style={{
-                    marginLeft: anchorElementRef.current.style.width,
-                    width: 200
+              <div
+                className="typeahead-popover auto-embed-menu"
+                style={{
+                  marginLeft: anchorElementRef.current.style.width,
+                  width: 200
+                }}
+              >
+                <AutoEmbedMenu
+                  options={options}
+                  selectedItemIndex={selectedIndex}
+                  onOptionClick={(option: AutoEmbedOption, index: number) => {
+                    setHighlightedIndex(index);
+                    selectOptionAndCleanUp(option);
                   }}
-                >
-                  <AutoEmbedMenu
-                    options={options}
-                    selectedItemIndex={selectedIndex}
-                    onOptionClick={(option: AutoEmbedOption, index: number) => {
-                      setHighlightedIndex(index);
-                      selectOptionAndCleanUp(option);
-                    }}
-                    onOptionMouseEnter={(index: number) => {
-                      setHighlightedIndex(index);
-                    }}
-                  />
-                </div>,
-                anchorElementRef.current
-              )
+                  onOptionMouseEnter={(index: number) => {
+                    setHighlightedIndex(index);
+                  }}
+                />
+              </div>,
+              anchorElementRef.current
+            )
             : null
         }
       />
