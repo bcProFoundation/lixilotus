@@ -12,6 +12,6 @@ export const toastReducer = createReducer(initialState, builder => {
   builder.addCase(showToast, (state, action) => {
     const { type, config } = action.payload;
     state.type = type;
-    state.config = (config as any)
+    state.config = config as any;
   });
 });

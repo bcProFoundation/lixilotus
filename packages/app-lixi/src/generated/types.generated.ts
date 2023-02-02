@@ -12,6 +12,8 @@ export type Scalars = {
   Float: number;
   /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: any;
+  /** An arbitrary-precision Decimal type */
+  Decimal: any;
 };
 
 export type Account = {
@@ -19,6 +21,14 @@ export type Account = {
   address: Scalars['String'];
   id: Scalars['ID'];
   name: Scalars['String'];
+};
+
+export type City = {
+  __typename?: 'City';
+  country: Country;
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  state: State;
 };
 
 export type Comment = {
@@ -66,6 +76,15 @@ export enum CommentOrderField {
   UpdatedAt = 'updatedAt'
 }
 
+export type Country = {
+  __typename?: 'Country';
+  capital: Scalars['String'];
+  city: Array<City>;
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  state: Array<State>;
+};
+
 export type CreateCommentInput = {
   commentByPublicKey?: InputMaybe<Scalars['String']>;
   commentText: Scalars['String'];
@@ -74,7 +93,7 @@ export type CreateCommentInput = {
 };
 
 export type CreatePageInput = {
-  categoryId: Scalars['String'];
+  categoryId?: InputMaybe<Scalars['String']>;
   description: Scalars['String'];
   name: Scalars['String'];
 };
@@ -88,11 +107,32 @@ export type CreatePostInput = {
   uploadCovers?: InputMaybe<Array<Scalars['String']>>;
 };
 
+export type CreateWorshipInput = {
+  latitude?: InputMaybe<Scalars['Decimal']>;
+  location?: InputMaybe<Scalars['String']>;
+  longitude?: InputMaybe<Scalars['Decimal']>;
+  worshipedAmount: Scalars['Float'];
+  worshipedPersonId: Scalars['String'];
+};
+
+export type CreateWorshipedPersonInput = {
+  avatar?: InputMaybe<Scalars['String']>;
+  cityId?: InputMaybe<Scalars['String']>;
+  countryId?: InputMaybe<Scalars['String']>;
+  dateOfBirth?: InputMaybe<Scalars['String']>;
+  dateOfDeath?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+  quote?: InputMaybe<Scalars['String']>;
+  stateId?: InputMaybe<Scalars['String']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createComment: Comment;
   createPage: Page;
   createPost: Post;
+  createWorship: WorshipedPerson;
+  createWorshipedPerson: WorshipedPerson;
   updatePage: Page;
   updatePost: Post;
 };
@@ -107,6 +147,14 @@ export type MutationCreatePageArgs = {
 
 export type MutationCreatePostArgs = {
   data: CreatePostInput;
+};
+
+export type MutationCreateWorshipArgs = {
+  data: CreateWorshipInput;
+};
+
+export type MutationCreateWorshipedPersonArgs = {
+  data: CreateWorshipedPersonInput;
 };
 
 export type MutationUpdatePageArgs = {
@@ -263,9 +311,11 @@ export type Query = {
   allPostsBySearch: PostResponse;
   allPostsByTokenId: PostConnection;
   allPostsByUserId: PostConnection;
+  allWorshipedPerson: WorshipedPersonConnection;
   comment: Comment;
   page: Page;
   post: Post;
+  worshipedPerson: WorshipedPerson;
 };
 
 export type QueryAllCommentsToPostIdArgs = {
@@ -346,6 +396,16 @@ export type QueryAllPostsByUserIdArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
+export type QueryAllWorshipedPersonArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<WorshipedPersonOrder>;
+  query?: InputMaybe<Scalars['String']>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
 export type QueryCommentArgs = {
   id: Scalars['String'];
 };
@@ -358,11 +418,24 @@ export type QueryPostArgs = {
   id: Scalars['String'];
 };
 
+export type QueryWorshipedPersonArgs = {
+  id: Scalars['String'];
+};
+
+export type State = {
+  __typename?: 'State';
+  city: Array<City>;
+  country: City;
+  id: Scalars['ID'];
+  name: Scalars['String'];
+};
+
 export type Subscription = {
   __typename?: 'Subscription';
   commentCreated: Comment;
   pageCreated: Page;
   postCreated: Post;
+  worshipedPersonCreated: WorshipedPerson;
 };
 
 export type Token = {
@@ -425,3 +498,46 @@ export type UploadDetail = {
   id: Scalars['ID'];
   upload: Upload;
 };
+
+export type WorshipedPerson = {
+  __typename?: 'WorshipedPerson';
+  avatar?: Maybe<UploadDetail>;
+  city?: Maybe<City>;
+  country?: Maybe<Country>;
+  /** Identifies the date and time when the object was created. */
+  createdAt: Scalars['DateTime'];
+  dateOfBirth?: Maybe<Scalars['DateTime']>;
+  dateOfDeath?: Maybe<Scalars['DateTime']>;
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  quote?: Maybe<Scalars['String']>;
+  state?: Maybe<State>;
+  /** Identifies the date and time when the object was last updated. */
+  updatedAt: Scalars['DateTime'];
+};
+
+export type WorshipedPersonConnection = {
+  __typename?: 'WorshipedPersonConnection';
+  edges?: Maybe<Array<WorshipedPersonEdge>>;
+  pageInfo: PageInfo;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type WorshipedPersonEdge = {
+  __typename?: 'WorshipedPersonEdge';
+  cursor: Scalars['String'];
+  node: WorshipedPerson;
+};
+
+export type WorshipedPersonOrder = {
+  direction: OrderDirection;
+  field: WorshipedPersonOrderField;
+};
+
+/** Properties by which worshiped person connections can be ordered. */
+export enum WorshipedPersonOrderField {
+  CreatedAt = 'createdAt',
+  Id = 'id',
+  TotalWorshipAmount = 'totalWorshipAmount',
+  UpdatedAt = 'updatedAt'
+}

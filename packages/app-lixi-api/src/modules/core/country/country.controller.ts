@@ -1,5 +1,6 @@
 import { Country, State } from '@bcpros/lixi-models';
-import { Controller, Get, Headers, HttpException, HttpStatus, Param } from '@nestjs/common';
+import { Controller, Get, Headers, HttpException, HttpStatus, Param, Query } from '@nestjs/common';
+import { Body } from '@nestjs/common/decorators';
 import geoip from 'geoip-country';
 import * as _ from 'lodash';
 import { I18n, I18nContext } from 'nestjs-i18n';
@@ -12,10 +13,10 @@ export class CountryController {
   constructor(private prisma: PrismaService) {}
 
   @Get()
-  async getCountries(@I18n() i18n: I18nContext): Promise<Country[]> {
+  async getCountries(@I18n() i18n: I18nContext): Promise<any> {
     try {
       const countries = await this.prisma.country.findMany();
-      const result = countries as Country[];
+      const result = countries;
       return result;
     } catch (err: unknown) {
       const unableGetEnvelope = await i18n.t('country.messages.unableToGetCountries');
@@ -24,7 +25,7 @@ export class CountryController {
   }
 
   @Get(':id/states')
-  async getStates(@Param('id') id: number | string, @I18n() i18n: I18nContext): Promise<State[]> {
+  async getStates(@Param('id') id: number | string, @I18n() i18n: I18nContext): Promise<any> {
     try {
       const states = await this.prisma.state.findMany({
         where: {
@@ -32,7 +33,40 @@ export class CountryController {
         }
       });
 
-      const resultApi = states as State[];
+      const resultApi = states;
+      return resultApi;
+    } catch (err: unknown) {
+      if (err instanceof VError) {
+        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      } else {
+        const unableToGetLixi = await i18n.t('country.messages.unableToGetState');
+        const error = new VError.WError(err as Error, unableToGetLixi);
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  }
+
+  @Get(':id/cities')
+  async getCities(
+    @Query('countryId') countryId: number,
+    @Query('stateId') stateId: number,
+    @I18n() i18n: I18nContext
+  ): Promise<any> {
+    try {
+      const cities = await this.prisma.city.findMany({
+        where: {
+          AND: [
+            {
+              countryId: _.toSafeInteger(countryId)
+            },
+            {
+              stateId: _.toSafeInteger(stateId)
+            }
+          ]
+        }
+      });
+
+      const resultApi = cities;
       return resultApi;
     } catch (err: unknown) {
       if (err instanceof VError) {
