@@ -331,7 +331,7 @@ const PageListItem = ({ index, item }) => {
               text={Math.floor(Math.random() * 10).toString()}
               key={`list-vertical-share-o-${item.id}`}
               dataItem={item}
-              onClickIcon={() => { }}
+              onClickIcon={() => {}}
             />
           </CountBar>
           <div className="line"></div>

@@ -310,27 +310,27 @@ export default function AutoEmbedPlugin(): JSX.Element {
         menuRenderFn={(anchorElementRef, { selectedIndex, options, selectOptionAndCleanUp, setHighlightedIndex }) =>
           anchorElementRef.current
             ? ReactDOM.createPortal(
-              <div
-                className="typeahead-popover auto-embed-menu"
-                style={{
-                  marginLeft: anchorElementRef.current.style.width,
-                  width: 200
-                }}
-              >
-                <AutoEmbedMenu
-                  options={options}
-                  selectedItemIndex={selectedIndex}
-                  onOptionClick={(option: AutoEmbedOption, index: number) => {
-                    setHighlightedIndex(index);
-                    selectOptionAndCleanUp(option);
+                <div
+                  className="typeahead-popover auto-embed-menu"
+                  style={{
+                    marginLeft: anchorElementRef.current.style.width,
+                    width: 200
                   }}
-                  onOptionMouseEnter={(index: number) => {
-                    setHighlightedIndex(index);
-                  }}
-                />
-              </div>,
-              anchorElementRef.current
-            )
+                >
+                  <AutoEmbedMenu
+                    options={options}
+                    selectedItemIndex={selectedIndex}
+                    onOptionClick={(option: AutoEmbedOption, index: number) => {
+                      setHighlightedIndex(index);
+                      selectOptionAndCleanUp(option);
+                    }}
+                    onOptionMouseEnter={(index: number) => {
+                      setHighlightedIndex(index);
+                    }}
+                  />
+                </div>,
+                anchorElementRef.current
+              )
             : null
         }
       />

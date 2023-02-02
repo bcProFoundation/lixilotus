@@ -306,12 +306,11 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
           </CreateForm>
         </CreateForm>
 
-        <div style={{textAlign: 'end', marginRight: '10px'}}>
+        <div style={{ textAlign: 'end', marginRight: '10px' }}>
           <Button type="primary" htmlType="submit" onClick={handleOnEditPage}>
             {intl.get('page.editPage')}
           </Button>
         </div>
-
       </Modal>
     </>
   );
