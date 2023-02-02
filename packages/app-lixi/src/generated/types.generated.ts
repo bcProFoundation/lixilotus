@@ -12,6 +12,8 @@ export type Scalars = {
   Float: number;
   /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: any;
+  /** An arbitrary-precision Decimal type */
+  Decimal: any;
 };
 
 export type Account = {
@@ -19,6 +21,14 @@ export type Account = {
   address: Scalars['String'];
   id: Scalars['ID'];
   name: Scalars['String'];
+};
+
+export type City = {
+  __typename?: 'City';
+  country: Country;
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  state: State;
 };
 
 export type Comment = {
@@ -172,8 +182,7 @@ export type Page = {
   __typename?: 'Page';
   address?: Maybe<Scalars['String']>;
   avatar?: Maybe<Scalars['String']>;
-  categoryId?: Maybe<Scalars['String']>;
-  countryId?: Maybe<Scalars['String']>;
+  country?: Maybe<Scalars['String']>;
   cover?: Maybe<Scalars['String']>;
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
@@ -500,12 +509,16 @@ export type WorshipedPerson = {
   avatar?: Maybe<UploadDetail>;
   city?: Maybe<City>;
   country?: Maybe<Country>;
+  /** Identifies the date and time when the object was created. */
+  createdAt: Scalars['DateTime'];
   dateOfBirth?: Maybe<Scalars['DateTime']>;
   dateOfDeath?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
   name: Scalars['String'];
   quote?: Maybe<Scalars['String']>;
   state?: Maybe<State>;
+  /** Identifies the date and time when the object was last updated. */
+  updatedAt: Scalars['DateTime'];
 };
 
 export type WorshipedPersonConnection = {

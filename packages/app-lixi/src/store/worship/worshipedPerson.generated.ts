@@ -23,6 +23,8 @@ export type WorshipedPersonFieldsFragment = {
   quote?: string | null;
   dateOfBirth?: any | null;
   dateOfDeath?: any | null;
+  createdAt: any;
+  updatedAt: any;
   avatar?: {
     __typename?: 'UploadDetail';
     id: string;
@@ -46,6 +48,8 @@ export type WorshipedPersonQuery = {
     quote?: string | null;
     dateOfBirth?: any | null;
     dateOfDeath?: any | null;
+    createdAt: any;
+    updatedAt: any;
     avatar?: {
       __typename?: 'UploadDetail';
       id: string;
@@ -82,6 +86,8 @@ export type WorshipedPeopleQuery = {
         quote?: string | null;
         dateOfBirth?: any | null;
         dateOfDeath?: any | null;
+        createdAt: any;
+        updatedAt: any;
         avatar?: {
           __typename?: 'UploadDetail';
           id: string;
@@ -115,6 +121,8 @@ export type CreateWorshipedPersonMutation = {
     quote?: string | null;
     dateOfBirth?: any | null;
     dateOfDeath?: any | null;
+    createdAt: any;
+    updatedAt: any;
     avatar?: {
       __typename?: 'UploadDetail';
       id: string;
@@ -139,6 +147,8 @@ export type CreateWorshipMutation = {
     quote?: string | null;
     dateOfBirth?: any | null;
     dateOfDeath?: any | null;
+    createdAt: any;
+    updatedAt: any;
     avatar?: {
       __typename?: 'UploadDetail';
       id: string;
@@ -177,6 +187,8 @@ export const WorshipedPersonFieldsFragmentDoc = `
     id
     name
   }
+  createdAt
+  updatedAt
 }
     `;
 export const WorshipedPersonDocument = `
