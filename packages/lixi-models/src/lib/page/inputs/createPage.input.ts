@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
 @InputType()
 export class CreatePageInput {
@@ -7,32 +7,10 @@ export class CreatePageInput {
   @IsNotEmpty()
   name: string;
 
+  @Field(() => String, { nullable: true })
   @IsNotEmpty()
-  @Field(() => String)
-  title: string;
+  categoryId: string;
 
   @Field(() => String)
   description: string;
-
-  @Field(() => String)
-  avatar?: string;
-
-  @Field(() => String)
-  cover?: string;
-
-  @Field(() => String, { nullable: true })
-  @IsOptional()
-  parentId?: string;
-
-  @Field(() => String)
-  website: string;
-
-  @Field(() => String)
-  country?: string;
-
-  @Field(() => String)
-  state?: string;
-
-  @Field(() => String)
-  address?: string;
 }

@@ -17,3 +17,4 @@ export * from './lib/upload';
 export * from './lib/burn';
 export * from './lib/geo-location';
 export * from './lib/worshiped-person';
+export * from './lib/category';

@@ -1,28 +1,28 @@
+import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
-import CommentComponent, { CommentItem, Editor } from '@components/Common/Comment';
+import CommentComponent, { CommentItem } from '@components/Common/Comment';
 import { Counter } from '@components/Common/Counter';
 import InfoCardUser from '@components/Common/InfoCardUser';
 import { currency } from '@components/Common/Ticker';
 import { WalletContext } from '@context/walletProvider';
 import useXPI from '@hooks/useXPI';
+import { getSelectedAccount } from '@store/account/selectors';
 import { burnForUpDownVote } from '@store/burn/actions';
+import { openModal } from '@store/modal/actions';
 import { PostsQuery } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
 import { formatBalance, fromXpiToSatoshis } from '@utils/cashMethods';
-import { Avatar, Comment, List, Space } from 'antd';
+import { List, Space } from 'antd';
 import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import moment from 'moment';
+import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import intl from 'react-intl-universal';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled from 'styled-components';
-import { PostsQueryTag } from '@bcpros/lixi-models/constants';
-import { useRouter } from 'next/router';
-import { getSelectedAccount } from '@store/account/selectors';
-import { openModal } from '@store/modal/actions';
 import { EditPostModalProps } from './EditPostModalPopup';
 
 const IconBurn = ({

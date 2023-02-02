@@ -16,7 +16,10 @@ export class Page {
   @Field(() => String)
   name: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
+  categoryId: string;
+
+  @Field(() => String, { nullable: true })
   title: string;
 
   @Field(() => String)
@@ -61,8 +64,8 @@ export class Page {
   updatedAt: Date;
 
   @Field(() => String, { nullable: true })
-  country?: string;
+  countryId?: string;
 
   @Field(() => String, { nullable: true })
-  state?: string;
+  stateId?: string;
 }

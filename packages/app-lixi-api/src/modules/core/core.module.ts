@@ -7,7 +7,6 @@ import * as _ from 'lodash';
 import { NotificationModule } from 'src/common/modules/notifications/notification.module';
 import { ChronikModule } from '../../common/modules/chronik/chronik.module';
 import { AuthModule } from '../auth/auth.module';
-import { LixiNftModule } from '../nft/lixinft.module';
 import { AccountController } from './account/account.controller';
 import { BurnController } from './burn/burn.controller';
 import { ClaimController } from './claim/claim.controller';
@@ -30,6 +29,7 @@ import { WithdrawSubLixiesProcessor } from './lixi/processors/withdraw-sub-lixie
 import { UploadFilesController } from './upload/upload.controller';
 import { UploadService } from './upload/upload.service';
 import { TokenController } from './tokens/token.controller';
+import { CategoryController } from './category/category.controller';
 const baseCorsConfig = cors({
   origin: process.env.BASE_URL ?? ''
 });
@@ -94,8 +94,7 @@ const baseCorsConfig = cors({
       }
     }),
     AuthModule,
-    NotificationModule,
-    LixiNftModule
+    NotificationModule
   ],
   controllers: [
     AccountController,
@@ -106,7 +105,8 @@ const baseCorsConfig = cors({
     UploadFilesController,
     TokenController,
     CountryController,
-    BurnController
+    BurnController,
+    CategoryController
   ],
   providers: [
     LixiService,

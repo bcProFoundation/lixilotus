@@ -1,0 +1,6 @@
+{
+  "messages": {
+    "categoryNotExist": "The category does not exist in the database.",
+    "unableToGetCategories": "Unable to get category."
+  }
+}

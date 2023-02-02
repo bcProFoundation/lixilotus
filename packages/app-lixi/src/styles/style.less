@@ -1,4 +1,4 @@
-@import '~antd/dist/antd.less';
+@import '~antd/dist/reset.css';
 @import '~@fortawesome/fontawesome-free/css/all.css';
 @import url('https://fonts.googleapis.com/css?family=Khula&display=swap&.css');
 
@@ -256,7 +256,7 @@ code {
 }
 
 .ant-modal {
-  &&.custom-create-lixi-modal {
+  &&.custom-create-lixi-modal .custom-create-page-modal .custom-edit-page-modal {
     vertical-align: middle;
     width: 1240px;
 
@@ -403,7 +403,12 @@ code {
         background: #fff;
         padding: 9px 1rem;
         border-radius: 8px;
-        min-height: 56px;
+        min-height: 46px;
+
+        &.edit-page {
+          min-height: 46px;
+          height: 46px !important;
+        }
 
         input {
           border-radius: 0;

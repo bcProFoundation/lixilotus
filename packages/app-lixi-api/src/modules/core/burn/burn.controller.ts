@@ -1,5 +1,4 @@
 import { Burn, BurnCommand, BurnForType, BurnType, fromSmallestDenomination } from '@bcpros/lixi-models';
-import { Prisma } from '@bcpros/lixi-prisma';
 import BCHJS from '@bcpros/xpi-js';
 import { Body, Controller, HttpException, HttpStatus, Inject, Logger, Post } from '@nestjs/common';
 import { ChronikClient } from 'chronik-client';
