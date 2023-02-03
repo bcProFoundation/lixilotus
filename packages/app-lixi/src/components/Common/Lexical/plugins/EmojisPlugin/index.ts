@@ -12,7 +12,7 @@ import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext
 import { TextNode } from 'lexical';
 import { useEffect } from 'react';
 
-import { $createEmojiNode, EmojiNode } from '../nodes/EmojiNode';
+import { $createEmojiNode, EmojiNode } from '../../nodes/EmojiNode';
 
 const emojis: Map<string, [string, string]> = new Map([
   [':)', ['emoji happysmile', '🙂']],
@@ -50,7 +50,7 @@ function findAndTransformEmoji(node: TextNode): null | TextNode {
   return null;
 }
 
-export function textNodeTransform(node: TextNode): void {
+function textNodeTransform(node: TextNode): void {
   let targetNode: TextNode | null = node;
 
   while (targetNode !== null) {

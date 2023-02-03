@@ -13,14 +13,13 @@ import intl from 'react-intl-universal';
 import { CreatePostInput, OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled from 'styled-components';
-import 'suneditor/dist/css/suneditor.min.css'; // Import Sun Editor's CSS File
-import SunEditorCore from 'suneditor/src/lib/core';
-import Editor from './Editor';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { Embed, SocialsEnum } from './Embed';
 import EditorLexical from './Lexical/EditorLexical';
 import { removeAllUpload } from '@store/account/actions';
 import { AvatarUser } from './AvatarUser';
+import { getEditorCache } from '@store/account/selectors';
+import { deleteEditorTextFromCache } from '@store/account/actions';
 
 type ErrorType = 'unsupported' | 'invalid';
 
@@ -42,10 +41,6 @@ const Preview = styled.div`
     width: 100% !important;
   }
 `;
-
-const SunEditor = dynamic(() => import('suneditor-react'), {
-  ssr: false
-});
 
 const MobileCreatePost = styled.div`
   display: none;
@@ -155,16 +150,12 @@ const CreatePostCard = (props: CreatePostCardProp) => {
   const [postId, setPostId] = useState<string>();
   const [error, setError] = useState<ErrorType | null>(null);
   const [enableEditor, setEnableEditor] = useState(false);
-  const sunEditor = useRef<SunEditorCore>();
   const [valueEditor, setValue] = useState(null);
   const postCoverUploads = useAppSelector(getPostCoverUploads);
   const [importValue, setImportValue] = useState(null);
   const { pageId, tokenPrimaryId } = props;
   const selectedAccount = useAppSelector(getSelectedAccount);
-
-  const getSunEditorInstance = (sunEditorCore: SunEditorCore) => {
-    sunEditor.current = sunEditorCore;
-  };
+  const editorCache = useAppSelector(getEditorCache);
 
   const items = [
     { label: 'Create ', key: 'create', children: 'Content Create' }, // remember to pass the key prop
@@ -205,18 +196,6 @@ const CreatePostCard = (props: CreatePostCardProp) => {
         'codeView'
       ]
     ]
-  };
-  const handleSaveEditor = contents => {
-    setValue(contents);
-    setEnableEditor(false);
-  };
-
-  const handleSubmit = event => {
-    event.preventDefault();
-
-    const valueInput = sunEditor.current.getContents(true);
-    setValue(valueInput);
-    setEnableEditor(false);
   };
 
   const handleUrlChange = (event): void => {
@@ -367,6 +346,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
 
       setEnableEditor(false);
       dispatch(removeAllUpload());
+      dispatch(deleteEditorTextFromCache());
     } catch (error) {
       const message = intl.get('post.unableCreatePostServer');
       if (patches) {
@@ -404,9 +384,10 @@ const CreatePostCard = (props: CreatePostCardProp) => {
         <Modal
           className="custom-modal-editor"
           title="Create Post"
-          visible={enableEditor}
+          open={enableEditor}
           footer={null}
           onCancel={() => setEnableEditor(false)}
+          destroyOnClose={true}
         >
           <>
             <UserCreate>
@@ -419,7 +400,11 @@ const CreatePostCard = (props: CreatePostCardProp) => {
                   </Button>
                 </div>
               </div>
-              <EditorLexical onSubmit={value => handleCreateNewPost(value)} loading={isLoadingCreatePost} />
+              <EditorLexical
+                onSubmit={value => handleCreateNewPost(value)}
+                loading={isLoadingCreatePost}
+                initialContent={editorCache}
+              />
             </UserCreate>
             {/* TODO: import link  */}
             {/* <Tabs defaultActiveKey="1">
@@ -461,4 +446,4 @@ const CreatePostCard = (props: CreatePostCardProp) => {
   );
 };
 
-export default React.memo(CreatePostCard);
+export default CreatePostCard;

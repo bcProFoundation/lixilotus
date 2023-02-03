@@ -81,6 +81,8 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
 
 const StyledTopbar = styled(Topbar)`
   display: flex;
+  background: transparent !important;
+  padding-inline: 0px !important;
   align-items: center;
   justify-content: space-between !important;
   width: 100%;

@@ -13,7 +13,6 @@ import axiosClient from '@utils/axiosClient';
 import { UPLOAD_API_S3_MULTIPLE } from '@bcpros/lixi-models/constants';
 import _ from 'lodash';
 import { ButtonType } from 'antd/lib/button';
-import { useMyPlateEditorRef } from '../Plate/plateTypes';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -74,7 +73,6 @@ export const MultiUploader = ({ type, buttonName, buttonType, isIcon, showUpload
   const [previewVisible, setPreviewVisible] = useState(false);
   const dispatch = useAppDispatch();
 
-  const editor = useMyPlateEditorRef();
   const uploadButton = (
     <StyledButton
       className={buttonType == 'text' ? 'clear-btn' : ''}
