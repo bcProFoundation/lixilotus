@@ -46,6 +46,7 @@ const AppBody = styled.div`
 
 export const NavBarHeader = styled(Header)`
   cursor: pointer;
+  background: transparent !important;
   width: 100%;
   display: flex;
   align-items: center;
@@ -100,11 +101,10 @@ export const AppContainer = styled.div`
     height: 100vh;
     scroll-behavior: smooth;
     overflow-y: auto;
-    overflow: scroll;
     flex-grow: 1;
     display: flex;
     flex-direction: row;
-    gap: 12vw;
+    gap: 10vw;
     justify-content: center;
     @media (max-width: 960px) {
       margin-left: 0 !important;

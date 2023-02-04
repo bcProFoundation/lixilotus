@@ -11,7 +11,9 @@ import {
   setUpload,
   removeUpload,
   removeAllUpload,
-  refreshLixiListSilentSuccess
+  refreshLixiListSilentSuccess,
+  saveEditorTextToCache,
+  deleteEditorTextFromCache
 } from './actions';
 import { AccountsState } from './state';
 
@@ -23,7 +25,8 @@ const initialState: AccountsState = accountsAdapter.getInitialState({
   envelopeUpload: null,
   pageAvatarUpload: null,
   pageCoverUpload: null,
-  postCoverUploads: []
+  postCoverUploads: [],
+  editorCache: null
 });
 
 export const accountReducer = createReducer(initialState, builder => {
@@ -102,6 +105,13 @@ export const accountReducer = createReducer(initialState, builder => {
     })
     .addCase(removeAllUpload, (state, action) => {
       state.postCoverUploads.length = 0;
+    })
+    .addCase(saveEditorTextToCache, (state, action) => {
+      const tempPost = action.payload;
+      state.editorCache = tempPost;
+    })
+    .addCase(deleteEditorTextFromCache, (state, action) => {
+      state.editorCache = '';
     })
     .addMatcher(isAnyOf(refreshLixiListSuccess, refreshLixiListSilentSuccess), (state, action) => {
       const { account, lixies } = action.payload;
