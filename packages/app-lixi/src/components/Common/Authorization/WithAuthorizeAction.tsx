@@ -24,6 +24,7 @@ export function WithAuthorizeAction<T>(WrappedComponent: React.ComponentType<T &
     };
 
     // props comes afterwards so the can override the default ones.
+    {/* @ts-ignore */ }
     return <WrappedComponent {...props} onClick={onClick} />;
   };
 

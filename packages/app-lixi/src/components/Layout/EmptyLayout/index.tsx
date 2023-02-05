@@ -116,6 +116,7 @@ const EmptyLayout: React.FC = (props: EmptyLayoutProps) => {
                 <AppContainer>
                   <Layout>
                     <Layout className="main-section-layout" style={{ paddingRight: '2rem' }}>
+                      {/* @ts-ignore */}
                       <Content className="content-layout">{children}</Content>
                     </Layout>
                   </Layout>

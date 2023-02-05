@@ -238,6 +238,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                   {/* Need to reimplement top bar */}
                   {/* <Topbar ref={ref}/> */}
                   <Topbar ref={setRef} />
+                  {/* @ts-ignore */}
                   <div className="container-content" id="scrollableDiv">
                     {/* <Layout
                             className="main-section-layout"

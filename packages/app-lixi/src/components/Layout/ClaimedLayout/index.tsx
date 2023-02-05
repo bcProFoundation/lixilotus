@@ -1,24 +1,23 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Layout, Spin } from 'antd';
-import Link from 'next/link';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 
 import { LeftOutlined, LoadingOutlined } from '@ant-design/icons';
 
-import ModalManager from '../../Common/ModalManager';
-import { GlobalStyle } from '../MainLayout/GlobalStyle';
-import { theme } from '../MainLayout/theme';
-import Sidebar from '@containers/Sidebar';
-import Topbar from '@containers/Topbar';
-import { loadLocale } from '@store/settings/actions';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
-import { injectStore } from 'src/utils/axiosClient';
-import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
 import { navBarHeaderList } from '@components/Common/navBarHeaderList';
+import Sidebar from '@containers/Sidebar';
+import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
+import Topbar from '@containers/Topbar';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { loadLocale } from '@store/settings/actions';
+import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
 import { useRouter } from 'next/router';
 import intl from 'react-intl-universal';
+import { injectStore } from 'src/utils/axiosClient';
+import ModalManager from '../../Common/ModalManager';
 import { NavBarHeader, PathDirection } from '../MainLayout';
+import { GlobalStyle } from '../MainLayout/GlobalStyle';
+import { theme } from '../MainLayout/theme';
 
 const { Content, Sider, Header } = Layout;
 
