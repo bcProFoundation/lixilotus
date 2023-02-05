@@ -1,4 +1,3 @@
-import { message } from 'antd';
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Logger } from '@nestjs/common';
 import { VError } from 'verror';
 

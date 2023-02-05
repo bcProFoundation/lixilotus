@@ -4,6 +4,7 @@
   "main": "dist/index.ts",
   "main:src": "src/index.ts",
   "license": "MIT",
+  "private": true,
   "dependencies": {
     "@ant-design/icons": "^5.0.1",
     "@babel/preset-typescript": "^7.18.6",
