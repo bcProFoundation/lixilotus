@@ -1,6 +1,5 @@
 {
   "name": "@bcpros/lixi-prisma",
-  "private": true,
   "version": "1.1.4",
   "author": "vince.tran8x@gmail.com",
   "description": "Db orm for lixi lotus application",

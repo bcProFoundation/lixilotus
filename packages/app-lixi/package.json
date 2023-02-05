@@ -21,7 +21,7 @@
     "@bcpros/lixi-components": "^1.1.4",
     "@bcpros/lixi-models": "^1.1.4",
     "@bcpros/lixi-prisma": "^1.1.4",
-    "@bcpros/minimal-xpi-slp-wallet": "^3.0.12",
+    "@bcpros/minimal-xpi-slp-wallet": "3.0.10",
     "@fortawesome/fontawesome-free": "^6.2.1",
     "@lexical/react": "^0.7.6",
     "@reduxjs/toolkit": "^1.9.1",
