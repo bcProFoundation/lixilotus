@@ -45,18 +45,20 @@ const StyledPageFeed = styled.div`
 `;
 
 const ToolboxBar = styled.div`
-  display: grid;
-  grid-template-columns: 80% 20%;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   div:not(.btn-search) {
     padding: 8px;
+    flex-grow: 1;
   }
   .anticon {
     font-size: 18px;
   }
   .ant-btn {
-    margin-left: 2rem;
+    margin-left: 1rem;
     height: 35px;
+    padding: 0 8px;
   }
   @media (max-width: 768px) {
     grid-template-columns: auto;

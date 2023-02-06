@@ -26,8 +26,9 @@ type PostsListingProps = {
 };
 
 const StyledPostsListing = styled.div`
-  margin-top: 1rem;
+  margin: 1rem auto;
   width: 100%;
+  max-width: 816px;
   &::-webkit-scrollbar {
     width: 5px;
   }

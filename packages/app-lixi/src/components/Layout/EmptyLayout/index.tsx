@@ -62,7 +62,7 @@ export const AppContainer = styled.div`
     }
   }
   .ant-layout.ant-layout-has-sider {
-    gap: 4rem;
+    gap: 2rem;
   }
   .main-section-layout {
     @media (max-width: 768px) {
