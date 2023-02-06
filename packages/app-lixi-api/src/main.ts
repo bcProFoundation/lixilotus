@@ -13,7 +13,7 @@ import loggerConfig from './logger.config';
 import { join } from 'path';
 import { contentParser } from 'fastify-multer';
 
-const allowedOrigins = [process.env.SENDLOTUS_URL, process.env.BASE_URL, process.env.ABCPAY_URL];
+const allowedOrigins = [process.env.SENDLOTUS_URL, process.env.BASE_URL, process.env.ABCPAY_URL, process.env.ABCPAY_SWAP_URL];
 
 async function bootstrap() {
   const POST_LIMIT = 1024 * 100; /* Max POST 100 kb */
@@ -43,15 +43,15 @@ async function bootstrap() {
   process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'local'
     ? app.enableCors()
     : app.enableCors({
-        origin: function (origin, callback) {
-          if (!origin) return callback(null, true);
-          if (allowedOrigins.indexOf(origin) === -1) {
-            const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-            return callback(new Error(msg), false);
-          }
-          return callback(null, true);
+      origin: function (origin, callback) {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+          const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+          return callback(new Error(msg), false);
         }
-      });
+        return callback(null, true);
+      }
+    });
 
   // Prisma
   const prismaService: PrismaService = app.get(PrismaService);
