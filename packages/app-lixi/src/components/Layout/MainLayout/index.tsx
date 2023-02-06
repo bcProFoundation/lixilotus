@@ -104,8 +104,8 @@ export const AppContainer = styled.div`
     flex-grow: 1;
     display: flex;
     flex-direction: row;
-    gap: 10vw;
-    justify-content: center;
+    gap: 2rem;
+    justify-content: flex-start;
     @media (max-width: 960px) {
       margin-left: 0 !important;
     }
@@ -121,6 +121,11 @@ export const AppContainer = styled.div`
         background-color: rgba(0, 0, 0, 0.5);
         box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
       }
+    }
+
+    .content-child {
+      width: 100%;
+      margin: 0 auto;
     }
   }
 `;
@@ -255,7 +260,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                           <SidebarRanking></SidebarRanking>
                         )} */}
                     <SidebarShortcut />
-                    {children}
+                    <div className="content-child">{children}</div>
                     {/* This below is just a dummy sidebar */}
                     <DummySidebar />
                     <Footer notifications={notifications} />

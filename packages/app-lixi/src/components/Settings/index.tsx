@@ -153,7 +153,8 @@ const AWRow = styled.div`
 
 export const WrapperPage = styled.div`
   width: 100%;
-  margin-top: 1rem;
+  max-width: 816px;
+  margin: 1rem auto;
   padding: 20px 30px;
   background: #fff;
   border-radius: 20px;
