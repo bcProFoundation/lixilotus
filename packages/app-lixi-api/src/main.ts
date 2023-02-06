@@ -13,7 +13,13 @@ import loggerConfig from './logger.config';
 import { join } from 'path';
 import { contentParser } from 'fastify-multer';
 
-const allowedOrigins = [process.env.SENDLOTUS_URL, process.env.BASE_URL, process.env.ABCPAY_URL, process.env.ABCPAY_SWAP_URL];
+const allowedOrigins = [
+  process.env.SENDLOTUS_URL,
+  process.env.BASE_URL,
+  process.env.ABCPAY_URL,
+  'https://swap.abcpay.cash',
+  'https://swap-dev.abcpay.cash'
+];
 
 async function bootstrap() {
   const POST_LIMIT = 1024 * 100; /* Max POST 100 kb */
