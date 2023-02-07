@@ -18,6 +18,7 @@ import { NavBarHeader, PathDirection } from '@components/Layout/MainLayout';
 import { burnForUpDownVote, getLatestBurnForToken } from '@store/burn';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import _ from 'lodash';
 
 const UpDownButton = styled(Button)`
   background: rgb(158, 42, 156);
@@ -91,7 +92,6 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
 
   const handleBurn = async (isUpVote: boolean) => {
     try {
-      handleSubmit(onSubmit);
       if (slpBalancesAndUtxos.nonSlpUtxos.length == 0) {
         throw new Error('Insufficient funds');
       }
@@ -102,6 +102,7 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
       const burnType = isUpVote ? BurnType.Up : BurnType.Down;
       const burnedBy = hash160;
       const burnForId = isToken ? token.id : '';
+      const burnValue = _.isNil(control._formValues.burnedValue) ? XpiToBurn[0].value : control._formValues.burnedValue;
 
       const txHex = await burnXpi(
         XPI,
@@ -112,7 +113,7 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
         isToken && BurnForType.Token,
         burnedBy,
         burnForId,
-        control._formValues.burnedValue
+        burnValue
       );
 
       const burnCommand: BurnCommand = {
@@ -121,7 +122,7 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
         burnForType: BurnForType.Token,
         burnedBy,
         burnForId,
-        burnValue: control._formValues.burnedValue
+        burnValue
       };
 
       dispatch(burnForUpDownVote(burnCommand));
@@ -181,7 +182,7 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
             <RadioStyle
               {...fieldProps}
               value={value}
-              defaultValue={XpiToBurn[0].value}
+              defaultValue={XpiToBurn.find(xpi => xpi.value === 1).value}
               options={XpiToBurn.map(xpi => xpi.value)}
               optionType="button"
               buttonStyle="solid"
