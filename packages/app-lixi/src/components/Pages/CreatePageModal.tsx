@@ -148,7 +148,16 @@ export const CreatePageModal: React.FC<CreatePageModalProps> = ({ accountId, dis
           title={intl.get('page.createNewPage')}
           visible={true}
           onCancel={handleOnCancel}
-          footer={null}
+          footer={
+            <Button
+              type="primary"
+              htmlType="submit"
+              onClick={handleOnCreateNewPage}
+              disabled={!createPageFormDataIsValid}
+            >
+              {intl.get('page.createPage')}
+            </Button>
+          }
           style={{ top: '0 !important' }}
         >
           <Form
@@ -197,17 +206,6 @@ export const CreatePageModal: React.FC<CreatePageModalProps> = ({ accountId, dis
             <Form.Item label={intl.get('page.description')}>
               <TextArea onChange={e => handleNewPageDescriptionInput(e)} rows={4} />
               <TextCustom>{intl.get('text.createPageDescription')}</TextCustom>
-            </Form.Item>
-
-            <Form.Item wrapperCol={{ offset: 0, span: 24 }} style={{ textAlign: 'center' }}>
-              <Button
-                type="primary"
-                htmlType="submit"
-                onClick={handleOnCreateNewPage}
-                disabled={!createPageFormDataIsValid}
-              >
-                {intl.get('page.createPage')}
-              </Button>
             </Form.Item>
           </Form>
         </Modal>

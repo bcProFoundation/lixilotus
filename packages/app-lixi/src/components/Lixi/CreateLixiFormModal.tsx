@@ -974,7 +974,17 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
         title={intl.get('lixi.createLixi')}
         visible={true}
         onCancel={handleOnCancel}
-        footer={null}
+        footer={
+          <Button
+            type="primary"
+            className="create-btn"
+            onClick={() => handleSubmitCreateLixi()}
+            disabled={!createLixiFormDataIsValid}
+            style={{ width: '143px' }}
+          >
+            {intl.get('account.createLixi')}
+          </Button>
+        }
         style={{ top: '0 !important' }}
       >
         <CreateForm className="form-parent">
@@ -1208,16 +1218,6 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
             </Form.Item>
           </CreateForm>
         </CreateForm>
-
-        <Button
-          type="primary"
-          className="create-btn"
-          onClick={() => handleSubmitCreateLixi()}
-          disabled={!createLixiFormDataIsValid}
-          style={{ width: '143px' }}
-        >
-          {intl.get('account.createLixi')}
-        </Button>
       </Modal>
 
       {/* Envelope modal */}

@@ -82,11 +82,15 @@ export const UploadAvatarCoverModal: React.FC<UploadAvatarCoverProps> = (props: 
   return (
     <Modal
       width={500}
-      className="custom-create-lixi-modal"
+      className="custom-edit-page-modal"
       title={isAvatar ? intl.get('page.avatar') : intl.get('page.cover')}
       visible={true}
       onCancel={handleOnCancel}
-      footer={null}
+      footer={
+        <Button type="primary" htmlType="submit" onClick={handleOnEditPage}>
+          {intl.get('post.upload')}
+        </Button>
+      }
       style={{ top: '0 !important' }}
     >
       <Form>
@@ -101,9 +105,7 @@ export const UploadAvatarCoverModal: React.FC<UploadAvatarCoverProps> = (props: 
         )}
       </Form>
 
-      <Button type="primary" htmlType="submit" onClick={handleOnEditPage}>
-        {intl.get('post.upload')}
-      </Button>
+      
     </Modal>
   );
 };

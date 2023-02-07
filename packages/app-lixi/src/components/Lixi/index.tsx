@@ -117,7 +117,7 @@ const InfoCard = styled.div`
   border-radius: 24px;
   height: fit-content;
   @media (min-width: 768px) {
-    height: 315px;
+    height: auto;
   }
 
   img {
