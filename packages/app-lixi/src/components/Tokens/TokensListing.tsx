@@ -25,7 +25,7 @@ import {
 } from '@store/tokens';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
 import { formatBalance } from '@utils/cashMethods';
-import { Button, Form, Image, Input, InputRef, message, Modal, notification, Space, Table } from 'antd';
+import { Button, Form, Image, Input, InputRef, message, Modal, notification, Space, Table, Tooltip } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { ColumnType } from 'antd/lib/table';
 import { FilterConfirmProps } from 'antd/lib/table/interface';
@@ -40,7 +40,9 @@ import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import makeBlockie from 'ethereum-blockies-base64';
 import BurnSvg from '@assets/icons/burn.svg';
+import UpVoteSvg from '@assets/icons/upVotePurple.svg';
 import { Counter } from '@components/Common/Counter';
+import { openModal } from '@store/modal/actions';
 
 const StyledTokensListing = styled.div``;
 
@@ -229,13 +231,24 @@ const TokensListing: React.FC = () => {
       // fixed: 'right',
       render: (_, record) => (
         <Space size="middle">
-          <Button
-            type="text"
-            className="outline-btn"
-            icon={<BurnSvg />}
-            style={{ fontSize: '27px' }}
-            onClick={() => burnToken(record.id)}
-          />
+          <Tooltip title={intl.get('general.burnUp')}>
+            <Button
+              type="text"
+              className="outline-btn"
+              icon={<UpVoteSvg />}
+              style={{ fontSize: '27px', color: '#9E2A9C' }}
+              onClick={() => burnToken(record.id)}
+            />
+          </Tooltip>
+          <Tooltip title={intl.get('general.customBurn')}>
+            <Button
+              type="text"
+              className="outline-btn"
+              icon={<BurnSvg />}
+              style={{ fontSize: '27px' }}
+              onClick={() => openBurnModal(record)}
+            />
+          </Tooltip>
         </Space>
       )
     }
@@ -309,6 +322,10 @@ const TokensListing: React.FC = () => {
     handleBurnForToken(true, id);
   };
 
+  const openBurnModal = (token: Token) => {
+    dispatch(openModal('BurnModal', { isToken: true, token: token }));
+  };
+
   const addTokenbyId = async data => {
     dispatch(postToken(data.tokenId));
     setIsModalVisible(false);
@@ -337,7 +354,7 @@ const TokensListing: React.FC = () => {
       <Modal
         className="modal-import-token"
         title={intl.get('token.importToken')}
-        visible={isModalVisible}
+        open={isModalVisible}
         onOk={handleSubmit(addTokenbyId)}
         onCancel={() => setIsModalVisible(!isModalVisible)}
         cancelButtonProps={{ type: 'primary' }}
