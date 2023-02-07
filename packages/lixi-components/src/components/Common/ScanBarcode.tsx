@@ -134,7 +134,7 @@ const ScanBarcode = (props: ScanBarcodeProps) => {
             </div>
           </>
         }
-        visible={visible}
+        open={visible}
         onCancel={() => setVisible(false)}
         destroyOnClose={true}
         footer={

@@ -306,7 +306,7 @@ const SendComponent: React.FC = () => {
 
   return (
     <>
-      <Modal title="Modal. Send" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+      <Modal title="Modal. Send" open={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
         <p>
           {intl.get('send.sendModalTitle', {
             value: formData.value,

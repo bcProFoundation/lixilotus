@@ -128,11 +128,11 @@ const PagesListing: React.FC<PagesListingProps> = ({ className }: PagesListingPr
         />
       </div>
 
-      <Modal title="Are you sure to down vote shop?" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+      <Modal title="Are you sure to down vote shop?" open={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
         <p>Some contents...</p>
       </Modal>
 
-      <Modal title="Qr code to claim lotus" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+      <Modal title="Qr code to claim lotus" open={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
         {isShowQrCode && selectedAccount?.address && <QRCode address={selectedAccount?.address} />}
       </Modal>
     </div>
