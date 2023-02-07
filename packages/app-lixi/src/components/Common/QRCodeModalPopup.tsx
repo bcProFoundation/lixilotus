@@ -50,7 +50,7 @@ export const QRCodeModalPopup: React.FC<QRCodeModalProps> = (props: QRCodeModalP
           <Descriptions bordered>
             <Descriptions.Item label={<QRCode address={props.address} size={300} />}>
               {/* <Button type='primary' onClick={handleCopy}> */}
-              <Button type="primary" style={{width: '76px'}}>
+              <Button type="primary" style={{width: '91px'}}>
                 <CopyToClipboard text={props.address} onCopy={handleOnCopy}>
                   <div>
                     <CopyOutlined style={{ fontSize: '24px', color: '#fff' }} />
@@ -60,7 +60,7 @@ export const QRCodeModalPopup: React.FC<QRCodeModalProps> = (props: QRCodeModalP
               </Button>
               <br />
               <br />
-              <Button type="primary" style={{width: '76px'}} onClick={handleCancel}>
+              <Button type="primary" style={{width: '91px'}} onClick={handleCancel}>
                 <CloseCircleOutlined style={{ fontSize: '24px', color: '#fff' }} />
                 <br /> {intl.get('special.cancel')}
               </Button>
