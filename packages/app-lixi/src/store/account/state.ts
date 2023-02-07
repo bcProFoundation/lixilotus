@@ -11,4 +11,5 @@ export interface AccountsState extends EntityState<Account> {
   pageCoverUpload: Upload;
   pageAvatarUpload: Upload;
   postCoverUploads: Upload[];
+  editorCache: Nullable<string> | undefined;
 }

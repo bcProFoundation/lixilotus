@@ -1,11 +1,3 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- */
-
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import {
   LexicalTypeaheadMenuPlugin,
@@ -16,6 +8,29 @@ import { $createTextNode, $getSelection, $isRangeSelection, TextNode } from 'lex
 import * as React from 'react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import * as ReactDOM from 'react-dom';
+import { Divider, List, Typography } from 'antd';
+import styled from 'styled-components';
+
+const StyledEmojiList = styled(List)`
+  position: relative;
+  bottom: -25px;
+  z-index: 1000;
+  width: 200px;
+  background: white;
+  height: 200px;
+  overflow: auto;
+
+  .ant-list-items {
+    border-radius: 8px;
+  }
+`;
+
+const StyledEmojiListItem = styled(List.Item)`
+  border-radius: 8px;
+  &:hover {
+    background-color: #eee;
+  }
+`;
 
 class EmojiOption extends TypeaheadOption {
   title: string;
@@ -35,25 +50,13 @@ class EmojiOption extends TypeaheadOption {
     this.keywords = options.keywords || [];
   }
 }
-function EmojiMenuItem({
-  index,
-  isSelected,
-  onClick,
-  onMouseEnter,
-  option
-}: {
-  index: number;
-  isSelected: boolean;
-  onClick: () => void;
-  onMouseEnter: () => void;
-  option: EmojiOption;
-}) {
+function EmojiMenuItem({ index, isSelected, option }: { index: number; isSelected: boolean; option: EmojiOption }) {
   let className = 'item';
   if (isSelected) {
     className += ' selected';
   }
   return (
-    <li
+    <div
       key={option.key}
       tabIndex={-1}
       className={className}
@@ -61,13 +64,11 @@ function EmojiMenuItem({
       role="option"
       aria-selected={isSelected}
       id={'typeahead-item-' + index}
-      onMouseEnter={onMouseEnter}
-      onClick={onClick}
     >
       <span className="text">
         {option.emoji} {option.title}
       </span>
-    </li>
+    </div>
   );
 }
 
@@ -84,7 +85,7 @@ type Emoji = {
 
 const MAX_EMOJI_SUGGESTION_COUNT = 10;
 
-const EmojiPickerPlugin: React.FC = () => {
+const EmojiPickerPlugin: React.FC<any> = () => {
   const [editor] = useLexicalComposerContext();
   const [queryString, setQueryString] = useState<string | null>(null);
   const [emojis, setEmojis] = useState<Array<Emoji>>([]);
@@ -157,26 +158,31 @@ const EmojiPickerPlugin: React.FC = () => {
 
         return anchorElementRef.current && options.length
           ? ReactDOM.createPortal(
-              <div className="typeahead-popover emoji-menu">
-                <ul>
-                  {options.map((option: EmojiOption, index) => (
-                    <div key={option.key}>
-                      <EmojiMenuItem
-                        index={index}
-                        isSelected={selectedIndex === index}
-                        onClick={() => {
-                          setHighlightedIndex(index);
-                          selectOptionAndCleanUp(option);
-                        }}
-                        onMouseEnter={() => {
-                          setHighlightedIndex(index);
-                        }}
-                        option={option}
-                      />
-                    </div>
-                  ))}
-                </ul>
-              </div>,
+              <StyledEmojiList
+                className="typeahead-popover emoji-menu"
+                bordered
+                size="small"
+                dataSource={options}
+                renderItem={(option: EmojiOption, index) => (
+                  <StyledEmojiListItem
+                    onClick={() => {
+                      setHighlightedIndex(index);
+                      selectOptionAndCleanUp(option);
+                    }}
+                    onMouseEnter={() => {
+                      setHighlightedIndex(index);
+                    }}
+                    style={{ backgroundColor: selectedIndex === index ? '#eee' : null }}
+                  >
+                    <EmojiMenuItem
+                      index={index}
+                      key={option.key}
+                      isSelected={selectedIndex === index}
+                      option={option}
+                    />
+                  </StyledEmojiListItem>
+                )}
+              ></StyledEmojiList>,
               anchorElementRef.current
             )
           : null;

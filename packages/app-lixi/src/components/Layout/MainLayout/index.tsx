@@ -46,6 +46,7 @@ const AppBody = styled.div`
 
 export const NavBarHeader = styled(Header)`
   cursor: pointer;
+  background: transparent !important;
   width: 100%;
   display: flex;
   align-items: center;
@@ -100,12 +101,11 @@ export const AppContainer = styled.div`
     height: 100vh;
     scroll-behavior: smooth;
     overflow-y: auto;
-    overflow: scroll;
     flex-grow: 1;
     display: flex;
     flex-direction: row;
-    gap: 12vw;
-    justify-content: center;
+    gap: 2rem;
+    justify-content: flex-start;
     @media (max-width: 960px) {
       margin-left: 0 !important;
     }
@@ -121,6 +121,11 @@ export const AppContainer = styled.div`
         background-color: rgba(0, 0, 0, 0.5);
         box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
       }
+    }
+
+    .content-child {
+      width: 100%;
+      margin: 0 auto;
     }
   }
 `;
@@ -238,6 +243,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                   {/* Need to reimplement top bar */}
                   {/* <Topbar ref={ref}/> */}
                   <Topbar ref={setRef} />
+                  {/* @ts-ignore */}
                   <div className="container-content" id="scrollableDiv">
                     {/* <Layout
                             className="main-section-layout"
@@ -254,7 +260,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                           <SidebarRanking></SidebarRanking>
                         )} */}
                     <SidebarShortcut />
-                    {children}
+                    <div className="content-child">{children}</div>
                     {/* This below is just a dummy sidebar */}
                     <DummySidebar />
                     <Footer notifications={notifications} />

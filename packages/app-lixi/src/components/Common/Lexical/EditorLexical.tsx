@@ -8,19 +8,19 @@ import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
 import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
 import TreeViewPlugin from './plugins/TreeViewPlugin';
-import EmoticonPlugin from './plugins/EmoticonPlugin';
+// import EmoticonPlugin from './plugins/EmoticonPlugin';
 import MyCustomAutoFocusPlugin from './plugins/MyCustomAutoFocusPlugin';
 import editorConfig from './editorConfig';
 import CustomButtonSubmitPlugin from './plugins/CustomButtonSubmitPlugin';
 import onChange from './onChange';
-import EmojisPlugin from './plugins/EmoticonPlugin';
+import EmojisPlugin from './plugins/EmojisPlugin';
+import EmojiPickerPlugin from './plugins/EmojiPickerPlugin';
 import TwitterPlugin from './plugins/TwitterPlugin';
 import AutoLinkPlugin from './plugins/AutoLinkPlugin';
 import AutoEmbedPlugin from './plugins/AutoEmbedPlugin';
 import { MultiUploader } from '../Uploader/MultiUploader';
 import { PictureOutlined } from '@ant-design/icons';
 import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
-import EmojiToolbarButtonsLexical from './plugins/EmojiToolbarButtonsLexical/EmojiToolbarButtonsLexical';
 import styled from 'styled-components';
 import LinkPlugin from './plugins/LinkPlugin';
 import ButtonLinkPlugin from './plugins/ButtonLinkPlugin';
@@ -104,6 +104,9 @@ const EditorLexical = (props: EditorLexicalProps) => {
   const { initialContent, onSubmit, isEditMode, loading } = props;
   const [floatingAnchorElem, setFloatingAnchorElem] = useState<HTMLDivElement | null>(null);
   const postCoverUploads = useAppSelector(getPostCoverUploads);
+  const defaultHtmlString = `<p class="EditorLexical_paragraph"><br><br></p>`;
+
+  console.log(initialContent);
 
   const onRef = (_floatingAnchorElem: HTMLDivElement) => {
     if (_floatingAnchorElem !== null) {
@@ -144,7 +147,9 @@ const EditorLexical = (props: EditorLexicalProps) => {
             <LinkPlugin />
             <HashtagPlugin />
             <AutoEmbedPlugin />
-            <MyCustomAutoFocusPlugin initialContent={isEditMode ? initialContent : ''} />
+            <MyCustomAutoFocusPlugin
+              initialContent={isEditMode || initialContent !== defaultHtmlString ? initialContent : ''}
+            />
             {floatingAnchorElem && (
               <>
                 <FloatingLinkEditorPlugin anchorElem={floatingAnchorElem} />
@@ -163,7 +168,7 @@ const EditorLexical = (props: EditorLexicalProps) => {
               </Image.PreviewGroup>
             </div>
             <div className="EditorLexical_action">
-              <EmojiToolbarButtonsLexical />
+              <EmojiPickerPlugin />
               <MultiUploader
                 type={UPLOAD_TYPES.POST}
                 isIcon={true}
@@ -176,7 +181,7 @@ const EditorLexical = (props: EditorLexicalProps) => {
               <TwitterPlugin />
             </div>
           </div>
-          <CustomButtonSubmitPlugin onSubmit={value => onSubmit(value)} loading={loading} />
+          <CustomButtonSubmitPlugin onSubmit={value => onSubmit(value)} loading={loading} isEditMode={isEditMode} />
         </LexicalComposer>
       </StyledEditorLexical>
     </>

@@ -62,7 +62,7 @@ export const AppContainer = styled.div`
     }
   }
   .ant-layout.ant-layout-has-sider {
-    gap: 4rem;
+    gap: 2rem;
   }
   .main-section-layout {
     @media (max-width: 768px) {
@@ -116,6 +116,7 @@ const EmptyLayout: React.FC = (props: EmptyLayoutProps) => {
                 <AppContainer>
                   <Layout>
                     <Layout className="main-section-layout" style={{ paddingRight: '2rem' }}>
+                      {/* @ts-ignore */}
                       <Content className="content-layout">{children}</Content>
                     </Layout>
                   </Layout>

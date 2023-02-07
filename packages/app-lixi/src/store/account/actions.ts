@@ -62,3 +62,5 @@ export const registerViaEmailNoVerifiedFailure = createAction<any>('account/regi
 export const verifyEmail = createAction<LoginViaEmailCommand>('account/verifyEmail');
 export const verifyEmailSuccess = createAction<any>('account/verifyEmailSuccess');
 export const verifyEmailFailure = createAction<any>('account/verifyEmailFailure');
+export const saveEditorTextToCache = createAction<string>('posts/saveEditorToCache');
+export const deleteEditorTextFromCache = createAction('posts/deleteEditorTextFromCache');

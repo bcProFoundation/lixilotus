@@ -116,7 +116,8 @@ const StyledLogo = styled.div`
 `;
 
 const ShortcutSideBar = styled(Sider)`
-  position: sticky;
+  position: sticky !important;
+  background: transparent !important;
   top: 0px;
   height: 100vh;
   flex: none !important;
@@ -141,13 +142,14 @@ const ShortcutSideBar = styled(Sider)`
   @media (max-width: 960px) {
     display: none;
   }
+  // Hard width zero to keep correct layout. Change when shortcut ranking implement
   @media (min-width: 960px) and (max-width: 1400px) {
-    min-width: 220px !important;
-    max-width: 220px !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
   }
   @media (min-width: 1400px) {
-    min-width: 250px !important;
-    max-width: 250px !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
   }
 `;
 

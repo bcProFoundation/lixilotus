@@ -50,5 +50,9 @@
     "hooks": {
       "pre-commit": "yarn precommit"
     }
+  },
+  "resolutions": {
+    "@types/react": "<18.0.0",
+    "@types/react-dom": "<18.0.0"
   }
 }

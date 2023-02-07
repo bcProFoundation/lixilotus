@@ -128,6 +128,7 @@ const PostDetailLayout: React.FC = (props: PostDetailsLayoutProps) => {
                     <Sidebar />
                     <Layout>
                       <Topbar />
+                      {/* @ts-ignore */}
                       <Content>{children}</Content>
                     </Layout>
                   </Layout>

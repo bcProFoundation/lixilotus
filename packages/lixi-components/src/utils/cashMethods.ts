@@ -26,7 +26,7 @@ export const toSmallestDenomination = (sendAmount, cashDecimals = currency.cashD
 
   // Validate
   // Input should be a BigNumber with no more decimal places than cashDecimals
-  const isValidSendAmount = BigNumber.isBigNumber(sendAmount) && sendAmount.dp() <= cashDecimals;
+  const isValidSendAmount = BigNumber.isBigNumber(sendAmount) && (sendAmount.dp() || 0 <= cashDecimals);
   if (!isValidSendAmount) {
     return false;
   }

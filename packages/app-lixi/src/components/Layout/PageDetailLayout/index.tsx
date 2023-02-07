@@ -48,7 +48,7 @@ export const AppContainer = styled.div`
     padding: 0 4px;
   }
   .ant-layout.ant-layout-has-sider {
-    gap: 4rem;
+    gap: 2rem;
     justify-content: center;
   }
   .main-section-layout {
@@ -120,6 +120,7 @@ const PageDetailLayout: React.FC = (props: PageDetailsLayoutProps) => {
                         style={{ paddingRight: '2rem', maxWidth: '100%', marginTop: '8px' }}
                       >
                         <Topbar ref={setRef} />
+                        {/* @ts-ignore */}
                         <Content className="content-layout">{children}</Content>
                       </Layout>
                     </Layout>
