@@ -337,7 +337,7 @@ const TokensListing: React.FC = () => {
       <Modal
         className="modal-import-token"
         title={intl.get('token.importToken')}
-        visible={isModalVisible}
+        open={isModalVisible}
         onOk={handleSubmit(addTokenbyId)}
         onCancel={() => setIsModalVisible(!isModalVisible)}
         cancelButtonProps={{ type: 'primary' }}

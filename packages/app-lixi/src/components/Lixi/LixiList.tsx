@@ -445,7 +445,7 @@ const LixiList = ({ lixies }: LixiListProps) => {
                   <StyledFilterModal
                     title="Filter"
                     width={'100%'}
-                    visible={isModalVisible}
+                    open={isModalVisible}
                     closable={false}
                     onOk={() => setModalVisible(false)}
                     onCancel={() => setModalVisible(false)}

@@ -7,6 +7,7 @@ import { AvatarUser } from './AvatarUser';
 import intl from 'react-intl-universal';
 import { useAppSelector } from '@store/hooks';
 import { getSelectedAccount } from '@store/account/selectors';
+import type { MenuProps } from 'antd';
 
 type InfoCardProps = {
   imgUrl: string;
@@ -90,16 +91,12 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
   const selectedAccount = useAppSelector(getSelectedAccount);
   const history = useRouter();
 
-  const DropdownMenu = (
-    <Menu
-      items={[
-        {
-          key: 'editPost',
-          label: <a onClick={onEditPostClick}>{intl.get('post.editPost')}</a>
-        }
-      ]}
-    />
-  );
+  const items: MenuProps['items'] = [
+    {
+      key: 'editPost',
+      label: <a onClick={onEditPostClick}>{intl.get('post.editPost')}</a>
+    }
+  ];
 
   const postLocation = () => {
     if (!token && !page) {
@@ -136,7 +133,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
           </div>
         </CardUser>
         <Dropdown
-          overlay={DropdownMenu}
+          menu={{ items }}
           trigger={[selectedAccount && selectedAccount.address === postAccountAddress ? 'click' : 'contextMenu']}
           arrow={{ pointAtCenter: true }}
           placement="bottomRight"

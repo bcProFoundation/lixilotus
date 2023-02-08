@@ -580,7 +580,7 @@ const SidebarRanking = () => {
         </ManageAccounts>
       )}
 
-      <StyledModal title="Import account" visible={open} footer={null} onCancel={() => setOpen(false)}>
+      <StyledModal title="Import account" open={open} footer={null} onCancel={() => setOpen(false)}>
         <p>{intl.get('settings.backupAccountHint')}</p>
         <AntdFormWrapper>
           <Form style={{ width: 'auto' }} form={form}>

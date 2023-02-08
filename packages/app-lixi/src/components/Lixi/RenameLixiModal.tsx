@@ -53,7 +53,7 @@ export const RenameLixiModal: React.FC<RenameLixiModalProps> = (props: RenameLix
     <>
       <Modal
         title={`${intl.get('lixi.renameLixi')} ${lixi.name}`}
-        visible={true}
+        open={true}
         onOk={handleOnOk}
         onCancel={handleOnCancel}
       >

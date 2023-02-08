@@ -26,7 +26,7 @@ const Sidebar = ({ className }: SidebarProps) => {
       closable={false}
       onClose={onToggleCollapsedNav}
       getContainer={false}
-      visible={!navCollapsed}
+      open={!navCollapsed}
     >
       <SidebarContent sidebarCollapsed={sidebarCollapsed} setSidebarCollapsed={setSidebarCollapsed} />
     </Drawer>

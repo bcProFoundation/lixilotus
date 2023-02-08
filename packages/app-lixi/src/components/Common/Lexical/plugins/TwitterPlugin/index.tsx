@@ -112,7 +112,7 @@ const TwitterPlugin: React.FC = () => {
       <Modal
         className="embed-tweet"
         title="Embed Tweet"
-        visible={isModalOpen}
+        open={isModalOpen}
         footer={null}
         onCancel={() => setIsModalOpen(false)}
       >
