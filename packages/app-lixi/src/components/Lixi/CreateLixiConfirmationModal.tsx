@@ -251,7 +251,7 @@ export const CreateLixiConfirmationModal: React.FC<CreateLixiConfirmationModalPr
     <>
       <Modal
         title={intl.get('lixi.settingConfirm')}
-        visible={true}
+        open={true}
         onOk={() => handleOnOk()}
         onCancel={() => handleOnCancel()}
       >

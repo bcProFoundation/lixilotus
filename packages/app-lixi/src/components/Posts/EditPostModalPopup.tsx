@@ -124,7 +124,7 @@ export const EditPostModalPopup: React.FC<EditPostModalProps> = props => {
     <Modal
       className="custom-modal-editor"
       title={intl.get('post.editPost')}
-      visible={true}
+      open={true}
       footer={null}
       onCancel={() => dispatch(closeModal())}
     >

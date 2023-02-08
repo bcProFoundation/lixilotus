@@ -972,7 +972,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
         width={1240}
         className="custom-create-lixi-modal"
         title={intl.get('lixi.createLixi')}
-        visible={true}
+        open={true}
         onCancel={handleOnCancel}
         footer={null}
         style={{ top: '0 !important' }}
@@ -1223,7 +1223,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
       {/* Envelope modal */}
       <Modal
         closable={false}
-        visible={isModalVisible}
+        open={isModalVisible}
         width={400}
         style={{
           flexDirection: 'column',

@@ -142,7 +142,7 @@ const ScanQRCode = (props: ScanQRCodeProps) => {
       </StyledScanQRCode>
       <StyledModal
         title={intl.get('general.scanQRCode')}
-        visible={visible}
+        open={visible}
         onCancel={() => setVisible(false)}
         destroyOnClose={true}
         footer={null}

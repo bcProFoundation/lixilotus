@@ -201,7 +201,7 @@ export const Uploader = ({ type, buttonName, buttonType, isIcon, showUploadList,
       >
         {uploadButton}
       </Upload>
-      <Modal visible={previewVisible} title={previewTitle} footer={null} onCancel={handleCancel}>
+      <Modal open={previewVisible} title={previewTitle} footer={null} onCancel={handleCancel}>
         <div style={{ width: '100%', height: '50vh', position: isMobile ? 'initial' : 'relative' }}>
           <Image alt="custom-upload" layout="fill" quality={100} src={previewImage} />
         </div>
