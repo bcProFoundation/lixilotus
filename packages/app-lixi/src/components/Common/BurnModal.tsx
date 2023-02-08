@@ -1,4 +1,4 @@
-import { Button, Form, Modal, Radio, Select } from 'antd';
+import { Button, Form, Modal, Radio } from 'antd';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
 import { closeModal } from '@store/modal/actions';
@@ -8,14 +8,12 @@ import UpDownSvg from '@assets/icons/upDownIcon.svg';
 import UpVoteSvg from '@assets/icons/upVote.svg';
 import DownVoteSvg from '@assets/icons/downVote.svg';
 import { WalletContext } from '@context/walletProvider';
-import React, { useState } from 'react';
+import React from 'react';
 import { Burn, Token } from '@bcpros/lixi-models';
 import styled from 'styled-components';
-import { XpiToBurn } from '@bcpros/lixi-models/constants/burnValue';
 import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { currency } from '@components/Common/Ticker';
-import { NavBarHeader, PathDirection } from '@components/Layout/MainLayout';
-import { burnForUpDownVote, getLatestBurnForToken } from '@store/burn';
+import { burnForUpDownVote } from '@store/burn';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import _ from 'lodash';
@@ -60,15 +58,16 @@ const RadioStyle = styled(Radio.Group)`
   }
 `;
 
+const DefaultXpiBurnValues = [1,2,3,5,8,13,20,40,100,200,1000];
+
 type BurnModalProps = {
-  isToken: boolean;
+  burnForType: BurnForType;
   token?: Token;
 } & React.HTMLProps<HTMLElement>;
 
 export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
-  const { isToken, token } = props;
+  const { burnForType, token } = props;
   const {
-    handleSubmit,
     formState: { errors },
     control
   } = useForm<Burn>();
@@ -79,16 +78,6 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
   const { burnXpi } = useXPI();
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
-
-  // const [newBurnValue, setNewBurnValue] = useState('');
-  // const handleNewBurnValueInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const { value } = e.target;
-  //   setNewBurnValue(value);
-  // };
-
-  const onSubmit: SubmitHandler<Burn> = data => {
-    console.log('data: ', data);
-  };
 
   const handleBurn = async (isUpVote: boolean) => {
     try {
@@ -101,8 +90,13 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
       const { fundingWif, hash160 } = currentWalletPath;
       const burnType = isUpVote ? BurnType.Up : BurnType.Down;
       const burnedBy = hash160;
-      const burnForId = isToken ? token.id : '';
-      const burnValue = _.isNil(control._formValues.burnedValue) ? XpiToBurn[0].value : control._formValues.burnedValue;
+      let burnForId;
+      if (burnForType == BurnForType.Token) {
+        burnForId = token.id
+      } else {
+        throw new Error('not support yet')
+      };
+      const burnValue = _.isNil(control._formValues.burnedValue) ? DefaultXpiBurnValues[0] : control._formValues.burnedValue;
 
       const txHex = await burnXpi(
         XPI,
@@ -110,7 +104,7 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
         slpBalancesAndUtxos.nonSlpUtxos,
         currency.defaultFee,
         burnType,
-        isToken && BurnForType.Token,
+        burnForType,
         burnedBy,
         burnForId,
         burnValue
@@ -119,7 +113,7 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
       const burnCommand: BurnCommand = {
         txHex,
         burnType,
-        burnForType: BurnForType.Token,
+        burnForType: burnForType,
         burnedBy,
         burnForId,
         burnValue
@@ -144,7 +138,7 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
   return (
     <Modal
       width={450}
-      className="custom-create-lixi-modal"
+      className="custom-burn-modal"
       open={true}
       onCancel={handleOnCancel}
       title={
@@ -167,7 +161,7 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
       style={{ top: '0 !important' }}
     >
       <Form>
-        <p>{intl.get('text.selectXpi', { name: isToken ? token.ticker : intl.get('text.post') })} </p>
+        <p>{intl.get('text.selectXpi', { name: burnForType == BurnForType.Token ? token.ticker : intl.get('text.post') })} </p>
 
         <Controller
           name="burnedValue"
@@ -175,15 +169,15 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
           rules={{
             required: {
               value: true,
-              message: intl.get('burn.selectXpi', { name: isToken ? token.ticker : intl.get('text.post') })
+              message: intl.get('burn.selectXpi', { name: burnForType == BurnForType.Token ? token.ticker : intl.get('text.post') })
             }
           }}
           render={({ field: { value, onChange, ...fieldProps } }) => (
             <RadioStyle
               {...fieldProps}
               value={value}
-              defaultValue={XpiToBurn.find(xpi => xpi.value === 1).value}
-              options={XpiToBurn.map(xpi => xpi.value)}
+              defaultValue={DefaultXpiBurnValues[0]}
+              options={DefaultXpiBurnValues.map(xpi => xpi)}
               optionType="button"
               buttonStyle="solid"
               onChange={value => onChange(value)}

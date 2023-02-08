@@ -236,7 +236,7 @@ const TokensListing: React.FC = () => {
               type="text"
               className="outline-btn"
               icon={<UpVoteSvg />}
-              style={{ fontSize: '27px', color: '#9E2A9C' }}
+              style={{ fontSize: '27px'}}
               onClick={() => burnToken(record.id)}
             />
           </Tooltip>
@@ -323,7 +323,7 @@ const TokensListing: React.FC = () => {
   };
 
   const openBurnModal = (token: Token) => {
-    dispatch(openModal('BurnModal', { isToken: true, token: token }));
+    dispatch(openModal('BurnModal', { burnForType: BurnForType.Token, token: token }));
   };
 
   const addTokenbyId = async data => {
