@@ -21,6 +21,14 @@ export class WorshipedPerson {
   @IsOptional()
   quote?: string;
 
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  bio?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  wikiDataId?: string;
+
   @Field(() => Date, { nullable: true })
   @IsOptional()
   dateOfBirth?: Date;

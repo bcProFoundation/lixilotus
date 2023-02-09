@@ -542,6 +542,8 @@ model WorshipedPerson {
   id                 String        @id @default(cuid())
   name               String
   avatar             UploadDetail? @relation("worshipedPersonAvatar")
+  bio                String?
+  wikiDataId         String?
   quote              String?       @default("")
   dateOfBirth        DateTime?     @map("date_of_birth") @db.Timestamptz(6)
   dateOfDeath        DateTime?     @map("date_of_death") @db.Timestamptz(6)
