@@ -8,6 +8,7 @@ import { FLUSH, PAUSE, PERSIST, persistStore, PURGE, REGISTER, REHYDRATE } from 
 import { api as commentsApi } from './comment/comments.api';
 import { api as pagesApi } from './page/pages.api';
 import { api as postApi } from './post/posts.api';
+import { api as worshipedPersonApi } from './worship/worshipedPerson.api';
 import rootReducer, { serverReducer } from './rootReducer';
 import rootSaga from './rootSaga';
 
@@ -53,6 +54,7 @@ const makeStore = (context: Context) => {
           .concat(pagesApi.middleware)
           .concat(postApi.middleware)
           .concat(commentsApi.middleware)
+          .concat(worshipedPersonApi.middleware)
           .concat(sagaMiddleware, routerMiddleware);
       },
       devTools:
