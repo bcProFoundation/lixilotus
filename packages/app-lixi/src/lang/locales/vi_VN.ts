@@ -32,6 +32,9 @@ export default {
   'text.createPageCategory': 'Chọn một danh mục mô tả loại hình kinh doanh, tổ chức hoặc chủ đề mà Trang đại diện.',
   'text.createPageDescription':
     'Viết về hoạt động kinh doanh của bạn, các dịch vụ bạn cung cấp hoặc mục đích của Trang.',
+  'text.post': 'bài viết',
+  'text.selectXpi': 'Bạn muốn đôt bao nhiêu Xpi cho {name}?',
+  'burn.selectXpi': 'Vui lòng chọn số lượng Xpi bạn muốn đôt cho {name}',
 
   /* 01.General */
   'general.tokens': 'Tokens',
@@ -85,6 +88,8 @@ export default {
   'general.burnUp': 'Đốt lên',
   'general.burnDown': 'Đốt xuống',
   'general.more': 'Thêm',
+  'general.goodOrNot': 'Tốt hay không?',
+  'general.customBurn': 'Tùy chọn đốt',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',

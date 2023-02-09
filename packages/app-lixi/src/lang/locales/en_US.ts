@@ -33,6 +33,9 @@ export default {
     'Choose a category that describes what type of business, organisation or topic the Page represents.',
   'text.createPageDescription':
     'Write about what your business does, the services that you provide or the purpose of the Page.',
+  'text.post': 'this post',
+  'text.selectXpi': 'How many XPI you want to burn for {name}?',
+  'burn.selectXpi': 'Please select Xpi you want to burn for {name}',
 
   /* 01.General */
   'general.tokens': 'Tokens',
@@ -86,6 +89,8 @@ export default {
   'general.burnUp': 'Burn up',
   'general.burnDown': 'Burn down',
   'general.more': 'More',
+  'general.goodOrNot': 'Good or not?',
+  'general.customBurn': 'Custom burn',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',

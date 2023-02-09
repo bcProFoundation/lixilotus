@@ -11,6 +11,7 @@ import { EditPostModalPopup } from '../Posts/EditPostModalPopup';
 import { CreatePageModal } from '@components/Pages/CreatePageModal';
 import { EditPageModal } from '@components/Pages/EditPageModal';
 import { UploadAvatarCoverModal } from './uploadImageModal';
+import { BurnModal } from './BurnModal';
 
 const modalComponentLookupTable = {
   CreateLixiConfirmationModal,
@@ -22,7 +23,8 @@ const modalComponentLookupTable = {
   EditPostModalPopup,
   CreatePageModal,
   EditPageModal,
-  UploadAvatarCoverModal
+  UploadAvatarCoverModal,
+  BurnModal
 };
 
 const ModalManager = () => {
