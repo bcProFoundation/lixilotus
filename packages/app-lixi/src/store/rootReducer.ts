@@ -27,6 +27,7 @@ import { CountriesState, StatesState } from './country/state';
 import { api as pagesApi } from './page/pages.api';
 import { api as postApi } from './post/posts.api';
 import { api as commentsApi } from './comment/comments.api';
+import { api as worshipedPersonApi } from './worship/worshipedPerson.api';
 import { LocalUserAccountsState } from './localAccount/state';
 import { localAccountsAdapter, localUserAccountReducer } from './localAccount/reducer';
 import { postReducer } from './post/reducer';
@@ -143,6 +144,7 @@ export const appReducer = combineReducers({
   [pagesApi.reducerPath]: pagesApi.reducer,
   [postApi.reducerPath]: postApi.reducer,
   [commentsApi.reducerPath]: commentsApi.reducer,
+  [worshipedPersonApi.reducerPath]: worshipedPersonApi.reducer,
   // This is use for useReduxEffect
   // Should be always at the end
   action: actionReducer
