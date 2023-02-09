@@ -117,6 +117,7 @@ export type CreateWorshipInput = {
 
 export type CreateWorshipedPersonInput = {
   avatar?: InputMaybe<Scalars['String']>;
+  bio?: InputMaybe<Scalars['String']>;
   cityId?: InputMaybe<Scalars['String']>;
   countryId?: InputMaybe<Scalars['String']>;
   dateOfBirth?: InputMaybe<Scalars['String']>;
@@ -124,6 +125,7 @@ export type CreateWorshipedPersonInput = {
   name: Scalars['String'];
   quote?: InputMaybe<Scalars['String']>;
   stateId?: InputMaybe<Scalars['String']>;
+  wikiDataId?: InputMaybe<Scalars['String']>;
 };
 
 export type Mutation = {
@@ -502,6 +504,7 @@ export type UploadDetail = {
 export type WorshipedPerson = {
   __typename?: 'WorshipedPerson';
   avatar?: Maybe<UploadDetail>;
+  bio?: Maybe<Scalars['String']>;
   city?: Maybe<City>;
   country?: Maybe<Country>;
   /** Identifies the date and time when the object was created. */
@@ -514,6 +517,7 @@ export type WorshipedPerson = {
   state?: Maybe<State>;
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
+  wikiDataId?: Maybe<Scalars['String']>;
 };
 
 export type WorshipedPersonConnection = {

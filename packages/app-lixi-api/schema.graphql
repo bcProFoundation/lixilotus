@@ -99,6 +99,7 @@ input CreateWorshipInput {
 
 input CreateWorshipedPersonInput {
   avatar: String
+  bio: String
   cityId: String
   countryId: String
   dateOfBirth: String
@@ -106,6 +107,7 @@ input CreateWorshipedPersonInput {
   name: String!
   quote: String
   stateId: String
+  wikiDataId: String
 }
 
 """
@@ -361,6 +363,7 @@ type UploadDetail {
 
 type WorshipedPerson {
   avatar: UploadDetail
+  bio: String
   city: City
   country: Country
 
@@ -375,6 +378,7 @@ type WorshipedPerson {
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
+  wikiDataId: String
 }
 
 type WorshipedPersonConnection {
