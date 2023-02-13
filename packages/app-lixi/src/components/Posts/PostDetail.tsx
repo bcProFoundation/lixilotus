@@ -366,6 +366,11 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     @media (max-width: 960px) {
       padding-bottom: 9rem;
     }
+    header {
+      padding: 0 !important;
+      margin-bottom: 1rem;
+      border-color: #c5c5c5;
+    }
     .reaction-container {
       display: flex;
       justify-content: space-between;

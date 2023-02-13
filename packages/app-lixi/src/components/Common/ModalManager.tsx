@@ -12,6 +12,8 @@ import { CreatePageModal } from '@components/Pages/CreatePageModal';
 import { EditPageModal } from '@components/Pages/EditPageModal';
 import { UploadAvatarCoverModal } from './uploadImageModal';
 import { BurnModal } from './BurnModal';
+import { ConfigProvider } from 'antd';
+import lightTheme from 'src/styles/themes/lightTheme';
 
 const modalComponentLookupTable = {
   CreateLixiConfirmationModal,
@@ -34,7 +36,11 @@ const ModalManager = () => {
     const { modalType, modalProps = {} } = modalDescription;
     const ModalComponent = modalComponentLookupTable[modalType];
 
-    return <ModalComponent {...modalProps} key={modalType + index} />;
+    return (
+      <ConfigProvider theme={lightTheme}>
+        <ModalComponent {...modalProps} key={modalType + index} />;
+      </ConfigProvider>
+    );
   });
 
   return <span>{renderedModals}</span>;
