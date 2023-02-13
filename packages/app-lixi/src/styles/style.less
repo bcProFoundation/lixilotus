@@ -69,13 +69,16 @@ code {
 }
 
 .ant-modal-content {
-  border-radius: 20px;
+  border-radius: 30px !important;
+  padding: 0 !important;
+  background: var(--bg-color-light-theme) !important;
 
   .ant-modal-header {
     background: var(--bg-color-light-theme);
     border-top-right-radius: 2rem;
     border-top-left-radius: 2rem;
     padding: 24px 32px;
+    margin: 0;
     border-bottom: 0;
 
     .ant-modal-title {
@@ -88,11 +91,43 @@ code {
 
   .ant-modal-body {
     background: var(--bg-color-light-theme);
-    border-bottom-right-radius: 2rem;
-    border-bottom-left-radius: 2rem;
     padding: 24px;
     position: relative;
   }
+
+  .ant-modal-footer {
+    margin: 0;
+    padding: 0px 24px 24px 24px;
+    border-bottom-right-radius: 2rem;
+    border-bottom-left-radius: 2rem;
+    background: var(--bg-color-light-theme);
+
+    .create-btn {
+      background-color: var(--color-primary);
+      color: #fff;
+      margin-right: 2%;
+      border-radius: 16px;
+
+      &:disabled{
+        background-color: var(--bg-color-disable);
+      }
+      &:hover{
+        box-shadow: 0px 0px 4px rgba(148, 31, 147, 0.5);
+      }
+
+      @media (max-width: 768px) {
+        margin-right: 0;
+      }
+    }
+  }
+}
+
+.ant-descriptions-item-label {
+  padding: 0 24px !important;
+  background-color: rgb(0 0 0 / 0%);
+}
+.ant-descriptions-item-content {
+  padding: 0 !important;
 }
 
 .custom-modal-editor {
@@ -257,13 +292,25 @@ code {
 }
 
 .ant-modal {
-  &&.custom-create-lixi-modal .custom-create-page-modal .custom-edit-page-modal .custom-burn-modal{
+  @media (max-width: 768px) {
+    top: 1% !important;
+    margin-bottom: 10%;
+  }
+
+  .ant-form-item-row {
+    display: contents;
+
+    .ant-picker {
+      height: 56px;
+    }
+  }
+
+  &.custom-create-lixi-modal .custom-create-page-modal .custom-edit-page-modal .custom-burn-modal {
     vertical-align: middle;
     width: 1240px;
 
     @media (max-width: 768px) {
       width: 400px !important;
-      top: 0px !important;
     }
 
     .ant-modal-body {

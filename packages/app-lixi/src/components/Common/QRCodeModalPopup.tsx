@@ -31,6 +31,9 @@ export const QRCodeModalPopup: React.FC<QRCodeModalProps> = (props: QRCodeModalP
       border-right: none;
     }
   `;
+  const StyledButton = styled(Button)`
+    min-width: 90px;
+  `
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -50,20 +53,20 @@ export const QRCodeModalPopup: React.FC<QRCodeModalProps> = (props: QRCodeModalP
           <Descriptions bordered>
             <Descriptions.Item label={<QRCode address={props.address} size={300} />}>
               {/* <Button type='primary' onClick={handleCopy}> */}
-              <Button type="primary">
+              <StyledButton type="primary">
                 <CopyToClipboard text={props.address} onCopy={handleOnCopy}>
                   <div>
                     <CopyOutlined style={{ fontSize: '24px', color: '#fff' }} />
                     <br /> {intl.get('special.copy')}
                   </div>
                 </CopyToClipboard>
-              </Button>
+              </StyledButton>
               <br />
               <br />
-              <Button type="primary" onClick={handleCancel}>
+              <StyledButton type="primary" onClick={handleCancel}>
                 <CloseCircleOutlined style={{ fontSize: '24px', color: '#fff' }} />
                 <br /> {intl.get('special.cancel')}
-              </Button>
+              </StyledButton>
             </Descriptions.Item>
           </Descriptions>
         </StyledModel>

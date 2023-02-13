@@ -17,6 +17,14 @@ export class CreateWorshipedPersonInput {
 
   @Field(() => String, { nullable: true })
   @IsOptional()
+  bio?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  wikiDataId?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
   dateOfBirth?: string;
 
   @Field(() => String, { nullable: true })
