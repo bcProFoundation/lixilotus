@@ -58,7 +58,7 @@ const RadioStyle = styled(Radio.Group)`
   }
 `;
 
-const DefaultXpiBurnValues = [1,2,3,5,8,13,20,40,100,200,1000];
+const DefaultXpiBurnValues = [1, 2, 3, 5, 8, 13, 20, 40, 100, 200, 1000];
 
 type BurnModalProps = {
   burnForType: BurnForType;
@@ -92,11 +92,13 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
       const burnedBy = hash160;
       let burnForId;
       if (burnForType == BurnForType.Token) {
-        burnForId = token.id
+        burnForId = token.id;
       } else {
-        throw new Error('not support yet')
-      };
-      const burnValue = _.isNil(control._formValues.burnedValue) ? DefaultXpiBurnValues[0] : control._formValues.burnedValue;
+        throw new Error('not support yet');
+      }
+      const burnValue = _.isNil(control._formValues.burnedValue)
+        ? DefaultXpiBurnValues[0]
+        : control._formValues.burnedValue;
 
       const txHex = await burnXpi(
         XPI,
@@ -161,7 +163,11 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
       style={{ top: '0 !important' }}
     >
       <Form>
-        <p>{intl.get('text.selectXpi', { name: burnForType == BurnForType.Token ? token.ticker : intl.get('text.post') })} </p>
+        <p>
+          {intl.get('text.selectXpi', {
+            name: burnForType == BurnForType.Token ? token.ticker : intl.get('text.post')
+          })}{' '}
+        </p>
 
         <Controller
           name="burnedValue"
@@ -169,7 +175,9 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
           rules={{
             required: {
               value: true,
-              message: intl.get('burn.selectXpi', { name: burnForType == BurnForType.Token ? token.ticker : intl.get('text.post') })
+              message: intl.get('burn.selectXpi', {
+                name: burnForType == BurnForType.Token ? token.ticker : intl.get('text.post')
+              })
             }
           }}
           render={({ field: { value, onChange, ...fieldProps } }) => (

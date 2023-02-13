@@ -89,6 +89,10 @@ input CreatePostInput {
   uploadCovers: [String!]
 }
 
+input CreateTokenInput {
+  tokenId: String!
+}
+
 input CreateWorshipInput {
   latitude: Decimal
   location: String
@@ -120,6 +124,7 @@ type Mutation {
   createComment(data: CreateCommentInput!): Comment!
   createPage(data: CreatePageInput!): Page!
   createPost(data: CreatePostInput!): Post!
+  createToken(data: CreateTokenInput!): Token!
   createWorship(data: CreateWorshipInput!): WorshipedPerson!
   createWorshipedPerson(data: CreateWorshipedPersonInput!): WorshipedPerson!
   updatePage(data: UpdatePageInput!): Page!
@@ -280,10 +285,12 @@ type Query {
   ): PostResponse!
   allPostsByTokenId(after: String, before: String, first: Int, id: String, last: Int, orderBy: PostOrder, skip: Int): PostConnection!
   allPostsByUserId(after: String, before: String, first: Int, id: String, last: Int, orderBy: PostOrder, skip: Int): PostConnection!
+  allTokens(after: String, before: String, first: Int, last: Int, orderBy: TokenOrder, query: String, skip: Int): TokenConnection!
   allWorshipedPerson(after: String, before: String, first: Int, last: Int, orderBy: WorshipedPersonOrder, query: String, skip: Int): WorshipedPersonConnection!
   comment(id: String!): Comment!
   page(id: String!): Page!
   post(id: String!): Post!
+  token(tokenId: String!): Token!
   worshipedPerson(id: String!): WorshipedPerson!
 }
 
@@ -298,6 +305,7 @@ type Subscription {
   commentCreated: Comment!
   pageCreated: Page!
   postCreated: Post!
+  tokenCreated: Token!
   worshipedPersonCreated: WorshipedPerson!
 }
 
@@ -322,9 +330,32 @@ type Token {
   totalMinted: String
 }
 
+type TokenConnection {
+  edges: [TokenEdge!]
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
 type TokenEdge {
   cursor: String!
   node: Token!
+}
+
+input TokenOrder {
+  direction: OrderDirection!
+  field: TokenOrderField!
+}
+
+"""Properties by which token connections can be ordered."""
+enum TokenOrderField {
+  createdDate
+  id
+  lotusBurnDown
+  lotusBurnScore
+  lotusBurnUp
+  name
+  ticker
+  tokenId
 }
 
 input UpdatePageInput {
