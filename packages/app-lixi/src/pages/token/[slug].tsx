@@ -21,8 +21,8 @@ const TokenDetailPage = props => {
       {isSuccess && (
         <>
           <NextSeo
-            title="Lixi Program"
-            description="The lixi program send you a small gift ."
+            title="Tokens Feed"
+            description="Share your opinion about this token."
             canonical={canonicalUrl}
             openGraph={{
               url: canonicalUrl,

@@ -32,8 +32,6 @@ export class TokenResolver {
 
   @Query(() => Token)
   async token(@Args('tokenId', { type: () => String }) tokenId: string) {
-    console.log('tokenId: ', tokenId);
-
     const tokenInfo = await this.prisma.token.findUnique({
       where: {
         tokenId: tokenId
