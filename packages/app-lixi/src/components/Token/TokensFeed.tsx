@@ -5,13 +5,14 @@ import { currency } from '@components/Common/Ticker';
 import PostListItem from '@components/Posts/PostListItem';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { useInfinitePostsByTokenIdQuery } from '@store/post/useInfinitePostsByTokenIdQuery';
-import { getSelectedToken } from '@store/tokens';
+import { getSelectedToken, getToken } from '@store/token';
+import { useTokenQuery } from '@store/token/tokens.api';
 import { formatBalance } from '@utils/cashMethods';
 import { Button, Dropdown, Image, Menu, MenuProps, message, Space, Tabs } from 'antd';
 import makeBlockie from 'ethereum-blockies-base64';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
-import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
+import { OrderDirection, PostOrderField, Token } from 'src/generated/types.generated';
 import styled from 'styled-components';
 
 const StyledTokensFeed = styled.div`
@@ -73,10 +74,14 @@ const BannerTicker = styled.div`
   }
 `;
 
-const TokensFeed: React.FC = () => {
+type TokenProps = {
+  token: any;
+  isMobile: boolean;
+};
+
+const TokensFeed = ({ token, isMobile }: TokenProps) => {
   const dispatch = useAppDispatch();
-  const tokenInfo = useAppSelector(getSelectedToken);
-  console.log('TOKEN INFO', tokenInfo);
+  const [tokenDetailData, setTokenDetailData] = useState<any>(token);
 
   let options = ['Withdraw', 'Rename', 'Export'];
 
@@ -87,7 +92,7 @@ const TokensFeed: React.FC = () => {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt
       },
-      id: tokenInfo.id
+      id: token.id
     },
     false
   );
@@ -114,23 +119,23 @@ const TokensFeed: React.FC = () => {
           <Image
             width={120}
             height={120}
-            src={`${currency.tokenIconsUrl}/128/${tokenInfo.tokenId}.png`}
-            fallback={makeBlockie(tokenInfo?.tokenId ?? '')}
+            src={`${currency.tokenIconsUrl}/128/${tokenDetailData.tokenId}.png`}
+            fallback={makeBlockie(tokenDetailData?.tokenId ?? '')}
             preview={false}
           />
         </div>
         <div className="info-ticker">
-          <h4 className="title-ticker">{tokenInfo['ticker']}</h4>
-          <p className="title-name">{tokenInfo['name']}</p>
+          <h4 className="title-ticker">{tokenDetailData['ticker']}</h4>
+          <p className="title-name">{tokenDetailData['name']}</p>
           <div className="score-ticker">
             <span className="burn-index">
-              <FireOutlined /> {formatBalance(tokenInfo.lotusBurnDown + tokenInfo.lotusBurnUp) + ' XPI'}
+              <FireOutlined /> {formatBalance(tokenDetailData.lotusBurnDown + tokenDetailData.lotusBurnUp) + ' XPI'}
             </span>
           </div>
         </div>
       </BannerTicker>
 
-      <CreatePostCard tokenPrimaryId={tokenInfo.id} refetch={() => refetch()} />
+      <CreatePostCard tokenPrimaryId={tokenDetailData.id} refetch={() => refetch()} />
       <SearchBox />
 
       <div className="content">

@@ -15,14 +15,7 @@ import useXPI from '@hooks/useXPI';
 import { burnForUpDownVote, getLatestBurnForToken } from '@store/burn';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { showToast } from '@store/toast/actions';
-import {
-  burnForToken,
-  burnForTokenSucceses,
-  fetchAllTokens,
-  postToken,
-  selectToken,
-  selectTokens
-} from '@store/tokens';
+import { burnForToken, burnForTokenSucceses, fetchAllTokens, postToken, selectToken, selectTokens } from '@store/token';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
 import { formatBalance } from '@utils/cashMethods';
 import { Button, Form, Image, Input, InputRef, message, Modal, notification, Space, Table, Tooltip } from 'antd';
@@ -43,6 +36,9 @@ import BurnSvg from '@assets/icons/burn.svg';
 import UpVoteSvg from '@assets/icons/upVotePurple.svg';
 import { Counter } from '@components/Common/Counter';
 import { openModal } from '@store/modal/actions';
+import { CreateTokenInput } from 'src/generated/types.generated';
+import { useCreateTokenMutation } from '@store/token/tokens.generated';
+import { push } from 'connected-next-router';
 
 const StyledTokensListing = styled.div``;
 
@@ -58,7 +54,7 @@ const StyledNavBarHeader = styled.div`
   }
 `;
 
-const TokensListing: React.FC = () => {
+const TokensListing = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -75,6 +71,17 @@ const TokensListing: React.FC = () => {
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const latestBurnForToken = useAppSelector(getLatestBurnForToken);
+
+  const [
+    createTokenTrigger,
+    {
+      isLoading: isLoadingCreateToken,
+      isSuccess: isSuccessCreateToken,
+      isError: isErrorCreateToken,
+      error: errorOnCreate
+    }
+  ] = useCreateTokenMutation();
+
   const burnValue = '1';
 
   const {
@@ -148,7 +155,7 @@ const TokensListing: React.FC = () => {
           textToHighlight={text ? text.toString() : ''}
         />
       ) : (
-        <Link href="/token/feed" passHref>
+        <Link href={'/token/' + record.tokenId} passHref>
           <a onClick={() => handleNavigateToken(record)}>{text}</a>
         </Link>
       )
@@ -236,7 +243,7 @@ const TokensListing: React.FC = () => {
               type="text"
               className="outline-btn"
               icon={<UpVoteSvg />}
-              style={{ fontSize: '27px'}}
+              style={{ fontSize: '27px' }}
               onClick={() => burnToken(record.id)}
             />
           </Tooltip>
@@ -271,7 +278,7 @@ const TokensListing: React.FC = () => {
   };
 
   const handleNavigateToken = token => {
-    dispatch(selectToken(token));
+    dispatch(push(`/token/${token.tokenId}`));
   };
 
   const handleBurnForToken = async (isUpVote: boolean, tokenId: string) => {
@@ -327,7 +334,34 @@ const TokensListing: React.FC = () => {
   };
 
   const addTokenbyId = async data => {
-    dispatch(postToken(data.tokenId));
+    const createTokenInput: CreateTokenInput = {
+      tokenId: data.tokenId
+    };
+
+    try {
+      if (createTokenInput) {
+        const tokenCreated = await createTokenTrigger({ input: createTokenInput }).unwrap();
+        dispatch(
+          showToast('success', {
+            message: 'Success',
+            description: intl.get('token.createTokenSuccessful'),
+            duration: 5
+          })
+        );
+        dispatch(push(`/token/${tokenCreated.createToken.tokenId}`));
+      }
+    } catch (error) {
+      const message = errorOnCreate?.message ?? intl.get('token.unableCreateTokenServer');
+
+      dispatch(
+        showToast('error', {
+          message: 'Error',
+          description: message,
+          duration: 5
+        })
+      );
+    }
+
     setIsModalVisible(false);
   };
 
@@ -348,6 +382,11 @@ const TokensListing: React.FC = () => {
           scroll={{ x: true }}
           dataSource={tokenList}
           pagination={tokenList.length >= 30 ? {} : false}
+          onRow={(record, rowIndex) => {
+            return {
+              onClick: () => handleNavigateToken(record)
+            };
+          }}
         />
       </StyledTokensListing>
 

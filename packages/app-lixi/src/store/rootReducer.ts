@@ -33,7 +33,7 @@ import { localAccountsAdapter, localUserAccountReducer } from './localAccount/re
 import { postReducer } from './post/reducer';
 import { PostState } from './post/state';
 import { walletStateReducer } from './wallet/reducer';
-import { tokenReducer, TokenState } from './tokens';
+import { tokenReducer, TokenState } from './token';
 import { CategoriesState } from './category/state';
 import { categoryReducer } from './category/reducer';
 

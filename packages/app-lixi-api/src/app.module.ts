@@ -20,6 +20,7 @@ import { GraphQLError, GraphQLFormattedError } from 'graphql';
 import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from './middlewares/exception.filter';
 import { S3Module } from 'nestjs-s3';
+import { TokenModule } from './modules/token/token.module';
 
 //enabled serving multiple static for fastify
 type FastifyServeStaticModuleOptions = ServeStaticModuleOptions & {
@@ -90,6 +91,7 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
     CoreModule,
     NotificationModule,
     PageModule,
+    TokenModule,
     WorshipModule,
     S3Module.forRootAsync({
       useFactory: () => ({

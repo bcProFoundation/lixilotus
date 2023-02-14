@@ -4,7 +4,13 @@ import { Order } from '../../../core';
 
 export enum TokenOrderField {
   id = 'id',
-  createdDate = 'createdAt'
+  tokenId = 'tokenId',
+  name = 'name',
+  ticker = 'ticker',
+  lotusBurnUp = 'lotusBurnUp',
+  lotusBurnDown = 'lotusBurnDown',
+  lotusBurnScore = 'lotusBurnScore',
+  createdDate = 'createdDate'
 }
 
 registerEnumType(TokenOrderField, {
@@ -13,7 +19,7 @@ registerEnumType(TokenOrderField, {
 });
 
 @InputType()
-export class TokentOrder extends Order {
+export class TokenOrder extends Order {
   @Field(() => TokenOrderField)
   field: TokenOrderField;
 }

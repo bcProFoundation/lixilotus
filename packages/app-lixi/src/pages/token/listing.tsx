@@ -1,6 +1,6 @@
 import React from 'react';
 import PageDetailLayout from '@components/Layout/PageDetailLayout';
-import TokensListing from '@components/Tokens/TokensListing';
+import TokensListing from '@components/Token/TokensListing';
 
 const TokensListingPage = () => {
   return (
