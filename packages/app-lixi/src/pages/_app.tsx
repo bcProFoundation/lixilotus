@@ -52,7 +52,20 @@ const LixiApp = ({ Component, ...rest }) => {
                 </Head>
                 <ConnectedRouter>
                   <PersistGate persistor={store.__persistor} loading={<SplashScreen />}>
-                    <ConfigProvider theme={lightTheme}>
+                    <ConfigProvider
+                      theme={{
+                        token: {
+                          col
+                        },
+                        components: {
+                          Descriptions: {
+                            colorBgContainer: '#000',
+                            colorBgBase: '#000',
+                            color
+                          }
+                        }
+                      }}
+                    >
                       <Component {...props.pageProps} />
                     </ConfigProvider>
                   </PersistGate>
