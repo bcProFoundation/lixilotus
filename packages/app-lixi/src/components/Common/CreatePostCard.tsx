@@ -241,8 +241,6 @@ const CreatePostCard = (props: CreatePostCardProp) => {
     }
   };
 
-  console.log('HAIHI', editorCache);
-
   return (
     <>
       <DesktopCreatePost onClick={() => setEnableEditor(!enableEditor)}>

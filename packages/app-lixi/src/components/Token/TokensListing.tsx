@@ -382,11 +382,6 @@ const TokensListing = () => {
           scroll={{ x: true }}
           dataSource={tokenList}
           pagination={tokenList.length >= 30 ? {} : false}
-          onRow={(record, rowIndex) => {
-            return {
-              onClick: () => handleNavigateToken(record)
-            };
-          }}
         />
       </StyledTokensListing>
 

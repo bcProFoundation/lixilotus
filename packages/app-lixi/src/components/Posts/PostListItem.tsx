@@ -3,6 +3,7 @@ import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn
 import CommentComponent, { CommentItem } from '@components/Common/Comment';
 import { Counter } from '@components/Common/Counter';
 import InfoCardUser from '@components/Common/InfoCardUser';
+import { ShareSocialButton } from '@components/Common/ShareSocialButton';
 import { currency } from '@components/Common/Ticker';
 import { WalletContext } from '@context/walletProvider';
 import useXPI from '@hooks/useXPI';
@@ -40,7 +41,7 @@ const IconBurn = ({
 }) => (
   <Space onClick={onClickIcon}>
     {icon && React.createElement(icon)}
-    {imgUrl && React.createElement('img', { src: imgUrl, width: '32' }, null)}
+    {imgUrl && React.createElement('img', { src: imgUrl, width: '28' }, null)}
     <Counter num={burnValue ?? 0} />
   </Space>
 );
@@ -84,7 +85,8 @@ const Content = styled.div`
     text-align: left;
     word-break: break-word;
     cursor: pointer;
-    margin-bottom: 1rem @media (max-width: 960px) {
+    margin-bottom: 1rem;
+    @media (max-width: 960px) {
       div {
         &[data-lexical-decorator='true'] > div > div {
           width: 100% !important;
@@ -133,6 +135,7 @@ const Content = styled.div`
       -webkit-line-clamp: 5;
       box-orient: vertical;
       -webkit-box-orient: vertical;
+      margin-bottom: 0;
     }
   }
   .image-cover {
@@ -161,10 +164,12 @@ const Content = styled.div`
 
 const ActionBar = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  padding: 1rem;
-  width: 100%;
+  align-self: center;
+  padding: 1rem 0;
+  width: 96%;
+  border-top: 1px solid #efeeef;
   button {
     margin-right: 1rem;
     border-radius: 20px;
@@ -187,8 +192,8 @@ export const GroupIconText = styled.div`
     }
   }
   img {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
   }
   .count {
     color: rgba(30, 26, 29, 0.6);
@@ -394,10 +399,10 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
           />
         </CardHeader>
         <Content onClick={e => handlePostClick(e)}>
-          <p className="description-post">{ReactHtmlParser(post?.content)}</p>
+          <div className="description-post">{ReactHtmlParser(post?.content)}</div>
           {showMore && (
             <p
-              style={{ textAlign: 'left', color: 'var(--color-primary)', marginBottom: '0', cursor: 'pointer' }}
+              style={{ textAlign: 'left', color: 'var(--color-primary)', marginBottom: '1rem', cursor: 'pointer' }}
               onClick={e => showMoreHandle(e)}
             >
               Show more...
@@ -412,7 +417,7 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
                       const imageUrl = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${item.upload.bucket}/${item.upload.sha}`;
                       return (
                         <>
-                          <img loading="lazy" src={imageUrl} />
+                          <img loading="eager" src={imageUrl} />
                         </>
                       );
                     }
@@ -453,6 +458,9 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
             onClickIcon={e => downVotePost(e, item)}
           /> */}
         </GroupIconText>
+        <div>
+          <ShareSocialButton slug={post.id} />
+        </div>
       </ActionBar>
       {isCollapseComment && (
         <div

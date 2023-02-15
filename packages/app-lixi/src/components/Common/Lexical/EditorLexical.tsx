@@ -161,7 +161,7 @@ const EditorLexical = (props: EditorLexicalProps) => {
                   const imageUrl = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${item.bucket}/${item.sha}`;
                   return (
                     <>
-                      <Image loading="lazy" width={200} src={imageUrl} />
+                      <Image loading="eager" src={imageUrl} />
                     </>
                   );
                 })}

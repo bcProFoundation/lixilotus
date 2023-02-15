@@ -33,9 +33,15 @@ const UpDownButton = styled(Button)`
 
   &.upVote {
     background: #9e2a9c;
+    &:hover {
+      color: #fff;
+    }
   }
   &.downVote {
     background: #ba1a1a;
+    &:hover {
+      color: #fff;
+    }
   }
 `;
 
@@ -55,6 +61,24 @@ const RadioStyle = styled(Radio.Group)`
     display: flex;
     align-items: center;
     justify-content: center;
+    border: 1px solid #c5c5c5;
+    color: #1e1a1d;
+    font-weight: 500;
+    font-size: 16px;
+    letter-spacing: 0.15px;
+    &:before {
+      content: none;
+    }
+    &:hover {
+      background: var(--color-primary);
+      color: #fff;
+    }
+    &.ant-radio-button-wrapper-checked {
+      color: #1e1a1d;
+      &:hover {
+        color: #1e1a1d;
+      }
+    }
   }
 `;
 

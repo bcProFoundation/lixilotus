@@ -91,13 +91,13 @@ code {
 
   .ant-modal-body {
     background: var(--bg-color-light-theme);
-    padding: 24px;
+    padding: 1rem 24px;
     position: relative;
   }
 
   .ant-modal-footer {
     margin: 0;
-    padding: 0px 24px 24px 24px;
+    padding: 24px;
     border-bottom-right-radius: 2rem;
     border-bottom-left-radius: 2rem;
     background: var(--bg-color-light-theme);
@@ -117,6 +117,31 @@ code {
 
       @media (max-width: 768px) {
         margin-right: 0;
+      }
+    }
+  }
+}
+
+.ant-modal-footer {
+  .ant-btn {
+    background: var(--color-primary);
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: 0.1px;
+    border-radius: 16px;
+    min-height: 40px;
+    height: fit-content;
+    box-shadow: none;
+
+    &:disabled {
+      background-color: rgba(30, 26, 29, 0.12);
+      color: rgba(30, 26, 29, 0.38);
+      border-color: transparent;
+
+      &:hover {
+        background: rgba(30, 26, 29, 0.12);
+        border-color: transparent;
       }
     }
   }
