@@ -13,7 +13,7 @@ const SearchBox = props => {
   const SearchBoxContainer = styled.div`
     display: flex;
     justify-content: space-between;
-    padding: 10px !important;
+    padding: 8px 1rem !important;
     margin: 2px;
     background: #fff;
     border-radius: 20px;
@@ -21,7 +21,8 @@ const SearchBox = props => {
     border: 1px solid var(--boder-item-light);
     .btn-search {
       .anticon {
-        font-size: 24px;
+        font-size: 18px;
+        color: #4e444b;
       }
     }
     input {

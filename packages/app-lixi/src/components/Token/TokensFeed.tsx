@@ -8,12 +8,13 @@ import { useInfinitePostsByTokenIdQuery } from '@store/post/useInfinitePostsByTo
 import { getSelectedToken, getToken } from '@store/token';
 import { useTokenQuery } from '@store/token/tokens.api';
 import { formatBalance } from '@utils/cashMethods';
-import { Button, Dropdown, Image, Menu, MenuProps, message, Space, Tabs } from 'antd';
+import { Button, Dropdown, Image, Menu, MenuProps, message, Skeleton, Space, Tabs } from 'antd';
 import makeBlockie from 'ethereum-blockies-base64';
 import React, { useEffect, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { OrderDirection, PostOrderField, Token } from 'src/generated/types.generated';
 import styled from 'styled-components';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 const StyledTokensFeed = styled.div`
   .content {
@@ -141,7 +142,25 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
       <div className="content">
         <Tabs defaultActiveKey="1">
           <Tabs.TabPane tab="Top discussions" key="1">
-            <div className={'listing'} style={{ height: '100vh' }}>
+            <React.Fragment>
+              <InfiniteScroll
+                dataLength={data.length}
+                next={loadMoreItems}
+                hasMore={hasNext}
+                loader={<Skeleton avatar active />}
+                endMessage={
+                  <p style={{ textAlign: 'center' }}>
+                    <p>{data.length > 0 ? 'end reached' : "It's so empty here..."}</p>
+                  </p>
+                }
+                scrollableTarget="scrollableDiv"
+              >
+                {data.map((item, index) => {
+                  return <PostListItem index={index} item={item} />;
+                })}
+              </InfiniteScroll>
+            </React.Fragment>
+            {/* <div className={'listing'} style={{ height: '100vh' }}>
               <Virtuoso
                 className={'listing'}
                 style={{ height: '100%' }}
@@ -167,21 +186,21 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
                   }
                 }}
               />
-            </div>
+            </div> */}
           </Tabs.TabPane>
-          <Tabs.TabPane tab="Most recent" key="2">
+          {/* <Tabs.TabPane tab="Most recent" key="2">
             Content of Tab Pane 2
-          </Tabs.TabPane>
+          </Tabs.TabPane> */}
         </Tabs>
         <div className="filter">
-          <Dropdown overlay={<Menu onClick={e => handleMenuClick(e)}>{menus}</Menu>}>
+          {/* <Dropdown overlay={<Menu onClick={e => handleMenuClick(e)}>{menus}</Menu>}>
             <Button type="primary" className="outline-btn">
               <Space>
                 All favorables
                 <DownOutlined />
               </Space>
             </Button>
-          </Dropdown>
+          </Dropdown> */}
         </div>
       </div>
     </StyledTokensFeed>

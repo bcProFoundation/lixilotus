@@ -52,7 +52,7 @@ const Footer = ({ notifications }: { notifications?: any }) => {
           <NavButton active={currentPathName.includes('/wallet')}>
             <img
               className="ico-img"
-              src={currentPathName.includes('/wallet') ? '/images/ico-account.svg' : '/images/ico-account.svg'}
+              src={currentPathName.includes('/wallet') ? '/images/ico-account-active.svg' : '/images/ico-account.svg'}
               alt=""
             />
             {intl.get('general.accounts')}

@@ -935,7 +935,7 @@ const Lixi = props => {
     <>
       {selectedLixi && selectedLixi.address ? (
         <React.Fragment>
-          <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', width: '100%', marginTop: '1rem' }}>
             <DescriptionsCustom
               bordered
               style={{ width: '100%' }}

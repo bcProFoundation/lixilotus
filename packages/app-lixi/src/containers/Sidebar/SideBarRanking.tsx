@@ -47,7 +47,7 @@ const RankingSideBar = styled(Sider)`
   height: 100vh;
   overflow: auto;
   flex: auto !important;
-  background: var(--bg-color-light-theme);
+  background: var(--bg-color-light-theme) !important;
   &::-webkit-scrollbar {
     width: 5px;
   }
@@ -73,7 +73,6 @@ const RankingSideBar = styled(Sider)`
   @media (max-width: 960px) {
     display: none;
   }
-
   @media (min-width: 960px) and (max-width: 1400px) {
     max-width: 270px !important;
     min-width: 270px !important;

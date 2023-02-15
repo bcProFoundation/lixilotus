@@ -5,13 +5,14 @@ import PostListItem from '@components/Posts/PostListItem';
 import { getSelectedAccountId } from '@store/account/selectors';
 import { useAppSelector } from '@store/hooks';
 import { useInfinitePostsByUserIdQuery } from '@store/post/useInfinitePostsByUserIdQuery';
-import { Button, Space, Tabs } from 'antd';
+import { Button, Space, Tabs, Skeleton } from 'antd';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import styled from 'styled-components';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 type UserDetailProps = {
   user: any;
@@ -258,8 +259,19 @@ const Timeline = styled.div`
   width: 100%;
   margin-right: 1rem;
   margin-bottom: 1rem;
-  .time-line-blank {
-    width: 100%;
+  margin-top: 1rem;
+  .blank-timeline {
+    background: #ffffff;
+    border: 1px solid rgba(128, 116, 124, 0.12);
+    border-radius: 24px;
+    padding: 1rem 0;
+    img {
+      max-width: 650px;
+      max-height: 650px;
+    }
+    p {
+      color: rgba(30, 26, 29, 0.6);
+    }
   }
 `;
 
@@ -534,36 +546,28 @@ const ProfileDetail = ({ user, isMobile }: UserDetailProps) => {
                   {data.length == 0 && (
                     <div className="blank-timeline">
                       <img className="time-line-blank" src="/images/time-line-blank.svg" alt="" />
-                      <p>Sharing your thinking</p>
+                      <p>Sharing your thinking...</p>
                     </div>
                   )}
-                  <div className={'listing'} style={{ height: '100vh' }}>
-                    <Virtuoso
-                      className={'listing'}
-                      style={{ height: '100%' }}
-                      data={data}
-                      endReached={loadMoreItems}
-                      overscan={900}
-                      itemContent={(index, item) => {
+
+                  <React.Fragment>
+                    <InfiniteScroll
+                      dataLength={data.length}
+                      next={loadMoreItems}
+                      hasMore={hasNext}
+                      loader={<Skeleton avatar active />}
+                      endMessage={
+                        <p style={{ textAlign: 'center' }}>
+                          <b>{data.length > 0 ? 'end reached' : ''}</b>
+                        </p>
+                      }
+                      scrollableTarget="scrollableDiv"
+                    >
+                      {data.map((item, index) => {
                         return <PostListItem index={index} item={item} />;
-                      }}
-                      totalCount={totalCount}
-                      components={{
-                        Footer: () => {
-                          return (
-                            <div
-                              style={{
-                                padding: '1rem',
-                                textAlign: 'center'
-                              }}
-                            >
-                              end reached
-                            </div>
-                          );
-                        }
-                      }}
-                    />
-                  </div>
+                      })}
+                    </InfiniteScroll>
+                  </React.Fragment>
                 </Timeline>
               </ContentTimeline>
             </Tabs.TabPane>

@@ -12,5 +12,11 @@ export default {
     colorPrimaryHover: '#9e2a9c',
     colorIcon: '#9e2a9c',
     colorInfoBg: '#5476eb'
+  },
+  components: {
+    Descriptions: {
+      colorBgContainer: '#000',
+      colorBgBase: '#000'
+    }
   }
 };
