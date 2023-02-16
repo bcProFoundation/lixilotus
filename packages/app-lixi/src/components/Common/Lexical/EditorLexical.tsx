@@ -104,9 +104,6 @@ const EditorLexical = (props: EditorLexicalProps) => {
   const { initialContent, onSubmit, isEditMode, loading } = props;
   const [floatingAnchorElem, setFloatingAnchorElem] = useState<HTMLDivElement | null>(null);
   const postCoverUploads = useAppSelector(getPostCoverUploads);
-  const defaultHtmlString = `<p class="EditorLexical_paragraph"><br><br></p>`;
-
-  console.log(initialContent);
 
   const onRef = (_floatingAnchorElem: HTMLDivElement) => {
     if (_floatingAnchorElem !== null) {
@@ -147,9 +144,7 @@ const EditorLexical = (props: EditorLexicalProps) => {
             <LinkPlugin />
             <HashtagPlugin />
             <AutoEmbedPlugin />
-            <MyCustomAutoFocusPlugin
-              initialContent={isEditMode || initialContent !== defaultHtmlString ? initialContent : ''}
-            />
+            <MyCustomAutoFocusPlugin initialContent={isEditMode ? initialContent : ''} />
             {floatingAnchorElem && (
               <>
                 <FloatingLinkEditorPlugin anchorElem={floatingAnchorElem} />

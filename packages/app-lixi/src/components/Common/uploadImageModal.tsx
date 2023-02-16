@@ -104,8 +104,6 @@ export const UploadAvatarCoverModal: React.FC<UploadAvatarCoverProps> = (props: 
           </Form.Item>
         )}
       </Form>
-
-      
     </Modal>
   );
 };

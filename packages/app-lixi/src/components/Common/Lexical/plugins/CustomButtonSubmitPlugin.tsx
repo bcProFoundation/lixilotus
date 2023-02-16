@@ -29,15 +29,15 @@ const CustomButtonSubmitPlugin = props => {
     return editorStateTextString;
   };
 
-  useEffect(() => {
-    if (props.isEditMode) return;
+  // useEffect(() => {
+  //   if (props.isEditMode) return;
 
-    const myInterval = setInterval(() => {
-      dispatch(saveEditorTextToCache(editor.getRootElement().innerHTML));
-    }, 5000);
-    // clear out the interval using the id when unmounting the component
-    return () => clearInterval(myInterval);
-  }, []);
+  //   const myInterval = setInterval(() => {
+  //     dispatch(saveEditorTextToCache(editor.getRootElement().innerHTML));
+  //   }, 5000);
+  //   // clear out the interval using the id when unmounting the component
+  //   return () => clearInterval(myInterval);
+  // }, []);
 
   const handleClick = () => {
     editor.update(() => {

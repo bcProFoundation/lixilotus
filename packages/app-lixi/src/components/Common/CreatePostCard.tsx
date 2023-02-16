@@ -266,7 +266,6 @@ const CreatePostCard = (props: CreatePostCardProp) => {
           open={enableEditor}
           footer={null}
           onCancel={() => setEnableEditor(false)}
-          destroyOnClose={true}
         >
           <>
             <UserCreate>
@@ -279,11 +278,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
                   </Button>
                 </div>
               </div>
-              <EditorLexical
-                onSubmit={value => handleCreateNewPost(value)}
-                loading={isLoadingCreatePost}
-                initialContent={editorCache}
-              />
+              <EditorLexical onSubmit={value => handleCreateNewPost(value)} loading={isLoadingCreatePost} />
             </UserCreate>
           </>
         </Modal>
