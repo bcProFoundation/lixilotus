@@ -70,19 +70,21 @@ const RadioStyle = styled(Radio.Group)`
       content: none;
     }
     &:hover {
-      background: var(--color-primary);
-      color: #fff;
+      background: #FFD7F6;
+      color: #1e1a1d;
     }
     &.ant-radio-button-wrapper-checked {
       color: #1e1a1d;
+      background: #FFD7F6;
       &:hover {
         color: #1e1a1d;
+        background: #FFD7F6;
       }
     }
   }
 `;
 
-const DefaultXpiBurnValues = [1, 2, 3, 5, 8, 13, 20, 40, 100, 200, 1000];
+const DefaultXpiBurnValues = [1,8,50,100,200,500,1000];
 
 type BurnModalProps = {
   burnForType: BurnForType;
@@ -116,7 +118,7 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
       const burnedBy = hash160;
       let burnForId;
       if (burnForType == BurnForType.Token) {
-        burnForId = token.id;
+        burnForId = token.tokenId;
       } else {
         throw new Error('not support yet');
       }
@@ -141,7 +143,7 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
         burnType,
         burnForType: burnForType,
         burnedBy,
-        burnForId,
+        burnForId: token.id,
         burnValue
       };
 

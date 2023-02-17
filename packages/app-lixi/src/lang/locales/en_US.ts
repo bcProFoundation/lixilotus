@@ -91,6 +91,7 @@ export default {
   'general.more': 'More',
   'general.goodOrNot': 'Good or not?',
   'general.customBurn': 'Custom burn',
+  'general.burnForType': 'Burn For Type',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
