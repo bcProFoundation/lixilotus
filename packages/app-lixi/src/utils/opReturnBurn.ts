@@ -18,6 +18,168 @@ export interface ParseBurnResult {
   burnForId: string;
 }
 
+export const parseBurnOutput = (scriptpubkey: Buffer | string): ParseBurnResult => {
+  if (typeof scriptpubkey === 'string') {
+    scriptpubkey = Buffer.from(scriptpubkey, 'hex');
+  }
+
+  let it: number = 0; // position in itObj
+  let itObj: Buffer = scriptpubkey; // object it refers to
+
+  const PARSE_CHECK = (v: boolean, str: string): void => {
+    if (v) {
+      throw Error(str);
+    }
+  };
+
+  const extractU8 = (): BigNumber => {
+    const r: number = itObj.readUInt8(it);
+    it += 1;
+    return new BigNumber(r);
+  };
+
+  const extractU16 = (): BigNumber => {
+    const r: number = itObj.readUInt16LE(it);
+    it += 2;
+    return new BigNumber(r);
+  };
+
+  const extractU32 = (): BigNumber => {
+    const r: number = itObj.readUInt32LE(it);
+    it += 4;
+    return new BigNumber(r);
+  };
+
+  const extractU64 = (): BigNumber => {
+    const r1: number = itObj.readUInt32LE(it);
+    it += 4;
+
+    const r2: number = itObj.readUInt32LE(it);
+    it += 4;
+
+    return new BigNumber(r2).multipliedBy(2 ** 32).plus(r1);
+  };
+
+  PARSE_CHECK(itObj.length === 0, 'scriptpubkey cannot be empty');
+  PARSE_CHECK(itObj[it] !== OP_RETURN, 'scriptpubkey not op_return');
+  PARSE_CHECK(itObj.length < 10, 'scriptpubkey too small');
+  ++it;
+
+  const extractPushdata = (): number => {
+    if (it === itObj.length) {
+      return -1;
+    }
+
+    const cnt: number = extractU8().toNumber();
+    if (cnt > OP_0 && cnt < OP_PUSHDATA1) {
+      if (it + cnt > itObj.length) {
+        --it;
+        return -1;
+      }
+
+      return cnt;
+    } else if (cnt === OP_PUSHDATA1) {
+      if (it + 1 >= itObj.length) {
+        --it;
+        return -1;
+      }
+      return extractU8().toNumber();
+    } else if (cnt === OP_PUSHDATA2) {
+      if (it + 2 >= itObj.length) {
+        --it;
+        return -1;
+      }
+      return extractU16().toNumber();
+    } else if (cnt === OP_PUSHDATA4) {
+      if (it + 4 >= itObj.length) {
+        --it;
+        return -1;
+      }
+      return extractU32().toNumber();
+    }
+
+    // other opcodes not allowed
+    --it;
+    return -1;
+  };
+
+  const bufferToBigNumber = (): BigNumber => {
+    if (itObj.length === 1) return extractU8();
+    if (itObj.length === 2) return extractU16();
+    if (itObj.length === 4) return extractU32();
+    if (itObj.length === 8) return extractU64();
+    throw new Error('extraction of number from buffer failed');
+  };
+
+  const chunks: Buffer[] = [];
+  for (let len = extractPushdata(); len >= 0; len = extractPushdata()) {
+    const buf: Buffer = itObj.slice(it, it + len);
+    PARSE_CHECK(it + len > itObj.length, 'pushdata data extraction failed');
+
+    it += len;
+    chunks.push(buf);
+
+    if (chunks.length === 1) {
+      const lokadIdStr = chunks[0];
+      PARSE_CHECK(lokadIdStr.length !== 5, 'lokad id wrong size');
+      PARSE_CHECK(
+        lokadIdStr[0] !== 'L'.charCodeAt(0) ||
+          lokadIdStr[1] !== 'I'.charCodeAt(0) ||
+          lokadIdStr[2] !== 'X'.charCodeAt(0) ||
+          lokadIdStr[3] !== 'I'.charCodeAt(0) ||
+          lokadIdStr[4] !== 0x00,
+        'LIXI not in first chunk'
+      );
+    }
+  }
+
+  PARSE_CHECK(it !== itObj.length, 'trailing data');
+  PARSE_CHECK(chunks.length === 0, 'chunks empty');
+
+  let cit = 0;
+  const CHECK_NEXT = (): void => {
+    ++cit;
+    PARSE_CHECK(cit === chunks.length, 'parsing ended early');
+    it = 0;
+    itObj = chunks[cit];
+  };
+  CHECK_NEXT(); // for quick exit check done above
+
+  const versionBuf = itObj.reverse();
+  PARSE_CHECK(versionBuf.length !== 1 && versionBuf.length !== 2, 'version string length must be 1 or 2');
+  const version: number = bufferToBigNumber().toNumber();
+  PARSE_CHECK(![0x01].includes(version), 'unknown version');
+
+  CHECK_NEXT();
+  const action = itObj.toString();
+  PARSE_CHECK(action !== 'BURN', 'Invalid burn identifier');
+
+  CHECK_NEXT();
+  const burnTypeBuf = itObj;
+  PARSE_CHECK(burnTypeBuf.length !== 1, 'brunType string length must be 1');
+  const burnType = bufferToBigNumber().toNumber();
+
+  CHECK_NEXT();
+  const burnForTypeBuf = itObj.reverse();
+  PARSE_CHECK(burnForTypeBuf.length !== 8, 'burnForType length must be 8');
+  const burnForType: number = bufferToBigNumber().toNumber();
+
+  CHECK_NEXT();
+  const burnedBy = itObj.toString('hex');
+
+  CHECK_NEXT();
+  const burnForId = itObj.toString();
+
+  const result: ParseBurnResult = {
+    version,
+    burnType,
+    burnForType,
+    burnedBy,
+    burnForId
+  };
+  return result;
+};
+
 export const pushdata = (buf: Buffer | Uint8Array): Buffer => {
   if (buf.length === 0) {
     return Buffer.from([OP_PUSHDATA1, 0x00]);
@@ -131,7 +293,6 @@ export const generateBurnTxOutput = (
     if (remainder.lt(0)) {
       throw new Error(`Insufficient funds`);
     }
-
     txBuilder.addOutput(burnOutputScript, parseInt(satoshisToBurn.toString()));
 
     tipToAddresseses &&

@@ -90,6 +90,7 @@ export default {
   'general.more': 'Thêm',
   'general.goodOrNot': 'Tốt hay không?',
   'general.customBurn': 'Tùy chọn đốt',
+  'general.burnForType': 'Đốt cho loại', 
 
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',

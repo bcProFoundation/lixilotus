@@ -29,15 +29,35 @@ export class BurnController {
       const { scriptPubKey, value } = txData['vout'][0];
       const parseResult = parseBurnOutput(scriptPubKey.hex);
 
-      // Compare parse result with the command
-      if (
-        command.burnForId !== parseResult.burnForId ||
-        command.burnForType !== parseResult.burnForType ||
-        command.burnType !== parseResult.burnType ||
-        command.burnedBy !== parseResult.burnedBy ||
-        _.toNumber(command.burnValue) != value
-      ) {
-        throw new Error('Unable to burn');
+      // In case of burn for token, burnForId is BurnForTokenId
+      if (command.burnForType === BurnForType.Token) {
+        const tokenCheck = await this.prisma.token.findUnique({
+          where: {
+            tokenId: parseResult.burnForId 
+          }
+        })
+
+        // Compare parse result with the command
+        if (
+          command.burnForId !== tokenCheck?.id ||
+          command.burnForType !== parseResult.burnForType ||
+          command.burnType !== parseResult.burnType ||
+          command.burnedBy !== parseResult.burnedBy ||
+          _.toNumber(command.burnValue) != value
+        ) {
+          throw new Error('Unable to burn');
+        }
+      } else {
+        // Compare parse result with the command
+        if (
+          command.burnForId !== parseResult.burnForId ||
+          command.burnForType !== parseResult.burnForType ||
+          command.burnType !== parseResult.burnType ||
+          command.burnedBy !== parseResult.burnedBy ||
+          _.toNumber(command.burnValue) != value
+        ) {
+          throw new Error('Unable to burn');
+        }
       }
 
       const savedBurn = await this.prisma.$transaction(async prisma => {

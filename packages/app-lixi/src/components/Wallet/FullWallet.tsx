@@ -17,6 +17,7 @@ import { getCurrentLocale } from '@store/settings/selectors';
 import { FormattedTxAddress } from '@components/Common/FormattedWalletAddress';
 import Link from 'next/link';
 import Reply from '@assets/icons/reply.svg';
+import { BurnForType } from '@bcpros/lixi-models/lib/burn';
 
 interface UserItem {
   email: string;
@@ -149,6 +150,11 @@ const FullWalletComponent: React.FC = () => {
     return month + ' ' + dateTime.getFullYear();
   });
 
+  const getBurnForType = (item: BurnForType) => {
+    const typeValuesArr = Object.values(BurnForType);
+    return Object.keys(BurnForType)[typeValuesArr.indexOf(item as unknown as BurnForType)]
+  }
+
   return (
     <>
       <FullWalletWrapper>
@@ -180,15 +186,25 @@ const FullWalletComponent: React.FC = () => {
                             <List.Item.Meta
                               title={
                                 <a className={item.parsed.incoming ? 'amount increase' : 'amount decrease'}>
-                                  {item.parsed.incoming
+                                  {item.parsed.isBurn ? '- ' + item.parsed.xpiAmount + ' XPI' :
+                                  item.parsed.incoming
                                     ? '+ ' + item.parsed.xpiAmount + ' XPI'
-                                    : '- ' + item.parsed.xpiAmount + ' XPI'}
+                                    : '- ' + item.parsed.xpiAmount + ' XPI'
+                                  }
                                 </a>
                               }
                               description={
                                 <div className="tx-transaction">
                                   <p className="tx-action">
-                                    {item.parsed.incoming ? (
+                                    {item.parsed.isBurn ? (
+                                    <p>
+                                      {intl.get('general.burnForType')}:{' '}
+                                      {item.parsed.parseBurn.burnForType && (
+                                        <span style={{ fontWeight: 'bold' }}>{getBurnForType(item.parsed.parseBurn.burnForType)}</span>
+                                      )}
+                                    </p>
+                                    ) :
+                                    item.parsed.incoming ? (
                                       <p>
                                         {intl.get('account.from')}:{' '}
                                         {item.parsed.replyAddress && (
@@ -213,7 +229,20 @@ const FullWalletComponent: React.FC = () => {
                             <div className="tx-info">
                               <div className="tx-status"></div>
                               <p className="tx-date">{formatDate(item.timeFirstSeen)}</p>
-                              {item.parsed.incoming && (
+                              {item.parsed.isBurn ? (
+                                <Link
+                                href={{
+                                  pathname: '/' + getBurnForType(item.parsed.parseBurn.burnForType).toLowerCase() + "/" + item.parsed.parseBurn.burnForId,
+                                }}
+                              >
+                                <Button size="small" type="text">
+                                  <p>
+                                    <Reply /> {intl.get('account.reply')}
+                                  </p>
+                                </Button>
+                              </Link>
+                              ) :
+                              item.parsed.incoming && (
                                 <Link
                                   href={{
                                     pathname: '/send',

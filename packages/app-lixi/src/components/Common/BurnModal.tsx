@@ -92,7 +92,7 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
       const burnedBy = hash160;
       let burnForId;
       if (burnForType == BurnForType.Token) {
-        burnForId = token.id
+        burnForId = token.tokenId;
       } else {
         throw new Error('not support yet')
       };
@@ -115,7 +115,7 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
         burnType,
         burnForType: burnForType,
         burnedBy,
-        burnForId,
+        burnForId: token.id,
         burnValue
       };
 

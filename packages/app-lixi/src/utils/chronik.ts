@@ -1,9 +1,11 @@
+import { BurnForType } from '@bcpros/lixi-models/lib/burn';
 import BCHJS from '@bcpros/xpi-js';
 import { currency } from '@components/Common/Ticker';
 import { walletAdapter, WalletState } from '@store/wallet';
 import BigNumber from 'bignumber.js';
 import { ChronikClient, Tx, TxHistoryPage, Utxo } from 'chronik-client';
 import { decryptOpReturnMsg, getHashArrayFromWallet, getUtxoWif, parseOpReturn } from './cashMethods';
+import { parseBurnOutput, ParseBurnResult } from './opReturnBurn';
 
 export interface Hash160AndAddress {
   address: string;
@@ -20,6 +22,9 @@ export interface ParsedChronikTx {
   decryptionSuccess: boolean;
   replyAddress: string;
   destinationAddress: string;
+  // Burn
+  isBurn: boolean;
+  parseBurn: ParseBurnResult | undefined;
 }
 
 const getWalletPathsFromWalletState = (wallet: WalletState) => {
@@ -259,6 +264,11 @@ export const parseChronikTx = async (
   let xpiAmount = new BigNumber(0);
   let originatingHash160 = '';
 
+  // Burn
+  let isBurn = false;
+  let xpiBurnAmount = new BigNumber(0);
+  let parseBurnResult;
+
   // Initialize required variables
   let messageHex: string = '';
   let opReturnMessage: string;
@@ -336,6 +346,13 @@ export const parseChronikTx = async (
         }
       }
     }
+
+    // Check OP_RETURN burn
+    if (thisOutputReceivedAtHash160.startsWith('6a')) {
+      isBurn = true;
+      xpiBurnAmount = new BigNumber(thisOutput.value);
+      parseBurnResult = parseBurnOutput(thisOutputReceivedAtHash160);
+    }
     // Find amounts at your wallet's addresses
     for (let j = 0; j < walletHash160s.length; j += 1) {
       const thisWalletHash160 = walletHash160s[j];
@@ -362,7 +379,7 @@ export const parseChronikTx = async (
 
   // Convert from sats to XPI
   xpiAmount = xpiAmount.shiftedBy(-1 * currency.cashDecimals);
-
+  if (isBurn) {xpiAmount = xpiAmount.plus(xpiBurnAmount.shiftedBy(-1 * currency.cashDecimals))} 
   // Convert from BigNumber to string
   const xpiAmountString = xpiAmount.toString();
 
@@ -406,7 +423,9 @@ export const parseChronikTx = async (
     isEncryptedMessage,
     decryptionSuccess,
     replyAddress,
-    destinationAddress
+    destinationAddress,
+    isBurn,
+    parseBurn: isBurn ? parseBurnResult : undefined
   };
   return parsedTx;
 };
