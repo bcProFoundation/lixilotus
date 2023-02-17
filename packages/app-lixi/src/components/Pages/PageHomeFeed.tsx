@@ -11,11 +11,9 @@ import { Virtuoso } from 'react-virtuoso';
 import { openModal } from '@store/modal/actions';
 import intl from 'react-intl-universal';
 import { getAllCategories } from '@store/category/selectors';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 const StyledPageFeed = styled.div`
-  padding-bottom: 4rem;
-  overflow: auto;
-  height: 100vh;
   h2 {
     text-align: left;
     margin-bottom: 1rem;
@@ -115,7 +113,19 @@ const YourPageContainer = styled.div`
   }
 `;
 
-const ListCard = styled.div``;
+const ListCard = styled.div`
+  .infinite-scroll-component__outerdiv {
+    padding-bottom: 2rem;
+    .infinite-scroll-component {
+      display: grid !important;
+      grid-template-columns: auto auto auto auto !important;
+      grid-gap: 10px !important;
+      @media (max-width: 768px) {
+        grid-template-columns: auto auto !important;
+      }
+    }
+  }
+`;
 
 const StyledCardPage = styled.div`
   max-width: 290px;
@@ -206,13 +216,18 @@ const CardPageItem = ({ item, onClickItem }: { item?: CardPageItem; onClickItem?
   <StyledCardPage onClick={() => onClickItem(item.id)} key={item.id}>
     <div className="container-img">
       <picture>
-        <img className="cover-img" src={item.cover || '/images/default-cover.jpg'} alt="cover-img" />
+        <img loading="eager" className="cover-img" src={item.cover || '/images/default-cover.jpg'} alt="cover-img" />
       </picture>
     </div>
     <div className="info-profile">
       <div className="wrapper-avatar">
         <picture>
-          <img className="avatar-img" src={item.avatar || '/images/default-avatar.jpg'} alt="avatar-img" />
+          <img
+            loading="eager"
+            className="avatar-img"
+            src={item.avatar || '/images/default-avatar.jpg'}
+            alt="avatar-img"
+          />
         </picture>
       </div>
       <div className="title-profile">
@@ -310,11 +325,11 @@ const PageHome = () => {
         {listsPage && listsPage.length > 0 && (
           <ToolboxBar>
             <SearchBox></SearchBox>
-            {!selectedPage && (
+            {/* {!selectedPage && (
               <Button type="primary" className="outline-btn" onClick={createPageBtn}>
                 {intl.get('page.createYourPage')}
               </Button>
-            )}
+            )} */}
           </ToolboxBar>
         )}
         <YourPageContainer>
@@ -340,18 +355,30 @@ const PageHome = () => {
           <h2>{intl.get('page.discover')}</h2>
           <ListCard>
             {listsPage && listsPage.length > 0 && (
-              <Virtuoso
-                id="list-pages1"
-                style={{ height: '100vh', paddingBottom: '2rem' }}
-                data={data}
-                endReached={loadMoreItems}
-                useWindowScroll={true}
-                overscan={15000}
-                itemContent={(index, item) => {
-                  return <CardPageItem item={mapPageItem(item)} onClickItem={id => routerPageDetail(id)} />;
-                }}
-                components={{ Footer, List: ListContainer }}
-              />
+              <>
+                <React.Fragment>
+                  <InfiniteScroll
+                    dataLength={data.length}
+                    next={loadMoreItems}
+                    hasMore={hasNext}
+                    loader={<Skeleton avatar active />}
+                    endMessage={
+                      <p style={{ textAlign: 'center' }}>
+                        <b>{"It's so empty here..."}</b>
+                      </p>
+                    }
+                    scrollableTarget="scrollableDiv"
+                  >
+                    {data.map((item, index) => {
+                      return (
+                        <>
+                          <CardPageItem item={mapPageItem(item)} onClickItem={id => routerPageDetail(id)} />
+                        </>
+                      );
+                    })}
+                  </InfiniteScroll>
+                </React.Fragment>
+              </>
             )}
           </ListCard>
         </PagesContainer>

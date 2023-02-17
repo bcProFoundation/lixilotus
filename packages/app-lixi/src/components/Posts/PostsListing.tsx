@@ -193,7 +193,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     return (
       <div>
         <SearchBox searchPost={searchPost} value={searchValue} />
-        <h1 style={{ textAlign: 'left', fontSize: '20px' }}>
+        <h1 style={{ textAlign: 'left', fontSize: '20px', margin: '1rem' }}>
           {intl.get('general.searchResults', { text: searchValue })}
         </h1>
       </div>

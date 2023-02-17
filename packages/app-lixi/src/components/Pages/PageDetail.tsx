@@ -7,13 +7,14 @@ import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { openModal } from '@store/modal/actions';
 import { useInfinitePostsByPageIdQuery } from '@store/post/useInfinitePostsByPageIdQuery';
 import intl from 'react-intl-universal';
-import { Button, Space, Tabs } from 'antd';
+import { Button, Space, Tabs, Skeleton } from 'antd';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import styled from 'styled-components';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 type PageDetailProps = {
   page: any;
@@ -263,8 +264,18 @@ const Timeline = styled.div`
   width: 100%;
   margin-right: 1rem;
   margin-bottom: 1rem;
-  .time-line-blank {
-    width: 100%;
+  .blank-timeline {
+    background: #ffffff;
+    border: 1px solid rgba(128, 116, 124, 0.12);
+    border-radius: 24px;
+    padding: 1rem 0;
+    img {
+      max-width: 650px;
+      max-height: 650px;
+    }
+    p {
+      color: rgba(30, 26, 29, 0.6);
+    }
   }
 `;
 
@@ -280,26 +291,14 @@ const StyledSpace = styled(Space)`
 `;
 
 const StyledMenu = styled(Tabs)`
+  width: 100%;
   .ant-tabs-nav {
     border-bottom-right-radius: 20px;
     border-bottom-left-radius: 20px;
     padding: 1rem 24px;
     border: 1px solid var(--boder-item-light);
     background: white;
-  }
-  .ant-tabs-tabpane {
-    gap: 1rem;
-    display: flex;
-    flex-direction: row;
-    @media (max-width: 768px) {
-      flex-direction: column;
-    }
-  }
-  &.ant-tabs {
-    width: 100vw;
-  }
-  .ant-tabs-nav {
-    &::before {
+    &:before {
       content: none;
     }
   }
@@ -562,36 +561,28 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
                   {data.length == 0 && (
                     <div className="blank-timeline">
                       <img className="time-line-blank" src="/images/time-line-blank.svg" alt="" />
-                      <p>Sharing your thinking</p>
+                      <p>Become a first person post on the page...</p>
                     </div>
                   )}
-                  <div className={'listing'} style={{ height: '100vh' }}>
-                    <Virtuoso
-                      className={'listing'}
-                      style={{ height: '100%' }}
-                      data={data}
-                      endReached={loadMoreItems}
-                      overscan={900}
-                      itemContent={(index, item) => {
+
+                  <React.Fragment>
+                    <InfiniteScroll
+                      dataLength={data.length}
+                      next={loadMoreItems}
+                      hasMore={hasNext}
+                      loader={<Skeleton avatar active />}
+                      endMessage={
+                        <p style={{ textAlign: 'center' }}>
+                          <b>{data.length > 0 ? 'end reached' : ''}</b>
+                        </p>
+                      }
+                      scrollableTarget="scrollableDiv"
+                    >
+                      {data.map((item, index) => {
                         return <PostListItem index={index} item={item} />;
-                      }}
-                      totalCount={totalCount}
-                      components={{
-                        Footer: () => {
-                          return (
-                            <div
-                              style={{
-                                padding: '1rem',
-                                textAlign: 'center'
-                              }}
-                            >
-                              end reached
-                            </div>
-                          );
-                        }
-                      }}
-                    />
-                  </div>
+                      })}
+                    </InfiniteScroll>
+                  </React.Fragment>
                 </Timeline>
               </ContentTimeline>
             </Tabs.TabPane>

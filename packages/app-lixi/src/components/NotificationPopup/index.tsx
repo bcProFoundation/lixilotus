@@ -149,6 +149,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
 
   return (
     <>
+      <h1>Notifications</h1>
       <StyledHeader>
         <h1 style={{ fontSize: '18px', margin: '0px' }}>{intl.get('notification.earlier')}</h1>
         <StyledReadAll onClick={() => router.push('/notifications')}>{intl.get('notification.readAll')}</StyledReadAll>
@@ -193,7 +194,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                 }}
                 author={
                   <StyledAuthor>
-                    <StyledTextLeft></StyledTextLeft>
+                    {/* <StyledTextLeft></StyledTextLeft> */}
                     <StyledTextRight>
                       {moment(notification.createdAt).local().format('MMMM Do YYYY, h:mm a')}
                     </StyledTextRight>

@@ -1,5 +1,5 @@
 import '../styles/style.less';
-
+import 'antd/dist/reset.css';
 // import '../styles/globals.css';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -14,6 +14,8 @@ import { wrapper } from '../store/store';
 import OutsideCallConsumer, { createCaller } from 'react-outside-call';
 import { Spin } from 'antd';
 import SplashScreen from '@components/Common/SplashScreen';
+import { ConfigProvider } from 'antd';
+import lightTheme from 'src/styles/themes/lightTheme';
 
 const PersistGateServer = (props: any) => {
   return props.children;
@@ -50,7 +52,9 @@ const LixiApp = ({ Component, ...rest }) => {
                 </Head>
                 <ConnectedRouter>
                   <PersistGate persistor={store.__persistor} loading={<SplashScreen />}>
-                    <Component {...props.pageProps} />
+                    <ConfigProvider theme={lightTheme}>
+                      <Component {...props.pageProps} />
+                    </ConfigProvider>
                   </PersistGate>
                 </ConnectedRouter>
               </Layout>

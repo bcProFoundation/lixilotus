@@ -61,6 +61,7 @@ import CommentListItem from './CommentListItem';
 import { useForm, Controller } from 'react-hook-form';
 import { openModal } from '@store/modal/actions';
 import { EditPostModalProps } from './EditPostModalPopup';
+import { ShareSocialButton } from '@components/Common/ShareSocialButton';
 
 type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 
@@ -81,77 +82,10 @@ const IconBurn = ({
 }) => (
   <Space onClick={onClickIcon} style={{ alignItems: 'end', marginRight: '1rem', gap: '4px !important' }}>
     {icon && React.createElement(icon)}
-    {imgUrl && React.createElement('img', { src: imgUrl }, null)}
+    {imgUrl && React.createElement('img', { src: imgUrl, width: '28px', height: '28px' }, null)}
     <Counter num={burnValue ?? 0} />
   </Space>
 );
-
-type SocialSharePanelProps = {
-  className?: string;
-  shareUrl: string;
-};
-
-const SocialSharePanel = ({ className, shareUrl }: SocialSharePanelProps): JSX.Element => {
-  const title = intl.get('post.titleShared');
-  return (
-    <div className={className}>
-      <div className="socialshare-network">
-        <FacebookShareButton url={shareUrl} quote={title} className="socialshare-button">
-          <FacebookIcon size={32} round />
-        </FacebookShareButton>
-      </div>
-
-      <div className="socialshare-network">
-        <FacebookMessengerShareButton url={shareUrl} appId="521270401588372" className="socialshare-button">
-          <FacebookMessengerIcon size={32} round />
-        </FacebookMessengerShareButton>
-      </div>
-
-      <div className="socialshare-network">
-        <TwitterShareButton url={shareUrl} title={title} className="socialshare">
-          <TwitterIcon size={32} round />
-        </TwitterShareButton>
-      </div>
-
-      <div className="socialshare-network">
-        <TelegramShareButton url={shareUrl} title={title} className="socialshare-button">
-          <TelegramIcon size={32} round />
-        </TelegramShareButton>
-      </div>
-
-      <div className="socialshare-network">
-        <WhatsappShareButton url={shareUrl} title={title} separator=":: " className="socialshare-button">
-          <WhatsappIcon size={32} round />
-        </WhatsappShareButton>
-      </div>
-
-      <div className="socialshare-network">
-        <Button
-          type="primary"
-          shape="circle"
-          icon={<LinkOutlined style={{ color: 'white', fontSize: '20px' }} />}
-          onClick={() => {
-            navigator.clipboard.writeText(window.location.href);
-            message.success(intl.get('post.copyToClipboard'));
-          }}
-        />
-      </div>
-    </div>
-  );
-};
-
-const StyledSocialSharePanel = styled(SocialSharePanel)`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  .socialshare-network {
-    padding: 10px 4px;
-  }
-`;
-
-const popOverContent = shareUrl => {
-  return <StyledSocialSharePanel shareUrl={shareUrl} />;
-};
 
 type PostDetailProps = {
   post: PostItem;
@@ -350,7 +284,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       transition: 0.5s ease;
       img {
         margin-bottom: 1rem;
-        width: 80%;
+        width: 100%;
       }
     }
   `;
@@ -366,6 +300,11 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     @media (max-width: 960px) {
       padding-bottom: 9rem;
     }
+    header {
+      padding: 0 !important;
+      margin-bottom: 1rem;
+      border-color: #c5c5c5;
+    }
     .reaction-container {
       display: flex;
       justify-content: space-between;
@@ -379,6 +318,13 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       .reaction-func {
         color: rgba(30, 26, 29, 0.6);
         cursor: pointer;
+        display: flex;
+        gap: 1rem;
+        img {
+          width: 28px;
+          height: 28px;
+          margin-right: 4px;
+        }
       }
     }
 
@@ -500,33 +446,6 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     }
   };
 
-  const slug = post.id;
-
-  const shareUrl = `${baseUrl}post/${slug}`;
-
-  const ShareSocialDropdown = (
-    <Popover content={() => popOverContent(shareUrl)}>
-      <ShareButton>
-        <ShareAltOutlined /> Share
-      </ShareButton>
-    </Popover>
-  );
-
-  const ShareSocialButton = (
-    <RWebShare
-      data={{
-        text: intl.get('post.titleShared'),
-        url: shareUrl,
-        title: 'LixiLotus'
-      }}
-      onClick={() => {}}
-    >
-      <ShareButton>
-        <ShareAltOutlined /> Share
-      </ShareButton>
-    </RWebShare>
-  );
-
   const editPost = () => {
     const editPostProps: EditPostModalProps = {
       postAccountAddress: post.postAccount.address,
@@ -565,7 +484,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
                 return (
                   <>
                     <Image.PreviewGroup>
-                      <Image loading="lazy" src={imageUrl} />
+                      <Image loading="eager" src={imageUrl} />
                     </Image.PreviewGroup>
                   </>
                 );
@@ -589,8 +508,17 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
               />
             </div>
             <div className="reaction-func">
-              <span>{totalCount}</span>&nbsp;
-              <img src="/images/ico-comments.svg" alt="" onClick={() => setFocus('comment', { shouldSelect: true })} />
+              <div>
+                <img
+                  src="/images/ico-comments.svg"
+                  alt=""
+                  onClick={() => setFocus('comment', { shouldSelect: true })}
+                />
+                <span>{totalCount}</span>&nbsp;
+              </div>
+              <div>
+                <ShareSocialButton slug={post.id} />
+              </div>
             </div>
           </div>
         </PostContentDetail>

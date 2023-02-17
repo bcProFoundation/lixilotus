@@ -107,6 +107,10 @@ export type CreatePostInput = {
   uploadCovers?: InputMaybe<Array<Scalars['String']>>;
 };
 
+export type CreateTokenInput = {
+  tokenId: Scalars['String'];
+};
+
 export type CreateWorshipInput = {
   latitude?: InputMaybe<Scalars['Decimal']>;
   location?: InputMaybe<Scalars['String']>;
@@ -133,6 +137,7 @@ export type Mutation = {
   createComment: Comment;
   createPage: Page;
   createPost: Post;
+  createToken: Token;
   createWorship: WorshipedPerson;
   createWorshipedPerson: WorshipedPerson;
   updatePage: Page;
@@ -149,6 +154,10 @@ export type MutationCreatePageArgs = {
 
 export type MutationCreatePostArgs = {
   data: CreatePostInput;
+};
+
+export type MutationCreateTokenArgs = {
+  data: CreateTokenInput;
 };
 
 export type MutationCreateWorshipArgs = {
@@ -313,10 +322,12 @@ export type Query = {
   allPostsBySearch: PostResponse;
   allPostsByTokenId: PostConnection;
   allPostsByUserId: PostConnection;
+  allTokens: TokenConnection;
   allWorshipedPerson: WorshipedPersonConnection;
   comment: Comment;
   page: Page;
   post: Post;
+  token: Token;
   worshipedPerson: WorshipedPerson;
 };
 
@@ -398,6 +409,16 @@ export type QueryAllPostsByUserIdArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
+export type QueryAllTokensArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<TokenOrder>;
+  query?: InputMaybe<Scalars['String']>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
 export type QueryAllWorshipedPersonArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
@@ -420,6 +441,10 @@ export type QueryPostArgs = {
   id: Scalars['String'];
 };
 
+export type QueryTokenArgs = {
+  tokenId: Scalars['String'];
+};
+
 export type QueryWorshipedPersonArgs = {
   id: Scalars['String'];
 };
@@ -437,6 +462,7 @@ export type Subscription = {
   commentCreated: Comment;
   pageCreated: Page;
   postCreated: Post;
+  tokenCreated: Token;
   worshipedPersonCreated: WorshipedPerson;
 };
 
@@ -461,11 +487,35 @@ export type Token = {
   totalMinted?: Maybe<Scalars['String']>;
 };
 
+export type TokenConnection = {
+  __typename?: 'TokenConnection';
+  edges?: Maybe<Array<TokenEdge>>;
+  pageInfo: PageInfo;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
 export type TokenEdge = {
   __typename?: 'TokenEdge';
   cursor: Scalars['String'];
   node: Token;
 };
+
+export type TokenOrder = {
+  direction: OrderDirection;
+  field: TokenOrderField;
+};
+
+/** Properties by which token connections can be ordered. */
+export enum TokenOrderField {
+  CreatedDate = 'createdDate',
+  Id = 'id',
+  LotusBurnDown = 'lotusBurnDown',
+  LotusBurnScore = 'lotusBurnScore',
+  LotusBurnUp = 'lotusBurnUp',
+  Name = 'name',
+  Ticker = 'ticker',
+  TokenId = 'tokenId'
+}
 
 export type UpdatePageInput = {
   address?: InputMaybe<Scalars['String']>;

@@ -293,7 +293,7 @@ export default {
   'NetworkType.FamilyFriendlyInfo': 'Max 5 users can claim Lixi under the wifi network',
   'NetworkType.NoWifiRestrictionInfo': 'Unlimited user can claim Lixi under the wifi network',
   'lixi.detail': 'Details of lixi',
-  'lixi.accountLixi': 'account of lixi ',
+  'lixi.accountLixi': 'Account of lixi ',
   'lixi.balance': 'Balance',
   'lixi.valuePerClaim': 'Value per claim',
   'lixi.validity': 'Validity',

@@ -5,14 +5,16 @@ import { currency } from '@components/Common/Ticker';
 import PostListItem from '@components/Posts/PostListItem';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { useInfinitePostsByTokenIdQuery } from '@store/post/useInfinitePostsByTokenIdQuery';
-import { getSelectedToken } from '@store/tokens';
+import { getSelectedToken, getToken } from '@store/token';
+import { useTokenQuery } from '@store/token/tokens.api';
 import { formatBalance } from '@utils/cashMethods';
-import { Button, Dropdown, Image, Menu, MenuProps, message, Space, Tabs } from 'antd';
+import { Button, Dropdown, Image, Menu, MenuProps, message, Skeleton, Space, Tabs } from 'antd';
 import makeBlockie from 'ethereum-blockies-base64';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
-import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
+import { OrderDirection, PostOrderField, Token } from 'src/generated/types.generated';
 import styled from 'styled-components';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 const StyledTokensFeed = styled.div`
   .content {
@@ -73,10 +75,14 @@ const BannerTicker = styled.div`
   }
 `;
 
-const TokensFeed: React.FC = () => {
+type TokenProps = {
+  token: any;
+  isMobile: boolean;
+};
+
+const TokensFeed = ({ token, isMobile }: TokenProps) => {
   const dispatch = useAppDispatch();
-  const tokenInfo = useAppSelector(getSelectedToken);
-  console.log('TOKEN INFO', tokenInfo);
+  const [tokenDetailData, setTokenDetailData] = useState<any>(token);
 
   let options = ['Withdraw', 'Rename', 'Export'];
 
@@ -87,7 +93,7 @@ const TokensFeed: React.FC = () => {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt
       },
-      id: tokenInfo.id
+      id: token.id
     },
     false
   );
@@ -114,29 +120,47 @@ const TokensFeed: React.FC = () => {
           <Image
             width={120}
             height={120}
-            src={`${currency.tokenIconsUrl}/128/${tokenInfo.tokenId}.png`}
-            fallback={makeBlockie(tokenInfo?.tokenId ?? '')}
+            src={`${currency.tokenIconsUrl}/128/${tokenDetailData.tokenId}.png`}
+            fallback={makeBlockie(tokenDetailData?.tokenId ?? '')}
             preview={false}
           />
         </div>
         <div className="info-ticker">
-          <h4 className="title-ticker">{tokenInfo['ticker']}</h4>
-          <p className="title-name">{tokenInfo['name']}</p>
+          <h4 className="title-ticker">{tokenDetailData['ticker']}</h4>
+          <p className="title-name">{tokenDetailData['name']}</p>
           <div className="score-ticker">
             <span className="burn-index">
-              <FireOutlined /> {formatBalance(tokenInfo.lotusBurnDown + tokenInfo.lotusBurnUp) + ' XPI'}
+              <FireOutlined /> {formatBalance(tokenDetailData.lotusBurnDown + tokenDetailData.lotusBurnUp) + ' XPI'}
             </span>
           </div>
         </div>
       </BannerTicker>
 
-      <CreatePostCard tokenPrimaryId={tokenInfo.id} refetch={() => refetch()} />
+      <CreatePostCard tokenPrimaryId={tokenDetailData.id} refetch={() => refetch()} />
       <SearchBox />
 
       <div className="content">
         <Tabs defaultActiveKey="1">
           <Tabs.TabPane tab="Top discussions" key="1">
-            <div className={'listing'} style={{ height: '100vh' }}>
+            <React.Fragment>
+              <InfiniteScroll
+                dataLength={data.length}
+                next={loadMoreItems}
+                hasMore={hasNext}
+                loader={<Skeleton avatar active />}
+                endMessage={
+                  <p style={{ textAlign: 'center' }}>
+                    <p>{data.length > 0 ? 'end reached' : "It's so empty here..."}</p>
+                  </p>
+                }
+                scrollableTarget="scrollableDiv"
+              >
+                {data.map((item, index) => {
+                  return <PostListItem index={index} item={item} />;
+                })}
+              </InfiniteScroll>
+            </React.Fragment>
+            {/* <div className={'listing'} style={{ height: '100vh' }}>
               <Virtuoso
                 className={'listing'}
                 style={{ height: '100%' }}
@@ -162,21 +186,21 @@ const TokensFeed: React.FC = () => {
                   }
                 }}
               />
-            </div>
+            </div> */}
           </Tabs.TabPane>
-          <Tabs.TabPane tab="Most recent" key="2">
+          {/* <Tabs.TabPane tab="Most recent" key="2">
             Content of Tab Pane 2
-          </Tabs.TabPane>
+          </Tabs.TabPane> */}
         </Tabs>
         <div className="filter">
-          <Dropdown overlay={<Menu onClick={e => handleMenuClick(e)}>{menus}</Menu>}>
+          {/* <Dropdown overlay={<Menu onClick={e => handleMenuClick(e)}>{menus}</Menu>}>
             <Button type="primary" className="outline-btn">
               <Space>
                 All favorables
                 <DownOutlined />
               </Space>
             </Button>
-          </Dropdown>
+          </Dropdown> */}
         </div>
       </div>
     </StyledTokensFeed>

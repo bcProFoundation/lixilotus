@@ -255,13 +255,11 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                           >
                           </Layout> 
                         */}
-                    {/* TODO: Implement SidebarRanking in future */}
-                    {/* {!disableSideBarRanking.some(item => selectedKey.includes(item)) && (
-                          <SidebarRanking></SidebarRanking>
-                        )} */}
                     <SidebarShortcut />
                     <div className="content-child">{children}</div>
                     {/* This below is just a dummy sidebar */}
+                    {/* TODO: Implement SidebarRanking in future */}
+                    {selectedKey === '/wallet' && <SidebarRanking></SidebarRanking>}
                     <DummySidebar />
                     <Footer notifications={notifications} />
                   </div>

@@ -33,9 +33,15 @@ const UpDownButton = styled(Button)`
 
   &.upVote {
     background: #9e2a9c;
+    &:hover {
+      color: #fff;
+    }
   }
   &.downVote {
     background: #ba1a1a;
+    &:hover {
+      color: #fff;
+    }
   }
 `;
 
@@ -55,10 +61,28 @@ const RadioStyle = styled(Radio.Group)`
     display: flex;
     align-items: center;
     justify-content: center;
+    border: 1px solid #c5c5c5;
+    color: #1e1a1d;
+    font-weight: 500;
+    font-size: 16px;
+    letter-spacing: 0.15px;
+    &:before {
+      content: none;
+    }
+    &:hover {
+      background: var(--color-primary);
+      color: #fff;
+    }
+    &.ant-radio-button-wrapper-checked {
+      color: #1e1a1d;
+      &:hover {
+        color: #1e1a1d;
+      }
+    }
   }
 `;
 
-const DefaultXpiBurnValues = [1,2,3,5,8,13,20,40,100,200,1000];
+const DefaultXpiBurnValues = [1, 2, 3, 5, 8, 13, 20, 40, 100, 200, 1000];
 
 type BurnModalProps = {
   burnForType: BurnForType;
@@ -94,9 +118,11 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
       if (burnForType == BurnForType.Token) {
         burnForId = token.tokenId;
       } else {
-        throw new Error('not support yet')
-      };
-      const burnValue = _.isNil(control._formValues.burnedValue) ? DefaultXpiBurnValues[0] : control._formValues.burnedValue;
+        throw new Error('not support yet');
+      }
+      const burnValue = _.isNil(control._formValues.burnedValue)
+        ? DefaultXpiBurnValues[0]
+        : control._formValues.burnedValue;
 
       const txHex = await burnXpi(
         XPI,
@@ -161,7 +187,11 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
       style={{ top: '0 !important' }}
     >
       <Form>
-        <p>{intl.get('text.selectXpi', { name: burnForType == BurnForType.Token ? token.ticker : intl.get('text.post') })} </p>
+        <p>
+          {intl.get('text.selectXpi', {
+            name: burnForType == BurnForType.Token ? token.ticker : intl.get('text.post')
+          })}{' '}
+        </p>
 
         <Controller
           name="burnedValue"
@@ -169,7 +199,9 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
           rules={{
             required: {
               value: true,
-              message: intl.get('burn.selectXpi', { name: burnForType == BurnForType.Token ? token.ticker : intl.get('text.post') })
+              message: intl.get('burn.selectXpi', {
+                name: burnForType == BurnForType.Token ? token.ticker : intl.get('text.post')
+              })
             }
           }}
           render={({ field: { value, onChange, ...fieldProps } }) => (

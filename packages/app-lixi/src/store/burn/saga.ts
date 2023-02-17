@@ -5,7 +5,7 @@ import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
 import { api as postApi } from '@store/post/posts.api';
 import { api as commentApi } from '@store/comment/comments.api';
 import { showToast } from '@store/toast/actions';
-import { burnForToken, burnForTokenFailure, burnForTokenSucceses, getTokenById } from '@store/tokens';
+import { burnForToken, burnForTokenFailure, burnForTokenSucceses, getTokenById } from '@store/token';
 import * as _ from 'lodash';
 import intl from 'react-intl-universal';
 import { actionChannel, put, select } from 'redux-saga/effects';

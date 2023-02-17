@@ -301,7 +301,7 @@ const PageListItem = ({ index, item }) => {
                         const imageUrl = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${item.upload.bucket}/${item.upload.sha}`;
                         return (
                           <>
-                            <img loading="lazy" src={imageUrl} />
+                            <img loading="eager" src={imageUrl} />
                           </>
                         );
                       }
