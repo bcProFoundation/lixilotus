@@ -17,6 +17,9 @@ import { getCurrentLocale } from '@store/settings/selectors';
 import { FormattedTxAddress } from '@components/Common/FormattedWalletAddress';
 import Link from 'next/link';
 import Reply from '@assets/icons/reply.svg';
+import { BurnForType } from '@bcpros/lixi-models/lib/burn';
+import { selectTokens } from '@store/token';
+import { useCommentQuery } from '@store/comment/comments.generated';
 
 interface UserItem {
   email: string;
@@ -139,6 +142,7 @@ const FullWalletComponent: React.FC = () => {
 
   const selectedAccount = useAppSelector(getSelectedAccount);
   const currentLocale = useAppSelector(getCurrentLocale);
+  const allTokens = useAppSelector(selectTokens);
 
   const walletParsedHistory = useAppSelector(getWalletParsedTxHistory);
   const orderedWalletParsedHistory = _.orderBy(walletParsedHistory, x => x.timeFirstSeen, 'desc');
@@ -149,6 +153,30 @@ const FullWalletComponent: React.FC = () => {
     const month = dateTime.toLocaleString('en', { month: 'long' });
     return month + ' ' + dateTime.getFullYear();
   });
+
+  const getBurnForType = (burnForType: BurnForType) => {
+    const typeValuesArr = Object.values(BurnForType);
+    const burnForTypeString = Object.keys(BurnForType)[typeValuesArr.indexOf(burnForType as unknown as BurnForType)];
+    return burnForTypeString;
+  };
+
+  const getUrl = (burnForType: BurnForType, burnForId: string) => {
+    let burnForTypeString = getBurnForType(burnForType);
+
+    if (burnForType == BurnForType.Token && burnForId.length !== 64) {
+      burnForId = allTokens.find(token => token.id === burnForId).tokenId;
+    }
+    if (burnForType == BurnForType.Comment) {
+      burnForTypeString = getBurnForType(BurnForType.Post);
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const { currentData, isSuccess } = useCommentQuery({ id: burnForId });
+      if (isSuccess) {
+        burnForId = currentData.comment.commentToId;
+      }
+    }
+
+    return '/' + burnForTypeString.toLowerCase() + '/' + burnForId;
+  };
 
   return (
     <>
@@ -181,7 +209,9 @@ const FullWalletComponent: React.FC = () => {
                             <List.Item.Meta
                               title={
                                 <a className={item.parsed.incoming ? 'amount increase' : 'amount decrease'}>
-                                  {item.parsed.incoming
+                                  {item.parsed.isBurn
+                                    ? '- ' + item.parsed.xpiAmount + ' XPI'
+                                    : item.parsed.incoming
                                     ? '+ ' + item.parsed.xpiAmount + ' XPI'
                                     : '- ' + item.parsed.xpiAmount + ' XPI'}
                                 </a>
@@ -189,7 +219,16 @@ const FullWalletComponent: React.FC = () => {
                               description={
                                 <div className="tx-transaction">
                                   <p className="tx-action">
-                                    {item.parsed.incoming ? (
+                                    {item.parsed.isBurn ? (
+                                      <p>
+                                        {intl.get('general.burnForType')}:{' '}
+                                        {item.parsed.burnInfo && (
+                                          <span style={{ fontWeight: 'bold' }}>
+                                            {getBurnForType(item.parsed.burnInfo.burnForType)}
+                                          </span>
+                                        )}
+                                      </p>
+                                    ) : item.parsed.incoming ? (
                                       <p>
                                         {intl.get('account.from')}:{' '}
                                         {item.parsed.replyAddress && (
@@ -214,11 +253,10 @@ const FullWalletComponent: React.FC = () => {
                             <div className="tx-info">
                               <div className="tx-status"></div>
                               <p className="tx-date">{formatDate(item.timeFirstSeen)}</p>
-                              {item.parsed.incoming && (
+                              {item.parsed.isBurn && item.parsed.burnInfo ? (
                                 <Link
                                   href={{
-                                    pathname: '/send',
-                                    query: { replyAddress: item.parsed.replyAddress }
+                                    pathname: getUrl(item.parsed.burnInfo.burnForType, item.parsed.burnInfo.burnForId)
                                   }}
                                 >
                                   <Button size="small" type="text">
@@ -227,6 +265,21 @@ const FullWalletComponent: React.FC = () => {
                                     </p>
                                   </Button>
                                 </Link>
+                              ) : (
+                                item.parsed.incoming && (
+                                  <Link
+                                    href={{
+                                      pathname: '/send',
+                                      query: { replyAddress: item.parsed.replyAddress }
+                                    }}
+                                  >
+                                    <Button size="small" type="text">
+                                      <p>
+                                        <Reply /> {intl.get('account.reply')}
+                                      </p>
+                                    </Button>
+                                  </Link>
+                                )
                               )}
                             </div>
                           </List.Item>

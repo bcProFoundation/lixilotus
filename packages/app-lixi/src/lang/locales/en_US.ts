@@ -91,6 +91,7 @@ export default {
   'general.more': 'More',
   'general.goodOrNot': 'Good or not?',
   'general.customBurn': 'Custom burn',
+  'general.burnForType': 'Burn For Type',
   'general.failed': 'Failed',
 
   /* 02.Account */

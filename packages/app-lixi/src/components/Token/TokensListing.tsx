@@ -306,7 +306,7 @@ const TokensListing = () => {
               className="outline-btn"
               icon={<UpVoteSvg />}
               style={{ fontSize: '27px' }}
-              onClick={() => burnToken(record.id)}
+              onClick={() => burnToken(record.id, record.tokenId)}
             />
           </Tooltip>
           <Tooltip title={intl.get('general.customBurn')}>
@@ -343,7 +343,7 @@ const TokensListing = () => {
     dispatch(push(`/token/${token.tokenId}`));
   };
 
-  const handleBurnForToken = async (isUpVote: boolean, tokenId: string) => {
+  const handleBurnForToken = async (isUpVote: boolean, id: string, tokenId: string) => {
     try {
       if (slpBalancesAndUtxos.nonSlpUtxos.length == 0) {
         throw new Error('Insufficient funds');
@@ -372,7 +372,7 @@ const TokensListing = () => {
         burnType,
         burnForType: BurnForType.Token,
         burnedBy,
-        burnForId,
+        burnForId: id,
         burnValue
       };
 
@@ -387,8 +387,8 @@ const TokensListing = () => {
     }
   };
 
-  const burnToken = (id: string) => {
-    handleBurnForToken(true, id);
+  const burnToken = (id: string, tokenId: string) => {
+    handleBurnForToken(true, id, tokenId);
   };
 
   const openBurnModal = (token: Token) => {
