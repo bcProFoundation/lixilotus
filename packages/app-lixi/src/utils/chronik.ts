@@ -24,7 +24,7 @@ export interface ParsedChronikTx {
   destinationAddress: string;
   // Burn
   isBurn: boolean;
-  parseBurn: ParseBurnResult | undefined;
+  burnInfo?: ParseBurnResult;
 }
 
 const getWalletPathsFromWalletState = (wallet: WalletState) => {
@@ -427,7 +427,7 @@ export const parseChronikTx = async (
     replyAddress,
     destinationAddress,
     isBurn,
-    parseBurn: isBurn ? parseBurnResult : undefined
+    burnInfo: isBurn ? parseBurnResult : undefined
   };
   return parsedTx;
 };

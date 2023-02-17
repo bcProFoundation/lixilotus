@@ -221,9 +221,9 @@ const FullWalletComponent: React.FC = () => {
                                     {item.parsed.isBurn ? (
                                       <p>
                                         {intl.get('general.burnForType')}:{' '}
-                                        {item.parsed.parseBurn.burnForType && (
+                                        {item.parsed.burnInfo.burnForType && (
                                           <span style={{ fontWeight: 'bold' }}>
-                                            {getBurnForType(item.parsed.parseBurn.burnForType)}
+                                            {getBurnForType(item.parsed.burnInfo.burnForType)}
                                           </span>
                                         )}
                                       </p>
@@ -255,7 +255,7 @@ const FullWalletComponent: React.FC = () => {
                               {item.parsed.isBurn ? (
                                 <Link
                                   href={{
-                                    pathname: getUrl(item.parsed.parseBurn.burnForType, item.parsed.parseBurn.burnForId)
+                                    pathname: getUrl(item.parsed.burnInfo.burnForType, item.parsed.burnInfo.burnForId)
                                   }}
                                 >
                                   <Button size="small" type="text">
