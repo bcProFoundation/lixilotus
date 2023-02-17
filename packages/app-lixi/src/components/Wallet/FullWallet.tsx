@@ -18,6 +18,8 @@ import { FormattedTxAddress } from '@components/Common/FormattedWalletAddress';
 import Link from 'next/link';
 import Reply from '@assets/icons/reply.svg';
 import { BurnForType } from '@bcpros/lixi-models/lib/burn';
+import { selectTokens } from '@store/token';
+import { useCommentQuery } from '@store/comment/comments.generated';
 
 interface UserItem {
   email: string;
@@ -139,6 +141,7 @@ const FullWalletComponent: React.FC = () => {
 
   const selectedAccount = useAppSelector(getSelectedAccount);
   const currentLocale = useAppSelector(getCurrentLocale);
+  const allTokens = useAppSelector(selectTokens);
 
   const walletParsedHistory = useAppSelector(getWalletParsedTxHistory);
   const orderedWalletParsedHistory = _.orderBy(walletParsedHistory, x => x.timeFirstSeen, 'desc');
@@ -150,9 +153,28 @@ const FullWalletComponent: React.FC = () => {
     return month + ' ' + dateTime.getFullYear();
   });
 
-  const getBurnForType = (item: BurnForType) => {
+  const getBurnForType = (burnForType: BurnForType) => {
     const typeValuesArr = Object.values(BurnForType);
-    return Object.keys(BurnForType)[typeValuesArr.indexOf(item as unknown as BurnForType)];
+    const burnForTypeString = Object.keys(BurnForType)[typeValuesArr.indexOf(burnForType as unknown as BurnForType)];
+    return burnForTypeString;
+  };
+
+  const getUrl = (burnForType: BurnForType, burnForId: string) => {
+    let burnForTypeString = getBurnForType(burnForType);
+
+    if (burnForType == BurnForType.Token && burnForId.length !== 64) {
+      burnForId = allTokens.find(token => token.id === burnForId).tokenId;
+    }
+    if (burnForType == BurnForType.Comment) {
+      burnForTypeString = getBurnForType(BurnForType.Post);
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const { currentData, isSuccess } = useCommentQuery({ id: burnForId });
+      if (isSuccess) {
+        burnForId = currentData.comment.commentToId;
+      }
+    }
+
+    return '/' + burnForTypeString.toLowerCase() + '/' + burnForId;
   };
 
   return (
@@ -233,11 +255,7 @@ const FullWalletComponent: React.FC = () => {
                               {item.parsed.isBurn ? (
                                 <Link
                                   href={{
-                                    pathname:
-                                      '/' +
-                                      getBurnForType(item.parsed.parseBurn.burnForType).toLowerCase() +
-                                      '/' +
-                                      item.parsed.parseBurn.burnForId
+                                    pathname: getUrl(item.parsed.parseBurn.burnForType, item.parsed.parseBurn.burnForId)
                                   }}
                                 >
                                   <Button size="small" type="text">
