@@ -104,11 +104,11 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
             direction={'horizontal'}
           />
           <ItemAccess
-            icon={'/images/ico-tokens.svg'}
-            text={intl.get('general.tokens')}
+            icon={'/images/ico-page.svg'}
+            text={intl.get('general.page')}
             active={false}
-            key="tokens"
-            href={'/token/listing'}
+            key="page"
+            href={'/page/feed'}
             direction={'horizontal'}
           />
           <ItemAccess

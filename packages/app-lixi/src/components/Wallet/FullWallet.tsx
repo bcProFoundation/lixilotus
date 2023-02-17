@@ -129,6 +129,7 @@ const FullWalletWrapper = styled.div`
   border-radius: 20px;
   @media (max-width: 768px) {
     border: none;
+    padding-bottom: 9rem;
   }
 `;
 

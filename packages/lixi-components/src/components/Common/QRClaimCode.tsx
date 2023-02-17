@@ -19,11 +19,7 @@ type StyledRawQRCodeProps = {
 
 export const StyledRawQRCode: React.FC<StyledRawQRCodeProps> = styled(RawQRCode)<StyledRawQRCodeProps>`
   cursor: pointer;
-  border-radius: 23px;
   background: ${props => props.theme.qr.background};
-  box-shadow: ${props => props.theme.qr.shadow};
-  margin-bottom: 10px;
-  border: 1px solid ${props => props.theme.wallet.borders.color};
   path:first-child {
     fill: ${props => props.theme.qr.background};
   }
@@ -44,7 +40,6 @@ type CopiedProps = {
 
 const Copied = styled.div<CopiedProps>`
   font-size: 18px;
-  font-weight: bold;
   width: 100%;
   text-align: center;
   background-color: ${({ xpi = 0, ...props }) => (xpi === 1 ? props.theme.primary : props.theme.qr.token)};
@@ -101,7 +96,6 @@ const CustomInput = styled.div<CustomInputProps>`
   border-radius: 5px;
 
   span {
-    font-weight: bold;
     color: ${props => props.theme.wallet.text.primary};
     font-size: 14px;
   }
@@ -134,7 +128,7 @@ const CustomInput = styled.div<CustomInputProps>`
     }
     input {
       font-size: 11px;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
     }
   }
   @media (max-width: 340px) {
@@ -144,7 +138,7 @@ const CustomInput = styled.div<CustomInputProps>`
     }
     input {
       font-size: 11px;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
     }
   }
 `;

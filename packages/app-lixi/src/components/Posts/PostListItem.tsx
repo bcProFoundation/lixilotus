@@ -26,7 +26,7 @@ import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled from 'styled-components';
 import { EditPostModalProps } from './EditPostModalPopup';
 
-const IconBurn = ({
+export const IconBurn = ({
   icon,
   burnValue,
   dataItem,

@@ -38,7 +38,7 @@ const ModalManager = () => {
 
     return (
       <ConfigProvider theme={lightTheme}>
-        <ModalComponent {...modalProps} key={modalType + index} />;
+        <ModalComponent {...modalProps} key={modalType + index} />
       </ConfigProvider>
     );
   });

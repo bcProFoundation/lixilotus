@@ -18,11 +18,7 @@ type StyledRawQRCodeProps = {
 
 export const StyledRawQRCode: React.FC<StyledRawQRCodeProps> = styled(RawQRCode)<StyledRawQRCodeProps>`
   cursor: pointer;
-  border-radius: 23px;
   background: ${props => props.theme.qr.background};
-  box-shadow: ${props => props.theme.qr.shadow};
-  margin-bottom: 10px;
-  border: 1px solid ${props => props.theme.wallet.borders.color};
   path:first-child {
     fill: ${props => props.theme.qr.background};
   }
@@ -43,7 +39,6 @@ type CopiedProps = {
 
 const Copied = styled.div<CopiedProps>`
   font-size: 18px;
-  font-weight: bold;
   width: 100%;
   text-align: center;
   background-color: ${({ xpi = 0, ...props }) => (xpi === 1 ? props.theme.primary : props.theme.qr.token)};
@@ -75,13 +70,12 @@ const PrefixLabel = styled.span`
   }
 `;
 const AddressHighlightTrim = styled.span`
-  font-weight: bold;
+  color: #4e444b;
+  letter-spacing: 0.25px;
   font-size: 14px;
+  margin-right: 4px;
   @media (max-width: 768px) {
     font-size: 12px;
-  }
-  @media (max-width: 400px) {
-    font-size: 10px;
   }
 `;
 
@@ -132,7 +126,7 @@ const CustomInput = styled.div<CustomInputProps>`
     }
     input {
       font-size: 11px;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
     }
   }
   @media (max-width: 340px) {
@@ -142,7 +136,7 @@ const CustomInput = styled.div<CustomInputProps>`
     }
     input {
       font-size: 11px;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
     }
   }
 `;
@@ -165,8 +159,8 @@ export const FormattedWalletAddress = ({ address, isAccountPage }) => {
         <AddressHighlightTrim>{address.slice(prefixLength, prefixLength + trimLength)}</AddressHighlightTrim>
       )}
       {!isAccountPage && address.slice(prefixLength + trimLength, -trimLength)}
-      {isAccountPage && <CopyOutlined />}
       <AddressHighlightTrim>{address ? address.slice(-trimLength) : 'lotus_0x00000000000000'}</AddressHighlightTrim>
+      {isAccountPage && <CopyOutlined />}
     </>
   );
 };
@@ -219,6 +213,15 @@ const QRCode = ({
           </span>
         </Copied>
 
+        {address && !isAccountPage && (
+          <CustomInput xpi={address ? 1 : 0}>
+            <input ref={txtRef} readOnly value={address} spellCheck="false" type="text" />
+            <span>
+              <FormattedWalletAddress address={address} isAccountPage={isAccountPage} />
+            </span>
+          </CustomInput>
+        )}
+
         <StyledRawQRCode
           {...otherProps}
           id="borderedQRCode"
@@ -236,15 +239,6 @@ const QRCode = ({
             excavate: true
           }}
         />
-
-        {address && !isAccountPage && (
-          <CustomInput xpi={address ? 1 : 0}>
-            <input ref={txtRef} readOnly value={address} spellCheck="false" type="text" />
-            <span>
-              <FormattedWalletAddress address={address} isAccountPage={isAccountPage} />
-            </span>
-          </CustomInput>
-        )}
       </div>
     </CopyToClipboard>
   );

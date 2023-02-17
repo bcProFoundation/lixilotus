@@ -3,6 +3,7 @@ import Icon, {
   FilterOutlined,
   FireOutlined,
   LeftOutlined,
+  RightOutlined,
   SearchOutlined,
   SyncOutlined
 } from '@ant-design/icons';
@@ -39,8 +40,69 @@ import { openModal } from '@store/modal/actions';
 import { CreateTokenInput } from 'src/generated/types.generated';
 import { useCreateTokenMutation } from '@store/token/tokens.generated';
 import { push } from 'connected-next-router';
+import InfoCardUser from '@components/Common/InfoCardUser';
+import { InfoSubCard } from '@components/Lixi';
+import { IconBurn } from '@components/Posts/PostListItem';
 
-const StyledTokensListing = styled.div``;
+const StyledTokensListing = styled.div`
+  .table-tokens {
+    display: block;
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+  @media (max-width: 768px) {
+    padding-bottom: 7rem;
+  }
+`;
+
+const StyledTokensListingMobile = styled.div`
+  display: none;
+  @media (max-width: 768px) {
+    display: block;
+  }
+`;
+
+const CardItemToken = styled.div`
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid var(--boder-item-light);
+  border-radius: 18px;
+  margin-bottom: 1rem;
+  .ant-avatar {
+    margin-right: 8px !important;
+    width: 40px;
+    height: 40px;
+  }
+  .card-info {
+    .name {
+      margin-bottom: 4px !important;
+    }
+  }
+  .ant-space {
+    margin-bottom: 8px;
+  }
+  .detail-token {
+    margin: 1rem 0;
+  }
+  .group-action-btn {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+    .ant-space {
+      margin-bottom: 0;
+    }
+    button {
+      padding: 0;
+      &.open-detail {
+        min-height: fit-content;
+        flex-grow: 1;
+        text-align: end;
+        align-self: center;
+      }
+    }
+  }
+`;
 
 const StyledNavBarHeader = styled.div`
   .navbar-token {
@@ -365,6 +427,14 @@ const TokensListing = () => {
     setIsModalVisible(false);
   };
 
+  const UpvoteIcon = () => {
+    return (
+      <>
+        <UpVoteSvg />
+      </>
+    );
+  };
+
   return (
     <>
       <StyledNavBarHeader>
@@ -383,6 +453,56 @@ const TokensListing = () => {
           dataSource={tokenList}
           pagination={tokenList.length >= 30 ? {} : false}
         />
+        <StyledTokensListingMobile>
+          {tokenList.length > 0 &&
+            tokenList.map(token => {
+              return (
+                <>
+                  <CardItemToken>
+                    <InfoCardUser
+                      name={token.ticker}
+                      title={token.name}
+                      imgUrl={`${currency.tokenIconsUrl}/32/${token.tokenId}.png`}
+                      isDropdown={false}
+                    />
+                    <div className="detail-token">
+                      <InfoSubCard
+                        typeName={'Short ID:'}
+                        content={token.id.slice(0, 4) + '...' + token.id.slice(-4)}
+                        icon={CopyOutlined}
+                        onClickIcon={() => handleOnCopy(token.tokenId)}
+                      />
+                      <InfoSubCard typeName={'Total Quantity:'} content={formatBalance(token.initialTokenQuantity)} />
+                      <InfoSubCard
+                        typeName={'Created:'}
+                        content={moment(token.createdDate).format('YYYY-MM-DD HH:MM')}
+                      />
+                    </div>
+                    <div className="group-action-btn">
+                      <IconBurn
+                        icon={UpvoteIcon}
+                        burnValue={formatBalance(token?.lotusBurnUp ?? 0)}
+                        key={`list-vertical-upvote-o-${token.id}`}
+                        dataItem={token}
+                        onClickIcon={e => burnToken(token.id)}
+                      />
+                      <Button type="text" onClick={() => openBurnModal(token)}>
+                        <img src="/images/ico-burn-up.svg" alt="" />
+                      </Button>
+
+                      <Button
+                        type="primary"
+                        className="no-border-btn open-detail"
+                        onClick={() => handleNavigateToken(token)}
+                      >
+                        Open <RightOutlined />
+                      </Button>
+                    </div>
+                  </CardItemToken>
+                </>
+              );
+            })}
+        </StyledTokensListingMobile>
       </StyledTokensListing>
 
       <Modal

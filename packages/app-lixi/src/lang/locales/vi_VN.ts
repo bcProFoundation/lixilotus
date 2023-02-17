@@ -90,6 +90,7 @@ export default {
   'general.more': 'Thêm',
   'general.goodOrNot': 'Tốt hay không?',
   'general.customBurn': 'Tùy chọn đốt',
+  'general.failed': 'Thất bại',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',
@@ -294,7 +295,7 @@ export default {
   'lixi.balance': 'Số dư',
   'lixi.valuePerClaim': 'Giá trị mỗi lần nhận',
   'lixi.validity': 'Hiệu lực',
-  'lixi.overview': 'Tổng quan',
+  'lixi.overview': 'Tổng quan đã nhận',
   'lixi.archive': 'Lưu trữ',
   'lixi.unarchive': 'Hủy lưu trữ',
   'lixi.withdraw': 'Rút tiền',

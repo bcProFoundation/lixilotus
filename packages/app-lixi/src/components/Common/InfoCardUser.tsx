@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { GlobalOutlined, DollarOutlined, ShopOutlined } from '@ant-design/icons';
@@ -20,6 +20,7 @@ type InfoCardProps = {
   postAccountAddress?: string;
   onEditPostClick?: () => void;
   postEdited?: boolean;
+  isDropdown?: boolean;
 };
 
 const CardUser = styled.div`
@@ -86,10 +87,15 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
     page,
     activatePostLocation,
     postAccountAddress,
-    postEdited
+    postEdited,
+    isDropdown
   } = props;
   const selectedAccount = useAppSelector(getSelectedAccount);
   const history = useRouter();
+
+  useEffect(() => {
+    isDropdown ? isDropdown : false;
+  }, []);
 
   const items: MenuProps['items'] = [
     {
@@ -116,7 +122,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
         <CardUser>
           <div className="card-container">
             <div onClick={() => history.push(`/profile/${postAccountAddress}`)}>
-              <AvatarUser name={name} isMarginRight={true} />
+              {imgUrl ? <Avatar src={imgUrl} /> : <AvatarUser name={name} isMarginRight={true} />}
             </div>
             <div className="card-info">
               <h4 className="name" onClick={() => history.push(`/profile/${postAccountAddress}`)}>
@@ -132,16 +138,20 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
             </div>
           </div>
         </CardUser>
-        <Dropdown
-          menu={{ items }}
-          trigger={[selectedAccount && selectedAccount.address === postAccountAddress ? 'click' : 'contextMenu']}
-          arrow={{ pointAtCenter: true }}
-          placement="bottomRight"
-        >
-          <Action>
-            <img src="/images/ico-more-vertical.svg" alt="" />
-          </Action>
-        </Dropdown>
+        {isDropdown === true && (
+          <>
+            <Dropdown
+              menu={{ items }}
+              trigger={[selectedAccount && selectedAccount.address === postAccountAddress ? 'click' : 'contextMenu']}
+              arrow={{ pointAtCenter: true }}
+              placement="bottomRight"
+            >
+              <Action>
+                <img src="/images/ico-more-vertical.svg" alt="" />
+              </Action>
+            </Dropdown>
+          </>
+        )}
       </InfoCardUserContainer>
     </>
   );

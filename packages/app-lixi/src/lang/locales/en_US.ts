@@ -91,6 +91,7 @@ export default {
   'general.more': 'More',
   'general.goodOrNot': 'Good or not?',
   'general.customBurn': 'Custom burn',
+  'general.failed': 'Failed',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
@@ -296,7 +297,7 @@ export default {
   'lixi.balance': 'Balance',
   'lixi.valuePerClaim': 'Value per claim',
   'lixi.validity': 'Validity',
-  'lixi.overview': 'Overview',
+  'lixi.overview': 'Claim Overview',
   'lixi.archive': 'Archive',
   'lixi.unarchive': 'Unarchive',
   'lixi.withdraw': 'Withdraw',

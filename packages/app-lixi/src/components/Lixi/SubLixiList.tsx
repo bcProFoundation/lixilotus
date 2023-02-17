@@ -97,7 +97,9 @@ const SubLixiList = props => {
         overscan={200}
         endReached={loadMore}
         components={{
-          Table: ({ style, ...props }) => <table {...props} style={{ ...style, borderCollapse: 'separate' }} />
+          Table: ({ style, ...props }) => (
+            <table {...props} style={{ ...style, borderCollapse: 'separate', width: '100%' }} />
+          )
         }}
         fixedHeaderContent={() => (
           <tr>

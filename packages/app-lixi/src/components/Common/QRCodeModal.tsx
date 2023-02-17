@@ -19,11 +19,7 @@ type StyledRawQRCodeProps = {
 };
 const StyledRawQRCode: React.FC<StyledRawQRCodeProps> = styled(RawQRCode)<StyledRawQRCodeProps>`
   cursor: pointer;
-  border-radius: 23px;
   background: ${props => props.theme.qr.background};
-  box-shadow: ${props => props.theme.qr.shadow};
-  margin-bottom: 10px;
-  border: 1px solid ${props => props.theme.wallet.borders.color};
   path:first-child {
     fill: ${props => props.theme.qr.background};
   }

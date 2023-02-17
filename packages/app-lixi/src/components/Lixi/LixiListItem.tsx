@@ -82,7 +82,8 @@ const Wrapper = styled.div`
   border-radius: 15px;
   margin-bottom: 15px;
   text-align: left;
-  border: 1px solid ${props => props.theme.listItem.border}!important;
+  border: 1px solid rgba(128, 116, 124, 0.12) !important;
+  background: #fff;
 
   :hover {
     border-color: ${props => props.theme.listItem.hoverBorder};
@@ -108,7 +109,7 @@ const LixiNameStyled = styled(Col)`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid ${props => props.theme.listItem.border}!important;
+  border-bottom: 1px solid rgba(128, 116, 124, 0.12) !important;
 `;
 
 const StyledRow = styled(Row)`
@@ -289,7 +290,7 @@ const LixiListItem: React.FC<LixiListItemProps> = (props: LixiListItemProps) => 
             <Text type="secondary">Status</Text>
           </Col>
           <Col span={11} offset={3}>
-            <StyledTag color={lixi.status === 'active' ? '#108ee9' : '#74546f'}>{lixi.status}</StyledTag>
+            <StyledTag color={lixi.status === 'active' ? '#108ee9' : '#74546f'}>{lixi.status.toUpperCase()}</StyledTag>
           </Col>
         </StyledRow>
       </Wrapper>
