@@ -40,6 +40,9 @@ const StyledPageFeed = styled.div`
       border-radius: 100px;
     }
   }
+  @media (max-width: 960px) {
+    padding-bottom: 7rem;
+  }
 `;
 
 const ToolboxBar = styled.div`
@@ -110,6 +113,14 @@ const YourPageContainer = styled.div`
     font-size: 14px;
     letter-spacing: 0.5px;
     color: rgba(30, 26, 29, 0.6);
+  }
+  @media (max-width: 9608px) {
+    .container-img {
+      img {
+        width: 100% !important;
+        height: 100px !important;
+      }
+    }
   }
 `;
 

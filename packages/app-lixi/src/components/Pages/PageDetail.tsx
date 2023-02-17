@@ -272,6 +272,9 @@ const Timeline = styled.div`
     img {
       max-width: 650px;
       max-height: 650px;
+      @media (max-width: 426px) {
+        max-width: 100%;
+      }
     }
     p {
       color: rgba(30, 26, 29, 0.6);

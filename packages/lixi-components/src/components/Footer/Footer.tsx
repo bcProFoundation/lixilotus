@@ -38,16 +38,6 @@ const Footer = ({ notifications }: { notifications?: any }) => {
             {intl.get('general.home')}
           </NavButton>
         </Link>
-        <Link href="/page/feed" passHref>
-          <NavButton active={currentPathName.includes('/page')}>
-            <img
-              className="ico-img"
-              src={currentPathName.includes('/page') ? '/images/ico-page-active.svg' : '/images/ico-page.svg'}
-              alt=""
-            />
-            {intl.get('general.page')}
-          </NavButton>
-        </Link>
         <Link href="/wallet" passHref>
           <NavButton active={currentPathName.includes('/wallet')}>
             <img
@@ -56,6 +46,18 @@ const Footer = ({ notifications }: { notifications?: any }) => {
               alt=""
             />
             {intl.get('general.accounts')}
+          </NavButton>
+        </Link>
+        <Link href="/token/listing" passHref>
+          <NavButton active={currentPathName.includes('/token/listing')}>
+            <img
+              className="ico-img"
+              src={
+                currentPathName.includes('/token/listing') ? '/images/ico-tokens-active.svg' : '/images/ico-tokens.svg'
+              }
+              alt=""
+            />
+            {intl.get('general.tokens')}
           </NavButton>
         </Link>
         <Link href="/notifications" passHref>

@@ -92,7 +92,10 @@ export default {
   'general.goodOrNot': 'Good or not?',
   'general.customBurn': 'Custom burn',
   'general.burnForType': 'Burn For Type',
+<<<<<<< HEAD
   'general.failed': 'Failed',
+=======
+>>>>>>> master
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',

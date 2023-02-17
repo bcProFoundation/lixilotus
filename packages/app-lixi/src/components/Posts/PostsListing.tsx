@@ -74,6 +74,9 @@ const StyledPostsListing = styled.div`
       opacity: 1;
     }
   }
+  @media (max-width: 960px) {
+    padding-bottom: 9rem;
+  }
 `;
 
 const StyledHeader = styled.div`
