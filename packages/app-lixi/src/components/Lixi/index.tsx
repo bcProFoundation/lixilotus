@@ -301,8 +301,6 @@ const Lixi = props => {
   const loadMoreStartId = useAppSelector(getLoadMoreSubLixiesStartId);
   let subLixies = useAppSelector(getAllSubLixies);
 
-  console.log('AHIOHIHI', selectedLixi);
-
   subLixies = _.sortBy(subLixies, ['isClaimed', 'packageId']);
 
   const { width } = useWindowDimensions();
