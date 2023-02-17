@@ -379,7 +379,9 @@ export const parseChronikTx = async (
 
   // Convert from sats to XPI
   xpiAmount = xpiAmount.shiftedBy(-1 * currency.cashDecimals);
-  if (isBurn) {xpiAmount = xpiAmount.plus(xpiBurnAmount.shiftedBy(-1 * currency.cashDecimals))} 
+  if (isBurn) {
+    xpiAmount = xpiAmount.plus(xpiBurnAmount.shiftedBy(-1 * currency.cashDecimals));
+  }
   // Convert from BigNumber to string
   const xpiAmountString = xpiAmount.toString();
 

@@ -33,7 +33,7 @@ export const QRCodeModalPopup: React.FC<QRCodeModalProps> = (props: QRCodeModalP
   `;
   const StyledButton = styled(Button)`
     min-width: 90px;
-  `
+  `;
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 

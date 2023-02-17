@@ -152,8 +152,8 @@ const FullWalletComponent: React.FC = () => {
 
   const getBurnForType = (item: BurnForType) => {
     const typeValuesArr = Object.values(BurnForType);
-    return Object.keys(BurnForType)[typeValuesArr.indexOf(item as unknown as BurnForType)]
-  }
+    return Object.keys(BurnForType)[typeValuesArr.indexOf(item as unknown as BurnForType)];
+  };
 
   return (
     <>
@@ -186,25 +186,26 @@ const FullWalletComponent: React.FC = () => {
                             <List.Item.Meta
                               title={
                                 <a className={item.parsed.incoming ? 'amount increase' : 'amount decrease'}>
-                                  {item.parsed.isBurn ? '- ' + item.parsed.xpiAmount + ' XPI' :
-                                  item.parsed.incoming
+                                  {item.parsed.isBurn
+                                    ? '- ' + item.parsed.xpiAmount + ' XPI'
+                                    : item.parsed.incoming
                                     ? '+ ' + item.parsed.xpiAmount + ' XPI'
-                                    : '- ' + item.parsed.xpiAmount + ' XPI'
-                                  }
+                                    : '- ' + item.parsed.xpiAmount + ' XPI'}
                                 </a>
                               }
                               description={
                                 <div className="tx-transaction">
                                   <p className="tx-action">
                                     {item.parsed.isBurn ? (
-                                    <p>
-                                      {intl.get('general.burnForType')}:{' '}
-                                      {item.parsed.parseBurn.burnForType && (
-                                        <span style={{ fontWeight: 'bold' }}>{getBurnForType(item.parsed.parseBurn.burnForType)}</span>
-                                      )}
-                                    </p>
-                                    ) :
-                                    item.parsed.incoming ? (
+                                      <p>
+                                        {intl.get('general.burnForType')}:{' '}
+                                        {item.parsed.parseBurn.burnForType && (
+                                          <span style={{ fontWeight: 'bold' }}>
+                                            {getBurnForType(item.parsed.parseBurn.burnForType)}
+                                          </span>
+                                        )}
+                                      </p>
+                                    ) : item.parsed.incoming ? (
                                       <p>
                                         {intl.get('account.from')}:{' '}
                                         {item.parsed.replyAddress && (
@@ -231,22 +232,12 @@ const FullWalletComponent: React.FC = () => {
                               <p className="tx-date">{formatDate(item.timeFirstSeen)}</p>
                               {item.parsed.isBurn ? (
                                 <Link
-                                href={{
-                                  pathname: '/' + getBurnForType(item.parsed.parseBurn.burnForType).toLowerCase() + "/" + item.parsed.parseBurn.burnForId,
-                                }}
-                              >
-                                <Button size="small" type="text">
-                                  <p>
-                                    <Reply /> {intl.get('account.reply')}
-                                  </p>
-                                </Button>
-                              </Link>
-                              ) :
-                              item.parsed.incoming && (
-                                <Link
                                   href={{
-                                    pathname: '/send',
-                                    query: { replyAddress: item.parsed.replyAddress }
+                                    pathname:
+                                      '/' +
+                                      getBurnForType(item.parsed.parseBurn.burnForType).toLowerCase() +
+                                      '/' +
+                                      item.parsed.parseBurn.burnForId
                                   }}
                                 >
                                   <Button size="small" type="text">
@@ -255,6 +246,21 @@ const FullWalletComponent: React.FC = () => {
                                     </p>
                                   </Button>
                                 </Link>
+                              ) : (
+                                item.parsed.incoming && (
+                                  <Link
+                                    href={{
+                                      pathname: '/send',
+                                      query: { replyAddress: item.parsed.replyAddress }
+                                    }}
+                                  >
+                                    <Button size="small" type="text">
+                                      <p>
+                                        <Reply /> {intl.get('account.reply')}
+                                      </p>
+                                    </Button>
+                                  </Link>
+                                )
                               )}
                             </div>
                           </List.Item>

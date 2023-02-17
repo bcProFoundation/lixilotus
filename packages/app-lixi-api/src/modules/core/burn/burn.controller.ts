@@ -33,9 +33,9 @@ export class BurnController {
       if (command.burnForType === BurnForType.Token) {
         const tokenCheck = await this.prisma.token.findUnique({
           where: {
-            tokenId: parseResult.burnForId 
+            tokenId: parseResult.burnForId
           }
-        })
+        });
 
         // Compare parse result with the command
         if (
