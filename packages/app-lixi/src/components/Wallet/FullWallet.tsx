@@ -221,7 +221,7 @@ const FullWalletComponent: React.FC = () => {
                                     {item.parsed.isBurn ? (
                                       <p>
                                         {intl.get('general.burnForType')}:{' '}
-                                        {item.parsed.burnInfo.burnForType && (
+                                        {item.parsed.burnInfo && (
                                           <span style={{ fontWeight: 'bold' }}>
                                             {getBurnForType(item.parsed.burnInfo.burnForType)}
                                           </span>
@@ -252,7 +252,7 @@ const FullWalletComponent: React.FC = () => {
                             <div className="tx-info">
                               <div className="tx-status"></div>
                               <p className="tx-date">{formatDate(item.timeFirstSeen)}</p>
-                              {item.parsed.isBurn ? (
+                              {item.parsed.isBurn && item.parsed.burnInfo ? (
                                 <Link
                                   href={{
                                     pathname: getUrl(item.parsed.burnInfo.burnForType, item.parsed.burnInfo.burnForId)

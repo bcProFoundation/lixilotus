@@ -427,7 +427,7 @@ export const parseChronikTx = async (
     replyAddress,
     destinationAddress,
     isBurn,
-    burnInfo: isBurn ? parseBurnResult : undefined
+    burnInfo: isBurn && parseBurnResult
   };
   return parsedTx;
 };
