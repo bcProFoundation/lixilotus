@@ -70,21 +70,21 @@ const RadioStyle = styled(Radio.Group)`
       content: none;
     }
     &:hover {
-      background: #FFD7F6;
+      background: #ffd7f6;
       color: #1e1a1d;
     }
     &.ant-radio-button-wrapper-checked {
       color: #1e1a1d;
-      background: #FFD7F6;
+      background: #ffd7f6;
       &:hover {
         color: #1e1a1d;
-        background: #FFD7F6;
+        background: #ffd7f6;
       }
     }
   }
 `;
 
-const DefaultXpiBurnValues = [1,8,50,100,200,500,1000];
+const DefaultXpiBurnValues = [1, 8, 50, 100, 200, 500, 1000];
 
 type BurnModalProps = {
   burnForType: BurnForType;

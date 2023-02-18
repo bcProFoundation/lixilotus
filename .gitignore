@@ -64,6 +64,9 @@ typings/
 # NPM lock file
 package-lock.json
 
-
+# Yalc
 .yalc/
 yalc.lock
+
+# Git
+.orig
