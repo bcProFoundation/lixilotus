@@ -8,7 +8,7 @@ import { useInfinitePostsByTokenIdQuery } from '@store/post/useInfinitePostsByTo
 import { getSelectedToken, getToken } from '@store/token';
 import { useTokenQuery } from '@store/token/tokens.api';
 import { formatBalance } from '@utils/cashMethods';
-import { Button, Dropdown, Image, Menu, MenuProps, message, Skeleton, Space, Tabs } from 'antd';
+import { Button, Dropdown, Image, Menu, MenuProps, message, notification, Skeleton, Space, Tabs } from 'antd';
 import makeBlockie from 'ethereum-blockies-base64';
 import React, { useEffect, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
@@ -18,6 +18,8 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import UpVoteSvg from '@assets/icons/upVotePurple.svg';
 import { InfoSubCard } from '@components/Lixi';
 import moment from 'moment';
+import intl from 'react-intl-universal';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 const StyledTokensFeed = styled.div`
   .content {
@@ -84,6 +86,9 @@ const BannerTicker = styled.div`
         .content {
           margin-top: 4px;
           color: #fff;
+          .anticon {
+            margin-left: 4px;
+          }
         }
       }
     }
@@ -151,6 +156,14 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
     console.log('click', e);
   };
 
+  const handleOnCopy = (id: string) => {
+    notification.info({
+      message: intl.get('token.copyId'),
+      description: id,
+      placement: 'top'
+    });
+  };
+
   const menus = options.map(option => <Menu.Item key={option}>{option}</Menu.Item>);
 
   const UpvoteIcon = () => {
@@ -177,7 +190,11 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
           <div className="info-ticker">
             <h4 className="title-ticker">{tokenDetailData['ticker']}</h4>
             <InfoSubCard typeName={'Name:'} content={tokenDetailData.name} />
-            <InfoSubCard typeName={'ID:'} content={tokenDetailData.id} icon={CopyOutlined} />
+            <CopyToClipboard text={tokenDetailData.tokenId} onCopy={() => handleOnCopy(tokenDetailData.tokenId)}>
+              <div>
+                <InfoSubCard typeName={'ID:'} content={tokenDetailData.id} icon={CopyOutlined} />
+              </div>
+            </CopyToClipboard>
             <InfoSubCard
               typeName={'Created:'}
               content={moment(tokenDetailData.createdDate).format('YYYY-MM-DD HH:MM')}
