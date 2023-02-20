@@ -484,7 +484,7 @@ const TokensListing = () => {
                         burnValue={formatBalance(token?.lotusBurnUp ?? 0)}
                         key={`list-vertical-upvote-o-${token.id}`}
                         dataItem={token}
-                        onClickIcon={e => burnToken(token.id)}
+                        onClickIcon={e => burnToken(token.id, token.tokenId)}
                       />
                       <Button type="text" onClick={() => openBurnModal(token)}>
                         <img src="/images/ico-burn-up.svg" alt="" />
