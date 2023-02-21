@@ -1,0 +1,55 @@
+# import TokenOrder from '/packages/app-lixi-api/schema.graphql'
+# import TokenInfoFields from '../../graphql/fragments/token-info-fields.fragment.graphql'
+
+query Token($tokenId: String!) {
+  token(tokenId: $tokenId) {
+    ...TokenFields
+  }
+}
+
+query Tokens(
+  $after: String
+  $before: String
+  $first: Int = 20
+  $last: Int
+  $orderBy: TokenOrder
+  $query: String
+  $skip: Int
+) {
+  allTokens(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, query: $query, skip: $skip) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...TokenFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+
+fragment TokenFields on Token {
+  id
+  tokenId
+  tokenType
+  name
+  ticker
+  decimals
+  tokenDocumentUrl
+  totalBurned
+  totalMinted
+  lotusBurnUp
+  lotusBurnDown
+  lotusBurnScore
+  initialTokenQuantity
+  comments
+  createdDate
+}
+
+mutation createToken($input: CreateTokenInput!) {
+  createToken(data: $input) {
+    ...TokenFields
+  }
+}

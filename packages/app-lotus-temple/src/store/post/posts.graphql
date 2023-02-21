@@ -1,0 +1,252 @@
+# import PostOrder from '/packages/app-lixi-api/schema.graphql'
+# import PageInfoFields from '../../graphql/fragments/page-info-fields.fragment.graphql'
+# import PostMeiliPageInfoFields from '../../graphql/fragments/page-info-fields.fragment.graphql'
+
+query Post($id: String!) {
+  post(id: $id) {
+    ...PostFields
+  }
+}
+
+query Posts(
+  $after: String
+  $before: String
+  $first: Int = 20
+  $last: Int
+  $orderBy: PostOrder
+  $query: String
+  $skip: Int
+) {
+  allPosts(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, query: $query, skip: $skip) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...PostFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+
+query OrphanPosts(
+  $after: String
+  $before: String
+  $first: Int = 20
+  $last: Int
+  $orderBy: PostOrder
+  $query: String
+  $skip: Int
+) {
+  allOrphanPosts(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    query: $query
+    skip: $skip
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...PostFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+
+query PostsByPageId(
+  $after: String
+  $before: String
+  $first: Int = 20
+  $last: Int
+  $orderBy: PostOrder
+  $id: String
+  $skip: Int
+) {
+  allPostsByPageId(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    id: $id
+    skip: $skip
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...PostFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+
+query PostsByUserId(
+  $after: String
+  $before: String
+  $first: Int = 20
+  $last: Int
+  $orderBy: PostOrder
+  $id: String
+  $skip: Int
+) {
+  allPostsByUserId(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    id: $id
+    skip: $skip
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...PostFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+
+query PostsByTokenId(
+  $after: String
+  $before: String
+  $first: Int = 20
+  $last: Int
+  $orderBy: PostOrder
+  $id: String
+  $skip: Int
+) {
+  allPostsByTokenId(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    id: $id
+    skip: $skip
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...PostFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+
+query PostsBySearch($after: String, $before: String, $first: Int, $last: Int, $query: String) {
+  allPostsBySearch(after: $after, before: $before, first: $first, last: $last, query: $query) {
+    edges {
+      cursor
+      node {
+        ...PostMeiliFields
+      }
+    }
+    pageInfo {
+      ...PostMeiliPageInfoFields
+    }
+  }
+}
+
+fragment PostFields on Post {
+  id
+  content
+  uploads {
+    id
+    upload {
+      id
+      sha
+      bucket
+    }
+  }
+  postAccount {
+    address
+    id
+    name
+  }
+  pageAccount {
+    address
+    id
+    name
+  }
+  page {
+    avatar
+    name
+    id
+  }
+  token {
+    id
+    name
+  }
+  lotusBurnUp
+  lotusBurnDown
+  lotusBurnScore
+  createdAt
+  updatedAt
+}
+
+fragment PostMeiliFields on Post {
+  id
+  content
+  uploads {
+    id
+    upload {
+      id
+      sha
+      bucket
+    }
+  }
+  postAccount {
+    address
+    id
+    name
+  }
+  pageAccount {
+    address
+    id
+    name
+  }
+  page {
+    avatar
+    name
+    id
+  }
+  lotusBurnUp
+  lotusBurnDown
+  lotusBurnScore
+  createdAt
+  updatedAt
+}
+
+mutation createPost($input: CreatePostInput!) {
+  createPost(data: $input) {
+    ...PostFields
+  }
+}
+
+mutation updatePost($input: UpdatePostInput!) {
+  updatePost(data: $input) {
+    ...PostFields
+  }
+}

@@ -1,0 +1,73 @@
+# import WorshipedPersonOrder from '/packages/app-lixi-api/schema.graphql'
+# import PageInfoFields from '../../graphql/fragments/page-info-fields.fragment.graphql'
+
+fragment WorshipedPersonFields on WorshipedPerson {
+  id
+  name
+  avatar {
+    id
+    upload {
+      id
+      sha
+      bucket
+    }
+  }
+  quote
+  dateOfBirth
+  dateOfDeath
+  country {
+    id
+    name
+  }
+  state {
+    id
+    name
+  }
+  city {
+    id
+    name
+  }
+  createdAt
+  updatedAt
+}
+
+query WorshipedPerson($id: String!) {
+  worshipedPerson(id: $id) {
+    ...WorshipedPersonFields
+  }
+}
+
+query WorshipedPeople(
+  $after: String
+  $before: String
+  $first: Int = 20
+  $last: Int
+  $orderBy: WorshipedPersonOrder
+  $query: String
+  $skip: Int
+) {
+  allWorshipedPerson(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, query: $query, skip: $skip) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...WorshipedPersonFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+
+mutation createWorshipedPerson($input: CreateWorshipedPersonInput!) {
+  createWorshipedPerson(data: $input) {
+    ...WorshipedPersonFields
+  }
+}
+
+mutation createWorship($input: CreateWorshipInput!) {
+  createWorship(data: $input) {
+    ...WorshipedPersonFields
+  }
+}
