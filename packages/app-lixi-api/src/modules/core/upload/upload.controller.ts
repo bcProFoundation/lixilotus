@@ -85,6 +85,7 @@ export class UploadFilesController {
       const buffer = file.buffer;
       const originalName = file.originalname.replace(/\.[^/.]+$/, '');
       const fileExtension = extname(file.originalname);
+      const originalImage = await sharp(file.buffer).metadata();
 
       const { Key } = await this.uploadService.uploadS3(buffer, fileExtension, bucket);
 
@@ -95,7 +96,9 @@ export class UploadFilesController {
         sha: Key,
         extension: fileExtension,
         type: type,
-        bucket: bucket
+        bucket: bucket,
+        width: originalImage.width,
+        height: originalImage.height
       };
 
       const resultImage: UploadDb = await this.prisma.upload.create({
@@ -108,8 +111,6 @@ export class UploadFilesController {
           upload: { connect: { id: resultImage.id } }
         }
       });
-
-      Object.assign(resultImage, { awsEndpoint: process.env.AWS_ENDPOINT });
 
       return resultImage;
     } catch (err) {
@@ -149,6 +150,7 @@ export class UploadFilesController {
         const originalName = file.originalname.replace(/\.[^/.]+$/, '');
         const fileExtension = extname(file.originalname);
         const { Key } = await this.uploadService.uploadS3(buffer, fileExtension, bucket);
+        const originalImage = await sharp(file.buffer).metadata();
 
         return {
           originalFilename: originalName,
@@ -157,7 +159,9 @@ export class UploadFilesController {
           sha: Key,
           extension: fileExtension,
           type: type,
-          bucket: bucket
+          bucket: bucket,
+          width: originalImage.width,
+          height: originalImage.height
         };
       });
 
