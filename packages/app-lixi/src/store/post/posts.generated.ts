@@ -34,7 +34,14 @@ export type PostQuery = {
     uploads?: Array<{
       __typename?: 'UploadDetail';
       id: string;
-      upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+      upload: {
+        __typename?: 'Upload';
+        id: string;
+        sha: string;
+        bucket?: string | null;
+        width?: string | null;
+        height?: string | null;
+      };
     }> | null;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
     pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
@@ -73,7 +80,14 @@ export type PostsQuery = {
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
-          upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+          upload: {
+            __typename?: 'Upload';
+            id: string;
+            sha: string;
+            bucket?: string | null;
+            width?: string | null;
+            height?: string | null;
+          };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
@@ -121,7 +135,14 @@ export type OrphanPostsQuery = {
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
-          upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+          upload: {
+            __typename?: 'Upload';
+            id: string;
+            sha: string;
+            bucket?: string | null;
+            width?: string | null;
+            height?: string | null;
+          };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
@@ -169,7 +190,14 @@ export type PostsByPageIdQuery = {
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
-          upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+          upload: {
+            __typename?: 'Upload';
+            id: string;
+            sha: string;
+            bucket?: string | null;
+            width?: string | null;
+            height?: string | null;
+          };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
@@ -217,7 +245,14 @@ export type PostsByUserIdQuery = {
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
-          upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+          upload: {
+            __typename?: 'Upload';
+            id: string;
+            sha: string;
+            bucket?: string | null;
+            width?: string | null;
+            height?: string | null;
+          };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
@@ -265,7 +300,14 @@ export type PostsByTokenIdQuery = {
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
-          upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+          upload: {
+            __typename?: 'Upload';
+            id: string;
+            sha: string;
+            bucket?: string | null;
+            width?: string | null;
+            height?: string | null;
+          };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
@@ -310,7 +352,14 @@ export type PostsBySearchQuery = {
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
-          upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+          upload: {
+            __typename?: 'Upload';
+            id: string;
+            sha: string;
+            bucket?: string | null;
+            width?: string | null;
+            height?: string | null;
+          };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
@@ -339,7 +388,14 @@ export type PostFieldsFragment = {
   uploads?: Array<{
     __typename?: 'UploadDetail';
     id: string;
-    upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+    upload: {
+      __typename?: 'Upload';
+      id: string;
+      sha: string;
+      bucket?: string | null;
+      width?: string | null;
+      height?: string | null;
+    };
   }> | null;
   postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
   pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
@@ -359,7 +415,14 @@ export type PostMeiliFieldsFragment = {
   uploads?: Array<{
     __typename?: 'UploadDetail';
     id: string;
-    upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+    upload: {
+      __typename?: 'Upload';
+      id: string;
+      sha: string;
+      bucket?: string | null;
+      width?: string | null;
+      height?: string | null;
+    };
   }> | null;
   postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
   pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
@@ -384,7 +447,14 @@ export type CreatePostMutation = {
     uploads?: Array<{
       __typename?: 'UploadDetail';
       id: string;
-      upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+      upload: {
+        __typename?: 'Upload';
+        id: string;
+        sha: string;
+        bucket?: string | null;
+        width?: string | null;
+        height?: string | null;
+      };
     }> | null;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
     pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
@@ -411,7 +481,14 @@ export type UpdatePostMutation = {
     uploads?: Array<{
       __typename?: 'UploadDetail';
       id: string;
-      upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+      upload: {
+        __typename?: 'Upload';
+        id: string;
+        sha: string;
+        bucket?: string | null;
+        width?: string | null;
+        height?: string | null;
+      };
     }> | null;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
     pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
@@ -430,6 +507,8 @@ export const PostFieldsFragmentDoc = `
       id
       sha
       bucket
+      width
+      height
     }
   }
   postAccount {
@@ -468,6 +547,8 @@ export const PostMeiliFieldsFragmentDoc = `
       id
       sha
       bucket
+      width
+      height
     }
   }
   postAccount {

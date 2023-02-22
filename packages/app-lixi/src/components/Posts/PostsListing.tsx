@@ -229,7 +229,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         }
         return;
       case 'all':
-        console.log(hasNext);
         if (hasNext && !isFetching) {
           fetchNext();
         } else if (hasNext) {

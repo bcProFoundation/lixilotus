@@ -383,8 +383,10 @@ input UpdatePostInput {
 
 type Upload {
   bucket: String
+  height: String
   id: ID!
   sha: String!
+  width: String
 }
 
 type UploadDetail {
