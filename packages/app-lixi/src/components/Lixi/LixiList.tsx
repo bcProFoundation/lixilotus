@@ -36,6 +36,9 @@ const StyledTable = styled(Table)`
       display: none;
     }
   }
+  .ant-table-row {
+    cursor: pointer;
+  }
 `;
 
 const CreateLixiBtn = styled(Button)``;

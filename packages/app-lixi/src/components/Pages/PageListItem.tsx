@@ -3,12 +3,14 @@ import { FireOutlined } from '@ant-design/icons';
 import CommentComponent, { CommentItem, Editor } from '@components/Common/Comment';
 import InfoCardUser from '@components/Common/InfoCardUser';
 import useWindowDimensions from '@hooks/useWindowDimensions';
-import { Avatar, List, message, Space } from 'antd';
+import { Avatar, List, message, Space, Button } from 'antd';
+import { PlusCircleOutlined } from '@ant-design/icons';
 import { push } from 'connected-next-router';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
 import { useAppDispatch } from 'src/store/hooks';
 import styled from 'styled-components';
+import Gallery from 'react-photo-gallery';
 
 const IconText = ({
   icon,
@@ -182,19 +184,30 @@ const PageListItem = ({ index, item }) => {
   const [submitting, setSubmitting] = useState(false);
   const [value, setValue] = useState('');
   const [showMore, setShowMore] = useState(false);
-  const [isMobileScreen, setIsMobileScreen] = useState(false);
+  const [showMoreImage, setShowMoreImage] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
+  const imagesList = item.uploads.map(img => {
+    const imgUrl = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${img.upload.bucket}/${img.upload.sha}`;
+    let width = parseInt(img?.upload?.width) || 4;
+    let height = parseInt(img?.upload?.height) || 3;
+    let objImg = {
+      src: imgUrl,
+      width: width,
+      height: height
+    };
+    return objImg;
+  });
 
   const { width } = useWindowDimensions();
 
   useEffect(() => {
     let isMobile = width < 768 ? true : false;
-    setIsMobileScreen(isMobile);
+    setShowMoreImage(isMobile);
   }, [width]);
 
   useEffect(() => {
     const descPost = ref?.current.querySelector('.description-post');
-    if (descPost.clientHeight > 130 || item.uploads.length != 0) {
+    if (descPost.clientHeight > 130) {
       descPost.classList.add('show-less');
       setShowMore(true);
     } else {
@@ -292,22 +305,22 @@ const PageListItem = ({ index, item }) => {
                 Show more...
               </p>
             )}
-            {item.lotusBurnScore > 3 ||
-              (!showMore && (
-                <div style={{ display: item.uploads.length != 0 ? 'grid' : 'none' }} className="images-post">
-                  {item.uploads.length != 0 &&
-                    item.uploads.map((item, index) => {
-                      while (index < 4) {
-                        const imageUrl = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${item.upload.bucket}/${item.upload.sha}`;
-                        return (
-                          <>
-                            <img loading="eager" src={imageUrl} />
-                          </>
-                        );
-                      }
-                    })}
-                </div>
-              ))}
+            {item.uploads.length != 0 && !showMoreImage && (
+              <div className="images-post">
+                <Gallery photos={imagesList} />
+              </div>
+            )}
+            {item.uploads.length != 0 && showMoreImage && (
+              <div className="images-post">
+                <Gallery photos={imagesList} />
+                {item.uploads.length > 1 && (
+                  <Button type="link" className="show-more-image no-border-btn">
+                    {'More ' + (item.uploads.length - 1) + ' images'}
+                    <PlusCircleOutlined />
+                  </Button>
+                )}
+              </div>
+            )}
           </Content>
           <CountBar>
             <IconText

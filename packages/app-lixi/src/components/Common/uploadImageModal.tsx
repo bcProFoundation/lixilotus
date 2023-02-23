@@ -93,6 +93,7 @@ export const UploadAvatarCoverModal: React.FC<UploadAvatarCoverProps> = (props: 
       }
       style={{ top: '0 !important' }}
     >
+      <h3>{isAvatar ? intl.get('page.chooseAvatar') : intl.get('page.chooseCover')}</h3>
       <Form>
         {isAvatar ? (
           <Form.Item name="avatar" valuePropName="fileList" getValueFromEvent={normFile}>

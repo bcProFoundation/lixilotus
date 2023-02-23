@@ -40,6 +40,8 @@ interface UserItem {
 const TransactionHistory = styled.div`
   background: #fff;
   padding: 0 2rem;
+  border-bottom-left-radius: 24px;
+  border-bottom-right-radius: 24px;
   .header-transaction {
     display: flex;
     justify-content: space-between;
@@ -176,7 +178,7 @@ const FullWalletComponent: React.FC = () => {
       }
     }
 
-    return (`/${burnForTypeString.toLowerCase()}/${burnForId}`) ;
+    return `/${burnForTypeString.toLowerCase()}/${burnForId}`;
   };
 
   return (
@@ -233,7 +235,9 @@ const FullWalletComponent: React.FC = () => {
                                             }}
                                           >
                                             <Button size="small" type="text">
-                                              <p style={{fontWeight: 'bold'}}>{getBurnForType(item.parsed.burnInfo.burnForType)}</p>
+                                              <p style={{ fontWeight: 'bold' }}>
+                                                {getBurnForType(item.parsed.burnInfo.burnForType)}
+                                              </p>
                                             </Button>
                                           </Link>
                                         )}
