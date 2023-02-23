@@ -8,7 +8,7 @@ import UpDownSvg from '@assets/icons/upDownIcon.svg';
 import UpVoteSvg from '@assets/icons/upVote.svg';
 import DownVoteSvg from '@assets/icons/downVote.svg';
 import { WalletContext } from '@context/walletProvider';
-import React from 'react';
+import React, { useState } from 'react';
 import { Burn, Token } from '@bcpros/lixi-models';
 import styled from 'styled-components';
 import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
@@ -17,6 +17,7 @@ import { burnForUpDownVote } from '@store/burn';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import _ from 'lodash';
+import { DislikeOutlined, LikeOutlined } from '@ant-design/icons';
 
 const UpDownButton = styled(Button)`
   background: rgb(158, 42, 156);
@@ -70,21 +71,21 @@ const RadioStyle = styled(Radio.Group)`
       content: none;
     }
     &:hover {
-      background: #FFD7F6;
+      background: #ffd7f6;
       color: #1e1a1d;
     }
     &.ant-radio-button-wrapper-checked {
       color: #1e1a1d;
-      background: #FFD7F6;
+      background: #ffd7f6;
       &:hover {
         color: #1e1a1d;
-        background: #FFD7F6;
+        background: #ffd7f6;
       }
     }
   }
 `;
 
-const DefaultXpiBurnValues = [1,8,50,100,200,500,1000];
+const DefaultXpiBurnValues = [1, 8, 50, 100, 200, 500, 1000];
 
 type BurnModalProps = {
   burnForType: BurnForType;
@@ -104,6 +105,7 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
   const { burnXpi } = useXPI();
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
+  const [selectedAmount, setSelectedAmount] = useState(1);
 
   const handleBurn = async (isUpVote: boolean) => {
     try {
@@ -170,8 +172,25 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
       open={true}
       onCancel={handleOnCancel}
       title={
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <UpDownSvg /> {intl.get('general.goodOrNot')}
+        <div className="custom-burn-header">
+          <UpDownSvg />
+          <h3>{intl.get('general.goodOrNot')}</h3>
+          <div className="banner-count-burn">
+            <div className="banner-item">
+              <LikeOutlined />
+              <div className="count-bar">
+                <p className="title">{token?.lotusBurnUp + ' XPI'}</p>
+                <p className="sub-title">burnt to up</p>
+              </div>
+            </div>
+            <div className="banner-item">
+              <DislikeOutlined />
+              <div className="count-bar">
+                <p className="title">{token?.lotusBurnDown + ' XPI'}</p>
+                <p className="sub-title">burnt to down</p>
+              </div>
+            </div>
+          </div>
         </div>
       }
       footer={
@@ -189,7 +208,7 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
       style={{ top: '0 !important' }}
     >
       <Form>
-        <p>
+        <p className="question-txt">
           {intl.get('text.selectXpi', {
             name: burnForType == BurnForType.Token ? token.ticker : intl.get('text.post')
           })}{' '}
@@ -214,7 +233,10 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
               options={DefaultXpiBurnValues.map(xpi => xpi)}
               optionType="button"
               buttonStyle="solid"
-              onChange={value => onChange(value)}
+              onChange={value => {
+                setSelectedAmount(value?.target?.value);
+                onChange(value);
+              }}
             />
           )}
         />
@@ -222,6 +244,7 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
           {errors.burnedValue && errors.burnedValue.message}
         </p>
       </Form>
+      <p className="amount-burn">{`You're burning ` + selectedAmount + ' XPI'}</p>
     </Modal>
   );
 };

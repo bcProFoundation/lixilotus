@@ -62,6 +62,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { openModal } from '@store/modal/actions';
 import { EditPostModalProps } from './EditPostModalPopup';
 import { ShareSocialButton } from '@components/Common/ShareSocialButton';
+import Gallery from 'react-photo-gallery';
 
 type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 
@@ -117,6 +118,18 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     },
     false
   );
+
+  const imagesList = post.uploads.map(img => {
+    const imgUrl = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${img.upload.bucket}/${img.upload.sha}`;
+    let width = parseInt(img?.upload?.width) || 4;
+    let height = parseInt(img?.upload?.height) || 3;
+    let objImg = {
+      src: imgUrl,
+      width: width,
+      height: height
+    };
+    return objImg;
+  });
 
   const [
     createCommentTrigger,
@@ -276,15 +289,9 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       box-sizing: border-box;
       box-shadow: 0 3px 12px rgb(0 0 0 / 4%);
       background: var(--bg-color-light-theme);
-      display: grid;
-      grid-template-columns: auto auto;
-      grid-template-rows: auto auto;
-      grid-column-gap: 1rem;
-      justify-items: center;
       transition: 0.5s ease;
       img {
-        margin-bottom: 1rem;
-        width: 100%;
+        max-width: 100%;
       }
     }
   `;
@@ -477,19 +484,11 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
         ></InfoCardUser>
         <PostContentDetail>
           <p className="description-post">{ReactHtmlParser(post.content)}</p>
-          <div style={{ display: post.uploads.length != 0 ? 'grid' : 'none' }} className="images-post">
-            {post.uploads.length != 0 &&
-              post.uploads.map((item, index) => {
-                const imageUrl = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${item.upload.bucket}/${item.upload.sha}`;
-                return (
-                  <>
-                    <Image.PreviewGroup>
-                      <Image loading="eager" src={imageUrl} />
-                    </Image.PreviewGroup>
-                  </>
-                );
-              })}
-          </div>
+          {post.uploads.length != 0 && (
+            <div className="images-post">
+              <Gallery photos={imagesList} />
+            </div>
+          )}
           <div className="reaction-container">
             <div className="reaction-ico">
               <IconBurn

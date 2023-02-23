@@ -14,7 +14,8 @@ import { PostsQuery } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
 import { formatBalance, fromXpiToSatoshis } from '@utils/cashMethods';
-import { List, Space } from 'antd';
+import { List, Space, Button } from 'antd';
+import { PlusCircleOutlined } from '@ant-design/icons';
 import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import moment from 'moment';
@@ -25,6 +26,8 @@ import intl from 'react-intl-universal';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled from 'styled-components';
 import { EditPostModalProps } from './EditPostModalPopup';
+import Gallery from 'react-photo-gallery';
+import useWindowDimensions from '@hooks/useWindowDimensions';
 
 export const IconBurn = ({
   icon,
@@ -146,18 +149,16 @@ const Content = styled.div`
     cursor: pointer;
     width: 100%;
     padding: 1rem;
-    margin-top: 1rem;
-    box-sizing: border-box;
-    box-shadow: 0 3px 12px rgb(0 0 0 / 4%);
+    margin: 1rem 0;
     background: var(--bg-color-light-theme);
-    grid-template-columns: auto auto;
-    grid-template-rows: auto auto;
-    grid-column-gap: 1rem;
-    justify-items: center;
     transition: 0.5s ease;
     img {
-      margin-bottom: 1rem;
-      width: 80%;
+      max-width: 100%;
+    }
+    &:hover {
+      opacity: 0.9;
+    }
+    .show-more-image {
     }
   }
 `;
@@ -233,6 +234,7 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
   const [submitting, setSubmitting] = useState(false);
   const [value, setValue] = useState('');
   const [showMore, setShowMore] = useState(false);
+  const [showMoreImage, setShowMoreImage] = useState(true);
   const ref = useRef<HTMLDivElement | null>(null);
 
   const Wallet = React.useContext(WalletContext);
@@ -241,12 +243,30 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const selectedAccount = useAppSelector(getSelectedAccount);
+  const imagesList = item.uploads.map(img => {
+    const imgUrl = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${img.upload.bucket}/${img.upload.sha}`;
+    let width = parseInt(img?.upload?.width) || 4;
+    let height = parseInt(img?.upload?.height) || 3;
+    let objImg = {
+      src: imgUrl,
+      width: width,
+      height: height
+    };
+    return objImg;
+  });
+
+  const { width } = useWindowDimensions();
+
+  useEffect(() => {
+    const isMobileDetail = width < 768 ? true : false;
+    setShowMoreImage(isMobileDetail);
+  }, [width]);
 
   if (!post) return null;
 
   useEffect(() => {
     const descPost = ref?.current.querySelector('.description-post');
-    if (descPost.clientHeight > 130 || item.uploads.length != 0) {
+    if (descPost.clientHeight > 130) {
       descPost.classList.add('show-less');
       setShowMore(true);
     } else {
@@ -408,22 +428,24 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
               Show more...
             </p>
           )}
-          {post.lotusBurnScore > 3 ||
-            (!showMore && (
-              <div style={{ display: item.uploads.length != 0 ? 'grid' : 'none' }} className="images-post">
-                {item.uploads.length != 0 &&
-                  item.uploads.map((item, index) => {
-                    while (index < 4) {
-                      const imageUrl = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${item.upload.bucket}/${item.upload.sha}`;
-                      return (
-                        <>
-                          <img loading="eager" src={imageUrl} />
-                        </>
-                      );
-                    }
-                  })}
+          {item.uploads.length != 0 && !showMoreImage && (
+            <div className="images-post">
+              <Gallery photos={imagesList} />
+            </div>
+          )}
+          {item.uploads.length != 0 && showMoreImage && (
+            <>
+              <div className="images-post">
+                <Gallery photos={imagesList.slice(0, 1)} />
+                {item.uploads.length > 1 && (
+                  <Button type="link" className="show-more-image no-border-btn">
+                    {'More ' + (item.uploads.length - 1) + ' images'}
+                    <PlusCircleOutlined />
+                  </Button>
+                )}
               </div>
-            ))}
+            </>
+          )}
         </Content>
       </CardContainer>
       <ActionBar>

@@ -192,7 +192,11 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
             <InfoSubCard typeName={'Name:'} content={tokenDetailData.name} />
             <CopyToClipboard text={tokenDetailData.tokenId} onCopy={() => handleOnCopy(tokenDetailData.tokenId)}>
               <div>
-                <InfoSubCard typeName={'ID:'} content={tokenDetailData.id} icon={CopyOutlined} />
+                <InfoSubCard
+                  typeName={'ID:'}
+                  content={tokenDetailData.tokenId.slice(0, 7) + '...' + tokenDetailData.tokenId.slice(-7)}
+                  icon={CopyOutlined}
+                />
               </div>
             </CopyToClipboard>
             <InfoSubCard

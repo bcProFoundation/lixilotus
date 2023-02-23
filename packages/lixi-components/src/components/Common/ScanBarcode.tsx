@@ -17,8 +17,12 @@ const StyledModal = styled(Modal)`
   height: 400px !important;
 
   .ant-modal-close {
-    top: 0 !important;
-    right: 0 !important;
+    top: 20px !important;
+    right: 20px !important;
+  }
+  .ant-modal-body {
+    border-bottom-left-radius: 24px;
+    border-bottom-right-radius: 24px;
   }
 `;
 

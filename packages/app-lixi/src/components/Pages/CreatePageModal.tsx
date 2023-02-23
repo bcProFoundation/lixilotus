@@ -21,6 +21,7 @@ const { Option } = Select;
 const TextCustom = styled.p`
   padding-left: 20px;
   margin-top: 4px;
+  padding-left: 0;
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 400;
