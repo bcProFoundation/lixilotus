@@ -16,8 +16,13 @@ export class Upload {
 
   originalFilename: string;
   fileSize?: number;
+
+  @Field(() => String, { nullable: true })
   width?: number;
+
+  @Field(() => String, { nullable: true })
   height?: number;
+
   url?: string;
   createdAt?: Date;
   updatedAt?: Date;

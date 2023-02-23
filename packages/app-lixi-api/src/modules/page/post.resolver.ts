@@ -620,7 +620,9 @@ export class PostResolver {
           select: {
             id: true,
             sha: true,
-            bucket: true
+            bucket: true,
+            width: true,
+            height: true
           }
         }
       }

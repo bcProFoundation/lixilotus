@@ -162,6 +162,7 @@ const FullWalletComponent: React.FC = () => {
 
   const getUrl = (burnForType: BurnForType, burnForId: string) => {
     let burnForTypeString = getBurnForType(burnForType);
+    let idComment = burnForId;
 
     if (burnForType == BurnForType.Token && burnForId.length !== 64) {
       burnForId = allTokens.find(token => token.id === burnForId).tokenId;
@@ -175,7 +176,7 @@ const FullWalletComponent: React.FC = () => {
       }
     }
 
-    return '/' + burnForTypeString.toLowerCase() + '/' + burnForId;
+    return (`/${burnForTypeString.toLowerCase()}/${burnForId}`) ;
   };
 
   return (
@@ -223,9 +224,18 @@ const FullWalletComponent: React.FC = () => {
                                       <p>
                                         {intl.get('general.burnForType')}:{' '}
                                         {item.parsed.burnInfo && (
-                                          <span style={{ fontWeight: 'bold' }}>
-                                            {getBurnForType(item.parsed.burnInfo.burnForType)}
-                                          </span>
+                                          <Link
+                                            href={{
+                                              pathname: getUrl(
+                                                item.parsed.burnInfo.burnForType,
+                                                item.parsed.burnInfo.burnForId
+                                              )
+                                            }}
+                                          >
+                                            <Button size="small" type="text">
+                                              <p style={{fontWeight: 'bold'}}>{getBurnForType(item.parsed.burnInfo.burnForType)}</p>
+                                            </Button>
+                                          </Link>
                                         )}
                                       </p>
                                     ) : item.parsed.incoming ? (
@@ -253,10 +263,11 @@ const FullWalletComponent: React.FC = () => {
                             <div className="tx-info">
                               <div className="tx-status"></div>
                               <p className="tx-date">{formatDate(item.timeFirstSeen)}</p>
-                              {item.parsed.isBurn && item.parsed.burnInfo ? (
+                              {item.parsed.incoming && (
                                 <Link
                                   href={{
-                                    pathname: getUrl(item.parsed.burnInfo.burnForType, item.parsed.burnInfo.burnForId)
+                                    pathname: '/send',
+                                    query: { replyAddress: item.parsed.replyAddress }
                                   }}
                                 >
                                   <Button size="small" type="text">
@@ -265,21 +276,6 @@ const FullWalletComponent: React.FC = () => {
                                     </p>
                                   </Button>
                                 </Link>
-                              ) : (
-                                item.parsed.incoming && (
-                                  <Link
-                                    href={{
-                                      pathname: '/send',
-                                      query: { replyAddress: item.parsed.replyAddress }
-                                    }}
-                                  >
-                                    <Button size="small" type="text">
-                                      <p>
-                                        <Reply /> {intl.get('account.reply')}
-                                      </p>
-                                    </Button>
-                                  </Link>
-                                )
                               )}
                             </div>
                           </List.Item>
