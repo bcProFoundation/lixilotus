@@ -16,13 +16,7 @@ export const AntdFormCss = css`
   .ant-select-selection,
   .ant-select-item-option-active,
   .ant-select-item {
-    background-color: ${props => props.theme.forms.selectionBackground} !important;
-    box-shadow: none !important;
-    border-radius: 4px;
-    font-weight: bold;
-    color: ${props => props.theme.forms.text};
-    opacity: 1;
-    height: 50px;
+    margin: 3px;
   }
   .ant-input-affix-wrapper {
     background-color: ${props => props.theme.forms.selectionBackground};
@@ -99,6 +93,7 @@ export const LanguageSelectDropdown = selectProps => {
       style={{
         width: '100%'
       }}
+      getPopupContainer={trigger => trigger.parentNode}
       {...selectProps}
     >
       {languageOptions}

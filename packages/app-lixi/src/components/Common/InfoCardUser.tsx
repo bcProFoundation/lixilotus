@@ -10,7 +10,7 @@ import { getSelectedAccount } from '@store/account/selectors';
 import type { MenuProps } from 'antd';
 
 type InfoCardProps = {
-  imgUrl: string;
+  imgUrl: any;
   name: string;
   title: string;
   type?: string;
@@ -47,6 +47,12 @@ const CardUser = styled.div`
         margin: 0;
         color: rgba(30, 26, 29, 0.38);
       }
+    }
+    .ant-avatar-image {
+      width: 48px;
+      height: 48px;
+      margin-right: 1rem;
+      border: 0;
     }
   }
 `;

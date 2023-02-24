@@ -28,6 +28,7 @@ import FloatingLinkEditorPlugin from './plugins/FloatingLinkEditorPlugin';
 import { Image } from 'antd';
 import { useAppSelector } from '@store/hooks';
 import { getPostCoverUploads } from '@store/account/selectors';
+import Gallery from 'react-photo-gallery';
 
 export type EditorLexicalProps = {
   initialContent?: string;
@@ -93,9 +94,7 @@ const StyledEditorLexical = styled.div`
   }
 
   .EditorLexical_pictures {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+    max-width: 100%;
     margin-bottom: 2rem;
   }
 `;
@@ -104,6 +103,17 @@ const EditorLexical = (props: EditorLexicalProps) => {
   const { initialContent, onSubmit, isEditMode, loading } = props;
   const [floatingAnchorElem, setFloatingAnchorElem] = useState<HTMLDivElement | null>(null);
   const postCoverUploads = useAppSelector(getPostCoverUploads);
+  const imagesList = postCoverUploads.map(img => {
+    const imgUrl = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${img.bucket}/${img.sha}`;
+    let width = img?.width || 4;
+    let height = img?.height || 3;
+    let objImg = {
+      src: imgUrl,
+      width: width,
+      height: height
+    };
+    return objImg;
+  });
 
   const onRef = (_floatingAnchorElem: HTMLDivElement) => {
     if (_floatingAnchorElem !== null) {
@@ -151,16 +161,7 @@ const EditorLexical = (props: EditorLexicalProps) => {
               </>
             )}
             <div className="EditorLexical_pictures">
-              <Image.PreviewGroup>
-                {postCoverUploads.map(item => {
-                  const imageUrl = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${item.bucket}/${item.sha}`;
-                  return (
-                    <>
-                      <Image loading="eager" src={imageUrl} />
-                    </>
-                  );
-                })}
-              </Image.PreviewGroup>
+              <Gallery photos={imagesList} />
             </div>
             <div className="EditorLexical_action">
               <EmojiPickerPlugin />

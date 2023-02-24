@@ -239,6 +239,8 @@ const StyledModal = styled(Modal)`
     p {
       color: rgba(30, 26, 29, 0.38);
     }
+    border-bottom-left-radius: 24px;
+    border-bottom-right-radius: 24px;
   }
 `;
 

@@ -54,6 +54,11 @@ const StyledTokensListing = styled.div`
   @media (max-width: 768px) {
     padding-bottom: 7rem;
   }
+  .ant-btn {
+    &:hover {
+      background: transparent !important;
+    }
+  }
 `;
 
 const StyledTokensListingMobile = styled.div`
