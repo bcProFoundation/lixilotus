@@ -36,7 +36,7 @@ import _, { isNil } from 'lodash';
 import moment from 'moment';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import intl from 'react-intl-universal';
@@ -105,6 +105,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const selectedAccount = useAppSelector(getSelectedAccount);
+  const [imagesList, setImagesList] = useState([]);
   const [isEncryptedOptionalOpReturnMsg, setIsEncryptedOptionalOpReturnMsg] = useState(true);
 
   const { data, totalCount, fetchNext, hasNext, isFetching } = useInfiniteCommentsToPostIdQuery(
@@ -119,17 +120,20 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     false
   );
 
-  const imagesList = post.uploads.map(img => {
-    const imgUrl = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${img.upload.bucket}/${img.upload.sha}`;
-    let width = parseInt(img?.upload?.width) || 4;
-    let height = parseInt(img?.upload?.height) || 3;
-    let objImg = {
-      src: imgUrl,
-      width: width,
-      height: height
-    };
-    return objImg;
-  });
+  useEffect(() => {
+    const mapImages = post.uploads.map(img => {
+      const imgUrl = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${img.upload.bucket}/${img.upload.sha}`;
+      let width = parseInt(img?.upload?.width) || 4;
+      let height = parseInt(img?.upload?.height) || 3;
+      let objImg = {
+        src: imgUrl,
+        width: width,
+        height: height
+      };
+      return objImg;
+    });
+    setImagesList(mapImages);
+  }, []);
 
   const [
     createCommentTrigger,
@@ -292,6 +296,8 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       transition: 0.5s ease;
       img {
         max-width: 100%;
+        max-height: 45vh;
+        object-fit: cover;
       }
     }
   `;
@@ -462,6 +468,11 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     dispatch(openModal('EditPostModalPopup', editPostProps));
   };
 
+  const imageRenderer = useCallback(
+    ({ photo }) => <Image src={photo?.src} width={photo?.width} height={photo?.height} />,
+    []
+  );
+
   return (
     <>
       <StyledContainerPostDetail>
@@ -486,7 +497,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           <p className="description-post">{ReactHtmlParser(post.content)}</p>
           {post.uploads.length != 0 && (
             <div className="images-post">
-              <Gallery photos={imagesList} />
+              <Gallery photos={imagesList} renderImage={imageRenderer} />
             </div>
           )}
           <div className="reaction-container">

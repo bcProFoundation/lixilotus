@@ -14,7 +14,7 @@ import { PostsQuery } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
 import { formatBalance, fromXpiToSatoshis } from '@utils/cashMethods';
-import { List, Space, Button } from 'antd';
+import { List, Space, Button, Image } from 'antd';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import BigNumber from 'bignumber.js';
 import _ from 'lodash';
@@ -77,9 +77,6 @@ const CardHeader = styled.div`
   }
   .time-created {
     font-size: 12px;
-  }
-  img {
-    width: 24px;
   }
 `;
 
@@ -154,6 +151,8 @@ const Content = styled.div`
     transition: 0.5s ease;
     img {
       max-width: 100%;
+      max-height: 45vh;
+      object-fit: cover;
     }
     &:hover {
       opacity: 0.9;
@@ -235,6 +234,7 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
   const [value, setValue] = useState('');
   const [showMore, setShowMore] = useState(false);
   const [showMoreImage, setShowMoreImage] = useState(true);
+  const [imagesList, setImagesList] = useState([]);
   const ref = useRef<HTMLDivElement | null>(null);
 
   const Wallet = React.useContext(WalletContext);
@@ -243,17 +243,20 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const selectedAccount = useAppSelector(getSelectedAccount);
-  const imagesList = item.uploads.map(img => {
-    const imgUrl = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${img.upload.bucket}/${img.upload.sha}`;
-    let width = parseInt(img?.upload?.width) || 4;
-    let height = parseInt(img?.upload?.height) || 3;
-    let objImg = {
-      src: imgUrl,
-      width: width,
-      height: height
-    };
-    return objImg;
-  });
+  useEffect(() => {
+    const mapImages = item.uploads.map(img => {
+      const imgUrl = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${img.upload.bucket}/${img.upload.sha}`;
+      let width = parseInt(img?.upload?.width) || 4;
+      let height = parseInt(img?.upload?.height) || 3;
+      let objImg = {
+        src: imgUrl,
+        width: width,
+        height: height
+      };
+      return objImg;
+    });
+    setImagesList(mapImages);
+  }, []);
 
   const { width } = useWindowDimensions();
 
