@@ -149,7 +149,7 @@ const TokensListing = () => {
     }
   ] = useCreateTokenMutation();
 
-  const burnValue = '1';
+  const burnValue = '0.1';
 
   const {
     handleSubmit,
@@ -159,7 +159,7 @@ const TokensListing = () => {
 
   useEffect(() => {
     dispatch(fetchAllTokens());
-  }, []);
+  }, [dispatch, tokenList]);
 
   const getColumnSearchProps = (dataIndex: any): ColumnType<any> => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
