@@ -1,5 +1,4 @@
 import { SearchOutlined } from '@ant-design/icons';
-import ClaimComponent from '@components/Claim';
 import { Button, List } from 'antd';
 import VirtualList from 'rc-virtual-list';
 import React from 'react';
@@ -177,7 +176,6 @@ const FullWalletComponent: React.FC = () => {
     <>
       <FullWalletWrapper>
         <WalletInfoComponent />
-        <ClaimComponent isClaimFromAccount={true}></ClaimComponent>
         <TransactionHistory>
           <div className="header-transaction">
             {intl.get('account.transactionHistory')}
