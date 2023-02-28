@@ -4,6 +4,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
 import { api as postApi } from '@store/post/posts.api';
 import { api as commentApi } from '@store/comment/comments.api';
+import { api as tokenApi } from '@store/token/tokens.api';
 import { showToast } from '@store/toast/actions';
 import { burnForToken, burnForTokenFailure, burnForTokenSucceses, getTokenById } from '@store/token';
 import * as _ from 'lodash';
@@ -28,7 +29,7 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
     };
 
     if (command.burnForType === BurnForType.Token) {
-      yield put(burnForToken({ id: command.burnForId, burnType: command.burnType, burnValue: burnValue }));
+      patches = yield updateTokenBurnValue(action);
     } else if (command.burnForType === BurnForType.Post) {
       patches = yield updatePostBurnValue(action);
     } else if (command.burnForType === BurnForType.Comment) {
@@ -244,6 +245,27 @@ function* updateCommentBurnValue(action: PayloadAction<BurnCommand>) {
           draft.allCommentsToPostId.totalCount = draft.allCommentsToPostId.totalCount - 1;
         }
       }
+    })
+  );
+}
+
+function* updateTokenBurnValue(action: PayloadAction<BurnCommand>) {
+  const command = action.payload;
+  let burnValue = _.toNumber(command.burnValue);
+
+  return yield put(
+    tokenApi.util.updateQueryData('Token', { tokenId: command.burnForId }, draft => {
+      let lotusBurnUp = draft?.token?.lotusBurnUp ?? 0;
+      let lotusBurnDown = draft?.token?.lotusBurnDown ?? 0;
+      if (command.burnType == BurnType.Up) {
+        lotusBurnUp = lotusBurnUp + burnValue;
+      } else {
+        lotusBurnDown = lotusBurnDown + burnValue;
+      }
+      const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+      draft.token.lotusBurnUp = lotusBurnUp;
+      draft.token.lotusBurnDown = lotusBurnDown;
+      draft.token.lotusBurnScore = lotusBurnScore;
     })
   );
 }

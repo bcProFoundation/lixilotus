@@ -159,7 +159,7 @@ const TokensListing = () => {
 
   useEffect(() => {
     dispatch(fetchAllTokens());
-  }, []);
+  }, [dispatch, tokenList]);
 
   const getColumnSearchProps = (dataIndex: any): ColumnType<any> => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (

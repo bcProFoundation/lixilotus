@@ -61,9 +61,6 @@ const CardHeader = styled.div`
   .time-created {
     font-size: 12px;
   }
-  img {
-    width: 24px;
-  }
 `;
 
 const Content = styled.div`
@@ -130,18 +127,15 @@ const Content = styled.div`
     cursor: pointer;
     width: 100%;
     padding: 1rem;
-    margin-top: 1rem;
+    margin: 1rem 0;
     box-sizing: border-box;
     box-shadow: 0 3px 12px rgb(0 0 0 / 4%);
     background: var(--bg-color-light-theme);
-    grid-template-columns: auto auto;
-    grid-template-rows: auto auto;
-    grid-column-gap: 1rem;
-    justify-items: center;
     transition: 0.5s ease;
     img {
-      margin-bottom: 1rem;
-      width: 80%;
+      max-width: 100%;
+      max-height: 45vh;
+      object-fit: cover;
     }
   }
 `;
@@ -185,18 +179,23 @@ const PageListItem = ({ index, item }) => {
   const [value, setValue] = useState('');
   const [showMore, setShowMore] = useState(false);
   const [showMoreImage, setShowMoreImage] = useState(false);
+  const [imagesList, setImagesList] = useState([]);
   const ref = useRef<HTMLDivElement | null>(null);
-  const imagesList = item.uploads.map(img => {
-    const imgUrl = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${img.upload.bucket}/${img.upload.sha}`;
-    let width = parseInt(img?.upload?.width) || 4;
-    let height = parseInt(img?.upload?.height) || 3;
-    let objImg = {
-      src: imgUrl,
-      width: width,
-      height: height
-    };
-    return objImg;
-  });
+
+  useEffect(() => {
+    const mapImages = item.uploads.map(img => {
+      const imgUrl = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${img.upload.bucket}/${img.upload.sha}`;
+      let width = parseInt(img?.upload?.width) || 4;
+      let height = parseInt(img?.upload?.height) || 3;
+      let objImg = {
+        src: imgUrl,
+        width: width,
+        height: height
+      };
+      return objImg;
+    });
+    setImagesList(mapImages);
+  }, []);
 
   const { width } = useWindowDimensions();
 
