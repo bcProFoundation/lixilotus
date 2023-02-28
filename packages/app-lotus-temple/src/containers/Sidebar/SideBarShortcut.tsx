@@ -251,25 +251,11 @@ const SidebarShortcut = () => {
               href={'/page/feed'}
             />
             <ItemAccess
-              icon={'/images/ico-tokens.svg'}
-              text={intl.get('general.tokens')}
-              active={currentPathName.includes('/token')}
-              key="tokens-feed"
-              href={'/token/listing'}
-            />
-            <ItemAccess
               icon={'/images/ico-account.svg'}
               text={intl.get('general.accounts')}
               active={currentPathName === '/wallet'}
               key="wallet-lotus"
               href={'/wallet'}
-            />
-            <ItemAccess
-              icon={'/images/ico-lixi.svg'}
-              text={intl.get('general.lixi')}
-              active={currentPathName.includes('/lixi')}
-              key="lixi"
-              href={'/lixi'}
             />
             <ItemAccess
               icon={'/images/ico-setting.svg'}

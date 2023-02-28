@@ -33,7 +33,6 @@ import { localAccountsAdapter, localUserAccountReducer } from './localAccount/re
 import { postReducer } from './post/reducer';
 import { PostState } from './post/state';
 import { walletStateReducer } from './wallet/reducer';
-import { tokenReducer, TokenState } from './token';
 import { CategoriesState } from './category/state';
 import { categoryReducer } from './category/reducer';
 
@@ -111,7 +110,6 @@ export const serverReducer = combineReducers({
   settings: settingsReducer,
   notifications: notificationReducer,
   pages: pageReducer,
-  tokens: tokenReducer,
   countries: countryReducer,
   states: stateReducer,
   categories: categoryReducer,
@@ -130,7 +128,6 @@ export const appReducer = combineReducers({
   claims: persistReducer(claimsPersistConfig, claimReducer),
   settings: persistReducer(settingsPersistConfig, settingsReducer),
   pages: persistReducer(shopPersistConfig, pageReducer),
-  tokens: tokenReducer,
   notifications: notificationReducer,
   envelopes: envelopeReducer,
   loading: loadingReducer,

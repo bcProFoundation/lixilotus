@@ -18,7 +18,6 @@ import { FormattedTxAddress } from '@components/Common/FormattedWalletAddress';
 import Link from 'next/link';
 import Reply from '@assets/icons/reply.svg';
 import { BurnForType } from '@bcpros/lixi-models/lib/burn';
-import { selectTokens } from '@store/token';
 import { useCommentQuery } from '@store/comment/comments.generated';
 
 interface UserItem {
@@ -142,7 +141,6 @@ const FullWalletComponent: React.FC = () => {
 
   const selectedAccount = useAppSelector(getSelectedAccount);
   const currentLocale = useAppSelector(getCurrentLocale);
-  const allTokens = useAppSelector(selectTokens);
 
   const walletParsedHistory = useAppSelector(getWalletParsedTxHistory);
   const orderedWalletParsedHistory = _.orderBy(walletParsedHistory, x => x.timeFirstSeen, 'desc');
@@ -163,9 +161,6 @@ const FullWalletComponent: React.FC = () => {
   const getUrl = (burnForType: BurnForType, burnForId: string) => {
     let burnForTypeString = getBurnForType(burnForType);
 
-    if (burnForType == BurnForType.Token && burnForId.length !== 64) {
-      burnForId = allTokens.find(token => token.id === burnForId).tokenId;
-    }
     if (burnForType == BurnForType.Comment) {
       burnForTypeString = getBurnForType(BurnForType.Post);
       // eslint-disable-next-line react-hooks/rules-of-hooks

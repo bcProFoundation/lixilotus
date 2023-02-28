@@ -14,7 +14,6 @@ import { UpdatePageInput, Page } from 'src/generated/types.generated';
 import { api as pageApi, useUpdatePageMutation } from '@store/page/pages.generated';
 import styled from 'styled-components';
 import { closeModal } from '@store/modal/actions';
-import { CreateForm } from '@components/Lixi/CreateLixiFormModal';
 import { getAllCategories } from '@store/category/selectors';
 
 const { TextArea } = Input;
@@ -23,6 +22,87 @@ const { Option } = Select;
 type EditPageModalProps = {
   page: Page;
 } & React.HTMLProps<HTMLElement>;
+
+export const CreateForm = styled(Form)`
+  &.form-parent {
+    display: block;
+
+    @media (min-width: 768px) {
+      display: flex;
+    }
+  }
+
+  &.form-child {
+    width: 100%;
+    padding: 0px;
+
+    @media (min-width: 768px) {
+      &.edit-page {
+        width: 50%;
+      }
+      width: 33%;
+      padding: 0px 10px;
+    }
+  }
+
+  .ant-form-item-label {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.4px;
+    color: #4e444b;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+  }
+
+  .ant-radio-group {
+    display: flex;
+
+    .ant-radio-wrapper {
+      font-family: 'Roboto';
+      font-style: normal;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 24px;
+      display: flex;
+      align-items: baseline !important;
+      letter-spacing: 0.5px;
+      color: #1e1a1d;
+      flex: none;
+      order: 0;
+      flex-grow: 0;
+    }
+  }
+
+  .ant-form-vertical .ant-form-item .ant-form-item-control {
+    display: flex;
+  }
+
+  .ant-checkbox-wrapper {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.5px;
+    color: #4e444b;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+    align-items: baseline !important;
+
+    .ant-checkbox-inner {
+      background: #ffffff;
+    }
+  }
+`;
 
 export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: EditPageModalProps) => {
   const dispatch = useAppDispatch();

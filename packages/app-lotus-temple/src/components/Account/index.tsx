@@ -2,7 +2,6 @@ import ReloadOutlined, { CheckCircleOutlined, InboxOutlined } from '@ant-design/
 import { ThemedWalletOutlined } from '@bcpros/lixi-components/components/Common/CustomIcons';
 import { SmartButton } from '@components/Common/PrimaryButton';
 import { StyledSpacer } from '@components/Common/StyledSpacer';
-import LixiList from '@components/Lixi/LixiList';
 import WalletInfoComponent from '@components/Wallet/WalletInfo';
 import { getAccount, refreshLixiList, refreshLixiListSilent, silentLogin } from '@store/account/actions';
 import { getPageBySelectedAccount } from '@store/page/selectors';
@@ -79,46 +78,6 @@ const Account: React.FC = () => {
       <SmartButton onClick={() => refreshList()}>
         <ReloadOutlined /> {intl.get('account.refreshLixiList')}
       </SmartButton>
-      {lixies.length > 0 && (
-        <StyledTabs type="card" size="large" defaultActiveKey="1" centered>
-          <TabPane
-            key={'1'}
-            tab={
-              <span>
-                {' '}
-                <CheckCircleOutlined className="active-tab-icon" /> Active{' '}
-              </span>
-            }
-          >
-            <LixiList
-              lixies={lixies.filter(
-                lixi =>
-                  lixi.status != 'locked' &&
-                  !moment().isAfter(lixi.expiryAt) &&
-                  !(lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim)
-              )}
-            />
-          </TabPane>
-          <TabPane
-            key={'2'}
-            tab={
-              <span>
-                {' '}
-                <InboxOutlined className="archive-tab-icon" /> Archive{' '}
-              </span>
-            }
-          >
-            <LixiList
-              lixies={lixies.filter(
-                lixi =>
-                  lixi.status === 'locked' ||
-                  moment().isAfter(lixi.expiryAt) ||
-                  (lixi.maxClaim != 0 && lixi.claimedNum == lixi.maxClaim)
-              )}
-            />
-          </TabPane>
-        </StyledTabs>
-      )}
     </>
   );
 };
