@@ -149,7 +149,7 @@ const TokensListing = () => {
     }
   ] = useCreateTokenMutation();
 
-  const burnValue = '0.1';
+  const burnValue = '1';
 
   const {
     handleSubmit,
