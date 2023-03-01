@@ -8,7 +8,7 @@ import { useInfinitePostsByPageIdQuery } from '@store/post/useInfinitePostsByPag
 import { WalletContext } from '@context/index';
 import { getLatestBurnForPost } from '@store/burn';
 import { api as postApi, useLazyPostQuery } from '@store/post/posts.api';
-import { Menu, MenuProps, Modal, Skeleton, Tabs } from 'antd';
+import { Menu, MenuProps, Modal, Select, Skeleton, Tabs } from 'antd';
 import _ from 'lodash';
 import React, { useRef, useState, useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
@@ -20,6 +20,7 @@ import intl from 'react-intl-universal';
 import { LoadingOutlined } from '@ant-design/icons';
 import PostListItem from './PostListItem';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { FilterBurnt } from '@components/Common/FilterBurn';
 
 type PostsListingProps = {
   className?: string;
@@ -252,20 +253,24 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       <StyledHeader>
         <SearchBox searchPost={searchPost} value={searchValue} />
         <CreatePostCard />
-        <Menu
-          className="menu-post-listing"
-          style={{
-            border: 'none',
-            position: 'relative',
-            marginBottom: '1rem',
-            background: 'var(--bg-color-light-theme)'
-          }}
-          mode="horizontal"
-          defaultSelectedKeys={['top']}
-          selectedKeys={tab}
-          onClick={onClickMenu}
-          items={menuItems}
-        ></Menu>
+        <div>
+          <Menu
+            className="menu-post-listing"
+            style={{
+              border: 'none',
+              position: 'relative',
+              marginBottom: '1rem',
+              background: 'var(--bg-color-light-theme)'
+            }}
+            mode="horizontal"
+            defaultSelectedKeys={['all']}
+            selectedKeys={tab}
+            onClick={onClickMenu}
+            items={menuItems}
+          ></Menu>
+
+          <FilterBurnt/>
+        </div>
       </StyledHeader>
     );
   };
