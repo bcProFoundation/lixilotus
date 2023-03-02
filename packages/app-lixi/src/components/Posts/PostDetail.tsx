@@ -200,7 +200,12 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
         postQueryTag: PostsQueryTag.Post
       };
 
-      dispatch(burnForUpDownVote(burnCommand));
+      dispatch({
+        type: 'REQUEST',
+        payload: burnCommand
+      });
+
+      // dispatch(burnForUpDownVote(burnCommand));
     } catch (e) {
       dispatch(
         showToast('error', {
@@ -473,9 +478,20 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     []
   );
 
+  const handleButtonClick = () => {
+    // dispatch a REQUEST action with the desired payload
+    dispatch({
+      type: 'REQUEST',
+      payload: {
+        /* request data */
+      }
+    });
+  };
+
   return (
     <>
       <StyledContainerPostDetail>
+        <button onClick={handleButtonClick}>Add Request</button>
         <NavBarHeader onClick={() => router.back()}>
           <LeftOutlined />
           <PathDirection>

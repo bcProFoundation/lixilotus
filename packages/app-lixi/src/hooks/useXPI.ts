@@ -196,7 +196,7 @@ export default function useXPI() {
     }
   };
 
-  const burnXpi = async (
+  const burnXpi = ( // change name to createBurnTransaction
     XPI: BCHJS,
     walletPaths: WalletPathAddressInfo[],
     utxos: Array<Utxo & { address: string }>,
@@ -207,7 +207,7 @@ export default function useXPI() {
     burnForId: string,
     burnAmount: string,
     tipToAddresses?: { address: string; amount: string }[]
-  ): Promise<string> => {
+  ) => {
     let txBuilder = new XPI.TransactionBuilder();
 
     const satoshisToBurn = fromXpiToSatoshis(new BigNumber(burnAmount));

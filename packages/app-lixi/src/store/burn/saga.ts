@@ -1,5 +1,5 @@
 import { BurnType, Burn, BurnCommand, BurnForType } from '@bcpros/lixi-models/lib/burn';
-import { all, call, fork, takeLatest, take } from '@redux-saga/core/effects';
+import { all, call, fork, takeLatest, take, put as putChannel } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
 import { api as postApi } from '@store/post/posts.api';
@@ -9,12 +9,19 @@ import { showToast } from '@store/toast/actions';
 import { burnForToken, burnForTokenFailure, burnForTokenSucceses, getTokenById } from '@store/token';
 import * as _ from 'lodash';
 import intl from 'react-intl-universal';
-import { actionChannel, put, select } from 'redux-saga/effects';
+import { actionChannel, select, race, put } from 'redux-saga/effects';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import { hideLoading } from '../loading/actions';
-import { burnForUpDownVote, burnForUpDownVoteFailure, burnForUpDownVoteSuccess } from './actions';
+import {
+  burnForUpDownVote,
+  burnForUpDownVoteFailure,
+  burnForUpDownVoteSuccess,
+  startBurnChannel,
+  addBurnToQueue
+} from './actions';
 import burnApi from './api';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
+import { channel } from 'redux-saga';
 
 function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
   let patches, patch: PatchCollection;
@@ -77,10 +84,12 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
 }
 
 function* burnForUpDownVoteSuccessSaga(action: PayloadAction<Burn>) {
+  console.log('done burning');
   yield put(hideLoading(burnForUpDownVote.type));
 }
 
 function* burnForUpDownVoteFailureSaga(action: PayloadAction<string>) {
+  console.log('failed burning');
   yield put(
     showToast('error', {
       message: action.payload,
@@ -295,10 +304,59 @@ function* watchBurnForUpDownVoteChannel() {
   }
 }
 
+function* watchRequests() {
+  const chan = yield call(channel);
+  console.log('create');
+
+  yield fork(handleRequest, chan);
+
+  while (true) {
+    const { payload } = yield take('REQUEST');
+    console.log(payload);
+    yield putChannel(chan, payload);
+  }
+}
+
+function* handleRequest(chan) {
+  while (true) {
+    const payload = yield take(chan);
+    console.log(payload);
+    // process the request
+    const result = yield put(burnForUpDownVote(payload));
+    // dispatch an action with the result
+    console.log(result);
+    yield put({ type: 'REQUEST_COMPLETE', result });
+  }
+}
+
+function* processRequest(payload) {
+  // simulate processing the request
+  const simulate = Math.random() * 2000;
+  return new Promise(resolve => setTimeout(() => resolve(simulate), simulate));
+}
+
+// function* startStopBurnChannel() {
+//   while (true) {
+//     yield take(startBurnChannel.type);
+//     yield race([yield call(createBurnChannelSaga)]);
+//   }
+// }
+
 export default function* burnSaga() {
-  yield all([
-    fork(watchBurnForUpDownVoteChannel),
-    fork(watchBurnForUpDownVoteSuccess),
-    fork(watchBurnForUpDownVoteFailure)
-  ]);
+  if (typeof window === 'undefined') {
+    yield all([
+      fork(watchBurnForUpDownVote),
+      fork(watchBurnForUpDownVoteChannel),
+      fork(watchBurnForUpDownVoteSuccess),
+      fork(watchBurnForUpDownVoteFailure)
+    ]);
+  } else {
+    yield all([
+      fork(watchRequests),
+      fork(watchBurnForUpDownVote),
+      fork(watchBurnForUpDownVoteChannel),
+      fork(watchBurnForUpDownVoteSuccess),
+      fork(watchBurnForUpDownVoteFailure)
+    ]);
+  }
 }
