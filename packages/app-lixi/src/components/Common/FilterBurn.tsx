@@ -3,6 +3,16 @@ import { useEffect, useState } from 'react';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import { useAppDispatch } from '@store/hooks';
 import { saveFilterBurn } from '@store/settings/actions';
+import styled from 'styled-components';
+
+const FilterStyle = styled.div`
+  display: flex;
+  align-items: baseline;
+  align-self: center;
+  p {
+    margin: 0;
+  }
+`
 
 const { Option } = Select;
 type FilterBurntProps = {
@@ -26,7 +36,7 @@ export const FilterBurnt = (props: FilterBurntProps) => {
   }
 
   return (
-    <div style={{ display: 'flex', alignItems: 'baseline', alignSelf: 'center' }}>
+    <FilterStyle>
       <p>Min XPI burnt &nbsp;</p>
       <Select
         defaultValue="0"
@@ -36,6 +46,6 @@ export const FilterBurnt = (props: FilterBurntProps) => {
           filterValueArr.map(item => <Option value={item}>{item}</Option>)
         }
       </Select>
-    </div>
+    </FilterStyle>
   );
 };

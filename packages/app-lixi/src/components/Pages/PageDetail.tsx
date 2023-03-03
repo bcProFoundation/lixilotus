@@ -260,6 +260,10 @@ const FriendBox = styled.div`
 
 const ContentTimeline = styled.div`
   width: 100%;
+  .search-bar {
+    display: flex;
+    gap: 1rem;
+  }
 `;
 
 const Timeline = styled.div`
@@ -564,7 +568,7 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
                 </FriendBox>
               </LegacyProfile> */}
               <ContentTimeline>
-                <div>
+                <div className='search-bar'>
                   <SearchBox />
                   <FilterBurnt filterForType={FilterType.postsPage} />
                 </div>

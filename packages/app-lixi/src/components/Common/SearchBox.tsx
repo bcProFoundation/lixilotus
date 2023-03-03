@@ -12,6 +12,7 @@ const SearchBox = props => {
   });
   const SearchBoxContainer = styled.div`
     display: flex;
+    flex-grow:1;
     justify-content: space-between;
     padding: 8px 1rem !important;
     margin: 2px;

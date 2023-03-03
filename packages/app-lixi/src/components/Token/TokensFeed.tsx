@@ -123,6 +123,11 @@ const BannerTicker = styled.div`
   }
 `;
 
+const SearchBar = styled.div`
+  display: flex;
+  gap: 1rem;
+`
+
 type TokenProps = {
   token: any;
   isMobile: boolean;
@@ -223,8 +228,11 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
       </BannerTicker>
 
       <CreatePostCard tokenPrimaryId={tokenDetailData.id} refetch={() => refetch()} />
-      <SearchBox />
-      <FilterBurnt filterForType={FilterType.postsToken} />
+      <SearchBar>
+        <SearchBox />
+        <FilterBurnt filterForType={FilterType.postsToken} />
+      </SearchBar>
+
 
       <div className="content">
         <Tabs defaultActiveKey="1">

@@ -100,6 +100,10 @@ const StyledHeader = styled.div`
       }
     }
   }
+  .filter-bar {
+    display: flex;
+    justify-content: space-between;
+  }
 `;
 const menuItems = [
   // { label: 'Top', key: 'top' },
@@ -259,7 +263,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       <StyledHeader>
         <SearchBox searchPost={searchPost} value={searchValue} />
         <CreatePostCard />
-        <div>
+        <div className='filter-bar' >
           <Menu
             className="menu-post-listing"
             style={{
