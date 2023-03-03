@@ -342,7 +342,7 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
   const [pageDetailData, setPageDetailData] = useState<any>(page);
   const [listsFriend, setListsFriend] = useState<any>([]);
   const [listsPicture, setListsPicture] = useState<any>([]);
-  const filterValue = useAppSelector(getFilterPostsPage)
+  const filterValue = useAppSelector(getFilterPostsPage);
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByPageIdQuery(
     {
@@ -356,7 +356,9 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
     false
   );
 
-  const filterData = data.filter(post => post.lotusBurnScore >= filterValue)
+  const filteredData = data.filter(
+    post => post.lotusBurnScore >= filterValue || post.postAccount.id == selectedAccountId.toString()
+  );
 
   useEffect(() => {
     // fetchListFriend();
@@ -568,13 +570,13 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
                 </FriendBox>
               </LegacyProfile> */}
               <ContentTimeline>
-                <div className='search-bar'>
+                <div className="search-bar">
                   <SearchBox />
-                  <FilterBurnt filterForType={FilterType.postsPage} />
+                  <FilterBurnt filterForType={FilterType.PostsPage} />
                 </div>
                 <CreatePostCard pageId={page.id} refetch={() => refetch()} />
                 <Timeline>
-                  {filterData.length == 0 && (
+                  {filteredData.length == 0 && (
                     <div className="blank-timeline">
                       <img className="time-line-blank" src="/images/time-line-blank.svg" alt="" />
                       <p>Become a first person post on the page...</p>
@@ -583,18 +585,18 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
 
                   <React.Fragment>
                     <InfiniteScroll
-                      dataLength={filterData.length}
+                      dataLength={filteredData.length}
                       next={loadMoreItems}
                       hasMore={hasNext}
                       loader={<Skeleton avatar active />}
                       endMessage={
                         <p style={{ textAlign: 'center' }}>
-                          <b>{filterData.length > 0 ? 'end reached' : ''}</b>
+                          <b>{filteredData.length > 0 ? 'end reached' : ''}</b>
                         </p>
                       }
                       scrollableTarget="scrollableDiv"
                     >
-                      {filterData.map((item, index) => {
+                      {filteredData.map((item, index) => {
                         return <PostListItem index={index} item={item} />;
                       })}
                     </InfiniteScroll>
@@ -618,19 +620,19 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
                   <div className="about-content">
                     <SubAbout
                       dataItem={pageDetailData?.description}
-                      onClickIcon={() => { }}
+                      onClickIcon={() => {}}
                       icon={InfoCircleOutlined}
                       text={pageDetailData?.description}
                     />
                     <SubAbout
                       dataItem={pageDetailData?.address}
-                      onClickIcon={() => { }}
+                      onClickIcon={() => {}}
                       icon={CompassOutlined}
                       text={pageDetailData?.address}
                     />
                     <SubAbout
                       dataItem={pageDetailData?.website}
-                      onClickIcon={() => { }}
+                      onClickIcon={() => {}}
                       icon={HomeOutlined}
                       text={pageDetailData?.website}
                     />

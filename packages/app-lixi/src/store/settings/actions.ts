@@ -9,4 +9,4 @@ export const loadLocale = createAction<string>('settings/loadLocale');
 export const loadLocaleSuccess = createAction<string>('settings/loadLocaleSuccess');
 export const loadLocaleFailure = createAction<string>('settings/loadLocaleFailure');
 export const saveWebAuthnConfig = createAction<WebAuthnConfig>('settings/saveWebAuthnConfig');
-export const saveFilterBurn = createAction<FilterBurnCommand>('settings/saveFilterBurn')
+export const saveBurnFilter = createAction<FilterBurnCommand>('settings/saveBurnFilter');

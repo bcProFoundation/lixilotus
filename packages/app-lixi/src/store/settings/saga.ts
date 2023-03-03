@@ -3,7 +3,7 @@ import intl from 'react-intl-universal';
 import { all, call, fork, put, select, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 
-import { loadLocale, loadLocaleFailure, loadLocaleSuccess, saveFilterBurn, setInitIntlStatus, updateLocale } from './actions';
+import { loadLocale, loadLocaleFailure, loadLocaleSuccess, setInitIntlStatus, updateLocale } from './actions';
 import AppLocale from 'src/lang';
 import { showToast } from '@store/toast/actions';
 import { Account, ChangeAccountLocaleCommand } from '@bcpros/lixi-models';
@@ -81,8 +81,6 @@ function* loadLocaleFailureSaga(action: PayloadAction<string>) {
   );
 }
 
-function* saveFilterBurnSaga(action: PayloadAction<FilterBurnCommand>) { }
-
 function* watchLoadLocale() {
   yield takeLatest(loadLocale.type, loadLocaleSaga);
 }
@@ -99,16 +97,11 @@ function* watchLoadLocaleFailuare() {
   yield takeLatest(loadLocaleFailure.type, loadLocaleFailureSaga);
 }
 
-function* watchSaveFilterBurn() {
-  yield takeLatest(saveFilterBurn.type, saveFilterBurnSaga);
-}
-
 export default function* lixiSaga() {
   yield all([
     fork(watchLoadLocale),
     fork(watchLoadLocaleSuccess),
     fork(watchLoadLocaleFailuare),
-    fork(watchUpdateLocale),
-    fork(watchSaveFilterBurn)
+    fork(watchUpdateLocale)
   ]);
 }

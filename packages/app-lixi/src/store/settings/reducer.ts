@@ -1,5 +1,5 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { saveFilterBurn, saveWebAuthnConfig, setInitIntlStatus, toggleCollapsedSideNav, updateLocale } from './actions';
+import { saveBurnFilter, saveWebAuthnConfig, setInitIntlStatus, toggleCollapsedSideNav, updateLocale } from './actions';
 import { SettingsState } from './state';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
 
@@ -27,16 +27,16 @@ export const settingsReducer = createReducer(initialState, builder => {
     .addCase(saveWebAuthnConfig, (state, action) => {
       state.webAuthnConfig = action.payload;
     })
-    .addCase(saveFilterBurn, (state, action) => {
+    .addCase(saveBurnFilter, (state, action) => {
       const { filterForType, filterValue } = action.payload;
       switch (filterForType) {
-        case FilterType.postsHome:
+        case FilterType.PostsHome:
           state.filterPostsHome = filterValue;
           break;
-        case FilterType.postsPage:
+        case FilterType.PostsPage:
           state.filterPostsPage = filterValue;
           break;
-        case FilterType.postsToken:
+        case FilterType.PostsToken:
           state.filterPostsToken = filterValue;
           break;
       }

@@ -1,6 +1,6 @@
 import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
 import CreatePostCard from '@components/Common/CreatePostCard';
-import { getSelectedAccount } from '@store/account/selectors';
+import { getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
 import { useInfinitePostsBySearchQuery } from '@store/post/useInfinitePostsBySearchQuery';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
 import { useInfiniteOrphanPostsQuery } from '@store/post/useInfiniteOrphanPostsQuery';
@@ -121,7 +121,7 @@ const menuItems = [
 
 const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingProps) => {
   const dispatch = useAppDispatch();
-  const selectedAccount = useAppSelector(getSelectedAccount);
+  const selectedAccountId = useAppSelector(getSelectedAccountId);
   const [isShowQrCode, setIsShowQrCode] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -246,8 +246,12 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     }
   };
 
-  const filterData = data.filter(item => item.lotusBurnScore >= filterValue);
-  const filterQueryData = queryData.filter(item => item.lotusBurnScore >= filterValue);
+  const filteredData = data.filter(
+    post => post.lotusBurnScore >= filterValue || post.postAccount.id == selectedAccountId.toString()
+  );
+  const filteredQueryData = queryData.filter(
+    post => post.lotusBurnScore >= filterValue || post.postAccount.id == selectedAccountId.toString()
+  );
 
   const triggerSrollbar = e => {
     const virtuosoNode = refPostsListing.current.querySelector('#list-virtuoso') || null;
@@ -263,7 +267,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       <StyledHeader>
         <SearchBox searchPost={searchPost} value={searchValue} />
         <CreatePostCard />
-        <div className='filter-bar' >
+        <div className="filter-bar">
           <Menu
             className="menu-post-listing"
             style={{
@@ -279,7 +283,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
             items={menuItems}
           ></Menu>
 
-          <FilterBurnt filterForType={FilterType.postsHome} />
+          <FilterBurnt filterForType={FilterType.PostsHome} />
         </div>
       </StyledHeader>
     );
@@ -344,7 +348,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
           <React.Fragment>
             <Header />
             <InfiniteScroll
-              dataLength={filterData.length}
+              dataLength={filteredData.length}
               next={loadMoreItems}
               hasMore={hasNext}
               loader={<Skeleton avatar active />}
@@ -355,7 +359,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
               }
               scrollableTarget="scrollableDiv"
             >
-              {filterData.map((item, index) => {
+              {filteredData.map((item, index) => {
                 return <PostListItem index={index} item={item} key={item.id} />;
               })}
             </InfiniteScroll>
@@ -372,7 +376,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         <React.Fragment>
           <QueryHeader />
           <InfiniteScroll
-            dataLength={filterQueryData.length}
+            dataLength={filteredQueryData.length}
             next={loadMoreQueryItems}
             hasMore={hasNextQuery}
             loader={<Skeleton avatar active />}
@@ -383,7 +387,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
             }
             scrollableTarget="scrollableDiv"
           >
-            {filterQueryData.map((item, index) => {
+            {filteredQueryData.map((item, index) => {
               return <PostListItem index={index} item={item} key={item.id} />;
             })}
           </InfiniteScroll>
