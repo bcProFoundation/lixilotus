@@ -21,3 +21,18 @@ export const getWebAuthnConfig = createSelector(
   (state: RootState) => state.settings,
   (state: SettingsState) => state.webAuthnConfig
 );
+
+export const getFilterPostsHome = createSelector(
+  (state: RootState) => state.settings,
+  (state: SettingsState) => state.filterPostsHome
+);
+
+export const getFilterPostsPage = createSelector(
+  (state: RootState) => state.settings,
+  (state: SettingsState) => state.filterPostsPage
+);
+
+export const getFilterPostsToken = createSelector(
+  (state: RootState) => state.settings,
+  (state: SettingsState) => state.filterPostsToken
+);

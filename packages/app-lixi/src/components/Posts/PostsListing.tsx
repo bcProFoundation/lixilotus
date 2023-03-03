@@ -21,6 +21,8 @@ import { LoadingOutlined } from '@ant-design/icons';
 import PostListItem from './PostListItem';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { FilterBurnt } from '@components/Common/FilterBurn';
+import { FilterType } from '@bcpros/lixi-models/lib/filter';
+import { getFilterPostsHome } from '@store/settings/selectors';
 
 type PostsListingProps = {
   className?: string;
@@ -124,6 +126,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const [tab, setTab] = useState<any>('all');
   const [queryPostTrigger, queryPostResult] = useLazyPostQuery();
   const latestBurnForPost = useAppSelector(getLatestBurnForPost);
+  const filterValue = useAppSelector(getFilterPostsHome);
 
   const onClickMenu: MenuProps['onClick'] = e => {
     setTab(e.key);
@@ -239,6 +242,9 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     }
   };
 
+  const filterData = data.filter(item => item.lotusBurnScore >= filterValue);
+  const filterQueryData = queryData.filter(item => item.lotusBurnScore >= filterValue);
+
   const triggerSrollbar = e => {
     const virtuosoNode = refPostsListing.current.querySelector('#list-virtuoso') || null;
     virtuosoNode.classList.add('show-scroll');
@@ -269,7 +275,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
             items={menuItems}
           ></Menu>
 
-          <FilterBurnt/>
+          <FilterBurnt filterForType={FilterType.postsHome} />
         </div>
       </StyledHeader>
     );
@@ -331,23 +337,10 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         );
       case 'all':
         return (
-          // Just in case for future usage
-          // <Virtuoso
-          //   id="list-virtuoso"
-          //   onScroll={e => triggerSrollbar(e)}
-          //   style={{ height: '100vh', paddingBottom: '2rem' }}
-          //   data={data}
-          //   endReached={loadMoreItems}
-          //   overscan={3000}
-          //   itemContent={(index, item) => {
-          //     return <PostListItem index={index} item={item} />;
-          //   }}
-          //   components={{ Header, Footer }}
-          // />
           <React.Fragment>
             <Header />
             <InfiniteScroll
-              dataLength={data.length}
+              dataLength={filterData.length}
               next={loadMoreItems}
               hasMore={hasNext}
               loader={<Skeleton avatar active />}
@@ -358,7 +351,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
               }
               scrollableTarget="scrollableDiv"
             >
-              {data.map((item, index) => {
+              {filterData.map((item, index) => {
                 return <PostListItem index={index} item={item} key={item.id} />;
               })}
             </InfiniteScroll>
@@ -375,7 +368,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         <React.Fragment>
           <QueryHeader />
           <InfiniteScroll
-            dataLength={queryData.length}
+            dataLength={filterQueryData.length}
             next={loadMoreQueryItems}
             hasMore={hasNextQuery}
             loader={<Skeleton avatar active />}
@@ -386,7 +379,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
             }
             scrollableTarget="scrollableDiv"
           >
-            {queryData.map((item, index) => {
+            {filterQueryData.map((item, index) => {
               return <PostListItem index={index} item={item} key={item.id} />;
             })}
           </InfiniteScroll>

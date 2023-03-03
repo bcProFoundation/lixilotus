@@ -3,3 +3,9 @@ export interface WebAuthnConfig {
   userId: string;
   credentialId: string;
 }
+
+// export interface FilterBurnt {
+//   filterPostsHome: number;
+//   filterPostsPage: number;
+//   filterPostsToken: number;
+// }

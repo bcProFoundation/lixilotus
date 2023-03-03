@@ -20,6 +20,9 @@ import { InfoSubCard } from '@components/Lixi';
 import moment from 'moment';
 import intl from 'react-intl-universal';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { getFilterPostsToken } from '@store/settings/selectors';
+import { FilterType } from '@bcpros/lixi-models/lib/filter';
+import { FilterBurnt } from '@components/Common/FilterBurn';
 
 const StyledTokensFeed = styled.div`
   .content {
@@ -128,6 +131,7 @@ type TokenProps = {
 const TokensFeed = ({ token, isMobile }: TokenProps) => {
   const dispatch = useAppDispatch();
   const [tokenDetailData, setTokenDetailData] = useState<any>(token);
+  const filterValue = useAppSelector(getFilterPostsToken);
 
   let options = ['Withdraw', 'Rename', 'Export'];
 
@@ -142,6 +146,8 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
     },
     false
   );
+
+  const filterData = data.filter(post => post.lotusBurnScore >= filterValue);
 
   const loadMoreItems = () => {
     if (hasNext && !isFetching) {
@@ -211,31 +217,32 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
             burnValue={formatBalance(tokenDetailData?.lotusBurnUp ?? 0)}
             key={`list-vertical-upvote-o-${tokenDetailData.id}`}
             dataItem={tokenDetailData}
-            onClickIcon={() => {}}
+            onClickIcon={() => { }}
           />
         </div>
       </BannerTicker>
 
       <CreatePostCard tokenPrimaryId={tokenDetailData.id} refetch={() => refetch()} />
       <SearchBox />
+      <FilterBurnt filterForType={FilterType.postsToken} />
 
       <div className="content">
         <Tabs defaultActiveKey="1">
           <Tabs.TabPane tab="Top discussions" key="1">
             <React.Fragment>
               <InfiniteScroll
-                dataLength={data.length}
+                dataLength={filterData.length}
                 next={loadMoreItems}
                 hasMore={hasNext}
                 loader={<Skeleton avatar active />}
                 endMessage={
                   <p style={{ textAlign: 'center' }}>
-                    <p>{data.length > 0 ? 'end reached' : "It's so empty here..."}</p>
+                    <p>{filterData.length > 0 ? 'end reached' : "It's so empty here..."}</p>
                   </p>
                 }
                 scrollableTarget="scrollableDiv"
               >
-                {data.map((item, index) => {
+                {filterData.map((item, index) => {
                   return <PostListItem index={index} item={item} />;
                 })}
               </InfiniteScroll>

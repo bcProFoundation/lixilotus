@@ -15,6 +15,9 @@ import { Virtuoso } from 'react-virtuoso';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import styled from 'styled-components';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { getFilterPostsPage } from '@store/settings/selectors';
+import { FilterBurnt } from '@components/Common/FilterBurn';
+import { FilterType } from '@bcpros/lixi-models/lib/filter';
 
 type PageDetailProps = {
   page: any;
@@ -335,6 +338,7 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
   const [pageDetailData, setPageDetailData] = useState<any>(page);
   const [listsFriend, setListsFriend] = useState<any>([]);
   const [listsPicture, setListsPicture] = useState<any>([]);
+  const filterValue = useAppSelector(getFilterPostsPage)
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByPageIdQuery(
     {
@@ -347,6 +351,8 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
     },
     false
   );
+
+  const filterData = data.filter(post => post.lotusBurnScore >= filterValue)
 
   useEffect(() => {
     // fetchListFriend();
@@ -558,10 +564,13 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
                 </FriendBox>
               </LegacyProfile> */}
               <ContentTimeline>
-                <SearchBox />
+                <div>
+                  <SearchBox />
+                  <FilterBurnt filterForType={FilterType.postsPage} />
+                </div>
                 <CreatePostCard pageId={page.id} refetch={() => refetch()} />
                 <Timeline>
-                  {data.length == 0 && (
+                  {filterData.length == 0 && (
                     <div className="blank-timeline">
                       <img className="time-line-blank" src="/images/time-line-blank.svg" alt="" />
                       <p>Become a first person post on the page...</p>
@@ -570,18 +579,18 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
 
                   <React.Fragment>
                     <InfiniteScroll
-                      dataLength={data.length}
+                      dataLength={filterData.length}
                       next={loadMoreItems}
                       hasMore={hasNext}
                       loader={<Skeleton avatar active />}
                       endMessage={
                         <p style={{ textAlign: 'center' }}>
-                          <b>{data.length > 0 ? 'end reached' : ''}</b>
+                          <b>{filterData.length > 0 ? 'end reached' : ''}</b>
                         </p>
                       }
                       scrollableTarget="scrollableDiv"
                     >
-                      {data.map((item, index) => {
+                      {filterData.map((item, index) => {
                         return <PostListItem index={index} item={item} />;
                       })}
                     </InfiniteScroll>
@@ -605,19 +614,19 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
                   <div className="about-content">
                     <SubAbout
                       dataItem={pageDetailData?.description}
-                      onClickIcon={() => {}}
+                      onClickIcon={() => { }}
                       icon={InfoCircleOutlined}
                       text={pageDetailData?.description}
                     />
                     <SubAbout
                       dataItem={pageDetailData?.address}
-                      onClickIcon={() => {}}
+                      onClickIcon={() => { }}
                       icon={CompassOutlined}
                       text={pageDetailData?.address}
                     />
                     <SubAbout
                       dataItem={pageDetailData?.website}
-                      onClickIcon={() => {}}
+                      onClickIcon={() => { }}
                       icon={HomeOutlined}
                       text={pageDetailData?.website}
                     />
