@@ -71,7 +71,7 @@ export class BurnController {
           }
         });
 
-        if (prevTxIdExist) throw new Error('Please wait! Updating wallet funds!');
+        if (prevTxIdExist) throw new Error('TxId already exist');
         const burnRecordToInsert = {
           txid,
           burnType: parseResult.burnType ? true : false,

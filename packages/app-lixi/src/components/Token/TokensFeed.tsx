@@ -2,7 +2,7 @@ import { CopyOutlined, DownOutlined, FireOutlined } from '@ant-design/icons';
 import CreatePostCard from '@components/Common/CreatePostCard';
 import SearchBox from '@components/Common/SearchBox';
 import { currency } from '@components/Common/Ticker';
-import PostListItem, { IconBurn } from '@components/Posts/PostListItem';
+import PostListItem from '@components/Posts/PostListItem';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { useInfinitePostsByTokenIdQuery } from '@store/post/useInfinitePostsByTokenIdQuery';
 import { getSelectedToken, getToken } from '@store/token';
@@ -20,6 +20,7 @@ import { InfoSubCard } from '@components/Lixi';
 import moment from 'moment';
 import intl from 'react-intl-universal';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { IconBurn } from '@components/Posts/PostDetail';
 
 const StyledTokensFeed = styled.div`
   .content {

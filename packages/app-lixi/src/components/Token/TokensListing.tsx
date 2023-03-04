@@ -42,7 +42,7 @@ import { useCreateTokenMutation } from '@store/token/tokens.generated';
 import { push } from 'connected-next-router';
 import InfoCardUser from '@components/Common/InfoCardUser';
 import { InfoSubCard } from '@components/Lixi';
-import { IconBurn } from '@components/Posts/PostListItem';
+import { IconBurn } from '@components/Posts/PostDetail';
 
 const StyledTokensListing = styled.div`
   .table-tokens {

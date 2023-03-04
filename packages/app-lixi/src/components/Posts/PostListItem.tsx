@@ -28,27 +28,27 @@ import styled from 'styled-components';
 import { EditPostModalProps } from './EditPostModalPopup';
 import Gallery from 'react-photo-gallery';
 import useWindowDimensions from '@hooks/useWindowDimensions';
-import { setTransactionReady } from '@store/account/actions';
+import { IconBurn } from './PostDetail';
 
-export const IconBurn = ({
-  icon,
-  burnValue,
-  dataItem,
-  imgUrl,
-  onClickIcon
-}: {
-  icon?: React.FC;
-  burnValue?: number;
-  dataItem: any;
-  imgUrl?: string;
-  onClickIcon: (e) => void;
-}) => (
-  <Space onClick={onClickIcon}>
-    {icon && React.createElement(icon)}
-    {imgUrl && React.createElement('img', { src: imgUrl, width: '28' }, null)}
-    <Counter num={burnValue ?? 0} />
-  </Space>
-);
+// export const IconBurn = ({
+//   icon,
+//   burnValue,
+//   dataItem,
+//   imgUrl,
+//   onClickIcon
+// }: {
+//   icon?: React.FC;
+//   burnValue?: number;
+//   dataItem: any;
+//   imgUrl?: string;
+//   onClickIcon: (e) => void;
+// }) => (
+//   <Space onClick={onClickIcon}>
+//     {icon && React.createElement(icon)}
+//     {imgUrl && React.createElement('img', { src: imgUrl, width: '28' }, null)}
+//     <Counter num={burnValue ?? 0} />
+//   </Space>
+// );
 
 export const CommentList = ({ comments }: { comments: CommentItem[] }) => (
   <List

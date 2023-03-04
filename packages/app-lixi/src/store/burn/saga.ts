@@ -55,9 +55,9 @@ function* createTxHexSaga(action: any) {
 
 function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
   let patches, patch: PatchCollection;
-  yield put(burning());
-
   const command = action.payload;
+  yield put(burning(command));
+
   const { burnForId: postId, queryParams } = command;
   let burnValue = _.toNumber(command.burnValue);
   yield put(createTxHex(command));
@@ -124,12 +124,10 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
 }
 
 function* burnForUpDownVoteSuccessSaga(action: PayloadAction<Burn>) {
-  console.log('done burning');
   yield put(hideLoading(burnForUpDownVote.type));
 }
 
 function* burnForUpDownVoteFailureSaga(action: PayloadAction<string>) {
-  console.log('failed burning');
   yield put(
     showToast('error', {
       message: action.payload,
@@ -320,10 +318,11 @@ function* updateTokenBurnValue(action: PayloadAction<BurnCommand>) {
 }
 
 function* burningSaga(action) {
+  const command = action.payload;
   yield put(
     showToast('burn', {
       key: 'burning',
-      message: 'Burning post'
+      message: `Burning for ${command.burnValue} XPI`
     })
   );
 }
@@ -332,7 +331,8 @@ function* doneBurningSaga(action) {
   yield put(
     showToast('success', {
       key: 'burning',
-      message: 'Burn post success'
+      message: 'Burn Success',
+      duration: 2
     })
   );
 }

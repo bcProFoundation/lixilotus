@@ -57,7 +57,7 @@ import { Virtuoso } from 'react-virtuoso';
 import { RWebShare } from 'react-web-share';
 import { CommentOrderField, CreateCommentInput, OrderDirection } from 'src/generated/types.generated';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import CommentListItem from './CommentListItem';
 import { useForm, Controller } from 'react-hook-form';
 import { openModal } from '@store/modal/actions';
@@ -66,12 +66,43 @@ import { ShareSocialButton } from '@components/Common/ShareSocialButton';
 import Gallery from 'react-photo-gallery';
 import { setTransactionNotReady, setTransactionReady } from '@store/account/actions';
 import { getTransactionStatus } from '@store/account/selectors';
+import Icon from '@ant-design/icons';
 
 type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 
 const { Search } = Input;
 
-const IconBurn = ({
+const StyledBurnIcon = styled.img`
+  transition: all 0.2s ease-in-out;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.2);
+  }
+
+  &:active {
+    animation: jump 0.4s ease-in-out;
+  }
+
+  @keyframes jump {
+    0% {
+      transform: translateY(0);
+    }
+    30% {
+      transform: translateY(-10px);
+    }
+    70% {
+      transform: translateY(-5px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+`;
+
+export const IconBurn = ({
   icon,
   burnValue,
   dataItem,
@@ -82,11 +113,13 @@ const IconBurn = ({
   burnValue?: number;
   dataItem: any;
   imgUrl?: string;
-  onClickIcon: () => void;
+  onClickIcon: (e: any) => void;
 }) => (
   <Space onClick={onClickIcon} style={{ alignItems: 'end', marginRight: '1rem', gap: '4px !important' }}>
     {icon && React.createElement(icon)}
-    {imgUrl && React.createElement('img', { src: imgUrl, width: '28px', height: '28px' }, null)}
+    <picture>
+      <StyledBurnIcon alt="burnIcon" src={imgUrl} />
+    </picture>
     <Counter num={burnValue ?? 0} />
   </Space>
 );
@@ -223,8 +256,6 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
         type: 'USER_REQUESTED',
         payload: burnCommand
       });
-      // debounceDropDown(burnCommand);
-      // dispatch(burnForUpDownVote(burnCommand));
     } catch (e) {
       const errorMessage = e.message || intl.get('post.unableToBurn');
       dispatch(
@@ -512,8 +543,6 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
             <h2>Post</h2>
           </PathDirection>
         </NavBarHeader>
-        <Button onClick={() => dispatch(setTransactionNotReady())}>Not Ready</Button>
-        <Button onClick={() => dispatch(setTransactionReady())}>Ready</Button>
         <InfoCardUser
           imgUrl={post.page ? post.page.avatar : ''}
           name={post.postAccount.name}
