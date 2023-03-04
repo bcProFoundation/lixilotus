@@ -20,6 +20,8 @@ import intl from 'react-intl-universal';
 import { LoadingOutlined } from '@ant-design/icons';
 import PostListItem from './PostListItem';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { setTransactionReady } from '@store/account/actions';
+import { getSlpBalancesAndUtxos } from '@store/wallet';
 
 type PostsListingProps = {
   className?: string;
@@ -123,6 +125,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const [tab, setTab] = useState<any>('all');
   const [queryPostTrigger, queryPostResult] = useLazyPostQuery();
   const latestBurnForPost = useAppSelector(getLatestBurnForPost);
+  const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
 
   const onClickMenu: MenuProps['onClick'] = e => {
     setTab(e.key);
@@ -306,6 +309,11 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       }
     })();
   }, [latestBurnForPost]);
+
+  useEffect(() => {
+    console.log('txid has changed');
+    dispatch(setTransactionReady());
+  }, [slpBalancesAndUtxos.nonSlpUtxos]);
 
   const showPosts = () => {
     switch (tab) {

@@ -503,10 +503,6 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     dispatch(setTransactionReady());
   }, [slpBalancesAndUtxos.nonSlpUtxos]);
 
-  useEffect(() => {
-    console.log(slpBalancesAndUtxos.nonSlpUtxos);
-  }, []);
-
   return (
     <>
       <StyledContainerPostDetail>

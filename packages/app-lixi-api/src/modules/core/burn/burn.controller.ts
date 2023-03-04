@@ -61,7 +61,9 @@ export class BurnController {
       }
 
       const savedBurn = await this.prisma.$transaction(async prisma => {
-        const broadcastResponse = await this.chronik.broadcastTx(command.txHex);
+        const broadcastResponse = await this.chronik.broadcastTx(command.txHex).catch(err => {
+          throw new Error('Please wait! Updating wallet funds on blockchain!');
+        });
         const { txid } = broadcastResponse;
         const prevTxIdExist = await this.prisma.burn.findFirst({
           where: {

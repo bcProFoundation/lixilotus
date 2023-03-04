@@ -28,6 +28,7 @@ import styled from 'styled-components';
 import { EditPostModalProps } from './EditPostModalPopup';
 import Gallery from 'react-photo-gallery';
 import useWindowDimensions from '@hooks/useWindowDimensions';
+import { setTransactionReady } from '@store/account/actions';
 
 export const IconBurn = ({
   icon,
@@ -356,8 +357,24 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
         tipToAddresses
       );
 
-      const burnCommand: BurnCommand = {
-        txHex,
+      // const burnCommand: BurnCommand = {
+      //   txHex,
+      //   burnType,
+      //   burnForType: BurnForType.Post,
+      //   burnedBy,
+      //   burnForId,
+      //   burnValue,
+      //   tipToAddresses: tipToAddresses,
+      //   postQueryTag: tag,
+      //   pageId: post.page?.id,
+      //   tokenId: post.token?.id
+      // };
+
+      // dispatch(burnForUpDownVote(burnCommand));
+
+      const burnCommand: any = {
+        // txHex,
+        defaultFee: currency.defaultFee,
         burnType,
         burnForType: BurnForType.Post,
         burnedBy,
@@ -369,7 +386,10 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
         tokenId: post.token?.id
       };
 
-      dispatch(burnForUpDownVote(burnCommand));
+      dispatch({
+        type: 'USER_REQUESTED',
+        payload: burnCommand
+      });
     } catch (e) {
       const errorMessage = e.message || intl.get('post.unableToBurn');
       dispatch(
