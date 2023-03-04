@@ -196,7 +196,7 @@ export default function useXPI() {
     }
   };
 
-  const burnXpi = ( // change name to createBurnTransaction
+  const createBurnTransaction = (
     XPI: BCHJS,
     walletPaths: WalletPathAddressInfo[],
     utxos: Array<Utxo & { address: string }>,
@@ -260,6 +260,6 @@ export default function useXPI() {
     getRestUrl,
     calcFee,
     sendXpi,
-    burnXpi
+    createBurnTransaction
   } as const;
 }

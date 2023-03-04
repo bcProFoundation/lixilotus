@@ -182,6 +182,7 @@ export default {
   'account.reply': 'Reply',
   'account.from': 'From',
   'account.to': 'To',
+  'account.insufficientFunds': 'Insufficient funds',
 
   /* 03.Lixi */
   'lixi.createLixi': 'Create new lixi',

@@ -1,8 +1,8 @@
 import { createAction } from '@reduxjs/toolkit';
 import { ArgsProps } from 'antd/lib/notification/interface';
-import { ToastType } from './state';
+import { ToastType, CustomToastType } from './state';
 
-export const showToast = createAction('toast/showToast', (type: ToastType, config: ArgsProps) => {
+export const showToast = createAction('toast/showToast', (type: ToastType | CustomToastType, config: ArgsProps) => {
   return {
     payload: {
       type,

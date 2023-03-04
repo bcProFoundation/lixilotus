@@ -180,6 +180,7 @@ export default {
   'account.reply': 'Trả lời',
   'account.from': 'Nhận từ',
   'account.to': 'Gửi đến',
+  'account.insufficientFunds': 'Không đủ số dư trong ví',
 
   /* 03.Lixi */
   'lixi.createLixi': 'Tạo lixi mới',
@@ -280,7 +281,7 @@ export default {
   'lixi.lotteryAddress': 'Địa chỉ ví xổ số',
   'lixi.lotteryAddressCheck': 'Xác nhận',
   'lixi.registrantAddress': 'Địa chỉ người đăng ký',
-  'lixi.addressCopied': 'địa chỉ đã được sao chép.',
+  'lixi.addressCopied': 'Địa chỉ đã được sao chép.',
   'lixi.redeemLixi': 'Nhận lì xì',
   'lixi.status': 'Trạng thái',
   'lixi.active': 'Hoạt động',

@@ -63,6 +63,13 @@ export class BurnController {
       const savedBurn = await this.prisma.$transaction(async prisma => {
         const broadcastResponse = await this.chronik.broadcastTx(command.txHex);
         const { txid } = broadcastResponse;
+        const prevTxIdExist = await this.prisma.burn.findFirst({
+          where: {
+            txid: txid
+          }
+        });
+
+        if (prevTxIdExist) throw new Error('Please wait! Updating wallet funds!');
         const burnRecordToInsert = {
           txid,
           burnType: parseResult.burnType ? true : false,
@@ -172,11 +179,11 @@ export class BurnController {
       };
 
       return result;
-    } catch (err) {
+    } catch (err: any) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
-        const unableToUpdateLixi = await this.i18n.t('burn.messages.unableToBurn');
+        const unableToUpdateLixi = err?.message || this.i18n.t('burn.messages.unableToBurn');
         const error = new VError.WError(err as Error, unableToUpdateLixi);
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }

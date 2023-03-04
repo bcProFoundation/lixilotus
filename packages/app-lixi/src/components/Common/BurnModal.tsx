@@ -102,7 +102,7 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
 
   const Wallet = React.useContext(WalletContext);
   const { XPI, chronik } = Wallet;
-  const { burnXpi } = useXPI();
+  const { createBurnTransaction } = useXPI();
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const [selectedAmount, setSelectedAmount] = useState(1);
@@ -110,7 +110,7 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
   const handleBurn = async (isUpVote: boolean) => {
     try {
       if (slpBalancesAndUtxos.nonSlpUtxos.length == 0) {
-        throw new Error('Insufficient funds');
+        throw new Error(intl.get('account.insufficientFunds'));
       }
 
       const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
@@ -128,7 +128,7 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
         ? DefaultXpiBurnValues[0]
         : control._formValues.burnedValue;
 
-      const txHex = await burnXpi(
+      const txHex = createBurnTransaction(
         XPI,
         walletPaths,
         slpBalancesAndUtxos.nonSlpUtxos,
@@ -152,10 +152,11 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
       dispatch(burnForUpDownVote(burnCommand));
       dispatch(closeModal());
     } catch (e) {
+      const errorMessage = e.message || intl.get('post.unableToBurn');
       dispatch(
         showToast('error', {
-          message: intl.get('post.unableToBurn'),
-          duration: 5
+          message: errorMessage,
+          duration: 3
         })
       );
     }

@@ -40,7 +40,7 @@ const CommentListItem = ({ index, item, post }: CommentListItemProps) => {
 
   const Wallet = React.useContext(WalletContext);
   const { XPI, chronik } = Wallet;
-  const { burnXpi } = useXPI();
+  const { createBurnTransaction } = useXPI();
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const selectedAccount = useAppSelector(getSelectedAccount);
@@ -56,7 +56,7 @@ const CommentListItem = ({ index, item, post }: CommentListItemProps) => {
   const handleBurnForComment = async (isUpVote: boolean, comment: CommentItem) => {
     try {
       if (slpBalancesAndUtxos.nonSlpUtxos.length == 0) {
-        throw new Error('Insufficient funds');
+        throw new Error(intl.get('account.insufficientFunds'));
       }
       const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
       const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
@@ -81,7 +81,7 @@ const CommentListItem = ({ index, item, post }: CommentListItemProps) => {
 
       tipToAddresses = tipToAddresses.filter(item => item.address != selectedAccount.address);
 
-      const txHex = await burnXpi(
+      const txHex = createBurnTransaction(
         XPI,
         walletPaths,
         slpBalancesAndUtxos.nonSlpUtxos,
@@ -113,9 +113,10 @@ const CommentListItem = ({ index, item, post }: CommentListItemProps) => {
 
       dispatch(burnForUpDownVote(burnCommand));
     } catch (e) {
+      const errorMessage = e.message || intl.get('post.unableToBurn');
       dispatch(
         showToast('error', {
-          message: intl.get('post.unableToBurn'),
+          message: errorMessage,
           duration: 3
         })
       );

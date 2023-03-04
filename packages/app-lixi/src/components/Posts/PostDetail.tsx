@@ -2,6 +2,7 @@ import {
   DashOutlined,
   DislikeFilled,
   DislikeOutlined,
+  FireTwoTone,
   LeftOutlined,
   LikeFilled,
   LikeOutlined,
@@ -20,7 +21,7 @@ import { WalletContext } from '@context/walletProvider';
 import useXPI from '@hooks/useXPI';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
 import { getSelectedAccount } from '@store/account/selectors';
-import { burnForUpDownVote } from '@store/burn/actions';
+import { burnForUpDownVote, createTxHex } from '@store/burn/actions';
 import { api as commentsApi, useCreateCommentMutation } from '@store/comment/comments.api';
 import { useInfiniteCommentsToPostIdQuery } from '@store/comment/useInfiniteCommentsToPostIdQuery';
 import { PostsQuery } from '@store/post/posts.generated';
@@ -28,11 +29,11 @@ import { sendXPIFailure } from '@store/send/actions';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
 import { formatBalance, fromXpiToSatoshis, getUtxoWif } from '@utils/cashMethods';
-import { Avatar, Button, Image, Input, message, Popover, Skeleton, Space, Tooltip } from 'antd';
+import { Avatar, Button, Image, Input, message, notification, Popover, Skeleton, Space, Tooltip } from 'antd';
 import { Header } from 'antd/lib/layout/layout';
 import BigNumber from 'bignumber.js';
 import { ChronikClient } from 'chronik-client';
-import _, { isNil } from 'lodash';
+import _, { debounce, isNil } from 'lodash';
 import moment from 'moment';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -63,6 +64,8 @@ import { openModal } from '@store/modal/actions';
 import { EditPostModalProps } from './EditPostModalPopup';
 import { ShareSocialButton } from '@components/Common/ShareSocialButton';
 import Gallery from 'react-photo-gallery';
+import { setTransactionNotReady, setTransactionReady } from '@store/account/actions';
+import { getTransactionStatus } from '@store/account/selectors';
 
 type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 
@@ -101,8 +104,9 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const refCommentsListing = useRef<HTMLDivElement | null>(null);
   const Wallet = React.useContext(WalletContext);
   const { XPI, chronik } = Wallet;
-  const { burnXpi, sendXpi } = useXPI();
+  const { createBurnTransaction, sendXpi } = useXPI();
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
+  const transactionStatus = useAppSelector(getTransactionStatus);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const selectedAccount = useAppSelector(getSelectedAccount);
   const [imagesList, setImagesList] = useState([]);
@@ -151,7 +155,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const handleBurnForPost = async (isUpVote: boolean, post: PostItem) => {
     try {
       if (slpBalancesAndUtxos.nonSlpUtxos.length == 0) {
-        throw new Error('Insufficient funds');
+        throw new Error(intl.get('account.insufficientFunds'));
       }
       const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
       const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
@@ -176,21 +180,36 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
 
       tipToAddresses = tipToAddresses.filter(item => item.address != selectedAccount.address);
 
-      const txHex = await burnXpi(
-        XPI,
-        walletPaths,
-        slpBalancesAndUtxos.nonSlpUtxos,
-        currency.defaultFee,
+      //TODO: Clean up code;
+
+      const txHexCommand = {
+        defaultFee: currency.defaultFee,
         burnType,
-        BurnForType.Post,
+        burnForType: BurnForType.Post,
         burnedBy,
         burnForId,
         burnValue,
         tipToAddresses
-      );
+      };
 
-      const burnCommand: BurnCommand = {
-        txHex,
+      // dispatch(createTxHex(txHexCommand));
+
+      // const txHex = createBurnTransaction(
+      //   XPI,
+      //   walletPaths,
+      //   slpBalancesAndUtxos.nonSlpUtxos,
+      //   currency.defaultFee,
+      //   burnType,
+      //   BurnForType.Post,
+      //   burnedBy,
+      //   burnForId,
+      //   burnValue,
+      //   tipToAddresses
+      // );
+
+      const burnCommand: any = {
+        // txHex,
+        defaultFee: currency.defaultFee,
         burnType,
         burnForType: BurnForType.Post,
         burnedBy,
@@ -201,15 +220,16 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       };
 
       dispatch({
-        type: 'REQUEST',
+        type: 'USER_REQUESTED',
         payload: burnCommand
       });
-
+      // debounceDropDown(burnCommand);
       // dispatch(burnForUpDownVote(burnCommand));
     } catch (e) {
+      const errorMessage = e.message || intl.get('post.unableToBurn');
       dispatch(
         showToast('error', {
-          message: intl.get('post.unableToBurn'),
+          message: errorMessage,
           duration: 3
         })
       );
@@ -478,26 +498,26 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     []
   );
 
-  const handleButtonClick = () => {
-    // dispatch a REQUEST action with the desired payload
-    dispatch({
-      type: 'REQUEST',
-      payload: {
-        /* request data */
-      }
-    });
-  };
+  useEffect(() => {
+    console.log('txid has changed');
+    dispatch(setTransactionReady());
+  }, [slpBalancesAndUtxos.nonSlpUtxos]);
+
+  useEffect(() => {
+    console.log(slpBalancesAndUtxos.nonSlpUtxos);
+  }, []);
 
   return (
     <>
       <StyledContainerPostDetail>
-        <button onClick={handleButtonClick}>Add Request</button>
         <NavBarHeader onClick={() => router.back()}>
           <LeftOutlined />
           <PathDirection>
             <h2>Post</h2>
           </PathDirection>
         </NavBarHeader>
+        <Button onClick={() => dispatch(setTransactionNotReady())}>Not Ready</Button>
+        <Button onClick={() => dispatch(setTransactionReady())}>Ready</Button>
         <InfoCardUser
           imgUrl={post.page ? post.page.avatar : ''}
           name={post.postAccount.name}

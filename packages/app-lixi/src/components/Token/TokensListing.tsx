@@ -134,7 +134,7 @@ const TokensListing = () => {
 
   const Wallet = React.useContext(WalletContext);
   const { XPI, chronik } = Wallet;
-  const { burnXpi } = useXPI();
+  const { createBurnTransaction } = useXPI();
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const latestBurnForToken = useAppSelector(getLatestBurnForToken);
@@ -351,7 +351,7 @@ const TokensListing = () => {
   const handleBurnForToken = async (isUpVote: boolean, id: string, tokenId: string) => {
     try {
       if (slpBalancesAndUtxos.nonSlpUtxos.length == 0) {
-        throw new Error('Insufficient funds');
+        throw new Error(intl.get('account.insufficientFunds'));
       }
       const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
       const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
@@ -360,7 +360,7 @@ const TokensListing = () => {
       const burnedBy = hash160;
       const burnForId = tokenId;
 
-      const txHex = await burnXpi(
+      const txHex = createBurnTransaction(
         XPI,
         walletPaths,
         slpBalancesAndUtxos.nonSlpUtxos,
@@ -383,10 +383,11 @@ const TokensListing = () => {
 
       dispatch(burnForUpDownVote(burnCommand));
     } catch (e) {
+      const errorMessage = e.message || intl.get('post.unableToBurn');
       dispatch(
         showToast('error', {
-          message: intl.get('post.unableToBurn'),
-          duration: 5
+          message: errorMessage,
+          duration: 3
         })
       );
     }
