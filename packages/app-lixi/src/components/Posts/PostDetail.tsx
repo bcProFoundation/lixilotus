@@ -21,7 +21,13 @@ import { WalletContext } from '@context/walletProvider';
 import useXPI from '@hooks/useXPI';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
 import { getSelectedAccount } from '@store/account/selectors';
-import { addBurnQueue, addBurnTransaction, burnForUpDownVote, createTxHex } from '@store/burn/actions';
+import {
+  addBurnQueue,
+  addBurnTransaction,
+  burnForUpDownVote,
+  createTxHex,
+  removeAllFailQueue
+} from '@store/burn/actions';
 import { api as commentsApi, useCreateCommentMutation } from '@store/comment/comments.api';
 import { useInfiniteCommentsToPostIdQuery } from '@store/comment/useInfiniteCommentsToPostIdQuery';
 import { PostsQuery } from '@store/post/posts.generated';
@@ -67,7 +73,7 @@ import Gallery from 'react-photo-gallery';
 import { setTransactionNotReady, setTransactionReady } from '@store/account/actions';
 import { getTransactionStatus } from '@store/account/selectors';
 import useDidMountEffect from '@hooks/useDidMountEffect ';
-import { getBurnQueue } from '@store/burn';
+import { getBurnQueue, getFailQueue } from '@store/burn';
 
 type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 
@@ -142,6 +148,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const transactionStatus = useAppSelector(getTransactionStatus);
   const burnQueue = useAppSelector(getBurnQueue);
+  const failQueue = useAppSelector(getFailQueue);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const selectedAccount = useAppSelector(getSelectedAccount);
   const [imagesList, setImagesList] = useState([]);
@@ -197,6 +204,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       ) {
         throw new Error(intl.get('account.insufficientFunds'));
       }
+      if (failQueue.length > 0) dispatch(removeAllFailQueue());
       const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
       const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
       const { hash160, xAddress } = currentWalletPath;
@@ -512,6 +520,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
 
   useDidMountEffect(() => {
     console.log(burnQueue);
+    console.log(failQueue);
     if (burnQueue.length > 0) {
       notification.info({
         key: 'burn',
@@ -522,10 +531,19 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     } else {
       notification.success({
         key: 'burn',
-        message: intl.get('post.doneBurning')
+        message: intl.get('post.doneBurning'),
+        duration: 3
       });
     }
-  }, [burnQueue]);
+
+    if (failQueue.length > 0) {
+      notification.error({
+        key: 'burnFail',
+        message: intl.get('account.insufficientBurningFunds'),
+        duration: 3
+      });
+    }
+  }, [burnQueue, failQueue]);
 
   return (
     <>

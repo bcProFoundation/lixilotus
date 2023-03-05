@@ -23,3 +23,8 @@ export const getBurnQueue = createSelector(
   (state: RootState) => state.burn,
   (burnState: BurnState) => burnState.burnQueue
 );
+
+export const getFailQueue = createSelector(
+  (state: RootState) => state.burn,
+  (burnState: BurnState) => burnState.failQueue
+);

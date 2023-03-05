@@ -6,7 +6,14 @@ import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
 import { useInfiniteOrphanPostsQuery } from '@store/post/useInfiniteOrphanPostsQuery';
 import { useInfinitePostsByPageIdQuery } from '@store/post/useInfinitePostsByPageIdQuery';
 import { WalletContext } from '@context/index';
-import { addBurnQueue, addBurnTransaction, getBurnQueue, getLatestBurnForPost } from '@store/burn';
+import {
+  addBurnQueue,
+  addBurnTransaction,
+  getBurnQueue,
+  getFailQueue,
+  getLatestBurnForPost,
+  removeAllFailQueue
+} from '@store/burn';
 import { api as postApi, useLazyPostQuery } from '@store/post/posts.api';
 import { Menu, MenuProps, Modal, notification, Skeleton, Tabs } from 'antd';
 import _ from 'lodash';
@@ -136,6 +143,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const walletPaths = useAppSelector(getAllWalletPaths);
   const burnQueue = useAppSelector(getBurnQueue);
   const walletStatus = useAppSelector(getWalletStatus);
+  const failQueue = useAppSelector(getFailQueue);
 
   const onClickMenu: MenuProps['onClick'] = e => {
     setTab(e.key);
@@ -392,10 +400,19 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     } else {
       notification.success({
         key: 'burn',
-        message: intl.get('post.doneBurning')
+        message: intl.get('post.doneBurning'),
+        duration: 3
       });
     }
-  }, [burnQueue]);
+
+    if (failQueue.length > 0) {
+      notification.error({
+        key: 'burnFail',
+        message: intl.get('account.insufficientBurningFunds'),
+        duration: 3
+      });
+    }
+  }, [burnQueue, failQueue]);
 
   const handleBurnForPost = async (isUpVote: boolean, post: any) => {
     try {
@@ -406,6 +423,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       ) {
         throw new Error(intl.get('account.insufficientFunds'));
       }
+      if (failQueue.length > 0) dispatch(removeAllFailQueue());
       const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
       const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
       const { hash160, xAddress } = currentWalletPath;

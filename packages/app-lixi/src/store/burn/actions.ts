@@ -9,3 +9,7 @@ export const createTxHex = createAction<any>('post/createTxHex');
 export const addBurnQueue = createAction<any>('post/addBurnQueue');
 export const removeBurnQueue = createAction('post/removeBurnQueue');
 export const removeAllBurnQueue = createAction('post/removeAllBurnQueue');
+export const addFailQueue = createAction<any>('post/addFailQueue');
+export const removeFailQueue = createAction('post/removeFailQueue');
+export const removeAllFailQueue = createAction('post/removeAllFailQueue');
+export const moveAllBurnToFailQueue = createAction('post/moveAllBurnToFailQueue');

@@ -181,6 +181,7 @@ export default {
   'account.from': 'Nhận từ',
   'account.to': 'Gửi đến',
   'account.insufficientFunds': 'Không đủ số dư trong ví',
+  'account.insufficientBurningFunds': 'Ví không còn đủ số dư để đốt tiếp',
 
   /* 03.Lixi */
   'lixi.createLixi': 'Tạo lixi mới',

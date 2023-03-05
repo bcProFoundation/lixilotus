@@ -9,7 +9,7 @@ import { showToast } from '@store/toast/actions';
 import { burnForToken, burnForTokenFailure, burnForTokenSucceses, getTokenById } from '@store/token';
 import * as _ from 'lodash';
 import intl from 'react-intl-universal';
-import { actionChannel, select, put, getContext } from 'redux-saga/effects';
+import { actionChannel, select, put, getContext, flush } from 'redux-saga/effects';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import { hideLoading } from '../loading/actions';
 import {
@@ -18,7 +18,10 @@ import {
   burnForUpDownVoteSuccess,
   createTxHex,
   addBurnTransaction,
-  removeBurnQueue
+  removeBurnQueue,
+  addFailQueue,
+  moveAllBurnToFailQueue,
+  removeAllBurnQueue
 } from './actions';
 import burnApi from './api';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
@@ -27,6 +30,9 @@ import { setTransactionNotReady, setTransactionReady } from '@store/account/acti
 import { getTransactionStatus } from '@store/account/selectors';
 import { getAllWalletPaths } from '@store/wallet';
 import { callConfig } from '@context/shareContext';
+import { getBurnQueue, getFailQueue } from './selectors';
+import { Channel } from 'redux-saga';
+import { Account } from '@bcpros/lixi-models';
 
 function* createTxHexSaga(action: any) {
   const data = action.payload;
@@ -53,7 +59,9 @@ function* createTxHexSaga(action: any) {
     yield put({ type: 'CREATE_TX_HEX', payload: txHex });
   } catch {
     //TODO: implement catch burning then out of money
-    yield put(removeBurnQueue());
+    yield put(moveAllBurnToFailQueue());
+    yield put(removeAllBurnQueue());
+    // throw new Error('fail');
   }
 }
 
@@ -342,6 +350,7 @@ function* handleRequest(action) {
     yield put(setTransactionNotReady());
     yield put(burnForUpDownVote(action.payload));
   } catch (err) {
+    console.log(err);
     // Dispatch a failure action with the error message
     // yield put({ type: 'USER_FETCH_FAILED', message: err.message });
   }
@@ -349,12 +358,19 @@ function* handleRequest(action) {
 
 // This saga will create an action channel and use it to dispatch work to one worker saga
 function* watchRequests() {
-  const requestChan = yield actionChannel(addBurnTransaction);
+  const requestChan: Channel<Account> = yield actionChannel(addBurnTransaction);
 
   while (true) {
     // Take an action from the channel
     const transactionStatus = yield select(getTransactionStatus);
+    const failQueue = yield select(getFailQueue);
     console.log('transactionStatus', transactionStatus);
+    console.log('failQueue', failQueue);
+
+    if (failQueue.length > 0) {
+      yield flush(requestChan);
+    }
+
     if (transactionStatus) {
       const action = yield take(requestChan);
 

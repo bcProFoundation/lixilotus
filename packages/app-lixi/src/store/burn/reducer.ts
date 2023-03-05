@@ -1,6 +1,15 @@
 import { BurnForType } from '@bcpros/lixi-models/lib/burn';
 import { createReducer } from '@reduxjs/toolkit';
-import { addBurnQueue, burnForUpDownVoteSuccess, removeAllBurnQueue, removeBurnQueue } from './actions';
+import {
+  addBurnQueue,
+  addFailQueue,
+  burnForUpDownVoteSuccess,
+  moveAllBurnToFailQueue,
+  removeAllBurnQueue,
+  removeAllFailQueue,
+  removeBurnQueue,
+  removeFailQueue
+} from './actions';
 import { BurnState } from './state';
 
 /**
@@ -8,6 +17,7 @@ import { BurnState } from './state';
  */
 const initialState: BurnState = {
   burnQueue: [],
+  failQueue: [],
   latestBurnForPage: null,
   latestBurnForPost: null,
   latestBurnForToken: null
@@ -33,5 +43,17 @@ export const burnReducer = createReducer(initialState, builder => {
     })
     .addCase(removeAllBurnQueue, (state, action) => {
       state.burnQueue.length = 0;
+    })
+    .addCase(addFailQueue, (state, action) => {
+      state.failQueue.push(action.payload);
+    })
+    .addCase(removeFailQueue, (state, action) => {
+      state.failQueue.shift();
+    })
+    .addCase(removeAllFailQueue, (state, action) => {
+      state.failQueue.length = 0;
+    })
+    .addCase(moveAllBurnToFailQueue, (state, action) => {
+      state.failQueue = [...state.burnQueue];
     });
 });

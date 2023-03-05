@@ -183,6 +183,7 @@ export default {
   'account.from': 'From',
   'account.to': 'To',
   'account.insufficientFunds': 'Insufficient funds',
+  'account.insufficientBurningFunds': 'Insufficient funds to continue burning',
 
   /* 03.Lixi */
   'lixi.createLixi': 'Create new lixi',
