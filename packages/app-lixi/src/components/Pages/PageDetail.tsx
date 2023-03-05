@@ -15,6 +15,9 @@ import { Virtuoso } from 'react-virtuoso';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import styled from 'styled-components';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { getFilterPostsPage } from '@store/settings/selectors';
+import { FilterBurnt } from '@components/Common/FilterBurn';
+import { FilterType } from '@bcpros/lixi-models/lib/filter';
 
 type PageDetailProps = {
   page: any;
@@ -257,6 +260,10 @@ const FriendBox = styled.div`
 
 const ContentTimeline = styled.div`
   width: 100%;
+  .search-bar {
+    display: flex;
+    gap: 1rem;
+  }
 `;
 
 const Timeline = styled.div`
@@ -335,6 +342,7 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
   const [pageDetailData, setPageDetailData] = useState<any>(page);
   const [listsFriend, setListsFriend] = useState<any>([]);
   const [listsPicture, setListsPicture] = useState<any>([]);
+  const filterValue = useAppSelector(getFilterPostsPage);
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByPageIdQuery(
     {
@@ -346,6 +354,10 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
       id: page.id
     },
     false
+  );
+
+  const filteredData = data.filter(
+    post => post.lotusBurnScore >= filterValue || post.postAccount.id == selectedAccountId.toString()
   );
 
   useEffect(() => {
@@ -558,10 +570,13 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
                 </FriendBox>
               </LegacyProfile> */}
               <ContentTimeline>
-                <SearchBox />
+                <div className="search-bar">
+                  <SearchBox />
+                  <FilterBurnt filterForType={FilterType.PostsPage} />
+                </div>
                 <CreatePostCard pageId={page.id} refetch={() => refetch()} />
                 <Timeline>
-                  {data.length == 0 && (
+                  {filteredData.length == 0 && (
                     <div className="blank-timeline">
                       <img className="time-line-blank" src="/images/time-line-blank.svg" alt="" />
                       <p>Become a first person post on the page...</p>
@@ -570,18 +585,18 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
 
                   <React.Fragment>
                     <InfiniteScroll
-                      dataLength={data.length}
+                      dataLength={filteredData.length}
                       next={loadMoreItems}
                       hasMore={hasNext}
                       loader={<Skeleton avatar active />}
                       endMessage={
                         <p style={{ textAlign: 'center' }}>
-                          <b>{data.length > 0 ? 'end reached' : ''}</b>
+                          <b>{filteredData.length > 0 ? 'end reached' : ''}</b>
                         </p>
                       }
                       scrollableTarget="scrollableDiv"
                     >
-                      {data.map((item, index) => {
+                      {filteredData.map((item, index) => {
                         return <PostListItem index={index} item={item} />;
                       })}
                     </InfiniteScroll>

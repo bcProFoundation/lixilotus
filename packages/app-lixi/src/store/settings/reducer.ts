@@ -1,12 +1,16 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { saveWebAuthnConfig, setInitIntlStatus, toggleCollapsedSideNav, updateLocale } from './actions';
+import { saveBurnFilter, saveWebAuthnConfig, setInitIntlStatus, toggleCollapsedSideNav, updateLocale } from './actions';
 import { SettingsState } from './state';
+import { FilterType } from '@bcpros/lixi-models/lib/filter';
 
 const initialState: SettingsState = {
   navCollapsed: true,
   locale: 'en',
   initIntlStatus: false,
-  webAuthnConfig: null
+  webAuthnConfig: null,
+  filterPostsHome: 0,
+  filterPostsPage: 0,
+  filterPostsToken: 0
 };
 
 export const settingsReducer = createReducer(initialState, builder => {
@@ -22,5 +26,19 @@ export const settingsReducer = createReducer(initialState, builder => {
     })
     .addCase(saveWebAuthnConfig, (state, action) => {
       state.webAuthnConfig = action.payload;
+    })
+    .addCase(saveBurnFilter, (state, action) => {
+      const { filterForType, filterValue } = action.payload;
+      switch (filterForType) {
+        case FilterType.PostsHome:
+          state.filterPostsHome = filterValue;
+          break;
+        case FilterType.PostsPage:
+          state.filterPostsPage = filterValue;
+          break;
+        case FilterType.PostsToken:
+          state.filterPostsToken = filterValue;
+          break;
+      }
     });
 });

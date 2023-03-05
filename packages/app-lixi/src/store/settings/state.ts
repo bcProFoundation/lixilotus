@@ -5,4 +5,7 @@ export interface SettingsState {
   locale: string;
   initIntlStatus: boolean;
   webAuthnConfig?: WebAuthnConfig;
+  filterPostsHome: number;
+  filterPostsPage: number;
+  filterPostsToken: number;
 }
