@@ -234,25 +234,29 @@ export default function useXPI() {
     // generate the tx outputs with burn output
     // and add to txBuilder instance
     // returns the updated txBuilder
-    const txOutputObj = generateBurnTxOutput(
-      XPI,
-      feeInSatsPerByte,
-      satoshisToBurn,
-      burnType,
-      burnForType,
-      burnedBy,
-      burnForId,
-      txInputObj.totalInputUtxoValue,
-      changeAddress,
-      txInputObj.txFee,
-      txBuilder,
-      tipToAddresses ?? []
-    );
-    txBuilder = txOutputObj; // update the local txBuilder with the generated tx outputs
+    try {
+      const txOutputObj = generateBurnTxOutput(
+        XPI,
+        feeInSatsPerByte,
+        satoshisToBurn,
+        burnType,
+        burnForType,
+        burnedBy,
+        burnForId,
+        txInputObj.totalInputUtxoValue,
+        changeAddress,
+        txInputObj.txFee,
+        txBuilder,
+        tipToAddresses ?? []
+      );
+      txBuilder = txOutputObj; // update the local txBuilder with the generated tx outputs
 
-    const rawTxHex: string = signAndBuildTx(XPI, txInputObj.inputUtxos, txBuilder, walletPaths);
+      const rawTxHex: string = signAndBuildTx(XPI, txInputObj.inputUtxos, txBuilder, walletPaths);
 
-    return rawTxHex;
+      return rawTxHex;
+    } catch (e) {
+      throw new Error(`Insufficient funds`);
+    }
   };
 
   return {

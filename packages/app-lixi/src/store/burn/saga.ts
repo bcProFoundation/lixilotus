@@ -16,9 +16,9 @@ import {
   burnForUpDownVote,
   burnForUpDownVoteFailure,
   burnForUpDownVoteSuccess,
-  burning,
-  doneBurning,
-  createTxHex
+  createTxHex,
+  addBurnTransaction,
+  removeBurnQueue
 } from './actions';
 import burnApi from './api';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
@@ -36,27 +36,30 @@ function* createTxHexSaga(action: any) {
   const slpBalancesAndUtxos = yield select(getSlpBalancesAndUtxos);
   const { createBurnTransaction } = xpiContext();
 
-  const txHex = createBurnTransaction(
-    XPI,
-    walletPaths,
-    slpBalancesAndUtxos.nonSlpUtxos,
-    data.defaultFee,
-    data.burnType,
-    data.burnForType,
-    data.burnedBy,
-    data.burnForId,
-    data.burnValue,
-    data.tipToAddresses
-  );
+  try {
+    const txHex = createBurnTransaction(
+      XPI,
+      walletPaths,
+      slpBalancesAndUtxos.nonSlpUtxos,
+      data.defaultFee,
+      data.burnType,
+      data.burnForType,
+      data.burnedBy,
+      data.burnForId,
+      data.burnValue,
+      data.tipToAddresses
+    );
 
-  yield put({ type: 'CREATE_TX_HEX', payload: txHex });
-  // yield put(setLatestTxHex(txHex))
+    yield put({ type: 'CREATE_TX_HEX', payload: txHex });
+  } catch {
+    //TODO: implement catch burning then out of money
+    yield put(removeBurnQueue());
+  }
 }
 
 function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
   let patches, patch: PatchCollection;
   const command = action.payload;
-  yield put(burning(command));
 
   const { burnForId: postId, queryParams } = command;
   let burnValue = _.toNumber(command.burnValue);
@@ -84,18 +87,19 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
         break;
     }
 
-    // if (command.burnForType === BurnForType.Token) {
-    //   yield put(burnForTokenSucceses());
-    // }
+    if (command.burnForType === BurnForType.Token) {
+      yield put(burnForTokenSucceses());
+    }
 
     if (_.isNil(data) || _.isNil(data.id)) {
       throw new Error(intl.get('post.unableToBurnForPost'));
     }
 
+    yield put(removeBurnQueue());
     yield put(burnForUpDownVoteSuccess(data));
-    yield put(doneBurning());
   } catch (err) {
     let message;
+    yield put(removeBurnQueue());
     if (command.burnForType === BurnForType.Token) {
       message = (err as Error)?.message ?? intl.get('token.unableToBurn');
       yield put(burnForTokenFailure({ id: command.burnForId, burnType: command.burnType, burnValue: burnValue }));
@@ -317,26 +321,6 @@ function* updateTokenBurnValue(action: PayloadAction<BurnCommand>) {
   );
 }
 
-function* burningSaga(action) {
-  const command = action.payload;
-  yield put(
-    showToast('burn', {
-      key: 'burning',
-      message: `Burning for ${command.burnValue} XPI`
-    })
-  );
-}
-
-function* doneBurningSaga(action) {
-  yield put(
-    showToast('success', {
-      key: 'burning',
-      message: 'Burn Success',
-      duration: 2
-    })
-  );
-}
-
 function* watchBurnForUpDownVote() {
   yield takeLatest(burnForUpDownVote.type, burnForUpDownVoteSaga);
 }
@@ -349,61 +333,23 @@ function* watchBurnForUpDownVoteFailure() {
   yield takeLatest(burnForUpDownVoteFailure.type, burnForUpDownVoteFailureSaga);
 }
 
-function* watchBurning() {
-  yield takeLatest(burning.type, burningSaga);
-}
-
-function* watchDoneBurning() {
-  yield takeLatest(doneBurning.type, doneBurningSaga);
-}
-
 function* watchCreateTxHex() {
   yield takeLatest(createTxHex.type, createTxHexSaga);
 }
-// function* watchBurnForUpDownVoteChannel() {
-//   // 1- Create a channel for request actions
-//   const burnChannel = yield actionChannel(burnForUpDownVote.type);
-//   while (true) {
-//     // 2- take from the channel
-
-//     const action = yield take(burnChannel);
-
-//     // 3- Note that we're using a blocking call
-//     yield call(burnForUpDownVoteSaga, action);
-//   }
-// }
-
-// function* startStopBurnChannel() {
-//   while (true) {
-//     yield take(startBurnChannel.type);
-//     yield race([yield call(createBurnChannelSaga)]);
-//   }
-// }
 
 function* handleRequest(action) {
   try {
-    // Call the API to fetch the user data
-    // const transactionStatus = yield select(getTransactionStatus);
-    // console.log('handle request, transactionStatus: ', transactionStatus)
     yield put(setTransactionNotReady());
-
     yield put(burnForUpDownVote(action.payload));
-
-    // // if(!transactionStatus) return;
-    // console.log('mock api')
-    // const user = yield call(burnApi.mock, action.payload)
-    // // Dispatch a success action with the user data
-    // yield put({ type: 'USER_FETCH_SUCCEEDED', user })
   } catch (err) {
     // Dispatch a failure action with the error message
-    yield put({ type: 'USER_FETCH_FAILED', message: err.message });
+    // yield put({ type: 'USER_FETCH_FAILED', message: err.message });
   }
 }
 
 // This saga will create an action channel and use it to dispatch work to one worker saga
 function* watchRequests() {
-  // Create a channel for USER_REQUESTED actions
-  const requestChan = yield actionChannel('USER_REQUESTED');
+  const requestChan = yield actionChannel(addBurnTransaction);
 
   while (true) {
     // Take an action from the channel
@@ -423,10 +369,7 @@ export default function* burnSaga() {
   if (typeof window === 'undefined') {
     yield all([
       fork(watchCreateTxHex),
-      fork(watchBurning),
-      fork(watchDoneBurning),
       fork(watchBurnForUpDownVote),
-      // fork(watchBurnForUpDownVoteChannel),
       fork(watchBurnForUpDownVoteSuccess),
       fork(watchBurnForUpDownVoteFailure)
     ]);
@@ -434,10 +377,7 @@ export default function* burnSaga() {
     yield all([
       fork(watchRequests),
       fork(watchCreateTxHex),
-      fork(watchDoneBurning),
       fork(watchBurnForUpDownVote),
-      fork(watchBurning),
-      // fork(watchBurnForUpDownVoteChannel),
       fork(watchBurnForUpDownVoteSuccess),
       fork(watchBurnForUpDownVoteFailure)
     ]);

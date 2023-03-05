@@ -21,14 +21,14 @@ import { WalletContext } from '@context/walletProvider';
 import useXPI from '@hooks/useXPI';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
 import { getSelectedAccount } from '@store/account/selectors';
-import { burnForUpDownVote, createTxHex } from '@store/burn/actions';
+import { addBurnQueue, addBurnTransaction, burnForUpDownVote, createTxHex } from '@store/burn/actions';
 import { api as commentsApi, useCreateCommentMutation } from '@store/comment/comments.api';
 import { useInfiniteCommentsToPostIdQuery } from '@store/comment/useInfiniteCommentsToPostIdQuery';
 import { PostsQuery } from '@store/post/posts.generated';
 import { sendXPIFailure } from '@store/send/actions';
 import { showToast } from '@store/toast/actions';
-import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
-import { formatBalance, fromXpiToSatoshis, getUtxoWif } from '@utils/cashMethods';
+import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
+import { formatBalance, fromSmallestDenomination, fromXpiToSatoshis, getUtxoWif } from '@utils/cashMethods';
 import { Avatar, Button, Image, Input, message, notification, Popover, Skeleton, Space, Tooltip } from 'antd';
 import { Header } from 'antd/lib/layout/layout';
 import BigNumber from 'bignumber.js';
@@ -66,7 +66,8 @@ import { ShareSocialButton } from '@components/Common/ShareSocialButton';
 import Gallery from 'react-photo-gallery';
 import { setTransactionNotReady, setTransactionReady } from '@store/account/actions';
 import { getTransactionStatus } from '@store/account/selectors';
-import Icon from '@ant-design/icons';
+import useDidMountEffect from '@hooks/useDidMountEffect ';
+import { getBurnQueue } from '@store/burn';
 
 type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 
@@ -140,10 +141,12 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const { createBurnTransaction, sendXpi } = useXPI();
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const transactionStatus = useAppSelector(getTransactionStatus);
+  const burnQueue = useAppSelector(getBurnQueue);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const selectedAccount = useAppSelector(getSelectedAccount);
   const [imagesList, setImagesList] = useState([]);
   const [isEncryptedOptionalOpReturnMsg, setIsEncryptedOptionalOpReturnMsg] = useState(true);
+  const walletStatus = useAppSelector(getWalletStatus);
 
   const { data, totalCount, fetchNext, hasNext, isFetching } = useInfiniteCommentsToPostIdQuery(
     {
@@ -187,7 +190,11 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
 
   const handleBurnForPost = async (isUpVote: boolean, post: PostItem) => {
     try {
-      if (slpBalancesAndUtxos.nonSlpUtxos.length == 0) {
+      const burnValue = '1';
+      if (
+        slpBalancesAndUtxos.nonSlpUtxos.length == 0 ||
+        fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis) < parseInt(burnValue)
+      ) {
         throw new Error(intl.get('account.insufficientFunds'));
       }
       const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
@@ -196,7 +203,6 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       const burnType = isUpVote ? BurnType.Up : BurnType.Down;
       const burnedBy = hash160;
       const burnForId = post.id;
-      const burnValue = '1';
       let tipToAddresses: { address: string; amount: string }[] = [
         {
           address: post.page ? post.pageAccount.address : post.postAccount.address,
@@ -213,35 +219,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
 
       tipToAddresses = tipToAddresses.filter(item => item.address != selectedAccount.address);
 
-      //TODO: Clean up code;
-
-      const txHexCommand = {
-        defaultFee: currency.defaultFee,
-        burnType,
-        burnForType: BurnForType.Post,
-        burnedBy,
-        burnForId,
-        burnValue,
-        tipToAddresses
-      };
-
-      // dispatch(createTxHex(txHexCommand));
-
-      // const txHex = createBurnTransaction(
-      //   XPI,
-      //   walletPaths,
-      //   slpBalancesAndUtxos.nonSlpUtxos,
-      //   currency.defaultFee,
-      //   burnType,
-      //   BurnForType.Post,
-      //   burnedBy,
-      //   burnForId,
-      //   burnValue,
-      //   tipToAddresses
-      // );
-
       const burnCommand: any = {
-        // txHex,
         defaultFee: currency.defaultFee,
         burnType,
         burnForType: BurnForType.Post,
@@ -252,10 +230,8 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
         postQueryTag: PostsQueryTag.Post
       };
 
-      dispatch({
-        type: 'USER_REQUESTED',
-        payload: burnCommand
-      });
+      dispatch(addBurnQueue(burnCommand));
+      dispatch(addBurnTransaction(burnCommand));
     } catch (e) {
       const errorMessage = e.message || intl.get('post.unableToBurn');
       dispatch(
@@ -529,10 +505,27 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     []
   );
 
-  useEffect(() => {
+  useDidMountEffect(() => {
     console.log('txid has changed');
     dispatch(setTransactionReady());
   }, [slpBalancesAndUtxos.nonSlpUtxos]);
+
+  useDidMountEffect(() => {
+    console.log(burnQueue);
+    if (burnQueue.length > 0) {
+      notification.info({
+        key: 'burn',
+        message: intl.get('post.burning'),
+        duration: null,
+        icon: <FireTwoTone twoToneColor="#ff0000" />
+      });
+    } else {
+      notification.success({
+        key: 'burn',
+        message: intl.get('post.doneBurning')
+      });
+    }
+  }, [burnQueue]);
 
   return (
     <>

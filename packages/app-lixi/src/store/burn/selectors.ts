@@ -18,3 +18,8 @@ export const getLatestBurnForToken = createSelector(
   (state: RootState) => state.burn,
   (burnState: BurnState) => burnState.latestBurnForToken
 );
+
+export const getBurnQueue = createSelector(
+  (state: RootState) => state.burn,
+  (burnState: BurnState) => burnState.burnQueue
+);

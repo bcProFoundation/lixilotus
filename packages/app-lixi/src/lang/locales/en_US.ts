@@ -495,6 +495,8 @@ export default {
   'post.selectAccountFirst': 'Please Select an account first before creating post',
   'post.content': 'Content',
   'post.unableToBurn': 'Unable to burn for the post',
+  'post.burning': 'Burning post',
+  'post.doneBurning': 'Done burning post!',
 
   /* 16.Token */
   'token.importToken': 'Import token',

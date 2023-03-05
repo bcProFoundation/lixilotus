@@ -29,7 +29,7 @@ const initialState: AccountsState = accountsAdapter.getInitialState({
   pageCoverUpload: null,
   postCoverUploads: [],
   editorCache: null,
-  transactionReady: false
+  transactionReady: true
 });
 
 export const accountReducer = createReducer(initialState, builder => {

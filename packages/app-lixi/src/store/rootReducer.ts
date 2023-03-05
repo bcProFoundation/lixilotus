@@ -40,7 +40,7 @@ import { categoryReducer } from './category/reducer';
 const persistConfig = {
   key: 'root',
   storage: storage('lixi-indexeddb'),
-  blacklist: ['accounts', 'router', 'modal', 'wallet', 'api', 'root', 'posts', 'pages']
+  blacklist: ['accounts', 'router', 'modal', 'wallet', 'api', 'root', 'posts', 'pages', 'burn']
 };
 
 const walletPersistConfig = {

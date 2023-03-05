@@ -496,6 +496,8 @@ export default {
   'post.unableUpdatePost': 'Không thể sửa bài viết.',
   'post.selectAccountFirst': 'Hãy chọn một tài khoản trước khi tạo bài viết',
   'post.unableToBurn': 'Không thể đốt cho bài viết.',
+  'post.burning': 'Đang đốt cho bài viết',
+  'post.doneBurning': 'Đốt thành công',
 
   /* 16.Token */
   'token.importToken': 'Thêm token',

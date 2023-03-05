@@ -6,9 +6,9 @@ import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
 import { useInfiniteOrphanPostsQuery } from '@store/post/useInfiniteOrphanPostsQuery';
 import { useInfinitePostsByPageIdQuery } from '@store/post/useInfinitePostsByPageIdQuery';
 import { WalletContext } from '@context/index';
-import { getLatestBurnForPost } from '@store/burn';
+import { addBurnQueue, addBurnTransaction, getBurnQueue, getLatestBurnForPost } from '@store/burn';
 import { api as postApi, useLazyPostQuery } from '@store/post/posts.api';
-import { Menu, MenuProps, Modal, Skeleton, Tabs } from 'antd';
+import { Menu, MenuProps, Modal, notification, Skeleton, Tabs } from 'antd';
 import _ from 'lodash';
 import React, { useRef, useState, useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
@@ -17,11 +17,18 @@ import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled from 'styled-components';
 import SearchBox from '../Common/SearchBox';
 import intl from 'react-intl-universal';
-import { LoadingOutlined } from '@ant-design/icons';
+import { FireTwoTone, LoadingOutlined } from '@ant-design/icons';
 import PostListItem from './PostListItem';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { setTransactionReady } from '@store/account/actions';
-import { getSlpBalancesAndUtxos } from '@store/wallet';
+import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
+import { PostsQueryTag } from '@bcpros/lixi-models/constants';
+import { BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
+import { currency } from '@components/Common/Ticker';
+import { fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods';
+import BigNumber from 'bignumber.js';
+import useDidMountEffect from '@hooks/useDidMountEffect ';
+import { showToast } from '@store/toast/actions';
 
 type PostsListingProps = {
   className?: string;
@@ -126,6 +133,9 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const [queryPostTrigger, queryPostResult] = useLazyPostQuery();
   const latestBurnForPost = useAppSelector(getLatestBurnForPost);
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
+  const walletPaths = useAppSelector(getAllWalletPaths);
+  const burnQueue = useAppSelector(getBurnQueue);
+  const walletStatus = useAppSelector(getWalletStatus);
 
   const onClickMenu: MenuProps['onClick'] = e => {
     setTab(e.key);
@@ -362,11 +372,95 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
               scrollableTarget="scrollableDiv"
             >
               {data.map((item, index) => {
-                return <PostListItem index={index} item={item} key={item.id} />;
+                return <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />;
               })}
             </InfiniteScroll>
           </React.Fragment>
         );
+    }
+  };
+
+  useDidMountEffect(() => {
+    console.log(burnQueue);
+    if (burnQueue.length > 0) {
+      notification.info({
+        key: 'burn',
+        message: intl.get('post.burning'),
+        duration: null,
+        icon: <FireTwoTone twoToneColor="#ff0000" />
+      });
+    } else {
+      notification.success({
+        key: 'burn',
+        message: intl.get('post.doneBurning')
+      });
+    }
+  }, [burnQueue]);
+
+  const handleBurnForPost = async (isUpVote: boolean, post: any) => {
+    try {
+      const burnValue = '1';
+      if (
+        slpBalancesAndUtxos.nonSlpUtxos.length == 0 ||
+        fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis) < parseInt(burnValue)
+      ) {
+        throw new Error(intl.get('account.insufficientFunds'));
+      }
+      const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
+      const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
+      const { hash160, xAddress } = currentWalletPath;
+      const burnType = isUpVote ? BurnType.Up : BurnType.Down;
+      const burnedBy = hash160;
+      const burnForId = post.id;
+      let tipToAddresses: { address: string; amount: string }[] = [
+        {
+          address: post.page ? post.pageAccount.address : post.postAccount.address,
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
+        }
+      ];
+
+      if (burnType === BurnType.Up && selectedAccount.address !== post.postAccount.address) {
+        tipToAddresses.push({
+          address: post.postAccount.address,
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
+        });
+      }
+
+      tipToAddresses = tipToAddresses.filter(item => item.address != selectedAccount.address);
+
+      let tag: string;
+
+      if (_.isNil(post.page) && _.isNil(post.token)) {
+        tag = PostsQueryTag.Posts;
+      } else if (post.page) {
+        tag = PostsQueryTag.PostsByPageId;
+      } else if (post.token) {
+        tag = PostsQueryTag.PostsByTokenId;
+      }
+
+      const burnCommand: any = {
+        defaultFee: currency.defaultFee,
+        burnType,
+        burnForType: BurnForType.Post,
+        burnedBy,
+        burnForId,
+        burnValue,
+        tipToAddresses: tipToAddresses,
+        postQueryTag: tag,
+        pageId: post.page?.id,
+        tokenId: post.token?.id
+      };
+
+      dispatch(addBurnQueue(burnCommand));
+      dispatch(addBurnTransaction(burnCommand));
+    } catch (e) {
+      const errorMessage = e.message || intl.get('post.unableToBurn');
+      dispatch(
+        showToast('error', {
+          message: errorMessage,
+          duration: 3
+        })
+      );
     }
   };
 
