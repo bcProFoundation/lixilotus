@@ -64,7 +64,7 @@ import { RWebShare } from 'react-web-share';
 import { CommentOrderField, CreateCommentInput, OrderDirection } from 'src/generated/types.generated';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled, { keyframes } from 'styled-components';
-import CommentListItem from './CommentListItem';
+import CommentListItem, { CommentItem } from './CommentListItem';
 import { useForm, Controller } from 'react-hook-form';
 import { openModal } from '@store/modal/actions';
 import { EditPostModalProps } from './EditPostModalPopup';
@@ -74,8 +74,13 @@ import { setTransactionNotReady, setTransactionReady } from '@store/account/acti
 import { getTransactionStatus } from '@store/account/selectors';
 import useDidMountEffect from '@hooks/useDidMountEffect ';
 import { getBurnQueue, getFailQueue } from '@store/burn';
+import { TokenItem } from '@components/Token/TokensFeed';
 
-type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
+export type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
+export type BurnData = {
+  data: PostItem | CommentItem | TokenItem;
+  burnForType: BurnForType;
+};
 
 const { Search } = Input;
 
@@ -188,16 +193,17 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   ] = useCreateCommentMutation();
 
   const upVotePost = (dataItem: PostItem) => {
-    handleBurnForPost(true, dataItem);
+    handleBurn(true, { data: dataItem, burnForType: BurnForType.Post });
   };
 
   const downVotePost = (dataItem: PostItem) => {
-    handleBurnForPost(false, dataItem);
+    handleBurn(false, { data: dataItem, burnForType: BurnForType.Post });
   };
 
-  const handleBurnForPost = async (isUpVote: boolean, post: PostItem) => {
+  const handleBurn = async (isUpVote: boolean, burnData: BurnData) => {
     try {
       const burnValue = '1';
+      const { data, burnForType } = burnData;
       if (
         slpBalancesAndUtxos.nonSlpUtxos.length == 0 ||
         fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis) < parseInt(burnValue)
@@ -210,7 +216,9 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       const { hash160, xAddress } = currentWalletPath;
       const burnType = isUpVote ? BurnType.Up : BurnType.Down;
       const burnedBy = hash160;
-      const burnForId = post.id;
+      const burnForId = data.id;
+      let queryParams;
+
       let tipToAddresses: { address: string; amount: string }[] = [
         {
           address: post.page ? post.pageAccount.address : post.postAccount.address,
@@ -218,11 +226,32 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
         }
       ];
 
-      if (burnType === BurnType.Up && selectedAccount.address !== post.postAccount.address) {
-        tipToAddresses.push({
-          address: post.postAccount.address,
-          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
-        });
+      switch (burnForType) {
+        case BurnForType.Post:
+          const post = data as PostItem;
+          if (burnType === BurnType.Up && selectedAccount.address !== post.postAccount.address) {
+            tipToAddresses.push({
+              address: post.postAccount.address,
+              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
+            });
+          }
+          break;
+        case BurnForType.Comment:
+          const comment = data as CommentItem;
+          if (burnType === BurnType.Up && selectedAccount.address != comment?.commentAccount?.address) {
+            tipToAddresses.push({
+              address: comment?.commentAccount?.address,
+              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
+            });
+          }
+          queryParams = {
+            id: comment.commentToId,
+            orderBy: {
+              direction: OrderDirection.Asc,
+              field: CommentOrderField.UpdatedAt
+            }
+          };
+          break;
       }
 
       tipToAddresses = tipToAddresses.filter(item => item.address != selectedAccount.address);
@@ -230,12 +259,13 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       const burnCommand: any = {
         defaultFee: currency.defaultFee,
         burnType,
-        burnForType: BurnForType.Post,
+        burnForType: burnForType,
         burnedBy,
         burnForId,
         burnValue,
         tipToAddresses: tipToAddresses,
-        postQueryTag: PostsQueryTag.Post
+        postQueryTag: PostsQueryTag.Post,
+        queryParams: queryParams
       };
 
       dispatch(addBurnQueue(burnCommand));
@@ -614,7 +644,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
             scrollableTarget="scrollableDiv"
           >
             {data.map((item, index) => {
-              return <CommentListItem index={index} item={item} post={post} key={item.id} />;
+              return <CommentListItem index={index} item={item} post={post} key={item.id} handleBurn={handleBurn} />;
             })}
           </InfiniteScroll>
         </CommentContainer>

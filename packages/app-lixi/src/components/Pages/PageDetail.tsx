@@ -1,13 +1,20 @@
-import { CameraOutlined, CompassOutlined, EditOutlined, HomeOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import {
+  CameraOutlined,
+  CompassOutlined,
+  EditOutlined,
+  FireTwoTone,
+  HomeOutlined,
+  InfoCircleOutlined
+} from '@ant-design/icons';
 import CreatePostCard from '@components/Common/CreatePostCard';
 import SearchBox from '@components/Common/SearchBox';
 import PostListItem from '@components/Posts/PostListItem';
-import { getSelectedAccountId } from '@store/account/selectors';
+import { getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { openModal } from '@store/modal/actions';
 import { useInfinitePostsByPageIdQuery } from '@store/post/useInfinitePostsByPageIdQuery';
 import intl from 'react-intl-universal';
-import { Button, Space, Tabs, Skeleton } from 'antd';
+import { Button, Space, Tabs, Skeleton, notification } from 'antd';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -15,6 +22,16 @@ import { Virtuoso } from 'react-virtuoso';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import styled from 'styled-components';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
+import useDidMountEffect from '@hooks/useDidMountEffect ';
+import { fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods';
+import { PostsQueryTag } from '@bcpros/lixi-models/constants';
+import { currency } from '@components/Common/Ticker';
+import { addBurnQueue, addBurnTransaction, getBurnQueue, getFailQueue, removeAllFailQueue } from '@store/burn';
+import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
+import BigNumber from 'bignumber.js';
+import { showToast } from '@store/toast/actions';
+import { setTransactionReady } from '@store/account/actions';
 
 type PageDetailProps = {
   page: any;
@@ -329,12 +346,18 @@ const SubAbout = ({
 
 const PageDetail = ({ page, isMobile }: PageDetailProps) => {
   const dispatch = useAppDispatch();
+  const selectedAccount = useAppSelector(getSelectedAccount);
   const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
   const router = useRouter();
   const selectedAccountId = useAppSelector(getSelectedAccountId);
   const [pageDetailData, setPageDetailData] = useState<any>(page);
   const [listsFriend, setListsFriend] = useState<any>([]);
   const [listsPicture, setListsPicture] = useState<any>([]);
+  const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
+  const walletPaths = useAppSelector(getAllWalletPaths);
+  const burnQueue = useAppSelector(getBurnQueue);
+  const walletStatus = useAppSelector(getWalletStatus);
+  const failQueue = useAppSelector(getFailQueue);
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByPageIdQuery(
     {
@@ -398,6 +421,94 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
 
   const uploadModal = (isAvatar: boolean) => {
     dispatch(openModal('UploadAvatarCoverModal', { page: pageDetailData, isAvatar: isAvatar }));
+  };
+
+  useDidMountEffect(() => {
+    console.log('txid has changed');
+    dispatch(setTransactionReady());
+  }, [slpBalancesAndUtxos.nonSlpUtxos]);
+
+  useDidMountEffect(() => {
+    console.log(burnQueue);
+    if (burnQueue.length > 0) {
+      notification.info({
+        key: 'burn',
+        message: intl.get('post.burning'),
+        duration: null,
+        icon: <FireTwoTone twoToneColor="#ff0000" />
+      });
+    } else {
+      notification.success({
+        key: 'burn',
+        message: intl.get('post.doneBurning'),
+        duration: 3
+      });
+    }
+
+    if (failQueue.length > 0) {
+      notification.error({
+        key: 'burnFail',
+        message: intl.get('account.insufficientBurningFunds'),
+        duration: 3
+      });
+    }
+  }, [burnQueue, failQueue]);
+
+  const handleBurnForPost = async (isUpVote: boolean, post: any) => {
+    try {
+      const burnValue = '1';
+      if (
+        slpBalancesAndUtxos.nonSlpUtxos.length == 0 ||
+        fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis) < parseInt(burnValue)
+      ) {
+        throw new Error(intl.get('account.insufficientFunds'));
+      }
+      if (failQueue.length > 0) dispatch(removeAllFailQueue());
+      const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
+      const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
+      const { hash160, xAddress } = currentWalletPath;
+      const burnType = isUpVote ? BurnType.Up : BurnType.Down;
+      const burnedBy = hash160;
+      const burnForId = post.id;
+      let tipToAddresses: { address: string; amount: string }[] = [
+        {
+          address: post.page ? post.pageAccount.address : post.postAccount.address,
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
+        }
+      ];
+
+      if (burnType === BurnType.Up && selectedAccount.address !== post.postAccount.address) {
+        tipToAddresses.push({
+          address: post.postAccount.address,
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
+        });
+      }
+
+      tipToAddresses = tipToAddresses.filter(item => item.address != selectedAccount.address);
+
+      const burnCommand: any = {
+        defaultFee: currency.defaultFee,
+        burnType,
+        burnForType: BurnForType.Post,
+        burnedBy,
+        burnForId,
+        burnValue,
+        tipToAddresses: tipToAddresses,
+        postQueryTag: PostsQueryTag.PostsByPageId,
+        pageId: post.page?.id
+      };
+
+      dispatch(addBurnQueue(burnCommand));
+      dispatch(addBurnTransaction(burnCommand));
+    } catch (e) {
+      const errorMessage = e.message || intl.get('post.unableToBurn');
+      dispatch(
+        showToast('error', {
+          message: errorMessage,
+          duration: 3
+        })
+      );
+    }
   };
 
   return (
@@ -582,7 +693,9 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
                       scrollableTarget="scrollableDiv"
                     >
                       {data.map((item, index) => {
-                        return <PostListItem index={index} item={item} />;
+                        return (
+                          <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />
+                        );
                       })}
                     </InfiniteScroll>
                   </React.Fragment>

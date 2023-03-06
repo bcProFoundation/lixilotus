@@ -1,4 +1,4 @@
-import { CopyOutlined, DownOutlined, FireOutlined } from '@ant-design/icons';
+import { CopyOutlined, DownOutlined, FireOutlined, FireTwoTone } from '@ant-design/icons';
 import CreatePostCard from '@components/Common/CreatePostCard';
 import SearchBox from '@components/Common/SearchBox';
 import { currency } from '@components/Common/Ticker';
@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { useInfinitePostsByTokenIdQuery } from '@store/post/useInfinitePostsByTokenIdQuery';
 import { getSelectedToken, getToken } from '@store/token';
 import { useTokenQuery } from '@store/token/tokens.api';
-import { formatBalance } from '@utils/cashMethods';
+import { formatBalance, fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods';
 import { Button, Dropdown, Image, Menu, MenuProps, message, notification, Skeleton, Space, Tabs } from 'antd';
 import makeBlockie from 'ethereum-blockies-base64';
 import React, { useEffect, useState } from 'react';
@@ -21,6 +21,18 @@ import moment from 'moment';
 import intl from 'react-intl-universal';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { IconBurn } from '@components/Posts/PostDetail';
+import BigNumber from 'bignumber.js';
+import { PostsQueryTag } from '@bcpros/lixi-models/constants';
+import { BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
+import { getSelectedAccount } from '@store/account/selectors';
+import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
+import { addBurnQueue, addBurnTransaction, getBurnQueue, getFailQueue, removeAllFailQueue } from '@store/burn';
+import useDidMountEffect from '@hooks/useDidMountEffect ';
+import { setTransactionReady } from '@store/account/actions';
+import { showToast } from '@store/toast/actions';
+import { TokenQuery } from '@store/token/tokens.generated';
+
+export type TokenItem = TokenQuery['token'];
 
 const StyledTokensFeed = styled.div`
   .content {
@@ -129,6 +141,12 @@ type TokenProps = {
 const TokensFeed = ({ token, isMobile }: TokenProps) => {
   const dispatch = useAppDispatch();
   const [tokenDetailData, setTokenDetailData] = useState<any>(token);
+  const selectedAccount = useAppSelector(getSelectedAccount);
+  const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
+  const walletPaths = useAppSelector(getAllWalletPaths);
+  const burnQueue = useAppSelector(getBurnQueue);
+  const walletStatus = useAppSelector(getWalletStatus);
+  const failQueue = useAppSelector(getFailQueue);
 
   let options = ['Withdraw', 'Rename', 'Export'];
 
@@ -173,6 +191,94 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
         <UpVoteSvg />
       </>
     );
+  };
+
+  useDidMountEffect(() => {
+    console.log('txid has changed');
+    dispatch(setTransactionReady());
+  }, [slpBalancesAndUtxos.nonSlpUtxos]);
+
+  useDidMountEffect(() => {
+    console.log(burnQueue);
+    if (burnQueue.length > 0) {
+      notification.info({
+        key: 'burn',
+        message: intl.get('post.burning'),
+        duration: null,
+        icon: <FireTwoTone twoToneColor="#ff0000" />
+      });
+    } else {
+      notification.success({
+        key: 'burn',
+        message: intl.get('post.doneBurning'),
+        duration: 3
+      });
+    }
+
+    if (failQueue.length > 0) {
+      notification.error({
+        key: 'burnFail',
+        message: intl.get('account.insufficientBurningFunds'),
+        duration: 3
+      });
+    }
+  }, [burnQueue, failQueue]);
+
+  const handleBurnForPost = async (isUpVote: boolean, post: any) => {
+    try {
+      const burnValue = '1';
+      if (
+        slpBalancesAndUtxos.nonSlpUtxos.length == 0 ||
+        fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis) < parseInt(burnValue)
+      ) {
+        throw new Error(intl.get('account.insufficientFunds'));
+      }
+      if (failQueue.length > 0) dispatch(removeAllFailQueue());
+      const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
+      const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
+      const { hash160, xAddress } = currentWalletPath;
+      const burnType = isUpVote ? BurnType.Up : BurnType.Down;
+      const burnedBy = hash160;
+      const burnForId = post.id;
+      let tipToAddresses: { address: string; amount: string }[] = [
+        {
+          address: post.page ? post.pageAccount.address : post.postAccount.address,
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
+        }
+      ];
+
+      if (burnType === BurnType.Up && selectedAccount.address !== post.postAccount.address) {
+        tipToAddresses.push({
+          address: post.postAccount.address,
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
+        });
+      }
+
+      tipToAddresses = tipToAddresses.filter(item => item.address != selectedAccount.address);
+
+      const burnCommand: any = {
+        defaultFee: currency.defaultFee,
+        burnType,
+        burnForType: BurnForType.Post,
+        burnedBy,
+        burnForId,
+        burnValue,
+        tipToAddresses: tipToAddresses,
+        postQueryTag: PostsQueryTag.PostsByTokenId,
+        tokenId: post.token?.id
+      };
+
+      dispatch(addBurnQueue(burnCommand));
+      dispatch(addBurnTransaction(burnCommand));
+    } catch (e) {
+      const errorMessage = e.message || intl.get('post.unableToBurn');
+      dispatch(
+        showToast('error', {
+          message: errorMessage,
+          duration: 3
+        })
+      );
+    }
   };
 
   return (
@@ -237,7 +343,7 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
                 scrollableTarget="scrollableDiv"
               >
                 {data.map((item, index) => {
-                  return <PostListItem index={index} item={item} />;
+                  return <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />;
                 })}
               </InfiniteScroll>
             </React.Fragment>

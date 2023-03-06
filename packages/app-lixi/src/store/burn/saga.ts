@@ -41,6 +41,8 @@ function* createTxHexSaga(action: any) {
   const walletPaths = yield select(getAllWalletPaths);
   const slpBalancesAndUtxos = yield select(getSlpBalancesAndUtxos);
   const { createBurnTransaction } = xpiContext();
+  const burnForId = data.burnForType === BurnForType.Token ? data.tokenId : data.burnForId;
+  const tipToAddresses = data.tipToAddresses ? data.tipToAddresses : null;
 
   try {
     const txHex = createBurnTransaction(
@@ -51,17 +53,15 @@ function* createTxHexSaga(action: any) {
       data.burnType,
       data.burnForType,
       data.burnedBy,
-      data.burnForId,
+      burnForId,
       data.burnValue,
-      data.tipToAddresses
+      tipToAddresses
     );
 
     yield put({ type: 'CREATE_TX_HEX', payload: txHex });
   } catch {
-    //TODO: implement catch burning then out of money
     yield put(moveAllBurnToFailQueue());
     yield put(removeAllBurnQueue());
-    // throw new Error('fail');
   }
 }
 
@@ -160,6 +160,34 @@ function* updatePostBurnValue(action: PayloadAction<BurnCommand>) {
   };
 
   let burnValue = _.toNumber(command.burnValue);
+  console.log(command);
+
+  //BUG: All token and page post show up on home page will not optimistic update becuz of PostQueryTag
+  // The algo will check for PostQueryTag then updateQueryData according to it. It only update normal post not page's post and token's post at homepage.
+  // That's why we need to update the all Posts here first then updateQueryData later. Not the best way to handle. Maybe come back later.
+  yield put(
+    postApi.util.updateQueryData('Posts', { ...params }, draft => {
+      const postToUpdateIndex = draft.allPosts.edges.findIndex(item => item.node.id === command.burnForId);
+      const postToUpdate = draft.allPosts.edges[postToUpdateIndex];
+      if (postToUpdateIndex >= 0) {
+        let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
+        let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+        if (command.burnType == BurnType.Up) {
+          lotusBurnUp = lotusBurnUp + burnValue;
+        } else {
+          lotusBurnDown = lotusBurnDown + burnValue;
+        }
+        const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+        draft.allPosts.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
+        draft.allPosts.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
+        draft.allPosts.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
+        if (lotusBurnScore < 0) {
+          draft.allPosts.edges.splice(postToUpdateIndex, 1);
+          draft.allPosts.totalCount = draft.allPosts.totalCount - 1;
+        }
+      }
+    })
+  );
 
   switch (command.postQueryTag) {
     case PostsQueryTag.Post:
@@ -313,7 +341,7 @@ function* updateTokenBurnValue(action: PayloadAction<BurnCommand>) {
   let burnValue = _.toNumber(command.burnValue);
 
   return yield put(
-    tokenApi.util.updateQueryData('Token', { tokenId: command.burnForId }, draft => {
+    tokenApi.util.updateQueryData('Token', { tokenId: command.tokenId }, draft => {
       let lotusBurnUp = draft?.token?.lotusBurnUp ?? 0;
       let lotusBurnDown = draft?.token?.lotusBurnDown ?? 0;
       if (command.burnType == BurnType.Up) {
