@@ -15,7 +15,7 @@ import {
   removeAllFailQueue
 } from '@store/burn';
 import { api as postApi, useLazyPostQuery } from '@store/post/posts.api';
-import { Menu, MenuProps, Modal, notification, Skeleton, Tabs } from 'antd';
+import { Menu, MenuProps, Modal, notification, Skeleton, Tabs, Collapse, Space } from 'antd';
 import _ from 'lodash';
 import React, { useRef, useState, useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
@@ -36,6 +36,10 @@ import { fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods'
 import BigNumber from 'bignumber.js';
 import useDidMountEffect from '@hooks/useDidMountEffect ';
 import { showToast } from '@store/toast/actions';
+import { Spin } from 'antd';
+
+const { Panel } = Collapse;
+const antIcon = <LoadingOutlined style={{ fontSize: 20 }} spin />;
 
 type PostsListingProps = {
   className?: string;
@@ -113,6 +117,20 @@ const StyledHeader = styled.div`
       }
     }
   }
+`;
+
+const StyledCollapse = styled(Collapse)`
+  .ant-collapse-header {
+    font-size: 16px;
+    padding: 0px 0px 5px 0px !important;
+  }
+  .ant-collapse-content-box {
+    padding: 5px 0px 5px 0px !important;
+  }
+`;
+
+const StyledNotificationContent = styled.div`
+  font-size: 14px;
 `;
 const menuItems = [
   // { label: 'Top', key: 'top' },
@@ -393,7 +411,26 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     if (burnQueue.length > 0) {
       notification.info({
         key: 'burn',
-        message: intl.get('post.burning'),
+        //TODO: Need to move all of this to a seperate function to reuse and remove dup
+        message: (
+          <StyledCollapse ghost>
+            <Panel header={intl.get('account.burning')} key="1" showArrow={false}>
+              {burnQueue.map(burn => {
+                return (
+                  <Space key={burn.burnForId} size={60}>
+                    <StyledNotificationContent>
+                      {intl.get('account.burningList', {
+                        burnForType: BurnForType[burn.burnForType],
+                        burnValue: burn.burnValue
+                      })}
+                    </StyledNotificationContent>
+                    <Spin indicator={antIcon} />
+                  </Space>
+                );
+              })}
+            </Panel>
+          </StyledCollapse>
+        ),
         duration: null,
         icon: <FireTwoTone twoToneColor="#ff0000" />
       });

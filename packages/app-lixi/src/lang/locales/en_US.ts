@@ -184,6 +184,8 @@ export default {
   'account.to': 'To',
   'account.insufficientFunds': 'Insufficient funds',
   'account.insufficientBurningFunds': 'Insufficient funds to continue burning',
+  'account.burning': 'Burning',
+  'account.burningList': 'Burning {burnForType} for {burnValue} XPI',
 
   /* 03.Lixi */
   'lixi.createLixi': 'Create new lixi',
