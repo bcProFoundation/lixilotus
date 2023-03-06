@@ -120,7 +120,6 @@ const PageDetailLayout: React.FC = (props: PageDetailsLayoutProps) => {
                         style={{ paddingRight: '2rem', maxWidth: '100%', marginTop: '8px' }}
                       >
                         <Topbar ref={setRef} />
-                        div
                         {/* @ts-ignore */}
                         <Content className="content-layout">{children}</Content>
                       </Layout>
