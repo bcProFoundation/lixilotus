@@ -36,6 +36,7 @@ const CardUser = styled.div`
         letter-spacing: 0.15px;
         margin: 0;
         text-transform: capitalize;
+        color: 
         &:hover {
           text-decoration: underline;
           cursor: pointer;
