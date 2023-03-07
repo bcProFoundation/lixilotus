@@ -31,7 +31,7 @@ import { getTransactionStatus } from '@store/account/selectors';
 import { getAllWalletPaths } from '@store/wallet';
 import { callConfig } from '@context/shareContext';
 import { getBurnQueue, getFailQueue } from './selectors';
-import { Channel } from 'redux-saga';
+import { buffers, Channel } from 'redux-saga';
 import { Account } from '@bcpros/lixi-models';
 
 function* createTxHexSaga(action: any) {
@@ -160,7 +160,6 @@ function* updatePostBurnValue(action: PayloadAction<BurnCommand>) {
   };
 
   let burnValue = _.toNumber(command.burnValue);
-  console.log(command);
 
   //BUG: All token and page post show up on home page will not optimistic update becuz of PostQueryTag
   // The algo will check for PostQueryTag then updateQueryData according to it. It only update normal post not page's post and token's post at homepage.
@@ -255,7 +254,7 @@ function* updatePostBurnValue(action: PayloadAction<BurnCommand>) {
         })
       );
     default:
-      yield put(
+      return yield put(
         postApi.util.updateQueryData('OrphanPosts', params, draft => {
           const postToUpdateIndex = draft.allOrphanPosts.edges.findIndex(item => item.node.id === command.burnForId);
           const postToUpdate = draft.allOrphanPosts.edges[postToUpdateIndex];
@@ -274,29 +273,6 @@ function* updatePostBurnValue(action: PayloadAction<BurnCommand>) {
             if (lotusBurnScore < 0) {
               draft.allOrphanPosts.edges.splice(postToUpdateIndex, 1);
               draft.allOrphanPosts.totalCount = draft.allOrphanPosts.totalCount - 1;
-            }
-          }
-        })
-      );
-      return yield put(
-        postApi.util.updateQueryData('Posts', params, draft => {
-          const postToUpdateIndex = draft.allPosts.edges.findIndex(item => item.node.id === command.burnForId);
-          const postToUpdate = draft.allPosts.edges[postToUpdateIndex];
-          if (postToUpdateIndex >= 0) {
-            let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
-            let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
-            if (command.burnType == BurnType.Up) {
-              lotusBurnUp = lotusBurnUp + burnValue;
-            } else {
-              lotusBurnDown = lotusBurnDown + burnValue;
-            }
-            const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-            draft.allPosts.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
-            draft.allPosts.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
-            draft.allPosts.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
-            if (lotusBurnScore < 0) {
-              draft.allPosts.edges.splice(postToUpdateIndex, 1);
-              draft.allPosts.totalCount = draft.allPosts.totalCount - 1;
             }
           }
         })
@@ -386,7 +362,7 @@ function* handleRequest(action) {
 
 // This saga will create an action channel and use it to dispatch work to one worker saga
 function* watchRequests() {
-  const requestChan: Channel<Account> = yield actionChannel(addBurnTransaction);
+  const requestChan = yield actionChannel(addBurnTransaction, buffers.expanding(10));
 
   while (true) {
     // Take an action from the channel

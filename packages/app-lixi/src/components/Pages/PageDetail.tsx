@@ -32,6 +32,7 @@ import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@sto
 import BigNumber from 'bignumber.js';
 import { showToast } from '@store/toast/actions';
 import { setTransactionReady } from '@store/account/actions';
+import { showBurnNotification } from '@components/Common/showBurnNotification';
 
 type PageDetailProps = {
   page: any;
@@ -429,28 +430,14 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
   }, [slpBalancesAndUtxos.nonSlpUtxos]);
 
   useDidMountEffect(() => {
-    console.log(burnQueue);
     if (burnQueue.length > 0) {
-      notification.info({
-        key: 'burn',
-        message: intl.get('post.burning'),
-        duration: null,
-        icon: <FireTwoTone twoToneColor="#ff0000" />
-      });
+      showBurnNotification('info', burnQueue);
     } else {
-      notification.success({
-        key: 'burn',
-        message: intl.get('post.doneBurning'),
-        duration: 3
-      });
+      showBurnNotification('success');
     }
 
     if (failQueue.length > 0) {
-      notification.error({
-        key: 'burnFail',
-        message: intl.get('account.insufficientBurningFunds'),
-        duration: 3
-      });
+      showBurnNotification('error');
     }
   }, [burnQueue, failQueue]);
 

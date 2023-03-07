@@ -35,6 +35,10 @@ export default {
   'text.post': 'bài viết',
   'text.selectXpi': 'Bạn muốn đốt bao nhiêu Xpi cho {name}?',
   'burn.selectXpi': 'Vui lòng chọn số lượng Xpi bạn muốn đốt cho {name}',
+  'burn.post': 'bài viết',
+  'burn.comment': 'bình luận',
+  'burn.token': 'token',
+  'burn.doneBurning': 'Đốt thành công!',
 
   /* 01.General */
   'general.tokens': 'Tokens',

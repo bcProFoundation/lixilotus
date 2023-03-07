@@ -25,6 +25,8 @@ import { Footer } from '@bcpros/lixi-components/components';
 import { getAllNotifications } from '@store/notification/selectors';
 import { fetchNotifications } from '@store/notification/actions';
 import DummySidebar from '@containers/Sidebar/DummySidebar';
+import { setTransactionReady } from '@store/account/actions';
+import { getSlpBalancesAndUtxos } from '@store/wallet';
 const { Content } = Layout;
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
@@ -187,6 +189,12 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   const disableSideBarRanking = ['lixi', 'profile'];
   const ref = useRef(null);
   const notifications = useAppSelector(getAllNotifications);
+  const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
+
+  useEffect(() => {
+    console.log('txid has changed');
+    dispatch(setTransactionReady());
+  }, [slpBalancesAndUtxos.nonSlpUtxos]);
 
   const setRef = useCallback(node => {
     if (node && node.clientHeight) {

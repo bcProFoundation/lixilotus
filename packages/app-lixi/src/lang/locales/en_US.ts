@@ -36,6 +36,10 @@ export default {
   'text.post': 'this post',
   'text.selectXpi': 'How many XPI you want to burn for {name}?',
   'burn.selectXpi': 'Please select Xpi you want to burn for {name}',
+  'burn.post': 'post',
+  'burn.comment': 'comment',
+  'burn.token': 'token',
+  'burn.doneBurning': 'Finish burning!',
 
   /* 01.General */
   'general.tokens': 'Tokens',

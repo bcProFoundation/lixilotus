@@ -37,6 +37,7 @@ import BigNumber from 'bignumber.js';
 import useDidMountEffect from '@hooks/useDidMountEffect ';
 import { showToast } from '@store/toast/actions';
 import { Spin } from 'antd';
+import { showBurnNotification } from '@components/Common/showBurnNotification';
 
 const { Panel } = Collapse;
 const antIcon = <LoadingOutlined style={{ fontSize: 20 }} spin />;
@@ -346,11 +347,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     })();
   }, [latestBurnForPost]);
 
-  useEffect(() => {
-    console.log('txid has changed');
-    dispatch(setTransactionReady());
-  }, [slpBalancesAndUtxos.nonSlpUtxos]);
-
   const showPosts = () => {
     switch (tab) {
       case 'top':
@@ -409,45 +405,13 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   useDidMountEffect(() => {
     console.log(burnQueue);
     if (burnQueue.length > 0) {
-      notification.info({
-        key: 'burn',
-        //TODO: Need to move all of this to a seperate function to reuse and remove dup
-        message: (
-          <StyledCollapse ghost>
-            <Panel header={intl.get('account.burning')} key="1" showArrow={false}>
-              {burnQueue.map(burn => {
-                return (
-                  <Space key={burn.burnForId} size={60}>
-                    <StyledNotificationContent>
-                      {intl.get('account.burningList', {
-                        burnForType: BurnForType[burn.burnForType],
-                        burnValue: burn.burnValue
-                      })}
-                    </StyledNotificationContent>
-                    <Spin indicator={antIcon} />
-                  </Space>
-                );
-              })}
-            </Panel>
-          </StyledCollapse>
-        ),
-        duration: null,
-        icon: <FireTwoTone twoToneColor="#ff0000" />
-      });
+      showBurnNotification('info', burnQueue);
     } else {
-      notification.success({
-        key: 'burn',
-        message: intl.get('post.doneBurning'),
-        duration: 3
-      });
+      showBurnNotification('success');
     }
 
     if (failQueue.length > 0) {
-      notification.error({
-        key: 'burnFail',
-        message: intl.get('account.insufficientBurningFunds'),
-        duration: 3
-      });
+      showBurnNotification('error');
     }
   }, [burnQueue, failQueue]);
 

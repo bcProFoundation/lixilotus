@@ -75,6 +75,7 @@ import { getTransactionStatus } from '@store/account/selectors';
 import useDidMountEffect from '@hooks/useDidMountEffect ';
 import { getBurnQueue, getFailQueue } from '@store/burn';
 import { TokenItem } from '@components/Token/TokensFeed';
+import { showBurnNotification } from '@components/Common/showBurnNotification';
 
 export type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 export type BurnData = {
@@ -543,21 +544,16 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     []
   );
 
-  useDidMountEffect(() => {
-    console.log('txid has changed');
-    dispatch(setTransactionReady());
-  }, [slpBalancesAndUtxos.nonSlpUtxos]);
+  // useDidMountEffect(() => {
+  //   console.log('txid has changed');
+  //   dispatch(setTransactionReady());
+  // }, [slpBalancesAndUtxos.nonSlpUtxos]);
 
   useDidMountEffect(() => {
     console.log(burnQueue);
     console.log(failQueue);
     if (burnQueue.length > 0) {
-      notification.info({
-        key: 'burn',
-        message: intl.get('post.burning'),
-        duration: null,
-        icon: <FireTwoTone twoToneColor="#ff0000" />
-      });
+      showBurnNotification('info', burnQueue);
     } else {
       notification.success({
         key: 'burn',

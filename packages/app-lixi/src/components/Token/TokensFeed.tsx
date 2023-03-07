@@ -31,6 +31,7 @@ import useDidMountEffect from '@hooks/useDidMountEffect ';
 import { setTransactionReady } from '@store/account/actions';
 import { showToast } from '@store/toast/actions';
 import { TokenQuery } from '@store/token/tokens.generated';
+import { showBurnNotification } from '@components/Common/showBurnNotification';
 
 export type TokenItem = TokenQuery['token'];
 
@@ -199,28 +200,14 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
   }, [slpBalancesAndUtxos.nonSlpUtxos]);
 
   useDidMountEffect(() => {
-    console.log(burnQueue);
     if (burnQueue.length > 0) {
-      notification.info({
-        key: 'burn',
-        message: intl.get('post.burning'),
-        duration: null,
-        icon: <FireTwoTone twoToneColor="#ff0000" />
-      });
+      showBurnNotification('info', burnQueue);
     } else {
-      notification.success({
-        key: 'burn',
-        message: intl.get('post.doneBurning'),
-        duration: 3
-      });
+      showBurnNotification('success');
     }
 
     if (failQueue.length > 0) {
-      notification.error({
-        key: 'burnFail',
-        message: intl.get('account.insufficientBurningFunds'),
-        duration: 3
-      });
+      showBurnNotification('error');
     }
   }, [burnQueue, failQueue]);
 

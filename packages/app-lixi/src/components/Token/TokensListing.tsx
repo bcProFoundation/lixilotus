@@ -54,6 +54,7 @@ import { InfoSubCard } from '@components/Lixi';
 import { IconBurn } from '@components/Posts/PostDetail';
 import useDidMountEffect from '@hooks/useDidMountEffect ';
 import { setTransactionReady } from '@store/account/actions';
+import { showBurnNotification } from '@components/Common/showBurnNotification';
 
 const StyledTokensListing = styled.div`
   .table-tokens {
@@ -451,29 +452,15 @@ const TokensListing = () => {
   }, [slpBalancesAndUtxos.nonSlpUtxos]);
 
   useDidMountEffect(() => {
-    console.log(burnQueue);
-    console.log(failQueue);
     if (burnQueue.length > 0) {
-      notification.info({
-        key: 'burn',
-        message: intl.get('post.burning'),
-        duration: null,
-        icon: <FireTwoTone twoToneColor="#ff0000" />
-      });
+      showBurnNotification('info', burnQueue);
     } else {
-      notification.success({
-        key: 'burn',
-        message: intl.get('post.doneBurning'),
-        duration: 3
-      });
+      showBurnNotification('success');
+      dispatch(fetchAllTokens());
     }
 
     if (failQueue.length > 0) {
-      notification.error({
-        key: 'burnFail',
-        message: intl.get('account.insufficientBurningFunds'),
-        duration: 3
-      });
+      showBurnNotification('error');
     }
   }, [burnQueue, failQueue]);
 
