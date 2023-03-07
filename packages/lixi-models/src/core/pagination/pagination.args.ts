@@ -16,4 +16,7 @@ export class PaginationArgs {
 
   @Field(() => Number, { nullable: true })
   last?: number;
+
+  @Field(() => Number, { nullable: true })
+  filter?: number;
 }

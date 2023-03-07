@@ -12,7 +12,7 @@ import { Menu, MenuProps, Modal, Select, Skeleton, Tabs } from 'antd';
 import _ from 'lodash';
 import React, { useRef, useState, useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
-import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
+import { OrderDirection, Post, PostOrderField } from 'src/generated/types.generated';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled from 'styled-components';
 import SearchBox from '../Common/SearchBox';
@@ -132,6 +132,10 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const latestBurnForPost = useAppSelector(getLatestBurnForPost);
   const filterValue = useAppSelector(getFilterPostsHome);
 
+  const [allPostsData, setAllPostsData] = useState<[]>([]);
+  const [queryPostsData, setQueryPostsData] = useState<[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   const onClickMenu: MenuProps['onClick'] = e => {
     setTab(e.key);
   };
@@ -147,6 +151,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   } = useInfiniteOrphanPostsQuery(
     {
       first: 20,
+      filter: filterValue,
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt
@@ -158,6 +163,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsQuery(
     {
       first: 20,
+      filter: filterValue,
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt
@@ -165,6 +171,23 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     },
     false
   );
+
+  useEffect(() => {
+    refetch();
+    orphanRefetch();
+  }, [filterValue]);
+
+  useEffect(() => {
+    if (!data) {
+      return;
+    }
+
+    const posts = data.flatMap(post => post);
+    setAllPostsData(posts);
+    setIsLoading(false);
+
+    console.log('data: ', data, allPostsData);
+  }, [data]);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -187,6 +210,16 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       },
       false
     );
+
+  useEffect(() => {
+    if (!queryData) {
+      return;
+    }
+
+    const posts = queryData.flatMap(post => post);
+    setQueryPostsData(posts);
+    setIsLoading(false);
+  }, [queryData]);
 
   const loadMoreQueryItems = () => {
     if (hasNextQuery && !isQueryFetching) {
@@ -245,13 +278,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         return;
     }
   };
-
-  const filteredData = data.filter(
-    post => post.lotusBurnScore >= filterValue || post.postAccount.id == selectedAccountId.toString()
-  );
-  const filteredQueryData = queryData.filter(
-    post => post.lotusBurnScore >= filterValue || post.postAccount.id == selectedAccountId.toString()
-  );
 
   const triggerSrollbar = e => {
     const virtuosoNode = refPostsListing.current.querySelector('#list-virtuoso') || null;
@@ -348,7 +374,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
           <React.Fragment>
             <Header />
             <InfiniteScroll
-              dataLength={filteredData.length}
+              dataLength={data.length}
               next={loadMoreItems}
               hasMore={hasNext}
               loader={<Skeleton avatar active />}
@@ -359,7 +385,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
               }
               scrollableTarget="scrollableDiv"
             >
-              {filteredData.map((item, index) => {
+              {data.map((item, index) => {
                 return <PostListItem index={index} item={item} key={item.id} />;
               })}
             </InfiniteScroll>
@@ -376,7 +402,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         <React.Fragment>
           <QueryHeader />
           <InfiniteScroll
-            dataLength={filteredQueryData.length}
+            dataLength={queryData.length}
             next={loadMoreQueryItems}
             hasMore={hasNextQuery}
             loader={<Skeleton avatar active />}
@@ -387,7 +413,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
             }
             scrollableTarget="scrollableDiv"
           >
-            {filteredQueryData.map((item, index) => {
+            {queryData.map((item, index) => {
               return <PostListItem index={index} item={item} key={item.id} />;
             })}
           </InfiniteScroll>

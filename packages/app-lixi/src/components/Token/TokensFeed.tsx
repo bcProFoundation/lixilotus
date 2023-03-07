@@ -138,13 +138,13 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
   const dispatch = useAppDispatch();
   const [tokenDetailData, setTokenDetailData] = useState<any>(token);
   const filterValue = useAppSelector(getFilterPostsToken);
-  const selectedAccountId = useAppSelector(getSelectedAccountId);
 
   let options = ['Withdraw', 'Rename', 'Export'];
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByTokenIdQuery(
     {
       first: 10,
+      filter: filterValue,
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt
@@ -152,10 +152,6 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
       id: token.id
     },
     false
-  );
-
-  const filterData = data.filter(
-    post => post.lotusBurnScore >= filterValue || post.postAccount.id == selectedAccountId.toString()
   );
 
   const loadMoreItems = () => {
@@ -242,18 +238,18 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
           <Tabs.TabPane tab="Top discussions" key="1">
             <React.Fragment>
               <InfiniteScroll
-                dataLength={filterData.length}
+                dataLength={data.length}
                 next={loadMoreItems}
                 hasMore={hasNext}
                 loader={<Skeleton avatar active />}
                 endMessage={
                   <p style={{ textAlign: 'center' }}>
-                    <p>{filterData.length > 0 ? 'end reached' : "It's so empty here..."}</p>
+                    <p>{data.length > 0 ? 'end reached' : "It's so empty here..."}</p>
                   </p>
                 }
                 scrollableTarget="scrollableDiv"
               >
-                {filterData.map((item, index) => {
+                {data.map((item, index) => {
                   return <PostListItem index={index} item={item} />;
                 })}
               </InfiniteScroll>
