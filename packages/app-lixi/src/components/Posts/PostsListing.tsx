@@ -132,10 +132,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const latestBurnForPost = useAppSelector(getLatestBurnForPost);
   const filterValue = useAppSelector(getFilterPostsHome);
 
-  const [allPostsData, setAllPostsData] = useState<[]>([]);
-  const [queryPostsData, setQueryPostsData] = useState<[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
   const onClickMenu: MenuProps['onClick'] = e => {
     setTab(e.key);
   };
@@ -151,7 +147,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   } = useInfiniteOrphanPostsQuery(
     {
       first: 20,
-      filter: filterValue,
+      minBurnFilter: filterValue,
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt
@@ -163,7 +159,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsQuery(
     {
       first: 20,
-      filter: filterValue,
+      minBurnFilter: filterValue,
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt
@@ -176,18 +172,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     refetch();
     orphanRefetch();
   }, [filterValue]);
-
-  useEffect(() => {
-    if (!data) {
-      return;
-    }
-
-    const posts = data.flatMap(post => post);
-    setAllPostsData(posts);
-    setIsLoading(false);
-
-    console.log('data: ', data, allPostsData);
-  }, [data]);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -210,16 +194,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       },
       false
     );
-
-  useEffect(() => {
-    if (!queryData) {
-      return;
-    }
-
-    const posts = queryData.flatMap(post => post);
-    setQueryPostsData(posts);
-    setIsLoading(false);
-  }, [queryData]);
 
   const loadMoreQueryItems = () => {
     if (hasNextQuery && !isQueryFetching) {

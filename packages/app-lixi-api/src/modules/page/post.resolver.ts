@@ -63,7 +63,7 @@ export class PostResolver {
   @UseGuards(GqlJwtAuthGuard)
   async allPosts(
     @PostAccountEntity() account: Account,
-    @Args() { after, before, first, last, filter }: PaginationArgs,
+    @Args() { after, before, first, last, minBurnFilter }: PaginationArgs,
     @Args({ name: 'query', type: () => String, nullable: true })
     query: string,
     @Args({
@@ -81,7 +81,7 @@ export class PostResolver {
             OR: [
               {
                 lotusBurnScore: {
-                  gte: filter ?? 0
+                  gte: minBurnFilter ?? 0
                 }
               },
               {
@@ -100,7 +100,7 @@ export class PostResolver {
             OR: [
               {
                 lotusBurnScore: {
-                  gte: filter ?? 0
+                  gte: minBurnFilter ?? 0
                 }
               },
               {
@@ -120,7 +120,7 @@ export class PostResolver {
   @UseGuards(GqlJwtAuthGuard)
   async allOrphanPosts(
     @PostAccountEntity() account: Account,
-    @Args() { after, before, first, last, filter }: PaginationArgs,
+    @Args() { after, before, first, last, minBurnFilter }: PaginationArgs,
     @Args({ name: 'query', type: () => String, nullable: true })
     query: string,
     @Args({
@@ -151,7 +151,7 @@ export class PostResolver {
                   },
                   {
                     lotusBurnScore: {
-                      gte: filter ?? 0
+                      gte: minBurnFilter ?? 0
                     }
                   }
                 ]
@@ -180,7 +180,7 @@ export class PostResolver {
                   },
                   {
                     lotusBurnScore: {
-                      gte: filter ?? 0
+                      gte: minBurnFilter ?? 0
                     }
                   }
                 ]
@@ -197,7 +197,7 @@ export class PostResolver {
   @UseGuards(GqlJwtAuthGuard)
   async allPostsByPageId(
     @PostAccountEntity() account: Account,
-    @Args() { after, before, first, last, filter }: PaginationArgs,
+    @Args() { after, before, first, last, minBurnFilter }: PaginationArgs,
     @Args({ name: 'id', type: () => String, nullable: true })
     id: string,
     @Args({
@@ -225,7 +225,7 @@ export class PostResolver {
                   postAccountId: account.id
                 },
                 {
-                  AND: [{ pageId: id }, { lotusBurnScore: { gte: filter ?? 0 } }]
+                  AND: [{ pageId: id }, { lotusBurnScore: { gte: minBurnFilter ?? 0 } }]
                 }
               ]
             },
@@ -240,7 +240,7 @@ export class PostResolver {
                   postAccountId: account.id
                 },
                 {
-                  AND: [{ pageId: id }, { lotusBurnScore: { gte: filter ?? 0 } }]
+                  AND: [{ pageId: id }, { lotusBurnScore: { gte: minBurnFilter ?? 0 } }]
                 }
               ]
             }
@@ -328,7 +328,7 @@ export class PostResolver {
   @UseGuards(GqlJwtAuthGuard)
   async allPostsByTokenId(
     @PostAccountEntity() account: Account,
-    @Args() { after, before, first, last, filter }: PaginationArgs,
+    @Args() { after, before, first, last, minBurnFilter }: PaginationArgs,
     @Args({ name: 'id', type: () => String, nullable: true })
     id: string,
     @Args({
@@ -354,7 +354,7 @@ export class PostResolver {
                   },
                   {
                     lotusBurnScore: {
-                      gte: filter ?? 0
+                      gte: minBurnFilter ?? 0
                     }
                   }
                 ]
@@ -378,7 +378,7 @@ export class PostResolver {
                   },
                   {
                     lotusBurnScore: {
-                      gte: filter ?? 0
+                      gte: minBurnFilter ?? 0
                     }
                   }
                 ]
@@ -395,7 +395,7 @@ export class PostResolver {
   @UseGuards(GqlJwtAuthGuard)
   async allPostsByUserId(
     @PostAccountEntity() account: Account,
-    @Args() { after, before, first, last, filter }: PaginationArgs,
+    @Args() { after, before, first, last, minBurnFilter }: PaginationArgs,
     @Args({ name: 'id', type: () => String, nullable: true })
     id: string,
     @Args({
@@ -442,7 +442,7 @@ export class PostResolver {
                     },
                     {
                       lotusBurnScore: {
-                        gte: filter ?? 0
+                        gte: minBurnFilter ?? 0
                       }
                     }
                   ]

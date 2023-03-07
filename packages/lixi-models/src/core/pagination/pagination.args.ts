@@ -18,5 +18,5 @@ export class PaginationArgs {
   last?: number;
 
   @Field(() => Number, { nullable: true })
-  filter?: number;
+  minBurnFilter?: number;
 }

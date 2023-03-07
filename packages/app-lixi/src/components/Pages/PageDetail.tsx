@@ -347,7 +347,7 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByPageIdQuery(
     {
       first: 10,
-      filter: filterValue,
+      minBurnFilter: filterValue,
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt

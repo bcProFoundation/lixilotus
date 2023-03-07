@@ -144,7 +144,7 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByTokenIdQuery(
     {
       first: 10,
-      filter: filterValue,
+      minBurnFilter: filterValue,
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt
