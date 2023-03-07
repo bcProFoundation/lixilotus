@@ -67,11 +67,12 @@ export const ContainerAccess = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 100vh;
+  height: 100%;
   background: linear-gradient(0deg, rgba(158, 42, 156, 0.08), rgba(158, 42, 156, 0.08)), #fffbff;
   border-right: 1px solid #f4e3f4;
+  overflow: -moz-scrollbars-none;
+  -ms-overflow-style: none;
   .item-access {
-    margin-bottom: 2rem;
     cursor: pointer;
     gap: 0 !important;
     .anticon {
@@ -79,7 +80,7 @@ export const ContainerAccess = styled.div`
       color: #12130f;
     }
     .icon-item {
-      padding: 6px;
+      padding: 0.78px;
       &.active-item-access {
         max-width: 50px;
         margin: auto;
@@ -110,7 +111,7 @@ export const ContainerAccess = styled.div`
 `;
 
 const StyledLogo = styled.div`
-  margin: 2rem 0;
+  margin: 0.8rem 0;
   cursor: pointer;
   background: linear-gradient(0deg, rgba(158, 42, 156, 0.08), rgba(158, 42, 156, 0.08)), #fffbff;
 `;
@@ -157,7 +158,7 @@ const UserControl = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  margin-bottom: 2rem;
+  margin-bottom: 60px;
 `;
 
 const SidebarShortcut = () => {
@@ -278,6 +279,23 @@ const SidebarShortcut = () => {
               key="settings"
               href={'/settings'}
             />
+            <UserControl>
+              <Badge
+                count={notifications.length}
+                overflowCount={9}
+                offset={[notifications.length < 10 ? 0 : 5, 8]}
+                color="var(--color-primary)"
+              >
+                <img
+                  src="/images/ico-notifications.svg"
+                  alt="ico-notifications"
+                  onClick={() => router.push('/notifications')}
+                />
+                <div style={{ cursor: 'pointer' }} onClick={() => router.push(`/profile/${selectedAccount?.address}`)}>
+                  <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
+                </div>
+              </Badge>
+            </UserControl>
             {/* TODO: show more shortcut  */}
             {/* {showMore && (
               <>
@@ -313,24 +331,6 @@ const SidebarShortcut = () => {
               </>
             )} */}
           </div>
-          <UserControl>
-            <Badge
-              count={notifications.length}
-              overflowCount={9}
-              offset={[notifications.length < 10 ? 0 : 5, 8]}
-              color="var(--color-primary)"
-            >
-              <img
-                style={{ marginBottom: '2rem' }}
-                src="/images/ico-notifications.svg"
-                alt="ico-notifications"
-                onClick={() => router.push('/notifications')}
-              />
-            </Badge>
-            <div style={{ cursor: 'pointer' }} onClick={() => router.push(`/profile/${selectedAccount?.address}`)}>
-              <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
-            </div>
-          </UserControl>
         </ContainerAccess>
       </ShortcutSideBar>
     </>
