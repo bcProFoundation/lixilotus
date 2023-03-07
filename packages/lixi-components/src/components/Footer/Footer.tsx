@@ -18,6 +18,7 @@ const StyledFooter = styled.div`
   z-index: 9999;
   @media (max-width: 968px) {
     display: flex;
+    left: 0;
   }
 `;
 
