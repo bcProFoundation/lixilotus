@@ -12,6 +12,7 @@ import { openModal } from '@store/modal/actions';
 import intl from 'react-intl-universal';
 import { getAllCategories } from '@store/category/selectors';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { getCategories } from '@store/category/actions';
 
 const StyledPageFeed = styled.div`
   h2 {
@@ -258,6 +259,10 @@ const PageHome = () => {
   const categories = useAppSelector(getAllCategories);
   const refPagesListing = useRef<HTMLDivElement | null>(null);
 
+  useEffect(() => {
+    dispatch(getCategories());
+  }, []);
+
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePagesQuery(
     {
       first: 10
@@ -273,7 +278,7 @@ const PageHome = () => {
   }, [data]);
 
   const getCategoryName = (item: number) => {
-    const categoryLang = categories.find(category => category.id == item).name;
+    const categoryLang = categories.find(category => category.id == item).name ?? 'art';
     return intl.get('category.' + categoryLang);
   };
 

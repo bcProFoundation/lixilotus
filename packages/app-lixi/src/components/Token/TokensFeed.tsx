@@ -137,6 +137,7 @@ type TokenProps = {
 const TokensFeed = ({ token, isMobile }: TokenProps) => {
   const dispatch = useAppDispatch();
   const [tokenDetailData, setTokenDetailData] = useState<any>(token);
+  const selectedAccountId = useAppSelector(getSelectedAccountId);
   const filterValue = useAppSelector(getFilterPostsToken);
 
   let options = ['Withdraw', 'Rename', 'Export'];
@@ -144,7 +145,8 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByTokenIdQuery(
     {
       first: 10,
-      minBurnFilter: filterValue,
+      minBurnFilter: filterValue ?? 1,
+      accountId: selectedAccountId ?? null,
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt
@@ -222,7 +224,7 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
             burnValue={formatBalance(tokenDetailData?.lotusBurnUp ?? 0)}
             key={`list-vertical-upvote-o-${tokenDetailData.id}`}
             dataItem={tokenDetailData}
-            onClickIcon={() => {}}
+            onClickIcon={() => { }}
           />
         </div>
       </BannerTicker>
