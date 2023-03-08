@@ -347,6 +347,7 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByPageIdQuery(
     {
       first: 10,
+      minBurnFilter: filterValue,
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt
@@ -354,10 +355,6 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
       id: page.id
     },
     false
-  );
-
-  const filteredData = data.filter(
-    post => post.lotusBurnScore >= filterValue || post.postAccount.id == selectedAccountId.toString()
   );
 
   useEffect(() => {
@@ -576,7 +573,7 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
                 </div>
                 <CreatePostCard pageId={page.id} refetch={() => refetch()} />
                 <Timeline>
-                  {filteredData.length == 0 && (
+                  {data.length == 0 && (
                     <div className="blank-timeline">
                       <img className="time-line-blank" src="/images/time-line-blank.svg" alt="" />
                       <p>Become a first person post on the page...</p>
@@ -585,18 +582,18 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
 
                   <React.Fragment>
                     <InfiniteScroll
-                      dataLength={filteredData.length}
+                      dataLength={data.length}
                       next={loadMoreItems}
                       hasMore={hasNext}
                       loader={<Skeleton avatar active />}
                       endMessage={
                         <p style={{ textAlign: 'center' }}>
-                          <b>{filteredData.length > 0 ? 'end reached' : ''}</b>
+                          <b>{data.length > 0 ? 'end reached' : ''}</b>
                         </p>
                       }
                       scrollableTarget="scrollableDiv"
                     >
-                      {filteredData.map((item, index) => {
+                      {data.map((item, index) => {
                         return <PostListItem index={index} item={item} />;
                       })}
                     </InfiniteScroll>
