@@ -503,7 +503,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
             scrollableTarget="scrollableDiv"
           >
             {queryData.map((item, index) => {
-              return <PostListItem index={index} item={item} key={item.id} />;
+              return <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />;
             })}
           </InfiniteScroll>
         </React.Fragment>

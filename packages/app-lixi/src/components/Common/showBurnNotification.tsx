@@ -67,7 +67,7 @@ export const showBurnNotification = (toastType: any, burnQueue?, failQueue?) => 
         type: toastType,
         key: 'burn',
         message: intl.get('burn.doneBurning'),
-        duration: 3
+        duration: 2
       });
       break;
     case 'error':
@@ -75,7 +75,7 @@ export const showBurnNotification = (toastType: any, burnQueue?, failQueue?) => 
         type: toastType,
         key: 'burnFail',
         message: intl.get('account.insufficientBurningFunds'),
-        duration: 3
+        duration: 2
       });
       break;
   }
