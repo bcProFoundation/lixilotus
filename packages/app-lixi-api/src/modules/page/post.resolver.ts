@@ -30,13 +30,14 @@ import {
 } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
 import { MeiliService } from './meili.service';
-import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
+import { GqlJwtAuthGuard, GqlJwtAuthGuardByPass } from '../auth/guards/gql-jwtauth.guard';
 import { PrismaService } from '../prisma/prisma.service';
 import { POSTS } from './constants/meili.constants';
 import ConnectionArgs, { getPagingParameters } from '../../common/custom-graphql-relay/connection.args';
 import { connectionFromArraySlice } from '../../common/custom-graphql-relay/arrayConnection';
 import PostResponse from 'src/common/post.response';
 import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
+import { NotificationLevel } from '@bcpros/lixi-prisma';
 
 const pubSub = new PubSub();
 
@@ -45,7 +46,7 @@ const pubSub = new PubSub();
 export class PostResolver {
   private logger: Logger = new Logger(this.constructor.name);
 
-  constructor(private prisma: PrismaService, private meiliService: MeiliService, @I18n() private i18n: I18nService) {}
+  constructor(private prisma: PrismaService, private meiliService: MeiliService, @I18n() private i18n: I18nService) { }
 
   @Subscription(() => Post)
   postCreated() {
@@ -60,12 +61,12 @@ export class PostResolver {
   }
 
   @Query(() => PostConnection)
-  @UseGuards(GqlJwtAuthGuard)
+  @UseGuards(GqlJwtAuthGuardByPass)
   async allPosts(
     @PostAccountEntity() account: Account,
     @Args() { after, before, first, last, minBurnFilter }: PaginationArgs,
     @Args({ name: 'query', type: () => String, nullable: true })
-    query: string,
+    accountId: number,
     @Args({
       name: 'orderBy',
       type: () => PostOrder,
@@ -73,6 +74,11 @@ export class PostResolver {
     })
     orderBy: PostOrder
   ) {
+    if (accountId && !_.isNil(account) && accountId !== account.id) {
+      const invalidAccountMessage = await this.i18n.t('account.messages.invalidAccount');
+      throw new VError(invalidAccountMessage);
+    }
+
     const result = await findManyCursorConnection(
       args =>
         this.prisma.post.findMany({
@@ -86,7 +92,7 @@ export class PostResolver {
               },
               {
                 postAccount: {
-                  id: account.id
+                  id: accountId
                 }
               }
             ]
@@ -105,7 +111,7 @@ export class PostResolver {
               },
               {
                 postAccount: {
-                  id: account.id
+                  id: accountId
                 }
               }
             ]
@@ -117,12 +123,12 @@ export class PostResolver {
   }
 
   @Query(() => PostConnection)
-  @UseGuards(GqlJwtAuthGuard)
+  @UseGuards(GqlJwtAuthGuardByPass)
   async allOrphanPosts(
     @PostAccountEntity() account: Account,
     @Args() { after, before, first, last, minBurnFilter }: PaginationArgs,
     @Args({ name: 'query', type: () => String, nullable: true })
-    query: string,
+    accountId: number,
     @Args({
       name: 'orderBy',
       type: () => PostOrder,
@@ -130,17 +136,18 @@ export class PostResolver {
     })
     orderBy: PostOrder
   ) {
+    if (accountId && !_.isNil(account) && accountId !== account.id) {
+      const invalidAccountMessage = await this.i18n.t('account.messages.invalidAccount');
+      throw new VError(invalidAccountMessage);
+    }
+
     const result = await findManyCursorConnection(
       args =>
         this.prisma.post.findMany({
           include: { postAccount: true },
           where: {
             OR: [
-              {
-                postAccount: {
-                  id: account.id
-                }
-              },
+              { postAccountId: accountId },
               {
                 AND: [
                   {
@@ -165,11 +172,7 @@ export class PostResolver {
         this.prisma.post.count({
           where: {
             OR: [
-              {
-                postAccount: {
-                  id: account.id
-                }
-              },
+              { postAccountId: accountId },
               {
                 AND: [
                   {
@@ -290,7 +293,6 @@ export class PostResolver {
   }
 
   @Query(() => PostResponse, { name: 'allPostsBySearch' })
-  @UseGuards(GqlJwtAuthGuard)
   async allPostsBySearch(
     @Args() args: ConnectionArgs,
     @Args({ name: 'query', type: () => String, nullable: true })
@@ -505,10 +507,10 @@ export class PostResolver {
           connect:
             uploadDetailIds.length > 0
               ? uploadDetailIds.map((uploadDetail: any) => {
-                  return {
-                    id: uploadDetail
-                  };
-                })
+                return {
+                  id: uploadDetail
+                };
+              })
               : undefined
         },
         page: {
@@ -568,6 +570,7 @@ export class PostResolver {
     await this.meiliService.add(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`, indexedPost, createdPost.id);
 
     pubSub.publish('postCreated', { postCreated: createdPost });
+
     return createdPost;
   }
 

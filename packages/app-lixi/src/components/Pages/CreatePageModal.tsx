@@ -48,9 +48,6 @@ export const CreatePageModal: React.FC<CreatePageModalProps> = ({ accountId, dis
     { isLoading: isLoadingCreatePage, isSuccess: isSuccessCreatePage, isError: isErrorCreatePage, error: errorOnCreate }
   ] = useCreatePageMutation();
 
-  useEffect(() => {
-    dispatch(getCategories());
-  }, []);
   const categories = useAppSelector(getAllCategories);
 
   // New page name
