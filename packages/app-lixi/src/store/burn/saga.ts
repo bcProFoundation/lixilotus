@@ -66,7 +66,7 @@ function* createTxHexSaga(action: any) {
   }
 }
 
-function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
+function* burnForUpDownVoteSaga(action: PayloadAction<any>) {
   let patches, patch: PatchCollection;
   const command = action.payload;
 
@@ -150,7 +150,7 @@ function* burnForUpDownVoteFailureSaga(action: PayloadAction<string>) {
   yield put(hideLoading(burnForUpDownVote.type));
 }
 
-function* updatePostBurnValue(action: PayloadAction<BurnCommand>) {
+function* updatePostBurnValue(action: PayloadAction<any>) {
   const command = action.payload;
   // @todo: better control the params for search/others
   const params = {
@@ -166,7 +166,7 @@ function* updatePostBurnValue(action: PayloadAction<BurnCommand>) {
   // The algo will check for PostQueryTag then updateQueryData according to it. It only update normal post not page's post and token's post at homepage.
   // That's why we need to update the all Posts here first then updateQueryData later. Not the best way to handle. Maybe come back later.
   yield put(
-    postApi.util.updateQueryData('Posts', { ...params }, draft => {
+    postApi.util.updateQueryData('Posts', { ...params, minBurnFilter: command.minBurnFilter }, draft => {
       const postToUpdateIndex = draft.allPosts.edges.findIndex(item => item.node.id === command.burnForId);
       const postToUpdate = draft.allPosts.edges[postToUpdateIndex];
       if (postToUpdateIndex >= 0) {

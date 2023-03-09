@@ -28,7 +28,7 @@ import {
   Request,
   UseGuards
 } from '@nestjs/common';
-import { Args, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
+import { Args, Int, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
 import { MeiliService } from './meili.service';
 import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
 import { PrismaService } from '../prisma/prisma.service';
@@ -294,6 +294,7 @@ export class PostResolver {
   async allPostsBySearch(
     @Args() args: ConnectionArgs,
     @Args({ name: 'query', type: () => String, nullable: true })
+    @Args({ name: 'minBurnFilter', type: () => Int, nullable: true })
     query: string
   ): Promise<PostResponse> {
     const { limit, offset } = getPagingParameters(args);

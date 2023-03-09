@@ -231,6 +231,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     useInfinitePostsBySearchQuery(
       {
         first: 20,
+        minBurnFilter: filterValue,
         query: searchValue
       },
       false
@@ -474,7 +475,8 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         tipToAddresses: tipToAddresses,
         postQueryTag: tag,
         pageId: post.page?.id,
-        tokenId: post.token?.id
+        tokenId: post.token?.id,
+        minBurnFilter: filterValue
       };
 
       dispatch(addBurnQueue(burnCommand));
