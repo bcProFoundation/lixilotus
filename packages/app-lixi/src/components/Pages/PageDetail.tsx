@@ -371,7 +371,8 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByPageIdQuery(
     {
       first: 10,
-      minBurnFilter: filterValue,
+      minBurnFilter: filterValue ?? 1,
+      accountId: selectedAccountId ?? undefined,
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt
@@ -717,19 +718,19 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
                   <div className="about-content">
                     <SubAbout
                       dataItem={pageDetailData?.description}
-                      onClickIcon={() => {}}
+                      onClickIcon={() => { }}
                       icon={InfoCircleOutlined}
                       text={pageDetailData?.description}
                     />
                     <SubAbout
                       dataItem={pageDetailData?.address}
-                      onClickIcon={() => {}}
+                      onClickIcon={() => { }}
                       icon={CompassOutlined}
                       text={pageDetailData?.address}
                     />
                     <SubAbout
                       dataItem={pageDetailData?.website}
-                      onClickIcon={() => {}}
+                      onClickIcon={() => { }}
                       icon={HomeOutlined}
                       text={pageDetailData?.website}
                     />

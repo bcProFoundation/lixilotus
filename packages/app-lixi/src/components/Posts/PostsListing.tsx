@@ -188,7 +188,8 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   } = useInfiniteOrphanPostsQuery(
     {
       first: 20,
-      minBurnFilter: filterValue,
+      minBurnFilter: filterValue ?? 1,
+      accountId: selectedAccountId ?? null,
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt
@@ -201,6 +202,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     {
       first: 20,
       minBurnFilter: filterValue,
+      accountId: selectedAccountId ?? null,
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt

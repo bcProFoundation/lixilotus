@@ -8,9 +8,9 @@ const initialState: SettingsState = {
   locale: 'en',
   initIntlStatus: false,
   webAuthnConfig: null,
-  filterPostsHome: 0,
-  filterPostsPage: 0,
-  filterPostsToken: 0
+  filterPostsHome: 1,
+  filterPostsPage: 1,
+  filterPostsToken: 1
 };
 
 export const settingsReducer = createReducer(initialState, builder => {
