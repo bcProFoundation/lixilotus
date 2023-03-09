@@ -32,6 +32,10 @@ import { setTransactionReady } from '@store/account/actions';
 import { showToast } from '@store/toast/actions';
 import { TokenQuery } from '@store/token/tokens.generated';
 import { showBurnNotification } from '@components/Common/showBurnNotification';
+import { getFilterPostsToken } from '@store/settings/selectors';
+import { FilterType } from '@bcpros/lixi-models/lib/filter';
+import { FilterBurnt } from '@components/Common/FilterBurn';
+import { getSelectedAccountId } from '@store/account/selectors';
 
 export type TokenItem = TokenQuery['token'];
 
@@ -134,6 +138,11 @@ const BannerTicker = styled.div`
   }
 `;
 
+const SearchBar = styled.div`
+  display: flex;
+  gap: 1rem;
+`;
+
 type TokenProps = {
   token: any;
   isMobile: boolean;
@@ -148,12 +157,14 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
   const burnQueue = useAppSelector(getBurnQueue);
   const walletStatus = useAppSelector(getWalletStatus);
   const failQueue = useAppSelector(getFailQueue);
+  const filterValue = useAppSelector(getFilterPostsToken);
 
   let options = ['Withdraw', 'Rename', 'Export'];
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByTokenIdQuery(
     {
       first: 10,
+      minBurnFilter: filterValue,
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt
@@ -311,7 +322,10 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
       </BannerTicker>
 
       <CreatePostCard tokenPrimaryId={tokenDetailData.id} refetch={() => refetch()} />
-      <SearchBox />
+      <SearchBar>
+        <SearchBox />
+        <FilterBurnt filterForType={FilterType.PostsToken} />
+      </SearchBar>
 
       <div className="content">
         <Tabs defaultActiveKey="1">

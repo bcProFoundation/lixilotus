@@ -58,6 +58,7 @@ export type PostsQueryVariables = Types.Exact<{
   orderBy?: Types.InputMaybe<Types.PostOrder>;
   query?: Types.InputMaybe<Types.Scalars['String']>;
   skip?: Types.InputMaybe<Types.Scalars['Int']>;
+  minBurnFilter?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
 export type PostsQuery = {
@@ -113,6 +114,7 @@ export type OrphanPostsQueryVariables = Types.Exact<{
   orderBy?: Types.InputMaybe<Types.PostOrder>;
   query?: Types.InputMaybe<Types.Scalars['String']>;
   skip?: Types.InputMaybe<Types.Scalars['Int']>;
+  minBurnFilter?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
 export type OrphanPostsQuery = {
@@ -168,6 +170,7 @@ export type PostsByPageIdQueryVariables = Types.Exact<{
   orderBy?: Types.InputMaybe<Types.PostOrder>;
   id?: Types.InputMaybe<Types.Scalars['String']>;
   skip?: Types.InputMaybe<Types.Scalars['Int']>;
+  minBurnFilter?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
 export type PostsByPageIdQuery = {
@@ -223,6 +226,7 @@ export type PostsByUserIdQueryVariables = Types.Exact<{
   orderBy?: Types.InputMaybe<Types.PostOrder>;
   id?: Types.InputMaybe<Types.Scalars['String']>;
   skip?: Types.InputMaybe<Types.Scalars['Int']>;
+  minBurnFilter?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
 export type PostsByUserIdQuery = {
@@ -278,6 +282,7 @@ export type PostsByTokenIdQueryVariables = Types.Exact<{
   orderBy?: Types.InputMaybe<Types.PostOrder>;
   id?: Types.InputMaybe<Types.Scalars['String']>;
   skip?: Types.InputMaybe<Types.Scalars['Int']>;
+  minBurnFilter?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
 export type PostsByTokenIdQuery = {
@@ -331,6 +336,7 @@ export type PostsBySearchQueryVariables = Types.Exact<{
   first?: Types.InputMaybe<Types.Scalars['Int']>;
   last?: Types.InputMaybe<Types.Scalars['Int']>;
   query?: Types.InputMaybe<Types.Scalars['String']>;
+  minBurnFilter?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
 export type PostsBySearchQuery = {
@@ -581,7 +587,7 @@ export const PostDocument = `
 }
     ${PostFieldsFragmentDoc}`;
 export const PostsDocument = `
-    query Posts($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $query: String, $skip: Int) {
+    query Posts($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $query: String, $skip: Int, $minBurnFilter: Int) {
   allPosts(
     after: $after
     before: $before
@@ -590,6 +596,7 @@ export const PostsDocument = `
     orderBy: $orderBy
     query: $query
     skip: $skip
+    minBurnFilter: $minBurnFilter
   ) {
     totalCount
     edges {
@@ -606,7 +613,7 @@ export const PostsDocument = `
     ${PostFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
 export const OrphanPostsDocument = `
-    query OrphanPosts($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $query: String, $skip: Int) {
+    query OrphanPosts($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $query: String, $skip: Int, $minBurnFilter: Int) {
   allOrphanPosts(
     after: $after
     before: $before
@@ -615,6 +622,7 @@ export const OrphanPostsDocument = `
     orderBy: $orderBy
     query: $query
     skip: $skip
+    minBurnFilter: $minBurnFilter
   ) {
     totalCount
     edges {
@@ -631,7 +639,7 @@ export const OrphanPostsDocument = `
     ${PostFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
 export const PostsByPageIdDocument = `
-    query PostsByPageId($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $id: String, $skip: Int) {
+    query PostsByPageId($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $id: String, $skip: Int, $minBurnFilter: Int) {
   allPostsByPageId(
     after: $after
     before: $before
@@ -640,6 +648,7 @@ export const PostsByPageIdDocument = `
     orderBy: $orderBy
     id: $id
     skip: $skip
+    minBurnFilter: $minBurnFilter
   ) {
     totalCount
     edges {
@@ -656,7 +665,7 @@ export const PostsByPageIdDocument = `
     ${PostFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
 export const PostsByUserIdDocument = `
-    query PostsByUserId($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $id: String, $skip: Int) {
+    query PostsByUserId($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $id: String, $skip: Int, $minBurnFilter: Int) {
   allPostsByUserId(
     after: $after
     before: $before
@@ -665,6 +674,7 @@ export const PostsByUserIdDocument = `
     orderBy: $orderBy
     id: $id
     skip: $skip
+    minBurnFilter: $minBurnFilter
   ) {
     totalCount
     edges {
@@ -681,7 +691,7 @@ export const PostsByUserIdDocument = `
     ${PostFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
 export const PostsByTokenIdDocument = `
-    query PostsByTokenId($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $id: String, $skip: Int) {
+    query PostsByTokenId($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $id: String, $skip: Int, $minBurnFilter: Int) {
   allPostsByTokenId(
     after: $after
     before: $before
@@ -690,6 +700,7 @@ export const PostsByTokenIdDocument = `
     orderBy: $orderBy
     id: $id
     skip: $skip
+    minBurnFilter: $minBurnFilter
   ) {
     totalCount
     edges {
@@ -706,13 +717,14 @@ export const PostsByTokenIdDocument = `
     ${PostFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
 export const PostsBySearchDocument = `
-    query PostsBySearch($after: String, $before: String, $first: Int, $last: Int, $query: String) {
+    query PostsBySearch($after: String, $before: String, $first: Int, $last: Int, $query: String, $minBurnFilter: Int) {
   allPostsBySearch(
     after: $after
     before: $before
     first: $first
     last: $last
     query: $query
+    minBurnFilter: $minBurnFilter
   ) {
     edges {
       cursor

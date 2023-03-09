@@ -346,6 +346,7 @@ export type QueryAllOrphanPostsArgs = {
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<PostOrder>;
   query?: InputMaybe<Scalars['String']>;
   skip?: InputMaybe<Scalars['Int']>;
@@ -366,6 +367,7 @@ export type QueryAllPostsArgs = {
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<PostOrder>;
   query?: InputMaybe<Scalars['String']>;
   skip?: InputMaybe<Scalars['Int']>;
@@ -377,6 +379,7 @@ export type QueryAllPostsByPageIdArgs = {
   first?: InputMaybe<Scalars['Int']>;
   id?: InputMaybe<Scalars['String']>;
   last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<PostOrder>;
   skip?: InputMaybe<Scalars['Int']>;
 };
@@ -386,6 +389,7 @@ export type QueryAllPostsBySearchArgs = {
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
   query?: InputMaybe<Scalars['String']>;
 };
 
@@ -395,6 +399,7 @@ export type QueryAllPostsByTokenIdArgs = {
   first?: InputMaybe<Scalars['Int']>;
   id?: InputMaybe<Scalars['String']>;
   last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<PostOrder>;
   skip?: InputMaybe<Scalars['Int']>;
 };
@@ -405,6 +410,7 @@ export type QueryAllPostsByUserIdArgs = {
   first?: InputMaybe<Scalars['Int']>;
   id?: InputMaybe<Scalars['String']>;
   last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<PostOrder>;
   skip?: InputMaybe<Scalars['Int']>;
 };

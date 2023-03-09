@@ -1,6 +1,6 @@
 import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
 import CreatePostCard from '@components/Common/CreatePostCard';
-import { getSelectedAccount } from '@store/account/selectors';
+import { getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
 import { useInfinitePostsBySearchQuery } from '@store/post/useInfinitePostsBySearchQuery';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
 import { useInfiniteOrphanPostsQuery } from '@store/post/useInfiniteOrphanPostsQuery';
@@ -15,11 +15,11 @@ import {
   removeAllFailQueue
 } from '@store/burn';
 import { api as postApi, useLazyPostQuery } from '@store/post/posts.api';
-import { Menu, MenuProps, Modal, notification, Skeleton, Tabs, Collapse, Space } from 'antd';
+import { Menu, MenuProps, Modal, notification, Skeleton, Tabs, Collapse, Space, Select } from 'antd';
 import _ from 'lodash';
 import React, { useRef, useState, useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
-import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
+import { OrderDirection, Post, PostOrderField } from 'src/generated/types.generated';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled from 'styled-components';
 import SearchBox from '../Common/SearchBox';
@@ -38,6 +38,9 @@ import useDidMountEffect from '@hooks/useDidMountEffect ';
 import { showToast } from '@store/toast/actions';
 import { Spin } from 'antd';
 import { showBurnNotification } from '@components/Common/showBurnNotification';
+import { FilterBurnt } from '@components/Common/FilterBurn';
+import { FilterType } from '@bcpros/lixi-models/lib/filter';
+import { getFilterPostsHome } from '@store/settings/selectors';
 
 const { Panel } = Collapse;
 const antIcon = <LoadingOutlined style={{ fontSize: 20 }} spin />;
@@ -118,6 +121,10 @@ const StyledHeader = styled.div`
       }
     }
   }
+  .filter-bar {
+    display: flex;
+    justify-content: space-between;
+  }
 `;
 
 const StyledCollapse = styled(Collapse)`
@@ -149,7 +156,7 @@ const menuItems = [
 
 const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingProps) => {
   const dispatch = useAppDispatch();
-  const selectedAccount = useAppSelector(getSelectedAccount);
+  const selectedAccountId = useAppSelector(getSelectedAccountId);
   const [isShowQrCode, setIsShowQrCode] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -157,12 +164,14 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const refPostsListing = useRef<HTMLDivElement | null>(null);
   const [tab, setTab] = useState<any>('all');
   const [queryPostTrigger, queryPostResult] = useLazyPostQuery();
+  const selectedAccount = useAppSelector(getSelectedAccount);
   const latestBurnForPost = useAppSelector(getLatestBurnForPost);
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const burnQueue = useAppSelector(getBurnQueue);
   const walletStatus = useAppSelector(getWalletStatus);
   const failQueue = useAppSelector(getFailQueue);
+  const filterValue = useAppSelector(getFilterPostsHome);
 
   const onClickMenu: MenuProps['onClick'] = e => {
     setTab(e.key);
@@ -179,6 +188,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   } = useInfiniteOrphanPostsQuery(
     {
       first: 20,
+      minBurnFilter: filterValue,
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt
@@ -190,6 +200,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsQuery(
     {
       first: 20,
+      minBurnFilter: filterValue,
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt
@@ -197,6 +208,11 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     },
     false
   );
+
+  useEffect(() => {
+    refetch();
+    orphanRefetch();
+  }, [filterValue]);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -292,20 +308,24 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       <StyledHeader>
         <SearchBox searchPost={searchPost} value={searchValue} />
         <CreatePostCard />
-        <Menu
-          className="menu-post-listing"
-          style={{
-            border: 'none',
-            position: 'relative',
-            marginBottom: '1rem',
-            background: 'var(--bg-color-light-theme)'
-          }}
-          mode="horizontal"
-          defaultSelectedKeys={['top']}
-          selectedKeys={tab}
-          onClick={onClickMenu}
-          items={menuItems}
-        ></Menu>
+        <div className="filter-bar">
+          <Menu
+            className="menu-post-listing"
+            style={{
+              border: 'none',
+              position: 'relative',
+              marginBottom: '1rem',
+              background: 'var(--bg-color-light-theme)'
+            }}
+            mode="horizontal"
+            defaultSelectedKeys={['all']}
+            selectedKeys={tab}
+            onClick={onClickMenu}
+            items={menuItems}
+          ></Menu>
+
+          <FilterBurnt filterForType={FilterType.PostsHome} />
+        </div>
       </StyledHeader>
     );
   };
@@ -366,19 +386,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         );
       case 'all':
         return (
-          // Just in case for future usage
-          // <Virtuoso
-          //   id="list-virtuoso"
-          //   onScroll={e => triggerSrollbar(e)}
-          //   style={{ height: '100vh', paddingBottom: '2rem' }}
-          //   data={data}
-          //   endReached={loadMoreItems}
-          //   overscan={3000}
-          //   itemContent={(index, item) => {
-          //     return <PostListItem index={index} item={item} />;
-          //   }}
-          //   components={{ Header, Footer }}
-          // />
           <React.Fragment>
             <Header />
             <InfiniteScroll

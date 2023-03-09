@@ -367,7 +367,6 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       transition: 0.5s ease;
       img {
         max-width: 100%;
-        max-height: 45vh;
         object-fit: cover;
       }
     }
