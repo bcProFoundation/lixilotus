@@ -273,8 +273,7 @@ const FullWalletComponent: React.FC = () => {
                                       </p>
                                     )}
                                   </p>
-                                  <div className="message">
-                                  </div>
+                                  <p className="tx-memo">{memo}</p>
                                 </div>
                               }
                             />
