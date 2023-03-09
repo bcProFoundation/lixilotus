@@ -21,6 +21,7 @@ import {
   removeBurnQueue,
   addFailQueue,
   moveAllBurnToFailQueue,
+  returnTxHex,
   removeAllBurnQueue
 } from './actions';
 import burnApi from './api';
@@ -58,7 +59,7 @@ function* createTxHexSaga(action: any) {
       tipToAddresses
     );
 
-    yield put({ type: 'CREATE_TX_HEX', payload: txHex });
+    yield put({ type: returnTxHex.type, payload: txHex });
   } catch {
     yield put(moveAllBurnToFailQueue());
     yield put(removeAllBurnQueue());
@@ -72,7 +73,7 @@ function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
   const { burnForId: postId, queryParams } = command;
   let burnValue = _.toNumber(command.burnValue);
   yield put(createTxHex(command));
-  const { payload } = yield take('CREATE_TX_HEX');
+  const { payload } = yield take(returnTxHex.type);
   const latestTxHex = payload;
 
   try {
