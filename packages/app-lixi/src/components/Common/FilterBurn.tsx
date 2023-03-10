@@ -24,8 +24,12 @@ const FilterStyle = styled.div`
 
 const SelectStyle = styled(Select)`
   width: 74px;
-  filter: drop-shadow(0px 0px 4px rgba(148, 31, 147, 0.5));
   border-radius: 12px;
+  cursor: pointer;
+  :hover {
+    border: 2px #9e2a9c;
+    padding: 0;
+  }
 `;
 
 const { Option } = Select;
@@ -61,7 +65,7 @@ export const FilterBurnt = (props: FilterBurntProps) => {
   return (
     <FilterStyle>
       <p>{intl.get('general.minBurnt')} &nbsp;</p>
-      <SelectStyle defaultValue={filterValue ?? 0} onChange={handleChange}>
+      <SelectStyle defaultValue={filterValue ?? 1} onChange={handleChange}>
         {filterValueArr.map(item => (
           <Option value={item}>{item}</Option>
         ))}
