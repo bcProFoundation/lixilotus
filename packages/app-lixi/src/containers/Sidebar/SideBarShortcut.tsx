@@ -69,10 +69,17 @@ export const ContainerAccess = styled.div`
   justify-content: space-between;
   height: 100%;
   background: linear-gradient(0deg, rgba(158, 42, 156, 0.08), rgba(158, 42, 156, 0.08)), #fffbff;
+<<<<<<< Updated upstream
   border-right: 1px solid #f4e3f4;
   overflow: -moz-scrollbars-none;
   -ms-overflow-style: none;
   .item-access {
+=======
+  border-right: 0rem solid #f4e3f4;
+  .item-access {
+    padding: auto;
+    margin-top: 1.5vh;
+>>>>>>> Stashed changes
     cursor: pointer;
     gap: 0 !important;
     .anticon {
@@ -80,7 +87,11 @@ export const ContainerAccess = styled.div`
       color: #12130f;
     }
     .icon-item {
+<<<<<<< Updated upstream
       padding: 0.78px;
+=======
+      padding: auto;
+>>>>>>> Stashed changes
       &.active-item-access {
         max-width: 50px;
         margin: auto;
@@ -97,7 +108,7 @@ export const ContainerAccess = styled.div`
   }
   .wrapper {
     // position: absolute;
-    padding: 0;
+    //padding: 6px;
     // top: 0;
     width: 100%;
     display: flex;
@@ -119,7 +130,7 @@ const StyledLogo = styled.div`
 const ShortcutSideBar = styled(Sider)`
   position: sticky !important;
   background: transparent !important;
-  top: 0px;
+  top: 0;
   height: 100vh;
   flex: none !important;
   overflow: auto;
@@ -158,7 +169,10 @@ const UserControl = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
+<<<<<<< Updated upstream
   margin-bottom: 60px;
+=======
+>>>>>>> Stashed changes
 `;
 
 const SidebarShortcut = () => {
@@ -331,6 +345,27 @@ const SidebarShortcut = () => {
               </>
             )} */}
           </div>
+<<<<<<< Updated upstream
+=======
+          <UserControl>
+            <Badge
+              count={notifications.length}
+              overflowCount={9}
+              offset={[notifications.length < 10 ? 0 : 5, 8]}
+              color="var(--color-primary)"
+            >
+              <img
+                style={{ marginBottom: '0.5rem' }}
+                src="/images/ico-notifications.svg"
+                alt="ico-notifications"
+                onClick={() => router.push('/notifications')}
+              />
+            </Badge>
+            <div style={{ cursor: 'pointer' } && { marginBottom: '2vh' }} onClick={() => router.push(`/profile/${selectedAccount?.address}`)}>
+              <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
+            </div>
+          </UserControl>
+>>>>>>> Stashed changes
         </ContainerAccess>
       </ShortcutSideBar>
     </>
