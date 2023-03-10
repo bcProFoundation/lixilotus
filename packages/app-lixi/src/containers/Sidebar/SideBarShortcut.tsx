@@ -77,9 +77,7 @@ export const ContainerAccess = styled.div`
 =======
   border-right: 0rem solid #f4e3f4;
   .item-access {
-    padding: auto;
-    margin-top: 1.5vh;
->>>>>>> Stashed changes
+    margin-bottom: 2rem;
     cursor: pointer;
     gap: 0 !important;
     .anticon {
@@ -87,11 +85,7 @@ export const ContainerAccess = styled.div`
       color: #12130f;
     }
     .icon-item {
-<<<<<<< Updated upstream
-      padding: 0.78px;
-=======
-      padding: auto;
->>>>>>> Stashed changes
+      padding: 6px;
       &.active-item-access {
         max-width: 50px;
         margin: auto;
@@ -108,7 +102,7 @@ export const ContainerAccess = styled.div`
   }
   .wrapper {
     // position: absolute;
-    //padding: 6px;
+    padding: 0;
     // top: 0;
     width: 100%;
     display: flex;
@@ -169,10 +163,7 @@ const UserControl = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-<<<<<<< Updated upstream
-  margin-bottom: 60px;
-=======
->>>>>>> Stashed changes
+  margin-bottom: 2rem;
 `;
 
 const SidebarShortcut = () => {
@@ -355,7 +346,7 @@ const SidebarShortcut = () => {
               color="var(--color-primary)"
             >
               <img
-                style={{ marginBottom: '0.5rem' }}
+                style={{ marginBottom: '2rem' }}
                 src="/images/ico-notifications.svg"
                 alt="ico-notifications"
                 onClick={() => router.push('/notifications')}
