@@ -11,7 +11,7 @@ import {
   UpOutlined
 } from '@ant-design/icons';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
-import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
+import { BurnCommand, BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { AvatarUser } from '@components/Common/AvatarUser';
 import { Counter } from '@components/Common/Counter';
 import InfoCardUser from '@components/Common/InfoCardUser';
@@ -21,13 +21,7 @@ import { WalletContext } from '@context/walletProvider';
 import useXPI from '@hooks/useXPI';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
 import { getSelectedAccount } from '@store/account/selectors';
-import {
-  addBurnQueue,
-  addBurnTransaction,
-  burnForUpDownVote,
-  createTxHex,
-  removeAllFailQueue
-} from '@store/burn/actions';
+import { addBurnQueue, addBurnTransaction, burnForUpDownVote, createTxHex, clearFailQueue } from '@store/burn/actions';
 import { api as commentsApi, useCreateCommentMutation } from '@store/comment/comments.api';
 import { useInfiniteCommentsToPostIdQuery } from '@store/comment/useInfiniteCommentsToPostIdQuery';
 import { PostsQuery } from '@store/post/posts.generated';
@@ -211,7 +205,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       ) {
         throw new Error(intl.get('account.insufficientFunds'));
       }
-      if (failQueue.length > 0) dispatch(removeAllFailQueue());
+      if (failQueue.length > 0) dispatch(clearFailQueue());
       const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
       const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
       const { hash160, xAddress } = currentWalletPath;
@@ -257,7 +251,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
 
       tipToAddresses = tipToAddresses.filter(item => item.address != selectedAccount.address);
 
-      const burnCommand: any = {
+      const burnCommand: BurnQueueCommand = {
         defaultFee: currency.defaultFee,
         burnType,
         burnForType: burnForType,
@@ -543,14 +537,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     []
   );
 
-  // useDidMountEffect(() => {
-  //   console.log('txid has changed');
-  //   dispatch(setTransactionReady());
-  // }, [slpBalancesAndUtxos.nonSlpUtxos]);
-
   useDidMountEffect(() => {
-    console.log(burnQueue);
-    console.log(failQueue);
     if (burnQueue.length > 0) {
       showBurnNotification('info', burnQueue);
     } else {

@@ -12,7 +12,7 @@ import React, { useState } from 'react';
 import { Burn, Comment, Post, Token } from '@bcpros/lixi-models';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import styled from 'styled-components';
-import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
+import { BurnCommand, BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { currency } from '@components/Common/Ticker';
 import {
   addBurnQueue,
@@ -20,7 +20,7 @@ import {
   burnForUpDownVote,
   getBurnQueue,
   getFailQueue,
-  removeAllFailQueue
+  clearFailQueue
 } from '@store/burn';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
@@ -103,15 +103,13 @@ const RadioStyle = styled(Radio.Group)`
 
 const DefaultXpiBurnValues = [1, 8, 50, 100, 200, 500, 1000];
 
-type BurnModalProps = PostItem | CommentItem | TokenItem;
-interface modalTypes {
-  data: BurnModalProps;
+type BurnForItem = PostItem | CommentItem | TokenItem;
+interface BurnModalProps {
+  data: BurnForItem;
   burnForType: BurnForType;
 }
 
-export const BurnModal = ({ data, burnForType }: modalTypes) => {
-  // const { data, burnForType } = props;
-  console.log(data, burnForType);
+export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
   const {
     formState: { errors },
     control
@@ -128,7 +126,7 @@ export const BurnModal = ({ data, burnForType }: modalTypes) => {
   const failQueue = useAppSelector(getFailQueue);
   const walletStatus = useAppSelector(getWalletStatus);
 
-  const handleBurn = async (isUpVote: boolean, data: any) => {
+  const handleBurn = async (isUpVote: boolean, data: BurnForItem) => {
     try {
       let queryParams;
       let tipToAddresses: { address: string; amount: string }[];
@@ -144,7 +142,7 @@ export const BurnModal = ({ data, burnForType }: modalTypes) => {
       ) {
         throw new Error(intl.get('account.insufficientFunds'));
       }
-      if (failQueue.length > 0) dispatch(removeAllFailQueue());
+      if (failQueue.length > 0) dispatch(clearFailQueue());
       const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
       const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
       const { fundingWif, hash160 } = currentWalletPath;
@@ -201,7 +199,7 @@ export const BurnModal = ({ data, burnForType }: modalTypes) => {
           break;
       }
 
-      const burnCommand: any = {
+      const burnCommand: BurnQueueCommand = {
         defaultFee: currency.defaultFee,
         burnType,
         burnForType: burnForType,

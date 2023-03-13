@@ -12,7 +12,7 @@ import {
   getBurnQueue,
   getFailQueue,
   getLatestBurnForPost,
-  removeAllFailQueue
+  clearFailQueue
 } from '@store/burn';
 import { api as postApi, useLazyPostQuery } from '@store/post/posts.api';
 import { Menu, MenuProps, Modal, notification, Skeleton, Tabs, Collapse, Space, Select } from 'antd';
@@ -30,7 +30,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { setTransactionReady } from '@store/account/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
-import { BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
+import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { currency } from '@components/Common/Ticker';
 import { fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods';
 import BigNumber from 'bignumber.js';
@@ -413,7 +413,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   };
 
   useDidMountEffect(() => {
-    console.log(burnQueue);
     if (burnQueue.length > 0) {
       showBurnNotification('info', burnQueue);
     } else {
@@ -434,7 +433,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       ) {
         throw new Error(intl.get('account.insufficientFunds'));
       }
-      if (failQueue.length > 0) dispatch(removeAllFailQueue());
+      if (failQueue.length > 0) dispatch(clearFailQueue());
       const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
       const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
       const { hash160, xAddress } = currentWalletPath;
@@ -467,7 +466,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         tag = PostsQueryTag.PostsByTokenId;
       }
 
-      const burnCommand: any = {
+      const burnCommand: BurnQueueCommand = {
         defaultFee: currency.defaultFee,
         burnType,
         burnForType: BurnForType.Post,

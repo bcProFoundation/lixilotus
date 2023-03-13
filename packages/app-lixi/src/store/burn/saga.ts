@@ -22,7 +22,7 @@ import {
   addFailQueue,
   moveAllBurnToFailQueue,
   returnTxHex,
-  removeAllBurnQueue
+  clearBurnQueue
 } from './actions';
 import burnApi from './api';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
@@ -62,7 +62,7 @@ function* createTxHexSaga(action: any) {
     yield put({ type: returnTxHex.type, payload: txHex });
   } catch {
     yield put(moveAllBurnToFailQueue());
-    yield put(removeAllBurnQueue());
+    yield put(clearBurnQueue());
   }
 }
 
@@ -369,8 +369,6 @@ function* watchRequests() {
     // Take an action from the channel
     const transactionStatus = yield select(getTransactionStatus);
     const failQueue = yield select(getFailQueue);
-    console.log('transactionStatus', transactionStatus);
-    console.log('failQueue', failQueue);
 
     if (failQueue.length > 0) {
       yield flush(requestChan);

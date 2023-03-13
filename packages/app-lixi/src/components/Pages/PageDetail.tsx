@@ -22,12 +22,12 @@ import { Virtuoso } from 'react-virtuoso';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import styled from 'styled-components';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
+import { BurnForType, BurnType, BurnQueueCommand } from '@bcpros/lixi-models/lib/burn';
 import useDidMountEffect from '@hooks/useDidMountEffect ';
 import { fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { currency } from '@components/Common/Ticker';
-import { addBurnQueue, addBurnTransaction, getBurnQueue, getFailQueue, removeAllFailQueue } from '@store/burn';
+import { addBurnQueue, addBurnTransaction, getBurnQueue, getFailQueue, clearFailQueue } from '@store/burn';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
 import BigNumber from 'bignumber.js';
 import { showToast } from '@store/toast/actions';
@@ -435,7 +435,6 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
   };
 
   useDidMountEffect(() => {
-    console.log('txid has changed');
     dispatch(setTransactionReady());
   }, [slpBalancesAndUtxos.nonSlpUtxos]);
 
@@ -460,7 +459,7 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
       ) {
         throw new Error(intl.get('account.insufficientFunds'));
       }
-      if (failQueue.length > 0) dispatch(removeAllFailQueue());
+      if (failQueue.length > 0) dispatch(clearFailQueue());
       const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
       const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
       const { hash160, xAddress } = currentWalletPath;
@@ -483,7 +482,7 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
 
       tipToAddresses = tipToAddresses.filter(item => item.address != selectedAccount.address);
 
-      const burnCommand: any = {
+      const burnCommand: BurnQueueCommand = {
         defaultFee: currency.defaultFee,
         burnType,
         burnForType: BurnForType.Post,
@@ -718,19 +717,19 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
                   <div className="about-content">
                     <SubAbout
                       dataItem={pageDetailData?.description}
-                      onClickIcon={() => { }}
+                      onClickIcon={() => {}}
                       icon={InfoCircleOutlined}
                       text={pageDetailData?.description}
                     />
                     <SubAbout
                       dataItem={pageDetailData?.address}
-                      onClickIcon={() => { }}
+                      onClickIcon={() => {}}
                       icon={CompassOutlined}
                       text={pageDetailData?.address}
                     />
                     <SubAbout
                       dataItem={pageDetailData?.website}
-                      onClickIcon={() => { }}
+                      onClickIcon={() => {}}
                       icon={HomeOutlined}
                       text={pageDetailData?.website}
                     />

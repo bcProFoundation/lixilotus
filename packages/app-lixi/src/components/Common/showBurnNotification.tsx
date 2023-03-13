@@ -22,7 +22,6 @@ const StyledNotificationContent = styled.div`
 `;
 
 export const showBurnNotification = (toastType: any, burnQueue?, failQueue?) => {
-  console.log('notification Burn Queue: ', burnQueue);
   const getType = burnForType => {
     switch (burnForType) {
       case BurnForType.Post:

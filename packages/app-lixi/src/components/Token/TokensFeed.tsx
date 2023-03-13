@@ -23,10 +23,10 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { IconBurn } from '@components/Posts/PostDetail';
 import BigNumber from 'bignumber.js';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
-import { BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
+import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { getSelectedAccount } from '@store/account/selectors';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
-import { addBurnQueue, addBurnTransaction, getBurnQueue, getFailQueue, removeAllFailQueue } from '@store/burn';
+import { addBurnQueue, addBurnTransaction, getBurnQueue, getFailQueue, clearFailQueue } from '@store/burn';
 import useDidMountEffect from '@hooks/useDidMountEffect ';
 import { setTransactionReady } from '@store/account/actions';
 import { showToast } from '@store/toast/actions';
@@ -208,7 +208,6 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
   };
 
   useDidMountEffect(() => {
-    console.log('txid has changed');
     dispatch(setTransactionReady());
   }, [slpBalancesAndUtxos.nonSlpUtxos]);
 
@@ -233,7 +232,7 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
       ) {
         throw new Error(intl.get('account.insufficientFunds'));
       }
-      if (failQueue.length > 0) dispatch(removeAllFailQueue());
+      if (failQueue.length > 0) dispatch(clearFailQueue());
       const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
       const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
       const { hash160, xAddress } = currentWalletPath;
@@ -256,7 +255,7 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
 
       tipToAddresses = tipToAddresses.filter(item => item.address != selectedAccount.address);
 
-      const burnCommand: any = {
+      const burnCommand: BurnQueueCommand = {
         defaultFee: currency.defaultFee,
         burnType,
         burnForType: BurnForType.Post,

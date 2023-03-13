@@ -5,8 +5,8 @@ import {
   addFailQueue,
   burnForUpDownVoteSuccess,
   moveAllBurnToFailQueue,
-  removeAllBurnQueue,
-  removeAllFailQueue,
+  clearBurnQueue,
+  clearFailQueue,
   removeBurnQueue,
   removeFailQueue
 } from './actions';
@@ -41,7 +41,7 @@ export const burnReducer = createReducer(initialState, builder => {
     .addCase(removeBurnQueue, (state, action) => {
       state.burnQueue.shift();
     })
-    .addCase(removeAllBurnQueue, (state, action) => {
+    .addCase(clearBurnQueue, (state, action) => {
       state.burnQueue.length = 0;
     })
     .addCase(addFailQueue, (state, action) => {
@@ -50,7 +50,7 @@ export const burnReducer = createReducer(initialState, builder => {
     .addCase(removeFailQueue, (state, action) => {
       state.failQueue.shift();
     })
-    .addCase(removeAllFailQueue, (state, action) => {
+    .addCase(clearFailQueue, (state, action) => {
       state.failQueue.length = 0;
     })
     .addCase(moveAllBurnToFailQueue, (state, action) => {

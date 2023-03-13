@@ -9,7 +9,7 @@ import Icon, {
   SyncOutlined
 } from '@ant-design/icons';
 import { Token } from '@bcpros/lixi-models';
-import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
+import { BurnCommand, BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { currency } from '@components/Common/Ticker';
 import { NavBarHeader, PathDirection } from '@components/Layout/MainLayout';
 import { WalletContext } from '@context/walletProvider';
@@ -21,7 +21,7 @@ import {
   getBurnQueue,
   getFailQueue,
   getLatestBurnForToken,
-  removeAllFailQueue
+  clearFailQueue
 } from '@store/burn';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { showToast } from '@store/toast/actions';
@@ -368,14 +368,14 @@ const TokensListing = () => {
       ) {
         throw new Error(intl.get('account.insufficientFunds'));
       }
-      if (failQueue.length > 0) dispatch(removeAllFailQueue());
+      if (failQueue.length > 0) dispatch(clearFailQueue());
       const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
       const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
       const { fundingWif, hash160 } = currentWalletPath;
       const burnType = isUpVote ? BurnType.Up : BurnType.Down;
       const burnedBy = hash160;
 
-      const burnCommand: any = {
+      const burnCommand: BurnQueueCommand = {
         defaultFee: currency.defaultFee,
         burnType,
         burnForType: BurnForType.Token,
@@ -447,7 +447,6 @@ const TokensListing = () => {
   };
 
   useDidMountEffect(() => {
-    console.log('txid has changed');
     dispatch(setTransactionReady());
   }, [slpBalancesAndUtxos.nonSlpUtxos]);
 

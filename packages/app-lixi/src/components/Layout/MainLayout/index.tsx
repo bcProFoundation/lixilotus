@@ -192,7 +192,6 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
 
   useEffect(() => {
-    console.log('txid has changed');
     dispatch(setTransactionReady());
   }, [slpBalancesAndUtxos.nonSlpUtxos]);
 
