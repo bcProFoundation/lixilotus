@@ -349,7 +349,7 @@ export const parseChronikTx = async (
     }
 
     // Check OP_RETURN burn
-    if (thisOutputReceivedAtHash160.startsWith('6a')) {
+    if (!isLotusMessage && thisOutputReceivedAtHash160.startsWith('6a')) {
       isBurn = true;
       xpiBurnAmount = new BigNumber(thisOutput.value);
       parseBurnResult = parseBurnOutput(thisOutputReceivedAtHash160);
