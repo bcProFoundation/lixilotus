@@ -74,12 +74,31 @@ export const ContainerAccess = styled.div`
     margin-bottom: 2rem;
     cursor: pointer;
     gap: 0 !important;
+    @media (max-height: 768px) {
+      margin-bottom: 1rem;
+    }
+    @media (max-height: 610px) {
+      margin-bottom: 0.5rem;
+    }
+    @media (max-height: 530px) {
+      margin-bottom: 0.2rem;
+    }
     .anticon {
       font-size: 25px;
       color: #12130f;
     }
     .icon-item {
       padding: 6px;
+      @media (max-height: 610px) {
+        padding: 10px;
+        img {
+          width: 20px;
+          height: 20px;
+        }
+      }
+      @media (max-height: 530px) {
+        padding: 8px;
+      }
       &.active-item-access {
         max-width: 50px;
         margin: auto;
@@ -92,12 +111,16 @@ export const ContainerAccess = styled.div`
       font-weight: 400;
       letter-spacing: 0.5px;
       color: #4e444b;
+      @media (max-height: 610px) {
+        font-size: 12px;
+      }
+      @media (max-height: 530px) {
+        font-size: 10px;
+      }
     }
   }
   .wrapper {
-    // position: absolute;
     padding: 0;
-    // top: 0;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -113,6 +136,9 @@ const StyledLogo = styled.div`
   margin: 2rem 0;
   cursor: pointer;
   background: linear-gradient(0deg, rgba(158, 42, 156, 0.08), rgba(158, 42, 156, 0.08)), #fffbff;
+  @media (max-height: 768px) {
+    margin: 0.8rem 0;
+  }
 `;
 
 const ShortcutSideBar = styled(Sider)`
@@ -158,6 +184,19 @@ const UserControl = styled.div`
   align-items: center;
   width: 100%;
   margin-bottom: 2rem;
+  .img-bell {
+    margin-bottom: 1rem;
+  }
+  @media (max-height: 610px) {
+    margin-bottom: 8px;
+    img {
+      width: 20px;
+      height: 20px;
+    }
+    .img-bell {
+      margin-bottom: 8px;
+    }
+  }
 `;
 
 const SidebarShortcut = () => {
@@ -321,7 +360,7 @@ const SidebarShortcut = () => {
               color="var(--color-primary)"
             >
               <img
-                style={{ marginBottom: '2rem' }}
+                className='img-bell'
                 src="/images/ico-notifications.svg"
                 alt="ico-notifications"
                 onClick={() => router.push('/notifications')}
