@@ -46,7 +46,7 @@ export type PostQuery = {
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
     pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
     page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-    token?: { __typename?: 'Token'; id: string; name: string } | null;
+    token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
   };
 };
 
@@ -93,7 +93,7 @@ export type PostsQuery = {
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
         page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-        token?: { __typename?: 'Token'; id: string; name: string } | null;
+        token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
       };
     }> | null;
     pageInfo: {
@@ -149,7 +149,7 @@ export type OrphanPostsQuery = {
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
         page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-        token?: { __typename?: 'Token'; id: string; name: string } | null;
+        token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
       };
     }> | null;
     pageInfo: {
@@ -205,7 +205,7 @@ export type PostsByPageIdQuery = {
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
         page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-        token?: { __typename?: 'Token'; id: string; name: string } | null;
+        token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
       };
     }> | null;
     pageInfo: {
@@ -261,7 +261,7 @@ export type PostsByUserIdQuery = {
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
         page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-        token?: { __typename?: 'Token'; id: string; name: string } | null;
+        token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
       };
     }> | null;
     pageInfo: {
@@ -317,7 +317,7 @@ export type PostsByTokenIdQuery = {
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
         page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-        token?: { __typename?: 'Token'; id: string; name: string } | null;
+        token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
       };
     }> | null;
     pageInfo: {
@@ -406,7 +406,7 @@ export type PostFieldsFragment = {
   postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
   pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
   page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-  token?: { __typename?: 'Token'; id: string; name: string } | null;
+  token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
 };
 
 export type PostMeiliFieldsFragment = {
@@ -465,7 +465,7 @@ export type CreatePostMutation = {
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
     pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
     page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-    token?: { __typename?: 'Token'; id: string; name: string } | null;
+    token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
   };
 };
 
@@ -499,7 +499,7 @@ export type UpdatePostMutation = {
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
     pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
     page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-    token?: { __typename?: 'Token'; id: string; name: string } | null;
+    token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
   };
 };
 
@@ -535,6 +535,7 @@ export const PostFieldsFragmentDoc = `
   token {
     id
     name
+    tokenId
   }
   lotusBurnUp
   lotusBurnDown
