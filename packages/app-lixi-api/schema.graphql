@@ -283,6 +283,7 @@ type Query {
 
     """Paginate last"""
     last: Int
+    minBurnFilter: Int
     query: String
   ): PostResponse!
   allPostsByTokenId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!

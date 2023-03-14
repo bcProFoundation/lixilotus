@@ -18,7 +18,16 @@ query Posts(
   $skip: Int
   $minBurnFilter: Int
 ) {
-  allPosts(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, query: $query, skip: $skip, minBurnFilter: $minBurnFilter) {
+  allPosts(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    query: $query
+    skip: $skip
+    minBurnFilter: $minBurnFilter
+  ) {
     totalCount
     edges {
       cursor
@@ -165,7 +174,14 @@ query PostsByTokenId(
 }
 
 query PostsBySearch($after: String, $before: String, $first: Int, $last: Int, $query: String, $minBurnFilter: Int) {
-  allPostsBySearch(after: $after, before: $before, first: $first, last: $last, query: $query, minBurnFilter: $minBurnFilter) {
+  allPostsBySearch(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    query: $query
+    minBurnFilter: $minBurnFilter
+  ) {
     edges {
       cursor
       node {
@@ -209,6 +225,7 @@ fragment PostFields on Post {
   token {
     id
     name
+    tokenId
   }
   lotusBurnUp
   lotusBurnDown
