@@ -74,14 +74,13 @@ export const ContainerAccess = styled.div`
     margin-bottom: 2rem;
     cursor: pointer;
     gap: 0 !important;
-    @media (max-height: 768px) {
-      margin-bottom: 1rem;
-      wrapper
-      .icon-item {
-        img {
-          width: 25px;
-          height: 25px;
-        }
+      @media (max-height: 768px) 
+      {
+        margin-bottom: 1.5rem;
+      }
+      @media (max-height: 610px)
+      {
+        margin-bottom: 0.2rem;
       }
     }
     .anticon {
@@ -90,6 +89,14 @@ export const ContainerAccess = styled.div`
     }
     .icon-item {
       padding: 6px;
+      @media (max-height: 530px)
+      {
+        margin: 0;
+        img {
+          width: 20px;
+          height: 20px;
+        }
+      }
       &.active-item-access {
         max-width: 50px;
         margin: auto;
@@ -102,12 +109,14 @@ export const ContainerAccess = styled.div`
       font-weight: 400;
       letter-spacing: 0.5px;
       color: #4e444b;
+      @media (max-height: 530px)
+      {
+        font-size: 10px;
+      }
     }
   }
   .wrapper {
-    // position: absolute;
     padding: 0;
-    // top: 0;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -167,7 +176,16 @@ const UserControl = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
+  @media (max-height: 530px)
+  {
+    margin: 0;
+    margin-bottom: 0.125rem;
+    img {
+      width: 20px;
+      height: 20px;
+    }
+  }
 `;
 
 const SidebarShortcut = () => {
@@ -331,7 +349,7 @@ const SidebarShortcut = () => {
               color="var(--color-primary)"
             >
               <img
-                style={{ marginBottom: '2rem' }}
+                style={{ marginBottom: '1rem' }}
                 src="/images/ico-notifications.svg"
                 alt="ico-notifications"
                 onClick={() => router.push('/notifications')}
