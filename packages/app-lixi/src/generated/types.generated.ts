@@ -554,6 +554,9 @@ export type Upload = {
   height?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   sha: Scalars['String'];
+  sha40?: Maybe<Scalars['String']>;
+  sha320?: Maybe<Scalars['String']>;
+  sha800?: Maybe<Scalars['String']>;
   width?: Maybe<Scalars['String']>;
 };
 
