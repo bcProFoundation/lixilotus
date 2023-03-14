@@ -205,6 +205,9 @@ fragment PostFields on Post {
       bucket
       width
       height
+      sha800
+      sha320
+      sha40
     }
   }
   postAccount {
@@ -245,6 +248,9 @@ fragment PostMeiliFields on Post {
       bucket
       width
       height
+      sha800
+      sha320
+      sha40
     }
   }
   postAccount {

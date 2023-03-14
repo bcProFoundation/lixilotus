@@ -41,6 +41,9 @@ export type PostQuery = {
         bucket?: string | null;
         width?: string | null;
         height?: string | null;
+        sha800?: string | null;
+        sha320?: string | null;
+        sha40?: string | null;
       };
     }> | null;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -88,6 +91,9 @@ export type PostsQuery = {
             bucket?: string | null;
             width?: string | null;
             height?: string | null;
+            sha800?: string | null;
+            sha320?: string | null;
+            sha40?: string | null;
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -144,6 +150,9 @@ export type OrphanPostsQuery = {
             bucket?: string | null;
             width?: string | null;
             height?: string | null;
+            sha800?: string | null;
+            sha320?: string | null;
+            sha40?: string | null;
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -200,6 +209,9 @@ export type PostsByPageIdQuery = {
             bucket?: string | null;
             width?: string | null;
             height?: string | null;
+            sha800?: string | null;
+            sha320?: string | null;
+            sha40?: string | null;
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -256,6 +268,9 @@ export type PostsByUserIdQuery = {
             bucket?: string | null;
             width?: string | null;
             height?: string | null;
+            sha800?: string | null;
+            sha320?: string | null;
+            sha40?: string | null;
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -312,6 +327,9 @@ export type PostsByTokenIdQuery = {
             bucket?: string | null;
             width?: string | null;
             height?: string | null;
+            sha800?: string | null;
+            sha320?: string | null;
+            sha40?: string | null;
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -365,6 +383,9 @@ export type PostsBySearchQuery = {
             bucket?: string | null;
             width?: string | null;
             height?: string | null;
+            sha800?: string | null;
+            sha320?: string | null;
+            sha40?: string | null;
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -401,6 +422,9 @@ export type PostFieldsFragment = {
       bucket?: string | null;
       width?: string | null;
       height?: string | null;
+      sha800?: string | null;
+      sha320?: string | null;
+      sha40?: string | null;
     };
   }> | null;
   postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -428,6 +452,9 @@ export type PostMeiliFieldsFragment = {
       bucket?: string | null;
       width?: string | null;
       height?: string | null;
+      sha800?: string | null;
+      sha320?: string | null;
+      sha40?: string | null;
     };
   }> | null;
   postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -460,6 +487,9 @@ export type CreatePostMutation = {
         bucket?: string | null;
         width?: string | null;
         height?: string | null;
+        sha800?: string | null;
+        sha320?: string | null;
+        sha40?: string | null;
       };
     }> | null;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -494,6 +524,9 @@ export type UpdatePostMutation = {
         bucket?: string | null;
         width?: string | null;
         height?: string | null;
+        sha800?: string | null;
+        sha320?: string | null;
+        sha40?: string | null;
       };
     }> | null;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -515,6 +548,9 @@ export const PostFieldsFragmentDoc = `
       bucket
       width
       height
+      sha800
+      sha320
+      sha40
     }
   }
   postAccount {
@@ -556,6 +592,9 @@ export const PostMeiliFieldsFragmentDoc = `
       bucket
       width
       height
+      sha800
+      sha320
+      sha40
     }
   }
   postAccount {
