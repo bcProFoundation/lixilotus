@@ -548,10 +548,6 @@ export class PostResolver {
       }
     });
 
-    _.update(createdPost, 'content', () => {
-      return pureContent;
-    });
-
     const indexedPost = {
       id: createdPost.id,
       content: pureContent,
