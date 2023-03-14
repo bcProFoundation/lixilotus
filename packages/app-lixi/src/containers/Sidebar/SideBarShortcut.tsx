@@ -74,6 +74,19 @@ export const ContainerAccess = styled.div`
     margin-bottom: 2rem;
     cursor: pointer;
     gap: 0 !important;
+    @media (max-height: 768px) {
+      margin-bottom: 1rem;
+      wrapper
+      .icon-item {
+        img {
+          width: 25px;
+          height: 25px;
+        }
+      }
+      // .text-item {
+      //   font-size: 9px !important;
+      // }
+    }
     .anticon {
       font-size: 25px;
       color: #12130f;
