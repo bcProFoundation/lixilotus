@@ -83,9 +83,6 @@ export const ContainerAccess = styled.div`
           height: 25px;
         }
       }
-      // .text-item {
-      //   font-size: 9px !important;
-      // }
     }
     .anticon {
       font-size: 25px;
