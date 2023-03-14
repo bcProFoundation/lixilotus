@@ -29,8 +29,6 @@ import { EditPostModalProps } from './EditPostModalPopup';
 import Gallery from 'react-photo-gallery';
 import useWindowDimensions from '@hooks/useWindowDimensions';
 import { IconBurn } from './PostDetail';
-import useDidMountEffect from '@hooks/useDidMountEffect ';
-import { getBurnQueue } from '@store/burn';
 
 // export const IconBurn = ({
 //   icon,

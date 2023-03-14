@@ -55,6 +55,7 @@ import { IconBurn } from '@components/Posts/PostDetail';
 import useDidMountEffect from '@hooks/useDidMountEffect ';
 import { setTransactionReady } from '@store/account/actions';
 import { showBurnNotification } from '@components/Common/showBurnNotification';
+import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
 
 const StyledTokensListing = styled.div`
   .table-tokens {
@@ -450,18 +451,7 @@ const TokensListing = () => {
     dispatch(setTransactionReady());
   }, [slpBalancesAndUtxos.nonSlpUtxos]);
 
-  useDidMountEffect(() => {
-    if (burnQueue.length > 0) {
-      showBurnNotification('info', burnQueue);
-    } else {
-      showBurnNotification('success');
-      dispatch(fetchAllTokens());
-    }
-
-    if (failQueue.length > 0) {
-      showBurnNotification('error');
-    }
-  }, [burnQueue, failQueue]);
+  useDidMountEffectNotification(dispatch(fetchAllTokens()));
 
   return (
     <>

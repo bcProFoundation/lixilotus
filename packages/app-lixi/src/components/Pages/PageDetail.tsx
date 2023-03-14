@@ -36,6 +36,7 @@ import { showBurnNotification } from '@components/Common/showBurnNotification';
 import { getFilterPostsPage } from '@store/settings/selectors';
 import { FilterBurnt } from '@components/Common/FilterBurn';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
+import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
 
 type PageDetailProps = {
   page: any;
@@ -438,17 +439,7 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
     dispatch(setTransactionReady());
   }, [slpBalancesAndUtxos.nonSlpUtxos]);
 
-  useDidMountEffect(() => {
-    if (burnQueue.length > 0) {
-      showBurnNotification('info', burnQueue);
-    } else {
-      showBurnNotification('success');
-    }
-
-    if (failQueue.length > 0) {
-      showBurnNotification('error');
-    }
-  }, [burnQueue, failQueue]);
+  useDidMountEffectNotification();
 
   const handleBurnForPost = async (isUpVote: boolean, post: any) => {
     try {
@@ -469,14 +460,14 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
       let tipToAddresses: { address: string; amount: string }[] = [
         {
           address: post.page ? post.pageAccount.address : post.postAccount.address,
-          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
         }
       ];
 
       if (burnType === BurnType.Up && selectedAccount.address !== post.postAccount.address) {
         tipToAddresses.push({
           address: post.postAccount.address,
-          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
         });
       }
 

@@ -156,13 +156,13 @@ export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
           tipToAddresses = [
             {
               address: post.page ? post.pageAccount.address : post.postAccount.address,
-              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
+              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
             }
           ];
           if (burnType === BurnType.Up && selectedAccount.address !== post.postAccount.address) {
             tipToAddresses.push({
               address: post.postAccount.address,
-              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
+              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
             });
           }
 
@@ -182,7 +182,7 @@ export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
           if (burnType === BurnType.Up && selectedAccount.address != comment?.commentAccount?.address) {
             tipToAddresses.push({
               address: comment?.commentAccount?.address,
-              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
+              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
             });
           }
           queryParams = {

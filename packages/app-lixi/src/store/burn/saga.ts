@@ -109,6 +109,7 @@ function* burnForUpDownVoteSaga(action: PayloadAction<any>) {
   } catch (err) {
     let message;
     yield put(removeBurnQueue());
+    yield put(setTransactionReady());
     if (command.burnForType === BurnForType.Token) {
       message = (err as Error)?.message ?? intl.get('token.unableToBurn');
       yield put(burnForTokenFailure({ id: command.burnForId, burnType: command.burnType, burnValue: burnValue }));

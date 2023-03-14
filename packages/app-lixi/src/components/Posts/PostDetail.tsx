@@ -70,6 +70,7 @@ import useDidMountEffect from '@hooks/useDidMountEffect ';
 import { getBurnQueue, getFailQueue } from '@store/burn';
 import { TokenItem } from '@components/Token/TokensFeed';
 import { showBurnNotification } from '@components/Common/showBurnNotification';
+import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
 
 export type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 export type BurnData = {
@@ -217,7 +218,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       let tipToAddresses: { address: string; amount: string }[] = [
         {
           address: post.page ? post.pageAccount.address : post.postAccount.address,
-          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
         }
       ];
 
@@ -227,7 +228,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           if (burnType === BurnType.Up && selectedAccount.address !== post.postAccount.address) {
             tipToAddresses.push({
               address: post.postAccount.address,
-              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
+              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
             });
           }
           break;
@@ -236,7 +237,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           if (burnType === BurnType.Up && selectedAccount.address != comment?.commentAccount?.address) {
             tipToAddresses.push({
               address: comment?.commentAccount?.address,
-              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
+              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
             });
           }
           queryParams = {
@@ -537,25 +538,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     []
   );
 
-  useDidMountEffect(() => {
-    if (burnQueue.length > 0) {
-      showBurnNotification('info', burnQueue);
-    } else {
-      notification.success({
-        key: 'burn',
-        message: intl.get('post.doneBurning'),
-        duration: 3
-      });
-    }
-
-    if (failQueue.length > 0) {
-      notification.error({
-        key: 'burnFail',
-        message: intl.get('account.insufficientBurningFunds'),
-        duration: 3
-      });
-    }
-  }, [burnQueue, failQueue]);
+  useDidMountEffectNotification();
 
   return (
     <>

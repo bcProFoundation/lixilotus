@@ -41,6 +41,7 @@ import { showBurnNotification } from '@components/Common/showBurnNotification';
 import { FilterBurnt } from '@components/Common/FilterBurn';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import { getFilterPostsHome } from '@store/settings/selectors';
+import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
 
 const { Panel } = Collapse;
 const antIcon = <LoadingOutlined style={{ fontSize: 20 }} spin />;
@@ -412,17 +413,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     }
   };
 
-  useDidMountEffect(() => {
-    if (burnQueue.length > 0) {
-      showBurnNotification('info', burnQueue);
-    } else {
-      showBurnNotification('success');
-    }
-
-    if (failQueue.length > 0) {
-      showBurnNotification('error');
-    }
-  }, [burnQueue, failQueue]);
+  useDidMountEffectNotification();
 
   const handleBurnForPost = async (isUpVote: boolean, post: any) => {
     try {
@@ -443,14 +434,14 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       let tipToAddresses: { address: string; amount: string }[] = [
         {
           address: post.page ? post.pageAccount.address : post.postAccount.address,
-          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
         }
       ];
 
       if (burnType === BurnType.Up && selectedAccount.address !== post.postAccount.address) {
         tipToAddresses.push({
           address: post.postAccount.address,
-          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
         });
       }
 
@@ -480,7 +471,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         minBurnFilter: filterValue
       };
 
-      dispatch(addBurnQueue(burnCommand));
+      dispatch(addBurnQueue(_.omit(burnCommand)));
       dispatch(addBurnTransaction(burnCommand));
     } catch (e) {
       const errorMessage = e.message || intl.get('post.unableToBurn');
