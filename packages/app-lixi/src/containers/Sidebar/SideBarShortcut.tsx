@@ -98,10 +98,6 @@ export const ContainerAccess = styled.div`
       }
       @media (max-height: 530px) {
         padding: 8px;
-        img {
-          width: 20px;
-          height: 20px;
-        }
       }
       &.active-item-access {
         max-width: 50px;
