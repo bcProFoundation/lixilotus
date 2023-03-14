@@ -77,12 +77,11 @@ export const ContainerAccess = styled.div`
     @media (max-height: 768px) {
       margin-bottom: 1rem;
     }
-      @media (max-height: 610px) {
-        margin-bottom: 0.5rem;
-      }
-      @media (max-height: 530px) {
-        margin-bottom: 0.2rem;
-      }
+    @media (max-height: 610px) {
+      margin-bottom: 0.5rem;
+    }
+    @media (max-height: 530px) {
+      margin-bottom: 0.2rem;
     }
     .anticon {
       font-size: 25px;
