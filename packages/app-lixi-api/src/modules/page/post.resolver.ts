@@ -28,7 +28,7 @@ import {
   Request,
   UseGuards
 } from '@nestjs/common';
-import { Args, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
+import { Args, Int, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
 import { MeiliService } from './meili.service';
 import { GqlJwtAuthGuard, GqlJwtAuthGuardByPass } from '../auth/guards/gql-jwtauth.guard';
 import { PrismaService } from '../prisma/prisma.service';
@@ -46,7 +46,7 @@ const pubSub = new PubSub();
 export class PostResolver {
   private logger: Logger = new Logger(this.constructor.name);
 
-  constructor(private prisma: PrismaService, private meiliService: MeiliService, @I18n() private i18n: I18nService) { }
+  constructor(private prisma: PrismaService, private meiliService: MeiliService, @I18n() private i18n: I18nService) {}
 
   @Subscription(() => Post)
   postCreated() {
@@ -292,6 +292,7 @@ export class PostResolver {
   async allPostsBySearch(
     @Args() args: ConnectionArgs,
     @Args({ name: 'query', type: () => String, nullable: true })
+    @Args({ name: 'minBurnFilter', type: () => Int, nullable: true })
     query: string
   ): Promise<PostResponse> {
     const { limit, offset } = getPagingParameters(args);
@@ -522,10 +523,10 @@ export class PostResolver {
           connect:
             uploadDetailIds.length > 0
               ? uploadDetailIds.map((uploadDetail: any) => {
-                return {
-                  id: uploadDetail
-                };
-              })
+                  return {
+                    id: uploadDetail
+                  };
+                })
               : undefined
         },
         page: {
@@ -560,10 +561,6 @@ export class PostResolver {
           }
         }
       }
-    });
-
-    _.update(createdPost, 'content', () => {
-      return pureContent;
     });
 
     const indexedPost = {
@@ -707,7 +704,10 @@ export class PostResolver {
             sha: true,
             bucket: true,
             width: true,
-            height: true
+            height: true,
+            sha800: true,
+            sha320: true,
+            sha40: true
           }
         }
       }
