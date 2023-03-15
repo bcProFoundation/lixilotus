@@ -522,7 +522,6 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
               <p>{pageDetailData.title}</p>
             </div>
             {/* TODO: implement in the future */}
-            {console.log('pageDetailData: ', pageDetailData)}
             {selectedAccountId == pageDetailData?.pageAccountId && (
               <div className="action-profile">
                 <Button

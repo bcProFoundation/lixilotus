@@ -387,6 +387,9 @@ type Upload {
   height: String
   id: ID!
   sha: String!
+  sha40: String
+  sha320: String
+  sha800: String
   width: String
 }
 

@@ -41,12 +41,15 @@ export type PostQuery = {
         bucket?: string | null;
         width?: string | null;
         height?: string | null;
+        sha800?: string | null;
+        sha320?: string | null;
+        sha40?: string | null;
       };
     }> | null;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
     pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
     page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-    token?: { __typename?: 'Token'; id: string; name: string } | null;
+    token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
   };
 };
 
@@ -88,12 +91,15 @@ export type PostsQuery = {
             bucket?: string | null;
             width?: string | null;
             height?: string | null;
+            sha800?: string | null;
+            sha320?: string | null;
+            sha40?: string | null;
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
         page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-        token?: { __typename?: 'Token'; id: string; name: string } | null;
+        token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
       };
     }> | null;
     pageInfo: {
@@ -144,12 +150,15 @@ export type OrphanPostsQuery = {
             bucket?: string | null;
             width?: string | null;
             height?: string | null;
+            sha800?: string | null;
+            sha320?: string | null;
+            sha40?: string | null;
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
         page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-        token?: { __typename?: 'Token'; id: string; name: string } | null;
+        token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
       };
     }> | null;
     pageInfo: {
@@ -200,12 +209,15 @@ export type PostsByPageIdQuery = {
             bucket?: string | null;
             width?: string | null;
             height?: string | null;
+            sha800?: string | null;
+            sha320?: string | null;
+            sha40?: string | null;
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
         page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-        token?: { __typename?: 'Token'; id: string; name: string } | null;
+        token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
       };
     }> | null;
     pageInfo: {
@@ -256,12 +268,15 @@ export type PostsByUserIdQuery = {
             bucket?: string | null;
             width?: string | null;
             height?: string | null;
+            sha800?: string | null;
+            sha320?: string | null;
+            sha40?: string | null;
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
         page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-        token?: { __typename?: 'Token'; id: string; name: string } | null;
+        token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
       };
     }> | null;
     pageInfo: {
@@ -312,12 +327,15 @@ export type PostsByTokenIdQuery = {
             bucket?: string | null;
             width?: string | null;
             height?: string | null;
+            sha800?: string | null;
+            sha320?: string | null;
+            sha40?: string | null;
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
         page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-        token?: { __typename?: 'Token'; id: string; name: string } | null;
+        token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
       };
     }> | null;
     pageInfo: {
@@ -365,6 +383,9 @@ export type PostsBySearchQuery = {
             bucket?: string | null;
             width?: string | null;
             height?: string | null;
+            sha800?: string | null;
+            sha320?: string | null;
+            sha40?: string | null;
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -401,12 +422,15 @@ export type PostFieldsFragment = {
       bucket?: string | null;
       width?: string | null;
       height?: string | null;
+      sha800?: string | null;
+      sha320?: string | null;
+      sha40?: string | null;
     };
   }> | null;
   postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
   pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
   page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-  token?: { __typename?: 'Token'; id: string; name: string } | null;
+  token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
 };
 
 export type PostMeiliFieldsFragment = {
@@ -428,6 +452,9 @@ export type PostMeiliFieldsFragment = {
       bucket?: string | null;
       width?: string | null;
       height?: string | null;
+      sha800?: string | null;
+      sha320?: string | null;
+      sha40?: string | null;
     };
   }> | null;
   postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
@@ -460,12 +487,15 @@ export type CreatePostMutation = {
         bucket?: string | null;
         width?: string | null;
         height?: string | null;
+        sha800?: string | null;
+        sha320?: string | null;
+        sha40?: string | null;
       };
     }> | null;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
     pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
     page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-    token?: { __typename?: 'Token'; id: string; name: string } | null;
+    token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
   };
 };
 
@@ -494,12 +524,15 @@ export type UpdatePostMutation = {
         bucket?: string | null;
         width?: string | null;
         height?: string | null;
+        sha800?: string | null;
+        sha320?: string | null;
+        sha40?: string | null;
       };
     }> | null;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
     pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
     page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-    token?: { __typename?: 'Token'; id: string; name: string } | null;
+    token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
   };
 };
 
@@ -515,6 +548,9 @@ export const PostFieldsFragmentDoc = `
       bucket
       width
       height
+      sha800
+      sha320
+      sha40
     }
   }
   postAccount {
@@ -535,6 +571,7 @@ export const PostFieldsFragmentDoc = `
   token {
     id
     name
+    tokenId
   }
   lotusBurnUp
   lotusBurnDown
@@ -555,6 +592,9 @@ export const PostMeiliFieldsFragmentDoc = `
       bucket
       width
       height
+      sha800
+      sha320
+      sha40
     }
   }
   postAccount {
