@@ -225,7 +225,7 @@ export class PostResolver {
             where: {
               OR: [
                 {
-                  postAccountId: account.id
+                  AND: [{ postAccountId: account.id }, { pageId: id }]
                 },
                 {
                   AND: [{ pageId: id }, { lotusBurnScore: { gte: minBurnFilter ?? 0 } }]
@@ -240,7 +240,7 @@ export class PostResolver {
             where: {
               OR: [
                 {
-                  postAccountId: account.id
+                  AND: [{ postAccountId: account.id }, { pageId: id }]
                 },
                 {
                   AND: [{ pageId: id }, { lotusBurnScore: { gte: minBurnFilter ?? 0 } }]
@@ -347,7 +347,7 @@ export class PostResolver {
           where: {
             OR: [
               {
-                postAccountId: account.id
+                AND: [{ postAccountId: account.id }, { tokenId: id }]
               },
               {
                 AND: [
@@ -371,7 +371,7 @@ export class PostResolver {
           where: {
             OR: [
               {
-                postAccountId: account.id
+                AND: [{ postAccountId: account.id }, { tokenId: id }]
               },
               {
                 AND: [
