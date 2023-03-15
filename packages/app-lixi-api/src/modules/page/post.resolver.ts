@@ -37,6 +37,7 @@ import ConnectionArgs, { getPagingParameters } from '../../common/custom-graphql
 import { connectionFromArraySlice } from '../../common/custom-graphql-relay/arrayConnection';
 import PostResponse from 'src/common/post.response';
 import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
+import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
 import { NotificationLevel } from '@bcpros/lixi-prisma';
 
 const pubSub = new PubSub();
@@ -46,7 +47,7 @@ const pubSub = new PubSub();
 export class PostResolver {
   private logger: Logger = new Logger(this.constructor.name);
 
-  constructor(private prisma: PrismaService, private meiliService: MeiliService, @I18n() private i18n: I18nService) {}
+  constructor(private prisma: PrismaService, private meiliService: MeiliService, @I18n() private i18n: I18nService) { }
 
   @Subscription(() => Post)
   postCreated() {
@@ -508,10 +509,10 @@ export class PostResolver {
           connect:
             uploadDetailIds.length > 0
               ? uploadDetailIds.map((uploadDetail: any) => {
-                  return {
-                    id: uploadDetail
-                  };
-                })
+                return {
+                  id: uploadDetail
+                };
+              })
               : undefined
         },
         page: {
@@ -567,6 +568,29 @@ export class PostResolver {
     await this.meiliService.add(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`, indexedPost, createdPost.id);
 
     pubSub.publish('postCreated', { postCreated: createdPost });
+
+    if (pageId) {
+      const recipient = await this.prisma.page.findFirst({
+        where: {
+          id: pageId
+        }
+      });
+
+      if (!recipient) {
+        const couldNotFindAccount = await this.i18n.t('post.messages.couldNotFindAccount');
+        throw new Error(couldNotFindAccount);
+      }
+
+      await this.prisma.notification.create({
+        data: {
+          senderId: createdPost.postAccountId,
+          recipientId: Number(recipient?.pageAccountId),
+          notificationTypeId: NOTIFICATION_TYPES.POST_ON_PAGE,
+          level: NotificationLevel.INFO,
+          url: "/post/" + createdPost.id
+        }
+      });
+    }
 
     return createdPost;
   }

@@ -19,6 +19,8 @@ import { PostAccountEntity } from 'src/decorators/postAccount.decorator';
 import VError from 'verror';
 import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
 import { PrismaService } from '../prisma/prisma.service';
+import { Notification, NotificationLevel } from '@bcpros/lixi-prisma';
+import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
 
 const pubSub = new PubSub();
 
@@ -31,7 +33,7 @@ export class CommentResolver {
     @I18n() private i18n: I18nService,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS
-  ) {}
+  ) { }
 
   @Subscription(() => Comment)
   commentCreated() {
@@ -120,16 +122,16 @@ export class CommentResolver {
       const savedComment = await this.prisma.$transaction(async prisma => {
         const createdComment = await prisma.comment.create(commentToSave);
 
-        if (tipHex) {
-          const post = await prisma.post.findFirst({
-            where: {
-              id: commentToId
-            },
-            include: {
-              postAccount: true
-            }
-          });
+        const post = await prisma.post.findFirst({
+          where: {
+            id: commentToId
+          },
+          include: {
+            postAccount: true
+          }
+        });
 
+        if (tipHex) {
           const txData = await this.XPI.RawTransactions.decodeRawTransaction(tipHex);
           const { value } = txData['vout'][0];
           if (Number(value) < 0) {
@@ -150,6 +152,16 @@ export class CommentResolver {
 
           await prisma.giveTip.create({ data: transactionTip });
         }
+
+        const noticeTip = {
+          senderId: account.id,
+          recipientId: post?.postAccount.id as number,
+          notificationTypeId: tipHex ? NOTIFICATION_TYPES.COMMENT_TO_GIVE : NOTIFICATION_TYPES.COMMENT_ON_POST,
+          level: NotificationLevel.INFO,
+          url: '/post/' + post?.id
+        };
+        await prisma.notification.create({ data: noticeTip });
+
         return createdComment;
       });
 
