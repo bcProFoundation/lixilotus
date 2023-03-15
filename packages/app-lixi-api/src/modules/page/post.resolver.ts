@@ -46,7 +46,7 @@ const pubSub = new PubSub();
 export class PostResolver {
   private logger: Logger = new Logger(this.constructor.name);
 
-  constructor(private prisma: PrismaService, private meiliService: MeiliService, @I18n() private i18n: I18nService) {}
+  constructor(private prisma: PrismaService, private meiliService: MeiliService, @I18n() private i18n: I18nService) { }
 
   @Subscription(() => Post)
   postCreated() {
@@ -412,14 +412,7 @@ export class PostResolver {
             include: { postAccount: true },
             where: {
               AND: [
-                {
-                  postAccountId: _.toSafeInteger(id)
-                },
-                {
-                  lotusBurnScore: {
-                    gte: minBurnFilter ?? 0
-                  }
-                },
+                { postAccountId: _.toSafeInteger(id) },
                 { pageId: null },
                 { tokenId: null }
               ]
@@ -431,14 +424,7 @@ export class PostResolver {
           this.prisma.post.count({
             where: {
               AND: [
-                {
-                  postAccountId: _.toSafeInteger(id)
-                },
-                {
-                  lotusBurnScore: {
-                    gte: minBurnFilter ?? 0
-                  }
-                },
+                { postAccountId: _.toSafeInteger(id) },
                 { pageId: null },
                 { tokenId: null }
               ]
@@ -523,10 +509,10 @@ export class PostResolver {
           connect:
             uploadDetailIds.length > 0
               ? uploadDetailIds.map((uploadDetail: any) => {
-                  return {
-                    id: uploadDetail
-                  };
-                })
+                return {
+                  id: uploadDetail
+                };
+              })
               : undefined
         },
         page: {
