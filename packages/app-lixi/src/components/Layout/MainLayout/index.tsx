@@ -190,8 +190,10 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   const ref = useRef(null);
   const notifications = useAppSelector(getAllNotifications);
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
+  const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
 
   useEffect(() => {
+    if (slpBalancesAndUtxos === slpBalancesAndUtxosRef.current) return;
     dispatch(setTransactionReady());
   }, [slpBalancesAndUtxos.nonSlpUtxos]);
 

@@ -145,7 +145,7 @@ function* burnForUpDownVoteFailureSaga(action: PayloadAction<string>) {
   yield put(
     showToast('error', {
       message: action.payload,
-      duration: 5
+      duration: 3
     })
   );
   yield put(hideLoading(burnForUpDownVote.type));

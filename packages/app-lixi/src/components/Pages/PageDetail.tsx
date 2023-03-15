@@ -17,13 +17,12 @@ import intl from 'react-intl-universal';
 import { Button, Space, Tabs, Skeleton, notification } from 'antd';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import styled from 'styled-components';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { BurnForType, BurnType, BurnQueueCommand } from '@bcpros/lixi-models/lib/burn';
-import useDidMountEffect from '@hooks/useDidMountEffect ';
 import { fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { currency } from '@components/Common/Ticker';
@@ -32,7 +31,6 @@ import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@sto
 import BigNumber from 'bignumber.js';
 import { showToast } from '@store/toast/actions';
 import { setTransactionReady } from '@store/account/actions';
-import { showBurnNotification } from '@components/Common/showBurnNotification';
 import { getFilterPostsPage } from '@store/settings/selectors';
 import { FilterBurnt } from '@components/Common/FilterBurn';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
@@ -368,6 +366,7 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
   const walletStatus = useAppSelector(getWalletStatus);
   const failQueue = useAppSelector(getFailQueue);
   const filterValue = useAppSelector(getFilterPostsPage);
+  const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByPageIdQuery(
     {
@@ -435,7 +434,8 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
     dispatch(openModal('UploadAvatarCoverModal', { page: pageDetailData, isAvatar: isAvatar }));
   };
 
-  useDidMountEffect(() => {
+  useEffect(() => {
+    if (slpBalancesAndUtxos === slpBalancesAndUtxosRef.current) return;
     dispatch(setTransactionReady());
   }, [slpBalancesAndUtxos.nonSlpUtxos]);
 

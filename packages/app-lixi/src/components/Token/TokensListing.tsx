@@ -52,9 +52,7 @@ import { push } from 'connected-next-router';
 import InfoCardUser from '@components/Common/InfoCardUser';
 import { InfoSubCard } from '@components/Lixi';
 import { IconBurn } from '@components/Posts/PostDetail';
-import useDidMountEffect from '@hooks/useDidMountEffect ';
 import { setTransactionReady } from '@store/account/actions';
-import { showBurnNotification } from '@components/Common/showBurnNotification';
 import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
 
 const StyledTokensListing = styled.div`
@@ -152,6 +150,7 @@ const TokensListing = () => {
   const burnQueue = useAppSelector(getBurnQueue);
   const failQueue = useAppSelector(getFailQueue);
   const walletStatus = useAppSelector(getWalletStatus);
+  const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
 
   const [
     createTokenTrigger,
@@ -447,7 +446,8 @@ const TokensListing = () => {
     );
   };
 
-  useDidMountEffect(() => {
+  useEffect(() => {
+    if (slpBalancesAndUtxos === slpBalancesAndUtxosRef.current) return;
     dispatch(setTransactionReady());
   }, [slpBalancesAndUtxos.nonSlpUtxos]);
 

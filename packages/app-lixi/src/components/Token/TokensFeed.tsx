@@ -10,7 +10,7 @@ import { useTokenQuery } from '@store/token/tokens.api';
 import { formatBalance, fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods';
 import { Button, Dropdown, Image, Menu, MenuProps, message, notification, Skeleton, Space, Tabs } from 'antd';
 import makeBlockie from 'ethereum-blockies-base64';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { OrderDirection, PostOrderField, Token } from 'src/generated/types.generated';
 import styled from 'styled-components';
@@ -27,11 +27,9 @@ import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib
 import { getSelectedAccount } from '@store/account/selectors';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
 import { addBurnQueue, addBurnTransaction, getBurnQueue, getFailQueue, clearFailQueue } from '@store/burn';
-import useDidMountEffect from '@hooks/useDidMountEffect ';
 import { setTransactionReady } from '@store/account/actions';
 import { showToast } from '@store/toast/actions';
 import { TokenQuery } from '@store/token/tokens.generated';
-import { showBurnNotification } from '@components/Common/showBurnNotification';
 import { getFilterPostsToken } from '@store/settings/selectors';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import { FilterBurnt } from '@components/Common/FilterBurn';
@@ -160,6 +158,7 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
   const failQueue = useAppSelector(getFailQueue);
   const selectedAccountId = useAppSelector(getSelectedAccountId);
   const filterValue = useAppSelector(getFilterPostsToken);
+  const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
 
   let options = ['Withdraw', 'Rename', 'Export'];
 
@@ -208,7 +207,8 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
     );
   };
 
-  useDidMountEffect(() => {
+  useEffect(() => {
+    if (slpBalancesAndUtxos === slpBalancesAndUtxosRef.current) return;
     dispatch(setTransactionReady());
   }, [slpBalancesAndUtxos.nonSlpUtxos]);
 

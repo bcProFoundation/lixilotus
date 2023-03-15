@@ -34,10 +34,8 @@ import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib
 import { currency } from '@components/Common/Ticker';
 import { fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods';
 import BigNumber from 'bignumber.js';
-import useDidMountEffect from '@hooks/useDidMountEffect ';
 import { showToast } from '@store/toast/actions';
 import { Spin } from 'antd';
-import { showBurnNotification } from '@components/Common/showBurnNotification';
 import { FilterBurnt } from '@components/Common/FilterBurn';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import { getFilterPostsHome } from '@store/settings/selectors';
