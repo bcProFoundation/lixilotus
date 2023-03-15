@@ -256,14 +256,12 @@ export class PostResolver {
           this.prisma.post.findMany({
             include: { postAccount: true },
             where: {
-              AND: [
+              OR: [
                 {
-                  pageId: id
+                  AND: [{ postAccountId: account.id }, { pageId: id }]
                 },
                 {
-                  lotusBurnScore: {
-                    gte: 0
-                  }
+                  AND: [{ pageId: id }, { lotusBurnScore: { gte: minBurnFilter ?? 0 } }]
                 }
               ]
             },
@@ -273,14 +271,12 @@ export class PostResolver {
         () =>
           this.prisma.post.count({
             where: {
-              AND: [
+              OR: [
                 {
-                  pageId: id
+                  AND: [{ postAccountId: account.id }, { pageId: id }]
                 },
                 {
-                  lotusBurnScore: {
-                    gte: 0
-                  }
+                  AND: [{ pageId: id }, { lotusBurnScore: { gte: minBurnFilter ?? 0 } }]
                 }
               ]
             }
@@ -414,41 +410,17 @@ export class PostResolver {
           this.prisma.post.findMany({
             include: { postAccount: true },
             where: {
-              postAccountId: _.toSafeInteger(id)
-            },
-            orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
-            ...args
-          }),
-        () =>
-          this.prisma.post.count({
-            where: {
-              postAccountId: _.toSafeInteger(id)
-            }
-          }),
-        { first, last, before, after }
-      );
-    } else {
-      result = await findManyCursorConnection(
-        args =>
-          this.prisma.post.findMany({
-            include: { postAccount: true },
-            where: {
-              OR: [
+              AND: [
                 {
-                  postAccountId: account.id
+                  postAccountId: _.toSafeInteger(id)
                 },
                 {
-                  AND: [
-                    {
-                      postAccountId: _.toSafeInteger(id)
-                    },
-                    {
-                      lotusBurnScore: {
-                        gte: minBurnFilter ?? 0
-                      }
-                    }
-                  ]
-                }
+                  lotusBurnScore: {
+                    gte: minBurnFilter ?? 0
+                  }
+                },
+                { pageId: null },
+                { tokenId: null }
               ]
             },
             orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
@@ -463,9 +435,52 @@ export class PostResolver {
                 },
                 {
                   lotusBurnScore: {
-                    gte: 0
+                    gte: minBurnFilter ?? 0
                   }
-                }
+                },
+                { pageId: null },
+                { tokenId: null }
+              ]
+            }
+          }),
+        { first, last, before, after }
+      );
+    } else {
+      result = await findManyCursorConnection(
+        args =>
+          this.prisma.post.findMany({
+            include: { postAccount: true, page: false, token: false },
+            where: {
+              AND: [
+                {
+                  postAccountId: _.toSafeInteger(id)
+                },
+                {
+                  lotusBurnScore: {
+                    gte: minBurnFilter ?? 0
+                  }
+                },
+                { pageId: null },
+                { tokenId: null }
+              ]
+            },
+            orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+            ...args
+          }),
+        () =>
+          this.prisma.post.count({
+            where: {
+              AND: [
+                {
+                  postAccountId: _.toSafeInteger(id)
+                },
+                {
+                  lotusBurnScore: {
+                    gte: minBurnFilter ?? 0
+                  }
+                },
+                { pageId: null },
+                { tokenId: null }
               ]
             }
           }),

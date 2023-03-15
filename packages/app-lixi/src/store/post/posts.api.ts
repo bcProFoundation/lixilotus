@@ -58,8 +58,8 @@ const enhancedApi = api.enhanceEndpoints({
       providesTags: (result, error, arg) => ['Post'],
       serializeQueryArgs({ queryArgs }) {
         if (queryArgs) {
-          const { orderBy, id, ...otherArgs } = queryArgs;
-          return { orderBy, id };
+          const { orderBy, id, minBurnFilter, ...otherArgs } = queryArgs;
+          return { orderBy, id, minBurnFilter };
         }
         return { queryArgs };
       },
@@ -74,8 +74,8 @@ const enhancedApi = api.enhanceEndpoints({
       providesTags: (result, error, arg) => ['Post'],
       serializeQueryArgs({ queryArgs }) {
         if (queryArgs) {
-          const { orderBy, id, ...otherArgs } = queryArgs;
-          return { orderBy, id };
+          const { orderBy, id, minBurnFilter, ...otherArgs } = queryArgs;
+          return { orderBy, id, minBurnFilter };
         }
         return { queryArgs };
       },
