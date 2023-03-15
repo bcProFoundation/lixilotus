@@ -412,14 +412,7 @@ export class PostResolver {
             include: { postAccount: true },
             where: {
               AND: [
-                {
-                  postAccountId: _.toSafeInteger(id)
-                },
-                {
-                  lotusBurnScore: {
-                    gte: minBurnFilter ?? 0
-                  }
-                },
+                { postAccountId: _.toSafeInteger(id) },
                 { pageId: null },
                 { tokenId: null }
               ]
@@ -431,14 +424,7 @@ export class PostResolver {
           this.prisma.post.count({
             where: {
               AND: [
-                {
-                  postAccountId: _.toSafeInteger(id)
-                },
-                {
-                  lotusBurnScore: {
-                    gte: minBurnFilter ?? 0
-                  }
-                },
+                { postAccountId: _.toSafeInteger(id) },
                 { pageId: null },
                 { tokenId: null }
               ]
