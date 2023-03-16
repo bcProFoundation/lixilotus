@@ -20,6 +20,10 @@ import { InfoSubCard } from '@components/Lixi';
 import moment from 'moment';
 import intl from 'react-intl-universal';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { getFilterPostsToken } from '@store/settings/selectors';
+import { FilterType } from '@bcpros/lixi-models/lib/filter';
+import { FilterBurnt } from '@components/Common/FilterBurn';
+import { getSelectedAccountId } from '@store/account/selectors';
 
 const StyledTokensFeed = styled.div`
   .content {
@@ -120,6 +124,11 @@ const BannerTicker = styled.div`
   }
 `;
 
+const SearchBar = styled.div`
+  display: flex;
+  gap: 1rem;
+`;
+
 type TokenProps = {
   token: any;
   isMobile: boolean;
@@ -128,12 +137,16 @@ type TokenProps = {
 const TokensFeed = ({ token, isMobile }: TokenProps) => {
   const dispatch = useAppDispatch();
   const [tokenDetailData, setTokenDetailData] = useState<any>(token);
+  const selectedAccountId = useAppSelector(getSelectedAccountId);
+  const filterValue = useAppSelector(getFilterPostsToken);
 
   let options = ['Withdraw', 'Rename', 'Export'];
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByTokenIdQuery(
     {
       first: 10,
+      minBurnFilter: filterValue ?? 1,
+      accountId: selectedAccountId ?? null,
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt
@@ -211,13 +224,16 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
             burnValue={formatBalance(tokenDetailData?.lotusBurnUp ?? 0)}
             key={`list-vertical-upvote-o-${tokenDetailData.id}`}
             dataItem={tokenDetailData}
-            onClickIcon={() => {}}
+            onClickIcon={() => { }}
           />
         </div>
       </BannerTicker>
 
       <CreatePostCard tokenPrimaryId={tokenDetailData.id} refetch={() => refetch()} />
-      <SearchBox />
+      <SearchBar>
+        <SearchBox />
+        <FilterBurnt filterForType={FilterType.PostsToken} />
+      </SearchBar>
 
       <div className="content">
         <Tabs defaultActiveKey="1">

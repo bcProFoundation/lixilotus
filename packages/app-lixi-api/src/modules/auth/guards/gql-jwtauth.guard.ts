@@ -36,3 +36,37 @@ export class GqlJwtAuthGuard implements CanActivate {
     }
   }
 }
+
+@Injectable()
+export class GqlJwtAuthGuardByPass implements CanActivate {
+  getRequest(context: ExecutionContext) {
+    const ctx = GqlExecutionContext.create(context);
+    return ctx.getContext().req;
+  }
+
+  constructor(private readonly authService: AuthService) {}
+
+  canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
+    try {
+      const ctx = GqlExecutionContext.create(context);
+      const req = ctx.getContext().req;
+
+      const token = req.cookies['_auth_token'];
+
+      return new Promise(async (resolve, reject) => {
+        try {
+          const account = await this.authService.verifyJwt(token);
+          if (!account) {
+            return resolve(true);
+          }
+          req.account = account;
+          resolve(true);
+        } catch (err) {
+          resolve(true);
+        }
+      });
+    } catch (e) {
+      return true;
+    }
+  }
+}

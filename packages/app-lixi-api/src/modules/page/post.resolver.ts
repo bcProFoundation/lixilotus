@@ -28,15 +28,16 @@ import {
   Request,
   UseGuards
 } from '@nestjs/common';
-import { Args, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
+import { Args, Int, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
 import { MeiliService } from './meili.service';
-import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
+import { GqlJwtAuthGuard, GqlJwtAuthGuardByPass } from '../auth/guards/gql-jwtauth.guard';
 import { PrismaService } from '../prisma/prisma.service';
 import { POSTS } from './constants/meili.constants';
 import ConnectionArgs, { getPagingParameters } from '../../common/custom-graphql-relay/connection.args';
 import { connectionFromArraySlice } from '../../common/custom-graphql-relay/arrayConnection';
 import PostResponse from 'src/common/post.response';
 import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
+import { NotificationLevel } from '@bcpros/lixi-prisma';
 
 const pubSub = new PubSub();
 
@@ -45,7 +46,7 @@ const pubSub = new PubSub();
 export class PostResolver {
   private logger: Logger = new Logger(this.constructor.name);
 
-  constructor(private prisma: PrismaService, private meiliService: MeiliService, @I18n() private i18n: I18nService) {}
+  constructor(private prisma: PrismaService, private meiliService: MeiliService, @I18n() private i18n: I18nService) { }
 
   @Subscription(() => Post)
   postCreated() {
@@ -60,10 +61,12 @@ export class PostResolver {
   }
 
   @Query(() => PostConnection)
+  @UseGuards(GqlJwtAuthGuardByPass)
   async allPosts(
-    @Args() { after, before, first, last }: PaginationArgs,
+    @PostAccountEntity() account: Account,
+    @Args() { after, before, first, last, minBurnFilter }: PaginationArgs,
     @Args({ name: 'query', type: () => String, nullable: true })
-    query: string,
+    accountId: number,
     @Args({
       name: 'orderBy',
       type: () => PostOrder,
@@ -71,15 +74,25 @@ export class PostResolver {
     })
     orderBy: PostOrder
   ) {
+    if (accountId && !_.isNil(account) && accountId !== account.id) {
+      const invalidAccountMessage = await this.i18n.t('account.messages.invalidAccount');
+      throw new VError(invalidAccountMessage);
+    }
+
     const result = await findManyCursorConnection(
       args =>
         this.prisma.post.findMany({
           include: { postAccount: true },
           where: {
-            AND: [
+            OR: [
               {
                 lotusBurnScore: {
-                  gte: 0
+                  gte: minBurnFilter ?? 0
+                }
+              },
+              {
+                postAccount: {
+                  id: accountId
                 }
               }
             ]
@@ -90,10 +103,15 @@ export class PostResolver {
       () =>
         this.prisma.post.count({
           where: {
-            AND: [
+            OR: [
               {
                 lotusBurnScore: {
-                  gte: 0
+                  gte: minBurnFilter ?? 0
+                }
+              },
+              {
+                postAccount: {
+                  id: accountId
                 }
               }
             ]
@@ -105,10 +123,12 @@ export class PostResolver {
   }
 
   @Query(() => PostConnection)
+  @UseGuards(GqlJwtAuthGuardByPass)
   async allOrphanPosts(
-    @Args() { after, before, first, last }: PaginationArgs,
+    @PostAccountEntity() account: Account,
+    @Args() { after, before, first, last, minBurnFilter }: PaginationArgs,
     @Args({ name: 'query', type: () => String, nullable: true })
-    query: string,
+    accountId: number,
     @Args({
       name: 'orderBy',
       type: () => PostOrder,
@@ -116,22 +136,32 @@ export class PostResolver {
     })
     orderBy: PostOrder
   ) {
+    if (accountId && !_.isNil(account) && accountId !== account.id) {
+      const invalidAccountMessage = await this.i18n.t('account.messages.invalidAccount');
+      throw new VError(invalidAccountMessage);
+    }
+
     const result = await findManyCursorConnection(
       args =>
         this.prisma.post.findMany({
           include: { postAccount: true },
           where: {
-            AND: [
+            OR: [
+              { postAccountId: accountId },
               {
-                page: null
-              },
-              {
-                token: null
-              },
-              {
-                lotusBurnScore: {
-                  gte: 0
-                }
+                AND: [
+                  {
+                    page: null
+                  },
+                  {
+                    token: null
+                  },
+                  {
+                    lotusBurnScore: {
+                      gte: minBurnFilter ?? 0
+                    }
+                  }
+                ]
               }
             ]
           },
@@ -141,17 +171,22 @@ export class PostResolver {
       () =>
         this.prisma.post.count({
           where: {
-            AND: [
+            OR: [
+              { postAccountId: accountId },
               {
-                page: null
-              },
-              {
-                token: null
-              },
-              {
-                lotusBurnScore: {
-                  gte: 0
-                }
+                AND: [
+                  {
+                    page: null
+                  },
+                  {
+                    token: null
+                  },
+                  {
+                    lotusBurnScore: {
+                      gte: minBurnFilter ?? 0
+                    }
+                  }
+                ]
               }
             ]
           }
@@ -165,7 +200,7 @@ export class PostResolver {
   @UseGuards(GqlJwtAuthGuard)
   async allPostsByPageId(
     @PostAccountEntity() account: Account,
-    @Args() { after, before, first, last }: PaginationArgs,
+    @Args() { after, before, first, last, minBurnFilter }: PaginationArgs,
     @Args({ name: 'id', type: () => String, nullable: true })
     id: string,
     @Args({
@@ -188,7 +223,14 @@ export class PostResolver {
           this.prisma.post.findMany({
             include: { postAccount: true },
             where: {
-              pageId: id
+              OR: [
+                {
+                  AND: [{ postAccountId: account.id }, { pageId: id }]
+                },
+                {
+                  AND: [{ pageId: id }, { lotusBurnScore: { gte: minBurnFilter ?? 0 } }]
+                }
+              ]
             },
             orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
             ...args
@@ -196,7 +238,14 @@ export class PostResolver {
         () =>
           this.prisma.post.count({
             where: {
-              pageId: id
+              OR: [
+                {
+                  AND: [{ postAccountId: account.id }, { pageId: id }]
+                },
+                {
+                  AND: [{ pageId: id }, { lotusBurnScore: { gte: minBurnFilter ?? 0 } }]
+                }
+              ]
             }
           }),
         { first, last, before, after }
@@ -207,14 +256,12 @@ export class PostResolver {
           this.prisma.post.findMany({
             include: { postAccount: true },
             where: {
-              AND: [
+              OR: [
                 {
-                  pageId: id
+                  AND: [{ postAccountId: account.id }, { pageId: id }]
                 },
                 {
-                  lotusBurnScore: {
-                    gte: 0
-                  }
+                  AND: [{ pageId: id }, { lotusBurnScore: { gte: minBurnFilter ?? 0 } }]
                 }
               ]
             },
@@ -224,14 +271,12 @@ export class PostResolver {
         () =>
           this.prisma.post.count({
             where: {
-              AND: [
+              OR: [
                 {
-                  pageId: id
+                  AND: [{ postAccountId: account.id }, { pageId: id }]
                 },
                 {
-                  lotusBurnScore: {
-                    gte: 0
-                  }
+                  AND: [{ pageId: id }, { lotusBurnScore: { gte: minBurnFilter ?? 0 } }]
                 }
               ]
             }
@@ -247,6 +292,7 @@ export class PostResolver {
   async allPostsBySearch(
     @Args() args: ConnectionArgs,
     @Args({ name: 'query', type: () => String, nullable: true })
+    @Args({ name: 'minBurnFilter', type: () => Int, nullable: true })
     query: string
   ): Promise<PostResponse> {
     const { limit, offset } = getPagingParameters(args);
@@ -278,8 +324,10 @@ export class PostResolver {
   }
 
   @Query(() => PostConnection)
+  @UseGuards(GqlJwtAuthGuard)
   async allPostsByTokenId(
-    @Args() { after, before, first, last }: PaginationArgs,
+    @PostAccountEntity() account: Account,
+    @Args() { after, before, first, last, minBurnFilter }: PaginationArgs,
     @Args({ name: 'id', type: () => String, nullable: true })
     id: string,
     @Args({
@@ -294,14 +342,21 @@ export class PostResolver {
         this.prisma.post.findMany({
           include: { postAccount: true },
           where: {
-            AND: [
+            OR: [
               {
-                tokenId: id
+                AND: [{ postAccountId: account.id }, { tokenId: id }]
               },
               {
-                lotusBurnScore: {
-                  gte: 0
-                }
+                AND: [
+                  {
+                    tokenId: id
+                  },
+                  {
+                    lotusBurnScore: {
+                      gte: minBurnFilter ?? 0
+                    }
+                  }
+                ]
               }
             ]
           },
@@ -311,14 +366,21 @@ export class PostResolver {
       () =>
         this.prisma.post.count({
           where: {
-            AND: [
+            OR: [
               {
-                tokenId: id
+                AND: [{ postAccountId: account.id }, { tokenId: id }]
               },
               {
-                lotusBurnScore: {
-                  gte: 0
-                }
+                AND: [
+                  {
+                    tokenId: id
+                  },
+                  {
+                    lotusBurnScore: {
+                      gte: minBurnFilter ?? 0
+                    }
+                  }
+                ]
               }
             ]
           }
@@ -332,7 +394,7 @@ export class PostResolver {
   @UseGuards(GqlJwtAuthGuard)
   async allPostsByUserId(
     @PostAccountEntity() account: Account,
-    @Args() { after, before, first, last }: PaginationArgs,
+    @Args() { after, before, first, last, minBurnFilter }: PaginationArgs,
     @Args({ name: 'id', type: () => String, nullable: true })
     id: string,
     @Args({
@@ -349,7 +411,11 @@ export class PostResolver {
           this.prisma.post.findMany({
             include: { postAccount: true },
             where: {
-              postAccountId: _.toSafeInteger(id)
+              AND: [
+                { postAccountId: _.toSafeInteger(id) },
+                { pageId: null },
+                { tokenId: null }
+              ]
             },
             orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
             ...args
@@ -357,7 +423,11 @@ export class PostResolver {
         () =>
           this.prisma.post.count({
             where: {
-              postAccountId: _.toSafeInteger(id)
+              AND: [
+                { postAccountId: _.toSafeInteger(id) },
+                { pageId: null },
+                { tokenId: null }
+              ]
             }
           }),
         { first, last, before, after }
@@ -366,7 +436,7 @@ export class PostResolver {
       result = await findManyCursorConnection(
         args =>
           this.prisma.post.findMany({
-            include: { postAccount: true },
+            include: { postAccount: true, page: false, token: false },
             where: {
               AND: [
                 {
@@ -374,9 +444,11 @@ export class PostResolver {
                 },
                 {
                   lotusBurnScore: {
-                    gte: 0
+                    gte: minBurnFilter ?? 0
                   }
-                }
+                },
+                { pageId: null },
+                { tokenId: null }
               ]
             },
             orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
@@ -391,9 +463,11 @@ export class PostResolver {
                 },
                 {
                   lotusBurnScore: {
-                    gte: 0
+                    gte: minBurnFilter ?? 0
                   }
-                }
+                },
+                { pageId: null },
+                { tokenId: null }
               ]
             }
           }),
@@ -435,10 +509,10 @@ export class PostResolver {
           connect:
             uploadDetailIds.length > 0
               ? uploadDetailIds.map((uploadDetail: any) => {
-                  return {
-                    id: uploadDetail
-                  };
-                })
+                return {
+                  id: uploadDetail
+                };
+              })
               : undefined
         },
         page: {
@@ -475,10 +549,6 @@ export class PostResolver {
       }
     });
 
-    _.update(createdPost, 'content', () => {
-      return pureContent;
-    });
-
     const indexedPost = {
       id: createdPost.id,
       content: pureContent,
@@ -498,6 +568,7 @@ export class PostResolver {
     await this.meiliService.add(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`, indexedPost, createdPost.id);
 
     pubSub.publish('postCreated', { postCreated: createdPost });
+
     return createdPost;
   }
 
@@ -619,7 +690,10 @@ export class PostResolver {
             sha: true,
             bucket: true,
             width: true,
-            height: true
+            height: true,
+            sha800: true,
+            sha320: true,
+            sha40: true
           }
         }
       }

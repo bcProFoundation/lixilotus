@@ -1,6 +1,6 @@
 import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
 import CreatePostCard from '@components/Common/CreatePostCard';
-import { getSelectedAccount } from '@store/account/selectors';
+import { getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
 import { useInfinitePostsBySearchQuery } from '@store/post/useInfinitePostsBySearchQuery';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
 import { useInfiniteOrphanPostsQuery } from '@store/post/useInfiniteOrphanPostsQuery';
@@ -8,11 +8,11 @@ import { useInfinitePostsByPageIdQuery } from '@store/post/useInfinitePostsByPag
 import { WalletContext } from '@context/index';
 import { getLatestBurnForPost } from '@store/burn';
 import { api as postApi, useLazyPostQuery } from '@store/post/posts.api';
-import { Menu, MenuProps, Modal, Skeleton, Tabs } from 'antd';
+import { Menu, MenuProps, Modal, Select, Skeleton, Tabs } from 'antd';
 import _ from 'lodash';
 import React, { useRef, useState, useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
-import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
+import { OrderDirection, Post, PostOrderField } from 'src/generated/types.generated';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled from 'styled-components';
 import SearchBox from '../Common/SearchBox';
@@ -20,6 +20,9 @@ import intl from 'react-intl-universal';
 import { LoadingOutlined } from '@ant-design/icons';
 import PostListItem from './PostListItem';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { FilterBurnt } from '@components/Common/FilterBurn';
+import { FilterType } from '@bcpros/lixi-models/lib/filter';
+import { getFilterPostsHome } from '@store/settings/selectors';
 
 type PostsListingProps = {
   className?: string;
@@ -97,6 +100,10 @@ const StyledHeader = styled.div`
       }
     }
   }
+  .filter-bar {
+    display: flex;
+    justify-content: space-between;
+  }
 `;
 const menuItems = [
   // { label: 'Top', key: 'top' },
@@ -114,7 +121,7 @@ const menuItems = [
 
 const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingProps) => {
   const dispatch = useAppDispatch();
-  const selectedAccount = useAppSelector(getSelectedAccount);
+  const selectedAccountId = useAppSelector(getSelectedAccountId);
   const [isShowQrCode, setIsShowQrCode] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -123,6 +130,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const [tab, setTab] = useState<any>('all');
   const [queryPostTrigger, queryPostResult] = useLazyPostQuery();
   const latestBurnForPost = useAppSelector(getLatestBurnForPost);
+  const filterValue = useAppSelector(getFilterPostsHome);
 
   const onClickMenu: MenuProps['onClick'] = e => {
     setTab(e.key);
@@ -139,6 +147,8 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   } = useInfiniteOrphanPostsQuery(
     {
       first: 20,
+      minBurnFilter: filterValue ?? 1,
+      accountId: selectedAccountId ?? null,
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt
@@ -150,6 +160,8 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsQuery(
     {
       first: 20,
+      minBurnFilter: filterValue,
+      accountId: selectedAccountId ?? null,
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt
@@ -157,6 +169,11 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     },
     false
   );
+
+  useEffect(() => {
+    refetch();
+    orphanRefetch();
+  }, [filterValue]);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -252,20 +269,24 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       <StyledHeader>
         <SearchBox searchPost={searchPost} value={searchValue} />
         <CreatePostCard />
-        <Menu
-          className="menu-post-listing"
-          style={{
-            border: 'none',
-            position: 'relative',
-            marginBottom: '1rem',
-            background: 'var(--bg-color-light-theme)'
-          }}
-          mode="horizontal"
-          defaultSelectedKeys={['top']}
-          selectedKeys={tab}
-          onClick={onClickMenu}
-          items={menuItems}
-        ></Menu>
+        <div className="filter-bar">
+          <Menu
+            className="menu-post-listing"
+            style={{
+              border: 'none',
+              position: 'relative',
+              marginBottom: '1rem',
+              background: 'var(--bg-color-light-theme)'
+            }}
+            mode="horizontal"
+            defaultSelectedKeys={['all']}
+            selectedKeys={tab}
+            onClick={onClickMenu}
+            items={menuItems}
+          ></Menu>
+
+          <FilterBurnt filterForType={FilterType.PostsHome} />
+        </div>
       </StyledHeader>
     );
   };
@@ -326,19 +347,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         );
       case 'all':
         return (
-          // Just in case for future usage
-          // <Virtuoso
-          //   id="list-virtuoso"
-          //   onScroll={e => triggerSrollbar(e)}
-          //   style={{ height: '100vh', paddingBottom: '2rem' }}
-          //   data={data}
-          //   endReached={loadMoreItems}
-          //   overscan={3000}
-          //   itemContent={(index, item) => {
-          //     return <PostListItem index={index} item={item} />;
-          //   }}
-          //   components={{ Header, Footer }}
-          // />
           <React.Fragment>
             <Header />
             <InfiniteScroll

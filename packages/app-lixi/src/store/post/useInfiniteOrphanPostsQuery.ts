@@ -15,7 +15,7 @@ const { selectAll } = postsAdapter.getSelectors();
 
 export interface PostListParams extends PaginationArgs {
   orderBy?: PostOrder;
-  query?: string;
+  accountId?: number;
 }
 export interface PostListBody {
   posts: Post[];
