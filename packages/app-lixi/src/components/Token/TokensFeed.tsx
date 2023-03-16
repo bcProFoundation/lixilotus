@@ -70,18 +70,18 @@ const BannerTicker = styled.div`
     }
     // css reponsive Show more info in token page
     .info-ticker {
-      width:100%;
+      width: 100%;
       display: flex;
       flex-direction: row;
       justify-content: space-between;
-      .info-ticker__item1{
+      .info-ticker__left{
         display: flex;
         flex-direction: column;
         justify-content: end;
         align-items: flex-start;
       }
-      .info-ticker_item2{
-        margin-right:150px;
+      .info-ticker__right{
+        margin-right: 150px;
         display: flex;
         flex-direction: column;
         justify-content: end;
@@ -221,27 +221,27 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
           </div>
           {/* Show more info in token page */}
           <div className="info-ticker">
-            <div className='info-ticker__item1'>
+            <div className='info-ticker__left'>
               <h4 className="title-ticker">{tokenDetailData['ticker']}</h4>
-              <InfoSubCard typeName={'Ticker:'} content={tokenDetailData.ticker} />
-              <InfoSubCard typeName={'Name:'} content={tokenDetailData.name} />
-              <InfoSubCard typeName={'Burnt XPI:'} content={tokenDetailData.lotusBurnUp} />
+              <InfoSubCard typeName={intl.get('token.ticker')} content={tokenDetailData.ticker} />
+              <InfoSubCard typeName={intl.get('token.name')} content={tokenDetailData.name} />
+              <InfoSubCard typeName={intl.get('token.burntXPI')} content={tokenDetailData.lotusBurnUp} />
             </div>
-            <div className='info-ticker_item2'>
+            <div className='info-ticker__right'>
               <CopyToClipboard text={tokenDetailData.tokenId} onCopy={() => handleOnCopy(tokenDetailData.tokenId)}>
                 <InfoSubCard
-                  typeName={'ID:'}
+                  typeName={intl.get('token.ID')}
                   content={tokenDetailData.tokenId.slice(0, 7) + '...' + tokenDetailData.tokenId.slice(-7)}
                   icon={CopyOutlined}
                   onClickIcon={() => { }}
                 />
               </CopyToClipboard>
               <InfoSubCard
-                typeName={'Created:'}
+                typeName={intl.get('token.created')}
                 content={moment(tokenDetailData.createdDate).format('YYYY-MM-DD HH:MM')}
               />
               <InfoSubCard
-                typeName={'Comments:'}
+                typeName={intl.get('token.comments')}
                 content={moment(tokenDetailData.comments).format('YYYY-MM-DD HH:MM')}
               />
             </div>
