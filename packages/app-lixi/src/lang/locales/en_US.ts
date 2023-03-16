@@ -513,8 +513,8 @@ export default {
   //Show more info in token page 
   'token.ticker': 'Ticker:',
   'token.name': 'Name:',
-  'token.burntXPI': 'Burnt XPI:',
-  'token.ID': 'ID:',
+  'token.burntxpi': 'Burnt XPI:',
+  'token.id': 'ID:',
   'token.created': 'Created:',
   'token.comments': 'Comments:',
 

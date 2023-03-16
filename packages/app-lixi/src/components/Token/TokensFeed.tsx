@@ -225,12 +225,12 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
               <h4 className="title-ticker">{tokenDetailData['ticker']}</h4>
               <InfoSubCard typeName={intl.get('token.ticker')} content={tokenDetailData.ticker} />
               <InfoSubCard typeName={intl.get('token.name')} content={tokenDetailData.name} />
-              <InfoSubCard typeName={intl.get('token.burntXPI')} content={tokenDetailData.lotusBurnUp} />
+              <InfoSubCard typeName={intl.get('token.burntxpi')} content={tokenDetailData.lotusBurnUp} />
             </div>
             <div className='info-ticker__right'>
               <CopyToClipboard text={tokenDetailData.tokenId} onCopy={() => handleOnCopy(tokenDetailData.tokenId)}>
                 <InfoSubCard
-                  typeName={intl.get('token.ID')}
+                  typeName={intl.get('token.id')}
                   content={tokenDetailData.tokenId.slice(0, 7) + '...' + tokenDetailData.tokenId.slice(-7)}
                   icon={CopyOutlined}
                   onClickIcon={() => { }}

@@ -512,12 +512,12 @@ export default {
   'token.copyId': 'Token Id đã được sao chép.',
   'token.unableToBurn': 'Không thể đốt cho mã tiền',
   //Show more info in token page 
-  'token.ticker': 'mã của token',
-  'token.name': 'tên của token',
-  'token.burntXPI': 'Burnt XPI của token',
-  'token.ID': 'ID của token',
-  'token.created': 'ngày tạo token',
-  'token.comments': 'ngày đăng bài post',
+  'token.ticker': 'mã',
+  'token.name': 'tên',
+  'token.burntxpi': 'xpi đã đốt',
+  'token.id': 'id',
+  'token.created': 'ngày tạo',
+  'token.comments': 'ngày đăng bài',
 
 
   /* 17. Comment */
