@@ -29,6 +29,7 @@ export type PostQuery = {
     lotusBurnUp: number;
     lotusBurnDown: number;
     lotusBurnScore: number;
+    totalComments: number;
     createdAt: any;
     updatedAt: any;
     uploads?: Array<{
@@ -79,6 +80,7 @@ export type PostsQuery = {
         lotusBurnUp: number;
         lotusBurnDown: number;
         lotusBurnScore: number;
+        totalComments: number;
         createdAt: any;
         updatedAt: any;
         uploads?: Array<{
@@ -138,6 +140,7 @@ export type OrphanPostsQuery = {
         lotusBurnUp: number;
         lotusBurnDown: number;
         lotusBurnScore: number;
+        totalComments: number;
         createdAt: any;
         updatedAt: any;
         uploads?: Array<{
@@ -197,6 +200,7 @@ export type PostsByPageIdQuery = {
         lotusBurnUp: number;
         lotusBurnDown: number;
         lotusBurnScore: number;
+        totalComments: number;
         createdAt: any;
         updatedAt: any;
         uploads?: Array<{
@@ -256,6 +260,7 @@ export type PostsByUserIdQuery = {
         lotusBurnUp: number;
         lotusBurnDown: number;
         lotusBurnScore: number;
+        totalComments: number;
         createdAt: any;
         updatedAt: any;
         uploads?: Array<{
@@ -315,6 +320,7 @@ export type PostsByTokenIdQuery = {
         lotusBurnUp: number;
         lotusBurnDown: number;
         lotusBurnScore: number;
+        totalComments: number;
         createdAt: any;
         updatedAt: any;
         uploads?: Array<{
@@ -371,6 +377,7 @@ export type PostsBySearchQuery = {
         lotusBurnUp: number;
         lotusBurnDown: number;
         lotusBurnScore: number;
+        totalComments: number;
         createdAt: any;
         updatedAt: any;
         uploads?: Array<{
@@ -410,6 +417,7 @@ export type PostFieldsFragment = {
   lotusBurnUp: number;
   lotusBurnDown: number;
   lotusBurnScore: number;
+  totalComments: number;
   createdAt: any;
   updatedAt: any;
   uploads?: Array<{
@@ -440,6 +448,7 @@ export type PostMeiliFieldsFragment = {
   lotusBurnUp: number;
   lotusBurnDown: number;
   lotusBurnScore: number;
+  totalComments: number;
   createdAt: any;
   updatedAt: any;
   uploads?: Array<{
@@ -475,6 +484,7 @@ export type CreatePostMutation = {
     lotusBurnUp: number;
     lotusBurnDown: number;
     lotusBurnScore: number;
+    totalComments: number;
     createdAt: any;
     updatedAt: any;
     uploads?: Array<{
@@ -512,6 +522,7 @@ export type UpdatePostMutation = {
     lotusBurnUp: number;
     lotusBurnDown: number;
     lotusBurnScore: number;
+    totalComments: number;
     createdAt: any;
     updatedAt: any;
     uploads?: Array<{
@@ -576,6 +587,7 @@ export const PostFieldsFragmentDoc = `
   lotusBurnUp
   lotusBurnDown
   lotusBurnScore
+  totalComments
   createdAt
   updatedAt
 }
@@ -615,6 +627,7 @@ export const PostMeiliFieldsFragmentDoc = `
   lotusBurnUp
   lotusBurnDown
   lotusBurnScore
+  totalComments
   createdAt
   updatedAt
 }
