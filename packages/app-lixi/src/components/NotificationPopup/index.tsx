@@ -12,6 +12,7 @@ import { deleteNotification, readNotification } from '@store/notification/action
 import { downloadExportedLixi } from '@store/lixi/actions';
 import { useRouter } from 'next/router';
 import intl from 'react-intl-universal';
+import { push } from 'connected-next-router';
 
 export type NotificationMenuProps = {
   notifications: Notification[];
@@ -186,6 +187,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
   };
 
   const handleRead = (account: Account, notification: Notification) => {
+    dispatch(push(`${notification.url}`));
     dispatch(readNotification({ mnemonichHash: account.mnemonicHash, notificationId: notification.id }));
     if (notification.notificationTypeId === 3) {
       const { parentId, mnemonicHash, fileName } = notification.additionalData as any;

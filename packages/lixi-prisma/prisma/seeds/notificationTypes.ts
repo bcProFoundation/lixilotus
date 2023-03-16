@@ -31,16 +31,26 @@ export const notificationTypes = [
   },
   {
     id: 7,
-    name: 'comment-for-tip',
-    description: 'Comment notification for tip'
+    name: 'comment-to-give',
+    description: 'Notification to comment on giving tips'
   },
   {
     id: 8,
-    name: 'receive-burn-tip',
-    description: 'Notification get tip when burn for post'
+    name: 'burn',
+    description: 'Notification to burn'
   },
   {
     id: 9,
+    name: 'receive-burn-tip',
+    description: 'Notification get tip when burn'
+  },
+  {
+    id: 10,
+    name: 'receive-burn-fee',
+    description: 'Notification get fee when burn'
+  },
+  {
+    id: 11,
     name: 'receive-xpi',
     description: 'Notification to receive XPI'
   },

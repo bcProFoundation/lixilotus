@@ -21,6 +21,7 @@ import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
 import { PrismaService } from '../prisma/prisma.service';
 import { Notification, NotificationLevel } from '@bcpros/lixi-prisma';
 import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
+import { NotificationService } from 'src/common/modules/notifications/notification.service';
 
 const pubSub = new PubSub();
 
@@ -30,6 +31,7 @@ export class CommentResolver {
 
   constructor(
     private prisma: PrismaService,
+    private readonly notificationService: NotificationService,
     @I18n() private i18n: I18nService,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS
@@ -131,6 +133,11 @@ export class CommentResolver {
           }
         });
 
+        let commentGive;
+        const commentNormal = {
+          senderName: account.name
+        }
+
         if (tipHex) {
           const txData = await this.XPI.RawTransactions.decodeRawTransaction(tipHex);
           const { value } = txData['vout'][0];
@@ -139,6 +146,10 @@ export class CommentResolver {
           }
 
           const broadcastResponse = await this.chronik.broadcastTx(tipHex);
+          if (!broadcastResponse) {
+            throw new Error('Empty chronik broadcast response');
+          }
+
           const { txid } = broadcastResponse;
           const transactionTip = {
             txid,
@@ -150,17 +161,23 @@ export class CommentResolver {
             commentId: createdComment.id
           };
 
+          commentGive = {
+            senderName: account.name,
+            xpiGive: value
+          }
+
           await prisma.giveTip.create({ data: transactionTip });
         }
 
-        const noticeTip = {
+        const createNotif = {
           senderId: account.id,
           recipientId: post?.postAccount.id as number,
           notificationTypeId: tipHex ? NOTIFICATION_TYPES.COMMENT_TO_GIVE : NOTIFICATION_TYPES.COMMENT_ON_POST,
           level: NotificationLevel.INFO,
-          url: '/post/' + post?.id
+          url: '/post/' + post?.id,
+          additionalData: tipHex ? commentGive : commentNormal
         };
-        await prisma.notification.create({ data: noticeTip });
+        await this.notificationService.createNotification(createNotif);
 
         return createdComment;
       });

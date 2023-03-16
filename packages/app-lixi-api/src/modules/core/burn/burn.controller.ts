@@ -8,12 +8,14 @@ import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { parseBurnOutput } from 'src/utils/opReturnBurn';
 import { VError } from 'verror';
 import _ from 'lodash';
+import { NotificationService } from 'src/common/modules/notifications/notification.service';
 
 @Controller('burn')
 export class BurnController {
   private logger: Logger = new Logger(BurnController.name);
   constructor(
     private prisma: PrismaService,
+    private readonly notificationService: NotificationService,
     @I18n() private i18n: I18nService,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS

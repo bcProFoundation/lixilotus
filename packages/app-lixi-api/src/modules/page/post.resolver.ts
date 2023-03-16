@@ -39,6 +39,8 @@ import PostResponse from 'src/common/post.response';
 import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
 import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
 import { NotificationLevel } from '@bcpros/lixi-prisma';
+import { template } from 'src/utils/stringTemplate';
+import { NotificationService } from 'src/common/modules/notifications/notification.service';
 
 const pubSub = new PubSub();
 
@@ -47,7 +49,12 @@ const pubSub = new PubSub();
 export class PostResolver {
   private logger: Logger = new Logger(this.constructor.name);
 
-  constructor(private prisma: PrismaService, private meiliService: MeiliService, @I18n() private i18n: I18nService) { }
+  constructor(
+    private prisma: PrismaService, 
+    private meiliService: MeiliService, 
+    private readonly notificationService: NotificationService,
+    @I18n() private i18n: I18nService
+  ) { }
 
   @Subscription(() => Post)
   postCreated() {
@@ -596,15 +603,19 @@ export class PostResolver {
         throw new Error(couldNotFindAccount);
       }
 
-      await this.prisma.notification.create({
-        data: {
+      const createNotif = {
+        senderId: createdPost.postAccountId,
+        recipientId: Number(recipient?.pageAccountId),
+        notificationTypeId: NOTIFICATION_TYPES.POST_ON_PAGE,
+        level: NotificationLevel.INFO,
+        url: "/post/" + createdPost.id,
+        additionalData: {
           senderId: createdPost.postAccountId,
-          recipientId: Number(recipient?.pageAccountId),
-          notificationTypeId: NOTIFICATION_TYPES.POST_ON_PAGE,
-          level: NotificationLevel.INFO,
-          url: "/post/" + createdPost.id
+          senderName: createdPost.postAccount.name,
+          pageName: createdPost.page?.name
         }
-      });
+      }
+      await this.notificationService.createNotification(createNotif);
     }
 
     return createdPost;
