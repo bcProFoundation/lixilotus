@@ -45,3 +45,8 @@ export const getEditorCache = createSelector(
   (state: RootState) => state.accounts,
   (accounts: AccountsState) => accounts.editorCache
 );
+
+export const getLeaderBoard = createSelector(
+  (state: RootState) => state.accounts,
+  (accounts: AccountsState) => accounts.leaderBoard
+);

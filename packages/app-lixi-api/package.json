@@ -31,6 +31,7 @@
     "@bcpros/minimal-xpi-slp-wallet": "3.0.10",
     "@bcpros/xpi-js": "4.0.6",
     "@devoxa/prisma-relay-cursor-connection": "^2.2.2",
+    "@bcpros/xaddress": "0.1.1",
     "@fastify/compress": "^6.2.0",
     "@fastify/cookie": "8.3.0",
     "@fastify/csrf-protection": "^6.1.0",

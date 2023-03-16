@@ -1434,6 +1434,14 @@
     bch-donation "^1.1.1"
     crypto-js "^4.0.0"
 
+"@bcpros/xaddress@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@bcpros/xaddress/-/xaddress-0.1.1.tgz#fd88ed274c0e4754faff3a4830850094c5130ae7"
+  integrity sha512-sxwSOSTnP5jaNt2lcydgMPa+ibOIJB62f2KY/FUAlOqcDf3Dl5QBHZUQnxNE/NNXIVor6/IAEgps6N9+IYMX6w==
+  dependencies:
+    bs58 "^4.0.1"
+    crypto "^1.0.1"
+
 "@bcpros/xpi-js@4.0.6":
   version "4.0.6"
   resolved "https://registry.yarnpkg.com/@bcpros/xpi-js/-/xpi-js-4.0.6.tgz#05bcb13ac675276ceb04abe4a16b2b5a45f3fca2"
@@ -10995,6 +11003,11 @@ crypto-random-string@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/crypto-random-string/-/crypto-random-string-2.0.0.tgz#ef2a7a966ec11083388369baa02ebead229b30d5"
   integrity sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA==
+
+crypto@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/crypto/-/crypto-1.0.1.tgz#2af1b7cad8175d24c8a1b0778255794a21803037"
+  integrity sha512-VxBKmeNcqQdiUQUW2Tzq0t377b54N2bMtXO/qiLa+6eRRmmC4qT3D4OnTGoT/U6O9aklQ/jTwbOtRMTTY8G0Ig==
 
 css-blank-pseudo@^3.0.3:
   version "3.0.3"

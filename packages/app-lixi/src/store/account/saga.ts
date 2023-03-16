@@ -68,7 +68,10 @@ import {
   silentLoginSuccess,
   verifyEmail,
   verifyEmailFailure,
-  verifyEmailSuccess
+  verifyEmailSuccess,
+  getTopFive,
+  getTopFiveSuccess,
+  getTopFiveFailure
 } from './actions';
 import { getAccountById, getSelectedAccount } from './selectors';
 import { activateWallet } from '@store/wallet';
@@ -107,6 +110,34 @@ function* generateAccountSaga(action: PayloadAction) {
   yield put(postAccount(account));
 }
 
+function* getTopFiveSaga(action: PayloadAction<number>) {
+  try {
+    yield put(showLoading(getTopFive.type));
+    const data = yield call(accountApi.getTopFive);
+    // yield put(getAccountSuccess(data));
+    yield put(getTopFiveSuccess(data));
+  } catch (err) {
+    const message = (err as Error).message ?? intl.get('account.couldNotFetchAccount');
+    yield put(getTopFiveFailure(message));
+  }
+}
+
+function* getTopFiveSuccessSaga(action: any) {
+  yield put(hideLoading(getTopFive.type));
+}
+
+function* getTopFiveFailureSaga(action: PayloadAction<string>) {
+  const message = action.payload ?? intl.get('account.unableGetAccountFromServer');
+  yield put(
+    showToast('error', {
+      message: 'Error',
+      description: message,
+      duration: 5
+    })
+  );
+  yield put(hideLoading(getTopFive.type));
+}
+
 function* getAccountSaga(action: PayloadAction<number>) {
   try {
     yield put(showLoading(getAccount.type));
@@ -124,6 +155,7 @@ function* getAccountSuccessSaga(action: PayloadAction<Account>) {
   yield put(setAccount(action.payload));
   yield put(hideLoading(getAccount.type));
 }
+
 
 function* getAccountFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? intl.get('account.unableGetAccountFromServer');
@@ -481,7 +513,7 @@ function* refreshLixiListSilentSaga(action: PayloadAction<number>) {
     const lixiesData = yield call(lixiApi.getByAccountId, accountId);
     const lixies = (lixiesData ?? []) as Lixi[];
     yield put(refreshLixiListSilentSuccess({ account: account, lixies: lixies }));
-  } catch (err) {}
+  } catch (err) { }
 }
 
 function* registerViaEmailNoVerifiedSaga(action: PayloadAction<RegisterViaEmailNoVerifiedCommand>) {
@@ -711,6 +743,18 @@ function* watchVerifyEmailFailure() {
   yield takeLatest(verifyEmailFailure.type, verifyEmailFailureSaga);
 }
 
+function* watchTopFive() {
+  yield takeLatest(getTopFive.type, getTopFiveSaga);
+}
+
+function* watchTopFiveSuccess() {
+  yield takeLatest(getTopFiveSuccess.type, getTopFiveSuccessSaga);
+}
+
+function* watchTopFiveFailure() {
+  yield takeLatest(getTopFiveFailure.type, getTopFiveFailureSaga);
+}
+
 function* silentLoginSaga(action: PayloadAction<string>) {
   const mnemonic = action.payload;
   try {
@@ -789,6 +833,9 @@ export default function* accountSaga() {
     fork(watchloginViaEmailFailure),
     fork(watchVerifyEmailEmail),
     fork(watchVerifyEmailSuccess),
-    fork(watchVerifyEmailFailure)
+    fork(watchVerifyEmailFailure),
+    fork(watchTopFive),
+    fork(watchTopFiveSuccess),
+    fork(watchTopFiveFailure)
   ]);
 }

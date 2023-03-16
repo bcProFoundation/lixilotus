@@ -37,14 +37,16 @@ import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase58Str, hashMnemonic } f
 import { PrismaService } from '../../prisma/prisma.service';
 import { WalletService } from '../../wallet/wallet.service';
 import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
+import BCHJS from '@bcpros/xpi-js'
 
 @Controller('accounts')
 export class AccountController {
   constructor(
     private prisma: PrismaService,
     private readonly walletService: WalletService,
-    @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet
-  ) {}
+    @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
+    @Inject('xpijs') private XPI: BCHJS,
+  ) { }
 
   @Get(':id')
   async getAccount(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<AccountDto> {
@@ -113,6 +115,64 @@ export class AccountController {
     }
   }
 
+  @Get('top5')
+  async getMostBurnAcount() {
+    try {
+      const accountsBuffer = await this.prisma.burn.groupBy({
+        by: ['burnedBy'],
+        _sum: {
+          burnedValue: true,
+        },
+        orderBy: {
+          _sum: {
+            burnedValue: 'desc'
+          }
+        },
+        take: 5
+      });
+
+      const accounts = accountsBuffer.map((account: any) => {
+
+        const burnedBy = account.burnedBy.toString('hex');
+
+        const legacyAddress = this.XPI.Address.hash160ToLegacy(burnedBy)
+
+        const publicAddress = this.XPI.Address.toXAddress(legacyAddress);
+
+        const totalBurned = account._sum.burnedValue
+        return {
+          publicAddress,
+          totalBurned
+        }
+      })
+
+      const accountAddress = _.map(accounts, 'publicAddress');
+
+      const accountDTO = await this.prisma.account.findMany({
+        where: {
+          address: {
+            in: accountAddress
+          }
+        }
+      });
+
+      const accountDDO = accounts.map((obj1) => {
+        const obj2 = accountDTO.find((obj2) => obj2.address === obj1.publicAddress);
+        return { ...obj1, ...obj2 };
+      });
+
+      const result = accountDDO.map(data => _.omit({ ...data }, 'publicAddress'))
+      return result
+    } catch (err: unknown) {
+      if (err instanceof VError) {
+        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      } else {
+        const unableGetAccountMessage = await i18n.t('account.messages.unableGetAccount');
+        const error = new VError.WError(err as Error, unableGetAccountMessage);
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  }
   @Post('import')
   async import(@Body() importAccountCommand: ImportAccountCommand, @I18n() i18n: I18nContext): Promise<AccountDto> {
     const { mnemonic } = importAccountCommand;
