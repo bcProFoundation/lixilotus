@@ -511,6 +511,14 @@ export default {
   'token.tokenIdInvalid': 'Token Id không hợp lệ',
   'token.copyId': 'Token Id đã được sao chép.',
   'token.unableToBurn': 'Không thể đốt cho mã tiền',
+  //Show more info in token page 
+  'token.ticker': 'Mã',
+  'token.name': 'Tên',
+  'token.burntxpi': 'Xpi đã đốt',
+  'token.id': 'Id',
+  'token.created': 'Ngày tạo',
+  'token.comments': 'Ngày đăng bài',
+
 
   /* 17. Comment */
   'comment.unableCreateComment': 'Không thể tạo bình luận',
