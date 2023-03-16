@@ -217,6 +217,7 @@ type Post {
   postAccountId: Int!
   token: Token
   tokenId: String
+  totalComments: Int!
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!

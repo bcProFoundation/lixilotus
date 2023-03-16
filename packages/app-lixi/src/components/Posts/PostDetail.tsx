@@ -478,8 +478,6 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     []
   );
 
-  console.log('rerender');
-
   return (
     <>
       <StyledContainerPostDetail>

@@ -233,6 +233,7 @@ fragment PostFields on Post {
   lotusBurnUp
   lotusBurnDown
   lotusBurnScore
+  totalComments
   createdAt
   updatedAt
 }
@@ -271,6 +272,7 @@ fragment PostMeiliFields on Post {
   lotusBurnUp
   lotusBurnDown
   lotusBurnScore
+  totalComments
   createdAt
   updatedAt
 }
