@@ -122,7 +122,7 @@ export const IconBurn = ({
   imgUrl?: string;
   onClickIcon: (e: any) => void;
 }) => (
-  <Space onClick={onClickIcon} style={{ alignItems: 'end', marginRight: '1rem', gap: '4px !important' }}>
+  <Space onClick={onClickIcon} size={4} style={{ alignItems: 'end', marginRight: '1rem' }}>
     {icon && React.createElement(icon)}
     <picture>
       <StyledBurnIcon alt="burnIcon" src={imgUrl} />
