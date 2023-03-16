@@ -50,8 +50,8 @@ export class PostResolver {
   private logger: Logger = new Logger(this.constructor.name);
 
   constructor(
-    private prisma: PrismaService, 
-    private meiliService: MeiliService, 
+    private prisma: PrismaService,
+    private meiliService: MeiliService,
     private readonly notificationService: NotificationService,
     @I18n() private i18n: I18nService
   ) { }
@@ -420,14 +420,7 @@ export class PostResolver {
             include: { postAccount: true },
             where: {
               AND: [
-                {
-                  postAccountId: _.toSafeInteger(id)
-                },
-                {
-                  lotusBurnScore: {
-                    gte: minBurnFilter ?? 0
-                  }
-                },
+                { postAccountId: _.toSafeInteger(id) },
                 { pageId: null },
                 { tokenId: null }
               ]
@@ -439,14 +432,7 @@ export class PostResolver {
           this.prisma.post.count({
             where: {
               AND: [
-                {
-                  postAccountId: _.toSafeInteger(id)
-                },
-                {
-                  lotusBurnScore: {
-                    gte: minBurnFilter ?? 0
-                  }
-                },
+                { postAccountId: _.toSafeInteger(id) },
                 { pageId: null },
                 { tokenId: null }
               ]

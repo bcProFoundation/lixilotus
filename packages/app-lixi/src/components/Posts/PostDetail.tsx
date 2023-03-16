@@ -28,7 +28,7 @@ import { sendXPIFailure } from '@store/send/actions';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
 import { formatBalance, fromXpiToSatoshis, getUtxoWif } from '@utils/cashMethods';
-import { Avatar, Button, Image, Input, message, Popover, Skeleton, Space, Tooltip } from 'antd';
+import { Avatar, Button, Image, Input, message, Popover, Skeleton, Space, Tooltip, AutoComplete } from 'antd';
 import { Header } from 'antd/lib/layout/layout';
 import BigNumber from 'bignumber.js';
 import { ChronikClient } from 'chronik-client';
@@ -93,6 +93,147 @@ type PostDetailProps = {
   isMobile: boolean;
 };
 
+const CommentContainer = styled.div`
+  .comment-item {
+    text-align: left;
+    border: 0 !important;
+    .ant-comment-inner {
+      padding: 16px 0 8px 0;
+      .ant-comment-avatar {
+        .ant-avatar {
+          width: 37px !important;
+          height: 37px !important;
+        }
+      }
+    }
+    .ant-comment-actions {
+      margin-top: 4px;
+    }
+    .ant-comment-content-author-name {
+      text-transform: capitalize;
+    }
+  }
+`;
+
+const CommentInputContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-end;
+  margin-top: 1rem;
+  gap: 1rem;
+  .ava-ico-cmt {
+    .ant-avatar {
+      width: 40px !important;
+      height: 40px !important;
+    }
+  }
+  .ant-input-affix-wrapper {
+    border-top-left-radius: 6px !important;
+    border-bottom-left-radius: 6px !important;
+    input {
+      font-size: 13px;
+    }
+  }
+  .ant-input-group-addon {
+    button {
+      border-top-right-radius: 6px !important;
+      border-bottom-right-radius: 6px !important;
+    }
+  }
+`;
+
+const PostCardDetail = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 0 1rem;
+  .info-post {
+    display: flex;
+    img {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+    }
+  }
+`;
+
+const PostContentDetail = styled.div`
+  text-align: left;
+  .description-post {
+    margin: 1rem 0;
+    text-align: left;
+    word-break: break-word;
+    a {
+      cursor: pointer;
+    }
+  }
+  .images-post {
+    cursor: pointer;
+    width: 100%;
+    padding: 1rem;
+    margin: 1rem 0;
+    box-sizing: border-box;
+    box-shadow: 0 3px 12px rgb(0 0 0 / 4%);
+    background: var(--bg-color-light-theme);
+    transition: 0.5s ease;
+    img {
+      max-width: 100%;
+      max-height: 45vh;
+      object-fit: cover;
+    }
+  }
+`;
+
+const StyledContainerPostDetail = styled.div`
+  width: 100%;
+  border-radius: 5px;
+  background: white;
+  padding: 0rem 1rem 1rem 1rem;
+  margin-top: 1rem;
+  height: max-content;
+  border-radius: 1rem;
+  @media (max-width: 960px) {
+    padding-bottom: 9rem;
+  }
+  header {
+    padding: 0 !important;
+    margin-bottom: 1rem;
+    border-color: #c5c5c5;
+  }
+  .reaction-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem;
+    border: 1px solid #c5c5c5;
+    border-left: 0;
+    border-right: 0;
+    .ant-space {
+      gap: 4px !important;
+    }
+    .reaction-func {
+      color: rgba(30, 26, 29, 0.6);
+      cursor: pointer;
+      display: flex;
+      gap: 1rem;
+      img {
+        width: 28px;
+        height: 28px;
+        margin-right: 4px;
+      }
+    }
+  }
+
+  .comment-item-meta {
+    margin-bottom: 0.5rem;
+    .ant-list-item-meta-avatar {
+      margin-top: 3%;
+    }
+    .ant-list-item-meta-title {
+      margin-bottom: 0.5rem;
+    }
+  }
+`;
+
 const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const dispatch = useAppDispatch();
   const { control, getValues, setValue, setFocus } = useForm();
@@ -107,6 +248,9 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const selectedAccount = useAppSelector(getSelectedAccount);
   const [imagesList, setImagesList] = useState([]);
   const [isEncryptedOptionalOpReturnMsg, setIsEncryptedOptionalOpReturnMsg] = useState(true);
+  const [open, setOpen] = useState(false);
+
+  const dataSource = ['/give '];
 
   const { data, totalCount, fetchNext, hasNext, isFetching } = useInfiniteCommentsToPostIdQuery(
     {
@@ -211,146 +355,6 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     }
   };
 
-  const CommentContainer = styled.div`
-    .comment-item {
-      text-align: left;
-      border: 0 !important;
-      .ant-comment-inner {
-        padding: 16px 0 8px 0;
-        .ant-comment-avatar {
-          .ant-avatar {
-            width: 37px !important;
-            height: 37px !important;
-          }
-        }
-      }
-      .ant-comment-actions {
-        margin-top: 4px;
-      }
-      .ant-comment-content-author-name {
-        text-transform: capitalize;
-      }
-    }
-  `;
-
-  const CommentInputContainer = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: flex-end;
-    margin-top: 1rem;
-    gap: 1rem;
-    .ava-ico-cmt {
-      .ant-avatar {
-        width: 40px !important;
-        height: 40px !important;
-      }
-    }
-    .ant-input-affix-wrapper {
-      border-top-left-radius: 6px !important;
-      border-bottom-left-radius: 6px !important;
-      input {
-        font-size: 13px;
-      }
-    }
-    .ant-input-group-addon {
-      button {
-        border-top-right-radius: 6px !important;
-        border-bottom-right-radius: 6px !important;
-      }
-    }
-  `;
-
-  const PostCardDetail = styled.div`
-    display: flex;
-    justify-content: space-between;
-    padding: 0 1rem;
-    .info-post {
-      display: flex;
-      img {
-        width: 35px;
-        height: 35px;
-        border-radius: 50%;
-      }
-    }
-  `;
-
-  const PostContentDetail = styled.div`
-    text-align: left;
-    .description-post {
-      margin: 1rem 0;
-      text-align: left;
-      word-break: break-word;
-      a {
-        cursor: pointer;
-      }
-    }
-    .images-post {
-      cursor: pointer;
-      width: 100%;
-      padding: 1rem;
-      margin: 1rem 0;
-      box-sizing: border-box;
-      box-shadow: 0 3px 12px rgb(0 0 0 / 4%);
-      background: var(--bg-color-light-theme);
-      transition: 0.5s ease;
-      img {
-        max-width: 100%;
-        object-fit: cover;
-      }
-    }
-  `;
-
-  const StyledContainerPostDetail = styled.div`
-    width: 100%;
-    border-radius: 5px;
-    background: white;
-    padding: 0rem 1rem 1rem 1rem;
-    margin-top: 1rem;
-    height: max-content;
-    border-radius: 1rem;
-    @media (max-width: 960px) {
-      padding-bottom: 9rem;
-    }
-    header {
-      padding: 0 !important;
-      margin-bottom: 1rem;
-      border-color: #c5c5c5;
-    }
-    .reaction-container {
-      display: flex;
-      justify-content: space-between;
-      padding: 0.5rem;
-      border: 1px solid #c5c5c5;
-      border-left: 0;
-      border-right: 0;
-      .ant-space {
-        gap: 4px !important;
-      }
-      .reaction-func {
-        color: rgba(30, 26, 29, 0.6);
-        cursor: pointer;
-        display: flex;
-        gap: 1rem;
-        img {
-          width: 28px;
-          height: 28px;
-          margin-right: 4px;
-        }
-      }
-    }
-
-    .comment-item-meta {
-      margin-bottom: 0.5rem;
-      .ant-list-item-meta-avatar {
-        margin-top: 3%;
-      }
-      .ant-list-item-meta-title {
-        margin-bottom: 0.5rem;
-      }
-    }
-  `;
-
   const ShareButton = styled.span`
     margin-left: 10px;
   `;
@@ -373,9 +377,11 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   };
 
   const handleCreateNewComment = async (text: string) => {
-    if (_.isNil(text) || _.isEmpty(text)) {
+    if (_.isNil(text) || _.isEmpty(text) || text === '/') {
       return;
     }
+
+    if (open) return;
 
     if (text !== '' || !_.isNil(text)) {
       let tipHex;
@@ -472,6 +478,8 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     []
   );
 
+  console.log('rerender');
+
   return (
     <>
       <StyledContainerPostDetail>
@@ -551,21 +559,40 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           </div>
           <Controller
             name="comment"
+            key="comment"
             control={control}
             render={({ field: { onChange, onBlur, value, ref } }) => (
-              <Search
-                ref={ref}
-                className="input-comment"
-                placeholder={intl.get('comment.writeComment')}
-                enterButton="Comment"
+              <AutoComplete
+                onSelect={() => {
+                  setOpen(false);
+                }}
+                dataSource={dataSource}
+                filterOption={(inputValue, option) => inputValue === '/'}
+                open={open}
+                onSearch={value => {
+                  if (value === '/') setOpen(true);
+                  else setOpen(false);
+                }}
+                getPopupContainer={trigger => trigger.parentElement}
+                value={value}
                 onChange={onChange}
                 onBlur={onBlur}
-                value={value}
-                size="large"
-                suffix={<DashOutlined />}
-                onSearch={handleCreateNewComment}
-                loading={isLoadingCreateComment}
-              />
+                style={{ width: '-webkit-fill-available' }}
+              >
+                <Search
+                  ref={ref}
+                  className="input-comment"
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  value={value}
+                  placeholder={intl.get('comment.writeComment')}
+                  enterButton="Comment"
+                  size="large"
+                  suffix={<DashOutlined />}
+                  onSearch={handleCreateNewComment}
+                  loading={isLoadingCreateComment}
+                />
+              </AutoComplete>
             )}
           />
         </CommentInputContainer>
