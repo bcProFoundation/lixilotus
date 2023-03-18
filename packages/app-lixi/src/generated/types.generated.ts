@@ -260,6 +260,7 @@ export type Post = {
   postAccountId: Scalars['Int'];
   token?: Maybe<Token>;
   tokenId?: Maybe<Scalars['String']>;
+  totalComments: Scalars['Int'];
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
   uploads?: Maybe<Array<UploadDetail>>;

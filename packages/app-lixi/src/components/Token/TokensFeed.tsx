@@ -8,7 +8,19 @@ import { useInfinitePostsByTokenIdQuery } from '@store/post/useInfinitePostsByTo
 import { getSelectedToken, getToken } from '@store/token';
 import { useTokenQuery } from '@store/token/tokens.api';
 import { formatBalance, fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods';
-import { Button, Dropdown, Image, Menu, MenuProps, message, notification, Skeleton, Space, Tabs } from 'antd';
+import {
+  Button,
+  Dropdown,
+  Image,
+  Menu,
+  MenuProps,
+  message,
+  notification,
+  Skeleton,
+  Space,
+  Tabs,
+  TimePicker
+} from 'antd';
 import makeBlockie from 'ethereum-blockies-base64';
 import React, { useEffect, useRef, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
@@ -35,6 +47,8 @@ import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import { FilterBurnt } from '@components/Common/FilterBurn';
 import { getSelectedAccountId } from '@store/account/selectors';
 import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
+import Ticker from '@bcpros/lixi-components/src/atoms/Ticker';
+import { LikeOutlined } from '@ant-design/icons';
 
 export type TokenItem = TokenQuery['token'];
 
@@ -80,11 +94,25 @@ const BannerTicker = styled.div`
         height: 120px;
       }
     }
+    // css reponsive Show more info in token page
     .info-ticker {
+      width: 100%;
       display: flex;
-      flex-direction: column;
-      justify-content: space-around;
-      align-items: flex-start;
+      flex-direction: row;
+      justify-content: space-between;
+      .info-ticker__left {
+        display: flex;
+        flex-direction: column;
+        justify-content: end;
+        align-items: flex-start;
+      }
+      .info-ticker__right {
+        margin-right: 150px;
+        display: flex;
+        flex-direction: column;
+        justify-content: end;
+        align-items: flex-start;
+      }
       .title-ticker {
         margin: 0;
         font-size: 28px;
@@ -108,14 +136,18 @@ const BannerTicker = styled.div`
           }
         }
       }
+      @media (max-width: 650px) {
+        flex-direction: column;
+      }
     }
     @media (max-width: 960px) {
       flex-direction: column;
     }
   }
   .score-ticker {
+    margin-left: 60rem;
+    display: inline-flex;
     margin-top: 1rem;
-    text-align: right;
     .count {
       color: #edeff099 !important;
     }
@@ -284,25 +316,36 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
               preview={false}
             />
           </div>
+          {/* Show more info in token page */}
           <div className="info-ticker">
-            <h4 className="title-ticker">{tokenDetailData['ticker']}</h4>
-            <InfoSubCard typeName={'Name:'} content={tokenDetailData.name} />
-            <CopyToClipboard text={tokenDetailData.tokenId} onCopy={() => handleOnCopy(tokenDetailData.tokenId)}>
-              <div>
+            <div className="info-ticker__left">
+              <h4 className="title-ticker">{tokenDetailData['ticker']}</h4>
+              <InfoSubCard typeName={intl.get('token.ticker')} content={tokenDetailData.ticker} />
+              <InfoSubCard typeName={intl.get('token.name')} content={tokenDetailData.name} />
+              <InfoSubCard typeName={intl.get('token.burntxpi')} content={tokenDetailData.lotusBurnUp} />
+            </div>
+            <div className="info-ticker__right">
+              <CopyToClipboard text={tokenDetailData.tokenId} onCopy={() => handleOnCopy(tokenDetailData.tokenId)}>
                 <InfoSubCard
-                  typeName={'ID:'}
+                  typeName={intl.get('token.id')}
                   content={tokenDetailData.tokenId.slice(0, 7) + '...' + tokenDetailData.tokenId.slice(-7)}
                   icon={CopyOutlined}
+                  onClickIcon={() => {}}
                 />
-              </div>
-            </CopyToClipboard>
-            <InfoSubCard
-              typeName={'Created:'}
-              content={moment(tokenDetailData.createdDate).format('YYYY-MM-DD HH:MM')}
-            />
+              </CopyToClipboard>
+              <InfoSubCard
+                typeName={intl.get('token.created')}
+                content={moment(tokenDetailData.createdDate).format('YYYY-MM-DD HH:MM')}
+              />
+              <InfoSubCard
+                typeName={intl.get('token.comments')}
+                content={moment(tokenDetailData.comments).format('YYYY-MM-DD HH:MM')}
+              />
+            </div>
           </div>
         </div>
         <div className="score-ticker">
+          <LikeOutlined style={{ marginRight: '10px', fontSize: '1.2rem' }} />
           <IconBurn
             imgUrl="/images/ico-burn-up.svg"
             burnValue={formatBalance(tokenDetailData?.lotusBurnUp ?? 0)}

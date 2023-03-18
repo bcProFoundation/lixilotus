@@ -82,7 +82,7 @@ export class PostResolver {
     const result = await findManyCursorConnection(
       args =>
         this.prisma.post.findMany({
-          include: { postAccount: true },
+          include: { postAccount: true, comments: true },
           where: {
             OR: [
               {
@@ -144,7 +144,7 @@ export class PostResolver {
     const result = await findManyCursorConnection(
       args =>
         this.prisma.post.findMany({
-          include: { postAccount: true },
+          include: { postAccount: true, comments: true },
           where: {
             OR: [
               { postAccountId: accountId },
@@ -221,7 +221,7 @@ export class PostResolver {
       result = await findManyCursorConnection(
         args =>
           this.prisma.post.findMany({
-            include: { postAccount: true },
+            include: { postAccount: true, comments: true },
             where: {
               OR: [
                 {
@@ -340,7 +340,7 @@ export class PostResolver {
     const result = await findManyCursorConnection(
       args =>
         this.prisma.post.findMany({
-          include: { postAccount: true },
+          include: { postAccount: true, comments: true },
           where: {
             OR: [
               {
@@ -409,20 +409,9 @@ export class PostResolver {
       result = await findManyCursorConnection(
         args =>
           this.prisma.post.findMany({
-            include: { postAccount: true },
+            include: { postAccount: true, comments: true },
             where: {
-              AND: [
-                {
-                  postAccountId: _.toSafeInteger(id)
-                },
-                {
-                  lotusBurnScore: {
-                    gte: minBurnFilter ?? 0
-                  }
-                },
-                { pageId: null },
-                { tokenId: null }
-              ]
+              AND: [{ postAccountId: _.toSafeInteger(id) }, { pageId: null }, { tokenId: null }]
             },
             orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
             ...args
@@ -430,18 +419,7 @@ export class PostResolver {
         () =>
           this.prisma.post.count({
             where: {
-              AND: [
-                {
-                  postAccountId: _.toSafeInteger(id)
-                },
-                {
-                  lotusBurnScore: {
-                    gte: minBurnFilter ?? 0
-                  }
-                },
-                { pageId: null },
-                { tokenId: null }
-              ]
+              AND: [{ postAccountId: _.toSafeInteger(id) }, { pageId: null }, { tokenId: null }]
             }
           }),
         { first, last, before, after }
@@ -645,6 +623,17 @@ export class PostResolver {
     });
 
     return account;
+  }
+
+  @ResolveField('totalComments', () => Number)
+  async postComments(@Parent() post: Post) {
+    const totalComments = await this.prisma.comment.count({
+      where: {
+        commentToId: post.id
+      }
+    });
+
+    return totalComments;
   }
 
   @ResolveField('pageAccount', () => Account)

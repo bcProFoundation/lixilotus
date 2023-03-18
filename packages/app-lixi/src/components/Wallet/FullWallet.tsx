@@ -102,22 +102,27 @@ const TransactionHistory = styled.div`
           .tx-memo {
             letter-spacing: 0.25px;
             color: rgba(0, 30, 46, 0.6);
+            margin-top: 16px;
           }
         }
       }
       .tx-info {
+        margin-top: 24px;
         .tx-status {
           background: linear-gradient(0deg, rgba(0, 101, 141, 0.08), rgba(0, 101, 141, 0.08)), #fafafb;
           border-radius: 4px;
           font-size: 12px;
           color: rgba(0, 30, 46, 0.6);
-          letter-spacing: 0.4px;
+          letter-spacing: 0.25px;
         }
         .tx-date {
           font-size: 12px;
           color: rgba(0, 30, 46, 0.6);
-          letter-spacing: 0.4px;
+          letter-spacing: 0.25px;
         }
+      }
+      .icon-reply {
+        margin-top: 6.5px;
       }
     }
   }
@@ -273,7 +278,9 @@ const FullWalletComponent: React.FC = () => {
                                       </p>
                                     )}
                                   </p>
-                                  <p className="tx-memo">{memo}</p>
+                                  <p className="tx-memo">
+                                    <LockOutlined /> {memo}
+                                  </p>
                                 </div>
                               }
                             />
@@ -289,7 +296,7 @@ const FullWalletComponent: React.FC = () => {
                                   }}
                                 >
                                   <Button size="small" type="text">
-                                    <p>
+                                    <p className="icon-reply">
                                       <Reply /> {intl.get('account.reply')}
                                     </p>
                                   </Button>
