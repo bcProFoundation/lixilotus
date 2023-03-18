@@ -93,6 +93,8 @@ export default {
   'general.burnForType': 'Đốt cho loại',
   'general.failed': 'Thất bại',
   'general.minBurnt': 'XPI tối thiểu đã đốt:',
+  'general.showMore': 'Xem thêm',
+  'general.showLess': 'Xem ít',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',

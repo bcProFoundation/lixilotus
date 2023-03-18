@@ -28,6 +28,7 @@ import styled from 'styled-components';
 import { EditPostModalProps } from './EditPostModalPopup';
 import Gallery from 'react-photo-gallery';
 import useWindowDimensions from '@hooks/useWindowDimensions';
+import { ReadMoreMore } from 'read-more-more';
 
 export const IconBurn = ({
   icon,
@@ -86,6 +87,13 @@ const Content = styled.div`
     word-break: break-word;
     cursor: pointer;
     margin-bottom: 1rem;
+    div > div > [data-lexical-decorator] {
+      display: flex;
+      justify-content: center;
+      @media (max-width: 960px) {
+        max-height: 500px;
+      }
+    }
     @media (max-width: 960px) {
       div {
         &[data-lexical-decorator='true'] > div > div {
@@ -120,22 +128,6 @@ const Content = styled.div`
     }
     p {
       margin: 0;
-    }
-    &.show-more {
-      display: block !important;
-      height: fit-content !important;
-      overflow: none !important;
-    }
-    &.show-less {
-      white-space: normal;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      line-clamp: 5;
-      -webkit-line-clamp: 5;
-      box-orient: vertical;
-      -webkit-box-orient: vertical;
-      margin-bottom: 0;
     }
   }
   .image-cover {
@@ -212,8 +204,9 @@ const PostListItemContainer = styled(List.Item)`
   border: none;
   border: 1px solid var(--boder-item-light);
   &:hover {
-    // background: #f7f7f7;
+    background: rgb(252, 252, 252);
   }
+  transition: 0.5s;
 `;
 
 type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
@@ -267,26 +260,8 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
 
   if (!post) return null;
 
-  useEffect(() => {
-    const descPost = ref?.current.querySelector('.description-post');
-    if (descPost.clientHeight > 130) {
-      descPost.classList.add('show-less');
-      setShowMore(true);
-    } else {
-      setShowMore(false);
-    }
-  }, []);
-
-  const showMoreHandle = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const descPostDom = ref?.current.querySelector('.description-post');
-    descPostDom.classList.add('show-more');
-    setShowMore(false);
-  };
-
   const handlePostClick = e => {
-    if (e.target.parentElement.tagName === 'A') {
+    if (e.target.className === 'read-more-more-module_btn__33IaH') {
       e.stopPropagation();
     } else {
       router.push(`/post/${post.id}`);
@@ -422,15 +397,21 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
           />
         </CardHeader>
         <Content onClick={e => handlePostClick(e)}>
-          <div className="description-post">{ReactHtmlParser(post?.content)}</div>
-          {showMore && (
-            <p
-              style={{ textAlign: 'left', color: 'var(--color-primary)', marginBottom: '1rem', cursor: 'pointer' }}
-              onClick={e => showMoreHandle(e)}
-            >
-              Show more...
-            </p>
-          )}
+          <div className="description-post">
+            <div className="read-more">
+              <ReadMoreMore
+                id="readMore"
+                linesToShow={5}
+                parseHtml
+                text={post?.content}
+                checkFor={500}
+                transDuration={0}
+                readMoreText={intl.get('general.showMore')}
+                readLessText={intl.get('general.showLess')}
+                btnStyles={{ color: 'var(--color-primary)' }}
+              />
+            </div>
+          </div>
           {item.uploads.length != 0 && !showMoreImage && (
             <div className="images-post">
               <Gallery photos={imagesList} />
