@@ -250,7 +250,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const [isEncryptedOptionalOpReturnMsg, setIsEncryptedOptionalOpReturnMsg] = useState(true);
   const [open, setOpen] = useState(false);
 
-  const dataSource = ['/give '];
+  const dataSource = ['/give'];
 
   const { data, totalCount, fetchNext, hasNext, isFetching } = useInfiniteCommentsToPostIdQuery(
     {
@@ -565,17 +565,21 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
                   setOpen(false);
                 }}
                 dataSource={dataSource}
-                filterOption={(inputValue, option) => inputValue === '/'}
                 open={open}
                 onSearch={value => {
-                  if (value === '/') setOpen(true);
-                  else setOpen(false);
+                  //TODO: This is not the best way to implement. Will come back later
+                  if (/\d+$/.test(value) || value === '') {
+                    setOpen(false);
+                  } else if (value.startsWith('/')) {
+                    setOpen(true);
+                  }
                 }}
+                defaultActiveFirstOption
                 getPopupContainer={trigger => trigger.parentElement}
                 value={value}
                 onChange={onChange}
                 onBlur={onBlur}
-                style={{ width: '-webkit-fill-available' }}
+                style={{ width: '-webkit-fill-available', textAlign: 'left' }}
               >
                 <Search
                   ref={ref}
