@@ -482,7 +482,8 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
         burnValue,
         tipToAddresses: tipToAddresses,
         postQueryTag: PostsQueryTag.PostsByPageId,
-        pageId: post.page?.id
+        pageId: post.page?.id,
+        minBurnFilter: filterValue
       };
 
       dispatch(addBurnQueue(burnCommand));
