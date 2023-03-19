@@ -7,7 +7,14 @@ const enhancedApi = api.enhanceEndpoints({
       providesTags: ['Token']
     },
     Token: {
-      providesTags: ['Token']
+      providesTags: ['Token'],
+      serializeQueryArgs({ queryArgs }) {
+        if (queryArgs) {
+          const { tokenId, ...otherArgs } = queryArgs;
+          return { tokenId };
+        }
+        return { queryArgs };
+      }
     },
     createToken: {
       invalidatesTags: ['Token']

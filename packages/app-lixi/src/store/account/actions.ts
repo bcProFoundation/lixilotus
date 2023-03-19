@@ -64,3 +64,5 @@ export const verifyEmailSuccess = createAction<any>('account/verifyEmailSuccess'
 export const verifyEmailFailure = createAction<any>('account/verifyEmailFailure');
 export const saveEditorTextToCache = createAction<string>('posts/saveEditorToCache');
 export const deleteEditorTextFromCache = createAction('posts/deleteEditorTextFromCache');
+export const setTransactionReady = createAction('account/setTransactionReady');
+export const setTransactionNotReady = createAction('account/setTransactionNotReady');
