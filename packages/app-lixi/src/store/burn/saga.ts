@@ -1,4 +1,4 @@
-import { BurnType, Burn, BurnCommand, BurnForType } from '@bcpros/lixi-models/lib/burn';
+import { BurnType, Burn, BurnCommand, BurnForType, BurnQueueCommand } from '@bcpros/lixi-models/lib/burn';
 import { all, call, fork, takeLatest, take, put as putChannel } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
@@ -151,7 +151,7 @@ function* burnForUpDownVoteFailureSaga(action: PayloadAction<string>) {
   yield put(hideLoading(burnForUpDownVote.type));
 }
 
-function* updatePostBurnValue(action: PayloadAction<any>) {
+function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
   const command = action.payload;
   // @todo: better control the params for search/others
   const params = {
@@ -209,51 +209,63 @@ function* updatePostBurnValue(action: PayloadAction<any>) {
       );
     case PostsQueryTag.PostsByPageId:
       return yield put(
-        postApi.util.updateQueryData('PostsByPageId', { ...params, id: command.pageId }, draft => {
-          const postToUpdateIndex = draft.allPostsByPageId.edges.findIndex(item => item.node.id === command.burnForId);
-          const postToUpdate = draft.allPostsByPageId.edges[postToUpdateIndex];
-          if (postToUpdateIndex >= 0) {
-            let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
-            let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
-            if (command.burnType == BurnType.Up) {
-              lotusBurnUp = lotusBurnUp + burnValue;
-            } else {
-              lotusBurnDown = lotusBurnDown + burnValue;
-            }
-            const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-            draft.allPostsByPageId.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
-            draft.allPostsByPageId.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
-            draft.allPostsByPageId.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
-            if (lotusBurnScore < 0) {
-              draft.allPostsByPageId.edges.splice(postToUpdateIndex, 1);
-              draft.allPostsByPageId.totalCount = draft.allPostsByPageId.totalCount - 1;
+        postApi.util.updateQueryData(
+          'PostsByPageId',
+          { ...params, id: command.pageId, minBurnFilter: command.minBurnFilter },
+          draft => {
+            const postToUpdateIndex = draft.allPostsByPageId.edges.findIndex(
+              item => item.node.id === command.burnForId
+            );
+            const postToUpdate = draft.allPostsByPageId.edges[postToUpdateIndex];
+            if (postToUpdateIndex >= 0) {
+              let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
+              let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+              if (command.burnType == BurnType.Up) {
+                lotusBurnUp = lotusBurnUp + burnValue;
+              } else {
+                lotusBurnDown = lotusBurnDown + burnValue;
+              }
+              const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+              draft.allPostsByPageId.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
+              draft.allPostsByPageId.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
+              draft.allPostsByPageId.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
+              if (lotusBurnScore < 0) {
+                draft.allPostsByPageId.edges.splice(postToUpdateIndex, 1);
+                draft.allPostsByPageId.totalCount = draft.allPostsByPageId.totalCount - 1;
+              }
             }
           }
-        })
+        )
       );
     case PostsQueryTag.PostsByTokenId:
       return yield put(
-        postApi.util.updateQueryData('PostsByTokenId', { ...params, id: command.tokenId }, draft => {
-          const postToUpdateIndex = draft.allPostsByTokenId.edges.findIndex(item => item.node.id === command.burnForId);
-          const postToUpdate = draft.allPostsByTokenId.edges[postToUpdateIndex];
-          if (postToUpdateIndex >= 0) {
-            let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
-            let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
-            if (command.burnType == BurnType.Up) {
-              lotusBurnUp = lotusBurnUp + burnValue;
-            } else {
-              lotusBurnDown = lotusBurnDown + burnValue;
-            }
-            const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-            draft.allPostsByTokenId.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
-            draft.allPostsByTokenId.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
-            draft.allPostsByTokenId.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
-            if (lotusBurnScore < 0) {
-              draft.allPostsByTokenId.edges.splice(postToUpdateIndex, 1);
-              draft.allPostsByTokenId.totalCount = draft.allPostsByTokenId.totalCount - 1;
+        postApi.util.updateQueryData(
+          'PostsByTokenId',
+          { ...params, id: command.tokenId, minBurnFilter: command.minBurnFilter },
+          draft => {
+            const postToUpdateIndex = draft.allPostsByTokenId.edges.findIndex(
+              item => item.node.id === command.burnForId
+            );
+            const postToUpdate = draft.allPostsByTokenId.edges[postToUpdateIndex];
+            if (postToUpdateIndex >= 0) {
+              let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
+              let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+              if (command.burnType == BurnType.Up) {
+                lotusBurnUp = lotusBurnUp + burnValue;
+              } else {
+                lotusBurnDown = lotusBurnDown + burnValue;
+              }
+              const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+              draft.allPostsByTokenId.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
+              draft.allPostsByTokenId.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
+              draft.allPostsByTokenId.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
+              if (lotusBurnScore < 0) {
+                draft.allPostsByTokenId.edges.splice(postToUpdateIndex, 1);
+                draft.allPostsByTokenId.totalCount = draft.allPostsByTokenId.totalCount - 1;
+              }
             }
           }
-        })
+        )
       );
     default:
       return yield put(

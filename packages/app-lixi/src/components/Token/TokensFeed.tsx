@@ -287,7 +287,8 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
         burnValue,
         tipToAddresses: tipToAddresses,
         postQueryTag: PostsQueryTag.PostsByTokenId,
-        tokenId: post.token?.id
+        tokenId: post.token?.id,
+        minBurnFilter: filterValue
       };
 
       dispatch(addBurnQueue(burnCommand));
