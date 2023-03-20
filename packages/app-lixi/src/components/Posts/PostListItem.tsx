@@ -8,14 +8,14 @@ import { currency } from '@components/Common/Ticker';
 import { WalletContext } from '@context/walletProvider';
 import useXPI from '@hooks/useXPI';
 import { getSelectedAccount } from '@store/account/selectors';
-import { burnForUpDownVote } from '@store/burn/actions';
+import { addBurnQueue, addBurnTransaction, burnForUpDownVote } from '@store/burn/actions';
 import { openModal } from '@store/modal/actions';
 import { PostsQuery } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
 import { formatBalance, fromXpiToSatoshis } from '@utils/cashMethods';
-import { List, Space, Button, Image } from 'antd';
-import { PlusCircleOutlined } from '@ant-design/icons';
+import { List, Space, Button, Image, notification } from 'antd';
+import { FireTwoTone, PlusCircleOutlined } from '@ant-design/icons';
 import BigNumber from 'bignumber.js';
 import _ from 'lodash';
 import moment from 'moment';
@@ -28,26 +28,27 @@ import styled from 'styled-components';
 import { EditPostModalProps } from './EditPostModalPopup';
 import Gallery from 'react-photo-gallery';
 import useWindowDimensions from '@hooks/useWindowDimensions';
+import { IconBurn } from './PostDetail';
 
-export const IconBurn = ({
-  icon,
-  burnValue,
-  dataItem,
-  imgUrl,
-  onClickIcon
-}: {
-  icon?: React.FC;
-  burnValue?: number;
-  dataItem: any;
-  imgUrl?: string;
-  onClickIcon: (e) => void;
-}) => (
-  <Space onClick={onClickIcon}>
-    {icon && React.createElement(icon)}
-    {imgUrl && React.createElement('img', { src: imgUrl, width: '28' }, null)}
-    <Counter num={burnValue ?? 0} />
-  </Space>
-);
+// export const IconBurn = ({
+//   icon,
+//   burnValue,
+//   dataItem,
+//   imgUrl,
+//   onClickIcon
+// }: {
+//   icon?: React.FC;
+//   burnValue?: number;
+//   dataItem: any;
+//   imgUrl?: string;
+//   onClickIcon: (e) => void;
+// }) => (
+//   <Space onClick={onClickIcon}>
+//     {icon && React.createElement(icon)}
+//     {imgUrl && React.createElement('img', { src: imgUrl, width: '28' }, null)}
+//     <Counter num={burnValue ?? 0} />
+//   </Space>
+// );
 
 export const CommentList = ({ comments }: { comments: CommentItem[] }) => (
   <List
@@ -222,9 +223,10 @@ type PostListItemProps = {
   index: number;
   item: PostItem;
   searchValue?: string;
+  handleBurnForPost?: (isUpVote: boolean, post: any) => Promise<void>;
 };
 
-const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
+const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListItemProps) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const post: PostItem = item;
@@ -236,10 +238,9 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
   const [showMoreImage, setShowMoreImage] = useState(true);
   const [imagesList, setImagesList] = useState([]);
   const ref = useRef<HTMLDivElement | null>(null);
-
   const Wallet = React.useContext(WalletContext);
   const { XPI, chronik } = Wallet;
-  const { burnXpi } = useXPI();
+  const { createBurnTransaction } = useXPI();
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const selectedAccount = useAppSelector(getSelectedAccount);
@@ -303,81 +304,6 @@ const PostListItem = ({ index, item, searchValue }: PostListItemProps) => {
     e.preventDefault();
     e.stopPropagation();
     handleBurnForPost(false, dataItem);
-  };
-
-  const handleBurnForPost = async (isUpVote: boolean, post: PostItem) => {
-    try {
-      if (slpBalancesAndUtxos.nonSlpUtxos.length == 0) {
-        throw new Error('Insufficient funds');
-      }
-      const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
-      const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
-      const { hash160, xAddress } = currentWalletPath;
-      const burnType = isUpVote ? BurnType.Up : BurnType.Down;
-      const burnedBy = hash160;
-      const burnForId = post.id;
-      const burnValue = '1';
-      let tipToAddresses: { address: string; amount: string }[] = [
-        {
-          address: post.page ? post.pageAccount.address : post.postAccount.address,
-          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
-        }
-      ];
-
-      if (burnType === BurnType.Up && selectedAccount.address !== post.postAccount.address) {
-        tipToAddresses.push({
-          address: post.postAccount.address,
-          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
-        });
-      }
-
-      tipToAddresses = tipToAddresses.filter(item => item.address != selectedAccount.address);
-
-      let tag: string;
-
-      if (_.isNil(post.page) && _.isNil(post.token)) {
-        tag = PostsQueryTag.Posts;
-      } else if (post.page) {
-        tag = PostsQueryTag.PostsByPageId;
-      } else if (post.token) {
-        tag = PostsQueryTag.PostsByTokenId;
-      }
-
-      const txHex = await burnXpi(
-        XPI,
-        walletPaths,
-        slpBalancesAndUtxos.nonSlpUtxos,
-        currency.defaultFee,
-        burnType,
-        BurnForType.Post,
-        burnedBy,
-        burnForId,
-        burnValue,
-        tipToAddresses
-      );
-
-      const burnCommand: BurnCommand = {
-        txHex,
-        burnType,
-        burnForType: BurnForType.Post,
-        burnedBy,
-        burnForId,
-        burnValue,
-        tipToAddresses: tipToAddresses,
-        postQueryTag: tag,
-        pageId: post.page?.id,
-        tokenId: post.token?.id
-      };
-
-      dispatch(burnForUpDownVote(burnCommand));
-    } catch (e) {
-      dispatch(
-        showToast('error', {
-          message: intl.get('post.unableToBurn'),
-          duration: 5
-        })
-      );
-    }
   };
 
   const showUsername = () => {

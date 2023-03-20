@@ -25,6 +25,7 @@ export interface ParsedChronikTx {
   // Burn
   isBurn: boolean;
   burnInfo?: ParseBurnResult;
+  xpiBurnAmount: string;
 }
 
 const getWalletPathsFromWalletState = (wallet: WalletState) => {
@@ -348,7 +349,7 @@ export const parseChronikTx = async (
     }
 
     // Check OP_RETURN burn
-    if (thisOutputReceivedAtHash160.startsWith('6a')) {
+    if (!isLotusMessage && thisOutputReceivedAtHash160.startsWith('6a')) {
       isBurn = true;
       xpiBurnAmount = new BigNumber(thisOutput.value);
       parseBurnResult = parseBurnOutput(thisOutputReceivedAtHash160);
@@ -380,10 +381,11 @@ export const parseChronikTx = async (
   // Convert from sats to XPI
   xpiAmount = xpiAmount.shiftedBy(-1 * currency.cashDecimals);
   if (isBurn) {
-    xpiAmount = xpiAmount.plus(xpiBurnAmount.shiftedBy(-1 * currency.cashDecimals));
+    xpiBurnAmount = xpiBurnAmount.shiftedBy(-1 * currency.cashDecimals);
   }
   // Convert from BigNumber to string
   const xpiAmountString = xpiAmount.toString();
+  const xpiBurnAmountString = xpiBurnAmount.toString();
 
   // Convert messageHex to string
   const theOtherAddress = incoming ? replyAddress : destinationAddress;
@@ -427,7 +429,8 @@ export const parseChronikTx = async (
     replyAddress,
     destinationAddress,
     isBurn,
-    burnInfo: isBurn && parseBurnResult
+    burnInfo: isBurn && parseBurnResult,
+    xpiBurnAmount: xpiBurnAmountString
   };
   return parsedTx;
 };

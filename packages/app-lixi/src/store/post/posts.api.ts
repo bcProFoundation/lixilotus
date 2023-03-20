@@ -14,8 +14,8 @@ const enhancedApi = api.enhanceEndpoints({
       providesTags: (result, error, arg) => ['Post'],
       serializeQueryArgs({ queryArgs }) {
         if (queryArgs) {
-          const { orderBy, ...otherArgs } = queryArgs;
-          return orderBy;
+          const { orderBy, minBurnFilter, ...otherArgs } = queryArgs;
+          return { orderBy, minBurnFilter };
         }
         return { queryArgs };
       },
@@ -29,8 +29,8 @@ const enhancedApi = api.enhanceEndpoints({
       providesTags: (result, error, arg) => ['Post'],
       serializeQueryArgs({ queryArgs }) {
         if (queryArgs) {
-          const { orderBy, ...otherArgs } = queryArgs;
-          return orderBy;
+          const { orderBy, minBurnFilter, ...otherArgs } = queryArgs;
+          return { orderBy, minBurnFilter };
         }
         return { queryArgs };
       },
@@ -44,8 +44,8 @@ const enhancedApi = api.enhanceEndpoints({
       providesTags: (result, error, arg) => ['Post'],
       serializeQueryArgs({ queryArgs }) {
         if (queryArgs) {
-          const { query, ...otherArgs } = queryArgs;
-          return query;
+          const { query, minBurnFilter, ...otherArgs } = queryArgs;
+          return { query, minBurnFilter };
         }
         return { queryArgs };
       },
@@ -58,8 +58,8 @@ const enhancedApi = api.enhanceEndpoints({
       providesTags: (result, error, arg) => ['Post'],
       serializeQueryArgs({ queryArgs }) {
         if (queryArgs) {
-          const { orderBy, id, ...otherArgs } = queryArgs;
-          return { orderBy, id };
+          const { orderBy, id, minBurnFilter, ...otherArgs } = queryArgs;
+          return { orderBy, id, minBurnFilter };
         }
         return { queryArgs };
       },
@@ -74,8 +74,8 @@ const enhancedApi = api.enhanceEndpoints({
       providesTags: (result, error, arg) => ['Post'],
       serializeQueryArgs({ queryArgs }) {
         if (queryArgs) {
-          const { orderBy, id, ...otherArgs } = queryArgs;
-          return { orderBy, id };
+          const { orderBy, id, minBurnFilter, ...otherArgs } = queryArgs;
+          return { orderBy, id, minBurnFilter };
         }
         return { queryArgs };
       },

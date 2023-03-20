@@ -17,6 +17,7 @@ const { selectAll, selectEntities, selectIds, selectTotal } = postsAdapter.getSe
 export interface PostListByIdParams extends PaginationArgs {
   orderBy?: PostOrder;
   id?: string;
+  accountId?: number;
 }
 export interface PostListBody {
   posts: Post[];

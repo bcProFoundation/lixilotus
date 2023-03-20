@@ -35,6 +35,10 @@ export default {
   'text.post': 'bài viết',
   'text.selectXpi': 'Bạn muốn đốt bao nhiêu Xpi cho {name}?',
   'burn.selectXpi': 'Vui lòng chọn số lượng Xpi bạn muốn đốt cho {name}',
+  'burn.post': 'bài viết',
+  'burn.comment': 'bình luận',
+  'burn.token': 'token',
+  'burn.doneBurning': 'Đốt thành công!',
 
   /* 01.General */
   'general.tokens': 'Tokens',
@@ -92,6 +96,7 @@ export default {
   'general.customBurn': 'Tùy chọn đốt',
   'general.burnForType': 'Đốt cho loại',
   'general.failed': 'Thất bại',
+  'general.minBurnt': 'XPI tối thiểu đã đốt:',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',
@@ -180,6 +185,10 @@ export default {
   'account.reply': 'Trả lời',
   'account.from': 'Nhận từ',
   'account.to': 'Gửi đến',
+  'account.insufficientFunds': 'Không đủ số dư trong ví',
+  'account.insufficientBurningFunds': 'Ví không còn đủ số dư để đốt tiếp',
+  'account.burning': 'Đang đốt',
+  'account.burningList': 'Đang đốt {burnForType} với {burnValue} XPI',
 
   /* 03.Lixi */
   'lixi.createLixi': 'Tạo lixi mới',
@@ -280,7 +289,7 @@ export default {
   'lixi.lotteryAddress': 'Địa chỉ ví xổ số',
   'lixi.lotteryAddressCheck': 'Xác nhận',
   'lixi.registrantAddress': 'Địa chỉ người đăng ký',
-  'lixi.addressCopied': 'địa chỉ đã được sao chép.',
+  'lixi.addressCopied': 'Địa chỉ đã được sao chép.',
   'lixi.redeemLixi': 'Nhận lì xì',
   'lixi.status': 'Trạng thái',
   'lixi.active': 'Hoạt động',
@@ -495,6 +504,8 @@ export default {
   'post.unableUpdatePost': 'Không thể sửa bài viết.',
   'post.selectAccountFirst': 'Hãy chọn một tài khoản trước khi tạo bài viết',
   'post.unableToBurn': 'Không thể đốt cho bài viết.',
+  'post.burning': 'Đang đốt cho bài viết',
+  'post.doneBurning': 'Đốt thành công',
 
   /* 16.Token */
   'token.importToken': 'Thêm token',
@@ -510,6 +521,13 @@ export default {
   'token.tokenIdInvalid': 'Token Id không hợp lệ',
   'token.copyId': 'Token Id đã được sao chép.',
   'token.unableToBurn': 'Không thể đốt cho mã tiền',
+  //Show more info in token page
+  'token.ticker': 'Mã',
+  'token.name': 'Tên',
+  'token.burntxpi': 'Xpi đã đốt',
+  'token.id': 'Id',
+  'token.created': 'Ngày tạo',
+  'token.comments': 'Ngày đăng bài',
 
   /* 17. Comment */
   'comment.unableCreateComment': 'Không thể tạo bình luận',

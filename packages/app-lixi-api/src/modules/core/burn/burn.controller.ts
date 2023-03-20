@@ -2,7 +2,7 @@ import { Burn, BurnCommand, BurnForType, BurnType, fromSmallestDenomination } fr
 import BCHJS from '@bcpros/xpi-js';
 import { Body, Controller, HttpException, HttpStatus, Inject, Logger, Post } from '@nestjs/common';
 import { ChronikClient } from 'chronik-client';
-import { I18n, I18nService } from 'nestjs-i18n';
+import { I18n, I18nContext, I18nService } from 'nestjs-i18n';
 import { InjectChronikClient } from 'src/common/modules/chronik/chronik.decorators';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { parseBurnOutput } from 'src/utils/opReturnBurn';
@@ -24,7 +24,7 @@ export class BurnController {
     try {
       const txData: any = await this.XPI.RawTransactions.decodeRawTransaction(command.txHex);
       if (!txData) {
-        throw new Error('Unable to burn');
+        throw new Error('Tx Data fail');
       }
       const { scriptPubKey, value } = txData['vout'][0];
       const parseResult = parseBurnOutput(scriptPubKey.hex);
@@ -61,8 +61,21 @@ export class BurnController {
       }
 
       const savedBurn = await this.prisma.$transaction(async prisma => {
-        const broadcastResponse = await this.chronik.broadcastTx(command.txHex);
+        const broadcastResponse = await this.chronik.broadcastTx(command.txHex).catch(async err => {
+          const updatingWalletFund = await this.i18n.t('burn.messages.updatingWalletFund');
+          throw new VError(updatingWalletFund);
+        });
         const { txid } = broadcastResponse;
+        const prevTxIdExist = await this.prisma.burn.findFirst({
+          where: {
+            txid: txid
+          }
+        });
+
+        if (prevTxIdExist) {
+          const burningCanceled = this.i18n.t('burn.messages.burningCanceled');
+          throw new VError(burningCanceled);
+        }
         const burnRecordToInsert = {
           txid,
           burnType: parseResult.burnType ? true : false,
@@ -172,11 +185,11 @@ export class BurnController {
       };
 
       return result;
-    } catch (err) {
+    } catch (err: any) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
-        const unableToUpdateLixi = await this.i18n.t('burn.messages.unableToBurn');
+        const unableToUpdateLixi = err?.message || this.i18n.t('burn.messages.unableToBurn');
         const error = new VError.WError(err as Error, unableToUpdateLixi);
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }

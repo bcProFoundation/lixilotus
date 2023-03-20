@@ -217,6 +217,7 @@ type Post {
   postAccountId: Int!
   token: Token
   tokenId: String
+  totalComments: Int!
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
@@ -266,11 +267,11 @@ type PostResponse {
 }
 
 type Query {
-  allCommentsToPostId(after: String, before: String, first: Int, id: String, last: Int, orderBy: CommentOrder, skip: Int): CommentConnection!
-  allOrphanPosts(after: String, before: String, first: Int, last: Int, orderBy: PostOrder, query: String, skip: Int): PostConnection!
-  allPages(after: String, before: String, first: Int, last: Int, orderBy: PageOrder, query: String, skip: Int): PageConnection!
-  allPosts(after: String, before: String, first: Int, last: Int, orderBy: PostOrder, query: String, skip: Int): PostConnection!
-  allPostsByPageId(after: String, before: String, first: Int, id: String, last: Int, orderBy: PostOrder, skip: Int): PostConnection!
+  allCommentsToPostId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: CommentOrder, skip: Int): CommentConnection!
+  allOrphanPosts(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PostOrder, query: String, skip: Int): PostConnection!
+  allPages(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PageOrder, query: String, skip: Int): PageConnection!
+  allPosts(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PostOrder, query: String, skip: Int): PostConnection!
+  allPostsByPageId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
   allPostsBySearch(
     """Paginate after opaque cursor"""
     after: String
@@ -283,12 +284,13 @@ type Query {
 
     """Paginate last"""
     last: Int
+    minBurnFilter: Int
     query: String
   ): PostResponse!
-  allPostsByTokenId(after: String, before: String, first: Int, id: String, last: Int, orderBy: PostOrder, skip: Int): PostConnection!
-  allPostsByUserId(after: String, before: String, first: Int, id: String, last: Int, orderBy: PostOrder, skip: Int): PostConnection!
-  allTokens(after: String, before: String, first: Int, last: Int, orderBy: TokenOrder, query: String, skip: Int): TokenConnection!
-  allWorshipedPerson(after: String, before: String, first: Int, last: Int, orderBy: WorshipedPersonOrder, query: String, skip: Int): WorshipedPersonConnection!
+  allPostsByTokenId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
+  allPostsByUserId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
+  allTokens(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: TokenOrder, query: String, skip: Int): TokenConnection!
+  allWorshipedPerson(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: WorshipedPersonOrder, query: String, skip: Int): WorshipedPersonConnection!
   comment(id: String!): Comment!
   page(id: String!): Page!
   post(id: String!): Post!
@@ -386,6 +388,9 @@ type Upload {
   height: String
   id: ID!
   sha: String!
+  sha40: String
+  sha320: String
+  sha800: String
   width: String
 }
 

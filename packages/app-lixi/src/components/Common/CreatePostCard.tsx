@@ -18,6 +18,7 @@ import { removeAllUpload } from '@store/account/actions';
 import { AvatarUser } from './AvatarUser';
 import { getEditorCache } from '@store/account/selectors';
 import { deleteEditorTextFromCache } from '@store/account/actions';
+import { getFilterPostsHome } from '@store/settings/selectors';
 
 type ErrorType = 'unsupported' | 'invalid';
 
@@ -136,6 +137,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
   const { pageId, tokenPrimaryId } = props;
   const selectedAccount = useAppSelector(getSelectedAccount);
   const editorCache = useAppSelector(getEditorCache);
+  const filterValue = useAppSelector(getFilterPostsHome);
 
   const [
     createPostTrigger,
@@ -144,7 +146,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
 
   const updatePost = (tag: string, params, result: CreatePostMutation, pageId?: string, tokenPrimaryId?: string) => {
     dispatch(
-      postApi.util.updateQueryData('Posts', params, draft => {
+      postApi.util.updateQueryData('Posts', { ...params, minBurnFilter: filterValue }, draft => {
         draft.allPosts.edges.unshift({
           cursor: result.createPost.id,
           node: {
@@ -214,7 +216,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
         tag = PostsQueryTag.PostsByTokenId;
       }
 
-      const patches = updatePost(tag, params, result, pageId, tokenPrimaryId);
+      patches = updatePost(tag, params, result, pageId, tokenPrimaryId);
       dispatch(
         showToast('success', {
           message: 'Success',
