@@ -14,7 +14,9 @@ import {
   refreshLixiListSilentSuccess,
   saveEditorTextToCache,
   deleteEditorTextFromCache,
-  getLeaderboardSuccess
+  getLeaderboardSuccess,
+  setTransactionNotReady,
+  setTransactionReady
 } from './actions';
 import { AccountsState } from './state';
 
@@ -29,6 +31,7 @@ const initialState: AccountsState = accountsAdapter.getInitialState({
   postCoverUploads: [],
   editorCache: null,
   leaderBoard: [],
+  transactionReady: true
 });
 
 export const accountReducer = createReducer(initialState, builder => {
@@ -117,6 +120,11 @@ export const accountReducer = createReducer(initialState, builder => {
     })
     .addCase(getLeaderboardSuccess, (state, action) => {
       state.leaderBoard = action.payload;
+    .addCase(setTransactionReady, (state, action) => {
+        state.transactionReady = true;
+      })
+    .addCase(setTransactionNotReady, (state, action) => {
+      state.transactionReady = false;
     })
     .addMatcher(isAnyOf(refreshLixiListSuccess, refreshLixiListSilentSuccess), (state, action) => {
       const { account, lixies } = action.payload;

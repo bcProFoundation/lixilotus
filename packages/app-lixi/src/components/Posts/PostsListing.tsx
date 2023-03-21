@@ -6,24 +6,44 @@ import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
 import { useInfiniteOrphanPostsQuery } from '@store/post/useInfiniteOrphanPostsQuery';
 import { useInfinitePostsByPageIdQuery } from '@store/post/useInfinitePostsByPageIdQuery';
 import { WalletContext } from '@context/index';
-import { getLatestBurnForPost } from '@store/burn';
+import {
+  addBurnQueue,
+  addBurnTransaction,
+  getBurnQueue,
+  getFailQueue,
+  getLatestBurnForPost,
+  clearFailQueue
+} from '@store/burn';
 import { api as postApi, useLazyPostQuery } from '@store/post/posts.api';
-import { Menu, MenuProps, Modal, Select, Skeleton, Tabs } from 'antd';
+import { Menu, MenuProps, Modal, notification, Skeleton, Tabs, Collapse, Space, Select } from 'antd';
 import _ from 'lodash';
 import React, { useRef, useState, useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
-import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
+import { OrderDirection, Post, PostOrderField } from 'src/generated/types.generated';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
 import styled from 'styled-components';
 import SearchBox from '../Common/SearchBox';
 import intl from 'react-intl-universal';
-import { LoadingOutlined } from '@ant-design/icons';
+import { FireTwoTone, LoadingOutlined } from '@ant-design/icons';
 import PostListItem from './PostListItem';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { setTransactionReady } from '@store/account/actions';
+import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
+import { PostsQueryTag } from '@bcpros/lixi-models/constants';
+import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
+import { currency } from '@components/Common/Ticker';
+import { fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods';
+import BigNumber from 'bignumber.js';
+import { showToast } from '@store/toast/actions';
+import { Spin } from 'antd';
 import { FilterBurnt } from '@components/Common/FilterBurn';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import { getFilterPostsHome } from '@store/settings/selectors';
 import { getLeaderboard } from '@store/account/actions';
+import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
+
+const { Panel } = Collapse;
+const antIcon = <LoadingOutlined style={{ fontSize: 20 }} spin />;
 
 type PostsListingProps = {
   className?: string;
@@ -106,6 +126,20 @@ const StyledHeader = styled.div`
     justify-content: space-between;
   }
 `;
+
+const StyledCollapse = styled(Collapse)`
+  .ant-collapse-header {
+    font-size: 16px;
+    padding: 0px 0px 5px 0px !important;
+  }
+  .ant-collapse-content-box {
+    padding: 5px 0px 5px 0px !important;
+  }
+`;
+
+const StyledNotificationContent = styled.div`
+  font-size: 14px;
+`;
 const menuItems = [
   // { label: 'Top', key: 'top' },
   { label: 'All', key: 'all' }
@@ -130,7 +164,13 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const refPostsListing = useRef<HTMLDivElement | null>(null);
   const [tab, setTab] = useState<any>('all');
   const [queryPostTrigger, queryPostResult] = useLazyPostQuery();
+  const selectedAccount = useAppSelector(getSelectedAccount);
   const latestBurnForPost = useAppSelector(getLatestBurnForPost);
+  const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
+  const walletPaths = useAppSelector(getAllWalletPaths);
+  const burnQueue = useAppSelector(getBurnQueue);
+  const walletStatus = useAppSelector(getWalletStatus);
+  const failQueue = useAppSelector(getFailQueue);
   const filterValue = useAppSelector(getFilterPostsHome);
   const getTopFirst = useAppSelector(getLeaderBoard);
 
@@ -152,6 +192,8 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   } = useInfiniteOrphanPostsQuery(
     {
       first: 20,
+      minBurnFilter: filterValue ?? 1,
+      accountId: selectedAccountId ?? null,
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt
@@ -163,6 +205,8 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsQuery(
     {
       first: 20,
+      minBurnFilter: filterValue,
+      accountId: selectedAccountId ?? null,
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt
@@ -170,6 +214,11 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     },
     false
   );
+
+  useEffect(() => {
+    refetch();
+    orphanRefetch();
+  }, [filterValue]);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -188,6 +237,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     useInfinitePostsBySearchQuery(
       {
         first: 20,
+        minBurnFilter: filterValue,
         query: searchValue
       },
       false
@@ -250,13 +300,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         return;
     }
   };
-
-  const filteredData = data.filter(
-    post => post.lotusBurnScore >= filterValue || post.postAccount.id == selectedAccountId.toString()
-  );
-  const filteredQueryData = queryData.filter(
-    post => post.lotusBurnScore >= filterValue || post.postAccount.id == selectedAccountId.toString()
-  );
 
   const triggerSrollbar = e => {
     const virtuosoNode = refPostsListing.current.querySelector('#list-virtuoso') || null;
@@ -353,7 +396,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
           <React.Fragment>
             <Header />
             <InfiniteScroll
-              dataLength={filteredData.length}
+              dataLength={data.length}
               next={loadMoreItems}
               hasMore={hasNext}
               loader={<Skeleton avatar active />}
@@ -364,12 +407,83 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
               }
               scrollableTarget="scrollableDiv"
             >
-              {filteredData.map((item, index) => {
-                return <PostListItem index={index} item={item} key={item.id} />;
+              {data.map((item, index) => {
+                return <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />;
               })}
             </InfiniteScroll>
           </React.Fragment>
         );
+    }
+  };
+
+  useDidMountEffectNotification();
+
+  const handleBurnForPost = async (isUpVote: boolean, post: any) => {
+    try {
+      const burnValue = '1';
+      if (
+        slpBalancesAndUtxos.nonSlpUtxos.length == 0 ||
+        fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis) < parseInt(burnValue)
+      ) {
+        throw new Error(intl.get('account.insufficientFunds'));
+      }
+      if (failQueue.length > 0) dispatch(clearFailQueue());
+      const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
+      const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
+      const { hash160, xAddress } = currentWalletPath;
+      const burnType = isUpVote ? BurnType.Up : BurnType.Down;
+      const burnedBy = hash160;
+      const burnForId = post.id;
+      let tipToAddresses: { address: string; amount: string }[] = [
+        {
+          address: post.page ? post.pageAccount.address : post.postAccount.address,
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
+        }
+      ];
+
+      if (burnType === BurnType.Up && selectedAccount.address !== post.postAccount.address) {
+        tipToAddresses.push({
+          address: post.postAccount.address,
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
+        });
+      }
+
+      tipToAddresses = tipToAddresses.filter(item => item.address != selectedAccount.address);
+
+      let tag: string;
+
+      if (_.isNil(post.page) && _.isNil(post.token)) {
+        tag = PostsQueryTag.Posts;
+      } else if (post.page) {
+        tag = PostsQueryTag.PostsByPageId;
+      } else if (post.token) {
+        tag = PostsQueryTag.PostsByTokenId;
+      }
+
+      const burnCommand: BurnQueueCommand = {
+        defaultFee: currency.defaultFee,
+        burnType,
+        burnForType: BurnForType.Post,
+        burnedBy,
+        burnForId,
+        burnValue,
+        tipToAddresses: tipToAddresses,
+        postQueryTag: tag,
+        pageId: post.page?.id,
+        tokenId: post.token?.id,
+        minBurnFilter: filterValue
+      };
+
+      dispatch(addBurnQueue(_.omit(burnCommand)));
+      dispatch(addBurnTransaction(burnCommand));
+    } catch (e) {
+      const errorMessage = e.message || intl.get('post.unableToBurn');
+      dispatch(
+        showToast('error', {
+          message: errorMessage,
+          duration: 3
+        })
+      );
     }
   };
 
@@ -381,7 +495,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         <React.Fragment>
           <QueryHeader />
           <InfiniteScroll
-            dataLength={filteredQueryData.length}
+            dataLength={queryData.length}
             next={loadMoreQueryItems}
             hasMore={hasNextQuery}
             loader={<Skeleton avatar active />}
@@ -392,8 +506,8 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
             }
             scrollableTarget="scrollableDiv"
           >
-            {filteredQueryData.map((item, index) => {
-              return <PostListItem index={index} item={item} key={item.id} />;
+            {queryData.map((item, index) => {
+              return <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />;
             })}
           </InfiniteScroll>
         </React.Fragment>

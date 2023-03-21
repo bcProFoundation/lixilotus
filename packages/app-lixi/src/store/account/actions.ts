@@ -68,3 +68,5 @@ export const deleteEditorTextFromCache = createAction('posts/deleteEditorTextFro
 export const getLeaderboard = createAction('account/getLeaderboard');
 export const getLeaderboardSuccess = createAction<any>('account/getLeaderboardSuccess');
 export const getLeaderboardFailure = createAction<string>('account/getLeaderboardFailure');
+export const setTransactionReady = createAction('account/setTransactionReady');
+export const setTransactionNotReady = createAction('account/setTransactionNotReady');

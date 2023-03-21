@@ -1,23 +1,40 @@
-import { CameraOutlined, CompassOutlined, EditOutlined, HomeOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import {
+  CameraOutlined,
+  CompassOutlined,
+  EditOutlined,
+  FireTwoTone,
+  HomeOutlined,
+  InfoCircleOutlined
+} from '@ant-design/icons';
 import CreatePostCard from '@components/Common/CreatePostCard';
 import SearchBox from '@components/Common/SearchBox';
 import PostListItem from '@components/Posts/PostListItem';
-import { getSelectedAccountId } from '@store/account/selectors';
+import { getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { openModal } from '@store/modal/actions';
 import { useInfinitePostsByPageIdQuery } from '@store/post/useInfinitePostsByPageIdQuery';
 import intl from 'react-intl-universal';
-import { Button, Space, Tabs, Skeleton } from 'antd';
+import { Button, Space, Tabs, Skeleton, notification } from 'antd';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import styled from 'styled-components';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { BurnForType, BurnType, BurnQueueCommand } from '@bcpros/lixi-models/lib/burn';
+import { fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods';
+import { PostsQueryTag } from '@bcpros/lixi-models/constants';
+import { currency } from '@components/Common/Ticker';
+import { addBurnQueue, addBurnTransaction, getBurnQueue, getFailQueue, clearFailQueue } from '@store/burn';
+import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
+import BigNumber from 'bignumber.js';
+import { showToast } from '@store/toast/actions';
+import { setTransactionReady } from '@store/account/actions';
 import { getFilterPostsPage } from '@store/settings/selectors';
 import { FilterBurnt } from '@components/Common/FilterBurn';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
+import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
 
 type PageDetailProps = {
   page: any;
@@ -336,17 +353,26 @@ const SubAbout = ({
 
 const PageDetail = ({ page, isMobile }: PageDetailProps) => {
   const dispatch = useAppDispatch();
+  const selectedAccount = useAppSelector(getSelectedAccount);
   const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
   const router = useRouter();
   const selectedAccountId = useAppSelector(getSelectedAccountId);
   const [pageDetailData, setPageDetailData] = useState<any>(page);
   const [listsFriend, setListsFriend] = useState<any>([]);
   const [listsPicture, setListsPicture] = useState<any>([]);
+  const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
+  const walletPaths = useAppSelector(getAllWalletPaths);
+  const burnQueue = useAppSelector(getBurnQueue);
+  const walletStatus = useAppSelector(getWalletStatus);
+  const failQueue = useAppSelector(getFailQueue);
   const filterValue = useAppSelector(getFilterPostsPage);
+  const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByPageIdQuery(
     {
       first: 10,
+      minBurnFilter: filterValue ?? 1,
+      accountId: selectedAccountId ?? undefined,
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt
@@ -354,10 +380,6 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
       id: page.id
     },
     false
-  );
-
-  const filteredData = data.filter(
-    post => post.lotusBurnScore >= filterValue || post.postAccount.id == selectedAccountId.toString()
   );
 
   useEffect(() => {
@@ -412,6 +434,71 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
     dispatch(openModal('UploadAvatarCoverModal', { page: pageDetailData, isAvatar: isAvatar }));
   };
 
+  useEffect(() => {
+    if (slpBalancesAndUtxos === slpBalancesAndUtxosRef.current) return;
+    dispatch(setTransactionReady());
+  }, [slpBalancesAndUtxos.nonSlpUtxos]);
+
+  useDidMountEffectNotification();
+
+  const handleBurnForPost = async (isUpVote: boolean, post: any) => {
+    try {
+      const burnValue = '1';
+      if (
+        slpBalancesAndUtxos.nonSlpUtxos.length == 0 ||
+        fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis) < parseInt(burnValue)
+      ) {
+        throw new Error(intl.get('account.insufficientFunds'));
+      }
+      if (failQueue.length > 0) dispatch(clearFailQueue());
+      const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
+      const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
+      const { hash160, xAddress } = currentWalletPath;
+      const burnType = isUpVote ? BurnType.Up : BurnType.Down;
+      const burnedBy = hash160;
+      const burnForId = post.id;
+      let tipToAddresses: { address: string; amount: string }[] = [
+        {
+          address: post.page ? post.pageAccount.address : post.postAccount.address,
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
+        }
+      ];
+
+      if (burnType === BurnType.Up && selectedAccount.address !== post.postAccount.address) {
+        tipToAddresses.push({
+          address: post.postAccount.address,
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
+        });
+      }
+
+      tipToAddresses = tipToAddresses.filter(item => item.address != selectedAccount.address);
+
+      const burnCommand: BurnQueueCommand = {
+        defaultFee: currency.defaultFee,
+        burnType,
+        burnForType: BurnForType.Post,
+        burnedBy,
+        burnForId,
+        burnValue,
+        tipToAddresses: tipToAddresses,
+        postQueryTag: PostsQueryTag.PostsByPageId,
+        pageId: post.page?.id,
+        minBurnFilter: filterValue
+      };
+
+      dispatch(addBurnQueue(burnCommand));
+      dispatch(addBurnTransaction(burnCommand));
+    } catch (e) {
+      const errorMessage = e.message || intl.get('post.unableToBurn');
+      dispatch(
+        showToast('error', {
+          message: errorMessage,
+          duration: 3
+        })
+      );
+    }
+  };
+
   return (
     <>
       <StyledContainerProfileDetail>
@@ -436,7 +523,6 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
               <p>{pageDetailData.title}</p>
             </div>
             {/* TODO: implement in the future */}
-            {console.log('pageDetailData: ', pageDetailData)}
             {selectedAccountId == pageDetailData?.pageAccountId && (
               <div className="action-profile">
                 <Button
@@ -576,7 +662,7 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
                 </div>
                 <CreatePostCard pageId={page.id} refetch={() => refetch()} />
                 <Timeline>
-                  {filteredData.length == 0 && (
+                  {data.length == 0 && (
                     <div className="blank-timeline">
                       <img className="time-line-blank" src="/images/time-line-blank.svg" alt="" />
                       <p>Become a first person post on the page...</p>
@@ -585,19 +671,21 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
 
                   <React.Fragment>
                     <InfiniteScroll
-                      dataLength={filteredData.length}
+                      dataLength={data.length}
                       next={loadMoreItems}
                       hasMore={hasNext}
                       loader={<Skeleton avatar active />}
                       endMessage={
                         <p style={{ textAlign: 'center' }}>
-                          <b>{filteredData.length > 0 ? 'end reached' : ''}</b>
+                          <b>{data.length > 0 ? 'end reached' : ''}</b>
                         </p>
                       }
                       scrollableTarget="scrollableDiv"
                     >
-                      {filteredData.map((item, index) => {
-                        return <PostListItem index={index} item={item} />;
+                      {data.map((item, index) => {
+                        return (
+                          <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />
+                        );
                       })}
                     </InfiniteScroll>
                   </React.Fragment>

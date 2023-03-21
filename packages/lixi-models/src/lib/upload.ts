@@ -30,6 +30,15 @@ export class Upload {
   @Field(() => String)
   sha: string;
 
+  @Field(() => String, { nullable: true })
+  sha800?: string;
+
+  @Field(() => String, { nullable: true })
+  sha320?: string;
+
+  @Field(() => String, { nullable: true })
+  sha40: string;
+
   extension: string;
   thumbnailWidth?: number;
   thumbnailHeight?: number;

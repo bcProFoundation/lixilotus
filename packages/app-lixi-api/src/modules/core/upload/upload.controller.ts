@@ -147,6 +147,12 @@ export class UploadFilesController {
 
       const promises = files.map(async (file: MulterFile) => {
         const buffer = file.buffer;
+        const numbers = [800, 320, 40];
+        const shaArray = numbers.map(async item => {
+          const shaThumbnailBuffer = await sharp(file.buffer).resize({ width: item }).png().toBuffer();
+          const { Key } = await this.uploadService.uploadS3(shaThumbnailBuffer, fileExtension, bucket);
+          return Key;
+        });
         const originalName = file.originalname.replace(/\.[^/.]+$/, '');
         const fileExtension = extname(file.originalname);
         const { Key } = await this.uploadService.uploadS3(buffer, fileExtension, bucket);
@@ -157,6 +163,9 @@ export class UploadFilesController {
           createdAt: new Date(),
           updatedAt: new Date(),
           sha: Key,
+          sha800: await shaArray[0],
+          sha320: await shaArray[1],
+          sha40: await shaArray[2],
           extension: fileExtension,
           type: type,
           bucket: bucket,

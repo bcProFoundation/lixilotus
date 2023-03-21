@@ -1,4 +1,4 @@
-import { SearchOutlined } from '@ant-design/icons';
+import { LockOutlined, SearchOutlined } from '@ant-design/icons';
 import ClaimComponent from '@components/Claim';
 import { Button, List } from 'antd';
 import VirtualList from 'rc-virtual-list';
@@ -102,22 +102,27 @@ const TransactionHistory = styled.div`
           .tx-memo {
             letter-spacing: 0.25px;
             color: rgba(0, 30, 46, 0.6);
+            margin-top: 16px;
           }
         }
       }
       .tx-info {
+        margin-top: 24px;
         .tx-status {
           background: linear-gradient(0deg, rgba(0, 101, 141, 0.08), rgba(0, 101, 141, 0.08)), #fafafb;
           border-radius: 4px;
           font-size: 12px;
           color: rgba(0, 30, 46, 0.6);
-          letter-spacing: 0.4px;
+          letter-spacing: 0.25px;
         }
         .tx-date {
           font-size: 12px;
           color: rgba(0, 30, 46, 0.6);
-          letter-spacing: 0.4px;
+          letter-spacing: 0.25px;
         }
+      }
+      .icon-reply {
+        margin-top: 6.5px;
       }
     }
   }
@@ -137,7 +142,6 @@ const FullWalletWrapper = styled.div`
     padding-bottom: 9rem;
   }
 `;
-
 const FullWalletComponent: React.FC = () => {
   const trimLength = 8;
   const dispatch = useAppDispatch();
@@ -181,6 +185,23 @@ const FullWalletComponent: React.FC = () => {
     return `/${burnForTypeString.toLowerCase()}/${burnForId}`;
   };
 
+  const showAmount = (item: Tx & { parsed: ParsedChronikTx }) => {
+    const xpiBurnAndGiftAmount = Number(item.parsed.xpiBurnAmount) + Number(item.parsed.xpiAmount);
+    if (item.parsed.isBurn) {
+      if (item.parsed.incoming) {
+        return ' +' + item.parsed.xpiAmount + ' XPI';
+      } else {
+        return '- ' + xpiBurnAndGiftAmount + ' XPI';
+      }
+    } else {
+      if (item.parsed.incoming) {
+        return '+ ' + item.parsed.xpiAmount + ' XPI';
+      } else {
+        return '- ' + item.parsed.xpiAmount + ' XPI';
+      }
+    }
+  };
+
   return (
     <>
       <FullWalletWrapper>
@@ -200,6 +221,7 @@ const FullWalletComponent: React.FC = () => {
                     <VirtualList data={walletParsedHistoryGroupByDate[index]} itemHeight={47} itemKey="email">
                       {(item: Tx & { parsed: ParsedChronikTx }) => {
                         let memo = '';
+
                         if (item.parsed.isLotusMessage) {
                           if (item.parsed.isEncryptedMessage && item.parsed.decryptionSuccess) {
                             memo = item.parsed.opReturnMessage ?? '';
@@ -212,11 +234,7 @@ const FullWalletComponent: React.FC = () => {
                             <List.Item.Meta
                               title={
                                 <a className={item.parsed.incoming ? 'amount increase' : 'amount decrease'}>
-                                  {item.parsed.isBurn
-                                    ? '- ' + item.parsed.xpiAmount + ' XPI'
-                                    : item.parsed.incoming
-                                    ? '+ ' + item.parsed.xpiAmount + ' XPI'
-                                    : '- ' + item.parsed.xpiAmount + ' XPI'}
+                                  {showAmount(item)}
                                 </a>
                               }
                               description={
@@ -260,13 +278,16 @@ const FullWalletComponent: React.FC = () => {
                                       </p>
                                     )}
                                   </p>
-                                  <p className="tx-memo">{memo}</p>
+                                  <p className="tx-memo">
+                                    <LockOutlined /> {memo}
+                                  </p>
                                 </div>
                               }
                             />
                             <div className="tx-info">
                               <div className="tx-status"></div>
                               <p className="tx-date">{formatDate(item.timeFirstSeen)}</p>
+
                               {item.parsed.incoming && (
                                 <Link
                                   href={{
@@ -275,7 +296,7 @@ const FullWalletComponent: React.FC = () => {
                                   }}
                                 >
                                   <Button size="small" type="text">
-                                    <p>
+                                    <p className="icon-reply">
                                       <Reply /> {intl.get('account.reply')}
                                     </p>
                                   </Button>

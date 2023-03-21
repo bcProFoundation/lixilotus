@@ -24,8 +24,12 @@ const FilterStyle = styled.div`
 
 const SelectStyle = styled(Select)`
   width: 74px;
-  filter: drop-shadow(0px 0px 4px rgba(148, 31, 147, 0.5));
   border-radius: 12px;
+  cursor: pointer;
+  :hover {
+    border: 2px #9e2a9c;
+    padding: 0;
+  }
 `;
 
 const { Option } = Select;
@@ -34,6 +38,7 @@ type FilterBurntProps = {
 };
 
 export const FilterBurnt = (props: FilterBurntProps) => {
+  const dispatch = useAppDispatch();
   const { filterForType } = props;
 
   let valueForType;
@@ -45,12 +50,8 @@ export const FilterBurnt = (props: FilterBurntProps) => {
     valueForType = useAppSelector(getFilterPostsToken);
   }
 
-  const dispatch = useAppDispatch();
-  const [filterValue, setFilterValue] = useState<number>(valueForType);
-
   const filterValueArr = [0, 1, 10, 100];
   const handleChange = value => {
-    setFilterValue(value);
     const filteredData = {
       filterForType: filterForType,
       filterValue: value
@@ -61,7 +62,7 @@ export const FilterBurnt = (props: FilterBurntProps) => {
   return (
     <FilterStyle>
       <p>{intl.get('general.minBurnt')} &nbsp;</p>
-      <SelectStyle defaultValue={filterValue ?? 0} onChange={handleChange}>
+      <SelectStyle defaultValue={valueForType ?? filterValueArr[1].toString()} onChange={handleChange}>
         {filterValueArr.map(item => (
           <Option value={item}>{item}</Option>
         ))}
