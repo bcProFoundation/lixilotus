@@ -265,7 +265,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
       return objImg;
     });
     setImagesList(mapImages);
-  }, []);
+  }, [width]);
 
   useEffect(() => {
     const isMobileDetail = width < 768 ? true : false;
