@@ -360,7 +360,7 @@ const SidebarShortcut = () => {
               color="var(--color-primary)"
             >
               <img
-                className='img-bell'
+                className="img-bell"
                 src="/images/ico-notifications.svg"
                 alt="ico-notifications"
                 onClick={() => router.push('/notifications')}

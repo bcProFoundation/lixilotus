@@ -1,5 +1,7 @@
 {
   "messages": {
-    "unableToBurn": "Unable to burn."
+    "unableToBurn": "Unable to burn.",
+    "updatingWalletFund": "Please wait! Updating wallet funds on blockchain!",
+    "burningCanceled": "Burning canceled!"
   }
 }

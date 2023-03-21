@@ -2,23 +2,32 @@ import Icon, {
   CopyOutlined,
   FilterOutlined,
   FireOutlined,
+  FireTwoTone,
   LeftOutlined,
   RightOutlined,
   SearchOutlined,
   SyncOutlined
 } from '@ant-design/icons';
 import { Token } from '@bcpros/lixi-models';
-import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
+import { BurnCommand, BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { currency } from '@components/Common/Ticker';
 import { NavBarHeader, PathDirection } from '@components/Layout/MainLayout';
 import { WalletContext } from '@context/walletProvider';
 import useXPI from '@hooks/useXPI';
-import { burnForUpDownVote, getLatestBurnForToken } from '@store/burn';
+import {
+  addBurnQueue,
+  addBurnTransaction,
+  burnForUpDownVote,
+  getBurnQueue,
+  getFailQueue,
+  getLatestBurnForToken,
+  clearFailQueue
+} from '@store/burn';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { showToast } from '@store/toast/actions';
 import { burnForToken, burnForTokenSucceses, fetchAllTokens, postToken, selectToken, selectTokens } from '@store/token';
-import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
-import { formatBalance } from '@utils/cashMethods';
+import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
+import { formatBalance, fromSmallestDenomination } from '@utils/cashMethods';
 import { Button, Form, Image, Input, InputRef, message, Modal, notification, Space, Table, Tooltip } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { ColumnType } from 'antd/lib/table';
@@ -42,7 +51,9 @@ import { useCreateTokenMutation } from '@store/token/tokens.generated';
 import { push } from 'connected-next-router';
 import InfoCardUser from '@components/Common/InfoCardUser';
 import { InfoSubCard } from '@components/Lixi';
-import { IconBurn } from '@components/Posts/PostListItem';
+import { IconBurn } from '@components/Posts/PostDetail';
+import { setTransactionReady } from '@store/account/actions';
+import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
 
 const StyledTokensListing = styled.div`
   .table-tokens {
@@ -128,16 +139,18 @@ const TokensListing = () => {
   const [valueInput, setValueInput] = useState('');
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
-
   const searchInput = useRef<InputRef>(null);
   const tokenList = useAppSelector(selectTokens);
-
   const Wallet = React.useContext(WalletContext);
   const { XPI, chronik } = Wallet;
-  const { burnXpi } = useXPI();
+  const { createBurnTransaction } = useXPI();
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const latestBurnForToken = useAppSelector(getLatestBurnForToken);
+  const burnQueue = useAppSelector(getBurnQueue);
+  const failQueue = useAppSelector(getFailQueue);
+  const walletStatus = useAppSelector(getWalletStatus);
+  const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
 
   const [
     createTokenTrigger,
@@ -149,8 +162,6 @@ const TokensListing = () => {
     }
   ] = useCreateTokenMutation();
 
-  const burnValue = '1';
-
   const {
     handleSubmit,
     formState: { errors },
@@ -159,7 +170,7 @@ const TokensListing = () => {
 
   useEffect(() => {
     dispatch(fetchAllTokens());
-  }, [dispatch, tokenList]);
+  }, []);
 
   const getColumnSearchProps = (dataIndex: any): ColumnType<any> => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
@@ -350,43 +361,38 @@ const TokensListing = () => {
 
   const handleBurnForToken = async (isUpVote: boolean, id: string, tokenId: string) => {
     try {
-      if (slpBalancesAndUtxos.nonSlpUtxos.length == 0) {
-        throw new Error('Insufficient funds');
+      const burnValue = '1';
+      if (
+        slpBalancesAndUtxos.nonSlpUtxos.length == 0 ||
+        fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis) < parseInt(burnValue)
+      ) {
+        throw new Error(intl.get('account.insufficientFunds'));
       }
+      if (failQueue.length > 0) dispatch(clearFailQueue());
       const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
       const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
       const { fundingWif, hash160 } = currentWalletPath;
       const burnType = isUpVote ? BurnType.Up : BurnType.Down;
       const burnedBy = hash160;
-      const burnForId = tokenId;
 
-      const txHex = await burnXpi(
-        XPI,
-        walletPaths,
-        slpBalancesAndUtxos.nonSlpUtxos,
-        currency.defaultFee,
-        burnType,
-        BurnForType.Token,
-        burnedBy,
-        burnForId,
-        burnValue
-      );
-
-      const burnCommand: BurnCommand = {
-        txHex,
+      const burnCommand: BurnQueueCommand = {
+        defaultFee: currency.defaultFee,
         burnType,
         burnForType: BurnForType.Token,
         burnedBy,
         burnForId: id,
+        tokenId: tokenId,
         burnValue
       };
 
-      dispatch(burnForUpDownVote(burnCommand));
+      dispatch(addBurnQueue(burnCommand));
+      dispatch(addBurnTransaction(burnCommand));
     } catch (e) {
+      const errorMessage = e.message || intl.get('post.unableToBurn');
       dispatch(
         showToast('error', {
-          message: intl.get('post.unableToBurn'),
-          duration: 5
+          message: errorMessage,
+          duration: 3
         })
       );
     }
@@ -397,7 +403,7 @@ const TokensListing = () => {
   };
 
   const openBurnModal = (token: Token) => {
-    dispatch(openModal('BurnModal', { burnForType: BurnForType.Token, token: token }));
+    dispatch(openModal('BurnModal', { burnForType: BurnForType.Token, data: token }));
   };
 
   const addTokenbyId = async data => {
@@ -439,6 +445,13 @@ const TokensListing = () => {
       </>
     );
   };
+
+  useEffect(() => {
+    if (slpBalancesAndUtxos === slpBalancesAndUtxosRef.current) return;
+    dispatch(setTransactionReady());
+  }, [slpBalancesAndUtxos.nonSlpUtxos]);
+
+  useDidMountEffectNotification(dispatch(fetchAllTokens()));
 
   return (
     <>
