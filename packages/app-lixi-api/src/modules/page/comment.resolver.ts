@@ -20,8 +20,8 @@ import VError from 'verror';
 import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
 import { PrismaService } from '../prisma/prisma.service';
 import { Notification, NotificationLevel } from '@bcpros/lixi-prisma';
-import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
-import { NotificationService } from 'src/common/modules/notifications/notification.service';
+import { NOTIFICATION_TYPES } from '../../common/modules/notifications/notification.constants';
+import { NotificationService } from '../../common/modules/notifications/notification.service';
 
 const pubSub = new PubSub();
 

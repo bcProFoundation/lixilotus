@@ -39,7 +39,6 @@ import PostResponse from 'src/common/post.response';
 import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
 import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
 import { NotificationLevel } from '@bcpros/lixi-prisma';
-import { template } from 'src/utils/stringTemplate';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
 
 const pubSub = new PubSub();
@@ -50,8 +49,8 @@ export class PostResolver {
   private logger: Logger = new Logger(this.constructor.name);
 
   constructor(
-    private prisma: PrismaService,
-    private meiliService: MeiliService,
+    private prisma: PrismaService, 
+    private meiliService: MeiliService, 
     private readonly notificationService: NotificationService,
     @I18n() private i18n: I18nService
   ) { }
@@ -420,7 +419,14 @@ export class PostResolver {
             include: { postAccount: true },
             where: {
               AND: [
-                { postAccountId: _.toSafeInteger(id) },
+                {
+                  postAccountId: _.toSafeInteger(id)
+                },
+                {
+                  lotusBurnScore: {
+                    gte: minBurnFilter ?? 0
+                  }
+                },
                 { pageId: null },
                 { tokenId: null }
               ]
@@ -432,7 +438,14 @@ export class PostResolver {
           this.prisma.post.count({
             where: {
               AND: [
-                { postAccountId: _.toSafeInteger(id) },
+                {
+                  postAccountId: _.toSafeInteger(id)
+                },
+                {
+                  lotusBurnScore: {
+                    gte: minBurnFilter ?? 0
+                  }
+                },
                 { pageId: null },
                 { tokenId: null }
               ]
@@ -585,8 +598,8 @@ export class PostResolver {
       });
 
       if (!recipient) {
-        const couldNotFindAccount = await this.i18n.t('post.messages.couldNotFindAccount');
-        throw new Error(couldNotFindAccount);
+        const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
+        throw new VError(accountNotExistMessage);
       }
 
       const createNotif = {

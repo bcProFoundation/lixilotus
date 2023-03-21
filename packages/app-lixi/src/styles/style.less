@@ -118,6 +118,7 @@ code {
       &:disabled {
         background-color: var(--bg-color-disable);
       }
+
       &:hover {
         box-shadow: 0px 0px 4px rgba(148, 31, 147, 0.5);
       }
@@ -158,6 +159,7 @@ code {
   padding: 0 24px !important;
   background-color: rgb(0 0 0 / 0%);
 }
+
 .ant-descriptions-item-content {
   padding: 0 !important;
 }
@@ -378,13 +380,16 @@ code {
     flex-direction: column !important;
     display: flex !important;
     align-items: center !important;
+
     h3 {
       margin: 8px 0;
     }
+
     p {
       margin: 0;
       line-height: 16px;
     }
+
     .banner-count-burn {
       border: 1px solid rgba(128, 116, 124, 0.12);
       border-radius: 24px;
@@ -392,13 +397,16 @@ code {
       width: 100%;
       justify-content: space-between;
       padding: 1rem;
+
       .banner-item {
         display: flex;
         gap: 8px;
+
         .anticon {
           font-size: 18px;
           color: rgba(30, 26, 29, 0.38);
         }
+
         .count-bar {
           .title {
             color: rgba(30, 26, 29, 0.6);
@@ -406,6 +414,7 @@ code {
             font-weight: 500;
             margin-bottom: 4px;
           }
+
           .sub-title {
             color: rgba(30, 26, 29, 0.38);
             font-size: 13px;
@@ -516,6 +525,7 @@ code {
 
   .ant-form-item-control {
     .ant-form-item-control-input-content {
+
       input,
       textarea {
         padding: 9px 1rem;
@@ -791,7 +801,7 @@ code {
     }
   }
 
-  .ant-popover-arrow > .ant-popover-arrow-content::before {
+  .ant-popover-arrow>.ant-popover-arrow-content::before {
     background: var(--color-primary);
   }
 
@@ -842,5 +852,12 @@ code {
   .ant-modal-body {
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
+  }
+}
+
+// Auto complete
+.ant-select-auto-complete {
+  .ant-select-item-option-content {
+    text-align: start;
   }
 }

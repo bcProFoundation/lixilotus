@@ -1,6 +1,6 @@
-import { Burn, BurnCommand, BurnForType, BurnType, fromSmallestDenomination } from '@bcpros/lixi-models';
+import { Account, Burn, BurnCommand, BurnForType, BurnType, fromSmallestDenomination } from '@bcpros/lixi-models';
 import BCHJS from '@bcpros/xpi-js';
-import { Body, Controller, HttpException, HttpStatus, Inject, Logger, Post } from '@nestjs/common';
+import { Body, Controller, HttpException, HttpStatus, Inject, Logger, Post, UseGuards } from '@nestjs/common';
 import { ChronikClient } from 'chronik-client';
 import { I18n, I18nService } from 'nestjs-i18n';
 import { InjectChronikClient } from 'src/common/modules/chronik/chronik.decorators';
@@ -9,6 +9,10 @@ import { parseBurnOutput } from 'src/utils/opReturnBurn';
 import { VError } from 'verror';
 import _ from 'lodash';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
+import { GqlJwtAuthGuard } from 'src/modules/auth/guards/gql-jwtauth.guard';
+import { PostAccountEntity } from 'src/decorators/postAccount.decorator';
+import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
+import { NotificationLevel } from '@bcpros/lixi-prisma';
 
 @Controller('burn')
 export class BurnController {
@@ -22,7 +26,9 @@ export class BurnController {
   ) {}
 
   @Post()
-  async burn(@Body() command: BurnCommand): Promise<Burn> {
+  async burn(
+    @Body() command: BurnCommand
+    ): Promise<Burn> {
     try {
       const txData: any = await this.XPI.RawTransactions.decodeRawTransaction(command.txHex);
       if (!txData) {
@@ -165,6 +171,99 @@ export class BurnController {
             }
           });
         }
+      }
+
+      // prepare data sender
+      const legacyAddress = this.XPI.Address.hash160ToLegacy(command.burnedBy)
+      const accountAddress = this.XPI.Address.toXAddress(legacyAddress);
+      const sender = await this.prisma.account.findFirst({
+        where: {
+          address: accountAddress
+        }
+      })
+      if (!sender) {
+        const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
+        throw new VError(accountNotExistMessage);
+      }
+
+      // prepare data recipient
+      let commentAccountId;
+      let commentPostId;
+      if (command.burnForType == BurnForType.Comment) {
+        const comment = await this.prisma.comment.findFirst({
+          where: {id: command.burnForId}
+        })
+
+        commentAccountId = comment?.commentAccountId;
+        commentPostId = comment?.commentToId;
+      };
+
+      const postId = command.burnForType == BurnForType.Comment ? commentPostId : command.burnForId;
+      const post = await this.prisma.post.findFirst({
+          where: {id: postId},
+          include: {
+            postAccount: true,
+            page: true
+          }
+        }) 
+
+      // get burnForType key
+      const typeValuesArr = Object.values(BurnForType);
+      const burnForTypeString = Object.keys(BurnForType)[typeValuesArr.indexOf(command.burnForType as unknown as BurnForType)];
+
+      // BurnValue + tip + fee
+      let tip = Number(command.burnValue)*0.04;
+      let fee = Number(command.burnValue)*0.04;
+      
+
+      // create Notifications Burn
+      const createNotifBurn = {
+        senderId: sender.id,
+        recipientId: post?.postAccountId as number,
+        notificationTypeId: NOTIFICATION_TYPES.BURN,
+        level: NotificationLevel.INFO,
+        url: '/post/' + post?.id,
+        additionalData: {
+          senderName: sender.name,
+          BurnForType: burnForTypeString,          
+          xpiBurn: command.burnValue,
+        }
+      };
+      await this.notificationService.createNotification(createNotifBurn);
+
+      // create Notifications Fee
+      const createNotifBurnFee = {
+        senderId: sender.id,
+        recipientId: post?.pageId ? post.page?.pageAccountId as number : post?.postAccountId,
+        notificationTypeId: NOTIFICATION_TYPES.RECEIVE_BURN_FEE,
+        level: NotificationLevel.INFO,
+        url: '/post/' + post?.id,
+        additionalData: {
+          senderName: sender.name,
+          pageName: post?.page?.name,
+          BurnForType: burnForTypeString,
+          xpiBurn: command.burnValue,
+          xpiFee: fee
+        }
+      };
+      await this.notificationService.createNotification(createNotifBurnFee);
+
+      // create Notifications Tip
+      if (command.burnType == BurnType.Up) {
+        const createNotifBurnTip = {
+          senderId: sender.id,
+          recipientId: command.burnForType == BurnForType.Comment ? Number(commentAccountId): Number(postId),
+          notificationTypeId: NOTIFICATION_TYPES.RECEIVE_BURN_TIP as number,
+          level: NotificationLevel.INFO,
+          url: '/post/' + post?.id,
+          additionalData: {
+            senderName: sender.name,
+            BurnForType: burnForTypeString,
+            xpiBurn: command.burnValue,
+            xpiTip: tip
+          }
+        };
+        await this.notificationService.createNotification(createNotifBurnTip);
       }
 
       const result: Burn = {

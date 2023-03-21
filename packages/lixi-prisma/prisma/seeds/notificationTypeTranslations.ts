@@ -136,14 +136,14 @@ export const notificationTypeTranslations = [
     notificationTypeId: 10,
     language: 'en',
     isDefault: true,
-    template: 'You get {{xpiTip}} XPI fee from {{senderName}} burned {{xpiBurn}} for your {{pageName}} name.'
+    template: 'You get {{xpiFee}} XPI fee from {{senderName}} burned {{xpiBurn}} for {{burnForType}} on your {{pageName}} page.'
   },
   {
     id: 20,
     notificationTypeId: 10,
     language: 'vi',
     isDefault: false,
-    template: 'Bạn nhận được {{xpiTip}} XPI phí từ {{senderName}} đã đốt {{xpiBurn}} cho trang {{pageName}} của bạn.'
+    template: 'Bạn nhận được {{xpiFee}} XPI phí từ {{senderName}} đã đốt {{xpiBurn}} XPI cho {{burnForType}} trên trang {{pageName}} của bạn.'
   },
   // receive-xpi
   {
