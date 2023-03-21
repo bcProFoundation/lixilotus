@@ -4,7 +4,7 @@ import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
 import InfoCardUser from '@components/Common/InfoCardUser';
 import { SmartButton } from '@components/Common/PrimaryButton';
 import { WalletContext } from '@context/index';
-import { generateAccount, getTopFive, importAccount, selectAccount } from '@store/account/actions';
+import { generateAccount, getLeaderboard, importAccount, selectAccount } from '@store/account/actions';
 import { getAllAccounts, getSelectedAccount, getLeaderBoard } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { fetchNotifications } from '@store/notification/actions';
@@ -39,7 +39,7 @@ export const ShortcutItemAccess = ({
     <a>
       <Space className={'item-access'}>
         <AvatarUser name={text} isMarginRight={false} />
-        <div style={{ margin: '0', color: '#1E1A1D', fontSize: '16px', letterSpacing: '0.5px' }}>
+        <div >
           {text}
           <span style={{ display: 'block', paddingTop: '4px', fontSize: '14px', color: 'rgba(30, 26, 29, 0.38)' }}>
             Burned:{burnValue} XPI
@@ -129,6 +129,20 @@ const RankingSideBar = styled(Sider)`
         .item-access {
           gap: 1rem !important;
           margin-bottom: 1rem;
+
+          div {
+            margin: 0; 
+            color: #1E1A1D; 
+            font-size: 16px; 
+            letter-spacing: 0.5px 
+
+            span {
+              display: 'block';
+              padding-top: '4px';
+              font-size: '14px';
+              color: rgba(30, 26, 29, 0.38)
+            }
+          }
         }
         .content {
           h3 {
@@ -313,7 +327,7 @@ const SidebarRanking = () => {
   });
   const { validateMnemonic } = Wallet;
 
-  useEffect(() => dispatch(getTopFive()), []);
+  useEffect(() => dispatch(getLeaderboard()), []);
 
   console.log(getTops)
 
@@ -434,14 +448,13 @@ const SidebarRanking = () => {
                 return (
                   <h4 className="distance">
                     <ShortcutItemAccess burnValue={item.totalBurned} icon={item.avatar} text={item.name} href={`/page/${item.id}`} />
-
                   </h4>
                 );
               })}
-              {/* <div style={{ textAlign: 'end' }}>
+              <div style={{ textAlign: 'end' }}>
                 {!isCollapse && <DownOutlined onClick={() => setIsCollapse(!isCollapse)} />}
                 {isCollapse && <UpOutlined onClick={() => setIsCollapse(!isCollapse)} />}
-              </div> */}
+              </div>
             </div>
           </div>
         </div>

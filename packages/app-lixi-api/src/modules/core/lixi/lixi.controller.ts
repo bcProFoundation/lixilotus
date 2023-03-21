@@ -75,7 +75,7 @@ export class LixiController {
     @Inject('xpijs') private XPI: BCHJS,
     @InjectQueue(EXPORT_SUB_LIXIES_QUEUE) private exportSubLixiesQueue: Queue,
     @InjectQueue(WITHDRAW_SUB_LIXIES_QUEUE) private withdrawSubLixiesQueue: Queue
-  ) {}
+  ) { }
 
   @Get(':id')
   async getLixi(
@@ -175,21 +175,21 @@ export class LixiController {
 
       subLixies = cursor
         ? await this.prisma.lixi.findMany({
-            take: take,
-            skip: 1,
-            where: {
-              parentId: lixiId
-            },
-            cursor: {
-              id: cursor
-            }
-          })
+          take: take,
+          skip: 1,
+          where: {
+            parentId: lixiId
+          },
+          cursor: {
+            id: cursor
+          }
+        })
         : await this.prisma.lixi.findMany({
-            take: take,
-            where: {
-              parentId: lixiId
-            }
-          });
+          take: take,
+          where: {
+            parentId: lixiId
+          }
+        });
 
       const childrenApiResult: LixiDto[] = [];
 
@@ -223,14 +223,14 @@ export class LixiController {
       const countAfter = !endCursor
         ? 0
         : await this.prisma.lixi.count({
-            where: {
-              parentId: lixiId
-            },
-            cursor: {
-              id: _.toSafeInteger(endCursor)
-            },
-            skip: 1
-          });
+          where: {
+            parentId: lixiId
+          },
+          cursor: {
+            id: _.toSafeInteger(endCursor)
+          },
+          skip: 1
+        });
 
       const hasNextPage = countAfter > 0;
 
@@ -848,19 +848,19 @@ export class LixiController {
       const countAfter = !endCursor
         ? 0
         : await this.prisma.claim.count({
-            where: {
-              lixiId: lixiId
-            },
-            orderBy: [
-              {
-                id: 'asc'
-              }
-            ],
-            cursor: {
-              id: _.toSafeInteger(endCursor)
-            },
-            skip: 1
-          });
+          where: {
+            lixiId: lixiId
+          },
+          orderBy: [
+            {
+              id: 'asc'
+            }
+          ],
+          cursor: {
+            id: _.toSafeInteger(endCursor)
+          },
+          skip: 1
+        });
 
       const hasNextPage = countAfter > 0;
 
@@ -979,7 +979,7 @@ export class LixiController {
     @Query('file') fileName: string,
     @Req() req: FastifyRequest,
     @Res({ passthrough: true }) res: FastifyReply,
-    @I18n() i18n: I18nContext
+    @I18n() i18n: I18nContext,
   ): Promise<StreamableFile> {
     try {
       if (!account) {

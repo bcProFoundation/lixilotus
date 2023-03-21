@@ -133,10 +133,14 @@ const accountApi = {
       });
   },
 
-  getTopFive() {
-    const url = '/api/accounts/top5';
+  getLeaderboard() {
+    const url = 'api/accounts/leaderboard';
     return axiosClient
-      .get(url)
+      .get(url, {
+        params: {
+          topMostBurned: 5
+        }
+      })
       .then(response => {
         return response.data;
       })

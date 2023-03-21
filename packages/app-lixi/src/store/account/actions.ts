@@ -65,6 +65,6 @@ export const verifyEmailFailure = createAction<any>('account/verifyEmailFailure'
 export const saveEditorTextToCache = createAction<string>('posts/saveEditorToCache');
 export const deleteEditorTextFromCache = createAction('posts/deleteEditorTextFromCache');
 
-export const getTopFive = createAction('account/getTopFive');
-export const getTopFiveSuccess = createAction<any>('account/getTopFiveSuccess');
-export const getTopFiveFailure = createAction<string>('account/getTopFiveFailure');
+export const getLeaderboard = createAction('account/getLeaderboard');
+export const getLeaderboardSuccess = createAction<any>('account/getLeaderboardSuccess');
+export const getLeaderboardFailure = createAction<string>('account/getLeaderboardFailure');

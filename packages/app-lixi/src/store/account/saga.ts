@@ -69,9 +69,9 @@ import {
   verifyEmail,
   verifyEmailFailure,
   verifyEmailSuccess,
-  getTopFive,
-  getTopFiveSuccess,
-  getTopFiveFailure
+  getLeaderboard,
+  getLeaderboardSuccess,
+  getLeaderboardFailure
 } from './actions';
 import { getAccountById, getSelectedAccount } from './selectors';
 import { activateWallet } from '@store/wallet';
@@ -110,23 +110,23 @@ function* generateAccountSaga(action: PayloadAction) {
   yield put(postAccount(account));
 }
 
-function* getTopFiveSaga(action: PayloadAction<number>) {
+function* getLeaderboardSaga(action: PayloadAction<number>) {
   try {
-    yield put(showLoading(getTopFive.type));
-    const data = yield call(accountApi.getTopFive);
+    yield put(showLoading(getLeaderboard.type));
+    const data = yield call(accountApi.getLeaderboard);
     // yield put(getAccountSuccess(data));
-    yield put(getTopFiveSuccess(data));
+    yield put(getLeaderboardSuccess(data));
   } catch (err) {
     const message = (err as Error).message ?? intl.get('account.couldNotFetchAccount');
-    yield put(getTopFiveFailure(message));
+    yield put(getLeaderboardFailure(message));
   }
 }
 
-function* getTopFiveSuccessSaga(action: any) {
-  yield put(hideLoading(getTopFive.type));
+function* getLeaderboardSuccessSaga(action: any) {
+  yield put(hideLoading(getLeaderboard.type));
 }
 
-function* getTopFiveFailureSaga(action: PayloadAction<string>) {
+function* getLeaderboardFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? intl.get('account.unableGetAccountFromServer');
   yield put(
     showToast('error', {
@@ -135,7 +135,7 @@ function* getTopFiveFailureSaga(action: PayloadAction<string>) {
       duration: 5
     })
   );
-  yield put(hideLoading(getTopFive.type));
+  yield put(hideLoading(getLeaderboard.type));
 }
 
 function* getAccountSaga(action: PayloadAction<number>) {
@@ -744,15 +744,15 @@ function* watchVerifyEmailFailure() {
 }
 
 function* watchTopFive() {
-  yield takeLatest(getTopFive.type, getTopFiveSaga);
+  yield takeLatest(getLeaderboard.type, getLeaderboardSaga);
 }
 
 function* watchTopFiveSuccess() {
-  yield takeLatest(getTopFiveSuccess.type, getTopFiveSuccessSaga);
+  yield takeLatest(getLeaderboardSuccess.type, getLeaderboardSuccessSaga);
 }
 
 function* watchTopFiveFailure() {
-  yield takeLatest(getTopFiveFailure.type, getTopFiveFailureSaga);
+  yield takeLatest(getLeaderboardFailure.type, getLeaderboardFailureSaga);
 }
 
 function* silentLoginSaga(action: PayloadAction<string>) {

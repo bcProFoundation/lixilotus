@@ -23,7 +23,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { FilterBurnt } from '@components/Common/FilterBurn';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import { getFilterPostsHome } from '@store/settings/selectors';
-import { getTopFive } from '@store/account/actions';
+import { getLeaderboard } from '@store/account/actions';
 
 type PostsListingProps = {
   className?: string;
@@ -134,9 +134,8 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const filterValue = useAppSelector(getFilterPostsHome);
   const getTopFirst = useAppSelector(getLeaderBoard);
 
-  // console.log(getTopFirst);
 
-  useEffect(() => dispatch(getTopFive()), [])
+  useEffect(() => dispatch(getLeaderboard()), [])
 
   const onClickMenu: MenuProps['onClick'] = e => {
     setTab(e.key);

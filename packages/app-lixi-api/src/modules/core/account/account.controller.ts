@@ -11,6 +11,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Request,
   UseGuards
 } from '@nestjs/common';
@@ -38,6 +39,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { WalletService } from '../../wallet/wallet.service';
 import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
 import BCHJS from '@bcpros/xpi-js'
+import { toSafeInteger } from 'lodash';
 
 @Controller('accounts')
 export class AccountController {
@@ -115,10 +117,10 @@ export class AccountController {
     }
   }
 
-  @Get('top5')
-  async getMostBurnAcount() {
+  @Get('leaderboard')
+  async getMostBurnedAcount(@Query('topMostBurned') topMostBurned: number, @I18n() i18n: I18nContext) {
     try {
-      const accountsBuffer = await this.prisma.burn.groupBy({
+      const leaderboardAccounts = await this.prisma.burn.groupBy({
         by: ['burnedBy'],
         _sum: {
           burnedValue: true,
@@ -128,10 +130,10 @@ export class AccountController {
             burnedValue: 'desc'
           }
         },
-        take: 5
+        take: toSafeInteger(topMostBurned)
       });
 
-      const accounts = accountsBuffer.map((account: any) => {
+      const addressAndTotalBurntArray = leaderboardAccounts.map((account: any) => {
 
         const burnedBy = account.burnedBy.toString('hex');
 
@@ -144,31 +146,32 @@ export class AccountController {
           publicAddress,
           totalBurned
         }
-      })
+      });
 
-      const accountAddress = _.map(accounts, 'publicAddress');
+      const accountAddresses = _.map(addressAndTotalBurntArray, 'publicAddress');
 
       const accountDTO = await this.prisma.account.findMany({
         where: {
           address: {
-            in: accountAddress
+            in: accountAddresses
           }
         }
       });
 
-      const accountDDO = accounts.map((obj1) => {
-        const obj2 = accountDTO.find((obj2) => obj2.address === obj1.publicAddress);
-        return { ...obj1, ...obj2 };
+      const accountDDO = addressAndTotalBurntArray.map((account) => {
+        const obj2 = accountDTO.find((addressItem) => addressItem.address === account.publicAddress);
+        return { ...account, ...obj2 };
       });
 
       const result = accountDDO.map(data => _.omit({ ...data }, 'publicAddress'))
       return result
     } catch (err: unknown) {
+      console.log(err)
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
-        const unableGetAccountMessage = await i18n.t('account.messages.unableGetAccount');
-        const error = new VError.WError(err as Error, unableGetAccountMessage);
+        const getMostBurnAccount = await i18n.t('account.messages.unableGetAccount');
+        const error = new VError.WError(err as Error, getMostBurnAccount);
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }

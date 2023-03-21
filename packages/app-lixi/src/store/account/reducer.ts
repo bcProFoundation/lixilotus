@@ -14,7 +14,7 @@ import {
   refreshLixiListSilentSuccess,
   saveEditorTextToCache,
   deleteEditorTextFromCache,
-  getTopFiveSuccess
+  getLeaderboardSuccess
 } from './actions';
 import { AccountsState } from './state';
 
@@ -115,7 +115,7 @@ export const accountReducer = createReducer(initialState, builder => {
     .addCase(deleteEditorTextFromCache, (state, action) => {
       state.editorCache = '';
     })
-    .addCase(getTopFiveSuccess, (state, action) => {
+    .addCase(getLeaderboardSuccess, (state, action) => {
       state.leaderBoard = action.payload;
     })
     .addMatcher(isAnyOf(refreshLixiListSuccess, refreshLixiListSilentSuccess), (state, action) => {
