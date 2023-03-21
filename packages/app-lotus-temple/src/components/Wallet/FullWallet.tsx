@@ -1,4 +1,4 @@
-import { SearchOutlined } from '@ant-design/icons';
+import { LockOutlined, SearchOutlined } from '@ant-design/icons';
 import { Button, List } from 'antd';
 import VirtualList from 'rc-virtual-list';
 import React from 'react';
@@ -17,6 +17,7 @@ import { FormattedTxAddress } from '@components/Common/FormattedWalletAddress';
 import Link from 'next/link';
 import Reply from '@assets/icons/reply.svg';
 import { BurnForType } from '@bcpros/lixi-models/lib/burn';
+import { selectTokens } from '@store/token';
 import { useCommentQuery } from '@store/comment/comments.generated';
 
 interface UserItem {
@@ -38,6 +39,8 @@ interface UserItem {
 const TransactionHistory = styled.div`
   background: #fff;
   padding: 0 2rem;
+  border-bottom-left-radius: 24px;
+  border-bottom-right-radius: 24px;
   .header-transaction {
     display: flex;
     justify-content: space-between;
@@ -98,22 +101,27 @@ const TransactionHistory = styled.div`
           .tx-memo {
             letter-spacing: 0.25px;
             color: rgba(0, 30, 46, 0.6);
+            margin-top: 16px;
           }
         }
       }
       .tx-info {
+        margin-top: 24px;
         .tx-status {
           background: linear-gradient(0deg, rgba(0, 101, 141, 0.08), rgba(0, 101, 141, 0.08)), #fafafb;
           border-radius: 4px;
           font-size: 12px;
           color: rgba(0, 30, 46, 0.6);
-          letter-spacing: 0.4px;
+          letter-spacing: 0.25px;
         }
         .tx-date {
           font-size: 12px;
           color: rgba(0, 30, 46, 0.6);
-          letter-spacing: 0.4px;
+          letter-spacing: 0.25px;
         }
+      }
+      .icon-reply {
+        margin-top: 6.5px;
       }
     }
   }
@@ -133,13 +141,13 @@ const FullWalletWrapper = styled.div`
     padding-bottom: 9rem;
   }
 `;
-
 const FullWalletComponent: React.FC = () => {
   const trimLength = 8;
   const dispatch = useAppDispatch();
 
   const selectedAccount = useAppSelector(getSelectedAccount);
   const currentLocale = useAppSelector(getCurrentLocale);
+  const allTokens = useAppSelector(selectTokens);
 
   const walletParsedHistory = useAppSelector(getWalletParsedTxHistory);
   const orderedWalletParsedHistory = _.orderBy(walletParsedHistory, x => x.timeFirstSeen, 'desc');
@@ -159,7 +167,11 @@ const FullWalletComponent: React.FC = () => {
 
   const getUrl = (burnForType: BurnForType, burnForId: string) => {
     let burnForTypeString = getBurnForType(burnForType);
+    let idComment = burnForId;
 
+    if (burnForType == BurnForType.Token && burnForId.length !== 64) {
+      burnForId = allTokens.find(token => token.id === burnForId).tokenId;
+    }
     if (burnForType == BurnForType.Comment) {
       burnForTypeString = getBurnForType(BurnForType.Post);
       // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -169,7 +181,24 @@ const FullWalletComponent: React.FC = () => {
       }
     }
 
-    return '/' + burnForTypeString.toLowerCase() + '/' + burnForId;
+    return `/${burnForTypeString.toLowerCase()}/${burnForId}`;
+  };
+
+  const showAmount = (item: Tx & { parsed: ParsedChronikTx }) => {
+    const xpiBurnAndGiftAmount = Number(item.parsed.xpiBurnAmount) + Number(item.parsed.xpiAmount);
+    if (item.parsed.isBurn) {
+      if (item.parsed.incoming) {
+        return ' +' + item.parsed.xpiAmount + ' XPI';
+      } else {
+        return '- ' + xpiBurnAndGiftAmount + ' XPI';
+      }
+    } else {
+      if (item.parsed.incoming) {
+        return '+ ' + item.parsed.xpiAmount + ' XPI';
+      } else {
+        return '- ' + item.parsed.xpiAmount + ' XPI';
+      }
+    }
   };
 
   return (
@@ -190,6 +219,7 @@ const FullWalletComponent: React.FC = () => {
                     <VirtualList data={walletParsedHistoryGroupByDate[index]} itemHeight={47} itemKey="email">
                       {(item: Tx & { parsed: ParsedChronikTx }) => {
                         let memo = '';
+
                         if (item.parsed.isLotusMessage) {
                           if (item.parsed.isEncryptedMessage && item.parsed.decryptionSuccess) {
                             memo = item.parsed.opReturnMessage ?? '';
@@ -202,11 +232,7 @@ const FullWalletComponent: React.FC = () => {
                             <List.Item.Meta
                               title={
                                 <a className={item.parsed.incoming ? 'amount increase' : 'amount decrease'}>
-                                  {item.parsed.isBurn
-                                    ? '- ' + item.parsed.xpiAmount + ' XPI'
-                                    : item.parsed.incoming
-                                    ? '+ ' + item.parsed.xpiAmount + ' XPI'
-                                    : '- ' + item.parsed.xpiAmount + ' XPI'}
+                                  {showAmount(item)}
                                 </a>
                               }
                               description={
@@ -216,9 +242,20 @@ const FullWalletComponent: React.FC = () => {
                                       <p>
                                         {intl.get('general.burnForType')}:{' '}
                                         {item.parsed.burnInfo && (
-                                          <span style={{ fontWeight: 'bold' }}>
-                                            {getBurnForType(item.parsed.burnInfo.burnForType)}
-                                          </span>
+                                          <Link
+                                            href={{
+                                              pathname: getUrl(
+                                                item.parsed.burnInfo.burnForType,
+                                                item.parsed.burnInfo.burnForId
+                                              )
+                                            }}
+                                          >
+                                            <Button size="small" type="text">
+                                              <p style={{ fontWeight: 'bold' }}>
+                                                {getBurnForType(item.parsed.burnInfo.burnForType)}
+                                              </p>
+                                            </Button>
+                                          </Link>
                                         )}
                                       </p>
                                     ) : item.parsed.incoming ? (
@@ -239,40 +276,29 @@ const FullWalletComponent: React.FC = () => {
                                       </p>
                                     )}
                                   </p>
-                                  <p className="tx-memo">{memo}</p>
+                                  <p className="tx-memo">
+                                    <LockOutlined /> {memo}
+                                  </p>
                                 </div>
                               }
                             />
                             <div className="tx-info">
                               <div className="tx-status"></div>
                               <p className="tx-date">{formatDate(item.timeFirstSeen)}</p>
-                              {item.parsed.isBurn && item.parsed.burnInfo ? (
+
+                              {item.parsed.incoming && (
                                 <Link
                                   href={{
-                                    pathname: getUrl(item.parsed.burnInfo.burnForType, item.parsed.burnInfo.burnForId)
+                                    pathname: '/send',
+                                    query: { replyAddress: item.parsed.replyAddress }
                                   }}
                                 >
                                   <Button size="small" type="text">
-                                    <p>
+                                    <p className="icon-reply">
                                       <Reply /> {intl.get('account.reply')}
                                     </p>
                                   </Button>
                                 </Link>
-                              ) : (
-                                item.parsed.incoming && (
-                                  <Link
-                                    href={{
-                                      pathname: '/send',
-                                      query: { replyAddress: item.parsed.replyAddress }
-                                    }}
-                                  >
-                                    <Button size="small" type="text">
-                                      <p>
-                                        <Reply /> {intl.get('account.reply')}
-                                      </p>
-                                    </Button>
-                                  </Link>
-                                )
                               )}
                             </div>
                           </List.Item>

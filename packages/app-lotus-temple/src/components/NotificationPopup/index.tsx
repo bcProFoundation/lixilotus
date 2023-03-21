@@ -1,6 +1,6 @@
 import React from 'react';
 import { CloseCircleOutlined } from '@ant-design/icons';
-import { Space, Popover } from 'antd';
+import { Space, Popover, Menu } from 'antd';
 import { Comment } from '@ant-design/compatible';
 import { useAppDispatch } from '@store/hooks';
 import styled from 'styled-components';
@@ -72,7 +72,19 @@ export const StyledPopover = styled(Popover)`
 const StyledComment = styled(Comment)`
   border-radius: 5px;
   border: 1px solid var(--boder-item-light);
-  padding: 5px;
+  padding: 8px;
+
+  &::before {
+    content: ' ';
+    top: 6px;
+    position: absolute;
+    left: -11px;
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-right: 10px solid var(--color-primary);
+    border-bottom: 10px solid transparent;
+  }
 
   &:hover {
     background-color: #eceff5 !important;
@@ -82,13 +94,29 @@ const StyledComment = styled(Comment)`
     padding: 0px;
     color: black;
   }
+
+  .ant-comment-content {
+    text-align: left;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 8px;
+    .ant-comment-content-author {
+      align-self: flex-start;
+    }
+  }
+`;
+
+const StyledTitlePage = styled.h1`
+  @media (max-width: 576px) {
+    display: none;
+  }
 `;
 
 const StyledAuthor = styled.div`
   font-size: 14px;
-  color: black;
   display: inline-block;
-  width: 300px;
+  width: fit-content;
+  color: var(--color-primary) !important;
 
   &:hover {
     color: black;
@@ -115,6 +143,24 @@ const StyledHeader = styled.div`
   display: flex;
   justify-content: space-between;
   margin-bottom: 1rem;
+  .menu-post-listing {
+    background: none !important;
+    .ant-menu-item {
+      .ant-menu-title-content {
+        font-size: 14px;
+        color: rgba(30, 26, 29, 0.6);
+      }
+      &.ant-menu-item-selected {
+        .ant-menu-title-content {
+          color: #1e1a1d;
+          font-weight: 500;
+        }
+        &::after {
+          border-bottom: 2px solid #9e2a9c !important;
+        }
+      }
+    }
+  }
 `;
 
 const StyledReadAll = styled.div`
@@ -147,11 +193,26 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
     }
   };
 
+  const menuItems = [{ label: 'All', key: 'all' }];
+
   return (
     <>
-      <h1>Notifications</h1>
+      <StyledTitlePage>Notifications</StyledTitlePage>
       <StyledHeader>
-        <h1 style={{ fontSize: '18px', margin: '0px' }}>{intl.get('notification.earlier')}</h1>
+        <Menu
+          className="menu-post-listing"
+          style={{
+            border: 'none',
+            position: 'relative',
+            marginBottom: '1rem',
+            background: 'var(--bg-color-light-theme)'
+          }}
+          mode="horizontal"
+          defaultSelectedKeys={['all']}
+          // selectedKeys={['all']}
+          // onClick={onClickMenu}
+          items={menuItems}
+        ></Menu>
         <StyledReadAll onClick={() => router.push('/notifications')}>{intl.get('notification.readAll')}</StyledReadAll>
       </StyledHeader>
       {notifications &&
@@ -190,7 +251,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                 style={{
                   borderRadius: '10px',
                   backgroundColor: notification.readAt == null ? '#eceff5' : '#fff',
-                  marginBottom: '5px'
+                  marginBottom: '8px'
                 }}
                 author={
                   <StyledAuthor>

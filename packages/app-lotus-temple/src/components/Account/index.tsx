@@ -78,6 +78,28 @@ const Account: React.FC = () => {
       <SmartButton onClick={() => refreshList()}>
         <ReloadOutlined /> {intl.get('account.refreshLixiList')}
       </SmartButton>
+      {lixies.length > 0 && (
+        <StyledTabs type="card" size="large" defaultActiveKey="1" centered>
+          <TabPane
+            key={'1'}
+            tab={
+              <span>
+                {' '}
+                <CheckCircleOutlined className="active-tab-icon" /> Active{' '}
+              </span>
+            }
+          ></TabPane>
+          <TabPane
+            key={'2'}
+            tab={
+              <span>
+                {' '}
+                <InboxOutlined className="archive-tab-icon" /> Archive{' '}
+              </span>
+            }
+          ></TabPane>
+        </StyledTabs>
+      )}
     </>
   );
 };

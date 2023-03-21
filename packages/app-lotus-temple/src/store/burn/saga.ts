@@ -1,48 +1,118 @@
-import { BurnType, Burn, BurnCommand, BurnForType } from '@bcpros/lixi-models/lib/burn';
-import { all, call, fork, takeLatest, take } from '@redux-saga/core/effects';
+import { BurnType, Burn, BurnCommand, BurnForType, BurnQueueCommand } from '@bcpros/lixi-models/lib/burn';
+import { all, call, fork, takeLatest, take, put as putChannel } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
 import { api as postApi } from '@store/post/posts.api';
 import { api as commentApi } from '@store/comment/comments.api';
+import { api as tokenApi } from '@store/token/tokens.api';
 import { showToast } from '@store/toast/actions';
+import { burnForToken, burnForTokenFailure, burnForTokenSucceses, getTokenById } from '@store/token';
 import * as _ from 'lodash';
 import intl from 'react-intl-universal';
-import { actionChannel, put, select } from 'redux-saga/effects';
+import { actionChannel, select, put, getContext, flush } from 'redux-saga/effects';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import { hideLoading } from '../loading/actions';
-import { burnForUpDownVote, burnForUpDownVoteFailure, burnForUpDownVoteSuccess } from './actions';
+import {
+  burnForUpDownVote,
+  burnForUpDownVoteFailure,
+  burnForUpDownVoteSuccess,
+  createTxHex,
+  addBurnTransaction,
+  removeBurnQueue,
+  addFailQueue,
+  moveAllBurnToFailQueue,
+  returnTxHex,
+  clearBurnQueue
+} from './actions';
 import burnApi from './api';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
+import { getSlpBalancesAndUtxos } from '@store/wallet';
+import { setTransactionNotReady, setTransactionReady } from '@store/account/actions';
+import { getTransactionStatus } from '@store/account/selectors';
+import { getAllWalletPaths } from '@store/wallet';
+import { callConfig } from '@context/shareContext';
+import { getBurnQueue, getFailQueue } from './selectors';
+import { buffers, Channel } from 'redux-saga';
+import { Account } from '@bcpros/lixi-models';
 
-function* burnForUpDownVoteSaga(action: PayloadAction<BurnCommand>) {
+function* createTxHexSaga(action: any) {
+  const data = action.payload;
+  const { XPI } = callConfig.call.walletContext;
+  const xpiContext = yield getContext('useXPI');
+  const walletPaths = yield select(getAllWalletPaths);
+  const slpBalancesAndUtxos = yield select(getSlpBalancesAndUtxos);
+  const { createBurnTransaction } = xpiContext();
+  const burnForId = data.burnForType === BurnForType.Token ? data.tokenId : data.burnForId;
+  const tipToAddresses = data.tipToAddresses ? data.tipToAddresses : null;
+
+  try {
+    const txHex = createBurnTransaction(
+      XPI,
+      walletPaths,
+      slpBalancesAndUtxos.nonSlpUtxos,
+      data.defaultFee,
+      data.burnType,
+      data.burnForType,
+      data.burnedBy,
+      burnForId,
+      data.burnValue,
+      tipToAddresses
+    );
+
+    yield put({ type: returnTxHex.type, payload: txHex });
+  } catch {
+    yield put(moveAllBurnToFailQueue());
+    yield put(clearBurnQueue());
+  }
+}
+
+function* burnForUpDownVoteSaga(action: PayloadAction<any>) {
   let patches, patch: PatchCollection;
-
   const command = action.payload;
+
   const { burnForId: postId, queryParams } = command;
   let burnValue = _.toNumber(command.burnValue);
+  yield put(createTxHex(command));
+  const { payload } = yield take(returnTxHex.type);
+  const latestTxHex = payload;
 
   try {
     const dataApi: BurnCommand = {
+      txHex: latestTxHex,
       ...command
     };
 
-    if (command.burnForType === BurnForType.Post) {
-      patches = yield updatePostBurnValue(action);
-    } else if (command.burnForType === BurnForType.Comment) {
-      patches = yield updateCommentBurnValue(action);
+    const data: Burn = yield call(burnApi.post, dataApi);
+
+    switch (command.burnForType) {
+      case BurnForType.Token:
+        patches = yield updateTokenBurnValue(action);
+        break;
+      case BurnForType.Post:
+        patches = yield updatePostBurnValue(action);
+        break;
+      case BurnForType.Comment:
+        patches = yield updateCommentBurnValue(action);
+        break;
     }
 
-    const data: Burn = yield call(burnApi.post, dataApi);
+    if (command.burnForType === BurnForType.Token) {
+      yield put(burnForTokenSucceses());
+    }
 
     if (_.isNil(data) || _.isNil(data.id)) {
       throw new Error(intl.get('post.unableToBurnForPost'));
     }
 
+    yield put(removeBurnQueue());
     yield put(burnForUpDownVoteSuccess(data));
   } catch (err) {
     let message;
+    yield put(removeBurnQueue());
+    yield put(setTransactionReady());
     if (command.burnForType === BurnForType.Token) {
       message = (err as Error)?.message ?? intl.get('token.unableToBurn');
+      yield put(burnForTokenFailure({ id: command.burnForId, burnType: command.burnType, burnValue: burnValue }));
     } else if (command.burnForType === BurnForType.Post) {
       message = (err as Error)?.message ?? intl.get('post.unableToBurn');
       const params = {
@@ -75,13 +145,13 @@ function* burnForUpDownVoteFailureSaga(action: PayloadAction<string>) {
   yield put(
     showToast('error', {
       message: action.payload,
-      duration: 5
+      duration: 3
     })
   );
   yield put(hideLoading(burnForUpDownVote.type));
 }
 
-function* updatePostBurnValue(action: PayloadAction<BurnCommand>) {
+function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
   const command = action.payload;
   // @todo: better control the params for search/others
   const params = {
@@ -92,6 +162,33 @@ function* updatePostBurnValue(action: PayloadAction<BurnCommand>) {
   };
 
   let burnValue = _.toNumber(command.burnValue);
+
+  //BUG: All token and page post show up on home page will not optimistic update becuz of PostQueryTag
+  // The algo will check for PostQueryTag then updateQueryData according to it. It only update normal post not page's post and token's post at homepage.
+  // That's why we need to update the all Posts here first then updateQueryData later. Not the best way to handle. Maybe come back later.
+  yield put(
+    postApi.util.updateQueryData('Posts', { ...params, minBurnFilter: command.minBurnFilter }, draft => {
+      const postToUpdateIndex = draft.allPosts.edges.findIndex(item => item.node.id === command.burnForId);
+      const postToUpdate = draft.allPosts.edges[postToUpdateIndex];
+      if (postToUpdateIndex >= 0) {
+        let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
+        let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+        if (command.burnType == BurnType.Up) {
+          lotusBurnUp = lotusBurnUp + burnValue;
+        } else {
+          lotusBurnDown = lotusBurnDown + burnValue;
+        }
+        const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+        draft.allPosts.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
+        draft.allPosts.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
+        draft.allPosts.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
+        if (lotusBurnScore < 0) {
+          draft.allPosts.edges.splice(postToUpdateIndex, 1);
+          draft.allPosts.totalCount = draft.allPosts.totalCount - 1;
+        }
+      }
+    })
+  );
 
   switch (command.postQueryTag) {
     case PostsQueryTag.Post:
@@ -112,54 +209,66 @@ function* updatePostBurnValue(action: PayloadAction<BurnCommand>) {
       );
     case PostsQueryTag.PostsByPageId:
       return yield put(
-        postApi.util.updateQueryData('PostsByPageId', { ...params, id: command.pageId }, draft => {
-          const postToUpdateIndex = draft.allPostsByPageId.edges.findIndex(item => item.node.id === command.burnForId);
-          const postToUpdate = draft.allPostsByPageId.edges[postToUpdateIndex];
-          if (postToUpdateIndex >= 0) {
-            let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
-            let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
-            if (command.burnType == BurnType.Up) {
-              lotusBurnUp = lotusBurnUp + burnValue;
-            } else {
-              lotusBurnDown = lotusBurnDown + burnValue;
-            }
-            const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-            draft.allPostsByPageId.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
-            draft.allPostsByPageId.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
-            draft.allPostsByPageId.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
-            if (lotusBurnScore < 0) {
-              draft.allPostsByPageId.edges.splice(postToUpdateIndex, 1);
-              draft.allPostsByPageId.totalCount = draft.allPostsByPageId.totalCount - 1;
+        postApi.util.updateQueryData(
+          'PostsByPageId',
+          { ...params, id: command.pageId, minBurnFilter: command.minBurnFilter },
+          draft => {
+            const postToUpdateIndex = draft.allPostsByPageId.edges.findIndex(
+              item => item.node.id === command.burnForId
+            );
+            const postToUpdate = draft.allPostsByPageId.edges[postToUpdateIndex];
+            if (postToUpdateIndex >= 0) {
+              let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
+              let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+              if (command.burnType == BurnType.Up) {
+                lotusBurnUp = lotusBurnUp + burnValue;
+              } else {
+                lotusBurnDown = lotusBurnDown + burnValue;
+              }
+              const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+              draft.allPostsByPageId.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
+              draft.allPostsByPageId.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
+              draft.allPostsByPageId.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
+              if (lotusBurnScore < 0) {
+                draft.allPostsByPageId.edges.splice(postToUpdateIndex, 1);
+                draft.allPostsByPageId.totalCount = draft.allPostsByPageId.totalCount - 1;
+              }
             }
           }
-        })
+        )
       );
     case PostsQueryTag.PostsByTokenId:
       return yield put(
-        postApi.util.updateQueryData('PostsByTokenId', { ...params, id: command.tokenId }, draft => {
-          const postToUpdateIndex = draft.allPostsByTokenId.edges.findIndex(item => item.node.id === command.burnForId);
-          const postToUpdate = draft.allPostsByTokenId.edges[postToUpdateIndex];
-          if (postToUpdateIndex >= 0) {
-            let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
-            let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
-            if (command.burnType == BurnType.Up) {
-              lotusBurnUp = lotusBurnUp + burnValue;
-            } else {
-              lotusBurnDown = lotusBurnDown + burnValue;
-            }
-            const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-            draft.allPostsByTokenId.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
-            draft.allPostsByTokenId.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
-            draft.allPostsByTokenId.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
-            if (lotusBurnScore < 0) {
-              draft.allPostsByTokenId.edges.splice(postToUpdateIndex, 1);
-              draft.allPostsByTokenId.totalCount = draft.allPostsByTokenId.totalCount - 1;
+        postApi.util.updateQueryData(
+          'PostsByTokenId',
+          { ...params, id: command.tokenId, minBurnFilter: command.minBurnFilter },
+          draft => {
+            const postToUpdateIndex = draft.allPostsByTokenId.edges.findIndex(
+              item => item.node.id === command.burnForId
+            );
+            const postToUpdate = draft.allPostsByTokenId.edges[postToUpdateIndex];
+            if (postToUpdateIndex >= 0) {
+              let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
+              let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+              if (command.burnType == BurnType.Up) {
+                lotusBurnUp = lotusBurnUp + burnValue;
+              } else {
+                lotusBurnDown = lotusBurnDown + burnValue;
+              }
+              const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+              draft.allPostsByTokenId.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
+              draft.allPostsByTokenId.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
+              draft.allPostsByTokenId.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
+              if (lotusBurnScore < 0) {
+                draft.allPostsByTokenId.edges.splice(postToUpdateIndex, 1);
+                draft.allPostsByTokenId.totalCount = draft.allPostsByTokenId.totalCount - 1;
+              }
             }
           }
-        })
+        )
       );
     default:
-      yield put(
+      return yield put(
         postApi.util.updateQueryData('OrphanPosts', params, draft => {
           const postToUpdateIndex = draft.allOrphanPosts.edges.findIndex(item => item.node.id === command.burnForId);
           const postToUpdate = draft.allOrphanPosts.edges[postToUpdateIndex];
@@ -178,29 +287,6 @@ function* updatePostBurnValue(action: PayloadAction<BurnCommand>) {
             if (lotusBurnScore < 0) {
               draft.allOrphanPosts.edges.splice(postToUpdateIndex, 1);
               draft.allOrphanPosts.totalCount = draft.allOrphanPosts.totalCount - 1;
-            }
-          }
-        })
-      );
-      return yield put(
-        postApi.util.updateQueryData('Posts', params, draft => {
-          const postToUpdateIndex = draft.allPosts.edges.findIndex(item => item.node.id === command.burnForId);
-          const postToUpdate = draft.allPosts.edges[postToUpdateIndex];
-          if (postToUpdateIndex >= 0) {
-            let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
-            let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
-            if (command.burnType == BurnType.Up) {
-              lotusBurnUp = lotusBurnUp + burnValue;
-            } else {
-              lotusBurnDown = lotusBurnDown + burnValue;
-            }
-            const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-            draft.allPosts.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
-            draft.allPosts.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
-            draft.allPosts.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
-            if (lotusBurnScore < 0) {
-              draft.allPosts.edges.splice(postToUpdateIndex, 1);
-              draft.allPosts.totalCount = draft.allPosts.totalCount - 1;
             }
           }
         })
@@ -240,6 +326,27 @@ function* updateCommentBurnValue(action: PayloadAction<BurnCommand>) {
   );
 }
 
+function* updateTokenBurnValue(action: PayloadAction<BurnCommand>) {
+  const command = action.payload;
+  let burnValue = _.toNumber(command.burnValue);
+
+  return yield put(
+    tokenApi.util.updateQueryData('Token', { tokenId: command.tokenId }, draft => {
+      let lotusBurnUp = draft?.token?.lotusBurnUp ?? 0;
+      let lotusBurnDown = draft?.token?.lotusBurnDown ?? 0;
+      if (command.burnType == BurnType.Up) {
+        lotusBurnUp = lotusBurnUp + burnValue;
+      } else {
+        lotusBurnDown = lotusBurnDown + burnValue;
+      }
+      const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+      draft.token.lotusBurnUp = lotusBurnUp;
+      draft.token.lotusBurnDown = lotusBurnDown;
+      draft.token.lotusBurnScore = lotusBurnScore;
+    })
+  );
+}
+
 function* watchBurnForUpDownVote() {
   yield takeLatest(burnForUpDownVote.type, burnForUpDownVoteSaga);
 }
@@ -252,23 +359,59 @@ function* watchBurnForUpDownVoteFailure() {
   yield takeLatest(burnForUpDownVoteFailure.type, burnForUpDownVoteFailureSaga);
 }
 
-function* watchBurnForUpDownVoteChannel() {
-  // 1- Create a channel for request actions
-  const burnChannel = yield actionChannel(burnForUpDownVote.type);
+function* watchCreateTxHex() {
+  yield takeLatest(createTxHex.type, createTxHexSaga);
+}
+
+function* handleRequest(action) {
+  try {
+    yield put(setTransactionNotReady());
+    yield put(burnForUpDownVote(action.payload));
+  } catch (err) {
+    console.log(err);
+    // Dispatch a failure action with the error message
+    // yield put({ type: 'USER_FETCH_FAILED', message: err.message });
+  }
+}
+
+// This saga will create an action channel and use it to dispatch work to one worker saga
+function* watchRequests() {
+  const requestChan = yield actionChannel(addBurnTransaction, buffers.expanding(10));
+
   while (true) {
-    // 2- take from the channel
+    // Take an action from the channel
+    const transactionStatus = yield select(getTransactionStatus);
+    const failQueue = yield select(getFailQueue);
 
-    const action = yield take(burnChannel);
+    if (failQueue.length > 0) {
+      yield flush(requestChan);
+    }
 
-    // 3- Note that we're using a blocking call
-    yield call(burnForUpDownVoteSaga, action);
+    if (transactionStatus) {
+      const action = yield take(requestChan);
+
+      yield call(handleRequest, action);
+    } else {
+      yield take(setTransactionReady.type);
+    }
   }
 }
 
 export default function* burnSaga() {
-  yield all([
-    fork(watchBurnForUpDownVoteChannel),
-    fork(watchBurnForUpDownVoteSuccess),
-    fork(watchBurnForUpDownVoteFailure)
-  ]);
+  if (typeof window === 'undefined') {
+    yield all([
+      fork(watchCreateTxHex),
+      fork(watchBurnForUpDownVote),
+      fork(watchBurnForUpDownVoteSuccess),
+      fork(watchBurnForUpDownVoteFailure)
+    ]);
+  } else {
+    yield all([
+      fork(watchRequests),
+      fork(watchCreateTxHex),
+      fork(watchBurnForUpDownVote),
+      fork(watchBurnForUpDownVoteSuccess),
+      fork(watchBurnForUpDownVoteFailure)
+    ]);
+  }
 }

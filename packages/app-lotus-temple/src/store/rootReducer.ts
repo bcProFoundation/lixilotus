@@ -1,7 +1,7 @@
 import { AnyAction, combineReducers } from '@reduxjs/toolkit';
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist-indexeddb-storage';
-import { PersistConfig } from 'redux-persist';
+import { PersistConfig, createMigrate } from 'redux-persist';
 import { routerReducer } from 'connected-next-router';
 import { loadingReducer } from './loading/reducer';
 import { errorReducer } from './error/reducer';
@@ -33,13 +33,29 @@ import { localAccountsAdapter, localUserAccountReducer } from './localAccount/re
 import { postReducer } from './post/reducer';
 import { PostState } from './post/state';
 import { walletStateReducer } from './wallet/reducer';
+import { tokenReducer, TokenState } from './token';
 import { CategoriesState } from './category/state';
 import { categoryReducer } from './category/reducer';
 
+const migration = {
+  0: state => {
+    return {
+      ...state,
+      burn: {
+        ...state.burn,
+        burnQueue: [],
+        failQueue: []
+      }
+    };
+  }
+};
+
 const persistConfig = {
   key: 'root',
+  version: 0,
   storage: storage('lixi-indexeddb'),
-  blacklist: ['accounts', 'router', 'modal', 'wallet', 'api', 'root', 'posts', 'pages']
+  blacklist: ['accounts', 'router', 'modal', 'wallet', 'api', 'root', 'posts', 'pages', 'burn'],
+  migrate: createMigrate(migration, { debug: false })
 };
 
 const walletPersistConfig = {
@@ -110,6 +126,7 @@ export const serverReducer = combineReducers({
   settings: settingsReducer,
   notifications: notificationReducer,
   pages: pageReducer,
+  tokens: tokenReducer,
   countries: countryReducer,
   states: stateReducer,
   categories: categoryReducer,
@@ -128,6 +145,7 @@ export const appReducer = combineReducers({
   claims: persistReducer(claimsPersistConfig, claimReducer),
   settings: persistReducer(settingsPersistConfig, settingsReducer),
   pages: persistReducer(shopPersistConfig, pageReducer),
+  tokens: tokenReducer,
   notifications: notificationReducer,
   envelopes: envelopeReducer,
   loading: loadingReducer,

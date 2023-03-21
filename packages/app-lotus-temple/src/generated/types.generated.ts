@@ -260,6 +260,7 @@ export type Post = {
   postAccountId: Scalars['Int'];
   token?: Maybe<Token>;
   tokenId?: Maybe<Scalars['String']>;
+  totalComments: Scalars['Int'];
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
   uploads?: Maybe<Array<UploadDetail>>;
@@ -337,6 +338,7 @@ export type QueryAllCommentsToPostIdArgs = {
   first?: InputMaybe<Scalars['Int']>;
   id?: InputMaybe<Scalars['String']>;
   last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<CommentOrder>;
   skip?: InputMaybe<Scalars['Int']>;
 };
@@ -346,6 +348,7 @@ export type QueryAllOrphanPostsArgs = {
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<PostOrder>;
   query?: InputMaybe<Scalars['String']>;
   skip?: InputMaybe<Scalars['Int']>;
@@ -356,6 +359,7 @@ export type QueryAllPagesArgs = {
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<PageOrder>;
   query?: InputMaybe<Scalars['String']>;
   skip?: InputMaybe<Scalars['Int']>;
@@ -366,6 +370,7 @@ export type QueryAllPostsArgs = {
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<PostOrder>;
   query?: InputMaybe<Scalars['String']>;
   skip?: InputMaybe<Scalars['Int']>;
@@ -377,6 +382,7 @@ export type QueryAllPostsByPageIdArgs = {
   first?: InputMaybe<Scalars['Int']>;
   id?: InputMaybe<Scalars['String']>;
   last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<PostOrder>;
   skip?: InputMaybe<Scalars['Int']>;
 };
@@ -386,6 +392,7 @@ export type QueryAllPostsBySearchArgs = {
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
   query?: InputMaybe<Scalars['String']>;
 };
 
@@ -395,6 +402,7 @@ export type QueryAllPostsByTokenIdArgs = {
   first?: InputMaybe<Scalars['Int']>;
   id?: InputMaybe<Scalars['String']>;
   last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<PostOrder>;
   skip?: InputMaybe<Scalars['Int']>;
 };
@@ -405,6 +413,7 @@ export type QueryAllPostsByUserIdArgs = {
   first?: InputMaybe<Scalars['Int']>;
   id?: InputMaybe<Scalars['String']>;
   last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<PostOrder>;
   skip?: InputMaybe<Scalars['Int']>;
 };
@@ -414,6 +423,7 @@ export type QueryAllTokensArgs = {
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<TokenOrder>;
   query?: InputMaybe<Scalars['String']>;
   skip?: InputMaybe<Scalars['Int']>;
@@ -424,6 +434,7 @@ export type QueryAllWorshipedPersonArgs = {
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<WorshipedPersonOrder>;
   query?: InputMaybe<Scalars['String']>;
   skip?: InputMaybe<Scalars['Int']>;
@@ -541,8 +552,13 @@ export type UpdatePostInput = {
 export type Upload = {
   __typename?: 'Upload';
   bucket?: Maybe<Scalars['String']>;
+  height?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   sha: Scalars['String'];
+  sha40?: Maybe<Scalars['String']>;
+  sha320?: Maybe<Scalars['String']>;
+  sha800?: Maybe<Scalars['String']>;
+  width?: Maybe<Scalars['String']>;
 };
 
 export type UploadDetail = {

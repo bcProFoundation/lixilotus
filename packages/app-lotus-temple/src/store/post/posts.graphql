@@ -16,8 +16,18 @@ query Posts(
   $orderBy: PostOrder
   $query: String
   $skip: Int
+  $minBurnFilter: Int
 ) {
-  allPosts(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, query: $query, skip: $skip) {
+  allPosts(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    query: $query
+    skip: $skip
+    minBurnFilter: $minBurnFilter
+  ) {
     totalCount
     edges {
       cursor
@@ -39,6 +49,7 @@ query OrphanPosts(
   $orderBy: PostOrder
   $query: String
   $skip: Int
+  $minBurnFilter: Int
 ) {
   allOrphanPosts(
     after: $after
@@ -48,6 +59,7 @@ query OrphanPosts(
     orderBy: $orderBy
     query: $query
     skip: $skip
+    minBurnFilter: $minBurnFilter
   ) {
     totalCount
     edges {
@@ -70,6 +82,7 @@ query PostsByPageId(
   $orderBy: PostOrder
   $id: String
   $skip: Int
+  $minBurnFilter: Int
 ) {
   allPostsByPageId(
     after: $after
@@ -79,6 +92,7 @@ query PostsByPageId(
     orderBy: $orderBy
     id: $id
     skip: $skip
+    minBurnFilter: $minBurnFilter
   ) {
     totalCount
     edges {
@@ -101,6 +115,7 @@ query PostsByUserId(
   $orderBy: PostOrder
   $id: String
   $skip: Int
+  $minBurnFilter: Int
 ) {
   allPostsByUserId(
     after: $after
@@ -110,6 +125,7 @@ query PostsByUserId(
     orderBy: $orderBy
     id: $id
     skip: $skip
+    minBurnFilter: $minBurnFilter
   ) {
     totalCount
     edges {
@@ -132,6 +148,7 @@ query PostsByTokenId(
   $orderBy: PostOrder
   $id: String
   $skip: Int
+  $minBurnFilter: Int
 ) {
   allPostsByTokenId(
     after: $after
@@ -141,6 +158,7 @@ query PostsByTokenId(
     orderBy: $orderBy
     id: $id
     skip: $skip
+    minBurnFilter: $minBurnFilter
   ) {
     totalCount
     edges {
@@ -155,8 +173,15 @@ query PostsByTokenId(
   }
 }
 
-query PostsBySearch($after: String, $before: String, $first: Int, $last: Int, $query: String) {
-  allPostsBySearch(after: $after, before: $before, first: $first, last: $last, query: $query) {
+query PostsBySearch($after: String, $before: String, $first: Int, $last: Int, $query: String, $minBurnFilter: Int) {
+  allPostsBySearch(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    query: $query
+    minBurnFilter: $minBurnFilter
+  ) {
     edges {
       cursor
       node {
@@ -178,6 +203,11 @@ fragment PostFields on Post {
       id
       sha
       bucket
+      width
+      height
+      sha800
+      sha320
+      sha40
     }
   }
   postAccount {
@@ -198,10 +228,12 @@ fragment PostFields on Post {
   token {
     id
     name
+    tokenId
   }
   lotusBurnUp
   lotusBurnDown
   lotusBurnScore
+  totalComments
   createdAt
   updatedAt
 }
@@ -215,6 +247,11 @@ fragment PostMeiliFields on Post {
       id
       sha
       bucket
+      width
+      height
+      sha800
+      sha320
+      sha40
     }
   }
   postAccount {
@@ -235,6 +272,7 @@ fragment PostMeiliFields on Post {
   lotusBurnUp
   lotusBurnDown
   lotusBurnScore
+  totalComments
   createdAt
   updatedAt
 }

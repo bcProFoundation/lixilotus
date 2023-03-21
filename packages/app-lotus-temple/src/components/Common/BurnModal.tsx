@@ -1,6 +1,6 @@
-import { Button, Form, Modal, Radio } from 'antd';
+import { Button, Form, Modal, notification, Radio } from 'antd';
 import { showToast } from '@store/toast/actions';
-import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
+import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
 import { closeModal } from '@store/modal/actions';
 import intl from 'react-intl-universal';
 import useXPI from '@hooks/useXPI';
@@ -8,15 +8,32 @@ import UpDownSvg from '@assets/icons/upDownIcon.svg';
 import UpVoteSvg from '@assets/icons/upVote.svg';
 import DownVoteSvg from '@assets/icons/downVote.svg';
 import { WalletContext } from '@context/walletProvider';
-import React from 'react';
-import { Burn, Token } from '@bcpros/lixi-models';
+import React, { useState } from 'react';
+import { Burn, Comment, Post, Token } from '@bcpros/lixi-models';
+import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import styled from 'styled-components';
-import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
+import { BurnCommand, BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { currency } from '@components/Common/Ticker';
-import { burnForUpDownVote } from '@store/burn';
+import {
+  addBurnQueue,
+  addBurnTransaction,
+  burnForUpDownVote,
+  getBurnQueue,
+  getFailQueue,
+  clearFailQueue
+} from '@store/burn';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import _ from 'lodash';
+import { DislikeOutlined, FireTwoTone, LikeOutlined } from '@ant-design/icons';
+import useDidMountEffect from '@hooks/useDidMountEffect ';
+import { fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods';
+import BigNumber from 'bignumber.js';
+import { getSelectedAccount } from '@store/account/selectors';
+import { CommentOrderField, OrderDirection } from 'src/generated/types.generated';
+import { BurnData, PostItem } from '@components/Posts/PostDetail';
+import { CommentItem } from '@components/Posts/CommentListItem';
+import { TokenItem } from '@components/Token/TokensFeed';
 
 const UpDownButton = styled(Button)`
   background: rgb(158, 42, 156);
@@ -86,74 +103,124 @@ const RadioStyle = styled(Radio.Group)`
 
 const DefaultXpiBurnValues = [1, 8, 50, 100, 200, 500, 1000];
 
-type BurnModalProps = {
+type BurnForItem = PostItem | CommentItem | TokenItem;
+interface BurnModalProps {
+  data: BurnForItem;
   burnForType: BurnForType;
-  token?: Token;
-} & React.HTMLProps<HTMLElement>;
+}
 
-export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
-  const { burnForType, token } = props;
+export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
   const {
     formState: { errors },
     control
   } = useForm<Burn>();
   const dispatch = useAppDispatch();
-
+  const selectedAccount = useAppSelector(getSelectedAccount);
   const Wallet = React.useContext(WalletContext);
   const { XPI, chronik } = Wallet;
-  const { burnXpi } = useXPI();
+  const { createBurnTransaction } = useXPI();
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
+  const [selectedAmount, setSelectedAmount] = useState(1);
+  const burnQueue = useAppSelector(getBurnQueue);
+  const failQueue = useAppSelector(getFailQueue);
+  const walletStatus = useAppSelector(getWalletStatus);
 
-  const handleBurn = async (isUpVote: boolean) => {
+  const handleBurn = async (isUpVote: boolean, data: BurnForItem) => {
     try {
-      if (slpBalancesAndUtxos.nonSlpUtxos.length == 0) {
-        throw new Error('Insufficient funds');
+      let queryParams;
+      let tipToAddresses: { address: string; amount: string }[];
+      let tag;
+      let pageId;
+      let tokenId;
+      const burnValue = _.isNil(control._formValues.burnedValue)
+        ? DefaultXpiBurnValues[0]
+        : control._formValues.burnedValue;
+      if (
+        slpBalancesAndUtxos.nonSlpUtxos.length == 0 ||
+        fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis) < parseInt(burnValue)
+      ) {
+        throw new Error(intl.get('account.insufficientFunds'));
       }
-
+      if (failQueue.length > 0) dispatch(clearFailQueue());
       const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
       const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
       const { fundingWif, hash160 } = currentWalletPath;
       const burnType = isUpVote ? BurnType.Up : BurnType.Down;
       const burnedBy = hash160;
-      let burnForId;
-      if (burnForType == BurnForType.Token) {
-        burnForId = token.tokenId;
-      } else {
-        throw new Error('not support yet');
+
+      switch (burnForType) {
+        case BurnForType.Post:
+          const post = data as PostItem;
+
+          tipToAddresses = [
+            {
+              address: post.page ? post.pageAccount.address : post.postAccount.address,
+              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
+            }
+          ];
+          if (burnType === BurnType.Up && selectedAccount.address !== post.postAccount.address) {
+            tipToAddresses.push({
+              address: post.postAccount.address,
+              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
+            });
+          }
+
+          if (_.isNil(post.page) && _.isNil(post.token)) {
+            tag = PostsQueryTag.Posts;
+          } else if (post.page) {
+            tag = PostsQueryTag.PostsByPageId;
+          } else if (post.token) {
+            tag = PostsQueryTag.PostsByTokenId;
+          }
+
+          pageId = post.page?.id;
+          tokenId = post.token?.id;
+          break;
+        case BurnForType.Comment:
+          const comment = data as CommentItem;
+          if (burnType === BurnType.Up && selectedAccount.address != comment?.commentAccount?.address) {
+            tipToAddresses.push({
+              address: comment?.commentAccount?.address,
+              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
+            });
+          }
+          queryParams = {
+            id: comment.commentToId,
+            orderBy: {
+              direction: OrderDirection.Asc,
+              field: CommentOrderField.UpdatedAt
+            }
+          };
+          break;
+        case BurnForType.Token:
+          const token = data as TokenItem;
+          tokenId = token.tokenId;
+          break;
       }
-      const burnValue = _.isNil(control._formValues.burnedValue)
-        ? DefaultXpiBurnValues[0]
-        : control._formValues.burnedValue;
 
-      const txHex = await burnXpi(
-        XPI,
-        walletPaths,
-        slpBalancesAndUtxos.nonSlpUtxos,
-        currency.defaultFee,
-        burnType,
-        burnForType,
-        burnedBy,
-        burnForId,
-        burnValue
-      );
-
-      const burnCommand: BurnCommand = {
-        txHex,
+      const burnCommand: BurnQueueCommand = {
+        defaultFee: currency.defaultFee,
         burnType,
         burnForType: burnForType,
         burnedBy,
-        burnForId: token.id,
-        burnValue
+        burnForId: data.id,
+        tokenId: tokenId,
+        burnValue,
+        queryParams: queryParams,
+        postQueryTag: tag,
+        pageId: pageId
       };
 
-      dispatch(burnForUpDownVote(burnCommand));
-      dispatch(closeModal());
+      dispatch(addBurnQueue(burnCommand));
+      dispatch(addBurnTransaction(burnCommand));
+      // dispatch(closeModal());
     } catch (e) {
+      const errorMessage = e.message || intl.get('post.unableToBurn');
       dispatch(
         showToast('error', {
-          message: intl.get('post.unableToBurn'),
-          duration: 5
+          message: errorMessage,
+          duration: 3
         })
       );
     }
@@ -170,17 +237,34 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
       open={true}
       onCancel={handleOnCancel}
       title={
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <UpDownSvg /> {intl.get('general.goodOrNot')}
+        <div className="custom-burn-header">
+          <UpDownSvg />
+          <h3>{intl.get('general.goodOrNot')}</h3>
+          <div className="banner-count-burn">
+            <div className="banner-item">
+              <LikeOutlined />
+              <div className="count-bar">
+                <p className="title">{data.lotusBurnUp + ' XPI'}</p>
+                <p className="sub-title">burnt to up</p>
+              </div>
+            </div>
+            <div className="banner-item">
+              <DislikeOutlined />
+              <div className="count-bar">
+                <p className="title">{data.lotusBurnDown + ' XPI'}</p>
+                <p className="sub-title">burnt to down</p>
+              </div>
+            </div>
+          </div>
         </div>
       }
       footer={
         <Button.Group style={{ width: '100%' }}>
-          <UpDownButton className="upVote" onClick={() => handleBurn(true)}>
+          <UpDownButton className="upVote" onClick={() => handleBurn(true, data)}>
             <UpVoteSvg />
             &nbsp; {intl.get('general.burnUp')}
           </UpDownButton>
-          <UpDownButton className="downVote" onClick={() => handleBurn(false)}>
+          <UpDownButton className="downVote" onClick={() => handleBurn(false, data)}>
             <DownVoteSvg />
             &nbsp; {intl.get('general.burnDown')}
           </UpDownButton>
@@ -189,9 +273,10 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
       style={{ top: '0 !important' }}
     >
       <Form>
-        <p>
+        <p className="question-txt">
           {intl.get('text.selectXpi', {
-            name: burnForType == BurnForType.Token ? token.ticker : intl.get('text.post')
+            //TODO: Will crash if use burn modal other than token. Will handle later!
+            name: burnForType == BurnForType.Token ? 'ticker' in data : intl.get('text.post')
           })}{' '}
         </p>
 
@@ -202,7 +287,7 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
             required: {
               value: true,
               message: intl.get('burn.selectXpi', {
-                name: burnForType == BurnForType.Token ? token.ticker : intl.get('text.post')
+                name: burnForType == BurnForType.Token ? 'ticker' in data : intl.get('text.post')
               })
             }
           }}
@@ -214,7 +299,10 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
               options={DefaultXpiBurnValues.map(xpi => xpi)}
               optionType="button"
               buttonStyle="solid"
-              onChange={value => onChange(value)}
+              onChange={value => {
+                setSelectedAmount(value?.target?.value);
+                onChange(value);
+              }}
             />
           )}
         />
@@ -222,6 +310,7 @@ export const BurnModal: React.FC<BurnModalProps> = (props: BurnModalProps) => {
           {errors.burnedValue && errors.burnedValue.message}
         </p>
       </Form>
+      <p className="amount-burn">{`You're burning ` + selectedAmount + ' XPI'}</p>
     </Modal>
   );
 };

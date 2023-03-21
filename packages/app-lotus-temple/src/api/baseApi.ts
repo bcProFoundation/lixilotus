@@ -3,7 +3,7 @@ import { graphqlRequestBaseQuery } from '@rtk-query/graphql-request-base-query';
 import { GraphQLClient } from 'graphql-request';
 import intl from 'react-intl-universal';
 
-export const client = new GraphQLClient('https://lixilotus.test/graphql', {
+export const client = new GraphQLClient(`${process.env.NEXT_PUBLIC_LIXI_API}/graphql`, {
   credentials: 'include',
   cache: 'no-cache'
 });

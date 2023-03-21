@@ -8,9 +8,10 @@ import intl from 'react-intl-universal';
 import { useAppSelector } from '@store/hooks';
 import { getSelectedAccount } from '@store/account/selectors';
 import type { MenuProps } from 'antd';
+import { CaretRightOutlined } from '@ant-design/icons';
 
 type InfoCardProps = {
-  imgUrl: string;
+  imgUrl: any;
   name: string;
   title: string;
   type?: string;
@@ -48,9 +49,14 @@ const CardUser = styled.div`
         color: rgba(30, 26, 29, 0.38);
       }
     }
+    .ant-avatar-image {
+      width: 48px;
+      height: 48px;
+      margin-right: 1rem;
+      border: 0;
+    }
   }
 `;
-
 const InfoCardUserContainer = styled.div`
   width: 100%;
   padding: 0;
@@ -103,12 +109,10 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
       label: <a onClick={onEditPostClick}>{intl.get('post.editPost')}</a>
     }
   ];
-
   const postLocation = () => {
     if (!token && !page) {
       return <GlobalOutlined />;
     }
-
     if (token) {
       return <DollarOutlined />;
     } else {
@@ -116,6 +120,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
     }
   };
 
+  //if not token or page, nothing will be displayed. If it is a page, it will display the page name and have an Arrow. If it is a token, it will show the token name and have an Arrow
   return (
     <>
       <InfoCardUserContainer className={type === 'card' ? 'card' : ''}>
@@ -125,9 +130,22 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
               {imgUrl ? <Avatar src={imgUrl} /> : <AvatarUser name={name} isMarginRight={true} />}
             </div>
             <div className="card-info">
-              <h4 className="name" onClick={() => history.push(`/profile/${postAccountAddress}`)}>
+              {/* pageName or tokenName */}
+              <span className="name" onClick={() => history.push(`/profile/${postAccountAddress}`)}>
                 {name}
-              </h4>
+              </span>
+              {page && (
+                <span className="name" onClick={() => history.push(`/page/${page.id}`)}>
+                  <CaretRightOutlined style={{ marginLeft: '1px' }} />
+                  {page.name}
+                </span>
+              )}
+              {token && (
+                <span className="name" onClick={() => history.push(`/token/${token.tokenId}`)}>
+                  <CaretRightOutlined style={{ marginLeft: '1px' }} />
+                  {token.name}
+                </span>
+              )}
               <p className="title">
                 {title}
                 <span style={{ marginLeft: '4px', fontSize: '10px' }}>{activatePostLocation && postLocation()}</span>

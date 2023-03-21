@@ -29,17 +29,28 @@ export type PostQuery = {
     lotusBurnUp: number;
     lotusBurnDown: number;
     lotusBurnScore: number;
+    totalComments: number;
     createdAt: any;
     updatedAt: any;
     uploads?: Array<{
       __typename?: 'UploadDetail';
       id: string;
-      upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+      upload: {
+        __typename?: 'Upload';
+        id: string;
+        sha: string;
+        bucket?: string | null;
+        width?: string | null;
+        height?: string | null;
+        sha800?: string | null;
+        sha320?: string | null;
+        sha40?: string | null;
+      };
     }> | null;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
     pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
     page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-    token?: { __typename?: 'Token'; id: string; name: string } | null;
+    token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
   };
 };
 
@@ -51,6 +62,7 @@ export type PostsQueryVariables = Types.Exact<{
   orderBy?: Types.InputMaybe<Types.PostOrder>;
   query?: Types.InputMaybe<Types.Scalars['String']>;
   skip?: Types.InputMaybe<Types.Scalars['Int']>;
+  minBurnFilter?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
 export type PostsQuery = {
@@ -68,17 +80,28 @@ export type PostsQuery = {
         lotusBurnUp: number;
         lotusBurnDown: number;
         lotusBurnScore: number;
+        totalComments: number;
         createdAt: any;
         updatedAt: any;
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
-          upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+          upload: {
+            __typename?: 'Upload';
+            id: string;
+            sha: string;
+            bucket?: string | null;
+            width?: string | null;
+            height?: string | null;
+            sha800?: string | null;
+            sha320?: string | null;
+            sha40?: string | null;
+          };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
         page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-        token?: { __typename?: 'Token'; id: string; name: string } | null;
+        token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
       };
     }> | null;
     pageInfo: {
@@ -99,6 +122,7 @@ export type OrphanPostsQueryVariables = Types.Exact<{
   orderBy?: Types.InputMaybe<Types.PostOrder>;
   query?: Types.InputMaybe<Types.Scalars['String']>;
   skip?: Types.InputMaybe<Types.Scalars['Int']>;
+  minBurnFilter?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
 export type OrphanPostsQuery = {
@@ -116,17 +140,28 @@ export type OrphanPostsQuery = {
         lotusBurnUp: number;
         lotusBurnDown: number;
         lotusBurnScore: number;
+        totalComments: number;
         createdAt: any;
         updatedAt: any;
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
-          upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+          upload: {
+            __typename?: 'Upload';
+            id: string;
+            sha: string;
+            bucket?: string | null;
+            width?: string | null;
+            height?: string | null;
+            sha800?: string | null;
+            sha320?: string | null;
+            sha40?: string | null;
+          };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
         page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-        token?: { __typename?: 'Token'; id: string; name: string } | null;
+        token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
       };
     }> | null;
     pageInfo: {
@@ -147,6 +182,7 @@ export type PostsByPageIdQueryVariables = Types.Exact<{
   orderBy?: Types.InputMaybe<Types.PostOrder>;
   id?: Types.InputMaybe<Types.Scalars['String']>;
   skip?: Types.InputMaybe<Types.Scalars['Int']>;
+  minBurnFilter?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
 export type PostsByPageIdQuery = {
@@ -164,17 +200,28 @@ export type PostsByPageIdQuery = {
         lotusBurnUp: number;
         lotusBurnDown: number;
         lotusBurnScore: number;
+        totalComments: number;
         createdAt: any;
         updatedAt: any;
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
-          upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+          upload: {
+            __typename?: 'Upload';
+            id: string;
+            sha: string;
+            bucket?: string | null;
+            width?: string | null;
+            height?: string | null;
+            sha800?: string | null;
+            sha320?: string | null;
+            sha40?: string | null;
+          };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
         page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-        token?: { __typename?: 'Token'; id: string; name: string } | null;
+        token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
       };
     }> | null;
     pageInfo: {
@@ -195,6 +242,7 @@ export type PostsByUserIdQueryVariables = Types.Exact<{
   orderBy?: Types.InputMaybe<Types.PostOrder>;
   id?: Types.InputMaybe<Types.Scalars['String']>;
   skip?: Types.InputMaybe<Types.Scalars['Int']>;
+  minBurnFilter?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
 export type PostsByUserIdQuery = {
@@ -212,17 +260,28 @@ export type PostsByUserIdQuery = {
         lotusBurnUp: number;
         lotusBurnDown: number;
         lotusBurnScore: number;
+        totalComments: number;
         createdAt: any;
         updatedAt: any;
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
-          upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+          upload: {
+            __typename?: 'Upload';
+            id: string;
+            sha: string;
+            bucket?: string | null;
+            width?: string | null;
+            height?: string | null;
+            sha800?: string | null;
+            sha320?: string | null;
+            sha40?: string | null;
+          };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
         page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-        token?: { __typename?: 'Token'; id: string; name: string } | null;
+        token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
       };
     }> | null;
     pageInfo: {
@@ -243,6 +302,7 @@ export type PostsByTokenIdQueryVariables = Types.Exact<{
   orderBy?: Types.InputMaybe<Types.PostOrder>;
   id?: Types.InputMaybe<Types.Scalars['String']>;
   skip?: Types.InputMaybe<Types.Scalars['Int']>;
+  minBurnFilter?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
 export type PostsByTokenIdQuery = {
@@ -260,17 +320,28 @@ export type PostsByTokenIdQuery = {
         lotusBurnUp: number;
         lotusBurnDown: number;
         lotusBurnScore: number;
+        totalComments: number;
         createdAt: any;
         updatedAt: any;
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
-          upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+          upload: {
+            __typename?: 'Upload';
+            id: string;
+            sha: string;
+            bucket?: string | null;
+            width?: string | null;
+            height?: string | null;
+            sha800?: string | null;
+            sha320?: string | null;
+            sha40?: string | null;
+          };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
         page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-        token?: { __typename?: 'Token'; id: string; name: string } | null;
+        token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
       };
     }> | null;
     pageInfo: {
@@ -289,6 +360,7 @@ export type PostsBySearchQueryVariables = Types.Exact<{
   first?: Types.InputMaybe<Types.Scalars['Int']>;
   last?: Types.InputMaybe<Types.Scalars['Int']>;
   query?: Types.InputMaybe<Types.Scalars['String']>;
+  minBurnFilter?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
 export type PostsBySearchQuery = {
@@ -305,12 +377,23 @@ export type PostsBySearchQuery = {
         lotusBurnUp: number;
         lotusBurnDown: number;
         lotusBurnScore: number;
+        totalComments: number;
         createdAt: any;
         updatedAt: any;
         uploads?: Array<{
           __typename?: 'UploadDetail';
           id: string;
-          upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+          upload: {
+            __typename?: 'Upload';
+            id: string;
+            sha: string;
+            bucket?: string | null;
+            width?: string | null;
+            height?: string | null;
+            sha800?: string | null;
+            sha320?: string | null;
+            sha40?: string | null;
+          };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
@@ -334,17 +417,28 @@ export type PostFieldsFragment = {
   lotusBurnUp: number;
   lotusBurnDown: number;
   lotusBurnScore: number;
+  totalComments: number;
   createdAt: any;
   updatedAt: any;
   uploads?: Array<{
     __typename?: 'UploadDetail';
     id: string;
-    upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+    upload: {
+      __typename?: 'Upload';
+      id: string;
+      sha: string;
+      bucket?: string | null;
+      width?: string | null;
+      height?: string | null;
+      sha800?: string | null;
+      sha320?: string | null;
+      sha40?: string | null;
+    };
   }> | null;
   postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
   pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
   page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-  token?: { __typename?: 'Token'; id: string; name: string } | null;
+  token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
 };
 
 export type PostMeiliFieldsFragment = {
@@ -354,12 +448,23 @@ export type PostMeiliFieldsFragment = {
   lotusBurnUp: number;
   lotusBurnDown: number;
   lotusBurnScore: number;
+  totalComments: number;
   createdAt: any;
   updatedAt: any;
   uploads?: Array<{
     __typename?: 'UploadDetail';
     id: string;
-    upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+    upload: {
+      __typename?: 'Upload';
+      id: string;
+      sha: string;
+      bucket?: string | null;
+      width?: string | null;
+      height?: string | null;
+      sha800?: string | null;
+      sha320?: string | null;
+      sha40?: string | null;
+    };
   }> | null;
   postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
   pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
@@ -379,17 +484,28 @@ export type CreatePostMutation = {
     lotusBurnUp: number;
     lotusBurnDown: number;
     lotusBurnScore: number;
+    totalComments: number;
     createdAt: any;
     updatedAt: any;
     uploads?: Array<{
       __typename?: 'UploadDetail';
       id: string;
-      upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+      upload: {
+        __typename?: 'Upload';
+        id: string;
+        sha: string;
+        bucket?: string | null;
+        width?: string | null;
+        height?: string | null;
+        sha800?: string | null;
+        sha320?: string | null;
+        sha40?: string | null;
+      };
     }> | null;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
     pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
     page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-    token?: { __typename?: 'Token'; id: string; name: string } | null;
+    token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
   };
 };
 
@@ -406,17 +522,28 @@ export type UpdatePostMutation = {
     lotusBurnUp: number;
     lotusBurnDown: number;
     lotusBurnScore: number;
+    totalComments: number;
     createdAt: any;
     updatedAt: any;
     uploads?: Array<{
       __typename?: 'UploadDetail';
       id: string;
-      upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+      upload: {
+        __typename?: 'Upload';
+        id: string;
+        sha: string;
+        bucket?: string | null;
+        width?: string | null;
+        height?: string | null;
+        sha800?: string | null;
+        sha320?: string | null;
+        sha40?: string | null;
+      };
     }> | null;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
     pageAccount?: { __typename?: 'Account'; address: string; id: string; name: string } | null;
     page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
-    token?: { __typename?: 'Token'; id: string; name: string } | null;
+    token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
   };
 };
 
@@ -430,6 +557,11 @@ export const PostFieldsFragmentDoc = `
       id
       sha
       bucket
+      width
+      height
+      sha800
+      sha320
+      sha40
     }
   }
   postAccount {
@@ -450,10 +582,12 @@ export const PostFieldsFragmentDoc = `
   token {
     id
     name
+    tokenId
   }
   lotusBurnUp
   lotusBurnDown
   lotusBurnScore
+  totalComments
   createdAt
   updatedAt
 }
@@ -468,6 +602,11 @@ export const PostMeiliFieldsFragmentDoc = `
       id
       sha
       bucket
+      width
+      height
+      sha800
+      sha320
+      sha40
     }
   }
   postAccount {
@@ -488,6 +627,7 @@ export const PostMeiliFieldsFragmentDoc = `
   lotusBurnUp
   lotusBurnDown
   lotusBurnScore
+  totalComments
   createdAt
   updatedAt
 }
@@ -500,7 +640,7 @@ export const PostDocument = `
 }
     ${PostFieldsFragmentDoc}`;
 export const PostsDocument = `
-    query Posts($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $query: String, $skip: Int) {
+    query Posts($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $query: String, $skip: Int, $minBurnFilter: Int) {
   allPosts(
     after: $after
     before: $before
@@ -509,6 +649,7 @@ export const PostsDocument = `
     orderBy: $orderBy
     query: $query
     skip: $skip
+    minBurnFilter: $minBurnFilter
   ) {
     totalCount
     edges {
@@ -525,7 +666,7 @@ export const PostsDocument = `
     ${PostFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
 export const OrphanPostsDocument = `
-    query OrphanPosts($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $query: String, $skip: Int) {
+    query OrphanPosts($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $query: String, $skip: Int, $minBurnFilter: Int) {
   allOrphanPosts(
     after: $after
     before: $before
@@ -534,6 +675,7 @@ export const OrphanPostsDocument = `
     orderBy: $orderBy
     query: $query
     skip: $skip
+    minBurnFilter: $minBurnFilter
   ) {
     totalCount
     edges {
@@ -550,7 +692,7 @@ export const OrphanPostsDocument = `
     ${PostFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
 export const PostsByPageIdDocument = `
-    query PostsByPageId($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $id: String, $skip: Int) {
+    query PostsByPageId($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $id: String, $skip: Int, $minBurnFilter: Int) {
   allPostsByPageId(
     after: $after
     before: $before
@@ -559,6 +701,7 @@ export const PostsByPageIdDocument = `
     orderBy: $orderBy
     id: $id
     skip: $skip
+    minBurnFilter: $minBurnFilter
   ) {
     totalCount
     edges {
@@ -575,7 +718,7 @@ export const PostsByPageIdDocument = `
     ${PostFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
 export const PostsByUserIdDocument = `
-    query PostsByUserId($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $id: String, $skip: Int) {
+    query PostsByUserId($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $id: String, $skip: Int, $minBurnFilter: Int) {
   allPostsByUserId(
     after: $after
     before: $before
@@ -584,6 +727,7 @@ export const PostsByUserIdDocument = `
     orderBy: $orderBy
     id: $id
     skip: $skip
+    minBurnFilter: $minBurnFilter
   ) {
     totalCount
     edges {
@@ -600,7 +744,7 @@ export const PostsByUserIdDocument = `
     ${PostFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
 export const PostsByTokenIdDocument = `
-    query PostsByTokenId($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $id: String, $skip: Int) {
+    query PostsByTokenId($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $id: String, $skip: Int, $minBurnFilter: Int) {
   allPostsByTokenId(
     after: $after
     before: $before
@@ -609,6 +753,7 @@ export const PostsByTokenIdDocument = `
     orderBy: $orderBy
     id: $id
     skip: $skip
+    minBurnFilter: $minBurnFilter
   ) {
     totalCount
     edges {
@@ -625,13 +770,14 @@ export const PostsByTokenIdDocument = `
     ${PostFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
 export const PostsBySearchDocument = `
-    query PostsBySearch($after: String, $before: String, $first: Int, $last: Int, $query: String) {
+    query PostsBySearch($after: String, $before: String, $first: Int, $last: Int, $query: String, $minBurnFilter: Int) {
   allPostsBySearch(
     after: $after
     before: $before
     first: $first
     last: $last
     query: $query
+    minBurnFilter: $minBurnFilter
   ) {
     edges {
       cursor

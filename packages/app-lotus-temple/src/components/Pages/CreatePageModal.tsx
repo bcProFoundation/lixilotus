@@ -21,6 +21,7 @@ const { Option } = Select;
 const TextCustom = styled.p`
   padding-left: 20px;
   margin-top: 4px;
+  padding-left: 0;
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 400;
@@ -47,9 +48,6 @@ export const CreatePageModal: React.FC<CreatePageModalProps> = ({ accountId, dis
     { isLoading: isLoadingCreatePage, isSuccess: isSuccessCreatePage, isError: isErrorCreatePage, error: errorOnCreate }
   ] = useCreatePageMutation();
 
-  useEffect(() => {
-    dispatch(getCategories());
-  }, []);
   const categories = useAppSelector(getAllCategories);
 
   // New page name

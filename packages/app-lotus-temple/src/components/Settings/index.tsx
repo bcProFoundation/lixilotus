@@ -27,14 +27,13 @@ import { Account, DeleteAccountCommand, RenameAccountCommand } from '@bcpros/lix
 import { AntdFormWrapper, LanguageSelectDropdown } from '@components/Common/EnhancedInputs';
 import PrimaryButton, { SecondaryButton, SmartButton } from '@components/Common/PrimaryButton';
 import { StyledCollapse } from '@components/Common/StyledCollapse';
-import { StyledSpacer } from '@components/Common/StyledSpacer';
 import { setInitIntlStatus, updateLocale } from '@store/settings/actions';
 import { getCurrentLocale } from '@store/settings/selectors';
 import { AuthenticationContext } from '@context/index';
 import getOauth2URL from '@utils/oauth2';
 import { DeleteAccountModalProps } from './DeleteAccountModal';
 import { RenameAccountModalProps } from './RenameAccountModal';
-import { axiosLocalClient } from '@utils/axiosClient';
+import axios from 'axios';
 
 const { Panel } = Collapse;
 
@@ -161,8 +160,9 @@ export const WrapperPage = styled.div`
   border: 1px solid var(--boder-item-light);
   height: max-content;
   display: block;
-  @media (max-width: 960px) {
-    padding-bottom: 5rem;
+  @media (max-width: 768px) {
+    padding: 1rem;
+    padding-bottom: 8rem;
   }
 `;
 
@@ -170,6 +170,36 @@ export const WrapperPost = styled.div`
   padding: 20px 30px;
   background: #fff;
   border-radius: 20px;
+`;
+
+const SettingBar = styled.div`
+  padding: 1rem;
+  border: 1px solid rgba(128, 116, 124, 0.12);
+  border-radius: 24px;
+  margin-bottom: 2rem;
+  &.language-bar {
+    margin-top: 2rem;
+  }
+  .ant-collapse-content {
+    border: none;
+  }
+  @media (min-width: 960px) {
+    .notranslate {
+      font-weight: 500;
+      color: transparent !important;
+      text-shadow: 0 0 5px rgb(0 0 0 / 50%);
+      &:hover {
+        color: var(--color-primary) !important;
+        text-shadow: none;
+      }
+    }
+  }
+  @media (max-width: 960px) {
+    .notranslate {
+      font-weight: 500;
+      color: var(--color-primary) !important;
+    }
+  }
 `;
 
 const GeneralSettingsItem = styled.div`
@@ -223,7 +253,7 @@ const Settings: React.FC = () => {
 
   const localLogout = async () => {
     const url = '/_api/local-logout';
-    await axiosLocalClient.post(url);
+    await axios.post(url);
   };
 
   const currentLocale = useAppSelector(getCurrentLocale);
@@ -312,142 +342,149 @@ const Settings: React.FC = () => {
     <>
       <WrapperPage>
         <Spin spinning={isLoading} indicator={CashLoadingIcon}>
-          <h2 style={{ color: 'var(--color-primary)' }}>
-            <ThemedCopyOutlined /> {intl.get('settings.backupAccount')}
-          </h2>
-          <Alert
-            style={{ marginBottom: '12px' }}
-            description={intl.get('settings.backupAccountWarning')}
-            type="warning"
-            showIcon
-            message
-          />
-          <StyledCollapse>
-            <Panel header={intl.get('settings.revealPhrase')} key="1">
-              <p className="notranslate">
-                {selectedAccount && selectedAccount.mnemonic ? selectedAccount.mnemonic : ''}
-              </p>
-            </Panel>
-          </StyledCollapse>
-          <StyledSpacer />
-          <h2 style={{ color: 'var(--color-primary)' }}>
-            <ThemedWalletOutlined /> {intl.get('settings.manageAccounts')}
-          </h2>
-          <PrimaryButton onClick={() => dispatch(generateAccount())}>
-            <PlusSquareOutlined /> {intl.get('settings.newAccount')}
-          </PrimaryButton>
-          <SecondaryButton onClick={() => openSeedInput(!seedInput)}>
-            <ImportOutlined /> {intl.get('settings.importAccount')}
-          </SecondaryButton>
-          {seedInput && (
-            <>
-              <p>{intl.get('settings.backupAccountHint')}</p>
-              <AntdFormWrapper>
-                <Form style={{ width: 'auto' }} form={form}>
-                  <Form.Item
-                    name="mnemonic"
-                    validateStatus={isValidMnemonic === null || isValidMnemonic ? '' : 'error'}
-                    help={isValidMnemonic === null || isValidMnemonic ? '' : intl.get('account.mnemonicRequired')}
-                  >
-                    <Input
-                      prefix={<LockOutlined />}
-                      placeholder={intl.get('account.mnemonic')}
+          <SettingBar>
+            <h2 style={{ color: 'var(--color-primary)' }}>
+              <ThemedCopyOutlined /> {intl.get('settings.backupAccount')}
+            </h2>
+            <Alert
+              style={{ marginBottom: '12px' }}
+              description={intl.get('settings.backupAccountWarning')}
+              type="warning"
+              showIcon
+              message
+            />
+            <StyledCollapse>
+              <Panel header={intl.get('settings.revealPhrase')} key="1">
+                <p className="notranslate">
+                  {selectedAccount && selectedAccount.mnemonic ? selectedAccount.mnemonic : ''}
+                </p>
+              </Panel>
+            </StyledCollapse>
+          </SettingBar>
+          <SettingBar>
+            <h2 style={{ color: 'var(--color-primary)' }}>
+              <ThemedWalletOutlined /> {intl.get('settings.manageAccounts')}
+            </h2>
+            <PrimaryButton onClick={() => dispatch(generateAccount())}>
+              <PlusSquareOutlined /> {intl.get('settings.newAccount')}
+            </PrimaryButton>
+            <SecondaryButton onClick={() => openSeedInput(!seedInput)}>
+              <ImportOutlined /> {intl.get('settings.importAccount')}
+            </SecondaryButton>
+            {seedInput && (
+              <>
+                <p>{intl.get('settings.backupAccountHint')}</p>
+                <AntdFormWrapper>
+                  <Form style={{ width: 'auto' }} form={form}>
+                    <Form.Item
                       name="mnemonic"
-                      autoComplete="off"
-                      onChange={e => handleChange(e)}
-                    />
-                  </Form.Item>
-                  <SmartButton disabled={!isValidMnemonic} onClick={() => submit()}>
-                    Import
-                  </SmartButton>
-                </Form>
-              </AntdFormWrapper>
-            </>
-          )}
+                      validateStatus={isValidMnemonic === null || isValidMnemonic ? '' : 'error'}
+                      help={isValidMnemonic === null || isValidMnemonic ? '' : intl.get('account.mnemonicRequired')}
+                    >
+                      <Input
+                        prefix={<LockOutlined />}
+                        placeholder={intl.get('account.mnemonic')}
+                        name="mnemonic"
+                        autoComplete="off"
+                        onChange={e => handleChange(e)}
+                      />
+                    </Form.Item>
+                    <SmartButton disabled={!isValidMnemonic} onClick={() => submit()}>
+                      Import
+                    </SmartButton>
+                  </Form>
+                </AntdFormWrapper>
+              </>
+            )}
 
-          {(selectedAccount || (otherAccounts && otherAccounts.length > 0)) && (
-            <>
-              <StyledCollapse>
-                <Panel header={intl.get('settings.savedAccount')} key="2">
-                  {
-                    <AWRow>
-                      <SWName>
-                        <h3>{selectedAccount?.name}</h3>
-                      </SWName>
-                      <SWButtonCtn>
-                        <span onClick={() => showPopulatedRenameAccountModal(selectedAccount as Account)}>
-                          <Edit />
-                        </span>
-                        <span onClick={() => showPopulatedDeleteAccountModal(selectedAccount as Account)}>
-                          <Trashcan />
-                        </span>
-                        <h4>{intl.get('settings.activated')}</h4>
-                      </SWButtonCtn>
-                    </AWRow>
-                  }
-                  <div>
-                    {otherAccounts &&
-                      otherAccounts.map(acc => (
-                        <SWRow key={acc.id}>
-                          <SWName>
-                            <h3>{acc.name}</h3>
-                          </SWName>
-
-                          <SWButtonCtn>
-                            <span onClick={() => showPopulatedRenameAccountModal(acc)}>
-                              <Edit />
-                            </span>
-                            <span onClick={() => showPopulatedDeleteAccountModal(acc)}>
-                              <Trashcan />
-                            </span>
-                            <button onClick={() => dispatch(selectAccount(acc.id))}>Activate</button>
-                          </SWButtonCtn>
-                        </SWRow>
-                      ))}
-                  </div>
-                </Panel>
-              </StyledCollapse>
-              <StyledSpacer />
-              <h2>{intl.get('settings.languages')}</h2>
-              <AntdFormWrapper>
-                <LanguageSelectDropdown
-                  defaultValue={currentLocale}
-                  onChange={(locale: any) => {
-                    setLocale(locale);
-                  }}
-                />
-              </AntdFormWrapper>
-              <StyledSpacer />
-              <h2>
-                <ThemedSettingOutlined /> {intl.get('settings.general')}
-              </h2>
-              <GeneralSettingsItem>
-                <div className="title">
-                  <LockFilled /> {intl.get('settings.lockApp')}
-                </div>
-                {authenticationContextValue ? (
-                  <Switch
-                    size="small"
-                    checkedChildren={<CheckOutlined />}
-                    unCheckedChildren={<CloseOutlined />}
-                    checked={
-                      authenticationContextValue.isAuthenticationRequired && authenticationContextValue.credentialId
-                        ? true
-                        : false
+            {(selectedAccount || (otherAccounts && otherAccounts.length > 0)) && (
+              <>
+                <StyledCollapse>
+                  <Panel header={intl.get('settings.savedAccount')} key="2">
+                    {
+                      <AWRow>
+                        <SWName>
+                          <h3>{selectedAccount?.name}</h3>
+                        </SWName>
+                        <SWButtonCtn>
+                          <span onClick={() => showPopulatedRenameAccountModal(selectedAccount as Account)}>
+                            <Edit />
+                          </span>
+                          <span onClick={() => showPopulatedDeleteAccountModal(selectedAccount as Account)}>
+                            <Trashcan />
+                          </span>
+                          <h4>{intl.get('settings.activated')}</h4>
+                        </SWButtonCtn>
+                      </AWRow>
                     }
-                    // checked={false}
-                    onChange={handleAppLockToggle}
-                  />
-                ) : (
-                  <Tag color="warning" icon={<ExclamationCircleFilled />}>
-                    {intl.get('settings.notSupported')}
-                  </Tag>
-                )}
-              </GeneralSettingsItem>
-              <StyledSpacer />
-              <Button href={getOauth2URL()}>Login</Button>
-            </>
-          )}
+                    <div>
+                      {otherAccounts &&
+                        otherAccounts.map(acc => (
+                          <SWRow key={acc.id}>
+                            <SWName>
+                              <h3>{acc.name}</h3>
+                            </SWName>
+
+                            <SWButtonCtn>
+                              <span onClick={() => showPopulatedRenameAccountModal(acc)}>
+                                <Edit />
+                              </span>
+                              <span onClick={() => showPopulatedDeleteAccountModal(acc)}>
+                                <Trashcan />
+                              </span>
+                              <button onClick={() => dispatch(selectAccount(acc.id))}>Activate</button>
+                            </SWButtonCtn>
+                          </SWRow>
+                        ))}
+                    </div>
+                  </Panel>
+                </StyledCollapse>
+                <SettingBar className="language-bar">
+                  <h2 style={{ color: 'var(--color-primary)' }}>
+                    <ThemedSettingOutlined /> {intl.get('settings.languages')}
+                  </h2>
+                  <AntdFormWrapper>
+                    <LanguageSelectDropdown
+                      defaultValue={currentLocale}
+                      onChange={(locale: any) => {
+                        setLocale(locale);
+                      }}
+                    />
+                  </AntdFormWrapper>
+                </SettingBar>
+                <SettingBar>
+                  <h2 style={{ color: 'var(--color-primary)' }}>
+                    <ThemedSettingOutlined /> {intl.get('settings.general')}
+                  </h2>
+                  <GeneralSettingsItem>
+                    <div className="title">
+                      <LockFilled /> {intl.get('settings.lockApp')}
+                    </div>
+                    {authenticationContextValue ? (
+                      <Switch
+                        size="small"
+                        checkedChildren={<CheckOutlined />}
+                        unCheckedChildren={<CloseOutlined />}
+                        checked={
+                          authenticationContextValue.isAuthenticationRequired && authenticationContextValue.credentialId
+                            ? true
+                            : false
+                        }
+                        // checked={false}
+                        onChange={handleAppLockToggle}
+                      />
+                    ) : (
+                      <Tag color="warning" icon={<ExclamationCircleFilled />}>
+                        {intl.get('settings.notSupported')}
+                      </Tag>
+                    )}
+                  </GeneralSettingsItem>
+                </SettingBar>
+                {/* TODO: Implement in the future */}
+                {/* <Button href={getOauth2URL()}>Login</Button> */}
+              </>
+            )}
+          </SettingBar>
         </Spin>
       </WrapperPage>
     </>

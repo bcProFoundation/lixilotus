@@ -9,6 +9,7 @@ import { showToast } from '@store/toast/actions';
 import { Account, ChangeAccountLocaleCommand } from '@bcpros/lixi-models';
 import { getSelectedAccount } from '@store/account/selectors';
 import { changeAccountLocale } from '@store/account/actions';
+import { FilterBurnCommand } from '@bcpros/lixi-models/lib/filter';
 
 function initLocale(currentAppLocale: any): Promise<boolean> {
   return intl

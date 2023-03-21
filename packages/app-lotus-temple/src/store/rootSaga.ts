@@ -13,6 +13,7 @@ import pageSaga from './page/saga';
 import countrySaga from './country/saga';
 import walletSaga from './wallet/saga';
 import postSaga from './post/saga';
+import tokenSaga from './token/saga';
 import burnSaga from './burn/saga';
 import categorySaga from './category/saga';
 
@@ -31,6 +32,7 @@ export default function* rootSaga() {
     pageSaga(),
     postSaga(),
     countrySaga(),
+    tokenSaga(),
     burnSaga(),
     categorySaga()
   ]);

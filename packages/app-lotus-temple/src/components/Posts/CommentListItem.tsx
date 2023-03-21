@@ -22,17 +22,19 @@ import React, { useRef } from 'react';
 import intl from 'react-intl-universal';
 import { CommentOrderField, OrderDirection } from 'src/generated/types.generated';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import { BurnData } from './PostDetail';
 
-type CommentItem = CommentQuery['comment'];
+export type CommentItem = CommentQuery['comment'];
 type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 
 type CommentListItemProps = {
   index: number;
   item: CommentItem;
   post: PostItem;
+  handleBurn: (isUpVote: boolean, burnData: BurnData) => Promise<void>;
 };
 
-const CommentListItem = ({ index, item, post }: CommentListItemProps) => {
+const CommentListItem = ({ index, item, post, handleBurn }: CommentListItemProps) => {
   const dispatch = useAppDispatch();
 
   const history = useRouter();
@@ -40,86 +42,17 @@ const CommentListItem = ({ index, item, post }: CommentListItemProps) => {
 
   const Wallet = React.useContext(WalletContext);
   const { XPI, chronik } = Wallet;
-  const { burnXpi } = useXPI();
+  const { createBurnTransaction } = useXPI();
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const selectedAccount = useAppSelector(getSelectedAccount);
 
   const upVoteComment = (dataItem: CommentItem) => {
-    handleBurnForComment(true, dataItem);
+    handleBurn(true, { data: dataItem, burnForType: BurnForType.Comment });
   };
 
   const downVoteComment = (dataItem: CommentItem) => {
-    handleBurnForComment(false, dataItem);
-  };
-
-  const handleBurnForComment = async (isUpVote: boolean, comment: CommentItem) => {
-    try {
-      if (slpBalancesAndUtxos.nonSlpUtxos.length == 0) {
-        throw new Error('Insufficient funds');
-      }
-      const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
-      const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
-      const { hash160, xAddress } = currentWalletPath;
-      const burnType = isUpVote ? BurnType.Up : BurnType.Down;
-      const burnedBy = hash160;
-      const burnForId = comment.id;
-      const burnValue = '1';
-      let tipToAddresses: { address: string; amount: string }[] = [
-        {
-          address: post.page ? post.pageAccount.address : post.postAccount.address,
-          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
-        }
-      ];
-
-      if (burnType === BurnType.Up && selectedAccount.address != comment?.commentAccount?.address) {
-        tipToAddresses.push({
-          address: comment?.commentAccount?.address,
-          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)) as unknown as string
-        });
-      }
-
-      tipToAddresses = tipToAddresses.filter(item => item.address != selectedAccount.address);
-
-      const txHex = await burnXpi(
-        XPI,
-        walletPaths,
-        slpBalancesAndUtxos.nonSlpUtxos,
-        currency.defaultFee,
-        burnType,
-        BurnForType.Comment,
-        burnedBy,
-        burnForId,
-        burnValue,
-        tipToAddresses
-      );
-
-      const burnCommand: BurnCommand = {
-        txHex,
-        burnType,
-        burnForType: BurnForType.Comment,
-        burnedBy,
-        burnForId,
-        burnValue,
-        tipToAddresses: tipToAddresses,
-        queryParams: {
-          id: comment.commentToId,
-          orderBy: {
-            direction: OrderDirection.Asc,
-            field: CommentOrderField.UpdatedAt
-          }
-        }
-      };
-
-      dispatch(burnForUpDownVote(burnCommand));
-    } catch (e) {
-      dispatch(
-        showToast('error', {
-          message: intl.get('post.unableToBurn'),
-          duration: 3
-        })
-      );
-    }
+    handleBurn(false, { data: dataItem, burnForType: BurnForType.Comment });
   };
 
   const showUsername = () => {
