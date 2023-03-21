@@ -521,12 +521,12 @@ export default {
   'token.copyId': 'The token Id has been copied.',
   'token.unableToBurn': 'Unable to burn for the token',
   //Show more info in token page
-  'token.ticker': 'Ticker:',
-  'token.name': 'Name:',
-  'token.burntxpi': 'Burnt XPI:',
-  'token.id': 'ID:',
-  'token.created': 'Created:',
-  'token.comments': 'Comments:',
+  'token.ticker': 'Ticker',
+  'token.name': 'Name',
+  'token.burntxpi': 'Burnt XPI',
+  'token.id': 'ID',
+  'token.created': 'Created',
+  'token.comments': 'Comments',
 
   /* 17. Comment */
   'comment.unableCreateComment': 'Unable to create comment',
