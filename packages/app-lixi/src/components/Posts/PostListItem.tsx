@@ -244,22 +244,28 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const selectedAccount = useAppSelector(getSelectedAccount);
+  const { width } = useWindowDimensions();
+
   useEffect(() => {
     const mapImages = item.uploads.map(img => {
-      const imgUrl = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${img.upload.bucket}/${img.upload.sha}`;
-      let width = parseInt(img?.upload?.width) || 4;
+      let imgSha;
+      if (width <= 1200) {
+        imgSha = img.upload.sha320;
+      } else {
+        imgSha = img.upload.sha800;
+      }
+      const imgUrl = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${img.upload.bucket}/${imgSha}`;
+      let imgWidth = parseInt(img?.upload?.width) || 4;
       let height = parseInt(img?.upload?.height) || 3;
       let objImg = {
         src: imgUrl,
-        width: width,
+        width: imgWidth,
         height: height
       };
       return objImg;
     });
     setImagesList(mapImages);
-  }, []);
-
-  const { width } = useWindowDimensions();
+  }, [width]);
 
   useEffect(() => {
     const isMobileDetail = width < 768 ? true : false;
