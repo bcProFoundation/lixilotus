@@ -251,8 +251,10 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
       let imgSha;
       if (width <= 1200) {
         imgSha = img.upload.sha320;
-      } else {
+      } else if (width > 1200) {
         imgSha = img.upload.sha800;
+      } else if (!img.upload.sha800 && !img.upload.sha320) {
+        imgSha = img.upload.sha;
       }
       const imgUrl = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${img.upload.bucket}/${imgSha}`;
       let imgWidth = parseInt(img?.upload?.width) || 4;
