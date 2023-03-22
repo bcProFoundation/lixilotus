@@ -9,7 +9,7 @@ import { loadLocale } from '@store/settings/actions';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
 import { injectStore } from 'src/utils/axiosClient';
-import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
+import SidebarShortcut from '@containers/Sidebar/SidebarContent';
 import { navBarHeaderList } from '@components/Common/navBarHeaderList';
 import { useRouter } from 'next/router';
 import intl from 'react-intl-universal';

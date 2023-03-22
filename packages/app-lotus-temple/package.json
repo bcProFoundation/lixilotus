@@ -6,7 +6,7 @@
     "precommit": "yarn fix && yarn lint",
     "build": "next build",
     "debug": "NODE_OPTIONS='--inspect' next dev",
-    "dev": "next dev",
+    "dev": "next dev -p 3001",
     "lint": "next lint",
     "start": "next start",
     "fix": "run-s fix:*",

@@ -11,7 +11,7 @@ import { navBarHeaderList } from '@components/Common/navBarHeaderList';
 import intl from 'react-intl-universal';
 import Sidebar from '@containers/Sidebar';
 import SidebarRanking from '@containers/Sidebar/SideBarRanking';
-import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
+import SidebarContent from '@containers/Sidebar/SidebarContent';
 import Topbar from '@containers/Topbar';
 import { loadLocale } from '@store/settings/actions';
 import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
@@ -24,10 +24,8 @@ import { theme } from './theme';
 import { Footer } from '@bcpros/lixi-components/components';
 import { getAllNotifications } from '@store/notification/selectors';
 import { fetchNotifications } from '@store/notification/actions';
-import DummySidebar from '@containers/Sidebar/DummySidebar';
 import { setTransactionReady } from '@store/account/actions';
 import { getSlpBalancesAndUtxos } from '@store/wallet';
-const { Content } = Layout;
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
 
@@ -249,27 +247,11 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                 <ModalManager />
                 <AppContainer>
                   <Sidebar />
-                  {/* Need to reimplement top bar */}
-                  {/* <Topbar ref={ref}/> */}
                   <Topbar ref={setRef} />
-                  {/* @ts-ignore */}
                   <div className="container-content" id="scrollableDiv">
-                    {/* <Layout
-                            className="main-section-layout"
-                            style={{
-                              paddingRight: disableSideBarRanking.some(item => selectedKey.includes(item)) ? '2rem' : '0',
-                              maxWidth: disableSideBarRanking.some(item => selectedKey.includes(item)) ? '100%' : ''
-                            }}
-                            
-                          >
-                          </Layout> 
-                        */}
-                    <SidebarShortcut />
+                    <SidebarContent />
                     <div className="content-child">{children}</div>
-                    {/* This below is just a dummy sidebar */}
-                    {/* TODO: Implement SidebarRanking in future */}
                     {selectedKey === '/wallet' && <SidebarRanking></SidebarRanking>}
-                    <DummySidebar />
                     <Footer notifications={notifications} />
                   </div>
                 </AppContainer>

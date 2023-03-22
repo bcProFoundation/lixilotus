@@ -6,7 +6,7 @@ import { LeftOutlined, LoadingOutlined } from '@ant-design/icons';
 
 import { navBarHeaderList } from '@components/Common/navBarHeaderList';
 import Sidebar from '@containers/Sidebar';
-import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
+import SidebarContent from '@containers/Sidebar/SidebarContent';
 import Topbar from '@containers/Topbar';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { loadLocale } from '@store/settings/actions';
@@ -126,7 +126,7 @@ const ClaimedLayout: React.FC = (props: ClaimedLayoutProps) => {
                 <>
                   <AppContainer>
                     <Layout>
-                      <SidebarShortcut></SidebarShortcut>
+                      <SidebarContent></SidebarContent>
                       <Sidebar />
                       <Layout className="main-section-layout" style={{ paddingRight: '2rem' }}>
                         <Topbar ref={setRef} />
