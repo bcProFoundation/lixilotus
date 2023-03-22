@@ -255,6 +255,8 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
         imgSha = img.upload.sha800;
       } else if (width <= 1200 && !img.upload.sha320) {
         imgSha = img.upload.sha;
+      } else if (width > 1200 && !img.upload.sha800) {
+        imgSha = img.upload.sha;
       } else if (!img.upload.sha800 && !img.upload.sha320) {
         imgSha = img.upload.sha;
       }
