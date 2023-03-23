@@ -248,10 +248,13 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
 
   useEffect(() => {
     const mapImages = item.uploads.map(img => {
+      //Resize img with Sha
       let imgSha;
-      if (width <= 1200) {
+      if (!img.upload.sha800 || !img.upload.sha320 || !img.upload.sha40) {
+        imgSha = img.upload.sha;
+      } else if (width <= 1200) {
         imgSha = img.upload.sha320;
-      } else {
+      } else if (width > 1200) {
         imgSha = img.upload.sha800;
       }
       const imgUrl = `${process.env.NEXT_PUBLIC_AWS_ENDPOINT}/${img.upload.bucket}/${imgSha}`;
