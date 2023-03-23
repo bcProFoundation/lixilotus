@@ -13,6 +13,11 @@ import { getAllNotifications } from '@store/notification/selectors';
 import NotificationPopup from '@components/NotificationPopup';
 import { fetchNotifications } from '@store/notification/actions';
 import { AvatarUser } from '@components/Common/AvatarUser';
+import { getWalletStatus } from '@store/wallet';
+import { fromSmallestDenomination } from '@utils/cashMethods';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { CopyOutlined } from '@ant-design/icons';
+import SidebarListItem from './SidebarListItem';
 
 const { Sider } = Layout;
 
@@ -179,13 +184,14 @@ const StyledSidebar = styled(Sider)`
 
 const StyledWrapper = styled.div`
   margin-top: 10px;
-  margin-bottom: 10px;
-  background-color: gray;
+  margin-bottom: 5px;
+  background: #e0e0e0;
   border-radius: 15px;
   min-height: 60px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  padding: 8px 16px;
 
   @media (min-width: 960px) and (max-width: 1400px) {
     min-width: 300px !important;
@@ -204,6 +210,11 @@ const StyledLogoText = styled.p`
   margin-left: 20px;
 `;
 
+const StyledText = styled.p`
+  font-size: 16px;
+  margin-bottom: 0px;
+`;
+
 const SidebarContent = () => {
   const refSidebarShortcut = useRef<HTMLDivElement | null>(null);
   const dispatch = useAppDispatch();
@@ -214,6 +225,7 @@ const SidebarContent = () => {
   const router = useRouter();
   const currentPathName = router.pathname ?? '';
   const notifications = useAppSelector(getAllNotifications);
+  const walletStatus = useAppSelector(getWalletStatus);
   let pastScan;
 
   const onScan = async (result: string) => {
@@ -251,6 +263,10 @@ const SidebarContent = () => {
     }, 700);
   };
 
+  const handleOnCopy = () => {
+    message.info(intl.get('lixi.addressCopied'));
+  };
+
   return (
     <StyledSidebar id="short-cut-sidebar" ref={refSidebarShortcut} onScroll={e => triggerSrollbar(e)}>
       <ContainerAccess>
@@ -262,13 +278,51 @@ const SidebarContent = () => {
             <StyledLogoText>Lotus Temple</StyledLogoText>
           </StyledWrapper>
           {selectedAccount && (
-            <StyledWrapper>
+            <StyledWrapper style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
               <Space>
-                <AvatarUser name={selectedAccount.name} isMarginRight={true} />
-                <p>{selectedAccount.name}</p>
+                <AvatarUser name={selectedAccount.name} />
+                <StyledText>{selectedAccount.name}</StyledText>
               </Space>
+              <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                <picture>
+                  <img alt="walletIcon" src="/images/ico-account.svg" />
+                </picture>
+                <Space direction="vertical" style={{ width: '100%' }}>
+                  <StyledText style={{ textAlign: 'left' }}>Tài khoản của bạn</StyledText>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <CopyToClipboard text={selectedAccount.address} onCopy={handleOnCopy}>
+                      <div>
+                        <span>{selectedAccount.address.substring(selectedAccount.address.length - 7)}</span>
+                        <CopyOutlined />
+                      </div>
+                    </CopyToClipboard>
+                    <StyledText>
+                      {fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis)} XPI
+                    </StyledText>
+                  </div>
+                </Space>
+              </div>
             </StyledWrapper>
           )}
+          <StyledWrapper style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+            <div style={{ width: '100%' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <h1>Bạn thờ phượng</h1>
+                <p style={{ marginBottom: '0' }}>Xem tất cả</p>
+              </div>
+              <SidebarListItem />
+              <SidebarListItem />
+              <SidebarListItem />
+            </div>
+          </StyledWrapper>
+          <StyledWrapper style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+            <div style={{ width: '100%' }}>
+              <h1 style={{ textAlign: 'left' }}>Thăm viếng gần đây</h1>
+              <SidebarListItem />
+              <SidebarListItem />
+              <SidebarListItem />
+            </div>
+          </StyledWrapper>
         </div>
       </ContainerAccess>
     </StyledSidebar>

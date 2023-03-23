@@ -16,7 +16,7 @@ type SidebarContentProps = {
   setSidebarCollapsed?: Function;
 };
 
-const ContainerSideBarContent = styled.div`
+const ContainerSidebarContent = styled.div`
   height: 100%;
   text-align: left;
   margin: 1rem 0;
@@ -69,7 +69,7 @@ const SidebarShortcut = ({ className }: SidebarContentProps) => {
   };
 
   return (
-    <ContainerSideBarContent onClick={handleOnClick}>
+    <ContainerSidebarContent onClick={handleOnClick}>
       <StyledContainerAccess>
         <ItemAccess
           icon={'/images/ico-home.svg'}
@@ -96,7 +96,7 @@ const SidebarShortcut = ({ className }: SidebarContentProps) => {
           direction={'horizontal'}
         />
       </StyledContainerAccess>
-    </ContainerSideBarContent>
+    </ContainerSidebarContent>
   );
 };
 

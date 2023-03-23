@@ -104,7 +104,7 @@ export const AppContainer = styled.div`
     flex-grow: 1;
     display: flex;
     flex-direction: row;
-    gap: 2rem;
+    gap: 15px;
     justify-content: flex-start;
     @media (max-width: 960px) {
       margin-left: 0 !important;
