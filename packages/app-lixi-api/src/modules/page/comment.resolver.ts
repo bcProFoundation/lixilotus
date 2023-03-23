@@ -133,6 +133,17 @@ export class CommentResolver {
           }
         });
 
+        const recipient = await this.prisma.account.findFirst({
+          where: {
+            id: _.toSafeInteger(post?.postAccountId)
+          }
+        })
+  
+        if (!recipient) {
+          const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
+          throw new VError(accountNotExistMessage);
+        }
+
         let commentGive;
         const commentNormal = {
           senderName: account.name
@@ -177,7 +188,7 @@ export class CommentResolver {
           url: '/post/' + post?.id,
           additionalData: tipHex ? commentGive : commentNormal
         };
-        await this.notificationService.createNotification(createNotif);
+        await this.notificationService.saveAndDispatchNotification(recipient?.mnemonicHash, createNotif);
 
         return createdComment;
       });

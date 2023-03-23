@@ -48,9 +48,6 @@ export class NotificationController {
         }
       });
 
-      this.logger.log(`Notification Recipient Id: ${notification?.recipientId}`);
-      this.logger.log(`Account Id: ${account?.id}`);
-
       // Check if the user have sufficient permission to get the notification
       if (notification?.recipientId !== account?.id) {
         const noPermission = await i18n.t('notification.messages.noPermission');

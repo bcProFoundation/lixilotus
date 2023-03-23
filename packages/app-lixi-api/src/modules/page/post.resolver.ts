@@ -591,11 +591,22 @@ export class PostResolver {
     pubSub.publish('postCreated', { postCreated: createdPost });
 
     if (pageId) {
-      const recipient = await this.prisma.page.findFirst({
+      const page = await this.prisma.page.findFirst({
         where: {
           id: pageId
         }
       });
+
+      if (!page) {
+        const accountNotExistMessage = await this.i18n.t('page.messages.couldNotFindPage');
+        throw new VError(accountNotExistMessage);
+      }
+
+      const recipient = await this.prisma.account.findFirst({
+        where: {
+          id: _.toSafeInteger(page.pageAccountId)
+        }
+      })
 
       if (!recipient) {
         const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
@@ -604,7 +615,7 @@ export class PostResolver {
 
       const createNotif = {
         senderId: createdPost.postAccountId,
-        recipientId: Number(recipient?.pageAccountId),
+        recipientId: Number(page?.pageAccountId),
         notificationTypeId: NOTIFICATION_TYPES.POST_ON_PAGE,
         level: NotificationLevel.INFO,
         url: "/post/" + createdPost.id,
@@ -614,7 +625,7 @@ export class PostResolver {
           pageName: createdPost.page?.name
         }
       }
-      await this.notificationService.createNotification(createNotif);
+      await this.notificationService.saveAndDispatchNotification(recipient?.mnemonicHash, createNotif);
     }
 
     return createdPost;
