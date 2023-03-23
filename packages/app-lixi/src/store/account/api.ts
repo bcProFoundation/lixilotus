@@ -134,11 +134,11 @@ const accountApi = {
   },
 
   getLeaderboard() {
-    const url = 'api/accounts/leaderboard';
+    const url = 'api/accounts/getleaderboard';
     return axiosClient
       .get(url, {
         params: {
-          topMostBurned: 5
+          limit: 5
         }
       })
       .then(response => {

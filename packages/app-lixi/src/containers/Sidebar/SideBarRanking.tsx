@@ -329,8 +329,6 @@ const SidebarRanking = () => {
 
   useEffect(() => dispatch(getLeaderboard()), []);
 
-  console.log(getTops)
-
   const [form] = Form.useForm();
 
   const { data } = useInfinitePagesQuery(

@@ -172,7 +172,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const walletStatus = useAppSelector(getWalletStatus);
   const failQueue = useAppSelector(getFailQueue);
   const filterValue = useAppSelector(getFilterPostsHome);
-  const getTopFirst = useAppSelector(getLeaderBoard);
+  const leaderboard = useAppSelector(getLeaderBoard);
 
 
   useEffect(() => dispatch(getLeaderboard()), [])

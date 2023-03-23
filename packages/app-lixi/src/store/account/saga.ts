@@ -114,7 +114,6 @@ function* getLeaderboardSaga(action: PayloadAction<number>) {
   try {
     yield put(showLoading(getLeaderboard.type));
     const data = yield call(accountApi.getLeaderboard);
-    // yield put(getAccountSuccess(data));
     yield put(getLeaderboardSuccess(data));
   } catch (err) {
     const message = (err as Error).message ?? intl.get('account.couldNotFetchAccount');

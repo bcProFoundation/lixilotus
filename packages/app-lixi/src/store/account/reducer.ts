@@ -120,9 +120,10 @@ export const accountReducer = createReducer(initialState, builder => {
     })
     .addCase(getLeaderboardSuccess, (state, action) => {
       state.leaderBoard = action.payload;
+    })
     .addCase(setTransactionReady, (state, action) => {
-        state.transactionReady = true;
-      })
+      state.transactionReady = true;
+    })
     .addCase(setTransactionNotReady, (state, action) => {
       state.transactionReady = false;
     })

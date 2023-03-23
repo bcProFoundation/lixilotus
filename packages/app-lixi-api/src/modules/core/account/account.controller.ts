@@ -117,8 +117,8 @@ export class AccountController {
     }
   }
 
-  @Get('leaderboard')
-  async getMostBurnedAcount(@Query('topMostBurned') topMostBurned: number, @I18n() i18n: I18nContext) {
+  @Get('getleaderboard')
+  async getMostBurnedAcount(@Query('limit') limit: number, @I18n() i18n: I18nContext): Promise<any> {
     try {
       const leaderboardAccounts = await this.prisma.burn.groupBy({
         by: ['burnedBy'],
@@ -130,7 +130,7 @@ export class AccountController {
             burnedValue: 'desc'
           }
         },
-        take: toSafeInteger(topMostBurned)
+        take: toSafeInteger(limit)
       });
 
       const addressAndTotalBurntArray = leaderboardAccounts.map((account: any) => {
@@ -159,7 +159,7 @@ export class AccountController {
       });
 
       const accountDDO = addressAndTotalBurntArray.map((account) => {
-        const obj2 = accountDTO.find((addressItem) => addressItem.address === account.publicAddress);
+        const obj2 = accountDTO.find(addressItem => _.includes(addressItem.address, account.publicAddress))
         return { ...account, ...obj2 };
       });
 
