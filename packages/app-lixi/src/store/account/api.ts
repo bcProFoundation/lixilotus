@@ -134,7 +134,7 @@ const accountApi = {
   },
 
   getLeaderboard() {
-    const url = 'api/accounts/getleaderboard';
+    const url = 'api/accounts/leaderboard';
     return axiosClient
       .get(url, {
         params: {

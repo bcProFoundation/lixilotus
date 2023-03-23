@@ -74,6 +74,7 @@ export class AccountController {
         page: account.page
       } as AccountDto;
 
+
       return result;
     } catch (err: unknown) {
       if (err instanceof VError) {
@@ -117,7 +118,7 @@ export class AccountController {
     }
   }
 
-  @Get('getleaderboard')
+  @Get('leaderboard')
   async getMostBurnedAcount(@Query('limit') limit: number, @I18n() i18n: I18nContext): Promise<any> {
     try {
       const leaderboardAccounts = await this.prisma.burn.groupBy({
@@ -163,15 +164,14 @@ export class AccountController {
         return { ...account, ...obj2 };
       });
 
-      const result = accountDDO.map(data => _.omit({ ...data }, 'publicAddress'))
+      const result = accountDDO.map(data => _.omit({ ...data }, 'publicAddress'));
       return result
     } catch (err: unknown) {
-      console.log(err)
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
-        const getMostBurnAccount = await i18n.t('account.messages.unableGetAccount');
-        const error = new VError.WError(err as Error, getMostBurnAccount);
+        const getunableGetBurnListAccount = await i18n.t('account.messages.unableGetBurnListAccount');
+        const error = new VError.WError(err as Error, getunableGetBurnListAccount);
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
     }

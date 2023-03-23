@@ -475,19 +475,7 @@ const SidebarRanking = () => {
               <Tabs.TabPane tab={<ShopOutlined />} key="page">
                 <div className="content">
                   <h3>Top Pages</h3>
-                  {/* {randomShortCut &&
-                    randomShortCut.map((item, index) => {
-                      return (
-                        <>
-                          <InfoCardUser
-                            type="card"
-                            imgUrl={item.avatar}
-                            name={item.name}
-                            title={item.title}
-                          ></InfoCardUser>
-                        </>
-                      );
-                    })} */}
+
                 </div>
               </Tabs.TabPane>
               <Tabs.TabPane tab={<NumberOutlined />} key="tag">
