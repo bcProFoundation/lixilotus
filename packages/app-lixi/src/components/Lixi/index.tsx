@@ -197,6 +197,7 @@ const StyledInfoSubCard = styled(Space)`
   display: flex;
   gap: 4px !important;
   flex-direction: column;
+  justify-content: center;
   align-items: flex-start;
   @media screen and (max-width: 960px) {
     flex-direction: row;
