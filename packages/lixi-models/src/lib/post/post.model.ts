@@ -60,4 +60,7 @@ export class Post {
     description: 'Identifies the date and time when the object was last updated.'
   })
   updatedAt: Date;
+
+  @Field(() => Number, { nullable: true })
+  totalComments?: number;
 }

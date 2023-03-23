@@ -49,8 +49,8 @@ export class PostResolver {
   private logger: Logger = new Logger(this.constructor.name);
 
   constructor(
-    private prisma: PrismaService, 
-    private meiliService: MeiliService, 
+    private prisma: PrismaService,
+    private meiliService: MeiliService,
     private readonly notificationService: NotificationService,
     @I18n() private i18n: I18nService
   ) { }
@@ -89,7 +89,7 @@ export class PostResolver {
     const result = await findManyCursorConnection(
       args =>
         this.prisma.post.findMany({
-          include: { postAccount: true },
+          include: { postAccount: true, comments: true },
           where: {
             OR: [
               {
@@ -151,7 +151,7 @@ export class PostResolver {
     const result = await findManyCursorConnection(
       args =>
         this.prisma.post.findMany({
-          include: { postAccount: true },
+          include: { postAccount: true, comments: true },
           where: {
             OR: [
               { postAccountId: accountId },
@@ -228,7 +228,7 @@ export class PostResolver {
       result = await findManyCursorConnection(
         args =>
           this.prisma.post.findMany({
-            include: { postAccount: true },
+            include: { postAccount: true, comments: true },
             where: {
               OR: [
                 {
@@ -347,7 +347,7 @@ export class PostResolver {
     const result = await findManyCursorConnection(
       args =>
         this.prisma.post.findMany({
-          include: { postAccount: true },
+          include: { postAccount: true, comments: true },
           where: {
             OR: [
               {
@@ -416,7 +416,7 @@ export class PostResolver {
       result = await findManyCursorConnection(
         args =>
           this.prisma.post.findMany({
-            include: { postAccount: true },
+            include: { postAccount: true, comments: true },
             where: {
               AND: [
                 {
@@ -690,6 +690,17 @@ export class PostResolver {
     });
 
     return account;
+  }
+
+  @ResolveField('totalComments', () => Number)
+  async postComments(@Parent() post: Post) {
+    const totalComments = await this.prisma.comment.count({
+      where: {
+        commentToId: post.id
+      }
+    });
+
+    return totalComments;
   }
 
   @ResolveField('pageAccount', () => Account)

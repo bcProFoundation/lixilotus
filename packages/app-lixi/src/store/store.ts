@@ -11,6 +11,8 @@ import { api as postApi } from './post/posts.api';
 import { api as worshipedPersonApi } from './worship/worshipedPerson.api';
 import rootReducer, { serverReducer } from './rootReducer';
 import rootSaga from './rootSaga';
+import { WalletContext } from '@context/walletProvider';
+import useXPI from '@hooks/useXPI';
 
 export interface SagaStore extends Store {
   __sagaTask: Task;
@@ -22,6 +24,9 @@ const makeStore = (context: Context) => {
   const sagaMiddleware = createSagaMiddleware({
     onError: (error: Error, { sagaStack: string }) => {
       console.log(error);
+    },
+    context: {
+      useXPI: useXPI
     }
   });
 
