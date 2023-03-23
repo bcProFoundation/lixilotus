@@ -791,7 +791,7 @@ const Lixi = props => {
                   </div>
                   <InfoSubCard
                     typeName={'Balance'}
-                    content={fromSmallestDenomination(selectedLixi?.balance) + ' ' + currency.ticker}
+                    content={fromSmallestDenomination(selectedLixi?.balance).toFixed(2) + ' ' + currency.ticker}
                   />
                 </div>
               </div>
@@ -807,7 +807,7 @@ const Lixi = props => {
                   </div>
                   <InfoSubCard
                     typeName={intl.get('lixi.claimed')}
-                    content={fromSmallestDenomination(selectedLixi?.totalClaim) + ' ' + currency.ticker}
+                    content={fromSmallestDenomination(selectedLixi?.totalClaim).toFixed(2) + ' ' + currency.ticker}
                   />
                 </div>
               </div>
