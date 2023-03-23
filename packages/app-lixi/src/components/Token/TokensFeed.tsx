@@ -124,7 +124,7 @@ const BannerTicker = styled.div`
         justify-content: center;
         align-items: baseline;
         .type-name {
-          min-width: 80px;
+          min-width: 100px;
           text-align: left;
           color: #edeff099;
         }
