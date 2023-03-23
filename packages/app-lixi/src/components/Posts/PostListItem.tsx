@@ -248,6 +248,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
 
   useEffect(() => {
     const mapImages = item.uploads.map(img => {
+      //Resize img with Sha
       let imgSha;
       if (!img.upload.sha800 || !img.upload.sha320 || !img.upload.sha40) {
         imgSha = img.upload.sha;
