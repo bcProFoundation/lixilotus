@@ -46,7 +46,44 @@ query WorshipedPeople(
   $query: String
   $skip: Int
 ) {
-  allWorshipedPerson(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, query: $query, skip: $skip) {
+  allWorshipedPerson(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    query: $query
+    skip: $skip
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...WorshipedPersonFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+
+query WorshipedPeopleSpecialDate(
+  $after: String
+  $before: String
+  $first: Int = 20
+  $last: Int
+  $orderBy: WorshipedPersonOrder
+  $skip: Int
+) {
+  allWorshipedPersonSpecialDate(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    skip: $skip
+  ) {
     totalCount
     edges {
       cursor

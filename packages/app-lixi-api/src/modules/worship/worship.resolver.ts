@@ -67,6 +67,40 @@ export class WorshipResolver {
     return result;
   }
 
+  @Query(() => WorshipedPersonConnection)
+  async allWorshipedPersonSpecialDate(
+    @Args() { after, before, first, last }: PaginationArgs,
+    @Args({
+      name: 'orderBy',
+      type: () => WorshipedPersonOrder,
+      nullable: true
+    })
+    orderBy: WorshipedPersonOrder
+  ) {
+    const today = moment().toString();
+    const result = await findManyCursorConnection(
+      args =>
+        this.prisma.worshipedPerson.findMany({
+          include: { avatar: true, country: true },
+          where: {
+            dateOfBirth: today
+          },
+          take: 10,
+          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+          ...args
+        }),
+      () =>
+        this.prisma.worshipedPerson.count({
+          where: {
+            dateOfBirth: today
+          },
+          take: 10
+        }),
+      { first, last, before, after }
+    );
+    return result;
+  }
+
   @UseGuards(GqlJwtAuthGuard)
   @Mutation(() => WorshipedPerson)
   async createWorshipedPerson(@PostAccountEntity() account: Account, @Args('data') data: CreateWorshipedPersonInput) {
