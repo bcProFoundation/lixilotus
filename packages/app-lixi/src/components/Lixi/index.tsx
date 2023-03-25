@@ -7,8 +7,8 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import intl from 'react-intl-universal';
-import { getAllClaims } from 'src/store/claim/selectors';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import { getAllClaims } from '@store/claim/selectors';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import {
   archiveLixi,
   fetchMoreSubLixies,
@@ -17,9 +17,9 @@ import {
   setLixiBalance,
   unarchiveLixi,
   withdrawLixi
-} from 'src/store/lixi/actions';
-import { getHasMoreSubLixies, getSelectedLixi, getSelectedLixiId } from 'src/store/lixi/selectors';
-import { showToast } from 'src/store/toast/actions';
+} from '@store/lixi/actions';
+import { getHasMoreSubLixies, getSelectedLixi, getSelectedLixiId } from '@store/lixi/selectors';
+import { showToast } from '@store/toast/actions';
 import styled from 'styled-components';
 
 import {
@@ -48,7 +48,7 @@ import { getAllSubLixies, getLoadMoreSubLixiesStartId } from '@store/lixi/select
 import { openModal } from '@store/modal/actions';
 import { fromSmallestDenomination } from '@utils/cashMethods';
 import { ClaimType } from '@bcpros/lixi-models/lib/lixi';
-import { exportSubLixies } from 'src/store/lixi/actions';
+import { exportSubLixies } from '@store/lixi/actions';
 import { RenameLixiModalProps } from './RenameLixiModal';
 import SubLixiList from './SubLixiList';
 import LixiClaimedList from './LixiClaimedList';

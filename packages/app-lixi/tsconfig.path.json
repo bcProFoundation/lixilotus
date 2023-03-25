@@ -21,13 +21,13 @@
         "src/containers/*"
       ],
       "@hooks/*": [
-        "src/hooks/*"
+        "../../packages/redux-store/src/hooks/*"
       ],
       "@store/*": [
-        "src/store/*"
+        "../../packages/redux-store/src/store/*"
       ],
       "@context/*": [
-        "src/context/*"
+        "../../packages/redux-store/src/context/*"
       ],
       "@bcpros/lixi-components/*": [
         "../../packages/lixi-components/src/*"
