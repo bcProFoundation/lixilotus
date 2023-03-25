@@ -5,15 +5,16 @@ import { NextSeo } from 'next-seo';
 import React from 'react';
 import { END } from 'redux-saga';
 import { getSelectorsByUserAgent } from 'react-device-detect';
-import { usePostQuery } from '@store/post/posts.generated';
+import { useWorshipedPersonQuery } from '@store/worship/worshipedPerson.generated';
 import MainLayout from '@components/Layout/MainLayout';
 import PersonDetail from '@components/WorshipedPerson/PersonDetail';
 
 const PersonDetailPage = props => {
   const { personId, isMobile } = props;
-  // const canonicalUrl = process.env.NEXT_PUBLIC_LIXI_URL + `posts/${postId}`;
+  const canonicalUrl = process.env.NEXT_PUBLIC_LIXI_URL + `posts/${personId}`;
 
-  // const postQuery = usePostQuery({ id: postId });
+  //TODO: Uncomment the below code to execute query
+  // const personQuery = useWorshipedPersonQuery({ id: personId });
 
   return (
     // <>
