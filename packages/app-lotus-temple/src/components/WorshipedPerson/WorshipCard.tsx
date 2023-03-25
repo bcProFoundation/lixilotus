@@ -5,31 +5,31 @@ import { Space } from 'antd';
 import { FireOutlined } from '@ant-design/icons';
 
 const StyledItem = style.div`
-   display: flex;
-   margin-bottom: 10px;
-   margin-top: 5px;
-   background: #FFFFFF;
-   width: 100%;
-   padding: 20px 32px;
-   border-radius: 24px;
+  display: flex;
+  margin-bottom: 10px;
+  margin-top: 5px;
+  background: #FFFFFF;
+  width: 100%;
+  padding: 20px 32px;
+  border-radius: 24px;
 `;
 
 const StyledInfoContainer = style.div`
-   display: flex;
-   flex-direction: column;
-   gap: 7px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 `;
 
 const StyledName = style.span`
-   margin-bottom: 0px;
-   text-align: left;
-   font-weight: bold;
+  margin-bottom: 0px;
+  text-align: left;
+  font-weight: bold;
 `;
 
 const StyledSubInfo = style.span`
-   font-weight: normal;
-   color: #4F4F4F;
-   font-size: 11.5px;
+  font-weight: normal;
+  color: #4F4F4F;
+  font-size: 11.5px;
 `;
 
 const WorshipCard = () => {

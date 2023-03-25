@@ -14,11 +14,11 @@ const SidebarListItem = () => {
     <StyledItem>
       <Space>
         <AvatarUser name={'Lixi Lotus'} />
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
           <p style={{ marginBottom: '0' }}>Lixi Lotus</p>
           <p style={{ marginBottom: '0' }}>
             <picture>
-              <img alt="burnIcon" src="/images/ico-burn-up.svg" width={20} />
+              <img alt="burn-icon" src="/images/burn-icon.svg" width={20} />
             </picture>
             9999 XPI
           </p>
