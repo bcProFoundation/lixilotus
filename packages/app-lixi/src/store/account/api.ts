@@ -75,7 +75,7 @@ const accountApi = {
     const url = `/api/accounts/${id}`;
     return axiosClient
       .delete(url, { data: data })
-      .then(response => { })
+      .then(response => {})
       .catch(err => {
         const { response } = err;
         throw response?.data ?? err ?? 'Network Error';
@@ -148,7 +148,7 @@ const accountApi = {
         const { response } = err;
         throw response?.data ?? err ?? 'Network Error';
       });
-  },
+  }
 };
 
 export default accountApi;
