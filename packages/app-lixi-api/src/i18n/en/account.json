@@ -14,6 +14,7 @@
     "sendAmountSmallerThanDust": "The send amount is smaller than dust",
     "accountNotSufficientFund": "The account balance is not sufficient to funding the lixi.",
     "importAccountNotFound": "Could not found import account.",
-    "requiredMnemonicHash": "Access denied. Need to provide mnemonic-hash in headers"
+    "requiredMnemonicHash": "Access denied. Need to provide mnemonic-hash in headers",
+    "unableGetBurnListAccount": "Rankings are not displayed"
   }
 }
