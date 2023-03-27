@@ -2,17 +2,19 @@ import React from 'react';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import { Space, Popover, Menu } from 'antd';
 import { Comment } from '@ant-design/compatible';
-import { useAppDispatch } from '@store/hooks';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import styled from 'styled-components';
 import { Account, NotificationDto as Notification } from '@bcpros/lixi-models';
 import SwipeToDelete from 'react-swipe-to-delete-ios';
 import moment from 'moment';
 import { isMobile } from 'react-device-detect';
-import { deleteNotification, readNotification } from '@store/notification/actions';
+import { deleteNotification, fetchNotifications, readAllNotifications, readNotification } from '@store/notification/actions';
 import { downloadExportedLixi } from '@store/lixi/actions';
 import { useRouter } from 'next/router';
 import intl from 'react-intl-universal';
 import { push } from 'connected-next-router';
+import { getAllNotifications } from '@store/notification/selectors';
+import { getSelectedAccount } from '@store/account/selectors';
 
 export type NotificationMenuProps = {
   notifications: Notification[];
@@ -181,6 +183,7 @@ const StyledReadAll = styled.div`
 const NotificationPopup = (notifications: Notification[], account: Account) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const selectedAccount = useAppSelector(getSelectedAccount);
 
   const handleDelete = (account: Account, notificationId: string) => {
     dispatch(deleteNotification({ mnemonichHash: account.mnemonicHash, notificationId }));
@@ -194,6 +197,16 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
       dispatch(downloadExportedLixi({ lixiId: parentId, mnemonicHash, fileName }));
     }
   };
+
+  const handleReadAll = (account: Account) => {
+    dispatch(readAllNotifications({ mnemonichHash: account.mnemonicHash }));
+    dispatch(
+      fetchNotifications({
+        accountId: selectedAccount.id,
+        mnemonichHash: selectedAccount.mnemonicHash
+      })
+    );
+  }
 
   const menuItems = [{ label: 'All', key: 'all' }];
 
@@ -215,7 +228,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
           // onClick={onClickMenu}
           items={menuItems}
         ></Menu>
-        <StyledReadAll onClick={() => router.push('/notifications')}>{intl.get('notification.readAll')}</StyledReadAll>
+        <StyledReadAll onClick={() => handleReadAll(account)}>{intl.get('notification.readAll')}</StyledReadAll>
       </StyledHeader>
       {notifications &&
         notifications.length > 0 &&

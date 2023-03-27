@@ -625,7 +625,7 @@ export class PostResolver {
           pageName: createdPost.page?.name
         }
       }
-      await this.notificationService.saveAndDispatchNotification(recipient?.mnemonicHash, createNotif);
+      createNotif.senderId !== createNotif.recipientId && await this.notificationService.saveAndDispatchNotification(recipient?.mnemonicHash, createNotif);
     }
 
     return createdPost;

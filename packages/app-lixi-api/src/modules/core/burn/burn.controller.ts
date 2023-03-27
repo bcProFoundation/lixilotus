@@ -260,7 +260,7 @@ export class BurnController {
           xpiBurn: command.burnValue,
         }
       };
-      await this.notificationService.saveAndDispatchNotification(recipientPostAccount.mnemonicHash, createNotifBurn);
+      createNotifBurn.senderId !== createNotifBurn.recipientId && await this.notificationService.saveAndDispatchNotification(recipientPostAccount.mnemonicHash, createNotifBurn);
 
       // create Notifications Fee
       let recipientPageAccount;
@@ -292,7 +292,7 @@ export class BurnController {
           xpiFee: fee
         }
       };
-      await this.notificationService.saveAndDispatchNotification(post?.pageId ? recipientPageAccount?.mnemonicHash as string : recipientPostAccount?.mnemonicHash ,createNotifBurnFee);
+      createNotifBurnFee.senderId !== createNotifBurnFee.recipientId && await this.notificationService.saveAndDispatchNotification(post?.pageId ? recipientPageAccount?.mnemonicHash as string : recipientPostAccount?.mnemonicHash ,createNotifBurnFee);
 
       // create Notifications Tip
       if (command.burnType == BurnType.Up) {
@@ -309,7 +309,7 @@ export class BurnController {
             xpiTip: tip
           }
         };
-        await this.notificationService.saveAndDispatchNotification(command.burnForType == BurnForType.Comment ? commentAccount?.mnemonicHash as string : recipientPostAccount.mnemonicHash, createNotifBurnTip);
+        createNotifBurnTip.senderId !== createNotifBurnTip.recipientId && await this.notificationService.saveAndDispatchNotification(command.burnForType == BurnForType.Comment ? commentAccount?.mnemonicHash as string : recipientPostAccount.mnemonicHash, createNotifBurnTip);
       }
 
       const result: Burn = {

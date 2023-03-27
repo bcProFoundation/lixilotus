@@ -188,7 +188,7 @@ export class CommentResolver {
           url: '/post/' + post?.id,
           additionalData: tipHex ? commentGive : commentNormal
         };
-        await this.notificationService.saveAndDispatchNotification(recipient?.mnemonicHash, createNotif);
+        createNotif.senderId !== createNotif.recipientId && await this.notificationService.saveAndDispatchNotification(recipient?.mnemonicHash, createNotif);
 
         return createdComment;
       });

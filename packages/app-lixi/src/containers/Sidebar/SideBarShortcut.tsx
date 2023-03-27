@@ -14,6 +14,7 @@ import { getAllNotifications } from '@store/notification/selectors';
 import NotificationPopup from '@components/NotificationPopup';
 import { fetchNotifications } from '@store/notification/actions';
 import { AvatarUser } from '@components/Common/AvatarUser';
+import _ from 'lodash';
 
 const { Sider } = Layout;
 
@@ -354,7 +355,7 @@ const SidebarShortcut = () => {
           </div>
           <UserControl>
             <Badge
-              count={notifications.length}
+              count={notifications.filter(item => _.isNil(item.readAt)).length}
               overflowCount={9}
               offset={[notifications.length < 10 ? 0 : 5, 8]}
               color="var(--color-primary)"

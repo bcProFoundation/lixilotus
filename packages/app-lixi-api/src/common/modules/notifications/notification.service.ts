@@ -21,10 +21,15 @@ export class NotificationService {
   ) {}
 
   async saveAndDispatchNotification(room: string, notification: NotificationDto) {
+    if (!notification.recipientId || !notification.senderId) {
+      const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
+      throw new VError(accountNotExistMessage);
+    }
+
     // get recipient account
     const recipientAccount = await this.prisma.account.findUnique({
       where: {
-        id: notification.recipientId as number
+        id: notification.recipientId
       }
     })
     if (!recipientAccount) {
