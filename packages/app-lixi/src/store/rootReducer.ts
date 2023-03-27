@@ -71,7 +71,7 @@ const localAccountPersistConfig: PersistConfig<LocalUserAccountsState> = {
 const accountPersistConfig: PersistConfig<AccountsState> = {
   key: 'accounts',
   storage: storage('lixi-indexeddb'),
-  blacklist: [`envelopeUpload`, 'pageCoverUpload', 'pageAvatarUpload', 'postCoverUploads'],
+  blacklist: [`envelopeUpload`, 'pageCoverUpload', 'pageAvatarUpload', 'postCoverUploads', 'leaderBoard'],
   timeout: 0
 };
 

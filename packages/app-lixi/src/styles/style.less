@@ -556,7 +556,7 @@ code {
       .ant-select {
         border: 2px solid var(--border-color-base);
         background: #fff;
-        padding: 9px 1rem;
+        margin: 0;
         border-radius: 8px;
         min-height: 46px;
 
@@ -598,7 +598,22 @@ code {
           background: #fff;
           text-align: left;
           border: 0;
-          padding: 0;
+          height: 100% !important;
+          top: 0 !important;
+          align-items: center;
+
+          .ant-select-selection-search {
+            top: 5px;
+            left: 10px;
+          }
+
+          .ant-select-selection-placeholder {
+            top: 5px;
+            left: 10px;
+          }
+
+
+
 
           &:hover {
             background: #fff;

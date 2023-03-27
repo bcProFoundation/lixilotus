@@ -11,6 +11,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Request,
   UseGuards
 } from '@nestjs/common';
@@ -37,14 +38,17 @@ import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase58Str, hashMnemonic } f
 import { PrismaService } from '../../prisma/prisma.service';
 import { WalletService } from '../../wallet/wallet.service';
 import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
+import BCHJS from '@bcpros/xpi-js'
+import { toSafeInteger } from 'lodash';
 
 @Controller('accounts')
 export class AccountController {
   constructor(
     private prisma: PrismaService,
     private readonly walletService: WalletService,
-    @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet
-  ) {}
+    @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
+    @Inject('xpijs') private XPI: BCHJS,
+  ) { }
 
   @Get(':id')
   async getAccount(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<AccountDto> {
@@ -69,6 +73,7 @@ export class AccountController {
         balance: balance,
         page: account.page
       } as AccountDto;
+
 
       return result;
     } catch (err: unknown) {
@@ -113,6 +118,64 @@ export class AccountController {
     }
   }
 
+  @Get('leaderboard')
+  async getLeaderboard(@Query('limit') limit: number, @I18n() i18n: I18nContext): Promise<any> {
+    try {
+      const leaderboardAccounts = await this.prisma.burn.groupBy({
+        by: ['burnedBy'],
+        _sum: {
+          burnedValue: true,
+        },
+        orderBy: {
+          _sum: {
+            burnedValue: 'desc'
+          }
+        },
+        take: toSafeInteger(limit)
+      });
+
+      const addressAndTotalBurntArray = leaderboardAccounts.map((account: any) => {
+
+        const burnedBy = account.burnedBy.toString('hex');
+
+        const legacyAddress = this.XPI.Address.hash160ToLegacy(burnedBy)
+
+        const publicAddress = this.XPI.Address.toXAddress(legacyAddress);
+
+        const totalBurned = account._sum.burnedValue
+        return {
+          publicAddress,
+          totalBurned
+        }
+      });
+
+      const accountAddresses = _.map(addressAndTotalBurntArray, 'publicAddress');
+
+      const accountDTO = await this.prisma.account.findMany({
+        where: {
+          address: {
+            in: accountAddresses
+          }
+        }
+      });
+
+      const accountDDO = addressAndTotalBurntArray.map((account) => {
+        const obj2 = accountDTO.find(addressItem => _.includes(addressItem.address, account.publicAddress))
+        return { ...account, ...obj2 };
+      });
+
+      const result = accountDDO.map(data => _.omit({ ...data }, 'publicAddress'));
+      return result
+    } catch (err: unknown) {
+      if (err instanceof VError) {
+        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      } else {
+        const getunableGetBurnListAccount = await i18n.t('account.messages.unableGetBurnListAccount');
+        const error = new VError.WError(err as Error, getunableGetBurnListAccount);
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  }
   @Post('import')
   async import(@Body() importAccountCommand: ImportAccountCommand, @I18n() i18n: I18nContext): Promise<AccountDto> {
     const { mnemonic } = importAccountCommand;

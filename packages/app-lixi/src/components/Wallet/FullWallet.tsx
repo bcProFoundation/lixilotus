@@ -278,10 +278,12 @@ const FullWalletComponent: React.FC = () => {
                                       </p>
                                     )}
                                   </p>
-                                  <p className="tx-memo">
+                                  {!_.isEmpty(memo) && <p className="tx-memo">
                                     <LockOutlined /> {memo}
                                   </p>
+                                  }
                                 </div>
+
                               }
                             />
                             <div className="tx-info">
