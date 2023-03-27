@@ -119,7 +119,7 @@ export class AccountController {
   }
 
   @Get('leaderboard')
-  async getMostBurnedAcount(@Query('limit') limit: number, @I18n() i18n: I18nContext): Promise<any> {
+  async getLeaderboard(@Query('limit') limit: number, @I18n() i18n: I18nContext): Promise<any> {
     try {
       const leaderboardAccounts = await this.prisma.burn.groupBy({
         by: ['burnedBy'],
