@@ -15,6 +15,7 @@ import intl from 'react-intl-universal';
 import { push } from 'connected-next-router';
 import { getAllNotifications } from '@store/notification/selectors';
 import { getSelectedAccount } from '@store/account/selectors';
+import { AvatarUser } from '@components/Common/AvatarUser';
 
 export type NotificationMenuProps = {
   notifications: Notification[];
@@ -77,17 +78,6 @@ const StyledComment = styled(Comment)`
   border: 1px solid var(--boder-item-light);
   padding: 8px;
 
-  &::before {
-    content: ' ';
-    top: 6px;
-    position: absolute;
-    left: -11px;
-    width: 0;
-    height: 0;
-    border-top: 10px solid transparent;
-    border-right: 10px solid var(--color-primary);
-    border-bottom: 10px solid transparent;
-  }
 
   &:hover {
     background-color: #eceff5 !important;
@@ -102,10 +92,14 @@ const StyledComment = styled(Comment)`
     text-align: left;
     display: flex;
     flex-direction: column-reverse;
-    gap: 8px;
     .ant-comment-content-author {
       align-self: flex-start;
     }
+  }
+  .text-notification {
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    color: #1E1A1D;
   }
 `;
 
@@ -133,9 +127,8 @@ const StyledTextLeft = styled.span`
 `;
 
 const StyledTextRight = styled.span`
-  float: right;
-  font-size: 10px;
-  font-style: italic;
+  letter-spacing: 0.25px;
+  color: var(--color-primary);
 `;
 
 const StyledSwipeToDelete = styled(SwipeToDelete)`
@@ -276,6 +269,11 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                     </StyledTextRight>
                   </StyledAuthor>
                 }
+                avatar={
+                  <div style={{ cursor: 'pointer' }} onClick={() => handleRead(account, notification)}>
+                    <AvatarUser name={selectedAccount?.address} isMarginRight={false} />
+                  </div>
+                }
                 content={
                   <Space>
                     <div
@@ -284,7 +282,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                     >
                       {notification.message}
                     </div>
-                    <CloseCircleOutlined onClick={() => handleDelete(account, notification.id)} />
+                    {/* <CloseCircleOutlined onClick={() => handleDelete(account, notification.id)} /> */}
                   </Space>
                 }
               />
