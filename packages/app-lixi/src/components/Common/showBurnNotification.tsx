@@ -58,7 +58,7 @@ export const showBurnNotification = (toastType: any, burnQueue?, failQueue?) => 
           </StyledCollapse>
         ),
         duration: null,
-        icon: <FireTwoTone twoToneColor="#ff0000" />
+        icon: <FireTwoTone twoToneColor="#ffaa00" />
       });
       break;
     case 'success':

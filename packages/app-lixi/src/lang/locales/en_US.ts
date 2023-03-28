@@ -39,7 +39,7 @@ export default {
   'burn.post': 'post',
   'burn.comment': 'comment',
   'burn.token': 'token',
-  'burn.doneBurning': 'Finish burning!',
+  'burn.doneBurning': 'Burning completed!',
 
   /* 01.General */
   'general.tokens': 'Tokens',
@@ -473,7 +473,7 @@ export default {
   /* 15.Page */
   'post.createNewPage': 'Create new post',
   'post.createPost': 'Create post',
-  'post.editPost': 'Edit post',
+  'post.editPost': 'Edit unburnt post',
   'post.edited': 'Edited',
   'post.name': 'Name',
   'post.inputName': 'Please input name',
