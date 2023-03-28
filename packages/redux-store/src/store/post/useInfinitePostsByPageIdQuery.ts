@@ -19,10 +19,6 @@ export interface PostListByIdParams extends PaginationArgs {
   id?: string;
   accountId?: number;
 }
-export interface PostListBody {
-  posts: Post[];
-  next: string;
-}
 
 export function useInfinitePostsByPageIdQuery(
   params: PostListByIdParams,

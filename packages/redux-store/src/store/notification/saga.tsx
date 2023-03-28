@@ -37,6 +37,7 @@ import {
   xpiReceivedNotificationWebSocket
 } from './actions';
 import notificationApi from './api';
+import { Notification } from '@prisma/client';
 
 const getDeviceNotificationStyle = () => {
   if (isMobile) {

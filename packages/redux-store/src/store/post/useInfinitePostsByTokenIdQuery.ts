@@ -14,14 +14,10 @@ const postsAdapter = createEntityAdapter<PostQuery['post']>({
 
 const { selectAll, selectEntities, selectIds, selectTotal } = postsAdapter.getSelectors();
 
-export interface PostListByIdParams extends PaginationArgs {
+interface PostListByIdParams extends PaginationArgs {
   orderBy?: PostOrder;
   id?: string;
   accountId?: number;
-}
-export interface PostListBody {
-  posts: Post[];
-  next: string;
 }
 
 export function useInfinitePostsByTokenIdQuery(
