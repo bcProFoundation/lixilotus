@@ -3,10 +3,10 @@ import style from 'styled-components';
 import WorshipCard from './WorshipCard';
 import { Space, Tabs } from 'antd';
 import type { TabsProps } from 'antd';
-import PersonInfo from './PersonInfo';
+import TempleInfo from './TempleInfo';
 import { FireOutlined } from '@ant-design/icons';
 
-type PersonDetail = {
+type TempleDetail = {
   person: any;
   isMobile: boolean;
 };
@@ -15,7 +15,7 @@ const StyledTab = style(Tabs)`
   margin-top: 10px;
 `;
 
-const StyledPersonCard = style.div`
+const StyledTempleCard = style.div`
   width: 700px;
   display: flex;
   flex-direction: column
@@ -42,7 +42,7 @@ const StyledBottomCard = style.div`
   padding: 16px 32px;
 `;
 
-const StyledPersonCover = style.div`
+const StyledTempleCover = style.div`
   background-image: url(/images/placeholder.svg);
   background-position: center;
   background-repeat: no-repeat;
@@ -55,7 +55,7 @@ const StyledPersonCover = style.div`
   margin-top:30px;
 `;
 
-const StyledPersonAvatar: any = style.div`
+const StyledTempleAvatar: any = style.div`
   width: 150px;
   height: 200px;
   background: #D9D9D9;
@@ -67,7 +67,7 @@ const StyledPersonAvatar: any = style.div`
   box-shadow: inset 0px 0px 4px #000000;
 `;
 
-const StyledPersonName = style.p`
+const StyledTempleName = style.p`
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 800;
@@ -76,7 +76,7 @@ const StyledPersonName = style.p`
   margin-bottom: 0px;
 `;
 
-const StyledPersonDate = style.p`
+const StyledTempleDate = style.p`
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 600;
@@ -106,7 +106,7 @@ const StyledActionIcon = style.img`
   cursor: pointer;
 `;
 
-const PersonDetail = ({ person, isMobile }: PersonDetail) => {
+const TempleDetail = ({ person, isMobile }: TempleDetail) => {
   const onChange = (key: string) => {
     console.log(key);
   };
@@ -134,19 +134,19 @@ const PersonDetail = ({ person, isMobile }: PersonDetail) => {
     {
       label: 'Thông tin',
       key: 'info',
-      children: <PersonInfo />
+      children: <TempleInfo />
     }
   ];
 
   return (
     <React.Fragment>
-      <StyledPersonCard>
+      <StyledTempleCard>
         <StyledTopCard>
-          <StyledPersonCover>
-            <StyledPersonAvatar avatar="/images/placeholderAvatar.svg" />
-          </StyledPersonCover>
-          <StyledPersonName>Nguyễn Huệ</StyledPersonName>
-          <StyledPersonDate>1752 - 16 tháng 9,1972</StyledPersonDate>
+          <StyledTempleCover>
+            <StyledTempleAvatar avatar="/images/placeholderAvatar.svg" />
+          </StyledTempleCover>
+          <StyledTempleName>Nguyễn Huệ</StyledTempleName>
+          <StyledTempleDate>1752 - 16 tháng 9,1972</StyledTempleDate>
         </StyledTopCard>
         <StyledBottomCard>
           <StyledWorshipInfo>
@@ -176,9 +176,9 @@ const PersonDetail = ({ person, isMobile }: PersonDetail) => {
           </StyledActionContainer>
         </StyledBottomCard>
         <StyledTab defaultActiveKey="1" items={items} onChange={onChange} />
-      </StyledPersonCard>
+      </StyledTempleCard>
     </React.Fragment>
   );
 };
 
-export default PersonDetail;
+export default TempleDetail;

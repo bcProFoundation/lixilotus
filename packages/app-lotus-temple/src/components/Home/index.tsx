@@ -36,6 +36,31 @@ const StyledCardContainer = style.div`
    grid-template-columns: auto auto
 `;
 
+const StyledHeaderContainer = style.div`
+  display: flex;
+  width: 640px;
+  margin-top: 25px;
+`;
+
+const StyledHeader = style.div`
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+`;
+
+const StyledTextHeader = style.p`
+  margin: 0px 0px 6px 0px;
+  font-weight: 700;
+  font-size: 24px;
+  text-align: left;
+`;
+
+const StyledTextDesc = style.p`
+  margin: 0px;
+  font-size: 16px;
+  text-align: left;
+`;
+
 const Home = () => {
   const [current, setCurrent] = useState('specialDay');
   const specialDayRef = useRef(null);
@@ -57,9 +82,17 @@ const Home = () => {
   return (
     <React.Fragment>
       <StyledMenu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />
-      <h1 style={{ textAlign: 'left' }} ref={specialDayRef}>
-        Ngày đặc biệt đã đến
-      </h1>
+      <StyledHeaderContainer>
+        <StyledHeader>
+          <StyledTextHeader ref={specialDayRef}>Ngày đặc biệt đã đến</StyledTextHeader>
+          <StyledTextDesc>
+            Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat{' '}
+          </StyledTextDesc>
+        </StyledHeader>
+        <picture>
+          <img alt="lotus-calendar" src="/images/lotus-calendar.svg" width="300px" />
+        </picture>
+      </StyledHeaderContainer>
       <StyledCardContainer>
         <WorshipedPersonCard />
         <WorshipedPersonCard />
