@@ -131,6 +131,23 @@ const accountApi = {
         const { response } = err;
         throw response?.data ?? err ?? 'Network Error';
       });
+  },
+
+  getLeaderboard() {
+    const url = 'api/accounts/leaderboard';
+    return axiosClient
+      .get(url, {
+        params: {
+          limit: 5
+        }
+      })
+      .then(response => {
+        return response.data;
+      })
+      .catch(err => {
+        const { response } = err;
+        throw response?.data ?? err ?? 'Network Error';
+      });
   }
 };
 

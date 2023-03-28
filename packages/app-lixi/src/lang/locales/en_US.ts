@@ -36,6 +36,10 @@ export default {
   'text.post': 'this post',
   'text.selectXpi': 'How many XPI you want to burn for {name}?',
   'burn.selectXpi': 'Please select Xpi you want to burn for {name}',
+  'burn.post': 'post',
+  'burn.comment': 'comment',
+  'burn.token': 'token',
+  'burn.doneBurning': 'Finish burning!',
 
   /* 01.General */
   'general.tokens': 'Tokens',
@@ -185,6 +189,10 @@ export default {
   'account.reply': 'Reply',
   'account.from': 'From',
   'account.to': 'To',
+  'account.insufficientFunds': 'Insufficient funds',
+  'account.insufficientBurningFunds': 'Insufficient funds to continue burning',
+  'account.burning': 'Burning',
+  'account.burningList': 'Burning {burnForType} for {burnValue} XPI',
 
   /* 03.Lixi */
   'lixi.createLixi': 'Create new lixi',
@@ -497,6 +505,8 @@ export default {
   'post.selectAccountFirst': 'Please Select an account first before creating post',
   'post.content': 'Content',
   'post.unableToBurn': 'Unable to burn for the post',
+  'post.burning': 'Burning post',
+  'post.doneBurning': 'Done burning post!',
 
   /* 16.Token */
   'token.importToken': 'Import token',
@@ -512,13 +522,13 @@ export default {
   'token.tokenIdInvalid': 'Token ID invalid',
   'token.copyId': 'The token Id has been copied.',
   'token.unableToBurn': 'Unable to burn for the token',
-  //Show more info in token page 
-  'token.ticker': 'Ticker:',
-  'token.name': 'Name:',
-  'token.burntxpi': 'Burnt XPI:',
-  'token.id': 'ID:',
-  'token.created': 'Created:',
-  'token.comments': 'Comments:',
+  //Show more info in token page
+  'token.ticker': 'Ticker',
+  'token.name': 'Name',
+  'token.burntxpi': 'Burnt XPI',
+  'token.id': 'ID',
+  'token.created': 'Created',
+  'token.comments': 'Comments',
 
   /* 17. Comment */
   'comment.unableCreateComment': 'Unable to create comment',

@@ -64,3 +64,9 @@ export const verifyEmailSuccess = createAction<any>('account/verifyEmailSuccess'
 export const verifyEmailFailure = createAction<any>('account/verifyEmailFailure');
 export const saveEditorTextToCache = createAction<string>('posts/saveEditorToCache');
 export const deleteEditorTextFromCache = createAction('posts/deleteEditorTextFromCache');
+
+export const getLeaderboard = createAction('account/getLeaderboard');
+export const getLeaderboardSuccess = createAction<Array<Account & { totalBurned: number }>>('account/getLeaderboardSuccess');
+export const getLeaderboardFailure = createAction<string>('account/getLeaderboardFailure');
+export const setTransactionReady = createAction('account/setTransactionReady');
+export const setTransactionNotReady = createAction('account/setTransactionNotReady');
