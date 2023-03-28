@@ -98,10 +98,6 @@ const StyledComment = styled(Comment)`
   }
   .text-notification {
     /* Body Large */
-
-    font-family: 'Roboto';
-    font-style: normal;
-    font-weight: 400;
     font-size: 16px;
     /* or 150% */
 
@@ -111,13 +107,6 @@ const StyledComment = styled(Comment)`
 
     color: #1E1A1D;
 
-
-    /* Inside auto layout */
-
-    flex: none;
-    order: 0;
-    align-self: stretch;
-    flex-grow: 0;
   }
 `;
 
@@ -145,12 +134,6 @@ const StyledTextLeft = styled.span`
 `;
 
 const StyledTextRight = styled.span`
-  /* Body Medium */
-
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 14px;
   /* identical to box height, or 143% */
 
   letter-spacing: 0.25px;
@@ -158,12 +141,6 @@ const StyledTextRight = styled.span`
   /* Primary/Primary */
 
   color: #9E2A9C;
-
-  /* Inside auto layout */
-
-  flex: none;
-  order: 1;
-  flex-grow: 0;
 `;
 
 const StyledSwipeToDelete = styled(SwipeToDelete)`
