@@ -97,16 +97,9 @@ const StyledComment = styled(Comment)`
     }
   }
   .text-notification {
-    /* Body Large */
     font-size: 16px;
-    /* or 150% */
-
     letter-spacing: 0.5px;
-
-    /* Neutral/ On background, surface */
-
     color: #1E1A1D;
-
   }
 `;
 
@@ -134,13 +127,8 @@ const StyledTextLeft = styled.span`
 `;
 
 const StyledTextRight = styled.span`
-  /* identical to box height, or 143% */
-
   letter-spacing: 0.25px;
-
-  /* Primary/Primary */
-
-  color: #9E2A9C;
+  color: var(--color-primary);
 `;
 
 const StyledSwipeToDelete = styled(SwipeToDelete)`
