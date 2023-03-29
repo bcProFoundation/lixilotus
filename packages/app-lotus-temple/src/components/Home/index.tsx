@@ -103,9 +103,17 @@ const Home = () => {
         <WorshipedPersonCard />
         <WorshipedPersonCard />
       </StyledCardContainer>
-      <h1 style={{ textAlign: 'left' }} ref={trendingRef}>
-        Quan tâm nhiều trong ngày
-      </h1>
+      <StyledHeaderContainer>
+        <StyledHeader>
+          <StyledTextHeader ref={trendingRef}>Quan tâm nhiều trong ngày</StyledTextHeader>
+          <StyledTextDesc>
+            Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat{' '}
+          </StyledTextDesc>
+        </StyledHeader>
+        <picture>
+          <img alt="recent-trending" src="/images/recent-trending.svg" width="300px" />
+        </picture>
+      </StyledHeaderContainer>
       <StyledCardContainer>
         <WorshipedPersonCard />
         <WorshipedPersonCard />

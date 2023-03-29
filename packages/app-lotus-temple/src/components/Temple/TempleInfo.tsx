@@ -59,7 +59,7 @@ const TempleInfo = () => {
         </picture>
         <StyledInfoContainer>
           <StyledSubHeader>Thành tựu</StyledSubHeader>
-          <StyledText>Hoàng đế thứ hai của nhà Tây Sơn</StyledText>
+          <StyledText>Lorem ipsum dolor sit amet, consectetur adipiscing elit</StyledText>
         </StyledInfoContainer>
       </StyledSpace>
       {/* Also know as / Tên khác */}
@@ -69,10 +69,9 @@ const TempleInfo = () => {
         </picture>
         <StyledInfoContainer>
           <StyledSubHeader>Tên khác</StyledSubHeader>
-          <StyledText>Nguyễn Văn Huệ</StyledText>
-          <StyledText>Quang Trung hoàng đế</StyledText>
-          <StyledText>Hồ Thơm</StyledText>
-          <StyledText>Hoàng đế Quang Trung</StyledText>
+          <StyledText>Lorem ipsum</StyledText>
+          <StyledText>Dolor sit amet</StyledText>
+          <StyledText>Duis aute irure</StyledText>
         </StyledInfoContainer>
       </StyledSpace>
       {/* Country of citizenship / Nguyên quán */}
@@ -82,7 +81,7 @@ const TempleInfo = () => {
         </picture>
         <StyledInfoContainer>
           <StyledSubHeader>Nguyên quán</StyledSubHeader>
-          <StyledText>Việt Nam</StyledText>
+          <StyledText>Reprehenderit</StyledText>
         </StyledInfoContainer>
       </StyledSpace>
       {/* Religion / Tôn giáo */}
@@ -92,33 +91,7 @@ const TempleInfo = () => {
         </picture>
         <StyledInfoContainer>
           <StyledSubHeader>Tôn giáo</StyledSubHeader>
-          <StyledText>Việt Nam</StyledText>
-        </StyledInfoContainer>
-      </StyledSpace>
-      {/* Date of birth / Ngày sinh */}
-      <StyledSpace>
-        <picture>
-          <StyledIcon alt="birth" src="/images/birth.svg" />
-        </picture>
-        <StyledInfoContainer>
-          <StyledSubHeader>Ngày sinh</StyledSubHeader>
-          <StyledText>Việt Nam</StyledText>
-          {/* Place of birth / Nơi sinh */}
-          <StyledSubHeader>Nơi sinh</StyledSubHeader>
-          <StyledText>Việt Nam</StyledText>
-        </StyledInfoContainer>
-      </StyledSpace>
-      {/* Date of death / Ngày an nghỉ */}
-      <StyledSpace>
-        <picture>
-          <StyledIcon alt="tomb" src="/images/tomb.svg" />
-        </picture>
-        <StyledInfoContainer>
-          <StyledSubHeader>Ngày an nghỉ</StyledSubHeader>
-          <StyledText>Việt Nam</StyledText>
-          {/* Place of burial / Nơi an nghỉ */}
-          <StyledSubHeader>Nơi an nghỉ</StyledSubHeader>
-          <StyledText>Việt Nam</StyledText>
+          <StyledText>Occaecat</StyledText>
         </StyledInfoContainer>
       </StyledSpace>
     </StyledItem>

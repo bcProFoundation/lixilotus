@@ -56,11 +56,12 @@ const StyledTempleCover = style.div`
 `;
 
 const StyledTempleAvatar: any = style.div`
-  width: 150px;
+  width: 250px;
   height: 200px;
   background: #D9D9D9;
-  border-radius: 40px;
+  border-radius: 30px;
   background-image: url(${(props: any) => props.avatar});
+  background-size: 250px;
   background-position: center;
   background-repeat: no-repeat;
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
@@ -73,7 +74,7 @@ const StyledTempleName = style.p`
   font-weight: 800;
   font-size: 24px;
   line-height: 36px;
-  margin-bottom: 0px;
+  margin-bottom: 10px;
 `;
 
 const StyledTempleDate = style.p`
@@ -103,7 +104,12 @@ const StyledText = style.span`
 `;
 
 const StyledActionIcon = style.img`
+  transition: all 0.2s ease-in-out;
   cursor: pointer;
+  
+  &:hover {
+    transform: scale(1.2);
+  }
 `;
 
 const TempleDetail = ({ person, isMobile }: TempleDetail) => {
@@ -143,10 +149,10 @@ const TempleDetail = ({ person, isMobile }: TempleDetail) => {
       <StyledTempleCard>
         <StyledTopCard>
           <StyledTempleCover>
-            <StyledTempleAvatar avatar="/images/placeholderAvatar.svg" />
+            <StyledTempleAvatar avatar="/images/lotus-temple-placeholder.jpg" />
           </StyledTempleCover>
-          <StyledTempleName>Nguyễn Huệ</StyledTempleName>
-          <StyledTempleDate>1752 - 16 tháng 9,1972</StyledTempleDate>
+          <StyledTempleName>Lotus Temple</StyledTempleName>
+          {/* <StyledTempleDate>1752 - 16 tháng 9,1972</StyledTempleDate> */}
         </StyledTopCard>
         <StyledBottomCard>
           <StyledWorshipInfo>

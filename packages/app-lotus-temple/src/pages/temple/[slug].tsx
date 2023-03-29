@@ -7,7 +7,7 @@ import { END } from 'redux-saga';
 import { getSelectorsByUserAgent } from 'react-device-detect';
 import { useWorshipedPersonQuery } from '@store/worship/worshipedPerson.generated';
 import MainLayout from '@components/Layout/MainLayout';
-import PersonDetail from '@components/WorshipedPerson/PersonDetail';
+import TempleDetail from '@components/Temple/TempleDetail';
 
 const TempleDetailPage = props => {
   const { templeId, isMobile } = props;
@@ -41,7 +41,7 @@ const TempleDetailPage = props => {
     //     </>
     //   )}
     // </>
-    <PersonDetail person={'5'} isMobile={isMobile} />
+    <TempleDetail person={'5'} isMobile={isMobile} />
   );
 };
 

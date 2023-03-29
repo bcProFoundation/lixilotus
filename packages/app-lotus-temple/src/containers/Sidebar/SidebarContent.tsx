@@ -213,6 +213,25 @@ const StyledLogoText = styled.p`
 const StyledText = styled.p`
   font-size: 16px;
   margin-bottom: 0px;
+  font-weight: bold;
+`;
+
+const StyledContainer = styled.div`
+  width: 100%;
+`;
+
+const StyledHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 6px;
+`;
+
+const StyledHeaderText = styled.p`
+  margin: 0px;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 32px;
 `;
 
 const SidebarContent = () => {
@@ -278,14 +297,14 @@ const SidebarContent = () => {
             <StyledLogoText>Lotus Temple</StyledLogoText>
           </StyledWrapper>
           {selectedAccount && (
-            <StyledWrapper style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+            <StyledWrapper style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '10px' }}>
               <Space>
                 <AvatarUser name={selectedAccount.name} />
                 <StyledText>{selectedAccount.name}</StyledText>
               </Space>
-              <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+              <div style={{ display: 'flex', alignItems: 'center', width: '100%', gap: '7px' }}>
                 <picture>
-                  <img alt="walletIcon" src="/images/ico-account.svg" />
+                  <img alt="wallet-placeholder" src="/images/wallet-placeholder.svg" />
                 </picture>
                 <Space direction="vertical" style={{ width: '100%' }}>
                   <StyledText style={{ textAlign: 'left' }}>Tài khoản của bạn</StyledText>
@@ -296,32 +315,34 @@ const SidebarContent = () => {
                         <CopyOutlined />
                       </div>
                     </CopyToClipboard>
-                    <StyledText>
+                    <p style={{ margin: 0 }}>
                       {fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis)} XPI
-                    </StyledText>
+                    </p>
                   </div>
                 </Space>
               </div>
             </StyledWrapper>
           )}
           <StyledWrapper style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-            <div style={{ width: '100%' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <h1>Bạn thờ phượng</h1>
-                <p style={{ marginBottom: '0' }}>Xem tất cả</p>
-              </div>
+            <StyledContainer>
+              <StyledHeader>
+                <StyledHeaderText>Bạn thờ</StyledHeaderText>
+                <p style={{ marginBottom: '0', color: '#004B74' }}>Xem tất cả</p>
+              </StyledHeader>
               <SidebarListItem />
               <SidebarListItem />
               <SidebarListItem />
-            </div>
+            </StyledContainer>
           </StyledWrapper>
           <StyledWrapper style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-            <div style={{ width: '100%' }}>
-              <h1 style={{ textAlign: 'left' }}>Thăm viếng gần đây</h1>
+            <StyledContainer>
+              <StyledHeader>
+                <StyledHeaderText>Thăm viếng gần đây</StyledHeaderText>
+              </StyledHeader>
               <SidebarListItem />
               <SidebarListItem />
               <SidebarListItem />
-            </div>
+            </StyledContainer>
           </StyledWrapper>
         </div>
       </ContainerAccess>
