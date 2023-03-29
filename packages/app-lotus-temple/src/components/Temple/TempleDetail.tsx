@@ -108,7 +108,11 @@ const StyledActionIcon = style.img`
   cursor: pointer;
   
   &:hover {
-    transform: scale(1.2);
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.9);
   }
 `;
 
@@ -171,10 +175,10 @@ const TempleDetail = ({ person, isMobile }: TempleDetail) => {
           </StyledWorshipInfo>
           <StyledActionContainer>
             <picture>
-              <StyledActionIcon alt="candle" src="/images/candle.svg" />
+              <StyledActionIcon alt="incense" src="/images/incense.svg" />
             </picture>
             <picture>
-              <StyledActionIcon alt="incense-box" src="/images/incense-box.svg" />
+              <StyledActionIcon alt="candle" src="/images/candle.svg" />
             </picture>
             <picture>
               <StyledActionIcon alt="lotus-burn" src="/images/lotus-burn.svg" />

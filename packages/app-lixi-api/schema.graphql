@@ -290,6 +290,7 @@ type Query {
   allPostsByTokenId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
   allPostsByUserId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
   allTokens(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: TokenOrder, query: String, skip: Int): TokenConnection!
+  allWorshipedByPersonId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: WorshipedPersonOrder, skip: Int): WorshipedPersonConnection!
   allWorshipedPerson(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: WorshipedPersonOrder, query: String, skip: Int): WorshipedPersonConnection!
   allWorshipedPersonSpecialDate(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: WorshipedPersonOrder, skip: Int): WorshipedPersonConnection!
   comment(id: String!): Comment!

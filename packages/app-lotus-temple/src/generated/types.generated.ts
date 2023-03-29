@@ -324,6 +324,7 @@ export type Query = {
   allPostsByTokenId: PostConnection;
   allPostsByUserId: PostConnection;
   allTokens: TokenConnection;
+  allWorshipedByPersonId: WorshipedPersonConnection;
   allWorshipedPerson: WorshipedPersonConnection;
   allWorshipedPersonSpecialDate: WorshipedPersonConnection;
   comment: Comment;
@@ -427,6 +428,17 @@ export type QueryAllTokensArgs = {
   minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<TokenOrder>;
   query?: InputMaybe<Scalars['String']>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryAllWorshipedByPersonIdArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  id?: InputMaybe<Scalars['String']>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<WorshipedPersonOrder>;
   skip?: InputMaybe<Scalars['Int']>;
 };
 

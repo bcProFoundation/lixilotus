@@ -61,7 +61,43 @@ export class WorshipResolver {
           orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
           ...args
         }),
-      () => this.prisma.post.count({}),
+      () => this.prisma.worshipedPerson.count({}),
+      { first, last, before, after }
+    );
+    return result;
+  }
+
+  @Query(() => WorshipedPersonConnection)
+  async allWorshipedByPersonId(
+    @Args() { after, before, first, last }: PaginationArgs,
+    @Args({ name: 'id', type: () => String, nullable: true }) id: string,
+    @Args({
+      name: 'orderBy',
+      type: () => WorshipedPersonOrder,
+      nullable: true
+    })
+    orderBy: WorshipedPersonOrder
+  ) {
+    const result = await findManyCursorConnection(
+      args =>
+        this.prisma.worship.findMany({
+          include: { account: true, worshipedPerson: true },
+          where: {
+            worshipedPerson: {
+              id: id
+            }
+          },
+          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+          ...args
+        }),
+      () =>
+        this.prisma.worship.count({
+          where: {
+            worshipedPerson: {
+              id: id
+            }
+          }
+        }),
       { first, last, before, after }
     );
     return result;
@@ -161,11 +197,24 @@ export class WorshipResolver {
   @Mutation(() => WorshipedPerson)
   async createWorship(@PostAccountEntity() account: Account, @Args('data') data: CreateWorshipInput) {
     if (!account) {
-      const couldNotFindAccount = await this.i18n.t('post.messages.couldNotFindAccount');
+      const couldNotFindAccount = this.i18n.t('post.messages.couldNotFindAccount');
       throw new Error(couldNotFindAccount);
     }
 
     const { worshipedPersonId, worshipedAmount, location, longitude, latitude } = data;
+
+    const person = await this.prisma.worshipedPerson.findFirst({
+      where: {
+        id: worshipedPersonId
+      }
+    });
+
+    const newTotalAmount = person?.totalWorshipAmount ? person?.totalWorshipAmount + worshipedAmount : worshipedAmount;
+
+    if (!person) {
+      const couldNotFindPerson = this.i18n.t('worship.messages.couldNotFindPerson');
+      throw new Error(couldNotFindPerson);
+    }
 
     const personToWorship = {
       data: {
@@ -180,13 +229,22 @@ export class WorshipResolver {
           }
         },
         worshipedAmount: worshipedAmount,
-        location: location,
-        latitude: latitude,
-        longitude: longitude
+        location: location || undefined,
+        latitude: latitude || undefined,
+        longitude: longitude || undefined
       }
     };
     const worshipedPerson = await this.prisma.worship.create({
       ...personToWorship
+    });
+
+    await this.prisma.worshipedPerson.update({
+      where: {
+        id: person.id
+      },
+      data: {
+        totalWorshipAmount: newTotalAmount
+      }
     });
 
     pubSub.publish('personWorshiped', { personWorshiped: worshipedPerson });

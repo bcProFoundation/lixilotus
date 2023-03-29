@@ -28,6 +28,21 @@ const enhancedApi = api.enhanceEndpoints({
     WorshipedPerson: {
       providesTags: (result, error, arg) => ['WorshipedPerson']
     },
+    allWorshipedByPersonId: {
+      providesTags: (result, error, arg) => ['WorshipedPerson'],
+      serializeQueryArgs({ queryArgs }) {
+        if (queryArgs) {
+          const { orderBy, id, ...otherArgs } = queryArgs;
+          return { orderBy, id };
+        }
+        return { queryArgs };
+      },
+      merge(currentCacheData, responseData) {
+        currentCacheData.allWorshipedByPersonId.edges.push(...responseData.allWorshipedByPersonId.edges);
+        currentCacheData.allWorshipedByPersonId.pageInfo = responseData.allWorshipedByPersonId.pageInfo;
+        currentCacheData.allWorshipedByPersonId.totalCount = responseData.allWorshipedByPersonId.totalCount;
+      }
+    },
     createWorship: {},
     createWorshipedPerson: {}
   }

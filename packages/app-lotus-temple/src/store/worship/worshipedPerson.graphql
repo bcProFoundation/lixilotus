@@ -97,6 +97,37 @@ query WorshipedPeopleSpecialDate(
   }
 }
 
+query allWorshipedByPersonId(
+  $after: String
+  $before: String
+  $first: Int = 20
+  $last: Int
+  $orderBy: WorshipedPersonOrder
+  $id: String
+  $skip: Int
+) {
+  allWorshipedByPersonId(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    id: $id
+    skip: $skip
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...WorshipedPersonFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+
 mutation createWorshipedPerson($input: CreateWorshipedPersonInput!) {
   createWorshipedPerson(data: $input) {
     ...WorshipedPersonFields
