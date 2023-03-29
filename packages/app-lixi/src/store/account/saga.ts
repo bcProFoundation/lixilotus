@@ -68,7 +68,10 @@ import {
   silentLoginSuccess,
   verifyEmail,
   verifyEmailFailure,
-  verifyEmailSuccess
+  verifyEmailSuccess,
+  getLeaderboard,
+  getLeaderboardSuccess,
+  getLeaderboardFailure
 } from './actions';
 import { getAccountById, getSelectedAccount } from './selectors';
 import { activateWallet } from '@store/wallet';
@@ -105,6 +108,33 @@ function* generateAccountSaga(action: PayloadAction) {
   };
 
   yield put(postAccount(account));
+}
+
+function* getLeaderboardSaga(action: PayloadAction<number>) {
+  try {
+    yield put(showLoading(getLeaderboard.type));
+    const data = yield call(accountApi.getLeaderboard);
+    yield put(getLeaderboardSuccess(data));
+  } catch (err) {
+    const message = (err as Error).message ?? intl.get('account.couldNotFetchAccount');
+    yield put(getLeaderboardFailure(message));
+  }
+}
+
+function* getLeaderboardSuccessSaga(action: any) {
+  yield put(hideLoading(getLeaderboard.type));
+}
+
+function* getLeaderboardFailureSaga(action: PayloadAction<string>) {
+  const message = action.payload ?? intl.get('account.unableGetAccountFromServer');
+  yield put(
+    showToast('error', {
+      message: 'Error',
+      description: message,
+      duration: 5
+    })
+  );
+  yield put(hideLoading(getLeaderboard.type));
 }
 
 function* getAccountSaga(action: PayloadAction<number>) {
@@ -711,6 +741,18 @@ function* watchVerifyEmailFailure() {
   yield takeLatest(verifyEmailFailure.type, verifyEmailFailureSaga);
 }
 
+function* watchTopFive() {
+  yield takeLatest(getLeaderboard.type, getLeaderboardSaga);
+}
+
+function* watchTopFiveSuccess() {
+  yield takeLatest(getLeaderboardSuccess.type, getLeaderboardSuccessSaga);
+}
+
+function* watchTopFiveFailure() {
+  yield takeLatest(getLeaderboardFailure.type, getLeaderboardFailureSaga);
+}
+
 function* silentLoginSaga(action: PayloadAction<string>) {
   const mnemonic = action.payload;
   try {
@@ -789,6 +831,9 @@ export default function* accountSaga() {
     fork(watchloginViaEmailFailure),
     fork(watchVerifyEmailEmail),
     fork(watchVerifyEmailSuccess),
-    fork(watchVerifyEmailFailure)
+    fork(watchVerifyEmailFailure),
+    fork(watchTopFive),
+    fork(watchTopFiveSuccess),
+    fork(watchTopFiveFailure)
   ]);
 }
