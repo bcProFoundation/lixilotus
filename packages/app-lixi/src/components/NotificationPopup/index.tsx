@@ -2,16 +2,20 @@ import React from 'react';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import { Space, Popover, Menu } from 'antd';
 import { Comment } from '@ant-design/compatible';
-import { useAppDispatch } from '@store/hooks';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import styled from 'styled-components';
 import { Account, NotificationDto as Notification } from '@bcpros/lixi-models';
 import SwipeToDelete from 'react-swipe-to-delete-ios';
 import moment from 'moment';
 import { isMobile } from 'react-device-detect';
-import { deleteNotification, readNotification } from '@store/notification/actions';
+import { deleteNotification, fetchNotifications, readAllNotifications, readNotification } from '@store/notification/actions';
 import { downloadExportedLixi } from '@store/lixi/actions';
 import { useRouter } from 'next/router';
 import intl from 'react-intl-universal';
+import { push } from 'connected-next-router';
+import { getAllNotifications } from '@store/notification/selectors';
+import { getSelectedAccount } from '@store/account/selectors';
+import { AvatarUser } from '@components/Common/AvatarUser';
 
 export type NotificationMenuProps = {
   notifications: Notification[];
@@ -74,17 +78,6 @@ const StyledComment = styled(Comment)`
   border: 1px solid var(--boder-item-light);
   padding: 8px;
 
-  &::before {
-    content: ' ';
-    top: 6px;
-    position: absolute;
-    left: -11px;
-    width: 0;
-    height: 0;
-    border-top: 10px solid transparent;
-    border-right: 10px solid var(--color-primary);
-    border-bottom: 10px solid transparent;
-  }
 
   &:hover {
     background-color: #eceff5 !important;
@@ -99,10 +92,14 @@ const StyledComment = styled(Comment)`
     text-align: left;
     display: flex;
     flex-direction: column-reverse;
-    gap: 8px;
     .ant-comment-content-author {
       align-self: flex-start;
     }
+  }
+  .text-notification {
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    color: #1E1A1D;
   }
 `;
 
@@ -130,9 +127,8 @@ const StyledTextLeft = styled.span`
 `;
 
 const StyledTextRight = styled.span`
-  float: right;
-  font-size: 10px;
-  font-style: italic;
+  letter-spacing: 0.25px;
+  color: var(--color-primary);
 `;
 
 const StyledSwipeToDelete = styled(SwipeToDelete)`
@@ -180,18 +176,30 @@ const StyledReadAll = styled.div`
 const NotificationPopup = (notifications: Notification[], account: Account) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const selectedAccount = useAppSelector(getSelectedAccount);
 
   const handleDelete = (account: Account, notificationId: string) => {
     dispatch(deleteNotification({ mnemonichHash: account.mnemonicHash, notificationId }));
   };
 
   const handleRead = (account: Account, notification: Notification) => {
+    notification.url && dispatch(push(`${notification.url}`));
     dispatch(readNotification({ mnemonichHash: account.mnemonicHash, notificationId: notification.id }));
     if (notification.notificationTypeId === 3) {
       const { parentId, mnemonicHash, fileName } = notification.additionalData as any;
       dispatch(downloadExportedLixi({ lixiId: parentId, mnemonicHash, fileName }));
     }
   };
+
+  const handleReadAll = () => {
+    dispatch(readAllNotifications());
+    dispatch(
+      fetchNotifications({
+        accountId: selectedAccount.id,
+        mnemonichHash: selectedAccount.mnemonicHash
+      })
+    );
+  }
 
   const menuItems = [{ label: 'All', key: 'all' }];
 
@@ -213,7 +221,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
           // onClick={onClickMenu}
           items={menuItems}
         ></Menu>
-        <StyledReadAll onClick={() => router.push('/notifications')}>{intl.get('notification.readAll')}</StyledReadAll>
+        <StyledReadAll onClick={() => handleReadAll()}>{intl.get('notification.readAll')}</StyledReadAll>
       </StyledHeader>
       {notifications &&
         notifications.length > 0 &&
@@ -261,6 +269,11 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                     </StyledTextRight>
                   </StyledAuthor>
                 }
+                avatar={
+                  <div style={{ cursor: 'pointer' }} onClick={() => handleRead(account, notification)}>
+                    <AvatarUser name={selectedAccount?.address} isMarginRight={false} />
+                  </div>
+                }
                 content={
                   <Space>
                     <div
@@ -269,7 +282,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                     >
                       {notification.message}
                     </div>
-                    <CloseCircleOutlined onClick={() => handleDelete(account, notification.id)} />
+                    {/* <CloseCircleOutlined onClick={() => handleDelete(account, notification.id)} /> */}
                   </Space>
                 }
               />

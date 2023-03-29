@@ -1,5 +1,6 @@
-import { NotificationDto as Notification } from '@bcpros/lixi-models';
+import { NotificationDto as Notification, PaginationResult } from '@bcpros/lixi-models';
 import axiosClient from '@utils/axiosClient';
+import { readAllNotifications } from './actions';
 
 const notificationApi = {
   getByAccountId(id: number, mnemonicHash?: string): Promise<Notification[]> {
@@ -7,11 +8,11 @@ const notificationApi = {
 
     const config = mnemonicHash
       ? {
-          headers: {
-            // 'Mnemonic-Hash': mnemonicHash
-          },
-          withCredentials: true
-        }
+        headers: {
+          // 'Mnemonic-Hash': mnemonicHash
+        },
+        withCredentials: true
+      }
       : {};
 
     return axiosClient
@@ -28,16 +29,16 @@ const notificationApi = {
     const url = `/api/notifications/${notificationId}`;
     const config = mnemonicHash
       ? {
-          headers: {
-            // 'Mnemonic-Hash': mnemonicHash
-          },
-          withCredentials: true
-        }
+        headers: {
+          // 'Mnemonic-Hash': mnemonicHash
+        },
+        withCredentials: true
+      }
       : {};
 
     return axiosClient
       .delete(url, config)
-      .then(response => {})
+      .then(response => { })
       .catch(err => {
         const { response } = err;
         throw response.data;
@@ -47,15 +48,28 @@ const notificationApi = {
     const url = `/api/notifications/${notificationId}`;
     const config = mnemonicHash
       ? {
-          headers: {
-            // 'Mnemonic-Hash': mnemonicHash
-          },
-          withCredentials: true
-        }
+        headers: {
+          // 'Mnemonic-Hash': mnemonicHash
+        },
+        withCredentials: true
+      }
       : {};
 
     return axiosClient
       .patch(url, {}, config)
+      .then(response => {
+        return response.data as Notification;
+      })
+      .catch(err => {
+        const { response } = err;
+        throw response.data;
+      });
+  },
+  readAllNotifications(): Promise<any> {
+    const url = `/api/notifications/readAll`;
+
+    return axiosClient
+      .patch(url)
       .then(response => {
         return response.data as Notification;
       })

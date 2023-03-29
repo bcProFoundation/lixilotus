@@ -34,7 +34,7 @@ async function main() {
     notificationTypeTranslations.map(notificationTypeTranslation =>
       prisma.notificationTypeTranslation.upsert({
         where: { id: notificationTypeTranslation.id },
-        update: {},
+        update: { ...notificationTypeTranslation },
         create: { ...notificationTypeTranslation }
       })
     )

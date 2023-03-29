@@ -3,6 +3,7 @@
     "noPermission": "No permission to get the notification.",
     "unableGetNotification": "Unable to get the notification.",
     "noReadPermission": "No permission to read the notification.",
-    "noDeletePermission": "No permission to delete the notification."
+    "noDeletePermission": "No permission to delete the notification.",
+    "unableCreateNotification": "Unable to create the notification."
   }
 }

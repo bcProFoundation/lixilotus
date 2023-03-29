@@ -48,9 +48,6 @@ export class NotificationController {
         }
       });
 
-      this.logger.log(`Notification Recipient Id: ${notification?.recipientId}`);
-      this.logger.log(`Account Id: ${account?.id}`);
-
       // Check if the user have sufficient permission to get the notification
       if (notification?.recipientId !== account?.id) {
         const noPermission = await i18n.t('notification.messages.noPermission');
@@ -165,6 +162,37 @@ export class NotificationController {
       });
 
       return resultNotification;
+    } catch (err: unknown) {
+      if (err instanceof VError) {
+        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      } else {
+        const unableGetNotification = await i18n.t('notification.messages.unableGetNotification');
+        const error = new VError.WError(err as Error, unableGetNotification);
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  }
+
+  @Patch('readAll')
+  @UseGuards(JwtAuthGuard)
+  async readAllNotifications(
+    @Request() req: FastifyRequest,
+    @I18n() i18n: I18nContext
+  ): Promise<any> {
+    try {
+      const account: Account = (req as any).account;
+
+      // Set readAt to now
+      const notifications = await this.prisma.notification.updateMany({
+        where: {
+          recipientId: account.id
+        },
+        data: {
+          readAt: new Date()
+        }
+      });
+
+      return notifications ?? [];
     } catch (err: unknown) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
