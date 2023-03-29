@@ -248,23 +248,26 @@ export class BurnController {
       
 
       // create Notifications Burn
-      const createNotifBurn = {
+      const calcTip = await this.notificationService.calcTip(post, recipientPostAccount, command)
+      const createNotifBurnAndTip = {
         senderId: sender.id,
         recipientId: post?.postAccountId as number,
-        notificationTypeId: NOTIFICATION_TYPES.BURN,
+        notificationTypeId: calcTip != 0 ? NOTIFICATION_TYPES.RECEIVE_BURN_TIP : NOTIFICATION_TYPES.BURN,
         level: NotificationLevel.INFO,
         url: '/post/' + post?.id,
         additionalData: {
           senderName: sender.name,
-          BurnForType: burnForTypeString,          
+          burnType: command.burnType == BurnType.Up ? 'upvoted' : 'downvoted',
+          burnForType: burnForTypeString.toLowerCase(),          
           xpiBurn: command.burnValue,
+          xpiTip: calcTip
         }
       };
-      createNotifBurn.senderId !== createNotifBurn.recipientId && await this.notificationService.saveAndDispatchNotification(recipientPostAccount.mnemonicHash, createNotifBurn);
+      createNotifBurnAndTip.senderId !== createNotifBurnAndTip.recipientId && await this.notificationService.saveAndDispatchNotification(recipientPostAccount.mnemonicHash, createNotifBurnAndTip);
 
       // create Notifications Fee
       let recipientPageAccount;
-      if (post?.pageId) {
+      if (post?.pageId && post.page?.pageAccountId != recipientPostAccount.id) {
         const page = await this.prisma.page.findFirst({
           where: {
             id: post.pageId
@@ -276,42 +279,25 @@ export class BurnController {
             id: _.toSafeInteger(page?.pageAccountId)
           }
         })
-      }
 
-      const createNotifBurnFee = {
-        senderId: sender.id,
-        recipientId: post?.pageId ? post.page?.pageAccountId as number : post?.postAccountId,
-        notificationTypeId: NOTIFICATION_TYPES.RECEIVE_BURN_FEE,
-        level: NotificationLevel.INFO,
-        url: '/post/' + post?.id,
-        additionalData: {
-          senderName: sender.name,
-          pageName: post?.page?.name,
-          BurnForType: burnForTypeString,
-          xpiBurn: command.burnValue,
-          xpiFee: fee
-        }
-      };
-      createNotifBurnFee.senderId !== createNotifBurnFee.recipientId && await this.notificationService.saveAndDispatchNotification(post?.pageId ? recipientPageAccount?.mnemonicHash as string : recipientPostAccount?.mnemonicHash ,createNotifBurnFee);
-
-      // create Notifications Tip
-      if (command.burnType == BurnType.Up) {
-        const createNotifBurnTip = {
+        const createNotifBurnFee = {
           senderId: sender.id,
-          recipientId: command.burnForType == BurnForType.Comment ? Number(commentAccountId): Number(post.id),
-          notificationTypeId: NOTIFICATION_TYPES.RECEIVE_BURN_TIP as number,
+          recipientId: post?.pageId ? post.page?.pageAccountId as number : post?.postAccountId,
+          notificationTypeId: NOTIFICATION_TYPES.RECEIVE_BURN_FEE,
           level: NotificationLevel.INFO,
           url: '/post/' + post?.id,
           additionalData: {
             senderName: sender.name,
+            pageName: post?.page?.name,
+            burnType: command.burnType == BurnType.Up ? 'upvoted' : 'downvoted',
             BurnForType: burnForTypeString,
             xpiBurn: command.burnValue,
-            xpiTip: tip
+            xpiFee: fee
           }
         };
-        createNotifBurnTip.senderId !== createNotifBurnTip.recipientId && await this.notificationService.saveAndDispatchNotification(command.burnForType == BurnForType.Comment ? commentAccount?.mnemonicHash as string : recipientPostAccount.mnemonicHash, createNotifBurnTip);
+        createNotifBurnFee.senderId !== createNotifBurnFee.recipientId && await this.notificationService.saveAndDispatchNotification(post?.pageId ? recipientPageAccount?.mnemonicHash as string : recipientPostAccount?.mnemonicHash ,createNotifBurnFee);  
       }
-
+      
       const result: Burn = {
         ...savedBurn,
         burnType: savedBurn.burnType ? BurnType.Up : BurnType.Down,

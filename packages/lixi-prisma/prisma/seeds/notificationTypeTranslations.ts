@@ -61,7 +61,7 @@ export const notificationTypeTranslations = [
     notificationTypeId: 5,
     language: 'en',
     isDefault: true,
-    template: '{{senderName}} created a new post in your {{pageName}} page.'
+    template: '{{senderName}} posted on your {{pageName}} page.'
   },
   {
     id: 10,
@@ -76,7 +76,7 @@ export const notificationTypeTranslations = [
     notificationTypeId: 6,
     language: 'en',
     isDefault: true,
-    template: '{{senderName}} created a new comment in your post.'
+    template: '{{senderName}} commented on your post.'
   },
   {
     id: 12,
@@ -91,14 +91,14 @@ export const notificationTypeTranslations = [
     notificationTypeId: 7,
     language: 'en',
     isDefault: true,
-    template: '{{senderName}} have given {{xpiGive}} XPI to you.'
+    template: '{{senderName}} gave you {{xpiGive}} XPI.' 
   },
   {
     id: 14,
     notificationTypeId: 7,
     language: 'vi',
     isDefault: false,
-    template: '{{senderName}} đã tặng cho bạn {{xpiGive}} XPI cho bạn.'
+    template: '{{senderName}} đã tặng cho bạn {{xpiGive}} XPI.'
   },
   // burn
   {
@@ -106,58 +106,43 @@ export const notificationTypeTranslations = [
     notificationTypeId: 8,
     language: 'en',
     isDefault: true,
-    template: '{{senderName}} have burn for your {{burnForType}} {{xpiBurn}} XPI.'
+    template: '{{senderName}} {{burnType}} {{xpiBurn}} XPI on your {{burnForType}}.'
   },
   {
     id: 16,
     notificationTypeId: 8,
     language: 'vi',
     isDefault: false,
-    template: '{{senderName}} đã đốt cho {{burnForType}} của bạn {{xpiBurn}} XPI.'
+    template: '{{senderName}} {{burnType}} {{xpiBurn}} XPI cho {{burnForType}} của bạn.'
   },
-  // receive-burn-tip
+  // burn-tip
   {
     id: 17,
     notificationTypeId: 9,
     language: 'en',
     isDefault: true,
-    template: 'You get {{xpiTip}} XPI tip from {{senderName}} burned {{xpiBurn}} for your {{burnForType}}.'
+    template: '{{senderName}} {{burnType}} {{xpiBurn}} XPI on your {{burnForType}}.  You received {{xpiTip}} XPI.'
   },
   {
     id: 18,
     notificationTypeId: 9,
     language: 'vi',
     isDefault: false,
-    template: 'Bạn nhận được {{xpiTip}} XPI tiền bo từ {{senderName}} đã đốt {{xpiBurn}} cho {{burnForType}} của bạn.'
+    template: '{{senderName}} {{burnType}} {{xpiBurn}} XPI cho {{burnForType}} của bạn. Bạn được nhận {{xpiTip}} XPI.'
   },
-  // receive-burn-fee
+  // burn-fee
   {
     id: 19,
     notificationTypeId: 10,
     language: 'en',
     isDefault: true,
-    template: 'You get {{xpiFee}} XPI fee from {{senderName}} burned {{xpiBurn}} for {{burnForType}} on your {{pageName}} page.'
+    template: '{{senderName}} {{burnType}} {{xpiBurn}} XPI for {{burnForType}} on your {{pageName}} page. You received {{xpiFee}} XPI fee.'
   },
   {
     id: 20,
     notificationTypeId: 10,
     language: 'vi',
     isDefault: false,
-    template: 'Bạn nhận được {{xpiFee}} XPI phí từ {{senderName}} đã đốt {{xpiBurn}} XPI cho {{burnForType}} trên trang {{pageName}} của bạn.'
-  },
-  // receive-xpi
-  {
-    id: 21,
-    notificationTypeId: 11,
-    language: 'en',
-    isDefault: true,
-    template: '{{senderName}} sent you {{xpiValue}} XPI.'
-  },
-  {
-    id: 22,
-    notificationTypeId: 11,
-    language: 'vi',
-    isDefault: false,
-    template: '{{senderName}} đã gửi {{xpiValue}} XPI cho bạn'
-  },
+    template: '{{senderName}} {{burnType}} {{xpiBurn}} XPI cho {{burnForType}} trong trang {{pageName}} của bạn. Bạn được nhận {{xpiFee}} XPI tiền phí.'
+  }
 ];

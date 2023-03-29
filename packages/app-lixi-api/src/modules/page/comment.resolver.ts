@@ -144,8 +144,8 @@ export class CommentResolver {
           throw new VError(accountNotExistMessage);
         }
 
-        let commentGive;
-        const commentNormal = {
+        let commentToGiveData;
+        const commentToPostData = {
           senderName: account.name
         }
 
@@ -172,7 +172,7 @@ export class CommentResolver {
             commentId: createdComment.id
           };
 
-          commentGive = {
+          commentToGiveData = {
             senderName: account.name,
             xpiGive: value
           }
@@ -186,7 +186,7 @@ export class CommentResolver {
           notificationTypeId: tipHex ? NOTIFICATION_TYPES.COMMENT_TO_GIVE : NOTIFICATION_TYPES.COMMENT_ON_POST,
           level: NotificationLevel.INFO,
           url: '/post/' + post?.id,
-          additionalData: tipHex ? commentGive : commentNormal
+          additionalData: tipHex ? commentToGiveData : commentToPostData
         };
         createNotif.senderId !== createNotif.recipientId && await this.notificationService.saveAndDispatchNotification(recipient?.mnemonicHash, createNotif);
 
