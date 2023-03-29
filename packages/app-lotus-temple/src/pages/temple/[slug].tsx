@@ -41,7 +41,7 @@ const TempleDetailPage = props => {
     //     </>
     //   )}
     // </>
-    <TempleDetail person={'5'} isMobile={isMobile} />
+    <TempleDetail temple={'5'} isMobile={isMobile} />
   );
 };
 

@@ -415,6 +415,7 @@ type WorshipedPerson {
   name: String!
   quote: String
   state: State
+  totalWorshipAmount: Int
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!

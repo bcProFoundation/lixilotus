@@ -21,6 +21,8 @@ export type WorshipedPersonFieldsFragment = {
   id: string;
   name: string;
   quote?: string | null;
+  wikiDataId?: string | null;
+  totalWorshipAmount?: number | null;
   dateOfBirth?: any | null;
   dateOfDeath?: any | null;
   createdAt: any;
@@ -28,7 +30,17 @@ export type WorshipedPersonFieldsFragment = {
   avatar?: {
     __typename?: 'UploadDetail';
     id: string;
-    upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+    upload: {
+      __typename?: 'Upload';
+      id: string;
+      sha: string;
+      bucket?: string | null;
+      width?: string | null;
+      height?: string | null;
+      sha800?: string | null;
+      sha320?: string | null;
+      sha40?: string | null;
+    };
   } | null;
   country?: { __typename?: 'Country'; id: string; name: string } | null;
   state?: { __typename?: 'State'; id: string; name: string } | null;
@@ -46,6 +58,8 @@ export type WorshipedPersonQuery = {
     id: string;
     name: string;
     quote?: string | null;
+    wikiDataId?: string | null;
+    totalWorshipAmount?: number | null;
     dateOfBirth?: any | null;
     dateOfDeath?: any | null;
     createdAt: any;
@@ -53,7 +67,17 @@ export type WorshipedPersonQuery = {
     avatar?: {
       __typename?: 'UploadDetail';
       id: string;
-      upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+      upload: {
+        __typename?: 'Upload';
+        id: string;
+        sha: string;
+        bucket?: string | null;
+        width?: string | null;
+        height?: string | null;
+        sha800?: string | null;
+        sha320?: string | null;
+        sha40?: string | null;
+      };
     } | null;
     country?: { __typename?: 'Country'; id: string; name: string } | null;
     state?: { __typename?: 'State'; id: string; name: string } | null;
@@ -84,6 +108,8 @@ export type WorshipedPeopleQuery = {
         id: string;
         name: string;
         quote?: string | null;
+        wikiDataId?: string | null;
+        totalWorshipAmount?: number | null;
         dateOfBirth?: any | null;
         dateOfDeath?: any | null;
         createdAt: any;
@@ -91,7 +117,17 @@ export type WorshipedPeopleQuery = {
         avatar?: {
           __typename?: 'UploadDetail';
           id: string;
-          upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+          upload: {
+            __typename?: 'Upload';
+            id: string;
+            sha: string;
+            bucket?: string | null;
+            width?: string | null;
+            height?: string | null;
+            sha800?: string | null;
+            sha320?: string | null;
+            sha40?: string | null;
+          };
         } | null;
         country?: { __typename?: 'Country'; id: string; name: string } | null;
         state?: { __typename?: 'State'; id: string; name: string } | null;
@@ -130,6 +166,8 @@ export type WorshipedPeopleSpecialDateQuery = {
         id: string;
         name: string;
         quote?: string | null;
+        wikiDataId?: string | null;
+        totalWorshipAmount?: number | null;
         dateOfBirth?: any | null;
         dateOfDeath?: any | null;
         createdAt: any;
@@ -137,7 +175,17 @@ export type WorshipedPeopleSpecialDateQuery = {
         avatar?: {
           __typename?: 'UploadDetail';
           id: string;
-          upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+          upload: {
+            __typename?: 'Upload';
+            id: string;
+            sha: string;
+            bucket?: string | null;
+            width?: string | null;
+            height?: string | null;
+            sha800?: string | null;
+            sha320?: string | null;
+            sha40?: string | null;
+          };
         } | null;
         country?: { __typename?: 'Country'; id: string; name: string } | null;
         state?: { __typename?: 'State'; id: string; name: string } | null;
@@ -177,6 +225,8 @@ export type AllWorshipedByPersonIdQuery = {
         id: string;
         name: string;
         quote?: string | null;
+        wikiDataId?: string | null;
+        totalWorshipAmount?: number | null;
         dateOfBirth?: any | null;
         dateOfDeath?: any | null;
         createdAt: any;
@@ -184,7 +234,17 @@ export type AllWorshipedByPersonIdQuery = {
         avatar?: {
           __typename?: 'UploadDetail';
           id: string;
-          upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+          upload: {
+            __typename?: 'Upload';
+            id: string;
+            sha: string;
+            bucket?: string | null;
+            width?: string | null;
+            height?: string | null;
+            sha800?: string | null;
+            sha320?: string | null;
+            sha40?: string | null;
+          };
         } | null;
         country?: { __typename?: 'Country'; id: string; name: string } | null;
         state?: { __typename?: 'State'; id: string; name: string } | null;
@@ -212,6 +272,8 @@ export type CreateWorshipedPersonMutation = {
     id: string;
     name: string;
     quote?: string | null;
+    wikiDataId?: string | null;
+    totalWorshipAmount?: number | null;
     dateOfBirth?: any | null;
     dateOfDeath?: any | null;
     createdAt: any;
@@ -219,7 +281,17 @@ export type CreateWorshipedPersonMutation = {
     avatar?: {
       __typename?: 'UploadDetail';
       id: string;
-      upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+      upload: {
+        __typename?: 'Upload';
+        id: string;
+        sha: string;
+        bucket?: string | null;
+        width?: string | null;
+        height?: string | null;
+        sha800?: string | null;
+        sha320?: string | null;
+        sha40?: string | null;
+      };
     } | null;
     country?: { __typename?: 'Country'; id: string; name: string } | null;
     state?: { __typename?: 'State'; id: string; name: string } | null;
@@ -238,6 +310,8 @@ export type CreateWorshipMutation = {
     id: string;
     name: string;
     quote?: string | null;
+    wikiDataId?: string | null;
+    totalWorshipAmount?: number | null;
     dateOfBirth?: any | null;
     dateOfDeath?: any | null;
     createdAt: any;
@@ -245,7 +319,17 @@ export type CreateWorshipMutation = {
     avatar?: {
       __typename?: 'UploadDetail';
       id: string;
-      upload: { __typename?: 'Upload'; id: string; sha: string; bucket?: string | null };
+      upload: {
+        __typename?: 'Upload';
+        id: string;
+        sha: string;
+        bucket?: string | null;
+        width?: string | null;
+        height?: string | null;
+        sha800?: string | null;
+        sha320?: string | null;
+        sha40?: string | null;
+      };
     } | null;
     country?: { __typename?: 'Country'; id: string; name: string } | null;
     state?: { __typename?: 'State'; id: string; name: string } | null;
@@ -263,9 +347,16 @@ export const WorshipedPersonFieldsFragmentDoc = `
       id
       sha
       bucket
+      width
+      height
+      sha800
+      sha320
+      sha40
     }
   }
   quote
+  wikiDataId
+  totalWorshipAmount
   dateOfBirth
   dateOfDeath
   country {

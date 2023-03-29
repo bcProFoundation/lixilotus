@@ -35,6 +35,8 @@ import { getBurnQueue, getFailQueue } from './selectors';
 import { buffers, Channel } from 'redux-saga';
 import { Account } from '@bcpros/lixi-models';
 
+//TODO: Handle burn for worship
+
 function* createTxHexSaga(action: any) {
   const data = action.payload;
   const { XPI } = callConfig.call.walletContext;

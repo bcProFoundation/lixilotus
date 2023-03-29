@@ -5,9 +5,23 @@ import { Space, Tabs } from 'antd';
 import type { TabsProps } from 'antd';
 import TempleInfo from './TempleInfo';
 import { FireOutlined } from '@ant-design/icons';
+import { WorshipedPerson } from '@bcpros/lixi-models';
+import { WORSHIP_TYPES } from '@bcpros/lixi-models/constants';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
+import { fromSmallestDenomination } from '@utils/cashMethods';
+import intl from 'react-intl-universal';
+import { addBurnQueue, addBurnTransaction, clearFailQueue, getFailQueue } from '@store/burn';
+import { currency } from '@components/Common/Ticker';
+import { showToast } from '@store/toast/actions';
+import _ from 'lodash';
+import { BurnCommand, BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
+import { AllWorshipedByPersonIdQuery } from '@store/worship/worshipedPerson.generated';
+
+// export type PersonType = AllWorshipedByPersonIdQuery['allWorshipedByPersonId']['edges'][0]['node'];
 
 type TempleDetail = {
-  person: any;
+  temple: any;
   isMobile: boolean;
 };
 
@@ -116,9 +130,52 @@ const StyledActionIcon = style.img`
   }
 `;
 
-const TempleDetail = ({ person, isMobile }: TempleDetail) => {
+const TempleDetail = ({ temple, isMobile }: TempleDetail) => {
+  const dispatch = useAppDispatch();
+  const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
+  const walletStatus = useAppSelector(getWalletStatus);
+  const failQueue = useAppSelector(getFailQueue);
+  const walletPaths = useAppSelector(getAllWalletPaths);
+
   const onChange = (key: string) => {
     console.log(key);
+  };
+
+  const handleWorship = async (worshipAmount: number) => {
+    try {
+      const burnValue = worshipAmount;
+      if (
+        slpBalancesAndUtxos.nonSlpUtxos.length == 0 ||
+        fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis) < burnValue
+      ) {
+        throw new Error(intl.get('account.insufficientFunds'));
+      }
+      if (failQueue.length > 0) dispatch(clearFailQueue());
+      const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
+      const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
+      const { hash160, xAddress } = currentWalletPath;
+      const burnType = BurnType.Up;
+      const burnedBy = hash160;
+      const burnForId = temple.id;
+      const burnCommand: BurnQueueCommand = {
+        defaultFee: currency.defaultFee,
+        burnType,
+        burnForType: BurnForType.Worship,
+        burnedBy,
+        burnForId,
+        burnValue: burnValue.toString()
+      };
+      dispatch(addBurnQueue(_.omit(burnCommand)));
+      dispatch(addBurnTransaction(burnCommand));
+    } catch (e) {
+      const errorMessage = e.message || intl.get('post.unableToBurn');
+      dispatch(
+        showToast('error', {
+          message: errorMessage,
+          duration: 3
+        })
+      );
+    }
   };
 
   const items: TabsProps['items'] = [
@@ -155,7 +212,7 @@ const TempleDetail = ({ person, isMobile }: TempleDetail) => {
           <StyledTempleCover>
             <StyledTempleAvatar avatar="/images/lotus-temple-placeholder.jpg" />
           </StyledTempleCover>
-          <StyledTempleName>Lotus Temple</StyledTempleName>
+          <StyledTempleName>{temple.name}</StyledTempleName>
           {/* <StyledTempleDate>1752 - 16 tháng 9,1972</StyledTempleDate> */}
         </StyledTopCard>
         <StyledBottomCard>
@@ -174,13 +231,13 @@ const TempleDetail = ({ person, isMobile }: TempleDetail) => {
             </Space>
           </StyledWorshipInfo>
           <StyledActionContainer>
-            <picture>
+            <picture onClick={() => handleWorship(WORSHIP_TYPES.INCENSE)}>
               <StyledActionIcon alt="incense" src="/images/incense.svg" />
             </picture>
-            <picture>
+            <picture onClick={() => handleWorship(WORSHIP_TYPES.CANDLE)}>
               <StyledActionIcon alt="candle" src="/images/candle.svg" />
             </picture>
-            <picture>
+            <picture onClick={() => handleWorship(WORSHIP_TYPES.FLOWER)}>
               <StyledActionIcon alt="lotus-burn" src="/images/lotus-burn.svg" />
             </picture>
           </StyledActionContainer>

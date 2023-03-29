@@ -10,9 +10,16 @@ fragment WorshipedPersonFields on WorshipedPerson {
       id
       sha
       bucket
+      width
+      height
+      sha800
+      sha320
+      sha40
     }
   }
   quote
+  wikiDataId
+  totalWorshipAmount
   dateOfBirth
   dateOfDeath
   country {

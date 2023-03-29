@@ -604,6 +604,7 @@ export type WorshipedPerson = {
   name: Scalars['String'];
   quote?: Maybe<Scalars['String']>;
   state?: Maybe<State>;
+  totalWorshipAmount?: Maybe<Scalars['Int']>;
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
   wikiDataId?: Maybe<Scalars['String']>;

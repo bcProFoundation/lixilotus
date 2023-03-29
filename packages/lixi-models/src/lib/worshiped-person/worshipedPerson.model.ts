@@ -15,7 +15,11 @@ export class WorshipedPerson {
   name: string;
 
   @Field(() => UploadDetail, { nullable: true })
-  avatar: UploadDetail;
+  avatar?: UploadDetail;
+
+  @Field(() => Number, { nullable: true })
+  @IsOptional()
+  totalWorshipAmount?: number;
 
   @Field(() => String, { nullable: true })
   @IsOptional()

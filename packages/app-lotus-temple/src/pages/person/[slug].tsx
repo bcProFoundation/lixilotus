@@ -14,34 +14,33 @@ const PersonDetailPage = props => {
   const canonicalUrl = process.env.NEXT_PUBLIC_LIXI_URL + `posts/${personId}`;
 
   //TODO: Uncomment the below code to execute query
-  // const personQuery = useWorshipedPersonQuery({ id: personId });
+  const personQuery = useWorshipedPersonQuery({ id: personId });
 
   return (
-    // <>
-    //   {postQuery && postQuery.isSuccess && (
-    //     <>
-    //       <NextSeo
-    //         title="Lixi Program"
-    //         description="The lixi program send you a small gift ."
-    //         canonical={canonicalUrl}
-    //         openGraph={{
-    //           url: canonicalUrl,
-    //           title: 'LixiLotus',
-    //           description: postQuery.data.post.content ?? 'LixiLotus allow you to giveaway your Lotus effortlessly',
-    //           images: [{ url: '' }],
-    //           site_name: 'LixiLotus'
-    //         }}
-    //         twitter={{
-    //           handle: '@handle',
-    //           site: '@site',
-    //           cardType: 'summary_large_image'
-    //         }}
-    //       />
-
-    //     </>
-    //   )}
-    // </>
-    <PersonDetail person={'5'} isMobile={isMobile} />
+    <>
+      {personQuery && personQuery.isSuccess && (
+        <>
+          <NextSeo
+          // title="Lixi Program"
+          // description="The lixi program send you a small gift ."
+          // canonical={canonicalUrl}
+          // openGraph={{
+          //   url: canonicalUrl,
+          //   title: 'LixiLotus',
+          //   description: postQuery.data.post.content ?? 'LixiLotus allow you to giveaway your Lotus effortlessly',
+          //   images: [{ url: '' }],
+          //   site_name: 'LixiLotus'
+          // }}
+          // twitter={{
+          //   handle: '@handle',
+          //   site: '@site',
+          //   cardType: 'summary_large_image'
+          // }}
+          />
+          <PersonDetail person={personQuery.data.worshipedPerson} isMobile={isMobile} />
+        </>
+      )}
+    </>
   );
 };
 

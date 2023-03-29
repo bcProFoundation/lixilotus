@@ -262,7 +262,12 @@ export class WorshipResolver {
           select: {
             id: true,
             sha: true,
-            bucket: true
+            bucket: true,
+            width: true,
+            height: true,
+            sha800: true,
+            sha320: true,
+            sha40: true
           }
         }
       }
