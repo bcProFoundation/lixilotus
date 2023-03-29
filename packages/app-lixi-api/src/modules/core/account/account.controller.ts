@@ -38,7 +38,7 @@ import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase58Str, hashMnemonic } f
 import { PrismaService } from '../../prisma/prisma.service';
 import { WalletService } from '../../wallet/wallet.service';
 import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
-import BCHJS from '@bcpros/xpi-js'
+import BCHJS from '@bcpros/xpi-js';
 import { toSafeInteger } from 'lodash';
 
 @Controller('accounts')
@@ -47,7 +47,7 @@ export class AccountController {
     private prisma: PrismaService,
     private readonly walletService: WalletService,
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
-    @Inject('xpijs') private XPI: BCHJS,
+    @Inject('xpijs') private XPI: BCHJS
   ) { }
 
   @Get(':id')
@@ -73,7 +73,6 @@ export class AccountController {
         balance: balance,
         page: account.page
       } as AccountDto;
-
 
       return result;
     } catch (err: unknown) {
@@ -124,7 +123,7 @@ export class AccountController {
       const leaderboardAccounts = await this.prisma.burn.groupBy({
         by: ['burnedBy'],
         _sum: {
-          burnedValue: true,
+          burnedValue: true
         },
         orderBy: {
           _sum: {
@@ -135,23 +134,22 @@ export class AccountController {
       });
 
       const addressAndTotalBurntArray = leaderboardAccounts.map((account: any) => {
-
         const burnedBy = account.burnedBy.toString('hex');
 
-        const legacyAddress = this.XPI.Address.hash160ToLegacy(burnedBy)
+        const legacyAddress = this.XPI.Address.hash160ToLegacy(burnedBy);
 
         const publicAddress = this.XPI.Address.toXAddress(legacyAddress);
 
-        const totalBurned = account._sum.burnedValue
+        const totalBurned: number = account._sum.burnedValue;
         return {
-          publicAddress,
+          address: publicAddress,
           totalBurned
-        }
+        };
       });
 
-      const accountAddresses = _.map(addressAndTotalBurntArray, 'publicAddress');
+      const accountAddresses = _.map(addressAndTotalBurntArray, 'address');
 
-      const accountDTO = await this.prisma.account.findMany({
+      const accountsWithAddresses = await this.prisma.account.findMany({
         where: {
           address: {
             in: accountAddresses
@@ -159,13 +157,13 @@ export class AccountController {
         }
       });
 
-      const accountDDO = addressAndTotalBurntArray.map((account) => {
-        const obj2 = accountDTO.find(addressItem => _.includes(addressItem.address, account.publicAddress))
-        return { ...account, ...obj2 };
+      const accounts = addressAndTotalBurntArray.map(addressAndTotalBurntItem => {
+        const account = accountsWithAddresses.find(account => account.address === addressAndTotalBurntItem.address);
+        return { ...account, ...addressAndTotalBurntItem };
       });
 
-      const result = accountDDO.map(data => _.omit({ ...data }, 'publicAddress'));
-      return result
+      const result = _.compact(accounts).map(data => _.omit({ ...data }, 'publicAddress'));
+      return result;
     } catch (err: unknown) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
