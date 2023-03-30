@@ -4,36 +4,32 @@ import {
   useAllWorshipedByPersonIdQuery
 } from '@store/worship/worshipedPerson.generated';
 import { useEffect, useRef, useState, useMemo } from 'react';
-import { WorshipedPerson, WorshipedPersonOrder } from 'src/generated/types.generated';
+import { WorshipedPerson, WorshipedPersonOrder, WorshipOrder } from 'src/generated/types.generated';
 import _ from 'lodash';
-import { WorshipedPersonQuery } from './worshipedPerson.generated';
+import { WorshipQuery } from './worshipedPerson.generated';
 import { useAppDispatch } from '@store/hooks';
 import { createEntityAdapter } from '@reduxjs/toolkit';
 
-const postsAdapter = createEntityAdapter<WorshipedPersonQuery['worshipedPerson']>({
-  selectId: post => post.id,
+const worshipAdapter = createEntityAdapter<WorshipQuery['worship']>({
+  selectId: worship => worship.id,
   sortComparer: (a, b) => b.createdAt - a.createdAt
 });
 
-const { selectAll, selectEntities, selectIds, selectTotal } = postsAdapter.getSelectors();
+const { selectAll, selectEntities, selectIds, selectTotal } = worshipAdapter.getSelectors();
 
-export interface PostListByIdParams extends PaginationArgs {
-  orderBy?: WorshipedPersonOrder;
+export interface WorshipListByIdParams extends PaginationArgs {
+  orderBy?: WorshipOrder;
   id?: string;
 }
-export interface PostListBody {
-  posts: WorshipedPerson[];
-  next: string;
-}
 
-export function useInfinitePostsByUserIdQuery(
-  params: PostListByIdParams,
+export function useInfiniteWorshipByPersonIdQuery(
+  params: WorshipListByIdParams,
   fetchAll: boolean = false // if `true`: auto do next fetches to get all notes at once
 ) {
   const baseResult = useAllWorshipedByPersonIdQuery(params);
 
   const [trigger, nextResult] = useLazyAllWorshipedByPersonIdQuery();
-  const [combinedData, setCombinedData] = useState(postsAdapter.getInitialState({}));
+  const [combinedData, setCombinedData] = useState(worshipAdapter.getInitialState({}));
 
   const isBaseReady = useRef(false);
   const isNextDone = useRef(true);
@@ -53,7 +49,7 @@ export function useInfinitePostsByUserIdQuery(
       isBaseReady.current = true;
 
       const baseResultParse = baseResult.data.allWorshipedByPersonId.edges.map(item => item.node);
-      const adapterSetAll = postsAdapter.setAll(
+      const adapterSetAll = worshipAdapter.setAll(
         combinedData,
         baseResult.data.allWorshipedByPersonId.edges.map(item => item.node)
       );
@@ -97,7 +93,7 @@ export function useInfinitePostsByUserIdQuery(
     errorNext: nextResult?.error,
     isErrorNext: nextResult?.isError,
     isFetchingNext: nextResult?.isFetching,
-    hasNext: baseResult.data?.allWorshipedByPersonId?.pageInfo?.endCursor !== undefined,
+    hasNext: baseResult.data?.allWorshipedByPersonId?.pageInfo?.endCursor !== null,
     fetchNext,
     refetch
   };

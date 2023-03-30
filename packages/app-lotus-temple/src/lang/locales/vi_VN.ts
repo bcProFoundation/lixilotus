@@ -568,5 +568,10 @@ export default {
   'category.scienceAndTechnology': 'Khoa học và Công nghệ',
   'category.healthAndFitness': 'Sức khỏe và Thể hình',
   'category.travelAndEvents': 'Du lịch và Sự kiện',
-  'category.other': 'Khác'
+  'category.other': 'Khác',
+
+  /* 19. Worship */
+  'worship.offerIncense': 'đã dâng một nến hương',
+  'worship.offerCandle': 'đã dâng một ngọn nến',
+  'worship.offerFlower': 'đã dâng một bông hoa sen'
 };

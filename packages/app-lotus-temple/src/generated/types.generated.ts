@@ -138,7 +138,7 @@ export type Mutation = {
   createPage: Page;
   createPost: Post;
   createToken: Token;
-  createWorship: WorshipedPerson;
+  createWorship: Worship;
   createWorshipedPerson: WorshipedPerson;
   updatePage: Page;
   updatePost: Post;
@@ -324,13 +324,14 @@ export type Query = {
   allPostsByTokenId: PostConnection;
   allPostsByUserId: PostConnection;
   allTokens: TokenConnection;
-  allWorshipedByPersonId: WorshipedPersonConnection;
+  allWorshipedByPersonId: WorshipConnection;
   allWorshipedPerson: WorshipedPersonConnection;
   allWorshipedPersonSpecialDate: WorshipedPersonConnection;
   comment: Comment;
   page: Page;
   post: Post;
   token: Token;
+  worship: Worship;
   worshipedPerson: WorshipedPerson;
 };
 
@@ -438,7 +439,7 @@ export type QueryAllWorshipedByPersonIdArgs = {
   id?: InputMaybe<Scalars['String']>;
   last?: InputMaybe<Scalars['Int']>;
   minBurnFilter?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<WorshipedPersonOrder>;
+  orderBy?: InputMaybe<WorshipOrder>;
   skip?: InputMaybe<Scalars['Int']>;
 };
 
@@ -477,6 +478,10 @@ export type QueryPostArgs = {
 
 export type QueryTokenArgs = {
   tokenId: Scalars['String'];
+};
+
+export type QueryWorshipArgs = {
+  id: Scalars['String'];
 };
 
 export type QueryWorshipedPersonArgs = {
@@ -589,6 +594,47 @@ export type UploadDetail = {
   id: Scalars['ID'];
   upload: Upload;
 };
+
+export type Worship = {
+  __typename?: 'Worship';
+  account: Account;
+  /** Identifies the date and time when the object was created. */
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  latitude?: Maybe<Scalars['Decimal']>;
+  location?: Maybe<Scalars['String']>;
+  longitude?: Maybe<Scalars['Decimal']>;
+  /** Identifies the date and time when the object was last updated. */
+  updatedAt: Scalars['DateTime'];
+  worshipedAmount: Scalars['Float'];
+  worshipedPerson: WorshipedPerson;
+};
+
+export type WorshipConnection = {
+  __typename?: 'WorshipConnection';
+  edges?: Maybe<Array<WorshipEdge>>;
+  pageInfo: PageInfo;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type WorshipEdge = {
+  __typename?: 'WorshipEdge';
+  cursor: Scalars['String'];
+  node: Worship;
+};
+
+export type WorshipOrder = {
+  direction: OrderDirection;
+  field: WorshipOrderField;
+};
+
+/** Properties by which worship connections can be ordered. */
+export enum WorshipOrderField {
+  CreatedAt = 'createdAt',
+  Id = 'id',
+  UpdatedAt = 'updatedAt',
+  WorshipedAmount = 'worshipedAmount'
+}
 
 export type WorshipedPerson = {
   __typename?: 'WorshipedPerson';

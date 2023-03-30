@@ -47,6 +47,19 @@ export type WorshipedPersonFieldsFragment = {
   city?: { __typename?: 'City'; id: string; name: string } | null;
 };
 
+export type WorshipFieldsFragment = {
+  __typename?: 'Worship';
+  id: string;
+  worshipedAmount: number;
+  location?: string | null;
+  latitude?: any | null;
+  longitude?: any | null;
+  createdAt: any;
+  updatedAt: any;
+  account: { __typename?: 'Account'; id: string; name: string; address: string };
+  worshipedPerson: { __typename?: 'WorshipedPerson'; id: string; name: string; totalWorshipAmount?: number | null };
+};
+
 export type WorshipedPersonQueryVariables = Types.Exact<{
   id: Types.Scalars['String'];
 }>;
@@ -82,6 +95,26 @@ export type WorshipedPersonQuery = {
     country?: { __typename?: 'Country'; id: string; name: string } | null;
     state?: { __typename?: 'State'; id: string; name: string } | null;
     city?: { __typename?: 'City'; id: string; name: string } | null;
+  };
+};
+
+export type WorshipQueryVariables = Types.Exact<{
+  id: Types.Scalars['String'];
+}>;
+
+export type WorshipQuery = {
+  __typename?: 'Query';
+  worship: {
+    __typename?: 'Worship';
+    id: string;
+    worshipedAmount: number;
+    location?: string | null;
+    latitude?: any | null;
+    longitude?: any | null;
+    createdAt: any;
+    updatedAt: any;
+    account: { __typename?: 'Account'; id: string; name: string; address: string };
+    worshipedPerson: { __typename?: 'WorshipedPerson'; id: string; name: string; totalWorshipAmount?: number | null };
   };
 };
 
@@ -207,7 +240,7 @@ export type AllWorshipedByPersonIdQueryVariables = Types.Exact<{
   before?: Types.InputMaybe<Types.Scalars['String']>;
   first?: Types.InputMaybe<Types.Scalars['Int']>;
   last?: Types.InputMaybe<Types.Scalars['Int']>;
-  orderBy?: Types.InputMaybe<Types.WorshipedPersonOrder>;
+  orderBy?: Types.InputMaybe<Types.WorshipOrder>;
   id?: Types.InputMaybe<Types.Scalars['String']>;
   skip?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
@@ -215,40 +248,27 @@ export type AllWorshipedByPersonIdQueryVariables = Types.Exact<{
 export type AllWorshipedByPersonIdQuery = {
   __typename?: 'Query';
   allWorshipedByPersonId: {
-    __typename?: 'WorshipedPersonConnection';
+    __typename?: 'WorshipConnection';
     totalCount?: number | null;
     edges?: Array<{
-      __typename?: 'WorshipedPersonEdge';
+      __typename?: 'WorshipEdge';
       cursor: string;
       node: {
-        __typename?: 'WorshipedPerson';
+        __typename?: 'Worship';
         id: string;
-        name: string;
-        quote?: string | null;
-        wikiDataId?: string | null;
-        totalWorshipAmount?: number | null;
-        dateOfBirth?: any | null;
-        dateOfDeath?: any | null;
+        worshipedAmount: number;
+        location?: string | null;
+        latitude?: any | null;
+        longitude?: any | null;
         createdAt: any;
         updatedAt: any;
-        avatar?: {
-          __typename?: 'UploadDetail';
+        account: { __typename?: 'Account'; id: string; name: string; address: string };
+        worshipedPerson: {
+          __typename?: 'WorshipedPerson';
           id: string;
-          upload: {
-            __typename?: 'Upload';
-            id: string;
-            sha: string;
-            bucket?: string | null;
-            width?: string | null;
-            height?: string | null;
-            sha800?: string | null;
-            sha320?: string | null;
-            sha40?: string | null;
-          };
-        } | null;
-        country?: { __typename?: 'Country'; id: string; name: string } | null;
-        state?: { __typename?: 'State'; id: string; name: string } | null;
-        city?: { __typename?: 'City'; id: string; name: string } | null;
+          name: string;
+          totalWorshipAmount?: number | null;
+        };
       };
     }> | null;
     pageInfo: {
@@ -306,34 +326,16 @@ export type CreateWorshipMutationVariables = Types.Exact<{
 export type CreateWorshipMutation = {
   __typename?: 'Mutation';
   createWorship: {
-    __typename?: 'WorshipedPerson';
+    __typename?: 'Worship';
     id: string;
-    name: string;
-    quote?: string | null;
-    wikiDataId?: string | null;
-    totalWorshipAmount?: number | null;
-    dateOfBirth?: any | null;
-    dateOfDeath?: any | null;
+    worshipedAmount: number;
+    location?: string | null;
+    latitude?: any | null;
+    longitude?: any | null;
     createdAt: any;
     updatedAt: any;
-    avatar?: {
-      __typename?: 'UploadDetail';
-      id: string;
-      upload: {
-        __typename?: 'Upload';
-        id: string;
-        sha: string;
-        bucket?: string | null;
-        width?: string | null;
-        height?: string | null;
-        sha800?: string | null;
-        sha320?: string | null;
-        sha40?: string | null;
-      };
-    } | null;
-    country?: { __typename?: 'Country'; id: string; name: string } | null;
-    state?: { __typename?: 'State'; id: string; name: string } | null;
-    city?: { __typename?: 'City'; id: string; name: string } | null;
+    account: { __typename?: 'Account'; id: string; name: string; address: string };
+    worshipedPerson: { __typename?: 'WorshipedPerson'; id: string; name: string; totalWorshipAmount?: number | null };
   };
 };
 
@@ -375,6 +377,27 @@ export const WorshipedPersonFieldsFragmentDoc = `
   updatedAt
 }
     `;
+export const WorshipFieldsFragmentDoc = `
+    fragment WorshipFields on Worship {
+  id
+  account {
+    id
+    name
+    address
+  }
+  worshipedPerson {
+    id
+    name
+    totalWorshipAmount
+  }
+  worshipedAmount
+  location
+  latitude
+  longitude
+  createdAt
+  updatedAt
+}
+    `;
 export const WorshipedPersonDocument = `
     query WorshipedPerson($id: String!) {
   worshipedPerson(id: $id) {
@@ -382,6 +405,13 @@ export const WorshipedPersonDocument = `
   }
 }
     ${WorshipedPersonFieldsFragmentDoc}`;
+export const WorshipDocument = `
+    query Worship($id: String!) {
+  worship(id: $id) {
+    ...WorshipFields
+  }
+}
+    ${WorshipFieldsFragmentDoc}`;
 export const WorshipedPeopleDocument = `
     query WorshipedPeople($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: WorshipedPersonOrder, $query: String, $skip: Int) {
   allWorshipedPerson(
@@ -432,7 +462,7 @@ export const WorshipedPeopleSpecialDateDocument = `
     ${WorshipedPersonFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
 export const AllWorshipedByPersonIdDocument = `
-    query allWorshipedByPersonId($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: WorshipedPersonOrder, $id: String, $skip: Int) {
+    query allWorshipedByPersonId($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: WorshipOrder, $id: String, $skip: Int) {
   allWorshipedByPersonId(
     after: $after
     before: $before
@@ -446,7 +476,7 @@ export const AllWorshipedByPersonIdDocument = `
     edges {
       cursor
       node {
-        ...WorshipedPersonFields
+        ...WorshipFields
       }
     }
     pageInfo {
@@ -454,7 +484,7 @@ export const AllWorshipedByPersonIdDocument = `
     }
   }
 }
-    ${WorshipedPersonFieldsFragmentDoc}
+    ${WorshipFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
 export const CreateWorshipedPersonDocument = `
     mutation createWorshipedPerson($input: CreateWorshipedPersonInput!) {
@@ -466,15 +496,18 @@ export const CreateWorshipedPersonDocument = `
 export const CreateWorshipDocument = `
     mutation createWorship($input: CreateWorshipInput!) {
   createWorship(data: $input) {
-    ...WorshipedPersonFields
+    ...WorshipFields
   }
 }
-    ${WorshipedPersonFieldsFragmentDoc}`;
+    ${WorshipFieldsFragmentDoc}`;
 
 const injectedRtkApi = api.injectEndpoints({
   endpoints: build => ({
     WorshipedPerson: build.query<WorshipedPersonQuery, WorshipedPersonQueryVariables>({
       query: variables => ({ document: WorshipedPersonDocument, variables })
+    }),
+    Worship: build.query<WorshipQuery, WorshipQueryVariables>({
+      query: variables => ({ document: WorshipDocument, variables })
     }),
     WorshipedPeople: build.query<WorshipedPeopleQuery, WorshipedPeopleQueryVariables | void>({
       query: variables => ({ document: WorshipedPeopleDocument, variables })
@@ -501,6 +534,8 @@ export { injectedRtkApi as api };
 export const {
   useWorshipedPersonQuery,
   useLazyWorshipedPersonQuery,
+  useWorshipQuery,
+  useLazyWorshipQuery,
   useWorshipedPeopleQuery,
   useLazyWorshipedPeopleQuery,
   useWorshipedPeopleSpecialDateQuery,

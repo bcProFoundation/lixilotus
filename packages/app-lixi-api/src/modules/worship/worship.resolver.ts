@@ -6,7 +6,9 @@ import {
   WorshipedPersonOrder,
   Account,
   CreateWorshipedPersonInput,
-  CreateWorshipInput
+  CreateWorshipInput,
+  WorshipOrder,
+  WorshipConnection
 } from '@bcpros/lixi-models';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
 import { HttpException, HttpStatus, Logger, UseFilters, UseGuards } from '@nestjs/common';
@@ -42,6 +44,15 @@ export class WorshipResolver {
     return result;
   }
 
+  @Query(() => Worship)
+  async worship(@Args('id', { type: () => String }) id: string) {
+    const result = await this.prisma.worship.findUnique({
+      where: { id: id }
+    });
+
+    return result;
+  }
+
   @Query(() => WorshipedPersonConnection)
   async allWorshipedPerson(
     @Args() { after, before, first, last }: PaginationArgs,
@@ -67,16 +78,16 @@ export class WorshipResolver {
     return result;
   }
 
-  @Query(() => WorshipedPersonConnection)
+  @Query(() => WorshipConnection)
   async allWorshipedByPersonId(
     @Args() { after, before, first, last }: PaginationArgs,
     @Args({ name: 'id', type: () => String, nullable: true }) id: string,
     @Args({
       name: 'orderBy',
-      type: () => WorshipedPersonOrder,
+      type: () => WorshipOrder,
       nullable: true
     })
-    orderBy: WorshipedPersonOrder
+    orderBy: WorshipOrder
   ) {
     const result = await findManyCursorConnection(
       args =>
@@ -194,7 +205,7 @@ export class WorshipResolver {
   }
 
   @UseGuards(GqlJwtAuthGuard)
-  @Mutation(() => WorshipedPerson)
+  @Mutation(() => Worship)
   async createWorship(@PostAccountEntity() account: Account, @Args('data') data: CreateWorshipInput) {
     if (!account) {
       const couldNotFindAccount = this.i18n.t('post.messages.couldNotFindAccount');
@@ -235,7 +246,23 @@ export class WorshipResolver {
       }
     };
     const worshipedPerson = await this.prisma.worship.create({
-      ...personToWorship
+      ...personToWorship,
+      include: {
+        account: {
+          select: {
+            id: true,
+            name: true,
+            address: true
+          }
+        },
+        worshipedPerson: {
+          select: {
+            id: true,
+            name: true,
+            totalWorshipAmount: true
+          }
+        }
+      }
     });
 
     await this.prisma.worshipedPerson.update({

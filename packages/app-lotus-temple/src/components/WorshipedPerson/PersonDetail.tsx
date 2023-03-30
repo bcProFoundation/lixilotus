@@ -1,7 +1,7 @@
-import React, { useState, useRef, ReactNode } from 'react';
+import React, { useState, useRef, ReactNode, useEffect } from 'react';
 import style from 'styled-components';
-import WorshipCard from './WorshipCard';
-import { Space, Tabs } from 'antd';
+import WorshipPersonCard from './WorshipPersonCard';
+import { Space, Tabs, Skeleton, Tooltip } from 'antd';
 import type { TabsProps } from 'antd';
 import PersonInfo from './PersonInfo';
 import { FireOutlined } from '@ant-design/icons';
@@ -16,9 +16,15 @@ import { currency } from '@components/Common/Ticker';
 import { showToast } from '@store/toast/actions';
 import _ from 'lodash';
 import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
-import { AllWorshipedByPersonIdQuery } from '@store/worship/worshipedPerson.generated';
+import { WorshipedPersonQuery } from '@store/worship/worshipedPerson.generated';
+import { useInfiniteWorshipByPersonIdQuery } from '@store/worship/useInfiniteWorshipByPersonIdQuery';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { OrderDirection, WorshipedPersonOrderField, WorshipOrderField } from 'src/generated/types.generated';
+import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
+import { setTransactionReady } from '@store/account/actions';
+import { Counter } from '@components/Common/Counter';
 
-export type PersonType = AllWorshipedByPersonIdQuery['allWorshipedByPersonId']['edges'][0]['node'];
+export type PersonType = WorshipedPersonQuery['worshipedPerson'];
 
 type PersonDetail = {
   person: PersonType;
@@ -135,9 +141,31 @@ const PersonDetail = ({ person, isMobile }: PersonDetail) => {
   const walletStatus = useAppSelector(getWalletStatus);
   const failQueue = useAppSelector(getFailQueue);
   const walletPaths = useAppSelector(getAllWalletPaths);
+  const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
 
   const onChange = (key: string) => {
     console.log(key);
+  };
+
+  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } =
+    useInfiniteWorshipByPersonIdQuery(
+      {
+        first: 20,
+        id: person.id,
+        orderBy: {
+          direction: OrderDirection.Desc,
+          field: WorshipOrderField.UpdatedAt
+        }
+      },
+      false
+    );
+
+  const loadMoreItems = () => {
+    if (hasNext && !isFetching) {
+      fetchNext();
+    } else if (hasNext) {
+      fetchNext();
+    }
   };
 
   const items: TabsProps['items'] = [
@@ -146,17 +174,22 @@ const PersonDetail = ({ person, isMobile }: PersonDetail) => {
       key: 'worship',
       children: (
         <React.Fragment>
-          <WorshipCard />
-          <WorshipCard />
-          <WorshipCard />
-          <WorshipCard />
-          <WorshipCard />
-          <WorshipCard />
-          <WorshipCard />
-          <WorshipCard />
-          <WorshipCard />
-          <WorshipCard />
-          <WorshipCard />
+          <InfiniteScroll
+            dataLength={data.length}
+            next={loadMoreItems}
+            hasMore={hasNext}
+            loader={<Skeleton avatar active />}
+            endMessage={
+              <p style={{ textAlign: 'center' }}>
+                <b>{"It's so empty here..."}</b>
+              </p>
+            }
+            scrollableTarget="scrollableDiv"
+          >
+            {data.map((item, index) => {
+              return <WorshipPersonCard index={index} item={item} key={item.id} />;
+            })}
+          </InfiniteScroll>
         </React.Fragment>
       )
     },
@@ -204,6 +237,13 @@ const PersonDetail = ({ person, isMobile }: PersonDetail) => {
     }
   };
 
+  useEffect(() => {
+    if (slpBalancesAndUtxos === slpBalancesAndUtxosRef.current) return;
+    dispatch(setTransactionReady());
+  }, [slpBalancesAndUtxos.nonSlpUtxos]);
+
+  useDidMountEffectNotification();
+
   return (
     <React.Fragment>
       <StyledPersonCard>
@@ -226,19 +266,29 @@ const PersonDetail = ({ person, isMobile }: PersonDetail) => {
               <picture>
                 <img alt="burn-icon" src="/images/burn-icon.svg" width="32px" />
               </picture>
-              <StyledText>{person.totalWorshipAmount} XPI</StyledText>
+              <StyledText>
+                <Counter num={person.totalWorshipAmount ?? 0} />
+              </StyledText>
             </Space>
           </StyledWorshipInfo>
           <StyledActionContainer>
-            <picture onClick={() => handleWorship(WORSHIP_TYPES.INCENSE)}>
-              <StyledActionIcon alt="incense" src="/images/incense.svg" />
-            </picture>
-            <picture onClick={() => handleWorship(WORSHIP_TYPES.CANDLE)}>
-              <StyledActionIcon alt="candle" src="/images/candle.svg" />
-            </picture>
-            <picture onClick={() => handleWorship(WORSHIP_TYPES.FLOWER)}>
-              <StyledActionIcon alt="lotus-burn" src="/images/lotus-burn.svg" />
-            </picture>
+            <Tooltip title={`${WORSHIP_TYPES.INCENSE} XPI`}>
+              <picture onClick={() => handleWorship(WORSHIP_TYPES.INCENSE)}>
+                <StyledActionIcon alt="incense" src="/images/incense.svg" />
+              </picture>
+            </Tooltip>
+
+            <Tooltip title={`${WORSHIP_TYPES.CANDLE} XPI`}>
+              <picture onClick={() => handleWorship(WORSHIP_TYPES.CANDLE)}>
+                <StyledActionIcon alt="candle" src="/images/candle.svg" />
+              </picture>
+            </Tooltip>
+
+            <Tooltip title={`${WORSHIP_TYPES.FLOWER} XPI`}>
+              <picture onClick={() => handleWorship(WORSHIP_TYPES.FLOWER)}>
+                <StyledActionIcon alt="lotus-burn" src="/images/lotus-burn.svg" />
+              </picture>
+            </Tooltip>
           </StyledActionContainer>
         </StyledBottomCard>
         <StyledTab defaultActiveKey="1" items={items} onChange={onChange} />

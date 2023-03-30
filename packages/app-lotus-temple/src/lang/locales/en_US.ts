@@ -567,5 +567,10 @@ export default {
   'category.scienceAndTechnology': 'Science And Technology',
   'category.healthAndFitness': 'Health And Fitness',
   'category.travelAndEvents': 'Travel And Events',
-  'category.other': 'Other'
+  'category.other': 'Other',
+
+  /* 19. Worship */
+  'worship.offerIncense': 'has offered an incense',
+  'worship.offerCandle': 'has offered a candle',
+  'worship.offerFlower': 'has offered a lotus'
 };

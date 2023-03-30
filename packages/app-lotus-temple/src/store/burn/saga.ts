@@ -10,7 +10,13 @@ import { burnForToken, burnForTokenFailure, burnForTokenSucceses, getTokenById }
 import * as _ from 'lodash';
 import intl from 'react-intl-universal';
 import { actionChannel, select, put, getContext, flush } from 'redux-saga/effects';
-import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
+import {
+  CreateWorshipInput,
+  OrderDirection,
+  PostOrderField,
+  WorshipedPersonOrderField,
+  WorshipOrderField
+} from 'src/generated/types.generated';
 import { hideLoading } from '../loading/actions';
 import {
   burnForUpDownVote,
@@ -34,8 +40,7 @@ import { callConfig } from '@context/shareContext';
 import { getBurnQueue, getFailQueue } from './selectors';
 import { buffers, Channel } from 'redux-saga';
 import { Account } from '@bcpros/lixi-models';
-
-//TODO: Handle burn for worship
+import { api as worshipApi } from '@store/worship/worshipedPerson.api';
 
 function* createTxHexSaga(action: any) {
   const data = action.payload;
@@ -96,6 +101,17 @@ function* burnForUpDownVoteSaga(action: PayloadAction<any>) {
       case BurnForType.Comment:
         patches = yield updateCommentBurnValue(action);
         break;
+      case BurnForType.Worship:
+        const createWorshipInput: CreateWorshipInput = {
+          worshipedPersonId: command.burnForId,
+          worshipedAmount: burnValue
+        };
+        const promise = yield put(worshipApi.endpoints.createWorship.initiate({ input: createWorshipInput }));
+        yield promise;
+
+        const data = yield promise.unwrap();
+        patches = yield updateWorshipBurnValue(data);
+        break;
     }
 
     if (command.burnForType === BurnForType.Token) {
@@ -133,6 +149,13 @@ function* burnForUpDownVoteSaga(action: PayloadAction<any>) {
       message = (err as Error)?.message ?? intl.get('comment.unableToBurn');
       if (patches) {
         yield put(commentApi.util.patchQueryData('CommentsToPostId', queryParams, patches.inversePatches));
+      }
+    } else if (command.burnForType === BurnForType.Worship) {
+      message = (err as Error)?.message ?? intl.get('comment.unableToBurn');
+      if (patches) {
+        yield put(
+          worshipApi.util.patchQueryData('allWorshipedByPersonId', { id: command.burnForId }, patches.inversePatches)
+        );
       }
     }
     yield put(burnForUpDownVoteFailure(message));
@@ -294,6 +317,37 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
         })
       );
   }
+}
+
+function* updateWorshipBurnValue(data) {
+  const { createWorship } = data;
+  const params = {
+    orderBy: {
+      direction: OrderDirection.Desc,
+      field: WorshipOrderField.UpdatedAt
+    }
+  };
+  yield put(
+    worshipApi.util.updateQueryData('WorshipedPerson', { id: createWorship.worshipedPerson.id }, draft => {
+      draft.worshipedPerson.totalWorshipAmount =
+        draft.worshipedPerson.totalWorshipAmount + createWorship.worshipedAmount;
+    })
+  );
+  return yield put(
+    worshipApi.util.updateQueryData(
+      'allWorshipedByPersonId',
+      { ...params, id: createWorship.worshipedPerson.id },
+      draft => {
+        draft.allWorshipedByPersonId.edges.unshift({
+          cursor: createWorship.id,
+          node: {
+            ...createWorship
+          }
+        });
+        draft.allWorshipedByPersonId.totalCount = draft.allWorshipedByPersonId.totalCount + 1;
+      }
+    )
+  );
 }
 
 function* updateCommentBurnValue(action: PayloadAction<BurnCommand>) {

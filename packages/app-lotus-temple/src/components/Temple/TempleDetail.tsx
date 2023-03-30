@@ -1,7 +1,7 @@
-import React, { useState, useRef, ReactNode } from 'react';
+import React, { useState, useRef, ReactNode, useEffect } from 'react';
 import style from 'styled-components';
-import WorshipCard from './WorshipCard';
-import { Space, Tabs } from 'antd';
+import WorshipTempleCard from './WorshipTempleCard';
+import { Space, Tabs, Skeleton } from 'antd';
 import type { TabsProps } from 'antd';
 import TempleInfo from './TempleInfo';
 import { FireOutlined } from '@ant-design/icons';
@@ -17,8 +17,15 @@ import { showToast } from '@store/toast/actions';
 import _ from 'lodash';
 import { BurnCommand, BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { AllWorshipedByPersonIdQuery } from '@store/worship/worshipedPerson.generated';
+import { WorshipedPersonQuery } from '@store/worship/worshipedPerson.generated';
+import { useInfiniteWorshipByPersonIdQuery } from '@store/worship/useInfiniteWorshipByPersonIdQuery';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { OrderDirection, WorshipedPersonOrderField, WorshipOrderField } from 'src/generated/types.generated';
+import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
+import { setTransactionReady } from '@store/account/actions';
+import { Counter } from '@components/Common/Counter';
 
-// export type PersonType = AllWorshipedByPersonIdQuery['allWorshipedByPersonId']['edges'][0]['node'];
+export type PersonType = WorshipedPersonQuery['worshipedPerson'];
 
 type TempleDetail = {
   temple: any;
@@ -136,9 +143,31 @@ const TempleDetail = ({ temple, isMobile }: TempleDetail) => {
   const walletStatus = useAppSelector(getWalletStatus);
   const failQueue = useAppSelector(getFailQueue);
   const walletPaths = useAppSelector(getAllWalletPaths);
+  const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
 
   const onChange = (key: string) => {
     console.log(key);
+  };
+
+  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } =
+    useInfiniteWorshipByPersonIdQuery(
+      {
+        first: 20,
+        id: temple.id,
+        orderBy: {
+          direction: OrderDirection.Desc,
+          field: WorshipOrderField.UpdatedAt
+        }
+      },
+      false
+    );
+
+  const loadMoreItems = () => {
+    if (hasNext && !isFetching) {
+      fetchNext();
+    } else if (hasNext) {
+      fetchNext();
+    }
   };
 
   const handleWorship = async (worshipAmount: number) => {
@@ -184,17 +213,22 @@ const TempleDetail = ({ temple, isMobile }: TempleDetail) => {
       key: 'worship',
       children: (
         <React.Fragment>
-          <WorshipCard />
-          <WorshipCard />
-          <WorshipCard />
-          <WorshipCard />
-          <WorshipCard />
-          <WorshipCard />
-          <WorshipCard />
-          <WorshipCard />
-          <WorshipCard />
-          <WorshipCard />
-          <WorshipCard />
+          <InfiniteScroll
+            dataLength={data.length}
+            next={loadMoreItems}
+            hasMore={hasNext}
+            loader={<Skeleton avatar active />}
+            endMessage={
+              <p style={{ textAlign: 'center' }}>
+                <b>{"It's so empty here..."}</b>
+              </p>
+            }
+            scrollableTarget="scrollableDiv"
+          >
+            {data.map((item, index) => {
+              return <WorshipTempleCard index={index} item={item} key={item.id} />;
+            })}
+          </InfiniteScroll>
         </React.Fragment>
       )
     },
@@ -204,6 +238,13 @@ const TempleDetail = ({ temple, isMobile }: TempleDetail) => {
       children: <TempleInfo />
     }
   ];
+
+  useEffect(() => {
+    if (slpBalancesAndUtxos === slpBalancesAndUtxosRef.current) return;
+    dispatch(setTransactionReady());
+  }, [slpBalancesAndUtxos.nonSlpUtxos]);
+
+  useDidMountEffectNotification();
 
   return (
     <React.Fragment>

@@ -38,9 +38,35 @@ fragment WorshipedPersonFields on WorshipedPerson {
   updatedAt
 }
 
+fragment WorshipFields on Worship {
+  id
+  account {
+    id
+    name
+    address
+  }
+  worshipedPerson {
+    id
+    name
+    totalWorshipAmount
+  }
+  worshipedAmount
+  location
+  latitude
+  longitude
+  createdAt
+  updatedAt
+}
+
 query WorshipedPerson($id: String!) {
   worshipedPerson(id: $id) {
     ...WorshipedPersonFields
+  }
+}
+
+query Worship($id: String!) {
+  worship(id: $id) {
+    ...WorshipFields
   }
 }
 
@@ -109,7 +135,7 @@ query allWorshipedByPersonId(
   $before: String
   $first: Int = 20
   $last: Int
-  $orderBy: WorshipedPersonOrder
+  $orderBy: WorshipOrder
   $id: String
   $skip: Int
 ) {
@@ -126,7 +152,7 @@ query allWorshipedByPersonId(
     edges {
       cursor
       node {
-        ...WorshipedPersonFields
+        ...WorshipFields
       }
     }
     pageInfo {
@@ -143,6 +169,6 @@ mutation createWorshipedPerson($input: CreateWorshipedPersonInput!) {
 
 mutation createWorship($input: CreateWorshipInput!) {
   createWorship(data: $input) {
-    ...WorshipedPersonFields
+    ...WorshipFields
   }
 }

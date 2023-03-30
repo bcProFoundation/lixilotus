@@ -48,7 +48,7 @@ export class AccountController {
     private readonly walletService: WalletService,
     @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
     @Inject('xpijs') private XPI: BCHJS
-  ) { }
+  ) {}
 
   @Get(':id')
   async getAccount(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<AccountDto> {

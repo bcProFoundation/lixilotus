@@ -19,6 +19,7 @@ import { AvatarUser } from './AvatarUser';
 import { getEditorCache } from '@store/account/selectors';
 import { deleteEditorTextFromCache } from '@store/account/actions';
 import { getFilterPostsHome } from '@store/settings/selectors';
+import { useCreateWorshipedPersonMutation } from '@store/worship/worshipedPerson.api';
 
 type ErrorType = 'unsupported' | 'invalid';
 
