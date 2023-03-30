@@ -233,8 +233,11 @@ const PostContentDetail = styled.div`
     transition: 0.5s ease;
     img {
       max-width: 100%;
-      max-height: 45vh;
+      max-height: 73vh;
       object-fit: cover;
+      @media (min-height: 920px) {
+        max-height: 45vh;
+      }
     }
   }
 `;
