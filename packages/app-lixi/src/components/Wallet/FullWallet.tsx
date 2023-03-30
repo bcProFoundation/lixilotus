@@ -294,7 +294,7 @@ const FullWalletComponent: React.FC = () => {
                                 <Link
                                   href={{
                                     pathname: '/send',
-                                    query: { replyAddress: item.parsed.replyAddress }
+                                    query: { replyAddress: item.parsed.replyAddress, isReply: true }
                                   }}
                                 >
                                   <Button size="small" type="text">
