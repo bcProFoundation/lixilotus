@@ -265,7 +265,10 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                   <StyledAuthor>
                     {/* <StyledTextLeft></StyledTextLeft> */}
                     <StyledTextRight>
-                      {moment(notification.createdAt).local().format('MMMM Do YYYY, h:mm a')}
+                      {/* {moment(notification.createdAt).local().format('MMMM Do YYYY, h:mm a')} */}
+                      {
+                        moment(notification.createdAt).endOf("minutes").fromNow()
+                      }
                     </StyledTextRight>
                   </StyledAuthor>
                 }
