@@ -98,6 +98,8 @@ export default {
   'general.burnForType': 'Burn For Type',
   'general.failed': 'Failed',
   'general.minBurnt': 'Min XPI burnt:',
+  'general.showMore': 'Show more',
+  'general.showLess': 'Show less',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
