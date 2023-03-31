@@ -354,6 +354,8 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
             activatePostLocation={true}
             onEditPostClick={editPost}
             postEdited={post.createdAt !== post.updatedAt}
+            isDropdown={true}
+            lotusBurnScore={post.lotusBurnScore}
           />
         </CardHeader>
         <Content onClick={e => handlePostClick(e)}>
