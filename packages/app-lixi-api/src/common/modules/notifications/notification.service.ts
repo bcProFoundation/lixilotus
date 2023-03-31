@@ -11,8 +11,6 @@ import { VError } from 'verror';
 import { template } from 'src/utils/stringTemplate';
 import _ from 'lodash';
 import { Account } from '@bcpros/lixi-prisma';
-import { VError } from 'verror';
-import { template } from 'src/utils/stringTemplate';
 
 @Injectable()
 export class NotificationService {
@@ -25,7 +23,7 @@ export class NotificationService {
   ) { }
 
   async saveAndDispatchNotification(room: string, notification: NotificationDto) {
-    if (!notification.recipientId) {
+    if (!notification.recipientId || !notification.senderId) {
       const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
       throw new VError(accountNotExistMessage);
     }
@@ -41,6 +39,7 @@ export class NotificationService {
       throw new VError(accountNotExistMessage);
     }
 
+    // Find notification types and create messenge
     // @todo: Find notification types and create messenge
     const notifType = await this.prisma.notificationType.findFirst({
       where: {
@@ -53,12 +52,12 @@ export class NotificationService {
     if (!notifType) return null;
 
     const translateTemplate: string =
-    notifType.notificationTypeTranslations.find(x => x.language == recipientAccount?.language)?.template ??
-    notifType.notificationTypeTranslations.find(x => x.isDefault)?.template ??
-    '';
+      notifType.notificationTypeTranslations.find(x => x.language == recipientAccount?.language)?.template ??
+      notifType.notificationTypeTranslations.find(x => x.isDefault)?.template ??
+      '';
 
     const message = template(translateTemplate, notification.additionalData);
-    
+
     // Save to the database
     const notif: NotificationDb = await this.prisma.notification.create({
       data: {

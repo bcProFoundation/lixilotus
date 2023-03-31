@@ -133,6 +133,23 @@ export class CommentResolver {
           }
         });
 
+        const recipient = await this.prisma.account.findFirst({
+          where: {
+            id: _.toSafeInteger(post?.postAccountId)
+          }
+        })
+
+        if (!recipient) {
+          const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
+          throw new VError(accountNotExistMessage);
+        }
+
+        let commentGive;
+        const commentNormal = {
+          senderName: account.name
+        }
+
+        if (tipHex) {
           const txData = await this.XPI.RawTransactions.decodeRawTransaction(tipHex);
           const { value } = txData['vout'][0];
           if (Number(value) < 0) {
@@ -155,8 +172,25 @@ export class CommentResolver {
             commentId: createdComment.id
           };
 
+
+          commentGive = {
+            senderName: account.name,
+            xpiGive: value
+          }
+
           await prisma.giveTip.create({ data: transactionTip });
         }
+
+        const createNotif = {
+          senderId: account.id,
+          recipientId: post?.postAccount.id as number,
+          notificationTypeId: tipHex ? NOTIFICATION_TYPES.COMMENT_TO_GIVE : NOTIFICATION_TYPES.COMMENT_ON_POST,
+          level: NotificationLevel.INFO,
+          url: '/post/' + post?.id,
+          additionalData: tipHex ? commentGive : commentNormal
+        };
+        createNotif.senderId !== createNotif.recipientId && await this.notificationService.saveAndDispatchNotification(recipient?.mnemonicHash, createNotif);
+
         return createdComment;
       });
 

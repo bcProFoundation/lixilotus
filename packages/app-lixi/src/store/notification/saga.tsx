@@ -156,7 +156,10 @@ function* readNotificationFailureSaga(action: PayloadAction<Notification>) {
 function* readAllNotificationsSaga(action: PayloadAction<{ mnemonichHash }>) {
   try {
     yield put(showLoading(readAllNotifications.type));
-    const data = yield call(notificationApi.readAllNotifications);
+    const { mnemonichHash } = action.payload;
+    console.log("mnemonicHash: ", mnemonichHash)
+    const data = yield call(notificationApi.readAllNotifications, mnemonichHash);
+    console.log("data: ", data)
     const notifications = (data ?? []) as Notification[];
     yield put(readAllNotificationsSuccess({ notifications: notifications }));
   } catch (err) {

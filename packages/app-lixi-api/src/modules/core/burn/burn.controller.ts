@@ -21,7 +21,7 @@ export class BurnController {
     @I18n() private i18n: I18nService,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS
-  ) {}
+  ) { }
 
   @Post()
   async burn(@Body() command: BurnCommand): Promise<Burn> {
@@ -181,6 +181,137 @@ export class BurnController {
           });
         }
       }
+
+      // prepare data sender
+      const legacyAddress = this.XPI.Address.hash160ToLegacy(command.burnedBy)
+      const accountAddress = this.XPI.Address.toXAddress(legacyAddress);
+      const sender = await this.prisma.account.findFirst({
+        where: {
+          address: accountAddress
+        }
+      })
+      if (!sender) {
+        const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
+        throw new VError(accountNotExistMessage);
+      }
+
+      // prepare data recipient
+      let commentAccountId;
+      let commentPostId;
+      let commentAccount;
+      if (command.burnForType == BurnForType.Comment) {
+        const comment = await this.prisma.comment.findFirst({
+          where: { id: command.burnForId }
+        })
+
+        commentAccountId = comment?.commentAccountId;
+        commentPostId = comment?.commentToId;
+        commentAccount = await this.prisma.account.findFirst({
+          where: {
+            id: _.toSafeInteger(commentAccountId)
+          }
+        })
+      };
+
+      const postId = command.burnForType == BurnForType.Comment ? commentPostId : command.burnForId;
+      const post = await this.prisma.post.findFirst({
+        where: { id: postId },
+        include: {
+          postAccount: true,
+          page: true
+        }
+      })
+
+      if (!post) {
+        const accountNotExistMessage = await this.i18n.t('post.messages.postNotExist');
+        throw new VError(accountNotExistMessage);
+      }
+
+      const recipientPostAccount = await this.prisma.account.findFirst({
+        where: {
+          id: _.toSafeInteger(post?.postAccountId)
+        }
+      })
+
+      if (!recipientPostAccount) {
+        const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
+        throw new VError(accountNotExistMessage);
+      }
+
+      // get burnForType key
+      const typeValuesArr = Object.values(BurnForType);
+      const burnForTypeString = Object.keys(BurnForType)[typeValuesArr.indexOf(command.burnForType as unknown as BurnForType)];
+
+      // BurnValue + tip + fee
+      let tip = Number(command.burnValue) * 0.04;
+      let fee = Number(command.burnValue) * 0.04;
+
+
+      // create Notifications Burn
+      const createNotifBurn = {
+        senderId: sender.id,
+        recipientId: post?.postAccountId as number,
+        notificationTypeId: NOTIFICATION_TYPES.BURN,
+        level: NotificationLevel.INFO,
+        url: '/post/' + post?.id,
+        additionalData: {
+          senderName: sender.name,
+          BurnForType: burnForTypeString,
+          xpiBurn: command.burnValue,
+        }
+      };
+      createNotifBurn.senderId !== createNotifBurn.recipientId && await this.notificationService.saveAndDispatchNotification(recipientPostAccount.mnemonicHash, createNotifBurn);
+
+      // create Notifications Fee
+      let recipientPageAccount;
+      if (post?.pageId) {
+        const page = await this.prisma.page.findFirst({
+          where: {
+            id: post.pageId
+          }
+        });
+
+        recipientPageAccount = await this.prisma.account.findFirst({
+          where: {
+            id: _.toSafeInteger(page?.pageAccountId)
+          }
+        })
+      }
+
+      const createNotifBurnFee = {
+        senderId: sender.id,
+        recipientId: post?.pageId ? post.page?.pageAccountId as number : post?.postAccountId,
+        notificationTypeId: NOTIFICATION_TYPES.RECEIVE_BURN_FEE,
+        level: NotificationLevel.INFO,
+        url: '/post/' + post?.id,
+        additionalData: {
+          senderName: sender.name,
+          pageName: post?.page?.name,
+          BurnForType: burnForTypeString,
+          xpiBurn: command.burnValue,
+          xpiFee: fee
+        }
+      };
+      createNotifBurnFee.senderId !== createNotifBurnFee.recipientId && await this.notificationService.saveAndDispatchNotification(post?.pageId ? recipientPageAccount?.mnemonicHash as string : recipientPostAccount?.mnemonicHash, createNotifBurnFee);
+
+      // create Notifications Tip
+      if (command.burnType == BurnType.Up) {
+        const createNotifBurnTip = {
+          senderId: sender.id,
+          recipientId: command.burnForType == BurnForType.Comment ? Number(commentAccountId) : Number(post.id),
+          notificationTypeId: NOTIFICATION_TYPES.RECEIVE_BURN_TIP as number,
+          level: NotificationLevel.INFO,
+          url: '/post/' + post?.id,
+          additionalData: {
+            senderName: sender.name,
+            BurnForType: burnForTypeString,
+            xpiBurn: command.burnValue,
+            xpiTip: tip
+          }
+        };
+        createNotifBurnTip.senderId !== createNotifBurnTip.recipientId && await this.notificationService.saveAndDispatchNotification(command.burnForType == BurnForType.Comment ? commentAccount?.mnemonicHash as string : recipientPostAccount.mnemonicHash, createNotifBurnTip);
+      }
+
 
       const result: Burn = {
         ...savedBurn,

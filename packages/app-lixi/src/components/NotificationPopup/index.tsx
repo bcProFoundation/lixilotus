@@ -3,21 +3,15 @@ import { CloseCircleOutlined } from '@ant-design/icons';
 import { Space, Popover, Menu } from 'antd';
 import { Comment } from '@ant-design/compatible';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
 import styled from 'styled-components';
 import { Account, NotificationDto as Notification } from '@bcpros/lixi-models';
 import SwipeToDelete from 'react-swipe-to-delete-ios';
 import moment from 'moment';
 import { isMobile } from 'react-device-detect';
 import { deleteNotification, fetchNotifications, readAllNotifications, readNotification } from '@store/notification/actions';
-import { deleteNotification, fetchNotifications, readAllNotifications, readNotification } from '@store/notification/actions';
 import { downloadExportedLixi } from '@store/lixi/actions';
 import { useRouter } from 'next/router';
 import intl from 'react-intl-universal';
-import { push } from 'connected-next-router';
-import { getAllNotifications } from '@store/notification/selectors';
-import { getSelectedAccount } from '@store/account/selectors';
-import { AvatarUser } from '@components/Common/AvatarUser';
 import { push } from 'connected-next-router';
 import { getAllNotifications } from '@store/notification/selectors';
 import { getSelectedAccount } from '@store/account/selectors';
@@ -190,7 +184,6 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const selectedAccount = useAppSelector(getSelectedAccount);
-  const selectedAccount = useAppSelector(getSelectedAccount);
 
   const handleDelete = (account: Account, notificationId: string) => {
     dispatch(deleteNotification({ mnemonichHash: account.mnemonicHash, notificationId }));
@@ -302,7 +295,6 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                     >
                       {notification.message}
                     </div>
-                    {/* <CloseCircleOutlined onClick={() => handleDelete(account, notification.id)} /> */}
                     {/* <CloseCircleOutlined onClick={() => handleDelete(account, notification.id)} /> */}
                   </Space>
                 }
