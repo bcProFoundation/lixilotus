@@ -241,6 +241,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                       <StyledAuthor>
                         <StyledTextLeft></StyledTextLeft>
                         <StyledTextRight>
+                          {/* // moment */}
                           {moment(notification.createdAt).fromNow().toString()}
                         </StyledTextRight>
                       </StyledAuthor>
