@@ -3,15 +3,21 @@ import { CloseCircleOutlined } from '@ant-design/icons';
 import { Space, Popover, Menu } from 'antd';
 import { Comment } from '@ant-design/compatible';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import styled from 'styled-components';
 import { Account, NotificationDto as Notification } from '@bcpros/lixi-models';
 import SwipeToDelete from 'react-swipe-to-delete-ios';
 import moment from 'moment';
 import { isMobile } from 'react-device-detect';
 import { deleteNotification, fetchNotifications, readAllNotifications, readNotification } from '@store/notification/actions';
+import { deleteNotification, fetchNotifications, readAllNotifications, readNotification } from '@store/notification/actions';
 import { downloadExportedLixi } from '@store/lixi/actions';
 import { useRouter } from 'next/router';
 import intl from 'react-intl-universal';
+import { push } from 'connected-next-router';
+import { getAllNotifications } from '@store/notification/selectors';
+import { getSelectedAccount } from '@store/account/selectors';
+import { AvatarUser } from '@components/Common/AvatarUser';
 import { push } from 'connected-next-router';
 import { getAllNotifications } from '@store/notification/selectors';
 import { getSelectedAccount } from '@store/account/selectors';
@@ -101,6 +107,11 @@ const StyledComment = styled(Comment)`
     letter-spacing: 0.5px;
     color: #1E1A1D;
   }
+  .text-notification {
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    color: #1E1A1D;
+  }
 `;
 
 const StyledTitlePage = styled.h1`
@@ -127,6 +138,8 @@ const StyledTextLeft = styled.span`
 `;
 
 const StyledTextRight = styled.span`
+  letter-spacing: 0.25px;
+  color: var(--color-primary);
   letter-spacing: 0.25px;
   color: var(--color-primary);
 `;
@@ -176,6 +189,7 @@ const StyledReadAll = styled.div`
 const NotificationPopup = (notifications: Notification[], account: Account) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const selectedAccount = useAppSelector(getSelectedAccount);
   const selectedAccount = useAppSelector(getSelectedAccount);
 
   const handleDelete = (account: Account, notificationId: string) => {
@@ -275,6 +289,11 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                     <AvatarUser name={selectedAccount?.address} isMarginRight={false} />
                   </div>
                 }
+                avatar={
+                  <div style={{ cursor: 'pointer' }} onClick={() => handleRead(account, notification)}>
+                    <AvatarUser name={selectedAccount?.address} isMarginRight={false} />
+                  </div>
+                }
                 content={
                   <Space>
                     <div
@@ -283,6 +302,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                     >
                       {notification.message}
                     </div>
+                    {/* <CloseCircleOutlined onClick={() => handleDelete(account, notification.id)} /> */}
                     {/* <CloseCircleOutlined onClick={() => handleDelete(account, notification.id)} /> */}
                   </Space>
                 }

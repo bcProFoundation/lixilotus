@@ -1,5 +1,5 @@
 // import { NotificationDto as Notification, NotificationTypeDto as NotificationType } from '@bcpros/lixi-models';
-import { NotificationDto, SendNotificationJobData } from '@bcpros/lixi-models';
+import { BurnCommand, BurnType, NotificationDto, SendNotificationJobData } from '@bcpros/lixi-models';
 import { InjectQueue } from '@nestjs/bullmq';
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { Notification as NotificationDb, NotificationLevel as NotificationLevelDb, Prisma } from '@prisma/client';
@@ -7,6 +7,10 @@ import { Queue } from 'bullmq';
 import { I18n, I18nService } from 'nestjs-i18n';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { NOTIFICATION_OUTBOUND_QUEUE } from './notification.constants';
+import { VError } from 'verror';
+import { template } from 'src/utils/stringTemplate';
+import _ from 'lodash';
+import { Account } from '@bcpros/lixi-prisma';
 import { VError } from 'verror';
 import { template } from 'src/utils/stringTemplate';
 
@@ -18,10 +22,10 @@ export class NotificationService {
     private prisma: PrismaService,
     @InjectQueue(NOTIFICATION_OUTBOUND_QUEUE) private notificationOutboundQueue: Queue,
     @I18n() private i18n: I18nService
-  ) {}
+  ) { }
 
   async saveAndDispatchNotification(room: string, notification: NotificationDto) {
-    if (!notification.recipientId || !notification.senderId) {
+    if (!notification.recipientId) {
       const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
       throw new VError(accountNotExistMessage);
     }
@@ -37,7 +41,7 @@ export class NotificationService {
       throw new VError(accountNotExistMessage);
     }
 
-    // Find notification types and create messenge
+    // @todo: Find notification types and create messenge
     const notifType = await this.prisma.notificationType.findFirst({
       where: {
         id: notification.notificationTypeId as number
@@ -77,5 +81,20 @@ export class NotificationService {
     };
     const job = await this.notificationOutboundQueue.add('send-notification', sendNotifJobData);
     return job.id;
+  }
+
+  async calcTip(post: any, recipient: Account, burn: BurnCommand) {
+    const isUpBurn = burn.burnType === BurnType.Up;
+    const burnValue = Number(burn.burnValue);
+
+    if (!post.page) {
+      return isUpBurn ? burnValue * 0.08 : burnValue * 0.04;
+    }
+
+    if (post.page.pageAccountId === recipient.id) {
+      return isUpBurn ? burnValue * 0.08 : burnValue * 0.04;
+    }
+
+    return isUpBurn ? burnValue * 0.04 : 0;
   }
 }
