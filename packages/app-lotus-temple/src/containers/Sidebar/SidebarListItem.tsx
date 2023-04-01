@@ -1,7 +1,13 @@
 import React from 'react';
 import style from 'styled-components';
 import { AvatarUser } from '@components/Common/AvatarUser';
-import { Space } from 'antd';
+import { useRouter } from 'next/router';
+
+type SidebarListItemProp = {
+  id: string;
+  name: string;
+  totalWorshipAmount: number;
+};
 
 const StyledName = style.p`
   font-size: 15px;
@@ -26,6 +32,7 @@ const StyledItem = style.div`
   margin-bottom: 5px;
   margin-top: 5px;
   gap: 8px;
+  cursor: pointer;
 `;
 
 const StyledContainer = style.div`
@@ -35,17 +42,19 @@ gap: 5px;
 padding-top: 5px;
 `;
 
-const SidebarListItem = () => {
+const SidebarListItem = ({ id, name, totalWorshipAmount }: SidebarListItemProp) => {
+  const history = useRouter();
+
   return (
-    <StyledItem>
-      <AvatarUser name={'Lixi Lotus'} />
+    <StyledItem onClick={() => history.push(`/person/${id}`)}>
+      <AvatarUser name={name} />
       <StyledContainer>
-        <StyledName>Lixi Lotus</StyledName>
+        <StyledName>{name}</StyledName>
         <StyledDesc>
           <picture>
             <img alt="burn-icon" src="/images/burn-icon.svg" width={15} />
           </picture>
-          <StyledBurnedAmount>999 XPI</StyledBurnedAmount>
+          <StyledBurnedAmount>{totalWorshipAmount} XPI</StyledBurnedAmount>
         </StyledDesc>
       </StyledContainer>
     </StyledItem>

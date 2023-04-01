@@ -177,6 +177,64 @@ export type WorshipedPeopleQuery = {
   };
 };
 
+export type WorshipedPeopleByUserIdQueryVariables = Types.Exact<{
+  after?: Types.InputMaybe<Types.Scalars['String']>;
+  before?: Types.InputMaybe<Types.Scalars['String']>;
+  first?: Types.InputMaybe<Types.Scalars['Int']>;
+  last?: Types.InputMaybe<Types.Scalars['Int']>;
+  orderBy?: Types.InputMaybe<Types.WorshipedPersonOrder>;
+  skip?: Types.InputMaybe<Types.Scalars['Int']>;
+}>;
+
+export type WorshipedPeopleByUserIdQuery = {
+  __typename?: 'Query';
+  allWorshipedPersonByUserId: {
+    __typename?: 'WorshipedPersonConnection';
+    totalCount?: number | null;
+    edges?: Array<{
+      __typename?: 'WorshipedPersonEdge';
+      cursor: string;
+      node: {
+        __typename?: 'WorshipedPerson';
+        id: string;
+        name: string;
+        quote?: string | null;
+        wikiDataId?: string | null;
+        totalWorshipAmount?: number | null;
+        dateOfBirth?: any | null;
+        dateOfDeath?: any | null;
+        createdAt: any;
+        updatedAt: any;
+        avatar?: {
+          __typename?: 'UploadDetail';
+          id: string;
+          upload: {
+            __typename?: 'Upload';
+            id: string;
+            sha: string;
+            bucket?: string | null;
+            width?: string | null;
+            height?: string | null;
+            sha800?: string | null;
+            sha320?: string | null;
+            sha40?: string | null;
+          };
+        } | null;
+        country?: { __typename?: 'Country'; id: string; name: string } | null;
+        state?: { __typename?: 'State'; id: string; name: string } | null;
+        city?: { __typename?: 'City'; id: string; name: string } | null;
+      };
+    }> | null;
+    pageInfo: {
+      __typename?: 'PageInfo';
+      endCursor?: string | null;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: string | null;
+    };
+  };
+};
+
 export type WorshipedPeopleSpecialDateQueryVariables = Types.Exact<{
   after?: Types.InputMaybe<Types.Scalars['String']>;
   before?: Types.InputMaybe<Types.Scalars['String']>;
@@ -437,6 +495,30 @@ export const WorshipedPeopleDocument = `
 }
     ${WorshipedPersonFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
+export const WorshipedPeopleByUserIdDocument = `
+    query WorshipedPeopleByUserId($after: String, $before: String, $first: Int = 5, $last: Int, $orderBy: WorshipedPersonOrder, $skip: Int) {
+  allWorshipedPersonByUserId(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    skip: $skip
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...WorshipedPersonFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+    ${WorshipedPersonFieldsFragmentDoc}
+${PageInfoFieldsFragmentDoc}`;
 export const WorshipedPeopleSpecialDateDocument = `
     query WorshipedPeopleSpecialDate($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: WorshipedPersonOrder, $skip: Int) {
   allWorshipedPersonSpecialDate(
@@ -512,6 +594,9 @@ const injectedRtkApi = api.injectEndpoints({
     WorshipedPeople: build.query<WorshipedPeopleQuery, WorshipedPeopleQueryVariables | void>({
       query: variables => ({ document: WorshipedPeopleDocument, variables })
     }),
+    WorshipedPeopleByUserId: build.query<WorshipedPeopleByUserIdQuery, WorshipedPeopleByUserIdQueryVariables | void>({
+      query: variables => ({ document: WorshipedPeopleByUserIdDocument, variables })
+    }),
     WorshipedPeopleSpecialDate: build.query<
       WorshipedPeopleSpecialDateQuery,
       WorshipedPeopleSpecialDateQueryVariables | void
@@ -538,6 +623,8 @@ export const {
   useLazyWorshipQuery,
   useWorshipedPeopleQuery,
   useLazyWorshipedPeopleQuery,
+  useWorshipedPeopleByUserIdQuery,
+  useLazyWorshipedPeopleByUserIdQuery,
   useWorshipedPeopleSpecialDateQuery,
   useLazyWorshipedPeopleSpecialDateQuery,
   useAllWorshipedByPersonIdQuery,

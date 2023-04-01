@@ -101,6 +101,35 @@ query WorshipedPeople(
   }
 }
 
+query WorshipedPeopleByUserId(
+  $after: String
+  $before: String
+  $first: Int = 5
+  $last: Int
+  $orderBy: WorshipedPersonOrder
+  $skip: Int
+) {
+  allWorshipedPersonByUserId(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    skip: $skip
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...WorshipedPersonFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+
 query WorshipedPeopleSpecialDate(
   $after: String
   $before: String

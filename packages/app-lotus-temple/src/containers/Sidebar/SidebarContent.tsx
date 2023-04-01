@@ -1,5 +1,5 @@
 import { Account } from '@bcpros/lixi-models';
-import { getAllAccounts, getSelectedAccount } from '@store/account/selectors';
+import { getAllAccounts, getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { Layout, message, Space, Modal, Popover, Button, Badge } from 'antd';
 import classNames from 'classnames';
@@ -18,6 +18,7 @@ import { fromSmallestDenomination } from '@utils/cashMethods';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { CopyOutlined } from '@ant-design/icons';
 import SidebarListItem from './SidebarListItem';
+import { useWorshipedPeopleByUserIdQuery } from '@store/worship/worshipedPerson.generated';
 
 const { Sider } = Layout;
 
@@ -234,45 +235,18 @@ const StyledHeaderText = styled.p`
   line-height: 32px;
 `;
 
+const StyledWallerContainer = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 7px;
+`;
 const SidebarContent = () => {
   const refSidebarShortcut = useRef<HTMLDivElement | null>(null);
   const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
-  const savedAccounts: Account[] = useAppSelector(getAllAccounts);
-  const [isCollapse, setIsCollapse] = useState(false);
-  const [showMore, setShowMore] = useState(false);
-  const router = useRouter();
-  const currentPathName = router.pathname ?? '';
-  const notifications = useAppSelector(getAllNotifications);
   const walletStatus = useAppSelector(getWalletStatus);
-  let pastScan;
-
-  const onScan = async (result: string) => {
-    if (pastScan !== result) {
-      pastScan = result;
-
-      await axiosClient
-        .post('api/lixies/check-valid', { lixiBarcode: result })
-        .then(res => {
-          message.success(res.data);
-        })
-        .catch(err => {
-          const { response } = err;
-          message.error(response.data.message ? response.data.message : intl.get('lixi.unableGetLixi'));
-        });
-    }
-  };
-
-  useEffect(() => {
-    if (selectedAccount) {
-      dispatch(
-        fetchNotifications({
-          accountId: selectedAccount.id,
-          mnemonichHash: selectedAccount.mnemonicHash
-        })
-      );
-    }
-  }, []);
+  const worshipedPeople = useWorshipedPeopleByUserIdQuery();
 
   const triggerSrollbar = e => {
     const sidebarShortcutNode = refSidebarShortcut.current;
@@ -302,7 +276,7 @@ const SidebarContent = () => {
                 <AvatarUser name={selectedAccount.name} />
                 <StyledText>{selectedAccount.name}</StyledText>
               </Space>
-              <div style={{ display: 'flex', alignItems: 'center', width: '100%', gap: '7px' }}>
+              <StyledWallerContainer>
                 <picture>
                   <img alt="wallet-placeholder" src="/images/wallet-placeholder.svg" />
                 </picture>
@@ -320,7 +294,7 @@ const SidebarContent = () => {
                     </p>
                   </div>
                 </Space>
-              </div>
+              </StyledWallerContainer>
             </StyledWrapper>
           )}
           <StyledWrapper style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
@@ -329,9 +303,17 @@ const SidebarContent = () => {
                 <StyledHeaderText>Bạn thờ</StyledHeaderText>
                 <p style={{ marginBottom: '0', color: '#004B74' }}>Xem tất cả</p>
               </StyledHeader>
-              <SidebarListItem />
-              <SidebarListItem />
-              <SidebarListItem />
+              {worshipedPeople.currentData &&
+                worshipedPeople.currentData.allWorshipedPersonByUserId.edges.map((person, index) => {
+                  return (
+                    <SidebarListItem
+                      key={index}
+                      id={person.node.id}
+                      name={person.node.name}
+                      totalWorshipAmount={person.node.totalWorshipAmount}
+                    />
+                  );
+                })}
             </StyledContainer>
           </StyledWrapper>
           <StyledWrapper style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
@@ -339,9 +321,9 @@ const SidebarContent = () => {
               <StyledHeader>
                 <StyledHeaderText>Thăm viếng gần đây</StyledHeaderText>
               </StyledHeader>
+              {/* <SidebarListItem />
               <SidebarListItem />
-              <SidebarListItem />
-              <SidebarListItem />
+              <SidebarListItem /> */}
             </StyledContainer>
           </StyledWrapper>
         </div>

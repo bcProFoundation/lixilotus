@@ -17,7 +17,7 @@ import { PubSub } from 'graphql-subscriptions';
 import { PrismaService } from '../prisma/prisma.service';
 import * as _ from 'lodash';
 import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
-import { PostAccountEntity } from 'src/decorators/postAccount.decorator';
+import { AccountEntity } from 'src/decorators/account.decorator';
 import { I18n, I18nService } from 'nestjs-i18n';
 import VError from 'verror';
 import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
@@ -73,6 +73,57 @@ export class WorshipResolver {
           ...args
         }),
       () => this.prisma.worshipedPerson.count({}),
+      { first, last, before, after }
+    );
+    return result;
+  }
+
+  @UseGuards(GqlJwtAuthGuard)
+  @Query(() => WorshipedPersonConnection)
+  async allWorshipedPersonByUserId(
+    @AccountEntity() account: Account,
+    @Args() { after, before, first, last }: PaginationArgs,
+    @Args({
+      name: 'orderBy',
+      type: () => WorshipedPersonOrder,
+      nullable: true
+    })
+    orderBy: WorshipedPersonOrder
+  ) {
+    if (!account) {
+      const couldNotFindAccount = await this.i18n.t('post.messages.couldNotFindAccount');
+      throw new Error(couldNotFindAccount);
+    }
+
+    const result = await findManyCursorConnection(
+      args =>
+        this.prisma.worshipedPerson.findMany({
+          include: { avatar: true, country: true },
+          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+          where: {
+            worship: {
+              some: {
+                account: {
+                  id: account.id
+                }
+              }
+            }
+          },
+          ...args
+        }),
+      () =>
+        this.prisma.worshipedPerson.count({
+          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+          where: {
+            worship: {
+              some: {
+                account: {
+                  id: account.id
+                }
+              }
+            }
+          }
+        }),
       { first, last, before, after }
     );
     return result;
@@ -150,7 +201,7 @@ export class WorshipResolver {
 
   @UseGuards(GqlJwtAuthGuard)
   @Mutation(() => WorshipedPerson)
-  async createWorshipedPerson(@PostAccountEntity() account: Account, @Args('data') data: CreateWorshipedPersonInput) {
+  async createWorshipedPerson(@AccountEntity() account: Account, @Args('data') data: CreateWorshipedPersonInput) {
     if (!account) {
       const couldNotFindAccount = await this.i18n.t('post.messages.couldNotFindAccount');
       throw new Error(couldNotFindAccount);
@@ -206,7 +257,7 @@ export class WorshipResolver {
 
   @UseGuards(GqlJwtAuthGuard)
   @Mutation(() => Worship)
-  async createWorship(@PostAccountEntity() account: Account, @Args('data') data: CreateWorshipInput) {
+  async createWorship(@AccountEntity() account: Account, @Args('data') data: CreateWorshipInput) {
     if (!account) {
       const couldNotFindAccount = this.i18n.t('post.messages.couldNotFindAccount');
       throw new Error(couldNotFindAccount);

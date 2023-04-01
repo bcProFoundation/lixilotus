@@ -26,7 +26,7 @@ import { Counter } from '@components/Common/Counter';
 
 export type PersonType = WorshipedPersonQuery['worshipedPerson'];
 
-type PersonDetail = {
+type PersonDetailProp = {
   person: PersonType;
   isMobile: boolean;
 };
@@ -135,7 +135,7 @@ const StyledActionIcon = style.img`
   }
 `;
 
-const PersonDetail = ({ person, isMobile }: PersonDetail) => {
+const PersonDetail = ({ person, isMobile }: PersonDetailProp) => {
   const dispatch = useAppDispatch();
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletStatus = useAppSelector(getWalletStatus);
