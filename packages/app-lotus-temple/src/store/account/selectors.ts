@@ -50,3 +50,8 @@ export const getTransactionStatus = createSelector(
   (state: RootState) => state.accounts,
   (accounts: AccountsState) => accounts.transactionReady
 );
+
+export const getRecentVisitedPeople = createSelector(
+  (state: RootState) => state.accounts,
+  (accounts: AccountsState) => accounts.recentVisitedPeople
+);

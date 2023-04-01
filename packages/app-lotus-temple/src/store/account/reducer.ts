@@ -15,9 +15,11 @@ import {
   saveEditorTextToCache,
   deleteEditorTextFromCache,
   setTransactionNotReady,
-  setTransactionReady
+  setTransactionReady,
+  addRecentVisitedPerson
 } from './actions';
 import { AccountsState } from './state';
+import _ from 'lodash';
 
 export const accountsAdapter = createEntityAdapter<Account>({});
 
@@ -29,7 +31,8 @@ const initialState: AccountsState = accountsAdapter.getInitialState({
   pageCoverUpload: null,
   postCoverUploads: [],
   editorCache: null,
-  transactionReady: true
+  transactionReady: true,
+  recentVisitedPeople: []
 });
 
 export const accountReducer = createReducer(initialState, builder => {
@@ -121,6 +124,17 @@ export const accountReducer = createReducer(initialState, builder => {
     })
     .addCase(setTransactionNotReady, (state, action) => {
       state.transactionReady = false;
+    })
+    .addCase(addRecentVisitedPerson, (state, action) => {
+      const person = action.payload;
+      const personExisted = _.find(state.recentVisitedPeople, { id: person.id });
+      if (personExisted) {
+        _.remove(state.recentVisitedPeople, { id: personExisted.id });
+      } else if (state.recentVisitedPeople.length === 5) {
+        state.recentVisitedPeople.pop();
+      }
+
+      state.recentVisitedPeople.unshift(person);
     })
     .addMatcher(isAnyOf(refreshLixiListSuccess, refreshLixiListSilentSuccess), (state, action) => {
       const { account, lixies } = action.payload;

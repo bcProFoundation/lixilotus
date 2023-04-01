@@ -21,7 +21,7 @@ import { useInfiniteWorshipByPersonIdQuery } from '@store/worship/useInfiniteWor
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { OrderDirection, WorshipedPersonOrderField, WorshipOrderField } from 'src/generated/types.generated';
 import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
-import { setTransactionReady } from '@store/account/actions';
+import { addRecentVisitedPerson, setTransactionReady } from '@store/account/actions';
 import { Counter } from '@components/Common/Counter';
 
 export type PersonType = WorshipedPersonQuery['worshipedPerson'];
@@ -142,6 +142,10 @@ const PersonDetail = ({ person, isMobile }: PersonDetailProp) => {
   const failQueue = useAppSelector(getFailQueue);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
+
+  useEffect(() => {
+    dispatch(addRecentVisitedPerson(person));
+  }, []);
 
   const onChange = (key: string) => {
     console.log(key);

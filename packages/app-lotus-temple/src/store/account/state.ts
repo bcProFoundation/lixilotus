@@ -1,6 +1,7 @@
 import { Account } from '@bcpros/lixi-models/lib/account';
 import { Upload } from '@bcpros/lixi-models/lib/upload';
 import { EntityState } from '@reduxjs/toolkit';
+import { WorshipedPersonFieldsFragment as WorshipedPerson } from '@store/worship/worshipedPerson.generated';
 
 export interface AccountsState extends EntityState<Account> {
   selectedId: Nullable<number> | undefined;
@@ -13,4 +14,5 @@ export interface AccountsState extends EntityState<Account> {
   postCoverUploads: Upload[];
   editorCache: Nullable<string> | undefined;
   transactionReady: boolean;
+  recentVisitedPeople: WorshipedPerson[];
 }

@@ -19,6 +19,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { CopyOutlined } from '@ant-design/icons';
 import SidebarListItem from './SidebarListItem';
 import { useWorshipedPeopleByUserIdQuery } from '@store/worship/worshipedPerson.generated';
+import { getRecentVisitedPeople } from '@store/account/selectors';
 
 const { Sider } = Layout;
 
@@ -247,6 +248,7 @@ const SidebarContent = () => {
   const selectedAccount = useAppSelector(getSelectedAccount);
   const walletStatus = useAppSelector(getWalletStatus);
   const worshipedPeople = useWorshipedPeopleByUserIdQuery();
+  const recentVisitedPeople = useAppSelector(getRecentVisitedPeople);
 
   const triggerSrollbar = e => {
     const sidebarShortcutNode = refSidebarShortcut.current;
@@ -321,9 +323,17 @@ const SidebarContent = () => {
               <StyledHeader>
                 <StyledHeaderText>Thăm viếng gần đây</StyledHeaderText>
               </StyledHeader>
-              {/* <SidebarListItem />
-              <SidebarListItem />
-              <SidebarListItem /> */}
+              {recentVisitedPeople &&
+                recentVisitedPeople.map((person, index) => {
+                  return (
+                    <SidebarListItem
+                      key={index}
+                      id={person.id}
+                      name={person.name}
+                      totalWorshipAmount={person.totalWorshipAmount}
+                    />
+                  );
+                })}
             </StyledContainer>
           </StyledWrapper>
         </div>
