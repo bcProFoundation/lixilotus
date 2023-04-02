@@ -190,7 +190,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
   };
 
   const handleRead = (account: Account, notification: Notification) => {
-    dispatch(push(`${notification.url}`));
+    notification.url && dispatch(push(`${ notification.url }`));
     dispatch(readNotification({ mnemonichHash: account.mnemonicHash, notificationId: notification.id }));
     if (notification.notificationTypeId === 3) {
       const { parentId, mnemonicHash, fileName } = notification.additionalData as any;
@@ -198,8 +198,8 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
     }
   };
 
-  const handleReadAll = (account: Account) => {
-    dispatch(readAllNotifications({ mnemonichHash: account.mnemonicHash }));
+  const handleReadAll = () => {
+    dispatch(readAllNotifications());
     dispatch(
       fetchNotifications({
         accountId: selectedAccount.id,
@@ -228,7 +228,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
           // onClick={onClickMenu}
           items={menuItems}
         ></Menu>
-        <StyledReadAll onClick={() => handleReadAll(account)}>{intl.get('notification.readAll')}</StyledReadAll>
+        <StyledReadAll onClick={() => handleReadAll()}>{intl.get('notification.readAll')}</StyledReadAll>
       </StyledHeader>
       {notifications &&
         notifications.length > 0 &&
@@ -276,11 +276,6 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                       {moment(notification.createdAt).fromNow().toString()}
                     </StyledTextRight>
                   </StyledAuthor>
-                }
-                avatar={
-                  <div style={{ cursor: 'pointer' }} onClick={() => handleRead(account, notification)}>
-                    <AvatarUser name={selectedAccount?.address} isMarginRight={false} />
-                  </div>
                 }
                 avatar={
                   <div style={{ cursor: 'pointer' }} onClick={() => handleRead(account, notification)}>

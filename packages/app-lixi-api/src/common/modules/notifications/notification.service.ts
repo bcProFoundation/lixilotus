@@ -23,7 +23,7 @@ export class NotificationService {
   ) { }
 
   async saveAndDispatchNotification(room: string, notification: NotificationDto) {
-    if (!notification.recipientId || !notification.senderId) {
+    if (!notification.recipientId) {
       const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
       throw new VError(accountNotExistMessage);
     }

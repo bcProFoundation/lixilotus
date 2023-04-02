@@ -65,27 +65,6 @@ const notificationApi = {
         throw response.data;
       });
   },
-  readAllNotifications(mnemonichHash?: string): Promise<any> {
-    const url = `/api/notifications/readAll`;
-    const config = mnemonichHash
-      ? {
-        headers: {
-          'Mnemonic-Hash': mnemonichHash
-        },
-        withCredentials: true
-      }
-      : {};
-
-    return axiosClient
-      .patch(url, {}, config)
-      .then(response => {
-        return response.data as Notification;
-      })
-      .catch(err => {
-        const { response } = err;
-        throw response.data;
-      });
-  },
   readAllNotifications(): Promise<any> {
     const url = `/api/notifications/readAll`;
 
