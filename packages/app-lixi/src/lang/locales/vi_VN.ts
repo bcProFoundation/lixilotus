@@ -97,6 +97,8 @@ export default {
   'general.burnForType': 'Đốt cho loại',
   'general.failed': 'Thất bại',
   'general.minBurnt': 'XPI tối thiểu đã đốt:',
+  'general.showMore': 'Xem thêm',
+  'general.showLess': 'Xem ít',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',
@@ -475,7 +477,7 @@ export default {
   /* 15.Post */
   'post.createNewPage': 'tạo bài viết mới',
   'post.createPage': 'tạo bài viết',
-  'post.editPost': 'Sửa bài viết',
+  'post.editPost': 'Sửa bài viết chưa đốt',
   'post.edited': 'Đã chỉnh sửa',
   'post.name': 'Tên',
   'post.inputName': 'Vui lòng nhập tên',
