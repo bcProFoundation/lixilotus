@@ -17,6 +17,7 @@ import { claimReducer } from './claim/reducer';
 import { modalReducer } from './modal/reducer';
 import { settingsReducer } from './settings/reducer';
 import { notificationReducer } from './notification/reducer';
+import { worshipReducer } from './worship/reducer';
 import { AccountsState } from './account/state';
 import { HYDRATE } from 'next-redux-wrapper';
 import { SettingsState } from './settings/state';
@@ -125,6 +126,7 @@ export const serverReducer = combineReducers({
   error: errorReducer,
   settings: settingsReducer,
   notifications: notificationReducer,
+  worship: worshipReducer,
   pages: pageReducer,
   tokens: tokenReducer,
   countries: countryReducer,
@@ -147,6 +149,7 @@ export const appReducer = combineReducers({
   pages: persistReducer(shopPersistConfig, pageReducer),
   tokens: tokenReducer,
   notifications: notificationReducer,
+  worship: worshipReducer,
   envelopes: envelopeReducer,
   loading: loadingReducer,
   modal: modalReducer,

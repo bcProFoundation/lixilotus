@@ -8,6 +8,7 @@ import envelopeSaga from './envelope/saga';
 import toastSaga from './toast/saga';
 import settingsSaga from './settings/saga';
 import notificationSaga from './notification/saga';
+import worshipSaga from './worship/saga';
 import sendSaga from './send/saga';
 import pageSaga from './page/saga';
 import countrySaga from './country/saga';
@@ -29,6 +30,7 @@ export default function* rootSaga() {
     toastSaga(),
     settingsSaga(),
     notificationSaga(),
+    worshipSaga(),
     pageSaga(),
     postSaga(),
     countrySaga(),

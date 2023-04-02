@@ -339,6 +339,51 @@ export type AllWorshipedByPersonIdQuery = {
   };
 };
 
+export type AllWorshipQueryVariables = Types.Exact<{
+  after?: Types.InputMaybe<Types.Scalars['String']>;
+  before?: Types.InputMaybe<Types.Scalars['String']>;
+  first?: Types.InputMaybe<Types.Scalars['Int']>;
+  last?: Types.InputMaybe<Types.Scalars['Int']>;
+  orderBy?: Types.InputMaybe<Types.WorshipOrder>;
+  skip?: Types.InputMaybe<Types.Scalars['Int']>;
+}>;
+
+export type AllWorshipQuery = {
+  __typename?: 'Query';
+  allWorship: {
+    __typename?: 'WorshipConnection';
+    totalCount?: number | null;
+    edges?: Array<{
+      __typename?: 'WorshipEdge';
+      cursor: string;
+      node: {
+        __typename?: 'Worship';
+        id: string;
+        worshipedAmount: number;
+        location?: string | null;
+        latitude?: any | null;
+        longitude?: any | null;
+        createdAt: any;
+        updatedAt: any;
+        account: { __typename?: 'Account'; id: string; name: string; address: string };
+        worshipedPerson: {
+          __typename?: 'WorshipedPerson';
+          id: string;
+          name: string;
+          totalWorshipAmount?: number | null;
+        };
+      };
+    }> | null;
+    pageInfo: {
+      __typename?: 'PageInfo';
+      endCursor?: string | null;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: string | null;
+    };
+  };
+};
+
 export type CreateWorshipedPersonMutationVariables = Types.Exact<{
   input: Types.CreateWorshipedPersonInput;
 }>;
@@ -568,6 +613,30 @@ export const AllWorshipedByPersonIdDocument = `
 }
     ${WorshipFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
+export const AllWorshipDocument = `
+    query allWorship($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: WorshipOrder, $skip: Int) {
+  allWorship(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    skip: $skip
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...WorshipFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+    ${WorshipFieldsFragmentDoc}
+${PageInfoFieldsFragmentDoc}`;
 export const CreateWorshipedPersonDocument = `
     mutation createWorshipedPerson($input: CreateWorshipedPersonInput!) {
   createWorshipedPerson(data: $input) {
@@ -606,6 +675,9 @@ const injectedRtkApi = api.injectEndpoints({
     allWorshipedByPersonId: build.query<AllWorshipedByPersonIdQuery, AllWorshipedByPersonIdQueryVariables | void>({
       query: variables => ({ document: AllWorshipedByPersonIdDocument, variables })
     }),
+    allWorship: build.query<AllWorshipQuery, AllWorshipQueryVariables | void>({
+      query: variables => ({ document: AllWorshipDocument, variables })
+    }),
     createWorshipedPerson: build.mutation<CreateWorshipedPersonMutation, CreateWorshipedPersonMutationVariables>({
       query: variables => ({ document: CreateWorshipedPersonDocument, variables })
     }),
@@ -629,6 +701,8 @@ export const {
   useLazyWorshipedPeopleSpecialDateQuery,
   useAllWorshipedByPersonIdQuery,
   useLazyAllWorshipedByPersonIdQuery,
+  useAllWorshipQuery,
+  useLazyAllWorshipQuery,
   useCreateWorshipedPersonMutation,
   useCreateWorshipMutation
 } = injectedRtkApi;

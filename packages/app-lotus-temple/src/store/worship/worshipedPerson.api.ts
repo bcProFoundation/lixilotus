@@ -8,7 +8,7 @@ export interface WorshipedPersonApiState extends EntityState<WorshipedPersonQuer
 }
 
 const enhancedApi = api.enhanceEndpoints({
-  addTagTypes: ['WorshipedPerson'],
+  addTagTypes: ['WorshipedPerson', 'Worship'],
   endpoints: {
     WorshipedPeople: {
       providesTags: (result, error, arg) => ['WorshipedPerson'],
@@ -41,6 +41,21 @@ const enhancedApi = api.enhanceEndpoints({
         currentCacheData.allWorshipedByPersonId.edges.push(...responseData.allWorshipedByPersonId.edges);
         currentCacheData.allWorshipedByPersonId.pageInfo = responseData.allWorshipedByPersonId.pageInfo;
         currentCacheData.allWorshipedByPersonId.totalCount = responseData.allWorshipedByPersonId.totalCount;
+      }
+    },
+    allWorship: {
+      providesTags: (result, error, arg) => ['Worship'],
+      serializeQueryArgs({ queryArgs }) {
+        if (queryArgs) {
+          const { orderBy, ...otherArgs } = queryArgs;
+          return { orderBy };
+        }
+        return { queryArgs };
+      },
+      merge(currentCacheData, responseData) {
+        currentCacheData.allWorship.edges.push(...responseData.allWorship.edges);
+        currentCacheData.allWorship.pageInfo = responseData.allWorship.pageInfo;
+        currentCacheData.allWorship.totalCount = responseData.allWorship.totalCount;
       }
     },
     createWorship: {},

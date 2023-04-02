@@ -1,8 +1,15 @@
-import React, { useRef, useState } from 'react';
-import { Menu } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
+import { Menu, Skeleton } from 'antd';
 import type { MenuProps } from 'antd';
 import style from 'styled-components';
 import WorshipedPersonCard from '@components/Common/WorshipedPersonCard';
+import { startChannel, stopChannel } from '@store/worship/actions';
+import { useAppDispatch } from '@store/hooks';
+import { useAllWorshipQuery } from '@store/worship/worshipedPerson.generated';
+import { OrderDirection, WorshipOrderField } from 'src/generated/types.generated';
+import { useInfiniteWorship } from '@store/worship/useInfiniteWorship';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import WorshipPersonCard from '@components/WorshipedPerson/WorshipPersonCard';
 
 const items: MenuProps['items'] = [
   {
@@ -28,6 +35,11 @@ const StyledMenu = style(Menu)`
    .ant-menu-item-selected {
       font-weight: bold;
    }
+`;
+
+const StyledLiveBurnContainer = style.div`
+  width: 640px;
+  margin-top: 25px;
 `;
 
 const StyledCardContainer = style.div`
@@ -65,6 +77,14 @@ const Home = () => {
   const [current, setCurrent] = useState('specialDay');
   const specialDayRef = useRef(null);
   const trendingRef = useRef(null);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(startChannel());
+    return () => {
+      stopChannel();
+    };
+  }, []);
 
   const onClick: MenuProps['onClick'] = e => {
     setCurrent(e.key);
@@ -76,6 +96,25 @@ const Home = () => {
       case 'specialDay':
         specialDayRef.current.scrollIntoView();
         break;
+    }
+  };
+
+  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfiniteWorship(
+    {
+      first: 20,
+      orderBy: {
+        direction: OrderDirection.Desc,
+        field: WorshipOrderField.UpdatedAt
+      }
+    },
+    false
+  );
+
+  const loadMoreItems = () => {
+    if (hasNext && !isFetching) {
+      fetchNext();
+    } else if (hasNext) {
+      fetchNext();
     }
   };
 
@@ -124,6 +163,46 @@ const Home = () => {
         <WorshipedPersonCard />
         <WorshipedPersonCard />
       </StyledCardContainer>
+      <StyledHeaderContainer>
+        <StyledHeader>
+          <StyledTextHeader ref={trendingRef}>Đốt trực típ</StyledTextHeader>
+          <StyledTextDesc>
+            Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat{' '}
+          </StyledTextDesc>
+        </StyledHeader>
+        <picture>
+          <img alt="recent-trending" src="/images/recent-trending.svg" width="300px" />
+        </picture>
+      </StyledHeaderContainer>
+      <StyledLiveBurnContainer>
+        <React.Fragment>
+          <InfiniteScroll
+            dataLength={data.length}
+            next={loadMoreItems}
+            hasMore={hasNext}
+            loader={<Skeleton avatar active />}
+            height={400}
+            endMessage={
+              <p style={{ textAlign: 'center' }}>
+                <b>{"It's so empty here..."}</b>
+              </p>
+            }
+            scrollableTarget="scrollableDiv"
+          >
+            {data.map((item, index) => {
+              return (
+                <WorshipPersonCard
+                  index={index}
+                  item={item}
+                  key={item.id}
+                  isPublic={true}
+                  worshipedPersonName={item.worshipedPerson.name}
+                />
+              );
+            })}
+          </InfiniteScroll>
+        </React.Fragment>
+      </StyledLiveBurnContainer>
     </React.Fragment>
   );
 };

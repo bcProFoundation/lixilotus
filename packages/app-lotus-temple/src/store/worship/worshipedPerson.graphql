@@ -190,6 +190,21 @@ query allWorshipedByPersonId(
   }
 }
 
+query allWorship($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: WorshipOrder, $skip: Int) {
+  allWorship(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, skip: $skip) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...WorshipFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+
 mutation createWorshipedPerson($input: CreateWorshipedPersonInput!) {
   createWorshipedPerson(data: $input) {
     ...WorshipedPersonFields

@@ -249,6 +249,7 @@ const SidebarContent = () => {
   const walletStatus = useAppSelector(getWalletStatus);
   const worshipedPeople = useWorshipedPeopleByUserIdQuery();
   const recentVisitedPeople = useAppSelector(getRecentVisitedPeople);
+  const history = useRouter();
 
   const triggerSrollbar = e => {
     const sidebarShortcutNode = refSidebarShortcut.current;
@@ -266,7 +267,7 @@ const SidebarContent = () => {
     <StyledSidebar id="short-cut-sidebar" ref={refSidebarShortcut} onScroll={e => triggerSrollbar(e)}>
       <ContainerAccess>
         <div className="wrapper">
-          <StyledWrapper style={{ justifyContent: 'center' }}>
+          <StyledWrapper style={{ justifyContent: 'center' }} onClick={() => history.push('/')}>
             <picture>
               <img width="35px" src="/images/lotus_logo.png" alt="lixilotus" />
             </picture>

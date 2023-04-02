@@ -12,9 +12,12 @@ export type WorshipItem = WorshipQuery['worship'];
 type WorshipCardProps = {
   index: number;
   item: WorshipItem;
+  isPublic?: boolean;
+  worshipedPersonName?: string;
 };
 
 const StyledAnimation = style.div`
+  padding-right: 5px;
   .new-item {
     opacity: 0;
     transform: scale(0);
@@ -62,7 +65,7 @@ const StyledSubInfo = style.span`
   font-size: 11.5px;
 `;
 
-const WorshipPersonCard = ({ index, item }: WorshipCardProps) => {
+const WorshipPersonCard = ({ index, item, isPublic, worshipedPersonName }: WorshipCardProps) => {
   const getWorshipImage = () => {
     if (item.worshipedAmount >= 1 && item.worshipedAmount < 10) {
       return '/images/incense-card.svg';
@@ -96,7 +99,7 @@ const WorshipPersonCard = ({ index, item }: WorshipCardProps) => {
               {item.account.name} <StyledSubInfo> - {moment(item.createdAt).fromNow().toString()}</StyledSubInfo>
             </StyledName>
             <span style={{ marginBottom: '0' }}>
-              {worshipTextType}
+              {worshipTextType} {isPublic && ` - ${worshipedPersonName}`}
               <StyledSubInfo>
                 - <FireOutlined /> {item.worshipedAmount} XPI
               </StyledSubInfo>

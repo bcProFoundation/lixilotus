@@ -22,13 +22,19 @@ import { I18n, I18nService } from 'nestjs-i18n';
 import VError from 'verror';
 import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
 import moment from 'moment';
+import { WorshipGateway } from './worship.gateway';
 
 const pubSub = new PubSub();
 
 @Resolver(() => WorshipedPerson)
 @UseFilters(GqlHttpExceptionFilter)
 export class WorshipResolver {
-  constructor(private logger: Logger, private prisma: PrismaService, @I18n() private i18n: I18nService) {}
+  constructor(
+    private logger: Logger,
+    private prisma: PrismaService,
+    @I18n() private i18n: I18nService,
+    private worshipGateway: WorshipGateway
+  ) {}
 
   @Subscription(() => WorshipedPerson)
   worshipedPersonCreated() {
@@ -160,6 +166,29 @@ export class WorshipResolver {
             }
           }
         }),
+      { first, last, before, after }
+    );
+    return result;
+  }
+
+  @Query(() => WorshipConnection)
+  async allWorship(
+    @Args() { after, before, first, last }: PaginationArgs,
+    @Args({
+      name: 'orderBy',
+      type: () => WorshipOrder,
+      nullable: true
+    })
+    orderBy: WorshipOrder
+  ) {
+    const result = await findManyCursorConnection(
+      args =>
+        this.prisma.worship.findMany({
+          include: { account: true, worshipedPerson: true },
+          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+          ...args
+        }),
+      () => this.prisma.worship.count({}),
       { first, last, before, after }
     );
     return result;
@@ -324,6 +353,8 @@ export class WorshipResolver {
         totalWorshipAmount: newTotalAmount
       }
     });
+
+    this.worshipGateway.publishWorship(worshipedPerson);
 
     pubSub.publish('personWorshiped', { personWorshiped: worshipedPerson });
     return worshipedPerson;
