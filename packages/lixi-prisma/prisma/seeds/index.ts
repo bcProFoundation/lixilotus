@@ -6,6 +6,7 @@ import { PrismaClient } from '@prisma/client';
 import { emailTemplates } from './emailTemplates';
 import { emailTemplateTranslations } from './emailTemplateTranslations';
 import { categories } from './categories';
+import { worshipedPersonInVietNam } from './worship/vietnam';
 
 const prisma = new PrismaClient();
 
@@ -69,6 +70,26 @@ async function main() {
       });
     })
   );
+
+  const worshipedPeople = await prisma.worshipedPerson.createMany({
+    data: worshipedPersonInVietNam.map((person)=> {
+      return {
+        name: person.PersonName,
+        wikiDataId: person.Person.split("/").pop(),
+        countryOfCitizenship: person.CountryOfCitizenshipLabel,
+        religion: person.ReligionLabel,
+        dateOfBirth: person.DateOfBirth,
+        placeOfBirth: person.PlaceOfBirthLabel,
+        dateOfDeath: person.DateOfDeath,
+        placeOfDeath: person.PlaceOfDeathLabel,
+        placeOfBurial: person.PlaceOfBurialLabel,
+        achievement: person.PersonDescription,
+        alias: person.PersonAlias,
+        wikiAvatar: person.Image
+      }
+    }),
+    skipDuplicates: true,
+  }) 
 }
 
 main()

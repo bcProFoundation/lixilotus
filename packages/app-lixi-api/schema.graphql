@@ -445,10 +445,13 @@ enum WorshipOrderField {
 }
 
 type WorshipedPerson {
+  achievement: String
+  alias: String
   avatar: UploadDetail
   bio: String
   city: City
   country: Country
+  countryOfCitizenship: String
 
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
@@ -456,12 +459,17 @@ type WorshipedPerson {
   dateOfDeath: DateTime
   id: ID!
   name: String!
+  placeOfBirth: String
+  placeOfBurial: String
+  placeOfDeath: String
   quote: String
+  religion: String
   state: State
   totalWorshipAmount: Int
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
+  wikiAvatar: String
   wikiDataId: String
 }
 

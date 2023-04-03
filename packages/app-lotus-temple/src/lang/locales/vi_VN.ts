@@ -571,6 +571,15 @@ export default {
   'category.other': 'Khác',
 
   /* 19. Worship */
+  'worship.achievement': 'Thành tựu',
+  'worship.alias': 'Tên khác',
+  'worship.religion': 'Tôn giáo',
+  'worship.placeOfBirth': 'Nơi sinh',
+  'worship.placeOfBurial': 'Nơi an nghỉ',
+  'worship.dateOfBirth': 'Ngày sinh',
+  'worship.dateOfDeath': 'Ngày an nghỉ',
+  'worship.countryOfCitizenship': 'Nguyên quán',
+  'worship.noInfo': 'Không có thông tin',
   'worship.offerIncense': 'đã dâng một nến hương',
   'worship.offerCandle': 'đã dâng một ngọn nến',
   'worship.offerFlower': 'đã dâng một bông hoa sen'

@@ -20,6 +20,15 @@ export type WorshipedPersonFieldsFragment = {
   __typename?: 'WorshipedPerson';
   id: string;
   name: string;
+  wikiAvatar?: string | null;
+  countryOfCitizenship?: string | null;
+  achievement?: string | null;
+  bio?: string | null;
+  alias?: string | null;
+  religion?: string | null;
+  placeOfBirth?: string | null;
+  placeOfDeath?: string | null;
+  placeOfBurial?: string | null;
   quote?: string | null;
   wikiDataId?: string | null;
   totalWorshipAmount?: number | null;
@@ -70,6 +79,15 @@ export type WorshipedPersonQuery = {
     __typename?: 'WorshipedPerson';
     id: string;
     name: string;
+    wikiAvatar?: string | null;
+    countryOfCitizenship?: string | null;
+    achievement?: string | null;
+    bio?: string | null;
+    alias?: string | null;
+    religion?: string | null;
+    placeOfBirth?: string | null;
+    placeOfDeath?: string | null;
+    placeOfBurial?: string | null;
     quote?: string | null;
     wikiDataId?: string | null;
     totalWorshipAmount?: number | null;
@@ -140,6 +158,15 @@ export type WorshipedPeopleQuery = {
         __typename?: 'WorshipedPerson';
         id: string;
         name: string;
+        wikiAvatar?: string | null;
+        countryOfCitizenship?: string | null;
+        achievement?: string | null;
+        bio?: string | null;
+        alias?: string | null;
+        religion?: string | null;
+        placeOfBirth?: string | null;
+        placeOfDeath?: string | null;
+        placeOfBurial?: string | null;
         quote?: string | null;
         wikiDataId?: string | null;
         totalWorshipAmount?: number | null;
@@ -198,6 +225,15 @@ export type WorshipedPeopleByUserIdQuery = {
         __typename?: 'WorshipedPerson';
         id: string;
         name: string;
+        wikiAvatar?: string | null;
+        countryOfCitizenship?: string | null;
+        achievement?: string | null;
+        bio?: string | null;
+        alias?: string | null;
+        religion?: string | null;
+        placeOfBirth?: string | null;
+        placeOfDeath?: string | null;
+        placeOfBurial?: string | null;
         quote?: string | null;
         wikiDataId?: string | null;
         totalWorshipAmount?: number | null;
@@ -256,6 +292,15 @@ export type WorshipedPeopleSpecialDateQuery = {
         __typename?: 'WorshipedPerson';
         id: string;
         name: string;
+        wikiAvatar?: string | null;
+        countryOfCitizenship?: string | null;
+        achievement?: string | null;
+        bio?: string | null;
+        alias?: string | null;
+        religion?: string | null;
+        placeOfBirth?: string | null;
+        placeOfDeath?: string | null;
+        placeOfBurial?: string | null;
         quote?: string | null;
         wikiDataId?: string | null;
         totalWorshipAmount?: number | null;
@@ -394,6 +439,15 @@ export type CreateWorshipedPersonMutation = {
     __typename?: 'WorshipedPerson';
     id: string;
     name: string;
+    wikiAvatar?: string | null;
+    countryOfCitizenship?: string | null;
+    achievement?: string | null;
+    bio?: string | null;
+    alias?: string | null;
+    religion?: string | null;
+    placeOfBirth?: string | null;
+    placeOfDeath?: string | null;
+    placeOfBurial?: string | null;
     quote?: string | null;
     wikiDataId?: string | null;
     totalWorshipAmount?: number | null;
@@ -459,6 +513,15 @@ export const WorshipedPersonFieldsFragmentDoc = `
       sha40
     }
   }
+  wikiAvatar
+  countryOfCitizenship
+  achievement
+  bio
+  alias
+  religion
+  placeOfBirth
+  placeOfDeath
+  placeOfBurial
   quote
   wikiDataId
   totalWorshipAmount

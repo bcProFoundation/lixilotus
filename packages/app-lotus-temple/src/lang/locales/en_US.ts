@@ -570,6 +570,15 @@ export default {
   'category.other': 'Other',
 
   /* 19. Worship */
+  'worship.achievement': 'Achievement',
+  'worship.alias': 'Also known as',
+  'worship.religion': 'Religion',
+  'worship.placeOfBirth': 'Place of Birth',
+  'worship.placeOfBurial': 'Place of Burial',
+  'worship.dateOfBirth': 'Date of Birth',
+  'worship.dateOfDeath': 'Date of Death',
+  'worship.countryOfCitizenship': 'Country of Citizenship',
+  'worship.noInfo': 'No information',
   'worship.offerIncense': 'has offered an incense',
   'worship.offerCandle': 'has offered a candle',
   'worship.offerFlower': 'has offered a lotus'

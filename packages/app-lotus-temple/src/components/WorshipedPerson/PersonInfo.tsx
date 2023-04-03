@@ -1,8 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import style from 'styled-components';
 import { AvatarUser } from '@components/Common/AvatarUser';
 import { Space } from 'antd';
+import { WorshipedPersonQuery } from '@store/worship/worshipedPerson.generated';
 import { FireOutlined } from '@ant-design/icons';
+import { PersonType } from './PersonDetail';
+import intl from 'react-intl-universal';
+import moment from 'moment';
+
+type PersonInfoProp = {
+  person: PersonType;
+};
 
 const StyledItem = style.div`
    display: flex;
@@ -48,7 +56,13 @@ const StyledIcon = style.img`
    min-width: 40px
 `;
 
-const PersonInfo = () => {
+const PersonInfo = ({ person }: PersonInfoProp) => {
+  const personAlias = person.alias && person.alias.split(',');
+
+  const getFallBackText = () => {
+    return <span style={{ fontStyle: 'italic' }}>{intl.get('worship.noInfo')}</span>;
+  };
+
   return (
     <StyledItem>
       <StyledHeader>Thông tin</StyledHeader>
@@ -58,8 +72,8 @@ const PersonInfo = () => {
           <StyledIcon alt="achievement" src="/images/achievement.svg" />
         </picture>
         <StyledInfoContainer>
-          <StyledSubHeader>Thành tựu</StyledSubHeader>
-          <StyledText>Hoàng đế thứ hai của nhà Tây Sơn</StyledText>
+          <StyledSubHeader>{intl.get('worship.achievement')}</StyledSubHeader>
+          <StyledText>{person.achievement || getFallBackText()}</StyledText>
         </StyledInfoContainer>
       </StyledSpace>
       {/* Also know as / Tên khác */}
@@ -68,11 +82,12 @@ const PersonInfo = () => {
           <StyledIcon alt="aka" src="/images/aka.svg" />
         </picture>
         <StyledInfoContainer>
-          <StyledSubHeader>Tên khác</StyledSubHeader>
-          <StyledText>Nguyễn Văn Huệ</StyledText>
-          <StyledText>Quang Trung hoàng đế</StyledText>
-          <StyledText>Hồ Thơm</StyledText>
-          <StyledText>Hoàng đế Quang Trung</StyledText>
+          <StyledSubHeader>{intl.get('worship.alias')}</StyledSubHeader>
+          {personAlias && personAlias.length > 0
+            ? personAlias.map((alias, index) => {
+                return <StyledText key={index}>{alias}</StyledText>;
+              })
+            : getFallBackText()}
         </StyledInfoContainer>
       </StyledSpace>
       {/* Country of citizenship / Nguyên quán */}
@@ -81,8 +96,8 @@ const PersonInfo = () => {
           <StyledIcon alt="aka" src="/images/aka.svg" />
         </picture>
         <StyledInfoContainer>
-          <StyledSubHeader>Nguyên quán</StyledSubHeader>
-          <StyledText>Việt Nam</StyledText>
+          <StyledSubHeader>{intl.get('worship.countryOfCitizenship')}</StyledSubHeader>
+          <StyledText>{person.countryOfCitizenship || getFallBackText()}</StyledText>
         </StyledInfoContainer>
       </StyledSpace>
       {/* Religion / Tôn giáo */}
@@ -91,8 +106,8 @@ const PersonInfo = () => {
           <StyledIcon alt="religion" src="/images/religion.svg" />
         </picture>
         <StyledInfoContainer>
-          <StyledSubHeader>Tôn giáo</StyledSubHeader>
-          <StyledText>Việt Nam</StyledText>
+          <StyledSubHeader>{intl.get('worship.religion')}</StyledSubHeader>
+          <StyledText>{person.religion || getFallBackText()}</StyledText>
         </StyledInfoContainer>
       </StyledSpace>
       {/* Date of birth / Ngày sinh */}
@@ -101,11 +116,13 @@ const PersonInfo = () => {
           <StyledIcon alt="birth" src="/images/birth.svg" />
         </picture>
         <StyledInfoContainer>
-          <StyledSubHeader>Ngày sinh</StyledSubHeader>
-          <StyledText>Việt Nam</StyledText>
+          <StyledSubHeader>{intl.get('worship.dateOfBirth')}</StyledSubHeader>
+          <StyledText>
+            {moment(person.dateOfBirth).locale('vi-vn').format('Do MMMM YYYY') || getFallBackText()}
+          </StyledText>
           {/* Place of birth / Nơi sinh */}
-          <StyledSubHeader>Nơi sinh</StyledSubHeader>
-          <StyledText>Việt Nam</StyledText>
+          <StyledSubHeader>{intl.get('worship.placeOfBirth')}</StyledSubHeader>
+          <StyledText>{person.placeOfBirth || getFallBackText()}</StyledText>
         </StyledInfoContainer>
       </StyledSpace>
       {/* Date of death / Ngày an nghỉ */}
@@ -114,11 +131,13 @@ const PersonInfo = () => {
           <StyledIcon alt="tomb" src="/images/tomb.svg" />
         </picture>
         <StyledInfoContainer>
-          <StyledSubHeader>Ngày an nghỉ</StyledSubHeader>
-          <StyledText>Việt Nam</StyledText>
+          <StyledSubHeader>{intl.get('worship.dateOfDeath')}</StyledSubHeader>
+          <StyledText>
+            {moment(person.dateOfDeath).locale('vi-vn').format('Do MMMM YYYY') || getFallBackText()}
+          </StyledText>
           {/* Place of burial / Nơi an nghỉ */}
-          <StyledSubHeader>Nơi an nghỉ</StyledSubHeader>
-          <StyledText>Việt Nam</StyledText>
+          <StyledSubHeader>{intl.get('worship.placeOfBurial')}</StyledSubHeader>
+          <StyledText>{person.placeOfBurial}</StyledText>
         </StyledInfoContainer>
       </StyledSpace>
     </StyledItem>

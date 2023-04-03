@@ -23,6 +23,7 @@ import { OrderDirection, WorshipedPersonOrderField, WorshipOrderField } from 'sr
 import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
 import { addRecentVisitedPerson, setTransactionReady } from '@store/account/actions';
 import { Counter } from '@components/Common/Counter';
+import moment from 'moment';
 
 export type PersonType = WorshipedPersonQuery['worshipedPerson'];
 
@@ -81,7 +82,8 @@ const StyledPersonAvatar: any = style.div`
   background: #D9D9D9;
   border-radius: 40px;
   background-image: url(${(props: any) => props.avatar});
-  background-position: center;
+  background-size: 175px;
+  background-position-x: center;
   background-repeat: no-repeat;
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
   box-shadow: inset 0px 0px 4px #000000;
@@ -200,7 +202,7 @@ const PersonDetail = ({ person, isMobile }: PersonDetailProp) => {
     {
       label: 'Thông tin',
       key: 'info',
-      children: <PersonInfo />
+      children: <PersonInfo person={person} />
     }
   ];
 
@@ -253,10 +255,13 @@ const PersonDetail = ({ person, isMobile }: PersonDetailProp) => {
       <StyledPersonCard>
         <StyledTopCard>
           <StyledPersonCover>
-            <StyledPersonAvatar avatar="/images/placeholderAvatar.svg" />
+            <StyledPersonAvatar avatar={person.wikiAvatar ? person.wikiAvatar : '/images/placeholderAvatar.svg'} />
           </StyledPersonCover>
           <StyledPersonName>{person.name}</StyledPersonName>
-          <StyledPersonDate>1752 - 16 tháng 9,1972</StyledPersonDate>
+          <StyledPersonDate>
+            {person.dateOfBirth ? moment(person.dateOfBirth).locale('vi-vn').format('Do MMMM YYYY') : ''} -{' '}
+            {person.dateOfDeath ? moment(person.dateOfDeath).locale('vi-vn').format('Do MMMM YYYY') : ''}
+          </StyledPersonDate>
         </StyledTopCard>
         <StyledBottomCard>
           <StyledWorshipInfo>

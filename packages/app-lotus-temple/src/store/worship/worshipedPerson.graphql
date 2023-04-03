@@ -17,6 +17,15 @@ fragment WorshipedPersonFields on WorshipedPerson {
       sha40
     }
   }
+  wikiAvatar
+  countryOfCitizenship
+  achievement
+  bio
+  alias
+  religion
+  placeOfBirth
+  placeOfDeath
+  placeOfBurial
   quote
   wikiDataId
   totalWorshipAmount

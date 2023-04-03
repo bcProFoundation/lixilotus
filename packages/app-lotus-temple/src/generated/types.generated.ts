@@ -660,21 +660,29 @@ export enum WorshipOrderField {
 
 export type WorshipedPerson = {
   __typename?: 'WorshipedPerson';
+  achievement?: Maybe<Scalars['String']>;
+  alias?: Maybe<Scalars['String']>;
   avatar?: Maybe<UploadDetail>;
   bio?: Maybe<Scalars['String']>;
   city?: Maybe<City>;
   country?: Maybe<Country>;
+  countryOfCitizenship?: Maybe<Scalars['String']>;
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
   dateOfBirth?: Maybe<Scalars['DateTime']>;
   dateOfDeath?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
   name: Scalars['String'];
+  placeOfBirth?: Maybe<Scalars['String']>;
+  placeOfBurial?: Maybe<Scalars['String']>;
+  placeOfDeath?: Maybe<Scalars['String']>;
   quote?: Maybe<Scalars['String']>;
+  religion?: Maybe<Scalars['String']>;
   state?: Maybe<State>;
   totalWorshipAmount?: Maybe<Scalars['Int']>;
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
+  wikiAvatar?: Maybe<Scalars['String']>;
   wikiDataId?: Maybe<Scalars['String']>;
 };
 

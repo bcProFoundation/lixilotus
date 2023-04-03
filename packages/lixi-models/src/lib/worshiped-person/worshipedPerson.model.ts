@@ -27,7 +27,39 @@ export class WorshipedPerson {
 
   @Field(() => String, { nullable: true })
   @IsOptional()
+  wikiAvatar?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  countryOfCitizenship?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  achievement?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
   bio?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  alias?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  religion?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  placeOfBirth?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  placeOfDeath?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  placeOfBurial?: string;
 
   @Field(() => String, { nullable: true })
   @IsOptional()

@@ -542,24 +542,32 @@ model GiveTip {
 }
 
 model WorshipedPerson {
-  id                 String        @id @default(cuid())
-  name               String
-  avatar             UploadDetail? @relation("worshipedPersonAvatar")
-  bio                String?
-  wikiDataId         String?
-  quote              String?       @default("")
-  dateOfBirth        DateTime?     @map("date_of_birth") @db.Timestamptz(6)
-  dateOfDeath        DateTime?     @map("date_of_death") @db.Timestamptz(6)
-  createdAt          DateTime?     @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt          DateTime?     @default(now()) @map("updated_at") @db.Timestamptz(6)
-  totalWorshipAmount Float         @default(0.0) @map("total_worship_amount")
-  city               City?         @relation(fields: [cityId], references: [id])
-  cityId             Int?
-  country            Country?      @relation(fields: [countryId], references: [id])
-  countryId          Int?
-  state              State?        @relation(fields: [stateId], references: [id])
-  stateId            Int?
-  worship            Worship[]
+  id                   String        @id @default(cuid())
+  name                 String
+  avatar               UploadDetail? @relation("worshipedPersonAvatar")
+  wikiAvatar           String?
+  countryOfCitizenship String?       @map("country_of_citizenship")
+  achievement          String?
+  bio                  String?
+  alias                String?
+  religion             String?
+  wikiDataId           String?       @unique @map("wiki_data_id")
+  quote                String?       @default("")
+  placeOfBirth         String?       @map("place_of_birth")
+  placeOfDeath         String?       @map("place_of_death")
+  placeOfBurial        String?       @map("place_of_burial")
+  dateOfBirth          DateTime?     @map("date_of_birth") @db.Timestamptz(6)
+  dateOfDeath          DateTime?     @map("date_of_death") @db.Timestamptz(6)
+  createdAt            DateTime?     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt            DateTime?     @default(now()) @map("updated_at") @db.Timestamptz(6)
+  totalWorshipAmount   Float         @default(0.0) @map("total_worship_amount")
+  city                 City?         @relation(fields: [cityId], references: [id])
+  cityId               Int?
+  country              Country?      @relation(fields: [countryId], references: [id])
+  countryId            Int?
+  state                State?        @relation(fields: [stateId], references: [id])
+  stateId              Int?
+  worship              Worship[]
 }
 
 model Worship {
