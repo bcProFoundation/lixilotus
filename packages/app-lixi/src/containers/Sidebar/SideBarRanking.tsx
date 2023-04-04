@@ -28,15 +28,17 @@ export const ShortcutItemAccess = ({
   text,
   href,
   burnValue,
+  key,
   onClickItem
 }: {
   icon: string;
   text: string;
   burnValue?: number;
   href?: string;
+  key?: React.Key;
   onClickItem?: () => void;
 }) => (
-  <Link onClick={onClickItem} href={href}>
+  <Link onClick={onClickItem} href={href} key={key}>
     <a>
       <Space className={'item-access'}>
         <AvatarUser name={text} isMarginRight={false} />
@@ -320,6 +322,7 @@ const SidebarRanking = () => {
   const onChange = (key: string | string[]) => {
     console.log(key);
   }
+
   const [open, setOpen] = useState(false);
   const [isValidMnemonic, setIsValidMnemonic] = useState<boolean | null>(null);
   const [formData, setFormData] = useState({
@@ -453,6 +456,7 @@ const SidebarRanking = () => {
                           icon={item?.page ? item?.page?.avatar : ''}
                           text={item.name}
                           href={`/profile/${item.address}`}
+                          key={`${item.id}-${item.address}`}
                         />
                       </h4>
                     );
