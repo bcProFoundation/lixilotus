@@ -80,6 +80,7 @@ const Footer = ({ notifications }: { notifications?: any }) => {
                 alt=""
               />
             </Badge>
+            
             {intl.get('general.notifications')}
           </NavButton>
         </Link>
