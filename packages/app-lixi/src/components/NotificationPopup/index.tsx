@@ -108,7 +108,7 @@ const StyledComment = styled(Comment)`
   .text-notification {
     font-size: 16px;
     letter-spacing: 0.5px;
-    color: #1E1A1D;
+    color: #1e1a1d;
   }
 `;
 
@@ -194,7 +194,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
   };
 
   const handleRead = (account: Account, notification: Notification) => {
-    notification.url && dispatch(push(`${ notification.url }`));
+    notification.url && dispatch(push(`${notification.url}`));
     dispatch(readNotification({ mnemonichHash: account.mnemonicHash, notificationId: notification.id }));
     if (notification.notificationTypeId === 3) {
       const { parentId, mnemonicHash, fileName } = notification.additionalData as any;
@@ -276,9 +276,16 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                 author={
                   <StyledAuthor>
                     {/* <StyledTextLeft></StyledTextLeft> */}
+<<<<<<< Updated upstream
+                    <StyledTextRight>{moment(notification.createdAt).fromNow().toString()}</StyledTextRight>
+=======
                     <StyledTextRight>
-                      {moment(notification.createdAt).fromNow().toString()}
+                      {
+                        //date-time
+                        moment(notification.createdAt).endOf("minutes").fromNow()
+                      }
                     </StyledTextRight>
+>>>>>>> Stashed changes
                   </StyledAuthor>
                 }
                 avatar={
