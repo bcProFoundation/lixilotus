@@ -316,8 +316,6 @@ const SidebarRanking = () => {
   const [isShowNotification, setIsShowNotification] = useState<boolean>(false);
   const [isCollapse, setIsCollapse] = useState(false);
   const leaderboard = useAppSelector(getLeaderBoard);
-
-  // Leader board (Error) #548
   const { Panel } = Collapse;
   const onChange = (key: string | string[]) => {
     console.log(key);
@@ -445,7 +443,6 @@ const SidebarRanking = () => {
           <div className="container-right-bar your-shortcuts">
             <div className="content">
               <h3>Leader Board</h3>
-              {/* Leader board (Error) #548 */}
               <Collapse defaultActiveKey={['1']} onChange={onChange}>
                 <Panel header="Show top leader board" key="1">
                   {leaderboard.map((item, index) => {
@@ -462,10 +459,6 @@ const SidebarRanking = () => {
                   })}
                 </Panel>
               </Collapse>
-              {/* <div style={{ textAlign: 'end' }}>
-                {!isCollapse && <DownOutlined onClick={() => setIsCollapse(!isCollapse)} />}
-                {isCollapse && <UpOutlined onClick={() => setIsCollapse(!isCollapse)} />}
-              </div> */}
             </div>
           </div>
         </div>
