@@ -23,6 +23,10 @@ import VError from 'verror';
 import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
 import moment from 'moment';
 import { WorshipGateway } from './worship.gateway';
+import ConnectionArgs, { getPagingParameters } from '../../common/custom-graphql-relay/connection.args';
+import { MeiliService } from '../page/meili.service';
+import { PERSON } from '../page/constants/meili.constants';
+import { connectionFromArraySlice } from 'src/common/custom-graphql-relay/arrayConnection';
 
 const pubSub = new PubSub();
 
@@ -32,6 +36,7 @@ export class WorshipResolver {
   constructor(
     private logger: Logger,
     private prisma: PrismaService,
+    private meiliService: MeiliService,
     @I18n() private i18n: I18nService,
     private worshipGateway: WorshipGateway
   ) {}
@@ -62,8 +67,6 @@ export class WorshipResolver {
   @Query(() => WorshipedPersonConnection)
   async allWorshipedPerson(
     @Args() { after, before, first, last }: PaginationArgs,
-    @Args({ name: 'query', type: () => String, nullable: true })
-    query: string,
     @Args({
       name: 'orderBy',
       type: () => WorshipedPersonOrder,
@@ -74,7 +77,7 @@ export class WorshipResolver {
     const result = await findManyCursorConnection(
       args =>
         this.prisma.worshipedPerson.findMany({
-          include: { avatar: true, country: true },
+          include: { avatar: true },
           orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
           ...args
         }),
@@ -82,6 +85,40 @@ export class WorshipResolver {
       { first, last, before, after }
     );
     return result;
+  }
+
+  @Query(() => WorshipedPersonConnection, { name: 'allWorshipedPersonBySearch' })
+  async allWorshipedPersonBySearch(
+    @Args() args: ConnectionArgs,
+    @Args({ name: 'query', type: () => String, nullable: true })
+    query: string
+  ) {
+    const { limit, offset } = getPagingParameters(args);
+
+    const count = await this.meiliService.searchByQueryEstimatedTotalHits(
+      `${process.env.MEILISEARCH_BUCKET}_${PERSON}`,
+      query
+    );
+
+    const people = await this.meiliService.searchByQueryHits(
+      `${process.env.MEILISEARCH_BUCKET}_${PERSON}`,
+      query,
+      offset!,
+      limit!
+    );
+
+    const peopleId = _.map(people, 'id');
+
+    const searchPeople = await this.prisma.worshipedPerson.findMany({
+      where: {
+        id: { in: peopleId }
+      }
+    });
+
+    return connectionFromArraySlice(searchPeople, args, {
+      arrayLength: count || 0,
+      sliceStart: offset || 0
+    });
   }
 
   @UseGuards(GqlJwtAuthGuard)

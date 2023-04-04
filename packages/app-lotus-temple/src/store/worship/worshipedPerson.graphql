@@ -85,18 +85,9 @@ query WorshipedPeople(
   $first: Int = 20
   $last: Int
   $orderBy: WorshipedPersonOrder
-  $query: String
   $skip: Int
 ) {
-  allWorshipedPerson(
-    after: $after
-    before: $before
-    first: $first
-    last: $last
-    orderBy: $orderBy
-    query: $query
-    skip: $skip
-  ) {
+  allWorshipedPerson(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, skip: $skip) {
     totalCount
     edges {
       cursor
@@ -127,6 +118,20 @@ query WorshipedPeopleByUserId(
     skip: $skip
   ) {
     totalCount
+    edges {
+      cursor
+      node {
+        ...WorshipedPersonFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+
+query WorshipedPersonBySearch($after: String, $before: String, $first: Int, $last: Int, $query: String) {
+  allWorshipedPersonBySearch(after: $after, before: $before, first: $first, last: $last, query: $query) {
     edges {
       cursor
       node {

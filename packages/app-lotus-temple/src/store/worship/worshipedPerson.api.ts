@@ -58,6 +58,21 @@ const enhancedApi = api.enhanceEndpoints({
         currentCacheData.allWorship.totalCount = responseData.allWorship.totalCount;
       }
     },
+    WorshipedPersonBySearch: {
+      providesTags: (result, error, arg) => ['WorshipedPerson'],
+      serializeQueryArgs({ queryArgs }) {
+        if (queryArgs) {
+          const { query, ...otherArgs } = queryArgs;
+          return { query };
+        }
+        return { queryArgs };
+      },
+      merge(currentCacheData, responseData) {
+        currentCacheData.allWorshipedPersonBySearch.edges.push(...responseData.allWorshipedPersonBySearch.edges);
+        currentCacheData.allWorshipedPersonBySearch.pageInfo = responseData.allWorshipedPersonBySearch.pageInfo;
+      }
+    },
+
     createWorship: {},
     createWorshipedPerson: {}
   }

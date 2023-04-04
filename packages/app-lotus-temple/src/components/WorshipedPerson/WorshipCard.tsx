@@ -65,7 +65,7 @@ const StyledSubInfo = style.span`
   font-size: 11.5px;
 `;
 
-const WorshipPersonCard = ({ index, item, isPublic, worshipedPersonName }: WorshipCardProps) => {
+const WorshipCard = ({ index, item, isPublic, worshipedPersonName }: WorshipCardProps) => {
   const getWorshipImage = () => {
     if (item.worshipedAmount >= 1 && item.worshipedAmount < 10) {
       return '/images/incense-card.svg';
@@ -114,4 +114,4 @@ const WorshipPersonCard = ({ index, item, isPublic, worshipedPersonName }: Worsh
   );
 };
 
-export default WorshipPersonCard;
+export default WorshipCard;

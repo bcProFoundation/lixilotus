@@ -1,6 +1,6 @@
 import React, { useState, useRef, ReactNode, useEffect } from 'react';
 import style from 'styled-components';
-import WorshipPersonCard from './WorshipPersonCard';
+import WorshipPersonCard from './WorshipCard';
 import { Space, Tabs, Skeleton, Tooltip } from 'antd';
 import type { TabsProps } from 'antd';
 import PersonInfo from './PersonInfo';

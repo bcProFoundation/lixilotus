@@ -142,7 +142,6 @@ export type WorshipedPeopleQueryVariables = Types.Exact<{
   first?: Types.InputMaybe<Types.Scalars['Int']>;
   last?: Types.InputMaybe<Types.Scalars['Int']>;
   orderBy?: Types.InputMaybe<Types.WorshipedPersonOrder>;
-  query?: Types.InputMaybe<Types.Scalars['String']>;
   skip?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
@@ -218,6 +217,71 @@ export type WorshipedPeopleByUserIdQuery = {
   allWorshipedPersonByUserId: {
     __typename?: 'WorshipedPersonConnection';
     totalCount?: number | null;
+    edges?: Array<{
+      __typename?: 'WorshipedPersonEdge';
+      cursor: string;
+      node: {
+        __typename?: 'WorshipedPerson';
+        id: string;
+        name: string;
+        wikiAvatar?: string | null;
+        countryOfCitizenship?: string | null;
+        achievement?: string | null;
+        bio?: string | null;
+        alias?: string | null;
+        religion?: string | null;
+        placeOfBirth?: string | null;
+        placeOfDeath?: string | null;
+        placeOfBurial?: string | null;
+        quote?: string | null;
+        wikiDataId?: string | null;
+        totalWorshipAmount?: number | null;
+        dateOfBirth?: any | null;
+        dateOfDeath?: any | null;
+        createdAt: any;
+        updatedAt: any;
+        avatar?: {
+          __typename?: 'UploadDetail';
+          id: string;
+          upload: {
+            __typename?: 'Upload';
+            id: string;
+            sha: string;
+            bucket?: string | null;
+            width?: string | null;
+            height?: string | null;
+            sha800?: string | null;
+            sha320?: string | null;
+            sha40?: string | null;
+          };
+        } | null;
+        country?: { __typename?: 'Country'; id: string; name: string } | null;
+        state?: { __typename?: 'State'; id: string; name: string } | null;
+        city?: { __typename?: 'City'; id: string; name: string } | null;
+      };
+    }> | null;
+    pageInfo: {
+      __typename?: 'PageInfo';
+      endCursor?: string | null;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: string | null;
+    };
+  };
+};
+
+export type WorshipedPersonBySearchQueryVariables = Types.Exact<{
+  after?: Types.InputMaybe<Types.Scalars['String']>;
+  before?: Types.InputMaybe<Types.Scalars['String']>;
+  first?: Types.InputMaybe<Types.Scalars['Int']>;
+  last?: Types.InputMaybe<Types.Scalars['Int']>;
+  query?: Types.InputMaybe<Types.Scalars['String']>;
+}>;
+
+export type WorshipedPersonBySearchQuery = {
+  __typename?: 'Query';
+  allWorshipedPersonBySearch: {
+    __typename?: 'WorshipedPersonConnection';
     edges?: Array<{
       __typename?: 'WorshipedPersonEdge';
       cursor: string;
@@ -579,14 +643,13 @@ export const WorshipDocument = `
 }
     ${WorshipFieldsFragmentDoc}`;
 export const WorshipedPeopleDocument = `
-    query WorshipedPeople($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: WorshipedPersonOrder, $query: String, $skip: Int) {
+    query WorshipedPeople($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: WorshipedPersonOrder, $skip: Int) {
   allWorshipedPerson(
     after: $after
     before: $before
     first: $first
     last: $last
     orderBy: $orderBy
-    query: $query
     skip: $skip
   ) {
     totalCount
@@ -614,6 +677,28 @@ export const WorshipedPeopleByUserIdDocument = `
     skip: $skip
   ) {
     totalCount
+    edges {
+      cursor
+      node {
+        ...WorshipedPersonFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+    ${WorshipedPersonFieldsFragmentDoc}
+${PageInfoFieldsFragmentDoc}`;
+export const WorshipedPersonBySearchDocument = `
+    query WorshipedPersonBySearch($after: String, $before: String, $first: Int, $last: Int, $query: String) {
+  allWorshipedPersonBySearch(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    query: $query
+  ) {
     edges {
       cursor
       node {
@@ -729,6 +814,9 @@ const injectedRtkApi = api.injectEndpoints({
     WorshipedPeopleByUserId: build.query<WorshipedPeopleByUserIdQuery, WorshipedPeopleByUserIdQueryVariables | void>({
       query: variables => ({ document: WorshipedPeopleByUserIdDocument, variables })
     }),
+    WorshipedPersonBySearch: build.query<WorshipedPersonBySearchQuery, WorshipedPersonBySearchQueryVariables | void>({
+      query: variables => ({ document: WorshipedPersonBySearchDocument, variables })
+    }),
     WorshipedPeopleSpecialDate: build.query<
       WorshipedPeopleSpecialDateQuery,
       WorshipedPeopleSpecialDateQueryVariables | void
@@ -760,6 +848,8 @@ export const {
   useLazyWorshipedPeopleQuery,
   useWorshipedPeopleByUserIdQuery,
   useLazyWorshipedPeopleByUserIdQuery,
+  useWorshipedPersonBySearchQuery,
+  useLazyWorshipedPersonBySearchQuery,
   useWorshipedPeopleSpecialDateQuery,
   useLazyWorshipedPeopleSpecialDateQuery,
   useAllWorshipedByPersonIdQuery,

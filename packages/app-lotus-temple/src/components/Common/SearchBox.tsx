@@ -39,13 +39,13 @@ const SearchBox = props => {
   const onPressEnter = e => {
     const { value } = e.target;
     if (e.key === 'Enter' && value !== '') {
-      props.searchPost(value);
+      props.search(value);
     }
   };
 
   const onDeleteText = () => {
     setValue('search', '');
-    props.searchPost(null);
+    props.search(null);
   };
 
   return (
@@ -63,7 +63,7 @@ const SearchBox = props => {
               onChange={onChange}
               onBlur={onBlur}
               value={value}
-              placeholder="Search for posts"
+              placeholder="Search..."
               onKeyDown={onPressEnter}
             />
           )}

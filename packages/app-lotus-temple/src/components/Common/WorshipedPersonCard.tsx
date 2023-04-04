@@ -11,15 +11,23 @@ type WorshipedPersonCardProp = {
 };
 
 const StyledCard = style.div`
-   display: flex;
-   width: 300px;
-   height: 80px;
-   background: #FDFCFC;
-   border-radius: 15px;
-   margin-top: 10px;
-   margin-bottom: 10px;
-   padding: 8px 16px;
-   cursor: pointer;
+  display: flex;
+  min-width: 300px;
+  max-width: 640px;
+  height: 80px;
+  background: #FDFCFC;
+  border-radius: 15px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 8px 16px;
+  cursor: pointer;
+
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    height: 95px;
+  }
 `;
 
 const WorshipedPersonCard = ({ person }: WorshipedPersonCardProp) => {
@@ -31,7 +39,9 @@ const WorshipedPersonCard = ({ person }: WorshipedPersonCardProp) => {
           <AvatarUser name={person.name} />
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <p style={{ marginBottom: '5px', textAlign: 'left', fontWeight: 'bold' }}>{person.name}</p>
-            <p style={{ marginBottom: '0' }}>Ngày giỗ: {moment(person.dateOfDeath).format('DD/MM/YYYY')}</p>
+            <p style={{ marginBottom: '0', textAlign: 'left' }}>
+              Ngày giỗ: {person.dateOfDeath ? moment(person.dateOfDeath).format('DD/MM/YYYY') : ''}
+            </p>
           </div>
         </Space>
       </StyledCard>

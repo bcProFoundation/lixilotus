@@ -124,7 +124,6 @@ export const AppContainer = styled.div`
     }
 
     .content-child {
-      width: 100%;
       margin: 0 auto;
     }
   }
