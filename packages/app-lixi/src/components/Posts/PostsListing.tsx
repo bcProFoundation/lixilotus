@@ -174,8 +174,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const filterValue = useAppSelector(getFilterPostsHome);
   const leaderboard = useAppSelector(getLeaderBoard);
 
-
-  useEffect(() => dispatch(getLeaderboard()), [])
+  useEffect(() => dispatch(getLeaderboard()), []);
 
   const onClickMenu: MenuProps['onClick'] = e => {
     setTab(e.key);

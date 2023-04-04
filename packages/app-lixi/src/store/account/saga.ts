@@ -155,7 +155,6 @@ function* getAccountSuccessSaga(action: PayloadAction<Account>) {
   yield put(hideLoading(getAccount.type));
 }
 
-
 function* getAccountFailureSaga(action: PayloadAction<string>) {
   const message = action.payload ?? intl.get('account.unableGetAccountFromServer');
   yield put(
@@ -512,7 +511,7 @@ function* refreshLixiListSilentSaga(action: PayloadAction<number>) {
     const lixiesData = yield call(lixiApi.getByAccountId, accountId);
     const lixies = (lixiesData ?? []) as Lixi[];
     yield put(refreshLixiListSilentSuccess({ account: account, lixies: lixies }));
-  } catch (err) { }
+  } catch (err) {}
 }
 
 function* registerViaEmailNoVerifiedSaga(action: PayloadAction<RegisterViaEmailNoVerifiedCommand>) {

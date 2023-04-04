@@ -39,7 +39,7 @@ export const ShortcutItemAccess = ({
     <a>
       <Space className={'item-access'}>
         <AvatarUser name={text} isMarginRight={false} />
-        <div >
+        <div>
           {text}
           <span style={{ display: 'block', paddingTop: '4px', fontSize: '14px', color: 'rgba(30, 26, 29, 0.38)' }}>
             Burned:{burnValue} XPI
@@ -131,16 +131,14 @@ const RankingSideBar = styled(Sider)`
           margin-bottom: 1rem;
 
           div {
-            margin: 0; 
-            color: #1E1A1D; 
-            font-size: 16px; 
-            letter-spacing: 0.5px 
-
-            span {
+            margin: 0;
+            color: #1e1a1d;
+            font-size: 16px;
+            letter-spacing: 0.5px span {
               display: 'block';
               padding-top: '4px';
               font-size: '14px';
-              color: rgba(30, 26, 29, 0.38)
+              color: rgba(30, 26, 29, 0.38);
             }
           }
         }
@@ -149,7 +147,6 @@ const RankingSideBar = styled(Sider)`
             margin-bottom: 24px;
           }
         }
-
       }
       .content {
         text-align: left;
@@ -445,7 +442,12 @@ const SidebarRanking = () => {
               {getTops.map((item, index) => {
                 return (
                   <h4 className="distance">
-                    <ShortcutItemAccess burnValue={item.totalBurned} icon={item.avatar} text={item.name} href={`/page/${item.id}`} />
+                    <ShortcutItemAccess
+                      burnValue={item.totalBurned}
+                      icon={item.avatar}
+                      text={item.name}
+                      href={`/page/${item.id}`}
+                    />
                   </h4>
                 );
               })}
@@ -475,7 +477,6 @@ const SidebarRanking = () => {
               <Tabs.TabPane tab={<ShopOutlined />} key="page">
                 <div className="content">
                   <h3>Top Pages</h3>
-
                 </div>
               </Tabs.TabPane>
               <Tabs.TabPane tab={<NumberOutlined />} key="tag">
