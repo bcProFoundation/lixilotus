@@ -31,7 +31,7 @@ const FilterStyle = styled.div`
         border-top-right-radius: 0;
         border-bottom-right-radius: 0;
       }
-    
+
       &.up-value {
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
@@ -42,12 +42,12 @@ const FilterStyle = styled.div`
       }
 
       &:hover {
-        svg{
-          color: #9E2A9C;
+        svg {
+          color: #9e2a9c;
         }
       }
     }
-  
+
     .ant-input-disabled {
       width: 60px;
       background: #fff;
@@ -61,7 +61,7 @@ const FilterStyle = styled.div`
     border: 1px solid #767576;
     border-radius: 8px;
     &:hover {
-      border: 2px solid #9E2A9C;
+      border: 2px solid #9e2a9c;
       filter: drop-shadow(0px 0px 4px rgba(148, 31, 147, 0.5));
       border-radius: 8px;
     }
@@ -87,7 +87,7 @@ export const FilterBurnt = (props: FilterBurntProps) => {
 
   const handleUpDownBtn = (isUp: boolean) => {
     if (isUp) {
-      valueForType === 0 ? valueForType = 1 : valueForType *= 10;
+      valueForType === 0 ? (valueForType = 1) : (valueForType *= 10);
     } else {
       if (valueForType < 10) {
         valueForType = 0;
@@ -98,7 +98,7 @@ export const FilterBurnt = (props: FilterBurntProps) => {
 
     const filteredData = {
       filterForType: filterForType,
-      filterValue: valueForType,
+      filterValue: valueForType
     };
     dispatch(saveBurnFilter(filteredData));
   };
@@ -108,16 +108,13 @@ export const FilterBurnt = (props: FilterBurntProps) => {
       <p>{intl.get('general.minBurnt')} &nbsp;</p>
       <Input.Group>
         <Button
-          className='down-value'
+          className="down-value"
           icon={<DownOutlined />}
           onClick={() => handleUpDownBtn(false)}
           disabled={valueForType === 0}
         />
         <Input disabled value={valueForType} />
-        <Button
-          className='up-value'
-          icon={<UpOutlined />}
-          onClick={() => handleUpDownBtn(true)} />
+        <Button className="up-value" icon={<UpOutlined />} onClick={() => handleUpDownBtn(true)} />
       </Input.Group>
     </FilterStyle>
   );

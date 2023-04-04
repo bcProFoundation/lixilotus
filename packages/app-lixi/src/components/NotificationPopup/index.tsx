@@ -105,11 +105,6 @@ const StyledComment = styled(Comment)`
     letter-spacing: 0.5px;
     color: #1e1a1d;
   }
-  .text-notification {
-    font-size: 16px;
-    letter-spacing: 0.5px;
-    color: #1e1a1d;
-  }
 `;
 
 const StyledTitlePage = styled.h1`

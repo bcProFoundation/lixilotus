@@ -35,6 +35,7 @@ export class CommentResolver {
     @I18n() private i18n: I18nService,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS
+  ) {}
 
   @Subscription(() => Comment)
   commentCreated() {
@@ -146,6 +147,7 @@ export class CommentResolver {
         let commentToGiveData;
         const commentToPostData = {
           senderName: account.name
+        };
 
         if (tipHex) {
           const txData = await this.XPI.RawTransactions.decodeRawTransaction(tipHex);
@@ -170,10 +172,10 @@ export class CommentResolver {
             commentId: createdComment.id
           };
 
-
           commentToGiveData = {
             senderName: account.name,
             xpiGive: value
+          };
 
           await prisma.giveTip.create({ data: transactionTip });
         }
@@ -186,6 +188,8 @@ export class CommentResolver {
           url: '/post/' + post?.id,
           additionalData: tipHex ? commentToGiveData : commentToPostData
         };
+        createNotif.senderId !== createNotif.recipientId &&
+          (await this.notificationService.saveAndDispatchNotification(recipient?.mnemonicHash, createNotif));
 
         return createdComment;
       });
