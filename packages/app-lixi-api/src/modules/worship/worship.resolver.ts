@@ -204,13 +204,22 @@ export class WorshipResolver {
     })
     orderBy: WorshipedPersonOrder
   ) {
-    const today = moment().toString();
+    const today = new Date();
+    const day = today.getDate();
+    const month = today.getMonth() + 1;
     const result = await findManyCursorConnection(
       args =>
         this.prisma.worshipedPerson.findMany({
           include: { avatar: true, country: true },
           where: {
-            dateOfBirth: today
+            AND: [
+              {
+                dayOfDeath: day
+              },
+              {
+                monthOfDeath: month
+              }
+            ]
           },
           take: 10,
           orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
@@ -219,7 +228,14 @@ export class WorshipResolver {
       () =>
         this.prisma.worshipedPerson.count({
           where: {
-            dateOfBirth: today
+            AND: [
+              {
+                dayOfDeath: day
+              },
+              {
+                monthOfDeath: month
+              }
+            ]
           },
           take: 10
         }),

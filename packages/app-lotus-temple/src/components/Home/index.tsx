@@ -5,7 +5,7 @@ import style from 'styled-components';
 import WorshipedPersonCard from '@components/Common/WorshipedPersonCard';
 import { startChannel, stopChannel } from '@store/worship/actions';
 import { useAppDispatch } from '@store/hooks';
-import { useAllWorshipQuery } from '@store/worship/worshipedPerson.generated';
+import { useAllWorshipQuery, useWorshipedPeopleSpecialDateQuery } from '@store/worship/worshipedPerson.generated';
 import { OrderDirection, WorshipOrderField } from 'src/generated/types.generated';
 import { useInfiniteWorship } from '@store/worship/useInfiniteWorship';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -78,6 +78,7 @@ const Home = () => {
   const specialDayRef = useRef(null);
   const trendingRef = useRef(null);
   const dispatch = useAppDispatch();
+  const worshipedPersonSpecialDate = useWorshipedPeopleSpecialDateQuery().currentData;
 
   useEffect(() => {
     dispatch(startChannel());
@@ -133,14 +134,10 @@ const Home = () => {
         </picture>
       </StyledHeaderContainer>
       <StyledCardContainer>
-        <WorshipedPersonCard />
-        <WorshipedPersonCard />
-        <WorshipedPersonCard />
-        <WorshipedPersonCard />
-        <WorshipedPersonCard />
-        <WorshipedPersonCard />
-        <WorshipedPersonCard />
-        <WorshipedPersonCard />
+        {worshipedPersonSpecialDate &&
+          worshipedPersonSpecialDate.allWorshipedPersonSpecialDate.edges.map((person, index) => {
+            return <WorshipedPersonCard key={index} person={person.node} />;
+          })}
       </StyledCardContainer>
       <StyledHeaderContainer>
         <StyledHeader>
@@ -154,14 +151,14 @@ const Home = () => {
         </picture>
       </StyledHeaderContainer>
       <StyledCardContainer>
+        {/* <WorshipedPersonCard />
         <WorshipedPersonCard />
         <WorshipedPersonCard />
         <WorshipedPersonCard />
         <WorshipedPersonCard />
         <WorshipedPersonCard />
         <WorshipedPersonCard />
-        <WorshipedPersonCard />
-        <WorshipedPersonCard />
+        <WorshipedPersonCard /> */}
       </StyledCardContainer>
       <StyledHeaderContainer>
         <StyledHeader>

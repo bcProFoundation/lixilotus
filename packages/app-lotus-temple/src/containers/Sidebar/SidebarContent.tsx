@@ -263,11 +263,43 @@ const SidebarContent = () => {
     message.info(intl.get('lixi.addressCopied'));
   };
 
+  const WorshipedPlaceholder = () => {
+    return (
+      <StyledWrapper style={{ flexDirection: 'column' }}>
+        <StyledContainer>
+          <picture>
+            <img alt="you-worshiped-placeholder" src="/images/you-worshiped-placeholder.svg" width="150px" />
+          </picture>
+          <StyledHeaderText>Bạn thờ</StyledHeaderText>
+          <p style={{ fontSize: 13 }}>
+            You are responsible for operations, service, or customer support and face challenges trying to
+          </p>
+        </StyledContainer>
+      </StyledWrapper>
+    );
+  };
+
+  const RecentVisitedPlaceholder = () => {
+    return (
+      <StyledWrapper style={{ flexDirection: 'column' }}>
+        <StyledContainer>
+          <picture>
+            <img alt="recent-visited-placeholder" src="/images/recent-visited-placeholder.svg" width="150px" />
+          </picture>
+          <StyledHeaderText>Thăm viếng gần đây</StyledHeaderText>
+          <p style={{ fontSize: 13 }}>
+            You are responsible for operations, service, or customer support and face challenges trying to
+          </p>
+        </StyledContainer>
+      </StyledWrapper>
+    );
+  };
+
   return (
     <StyledSidebar id="short-cut-sidebar" ref={refSidebarShortcut} onScroll={e => triggerSrollbar(e)}>
       <ContainerAccess>
         <div className="wrapper">
-          <StyledWrapper style={{ justifyContent: 'center' }} onClick={() => history.push('/')}>
+          <StyledWrapper style={{ justifyContent: 'center', cursor: 'pointer' }} onClick={() => history.push('/')}>
             <picture>
               <img width="35px" src="/images/lotus_logo.png" alt="lixilotus" />
             </picture>
@@ -300,14 +332,14 @@ const SidebarContent = () => {
               </StyledWallerContainer>
             </StyledWrapper>
           )}
-          <StyledWrapper style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-            <StyledContainer>
-              <StyledHeader>
-                <StyledHeaderText>Bạn thờ</StyledHeaderText>
-                <p style={{ marginBottom: '0', color: '#004B74' }}>Xem tất cả</p>
-              </StyledHeader>
-              {worshipedPeople.currentData &&
-                worshipedPeople.currentData.allWorshipedPersonByUserId.edges.map((person, index) => {
+          {worshipedPeople.currentData ? (
+            <StyledWrapper style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+              <StyledContainer>
+                <StyledHeader>
+                  <StyledHeaderText>Bạn thờ</StyledHeaderText>
+                  <p style={{ marginBottom: '0', color: '#004B74' }}>Xem tất cả</p>
+                </StyledHeader>
+                {worshipedPeople.currentData.allWorshipedPersonByUserId.edges.map((person, index) => {
                   return (
                     <SidebarListItem
                       key={index}
@@ -317,15 +349,19 @@ const SidebarContent = () => {
                     />
                   );
                 })}
-            </StyledContainer>
-          </StyledWrapper>
-          <StyledWrapper style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-            <StyledContainer>
-              <StyledHeader>
-                <StyledHeaderText>Thăm viếng gần đây</StyledHeaderText>
-              </StyledHeader>
-              {recentVisitedPeople &&
-                recentVisitedPeople.map((person, index) => {
+              </StyledContainer>
+            </StyledWrapper>
+          ) : (
+            WorshipedPlaceholder()
+          )}
+
+          {recentVisitedPeople && recentVisitedPeople.length > 0 ? (
+            <StyledWrapper style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+              <StyledContainer>
+                <StyledHeader>
+                  <StyledHeaderText>Thăm viếng gần đây</StyledHeaderText>
+                </StyledHeader>
+                {recentVisitedPeople.map((person, index) => {
                   return (
                     <SidebarListItem
                       key={index}
@@ -335,8 +371,11 @@ const SidebarContent = () => {
                     />
                   );
                 })}
-            </StyledContainer>
-          </StyledWrapper>
+              </StyledContainer>
+            </StyledWrapper>
+          ) : (
+            RecentVisitedPlaceholder()
+          )}
         </div>
       </ContainerAccess>
     </StyledSidebar>

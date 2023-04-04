@@ -72,7 +72,7 @@ async function main() {
   );
 
   const worshipedPeople = await prisma.worshipedPerson.createMany({
-    data: worshipedPersonInVietNam.map((person)=> {
+    data: worshipedPersonInVietNam.map((person) => {
       return {
         name: person.PersonName,
         wikiDataId: person.Person.split("/").pop(),
@@ -85,11 +85,17 @@ async function main() {
         placeOfBurial: person.PlaceOfBurialLabel,
         achievement: person.PersonDescription,
         alias: person.PersonAlias,
-        wikiAvatar: person.Image
+        wikiAvatar: person.Image,
+        dayOfBirth: person.DateOfBirth ? new Date(person.DateOfBirth).getDate() : null,
+        monthOfBirth: person.DateOfBirth ? new Date(person.DateOfBirth).getMonth() + 1 : null,
+        yearOfBirth: person.DateOfBirth ? new Date(person.DateOfBirth).getFullYear(): null,
+        dayOfDeath: person.DateOfDeath  ? new Date(person.DateOfDeath).getDate(): null,
+        monthOfDeath: person.DateOfDeath ? new Date(person.DateOfDeath).getMonth() + 1 : null,
+        yearOfDeath: person.DateOfDeath ? new Date(person.DateOfDeath).getFullYear(): null,
       }
     }),
     skipDuplicates: true,
-  }) 
+  })
 }
 
 main()
