@@ -214,7 +214,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
 
   return (
     <>
-      <StyledTitlePage>Notifications</StyledTitlePage>
+      <StyledTitlePage>{intl.get('general.notifications')}</StyledTitlePage>
       <StyledHeader>
         <Menu
           className="menu-post-listing"
