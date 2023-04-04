@@ -175,10 +175,7 @@ export class NotificationController {
 
   @Patch('readAll')
   @UseGuards(JwtAuthGuard)
-  async readAllNotifications(
-    @Request() req: FastifyRequest,
-    @I18n() i18n: I18nContext
-  ): Promise<any> {
+  async readAllNotifications(@Request() req: FastifyRequest, @I18n() i18n: I18nContext): Promise<any> {
     try {
       const account: Account = (req as any).account;
 

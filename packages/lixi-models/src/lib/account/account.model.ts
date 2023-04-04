@@ -1,4 +1,5 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
+
 import { Page } from '../page';
 
 @ObjectType()

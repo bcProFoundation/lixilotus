@@ -53,7 +53,7 @@ export class PostResolver {
     private meiliService: MeiliService,
     private readonly notificationService: NotificationService,
     @I18n() private i18n: I18nService
-  ) { }
+  ) {}
 
   @Subscription(() => Post)
   postCreated() {
@@ -530,10 +530,10 @@ export class PostResolver {
           connect:
             uploadDetailIds.length > 0
               ? uploadDetailIds.map((uploadDetail: any) => {
-                return {
-                  id: uploadDetail
-                };
-              })
+                  return {
+                    id: uploadDetail
+                  };
+                })
               : undefined
         },
         page: {
@@ -606,7 +606,7 @@ export class PostResolver {
         where: {
           id: _.toSafeInteger(page.pageAccountId)
         }
-      })
+      });
 
       if (!recipient) {
         const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
@@ -618,14 +618,15 @@ export class PostResolver {
         recipientId: Number(page?.pageAccountId),
         notificationTypeId: NOTIFICATION_TYPES.POST_ON_PAGE,
         level: NotificationLevel.INFO,
-        url: "/post/" + createdPost.id,
+        url: '/post/' + createdPost.id,
         additionalData: {
           senderId: createdPost.postAccountId,
           senderName: createdPost.postAccount.name,
           pageName: createdPost.page?.name
         }
-      }
-      createNotif.senderId !== createNotif.recipientId && await this.notificationService.saveAndDispatchNotification(recipient?.mnemonicHash, createNotif);
+      };
+      createNotif.senderId !== createNotif.recipientId &&
+        (await this.notificationService.saveAndDispatchNotification(recipient?.mnemonicHash, createNotif));
     }
 
     return createdPost;
