@@ -59,6 +59,8 @@ const CardUser = styled.div`
   }
 `;
 const InfoCardUserContainer = styled.div`
+  font-size: 16px;
+  line-height: 20px;
   width: 100%;
   padding: 0;
   box-shadow: none;
