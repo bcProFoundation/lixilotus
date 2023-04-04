@@ -56,7 +56,7 @@ const SendComponent: React.FC = () => {
     dirty: true,
     value: '',
     address: '',
-    checked: true
+    checked: false
   });
 
   const [queryStringText, setQueryStringText] = useState(null);
