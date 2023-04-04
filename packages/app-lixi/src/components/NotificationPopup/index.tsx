@@ -207,9 +207,18 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
 
   const menuItems = [{ label: 'All', key: 'all' }];
 
+  const momentCase = (createdAt: any) => {
+    const yesterday = moment().subtract(1, 'day');
+    if (moment(createdAt).isAfter(yesterday)) {
+      return moment(createdAt).fromNow().toString();
+    } else {
+      return moment(createdAt).format('MMMM Do YYYY, h:mm a');
+    }
+  };
+
   return (
     <>
-      <StyledTitlePage>Notifications</StyledTitlePage>
+      <StyledTitlePage>{intl.get('general.notifications')}</StyledTitlePage>
       <StyledHeader>
         <Menu
           className="menu-post-listing"
@@ -244,9 +253,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                     author={
                       <StyledAuthor>
                         <StyledTextLeft></StyledTextLeft>
-                        <StyledTextRight>
-                          {moment(notification.createdAt).local().format('MMMM Do YYYY, h:mm a')}
-                        </StyledTextRight>
+                        <StyledTextRight>{momentCase(notification.createdAt)}</StyledTextRight>
                       </StyledAuthor>
                     }
                     content={
@@ -268,9 +275,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                 author={
                   <StyledAuthor>
                     {/* <StyledTextLeft></StyledTextLeft> */}
-                    <StyledTextRight>
-                      {moment(notification.createdAt).local().format('MMMM Do YYYY, h:mm a')}
-                    </StyledTextRight>
+                    <StyledTextRight>{momentCase(notification.createdAt)}</StyledTextRight>
                   </StyledAuthor>
                 }
                 avatar={
