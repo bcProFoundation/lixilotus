@@ -12,7 +12,7 @@ import { NOTIFICATION_OUTBOUND_QUEUE } from 'src/common/modules/notifications/no
 // import { LixiNftService } from './lixinft.service';
 
 @Module({
-  imports: [AuthModule, NotificationModule, BullModule.registerQueue({name: NOTIFICATION_OUTBOUND_QUEUE})],
+  imports: [AuthModule, NotificationModule, BullModule.registerQueue({ name: NOTIFICATION_OUTBOUND_QUEUE })],
   providers: [PageResolver, Logger, PostResolver, MeiliService, CommentResolver, NotificationService],
   exports: [MeiliService, NotificationService]
 })

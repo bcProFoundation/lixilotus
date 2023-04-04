@@ -20,7 +20,7 @@ export class NotificationService {
     private prisma: PrismaService,
     @InjectQueue(NOTIFICATION_OUTBOUND_QUEUE) private notificationOutboundQueue: Queue,
     @I18n() private i18n: I18nService
-  ) { }
+  ) {}
 
   async saveAndDispatchNotification(room: string, notification: NotificationDto) {
     if (!notification.recipientId) {
@@ -33,7 +33,7 @@ export class NotificationService {
       where: {
         id: notification.recipientId
       }
-    })
+    });
     if (!recipientAccount) {
       const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
       throw new VError(accountNotExistMessage);

@@ -8,7 +8,12 @@ import { Account, NotificationDto as Notification } from '@bcpros/lixi-models';
 import SwipeToDelete from 'react-swipe-to-delete-ios';
 import moment from 'moment';
 import { isMobile } from 'react-device-detect';
-import { deleteNotification, fetchNotifications, readAllNotifications, readNotification } from '@store/notification/actions';
+import {
+  deleteNotification,
+  fetchNotifications,
+  readAllNotifications,
+  readNotification
+} from '@store/notification/actions';
 import { downloadExportedLixi } from '@store/lixi/actions';
 import { useRouter } from 'next/router';
 import intl from 'react-intl-universal';
@@ -78,7 +83,6 @@ const StyledComment = styled(Comment)`
   border: 1px solid var(--boder-item-light);
   padding: 8px;
 
-
   &:hover {
     background-color: #eceff5 !important;
   }
@@ -99,7 +103,7 @@ const StyledComment = styled(Comment)`
   .text-notification {
     font-size: 16px;
     letter-spacing: 0.5px;
-    color: #1E1A1D;
+    color: #1e1a1d;
   }
   .text-notification {
     font-size: 16px;
@@ -206,7 +210,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
         mnemonichHash: selectedAccount.mnemonicHash
       })
     );
-  }
+  };
 
   const menuItems = [{ label: 'All', key: 'all' }];
 

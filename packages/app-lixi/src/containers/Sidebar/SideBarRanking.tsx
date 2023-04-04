@@ -9,7 +9,7 @@ import { getAllAccounts, getSelectedAccount, getLeaderBoard } from '@store/accou
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { fetchNotifications } from '@store/notification/actions';
 import { getAllNotifications } from '@store/notification/selectors';
-import { Badge, Button, Space, Form, Input, Layout, Modal, Tabs } from 'antd';
+import { Badge, Button, Space, Form, Input, Layout, Modal, Tabs, Collapse } from 'antd';
 import * as _ from 'lodash';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -19,7 +19,8 @@ import styled from 'styled-components';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { useInfinitePagesQuery } from '@store/page/useInfinitePagesQuery';
 import { AvatarUser } from '@components/Common/AvatarUser';
-
+import CollapsePanel from 'antd/es/collapse/CollapsePanel';
+import { BorderRadius } from 'styled-icons/boxicons-regular';
 const { Sider } = Layout;
 
 export const ShortcutItemAccess = ({
@@ -27,15 +28,17 @@ export const ShortcutItemAccess = ({
   text,
   href,
   burnValue,
+  key,
   onClickItem
 }: {
   icon: string;
   text: string;
   burnValue?: number;
   href?: string;
+  key?: React.Key;
   onClickItem?: () => void;
 }) => (
-  <Link onClick={onClickItem} href={href}>
+  <Link onClick={onClickItem} href={href} key={key}>
     <a>
       <Space className={'item-access'}>
         <AvatarUser name={text} isMarginRight={false} />
@@ -315,6 +318,7 @@ const SidebarRanking = () => {
   const [isShowNotification, setIsShowNotification] = useState<boolean>(false);
   const [isCollapse, setIsCollapse] = useState(false);
   const leaderboard = useAppSelector(getLeaderBoard);
+  const { Panel } = Collapse;
 
   const [open, setOpen] = useState(false);
   const [isValidMnemonic, setIsValidMnemonic] = useState<boolean | null>(null);
@@ -439,22 +443,23 @@ const SidebarRanking = () => {
           <div className="container-right-bar your-shortcuts">
             <div className="content">
               <h3>Leader Board</h3>
-              {leaderboard.map((item, index) => {
-                return (
-                  <h4 className="distance">
-                    <ShortcutItemAccess
-                      burnValue={item.totalBurned}
-                      icon={item?.page ? item?.page?.avatar : ''}
-                      text={item.name}
-                      href={`/page/${item.id}`}
-                    />
-                  </h4>
-                );
-              })}
-              <div style={{ textAlign: 'end' }}>
-                {!isCollapse && <DownOutlined onClick={() => setIsCollapse(!isCollapse)} />}
-                {isCollapse && <UpOutlined onClick={() => setIsCollapse(!isCollapse)} />}
-              </div>
+              <Collapse defaultActiveKey={['1']}>
+                <Panel header="Show top leader board" key="1">
+                  {leaderboard.map((item, index) => {
+                    return (
+                      <h4 className="distance">
+                        <ShortcutItemAccess
+                          burnValue={item.totalBurned}
+                          icon={item?.page ? item?.page?.avatar : ''}
+                          text={item.name}
+                          href={`/profile/${item.address}`}
+                          key={`${item.id}-${item.address}`}
+                        />
+                      </h4>
+                    );
+                  })}
+                </Panel>
+              </Collapse>
             </div>
           </div>
         </div>
