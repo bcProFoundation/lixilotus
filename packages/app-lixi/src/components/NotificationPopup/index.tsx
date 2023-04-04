@@ -288,9 +288,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                 }}
                 author={
                   <StyledAuthor>
-                    {/* <StyledTextLeft></StyledTextLeft> */}
                     <StyledTextRight>
-                      {/* {moment(notification.createdAt).local().format('MMMM Do YYYY, h:mm a')} */}
                       {momentCase(notification.createdAt)}
                     </StyledTextRight>
                   </StyledAuthor>
