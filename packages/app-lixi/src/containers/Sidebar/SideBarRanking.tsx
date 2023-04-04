@@ -61,7 +61,7 @@ const RankingSideBar = styled(Sider)`
   background: var(--bg-color-light-theme) !important;
   &::-webkit-scrollbar {
     width: 5px;
-  } 
+  }
   &::-webkit-scrollbar-thumb {
     background: transparent;
   }
@@ -319,9 +319,6 @@ const SidebarRanking = () => {
   const [isCollapse, setIsCollapse] = useState(false);
   const leaderboard = useAppSelector(getLeaderBoard);
   const { Panel } = Collapse;
-  const onChange = (key: string | string[]) => {
-    console.log(key);
-  }
 
   const [open, setOpen] = useState(false);
   const [isValidMnemonic, setIsValidMnemonic] = useState<boolean | null>(null);
@@ -446,7 +443,7 @@ const SidebarRanking = () => {
           <div className="container-right-bar your-shortcuts">
             <div className="content">
               <h3>Leader Board</h3>
-              <Collapse defaultActiveKey={['1']} onChange={onChange}>
+              <Collapse defaultActiveKey={['1']}>
                 <Panel header="Show top leader board" key="1">
                   {leaderboard.map((item, index) => {
                     return (
