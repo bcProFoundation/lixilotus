@@ -204,28 +204,12 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
   const menuItems = [{ label: 'All', key: 'all' }];
 
   const momentCase = (createdAt: any) => {
-    const now = moment();
-    const diff = now.diff(createdAt, 'seconds');
-
-    if (diff < 60) {
-      return 'just now';
-    } else if (diff < 86400) {
-      const minutes = Math.floor(diff / 60);
-      return minutes + ' minutes ago';
-    } else if (diff < 172800) {
-      return '1 day ago';
-    } else if (diff < 259200) {
-      return '2 days ago';
+    const yesterday = moment().subtract(1, 'day');
+    if (moment(createdAt).isAfter(yesterday)) {
+      return moment(createdAt).fromNow().toString()
     } else {
-      return moment(createdAt).local().format('MMMM Do YYYY, h:mm a');
+      return moment(createdAt).format('MMMM Do YYYY, h:mm a')
     }
-
-    // const yesterday = moment().subtract(1, 'day');
-    // if (moment().isAfter(yesterday)) {
-    //   return moment(createdAt).local().format(' MMMM Do YYYY, hh:mm a')
-    // } else {
-    //   return moment(createdAt).fromNow().toString()
-    // }
   }
 
   return (
@@ -266,7 +250,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                       <StyledAuthor>
                         <StyledTextLeft></StyledTextLeft>
                         <StyledTextRight>
-                          {moment(notification.createdAt).local().format('MMMM Do YYYY, h:mm a')}
+                          {momentCase(notification.createdAt)}
                         </StyledTextRight>
                       </StyledAuthor>
                     }
