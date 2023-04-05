@@ -55,7 +55,8 @@ const SendComponent: React.FC = () => {
   const [formData, setFormData] = useState({
     dirty: true,
     value: '',
-    address: ''
+    address: '',
+    checked: false
   });
 
   const [queryStringText, setQueryStringText] = useState(null);
@@ -83,9 +84,12 @@ const SendComponent: React.FC = () => {
     const search = window.location.search;
     const params = new URLSearchParams(search);
     const replyAddress = params.get('replyAddress');
+    const isReply = params.get('isReply') === 'true';
     setFormData({
       ...formData,
-      address: replyAddress ?? ''
+      address: replyAddress ?? '',
+      checked: isReply ? isReply : false,
+      value: isReply ? getDustXPI() : ''
     });
     if (replyAddress) {
       fetchRecipientPublicKey(replyAddress);
@@ -144,6 +148,7 @@ const SendComponent: React.FC = () => {
         fundingWif
       );
       dispatch(sendXpiNotification(link));
+      setOpReturnMsg('');
     } catch (e) {
       let message;
       if (!e.error && !e.message) {
@@ -285,6 +290,7 @@ const SendComponent: React.FC = () => {
     <div style={{ textAlign: 'right' }}>
       {intl.get('send.onlyMessage')} &nbsp;
       <StyledCheckbox
+        checked={formData.checked}
         defaultChecked={false}
         onChange={() =>
           setFormData({
@@ -424,6 +430,7 @@ const SendComponent: React.FC = () => {
                     ) : (
                       <PrimaryButton onClick={() => submit()}>Send</PrimaryButton>
                     )}
+
                   </>
                 )}
               </div>
