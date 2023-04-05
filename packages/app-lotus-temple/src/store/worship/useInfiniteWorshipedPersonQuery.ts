@@ -21,16 +21,12 @@ export interface WorshipedPersonListParams extends PaginationArgs {
   orderBy?: WorshipedPersonOrder;
   query?: string;
 }
-export interface WorshipedPersonListBody {
-  posts: WorshipedPerson[];
-  next: string;
-}
 
 export function useInfiniteWorshipedPersonQuery(
   params: WorshipedPersonListParams,
   fetchAll: boolean = false // if `true`: auto do next fetches to get all notes at once
 ) {
-  const baseResult = useWorshipedPeopleQuery(params);
+  const baseResult = useWorshipedPeopleQuery(params, { skip: params.query === null });
 
   const [trigger, nextResult] = useLazyWorshipedPeopleQuery();
   const [combinedData, setCombinedData] = useState(worshipedPeopleAdapter.getInitialState({}));

@@ -43,9 +43,9 @@ const StyledHeader = style.p`
 `;
 
 const StyledText = style.p`
-margin-bottom: 0px;
-   text-align: left;
-   color: #4F4F4F;
+  margin-bottom: 0px;
+  text-align: left;
+  color: #4F4F4F;
 `;
 
 const StyledSpace = style(Space)`
@@ -60,7 +60,7 @@ const PersonInfo = ({ person }: PersonInfoProp) => {
   const personAlias = person.alias && person.alias.split(',');
 
   const getFallBackText = () => {
-    return <span style={{ fontStyle: 'italic' }}>{intl.get('worship.noInfo')}</span>;
+    return <span style={{ fontStyle: 'italic', textAlign: 'left' }}>{intl.get('worship.noInfo')}</span>;
   };
 
   return (

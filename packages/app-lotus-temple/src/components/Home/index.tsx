@@ -105,6 +105,7 @@ const Home = () => {
   const dispatch = useAppDispatch();
   const worshipedPersonSpecialDate = useWorshipedPeopleSpecialDateQuery().currentData;
   const [searchValue, setSearchValue] = useState<string | null>(null);
+  const [disableFetch, setDisableFetch] = useState<boolean>(true);
 
   useEffect(() => {
     dispatch(startChannel());
@@ -154,7 +155,8 @@ const Home = () => {
       orderBy: {
         direction: OrderDirection.Desc,
         field: WorshipedPersonOrderField.UpdatedAt
-      }
+      },
+      disableFetch: disableFetch
     },
     false
   );
@@ -203,7 +205,11 @@ const Home = () => {
   };
 
   const onChange = (key: string) => {
-    console.log(key);
+    if (key === 'search') {
+      setDisableFetch(false);
+    } else {
+      setDisableFetch(true);
+    }
   };
 
   const searchPerson = value => {
@@ -300,7 +306,7 @@ const Home = () => {
     },
     {
       label: 'Tìm kiếm',
-      key: 'info',
+      key: 'search',
       children: (
         <React.Fragment>
           <StyledContainer>
@@ -319,6 +325,7 @@ const Home = () => {
                   </p>
                 }
                 scrollableTarget="scrollableDiv"
+                scrollThreshold={0.7}
               >
                 {personData.map((person, index) => {
                   return <WorshipedPersonCard key={index} person={person} />;
@@ -336,6 +343,7 @@ const Home = () => {
                   </p>
                 }
                 scrollableTarget="scrollableDiv"
+                scrollThreshold={0.7}
               >
                 {queryData.map((person, index) => {
                   return <WorshipedPersonCard key={index} person={person} />;

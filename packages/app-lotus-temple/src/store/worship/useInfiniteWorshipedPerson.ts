@@ -6,6 +6,7 @@ import _ from 'lodash';
 import { WorshipedPersonQuery } from './worshipedPerson.generated';
 import { useAppDispatch } from '@store/hooks';
 import { createEntityAdapter } from '@reduxjs/toolkit';
+import { skipToken } from '@reduxjs/toolkit/dist/query';
 
 const worshipAdapter = createEntityAdapter<WorshipedPersonQuery['worshipedPerson']>({
   selectId: worship => worship.id,
@@ -16,13 +17,14 @@ const { selectAll, selectEntities, selectIds, selectTotal } = worshipAdapter.get
 
 export interface WorshipedListParams extends PaginationArgs {
   orderBy?: WorshipedPersonOrder;
+  disableFetch?: boolean;
 }
 
 export function useInfiniteWorshipedPerson(
   params: WorshipedListParams,
   fetchAll: boolean = false // if `true`: auto do next fetches to get all notes at once
 ) {
-  const baseResult = useWorshipedPeopleQuery(params);
+  const baseResult = useWorshipedPeopleQuery(params, { skip: params.disableFetch });
 
   const [trigger, nextResult] = useLazyWorshipedPeopleQuery();
   const [combinedData, setCombinedData] = useState(worshipAdapter.getInitialState({}));
