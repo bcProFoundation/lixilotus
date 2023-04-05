@@ -9,7 +9,7 @@ import { useAllWorshipQuery, useWorshipedPeopleSpecialDateQuery } from '@store/w
 import { OrderDirection, WorshipOrderField, WorshipedPersonOrderField } from 'src/generated/types.generated';
 import { useInfiniteWorship } from '@store/worship/useInfiniteWorship';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import WorshipPersonCard from '@components/WorshipedPerson/WorshipCard';
+import WorshipCard from '@components/WorshipedPerson/WorshipCard';
 import SearchBox from '@components/Common/SearchBox';
 import { useInfiniteWorshipedPerson } from '@store/worship/useInfiniteWorshipedPerson';
 import { useInfiniteWorshipedPersonBySearch } from '@store/worship/useInfiniteWorshipedPersonBySearch';
@@ -232,7 +232,7 @@ const Home = () => {
           <StyledCardContainer>
             {worshipedPersonSpecialDate &&
               worshipedPersonSpecialDate.allWorshipedPersonSpecialDate.edges.map((person, index) => {
-                return <WorshipedPersonCard key={index} person={person.node} />;
+                return <WorshipedPersonCard key={index} person={person.node} isSpecialDate={true} />;
               })}
           </StyledCardContainer>
           {/* Quan tâm nhiều trong ngày */}
@@ -282,12 +282,13 @@ const Home = () => {
               >
                 {data.map((item, index) => {
                   return (
-                    <WorshipPersonCard
+                    <WorshipCard
                       index={index}
                       item={item}
                       key={item.id}
                       isPublic={true}
                       worshipedPersonName={item.worshipedPerson.name}
+                      worshipedPersonId={item.worshipedPerson.id}
                     />
                   );
                 })}

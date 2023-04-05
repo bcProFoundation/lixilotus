@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 
 type WorshipedPersonCardProp = {
   person: PersonType;
+  isSpecialDate?: boolean;
 };
 
 const StyledCard = style.div`
@@ -23,14 +24,13 @@ const StyledCard = style.div`
   cursor: pointer;
 
   transition: all 0.2s ease-in-out;
-  cursor: pointer;
 
   &:hover {
     height: 95px;
   }
 `;
 
-const WorshipedPersonCard = ({ person }: WorshipedPersonCardProp) => {
+const WorshipedPersonCard = ({ person, isSpecialDate }: WorshipedPersonCardProp) => {
   const history = useRouter();
   return (
     <React.Fragment>
@@ -40,7 +40,9 @@ const WorshipedPersonCard = ({ person }: WorshipedPersonCardProp) => {
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <p style={{ marginBottom: '5px', textAlign: 'left', fontWeight: 'bold' }}>{person.name}</p>
             <p style={{ marginBottom: '0', textAlign: 'left' }}>
-              Ngày giỗ: {person.dateOfDeath ? moment(person.dateOfDeath).format('DD/MM/YYYY') : ''}
+              {isSpecialDate
+                ? `Ngày giỗ: ${person.dateOfDeath ? moment(person.dateOfDeath).format('DD/MM/YYYY') : ''}`
+                : `${person.achievement ? person.achievement : ''}`}
             </p>
           </div>
         </Space>

@@ -6,6 +6,7 @@ import { FireOutlined } from '@ant-design/icons';
 import { WorshipQuery } from '@store/worship/worshipedPerson.generated';
 import moment from 'moment';
 import intl from 'react-intl-universal';
+import { useRouter } from 'next/router';
 
 export type WorshipItem = WorshipQuery['worship'];
 
@@ -14,6 +15,7 @@ type WorshipCardProps = {
   item: WorshipItem;
   isPublic?: boolean;
   worshipedPersonName?: string;
+  worshipedPersonId?: string;
 };
 
 const StyledAnimation = style.div`
@@ -65,7 +67,8 @@ const StyledSubInfo = style.span`
   font-size: 11.5px;
 `;
 
-const WorshipCard = ({ index, item, isPublic, worshipedPersonName }: WorshipCardProps) => {
+const WorshipCard = ({ index, item, isPublic, worshipedPersonName, worshipedPersonId }: WorshipCardProps) => {
+  const history = useRouter();
   const getWorshipImage = () => {
     if (item.worshipedAmount >= 1 && item.worshipedAmount < 10) {
       return '/images/incense-card.svg';
@@ -98,10 +101,23 @@ const WorshipCard = ({ index, item, isPublic, worshipedPersonName }: WorshipCard
             <StyledName>
               {item.account.name} <StyledSubInfo> - {moment(item.createdAt).fromNow().toString()}</StyledSubInfo>
             </StyledName>
-            <span style={{ marginBottom: '0' }}>
-              {worshipTextType} {isPublic && ` - ${worshipedPersonName}`}
+            <span style={{ marginBottom: '0', textAlign: 'left' }}>
+              {worshipTextType}{' '}
+              {isPublic && (
+                <span>
+                  -
+                  <span
+                    style={{ cursor: 'pointer', fontWeight: 'bold' }}
+                    onClick={() => history.push(`/person/${worshipedPersonId}`)}
+                  >
+                    {worshipedPersonName}
+                  </span>
+                  -
+                </span>
+              )}
               <StyledSubInfo>
-                - <FireOutlined /> {item.worshipedAmount} XPI
+                {' '}
+                <FireOutlined /> {item.worshipedAmount} XPI
               </StyledSubInfo>
             </span>
           </StyledInfoContainer>
