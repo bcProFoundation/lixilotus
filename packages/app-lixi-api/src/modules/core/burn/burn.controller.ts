@@ -251,7 +251,7 @@ export class BurnController {
       const calcTip = await this.notificationService.calcTip(post, recipientPostAccount, command)
       const createNotifBurnAndTip = {
         senderId: sender.id,
-        recipientId: post?.postAccountId as number,
+        recipientId: command.burnForType == BurnForType.Comment ? commentAccount?.id : (post?.postAccountId as number),
         notificationTypeId: calcTip != 0 ? NOTIFICATION_TYPES.RECEIVE_BURN_TIP : NOTIFICATION_TYPES.BURN,
         level: NotificationLevel.INFO,
         url: '/post/' + post?.id,
