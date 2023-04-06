@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Menu, Skeleton, Tabs } from 'antd';
-import type { MenuProps, TabsProps } from 'antd';
+import { Menu, Skeleton, Tabs, Segmented } from 'antd';
+import type { MenuProps, TabsProps, SegmentedProps } from 'antd';
 import style from 'styled-components';
 import WorshipedPersonCard from '@components/Common/WorshipedPersonCard';
 import { startChannel, stopChannel } from '@store/worship/actions';
@@ -14,20 +14,78 @@ import SearchBox from '@components/Common/SearchBox';
 import { useInfiniteWorshipedPerson } from '@store/worship/useInfiniteWorshipedPerson';
 import { useInfiniteWorshipedPersonBySearch } from '@store/worship/useInfiniteWorshipedPersonBySearch';
 
-const items: MenuProps['items'] = [
+const StyledIcon = style.img`
+  width: 15px;
+  padding-bottom: 4px;
+`;
+
+const segmentedOptions: SegmentedProps['options'] = [
   {
     label: 'Ngày đặc biệt',
-    key: 'specialDay'
+    value: 'specialDay',
+    icon: (
+      <picture>
+        <StyledIcon alt="calendar-icon" src="/images/calendar-icon.svg" />
+      </picture>
+    )
   },
   {
     label: 'Quan tâm nhiều',
-    key: 'trending'
+    value: 'trending',
+    icon: (
+      <picture>
+        <StyledIcon alt="fire-icon" src="/images/fire-icon.svg" />
+      </picture>
+    )
   },
   {
     label: 'Đốt trực tiếp',
-    key: 'liveBurn'
+    value: 'liveBurn',
+    icon: (
+      <picture>
+        <StyledIcon alt="fire-icon" src="/images/fire-icon.svg" />
+      </picture>
+    )
   }
 ];
+
+const StyledSegmented = style(Segmented)`
+  background: #E6E5E5;
+  position: sticky;
+  top: 5px;
+  margin-bottom: 10px;
+  z-index: 1;
+  height: 48px;
+  border-radius: 24px;
+
+  .ant-segmented-group {
+    font-weight: bold;
+    align-items: center;
+    font-size: 16px;
+    .ant-segmented-item {
+      border-radius: 24px;
+      ::after {
+        background-color: transparent;
+      }
+
+      .ant-segmented-item-label {
+        line-height: 48px;
+      }
+    }
+
+    .ant-segmented-item-selected {
+      background-color: #EDE0DD;
+      ::after {
+        background-color: transparent;
+      }
+    }
+
+    .ant-segmented-thumb {
+      background-color: #EDE0DD;
+      border-radius: 24px !important;
+    }
+  }
+`;
 
 const StyledMenu = style(Menu)`
   width: 620px;
@@ -114,10 +172,10 @@ const Home = () => {
     };
   }, []);
 
-  const onClick: MenuProps['onClick'] = e => {
-    setCurrent(e.key);
+  const onSegmentedChange = value => {
+    setCurrent(value);
 
-    switch (e.key) {
+    switch (value) {
       case 'trending':
         trendingRef.current.scrollIntoView();
         break;
@@ -167,7 +225,8 @@ const Home = () => {
     hasNext: queryHasNext,
     isFetching: queryIsFetching,
     isFetchingNext: queryIsFetchingNext,
-    refetch: queryRefetch
+    refetch: queryRefetch,
+    isLoading: queryIsLoading
   } = useInfiniteWorshipedPersonBySearch(
     {
       first: 20,
@@ -222,7 +281,14 @@ const Home = () => {
       key: 'home',
       children: (
         <React.Fragment>
-          <StyledMenu onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />
+          <StyledSegmented
+            block
+            options={segmentedOptions}
+            onResize={undefined}
+            onResizeCapture={undefined}
+            defaultValue={'specialDay'}
+            onChange={onSegmentedChange}
+          />
           {/* Ngày đặc biệt đã đến */}
           <StyledHeaderContainer>
             <StyledHeader>
@@ -259,10 +325,10 @@ const Home = () => {
                 return <WorshipedPersonCard key={index} person={person.node} />;
               })}
           </StyledCardContainer>
-          {/* Đốt trực típ */}
+          {/* Đốt trực tiếp */}
           <StyledHeaderContainer>
             <StyledHeader>
-              <StyledTextHeader ref={liveBurnRef}>Đốt trực típ</StyledTextHeader>
+              <StyledTextHeader ref={liveBurnRef}>Đốt trực tiếp</StyledTextHeader>
               <StyledTextDesc>
                 Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat{' '}
               </StyledTextDesc>
@@ -318,7 +384,7 @@ const Home = () => {
                 dataLength={personData.length}
                 next={loadMorePeople}
                 hasMore={personHasNext}
-                loader={<Skeleton avatar active />}
+                loader={<Skeleton avatar active style={{ marginTop: 20 }} />}
                 endMessage={
                   <p style={{ textAlign: 'center' }}>
                     <b>{"It's so empty here..."}</b>
@@ -331,12 +397,12 @@ const Home = () => {
                   return <WorshipedPersonCard key={index} person={person} />;
                 })}
               </InfiniteScroll>
-            ) : (
+            ) : !queryIsLoading ? (
               <InfiniteScroll
                 dataLength={queryData.length}
                 next={loadMoreSearchPeople}
                 hasMore={queryHasNext}
-                loader={<Skeleton avatar active />}
+                loader={<Skeleton avatar active style={{ marginTop: 20 }} />}
                 endMessage={
                   <p style={{ textAlign: 'center' }}>
                     <b>{"It's so empty here..."}</b>
@@ -349,6 +415,8 @@ const Home = () => {
                   return <WorshipedPersonCard key={index} person={person} />;
                 })}
               </InfiniteScroll>
+            ) : (
+              <Skeleton avatar active style={{ marginTop: 20 }} />
             )}
           </React.Fragment>
         </React.Fragment>

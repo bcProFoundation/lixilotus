@@ -74,68 +74,7 @@ export const ContainerAccess = styled.div`
   flex-direction: column;
   justify-content: space-between;
   height: 100vh;
-  background: linear-gradient(0deg, rgba(158, 42, 156, 0.08), rgba(158, 42, 156, 0.08)), #fffbff;
   border-right: 1px solid #f4e3f4;
-  .item-access {
-    margin-bottom: 2rem;
-    cursor: pointer;
-    gap: 0 !important;
-    @media (max-height: 768px) {
-      margin-bottom: 1rem;
-    }
-    @media (max-height: 610px) {
-      margin-bottom: 0.5rem;
-    }
-    @media (max-height: 530px) {
-      margin-bottom: 0.2rem;
-    }
-    .anticon {
-      font-size: 25px;
-      color: #12130f;
-    }
-    .icon-item {
-      padding: 6px;
-      @media (max-height: 610px) {
-        padding: 10px;
-        img {
-          width: 20px;
-          height: 20px;
-        }
-      }
-      @media (max-height: 530px) {
-        padding: 8px;
-      }
-      &.active-item-access {
-        max-width: 50px;
-        margin: auto;
-        background: #ffd24d;
-        border-radius: 8px;
-      }
-    }
-    .text-item {
-      font-size: 14px;
-      font-weight: 400;
-      letter-spacing: 0.5px;
-      color: #4e444b;
-      @media (max-height: 610px) {
-        font-size: 12px;
-      }
-      @media (max-height: 530px) {
-        font-size: 10px;
-      }
-    }
-  }
-  .wrapper {
-    padding: 0;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: linear-gradient(0deg, rgba(158, 42, 156, 0.08), rgba(158, 42, 156, 0.08)), #fffbff;
-    @media (min-width: 768px) and (max-width: 1000px) {
-      padding: 0 1rem 1rem 1rem !important;
-    }
-  }
 `;
 
 const StyledLogo = styled.div`
@@ -149,12 +88,20 @@ const StyledLogo = styled.div`
 
 const StyledSidebar = styled(Sider)`
   position: sticky !important;
-  background: transparent !important;
   top: 0px;
   height: 100vh;
-  flex: none !important;
   overflow: auto;
-  background: var(--bg-color-light-theme);
+  background: var(--bg-color-sidebar-light-theme) !important ;
+  .wrapper {
+    padding: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    @media (min-width: 768px) and (max-width: 1000px) {
+      padding: 0 1rem 1rem 1rem !important;
+    }
+  }
   &::-webkit-scrollbar {
     width: 5px;
   }
@@ -297,87 +244,85 @@ const SidebarContent = () => {
 
   return (
     <StyledSidebar id="short-cut-sidebar" ref={refSidebarShortcut} onScroll={e => triggerSrollbar(e)}>
-      <ContainerAccess>
-        <div className="wrapper">
-          <StyledWrapper style={{ justifyContent: 'center', cursor: 'pointer' }} onClick={() => history.push('/')}>
-            <picture>
-              <img width="35px" src="/images/lotus_logo.png" alt="lixilotus" />
-            </picture>
-            <StyledLogoText>Lotus Temple</StyledLogoText>
-          </StyledWrapper>
-          {selectedAccount && (
-            <StyledWrapper style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '10px' }}>
-              <Space>
-                <AvatarUser name={selectedAccount.name} />
-                <StyledText>{selectedAccount.name}</StyledText>
+      <div className="wrapper">
+        <StyledWrapper style={{ justifyContent: 'center', cursor: 'pointer' }} onClick={() => history.push('/')}>
+          <picture>
+            <img width="35px" src="/images/lotus_logo.png" alt="lixilotus" />
+          </picture>
+          <StyledLogoText>Lotus Temple</StyledLogoText>
+        </StyledWrapper>
+        {selectedAccount && (
+          <StyledWrapper style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '10px' }}>
+            <Space>
+              <AvatarUser name={selectedAccount.name} />
+              <StyledText>{selectedAccount.name}</StyledText>
+            </Space>
+            <StyledWallerContainer>
+              <picture>
+                <img alt="wallet-placeholder" src="/images/wallet-placeholder.svg" />
+              </picture>
+              <Space direction="vertical" style={{ width: '100%' }}>
+                <StyledText style={{ textAlign: 'left' }}>Tài khoản của bạn</StyledText>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <CopyToClipboard text={selectedAccount.address} onCopy={handleOnCopy}>
+                    <div>
+                      <span>{selectedAccount.address.substring(selectedAccount.address.length - 7)}</span>
+                      <CopyOutlined />
+                    </div>
+                  </CopyToClipboard>
+                  <p style={{ margin: 0 }}>
+                    {fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis).toLocaleString('vi')} XPI
+                  </p>
+                </div>
               </Space>
-              <StyledWallerContainer>
-                <picture>
-                  <img alt="wallet-placeholder" src="/images/wallet-placeholder.svg" />
-                </picture>
-                <Space direction="vertical" style={{ width: '100%' }}>
-                  <StyledText style={{ textAlign: 'left' }}>Tài khoản của bạn</StyledText>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <CopyToClipboard text={selectedAccount.address} onCopy={handleOnCopy}>
-                      <div>
-                        <span>{selectedAccount.address.substring(selectedAccount.address.length - 7)}</span>
-                        <CopyOutlined />
-                      </div>
-                    </CopyToClipboard>
-                    <p style={{ margin: 0 }}>
-                      {fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis)} XPI
-                    </p>
-                  </div>
-                </Space>
-              </StyledWallerContainer>
-            </StyledWrapper>
-          )}
-          {worshipedPeople.currentData ? (
-            <StyledWrapper style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-              <StyledContainer>
-                <StyledHeader>
-                  <StyledHeaderText>Bạn thờ</StyledHeaderText>
-                  <p style={{ marginBottom: '0', color: '#004B74' }}>Xem tất cả</p>
-                </StyledHeader>
-                {worshipedPeople.currentData.allWorshipedPersonByUserId.edges.map((person, index) => {
-                  return (
-                    <SidebarListItem
-                      key={index}
-                      id={person.node.id}
-                      name={person.node.name}
-                      totalWorshipAmount={person.node.totalWorshipAmount}
-                    />
-                  );
-                })}
-              </StyledContainer>
-            </StyledWrapper>
-          ) : (
-            WorshipedPlaceholder()
-          )}
+            </StyledWallerContainer>
+          </StyledWrapper>
+        )}
+        {worshipedPeople.currentData ? (
+          <StyledWrapper style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+            <StyledContainer>
+              <StyledHeader>
+                <StyledHeaderText>Bạn thờ</StyledHeaderText>
+                <p style={{ marginBottom: '0', color: '#004B74' }}>Xem tất cả</p>
+              </StyledHeader>
+              {worshipedPeople.currentData.allWorshipedPersonByUserId.edges.map((person, index) => {
+                return (
+                  <SidebarListItem
+                    key={index}
+                    id={person.node.id}
+                    name={person.node.name}
+                    totalWorshipAmount={person.node.totalWorshipAmount}
+                  />
+                );
+              })}
+            </StyledContainer>
+          </StyledWrapper>
+        ) : (
+          WorshipedPlaceholder()
+        )}
 
-          {recentVisitedPeople && recentVisitedPeople.length > 0 ? (
-            <StyledWrapper style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-              <StyledContainer>
-                <StyledHeader>
-                  <StyledHeaderText>Thăm viếng gần đây</StyledHeaderText>
-                </StyledHeader>
-                {recentVisitedPeople.map((person, index) => {
-                  return (
-                    <SidebarListItem
-                      key={index}
-                      id={person.id}
-                      name={person.name}
-                      totalWorshipAmount={person.totalWorshipAmount}
-                    />
-                  );
-                })}
-              </StyledContainer>
-            </StyledWrapper>
-          ) : (
-            RecentVisitedPlaceholder()
-          )}
-        </div>
-      </ContainerAccess>
+        {recentVisitedPeople && recentVisitedPeople.length > 0 ? (
+          <StyledWrapper style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+            <StyledContainer>
+              <StyledHeader>
+                <StyledHeaderText>Thăm viếng gần đây</StyledHeaderText>
+              </StyledHeader>
+              {recentVisitedPeople.map((person, index) => {
+                return (
+                  <SidebarListItem
+                    key={index}
+                    id={person.id}
+                    name={person.name}
+                    totalWorshipAmount={person.totalWorshipAmount}
+                  />
+                );
+              })}
+            </StyledContainer>
+          </StyledWrapper>
+        ) : (
+          RecentVisitedPlaceholder()
+        )}
+      </div>
     </StyledSidebar>
   );
 };

@@ -46,7 +46,7 @@ const StyledTopCard = style.div`
   width: 100%;
   display: flex;
   margin-top: 10px;
-  background: #FFFFFF;
+  background: var(--bg-color-person-card-light-theme);
   border-radius: 24px 24px 0 0px;
   flex-direction: column
 `;
@@ -54,8 +54,8 @@ const StyledTopCard = style.div`
 const StyledBottomCard = style.div`
   width: 100%;
   display: flex;
-  background: #FFFFFF;
-  border-top: 1px solid #CDCCCA;
+  background: var(--bg-color-person-card-light-theme);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);;
   border-radius: 0 0 24px 24px ;
   flex-direction: row;
   justify-content: space-around;
@@ -91,6 +91,7 @@ const StyledPersonAvatar: any = style.div`
 
 const StyledPersonName = style.p`
   font-family: 'Open Sans';
+  color: var(--text-color-on-background);
   font-style: normal;
   font-weight: 800;
   font-size: 24px;
@@ -100,6 +101,7 @@ const StyledPersonName = style.p`
 
 const StyledPersonDate = style.p`
   font-family: 'Open Sans';
+  color: var(--text-color-on-background);
   font-style: normal;
   font-weight: 600;
   font-size: 22px;
@@ -119,12 +121,14 @@ const StyledWorshipInfo = style.div`
 `;
 
 const StyledText = style.span`
+  color: var(--text-color-on-background);
   font-size: 16px;
   line-height: 24px;
   font-weight: bold;
 `;
 
 const StyledActionIcon = style.img`
+  width: 60px;
   transition: all 0.2s ease-in-out;
   cursor: pointer;
 
@@ -259,8 +263,8 @@ const PersonDetail = ({ person, isMobile }: PersonDetailProp) => {
           </StyledPersonCover>
           <StyledPersonName>{person.name}</StyledPersonName>
           <StyledPersonDate>
-            {person.dateOfBirth ? moment(person.dateOfBirth).locale('vi-vn').format('Do MMMM YYYY') : ''} -{' '}
-            {person.dateOfDeath ? moment(person.dateOfDeath).locale('vi-vn').format('Do MMMM YYYY') : ''}
+            {person.dateOfBirth ? moment(person.dateOfBirth).locale('vi').format('Do MMMM YYYY') : ''} -{' '}
+            {person.dateOfDeath ? moment(person.dateOfDeath).locale('vi').format('Do MMMM YYYY') : ''}
           </StyledPersonDate>
         </StyledTopCard>
         <StyledBottomCard>
@@ -273,7 +277,7 @@ const PersonDetail = ({ person, isMobile }: PersonDetailProp) => {
             </Space>
             <Space>
               <picture>
-                <img alt="burn-icon" src="/images/burn-icon.svg" width="32px" />
+                <img alt="fire-icon-light" src="/images/fire-icon-light.svg" width="32px" />
               </picture>
               <StyledText>
                 <Counter num={person.totalWorshipAmount ?? 0} />
@@ -295,12 +299,12 @@ const PersonDetail = ({ person, isMobile }: PersonDetailProp) => {
 
             <Tooltip title={`${WORSHIP_TYPES.FLOWER} XPI`}>
               <picture onClick={() => handleWorship(WORSHIP_TYPES.FLOWER)}>
-                <StyledActionIcon alt="lotus-burn" src="/images/lotus-burn.svg" />
+                <StyledActionIcon alt="flowers" src="/images/flowers.svg" />
               </picture>
             </Tooltip>
           </StyledActionContainer>
         </StyledBottomCard>
-        <StyledTab defaultActiveKey="1" items={items} onChange={onChange} />
+        <StyledTab defaultActiveKey="1" items={items} onChange={onChange} centered />
       </StyledPersonCard>
     </React.Fragment>
   );
