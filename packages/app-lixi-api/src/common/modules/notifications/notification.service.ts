@@ -11,7 +11,6 @@ import { VError } from 'verror';
 import { template } from 'src/utils/stringTemplate';
 import _ from 'lodash';
 import { Account } from '@bcpros/lixi-prisma';
-import { NotificationGateway } from './notification.gateway';
 
 @Injectable()
 export class NotificationService {
@@ -19,12 +18,11 @@ export class NotificationService {
 
   constructor(
     private prisma: PrismaService,
-    private notificationGateway: NotificationGateway,
     @InjectQueue(NOTIFICATION_OUTBOUND_QUEUE) private notificationOutboundQueue: Queue,
     @I18n() private i18n: I18nService
   ) {}
 
-  async saveAndDispatchNotification(room: string, notification: NotificationDto, gateway?: boolean) {
+  async saveAndDispatchNotification(room: string, notification: NotificationDto) {
     if (!notification.recipientId) {
       const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
       throw new VError(accountNotExistMessage);
@@ -80,10 +78,6 @@ export class NotificationService {
       notification: { ...notif } as NotificationDto
     };
     const job = await this.notificationOutboundQueue.add('send-notification', sendNotifJobData);
-
-    if (gateway) {
-      return this.notificationGateway.sendNotification(sendNotifJobData.room, sendNotifJobData.notification);
-    }
     return job.id;
   }
 
