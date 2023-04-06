@@ -100,6 +100,7 @@ export default {
   'general.minBurnt': 'Min XPI burnt:',
   'general.showMore': 'Show more',
   'general.showLess': 'Show less',
+  'general.topAccounts': 'Top Accounts',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',

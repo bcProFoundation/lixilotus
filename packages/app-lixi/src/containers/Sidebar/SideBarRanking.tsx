@@ -443,7 +443,7 @@ const SidebarRanking = () => {
         <div className="right-bar">
           <div className="container-right-bar your-shortcuts">
             <div className="content">
-              <h3>Leader Board </h3>
+              <h3>{intl.get('general.topAccounts')}</h3>
               <Collapse defaultActiveKey={['1']}>
                 <Panel header="Show top leader board" key="1">
                   {leaderboard.map((item, index) => {
