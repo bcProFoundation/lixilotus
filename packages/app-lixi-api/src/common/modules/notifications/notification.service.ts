@@ -22,7 +22,7 @@ export class NotificationService {
     private notificationGateway: NotificationGateway,
     @InjectQueue(NOTIFICATION_OUTBOUND_QUEUE) private notificationOutboundQueue: Queue,
     @I18n() private i18n: I18nService
-  ) { }
+  ) {}
 
   async saveAndDispatchNotification(room: string, notification: NotificationDto, gateway?: boolean) {
     if (!notification.recipientId) {
@@ -35,7 +35,7 @@ export class NotificationService {
       where: {
         id: notification.recipientId
       }
-    })
+    });
     if (!recipientAccount) {
       const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
       throw new VError(accountNotExistMessage);
@@ -53,12 +53,12 @@ export class NotificationService {
     if (!notifType) return null;
 
     const translateTemplate: string =
-    notifType.notificationTypeTranslations.find(x => x.language == recipientAccount?.language)?.template ??
-    notifType.notificationTypeTranslations.find(x => x.isDefault)?.template ??
-    '';
+      notifType.notificationTypeTranslations.find(x => x.language == recipientAccount?.language)?.template ??
+      notifType.notificationTypeTranslations.find(x => x.isDefault)?.template ??
+      '';
 
     const message = template(translateTemplate, notification.additionalData);
-    
+
     // Save to the database
     const notif: NotificationDb = await this.prisma.notification.create({
       data: {

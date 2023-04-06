@@ -183,13 +183,13 @@ export class BurnController {
       }
 
       // prepare data sender
-      const legacyAddress = this.XPI.Address.hash160ToLegacy(command.burnedBy)
+      const legacyAddress = this.XPI.Address.hash160ToLegacy(command.burnedBy);
       const accountAddress = this.XPI.Address.toXAddress(legacyAddress);
       const sender = await this.prisma.account.findFirst({
         where: {
           address: accountAddress
         }
-      })
+      });
       if (!sender) {
         const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
         throw new VError(accountNotExistMessage);
@@ -201,8 +201,8 @@ export class BurnController {
       let commentAccount;
       if (command.burnForType == BurnForType.Comment) {
         const comment = await this.prisma.comment.findFirst({
-          where: {id: command.burnForId}
-        })
+          where: { id: command.burnForId }
+        });
 
         commentAccountId = comment?.commentAccountId;
         commentPostId = comment?.commentToId;
@@ -210,17 +210,17 @@ export class BurnController {
           where: {
             id: _.toSafeInteger(commentAccountId)
           }
-        })
-      };
+        });
+      }
 
       const postId = command.burnForType == BurnForType.Comment ? commentPostId : command.burnForId;
       const post = await this.prisma.post.findFirst({
-          where: {id: postId},
-          include: {
-            postAccount: true,
-            page: true
-          }
-        }) 
+        where: { id: postId },
+        include: {
+          postAccount: true,
+          page: true
+        }
+      });
 
       if (!post) {
         const accountNotExistMessage = await this.i18n.t('post.messages.postNotExist');
@@ -231,7 +231,7 @@ export class BurnController {
         where: {
           id: _.toSafeInteger(post?.postAccountId)
         }
-      })
+      });
 
       if (!recipientPostAccount) {
         const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
@@ -240,15 +240,15 @@ export class BurnController {
 
       // get burnForType key
       const typeValuesArr = Object.values(BurnForType);
-      const burnForTypeString = Object.keys(BurnForType)[typeValuesArr.indexOf(command.burnForType as unknown as BurnForType)];
+      const burnForTypeString =
+        Object.keys(BurnForType)[typeValuesArr.indexOf(command.burnForType as unknown as BurnForType)];
 
       // BurnValue + tip + fee
-      let tip = Number(command.burnValue)*0.04;
-      let fee = Number(command.burnValue)*0.04;
-      
+      let tip = Number(command.burnValue) * 0.04;
+      let fee = Number(command.burnValue) * 0.04;
 
       // create Notifications Burn
-      const calcTip = await this.notificationService.calcTip(post, recipientPostAccount, command)
+      const calcTip = await this.notificationService.calcTip(post, recipientPostAccount, command);
       const createNotifBurnAndTip = {
         senderId: sender.id,
         recipientId: command.burnForType == BurnForType.Comment ? commentAccount?.id : (post?.postAccountId as number),
@@ -258,12 +258,16 @@ export class BurnController {
         additionalData: {
           senderName: sender.name,
           burnType: command.burnType == BurnType.Up ? 'upvoted' : 'downvoted',
-          burnForType: burnForTypeString.toLowerCase(),          
+          burnForType: burnForTypeString.toLowerCase(),
           xpiBurn: command.burnValue,
           xpiTip: calcTip
         }
       };
-      createNotifBurnAndTip.senderId !== createNotifBurnAndTip.recipientId && await this.notificationService.saveAndDispatchNotification(recipientPostAccount.mnemonicHash, createNotifBurnAndTip);
+      createNotifBurnAndTip.senderId !== createNotifBurnAndTip.recipientId &&
+        (await this.notificationService.saveAndDispatchNotification(
+          recipientPostAccount.mnemonicHash,
+          createNotifBurnAndTip
+        ));
 
       // create Notifications Fee
       let recipientPageAccount;
@@ -278,11 +282,11 @@ export class BurnController {
           where: {
             id: _.toSafeInteger(page?.pageAccountId)
           }
-        })
+        });
 
         const createNotifBurnFee = {
           senderId: sender.id,
-          recipientId: post?.pageId ? post.page?.pageAccountId as number : post?.postAccountId,
+          recipientId: post?.pageId ? (post.page?.pageAccountId as number) : post?.postAccountId,
           notificationTypeId: NOTIFICATION_TYPES.RECEIVE_BURN_FEE,
           level: NotificationLevel.INFO,
           url: '/post/' + post?.id,
@@ -295,9 +299,13 @@ export class BurnController {
             xpiFee: fee
           }
         };
-        createNotifBurnFee.senderId !== createNotifBurnFee.recipientId && await this.notificationService.saveAndDispatchNotification(post?.pageId ? recipientPageAccount?.mnemonicHash as string : recipientPostAccount?.mnemonicHash ,createNotifBurnFee);  
+        createNotifBurnFee.senderId !== createNotifBurnFee.recipientId &&
+          (await this.notificationService.saveAndDispatchNotification(
+            post?.pageId ? (recipientPageAccount?.mnemonicHash as string) : recipientPostAccount?.mnemonicHash,
+            createNotifBurnFee
+          ));
       }
-      
+
       const result: Burn = {
         ...savedBurn,
         burnType: savedBurn.burnType ? BurnType.Up : BurnType.Down,
