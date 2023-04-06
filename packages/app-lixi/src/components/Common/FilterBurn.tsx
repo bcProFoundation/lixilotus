@@ -6,7 +6,7 @@ import { saveBurnFilter } from '@store/settings/actions';
 import styled from 'styled-components';
 import intl from 'react-intl-universal';
 import { getFilterPostsHome, getFilterPostsPage, getFilterPostsToken } from '@store/settings/selectors';
-import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import { DownOutlined, MinusOutlined, PlusOutlined, UpOutlined } from '@ant-design/icons';
 
 const FilterStyle = styled.div`
   display: flex;
@@ -26,15 +26,14 @@ const FilterStyle = styled.div`
   .ant-input-group {
     display: flex;
 
+
     Button {
       &.down-value {
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
+       border-radius:50%;
       }
     
       &.up-value {
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
+        border-radius:50%;
       }
 
       svg {
@@ -49,19 +48,17 @@ const FilterStyle = styled.div`
     }
   
     .ant-input-disabled {
-      width: 60px;
-      background: #fff;
+      width: 34px;
       color: #000;
       cursor: pointer;
-      border-radius: 0;
-      border-right: 0px;
-      border-left: 0px;
+      border-radius: 50%;
+      border: 0px;
+      background: rgba(0,0,0,0);
+
     }
 
-    border: 1px solid #767576;
     border-radius: 8px;
     &:hover {
-      border: 2px solid #9E2A9C;
       filter: drop-shadow(0px 0px 4px rgba(148, 31, 147, 0.5));
       border-radius: 8px;
     }
@@ -109,14 +106,14 @@ export const FilterBurnt = (props: FilterBurntProps) => {
       <Input.Group>
         <Button
           className='down-value'
-          icon={<DownOutlined />}
+          icon={<MinusOutlined />}
           onClick={() => handleUpDownBtn(false)}
           disabled={valueForType === 0}
         />
         <Input disabled value={valueForType} />
         <Button
           className='up-value'
-          icon={<UpOutlined />}
+          icon={<PlusOutlined />}
           onClick={() => handleUpDownBtn(true)} />
       </Input.Group>
     </FilterStyle>
