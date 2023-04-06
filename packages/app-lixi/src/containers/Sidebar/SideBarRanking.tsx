@@ -397,7 +397,6 @@ const SidebarRanking = () => {
       sidebarRankingNode.classList.remove('show-scroll');
     }, 700);
   };
-  console.log('PASGSGG', router)
 
   return (
     <RankingSideBar id="ranking-sidebar" ref={refSidebarRanking} onScroll={e => triggerSrollbar(e)}>
