@@ -40,7 +40,6 @@ const PostDetailPage = props => {
               type: 'image/jpeg',
             },
             { url: 'https://img5.thuthuatphanmem.vn/uploads/2022/01/12/999-hinh-anh-ngau-nhat_095431489.jpg' },
-
             { url: 'https://img5.thuthuatphanmem.vn/uploads/2022/01/12/999-hinh-anh-ngau-nhat_095431489.jpg' },
           ],
           siteName: 'SiteName',
