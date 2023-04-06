@@ -171,7 +171,12 @@ const FullWalletComponent: React.FC = () => {
     let idComment = burnForId;
 
     if (burnForType == BurnForType.Token && burnForId.length !== 64) {
-      burnForId = allTokens.find(token => token.id === burnForId).tokenId;
+      const searchTokenID = allTokens.find(token => token.id === burnForId);
+      if (searchTokenID) {
+        burnForId = searchTokenID.tokenId;
+      } else {
+        return '/404';
+      }
     }
     if (burnForType == BurnForType.Comment) {
       burnForTypeString = getBurnForType(BurnForType.Post);
