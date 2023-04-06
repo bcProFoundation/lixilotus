@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import intl from 'react-intl-universal';
 
 export const GridDiv = styled.div`
   .count {
@@ -33,6 +34,7 @@ export const GridDiv = styled.div`
 
 type CounterProps = {
   num: number;
+  isComments?: boolean;
 };
 
 export const Counter = (props: CounterProps) => {
@@ -57,7 +59,7 @@ export const Counter = (props: CounterProps) => {
         {count > 0 && (
           <>
             &nbsp;
-            <span style={{ fontSize: '10px' }}>XPI</span>
+            <span style={{ fontSize: '10px' }}>{props.isComments ? intl.get('label.comment') : "XPI"}</span>
           </>
         )}
       </div>

@@ -402,6 +402,14 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
             dataItem={item}
             onClickIcon={e => downVotePost(e, item)}
           />
+          <IconBurn
+            burnValue={formatBalance(post?.totalComments ?? 0)}
+            imgUrl="/images/ico-comments.svg"
+            key={`list-vertical-comment-o-${item.id}`}
+            dataItem={item}
+            onClickIcon={e => handlePostClick(e)}
+            isComment={true}
+          />
           {/* TODO: complete next Release */}
           {/* <IconBurn
             burnValue={formatBalance(post?.lotusBurnDown ?? 0)}
