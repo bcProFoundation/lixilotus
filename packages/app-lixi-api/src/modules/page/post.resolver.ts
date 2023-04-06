@@ -660,6 +660,11 @@ export class PostResolver {
       throw new Error(noPermissionToUpdate);
     }
 
+    if (post?.lotusBurnScore !== 0) {
+      const noPermissionToUpdate = await this.i18n.t('post.messages.noPermissionToUpdate');
+      throw new Error(noPermissionToUpdate);
+    }
+
     const updatedPost = await this.prisma.post.update({
       where: {
         id: id

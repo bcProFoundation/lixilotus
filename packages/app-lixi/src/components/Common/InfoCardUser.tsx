@@ -22,6 +22,7 @@ type InfoCardProps = {
   onEditPostClick?: () => void;
   postEdited?: boolean;
   isDropdown?: boolean;
+  lotusBurnScore?: number;
 };
 
 const CardUser = styled.div`
@@ -94,19 +95,17 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
     activatePostLocation,
     postAccountAddress,
     postEdited,
-    isDropdown
+    isDropdown,
+    lotusBurnScore
   } = props;
   const selectedAccount = useAppSelector(getSelectedAccount);
   const history = useRouter();
 
-  useEffect(() => {
-    isDropdown ? isDropdown : false;
-  }, []);
-
   const items: MenuProps['items'] = [
     {
       key: 'editPost',
-      label: <a onClick={onEditPostClick}>{intl.get('post.editPost')}</a>
+      label: <a onClick={onEditPostClick}>{intl.get('post.editPost')}</a>,
+      disabled: lotusBurnScore !== 0
     }
   ];
   const postLocation = () => {
@@ -156,7 +155,7 @@ const InfoCardUser: React.FC<InfoCardProps> = props => {
             </div>
           </div>
         </CardUser>
-        {isDropdown === true && (
+        {isDropdown && (
           <>
             <Dropdown
               menu={{ items }}
