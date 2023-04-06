@@ -13,10 +13,44 @@ const PostDetailPage = props => {
   const canonicalUrl = process.env.NEXT_PUBLIC_LIXI_URL + `posts/${postId}`;
 
   const postQuery = usePostQuery({ id: postId });
-
+  // TODO: test meta tag
   return (
     <>
-      {postQuery && postQuery.isSuccess && (
+      <NextSeo
+        title="Lixi Program"
+        description="The lixi program send you a small gift ."
+        canonical={canonicalUrl}
+        openGraph={{
+          url: canonicalUrl,
+          title: 'LixiLotus',
+          description: postQuery.data.post.content ?? 'LixiLotus allow you to giveaway your Lotus effortlessly',
+          images: [
+            {
+              url: 'https://img5.thuthuatphanmem.vn/uploads/2022/01/12/999-hinh-anh-ngau-nhat_095431489.jpg',
+              width: 800,
+              height: 600,
+              alt: 'Og Image Alt',
+              type: 'image/jpeg',
+            },
+            {
+              url: 'https://img5.thuthuatphanmem.vn/uploads/2022/01/12/999-hinh-anh-ngau-nhat_095431489.jpg',
+              width: 900,
+              height: 800,
+              alt: 'Og Image Alt Second',
+              type: 'image/jpeg',
+            },
+            { url: 'https://img5.thuthuatphanmem.vn/uploads/2022/01/12/999-hinh-anh-ngau-nhat_095431489.jpg' },
+            { url: 'https://img5.thuthuatphanmem.vn/uploads/2022/01/12/999-hinh-anh-ngau-nhat_095431489.jpg' },
+          ],
+          siteName: 'SiteName',
+        }}
+        twitter={{
+          handle: '@handle',
+          site: '@site',
+          cardType: 'summary_large_image',
+        }}
+      />
+      {/* {postQuery && postQuery.isSuccess && (
         <>
           <NextSeo
             title="Lixi Program"
@@ -37,7 +71,7 @@ const PostDetailPage = props => {
           />
           <PostDetail post={postQuery.data.post} isMobile={isMobile} />
         </>
-      )}
+      )} */}
     </>
   );
 };
