@@ -397,6 +397,7 @@ const SidebarRanking = () => {
       sidebarRankingNode.classList.remove('show-scroll');
     }, 700);
   };
+  console.log('PASGSGG', router)
 
   return (
     <RankingSideBar id="ranking-sidebar" ref={refSidebarRanking} onScroll={e => triggerSrollbar(e)}>
@@ -438,11 +439,11 @@ const SidebarRanking = () => {
           </StyledPopover>
         )}
       </div> */}
-      {router?.pathname == '/wallet' && (
+      {(router?.pathname == '/wallet' || router?.pathname == '/') && (
         <div className="right-bar">
           <div className="container-right-bar your-shortcuts">
             <div className="content">
-              <h3>Leader Board</h3>
+              <h3>Leader Board </h3>
               <Collapse defaultActiveKey={['1']}>
                 <Panel header="Show top leader board" key="1">
                   {leaderboard.map((item, index) => {
@@ -465,7 +466,7 @@ const SidebarRanking = () => {
         </div>
       )}
 
-      {router?.pathname !== '/wallet' && (
+      {/* {router?.pathname !== '/wallet'  && (
         <div className="right-bar">
           <div className="container-right-bar">
             <StyledTabs type="card">
@@ -496,7 +497,7 @@ const SidebarRanking = () => {
             </StyledTabs>
           </div>
         </div>
-      )}
+      )} */}
 
       {router?.pathname === '/wallet' && (
         <ManageAccounts>
