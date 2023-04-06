@@ -16,6 +16,29 @@ const PostDetailPage = props => {
   // TODO: test meta tag
   return (
     <>
+      {/* {postQuery && postQuery.isSuccess && (
+        <>
+          <NextSeo
+            title="Lixi Program"
+            description="The lixi program send you a small gift ."
+            canonical={canonicalUrl}
+            openGraph={{
+              url: canonicalUrl,
+              title: 'LixiLotus',
+              description: postQuery.data.post.content ?? 'LixiLotus allow you to giveaway your Lotus effortlessly',
+              images: [{ url: '' }],
+              site_name: 'LixiLotus'
+            }}
+            twitter={{
+              handle: '@handle',
+              site: '@site',
+              cardType: 'summary_large_image'
+            }}
+          />
+          <PostDetail post={postQuery.data.post} isMobile={isMobile} />
+        </>
+      )} */}
+
       <NextSeo
         title="Lixi Program"
         description="The lixi program send you a small gift ."
@@ -50,28 +73,6 @@ const PostDetailPage = props => {
           cardType: 'summary_large_image',
         }}
       />
-      {/* {postQuery && postQuery.isSuccess && (
-        <>
-          <NextSeo
-            title="Lixi Program"
-            description="The lixi program send you a small gift ."
-            canonical={canonicalUrl}
-            openGraph={{
-              url: canonicalUrl,
-              title: 'LixiLotus',
-              description: postQuery.data.post.content ?? 'LixiLotus allow you to giveaway your Lotus effortlessly',
-              images: [{ url: '' }],
-              site_name: 'LixiLotus'
-            }}
-            twitter={{
-              handle: '@handle',
-              site: '@site',
-              cardType: 'summary_large_image'
-            }}
-          />
-          <PostDetail post={postQuery.data.post} isMobile={isMobile} />
-        </>
-      )} */}
     </>
   );
 };
