@@ -53,7 +53,7 @@ export class PostResolver {
     private meiliService: MeiliService,
     private readonly notificationService: NotificationService,
     @I18n() private i18n: I18nService
-  ) {}
+  ) { }
 
   @Subscription(() => Post)
   postCreated() {
@@ -530,10 +530,10 @@ export class PostResolver {
           connect:
             uploadDetailIds.length > 0
               ? uploadDetailIds.map((uploadDetail: any) => {
-                  return {
-                    id: uploadDetail
-                  };
-                })
+                return {
+                  id: uploadDetail
+                };
+              })
               : undefined
         },
         page: {
@@ -620,8 +620,8 @@ export class PostResolver {
         level: NotificationLevel.INFO,
         url: '/post/' + createdPost.id,
         additionalData: {
-          senderId: createdPost.postAccountId,
           senderName: createdPost.postAccount.name,
+          senderAddress: createdPost.postAccount.address,
           pageName: createdPost.page?.name
         }
       };

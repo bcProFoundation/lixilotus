@@ -21,7 +21,7 @@ export class BurnController {
     @I18n() private i18n: I18nService,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS
-  ) {}
+  ) { }
 
   @Post()
   async burn(@Body() command: BurnCommand): Promise<Burn> {
@@ -257,6 +257,7 @@ export class BurnController {
         url: '/post/' + post?.id,
         additionalData: {
           senderName: sender.name,
+          senderAddress: sender.address,
           burnType: command.burnType == BurnType.Up ? 'upvoted' : 'downvoted',
           burnForType: burnForTypeString.toLowerCase(),
           xpiBurn: command.burnValue,
@@ -292,6 +293,7 @@ export class BurnController {
           url: '/post/' + post?.id,
           additionalData: {
             senderName: sender.name,
+            senderAddress: sender.address,
             pageName: post?.page?.name,
             burnType: command.burnType == BurnType.Up ? 'upvoted' : 'downvoted',
             BurnForType: burnForTypeString,
