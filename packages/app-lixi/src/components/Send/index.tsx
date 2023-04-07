@@ -430,7 +430,6 @@ const SendComponent: React.FC = () => {
                     ) : (
                       <PrimaryButton onClick={() => submit()}>Send</PrimaryButton>
                     )}
-
                   </>
                 )}
               </div>

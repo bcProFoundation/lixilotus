@@ -265,7 +265,7 @@ export class BurnController {
         }
       };
       createNotifBurnAndTip.senderId !== createNotifBurnAndTip.recipientId &&
-        (await this.notificationService.createAndGatewayNotification(
+        (await this.notificationService.saveAndDispatchNotification(
           recipientPostAccount.mnemonicHash,
           createNotifBurnAndTip
         ));
@@ -302,7 +302,7 @@ export class BurnController {
           }
         };
         createNotifBurnFee.senderId !== createNotifBurnFee.recipientId &&
-          (await this.notificationService.createAndGatewayNotification(
+          (await this.notificationService.saveAndDispatchNotification(
             post?.pageId ? (recipientPageAccount?.mnemonicHash as string) : recipientPostAccount?.mnemonicHash,
             createNotifBurnFee
           ));
