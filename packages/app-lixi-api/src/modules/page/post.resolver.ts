@@ -626,7 +626,7 @@ export class PostResolver {
         }
       };
       createNotif.senderId !== createNotif.recipientId &&
-        (await this.notificationService.saveAndDispatchNotification(recipient?.mnemonicHash, createNotif, true));
+        (await this.notificationService.saveAndDispatchNotification(recipient?.mnemonicHash, createNotif));
     }
 
     return createdPost;

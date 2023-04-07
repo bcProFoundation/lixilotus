@@ -22,9 +22,9 @@ export class NotificationService {
     private notificationGateway: NotificationGateway,
     @InjectQueue(NOTIFICATION_OUTBOUND_QUEUE) private notificationOutboundQueue: Queue,
     @I18n() private i18n: I18nService
-  ) {}
+  ) { }
 
-  async saveAndDispatchNotification(room: string, notification: NotificationDto, gateway?: boolean) {
+  async saveAndDispatchNotification(room: string, notification: NotificationDto) {
     if (!notification.recipientId) {
       const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
       throw new VError(accountNotExistMessage);
@@ -74,9 +74,7 @@ export class NotificationService {
       }
     });
 
-    if (gateway) {
-      await this.notificationGateway.sendNotification(room, notif);
-    }
+    await this.notificationGateway.sendNotification(room, notif);
 
     // Dispatch the notification
     const sendNotifJobData: SendNotificationJobData = {
