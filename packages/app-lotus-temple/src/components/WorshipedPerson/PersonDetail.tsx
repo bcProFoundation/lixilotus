@@ -247,11 +247,6 @@ const PersonDetail = ({ person, isMobile }: PersonDetailProp) => {
     }
   };
 
-  useEffect(() => {
-    if (slpBalancesAndUtxos === slpBalancesAndUtxosRef.current) return;
-    dispatch(setTransactionReady());
-  }, [slpBalancesAndUtxos.nonSlpUtxos]);
-
   useDidMountEffectNotification();
 
   return (
