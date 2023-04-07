@@ -376,7 +376,7 @@ const Home = () => {
       children: (
         <React.Fragment>
           <StyledContainer>
-            <SearchBox search={searchPerson} value={searchValue} />
+            <SearchBox search={searchPerson} value={searchValue} loading={queryIsLoading} />
           </StyledContainer>
           <React.Fragment>
             {!searchValue ? (
@@ -397,7 +397,9 @@ const Home = () => {
                   return <WorshipedPersonCard key={index} person={person} />;
                 })}
               </InfiniteScroll>
-            ) : !queryIsLoading ? (
+            ) : queryIsLoading ? (
+              <Skeleton avatar active style={{ marginTop: 20 }} />
+            ) : (
               <InfiniteScroll
                 dataLength={queryData.length}
                 next={loadMoreSearchPeople}
@@ -415,8 +417,6 @@ const Home = () => {
                   return <WorshipedPersonCard key={index} person={person} />;
                 })}
               </InfiniteScroll>
-            ) : (
-              <Skeleton avatar active style={{ marginTop: 20 }} />
             )}
           </React.Fragment>
         </React.Fragment>

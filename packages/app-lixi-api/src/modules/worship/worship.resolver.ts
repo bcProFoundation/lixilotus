@@ -107,15 +107,21 @@ export class WorshipResolver {
       limit!
     );
 
-    const peopleId = _.map(people, 'id');
+    // console.log(people);
 
-    const searchPeople = await this.prisma.worshipedPerson.findMany({
-      where: {
-        id: { in: peopleId }
-      }
-    });
+    // const peopleId = _.map(people, 'id');
 
-    return connectionFromArraySlice(searchPeople, args, {
+    // const searchPeople = await this.prisma.worshipedPerson.findMany({
+    //   where: {
+    //     id: { in: peopleId }
+    //   }
+    // });
+
+    // console.log('-------------------------------------------------------------------');
+
+    // console.log(searchPeople);
+
+    return connectionFromArraySlice(people, args, {
       arrayLength: count || 0,
       sliceStart: offset || 0
     });

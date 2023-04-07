@@ -468,7 +468,7 @@ type WorshipedPerson {
   countryOfCitizenship: String
 
   """Identifies the date and time when the object was created."""
-  createdAt: DateTime!
+  createdAt: DateTime
   dateOfBirth: DateTime
   dateOfDeath: DateTime
   id: ID!
@@ -482,7 +482,7 @@ type WorshipedPerson {
   totalWorshipAmount: Int
 
   """Identifies the date and time when the object was last updated."""
-  updatedAt: DateTime!
+  updatedAt: DateTime
   wikiAvatar: String
   wikiDataId: String
 }

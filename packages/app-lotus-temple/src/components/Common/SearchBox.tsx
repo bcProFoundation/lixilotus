@@ -65,6 +65,7 @@ const SearchBox = props => {
               value={value}
               placeholder="Search..."
               onKeyDown={onPressEnter}
+              disabled={props.loading}
             />
           )}
         />

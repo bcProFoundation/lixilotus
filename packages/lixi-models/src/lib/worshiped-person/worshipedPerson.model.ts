@@ -86,12 +86,14 @@ export class WorshipedPerson {
   city?: City;
 
   @Field(() => Date, {
-    description: 'Identifies the date and time when the object was created.'
+    description: 'Identifies the date and time when the object was created.',
+    nullable: true
   })
-  createdAt: Date;
+  createdAt?: Date;
 
   @Field(() => Date, {
-    description: 'Identifies the date and time when the object was last updated.'
+    description: 'Identifies the date and time when the object was last updated.',
+    nullable: true
   })
-  updatedAt: Date;
+  updatedAt?: Date;
 }
