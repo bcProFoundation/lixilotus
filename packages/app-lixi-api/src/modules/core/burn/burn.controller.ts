@@ -21,7 +21,7 @@ export class BurnController {
     @I18n() private i18n: I18nService,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS
-  ) { }
+  ) {}
 
   @Post()
   async burn(@Body() command: BurnCommand): Promise<Burn> {
@@ -265,7 +265,7 @@ export class BurnController {
         }
       };
       createNotifBurnAndTip.senderId !== createNotifBurnAndTip.recipientId &&
-        (await this.notificationService.saveAndDispatchNotification(
+        (await this.notificationService.createAndGatewayNotification(
           recipientPostAccount.mnemonicHash,
           createNotifBurnAndTip
         ));
@@ -302,7 +302,7 @@ export class BurnController {
           }
         };
         createNotifBurnFee.senderId !== createNotifBurnFee.recipientId &&
-          (await this.notificationService.saveAndDispatchNotification(
+          (await this.notificationService.createAndGatewayNotification(
             post?.pageId ? (recipientPageAccount?.mnemonicHash as string) : recipientPostAccount?.mnemonicHash,
             createNotifBurnFee
           ));

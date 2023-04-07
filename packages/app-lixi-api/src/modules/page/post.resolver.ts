@@ -53,7 +53,7 @@ export class PostResolver {
     private meiliService: MeiliService,
     private readonly notificationService: NotificationService,
     @I18n() private i18n: I18nService
-  ) { }
+  ) {}
 
   @Subscription(() => Post)
   postCreated() {
@@ -530,10 +530,10 @@ export class PostResolver {
           connect:
             uploadDetailIds.length > 0
               ? uploadDetailIds.map((uploadDetail: any) => {
-                return {
-                  id: uploadDetail
-                };
-              })
+                  return {
+                    id: uploadDetail
+                  };
+                })
               : undefined
         },
         page: {
@@ -626,7 +626,7 @@ export class PostResolver {
         }
       };
       createNotif.senderId !== createNotif.recipientId &&
-        (await this.notificationService.saveAndDispatchNotification(recipient?.mnemonicHash, createNotif));
+        (await this.notificationService.createAndGatewayNotification(recipient?.mnemonicHash, createNotif));
     }
 
     return createdPost;

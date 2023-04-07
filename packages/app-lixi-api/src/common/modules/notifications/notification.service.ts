@@ -11,6 +11,7 @@ import { VError } from 'verror';
 import { template } from 'src/utils/stringTemplate';
 import _ from 'lodash';
 import { Account } from '@bcpros/lixi-prisma';
+import { NotificationGateway } from './notification.gateway';
 
 @Injectable()
 export class NotificationService {
@@ -18,6 +19,7 @@ export class NotificationService {
 
   constructor(
     private prisma: PrismaService,
+    private notificationGateway: NotificationGateway,
     @InjectQueue(NOTIFICATION_OUTBOUND_QUEUE) private notificationOutboundQueue: Queue,
     @I18n() private i18n: I18nService
   ) {}
@@ -79,6 +81,70 @@ export class NotificationService {
     };
     const job = await this.notificationOutboundQueue.add('send-notification', sendNotifJobData);
     return job.id;
+  }
+
+  async createAndGatewayNotification(room: string, notification: NotificationDto) {
+    try {
+      if (!notification.recipientId) {
+        const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
+        throw new VError(accountNotExistMessage);
+      }
+
+      // get recipient account
+      const recipientAccount = await this.prisma.account.findUnique({
+        where: {
+          id: notification.recipientId
+        }
+      });
+      if (!recipientAccount) {
+        const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
+        throw new VError(accountNotExistMessage);
+      }
+
+      // @todo: Find notification types and create messenge
+      const notifType = await this.prisma.notificationType.findFirst({
+        where: {
+          id: notification.notificationTypeId as number
+        },
+        include: {
+          notificationTypeTranslations: true
+        }
+      });
+      if (!notifType) return null;
+
+      const translateTemplate: string =
+        notifType.notificationTypeTranslations.find(x => x.language == recipientAccount?.language)?.template ??
+        notifType.notificationTypeTranslations.find(x => x.isDefault)?.template ??
+        '';
+
+      const message = template(translateTemplate, notification.additionalData);
+
+      // Save to the database
+      const notif: NotificationDb = await this.prisma.notification.create({
+        data: {
+          senderId: notification.senderId,
+          recipientId: notification.recipientId,
+          level: notification.level as NotificationLevelDb,
+          action: notification.action,
+          message: message,
+          notificationTypeId: notification.notificationTypeId as number,
+          additionalData: notification.additionalData as Prisma.InputJsonValue,
+          url: notification.url,
+          status: 'active'
+        }
+      });
+      await this.notificationGateway.sendNotification(room, notif);
+
+      return;
+    } catch (err: unknown) {
+      if (err instanceof VError) {
+        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      } else {
+        const unableCreateNotification = await this.i18n.t('notification.messages.unableCreateNotification');
+        const error = new VError.WError(err as Error, unableCreateNotification);
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
   }
 
   async calcTip(post: any, recipient: Account, burn: BurnCommand) {

@@ -190,7 +190,7 @@ export class CommentResolver {
           additionalData: tipHex ? commentToGiveData : commentToPostData
         };
         createNotif.senderId !== createNotif.recipientId &&
-          (await this.notificationService.saveAndDispatchNotification(recipient?.mnemonicHash, createNotif));
+          (await this.notificationService.createAndGatewayNotification(recipient?.mnemonicHash, createNotif));
 
         return createdComment;
       });
