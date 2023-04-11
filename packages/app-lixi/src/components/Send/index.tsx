@@ -84,6 +84,7 @@ const SendComponent: React.FC = () => {
     const search = window.location.search;
     const params = new URLSearchParams(search);
     const replyAddress = params.get('replyAddress');
+    const isReply = params.get('isReply') === 'true';
     setFormData({
       ...formData,
       address: replyAddress ?? '',
@@ -287,8 +288,7 @@ const SendComponent: React.FC = () => {
     <div style={{ textAlign: 'right' }}>
       {intl.get('send.onlyMessage')} &nbsp;
       <StyledCheckbox
-        // checked={formData.checked}
-        defaultChecked={formData.checked}
+        defaultChecked={false}
         onChange={() =>
           setFormData({
             ...formData,

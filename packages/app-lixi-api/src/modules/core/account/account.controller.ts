@@ -11,6 +11,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Request,
   UseGuards
 } from '@nestjs/common';
@@ -37,13 +38,16 @@ import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase58Str, hashMnemonic } f
 import { PrismaService } from '../../prisma/prisma.service';
 import { WalletService } from '../../wallet/wallet.service';
 import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
+import BCHJS from '@bcpros/xpi-js';
+import { toSafeInteger } from 'lodash';
 
 @Controller('accounts')
 export class AccountController {
   constructor(
     private prisma: PrismaService,
     private readonly walletService: WalletService,
-    @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet
+    @Inject('xpiWallet') private xpiWallet: MinimalBCHWallet,
+    @Inject('xpijs') private XPI: BCHJS
   ) {}
 
   @Get(':id')
@@ -113,6 +117,63 @@ export class AccountController {
     }
   }
 
+  @Get('leaderboard')
+  async getLeaderboard(@Query('limit') limit: number, @I18n() i18n: I18nContext): Promise<any> {
+    try {
+      const leaderboardAccounts = await this.prisma.burn.groupBy({
+        by: ['burnedBy'],
+        _sum: {
+          burnedValue: true
+        },
+        orderBy: {
+          _sum: {
+            burnedValue: 'desc'
+          }
+        },
+        take: toSafeInteger(limit)
+      });
+
+      const addressAndTotalBurntArray = leaderboardAccounts.map((account: any) => {
+        const burnedBy = account.burnedBy.toString('hex');
+
+        const legacyAddress = this.XPI.Address.hash160ToLegacy(burnedBy);
+
+        const publicAddress = this.XPI.Address.toXAddress(legacyAddress);
+
+        const totalBurned: number = account._sum.burnedValue;
+        return {
+          address: publicAddress,
+          totalBurned
+        };
+      });
+
+      const accountAddresses = _.map(addressAndTotalBurntArray, 'address');
+
+      const accountsWithAddresses = await this.prisma.account.findMany({
+        where: {
+          address: {
+            in: accountAddresses
+          }
+        }
+      });
+
+      const accounts = addressAndTotalBurntArray.map(addressAndTotalBurntItem => {
+        const account = accountsWithAddresses.find(account => account.address === addressAndTotalBurntItem.address);
+        return { ...account, ...addressAndTotalBurntItem };
+      });
+
+      const result = _.compact(accounts).map(data => _.omit({ ...data }, 'publicAddress'));
+      return result;
+    } catch (err: unknown) {
+      if (err instanceof VError) {
+        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      } else {
+        const getunableGetBurnListAccount = await i18n.t('account.messages.unableGetBurnListAccount');
+        const error = new VError.WError(err as Error, getunableGetBurnListAccount);
+        throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  }
   @Post('import')
   async import(@Body() importAccountCommand: ImportAccountCommand, @I18n() i18n: I18nContext): Promise<AccountDto> {
     const { mnemonic } = importAccountCommand;

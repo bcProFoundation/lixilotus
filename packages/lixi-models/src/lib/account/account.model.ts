@@ -1,5 +1,7 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 
+import { Page } from '../page';
+
 @ObjectType()
 export class Account {
   @Field(() => ID)
@@ -21,4 +23,6 @@ export class Account {
 
   balance?: number;
   language?: string;
+
+  page?: Nullable<Page>;
 }

@@ -13,6 +13,7 @@ import { UpdatePostInput, OrderDirection, PostOrderField } from 'src/generated/t
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
 import { UpdatePostMutation } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
+import { getFilterPostsHome } from '@store/settings/selectors';
 
 const UserCreate = styled.div`
   .user-create-post {
@@ -63,6 +64,7 @@ export type EditPostModalProps = {
 export const EditPostModalPopup: React.FC<EditPostModalProps> = props => {
   const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
+  const filterValue = useAppSelector(getFilterPostsHome);
 
   const [
     updatePostTrigger,
@@ -91,7 +93,7 @@ export const EditPostModalPopup: React.FC<EditPostModalProps> = props => {
     try {
       const result = await updatePostTrigger({ input: editPostInput }).unwrap();
       const patches = dispatch(
-        postApi.util.updateQueryData('Posts', params, draft => {
+        postApi.util.updateQueryData('Posts', { ...params, minBurnFilter: filterValue }, draft => {
           const index = draft.allPosts.edges.findIndex(x => x.cursor === result.updatePost.id);
           draft.allPosts.edges[index].node.content = result.updatePost.content;
         })

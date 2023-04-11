@@ -539,11 +539,11 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
     };
   };
   const handleNewExpityTimeInput = value => {
-    setNewExpiryAtLixi(value._d.toString());
+    setNewExpiryAtLixi(value.$d.toString());
   };
 
   const handleNewActivatedTimeInput = value => {
-    setNewActivatedAtLixi(value._d.toString());
+    setNewActivatedAtLixi(value.$d.toString());
   };
 
   const handleMaxClaim = e => {
@@ -708,14 +708,14 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
   };
 
   const onOk = value => {
-    setNewExpiryAtLixi(value._d.toUTCString());
+    setNewExpiryAtLixi(value.$d.toUTCString());
     if (value && !isEmpty(value)) {
       setExpiryAtLixiIsValid(true);
     }
   };
 
   const onActivatedOk = value => {
-    setNewActivatedAtLixi(value._d.toUTCString());
+    setNewActivatedAtLixi(value.$d.toUTCString());
     if (value && !isEmpty(value)) {
       setActivatedAtLixiIsValid(true);
     }

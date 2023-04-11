@@ -1,5 +1,6 @@
-import { NotificationDto as Notification } from '@bcpros/lixi-models';
+import { NotificationDto as Notification, PaginationResult } from '@bcpros/lixi-models';
 import axiosClient from '@utils/axiosClient';
+import { readAllNotifications } from './actions';
 
 const notificationApi = {
   getByAccountId(id: number, mnemonicHash?: string): Promise<Notification[]> {
@@ -56,6 +57,19 @@ const notificationApi = {
 
     return axiosClient
       .patch(url, {}, config)
+      .then(response => {
+        return response.data as Notification;
+      })
+      .catch(err => {
+        const { response } = err;
+        throw response.data;
+      });
+  },
+  readAllNotifications(): Promise<any> {
+    const url = `/api/notifications/readAll`;
+
+    return axiosClient
+      .patch(url)
       .then(response => {
         return response.data as Notification;
       })
