@@ -207,13 +207,27 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
   };
 
   const menuItems = [{ label: 'All', key: 'all' }];
-
-  const momentCase = (createdAt: any) => {
-    const yesterday = moment().subtract(1, 'day');
-    if (moment(createdAt).isAfter(yesterday)) {
-      return moment(createdAt).fromNow().toString();
+  const formatTime = (createdAt: any) => {
+    moment.updateLocale('en', {
+      relativeTime: {
+        future: 'In %s',
+        past: '%s ago',
+        s: 'Just now',
+        ss: 'Just now',
+        m: 'A minute ',
+        mm: '%d minutes',
+        h: 'An hour',
+        hh: '%d hours',
+        d: 'A day'
+      }
+    });
+    const now = moment();
+    const notificationTime = moment(createdAt);
+    const daysAgo = now.diff(notificationTime, 'days');
+    if (daysAgo <= 2) {
+      return moment(notificationTime).fromNow();
     } else {
-      return moment(createdAt).format('MMMM Do YYYY, h:mm a');
+      return moment(notificationTime).format("MMMM Do YYYY, h:mm a");
     }
   };
 
@@ -254,7 +268,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                     author={
                       <StyledAuthor>
                         <StyledTextLeft></StyledTextLeft>
-                        <StyledTextRight>{momentCase(notification.createdAt)}</StyledTextRight>
+                        <StyledTextRight>{formatTime(notification.createdAt)}</StyledTextRight>
                       </StyledAuthor>
                     }
                     content={
@@ -276,7 +290,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                 author={
                   <StyledAuthor>
                     {/* <StyledTextLeft></StyledTextLeft> */}
-                    <StyledTextRight>{momentCase(notification.createdAt)}</StyledTextRight>
+                    <StyledTextRight>{formatTime(notification.createdAt)}</StyledTextRight>
                   </StyledAuthor>
                 }
                 avatar={
