@@ -6,14 +6,14 @@ import { saveBurnFilter } from '@store/settings/actions';
 import styled from 'styled-components';
 import intl from 'react-intl-universal';
 import { getFilterPostsHome, getFilterPostsPage, getFilterPostsToken } from '@store/settings/selectors';
-import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import { DownOutlined, MinusOutlined, PlusOutlined, UpOutlined } from '@ant-design/icons';
 
 const FilterStyle = styled.div`
   display: flex;
   align-items: baseline;
   align-self: center;
   p {
-    margin: 0;
+    margin: 0px;
     font-style: normal;
     font-weight: 400;
     font-size: 16px;
@@ -25,45 +25,42 @@ const FilterStyle = styled.div`
 
   .ant-input-group {
     display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 4px 8px;
+    gap: 10px;
 
     Button {
+       
       &.down-value {
-        border-top-right-radius: 0;
-        border-bottom-right-radius: 0;
+        border: .1px solid;
+        border-radius:50%;
+
+      } 
+
+      &.down-value:hover {
+        border: 1.3px solid #9E2A9C;
       }
 
       &.up-value {
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
+        border: .1px solid;
+        border-radius:50%;
       }
 
-      svg {
-        color: #767576;
+      &.up-value:hover {
+        border: 1.3px solid #9E2A9C;
       }
-
-      &:hover {
-        svg {
-          color: #9e2a9c;
-        }
-      }
+      
     }
 
     .ant-input-disabled {
-      width: 60px;
-      background: #fff;
+      width: 54px;
       color: #000;
       cursor: pointer;
-      border-radius: 0;
-      border-right: 0px;
-      border-left: 0px;
-    }
-
-    border: 1px solid #767576;
-    border-radius: 8px;
-    &:hover {
-      border: 2px solid #9e2a9c;
-      filter: drop-shadow(0px 0px 4px rgba(148, 31, 147, 0.5));
-      border-radius: 8px;
+      border: 0px;
+      background: rgba(0,0,0,0);
+      
     }
   }
 `;
@@ -108,13 +105,16 @@ export const FilterBurnt = (props: FilterBurntProps) => {
       <p>{intl.get('general.minBurnt')} &nbsp;</p>
       <Input.Group>
         <Button
-          className="down-value"
-          icon={<DownOutlined />}
+          className='down-value'
+          icon={<MinusOutlined />}
           onClick={() => handleUpDownBtn(false)}
           disabled={valueForType === 0}
         />
         <Input disabled value={valueForType} />
-        <Button className="up-value" icon={<UpOutlined />} onClick={() => handleUpDownBtn(true)} />
+        <Button
+          className='up-value'
+          icon={<PlusOutlined />}
+          onClick={() => handleUpDownBtn(true)} />
       </Input.Group>
     </FilterStyle>
   );
