@@ -182,6 +182,7 @@ export class CommentResolver {
 
         const createNotif = {
           senderId: account.id,
+          senderAddress: account.address,
           recipientId: post?.postAccount.id as number,
           notificationTypeId: tipHex ? NOTIFICATION_TYPES.COMMENT_TO_GIVE : NOTIFICATION_TYPES.COMMENT_ON_POST,
           level: NotificationLevel.INFO,

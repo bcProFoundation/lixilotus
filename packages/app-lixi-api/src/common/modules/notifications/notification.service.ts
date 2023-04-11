@@ -11,6 +11,7 @@ import { VError } from 'verror';
 import { template } from 'src/utils/stringTemplate';
 import _ from 'lodash';
 import { Account } from '@bcpros/lixi-prisma';
+import { NotificationGateway } from './notification.gateway';
 
 @Injectable()
 export class NotificationService {
@@ -18,9 +19,10 @@ export class NotificationService {
 
   constructor(
     private prisma: PrismaService,
+    private notificationGateway: NotificationGateway,
     @InjectQueue(NOTIFICATION_OUTBOUND_QUEUE) private notificationOutboundQueue: Queue,
     @I18n() private i18n: I18nService
-  ) {}
+  ) { }
 
   async saveAndDispatchNotification(room: string, notification: NotificationDto) {
     if (!notification.recipientId) {
@@ -71,6 +73,8 @@ export class NotificationService {
         status: 'active'
       }
     });
+
+    await this.notificationGateway.sendNotification(room, notif);
 
     // Dispatch the notification
     const sendNotifJobData: SendNotificationJobData = {

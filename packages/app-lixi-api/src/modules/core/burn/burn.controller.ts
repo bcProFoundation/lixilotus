@@ -21,7 +21,7 @@ export class BurnController {
     @I18n() private i18n: I18nService,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS
-  ) {}
+  ) { }
 
   @Post()
   async burn(@Body() command: BurnCommand): Promise<Burn> {
@@ -251,12 +251,13 @@ export class BurnController {
       const calcTip = await this.notificationService.calcTip(post, recipientPostAccount, command);
       const createNotifBurnAndTip = {
         senderId: sender.id,
-        recipientId: post?.postAccountId as number,
+        recipientId: command.burnForType == BurnForType.Comment ? commentAccount?.id : (post?.postAccountId as number),
         notificationTypeId: calcTip != 0 ? NOTIFICATION_TYPES.RECEIVE_BURN_TIP : NOTIFICATION_TYPES.BURN,
         level: NotificationLevel.INFO,
         url: '/post/' + post?.id,
         additionalData: {
           senderName: sender.name,
+          senderAddress: sender.address,
           burnType: command.burnType == BurnType.Up ? 'upvoted' : 'downvoted',
           burnForType: burnForTypeString.toLowerCase(),
           xpiBurn: command.burnValue,
@@ -292,6 +293,7 @@ export class BurnController {
           url: '/post/' + post?.id,
           additionalData: {
             senderName: sender.name,
+            senderAddress: sender.address,
             pageName: post?.page?.name,
             burnType: command.burnType == BurnType.Up ? 'upvoted' : 'downvoted',
             BurnForType: burnForTypeString,
