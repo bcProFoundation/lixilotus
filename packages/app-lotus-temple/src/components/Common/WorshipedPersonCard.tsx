@@ -30,6 +30,10 @@ const StyledCard = style.div`
   }
 `;
 
+const capitalizeFirstLetter = string => {
+  return string[0].toUpperCase() + string.slice(1);
+};
+
 const WorshipedPersonCard = ({ person, isSpecialDate }: WorshipedPersonCardProp) => {
   const history = useRouter();
   return (
@@ -42,7 +46,7 @@ const WorshipedPersonCard = ({ person, isSpecialDate }: WorshipedPersonCardProp)
             <p style={{ marginBottom: '0', textAlign: 'left' }}>
               {isSpecialDate
                 ? `Ngày giỗ: ${person.dateOfDeath ? moment(person.dateOfDeath).format('DD/MM/YYYY') : ''}`
-                : `${person.achievement ? person.achievement : ''}`}
+                : `${person.achievement ? capitalizeFirstLetter(person.achievement) : ''}`}
             </p>
           </div>
         </Space>

@@ -267,7 +267,7 @@ const SidebarContent = () => {
                   <CopyToClipboard text={selectedAccount.address} onCopy={handleOnCopy}>
                     <div>
                       <span>{selectedAccount.address.substring(selectedAccount.address.length - 7)}</span>
-                      <CopyOutlined />
+                      <CopyOutlined style={{ marginLeft: 5, cursor: 'pointer' }} />
                     </div>
                   </CopyToClipboard>
                   <p style={{ margin: 0 }}>
