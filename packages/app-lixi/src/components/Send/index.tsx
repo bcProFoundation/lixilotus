@@ -56,7 +56,6 @@ const SendComponent: React.FC = () => {
     dirty: true,
     value: '',
     address: '',
-    checked: false
   });
 
   const [queryStringText, setQueryStringText] = useState(null);
@@ -146,7 +145,6 @@ const SendComponent: React.FC = () => {
         fundingWif
       );
       dispatch(sendXpiNotification(link));
-      setOpReturnMsg('');
     } catch (e) {
       let message;
       if (!e.error && !e.message) {
