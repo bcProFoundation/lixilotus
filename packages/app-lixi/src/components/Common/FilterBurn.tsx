@@ -42,7 +42,7 @@ const FilterStyle = styled.div`
       &.down-value:hover {
         border: 1.3px solid #9E2A9C;
       }
-    
+
       &.up-value {
         border: .1px solid;
         border-radius:50%;
@@ -53,7 +53,7 @@ const FilterStyle = styled.div`
       }
       
     }
-  
+
     .ant-input-disabled {
       width: 54px;
       color: #000;
@@ -84,7 +84,7 @@ export const FilterBurnt = (props: FilterBurntProps) => {
 
   const handleUpDownBtn = (isUp: boolean) => {
     if (isUp) {
-      valueForType === 0 ? valueForType = 1 : valueForType *= 10;
+      valueForType === 0 ? (valueForType = 1) : (valueForType *= 10);
     } else {
       if (valueForType < 10) {
         valueForType = 0;
@@ -95,7 +95,7 @@ export const FilterBurnt = (props: FilterBurntProps) => {
 
     const filteredData = {
       filterForType: filterForType,
-      filterValue: valueForType,
+      filterValue: valueForType
     };
     dispatch(saveBurnFilter(filteredData));
   };

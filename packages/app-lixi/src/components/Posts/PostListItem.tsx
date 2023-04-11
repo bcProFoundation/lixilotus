@@ -84,6 +84,9 @@ const CardHeader = styled.div`
 
 const Content = styled.div`
   .description-post {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 20px;
     text-align: left;
     word-break: break-word;
     cursor: pointer;

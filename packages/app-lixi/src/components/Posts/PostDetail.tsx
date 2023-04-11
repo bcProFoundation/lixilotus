@@ -215,6 +215,8 @@ const PostCardDetail = styled.div`
 const PostContentDetail = styled.div`
   text-align: left;
   .description-post {
+    font-size: 16px;
+    line-height: 24px;
     margin: 1rem 0;
     text-align: left;
     word-break: break-word;
@@ -243,7 +245,9 @@ const PostContentDetail = styled.div`
 `;
 
 const StyledContainerPostDetail = styled.div`
+  margin: 1rem auto;
   width: 100%;
+  max-width: 816px;
   border-radius: 5px;
   background: white;
   padding: 0rem 1rem 1rem 1rem;

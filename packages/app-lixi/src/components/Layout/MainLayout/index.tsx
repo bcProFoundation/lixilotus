@@ -268,7 +268,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                     <div className="content-child">{children}</div>
                     {/* This below is just a dummy sidebar */}
                     {/* TODO: Implement SidebarRanking in future */}
-                    {selectedKey === '/wallet' && <SidebarRanking></SidebarRanking>}
+                    {(selectedKey === '/wallet' || selectedKey === '/') && <SidebarRanking></SidebarRanking>}
                     <DummySidebar />
                     <Footer notifications={notifications} />
                   </div>
