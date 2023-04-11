@@ -13,7 +13,7 @@ const FilterStyle = styled.div`
   align-items: baseline;
   align-self: center;
   p {
-    margin: 0;
+    margin: 0px;
     font-style: normal;
     font-weight: 400;
     font-size: 16px;
@@ -25,42 +25,42 @@ const FilterStyle = styled.div`
 
   .ant-input-group {
     display: flex;
-
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 4px 8px;
+    gap: 10px;
 
     Button {
+       
       &.down-value {
-       border-radius:50%;
+        border: .1px solid;
+        border-radius:50%;
+
+      } 
+
+      &.down-value:hover {
+        border: 1.3px solid #9E2A9C;
       }
     
       &.up-value {
+        border: .1px solid;
         border-radius:50%;
       }
 
-      svg {
-        color: #767576;
+      &.up-value:hover {
+        border: 1.3px solid #9E2A9C;
       }
-
-      &:hover {
-        svg{
-          color: #9E2A9C;
-        }
-      }
+      
     }
   
     .ant-input-disabled {
-      width: 34px;
+      width: 54px;
       color: #000;
       cursor: pointer;
-      border-radius: 50%;
       border: 0px;
       background: rgba(0,0,0,0);
-
-    }
-
-    border-radius: 8px;
-    &:hover {
-      filter: drop-shadow(0px 0px 4px rgba(148, 31, 147, 0.5));
-      border-radius: 8px;
+      
     }
   }
 `;
