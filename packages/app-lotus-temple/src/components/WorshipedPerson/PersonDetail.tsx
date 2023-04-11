@@ -247,8 +247,6 @@ const PersonDetail = ({ person, isMobile }: PersonDetailProp) => {
     }
   };
 
-  useDidMountEffectNotification();
-
   return (
     <React.Fragment>
       <StyledPersonCard>

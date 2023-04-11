@@ -25,6 +25,7 @@ import { getAllNotifications } from '@store/notification/selectors';
 import { fetchNotifications } from '@store/notification/actions';
 import { setTransactionReady } from '@store/account/actions';
 import { getSlpBalancesAndUtxos } from '@store/wallet';
+import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
 
@@ -192,6 +193,8 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
     if (slpBalancesAndUtxos === slpBalancesAndUtxosRef.current) return;
     dispatch(setTransactionReady());
   }, [slpBalancesAndUtxos.nonSlpUtxos]);
+
+  useDidMountEffectNotification();
 
   const setRef = useCallback(node => {
     if (node && node.clientHeight) {
