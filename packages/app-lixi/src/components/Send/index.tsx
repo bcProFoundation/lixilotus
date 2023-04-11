@@ -84,12 +84,9 @@ const SendComponent: React.FC = () => {
     const search = window.location.search;
     const params = new URLSearchParams(search);
     const replyAddress = params.get('replyAddress');
-    const isReply = params.get('isReply') === 'true';
     setFormData({
       ...formData,
       address: replyAddress ?? '',
-      checked: isReply ? isReply : false,
-      value: isReply ? getDustXPI() : ''
     });
     if (replyAddress) {
       fetchRecipientPublicKey(replyAddress);
@@ -290,8 +287,8 @@ const SendComponent: React.FC = () => {
     <div style={{ textAlign: 'right' }}>
       {intl.get('send.onlyMessage')} &nbsp;
       <StyledCheckbox
-        checked={formData.checked}
-        defaultChecked={false}
+        // checked={formData.checked}
+        defaultChecked={formData.checked}
         onChange={() =>
           setFormData({
             ...formData,
