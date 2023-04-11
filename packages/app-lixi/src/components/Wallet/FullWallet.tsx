@@ -254,7 +254,8 @@ const FullWalletComponent: React.FC = () => {
                                               pathname: getUrl(
                                                 item.parsed.burnInfo.burnForType,
                                                 item.parsed.burnInfo.burnForId
-                                              )
+                                              ),
+                                              query: item.parsed.burnInfo.burnForType == BurnForType.Comment && { comment: item.parsed.burnInfo.burnForId }
                                             }}
                                           >
                                             <Button size="small" type="text">
@@ -314,13 +315,13 @@ const FullWalletComponent: React.FC = () => {
                         );
                       }}
                     </VirtualList>
-                  </List>
+                  </List >
                 </>
               );
             })}
           </div>
         </TransactionHistory>
-      </FullWalletWrapper>
+      </FullWalletWrapper >
     </>
   );
 };

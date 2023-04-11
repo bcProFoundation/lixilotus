@@ -254,7 +254,7 @@ export class BurnController {
         recipientId: command.burnForType == BurnForType.Comment ? commentAccount?.id : (post?.postAccountId as number),
         notificationTypeId: calcTip != 0 ? NOTIFICATION_TYPES.RECEIVE_BURN_TIP : NOTIFICATION_TYPES.BURN,
         level: NotificationLevel.INFO,
-        url: '/post/' + post?.id,
+        url: command.burnForType == BurnForType.Comment ? `/post/${post.id}?comment=${command.burnForId}` : '/post/' + post?.id,
         additionalData: {
           senderName: sender.name,
           senderAddress: sender.address,

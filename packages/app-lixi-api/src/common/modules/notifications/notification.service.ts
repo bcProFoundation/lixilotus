@@ -57,6 +57,7 @@ export class NotificationService {
       notifType.notificationTypeTranslations.find(x => x.isDefault)?.template ??
       '';
 
+    // caching
     const message = template(translateTemplate, notification.additionalData);
 
     // Save to the database
