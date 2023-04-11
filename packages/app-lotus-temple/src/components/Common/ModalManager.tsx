@@ -5,8 +5,6 @@ import { RenameAccountModal } from '../Settings/RenameAccountModal';
 import { DeleteAccountModal } from '../Settings/DeleteAccountModal';
 import { QRCodeModalPopup } from './QRCodeModalPopup';
 import { EditPostModalPopup } from '../Posts/EditPostModalPopup';
-import { CreatePageModal } from '@components/Pages/CreatePageModal';
-import { EditPageModal } from '@components/Pages/EditPageModal';
 import { UploadAvatarCoverModal } from './uploadImageModal';
 import { BurnModal } from './BurnModal';
 import { ConfigProvider } from 'antd';
@@ -17,8 +15,6 @@ const modalComponentLookupTable = {
   DeleteAccountModal,
   QRCodeModalPopup,
   EditPostModalPopup,
-  CreatePageModal,
-  EditPageModal,
   UploadAvatarCoverModal,
   BurnModal
 };

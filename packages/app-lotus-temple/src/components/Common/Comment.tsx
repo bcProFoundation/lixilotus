@@ -1,10 +1,9 @@
 import React, { createElement, useEffect, useState } from 'react';
-import { Avatar, Button, Form, Input, Tooltip } from 'antd';
+import { Avatar, Button, Form, Input, Tooltip, List } from 'antd';
 import { Comment } from '@ant-design/compatible';
 import { DislikeFilled, DislikeOutlined, LikeFilled, LikeOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import moment from 'moment';
-import { CommentList } from '@components/Pages/PageListItem';
 
 const { TextArea } = Input;
 
@@ -19,6 +18,15 @@ export interface EditorProps {
   onSubmit: (value: any) => void;
   submitting: boolean;
 }
+
+export const CommentList = ({ comments }: { comments: CommentItem[] }) => (
+  <List
+    style={{ width: '100%' }}
+    dataSource={comments}
+    itemLayout="horizontal"
+    renderItem={item => <CommentComponent data={item}></CommentComponent>}
+  />
+);
 
 export const Editor = ({ onSubmit, submitting }: EditorProps) => (
   <>

@@ -10,7 +10,6 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { navBarHeaderList } from '@components/Common/navBarHeaderList';
 import intl from 'react-intl-universal';
 import Sidebar from '@containers/Sidebar';
-import SidebarRanking from '@containers/Sidebar/SideBarRanking';
 import SidebarContent from '@containers/Sidebar/SidebarContent';
 import Topbar from '@containers/Topbar';
 import { loadLocale } from '@store/settings/actions';
@@ -250,7 +249,6 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                   <div className="container-content" id="scrollableDiv">
                     <SidebarContent />
                     <div className="content-child">{children}</div>
-                    {selectedKey === '/wallet' && <SidebarRanking></SidebarRanking>}
                     <Footer notifications={notifications} />
                   </div>
                 </AppContainer>

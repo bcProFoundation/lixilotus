@@ -33,7 +33,6 @@ import { getSelectedAccount } from '@store/account/selectors';
 import { CommentOrderField, OrderDirection } from 'src/generated/types.generated';
 import { BurnData, PostItem } from '@components/Posts/PostDetail';
 import { CommentItem } from '@components/Posts/CommentListItem';
-import { TokenItem } from '@components/Token/TokensFeed';
 
 const UpDownButton = styled(Button)`
   background: rgb(158, 42, 156);
@@ -103,7 +102,7 @@ const RadioStyle = styled(Radio.Group)`
 
 const DefaultXpiBurnValues = [1, 8, 50, 100, 200, 500, 1000];
 
-type BurnForItem = PostItem | CommentItem | TokenItem;
+type BurnForItem = PostItem | CommentItem;
 interface BurnModalProps {
   data: BurnForItem;
   burnForType: BurnForType;
@@ -192,10 +191,6 @@ export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
               field: CommentOrderField.UpdatedAt
             }
           };
-          break;
-        case BurnForType.Token:
-          const token = data as TokenItem;
-          tokenId = token.tokenId;
           break;
       }
 

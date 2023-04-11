@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { ItemAccess } from './SidebarContent';
 import intl from 'react-intl-universal';
-import { ShortcutItemAccess } from './SideBarRanking';
 import { useState } from 'react';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { useInfinitePagesQuery } from '@store/page/useInfinitePagesQuery';

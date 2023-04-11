@@ -1,17 +1,6 @@
-import {
-  DashOutlined,
-  DislikeFilled,
-  DislikeOutlined,
-  FireTwoTone,
-  LeftOutlined,
-  LikeFilled,
-  LikeOutlined,
-  LinkOutlined,
-  ShareAltOutlined,
-  UpOutlined
-} from '@ant-design/icons';
+import { DashOutlined, LeftOutlined } from '@ant-design/icons';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
-import { BurnCommand, BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
+import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { AvatarUser } from '@components/Common/AvatarUser';
 import { Counter } from '@components/Common/Counter';
 import InfoCardUser from '@components/Common/InfoCardUser';
@@ -21,7 +10,7 @@ import { WalletContext } from '@context/walletProvider';
 import useXPI from '@hooks/useXPI';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
 import { getSelectedAccount } from '@store/account/selectors';
-import { addBurnQueue, addBurnTransaction, burnForUpDownVote, createTxHex, clearFailQueue } from '@store/burn/actions';
+import { addBurnQueue, addBurnTransaction, clearFailQueue } from '@store/burn/actions';
 import { api as commentsApi, useCreateCommentMutation } from '@store/comment/comments.api';
 import { useInfiniteCommentsToPostIdQuery } from '@store/comment/useInfiniteCommentsToPostIdQuery';
 import { PostsQuery } from '@store/post/posts.generated';
@@ -29,63 +18,31 @@ import { sendXPIFailure } from '@store/send/actions';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
 import { formatBalance, fromSmallestDenomination, fromXpiToSatoshis, getUtxoWif } from '@utils/cashMethods';
-import {
-  Avatar,
-  Button,
-  Image,
-  Input,
-  message,
-  notification,
-  Popover,
-  Skeleton,
-  Space,
-  Tooltip,
-  AutoComplete
-} from 'antd';
-import { Header } from 'antd/lib/layout/layout';
+import { Image, Input, Skeleton, Space, AutoComplete } from 'antd';
 import BigNumber from 'bignumber.js';
-import { ChronikClient } from 'chronik-client';
-import _, { debounce, isNil } from 'lodash';
+import _ from 'lodash';
 import moment from 'moment';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import intl from 'react-intl-universal';
-import {
-  FacebookIcon,
-  FacebookMessengerIcon,
-  FacebookMessengerShareButton,
-  FacebookShareButton,
-  TelegramIcon,
-  TelegramShareButton,
-  TwitterIcon,
-  TwitterShareButton,
-  WhatsappIcon,
-  WhatsappShareButton
-} from 'react-share';
-import { Virtuoso } from 'react-virtuoso';
-import { RWebShare } from 'react-web-share';
 import { CommentOrderField, CreateCommentInput, OrderDirection } from 'src/generated/types.generated';
 import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import CommentListItem, { CommentItem } from './CommentListItem';
 import { useForm, Controller } from 'react-hook-form';
 import { openModal } from '@store/modal/actions';
 import { EditPostModalProps } from './EditPostModalPopup';
 import { ShareSocialButton } from '@components/Common/ShareSocialButton';
 import Gallery from 'react-photo-gallery';
-import { setTransactionNotReady, setTransactionReady } from '@store/account/actions';
 import { getTransactionStatus } from '@store/account/selectors';
-import useDidMountEffect from '@hooks/useDidMountEffect ';
 import { getBurnQueue, getFailQueue } from '@store/burn';
-import { TokenItem } from '@components/Token/TokensFeed';
 import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
 
 export type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 export type BurnData = {
-  data: PostItem | CommentItem | TokenItem;
+  data: PostItem | CommentItem;
   burnForType: BurnForType;
 };
 
