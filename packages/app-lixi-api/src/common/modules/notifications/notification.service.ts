@@ -22,7 +22,7 @@ export class NotificationService {
     private notificationGateway: NotificationGateway,
     @InjectQueue(NOTIFICATION_OUTBOUND_QUEUE) private notificationOutboundQueue: Queue,
     @I18n() private i18n: I18nService
-  ) { }
+  ) {}
 
   async saveAndDispatchNotification(room: string, notification: NotificationDto) {
     if (!notification.recipientId) {

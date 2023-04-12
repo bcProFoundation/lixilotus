@@ -32,26 +32,23 @@ const FilterStyle = styled.div`
     gap: 10px;
 
     Button {
-       
       &.down-value {
-        border: .1px solid;
-        border-radius:50%;
-
-      } 
+        border: 0.1px solid;
+        border-radius: 50%;
+      }
 
       &.down-value:hover {
-        border: 1.3px solid #9E2A9C;
+        border: 1.3px solid #9e2a9c;
       }
 
       &.up-value {
-        border: .1px solid;
-        border-radius:50%;
+        border: 0.1px solid;
+        border-radius: 50%;
       }
 
       &.up-value:hover {
-        border: 1.3px solid #9E2A9C;
+        border: 1.3px solid #9e2a9c;
       }
-      
     }
 
     .ant-input-disabled {
@@ -59,8 +56,7 @@ const FilterStyle = styled.div`
       color: #000;
       cursor: pointer;
       border: 0px;
-      background: rgba(0,0,0,0);
-      
+      background: rgba(0, 0, 0, 0);
     }
   }
 `;
@@ -105,16 +101,13 @@ export const FilterBurnt = (props: FilterBurntProps) => {
       <p>{intl.get('general.minBurnt')} &nbsp;</p>
       <Input.Group>
         <Button
-          className='down-value'
+          className="down-value"
           icon={<MinusOutlined />}
           onClick={() => handleUpDownBtn(false)}
           disabled={valueForType === 0}
         />
         <Input disabled value={valueForType} />
-        <Button
-          className='up-value'
-          icon={<PlusOutlined />}
-          onClick={() => handleUpDownBtn(true)} />
+        <Button className="up-value" icon={<PlusOutlined />} onClick={() => handleUpDownBtn(true)} />
       </Input.Group>
     </FilterStyle>
   );

@@ -55,7 +55,7 @@ const SendComponent: React.FC = () => {
   const [formData, setFormData] = useState({
     dirty: true,
     value: '',
-    address: '',
+    address: ''
   });
 
   const [queryStringText, setQueryStringText] = useState(null);
@@ -86,7 +86,7 @@ const SendComponent: React.FC = () => {
     const isReply = params.get('isReply') === 'true';
     setFormData({
       ...formData,
-      address: replyAddress ?? '',
+      address: replyAddress ?? ''
     });
     if (replyAddress) {
       fetchRecipientPublicKey(replyAddress);
