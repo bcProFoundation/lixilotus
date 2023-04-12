@@ -99,6 +99,7 @@ export default {
   'general.minBurnt': 'XPI tối thiểu đã đốt:',
   'general.showMore': 'Xem thêm',
   'general.showLess': 'Xem ít',
+  'general.topAccounts': 'Xếp hạng tài khoản đã đốt',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',

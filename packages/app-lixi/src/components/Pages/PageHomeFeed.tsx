@@ -15,6 +15,9 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { getCategories } from '@store/category/actions';
 
 const StyledPageFeed = styled.div`
+  margin: 1rem auto;
+  width: 100%;
+  max-width: 816px;
   h2 {
     text-align: left;
     margin-bottom: 1rem;

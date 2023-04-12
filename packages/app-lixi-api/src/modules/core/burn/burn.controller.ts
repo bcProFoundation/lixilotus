@@ -260,6 +260,8 @@ export class BurnController {
           url: '/post/' + post?.id,
           additionalData: {
             senderName: sender.name,
+            senderAddress: sender.address,
+            pageName: post?.page?.name,
             burnType: command.burnType == BurnType.Up ? 'upvoted' : 'downvoted',
             burnForType: burnForTypeString.toLowerCase(),
             xpiBurn: command.burnValue,

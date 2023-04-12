@@ -623,8 +623,8 @@ export class PostResolver {
         level: NotificationLevel.INFO,
         url: '/post/' + createdPost.id,
         additionalData: {
-          senderId: createdPost.postAccountId,
           senderName: createdPost.postAccount.name,
+          senderAddress: createdPost.postAccount.address,
           pageName: createdPost.page?.name
         }
       };
