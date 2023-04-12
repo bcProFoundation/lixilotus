@@ -221,6 +221,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
         d: 'A day'
       }
     });
+    
     const now = moment();
     const notificationTime = moment(createdAt);
     const daysAgo = now.diff(notificationTime, 'days');
