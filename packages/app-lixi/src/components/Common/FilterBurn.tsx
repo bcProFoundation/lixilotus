@@ -35,37 +35,24 @@ const FilterStyle = styled.div`
       &.down-value {
         border: 0.1px solid;
         border-radius: 50%;
+        color: rgba(30, 26, 29, 0.6);
       }
-
       &.down-value:hover {
         border: 1.3px solid #9e2a9c;
       }
-
       &.up-value {
         border: 0.1px solid;
         border-radius: 50%;
+        color: rgba(30, 26, 29, 0.6);
       }
-
       &.up-value:hover {
         border: 1.3px solid #9e2a9c;
       }
     }
-
     .ant-input-disabled {
       width: 54px;
       color: #000;
       cursor: pointer;
-      border-radius: 0;
-      border-right: 0px;
-      border-left: 0px;
-    }
-
-    border: 1px solid #767576;
-    border-radius: 8px;
-    &:hover {
-      border: 2px solid #9e2a9c;
-      filter: drop-shadow(0px 0px 4px rgba(148, 31, 147, 0.5));
-      border-radius: 8px;
       border: 0px;
       background: rgba(0, 0, 0, 0);
     }

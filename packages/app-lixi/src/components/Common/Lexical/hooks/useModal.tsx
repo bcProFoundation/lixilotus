@@ -37,7 +37,7 @@ export default function useModal(): [
         onCancel={onClose}
         // onClose={onClose}
         title={title}
-        // closeOnClickOutside={closeOnClickOutside}
+      // closeOnClickOutside={closeOnClickOutside}
       >
         {content}
       </Modal>
