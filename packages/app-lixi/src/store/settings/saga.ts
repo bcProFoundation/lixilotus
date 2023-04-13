@@ -34,7 +34,18 @@ function* loadLocaleSaga(action: PayloadAction<string>) {
     const currentAppLocale = AppLocale[language];
     const initDone: boolean = yield call(initLocale, currentAppLocale);
     const selectedAccount: Account | undefined = yield select(getSelectedAccount);
-    moment.locale(language);
+    let createdAt: any;
+    moment.updateLocale(moment.locale(language), {
+      relativeTime: {
+        dd: function (num) {
+          if (num > 2) {
+            return moment(createdAt).add(num, 'days').format('MMMM Do YYYY, h:mm a');
+          } else {
+            return '%d days';
+          }
+        }
+      }
+    });
 
     if (initDone) {
       yield put(loadLocaleSuccess());

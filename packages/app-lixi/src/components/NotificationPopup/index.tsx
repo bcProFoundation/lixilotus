@@ -208,18 +208,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
 
   const menuItems = [{ label: 'All', key: 'all' }];
 
-  let createdAt: any;
-  moment.updateLocale(moment.locale(), {
-    relativeTime: {
-      dd: function (num) {
-        if (num > 2) {
-          return moment(createdAt).add(num, 'days').format('MMMM Do YYYY, h:mm a');
-        } else {
-          return '%d days';
-        }
-      }
-    }
-  });
+  
 
   return (
     <>
