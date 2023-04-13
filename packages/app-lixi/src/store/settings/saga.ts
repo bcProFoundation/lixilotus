@@ -10,7 +10,7 @@ import { getSelectedAccount } from '@store/account/selectors';
 import { changeAccountLocale } from '@store/account/actions';
 import { FilterBurnCommand } from '@bcpros/lixi-models/lib/filter';
 import moment from 'moment';
-import 'moment/locale/vi'
+import 'moment/locale/vi';
 
 function initLocale(currentAppLocale: any): Promise<boolean> {
   return intl

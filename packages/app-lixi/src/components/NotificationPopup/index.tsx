@@ -213,7 +213,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
     relativeTime: {
       dd: function (num) {
         if (num > 2) {
-          return moment(createdAt).add(num, 'days').format("MMMM Do YYYY, h:mm a");
+          return moment(createdAt).add(num, 'days').format('MMMM Do YYYY, h:mm a');
         } else {
           return '%d days';
         }
