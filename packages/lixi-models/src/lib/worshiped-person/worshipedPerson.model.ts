@@ -15,7 +15,11 @@ export class WorshipedPerson {
   name: string;
 
   @Field(() => UploadDetail, { nullable: true })
-  avatar: UploadDetail;
+  avatar?: UploadDetail;
+
+  @Field(() => Number, { nullable: true })
+  @IsOptional()
+  totalWorshipAmount?: number;
 
   @Field(() => String, { nullable: true })
   @IsOptional()
@@ -23,7 +27,39 @@ export class WorshipedPerson {
 
   @Field(() => String, { nullable: true })
   @IsOptional()
+  wikiAvatar?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  countryOfCitizenship?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  achievement?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
   bio?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  alias?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  religion?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  placeOfBirth?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  placeOfDeath?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  placeOfBurial?: string;
 
   @Field(() => String, { nullable: true })
   @IsOptional()
@@ -50,12 +86,14 @@ export class WorshipedPerson {
   city?: City;
 
   @Field(() => Date, {
-    description: 'Identifies the date and time when the object was created.'
+    description: 'Identifies the date and time when the object was created.',
+    nullable: true
   })
-  createdAt: Date;
+  createdAt?: Date;
 
   @Field(() => Date, {
-    description: 'Identifies the date and time when the object was last updated.'
+    description: 'Identifies the date and time when the object was last updated.',
+    nullable: true
   })
-  updatedAt: Date;
+  updatedAt?: Date;
 }

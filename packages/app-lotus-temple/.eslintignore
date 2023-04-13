@@ -1,0 +1,10 @@
+**/node_modules/**
+**/dist/**
+**/storybook-static/**
+**/coverage/**
+**/build/**
+**/.git/**
+**/public/**
+**/src/**
+serviceWorker.ts
+next-env.d.ts
