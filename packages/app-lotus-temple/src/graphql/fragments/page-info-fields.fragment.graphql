@@ -1,0 +1,13 @@
+fragment PageInfoFields on PageInfo {
+  endCursor
+  hasNextPage
+  hasPreviousPage
+  startCursor
+}
+
+fragment PostMeiliPageInfoFields on PostMeiliPageInfo {
+  endCursor
+  hasNextPage
+  hasPreviousPage
+  startCursor
+}

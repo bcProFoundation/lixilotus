@@ -17,7 +17,8 @@ const allowedOrigins = [
   process.env.SENDLOTUS_URL,
   process.env.BASE_URL,
   process.env.ABCPAY_URL,
-  process.env.ABCPAY_SWAP_URL
+  process.env.ABCPAY_SWAP_URL,
+  process.env.LOTUSTEMPLE_URL
 ];
 
 async function bootstrap() {
@@ -48,6 +49,7 @@ async function bootstrap() {
   process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'local'
     ? app.enableCors()
     : app.enableCors({
+        credentials: true,
         origin: function (origin, callback) {
           if (!origin) return callback(null, true);
           if (allowedOrigins.indexOf(origin) === -1) {

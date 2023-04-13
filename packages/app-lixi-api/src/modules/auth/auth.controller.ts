@@ -15,8 +15,9 @@ export class AuthController {
       const token = await this.authService.login(mnemonic);
       response.setCookie('_auth_token', token, {
         httpOnly: true,
-        sameSite: 'strict',
+        sameSite: 'none',
         signed: true,
+        secure: true,
         path: '/'
       });
       return token;

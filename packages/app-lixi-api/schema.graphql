@@ -127,7 +127,7 @@ type Mutation {
   createPage(data: CreatePageInput!): Page!
   createPost(data: CreatePostInput!): Post!
   createToken(data: CreateTokenInput!): Token!
-  createWorship(data: CreateWorshipInput!): WorshipedPerson!
+  createWorship(data: CreateWorshipInput!): Worship!
   createWorshipedPerson(data: CreateWorshipedPersonInput!): WorshipedPerson!
   updatePage(data: UpdatePageInput!): Page!
   updatePost(data: UpdatePostInput!): Post!
@@ -290,11 +290,30 @@ type Query {
   allPostsByTokenId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
   allPostsByUserId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
   allTokens(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: TokenOrder, query: String, skip: Int): TokenConnection!
-  allWorshipedPerson(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: WorshipedPersonOrder, query: String, skip: Int): WorshipedPersonConnection!
+  allWorship(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: WorshipOrder, skip: Int): WorshipConnection!
+  allWorshipedByPersonId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: WorshipOrder, skip: Int): WorshipConnection!
+  allWorshipedPerson(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: WorshipedPersonOrder, skip: Int): WorshipedPersonConnection!
+  allWorshipedPersonBySearch(
+    """Paginate after opaque cursor"""
+    after: String
+
+    """Paginate before opaque cursor"""
+    before: String
+
+    """Paginate first"""
+    first: Int
+
+    """Paginate last"""
+    last: Int
+    query: String
+  ): WorshipedPersonConnection!
+  allWorshipedPersonByUserId(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: WorshipedPersonOrder, skip: Int): WorshipedPersonConnection!
+  allWorshipedPersonSpecialDate(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: WorshipedPersonOrder, skip: Int): WorshipedPersonConnection!
   comment(id: String!): Comment!
   page(id: String!): Page!
   post(id: String!): Post!
   token(tokenId: String!): Token!
+  worship(id: String!): Worship!
   worshipedPerson(id: String!): WorshipedPerson!
 }
 
@@ -399,23 +418,72 @@ type UploadDetail {
   upload: Upload!
 }
 
+type Worship {
+  account: Account!
+
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  id: ID!
+  latitude: Decimal
+  location: String
+  longitude: Decimal
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
+  worshipedAmount: Float!
+  worshipedPerson: WorshipedPerson!
+}
+
+type WorshipConnection {
+  edges: [WorshipEdge!]
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+type WorshipEdge {
+  cursor: String!
+  node: Worship!
+}
+
+input WorshipOrder {
+  direction: OrderDirection!
+  field: WorshipOrderField!
+}
+
+"""Properties by which worship connections can be ordered."""
+enum WorshipOrderField {
+  createdAt
+  id
+  updatedAt
+  worshipedAmount
+}
+
 type WorshipedPerson {
+  achievement: String
+  alias: String
   avatar: UploadDetail
   bio: String
   city: City
   country: Country
+  countryOfCitizenship: String
 
   """Identifies the date and time when the object was created."""
-  createdAt: DateTime!
+  createdAt: DateTime
   dateOfBirth: DateTime
   dateOfDeath: DateTime
   id: ID!
   name: String!
+  placeOfBirth: String
+  placeOfBurial: String
+  placeOfDeath: String
   quote: String
+  religion: String
   state: State
+  totalWorshipAmount: Int
 
   """Identifies the date and time when the object was last updated."""
-  updatedAt: DateTime!
+  updatedAt: DateTime
+  wikiAvatar: String
   wikiDataId: String
 }
 

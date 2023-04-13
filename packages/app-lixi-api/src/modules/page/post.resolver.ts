@@ -26,7 +26,8 @@ import {
   Injectable,
   Logger,
   Request,
-  UseGuards
+  UseGuards,
+  UseFilters
 } from '@nestjs/common';
 import { Args, Int, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
 import { MeiliService } from './meili.service';
@@ -37,6 +38,7 @@ import ConnectionArgs, { getPagingParameters } from '../../common/custom-graphql
 import { connectionFromArraySlice } from '../../common/custom-graphql-relay/arrayConnection';
 import PostResponse from 'src/common/post.response';
 import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
+import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
 import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
 import { NotificationLevel } from '@bcpros/lixi-prisma';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
@@ -45,6 +47,7 @@ const pubSub = new PubSub();
 
 @Injectable()
 @Resolver(() => Post)
+@UseFilters(GqlHttpExceptionFilter)
 export class PostResolver {
   private logger: Logger = new Logger(this.constructor.name);
 
