@@ -36,7 +36,7 @@ const FilterStyle = styled.div`
       &.down-value {
         border: .1px solid;
         border-radius:50%;
-
+        color: rgba(30, 26, 29, 0.6);
       } 
 
       &.down-value:hover {
@@ -46,16 +46,8 @@ const FilterStyle = styled.div`
       &.up-value {
         border: .1px solid;
         border-radius:50%;
+        color: rgba(30, 26, 29, 0.6);
       }
-
-      svg {
-        color: #767576;
-      }
-
-      &:hover {
-        svg {
-          color: #9e2a9c;
-        }
       &.up-value:hover {
         border: 1.3px solid #9E2A9C;
       }
@@ -66,21 +58,8 @@ const FilterStyle = styled.div`
       width: 54px;
       color: #000;
       cursor: pointer;
-      border-radius: 0;
-      border-right: 0px;
-      border-left: 0px;
-    }
-
-    border: 1px solid #767576;
-    border-radius: 8px;
-    &:hover {
-      border: 2px solid #9e2a9c;
-      filter: drop-shadow(0px 0px 4px rgba(148, 31, 147, 0.5));
-      border-radius: 8px;
       border: 0px;
       background: rgba(0,0,0,0);
-      
-    }
   }
 `;
 
@@ -125,12 +104,12 @@ export const FilterBurnt = (props: FilterBurntProps) => {
       <Input.Group>
         <Button
           className="down-value"
-          icon={<DownOutlined />}
+          icon={<MinusOutlined />}
           onClick={() => handleUpDownBtn(false)}
           disabled={valueForType === 0}
         />
         <Input disabled value={valueForType} />
-        <Button className="up-value" icon={<UpOutlined />} onClick={() => handleUpDownBtn(true)} />
+        <Button className="up-value" icon={<PlusOutlined />} onClick={() => handleUpDownBtn(true)} />
       </Input.Group>
     </FilterStyle>
   );
