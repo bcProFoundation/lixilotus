@@ -36,7 +36,7 @@ const FilterStyle = styled.div`
       &.down-value {
         border: .1px solid;
         border-radius:50%;
-
+        color: rgba(30, 26, 29, 0.6);
       } 
 
       &.down-value:hover {
@@ -46,6 +46,7 @@ const FilterStyle = styled.div`
       &.up-value {
         border: .1px solid;
         border-radius:50%;
+        color: rgba(30, 26, 29, 0.6);
       }
 
       &.up-value:hover {
