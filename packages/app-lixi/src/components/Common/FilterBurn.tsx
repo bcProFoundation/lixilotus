@@ -52,29 +52,14 @@ const FilterStyle = styled.div`
       &.up-value:hover {
         border: 1.3px solid #9E2A9C;
       }
-
-      &:hover {
-        svg {
-          color: #9e2a9c;
-        }
-      }
     }
 
     .ant-input-disabled {
       width: 54px;
       color: #000;
       cursor: pointer;
-      border-radius: 0;
-      border-right: 0px;
-      border-left: 0px;
-    }
-
-    border: 1px solid #767576;
-    border-radius: 8px;
-    &:hover {
-      border: 2px solid #9e2a9c;
-      filter: drop-shadow(0px 0px 4px rgba(148, 31, 147, 0.5));
-      border-radius: 8px;
+      border: 0px;
+      background: rgba(0,0,0,0);
     }
   }
 `;
