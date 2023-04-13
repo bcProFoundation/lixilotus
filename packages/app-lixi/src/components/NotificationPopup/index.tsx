@@ -207,30 +207,33 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
   };
 
   const menuItems = [{ label: 'All', key: 'all' }];
-  const formatTime = (createdAt: any) => {
-    moment.updateLocale('en', {
-      relativeTime: {
-        future: 'In %s',
-        past: '%s ago',
-        s: 'Just now',
-        ss: 'Just now',
-        m: 'A minute ',
-        mm: '%d minutes',
-        h: 'An hour',
-        hh: '%d hours',
-        d: 'A day'
-      }
-    });
-    
-    const now = moment();
-    const notificationTime = moment(createdAt);
-    const daysAgo = now.diff(notificationTime, 'days');
-    if (daysAgo <= 2) {
-      return moment(notificationTime).fromNow();
-    } else {
-      return moment(notificationTime).format("MMMM Do YYYY, h:mm a");
+  let createdAt: any;
+  moment.updateLocale('en', {
+    relativeTime: {
+      future: "in %s",
+      past: "%s ago",
+      s: 'a few seconds',
+      ss: '%d seconds',
+      m: "a minute",
+      mm: "%d minutes",
+      h: "an hour",
+      hh: "%d hours",
+      d: "a day",
+      dd: function (num) {
+        if (num > 2) {
+          return moment(createdAt).add(num, 'days').format("MMMM Do YYYY, h:mm a");
+        } else {
+          return '%d days';
+        }
+      },
+      w: "a week",
+      ww: "%d weeks",
+      M: "a month",
+      MM: "%d months",
+      y: "a year",
+      yy: "%d years"
     }
-  };
+  });
 
   return (
     <>
@@ -269,7 +272,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                     author={
                       <StyledAuthor>
                         <StyledTextLeft></StyledTextLeft>
-                        <StyledTextRight>{formatTime(notification.createdAt)}</StyledTextRight>
+                        <StyledTextRight>{moment(notification.createdAt).fromNow()}</StyledTextRight>
                       </StyledAuthor>
                     }
                     content={
@@ -291,7 +294,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                 author={
                   <StyledAuthor>
                     {/* <StyledTextLeft></StyledTextLeft> */}
-                    <StyledTextRight>{formatTime(notification.createdAt)}</StyledTextRight>
+                    <StyledTextRight>{moment(notification.createdAt).fromNow()}</StyledTextRight>
                   </StyledAuthor>
                 }
                 avatar={
