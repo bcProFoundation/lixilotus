@@ -195,115 +195,121 @@ export class BurnController {
         throw new VError(accountNotExistMessage);
       }
 
-      // prepare data recipient
-      let commentAccountId;
-      let commentPostId;
-      let commentAccount;
-      if (command.burnForType == BurnForType.Comment) {
-        const comment = await this.prisma.comment.findFirst({
-          where: { id: command.burnForId }
-        });
+      //Need to remove BurnForType.Worship becasue we dont have notification YET on lotus-temple
+      //TODO: Remove line below to handle BurnForType.Worship notification
+      if (command.burnForType !== BurnForType.Worship) {
+        // prepare data recipient
+        let commentAccountId;
+        let commentPostId;
+        let commentAccount;
+        if (command.burnForType == BurnForType.Comment) {
+          const comment = await this.prisma.comment.findFirst({
+            where: { id: command.burnForId }
+          });
 
-        commentAccountId = comment?.commentAccountId;
-        commentPostId = comment?.commentToId;
-        commentAccount = await this.prisma.account.findFirst({
-          where: {
-            id: _.toSafeInteger(commentAccountId)
-          }
-        });
-      }
-
-      const postId = command.burnForType == BurnForType.Comment ? commentPostId : command.burnForId;
-      const post = await this.prisma.post.findFirst({
-        where: { id: postId },
-        include: {
-          postAccount: true,
-          page: true
+          commentAccountId = comment?.commentAccountId;
+          commentPostId = comment?.commentToId;
+          commentAccount = await this.prisma.account.findFirst({
+            where: {
+              id: _.toSafeInteger(commentAccountId)
+            }
+          });
         }
-      });
 
-      if (!post) {
-        const accountNotExistMessage = await this.i18n.t('post.messages.postNotExist');
-        throw new VError(accountNotExistMessage);
-      }
-
-      const recipientPostAccount = await this.prisma.account.findFirst({
-        where: {
-          id: _.toSafeInteger(post?.postAccountId)
-        }
-      });
-
-      if (!recipientPostAccount) {
-        const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
-        throw new VError(accountNotExistMessage);
-      }
-
-      // get burnForType key
-      const typeValuesArr = Object.values(BurnForType);
-      const burnForTypeString =
-        Object.keys(BurnForType)[typeValuesArr.indexOf(command.burnForType as unknown as BurnForType)];
-
-      // BurnValue + tip + fee
-      let tip = Number(command.burnValue) * 0.04;
-      let fee = Number(command.burnValue) * 0.04;
-
-      // create Notifications Burn
-      const calcTip = await this.notificationService.calcTip(post, recipientPostAccount, command);
-      const createNotifBurnAndTip = {
-        senderId: sender.id,
-        recipientId: post?.postAccountId as number,
-        notificationTypeId: calcTip != 0 ? NOTIFICATION_TYPES.RECEIVE_BURN_TIP : NOTIFICATION_TYPES.BURN,
-        level: NotificationLevel.INFO,
-        url: '/post/' + post?.id,
-        additionalData: {
-          senderName: sender.name,
-          burnType: command.burnType == BurnType.Up ? 'upvoted' : 'downvoted',
-          burnForType: burnForTypeString.toLowerCase(),
-          xpiBurn: command.burnValue,
-          xpiTip: calcTip
-        }
-      };
-      createNotifBurnAndTip.senderId !== createNotifBurnAndTip.recipientId &&
-        (await this.notificationService.saveAndDispatchNotification(
-          recipientPostAccount.mnemonicHash,
-          createNotifBurnAndTip
-        ));
-
-      // create Notifications Fee
-      let recipientPageAccount;
-      if (post?.pageId && post.page?.pageAccountId != recipientPostAccount.id) {
-        const page = await this.prisma.page.findFirst({
-          where: {
-            id: post.pageId
+        const postId = command.burnForType == BurnForType.Comment ? commentPostId : command.burnForId;
+        const post = await this.prisma.post.findFirst({
+          where: { id: postId },
+          include: {
+            postAccount: true,
+            page: true
           }
         });
 
-        recipientPageAccount = await this.prisma.account.findFirst({
+        if (!post) {
+          const accountNotExistMessage = await this.i18n.t('post.messages.postNotExist');
+          throw new VError(accountNotExistMessage);
+        }
+
+        const recipientPostAccount = await this.prisma.account.findFirst({
           where: {
-            id: _.toSafeInteger(page?.pageAccountId)
+            id: _.toSafeInteger(post?.postAccountId)
           }
         });
 
-        const createNotifBurnFee = {
+        if (!recipientPostAccount) {
+          const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
+          throw new VError(accountNotExistMessage);
+        }
+
+        // get burnForType key
+        const typeValuesArr = Object.values(BurnForType);
+        const burnForTypeString =
+          Object.keys(BurnForType)[typeValuesArr.indexOf(command.burnForType as unknown as BurnForType)];
+
+        // BurnValue + tip + fee
+        let tip = Number(command.burnValue) * 0.04;
+        let fee = Number(command.burnValue) * 0.04;
+
+        // create Notifications Burn
+        const calcTip = await this.notificationService.calcTip(post, recipientPostAccount, command);
+        const createNotifBurnAndTip = {
           senderId: sender.id,
-          recipientId: post?.pageId ? (post.page?.pageAccountId as number) : post?.postAccountId,
-          notificationTypeId: NOTIFICATION_TYPES.RECEIVE_BURN_FEE,
+          recipientId: post?.postAccountId as number,
+          notificationTypeId: calcTip != 0 ? NOTIFICATION_TYPES.RECEIVE_BURN_TIP : NOTIFICATION_TYPES.BURN,
           level: NotificationLevel.INFO,
           url: '/post/' + post?.id,
           additionalData: {
             senderName: sender.name,
+            senderAddress: sender.address,
             pageName: post?.page?.name,
             burnType: command.burnType == BurnType.Up ? 'upvoted' : 'downvoted',
-            BurnForType: burnForTypeString,
+            burnForType: burnForTypeString.toLowerCase(),
             xpiBurn: command.burnValue,
-            xpiFee: fee
+            xpiTip: calcTip
           }
         };
-        createNotifBurnFee.senderId !== createNotifBurnFee.recipientId &&
+        createNotifBurnAndTip.senderId !== createNotifBurnAndTip.recipientId &&
           (await this.notificationService.saveAndDispatchNotification(
-            post?.pageId ? (recipientPageAccount?.mnemonicHash as string) : recipientPostAccount?.mnemonicHash,
-            createNotifBurnFee
+            recipientPostAccount.mnemonicHash,
+            createNotifBurnAndTip
           ));
+
+        // create Notifications Fee
+        let recipientPageAccount;
+        if (post?.pageId && post.page?.pageAccountId != recipientPostAccount.id) {
+          const page = await this.prisma.page.findFirst({
+            where: {
+              id: post.pageId
+            }
+          });
+
+          recipientPageAccount = await this.prisma.account.findFirst({
+            where: {
+              id: _.toSafeInteger(page?.pageAccountId)
+            }
+          });
+
+          const createNotifBurnFee = {
+            senderId: sender.id,
+            recipientId: post?.pageId ? (post.page?.pageAccountId as number) : post?.postAccountId,
+            notificationTypeId: NOTIFICATION_TYPES.RECEIVE_BURN_FEE,
+            level: NotificationLevel.INFO,
+            url: '/post/' + post?.id,
+            additionalData: {
+              senderName: sender.name,
+              pageName: post?.page?.name,
+              burnType: command.burnType == BurnType.Up ? 'upvoted' : 'downvoted',
+              BurnForType: burnForTypeString,
+              xpiBurn: command.burnValue,
+              xpiFee: fee
+            }
+          };
+          createNotifBurnFee.senderId !== createNotifBurnFee.recipientId &&
+            (await this.notificationService.saveAndDispatchNotification(
+              post?.pageId ? (recipientPageAccount?.mnemonicHash as string) : recipientPostAccount?.mnemonicHash,
+              createNotifBurnFee
+            ));
+        }
       }
 
       const result: Burn = {
