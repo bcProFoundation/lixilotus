@@ -207,31 +207,17 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
   };
 
   const menuItems = [{ label: 'All', key: 'all' }];
+
   let createdAt: any;
-  moment.updateLocale('en', {
+  moment.updateLocale(moment.locale(), {
     relativeTime: {
-      future: "in %s",
-      past: "%s ago",
-      s: 'a few seconds',
-      ss: '%d seconds',
-      m: "a minute",
-      mm: "%d minutes",
-      h: "an hour",
-      hh: "%d hours",
-      d: "a day",
       dd: function (num) {
         if (num > 2) {
           return moment(createdAt).add(num, 'days').format("MMMM Do YYYY, h:mm a");
         } else {
           return '%d days';
         }
-      },
-      w: "a week",
-      ww: "%d weeks",
-      M: "a month",
-      MM: "%d months",
-      y: "a year",
-      yy: "%d years"
+      }
     }
   });
 
