@@ -67,6 +67,7 @@
     "styled-components": "^5.3.6",
     "ua-parser-js": "^1.0.33",
     "unique-names-generator": "^4.7.1",
+    "react-photo-gallery": "^8.0.0",
     "wif": "^2.0.6"
   },
   "devDependencies": {

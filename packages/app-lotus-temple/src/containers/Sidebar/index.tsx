@@ -3,7 +3,7 @@ import { Drawer } from 'antd';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { toggleCollapsedSideNav } from '@store/settings/actions';
 import { getNavCollapsed } from '@store/settings/selectors';
-import SidebarShortcut from './SidebarShortcut';
+import SidebarShortcut from './SideBarShortcut';
 
 export type SidebarProps = {
   className?: string;
