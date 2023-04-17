@@ -278,6 +278,12 @@ const PersonDetail = ({ person, isMobile }: PersonDetailProp) => {
             </Space>
           </StyledWorshipInfo>
           <StyledActionContainer>
+            <Tooltip title={`${WORSHIP_TYPES.FLOWER} XPI`}>
+              <picture onClick={() => handleWorship(WORSHIP_TYPES.FLOWER)}>
+                <StyledActionIcon alt="flowers" src="/images/flowers.svg" />
+              </picture>
+            </Tooltip>
+
             <Tooltip title={`${WORSHIP_TYPES.INCENSE} XPI`}>
               <picture onClick={() => handleWorship(WORSHIP_TYPES.INCENSE)}>
                 <StyledActionIcon alt="incense" src="/images/incense.svg" />
@@ -287,12 +293,6 @@ const PersonDetail = ({ person, isMobile }: PersonDetailProp) => {
             <Tooltip title={`${WORSHIP_TYPES.CANDLE} XPI`}>
               <picture onClick={() => handleWorship(WORSHIP_TYPES.CANDLE)}>
                 <StyledActionIcon alt="candle" src="/images/candle.svg" />
-              </picture>
-            </Tooltip>
-
-            <Tooltip title={`${WORSHIP_TYPES.FLOWER} XPI`}>
-              <picture onClick={() => handleWorship(WORSHIP_TYPES.FLOWER)}>
-                <StyledActionIcon alt="flowers" src="/images/flowers.svg" />
               </picture>
             </Tooltip>
           </StyledActionContainer>
