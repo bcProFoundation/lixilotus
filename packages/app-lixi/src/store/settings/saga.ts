@@ -34,14 +34,34 @@ function* loadLocaleSaga(action: PayloadAction<string>) {
     const currentAppLocale = AppLocale[language];
     const initDone: boolean = yield call(initLocale, currentAppLocale);
     const selectedAccount: Account | undefined = yield select(getSelectedAccount);
-    let createdAt: any;
+
     moment.updateLocale(moment.locale(language), {
       relativeTime: {
         dd: function (num) {
           if (num > 2) {
-            return moment(createdAt).add(num, 'days').format('MMMM Do YYYY, h:mm a');
+            return moment().subtract(num, 'days').format('MMMM Do YYYY');
           } else {
             return '%d days';
+          }
+        },
+        M: function (num) {
+          if (num <= 1) {
+            return moment().subtract(num, 'months').format('MMMM Do YYYY');
+          }
+        },
+        MM: function (num) {
+          if (num <= 1) {
+            return moment().subtract(num, 'months').format('MMMM Do YYYY');
+          }
+        },
+        y: function (num) {
+          if (num <= 1) {
+            return moment().subtract(num, 'years').format('MMMM Do YYYY');
+          }
+        },
+        yy: function (num) {
+          if (num <= 1) {
+            return moment().subtract(num, 'years').format('MMMM Do YYYY');
           }
         }
       }
