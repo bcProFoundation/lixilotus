@@ -39,7 +39,7 @@ export default {
   'burn.post': 'post',
   'burn.comment': 'comment',
   'burn.token': 'token',
-  'burn.doneBurning': 'Finish burning!',
+  'burn.doneBurning': 'Burning completed!',
 
   /* 01.General */
   'general.tokens': 'Tokens',

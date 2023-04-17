@@ -107,20 +107,6 @@ export class WorshipResolver {
       limit!
     );
 
-    // console.log(people);
-
-    // const peopleId = _.map(people, 'id');
-
-    // const searchPeople = await this.prisma.worshipedPerson.findMany({
-    //   where: {
-    //     id: { in: peopleId }
-    //   }
-    // });
-
-    // console.log('-------------------------------------------------------------------');
-
-    // console.log(searchPeople);
-
     return connectionFromArraySlice(people, args, {
       arrayLength: count || 0,
       sliceStart: offset || 0
