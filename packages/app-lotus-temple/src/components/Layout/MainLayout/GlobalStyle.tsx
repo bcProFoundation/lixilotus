@@ -40,6 +40,10 @@ export const GlobalStyle = createGlobalStyle`
     }
     .ant-drawer-content-wrapper {
       width: 320px !important;
+
+      @media (max-width: 480px) {
+        width: 100% !important;
+      }
     }
     @media (max-width: 768px) {
         .ant-layout {

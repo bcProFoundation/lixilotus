@@ -183,7 +183,7 @@ const StyledHeaderText = styled.p`
   line-height: 32px;
 `;
 
-const StyledWallerContainer = styled.div`
+const StyledWalletContainer = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
@@ -257,7 +257,7 @@ const SidebarContent = () => {
               <AvatarUser name={selectedAccount.name} />
               <StyledText>{selectedAccount.name}</StyledText>
             </Space>
-            <StyledWallerContainer>
+            <StyledWalletContainer>
               <picture>
                 <img alt="wallet-placeholder" src="/images/wallet-placeholder.svg" />
               </picture>
@@ -275,7 +275,7 @@ const SidebarContent = () => {
                   </p>
                 </div>
               </Space>
-            </StyledWallerContainer>
+            </StyledWalletContainer>
           </StyledWrapper>
         )}
         {worshipedPeople.currentData ? (

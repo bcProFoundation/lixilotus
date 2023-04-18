@@ -13,6 +13,7 @@ import WorshipCard from '@components/WorshipedPerson/WorshipCard';
 import SearchBox from '@components/Common/SearchBox';
 import { useInfiniteWorshipedPerson } from '@store/worship/useInfiniteWorshipedPerson';
 import { useInfiniteWorshipedPersonBySearch } from '@store/worship/useInfiniteWorshipedPersonBySearch';
+import { FloatButton } from 'antd';
 
 const StyledIcon = style.img`
   width: 15px;
@@ -52,7 +53,7 @@ const segmentedOptions: SegmentedProps['options'] = [
 const StyledSegmented = style(Segmented)`
   background: #E6E5E5;
   position: sticky;
-  top: 5px;
+  top: 0px;
   margin-bottom: 10px;
   z-index: 1;
   height: 48px;
@@ -87,9 +88,15 @@ const StyledSegmented = style(Segmented)`
   }
 
   @media (max-width: 480px) {
-    max-width: 350px;
-    margin: 0 auto;
+    display: none !important;
   }
+`;
+
+const StyledFloatButtonGroup = style(FloatButton.Group)`
+  @media (min-width: 480px) {
+    display: none;
+  }
+  bottom: 100px;
 `;
 
 const StyledMenu = style(Menu)`
@@ -167,6 +174,11 @@ const StyledTextHeader = style.p`
   font-weight: 700;
   font-size: 24px;
   text-align: left;
+  scroll-margin-top: 70px;
+
+  @media (max-width: 480px) {
+    scroll-margin-top: 0px;
+  }
 `;
 
 const StyledTextDesc = style.p`
@@ -368,7 +380,7 @@ const Home = () => {
                 next={loadMoreItems}
                 hasMore={hasNext}
                 loader={<Skeleton avatar active />}
-                height={400}
+                height={500}
                 endMessage={
                   <p style={{ textAlign: 'center' }}>
                     <b>{"It's so empty here..."}</b>
@@ -451,6 +463,22 @@ const Home = () => {
   return (
     <React.Fragment>
       <StyledTab defaultActiveKey="1" items={tabItems} onChange={onChange} />
+      {disableFetch && (
+        <StyledFloatButtonGroup shape="circle">
+          <FloatButton
+            onClick={() => specialDayRef.current.scrollIntoView()}
+            icon={<StyledIcon alt="calendar-icon" src="/images/calendar-icon.svg" />}
+          />
+          <FloatButton
+            onClick={() => trendingRef.current.scrollIntoView()}
+            icon={<StyledIcon alt="fire-icon" src="/images/fire-icon.svg" />}
+          />
+          <FloatButton
+            onClick={() => liveBurnRef.current.scrollIntoView()}
+            icon={<StyledIcon alt="fire-icon" src="/images/fire-icon.svg" />}
+          />
+        </StyledFloatButtonGroup>
+      )}
     </React.Fragment>
   );
 };
