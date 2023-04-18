@@ -124,7 +124,9 @@ export const AppContainer = styled.div`
     }
 
     .content-child {
+      width: 100vw;
       margin: 0 auto;
+      max-width: 640px;
     }
   }
 `;

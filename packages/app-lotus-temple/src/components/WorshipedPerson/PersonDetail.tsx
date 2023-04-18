@@ -37,7 +37,6 @@ const StyledTab = style(Tabs)`
 `;
 
 const StyledPersonCard = style.div`
-  width: 700px;
   display: flex;
   flex-direction: column
 `;
@@ -61,6 +60,10 @@ const StyledBottomCard = style.div`
   justify-content: space-around;
   align-items: center;
   padding: 16px 32px;
+
+  @media (max-width: 480px) {
+    flex-direction: column-reverse;
+  }
 `;
 
 const StyledPersonCover = style.div`
@@ -111,13 +114,24 @@ const StyledPersonDate = style.p`
 const StyledActionContainer = style.div`
   display: flex;
   width: 50%;
-  justify-content: space-evenly
+  justify-content: space-evenly;
+
+  @media (max-width: 480px) {
+    width: 100%;
+    align-items: center;
+  }
 `;
 
 const StyledWorshipInfo = style.div`
   display: flex;
   width: 50%;
   flex-direction: column;
+
+  @media (max-width: 480px) {
+    width: 100%;
+    align-items: center;
+    margin-top: 20px;
+  }
 `;
 
 const StyledText = style.span`
@@ -138,6 +152,10 @@ const StyledActionIcon = style.img`
 
   &:active {
     transform: scale(0.9);
+  }
+
+  @media (max-width: 480px) {
+    width: 72px;
   }
 `;
 
