@@ -30,6 +30,7 @@ import Gallery from 'react-photo-gallery';
 import useWindowDimensions from '@hooks/useWindowDimensions';
 import { ReadMoreMore } from 'read-more-more';
 import { IconBurn } from './PostDetail';
+import { returnRelativeTime } from '@utils/formatting';
 
 // export const IconBurn = ({
 //   icon,
@@ -317,17 +318,6 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
     };
     dispatch(openModal('EditPostModalPopup', editPostProps));
   };
-
-  const returnRelativeTime = (createdAt: any) => {
-    const yesterday = moment().subtract(2, 'day');
-    if (!createdAt) {
-      return;
-    } else if (moment(createdAt).isAfter(yesterday)) {
-      return moment(createdAt).fromNow().toString();
-    } else {
-      return moment(createdAt).format('l');
-    }
-  }
 
   return (
     <PostListItemContainer key={post.id} ref={ref}>

@@ -22,6 +22,7 @@ import { getAllNotifications } from '@store/notification/selectors';
 import { getSelectedAccount } from '@store/account/selectors';
 import { AvatarUser } from '@components/Common/AvatarUser';
 import { InfoSubCard } from '@components/Lixi';
+import { returnRelativeTime } from '@utils/formatting';
 
 export type NotificationMenuProps = {
   notifications: Notification[];
@@ -207,17 +208,6 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
   };
 
   const menuItems = [{ label: 'All', key: 'all' }];
-
-  const returnRelativeTime = (createdAt: any) => {
-    const yesterday = moment().subtract(2, 'day');
-    if(!createdAt) {
-      return;
-    } else if (moment(createdAt).isAfter(yesterday)) {
-      return moment(createdAt).fromNow().toString();
-    } else {
-      return moment(createdAt).format('l');
-    }
-  }
 
   return (
     <>
