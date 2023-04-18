@@ -28,7 +28,6 @@ const FilterStyle = styled.div`
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    padding: 4px 8px;
     gap: 10px;
 
     Button {
@@ -51,7 +50,6 @@ const FilterStyle = styled.div`
       &.up-value:hover {
         border: 1.3px solid #9E2A9C;
       }
-      
     }
 
     .ant-input-disabled {
