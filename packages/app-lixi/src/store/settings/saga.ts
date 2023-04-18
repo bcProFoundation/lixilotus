@@ -46,22 +46,22 @@ function* loadLocaleSaga(action: PayloadAction<string>) {
         },
         M: function (num) {
           if (num <= 1) {
-            return moment().subtract(num, 'months').format('MMMM Do YYYY');
+            return moment().subtract(num, 'months').format('l');
           }
         },
         MM: function (num) {
           if (num <= 1) {
-            return moment().subtract(num, 'months').format('MMMM Do YYYY');
+            return moment().subtract(num, 'months').format('l');
           }
         },
         y: function (num) {
           if (num <= 1) {
-            return moment().subtract(num, 'years').format('MMMM Do YYYY');
+            return moment().subtract(num, 'years').format('l');
           }
         },
         yy: function (num) {
           if (num <= 1) {
-            return moment().subtract(num, 'years').format('MMMM Do YYYY');
+            return moment().subtract(num, 'years').format('l');
           }
         }
       }
