@@ -32,6 +32,7 @@ import { ReadMoreMore } from 'read-more-more';
 import { IconBurn } from './PostDetail';
 import { returnRelativeTime } from '@utils/formatting';
 
+
 // export const IconBurn = ({
 //   icon,
 //   burnValue,
@@ -326,6 +327,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
           <InfoCardUser
             imgUrl={post.page ? post.page.avatar : ''}
             name={showUsername()}
+            
             title={returnRelativeTime(post.createdAt)}
             postAccountAddress={post.postAccount ? post.postAccount.address : undefined}
             page={post.page ? post.page : undefined}
