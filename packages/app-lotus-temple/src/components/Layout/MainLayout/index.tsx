@@ -20,7 +20,7 @@ import { injectStore } from 'src/utils/axiosClient';
 import ModalManager from '../../Common/ModalManager';
 import { GlobalStyle } from './GlobalStyle';
 import { theme } from './theme';
-import { Footer } from '@bcpros/lixi-components/components';
+import Footer from '@containers/Footer';
 import { getAllNotifications } from '@store/notification/selectors';
 import { fetchNotifications } from '@store/notification/actions';
 import { setTransactionReady } from '@store/account/actions';
