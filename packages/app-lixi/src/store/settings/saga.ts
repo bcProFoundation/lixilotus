@@ -37,11 +37,18 @@ function* loadLocaleSaga(action: PayloadAction<string>) {
 
     moment.updateLocale(moment.locale(language), {
       relativeTime: {
+        future: 'in %s',
+        past: '%s',
+        s: 'a few seconds ago',
+        ss: '%d seconds ago',
+        m: 'a minute ago',
+        mm: '%d minutes ago',
+        h: 'an hour ago',
+        hh: '%d hours ago',
+        d: 'a day ago',
         dd: function (num) {
           if (num > 2) {
             return moment().subtract(num, 'days').format('l');
-          } else {
-            return '%d days';
           }
         },
         M: function (num) {
