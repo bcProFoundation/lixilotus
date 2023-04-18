@@ -39,7 +39,7 @@ function* loadLocaleSaga(action: PayloadAction<string>) {
       relativeTime: {
         dd: function (num) {
           if (num > 2) {
-            return moment().subtract(num, 'days').format('MMMM Do YYYY');
+            return moment().subtract(num, 'days').format('l');
           } else {
             return '%d days';
           }
