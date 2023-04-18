@@ -318,6 +318,17 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
     dispatch(openModal('EditPostModalPopup', editPostProps));
   };
 
+  const returnRelativeTime = (createdAt: any) => {
+    const yesterday = moment().subtract(2, 'day');
+    if (!createdAt) {
+      return;
+    } else if (moment(createdAt).isAfter(yesterday)) {
+      return moment(createdAt).fromNow().toString();
+    } else {
+      return moment(createdAt).format('l');
+    }
+  }
+
   return (
     <PostListItemContainer key={post.id} ref={ref}>
       <CardContainer>
@@ -325,7 +336,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
           <InfoCardUser
             imgUrl={post.page ? post.page.avatar : ''}
             name={showUsername()}
-            title={moment(post.createdAt).fromNow().toString()}
+            title={returnRelativeTime(post.createdAt)}
             postAccountAddress={post.postAccount ? post.postAccount.address : undefined}
             page={post.page ? post.page : undefined}
             token={post.token ? post.token : undefined}

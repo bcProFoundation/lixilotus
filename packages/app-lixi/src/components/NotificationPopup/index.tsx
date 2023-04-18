@@ -208,7 +208,16 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
 
   const menuItems = [{ label: 'All', key: 'all' }];
 
-  
+  const returnRelativeTime = (createdAt: any) => {
+    const yesterday = moment().subtract(2, 'day');
+    if(!createdAt) {
+      return;
+    } else if (moment(createdAt).isAfter(yesterday)) {
+      return moment(createdAt).fromNow().toString();
+    } else {
+      return moment(createdAt).format('l');
+    }
+  }
 
   return (
     <>
@@ -247,7 +256,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                     author={
                       <StyledAuthor>
                         <StyledTextLeft></StyledTextLeft>
-                        <StyledTextRight>{moment(notification.createdAt).fromNow()}</StyledTextRight>
+                        <StyledTextRight>{returnRelativeTime(notification.createdAt)}</StyledTextRight>
                       </StyledAuthor>
                     }
                     content={
@@ -269,7 +278,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                 author={
                   <StyledAuthor>
                     {/* <StyledTextLeft></StyledTextLeft> */}
-                    <StyledTextRight>{moment(notification.createdAt).fromNow()}</StyledTextRight>
+                    <StyledTextRight>{returnRelativeTime(notification.createdAt)}</StyledTextRight>
                   </StyledAuthor>
                 }
                 avatar={
