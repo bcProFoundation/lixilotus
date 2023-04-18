@@ -2,7 +2,6 @@ import * as _ from 'lodash';
 import intl from 'react-intl-universal';
 import { all, call, fork, put, select, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
-
 import { loadLocale, loadLocaleFailure, loadLocaleSuccess, setInitIntlStatus, updateLocale } from './actions';
 import AppLocale from 'src/lang';
 import { showToast } from '@store/toast/actions';
@@ -10,6 +9,8 @@ import { Account, ChangeAccountLocaleCommand } from '@bcpros/lixi-models';
 import { getSelectedAccount } from '@store/account/selectors';
 import { changeAccountLocale } from '@store/account/actions';
 import { FilterBurnCommand } from '@bcpros/lixi-models/lib/filter';
+import moment from 'moment';
+import 'moment/locale/vi';
 
 function initLocale(currentAppLocale: any): Promise<boolean> {
   return intl
@@ -33,6 +34,38 @@ function* loadLocaleSaga(action: PayloadAction<string>) {
     const currentAppLocale = AppLocale[language];
     const initDone: boolean = yield call(initLocale, currentAppLocale);
     const selectedAccount: Account | undefined = yield select(getSelectedAccount);
+
+    moment.updateLocale(moment.locale(language), {
+      relativeTime: {
+        dd: function (num) {
+          if (num > 2) {
+            return moment().subtract(num, 'days').format('l');
+          } else {
+            return '%d days';
+          }
+        },
+        M: function (num) {
+          if (num <= 1) {
+            return moment().subtract(num, 'months').format('l');
+          }
+        },
+        MM: function (num) {
+          if (num <= 1) {
+            return moment().subtract(num, 'months').format('l');
+          }
+        },
+        y: function (num) {
+          if (num <= 1) {
+            return moment().subtract(num, 'years').format('l');
+          }
+        },
+        yy: function (num) {
+          if (num <= 1) {
+            return moment().subtract(num, 'years').format('l');
+          }
+        }
+      }
+    });
 
     if (initDone) {
       yield put(loadLocaleSuccess());
