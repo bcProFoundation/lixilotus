@@ -35,37 +35,7 @@ function* loadLocaleSaga(action: PayloadAction<string>) {
     const initDone: boolean = yield call(initLocale, currentAppLocale);
     const selectedAccount: Account | undefined = yield select(getSelectedAccount);
 
-    moment.updateLocale(moment.locale(language), {
-      relativeTime: {
-        dd: function (num) {
-          if (num > 2) {
-            return moment().subtract(num, 'days').format('l');
-          } else {
-            return '%d days';
-          }
-        },
-        M: function (num) {
-          if (num <= 1) {
-            return moment().subtract(num, 'months').format('l');
-          }
-        },
-        MM: function (num) {
-          if (num <= 1) {
-            return moment().subtract(num, 'months').format('l');
-          }
-        },
-        y: function (num) {
-          if (num <= 1) {
-            return moment().subtract(num, 'years').format('l');
-          }
-        },
-        yy: function (num) {
-          if (num <= 1) {
-            return moment().subtract(num, 'years').format('l');
-          }
-        }
-      }
-    });
+    moment.locale(language);
 
     if (initDone) {
       yield put(loadLocaleSuccess());

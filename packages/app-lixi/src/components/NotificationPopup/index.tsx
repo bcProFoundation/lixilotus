@@ -22,6 +22,8 @@ import { getAllNotifications } from '@store/notification/selectors';
 import { getSelectedAccount } from '@store/account/selectors';
 import { AvatarUser } from '@components/Common/AvatarUser';
 import { InfoSubCard } from '@components/Lixi';
+import { formatRelativeTime } from '@utils/formatting';
+
 
 export type NotificationMenuProps = {
   notifications: Notification[];
@@ -208,8 +210,6 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
 
   const menuItems = [{ label: 'All', key: 'all' }];
 
-  
-
   return (
     <>
       <StyledTitlePage>{intl.get('general.notifications')}</StyledTitlePage>
@@ -247,7 +247,8 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                     author={
                       <StyledAuthor>
                         <StyledTextLeft></StyledTextLeft>
-                        <StyledTextRight>{moment(notification.createdAt).fromNow()}</StyledTextRight>
+
+                        <StyledTextRight>{formatRelativeTime(notification.createdAt)}</StyledTextRight>
                       </StyledAuthor>
                     }
                     content={
@@ -269,7 +270,8 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                 author={
                   <StyledAuthor>
                     {/* <StyledTextLeft></StyledTextLeft> */}
-                    <StyledTextRight>{moment(notification.createdAt).fromNow()}</StyledTextRight>
+                    
+                    <StyledTextRight>{formatRelativeTime(notification.createdAt)}</StyledTextRight>
                   </StyledAuthor>
                 }
                 avatar={

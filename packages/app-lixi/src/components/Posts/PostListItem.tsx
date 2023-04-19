@@ -30,6 +30,8 @@ import Gallery from 'react-photo-gallery';
 import useWindowDimensions from '@hooks/useWindowDimensions';
 import { ReadMoreMore } from 'read-more-more';
 import { IconBurn } from './PostDetail';
+import { formatRelativeTime } from '@utils/formatting';
+
 
 // export const IconBurn = ({
 //   icon,
@@ -325,7 +327,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
           <InfoCardUser
             imgUrl={post.page ? post.page.avatar : ''}
             name={showUsername()}
-            title={moment(post.createdAt).fromNow().toString()}
+            title={formatRelativeTime(post.createdAt)}
             postAccountAddress={post.postAccount ? post.postAccount.address : undefined}
             page={post.page ? post.page : undefined}
             token={post.token ? post.token : undefined}
