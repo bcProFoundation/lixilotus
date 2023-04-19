@@ -22,7 +22,7 @@ import { getAllNotifications } from '@store/notification/selectors';
 import { getSelectedAccount } from '@store/account/selectors';
 import { AvatarUser } from '@components/Common/AvatarUser';
 import { InfoSubCard } from '@components/Lixi';
-import { returnRelativeTime } from '@utils/formatting';
+import { formatRelativeTime } from '@utils/formatting';
 
 
 export type NotificationMenuProps = {
@@ -248,7 +248,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                       <StyledAuthor>
                         <StyledTextLeft></StyledTextLeft>
 
-                        <StyledTextRight>{returnRelativeTime(notification.createdAt)}</StyledTextRight>
+                        <StyledTextRight>{formatRelativeTime(notification.createdAt)}</StyledTextRight>
                       </StyledAuthor>
                     }
                     content={
@@ -271,7 +271,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                   <StyledAuthor>
                     {/* <StyledTextLeft></StyledTextLeft> */}
                     
-                    <StyledTextRight>{returnRelativeTime(notification.createdAt)}</StyledTextRight>
+                    <StyledTextRight>{formatRelativeTime(notification.createdAt)}</StyledTextRight>
                   </StyledAuthor>
                 }
                 avatar={
