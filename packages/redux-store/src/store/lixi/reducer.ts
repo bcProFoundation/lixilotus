@@ -1,7 +1,6 @@
-import * as _ from 'lodash';
-
-import { Lixi, ClaimType } from '@bcpros/lixi-models/lib/lixi';
+import { ClaimType, Lixi } from '@bcpros/lixi-models/lib/lixi';
 import { createEntityAdapter, createReducer, isAnyOf, Update } from '@reduxjs/toolkit';
+import * as _ from 'lodash';
 
 import {
   importAccountSuccess,
@@ -9,18 +8,19 @@ import {
   refreshLixiListSuccess,
   selectAccountSuccess
 } from '../account/actions';
+
 import {
+  archiveLixiSuccess,
   fetchInitialSubLixiesSuccess,
   fetchMoreSubLixiesSuccess,
-  archiveLixiSuccess,
   postLixiSuccess,
+  refreshLixiSilentSuccess,
   refreshLixiSuccess,
   renameLixiSuccess,
   selectLixiSuccess,
   setLixi,
   setLixiBalance,
-  unarchiveLixiSuccess,
-  refreshLixiSilentSuccess
+  unarchiveLixiSuccess
 } from './actions';
 import { LixiesState } from './state';
 

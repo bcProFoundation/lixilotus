@@ -1,4 +1,4 @@
-import { CashReceivedNotificationIcon } from '@bcpros/lixi-components/components/Common/CustomIcons';
+// import { CashReceivedNotificationIcon } from '@bcpros/lixi-components/components/Common/CustomIcons';
 import { AccountDto as Account, NotificationDto, PaginationResult } from '@bcpros/lixi-models';
 import { currency } from '@components/Common/Ticker';
 import { all, call, cancelled, fork, put, select, take, takeLatest } from '@redux-saga/core/effects';
@@ -359,7 +359,6 @@ function* sendXpiNotificationSaga(action: PayloadAction<string>) {
       </a>
     ),
     duration: currency.notificationDurationShort,
-    icon: <CashReceivedNotificationIcon />,
     style: notificationStyle
   });
 }
@@ -377,7 +376,6 @@ function* xpiReceivedNotificationWebSocketSaga(action: PayloadAction<string>) {
       </>
     ),
     duration: currency.notificationDurationShort,
-    icon: <CashReceivedNotificationIcon />,
     style: notificationStyle
   };
   notification.success(config);

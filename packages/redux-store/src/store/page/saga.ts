@@ -1,10 +1,14 @@
-import * as _ from 'lodash';
-import * as Effects from 'redux-saga/effects';
-import intl from 'react-intl-universal';
+import { AccountDto, EditPageCommand, Page, PageDto } from '@bcpros/lixi-models';
+import { CreatePageCommand } from '@bcpros/lixi-models/src';
 import { all, fork, put, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
+import * as _ from 'lodash';
+import intl from 'react-intl-universal';
+import * as Effects from 'redux-saga/effects';
+
 import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
+
 import {
   editPage,
   editPageFailure,
@@ -12,19 +16,17 @@ import {
   fetchAllPages,
   fetchAllPagesFailure,
   fetchAllPagesSuccess,
+  getPage,
+  getPageFailure,
   getPagesByAccountId,
+  getPageSuccess,
   postPage,
   postPageFailure,
   postPageSuccess,
-  getPage,
-  getPageFailure,
-  getPageSuccess,
   setPage,
   setPagesByAccountId
 } from './action';
-import { CreatePageCommand } from '@bcpros/lixi-models/src';
 import pageApi from './api';
-import { AccountDto, EditPageCommand, Page, PageDto } from '@bcpros/lixi-models';
 
 const call: any = Effects.call;
 /**

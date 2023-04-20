@@ -1,5 +1,5 @@
+import { crypto, PrivateKey, PublicKey } from '@abcpros/bitcore-lib-xpi';
 import * as forge from 'node-forge';
-import { PublicKey, PrivateKey, crypto } from '@abcpros/bitcore-lib-xpi';
 
 // privateKey: PrivateKey
 // publicKey: PublicKey
@@ -9,15 +9,15 @@ const constructMergedKey = (privateKey, publicKey) => {
 
 const publicKeyToBuffer = pubKey => {
   const { x, y, compressed } = pubKey.toObject();
-  let xBuf = Buffer.from(x, 'hex');
-  let yBuf = Buffer.from(y, 'hex');
+  const xBuf = Buffer.from(x, 'hex');
+  const yBuf = Buffer.from(y, 'hex');
   let prefix;
   let buf;
   if (!compressed) {
     prefix = Buffer.from([0x04]);
     buf = Buffer.concat([prefix, xBuf, yBuf]);
   } else {
-    let odd = yBuf[yBuf.length - 1] % 2;
+    const odd = yBuf[yBuf.length - 1] % 2;
     if (odd) {
       prefix = Buffer.from([0x03]);
     } else {

@@ -1,5 +1,6 @@
 import { NotificationDto } from '@bcpros/lixi-models/lib/common/notification';
 import { createEntityAdapter, createReducer, Update } from '@reduxjs/toolkit';
+
 import {
   channelOff,
   channelOn,

@@ -1,5 +1,5 @@
+import { Claim, CreateClaimDto, ViewClaimDto } from '@bcpros/lixi-models';
 import { createAction } from '@reduxjs/toolkit';
-import { CreateClaimDto, Claim, ViewClaimDto } from '@bcpros/lixi-models';
 
 export const postClaimActionType = 'claim/postClaim';
 export const postClaim = createAction<CreateClaimDto>('claim/postClaim');

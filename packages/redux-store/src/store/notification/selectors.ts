@@ -1,5 +1,7 @@
 import { createSelector } from 'reselect';
+
 import { RootState } from '../store';
+
 import { notificationsAdapter } from './reducer';
 import { NotificationsState } from './state';
 

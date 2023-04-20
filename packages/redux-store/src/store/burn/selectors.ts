@@ -2,6 +2,7 @@ import _ from 'lodash';
 import { createSelector } from 'reselect';
 
 import { RootState } from '../store';
+
 import { BurnState } from './state';
 
 export const getLatestBurnForPost = createSelector(

@@ -1,5 +1,7 @@
 import { createSelector } from 'reselect';
+
 import { RootState } from '../store';
+
 import { SettingsState } from './state';
 
 export const getNavCollapsed = createSelector(

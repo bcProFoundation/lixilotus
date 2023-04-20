@@ -26,7 +26,6 @@
     "fix": "run-s fix:*",
     "lint": "run-s lint:*",
     "lint:ts": "eslint src --ext .ts",
-    "lint:prettier": "prettier \"src/**/*.ts\" --check --config .prettierrc.js",
     "fix:prettier": "prettier \"src/**/*.ts\" --write --config .prettierrc.js",
     "fix:lint": "eslint src --ext .ts --fix"
   },

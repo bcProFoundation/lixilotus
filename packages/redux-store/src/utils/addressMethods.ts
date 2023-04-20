@@ -17,7 +17,7 @@ export function parseAddress(XPI: any, addressString: string): AddressInfo {
   };
   // Parse address string for parameters
   const paramCheck = addressString.split('?');
-  let cleanAddress = paramCheck[0];
+  const cleanAddress = paramCheck[0];
   addressInfo.address = cleanAddress;
 
   let isValidAddress;

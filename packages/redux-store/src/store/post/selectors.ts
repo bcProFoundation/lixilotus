@@ -1,5 +1,7 @@
 import { createSelector } from 'reselect';
+
 import { RootState } from '../store';
+
 import { postAdapter } from './reducer';
 import { PostState } from './state';
 

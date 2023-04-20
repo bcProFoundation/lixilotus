@@ -10,23 +10,27 @@ import {
   RegisterViaEmailNoVerifiedCommand,
   RenameAccountCommand
 } from '@bcpros/lixi-models';
+import { callConfig } from '@context/index';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { setLocalUserAccount, silentLocalLogin } from '@store/localAccount';
 import { fetchNotifications } from '@store/notification/actions';
 import { getCurrentLocale } from '@store/settings/selectors';
+import { activateWallet } from '@store/wallet';
 import { aesGcmDecrypt, aesGcmEncrypt, numberToBase58 } from '@utils/encryptionMethods';
 import { Modal } from 'antd';
 import { push } from 'connected-next-router';
 import intl from 'react-intl-universal';
 import { all, call, fork, put, putResolve, select, takeLatest } from 'redux-saga/effects';
-import { callConfig } from '@context/index';
 import { LocalUser } from 'src/models/localUser';
+import { Config, names, uniqueNamesGenerator } from 'unique-names-generator';
+
 import { ChangeAccountLocaleCommand } from '../../../../lixi-models/build/module/lib/account/account.dto.d';
 import { PatchAccountCommand } from '../../../../lixi-models/src/lib/account/account.dto';
 import accountApi from '../account/api';
 import lixiApi from '../lixi/api';
 import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
+
 import {
   changeAccountLocale,
   changeAccountLocaleFailure,
@@ -38,6 +42,9 @@ import {
   getAccount,
   getAccountFailure,
   getAccountSuccess,
+  getLeaderboard,
+  getLeaderboardFailure,
+  getLeaderboardSuccess,
   importAccount,
   importAccountFailure,
   importAccountSuccess,
@@ -68,14 +75,9 @@ import {
   silentLoginSuccess,
   verifyEmail,
   verifyEmailFailure,
-  verifyEmailSuccess,
-  getLeaderboard,
-  getLeaderboardSuccess,
-  getLeaderboardFailure
+  verifyEmailSuccess
 } from './actions';
 import { getAccountById, getSelectedAccount } from './selectors';
-import { activateWallet } from '@store/wallet';
-import { uniqueNamesGenerator, Config, names } from 'unique-names-generator';
 
 const nameConfigGenerator: Config = {
   dictionaries: [names, names],
@@ -244,7 +246,7 @@ function* importAccountSaga(action: PayloadAction<string>) {
     // Merge back to action payload
     const account = { ...data } as Account;
 
-    let lixies: Lixi[] = [];
+    const lixies: Lixi[] = [];
 
     try {
       const lixiesData = (yield call(lixiApi.getByAccountId, account.id)) as Lixi[];

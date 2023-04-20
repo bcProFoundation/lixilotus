@@ -1,8 +1,9 @@
 import { PayloadAction } from '@reduxjs/toolkit';
 import { showToast } from '@store/toast/actions';
-import { all, fork, put, takeLatest } from 'redux-saga/effects';
-import { sendXPIFailure, sendXPISuccess } from './actions';
 import intl from 'react-intl-universal';
+import { all, fork, put, takeLatest } from 'redux-saga/effects';
+
+import { sendXPIFailure, sendXPISuccess } from './actions';
 
 function* sendXPISuccessSaga(action: PayloadAction<number>) {
   const selectedAccountId: number = action.payload;

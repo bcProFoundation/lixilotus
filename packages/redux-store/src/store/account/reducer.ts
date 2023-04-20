@@ -1,22 +1,23 @@
 import { Account } from '@bcpros/lixi-models';
-import { createEntityAdapter, createReducer, isAnyOf, Update } from '@reduxjs/toolkit';
 import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
+import { createEntityAdapter, createReducer, isAnyOf, Update } from '@reduxjs/toolkit';
+
 import {
   deleteAccountSuccess,
-  importAccountSuccess,
-  renameAccountSuccess,
-  selectAccountSuccess,
-  setAccount,
-  refreshLixiListSuccess,
-  setUpload,
-  removeUpload,
-  removeAllUpload,
-  refreshLixiListSilentSuccess,
-  saveEditorTextToCache,
   deleteEditorTextFromCache,
   getLeaderboardSuccess,
+  importAccountSuccess,
+  refreshLixiListSilentSuccess,
+  refreshLixiListSuccess,
+  removeAllUpload,
+  removeUpload,
+  renameAccountSuccess,
+  saveEditorTextToCache,
+  selectAccountSuccess,
+  setAccount,
   setTransactionNotReady,
-  setTransactionReady
+  setTransactionReady,
+  setUpload
 } from './actions';
 import { AccountsState } from './state';
 

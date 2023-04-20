@@ -40,7 +40,7 @@ import { FilterBurnt } from '@components/Common/FilterBurn';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import { getFilterPostsHome } from '@store/settings/selectors';
 import { getLeaderboard } from '@store/account/actions';
-import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
+import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 
 const { Panel } = Collapse;
 const antIcon = <LoadingOutlined style={{ fontSize: 20 }} spin />;

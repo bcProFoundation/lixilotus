@@ -1,5 +1,6 @@
 import { EntityState } from '@reduxjs/toolkit';
 import { PageInfo } from 'src/generated/types.generated';
+
 import { api, CommentQuery } from './comments.generated';
 
 export interface CommentApiState extends EntityState<CommentQuery['comment']> {

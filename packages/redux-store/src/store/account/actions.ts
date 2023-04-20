@@ -1,13 +1,13 @@
 import {
   Account,
+  ChangeAccountLocaleCommand,
   CreateAccountCommand,
   DeleteAccountCommand,
-  RenameAccountCommand,
   Lixi,
-  ChangeAccountLocaleCommand,
-  Upload,
+  LoginViaEmailCommand,
   RegisterViaEmailNoVerifiedCommand,
-  LoginViaEmailCommand
+  RenameAccountCommand,
+  Upload
 } from '@bcpros/lixi-models';
 import { createAction } from '@reduxjs/toolkit';
 

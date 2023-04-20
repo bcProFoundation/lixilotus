@@ -1,16 +1,17 @@
 import { createEntityAdapter, createReducer, Update } from '@reduxjs/toolkit';
-import { PostState } from './state';
+
 import {
-  fetchAllPostsSuccess,
-  setPostsByAccountId,
-  setSelectedPost,
   editPostSuccess,
+  fetchAllPostsSuccess,
+  getPost,
+  getPostSuccess,
   postPostSuccess,
   setPost,
-  getPost,
-  getPostSuccess
+  setPostsByAccountId,
+  setSelectedPost
 } from './actions';
 import { PostQuery } from './posts.generated';
+import { PostState } from './state';
 
 export const postAdapter = createEntityAdapter<PostQuery['post']>({
   selectId: post => post.id,

@@ -2,39 +2,18 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@assets/*": [
-        "src/assets/*"
-      ],
-      "@images/*": [
-        "src/assets/images/*"
-      ],
-      "@icons/*": [
-        "src/assets/icons/*"
-      ],
-      "@utils/*": [
-        "src/utils/*"
-      ],
-      "@components/*": [
-        "src/components/*"
-      ],
-      "@containers/*": [
-        "src/containers/*"
-      ],
-      "@hooks/*": [
-        "../../packages/redux-store/src/hooks/*"
-      ],
-      "@store/*": [
-        "../../packages/redux-store/src/store/*"
-      ],
-      "@context/*": [
-        "../../packages/redux-store/src/context/*"
-      ],
-      "@bcpros/lixi-components/*": [
-        "../../packages/lixi-components/src/*"
-      ],
-      "@bcpros/lixi-models/*": [
-        "../../packages/lixi-models/src/*"
-      ]
+      "@assets/*": ["src/assets/*"],
+      "@images/*": ["src/assets/images/*"],
+      "@icons/*": ["src/assets/icons/*"],
+      "@utils/*": ["src/utils/*"],
+      "@components/*": ["src/components/*"],
+      "@containers/*": ["src/containers/*"],
+      "@hooks/*": ["../../packages/redux-store/src/hooks/*"],
+      "@local-hooks/*": ["src/hooks/*"],
+      "@store/*": ["../../packages/redux-store/src/store/*"],
+      "@context/*": ["../../packages/redux-store/src/context/*"],
+      "@bcpros/lixi-components/*": ["../../packages/lixi-components/src/*"],
+      "@bcpros/lixi-models/*": ["../../packages/lixi-models/src/*"]
     }
-  },
+  }
 }

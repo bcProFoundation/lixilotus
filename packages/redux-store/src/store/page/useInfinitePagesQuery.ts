@@ -1,6 +1,7 @@
 import { PaginationArgs } from '@bcpros/lixi-models';
 import { useEffect, useRef, useState } from 'react';
 import { Page, PageOrder } from 'src/generated/types.generated';
+
 import { useLazyPagesQuery, usePagesQuery } from './pages.api';
 
 export interface PageListParams {
@@ -19,7 +20,7 @@ export interface PageListBody {
 
 export function useInfinitePagesQuery(
   params: PaginationArgs,
-  fetchAll: boolean = false // if `true`: auto do next fetches to get all notes at once
+  fetchAll = false // if `true`: auto do next fetches to get all notes at once
 ) {
   const baseResult = usePagesQuery(params);
 

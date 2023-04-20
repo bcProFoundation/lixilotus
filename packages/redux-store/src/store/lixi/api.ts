@@ -6,13 +6,13 @@ import {
   RegisterLixiPackCommand
 } from '@bcpros/lixi-models';
 import {
-  CreateLixiCommand,
   ArchiveLixiCommand,
-  UnarchiveLixiCommand,
-  WithdrawLixiCommand,
-  RenameLixiCommand,
+  CreateLixiCommand,
   Lixi,
-  PostLixiResponseDto
+  PostLixiResponseDto,
+  RenameLixiCommand,
+  UnarchiveLixiCommand,
+  WithdrawLixiCommand
 } from '@bcpros/lixi-models/lib/lixi';
 import axiosClient from '@utils/axiosClient';
 

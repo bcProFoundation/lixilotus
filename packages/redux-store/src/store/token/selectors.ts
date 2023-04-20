@@ -1,6 +1,8 @@
 import { Token } from '@bcpros/lixi-models';
 import { createSelector } from 'reselect';
+
 import { RootState } from '../store';
+
 import { tokenAdapter } from './reducer';
 import { TokenState } from './state';
 

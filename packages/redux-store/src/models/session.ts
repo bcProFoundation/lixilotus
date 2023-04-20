@@ -1,4 +1,5 @@
 import type { IronSessionOptions } from 'iron-session';
+
 import type { LocalUser } from './localUser';
 
 export const sessionOptions: IronSessionOptions = {

@@ -32,9 +32,11 @@ import moment from 'moment';
 import intl from 'react-intl-universal';
 import * as Effects from 'redux-saga/effects';
 import { select } from 'redux-saga/effects';
+
 import claimApi from '../claim/api';
 import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
+
 import {
   archiveLixi,
   archiveLixiFailure,
@@ -613,10 +615,10 @@ function* downloadExportedLixiSuccessSaga(action: PayloadAction<any>) {
   const { data, lixiName } = action.payload;
 
   const name = lixiName.replace(/\s/g, '').toLowerCase();
-  var timestamp = moment().format('YYYYMMDD_HHmmss');
+  const timestamp = moment().format('YYYYMMDD_HHmmss');
   const fileName = `${name}_SubLixiList_${timestamp}.csv`;
 
-  var blob = new Blob([data], { type: 'text/csv' });
+  const blob = new Blob([data], { type: 'text/csv' });
   saveAs(blob, fileName);
 
   yield put(hideLoading(downloadExportedLixi.type));

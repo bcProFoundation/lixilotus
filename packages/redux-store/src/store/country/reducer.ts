@@ -1,7 +1,8 @@
 import { Country, State } from '@bcpros/lixi-models';
 import { createEntityAdapter, createReducer, isAnyOf, Update } from '@reduxjs/toolkit';
-import { CountriesState, StatesState } from './state';
+
 import { getCountriesSuccess, getStatesSuccess } from './actions';
+import { CountriesState, StatesState } from './state';
 
 // Coutry
 export const countriesAdapter = createEntityAdapter<Country>({});

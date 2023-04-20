@@ -3,6 +3,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import { activateWallet } from '@store/wallet';
 import { all, call, fork, put, takeLatest } from 'redux-saga/effects';
 import { LocalUser } from 'src/models/localUser';
+
 import { setLocalUserAccount, silentLocalLogin, silentLocalLoginFailure, silentLocalLoginSuccess } from './actions';
 import localAccountApi from './api';
 

@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
-import localforage from 'localforage';
 import { currency } from '@components/Common/Ticker';
-import { convertBase64ToArrayBuffer, convertArrayBufferToBase64 } from '@utils/convertArrBuffBase64';
-import _ from 'lodash';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { getWebAuthnConfig } from '@store/settings/selectors';
 import { saveWebAuthnConfig } from '@store/settings/actions';
+import { getWebAuthnConfig } from '@store/settings/selectors';
+import { convertArrayBufferToBase64, convertBase64ToArrayBuffer } from '@utils/convertArrBuffBase64';
+import localforage from 'localforage';
+import _ from 'lodash';
+import { useEffect, useRef, useState } from 'react';
 
 type AuthenticationConfig = {
   isAuthenticationRequired: boolean;

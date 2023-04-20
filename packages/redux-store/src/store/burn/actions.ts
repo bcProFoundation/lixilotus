@@ -1,4 +1,4 @@
-import { BurnCommand, Burn, BurnQueueCommand } from '@bcpros/lixi-models';
+import { Burn, BurnCommand, BurnQueueCommand } from '@bcpros/lixi-models';
 import { createAction } from '@reduxjs/toolkit';
 
 export const burnForUpDownVote = createAction<BurnCommand>('post/burnForUpDownVote');

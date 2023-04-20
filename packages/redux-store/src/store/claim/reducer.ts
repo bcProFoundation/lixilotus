@@ -1,8 +1,10 @@
-import { createEntityAdapter, createReducer } from '@reduxjs/toolkit';
 import { Claim } from '@bcpros/lixi-models/lib/claim';
-import { ClaimsState } from './state';
+import { createEntityAdapter, createReducer } from '@reduxjs/toolkit';
+
 import { refreshLixiSuccess, selectLixiSuccess } from '../lixi/actions';
+
 import { saveClaimAddress, saveClaimCode, viewClaimFailure, viewClaimSuccess } from './actions';
+import { ClaimsState } from './state';
 
 export const claimsAdapter = createEntityAdapter<Claim>({});
 

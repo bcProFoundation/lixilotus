@@ -1,16 +1,17 @@
 import { createEntityAdapter, createReducer, Update } from '@reduxjs/toolkit';
-import { PageState } from './state';
+import { Page } from 'src/generated/types.generated';
+
 import {
-  fetchAllPagesSuccess,
-  setPagesByAccountId,
-  setSelectedPage,
   editPageSuccess,
+  fetchAllPagesSuccess,
+  getPage,
+  getPageSuccess,
   postPageSuccess,
   setPage,
-  getPage,
-  getPageSuccess
+  setPagesByAccountId,
+  setSelectedPage
 } from './action';
-import { Page } from 'src/generated/types.generated';
+import { PageState } from './state';
 
 export const pageAdapter = createEntityAdapter<Page>({});
 

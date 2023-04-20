@@ -1,9 +1,11 @@
+import { State } from '@bcpros/lixi-models';
 import _ from 'lodash';
 import { createSelector } from 'reselect';
+
 import { RootState } from '../store';
+
 import { countriesAdapter, statesAdapter } from './reducer';
 import { CountriesState, StatesState } from './state';
-import { State } from '@bcpros/lixi-models';
 
 export const getCountriesState = createSelector(
   (state: RootState) => state.countries,

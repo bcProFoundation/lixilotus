@@ -1,14 +1,15 @@
-import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import { BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
 import BCHJS from '@bcpros/xpi-js';
 import BigNumber from 'bignumber.js';
 
-const OP_0: number = 0x00;
-const OP_16: number = 0x60;
-const OP_RETURN: number = 0x6a;
-const OP_PUSHDATA1: number = 0x4c;
-const OP_PUSHDATA2: number = 0x4d;
-const OP_PUSHDATA4: number = 0x4e;
+import { currency } from '../components/common/Ticker';
+
+const OP_0 = 0x00;
+const OP_16 = 0x60;
+const OP_RETURN = 0x6a;
+const OP_PUSHDATA1 = 0x4c;
+const OP_PUSHDATA2 = 0x4d;
+const OP_PUSHDATA4 = 0x4e;
 
 export interface ParseBurnResult {
   version: number;
@@ -23,7 +24,7 @@ export const parseBurnOutput = (scriptpubkey: Buffer | string): ParseBurnResult 
     scriptpubkey = Buffer.from(scriptpubkey, 'hex');
   }
 
-  let it: number = 0; // position in itObj
+  let it = 0; // position in itObj
   let itObj: Buffer = scriptpubkey; // object it refers to
 
   const PARSE_CHECK = (v: boolean, str: string): void => {

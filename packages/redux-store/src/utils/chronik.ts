@@ -4,6 +4,7 @@ import { currency } from '@components/Common/Ticker';
 import { walletAdapter, WalletState } from '@store/wallet';
 import BigNumber from 'bignumber.js';
 import { ChronikClient, Tx, TxHistoryPage, Utxo } from 'chronik-client';
+
 import { decryptOpReturnMsg, getHashArrayFromWallet, getUtxoWif, parseOpReturn } from './cashMethods';
 import { parseBurnOutput, ParseBurnResult } from './opReturnBurn';
 
@@ -271,7 +272,7 @@ export const parseChronikTx = async (
   let parseBurnResult;
 
   // Initialize required variables
-  let messageHex: string = '';
+  let messageHex = '';
   let opReturnMessage: string;
   let isLotusMessage = false;
   let isEncryptedMessage = false;
@@ -311,15 +312,15 @@ export const parseChronikTx = async (
     const thisOutputReceivedAtHash160 = thisOutput.outputScript;
     // Check for OP_RETURN msg
     if (thisOutput.value === '0' && typeof thisOutput.slpToken === 'undefined') {
-      let hex = thisOutputReceivedAtHash160;
-      let parsedOpReturnArray = parseOpReturn(hex);
+      const hex = thisOutputReceivedAtHash160;
+      const parsedOpReturnArray = parseOpReturn(hex);
 
       if (!parsedOpReturnArray) {
         console.log('parseChronikTx() error: parsed array is empty');
         break;
       }
 
-      let txType = parsedOpReturnArray[0];
+      const txType = parsedOpReturnArray[0];
 
       if (txType === currency.opReturn.appPrefixesHex.lotusChat) {
         // this is a sendlotus message
@@ -452,7 +453,7 @@ export const getTxHistoryChronik = async (
     };
   });
 
-  let txHistoryPromises: Array<Promise<TxHistoryPage>> = [];
+  const txHistoryPromises: Array<Promise<TxHistoryPage>> = [];
   for (let i = 0; i < hash160AndAddressObjArray.length; i += 1) {
     const txHistoryPromise = returnGetTxHistoryChronikPromise(chronik, hash160AndAddressObjArray[i]);
     txHistoryPromises.push(txHistoryPromise);

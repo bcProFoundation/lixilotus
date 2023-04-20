@@ -1,9 +1,10 @@
-import { NotificationDto as Notification, PaginationResult } from '@bcpros/lixi-models';
+import { NotificationDto, PaginationResult } from '@bcpros/lixi-models';
 import axiosClient from '@utils/axiosClient';
+
 import { readAllNotifications } from './actions';
 
 const notificationApi = {
-  getByAccountId(id: number, mnemonicHash?: string): Promise<Notification[]> {
+  getByAccountId(id: number, mnemonicHash?: string): Promise<NotificationDto[]> {
     const url = `/api/accounts/${id}/notifications`;
 
     const config = mnemonicHash
@@ -18,7 +19,7 @@ const notificationApi = {
     return axiosClient
       .get(url, config)
       .then(response => {
-        return response.data as Notification[];
+        return response.data as NotificationDto[];
       })
       .catch(err => {
         const { response } = err;
@@ -44,7 +45,7 @@ const notificationApi = {
         throw response.data;
       });
   },
-  readByNotificationId(mnemonicHash?: string, notificationId?: number): Promise<Notification> {
+  readByNotificationId(mnemonicHash?: string, notificationId?: number): Promise<NotificationDto> {
     const url = `/api/notifications/${notificationId}`;
     const config = mnemonicHash
       ? {
@@ -58,7 +59,7 @@ const notificationApi = {
     return axiosClient
       .patch(url, {}, config)
       .then(response => {
-        return response.data as Notification;
+        return response.data as NotificationDto;
       })
       .catch(err => {
         const { response } = err;
@@ -71,7 +72,7 @@ const notificationApi = {
     return axiosClient
       .patch(url)
       .then(response => {
-        return response.data as Notification;
+        return response.data as NotificationDto;
       })
       .catch(err => {
         const { response } = err;

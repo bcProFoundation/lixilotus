@@ -53,7 +53,7 @@ import InfoCardUser from '@components/Common/InfoCardUser';
 import { InfoSubCard } from '@components/Lixi';
 import { IconBurn } from '@components/Posts/PostDetail';
 import { setTransactionReady } from '@store/account/actions';
-import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
+import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 
 const StyledTokensListing = styled.div`
   .table-tokens {

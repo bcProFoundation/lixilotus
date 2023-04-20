@@ -22,7 +22,7 @@ export const sendXpiNotification = createAction<string>('notification/sendXpiNot
 export const xpiReceivedNotificationWebSocket = createAction<string>('notification/xpiReceivedNotificationWebSocket');
 
 export const readAllNotifications = createAction('notifications/readAllNotifications');
-export const readAllNotificationsSuccess = createAction<{ notifications: Notification[] }>(
+export const readAllNotificationsSuccess = createAction<{ notifications: NotificationDto[] }>(
   'notifications/readAllNotificationsSuccess'
 );
 export const readAllNotificationsFailure = createAction<string>('notifications/readAllNotificationsFailure');

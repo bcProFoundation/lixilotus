@@ -1,12 +1,10 @@
 import { useEffect, useRef } from 'react';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
 const noop = () => {};
 
 type GeneratorReturnValueType = void | (() => void);
 
 function* cast<T>(input: Promise<T>): Generator<Promise<T>, T> {
-  // eslint-disable-next-line
   // @ts-ignore
   return yield input;
 }
@@ -35,7 +33,6 @@ export const useAsyncEffect = (
     let cleanupHandler = noop;
 
     const run = async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let result: IteratorResult<any> = { value: undefined, done: false };
       let lastError: Error | undefined = undefined;
 

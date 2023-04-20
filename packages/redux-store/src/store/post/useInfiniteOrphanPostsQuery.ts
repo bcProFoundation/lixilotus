@@ -1,10 +1,11 @@
 import { PaginationArgs } from '@bcpros/lixi-models';
-import { useLazyOrphanPostsQuery, useOrphanPostsQuery, api as postApi } from '@store/post/posts.api';
+import { createEntityAdapter } from '@reduxjs/toolkit';
+import { api as postApi, useLazyOrphanPostsQuery, useOrphanPostsQuery } from '@store/post/posts.api';
+import _ from 'lodash';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Post, PostOrder } from 'src/generated/types.generated';
-import _ from 'lodash';
+
 import { PostQuery } from './posts.generated';
-import { createEntityAdapter } from '@reduxjs/toolkit';
 
 const postsAdapter = createEntityAdapter<PostQuery['post']>({
   selectId: post => post.id,
@@ -20,7 +21,7 @@ interface PostListParams extends PaginationArgs {
 
 export function useInfiniteOrphanPostsQuery(
   params: PostListParams,
-  fetchAll: boolean = false // if `true`: auto do next fetches to get all notes at once
+  fetchAll = false // if `true`: auto do next fetches to get all notes at once
 ) {
   const baseResult = useOrphanPostsQuery(params);
 

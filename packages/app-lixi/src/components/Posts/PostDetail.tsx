@@ -81,7 +81,7 @@ import { getTransactionStatus } from '@store/account/selectors';
 import useDidMountEffect from '@hooks/useDidMountEffect ';
 import { getBurnQueue, getFailQueue } from '@store/burn';
 import { TokenItem } from '@components/Token/TokensFeed';
-import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
+import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 
 export type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 export type BurnData = {

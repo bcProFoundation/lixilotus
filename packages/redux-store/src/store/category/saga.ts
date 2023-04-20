@@ -1,9 +1,8 @@
-import intl from 'react-intl-universal';
-import * as Effects from 'redux-saga/effects';
-
 import { all, fork, put, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { showToast } from '@store/toast/actions';
+import intl from 'react-intl-universal';
+import * as Effects from 'redux-saga/effects';
 
 import { getCategories, getCategoriesFailure, getCategoriesSuccess } from './actions';
 import categoryApi from './api';

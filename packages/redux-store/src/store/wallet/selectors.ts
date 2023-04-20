@@ -1,5 +1,7 @@
 import { createSelector } from 'reselect';
+
 import { RootState } from '../store';
+
 import { WalletStatus } from './models';
 import { walletAdapter } from './reducer';
 import { WalletState } from './state';

@@ -1,5 +1,5 @@
-import { createAction } from '@reduxjs/toolkit';
 import { Country, State } from '@bcpros/lixi-models';
+import { createAction } from '@reduxjs/toolkit';
 
 export const getCountryActionType = 'country/getCountries';
 

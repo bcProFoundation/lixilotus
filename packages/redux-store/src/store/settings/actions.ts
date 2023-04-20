@@ -1,6 +1,7 @@
-import { createAction } from '@reduxjs/toolkit';
-import { WebAuthnConfig } from './model';
 import { FilterBurnCommand } from '@bcpros/lixi-models/src/lib/filter';
+import { createAction } from '@reduxjs/toolkit';
+
+import { WebAuthnConfig } from './model';
 
 export const toggleCollapsedSideNav = createAction<boolean>('settings/toggleCollapsedSideNav');
 export const updateLocale = createAction<string>('settings/updateLocale');

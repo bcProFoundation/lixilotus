@@ -1,15 +1,17 @@
-import * as _ from 'lodash';
-import intl from 'react-intl-universal';
+import { Account, ChangeAccountLocaleCommand } from '@bcpros/lixi-models';
+import { FilterBurnCommand } from '@bcpros/lixi-models/lib/filter';
 import { all, call, fork, put, select, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
-import { loadLocale, loadLocaleFailure, loadLocaleSuccess, setInitIntlStatus, updateLocale } from './actions';
-import AppLocale from 'src/lang';
-import { showToast } from '@store/toast/actions';
-import { Account, ChangeAccountLocaleCommand } from '@bcpros/lixi-models';
-import { getSelectedAccount } from '@store/account/selectors';
 import { changeAccountLocale } from '@store/account/actions';
-import { FilterBurnCommand } from '@bcpros/lixi-models/lib/filter';
+import { getSelectedAccount } from '@store/account/selectors';
+import { showToast } from '@store/toast/actions';
+import * as _ from 'lodash';
 import moment from 'moment';
+import intl from 'react-intl-universal';
+import AppLocale from 'src/lang';
+
+import { loadLocale, loadLocaleFailure, loadLocaleSuccess, setInitIntlStatus, updateLocale } from './actions';
+
 import 'moment/locale/vi';
 
 function initLocale(currentAppLocale: any): Promise<boolean> {

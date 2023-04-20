@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-export const formatDate = (dateString: string, userLocale: string = 'en') => {
+export const formatDate = (dateString: string, userLocale = 'en') => {
   const options: Intl.DateTimeFormatOptions = { month: 'numeric', day: 'numeric', year: 'numeric' };
   const dateFormattingError = 'Unable to format date.';
   try {

@@ -1,12 +1,13 @@
-import BigNumber from 'bignumber.js';
-import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import { fromSmallestDenomination } from '@utils/cashMethods';
+import BigNumber from 'bignumber.js';
+
+import { currency } from '../components/common/Ticker';
 
 // Validate cash amount
 export const shouldRejectAmountInput = (cashAmount, totalCashBalance) => {
   // Take cashAmount as input, a string from form input
   let error = '';
-  let testedAmount = new BigNumber(cashAmount);
+  const testedAmount = new BigNumber(cashAmount);
 
   // if (selectedCurrency !== currency.ticker) {
   //     // Ensure no more than currency.cashDecimals decimal places
@@ -32,7 +33,7 @@ export const shouldRejectAmountInput = (cashAmount, totalCashBalance) => {
 };
 
 export const fiatToCrypto = (fiatAmount, fiatPrice, cashDecimals = currency.cashDecimals) => {
-  let cryptoAmount = new BigNumber(fiatAmount).div(new BigNumber(fiatPrice)).toFixed(cashDecimals);
+  const cryptoAmount = new BigNumber(fiatAmount).div(new BigNumber(fiatPrice)).toFixed(cashDecimals);
   return cryptoAmount;
 };
 
@@ -46,6 +47,6 @@ export const isValidLixiName = (lixiName: string) => {
 
 export const isValidAmountInput = (cashAmount: string) => {
   if (cashAmount === '') return true;
-  let testedAmount = new BigNumber(cashAmount);
+  const testedAmount = new BigNumber(cashAmount);
   return !testedAmount.isNaN() && testedAmount.isFinite() && testedAmount.isPositive();
 };

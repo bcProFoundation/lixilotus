@@ -1,8 +1,10 @@
-import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import BCHJS from '@bcpros/xpi-js';
 import { WalletPathAddressInfo, WalletState } from '@store/wallet';
 import BigNumber from 'bignumber.js';
 import { Utxo } from 'chronik-client';
+
+import { currency } from '../components/Common/Ticker';
+
 import { createSharedKey, decrypt, encrypt } from './encryption';
 
 export type TxInputObj = {
@@ -238,11 +240,11 @@ export const generateTxOutput = (
 
     if (isOneToMany) {
       // for one to many mode, add the multiple outputs from the array
-      let arrayLength = destinationAddressAndValueArray.length;
+      const arrayLength = destinationAddressAndValueArray.length;
       for (let i = 0; i < arrayLength; i++) {
         // add each send tx from the array as an output
-        let outputAddress = destinationAddressAndValueArray[i].split(',')[0];
-        let outputValue = new BigNumber(destinationAddressAndValueArray[i].split(',')[1]);
+        const outputAddress = destinationAddressAndValueArray[i].split(',')[0];
+        const outputValue = new BigNumber(destinationAddressAndValueArray[i].split(',')[1]);
         txBuilder.addOutput(outputAddress, parseInt(fromXpiToSatoshis(outputValue).toString()));
       }
     } else {
@@ -382,7 +384,7 @@ export const getDustXPI = () => {
 
 export const formatBalance = x => {
   try {
-    let balanceInParts = x.toString().split('.');
+    const balanceInParts = x.toString().split('.');
     balanceInParts[0] = balanceInParts[0].replace(/\B(?=(\d{2})+(?!\d))/g, '');
     if (balanceInParts.length > 1) {
       balanceInParts[1] = balanceInParts[1].slice(0, 2);
@@ -494,13 +496,13 @@ export function parseOpReturn(hexStr: string): Array<string> | false {
    *  resultArray[1] is the actual sendlotus message or the 2nd part of an external message
    *  resultArray[2 - n] are the additional messages for future protcols
    */
-  let resultArray = [];
+  const resultArray = [];
   let message = '';
   let hexStrLength = hexStr.length;
 
   for (let i = 0; hexStrLength !== 0; i++) {
     // part 1: check the preceding byte value for the subsequent message
-    let byteValue = hexStr.substring(0, 2);
+    const byteValue = hexStr.substring(0, 2);
     let msgByteSize = 0;
     if (byteValue === currency.opReturn.opPushDataOne) {
       // if this byte is 4c then the next byte is the message byte size - retrieve the message byte size only

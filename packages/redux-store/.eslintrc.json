@@ -1,0 +1,39 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "env": {
+    "es6": true
+  },
+  "ignorePatterns": ["node_modules", "build", "coverage"],
+  "plugins": ["import", "eslint-comments", "react", "react-hooks", "prettier"],
+  "extends": ["eslint:recommended", "plugin:import/typescript", "prettier"],
+  "globals": {
+    "BigInt": true,
+    "console": true,
+    "WebAssembly": true
+  },
+  "rules": {
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "eslint-comments/disable-enable-pair": [
+      "off",
+      {
+        "allowWholeFile": true
+      }
+    ],
+    "eslint-comments/no-unused-disable": "error",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/no-empty-function": "off",
+    "no-empty": "off",
+    "no-undef": "off",
+    "no-unused-vars": "off",
+    "no-useless-catch": "off",
+    "no-ex-assign": "off",
+    "no-redeclare": "off",
+    "require-yield": "off",
+    "react-hooks/exhaustive-deps": "off"
+  }
+}

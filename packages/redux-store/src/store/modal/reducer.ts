@@ -1,4 +1,5 @@
 import { createReducer } from '@reduxjs/toolkit';
+
 import { closeModal, openModal } from './actions';
 import { ModalState } from './state';
 

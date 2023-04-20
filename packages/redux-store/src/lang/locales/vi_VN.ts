@@ -1,4 +1,3 @@
-/* eslint-disable import/no-anonymous-default-export */
 /* SendLotus Language Texts
 
 Table of Contents

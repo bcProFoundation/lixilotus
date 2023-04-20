@@ -1,6 +1,8 @@
 import { Page } from '@bcpros/lixi-models';
 import { createSelector } from 'reselect';
+
 import { RootState } from '../store';
+
 import { pageAdapter } from './reducer';
 import { PageState } from './state';
 

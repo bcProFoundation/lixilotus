@@ -1,12 +1,13 @@
 import { BurnForType } from '@bcpros/lixi-models/lib/burn';
 import { createReducer } from '@reduxjs/toolkit';
+
 import {
   addBurnQueue,
   addFailQueue,
   burnForUpDownVoteSuccess,
-  moveAllBurnToFailQueue,
   clearBurnQueue,
   clearFailQueue,
+  moveAllBurnToFailQueue,
   removeBurnQueue,
   removeFailQueue
 } from './actions';

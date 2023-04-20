@@ -4,8 +4,10 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import * as _ from 'lodash';
 import intl from 'react-intl-universal';
 import * as Effects from 'redux-saga/effects';
+
 import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
+
 import {
   editPost,
   editPostFailure,

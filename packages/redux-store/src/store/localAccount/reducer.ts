@@ -1,5 +1,6 @@
 import { LocalUserAccount } from '@bcpros/lixi-models';
 import { createEntityAdapter, createReducer } from '@reduxjs/toolkit';
+
 import { setLocalUserAccount } from './actions';
 import { LocalUserAccountsState } from './state';
 

@@ -1,6 +1,7 @@
 import { callConfig } from '@context/index';
 import { all, call, fork, put, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
+
 import { activateWallet, activateWalletFailure, activateWalletSuccess } from './actions';
 import { WalletPathAddressInfo } from './models';
 

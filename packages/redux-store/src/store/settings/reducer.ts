@@ -1,7 +1,8 @@
+import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import { createReducer } from '@reduxjs/toolkit';
+
 import { saveBurnFilter, saveWebAuthnConfig, setInitIntlStatus, toggleCollapsedSideNav, updateLocale } from './actions';
 import { SettingsState } from './state';
-import { FilterType } from '@bcpros/lixi-models/lib/filter';
 
 const initialState: SettingsState = {
   navCollapsed: true,

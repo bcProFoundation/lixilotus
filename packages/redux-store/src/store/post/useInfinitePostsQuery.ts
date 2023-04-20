@@ -1,10 +1,11 @@
 import { PaginationArgs } from '@bcpros/lixi-models';
-import { useLazyPostsQuery, usePostsQuery, api as postApi } from '@store/post/posts.api';
+import { createEntityAdapter } from '@reduxjs/toolkit';
+import { api as postApi, useLazyPostsQuery, usePostsQuery } from '@store/post/posts.api';
+import _ from 'lodash';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Post, PostOrder } from 'src/generated/types.generated';
-import _ from 'lodash';
+
 import { PostQuery } from './posts.generated';
-import { createEntityAdapter } from '@reduxjs/toolkit';
 
 const postsAdapter = createEntityAdapter<PostQuery['post']>({
   selectId: post => post.id,
@@ -24,7 +25,7 @@ export interface PostListBody {
 
 export function useInfinitePostsQuery(
   params: PostListParams,
-  fetchAll: boolean = false // if `true`: auto do next fetches to get all notes at once
+  fetchAll = false // if `true`: auto do next fetches to get all notes at once
 ) {
   const baseResult = usePostsQuery(params);
 

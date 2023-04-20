@@ -24,17 +24,17 @@ import {
   organizeUtxosByType,
   parseChronikTx
 } from '@utils/chronik';
+import isEqualIgnoreUndefined from '@utils/comparision';
 import { ChronikClient, SubscribeMsg, Tx, Utxo } from 'chronik-client';
 import _, { isEqual } from 'lodash';
 import { useEffect, useState } from 'react';
+// @ts-ignore
 import useInterval from './useInterval';
 import useXPI from './useXPI';
-import isEqualIgnoreUndefined from '@utils/comparision';
 
 const chronik = new ChronikClient('https://chronik.be.cash/xpi');
 const websocketConnectedRefreshInterval = 10000;
 
-/* eslint-disable react-hooks/exhaustive-deps */
 const useWallet = () => {
   // @todo: use constant
   // and consider to move to redux the neccessary variable
@@ -97,7 +97,7 @@ const useWallet = () => {
       masterHDNode = XPI.HDNode.fromSeed(rootSeedBuffer, 'testnet');
     }
 
-    let walletPaths: WalletPathAddressInfo[] = [];
+    const walletPaths: WalletPathAddressInfo[] = [];
     for (const path of paths) {
       const walletPath = await deriveAccount(XPI, {
         masterHDNode,
@@ -170,7 +170,7 @@ const useWallet = () => {
     }
 
     // If wallet is valid, compare what exists in written wallet state instead of former api call
-    let utxosToCompare = previousUtxos;
+    const utxosToCompare = previousUtxos;
 
     const haveChanged = !_.isEqualWith(utxos, utxosToCompare, isEqualIgnoreUndefined);
 

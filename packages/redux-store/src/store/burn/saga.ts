@@ -1,39 +1,41 @@
-import { BurnType, Burn, BurnCommand, BurnForType, BurnQueueCommand } from '@bcpros/lixi-models/lib/burn';
-import { all, call, fork, takeLatest, take, put as putChannel } from '@redux-saga/core/effects';
+import { Account } from '@bcpros/lixi-models';
+import { PostsQueryTag } from '@bcpros/lixi-models/constants';
+import { Burn, BurnCommand, BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
+import { callConfig } from '@context/shareContext';
+import { all, call, fork, put as putChannel, take, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
-import { api as postApi } from '@store/post/posts.api';
+import { setTransactionNotReady, setTransactionReady } from '@store/account/actions';
+import { getTransactionStatus } from '@store/account/selectors';
 import { api as commentApi } from '@store/comment/comments.api';
-import { api as tokenApi } from '@store/token/tokens.api';
+import { api as postApi } from '@store/post/posts.api';
 import { showToast } from '@store/toast/actions';
 import { burnForToken, burnForTokenFailure, burnForTokenSucceses, getTokenById } from '@store/token';
+import { api as tokenApi } from '@store/token/tokens.api';
+import { getSlpBalancesAndUtxos } from '@store/wallet';
+import { getAllWalletPaths } from '@store/wallet';
 import * as _ from 'lodash';
 import intl from 'react-intl-universal';
-import { actionChannel, select, put, getContext, flush } from 'redux-saga/effects';
+import { buffers, Channel } from 'redux-saga';
+import { actionChannel, flush, getContext, put, select } from 'redux-saga/effects';
 import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
+
 import { hideLoading } from '../loading/actions';
+
 import {
+  addBurnTransaction,
+  addFailQueue,
   burnForUpDownVote,
   burnForUpDownVoteFailure,
   burnForUpDownVoteSuccess,
+  clearBurnQueue,
   createTxHex,
-  addBurnTransaction,
-  removeBurnQueue,
-  addFailQueue,
   moveAllBurnToFailQueue,
-  returnTxHex,
-  clearBurnQueue
+  removeBurnQueue,
+  returnTxHex
 } from './actions';
 import burnApi from './api';
-import { PostsQueryTag } from '@bcpros/lixi-models/constants';
-import { getSlpBalancesAndUtxos } from '@store/wallet';
-import { setTransactionNotReady, setTransactionReady } from '@store/account/actions';
-import { getTransactionStatus } from '@store/account/selectors';
-import { getAllWalletPaths } from '@store/wallet';
-import { callConfig } from '@context/shareContext';
 import { getBurnQueue, getFailQueue } from './selectors';
-import { buffers, Channel } from 'redux-saga';
-import { Account } from '@bcpros/lixi-models';
 
 function* createTxHexSaga(action: any) {
   const data = action.payload;
@@ -71,7 +73,7 @@ function* burnForUpDownVoteSaga(action: PayloadAction<any>) {
   const command = action.payload;
 
   const { burnForId: postId, queryParams } = command;
-  let burnValue = _.toNumber(command.burnValue);
+  const burnValue = _.toNumber(command.burnValue);
   yield put(createTxHex(command));
   const { payload } = yield take(returnTxHex.type);
   const latestTxHex = payload;
@@ -161,7 +163,7 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
     }
   };
 
-  let burnValue = _.toNumber(command.burnValue);
+  const burnValue = _.toNumber(command.burnValue);
 
   //BUG: All token and page post show up on home page will not optimistic update becuz of PostQueryTag
   // The algo will check for PostQueryTag then updateQueryData according to it. It only update normal post not page's post and token's post at homepage.
@@ -297,7 +299,7 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
 function* updateCommentBurnValue(action: PayloadAction<BurnCommand>) {
   const command = action.payload;
   const { queryParams: params } = command;
-  let burnValue = _.toNumber(command.burnValue);
+  const burnValue = _.toNumber(command.burnValue);
 
   return yield put(
     commentApi.util.updateQueryData('CommentsToPostId', params, draft => {
@@ -328,7 +330,7 @@ function* updateCommentBurnValue(action: PayloadAction<BurnCommand>) {
 
 function* updateTokenBurnValue(action: PayloadAction<BurnCommand>) {
   const command = action.payload;
-  let burnValue = _.toNumber(command.burnValue);
+  const burnValue = _.toNumber(command.burnValue);
 
   return yield put(
     tokenApi.util.updateQueryData('Token', { tokenId: command.tokenId }, draft => {

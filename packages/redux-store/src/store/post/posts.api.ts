@@ -1,5 +1,6 @@
 import { EntityState } from '@reduxjs/toolkit';
 import { PageInfo } from 'src/generated/types.generated';
+
 import { api, PostQuery } from './posts.generated';
 
 export interface PostApiState extends EntityState<PostQuery['post']> {

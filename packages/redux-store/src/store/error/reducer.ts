@@ -1,4 +1,5 @@
 import { AnyAction } from 'redux';
+
 import { ErrorState } from './state';
 
 const initialState: ErrorState = {

@@ -1,5 +1,5 @@
-import { UseQuery, UseLazyQuery } from '@reduxjs/toolkit/dist/query/react/buildHooks';
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { UseLazyQuery, UseQuery } from '@reduxjs/toolkit/dist/query/react/buildHooks';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 export interface UseInfiniteQueryResult {}
 

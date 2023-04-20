@@ -1,4 +1,4 @@
-import { CreateClaimDto, Claim, ClaimDto, ViewClaimDto } from '@bcpros/lixi-models';
+import { Claim, ClaimDto, CreateClaimDto, ViewClaimDto } from '@bcpros/lixi-models';
 import { all, call, fork, put, select, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 import intl from 'react-intl-universal';
@@ -6,6 +6,7 @@ import intl from 'react-intl-universal';
 import { fromSmallestDenomination } from '../../utils/cashMethods';
 import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
+
 import {
   postClaim,
   postClaimActionType,

@@ -1,4 +1,5 @@
 import { AnyAction } from 'redux';
+
 import { ActionState } from './state';
 
 /**

@@ -22,5 +22,5 @@ export * from './settings';
 export * from './store';
 export * from './toast';
 export * from './token';
-export * from './wallet';
+export * as wallet from './wallet';
 export * from './worship';

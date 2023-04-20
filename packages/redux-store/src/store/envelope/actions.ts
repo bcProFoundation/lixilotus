@@ -1,5 +1,5 @@
-import { createAction } from '@reduxjs/toolkit';
 import { Envelope } from '@bcpros/lixi-models';
+import { createAction } from '@reduxjs/toolkit';
 
 export const getEnvelope = createAction<number>('envelope/getEnvelope');
 export const getEnvelopeSuccess = createAction<Envelope>('envelope/getEnvelopeSuccess');

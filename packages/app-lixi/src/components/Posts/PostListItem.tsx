@@ -32,7 +32,6 @@ import { ReadMoreMore } from 'read-more-more';
 import { IconBurn } from './PostDetail';
 import { formatRelativeTime } from '@utils/formatting';
 
-
 // export const IconBurn = ({
 //   icon,
 //   burnValue,

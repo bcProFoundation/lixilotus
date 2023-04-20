@@ -1,9 +1,9 @@
+import { Lixi } from '@bcpros/lixi-models';
 import _ from 'lodash';
 import { createSelector } from 'reselect';
 
-import { Lixi } from '@bcpros/lixi-models';
-
 import { RootState } from '../store';
+
 import { childrenLixiesAdapter, lixiesAdapter } from './reducer';
 import { LixiesState } from './state';
 

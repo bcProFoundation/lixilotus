@@ -1,5 +1,5 @@
 import { Claim, PaginationResult } from '@bcpros/lixi-models';
-import { CreateClaimDto, ClaimDto, ViewClaimDto } from '@bcpros/lixi-models/lib/claim';
+import { ClaimDto, CreateClaimDto, ViewClaimDto } from '@bcpros/lixi-models/lib/claim';
 import axiosClient from '@utils/axiosClient';
 
 const claimApi = {

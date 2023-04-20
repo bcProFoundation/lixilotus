@@ -106,7 +106,7 @@ export default function useXPI() {
         if (encryptionFlag && optionalOpReturnMsg) {
           try {
             // get the pub key for the recipient address
-            let recipientPubKey = await getRecipientPublicKey(XPI, chronik, destinationAddress);
+            const recipientPubKey = await getRecipientPublicKey(XPI, chronik, destinationAddress);
             // if the API can't find a pub key, it is due to the wallet having no outbound tx
             if (!recipientPubKey) {
               throw new Error('Cannot send an encrypted message to a wallet with no outgoing transactions');
@@ -130,7 +130,7 @@ export default function useXPI() {
 
       // generate the tx inputs and add to txBuilder instance
       // returns the updated txBuilder, txFee, totalInputUtxoValue and inputUtxos
-      let txInputObj = generateTxInput(
+      const txInputObj = generateTxInput(
         XPI,
         isOneToMany,
         utxos,
@@ -220,7 +220,7 @@ export default function useXPI() {
 
     // generate the tx inputs and add to txBuilder instance
     // returns the updated txBuilder, txFee, totalInputUtxoValue and inputUtxos
-    let txInputObj = generateTxInput(
+    const txInputObj = generateTxInput(
       XPI,
       tipToAddresses ? true : false,
       utxos,

@@ -1,5 +1,7 @@
+import { Token } from '@bcpros/lixi-models';
+import { BurnType } from '@bcpros/lixi-models/lib/burn';
 import { createEntityAdapter, createReducer, Update } from '@reduxjs/toolkit';
-import { TokenState } from './state';
+
 import {
   burnForToken,
   burnForTokenFailure,
@@ -8,8 +10,7 @@ import {
   postTokenSuccess,
   selectToken
 } from './action';
-import { Token } from '@bcpros/lixi-models';
-import { BurnType } from '@bcpros/lixi-models/lib/burn';
+import { TokenState } from './state';
 
 export const tokenAdapter = createEntityAdapter<Token>();
 

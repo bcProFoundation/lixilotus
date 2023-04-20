@@ -10,4 +10,4 @@ export * from './lang/index';
 export * from './models/localUser';
 export * from './models/session';
 export * from './store/index';
-// export * from './utils';
+export * from './utils';

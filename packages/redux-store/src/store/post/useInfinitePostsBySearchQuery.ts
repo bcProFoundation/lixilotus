@@ -1,12 +1,13 @@
-import { useMemo } from 'react';
 import { PaginationArgs } from '@bcpros/lixi-models';
+import { createEntityAdapter } from '@reduxjs/toolkit';
+import { useAppDispatch } from '@store/hooks';
 import { useLazyPostsBySearchQuery, usePostsBySearchQuery } from '@store/post/posts.generated';
+import _ from 'lodash';
+import { useMemo } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { Post, PostOrder } from 'src/generated/types.generated';
-import _ from 'lodash';
+
 import { PostQuery } from './posts.generated';
-import { useAppDispatch } from '@store/hooks';
-import { createEntityAdapter } from '@reduxjs/toolkit';
 
 const postsAdapter = createEntityAdapter<PostQuery['post']>({
   selectId: post => post.id,
@@ -21,7 +22,7 @@ interface PostListParams extends PaginationArgs {
 
 export function useInfinitePostsBySearchQuery(
   params: PostListParams,
-  fetchAll: boolean = false // if `true`: auto do next fetches to get all notes at once
+  fetchAll = false // if `true`: auto do next fetches to get all notes at once
 ) {
   const dispatch = useAppDispatch();
   const baseResult = usePostsBySearchQuery(params, { skip: params.query === null });

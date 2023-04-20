@@ -1,10 +1,11 @@
 import { PaginationArgs } from '@bcpros/lixi-models';
 import { createEntityAdapter } from '@reduxjs/toolkit';
-import { useLazyCommentsToPostIdQuery, useCommentsToPostIdQuery, api as commentApi } from '@store/comment/comments.api';
-import { useEffect, useRef, useState, useMemo } from 'react';
-import { CommentOrder } from 'src/generated/types.generated';
-import { CommentQuery } from './comments.generated';
+import { api as commentApi, useCommentsToPostIdQuery, useLazyCommentsToPostIdQuery } from '@store/comment/comments.api';
 import moment from 'moment';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { CommentOrder } from 'src/generated/types.generated';
+
+import { CommentQuery } from './comments.generated';
 
 export interface CommentsByPostIdParams extends PaginationArgs {
   orderBy: CommentOrder;
@@ -23,7 +24,7 @@ const { selectAll } = commentsAdapter.getSelectors();
 
 export function useInfiniteCommentsToPostIdQuery(
   params: CommentsByPostIdParams,
-  fetchAll: boolean = false // if `true`: auto do next fetches to get all notes at once
+  fetchAll = false // if `true`: auto do next fetches to get all notes at once
 ) {
   const baseResult = useCommentsToPostIdQuery(params);
 

@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import { createSelector } from 'reselect';
+
 import { RootState } from '../store';
+
 import { categoriesAdapter } from './reducer';
 import { CategoriesState } from './state';
 

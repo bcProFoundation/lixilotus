@@ -71,7 +71,7 @@ export function generateRandomBase58Str(length: number): string {
   const array = new Uint8Array(length);
   crypto.getRandomValues(array);
   let str = '';
-  for (var i = 0; i < array.length; i++) {
+  for (let i = 0; i < array.length; i++) {
     str += base[array[i] % base.length];
   }
   return str;

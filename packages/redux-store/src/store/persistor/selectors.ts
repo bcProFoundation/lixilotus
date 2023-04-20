@@ -1,5 +1,6 @@
 import { PersistState } from 'redux-persist';
 import { createSelector } from 'reselect';
+
 import { RootState } from '../store';
 
 export const getIsBootstrapped = createSelector(

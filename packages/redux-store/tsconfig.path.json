@@ -2,39 +2,19 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@assets/*": [
-        "src/assets/*"
-      ],
-      "@images/*": [
-        "src/assets/images/*"
-      ],
-      "@icons/*": [
-        "src/assets/icons/*"
-      ],
-      "@utils/*": [
-        "src/utils/*"
-      ],
-      "@components/*": [
-        "src/components/*"
-      ],
-      "@containers/*": [
-        "src/containers/*"
-      ],
-      "@hooks/*": [
-        "src/hooks/*"
-      ],
-      "@store/*": [
-        "src/store/*"
-      ],
-      "@context/*": [
-        "src/context/*"
-      ],
-      "@bcpros/lixi-components/*": [
-        "../../packages/lixi-components/src/*"
-      ],
-      "@bcpros/lixi-models/*": [
-        "../../packages/lixi-models/src/*"
-      ]
+      "@assets/*": ["src/assets/*"],
+      "@images/*": ["src/assets/images/*"],
+      "@icons/*": ["src/assets/icons/*"],
+      "@utils/*": ["src/utils/*"],
+      "@components/*": ["src/components/*"],
+      "@containers/*": ["src/containers/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@store/*": ["src/store/*"],
+      "@context/*": ["src/context/*"],
+      "@bcpros/lixi-components/*": ["../../packages/lixi-components/src/*"],
+      "@bcpros/lixi-models/*": ["../../packages/lixi-models/src/*"],
+      "@bcpros/app-lixi/*": ["../../packages/app-lixi/src/*"],
+      "@bcpros/app-lotus-temple/*": ["../../packages/app-lotus-temple/src/*"]
     }
-  },
+  }
 }

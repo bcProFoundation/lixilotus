@@ -1,23 +1,25 @@
-import * as _ from 'lodash';
-import * as Effects from 'redux-saga/effects';
-import intl from 'react-intl-universal';
+import { TokenDto } from '@bcpros/lixi-models';
 import { all, fork, put, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
+import * as _ from 'lodash';
+import intl from 'react-intl-universal';
+import * as Effects from 'redux-saga/effects';
+
 import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
+
 import {
   fetchAllTokens,
   fetchAllTokensFailure,
   fetchAllTokensSuccess,
-  postToken,
-  postTokenFailure,
-  postTokenSuccess,
   getToken,
   getTokenFailure,
-  getTokenSuccess
+  getTokenSuccess,
+  postToken,
+  postTokenFailure,
+  postTokenSuccess
 } from './action';
 import TokenApi from './api';
-import { TokenDto } from '@bcpros/lixi-models';
 
 const call: any = Effects.call;
 /**
