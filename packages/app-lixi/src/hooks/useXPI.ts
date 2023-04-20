@@ -164,21 +164,21 @@ export default function useXPI() {
       // returns the raw tx hex string
       const rawTxHex = signAndBuildTx(XPI, txInputObj.inputUtxos, txBuilder, walletPaths);
 
-      // Broadcast transaction to the network via the chronik client
-      let broadcastResponse;
-      try {
-        broadcastResponse = await chronik.broadcastTx(rawTxHex);
-        if (!broadcastResponse) {
-          throw new Error('Empty chronik broadcast response');
-        }
-      } catch (err) {
-        console.log('Error broadcasting tx to chronik client');
-        throw err;
-      }
-
       if (returnHex) {
         return rawTxHex;
       } else {
+        // Broadcast transaction to the network via the chronik client
+        let broadcastResponse;
+        try {
+          broadcastResponse = await chronik.broadcastTx(rawTxHex);
+          if (!broadcastResponse) {
+            throw new Error('Empty chronik broadcast response');
+          }
+        } catch (err) {
+          console.log('Error broadcasting tx to chronik client');
+          throw err;
+        }
+
         // return the explorer link for the broadcasted tx
         return `${currency.blockExplorerUrl}/tx/${broadcastResponse.txid}`;
       }

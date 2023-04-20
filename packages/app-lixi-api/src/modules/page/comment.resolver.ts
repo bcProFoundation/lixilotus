@@ -19,6 +19,9 @@ import { PostAccountEntity } from 'src/decorators/postAccount.decorator';
 import VError from 'verror';
 import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
 import { PrismaService } from '../prisma/prisma.service';
+import { Notification, NotificationLevel } from '@bcpros/lixi-prisma';
+import { NOTIFICATION_TYPES } from '../../common/modules/notifications/notification.constants';
+import { NotificationService } from '../../common/modules/notifications/notification.service';
 
 const pubSub = new PubSub();
 
@@ -28,6 +31,7 @@ export class CommentResolver {
 
   constructor(
     private prisma: PrismaService,
+    private readonly notificationService: NotificationService,
     @I18n() private i18n: I18nService,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS
@@ -120,16 +124,32 @@ export class CommentResolver {
       const savedComment = await this.prisma.$transaction(async prisma => {
         const createdComment = await prisma.comment.create(commentToSave);
 
-        if (tipHex) {
-          const post = await prisma.post.findFirst({
-            where: {
-              id: commentToId
-            },
-            include: {
-              postAccount: true
-            }
-          });
+        const post = await prisma.post.findFirst({
+          where: {
+            id: commentToId
+          },
+          include: {
+            postAccount: true
+          }
+        });
 
+        const recipient = await this.prisma.account.findFirst({
+          where: {
+            id: _.toSafeInteger(post?.postAccountId)
+          }
+        });
+
+        if (!recipient) {
+          const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
+          throw new VError(accountNotExistMessage);
+        }
+
+        let commentToGiveData;
+        const commentToPostData = {
+          senderName: account.name
+        };
+
+        if (tipHex) {
           const txData = await this.XPI.RawTransactions.decodeRawTransaction(tipHex);
           const { value } = txData['vout'][0];
           if (Number(value) < 0) {
@@ -137,6 +157,10 @@ export class CommentResolver {
           }
 
           const broadcastResponse = await this.chronik.broadcastTx(tipHex);
+          if (!broadcastResponse) {
+            throw new Error('Empty chronik broadcast response');
+          }
+
           const { txid } = broadcastResponse;
           const transactionTip = {
             txid,
@@ -148,8 +172,26 @@ export class CommentResolver {
             commentId: createdComment.id
           };
 
+          commentToGiveData = {
+            senderName: account.name,
+            xpiGive: value
+          };
+
           await prisma.giveTip.create({ data: transactionTip });
         }
+
+        const createNotif = {
+          senderId: account.id,
+          senderAddress: account.address,
+          recipientId: post?.postAccount.id as number,
+          notificationTypeId: tipHex ? NOTIFICATION_TYPES.COMMENT_TO_GIVE : NOTIFICATION_TYPES.COMMENT_ON_POST,
+          level: NotificationLevel.INFO,
+          url: '/post/' + post?.id,
+          additionalData: tipHex ? commentToGiveData : commentToPostData
+        };
+        createNotif.senderId !== createNotif.recipientId &&
+          (await this.notificationService.saveAndDispatchNotification(recipient?.mnemonicHash, createNotif));
+
         return createdComment;
       });
 

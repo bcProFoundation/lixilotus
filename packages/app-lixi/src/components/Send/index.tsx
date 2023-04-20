@@ -83,6 +83,7 @@ const SendComponent: React.FC = () => {
     const search = window.location.search;
     const params = new URLSearchParams(search);
     const replyAddress = params.get('replyAddress');
+    const isReply = params.get('isReply') === 'true';
     setFormData({
       ...formData,
       address: replyAddress ?? ''

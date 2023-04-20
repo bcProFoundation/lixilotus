@@ -26,7 +26,8 @@ import {
   Injectable,
   Logger,
   Request,
-  UseGuards
+  UseGuards,
+  UseFilters
 } from '@nestjs/common';
 import { Args, Int, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
 import { MeiliService } from './meili.service';
@@ -37,16 +38,25 @@ import ConnectionArgs, { getPagingParameters } from '../../common/custom-graphql
 import { connectionFromArraySlice } from '../../common/custom-graphql-relay/arrayConnection';
 import PostResponse from 'src/common/post.response';
 import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
+import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
+import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
 import { NotificationLevel } from '@bcpros/lixi-prisma';
+import { NotificationService } from 'src/common/modules/notifications/notification.service';
 
 const pubSub = new PubSub();
 
 @Injectable()
 @Resolver(() => Post)
+@UseFilters(GqlHttpExceptionFilter)
 export class PostResolver {
   private logger: Logger = new Logger(this.constructor.name);
 
-  constructor(private prisma: PrismaService, private meiliService: MeiliService, @I18n() private i18n: I18nService) {}
+  constructor(
+    private prisma: PrismaService,
+    private meiliService: MeiliService,
+    private readonly notificationService: NotificationService,
+    @I18n() private i18n: I18nService
+  ) {}
 
   @Subscription(() => Post)
   postCreated() {
@@ -411,7 +421,18 @@ export class PostResolver {
           this.prisma.post.findMany({
             include: { postAccount: true, comments: true },
             where: {
-              AND: [{ postAccountId: _.toSafeInteger(id) }, { pageId: null }, { tokenId: null }]
+              AND: [
+                {
+                  postAccountId: _.toSafeInteger(id)
+                },
+                {
+                  lotusBurnScore: {
+                    gte: minBurnFilter ?? 0
+                  }
+                },
+                { pageId: null },
+                { tokenId: null }
+              ]
             },
             orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
             ...args
@@ -419,7 +440,18 @@ export class PostResolver {
         () =>
           this.prisma.post.count({
             where: {
-              AND: [{ postAccountId: _.toSafeInteger(id) }, { pageId: null }, { tokenId: null }]
+              AND: [
+                {
+                  postAccountId: _.toSafeInteger(id)
+                },
+                {
+                  lotusBurnScore: {
+                    gte: minBurnFilter ?? 0
+                  }
+                },
+                { pageId: null },
+                { tokenId: null }
+              ]
             }
           }),
         { first, last, before, after }
@@ -561,6 +593,45 @@ export class PostResolver {
 
     pubSub.publish('postCreated', { postCreated: createdPost });
 
+    if (pageId) {
+      const page = await this.prisma.page.findFirst({
+        where: {
+          id: pageId
+        }
+      });
+
+      if (!page) {
+        const accountNotExistMessage = await this.i18n.t('page.messages.couldNotFindPage');
+        throw new VError(accountNotExistMessage);
+      }
+
+      const recipient = await this.prisma.account.findFirst({
+        where: {
+          id: _.toSafeInteger(page.pageAccountId)
+        }
+      });
+
+      if (!recipient) {
+        const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
+        throw new VError(accountNotExistMessage);
+      }
+
+      const createNotif = {
+        senderId: createdPost.postAccountId,
+        recipientId: Number(page?.pageAccountId),
+        notificationTypeId: NOTIFICATION_TYPES.POST_ON_PAGE,
+        level: NotificationLevel.INFO,
+        url: '/post/' + createdPost.id,
+        additionalData: {
+          senderName: createdPost.postAccount.name,
+          senderAddress: createdPost.postAccount.address,
+          pageName: createdPost.page?.name
+        }
+      };
+      createNotif.senderId !== createNotif.recipientId &&
+        (await this.notificationService.saveAndDispatchNotification(recipient?.mnemonicHash, createNotif));
+    }
+
     return createdPost;
   }
 
@@ -588,6 +659,11 @@ export class PostResolver {
     });
 
     if (post?.postAccount.address !== account.address) {
+      const noPermissionToUpdate = await this.i18n.t('post.messages.noPermissionToUpdate');
+      throw new Error(noPermissionToUpdate);
+    }
+
+    if (post?.lotusBurnScore !== 0) {
       const noPermissionToUpdate = await this.i18n.t('post.messages.noPermissionToUpdate');
       throw new Error(noPermissionToUpdate);
     }

@@ -18,5 +18,6 @@ export enum BurnForType {
   Post = 0x5f02,
   Comment = 0x5f03,
   Account = 0x5f04,
-  Token = 0x5f05
+  Token = 0x5f05,
+  Worship = 0x5f06
 }

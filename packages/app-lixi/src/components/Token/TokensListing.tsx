@@ -451,7 +451,7 @@ const TokensListing = () => {
     dispatch(setTransactionReady());
   }, [slpBalancesAndUtxos.nonSlpUtxos]);
 
-  useDidMountEffectNotification(dispatch(fetchAllTokens()));
+  useDidMountEffectNotification(() => dispatch(fetchAllTokens()));
 
   return (
     <>

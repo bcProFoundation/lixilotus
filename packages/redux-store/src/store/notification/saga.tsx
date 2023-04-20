@@ -1,5 +1,5 @@
 import { CashReceivedNotificationIcon } from '@bcpros/lixi-components/components/Common/CustomIcons';
-import { AccountDto as Account, NotificationDto } from '@bcpros/lixi-models';
+import { AccountDto as Account, NotificationDto, PaginationResult } from '@bcpros/lixi-models';
 import { currency } from '@components/Common/Ticker';
 import { all, call, cancelled, fork, put, select, take, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
@@ -25,6 +25,9 @@ import {
   fetchNotifications,
   fetchNotificationsFailure,
   fetchNotificationsSuccess,
+  readAllNotifications,
+  readAllNotificationsFailure,
+  readAllNotificationsSuccess,
   readNotification,
   readNotificationFailure,
   readNotificationSuccess,
@@ -151,6 +154,30 @@ function* readNotificationFailureSaga(action: PayloadAction<Notification>) {
   yield put(hideLoading(readNotification.type));
 }
 
+function* readAllNotificationsSaga(action: PayloadAction<{ mnemonichHash }>) {
+  try {
+    yield put(showLoading(readAllNotifications.type));
+    const data = yield call(notificationApi.readAllNotifications);
+    const notifications = (data ?? []) as Notification[];
+    yield put(readAllNotificationsSuccess({ notifications: notifications }));
+  } catch (err) {
+    const message = (err as Error).message ?? intl.get('notification.unableToRead');
+    yield put(readAllNotificationsFailure(message));
+  }
+}
+
+function* readAllNotificationsFailureSaga(action: PayloadAction<Notification>) {
+  const message = action.payload ?? intl.get('notification.unableToRead');
+  yield put(
+    showToast('error', {
+      message: 'Error',
+      description: message,
+      duration: 5
+    })
+  );
+  yield put(hideLoading(readAllNotifications.type));
+}
+
 function* fetchNotificationsSuccessSaga(action: PayloadAction<Notification[]>) {
   yield put(hideLoading(fetchNotifications.type));
 }
@@ -197,6 +224,14 @@ function* watchReadNotificationSuccess() {
 
 function* watchReadNotificationFailure() {
   yield takeLatest(readNotificationFailure.type, readNotificationFailureSaga);
+}
+
+function* watchReadAllNotifications() {
+  yield takeLatest(readAllNotifications.type, readAllNotificationsSaga);
+}
+
+function* watchReadAllNotificationsFailure() {
+  yield takeLatest(readAllNotificationsFailure.type, readAllNotificationsFailureSaga);
 }
 
 function connect(): Promise<Socket> {
@@ -367,7 +402,9 @@ export default function* notificationSaga() {
       fork(watchDeleteNotificationFailure),
       fork(watchReadNotification),
       fork(watchReadNotificationSuccess),
-      fork(watchReadNotificationFailure)
+      fork(watchReadNotificationFailure),
+      fork(watchReadAllNotifications),
+      fork(watchReadAllNotificationsFailure)
     ]);
   } else {
     yield all([
@@ -382,6 +419,8 @@ export default function* notificationSaga() {
       fork(watchReadNotification),
       fork(watchReadNotificationSuccess),
       fork(watchReadNotificationFailure),
+      fork(watchReadAllNotifications),
+      fork(watchReadAllNotificationsFailure),
       fork(watchSendXpiNotificationSaga),
       fork(watchXpiReceivedNotificationWebSocketSaga)
     ]);

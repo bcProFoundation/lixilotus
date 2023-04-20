@@ -4,12 +4,12 @@ import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
 import InfoCardUser from '@components/Common/InfoCardUser';
 import { SmartButton } from '@components/Common/PrimaryButton';
 import { WalletContext } from '@context/index';
-import { generateAccount, importAccount, selectAccount } from '@store/account/actions';
-import { getAllAccounts, getSelectedAccount } from '@store/account/selectors';
+import { generateAccount, getLeaderboard, importAccount, selectAccount } from '@store/account/actions';
+import { getAllAccounts, getSelectedAccount, getLeaderBoard } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { fetchNotifications } from '@store/notification/actions';
 import { getAllNotifications } from '@store/notification/selectors';
-import { Badge, Button, Space, Form, Input, Layout, Modal, Tabs } from 'antd';
+import { Badge, Button, Space, Form, Input, Layout, Modal, Tabs, Collapse } from 'antd';
 import * as _ from 'lodash';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -18,25 +18,36 @@ import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { useInfinitePagesQuery } from '@store/page/useInfinitePagesQuery';
-
+import { AvatarUser } from '@components/Common/AvatarUser';
+import CollapsePanel from 'antd/es/collapse/CollapsePanel';
+import { BorderRadius } from 'styled-icons/boxicons-regular';
 const { Sider } = Layout;
 
 export const ShortcutItemAccess = ({
   icon,
   text,
   href,
+  burnValue,
+  key,
   onClickItem
 }: {
   icon: string;
   text: string;
+  burnValue?: number;
   href?: string;
+  key?: React.Key;
   onClickItem?: () => void;
 }) => (
-  <Link onClick={onClickItem} href={href}>
+  <Link onClick={onClickItem} href={href} key={key}>
     <a>
       <Space className={'item-access'}>
-        <img style={{ borderRadius: '50%' }} width={48} height={48} src={icon ? icon : '/images/xpi.svg'} alt="" />
-        <p style={{ margin: '0', color: '#1E1A1D', fontSize: '16px', letterSpacing: '0.5px' }}>{text}</p>
+        <AvatarUser name={text} isMarginRight={false} />
+        <div>
+          {text}
+          <span style={{ display: 'block', paddingTop: '4px', fontSize: '14px', color: 'rgba(30, 26, 29, 0.38)' }}>
+            Burned:{burnValue} XPI
+          </span>
+        </div>
       </Space>
     </a>
   </Link>
@@ -121,6 +132,18 @@ const RankingSideBar = styled(Sider)`
         .item-access {
           gap: 1rem !important;
           margin-bottom: 1rem;
+
+          div {
+            margin: 0;
+            color: #1e1a1d;
+            font-size: 16px;
+            letter-spacing: 0.5px span {
+              display: 'block';
+              padding-top: '4px';
+              font-size: '14px';
+              color: rgba(30, 26, 29, 0.38);
+            }
+          }
         }
         .content {
           h3 {
@@ -294,6 +317,8 @@ const SidebarRanking = () => {
   const savedAccounts: Account[] = useAppSelector(getAllAccounts);
   const [isShowNotification, setIsShowNotification] = useState<boolean>(false);
   const [isCollapse, setIsCollapse] = useState(false);
+  const leaderboard = useAppSelector(getLeaderBoard);
+  const { Panel } = Collapse;
 
   const [open, setOpen] = useState(false);
   const [isValidMnemonic, setIsValidMnemonic] = useState<boolean | null>(null);
@@ -303,6 +328,8 @@ const SidebarRanking = () => {
   });
   const { validateMnemonic } = Wallet;
 
+  useEffect(() => dispatch(getLeaderboard()), []);
+
   const [form] = Form.useForm();
 
   const { data } = useInfinitePagesQuery(
@@ -311,8 +338,6 @@ const SidebarRanking = () => {
     },
     false
   );
-
-  const randomShortCut = _.sampleSize(data, 5);
 
   useEffect(() => {
     if (selectedAccount) {
@@ -413,41 +438,34 @@ const SidebarRanking = () => {
           </StyledPopover>
         )}
       </div> */}
-      {router?.pathname !== '/wallet' && (
+      {(router?.pathname == '/wallet' || router?.pathname == '/') && (
         <div className="right-bar">
           <div className="container-right-bar your-shortcuts">
             <div className="content">
-              <h3>Your shortcuts</h3>
-              {randomShortCut &&
-                randomShortCut.map((item, index) => {
-                  return (
-                    <>
-                      <ShortcutItemAccess icon={item.avatar} text={item.name} href={`/page/${item.id}`} />
-                    </>
-                  );
-                })}
-              {/* <ShortcutItemAccess icon="/images/default-avatar.jpg" text="Cameron Williamson" href={'/'} />
-            <ShortcutItemAccess icon="/images/default-avatar.jpg" text="Cameron Williamson" href={'/'} />
-            <ShortcutItemAccess icon="/images/default-avatar.jpg" text="Cameron Williamson" href={'/'} />
-            <ShortcutItemAccess icon="/images/default-avatar.jpg" text="Cameron Williamson" href={'/'} />
-            <ShortcutItemAccess icon="/images/default-avatar.jpg" text="Cameron Williamson" href={'/'} />
-            {isCollapse && (
-              <>
-                <ShortcutItemAccess icon="/images/default-avatar.jpg" text="Cameron Williamson" href={'/'} />
-                <ShortcutItemAccess icon="/images/default-avatar.jpg" text="Cameron Williamson" href={'/'} />
-                <ShortcutItemAccess icon="/images/default-avatar.jpg" text="Cameron Williamson" href={'/'} />
-              </>
-            )}
-            <div style={{ textAlign: 'end' }}>
-              {!isCollapse && <DownOutlined onClick={() => setIsCollapse(!isCollapse)} />}
-              {isCollapse && <UpOutlined onClick={() => setIsCollapse(!isCollapse)} />}
-            </div> */}
+              <h3>{intl.get('general.topAccounts')}</h3>
+              <Collapse defaultActiveKey={['1']}>
+                <Panel header="Show top leader board" key="1">
+                  {leaderboard.map((item, index) => {
+                    return (
+                      <h4 className="distance">
+                        <ShortcutItemAccess
+                          burnValue={item.totalBurned}
+                          icon={item?.page ? item?.page?.avatar : ''}
+                          text={item.name}
+                          href={`/profile/${item.address}`}
+                          key={`${item.id}-${item.address}`}
+                        />
+                      </h4>
+                    );
+                  })}
+                </Panel>
+              </Collapse>
             </div>
           </div>
         </div>
       )}
 
-      {router?.pathname !== '/wallet' && (
+      {/* {router?.pathname !== '/wallet'  && (
         <div className="right-bar">
           <div className="container-right-bar">
             <StyledTabs type="card">
@@ -464,19 +482,6 @@ const SidebarRanking = () => {
               <Tabs.TabPane tab={<ShopOutlined />} key="page">
                 <div className="content">
                   <h3>Top Pages</h3>
-                  {randomShortCut &&
-                    randomShortCut.map((item, index) => {
-                      return (
-                        <>
-                          <InfoCardUser
-                            type="card"
-                            imgUrl={item.avatar}
-                            name={item.name}
-                            title={item.title}
-                          ></InfoCardUser>
-                        </>
-                      );
-                    })}
                 </div>
               </Tabs.TabPane>
               <Tabs.TabPane tab={<NumberOutlined />} key="tag">
@@ -491,7 +496,7 @@ const SidebarRanking = () => {
             </StyledTabs>
           </div>
         </div>
-      )}
+      )} */}
 
       {router?.pathname === '/wallet' && (
         <ManageAccounts>
