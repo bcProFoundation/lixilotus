@@ -512,79 +512,39 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       };
 
       let patches: PatchCollection;
-      console.log('Create Comment Input', createCommentInput);
-      createCommentTrigger({ input: createCommentInput })
-        .unwrap()
-        .then(result => {
-          console.log('Result create comment', result);
-          patches = dispatch(
-            commentsApi.util.updateQueryData(
-              'CommentsToPostId',
-              { id: createCommentInput.commentToId, ...params },
-              draft => {
-                draft.allCommentsToPostId.edges.unshift({
-                  cursor: result.createComment.id,
-                  node: {
-                    ...result.createComment
-                  }
-                });
-                draft.allCommentsToPostId.totalCount = draft.allCommentsToPostId.totalCount + 1;
-              }
-            )
-          );
-        })
-        .catch(err => {
-          console.log('Error create comment', err);
-          const message = intl.get('comment.unableCreateComment');
-          if (patches) {
-            dispatch(commentsApi.util.patchQueryData('CommentsToPostId', params, patches.inversePatches));
-          }
-          dispatch(
-            showToast('error', {
-              message: 'Error',
-              description: message,
-              duration: 3
-            })
-          );
-        })
-        .finally(() => {
-          console.log('Finally create comment');
-          setFocus('comment', { shouldSelect: true });
-          setValue('comment', '');
-        });
-      // try {
-      //   const result = await createCommentTrigger({ input: createCommentInput }).unwrap();
-      //   patches = dispatch(
-      //     commentsApi.util.updateQueryData(
-      //       'CommentsToPostId',
-      //       { id: createCommentInput.commentToId, ...params },
-      //       draft => {
-      //         draft.allCommentsToPostId.edges.unshift({
-      //           cursor: result.createComment.id,
-      //           node: {
-      //             ...result.createComment
-      //           }
-      //         });
-      //         draft.allCommentsToPostId.totalCount = draft.allCommentsToPostId.totalCount + 1;
-      //       }
-      //     )
-      //   );
-      // } catch (error) {
-      //   const message = intl.get('comment.unableCreateComment');
-      //   if (patches) {
-      //     dispatch(commentsApi.util.patchQueryData('CommentsToPostId', params, patches.inversePatches));
-      //   }
-      //   dispatch(
-      //     showToast('error', {
-      //       message: 'Error',
-      //       description: message,
-      //       duration: 3
-      //     })
-      //   );
-      // }
+      try {
+        const result = await createCommentTrigger({ input: createCommentInput }).unwrap();
+        patches = dispatch(
+          commentsApi.util.updateQueryData(
+            'CommentsToPostId',
+            { id: createCommentInput.commentToId, ...params },
+            draft => {
+              draft.allCommentsToPostId.edges.unshift({
+                cursor: result.createComment.id,
+                node: {
+                  ...result.createComment
+                }
+              });
+              draft.allCommentsToPostId.totalCount = draft.allCommentsToPostId.totalCount + 1;
+            }
+          )
+        );
+      } catch (error) {
+        const message = intl.get('comment.unableCreateComment');
+        if (patches) {
+          dispatch(commentsApi.util.patchQueryData('CommentsToPostId', params, patches.inversePatches));
+        }
+        dispatch(
+          showToast('error', {
+            message: 'Error',
+            description: message,
+            duration: 3
+          })
+        );
+      }
 
-      // setFocus('comment', { shouldSelect: true });
-      // setValue('comment', '');
+      setFocus('comment', { shouldSelect: true });
+      setValue('comment', '');
     }
   };
 
