@@ -21,7 +21,7 @@ export class BurnController {
     @I18n() private i18n: I18nService,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS
-  ) {}
+  ) { }
 
   @Post()
   async burn(@Body() command: BurnCommand): Promise<Burn> {
@@ -197,7 +197,7 @@ export class BurnController {
 
       //Need to remove BurnForType.Worship becasue we dont have notification YET on lotus-temple
       //TODO: Remove line below to handle BurnForType.Worship notification
-      if (command.burnForType !== BurnForType.Worship) {
+      if (command.burnForType !== BurnForType.Worship && command.burnForType !== BurnForType.Token) {
         // prepare data recipient
         let commentAccountId;
         let commentPostId;
@@ -297,6 +297,7 @@ export class BurnController {
             url: '/post/' + post?.id,
             additionalData: {
               senderName: sender.name,
+              senderAddress: sender.address,
               pageName: post?.page?.name,
               burnType: command.burnType == BurnType.Up ? 'upvoted' : 'downvoted',
               BurnForType: burnForTypeString,

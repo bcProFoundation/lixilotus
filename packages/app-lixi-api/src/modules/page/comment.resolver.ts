@@ -35,7 +35,7 @@ export class CommentResolver {
     @I18n() private i18n: I18nService,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS
-  ) {}
+  ) { }
 
   @Subscription(() => Comment)
   commentCreated() {
@@ -146,7 +146,8 @@ export class CommentResolver {
 
         let commentToGiveData;
         const commentToPostData = {
-          senderName: account.name
+          senderName: account.name,
+          senderAddress: account.address,
         };
 
         if (tipHex) {
@@ -180,17 +181,16 @@ export class CommentResolver {
           await prisma.giveTip.create({ data: transactionTip });
         }
 
-        // const createNotif = {
-        //   senderId: account.id,
-        //   senderAddress: account.address,
-        //   recipientId: post?.postAccount.id as number,
-        //   notificationTypeId: tipHex ? NOTIFICATION_TYPES.COMMENT_TO_GIVE : NOTIFICATION_TYPES.COMMENT_ON_POST,
-        //   level: NotificationLevel.INFO,
-        //   url: '/post/' + post?.id,
-        //   additionalData: tipHex ? commentToGiveData : commentToPostData
-        // };
-        // createNotif.senderId !== createNotif.recipientId &&
-        //   (await this.notificationService.saveAndDispatchNotification(recipient?.mnemonicHash, createNotif));
+        const createNotif = {
+          senderId: account.id,
+          recipientId: post?.postAccount.id as number,
+          notificationTypeId: tipHex ? NOTIFICATION_TYPES.COMMENT_TO_GIVE : NOTIFICATION_TYPES.COMMENT_ON_POST,
+          level: NotificationLevel.INFO,
+          url: '/post/' + post?.id,
+          additionalData: tipHex ? commentToGiveData : commentToPostData
+        };
+        createNotif.senderId !== createNotif.recipientId &&
+          (await this.notificationService.saveAndDispatchNotification(recipient?.mnemonicHash, createNotif));
 
         return createdComment;
       });
