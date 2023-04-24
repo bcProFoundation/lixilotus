@@ -175,6 +175,7 @@ export class CommentResolver {
 
           commentToGiveData = {
             senderName: account.name,
+            senderAddress: account.address,
             xpiGive: value
           };
 
