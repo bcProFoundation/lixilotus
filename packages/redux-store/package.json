@@ -6,7 +6,7 @@
   "types": "build/main/index.d.ts",
   "typings": "build/main/index.d.ts",
   "module": "build/module/index.js",
-  "repository": "https://github.com/bcProFoundation/lixilotus/tree/master/packages/lixi-models",
+  "repository": "https://github.com/bcProFoundation/lixilotus/tree/master/packages/redux-store",
   "license": "MIT",
   "keywords": [],
   "exports": {

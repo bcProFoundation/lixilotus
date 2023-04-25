@@ -2,7 +2,7 @@ import { BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
 import BCHJS from '@bcpros/xpi-js';
 import BigNumber from 'bignumber.js';
 
-import { currency } from '../components/common/Ticker';
+import { currency } from '@bcpros/lixi-models/constants/Ticker';
 
 const OP_0 = 0x00;
 const OP_16 = 0x60;
@@ -125,10 +125,10 @@ export const parseBurnOutput = (scriptpubkey: Buffer | string): ParseBurnResult 
       PARSE_CHECK(lokadIdStr.length !== 5, 'lokad id wrong size');
       PARSE_CHECK(
         lokadIdStr[0] !== 'L'.charCodeAt(0) ||
-          lokadIdStr[1] !== 'I'.charCodeAt(0) ||
-          lokadIdStr[2] !== 'X'.charCodeAt(0) ||
-          lokadIdStr[3] !== 'I'.charCodeAt(0) ||
-          lokadIdStr[4] !== 0x00,
+        lokadIdStr[1] !== 'I'.charCodeAt(0) ||
+        lokadIdStr[2] !== 'X'.charCodeAt(0) ||
+        lokadIdStr[3] !== 'I'.charCodeAt(0) ||
+        lokadIdStr[4] !== 0x00,
         'LIXI not in first chunk'
       );
     }
