@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
+import { currency } from '@components/Common/Ticker';
 import { fromSmallestDenomination } from '@utils/cashMethods';
 
 // Validate cash amount

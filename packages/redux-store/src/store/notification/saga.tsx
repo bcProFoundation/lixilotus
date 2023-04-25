@@ -1,5 +1,5 @@
 // import { CashReceivedNotificationIcon } from '@bcpros/lixi-components/components/Common/CustomIcons';
-import { AccountDto as Account, NotificationDto, PaginationResult } from '@bcpros/lixi-models';
+import { AccountDto as Account, NotificationDto as Notification, PaginationResult } from '@bcpros/lixi-models';
 import { currency } from '@components/Common/Ticker';
 import { all, call, cancelled, fork, put, select, take, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
@@ -40,7 +40,6 @@ import {
   xpiReceivedNotificationWebSocket
 } from './actions';
 import notificationApi from './api';
-import { Notification } from '@prisma/client';
 
 const getDeviceNotificationStyle = () => {
   if (isMobile) {
@@ -89,7 +88,7 @@ function* fetchNotificationsSaga(action: PayloadAction<{ accountId: number; mnem
   try {
     yield put(showLoading(fetchNotifications.type));
     const { accountId, mnemonichHash } = action.payload;
-    const notifications: NotificationDto[] = yield call(notificationApi.getByAccountId, accountId, mnemonichHash);
+    const notifications: Notification[] = yield call(notificationApi.getByAccountId, accountId, mnemonichHash);
     yield put(fetchNotificationsSuccess(notifications));
   } catch (err) {
     const message = (err as Error).message ?? intl.get('claim.unableClaim');
@@ -341,7 +340,7 @@ function* startStopChannel() {
   }
 }
 
-function* receiveNotificationSaga(action: PayloadAction<NotificationDto>) {
+function* receiveNotificationSaga(action: PayloadAction<Notification>) {
   try {
     const { notificationTypeId, additionalData } = action.payload;
     if (notificationTypeId == NOTIFICATION_TYPES.CREATE_SUB_LIXIES) {
