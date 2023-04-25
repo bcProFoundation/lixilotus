@@ -13,10 +13,9 @@ query Tokens(
   $first: Int = 20
   $last: Int
   $orderBy: TokenOrder
-  $query: String
   $skip: Int
 ) {
-  allTokens(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, query: $query, skip: $skip) {
+  allTokens(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, skip: $skip) {
     totalCount
     edges {
       cursor
