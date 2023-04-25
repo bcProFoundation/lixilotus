@@ -20,7 +20,6 @@ import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { useInfinitePagesQuery } from '@store/page/useInfinitePagesQuery';
 import { AvatarUser } from '@components/Common/AvatarUser';
 import CollapsePanel from 'antd/es/collapse/CollapsePanel';
-import { BorderRadius } from 'styled-icons/boxicons-regular';
 const { Sider } = Layout;
 
 export const ShortcutItemAccess = ({

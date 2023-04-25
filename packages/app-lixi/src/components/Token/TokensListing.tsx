@@ -177,10 +177,6 @@ const TokensListing = () => {
     control
   } = useForm();
 
-  useEffect(() => {
-    dispatch(fetchAllTokens());
-  }, []);
-
   const getColumnSearchProps = (dataIndex: any): ColumnType<any> => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
       <div style={{ padding: 8 }} onKeyDown={e => e.stopPropagation()}>
@@ -228,11 +224,9 @@ const TokensListing = () => {
       </div>
     ),
     filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-    onFilter: (value, record) =>
-      record[dataIndex]
-        .toString()
-        .toLowerCase()
-        .includes((value as string).toLowerCase()),
+    onFilter: (value: string, record: TokenEdge) => {
+      return record.node.name.toString().toLowerCase().includes(value.toLowerCase());
+    },
     render: (text, record) =>
       searchedColumn === dataIndex ? (
         <Highlighter
@@ -263,6 +257,7 @@ const TokensListing = () => {
       render: (_, { node: token }) => (
         // eslint-disable-next-line react/jsx-no-undef, @next/next/no-img-element
         <Image
+          alt="tokenIcon"
           width={32}
           height={32}
           src={`${currency.tokenIconsUrl}/32/${token.tokenId}.png`}
@@ -294,7 +289,11 @@ const TokensListing = () => {
       key: 'ticker',
       // fixed: 'left',
       ...getColumnSearchProps('ticker'),
-      render: (_, { node: token }) => <p style={{ marginTop: '0px', marginBottom: '0px' }}>{token.ticker}</p>
+      render: (_, { node: token }) => (
+        <a style={{ marginTop: '0px', marginBottom: '0px' }} onClick={() => handleNavigateToken(token)}>
+          {token.ticker}
+        </a>
+      )
     },
     {
       title: intl.get('label.name'),
@@ -302,7 +301,11 @@ const TokensListing = () => {
       key: 'name',
       // fixed: 'left',
       ...getColumnSearchProps('name'),
-      render: (_, { node: token }) => <p style={{ marginTop: '0px', marginBottom: '0px' }}>{token.name}</p>
+      render: (_, { node: token }) => (
+        <a style={{ marginTop: '0px', marginBottom: '0px' }} onClick={() => handleNavigateToken(token)}>
+          {token.name}
+        </a>
+      )
     },
     {
       title: intl.get('label.burnXPI'),
@@ -462,7 +465,7 @@ const TokensListing = () => {
     dispatch(setTransactionReady());
   }, [slpBalancesAndUtxos.nonSlpUtxos]);
 
-  useDidMountEffectNotification(() => dispatch(fetchAllTokens()));
+  useDidMountEffectNotification();
 
   return (
     <>
@@ -484,7 +487,7 @@ const TokensListing = () => {
         />
         <StyledTokensListingMobile>
           {tokens &&
-            tokens.length > 0 &&
+            tokens.allTokens.edges.length > 0 &&
             tokens.allTokens.edges.map(({ node: token }) => {
               return (
                 <>
