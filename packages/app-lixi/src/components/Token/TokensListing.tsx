@@ -53,7 +53,7 @@ import InfoCardUser from '@components/Common/InfoCardUser';
 import { InfoSubCard } from '@components/Lixi';
 import { IconBurn } from '@components/Posts/PostDetail';
 import { setTransactionReady } from '@store/account/actions';
-import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
+import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 import { useTokensQuery } from '@store/token/tokens.api';
 import Tokens from '@bcpros/minimal-xpi-slp-wallet/types/lib/tokens';
 import { TokenItem } from './TokensFeed';

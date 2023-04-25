@@ -5,7 +5,7 @@ import { generateAccount, importAccount } from '@store/account/actions';
 import { Form, Input, Modal } from 'antd';
 import React, { useState } from 'react';
 import intl from 'react-intl-universal';
-import { useAppDispatch } from 'src/store/hooks';
+import { useAppDispatch } from '@store/hooks';
 import { WalletContext } from '@context/index';
 import styled from 'styled-components';
 

@@ -19,11 +19,11 @@ import isEmpty from 'lodash.isempty';
 import moment from 'moment';
 import React, { useState } from 'react';
 import intl from 'react-intl-universal';
-import { getAllEnvelopes } from 'src/store/envelope/selectors';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { generateLixi } from 'src/store/lixi/actions';
-import { closeModal, openModal } from 'src/store/modal/actions';
-import { showToast } from 'src/store/toast/actions';
+import { getAllEnvelopes } from '@store/envelope/selectors';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { generateLixi } from '@store/lixi/actions';
+import { closeModal, openModal } from '@store/modal/actions';
+import { showToast } from '@store/toast/actions';
 import styled from 'styled-components';
 
 import { DollarOutlined, QuestionCircleOutlined } from '@ant-design/icons';

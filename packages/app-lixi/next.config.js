@@ -185,7 +185,7 @@ const nextConfig = withLess({
 			'@components': path.resolve(__dirname, 'src/components/'),
 			'@containers': path.resolve(__dirname, 'src/containers/'),
 			'@hooks': path.resolve(__dirname, 'src/hooks/'),
-			'@store': path.resolve(__dirname, 'src/store/'),
+			'@store': path.resolve(__dirname, '../redux-store/src/store/'),
 			'@context': path.resolve(__dirname, 'src/context/'),
 			'@bcpros/lixi-components': path.resolve(__dirname, '../lixi-components/src')
 		};

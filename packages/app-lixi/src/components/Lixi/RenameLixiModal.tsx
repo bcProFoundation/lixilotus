@@ -2,14 +2,14 @@ import { Form, Input, Modal } from 'antd';
 import intl from 'react-intl-universal';
 import * as _ from 'lodash';
 import React, { useState } from 'react';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { closeModal } from 'src/store/modal/actions';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { closeModal } from '@store/modal/actions';
 import { refreshLixiList } from '@store/account/actions';
 import { Lixi } from '@bcpros/lixi-models';
 import { ProfileFilled } from '@ant-design/icons';
 import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
 import { AnyAction } from '@reduxjs/toolkit';
-import { getSelectedAccount } from 'src/store/account/selectors';
+import { getSelectedAccount } from '@store/account/selectors';
 
 export type RenameLixiModalProps = {
   lixi: Lixi;

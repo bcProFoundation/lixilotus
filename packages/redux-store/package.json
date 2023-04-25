@@ -1,0 +1,93 @@
+{
+  "name": "@bcpros/redux-store",
+  "version": "1.1.4",
+  "description": "Models library for lixi application",
+  "main": "build/main/index.js",
+  "types": "build/main/index.d.ts",
+  "typings": "build/main/index.d.ts",
+  "module": "build/module/index.js",
+  "repository": "https://github.com/bcProFoundation/lixilotus/tree/master/packages/lixi-models",
+  "license": "MIT",
+  "keywords": [],
+  "exports": {
+    ".": {
+      "require": "./build/main/index.js",
+      "import": "./dist/module/index.mjs"
+    },
+    "./*": {
+      "require": "./build/main/*.js",
+      "import": "./build/module/*.mjs"
+    }
+  },
+  "scripts": {
+    "build": "run-p build:*",
+    "build:main": "tsc -p tsconfig.json",
+    "precommit": "yarn fix && yarn lint",
+    "fix": "run-s fix:*",
+    "lint": "run-s lint:*",
+    "lint:ts": "eslint src --ext .ts",
+    "fix:prettier": "prettier \"src/**/*.ts\" --write --config .prettierrc.js",
+    "fix:lint": "eslint src --ext .ts --fix"
+  },
+  "engines": {
+    "node": ">=10"
+  },
+  "peerDependencies": {
+    "@prisma/client": ">=3.9",
+    "graphql": ">=16"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.50.0",
+    "@typescript-eslint/parser": "^5.50.0",
+    "eslint": "^8.33.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-eslint-comments": "^3.2.0",
+    "eslint-plugin-import": "^2.27.5",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.8.3",
+    "ts-node": "^10.9.1",
+    "typescript": "4.9.5"
+  },
+  "files": [
+    "build/main",
+    "build/module",
+    "!**/*.spec.*",
+    "!**/*.json",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md"
+  ],
+  "ava": {
+    "failFast": true,
+    "timeout": "60s",
+    "typescript": {
+      "rewritePaths": {
+        "src/": "build/main/"
+      }
+    },
+    "files": [
+      "!build/module/**"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
+  "prettier": {
+    "singleQuote": true
+  },
+  "nyc": {
+    "extends": "@istanbuljs/nyc-config-typescript",
+    "exclude": [
+      "**/*.spec.js"
+    ]
+  },
+  "dependencies": {
+    "@nestjs/mapped-types": "^1.2.0",
+    "class-validator": "^0.14.0",
+    "prisma-graphql-type-decimal": "^2.0.6",
+    "ts-morph": "^17.0.1",
+    "@bcpros/lixi-models": "^1.1.4"
+  }
+}

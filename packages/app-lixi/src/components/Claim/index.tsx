@@ -11,11 +11,11 @@ import {
 } from '@bcpros/lixi-components/components/Common/EnhancedInputs';
 import { parseAddress } from '@utils/addressMethods';
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { postClaim, saveClaimAddress, saveClaimCode } from 'src/store/claim/actions';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { postClaim, saveClaimAddress, saveClaimCode } from '@store/claim/actions';
 import { CreateClaimDto } from '@bcpros/lixi-models/lib/claim';
-import { getIsGlobalLoading } from 'src/store/loading/selectors';
-import { getCurrentAddress, getCurrentClaimCode } from 'src/store/claim/selectors';
+import { getIsGlobalLoading } from '@store/loading/selectors';
+import { getCurrentAddress, getCurrentClaimCode } from '@store/claim/selectors';
 import { useSelector } from 'react-redux';
 import { getSelectedAccount } from '@store/account/selectors';
 import styled from 'styled-components';
