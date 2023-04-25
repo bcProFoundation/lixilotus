@@ -166,6 +166,10 @@ function* readAllNotificationsSaga(action: PayloadAction<{ mnemonichHash }>) {
   }
 }
 
+function* readAllNotificationsSuccessSaga(action: PayloadAction<Notification[]>) {
+  yield put(hideLoading(readAllNotifications.type));
+}
+
 function* readAllNotificationsFailureSaga(action: PayloadAction<Notification>) {
   const message = action.payload ?? intl.get('notification.unableToRead');
   yield put(
@@ -228,6 +232,10 @@ function* watchReadNotificationFailure() {
 
 function* watchReadAllNotifications() {
   yield takeLatest(readAllNotifications.type, readAllNotificationsSaga);
+}
+
+function* watchReadAllNotificationsSuccess() {
+  yield takeLatest(readAllNotificationsSuccess.type, readAllNotificationsSuccessSaga);
 }
 
 function* watchReadAllNotificationsFailure() {
@@ -402,6 +410,7 @@ export default function* notificationSaga() {
       fork(watchReadNotificationSuccess),
       fork(watchReadNotificationFailure),
       fork(watchReadAllNotifications),
+      fork(watchReadAllNotificationsSuccess),
       fork(watchReadAllNotificationsFailure)
     ]);
   } else {
@@ -418,6 +427,7 @@ export default function* notificationSaga() {
       fork(watchReadNotificationSuccess),
       fork(watchReadNotificationFailure),
       fork(watchReadAllNotifications),
+      fork(watchReadAllNotificationsSuccess),
       fork(watchReadAllNotificationsFailure),
       fork(watchSendXpiNotificationSaga),
       fork(watchXpiReceivedNotificationWebSocketSaga)

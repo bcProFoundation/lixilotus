@@ -27,7 +27,7 @@ async function bootstrap() {
   const fastifyAdapter = new FastifyAdapter();
   fastifyAdapter
     .getInstance()
-    .addContentTypeParser('application/json', { bodyLimit: POST_LIMIT }, (_request, _payload, done) => {
+    .addContentTypeParser('application/json', { bodyLimit: 10048576 }, (_request, _payload, done) => {
       done(null, (_payload as any).body);
     });
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), {
