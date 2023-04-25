@@ -4,7 +4,14 @@ const enhancedApi = api.enhanceEndpoints({
   addTagTypes: ['Token'],
   endpoints: {
     Tokens: {
-      providesTags: ['Token']
+      providesTags: ['Token'],
+      serializeQueryArgs({ queryArgs }) {
+        if (queryArgs) {
+          const { orderBy, ...otherArgs } = queryArgs;
+          return orderBy;
+        }
+        return { queryArgs };
+      }
     },
     Token: {
       providesTags: ['Token'],

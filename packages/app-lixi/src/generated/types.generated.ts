@@ -138,7 +138,7 @@ export type Mutation = {
   createPage: Page;
   createPost: Post;
   createToken: Token;
-  createWorship: WorshipedPerson;
+  createWorship: Worship;
   createWorshipedPerson: WorshipedPerson;
   updatePage: Page;
   updatePost: Post;
@@ -324,11 +324,17 @@ export type Query = {
   allPostsByTokenId: PostConnection;
   allPostsByUserId: PostConnection;
   allTokens: TokenConnection;
+  allWorship: WorshipConnection;
+  allWorshipedByPersonId: WorshipConnection;
   allWorshipedPerson: WorshipedPersonConnection;
+  allWorshipedPersonBySearch: WorshipedPersonConnection;
+  allWorshipedPersonByUserId: WorshipedPersonConnection;
+  allWorshipedPersonSpecialDate: WorshipedPersonConnection;
   comment: Comment;
   page: Page;
   post: Post;
   token: Token;
+  worship: Worship;
   worshipedPerson: WorshipedPerson;
 };
 
@@ -429,6 +435,27 @@ export type QueryAllTokensArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
+export type QueryAllWorshipArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<WorshipOrder>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryAllWorshipedByPersonIdArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  id?: InputMaybe<Scalars['String']>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<WorshipOrder>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
 export type QueryAllWorshipedPersonArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
@@ -436,7 +463,34 @@ export type QueryAllWorshipedPersonArgs = {
   last?: InputMaybe<Scalars['Int']>;
   minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<WorshipedPersonOrder>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryAllWorshipedPersonBySearchArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
   query?: InputMaybe<Scalars['String']>;
+};
+
+export type QueryAllWorshipedPersonByUserIdArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<WorshipedPersonOrder>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryAllWorshipedPersonSpecialDateArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<WorshipedPersonOrder>;
   skip?: InputMaybe<Scalars['Int']>;
 };
 
@@ -454,6 +508,10 @@ export type QueryPostArgs = {
 
 export type QueryTokenArgs = {
   tokenId: Scalars['String'];
+};
+
+export type QueryWorshipArgs = {
+  id: Scalars['String'];
 };
 
 export type QueryWorshipedPersonArgs = {
@@ -567,22 +625,72 @@ export type UploadDetail = {
   upload: Upload;
 };
 
+export type Worship = {
+  __typename?: 'Worship';
+  account: Account;
+  /** Identifies the date and time when the object was created. */
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  latitude?: Maybe<Scalars['Decimal']>;
+  location?: Maybe<Scalars['String']>;
+  longitude?: Maybe<Scalars['Decimal']>;
+  /** Identifies the date and time when the object was last updated. */
+  updatedAt: Scalars['DateTime'];
+  worshipedAmount: Scalars['Float'];
+  worshipedPerson: WorshipedPerson;
+};
+
+export type WorshipConnection = {
+  __typename?: 'WorshipConnection';
+  edges?: Maybe<Array<WorshipEdge>>;
+  pageInfo: PageInfo;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type WorshipEdge = {
+  __typename?: 'WorshipEdge';
+  cursor: Scalars['String'];
+  node: Worship;
+};
+
+export type WorshipOrder = {
+  direction: OrderDirection;
+  field: WorshipOrderField;
+};
+
+/** Properties by which worship connections can be ordered. */
+export enum WorshipOrderField {
+  CreatedAt = 'createdAt',
+  Id = 'id',
+  UpdatedAt = 'updatedAt',
+  WorshipedAmount = 'worshipedAmount'
+}
+
 export type WorshipedPerson = {
   __typename?: 'WorshipedPerson';
+  achievement?: Maybe<Scalars['String']>;
+  alias?: Maybe<Scalars['String']>;
   avatar?: Maybe<UploadDetail>;
   bio?: Maybe<Scalars['String']>;
   city?: Maybe<City>;
   country?: Maybe<Country>;
+  countryOfCitizenship?: Maybe<Scalars['String']>;
   /** Identifies the date and time when the object was created. */
-  createdAt: Scalars['DateTime'];
+  createdAt?: Maybe<Scalars['DateTime']>;
   dateOfBirth?: Maybe<Scalars['DateTime']>;
   dateOfDeath?: Maybe<Scalars['DateTime']>;
   id: Scalars['ID'];
   name: Scalars['String'];
+  placeOfBirth?: Maybe<Scalars['String']>;
+  placeOfBurial?: Maybe<Scalars['String']>;
+  placeOfDeath?: Maybe<Scalars['String']>;
   quote?: Maybe<Scalars['String']>;
+  religion?: Maybe<Scalars['String']>;
   state?: Maybe<State>;
+  totalWorshipAmount?: Maybe<Scalars['Int']>;
   /** Identifies the date and time when the object was last updated. */
-  updatedAt: Scalars['DateTime'];
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  wikiAvatar?: Maybe<Scalars['String']>;
   wikiDataId?: Maybe<Scalars['String']>;
 };
 
