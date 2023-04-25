@@ -35,7 +35,7 @@ export class CommentResolver {
     @I18n() private i18n: I18nService,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS
-  ) { }
+  ) {}
 
   @Subscription(() => Comment)
   commentCreated() {
