@@ -214,6 +214,13 @@ export class WorshipResolver {
       args =>
         this.prisma.worship.findMany({
           include: { account: true, worshipedPerson: true },
+          where: {
+            worshipedPerson: {
+              yearOfDeath: {
+                lt: moment().year() - 60
+              }
+            }
+          },
           orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
           ...args
         }),
@@ -247,6 +254,11 @@ export class WorshipResolver {
               },
               {
                 monthOfDeath: month
+              },
+              {
+                yearOfDeath: {
+                  lt: moment().year() - 60
+                }
               }
             ]
           },
@@ -263,6 +275,11 @@ export class WorshipResolver {
               },
               {
                 monthOfDeath: month
+              },
+              {
+                yearOfDeath: {
+                  lt: moment().year() - 60
+                }
               }
             ]
           },
@@ -399,7 +416,8 @@ export class WorshipResolver {
       }
     });
 
-    this.worshipGateway.publishWorship(worshipedPerson);
+    if (person.yearOfDeath && moment().year() - person.yearOfDeath > 60)
+      this.worshipGateway.publishWorship(worshipedPerson);
 
     pubSub.publish('personWorshiped', { personWorshiped: worshipedPerson });
     return worshipedPerson;

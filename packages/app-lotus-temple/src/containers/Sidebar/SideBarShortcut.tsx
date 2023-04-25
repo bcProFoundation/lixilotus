@@ -119,7 +119,7 @@ const SidebarShortcut = ({ className }: SidebarContentProps) => {
           <picture>
             <img alt="you-worshiped-placeholder" src="/images/you-worshiped-placeholder.svg" width="150px" />
           </picture>
-          <StyledHeaderText>Bạn thờ</StyledHeaderText>
+          <StyledHeaderText>Bàn thờ</StyledHeaderText>
           <p style={{ fontSize: 13 }}>
             You are responsible for operations, service, or customer support and face challenges trying to
           </p>
@@ -187,7 +187,7 @@ const SidebarShortcut = ({ className }: SidebarContentProps) => {
           <StyledWrapper style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
             <StyledContainer>
               <StyledHeader>
-                <StyledHeaderText>Bạn thờ</StyledHeaderText>
+                <StyledHeaderText>Bàn thờ</StyledHeaderText>
                 <p style={{ marginBottom: '0', color: '#004B74' }}>Xem tất cả</p>
               </StyledHeader>
               {worshipedPeople.currentData.allWorshipedPersonByUserId.edges.map((person, index) => {
