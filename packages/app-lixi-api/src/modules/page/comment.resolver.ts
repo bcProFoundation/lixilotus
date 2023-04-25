@@ -146,7 +146,8 @@ export class CommentResolver {
 
         let commentToGiveData;
         const commentToPostData = {
-          senderName: account.name
+          senderName: account.name,
+          senderAddress: account.address
         };
 
         if (tipHex) {
@@ -174,23 +175,23 @@ export class CommentResolver {
 
           commentToGiveData = {
             senderName: account.name,
+            senderAddress: account.address,
             xpiGive: value
           };
 
           await prisma.giveTip.create({ data: transactionTip });
         }
 
-        // const createNotif = {
-        //   senderId: account.id,
-        //   senderAddress: account.address,
-        //   recipientId: post?.postAccount.id as number,
-        //   notificationTypeId: tipHex ? NOTIFICATION_TYPES.COMMENT_TO_GIVE : NOTIFICATION_TYPES.COMMENT_ON_POST,
-        //   level: NotificationLevel.INFO,
-        //   url: '/post/' + post?.id,
-        //   additionalData: tipHex ? commentToGiveData : commentToPostData
-        // };
-        // createNotif.senderId !== createNotif.recipientId &&
-        //   (await this.notificationService.saveAndDispatchNotification(recipient?.mnemonicHash, createNotif));
+        const createNotif = {
+          senderId: account.id,
+          recipientId: post?.postAccount.id as number,
+          notificationTypeId: tipHex ? NOTIFICATION_TYPES.COMMENT_TO_GIVE : NOTIFICATION_TYPES.COMMENT_ON_POST,
+          level: NotificationLevel.INFO,
+          url: '/post/' + post?.id,
+          additionalData: tipHex ? commentToGiveData : commentToPostData
+        };
+        createNotif.senderId !== createNotif.recipientId &&
+          (await this.notificationService.saveAndDispatchNotification(recipient?.mnemonicHash, createNotif));
 
         return createdComment;
       });
