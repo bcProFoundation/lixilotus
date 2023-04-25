@@ -49,7 +49,7 @@ const UpDownButton = styled(Button)`
   justify-content: center;
 
   &.upVote {
-    background: #9e2a9c;
+    background: #00abe7;
     &:hover {
       color: #fff;
     }
