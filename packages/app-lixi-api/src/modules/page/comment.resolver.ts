@@ -121,25 +121,28 @@ export class CommentResolver {
         }
       };
 
+      const post = await this.prisma.post.findFirst({
+        where: {
+          id: commentToId
+        },
+        include: {
+          postAccount: true
+        }
+      });
+
+      let tipValue: any;
+      if (tipHex) {
+        const txData = await this.XPI.RawTransactions.decodeRawTransaction(tipHex);
+        tipValue = txData['vout'][0].value;
+        if (Number(tipValue) < 0) {
+          throw new Error('Syntax error. Number cannot be less than or equal to 0');
+        }
+      }
+
       const savedComment = await this.prisma.$transaction(async prisma => {
         const createdComment = await prisma.comment.create(commentToSave);
 
-        const post = await prisma.post.findFirst({
-          where: {
-            id: commentToId
-          },
-          include: {
-            postAccount: true
-          }
-        });
-
         if (tipHex) {
-          const txData = await this.XPI.RawTransactions.decodeRawTransaction(tipHex);
-          const { value } = txData['vout'][0];
-          if (Number(value) < 0) {
-            throw new Error('Syntax error. Number cannot be less than or equal to 0');
-          }
-
           const broadcastResponse = await this.chronik.broadcastTx(tipHex);
           if (!broadcastResponse) {
             throw new Error('Empty chronik broadcast response');
@@ -152,7 +155,7 @@ export class CommentResolver {
             fromAccountId: account.id,
             toAddress: post?.postAccount.address as string,
             toAccountId: post?.postAccount.id as number,
-            tipValue: value,
+            tipValue: tipValue,
             commentId: createdComment.id
           };
           await prisma.giveTip.create({ data: transactionTip });
@@ -164,56 +167,41 @@ export class CommentResolver {
       pubSub.publish('commentCreated', { commentCreated: savedComment });
 
       if (savedComment) {
-        await this.prisma.$transaction(async prisma => {
-
-          const post = await prisma.post.findFirst({
-            where: {
-              id: commentToId
-            },
-            include: {
-              postAccount: true
-            }
-          });
-
-          const recipient = await this.prisma.account.findFirst({
-            where: {
-              id: _.toSafeInteger(post?.postAccountId)
-            }
-          });
-
-          if (!recipient) {
-            const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
-            throw new VError(accountNotExistMessage);
+        const recipient = await this.prisma.account.findFirst({
+          where: {
+            id: _.toSafeInteger(post?.postAccountId)
           }
+        });
 
-          let commentToGiveData;
-          const commentToPostData = {
+        if (!recipient) {
+          const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
+          throw new VError(accountNotExistMessage);
+        }
+
+        let commentToGiveData;
+        const commentToPostData = {
+          senderName: account.name,
+          senderAddress: account.address
+        };
+
+        if (tipHex) {
+          commentToGiveData = {
             senderName: account.name,
-            senderAddress: account.address
+            senderAddress: account.address,
+            xpiGive: tipValue
           };
+        }
 
-          if (tipHex) {
-            const txData = await this.XPI.RawTransactions.decodeRawTransaction(tipHex);
-            const { value } = txData['vout'][0];
-
-            commentToGiveData = {
-              senderName: account.name,
-              senderAddress: account.address,
-              xpiGive: value
-            };
-          }
-
-          const createNotif = {
-            senderId: account.id,
-            recipientId: post?.postAccount.id as number,
-            notificationTypeId: tipHex ? NOTIFICATION_TYPES.COMMENT_TO_GIVE : NOTIFICATION_TYPES.COMMENT_ON_POST,
-            level: NotificationLevel.INFO,
-            url: '/post/' + post?.id,
-            additionalData: tipHex ? commentToGiveData : commentToPostData
-          };
-          createNotif.senderId !== createNotif.recipientId &&
-            (await this.notificationService.saveAndDispatchNotification(recipient?.mnemonicHash, createNotif));
-        })
+        const createNotif = {
+          senderId: account.id,
+          recipientId: post?.postAccount.id as number,
+          notificationTypeId: tipHex ? NOTIFICATION_TYPES.COMMENT_TO_GIVE : NOTIFICATION_TYPES.COMMENT_ON_POST,
+          level: NotificationLevel.INFO,
+          url: '/post/' + post?.id,
+          additionalData: tipHex ? commentToGiveData : commentToPostData
+        };
+        createNotif.senderId !== createNotif.recipientId &&
+          (await this.notificationService.saveAndDispatchNotification(recipient?.mnemonicHash, createNotif));
       }
 
       return savedComment;
