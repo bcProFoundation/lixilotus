@@ -35,7 +35,7 @@ export class CommentResolver {
     @I18n() private i18n: I18nService,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS
-  ) {}
+  ) { }
 
   @Subscription(() => Comment)
   commentCreated() {
@@ -180,7 +180,7 @@ export class CommentResolver {
               id: _.toSafeInteger(post?.postAccountId)
             }
           });
-  
+
           if (!recipient) {
             const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
             throw new VError(accountNotExistMessage);
