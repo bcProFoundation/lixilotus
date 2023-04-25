@@ -1,4 +1,12 @@
-import { Account, Burn, BurnCommand, BurnForType, BurnType, fromSmallestDenomination } from '@bcpros/lixi-models';
+import {
+  Account,
+  Burn,
+  BurnCommand,
+  BurnForType,
+  BurnType,
+  Comment,
+  fromSmallestDenomination
+} from '@bcpros/lixi-models';
 import BCHJS from '@bcpros/xpi-js';
 import { Body, Controller, HttpException, HttpStatus, Inject, Logger, Post, UseGuards } from '@nestjs/common';
 import { ChronikClient } from 'chronik-client';
@@ -197,7 +205,7 @@ export class BurnController {
 
       //Need to remove BurnForType.Worship becasue we dont have notification YET on lotus-temple
       //TODO: Remove line below to handle BurnForType.Worship notification
-      if (command.burnForType !== BurnForType.Worship && command.burnForType !== BurnForType.Token) {
+      if (command.burnForType !== BurnForType.Token && command.burnForType !== BurnForType.Worship) {
         // prepare data recipient
         let commentAccountId;
         let commentPostId;

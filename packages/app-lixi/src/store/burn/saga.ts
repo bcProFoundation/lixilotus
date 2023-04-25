@@ -10,7 +10,7 @@ import { burnForToken, burnForTokenFailure, burnForTokenSucceses, getTokenById }
 import * as _ from 'lodash';
 import intl from 'react-intl-universal';
 import { actionChannel, select, put, getContext, flush } from 'redux-saga/effects';
-import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
+import { OrderDirection, PostOrderField, TokenOrderField } from 'src/generated/types.generated';
 import { hideLoading } from '../loading/actions';
 import {
   burnForUpDownVote,
@@ -329,20 +329,28 @@ function* updateCommentBurnValue(action: PayloadAction<BurnCommand>) {
 function* updateTokenBurnValue(action: PayloadAction<BurnCommand>) {
   const command = action.payload;
   let burnValue = _.toNumber(command.burnValue);
+  const params = {
+    orderBy: {
+      direction: OrderDirection.Desc,
+      field: TokenOrderField.CreatedDate
+    }
+  };
 
   return yield put(
-    tokenApi.util.updateQueryData('Token', { tokenId: command.tokenId }, draft => {
-      let lotusBurnUp = draft?.token?.lotusBurnUp ?? 0;
-      let lotusBurnDown = draft?.token?.lotusBurnDown ?? 0;
+    tokenApi.util.updateQueryData('Tokens', params, draft => {
+      const tokenBurnValueIndex = draft.allTokens.edges.findIndex(item => item.node.id === command.burnForId);
+      const tokenBurnValue = draft.allTokens.edges[tokenBurnValueIndex];
+      let lotusBurnUp = tokenBurnValue?.node?.lotusBurnUp ?? 0;
+      let lotusBurnDown = tokenBurnValue?.node?.lotusBurnDown ?? 0;
       if (command.burnType == BurnType.Up) {
         lotusBurnUp = lotusBurnUp + burnValue;
       } else {
         lotusBurnDown = lotusBurnDown + burnValue;
       }
       const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-      draft.token.lotusBurnUp = lotusBurnUp;
-      draft.token.lotusBurnDown = lotusBurnDown;
-      draft.token.lotusBurnScore = lotusBurnScore;
+      draft.allTokens.edges[tokenBurnValueIndex].node.lotusBurnUp = lotusBurnUp;
+      draft.allTokens.edges[tokenBurnValueIndex].node.lotusBurnDown = lotusBurnDown;
+      draft.allTokens.edges[tokenBurnValueIndex].node.lotusBurnScore = lotusBurnScore;
     })
   );
 }
