@@ -85,7 +85,7 @@ export class ExportSubLixiesProcessor extends WorkerHost {
       childrenApiResult.push(childResult);
     }
 
-    const fields = ['id', 'name', 'claimCode', 'amount', 'package', 'barcode'];
+    const fields = ['id', 'name', 'claimCode', 'amount', 'package', 'barcode', 'claimed'];
 
     const parser = new Parser({
       fields,
@@ -98,7 +98,8 @@ export class ExportSubLixiesProcessor extends WorkerHost {
         claimCode: `lixi_${item.claimCode}`,
         amount: item.amount,
         package: item.packageId ? numberToBase58(item.packageId) : '',
-        barcode: item.id?.toString().padStart(11, '0')
+        barcode: item.id?.toString().padStart(11, '0'),
+        claimed: item.isClaimed
       };
     });
 
