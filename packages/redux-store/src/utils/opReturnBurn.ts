@@ -2,7 +2,7 @@ import { BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
 import BCHJS from '@bcpros/xpi-js';
 import BigNumber from 'bignumber.js';
 
-import { currency } from '@bcpros/lixi-models/constants/Ticker';
+import { currency } from '../components/Common/Ticker';
 
 const OP_0 = 0x00;
 const OP_16 = 0x60;
