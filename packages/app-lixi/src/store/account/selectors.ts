@@ -55,3 +55,8 @@ export const getTransactionStatus = createSelector(
   (state: RootState) => state.accounts,
   (accounts: AccountsState) => accounts.transactionReady
 );
+
+export const getGraphqlRequestStatus = createSelector(
+  (state: RootState) => state.accounts,
+  (accounts: AccountsState) => accounts.graphqlRequestLoading
+);

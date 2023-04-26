@@ -16,7 +16,9 @@ import {
   deleteEditorTextFromCache,
   getLeaderboardSuccess,
   setTransactionNotReady,
-  setTransactionReady
+  setTransactionReady,
+  setGraphqlRequestLoading,
+  setGraphqlRequestDone
 } from './actions';
 import { AccountsState } from './state';
 
@@ -31,7 +33,8 @@ const initialState: AccountsState = accountsAdapter.getInitialState({
   postCoverUploads: [],
   editorCache: null,
   leaderBoard: [],
-  transactionReady: true
+  transactionReady: true,
+  graphqlRequestLoading: false
 });
 
 export const accountReducer = createReducer(initialState, builder => {
@@ -126,6 +129,12 @@ export const accountReducer = createReducer(initialState, builder => {
     })
     .addCase(setTransactionNotReady, (state, action) => {
       state.transactionReady = false;
+    })
+    .addCase(setGraphqlRequestLoading, (state, action) => {
+      state.graphqlRequestLoading = true;
+    })
+    .addCase(setGraphqlRequestDone, (state, action) => {
+      state.graphqlRequestLoading = false;
     })
     .addMatcher(isAnyOf(refreshLixiListSuccess, refreshLixiListSilentSuccess), (state, action) => {
       const { account, lixies } = action.payload;

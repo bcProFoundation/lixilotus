@@ -270,7 +270,7 @@ type Query {
   allCommentsToPostId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: CommentOrder, skip: Int): CommentConnection!
   allOrphanPosts(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PostOrder, query: String, skip: Int): PostConnection!
   allPages(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PageOrder, query: String, skip: Int): PageConnection!
-  allPosts(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PostOrder, query: String, skip: Int): PostConnection!
+  allPosts(accountId: Int, after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
   allPostsByPageId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
   allPostsBySearch(
     """Paginate after opaque cursor"""

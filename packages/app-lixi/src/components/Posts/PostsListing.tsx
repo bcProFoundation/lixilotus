@@ -1,6 +1,11 @@
 import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
 import CreatePostCard from '@components/Common/CreatePostCard';
-import { getLeaderBoard, getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
+import {
+  getGraphqlRequestStatus,
+  getLeaderBoard,
+  getSelectedAccount,
+  getSelectedAccountId
+} from '@store/account/selectors';
 import { useInfinitePostsBySearchQuery } from '@store/post/useInfinitePostsBySearchQuery';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
 import { useInfiniteOrphanPostsQuery } from '@store/post/useInfiniteOrphanPostsQuery';
@@ -15,7 +20,7 @@ import {
   clearFailQueue
 } from '@store/burn';
 import { api as postApi, useLazyPostQuery } from '@store/post/posts.api';
-import { Menu, MenuProps, Modal, notification, Skeleton, Tabs, Collapse, Space, Select } from 'antd';
+import { Menu, MenuProps, Modal, notification, Skeleton, Tabs, Collapse, Space, Select, Button } from 'antd';
 import _ from 'lodash';
 import React, { useRef, useState, useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
@@ -27,7 +32,7 @@ import intl from 'react-intl-universal';
 import { FireTwoTone, LoadingOutlined } from '@ant-design/icons';
 import PostListItem from './PostListItem';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { setTransactionReady } from '@store/account/actions';
+import { setGraphqlRequestDone, setTransactionReady } from '@store/account/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
@@ -173,6 +178,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const failQueue = useAppSelector(getFailQueue);
   const filterValue = useAppSelector(getFilterPostsHome);
   const leaderboard = useAppSelector(getLeaderBoard);
+  const graphqlRequestLoading = useAppSelector(getGraphqlRequestStatus);
 
   useEffect(() => dispatch(getLeaderboard()), []);
 
@@ -213,11 +219,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     },
     false
   );
-
-  useEffect(() => {
-    refetch();
-    orphanRefetch();
-  }, [filterValue]);
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -373,6 +374,12 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     })();
   }, [latestBurnForPost]);
 
+  useEffect(() => {
+    if (data.length > 0) {
+      dispatch(setGraphqlRequestDone());
+    }
+  }, [data]);
+
   const showPosts = () => {
     switch (tab) {
       case 'top':
@@ -394,22 +401,26 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         return (
           <React.Fragment>
             <Header />
-            <InfiniteScroll
-              dataLength={data.length}
-              next={loadMoreItems}
-              hasMore={hasNext}
-              loader={<Skeleton avatar active />}
-              endMessage={
-                <p style={{ textAlign: 'center' }}>
-                  <b>{"It's so empty here..."}</b>
-                </p>
-              }
-              scrollableTarget="scrollableDiv"
-            >
-              {data.map((item, index) => {
-                return <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />;
-              })}
-            </InfiniteScroll>
+            {graphqlRequestLoading ? (
+              <Skeleton avatar active />
+            ) : (
+              <InfiniteScroll
+                dataLength={data.length}
+                next={loadMoreItems}
+                hasMore={hasNext}
+                loader={<Skeleton avatar active />}
+                endMessage={
+                  <p style={{ textAlign: 'center' }}>
+                    <b>{"It's so empty here..."}</b>
+                  </p>
+                }
+                scrollableTarget="scrollableDiv"
+              >
+                {data.map((item, index) => {
+                  return <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />;
+                })}
+              </InfiniteScroll>
+            )}
           </React.Fragment>
         );
     }
@@ -487,7 +498,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   };
 
   return (
-    <StyledPostsListing ref={refPostsListing}>
+    <StyledPostsListing>
       {!searchValue ? (
         showPosts()
       ) : (
