@@ -75,8 +75,6 @@ export class NotificationService {
       }
     });
 
-    await this.notificationGateway.sendNotification(room, notif);
-
     // Dispatch the notification
     const sendNotifJobData: SendNotificationJobData = {
       room,

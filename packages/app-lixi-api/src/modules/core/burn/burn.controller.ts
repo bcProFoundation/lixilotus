@@ -17,8 +17,14 @@ import { parseBurnOutput } from 'src/utils/opReturnBurn';
 import { VError } from 'verror';
 import _ from 'lodash';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
-import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
+import {
+  NOTIFICATION_JOB_NAME,
+  NOTIFICATION_OUTBOUND_QUEUE,
+  NOTIFICATION_TYPES
+} from 'src/common/modules/notifications/notification.constants';
 import { NotificationLevel } from '@bcpros/lixi-prisma';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
 
 @Controller('burn')
 export class BurnController {
@@ -26,6 +32,7 @@ export class BurnController {
   constructor(
     private prisma: PrismaService,
     private readonly notificationService: NotificationService,
+    @InjectQueue(NOTIFICATION_OUTBOUND_QUEUE) private notificationOutboundQueue: Queue,
     @I18n() private i18n: I18nService,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS
@@ -278,12 +285,13 @@ export class BurnController {
             xpiTip: calcTip
           }
         };
-        createNotifBurnAndTip.senderId !== createNotifBurnAndTip.recipientId &&
-          (await this.notificationService.saveAndDispatchNotification(
-            recipientPostAccount.mnemonicHash,
-            createNotifBurnAndTip
-          ));
+        const jobDataBurnAndTip = {
+          room: recipientPostAccount.mnemonicHash,
+          notification: createNotifBurnAndTip
+        };
 
+        createNotifBurnAndTip.senderId !== createNotifBurnAndTip.recipientId &&
+          (await this.notificationOutboundQueue.add(NOTIFICATION_JOB_NAME.BURN_XPI_AND_TIP, jobDataBurnAndTip));
         // create Notifications Fee
         let recipientPageAccount;
         if (post?.pageId && post.page?.pageAccountId != recipientPostAccount.id) {
@@ -315,11 +323,13 @@ export class BurnController {
               xpiFee: fee
             }
           };
-          createNotifBurnFee.senderId !== createNotifBurnFee.recipientId &&
-            (await this.notificationService.saveAndDispatchNotification(
-              post?.pageId ? (recipientPageAccount?.mnemonicHash as string) : recipientPostAccount?.mnemonicHash,
-              createNotifBurnFee
-            ));
+
+          const jobDataBurnFee = {
+            room: post?.pageId ? (recipientPageAccount?.mnemonicHash as string) : recipientPostAccount?.mnemonicHash,
+            notification: createNotifBurnFee
+          };
+          jobDataBurnFee.room !== recipientPageAccount?.mnemonicHash &&
+            (await this.notificationOutboundQueue.add(NOTIFICATION_JOB_NAME.BURN_XPI_FEE, jobDataBurnFee));
         }
       }
 

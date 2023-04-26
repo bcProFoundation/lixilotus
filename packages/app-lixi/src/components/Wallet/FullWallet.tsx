@@ -194,7 +194,7 @@ const FullWalletComponent: React.FC = () => {
     const xpiBurnAndGiftAmount = Number(item.parsed.xpiBurnAmount) + Number(item.parsed.xpiAmount);
     if (item.parsed.isBurn) {
       if (item.parsed.incoming) {
-        return ' +' + item.parsed.xpiAmount + ' XPI';
+        return '+ ' + item.parsed.xpiAmount + ' XPI';
       } else {
         return '- ' + xpiBurnAndGiftAmount + ' XPI';
       }

@@ -20,8 +20,13 @@ import VError from 'verror';
 import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
 import { PrismaService } from '../prisma/prisma.service';
 import { Notification, NotificationLevel } from '@bcpros/lixi-prisma';
-import { NOTIFICATION_TYPES } from '../../common/modules/notifications/notification.constants';
-import { NotificationService } from '../../common/modules/notifications/notification.service';
+import {
+  NOTIFICATION_JOB_NAME,
+  NOTIFICATION_OUTBOUND_QUEUE,
+  NOTIFICATION_TYPES
+} from '../../common/modules/notifications/notification.constants';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
 
 const pubSub = new PubSub();
 
@@ -31,11 +36,11 @@ export class CommentResolver {
 
   constructor(
     private prisma: PrismaService,
-    private readonly notificationService: NotificationService,
     @I18n() private i18n: I18nService,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
-    @Inject('xpijs') private XPI: BCHJS
-  ) {}
+    @Inject('xpijs') private XPI: BCHJS,
+    @InjectQueue(NOTIFICATION_OUTBOUND_QUEUE) private notificationOutboundQueue: Queue
+  ) { }
 
   @Subscription(() => Comment)
   commentCreated() {
@@ -192,16 +197,31 @@ export class CommentResolver {
           };
         }
 
+        if (tipHex) {
+          const txData = await this.XPI.RawTransactions.decodeRawTransaction(tipHex);
+          const { value } = txData['vout'][0];
+
+          commentToGiveData = {
+            senderName: account.name,
+            senderAddress: account.address,
+            xpiGive: value
+          };
+        }
+
         const createNotif = {
           senderId: account.id,
           recipientId: post?.postAccount.id as number,
           notificationTypeId: tipHex ? NOTIFICATION_TYPES.COMMENT_TO_GIVE : NOTIFICATION_TYPES.COMMENT_ON_POST,
           level: NotificationLevel.INFO,
-          url: '/post/' + post?.id,
+          url: `/post/${post?.id}?comment=${savedComment.id}`,
           additionalData: tipHex ? commentToGiveData : commentToPostData
         };
+        const jobData = {
+          room: recipient?.mnemonicHash,
+          notification: createNotif
+        };
         createNotif.senderId !== createNotif.recipientId &&
-          (await this.notificationService.saveAndDispatchNotification(recipient?.mnemonicHash, createNotif));
+          (await this.notificationOutboundQueue.add(NOTIFICATION_JOB_NAME.CREATE_COMMENT, jobData));
       }
 
       return savedComment;

@@ -39,9 +39,15 @@ import { connectionFromArraySlice } from '../../common/custom-graphql-relay/arra
 import PostResponse from 'src/common/post.response';
 import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
 import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
-import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
+import {
+  NOTIFICATION_JOB_NAME,
+  NOTIFICATION_OUTBOUND_QUEUE,
+  NOTIFICATION_TYPES
+} from 'src/common/modules/notifications/notification.constants';
 import { NotificationLevel } from '@bcpros/lixi-prisma';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
+import { Queue } from 'bullmq';
+import { InjectQueue } from '@nestjs/bullmq';
 
 const pubSub = new PubSub();
 
@@ -55,6 +61,7 @@ export class PostResolver {
     private prisma: PrismaService,
     private meiliService: MeiliService,
     private readonly notificationService: NotificationService,
+    @InjectQueue(NOTIFICATION_OUTBOUND_QUEUE) private notificationOutboundQueue: Queue,
     @I18n() private i18n: I18nService
   ) {}
 
@@ -628,8 +635,12 @@ export class PostResolver {
           pageName: createdPost.page?.name
         }
       };
+      const jobData = {
+        room: recipient.mnemonicHash,
+        notification: createNotif
+      };
       createNotif.senderId !== createNotif.recipientId &&
-        (await this.notificationService.saveAndDispatchNotification(recipient?.mnemonicHash, createNotif));
+        (await this.notificationOutboundQueue.add(NOTIFICATION_JOB_NAME.CREATE_POST, jobData));
     }
 
     return createdPost;
