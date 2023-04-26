@@ -3,7 +3,7 @@ import intl from 'react-intl-universal';
 import * as _ from 'lodash';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import styled from 'styled-components';
 import { getSelectedAccount } from '@store/account/selectors';
 import SmartButton from '@components/Common/PrimaryButton';

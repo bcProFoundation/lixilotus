@@ -71,21 +71,21 @@ const WorshipCard = ({ index, item, isPublic, worshipedPersonName, worshipedPers
   const history = useRouter();
   const getWorshipImage = () => {
     if (item.worshipedAmount >= 1 && item.worshipedAmount < 10) {
-      return '/images/incense-card.svg';
-    } else if (item.worshipedAmount >= 10 && item.worshipedAmount < 100) {
-      return '/images/candle-card.svg';
-    } else {
       return '/images/flower-card.svg';
+    } else if (item.worshipedAmount >= 10 && item.worshipedAmount < 100) {
+      return '/images/incense-card.svg';
+    } else {
+      return '/images/candle-card.svg';
     }
   };
 
   const getWorshipText = () => {
     if (item.worshipedAmount >= 1 && item.worshipedAmount < 10) {
-      return intl.get('worship.offerIncense');
-    } else if (item.worshipedAmount >= 10 && item.worshipedAmount < 100) {
-      return intl.get('worship.offerCandle');
-    } else {
       return intl.get('worship.offerFlower');
+    } else if (item.worshipedAmount >= 10 && item.worshipedAmount < 100) {
+      return intl.get('worship.offerIncense');
+    } else {
+      return intl.get('worship.offerCandle');
     }
   };
 

@@ -46,7 +46,7 @@ import { getFilterPostsToken } from '@store/settings/selectors';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import { FilterBurnt } from '@components/Common/FilterBurn';
 import { getSelectedAccountId } from '@store/account/selectors';
-import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
+import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 import Ticker from '@bcpros/lixi-components/src/atoms/Ticker';
 import { LikeOutlined } from '@ant-design/icons';
 

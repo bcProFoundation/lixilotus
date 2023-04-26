@@ -13,6 +13,7 @@ import WorshipCard from '@components/WorshipedPerson/WorshipCard';
 import SearchBox from '@components/Common/SearchBox';
 import { useInfiniteWorshipedPerson } from '@store/worship/useInfiniteWorshipedPerson';
 import { useInfiniteWorshipedPersonBySearch } from '@store/worship/useInfiniteWorshipedPersonBySearch';
+import { FloatButton } from 'antd';
 
 const StyledIcon = style.img`
   width: 15px;
@@ -52,7 +53,7 @@ const segmentedOptions: SegmentedProps['options'] = [
 const StyledSegmented = style(Segmented)`
   background: #E6E5E5;
   position: sticky;
-  top: 5px;
+  top: 0px;
   margin-bottom: 10px;
   z-index: 1;
   height: 48px;
@@ -85,6 +86,17 @@ const StyledSegmented = style(Segmented)`
       border-radius: 24px !important;
     }
   }
+
+  @media (max-width: 480px) {
+    display: none !important;
+  }
+`;
+
+const StyledFloatButtonGroup = style(FloatButton.Group)`
+  @media (min-width: 480px) {
+    display: none;
+  }
+  bottom: 100px;
 `;
 
 const StyledMenu = style(Menu)`
@@ -109,33 +121,52 @@ const StyledMenu = style(Menu)`
 `;
 
 const StyledLiveBurnContainer = style.div`
-  width: 640px;
   margin-top: 25px;
 `;
 
 const StyledCardContainer = style.div`
-   width: 640px;
-   display: grid;
-   align-items: center;
-   gap: 10px;
-   grid-template-columns: auto auto
+  display: grid;
+  align-items: center;
+  gap: 10px;
+  grid-template-columns: auto auto;
+
+  @media (max-width: 600px) {
+    grid-template-columns: auto;
+    gap: 0px;
+  }
 `;
 
 const StyledContainer = style.div`
-   width: 640px;
    display: flex;
 `;
 
 const StyledHeaderContainer = style.div`
   display: flex;
-  width: 640px;
   margin-top: 25px;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
 `;
 
 const StyledHeader = style.div`
   display: flex;
   flex-direction: column;
   width: 50%;
+
+  @media (max-width: 600px) {
+    width: 100%;
+  }
+`;
+
+const StyledImage = style.img`
+  width: 300px;
+
+  @media (max-width: 600px) {
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
 `;
 
 const StyledTextHeader = style.p`
@@ -143,6 +174,11 @@ const StyledTextHeader = style.p`
   font-weight: 700;
   font-size: 24px;
   text-align: left;
+  scroll-margin-top: 70px;
+
+  @media (max-width: 480px) {
+    scroll-margin-top: 0px;
+  }
 `;
 
 const StyledTextDesc = style.p`
@@ -298,7 +334,7 @@ const Home = () => {
               </StyledTextDesc>
             </StyledHeader>
             <picture>
-              <img alt="lotus-calendar" src="/images/lotus-calendar.svg" width="300px" />
+              <StyledImage alt="lotus-calendar" src="/images/lotus-calendar.svg" />
             </picture>
           </StyledHeaderContainer>
           <StyledCardContainer>
@@ -316,7 +352,7 @@ const Home = () => {
               </StyledTextDesc>
             </StyledHeader>
             <picture>
-              <img alt="recent-trending" src="/images/recent-trending.svg" width="300px" />
+              <StyledImage alt="recent-trending" src="/images/recent-trending.svg" />
             </picture>
           </StyledHeaderContainer>
           <StyledCardContainer>
@@ -344,7 +380,7 @@ const Home = () => {
                 next={loadMoreItems}
                 hasMore={hasNext}
                 loader={<Skeleton avatar active />}
-                height={400}
+                height={500}
                 endMessage={
                   <p style={{ textAlign: 'center' }}>
                     <b>{"It's so empty here..."}</b>
@@ -427,6 +463,22 @@ const Home = () => {
   return (
     <React.Fragment>
       <StyledTab defaultActiveKey="1" items={tabItems} onChange={onChange} />
+      {disableFetch && (
+        <StyledFloatButtonGroup shape="circle">
+          <FloatButton
+            onClick={() => specialDayRef.current.scrollIntoView()}
+            icon={<StyledIcon alt="calendar-icon" src="/images/calendar-icon.svg" />}
+          />
+          <FloatButton
+            onClick={() => trendingRef.current.scrollIntoView()}
+            icon={<StyledIcon alt="fire-icon" src="/images/fire-icon.svg" />}
+          />
+          <FloatButton
+            onClick={() => liveBurnRef.current.scrollIntoView()}
+            icon={<StyledIcon alt="fire-icon" src="/images/fire-icon.svg" />}
+          />
+        </StyledFloatButtonGroup>
+      )}
     </React.Fragment>
   );
 };

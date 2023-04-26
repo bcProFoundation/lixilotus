@@ -13,7 +13,6 @@ import { Button, Input, Modal } from 'antd';
 import { COMMAND_PRIORITY_EDITOR, createCommand, LexicalCommand } from 'lexical';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { E } from 'styled-icons/fa-solid';
 
 import { $createTweetNode, TweetNode } from '../../nodes/TweetNode';
 

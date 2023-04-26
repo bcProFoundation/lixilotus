@@ -8,8 +8,8 @@ import {
   FormItemClaimCodeXpiInput,
   FormItemRegistrantAddressInput
 } from '@bcpros/lixi-components/components/Common/EnhancedInputs';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { getIsGlobalLoading } from 'src/store/loading/selectors';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { getIsGlobalLoading } from '@store/loading/selectors';
 import { getSelectedAccount } from '@store/account/selectors';
 import { Account } from '@bcpros/lixi-models/src/lib/account';
 import { registerLixiPack, registerLixiPackFailure } from '@store/lixi/actions';

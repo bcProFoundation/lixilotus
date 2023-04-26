@@ -67,7 +67,6 @@
     "sanitize-html": "^2.8.1",
     "socket.io-client": "^4.5.4",
     "styled-components": "^5.3.6",
-    "styled-icons": "^10.47.0",
     "ua-parser-js": "^1.0.33",
     "unique-names-generator": "^4.7.1",
     "wif": "^2.0.6"

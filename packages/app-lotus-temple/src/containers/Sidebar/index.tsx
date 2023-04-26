@@ -3,11 +3,24 @@ import { Drawer } from 'antd';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { toggleCollapsedSideNav } from '@store/settings/actions';
 import { getNavCollapsed } from '@store/settings/selectors';
-import SidebarShortcut from './SidebarShortcut';
+import SidebarShortcut from './SideBarShortcut';
+import styled from 'styled-components';
 
 export type SidebarProps = {
   className?: string;
 };
+
+const StyledDrawer = styled(Drawer)`
+  width: 320px !important;
+
+  .ant-drawer-body {
+    padding: 0px !important;
+  }
+
+  @media (max-width: 600px) {
+    width: 100vw !important;
+  }
+`;
 
 const Sidebar = ({ className }: SidebarProps) => {
   const dispatch = useAppDispatch();
@@ -19,17 +32,17 @@ const Sidebar = ({ className }: SidebarProps) => {
   };
 
   return (
-    <Drawer
+    <StyledDrawer
       style={{ position: 'absolute' }}
       className={`${className} lixi-drawer-sidebar`}
-      placement="left"
+      placement="right"
       closable={false}
       onClose={onToggleCollapsedNav}
       getContainer={false}
       open={!navCollapsed}
     >
       <SidebarShortcut sidebarCollapsed={sidebarCollapsed} setSidebarCollapsed={setSidebarCollapsed} />
-    </Drawer>
+    </StyledDrawer>
   );
 };
 

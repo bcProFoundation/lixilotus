@@ -107,20 +107,6 @@ export class WorshipResolver {
       limit!
     );
 
-    // console.log(people);
-
-    // const peopleId = _.map(people, 'id');
-
-    // const searchPeople = await this.prisma.worshipedPerson.findMany({
-    //   where: {
-    //     id: { in: peopleId }
-    //   }
-    // });
-
-    // console.log('-------------------------------------------------------------------');
-
-    // console.log(searchPeople);
-
     return connectionFromArraySlice(people, args, {
       arrayLength: count || 0,
       sliceStart: offset || 0
@@ -228,6 +214,13 @@ export class WorshipResolver {
       args =>
         this.prisma.worship.findMany({
           include: { account: true, worshipedPerson: true },
+          where: {
+            worshipedPerson: {
+              yearOfDeath: {
+                lt: moment().year() - 60
+              }
+            }
+          },
           orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
           ...args
         }),
@@ -261,6 +254,11 @@ export class WorshipResolver {
               },
               {
                 monthOfDeath: month
+              },
+              {
+                yearOfDeath: {
+                  lt: moment().year() - 60
+                }
               }
             ]
           },
@@ -277,6 +275,11 @@ export class WorshipResolver {
               },
               {
                 monthOfDeath: month
+              },
+              {
+                yearOfDeath: {
+                  lt: moment().year() - 60
+                }
               }
             ]
           },
@@ -413,7 +416,8 @@ export class WorshipResolver {
       }
     });
 
-    this.worshipGateway.publishWorship(worshipedPerson);
+    if (person.yearOfDeath && moment().year() - person.yearOfDeath > 60)
+      this.worshipGateway.publishWorship(worshipedPerson);
 
     pubSub.publish('personWorshiped', { personWorshiped: worshipedPerson });
     return worshipedPerson;

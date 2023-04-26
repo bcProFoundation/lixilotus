@@ -28,7 +28,6 @@ const FilterStyle = styled.div`
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    padding: 4px 8px;
     gap: 10px;
 
     Button {

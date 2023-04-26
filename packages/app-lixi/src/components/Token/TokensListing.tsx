@@ -46,14 +46,17 @@ import BurnSvg from '@assets/icons/burn.svg';
 import UpVoteSvg from '@assets/icons/upVotePurple.svg';
 import { Counter } from '@components/Common/Counter';
 import { openModal } from '@store/modal/actions';
-import { CreateTokenInput } from 'src/generated/types.generated';
+import { CreateTokenInput, OrderDirection, TokenEdge, TokenOrderField } from 'src/generated/types.generated';
 import { useCreateTokenMutation } from '@store/token/tokens.generated';
 import { push } from 'connected-next-router';
 import InfoCardUser from '@components/Common/InfoCardUser';
 import { InfoSubCard } from '@components/Lixi';
 import { IconBurn } from '@components/Posts/PostDetail';
 import { setTransactionReady } from '@store/account/actions';
-import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
+import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
+import { useTokensQuery } from '@store/token/tokens.api';
+import Tokens from '@bcpros/minimal-xpi-slp-wallet/types/lib/tokens';
+import { TokenItem } from './TokensFeed';
 
 const StyledTokensListing = styled.div`
   .table-tokens {
@@ -140,7 +143,7 @@ const TokensListing = () => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef<InputRef>(null);
-  const tokenList = useAppSelector(selectTokens);
+  // const tokenList = useAppSelector(selectTokens);
   const Wallet = React.useContext(WalletContext);
   const { XPI, chronik } = Wallet;
   const { createBurnTransaction } = useXPI();
@@ -151,6 +154,12 @@ const TokensListing = () => {
   const failQueue = useAppSelector(getFailQueue);
   const walletStatus = useAppSelector(getWalletStatus);
   const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
+  const tokens = useTokensQuery({
+    orderBy: {
+      direction: OrderDirection.Desc,
+      field: TokenOrderField.CreatedDate
+    }
+  }).currentData;
 
   const [
     createTokenTrigger,
@@ -167,10 +176,6 @@ const TokensListing = () => {
     formState: { errors },
     control
   } = useForm();
-
-  useEffect(() => {
-    dispatch(fetchAllTokens());
-  }, []);
 
   const getColumnSearchProps = (dataIndex: any): ColumnType<any> => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
@@ -219,11 +224,9 @@ const TokensListing = () => {
       </div>
     ),
     filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1890ff' : undefined }} />,
-    onFilter: (value, record) =>
-      record[dataIndex]
-        .toString()
-        .toLowerCase()
-        .includes((value as string).toLowerCase()),
+    onFilter: (value: string, record: TokenEdge) => {
+      return record.node.name.toString().toLowerCase().includes(value.toLowerCase());
+    },
     render: (text, record) =>
       searchedColumn === dataIndex ? (
         <Highlighter
@@ -247,13 +250,14 @@ const TokensListing = () => {
     });
   };
 
-  const columns: ColumnsType<Token> = [
+  const columns: ColumnsType<TokenEdge> = [
     {
       key: 'image',
       className: 'token-img',
-      render: (_, token) => (
+      render: (_, { node: token }) => (
         // eslint-disable-next-line react/jsx-no-undef, @next/next/no-img-element
         <Image
+          alt="tokenIcon"
           width={32}
           height={32}
           src={`${currency.tokenIconsUrl}/32/${token.tokenId}.png`}
@@ -269,7 +273,7 @@ const TokensListing = () => {
       title: intl.get('label.shortId'),
       key: 'id',
       // fixed: 'left',
-      render: (_, token) => (
+      render: (_, { node: token }) => (
         <CopyToClipboard text={token.tokenId} onCopy={() => handleOnCopy(token.tokenId)}>
           <p style={{ marginTop: '0px', marginBottom: '0px' }}>
             {token.tokenId.substring(token.tokenId.length - 8).slice(0, 4)}
@@ -284,37 +288,47 @@ const TokensListing = () => {
       dataIndex: 'ticker',
       key: 'ticker',
       // fixed: 'left',
-      ...getColumnSearchProps('ticker')
+      ...getColumnSearchProps('ticker'),
+      render: (_, { node: token }) => (
+        <a style={{ marginTop: '0px', marginBottom: '0px' }} onClick={() => handleNavigateToken(token)}>
+          {token.ticker}
+        </a>
+      )
     },
     {
       title: intl.get('label.name'),
       dataIndex: 'name',
       key: 'name',
       // fixed: 'left',
-      ...getColumnSearchProps('name')
+      ...getColumnSearchProps('name'),
+      render: (_, { node: token }) => (
+        <a style={{ marginTop: '0px', marginBottom: '0px' }} onClick={() => handleNavigateToken(token)}>
+          {token.name}
+        </a>
+      )
     },
     {
       title: intl.get('label.burnXPI'),
       key: 'lotusBurn',
-      sorter: (a, b) => a.lotusBurnUp + a.lotusBurnDown - (b.lotusBurnUp + b.lotusBurnDown),
+      sorter: ({ node: a }, { node: b }) => a.lotusBurnUp + a.lotusBurnDown - (b.lotusBurnUp + b.lotusBurnDown),
       defaultSortOrder: 'descend',
-      render: (_, record) => <Counter num={formatBalance(record.lotusBurnUp + record.lotusBurnDown)} />
+      render: (_, { node: record }) => <Counter num={formatBalance(record.lotusBurnUp + record.lotusBurnDown)} />
     },
     {
       title: intl.get('label.comment'),
       key: 'comments',
-      render: (_, record) => moment(record.comments).format('DD-MM-YYYY HH:mm')
+      render: (_, { node: record }) => moment(record.comments).format('DD-MM-YYYY HH:mm')
     },
     {
       title: intl.get('label.created'),
       key: 'createdDate',
-      render: (_, record) => moment(record.createdDate).format('DD-MM-YYYY HH:mm')
+      render: (_, { node: record }) => moment(record.createdDate).format('DD-MM-YYYY HH:mm')
     },
     {
       title: intl.get('label.action'),
       key: 'action',
       // fixed: 'right',
-      render: (_, record) => (
+      render: (_, { node: record }) => (
         <Space size="middle">
           <Tooltip title={intl.get('general.burnUp')}>
             <Button
@@ -402,7 +416,7 @@ const TokensListing = () => {
     handleBurnForToken(true, id, tokenId);
   };
 
-  const openBurnModal = (token: Token) => {
+  const openBurnModal = (token: any) => {
     dispatch(openModal('BurnModal', { burnForType: BurnForType.Token, data: token }));
   };
 
@@ -451,7 +465,7 @@ const TokensListing = () => {
     dispatch(setTransactionReady());
   }, [slpBalancesAndUtxos.nonSlpUtxos]);
 
-  useDidMountEffectNotification(() => dispatch(fetchAllTokens()));
+  useDidMountEffectNotification();
 
   return (
     <>
@@ -468,12 +482,13 @@ const TokensListing = () => {
           className="table-tokens"
           columns={columns}
           scroll={{ x: true }}
-          dataSource={tokenList}
-          pagination={tokenList.length >= 30 ? {} : false}
+          dataSource={tokens && tokens.allTokens.edges}
+          pagination={tokens && tokens.allTokens.totalCount >= 30 ? {} : false}
         />
         <StyledTokensListingMobile>
-          {tokenList.length > 0 &&
-            tokenList.map(token => {
+          {tokens &&
+            tokens.allTokens.edges.length > 0 &&
+            tokens.allTokens.edges.map(({ node: token }) => {
               return (
                 <>
                   <CardItemToken>

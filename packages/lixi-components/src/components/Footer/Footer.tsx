@@ -5,6 +5,7 @@ import { NavButton } from '../NavButton';
 import { useRouter } from 'next/router';
 import { Badge } from 'antd';
 import { useEffect } from 'react';
+import _ from 'lodash';
 
 const StyledFooter = styled.div`
   border-top: 1px solid ${props => props.theme.wallet.borders.color};
@@ -64,7 +65,7 @@ const Footer = ({ notifications }: { notifications?: any }) => {
         <Link href="/notifications" passHref>
           <NavButton active={currentPathName == '/notifications'}>
             <Badge
-              count={notifications?.length}
+              count={notifications.filter(item => _.isNil(item.readAt)).length}
               overflowCount={9}
               offset={[notifications?.length < 10 ? 0 : 5, 8]}
               color="var(--color-primary)"

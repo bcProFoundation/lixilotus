@@ -58,20 +58,16 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
     };
   }, []);
 
-  const handleMenuClick = e => {
+  const handleMenuClick = () => {
     dispatch(toggleCollapsedSideNav(!navCollapsed));
   };
 
   return (
     <Header ref={ref} className={className}>
-      <PathDirection>
-        <img src="/images/ico-menu.svg" alt="" onClick={handleMenuClick} />
-        {currentPathName == '/' && <img width="98px" src="/images/lixilotus-logo.svg" alt="" />}
-        {pathDirection[1] != '' && <h3>{pathDirection[1]}</h3>}
-      </PathDirection>
+      <img width="98px" src="/images/lixilotus-logo.svg" alt="" />
       <Space direction="horizontal" size={15}>
         {/* <Button type="text" icon={<SearchOutlined style={{ fontSize: '18px', color: '4E444B' }} />}></Button> */}
-        <div style={{ cursor: 'pointer' }} onClick={() => router.push(`/profile/${selectedAccount?.address}`)}>
+        <div style={{ cursor: 'pointer' }} onClick={() => handleMenuClick()}>
           <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
         </div>
       </Space>

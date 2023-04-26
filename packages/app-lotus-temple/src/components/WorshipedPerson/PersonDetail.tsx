@@ -37,7 +37,6 @@ const StyledTab = style(Tabs)`
 `;
 
 const StyledPersonCard = style.div`
-  width: 700px;
   display: flex;
   flex-direction: column
 `;
@@ -61,6 +60,10 @@ const StyledBottomCard = style.div`
   justify-content: space-around;
   align-items: center;
   padding: 16px 32px;
+
+  @media (max-width: 480px) {
+    flex-direction: column-reverse;
+  }
 `;
 
 const StyledPersonCover = style.div`
@@ -111,13 +114,24 @@ const StyledPersonDate = style.p`
 const StyledActionContainer = style.div`
   display: flex;
   width: 50%;
-  justify-content: space-evenly
+  justify-content: space-evenly;
+
+  @media (max-width: 480px) {
+    width: 100%;
+    align-items: center;
+  }
 `;
 
 const StyledWorshipInfo = style.div`
   display: flex;
   width: 50%;
   flex-direction: column;
+
+  @media (max-width: 480px) {
+    width: 100%;
+    align-items: center;
+    margin-top: 20px;
+  }
 `;
 
 const StyledText = style.span`
@@ -138,6 +152,10 @@ const StyledActionIcon = style.img`
 
   &:active {
     transform: scale(0.9);
+  }
+
+  @media (max-width: 480px) {
+    width: 72px;
   }
 `;
 
@@ -278,6 +296,12 @@ const PersonDetail = ({ person, isMobile }: PersonDetailProp) => {
             </Space>
           </StyledWorshipInfo>
           <StyledActionContainer>
+            <Tooltip title={`${WORSHIP_TYPES.FLOWER} XPI`}>
+              <picture onClick={() => handleWorship(WORSHIP_TYPES.FLOWER)}>
+                <StyledActionIcon alt="flowers" src="/images/flowers.svg" />
+              </picture>
+            </Tooltip>
+
             <Tooltip title={`${WORSHIP_TYPES.INCENSE} XPI`}>
               <picture onClick={() => handleWorship(WORSHIP_TYPES.INCENSE)}>
                 <StyledActionIcon alt="incense" src="/images/incense.svg" />
@@ -287,12 +311,6 @@ const PersonDetail = ({ person, isMobile }: PersonDetailProp) => {
             <Tooltip title={`${WORSHIP_TYPES.CANDLE} XPI`}>
               <picture onClick={() => handleWorship(WORSHIP_TYPES.CANDLE)}>
                 <StyledActionIcon alt="candle" src="/images/candle.svg" />
-              </picture>
-            </Tooltip>
-
-            <Tooltip title={`${WORSHIP_TYPES.FLOWER} XPI`}>
-              <picture onClick={() => handleWorship(WORSHIP_TYPES.FLOWER)}>
-                <StyledActionIcon alt="flowers" src="/images/flowers.svg" />
               </picture>
             </Tooltip>
           </StyledActionContainer>

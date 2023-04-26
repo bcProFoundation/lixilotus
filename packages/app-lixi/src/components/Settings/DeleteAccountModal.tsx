@@ -2,14 +2,14 @@ import { Form, Input, Modal } from 'antd';
 import intl from 'react-intl-universal';
 import * as _ from 'lodash';
 import React, { useState } from 'react';
-import { useAppDispatch } from 'src/store/hooks';
-import { closeModal } from 'src/store/modal/actions';
+import { useAppDispatch } from '@store/hooks';
+import { closeModal } from '@store/modal/actions';
 
 import { Account } from '@bcpros/lixi-models';
 import { WalletFilled } from '@ant-design/icons';
 import { AntdFormWrapper } from '@components/Common/EnhancedInputs';
 import { AnyAction } from '@reduxjs/toolkit';
-import { selectAccount } from 'src/store/account/actions';
+import { selectAccount } from '@store/account/actions';
 
 export type DeleteAccountModalProps = {
   account: Account;

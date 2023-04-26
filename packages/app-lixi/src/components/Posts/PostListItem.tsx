@@ -23,13 +23,14 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import intl from 'react-intl-universal';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import styled from 'styled-components';
 import { EditPostModalProps } from './EditPostModalPopup';
 import Gallery from 'react-photo-gallery';
 import useWindowDimensions from '@hooks/useWindowDimensions';
 import { ReadMoreMore } from 'read-more-more';
 import { IconBurn } from './PostDetail';
+import { formatRelativeTime } from '@utils/formatting';
 
 // export const IconBurn = ({
 //   icon,
@@ -325,7 +326,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
           <InfoCardUser
             imgUrl={post.page ? post.page.avatar : ''}
             name={showUsername()}
-            title={moment(post.createdAt).fromNow().toString()}
+            title={formatRelativeTime(post.createdAt)}
             postAccountAddress={post.postAccount ? post.postAccount.address : undefined}
             page={post.page ? post.page : undefined}
             token={post.token ? post.token : undefined}

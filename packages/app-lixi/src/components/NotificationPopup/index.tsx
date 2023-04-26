@@ -1,6 +1,6 @@
 import React from 'react';
 import { CloseCircleOutlined } from '@ant-design/icons';
-import { Space, Popover, Menu } from 'antd';
+import { Space, Popover, Menu, notification } from 'antd';
 import { Comment } from '@ant-design/compatible';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import styled from 'styled-components';
@@ -21,6 +21,8 @@ import { push } from 'connected-next-router';
 import { getAllNotifications } from '@store/notification/selectors';
 import { getSelectedAccount } from '@store/account/selectors';
 import { AvatarUser } from '@components/Common/AvatarUser';
+import { InfoSubCard } from '@components/Lixi';
+import { formatRelativeTime } from '@utils/formatting';
 
 export type NotificationMenuProps = {
   notifications: Notification[];
@@ -209,7 +211,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
 
   return (
     <>
-      <StyledTitlePage>Notifications</StyledTitlePage>
+      <StyledTitlePage>{intl.get('general.notifications')}</StyledTitlePage>
       <StyledHeader>
         <Menu
           className="menu-post-listing"
@@ -244,9 +246,8 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                     author={
                       <StyledAuthor>
                         <StyledTextLeft></StyledTextLeft>
-                        <StyledTextRight>
-                          {moment(notification.createdAt).local().format('MMMM Do YYYY, h:mm a')}
-                        </StyledTextRight>
+
+                        <StyledTextRight>{formatRelativeTime(notification.createdAt)}</StyledTextRight>
                       </StyledAuthor>
                     }
                     content={
@@ -268,14 +269,15 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                 author={
                   <StyledAuthor>
                     {/* <StyledTextLeft></StyledTextLeft> */}
-                    <StyledTextRight>
-                      {moment(notification.createdAt).local().format('MMMM Do YYYY, h:mm a')}
-                    </StyledTextRight>
+
+                    <StyledTextRight>{formatRelativeTime(notification.createdAt)}</StyledTextRight>
                   </StyledAuthor>
                 }
                 avatar={
-                  <div style={{ cursor: 'pointer' }} onClick={() => handleRead(account, notification)}>
-                    <AvatarUser name={selectedAccount?.address} isMarginRight={false} />
+                  <div style={{ cursor: 'pointer' }}>
+                    {' '}
+                    {/* onClick={() => router.push(`/profile/${notification.additionalData.senderName}`)} */}
+                    <AvatarUser name={notification.additionalData.senderName} isMarginRight={false} />
                   </div>
                 }
                 content={
