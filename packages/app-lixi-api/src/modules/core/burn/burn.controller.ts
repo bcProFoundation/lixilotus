@@ -17,11 +17,7 @@ import { parseBurnOutput } from 'src/utils/opReturnBurn';
 import { VError } from 'verror';
 import _ from 'lodash';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
-import {
-  NOTIFICATION_JOB_NAME,
-  NOTIFICATION_OUTBOUND_QUEUE,
-  NOTIFICATION_TYPES
-} from 'src/common/modules/notifications/notification.constants';
+import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
 import { NotificationLevel } from '@bcpros/lixi-prisma';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
@@ -32,11 +28,10 @@ export class BurnController {
   constructor(
     private prisma: PrismaService,
     private readonly notificationService: NotificationService,
-    @InjectQueue(NOTIFICATION_OUTBOUND_QUEUE) private notificationOutboundQueue: Queue,
     @I18n() private i18n: I18nService,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS
-  ) { }
+  ) {}
 
   @Post()
   async burn(@Body() command: BurnCommand): Promise<Burn> {
@@ -269,7 +264,8 @@ export class BurnController {
         const calcTip = await this.notificationService.calcTip(post, recipientPostAccount, command);
         const createNotifBurnAndTip = {
           senderId: sender.id,
-          recipientId: command.burnForType == BurnForType.Comment ? commentAccount?.id : (post?.postAccountId as number),
+          recipientId:
+            command.burnForType == BurnForType.Comment ? commentAccount?.id : (post?.postAccountId as number),
           notificationTypeId: calcTip != 0 ? NOTIFICATION_TYPES.RECEIVE_BURN_TIP : NOTIFICATION_TYPES.BURN,
           level: NotificationLevel.INFO,
           url:
@@ -289,9 +285,11 @@ export class BurnController {
           room: recipientPostAccount.mnemonicHash,
           notification: createNotifBurnAndTip
         };
-
         createNotifBurnAndTip.senderId !== createNotifBurnAndTip.recipientId &&
-          (await this.notificationOutboundQueue.add(NOTIFICATION_JOB_NAME.BURN_XPI_AND_TIP, jobDataBurnAndTip));
+          (await this.notificationService.saveAndDispatchNotification(
+            jobDataBurnAndTip.room,
+            jobDataBurnAndTip.notification
+          ));
         // create Notifications Fee
         let recipientPageAccount;
         if (post?.pageId && post.page?.pageAccountId != recipientPostAccount.id) {
@@ -329,7 +327,10 @@ export class BurnController {
             notification: createNotifBurnFee
           };
           jobDataBurnFee.room !== recipientPageAccount?.mnemonicHash &&
-            (await this.notificationOutboundQueue.add(NOTIFICATION_JOB_NAME.BURN_XPI_FEE, jobDataBurnFee));
+            (await this.notificationService.saveAndDispatchNotification(
+              jobDataBurnFee.room,
+              jobDataBurnFee.notification
+            ));
         }
       }
 

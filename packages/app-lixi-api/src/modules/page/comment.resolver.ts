@@ -20,13 +20,8 @@ import VError from 'verror';
 import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
 import { PrismaService } from '../prisma/prisma.service';
 import { Notification, NotificationLevel } from '@bcpros/lixi-prisma';
-import {
-  NOTIFICATION_JOB_NAME,
-  NOTIFICATION_OUTBOUND_QUEUE,
-  NOTIFICATION_TYPES
-} from '../../common/modules/notifications/notification.constants';
-import { InjectQueue } from '@nestjs/bullmq';
-import { Queue } from 'bullmq';
+import { NOTIFICATION_TYPES } from '../../common/modules/notifications/notification.constants';
+import { NotificationService } from 'src/common/modules/notifications/notification.service';
 
 const pubSub = new PubSub();
 
@@ -39,8 +34,8 @@ export class CommentResolver {
     @I18n() private i18n: I18nService,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS,
-    @InjectQueue(NOTIFICATION_OUTBOUND_QUEUE) private notificationOutboundQueue: Queue
-  ) { }
+    private readonly notificationService: NotificationService
+  ) {}
 
   @Subscription(() => Comment)
   commentCreated() {
@@ -221,7 +216,7 @@ export class CommentResolver {
           notification: createNotif
         };
         createNotif.senderId !== createNotif.recipientId &&
-          (await this.notificationOutboundQueue.add(NOTIFICATION_JOB_NAME.CREATE_COMMENT, jobData));
+          (await this.notificationService.saveAndDispatchNotification(jobData.room, jobData.notification));
       }
 
       return savedComment;
