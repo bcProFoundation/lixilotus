@@ -358,6 +358,10 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     handleBurn(false, { data: dataItem, burnForType: BurnForType.Post });
   };
 
+  const openBurnModal = (dataItem: PostItem) => {
+    dispatch(openModal('BurnModal', { burnForType: BurnForType.Post, data: dataItem }));
+  };
+
   const handleBurn = async (isUpVote: boolean, burnData: BurnData) => {
     try {
       const burnValue = '1';
@@ -605,7 +609,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
                 imgUrl="/images/ico-burn-down.svg"
                 key={`list-vertical-downvote-o-${post.id}`}
                 dataItem={post}
-                onClickIcon={() => downVotePost(post)}
+                onClickIcon={() => openBurnModal(post)}
               />
             </div>
             <div className="reaction-func">
