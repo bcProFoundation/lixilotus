@@ -1,31 +1,26 @@
 import { PaginationArgs } from '@bcpros/lixi-models';
-import { useEffect, useRef, useState } from 'react';
-import { Page, PageOrder } from 'src/generated/types.generated';
+import { useLazyPagesQuery, usePagesQuery, api as postApi } from '@store/page/pages.api';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Post, PostOrder } from 'src/generated/types.generated';
+import _ from 'lodash';
+import { PageQuery } from './pages.generated';
+import { createEntityAdapter } from '@reduxjs/toolkit';
 
-import { useLazyPagesQuery, usePagesQuery } from './pages.api';
+const pagesAdapter = createEntityAdapter<PageQuery['page']>({
+  selectId: post => post.id,
+  sortComparer: (a, b) => b.createdAt - a.createdAt
+});
 
-export interface PageListParams {
-  skip?: number;
-  after?: string;
-  before?: string;
-  first?: number;
-  last?: number;
-  orderBy?: PageOrder;
-  query?: string;
-}
-export interface PageListBody {
-  pages: Page[];
-  next: string;
-}
+const { selectAll } = pagesAdapter.getSelectors();
 
 export function useInfinitePagesQuery(
   params: PaginationArgs,
-  fetchAll = false // if `true`: auto do next fetches to get all notes at once
+  fetchAll: boolean = false // if `true`: auto do next fetches to get all notes at once
 ) {
   const baseResult = usePagesQuery(params);
 
   const [trigger, nextResult] = useLazyPagesQuery();
-  const [combinedData, setCombinedData] = useState([]);
+  const [combinedData, setCombinedData] = useState(pagesAdapter.getInitialState({}));
 
   const isBaseReady = useRef(false);
   const isNextDone = useRef(true);
@@ -33,38 +28,26 @@ export function useInfinitePagesQuery(
   // next: starts with a null, fetching ended with an undefined cursor
   const next = useRef<null | string | undefined>(null);
 
+  const data = useMemo(() => {
+    const result = selectAll(combinedData);
+    return result;
+  }, [combinedData]);
+
   // Base result
   useEffect(() => {
-    console.log('baseResult: ', baseResult);
     next.current = baseResult.data?.allPages?.pageInfo?.endCursor;
     if (baseResult?.data?.allPages) {
       isBaseReady.current = true;
-      setCombinedData(baseResult.data.allPages.edges.map(item => item.node));
+
+      const adapterSetAll = pagesAdapter.setAll(
+        combinedData,
+        baseResult.data.allPages.edges.map(item => item.node)
+      );
+
+      setCombinedData(adapterSetAll);
       fetchAll && fetchNext();
     }
   }, [baseResult]);
-
-  // When there're next results
-  useEffect(() => {
-    // Not success next result
-    if (!nextResult.isSuccess) return;
-
-    if (
-      isBaseReady.current &&
-      nextResult.data &&
-      nextResult.data.allPages.pageInfo &&
-      nextResult.data.allPages.pageInfo.endCursor != next.current
-    ) {
-      next.current = nextResult.data.allPages.pageInfo.endCursor;
-
-      const newItems = nextResult.data.allPages.edges.map(item => item.node);
-      if (newItems && newItems.length) {
-        setCombinedData(currentItems => {
-          return [...currentItems, ...newItems];
-        });
-      }
-    }
-  }, [nextResult]);
 
   const fetchNext = async () => {
     if (!isBaseReady.current || !isNextDone.current || next.current === undefined || next.current === null) {
@@ -91,7 +74,7 @@ export function useInfinitePagesQuery(
   };
 
   return {
-    data: combinedData ?? [],
+    data: data ?? [],
     totalCount: baseResult?.data?.allPages?.totalCount ?? 0,
     error: baseResult?.error,
     isError: baseResult?.isError,
@@ -100,7 +83,7 @@ export function useInfinitePagesQuery(
     errorNext: nextResult?.error,
     isErrorNext: nextResult?.isError,
     isFetchingNext: nextResult?.isFetching,
-    hasNext: baseResult.data?.allPages?.pageInfo?.endCursor !== undefined,
+    hasNext: baseResult.data?.allPages?.pageInfo?.endCursor !== null,
     fetchNext,
     refetch
   };

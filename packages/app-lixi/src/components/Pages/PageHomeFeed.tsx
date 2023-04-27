@@ -133,7 +133,7 @@ const ListCard = styled.div`
     padding-bottom: 2rem;
     .infinite-scroll-component {
       display: grid !important;
-      grid-template-columns: auto auto auto auto !important;
+      grid-template-columns: auto auto auto !important;
       grid-gap: 10px !important;
       @media (max-width: 768px) {
         grid-template-columns: auto auto !important;
@@ -281,7 +281,7 @@ const PageHome = () => {
   }, [data]);
 
   const getCategoryName = (item: number) => {
-    const categoryLang = categories.find(category => category.id == item).name ?? 'art';
+    const categoryLang = (categories.length > 0 && categories.find(category => category.id == item).name) ?? 'art';
     return intl.get('category.' + categoryLang);
   };
 
@@ -300,10 +300,6 @@ const PageHome = () => {
   const routerPageDetail = id => {
     dispatch(push(`/page/${id}`));
   };
-
-  useEffect(() => {
-    refetch();
-  }, []);
 
   const loadMoreItems = () => {
     if (hasNext && !isFetching) {
@@ -341,16 +337,6 @@ const PageHome = () => {
   return (
     <>
       <StyledPageFeed ref={refPagesListing} onScroll={e => triggerSrollbar(e)}>
-        {listsPage && listsPage.length > 0 && (
-          <ToolboxBar>
-            <SearchBox></SearchBox>
-            {/* {!selectedPage && (
-              <Button type="primary" className="outline-btn" onClick={createPageBtn}>
-                {intl.get('page.createYourPage')}
-              </Button>
-            )} */}
-          </ToolboxBar>
-        )}
         <YourPageContainer>
           <h2>{intl.get('page.yourPage')}</h2>
           {!selectedPage && (
@@ -390,9 +376,9 @@ const PageHome = () => {
                   >
                     {data.map((item, index) => {
                       return (
-                        <>
+                        <React.Fragment key={index}>
                           <CardPageItem item={mapPageItem(item)} onClickItem={id => routerPageDetail(id)} />
-                        </>
+                        </React.Fragment>
                       );
                     })}
                   </InfiniteScroll>
