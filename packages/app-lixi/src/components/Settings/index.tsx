@@ -553,7 +553,8 @@ const Settings: React.FC = () => {
                         {intl.get('settings.notSupported')}
                       </Tag>
                     )}
-
+                  </GeneralSettingsItem>
+                  <GeneralSettingsItem>
                     {/* Notification */}
                     {/* <PushNotificationSetting pushNotificationConfig={pushNotificationConfig} /> */}
                     <div className="title">

@@ -51,7 +51,7 @@ const usePushNotification = () => {
 
   // run only once
   useEffect(() => {
-    async () => {
+    (async () => {
       if ('serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window) {
         let pushConfiguration = await loadPushNotificationConfigFromStorage();
         if (!pushConfiguration) {
@@ -74,7 +74,7 @@ const usePushNotification = () => {
       }
 
       return null;
-    };
+    })();
   }, []);
 
   // save the configuration to local storage whenever it is changed
