@@ -57,6 +57,7 @@ export class NotificationService {
       notifType.notificationTypeTranslations.find(x => x.isDefault)?.template ??
       '';
 
+    // caching
     const message = template(translateTemplate, notification.additionalData);
 
     // Save to the database
@@ -73,8 +74,6 @@ export class NotificationService {
         status: 'active'
       }
     });
-
-    await this.notificationGateway.sendNotification(room, notif);
 
     // Dispatch the notification
     const sendNotifJobData: SendNotificationJobData = {

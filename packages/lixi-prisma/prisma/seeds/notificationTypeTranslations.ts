@@ -91,7 +91,7 @@ export const notificationTypeTranslations = [
     notificationTypeId: 7,
     language: 'en',
     isDefault: true,
-    template: '{{senderName}} gave you {{xpiGive}} XPI.' 
+    template: '{{senderName}} gave you {{xpiGive}} XPI.'
   },
   {
     id: 14,

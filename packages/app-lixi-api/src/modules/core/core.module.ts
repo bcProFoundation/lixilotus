@@ -30,6 +30,7 @@ import { UploadFilesController } from './upload/upload.controller';
 import { UploadService } from './upload/upload.service';
 import { TokenController } from './token/token.controller';
 import { CategoryController } from './category/category.controller';
+import { NOTIFICATION_OUTBOUND_QUEUE } from 'src/common/modules/notifications/notification.constants';
 const baseCorsConfig = cors({
   origin: process.env.BASE_URL ?? ''
 });
@@ -73,6 +74,21 @@ const baseCorsConfig = cors({
         useFactory: (config: ConfigService) => {
           return {
             name: WITHDRAW_SUB_LIXIES_QUEUE,
+            connection: new IORedis({
+              maxRetriesPerRequest: null,
+              enableReadyCheck: false,
+              host: config.get<string>('REDIS_HOST') ? config.get<string>('REDIS_HOST') : 'redis-lixi',
+              port: config.get<string>('REDIS_PORT') ? _.toSafeInteger(config.get<string>('REDIS_PORT')) : 6379
+            })
+          };
+        }
+      },
+      {
+        name: NOTIFICATION_OUTBOUND_QUEUE,
+        inject: [ConfigService],
+        useFactory: (config: ConfigService) => {
+          return {
+            name: NOTIFICATION_OUTBOUND_QUEUE,
             connection: new IORedis({
               maxRetriesPerRequest: null,
               enableReadyCheck: false,

@@ -19,6 +19,8 @@ import _ from 'lodash';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
 import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
 import { NotificationLevel } from '@bcpros/lixi-prisma';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
 
 @Controller('burn')
 export class BurnController {
@@ -262,26 +264,32 @@ export class BurnController {
         const calcTip = await this.notificationService.calcTip(post, recipientPostAccount, command);
         const createNotifBurnAndTip = {
           senderId: sender.id,
-          recipientId: post?.postAccountId as number,
+          recipientId:
+            command.burnForType == BurnForType.Comment ? commentAccount?.id : (post?.postAccountId as number),
           notificationTypeId: calcTip != 0 ? NOTIFICATION_TYPES.RECEIVE_BURN_TIP : NOTIFICATION_TYPES.BURN,
           level: NotificationLevel.INFO,
-          url: '/post/' + post?.id,
+          url:
+            command.burnForType == BurnForType.Comment
+              ? `/post/${post.id}?comment=${command.burnForId}`
+              : '/post/' + post?.id,
           additionalData: {
             senderName: sender.name,
             senderAddress: sender.address,
-            pageName: post?.page?.name,
             burnType: command.burnType == BurnType.Up ? 'upvoted' : 'downvoted',
             burnForType: burnForTypeString.toLowerCase(),
             xpiBurn: command.burnValue,
             xpiTip: calcTip
           }
         };
+        const jobDataBurnAndTip = {
+          room: recipientPostAccount.mnemonicHash,
+          notification: createNotifBurnAndTip
+        };
         createNotifBurnAndTip.senderId !== createNotifBurnAndTip.recipientId &&
           (await this.notificationService.saveAndDispatchNotification(
-            recipientPostAccount.mnemonicHash,
-            createNotifBurnAndTip
+            jobDataBurnAndTip.room,
+            jobDataBurnAndTip.notification
           ));
-
         // create Notifications Fee
         let recipientPageAccount;
         if (post?.pageId && post.page?.pageAccountId != recipientPostAccount.id) {
@@ -313,10 +321,15 @@ export class BurnController {
               xpiFee: fee
             }
           };
-          createNotifBurnFee.senderId !== createNotifBurnFee.recipientId &&
+
+          const jobDataBurnFee = {
+            room: post?.pageId ? (recipientPageAccount?.mnemonicHash as string) : recipientPostAccount?.mnemonicHash,
+            notification: createNotifBurnFee
+          };
+          jobDataBurnFee.room !== recipientPageAccount?.mnemonicHash &&
             (await this.notificationService.saveAndDispatchNotification(
-              post?.pageId ? (recipientPageAccount?.mnemonicHash as string) : recipientPostAccount?.mnemonicHash,
-              createNotifBurnFee
+              jobDataBurnFee.room,
+              jobDataBurnFee.notification
             ));
         }
       }
