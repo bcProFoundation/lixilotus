@@ -189,6 +189,7 @@ function* getPagesByAccountIdSaga(action: PayloadAction<number>) {
     }
 
     // yield put(postPageSuccess(data));
+    yield put(hideLoading(getPagesByAccountId.type));
     yield put(setPagesByAccountId(data));
   } catch (err) {
     const message = (err as Error).message ?? intl.get('lixi.couldNotpostPage');

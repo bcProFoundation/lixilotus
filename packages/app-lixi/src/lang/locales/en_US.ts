@@ -314,6 +314,7 @@ export default {
   'lixi.archive': 'Archive',
   'lixi.unarchive': 'Unarchive',
   'lixi.withdraw': 'Withdraw',
+  'lixi.withdrawn': 'Withdrawn',
   'lixi.claimed': 'Claimed',
   'lixi.budget': 'Budget',
   'lixi.redeemed': 'Redeemed',

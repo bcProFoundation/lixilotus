@@ -699,6 +699,16 @@ export class LixiController {
           lixi: resultApi
         } as PostLixiResponseDto;
       } else {
+        await this.prisma.lixi.update({
+          where: {
+            id: lixi.id
+          },
+          data: {
+            amount: 0,
+            status: 'withdrawn'
+          }
+        });
+
         // Withdraw for OneTime Code
         const jobData = {
           parentId: lixiId,
