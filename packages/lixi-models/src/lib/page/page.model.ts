@@ -53,6 +53,9 @@ export class Page {
   @Field(() => Float)
   lotusBurnScore: number;
 
+  @Field(() => Float, { nullable: true })
+  totalBurnForPage: number;
+
   @Field(() => Date, {
     description: 'Identifies the date and time when the object was created.'
   })

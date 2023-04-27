@@ -52,34 +52,41 @@ export class PageResolver {
     })
     orderBy: PageOrder
   ) {
+    const postsHasPage = await this.prisma.post.findMany({
+      where: {
+        NOT: [
+          {
+            page: null
+          }
+        ]
+      }
+    });
+
+    const totalBurn = _.chain(postsHasPage)
+      .groupBy('pageId')
+      .map((post, id) => ({
+        totalBurnForPage: _.sumBy(post, 'lotusBurnScore')
+      }))
+      .value();
+
     const result = await findManyCursorConnection(
-      paginationArgs =>
-        this.prisma.page.findMany({
+      async args => {
+        const allPages = await this.prisma.page.findMany({
           include: {
             pageAccount: true
           },
-          where: {
-            OR: !query
-              ? undefined
-              : {
-                  title: { contains: query || '' },
-                  name: { contains: query || '' }
-                }
-          },
           orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
-          ...paginationArgs
-        }),
-      () =>
-        this.prisma.page.count({
-          where: {
-            OR: !query
-              ? undefined
-              : {
-                  title: { contains: query || '' },
-                  name: { contains: query || '' }
-                }
-          }
-        }),
+          ...args
+        });
+
+        const allPagesTotalBurn = totalBurn.map(totalBurn => {
+          const resl = allPages.find(resl => resl.pageAccountId);
+          return { ...resl, ...totalBurn };
+        });
+
+        return allPagesTotalBurn;
+      },
+      () => this.prisma.page.count(),
       { first, last, before, after }
     );
     return result;
