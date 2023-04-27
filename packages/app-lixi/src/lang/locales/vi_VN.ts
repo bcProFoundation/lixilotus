@@ -571,5 +571,5 @@ export default {
   'category.scienceAndTechnology': 'Khoa học và Công nghệ',
   'category.healthAndFitness': 'Sức khỏe và Thể hình',
   'category.travelAndEvents': 'Du lịch và Sự kiện',
-  'category.other': 'Khác',
+  'category.other': 'Khác'
 };
