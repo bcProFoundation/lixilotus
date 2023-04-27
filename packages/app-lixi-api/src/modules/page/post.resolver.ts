@@ -75,8 +75,7 @@ export class PostResolver {
   async allPosts(
     @PostAccountEntity() account: Account,
     @Args() { after, before, first, last, minBurnFilter }: PaginationArgs,
-    @Args({ name: 'query', type: () => String, nullable: true })
-    accountId: number,
+    @Args({ name: 'accountId', type: () => Number, nullable: true }) accountId: number,
     @Args({
       name: 'orderBy',
       type: () => PostOrder,
@@ -84,51 +83,77 @@ export class PostResolver {
     })
     orderBy: PostOrder
   ) {
-    if (accountId && !_.isNil(account) && accountId !== account.id) {
-      const invalidAccountMessage = await this.i18n.t('account.messages.invalidAccount');
-      throw new VError(invalidAccountMessage);
-    }
+    let result;
 
-    const result = await findManyCursorConnection(
-      args =>
-        this.prisma.post.findMany({
-          include: { postAccount: true, comments: true },
-          where: {
-            OR: [
-              {
-                lotusBurnScore: {
-                  gte: minBurnFilter ?? 0
+    if (account) {
+      if (accountId && !_.isNil(account) && accountId !== account.id) {
+        const invalidAccountMessage = await this.i18n.t('account.messages.invalidAccount');
+        throw new VError(invalidAccountMessage);
+      }
+      result = await findManyCursorConnection(
+        args =>
+          this.prisma.post.findMany({
+            include: { postAccount: true, comments: true },
+            where: {
+              OR: [
+                {
+                  lotusBurnScore: {
+                    gte: minBurnFilter ?? 0
+                  }
+                },
+                {
+                  postAccount: {
+                    id: account.id
+                  }
                 }
-              },
-              {
-                postAccount: {
-                  id: accountId
+              ]
+            },
+            orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+            ...args
+          }),
+        () =>
+          this.prisma.post.count({
+            where: {
+              OR: [
+                {
+                  lotusBurnScore: {
+                    gte: minBurnFilter ?? 0
+                  }
+                },
+                {
+                  postAccount: {
+                    id: account.id
+                  }
                 }
+              ]
+            }
+          }),
+        { first, last, before, after }
+      );
+    } else {
+      result = await findManyCursorConnection(
+        args =>
+          this.prisma.post.findMany({
+            include: { postAccount: true, comments: true },
+            where: {
+              lotusBurnScore: {
+                gte: minBurnFilter ?? 0
               }
-            ]
-          },
-          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
-          ...args
-        }),
-      () =>
-        this.prisma.post.count({
-          where: {
-            OR: [
-              {
-                lotusBurnScore: {
-                  gte: minBurnFilter ?? 0
-                }
-              },
-              {
-                postAccount: {
-                  id: accountId
-                }
+            },
+            orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+            ...args
+          }),
+        () =>
+          this.prisma.post.count({
+            where: {
+              lotusBurnScore: {
+                gte: minBurnFilter ?? 0
               }
-            ]
-          }
-        }),
-      { first, last, before, after }
-    );
+            }
+          }),
+        { first, last, before, after }
+      );
+    }
     return result;
   }
 

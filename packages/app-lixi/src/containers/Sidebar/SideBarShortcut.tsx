@@ -1,5 +1,5 @@
 import { Account } from '@bcpros/lixi-models';
-import { getAllAccounts, getSelectedAccount } from '@store/account/selectors';
+import { getAllAccounts, getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { Layout, message, Space, Modal, Popover, Button, Badge } from 'antd';
 import classNames from 'classnames';
@@ -15,6 +15,12 @@ import NotificationPopup from '@components/NotificationPopup';
 import { fetchNotifications } from '@store/notification/actions';
 import { AvatarUser } from '@components/Common/AvatarUser';
 import _ from 'lodash';
+import { setGraphqlRequestLoading } from '@store/account/actions';
+import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
+import { getFilterPostsHome } from '@store/settings/selectors';
+import { api as postApi, useLazyPostQuery } from '@store/post/posts.api';
+import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
+import { push } from 'connected-next-router';
 
 const { Sider } = Layout;
 
@@ -210,6 +216,9 @@ const SidebarShortcut = () => {
   const router = useRouter();
   const currentPathName = router.pathname ?? '';
   const notifications = useAppSelector(getAllNotifications);
+  const filterValue = useAppSelector(getFilterPostsHome);
+  const selectedAccountId = useAppSelector(getSelectedAccountId);
+
   let pastScan;
 
   const onScan = async (result: string) => {
@@ -266,15 +275,40 @@ const SidebarShortcut = () => {
     </div>
   );
 
+  const { refetch } = useInfinitePostsQuery(
+    {
+      first: 20,
+      minBurnFilter: filterValue,
+      accountId: selectedAccountId,
+      orderBy: {
+        direction: OrderDirection.Desc,
+        field: PostOrderField.UpdatedAt
+      }
+    },
+    false
+  );
+
+  const handleLogoClick = () => {
+    if (currentPathName === '/') {
+      dispatch(postApi.util.resetApiState());
+      refetch();
+      dispatch(setGraphqlRequestLoading());
+    } else {
+      dispatch(push(`/`));
+    }
+  };
+
   return (
     <>
       <ShortcutSideBar id="short-cut-sidebar" ref={refSidebarShortcut} onScroll={e => triggerSrollbar(e)}>
         <ContainerAccess>
           <div className="wrapper">
             <StyledLogo>
-              <Link href="/" passHref>
-                <img width="137px" height="56px" src="/images/lixilotus-logo.svg" alt="lixilotus" />
-              </Link>
+              <div onClick={handleLogoClick}>
+                <picture>
+                  <img width="137px" height="56px" src="/images/lixilotus-logo.svg" alt="lixilotus" />
+                </picture>
+              </div>
             </StyledLogo>
             <ItemAccess
               icon={'/images/ico-home.svg'}

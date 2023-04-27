@@ -1,7 +1,7 @@
 import { Layout, Spin } from 'antd';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { getSelectedAccount } from '@store/account/selectors';
+import { getGraphqlRequestStatus, getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 
@@ -14,7 +14,7 @@ import SidebarRanking from '@containers/Sidebar/SideBarRanking';
 import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
 import Topbar from '@containers/Topbar';
 import { loadLocale } from '@store/settings/actions';
-import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
+import { getCurrentLocale, getFilterPostsHome, getIntlInitStatus } from '@store/settings/selectors';
 import { Header } from 'antd/lib/layout/layout';
 import { getIsGlobalLoading } from '@store/loading/selectors';
 import { injectStore } from 'src/utils/axiosClient';
@@ -27,6 +27,8 @@ import { fetchNotifications } from '@store/notification/actions';
 import DummySidebar from '@containers/Sidebar/DummySidebar';
 import { setTransactionReady } from '@store/account/actions';
 import { getSlpBalancesAndUtxos } from '@store/wallet';
+import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
+import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
 const { Content } = Layout;
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
@@ -191,6 +193,8 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
   const notifications = useAppSelector(getAllNotifications);
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
+  const scrollRef = useRef(null);
+  const graphqlRequestLoading = useAppSelector(getGraphqlRequestStatus);
 
   useEffect(() => {
     if (slpBalancesAndUtxos === slpBalancesAndUtxosRef.current) return;
@@ -206,6 +210,27 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
     // Save a reference to the node
     ref.current = node;
   }, []);
+
+  /*TODO: Dont delete - need for maintain scroll position in the future */
+  // useEffect(() => {
+  //   if (scrollRef.current) {
+  //     console.log(scrollRef.current);
+  //     setTimeout(() => {
+  //       scrollRef.current.scrollTo(0, 500);
+  //     }, 2000);
+  //   }
+  // }, [scrollRef.current]);
+
+  useEffect(() => {
+    if (graphqlRequestLoading) {
+      if (scrollRef.current) {
+        scrollRef.current.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }
+    }
+  }, [graphqlRequestLoading]);
 
   useEffect(() => {
     if (selectedAccount) {
@@ -253,7 +278,16 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                   {/* <Topbar ref={ref}/> */}
                   <Topbar ref={setRef} />
                   {/* @ts-ignore */}
-                  <div className="container-content" id="scrollableDiv">
+                  <div
+                    className="container-content"
+                    id="scrollableDiv"
+                    ref={scrollRef}
+                    /*TODO: Dont delete - need for maintain scroll position in the future */
+                    // onScroll={() => {
+                    //   const scrollTop = scrollRef.current.scrollTop;
+                    //   console.log(`onScroll, scrollRef.current.scrollTop: ${scrollTop}`);
+                    // }}
+                  >
                     {/* <Layout
                             className="main-section-layout"
                             style={{

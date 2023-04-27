@@ -60,8 +60,8 @@ export type PostsQueryVariables = Types.Exact<{
   first?: Types.InputMaybe<Types.Scalars['Int']>;
   last?: Types.InputMaybe<Types.Scalars['Int']>;
   orderBy?: Types.InputMaybe<Types.PostOrder>;
-  query?: Types.InputMaybe<Types.Scalars['String']>;
   skip?: Types.InputMaybe<Types.Scalars['Int']>;
+  accountId?: Types.InputMaybe<Types.Scalars['Int']>;
   minBurnFilter?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
@@ -640,15 +640,15 @@ export const PostDocument = `
 }
     ${PostFieldsFragmentDoc}`;
 export const PostsDocument = `
-    query Posts($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $query: String, $skip: Int, $minBurnFilter: Int) {
+    query Posts($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $skip: Int, $accountId: Int, $minBurnFilter: Int) {
   allPosts(
     after: $after
     before: $before
     first: $first
     last: $last
     orderBy: $orderBy
-    query: $query
     skip: $skip
+    accountId: $accountId
     minBurnFilter: $minBurnFilter
   ) {
     totalCount

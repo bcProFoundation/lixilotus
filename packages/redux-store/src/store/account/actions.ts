@@ -72,3 +72,5 @@ export const getLeaderboardSuccess = createAction<Array<Account & { totalBurned:
 export const getLeaderboardFailure = createAction<string>('account/getLeaderboardFailure');
 export const setTransactionReady = createAction('account/setTransactionReady');
 export const setTransactionNotReady = createAction('account/setTransactionNotReady');
+export const setGraphqlRequestLoading = createAction('account/setGraphqlRequestLoading');
+export const setGraphqlRequestDone = createAction('account/setGraphqlRequestDone');
