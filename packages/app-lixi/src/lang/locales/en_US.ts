@@ -341,6 +341,7 @@ export default {
   'settings.languages': 'Languages',
   'settings.general': 'General Settings',
   'settings.lockApp': 'Lock App',
+  'settings.notifications': 'Notifications',
   'settings.notSupported': 'Not Supported',
   'settings.backupAccount': 'Backup your account',
   'settings.manageAccounts': 'Manage Accounts',
@@ -360,6 +361,15 @@ export default {
   'settings.yourConfirmationPhraseMustExact': 'Your confirmation phrase must match exactly',
   en: 'English',
   vi: 'Vietnamese',
+  'setting.AllowNotification': 'Allow notification for the',
+  'setting.ForBrowser': 'browser on your device',
+  'setting.ThenAllowNotification': 'Then allow notification for',
+  'setting.SendlotusOnBrower': 'sendlotus.com on your browser',
+  'setting.EnableNotification': 'Enable Notification',
+  'setting.GrantPermisson': 'You will be prompted to grant permisson for notification, Please click "Allow"',
+  'setting.OK': 'OK',
+  'setting.PermisionError': 'Error - Permision Error',
+  'settings.BlockedDevice': 'Blocked by device',
 
   /* 06.Countries */
   'country.all': 'All of country',

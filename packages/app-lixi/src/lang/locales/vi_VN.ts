@@ -341,6 +341,7 @@ export default {
   'settings.languages': 'Ngôn ngữ',
   'settings.general': 'Thiết lập chung',
   'settings.lockApp': 'Khóa ứng dụng',
+  'settings.notifications': 'Thông báo',
   'settings.notSupported': 'Không hỗ trợ',
   'settings.backupAccount': 'Sao lưu tài khoản của bạn',
   'settings.manageAccounts': 'Quản lý tài khoản',
@@ -360,6 +361,15 @@ export default {
   'settings.yourConfirmationPhraseMustExact': 'Bạn phải nhập chính xác cụm từ xác nhận',
   en: 'Tiếng Anh',
   vi: 'Tiếng Việt',
+  'setting.AllowNotification': 'Cho phép thông báo cho',
+  'setting.ForBrowser': 'trình duyệt trên thiết bị của bạn',
+  'setting.ThenAllowNotification': 'Sau đó cho phép thông báo cho',
+  'setting.SendlotusOnBrower': 'sendlotus.com trên trình duyệt của bạn',
+  'setting.EnableNotification': 'Bật thông báo',
+  'setting.GrantPermisson': 'Bạn sẽ được nhắc cấp quyền cho thông báo, Vui lòng nhấp vào "Cho phép"',
+  'setting.OK': 'OK',
+  'setting.PermisionError': 'Lỗi - Không có quyền truy cập',
+  'settings.BlockedDevice': 'Bị khóa bởi thiết bị của bạn',
 
   /* 06.Countries */
   'country.all': 'Tất cả Quốc gia',

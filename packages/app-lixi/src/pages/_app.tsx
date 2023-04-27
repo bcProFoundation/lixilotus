@@ -16,6 +16,7 @@ import { Spin } from 'antd';
 import SplashScreen from '@components/Common/SplashScreen';
 import { ConfigProvider } from 'antd';
 import lightTheme from 'src/styles/themes/lightTheme';
+import { PushNotificationProvider } from '@context/notificationProvider';
 
 const PersistGateServer = (props: any) => {
   return props.children;
@@ -40,25 +41,27 @@ const LixiApp = ({ Component, ...rest }) => {
       <WalletProvider>
         <AuthenticationProvider>
           <AuthorizationProvider>
-            <OutsideCallConsumer config={callConfig}>
-              <Layout className="lixi-app-layout">
-                <Head>
-                  <title>LixiLotus</title>
-                  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-                  <link
-                    rel="stylesheet"
-                    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-                  />
-                </Head>
-                <ConnectedRouter>
-                  <PersistGate persistor={store.__persistor} loading={<SplashScreen />}>
-                    <ConfigProvider theme={lightTheme}>
-                      <Component {...props.pageProps} />
-                    </ConfigProvider>
-                  </PersistGate>
-                </ConnectedRouter>
-              </Layout>
-            </OutsideCallConsumer>
+            <PushNotificationProvider>
+              <OutsideCallConsumer config={callConfig}>
+                <Layout className="lixi-app-layout">
+                  <Head>
+                    <title>LixiLotus</title>
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+                    <link
+                      rel="stylesheet"
+                      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+                    />
+                  </Head>
+                  <ConnectedRouter>
+                    <PersistGate persistor={store.__persistor} loading={<SplashScreen />}>
+                      <ConfigProvider theme={lightTheme}>
+                        <Component {...props.pageProps} />
+                      </ConfigProvider>
+                    </PersistGate>
+                  </ConnectedRouter>
+                </Layout>
+              </OutsideCallConsumer>
+            </PushNotificationProvider>
           </AuthorizationProvider>
         </AuthenticationProvider>
       </WalletProvider>

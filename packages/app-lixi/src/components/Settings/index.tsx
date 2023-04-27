@@ -1,4 +1,4 @@
-import { Alert, Button, Collapse, Form, Input, Spin, Switch, Tag } from 'antd';
+import { Alert, Button, Collapse, Form, Input, Modal, Spin, Switch, Tag } from 'antd';
 import * as _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import intl from 'react-intl-universal';
@@ -10,10 +10,12 @@ import { openModal } from '@store/modal/actions';
 import { WalletContext } from '@context/index';
 import styled from 'styled-components';
 import {
+  BellFilled,
   CheckOutlined,
   CloseOutlined,
   CopyOutlined,
   ExclamationCircleFilled,
+  ExclamationCircleOutlined,
   ImportOutlined,
   LockFilled,
   LockOutlined,
@@ -22,7 +24,7 @@ import {
 } from '@ant-design/icons';
 import Edit from '@assets/icons/edit.svg';
 import Trashcan from '@assets/icons/trashcan.svg';
-import { CashLoadingIcon, ThemedSettingOutlined } from '@bcpros/lixi-components/components/Common/CustomIcons';
+import { CashLoadingIcon, ThemedQuerstionCircleOutlinedFaded, ThemedSettingOutlined } from '@bcpros/lixi-components/components/Common/CustomIcons';
 import { Account, DeleteAccountCommand, RenameAccountCommand } from '@bcpros/lixi-models';
 import { AntdFormWrapper, LanguageSelectDropdown } from '@components/Common/EnhancedInputs';
 import PrimaryButton, { SecondaryButton, SmartButton } from '@components/Common/PrimaryButton';
@@ -34,6 +36,9 @@ import getOauth2URL from '@utils/oauth2';
 import { DeleteAccountModalProps } from './DeleteAccountModal';
 import { RenameAccountModalProps } from './RenameAccountModal';
 import axios from 'axios';
+import { PushNotificationContext } from '@context/notificationProvider';
+import PushNotificationSetting from '@components/NotificationSetting';
+import { askPermission, getPlatformPermissionState, subscribeAllWalletsToPushNotification, unsubscribeAllWalletsFromPushNotification } from '@utils/pushNotification';
 
 const { Panel } = Collapse;
 
@@ -223,6 +228,30 @@ const GeneralSettingsItem = styled.div`
   }
 `;
 
+const helpInfoIcon = (
+  <ThemedQuerstionCircleOutlinedFaded
+    onClick={() => {
+      Modal.info({
+        centered: true,
+        okText: intl.get('setting.GotIt'),
+        title: intl.get('setting.HowEnableNotification'),
+        maskClosable: true,
+        content: (
+          <div>
+            <p>{intl.get('setting.DeviceSupport')}</p>
+            <p>{intl.get('setting.NotSupportIos')}</p>
+            <div className='heading'>{intl.get('setting.TwoStepEnableNotification')}</div>
+            <ul>
+              <li>{intl.get('setting.AllowNotification')}<em>{intl.get('setting.ForBrowser')}</em>.</li>
+              <li>{intl.get('setting.ThenAllowNotification')}<em>{intl.get('setting.SendlotusOnBrower')}</em>.</li>
+            </ul>
+          </div>
+        ),
+      })
+    }}
+  />
+)
+
 const Settings: React.FC = () => {
   const Wallet = React.useContext(WalletContext);
   const authenticationContextValue = React.useContext(AuthenticationContext);
@@ -236,6 +265,9 @@ const Settings: React.FC = () => {
 
   const [form] = Form.useForm();
   const [otherAccounts, setOtherAccounts] = useState<Account[]>([]);
+
+  const pushNotificationConfig = React.useContext(PushNotificationContext);
+  const [permission, setPermission] = useState(() => getPlatformPermissionState());
 
   const dispatch = useAppDispatch();
   const savedAccounts: Account[] = useAppSelector(getAllAccounts);
@@ -312,6 +344,48 @@ const Settings: React.FC = () => {
       }
     } else {
       authenticationContextValue.turnOffAuthentication();
+    }
+  };
+
+  const showModal = () => {
+    Modal.confirm({
+      centered: true,
+      title: intl.get('setting.EnableNotification'),
+      icon: <ExclamationCircleOutlined />,
+      content: intl.get('setting.GrantPermisson'),
+      okText: intl.get('setting.OK'),
+      async onOk() {
+        // get user permissioin
+        try {
+          await askPermission();
+        } catch (error) {
+          Modal.error({
+            title: intl.get('setting.PermisionError'),
+            content: error.message
+          });
+          return;
+        }
+
+        // subscribe all wallets to Push Notification in interactive mode
+        subscribeAllWalletsToPushNotification(pushNotificationConfig, true);
+        pushNotificationConfig.turnOnPushNotification();
+        setPermission(getPlatformPermissionState());
+      }
+    });
+  };
+
+  const handleNotificationToggle = (checked, event) => {
+    if (checked) {
+      if (permission === 'granted') {
+        subscribeAllWalletsToPushNotification(pushNotificationConfig, false);
+        pushNotificationConfig.turnOnPushNotification();
+      } else {
+        showModal();
+      }
+    } else {
+      // unsubscribe
+      unsubscribeAllWalletsFromPushNotification(pushNotificationConfig);
+      pushNotificationConfig.turnOffPushNotification();
     }
   };
 
@@ -457,6 +531,7 @@ const Settings: React.FC = () => {
                     <ThemedSettingOutlined /> {intl.get('settings.general')}
                   </h2>
                   <GeneralSettingsItem>
+                    {/* Lock app */}
                     <div className="title">
                       <LockFilled /> {intl.get('settings.lockApp')}
                     </div>
@@ -473,6 +548,34 @@ const Settings: React.FC = () => {
                         // checked={false}
                         onChange={handleAppLockToggle}
                       />
+                    ) : (
+                      <Tag color="warning" icon={<ExclamationCircleFilled />}>
+                        {intl.get('settings.notSupported')}
+                      </Tag>
+                    )}
+
+                    {/* Notification */}
+                    {/* <PushNotificationSetting pushNotificationConfig={pushNotificationConfig} /> */}
+                    <div className="title">
+                      <BellFilled /> {intl.get('settings.notifications')}
+                    </div>
+                    {pushNotificationConfig ? (
+                      permission !== 'denied' ? (
+                        <Switch
+                          size="small"
+                          checkedChildren={<CheckOutlined />}
+                          unCheckedChildren={<CloseOutlined />}
+                          checked={pushNotificationConfig.allowPushNotification ? true : false}
+                          onChange={handleNotificationToggle}
+                        />
+                      ) : (
+                        <div>
+                          <Tag color="warning" icon={<ExclamationCircleFilled />}>
+                            {intl.get('settings.BlockedDevice')}
+                          </Tag>
+                          {helpInfoIcon}
+                        </div>
+                      )
                     ) : (
                       <Tag color="warning" icon={<ExclamationCircleFilled />}>
                         {intl.get('settings.notSupported')}

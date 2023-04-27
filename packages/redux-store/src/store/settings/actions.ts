@@ -11,3 +11,4 @@ export const loadLocaleSuccess = createAction<string>('settings/loadLocaleSucces
 export const loadLocaleFailure = createAction<string>('settings/loadLocaleFailure');
 export const saveWebAuthnConfig = createAction<WebAuthnConfig>('settings/saveWebAuthnConfig');
 export const saveBurnFilter = createAction<FilterBurnCommand>('settings/saveBurnFilter');
+export const savePushNotifConfig = createAction<WebAuthnConfig>('settings/savePushNotifConfig');
