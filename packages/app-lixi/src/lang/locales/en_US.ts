@@ -101,6 +101,7 @@ export default {
   'general.showMore': 'Show more',
   'general.showLess': 'Show less',
   'general.topAccounts': 'Top Accounts',
+  'general.burned': 'Burned',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
@@ -570,5 +571,5 @@ export default {
   'category.scienceAndTechnology': 'Science And Technology',
   'category.healthAndFitness': 'Health And Fitness',
   'category.travelAndEvents': 'Travel And Events',
-  'category.other': 'Other'
+  'category.other': 'Other',
 };
