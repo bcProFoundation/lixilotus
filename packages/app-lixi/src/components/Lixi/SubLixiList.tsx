@@ -1,4 +1,5 @@
 import { CopyOutlined } from '@ant-design/icons';
+import { Lixi } from '@bcpros/lixi-models';
 import { message } from 'antd';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { isMobile } from 'react-device-detect';
@@ -39,6 +40,42 @@ const SubLixiList = props => {
     message.info(intl.get('claim.claimCodeCopied'));
   };
 
+  const statusOfSubLixi = (item: Lixi) => {
+    let bgStatus = '';
+    let status = '';
+    if (item.isClaimed) {
+      bgStatus = '#598300';
+      status = `lixi.redeemed`;
+    } else {
+      if (item.status == 'withdrawn') {
+        bgStatus = '#CDC4C8';
+        status = `lixi.withdrawn`;
+      } else {
+        bgStatus = '#E37100';
+        status = `lixi.remaining`;
+      }
+    }
+
+    return (
+      <p
+        style={{
+          width: 'fit-content',
+          color: '#FFFFFF',
+          padding: '4px 8px',
+          borderRadius: '8px',
+          fontWeight: '400',
+          fontSize: '14px',
+          alignItems: 'center',
+          letterSpacing: '0.25px',
+          marginTop: '4px',
+          background: bgStatus
+        }}
+      >
+        {intl.get(status)}
+      </p>
+    );
+  };
+
   const subLixiesDataSource =
     dataSource &&
     dataSource.map((item, i) => {
@@ -58,33 +95,7 @@ const SubLixiList = props => {
           </CopyToClipboard>
         ),
         amount: parseFloat(item.amount).toFixed(2),
-        isClaimed: item.isClaimed ? (
-          <span
-            style={{
-              color: '#FFFFFF',
-              padding: '4px 8px',
-              borderRadius: '8px',
-              fontWeight: '400',
-              fontSize: '14px',
-              background: '#598300'
-            }}
-          >
-            Redeemed
-          </span>
-        ) : (
-          <span
-            style={{
-              color: '#FFFFFF',
-              padding: '4px 8px',
-              borderRadius: '8px',
-              fontWeight: '400',
-              fontSize: '14px',
-              background: '#E37100'
-            }}
-          >
-            Remaining
-          </span>
-        )
+        isClaimed: statusOfSubLixi(item)
       };
     });
 

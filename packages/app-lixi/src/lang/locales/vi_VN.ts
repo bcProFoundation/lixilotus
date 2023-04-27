@@ -100,7 +100,7 @@ export default {
   'general.showMore': 'Xem thêm',
   'general.showLess': 'Xem ít',
   'general.topAccounts': 'Xếp hạng tài khoản đã đốt',
-
+  'general.burned': 'Đã đốt',
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',
   'account.mnemonic': 'mnemonic (cụm từ bảo mật)',
@@ -239,7 +239,7 @@ export default {
   'lixi.downloadCode': 'Tải về mã code',
   'lixi.copyClaim': 'Sao chép mã code',
   'lixi.refreshLixi': 'Làm mới Lì xì',
-  'lixi.exportLixi': 'Export Lixi',
+  'lixi.exportLixi': 'Xuất tệp Lì xì',
   'lixi.noLixiSelected': 'Chọn ít nhất một Lì xì',
   'lixi.fileTypeError': 'Bạn chỉ có thể tải lên tệp JPG/PNG/GIF !',
   'lixi.fileSizeError': 'Hình ảnh phải nhỏ hơn 10MB!',
@@ -312,10 +312,10 @@ export default {
   'lixi.archive': 'Lưu trữ',
   'lixi.unarchive': 'Hủy lưu trữ',
   'lixi.withdraw': 'Rút tiền',
+  'lixi.withdrawn': 'Đã rút',
   'lixi.claimed': 'Đã nhận',
   'lixi.budget': 'Ngân sách',
   'lixi.redeemed': 'Đã nhận',
-
   /* 04.Claim */
   'claim.claim': 'Nhận Lì xì',
   'claim.claimReport': 'Danh sách đã nhận lì xì',

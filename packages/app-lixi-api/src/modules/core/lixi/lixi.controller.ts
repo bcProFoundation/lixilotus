@@ -593,7 +593,8 @@ export class LixiController {
           },
           data: {
             previousStatus: lixi?.status,
-            status: lixi?.previousStatus == 'failed' ? 'failed' : 'active',
+            status:
+              lixi?.previousStatus == 'failed' || lixi?.previousStatus == 'withdrawn' ? lixi?.previousStatus : 'active',
             updatedAt: new Date()
           }
         });
@@ -699,6 +700,16 @@ export class LixiController {
           lixi: resultApi
         } as PostLixiResponseDto;
       } else {
+        await this.prisma.lixi.update({
+          where: {
+            id: lixi.id
+          },
+          data: {
+            amount: 0,
+            status: 'withdrawn'
+          }
+        });
+
         // Withdraw for OneTime Code
         const jobData = {
           parentId: lixiId,
