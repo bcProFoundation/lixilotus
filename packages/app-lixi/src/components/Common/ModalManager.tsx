@@ -1,5 +1,5 @@
-import { useAppSelector } from 'src/store/hooks';
-import { getModals } from 'src/store/modal/selectors';
+import { useAppSelector } from '@store/hooks';
+import { getModals } from '@store/modal/selectors';
 
 import { RenameAccountModal } from '../Settings/RenameAccountModal';
 import { RenameLixiModal } from '../Lixi/RenameLixiModal';

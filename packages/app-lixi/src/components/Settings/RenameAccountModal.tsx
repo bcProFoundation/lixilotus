@@ -2,8 +2,8 @@ import { Form, Input, Modal } from 'antd';
 import intl from 'react-intl-universal';
 import * as _ from 'lodash';
 import React, { useState } from 'react';
-import { useAppDispatch } from 'src/store/hooks';
-import { closeModal } from 'src/store/modal/actions';
+import { useAppDispatch } from '@store/hooks';
+import { closeModal } from '@store/modal/actions';
 
 import { Account } from '@bcpros/lixi-models';
 import { ProfileFilled } from '@ant-design/icons';

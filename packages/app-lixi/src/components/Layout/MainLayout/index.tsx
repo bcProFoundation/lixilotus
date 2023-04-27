@@ -1,8 +1,8 @@
 import { Layout, Spin } from 'antd';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { getSelectedAccount } from 'src/store/account/selectors';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import { getSelectedAccount } from '@store/account/selectors';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 
 import { LoadingOutlined } from '@ant-design/icons';
@@ -16,7 +16,7 @@ import Topbar from '@containers/Topbar';
 import { loadLocale } from '@store/settings/actions';
 import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
 import { Header } from 'antd/lib/layout/layout';
-import { getIsGlobalLoading } from 'src/store/loading/selectors';
+import { getIsGlobalLoading } from '@store/loading/selectors';
 import { injectStore } from 'src/utils/axiosClient';
 import ModalManager from '../../Common/ModalManager';
 import { GlobalStyle } from './GlobalStyle';
@@ -268,7 +268,7 @@ const MainLayout: React.FC = (props: MainLayoutProps) => {
                     <div className="content-child">{children}</div>
                     {/* This below is just a dummy sidebar */}
                     {/* TODO: Implement SidebarRanking in future */}
-                    {selectedKey === '/wallet' && <SidebarRanking></SidebarRanking>}
+                    {(selectedKey === '/wallet' || selectedKey === '/') && <SidebarRanking></SidebarRanking>}
                     <DummySidebar />
                     <Footer notifications={notifications} />
                   </div>

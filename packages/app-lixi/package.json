@@ -59,6 +59,7 @@
     "react-swipe-to-delete-ios": "^2.1.0",
     "react-virtuoso": "^4.0.7",
     "react-web-share": "^2.0.2",
+    "read-more-more": "^2.0.2",
     "redux": "^4.2.1",
     "redux-persist": "^6.0.0",
     "redux-persist-indexeddb-storage": "^1.0.4",
@@ -66,7 +67,6 @@
     "sanitize-html": "^2.8.1",
     "socket.io-client": "^4.5.4",
     "styled-components": "^5.3.6",
-    "styled-icons": "^10.47.0",
     "ua-parser-js": "^1.0.33",
     "unique-names-generator": "^4.7.1",
     "wif": "^2.0.6"

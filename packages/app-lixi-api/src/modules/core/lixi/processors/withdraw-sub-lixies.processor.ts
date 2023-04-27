@@ -68,7 +68,8 @@ export class WithdrawSubLixiesProcessor extends WorkerHost {
               id: subLixies[item].id
             },
             data: {
-              amount: 0
+              amount: 0,
+              status: 'withdrawn'
             }
           });
         } catch (err) {

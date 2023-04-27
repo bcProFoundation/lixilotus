@@ -19,11 +19,11 @@ import isEmpty from 'lodash.isempty';
 import moment from 'moment';
 import React, { useState } from 'react';
 import intl from 'react-intl-universal';
-import { getAllEnvelopes } from 'src/store/envelope/selectors';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { generateLixi } from 'src/store/lixi/actions';
-import { closeModal, openModal } from 'src/store/modal/actions';
-import { showToast } from 'src/store/toast/actions';
+import { getAllEnvelopes } from '@store/envelope/selectors';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { generateLixi } from '@store/lixi/actions';
+import { closeModal, openModal } from '@store/modal/actions';
+import { showToast } from '@store/toast/actions';
 import styled from 'styled-components';
 
 import { DollarOutlined, QuestionCircleOutlined } from '@ant-design/icons';
@@ -539,11 +539,11 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
     };
   };
   const handleNewExpityTimeInput = value => {
-    setNewExpiryAtLixi(value._d.toString());
+    setNewExpiryAtLixi(value.$d.toString());
   };
 
   const handleNewActivatedTimeInput = value => {
-    setNewActivatedAtLixi(value._d.toString());
+    setNewActivatedAtLixi(value.$d.toString());
   };
 
   const handleMaxClaim = e => {
@@ -708,14 +708,14 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
   };
 
   const onOk = value => {
-    setNewExpiryAtLixi(value._d.toUTCString());
+    setNewExpiryAtLixi(value.$d.toUTCString());
     if (value && !isEmpty(value)) {
       setExpiryAtLixiIsValid(true);
     }
   };
 
   const onActivatedOk = value => {
-    setNewActivatedAtLixi(value._d.toUTCString());
+    setNewActivatedAtLixi(value.$d.toUTCString());
     if (value && !isEmpty(value)) {
       setActivatedAtLixiIsValid(true);
     }

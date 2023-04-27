@@ -39,7 +39,7 @@ export default {
   'burn.post': 'post',
   'burn.comment': 'comment',
   'burn.token': 'token',
-  'burn.doneBurning': 'Finish burning!',
+  'burn.doneBurning': 'Burning completed!',
 
   /* 01.General */
   'general.tokens': 'Tokens',
@@ -98,6 +98,10 @@ export default {
   'general.burnForType': 'Burn For Type',
   'general.failed': 'Failed',
   'general.minBurnt': 'Min XPI burnt:',
+  'general.showMore': 'Show more',
+  'general.showLess': 'Show less',
+  'general.topAccounts': 'Top Accounts',
+  'general.burned': 'Burned',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
@@ -311,6 +315,7 @@ export default {
   'lixi.archive': 'Archive',
   'lixi.unarchive': 'Unarchive',
   'lixi.withdraw': 'Withdraw',
+  'lixi.withdrawn': 'Withdrawn',
   'lixi.claimed': 'Claimed',
   'lixi.budget': 'Budget',
   'lixi.redeemed': 'Redeemed',
@@ -473,7 +478,7 @@ export default {
   /* 15.Page */
   'post.createNewPage': 'Create new post',
   'post.createPost': 'Create post',
-  'post.editPost': 'Edit post',
+  'post.editPost': 'Edit unburnt post',
   'post.edited': 'Edited',
   'post.name': 'Name',
   'post.inputName': 'Please input name',

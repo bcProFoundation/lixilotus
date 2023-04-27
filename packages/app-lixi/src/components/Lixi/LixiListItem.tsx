@@ -20,8 +20,8 @@ import { openModal } from '@store/modal/actions';
 import { fromSmallestDenomination } from '@utils/cashMethods';
 import { Button, Col, Dropdown, Menu, Row, Tag, Typography } from 'antd';
 import intl from 'react-intl-universal';
-import { getSelectedAccount } from 'src/store/account/selectors';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import { getSelectedAccount } from '@store/account/selectors';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import {
   archiveLixi,
   exportSubLixies,
@@ -30,7 +30,7 @@ import {
   selectLixi,
   unarchiveLixi,
   withdrawLixi
-} from 'src/store/lixi/actions';
+} from '@store/lixi/actions';
 import styled, { DefaultTheme } from 'styled-components';
 import { RenameLixiModalProps } from './RenameLixiModal';
 

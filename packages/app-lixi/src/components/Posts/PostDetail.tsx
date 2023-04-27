@@ -68,7 +68,7 @@ import {
 import { Virtuoso } from 'react-virtuoso';
 import { RWebShare } from 'react-web-share';
 import { CommentOrderField, CreateCommentInput, OrderDirection } from 'src/generated/types.generated';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import styled, { keyframes } from 'styled-components';
 import CommentListItem, { CommentItem } from './CommentListItem';
 import { useForm, Controller } from 'react-hook-form';
@@ -81,7 +81,7 @@ import { getTransactionStatus } from '@store/account/selectors';
 import useDidMountEffect from '@hooks/useDidMountEffect ';
 import { getBurnQueue, getFailQueue } from '@store/burn';
 import { TokenItem } from '@components/Token/TokensFeed';
-import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
+import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 
 export type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 export type BurnData = {
@@ -217,6 +217,8 @@ const PostCardDetail = styled.div`
 const PostContentDetail = styled.div`
   text-align: left;
   .description-post {
+    font-size: 16px;
+    line-height: 24px;
     margin: 1rem 0;
     text-align: left;
     word-break: break-word;
@@ -235,14 +237,19 @@ const PostContentDetail = styled.div`
     transition: 0.5s ease;
     img {
       max-width: 100%;
-      max-height: 45vh;
+      max-height: 100vh;
       object-fit: cover;
+      @media (min-height: 920px) {
+        max-height: 45vh;
+      }
     }
   }
 `;
 
 const StyledContainerPostDetail = styled.div`
+  margin: 1rem auto;
   width: 100%;
+  max-width: 816px;
   border-radius: 5px;
   background: white;
   padding: 0rem 1rem 1rem 1rem;
@@ -351,6 +358,10 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
 
   const downVotePost = (dataItem: PostItem) => {
     handleBurn(false, { data: dataItem, burnForType: BurnForType.Post });
+  };
+
+  const openBurnModal = (dataItem: PostItem) => {
+    dispatch(openModal('BurnModal', { burnForType: BurnForType.Post, data: dataItem }));
   };
 
   const handleBurn = async (isUpVote: boolean, burnData: BurnData) => {
@@ -600,7 +611,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
                 imgUrl="/images/ico-burn-down.svg"
                 key={`list-vertical-downvote-o-${post.id}`}
                 dataItem={post}
-                onClickIcon={() => downVotePost(post)}
+                onClickIcon={() => openBurnModal(post)}
               />
             </div>
             <div className="reaction-func">

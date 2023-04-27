@@ -34,7 +34,7 @@ import { setTransactionReady } from '@store/account/actions';
 import { getFilterPostsPage } from '@store/settings/selectors';
 import { FilterBurnt } from '@components/Common/FilterBurn';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
-import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
+import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 
 type PageDetailProps = {
   page: any;
@@ -42,6 +42,9 @@ type PageDetailProps = {
 };
 
 const StyledContainerProfileDetail = styled.div`
+  margin: 1rem auto;
+  width: 100%;
+  max-width: 816px;
   background: var(--bg-color-light-theme);
   border-radius: 20px;
   padding-bottom: 3rem;

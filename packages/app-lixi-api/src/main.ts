@@ -17,7 +17,8 @@ const allowedOrigins = [
   process.env.SENDLOTUS_URL,
   process.env.BASE_URL,
   process.env.ABCPAY_URL,
-  process.env.ABCPAY_SWAP_URL
+  process.env.ABCPAY_SWAP_URL,
+  process.env.LOTUSTEMPLE_URL
 ];
 
 async function bootstrap() {
@@ -26,7 +27,7 @@ async function bootstrap() {
   const fastifyAdapter = new FastifyAdapter();
   fastifyAdapter
     .getInstance()
-    .addContentTypeParser('application/json', { bodyLimit: POST_LIMIT }, (_request, _payload, done) => {
+    .addContentTypeParser('application/json', { bodyLimit: 10048576 }, (_request, _payload, done) => {
       done(null, (_payload as any).body);
     });
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter(), {
@@ -48,6 +49,7 @@ async function bootstrap() {
   process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'local'
     ? app.enableCors()
     : app.enableCors({
+        credentials: true,
         origin: function (origin, callback) {
           if (!origin) return callback(null, true);
           if (allowedOrigins.indexOf(origin) === -1) {

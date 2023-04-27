@@ -46,13 +46,16 @@ import { getFilterPostsToken } from '@store/settings/selectors';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import { FilterBurnt } from '@components/Common/FilterBurn';
 import { getSelectedAccountId } from '@store/account/selectors';
-import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
+import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 import Ticker from '@bcpros/lixi-components/src/atoms/Ticker';
 import { LikeOutlined } from '@ant-design/icons';
 
 export type TokenItem = TokenQuery['token'];
 
 const StyledTokensFeed = styled.div`
+  margin: 1rem auto;
+  width: 100%;
+  max-width: 816px;
   .content {
     display: flex;
     justify-content: space-between;
@@ -145,9 +148,18 @@ const BannerTicker = styled.div`
     }
   }
   .score-ticker {
-    margin-left: 60rem;
+    margin-left: 75vh;
     display: inline-flex;
     margin-top: 1rem;
+    @media (min-width: 85px) {
+      margin-left: 60vh;
+    }
+    @media (min-width: 30px) {
+      margin-left: 40vh;
+    }
+    @media (min-width: 20px) {
+      margin-left: 30vh;
+    }
     .count {
       color: #edeff099 !important;
     }

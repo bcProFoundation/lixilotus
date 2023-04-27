@@ -8,7 +8,7 @@ import { PlusCircleOutlined } from '@ant-design/icons';
 import { push } from 'connected-next-router';
 import moment from 'moment';
 import React, { useEffect, useRef, useState } from 'react';
-import { useAppDispatch } from 'src/store/hooks';
+import { useAppDispatch } from '@store/hooks';
 import styled from 'styled-components';
 import Gallery from 'react-photo-gallery';
 

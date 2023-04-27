@@ -171,7 +171,12 @@ const FullWalletComponent: React.FC = () => {
     let idComment = burnForId;
 
     if (burnForType == BurnForType.Token && burnForId.length !== 64) {
-      burnForId = allTokens.find(token => token.id === burnForId).tokenId;
+      const searchTokenID = allTokens.find(token => token.id === burnForId);
+      if (searchTokenID) {
+        burnForId = searchTokenID.tokenId;
+      } else {
+        return '/404';
+      }
     }
     if (burnForType == BurnForType.Comment) {
       burnForTypeString = getBurnForType(BurnForType.Post);
@@ -189,7 +194,7 @@ const FullWalletComponent: React.FC = () => {
     const xpiBurnAndGiftAmount = Number(item.parsed.xpiBurnAmount) + Number(item.parsed.xpiAmount);
     if (item.parsed.isBurn) {
       if (item.parsed.incoming) {
-        return ' +' + item.parsed.xpiAmount + ' XPI';
+        return '+ ' + item.parsed.xpiAmount + ' XPI';
       } else {
         return '- ' + xpiBurnAndGiftAmount + ' XPI';
       }
@@ -249,7 +254,10 @@ const FullWalletComponent: React.FC = () => {
                                               pathname: getUrl(
                                                 item.parsed.burnInfo.burnForType,
                                                 item.parsed.burnInfo.burnForId
-                                              )
+                                              ),
+                                              query: item.parsed.burnInfo.burnForType == BurnForType.Comment && {
+                                                comment: item.parsed.burnInfo.burnForId
+                                              }
                                             }}
                                           >
                                             <Button size="small" type="text">
@@ -278,9 +286,11 @@ const FullWalletComponent: React.FC = () => {
                                       </p>
                                     )}
                                   </p>
-                                  <p className="tx-memo">
-                                    <LockOutlined /> {memo}
-                                  </p>
+                                  {!_.isEmpty(memo) && (
+                                    <p className="tx-memo">
+                                      <LockOutlined /> {memo}
+                                    </p>
+                                  )}
                                 </div>
                               }
                             />
@@ -292,7 +302,7 @@ const FullWalletComponent: React.FC = () => {
                                 <Link
                                   href={{
                                     pathname: '/send',
-                                    query: { replyAddress: item.parsed.replyAddress }
+                                    query: { replyAddress: item.parsed.replyAddress, isReply: true }
                                   }}
                                 >
                                   <Button size="small" type="text">

@@ -23,12 +23,14 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import intl from 'react-intl-universal';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import styled from 'styled-components';
 import { EditPostModalProps } from './EditPostModalPopup';
 import Gallery from 'react-photo-gallery';
 import useWindowDimensions from '@hooks/useWindowDimensions';
+import { ReadMoreMore } from 'read-more-more';
 import { IconBurn } from './PostDetail';
+import { formatRelativeTime } from '@utils/formatting';
 
 // export const IconBurn = ({
 //   icon,
@@ -83,10 +85,20 @@ const CardHeader = styled.div`
 
 const Content = styled.div`
   .description-post {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 20px;
     text-align: left;
     word-break: break-word;
     cursor: pointer;
     margin-bottom: 1rem;
+    div > div > [data-lexical-decorator] {
+      display: flex;
+      justify-content: center;
+      @media (max-width: 960px) {
+        max-height: 500px;
+      }
+    }
     @media (max-width: 960px) {
       div {
         &[data-lexical-decorator='true'] > div > div {
@@ -121,22 +133,6 @@ const Content = styled.div`
     }
     p {
       margin: 0;
-    }
-    &.show-more {
-      display: block !important;
-      height: fit-content !important;
-      overflow: none !important;
-    }
-    &.show-less {
-      white-space: normal;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      line-clamp: 5;
-      -webkit-line-clamp: 5;
-      box-orient: vertical;
-      -webkit-box-orient: vertical;
-      margin-bottom: 0;
     }
   }
   .image-cover {
@@ -213,8 +209,9 @@ const PostListItemContainer = styled(List.Item)`
   border: none;
   border: 1px solid var(--boder-item-light);
   &:hover {
-    // background: #f7f7f7;
+    background: rgb(252, 252, 252);
   }
+  transition: 0.5s;
 `;
 
 type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
@@ -277,26 +274,8 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
 
   if (!post) return null;
 
-  useEffect(() => {
-    const descPost = ref?.current.querySelector('.description-post');
-    if (descPost.clientHeight > 130) {
-      descPost.classList.add('show-less');
-      setShowMore(true);
-    } else {
-      setShowMore(false);
-    }
-  }, []);
-
-  const showMoreHandle = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const descPostDom = ref?.current.querySelector('.description-post');
-    descPostDom.classList.add('show-more');
-    setShowMore(false);
-  };
-
   const handlePostClick = e => {
-    if (e.target.parentElement.tagName === 'A') {
+    if (e.target.className === 'read-more-more-module_btn__33IaH') {
       e.stopPropagation();
     } else {
       router.push(`/post/${post.id}`);
@@ -340,6 +319,10 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
     dispatch(openModal('EditPostModalPopup', editPostProps));
   };
 
+  const openBurnModal = (e: React.MouseEvent<HTMLElement>, dataItem: PostItem) => {
+    dispatch(openModal('BurnModal', { burnForType: BurnForType.Post, data: dataItem }));
+  };
+
   return (
     <PostListItemContainer key={post.id} ref={ref}>
       <CardContainer>
@@ -347,25 +330,33 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
           <InfoCardUser
             imgUrl={post.page ? post.page.avatar : ''}
             name={showUsername()}
-            title={moment(post.createdAt).fromNow().toString()}
+            title={formatRelativeTime(post.createdAt)}
             postAccountAddress={post.postAccount ? post.postAccount.address : undefined}
             page={post.page ? post.page : undefined}
             token={post.token ? post.token : undefined}
             activatePostLocation={true}
             onEditPostClick={editPost}
             postEdited={post.createdAt !== post.updatedAt}
+            isDropdown={true}
+            lotusBurnScore={post.lotusBurnScore}
           />
         </CardHeader>
         <Content onClick={e => handlePostClick(e)}>
-          <div className="description-post">{ReactHtmlParser(post?.content)}</div>
-          {showMore && (
-            <p
-              style={{ textAlign: 'left', color: 'var(--color-primary)', marginBottom: '1rem', cursor: 'pointer' }}
-              onClick={e => showMoreHandle(e)}
-            >
-              Show more...
-            </p>
-          )}
+          <div className="description-post">
+            <div className="read-more">
+              <ReadMoreMore
+                id="readMore"
+                linesToShow={5}
+                parseHtml
+                text={post?.content}
+                checkFor={500}
+                transDuration={0}
+                readMoreText={intl.get('general.showMore')}
+                readLessText={intl.get('general.showLess')}
+                btnStyles={{ color: 'var(--color-primary)' }}
+              />
+            </div>
+          </div>
           {item.uploads.length != 0 && !showMoreImage && (
             <div className="images-post">
               <Gallery photos={imagesList} />
@@ -400,7 +391,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
             imgUrl="/images/ico-burn-down.svg"
             key={`list-vertical-downvote-o-${item.id}`}
             dataItem={item}
-            onClickIcon={e => downVotePost(e, item)}
+            onClickIcon={e => openBurnModal(e, item)}
           />
           <IconBurn
             burnValue={formatBalance(post?.totalComments ?? 0)}

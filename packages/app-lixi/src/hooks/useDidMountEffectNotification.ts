@@ -11,6 +11,7 @@ const useDidMountEffectNotification = (func?) => {
   const showNotification = () => {
     if (burnQueue.length > 0) {
       showBurnNotification('info', burnQueue);
+      if (func) func();
     } else {
       showBurnNotification('success');
     }
