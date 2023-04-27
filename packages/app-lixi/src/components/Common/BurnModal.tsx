@@ -125,6 +125,8 @@ export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
   const burnQueue = useAppSelector(getBurnQueue);
   const failQueue = useAppSelector(getFailQueue);
   const walletStatus = useAppSelector(getWalletStatus);
+  const [burnUp, setBurnUp] = useState(data.lotusBurnUp);
+  const [burnDown, setBurnDown] = useState(data.lotusBurnDown);
 
   const handleBurn = async (isUpVote: boolean, data: BurnForItem) => {
     try {
@@ -193,9 +195,21 @@ export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
             }
           };
           break;
+
         case BurnForType.Token:
           const token = data as TokenItem;
           tokenId = token.tokenId;
+          if (burnType == BurnType.Up) {
+            setBurnUp((prev) => {
+              return prev + burnValue
+            });
+          }
+          else {
+            setBurnDown((prev) => {
+              return prev + burnValue
+            });
+          }
+
           break;
       }
 
@@ -229,7 +243,6 @@ export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
   const handleOnCancel = () => {
     dispatch(closeModal());
   };
-
   return (
     <Modal
       width={450}
@@ -244,14 +257,14 @@ export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
             <div className="banner-item">
               <LikeOutlined />
               <div className="count-bar">
-                <p className="title">{data.lotusBurnUp + ' XPI'}</p>
+                <p className="title">{burnUp + ' XPI'}</p>
                 <p className="sub-title">burnt to up</p>
               </div>
             </div>
             <div className="banner-item">
               <DislikeOutlined />
               <div className="count-bar">
-                <p className="title">{data.lotusBurnDown + ' XPI'}</p>
+                <p className="title">{burnDown + ' XPI'}</p>
                 <p className="sub-title">burnt to down</p>
               </div>
             </div>
