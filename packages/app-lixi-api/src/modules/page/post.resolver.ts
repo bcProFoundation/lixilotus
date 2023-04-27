@@ -628,8 +628,12 @@ export class PostResolver {
           pageName: createdPost.page?.name
         }
       };
+      const jobData = {
+        room: recipient.mnemonicHash,
+        notification: createNotif
+      };
       createNotif.senderId !== createNotif.recipientId &&
-        (await this.notificationService.saveAndDispatchNotification(recipient?.mnemonicHash, createNotif));
+        (await this.notificationService.saveAndDispatchNotification(jobData.room, jobData.notification));
     }
 
     return createdPost;

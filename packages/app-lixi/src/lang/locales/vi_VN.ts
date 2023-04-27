@@ -100,7 +100,7 @@ export default {
   'general.showMore': 'Xem thêm',
   'general.showLess': 'Xem ít',
   'general.topAccounts': 'Xếp hạng tài khoản đã đốt',
-
+  'general.burned': 'Đã đốt',
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',
   'account.mnemonic': 'mnemonic (cụm từ bảo mật)',
@@ -316,7 +316,6 @@ export default {
   'lixi.claimed': 'Đã nhận',
   'lixi.budget': 'Ngân sách',
   'lixi.redeemed': 'Đã nhận',
-
   /* 04.Claim */
   'claim.claim': 'Nhận Lì xì',
   'claim.claimReport': 'Danh sách đã nhận lì xì',
@@ -572,5 +571,5 @@ export default {
   'category.scienceAndTechnology': 'Khoa học và Công nghệ',
   'category.healthAndFitness': 'Sức khỏe và Thể hình',
   'category.travelAndEvents': 'Du lịch và Sự kiện',
-  'category.other': 'Khác'
+  'category.other': 'Khác',
 };

@@ -31,33 +31,30 @@ const FilterStyle = styled.div`
     gap: 10px;
 
     Button {
-       
       &.down-value {
-        border: .1px solid;
-        border-radius:50%;
+        border: 0.1px solid;
+        border-radius: 50%;
         color: rgba(30, 26, 29, 0.6);
-      } 
-
-      &.down-value:hover {
-        border: 1.3px solid #9E2A9C;
       }
-
+      &.down-value:hover {
+        border: 1.3px solid #9e2a9c;
+      }
       &.up-value {
-        border: .1px solid;
-        border-radius:50%;
+        border: 0.1px solid;
+        border-radius: 50%;
         color: rgba(30, 26, 29, 0.6);
       }
       &.up-value:hover {
-        border: 1.3px solid #9E2A9C;
+        border: 1.3px solid #9e2a9c;
       }
     }
-
     .ant-input-disabled {
       width: 54px;
       color: #000;
       cursor: pointer;
       border: 0px;
-      background: rgba(0,0,0,0);
+      background: rgba(0, 0, 0, 0);
+    }
   }
 `;
 
