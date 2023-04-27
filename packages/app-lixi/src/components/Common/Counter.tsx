@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import intl from 'react-intl-universal';
 
 export const GridDiv = styled.div`
   .count {
@@ -54,12 +55,6 @@ export const Counter = (props: CounterProps) => {
         <span style={{ fontSize: '13px' }} className={animationCounter}>
           {count}
         </span>
-        {count > 0 && (
-          <>
-            &nbsp;
-            <span style={{ fontSize: '10px' }}>XPI</span>
-          </>
-        )}
       </div>
     </GridDiv>
   );
