@@ -23,7 +23,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import intl from 'react-intl-universal';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import styled from 'styled-components';
 import { EditPostModalProps } from './EditPostModalPopup';
 import Gallery from 'react-photo-gallery';
@@ -31,7 +31,6 @@ import useWindowDimensions from '@hooks/useWindowDimensions';
 import { ReadMoreMore } from 'read-more-more';
 import { IconBurn } from './PostDetail';
 import { formatRelativeTime } from '@utils/formatting';
-
 
 // export const IconBurn = ({
 //   icon,
@@ -320,6 +319,10 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
     dispatch(openModal('EditPostModalPopup', editPostProps));
   };
 
+  const openBurnModal = (e: React.MouseEvent<HTMLElement>, dataItem: PostItem) => {
+    dispatch(openModal('BurnModal', { burnForType: BurnForType.Post, data: dataItem }));
+  };
+
   return (
     <PostListItemContainer key={post.id} ref={ref}>
       <CardContainer>
@@ -388,7 +391,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
             imgUrl="/images/ico-burn-down.svg"
             key={`list-vertical-downvote-o-${item.id}`}
             dataItem={item}
-            onClickIcon={e => downVotePost(e, item)}
+            onClickIcon={e => openBurnModal(e, item)}
           />
           {/* TODO: complete next Release */}
           {/* <IconBurn

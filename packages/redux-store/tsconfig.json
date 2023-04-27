@@ -1,0 +1,49 @@
+{
+  "extends": "./tsconfig.path.json",
+  "compilerOptions": {
+    "incremental": true,
+    "target": "ES2021",
+    "outDir": "build/main",
+    "rootDir": "src",
+    // "moduleResolution": "node",
+    "module": "commonjs",
+    "declaration": true,
+    "inlineSourceMap": true,
+    "composite": true,
+    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */,
+    "resolveJsonModule": true /* Include modules imported with .json extension. */,
+    "strict": false,
+    "traceResolution": false /* Report module resolution log messages. */,
+    "listEmittedFiles": false /* Print names of generated files part of the compilation. */,
+    "listFiles": false /* Print names of files part of the compilation. */,
+    "pretty": true /* Stylize errors and messages using color and context. */,
+    /* Experimental Options */
+    "experimentalDecorators": true /* Enables experimental support for ES7 decorators. */,
+    // "emitDecoratorMetadata": true /* Enables experimental support for emitting type metadata for decorators. */,
+    "lib": ["ES2021", "dom", "dom.iterable", "esnext"],
+    "types": ["node"],
+    "typeRoots": ["node_modules/@types", "src/types"],
+    "jsx": "preserve",
+    "moduleResolution": "node",
+    "isolatedModules": true
+  },
+  "references": [
+    {
+      "path": "../lixi-models/tsconfig.json"
+    },
+    {
+      "path": "../app-lixi/tsconfig.json"
+    },
+    {
+      "path": "../lixi-components/tsconfig.json"
+    },
+    {
+      "path": "../app-lotus-temple/tsconfig.json"
+    }
+  ],
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"],
+  "typeRoots": ["./src/@types", "./node_modules/@types"]
+}

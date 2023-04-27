@@ -15,7 +15,6 @@ export const formatDate = (dateString: string, userLocale: string = 'en') => {
   }
 };
 
-
 export const formatRelativeTime = (createdAt: Date) => {
   const yesterday = moment().subtract(2, 'day');
   if (!createdAt) {
@@ -25,4 +24,4 @@ export const formatRelativeTime = (createdAt: Date) => {
   } else {
     return moment(createdAt).format('l');
   }
-}
+};

@@ -68,7 +68,7 @@ import {
 import { Virtuoso } from 'react-virtuoso';
 import { RWebShare } from 'react-web-share';
 import { CommentOrderField, CreateCommentInput, OrderDirection } from 'src/generated/types.generated';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import styled, { keyframes } from 'styled-components';
 import CommentListItem, { CommentItem } from './CommentListItem';
 import { useForm, Controller } from 'react-hook-form';
@@ -81,7 +81,7 @@ import { getTransactionStatus } from '@store/account/selectors';
 import useDidMountEffect from '@hooks/useDidMountEffect ';
 import { getBurnQueue, getFailQueue } from '@store/burn';
 import { TokenItem } from '@components/Token/TokensFeed';
-import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
+import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 
 export type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 export type BurnData = {
@@ -358,6 +358,10 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     handleBurn(false, { data: dataItem, burnForType: BurnForType.Post });
   };
 
+  const openBurnModal = (dataItem: PostItem) => {
+    dispatch(openModal('BurnModal', { burnForType: BurnForType.Post, data: dataItem }));
+  };
+
   const handleBurn = async (isUpVote: boolean, burnData: BurnData) => {
     try {
       const burnValue = '1';
@@ -605,7 +609,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
                 imgUrl="/images/ico-burn-down.svg"
                 key={`list-vertical-downvote-o-${post.id}`}
                 dataItem={post}
-                onClickIcon={() => downVotePost(post)}
+                onClickIcon={() => openBurnModal(post)}
               />
             </div>
             <div className="reaction-func">

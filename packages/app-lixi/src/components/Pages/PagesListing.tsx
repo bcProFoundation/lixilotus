@@ -9,7 +9,7 @@ import { Menu, MenuProps, Modal } from 'antd';
 import _ from 'lodash';
 import React, { useEffect, useRef, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import PageListItem from './PageListItem';
 
 type PagesListingProps = {

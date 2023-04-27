@@ -34,7 +34,7 @@ import { setTransactionReady } from '@store/account/actions';
 import { getFilterPostsPage } from '@store/settings/selectors';
 import { FilterBurnt } from '@components/Common/FilterBurn';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
-import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
+import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 
 type PageDetailProps = {
   page: any;

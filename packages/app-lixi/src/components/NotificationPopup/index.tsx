@@ -24,7 +24,6 @@ import { AvatarUser } from '@components/Common/AvatarUser';
 import { InfoSubCard } from '@components/Lixi';
 import { formatRelativeTime } from '@utils/formatting';
 
-
 export type NotificationMenuProps = {
   notifications: Notification[];
   className?: string;
@@ -270,7 +269,7 @@ const NotificationPopup = (notifications: Notification[], account: Account) => {
                 author={
                   <StyledAuthor>
                     {/* <StyledTextLeft></StyledTextLeft> */}
-                    
+
                     <StyledTextRight>{formatRelativeTime(notification.createdAt)}</StyledTextRight>
                   </StyledAuthor>
                 }

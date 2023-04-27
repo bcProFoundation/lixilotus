@@ -1,4 +1,4 @@
-import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
+import { currency } from '@components/Common/Ticker';
 import { BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
 import BCHJS from '@bcpros/xpi-js';
 import BigNumber from 'bignumber.js';
