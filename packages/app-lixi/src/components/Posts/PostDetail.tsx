@@ -126,46 +126,43 @@ export const IconBurn = ({
   burnValue,
   dataItem,
   imgUrl,
-  onClickIcon,
-  isComment,
+  onClickIcon
 }: {
   icon?: React.FC;
   burnValue?: number;
   dataItem: any;
   imgUrl?: string;
   onClickIcon: (e: any) => void;
-  isComment?: boolean
 }) => (
   <Space onClick={onClickIcon} size={4} style={{ alignItems: 'end', marginRight: '1rem' }}>
     {icon && React.createElement(icon)}
     <picture>
       <StyledBurnIcon alt="burnIcon" src={imgUrl} />
     </picture>
-    <Counter num={burnValue ?? 0} isComments={isComment} />
+    <Counter num={burnValue ?? 0} />
   </Space>
 );
 
 export const IconComment = ({
   icon,
-  burnValue,
+  totalComments,
   dataItem,
   imgUrl,
-  onClickIcon,
-  isComment,
+  onClickIcon
 }: {
   icon?: React.FC;
-  burnValue?: number;
+  totalComments?: number;
   dataItem: any;
   imgUrl?: string;
   onClickIcon: (e: any) => void;
-  isComment?: boolean
+  isComment?: boolean;
 }) => (
   <Space onClick={onClickIcon} size={4} style={{ alignItems: 'end', marginRight: '1rem' }}>
     {icon && React.createElement(icon)}
     <picture>
       <StyledBurnIcon alt="burnIcon" src={imgUrl} />
     </picture>
-    <Counter num={burnValue ?? 0} isComments={isComment} />
+    <Counter num={totalComments ?? 0} />
   </Space>
 );
 
@@ -623,7 +620,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           )}
           <div className="reaction-container">
             <div className="reaction-ico">
-              <IconComment
+              <IconBurn
                 burnValue={formatBalance(post?.lotusBurnUp ?? 0)}
                 imgUrl="/images/ico-burn-up.svg"
                 key={`list-vertical-upvote-o-${post.id}`}
@@ -631,7 +628,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
                 onClickIcon={() => upVotePost(post)}
               />
               <IconComment
-                burnValue={formatBalance(post?.lotusBurnDown ?? 0)}
+                totalComments={formatBalance(post?.totalComments ?? 0)}
                 imgUrl="/images/ico-burn-down.svg"
                 key={`list-vertical-downvote-o-${post.id}`}
                 dataItem={post}

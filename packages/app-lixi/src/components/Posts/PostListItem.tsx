@@ -29,28 +29,8 @@ import { EditPostModalProps } from './EditPostModalPopup';
 import Gallery from 'react-photo-gallery';
 import useWindowDimensions from '@hooks/useWindowDimensions';
 import { ReadMoreMore } from 'read-more-more';
-import { IconBurn } from './PostDetail';
+import { IconBurn, IconComment } from './PostDetail';
 import { formatRelativeTime } from '@utils/formatting';
-
-// export const IconBurn = ({
-//   icon,
-//   burnValue,
-//   dataItem,
-//   imgUrl,
-//   onClickIcon
-// }: {
-//   icon?: React.FC;
-//   burnValue?: number;
-//   dataItem: any;
-//   imgUrl?: string;
-//   onClickIcon: (e) => void;
-// }) => (
-//   <Space onClick={onClickIcon}>
-//     {icon && React.createElement(icon)}
-//     {imgUrl && React.createElement('img', { src: imgUrl, width: '28' }, null)}
-//     <Counter num={burnValue ?? 0} />
-//   </Space>
-// );
 
 export const CommentList = ({ comments }: { comments: CommentItem[] }) => (
   <List
@@ -393,29 +373,13 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
             dataItem={item}
             onClickIcon={e => openBurnModal(e, item)}
           />
-          <IconBurn
-            burnValue={formatBalance(post?.totalComments ?? 0)}
+          <IconComment
+            totalComments={formatBalance(post?.totalComments ?? 0)}
             imgUrl="/images/ico-comments.svg"
             key={`list-vertical-comment-o-${item.id}`}
             dataItem={item}
             onClickIcon={e => handlePostClick(e)}
-            isComment={true}
           />
-          {/* TODO: complete next Release */}
-          {/* <IconBurn
-            burnValue={formatBalance(post?.lotusBurnDown ?? 0)}
-            imgUrl="/images/ico-comments.svg"
-            key={`list-vertical-comments-o-${item.id}`}
-            dataItem={item}
-            onClickIcon={e => downVotePost(e, item)}
-          />
-          <IconBurn
-            burnValue={formatBalance(post?.lotusBurnDown ?? 0)}
-            imgUrl="/images/ico-share.svg"
-            key={`list-vertical-share-o-${item.id}`}
-            dataItem={item}
-            onClickIcon={e => downVotePost(e, item)}
-          /> */}
         </GroupIconText>
         <div>
           <ShareSocialButton slug={post.id} />

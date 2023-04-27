@@ -34,7 +34,6 @@ export const GridDiv = styled.div`
 
 type CounterProps = {
   num: number;
-  isComments?: boolean;
 };
 
 export const Counter = (props: CounterProps) => {
@@ -56,12 +55,6 @@ export const Counter = (props: CounterProps) => {
         <span style={{ fontSize: '13px' }} className={animationCounter}>
           {count}
         </span>
-        {count > 0 && (
-          <>
-            &nbsp;
-            <span style={{ fontSize: '10px' }}>{props.isComments ? intl.get('label.comment') : "XPI"}</span>
-          </>
-        )}
       </div>
     </GridDiv>
   );
