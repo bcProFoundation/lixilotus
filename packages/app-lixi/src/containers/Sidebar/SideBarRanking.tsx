@@ -45,7 +45,7 @@ export const ShortcutItemAccess = ({
         <div>
           {text}
           <span style={{ display: 'block', paddingTop: '4px', fontSize: '14px', color: 'rgba(30, 26, 29, 0.38)' }}>
-            {intl.get('burned.burn')}: {burnValue} XPI
+            {intl.get('general.burned')}: {burnValue} XPI
           </span>
         </div>
       </Space>

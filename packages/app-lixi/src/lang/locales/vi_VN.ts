@@ -100,7 +100,7 @@ export default {
   'general.showMore': 'Xem thêm',
   'general.showLess': 'Xem ít',
   'general.topAccounts': 'Xếp hạng tài khoản đã đốt',
-
+  'general.burned': 'Đã đốt',
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',
   'account.mnemonic': 'mnemonic (cụm từ bảo mật)',
@@ -571,6 +571,4 @@ export default {
   'category.healthAndFitness': 'Sức khỏe và Thể hình',
   'category.travelAndEvents': 'Du lịch và Sự kiện',
   'category.other': 'Khác',
-  // Burned
-  'burned.burn': 'Đã đốt cháy',
 };
