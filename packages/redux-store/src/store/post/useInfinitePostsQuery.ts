@@ -13,14 +13,9 @@ const postsAdapter = createEntityAdapter<PostQuery['post']>({
 });
 
 const { selectAll } = postsAdapter.getSelectors();
-
 export interface PostListParams extends PaginationArgs {
+  accountId: number;
   orderBy?: PostOrder;
-  accountId?: number;
-}
-export interface PostListBody {
-  posts: Post[];
-  next: string;
 }
 
 export function useInfinitePostsQuery(
@@ -80,6 +75,7 @@ export function useInfinitePostsQuery(
   const refetch = async () => {
     isBaseReady.current = false;
     next.current = null; // restart
+    data.length = 0; // delete data from memo
     await baseResult.refetch(); // restart with a whole new refetching
   };
 

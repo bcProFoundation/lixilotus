@@ -3,14 +3,17 @@ import { BellTwoTone, MenuOutlined, SearchOutlined } from '@ant-design/icons';
 import { Space, Badge, Button } from 'antd';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { toggleCollapsedSideNav } from '@store/settings/actions';
-import { getNavCollapsed } from '@store/settings/selectors';
+import { getFilterPostsHome, getNavCollapsed } from '@store/settings/selectors';
 import { Header } from 'antd/lib/layout/layout';
 import styled from 'styled-components';
-import { getSelectedAccount } from '@store/account/selectors';
+import { getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
 import { fetchNotifications, startChannel, stopChannel } from '@store/notification/actions';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 import { AvatarUser } from '@components/Common/AvatarUser';
+import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
+import { OrderDirection, PostOrderField } from '@generated/types.generated';
+import { api as postApi } from '@store/post/posts.api';
+import { setGraphqlRequestLoading } from '@store/account/actions';
 
 export type TopbarProps = {
   className?: string;
@@ -39,6 +42,8 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   const router = useRouter();
   const currentPathName = router.pathname ?? '';
   const pathDirection = currentPathName.split('/', 2);
+  const filterValue = useAppSelector(getFilterPostsHome);
+  const selectedAccountId = useAppSelector(getSelectedAccountId);
 
   useEffect(() => {
     if (selectedAccount) {
@@ -62,11 +67,36 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
     dispatch(toggleCollapsedSideNav(!navCollapsed));
   };
 
+  const { refetch } = useInfinitePostsQuery(
+    {
+      first: 20,
+      minBurnFilter: filterValue,
+      accountId: selectedAccountId,
+      orderBy: {
+        direction: OrderDirection.Desc,
+        field: PostOrderField.UpdatedAt
+      }
+    },
+    false
+  );
+
+  const handleLogoClick = () => {
+    if (currentPathName === '/') {
+      dispatch(postApi.util.resetApiState());
+      refetch();
+      dispatch(setGraphqlRequestLoading());
+    }
+  };
+
   return (
     <Header ref={ref} className={className}>
       <PathDirection>
         <img src="/images/ico-menu.svg" alt="" onClick={handleMenuClick} />
-        {currentPathName == '/' && <img width="98px" src="/images/lixilotus-logo.svg" alt="" />}
+        {currentPathName == '/' && (
+          <picture>
+            <img width="98px" src="/images/lixilotus-logo.svg" alt="lixilotus-logo" onClick={() => handleLogoClick()} />
+          </picture>
+        )}
         {pathDirection[1] != '' && <h3>{pathDirection[1]}</h3>}
       </PathDirection>
       <Space direction="horizontal" size={15}>

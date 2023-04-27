@@ -14,4 +14,5 @@ export interface AccountsState extends EntityState<Account> {
   editorCache: Nullable<string> | undefined;
   leaderBoard: Array<Account & { totalBurned: number }>;
   transactionReady: boolean;
+  graphqlRequestLoading: boolean;
 }

@@ -82,6 +82,7 @@ import useDidMountEffect from '@hooks/useDidMountEffect ';
 import { getBurnQueue, getFailQueue } from '@store/burn';
 import { TokenItem } from '@components/Token/TokensFeed';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
+import { getFilterPostsHome } from '@store/settings/selectors';
 
 export type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 export type BurnData = {
@@ -315,6 +316,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const [isEncryptedOptionalOpReturnMsg, setIsEncryptedOptionalOpReturnMsg] = useState(true);
   const walletStatus = useAppSelector(getWalletStatus);
   const [open, setOpen] = useState(false);
+  const filterValue = useAppSelector(getFilterPostsHome);
 
   const dataSource = ['/give'];
 
@@ -427,7 +429,8 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
         burnValue,
         tipToAddresses: tipToAddresses,
         postQueryTag: PostsQueryTag.Post,
-        queryParams: queryParams
+        queryParams: queryParams,
+        minBurnFilter: filterValue
       };
 
       dispatch(addBurnQueue(burnCommand));

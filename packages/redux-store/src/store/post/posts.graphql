@@ -14,8 +14,8 @@ query Posts(
   $first: Int = 20
   $last: Int
   $orderBy: PostOrder
-  $query: String
   $skip: Int
+  $accountId: Int
   $minBurnFilter: Int
 ) {
   allPosts(
@@ -24,8 +24,8 @@ query Posts(
     first: $first
     last: $last
     orderBy: $orderBy
-    query: $query
     skip: $skip
+    accountId: $accountId
     minBurnFilter: $minBurnFilter
   ) {
     totalCount
