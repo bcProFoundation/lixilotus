@@ -145,6 +145,30 @@ export const IconBurn = ({
   </Space>
 );
 
+export const IconComment = ({
+  icon,
+  burnValue,
+  dataItem,
+  imgUrl,
+  onClickIcon,
+  isComment,
+}: {
+  icon?: React.FC;
+  burnValue?: number;
+  dataItem: any;
+  imgUrl?: string;
+  onClickIcon: (e: any) => void;
+  isComment?: boolean
+}) => (
+  <Space onClick={onClickIcon} size={4} style={{ alignItems: 'end', marginRight: '1rem' }}>
+    {icon && React.createElement(icon)}
+    <picture>
+      <StyledBurnIcon alt="burnIcon" src={imgUrl} />
+    </picture>
+    <Counter num={burnValue ?? 0} isComments={isComment} />
+  </Space>
+);
+
 type PostDetailProps = {
   post: PostItem;
   isMobile: boolean;
@@ -599,14 +623,14 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           )}
           <div className="reaction-container">
             <div className="reaction-ico">
-              <IconBurn
+              <IconComment
                 burnValue={formatBalance(post?.lotusBurnUp ?? 0)}
                 imgUrl="/images/ico-burn-up.svg"
                 key={`list-vertical-upvote-o-${post.id}`}
                 dataItem={post}
                 onClickIcon={() => upVotePost(post)}
               />
-              <IconBurn
+              <IconComment
                 burnValue={formatBalance(post?.lotusBurnDown ?? 0)}
                 imgUrl="/images/ico-burn-down.svg"
                 key={`list-vertical-downvote-o-${post.id}`}
