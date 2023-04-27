@@ -315,7 +315,6 @@ export default {
   'lixi.claimed': 'Đã nhận',
   'lixi.budget': 'Ngân sách',
   'lixi.redeemed': 'Đã nhận',
-
   /* 04.Claim */
   'claim.claim': 'Nhận Lì xì',
   'claim.claimReport': 'Danh sách đã nhận lì xì',
@@ -571,5 +570,7 @@ export default {
   'category.scienceAndTechnology': 'Khoa học và Công nghệ',
   'category.healthAndFitness': 'Sức khỏe và Thể hình',
   'category.travelAndEvents': 'Du lịch và Sự kiện',
-  'category.other': 'Khác'
+  'category.other': 'Khác',
+  // Burned
+  'burned.burn': 'Đã đốt cháy',
 };

@@ -20,6 +20,7 @@ import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { useInfinitePagesQuery } from '@store/page/useInfinitePagesQuery';
 import { AvatarUser } from '@components/Common/AvatarUser';
 import CollapsePanel from 'antd/es/collapse/CollapsePanel';
+import { Content } from 'antd/es/layout/layout';
 const { Sider } = Layout;
 
 export const ShortcutItemAccess = ({
@@ -44,7 +45,7 @@ export const ShortcutItemAccess = ({
         <div>
           {text}
           <span style={{ display: 'block', paddingTop: '4px', fontSize: '14px', color: 'rgba(30, 26, 29, 0.38)' }}>
-            Burned: {burnValue} XPI
+            {intl.get('burned.burn')}: {burnValue} XPI
           </span>
         </div>
       </Space>
