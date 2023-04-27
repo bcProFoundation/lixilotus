@@ -12,6 +12,7 @@
       "@local-hooks/*": ["src/hooks/*"],
       "@store/*": ["../../packages/redux-store/src/store/*"],
       "@context/*": ["../../packages/redux-store/src/context/*"],
+      "@generated/*": ["../../packages/redux-store/src/generated/*"],
       "@bcpros/lixi-components/*": ["../../packages/lixi-components/src/*"],
       "@bcpros/lixi-models/*": ["../../packages/lixi-models/src/*"]
     }
