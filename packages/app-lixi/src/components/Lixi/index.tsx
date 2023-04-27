@@ -628,6 +628,10 @@ const Lixi = props => {
           bgStatus = '#BA1A1A';
           status = `general.failed`;
           break;
+        case 'withdrawn':
+          bgStatus = '#CDC4C8';
+          status = `lixi.withdrawn`;
+          break;
       }
     }
     return (

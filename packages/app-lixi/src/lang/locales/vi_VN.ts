@@ -239,7 +239,7 @@ export default {
   'lixi.downloadCode': 'Tải về mã code',
   'lixi.copyClaim': 'Sao chép mã code',
   'lixi.refreshLixi': 'Làm mới Lì xì',
-  'lixi.exportLixi': 'Export Lixi',
+  'lixi.exportLixi': 'Xuất tệp Lì xì',
   'lixi.noLixiSelected': 'Chọn ít nhất một Lì xì',
   'lixi.fileTypeError': 'Bạn chỉ có thể tải lên tệp JPG/PNG/GIF !',
   'lixi.fileSizeError': 'Hình ảnh phải nhỏ hơn 10MB!',
@@ -312,6 +312,7 @@ export default {
   'lixi.archive': 'Lưu trữ',
   'lixi.unarchive': 'Hủy lưu trữ',
   'lixi.withdraw': 'Rút tiền',
+  'lixi.withdrawn': 'Đã rút',
   'lixi.claimed': 'Đã nhận',
   'lixi.budget': 'Ngân sách',
   'lixi.redeemed': 'Đã nhận',
@@ -570,5 +571,5 @@ export default {
   'category.scienceAndTechnology': 'Khoa học và Công nghệ',
   'category.healthAndFitness': 'Sức khỏe và Thể hình',
   'category.travelAndEvents': 'Du lịch và Sự kiện',
-  'category.other': 'Khác',
+  'category.other': 'Khác'
 };

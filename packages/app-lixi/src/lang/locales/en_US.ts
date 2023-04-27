@@ -315,6 +315,7 @@ export default {
   'lixi.archive': 'Archive',
   'lixi.unarchive': 'Unarchive',
   'lixi.withdraw': 'Withdraw',
+  'lixi.withdrawn': 'Withdrawn',
   'lixi.claimed': 'Claimed',
   'lixi.budget': 'Budget',
   'lixi.redeemed': 'Redeemed',
@@ -571,5 +572,5 @@ export default {
   'category.scienceAndTechnology': 'Science And Technology',
   'category.healthAndFitness': 'Health And Fitness',
   'category.travelAndEvents': 'Travel And Events',
-  'category.other': 'Other',
+  'category.other': 'Other'
 };
