@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { saveBurnFilter } from '@store/settings/actions';
 import styled from 'styled-components';
 import intl from 'react-intl-universal';
-import { getFilterPostsHome, getFilterPostsPage, getFilterPostsToken } from '@store/settings/selectors';
+import { getFilterPostsHome, getFilterPostsPage, getFilterPostsProfile, getFilterPostsToken } from '@store/settings/selectors';
 import { DownOutlined, MinusOutlined, PlusOutlined, UpOutlined } from '@ant-design/icons';
 
 const FilterStyle = styled.div`
@@ -71,8 +71,10 @@ export const FilterBurnt = (props: FilterBurntProps) => {
     valueForType = useAppSelector(getFilterPostsHome);
   } else if (filterForType == FilterType.PostsPage) {
     valueForType = useAppSelector(getFilterPostsPage);
-  } else {
+  } else if (filterForType == FilterType.PostsToken) {
     valueForType = useAppSelector(getFilterPostsToken);
+  } else {
+    valueForType = useAppSelector(getFilterPostsProfile);
   }
 
   const handleUpDownBtn = (isUp: boolean) => {

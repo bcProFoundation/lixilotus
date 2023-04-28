@@ -34,6 +34,7 @@ import { CommentOrderField, OrderDirection } from 'src/generated/types.generated
 import { BurnData, PostItem } from '@components/Posts/PostDetail';
 import { CommentItem } from '@components/Posts/CommentListItem';
 import { TokenItem } from '@components/Token/TokensFeed';
+import router from 'next/router';
 
 const UpDownButton = styled(Button)`
   background: rgb(158, 42, 156);
@@ -125,6 +126,7 @@ export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
   const burnQueue = useAppSelector(getBurnQueue);
   const failQueue = useAppSelector(getFailQueue);
   const walletStatus = useAppSelector(getWalletStatus);
+  const pathName = router.pathname ?? '';
 
   const handleBurn = async (isUpVote: boolean, data: BurnForItem) => {
     try {
@@ -133,6 +135,7 @@ export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
       let tag;
       let pageId;
       let tokenId;
+      let userId;
       const burnValue = _.isNil(control._formValues.burnedValue)
         ? DefaultXpiBurnValues[0]
         : control._formValues.burnedValue;
@@ -167,6 +170,11 @@ export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
           }
 
           if (_.isNil(post.page) && _.isNil(post.token)) {
+            if (pathName.includes('/profile/')) {
+              tag = PostsQueryTag.PostsByUserId
+            } else {
+              tag = PostsQueryTag.Posts;
+            }
             tag = PostsQueryTag.Posts;
           } else if (post.page) {
             tag = PostsQueryTag.PostsByPageId;
@@ -176,6 +184,7 @@ export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
 
           pageId = post.page?.id;
           tokenId = post.token?.id;
+          userId = post.postAccount.id;
           break;
         case BurnForType.Comment:
           const comment = data as CommentItem;
@@ -214,7 +223,7 @@ export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
 
       dispatch(addBurnQueue(burnCommand));
       dispatch(addBurnTransaction(burnCommand));
-      // dispatch(closeModal());
+      dispatch(closeModal());
     } catch (e) {
       const errorMessage = e.message || intl.get('post.unableToBurn');
       dispatch(

@@ -38,3 +38,8 @@ export const getFilterPostsToken = createSelector(
   (state: RootState) => state.settings,
   (state: SettingsState) => state.filterPostsToken
 );
+
+export const getFilterPostsProfile = createSelector(
+  (state: RootState) => state.settings,
+  (state: SettingsState) => state.filterPostsProfile
+);

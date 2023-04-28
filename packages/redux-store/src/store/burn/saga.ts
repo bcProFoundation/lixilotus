@@ -268,6 +268,36 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
           }
         )
       );
+    case PostsQueryTag.PostsByUserId:
+      return yield put(
+        postApi.util.updateQueryData(
+          'PostsByUserId',
+          { ...params, id: command.userId, minBurnFilter: command.minBurnFilter },
+          draft => {
+            const postToUpdateIndex = draft.allPostsByUserId.edges.findIndex(
+              item => item.node.id === command.burnForId
+            );
+            const postToUpdate = draft.allPostsByUserId.edges[postToUpdateIndex];
+            if (postToUpdateIndex >= 0) {
+              let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
+              let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+              if (command.burnType == BurnType.Up) {
+                lotusBurnUp = lotusBurnUp + burnValue;
+              } else {
+                lotusBurnDown = lotusBurnDown + burnValue;
+              }
+              const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+              draft.allPostsByUserId.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
+              draft.allPostsByUserId.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
+              draft.allPostsByUserId.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
+              if (lotusBurnScore < 0) {
+                draft.allPostsByUserId.edges.splice(postToUpdateIndex, 1);
+                draft.allPostsByUserId.totalCount = draft.allPostsByUserId.totalCount - 1;
+              }
+            }
+          }
+        )
+      );
     default:
       return yield put(
         postApi.util.updateQueryData('OrphanPosts', params, draft => {
