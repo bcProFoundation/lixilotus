@@ -40,6 +40,9 @@ export const settingsReducer = createReducer(initialState, builder => {
         case FilterType.PostsToken:
           state.filterPostsToken = filterValue;
           break;
+        case FilterType.PostsProfile:
+          state.filterPostsProfile = filterValue;
+          break;
       }
     });
 });
