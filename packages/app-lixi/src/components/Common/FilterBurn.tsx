@@ -5,7 +5,12 @@ import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { saveBurnFilter } from '@store/settings/actions';
 import styled from 'styled-components';
 import intl from 'react-intl-universal';
-import { getFilterPostsHome, getFilterPostsPage, getFilterPostsProfile, getFilterPostsToken } from '@store/settings/selectors';
+import {
+  getFilterPostsHome,
+  getFilterPostsPage,
+  getFilterPostsProfile,
+  getFilterPostsToken
+} from '@store/settings/selectors';
 import { DownOutlined, MinusOutlined, PlusOutlined, UpOutlined } from '@ant-design/icons';
 
 const FilterStyle = styled.div`

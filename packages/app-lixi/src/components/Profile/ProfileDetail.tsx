@@ -517,7 +517,7 @@ const ProfileDetail = ({ user, isMobile }: UserDetailProps) => {
               )} */}
             </div>
             <div className="title-profile">
-              {console.log("userDetailData: ", userDetailData)}
+              {console.log('userDetailData: ', userDetailData)}
               <h2>{userDetailData.name}</h2>
               <p className="add">{userDetailData?.address.slice(6, 11) + '...' + userDetailData?.address.slice(-5)}</p>
             </div>
@@ -670,7 +670,9 @@ const ProfileDetail = ({ user, isMobile }: UserDetailProps) => {
                       scrollableTarget="scrollableDiv"
                     >
                       {data.map((item, index) => {
-                        return <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />;
+                        return (
+                          <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />
+                        );
                       })}
                     </InfiniteScroll>
                   </React.Fragment>

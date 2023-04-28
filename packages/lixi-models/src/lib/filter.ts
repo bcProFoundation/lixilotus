@@ -2,7 +2,7 @@ export enum FilterType {
   PostsHome = 'postsHome',
   PostsPage = 'postsPage',
   PostsToken = 'postsToken',
-  PostsProfile = 'postsProfile',
+  PostsProfile = 'postsProfile'
 }
 
 export interface FilterBurnCommand {

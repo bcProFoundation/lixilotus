@@ -171,7 +171,7 @@ export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
 
           if (_.isNil(post.page) && _.isNil(post.token)) {
             if (pathName.includes('/profile/')) {
-              tag = PostsQueryTag.PostsByUserId
+              tag = PostsQueryTag.PostsByUserId;
             } else {
               tag = PostsQueryTag.Posts;
             }
