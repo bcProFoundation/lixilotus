@@ -122,7 +122,7 @@ const nextConfig = withLess({
 
 		// Standalone build
 		// @link https://nextjs.org/docs/advanced-features/output-file-tracing#automatically-copying-traced-files-experimental
-		output: 'standalone',
+		outputStandalone: true,
 		// @link https://nextjs.org/docs/advanced-features/output-file-tracing#caveats
 		outputFileTracingRoot: path.join(__dirname, '../../'),
 
