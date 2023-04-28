@@ -630,8 +630,8 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
                 dataItem={post}
                 onClickIcon={() => upVotePost(post)}
               />
-              <IconComment
-                totalComments={formatBalance(post?.totalComments ?? 0)}
+              <IconBurn
+                burnValue={formatBalance(post?.lotusBurnDown ?? 0)}
                 imgUrl="/images/ico-burn-down.svg"
                 key={`list-vertical-downvote-o-${post.id}`}
                 dataItem={post}
