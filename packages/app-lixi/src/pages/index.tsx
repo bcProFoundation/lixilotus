@@ -12,8 +12,8 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { getSelectorsByUserAgent } from 'react-device-detect';
 import { END } from 'redux-saga';
-import { LocalUser } from 'src/models/localUser';
-import { sessionOptions } from 'src/models/session';
+import { LocalUser } from 'src/shared/models/localUser';
+import { sessionOptions } from 'src/shared/models/session';
 
 type HomePageProps = {
   isMobile: boolean;
