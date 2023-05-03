@@ -6,5 +6,6 @@ export interface WebAuthnConfig {
 
 export interface WebPushNotifConfig {
   allowPushNotification: boolean;
-  userId: string;
+  appId: string;
+  lastPushMessageTimestamp: string;
 }

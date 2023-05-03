@@ -1,18 +1,14 @@
-import * as localforage from 'localforage';
 import { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import {
   checkInWithPushNotificationServer,
   getPlatformPermissionState,
   unsubscribeAllWalletsFromPushNotification
 } from '@utils/pushNotification';
+import { saveWebPushNotifConfig } from '@store/settings/actions';
+import { getWebPushNotifConfig } from '@store/settings/selectors';
 
-const KEY = 'pushNotificationConfig';
-type NotificationConfig = {
-  allowPushNotification: boolean;
-  userId: string;
-  lastPushMessageTimestamp: string;
-};
 
 export type DeviceNotificationValue = {
   allowPushNotification: boolean;
@@ -22,30 +18,26 @@ export type DeviceNotificationValue = {
 };
 
 const usePushNotification = () => {
-  const [pushNotification, setPushNotification] = useState(null);
+  const [isWebPushNotifSupported, setIsWebPushNotifSupported] = useState(false);
   const [allowPushNotification, setAllowPushNotification] = useState(undefined);
   const [userId, setUserId] = useState(Date.now().toString(16));
 
-  const loadPushNotificationConfigFromStorage = async () => {
-    try {
-      return await localforage.getItem(KEY);
-    } catch (error) {
-      // TODO: log the error
-      throw error;
-    }
-  };
+  const dispatch = useAppDispatch();
+  const webPushNotifConfig = useAppSelector(getWebPushNotifConfig);
 
   const savePushNotificationConfigToStorage = async ({ allowPushNotification, appId, lastPushMessageTimestamp }) => {
     try {
-      return await localforage.setItem(KEY, {
-        allowPushNotification,
-        appId,
-        lastPushMessageTimestamp
-      });
-    } catch (error) {
-      console.error('ERROR in savePushNotificationConfigFromStorage() in usePushNotification()');
+      dispatch(
+        saveWebPushNotifConfig({
+          allowPushNotification,
+          appId,
+          lastPushMessageTimestamp
+        })
+      );
+    } catch (err) {
+      console.error('Could not save webpush config');
       // TODO: log the error
-      throw error;
+      throw err;
     }
   };
 
@@ -53,15 +45,16 @@ const usePushNotification = () => {
   useEffect(() => {
     (async () => {
       if ('serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window) {
-        let pushConfiguration = await loadPushNotificationConfigFromStorage();
-        if (!pushConfiguration) {
+        setIsWebPushNotifSupported(true);
+
+        if (!webPushNotifConfig) {
           // no configuration saved on the local storage
           // generate a new one and save it to local storage
-          pushConfiguration = {
+          savePushNotificationConfigToStorage({
             allowPushNotification: undefined,
             appId: uuidv4(),
             lastPushMessageTimestamp: undefined
-          };
+          });
         } else {
           const permission = getPlatformPermissionState();
           if (permission !== 'granted' && (pushConfiguration as NotificationConfig).allowPushNotification) {

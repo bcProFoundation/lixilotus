@@ -27,22 +27,22 @@ const helpInfoIcon = (
     onClick={() => {
       Modal.info({
         centered: true,
-        okText: intl.get('setting.GotIt'),
-        title: intl.get('setting.HowEnableNotification'),
+        okText: intl.get('settings.gotIt'),
+        title: intl.get('settings.howEnableNotification'),
         maskClosable: true,
         content: (
           <div>
-            <p>{intl.get('setting.DeviceSupport')}</p>
-            <p>{intl.get('setting.NotSupportIos')}</p>
-            <div className="heading">{intl.get('setting.TwoStepEnableNotification')}</div>
+            <p>{intl.get('settings.deviceSupport')}</p>
+            <p>{intl.get('settings.notSupportIos')}</p>
+            <div className="heading">{intl.get('settings.twoStepEnableNotification')}</div>
             <ul>
               <li>
-                {intl.get('setting.AllowNotification')}
-                <em>{intl.get('setting.ForBrowser')}</em>.
+                {intl.get('settings.allowNotification')}
+                <em>{intl.get('settings.forBrowser')}</em>.
               </li>
               <li>
-                {intl.get('setting.ThenAllowNotification')}
-                <em>{intl.get('setting.SendlotusOnBrower')}</em>.
+                {intl.get('settings.thenAllowNotification')}
+                <em>{intl.get('settings.sendlotusOnBrower')}</em>.
               </li>
             </ul>
           </div>
@@ -57,18 +57,18 @@ const PushNotificationSetting = ({ pushNotificationConfig }) => {
 
   const showModal = () => {
     Modal.confirm({
-      centered: true,
-      title: intl.get('setting.EnableNotification'),
+      centered: true
+      title: intl.get('settings.enableNotification'),
       icon: <ExclamationCircleOutlined />,
-      content: intl.get('setting.GrantPermisson'),
-      okText: intl.get('setting.OK'),
+      content: intl.get('settings.grantPermisson'),
+      okText: intl.get('settings.ok'),
       async onOk() {
         // get user permissioin
         try {
           await askPermission();
         } catch (error) {
           Modal.error({
-            title: intl.get('setting.PermisionError'),
+            title: intl.get('settings.permisionError'),
             content: error.message
           });
           return;
