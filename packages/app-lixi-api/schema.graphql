@@ -93,6 +93,16 @@ input CreateTokenInput {
   tokenId: String!
 }
 
+input CreateWebpushSubscriberInput {
+  accountId: Int!
+  address: Int!
+  auth: String!
+  clientAppId: String!
+  deviceId: String!
+  endpoint: String!
+  p256dh: String!
+}
+
 input CreateWorshipInput {
   latitude: Decimal
   location: String
@@ -127,10 +137,12 @@ type Mutation {
   createPage(data: CreatePageInput!): Page!
   createPost(data: CreatePostInput!): Post!
   createToken(data: CreateTokenInput!): Token!
+  createWebpushSubscriber(data: CreateWebpushSubscriberInput!): WebpushSubscriber!
   createWorship(data: CreateWorshipInput!): Worship!
   createWorshipedPerson(data: CreateWorshipedPersonInput!): WorshipedPerson!
   updatePage(data: UpdatePageInput!): Page!
   updatePost(data: UpdatePostInput!): Post!
+  updateWebpushSubscriber(data: UpdateWebpushSubscriberInput!): WebpushSubscriber!
 }
 
 """
@@ -312,6 +324,7 @@ type Query {
   comment(id: String!): Comment!
   page(id: String!): Page!
   post(id: String!): Post!
+  subscriber(id: String!): WebpushSubscriber!
   token(tokenId: String!): Token!
   worship(id: String!): Worship!
   worshipedPerson(id: String!): WorshipedPerson!
@@ -402,6 +415,18 @@ input UpdatePostInput {
   pureContent: String!
 }
 
+input UpdateWebpushSubscriberInput {
+  accountId: Int!
+  address: Int!
+  auth: String!
+  clientAppId: String!
+  deviceId: String!
+  endpoint: String!
+  id: ID!
+  lastModifiedAt: DateTime
+  p256dh: String!
+}
+
 type Upload {
   bucket: String
   height: String
@@ -416,6 +441,24 @@ type Upload {
 type UploadDetail {
   id: ID!
   upload: Upload!
+}
+
+type WebpushSubscriber {
+  account: Account!
+  accountId: Int!
+  address: Int!
+  auth: String!
+  clientAppId: String!
+
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  deviceId: String!
+  endpoint: String!
+  id: ID!
+  p256d: String!
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
 }
 
 type Worship {

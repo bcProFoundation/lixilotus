@@ -33,10 +33,18 @@ export default class MyDocument extends Document {
       <Html lang="en">
         <Head>
           <meta charSet="utf-8" />
+          <meta name="application-name" content="LixiLotus" />
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+          <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+          <meta name="apple-mobile-web-app-title" content="LixiLotus" />
+          <meta name="description" content="Give out lotus to others" />
+          <meta name="format-detection" content="telephone=no" />
+          <meta name="mobile-web-app-capable" content="yes" />
+          <meta name="theme-color" content="#000000" />
           <link rel="manifest" href="/manifest.json" />
           <link rel="shortcut icon" href="/favicon.ico" />
           <meta name="theme-color" content="#faf0fa" />
-          <meta name="description" content="Website allow user to give lotus to others" />
+
           <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
           <link rel="shortcut icon" type="image/x-icon" sizes="512x512" href="/favicon.ico" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />

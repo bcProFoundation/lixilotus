@@ -24,7 +24,11 @@ import {
 } from '@ant-design/icons';
 import Edit from '@assets/icons/edit.svg';
 import Trashcan from '@assets/icons/trashcan.svg';
-import { CashLoadingIcon, ThemedQuerstionCircleOutlinedFaded, ThemedSettingOutlined } from '@bcpros/lixi-components/components/Common/CustomIcons';
+import {
+  CashLoadingIcon,
+  ThemedQuerstionCircleOutlinedFaded,
+  ThemedSettingOutlined
+} from '@bcpros/lixi-components/components/Common/CustomIcons';
 import { Account, DeleteAccountCommand, RenameAccountCommand } from '@bcpros/lixi-models';
 import { AntdFormWrapper, LanguageSelectDropdown } from '@components/Common/EnhancedInputs';
 import PrimaryButton, { SecondaryButton, SmartButton } from '@components/Common/PrimaryButton';
@@ -36,9 +40,13 @@ import getOauth2URL from '@utils/oauth2';
 import { DeleteAccountModalProps } from './DeleteAccountModal';
 import { RenameAccountModalProps } from './RenameAccountModal';
 import axios from 'axios';
-import { PushNotificationContext } from '@context/notificationProvider';
 import PushNotificationSetting from '@components/NotificationSetting';
-import { askPermission, getPlatformPermissionState, subscribeAllWalletsToPushNotification, unsubscribeAllWalletsFromPushNotification } from '@utils/pushNotification';
+import {
+  askPermission,
+  getPlatformPermissionState,
+  subscribeAllWalletsToPushNotification,
+  unsubscribeAllWalletsFromPushNotification
+} from '@utils/pushNotification';
 
 const { Panel } = Collapse;
 
@@ -240,17 +248,23 @@ const helpInfoIcon = (
           <div>
             <p>{intl.get('setting.DeviceSupport')}</p>
             <p>{intl.get('setting.NotSupportIos')}</p>
-            <div className='heading'>{intl.get('setting.TwoStepEnableNotification')}</div>
+            <div className="heading">{intl.get('setting.TwoStepEnableNotification')}</div>
             <ul>
-              <li>{intl.get('setting.AllowNotification')}<em>{intl.get('setting.ForBrowser')}</em>.</li>
-              <li>{intl.get('setting.ThenAllowNotification')}<em>{intl.get('setting.SendlotusOnBrower')}</em>.</li>
+              <li>
+                {intl.get('setting.AllowNotification')}
+                <em>{intl.get('setting.ForBrowser')}</em>.
+              </li>
+              <li>
+                {intl.get('setting.ThenAllowNotification')}
+                <em>{intl.get('setting.SendlotusOnBrower')}</em>.
+              </li>
             </ul>
           </div>
-        ),
-      })
+        )
+      });
     }}
   />
-)
+);
 
 const Settings: React.FC = () => {
   const Wallet = React.useContext(WalletContext);

@@ -7,8 +7,7 @@ datasource db {
 }
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["interactiveTransactions"]
+  provider = "prisma-client-js"
 }
 
 // The handle for page or user account
@@ -29,7 +28,7 @@ model Handle {
 //   User              User[]
 //   encryptedMnemonic String @map("encrypted_mnemonic")
 //   encryptedSecret   String @default("") @map("encrypted_secret")
-//   mnemonicHash      String @map("mnemonic_hash")
+//   mnemonicHash      String 0@map("mnemonic_hash")
 //   address           String @default("") @map("address")
 //   publicKey         String @default("") @map("public_key")
 
@@ -179,24 +178,25 @@ model Comment {
 }
 
 model Account {
-  id                Int            @id @default(autoincrement())
+  id                Int                 @id @default(autoincrement())
   name              String
-  encryptedMnemonic String         @map("encrypted_mnemonic")
-  encryptedSecret   String         @default("") @map("encrypted_secret")
-  createdAt         DateTime       @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt         DateTime       @default(now()) @map("updated_at") @db.Timestamptz
+  encryptedMnemonic String              @map("encrypted_mnemonic")
+  encryptedSecret   String              @default("") @map("encrypted_secret")
+  createdAt         DateTime            @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime            @default(now()) @map("updated_at") @db.Timestamptz
   lixies            Lixi[]
-  mnemonicHash      String         @map("mnemonic_hash")
-  address           String         @default("") @map("address")
+  mnemonicHash      String              @map("mnemonic_hash")
+  address           String              @default("") @map("address")
   notifications     Notification[]
-  language          String         @default("en")
-  publicKey         String         @default("") @map("public_key")
-  email             String?        @unique
+  language          String              @default("en")
+  publicKey         String              @default("") @map("public_key")
+  email             String?             @unique
   uploadDetail      UploadDetail[]
   page              Page?
   posts             Post[]
   comments          Comment[]
   Worship           Worship[]
+  webpushSubscriber WebpushSubscriber[]
 
   @@index([mnemonicHash], type: Hash)
   @@map("account")
@@ -347,6 +347,26 @@ model Notification {
   action             String?
 
   @@map("notification")
+}
+
+model WebpushSubscriber {
+  id          String   @id @default(cuid())
+  clientAppId String   @map("client_app_id")
+  auth        String
+  p256dh      String
+  endpoint    String
+  deviceId    String   @map("device_id")
+  account     Account? @relation(fields: [accountId], references: [id])
+  accountId   Int?     @map("account_id")
+  address     String
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@index([endpoint])
+  @@index([address])
+  @@index([deviceId])
+  @@map("webpush_subscription")
 }
 
 model Upload {

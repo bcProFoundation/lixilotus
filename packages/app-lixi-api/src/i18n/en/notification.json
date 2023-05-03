@@ -4,6 +4,10 @@
     "unableGetNotification": "Unable to get the notification.",
     "noReadPermission": "No permission to read the notification.",
     "noDeletePermission": "No permission to delete the notification.",
-    "unableCreateNotification": "Unable to create the notification."
+    "unableCreateNotification": "Unable to create the notification.",
+    "unableToCreateSubscriber": "Unable to create subscriber.",
+    "couldNotFindAccount": "Could not find the associated account.",
+    "couldNotFindSubscriber": "Could not find the subscriber.",
+    "noUpdateSubscriberPermission": "No permission to update the subscriber."
   }
 }

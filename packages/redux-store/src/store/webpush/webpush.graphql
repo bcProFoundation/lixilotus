@@ -1,0 +1,27 @@
+query WebpushSubscriber($id: String!) {
+  subscriber(id: $id) {
+    ...WebpushSubscriberFields
+  }
+}
+
+fragment WebpushSubscriberFields on WebpushSubscriber {
+  id
+  clientAppId
+  deviceId
+  accountId
+  address
+  createdAt
+  updatedAt
+}
+
+mutation CreateWebpushSubscriber($input: CreateWebpushSubscriberInput!) {
+  createWebpushSubscriber(data: $input) {
+    ...WebpushSubscriberFields
+  }
+}
+
+mutation UpdateWebpushSubscriber($input: UpdateWebpushSubscriberInput!) {
+  updateWebpushSubscriber(data: $input) {
+    ...WebpushSubscriberFields
+  }
+}

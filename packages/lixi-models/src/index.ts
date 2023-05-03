@@ -5,6 +5,7 @@ export * from './lib/lixi';
 export * from './lib/claim';
 export * from './lib/page';
 export * from './lib/common/notification';
+export * from './lib/common/webpush';
 export * from './utils/cashMethods';
 export * from './utils/paginationResult';
 export * from './constants';

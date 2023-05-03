@@ -1,6 +1,6 @@
-import { NotificationDto, SendNotificationJobData } from '@bcpros/lixi-models';
+import { SendNotificationJobData } from '@bcpros/lixi-models';
 import { Processor, WorkerHost } from '@nestjs/bullmq';
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { NOTIFICATION_OUTBOUND_QUEUE } from './notification.constants';

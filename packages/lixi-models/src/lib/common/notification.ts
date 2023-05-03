@@ -42,6 +42,10 @@ export interface NotificationDto {
   action?: Nullable<string>;
 }
 
+/**
+ * Interface to modeling PushSubscription of web-push
+ */
+
 export interface SendNotificationJobData {
   room: string;
   notification: NotificationDto;
