@@ -144,6 +144,29 @@ export const IconBurn = ({
   </Space>
 );
 
+export const IconComment = ({
+  icon,
+  totalComments,
+  dataItem,
+  imgUrl,
+  onClickIcon
+}: {
+  icon?: React.FC;
+  totalComments?: number;
+  dataItem: any;
+  imgUrl?: string;
+  onClickIcon: (e: any) => void;
+  isComment?: boolean;
+}) => (
+  <Space onClick={onClickIcon} size={4} style={{ alignItems: 'end', marginRight: '1rem' }}>
+    {icon && React.createElement(icon)}
+    <picture>
+      <StyledBurnIcon alt="burnIcon" src={imgUrl} />
+    </picture>
+    <Counter num={totalComments ?? 0} />
+  </Space>
+);
+
 type PostDetailProps = {
   post: PostItem;
   isMobile: boolean;

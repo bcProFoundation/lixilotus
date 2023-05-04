@@ -109,7 +109,7 @@ export const ContainerAccess = styled.div`
       &.active-item-access {
         max-width: 50px;
         margin: auto;
-        background: #ffd24d;
+        background: #ffd7f6;
         border-radius: 8px;
       }
     }
