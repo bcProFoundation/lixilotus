@@ -16,11 +16,12 @@ export default function useModal(): [
   JSX.Element | null,
   (title: string, showModal: (onClose: () => void) => JSX.Element) => void
 ] {
-  const [modalContent, setModalContent] = useState<null | {
-    closeOnClickOutside: boolean;
-    content: JSX.Element;
-    title: string;
-  }>(null);
+  const [modalContent, setModalContent] =
+    useState<null | {
+      closeOnClickOutside: boolean;
+      content: JSX.Element;
+      title: string;
+    }>(null);
 
   const onClose = useCallback(() => {
     setModalContent(null);
@@ -36,7 +37,7 @@ export default function useModal(): [
         onCancel={onClose}
         // onClose={onClose}
         title={title}
-      // closeOnClickOutside={closeOnClickOutside}
+        // closeOnClickOutside={closeOnClickOutside}
       >
         {content}
       </Modal>

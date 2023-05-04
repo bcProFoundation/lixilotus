@@ -59,6 +59,8 @@ export class BurnQueueCommand {
 
   tokenId?: string;
 
+  userId?: string;
+
   tipToAddresses?: { address: string; amount: string }[];
   // Params to patch rtk query data
   queryParams?: any;
