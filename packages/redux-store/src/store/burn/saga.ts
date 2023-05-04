@@ -191,23 +191,23 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
     })
   );
 
+  yield put(
+    postApi.util.updateQueryData('Post', { id: command.burnForId }, draft => {
+      let lotusBurnUp = draft?.post?.lotusBurnUp ?? 0;
+      let lotusBurnDown = draft?.post?.lotusBurnDown ?? 0;
+      if (command.burnType == BurnType.Up) {
+        lotusBurnUp = lotusBurnUp + burnValue;
+      } else {
+        lotusBurnDown = lotusBurnDown + burnValue;
+      }
+      const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+      draft.post.lotusBurnUp = lotusBurnUp;
+      draft.post.lotusBurnDown = lotusBurnDown;
+      draft.post.lotusBurnScore = lotusBurnScore;
+    })
+  );
+
   switch (command.postQueryTag) {
-    case PostsQueryTag.Post:
-      return yield put(
-        postApi.util.updateQueryData('Post', { id: command.burnForId }, draft => {
-          let lotusBurnUp = draft?.post?.lotusBurnUp ?? 0;
-          let lotusBurnDown = draft?.post?.lotusBurnDown ?? 0;
-          if (command.burnType == BurnType.Up) {
-            lotusBurnUp = lotusBurnUp + burnValue;
-          } else {
-            lotusBurnDown = lotusBurnDown + burnValue;
-          }
-          const lotusBurnScore = lotusBurnUp - lotusBurnDown;
-          draft.post.lotusBurnUp = lotusBurnUp;
-          draft.post.lotusBurnDown = lotusBurnDown;
-          draft.post.lotusBurnScore = lotusBurnScore;
-        })
-      );
     case PostsQueryTag.PostsByPageId:
       return yield put(
         postApi.util.updateQueryData(
@@ -263,6 +263,36 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
               if (lotusBurnScore < 0) {
                 draft.allPostsByTokenId.edges.splice(postToUpdateIndex, 1);
                 draft.allPostsByTokenId.totalCount = draft.allPostsByTokenId.totalCount - 1;
+              }
+            }
+          }
+        )
+      );
+    case PostsQueryTag.PostsByUserId:
+      return yield put(
+        postApi.util.updateQueryData(
+          'PostsByUserId',
+          { ...params, id: command.userId, minBurnFilter: command.minBurnFilter },
+          draft => {
+            const postToUpdateIndex = draft.allPostsByUserId.edges.findIndex(
+              item => item.node.id === command.burnForId
+            );
+            const postToUpdate = draft.allPostsByUserId.edges[postToUpdateIndex];
+            if (postToUpdateIndex >= 0) {
+              let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
+              let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+              if (command.burnType == BurnType.Up) {
+                lotusBurnUp = lotusBurnUp + burnValue;
+              } else {
+                lotusBurnDown = lotusBurnDown + burnValue;
+              }
+              const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+              draft.allPostsByUserId.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
+              draft.allPostsByUserId.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
+              draft.allPostsByUserId.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
+              if (lotusBurnScore < 0) {
+                draft.allPostsByUserId.edges.splice(postToUpdateIndex, 1);
+                draft.allPostsByUserId.totalCount = draft.allPostsByUserId.totalCount - 1;
               }
             }
           }
@@ -336,6 +366,22 @@ function* updateTokenBurnValue(action: PayloadAction<BurnCommand>) {
       field: TokenOrderField.CreatedDate
     }
   };
+
+  yield put(
+    tokenApi.util.updateQueryData('Token', { tokenId: command.tokenId }, draft => {
+      let lotusBurnUp = draft?.token.lotusBurnUp ?? 0;
+      let lotusBurnDown = draft?.token?.lotusBurnDown ?? 0;
+      if (command.burnType == BurnType.Up) {
+        lotusBurnUp = lotusBurnUp + burnValue;
+      } else {
+        lotusBurnDown = lotusBurnDown + burnValue;
+      }
+      const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+      draft.token.lotusBurnUp = lotusBurnUp;
+      draft.token.lotusBurnDown = lotusBurnDown;
+      draft.token.lotusBurnScore = lotusBurnScore;
+    })
+  );
 
   return yield put(
     tokenApi.util.updateQueryData('Tokens', params, draft => {

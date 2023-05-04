@@ -40,6 +40,7 @@ export type PageQuery = {
     lotusBurnUp: number;
     lotusBurnDown: number;
     lotusBurnScore: number;
+    totalBurnForPage?: number | null;
     createdAt: any;
     updatedAt: any;
   };
@@ -81,6 +82,7 @@ export type PagesQuery = {
         lotusBurnUp: number;
         lotusBurnDown: number;
         lotusBurnScore: number;
+        totalBurnForPage?: number | null;
         createdAt: any;
         updatedAt: any;
       };
@@ -113,6 +115,7 @@ export type PageFieldsFragment = {
   lotusBurnUp: number;
   lotusBurnDown: number;
   lotusBurnScore: number;
+  totalBurnForPage?: number | null;
   createdAt: any;
   updatedAt: any;
 };
@@ -141,6 +144,7 @@ export type CreatePageMutation = {
     lotusBurnUp: number;
     lotusBurnDown: number;
     lotusBurnScore: number;
+    totalBurnForPage?: number | null;
     createdAt: any;
     updatedAt: any;
   };
@@ -170,6 +174,7 @@ export type UpdatePageMutation = {
     lotusBurnUp: number;
     lotusBurnDown: number;
     lotusBurnScore: number;
+    totalBurnForPage?: number | null;
     createdAt: any;
     updatedAt: any;
   };
@@ -193,6 +198,7 @@ export const PageFieldsFragmentDoc = `
   lotusBurnUp
   lotusBurnDown
   lotusBurnScore
+  totalBurnForPage
   createdAt
   updatedAt
 }

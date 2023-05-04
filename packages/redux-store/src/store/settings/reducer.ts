@@ -11,7 +11,8 @@ const initialState: SettingsState = {
   webAuthnConfig: null,
   filterPostsHome: 1,
   filterPostsPage: 1,
-  filterPostsToken: 1
+  filterPostsToken: 1,
+  filterPostsProfile: 1
 };
 
 export const settingsReducer = createReducer(initialState, builder => {
@@ -42,6 +43,9 @@ export const settingsReducer = createReducer(initialState, builder => {
           break;
         case FilterType.PostsToken:
           state.filterPostsToken = filterValue;
+          break;
+        case FilterType.PostsProfile:
+          state.filterPostsProfile = filterValue;
           break;
       }
     });

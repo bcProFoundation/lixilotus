@@ -33,8 +33,9 @@ export default {
   'text.createPageDescription':
     'Viết về hoạt động kinh doanh của bạn, các dịch vụ bạn cung cấp hoặc mục đích của Trang.',
   'text.post': 'bài viết',
-  'text.selectXpi': 'Bạn muốn đốt bao nhiêu Xpi cho {name}?',
-  'burn.selectXpi': 'Vui lòng chọn số lượng Xpi bạn muốn đốt cho {name}',
+  'text.selectXpi': 'Bạn muốn đốt bao nhiêu XPI cho {name}?',
+  'burn.selectXpi': 'Vui lòng chọn số lượng XPI bạn muốn đốt cho {name}',
+  'burn.youBurning': 'Bạn đang đốt ',
   'burn.post': 'bài viết',
   'burn.comment': 'bình luận',
   'burn.token': 'token',

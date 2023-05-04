@@ -173,6 +173,7 @@ type Page {
   parentId: String
   stateId: String
   title: String
+  totalBurnForPage: Float
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!

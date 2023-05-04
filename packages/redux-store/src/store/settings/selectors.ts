@@ -38,8 +38,11 @@ export const getFilterPostsToken = createSelector(
   (state: RootState) => state.settings,
   (state: SettingsState) => state.filterPostsToken
 );
-
 export const getWebPushNotifConfig = createSelector(
   (state: RootState) => state.settings,
   (state: SettingsState) => state.webPushNotifConfig
+);
+export const getFilterPostsProfile = createSelector(
+  (state: RootState) => state.settings,
+  (state: SettingsState) => state.filterPostsProfile
 );

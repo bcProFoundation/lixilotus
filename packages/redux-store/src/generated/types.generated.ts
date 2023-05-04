@@ -222,6 +222,7 @@ export type Page = {
   parentId?: Maybe<Scalars['String']>;
   stateId?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
+  totalBurnForPage?: Maybe<Scalars['Float']>;
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
   website?: Maybe<Scalars['String']>;

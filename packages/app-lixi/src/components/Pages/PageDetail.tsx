@@ -393,10 +393,6 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
     // fetchListPicture();
   }, []);
 
-  // useEffect(() => {
-  //   refetch();
-  // }, []);
-
   const fetchListFriend = () => {
     return axios
       .get('https://picsum.photos/v2/list?page=1&limit=10', {
@@ -663,7 +659,7 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
                   <SearchBox />
                   <FilterBurnt filterForType={FilterType.PostsPage} />
                 </div>
-                <CreatePostCard pageId={page.id} refetch={() => refetch()} />
+                <CreatePostCard pageId={page.id} />
                 <Timeline>
                   {data.length == 0 && (
                     <div className="blank-timeline">

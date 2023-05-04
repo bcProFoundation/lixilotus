@@ -9,4 +9,5 @@ export interface SettingsState {
   filterPostsHome: number;
   filterPostsPage: number;
   filterPostsToken: number;
+  filterPostsProfile: number;
 }

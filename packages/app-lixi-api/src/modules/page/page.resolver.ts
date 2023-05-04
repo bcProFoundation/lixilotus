@@ -53,33 +53,23 @@ export class PageResolver {
     orderBy: PageOrder
   ) {
     const result = await findManyCursorConnection(
-      paginationArgs =>
-        this.prisma.page.findMany({
+      async args => {
+        const pages = await this.prisma.page.findMany({
           include: {
-            pageAccount: true
-          },
-          where: {
-            OR: !query
-              ? undefined
-              : {
-                  title: { contains: query || '' },
-                  name: { contains: query || '' }
-                }
+            posts: true
           },
           orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
-          ...paginationArgs
-        }),
-      () =>
-        this.prisma.page.count({
-          where: {
-            OR: !query
-              ? undefined
-              : {
-                  title: { contains: query || '' },
-                  name: { contains: query || '' }
-                }
-          }
-        }),
+          ...args
+        });
+
+        const output = pages.map(page => ({
+          ...page,
+          totalBurnForPage: page.posts.reduce((a, b) => a + b.lotusBurnScore, 0)
+        }));
+
+        return output;
+      },
+      () => this.prisma.page.count(),
       { first, last, before, after }
     );
     return result;
