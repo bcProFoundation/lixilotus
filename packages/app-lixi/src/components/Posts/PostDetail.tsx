@@ -137,9 +137,6 @@ export const IconBurn = ({
 }) => (
   <Space onClick={onClickIcon} size={4} style={{ alignItems: 'end', marginRight: '1rem' }}>
     {icon && React.createElement(icon)}
-    <picture>
-      <StyledBurnIcon alt="burnIcon" src={imgUrl} />
-    </picture>
     <Counter num={burnValue ?? 0} />
   </Space>
 );
