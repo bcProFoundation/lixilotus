@@ -47,6 +47,7 @@ fragment PageFields on Page {
   lotusBurnUp
   lotusBurnDown
   lotusBurnScore
+  totalBurnForPage
   createdAt
   updatedAt
 }

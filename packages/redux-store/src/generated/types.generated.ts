@@ -202,6 +202,7 @@ export type Page = {
   parentId?: Maybe<Scalars['String']>;
   stateId?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
+  totalBurnForPage?: Maybe<Scalars['Float']>;
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
   website?: Maybe<Scalars['String']>;
@@ -372,13 +373,13 @@ export type QueryAllPagesArgs = {
 };
 
 export type QueryAllPostsArgs = {
+  accountId?: InputMaybe<Scalars['Int']>;
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<PostOrder>;
-  query?: InputMaybe<Scalars['String']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
 

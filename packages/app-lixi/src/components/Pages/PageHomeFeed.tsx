@@ -248,7 +248,7 @@ const CardPageItem = ({ item, onClickItem }: { item?: CardPageItem; onClickItem?
       <div className="title-profile">
         <h3 className="page-name">{item.name}</h3>
         <p className="page-category">{item.category}</p>
-        <p className="sub-text">{item.subText + ' people like this page' || '24 people like this page'}</p>
+        <p className="sub-text">{item.subText + ' XPI has been burned'}</p>
       </div>
     </div>
   </StyledCardPage>
@@ -291,7 +291,7 @@ const PageHome = () => {
       name: pageItem?.name,
       avatar: pageItem?.avatar,
       cover: pageItem?.cover,
-      subText: Math.floor(Math.random() * 100).toString(),
+      subText: pageItem?.totalBurnForPage,
       category: pageItem.categoryId ? getCategoryName(pageItem.categoryId) : 'Food & Drink'
     };
     return newItemObj;
