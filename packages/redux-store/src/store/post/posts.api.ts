@@ -87,6 +87,22 @@ const enhancedApi = api.enhanceEndpoints({
         currentCacheData.allPostsByTokenId.totalCount = responseData.allPostsByTokenId.totalCount;
       }
     },
+    PostsByUserId: {
+      providesTags: (result, error, arg) => ['Post'],
+      serializeQueryArgs({ queryArgs }) {
+        if (queryArgs) {
+          const { orderBy, id, minBurnFilter, ...otherArgs } = queryArgs;
+          return { orderBy, id, minBurnFilter };
+        }
+        return { queryArgs };
+      },
+
+      merge(currentCacheData, responseData) {
+        currentCacheData.allPostsByUserId.edges.push(...responseData.allPostsByUserId.edges);
+        currentCacheData.allPostsByUserId.pageInfo = responseData.allPostsByUserId.pageInfo;
+        currentCacheData.allPostsByUserId.totalCount = responseData.allPostsByUserId.totalCount;
+      }
+    },
     Post: {
       providesTags: (result, error, arg) => ['Post']
     },

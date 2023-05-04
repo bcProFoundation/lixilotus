@@ -478,7 +478,8 @@ const ProfileDetail = ({ user, isMobile }: UserDetailProps) => {
         burnValue,
         tipToAddresses: tipToAddresses,
         postQueryTag: PostsQueryTag.PostsByUserId,
-        userId: post.postAccount.Id as string,
+        userId: post.postAccount?.id as string,
+        //TODO: minBurnFilter undefined cause not optimistic update. Fix it in future update!
         minBurnFilter: filterValue
       };
 

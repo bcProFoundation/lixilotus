@@ -352,29 +352,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   //#endregion
 
   useEffect(() => {
-    (async () => {
-      if (latestBurnForPost) {
-        const post = await queryPostTrigger({ id: latestBurnForPost.burnForId });
-        dispatch(
-          postApi.util.updateQueryData('Posts', undefined, draft => {
-            const postToUpdate = draft.allPosts.edges.find(item => item.node.id === latestBurnForPost.burnForId);
-            if (postToUpdate) {
-              postToUpdate.node = post.data.post;
-            }
-          }),
-          postApi.util.updateQueryData('OrphanPosts', undefined, draft => {
-            const postToUpdate = draft.allOrphanPosts.edges.find(item => item.node.id === latestBurnForPost.burnForId);
-            if (postToUpdate) {
-              postToUpdate.node = post.data.post;
-            }
-          })
-        );
-        postApi.util.invalidateTags(['Post']);
-      }
-    })();
-  }, [latestBurnForPost]);
-
-  useEffect(() => {
     if (data.length > 0) {
       dispatch(setGraphqlRequestDone());
     }

@@ -35,6 +35,10 @@ import { BurnData, PostItem } from '@components/Posts/PostDetail';
 import { CommentItem } from '@components/Posts/CommentListItem';
 import { TokenItem } from '@components/Token/TokensFeed';
 import router from 'next/router';
+import { useTokenQuery } from '@store/token/tokens.generated';
+import { usePostQuery } from '@store/post/posts.generated';
+import { useCommentQuery } from '@store/comment/comments.generated';
+import { getFilterPostsHome } from '@store/settings/selectors';
 
 const UpDownButton = styled(Button)`
   background: rgb(158, 42, 156);
@@ -106,11 +110,11 @@ const DefaultXpiBurnValues = [1, 8, 50, 100, 200, 500, 1000];
 
 type BurnForItem = PostItem | CommentItem | TokenItem;
 interface BurnModalProps {
-  data: BurnForItem;
+  id?: string;
   burnForType: BurnForType;
 }
 
-export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
+export const BurnModal = ({ id, burnForType }: BurnModalProps) => {
   const {
     formState: { errors },
     control
@@ -126,11 +130,13 @@ export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
   const burnQueue = useAppSelector(getBurnQueue);
   const failQueue = useAppSelector(getFailQueue);
   const walletStatus = useAppSelector(getWalletStatus);
-  const [burnUp, setBurnUp] = useState(data.lotusBurnUp);
-  const [burnDown, setBurnDown] = useState(data.lotusBurnDown);
   const pathName = router.pathname ?? '';
+  const tokenQuery = useTokenQuery({ tokenId: id }, { skip: burnForType !== BurnForType.Token }).currentData;
+  const postQuery = usePostQuery({ id: id }, { skip: burnForType !== BurnForType.Post }).currentData;
+  const commentQuery = useCommentQuery({ id: id }, { skip: burnForType !== BurnForType.Comment }).currentData;
+  const filterValue = useAppSelector(getFilterPostsHome);
 
-  const handleBurn = async (isUpVote: boolean, data: BurnForItem) => {
+  const handleBurn = async (isUpVote: boolean) => {
     try {
       let queryParams;
       let tipToAddresses: { address: string; amount: string }[];
@@ -138,6 +144,7 @@ export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
       let pageId;
       let tokenId;
       let userId;
+      let id: string;
       const burnValue = _.isNil(control._formValues.burnedValue)
         ? DefaultXpiBurnValues[0]
         : control._formValues.burnedValue;
@@ -156,7 +163,8 @@ export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
 
       switch (burnForType) {
         case BurnForType.Post:
-          const post = data as PostItem;
+          const post = postQuery.post as PostItem;
+          id = post.id;
 
           tipToAddresses = [
             {
@@ -175,9 +183,8 @@ export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
             if (pathName.includes('/profile/')) {
               tag = PostsQueryTag.PostsByUserId;
             } else {
-              tag = PostsQueryTag.Posts;
+              tag = PostsQueryTag.Post;
             }
-            tag = PostsQueryTag.Posts;
           } else if (post.page) {
             tag = PostsQueryTag.PostsByPageId;
           } else if (post.token) {
@@ -189,7 +196,8 @@ export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
           userId = post.postAccount.id;
           break;
         case BurnForType.Comment:
-          const comment = data as CommentItem;
+          const comment = commentQuery.comment as CommentItem;
+          id = comment.id;
           if (burnType === BurnType.Up && selectedAccount.address != comment?.commentAccount?.address) {
             tipToAddresses.push({
               address: comment?.commentAccount?.address,
@@ -206,18 +214,9 @@ export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
           break;
 
         case BurnForType.Token:
-          const token = data as TokenItem;
+          const token = tokenQuery.token as TokenItem;
           tokenId = token.tokenId;
-          if (burnType == BurnType.Up) {
-            setBurnUp(prev => {
-              return prev + burnValue;
-            });
-          } else {
-            setBurnDown(prev => {
-              return prev + burnValue;
-            });
-          }
-
+          id = token.id;
           break;
       }
 
@@ -226,17 +225,18 @@ export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
         burnType,
         burnForType: burnForType,
         burnedBy,
-        burnForId: data.id,
+        burnForId: id,
         tokenId: tokenId,
         burnValue,
         queryParams: queryParams,
         postQueryTag: tag,
-        pageId: pageId
+        pageId: pageId,
+        minBurnFilter: filterValue
       };
 
       dispatch(addBurnQueue(burnCommand));
       dispatch(addBurnTransaction(burnCommand));
-      dispatch(closeModal());
+      // dispatch(closeModal());
     } catch (e) {
       const errorMessage = e.message || intl.get('post.unableToBurn');
       dispatch(
@@ -251,6 +251,44 @@ export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
   const handleOnCancel = () => {
     dispatch(closeModal());
   };
+
+  const getName = () => {
+    switch (burnForType) {
+      case BurnForType.Token:
+        return tokenQuery && tokenQuery.token.ticker;
+      case BurnForType.Comment:
+        return intl.get('burn.comment');
+      default:
+        return intl.get('burn.post');
+    }
+  };
+
+  const getLotusBurnUp = () => {
+    switch (burnForType) {
+      case BurnForType.Token:
+        return (tokenQuery && tokenQuery.token.lotusBurnUp) || 0;
+      case BurnForType.Comment:
+        return (commentQuery && commentQuery.comment.lotusBurnUp) || 0;
+      case BurnForType.Post:
+        return (postQuery && postQuery.post.lotusBurnUp) || 0;
+      default:
+        return 0;
+    }
+  };
+
+  const getLotusBurnDown = () => {
+    switch (burnForType) {
+      case BurnForType.Token:
+        return (tokenQuery && tokenQuery.token.lotusBurnDown) || 0;
+      case BurnForType.Comment:
+        return (commentQuery && commentQuery.comment.lotusBurnDown) || 0;
+      case BurnForType.Post:
+        return (postQuery && postQuery.post.lotusBurnDown) || 0;
+      default:
+        return 0;
+    }
+  };
+
   return (
     <Modal
       width={450}
@@ -265,15 +303,13 @@ export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
             <div className="banner-item">
               <LikeOutlined />
               <div className="count-bar">
-                <p className="title">{burnUp + ' XPI'}</p>
-                <p className="sub-title">burnt to up</p>
+                <p className="title">{getLotusBurnUp() + ' XPI'}</p>
               </div>
             </div>
             <div className="banner-item">
               <DislikeOutlined />
               <div className="count-bar">
-                <p className="title">{burnDown + ' XPI'}</p>
-                <p className="sub-title">burnt to down</p>
+                <p className="title">{getLotusBurnDown() + ' XPI'}</p>
               </div>
             </div>
           </div>
@@ -281,11 +317,11 @@ export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
       }
       footer={
         <Button.Group style={{ width: '100%' }}>
-          <UpDownButton className="upVote" onClick={() => handleBurn(true, data)}>
+          <UpDownButton className="upVote" onClick={() => handleBurn(true)}>
             <UpVoteSvg />
             &nbsp; {intl.get('general.burnUp')}
           </UpDownButton>
-          <UpDownButton className="downVote" onClick={() => handleBurn(false, data)}>
+          <UpDownButton className="downVote" onClick={() => handleBurn(false)}>
             <DownVoteSvg />
             &nbsp; {intl.get('general.burnDown')}
           </UpDownButton>
@@ -296,9 +332,8 @@ export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
       <Form>
         <p className="question-txt">
           {intl.get('text.selectXpi', {
-            //TODO: Will crash if use burn modal other than token. Will handle later!
-            name: burnForType == BurnForType.Token ? 'ticker' in data : intl.get('text.post')
-          })}{' '}
+            name: getName()
+          })}
         </p>
 
         <Controller
@@ -308,7 +343,7 @@ export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
             required: {
               value: true,
               message: intl.get('burn.selectXpi', {
-                name: burnForType == BurnForType.Token ? 'ticker' in data : intl.get('text.post')
+                name: getName()
               })
             }
           }}
@@ -331,7 +366,7 @@ export const BurnModal = ({ data, burnForType }: BurnModalProps) => {
           {errors.burnedValue && errors.burnedValue.message}
         </p>
       </Form>
-      <p className="amount-burn">{`You're burning ` + selectedAmount + ' XPI'}</p>
+      <p className="amount-burn">{intl.get('burn.youBurning') + selectedAmount + ' XPI'}</p>
     </Modal>
   );
 };
