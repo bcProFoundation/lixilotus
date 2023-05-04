@@ -252,7 +252,7 @@ export const BurnModal = ({ id, burnForType }: BurnModalProps) => {
     dispatch(closeModal());
   };
 
-  const getName = () => {
+  const getName = (burnForType: BurnForType) => {
     switch (burnForType) {
       case BurnForType.Token:
         return tokenQuery && tokenQuery.token.ticker;
@@ -263,7 +263,7 @@ export const BurnModal = ({ id, burnForType }: BurnModalProps) => {
     }
   };
 
-  const getLotusBurnUp = () => {
+  const getLotusBurnUp = (burnForType: BurnForType) => {
     switch (burnForType) {
       case BurnForType.Token:
         return (tokenQuery && tokenQuery.token.lotusBurnUp) || 0;
@@ -276,7 +276,7 @@ export const BurnModal = ({ id, burnForType }: BurnModalProps) => {
     }
   };
 
-  const getLotusBurnDown = () => {
+  const getLotusBurnDown = (burnForType: BurnForType) => {
     switch (burnForType) {
       case BurnForType.Token:
         return (tokenQuery && tokenQuery.token.lotusBurnDown) || 0;
@@ -303,13 +303,13 @@ export const BurnModal = ({ id, burnForType }: BurnModalProps) => {
             <div className="banner-item">
               <LikeOutlined />
               <div className="count-bar">
-                <p className="title">{getLotusBurnUp() + ' XPI'}</p>
+                <p className="title">{getLotusBurnUp(burnForType) + ' XPI'}</p>
               </div>
             </div>
             <div className="banner-item">
               <DislikeOutlined />
               <div className="count-bar">
-                <p className="title">{getLotusBurnDown() + ' XPI'}</p>
+                <p className="title">{getLotusBurnDown(burnForType) + ' XPI'}</p>
               </div>
             </div>
           </div>
@@ -332,7 +332,7 @@ export const BurnModal = ({ id, burnForType }: BurnModalProps) => {
       <Form>
         <p className="question-txt">
           {intl.get('text.selectXpi', {
-            name: getName()
+            name: getName(burnForType)
           })}
         </p>
 
@@ -343,7 +343,7 @@ export const BurnModal = ({ id, burnForType }: BurnModalProps) => {
             required: {
               value: true,
               message: intl.get('burn.selectXpi', {
-                name: getName()
+                name: getName(burnForType)
               })
             }
           }}
