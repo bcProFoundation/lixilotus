@@ -53,7 +53,7 @@ export class Page {
   @Field(() => Float)
   lotusBurnScore: number;
 
-  @Field(() => Float, { nullable: true })
+  @Field(() => Float, { nullable: true, description: 'The sum of burn amount for every post on page' })
   totalBurnForPage: number;
 
   @Field(() => Date, {

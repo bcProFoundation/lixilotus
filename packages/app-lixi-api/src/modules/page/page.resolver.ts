@@ -52,39 +52,22 @@ export class PageResolver {
     })
     orderBy: PageOrder
   ) {
-    const postsHasPage = await this.prisma.post.findMany({
-      where: {
-        NOT: [
-          {
-            page: null
-          }
-        ]
-      }
-    });
-
-    const totalBurn = _.chain(postsHasPage)
-      .groupBy('pageId')
-      .map((post, id) => ({
-        totalBurnForPage: _.sumBy(post, 'lotusBurnScore')
-      }))
-      .value();
-
     const result = await findManyCursorConnection(
       async args => {
-        const allPages = await this.prisma.page.findMany({
+        const pages = await this.prisma.page.findMany({
           include: {
-            pageAccount: true
+            posts: true
           },
           orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
           ...args
         });
 
-        const allPagesTotalBurn = totalBurn.map(totalBurn => {
-          const resl = allPages.find(resl => resl.pageAccountId);
-          return { ...resl, ...totalBurn };
-        });
+        const output = pages.map(page => ({
+          ...page,
+          totalBurnForPage: page.posts.reduce((a, b) => a + b.lotusBurnScore, 0)
+        }));
 
-        return allPagesTotalBurn;
+        return output;
       },
       () => this.prisma.page.count(),
       { first, last, before, after }

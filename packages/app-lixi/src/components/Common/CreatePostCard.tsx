@@ -6,7 +6,7 @@ import { CreatePostMutation } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';
 import { Button, Input, Modal } from 'antd';
 import _ from 'lodash';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import intl from 'react-intl-universal';
 import { CreatePostInput, OrderDirection, PostOrderField } from 'src/generated/types.generated';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
@@ -18,7 +18,8 @@ import { removeAllUpload } from '@store/account/actions';
 import { AvatarUser } from './AvatarUser';
 import { getEditorCache } from '@store/account/selectors';
 import { deleteEditorTextFromCache } from '@store/account/actions';
-import { getFilterPostsHome } from '@store/settings/selectors';
+import { getFilterPostsHome, getFilterPostsPage, getFilterPostsToken } from '@store/settings/selectors';
+import router from 'next/router';
 
 type ErrorType = 'unsupported' | 'invalid';
 
@@ -132,19 +133,29 @@ type CreatePostCardProp = {
 
 const CreatePostCard = (props: CreatePostCardProp) => {
   const dispatch = useAppDispatch();
+  const pathname = router.pathname ?? '';
   const [enableEditor, setEnableEditor] = useState(false);
   const postCoverUploads = useAppSelector(getPostCoverUploads);
   const { pageId, tokenPrimaryId } = props;
   const selectedAccount = useAppSelector(getSelectedAccount);
   const editorCache = useAppSelector(getEditorCache);
-  const filterValue = useAppSelector(getFilterPostsHome);
+  const filterHome = useAppSelector(getFilterPostsHome);
+  const filterPage = useAppSelector(getFilterPostsPage);
+  const filterToken = useAppSelector(getFilterPostsToken);
 
   const [
     createPostTrigger,
     { isLoading: isLoadingCreatePost, isSuccess: isSuccessCreatePost, isError: isErrorCreatePost }
   ] = useCreatePostMutation();
 
-  const updatePost = (tag: string, params, result: CreatePostMutation, pageId?: string, tokenPrimaryId?: string) => {
+  const updatePost = (
+    tag: string,
+    params,
+    filterValue: number,
+    result: CreatePostMutation,
+    pageId?: string,
+    tokenPrimaryId?: string
+  ) => {
     dispatch(
       postApi.util.updateQueryData('Posts', { ...params, minBurnFilter: filterValue }, draft => {
         draft.allPosts.edges.unshift({
@@ -159,34 +170,51 @@ const CreatePostCard = (props: CreatePostCardProp) => {
     switch (tag) {
       case 'PostsByPageId':
         return dispatch(
-          postApi.util.updateQueryData('PostsByPageId', { ...params, id: pageId }, draft => {
-            draft.allPostsByPageId.edges.unshift({
-              cursor: result.createPost.id,
-              node: {
-                ...result.createPost
-              }
-            });
-            draft.allPostsByPageId.totalCount = draft.allPostsByPageId.totalCount + 1;
-          })
+          postApi.util.updateQueryData(
+            'PostsByPageId',
+            { ...params, id: pageId, minBurnFilter: filterValue },
+            draft => {
+              draft.allPostsByPageId.edges.unshift({
+                cursor: result.createPost.id,
+                node: {
+                  ...result.createPost
+                }
+              });
+              draft.allPostsByPageId.totalCount = draft.allPostsByPageId.totalCount + 1;
+            }
+          )
         );
       case 'PostsByTokenId':
         return dispatch(
-          postApi.util.updateQueryData('PostsByTokenId', { ...params, id: tokenPrimaryId }, draft => {
-            draft.allPostsByTokenId.edges.unshift({
-              cursor: result.createPost.id,
-              node: {
-                ...result.createPost
-              }
-            });
-            draft.allPostsByTokenId.totalCount = draft.allPostsByTokenId.totalCount + 1;
-          })
+          postApi.util.updateQueryData(
+            'PostsByTokenId',
+            { ...params, id: tokenPrimaryId, minBurnFilter: filterValue },
+            draft => {
+              draft.allPostsByTokenId.edges.unshift({
+                cursor: result.createPost.id,
+                node: {
+                  ...result.createPost
+                }
+              });
+              draft.allPostsByTokenId.totalCount = draft.allPostsByTokenId.totalCount + 1;
+            }
+          )
         );
     }
   };
 
   const handleCreateNewPost = async ({ htmlContent, pureContent }) => {
+    let filterValue: number;
     if (pureContent === '' || _.isNil(pureContent)) {
       return;
+    }
+
+    if (pathname.includes('/token')) {
+      filterValue = filterToken;
+    } else if (pathname.includes('/page')) {
+      filterValue = filterPage;
+    } else {
+      filterValue = filterHome;
     }
 
     const createPostInput: CreatePostInput = {
@@ -216,7 +244,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
         tag = PostsQueryTag.PostsByTokenId;
       }
 
-      patches = updatePost(tag, params, result, pageId, tokenPrimaryId);
+      patches = updatePost(tag, params, filterValue, result, pageId, tokenPrimaryId);
       dispatch(
         showToast('success', {
           message: 'Success',
