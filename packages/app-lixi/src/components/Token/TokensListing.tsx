@@ -416,8 +416,8 @@ const TokensListing = () => {
     handleBurnForToken(true, id, tokenId);
   };
 
-  const openBurnModal = (token: any) => {
-    dispatch(openModal('BurnModal', { burnForType: BurnForType.Token, data: token }));
+  const openBurnModal = (token: TokenItem) => {
+    dispatch(openModal('BurnModal', { burnForType: BurnForType.Token, id: token.tokenId }));
   };
 
   const addTokenbyId = async data => {
@@ -490,7 +490,7 @@ const TokensListing = () => {
             tokens.allTokens.edges.length > 0 &&
             tokens.allTokens.edges.map(({ node: token }) => {
               return (
-                <>
+                <React.Fragment key={token.id}>
                   <CardItemToken>
                     <InfoCardUser
                       name={token.ticker}
@@ -532,7 +532,7 @@ const TokensListing = () => {
                       </Button>
                     </div>
                   </CardItemToken>
-                </>
+                </React.Fragment>
               );
             })}
         </StyledTokensListingMobile>

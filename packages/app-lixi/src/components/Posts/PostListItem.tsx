@@ -1,29 +1,17 @@
-import { PostsQueryTag } from '@bcpros/lixi-models/constants';
-import { BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models/lib/burn';
+import { BurnForType } from '@bcpros/lixi-models/lib/burn';
 import CommentComponent, { CommentItem } from '@components/Common/Comment';
-import { Counter } from '@components/Common/Counter';
 import InfoCardUser from '@components/Common/InfoCardUser';
 import { ShareSocialButton } from '@components/Common/ShareSocialButton';
-import { currency } from '@components/Common/Ticker';
-import { WalletContext } from '@context/walletProvider';
-import useXPI from '@hooks/useXPI';
-import { getSelectedAccount } from '@store/account/selectors';
-import { addBurnQueue, addBurnTransaction, burnForUpDownVote } from '@store/burn/actions';
 import { openModal } from '@store/modal/actions';
 import { PostsQuery } from '@store/post/posts.generated';
-import { showToast } from '@store/toast/actions';
-import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
-import { formatBalance, fromXpiToSatoshis } from '@utils/cashMethods';
-import { List, Space, Button, Image, notification } from 'antd';
-import { FireTwoTone, PlusCircleOutlined } from '@ant-design/icons';
-import BigNumber from 'bignumber.js';
+import { formatBalance } from '@utils/cashMethods';
+import { List, Button } from 'antd';
+import { PlusCircleOutlined } from '@ant-design/icons';
 import _ from 'lodash';
-import moment from 'moment';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
-import ReactHtmlParser from 'react-html-parser';
 import intl from 'react-intl-universal';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { useAppDispatch } from '@store/hooks';
 import styled from 'styled-components';
 import { EditPostModalProps } from './EditPostModalPopup';
 import Gallery from 'react-photo-gallery';
@@ -215,12 +203,6 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
   const [showMoreImage, setShowMoreImage] = useState(true);
   const [imagesList, setImagesList] = useState([]);
   const ref = useRef<HTMLDivElement | null>(null);
-  const Wallet = React.useContext(WalletContext);
-  const { XPI, chronik } = Wallet;
-  const { createBurnTransaction } = useXPI();
-  const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
-  const walletPaths = useAppSelector(getAllWalletPaths);
-  const selectedAccount = useAppSelector(getSelectedAccount);
   const { width } = useWindowDimensions();
 
   useEffect(() => {
@@ -268,12 +250,6 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
     handleBurnForPost(true, dataItem);
   };
 
-  const downVotePost = (e: React.MouseEvent<HTMLElement>, dataItem: PostItem) => {
-    e.preventDefault();
-    e.stopPropagation();
-    handleBurnForPost(false, dataItem);
-  };
-
   const showUsername = () => {
     if (_.isNil(post.postAccount)) {
       return 'Anonymous';
@@ -300,7 +276,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
   };
 
   const openBurnModal = (e: React.MouseEvent<HTMLElement>, dataItem: PostItem) => {
-    dispatch(openModal('BurnModal', { burnForType: BurnForType.Post, data: dataItem }));
+    dispatch(openModal('BurnModal', { burnForType: BurnForType.Post, id: dataItem.id }));
   };
 
   return (
