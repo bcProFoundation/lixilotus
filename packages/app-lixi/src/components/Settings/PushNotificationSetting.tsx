@@ -10,11 +10,16 @@ import {
 import { Switch, Tag, Modal } from 'antd';
 import {
   askPermission,
+  getPlatformPermissionState,
   subscribeAllWalletsToPushNotification,
   unsubscribeAllWalletsFromPushNotification
 } from '@utils/pushNotification';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { ServiceWorkerContext } from '@context/index';
+import { getWebPushNotifConfig } from '@store/settings/selectors';
+import { GeneralSettingsItem } from '@components/Common/Atoms/GeneralSettingsItem';
 
 const ThemedQuerstionCircleOutlinedFaded = styled(QuestionCircleOutlined)`
   color: #bb98ff !important;
@@ -32,7 +37,6 @@ const helpInfoIcon = (
         content: (
           <div>
             <p>{intl.get('settings.deviceSupport')}</p>
-            <p>{intl.get('settings.notSupportIos')}</p>
             <div className="heading">{intl.get('settings.twoStepEnableNotification')}</div>
             <ul>
               <li>
@@ -41,7 +45,7 @@ const helpInfoIcon = (
               </li>
               <li>
                 {intl.get('settings.thenAllowNotification')}
-                <em>{intl.get('settings.sendlotusOnBrower')}</em>.
+                <em>{intl.get('settings.lixilotusOnBrower')}</em>.
               </li>
             </ul>
           </div>
@@ -51,18 +55,23 @@ const helpInfoIcon = (
   />
 );
 
-const PushNotificationSetting = ({ pushNotificationConfig }) => {
+const PushNotificationSetting = () => {
+
+  const dispatch = useAppDispatch();
+  const serviceWorkerContextValue = React.useContext(ServiceWorkerContext);
   const [permission, setPermission] = useState(() => getPlatformPermissionState());
+  const webPushNotifConfig = useAppSelector(getWebPushNotifConfig);
+  const pushNotificationConfig = {};
 
   const showModal = () => {
     Modal.confirm({
-      centered: true
+      centered: true,
       title: intl.get('settings.enableNotification'),
       icon: <ExclamationCircleOutlined />,
       content: intl.get('settings.grantPermisson'),
       okText: intl.get('settings.ok'),
       async onOk() {
-        // get user permissioin
+        // get user permission
         try {
           await askPermission();
         } catch (error) {
@@ -75,29 +84,33 @@ const PushNotificationSetting = ({ pushNotificationConfig }) => {
 
         // subscribe all wallets to Push Notification in interactive mode
         subscribeAllWalletsToPushNotification(pushNotificationConfig, true);
-        pushNotificationConfig.turnOnPushNotification();
+        // pushNotificationConfig.turnOnPushNotification();
         setPermission(getPlatformPermissionState());
       }
     });
   };
 
-  const handleNotificationToggle = (checked, event) => {
+  const handleNotificationToggle = (checked: boolean, event: React.MouseEvent<HTMLButtonElement>) => {
     if (checked) {
       if (permission === 'granted') {
         subscribeAllWalletsToPushNotification(pushNotificationConfig, false);
-        pushNotificationConfig.turnOnPushNotification();
+        // pushNotificationConfig.turnOnPushNotification();
+      } else if (permission === 'denied') {
+        Modal.info({
+          content: intl.get('settings.blockedDevice')
+        });
       } else {
         showModal();
       }
     } else {
       // unsubscribe
       unsubscribeAllWalletsFromPushNotification(pushNotificationConfig);
-      pushNotificationConfig.turnOffPushNotification();
+      // pushNotificationConfig.turnOffPushNotification();
     }
   };
 
   return (
-    <>
+    <GeneralSettingsItem>
       <div className="title">
         <BellFilled /> {intl.get('settings.notifications')}
       </div>
@@ -107,13 +120,13 @@ const PushNotificationSetting = ({ pushNotificationConfig }) => {
             size="small"
             checkedChildren={<CheckOutlined />}
             unCheckedChildren={<CloseOutlined />}
-            checked={pushNotificationConfig.allowPushNotification ? true : false}
+            checked={true}
             onChange={handleNotificationToggle}
           />
         ) : (
           <div>
             <Tag color="warning" icon={<ExclamationCircleFilled />}>
-              {intl.get('settings.BlockedDevice')}
+              {intl.get('settings.blockedDevice')}
             </Tag>
             {helpInfoIcon}
           </div>
@@ -123,7 +136,7 @@ const PushNotificationSetting = ({ pushNotificationConfig }) => {
           {intl.get('settings.notSupported')}
         </Tag>
       )}
-    </>
+    </GeneralSettingsItem>
   );
 };
 

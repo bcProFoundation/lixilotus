@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useEffect, useState } from 'react';
 
 export type ServiceWorkerValue = {
   registration?: ServiceWorkerRegistration
@@ -9,7 +9,6 @@ const defaultServiceWorkerValue: ServiceWorkerValue = {
 }
 
 export const ServiceWorkerContext = createContext<ServiceWorkerValue>(defaultServiceWorkerValue);
-
 
 export const ServiceWorkerProvider = ({ children }) => {
 

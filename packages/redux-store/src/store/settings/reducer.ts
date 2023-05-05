@@ -9,6 +9,7 @@ const initialState: SettingsState = {
   locale: 'en',
   initIntlStatus: false,
   webAuthnConfig: null,
+  webPushNotifConfig: null,
   filterPostsHome: 1,
   filterPostsPage: 1,
   filterPostsToken: 1,

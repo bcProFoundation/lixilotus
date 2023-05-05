@@ -1,18 +1,31 @@
 import { Modal } from 'antd';
 import { getAddressesOfSavedWallets, getAddressesOfWallet } from './cashMethods';
 
+/**
+ * Ask user for permission to send push notification
+ * @returns {Promise<NotificationPermission>}
+ */
 export const askPermission = () => {
   return new Promise(function (resolve, reject) {
     const permissionResult = Notification.requestPermission(function (result) {
+      // The callback syntax is used by safari
       resolve(result);
     });
 
     if (permissionResult) {
+      // The promise syntax is used by chrome
       permissionResult.then(resolve, reject);
     }
   });
 };
 
+export const getPlatformPermissionState = () => {
+  if ('Notification' in window) {
+    return Notification.permission;
+  }
+
+  return null;
+}
 
 // subscribe all wallets
 export const subscribeAllWalletsToPushNotification = async (pushNotificationConfig, interactiveMode) => {

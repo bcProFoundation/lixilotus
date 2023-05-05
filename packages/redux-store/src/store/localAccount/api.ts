@@ -1,5 +1,5 @@
 import axiosClient from '@utils/axiosClient';
-import { LocalUser } from 'src/models/localUser';
+import { LocalUser } from '../../models/localUser';
 
 const localAccountApi = {
   localLogin(localUser: LocalUser): Promise<any> {

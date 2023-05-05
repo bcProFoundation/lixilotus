@@ -43,6 +43,8 @@ import intl from 'react-intl-universal';
 import { ServiceWorkerContext } from 'src/context/serviceWorkerProvider';
 import styled from 'styled-components';
 import { DeleteAccountModalProps } from './DeleteAccountModal';
+import LockAppSetting from './LockAppSetting';
+import PushNotificationSetting from './PushNotificationSetting';
 import { RenameAccountModalProps } from './RenameAccountModal';
 
 const { Panel } = Collapse;
@@ -212,27 +214,6 @@ const SettingBar = styled.div`
   }
 `;
 
-const GeneralSettingsItem = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  .title {
-    color: ${props => props.theme.generalSettings.item.title};
-  }
-  .anticon {
-    color: ${props => props.theme.generalSettings.item.icon};
-  }
-  .ant-switch {
-    background-color: ${props => props.theme.generalSettings.item.icon};
-    .anticon {
-      color: ${props => props.theme.generalSettings.background};
-    }
-  }
-  .ant-switch-checked {
-    background-color: ${props => props.theme.primary};
-  }
-`;
-
 const helpInfoIcon = (
   <ThemedQuerstionCircleOutlinedFaded
     onClick={() => {
@@ -259,7 +240,7 @@ const helpInfoIcon = (
 
 const Settings: React.FC = () => {
   const Wallet = React.useContext(WalletContext);
-  const authenticationContextValue = React.useContext(AuthenticationContext);
+
   const isLoading = useAppSelector(getIsGlobalLoading);
   const [seedInput, openSeedInput] = useState(false);
   const [isValidMnemonic, setIsValidMnemonic] = useState<boolean | null>(null);
@@ -336,63 +317,6 @@ const Settings: React.FC = () => {
     dispatch(updateLocale(locales));
   }
 
-  const handleAppLockToggle = (checked, e) => {
-    if (checked) {
-      // if there is an existing credential, that means user has registered
-      // simply turn on the Authentication Required flag
-      if (authenticationContextValue.credentialId) {
-        authenticationContextValue.turnOnAuthentication();
-      } else {
-        // there is no existing credential, that means user has not registered
-        // user need to register
-        authenticationContextValue.signUp();
-      }
-    } else {
-      authenticationContextValue.turnOffAuthentication();
-    }
-  };
-
-  const showEnableNotificationModal = () => {
-    Modal.confirm({
-      centered: true,
-      title: intl.get('settings.enableNotification'),
-      icon: <ExclamationCircleOutlined />,
-      content: intl.get('settings.grantPermisson'),
-      okText: intl.get('settings.ok'),
-      async onOk() {
-        // get user permissioin
-        try {
-          await askPermission();
-        } catch (error) {
-          Modal.error({
-            title: intl.get('settings.permisionError'),
-            content: error.message
-          });
-          return;
-        }
-
-        // subscribe all wallets to Push Notification in interactive mode
-        subscribeAllWalletsToPushNotification(pushNotificationConfig, true);
-        pushNotificationConfig.turnOnPushNotification();
-        setPermission(getPlatformPermissionState());
-      }
-    });
-  };
-
-  const handleNotificationToggle = (checked, event) => {
-    if (checked) {
-      if (permission === 'granted') {
-        subscribeAllWalletsToPushNotification(pushNotificationConfig, false);
-        pushNotificationConfig.turnOnPushNotification();
-      } else {
-        showModal();
-      }
-    } else {
-      // unsubscribe
-      unsubscribeAllWalletsFromPushNotification(pushNotificationConfig);
-      pushNotificationConfig.turnOffPushNotification();
-    }
-  };
 
   async function submit() {
     setFormData({
@@ -535,57 +459,8 @@ const Settings: React.FC = () => {
                   <h2 style={{ color: 'var(--color-primary)' }}>
                     <ThemedSettingOutlined /> {intl.get('settings.general')}
                   </h2>
-                  <GeneralSettingsItem>
-                    {/* Lock app */}
-                    <div className="title">
-                      <LockFilled /> {intl.get('settings.lockApp')}
-                    </div>
-                    {authenticationContextValue ? (
-                      <Switch
-                        size="small"
-                        checkedChildren={<CheckOutlined />}
-                        unCheckedChildren={<CloseOutlined />}
-                        checked={
-                          authenticationContextValue.isAuthenticationRequired && authenticationContextValue.credentialId
-                            ? true
-                            : false
-                        }
-                        // checked={false}
-                        onChange={handleAppLockToggle}
-                      />
-                    ) : (
-                      <Tag color="warning" icon={<ExclamationCircleFilled />}>
-                        {intl.get('settings.notSupported')}
-                      </Tag>
-                    )}
-                  </GeneralSettingsItem>
-                  <GeneralSettingsItem>
-                    <div className="title">
-                      <BellFilled /> {intl.get('settings.notifications')}
-                    </div>
-                    {pushNotificationConfig ? (
-                      permission !== 'denied' ? (
-                        <Switch
-                          size="small"
-                          checkedChildren={<CheckOutlined />}
-                          unCheckedChildren={<CloseOutlined />}
-                          checked={pushNotificationConfig.allowPushNotification ? true : false}
-                          onChange={handleNotificationToggle}
-                        />
-                      ) : (
-                        <div>
-                          <Tag color="warning" icon={<ExclamationCircleFilled />}>
-                            {intl.get('settings.BlockedDevice')}
-                          </Tag>
-                          {helpInfoIcon}
-                        </div>
-                      )
-                    ) : (
-                      <Tag color="warning" icon={<ExclamationCircleFilled />}>
-                        {intl.get('settings.notSupported')}
-                      </Tag>
-                    )}
-                  </GeneralSettingsItem>
+                  <LockAppSetting />
+                  <PushNotificationSetting />
                 </SettingBar>
                 {/* TODO: Implement in the future */}
                 {/* <Button href={getOauth2URL()}>Login</Button> */}

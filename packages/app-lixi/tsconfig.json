@@ -3,7 +3,11 @@
   "compilerOptions": {
     "baseUrl": ".",
     "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -27,7 +31,15 @@
       "path": "../redux-store/tsconfig.json"
     }
   ],
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"],
-  "typeRoots": ["./src/@types", "./node_modules/@types"]
+  "include": [
+    "src/**/*",
+    "../redux-store/src/context/serviceWorkerProvider.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+  "typeRoots": [
+    "./src/@types",
+    "./node_modules/@types"
+  ]
 }

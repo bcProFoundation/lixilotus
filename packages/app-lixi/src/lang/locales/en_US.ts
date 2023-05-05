@@ -367,12 +367,17 @@ export default {
   'settings.allowNotification': 'Allow notification for the',
   'settings.forBrowser': 'browser on your device',
   'settings.thenAllowNotification': 'Then allow notification for',
-  'settings.sendlotusOnBrower': 'sendlotus.com on your browser',
+  'settings.lixilotusOnBrower': 'lixilotus.com on your browser',
   'settings.enableNotification': 'Enable Notification',
   'settings.grantPermisson': 'You will be prompted to grant permisson for notification, Please click "Allow"',
   'settings.ok': 'OK',
   'settings.permissionError': 'Error - Permision Error',
   'settings.blockedDevice': 'Blocked by device',
+  'setting.notSupported': 'Not Supported',
+  'setting.gotIt': 'Got It',
+  'settings.howEnableNotification': 'How to enable notification',
+  'settings.deviceSupport': 'This feature works best with Chrome or Brave on Android device',
+  'settings.twoStepEnableNotification': '2 steps to enable notification',
 
   /* 06.Countries */
   'country.all': 'All of country',

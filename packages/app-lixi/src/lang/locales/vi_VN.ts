@@ -365,12 +365,16 @@ export default {
   'settings.allowNotification': 'Cho phép thông báo cho',
   'settings.forBrowser': 'trình duyệt trên thiết bị của bạn',
   'settings.thenAllowNotification': 'Sau đó cho phép thông báo cho',
-  'settings.sendlotusOnBrower': 'sendlotus.com trên trình duyệt của bạn',
+  'settings.lixilotusOnBrower': 'lixilotus.com trên trình duyệt của bạn',
   'settings.enableNotification': 'Bật thông báo',
   'settings.grantPermisson': 'Bạn sẽ được nhắc cấp quyền cho thông báo, Vui lòng nhấp vào "Cho phép"',
   'settings.ok': 'OK',
   'settings.permisionError': 'Lỗi - Không có quyền truy cập',
   'settings.blockedDevice': 'Bị khóa bởi thiết bị của bạn',
+  'settings.gotIt': 'Tôi biết rồi!',
+  'settings.howEnableNotification': 'Làm thế nào để bật thông báo',
+  'settings.deviceSupport': 'Tính năng này hoạt động tốt nhất với Chrome hoặc Brave trên thiết bị Android',
+  'settings.twoStepEnableNotification': '2 bước để bật thông báo',
 
   /* 06.Countries */
   'country.all': 'Tất cả Quốc gia',

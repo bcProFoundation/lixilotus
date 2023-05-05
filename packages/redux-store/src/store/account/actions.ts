@@ -11,7 +11,6 @@ import {
 } from '@bcpros/lixi-models';
 import { createAction } from '@reduxjs/toolkit';
 
-import { AppThunk } from '../store';
 
 export const generateAccount = createAction('account/generateAccount');
 export const getAccount = createAction<number>('account/getAccount');

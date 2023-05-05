@@ -8,7 +8,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 
 import MainLayout from '@components/Layout/MainLayout';
 
-import { AuthenticationProvider, WalletProvider, AuthorizationProvider, callConfig } from '@context/index';
+import { ServiceWorkerProvider, AuthenticationProvider, WalletProvider, AuthorizationProvider, callConfig } from '@context/index';
 import { ConnectedRouter } from 'connected-next-router';
 import { wrapper } from '@store/store';
 import OutsideCallConsumer, { createCaller } from 'react-outside-call';
@@ -16,7 +16,6 @@ import { Spin } from 'antd';
 import SplashScreen from '@components/Common/SplashScreen';
 import { ConfigProvider } from 'antd';
 import lightTheme from 'src/styles/themes/lightTheme';
-import { PushNotificationProvider } from '@context/notificationProvider';
 
 const PersistGateServer = (props: any) => {
   return props.children;
@@ -38,10 +37,10 @@ const LixiApp = ({ Component, ...rest }) => {
 
   return (
     <Provider store={store}>
-      <WalletProvider>
-        <AuthenticationProvider>
-          <AuthorizationProvider>
-            <PushNotificationProvider>
+      <ServiceWorkerProvider>
+        <WalletProvider>
+          <AuthenticationProvider>
+            <AuthorizationProvider>
               <OutsideCallConsumer config={callConfig}>
                 <Layout className="lixi-app-layout">
                   <Head>
@@ -61,10 +60,10 @@ const LixiApp = ({ Component, ...rest }) => {
                   </ConnectedRouter>
                 </Layout>
               </OutsideCallConsumer>
-            </PushNotificationProvider>
-          </AuthorizationProvider>
-        </AuthenticationProvider>
-      </WalletProvider>
+            </AuthorizationProvider>
+          </AuthenticationProvider>
+        </WalletProvider>
+      </ServiceWorkerProvider>
     </Provider>
   );
 };
