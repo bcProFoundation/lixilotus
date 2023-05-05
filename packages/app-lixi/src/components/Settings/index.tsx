@@ -1,14 +1,3 @@
-import { Alert, Button, Collapse, Form, Input, Modal, Spin, Switch, Tag } from 'antd';
-import * as _ from 'lodash';
-import React, { useEffect, useState } from 'react';
-import intl from 'react-intl-universal';
-import { deleteAccount, generateAccount, importAccount, renameAccount, selectAccount } from '@store/account/actions';
-import { getAllAccounts, getSelectedAccount } from '@store/account/selectors';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { getIsGlobalLoading } from '@store/loading/selectors';
-import { openModal } from '@store/modal/actions';
-import { WalletContext } from '@context/index';
-import styled from 'styled-components';
 import {
   BellFilled,
   CheckOutlined,
@@ -33,20 +22,28 @@ import { Account, DeleteAccountCommand, RenameAccountCommand } from '@bcpros/lix
 import { AntdFormWrapper, LanguageSelectDropdown } from '@components/Common/EnhancedInputs';
 import PrimaryButton, { SecondaryButton, SmartButton } from '@components/Common/PrimaryButton';
 import { StyledCollapse } from '@components/Common/StyledCollapse';
+import { AuthenticationContext, WalletContext } from '@context/index';
+import { deleteAccount, generateAccount, importAccount, renameAccount, selectAccount } from '@store/account/actions';
+import { getAllAccounts, getSelectedAccount } from '@store/account/selectors';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { getIsGlobalLoading } from '@store/loading/selectors';
+import { openModal } from '@store/modal/actions';
 import { setInitIntlStatus, updateLocale } from '@store/settings/actions';
 import { getCurrentLocale } from '@store/settings/selectors';
-import { AuthenticationContext } from '@context/index';
-import getOauth2URL from '@utils/oauth2';
-import { DeleteAccountModalProps } from './DeleteAccountModal';
-import { RenameAccountModalProps } from './RenameAccountModal';
-import axios from 'axios';
-import PushNotificationSetting from '@components/NotificationSetting';
 import {
   askPermission,
-  getPlatformPermissionState,
   subscribeAllWalletsToPushNotification,
   unsubscribeAllWalletsFromPushNotification
 } from '@utils/pushNotification';
+import { Alert, Collapse, Form, Input, Modal, Spin, Switch, Tag } from 'antd';
+import axios from 'axios';
+import * as _ from 'lodash';
+import React, { useEffect, useState } from 'react';
+import intl from 'react-intl-universal';
+import { ServiceWorkerContext } from 'src/context/serviceWorkerProvider';
+import styled from 'styled-components';
+import { DeleteAccountModalProps } from './DeleteAccountModal';
+import { RenameAccountModalProps } from './RenameAccountModal';
 
 const { Panel } = Collapse;
 
@@ -274,8 +271,8 @@ const Settings: React.FC = () => {
   const [form] = Form.useForm();
   const [otherAccounts, setOtherAccounts] = useState<Account[]>([]);
 
-  const pushNotificationConfig = React.useContext(PushNotificationContext);
-  const [permission, setPermission] = useState(() => getPlatformPermissionState());
+  const serviceWorkerContext = React.useContext(ServiceWorkerContext);
+  const [permission, setPermission] = useState(false);
 
   const dispatch = useAppDispatch();
   const savedAccounts: Account[] = useAppSelector(getAllAccounts);
@@ -355,7 +352,7 @@ const Settings: React.FC = () => {
     }
   };
 
-  const showModal = () => {
+  const showEnableNotificationModal = () => {
     Modal.confirm({
       centered: true,
       title: intl.get('settings.enableNotification'),
@@ -563,8 +560,6 @@ const Settings: React.FC = () => {
                     )}
                   </GeneralSettingsItem>
                   <GeneralSettingsItem>
-                    {/* Notification */}
-                    {/* <PushNotificationSetting pushNotificationConfig={pushNotificationConfig} /> */}
                     <div className="title">
                       <BellFilled /> {intl.get('settings.notifications')}
                     </div>

@@ -3,41 +3,97 @@ import { v4 as uuidv4 } from 'uuid';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import {
   checkInWithPushNotificationServer,
-  getPlatformPermissionState,
   unsubscribeAllWalletsFromPushNotification
 } from '@utils/pushNotification';
 import { saveWebPushNotifConfig } from '@store/settings/actions';
 import { getWebPushNotifConfig } from '@store/settings/selectors';
+import { WEBPUSH_CLIENT_APP_ID } from 'src/shared/constants';
 
-
-export type DeviceNotificationValue = {
-  allowPushNotification: boolean;
-  credentialId: string;
-  turnOnPushNotification: () => void;
-  turnOffPushNotification: () => void;
-};
 
 const usePushNotification = () => {
   const [isWebPushNotifSupported, setIsWebPushNotifSupported] = useState(false);
   const [allowPushNotification, setAllowPushNotification] = useState(undefined);
-  const [userId, setUserId] = useState(Date.now().toString(16));
 
   const dispatch = useAppDispatch();
   const webPushNotifConfig = useAppSelector(getWebPushNotifConfig);
 
-  const savePushNotificationConfigToStorage = async ({ allowPushNotification, appId, lastPushMessageTimestamp }) => {
+  const askPermission = () => {
+    return new Promise(function (resolve, reject) {
+      const permissionResult = Notification.requestPermission(function (result) {
+        resolve(result);
+      });
+
+      if (permissionResult) {
+        permissionResult.then(resolve, reject);
+      }
+    });
+  }
+
+  const savePushNotificationConfigToStorage = async ({ allowPushNotification, clientAppId, deviceId }) => {
     try {
       dispatch(
         saveWebPushNotifConfig({
           allowPushNotification,
-          appId,
-          lastPushMessageTimestamp
+          clientAppId,
+          deviceId
         })
       );
     } catch (err) {
       console.error('Could not save webpush config');
       // TODO: log the error
       throw err;
+    }
+  };
+
+  // subscribe all wallets
+  const subscribeAllWalletsToPushNotification = async (pushNotificationConfig, interactiveMode) => {
+    // get the PushSubscription Object from browser
+    let pushSubscription;
+    try {
+      const registration = await navigator.serviceWorker.getRegistration();
+      const subscribeOptions = {
+        userVisibleOnly: true,
+        applicationServerKey: process.env.REACT_APP_PUSH_SERVER_PUBLIC_KEY
+      };
+      pushSubscription = await registration.pushManager.subscribe(subscribeOptions);
+
+      // get addresses of all the saved wallets
+      const addresses = await getAddressesOfSavedWallets();
+
+      // send the subscription details to backend server
+      const subscribeURL = process.env.REACT_APP_PUSH_SERVER_API + 'subscribe';
+      const subscriptionObject = {
+        ids: addresses,
+        clientAppId: pushNotificationConfig.appId,
+        pushSubscription
+      };
+      console.log(JSON.stringify(subscriptionObject));
+      const res = await fetch(subscribeURL, {
+        method: 'POST',
+        mode: 'cors',
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify(subscriptionObject)
+      });
+      const resData = await res.json();
+      if (resData.error) {
+        throw new Error(resData.error);
+      }
+      pushNotificationConfig.turnOnPushNotification();
+      if (interactiveMode) {
+        Modal.success({ content: 'Success! you will receive notification of new transaction' });
+      }
+    } catch (error) {
+      console.log('Error in subscribeAllWalletsToPushNotification()', error);
+      if (interactiveMode) {
+        // show an error modal in interactive mode
+        Modal.error({
+          title: 'Error - Push Notification Subscription',
+          content: error.message
+        });
+      }
+      return;
     }
   };
 
@@ -52,11 +108,11 @@ const usePushNotification = () => {
           // generate a new one and save it to local storage
           savePushNotificationConfigToStorage({
             allowPushNotification: undefined,
-            appId: uuidv4(),
-            lastPushMessageTimestamp: undefined
+            clientAppId: WEBPUSH_CLIENT_APP_ID,
+            deviceId: undefined
           });
         } else {
-          const permission = getPlatformPermissionState();
+          const permission = await askPermission();
           if (permission !== 'granted' && (pushConfiguration as NotificationConfig).allowPushNotification) {
             unsubscribeAllWalletsFromPushNotification(pushConfiguration);
             (pushConfiguration as NotificationConfig).allowPushNotification = false;

@@ -10,22 +10,9 @@ export const askPermission = () => {
     if (permissionResult) {
       permissionResult.then(resolve, reject);
     }
-  }).then(function (permissionResult) {
-    if (permissionResult === 'denied') {
-      throw new Error('permission denied - Notification is blocked');
-    } else if (permissionResult === 'default') {
-      throw new Error('permission not granted - Notification permission is neither granted nor blocked this time');
-    }
   });
 };
 
-export const getPlatformPermissionState = () => {
-  if ('Notification' in window) {
-    return Notification.permission;
-  }
-
-  return null;
-};
 
 // subscribe all wallets
 export const subscribeAllWalletsToPushNotification = async (pushNotificationConfig, interactiveMode) => {

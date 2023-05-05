@@ -10,7 +10,6 @@ import {
 import { Switch, Tag, Modal } from 'antd';
 import {
   askPermission,
-  getPlatformPermissionState,
   subscribeAllWalletsToPushNotification,
   unsubscribeAllWalletsFromPushNotification
 } from '@utils/pushNotification';
