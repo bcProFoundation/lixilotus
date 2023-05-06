@@ -11,7 +11,6 @@ import {
 } from '@bcpros/lixi-models';
 import { createAction } from '@reduxjs/toolkit';
 
-
 export const generateAccount = createAction('account/generateAccount');
 export const getAccount = createAction<number>('account/getAccount');
 export const getAccountSuccess = createAction<Account>('account/getAccountSuccess');

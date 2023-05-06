@@ -226,10 +226,16 @@ const helpInfoIcon = (
           <div>
             <p>{intl.get('settings.deviceSupport')}</p>
             <p>{intl.get('settings.notSupportIos')}</p>
-            <div className='heading'>{intl.get('settings.twoStepEnableNotification')}</div>
+            <div className="heading">{intl.get('settings.twoStepEnableNotification')}</div>
             <ul>
-              <li>{intl.get('settings.allowNotification')}<em>{intl.get('settings.forBrowser')}</em>.</li>
-              <li>{intl.get('settings.thenAllowNotification')}<em>{intl.get('settings.sendlotusOnBrower')}</em>.</li>
+              <li>
+                {intl.get('settings.allowNotification')}
+                <em>{intl.get('settings.forBrowser')}</em>.
+              </li>
+              <li>
+                {intl.get('settings.thenAllowNotification')}
+                <em>{intl.get('settings.sendlotusOnBrower')}</em>.
+              </li>
             </ul>
           </div>
         )
@@ -316,7 +322,6 @@ const Settings: React.FC = () => {
     dispatch(setInitIntlStatus(false));
     dispatch(updateLocale(locales));
   }
-
 
   async function submit() {
     setFormData({

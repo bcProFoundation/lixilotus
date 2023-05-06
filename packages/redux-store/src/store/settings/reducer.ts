@@ -1,7 +1,14 @@
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import { createReducer } from '@reduxjs/toolkit';
 
-import { saveBurnFilter, saveWebAuthnConfig, saveWebPushNotifConfig, setInitIntlStatus, toggleCollapsedSideNav, updateLocale } from './actions';
+import {
+  saveBurnFilter,
+  saveWebAuthnConfig,
+  saveWebPushNotifConfig,
+  setInitIntlStatus,
+  toggleCollapsedSideNav,
+  updateLocale
+} from './actions';
 import { SettingsState } from './state';
 
 const initialState: SettingsState = {

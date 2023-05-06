@@ -8,7 +8,13 @@ import { PersistGate } from 'redux-persist/integration/react';
 
 import MainLayout from '@components/Layout/MainLayout';
 
-import { ServiceWorkerProvider, AuthenticationProvider, WalletProvider, AuthorizationProvider, callConfig } from '@context/index';
+import {
+  ServiceWorkerProvider,
+  AuthenticationProvider,
+  WalletProvider,
+  AuthorizationProvider,
+  callConfig
+} from '@context/index';
 import { ConnectedRouter } from 'connected-next-router';
 import { wrapper } from '@store/store';
 import OutsideCallConsumer, { createCaller } from 'react-outside-call';
@@ -37,33 +43,33 @@ const LixiApp = ({ Component, ...rest }) => {
 
   return (
     <Provider store={store}>
-      <ServiceWorkerProvider>
-        <WalletProvider>
-          <AuthenticationProvider>
-            <AuthorizationProvider>
-              <OutsideCallConsumer config={callConfig}>
-                <Layout className="lixi-app-layout">
-                  <Head>
-                    <title>LixiLotus</title>
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-                    <link
-                      rel="stylesheet"
-                      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-                    />
-                  </Head>
-                  <ConnectedRouter>
-                    <PersistGate persistor={store.__persistor} loading={<SplashScreen />}>
+      <PersistGate persistor={store.__persistor} loading={<SplashScreen />}>
+        <ServiceWorkerProvider>
+          <WalletProvider>
+            <AuthenticationProvider>
+              <AuthorizationProvider>
+                <OutsideCallConsumer config={callConfig}>
+                  <Layout className="lixi-app-layout">
+                    <Head>
+                      <title>LixiLotus</title>
+                      <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+                      <link
+                        rel="stylesheet"
+                        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+                      />
+                    </Head>
+                    <ConnectedRouter>
                       <ConfigProvider theme={lightTheme}>
                         <Component {...props.pageProps} />
                       </ConfigProvider>
-                    </PersistGate>
-                  </ConnectedRouter>
-                </Layout>
-              </OutsideCallConsumer>
-            </AuthorizationProvider>
-          </AuthenticationProvider>
-        </WalletProvider>
-      </ServiceWorkerProvider>
+                    </ConnectedRouter>
+                  </Layout>
+                </OutsideCallConsumer>
+              </AuthorizationProvider>
+            </AuthenticationProvider>
+          </WalletProvider>
+        </ServiceWorkerProvider>
+      </PersistGate>
     </Provider>
   );
 };

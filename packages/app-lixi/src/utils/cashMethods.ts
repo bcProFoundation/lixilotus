@@ -589,38 +589,3 @@ export const getAddressesOfWallet = wallet => {
 
   return addresses;
 };
-
-export const getAddressesOfSavedWallets = async () => {
-  let addresses = [];
-  const savedWallets: any = await localforage.getItem('savedWallets');
-  savedWallets.forEach(wallet => {
-    addresses = addresses.concat(getAddressesOfWallet(wallet));
-  });
-
-  return addresses;
-};
-
-export const getWalletNameFromAddress = async address => {
-  const savedWallets: any = await localforage.getItem('savedWallets');
-  const found = savedWallets.find(wallet => {
-    return (
-      wallet.Path10605.xAddress === address ||
-      wallet.Path1899.xAddress === address ||
-      wallet.Path899.xAddress === address
-    );
-  });
-
-  return found ? found.name : null;
-};
-
-export const getPrivateKeyFromAddress = async address => {
-  const savedWallets: any = await localforage.getItem('savedWallets');
-  let privateKey = null;
-  savedWallets.forEach(wallet => {
-    if (wallet.Path10605.xAddress === address) privateKey = wallet.Path10605.fundingWif;
-    else if (wallet.Path1899.xAddress === address) privateKey = wallet.Path1899.fundingWif;
-    else if (wallet.Path899.xAddress === address) privateKey = wallet.Path899.fundingWif;
-  });
-
-  return privateKey;
-};

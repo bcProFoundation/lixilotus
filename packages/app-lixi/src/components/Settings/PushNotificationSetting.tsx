@@ -19,6 +19,7 @@ import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { ServiceWorkerContext } from '@context/index';
 import { getWebPushNotifConfig } from '@store/settings/selectors';
+import { saveWebPushNotifConfig } from '@store/settings/actions';
 import { GeneralSettingsItem } from '@components/Common/Atoms/GeneralSettingsItem';
 
 const ThemedQuerstionCircleOutlinedFaded = styled(QuestionCircleOutlined)`
@@ -56,12 +57,10 @@ const helpInfoIcon = (
 );
 
 const PushNotificationSetting = () => {
-
   const dispatch = useAppDispatch();
   const serviceWorkerContextValue = React.useContext(ServiceWorkerContext);
-  const [permission, setPermission] = useState(() => getPlatformPermissionState());
+  const [permission, setPermission] = useState<NotificationPermission>(() => getPlatformPermissionState());
   const webPushNotifConfig = useAppSelector(getWebPushNotifConfig);
-  const pushNotificationConfig = {};
 
   const showModal = () => {
     Modal.confirm({
@@ -73,7 +72,24 @@ const PushNotificationSetting = () => {
       async onOk() {
         // get user permission
         try {
-          await askPermission();
+          askPermission().then(result => {
+            setPermission(result);
+            if (result === 'granted') {
+              dispatch(
+                saveWebPushNotifConfig({
+                  ...webPushNotifConfig,
+                  allowPushNotification: true
+                })
+              );
+            } else {
+              dispatch(
+                saveWebPushNotifConfig({
+                  ...webPushNotifConfig,
+                  allowPushNotification: false
+                })
+              );
+            }
+          });
         } catch (error) {
           Modal.error({
             title: intl.get('settings.permisionError'),
@@ -83,28 +99,33 @@ const PushNotificationSetting = () => {
         }
 
         // subscribe all wallets to Push Notification in interactive mode
-        subscribeAllWalletsToPushNotification(pushNotificationConfig, true);
+        // subscribeAllWalletsToPushNotification(pushNotificationConfig, true);
         // pushNotificationConfig.turnOnPushNotification();
-        setPermission(getPlatformPermissionState());
       }
     });
   };
 
-  const handleNotificationToggle = (checked: boolean, event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleNotificationToggle = async (checked: boolean, event: React.MouseEvent<HTMLButtonElement>) => {
     if (checked) {
       if (permission === 'granted') {
-        subscribeAllWalletsToPushNotification(pushNotificationConfig, false);
+        const registration = await navigator.serviceWorker.getRegistration();
+        const subscribeOptions = {
+          userVisibleOnly: true,
+          applicationServerKey: process.env.NEXT_PUBLIC_PUBLIC_VAPID_KEY
+        };
+
+        const pushSubscription: PushSubscription = await registration.pushManager.subscribe(subscribeOptions);
+
+        console.log('pushSubscription', pushSubscription);
+
+        // subscribeAllWalletsToPushNotification(pushNotificationConfig, false);
         // pushNotificationConfig.turnOnPushNotification();
-      } else if (permission === 'denied') {
-        Modal.info({
-          content: intl.get('settings.blockedDevice')
-        });
       } else {
         showModal();
       }
     } else {
       // unsubscribe
-      unsubscribeAllWalletsFromPushNotification(pushNotificationConfig);
+      // unsubscribeAllWalletsFromPushNotification(pushNotificationConfig);
       // pushNotificationConfig.turnOffPushNotification();
     }
   };
@@ -114,13 +135,13 @@ const PushNotificationSetting = () => {
       <div className="title">
         <BellFilled /> {intl.get('settings.notifications')}
       </div>
-      {pushNotificationConfig ? (
+      {webPushNotifConfig ? (
         permission !== 'denied' ? (
           <Switch
             size="small"
             checkedChildren={<CheckOutlined />}
             unCheckedChildren={<CloseOutlined />}
-            checked={true}
+            checked={webPushNotifConfig.allowPushNotification}
             onChange={handleNotificationToggle}
           />
         ) : (

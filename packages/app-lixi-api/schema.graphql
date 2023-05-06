@@ -173,6 +173,8 @@ type Page {
   parentId: String
   stateId: String
   title: String
+
+  """The sum of burn amount for every post on page"""
   totalBurnForPage: Float
 
   """Identifies the date and time when the object was last updated."""

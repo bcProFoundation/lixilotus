@@ -6,7 +6,6 @@ import { AuthenticationContext } from '@context/index';
 import { GeneralSettingsItem } from '@components/Common/Atoms/GeneralSettingsItem';
 
 const LockAppSetting = () => {
-
   const authenticationContextValue = React.useContext(AuthenticationContext);
 
   const handleAppLockToggle = (checked: boolean, e: React.MouseEvent<HTMLButtonElement>) => {
@@ -51,6 +50,6 @@ const LockAppSetting = () => {
       )}
     </GeneralSettingsItem>
   );
-}
+};
 
 export default LockAppSetting;

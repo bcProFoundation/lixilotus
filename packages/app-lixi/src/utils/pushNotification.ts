@@ -1,11 +1,11 @@
 import { Modal } from 'antd';
-import { getAddressesOfSavedWallets, getAddressesOfWallet } from './cashMethods';
+import { getAddressesOfWallet } from './cashMethods';
 
 /**
  * Ask user for permission to send push notification
  * @returns {Promise<NotificationPermission>}
  */
-export const askPermission = () => {
+export const askPermission = (): Promise<NotificationPermission> => {
   return new Promise(function (resolve, reject) {
     const permissionResult = Notification.requestPermission(function (result) {
       // The callback syntax is used by safari
@@ -19,13 +19,17 @@ export const askPermission = () => {
   });
 };
 
-export const getPlatformPermissionState = () => {
+/**
+ * Get the current notification permission state of the browser
+ * @returns {NotificationPermission | null} return null if the browser does not support push notification
+ */
+export const getPlatformPermissionState = (): NotificationPermission | null => {
   if ('Notification' in window) {
     return Notification.permission;
   }
 
   return null;
-}
+};
 
 // subscribe all wallets
 export const subscribeAllWalletsToPushNotification = async (pushNotificationConfig, interactiveMode) => {
@@ -40,7 +44,7 @@ export const subscribeAllWalletsToPushNotification = async (pushNotificationConf
     pushSubscription = await registration.pushManager.subscribe(subscribeOptions);
 
     // get addresses of all the saved wallets
-    const addresses = await getAddressesOfSavedWallets();
+    const addresses = []; // await getAddressesOfSavedWallets();
 
     // send the subscription details to backend server
     const subscribeURL = process.env.REACT_APP_PUSH_SERVER_API + 'subscribe';
@@ -79,12 +83,10 @@ export const subscribeAllWalletsToPushNotification = async (pushNotificationConf
   }
 };
 
-export const unsubscribeAllWalletsFromPushNotification = async pushNotificationConfig => {
-  if (!pushNotificationConfig || !pushNotificationConfig.allowPushNotification) return;
-
+export const unsubscribeAllWalletsFromPushNotification = async () => {
   try {
-    const addresses = await getAddressesOfSavedWallets();
-    unsubscribePushNotification(addresses, pushNotificationConfig.appId);
+    // const addresses = await getAddressesOfSavedWallets();
+    // unsubscribePushNotification(addresses, pushNotificationConfig.appId);
   } catch (error) {
     console.log('Error is unsubscribeAllWalletsFromPushNotification()', error);
   }
@@ -119,35 +121,5 @@ export const unsubscribePushNotification = async (addresses, appId) => {
     });
   } catch (error) {
     console.log(error);
-  }
-};
-
-export const checkInWithPushNotificationServer = async pushNotificationConfig => {
-  if (!pushNotificationConfig || !pushNotificationConfig.allowPushNotification) return;
-
-  try {
-    const addresses = await getAddressesOfSavedWallets();
-    const checkInURL = process.env.REACT_APP_PUSH_SERVER_API + 'checkin';
-    const checkinObj = {
-      ids: addresses,
-      clientAppId: pushNotificationConfig.appId
-    };
-    const res = await fetch(checkInURL, {
-      method: 'POST',
-      mode: 'cors',
-      headers: {
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify(checkinObj)
-    });
-    res.json().then(data => {
-      if (data.success) {
-        console.log('Push Notification Server checkin OK');
-      } else {
-        console.log('Push Notification Server checkin Failed');
-      }
-    });
-  } catch (error) {
-    console.log('Error in checkInWithPushNotificationServer', error);
   }
 };

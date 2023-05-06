@@ -52,6 +52,7 @@ const migration = {
 };
 
 const persistConfig = {
+  timeout: 1000,
   key: 'root',
   version: 0,
   storage: storage('lixi-indexeddb'),

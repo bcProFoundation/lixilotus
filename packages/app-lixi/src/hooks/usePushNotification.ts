@@ -1,97 +1,69 @@
 import { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import {
-  checkInWithPushNotificationServer,
-  unsubscribeAllWalletsFromPushNotification
-} from '@utils/pushNotification';
+import { getPlatformPermissionState, unsubscribeAllWalletsFromPushNotification } from '@utils/pushNotification';
 import { saveWebPushNotifConfig } from '@store/settings/actions';
 import { getWebPushNotifConfig } from '@store/settings/selectors';
-import { WEBPUSH_CLIENT_APP_ID } from 'src/shared/constants';
-
 
 const usePushNotification = () => {
-  const [allowPushNotification, setAllowPushNotification] = useState(null);
-  const [deviceId, setDeviceId] = useState<string | null>(null);
-
   const dispatch = useAppDispatch();
   const webPushNotifConfig = useAppSelector(getWebPushNotifConfig);
 
-  const savePushNotificationConfigToStorage = async ({ allowPushNotification: boolean, deviceId: string }) => {
-    try {
-      dispatch(
-        saveWebPushNotifConfig({
-          allowPushNotification,
-          deviceId
-        })
-      );
-    } catch (err) {
-      console.error('Could not save webpush config');
-      throw err;
-    }
-  };
-
-  // save the config whenever the webPushNotifConfig's attributes are changed
+  // run only once
   useEffect(() => {
     (async () => {
-      await savePushNotificationConfigToStorage({ allowPushNotification, deviceId });
+      if ('serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window) {
+        // Because we use redux-persist with PersistGate so webPushNotifConfig should be hydrated before the useEffect is run
+        // webPushNotifConfig should be already hydrated from indexeddb at this point.
+        if (!webPushNotifConfig) {
+          // no webpush notification configuration saved on the redux
+          // generate a new one and save it to redux store
+          dispatch(
+            saveWebPushNotifConfig({
+              allowPushNotification: true,
+              deviceId: uuidv4()
+            })
+          );
+        } else {
+          const permission = getPlatformPermissionState();
+          let allowPushNotification = webPushNotifConfig.allowPushNotification;
+          if (permission !== 'granted' && webPushNotifConfig.allowPushNotification === true) {
+            // unsubscribeAllWalletsFromPushNotification();
+
+            // if the permission is not granted, we should not allow push notification
+            // reset the allowPushNotification value to false
+            allowPushNotification = false;
+          }
+          dispatch(
+            saveWebPushNotifConfig({
+              allowPushNotification: allowPushNotification,
+              // generate new deviceId if it is not available
+              deviceId: webPushNotifConfig.deviceId ?? uuidv4()
+            })
+          );
+        }
+      }
     })();
-  }, [allowPushNotification, deviceId]);
+  }, []);
 
-  // run only once
-  // useEffect(() => {
-  //   (async () => {
-  //     if ('serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window) {
-  //       setIsWebPushNotifSupported(true);
-
-  //       if (!webPushNotifConfig) {
-  //         // no configuration saved on the local storage
-  //         // generate a new one and save it to local storage
-  //         savePushNotificationConfigToStorage({
-  //           allowPushNotification: undefined,
-  //           deviceId: undefined
-  //         });
-  //       } else {
-  //         const permission = await askPermission();
-  //         if (permission !== 'granted' && (pushConfiguration as NotificationConfig).allowPushNotification) {
-  //           unsubscribeAllWalletsFromPushNotification(pushConfiguration);
-  //           (pushConfiguration as NotificationConfig).allowPushNotification = false;
-  //         }
-  //       }
-  //       setPushNotification(pushConfiguration);
-  //       checkInWithPushNotificationServer(pushConfiguration);
-  //     }
-
-  //     return null;
-  //   })();
-  // }, []);
-
-  // save the configuration to local storage whenever it is changed
-  // useEffect(() => {
-  //   async () => {
-  //     if (pushNotification) {
-  //       await savePushNotificationConfigToStorage(pushNotification);
-  //     }
-  //   };
-  // }, [pushNotification]);
-
-  // if (!pushNotification) return null;
-
-  // return {
-  //   ...pushNotification,
-  //   turnOffPushNotification: () => {
-  //     setPushNotification({
-  //       ...pushNotification,
-  //       allowPushNotification: false
-  //     });
-  //   },
-  //   turnOnPushNotification: () => {
-  //     setPushNotification({
-  //       ...pushNotification,
-  //       allowPushNotification: true
-  //     });
-  //   }
-  // };
+  return {
+    turnOffWebPushNotification: () => {
+      dispatch(
+        saveWebPushNotifConfig({
+          ...webPushNotifConfig,
+          allowPushNotification: false
+        })
+      );
+    },
+    turnOnWebPushNotification: () => {
+      dispatch(
+        saveWebPushNotifConfig({
+          ...webPushNotifConfig,
+          allowPushNotification: true
+        })
+      );
+    }
+  };
 };
 
 export default usePushNotification;

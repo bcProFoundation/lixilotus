@@ -1,18 +1,20 @@
+import usePushNotification from '@local-hooks/usePushNotification';
 import { createContext, useEffect, useState } from 'react';
 
 export type ServiceWorkerValue = {
-  registration?: ServiceWorkerRegistration
+  registration?: ServiceWorkerRegistration;
 };
 
 const defaultServiceWorkerValue: ServiceWorkerValue = {
   registration: null
-}
+};
 
 export const ServiceWorkerContext = createContext<ServiceWorkerValue>(defaultServiceWorkerValue);
 
 export const ServiceWorkerProvider = ({ children }) => {
-
   const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null);
+  console.log('ServiceWorkerProvider');
+  const { turnOnWebPushNotification, turnOffWebPushNotification } = usePushNotification();
 
   useEffect(() => {
     if (typeof window !== 'undefined' && 'serviceWorker' in navigator && (window as any).workbox !== undefined) {
@@ -23,9 +25,5 @@ export const ServiceWorkerProvider = ({ children }) => {
     }
   }, []);
 
-  return (
-    <ServiceWorkerContext.Provider value={{ registration }}>
-      {children}
-    </ServiceWorkerContext.Provider>
-  );
+  return <ServiceWorkerContext.Provider value={{ registration }}>{children}</ServiceWorkerContext.Provider>;
 };
