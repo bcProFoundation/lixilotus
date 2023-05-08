@@ -20,7 +20,7 @@ import _ from 'lodash';
 import React, { useRef, useState, useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 import { OrderDirection, Post, PostOrderField } from 'src/generated/types.generated';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import styled from 'styled-components';
 import SearchBox from '../Common/SearchBox';
 import intl from 'react-intl-universal';
@@ -39,7 +39,7 @@ import { Spin } from 'antd';
 import { FilterBurnt } from '@components/Common/FilterBurn';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import { getFilterPostsHome } from '@store/settings/selectors';
-import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
+import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 
 const { Panel } = Collapse;
 const antIcon = <LoadingOutlined style={{ fontSize: 20 }} spin />;
