@@ -25,3 +25,9 @@ mutation UpdateWebpushSubscriber($input: UpdateWebpushSubscriberInput!) {
     ...WebpushSubscriberFields
   }
 }
+
+mutation Subscribe($input: WebpushSubscribeInput!) {
+  subscribe(data: $input) {
+    ...WebpushSubscriberFields
+  }
+}

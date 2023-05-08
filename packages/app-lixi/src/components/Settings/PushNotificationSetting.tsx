@@ -57,6 +57,7 @@ const helpInfoIcon = (
 );
 
 const PushNotificationSetting = () => {
+
   const dispatch = useAppDispatch();
   const serviceWorkerContextValue = React.useContext(ServiceWorkerContext);
   const [permission, setPermission] = useState<NotificationPermission>(() => getPlatformPermissionState());
@@ -72,22 +73,18 @@ const PushNotificationSetting = () => {
       async onOk() {
         // get user permission
         try {
-          askPermission().then(result => {
+          askPermission().then((result) => {
             setPermission(result);
             if (result === 'granted') {
-              dispatch(
-                saveWebPushNotifConfig({
-                  ...webPushNotifConfig,
-                  allowPushNotification: true
-                })
-              );
+              dispatch(saveWebPushNotifConfig({
+                ...webPushNotifConfig,
+                allowPushNotification: true
+              }));
             } else {
-              dispatch(
-                saveWebPushNotifConfig({
-                  ...webPushNotifConfig,
-                  allowPushNotification: false
-                })
-              );
+              dispatch(saveWebPushNotifConfig({
+                ...webPushNotifConfig,
+                allowPushNotification: false
+              }));
             }
           });
         } catch (error) {

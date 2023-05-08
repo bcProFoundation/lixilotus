@@ -1,7 +1,13 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Account } from '../account';
 
-import { Account } from '../../account';
-import { NotificationDto } from '../notification';
+export interface WebpushSubscription {
+  endpoint: string;
+  keys: {
+    auth: string;
+    p256dh: string;
+  };
+}
 
 @ObjectType()
 export class WebpushSubscriber {
@@ -32,6 +38,9 @@ export class WebpushSubscriber {
   @Field(() => Number)
   address: string;
 
+  @Field(() => Date, { nullable: true })
+  expirationTime?: Date
+
   @Field(() => Date, {
     description: 'Identifies the date and time when the object was created.'
   })
@@ -41,18 +50,4 @@ export class WebpushSubscriber {
     description: 'Identifies the date and time when the object was last updated.'
   })
   updatedAt: Date;
-}
-
-export interface WebpushSubscription {
-  endpoint: string;
-  keys: {
-    auth: string;
-    p256dh: string;
-  };
-}
-
-export interface WebpushNotificationJobData {
-  clientAppId: string;
-  pushSubcription: WebpushSubscription;
-  notification: NotificationDto;
 }

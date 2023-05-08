@@ -350,19 +350,21 @@ model Notification {
 }
 
 model WebpushSubscriber {
-  id          String   @id @default(cuid())
-  clientAppId String   @map("client_app_id")
-  auth        String
-  p256dh      String
-  endpoint    String
-  deviceId    String   @map("device_id")
-  account     Account? @relation(fields: [accountId], references: [id])
-  accountId   Int?     @map("account_id")
-  address     String
+  id             String    @id @default(cuid())
+  clientAppId    String    @map("client_app_id")
+  auth           String
+  p256dh         String
+  endpoint       String
+  deviceId       String    @map("device_id")
+  account        Account?  @relation(fields: [accountId], references: [id])
+  accountId      Int?      @map("account_id")
+  address        String
+  expirationTime DateTime? @map("expiration_time") @db.Timestamptz
 
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
 
+  @@index([endpoint, p256dh, auth])
   @@index([endpoint])
   @@index([address])
   @@index([deviceId])

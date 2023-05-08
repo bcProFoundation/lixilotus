@@ -1,8 +1,13 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { IsNotEmpty } from 'class-validator';
+import { UpsertWebpushSubscriberInput } from './upsertWebpushSubscriber.input';
 
 @InputType()
-export class CreateWebpushSubscriberInput {
+export class WebpushSubscribeInput {
+  @Field(() => [UpsertWebpushSubscriberInput])
+  @IsNotEmpty()
+  subscribers?: UpsertWebpushSubscriberInput;
+
   @Field(() => String)
   @IsNotEmpty()
   clientAppId: string;
@@ -22,12 +27,4 @@ export class CreateWebpushSubscriberInput {
   @Field(() => String)
   @IsNotEmpty()
   deviceId: string;
-
-  @Field(() => Number)
-  @IsNotEmpty()
-  accountId: number;
-
-  @Field(() => Number)
-  @IsNotEmpty()
-  address: string;
 }

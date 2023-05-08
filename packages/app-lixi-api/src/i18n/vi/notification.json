@@ -5,9 +5,7 @@
     "noReadPermission": "Không có quyền đọc thông báo.",
     "noDeletePermission": "Không có quyền xóa thông báo",
     "unableCreateNotification": "Không thể tạo thông báo.",
-    "unableToCreateSubscriber": "Không thể tạo người đăng ký.",
-    "couldNotFindAccount": "Không thể tìm thấy tài khoản đăng ký.",
-    "couldNotFindSubscriber": "Không thể tìm thấy người đăng ký.",
-    "noUpdateSubscriberPermission": "Không có quyền cập nhật người đăng ký."
+    "unableToSubscribe": "Không thể đăng ký.",
+    "unableToUnsubscribe": "Không thể hủy đăng ký."
   }
 }

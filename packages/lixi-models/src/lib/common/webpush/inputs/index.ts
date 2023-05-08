@@ -1,2 +1,2 @@
-export * from './createWebpushSubscriber.input';
-export * from './updateWebpushSubscriber.input';
+export * from './upsertWebpushSubscriber.input';
+export * from './webpushSubsribe.input';

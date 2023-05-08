@@ -1,13 +1,5 @@
 import {
-  BellFilled,
-  CheckOutlined,
-  CloseOutlined,
-  CopyOutlined,
-  ExclamationCircleFilled,
-  ExclamationCircleOutlined,
-  ImportOutlined,
-  LockFilled,
-  LockOutlined,
+  CopyOutlined, ImportOutlined, LockOutlined,
   PlusSquareOutlined,
   WalletOutlined
 } from '@ant-design/icons';
@@ -22,7 +14,7 @@ import { Account, DeleteAccountCommand, RenameAccountCommand } from '@bcpros/lix
 import { AntdFormWrapper, LanguageSelectDropdown } from '@components/Common/EnhancedInputs';
 import PrimaryButton, { SecondaryButton, SmartButton } from '@components/Common/PrimaryButton';
 import { StyledCollapse } from '@components/Common/StyledCollapse';
-import { AuthenticationContext, WalletContext } from '@context/index';
+import { WalletContext } from '@context/index';
 import { deleteAccount, generateAccount, importAccount, renameAccount, selectAccount } from '@store/account/actions';
 import { getAllAccounts, getSelectedAccount } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
@@ -30,17 +22,11 @@ import { getIsGlobalLoading } from '@store/loading/selectors';
 import { openModal } from '@store/modal/actions';
 import { setInitIntlStatus, updateLocale } from '@store/settings/actions';
 import { getCurrentLocale } from '@store/settings/selectors';
-import {
-  askPermission,
-  subscribeAllWalletsToPushNotification,
-  unsubscribeAllWalletsFromPushNotification
-} from '@utils/pushNotification';
-import { Alert, Collapse, Form, Input, Modal, Spin, Switch, Tag } from 'antd';
+import { Alert, Collapse, Form, Input, Modal, Spin } from 'antd';
 import axios from 'axios';
 import * as _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import intl from 'react-intl-universal';
-import { ServiceWorkerContext } from 'src/context/serviceWorkerProvider';
 import styled from 'styled-components';
 import { DeleteAccountModalProps } from './DeleteAccountModal';
 import LockAppSetting from './LockAppSetting';
@@ -226,16 +212,10 @@ const helpInfoIcon = (
           <div>
             <p>{intl.get('settings.deviceSupport')}</p>
             <p>{intl.get('settings.notSupportIos')}</p>
-            <div className="heading">{intl.get('settings.twoStepEnableNotification')}</div>
+            <div className='heading'>{intl.get('settings.twoStepEnableNotification')}</div>
             <ul>
-              <li>
-                {intl.get('settings.allowNotification')}
-                <em>{intl.get('settings.forBrowser')}</em>.
-              </li>
-              <li>
-                {intl.get('settings.thenAllowNotification')}
-                <em>{intl.get('settings.sendlotusOnBrower')}</em>.
-              </li>
+              <li>{intl.get('settings.allowNotification')}<em>{intl.get('settings.forBrowser')}</em>.</li>
+              <li>{intl.get('settings.thenAllowNotification')}<em>{intl.get('settings.sendlotusOnBrower')}</em>.</li>
             </ul>
           </div>
         )
@@ -257,9 +237,6 @@ const Settings: React.FC = () => {
 
   const [form] = Form.useForm();
   const [otherAccounts, setOtherAccounts] = useState<Account[]>([]);
-
-  const serviceWorkerContext = React.useContext(ServiceWorkerContext);
-  const [permission, setPermission] = useState(false);
 
   const dispatch = useAppDispatch();
   const savedAccounts: Account[] = useAppSelector(getAllAccounts);
@@ -322,6 +299,7 @@ const Settings: React.FC = () => {
     dispatch(setInitIntlStatus(false));
     dispatch(updateLocale(locales));
   }
+
 
   async function submit() {
     setFormData({

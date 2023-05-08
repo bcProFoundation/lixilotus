@@ -11,8 +11,7 @@
     "start": "next start",
     "fix": "run-s fix:*",
     "lint:prettier": "prettier \"src/**/*{.ts,.tsx}\" --check --config .prettierrc.js",
-    "fix:prettier": "prettier \"src/**/*{.ts,.tsx}\" --write --config .prettierrc.js",
-    "graphql-codegen": "graphql-codegen --config codegen.yml"
+    "fix:prettier": "prettier \"src/**/*{.ts,.tsx}\" --write --config .prettierrc.js"
   },
   "dependencies": {
     "@abcpros/bitcore-lib-xpi": "^8.25.37",
