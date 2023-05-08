@@ -4,8 +4,31 @@
 
 type Account {
   address: String!
+  balance: String!
+
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  encryptedMnemonic: String!
+  encryptedSecret: String!
   id: ID!
+  language: String!
+  lotusBurnDown: Float!
+  lotusBurnScore: Float!
+  lotusBurnUp: Float!
+  mnemonic: String!
+  mnemonicHash: String!
   name: String!
+  page: Page
+  publicKey: String
+  secret: String
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
+}
+
+type AccountEdge {
+  cursor: String!
+  node: Account!
 }
 
 type City {
@@ -67,11 +90,28 @@ type Country {
   state: [State!]!
 }
 
+input CreateAccountInput {
+  encryptedMnemonic: String!
+  language: String!
+  mnemonic: String!
+  mnemonicHash: String!
+}
+
 input CreateCommentInput {
   commentByPublicKey: String
   commentText: String!
   commentToId: String!
   tipHex: String
+}
+
+input CreateFollowAccountInput {
+  followerAccountId: Int!
+  followingAccountId: Int!
+}
+
+input CreateFollowPageInput {
+  accountId: Int!
+  pageId: String!
 }
 
 input CreatePageInput {
@@ -122,13 +162,60 @@ scalar DateTime
 """An arbitrary-precision Decimal type"""
 scalar Decimal
 
+type FollowAccount {
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  followerAccount: Account
+  followerAccountId: Int
+  followingAccount: Account
+  followingAccountId: Int
+  id: ID!
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
+}
+
+type FollowAccountEdge {
+  cursor: String!
+  node: FollowAccount!
+}
+
+type FollowPage {
+  account: Account
+  accountId: Int
+
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  id: ID!
+  page: Page
+  pageId: String
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
+}
+
+type FollowPageEdge {
+  cursor: String!
+  node: FollowPage!
+}
+
+input ImportAccountInput {
+  language: String
+  mnemonic: String!
+  mnemonicHash: String
+}
+
 type Mutation {
+  createAccount(data: CreateAccountInput!): Account!
   createComment(data: CreateCommentInput!): Comment!
+  createFollowAccount(data: CreateFollowAccountInput!): FollowAccount!
+  createFollowPage(data: CreateFollowPageInput!): FollowPage!
   createPage(data: CreatePageInput!): Page!
   createPost(data: CreatePostInput!): Post!
   createToken(data: CreateTokenInput!): Token!
   createWorship(data: CreateWorshipInput!): Worship!
   createWorshipedPerson(data: CreateWorshipedPersonInput!): WorshipedPerson!
+  importAccount(data: ImportAccountInput!): Account!
   updatePage(data: UpdatePageInput!): Page!
   updatePost(data: UpdatePostInput!): Post!
 }
@@ -161,6 +248,8 @@ type Page {
   parentId: String
   stateId: String
   title: String
+
+  """The sum of burn amount for every post on page"""
   totalBurnForPage: Float
 
   """Identifies the date and time when the object was last updated."""
@@ -268,6 +357,7 @@ type PostResponse {
 }
 
 type Query {
+  account(id: Int!): Account!
   allCommentsToPostId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: CommentOrder, skip: Int): CommentConnection!
   allOrphanPosts(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PostOrder, query: String, skip: Int): PostConnection!
   allPages(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PageOrder, query: String, skip: Int): PageConnection!
@@ -326,7 +416,9 @@ type State {
 }
 
 type Subscription {
+  accountCreated: Account!
   commentCreated: Comment!
+  followAccountCreated: FollowAccount!
   pageCreated: Page!
   postCreated: Post!
   tokenCreated: Token!

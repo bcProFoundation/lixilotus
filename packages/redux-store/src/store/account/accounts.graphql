@@ -1,0 +1,60 @@
+query Account($id: Int!) {
+  account(id: $id) {
+    ...AccountFields
+  }
+}
+
+# query Accounts(
+#   $after: String
+#   $before: String
+#   $first: Int=20
+#   $last: Int
+#   $orderBy: AccountOrder
+#   $skip: Int
+# ) {
+#   allAccounts(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, skip: $skip) {
+#     totalCount
+#     edges {
+#       cursor
+#       node {
+#         ...AccountFields
+#       }
+#     }
+#     pageInfo{
+#       ...PageInfoFields
+#     }
+#   }
+# }
+
+fragment AccountFields on Account {
+  id
+  name
+  address
+  mnemonicHash
+  publicKey
+  balance
+  language
+  lotusBurnUp
+  lotusBurnDown
+  lotusBurnScore
+  createdAt
+  updatedAt
+}
+
+mutation createAccount($input: CreateAccountInput!) {
+  createAccount(data: $input) {
+    ...AccountFields
+  }
+}
+
+mutation importAccount($input: ImportAccountInput!) {
+  importAccount(data: $input) {
+    ...AccountFields
+  }
+}
+
+# mutation updateAccount($input: UpdateAccountInput!) {
+#   updateAccount(data: $input) {
+#     ...AccountFields
+#   }
+# }

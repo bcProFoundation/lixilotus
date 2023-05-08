@@ -1,0 +1,46 @@
+fragment FollowAccountFields on FollowAccount {
+  id
+  followerAccountId
+  followerAccount {
+    id
+    name
+    address
+  }
+  followingAccountId
+  followingAccount {
+    id
+    name
+    address
+  }
+  createdAt
+  updatedAt
+}
+
+mutation createFollowAccount($input: CreateFollowAccountInput!) {
+  createFollowAccount(data: $input) {
+    ...FollowAccountFields
+  }
+}
+
+fragment FollowPageFields on FollowPage {
+  id
+  accountId
+  account {
+    id
+    name
+    address
+  }
+  pageId
+  page {
+    id
+    name
+  }
+  createdAt
+  updatedAt
+}
+
+mutation createFollowPage($input: CreateFollowPageInput!) {
+  createFollowPage(data: $input) {
+    ...FollowPageFields
+  }
+}

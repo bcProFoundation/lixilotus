@@ -21,6 +21,7 @@ import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from './middlewares/exception.filter';
 import { S3Module } from 'nestjs-s3';
 import { TokenModule } from './modules/token/token.module';
+import { AccountModule } from './modules/account/account.module';
 
 //enabled serving multiple static for fastify
 type FastifyServeStaticModuleOptions = ServeStaticModuleOptions & {
@@ -90,6 +91,7 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
     AuthModule,
     CoreModule,
     NotificationModule,
+    AccountModule,
     PageModule,
     TokenModule,
     WorshipModule,

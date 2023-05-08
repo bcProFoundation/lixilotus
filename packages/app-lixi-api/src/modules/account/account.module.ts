@@ -1,12 +1,13 @@
-import { Module } from '@nestjs/common';
-// import { I18nModule } from 'nestjs-i18n';
-// import { LixiNftController } from './lixinft.controller';
-// import { LixiNftService } from './lixinft.service';
+import { Logger, Module } from '@nestjs/common';
+import { AuthModule } from '../auth/auth.module';
+import { AccountController } from '../core/account/account.controller';
+import { AccountResolver } from './account.resolver';
+import { FollowResolver } from './follow.resolver';
 
 @Module({
-  imports: []
-  // controllers: [AccountController],
-  // providers: [AccountService],
-  // exports: [AccountService]
+  imports: [AuthModule],
+  controllers: [],
+  providers: [AccountResolver, FollowResolver, Logger],
+  exports: []
 })
 export class AccountModule {}

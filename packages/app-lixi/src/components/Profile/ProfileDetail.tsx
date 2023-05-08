@@ -33,8 +33,10 @@ import { fromXpiToSatoshis } from '@utils/cashMethods';
 import { FilterBurnt } from '@components/Common/FilterBurn';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import { getFilterPostsHome, getFilterPostsProfile } from '@store/settings/selectors';
-import { setTransactionReady } from '@store/account/actions';
+import { selectAccount, setTransactionReady } from '@store/account/actions';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
+import { api as followsApi, useCreateFollowAccountMutation } from '@store/follow/follows.api';
+import { CreateFollowAccountInput } from 'src/generated/types.generated';
 
 type UserDetailProps = {
   user: any;
@@ -371,9 +373,20 @@ const ProfileDetail = ({ user, isMobile }: UserDetailProps) => {
   const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
   const failQueue = useAppSelector(getFailQueue);
   const filterValue = useAppSelector(getFilterPostsProfile);
+  const selectedAccount = useAppSelector(getSelectedAccount);
   const [userDetailData, setUserDetailData] = useState<any>(user);
   const [listsFriend, setListsFriend] = useState<any>([]);
   const [listsPicture, setListsPicture] = useState<any>([]);
+
+  const [
+    createFollowAccountTrigger,
+    {
+      isLoading: isLoadingCreateFollowAccount,
+      isSuccess: isSuccessCreateFollowAccount,
+      isError: isErrorCreateFollowAccount,
+      error: errorOnCreate
+    }
+  ] = useCreateFollowAccountMutation();
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByUserIdQuery(
     {
@@ -498,6 +511,33 @@ const ProfileDetail = ({ user, isMobile }: UserDetailProps) => {
 
   useDidMountEffectNotification();
 
+  const handleAddFollower = async () => {
+    const createFollowAccountInput: CreateFollowAccountInput = {
+      followerAccountId: userDetailData.id,
+      followingAccountId: selectedAccount.id
+    };
+
+    try {
+      await createFollowAccountTrigger({ input: createFollowAccountInput });
+      dispatch(
+        showToast('success', {
+          message: 'Success',
+          description: intl.get('follow.followSuccess'),
+          duration: 5
+        })
+      );
+    } catch (error) {
+      const message = errorOnCreate?.message ?? intl.get('followFailure');
+      dispatch(
+        showToast('error', {
+          message: 'Error',
+          description: message,
+          duration: 5
+        })
+      );
+    }
+  };
+
   return (
     <>
       <StyledContainerProfileDetail>
@@ -521,6 +561,12 @@ const ProfileDetail = ({ user, isMobile }: UserDetailProps) => {
               <h2>{userDetailData.name}</h2>
               <p className="add">{userDetailData?.address.slice(6, 11) + '...' + userDetailData?.address.slice(-5)}</p>
             </div>
+            {userDetailData.id !== selectedAccount.id && (
+              <div className="title-profile">
+                <Button onClick={() => handleAddFollower()}>Follow</Button>
+              </div>
+            )}
+
             {/* TODO: implement in the future */}
             {/* {selectedAccountId == userDetailData.id && (
               <div className="action-profile">

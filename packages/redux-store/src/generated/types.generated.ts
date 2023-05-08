@@ -19,8 +19,30 @@ export type Scalars = {
 export type Account = {
   __typename?: 'Account';
   address: Scalars['String'];
+  balance: Scalars['String'];
+  /** Identifies the date and time when the object was created. */
+  createdAt: Scalars['DateTime'];
+  encryptedMnemonic: Scalars['String'];
+  encryptedSecret: Scalars['String'];
   id: Scalars['ID'];
+  language: Scalars['String'];
+  lotusBurnDown: Scalars['Float'];
+  lotusBurnScore: Scalars['Float'];
+  lotusBurnUp: Scalars['Float'];
+  mnemonic: Scalars['String'];
+  mnemonicHash: Scalars['String'];
   name: Scalars['String'];
+  page?: Maybe<Page>;
+  publicKey?: Maybe<Scalars['String']>;
+  secret?: Maybe<Scalars['String']>;
+  /** Identifies the date and time when the object was last updated. */
+  updatedAt: Scalars['DateTime'];
+};
+
+export type AccountEdge = {
+  __typename?: 'AccountEdge';
+  cursor: Scalars['String'];
+  node: Account;
 };
 
 export type City = {
@@ -85,11 +107,28 @@ export type Country = {
   state: Array<State>;
 };
 
+export type CreateAccountInput = {
+  encryptedMnemonic: Scalars['String'];
+  language: Scalars['String'];
+  mnemonic: Scalars['String'];
+  mnemonicHash: Scalars['String'];
+};
+
 export type CreateCommentInput = {
   commentByPublicKey?: InputMaybe<Scalars['String']>;
   commentText: Scalars['String'];
   commentToId: Scalars['String'];
   tipHex?: InputMaybe<Scalars['String']>;
+};
+
+export type CreateFollowAccountInput = {
+  followerAccountId: Scalars['Int'];
+  followingAccountId: Scalars['Int'];
+};
+
+export type CreateFollowPageInput = {
+  accountId: Scalars['Int'];
+  pageId: Scalars['String'];
 };
 
 export type CreatePageInput = {
@@ -132,20 +171,80 @@ export type CreateWorshipedPersonInput = {
   wikiDataId?: InputMaybe<Scalars['String']>;
 };
 
+export type FollowAccount = {
+  __typename?: 'FollowAccount';
+  /** Identifies the date and time when the object was created. */
+  createdAt: Scalars['DateTime'];
+  followerAccount?: Maybe<Account>;
+  followerAccountId?: Maybe<Scalars['Int']>;
+  followingAccount?: Maybe<Account>;
+  followingAccountId?: Maybe<Scalars['Int']>;
+  id: Scalars['ID'];
+  /** Identifies the date and time when the object was last updated. */
+  updatedAt: Scalars['DateTime'];
+};
+
+export type FollowAccountEdge = {
+  __typename?: 'FollowAccountEdge';
+  cursor: Scalars['String'];
+  node: FollowAccount;
+};
+
+export type FollowPage = {
+  __typename?: 'FollowPage';
+  account?: Maybe<Account>;
+  accountId?: Maybe<Scalars['Int']>;
+  /** Identifies the date and time when the object was created. */
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  page?: Maybe<Page>;
+  pageId?: Maybe<Scalars['String']>;
+  /** Identifies the date and time when the object was last updated. */
+  updatedAt: Scalars['DateTime'];
+};
+
+export type FollowPageEdge = {
+  __typename?: 'FollowPageEdge';
+  cursor: Scalars['String'];
+  node: FollowPage;
+};
+
+export type ImportAccountInput = {
+  language?: InputMaybe<Scalars['String']>;
+  mnemonic: Scalars['String'];
+  mnemonicHash?: InputMaybe<Scalars['String']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  createAccount: Account;
   createComment: Comment;
+  createFollowAccount: FollowAccount;
+  createFollowPage: FollowPage;
   createPage: Page;
   createPost: Post;
   createToken: Token;
   createWorship: Worship;
   createWorshipedPerson: WorshipedPerson;
+  importAccount: Account;
   updatePage: Page;
   updatePost: Post;
 };
 
+export type MutationCreateAccountArgs = {
+  data: CreateAccountInput;
+};
+
 export type MutationCreateCommentArgs = {
   data: CreateCommentInput;
+};
+
+export type MutationCreateFollowAccountArgs = {
+  data: CreateFollowAccountInput;
+};
+
+export type MutationCreateFollowPageArgs = {
+  data: CreateFollowPageInput;
 };
 
 export type MutationCreatePageArgs = {
@@ -166,6 +265,10 @@ export type MutationCreateWorshipArgs = {
 
 export type MutationCreateWorshipedPersonArgs = {
   data: CreateWorshipedPersonInput;
+};
+
+export type MutationImportAccountArgs = {
+  data: ImportAccountInput;
 };
 
 export type MutationUpdatePageArgs = {
@@ -202,6 +305,7 @@ export type Page = {
   parentId?: Maybe<Scalars['String']>;
   stateId?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
+  /** The sum of burn amount for every post on page */
   totalBurnForPage?: Maybe<Scalars['Float']>;
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
@@ -316,6 +420,7 @@ export type PostResponse = {
 
 export type Query = {
   __typename?: 'Query';
+  account: Account;
   allCommentsToPostId: CommentConnection;
   allOrphanPosts: PostConnection;
   allPages: PageConnection;
@@ -337,6 +442,10 @@ export type Query = {
   token: Token;
   worship: Worship;
   worshipedPerson: WorshipedPerson;
+};
+
+export type QueryAccountArgs = {
+  id: Scalars['Int'];
 };
 
 export type QueryAllCommentsToPostIdArgs = {
@@ -529,7 +638,9 @@ export type State = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  accountCreated: Account;
   commentCreated: Comment;
+  followAccountCreated: FollowAccount;
   pageCreated: Page;
   postCreated: Post;
   tokenCreated: Token;

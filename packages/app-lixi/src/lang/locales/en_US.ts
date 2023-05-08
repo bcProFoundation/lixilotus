@@ -573,5 +573,9 @@ export default {
   'category.scienceAndTechnology': 'Science And Technology',
   'category.healthAndFitness': 'Health And Fitness',
   'category.travelAndEvents': 'Travel And Events',
-  'category.other': 'Other'
+  'category.other': 'Other',
+
+  /* 19. Follow*/
+  'follow.followSuccess': 'Follow successful',
+  'follow.followFailure': 'Follow failure'
 };

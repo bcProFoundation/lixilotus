@@ -35,6 +35,8 @@ import { getFilterPostsPage } from '@store/settings/selectors';
 import { FilterBurnt } from '@components/Common/FilterBurn';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
+import { CreateFollowPageInput } from 'src/generated/types.generated';
+import { useCreateFollowPageMutation } from '@store/follow/follows.api';
 
 type PageDetailProps = {
   page: any;
@@ -371,6 +373,16 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
   const filterValue = useAppSelector(getFilterPostsPage);
   const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
 
+  const [
+    createFollowPageTrigger,
+    {
+      isLoading: isLoadingCreateFollowAccount,
+      isSuccess: isSuccessCreateFollowAccount,
+      isError: isErrorCreateFollowAccount,
+      error: errorOnCreate
+    }
+  ] = useCreateFollowPageMutation();
+
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByPageIdQuery(
     {
       first: 10,
@@ -498,6 +510,33 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
     }
   };
 
+  const handleFollowPage = async () => {
+    const createFollowPageInput: CreateFollowPageInput = {
+      accountId: selectedAccountId,
+      pageId: pageDetailData.id
+    };
+
+    try {
+      await createFollowPageTrigger({ input: createFollowPageInput });
+      dispatch(
+        showToast('success', {
+          message: 'Success',
+          description: intl.get('follow.followSuccess'),
+          duration: 5
+        })
+      );
+    } catch (error) {
+      const message = errorOnCreate?.message ?? intl.get('followFailure');
+      dispatch(
+        showToast('error', {
+          message: 'Error',
+          description: message,
+          duration: 5
+        })
+      );
+    }
+  };
+
   return (
     <>
       <StyledContainerProfileDetail>
@@ -537,6 +576,12 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
                   <CameraOutlined />
                   {intl.get('page.editCoverPhoto')}
                 </Button>
+              </div>
+            )}
+            {/* Follow */}
+            {selectedAccountId !== pageDetailData?.pageAccountId && (
+              <div className="action-profile">
+                <Button onClick={handleFollowPage}>Follow</Button>
               </div>
             )}
           </div>
