@@ -1,7 +1,7 @@
 import { Spin } from 'antd';
 import { Account } from '@bcpros/lixi-models';
-import { useAppSelector } from 'src/store/hooks';
-import { getIsGlobalLoading } from 'src/store/loading/selectors';
+import { useAppSelector } from '@store/hooks';
+import { getIsGlobalLoading } from '@store/loading/selectors';
 import { CashLoadingIcon } from '@bcpros/lixi-components/components/Common/CustomIcons';
 import AccountListItem from './AccountListItem';
 

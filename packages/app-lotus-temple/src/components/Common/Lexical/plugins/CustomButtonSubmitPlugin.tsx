@@ -4,7 +4,7 @@ import { $generateHtmlFromNodes } from '@lexical/html';
 import { Button } from 'antd';
 import React, { useEffect } from 'react';
 import intl from 'react-intl-universal';
-import { useAppDispatch } from 'src/store/hooks';
+import { useAppDispatch } from '@store/hooks';
 import { saveEditorTextToCache } from '@store/account/actions';
 
 // Lexical React plugins are React components, which makes them

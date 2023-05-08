@@ -8,9 +8,9 @@ import { PersistGate } from 'redux-persist/integration/react';
 
 import MainLayout from '@components/Layout/MainLayout';
 
-import { AuthenticationProvider, WalletProvider, AuthorizationProvider, callConfig } from 'src/context';
+import { AuthenticationProvider, WalletProvider, AuthorizationProvider, callConfig } from '@context/index';
 import { ConnectedRouter } from 'connected-next-router';
-import { wrapper } from '../store/store';
+import { wrapper } from '@store/store';
 import OutsideCallConsumer, { createCaller } from 'react-outside-call';
 import { Spin } from 'antd';
 import SplashScreen from '@components/Common/SplashScreen';

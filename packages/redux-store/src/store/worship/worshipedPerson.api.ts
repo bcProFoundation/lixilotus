@@ -1,6 +1,5 @@
 import { EntityState } from '@reduxjs/toolkit';
 import { PageInfo } from 'src/generated/types.generated';
-
 import { api, WorshipedPersonQuery } from './worshipedPerson.generated';
 
 export interface WorshipedPersonApiState extends EntityState<WorshipedPersonQuery['worshipedPerson']> {

@@ -22,6 +22,14 @@
     "incremental": true,
     "experimentalDecorators": true
   },
+  "references": [
+    {
+      "path": "../redux-store/tsconfig.json"
+    },
+    {
+      "path": "../lixi-components/tsconfig.json"
+    }
+  ],
   "include": ["src/**/*"],
   "exclude": ["node_modules"],
   "typeRoots": ["./src/@types", "./node_modules/@types"]

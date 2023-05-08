@@ -1,8 +1,8 @@
 import { Layout, Spin } from 'antd';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { getSelectedAccount } from 'src/store/account/selectors';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
+import { getSelectedAccount } from '@store/account/selectors';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 
 import { LoadingOutlined } from '@ant-design/icons';
@@ -15,7 +15,7 @@ import Topbar from '@containers/Topbar';
 import { loadLocale } from '@store/settings/actions';
 import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
 import { Header } from 'antd/lib/layout/layout';
-import { getIsGlobalLoading } from 'src/store/loading/selectors';
+import { getIsGlobalLoading } from '@store/loading/selectors';
 import { injectStore } from 'src/utils/axiosClient';
 import ModalManager from '../../Common/ModalManager';
 import { GlobalStyle } from './GlobalStyle';
@@ -25,7 +25,7 @@ import { getAllNotifications } from '@store/notification/selectors';
 import { fetchNotifications } from '@store/notification/actions';
 import { setTransactionReady } from '@store/account/actions';
 import { getSlpBalancesAndUtxos } from '@store/wallet';
-import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
+import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;
 

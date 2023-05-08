@@ -1,15 +1,14 @@
 import { PaginationArgs } from '@bcpros/lixi-models';
-import { createEntityAdapter } from '@reduxjs/toolkit';
-import { useAppDispatch } from '@store/hooks';
 import {
-  useAllWorshipedByPersonIdQuery,
-  useLazyAllWorshipedByPersonIdQuery
+  useLazyAllWorshipedByPersonIdQuery,
+  useAllWorshipedByPersonIdQuery
 } from '@store/worship/worshipedPerson.generated';
-import _ from 'lodash';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { WorshipedPerson, WorshipedPersonOrder, WorshipOrder } from 'src/generated/types.generated';
-
+import _ from 'lodash';
 import { WorshipQuery } from './worshipedPerson.generated';
+import { useAppDispatch } from '@store/hooks';
+import { createEntityAdapter } from '@reduxjs/toolkit';
 
 const worshipAdapter = createEntityAdapter<WorshipQuery['worship']>({
   selectId: worship => worship.id,
@@ -25,7 +24,7 @@ export interface WorshipListByIdParams extends PaginationArgs {
 
 export function useInfiniteWorshipByPersonIdQuery(
   params: WorshipListByIdParams,
-  fetchAll = false // if `true`: auto do next fetches to get all notes at once
+  fetchAll: boolean = false // if `true`: auto do next fetches to get all notes at once
 ) {
   const baseResult = useAllWorshipedByPersonIdQuery(params);
 

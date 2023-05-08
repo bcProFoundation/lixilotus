@@ -3,7 +3,6 @@ import { currency } from '@components/Common/Ticker';
 import { all, call, cancelled, fork, put, select, take, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { getSelectedAccount } from '@store/account/selectors';
-import { api as worshipApi } from '@store/worship/worshipedPerson.api';
 import { notification } from 'antd';
 import { ArgsProps } from 'antd/lib/notification/interface';
 import Paragraph from 'antd/lib/typography/Paragraph';
@@ -12,15 +11,14 @@ import { isMobile } from 'react-device-detect';
 import intl from 'react-intl-universal';
 import { eventChannel } from 'redux-saga';
 import { delay, race } from 'redux-saga/effects';
-import { put as putAction } from 'redux-saga/effects';
 import io, { Socket } from 'socket.io-client';
-import { OrderDirection, WorshipOrderField } from 'src/generated/types.generated';
-
 import { downloadExportedLixi, refreshLixiSilent } from '../lixi/actions';
 import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
-
 import { channelOff, channelOn, serverOff, serverOn, startChannel, stopChannel } from './actions';
+import { api as worshipApi } from './worshipedPerson.api';
+import { OrderDirection, WorshipOrderField } from 'src/generated/types.generated';
+import { put as putAction } from 'redux-saga/effects';
 
 const getDeviceNotificationStyle = () => {
   if (isMobile) {
@@ -90,7 +88,7 @@ function subscribe(account: Account) {
 
 function createSocketChannel(socket: Socket) {
   return eventChannel(emit => {
-    const handler = (data: NotificationDto) => {
+    const handler = (data: Notification) => {
       emit(data);
     };
     socket.on('publishWorship', handler);

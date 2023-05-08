@@ -1,15 +1,14 @@
 import { PaginationArgs } from '@bcpros/lixi-models';
-import { createEntityAdapter } from '@reduxjs/toolkit';
 import {
   useLazyWorshipedPeopleQuery,
   useWorshipedPeopleQuery,
   api as worshipedPeopleApi
 } from '@store/worship/worshipedPerson.api';
-import _ from 'lodash';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { WorshipedPerson, WorshipedPersonOrder } from 'src/generated/types.generated';
-
+import _ from 'lodash';
 import { WorshipedPersonQuery } from './worshipedPerson.generated';
+import { createEntityAdapter } from '@reduxjs/toolkit';
 
 const worshipedPeopleAdapter = createEntityAdapter<WorshipedPersonQuery['worshipedPerson']>({
   selectId: person => person.id,
@@ -25,7 +24,7 @@ export interface WorshipedPersonListParams extends PaginationArgs {
 
 export function useInfiniteWorshipedPersonQuery(
   params: WorshipedPersonListParams,
-  fetchAll = false // if `true`: auto do next fetches to get all notes at once
+  fetchAll: boolean = false // if `true`: auto do next fetches to get all notes at once
 ) {
   const baseResult = useWorshipedPeopleQuery(params, { skip: params.query === null });
 
