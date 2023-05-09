@@ -18,6 +18,7 @@ const StyledName = style.p`
 const StyledDesc = style.p`
   display: flex;
   gap: 3px;
+  margin-bottom: 0px;
 `;
 
 const StyledBurnedAmount = style.p`
@@ -33,13 +34,20 @@ const StyledItem = style.div`
   margin-top: 5px;
   gap: 8px;
   cursor: pointer;
+  border-radius: 15px;
+  padding: 5px;
+  transition: 0.5s;
+
+  &:hover {
+    background-color: #ceccca;
+  }
 `;
 
 const StyledContainer = style.div`
-display: flex;
-flex-direction: column;
-gap: 5px;
-padding-top: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-top: 5px;
 `;
 
 const SidebarListItem = ({ id, name, totalWorshipAmount }: SidebarListItemProp) => {
