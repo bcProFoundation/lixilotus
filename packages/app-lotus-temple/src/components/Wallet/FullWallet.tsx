@@ -180,6 +180,11 @@ const FullWalletComponent: React.FC = () => {
         burnForId = currentData.comment.commentToId;
       }
     }
+    if (burnForType == BurnForType.Worship) {
+      //Only handle burn for person. Cannot handle burn for Altar or Temple
+      //TODO: Think of better way to handle
+      burnForTypeString = 'person';
+    }
 
     return `/${burnForTypeString.toLowerCase()}/${burnForId}`;
   };
