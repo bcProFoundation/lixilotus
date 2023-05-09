@@ -1,5 +1,4 @@
 import { createAction } from '@reduxjs/toolkit';
-import { CreateWebpushSubscriberInput } from 'src/generated/types.generated';
 
-export const webpushSubscribe = createAction('webpush/webpushSubscribe');
-export const createWebpushSubscriber = createAction<CreateWebpushSubscriberInput>('webpush/subscribeWebpushNotification');
+export const subscribe = createAction('webpush/subscribe');
+export const unsubscribe = createAction('webpush/unsubscribe');

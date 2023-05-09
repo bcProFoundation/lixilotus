@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { getPlatformPermissionState, unsubscribeAllWalletsFromPushNotification } from '@utils/pushNotification';
 import { saveWebPushNotifConfig } from '@store/settings/actions';
 import { getWebPushNotifConfig } from '@store/settings/selectors';
+import { getPlatformPermissionState } from '@utils/pushNotification';
+import { useEffect } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 const usePushNotification = () => {
   const dispatch = useAppDispatch();

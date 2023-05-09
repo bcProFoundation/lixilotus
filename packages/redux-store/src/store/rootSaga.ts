@@ -17,6 +17,7 @@ import toastSaga from './toast/saga';
 import tokenSaga from './token/saga';
 import walletSaga from './wallet/saga';
 import worshipSaga from './worship/saga';
+import webpushSaga from './webpush/saga';
 
 export default function* rootSaga() {
   yield all([
@@ -30,6 +31,7 @@ export default function* rootSaga() {
     toastSaga(),
     settingsSaga(),
     notificationSaga(),
+    webpushSaga(),
     worshipSaga(),
     pageSaga(),
     postSaga(),

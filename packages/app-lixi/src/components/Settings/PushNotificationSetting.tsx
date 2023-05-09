@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import {
   BellFilled,
   CheckOutlined,
@@ -7,20 +6,19 @@ import {
   ExclamationCircleOutlined,
   QuestionCircleOutlined
 } from '@ant-design/icons';
-import { Switch, Tag, Modal } from 'antd';
+import { GeneralSettingsItem } from '@components/Common/Atoms/GeneralSettingsItem';
+import { ServiceWorkerContext } from '@context/index';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { saveWebPushNotifConfig } from '@store/settings/actions';
+import { getWebPushNotifConfig } from '@store/settings/selectors';
 import {
   askPermission,
-  getPlatformPermissionState,
-  subscribeAllWalletsToPushNotification,
-  unsubscribeAllWalletsFromPushNotification
+  getPlatformPermissionState
 } from '@utils/pushNotification';
+import { Modal, Switch, Tag } from 'antd';
+import React, { useState } from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { ServiceWorkerContext } from '@context/index';
-import { getWebPushNotifConfig } from '@store/settings/selectors';
-import { saveWebPushNotifConfig } from '@store/settings/actions';
-import { GeneralSettingsItem } from '@components/Common/Atoms/GeneralSettingsItem';
 
 const ThemedQuerstionCircleOutlinedFaded = styled(QuestionCircleOutlined)`
   color: #bb98ff !important;

@@ -32,8 +32,7 @@
     }
   ],
   "include": [
-    "src/**/*",
-    "../redux-store/src/context/serviceWorkerProvider.tsx"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules"

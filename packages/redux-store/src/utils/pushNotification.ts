@@ -1,4 +1,3 @@
-import { Modal } from 'antd';
 import { getAddressesOfWallet } from './cashMethods';
 
 /**
@@ -67,18 +66,8 @@ export const subscribeAllWalletsToPushNotification = async (pushNotificationConf
       throw new Error(resData.error);
     }
     pushNotificationConfig.turnOnPushNotification();
-    if (interactiveMode) {
-      Modal.success({ content: 'Success! you will receive notification of new transaction' });
-    }
   } catch (error) {
     console.log('Error in subscribeAllWalletsToPushNotification()', error);
-    if (interactiveMode) {
-      // show an error modal in interactive mode
-      Modal.error({
-        title: 'Error - Push Notification Subscription',
-        content: error.message
-      });
-    }
     return;
   }
 };

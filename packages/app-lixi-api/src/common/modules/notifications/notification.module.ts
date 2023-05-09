@@ -10,7 +10,7 @@ import { NotificationGateway } from './notification.gateway';
 import { NotificationOutboundProcessor } from './notification.processor';
 import { NotificationService } from './notification.service';
 import { WebpushNotificationProcessor } from './webpush-notification.process';
-import { WebpushNotificationResolver } from './webpush-notification.resolver';
+import { WebpushController } from './webpush.controller';
 
 @Module({
   imports: [
@@ -51,9 +51,9 @@ import { WebpushNotificationResolver } from './webpush-notification.resolver';
     NotificationGateway,
     NotificationService,
     NotificationOutboundProcessor,
-    WebpushNotificationResolver,
+    WebpushController,
     WebpushNotificationProcessor
   ],
   exports: [NotificationGateway, NotificationService, NotificationOutboundProcessor]
 })
-export class NotificationModule {}
+export class NotificationModule { }

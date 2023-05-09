@@ -1,4 +1,4 @@
-import usePushNotification from '@local-hooks/usePushNotification';
+import usePushNotification from '@hooks/usePushNotification';
 import { createContext, useEffect, useState } from 'react';
 
 export type ServiceWorkerValue = {

@@ -11,9 +11,6 @@
       "@icons/*": [
         "src/assets/icons/*"
       ],
-      "@utils/*": [
-        "src/utils/*"
-      ],
       "@components/*": [
         "src/components/*"
       ],
@@ -21,7 +18,7 @@
         "src/containers/*"
       ],
       "@context/*": [
-        "src/context/*"
+        "../../packages/redux-store/src/context/*"
       ],
       "@hooks/*": [
         "../../packages/redux-store/src/hooks/*"
@@ -31,6 +28,9 @@
       ],
       "@store/*": [
         "../../packages/redux-store/src/store/*"
+      ],
+      "@utils/*": [
+        "../../packages/redux-store/src/utils/*"
       ],
       "@generated/*": [
         "../../packages/redux-store/src/generated/*"
