@@ -153,6 +153,7 @@ const StyledCardPage = styled.div`
     @media (max-width: 768px) {
       width: 185px;
       height: 75px;
+      object-fit: cover;
     }
   }
   .info-profile {
