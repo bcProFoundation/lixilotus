@@ -1,6 +1,7 @@
 import { Account } from '@bcpros/lixi-models/lib/account';
 import { Upload } from '@bcpros/lixi-models/lib/upload';
 import { EntityState } from '@reduxjs/toolkit';
+import { WorshipedPersonFieldsFragment as WorshipedPerson } from '@store/worship/worshipedPerson.generated';
 
 export interface AccountsState extends EntityState<Account> {
   selectedId: Nullable<number> | undefined;
@@ -15,4 +16,5 @@ export interface AccountsState extends EntityState<Account> {
   leaderBoard: Array<Account & { totalBurned: number }>;
   transactionReady: boolean;
   graphqlRequestLoading: boolean;
+  recentVisitedPeople: WorshipedPerson[];
 }

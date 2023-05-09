@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 import { Account } from '@bcpros/lixi-models';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { Burn, BurnCommand, BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
@@ -18,9 +19,14 @@ import * as _ from 'lodash';
 import intl from 'react-intl-universal';
 import { buffers, Channel } from 'redux-saga';
 import { actionChannel, flush, getContext, put, select } from 'redux-saga/effects';
-import { OrderDirection, PostOrderField, TokenOrderField } from 'src/generated/types.generated';
+import {
+  CreateWorshipInput,
+  OrderDirection,
+  PostOrderField,
+  TokenOrderField,
+  WorshipOrderField
+} from 'src/generated/types.generated';
 import { hideLoading } from '../loading/actions';
-
 import {
   addBurnTransaction,
   addFailQueue,
@@ -35,6 +41,7 @@ import {
 } from './actions';
 import burnApi from './api';
 import { getBurnQueue, getFailQueue } from './selectors';
+import { api as worshipApi } from '@store/worship/worshipedPerson.api';
 
 function* createTxHexSaga(action: any) {
   const data = action.payload;
@@ -72,7 +79,7 @@ function* burnForUpDownVoteSaga(action: PayloadAction<any>) {
   const command = action.payload;
 
   const { burnForId: postId, queryParams } = command;
-  const burnValue = _.toNumber(command.burnValue);
+  let burnValue = _.toNumber(command.burnValue);
   yield put(createTxHex(command));
   const { payload } = yield take(returnTxHex.type);
   const latestTxHex = payload;
@@ -94,6 +101,17 @@ function* burnForUpDownVoteSaga(action: PayloadAction<any>) {
         break;
       case BurnForType.Comment:
         patches = yield updateCommentBurnValue(action);
+        break;
+      case BurnForType.Worship:
+        const createWorshipInput: CreateWorshipInput = {
+          worshipedPersonId: command.burnForId,
+          worshipedAmount: burnValue
+        };
+        const promise = yield put(worshipApi.endpoints.createWorship.initiate({ input: createWorshipInput }));
+        yield promise;
+
+        const data = yield promise.unwrap();
+        patches = yield updateWorshipBurnValue(data);
         break;
     }
 
@@ -133,6 +151,13 @@ function* burnForUpDownVoteSaga(action: PayloadAction<any>) {
       if (patches) {
         yield put(commentApi.util.patchQueryData('CommentsToPostId', queryParams, patches.inversePatches));
       }
+    } else if (command.burnForType === BurnForType.Worship) {
+      message = (err as Error)?.message ?? intl.get('comment.unableToBurn');
+      if (patches) {
+        yield put(
+          worshipApi.util.patchQueryData('allWorshipedByPersonId', { id: command.burnForId }, patches.inversePatches)
+        );
+      }
     }
     yield put(burnForUpDownVoteFailure(message));
   }
@@ -162,7 +187,7 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
     }
   };
 
-  const burnValue = _.toNumber(command.burnValue);
+  let burnValue = _.toNumber(command.burnValue);
 
   //BUG: All token and page post show up on home page will not optimistic update becuz of PostQueryTag
   // The algo will check for PostQueryTag then updateQueryData according to it. It only update normal post not page's post and token's post at homepage.
@@ -323,6 +348,37 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
         })
       );
   }
+}
+
+function* updateWorshipBurnValue(data) {
+  const { createWorship } = data;
+  const params = {
+    orderBy: {
+      direction: OrderDirection.Desc,
+      field: WorshipOrderField.UpdatedAt
+    }
+  };
+  yield put(
+    worshipApi.util.updateQueryData('WorshipedPerson', { id: createWorship.worshipedPerson.id }, draft => {
+      draft.worshipedPerson.totalWorshipAmount =
+        draft.worshipedPerson.totalWorshipAmount + createWorship.worshipedAmount;
+    })
+  );
+  return yield put(
+    worshipApi.util.updateQueryData(
+      'allWorshipedByPersonId',
+      { ...params, id: createWorship.worshipedPerson.id },
+      draft => {
+        draft.allWorshipedByPersonId.edges.unshift({
+          cursor: createWorship.id,
+          node: {
+            ...createWorship
+          }
+        });
+        draft.allWorshipedByPersonId.totalCount = draft.allWorshipedByPersonId.totalCount + 1;
+      }
+    )
+  );
 }
 
 function* updateCommentBurnValue(action: PayloadAction<BurnCommand>) {

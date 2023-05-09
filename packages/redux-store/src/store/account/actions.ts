@@ -10,6 +10,7 @@ import {
   Upload
 } from '@bcpros/lixi-models';
 import { createAction } from '@reduxjs/toolkit';
+import { WorshipedPersonFieldsFragment as WorshipedPerson } from '@store/worship/worshipedPerson.generated';
 
 export const generateAccount = createAction('account/generateAccount');
 export const getAccount = createAction<number>('account/getAccount');
@@ -72,3 +73,5 @@ export const setTransactionReady = createAction('account/setTransactionReady');
 export const setTransactionNotReady = createAction('account/setTransactionNotReady');
 export const setGraphqlRequestLoading = createAction('account/setGraphqlRequestLoading');
 export const setGraphqlRequestDone = createAction('account/setGraphqlRequestDone');
+export const addRecentVisitedPerson = createAction<WorshipedPerson>('account/addRecentVisitedPerson');
+export const clearRecentVisitedPeople = createAction('account/clearRecentVisitedPeople');

@@ -1,10 +1,10 @@
-import axiosClient from '@utils/axiosClient';
+import axiosClient, { axiosLocalClient } from '../../utils/axiosClient';
 import { LocalUser } from '../../models/localUser';
 
 const localAccountApi = {
   localLogin(localUser: LocalUser): Promise<any> {
     const url = '/_api/local-login';
-    return axiosClient
+    return axiosLocalClient
       .post(url, localUser)
       .then(res => {
         return res.data;

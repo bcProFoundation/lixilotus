@@ -62,3 +62,8 @@ export const getGraphqlRequestStatus = createSelector(
   (state: RootState) => state.accounts,
   (accounts: AccountsState) => accounts.graphqlRequestLoading
 );
+
+export const getRecentVisitedPeople = createSelector(
+  (state: RootState) => state.accounts,
+  (accounts: AccountsState) => accounts.recentVisitedPeople
+);
