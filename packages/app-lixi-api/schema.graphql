@@ -400,6 +400,7 @@ type Query {
   ): WorshipedPersonConnection!
   allWorshipedPersonByUserId(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: WorshipedPersonOrder, skip: Int): WorshipedPersonConnection!
   allWorshipedPersonSpecialDate(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: WorshipedPersonOrder, skip: Int): WorshipedPersonConnection!
+  checkFollowAccount(followerAccountId: Int!): FollowAccount!
   comment(id: String!): Comment!
   page(id: String!): Page!
   post(id: String!): Post!

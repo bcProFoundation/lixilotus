@@ -436,6 +436,7 @@ export type Query = {
   allWorshipedPersonBySearch: WorshipedPersonConnection;
   allWorshipedPersonByUserId: WorshipedPersonConnection;
   allWorshipedPersonSpecialDate: WorshipedPersonConnection;
+  checkFollowAccount: FollowAccount;
   comment: Comment;
   page: Page;
   post: Post;
@@ -602,6 +603,10 @@ export type QueryAllWorshipedPersonSpecialDateArgs = {
   minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<WorshipedPersonOrder>;
   skip?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryCheckFollowAccountArgs = {
+  followerAccountId: Scalars['Int'];
 };
 
 export type QueryCommentArgs = {

@@ -363,6 +363,7 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
   const router = useRouter();
   const selectedAccountId = useAppSelector(getSelectedAccountId);
   const [pageDetailData, setPageDetailData] = useState<any>(page);
+  const [followed, setFollowed] = useState<boolean>(false);
   const [listsFriend, setListsFriend] = useState<any>([]);
   const [listsPicture, setListsPicture] = useState<any>([]);
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
@@ -516,25 +517,8 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
       pageId: pageDetailData.id
     };
 
-    try {
-      await createFollowPageTrigger({ input: createFollowPageInput });
-      dispatch(
-        showToast('success', {
-          message: 'Success',
-          description: intl.get('follow.followSuccess'),
-          duration: 5
-        })
-      );
-    } catch (error) {
-      const message = errorOnCreate?.message ?? intl.get('followFailure');
-      dispatch(
-        showToast('error', {
-          message: 'Error',
-          description: message,
-          duration: 5
-        })
-      );
-    }
+    await createFollowPageTrigger({ input: createFollowPageInput });
+    if (isSuccessCreateFollowAccount) setFollowed(true);
   };
 
   return (
@@ -581,7 +565,9 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
             {/* Follow */}
             {selectedAccountId !== pageDetailData?.pageAccountId && (
               <div className="action-profile">
-                <Button onClick={handleFollowPage}>Follow</Button>
+                <Button onClick={handleFollowPage}>
+                  {followed ? intl.get('general.unfollow') : intl.get('general.follow')}
+                </Button>
               </div>
             )}
           </div>

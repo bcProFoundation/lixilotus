@@ -7,7 +7,7 @@ import {
 } from '@bcpros/lixi-models';
 import { PrismaService } from '../prisma/prisma.service';
 import { HttpException, HttpStatus, Injectable, Logger, UseFilters, UseGuards } from '@nestjs/common';
-import { Args, Mutation, Resolver, Subscription } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
 import { I18n, I18nService } from 'nestjs-i18n';
 import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
@@ -46,7 +46,7 @@ export class FollowResolver {
       });
 
       if (existData) {
-        throw new Error('You are already follow this account');
+        return existData;
       }
 
       const createdFollowAccount = await this.prisma.followAccount.create({
@@ -55,6 +55,38 @@ export class FollowResolver {
 
       pubSub.publish('followAccountCreated', { followAccountCreated: createdFollowAccount });
       return createdFollowAccount;
+    } catch (err) {
+      if (err instanceof VError) {
+        throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+  }
+
+  @UseGuards(GqlJwtAuthGuard)
+  @Query(() => FollowAccount)
+  async checkFollowAccount(
+    @AccountEntity() account: Account,
+    @Args({ name: 'followerAccountId', type: () => Number }) followerAccountId: number
+  ) {
+    try {
+      if (!account) {
+        const couldNotFindAccount = await this.i18n.t('post.messages.couldNotFindAccount');
+        throw new Error(couldNotFindAccount);
+      }
+
+      if (account.id !== account.id) {
+        const invalidAccountMessage = await this.i18n.t('account.messages.invalidAccount');
+        throw new VError(invalidAccountMessage);
+      }
+
+      const existData = await this.prisma.followAccount.findFirst({
+        where: {
+          followerAccountId: followerAccountId,
+          followingAccountId: account.id
+        }
+      });
+
+      return existData;
     } catch (err) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -73,6 +105,11 @@ export class FollowResolver {
         throw new Error(couldNotFindAccount);
       }
 
+      if (account.id !== accountId) {
+        const invalidAccountMessage = await this.i18n.t('account.messages.invalidAccount');
+        throw new VError(invalidAccountMessage);
+      }
+
       const existData = await this.prisma.followPage.findFirst({
         where: {
           accountId: accountId,
@@ -81,7 +118,7 @@ export class FollowResolver {
       });
 
       if (existData) {
-        throw new Error('You are already follow this page');
+        return existData;
       }
 
       const createdFollowPage = await this.prisma.followPage.create({

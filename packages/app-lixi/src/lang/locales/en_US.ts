@@ -576,6 +576,9 @@ export default {
   'category.other': 'Other',
 
   /* 19. Follow*/
+  'general.follow': 'Follow',
+  'general.followBack': 'Follow back',
+  'general.unfollow': 'Unfollow',
   'follow.followSuccess': 'Follow successful',
   'follow.followFailure': 'Follow failure'
 };

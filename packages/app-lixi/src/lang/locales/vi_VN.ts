@@ -575,6 +575,9 @@ export default {
   'category.other': 'Khác',
 
   /* 19. Follow*/
+  'general.follow': 'Theo dõi',
+  'general.followBack': 'Theo dõi lại',
+  'general.unfollow': 'Bỏ theo dõi',
   'follow.followSuccess': 'Theo dõi thành công',
   'follow.followFailure': 'Theo dõi không thành công'
 };

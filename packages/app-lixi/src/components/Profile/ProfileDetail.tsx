@@ -35,7 +35,11 @@ import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import { getFilterPostsHome, getFilterPostsProfile } from '@store/settings/selectors';
 import { selectAccount, setTransactionReady } from '@store/account/actions';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
-import { api as followsApi, useCreateFollowAccountMutation } from '@store/follow/follows.api';
+import {
+  api as followsApi,
+  useCheckFollowAccountQuery,
+  useCreateFollowAccountMutation
+} from '@store/follow/follows.api';
 import { CreateFollowAccountInput } from 'src/generated/types.generated';
 
 type UserDetailProps = {
@@ -375,6 +379,7 @@ const ProfileDetail = ({ user, isMobile }: UserDetailProps) => {
   const filterValue = useAppSelector(getFilterPostsProfile);
   const selectedAccount = useAppSelector(getSelectedAccount);
   const [userDetailData, setUserDetailData] = useState<any>(user);
+  const [followed, setFollowed] = useState<boolean>(false);
   const [listsFriend, setListsFriend] = useState<any>([]);
   const [listsPicture, setListsPicture] = useState<any>([]);
 
@@ -517,25 +522,8 @@ const ProfileDetail = ({ user, isMobile }: UserDetailProps) => {
       followingAccountId: selectedAccount.id
     };
 
-    try {
-      await createFollowAccountTrigger({ input: createFollowAccountInput });
-      dispatch(
-        showToast('success', {
-          message: 'Success',
-          description: intl.get('follow.followSuccess'),
-          duration: 5
-        })
-      );
-    } catch (error) {
-      const message = errorOnCreate?.message ?? intl.get('followFailure');
-      dispatch(
-        showToast('error', {
-          message: 'Error',
-          description: message,
-          duration: 5
-        })
-      );
-    }
+    await createFollowAccountTrigger({ input: createFollowAccountInput });
+    if (isSuccessCreateFollowAccount) setFollowed(true);
   };
 
   return (
@@ -563,7 +551,9 @@ const ProfileDetail = ({ user, isMobile }: UserDetailProps) => {
             </div>
             {userDetailData.id !== selectedAccount.id && (
               <div className="title-profile">
-                <Button onClick={() => handleAddFollower()}>Follow</Button>
+                <Button onClick={() => handleAddFollower()}>
+                  {followed ? intl.get('general.unfollow') : intl.get('general.follow')}
+                </Button>
               </div>
             )}
 

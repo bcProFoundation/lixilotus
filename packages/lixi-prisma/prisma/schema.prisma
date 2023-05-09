@@ -603,6 +603,8 @@ model FollowAccount {
   createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt          DateTime @default(now()) @map("updated_at") @db.Timestamptz
 
+  @@index(followerAccountId)
+  @@index(followingAccountId)
   @@map("follow_account")
 }
 
@@ -615,5 +617,7 @@ model FollowPage {
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
 
+  @@index(accountId)
+  @@index(pageId)
   @@map("follow_page")
 }

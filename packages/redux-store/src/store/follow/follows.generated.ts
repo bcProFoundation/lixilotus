@@ -12,6 +12,24 @@
 import * as Types from '../../generated/types.generated';
 
 import { api } from 'src/api/baseApi';
+export type CheckFollowAccountQueryVariables = Types.Exact<{
+  followerAccountId: Types.Scalars['Int'];
+}>;
+
+export type CheckFollowAccountQuery = {
+  __typename?: 'Query';
+  checkFollowAccount: {
+    __typename?: 'FollowAccount';
+    id: string;
+    followerAccountId?: number | null;
+    followingAccountId?: number | null;
+    createdAt: any;
+    updatedAt: any;
+    followerAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+    followingAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+  };
+};
+
 export type FollowAccountFieldsFragment = {
   __typename?: 'FollowAccount';
   id: string;
@@ -107,6 +125,13 @@ export const FollowPageFieldsFragmentDoc = `
   updatedAt
 }
     `;
+export const CheckFollowAccountDocument = `
+    query checkFollowAccount($followerAccountId: Int!) {
+  checkFollowAccount(followerAccountId: $followerAccountId) {
+    ...FollowAccountFields
+  }
+}
+    ${FollowAccountFieldsFragmentDoc}`;
 export const CreateFollowAccountDocument = `
     mutation createFollowAccount($input: CreateFollowAccountInput!) {
   createFollowAccount(data: $input) {
@@ -124,6 +149,9 @@ export const CreateFollowPageDocument = `
 
 const injectedRtkApi = api.injectEndpoints({
   endpoints: build => ({
+    checkFollowAccount: build.query<CheckFollowAccountQuery, CheckFollowAccountQueryVariables>({
+      query: variables => ({ document: CheckFollowAccountDocument, variables })
+    }),
     createFollowAccount: build.mutation<CreateFollowAccountMutation, CreateFollowAccountMutationVariables>({
       query: variables => ({ document: CreateFollowAccountDocument, variables })
     }),
@@ -134,4 +162,9 @@ const injectedRtkApi = api.injectEndpoints({
 });
 
 export { injectedRtkApi as api };
-export const { useCreateFollowAccountMutation, useCreateFollowPageMutation } = injectedRtkApi;
+export const {
+  useCheckFollowAccountQuery,
+  useLazyCheckFollowAccountQuery,
+  useCreateFollowAccountMutation,
+  useCreateFollowPageMutation
+} = injectedRtkApi;

@@ -1,3 +1,9 @@
+query checkFollowAccount($followerAccountId: Int!) {
+  checkFollowAccount(followerAccountId: $followerAccountId) {
+    ...FollowAccountFields
+  }
+}
+
 fragment FollowAccountFields on FollowAccount {
   id
   followerAccountId
