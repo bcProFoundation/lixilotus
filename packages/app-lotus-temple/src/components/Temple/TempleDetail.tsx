@@ -21,7 +21,7 @@ import { WorshipedPersonQuery } from '@store/worship/worshipedPerson.generated';
 import { useInfiniteWorshipByPersonIdQuery } from '@store/worship/useInfiniteWorshipByPersonIdQuery';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { OrderDirection, WorshipedPersonOrderField, WorshipOrderField } from 'src/generated/types.generated';
-import useDidMountEffectNotification from '@hooks/useDidMountEffectNotification';
+import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 import { setTransactionReady } from '@store/account/actions';
 import { Counter } from '@components/Common/Counter';
 

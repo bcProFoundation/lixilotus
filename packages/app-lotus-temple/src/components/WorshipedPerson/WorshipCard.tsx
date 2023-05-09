@@ -47,6 +47,10 @@ const StyledItem = style.div`
   padding: 6px 32px 0px 32px;
   border-radius: 24px;
   justify-content: space-between;
+
+  @media (max-width: 440px) {
+    padding: 6px 16px 0px 16px;
+  }
 `;
 
 const StyledInfoContainer = style.div`

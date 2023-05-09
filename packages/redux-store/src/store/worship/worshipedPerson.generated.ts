@@ -34,8 +34,8 @@ export type WorshipedPersonFieldsFragment = {
   totalWorshipAmount?: number | null;
   dateOfBirth?: any | null;
   dateOfDeath?: any | null;
-  createdAt?: any | null;
-  updatedAt?: any | null;
+  createdAt: any;
+  updatedAt: any;
   avatar?: {
     __typename?: 'UploadDetail';
     id: string;
@@ -93,8 +93,8 @@ export type WorshipedPersonQuery = {
     totalWorshipAmount?: number | null;
     dateOfBirth?: any | null;
     dateOfDeath?: any | null;
-    createdAt?: any | null;
-    updatedAt?: any | null;
+    createdAt: any;
+    updatedAt: any;
     avatar?: {
       __typename?: 'UploadDetail';
       id: string;
@@ -171,8 +171,8 @@ export type WorshipedPeopleQuery = {
         totalWorshipAmount?: number | null;
         dateOfBirth?: any | null;
         dateOfDeath?: any | null;
-        createdAt?: any | null;
-        updatedAt?: any | null;
+        createdAt: any;
+        updatedAt: any;
         avatar?: {
           __typename?: 'UploadDetail';
           id: string;
@@ -238,8 +238,8 @@ export type WorshipedPeopleByUserIdQuery = {
         totalWorshipAmount?: number | null;
         dateOfBirth?: any | null;
         dateOfDeath?: any | null;
-        createdAt?: any | null;
-        updatedAt?: any | null;
+        createdAt: any;
+        updatedAt: any;
         avatar?: {
           __typename?: 'UploadDetail';
           id: string;
@@ -303,8 +303,8 @@ export type WorshipedPersonBySearchQuery = {
         totalWorshipAmount?: number | null;
         dateOfBirth?: any | null;
         dateOfDeath?: any | null;
-        createdAt?: any | null;
-        updatedAt?: any | null;
+        createdAt: any;
+        updatedAt: any;
         avatar?: {
           __typename?: 'UploadDetail';
           id: string;
@@ -370,8 +370,8 @@ export type WorshipedPeopleSpecialDateQuery = {
         totalWorshipAmount?: number | null;
         dateOfBirth?: any | null;
         dateOfDeath?: any | null;
-        createdAt?: any | null;
-        updatedAt?: any | null;
+        createdAt: any;
+        updatedAt: any;
         avatar?: {
           __typename?: 'UploadDetail';
           id: string;
@@ -517,8 +517,8 @@ export type CreateWorshipedPersonMutation = {
     totalWorshipAmount?: number | null;
     dateOfBirth?: any | null;
     dateOfDeath?: any | null;
-    createdAt?: any | null;
-    updatedAt?: any | null;
+    createdAt: any;
+    updatedAt: any;
     avatar?: {
       __typename?: 'UploadDetail';
       id: string;

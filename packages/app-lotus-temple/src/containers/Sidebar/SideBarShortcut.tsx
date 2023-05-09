@@ -93,6 +93,31 @@ const StyledWalletContainer = styled.div`
   align-items: center;
   width: 100%;
   gap: 7px;
+  cursor: pointer;
+  border-radius: 15px;
+  padding: 5px;
+  transition: 0.5s;
+
+  &:hover {
+    background-color: #ceccca;
+  }
+`;
+
+const StyledSpace = styled(Space)`
+  width: 100%;
+  cursor: pointer;
+  border-radius: 15px;
+  padding: 5px;
+  transition: 0.5s;
+
+  &:hover {
+    background-color: #ceccca;
+  }
+`;
+
+const StyledCopyOutlined = styled(CopyOutlined)`
+  margin-left: 5px;
+  cursor: pointer;
 `;
 
 const SidebarShortcut = ({ className }: SidebarContentProps) => {
@@ -119,7 +144,7 @@ const SidebarShortcut = ({ className }: SidebarContentProps) => {
           <picture>
             <img alt="you-worshiped-placeholder" src="/images/you-worshiped-placeholder.svg" width="150px" />
           </picture>
-          <StyledHeaderText>Bàn thờ</StyledHeaderText>
+          <StyledHeaderText>Ban thờ</StyledHeaderText>
           <p style={{ fontSize: 13 }}>
             You are responsible for operations, service, or customer support and face challenges trying to
           </p>
@@ -158,21 +183,21 @@ const SidebarShortcut = ({ className }: SidebarContentProps) => {
         </div>
         {selectedAccount && (
           <StyledWrapper style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '10px' }}>
-            <Space>
+            <StyledSpace>
               <AvatarUser name={selectedAccount.name} />
               <StyledText>{selectedAccount.name}</StyledText>
-            </Space>
+            </StyledSpace>
             <StyledWalletContainer>
               <picture>
                 <img alt="wallet-placeholder" src="/images/wallet-placeholder.svg" />
               </picture>
               <Space direction="vertical" style={{ width: '100%' }}>
                 <StyledText style={{ textAlign: 'left' }}>Tài khoản của bạn</StyledText>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }} onClick={e => e.stopPropagation()}>
                   <CopyToClipboard text={selectedAccount.address} onCopy={handleOnCopy}>
                     <div>
                       <span>{selectedAccount.address.substring(selectedAccount.address.length - 7)}</span>
-                      <CopyOutlined style={{ marginLeft: 5, cursor: 'pointer' }} />
+                      <StyledCopyOutlined />
                     </div>
                   </CopyToClipboard>
                   <p style={{ margin: 0 }}>
@@ -187,7 +212,7 @@ const SidebarShortcut = ({ className }: SidebarContentProps) => {
           <StyledWrapper style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
             <StyledContainer>
               <StyledHeader>
-                <StyledHeaderText>Bàn thờ</StyledHeaderText>
+                <StyledHeaderText>Ban thờ</StyledHeaderText>
                 <p style={{ marginBottom: '0', color: '#004B74' }}>Xem tất cả</p>
               </StyledHeader>
               {worshipedPeople.currentData.allWorshipedPersonByUserId.edges.map((person, index) => {

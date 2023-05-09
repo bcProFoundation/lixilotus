@@ -147,11 +147,13 @@ const StyledCardPage = styled.div`
   .cover-img {
     width: 100%;
     height: 150px;
+    object-fit: cover;
     border-top-right-radius: 20px;
     border-top-left-radius: 20px;
     @media (max-width: 768px) {
       width: 185px;
       height: 75px;
+      object-fit: cover;
     }
   }
   .info-profile {
@@ -177,6 +179,7 @@ const StyledCardPage = styled.div`
         width: 56px;
         height: 56px;
         border-radius: 50%;
+        object-fit: cover;
       }
     }
     .title-profile {

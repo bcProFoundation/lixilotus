@@ -48,15 +48,22 @@ export const AppContainer = styled.div`
     padding: 0 4px;
   }
   .ant-layout.ant-layout-has-sider {
-    gap: 2rem;
+    gap: 10rem;
     justify-content: center;
   }
   .main-section-layout {
-    max-width: 680px;
+    padding-right: 188px;
+    max-width: 100%;
+    margin-top: 8px;
     height: 100vh;
     overflow-y: auto;
     @media (max-width: 768px) {
       padding-right: 0 !important;
+    }
+    .content-layout{
+      flex: auto;
+      min-height: 0;
+      margin-top: 17px;
     }
   }
 `;
@@ -117,7 +124,6 @@ const PageDetailLayout: React.FC = (props: PageDetailsLayoutProps) => {
                       <Sidebar />
                       <Layout
                         className="main-section-layout"
-                        style={{ paddingRight: '2rem', maxWidth: '100%', marginTop: '8px' }}
                       >
                         <Topbar ref={setRef} />
                         {/* @ts-ignore */}

@@ -188,6 +188,31 @@ const StyledWalletContainer = styled.div`
   align-items: center;
   width: 100%;
   gap: 7px;
+  cursor: pointer;
+  border-radius: 15px;
+  padding: 5px;
+  transition: 0.5s;
+
+  &:hover {
+    background-color: #ceccca;
+  }
+`;
+
+const StyledSpace = styled(Space)`
+  width: 100%;
+  cursor: pointer;
+  border-radius: 15px;
+  padding: 5px;
+  transition: 0.5s;
+
+  &:hover {
+    background-color: #ceccca;
+  }
+`;
+
+const StyledCopyOutlined = styled(CopyOutlined)`
+  margin-left: 5px;
+  cursor: pointer;
 `;
 const SidebarContent = () => {
   const refSidebarShortcut = useRef<HTMLDivElement | null>(null);
@@ -206,7 +231,7 @@ const SidebarContent = () => {
     }, 700);
   };
 
-  const handleOnCopy = () => {
+  const handleOnCopy = e => {
     message.info(intl.get('lixi.addressCopied'));
   };
 
@@ -217,7 +242,7 @@ const SidebarContent = () => {
           <picture>
             <img alt="you-worshiped-placeholder" src="/images/you-worshiped-placeholder.svg" width="150px" />
           </picture>
-          <StyledHeaderText>Bàn thờ</StyledHeaderText>
+          <StyledHeaderText>Ban thờ</StyledHeaderText>
           <p style={{ fontSize: 13 }}>
             You are responsible for operations, service, or customer support and face challenges trying to
           </p>
@@ -253,21 +278,21 @@ const SidebarContent = () => {
         </StyledWrapper>
         {selectedAccount && (
           <StyledWrapper style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '10px' }}>
-            <Space>
+            <StyledSpace onClick={() => history.push('/settings')}>
               <AvatarUser name={selectedAccount.name} />
               <StyledText>{selectedAccount.name}</StyledText>
-            </Space>
-            <StyledWalletContainer>
+            </StyledSpace>
+            <StyledWalletContainer onClick={() => history.push('/wallet')}>
               <picture>
                 <img alt="wallet-placeholder" src="/images/wallet-placeholder.svg" />
               </picture>
               <Space direction="vertical" style={{ width: '100%' }}>
                 <StyledText style={{ textAlign: 'left' }}>Tài khoản của bạn</StyledText>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }} onClick={e => e.stopPropagation()}>
                   <CopyToClipboard text={selectedAccount.address} onCopy={handleOnCopy}>
                     <div>
                       <span>{selectedAccount.address.substring(selectedAccount.address.length - 7)}</span>
-                      <CopyOutlined style={{ marginLeft: 5, cursor: 'pointer' }} />
+                      <StyledCopyOutlined />
                     </div>
                   </CopyToClipboard>
                   <p style={{ margin: 0 }}>
@@ -282,7 +307,7 @@ const SidebarContent = () => {
           <StyledWrapper style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
             <StyledContainer>
               <StyledHeader>
-                <StyledHeaderText>Bàn thờ</StyledHeaderText>
+                <StyledHeaderText>Ban thờ</StyledHeaderText>
                 <p style={{ marginBottom: '0', color: '#004B74' }}>Xem tất cả</p>
               </StyledHeader>
               {worshipedPeople.currentData.allWorshipedPersonByUserId.edges.map((person, index) => {

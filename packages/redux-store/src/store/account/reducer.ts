@@ -1,6 +1,7 @@
 import { Account } from '@bcpros/lixi-models';
 import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';
 import { createEntityAdapter, createReducer, isAnyOf, Update } from '@reduxjs/toolkit';
+import _ from 'lodash';
 
 import {
   deleteAccountSuccess,
@@ -19,7 +20,8 @@ import {
   setTransactionReady,
   setGraphqlRequestLoading,
   setGraphqlRequestDone,
-  setUpload
+  setUpload,
+  addRecentVisitedPerson
 } from './actions';
 import { AccountsState } from './state';
 
@@ -35,7 +37,8 @@ const initialState: AccountsState = accountsAdapter.getInitialState({
   editorCache: null,
   leaderBoard: [],
   transactionReady: true,
-  graphqlRequestLoading: false
+  graphqlRequestLoading: false,
+  recentVisitedPeople: []
 });
 
 export const accountReducer = createReducer(initialState, builder => {
@@ -130,6 +133,17 @@ export const accountReducer = createReducer(initialState, builder => {
     })
     .addCase(setTransactionNotReady, (state, action) => {
       state.transactionReady = false;
+    })
+    .addCase(addRecentVisitedPerson, (state, action) => {
+      const person = action.payload;
+      const personExisted = _.find(state.recentVisitedPeople, { id: person.id });
+      if (personExisted) {
+        _.remove(state.recentVisitedPeople, { id: personExisted.id });
+      } else if (state.recentVisitedPeople.length === 5) {
+        state.recentVisitedPeople.pop();
+      }
+
+      state.recentVisitedPeople.unshift(person);
     })
     .addCase(setGraphqlRequestLoading, (state, action) => {
       state.graphqlRequestLoading = true;

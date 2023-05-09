@@ -2,11 +2,11 @@ import { Alert, Button, Collapse, Form, Input, Spin, Switch, Tag } from 'antd';
 import * as _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 import intl from 'react-intl-universal';
-import { deleteAccount, generateAccount, importAccount, renameAccount, selectAccount } from 'src/store/account/actions';
-import { getAllAccounts, getSelectedAccount } from 'src/store/account/selectors';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { getIsGlobalLoading } from 'src/store/loading/selectors';
-import { openModal } from 'src/store/modal/actions';
+import { deleteAccount, generateAccount, importAccount, renameAccount, selectAccount } from '@store/account/actions';
+import { getAllAccounts, getSelectedAccount } from '@store/account/selectors';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { getIsGlobalLoading } from '@store/loading/selectors';
+import { openModal } from '@store/modal/actions';
 import { WalletContext } from '@context/index';
 import styled from 'styled-components';
 import {

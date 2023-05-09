@@ -10,9 +10,9 @@ import moment from 'moment';
 import Link from 'next/link';
 import React, { useEffect } from 'react';
 import intl from 'react-intl-universal';
-import { getSelectedAccount } from 'src/store/account/selectors';
-import { useAppDispatch, useAppSelector } from 'src/store/hooks';
-import { getLixiesBySelectedAccount } from 'src/store/lixi/selectors';
+import { getSelectedAccount } from '@store/account/selectors';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { getLixiesBySelectedAccount } from '@store/lixi/selectors';
 import styled from 'styled-components';
 
 const { TabPane } = Tabs;
