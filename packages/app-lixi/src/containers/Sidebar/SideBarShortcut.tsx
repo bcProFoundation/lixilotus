@@ -318,6 +318,13 @@ const SidebarShortcut = () => {
               href={'/'}
             />
             <ItemAccess
+              icon={'/images/ico-notifications.svg'}
+              text={intl.get('general.notifications')}
+              active={currentPathName === '/notifications'}
+              key="notifications"
+              href={'/notifications'}
+            />
+            <ItemAccess
               icon={'/images/ico-page.svg'}
               text={intl.get('general.page')}
               active={currentPathName.includes('/page')}
@@ -388,19 +395,6 @@ const SidebarShortcut = () => {
             )} */}
           </div>
           <UserControl>
-            <Badge
-              count={notifications.filter(item => _.isNil(item.readAt)).length}
-              overflowCount={9}
-              offset={[notifications.length < 10 ? 0 : 5, 8]}
-              color="var(--color-primary)"
-            >
-              <img
-                className="img-bell"
-                src="/images/ico-notifications.svg"
-                alt="ico-notifications"
-                onClick={() => router.push('/notifications')}
-              />
-            </Badge>
             <div style={{ cursor: 'pointer' }} onClick={() => router.push(`/profile/${selectedAccount?.address}`)}>
               <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
             </div>
