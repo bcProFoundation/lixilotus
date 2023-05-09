@@ -82,6 +82,7 @@ const ProfileCardHeader = styled.div`
     height: 350px;
     border-top-right-radius: 20px;
     border-top-left-radius: 20px;
+    object-fit: cover;
     @media (max-width: 768px) {
       border-radius: 0;
       height: 200px;
@@ -105,6 +106,7 @@ const ProfileCardHeader = styled.div`
         width: 150px;
         height: 150px;
         border-radius: 50%;
+        object-fit: cover;
       }
       @media (max-width: 768px) {
         left: auto;
