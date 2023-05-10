@@ -38,6 +38,11 @@ export class FollowResolver {
         throw new Error(couldNotFindAccount);
       }
 
+      if (account.id !== followingAccountId) {
+        const invalidAccountMessage = await this.i18n.t('account.messages.invalidAccount');
+        throw new VError(invalidAccountMessage);
+      }
+
       const existData = await this.prisma.followAccount.findFirst({
         where: {
           followerAccountId: followerAccountId,
@@ -72,11 +77,6 @@ export class FollowResolver {
       if (!account) {
         const couldNotFindAccount = await this.i18n.t('post.messages.couldNotFindAccount');
         throw new Error(couldNotFindAccount);
-      }
-
-      if (account.id !== account.id) {
-        const invalidAccountMessage = await this.i18n.t('account.messages.invalidAccount');
-        throw new VError(invalidAccountMessage);
       }
 
       const existData = await this.prisma.followAccount.findFirst({
