@@ -3,10 +3,12 @@ import winston, { format } from 'winston';
 import LogzioWinstonTransport from 'winston-logzio';
 import 'winston-daily-rotate-file';
 import { verrorFormat } from 'winston-verror-format';
+import LokiTransport from 'winston-loki';
 const { combine, timestamp, printf } = format;
 
 const environment = process.env.DEPLOY_ENVIRONMENT;
 const nodeEnv = process.env.NODE_ENV;
+const allowGrafanaLogging = process.env.GRAFANA_LOGGING === 'true';
 
 const allTransports: winston.transport[] = [
   new winston.transports.DailyRotateFile({
@@ -18,6 +20,19 @@ const allTransports: winston.transport[] = [
     level: 'debug' // TODO
   })
 ];
+if (allowGrafanaLogging) {
+  allTransports.push(
+    new LokiTransport({
+      host: process.env.LOKI_HOST ?? '',
+      labels: { app: 'app-lixi-api', env: process.env.DEPLOY_ENVIRONMENT ?? 'local' },
+      basicAuth: `${process.env.LOKI_USER_ID}:${process.env.LOKI_API_KEY}`,
+      json: true,
+      format: format.json(),
+      replaceTimestamp: true,
+      onConnectionError: (err) => console.error(err)
+    })
+  );
+}
 
 if (nodeEnv !== 'development') {
   const logzioWinstonTransport = new LogzioWinstonTransport({
