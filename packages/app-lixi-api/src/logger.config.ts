@@ -25,7 +25,7 @@ if (allowGrafanaLogging) {
     new LokiTransport({
       host: process.env.GRAFANA_HOST ?? '',
       labels: { app: 'app-lixi-api', env: process.env.DEPLOY_ENVIRONMENT ?? 'local' },
-      basicAuth: `${process.env.GRAFANA_USER_ID}:${process.env.GRANFANA_API_KEY}`,
+      basicAuth: `${process.env.GRAFANA_USER_ID}:${process.env.GRAFANA_API_KEY}`,
       json: true,
       format: format.json(),
       replaceTimestamp: true,
