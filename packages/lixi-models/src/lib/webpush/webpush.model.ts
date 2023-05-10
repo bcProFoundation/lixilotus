@@ -1,4 +1,5 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
+
 import { Account } from '../account';
 
 export interface WebpushSubscription {
@@ -39,7 +40,7 @@ export class WebpushSubscriber {
   address: string;
 
   @Field(() => Date, { nullable: true })
-  expirationTime?: Date
+  expirationTime?: Date;
 
   @Field(() => Date, {
     description: 'Identifies the date and time when the object was created.'

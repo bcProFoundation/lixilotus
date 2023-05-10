@@ -1,4 +1,15 @@
+import {
+  Account,
+  WebpushSubscribeCommand,
+  WebpushSubscriberCommand,
+  WebpushUnsubscribeCommand
+} from '@bcpros/lixi-models';
+import { WalletPathAddressInfo } from '@store/wallet';
+import messageLib from 'bitcoinjs-message';
+import * as _ from 'lodash';
+import * as wif from 'wif';
 import { getAddressesOfWallet } from './cashMethods';
+import { convertArrayBufferToBase64 } from './convertArrBuffBase64';
 
 /**
  * Ask user for permission to send push notification
@@ -30,85 +41,76 @@ export const getPlatformPermissionState = (): NotificationPermission | null => {
   return null;
 };
 
-// subscribe all wallets
-export const subscribeAllWalletsToPushNotification = async (pushNotificationConfig, interactiveMode) => {
+export const buildSubscribeCommand = (
+  pushSubscription: PushSubscription,
+  accounts: Account[],
+  walletPaths: WalletPathAddressInfo[],
+  deviceId: string,
+  clientAppId: string
+): WebpushSubscribeCommand => {
   // get the PushSubscription Object from browser
-  let pushSubscription;
   try {
-    const registration = await navigator.serviceWorker.getRegistration();
-    const subscribeOptions = {
-      userVisibleOnly: true,
-      applicationServerKey: process.env.REACT_APP_PUSH_SERVER_PUBLIC_KEY
-    };
-    pushSubscription = await registration.pushManager.subscribe(subscribeOptions);
+    // const registration = await navigator.serviceWorker.getRegistration();
+    // const subscribeOptions = {
+    //   userVisibleOnly: true,
+    //   applicationServerKey: applicationServerKey
+    // };
+    // pushSubscription = await registration.pushManager.subscribe(subscribeOptions);
 
-    // get addresses of all the saved wallets
-    const addresses = []; // await getAddressesOfSavedWallets();
+    const auth = pushSubscription.getKey('auth');
+    const p256dh = pushSubscription.getKey('p256dh');
+    const expirationTime = pushSubscription.expirationTime;
 
-    // send the subscription details to backend server
-    const subscribeURL = process.env.REACT_APP_PUSH_SERVER_API + 'subscribe';
-    const subscriptionObject = {
-      ids: addresses,
-      clientAppId: pushNotificationConfig.appId,
-      pushSubscription
+    const subscribers: WebpushSubscriberCommand[] = _.compact(
+      accounts.map(account => {
+        const associatedWallet = _.find(walletPaths, wallet => account.address === wallet.xAddress);
+        if (!associatedWallet) return null;
+
+        const { fundingWif, xAddress } = associatedWallet;
+        const { privateKey, compressed } = wif.decode(fundingWif);
+        const signature = messageLib.sign(xAddress, privateKey, compressed).toString();
+        const subscriber: WebpushSubscriberCommand = {
+          address: account.address,
+          accountId: account.id,
+          expirationTime: expirationTime ? new Date(expirationTime) : null,
+          signature: signature
+        };
+        return subscriber;
+      })
+    );
+
+    const subscribeCommand: WebpushSubscribeCommand = {
+      subscribers,
+      auth: convertArrayBufferToBase64(auth),
+      p256dh: convertArrayBufferToBase64(p256dh),
+      endpoint: pushSubscription.endpoint,
+      clientAppId,
+      deviceId
     };
-    console.log(JSON.stringify(subscriptionObject));
-    const res = await fetch(subscribeURL, {
-      method: 'POST',
-      mode: 'cors',
-      headers: {
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify(subscriptionObject)
-    });
-    const resData = await res.json();
-    if (resData.error) {
-      throw new Error(resData.error);
-    }
-    pushNotificationConfig.turnOnPushNotification();
+
+    return subscribeCommand;
   } catch (error) {
-    console.log('Error in subscribeAllWalletsToPushNotification()', error);
-    return;
+    return null;
   }
 };
 
-export const unsubscribeAllWalletsFromPushNotification = async () => {
+export const buildUnsubscribeCommand = (pushSubscription: PushSubscription, deviceId: string, clientAppId: string) => {
   try {
-    // const addresses = await getAddressesOfSavedWallets();
-    // unsubscribePushNotification(addresses, pushNotificationConfig.appId);
+    if (!pushSubscription) return null;
+
+    const auth = pushSubscription.getKey('auth');
+    const p256dh = pushSubscription.getKey('p256dh');
+
+    const unsubscribeCommand: WebpushUnsubscribeCommand = {
+      auth: convertArrayBufferToBase64(auth),
+      p256dh: convertArrayBufferToBase64(p256dh),
+      endpoint: pushSubscription.endpoint,
+      clientAppId,
+      deviceId
+    };
+
+    return unsubscribeCommand;
   } catch (error) {
-    console.log('Error is unsubscribeAllWalletsFromPushNotification()', error);
-  }
-};
-
-// unsubscribe a single wallet
-export const unsubscribeWalletFromPushNotification = async (pushNotificationConfig, wallet) => {
-  if (!pushNotificationConfig || !wallet) return;
-
-  const addresses = getAddressesOfWallet(wallet);
-  unsubscribePushNotification(addresses, pushNotificationConfig.appId);
-};
-
-export const unsubscribePushNotification = async (addresses, appId) => {
-  const unsubscriptionObject = { ids: addresses, clientAppId: appId };
-  const unsubscribeURL = process.env.REACT_APP_PUSH_SERVER_API + 'unsubscribe';
-  try {
-    const res = await fetch(unsubscribeURL, {
-      method: 'POST',
-      mode: 'cors',
-      headers: {
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify(unsubscriptionObject)
-    });
-    res.json().then(data => {
-      if (data.success) {
-        console.log('Successfully unsubscribe Push Notification');
-      } else {
-        console.log(data.error);
-      }
-    });
-  } catch (error) {
-    console.log(error);
+    return null;
   }
 };

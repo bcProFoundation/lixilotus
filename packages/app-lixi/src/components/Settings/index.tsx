@@ -1,8 +1,4 @@
-import {
-  CopyOutlined, ImportOutlined, LockOutlined,
-  PlusSquareOutlined,
-  WalletOutlined
-} from '@ant-design/icons';
+import { CopyOutlined, ImportOutlined, LockOutlined, PlusSquareOutlined, WalletOutlined } from '@ant-design/icons';
 import Edit from '@assets/icons/edit.svg';
 import Trashcan from '@assets/icons/trashcan.svg';
 import {
@@ -212,10 +208,16 @@ const helpInfoIcon = (
           <div>
             <p>{intl.get('settings.deviceSupport')}</p>
             <p>{intl.get('settings.notSupportIos')}</p>
-            <div className='heading'>{intl.get('settings.twoStepEnableNotification')}</div>
+            <div className="heading">{intl.get('settings.twoStepEnableNotification')}</div>
             <ul>
-              <li>{intl.get('settings.allowNotification')}<em>{intl.get('settings.forBrowser')}</em>.</li>
-              <li>{intl.get('settings.thenAllowNotification')}<em>{intl.get('settings.sendlotusOnBrower')}</em>.</li>
+              <li>
+                {intl.get('settings.allowNotification')}
+                <em>{intl.get('settings.forBrowser')}</em>.
+              </li>
+              <li>
+                {intl.get('settings.thenAllowNotification')}
+                <em>{intl.get('settings.sendlotusOnBrower')}</em>.
+              </li>
             </ul>
           </div>
         )
@@ -299,7 +301,6 @@ const Settings: React.FC = () => {
     dispatch(setInitIntlStatus(false));
     dispatch(updateLocale(locales));
   }
-
 
   async function submit() {
     setFormData({

@@ -12,11 +12,7 @@ export class WebpushSubscriberCommand {
 
   @Field(() => Date, { nullable: true })
   @IsOptional()
-  expirationTime?: Date
-
-  @Field(() => String)
-  @IsNotEmpty()
-  publicKey: string;
+  expirationTime?: Date;
 
   @Field(() => String)
   @IsNotEmpty()

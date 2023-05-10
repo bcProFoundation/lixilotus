@@ -56,4 +56,4 @@ import { WebpushController } from './webpush.controller';
   ],
   exports: [NotificationGateway, NotificationService, NotificationOutboundProcessor]
 })
-export class NotificationModule { }
+export class NotificationModule {}

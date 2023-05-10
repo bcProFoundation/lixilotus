@@ -13,12 +13,18 @@ import { saveWebPushNotifConfig } from '@store/settings/actions';
 import { getWebPushNotifConfig } from '@store/settings/selectors';
 import {
   askPermission,
+  buildSubscribeCommand,
+  buildUnsubscribeCommand,
   getPlatformPermissionState
 } from '@utils/pushNotification';
 import { Modal, Switch, Tag } from 'antd';
 import React, { useState } from 'react';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
+import { getAllAccounts } from '@store/account';
+import { getAllWalletPaths } from '@store/wallet';
+import { WEBPUSH_CLIENT_APP_ID } from 'src/shared/constants';
+import { subscribe, unsubscribe } from '@store/webpush/actions';
 
 const ThemedQuerstionCircleOutlinedFaded = styled(QuestionCircleOutlined)`
   color: #bb98ff !important;
@@ -55,11 +61,12 @@ const helpInfoIcon = (
 );
 
 const PushNotificationSetting = () => {
-
   const dispatch = useAppDispatch();
   const serviceWorkerContextValue = React.useContext(ServiceWorkerContext);
   const [permission, setPermission] = useState<NotificationPermission>(() => getPlatformPermissionState());
   const webPushNotifConfig = useAppSelector(getWebPushNotifConfig);
+  const accounts = useAppSelector(getAllAccounts);
+  const walletPaths = useAppSelector(getAllWalletPaths);
 
   const showModal = () => {
     Modal.confirm({
@@ -71,18 +78,23 @@ const PushNotificationSetting = () => {
       async onOk() {
         // get user permission
         try {
-          askPermission().then((result) => {
+          askPermission().then(result => {
             setPermission(result);
             if (result === 'granted') {
-              dispatch(saveWebPushNotifConfig({
-                ...webPushNotifConfig,
-                allowPushNotification: true
-              }));
+              dispatch(
+                saveWebPushNotifConfig({
+                  ...webPushNotifConfig,
+                  allowPushNotification: true
+                })
+              );
             } else {
-              dispatch(saveWebPushNotifConfig({
-                ...webPushNotifConfig,
-                allowPushNotification: false
-              }));
+              dispatch(
+                saveWebPushNotifConfig({
+                  ...webPushNotifConfig,
+                  allowPushNotification: false
+                })
+              );
+              return;
             }
           });
         } catch (error) {
@@ -93,9 +105,22 @@ const PushNotificationSetting = () => {
           return;
         }
 
-        // subscribe all wallets to Push Notification in interactive mode
-        // subscribeAllWalletsToPushNotification(pushNotificationConfig, true);
-        // pushNotificationConfig.turnOnPushNotification();
+        const applicationServerKey = process.env.NEXT_PUBLIC_PUBLIC_VAPID_KEY;
+        const registration = await navigator.serviceWorker.getRegistration();
+        const subscribeOptions = {
+          userVisibleOnly: true,
+          applicationServerKey: applicationServerKey
+        };
+        const pushSubscription = await registration.pushManager.subscribe(subscribeOptions);
+        const command = buildSubscribeCommand(
+          pushSubscription,
+          accounts,
+          walletPaths,
+          webPushNotifConfig.deviceId,
+          WEBPUSH_CLIENT_APP_ID
+        );
+
+        dispatch(subscribe(command));
       }
     });
   };
@@ -111,17 +136,37 @@ const PushNotificationSetting = () => {
 
         const pushSubscription: PushSubscription = await registration.pushManager.subscribe(subscribeOptions);
 
-        console.log('pushSubscription', pushSubscription);
+        const command = buildSubscribeCommand(
+          pushSubscription,
+          accounts,
+          walletPaths,
+          webPushNotifConfig.deviceId,
+          WEBPUSH_CLIENT_APP_ID
+        );
 
-        // subscribeAllWalletsToPushNotification(pushNotificationConfig, false);
-        // pushNotificationConfig.turnOnPushNotification();
+        dispatch(subscribe(command));
+        dispatch(
+          saveWebPushNotifConfig({
+            ...webPushNotifConfig,
+            allowPushNotification: true
+          })
+        );
       } else {
         showModal();
       }
     } else {
       // unsubscribe
-      // unsubscribeAllWalletsFromPushNotification(pushNotificationConfig);
-      // pushNotificationConfig.turnOffPushNotification();
+      const registration = await navigator.serviceWorker.getRegistration();
+      const pushSubscription = await registration.pushManager.getSubscription();
+      const command = buildUnsubscribeCommand(pushSubscription, webPushNotifConfig.deviceId, WEBPUSH_CLIENT_APP_ID);
+
+      dispatch(unsubscribe(command));
+      dispatch(
+        saveWebPushNotifConfig({
+          ...webPushNotifConfig,
+          allowPushNotification: false
+        })
+      );
     }
   };
 
