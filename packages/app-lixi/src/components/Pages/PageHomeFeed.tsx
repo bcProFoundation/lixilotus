@@ -13,6 +13,7 @@ import intl from 'react-intl-universal';
 import { getAllCategories } from '@store/category/selectors';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { getCategories } from '@store/category/actions';
+import { OrderDirection, PageOrderField } from '@generated/types.generated';
 
 const StyledPageFeed = styled.div`
   margin: 1rem auto;
@@ -143,15 +144,18 @@ const ListCard = styled.div`
 `;
 
 const StyledCardPage = styled.div`
+  cursor: pointer;
   max-width: 290px;
   .cover-img {
     width: 100%;
     height: 150px;
+    object-fit: cover;
     border-top-right-radius: 20px;
     border-top-left-radius: 20px;
     @media (max-width: 768px) {
       width: 185px;
       height: 75px;
+      object-fit: cover;
     }
   }
   .info-profile {
@@ -177,6 +181,7 @@ const StyledCardPage = styled.div`
         width: 56px;
         height: 56px;
         border-radius: 50%;
+        object-fit: cover;
       }
     }
     .title-profile {
@@ -222,9 +227,9 @@ type CardPageItem = {
   id?: any;
   name?: string;
   category?: string;
-  subText?: string;
   cover?: string;
   avatar?: string;
+  totalBurnForPage?: number;
 };
 
 const CardPageItem = ({ item, onClickItem }: { item?: CardPageItem; onClickItem?: (id) => void }) => (
@@ -248,7 +253,11 @@ const CardPageItem = ({ item, onClickItem }: { item?: CardPageItem; onClickItem?
       <div className="title-profile">
         <h3 className="page-name">{item.name}</h3>
         <p className="page-category">{item.category}</p>
-        <p className="sub-text">{item.subText + ' XPI has been burned'}</p>
+        <p className="sub-text">
+          {item.totalBurnForPage > 0
+            ? `${item.totalBurnForPage} ${intl.get('page.xpiHasBurned')}`
+            : intl.get('page.noXpiHasBurned')}
+        </p>
       </div>
     </div>
   </StyledCardPage>
@@ -291,7 +300,7 @@ const PageHome = () => {
       name: pageItem?.name,
       avatar: pageItem?.avatar,
       cover: pageItem?.cover,
-      subText: pageItem?.totalBurnForPage,
+      totalBurnForPage: pageItem?.totalBurnForPage,
       category: pageItem.categoryId ? getCategoryName(pageItem.categoryId) : 'Food & Drink'
     };
     return newItemObj;

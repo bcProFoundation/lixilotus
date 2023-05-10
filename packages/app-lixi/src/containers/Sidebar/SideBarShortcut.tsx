@@ -38,18 +38,18 @@ export const ItemAccess = ({
   active: boolean;
   direction?: string;
   onClickItem?: () => void;
-}) => (
-  <Link onClick={onClickItem} href={href}>
-    <a>
+}) => {
+  return (
+    <div onClick={onClickItem}>
       <Space direction={direction === 'horizontal' ? 'horizontal' : 'vertical'} className={'item-access'}>
         <div className={classNames('icon-item', { 'active-item-access': active })}>
           <img src={icon} />
         </div>
         <span className="text-item">{text}</span>
       </Space>
-    </a>
-  </Link>
-);
+    </div>
+  );
+};
 
 export const ItemAccessBarcode = ({
   icon,
@@ -288,13 +288,13 @@ const SidebarShortcut = () => {
     false
   );
 
-  const handleLogoClick = () => {
-    if (currentPathName === '/') {
+  const handleIconClick = (newPath?: string) => {
+    if (currentPathName === '/' && newPath === '/') {
       dispatch(postApi.util.resetApiState());
       refetch();
       dispatch(setGraphqlRequestLoading());
     } else {
-      dispatch(push(`/`));
+      dispatch(push(newPath));
     }
   };
 
@@ -304,7 +304,7 @@ const SidebarShortcut = () => {
         <ContainerAccess>
           <div className="wrapper">
             <StyledLogo>
-              <div onClick={handleLogoClick}>
+              <div onClick={e => handleIconClick('/')}>
                 <picture>
                   <img width="137px" height="56px" src="/images/lixilotus-logo.svg" alt="lixilotus" />
                 </picture>
@@ -315,42 +315,49 @@ const SidebarShortcut = () => {
               text={intl.get('general.home')}
               active={currentPathName === '/' || currentPathName.includes('/post')}
               key="home"
-              href={'/'}
+              onClickItem={() => handleIconClick('/')}
+            />
+            <ItemAccess
+              icon={'/images/ico-notifications.svg'}
+              text={intl.get('general.notifications')}
+              active={currentPathName === '/notifications'}
+              key="notifications"
+              onClickItem={() => handleIconClick('/notifications')}
             />
             <ItemAccess
               icon={'/images/ico-page.svg'}
               text={intl.get('general.page')}
               active={currentPathName.includes('/page')}
               key="page-feed"
-              href={'/page/feed'}
+              onClickItem={() => handleIconClick('/page/feed')}
             />
             <ItemAccess
               icon={'/images/ico-tokens.svg'}
               text={intl.get('general.tokens')}
               active={currentPathName.includes('/token')}
               key="tokens-feed"
-              href={'/token/listing'}
+              onClickItem={() => handleIconClick('/token/listing')}
             />
             <ItemAccess
               icon={'/images/ico-account.svg'}
               text={intl.get('general.accounts')}
               active={currentPathName === '/wallet'}
               key="wallet-lotus"
-              href={'/wallet'}
+              onClickItem={() => handleIconClick('/wallet')}
             />
             <ItemAccess
               icon={'/images/ico-lixi.svg'}
               text={intl.get('general.lixi')}
               active={currentPathName.includes('/lixi')}
               key="lixi"
-              href={'/lixi'}
+              onClickItem={() => handleIconClick('/lixi')}
             />
             <ItemAccess
               icon={'/images/ico-setting.svg'}
               text={intl.get('general.settings')}
               active={currentPathName === '/settings'}
               key="settings"
-              href={'/settings'}
+              onClickItem={() => handleIconClick('/settings')}
             />
             {/* TODO: show more shortcut  */}
             {/* {showMore && (
@@ -388,19 +395,6 @@ const SidebarShortcut = () => {
             )} */}
           </div>
           <UserControl>
-            <Badge
-              count={notifications.filter(item => _.isNil(item.readAt)).length}
-              overflowCount={9}
-              offset={[notifications.length < 10 ? 0 : 5, 8]}
-              color="var(--color-primary)"
-            >
-              <img
-                className="img-bell"
-                src="/images/ico-notifications.svg"
-                alt="ico-notifications"
-                onClick={() => router.push('/notifications')}
-              />
-            </Badge>
             <div style={{ cursor: 'pointer' }} onClick={() => router.push(`/profile/${selectedAccount?.address}`)}>
               <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
             </div>

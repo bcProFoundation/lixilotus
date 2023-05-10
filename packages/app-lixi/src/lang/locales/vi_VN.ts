@@ -484,6 +484,8 @@ export default {
   'page.unableCreatePage': 'Không thể tạo trang.',
   'page.unableUpdatePage': 'Không thể sửa trang.',
   'page.selectAccountFirst': 'Hãy chọn một tài khoản trước khi tạo trang',
+  'page.xpiHasBurned': 'XPI đã được đốt',
+  'page.noXpiHasBurned': 'Chưa ai đốt trang này!',
   'category.foodAndDrink': 'Đồ ăn và thức uống',
 
   /* 14.Country */
