@@ -10,6 +10,8 @@ import _ from 'lodash';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getNavCollapsed } from '@store/settings/selectors';
 import { toggleCollapsedSideNav } from '@store/settings/actions';
+import { push } from 'connected-next-router';
+import { useRouter } from 'next/router';
 
 type SidebarContentProps = {
   className?: string;
@@ -62,19 +64,17 @@ const StyledContainerShortcut = styled.div`
 
 const SidebarContent = ({ className }: SidebarContentProps) => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const [isCollapse, setIsCollapse] = useState(false);
   const navCollapsed = useAppSelector(getNavCollapsed);
-  const { data } = useInfinitePagesQuery(
-    {
-      first: 10
-    },
-    true
-  );
-
-  const randomShortCut = _.sampleSize(data, 5);
+  const currentPathName = router.pathname ?? '';
 
   const handleOnClick = () => {
     dispatch(toggleCollapsedSideNav(!navCollapsed));
+  };
+
+  const handleIconClick = (newPath?: string) => {
+    dispatch(push(newPath));
   };
 
   return (
@@ -100,7 +100,7 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
             text={intl.get('general.home')}
             active={false}
             key="home-lixi"
-            href={'/'}
+            onClickItem={() => handleIconClick('/')}
             direction={'horizontal'}
           />
           <ItemAccess
@@ -108,7 +108,7 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
             text={intl.get('general.page')}
             active={false}
             key="page"
-            href={'/page/feed'}
+            onClickItem={() => handleIconClick('/page/feed')}
             direction={'horizontal'}
           />
           <ItemAccess
@@ -116,7 +116,7 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
             text={intl.get('general.lixi')}
             active={false}
             key="lixi"
-            href={'/lixi'}
+            onClickItem={() => handleIconClick('/lixi')}
             direction={'horizontal'}
           />
           <ItemAccess
@@ -124,7 +124,7 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
             text={intl.get('general.settings')}
             active={false}
             key="settings"
-            href={'/settings'}
+            onClickItem={() => handleIconClick('/settings')}
             direction={'horizontal'}
           />
         </StyledContainerAccess>

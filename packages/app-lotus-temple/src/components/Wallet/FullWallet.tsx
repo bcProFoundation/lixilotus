@@ -218,7 +218,7 @@ const FullWalletComponent: React.FC = () => {
           <div className="content-transaction">
             {Object.keys(walletParsedHistoryGroupByDate).map(index => {
               return (
-                <>
+                <React.Fragment key={index}>
                   <h3 className="tx-history-header">{index}</h3>
                   <List>
                     <VirtualList data={walletParsedHistoryGroupByDate[index]} itemHeight={47} itemKey="email">
@@ -242,7 +242,7 @@ const FullWalletComponent: React.FC = () => {
                               }
                               description={
                                 <div className="tx-transaction">
-                                  <p className="tx-action">
+                                  <div className="tx-action">
                                     {item.parsed.isBurn ? (
                                       <p>
                                         {intl.get('general.burnForType')}:{' '}
@@ -280,7 +280,7 @@ const FullWalletComponent: React.FC = () => {
                                         )}
                                       </p>
                                     )}
-                                  </p>
+                                  </div>
                                   <p className="tx-memo">
                                     <LockOutlined /> {memo}
                                   </p>
@@ -311,7 +311,7 @@ const FullWalletComponent: React.FC = () => {
                       }}
                     </VirtualList>
                   </List>
-                </>
+                </React.Fragment>
               );
             })}
           </div>
