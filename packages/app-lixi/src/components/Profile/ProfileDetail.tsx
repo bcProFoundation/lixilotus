@@ -44,7 +44,6 @@ import { selectAccount, setTransactionReady } from '@store/account/actions';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 import {
   api as followsApi,
-  useCheckFollowAccountQuery,
   useCreateFollowAccountMutation,
   useDeleteFollowAccountMutation
 } from '@store/follow/follows.api';
@@ -780,19 +779,19 @@ const ProfileDetail = ({ user, isMobile }: UserDetailProps) => {
                     <div className="about-content">
                       <SubAbout
                         dataItem={userDetailData?.follower.length}
-                        onClickIcon={() => {}}
+                        onClickIcon={() => { }}
                         icon={UserOutlined}
                         text={`${userDetailData?.follower.length} ${intl.get('general.follower')}`}
                       />
                       <SubAbout
                         dataItem={userDetailData?.following.length}
-                        onClickIcon={() => {}}
+                        onClickIcon={() => { }}
                         icon={UserOutlined}
                         text={`${userDetailData?.following.length} ${intl.get('general.following')}`}
                       />
                       <SubAbout
                         dataItem={userDetailData?.followingPage.length}
-                        onClickIcon={() => {}}
+                        onClickIcon={() => { }}
                         icon={HomeOutlined}
                         text={`${userDetailData?.followingPage.length} ${intl.get('general.followingPage')}`}
                       />
