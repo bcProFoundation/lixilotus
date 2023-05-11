@@ -3,17 +3,7 @@ import { api } from './accounts.generated';
 const enhancedApi = api.enhanceEndpoints({
   addTagTypes: ['Account'],
   endpoints: {
-    Accounts: {
-      providesTags: ['Account'],
-      serializeQueryArgs({ queryArgs }) {
-        if (queryArgs) {
-          const { orderBy, ...otherArgs } = queryArgs;
-          return orderBy;
-        }
-        return { queryArgs };
-      }
-    },
-    Account: {
+    getAccountViaAddress: {
       providesTags: (result, error, arg) => ['Account']
     },
     createAccount: {
@@ -25,9 +15,8 @@ const enhancedApi = api.enhanceEndpoints({
 export { enhancedApi as api };
 
 export const {
-  useAccountQuery,
-  useLazyAccountQuery,
-  useAccountsQuery,
-  useLazyAccountsQuery,
-  useCreateAccountMutation
+  useGetAccountViaAddressQuery,
+  useLazyGetAccountViaAddressQuery,
+  useCreateAccountMutation,
+  useImportAccountMutation
 } = enhancedApi;

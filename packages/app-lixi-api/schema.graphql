@@ -4,19 +4,19 @@
 
 type Account {
   address: String!
-  balance: String!
 
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
-  encryptedMnemonic: String!
-  encryptedSecret: String!
+  encryptedMnemonic: String
+  encryptedSecret: String
+  follower: FollowAccount
+  following: FollowAccount
+  followingPage: FollowPage
   id: ID!
+  isFollow: Boolean
   language: String!
-  lotusBurnDown: Float!
-  lotusBurnScore: Float!
-  lotusBurnUp: Float!
-  mnemonic: String!
-  mnemonicHash: String!
+  mnemonic: String
+  mnemonicHash: String
   name: String!
   page: Page
   publicKey: String
@@ -162,6 +162,16 @@ scalar DateTime
 """An arbitrary-precision Decimal type"""
 scalar Decimal
 
+input DeleteFollowAccountInput {
+  followerAccountId: Int!
+  followingAccountId: Int!
+}
+
+input DeleteFollowPageInput {
+  accountId: Int!
+  pageId: String!
+}
+
 type FollowAccount {
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
@@ -169,15 +179,35 @@ type FollowAccount {
   followerAccountId: Int
   followingAccount: Account
   followingAccountId: Int
-  id: ID!
+  id: ID
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
 }
 
+type FollowAccountConnection {
+  edges: [FollowAccountEdge!]
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
 type FollowAccountEdge {
   cursor: String!
   node: FollowAccount!
+}
+
+input FollowAccountOrder {
+  direction: OrderDirection!
+  field: FollowAccountOrderField!
+}
+
+"""Properties by which follow account connections can be ordered."""
+enum FollowAccountOrderField {
+  createdAt
+  followerAccountId
+  followingAccountId
+  id
+  updatedAt
 }
 
 type FollowPage {
@@ -186,7 +216,7 @@ type FollowPage {
 
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
-  id: ID!
+  id: ID
   page: Page
   pageId: String
 
@@ -215,6 +245,8 @@ type Mutation {
   createToken(data: CreateTokenInput!): Token!
   createWorship(data: CreateWorshipInput!): Worship!
   createWorshipedPerson(data: CreateWorshipedPersonInput!): WorshipedPerson!
+  deleteFollowAccount(data: DeleteFollowAccountInput!): FollowAccount!
+  deleteFollowPage(data: DeleteFollowPageInput!): FollowPage!
   importAccount(data: ImportAccountInput!): Account!
   updatePage(data: UpdatePageInput!): Page!
   updatePost(data: UpdatePostInput!): Post!
@@ -238,7 +270,9 @@ type Page {
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
   description: String!
+  follower: FollowPage
   id: ID!
+  isFollow: Boolean
   lotusBurnDown: Float!
   lotusBurnScore: Float!
   lotusBurnUp: Float!
@@ -357,8 +391,9 @@ type PostResponse {
 }
 
 type Query {
-  account(id: Int!): Account!
   allCommentsToPostId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: CommentOrder, skip: Int): CommentConnection!
+  allFollowers(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: FollowAccountOrder, query: Int, skip: Int): FollowAccountConnection!
+  allFollowings(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: FollowAccountOrder, query: Int, skip: Int): FollowAccountConnection!
   allOrphanPosts(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PostOrder, query: String, skip: Int): PostConnection!
   allPages(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PageOrder, query: String, skip: Int): PageConnection!
   allPosts(accountId: Int, after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
@@ -400,8 +435,8 @@ type Query {
   ): WorshipedPersonConnection!
   allWorshipedPersonByUserId(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: WorshipedPersonOrder, skip: Int): WorshipedPersonConnection!
   allWorshipedPersonSpecialDate(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: WorshipedPersonOrder, skip: Int): WorshipedPersonConnection!
-  checkFollowAccount(followerAccountId: Int!): FollowAccount!
   comment(id: String!): Comment!
+  getAccountViaAddress(address: String!): Account!
   page(id: String!): Page!
   post(id: String!): Post!
   token(tokenId: String!): Token!

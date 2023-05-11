@@ -344,7 +344,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
           />
           <IconBurn
             burnValue={formatBalance(post?.lotusBurnDown ?? 0)}
-            imgUrl="/images/ico-burn-down.svg"
+            imgUrl="/images/custom-burn.svg"
             key={`list-vertical-downvote-o-${item.id}`}
             dataItem={item}
             onClickIcon={e => openBurnModal(e, item)}

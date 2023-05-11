@@ -5,7 +5,7 @@ import { Account } from '../account';
 
 @ObjectType()
 export class FollowAccount {
-  @Field(() => ID)
+  @Field(() => ID, { nullable: true })
   id: string;
 
   @Field(() => Number, { nullable: true })

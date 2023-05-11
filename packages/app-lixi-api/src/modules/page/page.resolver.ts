@@ -32,10 +32,19 @@ export class PageResolver {
   }
 
   @Query(() => Page)
-  async page(@Args('id', { type: () => String }) id: string) {
-    const result = await this.prisma.page.findUnique({
-      where: { id: id }
+  @UseGuards(GqlJwtAuthGuard)
+  async page(@PageAccountEntity() account: Account, @Args('id', { type: () => String }) id: string) {
+    const page = await this.prisma.page.findUnique({
+      where: { id: id },
+      include: {
+        follower: true
+      }
     });
+
+    const result = {
+      ...page,
+      isFollow: page?.follower.find(item => item.accountId == account.id) ? true : false
+    };
 
     return result;
   }

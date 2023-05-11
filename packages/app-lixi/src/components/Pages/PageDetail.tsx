@@ -35,8 +35,8 @@ import { getFilterPostsPage } from '@store/settings/selectors';
 import { FilterBurnt } from '@components/Common/FilterBurn';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
-import { CreateFollowPageInput } from 'src/generated/types.generated';
-import { useCreateFollowPageMutation } from '@store/follow/follows.api';
+import { CreateFollowPageInput, DeleteFollowPageInput } from '@generated/types.generated';
+import { useCreateFollowPageMutation, useDeleteFollowPageMutation } from '@store/follow/follows.api';
 
 type PageDetailProps = {
   page: any;
@@ -365,7 +365,7 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
   const router = useRouter();
   const selectedAccountId = useAppSelector(getSelectedAccountId);
   const [pageDetailData, setPageDetailData] = useState<any>(page);
-  const [followed, setFollowed] = useState<boolean>(false);
+  const [followed, setFollowed] = useState<boolean>(page.isFollow);
   const [listsFriend, setListsFriend] = useState<any>([]);
   const [listsPicture, setListsPicture] = useState<any>([]);
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
@@ -385,6 +385,16 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
       error: errorOnCreate
     }
   ] = useCreateFollowPageMutation();
+
+  const [
+    deleteFollowPageTrigger,
+    {
+      isLoading: isLoadingDeleteFollowAccount,
+      isSuccess: isSuccessDeleteFollowAccount,
+      isError: isErrorDeleteFollowAccount,
+      error: errorOnDelete
+    }
+  ] = useDeleteFollowPageMutation();
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByPageIdQuery(
     {
@@ -523,6 +533,16 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
     if (isSuccessCreateFollowAccount) setFollowed(true);
   };
 
+  const handleUnfollowPage = async () => {
+    const deleteFollowPageInput: DeleteFollowPageInput = {
+      accountId: selectedAccountId,
+      pageId: pageDetailData.id
+    };
+
+    await deleteFollowPageTrigger({ input: deleteFollowPageInput });
+    if (isSuccessDeleteFollowAccount) setFollowed(false);
+  };
+
   return (
     <>
       <StyledContainerProfileDetail>
@@ -567,7 +587,7 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
             {/* Follow */}
             {selectedAccountId !== pageDetailData?.pageAccountId && (
               <div className="action-profile">
-                <Button onClick={handleFollowPage}>
+                <Button onClick={followed ? handleUnfollowPage : handleFollowPage}>
                   {followed ? intl.get('general.unfollow') : intl.get('general.follow')}
                 </Button>
               </div>

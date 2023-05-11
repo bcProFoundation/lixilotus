@@ -1,5 +1,5 @@
-query Account($id: Int!) {
-  account(id: $id) {
+query getAccountViaAddress($address: String!) {
+  getAccountViaAddress(address: $address) {
     ...AccountFields
   }
 }
@@ -9,12 +9,38 @@ fragment AccountFields on Account {
   name
   address
   mnemonicHash
+  encryptedMnemonic
+  encryptedSecret
   publicKey
-  balance
   language
-  lotusBurnUp
-  lotusBurnDown
-  lotusBurnScore
+  page {
+    id
+    name
+  }
+  isFollow
+  follower {
+    id
+    followingAccount {
+      id
+      name
+      address
+    }
+  }
+  following {
+    id
+    followerAccount {
+      id
+      name
+      address
+    }
+  }
+  followingPage {
+    id
+    page {
+      id
+      name
+    }
+  }
   createdAt
   updatedAt
 }

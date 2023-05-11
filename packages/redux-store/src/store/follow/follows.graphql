@@ -1,6 +1,44 @@
-query checkFollowAccount($followerAccountId: Int!) {
-  checkFollowAccount(followerAccountId: $followerAccountId) {
-    ...FollowAccountFields
+query Followers(
+  $after: String
+  $before: String
+  $first: Int = 20
+  $last: Int
+  $orderBy: FollowAccountOrder
+  $skip: Int
+) {
+  allFollowers(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, skip: $skip) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...FollowAccountFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+
+query Followings(
+  $after: String
+  $before: String
+  $first: Int = 20
+  $last: Int
+  $orderBy: FollowAccountOrder
+  $skip: Int
+) {
+  allFollowings(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, skip: $skip) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...FollowAccountFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
   }
 }
 
@@ -28,6 +66,12 @@ mutation createFollowAccount($input: CreateFollowAccountInput!) {
   }
 }
 
+mutation deleteFollowAccount($input: DeleteFollowAccountInput!) {
+  deleteFollowAccount(data: $input) {
+    ...FollowAccountFields
+  }
+}
+
 fragment FollowPageFields on FollowPage {
   id
   accountId
@@ -47,6 +91,12 @@ fragment FollowPageFields on FollowPage {
 
 mutation createFollowPage($input: CreateFollowPageInput!) {
   createFollowPage(data: $input) {
+    ...FollowPageFields
+  }
+}
+
+mutation deleteFollowPage($input: DeleteFollowPageInput!) {
+  deleteFollowPage(data: $input) {
     ...FollowPageFields
   }
 }

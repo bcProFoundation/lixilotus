@@ -1,5 +1,6 @@
-import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 
+import { FollowAccount, FollowPage } from '../follow';
 import { Page } from '../page';
 
 @ObjectType()
@@ -10,14 +11,14 @@ export class Account {
   @Field(() => String)
   name: string;
 
-  @Field(() => String)
-  mnemonic: string;
+  @Field(() => String, { nullable: true })
+  mnemonic?: string;
 
-  @Field(() => String)
-  encryptedMnemonic: string;
+  @Field(() => String, { nullable: true })
+  encryptedMnemonic?: string;
 
-  @Field(() => String)
-  encryptedSecret: string;
+  @Field(() => String, { nullable: true })
+  encryptedSecret?: string;
 
   @Field(() => String, { nullable: true })
   secret?: string;
@@ -35,14 +36,11 @@ export class Account {
   })
   updatedAt?: Date;
 
-  @Field(() => String)
-  mnemonicHash: string;
+  @Field(() => String, { nullable: true })
+  mnemonicHash?: string;
 
   @Field(() => String)
   address: string;
-
-  @Field(() => String)
-  balance?: number;
 
   @Field(() => String)
   language?: string;
@@ -50,12 +48,15 @@ export class Account {
   @Field(() => Page, { nullable: true })
   page?: Page;
 
-  @Field(() => Float)
-  lotusBurnUp: number;
+  @Field(() => Boolean, { nullable: true })
+  isFollow?: boolean;
 
-  @Field(() => Float)
-  lotusBurnDown: number;
+  @Field(() => FollowAccount, { nullable: true })
+  follower?: FollowAccount;
 
-  @Field(() => Float)
-  lotusBurnScore: number;
+  @Field(() => FollowAccount, { nullable: true })
+  following?: FollowAccount;
+
+  @Field(() => FollowPage, { nullable: true })
+  followingPage?: FollowPage;
 }

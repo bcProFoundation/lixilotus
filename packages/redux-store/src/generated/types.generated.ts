@@ -19,18 +19,18 @@ export type Scalars = {
 export type Account = {
   __typename?: 'Account';
   address: Scalars['String'];
-  balance: Scalars['String'];
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
-  encryptedMnemonic: Scalars['String'];
-  encryptedSecret: Scalars['String'];
+  encryptedMnemonic?: Maybe<Scalars['String']>;
+  encryptedSecret?: Maybe<Scalars['String']>;
+  follower?: Maybe<FollowAccount>;
+  following?: Maybe<FollowAccount>;
+  followingPage?: Maybe<FollowPage>;
   id: Scalars['ID'];
+  isFollow?: Maybe<Scalars['Boolean']>;
   language: Scalars['String'];
-  lotusBurnDown: Scalars['Float'];
-  lotusBurnScore: Scalars['Float'];
-  lotusBurnUp: Scalars['Float'];
-  mnemonic: Scalars['String'];
-  mnemonicHash: Scalars['String'];
+  mnemonic?: Maybe<Scalars['String']>;
+  mnemonicHash?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   page?: Maybe<Page>;
   publicKey?: Maybe<Scalars['String']>;
@@ -171,6 +171,16 @@ export type CreateWorshipedPersonInput = {
   wikiDataId?: InputMaybe<Scalars['String']>;
 };
 
+export type DeleteFollowAccountInput = {
+  followerAccountId: Scalars['Int'];
+  followingAccountId: Scalars['Int'];
+};
+
+export type DeleteFollowPageInput = {
+  accountId: Scalars['Int'];
+  pageId: Scalars['String'];
+};
+
 export type FollowAccount = {
   __typename?: 'FollowAccount';
   /** Identifies the date and time when the object was created. */
@@ -179,9 +189,16 @@ export type FollowAccount = {
   followerAccountId?: Maybe<Scalars['Int']>;
   followingAccount?: Maybe<Account>;
   followingAccountId?: Maybe<Scalars['Int']>;
-  id: Scalars['ID'];
+  id?: Maybe<Scalars['ID']>;
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
+};
+
+export type FollowAccountConnection = {
+  __typename?: 'FollowAccountConnection';
+  edges?: Maybe<Array<FollowAccountEdge>>;
+  pageInfo: PageInfo;
+  totalCount?: Maybe<Scalars['Int']>;
 };
 
 export type FollowAccountEdge = {
@@ -190,13 +207,27 @@ export type FollowAccountEdge = {
   node: FollowAccount;
 };
 
+export type FollowAccountOrder = {
+  direction: OrderDirection;
+  field: FollowAccountOrderField;
+};
+
+/** Properties by which follow account connections can be ordered. */
+export enum FollowAccountOrderField {
+  CreatedAt = 'createdAt',
+  FollowerAccountId = 'followerAccountId',
+  FollowingAccountId = 'followingAccountId',
+  Id = 'id',
+  UpdatedAt = 'updatedAt'
+}
+
 export type FollowPage = {
   __typename?: 'FollowPage';
   account?: Maybe<Account>;
   accountId?: Maybe<Scalars['Int']>;
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
-  id: Scalars['ID'];
+  id?: Maybe<Scalars['ID']>;
   page?: Maybe<Page>;
   pageId?: Maybe<Scalars['String']>;
   /** Identifies the date and time when the object was last updated. */
@@ -226,6 +257,8 @@ export type Mutation = {
   createToken: Token;
   createWorship: Worship;
   createWorshipedPerson: WorshipedPerson;
+  deleteFollowAccount: FollowAccount;
+  deleteFollowPage: FollowPage;
   importAccount: Account;
   updatePage: Page;
   updatePost: Post;
@@ -267,6 +300,14 @@ export type MutationCreateWorshipedPersonArgs = {
   data: CreateWorshipedPersonInput;
 };
 
+export type MutationDeleteFollowAccountArgs = {
+  data: DeleteFollowAccountInput;
+};
+
+export type MutationDeleteFollowPageArgs = {
+  data: DeleteFollowPageInput;
+};
+
 export type MutationImportAccountArgs = {
   data: ImportAccountInput;
 };
@@ -295,7 +336,9 @@ export type Page = {
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
   description: Scalars['String'];
+  follower?: Maybe<FollowPage>;
   id: Scalars['ID'];
+  isFollow?: Maybe<Scalars['Boolean']>;
   lotusBurnDown: Scalars['Float'];
   lotusBurnScore: Scalars['Float'];
   lotusBurnUp: Scalars['Float'];
@@ -420,8 +463,9 @@ export type PostResponse = {
 
 export type Query = {
   __typename?: 'Query';
-  account: Account;
   allCommentsToPostId: CommentConnection;
+  allFollowers: FollowAccountConnection;
+  allFollowings: FollowAccountConnection;
   allOrphanPosts: PostConnection;
   allPages: PageConnection;
   allPosts: PostConnection;
@@ -436,17 +480,13 @@ export type Query = {
   allWorshipedPersonBySearch: WorshipedPersonConnection;
   allWorshipedPersonByUserId: WorshipedPersonConnection;
   allWorshipedPersonSpecialDate: WorshipedPersonConnection;
-  checkFollowAccount: FollowAccount;
   comment: Comment;
+  getAccountViaAddress: Account;
   page: Page;
   post: Post;
   token: Token;
   worship: Worship;
   worshipedPerson: WorshipedPerson;
-};
-
-export type QueryAccountArgs = {
-  id: Scalars['Int'];
 };
 
 export type QueryAllCommentsToPostIdArgs = {
@@ -457,6 +497,28 @@ export type QueryAllCommentsToPostIdArgs = {
   last?: InputMaybe<Scalars['Int']>;
   minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<CommentOrder>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryAllFollowersArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<FollowAccountOrder>;
+  query?: InputMaybe<Scalars['Int']>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryAllFollowingsArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<FollowAccountOrder>;
+  query?: InputMaybe<Scalars['Int']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
 
@@ -605,12 +667,12 @@ export type QueryAllWorshipedPersonSpecialDateArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
-export type QueryCheckFollowAccountArgs = {
-  followerAccountId: Scalars['Int'];
-};
-
 export type QueryCommentArgs = {
   id: Scalars['String'];
+};
+
+export type QueryGetAccountViaAddressArgs = {
+  address: Scalars['String'];
 };
 
 export type QueryPageArgs = {

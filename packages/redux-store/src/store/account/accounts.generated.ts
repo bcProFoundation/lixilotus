@@ -12,26 +12,41 @@
 import * as Types from '../../generated/types.generated';
 
 import { api } from 'src/api/baseApi';
-export type AccountQueryVariables = Types.Exact<{
-  id: Types.Scalars['Int'];
+export type GetAccountViaAddressQueryVariables = Types.Exact<{
+  address: Types.Scalars['String'];
 }>;
 
-export type AccountQuery = {
+export type GetAccountViaAddressQuery = {
   __typename?: 'Query';
-  account: {
+  getAccountViaAddress: {
     __typename?: 'Account';
     id: string;
     name: string;
     address: string;
-    mnemonicHash: string;
+    mnemonicHash?: string | null;
+    encryptedMnemonic?: string | null;
+    encryptedSecret?: string | null;
     publicKey?: string | null;
-    balance: string;
     language: string;
-    lotusBurnUp: number;
-    lotusBurnDown: number;
-    lotusBurnScore: number;
+    isFollow?: boolean | null;
     createdAt: any;
     updatedAt: any;
+    page?: { __typename?: 'Page'; id: string; name: string } | null;
+    follower?: {
+      __typename?: 'FollowAccount';
+      id?: string | null;
+      followingAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+    } | null;
+    following?: {
+      __typename?: 'FollowAccount';
+      id?: string | null;
+      followerAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+    } | null;
+    followingPage?: {
+      __typename?: 'FollowPage';
+      id?: string | null;
+      page?: { __typename?: 'Page'; id: string; name: string } | null;
+    } | null;
   };
 };
 
@@ -40,15 +55,30 @@ export type AccountFieldsFragment = {
   id: string;
   name: string;
   address: string;
-  mnemonicHash: string;
+  mnemonicHash?: string | null;
+  encryptedMnemonic?: string | null;
+  encryptedSecret?: string | null;
   publicKey?: string | null;
-  balance: string;
   language: string;
-  lotusBurnUp: number;
-  lotusBurnDown: number;
-  lotusBurnScore: number;
+  isFollow?: boolean | null;
   createdAt: any;
   updatedAt: any;
+  page?: { __typename?: 'Page'; id: string; name: string } | null;
+  follower?: {
+    __typename?: 'FollowAccount';
+    id?: string | null;
+    followingAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+  } | null;
+  following?: {
+    __typename?: 'FollowAccount';
+    id?: string | null;
+    followerAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+  } | null;
+  followingPage?: {
+    __typename?: 'FollowPage';
+    id?: string | null;
+    page?: { __typename?: 'Page'; id: string; name: string } | null;
+  } | null;
 };
 
 export type CreateAccountMutationVariables = Types.Exact<{
@@ -62,15 +92,30 @@ export type CreateAccountMutation = {
     id: string;
     name: string;
     address: string;
-    mnemonicHash: string;
+    mnemonicHash?: string | null;
+    encryptedMnemonic?: string | null;
+    encryptedSecret?: string | null;
     publicKey?: string | null;
-    balance: string;
     language: string;
-    lotusBurnUp: number;
-    lotusBurnDown: number;
-    lotusBurnScore: number;
+    isFollow?: boolean | null;
     createdAt: any;
     updatedAt: any;
+    page?: { __typename?: 'Page'; id: string; name: string } | null;
+    follower?: {
+      __typename?: 'FollowAccount';
+      id?: string | null;
+      followingAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+    } | null;
+    following?: {
+      __typename?: 'FollowAccount';
+      id?: string | null;
+      followerAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+    } | null;
+    followingPage?: {
+      __typename?: 'FollowPage';
+      id?: string | null;
+      page?: { __typename?: 'Page'; id: string; name: string } | null;
+    } | null;
   };
 };
 
@@ -85,15 +130,30 @@ export type ImportAccountMutation = {
     id: string;
     name: string;
     address: string;
-    mnemonicHash: string;
+    mnemonicHash?: string | null;
+    encryptedMnemonic?: string | null;
+    encryptedSecret?: string | null;
     publicKey?: string | null;
-    balance: string;
     language: string;
-    lotusBurnUp: number;
-    lotusBurnDown: number;
-    lotusBurnScore: number;
+    isFollow?: boolean | null;
     createdAt: any;
     updatedAt: any;
+    page?: { __typename?: 'Page'; id: string; name: string } | null;
+    follower?: {
+      __typename?: 'FollowAccount';
+      id?: string | null;
+      followingAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+    } | null;
+    following?: {
+      __typename?: 'FollowAccount';
+      id?: string | null;
+      followerAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+    } | null;
+    followingPage?: {
+      __typename?: 'FollowPage';
+      id?: string | null;
+      page?: { __typename?: 'Page'; id: string; name: string } | null;
+    } | null;
   };
 };
 
@@ -103,19 +163,45 @@ export const AccountFieldsFragmentDoc = `
   name
   address
   mnemonicHash
+  encryptedMnemonic
+  encryptedSecret
   publicKey
-  balance
   language
-  lotusBurnUp
-  lotusBurnDown
-  lotusBurnScore
+  page {
+    id
+    name
+  }
+  isFollow
+  follower {
+    id
+    followingAccount {
+      id
+      name
+      address
+    }
+  }
+  following {
+    id
+    followerAccount {
+      id
+      name
+      address
+    }
+  }
+  followingPage {
+    id
+    page {
+      id
+      name
+    }
+  }
   createdAt
   updatedAt
 }
     `;
-export const AccountDocument = `
-    query Account($id: Int!) {
-  account(id: $id) {
+export const GetAccountViaAddressDocument = `
+    query getAccountViaAddress($address: String!) {
+  getAccountViaAddress(address: $address) {
     ...AccountFields
   }
 }
@@ -137,8 +223,8 @@ export const ImportAccountDocument = `
 
 const injectedRtkApi = api.injectEndpoints({
   endpoints: build => ({
-    Account: build.query<AccountQuery, AccountQueryVariables>({
-      query: variables => ({ document: AccountDocument, variables })
+    getAccountViaAddress: build.query<GetAccountViaAddressQuery, GetAccountViaAddressQueryVariables>({
+      query: variables => ({ document: GetAccountViaAddressDocument, variables })
     }),
     createAccount: build.mutation<CreateAccountMutation, CreateAccountMutationVariables>({
       query: variables => ({ document: CreateAccountDocument, variables })
@@ -150,5 +236,9 @@ const injectedRtkApi = api.injectEndpoints({
 });
 
 export { injectedRtkApi as api };
-export const { useAccountQuery, useLazyAccountQuery, useCreateAccountMutation, useImportAccountMutation } =
-  injectedRtkApi;
+export const {
+  useGetAccountViaAddressQuery,
+  useLazyGetAccountViaAddressQuery,
+  useCreateAccountMutation,
+  useImportAccountMutation
+} = injectedRtkApi;

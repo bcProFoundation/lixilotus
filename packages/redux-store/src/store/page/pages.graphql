@@ -48,6 +48,15 @@ fragment PageFields on Page {
   lotusBurnDown
   lotusBurnScore
   totalBurnForPage
+  follower {
+    id
+    account {
+      id
+      name
+      address
+    }
+  }
+  isFollow
   createdAt
   updatedAt
 }

@@ -4,6 +4,8 @@ import { Order } from '../../../core';
 
 export enum FollowPageOrderField {
   id = 'id',
+  accountId = 'accountId',
+  pageId = 'pageId',
   createdAt = 'createdAt',
   updatedAt = 'updatedAt'
 }

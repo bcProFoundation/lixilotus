@@ -10,6 +10,8 @@ import VError from 'verror';
 import { WalletService } from '../wallet/wallet.service';
 import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase58Str, hashMnemonic } from 'src/utils/encryptionMethods';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
+import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
+import { AccountEntity } from 'src/decorators/account.decorator';
 
 const pubSub = new PubSub();
 
@@ -30,14 +32,23 @@ export class AccountResolver {
   }
 
   @Query(() => Account)
-  async account(@Args('id', { type: () => Number }) id: number, @I18n() i18n: I18nContext) {
+  @UseGuards(GqlJwtAuthGuard)
+  async getAccountViaAddress(
+    @AccountEntity() myAccount: Account,
+    @Args('address', { type: () => String }) address: string,
+    @I18n() i18n: I18nContext
+  ) {
     try {
-      const account = await this.prisma.account.findUnique({
+      const account = await this.prisma.account.findFirst({
         where: {
-          id: _.toSafeInteger(id)
+          address: address
         },
         include: {
-          page: true
+          page: true,
+          uploadDetail: true,
+          follower: true,
+          following: true,
+          followingPage: true
         }
       });
       if (!account) {
@@ -45,13 +56,28 @@ export class AccountResolver {
         throw new VError(accountNotExistMessage);
       }
 
-      const balance: number = await this.xpiWallet.getBalance(account.address);
+      let isFollow: boolean = false;
+      if (myAccount.id != account.id) {
+        const followed = await this.prisma.followAccount.findFirst({
+          where: {
+            followerAccountId: account.id,
+            followingAccountId: myAccount.id
+          }
+        });
 
-      const result = {
-        ...account,
-        balance: balance,
-        page: account.page
-      } as AccountDto;
+        followed ? (isFollow = true) : (isFollow = false);
+      }
+
+      const result = _.omit(
+        {
+          ...account,
+          isFollow: isFollow
+        },
+        'encryptedMnemonic',
+        'encryptedSecret',
+        'mnemonicHash',
+        'notifications'
+      );
 
       return result;
     } catch (err: unknown) {

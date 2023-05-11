@@ -4,6 +4,8 @@ import { Order } from '../../../core';
 
 export enum FollowAccountOrderField {
   id = 'id',
+  followerAccountId = 'followerAccountId',
+  followingAccountId = 'followingAccountId',
   createdAt = 'createdAt',
   updatedAt = 'updatedAt'
 }

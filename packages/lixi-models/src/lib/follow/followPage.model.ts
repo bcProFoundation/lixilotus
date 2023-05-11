@@ -6,7 +6,7 @@ import { Page } from '../page';
 
 @ObjectType()
 export class FollowPage {
-  @Field(() => ID)
+  @Field(() => ID, { nullable: true })
   id: string;
 
   @Field(() => Number, { nullable: true })

@@ -137,13 +137,11 @@ export const IconBurn = ({
 }) => (
   <Space onClick={onClickIcon} size={5} style={{ alignItems: 'end', marginRight: '1rem' }}>
     {icon && React.createElement(icon)}
-    {
-      imgUrl && (
-        <picture>
-          <StyledBurnIcon alt="burnIcon" src={imgUrl} />
-        </picture>
-      )
-    }
+    {imgUrl && (
+      <picture>
+        <StyledBurnIcon alt="burnIcon" src={imgUrl} />
+      </picture>
+    )}
     <Counter num={burnValue ?? 0} />
   </Space>
 );
@@ -636,7 +634,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
               />
               <IconBurn
                 burnValue={formatBalance(post?.lotusBurnDown ?? 0)}
-                imgUrl="/images/ico-burn-down.svg"
+                imgUrl="/images/custom-burn.svg"
                 key={`list-vertical-downvote-o-${post.id}`}
                 dataItem={post}
                 onClickIcon={() => openBurnModal(post)}

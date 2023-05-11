@@ -2,6 +2,7 @@ import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
 import { IsOptional } from 'class-validator';
 
 import { Account } from '../account';
+import { FollowPage } from '../follow';
 
 @ObjectType()
 export class Page {
@@ -71,4 +72,10 @@ export class Page {
 
   @Field(() => String, { nullable: true })
   stateId?: string;
+
+  @Field(() => FollowPage, { nullable: true })
+  follower?: FollowPage;
+
+  @Field(() => Boolean, { nullable: true })
+  isFollow?: boolean;
 }

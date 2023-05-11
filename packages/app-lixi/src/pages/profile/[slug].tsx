@@ -10,34 +10,40 @@ import PageDetailLayout from '@components/Layout/PageDetailLayout';
 import ProfileDetail from '@components/Profile/ProfileDetail';
 import { usePageQuery } from '@store/page/pages.generated';
 import { AccountDto } from '@bcpros/lixi-models/src';
+import { useGetAccountViaAddressQuery } from '@store/account/accounts.api';
 
 const ProfileDetailPage = props => {
-  const { user, isMobile } = props;
-  const canonicalUrl = process.env.NEXT_PUBLIC_LIXI_URL + `profile/${user.address}`;
-  // let currentPage;
+  const { userAddress, isMobile } = props;
+  const { currentData, isSuccess } = useGetAccountViaAddressQuery({ address: userAddress });
 
-  // const { currentData, isSuccess } = usePageQuery({ id: pageId });
-  // if (isSuccess) currentPage = currentData.page;
+  let user;
+  if (isSuccess) user = currentData.getAccountViaAddress;
+  console.log('user: ', user);
+  const canonicalUrl = process.env.NEXT_PUBLIC_LIXI_URL + `profile/${userAddress}`;
 
   return (
     <>
-      <NextSeo
-        title="Lixi Program"
-        description="The lixi program send you a small gift ."
-        canonical={canonicalUrl}
-        openGraph={{
-          url: canonicalUrl,
-          title: 'LixiLotus',
-          images: [{ url: '' }],
-          site_name: 'LixiLotus'
-        }}
-        twitter={{
-          handle: '@handle',
-          site: '@site',
-          cardType: 'summary_large_image'
-        }}
-      />
-      <ProfileDetail user={user} isMobile={isMobile} />
+      {isSuccess && (
+        <>
+          <NextSeo
+            title="Lixi Program"
+            description="The lixi program send you a small gift ."
+            canonical={canonicalUrl}
+            openGraph={{
+              url: canonicalUrl,
+              title: 'LixiLotus',
+              images: [{ url: '' }],
+              site_name: 'LixiLotus'
+            }}
+            twitter={{
+              handle: '@handle',
+              site: '@site',
+              cardType: 'summary_large_image'
+            }}
+          />
+          <ProfileDetail user={user} isMobile={isMobile} />
+        </>
+      )}
     </>
   );
 };
@@ -53,11 +59,9 @@ export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) 
   const slug: string = _.isArray(context.params.slug) ? context.params.slug[0] : context.params.slug;
   const userAddress: string = slug;
 
-  const user = await accountApi.getByAddress(userAddress);
-
   return {
     props: {
-      user,
+      userAddress,
       isMobile
     }
   };

@@ -41,8 +41,14 @@ export type PageQuery = {
     lotusBurnDown: number;
     lotusBurnScore: number;
     totalBurnForPage?: number | null;
+    isFollow?: boolean | null;
     createdAt: any;
     updatedAt: any;
+    follower?: {
+      __typename?: 'FollowPage';
+      id?: string | null;
+      account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+    } | null;
   };
 };
 
@@ -83,8 +89,14 @@ export type PagesQuery = {
         lotusBurnDown: number;
         lotusBurnScore: number;
         totalBurnForPage?: number | null;
+        isFollow?: boolean | null;
         createdAt: any;
         updatedAt: any;
+        follower?: {
+          __typename?: 'FollowPage';
+          id?: string | null;
+          account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+        } | null;
       };
     }> | null;
     pageInfo: {
@@ -116,8 +128,14 @@ export type PageFieldsFragment = {
   lotusBurnDown: number;
   lotusBurnScore: number;
   totalBurnForPage?: number | null;
+  isFollow?: boolean | null;
   createdAt: any;
   updatedAt: any;
+  follower?: {
+    __typename?: 'FollowPage';
+    id?: string | null;
+    account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+  } | null;
 };
 
 export type CreatePageMutationVariables = Types.Exact<{
@@ -145,8 +163,14 @@ export type CreatePageMutation = {
     lotusBurnDown: number;
     lotusBurnScore: number;
     totalBurnForPage?: number | null;
+    isFollow?: boolean | null;
     createdAt: any;
     updatedAt: any;
+    follower?: {
+      __typename?: 'FollowPage';
+      id?: string | null;
+      account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+    } | null;
   };
 };
 
@@ -175,8 +199,14 @@ export type UpdatePageMutation = {
     lotusBurnDown: number;
     lotusBurnScore: number;
     totalBurnForPage?: number | null;
+    isFollow?: boolean | null;
     createdAt: any;
     updatedAt: any;
+    follower?: {
+      __typename?: 'FollowPage';
+      id?: string | null;
+      account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+    } | null;
   };
 };
 
@@ -199,6 +229,15 @@ export const PageFieldsFragmentDoc = `
   lotusBurnDown
   lotusBurnScore
   totalBurnForPage
+  follower {
+    id
+    account {
+      id
+      name
+      address
+    }
+  }
+  isFollow
   createdAt
   updatedAt
 }

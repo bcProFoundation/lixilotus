@@ -11,28 +11,90 @@
 
 import * as Types from '../../generated/types.generated';
 
+import {
+  PageInfoFieldsFragmentDoc,
+  PostMeiliPageInfoFieldsFragmentDoc
+} from '../../graphql/fragments/page-info-fields.fragment.generated';
 import { api } from 'src/api/baseApi';
-export type CheckFollowAccountQueryVariables = Types.Exact<{
-  followerAccountId: Types.Scalars['Int'];
+export type FollowersQueryVariables = Types.Exact<{
+  after?: Types.InputMaybe<Types.Scalars['String']>;
+  before?: Types.InputMaybe<Types.Scalars['String']>;
+  first?: Types.InputMaybe<Types.Scalars['Int']>;
+  last?: Types.InputMaybe<Types.Scalars['Int']>;
+  orderBy?: Types.InputMaybe<Types.FollowAccountOrder>;
+  skip?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
 
-export type CheckFollowAccountQuery = {
+export type FollowersQuery = {
   __typename?: 'Query';
-  checkFollowAccount: {
-    __typename?: 'FollowAccount';
-    id: string;
-    followerAccountId?: number | null;
-    followingAccountId?: number | null;
-    createdAt: any;
-    updatedAt: any;
-    followerAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
-    followingAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+  allFollowers: {
+    __typename?: 'FollowAccountConnection';
+    totalCount?: number | null;
+    edges?: Array<{
+      __typename?: 'FollowAccountEdge';
+      cursor: string;
+      node: {
+        __typename?: 'FollowAccount';
+        id?: string | null;
+        followerAccountId?: number | null;
+        followingAccountId?: number | null;
+        createdAt: any;
+        updatedAt: any;
+        followerAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+        followingAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+      };
+    }> | null;
+    pageInfo: {
+      __typename?: 'PageInfo';
+      endCursor?: string | null;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: string | null;
+    };
+  };
+};
+
+export type FollowingsQueryVariables = Types.Exact<{
+  after?: Types.InputMaybe<Types.Scalars['String']>;
+  before?: Types.InputMaybe<Types.Scalars['String']>;
+  first?: Types.InputMaybe<Types.Scalars['Int']>;
+  last?: Types.InputMaybe<Types.Scalars['Int']>;
+  orderBy?: Types.InputMaybe<Types.FollowAccountOrder>;
+  skip?: Types.InputMaybe<Types.Scalars['Int']>;
+}>;
+
+export type FollowingsQuery = {
+  __typename?: 'Query';
+  allFollowings: {
+    __typename?: 'FollowAccountConnection';
+    totalCount?: number | null;
+    edges?: Array<{
+      __typename?: 'FollowAccountEdge';
+      cursor: string;
+      node: {
+        __typename?: 'FollowAccount';
+        id?: string | null;
+        followerAccountId?: number | null;
+        followingAccountId?: number | null;
+        createdAt: any;
+        updatedAt: any;
+        followerAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+        followingAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+      };
+    }> | null;
+    pageInfo: {
+      __typename?: 'PageInfo';
+      endCursor?: string | null;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: string | null;
+    };
   };
 };
 
 export type FollowAccountFieldsFragment = {
   __typename?: 'FollowAccount';
-  id: string;
+  id?: string | null;
   followerAccountId?: number | null;
   followingAccountId?: number | null;
   createdAt: any;
@@ -49,7 +111,25 @@ export type CreateFollowAccountMutation = {
   __typename?: 'Mutation';
   createFollowAccount: {
     __typename?: 'FollowAccount';
-    id: string;
+    id?: string | null;
+    followerAccountId?: number | null;
+    followingAccountId?: number | null;
+    createdAt: any;
+    updatedAt: any;
+    followerAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+    followingAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+  };
+};
+
+export type DeleteFollowAccountMutationVariables = Types.Exact<{
+  input: Types.DeleteFollowAccountInput;
+}>;
+
+export type DeleteFollowAccountMutation = {
+  __typename?: 'Mutation';
+  deleteFollowAccount: {
+    __typename?: 'FollowAccount';
+    id?: string | null;
     followerAccountId?: number | null;
     followingAccountId?: number | null;
     createdAt: any;
@@ -61,7 +141,7 @@ export type CreateFollowAccountMutation = {
 
 export type FollowPageFieldsFragment = {
   __typename?: 'FollowPage';
-  id: string;
+  id?: string | null;
   accountId?: number | null;
   pageId?: string | null;
   createdAt: any;
@@ -78,7 +158,25 @@ export type CreateFollowPageMutation = {
   __typename?: 'Mutation';
   createFollowPage: {
     __typename?: 'FollowPage';
-    id: string;
+    id?: string | null;
+    accountId?: number | null;
+    pageId?: string | null;
+    createdAt: any;
+    updatedAt: any;
+    account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
+    page?: { __typename?: 'Page'; id: string; name: string } | null;
+  };
+};
+
+export type DeleteFollowPageMutationVariables = Types.Exact<{
+  input: Types.DeleteFollowPageInput;
+}>;
+
+export type DeleteFollowPageMutation = {
+  __typename?: 'Mutation';
+  deleteFollowPage: {
+    __typename?: 'FollowPage';
+    id?: string | null;
     accountId?: number | null;
     pageId?: string | null;
     createdAt: any;
@@ -125,16 +223,64 @@ export const FollowPageFieldsFragmentDoc = `
   updatedAt
 }
     `;
-export const CheckFollowAccountDocument = `
-    query checkFollowAccount($followerAccountId: Int!) {
-  checkFollowAccount(followerAccountId: $followerAccountId) {
+export const FollowersDocument = `
+    query Followers($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: FollowAccountOrder, $skip: Int) {
+  allFollowers(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    skip: $skip
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...FollowAccountFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+    ${FollowAccountFieldsFragmentDoc}
+${PageInfoFieldsFragmentDoc}`;
+export const FollowingsDocument = `
+    query Followings($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: FollowAccountOrder, $skip: Int) {
+  allFollowings(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    skip: $skip
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...FollowAccountFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+    ${FollowAccountFieldsFragmentDoc}
+${PageInfoFieldsFragmentDoc}`;
+export const CreateFollowAccountDocument = `
+    mutation createFollowAccount($input: CreateFollowAccountInput!) {
+  createFollowAccount(data: $input) {
     ...FollowAccountFields
   }
 }
     ${FollowAccountFieldsFragmentDoc}`;
-export const CreateFollowAccountDocument = `
-    mutation createFollowAccount($input: CreateFollowAccountInput!) {
-  createFollowAccount(data: $input) {
+export const DeleteFollowAccountDocument = `
+    mutation deleteFollowAccount($input: DeleteFollowAccountInput!) {
+  deleteFollowAccount(data: $input) {
     ...FollowAccountFields
   }
 }
@@ -146,25 +292,45 @@ export const CreateFollowPageDocument = `
   }
 }
     ${FollowPageFieldsFragmentDoc}`;
+export const DeleteFollowPageDocument = `
+    mutation deleteFollowPage($input: DeleteFollowPageInput!) {
+  deleteFollowPage(data: $input) {
+    ...FollowPageFields
+  }
+}
+    ${FollowPageFieldsFragmentDoc}`;
 
 const injectedRtkApi = api.injectEndpoints({
   endpoints: build => ({
-    checkFollowAccount: build.query<CheckFollowAccountQuery, CheckFollowAccountQueryVariables>({
-      query: variables => ({ document: CheckFollowAccountDocument, variables })
+    Followers: build.query<FollowersQuery, FollowersQueryVariables | void>({
+      query: variables => ({ document: FollowersDocument, variables })
+    }),
+    Followings: build.query<FollowingsQuery, FollowingsQueryVariables | void>({
+      query: variables => ({ document: FollowingsDocument, variables })
     }),
     createFollowAccount: build.mutation<CreateFollowAccountMutation, CreateFollowAccountMutationVariables>({
       query: variables => ({ document: CreateFollowAccountDocument, variables })
     }),
+    deleteFollowAccount: build.mutation<DeleteFollowAccountMutation, DeleteFollowAccountMutationVariables>({
+      query: variables => ({ document: DeleteFollowAccountDocument, variables })
+    }),
     createFollowPage: build.mutation<CreateFollowPageMutation, CreateFollowPageMutationVariables>({
       query: variables => ({ document: CreateFollowPageDocument, variables })
+    }),
+    deleteFollowPage: build.mutation<DeleteFollowPageMutation, DeleteFollowPageMutationVariables>({
+      query: variables => ({ document: DeleteFollowPageDocument, variables })
     })
   })
 });
 
 export { injectedRtkApi as api };
 export const {
-  useCheckFollowAccountQuery,
-  useLazyCheckFollowAccountQuery,
+  useFollowersQuery,
+  useLazyFollowersQuery,
+  useFollowingsQuery,
+  useLazyFollowingsQuery,
   useCreateFollowAccountMutation,
-  useCreateFollowPageMutation
+  useDeleteFollowAccountMutation,
+  useCreateFollowPageMutation,
+  useDeleteFollowPageMutation
 } = injectedRtkApi;
