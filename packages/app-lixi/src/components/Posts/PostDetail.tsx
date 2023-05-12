@@ -343,7 +343,12 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const [open, setOpen] = useState(false);
   const filterValue = useAppSelector(getFilterPostsHome);
 
-  const dataSource = ['/give'];
+  const dataSource = [
+    {
+      label: '/give',
+      value: '/give'
+    }
+  ];
 
   const { data, totalCount, fetchNext, hasNext, isFetching } = useInfiniteCommentsToPostIdQuery(
     {
@@ -617,7 +622,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           postEdited={post.createdAt !== post.updatedAt}
         ></InfoCardUser>
         <PostContentDetail>
-          <p className="description-post">{ReactHtmlParser(post.content)}</p>
+          <div className="description-post">{ReactHtmlParser(post.content)}</div>
           {post.uploads.length != 0 && (
             <div className="images-post">
               <Gallery photos={imagesList} renderImage={imageRenderer} />
@@ -682,7 +687,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
                 onSelect={() => {
                   setOpen(false);
                 }}
-                dataSource={dataSource}
+                options={dataSource}
                 open={open}
                 onSearch={value => {
                   //TODO: This is not the best way to implement. Will come back later
