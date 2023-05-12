@@ -479,6 +479,8 @@ export default {
   'country.unablegetStates': 'Unable to get states',
 
   /* 15.Page */
+  'general.allPost': 'All',
+  'general.followsPost': 'Follows',
   'post.createNewPage': 'Create new post',
   'post.createPost': 'Create post',
   'post.editPost': 'Edit unburnt post',

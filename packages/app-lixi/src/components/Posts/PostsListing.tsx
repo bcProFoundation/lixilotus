@@ -147,9 +147,7 @@ const StyledNotificationContent = styled.div`
   font-size: 14px;
 `;
 const menuItems = [
-  // { label: 'Top', key: 'top' },
-  { label: 'All', key: 'all' }
-  // { label: 'New', key: 'new' },
+  { label: intl.get('general.allPost'), key: 'all' }
   // {
   //   label: 'Follows',
   //   key: 'follows'

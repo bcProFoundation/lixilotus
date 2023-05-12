@@ -479,6 +479,8 @@ export default {
   'country.unablegetStates': 'Không thể tải tỉnh thành',
 
   /* 15.Post */
+  'general.allPost': 'Tất cả',
+  'general.followsPost': 'Theo dõi',
   'post.createNewPage': 'tạo bài viết mới',
   'post.createPage': 'tạo bài viết',
   'post.editPost': 'Sửa bài viết chưa đốt',

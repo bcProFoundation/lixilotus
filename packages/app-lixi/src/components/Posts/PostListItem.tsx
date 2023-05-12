@@ -336,14 +336,13 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
       <ActionBar>
         <GroupIconText>
           <IconBurn
-            burnValue={formatBalance(post?.lotusBurnUp ?? 0)}
             imgUrl="/images/ico-burn-up.svg"
             key={`list-vertical-upvote-o-${item.id}`}
             dataItem={item}
             onClickIcon={e => upVotePost(e, item)}
           />
           <IconBurn
-            burnValue={formatBalance(post?.lotusBurnDown ?? 0)}
+            burnValue={formatBalance(post?.lotusBurnScore ?? 0)}
             imgUrl="/images/custom-burn.svg"
             key={`list-vertical-downvote-o-${item.id}`}
             dataItem={item}

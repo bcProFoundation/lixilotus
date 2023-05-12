@@ -90,6 +90,19 @@ export class PostResolver {
         const invalidAccountMessage = await this.i18n.t('account.messages.invalidAccount');
         throw new VError(invalidAccountMessage);
       }
+
+      const followingsAccount = await this.prisma.followAccount.findMany({
+        where: { followingAccountId: account.id },
+        select: { followerAccountId: true }
+      });
+      const listFollowingsAccountIds = followingsAccount.map(item => item.followerAccountId);
+
+      const followingPagesAccount = await this.prisma.followPage.findMany({
+        where: { accountId: account.id },
+        select: { pageId: true }
+      });
+      const listFollowingsPageIds = followingPagesAccount.map(item => item.pageId);
+
       result = await findManyCursorConnection(
         args =>
           this.prisma.post.findMany({
@@ -105,6 +118,30 @@ export class PostResolver {
                   postAccount: {
                     id: account.id
                   }
+                },
+                {
+                  AND: [
+                    {
+                      postAccount: {
+                        id: { in: listFollowingsAccountIds }
+                      }
+                    },
+                    {
+                      lotusBurnScore: {
+                        gte: 0
+                      }
+                    }
+                  ]
+                },
+                {
+                  AND: [
+                    { pageId: { in: listFollowingsPageIds } },
+                    {
+                      lotusBurnScore: {
+                        gte: 1
+                      }
+                    }
+                  ]
                 }
               ]
             },
@@ -124,6 +161,30 @@ export class PostResolver {
                   postAccount: {
                     id: account.id
                   }
+                },
+                {
+                  AND: [
+                    {
+                      postAccount: {
+                        id: { in: listFollowingsAccountIds }
+                      }
+                    },
+                    {
+                      lotusBurnScore: {
+                        gte: 0
+                      }
+                    }
+                  ]
+                },
+                {
+                  AND: [
+                    { pageId: { in: listFollowingsPageIds } },
+                    {
+                      lotusBurnScore: {
+                        gte: 1
+                      }
+                    }
+                  ]
                 }
               ]
             }
