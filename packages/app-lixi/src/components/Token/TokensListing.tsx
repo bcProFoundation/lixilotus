@@ -484,6 +484,9 @@ const TokensListing = () => {
           scroll={{ x: true }}
           dataSource={tokens && tokens.allTokens.edges}
           pagination={tokens && tokens.allTokens.totalCount >= 30 ? {} : false}
+          rowKey={record => {
+            return record.node.id;
+          }}
         />
         <StyledTokensListingMobile>
           {tokens &&

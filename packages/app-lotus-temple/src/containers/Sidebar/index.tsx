@@ -33,7 +33,7 @@ const Sidebar = ({ className }: SidebarProps) => {
 
   return (
     <StyledDrawer
-      style={{ position: 'absolute' }}
+      rootStyle={{ position: 'absolute' }}
       className={`${className} lixi-drawer-sidebar`}
       placement="right"
       closable={false}

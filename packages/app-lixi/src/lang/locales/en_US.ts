@@ -470,6 +470,8 @@ export default {
   'page.copyToClipboard': 'Link copied to clipboard',
   'page.unableCreatePage': 'Unable to create page.',
   'page.unableUpdatePage': 'Unable to update the page.',
+  'page.xpiHasBurned': 'XPI has been burned',
+  'page.noXpiHasBurned': 'No one has burned this page!',
   'page.selectAccountFirst': 'Please Select an account first before creating page',
 
   /* 14.Country */

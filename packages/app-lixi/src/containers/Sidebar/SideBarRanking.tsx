@@ -28,17 +28,15 @@ export const ShortcutItemAccess = ({
   text,
   href,
   burnValue,
-  key,
   onClickItem
 }: {
   icon: string;
   text: string;
   burnValue?: number;
   href?: string;
-  key?: React.Key;
   onClickItem?: () => void;
 }) => (
-  <Link onClick={onClickItem} href={href} key={key}>
+  <Link onClick={onClickItem} href={href}>
     <a>
       <Space className={'item-access'}>
         <AvatarUser name={text} isMarginRight={false} />
@@ -447,13 +445,12 @@ const SidebarRanking = () => {
                 <Panel header="Show top leader board" key="1">
                   {leaderboard.map((item, index) => {
                     return (
-                      <h4 className="distance">
+                      <h4 className="distance" key={`${item.id}-${item.address}`}>
                         <ShortcutItemAccess
                           burnValue={item.totalBurned}
                           icon={item?.page ? item?.page?.avatar : ''}
                           text={item.name}
                           href={`/profile/${item.address}`}
-                          key={`${item.id}-${item.address}`}
                         />
                       </h4>
                     );
@@ -514,44 +511,40 @@ const SidebarRanking = () => {
             otherAccounts.map((acc, index) => {
               if (!isSeemore && index <= 2) {
                 return (
-                  <div>
-                    <div className="sub-account">
-                      <div className="sub-account-info">
-                        <p className="name">{acc?.name}</p>
-                        <p className="address">{acc?.address.slice(-10)}</p>
-                      </div>
-                      <Button
-                        type="primary"
-                        className="outline-btn"
-                        style={{ color: '#000' }}
-                        onClick={() => {
-                          dispatch(selectAccount(acc.id));
-                        }}
-                      >
-                        Activate
-                      </Button>
+                  <div className="sub-account" key={index}>
+                    <div className="sub-account-info">
+                      <p className="name">{acc?.name}</p>
+                      <p className="address">{acc?.address.slice(-10)}</p>
                     </div>
+                    <Button
+                      type="primary"
+                      className="outline-btn"
+                      style={{ color: '#000' }}
+                      onClick={() => {
+                        dispatch(selectAccount(acc.id));
+                      }}
+                    >
+                      Activate
+                    </Button>
                   </div>
                 );
               } else if (isSeemore) {
                 return (
-                  <div>
-                    <div className="sub-account">
-                      <div className="sub-account-info">
-                        <p className="name">{acc?.name}</p>
-                        <p className="address">{acc?.address.slice(-10)}</p>
-                      </div>
-                      <Button
-                        type="primary"
-                        className="outline-btn"
-                        style={{ color: '#000' }}
-                        onClick={() => {
-                          dispatch(selectAccount(acc.id));
-                        }}
-                      >
-                        Activate
-                      </Button>
+                  <div className="sub-account" key={index}>
+                    <div className="sub-account-info">
+                      <p className="name">{acc?.name}</p>
+                      <p className="address">{acc?.address.slice(-10)}</p>
                     </div>
+                    <Button
+                      type="primary"
+                      className="outline-btn"
+                      style={{ color: '#000' }}
+                      onClick={() => {
+                        dispatch(selectAccount(acc.id));
+                      }}
+                    >
+                      Activate
+                    </Button>
                   </div>
                 );
               }
