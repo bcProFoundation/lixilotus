@@ -1,5 +1,6 @@
 import { WebpushSubscribeCommand, WebpushUnsubscribeCommand } from '@bcpros/lixi-models';
-import { Body, Controller, HttpException, HttpStatus, Logger, Post } from '@nestjs/common';
+import BCHJS from '@bcpros/xpi-js';
+import { Body, Controller, HttpException, HttpStatus, Inject, Logger, Post } from '@nestjs/common';
 import { verify } from 'bitcoinjs-message';
 import * as _ from 'lodash';
 import { I18n, I18nService } from 'nestjs-i18n';
@@ -10,7 +11,10 @@ import { VError } from 'verror';
 export class WebpushController {
   private logger: Logger = new Logger(WebpushController.name);
 
-  constructor(private prisma: PrismaService, @I18n() private i18n: I18nService) {}
+  constructor(
+    private prisma: PrismaService, @I18n() private i18n: I18nService,
+    @Inject('xpijs') private XPI: BCHJS
+  ) { }
 
   @Post('subscribe')
   async subscribe(@Body() command: WebpushSubscribeCommand): Promise<any> {
@@ -39,8 +43,8 @@ export class WebpushController {
 
         // Verify the new subscribers
         const verifiedSubscribers = _.filter(newSubscribers, subscriber => {
-          const { address, signature } = subscriber;
-          return this.verifySubscriber(address, signature);
+          const { address, legacyAddress, signature } = subscriber;
+          return this.verifySubscriber(address, legacyAddress, signature);
         });
 
         // Insert the new subscribers to the datababase
@@ -79,7 +83,7 @@ export class WebpushController {
   @Post('unsubscribe')
   async unsubscribe(@Body() command: WebpushUnsubscribeCommand) {
     try {
-      const { clientAppId, auth, p256dh, endpoint, deviceId } = command;
+      const { addresses, clientAppId, auth, p256dh, endpoint, deviceId } = command;
 
       // Delete the stale subscribers
       const count = await this.prisma.webpushSubscriber.deleteMany({
@@ -89,7 +93,12 @@ export class WebpushController {
             { p256dh: p256dh },
             { auth: auth },
             { deviceId: deviceId },
-            { clientAppId: clientAppId }
+            { clientAppId: clientAppId },
+            {
+              address: {
+                in: addresses
+              }
+            }
           ]
         }
       });
@@ -106,9 +115,8 @@ export class WebpushController {
     }
   }
 
-  verifySubscriber(address: string, signature: string): boolean {
+  verifySubscriber(message: string, address: string, signature: string): boolean {
     try {
-      const message = address;
       return verify(message, address, signature);
     } catch (error) {
       return false;

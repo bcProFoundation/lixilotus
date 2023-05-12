@@ -590,5 +590,9 @@ export default {
   'category.scienceAndTechnology': 'Science And Technology',
   'category.healthAndFitness': 'Health And Fitness',
   'category.travelAndEvents': 'Travel And Events',
-  'category.other': 'Other'
+  'category.other': 'Other',
+
+  /* 18. Webpush */
+  'webpush.unableToSubscribe': 'Unable to subscriber.',
+  'webpush.unableToUnsubscribe': 'Unable to unsubscriber.'
 };

@@ -1,26 +1,21 @@
 import {
-  Account,
   Burn,
   BurnCommand,
   BurnForType,
-  BurnType,
-  Comment,
-  fromSmallestDenomination
+  BurnType
 } from '@bcpros/lixi-models';
+import { NotificationLevel } from '@bcpros/lixi-prisma';
 import BCHJS from '@bcpros/xpi-js';
-import { Body, Controller, HttpException, HttpStatus, Inject, Logger, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, HttpException, HttpStatus, Inject, Logger, Post } from '@nestjs/common';
 import { ChronikClient } from 'chronik-client';
-import { I18n, I18nContext, I18nService } from 'nestjs-i18n';
+import _ from 'lodash';
+import { I18n, I18nService } from 'nestjs-i18n';
 import { InjectChronikClient } from 'src/common/modules/chronik/chronik.decorators';
+import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
+import { NotificationService } from 'src/common/modules/notifications/notification.service';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { parseBurnOutput } from 'src/utils/opReturnBurn';
 import { VError } from 'verror';
-import _ from 'lodash';
-import { NotificationService } from 'src/common/modules/notifications/notification.service';
-import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
-import { NotificationLevel } from '@bcpros/lixi-prisma';
-import { InjectQueue } from '@nestjs/bullmq';
-import { Queue } from 'bullmq';
 
 @Controller('burn')
 export class BurnController {
@@ -31,7 +26,7 @@ export class BurnController {
     @I18n() private i18n: I18nService,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS
-  ) {}
+  ) { }
 
   @Post()
   async burn(@Body() command: BurnCommand): Promise<Burn> {

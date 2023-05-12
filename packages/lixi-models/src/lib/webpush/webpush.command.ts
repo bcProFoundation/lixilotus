@@ -10,6 +10,10 @@ export class WebpushSubscriberCommand {
   @IsNotEmpty()
   address: string;
 
+  @Field(() => String)
+  @IsNotEmpty()
+  legacyAddress: string;
+
   @Field(() => Date, { nullable: true })
   @IsOptional()
   expirationTime?: Date;
@@ -65,4 +69,8 @@ export class WebpushUnsubscribeCommand {
   @Field(() => String)
   @IsNotEmpty()
   deviceId: string;
+
+  @Field(() => [String])
+  @IsNotEmpty()
+  addresses: string[];
 }

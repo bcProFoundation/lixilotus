@@ -6,6 +6,6 @@ declare let self: ServiceWorkerGlobalScope
 self.__WB_DISABLE_DEV_LOGS = true
 
 self.addEventListener('pushsubscriptionchange', (event) => {
-  console.log(event);
-  // const newSubscription = await self.registration.pushManager.subscribe(event.oldSubscription.options);
+    console.log(event);
+    // const newSubscription = await self.registration.pushManager.subscribe(event.oldSubscription.options);
 });

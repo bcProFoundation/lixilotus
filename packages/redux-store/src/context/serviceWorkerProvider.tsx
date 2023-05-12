@@ -3,17 +3,20 @@ import { createContext, useEffect, useState } from 'react';
 
 export type ServiceWorkerValue = {
   registration?: ServiceWorkerRegistration;
+  turnOnWebPushNotification: () => void;
+  turnOffWebPushNotification: () => void;
 };
 
 const defaultServiceWorkerValue: ServiceWorkerValue = {
-  registration: null
+  registration: null,
+  turnOnWebPushNotification: null,
+  turnOffWebPushNotification: null
 };
 
 export const ServiceWorkerContext = createContext<ServiceWorkerValue>(defaultServiceWorkerValue);
 
 export const ServiceWorkerProvider = ({ children }) => {
   const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null);
-  console.log('ServiceWorkerProvider');
   const { turnOnWebPushNotification, turnOffWebPushNotification } = usePushNotification();
 
   useEffect(() => {
@@ -25,5 +28,5 @@ export const ServiceWorkerProvider = ({ children }) => {
     }
   }, []);
 
-  return <ServiceWorkerContext.Provider value={{ registration }}>{children}</ServiceWorkerContext.Provider>;
+  return <ServiceWorkerContext.Provider value={{ registration, turnOnWebPushNotification, turnOffWebPushNotification }}>{children}</ServiceWorkerContext.Provider>;
 };

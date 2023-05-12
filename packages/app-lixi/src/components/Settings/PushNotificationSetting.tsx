@@ -62,7 +62,7 @@ const helpInfoIcon = (
 
 const PushNotificationSetting = () => {
   const dispatch = useAppDispatch();
-  const serviceWorkerContextValue = React.useContext(ServiceWorkerContext);
+  const { registration, turnOnWebPushNotification, turnOffWebPushNotification } = React.useContext(ServiceWorkerContext);
   const [permission, setPermission] = useState<NotificationPermission>(() => getPlatformPermissionState());
   const webPushNotifConfig = useAppSelector(getWebPushNotifConfig);
   const accounts = useAppSelector(getAllAccounts);
@@ -78,22 +78,28 @@ const PushNotificationSetting = () => {
       async onOk() {
         // get user permission
         try {
-          askPermission().then(result => {
+          askPermission().then(async (result) => {
             setPermission(result);
             if (result === 'granted') {
-              dispatch(
-                saveWebPushNotifConfig({
-                  ...webPushNotifConfig,
-                  allowPushNotification: true
-                })
-              );
+              const applicationServerKey = process.env.NEXT_PUBLIC_PUBLIC_VAPID_KEY;
+              const subscribeOptions = {
+                userVisibleOnly: true,
+                applicationServerKey: applicationServerKey
+              };
+              if (registration) {
+                const pushSubscription = await registration.pushManager.subscribe(subscribeOptions);
+                const command = buildSubscribeCommand(
+                  pushSubscription,
+                  accounts,
+                  walletPaths,
+                  webPushNotifConfig.deviceId,
+                  WEBPUSH_CLIENT_APP_ID
+                );
+                dispatch(subscribe({ interactive: true, command }));
+              }
+              turnOnWebPushNotification();
             } else {
-              dispatch(
-                saveWebPushNotifConfig({
-                  ...webPushNotifConfig,
-                  allowPushNotification: false
-                })
-              );
+              turnOffWebPushNotification();
               return;
             }
           });
@@ -104,23 +110,6 @@ const PushNotificationSetting = () => {
           });
           return;
         }
-
-        const applicationServerKey = process.env.NEXT_PUBLIC_PUBLIC_VAPID_KEY;
-        const registration = await navigator.serviceWorker.getRegistration();
-        const subscribeOptions = {
-          userVisibleOnly: true,
-          applicationServerKey: applicationServerKey
-        };
-        const pushSubscription = await registration.pushManager.subscribe(subscribeOptions);
-        const command = buildSubscribeCommand(
-          pushSubscription,
-          accounts,
-          walletPaths,
-          webPushNotifConfig.deviceId,
-          WEBPUSH_CLIENT_APP_ID
-        );
-
-        dispatch(subscribe(command));
       }
     });
   };
@@ -128,45 +117,45 @@ const PushNotificationSetting = () => {
   const handleNotificationToggle = async (checked: boolean, event: React.MouseEvent<HTMLButtonElement>) => {
     if (checked) {
       if (permission === 'granted') {
-        const registration = await navigator.serviceWorker.getRegistration();
         const subscribeOptions = {
           userVisibleOnly: true,
           applicationServerKey: process.env.NEXT_PUBLIC_PUBLIC_VAPID_KEY
         };
 
-        const pushSubscription: PushSubscription = await registration.pushManager.subscribe(subscribeOptions);
+        if (registration) {
+          const pushSubscription: PushSubscription = await registration.pushManager.subscribe(subscribeOptions);
 
-        const command = buildSubscribeCommand(
-          pushSubscription,
-          accounts,
-          walletPaths,
-          webPushNotifConfig.deviceId,
-          WEBPUSH_CLIENT_APP_ID
-        );
+          const command = buildSubscribeCommand(
+            pushSubscription,
+            accounts,
+            walletPaths,
+            webPushNotifConfig.deviceId,
+            WEBPUSH_CLIENT_APP_ID
+          );
 
-        dispatch(subscribe(command));
-        dispatch(
-          saveWebPushNotifConfig({
-            ...webPushNotifConfig,
-            allowPushNotification: true
-          })
-        );
+          dispatch(subscribe({ interactive: true, command }));
+          turnOnWebPushNotification();
+        }
+
+
       } else {
         showModal();
       }
     } else {
       // unsubscribe
-      const registration = await navigator.serviceWorker.getRegistration();
-      const pushSubscription = await registration.pushManager.getSubscription();
-      const command = buildUnsubscribeCommand(pushSubscription, webPushNotifConfig.deviceId, WEBPUSH_CLIENT_APP_ID);
+      if (registration) {
+        const pushSubscription = await registration.pushManager.getSubscription();
+        const addresses = walletPaths.map(walletPath => walletPath.xAddress);
+        const command = buildUnsubscribeCommand(pushSubscription, addresses, webPushNotifConfig.deviceId, WEBPUSH_CLIENT_APP_ID);
 
-      dispatch(unsubscribe(command));
-      dispatch(
-        saveWebPushNotifConfig({
-          ...webPushNotifConfig,
-          allowPushNotification: false
-        })
-      );
+        dispatch(unsubscribe({ interactive: true, command }));
+        dispatch(
+          saveWebPushNotifConfig({
+            ...webPushNotifConfig,
+            allowPushNotification: false
+          })
+        );
+      }
     }
   };
 

@@ -4,8 +4,6 @@
     "unableGetNotification": "Unable to get the notification.",
     "noReadPermission": "No permission to read the notification.",
     "noDeletePermission": "No permission to delete the notification.",
-    "unableCreateNotification": "Unable to create the notification.",
-    "unableToSubscribe": "Unable to subscriber.",
-    "unableToUnsubscribe": "Unable to unsubscriber."
+    "unableCreateNotification": "Unable to create the notification."
   }
 }

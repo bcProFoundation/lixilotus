@@ -8,7 +8,6 @@ import { WalletPathAddressInfo } from '@store/wallet';
 import messageLib from 'bitcoinjs-message';
 import * as _ from 'lodash';
 import * as wif from 'wif';
-import { getAddressesOfWallet } from './cashMethods';
 import { convertArrayBufferToBase64 } from './convertArrBuffBase64';
 
 /**
@@ -48,15 +47,7 @@ export const buildSubscribeCommand = (
   deviceId: string,
   clientAppId: string
 ): WebpushSubscribeCommand => {
-  // get the PushSubscription Object from browser
   try {
-    // const registration = await navigator.serviceWorker.getRegistration();
-    // const subscribeOptions = {
-    //   userVisibleOnly: true,
-    //   applicationServerKey: applicationServerKey
-    // };
-    // pushSubscription = await registration.pushManager.subscribe(subscribeOptions);
-
     const auth = pushSubscription.getKey('auth');
     const p256dh = pushSubscription.getKey('p256dh');
     const expirationTime = pushSubscription.expirationTime;
@@ -66,11 +57,12 @@ export const buildSubscribeCommand = (
         const associatedWallet = _.find(walletPaths, wallet => account.address === wallet.xAddress);
         if (!associatedWallet) return null;
 
-        const { fundingWif, xAddress } = associatedWallet;
+        const { fundingWif, xAddress, legacyAddress } = associatedWallet;
         const { privateKey, compressed } = wif.decode(fundingWif);
-        const signature = messageLib.sign(xAddress, privateKey, compressed).toString();
+        const signature = messageLib.sign(xAddress, privateKey, compressed).toString('base64');
         const subscriber: WebpushSubscriberCommand = {
           address: account.address,
+          legacyAddress: legacyAddress,
           accountId: account.id,
           expirationTime: expirationTime ? new Date(expirationTime) : null,
           signature: signature
@@ -94,7 +86,7 @@ export const buildSubscribeCommand = (
   }
 };
 
-export const buildUnsubscribeCommand = (pushSubscription: PushSubscription, deviceId: string, clientAppId: string) => {
+export const buildUnsubscribeCommand = (pushSubscription: PushSubscription, addresses: string[], deviceId: string, clientAppId: string) => {
   try {
     if (!pushSubscription) return null;
 
@@ -102,6 +94,7 @@ export const buildUnsubscribeCommand = (pushSubscription: PushSubscription, devi
     const p256dh = pushSubscription.getKey('p256dh');
 
     const unsubscribeCommand: WebpushUnsubscribeCommand = {
+      addresses,
       auth: convertArrayBufferToBase64(auth),
       p256dh: convertArrayBufferToBase64(p256dh),
       endpoint: pushSubscription.endpoint,
