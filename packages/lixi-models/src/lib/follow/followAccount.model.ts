@@ -24,6 +24,9 @@ export class FollowAccount {
   @IsOptional()
   followingAccount: Account;
 
+  @Field(() => Boolean, { nullable: true })
+  isFollowed: boolean;
+
   @Field(() => Date, {
     description: 'Identifies the date and time when the object was created.'
   })

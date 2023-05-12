@@ -1,3 +1,9 @@
+query checkIsFollowedAccount($address: String!) {
+  checkIsFollowedAccount(address: $address) {
+    isFollowed
+  }
+}
+
 query Followers(
   $after: String
   $before: String
@@ -56,6 +62,7 @@ fragment FollowAccountFields on FollowAccount {
     name
     address
   }
+  isFollowed
   createdAt
   updatedAt
 }
@@ -72,6 +79,15 @@ mutation deleteFollowAccount($input: DeleteFollowAccountInput!) {
   }
 }
 
+
+
+# FollowPage
+query checkIsFollowedPage($pageId: String!) {
+  checkIsFollowedPage(pageId: $pageId) {
+    isFollowed
+  }
+}
+
 fragment FollowPageFields on FollowPage {
   id
   accountId
@@ -85,6 +101,7 @@ fragment FollowPageFields on FollowPage {
     id
     name
   }
+  isFollowed
   createdAt
   updatedAt
 }

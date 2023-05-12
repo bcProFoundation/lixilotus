@@ -1,4 +1,3 @@
-import PageDetail from '@components/Pages/PageDetail';
 import { SagaStore, wrapper } from '@store/store';
 import _ from 'lodash';
 import accountApi from '@store/account/api';
@@ -8,22 +7,29 @@ import { END } from 'redux-saga';
 import { getSelectorsByUserAgent } from 'react-device-detect';
 import PageDetailLayout from '@components/Layout/PageDetailLayout';
 import ProfileDetail from '@components/Profile/ProfileDetail';
-import { usePageQuery } from '@store/page/pages.generated';
-import { AccountDto } from '@bcpros/lixi-models/src';
-import { useGetAccountViaAddressQuery } from '@store/account/accounts.api';
+import { useGetAccountByAddressQuery } from '@store/account/accounts.api';
+import { useCheckIsFollowedAccountQuery } from '@store/follow/follows.api';
 
 const ProfileDetailPage = props => {
   const { userAddress, isMobile } = props;
-  const { currentData, isSuccess } = useGetAccountViaAddressQuery({ address: userAddress });
+  const { currentData: currentDataGetAccount, isSuccess: isSuccessGetAccount } = useGetAccountByAddressQuery({
+    address: userAddress
+  });
+  const { currentData: currentIsFollowedData, isSuccess: isSuccessCheckFollowed } = useCheckIsFollowedAccountQuery({
+    address: userAddress
+  });
 
   let user;
-  if (isSuccess) user = currentData.getAccountViaAddress;
-  console.log('user: ', user);
+  let checkIsFollowed;
+  if (isSuccessGetAccount && isSuccessCheckFollowed) {
+    user = currentDataGetAccount.getAccountByAddress;
+    checkIsFollowed = currentIsFollowedData.checkIsFollowedAccount.isFollowed;
+  }
   const canonicalUrl = process.env.NEXT_PUBLIC_LIXI_URL + `profile/${userAddress}`;
 
   return (
     <>
-      {isSuccess && (
+      {isSuccessGetAccount && isSuccessCheckFollowed && (
         <>
           <NextSeo
             title="Lixi Program"
@@ -41,7 +47,7 @@ const ProfileDetailPage = props => {
               cardType: 'summary_large_image'
             }}
           />
-          <ProfileDetail user={user} isMobile={isMobile} />
+          <ProfileDetail user={user} isMobile={isMobile} checkIsFollowed={checkIsFollowed} />
         </>
       )}
     </>

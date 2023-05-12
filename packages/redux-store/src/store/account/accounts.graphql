@@ -1,5 +1,5 @@
-query getAccountViaAddress($address: String!) {
-  getAccountViaAddress(address: $address) {
+query getAccountByAddress($address: String!) {
+  getAccountByAddress(address: $address) {
     ...AccountFields
   }
 }
@@ -17,30 +17,9 @@ fragment AccountFields on Account {
     id
     name
   }
-  isFollow
-  follower {
-    id
-    followingAccount {
-      id
-      name
-      address
-    }
-  }
-  following {
-    id
-    followerAccount {
-      id
-      name
-      address
-    }
-  }
-  followingPage {
-    id
-    page {
-      id
-      name
-    }
-  }
+  followersCount
+  followingsCount
+  followingPagesCount
   createdAt
   updatedAt
 }

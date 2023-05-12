@@ -3,6 +3,8 @@ import { api } from './follows.generated';
 const enhancedApi = api.enhanceEndpoints({
   addTagTypes: ['FollowAccount', 'FollowPage'],
   endpoints: {
+    checkIsFollowedAccount: {},
+    checkIsFollowedPage: {},
     createFollowAccount: {},
     createFollowPage: {},
     deleteFollowAccount: {},
@@ -13,6 +15,10 @@ const enhancedApi = api.enhanceEndpoints({
 export { enhancedApi as api };
 
 export const {
+  useCheckIsFollowedAccountQuery,
+  useLazyCheckIsFollowedAccountQuery,
+  useCheckIsFollowedPageQuery,
+  useLazyCheckIsFollowedPageQuery,
   useCreateFollowAccountMutation,
   useCreateFollowPageMutation,
   useDeleteFollowAccountMutation,

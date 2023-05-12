@@ -21,6 +21,7 @@ import VError from 'verror';
 import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
 import _ from 'lodash';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
+import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
 
 const pubSub = new PubSub();
 
@@ -35,6 +36,36 @@ export class FollowResolver {
   }
 
   // Follow Account
+  @Query(() => FollowAccount)
+  @UseGuards(GqlJwtAuthGuard)
+  async checkIsFollowedAccount(
+    @PageAccountEntity() account: Account,
+    @Args('address', { type: () => String }) address: string
+  ) {
+    const accountQuery = await this.prisma.account.findFirst({
+      where: { address: address }
+    });
+
+    if (!account || !accountQuery) {
+      const couldNotFindAccount = await this.i18n.t('page.messages.couldNotFindAccount');
+      throw new VError.WError(couldNotFindAccount);
+    }
+
+    const existData = await this.prisma.followAccount.findFirst({
+      where: {
+        followerAccountId: accountQuery.id,
+        followingAccountId: account.id
+      }
+    });
+
+    const result = {
+      ...existData,
+      isFollowed: existData ? true : false
+    };
+
+    return result;
+  }
+
   @Query(() => FollowAccountConnection)
   async allFollowers(
     @Args() { after, before, first, last }: PaginationArgs,
@@ -196,6 +227,32 @@ export class FollowResolver {
   }
 
   // Follow Page
+  @Query(() => FollowPage)
+  @UseGuards(GqlJwtAuthGuard)
+  async checkIsFollowedPage(
+    @PageAccountEntity() account: Account,
+    @Args('pageId', { type: () => String }) pageId: string
+  ) {
+    if (!account) {
+      const couldNotFindAccount = await this.i18n.t('page.messages.couldNotFindAccount');
+      throw new VError.WError(couldNotFindAccount);
+    }
+
+    const existData = await this.prisma.followPage.findFirst({
+      where: {
+        pageId: pageId,
+        accountId: account.id
+      }
+    });
+
+    const result = {
+      ...existData,
+      isFollowed: existData ? true : false
+    };
+
+    return result;
+  }
+
   @UseGuards(GqlJwtAuthGuard)
   @Mutation(() => FollowPage)
   async createFollowPage(@AccountEntity() account: Account, @Args('data') data: CreateFollowPageInput) {

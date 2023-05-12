@@ -16,6 +16,15 @@ import {
   PostMeiliPageInfoFieldsFragmentDoc
 } from '../../graphql/fragments/page-info-fields.fragment.generated';
 import { api } from 'src/api/baseApi';
+export type CheckIsFollowedAccountQueryVariables = Types.Exact<{
+  address: Types.Scalars['String'];
+}>;
+
+export type CheckIsFollowedAccountQuery = {
+  __typename?: 'Query';
+  checkIsFollowedAccount: { __typename?: 'FollowAccount'; isFollowed?: boolean | null };
+};
+
 export type FollowersQueryVariables = Types.Exact<{
   after?: Types.InputMaybe<Types.Scalars['String']>;
   before?: Types.InputMaybe<Types.Scalars['String']>;
@@ -38,6 +47,7 @@ export type FollowersQuery = {
         id?: string | null;
         followerAccountId?: number | null;
         followingAccountId?: number | null;
+        isFollowed?: boolean | null;
         createdAt: any;
         updatedAt: any;
         followerAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
@@ -76,6 +86,7 @@ export type FollowingsQuery = {
         id?: string | null;
         followerAccountId?: number | null;
         followingAccountId?: number | null;
+        isFollowed?: boolean | null;
         createdAt: any;
         updatedAt: any;
         followerAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
@@ -97,6 +108,7 @@ export type FollowAccountFieldsFragment = {
   id?: string | null;
   followerAccountId?: number | null;
   followingAccountId?: number | null;
+  isFollowed?: boolean | null;
   createdAt: any;
   updatedAt: any;
   followerAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
@@ -114,6 +126,7 @@ export type CreateFollowAccountMutation = {
     id?: string | null;
     followerAccountId?: number | null;
     followingAccountId?: number | null;
+    isFollowed?: boolean | null;
     createdAt: any;
     updatedAt: any;
     followerAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
@@ -132,6 +145,7 @@ export type DeleteFollowAccountMutation = {
     id?: string | null;
     followerAccountId?: number | null;
     followingAccountId?: number | null;
+    isFollowed?: boolean | null;
     createdAt: any;
     updatedAt: any;
     followerAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
@@ -139,11 +153,21 @@ export type DeleteFollowAccountMutation = {
   };
 };
 
+export type CheckIsFollowedPageQueryVariables = Types.Exact<{
+  pageId: Types.Scalars['String'];
+}>;
+
+export type CheckIsFollowedPageQuery = {
+  __typename?: 'Query';
+  checkIsFollowedPage: { __typename?: 'FollowPage'; isFollowed?: boolean | null };
+};
+
 export type FollowPageFieldsFragment = {
   __typename?: 'FollowPage';
   id?: string | null;
   accountId?: number | null;
   pageId?: string | null;
+  isFollowed?: boolean | null;
   createdAt: any;
   updatedAt: any;
   account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
@@ -161,6 +185,7 @@ export type CreateFollowPageMutation = {
     id?: string | null;
     accountId?: number | null;
     pageId?: string | null;
+    isFollowed?: boolean | null;
     createdAt: any;
     updatedAt: any;
     account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
@@ -179,6 +204,7 @@ export type DeleteFollowPageMutation = {
     id?: string | null;
     accountId?: number | null;
     pageId?: string | null;
+    isFollowed?: boolean | null;
     createdAt: any;
     updatedAt: any;
     account?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
@@ -201,6 +227,7 @@ export const FollowAccountFieldsFragmentDoc = `
     name
     address
   }
+  isFollowed
   createdAt
   updatedAt
 }
@@ -219,8 +246,16 @@ export const FollowPageFieldsFragmentDoc = `
     id
     name
   }
+  isFollowed
   createdAt
   updatedAt
+}
+    `;
+export const CheckIsFollowedAccountDocument = `
+    query checkIsFollowedAccount($address: String!) {
+  checkIsFollowedAccount(address: $address) {
+    isFollowed
+  }
 }
     `;
 export const FollowersDocument = `
@@ -285,6 +320,13 @@ export const DeleteFollowAccountDocument = `
   }
 }
     ${FollowAccountFieldsFragmentDoc}`;
+export const CheckIsFollowedPageDocument = `
+    query checkIsFollowedPage($pageId: String!) {
+  checkIsFollowedPage(pageId: $pageId) {
+    isFollowed
+  }
+}
+    `;
 export const CreateFollowPageDocument = `
     mutation createFollowPage($input: CreateFollowPageInput!) {
   createFollowPage(data: $input) {
@@ -302,6 +344,9 @@ export const DeleteFollowPageDocument = `
 
 const injectedRtkApi = api.injectEndpoints({
   endpoints: build => ({
+    checkIsFollowedAccount: build.query<CheckIsFollowedAccountQuery, CheckIsFollowedAccountQueryVariables>({
+      query: variables => ({ document: CheckIsFollowedAccountDocument, variables })
+    }),
     Followers: build.query<FollowersQuery, FollowersQueryVariables | void>({
       query: variables => ({ document: FollowersDocument, variables })
     }),
@@ -314,6 +359,9 @@ const injectedRtkApi = api.injectEndpoints({
     deleteFollowAccount: build.mutation<DeleteFollowAccountMutation, DeleteFollowAccountMutationVariables>({
       query: variables => ({ document: DeleteFollowAccountDocument, variables })
     }),
+    checkIsFollowedPage: build.query<CheckIsFollowedPageQuery, CheckIsFollowedPageQueryVariables>({
+      query: variables => ({ document: CheckIsFollowedPageDocument, variables })
+    }),
     createFollowPage: build.mutation<CreateFollowPageMutation, CreateFollowPageMutationVariables>({
       query: variables => ({ document: CreateFollowPageDocument, variables })
     }),
@@ -325,12 +373,16 @@ const injectedRtkApi = api.injectEndpoints({
 
 export { injectedRtkApi as api };
 export const {
+  useCheckIsFollowedAccountQuery,
+  useLazyCheckIsFollowedAccountQuery,
   useFollowersQuery,
   useLazyFollowersQuery,
   useFollowingsQuery,
   useLazyFollowingsQuery,
   useCreateFollowAccountMutation,
   useDeleteFollowAccountMutation,
+  useCheckIsFollowedPageQuery,
+  useLazyCheckIsFollowedPageQuery,
   useCreateFollowPageMutation,
   useDeleteFollowPageMutation
 } = injectedRtkApi;

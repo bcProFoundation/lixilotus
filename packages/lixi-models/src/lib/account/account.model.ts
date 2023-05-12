@@ -1,6 +1,5 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 
-import { FollowAccount, FollowPage } from '../follow';
 import { Page } from '../page';
 
 @ObjectType()
@@ -48,15 +47,12 @@ export class Account {
   @Field(() => Page, { nullable: true })
   page?: Page;
 
-  @Field(() => Boolean, { nullable: true })
-  isFollow?: boolean;
+  @Field(() => Number, { nullable: true })
+  followersCount?: number;
 
-  @Field(() => FollowAccount, { nullable: true })
-  follower?: FollowAccount;
+  @Field(() => Number, { nullable: true })
+  followingsCount?: number;
 
-  @Field(() => FollowAccount, { nullable: true })
-  following?: FollowAccount;
-
-  @Field(() => FollowPage, { nullable: true })
-  followingPage?: FollowPage;
+  @Field(() => Number, { nullable: true })
+  followingPagesCount?: number;
 }

@@ -23,11 +23,10 @@ export type Account = {
   createdAt: Scalars['DateTime'];
   encryptedMnemonic?: Maybe<Scalars['String']>;
   encryptedSecret?: Maybe<Scalars['String']>;
-  follower?: Maybe<FollowAccount>;
-  following?: Maybe<FollowAccount>;
-  followingPage?: Maybe<FollowPage>;
+  followersCount?: Maybe<Scalars['Int']>;
+  followingPagesCount?: Maybe<Scalars['Int']>;
+  followingsCount?: Maybe<Scalars['Int']>;
   id: Scalars['ID'];
-  isFollow?: Maybe<Scalars['Boolean']>;
   language: Scalars['String'];
   mnemonic?: Maybe<Scalars['String']>;
   mnemonicHash?: Maybe<Scalars['String']>;
@@ -190,6 +189,7 @@ export type FollowAccount = {
   followingAccount?: Maybe<Account>;
   followingAccountId?: Maybe<Scalars['Int']>;
   id?: Maybe<Scalars['ID']>;
+  isFollowed?: Maybe<Scalars['Boolean']>;
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
 };
@@ -228,6 +228,7 @@ export type FollowPage = {
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
   id?: Maybe<Scalars['ID']>;
+  isFollowed?: Maybe<Scalars['Boolean']>;
   page?: Maybe<Page>;
   pageId?: Maybe<Scalars['String']>;
   /** Identifies the date and time when the object was last updated. */
@@ -336,9 +337,8 @@ export type Page = {
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
   description: Scalars['String'];
-  follower?: Maybe<FollowPage>;
+  followersCount?: Maybe<Scalars['Int']>;
   id: Scalars['ID'];
-  isFollow?: Maybe<Scalars['Boolean']>;
   lotusBurnDown: Scalars['Float'];
   lotusBurnScore: Scalars['Float'];
   lotusBurnUp: Scalars['Float'];
@@ -480,8 +480,10 @@ export type Query = {
   allWorshipedPersonBySearch: WorshipedPersonConnection;
   allWorshipedPersonByUserId: WorshipedPersonConnection;
   allWorshipedPersonSpecialDate: WorshipedPersonConnection;
+  checkIsFollowedAccount: FollowAccount;
+  checkIsFollowedPage: FollowPage;
   comment: Comment;
-  getAccountViaAddress: Account;
+  getAccountByAddress: Account;
   page: Page;
   post: Post;
   token: Token;
@@ -667,11 +669,19 @@ export type QueryAllWorshipedPersonSpecialDateArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
+export type QueryCheckIsFollowedAccountArgs = {
+  address: Scalars['String'];
+};
+
+export type QueryCheckIsFollowedPageArgs = {
+  pageId: Scalars['String'];
+};
+
 export type QueryCommentArgs = {
   id: Scalars['String'];
 };
 
-export type QueryGetAccountViaAddressArgs = {
+export type QueryGetAccountByAddressArgs = {
   address: Scalars['String'];
 };
 

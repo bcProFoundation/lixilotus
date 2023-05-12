@@ -33,7 +33,7 @@ export class AccountResolver {
 
   @Query(() => Account)
   @UseGuards(GqlJwtAuthGuard)
-  async getAccountViaAddress(
+  async getAccountByAddress(
     @AccountEntity() myAccount: Account,
     @Args('address', { type: () => String }) address: string,
     @I18n() i18n: I18nContext
@@ -45,10 +45,7 @@ export class AccountResolver {
         },
         include: {
           page: true,
-          uploadDetail: true,
-          follower: true,
-          following: true,
-          followingPage: true
+          uploadDetail: true
         }
       });
       if (!account) {
@@ -56,22 +53,27 @@ export class AccountResolver {
         throw new VError(accountNotExistMessage);
       }
 
-      let isFollow: boolean = false;
-      if (myAccount.id != account.id) {
-        const followed = await this.prisma.followAccount.findFirst({
-          where: {
-            followerAccountId: account.id,
-            followingAccountId: myAccount.id
-          }
+      let followersCount = 0;
+      let followingsCount = 0;
+      let followingPagesCount = 0;
+      if (myAccount.id === account.id) {
+        followersCount = await this.prisma.followAccount.count({
+          where: { followingAccountId: myAccount.id }
         });
-
-        followed ? (isFollow = true) : (isFollow = false);
+        followingsCount = await this.prisma.followAccount.count({
+          where: { followerAccountId: myAccount.id }
+        });
+        followingPagesCount = await this.prisma.followPage.count({
+          where: { accountId: myAccount.id }
+        });
       }
 
       const result = _.omit(
         {
           ...account,
-          isFollow: isFollow
+          followersCount: followersCount,
+          followingsCount: followingsCount,
+          followingPagesCount: followingPagesCount
         },
         'encryptedMnemonic',
         'encryptedSecret',

@@ -87,28 +87,15 @@ export class AccountController {
   }
 
   @Get('address/:id')
-  @UseGuards(JwtAuthGuard)
-  async getAccountViaAddress(
-    @PageAccountEntity() myAccount: Account,
-    @Param('id') address: string,
-    @I18n() i18n: I18nContext
-  ) {
+  async getAccountViaAddress(@Param('id') address: string, @I18n() i18n: I18nContext) {
     try {
-      if (!myAccount) {
-        const couldNotFindAccount = await i18n.t('lixi.messages.couldNotFindAccount');
-        throw new Error(couldNotFindAccount);
-      }
-
       const account = await this.prisma.account.findFirst({
         where: {
           address: address
         },
         include: {
           page: true,
-          uploadDetail: true,
-          follower: true,
-          following: true,
-          followingPage: true
+          uploadDetail: true
         }
       });
       if (!account) {
@@ -116,28 +103,7 @@ export class AccountController {
         throw new VError(accountNotExistMessage);
       }
 
-      let isFollow: boolean = false;
-      if (myAccount.id != account.id) {
-        const followed = await this.prisma.followAccount.findFirst({
-          where: {
-            followerAccountId: account.id,
-            followingAccountId: myAccount.id
-          }
-        });
-
-        followed ? (isFollow = true) : (isFollow = false);
-      }
-
-      const result = _.omit(
-        {
-          ...account,
-          isFollow: isFollow
-        },
-        'encryptedMnemonic',
-        'encryptedSecret',
-        'mnemonicHash',
-        'notifications'
-      );
+      const result = _.omit(account, 'encryptedMnemonic', 'encryptedSecret', 'mnemonicHash', 'notifications');
 
       return result;
     } catch (err: unknown) {

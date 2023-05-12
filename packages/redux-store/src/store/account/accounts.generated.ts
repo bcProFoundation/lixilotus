@@ -12,13 +12,13 @@
 import * as Types from '../../generated/types.generated';
 
 import { api } from 'src/api/baseApi';
-export type GetAccountViaAddressQueryVariables = Types.Exact<{
+export type GetAccountByAddressQueryVariables = Types.Exact<{
   address: Types.Scalars['String'];
 }>;
 
-export type GetAccountViaAddressQuery = {
+export type GetAccountByAddressQuery = {
   __typename?: 'Query';
-  getAccountViaAddress: {
+  getAccountByAddress: {
     __typename?: 'Account';
     id: string;
     name: string;
@@ -28,25 +28,12 @@ export type GetAccountViaAddressQuery = {
     encryptedSecret?: string | null;
     publicKey?: string | null;
     language: string;
-    isFollow?: boolean | null;
+    followersCount?: number | null;
+    followingsCount?: number | null;
+    followingPagesCount?: number | null;
     createdAt: any;
     updatedAt: any;
     page?: { __typename?: 'Page'; id: string; name: string } | null;
-    follower?: {
-      __typename?: 'FollowAccount';
-      id?: string | null;
-      followingAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
-    } | null;
-    following?: {
-      __typename?: 'FollowAccount';
-      id?: string | null;
-      followerAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
-    } | null;
-    followingPage?: {
-      __typename?: 'FollowPage';
-      id?: string | null;
-      page?: { __typename?: 'Page'; id: string; name: string } | null;
-    } | null;
   };
 };
 
@@ -60,25 +47,12 @@ export type AccountFieldsFragment = {
   encryptedSecret?: string | null;
   publicKey?: string | null;
   language: string;
-  isFollow?: boolean | null;
+  followersCount?: number | null;
+  followingsCount?: number | null;
+  followingPagesCount?: number | null;
   createdAt: any;
   updatedAt: any;
   page?: { __typename?: 'Page'; id: string; name: string } | null;
-  follower?: {
-    __typename?: 'FollowAccount';
-    id?: string | null;
-    followingAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
-  } | null;
-  following?: {
-    __typename?: 'FollowAccount';
-    id?: string | null;
-    followerAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
-  } | null;
-  followingPage?: {
-    __typename?: 'FollowPage';
-    id?: string | null;
-    page?: { __typename?: 'Page'; id: string; name: string } | null;
-  } | null;
 };
 
 export type CreateAccountMutationVariables = Types.Exact<{
@@ -97,25 +71,12 @@ export type CreateAccountMutation = {
     encryptedSecret?: string | null;
     publicKey?: string | null;
     language: string;
-    isFollow?: boolean | null;
+    followersCount?: number | null;
+    followingsCount?: number | null;
+    followingPagesCount?: number | null;
     createdAt: any;
     updatedAt: any;
     page?: { __typename?: 'Page'; id: string; name: string } | null;
-    follower?: {
-      __typename?: 'FollowAccount';
-      id?: string | null;
-      followingAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
-    } | null;
-    following?: {
-      __typename?: 'FollowAccount';
-      id?: string | null;
-      followerAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
-    } | null;
-    followingPage?: {
-      __typename?: 'FollowPage';
-      id?: string | null;
-      page?: { __typename?: 'Page'; id: string; name: string } | null;
-    } | null;
   };
 };
 
@@ -135,25 +96,12 @@ export type ImportAccountMutation = {
     encryptedSecret?: string | null;
     publicKey?: string | null;
     language: string;
-    isFollow?: boolean | null;
+    followersCount?: number | null;
+    followingsCount?: number | null;
+    followingPagesCount?: number | null;
     createdAt: any;
     updatedAt: any;
     page?: { __typename?: 'Page'; id: string; name: string } | null;
-    follower?: {
-      __typename?: 'FollowAccount';
-      id?: string | null;
-      followingAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
-    } | null;
-    following?: {
-      __typename?: 'FollowAccount';
-      id?: string | null;
-      followerAccount?: { __typename?: 'Account'; id: string; name: string; address: string } | null;
-    } | null;
-    followingPage?: {
-      __typename?: 'FollowPage';
-      id?: string | null;
-      page?: { __typename?: 'Page'; id: string; name: string } | null;
-    } | null;
   };
 };
 
@@ -171,37 +119,16 @@ export const AccountFieldsFragmentDoc = `
     id
     name
   }
-  isFollow
-  follower {
-    id
-    followingAccount {
-      id
-      name
-      address
-    }
-  }
-  following {
-    id
-    followerAccount {
-      id
-      name
-      address
-    }
-  }
-  followingPage {
-    id
-    page {
-      id
-      name
-    }
-  }
+  followersCount
+  followingsCount
+  followingPagesCount
   createdAt
   updatedAt
 }
     `;
-export const GetAccountViaAddressDocument = `
-    query getAccountViaAddress($address: String!) {
-  getAccountViaAddress(address: $address) {
+export const GetAccountByAddressDocument = `
+    query getAccountByAddress($address: String!) {
+  getAccountByAddress(address: $address) {
     ...AccountFields
   }
 }
@@ -223,8 +150,8 @@ export const ImportAccountDocument = `
 
 const injectedRtkApi = api.injectEndpoints({
   endpoints: build => ({
-    getAccountViaAddress: build.query<GetAccountViaAddressQuery, GetAccountViaAddressQueryVariables>({
-      query: variables => ({ document: GetAccountViaAddressDocument, variables })
+    getAccountByAddress: build.query<GetAccountByAddressQuery, GetAccountByAddressQueryVariables>({
+      query: variables => ({ document: GetAccountByAddressDocument, variables })
     }),
     createAccount: build.mutation<CreateAccountMutation, CreateAccountMutationVariables>({
       query: variables => ({ document: CreateAccountDocument, variables })
@@ -237,8 +164,8 @@ const injectedRtkApi = api.injectEndpoints({
 
 export { injectedRtkApi as api };
 export const {
-  useGetAccountViaAddressQuery,
-  useLazyGetAccountViaAddressQuery,
+  useGetAccountByAddressQuery,
+  useLazyGetAccountByAddressQuery,
   useCreateAccountMutation,
   useImportAccountMutation
 } = injectedRtkApi;

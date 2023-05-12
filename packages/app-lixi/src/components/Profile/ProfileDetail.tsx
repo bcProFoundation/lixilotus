@@ -44,16 +44,18 @@ import { selectAccount, setTransactionReady } from '@store/account/actions';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 import {
   api as followsApi,
+  useCheckIsFollowedAccountQuery,
   useCreateFollowAccountMutation,
   useDeleteFollowAccountMutation
 } from '@store/follow/follows.api';
 import { CreateFollowAccountInput, DeleteFollowAccountInput } from '@generated/types.generated';
-import { api as accountApi, useGetAccountViaAddressQuery } from '@store/account/accounts.api';
+import { api as accountApi, useGetAccountByAddressQuery } from '@store/account/accounts.api';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
 
 type UserDetailProps = {
   user: any;
   isMobile: boolean;
+  checkIsFollowed: boolean;
 };
 
 const StyledContainerProfileDetail = styled.div`
@@ -379,7 +381,7 @@ const SubAbout = ({
   </StyledSpace>
 );
 
-const ProfileDetail = ({ user, isMobile }: UserDetailProps) => {
+const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => {
   const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -391,7 +393,7 @@ const ProfileDetail = ({ user, isMobile }: UserDetailProps) => {
   const filterValue = useAppSelector(getFilterPostsProfile);
   const selectedAccount = useAppSelector(getSelectedAccount);
   const [userDetailData, setUserDetailData] = useState<any>(user);
-  const [followed, setFollowed] = useState<boolean>(user.isFollow);
+  const [isFollowed, setIsFollowed] = useState<boolean>(checkIsFollowed);
   const [listsFriend, setListsFriend] = useState<any>([]);
   const [listsPicture, setListsPicture] = useState<any>([]);
 
@@ -414,14 +416,6 @@ const ProfileDetail = ({ user, isMobile }: UserDetailProps) => {
       error: errorOnDelete
     }
   ] = useDeleteFollowAccountMutation();
-
-  const updateAccount = params => {
-    return dispatch(
-      accountApi.util.updateQueryData('getAccountViaAddress', { ...params }, draft => {
-        draft.getAccountViaAddress.isFollow = !userDetailData.isFollow;
-      })
-    );
-  };
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByUserIdQuery(
     {
@@ -450,14 +444,12 @@ const ProfileDetail = ({ user, isMobile }: UserDetailProps) => {
   }, [slpBalancesAndUtxos.nonSlpUtxos]);
 
   useEffect(() => {
-    console.log('Follow: ', followed);
-    const followButton = document.getElementById('follow-button');
-    if (followed) {
-      followButton.innerText = intl.get('general.unfollow');
-    } else {
-      followButton.innerText = intl.get('general.follow');
-    }
-  }, [followed]);
+    if (isSuccessCreateFollowAccount) setIsFollowed(true);
+  }, [isSuccessCreateFollowAccount]);
+
+  useEffect(() => {
+    if (isSuccessDeleteFollowAccount) setIsFollowed(false);
+  }, [isSuccessDeleteFollowAccount]);
 
   const fetchListFriend = () => {
     return axios
@@ -556,28 +548,22 @@ const ProfileDetail = ({ user, isMobile }: UserDetailProps) => {
 
   useDidMountEffectNotification();
 
-  const handleAddFollower = async () => {
+  const handleFollow = async () => {
     const createFollowAccountInput: CreateFollowAccountInput = {
       followerAccountId: parseInt(userDetailData.id),
       followingAccountId: selectedAccount.id
     };
 
     await createFollowAccountTrigger({ input: createFollowAccountInput });
-    if (isSuccessCreateFollowAccount) {
-      setFollowed(true);
-    }
   };
 
-  const handleUnfollower = async () => {
+  const handleUnfollow = async () => {
     const deleteFollowAccountInput: DeleteFollowAccountInput = {
       followerAccountId: parseInt(userDetailData.id),
       followingAccountId: selectedAccount.id
     };
 
     await deleteFollowAccountTrigger({ input: deleteFollowAccountInput });
-    if (isSuccessDeleteFollowAccount) {
-      setFollowed(false);
-    }
   };
 
   return (
@@ -606,9 +592,9 @@ const ProfileDetail = ({ user, isMobile }: UserDetailProps) => {
                   {userDetailData?.address.slice(6, 11) + '...' + userDetailData?.address.slice(-5)}
                 </p>
               </div>
-              {userDetailData.id !== selectedAccount.id && (
-                <Button id="follow-button" onClick={followed ? () => handleUnfollower() : () => handleAddFollower()}>
-                  {followed ? intl.get('general.unfollow') : intl.get('general.follow')}
+              {userDetailData.id != selectedAccount.id && (
+                <Button id="follow-button" onClick={isFollowed ? () => handleUnfollow() : () => handleFollow()}>
+                  {isFollowed ? intl.get('general.unfollow') : intl.get('general.follow')}
                 </Button>
               )}
             </div>
@@ -771,35 +757,30 @@ const ProfileDetail = ({ user, isMobile }: UserDetailProps) => {
                 </Timeline>
               </ContentTimeline>
             </Tabs.TabPane>
-            {userDetailData.id === selectedAccount.id && (
+            {userDetailData.id == selectedAccount.id && (
               <Tabs.TabPane tab="About" key="about">
                 <LegacyProfile>
                   <AboutBox>
-                    <h3>Follow</h3>
+                    <h3>{intl.get('general.follow')}</h3>
                     <div className="about-content">
                       <SubAbout
-                        dataItem={userDetailData?.follower.length}
-                        onClickIcon={() => { }}
+                        dataItem={userDetailData?.followersCount}
+                        onClickIcon={() => {}}
                         icon={UserOutlined}
-                        text={`${userDetailData?.follower.length} ${intl.get('general.follower')}`}
+                        text={`${userDetailData?.followersCount} ${intl.get('general.follower')}`}
                       />
                       <SubAbout
-                        dataItem={userDetailData?.following.length}
-                        onClickIcon={() => { }}
+                        dataItem={userDetailData?.followingsCount}
+                        onClickIcon={() => {}}
                         icon={UserOutlined}
-                        text={`${userDetailData?.following.length} ${intl.get('general.following')}`}
+                        text={`${userDetailData?.followingsCount} ${intl.get('general.following')}`}
                       />
                       <SubAbout
-                        dataItem={userDetailData?.followingPage.length}
-                        onClickIcon={() => { }}
+                        dataItem={userDetailData?.followingPagesCount}
+                        onClickIcon={() => {}}
                         icon={HomeOutlined}
-                        text={`${userDetailData?.followingPage.length} ${intl.get('general.followingPage')}`}
+                        text={`${userDetailData?.followingPagesCount} ${intl.get('general.followingPage')}`}
                       />
-                      {/* {selectedAccountId == pageDetailData?.pageAccountId && (
-                        <Button type="primary" className="outline-btn" onClick={navigateEditPage}>
-                          Edit your profile
-                        </Button>
-                      )} */}
                     </div>
                   </AboutBox>
                 </LegacyProfile>

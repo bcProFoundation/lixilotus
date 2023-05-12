@@ -9,11 +9,10 @@ type Account {
   createdAt: DateTime!
   encryptedMnemonic: String
   encryptedSecret: String
-  follower: FollowAccount
-  following: FollowAccount
-  followingPage: FollowPage
+  followersCount: Int
+  followingPagesCount: Int
+  followingsCount: Int
   id: ID!
-  isFollow: Boolean
   language: String!
   mnemonic: String
   mnemonicHash: String
@@ -180,6 +179,7 @@ type FollowAccount {
   followingAccount: Account
   followingAccountId: Int
   id: ID
+  isFollowed: Boolean
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
@@ -217,6 +217,7 @@ type FollowPage {
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
   id: ID
+  isFollowed: Boolean
   page: Page
   pageId: String
 
@@ -270,9 +271,8 @@ type Page {
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
   description: String!
-  follower: FollowPage
+  followersCount: Int
   id: ID!
-  isFollow: Boolean
   lotusBurnDown: Float!
   lotusBurnScore: Float!
   lotusBurnUp: Float!
@@ -435,8 +435,10 @@ type Query {
   ): WorshipedPersonConnection!
   allWorshipedPersonByUserId(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: WorshipedPersonOrder, skip: Int): WorshipedPersonConnection!
   allWorshipedPersonSpecialDate(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: WorshipedPersonOrder, skip: Int): WorshipedPersonConnection!
+  checkIsFollowedAccount(address: String!): FollowAccount!
+  checkIsFollowedPage(pageId: String!): FollowPage!
   comment(id: String!): Comment!
-  getAccountViaAddress(address: String!): Account!
+  getAccountByAddress(address: String!): Account!
   page(id: String!): Page!
   post(id: String!): Post!
   token(tokenId: String!): Token!
