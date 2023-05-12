@@ -21,8 +21,8 @@ import { Modal } from 'antd';
 import { push } from 'connected-next-router';
 import intl from 'react-intl-universal';
 import { all, call, fork, put, putResolve, select, takeLatest } from 'redux-saga/effects';
-import { LocalUser } from '../../models/localUser';
 import { Config, names, uniqueNamesGenerator } from 'unique-names-generator';
+import { LocalUser } from '../../models/localUser';
 
 import { ChangeAccountLocaleCommand } from '../../../../lixi-models/build/module/lib/account/account.dto.d';
 import { PatchAccountCommand } from '../../../../lixi-models/src/lib/account/account.dto';
@@ -447,6 +447,7 @@ function* deleteAccountSaga(action: PayloadAction<DeleteAccountCommand>) {
   try {
     yield put(showLoading(deleteAccount.type));
     const { id } = action.payload;
+    const account: Account = yield select(getAccountById(id));
     yield call(accountApi.delete, id, action.payload);
     yield put(deleteAccountSuccess(id));
   } catch (err) {

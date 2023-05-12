@@ -4,53 +4,58 @@ import { all, call, fork, put, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { getAllAccounts } from '@store/account';
 import { getWebPushNotifConfig } from '@store/settings/selectors';
-import { getAllWalletPaths } from '@store/wallet';
+import { WalletPathAddressInfo, getAllWalletPaths } from '@store/wallet';
 import { buildSubscribeCommand, buildUnsubscribeCommand } from '@utils/pushNotification';
 import intl from 'react-intl-universal';
 import { select } from 'redux-saga/effects';
 import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
 import {
-  subscribe,
-  subscribeFailure,
-  subscribeSuccess,
-  unsubscribe,
-  unsubscribeFailure,
-  unsubscribeSuccess
+  subscribeAll,
+  subscribeAllFailure,
+  subscribeAllSuccess,
+  unsubscribeAll,
+  unsubscribeAllFailure,
+  unsubscribeAllSuccess,
+  unsubscribeByAddresses
 } from './actions';
 import webpushApi from './api';
 
-function* watchSubscribe() {
-  yield takeLatest(subscribe.type, subscribeSaga);
+function* watchSubscribeAll() {
+  yield takeLatest(subscribeAll.type, subscribeAllSaga);
 }
 
-function* watchUnsubscribe() {
-  yield takeLatest(unsubscribe.type, unsubscribeSaga);
+function* watchUnsubscribeAll() {
+  yield takeLatest(unsubscribeAll.type, unsubscribeAllSaga);
 }
 
-function* watchSubscribeSuccess() {
-  yield takeLatest(subscribeSuccess.type, subscribeSuccessSaga);
+function* watchSubscribeAllSuccess() {
+  yield takeLatest(subscribeAllSuccess.type, subscribeAllSuccessSaga);
 }
 
-function* watchUnsubscribeSuccess() {
-  yield takeLatest(unsubscribeSuccess.type, unsubscribeSuccessSaga);
+function* watchUnsubscribeAllSuccess() {
+  yield takeLatest(unsubscribeAllSuccess.type, unsubscribeAllSuccessSaga);
 }
 
-function* watchSubscribeFailure() {
-  yield takeLatest(subscribeFailure.type, subscribeFailureSaga);
+function* watchSubscribeAllFailure() {
+  yield takeLatest(subscribeAllFailure.type, subscribeAllFailureSaga);
 }
 
-function* watchUnsubscribeFailure() {
-  yield takeLatest(unsubscribeFailure.type, unsubscribeFailureSaga);
+function* watchUnsubscribeAllFailure() {
+  yield takeLatest(unsubscribeAllFailure.type, unsubscribeAllFailureSaga);
 }
 
-function* subscribeSaga(action: PayloadAction<{ interactive: boolean; clientAppId: string }>) {
+function* watchUnsubscribeByAddresses() {
+  yield takeLatest(unsubscribeByAddresses.type, unsubscribeByAddressesSaga);
+}
+
+function* subscribeAllSaga(action: PayloadAction<{ interactive: boolean; clientAppId: string }>) {
   const { registration } = callConfig.call.serviceWorkerContext;
   const { interactive, clientAppId } = action.payload;
 
   if (!registration) {
     const message = intl.get('webpush.serviceWorkerNotReady');
-    yield put(unsubscribeFailure({ interactive: interactive, message: message }));
+    yield put(unsubscribeAllFailure({ interactive: interactive, message: message }));
   }
 
   try {
@@ -63,65 +68,98 @@ function* subscribeSaga(action: PayloadAction<{ interactive: boolean; clientAppI
       userVisibleOnly: true,
       applicationServerKey: applicationServerKey
     };
-    const pushSubscription = yield call(registration.pushManager.subscribe, subscribeOptions);
+    const pushSubscription = yield call(
+      [registration.pushManager, registration.pushManager.subscribe],
+      subscribeOptions
+    );
     const command = buildSubscribeCommand(pushSubscription, accounts, walletPaths, webpushConfig.deviceId, clientAppId);
 
     if (interactive) {
-      yield put(showLoading(subscribe.type));
+      yield put(showLoading(subscribeAll.type));
     }
     const dataApi: WebpushSubscribeCommand = {
       ...command
     };
 
     yield call(webpushApi.subscribe, dataApi);
-    yield put(subscribeSuccess({ interactive }));
+    yield put(subscribeAllSuccess({ interactive }));
   } catch (err) {
     const message = (err as Error).message ?? intl.get('webpush.unableToSubscribe');
-    yield put(subscribeFailure({ interactive: interactive, message: message }));
+    yield put(subscribeAllFailure({ interactive: interactive, message: message }));
   }
 }
 
-function* unsubscribeSaga(action: PayloadAction<{ interactive: boolean; addresses: string[]; clientAppId: string }>) {
+function* unsbuscribeAddressess(registration: ServiceWorkerRegistration, addresses: string[], clientAppId: string) {
+  const pushSubscription: PushSubscription = yield call([
+    registration.pushManager,
+    registration.pushManager.getSubscription
+  ]);
+
+  // Select the data
+  const webpushConfig = yield select(getWebPushNotifConfig);
+
+  const command = buildUnsubscribeCommand(pushSubscription, addresses, webpushConfig.deviceId, clientAppId);
+
+  const dataApi: WebpushUnsubscribeCommand = {
+    ...command
+  };
+
+  yield call(webpushApi.unsubscribe, dataApi);
+}
+
+function* unsubscribeAllSaga(action: PayloadAction<{ interactive: boolean; clientAppId: string }>) {
   const { registration } = callConfig.call.serviceWorkerContext;
-  const { interactive, addresses, clientAppId } = action.payload;
+  const { interactive, clientAppId } = action.payload;
 
   if (!registration) {
     const message = intl.get('webpush.serviceWorkerNotReady');
-    yield put(unsubscribeFailure({ interactive: interactive, message: message }));
+    yield put(unsubscribeAllFailure({ interactive: interactive, message: message }));
   }
+
+  const walletPaths: WalletPathAddressInfo[] = yield select(getAllWalletPaths);
+  const addresses = walletPaths.map(walletPath => walletPath.xAddress);
 
   try {
-    const subscribeOptions = {
-      userVisibleOnly: true,
-      applicationServerKey: process.env.NEXT_PUBLIC_PUBLIC_VAPID_KEY
-    };
-    const pushSubscription: PushSubscription = yield call(registration.pushManager.subscribe, subscribeOptions);
-
-    // Select the data
-    const webpushConfig = yield select(getWebPushNotifConfig);
-
-    const command = buildUnsubscribeCommand(pushSubscription, addresses, webpushConfig.deviceId, clientAppId);
-
-    const dataApi: WebpushUnsubscribeCommand = {
-      ...command
-    };
-
-    yield call(webpushApi.unsubscribe, dataApi);
-    yield put(unsubscribeSuccess({ interactive }));
+    yield unsbuscribeAddressess(registration, addresses, clientAppId);
+    yield put(unsubscribeAllSuccess({ interactive }));
   } catch (err) {
     const message = (err as Error).message ?? intl.get('webpush.unableToUnsubscribe');
-    yield put(unsubscribeFailure({ interactive: interactive, message: message }));
+    yield put(unsubscribeAllFailure({ interactive: interactive, message: message }));
   }
 }
 
-function* subscribeSuccessSaga(action: PayloadAction<{ interactive: boolean }>) {
-  yield put(hideLoading(subscribe.type));
+function* unsubscribeByAddressesSaga(action: PayloadAction<{ addresses: string[]; clientAppId: string }>) {
+  const { registration } = callConfig.call.serviceWorkerContext;
+  const { addresses, clientAppId } = action.payload;
+
+  if (!registration) {
+    return;
+  }
+  try {
+    yield unsbuscribeAddressess(registration, addresses, clientAppId);
+  } catch (err) {
+    return;
+  }
 }
 
-function* subscribeFailureSaga(action: PayloadAction<{ interactive: boolean }>) {
+function* subscribeAllSuccessSaga(action: PayloadAction<{ interactive: boolean }>) {
+  yield put(hideLoading(subscribeAll.type));
+  const { turnOnWebPushNotification } = callConfig.call.serviceWorkerContext;
+
+  // Because we subscribe all of addresses
+  // so we should turn on the notification toggle
+  yield call(turnOnWebPushNotification);
+}
+
+function* subscribeAllFailureSaga(action: PayloadAction<{ interactive: boolean }>) {
   const { interactive } = action.payload;
-  yield put(hideLoading(subscribe.type));
+  yield put(hideLoading(subscribeAll.type));
   const message = action.payload ?? intl.get('webpush.unableToSubscribe');
+  const { turnOffWebPushNotification } = callConfig.call.serviceWorkerContext;
+
+  // Otherwise we unsubscribe all of addresses
+  // so we should turn off the notification toggle
+  yield call(turnOffWebPushNotification);
   if (interactive) {
     yield put(
       showToast('error', {
@@ -133,13 +171,13 @@ function* subscribeFailureSaga(action: PayloadAction<{ interactive: boolean }>) 
   }
 }
 
-function* unsubscribeSuccessSaga(action: PayloadAction<{ interactive: boolean }>) {
-  yield put(hideLoading(unsubscribe.type));
+function* unsubscribeAllSuccessSaga(action: PayloadAction<{ interactive: boolean }>) {
+  yield put(hideLoading(unsubscribeAll.type));
 }
 
-function* unsubscribeFailureSaga(action: PayloadAction<{ interactive: boolean }>) {
+function* unsubscribeAllFailureSaga(action: PayloadAction<{ interactive: boolean }>) {
   const { interactive } = action.payload;
-  yield put(hideLoading(unsubscribe.type));
+  yield put(hideLoading(unsubscribeAll.type));
   const message = action.payload ?? intl.get('webpush.unableToUnsubscribe');
   if (interactive) {
     yield put(
@@ -154,11 +192,12 @@ function* unsubscribeFailureSaga(action: PayloadAction<{ interactive: boolean }>
 
 export default function* webpushSaga() {
   yield all([
-    fork(watchSubscribe),
-    fork(watchSubscribeSuccess),
-    fork(watchSubscribeFailure),
-    fork(watchUnsubscribe),
-    fork(watchUnsubscribeSuccess),
-    fork(watchUnsubscribeFailure)
+    fork(watchSubscribeAll),
+    fork(watchSubscribeAllSuccess),
+    fork(watchSubscribeAllFailure),
+    fork(watchUnsubscribeAll),
+    fork(watchUnsubscribeAllSuccess),
+    fork(watchUnsubscribeAllFailure),
+    fork(watchUnsubscribeByAddresses)
   ]);
 }

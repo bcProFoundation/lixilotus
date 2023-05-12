@@ -11,7 +11,7 @@ import { ServiceWorkerContext } from '@context/index';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getWebPushNotifConfig } from '@store/settings/selectors';
 import { getAllWalletPaths } from '@store/wallet';
-import { subscribe, unsubscribe } from '@store/webpush/actions';
+import { subscribeAll, unsubscribeAll } from '@store/webpush/actions';
 import { askPermission, getPlatformPermissionState } from '@utils/pushNotification';
 import { Modal, Switch, Tag } from 'antd';
 import React, { useState } from 'react';
@@ -74,8 +74,7 @@ const PushNotificationSetting = () => {
           askPermission().then(async result => {
             setPermission(result);
             if (result === 'granted') {
-              dispatch(subscribe({ interactive: true, clientAppId: WEBPUSH_CLIENT_APP_ID }));
-              turnOnWebPushNotification();
+              dispatch(subscribeAll({ interactive: true, clientAppId: WEBPUSH_CLIENT_APP_ID }));
             } else {
               turnOffWebPushNotification();
               return;
@@ -95,17 +94,14 @@ const PushNotificationSetting = () => {
   const handleNotificationToggle = async (checked: boolean, event: React.MouseEvent<HTMLButtonElement>) => {
     if (checked) {
       if (permission === 'granted') {
-        dispatch(subscribe({ interactive: true, clientAppId: WEBPUSH_CLIENT_APP_ID }));
-        turnOnWebPushNotification();
+        dispatch(subscribeAll({ interactive: true, clientAppId: WEBPUSH_CLIENT_APP_ID }));
       } else {
         showModal();
       }
     } else {
       // unsubscribe
       if (registration) {
-        const addresses = walletPaths.map(walletPath => walletPath.xAddress);
-        dispatch(unsubscribe({ interactive: true, addresses, clientAppId: WEBPUSH_CLIENT_APP_ID }));
-        turnOffWebPushNotification();
+        dispatch(unsubscribeAll({ interactive: true, clientAppId: WEBPUSH_CLIENT_APP_ID }));
       }
     }
   };

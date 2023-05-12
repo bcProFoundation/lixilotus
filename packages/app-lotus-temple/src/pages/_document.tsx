@@ -36,7 +36,7 @@ export default class MyDocument extends Document {
           <link rel="manifest" href="/manifest.json" />
           <link rel="shortcut icon" href="/favicon.ico" />
           <meta name="theme-color" content="#faf0fa" />
-          <meta name="description" content="Website allow user to give lotus to others" />
+          <meta name="description" content="Temple of Lotus" />
           <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
           <link rel="shortcut icon" type="image/x-icon" sizes="512x512" href="/favicon.ico" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
