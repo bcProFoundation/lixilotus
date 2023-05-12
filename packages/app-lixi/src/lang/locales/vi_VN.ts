@@ -592,6 +592,6 @@ export default {
 
   /* 18. Webpush */
   'webpush.unableToSubscribe': 'Không thể đăng ký.',
-  'webpush.unableToUnsubscribe': 'Không thể hủy đăng ký.'
-
+  'webpush.unableToUnsubscribe': 'Không thể hủy đăng ký.',
+  'webpush.serviceWorkerNotReady': 'Service worker không sẵn sàng.'
 };

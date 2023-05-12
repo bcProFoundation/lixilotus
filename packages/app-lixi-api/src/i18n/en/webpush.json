@@ -1,6 +1,6 @@
 {
-    "messages": {
-        "unableToSubscribe": "Unable to subscriber.",
-        "unableToUnsubscribe": "Unable to unsubscriber."
-    }
+  "messages": {
+    "unableToSubscribe": "Unable to subscriber.",
+    "unableToUnsubscribe": "Unable to unsubscriber."
+  }
 }

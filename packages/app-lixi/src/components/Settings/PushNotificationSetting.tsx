@@ -9,22 +9,15 @@ import {
 import { GeneralSettingsItem } from '@components/Common/Atoms/GeneralSettingsItem';
 import { ServiceWorkerContext } from '@context/index';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { saveWebPushNotifConfig } from '@store/settings/actions';
 import { getWebPushNotifConfig } from '@store/settings/selectors';
-import {
-  askPermission,
-  buildSubscribeCommand,
-  buildUnsubscribeCommand,
-  getPlatformPermissionState
-} from '@utils/pushNotification';
+import { getAllWalletPaths } from '@store/wallet';
+import { subscribe, unsubscribe } from '@store/webpush/actions';
+import { askPermission, getPlatformPermissionState } from '@utils/pushNotification';
 import { Modal, Switch, Tag } from 'antd';
 import React, { useState } from 'react';
 import intl from 'react-intl-universal';
-import styled from 'styled-components';
-import { getAllAccounts } from '@store/account';
-import { getAllWalletPaths } from '@store/wallet';
 import { WEBPUSH_CLIENT_APP_ID } from 'src/shared/constants';
-import { subscribe, unsubscribe } from '@store/webpush/actions';
+import styled from 'styled-components';
 
 const ThemedQuerstionCircleOutlinedFaded = styled(QuestionCircleOutlined)`
   color: #bb98ff !important;
@@ -62,10 +55,10 @@ const helpInfoIcon = (
 
 const PushNotificationSetting = () => {
   const dispatch = useAppDispatch();
-  const { registration, turnOnWebPushNotification, turnOffWebPushNotification } = React.useContext(ServiceWorkerContext);
+  const { registration, turnOnWebPushNotification, turnOffWebPushNotification } =
+    React.useContext(ServiceWorkerContext);
   const [permission, setPermission] = useState<NotificationPermission>(() => getPlatformPermissionState());
   const webPushNotifConfig = useAppSelector(getWebPushNotifConfig);
-  const accounts = useAppSelector(getAllAccounts);
   const walletPaths = useAppSelector(getAllWalletPaths);
 
   const showModal = () => {
@@ -78,25 +71,10 @@ const PushNotificationSetting = () => {
       async onOk() {
         // get user permission
         try {
-          askPermission().then(async (result) => {
+          askPermission().then(async result => {
             setPermission(result);
             if (result === 'granted') {
-              const applicationServerKey = process.env.NEXT_PUBLIC_PUBLIC_VAPID_KEY;
-              const subscribeOptions = {
-                userVisibleOnly: true,
-                applicationServerKey: applicationServerKey
-              };
-              if (registration) {
-                const pushSubscription = await registration.pushManager.subscribe(subscribeOptions);
-                const command = buildSubscribeCommand(
-                  pushSubscription,
-                  accounts,
-                  walletPaths,
-                  webPushNotifConfig.deviceId,
-                  WEBPUSH_CLIENT_APP_ID
-                );
-                dispatch(subscribe({ interactive: true, command }));
-              }
+              dispatch(subscribe({ interactive: true, clientAppId: WEBPUSH_CLIENT_APP_ID }));
               turnOnWebPushNotification();
             } else {
               turnOffWebPushNotification();
@@ -117,44 +95,17 @@ const PushNotificationSetting = () => {
   const handleNotificationToggle = async (checked: boolean, event: React.MouseEvent<HTMLButtonElement>) => {
     if (checked) {
       if (permission === 'granted') {
-        const subscribeOptions = {
-          userVisibleOnly: true,
-          applicationServerKey: process.env.NEXT_PUBLIC_PUBLIC_VAPID_KEY
-        };
-
-        if (registration) {
-          const pushSubscription: PushSubscription = await registration.pushManager.subscribe(subscribeOptions);
-
-          const command = buildSubscribeCommand(
-            pushSubscription,
-            accounts,
-            walletPaths,
-            webPushNotifConfig.deviceId,
-            WEBPUSH_CLIENT_APP_ID
-          );
-
-          dispatch(subscribe({ interactive: true, command }));
-          turnOnWebPushNotification();
-        }
-
-
+        dispatch(subscribe({ interactive: true, clientAppId: WEBPUSH_CLIENT_APP_ID }));
+        turnOnWebPushNotification();
       } else {
         showModal();
       }
     } else {
       // unsubscribe
       if (registration) {
-        const pushSubscription = await registration.pushManager.getSubscription();
         const addresses = walletPaths.map(walletPath => walletPath.xAddress);
-        const command = buildUnsubscribeCommand(pushSubscription, addresses, webPushNotifConfig.deviceId, WEBPUSH_CLIENT_APP_ID);
-
-        dispatch(unsubscribe({ interactive: true, command }));
-        dispatch(
-          saveWebPushNotifConfig({
-            ...webPushNotifConfig,
-            allowPushNotification: false
-          })
-        );
+        dispatch(unsubscribe({ interactive: true, addresses, clientAppId: WEBPUSH_CLIENT_APP_ID }));
+        turnOffWebPushNotification();
       }
     }
   };

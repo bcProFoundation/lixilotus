@@ -47,12 +47,7 @@ import { WebpushController } from './webpush.controller';
     AuthModule
   ],
   controllers: [NotificationController, WebpushController],
-  providers: [
-    NotificationGateway,
-    NotificationService,
-    NotificationOutboundProcessor,
-    WebpushNotificationProcessor
-  ],
+  providers: [NotificationGateway, NotificationService, NotificationOutboundProcessor, WebpushNotificationProcessor],
   exports: [NotificationGateway, NotificationService, NotificationOutboundProcessor]
 })
 export class NotificationModule {}

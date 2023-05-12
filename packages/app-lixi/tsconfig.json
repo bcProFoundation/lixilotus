@@ -32,7 +32,8 @@
     }
   ],
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "../redux-store/src/store/webpush/constants.ts"
   ],
   "exclude": [
     "node_modules"

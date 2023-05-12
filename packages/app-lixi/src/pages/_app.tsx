@@ -1,26 +1,24 @@
-import '../styles/style.less';
 import 'antd/dist/reset.css';
+import '../styles/style.less';
 // import '../styles/globals.css';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 
 import MainLayout from '@components/Layout/MainLayout';
 
+import SplashScreen from '@components/Common/SplashScreen';
 import {
-  ServiceWorkerProvider,
   AuthenticationProvider,
-  WalletProvider,
   AuthorizationProvider,
+  ServiceWorkerProvider,
+  WalletProvider,
   callConfig
 } from '@context/index';
-import { ConnectedRouter } from 'connected-next-router';
 import { wrapper } from '@store/store';
-import OutsideCallConsumer, { createCaller } from 'react-outside-call';
-import { Spin } from 'antd';
-import SplashScreen from '@components/Common/SplashScreen';
 import { ConfigProvider } from 'antd';
+import { ConnectedRouter } from 'connected-next-router';
+import OutsideCallConsumer from 'react-outside-call';
 import lightTheme from 'src/styles/themes/lightTheme';
 
 const PersistGateServer = (props: any) => {

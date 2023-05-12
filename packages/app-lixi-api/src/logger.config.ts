@@ -29,7 +29,7 @@ if (allowGrafanaLogging) {
       json: true,
       format: format.json(),
       replaceTimestamp: true,
-      onConnectionError: (err) => console.error(err)
+      onConnectionError: err => console.error(err)
     })
   );
 }

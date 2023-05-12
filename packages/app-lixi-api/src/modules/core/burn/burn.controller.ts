@@ -1,9 +1,4 @@
-import {
-  Burn,
-  BurnCommand,
-  BurnForType,
-  BurnType
-} from '@bcpros/lixi-models';
+import { Burn, BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models';
 import { NotificationLevel } from '@bcpros/lixi-prisma';
 import BCHJS from '@bcpros/xpi-js';
 import { Body, Controller, HttpException, HttpStatus, Inject, Logger, Post } from '@nestjs/common';
@@ -26,7 +21,7 @@ export class BurnController {
     @I18n() private i18n: I18nService,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS
-  ) { }
+  ) {}
 
   @Post()
   async burn(@Body() command: BurnCommand): Promise<Burn> {

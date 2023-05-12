@@ -457,6 +457,9 @@ function* deleteAccountSaga(action: PayloadAction<DeleteAccountCommand>) {
 
 function* deleteAccountSuccessSaga(action: PayloadAction<number>) {
   yield put(hideLoading(deleteAccount.type));
+
+  // unsubscribe webpush subscription
+
   Modal.success({
     content: intl.get('account.accountDeleteSuccess')
   });

@@ -594,5 +594,6 @@ export default {
 
   /* 18. Webpush */
   'webpush.unableToSubscribe': 'Unable to subscriber.',
-  'webpush.unableToUnsubscribe': 'Unable to unsubscriber.'
+  'webpush.unableToUnsubscribe': 'Unable to unsubscriber.',
+  'webpush.serviceWorkerNotReady': 'The service worker is not ready.'
 };

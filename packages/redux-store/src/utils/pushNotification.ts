@@ -86,7 +86,12 @@ export const buildSubscribeCommand = (
   }
 };
 
-export const buildUnsubscribeCommand = (pushSubscription: PushSubscription, addresses: string[], deviceId: string, clientAppId: string) => {
+export const buildUnsubscribeCommand = (
+  pushSubscription: PushSubscription,
+  addresses: string[],
+  deviceId: string,
+  clientAppId: string
+) => {
   try {
     if (!pushSubscription) return null;
 
