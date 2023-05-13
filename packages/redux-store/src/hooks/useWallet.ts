@@ -56,36 +56,6 @@ const useWallet = () => {
   const dispatch = useAppDispatch();
   const walletStatus = useAppSelector(getWalletStatus);
 
-  // If you catch API errors, call this function
-  const tryNextAPI = () => {
-    let currentApiIndex = apiIndex;
-    // How many APIs do you have?
-    const apiString = process.env.NEXT_PUBLIC_XPI_APIS;
-
-    const apiArray = apiString.split(',');
-
-    console.log(`You have ${apiArray.length} APIs to choose from`);
-    console.log(`Current selection: ${apiIndex}`);
-    // If only one, exit
-    if (apiArray.length === 0) {
-      console.log(`There are no backup APIs, you are stuck with this error`);
-      return;
-    } else if (currentApiIndex < apiArray.length - 1) {
-      currentApiIndex += 1;
-      console.log(`Incrementing API index from ${apiIndex} to ${currentApiIndex}`);
-    } else {
-      // Otherwise use the first option again
-      console.log(`Retrying first API index`);
-      currentApiIndex = 0;
-    }
-    //return setApiIndex(currentApiIndex);
-    console.log(`Setting Api Index to ${currentApiIndex}`);
-    setApiIndex(currentApiIndex);
-    return setXPI(getXPI(currentApiIndex));
-    // If you have more than one, use the next one
-    // If you are at the "end" of the array, use the first one
-  };
-
   const getWalletPathDetails = async (mnemonic: string, paths: string[]): Promise<WalletPathAddressInfo[]> => {
     const NETWORK = process.env.NEXT_PUBLIC_NETWORK;
     const rootSeedBuffer = await XPI.Mnemonic.toSeed(mnemonic);
@@ -373,7 +343,6 @@ const useWallet = () => {
       //console.timeEnd("update");
       // Try another endpoint
       console.log(`Trying next API...`);
-      // tryNextAPI();
     }
   };
 

@@ -173,6 +173,8 @@ function* subscribeAllFailureSaga(action: PayloadAction<{ interactive: boolean }
 
 function* unsubscribeAllSuccessSaga(action: PayloadAction<{ interactive: boolean }>) {
   yield put(hideLoading(unsubscribeAll.type));
+  const { turnOffWebPushNotification } = callConfig.call.serviceWorkerContext;
+  yield call(turnOffWebPushNotification);
 }
 
 function* unsubscribeAllFailureSaga(action: PayloadAction<{ interactive: boolean }>) {

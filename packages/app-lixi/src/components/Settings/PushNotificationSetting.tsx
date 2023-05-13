@@ -16,7 +16,6 @@ import { askPermission, getPlatformPermissionState } from '@utils/pushNotificati
 import { Modal, Switch, Tag } from 'antd';
 import React, { useState } from 'react';
 import intl from 'react-intl-universal';
-import { WEBPUSH_CLIENT_APP_ID } from 'src/shared/constants';
 import styled from 'styled-components';
 
 const ThemedQuerstionCircleOutlinedFaded = styled(QuestionCircleOutlined)`
@@ -74,7 +73,7 @@ const PushNotificationSetting = () => {
           askPermission().then(async result => {
             setPermission(result);
             if (result === 'granted') {
-              dispatch(subscribeAll({ interactive: true, clientAppId: WEBPUSH_CLIENT_APP_ID }));
+              dispatch(subscribeAll({ interactive: true, clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID }));
             } else {
               turnOffWebPushNotification();
               return;
@@ -94,14 +93,14 @@ const PushNotificationSetting = () => {
   const handleNotificationToggle = async (checked: boolean, event: React.MouseEvent<HTMLButtonElement>) => {
     if (checked) {
       if (permission === 'granted') {
-        dispatch(subscribeAll({ interactive: true, clientAppId: WEBPUSH_CLIENT_APP_ID }));
+        dispatch(subscribeAll({ interactive: true, clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID }));
       } else {
         showModal();
       }
     } else {
       // unsubscribe
       if (registration) {
-        dispatch(unsubscribeAll({ interactive: true, clientAppId: WEBPUSH_CLIENT_APP_ID }));
+        dispatch(unsubscribeAll({ interactive: true, clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID }));
       }
     }
   };

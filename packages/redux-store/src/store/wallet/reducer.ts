@@ -5,7 +5,7 @@ import { WalletPathAddressInfo } from './models';
 import { WalletState } from './state';
 
 export const walletAdapter = createEntityAdapter<WalletPathAddressInfo>({
-  selectId: wallet => wallet.path
+  selectId: wallet => wallet.xAddress
 });
 
 const initialState: WalletState = walletAdapter.getInitialState({

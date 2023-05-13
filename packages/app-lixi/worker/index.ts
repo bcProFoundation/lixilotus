@@ -6,6 +6,9 @@ declare let self: ServiceWorkerGlobalScope
 self.__WB_DISABLE_DEV_LOGS = true
 
 self.addEventListener('pushsubscriptionchange', (event) => {
-    console.log(event);
-    // const newSubscription = await self.registration.pushManager.subscribe(event.oldSubscription.options);
+  // HOW TO TEST THIS?
+  // Run this in your browser console: 
+  //     window.navigator.serviceWorker.controller.postMessage({command: 'log', message: 'hello world'})
+  // OR use next-pwa injected workbox object
+  window.workbox.messageSW({ command: 'pushsubscriptionchange', message: 'pushsubscriptionchange' })
 });

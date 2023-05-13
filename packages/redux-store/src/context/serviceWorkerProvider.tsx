@@ -1,4 +1,6 @@
 import usePushNotification from '@hooks/usePushNotification';
+import { useAppDispatch } from '@store/hooks';
+import { subscribeAll } from '@store/webpush';
 import { createContext, useEffect, useState } from 'react';
 
 export type ServiceWorkerValue = {
@@ -18,6 +20,7 @@ export const ServiceWorkerContext = createContext<ServiceWorkerValue>(defaultSer
 export const ServiceWorkerProvider = ({ children }) => {
   const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null);
   const { turnOnWebPushNotification, turnOffWebPushNotification } = usePushNotification();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (typeof window !== 'undefined' && 'serviceWorker' in navigator && (window as any).workbox !== undefined) {
@@ -25,6 +28,11 @@ export const ServiceWorkerProvider = ({ children }) => {
         // Set the registration object in the context
         setRegistration(reg);
       });
+      navigator.serviceWorker.onmessage = (event) => {
+        if (event && (event as any).command === 'pushsubscriptionchange') {
+          dispatch(subscribeAll({ interactive: false, clientAppId: process.env.WEBPUSH_CLIENT_APP_ID }))
+        }
+      }
     }
   }, []);
 
