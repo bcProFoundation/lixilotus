@@ -27,12 +27,13 @@ export const ServiceWorkerProvider = ({ children }) => {
       navigator.serviceWorker.ready.then((reg: ServiceWorkerRegistration) => {
         // Set the registration object in the context
         setRegistration(reg);
-      });
-      navigator.serviceWorker.onmessage = (event) => {
-        if (event && (event as any).command === 'pushsubscriptionchange') {
-          dispatch(subscribeAll({ interactive: false, clientAppId: process.env.WEBPUSH_CLIENT_APP_ID }))
+        navigator.serviceWorker.onmessage = (event) => {
+          console.log('onmessage', event);
+          if (event && (event as any).command === 'pushsubscriptionchange') {
+            dispatch(subscribeAll({ interactive: false, clientAppId: process.env.WEBPUSH_CLIENT_APP_ID }))
+          }
         }
-      }
+      });
     }
   }, []);
 

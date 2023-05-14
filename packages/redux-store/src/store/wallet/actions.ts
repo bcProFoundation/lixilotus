@@ -12,3 +12,4 @@ export const activateWalletSuccess = createAction<{
 export const activateWalletFailure = createAction<string>('wallet/activateWalletFailure');
 export const setWalletRefreshInterval = createAction<number>('wallet/setWalletRefreshInterval');
 export const setWalletHasUpdated = createAction<boolean>('wallet/setWalletHasUpdated');
+export const setWalletPaths = createAction<WalletPathAddressInfo[]>('wallet/setWalletPaths');
