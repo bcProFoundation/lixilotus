@@ -42,6 +42,11 @@ export interface NotificationDto {
   action?: Nullable<string>;
 }
 
+export interface SocketUserOnline {
+  address: string;
+  deviceId: string;
+}
+
 /**
  * Interface to modeling PushSubscription of web-push
  */

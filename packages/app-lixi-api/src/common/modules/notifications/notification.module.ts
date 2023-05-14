@@ -11,6 +11,7 @@ import { NotificationOutboundProcessor } from './notification.processor';
 import { NotificationService } from './notification.service';
 import { WebpushNotificationProcessor } from './webpush-notification.process';
 import { WebpushController } from './webpush.controller';
+import { RedisModule } from '@nestjs-modules/ioredis';
 
 @Module({
   imports: [
@@ -44,10 +45,11 @@ import { WebpushController } from './webpush.controller';
         };
       }
     }),
-    AuthModule
+    AuthModule,
+    RedisModule
   ],
   controllers: [NotificationController, WebpushController],
   providers: [NotificationGateway, NotificationService, NotificationOutboundProcessor, WebpushNotificationProcessor],
-  exports: [NotificationGateway, NotificationService, NotificationOutboundProcessor]
+  exports: [NotificationGateway, NotificationService, NotificationOutboundProcessor, WebpushNotificationProcessor]
 })
-export class NotificationModule {}
+export class NotificationModule { }

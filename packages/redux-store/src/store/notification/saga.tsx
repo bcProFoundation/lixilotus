@@ -1,9 +1,9 @@
 // import { CashReceivedNotificationIcon } from '@bcpros/lixi-components/components/Common/CustomIcons';
-import { AccountDto as Account, NotificationDto as Notification, PaginationResult } from '@bcpros/lixi-models';
+import { AccountDto as Account, NotificationDto as Notification, PaginationResult, SocketUserOnline } from '@bcpros/lixi-models';
 import { currency } from '@components/Common/Ticker';
 import { all, call, cancelled, fork, put, select, take, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
-import { getSelectedAccount } from '@store/account/selectors';
+import { getAllAccounts, getSelectedAccount } from '@store/account/selectors';
 import { notification } from 'antd';
 import { ArgsProps } from 'antd/lib/notification/interface';
 import Paragraph from 'antd/lib/typography/Paragraph';
@@ -40,6 +40,7 @@ import {
   xpiReceivedNotificationWebSocket
 } from './actions';
 import notificationApi from './api';
+import { getDeviceId } from '..';
 
 const getDeviceNotificationStyle = () => {
   if (isMobile) {
@@ -266,8 +267,14 @@ function reconnect(): Promise<Socket> {
   });
 }
 
-function subscribe(account: Account) {
-  socket.emit('subscribe', account.mnemonicHash);
+function userOnline(accounts: Account[], deviceId: string) {
+  const users: SocketUserOnline[] = accounts.map(account => {
+    return {
+      address: account.address,
+      deviceId: deviceId
+    }
+  });
+  socket.emit('user_online', users);
 }
 
 function createSocketChannel(socket: Socket) {
@@ -285,8 +292,9 @@ function createSocketChannel(socket: Socket) {
 function* listenConnectSaga() {
   while (true) {
     yield call(reconnect);
-    const account: Account = yield call(waitFor, getSelectedAccount);
-    yield call(subscribe, account);
+    const accounts: Account[] = yield call(waitFor, getAllAccounts);
+    const deviceId: string = yield call(waitFor, getDeviceId);
+    yield call(userOnline, accounts, deviceId);
     yield put(serverOn());
   }
 }
@@ -313,8 +321,11 @@ function* listenServerSaga() {
     yield fork(listenDisconnectSaga);
     yield fork(listenConnectSaga);
 
-    const account: Account = yield call(waitFor, getSelectedAccount);
-    yield call(subscribe, account);
+    // @todo: verify that the user has permission to subscribe to that paticular addresses
+    const accounts: Account[] = yield call(waitFor, getAllAccounts);
+    const deviceId: string = yield call(waitFor, getDeviceId);
+
+    yield call(userOnline, accounts, deviceId);
     yield put(serverOn());
 
     while (true) {

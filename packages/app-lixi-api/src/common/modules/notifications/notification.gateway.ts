@@ -1,5 +1,8 @@
-import { NotificationDto as Notification } from '@bcpros/lixi-models';
+import { NotificationDto as Notification, SocketUserOnline } from '@bcpros/lixi-models';
 import { Injectable, Logger } from '@nestjs/common';
+import { InjectRedis, DEFAULT_REDIS_NAMESPACE } from '@liaoliaots/nestjs-redis';
+import Redis from 'ioredis';
+
 import {
   ConnectedSocket,
   MessageBody,
@@ -24,7 +27,10 @@ export class NotificationGateway implements OnGatewayInit, OnGatewayConnection, 
   server!: Server;
 
   private logger: Logger = new Logger('NotificationGateway');
-  constructor() {}
+
+  constructor(
+    @InjectRedis() private readonly redis: Redis
+  ) { }
 
   handleConnection(client: Socket, ...args: any[]) {
     this.logger.log(`Client connected: ${client.id}`);
@@ -38,9 +44,8 @@ export class NotificationGateway implements OnGatewayInit, OnGatewayConnection, 
     this.logger.log('Notification gateway initialized');
   }
 
-  @SubscribeMessage('subscribe')
-  handleSubscription(@MessageBody() mnemonicHash: string, @ConnectedSocket() client: Socket): WsResponse<string> {
-    client.join(mnemonicHash);
+  @SubscribeMessage('user_online')
+  handleUserOnline(@MessageBody() users: SocketUserOnline[], @ConnectedSocket() client: Socket): WsResponse<string> {
 
     return {
       event: 'subscribe',

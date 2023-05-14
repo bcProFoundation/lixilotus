@@ -1,9 +1,9 @@
-declare let self: ServiceWorkerGlobalScope
+declare let self: ServiceWorkerGlobalScope;
 
 // To disable all workbox logging during development, you can set self.__WB_DISABLE_DEV_LOGS to true
 // https://developers.google.com/web/tools/workbox/guides/configure-workbox#disable_logging
 //
-self.__WB_DISABLE_DEV_LOGS = true
+self.__WB_DISABLE_DEV_LOGS = true;
 
 self.addEventListener('pushsubscriptionchange', (event) => {
   // HOW TO TEST THIS?
@@ -12,3 +12,23 @@ self.addEventListener('pushsubscriptionchange', (event) => {
   // OR use next-pwa injected workbox object
   window.workbox.messageSW({ command: 'pushsubscriptionchange', message: 'pushsubscriptionchange' })
 });
+
+// Push Notification Click Event Handler
+self.addEventListener('notificationclick', (event: NotificationEvent) => {
+  console.log('notificationclick', event);
+  event?.notification.close()
+  event?.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (clientList) {
+      if (clientList.length > 0) {
+        let client = clientList[0]
+        for (let i = 0; i < clientList.length; i++) {
+          if (clientList[i].focused) {
+            client = clientList[i]
+          }
+        }
+        return client.focus()
+      }
+      return self.clients.openWindow('/')
+    })
+  )
+})

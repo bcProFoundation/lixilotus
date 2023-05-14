@@ -4,10 +4,11 @@ import { Job } from 'bullmq';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { PushSubscription, sendNotification, setVapidDetails } from 'web-push';
 import { WEBPUSH_NOTIFICATION_QUEUE } from './notification.constants';
+import { Notification } from '@bcpros/lixi-prisma';
 
 export interface WebpushNotificationJobData {
-  clientAppId: string;
   pushSubObj: PushSubscription;
+  notification: Notification
 }
 
 @Injectable()
@@ -28,8 +29,8 @@ export class WebpushNotificationProcessor extends WorkerHost {
    * @returns The process is success or not
    */
   public async process(job: Job<WebpushNotificationJobData, boolean, string>): Promise<boolean> {
-    const { clientAppId, pushSubObj } = job.data;
-    // sendNotification(pushSubObj)
+    const { pushSubObj, notification } = job.data;
+    sendNotification(pushSubObj, notification.message)
     return true;
   }
 }

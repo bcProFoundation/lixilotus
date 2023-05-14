@@ -2,6 +2,7 @@ import { createSelector } from 'reselect';
 
 import { RootState } from '../store';
 
+import { WebPushNotifConfig } from './model';
 import { SettingsState } from './state';
 
 export const getNavCollapsed = createSelector(
@@ -47,3 +48,8 @@ export const getFilterPostsProfile = createSelector(
   (state: RootState) => state.settings,
   (state: SettingsState) => state.filterPostsProfile
 );
+
+export const getDeviceId = createSelector(
+  getWebPushNotifConfig,
+  (state: WebPushNotifConfig) => state.deviceId
+)
