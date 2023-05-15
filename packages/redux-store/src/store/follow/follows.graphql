@@ -4,7 +4,7 @@ query checkIsFollowedAccount($address: String!) {
   }
 }
 
-query Followers(
+query allFollowersByFollowing(
   $after: String
   $before: String
   $first: Int = 20
@@ -12,7 +12,7 @@ query Followers(
   $orderBy: FollowAccountOrder
   $skip: Int
 ) {
-  allFollowers(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, skip: $skip) {
+  allFollowersByFollowing(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, skip: $skip) {
     totalCount
     edges {
       cursor
@@ -26,7 +26,7 @@ query Followers(
   }
 }
 
-query Followings(
+query allFollowingsByFollower(
   $after: String
   $before: String
   $first: Int = 20
@@ -34,7 +34,7 @@ query Followings(
   $orderBy: FollowAccountOrder
   $skip: Int
 ) {
-  allFollowings(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, skip: $skip) {
+  allFollowingsByFollower(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, skip: $skip) {
     totalCount
     edges {
       cursor

@@ -38,6 +38,7 @@ export class PageResolver {
       where: { id: id }
     });
 
+    // TODO: Shorten query
     const followersCount = await this.prisma.followPage.count({
       where: { pageId: id }
     });

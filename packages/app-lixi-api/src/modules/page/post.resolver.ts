@@ -92,10 +92,10 @@ export class PostResolver {
       }
 
       const followingsAccount = await this.prisma.followAccount.findMany({
-        where: { followingAccountId: account.id },
-        select: { followerAccountId: true }
+        where: { followerAccountId: account.id },
+        select: { followingAccountId: true }
       });
-      const listFollowingsAccountIds = followingsAccount.map(item => item.followerAccountId);
+      const listFollowingsAccountIds = followingsAccount.map(item => item.followingAccountId);
 
       const followingPagesAccount = await this.prisma.followPage.findMany({
         where: { accountId: account.id },

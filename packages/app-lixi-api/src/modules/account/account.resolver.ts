@@ -57,15 +57,21 @@ export class AccountResolver {
       let followingsCount = 0;
       let followingPagesCount = 0;
       if (myAccount.id === account.id) {
-        followersCount = await this.prisma.followAccount.count({
-          where: { followingAccountId: myAccount.id }
-        });
-        followingsCount = await this.prisma.followAccount.count({
+        const followersCountPromise = this.prisma.followAccount.count({
           where: { followerAccountId: myAccount.id }
         });
-        followingPagesCount = await this.prisma.followPage.count({
+        const followingsCountPromise = this.prisma.followAccount.count({
+          where: { followingAccountId: myAccount.id }
+        });
+        const followingPagesCountPromise = this.prisma.followPage.count({
           where: { accountId: myAccount.id }
         });
+
+        [followersCount, followingsCount, followingPagesCount] = await Promise.all([
+          followersCountPromise,
+          followingsCountPromise,
+          followingPagesCountPromise
+        ]);
       }
 
       const result = _.omit(

@@ -582,9 +582,9 @@ export default {
   'general.follow': 'Theo dõi',
   'general.followBack': 'Theo dõi lại',
   'general.unfollow': 'Bỏ theo dõi',
-  'general.follower': 'Người theo dõi',
-  'general.following': 'Đang theo dõi',
-  'general.followingPage': 'Trang đang theo dõi',
+  'general.followers': 'Người theo dõi',
+  'general.followings': 'Đang theo dõi',
+  'general.followingPages': 'Trang đang theo dõi',
   'follow.followSuccess': 'Theo dõi thành công',
   'follow.followFailure': 'Theo dõi không thành công'
 };

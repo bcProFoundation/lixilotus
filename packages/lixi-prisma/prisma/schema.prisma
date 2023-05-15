@@ -133,7 +133,7 @@ model Page {
   lotusBurnDown  Float         @default(0.0) @map("lotus_burn_down")
   lotusBurnScore Float         @default(0.0) @map("lotus_burn_score")
   posts          Post[]
-  follower       FollowPage[]
+  followers      FollowPage[]
 
   @@map("page")
 }
@@ -198,9 +198,9 @@ model Account {
   posts             Post[]
   comments          Comment[]
   Worship           Worship[]
-  follower          FollowAccount[] @relation("followerAccount")
-  following         FollowAccount[] @relation("followingAccount")
-  followingPage     FollowPage[]
+  followers         FollowAccount[] @relation("followerAccount")
+  followings        FollowAccount[] @relation("followingAccount")
+  followingPages    FollowPage[]
 
   @@index([mnemonicHash], type: Hash)
   @@map("account")

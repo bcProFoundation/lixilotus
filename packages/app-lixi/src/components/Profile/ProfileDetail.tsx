@@ -550,8 +550,8 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
 
   const handleFollow = async () => {
     const createFollowAccountInput: CreateFollowAccountInput = {
-      followerAccountId: parseInt(userDetailData.id),
-      followingAccountId: selectedAccount.id
+      followingAccountId: parseInt(userDetailData.id),
+      followerAccountId: selectedAccount.id
     };
 
     await createFollowAccountTrigger({ input: createFollowAccountInput });
@@ -767,19 +767,19 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
                         dataItem={userDetailData?.followersCount}
                         onClickIcon={() => {}}
                         icon={UserOutlined}
-                        text={`${userDetailData?.followersCount} ${intl.get('general.follower')}`}
+                        text={`${userDetailData?.followersCount} ${intl.get('general.followers')}`}
                       />
                       <SubAbout
                         dataItem={userDetailData?.followingsCount}
                         onClickIcon={() => {}}
                         icon={UserOutlined}
-                        text={`${userDetailData?.followingsCount} ${intl.get('general.following')}`}
+                        text={`${userDetailData?.followingsCount} ${intl.get('general.followings')}`}
                       />
                       <SubAbout
                         dataItem={userDetailData?.followingPagesCount}
                         onClickIcon={() => {}}
                         icon={HomeOutlined}
-                        text={`${userDetailData?.followingPagesCount} ${intl.get('general.followingPage')}`}
+                        text={`${userDetailData?.followingPagesCount} ${intl.get('general.followingPages')}`}
                       />
                     </div>
                   </AboutBox>

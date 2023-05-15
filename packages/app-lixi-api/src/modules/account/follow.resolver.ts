@@ -53,8 +53,8 @@ export class FollowResolver {
 
     const existData = await this.prisma.followAccount.findFirst({
       where: {
-        followerAccountId: accountQuery.id,
-        followingAccountId: account.id
+        followingAccountId: accountQuery.id,
+        followerAccountId: account.id
       }
     });
 
@@ -67,10 +67,10 @@ export class FollowResolver {
   }
 
   @Query(() => FollowAccountConnection)
-  async allFollowers(
+  async allFollowersByFollowing(
     @Args() { after, before, first, last }: PaginationArgs,
-    @Args({ name: 'query', type: () => Number, nullable: true })
-    query: number,
+    @Args({ name: 'followerAccountId', type: () => Number, nullable: true })
+    followerAccountId: number,
     @Args({
       name: 'orderBy',
       type: () => FollowAccountOrder,
@@ -82,11 +82,7 @@ export class FollowResolver {
       paginationArgs =>
         this.prisma.followAccount.findMany({
           where: {
-            OR: !query
-              ? undefined
-              : {
-                  followingAccountId: { equals: query }
-                }
+            followerAccountId: followerAccountId
           },
           orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
           ...paginationArgs
@@ -94,11 +90,7 @@ export class FollowResolver {
       () =>
         this.prisma.followAccount.count({
           where: {
-            OR: !query
-              ? undefined
-              : {
-                  followingAccountId: { equals: query }
-                }
+            followerAccountId: followerAccountId
           }
         }),
       { first, last, before, after }
@@ -107,10 +99,10 @@ export class FollowResolver {
   }
 
   @Query(() => FollowAccountConnection)
-  async allFollowings(
+  async allFollowingsByFollower(
     @Args() { after, before, first, last }: PaginationArgs,
-    @Args({ name: 'query', type: () => Number, nullable: true })
-    query: number,
+    @Args({ name: 'followingAccountId', type: () => Number, nullable: true })
+    followingAccountId: number,
     @Args({
       name: 'orderBy',
       type: () => FollowAccountOrder,
@@ -122,11 +114,7 @@ export class FollowResolver {
       paginationArgs =>
         this.prisma.followAccount.findMany({
           where: {
-            OR: !query
-              ? undefined
-              : {
-                  followerAccountId: { equals: query }
-                }
+            followingAccountId: followingAccountId
           },
           orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
           ...paginationArgs
@@ -134,11 +122,7 @@ export class FollowResolver {
       () =>
         this.prisma.followAccount.count({
           where: {
-            OR: !query
-              ? undefined
-              : {
-                  followerAccountId: { equals: query }
-                }
+            followingAccountId: followingAccountId
           }
         }),
       { first, last, before, after }
@@ -150,22 +134,22 @@ export class FollowResolver {
   @Mutation(() => FollowAccount)
   async createFollowAccount(@AccountEntity() account: Account, @Args('data') data: CreateFollowAccountInput) {
     try {
-      const { followerAccountId, followingAccountId } = data;
+      const { followingAccountId, followerAccountId } = data;
 
       if (!account) {
         const couldNotFindAccount = await this.i18n.t('post.messages.couldNotFindAccount');
         throw new Error(couldNotFindAccount);
       }
 
-      if (account.id !== followingAccountId) {
+      if (account.id !== followerAccountId) {
         const invalidAccountMessage = await this.i18n.t('account.messages.invalidAccount');
         throw new VError(invalidAccountMessage);
       }
 
       const existData = await this.prisma.followAccount.findFirst({
         where: {
-          followerAccountId: followerAccountId,
-          followingAccountId: followingAccountId
+          followingAccountId: followingAccountId,
+          followerAccountId: followerAccountId
         }
       });
 
@@ -190,31 +174,23 @@ export class FollowResolver {
   @Mutation(() => FollowAccount)
   async deleteFollowAccount(@AccountEntity() account: Account, @Args('data') data: DeleteFollowAccountInput) {
     try {
-      const { followerAccountId, followingAccountId } = data;
+      const { followingAccountId, followerAccountId } = data;
 
       if (!account) {
         const couldNotFindAccount = await this.i18n.t('post.messages.couldNotFindAccount');
         throw new Error(couldNotFindAccount);
       }
 
-      if (account.id !== followingAccountId) {
+      if (account.id !== followerAccountId) {
         const invalidAccountMessage = await this.i18n.t('account.messages.invalidAccount');
         throw new VError(invalidAccountMessage);
       }
 
-      const existData = await this.prisma.followAccount.findFirst({
+      const deletedFollowAccount = await this.prisma.followAccount.deleteMany({
         where: {
-          followerAccountId: followerAccountId,
-          followingAccountId: followingAccountId
+          followingAccountId: followingAccountId,
+          followerAccountId: followerAccountId
         }
-      });
-
-      if (!existData) {
-        return existData;
-      }
-
-      const deletedFollowAccount = await this.prisma.followAccount.delete({
-        where: { id: existData.id }
       });
 
       pubSub.publish('followAccountDeleted', { followAccountDeleted: deletedFollowAccount });
@@ -309,19 +285,11 @@ export class FollowResolver {
         throw new VError(invalidAccountMessage);
       }
 
-      const existData = await this.prisma.followPage.findFirst({
+      const deletedFollowPage = await this.prisma.followPage.deleteMany({
         where: {
           accountId: accountId,
           pageId: pageId
         }
-      });
-
-      if (!existData) {
-        return existData;
-      }
-
-      const deletedFollowPage = await this.prisma.followPage.delete({
-        where: { id: existData.id }
       });
 
       pubSub.publish('followPageDeleted', { followPageDeleted: deletedFollowPage });

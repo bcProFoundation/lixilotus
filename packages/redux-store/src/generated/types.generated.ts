@@ -464,8 +464,8 @@ export type PostResponse = {
 export type Query = {
   __typename?: 'Query';
   allCommentsToPostId: CommentConnection;
-  allFollowers: FollowAccountConnection;
-  allFollowings: FollowAccountConnection;
+  allFollowersByFollowing: FollowAccountConnection;
+  allFollowingsByFollower: FollowAccountConnection;
   allOrphanPosts: PostConnection;
   allPages: PageConnection;
   allPosts: PostConnection;
@@ -502,25 +502,25 @@ export type QueryAllCommentsToPostIdArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
-export type QueryAllFollowersArgs = {
+export type QueryAllFollowersByFollowingArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
+  followerAccountId?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<FollowAccountOrder>;
-  query?: InputMaybe<Scalars['Int']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
 
-export type QueryAllFollowingsArgs = {
+export type QueryAllFollowingsByFollowerArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
+  followingAccountId?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<FollowAccountOrder>;
-  query?: InputMaybe<Scalars['Int']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
 

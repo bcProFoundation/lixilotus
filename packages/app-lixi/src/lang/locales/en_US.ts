@@ -583,9 +583,9 @@ export default {
   'general.follow': 'Follow',
   'general.followBack': 'Follow back',
   'general.unfollow': 'Unfollow',
-  'general.follower': 'Follower',
-  'general.following': 'Following',
-  'general.followingPage': 'Following Page',
+  'general.followers': 'Followers',
+  'general.followings': 'Followings',
+  'general.followingPages': 'Following Pages',
   'follow.followSuccess': 'Follow successful',
   'follow.followFailure': 'Follow failure'
 };
