@@ -22,13 +22,21 @@ import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
 import _ from 'lodash';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
 import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
+import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
+import { NotificationService } from 'src/common/modules/notifications/notification.service';
+import { NotificationLevel } from '@bcpros/lixi-prisma';
 
 const pubSub = new PubSub();
 
 @Resolver(() => FollowAccount)
 @UseFilters(GqlHttpExceptionFilter)
 export class FollowResolver {
-  constructor(private logger: Logger, private prisma: PrismaService, @I18n() private i18n: I18nService) {}
+  constructor(
+    private logger: Logger,
+    private prisma: PrismaService,
+    private readonly notificationService: NotificationService,
+    @I18n() private i18n: I18nService
+  ) {}
 
   @Subscription(() => FollowAccount)
   followAccountCreated() {
@@ -67,7 +75,7 @@ export class FollowResolver {
   }
 
   @Query(() => FollowAccountConnection)
-  async allFollowersByFollowing(
+  async allFollowingsByFollower(
     @Args() { after, before, first, last }: PaginationArgs,
     @Args({ name: 'followerAccountId', type: () => Number, nullable: true })
     followerAccountId: number,
@@ -99,7 +107,7 @@ export class FollowResolver {
   }
 
   @Query(() => FollowAccountConnection)
-  async allFollowingsByFollower(
+  async allFollowersByFollowing(
     @Args() { after, before, first, last }: PaginationArgs,
     @Args({ name: 'followingAccountId', type: () => Number, nullable: true })
     followingAccountId: number,
@@ -160,6 +168,34 @@ export class FollowResolver {
       const createdFollowAccount = await this.prisma.followAccount.create({
         data: { ...data }
       });
+
+      const recipient = await this.prisma.account.findFirst({
+        where: {
+          id: _.toSafeInteger(followingAccountId)
+        }
+      });
+
+      if (!recipient) {
+        const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
+        throw new VError(accountNotExistMessage);
+      }
+
+      const createNotif = {
+        senderId: account.id,
+        recipientId: recipient.id,
+        notificationTypeId: NOTIFICATION_TYPES.FOLLOW_ACCOUNT,
+        level: NotificationLevel.INFO,
+        url: '/profile/' + account.address,
+        additionalData: {
+          senderName: account.name
+        }
+      };
+      const jobData = {
+        room: recipient.mnemonicHash,
+        notification: createNotif
+      };
+      createNotif.senderId !== createNotif.recipientId &&
+        (await this.notificationService.saveAndDispatchNotification(jobData.room, jobData.notification));
 
       pubSub.publish('followAccountCreated', { followAccountCreated: createdFollowAccount });
       return createdFollowAccount;
@@ -259,6 +295,40 @@ export class FollowResolver {
       const createdFollowPage = await this.prisma.followPage.create({
         data: { ...data }
       });
+
+      const recipient = await this.prisma.account.findFirst({
+        where: {
+          page: {
+            id: pageId
+          }
+        },
+        include: {
+          page: true
+        }
+      });
+
+      if (!recipient) {
+        const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
+        throw new VError(accountNotExistMessage);
+      }
+
+      const createNotif = {
+        senderId: account.id,
+        recipientId: recipient.id,
+        notificationTypeId: NOTIFICATION_TYPES.FOLLOW_PAGE,
+        level: NotificationLevel.INFO,
+        url: '/profile/' + account.address,
+        additionalData: {
+          senderName: account.name,
+          pageName: recipient.page?.name
+        }
+      };
+      const jobData = {
+        room: recipient.mnemonicHash,
+        notification: createNotif
+      };
+      createNotif.senderId !== createNotif.recipientId &&
+        (await this.notificationService.saveAndDispatchNotification(jobData.room, jobData.notification));
 
       pubSub.publish('followPageCreated', { followPageCreated: createdFollowPage });
       return createdFollowPage;
