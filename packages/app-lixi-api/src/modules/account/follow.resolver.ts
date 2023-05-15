@@ -36,7 +36,7 @@ export class FollowResolver {
     private prisma: PrismaService,
     private readonly notificationService: NotificationService,
     @I18n() private i18n: I18nService
-  ) {}
+  ) { }
 
   @Subscription(() => FollowAccount)
   followAccountCreated() {
@@ -222,11 +222,15 @@ export class FollowResolver {
         throw new VError(invalidAccountMessage);
       }
 
-      const deletedFollowAccount = await this.prisma.followAccount.deleteMany({
+      const existData = await this.prisma.followAccount.findFirst({
         where: {
           followingAccountId: followingAccountId,
           followerAccountId: followerAccountId
         }
+      });
+
+      const deletedFollowAccount = await this.prisma.followAccount.delete({
+        where: { id: existData?.id }
       });
 
       pubSub.publish('followAccountDeleted', { followAccountDeleted: deletedFollowAccount });
@@ -355,11 +359,15 @@ export class FollowResolver {
         throw new VError(invalidAccountMessage);
       }
 
-      const deletedFollowPage = await this.prisma.followPage.deleteMany({
+      const existData = await this.prisma.followPage.findFirst({
         where: {
           accountId: accountId,
           pageId: pageId
         }
+      });
+
+      const deletedFollowPage = await this.prisma.followPage.delete({
+        where: { id: existData?.id }
       });
 
       pubSub.publish('followPageDeleted', { followPageDeleted: deletedFollowPage });

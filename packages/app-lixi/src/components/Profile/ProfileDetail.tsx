@@ -564,11 +564,6 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
     };
 
     await deleteFollowAccountTrigger({ input: deleteFollowAccountInput });
-    console.log("return: ",
-      isLoadingDeleteFollowAccount,
-      isSuccessDeleteFollowAccount,
-      isErrorDeleteFollowAccount,
-      errorOnDelete)
   };
 
   return (
