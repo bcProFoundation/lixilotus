@@ -14,6 +14,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { CoreModule } from './modules/core/core.module';
 import { PageModule } from './modules/page/page.module';
 import { WorshipModule } from './modules/worship/worship.module';
+import { TempleModule } from './modules/temple/temple.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { WalletModule } from './modules/wallet/wallet.module';
 import { GraphQLError, GraphQLFormattedError } from 'graphql';
@@ -93,6 +94,7 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
     PageModule,
     TokenModule,
     WorshipModule,
+    TempleModule,
     S3Module.forRootAsync({
       useFactory: () => ({
         config: {

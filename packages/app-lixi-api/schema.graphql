@@ -89,6 +89,23 @@ input CreatePostInput {
   uploadCovers: [String!]
 }
 
+input CreateTempleInput {
+  achievement: String
+  address: String
+  alias: String
+  avatar: String
+  cityId: String
+  countryId: String
+  cover: String
+  dateOfCompleted: DateTime
+  description: String
+  name: String!
+  president: String
+  religion: String
+  stateId: String
+  website: String
+}
+
 input CreateTokenInput {
   tokenId: String!
 }
@@ -97,8 +114,9 @@ input CreateWorshipInput {
   latitude: Decimal
   location: String
   longitude: Decimal
+  templeId: String
   worshipedAmount: Float!
-  worshipedPersonId: String!
+  worshipedPersonId: String
 }
 
 input CreateWorshipedPersonInput {
@@ -126,8 +144,10 @@ type Mutation {
   createComment(data: CreateCommentInput!): Comment!
   createPage(data: CreatePageInput!): Page!
   createPost(data: CreatePostInput!): Post!
+  createTemple(data: CreateTempleInput!): Temple!
   createToken(data: CreateTokenInput!): Token!
   createWorship(data: CreateWorshipInput!): Worship!
+  createWorshipTemple(data: CreateWorshipInput!): Worship!
   createWorshipedPerson(data: CreateWorshipedPersonInput!): WorshipedPerson!
   updatePage(data: UpdatePageInput!): Page!
   updatePost(data: UpdatePostInput!): Post!
@@ -292,9 +312,25 @@ type Query {
   ): PostResponse!
   allPostsByTokenId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
   allPostsByUserId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
+  allTemple(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: TempleOrder, skip: Int): TempleConnection!
+  allTempleBySearch(
+    """Paginate after opaque cursor"""
+    after: String
+
+    """Paginate before opaque cursor"""
+    before: String
+
+    """Paginate first"""
+    first: Int
+
+    """Paginate last"""
+    last: Int
+    query: String
+  ): TempleConnection!
   allTokens(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: TokenOrder, query: String, skip: Int): TokenConnection!
   allWorship(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: WorshipOrder, skip: Int): WorshipConnection!
   allWorshipedByPersonId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: WorshipOrder, skip: Int): WorshipConnection!
+  allWorshipedByTempleId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: WorshipOrder, skip: Int): WorshipConnection!
   allWorshipedPerson(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: WorshipedPersonOrder, skip: Int): WorshipedPersonConnection!
   allWorshipedPersonBySearch(
     """Paginate after opaque cursor"""
@@ -315,6 +351,7 @@ type Query {
   comment(id: String!): Comment!
   page(id: String!): Page!
   post(id: String!): Post!
+  temple(id: String!): Temple!
   token(tokenId: String!): Token!
   worship(id: String!): Worship!
   worshipedPerson(id: String!): WorshipedPerson!
@@ -331,8 +368,60 @@ type Subscription {
   commentCreated: Comment!
   pageCreated: Page!
   postCreated: Post!
+  templeCreated: Temple!
   tokenCreated: Token!
   worshipedPersonCreated: WorshipedPerson!
+}
+
+type Temple {
+  account: Account!
+  achievement: String
+  address: String
+  alias: String
+  avatar: UploadDetail
+  city: City
+  country: Country
+  cover: UploadDetail
+
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime
+  dateOfCompleted: DateTime
+  description: String
+  id: ID!
+  name: String!
+  president: String
+  religion: String
+  state: State
+  totalWorshipAmount: Int
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime
+  verified: Boolean!
+  website: String
+}
+
+type TempleConnection {
+  edges: [TempleEdge!]
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+type TempleEdge {
+  cursor: String!
+  node: Temple!
+}
+
+input TempleOrder {
+  direction: OrderDirection!
+  field: TempleOrderField!
+}
+
+"""Properties by which worshiped person connections can be ordered."""
+enum TempleOrderField {
+  createdAt
+  id
+  totalWorshipAmount
+  updatedAt
 }
 
 type Token {
@@ -430,11 +519,12 @@ type Worship {
   latitude: Decimal
   location: String
   longitude: Decimal
+  temple: Temple
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
   worshipedAmount: Float!
-  worshipedPerson: WorshipedPerson!
+  worshipedPerson: WorshipedPerson
 }
 
 type WorshipConnection {

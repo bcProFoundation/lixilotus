@@ -1,5 +1,6 @@
 {
   "messages": {
-    "couldNotFindPerson": "The person does not exist in the database."
+    "couldNotFindPerson": "The person does not exist in the database.",
+    "couldNotFindTemple": "The temple does not exist in the database."
   }
 }

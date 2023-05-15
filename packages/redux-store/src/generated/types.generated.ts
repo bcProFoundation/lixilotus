@@ -107,6 +107,23 @@ export type CreatePostInput = {
   uploadCovers?: InputMaybe<Array<Scalars['String']>>;
 };
 
+export type CreateTempleInput = {
+  achievement?: InputMaybe<Scalars['String']>;
+  address?: InputMaybe<Scalars['String']>;
+  alias?: InputMaybe<Scalars['String']>;
+  avatar?: InputMaybe<Scalars['String']>;
+  cityId?: InputMaybe<Scalars['String']>;
+  countryId?: InputMaybe<Scalars['String']>;
+  cover?: InputMaybe<Scalars['String']>;
+  dateOfCompleted?: InputMaybe<Scalars['DateTime']>;
+  description?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+  president?: InputMaybe<Scalars['String']>;
+  religion?: InputMaybe<Scalars['String']>;
+  stateId?: InputMaybe<Scalars['String']>;
+  website?: InputMaybe<Scalars['String']>;
+};
+
 export type CreateTokenInput = {
   tokenId: Scalars['String'];
 };
@@ -115,8 +132,9 @@ export type CreateWorshipInput = {
   latitude?: InputMaybe<Scalars['Decimal']>;
   location?: InputMaybe<Scalars['String']>;
   longitude?: InputMaybe<Scalars['Decimal']>;
+  templeId?: InputMaybe<Scalars['String']>;
   worshipedAmount: Scalars['Float'];
-  worshipedPersonId: Scalars['String'];
+  worshipedPersonId?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateWorshipedPersonInput = {
@@ -137,8 +155,10 @@ export type Mutation = {
   createComment: Comment;
   createPage: Page;
   createPost: Post;
+  createTemple: Temple;
   createToken: Token;
   createWorship: Worship;
+  createWorshipTemple: Worship;
   createWorshipedPerson: WorshipedPerson;
   updatePage: Page;
   updatePost: Post;
@@ -156,11 +176,19 @@ export type MutationCreatePostArgs = {
   data: CreatePostInput;
 };
 
+export type MutationCreateTempleArgs = {
+  data: CreateTempleInput;
+};
+
 export type MutationCreateTokenArgs = {
   data: CreateTokenInput;
 };
 
 export type MutationCreateWorshipArgs = {
+  data: CreateWorshipInput;
+};
+
+export type MutationCreateWorshipTempleArgs = {
   data: CreateWorshipInput;
 };
 
@@ -325,9 +353,12 @@ export type Query = {
   allPostsBySearch: PostResponse;
   allPostsByTokenId: PostConnection;
   allPostsByUserId: PostConnection;
+  allTemple: TempleConnection;
+  allTempleBySearch: TempleConnection;
   allTokens: TokenConnection;
   allWorship: WorshipConnection;
   allWorshipedByPersonId: WorshipConnection;
+  allWorshipedByTempleId: WorshipConnection;
   allWorshipedPerson: WorshipedPersonConnection;
   allWorshipedPersonBySearch: WorshipedPersonConnection;
   allWorshipedPersonByUserId: WorshipedPersonConnection;
@@ -335,6 +366,7 @@ export type Query = {
   comment: Comment;
   page: Page;
   post: Post;
+  temple: Temple;
   token: Token;
   worship: Worship;
   worshipedPerson: WorshipedPerson;
@@ -426,6 +458,24 @@ export type QueryAllPostsByUserIdArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
+export type QueryAllTempleArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<TempleOrder>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryAllTempleBySearchArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  query?: InputMaybe<Scalars['String']>;
+};
+
 export type QueryAllTokensArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
@@ -448,6 +498,17 @@ export type QueryAllWorshipArgs = {
 };
 
 export type QueryAllWorshipedByPersonIdArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  id?: InputMaybe<Scalars['String']>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<WorshipOrder>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryAllWorshipedByTempleIdArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
@@ -508,6 +569,10 @@ export type QueryPostArgs = {
   id: Scalars['String'];
 };
 
+export type QueryTempleArgs = {
+  id: Scalars['String'];
+};
+
 export type QueryTokenArgs = {
   tokenId: Scalars['String'];
 };
@@ -533,9 +598,62 @@ export type Subscription = {
   commentCreated: Comment;
   pageCreated: Page;
   postCreated: Post;
+  templeCreated: Temple;
   tokenCreated: Token;
   worshipedPersonCreated: WorshipedPerson;
 };
+
+export type Temple = {
+  __typename?: 'Temple';
+  account: Account;
+  achievement?: Maybe<Scalars['String']>;
+  address?: Maybe<Scalars['String']>;
+  alias?: Maybe<Scalars['String']>;
+  avatar?: Maybe<UploadDetail>;
+  city?: Maybe<City>;
+  country?: Maybe<Country>;
+  cover?: Maybe<UploadDetail>;
+  /** Identifies the date and time when the object was created. */
+  createdAt?: Maybe<Scalars['DateTime']>;
+  dateOfCompleted?: Maybe<Scalars['DateTime']>;
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  president?: Maybe<Scalars['String']>;
+  religion?: Maybe<Scalars['String']>;
+  state?: Maybe<State>;
+  totalWorshipAmount?: Maybe<Scalars['Int']>;
+  /** Identifies the date and time when the object was last updated. */
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  verified: Scalars['Boolean'];
+  website?: Maybe<Scalars['String']>;
+};
+
+export type TempleConnection = {
+  __typename?: 'TempleConnection';
+  edges?: Maybe<Array<TempleEdge>>;
+  pageInfo: PageInfo;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type TempleEdge = {
+  __typename?: 'TempleEdge';
+  cursor: Scalars['String'];
+  node: Temple;
+};
+
+export type TempleOrder = {
+  direction: OrderDirection;
+  field: TempleOrderField;
+};
+
+/** Properties by which worshiped person connections can be ordered. */
+export enum TempleOrderField {
+  CreatedAt = 'createdAt',
+  Id = 'id',
+  TotalWorshipAmount = 'totalWorshipAmount',
+  UpdatedAt = 'updatedAt'
+}
 
 export type Token = {
   __typename?: 'Token';
@@ -636,10 +754,11 @@ export type Worship = {
   latitude?: Maybe<Scalars['Decimal']>;
   location?: Maybe<Scalars['String']>;
   longitude?: Maybe<Scalars['Decimal']>;
+  temple?: Maybe<Temple>;
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
   worshipedAmount: Scalars['Float'];
-  worshipedPerson: WorshipedPerson;
+  worshipedPerson?: Maybe<WorshipedPerson>;
 };
 
 export type WorshipConnection = {

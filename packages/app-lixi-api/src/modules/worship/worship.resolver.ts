@@ -8,7 +8,8 @@ import {
   CreateWorshipedPersonInput,
   CreateWorshipInput,
   WorshipOrder,
-  WorshipConnection
+  WorshipConnection,
+  TempleOrder
 } from '@bcpros/lixi-models';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
 import { HttpException, HttpStatus, Logger, UseFilters, UseGuards } from '@nestjs/common';
@@ -191,6 +192,42 @@ export class WorshipResolver {
         this.prisma.worship.count({
           where: {
             worshipedPerson: {
+              id: id
+            }
+          }
+        }),
+      { first, last, before, after }
+    );
+    return result;
+  }
+
+  @Query(() => WorshipConnection)
+  async allWorshipedByTempleId(
+    @Args() { after, before, first, last }: PaginationArgs,
+    @Args({ name: 'id', type: () => String, nullable: true }) id: string,
+    @Args({
+      name: 'orderBy',
+      type: () => WorshipOrder,
+      nullable: true
+    })
+    orderBy: WorshipOrder
+  ) {
+    const result = await findManyCursorConnection(
+      args =>
+        this.prisma.worship.findMany({
+          include: { account: true, temple: true },
+          where: {
+            temple: {
+              id: id
+            }
+          },
+          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+          ...args
+        }),
+      () =>
+        this.prisma.worship.count({
+          where: {
+            temple: {
               id: id
             }
           }
@@ -421,6 +458,80 @@ export class WorshipResolver {
 
     pubSub.publish('personWorshiped', { personWorshiped: worshipedPerson });
     return worshipedPerson;
+  }
+
+  @UseGuards(GqlJwtAuthGuard)
+  @Mutation(() => Worship)
+  async createWorshipTemple(@AccountEntity() account: Account, @Args('data') data: CreateWorshipInput) {
+    if (!account) {
+      const couldNotFindAccount = this.i18n.t('post.messages.couldNotFindAccount');
+      throw new Error(couldNotFindAccount);
+    }
+
+    const { templeId, worshipedAmount, location, longitude, latitude } = data;
+
+    const temple = await this.prisma.temple.findFirst({
+      where: {
+        id: templeId
+      }
+    });
+
+    const newTotalAmount = temple?.totalWorshipAmount ? temple?.totalWorshipAmount + worshipedAmount : worshipedAmount;
+
+    if (!temple) {
+      const couldNotFindTemple = this.i18n.t('worship.messages.couldNotFindTemple');
+      throw new Error(couldNotFindTemple);
+    }
+
+    const templeToWorship = {
+      data: {
+        account: {
+          connect: {
+            id: account.id
+          }
+        },
+        temple: {
+          connect: {
+            id: templeId
+          }
+        },
+        worshipedAmount: worshipedAmount,
+        location: location || undefined,
+        latitude: latitude || undefined,
+        longitude: longitude || undefined
+      }
+    };
+    const worshipedTemple = await this.prisma.worship.create({
+      ...templeToWorship,
+      include: {
+        account: {
+          select: {
+            id: true,
+            name: true,
+            address: true
+          }
+        },
+        temple: {
+          select: {
+            id: true,
+            name: true,
+            totalWorshipAmount: true
+          }
+        }
+      }
+    });
+
+    await this.prisma.temple.update({
+      where: {
+        id: temple.id
+      },
+      data: {
+        totalWorshipAmount: newTotalAmount
+      }
+    });
+
+    pubSub.publish('templeWorshiped', { templeWorshiped: worshipedTemple });
+    return worshipedTemple;
   }
 
   @ResolveField()
