@@ -19,8 +19,29 @@ export type Scalars = {
 export type Account = {
   __typename?: 'Account';
   address: Scalars['String'];
+  /** Identifies the date and time when the object was created. */
+  createdAt: Scalars['DateTime'];
+  encryptedMnemonic?: Maybe<Scalars['String']>;
+  encryptedSecret?: Maybe<Scalars['String']>;
+  followersCount?: Maybe<Scalars['Int']>;
+  followingPagesCount?: Maybe<Scalars['Int']>;
+  followingsCount?: Maybe<Scalars['Int']>;
   id: Scalars['ID'];
+  language: Scalars['String'];
+  mnemonic?: Maybe<Scalars['String']>;
+  mnemonicHash?: Maybe<Scalars['String']>;
   name: Scalars['String'];
+  page?: Maybe<Page>;
+  publicKey?: Maybe<Scalars['String']>;
+  secret?: Maybe<Scalars['String']>;
+  /** Identifies the date and time when the object was last updated. */
+  updatedAt: Scalars['DateTime'];
+};
+
+export type AccountEdge = {
+  __typename?: 'AccountEdge';
+  cursor: Scalars['String'];
+  node: Account;
 };
 
 export type City = {
@@ -85,11 +106,28 @@ export type Country = {
   state: Array<State>;
 };
 
+export type CreateAccountInput = {
+  encryptedMnemonic: Scalars['String'];
+  language: Scalars['String'];
+  mnemonic: Scalars['String'];
+  mnemonicHash: Scalars['String'];
+};
+
 export type CreateCommentInput = {
   commentByPublicKey?: InputMaybe<Scalars['String']>;
   commentText: Scalars['String'];
   commentToId: Scalars['String'];
   tipHex?: InputMaybe<Scalars['String']>;
+};
+
+export type CreateFollowAccountInput = {
+  followerAccountId: Scalars['Int'];
+  followingAccountId: Scalars['Int'];
+};
+
+export type CreateFollowPageInput = {
+  accountId: Scalars['Int'];
+  pageId: Scalars['String'];
 };
 
 export type CreatePageInput = {
@@ -132,45 +170,166 @@ export type CreateWorshipedPersonInput = {
   wikiDataId?: InputMaybe<Scalars['String']>;
 };
 
+export type DeleteFollowAccountInput = {
+  followerAccountId: Scalars['Int'];
+  followingAccountId: Scalars['Int'];
+};
+
+export type DeleteFollowPageInput = {
+  accountId: Scalars['Int'];
+  pageId: Scalars['String'];
+};
+
+export type FollowAccount = {
+  __typename?: 'FollowAccount';
+  /** Identifies the date and time when the object was created. */
+  createdAt: Scalars['DateTime'];
+  followerAccount?: Maybe<Account>;
+  followerAccountId?: Maybe<Scalars['Int']>;
+  followingAccount?: Maybe<Account>;
+  followingAccountId?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['ID']>;
+  isFollowed?: Maybe<Scalars['Boolean']>;
+  /** Identifies the date and time when the object was last updated. */
+  updatedAt: Scalars['DateTime'];
+};
+
+export type FollowAccountConnection = {
+  __typename?: 'FollowAccountConnection';
+  edges?: Maybe<Array<FollowAccountEdge>>;
+  pageInfo: PageInfo;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type FollowAccountEdge = {
+  __typename?: 'FollowAccountEdge';
+  cursor: Scalars['String'];
+  node: FollowAccount;
+};
+
+export type FollowAccountOrder = {
+  direction: OrderDirection;
+  field: FollowAccountOrderField;
+};
+
+/** Properties by which follow account connections can be ordered. */
+export enum FollowAccountOrderField {
+  CreatedAt = 'createdAt',
+  FollowerAccountId = 'followerAccountId',
+  FollowingAccountId = 'followingAccountId',
+  Id = 'id',
+  UpdatedAt = 'updatedAt'
+}
+
+export type FollowPage = {
+  __typename?: 'FollowPage';
+  account?: Maybe<Account>;
+  accountId?: Maybe<Scalars['Int']>;
+  /** Identifies the date and time when the object was created. */
+  createdAt: Scalars['DateTime'];
+  id?: Maybe<Scalars['ID']>;
+  isFollowed?: Maybe<Scalars['Boolean']>;
+  page?: Maybe<Page>;
+  pageId?: Maybe<Scalars['String']>;
+  /** Identifies the date and time when the object was last updated. */
+  updatedAt: Scalars['DateTime'];
+};
+
+export type FollowPageEdge = {
+  __typename?: 'FollowPageEdge';
+  cursor: Scalars['String'];
+  node: FollowPage;
+};
+
+export type ImportAccountInput = {
+  language?: InputMaybe<Scalars['String']>;
+  mnemonic: Scalars['String'];
+  mnemonicHash?: InputMaybe<Scalars['String']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  createAccount: Account;
   createComment: Comment;
+  createFollowAccount: FollowAccount;
+  createFollowPage: FollowPage;
   createPage: Page;
   createPost: Post;
   createToken: Token;
   createWorship: Worship;
   createWorshipedPerson: WorshipedPerson;
+  deleteFollowAccount: Scalars['Boolean'];
+  deleteFollowPage: Scalars['Boolean'];
+  importAccount: Account;
   updatePage: Page;
   updatePost: Post;
 };
+
+
+export type MutationCreateAccountArgs = {
+  data: CreateAccountInput;
+};
+
 
 export type MutationCreateCommentArgs = {
   data: CreateCommentInput;
 };
 
+
+export type MutationCreateFollowAccountArgs = {
+  data: CreateFollowAccountInput;
+};
+
+
+export type MutationCreateFollowPageArgs = {
+  data: CreateFollowPageInput;
+};
+
+
 export type MutationCreatePageArgs = {
   data: CreatePageInput;
 };
+
 
 export type MutationCreatePostArgs = {
   data: CreatePostInput;
 };
 
+
 export type MutationCreateTokenArgs = {
   data: CreateTokenInput;
 };
+
 
 export type MutationCreateWorshipArgs = {
   data: CreateWorshipInput;
 };
 
+
 export type MutationCreateWorshipedPersonArgs = {
   data: CreateWorshipedPersonInput;
 };
 
+
+export type MutationDeleteFollowAccountArgs = {
+  data: DeleteFollowAccountInput;
+};
+
+
+export type MutationDeleteFollowPageArgs = {
+  data: DeleteFollowPageInput;
+};
+
+
+export type MutationImportAccountArgs = {
+  data: ImportAccountInput;
+};
+
+
 export type MutationUpdatePageArgs = {
   data: UpdatePageInput;
 };
+
 
 export type MutationUpdatePostArgs = {
   data: UpdatePostInput;
@@ -192,6 +351,7 @@ export type Page = {
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
   description: Scalars['String'];
+  followersCount?: Maybe<Scalars['Int']>;
   id: Scalars['ID'];
   lotusBurnDown: Scalars['Float'];
   lotusBurnScore: Scalars['Float'];
@@ -318,6 +478,8 @@ export type PostResponse = {
 export type Query = {
   __typename?: 'Query';
   allCommentsToPostId: CommentConnection;
+  allFollowersByFollowing: FollowAccountConnection;
+  allFollowingsByFollower: FollowAccountConnection;
   allOrphanPosts: PostConnection;
   allPages: PageConnection;
   allPosts: PostConnection;
@@ -332,13 +494,18 @@ export type Query = {
   allWorshipedPersonBySearch: WorshipedPersonConnection;
   allWorshipedPersonByUserId: WorshipedPersonConnection;
   allWorshipedPersonSpecialDate: WorshipedPersonConnection;
+  checkIsFollowedAccount: FollowAccount;
+  checkIsFollowedPage: FollowPage;
   comment: Comment;
+  getAccountByAddress: Account;
   page: Page;
   post: Post;
   token: Token;
+  topPages: PageConnection;
   worship: Worship;
   worshipedPerson: WorshipedPerson;
 };
+
 
 export type QueryAllCommentsToPostIdArgs = {
   after?: InputMaybe<Scalars['String']>;
@@ -351,6 +518,31 @@ export type QueryAllCommentsToPostIdArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
+
+export type QueryAllFollowersByFollowingArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  followingAccountId?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<FollowAccountOrder>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type QueryAllFollowingsByFollowerArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  followerAccountId?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<FollowAccountOrder>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+
 export type QueryAllOrphanPostsArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
@@ -361,6 +553,7 @@ export type QueryAllOrphanPostsArgs = {
   query?: InputMaybe<Scalars['String']>;
   skip?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type QueryAllPagesArgs = {
   after?: InputMaybe<Scalars['String']>;
@@ -373,6 +566,7 @@ export type QueryAllPagesArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
+
 export type QueryAllPostsArgs = {
   accountId?: InputMaybe<Scalars['Int']>;
   after?: InputMaybe<Scalars['String']>;
@@ -383,6 +577,7 @@ export type QueryAllPostsArgs = {
   orderBy?: InputMaybe<PostOrder>;
   skip?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type QueryAllPostsByPageIdArgs = {
   after?: InputMaybe<Scalars['String']>;
@@ -395,6 +590,7 @@ export type QueryAllPostsByPageIdArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
+
 export type QueryAllPostsBySearchArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
@@ -403,6 +599,7 @@ export type QueryAllPostsBySearchArgs = {
   minBurnFilter?: InputMaybe<Scalars['Int']>;
   query?: InputMaybe<Scalars['String']>;
 };
+
 
 export type QueryAllPostsByTokenIdArgs = {
   after?: InputMaybe<Scalars['String']>;
@@ -415,6 +612,7 @@ export type QueryAllPostsByTokenIdArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
+
 export type QueryAllPostsByUserIdArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
@@ -425,6 +623,7 @@ export type QueryAllPostsByUserIdArgs = {
   orderBy?: InputMaybe<PostOrder>;
   skip?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type QueryAllTokensArgs = {
   after?: InputMaybe<Scalars['String']>;
@@ -437,6 +636,7 @@ export type QueryAllTokensArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
+
 export type QueryAllWorshipArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
@@ -446,6 +646,7 @@ export type QueryAllWorshipArgs = {
   orderBy?: InputMaybe<WorshipOrder>;
   skip?: InputMaybe<Scalars['Int']>;
 };
+
 
 export type QueryAllWorshipedByPersonIdArgs = {
   after?: InputMaybe<Scalars['String']>;
@@ -458,6 +659,7 @@ export type QueryAllWorshipedByPersonIdArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
+
 export type QueryAllWorshipedPersonArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
@@ -468,6 +670,7 @@ export type QueryAllWorshipedPersonArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
+
 export type QueryAllWorshipedPersonBySearchArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
@@ -475,6 +678,7 @@ export type QueryAllWorshipedPersonBySearchArgs = {
   last?: InputMaybe<Scalars['Int']>;
   query?: InputMaybe<Scalars['String']>;
 };
+
 
 export type QueryAllWorshipedPersonByUserIdArgs = {
   after?: InputMaybe<Scalars['String']>;
@@ -486,6 +690,7 @@ export type QueryAllWorshipedPersonByUserIdArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
+
 export type QueryAllWorshipedPersonSpecialDateArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
@@ -496,25 +701,58 @@ export type QueryAllWorshipedPersonSpecialDateArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
+
+export type QueryCheckIsFollowedAccountArgs = {
+  address: Scalars['String'];
+};
+
+
+export type QueryCheckIsFollowedPageArgs = {
+  pageId: Scalars['String'];
+};
+
+
 export type QueryCommentArgs = {
   id: Scalars['String'];
 };
+
+
+export type QueryGetAccountByAddressArgs = {
+  address: Scalars['String'];
+};
+
 
 export type QueryPageArgs = {
   id: Scalars['String'];
 };
 
+
 export type QueryPostArgs = {
   id: Scalars['String'];
 };
+
 
 export type QueryTokenArgs = {
   tokenId: Scalars['String'];
 };
 
+
+export type QueryTopPagesArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<PageOrder>;
+  query?: InputMaybe<Scalars['String']>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+
 export type QueryWorshipArgs = {
   id: Scalars['String'];
 };
+
 
 export type QueryWorshipedPersonArgs = {
   id: Scalars['String'];
@@ -530,7 +768,9 @@ export type State = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  accountCreated: Account;
   commentCreated: Comment;
+  followAccountCreated: FollowAccount;
   pageCreated: Page;
   postCreated: Post;
   tokenCreated: Token;

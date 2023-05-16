@@ -133,6 +133,7 @@ model Page {
   lotusBurnDown  Float         @default(0.0) @map("lotus_burn_down")
   lotusBurnScore Float         @default(0.0) @map("lotus_burn_score")
   posts          Post[]
+  followers      FollowPage[]
 
   @@map("page")
 }
@@ -179,24 +180,27 @@ model Comment {
 }
 
 model Account {
-  id                Int            @id @default(autoincrement())
+  id                Int             @id @default(autoincrement())
   name              String
-  encryptedMnemonic String         @map("encrypted_mnemonic")
-  encryptedSecret   String         @default("") @map("encrypted_secret")
-  createdAt         DateTime       @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt         DateTime       @default(now()) @map("updated_at") @db.Timestamptz
+  encryptedMnemonic String          @map("encrypted_mnemonic")
+  encryptedSecret   String          @default("") @map("encrypted_secret")
+  createdAt         DateTime        @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime        @default(now()) @map("updated_at") @db.Timestamptz
   lixies            Lixi[]
-  mnemonicHash      String         @map("mnemonic_hash")
-  address           String         @default("") @map("address")
+  mnemonicHash      String          @map("mnemonic_hash")
+  address           String          @default("") @map("address")
   notifications     Notification[]
-  language          String         @default("en")
-  publicKey         String         @default("") @map("public_key")
-  email             String?        @unique
+  language          String          @default("en")
+  publicKey         String          @default("") @map("public_key")
+  email             String?         @unique
   uploadDetail      UploadDetail[]
   page              Page?
   posts             Post[]
   comments          Comment[]
   Worship           Worship[]
+  followers         FollowAccount[] @relation("followerAccount")
+  followings        FollowAccount[] @relation("followingAccount")
+  followingPages    FollowPage[]
 
   @@index([mnemonicHash], type: Hash)
   @@map("account")
@@ -588,4 +592,32 @@ model Worship {
   longitude         Decimal?        @map("longitude") @db.Decimal(11, 8)
   createdAt         DateTime?       @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt         DateTime?       @default(now()) @map("updated_at") @db.Timestamptz(6)
+}
+
+model FollowAccount {
+  id                 String   @id @default(cuid())
+  followerAccount    Account  @relation("followerAccount", fields: [followerAccountId], references: [id])
+  followerAccountId  Int      @map("follower_account_id")
+  followingAccount   Account  @relation("followingAccount", fields: [followingAccountId], references: [id])
+  followingAccountId Int      @map("following_account_id")
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@index(followerAccountId)
+  @@index(followingAccountId)
+  @@map("follow_account")
+}
+
+model FollowPage {
+  id        String   @id @default(cuid())
+  account   Account  @relation(fields: [accountId], references: [id])
+  accountId Int      @map("account_id")
+  page      Page     @relation(fields: [pageId], references: [id])
+  pageId    String   @map("page_id")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@index(accountId)
+  @@index(pageId)
+  @@map("follow_page")
 }

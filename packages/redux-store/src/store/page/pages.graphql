@@ -48,6 +48,7 @@ fragment PageFields on Page {
   lotusBurnDown
   lotusBurnScore
   totalBurnForPage
+  followersCount
   createdAt
   updatedAt
 }

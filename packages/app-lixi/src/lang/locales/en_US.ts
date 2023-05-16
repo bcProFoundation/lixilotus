@@ -479,6 +479,8 @@ export default {
   'country.unablegetStates': 'Unable to get states',
 
   /* 15.Page */
+  'general.allPost': 'All',
+  'general.followsPost': 'Follows',
   'post.createNewPage': 'Create new post',
   'post.createPost': 'Create post',
   'post.editPost': 'Edit unburnt post',
@@ -575,5 +577,15 @@ export default {
   'category.scienceAndTechnology': 'Science And Technology',
   'category.healthAndFitness': 'Health And Fitness',
   'category.travelAndEvents': 'Travel And Events',
-  'category.other': 'Other'
+  'category.other': 'Other',
+
+  /* 19. Follow*/
+  'general.follow': 'Follow',
+  'general.followBack': 'Follow back',
+  'general.unfollow': 'Unfollow',
+  'general.followers': 'Followers',
+  'general.followings': 'Followings',
+  'general.followingPages': 'Following Pages',
+  'follow.followSuccess': 'Follow successful',
+  'follow.followFailure': 'Follow failure'
 };

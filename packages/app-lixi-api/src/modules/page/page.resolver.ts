@@ -32,16 +32,62 @@ export class PageResolver {
   }
 
   @Query(() => Page)
-  async page(@Args('id', { type: () => String }) id: string) {
-    const result = await this.prisma.page.findUnique({
+  @UseGuards(GqlJwtAuthGuard)
+  async page(@PageAccountEntity() account: Account, @Args('id', { type: () => String }) id: string) {
+    const page = await this.prisma.page.findUnique({
       where: { id: id }
     });
+
+    // TODO: Shorten query
+    const followersCount = await this.prisma.followPage.count({
+      where: { pageId: id }
+    });
+
+    const result = {
+      ...page,
+      followersCount: followersCount
+    };
 
     return result;
   }
 
   @Query(() => PageConnection)
   async allPages(
+    @Args() { after, before, first, last }: PaginationArgs,
+    @Args({ name: 'query', type: () => String, nullable: true })
+    query: string,
+    @Args({
+      name: 'orderBy',
+      type: () => PageOrder,
+      nullable: true
+    })
+    orderBy: PageOrder
+  ) {
+    const result = await findManyCursorConnection(
+      async args => {
+        const pages = await this.prisma.page.findMany({
+          include: {
+            posts: true
+          },
+          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+          ...args
+        });
+
+        const output = pages.map(page => ({
+          ...page,
+          totalBurnForPage: page.posts.reduce((a, b) => a + b.lotusBurnScore, 0)
+        }));
+
+        return output;
+      },
+      () => this.prisma.page.count(),
+      { first, last, before, after }
+    );
+    return result;
+  }
+
+  @Query(() => PageConnection)
+  async topPages(
     @Args() { after, before, first, last }: PaginationArgs,
     @Args({ name: 'query', type: () => String, nullable: true })
     query: string,

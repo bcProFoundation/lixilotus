@@ -10,19 +10,49 @@ export class Account {
   @Field(() => String)
   name: string;
 
-  mnemonic: string;
-  encryptedMnemonic: string;
-  encryptedSecret: string;
+  @Field(() => String, { nullable: true })
+  mnemonic?: string;
+
+  @Field(() => String, { nullable: true })
+  encryptedMnemonic?: string;
+
+  @Field(() => String, { nullable: true })
+  encryptedSecret?: string;
+
+  @Field(() => String, { nullable: true })
   secret?: string;
+
+  @Field(() => String, { nullable: true })
+  publicKey?: string;
+
+  @Field(() => Date, {
+    description: 'Identifies the date and time when the object was created.'
+  })
   createdAt?: Date;
+
+  @Field(() => Date, {
+    description: 'Identifies the date and time when the object was last updated.'
+  })
   updatedAt?: Date;
-  mnemonicHash: string;
+
+  @Field(() => String, { nullable: true })
+  mnemonicHash?: string;
 
   @Field(() => String)
   address: string;
 
-  balance?: number;
+  @Field(() => String)
   language?: string;
 
-  page?: Nullable<Page>;
+  @Field(() => Page, { nullable: true })
+  page?: Page;
+
+  @Field(() => Number, { nullable: true })
+  followersCount?: number;
+
+  @Field(() => Number, { nullable: true })
+  followingsCount?: number;
+
+  @Field(() => Number, { nullable: true })
+  followingPagesCount?: number;
 }

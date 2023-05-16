@@ -35,10 +35,13 @@ import { getFilterPostsPage } from '@store/settings/selectors';
 import { FilterBurnt } from '@components/Common/FilterBurn';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
+import { CreateFollowPageInput, DeleteFollowPageInput } from '@generated/types.generated';
+import { useCreateFollowPageMutation, useDeleteFollowPageMutation } from '@store/follow/follows.api';
 
 type PageDetailProps = {
   page: any;
   isMobile: boolean;
+  checkIsFollowed: boolean;
 };
 
 const StyledContainerProfileDetail = styled.div`
@@ -356,13 +359,14 @@ const SubAbout = ({
   </StyledSpace>
 );
 
-const PageDetail = ({ page, isMobile }: PageDetailProps) => {
+const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
   const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
   const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
   const router = useRouter();
   const selectedAccountId = useAppSelector(getSelectedAccountId);
   const [pageDetailData, setPageDetailData] = useState<any>(page);
+  const [isFollowed, setIsFollowed] = useState<boolean>(checkIsFollowed);
   const [listsFriend, setListsFriend] = useState<any>([]);
   const [listsPicture, setListsPicture] = useState<any>([]);
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
@@ -372,6 +376,34 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
   const failQueue = useAppSelector(getFailQueue);
   const filterValue = useAppSelector(getFilterPostsPage);
   const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
+
+  const [
+    createFollowPageTrigger,
+    {
+      isLoading: isLoadingCreateFollowPage,
+      isSuccess: isSuccessCreateFollowPage,
+      isError: isErrorCreateFollowPage,
+      error: errorOnCreate
+    }
+  ] = useCreateFollowPageMutation();
+
+  const [
+    deleteFollowPageTrigger,
+    {
+      isLoading: isLoadingDeleteFollowPage,
+      isSuccess: isSuccessDeleteFollowPage,
+      isError: isErrorDeleteFollowPage,
+      error: errorOnDelete
+    }
+  ] = useDeleteFollowPageMutation();
+
+  useEffect(() => {
+    if (isSuccessCreateFollowPage) setIsFollowed(true);
+  }, [isSuccessCreateFollowPage]);
+
+  useEffect(() => {
+    if (isSuccessDeleteFollowPage) setIsFollowed(false);
+  }, [isSuccessDeleteFollowPage]);
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByPageIdQuery(
     {
@@ -500,6 +532,24 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
     }
   };
 
+  const handleFollowPage = async () => {
+    const createFollowPageInput: CreateFollowPageInput = {
+      accountId: selectedAccountId,
+      pageId: pageDetailData.id
+    };
+
+    await createFollowPageTrigger({ input: createFollowPageInput });
+  };
+
+  const handleUnfollowPage = async () => {
+    const deleteFollowPageInput: DeleteFollowPageInput = {
+      accountId: selectedAccountId,
+      pageId: pageDetailData.id
+    };
+
+    await deleteFollowPageTrigger({ input: deleteFollowPageInput });
+  };
+
   return (
     <>
       <StyledContainerProfileDetail>
@@ -538,6 +588,14 @@ const PageDetail = ({ page, isMobile }: PageDetailProps) => {
                 <Button type="primary" className="outline-btn" onClick={() => uploadModal(false)}>
                   <CameraOutlined />
                   {intl.get('page.editCoverPhoto')}
+                </Button>
+              </div>
+            )}
+            {/* Follow */}
+            {selectedAccountId != pageDetailData?.pageAccountId && (
+              <div className="action-profile">
+                <Button onClick={isFollowed ? handleUnfollowPage : handleFollowPage}>
+                  {isFollowed ? intl.get('general.unfollow') : intl.get('general.follow')}
                 </Button>
               </div>
             )}
