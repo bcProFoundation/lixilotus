@@ -6,9 +6,13 @@ import { GraphQLDecimal, transformToDecimal } from 'prisma-graphql-type-decimal'
 
 @InputType()
 export class CreateWorshipInput {
-  @Field(() => String)
-  @IsNotEmpty()
-  worshipedPersonId: string;
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  worshipedPersonId?: string;
+
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  templeId?: string;
 
   @Field(() => Float)
   @IsNotEmpty()

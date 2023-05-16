@@ -1,0 +1,100 @@
+fragment TempleFields on Temple {
+  id
+  name
+  account {
+    address
+    id
+    name
+  }
+  avatar {
+    id
+    upload {
+      id
+      sha
+      bucket
+      width
+      height
+      sha800
+      sha320
+      sha40
+    }
+  }
+  cover {
+    id
+    upload {
+      id
+      sha
+      bucket
+      width
+      height
+      sha800
+      sha320
+      sha40
+    }
+  }
+  achievement
+  description
+  alias
+  religion
+  address
+  president
+  website
+  verified
+  totalWorshipAmount
+  dateOfCompleted
+  country {
+    id
+    name
+  }
+  state {
+    id
+    name
+  }
+  city {
+    id
+    name
+  }
+  createdAt
+  updatedAt
+}
+
+query Temple($id: String!) {
+  temple(id: $id) {
+    ...TempleFields
+  }
+}
+
+query Temples($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: TempleOrder, $skip: Int) {
+  allTemple(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, skip: $skip) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...TempleFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+
+query TempleBySearch($after: String, $before: String, $first: Int, $last: Int, $query: String) {
+  allTempleBySearch(after: $after, before: $before, first: $first, last: $last, query: $query) {
+    edges {
+      cursor
+      node {
+        ...TempleFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+
+mutation CreateTemple($input: CreateTempleInput!) {
+  createTemple(data: $input) {
+    ...TempleFields
+  }
+}

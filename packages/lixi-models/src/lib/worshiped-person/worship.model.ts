@@ -5,6 +5,7 @@ import { IsOptional } from 'class-validator';
 import { GraphQLDecimal, transformToDecimal } from 'prisma-graphql-type-decimal';
 
 import { Account } from '../account';
+import { Temple } from '../temple';
 
 import { WorshipedPerson } from './worshipedPerson.model';
 
@@ -16,8 +17,13 @@ export class Worship {
   @Field(() => Account)
   account: Account;
 
-  @Field(() => WorshipedPerson)
-  worshipedPerson: WorshipedPerson;
+  @Field(() => WorshipedPerson, { nullable: true })
+  @IsOptional()
+  worshipedPerson?: WorshipedPerson;
+
+  @Field(() => Temple, { nullable: true })
+  @IsOptional()
+  temple?: Temple;
 
   @Field(() => Float)
   worshipedAmount: number;

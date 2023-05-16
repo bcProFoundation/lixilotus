@@ -23,4 +23,5 @@ export * from './store';
 export * from './toast';
 export * from './token';
 export * as wallet from './wallet';
-export * from './worship';
+export * as worship from './worship';
+export * as temple from './temple';

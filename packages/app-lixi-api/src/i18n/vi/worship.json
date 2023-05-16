@@ -1,5 +1,6 @@
 {
   "messages": {
-    "couldNotFindPerson": "Người này không tồn tại trong cơ sở dữ liệu."
+    "couldNotFindPerson": "Người này không tồn tại trong cơ sở dữ liệu.",
+    "couldNotFindTemple": "Đền này không tồn tại trong cơ sở dữ liệu."
   }
 }

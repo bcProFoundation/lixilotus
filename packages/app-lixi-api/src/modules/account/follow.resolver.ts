@@ -208,10 +208,7 @@ export class FollowResolver {
 
   @UseGuards(GqlJwtAuthGuard)
   @Mutation(() => Boolean)
-  async deleteFollowAccount(
-    @AccountEntity() account: Account,
-    @Args('data') data: DeleteFollowAccountInput
-  ) {
+  async deleteFollowAccount(@AccountEntity() account: Account, @Args('data') data: DeleteFollowAccountInput) {
     try {
       const { followingAccountId, followerAccountId } = data;
 
@@ -344,10 +341,7 @@ export class FollowResolver {
 
   @UseGuards(GqlJwtAuthGuard)
   @Mutation(() => Boolean)
-  async deleteFollowPage(
-    @AccountEntity() account: Account,
-    @Args('data') data: DeleteFollowPageInput
-  ) {
+  async deleteFollowPage(@AccountEntity() account: Account, @Args('data') data: DeleteFollowPageInput) {
     try {
       const { accountId, pageId } = data;
 
