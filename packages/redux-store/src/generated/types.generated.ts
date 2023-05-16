@@ -258,8 +258,8 @@ export type Mutation = {
   createToken: Token;
   createWorship: Worship;
   createWorshipedPerson: WorshipedPerson;
-  deleteFollowAccount: FollowAccount;
-  deleteFollowPage: FollowPage;
+  deleteFollowAccount: Scalars['Boolean'];
+  deleteFollowPage: Scalars['Boolean'];
   importAccount: Account;
   updatePage: Page;
   updatePost: Post;
@@ -487,6 +487,7 @@ export type Query = {
   page: Page;
   post: Post;
   token: Token;
+  topPages: PageConnection;
   worship: Worship;
   worshipedPerson: WorshipedPerson;
 };
@@ -506,7 +507,7 @@ export type QueryAllFollowersByFollowingArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
-  followerAccountId?: InputMaybe<Scalars['Int']>;
+  followingAccountId?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<FollowAccountOrder>;
@@ -517,7 +518,7 @@ export type QueryAllFollowingsByFollowerArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
-  followingAccountId?: InputMaybe<Scalars['Int']>;
+  followerAccountId?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<FollowAccountOrder>;
@@ -695,6 +696,17 @@ export type QueryPostArgs = {
 
 export type QueryTokenArgs = {
   tokenId: Scalars['String'];
+};
+
+export type QueryTopPagesArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<PageOrder>;
+  query?: InputMaybe<Scalars['String']>;
+  skip?: InputMaybe<Scalars['Int']>;
 };
 
 export type QueryWorshipArgs = {

@@ -86,6 +86,41 @@ export class PageResolver {
     return result;
   }
 
+  @Query(() => PageConnection)
+  async topPages(
+    @Args() { after, before, first, last }: PaginationArgs,
+    @Args({ name: 'query', type: () => String, nullable: true })
+    query: string,
+    @Args({
+      name: 'orderBy',
+      type: () => PageOrder,
+      nullable: true
+    })
+    orderBy: PageOrder
+  ) {
+    const result = await findManyCursorConnection(
+      async args => {
+        const pages = await this.prisma.page.findMany({
+          include: {
+            posts: true
+          },
+          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+          ...args
+        });
+
+        const output = pages.map(page => ({
+          ...page,
+          totalBurnForPage: page.posts.reduce((a, b) => a + b.lotusBurnScore, 0)
+        }));
+
+        return output;
+      },
+      () => this.prisma.page.count(),
+      { first, last, before, after }
+    );
+    return result;
+  }
+
   @ResolveField('avatar', () => String)
   async avatar(@Parent() page: Page) {
     const uploadDetail = await this.prisma.page

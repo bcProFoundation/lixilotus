@@ -246,8 +246,8 @@ type Mutation {
   createToken(data: CreateTokenInput!): Token!
   createWorship(data: CreateWorshipInput!): Worship!
   createWorshipedPerson(data: CreateWorshipedPersonInput!): WorshipedPerson!
-  deleteFollowAccount(data: DeleteFollowAccountInput!): FollowAccount!
-  deleteFollowPage(data: DeleteFollowPageInput!): FollowPage!
+  deleteFollowAccount(data: DeleteFollowAccountInput!): Boolean!
+  deleteFollowPage(data: DeleteFollowPageInput!): Boolean!
   importAccount(data: ImportAccountInput!): Account!
   updatePage(data: UpdatePageInput!): Page!
   updatePost(data: UpdatePostInput!): Post!
@@ -442,6 +442,7 @@ type Query {
   page(id: String!): Page!
   post(id: String!): Post!
   token(tokenId: String!): Token!
+  topPages(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PageOrder, query: String, skip: Int): PageConnection!
   worship(id: String!): Worship!
   worshipedPerson(id: String!): WorshipedPerson!
 }

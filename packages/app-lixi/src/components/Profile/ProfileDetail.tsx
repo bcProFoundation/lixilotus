@@ -765,19 +765,19 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
                     <div className="about-content">
                       <SubAbout
                         dataItem={userDetailData?.followersCount}
-                        onClickIcon={() => { }}
+                        onClickIcon={() => {}}
                         icon={UserOutlined}
                         text={`${userDetailData?.followersCount} ${intl.get('general.followers')}`}
                       />
                       <SubAbout
                         dataItem={userDetailData?.followingsCount}
-                        onClickIcon={() => { }}
+                        onClickIcon={() => {}}
                         icon={UserOutlined}
                         text={`${userDetailData?.followingsCount} ${intl.get('general.followings')}`}
                       />
                       <SubAbout
                         dataItem={userDetailData?.followingPagesCount}
-                        onClickIcon={() => { }}
+                        onClickIcon={() => {}}
                         icon={HomeOutlined}
                         text={`${userDetailData?.followingPagesCount} ${intl.get('general.followingPages')}`}
                       />

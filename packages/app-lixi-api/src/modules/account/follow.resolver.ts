@@ -36,7 +36,7 @@ export class FollowResolver {
     private prisma: PrismaService,
     private readonly notificationService: NotificationService,
     @I18n() private i18n: I18nService
-  ) { }
+  ) {}
 
   @Subscription(() => FollowAccount)
   followAccountCreated() {
@@ -207,8 +207,11 @@ export class FollowResolver {
   }
 
   @UseGuards(GqlJwtAuthGuard)
-  @Mutation(() => FollowAccount)
-  async deleteFollowAccount(@AccountEntity() account: Account, @Args('data') data: DeleteFollowAccountInput) {
+  @Mutation(() => Boolean)
+  async deleteFollowAccount(
+    @AccountEntity() account: Account,
+    @Args('data') data: DeleteFollowAccountInput
+  ): Promise<boolean | undefined> {
     try {
       const { followingAccountId, followerAccountId } = data;
 
@@ -222,19 +225,15 @@ export class FollowResolver {
         throw new VError(invalidAccountMessage);
       }
 
-      const existData = await this.prisma.followAccount.findFirst({
+      const deletedFollowAccount = await this.prisma.followAccount.deleteMany({
         where: {
           followingAccountId: followingAccountId,
           followerAccountId: followerAccountId
         }
       });
 
-      const deletedFollowAccount = await this.prisma.followAccount.delete({
-        where: { id: existData?.id }
-      });
-
       pubSub.publish('followAccountDeleted', { followAccountDeleted: deletedFollowAccount });
-      return deletedFollowAccount;
+      return deletedFollowAccount ? true : false;
     } catch (err) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -344,8 +343,11 @@ export class FollowResolver {
   }
 
   @UseGuards(GqlJwtAuthGuard)
-  @Mutation(() => FollowPage)
-  async deleteFollowPage(@AccountEntity() account: Account, @Args('data') data: DeleteFollowPageInput) {
+  @Mutation(() => Boolean)
+  async deleteFollowPage(
+    @AccountEntity() account: Account,
+    @Args('data') data: DeleteFollowPageInput
+  ): Promise<boolean | undefined> {
     try {
       const { accountId, pageId } = data;
 
@@ -359,19 +361,15 @@ export class FollowResolver {
         throw new VError(invalidAccountMessage);
       }
 
-      const existData = await this.prisma.followPage.findFirst({
+      const deletedFollowPage = await this.prisma.followPage.deleteMany({
         where: {
           accountId: accountId,
           pageId: pageId
         }
       });
 
-      const deletedFollowPage = await this.prisma.followPage.delete({
-        where: { id: existData?.id }
-      });
-
       pubSub.publish('followPageDeleted', { followPageDeleted: deletedFollowPage });
-      return deletedFollowPage;
+      return deletedFollowPage ? true : false;
     } catch (err) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
