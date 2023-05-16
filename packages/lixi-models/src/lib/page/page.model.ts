@@ -71,4 +71,7 @@ export class Page {
 
   @Field(() => String, { nullable: true })
   stateId?: string;
+
+  @Field(() => Number, { nullable: true })
+  followersCount?: number;
 }

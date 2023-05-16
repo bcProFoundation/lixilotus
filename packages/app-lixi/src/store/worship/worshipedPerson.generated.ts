@@ -11,10 +11,7 @@
 
 import * as Types from '../../generated/types.generated';
 
-import {
-  PageInfoFieldsFragmentDoc,
-  PostMeiliPageInfoFieldsFragmentDoc
-} from '../../graphql/fragments/page-info-fields.fragment.generated';
+import { PageInfoFieldsFragmentDoc } from '../../graphql/fragments/page-info-fields.fragment.generated';
 import { api } from 'src/api/baseApi';
 export type WorshipedPersonFieldsFragment = {
   __typename?: 'WorshipedPerson';

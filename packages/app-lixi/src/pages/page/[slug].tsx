@@ -9,18 +9,27 @@ import { getSelectorsByUserAgent } from 'react-device-detect';
 import PageDetailLayout from '@components/Layout/PageDetailLayout';
 import ProfileDetail from '@components/Profile/ProfileDetail';
 import { usePageQuery } from '@store/page/pages.generated';
+import { useCheckIsFollowedPageQuery } from '@store/follow/follows.api';
 
 const PageDetailPage = props => {
   const { pageId, isMobile } = props;
   const canonicalUrl = process.env.NEXT_PUBLIC_LIXI_URL + `pages/${pageId}`;
   let currentPage;
+  let checkIsFollowed;
 
-  const { currentData, isSuccess } = usePageQuery({ id: pageId });
-  if (isSuccess) currentPage = currentData.page;
+  const { currentData: currentDataPageQuery, isSuccess: isSuccessPageQuery } = usePageQuery({ id: pageId });
+  const { currentData: currentDataCheckIsFollowed, isSuccess: isSuccessCheckIsFollowed } = useCheckIsFollowedPageQuery({
+    pageId: pageId
+  });
+
+  if (isSuccessPageQuery && isSuccessCheckIsFollowed) {
+    currentPage = currentDataPageQuery.page;
+    checkIsFollowed = currentDataCheckIsFollowed.checkIsFollowedPage.isFollowed;
+  }
 
   return (
     <>
-      {isSuccess && (
+      {isSuccessPageQuery && isSuccessCheckIsFollowed && (
         <>
           <NextSeo
             title="Lixi Program"
@@ -39,7 +48,7 @@ const PageDetailPage = props => {
               cardType: 'summary_large_image'
             }}
           />
-          <PageDetail page={currentPage} isMobile={isMobile} />
+          <PageDetail page={currentPage} isMobile={isMobile} checkIsFollowed={checkIsFollowed} />
         </>
       )}
     </>

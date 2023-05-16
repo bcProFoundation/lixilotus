@@ -479,6 +479,8 @@ export default {
   'country.unablegetStates': 'Không thể tải tỉnh thành',
 
   /* 15.Post */
+  'general.allPost': 'Tất cả',
+  'general.followsPost': 'Theo dõi',
   'post.createNewPage': 'tạo bài viết mới',
   'post.createPage': 'tạo bài viết',
   'post.editPost': 'Sửa bài viết chưa đốt',
@@ -574,5 +576,15 @@ export default {
   'category.scienceAndTechnology': 'Khoa học và Công nghệ',
   'category.healthAndFitness': 'Sức khỏe và Thể hình',
   'category.travelAndEvents': 'Du lịch và Sự kiện',
-  'category.other': 'Khác'
+  'category.other': 'Khác',
+
+  /* 19. Follow*/
+  'general.follow': 'Theo dõi',
+  'general.followBack': 'Theo dõi lại',
+  'general.unfollow': 'Bỏ theo dõi',
+  'general.followers': 'Người theo dõi',
+  'general.followings': 'Đang theo dõi',
+  'general.followingPages': 'Trang đang theo dõi',
+  'follow.followSuccess': 'Theo dõi thành công',
+  'follow.followFailure': 'Theo dõi không thành công'
 };

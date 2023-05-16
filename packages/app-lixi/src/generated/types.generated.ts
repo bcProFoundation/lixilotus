@@ -19,9 +19,51 @@ export type Scalars = {
 export type Account = {
   __typename?: 'Account';
   address: Scalars['String'];
+  balance: Scalars['String'];
+  /** Identifies the date and time when the object was created. */
+  createdAt: Scalars['DateTime'];
+  encryptedMnemonic: Scalars['String'];
+  encryptedSecret: Scalars['String'];
   id: Scalars['ID'];
+  language: Scalars['String'];
+  lotusBurnDown: Scalars['Float'];
+  lotusBurnScore: Scalars['Float'];
+  lotusBurnUp: Scalars['Float'];
+  mnemonic: Scalars['String'];
+  mnemonicHash: Scalars['String'];
   name: Scalars['String'];
+  page?: Maybe<Page>;
+  secret?: Maybe<Scalars['String']>;
+  /** Identifies the date and time when the object was last updated. */
+  updatedAt: Scalars['DateTime'];
 };
+
+export type AccountConnection = {
+  __typename?: 'AccountConnection';
+  edges?: Maybe<Array<AccountEdge>>;
+  pageInfo: PageInfo;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type AccountEdge = {
+  __typename?: 'AccountEdge';
+  cursor: Scalars['String'];
+  node: Account;
+};
+
+export type AccountOrder = {
+  direction: OrderDirection;
+  field: AccountOrderField;
+};
+
+/** Properties by which account connections can be ordered. */
+export enum AccountOrderField {
+  Address = 'address',
+  CreatedAt = 'createdAt',
+  Id = 'id',
+  Name = 'name',
+  UpdatedAt = 'updatedAt'
+}
 
 export type City = {
   __typename?: 'City';
@@ -85,6 +127,13 @@ export type Country = {
   state: Array<State>;
 };
 
+export type CreateAccountInput = {
+  encryptedMnemonic: Scalars['String'];
+  language?: InputMaybe<Scalars['String']>;
+  mnemonic: Scalars['String'];
+  mnemonicHash: Scalars['String'];
+};
+
 export type CreateCommentInput = {
   commentByPublicKey?: InputMaybe<Scalars['String']>;
   commentText: Scalars['String'];
@@ -132,16 +181,29 @@ export type CreateWorshipedPersonInput = {
   wikiDataId?: InputMaybe<Scalars['String']>;
 };
 
+export type ImportAccountInput = {
+  language?: InputMaybe<Scalars['String']>;
+  mnemonic: Scalars['String'];
+  mnemonicHash?: InputMaybe<Scalars['String']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  createAccount: Account;
   createComment: Comment;
   createPage: Page;
   createPost: Post;
   createToken: Token;
   createWorship: Worship;
   createWorshipedPerson: WorshipedPerson;
+  importAccount: Account;
+  updateAccount: Account;
   updatePage: Page;
   updatePost: Post;
+};
+
+export type MutationCreateAccountArgs = {
+  data: CreateAccountInput;
 };
 
 export type MutationCreateCommentArgs = {
@@ -166,6 +228,14 @@ export type MutationCreateWorshipArgs = {
 
 export type MutationCreateWorshipedPersonArgs = {
   data: CreateWorshipedPersonInput;
+};
+
+export type MutationImportAccountArgs = {
+  data: ImportAccountInput;
+};
+
+export type MutationUpdateAccountArgs = {
+  data: UpdateAccountInput;
 };
 
 export type MutationUpdatePageArgs = {
@@ -202,6 +272,7 @@ export type Page = {
   parentId?: Maybe<Scalars['String']>;
   stateId?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
+  totalBurnForPage?: Maybe<Scalars['Float']>;
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
   website?: Maybe<Scalars['String']>;
@@ -528,6 +599,7 @@ export type State = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  accountCreated: Account;
   commentCreated: Comment;
   pageCreated: Page;
   postCreated: Post;
@@ -585,6 +657,13 @@ export enum TokenOrderField {
   Ticker = 'ticker',
   TokenId = 'tokenId'
 }
+
+export type UpdateAccountInput = {
+  id: Scalars['ID'];
+  language?: InputMaybe<Scalars['String']>;
+  mnemonic?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+};
 
 export type UpdatePageInput = {
   address?: InputMaybe<Scalars['String']>;

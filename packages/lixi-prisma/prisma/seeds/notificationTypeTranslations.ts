@@ -144,5 +144,35 @@ export const notificationTypeTranslations = [
     language: 'vi',
     isDefault: false,
     template: '{{senderName}} {{burnType}} {{xpiBurn}} XPI cho {{burnForType}} trong trang {{pageName}} của bạn. Bạn được nhận {{xpiFee}} XPI tiền phí.'
+  },
+  // follow-account
+  {
+    id: 23,
+    notificationTypeId: 12,
+    language: 'en',
+    isDefault: true,
+    template: '{{senderName}} is following you.'
+  },
+  {
+    id: 24,
+    notificationTypeId: 12,
+    language: 'vi',
+    isDefault: false,
+    template: '{{senderName}} hiện đang theo dõi bạn.'
+  },
+  // follow-page
+  {
+    id: 25,
+    notificationTypeId: 13,
+    language: 'en',
+    isDefault: true,
+    template: '{{senderName}} is following your {{pageName}} page.'
+  },
+  {
+    id: 26,
+    notificationTypeId: 13,
+    language: 'vi',
+    isDefault: false,
+    template: '{{senderName}} hiện đang theo dõi trang {{pageName}} của bạn.'
   }
 ];

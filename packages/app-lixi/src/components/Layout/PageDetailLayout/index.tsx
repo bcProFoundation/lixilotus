@@ -60,7 +60,7 @@ export const AppContainer = styled.div`
     @media (max-width: 768px) {
       padding-right: 0 !important;
     }
-    .content-layout{
+    .content-layout {
       flex: auto;
       min-height: 0;
       margin-top: 17px;
@@ -122,9 +122,7 @@ const PageDetailLayout: React.FC = (props: PageDetailsLayoutProps) => {
                     <Layout>
                       <SidebarShortcut></SidebarShortcut>
                       <Sidebar />
-                      <Layout
-                        className="main-section-layout"
-                      >
+                      <Layout className="main-section-layout">
                         <Topbar ref={setRef} />
                         {/* @ts-ignore */}
                         <Content className="content-layout">{children}</Content>

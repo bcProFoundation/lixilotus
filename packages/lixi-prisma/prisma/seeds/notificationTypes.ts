@@ -54,4 +54,14 @@ export const notificationTypes = [
     name: 'receive-xpi',
     description: 'Notification to receive XPI'
   },
+  {
+    id: 12,
+    name: 'follow-account',
+    description: 'Notification has an account to follow you'
+  },
+  {
+    id: 13,
+    name: 'follow-page',
+    description: 'Notification has an account to follow your page'
+  },
 ];
