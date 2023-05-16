@@ -211,7 +211,7 @@ export class FollowResolver {
   async deleteFollowAccount(
     @AccountEntity() account: Account,
     @Args('data') data: DeleteFollowAccountInput
-  ): Promise<boolean | undefined> {
+  ) {
     try {
       const { followingAccountId, followerAccountId } = data;
 
@@ -347,7 +347,7 @@ export class FollowResolver {
   async deleteFollowPage(
     @AccountEntity() account: Account,
     @Args('data') data: DeleteFollowPageInput
-  ): Promise<boolean | undefined> {
+  ) {
     try {
       const { accountId, pageId } = data;
 
