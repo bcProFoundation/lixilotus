@@ -21,6 +21,7 @@ import { useInfinitePagesQuery } from '@store/page/useInfinitePagesQuery';
 import { AvatarUser } from '@components/Common/AvatarUser';
 import CollapsePanel from 'antd/es/collapse/CollapsePanel';
 import { Content } from 'antd/es/layout/layout';
+import { usePagesQuery } from '@store/page/pages.api';
 const { Sider } = Layout;
 
 export const ShortcutItemAccess = ({
@@ -125,6 +126,9 @@ const RankingSideBar = styled(Sider)`
       padding: 24px 16px 1rem 24px;
       border: 1px solid var(--boder-item-light);
       &.your-shortcuts {
+        .ant-tabs-tab-active {
+          color: var(--color-primary) !important;
+        }        
         margin-bottom: 1rem;
         padding: 24px;
         .item-access {
@@ -330,9 +334,9 @@ const SidebarRanking = () => {
 
   const [form] = Form.useForm();
 
-  const { data } = useInfinitePagesQuery(
+  const { data: topPagesData } = useInfinitePagesQuery(
     {
-      first: 10
+      first: 5
     },
     false
   );
@@ -436,13 +440,14 @@ const SidebarRanking = () => {
           </StyledPopover>
         )}
       </div> */}
+
       {(router?.pathname == '/wallet' || router?.pathname == '/') && (
         <div className="right-bar">
           <div className="container-right-bar your-shortcuts">
-            <div className="content">
-              <h3>{intl.get('general.topAccounts')}</h3>
-              <Collapse defaultActiveKey={['1']}>
-                <Panel header="Show top leader board" key="1">
+            <StyledTabs type="card">
+              <Tabs.TabPane tab={<UserOutlined />} key="people">
+                <div className="content">
+                  <h3>{intl.get('general.topAccounts')}</h3>
                   {leaderboard.map((item, index) => {
                     return (
                       <h4 className="distance" key={`${item.id}-${item.address}`}>
@@ -455,45 +460,29 @@ const SidebarRanking = () => {
                       </h4>
                     );
                   })}
-                </Panel>
-              </Collapse>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* {router?.pathname !== '/wallet'  && (
-        <div className="right-bar">
-          <div className="container-right-bar">
-            <StyledTabs type="card">
-              <Tabs.TabPane tab={<UserOutlined />} key="people">
-                <div className="content">
-                  <h3>Trending Experience</h3>
-                  <InfoCardUser type="card" imgUrl={null} name={'Nghia Cao'} title={'@nghiacc'}></InfoCardUser>
-                  <InfoCardUser type="card" imgUrl={null} name={'Binh Vo'} title={'@kensaurus'}></InfoCardUser>
-                  <InfoCardUser type="card" imgUrl={null} name={'Viet Tran'} title={'@vince8x'}></InfoCardUser>
-                  <InfoCardUser type="card" imgUrl={null} name={'Tan Vu'} title={'@talkyorn'}></InfoCardUser>
-                  <InfoCardUser type="card" imgUrl={null} name={'Nguyen Tanh'} title={'@ericson'}></InfoCardUser>
                 </div>
               </Tabs.TabPane>
               <Tabs.TabPane tab={<ShopOutlined />} key="page">
                 <div className="content">
-                  <h3>Top Pages</h3>
-                </div>
-              </Tabs.TabPane>
-              <Tabs.TabPane tab={<NumberOutlined />} key="tag">
-                <div className="content">
-                  <h3>Trending HashTag</h3>
-                  <p>#GiveLotus</p>
-                  <p>#LixiLotus</p>
-                  <p>#Love</p>
-                  <p>#Heart</p>
+                  <h3>{intl.get('general.topPages')}</h3>
+                  {topPagesData.map((item, index) => {
+                    return (
+                      <h4 className="distance" key={`${item.id}`}>
+                        <ShortcutItemAccess
+                          burnValue={item.totalBurnForPage}
+                          icon={item.avatar ? item.avatar : item.name}
+                          text={item.name}
+                          href={`/page/${item.id}`}
+                        />
+                      </h4>
+                    );
+                  })}
                 </div>
               </Tabs.TabPane>
             </StyledTabs>
           </div>
         </div>
-      )} */}
+      )}
 
       {router?.pathname === '/wallet' && (
         <ManageAccounts>
