@@ -93,7 +93,7 @@ query TempleBySearch($after: String, $before: String, $first: Int, $last: Int, $
   }
 }
 
-mutation createTemple($input: CreateTempleInput!) {
+mutation CreateTemple($input: CreateTempleInput!) {
   createTemple(data: $input) {
     ...TempleFields
   }

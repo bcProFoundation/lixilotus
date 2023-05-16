@@ -457,7 +457,7 @@ export const TempleBySearchDocument = `
     ${TempleFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
 export const CreateTempleDocument = `
-    mutation createTemple($input: CreateTempleInput!) {
+    mutation CreateTemple($input: CreateTempleInput!) {
   createTemple(data: $input) {
     ...TempleFields
   }
@@ -475,7 +475,7 @@ const injectedRtkApi = api.injectEndpoints({
     TempleBySearch: build.query<TempleBySearchQuery, TempleBySearchQueryVariables | void>({
       query: variables => ({ document: TempleBySearchDocument, variables })
     }),
-    createTemple: build.mutation<CreateTempleMutation, CreateTempleMutationVariables>({
+    CreateTemple: build.mutation<CreateTempleMutation, CreateTempleMutationVariables>({
       query: variables => ({ document: CreateTempleDocument, variables })
     })
   })

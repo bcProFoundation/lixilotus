@@ -42,7 +42,7 @@ const enhancedApi = api.enhanceEndpoints({
         currentCacheData.allTempleBySearch.pageInfo = responseData.allTempleBySearch.pageInfo;
       }
     },
-    createTemple: {}
+    CreateTemple: {}
   }
 });
 

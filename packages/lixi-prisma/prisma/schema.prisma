@@ -198,7 +198,7 @@ model Account {
   posts             Post[]
   comments          Comment[]
   Worship           Worship[]
-  Temple            Temple[]
+  temples           Temple[]
   followers         FollowAccount[] @relation("followerAccount")
   followings        FollowAccount[] @relation("followingAccount")
   followingPages    FollowPage[]
@@ -450,7 +450,7 @@ model Country {
   city            City[]
   pages           Page[]
   worshipedPerson WorshipedPerson[]
-  Temple          Temple[]
+  temples         Temple[]
 
   @@map("country")
 }
@@ -473,7 +473,7 @@ model State {
   city            City[]
   pages           Page[]
   worshipedPerson WorshipedPerson[]
-  Temple          Temple[]
+  temples         Temple[]
 
   @@index([countryId], map: "idx_158799_country_region")
   @@map("state")
@@ -586,7 +586,7 @@ model WorshipedPerson {
   state                State?           @relation(fields: [stateId], references: [id])
   stateId              Int?
   worship              Worship[]
-  PersonOnTemple       PersonOnTemple[]
+  personOnTemple       PersonOnTemple[]
 }
 
 model Worship {
@@ -634,7 +634,7 @@ model Temple {
   createdAt          DateTime?        @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt          DateTime?        @default(now()) @map("updated_at") @db.Timestamptz(6)
   worship            Worship[]
-  PersonOnTemple     PersonOnTemple[]
+  personOnTemple     PersonOnTemple[]
 }
 
 model PersonOnTemple {

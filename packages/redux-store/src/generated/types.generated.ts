@@ -19,6 +19,7 @@ export type Scalars = {
 export type Account = {
   __typename?: 'Account';
   address: Scalars['String'];
+  balance: Scalars['Int'];
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
   encryptedMnemonic?: Maybe<Scalars['String']>;

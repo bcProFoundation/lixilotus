@@ -11,7 +11,7 @@ export enum TempleOrderField {
 
 registerEnumType(TempleOrderField, {
   name: 'TempleOrderField',
-  description: 'Properties by which worshiped person connections can be ordered.'
+  description: 'Properties by which temple connections can be ordered.'
 });
 
 @InputType()
