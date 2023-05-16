@@ -4,6 +4,7 @@
 
 type Account {
   address: String!
+  balance: Int!
 
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
