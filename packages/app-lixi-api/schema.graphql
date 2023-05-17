@@ -4,8 +4,31 @@
 
 type Account {
   address: String!
+  balance: Int!
+
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  encryptedMnemonic: String
+  encryptedSecret: String
+  followersCount: Int
+  followingPagesCount: Int
+  followingsCount: Int
   id: ID!
+  language: String!
+  mnemonic: String
+  mnemonicHash: String
   name: String!
+  page: Page
+  publicKey: String
+  secret: String
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
+}
+
+type AccountEdge {
+  cursor: String!
+  node: Account!
 }
 
 type City {
@@ -67,11 +90,28 @@ type Country {
   state: [State!]!
 }
 
+input CreateAccountInput {
+  encryptedMnemonic: String!
+  language: String!
+  mnemonic: String!
+  mnemonicHash: String!
+}
+
 input CreateCommentInput {
   commentByPublicKey: String
   commentText: String!
   commentToId: String!
   tipHex: String
+}
+
+input CreateFollowAccountInput {
+  followerAccountId: Int!
+  followingAccountId: Int!
+}
+
+input CreateFollowPageInput {
+  accountId: Int!
+  pageId: String!
 }
 
 input CreatePageInput {
@@ -89,6 +129,23 @@ input CreatePostInput {
   uploadCovers: [String!]
 }
 
+input CreateTempleInput {
+  achievement: String
+  address: String
+  alias: String
+  avatar: String
+  cityId: String
+  countryId: String
+  cover: String
+  dateOfCompleted: DateTime
+  description: String
+  name: String!
+  president: String
+  religion: String
+  stateId: String
+  website: String
+}
+
 input CreateTokenInput {
   tokenId: String!
 }
@@ -97,8 +154,9 @@ input CreateWorshipInput {
   latitude: Decimal
   location: String
   longitude: Decimal
+  templeId: String
   worshipedAmount: Float!
-  worshipedPersonId: String!
+  worshipedPersonId: String
 }
 
 input CreateWorshipedPersonInput {
@@ -122,13 +180,96 @@ scalar DateTime
 """An arbitrary-precision Decimal type"""
 scalar Decimal
 
+input DeleteFollowAccountInput {
+  followerAccountId: Int!
+  followingAccountId: Int!
+}
+
+input DeleteFollowPageInput {
+  accountId: Int!
+  pageId: String!
+}
+
+type FollowAccount {
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  followerAccount: Account
+  followerAccountId: Int
+  followingAccount: Account
+  followingAccountId: Int
+  id: ID
+  isFollowed: Boolean
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
+}
+
+type FollowAccountConnection {
+  edges: [FollowAccountEdge!]
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+type FollowAccountEdge {
+  cursor: String!
+  node: FollowAccount!
+}
+
+input FollowAccountOrder {
+  direction: OrderDirection!
+  field: FollowAccountOrderField!
+}
+
+"""Properties by which follow account connections can be ordered."""
+enum FollowAccountOrderField {
+  createdAt
+  followerAccountId
+  followingAccountId
+  id
+  updatedAt
+}
+
+type FollowPage {
+  account: Account
+  accountId: Int
+
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  id: ID
+  isFollowed: Boolean
+  page: Page
+  pageId: String
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
+}
+
+type FollowPageEdge {
+  cursor: String!
+  node: FollowPage!
+}
+
+input ImportAccountInput {
+  language: String
+  mnemonic: String!
+  mnemonicHash: String
+}
+
 type Mutation {
+  createAccount(data: CreateAccountInput!): Account!
   createComment(data: CreateCommentInput!): Comment!
+  createFollowAccount(data: CreateFollowAccountInput!): FollowAccount!
+  createFollowPage(data: CreateFollowPageInput!): FollowPage!
   createPage(data: CreatePageInput!): Page!
   createPost(data: CreatePostInput!): Post!
+  createTemple(data: CreateTempleInput!): Temple!
   createToken(data: CreateTokenInput!): Token!
   createWorship(data: CreateWorshipInput!): Worship!
+  createWorshipTemple(data: CreateWorshipInput!): Worship!
   createWorshipedPerson(data: CreateWorshipedPersonInput!): WorshipedPerson!
+  deleteFollowAccount(data: DeleteFollowAccountInput!): Boolean!
+  deleteFollowPage(data: DeleteFollowPageInput!): Boolean!
+  importAccount(data: ImportAccountInput!): Account!
   updatePage(data: UpdatePageInput!): Page!
   updatePost(data: UpdatePostInput!): Post!
 }
@@ -151,6 +292,7 @@ type Page {
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
   description: String!
+  followersCount: Int
   id: ID!
   lotusBurnDown: Float!
   lotusBurnScore: Float!
@@ -271,6 +413,8 @@ type PostResponse {
 
 type Query {
   allCommentsToPostId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: CommentOrder, skip: Int): CommentConnection!
+  allFollowersByFollowing(after: String, before: String, first: Int, followingAccountId: Int, last: Int, minBurnFilter: Int, orderBy: FollowAccountOrder, skip: Int): FollowAccountConnection!
+  allFollowingsByFollower(after: String, before: String, first: Int, followerAccountId: Int, last: Int, minBurnFilter: Int, orderBy: FollowAccountOrder, skip: Int): FollowAccountConnection!
   allOrphanPosts(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PostOrder, query: String, skip: Int): PostConnection!
   allPages(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PageOrder, query: String, skip: Int): PageConnection!
   allPosts(accountId: Int, after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
@@ -292,9 +436,25 @@ type Query {
   ): PostResponse!
   allPostsByTokenId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
   allPostsByUserId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
+  allTemple(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: TempleOrder, skip: Int): TempleConnection!
+  allTempleBySearch(
+    """Paginate after opaque cursor"""
+    after: String
+
+    """Paginate before opaque cursor"""
+    before: String
+
+    """Paginate first"""
+    first: Int
+
+    """Paginate last"""
+    last: Int
+    query: String
+  ): TempleConnection!
   allTokens(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: TokenOrder, query: String, skip: Int): TokenConnection!
   allWorship(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: WorshipOrder, skip: Int): WorshipConnection!
   allWorshipedByPersonId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: WorshipOrder, skip: Int): WorshipConnection!
+  allWorshipedByTempleId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: WorshipOrder, skip: Int): WorshipConnection!
   allWorshipedPerson(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: WorshipedPersonOrder, skip: Int): WorshipedPersonConnection!
   allWorshipedPersonBySearch(
     """Paginate after opaque cursor"""
@@ -312,10 +472,15 @@ type Query {
   ): WorshipedPersonConnection!
   allWorshipedPersonByUserId(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: WorshipedPersonOrder, skip: Int): WorshipedPersonConnection!
   allWorshipedPersonSpecialDate(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: WorshipedPersonOrder, skip: Int): WorshipedPersonConnection!
+  checkIsFollowedAccount(address: String!): FollowAccount!
+  checkIsFollowedPage(pageId: String!): FollowPage!
   comment(id: String!): Comment!
+  getAccountByAddress(address: String!): Account!
   page(id: String!): Page!
   post(id: String!): Post!
+  temple(id: String!): Temple!
   token(tokenId: String!): Token!
+  topPages(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PageOrder, query: String, skip: Int): PageConnection!
   worship(id: String!): Worship!
   worshipedPerson(id: String!): WorshipedPerson!
 }
@@ -328,11 +493,65 @@ type State {
 }
 
 type Subscription {
+  accountCreated: Account!
   commentCreated: Comment!
+  followAccountCreated: FollowAccount!
   pageCreated: Page!
   postCreated: Post!
+  templeCreated: Temple!
   tokenCreated: Token!
   worshipedPersonCreated: WorshipedPerson!
+}
+
+type Temple {
+  account: Account!
+  achievement: String
+  address: String
+  alias: String
+  avatar: UploadDetail
+  city: City
+  country: Country
+  cover: UploadDetail
+
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime
+  dateOfCompleted: DateTime
+  description: String
+  id: ID!
+  name: String!
+  president: String
+  religion: String
+  state: State
+  totalWorshipAmount: Int
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime
+  verified: Boolean!
+  website: String
+}
+
+type TempleConnection {
+  edges: [TempleEdge!]
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
+type TempleEdge {
+  cursor: String!
+  node: Temple!
+}
+
+input TempleOrder {
+  direction: OrderDirection!
+  field: TempleOrderField!
+}
+
+"""Properties by which worshiped person connections can be ordered."""
+enum TempleOrderField {
+  createdAt
+  id
+  totalWorshipAmount
+  updatedAt
 }
 
 type Token {
@@ -430,11 +649,12 @@ type Worship {
   latitude: Decimal
   location: String
   longitude: Decimal
+  temple: Temple
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
   worshipedAmount: Float!
-  worshipedPerson: WorshipedPerson!
+  worshipedPerson: WorshipedPerson
 }
 
 type WorshipConnection {

@@ -1,0 +1,37 @@
+query getAccountByAddress($address: String!) {
+  getAccountByAddress(address: $address) {
+    ...AccountFields
+  }
+}
+
+fragment AccountFields on Account {
+  id
+  name
+  address
+  mnemonicHash
+  encryptedMnemonic
+  encryptedSecret
+  publicKey
+  language
+  page {
+    id
+    name
+  }
+  followersCount
+  followingsCount
+  followingPagesCount
+  createdAt
+  updatedAt
+}
+
+mutation createAccount($input: CreateAccountInput!) {
+  createAccount(data: $input) {
+    ...AccountFields
+  }
+}
+
+mutation importAccount($input: ImportAccountInput!) {
+  importAccount(data: $input) {
+    ...AccountFields
+  }
+}

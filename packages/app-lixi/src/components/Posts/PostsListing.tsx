@@ -46,6 +46,7 @@ import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import { getFilterPostsHome } from '@store/settings/selectors';
 import { getLeaderboard } from '@store/account/actions';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
+import axiosClient from '@utils/axiosClient';
 
 const { Panel } = Collapse;
 const antIcon = <LoadingOutlined style={{ fontSize: 20 }} spin />;
@@ -146,9 +147,7 @@ const StyledNotificationContent = styled.div`
   font-size: 14px;
 `;
 const menuItems = [
-  // { label: 'Top', key: 'top' },
-  { label: 'All', key: 'all' }
-  // { label: 'New', key: 'new' },
+  { label: intl.get('general.allPost'), key: 'all' }
   // {
   //   label: 'Follows',
   //   key: 'follows'

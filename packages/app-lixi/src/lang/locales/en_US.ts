@@ -102,6 +102,7 @@ export default {
   'general.showMore': 'Show more',
   'general.showLess': 'Show less',
   'general.topAccounts': 'Top Accounts',
+  'general.topPages': 'Top Pages',
   'general.burned': 'Burned',
 
   /* 02.Account */
@@ -494,6 +495,8 @@ export default {
   'country.unablegetStates': 'Unable to get states',
 
   /* 15.Page */
+  'general.allPost': 'All',
+  'general.followsPost': 'Follows',
   'post.createNewPage': 'Create new post',
   'post.createPost': 'Create post',
   'post.editPost': 'Edit unburnt post',
@@ -592,8 +595,18 @@ export default {
   'category.travelAndEvents': 'Travel And Events',
   'category.other': 'Other',
 
-  /* 18. Webpush */
+  /* 19. Webpush */
   'webpush.unableToSubscribe': 'Unable to subscriber.',
   'webpush.unableToUnsubscribe': 'Unable to unsubscriber.',
-  'webpush.serviceWorkerNotReady': 'The service worker is not ready.'
+  'webpush.serviceWorkerNotReady': 'The service worker is not ready.',
+
+  /* 20. Follow*/
+  'general.follow': 'Follow',
+  'general.followBack': 'Follow back',
+  'general.unfollow': 'Unfollow',
+  'general.followers': 'Followers',
+  'general.followings': 'Followings',
+  'general.followingPages': 'Following Pages',
+  'follow.followSuccess': 'Follow successful',
+  'follow.followFailure': 'Follow failure'
 };

@@ -101,6 +101,7 @@ export default {
   'general.showMore': 'Xem thêm',
   'general.showLess': 'Xem ít',
   'general.topAccounts': 'Xếp hạng tài khoản đã đốt',
+  'general.topPages': 'Xếo hạng trang',
   'general.burned': 'Đã đốt',
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',
@@ -493,6 +494,8 @@ export default {
   'country.unablegetStates': 'Không thể tải tỉnh thành',
 
   /* 15.Post */
+  'general.allPost': 'Tất cả',
+  'general.followsPost': 'Theo dõi',
   'post.createNewPage': 'tạo bài viết mới',
   'post.createPage': 'tạo bài viết',
   'post.editPost': 'Sửa bài viết chưa đốt',
@@ -590,8 +593,18 @@ export default {
   'category.travelAndEvents': 'Du lịch và Sự kiện',
   'category.other': 'Khác',
 
-  /* 18. Webpush */
+  /* 19. Webpush */
   'webpush.unableToSubscribe': 'Không thể đăng ký.',
   'webpush.unableToUnsubscribe': 'Không thể hủy đăng ký.',
-  'webpush.serviceWorkerNotReady': 'Service worker không sẵn sàng.'
+  'webpush.serviceWorkerNotReady': 'Service worker không sẵn sàng.',
+
+  /* 20. Follow*/
+  'general.follow': 'Theo dõi',
+  'general.followBack': 'Theo dõi lại',
+  'general.unfollow': 'Bỏ theo dõi',
+  'general.followers': 'Người theo dõi',
+  'general.followings': 'Đang theo dõi',
+  'general.followingPages': 'Trang đang theo dõi',
+  'follow.followSuccess': 'Theo dõi thành công',
+  'follow.followFailure': 'Theo dõi không thành công'
 };

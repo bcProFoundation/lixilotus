@@ -467,7 +467,7 @@ export class LixiController {
   ): Promise<LixiDto | undefined> {
     const lixiId = _.toSafeInteger(id);
     try {
-      const mnemonicFromApi = command.mnemonic;
+      const mnemonicFromApi = command.mnemonic as string;
 
       const account = await this.prisma.account.findFirst({
         where: {
@@ -551,7 +551,7 @@ export class LixiController {
   ): Promise<LixiDto | undefined> {
     const lixiId = _.toSafeInteger(id);
     try {
-      const mnemonicFromApi = command.mnemonic;
+      const mnemonicFromApi = command.mnemonic as string;
 
       const account = await this.prisma.account.findFirst({
         where: {
@@ -632,7 +632,7 @@ export class LixiController {
   async withdrawLixi(@Param('id') id: string, @Body() command: Account, @I18n() i18n: I18nContext) {
     const lixiId = _.toSafeInteger(id);
     try {
-      const mnemonicFromApi = command.mnemonic;
+      const mnemonicFromApi = command.mnemonic as string;
 
       const account = await this.prisma.account.findFirst({
         where: {

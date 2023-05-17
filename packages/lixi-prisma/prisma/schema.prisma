@@ -132,6 +132,7 @@ model Page {
   lotusBurnDown  Float         @default(0.0) @map("lotus_burn_down")
   lotusBurnScore Float         @default(0.0) @map("lotus_burn_score")
   posts          Post[]
+  followers      FollowPage[]
 
   @@map("page")
 }
@@ -178,25 +179,28 @@ model Comment {
 }
 
 model Account {
-  id                Int                 @id @default(autoincrement())
+  id                Int             @id @default(autoincrement())
   name              String
-  encryptedMnemonic String              @map("encrypted_mnemonic")
-  encryptedSecret   String              @default("") @map("encrypted_secret")
-  createdAt         DateTime            @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt         DateTime            @default(now()) @map("updated_at") @db.Timestamptz
+  encryptedMnemonic String          @map("encrypted_mnemonic")
+  encryptedSecret   String          @default("") @map("encrypted_secret")
+  createdAt         DateTime        @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime        @default(now()) @map("updated_at") @db.Timestamptz
   lixies            Lixi[]
-  mnemonicHash      String              @map("mnemonic_hash")
-  address           String              @default("") @map("address")
+  mnemonicHash      String          @map("mnemonic_hash")
+  address           String          @default("") @map("address")
   notifications     Notification[]
-  language          String              @default("en")
-  publicKey         String              @default("") @map("public_key")
-  email             String?             @unique
+  language          String          @default("en")
+  publicKey         String          @default("") @map("public_key")
+  email             String?         @unique
   uploadDetail      UploadDetail[]
   page              Page?
   posts             Post[]
   comments          Comment[]
   Worship           Worship[]
-  webpushSubscriber WebpushSubscriber[]
+  temples           Temple[]
+  followers         FollowAccount[] @relation("followerAccount")
+  followings        FollowAccount[] @relation("followingAccount")
+  followingPages    FollowPage[]
 
   @@index([mnemonicHash], type: Hash)
   @@map("account")
@@ -467,6 +471,7 @@ model Country {
   city            City[]
   pages           Page[]
   worshipedPerson WorshipedPerson[]
+  temples         Temple[]
 
   @@map("country")
 }
@@ -489,6 +494,7 @@ model State {
   city            City[]
   pages           Page[]
   worshipedPerson WorshipedPerson[]
+  temples         Temple[]
 
   @@index([countryId], map: "idx_158799_country_region")
   @@map("state")
@@ -510,6 +516,7 @@ model City {
   stateId         Int               @map("state_id")
   state           State             @relation(fields: [stateId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "cities_ibfk_1")
   worshipedPerson WorshipedPerson[]
+  Temple          Temple[]
 
   @@index([stateId], map: "idx_158778_cities_test_ibfk_1")
   @@index([countryId], map: "idx_158778_cities_test_ibfk_2")
@@ -532,6 +539,10 @@ model UploadDetail {
   postId                  String?          @map("post_cover_id")
   worshipedPersonAvatar   WorshipedPerson? @relation("worshipedPersonAvatar", fields: [worshipedPersonAvatarId], references: [id])
   worshipedPersonAvatarId String?          @unique @map("worshipedPerson_avatar_id")
+  templeAvatar            Temple?          @relation("temple_avatar", fields: [templeAvatarId], references: [id])
+  templeAvatarId          String?          @unique @map("temple_avatar_id")
+  templeCover             Temple?          @relation("temple_cover", fields: [templeCoverId], references: [id])
+  templeCoverId           String?          @unique @map("temple_cover_id")
 
   @@map("upload_detail")
 }
@@ -564,50 +575,123 @@ model GiveTip {
 }
 
 model WorshipedPerson {
-  id                   String        @id @default(cuid())
+  id                   String           @id @default(cuid())
   name                 String
-  avatar               UploadDetail? @relation("worshipedPersonAvatar")
+  avatar               UploadDetail?    @relation("worshipedPersonAvatar")
   wikiAvatar           String?
-  countryOfCitizenship String?       @map("country_of_citizenship")
+  countryOfCitizenship String?          @map("country_of_citizenship")
   achievement          String?
   bio                  String?
   alias                String?
   religion             String?
-  wikiDataId           String?       @unique @map("wiki_data_id")
-  quote                String?       @default("")
-  placeOfBirth         String?       @map("place_of_birth")
-  placeOfDeath         String?       @map("place_of_death")
-  placeOfBurial        String?       @map("place_of_burial")
-  dateOfBirth          DateTime?     @map("date_of_birth") @db.Timestamptz(6)
-  dayOfBirth           Int?          @map("day_of_birth")
-  monthOfBirth         Int?          @map("month_of_birth")
-  yearOfBirth          Int?          @map("year_of_birth")
-  dateOfDeath          DateTime?     @map("date_of_death") @db.Timestamptz(6)
-  dayOfDeath           Int?          @map("day_of_death")
-  monthOfDeath         Int?          @map("month_of_death")
-  yearOfDeath          Int?          @map("year_of_death")
-  createdAt            DateTime?     @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt            DateTime?     @default(now()) @map("updated_at") @db.Timestamptz(6)
-  totalWorshipAmount   Float         @default(0.0) @map("total_worship_amount")
-  city                 City?         @relation(fields: [cityId], references: [id])
+  wikiDataId           String?          @unique @map("wiki_data_id")
+  quote                String?          @default("")
+  placeOfBirth         String?          @map("place_of_birth")
+  placeOfDeath         String?          @map("place_of_death")
+  placeOfBurial        String?          @map("place_of_burial")
+  dateOfBirth          DateTime?        @map("date_of_birth") @db.Timestamptz(6)
+  dayOfBirth           Int?             @map("day_of_birth")
+  monthOfBirth         Int?             @map("month_of_birth")
+  yearOfBirth          Int?             @map("year_of_birth")
+  dateOfDeath          DateTime?        @map("date_of_death") @db.Timestamptz(6)
+  dayOfDeath           Int?             @map("day_of_death")
+  monthOfDeath         Int?             @map("month_of_death")
+  yearOfDeath          Int?             @map("year_of_death")
+  createdAt            DateTime?        @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt            DateTime?        @default(now()) @map("updated_at") @db.Timestamptz(6)
+  totalWorshipAmount   Float            @default(0.0) @map("total_worship_amount")
+  city                 City?            @relation(fields: [cityId], references: [id])
   cityId               Int?
-  country              Country?      @relation(fields: [countryId], references: [id])
+  country              Country?         @relation(fields: [countryId], references: [id])
   countryId            Int?
-  state                State?        @relation(fields: [stateId], references: [id])
+  state                State?           @relation(fields: [stateId], references: [id])
   stateId              Int?
   worship              Worship[]
+  personOnTemple       PersonOnTemple[]
 }
 
 model Worship {
-  id                String          @id @default(cuid())
-  account           Account         @relation(fields: [accountId], references: [id])
+  id                String           @id @default(cuid())
+  account           Account          @relation(fields: [accountId], references: [id])
   accountId         Int
-  worshipedPerson   WorshipedPerson @relation(fields: [worshipedPersonId], references: [id])
-  worshipedPersonId String
-  worshipedAmount   Float           @default(0.0) @map("lotus_worship_amount")
+  worshipedPerson   WorshipedPerson? @relation(fields: [worshipedPersonId], references: [id])
+  worshipedPersonId String?
+  temple            Temple?          @relation(fields: [templeId], references: [id])
+  templeId          String?
+  worshipedAmount   Float            @default(0.0) @map("lotus_worship_amount")
   location          String?
-  latitude          Decimal?        @map("latitude") @db.Decimal(10, 8)
-  longitude         Decimal?        @map("longitude") @db.Decimal(11, 8)
-  createdAt         DateTime?       @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt         DateTime?       @default(now()) @map("updated_at") @db.Timestamptz(6)
+  latitude          Decimal?         @map("latitude") @db.Decimal(10, 8)
+  longitude         Decimal?         @map("longitude") @db.Decimal(11, 8)
+  createdAt         DateTime?        @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime?        @default(now()) @map("updated_at") @db.Timestamptz(6)
+}
+
+model Temple {
+  id                 String           @id @default(cuid())
+  name               String
+  account            Account          @relation(fields: [accountId], references: [id])
+  accountId          Int
+  avatar             UploadDetail?    @relation("temple_avatar")
+  cover              UploadDetail?    @relation("temple_cover")
+  achievement        String?
+  description        String?
+  alias              String?
+  religion           String?
+  address            String?
+  president          String?
+  website            String?
+  verified           Boolean          @default(false)
+  dateOfCompleted    DateTime?        @map("date_of_completed") @db.Timestamptz(6)
+  dayOfCompleted     Int?             @map("day_of_completed")
+  monthOfCompleted   Int?             @map("month_of_completed")
+  yearOfCompleted    Int?             @map("year_of_completed")
+  totalWorshipAmount Float            @default(0.0) @map("total_worship_amount")
+  city               City?            @relation(fields: [cityId], references: [id])
+  cityId             Int?
+  country            Country?         @relation(fields: [countryId], references: [id])
+  countryId          Int?
+  state              State?           @relation(fields: [stateId], references: [id])
+  stateId            Int?
+  createdAt          DateTime?        @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt          DateTime?        @default(now()) @map("updated_at") @db.Timestamptz(6)
+  worship            Worship[]
+  personOnTemple     PersonOnTemple[]
+}
+
+model PersonOnTemple {
+  id                String          @id @default(cuid())
+  temple            Temple          @relation(fields: [templeId], references: [id])
+  templeId          String          @map("temple_id")
+  worshipedPerson   WorshipedPerson @relation(fields: [worshipedPersonId], references: [id])
+  worshipedPersonId String          @map("worshiped_person_id")
+
+  @@map("person_on_temple")
+}
+
+model FollowAccount {
+  id                 String   @id @default(cuid())
+  followerAccount    Account  @relation("followerAccount", fields: [followerAccountId], references: [id])
+  followerAccountId  Int      @map("follower_account_id")
+  followingAccount   Account  @relation("followingAccount", fields: [followingAccountId], references: [id])
+  followingAccountId Int      @map("following_account_id")
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@index(followerAccountId)
+  @@index(followingAccountId)
+  @@map("follow_account")
+}
+
+model FollowPage {
+  id        String   @id @default(cuid())
+  account   Account  @relation(fields: [accountId], references: [id])
+  accountId Int      @map("account_id")
+  page      Page     @relation(fields: [pageId], references: [id])
+  pageId    String   @map("page_id")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@index(accountId)
+  @@index(pageId)
+  @@map("follow_page")
 }

@@ -1,0 +1,115 @@
+query checkIsFollowedAccount($address: String!) {
+  checkIsFollowedAccount(address: $address) {
+    isFollowed
+  }
+}
+
+query allFollowersByFollowing(
+  $after: String
+  $before: String
+  $first: Int = 20
+  $last: Int
+  $orderBy: FollowAccountOrder
+  $skip: Int
+) {
+  allFollowersByFollowing(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, skip: $skip) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...FollowAccountFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+
+query allFollowingsByFollower(
+  $after: String
+  $before: String
+  $first: Int = 20
+  $last: Int
+  $orderBy: FollowAccountOrder
+  $skip: Int
+) {
+  allFollowingsByFollower(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, skip: $skip) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...FollowAccountFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+
+fragment FollowAccountFields on FollowAccount {
+  id
+  followerAccountId
+  followerAccount {
+    id
+    name
+    address
+  }
+  followingAccountId
+  followingAccount {
+    id
+    name
+    address
+  }
+  isFollowed
+  createdAt
+  updatedAt
+}
+
+mutation createFollowAccount($input: CreateFollowAccountInput!) {
+  createFollowAccount(data: $input) {
+    ...FollowAccountFields
+  }
+}
+
+mutation deleteFollowAccount($input: DeleteFollowAccountInput!) {
+  deleteFollowAccount(data: $input)
+}
+
+
+
+# FollowPage
+query checkIsFollowedPage($pageId: String!) {
+  checkIsFollowedPage(pageId: $pageId) {
+    isFollowed
+  }
+}
+
+fragment FollowPageFields on FollowPage {
+  id
+  accountId
+  account {
+    id
+    name
+    address
+  }
+  pageId
+  page {
+    id
+    name
+  }
+  isFollowed
+  createdAt
+  updatedAt
+}
+
+mutation createFollowPage($input: CreateFollowPageInput!) {
+  createFollowPage(data: $input) {
+    ...FollowPageFields
+  }
+}
+
+mutation deleteFollowPage($input: DeleteFollowPageInput!) {
+  deleteFollowPage(data: $input)
+}

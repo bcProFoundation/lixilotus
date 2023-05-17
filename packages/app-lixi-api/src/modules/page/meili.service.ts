@@ -2,7 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Document, EnqueuedTask, MeiliSearch } from 'meilisearch';
 import { I18n, I18nService } from 'nestjs-i18n';
 import { InjectMeiliSearch } from 'nestjs-meilisearch';
-import { PERSON, POSTS } from './constants/meili.constants';
+import { PERSON, POSTS, TEMPLE } from './constants/meili.constants';
 
 @Injectable()
 export class MeiliService implements OnModuleInit {
@@ -17,6 +17,10 @@ export class MeiliService implements OnModuleInit {
     });
     await this.meiliSearch.index(`${process.env.MEILISEARCH_BUCKET}_${PERSON}`).updateSettings({
       searchableAttributes: ['name', 'achievement'],
+      displayedAttributes: ['*']
+    });
+    await this.meiliSearch.index(`${process.env.MEILISEARCH_BUCKET}_${TEMPLE}`).updateSettings({
+      searchableAttributes: ['name', 'president', 'alias', 'religion'],
       displayedAttributes: ['*']
     });
   }

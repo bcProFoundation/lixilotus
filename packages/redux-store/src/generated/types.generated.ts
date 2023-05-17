@@ -19,8 +19,30 @@ export type Scalars = {
 export type Account = {
   __typename?: 'Account';
   address: Scalars['String'];
+  balance: Scalars['Int'];
+  /** Identifies the date and time when the object was created. */
+  createdAt: Scalars['DateTime'];
+  encryptedMnemonic?: Maybe<Scalars['String']>;
+  encryptedSecret?: Maybe<Scalars['String']>;
+  followersCount?: Maybe<Scalars['Int']>;
+  followingPagesCount?: Maybe<Scalars['Int']>;
+  followingsCount?: Maybe<Scalars['Int']>;
   id: Scalars['ID'];
+  language: Scalars['String'];
+  mnemonic?: Maybe<Scalars['String']>;
+  mnemonicHash?: Maybe<Scalars['String']>;
   name: Scalars['String'];
+  page?: Maybe<Page>;
+  publicKey?: Maybe<Scalars['String']>;
+  secret?: Maybe<Scalars['String']>;
+  /** Identifies the date and time when the object was last updated. */
+  updatedAt: Scalars['DateTime'];
+};
+
+export type AccountEdge = {
+  __typename?: 'AccountEdge';
+  cursor: Scalars['String'];
+  node: Account;
 };
 
 export type City = {
@@ -85,11 +107,28 @@ export type Country = {
   state: Array<State>;
 };
 
+export type CreateAccountInput = {
+  encryptedMnemonic: Scalars['String'];
+  language: Scalars['String'];
+  mnemonic: Scalars['String'];
+  mnemonicHash: Scalars['String'];
+};
+
 export type CreateCommentInput = {
   commentByPublicKey?: InputMaybe<Scalars['String']>;
   commentText: Scalars['String'];
   commentToId: Scalars['String'];
   tipHex?: InputMaybe<Scalars['String']>;
+};
+
+export type CreateFollowAccountInput = {
+  followerAccountId: Scalars['Int'];
+  followingAccountId: Scalars['Int'];
+};
+
+export type CreateFollowPageInput = {
+  accountId: Scalars['Int'];
+  pageId: Scalars['String'];
 };
 
 export type CreatePageInput = {
@@ -105,6 +144,23 @@ export type CreatePostInput = {
   pureContent: Scalars['String'];
   tokenPrimaryId?: InputMaybe<Scalars['String']>;
   uploadCovers?: InputMaybe<Array<Scalars['String']>>;
+};
+
+export type CreateTempleInput = {
+  achievement?: InputMaybe<Scalars['String']>;
+  address?: InputMaybe<Scalars['String']>;
+  alias?: InputMaybe<Scalars['String']>;
+  avatar?: InputMaybe<Scalars['String']>;
+  cityId?: InputMaybe<Scalars['String']>;
+  countryId?: InputMaybe<Scalars['String']>;
+  cover?: InputMaybe<Scalars['String']>;
+  dateOfCompleted?: InputMaybe<Scalars['DateTime']>;
+  description?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+  president?: InputMaybe<Scalars['String']>;
+  religion?: InputMaybe<Scalars['String']>;
+  stateId?: InputMaybe<Scalars['String']>;
+  website?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateTokenInput = {
@@ -125,8 +181,9 @@ export type CreateWorshipInput = {
   latitude?: InputMaybe<Scalars['Decimal']>;
   location?: InputMaybe<Scalars['String']>;
   longitude?: InputMaybe<Scalars['Decimal']>;
+  templeId?: InputMaybe<Scalars['String']>;
   worshipedAmount: Scalars['Float'];
-  worshipedPersonId: Scalars['String'];
+  worshipedPersonId?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateWorshipedPersonInput = {
@@ -142,22 +199,119 @@ export type CreateWorshipedPersonInput = {
   wikiDataId?: InputMaybe<Scalars['String']>;
 };
 
+export type DeleteFollowAccountInput = {
+  followerAccountId: Scalars['Int'];
+  followingAccountId: Scalars['Int'];
+};
+
+export type DeleteFollowPageInput = {
+  accountId: Scalars['Int'];
+  pageId: Scalars['String'];
+};
+
+export type FollowAccount = {
+  __typename?: 'FollowAccount';
+  /** Identifies the date and time when the object was created. */
+  createdAt: Scalars['DateTime'];
+  followerAccount?: Maybe<Account>;
+  followerAccountId?: Maybe<Scalars['Int']>;
+  followingAccount?: Maybe<Account>;
+  followingAccountId?: Maybe<Scalars['Int']>;
+  id?: Maybe<Scalars['ID']>;
+  isFollowed?: Maybe<Scalars['Boolean']>;
+  /** Identifies the date and time when the object was last updated. */
+  updatedAt: Scalars['DateTime'];
+};
+
+export type FollowAccountConnection = {
+  __typename?: 'FollowAccountConnection';
+  edges?: Maybe<Array<FollowAccountEdge>>;
+  pageInfo: PageInfo;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type FollowAccountEdge = {
+  __typename?: 'FollowAccountEdge';
+  cursor: Scalars['String'];
+  node: FollowAccount;
+};
+
+export type FollowAccountOrder = {
+  direction: OrderDirection;
+  field: FollowAccountOrderField;
+};
+
+/** Properties by which follow account connections can be ordered. */
+export enum FollowAccountOrderField {
+  CreatedAt = 'createdAt',
+  FollowerAccountId = 'followerAccountId',
+  FollowingAccountId = 'followingAccountId',
+  Id = 'id',
+  UpdatedAt = 'updatedAt'
+}
+
+export type FollowPage = {
+  __typename?: 'FollowPage';
+  account?: Maybe<Account>;
+  accountId?: Maybe<Scalars['Int']>;
+  /** Identifies the date and time when the object was created. */
+  createdAt: Scalars['DateTime'];
+  id?: Maybe<Scalars['ID']>;
+  isFollowed?: Maybe<Scalars['Boolean']>;
+  page?: Maybe<Page>;
+  pageId?: Maybe<Scalars['String']>;
+  /** Identifies the date and time when the object was last updated. */
+  updatedAt: Scalars['DateTime'];
+};
+
+export type FollowPageEdge = {
+  __typename?: 'FollowPageEdge';
+  cursor: Scalars['String'];
+  node: FollowPage;
+};
+
+export type ImportAccountInput = {
+  language?: InputMaybe<Scalars['String']>;
+  mnemonic: Scalars['String'];
+  mnemonicHash?: InputMaybe<Scalars['String']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  createAccount: Account;
   createComment: Comment;
+  createFollowAccount: FollowAccount;
+  createFollowPage: FollowPage;
   createPage: Page;
   createPost: Post;
+  createTemple: Temple;
   createToken: Token;
   createWebpushSubscriber: WebpushSubscriber;
   createWorship: Worship;
+  createWorshipTemple: Worship;
   createWorshipedPerson: WorshipedPerson;
+  deleteFollowAccount: Scalars['Boolean'];
+  deleteFollowPage: Scalars['Boolean'];
+  importAccount: Account;
   updatePage: Page;
   updatePost: Post;
   updateWebpushSubscriber: WebpushSubscriber;
 };
 
+export type MutationCreateAccountArgs = {
+  data: CreateAccountInput;
+};
+
 export type MutationCreateCommentArgs = {
   data: CreateCommentInput;
+};
+
+export type MutationCreateFollowAccountArgs = {
+  data: CreateFollowAccountInput;
+};
+
+export type MutationCreateFollowPageArgs = {
+  data: CreateFollowPageInput;
 };
 
 export type MutationCreatePageArgs = {
@@ -166,6 +320,10 @@ export type MutationCreatePageArgs = {
 
 export type MutationCreatePostArgs = {
   data: CreatePostInput;
+};
+
+export type MutationCreateTempleArgs = {
+  data: CreateTempleInput;
 };
 
 export type MutationCreateTokenArgs = {
@@ -180,8 +338,24 @@ export type MutationCreateWorshipArgs = {
   data: CreateWorshipInput;
 };
 
+export type MutationCreateWorshipTempleArgs = {
+  data: CreateWorshipInput;
+};
+
 export type MutationCreateWorshipedPersonArgs = {
   data: CreateWorshipedPersonInput;
+};
+
+export type MutationDeleteFollowAccountArgs = {
+  data: DeleteFollowAccountInput;
+};
+
+export type MutationDeleteFollowPageArgs = {
+  data: DeleteFollowPageInput;
+};
+
+export type MutationImportAccountArgs = {
+  data: ImportAccountInput;
 };
 
 export type MutationUpdatePageArgs = {
@@ -212,6 +386,7 @@ export type Page = {
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
   description: Scalars['String'];
+  followersCount?: Maybe<Scalars['Int']>;
   id: Scalars['ID'];
   lotusBurnDown: Scalars['Float'];
   lotusBurnScore: Scalars['Float'];
@@ -338,6 +513,8 @@ export type PostResponse = {
 export type Query = {
   __typename?: 'Query';
   allCommentsToPostId: CommentConnection;
+  allFollowersByFollowing: FollowAccountConnection;
+  allFollowingsByFollower: FollowAccountConnection;
   allOrphanPosts: PostConnection;
   allPages: PageConnection;
   allPosts: PostConnection;
@@ -345,18 +522,25 @@ export type Query = {
   allPostsBySearch: PostResponse;
   allPostsByTokenId: PostConnection;
   allPostsByUserId: PostConnection;
+  allTemple: TempleConnection;
+  allTempleBySearch: TempleConnection;
   allTokens: TokenConnection;
   allWorship: WorshipConnection;
   allWorshipedByPersonId: WorshipConnection;
+  allWorshipedByTempleId: WorshipConnection;
   allWorshipedPerson: WorshipedPersonConnection;
   allWorshipedPersonBySearch: WorshipedPersonConnection;
   allWorshipedPersonByUserId: WorshipedPersonConnection;
   allWorshipedPersonSpecialDate: WorshipedPersonConnection;
+  checkIsFollowedAccount: FollowAccount;
+  checkIsFollowedPage: FollowPage;
   comment: Comment;
+  getAccountByAddress: Account;
   page: Page;
   post: Post;
-  subscriber: WebpushSubscriber;
+  temple: Temple;
   token: Token;
+  topPages: PageConnection;
   worship: Worship;
   worshipedPerson: WorshipedPerson;
 };
@@ -369,6 +553,28 @@ export type QueryAllCommentsToPostIdArgs = {
   last?: InputMaybe<Scalars['Int']>;
   minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<CommentOrder>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryAllFollowersByFollowingArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  followingAccountId?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<FollowAccountOrder>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryAllFollowingsByFollowerArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  followerAccountId?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<FollowAccountOrder>;
   skip?: InputMaybe<Scalars['Int']>;
 };
 
@@ -447,6 +653,24 @@ export type QueryAllPostsByUserIdArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
+export type QueryAllTempleArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<TempleOrder>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryAllTempleBySearchArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  query?: InputMaybe<Scalars['String']>;
+};
+
 export type QueryAllTokensArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
@@ -469,6 +693,17 @@ export type QueryAllWorshipArgs = {
 };
 
 export type QueryAllWorshipedByPersonIdArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  id?: InputMaybe<Scalars['String']>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<WorshipOrder>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryAllWorshipedByTempleIdArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
@@ -517,8 +752,20 @@ export type QueryAllWorshipedPersonSpecialDateArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
+export type QueryCheckIsFollowedAccountArgs = {
+  address: Scalars['String'];
+};
+
+export type QueryCheckIsFollowedPageArgs = {
+  pageId: Scalars['String'];
+};
+
 export type QueryCommentArgs = {
   id: Scalars['String'];
+};
+
+export type QueryGetAccountByAddressArgs = {
+  address: Scalars['String'];
 };
 
 export type QueryPageArgs = {
@@ -529,12 +776,23 @@ export type QueryPostArgs = {
   id: Scalars['String'];
 };
 
-export type QuerySubscriberArgs = {
+export type QueryTempleArgs = {
   id: Scalars['String'];
 };
 
 export type QueryTokenArgs = {
   tokenId: Scalars['String'];
+};
+
+export type QueryTopPagesArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<PageOrder>;
+  query?: InputMaybe<Scalars['String']>;
+  skip?: InputMaybe<Scalars['Int']>;
 };
 
 export type QueryWorshipArgs = {
@@ -555,12 +813,67 @@ export type State = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  accountCreated: Account;
   commentCreated: Comment;
+  followAccountCreated: FollowAccount;
   pageCreated: Page;
   postCreated: Post;
+  templeCreated: Temple;
   tokenCreated: Token;
   worshipedPersonCreated: WorshipedPerson;
 };
+
+export type Temple = {
+  __typename?: 'Temple';
+  account: Account;
+  achievement?: Maybe<Scalars['String']>;
+  address?: Maybe<Scalars['String']>;
+  alias?: Maybe<Scalars['String']>;
+  avatar?: Maybe<UploadDetail>;
+  city?: Maybe<City>;
+  country?: Maybe<Country>;
+  cover?: Maybe<UploadDetail>;
+  /** Identifies the date and time when the object was created. */
+  createdAt?: Maybe<Scalars['DateTime']>;
+  dateOfCompleted?: Maybe<Scalars['DateTime']>;
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  president?: Maybe<Scalars['String']>;
+  religion?: Maybe<Scalars['String']>;
+  state?: Maybe<State>;
+  totalWorshipAmount?: Maybe<Scalars['Int']>;
+  /** Identifies the date and time when the object was last updated. */
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  verified: Scalars['Boolean'];
+  website?: Maybe<Scalars['String']>;
+};
+
+export type TempleConnection = {
+  __typename?: 'TempleConnection';
+  edges?: Maybe<Array<TempleEdge>>;
+  pageInfo: PageInfo;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type TempleEdge = {
+  __typename?: 'TempleEdge';
+  cursor: Scalars['String'];
+  node: Temple;
+};
+
+export type TempleOrder = {
+  direction: OrderDirection;
+  field: TempleOrderField;
+};
+
+/** Properties by which worshiped person connections can be ordered. */
+export enum TempleOrderField {
+  CreatedAt = 'createdAt',
+  Id = 'id',
+  TotalWorshipAmount = 'totalWorshipAmount',
+  UpdatedAt = 'updatedAt'
+}
 
 export type Token = {
   __typename?: 'Token';
@@ -690,10 +1003,11 @@ export type Worship = {
   latitude?: Maybe<Scalars['Decimal']>;
   location?: Maybe<Scalars['String']>;
   longitude?: Maybe<Scalars['Decimal']>;
+  temple?: Maybe<Temple>;
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
   worshipedAmount: Scalars['Float'];
-  worshipedPerson: WorshipedPerson;
+  worshipedPerson?: Maybe<WorshipedPerson>;
 };
 
 export type WorshipConnection = {

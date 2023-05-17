@@ -44,7 +44,6 @@ const HomePage = ({ isMobile, localUser }: HomePageProps) => {
           mnemonic: selectedAccount.mnemonic,
           language: selectedAccount.language,
           address: selectedAccount.address,
-          balance: selectedAccount.balance,
           name: selectedAccount.name,
           createdAt: selectedAccount.createdAt,
           updatedAt: selectedAccount.updatedAt

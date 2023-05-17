@@ -34,8 +34,8 @@ export type WorshipedPersonFieldsFragment = {
   totalWorshipAmount?: number | null;
   dateOfBirth?: any | null;
   dateOfDeath?: any | null;
-  createdAt: any;
-  updatedAt: any;
+  createdAt?: any | null;
+  updatedAt?: any | null;
   avatar?: {
     __typename?: 'UploadDetail';
     id: string;
@@ -66,7 +66,13 @@ export type WorshipFieldsFragment = {
   createdAt: any;
   updatedAt: any;
   account: { __typename?: 'Account'; id: string; name: string; address: string };
-  worshipedPerson: { __typename?: 'WorshipedPerson'; id: string; name: string; totalWorshipAmount?: number | null };
+  worshipedPerson?: {
+    __typename?: 'WorshipedPerson';
+    id: string;
+    name: string;
+    totalWorshipAmount?: number | null;
+  } | null;
+  temple?: { __typename?: 'Temple'; id: string; name: string; totalWorshipAmount?: number | null } | null;
 };
 
 export type WorshipedPersonQueryVariables = Types.Exact<{
@@ -93,8 +99,8 @@ export type WorshipedPersonQuery = {
     totalWorshipAmount?: number | null;
     dateOfBirth?: any | null;
     dateOfDeath?: any | null;
-    createdAt: any;
-    updatedAt: any;
+    createdAt?: any | null;
+    updatedAt?: any | null;
     avatar?: {
       __typename?: 'UploadDetail';
       id: string;
@@ -132,7 +138,13 @@ export type WorshipQuery = {
     createdAt: any;
     updatedAt: any;
     account: { __typename?: 'Account'; id: string; name: string; address: string };
-    worshipedPerson: { __typename?: 'WorshipedPerson'; id: string; name: string; totalWorshipAmount?: number | null };
+    worshipedPerson?: {
+      __typename?: 'WorshipedPerson';
+      id: string;
+      name: string;
+      totalWorshipAmount?: number | null;
+    } | null;
+    temple?: { __typename?: 'Temple'; id: string; name: string; totalWorshipAmount?: number | null } | null;
   };
 };
 
@@ -171,8 +183,8 @@ export type WorshipedPeopleQuery = {
         totalWorshipAmount?: number | null;
         dateOfBirth?: any | null;
         dateOfDeath?: any | null;
-        createdAt: any;
-        updatedAt: any;
+        createdAt?: any | null;
+        updatedAt?: any | null;
         avatar?: {
           __typename?: 'UploadDetail';
           id: string;
@@ -238,8 +250,8 @@ export type WorshipedPeopleByUserIdQuery = {
         totalWorshipAmount?: number | null;
         dateOfBirth?: any | null;
         dateOfDeath?: any | null;
-        createdAt: any;
-        updatedAt: any;
+        createdAt?: any | null;
+        updatedAt?: any | null;
         avatar?: {
           __typename?: 'UploadDetail';
           id: string;
@@ -303,8 +315,8 @@ export type WorshipedPersonBySearchQuery = {
         totalWorshipAmount?: number | null;
         dateOfBirth?: any | null;
         dateOfDeath?: any | null;
-        createdAt: any;
-        updatedAt: any;
+        createdAt?: any | null;
+        updatedAt?: any | null;
         avatar?: {
           __typename?: 'UploadDetail';
           id: string;
@@ -370,8 +382,8 @@ export type WorshipedPeopleSpecialDateQuery = {
         totalWorshipAmount?: number | null;
         dateOfBirth?: any | null;
         dateOfDeath?: any | null;
-        createdAt: any;
-        updatedAt: any;
+        createdAt?: any | null;
+        updatedAt?: any | null;
         avatar?: {
           __typename?: 'UploadDetail';
           id: string;
@@ -430,12 +442,60 @@ export type AllWorshipedByPersonIdQuery = {
         createdAt: any;
         updatedAt: any;
         account: { __typename?: 'Account'; id: string; name: string; address: string };
-        worshipedPerson: {
+        worshipedPerson?: {
           __typename?: 'WorshipedPerson';
           id: string;
           name: string;
           totalWorshipAmount?: number | null;
-        };
+        } | null;
+        temple?: { __typename?: 'Temple'; id: string; name: string; totalWorshipAmount?: number | null } | null;
+      };
+    }> | null;
+    pageInfo: {
+      __typename?: 'PageInfo';
+      endCursor?: string | null;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: string | null;
+    };
+  };
+};
+
+export type AllWorshipedByTempleIdQueryVariables = Types.Exact<{
+  after?: Types.InputMaybe<Types.Scalars['String']>;
+  before?: Types.InputMaybe<Types.Scalars['String']>;
+  first?: Types.InputMaybe<Types.Scalars['Int']>;
+  last?: Types.InputMaybe<Types.Scalars['Int']>;
+  orderBy?: Types.InputMaybe<Types.WorshipOrder>;
+  id?: Types.InputMaybe<Types.Scalars['String']>;
+  skip?: Types.InputMaybe<Types.Scalars['Int']>;
+}>;
+
+export type AllWorshipedByTempleIdQuery = {
+  __typename?: 'Query';
+  allWorshipedByTempleId: {
+    __typename?: 'WorshipConnection';
+    totalCount?: number | null;
+    edges?: Array<{
+      __typename?: 'WorshipEdge';
+      cursor: string;
+      node: {
+        __typename?: 'Worship';
+        id: string;
+        worshipedAmount: number;
+        location?: string | null;
+        latitude?: any | null;
+        longitude?: any | null;
+        createdAt: any;
+        updatedAt: any;
+        account: { __typename?: 'Account'; id: string; name: string; address: string };
+        worshipedPerson?: {
+          __typename?: 'WorshipedPerson';
+          id: string;
+          name: string;
+          totalWorshipAmount?: number | null;
+        } | null;
+        temple?: { __typename?: 'Temple'; id: string; name: string; totalWorshipAmount?: number | null } | null;
       };
     }> | null;
     pageInfo: {
@@ -475,12 +535,13 @@ export type AllWorshipQuery = {
         createdAt: any;
         updatedAt: any;
         account: { __typename?: 'Account'; id: string; name: string; address: string };
-        worshipedPerson: {
+        worshipedPerson?: {
           __typename?: 'WorshipedPerson';
           id: string;
           name: string;
           totalWorshipAmount?: number | null;
-        };
+        } | null;
+        temple?: { __typename?: 'Temple'; id: string; name: string; totalWorshipAmount?: number | null } | null;
       };
     }> | null;
     pageInfo: {
@@ -517,8 +578,8 @@ export type CreateWorshipedPersonMutation = {
     totalWorshipAmount?: number | null;
     dateOfBirth?: any | null;
     dateOfDeath?: any | null;
-    createdAt: any;
-    updatedAt: any;
+    createdAt?: any | null;
+    updatedAt?: any | null;
     avatar?: {
       __typename?: 'UploadDetail';
       id: string;
@@ -556,7 +617,13 @@ export type CreateWorshipMutation = {
     createdAt: any;
     updatedAt: any;
     account: { __typename?: 'Account'; id: string; name: string; address: string };
-    worshipedPerson: { __typename?: 'WorshipedPerson'; id: string; name: string; totalWorshipAmount?: number | null };
+    worshipedPerson?: {
+      __typename?: 'WorshipedPerson';
+      id: string;
+      name: string;
+      totalWorshipAmount?: number | null;
+    } | null;
+    temple?: { __typename?: 'Temple'; id: string; name: string; totalWorshipAmount?: number | null } | null;
   };
 };
 
@@ -616,6 +683,11 @@ export const WorshipFieldsFragmentDoc = `
     address
   }
   worshipedPerson {
+    id
+    name
+    totalWorshipAmount
+  }
+  temple {
     id
     name
     totalWorshipAmount
@@ -761,6 +833,31 @@ export const AllWorshipedByPersonIdDocument = `
 }
     ${WorshipFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
+export const AllWorshipedByTempleIdDocument = `
+    query allWorshipedByTempleId($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: WorshipOrder, $id: String, $skip: Int) {
+  allWorshipedByTempleId(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    id: $id
+    skip: $skip
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...WorshipFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+    ${WorshipFieldsFragmentDoc}
+${PageInfoFieldsFragmentDoc}`;
 export const AllWorshipDocument = `
     query allWorship($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: WorshipOrder, $skip: Int) {
   allWorship(
@@ -826,6 +923,9 @@ const injectedRtkApi = api.injectEndpoints({
     allWorshipedByPersonId: build.query<AllWorshipedByPersonIdQuery, AllWorshipedByPersonIdQueryVariables | void>({
       query: variables => ({ document: AllWorshipedByPersonIdDocument, variables })
     }),
+    allWorshipedByTempleId: build.query<AllWorshipedByTempleIdQuery, AllWorshipedByTempleIdQueryVariables | void>({
+      query: variables => ({ document: AllWorshipedByTempleIdDocument, variables })
+    }),
     allWorship: build.query<AllWorshipQuery, AllWorshipQueryVariables | void>({
       query: variables => ({ document: AllWorshipDocument, variables })
     }),
@@ -854,6 +954,8 @@ export const {
   useLazyWorshipedPeopleSpecialDateQuery,
   useAllWorshipedByPersonIdQuery,
   useLazyAllWorshipedByPersonIdQuery,
+  useAllWorshipedByTempleIdQuery,
+  useLazyAllWorshipedByTempleIdQuery,
   useAllWorshipQuery,
   useLazyAllWorshipQuery,
   useCreateWorshipedPersonMutation,
