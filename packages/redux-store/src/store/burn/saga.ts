@@ -42,6 +42,7 @@ import {
 import burnApi from './api';
 import { getBurnQueue, getFailQueue } from './selectors';
 import { api as worshipApi } from '@store/worship/worshipedPerson.api';
+import { api as templeApi } from '@store/temple/temple.api';
 
 function* createTxHexSaga(action: any) {
   const data = action.payload;
@@ -358,27 +359,52 @@ function* updateWorshipBurnValue(data) {
       field: WorshipOrderField.UpdatedAt
     }
   };
-  yield put(
-    worshipApi.util.updateQueryData('WorshipedPerson', { id: createWorship.worshipedPerson.id }, draft => {
-      draft.worshipedPerson.totalWorshipAmount =
-        draft.worshipedPerson.totalWorshipAmount + createWorship.worshipedAmount;
-    })
-  );
-  return yield put(
-    worshipApi.util.updateQueryData(
-      'allWorshipedByPersonId',
-      { ...params, id: createWorship.worshipedPerson.id },
-      draft => {
-        draft.allWorshipedByPersonId.edges.unshift({
-          cursor: createWorship.id,
-          node: {
-            ...createWorship
-          }
-        });
-        draft.allWorshipedByPersonId.totalCount = draft.allWorshipedByPersonId.totalCount + 1;
-      }
-    )
-  );
+  //At the time being, there are only 2 object to worship, so we use if/else here,
+  //In the future, if there is more object to worship, create WorshipType in createWorshipMutation
+  if (createWorship.worshipedPerson.id) {
+    yield put(
+      worshipApi.util.updateQueryData('WorshipedPerson', { id: createWorship.worshipedPerson?.id }, draft => {
+        draft.worshipedPerson.totalWorshipAmount =
+          draft.worshipedPerson.totalWorshipAmount + createWorship.worshipedAmount;
+      })
+    );
+    return yield put(
+      worshipApi.util.updateQueryData(
+        'allWorshipedByPersonId',
+        { ...params, id: createWorship.worshipedPerson.id },
+        draft => {
+          draft.allWorshipedByPersonId.edges.unshift({
+            cursor: createWorship.id,
+            node: {
+              ...createWorship
+            }
+          });
+          draft.allWorshipedByPersonId.totalCount = draft.allWorshipedByPersonId.totalCount + 1;
+        }
+      )
+    );
+  } else {
+    yield put(
+      templeApi.util.updateQueryData('Temple', { id: createWorship.temple?.id }, draft => {
+        draft.temple.totalWorshipAmount = draft.temple.totalWorshipAmount + createWorship.worshipedAmount;
+      })
+    );
+    return yield put(
+      worshipApi.util.updateQueryData(
+        'allWorshipedByTempleId',
+        { ...params, id: createWorship.worshipedPerson.id },
+        draft => {
+          draft.allWorshipedByTempleId.edges.unshift({
+            cursor: createWorship.id,
+            node: {
+              ...createWorship
+            }
+          });
+          draft.allWorshipedByTempleId.totalCount = draft.allWorshipedByTempleId.totalCount + 1;
+        }
+      )
+    );
+  }
 }
 
 function* updateCommentBurnValue(action: PayloadAction<BurnCommand>) {

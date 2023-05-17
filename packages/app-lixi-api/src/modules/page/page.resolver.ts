@@ -76,7 +76,7 @@ export class PageResolver {
         const output = pages.map(page => ({
           ...page,
           totalBurnForPage: page.posts.reduce((a, b) => a + b.lotusBurnScore, 0)
-        }));
+        })).sort((a,b) => a.lotusBurnScore - b.lotusBurnScore);
 
         return output;
       },

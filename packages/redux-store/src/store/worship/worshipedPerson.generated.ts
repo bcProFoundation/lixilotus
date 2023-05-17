@@ -15,7 +15,7 @@ import { PageInfoFieldsFragmentDoc, PostMeiliPageInfoFieldsFragmentDoc } from '.
 import { api } from 'src/api/baseApi';
 export type WorshipedPersonFieldsFragment = { __typename?: 'WorshipedPerson', id: string, name: string, wikiAvatar?: string | null, countryOfCitizenship?: string | null, achievement?: string | null, bio?: string | null, alias?: string | null, religion?: string | null, placeOfBirth?: string | null, placeOfDeath?: string | null, placeOfBurial?: string | null, quote?: string | null, wikiDataId?: string | null, totalWorshipAmount?: number | null, dateOfBirth?: any | null, dateOfDeath?: any | null, createdAt?: any | null, updatedAt?: any | null, avatar?: { __typename?: 'UploadDetail', id: string, upload: { __typename?: 'Upload', id: string, sha: string, bucket?: string | null, width?: string | null, height?: string | null, sha800?: string | null, sha320?: string | null, sha40?: string | null } } | null, country?: { __typename?: 'Country', id: string, name: string } | null, state?: { __typename?: 'State', id: string, name: string } | null, city?: { __typename?: 'City', id: string, name: string } | null };
 
-export type WorshipFieldsFragment = { __typename?: 'Worship', id: string, worshipedAmount: number, location?: string | null, latitude?: any | null, longitude?: any | null, createdAt: any, updatedAt: any, account: { __typename?: 'Account', id: string, name: string, address: string }, worshipedPerson: { __typename?: 'WorshipedPerson', id: string, name: string, totalWorshipAmount?: number | null } };
+export type WorshipFieldsFragment = { __typename?: 'Worship', id: string, worshipedAmount: number, location?: string | null, latitude?: any | null, longitude?: any | null, createdAt: any, updatedAt: any, account: { __typename?: 'Account', id: string, name: string, address: string }, worshipedPerson?: { __typename?: 'WorshipedPerson', id: string, name: string, totalWorshipAmount?: number | null } | null, temple?: { __typename?: 'Temple', id: string, name: string, totalWorshipAmount?: number | null } | null };
 
 export type WorshipedPersonQueryVariables = Types.Exact<{
   id: Types.Scalars['String'];
@@ -29,7 +29,7 @@ export type WorshipQueryVariables = Types.Exact<{
 }>;
 
 
-export type WorshipQuery = { __typename?: 'Query', worship: { __typename?: 'Worship', id: string, worshipedAmount: number, location?: string | null, latitude?: any | null, longitude?: any | null, createdAt: any, updatedAt: any, account: { __typename?: 'Account', id: string, name: string, address: string }, worshipedPerson: { __typename?: 'WorshipedPerson', id: string, name: string, totalWorshipAmount?: number | null } } };
+export type WorshipQuery = { __typename?: 'Query', worship: { __typename?: 'Worship', id: string, worshipedAmount: number, location?: string | null, latitude?: any | null, longitude?: any | null, createdAt: any, updatedAt: any, account: { __typename?: 'Account', id: string, name: string, address: string }, worshipedPerson?: { __typename?: 'WorshipedPerson', id: string, name: string, totalWorshipAmount?: number | null } | null, temple?: { __typename?: 'Temple', id: string, name: string, totalWorshipAmount?: number | null } | null } };
 
 export type WorshipedPeopleQueryVariables = Types.Exact<{
   after?: Types.InputMaybe<Types.Scalars['String']>;
@@ -89,7 +89,20 @@ export type AllWorshipedByPersonIdQueryVariables = Types.Exact<{
 }>;
 
 
-export type AllWorshipedByPersonIdQuery = { __typename?: 'Query', allWorshipedByPersonId: { __typename?: 'WorshipConnection', totalCount?: number | null, edges?: Array<{ __typename?: 'WorshipEdge', cursor: string, node: { __typename?: 'Worship', id: string, worshipedAmount: number, location?: string | null, latitude?: any | null, longitude?: any | null, createdAt: any, updatedAt: any, account: { __typename?: 'Account', id: string, name: string, address: string }, worshipedPerson: { __typename?: 'WorshipedPerson', id: string, name: string, totalWorshipAmount?: number | null } } }> | null, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } } };
+export type AllWorshipedByPersonIdQuery = { __typename?: 'Query', allWorshipedByPersonId: { __typename?: 'WorshipConnection', totalCount?: number | null, edges?: Array<{ __typename?: 'WorshipEdge', cursor: string, node: { __typename?: 'Worship', id: string, worshipedAmount: number, location?: string | null, latitude?: any | null, longitude?: any | null, createdAt: any, updatedAt: any, account: { __typename?: 'Account', id: string, name: string, address: string }, worshipedPerson?: { __typename?: 'WorshipedPerson', id: string, name: string, totalWorshipAmount?: number | null } | null, temple?: { __typename?: 'Temple', id: string, name: string, totalWorshipAmount?: number | null } | null } }> | null, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } } };
+
+export type AllWorshipedByTempleIdQueryVariables = Types.Exact<{
+  after?: Types.InputMaybe<Types.Scalars['String']>;
+  before?: Types.InputMaybe<Types.Scalars['String']>;
+  first?: Types.InputMaybe<Types.Scalars['Int']>;
+  last?: Types.InputMaybe<Types.Scalars['Int']>;
+  orderBy?: Types.InputMaybe<Types.WorshipOrder>;
+  id?: Types.InputMaybe<Types.Scalars['String']>;
+  skip?: Types.InputMaybe<Types.Scalars['Int']>;
+}>;
+
+
+export type AllWorshipedByTempleIdQuery = { __typename?: 'Query', allWorshipedByTempleId: { __typename?: 'WorshipConnection', totalCount?: number | null, edges?: Array<{ __typename?: 'WorshipEdge', cursor: string, node: { __typename?: 'Worship', id: string, worshipedAmount: number, location?: string | null, latitude?: any | null, longitude?: any | null, createdAt: any, updatedAt: any, account: { __typename?: 'Account', id: string, name: string, address: string }, worshipedPerson?: { __typename?: 'WorshipedPerson', id: string, name: string, totalWorshipAmount?: number | null } | null, temple?: { __typename?: 'Temple', id: string, name: string, totalWorshipAmount?: number | null } | null } }> | null, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } } };
 
 export type AllWorshipQueryVariables = Types.Exact<{
   after?: Types.InputMaybe<Types.Scalars['String']>;
@@ -101,7 +114,7 @@ export type AllWorshipQueryVariables = Types.Exact<{
 }>;
 
 
-export type AllWorshipQuery = { __typename?: 'Query', allWorship: { __typename?: 'WorshipConnection', totalCount?: number | null, edges?: Array<{ __typename?: 'WorshipEdge', cursor: string, node: { __typename?: 'Worship', id: string, worshipedAmount: number, location?: string | null, latitude?: any | null, longitude?: any | null, createdAt: any, updatedAt: any, account: { __typename?: 'Account', id: string, name: string, address: string }, worshipedPerson: { __typename?: 'WorshipedPerson', id: string, name: string, totalWorshipAmount?: number | null } } }> | null, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } } };
+export type AllWorshipQuery = { __typename?: 'Query', allWorship: { __typename?: 'WorshipConnection', totalCount?: number | null, edges?: Array<{ __typename?: 'WorshipEdge', cursor: string, node: { __typename?: 'Worship', id: string, worshipedAmount: number, location?: string | null, latitude?: any | null, longitude?: any | null, createdAt: any, updatedAt: any, account: { __typename?: 'Account', id: string, name: string, address: string }, worshipedPerson?: { __typename?: 'WorshipedPerson', id: string, name: string, totalWorshipAmount?: number | null } | null, temple?: { __typename?: 'Temple', id: string, name: string, totalWorshipAmount?: number | null } | null } }> | null, pageInfo: { __typename?: 'PageInfo', endCursor?: string | null, hasNextPage: boolean, hasPreviousPage: boolean, startCursor?: string | null } } };
 
 export type CreateWorshipedPersonMutationVariables = Types.Exact<{
   input: Types.CreateWorshipedPersonInput;
@@ -115,7 +128,7 @@ export type CreateWorshipMutationVariables = Types.Exact<{
 }>;
 
 
-export type CreateWorshipMutation = { __typename?: 'Mutation', createWorship: { __typename?: 'Worship', id: string, worshipedAmount: number, location?: string | null, latitude?: any | null, longitude?: any | null, createdAt: any, updatedAt: any, account: { __typename?: 'Account', id: string, name: string, address: string }, worshipedPerson: { __typename?: 'WorshipedPerson', id: string, name: string, totalWorshipAmount?: number | null } } };
+export type CreateWorshipMutation = { __typename?: 'Mutation', createWorship: { __typename?: 'Worship', id: string, worshipedAmount: number, location?: string | null, latitude?: any | null, longitude?: any | null, createdAt: any, updatedAt: any, account: { __typename?: 'Account', id: string, name: string, address: string }, worshipedPerson?: { __typename?: 'WorshipedPerson', id: string, name: string, totalWorshipAmount?: number | null } | null, temple?: { __typename?: 'Temple', id: string, name: string, totalWorshipAmount?: number | null } | null } };
 
 export const WorshipedPersonFieldsFragmentDoc = `
     fragment WorshipedPersonFields on WorshipedPerson {
@@ -173,6 +186,11 @@ export const WorshipFieldsFragmentDoc = `
     address
   }
   worshipedPerson {
+    id
+    name
+    totalWorshipAmount
+  }
+  temple {
     id
     name
     totalWorshipAmount
@@ -318,6 +336,31 @@ export const AllWorshipedByPersonIdDocument = `
 }
     ${WorshipFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
+export const AllWorshipedByTempleIdDocument = `
+    query allWorshipedByTempleId($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: WorshipOrder, $id: String, $skip: Int) {
+  allWorshipedByTempleId(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    id: $id
+    skip: $skip
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...WorshipFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+    ${WorshipFieldsFragmentDoc}
+${PageInfoFieldsFragmentDoc}`;
 export const AllWorshipDocument = `
     query allWorship($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: WorshipOrder, $skip: Int) {
   allWorship(
@@ -380,6 +423,9 @@ const injectedRtkApi = api.injectEndpoints({
     allWorshipedByPersonId: build.query<AllWorshipedByPersonIdQuery, AllWorshipedByPersonIdQueryVariables | void>({
       query: (variables) => ({ document: AllWorshipedByPersonIdDocument, variables })
     }),
+    allWorshipedByTempleId: build.query<AllWorshipedByTempleIdQuery, AllWorshipedByTempleIdQueryVariables | void>({
+      query: (variables) => ({ document: AllWorshipedByTempleIdDocument, variables })
+    }),
     allWorship: build.query<AllWorshipQuery, AllWorshipQueryVariables | void>({
       query: (variables) => ({ document: AllWorshipDocument, variables })
     }),
@@ -393,5 +439,5 @@ const injectedRtkApi = api.injectEndpoints({
 });
 
 export { injectedRtkApi as api };
-export const { useWorshipedPersonQuery, useLazyWorshipedPersonQuery, useWorshipQuery, useLazyWorshipQuery, useWorshipedPeopleQuery, useLazyWorshipedPeopleQuery, useWorshipedPeopleByUserIdQuery, useLazyWorshipedPeopleByUserIdQuery, useWorshipedPersonBySearchQuery, useLazyWorshipedPersonBySearchQuery, useWorshipedPeopleSpecialDateQuery, useLazyWorshipedPeopleSpecialDateQuery, useAllWorshipedByPersonIdQuery, useLazyAllWorshipedByPersonIdQuery, useAllWorshipQuery, useLazyAllWorshipQuery, useCreateWorshipedPersonMutation, useCreateWorshipMutation } = injectedRtkApi;
+export const { useWorshipedPersonQuery, useLazyWorshipedPersonQuery, useWorshipQuery, useLazyWorshipQuery, useWorshipedPeopleQuery, useLazyWorshipedPeopleQuery, useWorshipedPeopleByUserIdQuery, useLazyWorshipedPeopleByUserIdQuery, useWorshipedPersonBySearchQuery, useLazyWorshipedPersonBySearchQuery, useWorshipedPeopleSpecialDateQuery, useLazyWorshipedPeopleSpecialDateQuery, useAllWorshipedByPersonIdQuery, useLazyAllWorshipedByPersonIdQuery, useAllWorshipedByTempleIdQuery, useLazyAllWorshipedByTempleIdQuery, useAllWorshipQuery, useLazyAllWorshipQuery, useCreateWorshipedPersonMutation, useCreateWorshipMutation } = injectedRtkApi;
 

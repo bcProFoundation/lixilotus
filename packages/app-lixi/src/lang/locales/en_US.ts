@@ -102,6 +102,7 @@ export default {
   'general.showMore': 'Show more',
   'general.showLess': 'Show less',
   'general.topAccounts': 'Top Accounts',
+  'general.topPages': 'Top Pages',
   'general.burned': 'Burned',
 
   /* 02.Account */

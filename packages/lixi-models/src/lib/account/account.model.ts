@@ -10,6 +10,9 @@ export class Account {
   @Field(() => String)
   name: string;
 
+  @Field(() => Number)
+  balance: number;
+
   @Field(() => String, { nullable: true })
   mnemonic?: string;
 
