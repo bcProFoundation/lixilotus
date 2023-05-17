@@ -25,10 +25,9 @@ export class NotificationService {
     @InjectQueue(NOTIFICATION_OUTBOUND_QUEUE) private notificationOutboundQueue: Queue,
     @InjectRedis() private readonly redis: Redis,
     @I18n() private i18n: I18nService
-  ) { }
+  ) {}
 
   async saveAndDispatchNotification(notification: NotificationDto) {
-
     if (!notification.recipientId) {
       const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
       this.logger.error(accountNotExistMessage);
@@ -89,10 +88,10 @@ export class NotificationService {
     // Each room is a device
     const rooms = deviceIds.map(deviceId => {
       return `device:${deviceId}`;
-    })
+    });
 
     // Dispatch the notification
-    _.map(rooms, async (room) => {
+    _.map(rooms, async room => {
       const sendNotifJobData: SendNotificationJobData = {
         room,
         notification: { ...notif } as NotificationDto

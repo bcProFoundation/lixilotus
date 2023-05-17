@@ -29,9 +29,7 @@ export class NotificationGateway implements OnGatewayInit, OnGatewayConnection, 
 
   private logger: Logger = new Logger('NotificationGateway');
 
-  constructor(
-    @InjectRedis() private readonly redis: Redis
-  ) { }
+  constructor(@InjectRedis() private readonly redis: Redis) {}
 
   handleConnection(client: Socket, ...args: any[]) {
     this.logger.log(`Client connected: ${client.id}`);
@@ -56,7 +54,7 @@ export class NotificationGateway implements OnGatewayInit, OnGatewayConnection, 
       });
     }
 
-    this.redis.del(`client:${client.id}`)
+    this.redis.del(`client:${client.id}`);
   }
 
   afterInit(server: Server) {
@@ -85,10 +83,7 @@ export class NotificationGateway implements OnGatewayInit, OnGatewayConnection, 
   }
 
   @SubscribeMessage('user_offline')
-  async handleUserOffline(
-    @MessageBody() user: SocketUser,
-    @ConnectedSocket() socket: Socket,
-  ) {
+  async handleUserOffline(@MessageBody() user: SocketUser, @ConnectedSocket() socket: Socket) {
     const { address, deviceId } = user;
     const deviceRoomName = `device:${deviceId}`;
     socket.leave(deviceRoomName);

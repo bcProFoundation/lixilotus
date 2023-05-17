@@ -1,6 +1,12 @@
 import { createEntityAdapter, createReducer } from '@reduxjs/toolkit';
 
-import { activateWalletSuccess, setWalletHasUpdated, setWalletPaths, setWalletRefreshInterval, writeWalletStatus } from './actions';
+import {
+  activateWalletSuccess,
+  setWalletHasUpdated,
+  setWalletPaths,
+  setWalletRefreshInterval,
+  writeWalletStatus
+} from './actions';
 import { WalletPathAddressInfo } from './models';
 import { WalletState } from './state';
 

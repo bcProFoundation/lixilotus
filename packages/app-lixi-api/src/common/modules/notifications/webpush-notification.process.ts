@@ -8,7 +8,7 @@ import { Notification } from '@bcpros/lixi-prisma';
 
 export interface WebpushNotificationJobData {
   pushSubObj: PushSubscription;
-  notification: Notification
+  notification: Notification;
 }
 
 @Injectable()
@@ -30,7 +30,7 @@ export class WebpushNotificationProcessor extends WorkerHost {
    */
   public async process(job: Job<WebpushNotificationJobData, boolean, string>): Promise<boolean> {
     const { pushSubObj, notification } = job.data;
-    sendNotification(pushSubObj, notification.message)
+    sendNotification(pushSubObj, notification.message);
     return true;
   }
 }

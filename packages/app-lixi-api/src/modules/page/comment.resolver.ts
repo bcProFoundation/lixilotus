@@ -35,7 +35,7 @@ export class CommentResolver {
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS,
     private readonly notificationService: NotificationService
-  ) { }
+  ) {}
 
   @Subscription(() => Comment)
   commentCreated() {

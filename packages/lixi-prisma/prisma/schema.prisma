@@ -179,28 +179,29 @@ model Comment {
 }
 
 model Account {
-  id                Int             @id @default(autoincrement())
-  name              String
-  encryptedMnemonic String          @map("encrypted_mnemonic")
-  encryptedSecret   String          @default("") @map("encrypted_secret")
-  createdAt         DateTime        @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt         DateTime        @default(now()) @map("updated_at") @db.Timestamptz
-  lixies            Lixi[]
-  mnemonicHash      String          @map("mnemonic_hash")
-  address           String          @default("") @map("address")
-  notifications     Notification[]
-  language          String          @default("en")
-  publicKey         String          @default("") @map("public_key")
-  email             String?         @unique
-  uploadDetail      UploadDetail[]
-  page              Page?
-  posts             Post[]
-  comments          Comment[]
-  Worship           Worship[]
-  temples           Temple[]
-  followers         FollowAccount[] @relation("followerAccount")
-  followings        FollowAccount[] @relation("followingAccount")
-  followingPages    FollowPage[]
+  id                 Int                 @id @default(autoincrement())
+  name               String
+  encryptedMnemonic  String              @map("encrypted_mnemonic")
+  encryptedSecret    String              @default("") @map("encrypted_secret")
+  createdAt          DateTime            @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt          DateTime            @default(now()) @map("updated_at") @db.Timestamptz
+  lixies             Lixi[]
+  mnemonicHash       String              @map("mnemonic_hash")
+  address            String              @default("") @map("address")
+  notifications      Notification[]
+  language           String              @default("en")
+  publicKey          String              @default("") @map("public_key")
+  email              String?             @unique
+  uploadDetail       UploadDetail[]
+  page               Page?
+  posts              Post[]
+  comments           Comment[]
+  Worship            Worship[]
+  temples            Temple[]
+  followers          FollowAccount[]     @relation("followerAccount")
+  followings         FollowAccount[]     @relation("followingAccount")
+  followingPages     FollowPage[]
+  webpushSubscribers WebpushSubscriber[]
 
   @@index([mnemonicHash], type: Hash)
   @@map("account")

@@ -7,6 +7,7 @@ import { MeiliSearchModule } from 'nestjs-meilisearch';
 import { FastifyRequest } from 'fastify';
 import { AcceptLanguageResolver, HeaderResolver, I18nModule } from 'nestjs-i18n';
 import path, { join } from 'path';
+import IORedis from 'ioredis';
 import * as _ from 'lodash';
 import { NotificationModule } from './common/modules/notifications/notification.module';
 import { GraphqlConfig } from './config/config.interface';
@@ -25,6 +26,7 @@ import { S3Module } from 'nestjs-s3';
 import { TokenModule } from './modules/token/token.module';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { AccountModule } from './modules/account/account.module';
+import { BullModule } from '@nestjs/bullmq';
 
 //enabled serving multiple static for fastify
 type FastifyServeStaticModuleOptions = ServeStaticModuleOptions & {
@@ -46,6 +48,19 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
     ConfigModule.forRoot({
       isGlobal: true,
       load: [configuration]
+    }),
+    BullModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        return {
+          connection: new IORedis({
+            maxRetriesPerRequest: null,
+            enableReadyCheck: false,
+            host: config.get<string>('REDIS_HOST') ? config.get<string>('REDIS_HOST') : 'redis-lixi',
+            port: config.get<string>('REDIS_PORT') ? _.toSafeInteger(config.get<string>('REDIS_PORT')) : 6379
+          })
+        };
+      }
     }),
     PrismaModule,
     ServeStaticModule.forRoot(serveStaticModule_images),
@@ -96,8 +111,8 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
         config: {
           host: config.get<string>('REDIS_HOST') ? config.get<string>('REDIS_HOST') : 'redis-lixi',
           port: config.get<string>('REDIS_PORT') ? _.toSafeInteger(config.get<string>('REDIS_PORT')) : 6379
-        },
-      }),
+        }
+      })
     }),
     WalletModule,
     AuthModule,

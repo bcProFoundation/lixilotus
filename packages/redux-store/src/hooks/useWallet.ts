@@ -126,27 +126,30 @@ const useWallet = () => {
   const syncAccountsToWallets = async (accounts: Account[], walletPaths: WalletPathAddressInfo[]) => {
     const accountsNotInWallets = _.filter(accounts, (account: Account) => {
       return !_.some(walletPaths, (walletPath: WalletPathAddressInfo) => {
-        return walletPath.xAddress === account.address
+        return walletPath.xAddress === account.address;
       });
     });
     const walletsAlreadySync = _.filter(walletPaths, (walletPath: WalletPathAddressInfo) => {
       return _.some(accounts, (account: Account) => {
-        return walletPath.xAddress === account.address
+        return walletPath.xAddress === account.address;
       });
     });
 
     // There is an mismatch between accounts and wallets
     if (accountsNotInWallets.length > 0 || walletsAlreadySync.length !== accounts.length) {
       // Then calculate the wallets and dispatch action to save the wallet paths to redux
-      const derivedWalletPathsPromises: Array<Promise<WalletPathAddressInfo[]>> = _.map(accountsNotInWallets, account => {
-        return getWalletPathDetails(account.mnemonic, [walletState.selectedWalletPath]);
-      });
+      const derivedWalletPathsPromises: Array<Promise<WalletPathAddressInfo[]>> = _.map(
+        accountsNotInWallets,
+        account => {
+          return getWalletPathDetails(account.mnemonic, [walletState.selectedWalletPath]);
+        }
+      );
       // Calculate the wallet not synced yet
       const walletsPathToSync = (await Promise.all(derivedWalletPathsPromises)).flat();
 
       dispatch(setWalletPaths([...walletsAlreadySync, ...walletsPathToSync]));
     }
-  }
+  };
 
   const haveUtxosChanged = (utxos: Utxo[], previousUtxos: Utxo[]) => {
     // Relevant points for this array comparing exercise
@@ -392,7 +395,7 @@ const useWallet = () => {
 
   useEffect(() => {
     syncAccountsToWallets(accounts, allWalletPaths);
-  }, [])
+  }, []);
 
   return {
     XPI,

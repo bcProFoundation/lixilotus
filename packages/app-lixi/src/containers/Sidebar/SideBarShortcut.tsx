@@ -65,7 +65,7 @@ export const ItemAccessNotification = ({
   href?: string;
   active: boolean;
   direction?: string;
-  notifications: NotificationDto[]
+  notifications: NotificationDto[];
   onClickItem?: () => void;
 }) => {
   return (
@@ -355,9 +355,11 @@ const SidebarShortcut = () => {
             />
             <ItemAccessNotification
               notifications={notifications}
-              icon={currentPathName === '/notifications' ?
-                '/images/ico-notifications-active.svg'
-                : '/images/ico-notifications.svg'}
+              icon={
+                currentPathName === '/notifications'
+                  ? '/images/ico-notifications-active.svg'
+                  : '/images/ico-notifications.svg'
+              }
               text={intl.get('general.notifications')}
               active={currentPathName === '/notifications'}
               key="notifications"

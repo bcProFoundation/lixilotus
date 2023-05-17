@@ -23,6 +23,9 @@
       "@hooks/*": [
         "src/hooks/*"
       ],
+      "@generated/*": [
+        "src/generated/*"
+      ],
       "@store/*": [
         "src/store/*"
       ],

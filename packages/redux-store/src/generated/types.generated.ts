@@ -167,16 +167,6 @@ export type CreateTokenInput = {
   tokenId: Scalars['String'];
 };
 
-export type CreateWebpushSubscriberInput = {
-  accountId: Scalars['Int'];
-  address: Scalars['Int'];
-  auth: Scalars['String'];
-  clientAppId: Scalars['String'];
-  deviceId: Scalars['String'];
-  endpoint: Scalars['String'];
-  p256dh: Scalars['String'];
-};
-
 export type CreateWorshipInput = {
   latitude?: InputMaybe<Scalars['Decimal']>;
   location?: InputMaybe<Scalars['String']>;
@@ -286,7 +276,6 @@ export type Mutation = {
   createPost: Post;
   createTemple: Temple;
   createToken: Token;
-  createWebpushSubscriber: WebpushSubscriber;
   createWorship: Worship;
   createWorshipTemple: Worship;
   createWorshipedPerson: WorshipedPerson;
@@ -295,7 +284,6 @@ export type Mutation = {
   importAccount: Account;
   updatePage: Page;
   updatePost: Post;
-  updateWebpushSubscriber: WebpushSubscriber;
 };
 
 export type MutationCreateAccountArgs = {
@@ -330,10 +318,6 @@ export type MutationCreateTokenArgs = {
   data: CreateTokenInput;
 };
 
-export type MutationCreateWebpushSubscriberArgs = {
-  data: CreateWebpushSubscriberInput;
-};
-
 export type MutationCreateWorshipArgs = {
   data: CreateWorshipInput;
 };
@@ -364,10 +348,6 @@ export type MutationUpdatePageArgs = {
 
 export type MutationUpdatePostArgs = {
   data: UpdatePostInput;
-};
-
-export type MutationUpdateWebpushSubscriberArgs = {
-  data: UpdateWebpushSubscriberInput;
 };
 
 /** Possible directions in which to order a list of items when provided an `orderBy` argument. */
@@ -540,7 +520,6 @@ export type Query = {
   post: Post;
   temple: Temple;
   token: Token;
-  topPages: PageConnection;
   worship: Worship;
   worshipedPerson: WorshipedPerson;
 };
@@ -784,17 +763,6 @@ export type QueryTokenArgs = {
   tokenId: Scalars['String'];
 };
 
-export type QueryTopPagesArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-  minBurnFilter?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<PageOrder>;
-  query?: InputMaybe<Scalars['String']>;
-  skip?: InputMaybe<Scalars['Int']>;
-};
-
 export type QueryWorshipArgs = {
   id: Scalars['String'];
 };
@@ -867,7 +835,7 @@ export type TempleOrder = {
   field: TempleOrderField;
 };
 
-/** Properties by which worshiped person connections can be ordered. */
+/** Properties by which temple connections can be ordered. */
 export enum TempleOrderField {
   CreatedAt = 'createdAt',
   Id = 'id',
@@ -947,18 +915,6 @@ export type UpdatePostInput = {
   pureContent: Scalars['String'];
 };
 
-export type UpdateWebpushSubscriberInput = {
-  accountId: Scalars['Int'];
-  address: Scalars['Int'];
-  auth: Scalars['String'];
-  clientAppId: Scalars['String'];
-  deviceId: Scalars['String'];
-  endpoint: Scalars['String'];
-  id: Scalars['ID'];
-  lastModifiedAt?: InputMaybe<Scalars['DateTime']>;
-  p256dh: Scalars['String'];
-};
-
 export type Upload = {
   __typename?: 'Upload';
   bucket?: Maybe<Scalars['String']>;
@@ -975,23 +931,6 @@ export type UploadDetail = {
   __typename?: 'UploadDetail';
   id: Scalars['ID'];
   upload: Upload;
-};
-
-export type WebpushSubscriber = {
-  __typename?: 'WebpushSubscriber';
-  account: Account;
-  accountId: Scalars['Int'];
-  address: Scalars['Int'];
-  auth: Scalars['String'];
-  clientAppId: Scalars['String'];
-  /** Identifies the date and time when the object was created. */
-  createdAt: Scalars['DateTime'];
-  deviceId: Scalars['String'];
-  endpoint: Scalars['String'];
-  id: Scalars['ID'];
-  p256d: Scalars['String'];
-  /** Identifies the date and time when the object was last updated. */
-  updatedAt: Scalars['DateTime'];
 };
 
 export type Worship = {

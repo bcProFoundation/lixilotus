@@ -74,7 +74,6 @@ const PushNotificationSetting = () => {
             if (result === 'granted') {
               dispatch(subscribeAll({ interactive: true, clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID }));
             } else {
-
               turnOffWebPushNotification();
               return;
             }

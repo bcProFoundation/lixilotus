@@ -480,7 +480,6 @@ type Query {
   post(id: String!): Post!
   temple(id: String!): Temple!
   token(tokenId: String!): Token!
-  topPages(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PageOrder, query: String, skip: Int): PageConnection!
   worship(id: String!): Worship!
   worshipedPerson(id: String!): WorshipedPerson!
 }
@@ -546,7 +545,7 @@ input TempleOrder {
   field: TempleOrderField!
 }
 
-"""Properties by which worshiped person connections can be ordered."""
+"""Properties by which temple connections can be ordered."""
 enum TempleOrderField {
   createdAt
   id
