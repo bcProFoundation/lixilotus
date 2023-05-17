@@ -98,7 +98,7 @@ const StyledBurnIcon = styled.img`
   height: 28px;
   cursor: pointer;
 
-  &.custom-burn{
+  &.custom-burn {
     width: 24px;
     height: 24px;
   }
@@ -649,7 +649,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
                 imgUrl="/images/custom-burn.svg"
                 key={`list-vertical-downvote-o-${post.id}`}
                 dataItem={post}
-                classStyle='custom-burn'
+                classStyle="custom-burn"
                 onClickIcon={() => openBurnModal(post)}
               />
             </div>
