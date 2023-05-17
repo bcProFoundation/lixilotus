@@ -24,7 +24,7 @@ const pubSub = new PubSub();
 @Resolver(() => Page)
 @UseFilters(GqlHttpExceptionFilter)
 export class PageResolver {
-  constructor(private logger: Logger, private prisma: PrismaService, @I18n() private i18n: I18nService) {}
+  constructor(private logger: Logger, private prisma: PrismaService, @I18n() private i18n: I18nService) { }
 
   @Subscription(() => Page)
   pageCreated() {
@@ -79,41 +79,6 @@ export class PageResolver {
             totalBurnForPage: page.posts.reduce((a, b) => a + b.lotusBurnScore, 0)
           }))
           .sort((a, b) => a.lotusBurnScore - b.lotusBurnScore);
-
-        return output;
-      },
-      () => this.prisma.page.count(),
-      { first, last, before, after }
-    );
-    return result;
-  }
-
-  @Query(() => PageConnection)
-  async topPages(
-    @Args() { after, before, first, last }: PaginationArgs,
-    @Args({ name: 'query', type: () => String, nullable: true })
-    query: string,
-    @Args({
-      name: 'orderBy',
-      type: () => PageOrder,
-      nullable: true
-    })
-    orderBy: PageOrder
-  ) {
-    const result = await findManyCursorConnection(
-      async args => {
-        const pages = await this.prisma.page.findMany({
-          include: {
-            posts: true
-          },
-          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
-          ...args
-        });
-
-        const output = pages.map(page => ({
-          ...page,
-          totalBurnForPage: page.posts.reduce((a, b) => a + b.lotusBurnScore, 0)
-        }));
 
         return output;
       },
@@ -202,18 +167,18 @@ export class PageResolver {
 
     const uploadAvatarDetail = data.avatar
       ? await this.prisma.uploadDetail.findFirst({
-          where: {
-            uploadId: data.avatar
-          }
-        })
+        where: {
+          uploadId: data.avatar
+        }
+      })
       : undefined;
 
     const uploadCoverDetail = data.cover
       ? await this.prisma.uploadDetail.findFirst({
-          where: {
-            uploadId: data.cover
-          }
-        })
+        where: {
+          uploadId: data.cover
+        }
+      })
       : undefined;
 
     const updatedPage = await this.prisma.page.update({
@@ -227,22 +192,22 @@ export class PageResolver {
         category: {
           connect: data.categoryId
             ? {
-                id: Number(data.categoryId)
-              }
+              id: Number(data.categoryId)
+            }
             : undefined
         },
         country: {
           connect: data.countryId
             ? {
-                id: Number(data.countryId)
-              }
+              id: Number(data.countryId)
+            }
             : undefined
         },
         state: {
           connect: data.stateId
             ? {
-                id: Number(data.stateId)
-              }
+              id: Number(data.stateId)
+            }
             : undefined
         }
       }
