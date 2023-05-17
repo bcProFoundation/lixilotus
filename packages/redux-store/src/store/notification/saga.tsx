@@ -1,9 +1,9 @@
 // import { CashReceivedNotificationIcon } from '@bcpros/lixi-components/components/Common/CustomIcons';
-import { AccountDto as Account, NotificationDto as Notification, PaginationResult, SocketUserOnline } from '@bcpros/lixi-models';
+import { AccountDto as Account, NotificationDto as Notification, SocketUser } from '@bcpros/lixi-models';
 import { currency } from '@components/Common/Ticker';
 import { all, call, cancelled, fork, put, select, take, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
-import { getAllAccounts, getSelectedAccount } from '@store/account/selectors';
+import { getSelectedAccount } from '@store/account/selectors';
 import { notification } from 'antd';
 import { ArgsProps } from 'antd/lib/notification/interface';
 import Paragraph from 'antd/lib/typography/Paragraph';
@@ -13,6 +13,7 @@ import intl from 'react-intl-universal';
 import { eventChannel } from 'redux-saga';
 import { delay, race } from 'redux-saga/effects';
 import io, { Socket } from 'socket.io-client';
+import { getDeviceId } from '..';
 import { downloadExportedLixi, refreshLixiSilent } from '../lixi/actions';
 import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
@@ -37,10 +38,11 @@ import {
   serverOn,
   startChannel,
   stopChannel,
+  userOffline,
+  userOnline,
   xpiReceivedNotificationWebSocket
 } from './actions';
 import notificationApi from './api';
-import { getDeviceId } from '..';
 
 const getDeviceNotificationStyle = () => {
   if (isMobile) {
@@ -267,16 +269,6 @@ function reconnect(): Promise<Socket> {
   });
 }
 
-function userOnline(accounts: Account[], deviceId: string) {
-  const users: SocketUserOnline[] = accounts.map(account => {
-    return {
-      address: account.address,
-      deviceId: deviceId
-    }
-  });
-  socket.emit('user_online', users);
-}
-
 function createSocketChannel(socket: Socket) {
   return eventChannel(emit => {
     const handler = (data: Notification) => {
@@ -292,9 +284,15 @@ function createSocketChannel(socket: Socket) {
 function* listenConnectSaga() {
   while (true) {
     yield call(reconnect);
-    const accounts: Account[] = yield call(waitFor, getAllAccounts);
-    const deviceId: string = yield call(waitFor, getDeviceId);
-    yield call(userOnline, accounts, deviceId);
+    // const account: Account = yield call(waitFor, getSelectedAccount);
+    // const deviceId: string = yield call(waitFor, getDeviceId);
+    // const users: SocketUser[] = [account].map(account => {
+    //   return {
+    //     address: account.address,
+    //     deviceId: deviceId
+    //   }
+    // });
+    // yield put(userOnline(users));
     yield put(serverOn());
   }
 }
@@ -302,7 +300,16 @@ function* listenConnectSaga() {
 function* listenDisconnectSaga() {
   while (true) {
     yield call(disconnect);
-    yield put(serverOn());
+    // const account: Account = yield call(waitFor, getSelectedAccount);
+    // const deviceId: string = yield call(waitFor, getDeviceId);
+    // const users: SocketUser[] = [account].map(account => {
+    //   return {
+    //     address: account.address,
+    //     deviceId: deviceId
+    //   }
+    // });
+    // yield put(userOffline(users));
+    yield put(serverOff());
   }
 }
 
@@ -322,10 +329,15 @@ function* listenServerSaga() {
     yield fork(listenConnectSaga);
 
     // @todo: verify that the user has permission to subscribe to that paticular addresses
-    const accounts: Account[] = yield call(waitFor, getAllAccounts);
-    const deviceId: string = yield call(waitFor, getDeviceId);
-
-    yield call(userOnline, accounts, deviceId);
+    // const account: Account = yield call(waitFor, getSelectedAccount);
+    // const deviceId: string = yield call(waitFor, getDeviceId);
+    // const users: SocketUser[] = [account].map(account => {
+    //   return {
+    //     address: account.address,
+    //     deviceId: deviceId
+    //   }
+    // });
+    // yield put(userOnline(users));
     yield put(serverOn());
 
     while (true) {
@@ -399,12 +411,30 @@ function* xpiReceivedNotificationWebSocketSaga(action: PayloadAction<string>) {
   notification.success(config);
 }
 
+function* userOnlineSaga(action: PayloadAction<SocketUser>) {
+  const { payload } = action;
+  socket.emit('user_online', payload);
+}
+
+function* userOfflineSaga(action: PayloadAction<SocketUser>) {
+  const { payload } = action;
+  socket.emit('user_offline', payload);
+}
+
 function* watchSendXpiNotificationSaga() {
   yield takeLatest(sendXpiNotification.type, sendXpiNotificationSaga);
 }
 
 function* watchXpiReceivedNotificationWebSocketSaga() {
   yield takeLatest(xpiReceivedNotificationWebSocket.type, xpiReceivedNotificationWebSocketSaga);
+}
+
+function* watchUserOnline() {
+  yield takeLatest(userOnline.type, userOnlineSaga);
+}
+
+function* watchUserOffline() {
+  yield takeLatest(userOffline.type, userOfflineSaga);
 }
 
 export default function* notificationSaga() {
@@ -440,7 +470,9 @@ export default function* notificationSaga() {
       fork(watchReadAllNotificationsSuccess),
       fork(watchReadAllNotificationsFailure),
       fork(watchSendXpiNotificationSaga),
-      fork(watchXpiReceivedNotificationWebSocketSaga)
+      fork(watchXpiReceivedNotificationWebSocketSaga),
+      fork(watchUserOnline),
+      fork(watchUserOffline)
     ]);
   }
 }

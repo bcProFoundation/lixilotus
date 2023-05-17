@@ -35,7 +35,7 @@ export class CommentResolver {
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS,
     private readonly notificationService: NotificationService
-  ) {}
+  ) { }
 
   @Subscription(() => Comment)
   commentCreated() {
@@ -212,11 +212,10 @@ export class CommentResolver {
           additionalData: tipHex ? commentToGiveData : commentToPostData
         };
         const jobData = {
-          room: recipient?.mnemonicHash,
           notification: createNotif
         };
         createNotif.senderId !== createNotif.recipientId &&
-          (await this.notificationService.saveAndDispatchNotification(jobData.room, jobData.notification));
+          (await this.notificationService.saveAndDispatchNotification(jobData.notification));
       }
 
       return savedComment;

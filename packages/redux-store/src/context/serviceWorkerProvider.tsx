@@ -1,4 +1,5 @@
 import usePushNotification from '@hooks/usePushNotification';
+import useUserStatus from '@hooks/useUserStatus';
 import { useAppDispatch } from '@store/hooks';
 import { subscribeAll } from '@store/webpush';
 import { createContext, useEffect, useState } from 'react';
@@ -20,6 +21,7 @@ export const ServiceWorkerContext = createContext<ServiceWorkerValue>(defaultSer
 export const ServiceWorkerProvider = ({ children }) => {
   const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null);
   const { turnOnWebPushNotification, turnOffWebPushNotification } = usePushNotification();
+  useUserStatus();
   const dispatch = useAppDispatch();
 
   useEffect(() => {

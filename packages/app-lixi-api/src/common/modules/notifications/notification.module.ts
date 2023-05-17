@@ -1,3 +1,4 @@
+import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { BullModule } from '@nestjs/bullmq';
 import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -11,7 +12,6 @@ import { NotificationOutboundProcessor } from './notification.processor';
 import { NotificationService } from './notification.service';
 import { WebpushNotificationProcessor } from './webpush-notification.process';
 import { WebpushController } from './webpush.controller';
-import { RedisModule } from '@nestjs-modules/ioredis';
 
 @Module({
   imports: [

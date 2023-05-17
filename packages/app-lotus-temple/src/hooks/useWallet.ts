@@ -300,7 +300,6 @@ const useWallet = () => {
     // Subscribe to addresses of current wallet
     for (let i = 0; i < hash160Array.length; i += 1) {
       ws.subscribe('p2pkh', hash160Array[i]);
-      console.log(`ws.subscribe('p2pkh', ${hash160Array[i]})`);
     }
 
     // Put connected websocket in state

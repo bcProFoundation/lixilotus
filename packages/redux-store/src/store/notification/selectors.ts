@@ -10,3 +10,8 @@ const { selectAll, selectEntities, selectIds, selectTotal } = notificationsAdapt
 export const getAllNotifications = createSelector((state: RootState) => state.notifications, selectAll);
 
 export const getAllNotificationsEntities = createSelector((state: RootState) => state.notifications, selectEntities);
+
+export const getIsServerStatusOn = createSelector(
+    (state: RootState) => state.notifications,
+    (state: NotificationsState) => state.serverStatusOn
+);

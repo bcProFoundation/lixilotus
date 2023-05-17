@@ -3,7 +3,9 @@ import { WalletContextValue } from '@context/index';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { xpiReceivedNotificationWebSocket } from '@store/notification/actions';
 import {
+  activateWallet,
   getAllWalletPaths,
+  getSelectedWalletPath,
   getWaletRefreshInterval,
   getWalletHasUpdated,
   getWalletState,
@@ -56,6 +58,7 @@ const useWallet = () => {
   const walletRefreshInterval = useAppSelector(getWaletRefreshInterval);
   const walletHasUpdated = useAppSelector(getWalletHasUpdated);
   const allWalletPaths = useAppSelector(getAllWalletPaths);
+  const selectedWalletPath = useAppSelector(getSelectedWalletPath);
   const walletUtxos = useAppSelector(getWalletUtxos);
   const dispatch = useAppDispatch();
   const walletStatus = useAppSelector(getWalletStatus);
@@ -143,11 +146,6 @@ const useWallet = () => {
 
       dispatch(setWalletPaths([...walletsAlreadySync, ...walletsPathToSync]));
     }
-
-
-
-
-
   }
 
   const haveUtxosChanged = (utxos: Utxo[], previousUtxos: Utxo[]) => {
@@ -222,6 +220,7 @@ const useWallet = () => {
   const initializeWebsocket = async (wallet: WalletState) => {
     console.log(`Initializing websocket connection for wallet ${wallet}`);
 
+    // @todo: previously we have one wallet, now we have multiple
     const hash160Array = getHashArrayFromWallet(wallet);
     if (!wallet || !hash160Array) {
       return setChronikWebsocket(null);
@@ -292,19 +291,16 @@ const useWallet = () => {
     }
 
     // Unsubscribe to any active subscriptions
-    console.log(`previousWebsocketSubscriptions`, previousWebsocketSubscriptions);
     if (previousWebsocketSubscriptions.length > 0) {
       for (let i = 0; i < previousWebsocketSubscriptions.length; i += 1) {
         const unsubHash160 = previousWebsocketSubscriptions[i].scriptPayload;
         ws.unsubscribe('p2pkh', unsubHash160);
-        console.log(`ws.unsubscribe('p2pkh', ${unsubHash160})`);
       }
     }
 
     // Subscribe to addresses of current wallet
     for (let i = 0; i < hash160Array.length; i += 1) {
       ws.subscribe('p2pkh', hash160Array[i]);
-      console.log(`ws.subscribe('p2pkh', ${hash160Array[i]})`);
     }
 
     // Put connected websocket in state
@@ -322,20 +318,12 @@ const useWallet = () => {
         return;
       }
 
-      const hash160AndAddressObjArray: Hash160AndAddress[] = allWalletPaths.map(item => {
+      const hash160AndAddressObjArray: Hash160AndAddress[] = [selectedWalletPath].map(item => {
         return {
           address: item.xAddress,
           hash160: item.hash160
         };
       });
-
-      // Check that server is live
-      try {
-        await XPI.Blockchain.getBlockCount();
-      } catch (err) {
-        console.log(`Error in BCH.Blockchain.getBlockCount, the full node is likely down`, err);
-        throw new Error(`Node unavailable`);
-      }
 
       const chronikUtxos = await getUtxosChronik(chronik, hash160AndAddressObjArray);
 
@@ -398,6 +386,7 @@ const useWallet = () => {
   useEffect(() => {
     (async () => {
       await initializeWebsocket(walletState);
+      dispatch(activateWallet(walletState.mnemonic));
     })();
   }, [walletState.mnemonic]);
 

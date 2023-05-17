@@ -42,7 +42,7 @@ export interface NotificationDto {
   action?: Nullable<string>;
 }
 
-export interface SocketUserOnline {
+export interface SocketUser {
   address: string;
   deviceId: string;
 }

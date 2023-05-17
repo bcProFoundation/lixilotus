@@ -21,7 +21,7 @@ export class BurnController {
     @I18n() private i18n: I18nService,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS
-  ) {}
+  ) { }
 
   @Post()
   async burn(@Body() command: BurnCommand): Promise<Burn> {
@@ -272,12 +272,10 @@ export class BurnController {
           }
         };
         const jobDataBurnAndTip = {
-          room: recipientPostAccount.mnemonicHash,
           notification: createNotifBurnAndTip
         };
         createNotifBurnAndTip.senderId !== createNotifBurnAndTip.recipientId &&
           (await this.notificationService.saveAndDispatchNotification(
-            jobDataBurnAndTip.room,
             jobDataBurnAndTip.notification
           ));
         // create Notifications Fee
@@ -318,7 +316,6 @@ export class BurnController {
           };
           jobDataBurnFee.room !== recipientPageAccount?.mnemonicHash &&
             (await this.notificationService.saveAndDispatchNotification(
-              jobDataBurnFee.room,
               jobDataBurnFee.notification
             ));
         }

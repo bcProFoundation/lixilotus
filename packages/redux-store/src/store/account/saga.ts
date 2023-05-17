@@ -763,7 +763,6 @@ function* silentLoginSaga(action: PayloadAction<string>) {
   const mnemonic = action.payload;
   try {
     const data = yield call(accountApi.login, mnemonic);
-    console.log('data:', data);
     yield put(silentLoginSuccess());
   } catch (err) {
     yield put(silentLoginFailure());

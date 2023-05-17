@@ -1,16 +1,18 @@
 // import { NotificationDto as Notification, NotificationTypeDto as NotificationType } from '@bcpros/lixi-models';
 import { BurnCommand, BurnType, NotificationDto, SendNotificationJobData } from '@bcpros/lixi-models';
+import { Account } from '@bcpros/lixi-prisma';
+import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import { InjectQueue } from '@nestjs/bullmq';
-import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Notification as NotificationDb, NotificationLevel as NotificationLevelDb, Prisma } from '@prisma/client';
 import { Queue } from 'bullmq';
+import Redis from 'ioredis';
+import _ from 'lodash';
 import { I18n, I18nService } from 'nestjs-i18n';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
-import { NOTIFICATION_OUTBOUND_QUEUE } from './notification.constants';
-import { VError } from 'verror';
 import { template } from 'src/utils/stringTemplate';
-import _ from 'lodash';
-import { Account } from '@bcpros/lixi-prisma';
+import { VError } from 'verror';
+import { NOTIFICATION_OUTBOUND_QUEUE } from './notification.constants';
 import { NotificationGateway } from './notification.gateway';
 
 @Injectable()
@@ -21,13 +23,16 @@ export class NotificationService {
     private prisma: PrismaService,
     private notificationGateway: NotificationGateway,
     @InjectQueue(NOTIFICATION_OUTBOUND_QUEUE) private notificationOutboundQueue: Queue,
+    @InjectRedis() private readonly redis: Redis,
     @I18n() private i18n: I18nService
-  ) {}
+  ) { }
 
-  async saveAndDispatchNotification(room: string, notification: NotificationDto) {
+  async saveAndDispatchNotification(notification: NotificationDto) {
+
     if (!notification.recipientId) {
       const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
-      throw new VError(accountNotExistMessage);
+      this.logger.error(accountNotExistMessage);
+      return;
     }
 
     // get recipient account
@@ -38,8 +43,13 @@ export class NotificationService {
     });
     if (!recipientAccount) {
       const accountNotExistMessage = await this.i18n.t('account.messages.accountNotExist');
-      throw new VError(accountNotExistMessage);
+      this.logger.error(new VError(accountNotExistMessage));
+      return;
     }
+
+    // Find all the devices which are currently only
+    // and associated to that paticular address
+    const deviceIds = await this.redis.smembers(`online:user:${recipientAccount.address}`);
 
     // @todo: Find notification types and create messenge
     const notifType = await this.prisma.notificationType.findFirst({
@@ -75,13 +85,20 @@ export class NotificationService {
       }
     });
 
+    // The rooms are the list of devices
+    // Each room is a device
+    const rooms = deviceIds.map(deviceId => {
+      return `device:${deviceId}`;
+    })
+
     // Dispatch the notification
-    const sendNotifJobData: SendNotificationJobData = {
-      room,
-      notification: { ...notif } as NotificationDto
-    };
-    const job = await this.notificationOutboundQueue.add('send-notification', sendNotifJobData);
-    return job.id;
+    _.map(rooms, async (room) => {
+      const sendNotifJobData: SendNotificationJobData = {
+        room,
+        notification: { ...notif } as NotificationDto
+      };
+      await this.notificationOutboundQueue.add('send-notification', sendNotifJobData);
+    });
   }
 
   async calcTip(post: any, recipient: Account, burn: BurnCommand) {

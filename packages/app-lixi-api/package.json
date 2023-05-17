@@ -99,7 +99,6 @@
     "wif": "^2.0.6",
     "winston": "^3.8.2",
     "winston-daily-rotate-file": "^4.7.1",
-    "winston-logzio": "^5.1.7",
     "winston-loki": "^6.0.6",
     "winston-verror-format": "^1.0.3"
   },

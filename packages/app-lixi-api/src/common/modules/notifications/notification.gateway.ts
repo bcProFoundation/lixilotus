@@ -1,7 +1,8 @@
-import { NotificationDto as Notification, SocketUserOnline } from '@bcpros/lixi-models';
+import { NotificationDto as Notification, SocketUser } from '@bcpros/lixi-models';
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectRedis, DEFAULT_REDIS_NAMESPACE } from '@liaoliaots/nestjs-redis';
+import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import Redis from 'ioredis';
+import * as _ from 'lodash';
 
 import {
   ConnectedSocket,
@@ -36,8 +37,26 @@ export class NotificationGateway implements OnGatewayInit, OnGatewayConnection, 
     this.logger.log(`Client connected: ${client.id}`);
   }
 
-  handleDisconnect(client: Socket) {
+  async handleDisconnect(client: Socket) {
     this.logger.log(`Client disconnected: ${client.id}`);
+
+    // Get the current user associated to the client id
+    const address = await this.redis.hget(`client:${client.id}`, 'address');
+    const deviceId = await this.redis.hget(`client:${client.id}`, 'deviceId');
+    if (address && deviceId) {
+      await this.redis.srem(`online:user:${address}`, deviceId);
+      await this.redis.scard(`online:user:${address}`, (error, count) => {
+        if (error) {
+          this.logger.error('Redis error:', error);
+          return;
+        }
+        if (count === 0) {
+          this.redis.del(`online:user:${address}`);
+        }
+      });
+    }
+
+    this.redis.del(`client:${client.id}`)
   }
 
   afterInit(server: Server) {
@@ -45,12 +64,45 @@ export class NotificationGateway implements OnGatewayInit, OnGatewayConnection, 
   }
 
   @SubscribeMessage('user_online')
-  handleUserOnline(@MessageBody() users: SocketUserOnline[], @ConnectedSocket() client: Socket): WsResponse<string> {
+  async handleUserOnline(@MessageBody() user: SocketUser, @ConnectedSocket() client: Socket) {
+    const { address, deviceId } = user;
+    const deviceRoomName = `device:${deviceId}`;
+    client.join(deviceRoomName);
+    this.redis.sadd(`online:user:${address}`, deviceId);
+    this.redis.expire(`online:user:${address}`, 604800);
 
+    this.redis.hset(`client:${client.id}`, 'address', address);
+    this.redis.hset(`client:${client.id}`, 'deviceId', deviceId);
+    this.redis.expire(`client:${client.id}`, 604800);
+
+    // We need to store the map between the client id (which is unique)
+    // and when the user is disconnected, we need to remove the mapping
+    // also remove the associated record in Redis set
     return {
-      event: 'subscribe',
+      event: 'user_online',
       data: client.id
     };
+  }
+
+  @SubscribeMessage('user_offline')
+  async handleUserOffline(
+    @MessageBody() user: SocketUser,
+    @ConnectedSocket() socket: Socket,
+  ) {
+    const { address, deviceId } = user;
+    const deviceRoomName = `device:${deviceId}`;
+    socket.leave(deviceRoomName);
+    await this.redis.srem(`online:user:${address}`, deviceId);
+    await this.redis.scard(`online:user:${address}`, (error, count) => {
+      if (error) {
+        this.logger.error('Redis error:', error);
+        return;
+      }
+      if (count === 0) {
+        this.redis.del(`online:user:${address}`);
+      }
+    });
+    return true;
   }
 
   sendNotification(room: string, notification: Notification) {

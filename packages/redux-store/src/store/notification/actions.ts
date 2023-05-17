@@ -1,4 +1,4 @@
-import { NotificationDto } from '@bcpros/lixi-models';
+import { NotificationDto, SocketUser } from '@bcpros/lixi-models';
 import { createAction } from '@reduxjs/toolkit';
 
 export const fetchNotifications = createAction<{ accountId: number; mnemonichHash }>('notification/fetchNotifications');
@@ -26,3 +26,6 @@ export const readAllNotificationsSuccess = createAction<{ notifications: Notific
   'notifications/readAllNotificationsSuccess'
 );
 export const readAllNotificationsFailure = createAction<string>('notifications/readAllNotificationsFailure');
+
+export const userOnline = createAction<SocketUser>('notification/userOnline');
+export const userOffline = createAction<SocketUser>('notification/userOffline');
