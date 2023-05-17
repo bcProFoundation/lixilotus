@@ -346,6 +346,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
             imgUrl="/images/custom-burn.svg"
             key={`list-vertical-downvote-o-${item.id}`}
             dataItem={item}
+            classStyle='custom-burn'
             onClickIcon={e => openBurnModal(e, item)}
           />
           <IconComment
