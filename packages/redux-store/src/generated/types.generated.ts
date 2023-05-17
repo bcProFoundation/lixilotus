@@ -520,7 +520,6 @@ export type Query = {
   post: Post;
   temple: Temple;
   token: Token;
-  topPages: PageConnection;
   worship: Worship;
   worshipedPerson: WorshipedPerson;
 };
@@ -764,17 +763,6 @@ export type QueryTokenArgs = {
   tokenId: Scalars['String'];
 };
 
-export type QueryTopPagesArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-  minBurnFilter?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<PageOrder>;
-  query?: InputMaybe<Scalars['String']>;
-  skip?: InputMaybe<Scalars['Int']>;
-};
-
 export type QueryWorshipArgs = {
   id: Scalars['String'];
 };
@@ -847,7 +835,7 @@ export type TempleOrder = {
   field: TempleOrderField;
 };
 
-/** Properties by which worshiped person connections can be ordered. */
+/** Properties by which temple connections can be ordered. */
 export enum TempleOrderField {
   CreatedAt = 'createdAt',
   Id = 'id',

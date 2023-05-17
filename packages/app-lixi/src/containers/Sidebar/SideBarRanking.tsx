@@ -128,7 +128,7 @@ const RankingSideBar = styled(Sider)`
       &.your-shortcuts {
         .ant-tabs-tab-active {
           color: var(--color-primary) !important;
-        }        
+        }
         margin-bottom: 1rem;
         padding: 24px;
         .item-access {

@@ -36,7 +36,7 @@ export class FollowResolver {
     private prisma: PrismaService,
     private readonly notificationService: NotificationService,
     @I18n() private i18n: I18nService
-  ) {}
+  ) { }
 
   @Subscription(() => FollowAccount)
   followAccountCreated() {
