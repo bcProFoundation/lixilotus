@@ -127,6 +127,7 @@ export const BurnModal = ({ id, burnForType }: BurnModalProps) => {
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const [selectedAmount, setSelectedAmount] = useState(1);
+  const feeTip = selectedAmount * 0.04;
   const burnQueue = useAppSelector(getBurnQueue);
   const failQueue = useAppSelector(getFailQueue);
   const walletStatus = useAppSelector(getWalletStatus);
@@ -367,6 +368,8 @@ export const BurnModal = ({ id, burnForType }: BurnModalProps) => {
         </p>
       </Form>
       <p className="amount-burn">{intl.get('burn.youBurning') + selectedAmount + ' XPI'}</p>
+      <p className="amount-burn">{'Burn Up: You will send ' + feeTip + ' XPI for page and ' + feeTip + ' for post'}</p>
+      <p className="amount-burn">{'Burn Down: You will send ' + feeTip + ' XPI for page'}</p>
     </Modal>
   );
 };

@@ -96,7 +96,7 @@ export default {
   'general.customBurn': 'Custom burn',
   'general.burnForType': 'Burn For Type',
   'general.failed': 'Failed',
-  'general.minBurnt': 'Min XPI burnt:',
+  'general.minBurnt': 'Min XPI Level',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
