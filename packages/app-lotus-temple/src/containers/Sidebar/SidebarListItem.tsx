@@ -15,7 +15,7 @@ const StyledName = style.p`
   font-weight: bold;
 `;
 
-const StyledDesc = style.p`
+const StyledDesc = style.div`
   display: flex;
   gap: 3px;
   margin-bottom: 0px;

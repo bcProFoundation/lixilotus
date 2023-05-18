@@ -8,6 +8,7 @@
       "@utils/*": ["src/utils/*"],
       "@components/*": ["src/components/*"],
       "@containers/*": ["src/containers/*"],
+      "@generated/*": ["src/generated/*"],
       "@hooks/*": ["src/hooks/*"],
       "@store/*": ["src/store/*"],
       "@context/*": ["src/context/*"],

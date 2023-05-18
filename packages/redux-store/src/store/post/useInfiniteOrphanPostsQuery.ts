@@ -3,7 +3,7 @@ import { createEntityAdapter } from '@reduxjs/toolkit';
 import { api as postApi, useLazyOrphanPostsQuery, useOrphanPostsQuery } from '@store/post/posts.api';
 import _ from 'lodash';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Post, PostOrder } from 'src/generated/types.generated';
+import { Post, PostOrder } from '@generated/types.generated';
 
 import { PostQuery } from './posts.generated';
 

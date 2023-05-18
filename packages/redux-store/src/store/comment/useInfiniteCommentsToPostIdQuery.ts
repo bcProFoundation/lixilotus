@@ -3,7 +3,7 @@ import { createEntityAdapter } from '@reduxjs/toolkit';
 import { api as commentApi, useCommentsToPostIdQuery, useLazyCommentsToPostIdQuery } from '@store/comment/comments.api';
 import moment from 'moment';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { CommentOrder } from 'src/generated/types.generated';
+import { CommentOrder } from '@generated/types.generated';
 
 import { CommentQuery } from './comments.generated';
 

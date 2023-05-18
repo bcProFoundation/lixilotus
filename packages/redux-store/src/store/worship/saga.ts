@@ -17,7 +17,7 @@ import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
 import { channelOff, channelOn, serverOff, serverOn, startChannel, stopChannel } from './actions';
 import { api as worshipApi } from './worshipedPerson.api';
-import { OrderDirection, WorshipOrderField } from 'src/generated/types.generated';
+import { OrderDirection, WorshipOrderField } from '@generated/types.generated';
 import { put as putAction } from 'redux-saga/effects';
 
 const getDeviceNotificationStyle = () => {
