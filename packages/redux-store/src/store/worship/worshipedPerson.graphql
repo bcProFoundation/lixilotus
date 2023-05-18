@@ -266,3 +266,9 @@ mutation createWorship($input: CreateWorshipInput!) {
     ...WorshipFields
   }
 }
+
+mutation CreateWorshipTemple($input: CreateWorshipInput!) {
+  createWorshipTemple(data: $input) {
+    ...WorshipFields
+  }
+}

@@ -1,5 +1,7 @@
 import { IsNotEmpty } from 'class-validator';
 
+import { WORSHIP_TYPES } from '../../constants';
+
 import { BurnForType, BurnType } from './burn.model';
 
 export class BurnCommand {
@@ -31,6 +33,8 @@ export class BurnCommand {
 
   // Params to patch rtk query data
   queryParams?: any;
+
+  worshipType?: WORSHIP_TYPES;
 }
 
 export class BurnQueueCommand {
@@ -64,4 +68,6 @@ export class BurnQueueCommand {
   tipToAddresses?: { address: string; amount: string }[];
   // Params to patch rtk query data
   queryParams?: any;
+
+  worshipType?: WORSHIP_TYPES;
 }

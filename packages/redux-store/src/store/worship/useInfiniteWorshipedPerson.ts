@@ -1,7 +1,7 @@
 import { PaginationArgs } from '@bcpros/lixi-models';
 import { useLazyWorshipedPeopleQuery, useWorshipedPeopleQuery } from '@store/worship/worshipedPerson.generated';
 import { useEffect, useRef, useState, useMemo } from 'react';
-import { WorshipedPerson, WorshipedPersonOrder } from 'src/generated/types.generated';
+import { WorshipedPerson, WorshipedPersonOrder } from '@generated/types.generated';
 import _ from 'lodash';
 import { WorshipedPersonQuery } from './worshipedPerson.generated';
 import { useAppDispatch } from '@store/hooks';

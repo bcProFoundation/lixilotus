@@ -4,7 +4,7 @@ import { useAppDispatch } from '@store/hooks';
 import { useLazyPostsByPageIdQuery, usePostsByPageIdQuery } from '@store/post/posts.generated';
 import _ from 'lodash';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Post, PostOrder } from 'src/generated/types.generated';
+import { Post, PostOrder } from '@generated/types.generated';
 
 import { PostQuery } from './posts.generated';
 

@@ -8,7 +8,7 @@ import { Button, Input, Modal } from 'antd';
 import _ from 'lodash';
 import React, { useState } from 'react';
 import intl from 'react-intl-universal';
-import { CreatePostInput, OrderDirection, PostOrderField } from 'src/generated/types.generated';
+import { CreatePostInput, OrderDirection, PostOrderField } from '@generated/types.generated';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import styled from 'styled-components';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';

@@ -1,7 +1,7 @@
 import { PaginationArgs } from '@bcpros/lixi-models';
 import { useLazyTempleBySearchQuery, useTempleBySearchQuery } from '@store/temple/temple.generated';
 import { useEffect, useRef, useState, useMemo } from 'react';
-import { TempleOrder } from 'src/generated/types.generated';
+import { TempleOrder } from '@generated/types.generated';
 import _ from 'lodash';
 import { createEntityAdapter } from '@reduxjs/toolkit';
 import { TempleQuery } from './temple.generated';

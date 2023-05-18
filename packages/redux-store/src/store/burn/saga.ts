@@ -1,6 +1,6 @@
 /* eslint-disable no-case-declarations */
 import { Account } from '@bcpros/lixi-models';
-import { PostsQueryTag } from '@bcpros/lixi-models/constants';
+import { PostsQueryTag, WORSHIP_TYPES } from '@bcpros/lixi-models/constants';
 import { Burn, BurnCommand, BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { callConfig } from '@context/shareContext';
 import { all, call, fork, put as putChannel, take, takeLatest } from '@redux-saga/core/effects';
@@ -25,7 +25,7 @@ import {
   PostOrderField,
   TokenOrderField,
   WorshipOrderField
-} from 'src/generated/types.generated';
+} from '@generated/types.generated';
 import { hideLoading } from '../loading/actions';
 import {
   addBurnTransaction,
@@ -104,15 +104,31 @@ function* burnForUpDownVoteSaga(action: PayloadAction<any>) {
         patches = yield updateCommentBurnValue(action);
         break;
       case BurnForType.Worship:
-        const createWorshipInput: CreateWorshipInput = {
-          worshipedPersonId: command.burnForId,
-          worshipedAmount: burnValue
-        };
-        const promise = yield put(worshipApi.endpoints.createWorship.initiate({ input: createWorshipInput }));
-        yield promise;
-
-        const data = yield promise.unwrap();
-        patches = yield updateWorshipBurnValue(data);
+        let promise;
+        let createWorshipInput: CreateWorshipInput;
+        let data;
+        switch (command.worshipType) {
+          case WORSHIP_TYPES.PERSON:
+            createWorshipInput = {
+              worshipedPersonId: command.burnForId,
+              worshipedAmount: burnValue
+            };
+            promise = yield put(worshipApi.endpoints.createWorship.initiate({ input: createWorshipInput }));
+            yield promise;
+            data = yield promise.unwrap();
+            patches = yield updateWorshipBurnValue(data.createWorship);
+            break;
+          case WORSHIP_TYPES.TEMPLE:
+            createWorshipInput = {
+              templeId: command.burnForId,
+              worshipedAmount: burnValue
+            };
+            promise = yield put(worshipApi.endpoints.CreateWorshipTemple.initiate({ input: createWorshipInput }));
+            yield promise;
+            data = yield promise.unwrap();
+            patches = yield updateWorshipBurnValue(data.createWorshipTemple);
+            break;
+        }
         break;
     }
 
@@ -352,7 +368,7 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
 }
 
 function* updateWorshipBurnValue(data) {
-  const { createWorship } = data;
+  const { worshipedPerson, temple, id, worshipedAmount } = data;
   const params = {
     orderBy: {
       direction: OrderDirection.Desc,
@@ -361,48 +377,40 @@ function* updateWorshipBurnValue(data) {
   };
   //At the time being, there are only 2 object to worship, so we use if/else here,
   //In the future, if there is more object to worship, create WorshipType in createWorshipMutation
-  if (createWorship.worshipedPerson.id) {
+  if (worshipedPerson) {
     yield put(
-      worshipApi.util.updateQueryData('WorshipedPerson', { id: createWorship.worshipedPerson?.id }, draft => {
-        draft.worshipedPerson.totalWorshipAmount =
-          draft.worshipedPerson.totalWorshipAmount + createWorship.worshipedAmount;
+      worshipApi.util.updateQueryData('WorshipedPerson', { id: worshipedPerson?.id }, draft => {
+        draft.worshipedPerson.totalWorshipAmount = draft.worshipedPerson.totalWorshipAmount + worshipedAmount;
       })
     );
     return yield put(
-      worshipApi.util.updateQueryData(
-        'allWorshipedByPersonId',
-        { ...params, id: createWorship.worshipedPerson.id },
-        draft => {
-          draft.allWorshipedByPersonId.edges.unshift({
-            cursor: createWorship.id,
-            node: {
-              ...createWorship
-            }
-          });
-          draft.allWorshipedByPersonId.totalCount = draft.allWorshipedByPersonId.totalCount + 1;
-        }
-      )
+      worshipApi.util.updateQueryData('allWorshipedByPersonId', { ...params, id: worshipedPerson.id }, draft => {
+        draft.allWorshipedByPersonId.edges.unshift({
+          cursor: id,
+          node: {
+            ...data
+          }
+        });
+        draft.allWorshipedByPersonId.totalCount = draft.allWorshipedByPersonId.totalCount + 1;
+      })
     );
   } else {
     yield put(
-      templeApi.util.updateQueryData('Temple', { id: createWorship.temple?.id }, draft => {
-        draft.temple.totalWorshipAmount = draft.temple.totalWorshipAmount + createWorship.worshipedAmount;
+      templeApi.util.updateQueryData('Temple', { id: temple?.id }, draft => {
+        draft.temple.totalWorshipAmount = draft.temple.totalWorshipAmount + worshipedAmount;
       })
     );
     return yield put(
-      worshipApi.util.updateQueryData(
-        'allWorshipedByTempleId',
-        { ...params, id: createWorship.worshipedPerson.id },
-        draft => {
-          draft.allWorshipedByTempleId.edges.unshift({
-            cursor: createWorship.id,
-            node: {
-              ...createWorship
-            }
-          });
-          draft.allWorshipedByTempleId.totalCount = draft.allWorshipedByTempleId.totalCount + 1;
-        }
-      )
+      worshipApi.util.updateQueryData('allWorshipedByTempleId', { ...params, id: temple.id }, draft => {
+        console.log(draft);
+        draft.allWorshipedByTempleId.edges.unshift({
+          cursor: id,
+          node: {
+            ...data
+          }
+        });
+        draft.allWorshipedByTempleId.totalCount = draft.allWorshipedByTempleId.totalCount + 1;
+      })
     );
   }
 }

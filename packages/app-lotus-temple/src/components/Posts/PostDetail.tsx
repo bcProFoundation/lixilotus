@@ -27,7 +27,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import intl from 'react-intl-universal';
-import { CommentOrderField, CreateCommentInput, OrderDirection } from 'src/generated/types.generated';
+import { CommentOrderField, CreateCommentInput, OrderDirection } from '@generated/types.generated';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import styled from 'styled-components';
 import CommentListItem, { CommentItem } from './CommentListItem';

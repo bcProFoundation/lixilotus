@@ -6,14 +6,18 @@ import WorshipedPersonCard from '@components/Common/WorshipedPersonCard';
 import { startChannel, stopChannel } from '@store/worship/actions';
 import { useAppDispatch } from '@store/hooks';
 import { useAllWorshipQuery, useWorshipedPeopleSpecialDateQuery } from '@store/worship/worshipedPerson.generated';
-import { OrderDirection, WorshipOrderField, WorshipedPersonOrderField } from 'src/generated/types.generated';
+import { OrderDirection, WorshipOrderField, WorshipedPersonOrderField } from '@generated/types.generated';
 import { useInfiniteWorship } from '@store/worship/useInfiniteWorship';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import WorshipCard from '@components/WorshipedPerson/WorshipCard';
 import SearchBox from '@components/Common/SearchBox';
 import { useInfiniteWorshipedPerson } from '@store/worship/useInfiniteWorshipedPerson';
 import { useInfiniteWorshipedPersonBySearch } from '@store/worship/useInfiniteWorshipedPersonBySearch';
+import { useInfiniteTemplesBySearchQuery } from '@store/temple/useInfiniteTemplesBySearchQuery';
+import { useInfiniteTemplesQuery } from '@store/temple/useInfiniteTemplesQuery';
 import { FloatButton } from 'antd';
+import { TempleOrderField } from '@generated/types.generated';
+import WorshipedTempleCard from '@components/Common/WorshipedTempleCard';
 
 const StyledIcon = style.img`
   width: 15px;
@@ -198,7 +202,8 @@ const Home = () => {
   const liveBurnRef = useRef(null);
   const dispatch = useAppDispatch();
   const worshipedPersonSpecialDate = useWorshipedPeopleSpecialDateQuery().currentData;
-  const [searchValue, setSearchValue] = useState<string | null>(null);
+  const [searchPersonValue, setSearchPersonValue] = useState<string | null>(null);
+  const [searchTempleValue, setSearchTempleValue] = useState<string | null>(null);
   const [disableFetch, setDisableFetch] = useState<boolean>(true);
 
   useEffect(() => {
@@ -256,6 +261,26 @@ const Home = () => {
   );
 
   const {
+    data: templeData,
+    totalCount: templeTotalCount,
+    fetchNext: templeFetchNext,
+    hasNext: templeHasNext,
+    isFetching: templeIsFetching,
+    isFetchingNext: templeIsFetchingNext,
+    refetch: templeRefetch
+  } = useInfiniteTemplesQuery(
+    {
+      first: 20,
+      orderBy: {
+        direction: OrderDirection.Desc,
+        field: TempleOrderField.UpdatedAt
+      },
+      disableFetch: disableFetch
+    },
+    false
+  );
+
+  const {
     data: queryData,
     fetchNext: queryFetchNext,
     hasNext: queryHasNext,
@@ -266,10 +291,30 @@ const Home = () => {
   } = useInfiniteWorshipedPersonBySearch(
     {
       first: 20,
-      query: searchValue,
+      query: searchPersonValue,
       orderBy: {
         direction: OrderDirection.Desc,
         field: WorshipedPersonOrderField.UpdatedAt
+      }
+    },
+    false
+  );
+
+  const {
+    data: queryTempleData,
+    fetchNext: queryTempleFetchNext,
+    hasNext: queryTempleHasNext,
+    isFetching: queryTempleIsFetching,
+    isFetchingNext: queryTempleIsFetchingNext,
+    refetch: queryTempleRefetch,
+    isLoading: queryTempleIsLoading
+  } = useInfiniteTemplesBySearchQuery(
+    {
+      first: 20,
+      query: searchTempleValue,
+      orderBy: {
+        direction: OrderDirection.Desc,
+        field: TempleOrderField.UpdatedAt
       }
     },
     false
@@ -283,11 +328,27 @@ const Home = () => {
     }
   };
 
+  const loadMoreSearchTemple = () => {
+    if (queryTempleHasNext && !queryTempleIsFetching) {
+      queryTempleFetchNext();
+    } else if (queryHasNext) {
+      queryTempleFetchNext();
+    }
+  };
+
   const loadMorePeople = () => {
     if (personHasNext && !personIsFetching) {
       personFetchNext();
     } else if (personHasNext) {
       personFetchNext();
+    }
+  };
+
+  const loadMoreTemple = () => {
+    if (templeHasNext && !templeIsFetching) {
+      templeFetchNext();
+    } else if (templeHasNext) {
+      templeFetchNext();
     }
   };
 
@@ -300,7 +361,7 @@ const Home = () => {
   };
 
   const onChange = (key: string) => {
-    if (key === 'search') {
+    if (key === 'person' || key === 'temple') {
       setDisableFetch(false);
     } else {
       setDisableFetch(true);
@@ -308,7 +369,11 @@ const Home = () => {
   };
 
   const searchPerson = value => {
-    setSearchValue(value);
+    setSearchPersonValue(value);
+  };
+
+  const searchTemple = value => {
+    setSearchTempleValue(value);
   };
 
   const tabItems: TabsProps['items'] = [
@@ -407,15 +472,15 @@ const Home = () => {
       )
     },
     {
-      label: 'Tìm kiếm',
-      key: 'search',
+      label: 'Người',
+      key: 'person',
       children: (
         <React.Fragment>
           <StyledContainer>
-            <SearchBox search={searchPerson} value={searchValue} loading={queryIsLoading} />
+            <SearchBox search={searchPerson} value={searchPersonValue} loading={queryIsLoading} />
           </StyledContainer>
           <React.Fragment>
-            {!searchValue ? (
+            {!searchPersonValue ? (
               <InfiniteScroll
                 dataLength={personData.length}
                 next={loadMorePeople}
@@ -451,6 +516,58 @@ const Home = () => {
               >
                 {queryData.map((person, index) => {
                   return <WorshipedPersonCard key={index} person={person} />;
+                })}
+              </InfiniteScroll>
+            )}
+          </React.Fragment>
+        </React.Fragment>
+      )
+    },
+    {
+      label: 'Đền thờ',
+      key: 'temple',
+      children: (
+        <React.Fragment>
+          <StyledContainer>
+            <SearchBox search={searchTemple} value={searchTempleValue} loading={queryTempleIsLoading} />
+          </StyledContainer>
+          <React.Fragment>
+            {!searchTempleValue ? (
+              <InfiniteScroll
+                dataLength={templeData.length}
+                next={loadMoreTemple}
+                hasMore={templeHasNext}
+                loader={<Skeleton avatar active style={{ marginTop: 20 }} />}
+                endMessage={
+                  <p style={{ textAlign: 'center' }}>
+                    <b>{"It's so empty here..."}</b>
+                  </p>
+                }
+                scrollableTarget="scrollableDiv"
+                scrollThreshold={0.7}
+              >
+                {templeData.map((temple, index) => {
+                  return <WorshipedTempleCard key={index} temple={temple} />;
+                })}
+              </InfiniteScroll>
+            ) : queryTempleIsLoading ? (
+              <Skeleton avatar active style={{ marginTop: 20 }} />
+            ) : (
+              <InfiniteScroll
+                dataLength={queryTempleData.length}
+                next={loadMoreSearchTemple}
+                hasMore={queryTempleHasNext}
+                loader={<Skeleton avatar active style={{ marginTop: 20 }} />}
+                endMessage={
+                  <p style={{ textAlign: 'center' }}>
+                    <b>{"It's so empty here..."}</b>
+                  </p>
+                }
+                scrollableTarget="scrollableDiv"
+                scrollThreshold={0.7}
+              >
+                {queryTempleData.map((temple, index) => {
+                  return <WorshipedTempleCard key={index} temple={temple} />;
                 })}
               </InfiniteScroll>
             )}

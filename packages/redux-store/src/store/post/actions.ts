@@ -1,6 +1,6 @@
 import { CreatePostCommand, EditPostCommand } from '@bcpros/lixi-models';
 import { createAction } from '@reduxjs/toolkit';
-import { Post } from 'src/generated/types.generated';
+import { Post } from '@generated/types.generated';
 
 export const fetchAllPosts = createAction('posts/fetchAllPosts');
 export const fetchAllPostsSuccess = createAction<any>('posts/fetchAllPostsSuccess');

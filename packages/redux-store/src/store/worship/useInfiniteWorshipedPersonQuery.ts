@@ -5,7 +5,7 @@ import {
   api as worshipedPeopleApi
 } from '@store/worship/worshipedPerson.api';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { WorshipedPerson, WorshipedPersonOrder } from 'src/generated/types.generated';
+import { WorshipedPerson, WorshipedPersonOrder } from '@generated/types.generated';
 import _ from 'lodash';
 import { WorshipedPersonQuery } from './worshipedPerson.generated';
 import { createEntityAdapter } from '@reduxjs/toolkit';
