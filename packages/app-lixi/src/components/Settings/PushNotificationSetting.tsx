@@ -11,7 +11,7 @@ import { ServiceWorkerContext } from '@context/index';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getWebPushNotifConfig } from '@store/settings/selectors';
 import { getAllWalletPaths } from '@store/wallet';
-import { subscribeAll, unsubscribeAll } from '@store/webpush/actions';
+import { subscribeSelectedAccount, unsubscribeAll } from '@store/webpush/actions';
 import { askPermission, getPlatformPermissionState } from '@utils/pushNotification';
 import { Modal, Switch, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
@@ -72,7 +72,7 @@ const PushNotificationSetting = () => {
           askPermission().then(async result => {
             setPermission(result);
             if (result === 'granted') {
-              dispatch(subscribeAll({ interactive: true, clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID }));
+              dispatch(subscribeSelectedAccount({ interactive: true, clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID }));
             } else {
               turnOffWebPushNotification();
               return;
@@ -92,7 +92,7 @@ const PushNotificationSetting = () => {
   const handleNotificationToggle = async (checked: boolean, event: React.MouseEvent<HTMLButtonElement>) => {
     if (checked) {
       if (permission === 'granted') {
-        dispatch(subscribeAll({ interactive: true, clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID }));
+        dispatch(subscribeSelectedAccount({ interactive: true, clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID }));
       } else {
         showModal();
       }

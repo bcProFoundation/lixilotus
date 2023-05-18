@@ -1,13 +1,18 @@
+import { getSelectedAccount } from '@store/account';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { saveWebPushNotifConfig } from '@store/settings/actions';
 import { getWebPushNotifConfig } from '@store/settings/selectors';
+import { subscribeSelectedAccount, unsubscribeAll } from '@store/webpush';
 import { getPlatformPermissionState } from '@utils/pushNotification';
 import { useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-const usePushNotification = () => {
+const usePushNotification = (props: { registration: ServiceWorkerRegistration }) => {
+
+  const { registration } = props;
   const dispatch = useAppDispatch();
   const webPushNotifConfig = useAppSelector(getWebPushNotifConfig);
+  const selectedAccount = useAppSelector(getSelectedAccount);
 
   // run only once
   useEffect(() => {
@@ -45,6 +50,20 @@ const usePushNotification = () => {
       }
     })();
   }, []);
+
+  useEffect(() => {
+    if (selectedAccount &&
+      registration &&
+      webPushNotifConfig &&
+      webPushNotifConfig.allowPushNotification &&
+      getPlatformPermissionState() == 'granted' &&
+      webPushNotifConfig.deviceId) {
+      // unsubscribe webpush for all by device id
+      // then subscribe with the current active account
+      dispatch(unsubscribeAll({ interactive: false, clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID }));
+      dispatch(subscribeSelectedAccount({ interactive: false, clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID }));
+    }
+  }, [selectedAccount, registration]);
 
   return {
     turnOffWebPushNotification: () => {

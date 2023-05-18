@@ -29,7 +29,7 @@ export class NotificationGateway implements OnGatewayInit, OnGatewayConnection, 
 
   private logger: Logger = new Logger('NotificationGateway');
 
-  constructor(@InjectRedis() private readonly redis: Redis) {}
+  constructor(@InjectRedis() private readonly redis: Redis) { }
 
   handleConnection(client: Socket, ...args: any[]) {
     this.logger.log(`Client connected: ${client.id}`);
@@ -54,7 +54,7 @@ export class NotificationGateway implements OnGatewayInit, OnGatewayConnection, 
       });
     }
 
-    this.redis.del(`client:${client.id}`);
+    await this.redis.del(`client:${client.id}`);
   }
 
   afterInit(server: Server) {
@@ -71,7 +71,7 @@ export class NotificationGateway implements OnGatewayInit, OnGatewayConnection, 
 
     this.redis.hset(`client:${client.id}`, 'address', address);
     this.redis.hset(`client:${client.id}`, 'deviceId', deviceId);
-    this.redis.expire(`client:${client.id}`, 604800);
+    this.redis.expire(`client:${client.id}`, 86400);
 
     // We need to store the map between the client id (which is unique)
     // and when the user is disconnected, we need to remove the mapping

@@ -12,7 +12,7 @@ import { I18n, I18nService } from 'nestjs-i18n';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { template } from 'src/utils/stringTemplate';
 import { VError } from 'verror';
-import { NOTIFICATION_OUTBOUND_QUEUE } from './notification.constants';
+import { NOTIFICATION_OUTBOUND_QUEUE, WEBPUSH_NOTIFICATION_QUEUE } from './notification.constants';
 import { NotificationGateway } from './notification.gateway';
 
 @Injectable()
@@ -23,9 +23,10 @@ export class NotificationService {
     private prisma: PrismaService,
     private notificationGateway: NotificationGateway,
     @InjectQueue(NOTIFICATION_OUTBOUND_QUEUE) private notificationOutboundQueue: Queue,
+    @InjectQueue(WEBPUSH_NOTIFICATION_QUEUE) private webpushQueue: Queue,
     @InjectRedis() private readonly redis: Redis,
     @I18n() private i18n: I18nService
-  ) {}
+  ) { }
 
   async saveAndDispatchNotification(notification: NotificationDto) {
     if (!notification.recipientId) {
@@ -90,14 +91,23 @@ export class NotificationService {
       return `device:${deviceId}`;
     });
 
-    // Dispatch the notification
-    _.map(rooms, async room => {
-      const sendNotifJobData: SendNotificationJobData = {
-        room,
-        notification: { ...notif } as NotificationDto
-      };
-      await this.notificationOutboundQueue.add('send-notification', sendNotifJobData);
-    });
+    // If that paticular user not online
+    // means that there're no devices currently online which associates to the address
+    // then we send the webpush notification
+    if (rooms.length == 0) {
+      // const 
+      // await this.webpushQueue.add('send-webpush-notification', )
+    } else {
+      // User currently online, we send in-app notification
+      // Dispatch the notification
+      _.map(rooms, async room => {
+        const sendNotifJobData: SendNotificationJobData = {
+          room,
+          notification: { ...notif } as NotificationDto
+        };
+        await this.notificationOutboundQueue.add('send-notification', sendNotifJobData);
+      });
+    }
   }
 
   async calcTip(post: any, recipient: Account, burn: BurnCommand) {

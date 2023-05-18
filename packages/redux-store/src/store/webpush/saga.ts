@@ -1,8 +1,8 @@
-import { WebpushSubscribeCommand, WebpushUnsubscribeCommand } from '@bcpros/lixi-models';
+import { Account, WebpushSubscribeCommand, WebpushUnsubscribeCommand } from '@bcpros/lixi-models';
 import { callConfig } from '@context/shareContext';
 import { all, call, fork, put, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
-import { getAllAccounts } from '@store/account';
+import { getAllAccounts, getSelectedAccount } from '@store/account';
 import { getWebPushNotifConfig } from '@store/settings/selectors';
 import { WalletPathAddressInfo, getAllWalletPaths } from '@store/wallet';
 import { buildSubscribeCommand, buildUnsubscribeCommand } from '@utils/pushNotification';
@@ -11,9 +11,9 @@ import { select } from 'redux-saga/effects';
 import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
 import {
-  subscribeAll,
-  subscribeAllFailure,
-  subscribeAllSuccess,
+  subscribeSelectedAccount,
+  subscribeSelectedAccountFailure,
+  subscribeSelectedAccountSuccess,
   unsubscribeAll,
   unsubscribeAllFailure,
   unsubscribeAllSuccess,
@@ -21,24 +21,24 @@ import {
 } from './actions';
 import webpushApi from './api';
 
-function* watchSubscribeAll() {
-  yield takeLatest(subscribeAll.type, subscribeAllSaga);
+function* watchSubscribeSelectedAccount() {
+  yield takeLatest(subscribeSelectedAccount.type, subscribeSelectedAccountSaga);
 }
 
 function* watchUnsubscribeAll() {
   yield takeLatest(unsubscribeAll.type, unsubscribeAllSaga);
 }
 
-function* watchSubscribeAllSuccess() {
-  yield takeLatest(subscribeAllSuccess.type, subscribeAllSuccessSaga);
+function* watchSubscribeSelectedAccountSuccess() {
+  yield takeLatest(subscribeSelectedAccountSuccess.type, subscribeSelectedAccountSuccessSaga);
 }
 
 function* watchUnsubscribeAllSuccess() {
   yield takeLatest(unsubscribeAllSuccess.type, unsubscribeAllSuccessSaga);
 }
 
-function* watchSubscribeAllFailure() {
-  yield takeLatest(subscribeAllFailure.type, subscribeAllFailureSaga);
+function* watchSubscribeSelectedAccountFailure() {
+  yield takeLatest(subscribeSelectedAccountFailure.type, subscribeSelectedAccountFailureSaga);
 }
 
 function* watchUnsubscribeAllFailure() {
@@ -49,7 +49,7 @@ function* watchUnsubscribeByAddresses() {
   yield takeLatest(unsubscribeByAddresses.type, unsubscribeByAddressesSaga);
 }
 
-function* subscribeAllSaga(action: PayloadAction<{ interactive: boolean; clientAppId: string }>) {
+function* subscribeSelectedAccountSaga(action: PayloadAction<{ interactive: boolean; clientAppId: string }>) {
   const { registration } = callConfig.call.serviceWorkerContext;
   const { interactive, clientAppId } = action.payload;
 
@@ -60,7 +60,7 @@ function* subscribeAllSaga(action: PayloadAction<{ interactive: boolean; clientA
 
   try {
     const webpushConfig = yield select(getWebPushNotifConfig);
-    const accounts = yield select(getAllAccounts);
+    const account = yield select(getSelectedAccount);
     const walletPaths = yield select(getAllWalletPaths);
 
     const applicationServerKey = process.env.NEXT_PUBLIC_PUBLIC_VAPID_KEY;
@@ -72,20 +72,20 @@ function* subscribeAllSaga(action: PayloadAction<{ interactive: boolean; clientA
       [registration.pushManager, registration.pushManager.subscribe],
       subscribeOptions
     );
-    const command = buildSubscribeCommand(pushSubscription, accounts, walletPaths, webpushConfig.deviceId, clientAppId);
+    const command = buildSubscribeCommand(pushSubscription, [account], walletPaths, webpushConfig.deviceId, clientAppId);
 
     if (interactive) {
-      yield put(showLoading(subscribeAll.type));
+      yield put(showLoading(subscribeSelectedAccount.type));
     }
     const dataApi: WebpushSubscribeCommand = {
       ...command
     };
 
     yield call(webpushApi.subscribe, dataApi);
-    yield put(subscribeAllSuccess({ interactive }));
+    yield put(subscribeSelectedAccountSuccess({ interactive }));
   } catch (err) {
     const message = (err as Error).message ?? intl.get('webpush.unableToSubscribe');
-    yield put(subscribeAllFailure({ interactive: interactive, message: message }));
+    yield put(subscribeSelectedAccountFailure({ interactive: interactive, message: message }));
   }
 }
 
@@ -116,11 +116,8 @@ function* unsubscribeAllSaga(action: PayloadAction<{ interactive: boolean; clien
     yield put(unsubscribeAllFailure({ interactive: interactive, message: message }));
   }
 
-  const walletPaths: WalletPathAddressInfo[] = yield select(getAllWalletPaths);
-  const addresses = walletPaths.map(walletPath => walletPath.xAddress);
-
   try {
-    yield unsbuscribeAddressess(registration, addresses, clientAppId);
+    yield unsbuscribeAddressess(registration, [], clientAppId);
     yield put(unsubscribeAllSuccess({ interactive }));
   } catch (err) {
     const message = (err as Error).message ?? intl.get('webpush.unableToUnsubscribe');
@@ -142,8 +139,8 @@ function* unsubscribeByAddressesSaga(action: PayloadAction<{ addresses: string[]
   }
 }
 
-function* subscribeAllSuccessSaga(action: PayloadAction<{ interactive: boolean }>) {
-  yield put(hideLoading(subscribeAll.type));
+function* subscribeSelectedAccountSuccessSaga(action: PayloadAction<{ interactive: boolean }>) {
+  yield put(hideLoading(subscribeSelectedAccount.type));
   const { turnOnWebPushNotification } = callConfig.call.serviceWorkerContext;
 
   // Because we subscribe all of addresses
@@ -151,9 +148,9 @@ function* subscribeAllSuccessSaga(action: PayloadAction<{ interactive: boolean }
   yield call(turnOnWebPushNotification);
 }
 
-function* subscribeAllFailureSaga(action: PayloadAction<{ interactive: boolean }>) {
+function* subscribeSelectedAccountFailureSaga(action: PayloadAction<{ interactive: boolean }>) {
   const { interactive } = action.payload;
-  yield put(hideLoading(subscribeAll.type));
+  yield put(hideLoading(subscribeSelectedAccount.type));
   const message = action.payload ?? intl.get('webpush.unableToSubscribe');
   const { turnOffWebPushNotification } = callConfig.call.serviceWorkerContext;
 
@@ -194,9 +191,9 @@ function* unsubscribeAllFailureSaga(action: PayloadAction<{ interactive: boolean
 
 export default function* webpushSaga() {
   yield all([
-    fork(watchSubscribeAll),
-    fork(watchSubscribeAllSuccess),
-    fork(watchSubscribeAllFailure),
+    fork(watchSubscribeSelectedAccount),
+    fork(watchSubscribeSelectedAccountSuccess),
+    fork(watchSubscribeSelectedAccountFailure),
     fork(watchUnsubscribeAll),
     fork(watchUnsubscribeAllSuccess),
     fork(watchUnsubscribeAllFailure),

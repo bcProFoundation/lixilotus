@@ -1,9 +1,8 @@
 // import { CashReceivedNotificationIcon } from '@bcpros/lixi-components/components/Common/CustomIcons';
-import { AccountDto as Account, NotificationDto as Notification, SocketUser } from '@bcpros/lixi-models';
+import { NotificationDto as Notification, SocketUser } from '@bcpros/lixi-models';
 import { currency } from '@components/Common/Ticker';
 import { all, call, cancelled, fork, put, select, take, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
-import { getSelectedAccount } from '@store/account/selectors';
 import { notification } from 'antd';
 import { ArgsProps } from 'antd/lib/notification/interface';
 import Paragraph from 'antd/lib/typography/Paragraph';
@@ -13,7 +12,6 @@ import intl from 'react-intl-universal';
 import { eventChannel } from 'redux-saga';
 import { delay, race } from 'redux-saga/effects';
 import io, { Socket } from 'socket.io-client';
-import { getDeviceId } from '..';
 import { downloadExportedLixi, refreshLixiSilent } from '../lixi/actions';
 import { hideLoading, showLoading } from '../loading/actions';
 import { showToast } from '../toast/actions';
@@ -284,15 +282,6 @@ function createSocketChannel(socket: Socket) {
 function* listenConnectSaga() {
   while (true) {
     yield call(reconnect);
-    // const account: Account = yield call(waitFor, getSelectedAccount);
-    // const deviceId: string = yield call(waitFor, getDeviceId);
-    // const users: SocketUser[] = [account].map(account => {
-    //   return {
-    //     address: account.address,
-    //     deviceId: deviceId
-    //   }
-    // });
-    // yield put(userOnline(users));
     yield put(serverOn());
   }
 }
@@ -300,15 +289,6 @@ function* listenConnectSaga() {
 function* listenDisconnectSaga() {
   while (true) {
     yield call(disconnect);
-    // const account: Account = yield call(waitFor, getSelectedAccount);
-    // const deviceId: string = yield call(waitFor, getDeviceId);
-    // const users: SocketUser[] = [account].map(account => {
-    //   return {
-    //     address: account.address,
-    //     deviceId: deviceId
-    //   }
-    // });
-    // yield put(userOffline(users));
     yield put(serverOff());
   }
 }
@@ -327,17 +307,6 @@ function* listenServerSaga() {
     const socketChannel = yield call(createSocketChannel, socket);
     yield fork(listenDisconnectSaga);
     yield fork(listenConnectSaga);
-
-    // @todo: verify that the user has permission to subscribe to that paticular addresses
-    // const account: Account = yield call(waitFor, getSelectedAccount);
-    // const deviceId: string = yield call(waitFor, getDeviceId);
-    // const users: SocketUser[] = [account].map(account => {
-    //   return {
-    //     address: account.address,
-    //     deviceId: deviceId
-    //   }
-    // });
-    // yield put(userOnline(users));
     yield put(serverOn());
 
     while (true) {
@@ -365,13 +334,23 @@ function* startStopChannel() {
 
 function* receiveNotificationSaga(action: PayloadAction<Notification>) {
   try {
-    const { notificationTypeId, additionalData } = action.payload;
+    const { message, notificationTypeId, additionalData } = action.payload;
     if (notificationTypeId == NOTIFICATION_TYPES.CREATE_SUB_LIXIES) {
       const { id } = additionalData as any;
       yield put(refreshLixiSilent(id));
     } else if (notificationTypeId == NOTIFICATION_TYPES.EXPORT_SUB_LIXIES) {
       const { parentId, mnemonicHash, fileName } = additionalData as any;
       yield put(downloadExportedLixi({ lixiId: parentId, mnemonicHash, fileName }));
+    }
+
+    if (message) {
+      yield put(
+        showToast('info', {
+          message: 'Info',
+          description: message,
+          duration: 5
+        })
+      );
     }
   } catch (error) {
     console.log('error', error.message);

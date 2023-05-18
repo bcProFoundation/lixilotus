@@ -11,7 +11,7 @@ import { VError } from 'verror';
 export class WebpushController {
   private logger: Logger = new Logger(WebpushController.name);
 
-  constructor(private prisma: PrismaService, @I18n() private i18n: I18nService, @Inject('xpijs') private XPI: BCHJS) {}
+  constructor(private prisma: PrismaService, @I18n() private i18n: I18nService, @Inject('xpijs') private XPI: BCHJS) { }
 
   @Post('subscribe')
   async subscribe(@Body() command: WebpushSubscribeCommand): Promise<any> {
@@ -82,6 +82,10 @@ export class WebpushController {
     try {
       const { addresses, clientAppId, auth, p256dh, endpoint, deviceId } = command;
 
+      // If no addresses or empty addresses, we consider
+      // that we subscrbe all addresses with the deviceId and clientAppId
+      const isUnsubscribedAll = !(addresses && addresses.length > 0);
+
       // Delete the stale subscribers
       const count = await this.prisma.webpushSubscriber.deleteMany({
         where: {
@@ -92,7 +96,7 @@ export class WebpushController {
             { deviceId: deviceId },
             { clientAppId: clientAppId },
             {
-              address: {
+              address: isUnsubscribedAll ? undefined : {
                 in: addresses
               }
             }
