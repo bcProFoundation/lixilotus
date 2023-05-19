@@ -37,7 +37,7 @@ export default class MyDocument extends Document {
           <link rel="shortcut icon" href="/favicon.ico" />
           <meta name="theme-color" content="#faf0fa" />
           <meta name="description" content="Temple of Lotus" />
-          <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+          <link rel="apple-touch-icon" href="/logo192.png" />
           <link rel="shortcut icon" type="image/x-icon" sizes="512x512" href="/favicon.ico" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
           <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
