@@ -1,10 +1,10 @@
 import { PaginationArgs } from '@bcpros/lixi-models';
 import { useLazyTemplesQuery, useTemplesQuery } from '@store/temple/temple.generated';
 import { useEffect, useRef, useState, useMemo } from 'react';
+import { TempleOrder } from '@generated/types.generated';
 import _ from 'lodash';
 import { createEntityAdapter } from '@reduxjs/toolkit';
 import { TempleQuery } from './temple.generated';
-import { TempleOrder } from '@generated/types.generated';
 
 const templeAdapter = createEntityAdapter<TempleQuery['temple']>({
   selectId: temple => temple.id,

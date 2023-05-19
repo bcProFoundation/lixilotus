@@ -72,7 +72,13 @@ function* subscribeSelectedAccountSaga(action: PayloadAction<{ interactive: bool
       [registration.pushManager, registration.pushManager.subscribe],
       subscribeOptions
     );
-    const command = buildSubscribeCommand(pushSubscription, [account], walletPaths, webpushConfig.deviceId, clientAppId);
+    const command = buildSubscribeCommand(
+      pushSubscription,
+      [account],
+      walletPaths,
+      webpushConfig.deviceId,
+      clientAppId
+    );
 
     if (interactive) {
       yield put(showLoading(subscribeSelectedAccount.type));

@@ -1,5 +1,5 @@
 import { EntityState } from '@reduxjs/toolkit';
-import { PageInfo } from 'src/generated/types.generated';
+import { PageInfo } from '@generated/types.generated';
 import { api, TempleQuery } from './temple.generated';
 
 export interface TempleApiState extends EntityState<TempleQuery['temple']> {

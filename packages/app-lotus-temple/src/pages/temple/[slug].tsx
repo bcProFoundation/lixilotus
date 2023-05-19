@@ -8,40 +8,39 @@ import { getSelectorsByUserAgent } from 'react-device-detect';
 import { useWorshipedPersonQuery } from '@store/worship/worshipedPerson.generated';
 import MainLayout from '@components/Layout/MainLayout';
 import TempleDetail from '@components/Temple/TempleDetail';
+import { useTempleQuery } from '@store/temple/temple.generated';
 
 const TempleDetailPage = props => {
   const { templeId, isMobile } = props;
-  const canonicalUrl = process.env.NEXT_PUBLIC_LIXI_URL + `posts/${templeId}`;
+  const canonicalUrl = process.env.NEXT_PUBLIC_LOTUS_TEMPLE_URL + `temple/${templeId}`;
 
-  //TODO: Uncomment the below code to execute query
-  // const personQuery = useWorshipedPersonQuery({ id: personId });
+  const templeQuery = useTempleQuery({ id: templeId });
 
   return (
-    // <>
-    //   {postQuery && postQuery.isSuccess && (
-    //     <>
-    //       <NextSeo
-    //         title="Lixi Program"
-    //         description="The lixi program send you a small gift ."
-    //         canonical={canonicalUrl}
-    //         openGraph={{
-    //           url: canonicalUrl,
-    //           title: 'LixiLotus',
-    //           description: postQuery.data.post.content ?? 'LixiLotus allow you to giveaway your Lotus effortlessly',
-    //           images: [{ url: '' }],
-    //           site_name: 'LixiLotus'
-    //         }}
-    //         twitter={{
-    //           handle: '@handle',
-    //           site: '@site',
-    //           cardType: 'summary_large_image'
-    //         }}
-    //       />
-
-    //     </>
-    //   )}
-    // </>
-    <TempleDetail temple={'5'} isMobile={isMobile} />
+    <React.Fragment>
+      {templeQuery && templeQuery.isSuccess && (
+        <React.Fragment>
+          <NextSeo
+          // title="Lixi Program"
+          // description="The lixi program send you a small gift ."
+          // canonical={canonicalUrl}
+          // openGraph={{
+          //   url: canonicalUrl,
+          //   title: 'LixiLotus',
+          //   description: postQuery.data.post.content ?? 'LixiLotus allow you to giveaway your Lotus effortlessly',
+          //   images: [{ url: '' }],
+          //   site_name: 'LixiLotus'
+          // }}
+          // twitter={{
+          //   handle: '@handle',
+          //   site: '@site',
+          //   cardType: 'summary_large_image'
+          // }}
+          />
+          <TempleDetail temple={templeQuery.data.temple} isMobile={isMobile} />
+        </React.Fragment>
+      )}
+    </React.Fragment>
   );
 };
 

@@ -1,6 +1,6 @@
 import { getPageAvatarUpload, getPageCoverUpload } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { UpdatePageInput, Page } from 'src/generated/types.generated';
+import { UpdatePageInput, Page } from '@generated/types.generated';
 import Image from 'next/image';
 import { StyledUploader } from './Uploader/Uploader';
 import { UPLOAD_TYPES } from '@bcpros/lixi-models/constants';

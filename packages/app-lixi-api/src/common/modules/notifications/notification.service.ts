@@ -28,7 +28,7 @@ export class NotificationService {
     @InjectQueue(WEBPUSH_NOTIFICATION_QUEUE) private webpushQueue: Queue,
     @InjectRedis() private readonly redis: Redis,
     @I18n() private i18n: I18nService
-  ) { }
+  ) {}
 
   async saveAndDispatchNotification(notification: NotificationDto) {
     if (!notification.recipientId) {
@@ -121,7 +121,6 @@ export class NotificationService {
 
         await this.webpushQueue.add('send-webpush-notification', webpushJobData);
       });
-
     } else {
       // User currently online, we send in-app notification
       // Dispatch the notification

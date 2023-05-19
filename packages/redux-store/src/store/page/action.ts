@@ -1,6 +1,6 @@
 import { CreatePageCommand, EditPageCommand } from '@bcpros/lixi-models/src';
 import { createAction } from '@reduxjs/toolkit';
-import { Page } from 'src/generated/types.generated';
+import { Page } from '@generated/types.generated';
 
 export const fetchAllPages = createAction('pages/fetchAllPages');
 export const fetchAllPagesSuccess = createAction<any>('pages/fetchAllPagesSuccess');

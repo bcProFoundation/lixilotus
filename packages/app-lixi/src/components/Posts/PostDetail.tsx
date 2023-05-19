@@ -98,6 +98,11 @@ const StyledBurnIcon = styled.img`
   height: 28px;
   cursor: pointer;
 
+  &.custom-burn {
+    width: 24px;
+    height: 24px;
+  }
+
   &:hover {
     transform: scale(1.2);
   }
@@ -127,19 +132,21 @@ export const IconBurn = ({
   burnValue,
   dataItem,
   imgUrl,
+  classStyle,
   onClickIcon
 }: {
   icon?: React.FC;
   burnValue?: number;
   dataItem: any;
   imgUrl?: string;
+  classStyle?: string;
   onClickIcon: (e: any) => void;
 }) => (
   <Space onClick={onClickIcon} size={5} style={{ alignItems: 'end', marginRight: '1rem' }}>
     {icon && React.createElement(icon)}
     {imgUrl && (
       <picture>
-        <StyledBurnIcon alt="burnIcon" src={imgUrl} />
+        <StyledBurnIcon className={classStyle} alt="burnIcon" src={imgUrl} />
       </picture>
     )}
     {burnValue && <Counter num={burnValue ?? 0} />}
@@ -165,6 +172,7 @@ export const IconComment = ({
     <picture>
       <StyledBurnIcon alt="burnIcon" src={imgUrl} />
     </picture>
+    &nbsp;
     <Counter num={totalComments ?? 0} />
   </Space>
 );
@@ -641,6 +649,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
                 imgUrl="/images/custom-burn.svg"
                 key={`list-vertical-downvote-o-${post.id}`}
                 dataItem={post}
+                classStyle="custom-burn"
                 onClickIcon={() => openBurnModal(post)}
               />
             </div>

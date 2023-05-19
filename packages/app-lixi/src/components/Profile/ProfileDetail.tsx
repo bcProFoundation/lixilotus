@@ -147,6 +147,7 @@ const ProfileCardHeader = styled.div`
         margin-left: 0;
         margin-top: 4rem;
         text-align: center;
+        justify-content: center;
       }
       h2 {
         font-weight: 600;
@@ -170,6 +171,26 @@ const ProfileCardHeader = styled.div`
       flex-direction: column;
       align-items: center;
       padding-right: 0;
+    }
+  }
+  .description-profile {
+    width: 100%;
+    background: #fff;
+    padding-left: calc(0px + 48px);
+    padding-bottom: 15px;
+    text-align: left;
+    display: flex;
+    @media (max-width: 768px) {
+      margin-left: 0;
+      text-align: center;
+    }
+    h2 {
+      font-weight: 600;
+      margin-bottom: 0;
+      text-transform: capitalize;
+    }
+    p {
+      margin: 5px 10px;
     }
   }
 `;
@@ -618,6 +639,13 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
               </div>
             )} */}
           </div>
+          {selectedAccount.id == userDetailData.id && (
+            <div className="description-profile">
+              <p>{`${userDetailData.followersCount} ${intl.get('general.followers')}`}</p>
+              <p>{`${userDetailData.followingsCount} ${intl.get('general.youFollow')}`}</p>
+              <p>{`${userDetailData.followingPagesCount} ${intl.get('general.followingPages')}`}</p>
+            </div>
+          )}
         </ProfileCardHeader>
         <ProfileContentContainer>
           <StyledMenu defaultActiveKey="post">
@@ -757,35 +785,6 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
                 </Timeline>
               </ContentTimeline>
             </Tabs.TabPane>
-            {userDetailData.id == selectedAccount.id && (
-              <Tabs.TabPane tab="About" key="about">
-                <LegacyProfile>
-                  <AboutBox>
-                    <h3>{intl.get('general.follow')}</h3>
-                    <div className="about-content">
-                      <SubAbout
-                        dataItem={userDetailData?.followersCount}
-                        onClickIcon={() => {}}
-                        icon={UserOutlined}
-                        text={`${userDetailData?.followersCount} ${intl.get('general.followers')}`}
-                      />
-                      <SubAbout
-                        dataItem={userDetailData?.followingsCount}
-                        onClickIcon={() => {}}
-                        icon={UserOutlined}
-                        text={`${userDetailData?.followingsCount} ${intl.get('general.followings')}`}
-                      />
-                      <SubAbout
-                        dataItem={userDetailData?.followingPagesCount}
-                        onClickIcon={() => {}}
-                        icon={HomeOutlined}
-                        text={`${userDetailData?.followingPagesCount} ${intl.get('general.followingPages')}`}
-                      />
-                    </div>
-                  </AboutBox>
-                </LegacyProfile>
-              </Tabs.TabPane>
-            )}
 
             {/* TODO: implement in the future */}
             {/* <Tabs.TabPane tab="About" key="about"></Tabs.TabPane>

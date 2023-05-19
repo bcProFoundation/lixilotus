@@ -1,5 +1,5 @@
 import { EntityState } from '@reduxjs/toolkit';
-import { PageInfo } from 'src/generated/types.generated';
+import { PageInfo } from '@generated/types.generated';
 import { api, WorshipedPersonQuery } from './worshipedPerson.generated';
 
 export interface WorshipedPersonApiState extends EntityState<WorshipedPersonQuery['worshipedPerson']> {
@@ -8,7 +8,7 @@ export interface WorshipedPersonApiState extends EntityState<WorshipedPersonQuer
 }
 
 const enhancedApi = api.enhanceEndpoints({
-  addTagTypes: ['WorshipedPerson', 'Worship'],
+  addTagTypes: ['WorshipedPerson', 'Worship', 'Temple'],
   endpoints: {
     WorshipedPeople: {
       providesTags: (result, error, arg) => ['WorshipedPerson'],
@@ -43,6 +43,21 @@ const enhancedApi = api.enhanceEndpoints({
         currentCacheData.allWorshipedByPersonId.totalCount = responseData.allWorshipedByPersonId.totalCount;
       }
     },
+    allWorshipedByTempleId: {
+      providesTags: (result, error, arg) => ['Temple'],
+      serializeQueryArgs({ queryArgs }) {
+        if (queryArgs) {
+          const { orderBy, id, ...otherArgs } = queryArgs;
+          return { orderBy, id };
+        }
+        return { queryArgs };
+      },
+      merge(currentCacheData, responseData) {
+        currentCacheData.allWorshipedByTempleId.edges.push(...responseData.allWorshipedByTempleId.edges);
+        currentCacheData.allWorshipedByTempleId.pageInfo = responseData.allWorshipedByTempleId.pageInfo;
+        currentCacheData.allWorshipedByTempleId.totalCount = responseData.allWorshipedByTempleId.totalCount;
+      }
+    },
     allWorship: {
       providesTags: (result, error, arg) => ['Worship'],
       serializeQueryArgs({ queryArgs }) {
@@ -74,7 +89,8 @@ const enhancedApi = api.enhanceEndpoints({
     },
 
     createWorship: {},
-    createWorshipedPerson: {}
+    createWorshipedPerson: {},
+    CreateWorshipTemple: {}
   }
 });
 
@@ -84,6 +100,7 @@ export const {
   useWorshipedPeopleQuery,
   useCreateWorshipMutation,
   useCreateWorshipedPersonMutation,
+  useCreateWorshipTempleMutation,
   useLazyWorshipedPeopleQuery,
   useLazyWorshipedPersonQuery,
   useWorshipedPersonQuery

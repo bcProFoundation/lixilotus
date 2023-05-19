@@ -1,5 +1,5 @@
 import { createEntityAdapter, createReducer, Update } from '@reduxjs/toolkit';
-import { Page } from 'src/generated/types.generated';
+import { Page } from '@generated/types.generated';
 
 import {
   editPageSuccess,

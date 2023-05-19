@@ -6,15 +6,20 @@ import { FireOutlined } from '@ant-design/icons';
 import { WorshipQuery } from '@store/worship/worshipedPerson.generated';
 import moment from 'moment';
 import intl from 'react-intl-universal';
+import { useRouter } from 'next/router';
 
 export type WorshipItem = WorshipQuery['worship'];
 
-type WorshipCardProps = {
+type WorshipTempleCardProps = {
   index: number;
   item: WorshipItem;
+  isPublic?: boolean;
+  templeName?: string;
+  templeId?: string;
 };
 
 const StyledAnimation = style.div`
+  padding-right: 5px;
   .new-item {
     opacity: 0;
     transform: scale(0);
@@ -42,6 +47,10 @@ const StyledItem = style.div`
   padding: 6px 32px 0px 32px;
   border-radius: 24px;
   justify-content: space-between;
+
+  @media (max-width: 440px) {
+    padding: 6px 16px 0px 16px;
+  }
 `;
 
 const StyledInfoContainer = style.div`
@@ -62,7 +71,9 @@ const StyledSubInfo = style.span`
   font-size: 11.5px;
 `;
 
-const WorshipTempleCard = ({ index, item }: WorshipCardProps) => {
+const WorshipTempleCard = ({ index, item, isPublic, templeName, templeId }: WorshipTempleCardProps) => {
+  const history = useRouter();
+
   const getWorshipImage = () => {
     if (item.worshipedAmount >= 1 && item.worshipedAmount < 10) {
       return '/images/incense-card.svg';
@@ -95,10 +106,23 @@ const WorshipTempleCard = ({ index, item }: WorshipCardProps) => {
             <StyledName>
               {item.account.name} <StyledSubInfo> - {moment(item.createdAt).fromNow().toString()}</StyledSubInfo>
             </StyledName>
-            <span style={{ marginBottom: '0' }}>
-              {worshipTextType}
+            <span style={{ marginBottom: '0', textAlign: 'left' }}>
+              {worshipTextType}{' '}
+              {isPublic && (
+                <span>
+                  -
+                  <span
+                    style={{ cursor: 'pointer', fontWeight: 'bold' }}
+                    onClick={() => history.push(`/temple/${templeId}`)}
+                  >
+                    {templeName}
+                  </span>
+                  -
+                </span>
+              )}
               <StyledSubInfo>
-                - <FireOutlined /> {item.worshipedAmount} XPI
+                {' '}
+                <FireOutlined /> {item.worshipedAmount} XPI
               </StyledSubInfo>
             </span>
           </StyledInfoContainer>

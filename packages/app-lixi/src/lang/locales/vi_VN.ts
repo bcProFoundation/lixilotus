@@ -604,6 +604,7 @@ export default {
   'general.unfollow': 'Bỏ theo dõi',
   'general.followers': 'Người theo dõi',
   'general.followings': 'Đang theo dõi',
+  'general.youFollow': 'Bạn theo dõi',
   'general.followingPages': 'Trang đang theo dõi',
   'follow.followSuccess': 'Theo dõi thành công',
   'follow.followFailure': 'Theo dõi không thành công'

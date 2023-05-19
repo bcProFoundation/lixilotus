@@ -1,7 +1,11 @@
 import { createAction } from '@reduxjs/toolkit';
 
-export const subscribeSelectedAccount = createAction<{ interactive: boolean; clientAppId: string }>('webpush/subscribeSelectedAccount');
-export const subscribeSelectedAccountSuccess = createAction<{ interactive: boolean }>('webpush/subscribeSelectedAccountSuccess');
+export const subscribeSelectedAccount = createAction<{ interactive: boolean; clientAppId: string }>(
+  'webpush/subscribeSelectedAccount'
+);
+export const subscribeSelectedAccountSuccess = createAction<{ interactive: boolean }>(
+  'webpush/subscribeSelectedAccountSuccess'
+);
 export const subscribeSelectedAccountFailure = createAction<{ interactive: boolean; message: string }>(
   'webpush/subscribeSelectedAccountFailure'
 );
@@ -13,5 +17,3 @@ export const unsubscribeAllFailure = createAction<{ interactive: boolean; messag
 export const unsubscribeByAddresses = createAction<{ addresses: string[]; clientAppId: string }>(
   'webpush/unsubscribeByAddresses'
 );
-
-

@@ -1,5 +1,10 @@
-export const WORSHIP_TYPES = {
+export const WORSHIP_AMOUNT_TYPES = {
   FLOWER: 1,
   INCENSE: 10,
   CANDLE: 100
 };
+
+export enum WORSHIP_TYPES {
+  PERSON = 'PERSON',
+  TEMPLE = 'TEMPLE'
+}

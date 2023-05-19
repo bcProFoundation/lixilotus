@@ -9,7 +9,6 @@ import { NotificationGateway } from './notification.gateway';
 @Injectable()
 @Processor(NOTIFICATION_OUTBOUND_QUEUE)
 export class NotificationOutboundProcessor extends WorkerHost {
-
   private logger: Logger = new Logger(NotificationOutboundProcessor.name);
 
   constructor(private prisma: PrismaService, private notificationGateway: NotificationGateway) {

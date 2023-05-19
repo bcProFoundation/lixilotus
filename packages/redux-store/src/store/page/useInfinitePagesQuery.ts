@@ -1,7 +1,7 @@
 import { PaginationArgs } from '@bcpros/lixi-models';
 import { useLazyPagesQuery, usePagesQuery, api as postApi } from '@store/page/pages.api';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { PageOrder } from 'src/generated/types.generated';
+import { PageOrder } from '@generated/types.generated';
 import _ from 'lodash';
 import { PageQuery } from './pages.generated';
 import { createEntityAdapter } from '@reduxjs/toolkit';

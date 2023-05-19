@@ -3,6 +3,13 @@ import style from 'styled-components';
 import { AvatarUser } from '@components/Common/AvatarUser';
 import { Space } from 'antd';
 import { FireOutlined } from '@ant-design/icons';
+import { TempleType } from './TempleDetail';
+import intl from 'react-intl-universal';
+import moment from 'moment';
+
+type TempleInfoProp = {
+  temple: TempleType;
+};
 
 const StyledItem = style.div`
    display: flex;
@@ -35,9 +42,9 @@ const StyledHeader = style.p`
 `;
 
 const StyledText = style.p`
-margin-bottom: 0px;
-   text-align: left;
-   color: #4F4F4F;
+  margin-bottom: 0px;
+  text-align: left;
+  color: #4F4F4F;
 `;
 
 const StyledSpace = style(Space)`
@@ -48,7 +55,12 @@ const StyledIcon = style.img`
    min-width: 40px
 `;
 
-const TempleInfo = () => {
+const TempleInfo = ({ temple }: TempleInfoProp) => {
+  const templeAlias = temple.alias && temple.alias.split(',');
+
+  const getFallBackText = () => {
+    return <span style={{ fontStyle: 'italic', textAlign: 'left' }}>{intl.get('worship.noInfo')}</span>;
+  };
   return (
     <StyledItem>
       <StyledHeader>Thông tin</StyledHeader>
@@ -58,8 +70,8 @@ const TempleInfo = () => {
           <StyledIcon alt="achievement" src="/images/achievement.svg" />
         </picture>
         <StyledInfoContainer>
-          <StyledSubHeader>Thành tựu</StyledSubHeader>
-          <StyledText>Lorem ipsum dolor sit amet, consectetur adipiscing elit</StyledText>
+          <StyledSubHeader>{intl.get('worship.achievement')}</StyledSubHeader>
+          <StyledText>{temple.achievement || getFallBackText()}</StyledText>
         </StyledInfoContainer>
       </StyledSpace>
       {/* Also know as / Tên khác */}
@@ -68,20 +80,12 @@ const TempleInfo = () => {
           <StyledIcon alt="aka" src="/images/aka.svg" />
         </picture>
         <StyledInfoContainer>
-          <StyledSubHeader>Tên khác</StyledSubHeader>
-          <StyledText>Lorem ipsum</StyledText>
-          <StyledText>Dolor sit amet</StyledText>
-          <StyledText>Duis aute irure</StyledText>
-        </StyledInfoContainer>
-      </StyledSpace>
-      {/* Country of citizenship / Nguyên quán */}
-      <StyledSpace>
-        <picture>
-          <StyledIcon alt="aka" src="/images/aka.svg" />
-        </picture>
-        <StyledInfoContainer>
-          <StyledSubHeader>Nguyên quán</StyledSubHeader>
-          <StyledText>Reprehenderit</StyledText>
+          <StyledSubHeader>{intl.get('worship.alias')}</StyledSubHeader>
+          {templeAlias && templeAlias.length > 0
+            ? templeAlias.map((alias, index) => {
+                return <StyledText key={index}>{alias}</StyledText>;
+              })
+            : getFallBackText()}
         </StyledInfoContainer>
       </StyledSpace>
       {/* Religion / Tôn giáo */}
@@ -90,8 +94,20 @@ const TempleInfo = () => {
           <StyledIcon alt="religion" src="/images/religion.svg" />
         </picture>
         <StyledInfoContainer>
-          <StyledSubHeader>Tôn giáo</StyledSubHeader>
-          <StyledText>Occaecat</StyledText>
+          <StyledSubHeader>{intl.get('worship.religion')}</StyledSubHeader>
+          <StyledText>{temple.religion || getFallBackText()}</StyledText>
+        </StyledInfoContainer>
+      </StyledSpace>
+      {/* Date of completed / Ngày thành lập */}
+      <StyledSpace>
+        <picture>
+          <StyledIcon alt="birth" src="/images/birth.svg" />
+        </picture>
+        <StyledInfoContainer>
+          <StyledSubHeader>{intl.get('worship.dateOfBirth')}</StyledSubHeader>
+          <StyledText>
+            {moment(temple.dateOfCompleted).locale('vi-vn').format('Do MMMM YYYY') || getFallBackText()}
+          </StyledText>
         </StyledInfoContainer>
       </StyledSpace>
     </StyledItem>

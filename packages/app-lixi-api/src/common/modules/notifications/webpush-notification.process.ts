@@ -3,10 +3,9 @@ import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Injectable, Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
-import * as webPush from 'web-push'
+import * as webPush from 'web-push';
 
 import { WEBPUSH_NOTIFICATION_QUEUE } from './notification.constants';
-
 
 const TTL = 86400;
 
@@ -19,7 +18,6 @@ export interface WebpushNotificationJobData {
 @Injectable()
 @Processor(WEBPUSH_NOTIFICATION_QUEUE)
 export class WebpushNotificationProcessor extends WorkerHost {
-
   private logger: Logger = new Logger(WebpushNotificationProcessor.name);
 
   constructor(private prisma: PrismaService) {
@@ -37,21 +35,22 @@ export class WebpushNotificationProcessor extends WorkerHost {
    * @returns The process is success or not
    */
   public async process(job: Job<WebpushNotificationJobData, boolean, string>): Promise<boolean> {
-
     const { pushSubObj, notification } = job.data;
 
     try {
-      webPush.sendNotification(pushSubObj, JSON.stringify(notification), { TTL }).then(result => {
-      }).catch(error => {
-        if (error.statusCode === 404 || error.statusCode === 410) {
-          // delete the subscription
-          this.removeSubscription(pushSubObj);
-        } else {
-          throw error;
-        }
-        this.logger.error(error);
-        return false;
-      })
+      webPush
+        .sendNotification(pushSubObj, JSON.stringify(notification), { TTL })
+        .then(result => {})
+        .catch(error => {
+          if (error.statusCode === 404 || error.statusCode === 410) {
+            // delete the subscription
+            this.removeSubscription(pushSubObj);
+          } else {
+            throw error;
+          }
+          this.logger.error(error);
+          return false;
+        });
     } catch (err) {
       this.logger.error(err);
     }
@@ -66,7 +65,7 @@ export class WebpushNotificationProcessor extends WorkerHost {
           AND: [
             { endpoint: subscription.endpoint },
             { p256dh: subscription.keys.p256dh },
-            { auth: subscription.keys.auth },
+            { auth: subscription.keys.auth }
           ]
         }
       });

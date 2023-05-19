@@ -8,7 +8,6 @@ import { useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 const usePushNotification = (props: { registration: ServiceWorkerRegistration }) => {
-
   const { registration } = props;
   const dispatch = useAppDispatch();
   const webPushNotifConfig = useAppSelector(getWebPushNotifConfig);
@@ -50,16 +49,20 @@ const usePushNotification = (props: { registration: ServiceWorkerRegistration })
   }, []);
 
   useEffect(() => {
-    if (selectedAccount &&
+    if (
+      selectedAccount &&
       registration &&
       webPushNotifConfig &&
       webPushNotifConfig.allowPushNotification &&
       getPlatformPermissionState() == 'granted' &&
-      webPushNotifConfig.deviceId) {
+      webPushNotifConfig.deviceId
+    ) {
       // unsubscribe webpush for all by device id
       // then subscribe with the current active account
       dispatch(unsubscribeAll({ interactive: false, clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID }));
-      dispatch(subscribeSelectedAccount({ interactive: false, clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID }));
+      dispatch(
+        subscribeSelectedAccount({ interactive: false, clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID })
+      );
     }
   }, [selectedAccount, registration]);
 

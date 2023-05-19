@@ -606,6 +606,7 @@ export default {
   'general.unfollow': 'Unfollow',
   'general.followers': 'Followers',
   'general.followings': 'Followings',
+  'general.youFollow': 'You Follow',
   'general.followingPages': 'Following Pages',
   'follow.followSuccess': 'Follow successful',
   'follow.followFailure': 'Follow failure'

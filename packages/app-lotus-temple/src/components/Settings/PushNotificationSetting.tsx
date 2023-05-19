@@ -72,7 +72,12 @@ const PushNotificationSetting = () => {
           askPermission().then(async result => {
             setPermission(result);
             if (result === 'granted') {
-              dispatch(subscribeSelectedAccount({ interactive: true, clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID }));
+              dispatch(
+                subscribeSelectedAccount({
+                  interactive: true,
+                  clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID
+                })
+              );
             } else {
               turnOffWebPushNotification();
               return;
@@ -92,7 +97,9 @@ const PushNotificationSetting = () => {
   const handleNotificationToggle = async (checked: boolean, event: React.MouseEvent<HTMLButtonElement>) => {
     if (checked) {
       if (permission === 'granted') {
-        dispatch(subscribeSelectedAccount({ interactive: true, clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID }));
+        dispatch(
+          subscribeSelectedAccount({ interactive: true, clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID })
+        );
       } else {
         showModal();
       }

@@ -6,7 +6,7 @@ import type { TabsProps } from 'antd';
 import PersonInfo from './PersonInfo';
 import { FireOutlined } from '@ant-design/icons';
 import { WorshipedPerson } from '@bcpros/lixi-models';
-import { WORSHIP_TYPES } from '@bcpros/lixi-models/constants';
+import { WORSHIP_AMOUNT_TYPES, WORSHIP_TYPES } from '@bcpros/lixi-models/constants';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
 import { fromSmallestDenomination } from '@utils/cashMethods';
@@ -19,7 +19,7 @@ import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib
 import { WorshipedPersonQuery } from '@store/worship/worshipedPerson.generated';
 import { useInfiniteWorshipByPersonIdQuery } from '@store/worship/useInfiniteWorshipByPersonIdQuery';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { OrderDirection, WorshipedPersonOrderField, WorshipOrderField } from 'src/generated/types.generated';
+import { OrderDirection, WorshipedPersonOrderField, WorshipOrderField } from '@generated/types.generated';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 import { addRecentVisitedPerson, setTransactionReady } from '@store/account/actions';
 import { Counter } from '@components/Common/Counter';
@@ -250,7 +250,8 @@ const PersonDetail = ({ person, isMobile }: PersonDetailProp) => {
         burnForType: BurnForType.Worship,
         burnedBy,
         burnForId,
-        burnValue: burnValue.toString()
+        burnValue: burnValue.toString(),
+        worshipType: WORSHIP_TYPES.PERSON
       };
       dispatch(addBurnQueue(_.omit(burnCommand)));
       dispatch(addBurnTransaction(burnCommand));
@@ -296,20 +297,20 @@ const PersonDetail = ({ person, isMobile }: PersonDetailProp) => {
             </Space>
           </StyledWorshipInfo>
           <StyledActionContainer>
-            <Tooltip title={`${WORSHIP_TYPES.FLOWER} XPI`}>
-              <picture onClick={() => handleWorship(WORSHIP_TYPES.FLOWER)}>
+            <Tooltip title={`${WORSHIP_AMOUNT_TYPES.FLOWER} XPI`}>
+              <picture onClick={() => handleWorship(WORSHIP_AMOUNT_TYPES.FLOWER)}>
                 <StyledActionIcon alt="flowers" src="/images/flowers.svg" />
               </picture>
             </Tooltip>
 
-            <Tooltip title={`${WORSHIP_TYPES.INCENSE} XPI`}>
-              <picture onClick={() => handleWorship(WORSHIP_TYPES.INCENSE)}>
+            <Tooltip title={`${WORSHIP_AMOUNT_TYPES.INCENSE} XPI`}>
+              <picture onClick={() => handleWorship(WORSHIP_AMOUNT_TYPES.INCENSE)}>
                 <StyledActionIcon alt="incense" src="/images/incense.svg" />
               </picture>
             </Tooltip>
 
-            <Tooltip title={`${WORSHIP_TYPES.CANDLE} XPI`}>
-              <picture onClick={() => handleWorship(WORSHIP_TYPES.CANDLE)}>
+            <Tooltip title={`${WORSHIP_AMOUNT_TYPES.CANDLE} XPI`}>
+              <picture onClick={() => handleWorship(WORSHIP_AMOUNT_TYPES.CANDLE)}>
                 <StyledActionIcon alt="candle" src="/images/candle.svg" />
               </picture>
             </Tooltip>

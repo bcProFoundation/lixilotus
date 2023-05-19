@@ -20,7 +20,7 @@ import moment from 'moment';
 import { useRouter } from 'next/router';
 import React, { useRef } from 'react';
 import intl from 'react-intl-universal';
-import { CommentOrderField, OrderDirection } from 'src/generated/types.generated';
+import { CommentOrderField, OrderDirection } from '@generated/types.generated';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { BurnData } from './PostDetail';
 
