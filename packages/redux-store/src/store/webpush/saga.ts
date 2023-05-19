@@ -49,13 +49,19 @@ function* watchUnsubscribeByAddresses() {
   yield takeLatest(unsubscribeByAddresses.type, unsubscribeByAddressesSaga);
 }
 
-function* subscribeSelectedAccountSaga(action: PayloadAction<{ interactive: boolean; clientAppId: string }>) {
+function* subscribeSelectedAccountSaga(
+  action: PayloadAction<{
+    interactive: boolean;
+    modifySetting: boolean;
+    clientAppId: string;
+  }>
+) {
   const { registration } = callConfig.call.serviceWorkerContext;
-  const { interactive, clientAppId } = action.payload;
+  const { interactive, clientAppId, modifySetting } = action.payload;
 
   if (!registration) {
     const message = intl.get('webpush.serviceWorkerNotReady');
-    yield put(unsubscribeAllFailure({ interactive: interactive, message: message }));
+    yield put(unsubscribeAllFailure({ interactive: interactive, modifySetting: modifySetting, message: message }));
   }
 
   try {
@@ -88,10 +94,10 @@ function* subscribeSelectedAccountSaga(action: PayloadAction<{ interactive: bool
     };
 
     yield call(webpushApi.subscribe, dataApi);
-    yield put(subscribeSelectedAccountSuccess({ interactive }));
+    yield put(subscribeSelectedAccountSuccess({ interactive, modifySetting }));
   } catch (err) {
     const message = (err as Error).message ?? intl.get('webpush.unableToSubscribe');
-    yield put(subscribeSelectedAccountFailure({ interactive: interactive, message: message }));
+    yield put(subscribeSelectedAccountFailure({ interactive, modifySetting, message }));
   }
 }
 
@@ -113,27 +119,39 @@ function* unsbuscribeAddressess(registration: ServiceWorkerRegistration, address
   yield call(webpushApi.unsubscribe, dataApi);
 }
 
-function* unsubscribeAllSaga(action: PayloadAction<{ interactive: boolean; clientAppId: string }>) {
+function* unsubscribeAllSaga(
+  action: PayloadAction<{
+    interactive: boolean;
+    modifySetting: boolean;
+    clientAppId: string;
+  }>
+) {
   const { registration } = callConfig.call.serviceWorkerContext;
-  const { interactive, clientAppId } = action.payload;
+  const { interactive, clientAppId, modifySetting } = action.payload;
 
   if (!registration) {
     const message = intl.get('webpush.serviceWorkerNotReady');
-    yield put(unsubscribeAllFailure({ interactive: interactive, message: message }));
+    yield put(unsubscribeAllFailure({ interactive, modifySetting, message }));
   }
 
   try {
     yield unsbuscribeAddressess(registration, [], clientAppId);
-    yield put(unsubscribeAllSuccess({ interactive }));
+    yield put(unsubscribeAllSuccess({ interactive, modifySetting }));
   } catch (err) {
     const message = (err as Error).message ?? intl.get('webpush.unableToUnsubscribe');
-    yield put(unsubscribeAllFailure({ interactive: interactive, message: message }));
+    yield put(unsubscribeAllFailure({ interactive, modifySetting, message }));
   }
 }
 
-function* unsubscribeByAddressesSaga(action: PayloadAction<{ addresses: string[]; clientAppId: string }>) {
+function* unsubscribeByAddressesSaga(
+  action: PayloadAction<{
+    addresses: string[];
+    modifySetting: boolean;
+    clientAppId: string;
+  }>
+) {
   const { registration } = callConfig.call.serviceWorkerContext;
-  const { addresses, clientAppId } = action.payload;
+  const { addresses, clientAppId, modifySetting } = action.payload;
 
   if (!registration) {
     return;
@@ -145,24 +163,22 @@ function* unsubscribeByAddressesSaga(action: PayloadAction<{ addresses: string[]
   }
 }
 
-function* subscribeSelectedAccountSuccessSaga(action: PayloadAction<{ interactive: boolean }>) {
-  yield put(hideLoading(subscribeSelectedAccount.type));
-  const { turnOnWebPushNotification } = callConfig.call.serviceWorkerContext;
+function* subscribeSelectedAccountSuccessSaga(action: PayloadAction<{ interactive: boolean; modifySetting: boolean }>) {
+  const { modifySetting } = action.payload;
 
-  // Because we subscribe all of addresses
-  // so we should turn on the notification toggle
-  yield call(turnOnWebPushNotification);
+  yield put(hideLoading(subscribeSelectedAccount.type));
+
+  if (modifySetting) {
+    const { turnOnWebPushNotification } = callConfig.call.serviceWorkerContext;
+    yield call(turnOnWebPushNotification);
+  }
 }
 
-function* subscribeSelectedAccountFailureSaga(action: PayloadAction<{ interactive: boolean }>) {
-  const { interactive } = action.payload;
+function* subscribeSelectedAccountFailureSaga(action: PayloadAction<{ interactive: boolean; modifySetting: boolean }>) {
+  const { interactive, modifySetting } = action.payload;
   yield put(hideLoading(subscribeSelectedAccount.type));
   const message = action.payload ?? intl.get('webpush.unableToSubscribe');
-  const { turnOffWebPushNotification } = callConfig.call.serviceWorkerContext;
 
-  // Otherwise we unsubscribe all of addresses
-  // so we should turn off the notification toggle
-  yield call(turnOffWebPushNotification);
   if (interactive) {
     yield put(
       showToast('error', {
@@ -172,13 +188,24 @@ function* subscribeSelectedAccountFailureSaga(action: PayloadAction<{ interactiv
       })
     );
   }
+  if (modifySetting) {
+    const { turnOffWebPushNotification } = callConfig.call.serviceWorkerContext;
+    yield call(turnOffWebPushNotification);
+  }
 }
 
-function* unsubscribeAllSuccessSaga(action: PayloadAction<{ interactive: boolean }>) {
+function* unsubscribeAllSuccessSaga(action: PayloadAction<{ interactive: boolean; modifySetting: boolean }>) {
   yield put(hideLoading(unsubscribeAll.type));
+
+  const { modifySetting } = action.payload;
+
+  if (modifySetting) {
+    const { turnOffWebPushNotification } = callConfig.call.serviceWorkerContext;
+    yield call(turnOffWebPushNotification);
+  }
 }
 
-function* unsubscribeAllFailureSaga(action: PayloadAction<{ interactive: boolean }>) {
+function* unsubscribeAllFailureSaga(action: PayloadAction<{ interactive: boolean; modifySetting: boolean }>) {
   const { interactive } = action.payload;
   yield put(hideLoading(unsubscribeAll.type));
   const message = action.payload ?? intl.get('webpush.unableToUnsubscribe');

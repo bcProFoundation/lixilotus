@@ -31,7 +31,7 @@ export const ServiceWorkerProvider = ({ children }) => {
         setRegistration(reg);
         navigator.serviceWorker.onmessage = (event) => {
           if (event && (event as any).command === 'pushsubscriptionchange') {
-            dispatch(subscribeSelectedAccount({ interactive: false, clientAppId: process.env.WEBPUSH_CLIENT_APP_ID }))
+            dispatch(subscribeSelectedAccount({ interactive: false, modifySetting: false, clientAppId: process.env.WEBPUSH_CLIENT_APP_ID }))
           }
         }
 

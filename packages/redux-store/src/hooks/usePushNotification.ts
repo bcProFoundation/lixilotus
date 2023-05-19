@@ -59,9 +59,19 @@ const usePushNotification = (props: { registration: ServiceWorkerRegistration })
     ) {
       // unsubscribe webpush for all by device id
       // then subscribe with the current active account
-      dispatch(unsubscribeAll({ interactive: false, clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID }));
       dispatch(
-        subscribeSelectedAccount({ interactive: false, clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID })
+        unsubscribeAll({
+          interactive: false,
+          modifySetting: false,
+          clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID
+        })
+      );
+      dispatch(
+        subscribeSelectedAccount({
+          interactive: false,
+          modifySetting: false,
+          clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID
+        })
       );
     }
   }, [selectedAccount, registration]);

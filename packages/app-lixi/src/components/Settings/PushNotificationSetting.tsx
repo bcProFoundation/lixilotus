@@ -75,6 +75,7 @@ const PushNotificationSetting = () => {
               dispatch(
                 subscribeSelectedAccount({
                   interactive: true,
+                  modifySetting: true,
                   clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID
                 })
               );
@@ -98,7 +99,11 @@ const PushNotificationSetting = () => {
     if (checked) {
       if (permission === 'granted') {
         dispatch(
-          subscribeSelectedAccount({ interactive: true, clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID })
+          subscribeSelectedAccount({
+            interactive: true,
+            modifySetting: true,
+            clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID
+          })
         );
       } else {
         showModal();
@@ -106,14 +111,26 @@ const PushNotificationSetting = () => {
     } else {
       // unsubscribe
       if (registration) {
-        dispatch(unsubscribeAll({ interactive: true, clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID }));
+        dispatch(
+          unsubscribeAll({
+            interactive: true,
+            modifySetting: true,
+            clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID
+          })
+        );
       }
     }
   };
 
   useEffect(() => {
     if (registration && permission !== 'granted') {
-      dispatch(unsubscribeAll({ interactive: false, clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID }));
+      dispatch(
+        unsubscribeAll({
+          interactive: false,
+          modifySetting: true,
+          clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID
+        })
+      );
     }
   }, [permission, registration]);
 
