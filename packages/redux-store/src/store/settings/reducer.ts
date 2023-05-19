@@ -17,8 +17,8 @@ const initialState: SettingsState = {
   initIntlStatus: false,
   webAuthnConfig: null,
   webPushNotifConfig: null,
-  filterPostsHome: 1,
-  filterPostsPage: 1,
+  filterPostsHome: 10,
+  filterPostsPage: 10,
   filterPostsToken: 1,
   filterPostsProfile: 1
 };
