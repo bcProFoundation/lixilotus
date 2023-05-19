@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { setPage } from '@store/page/action';
 import { showToast } from '@store/toast/actions';
 import { getCountries, getStates } from '@store/country/actions';
-import { CreatePageInput } from 'src/generated/types.generated';
+import { CreatePageInput } from '@generated/types.generated';
 import { useCreatePageMutation } from '@store/page/pages.generated';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';

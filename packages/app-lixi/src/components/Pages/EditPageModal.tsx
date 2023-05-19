@@ -10,7 +10,7 @@ import { showToast } from '@store/toast/actions';
 import { getCountries, getStates } from '@store/country/actions';
 import _ from 'lodash';
 import Image from 'next/image';
-import { UpdatePageInput, Page } from 'src/generated/types.generated';
+import { UpdatePageInput, Page } from '@generated/types.generated';
 import { api as pageApi, useUpdatePageMutation } from '@store/page/pages.generated';
 import styled from 'styled-components';
 import { closeModal } from '@store/modal/actions';

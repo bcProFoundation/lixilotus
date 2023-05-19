@@ -30,7 +30,7 @@ import useDidMountEffect from '@hooks/useDidMountEffect ';
 import { fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods';
 import BigNumber from 'bignumber.js';
 import { getSelectedAccount } from '@store/account/selectors';
-import { CommentOrderField, OrderDirection } from 'src/generated/types.generated';
+import { CommentOrderField, OrderDirection } from '@generated/types.generated';
 import { BurnData, PostItem } from '@components/Posts/PostDetail';
 import { CommentItem } from '@components/Posts/CommentListItem';
 import { TokenItem } from '@components/Token/TokensFeed';

@@ -262,4 +262,10 @@ if (process.env.ANALYZE === 'true') {
 	config = withBundleAnalyzer(config);
 }
 
+const withPWA = require('next-pwa')({
+	dest: 'public'
+});
+
+config = withPWA(config);
+
 module.exports = config;

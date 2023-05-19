@@ -39,3 +39,9 @@ yarn-error.log*
 
 # NPM lock file
 package-lock.json
+
+# next-pwa
+**/public/workbox-*.js
+**/public/sw.js
+**/public/worker-*.js
+**/public/*.js.map

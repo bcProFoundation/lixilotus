@@ -1,34 +1,31 @@
+import { getGraphqlRequestStatus, getSelectedAccount } from '@store/account/selectors';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { Layout, Spin } from 'antd';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { getGraphqlRequestStatus, getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
 import styled, { DefaultTheme, ThemeProvider } from 'styled-components';
 
 import { LoadingOutlined } from '@ant-design/icons';
 
+import { Footer } from '@bcpros/lixi-components/components';
 import { navBarHeaderList } from '@components/Common/navBarHeaderList';
-import intl from 'react-intl-universal';
 import Sidebar from '@containers/Sidebar';
+import DummySidebar from '@containers/Sidebar/DummySidebar';
 import SidebarRanking from '@containers/Sidebar/SideBarRanking';
 import SidebarShortcut from '@containers/Sidebar/SideBarShortcut';
 import Topbar from '@containers/Topbar';
-import { loadLocale } from '@store/settings/actions';
-import { getCurrentLocale, getFilterPostsHome, getIntlInitStatus } from '@store/settings/selectors';
-import { Header } from 'antd/lib/layout/layout';
+import { setTransactionReady } from '@store/account/actions';
 import { getIsGlobalLoading } from '@store/loading/selectors';
+import { fetchNotifications } from '@store/notification/actions';
+import { getAllNotifications } from '@store/notification/selectors';
+import { loadLocale } from '@store/settings/actions';
+import { getCurrentLocale, getIntlInitStatus } from '@store/settings/selectors';
+import { getSlpBalancesAndUtxos } from '@store/wallet';
+import { Header } from 'antd/lib/layout/layout';
 import { injectStore } from 'src/utils/axiosClient';
 import ModalManager from '../../Common/ModalManager';
 import { GlobalStyle } from './GlobalStyle';
 import { theme } from './theme';
-import { Footer } from '@bcpros/lixi-components/components';
-import { getAllNotifications } from '@store/notification/selectors';
-import { fetchNotifications } from '@store/notification/actions';
-import DummySidebar from '@containers/Sidebar/DummySidebar';
-import { setTransactionReady } from '@store/account/actions';
-import { getSlpBalancesAndUtxos } from '@store/wallet';
-import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
-import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
 const { Content } = Layout;
 
 export const LoadingIcon = <LoadingOutlined className="loadingIcon" />;

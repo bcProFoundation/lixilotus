@@ -1,6 +1,6 @@
 import { withIronSessionApiRoute } from 'iron-session/next';
 import { NextApiRequest, NextApiResponse } from 'next';
-import { sessionOptions } from 'src/models/session';
+import { sessionOptions } from 'src/shared/models/session';
 
 async function localLogoutRoute(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {

@@ -1,7 +1,14 @@
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import { createReducer } from '@reduxjs/toolkit';
 
-import { saveBurnFilter, saveWebAuthnConfig, setInitIntlStatus, toggleCollapsedSideNav, updateLocale } from './actions';
+import {
+  saveBurnFilter,
+  saveWebAuthnConfig,
+  saveWebPushNotifConfig,
+  setInitIntlStatus,
+  toggleCollapsedSideNav,
+  updateLocale
+} from './actions';
 import { SettingsState } from './state';
 
 const initialState: SettingsState = {
@@ -9,6 +16,7 @@ const initialState: SettingsState = {
   locale: 'en',
   initIntlStatus: false,
   webAuthnConfig: null,
+  webPushNotifConfig: null,
   filterPostsHome: 1,
   filterPostsPage: 1,
   filterPostsToken: 1,
@@ -28,6 +36,9 @@ export const settingsReducer = createReducer(initialState, builder => {
     })
     .addCase(saveWebAuthnConfig, (state, action) => {
       state.webAuthnConfig = action.payload;
+    })
+    .addCase(saveWebPushNotifConfig, (state, action) => {
+      state.webPushNotifConfig = action.payload;
     })
     .addCase(saveBurnFilter, (state, action) => {
       const { filterForType, filterValue } = action.payload;

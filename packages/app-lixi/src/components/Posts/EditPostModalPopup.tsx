@@ -9,7 +9,7 @@ import { getSelectedAccount } from '@store/account/selectors';
 import intl from 'react-intl-universal';
 import _ from 'lodash';
 import { useUpdatePostMutation, api as postApi } from '@store/post/posts.generated';
-import { UpdatePostInput, OrderDirection, PostOrderField } from 'src/generated/types.generated';
+import { UpdatePostInput, OrderDirection, PostOrderField } from '@generated/types.generated';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
 import { UpdatePostMutation } from '@store/post/posts.generated';
 import { showToast } from '@store/toast/actions';

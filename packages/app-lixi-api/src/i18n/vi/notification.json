@@ -4,6 +4,8 @@
     "unableGetNotification": "Không thể nhận danh sách thông báo của tài khoản.",
     "noReadPermission": "Không có quyền đọc thông báo.",
     "noDeletePermission": "Không có quyền xóa thông báo",
-    "unableCreateNotification": "Không thể tạo thông báo."
+    "unableCreateNotification": "Không thể tạo thông báo.",
+    "unableToSubscribe": "Không thể đăng ký.",
+    "unableToUnsubscribe": "Không thể hủy đăng ký."
   }
 }

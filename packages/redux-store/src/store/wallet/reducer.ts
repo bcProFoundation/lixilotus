@@ -1,11 +1,17 @@
 import { createEntityAdapter, createReducer } from '@reduxjs/toolkit';
 
-import { activateWalletSuccess, setWalletHasUpdated, setWalletRefreshInterval, writeWalletStatus } from './actions';
+import {
+  activateWalletSuccess,
+  setWalletHasUpdated,
+  setWalletPaths,
+  setWalletRefreshInterval,
+  writeWalletStatus
+} from './actions';
 import { WalletPathAddressInfo } from './models';
 import { WalletState } from './state';
 
 export const walletAdapter = createEntityAdapter<WalletPathAddressInfo>({
-  selectId: wallet => wallet.path
+  selectId: wallet => wallet.xAddress
 });
 
 const initialState: WalletState = walletAdapter.getInitialState({
@@ -33,7 +39,7 @@ export const walletStateReducer = createReducer(initialState, builder => {
     })
     .addCase(activateWalletSuccess, (state, action) => {
       const { walletPaths, mnemonic, selectPath } = action.payload;
-      walletAdapter.setAll(state, walletPaths);
+      walletAdapter.setMany(state, walletPaths);
       state.mnemonic = mnemonic;
       state.walletHasUpdated = false;
       state.selectedWalletPath = selectPath;
@@ -43,5 +49,8 @@ export const walletStateReducer = createReducer(initialState, builder => {
     })
     .addCase(setWalletHasUpdated, (state, action) => {
       state.walletHasUpdated = action.payload;
+    })
+    .addCase(setWalletPaths, (state, walletPaths) => {
+      walletAdapter.setAll(state, walletPaths);
     });
 });

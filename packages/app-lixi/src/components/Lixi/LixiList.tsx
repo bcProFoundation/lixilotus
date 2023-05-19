@@ -194,6 +194,7 @@ const LixiList = ({ lixies }: LixiListProps) => {
 
   const mapDataListItem = () => {
     let newListLixiType = [];
+    console.log('lixies', lixies);
     lixies.forEach(lixi => {
       let objLixiType: LixiType = {
         id: lixi.id,
@@ -203,10 +204,10 @@ const LixiList = ({ lixies }: LixiListProps) => {
         redeemed: _.isNil(lixi.subLixiTotalClaim)
           ? fromSmallestDenomination(lixi.totalClaim)
           : lixi.subLixiTotalClaim.toFixed(2),
-        remaining: _.isNil(lixi.subLixiBalance)
+        remaining: _.isNil(lixi?.subLixiBalance)
           ? fromSmallestDenomination(lixi.balance)
           : (lixi.subLixiBalance - lixi.subLixiTotalClaim).toFixed(2),
-        budget: lixi.claimType == ClaimType.Single ? lixi.amount.toFixed(3) : lixi.subLixiBalance.toFixed(3) || 0.0,
+        budget: lixi.claimType == ClaimType.Single ? lixi.amount.toFixed(3) : lixi?.subLixiBalance?.toFixed(3) || 0.0,
         status: lixi.status,
         claimType: lixi.claimType
       };

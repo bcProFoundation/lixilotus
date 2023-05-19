@@ -3,3 +3,8 @@ export interface WebAuthnConfig {
   userId: string;
   credentialId: string;
 }
+
+export interface WebPushNotifConfig {
+  allowPushNotification: boolean;
+  deviceId: string;
+}

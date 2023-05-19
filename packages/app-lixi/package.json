@@ -11,8 +11,7 @@
     "start": "next start",
     "fix": "run-s fix:*",
     "lint:prettier": "prettier \"src/**/*{.ts,.tsx}\" --check --config .prettierrc.js",
-    "fix:prettier": "prettier \"src/**/*{.ts,.tsx}\" --write --config .prettierrc.js",
-    "graphql-codegen": "graphql-codegen --config codegen.yml"
+    "fix:prettier": "prettier \"src/**/*{.ts,.tsx}\" --write --config .prettierrc.js"
   },
   "dependencies": {
     "@abcpros/bitcore-lib-xpi": "^8.25.37",
@@ -41,6 +40,7 @@
     "lodash": "^4.17.21",
     "lodash.isempty": "^4.4.0",
     "next": "^12.3.1",
+    "next-pwa": "^5.6.0",
     "next-redux-wrapper": "8.1.0",
     "next-seo": "^5.15.0",
     "node-forge": "^1.3.1",
@@ -81,6 +81,7 @@
     "@types/react-dom": "17.0.2",
     "@types/react-redux": "^7.1.24",
     "@types/styled-components": "^5.1.26",
+    "babel-loader": "^9.1.2",
     "babel-plugin-import": "^1.13.6",
     "babel-plugin-styled-components": "^2.0.7",
     "eslint": "^8.33.0",

@@ -345,6 +345,7 @@ export default {
   'settings.languages': 'Languages',
   'settings.general': 'General Settings',
   'settings.lockApp': 'Lock App',
+  'settings.notifications': 'Notifications',
   'settings.notSupported': 'Not Supported',
   'settings.backupAccount': 'Backup your account',
   'settings.manageAccounts': 'Manage Accounts',
@@ -362,8 +363,22 @@ export default {
   'settings.deleteAccountConfirm': 'Type "delete {account}" to confirm',
   'settings.deleteAccountConfirmMessage': 'Are you sure you want to delete account "{account}"?',
   'settings.yourConfirmationPhraseMustExact': 'Your confirmation phrase must match exactly',
-  en: 'English',
-  vi: 'Vietnamese',
+  'settings.en': 'English',
+  'settings.vi': 'Vietnamese',
+  'settings.allowNotification': 'Allow notification for the',
+  'settings.forBrowser': 'browser on your device',
+  'settings.thenAllowNotification': 'Then allow notification for',
+  'settings.lixilotusOnBrower': 'lixilotus.com on your browser',
+  'settings.enableNotification': 'Enable Notification',
+  'settings.grantPermisson': 'You will be prompted to grant permisson for notification, Please click "Allow"',
+  'settings.ok': 'OK',
+  'settings.permissionError': 'Error - Permision Error',
+  'settings.blockedDevice': 'Blocked by device',
+  'setting.notSupported': 'Not Supported',
+  'setting.gotIt': 'Got It',
+  'settings.howEnableNotification': 'How to enable notification',
+  'settings.deviceSupport': 'This feature works best with Chrome or Brave on Android device',
+  'settings.twoStepEnableNotification': '2 steps to enable notification',
 
   /* 06.Countries */
   'country.all': 'All of country',
@@ -580,7 +595,12 @@ export default {
   'category.travelAndEvents': 'Travel And Events',
   'category.other': 'Other',
 
-  /* 19. Follow*/
+  /* 19. Webpush */
+  'webpush.unableToSubscribe': 'Unable to subscriber.',
+  'webpush.unableToUnsubscribe': 'Unable to unsubscriber.',
+  'webpush.serviceWorkerNotReady': 'The service worker is not ready.',
+
+  /* 20. Follow*/
   'general.follow': 'Follow',
   'general.followBack': 'Follow back',
   'general.unfollow': 'Unfollow',

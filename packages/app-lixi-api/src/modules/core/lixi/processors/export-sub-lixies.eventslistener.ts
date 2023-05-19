@@ -39,8 +39,7 @@ export class ExportSubLixiesEventsListener extends QueueEventsHost {
       mnemonicHash
     );
     if (notif) {
-      const room = mnemonicHash;
-      await this.notificationService.saveAndDispatchNotification(room, notif);
+      await this.notificationService.saveAndDispatchNotification(notif);
     }
   }
 }

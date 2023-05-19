@@ -1,26 +1,16 @@
-import {
-  Account,
-  Burn,
-  BurnCommand,
-  BurnForType,
-  BurnType,
-  Comment,
-  fromSmallestDenomination
-} from '@bcpros/lixi-models';
+import { Burn, BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models';
+import { NotificationLevel } from '@bcpros/lixi-prisma';
 import BCHJS from '@bcpros/xpi-js';
-import { Body, Controller, HttpException, HttpStatus, Inject, Logger, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, HttpException, HttpStatus, Inject, Logger, Post } from '@nestjs/common';
 import { ChronikClient } from 'chronik-client';
-import { I18n, I18nContext, I18nService } from 'nestjs-i18n';
+import _ from 'lodash';
+import { I18n, I18nService } from 'nestjs-i18n';
 import { InjectChronikClient } from 'src/common/modules/chronik/chronik.decorators';
+import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
+import { NotificationService } from 'src/common/modules/notifications/notification.service';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { parseBurnOutput } from 'src/utils/opReturnBurn';
 import { VError } from 'verror';
-import _ from 'lodash';
-import { NotificationService } from 'src/common/modules/notifications/notification.service';
-import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
-import { NotificationLevel } from '@bcpros/lixi-prisma';
-import { InjectQueue } from '@nestjs/bullmq';
-import { Queue } from 'bullmq';
 
 @Controller('burn')
 export class BurnController {
@@ -281,15 +271,9 @@ export class BurnController {
             xpiTip: calcTip
           }
         };
-        const jobDataBurnAndTip = {
-          room: recipientPostAccount.mnemonicHash,
-          notification: createNotifBurnAndTip
-        };
+
         createNotifBurnAndTip.senderId !== createNotifBurnAndTip.recipientId &&
-          (await this.notificationService.saveAndDispatchNotification(
-            jobDataBurnAndTip.room,
-            jobDataBurnAndTip.notification
-          ));
+          (await this.notificationService.saveAndDispatchNotification(createNotifBurnAndTip));
         // create Notifications Fee
         let recipientPageAccount;
         if (post?.pageId && post.page?.pageAccountId != recipientPostAccount.id) {
@@ -322,15 +306,8 @@ export class BurnController {
             }
           };
 
-          const jobDataBurnFee = {
-            room: post?.pageId ? (recipientPageAccount?.mnemonicHash as string) : recipientPostAccount?.mnemonicHash,
-            notification: createNotifBurnFee
-          };
-          jobDataBurnFee.room !== recipientPageAccount?.mnemonicHash &&
-            (await this.notificationService.saveAndDispatchNotification(
-              jobDataBurnFee.room,
-              jobDataBurnFee.notification
-            ));
+          createNotifBurnFee.recipientId !== recipientPageAccount?.id &&
+            (await this.notificationService.saveAndDispatchNotification(createNotifBurnFee));
         }
       }
 

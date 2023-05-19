@@ -1,39 +1,33 @@
-import { Alert, Button, Collapse, Form, Input, Spin, Switch, Tag } from 'antd';
-import * as _ from 'lodash';
-import React, { useEffect, useState } from 'react';
-import intl from 'react-intl-universal';
+import { CopyOutlined, ImportOutlined, LockOutlined, PlusSquareOutlined, WalletOutlined } from '@ant-design/icons';
+import Edit from '@assets/icons/edit.svg';
+import Trashcan from '@assets/icons/trashcan.svg';
+import {
+  CashLoadingIcon,
+  ThemedQuerstionCircleOutlinedFaded,
+  ThemedSettingOutlined
+} from '@bcpros/lixi-components/components/Common/CustomIcons';
+import { Account, DeleteAccountCommand, RenameAccountCommand } from '@bcpros/lixi-models';
+import { AntdFormWrapper, LanguageSelectDropdown } from '@components/Common/EnhancedInputs';
+import PrimaryButton, { SecondaryButton, SmartButton } from '@components/Common/PrimaryButton';
+import { StyledCollapse } from '@components/Common/StyledCollapse';
+import { WalletContext } from '@context/index';
 import { deleteAccount, generateAccount, importAccount, renameAccount, selectAccount } from '@store/account/actions';
 import { getAllAccounts, getSelectedAccount } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getIsGlobalLoading } from '@store/loading/selectors';
 import { openModal } from '@store/modal/actions';
-import { WalletContext } from '@context/index';
-import styled from 'styled-components';
-import {
-  CheckOutlined,
-  CloseOutlined,
-  CopyOutlined,
-  ExclamationCircleFilled,
-  ImportOutlined,
-  LockFilled,
-  LockOutlined,
-  PlusSquareOutlined,
-  WalletOutlined
-} from '@ant-design/icons';
-import Edit from '@assets/icons/edit.svg';
-import Trashcan from '@assets/icons/trashcan.svg';
-import { CashLoadingIcon, ThemedSettingOutlined } from '@bcpros/lixi-components/components/Common/CustomIcons';
-import { Account, DeleteAccountCommand, RenameAccountCommand } from '@bcpros/lixi-models';
-import { AntdFormWrapper, LanguageSelectDropdown } from '@components/Common/EnhancedInputs';
-import PrimaryButton, { SecondaryButton, SmartButton } from '@components/Common/PrimaryButton';
-import { StyledCollapse } from '@components/Common/StyledCollapse';
 import { setInitIntlStatus, updateLocale } from '@store/settings/actions';
 import { getCurrentLocale } from '@store/settings/selectors';
-import { AuthenticationContext } from '@context/index';
-import getOauth2URL from '@utils/oauth2';
-import { DeleteAccountModalProps } from './DeleteAccountModal';
-import { RenameAccountModalProps } from './RenameAccountModal';
+import { Alert, Collapse, Form, Input, Modal, Spin } from 'antd';
 import axios from 'axios';
+import * as _ from 'lodash';
+import React, { useEffect, useState } from 'react';
+import intl from 'react-intl-universal';
+import styled from 'styled-components';
+import { DeleteAccountModalProps } from './DeleteAccountModal';
+import LockAppSetting from './LockAppSetting';
+import PushNotificationSetting from './PushNotificationSetting';
+import { RenameAccountModalProps } from './RenameAccountModal';
 
 const { Panel } = Collapse;
 
@@ -202,30 +196,39 @@ const SettingBar = styled.div`
   }
 `;
 
-const GeneralSettingsItem = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  .title {
-    color: ${props => props.theme.generalSettings.item.title};
-  }
-  .anticon {
-    color: ${props => props.theme.generalSettings.item.icon};
-  }
-  .ant-switch {
-    background-color: ${props => props.theme.generalSettings.item.icon};
-    .anticon {
-      color: ${props => props.theme.generalSettings.background};
-    }
-  }
-  .ant-switch-checked {
-    background-color: ${props => props.theme.primary};
-  }
-`;
+const helpInfoIcon = (
+  <ThemedQuerstionCircleOutlinedFaded
+    onClick={() => {
+      Modal.info({
+        centered: true,
+        okText: intl.get('settings.gotIt'),
+        title: intl.get('settings.howEnableNotification'),
+        maskClosable: true,
+        content: (
+          <div>
+            <p>{intl.get('settings.deviceSupport')}</p>
+            <p>{intl.get('settings.notSupportIos')}</p>
+            <div className="heading">{intl.get('settings.twoStepEnableNotification')}</div>
+            <ul>
+              <li>
+                {intl.get('settings.allowNotification')}
+                <em>{intl.get('settings.forBrowser')}</em>.
+              </li>
+              <li>
+                {intl.get('settings.thenAllowNotification')}
+                <em>{intl.get('settings.sendlotusOnBrower')}</em>.
+              </li>
+            </ul>
+          </div>
+        )
+      });
+    }}
+  />
+);
 
 const Settings: React.FC = () => {
   const Wallet = React.useContext(WalletContext);
-  const authenticationContextValue = React.useContext(AuthenticationContext);
+
   const isLoading = useAppSelector(getIsGlobalLoading);
   const [seedInput, openSeedInput] = useState(false);
   const [isValidMnemonic, setIsValidMnemonic] = useState<boolean | null>(null);
@@ -298,22 +301,6 @@ const Settings: React.FC = () => {
     dispatch(setInitIntlStatus(false));
     dispatch(updateLocale(locales));
   }
-
-  const handleAppLockToggle = (checked, e) => {
-    if (checked) {
-      // if there is an existing credential, that means user has registered
-      // simply turn on the Authentication Required flag
-      if (authenticationContextValue.credentialId) {
-        authenticationContextValue.turnOnAuthentication();
-      } else {
-        // there is no existing credential, that means user has not registered
-        // user need to register
-        authenticationContextValue.signUp();
-      }
-    } else {
-      authenticationContextValue.turnOffAuthentication();
-    }
-  };
 
   async function submit() {
     setFormData({
@@ -456,29 +443,8 @@ const Settings: React.FC = () => {
                   <h2 style={{ color: 'var(--color-primary)' }}>
                     <ThemedSettingOutlined /> {intl.get('settings.general')}
                   </h2>
-                  <GeneralSettingsItem>
-                    <div className="title">
-                      <LockFilled /> {intl.get('settings.lockApp')}
-                    </div>
-                    {authenticationContextValue ? (
-                      <Switch
-                        size="small"
-                        checkedChildren={<CheckOutlined />}
-                        unCheckedChildren={<CloseOutlined />}
-                        checked={
-                          authenticationContextValue.isAuthenticationRequired && authenticationContextValue.credentialId
-                            ? true
-                            : false
-                        }
-                        // checked={false}
-                        onChange={handleAppLockToggle}
-                      />
-                    ) : (
-                      <Tag color="warning" icon={<ExclamationCircleFilled />}>
-                        {intl.get('settings.notSupported')}
-                      </Tag>
-                    )}
-                  </GeneralSettingsItem>
+                  <LockAppSetting />
+                  <PushNotificationSetting />
                 </SettingBar>
                 {/* TODO: Implement in the future */}
                 {/* <Button href={getOauth2URL()}>Login</Button> */}

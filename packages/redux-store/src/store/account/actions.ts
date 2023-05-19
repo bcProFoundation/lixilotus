@@ -12,8 +12,6 @@ import {
 import { createAction } from '@reduxjs/toolkit';
 import { WorshipedPersonFieldsFragment as WorshipedPerson } from '@store/worship/worshipedPerson.generated';
 
-import { AppThunk } from '../store';
-
 export const generateAccount = createAction('account/generateAccount');
 export const getAccount = createAction<number>('account/getAccount');
 export const getAccountSuccess = createAction<Account>('account/getAccountSuccess');

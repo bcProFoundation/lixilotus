@@ -1,6 +1,5 @@
 import { WinstonModule, utilities as nestWinstonModuleUtilities } from 'nest-winston';
 import winston, { format } from 'winston';
-import LogzioWinstonTransport from 'winston-logzio';
 import 'winston-daily-rotate-file';
 import { verrorFormat } from 'winston-verror-format';
 import LokiTransport from 'winston-loki';
@@ -32,19 +31,6 @@ if (allowGrafanaLogging) {
       onConnectionError: err => console.error(err)
     })
   );
-}
-
-if (nodeEnv !== 'development') {
-  const logzioWinstonTransport = new LogzioWinstonTransport({
-    level: 'info',
-    name: 'winston_logzio',
-    token: process.env.LOGZIO_TOKEN ?? '',
-    host: process.env.LOGZIO_HOST ?? '',
-    extraFields: {
-      environment: `${environment}`
-    }
-  });
-  allTransports.push(logzioWinstonTransport);
 }
 
 if (nodeEnv === 'local') {

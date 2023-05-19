@@ -1,4 +1,4 @@
-import { Account } from '@bcpros/lixi-models';
+import { Account, NotificationDto } from '@bcpros/lixi-models';
 import { getAllAccounts, getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { Layout, message, Space, Modal, Popover, Button, Badge } from 'antd';
@@ -16,7 +16,7 @@ import { fetchNotifications } from '@store/notification/actions';
 import { AvatarUser } from '@components/Common/AvatarUser';
 import _ from 'lodash';
 import { setGraphqlRequestLoading } from '@store/account/actions';
-import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
+import { OrderDirection, PostOrderField } from '@generated/types.generated';
 import { getFilterPostsHome } from '@store/settings/selectors';
 import { api as postApi, useLazyPostQuery } from '@store/post/posts.api';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
@@ -44,6 +44,42 @@ export const ItemAccess = ({
       <Space direction={direction === 'horizontal' ? 'horizontal' : 'vertical'} className={'item-access'}>
         <div className={classNames('icon-item', { 'active-item-access': active })}>
           <img src={icon} />
+        </div>
+        <span className="text-item">{text}</span>
+      </Space>
+    </div>
+  );
+};
+
+export const ItemAccessNotification = ({
+  icon,
+  text,
+  href,
+  active,
+  direction,
+  notifications,
+  onClickItem
+}: {
+  icon: string;
+  text: string;
+  href?: string;
+  active: boolean;
+  direction?: string;
+  notifications: NotificationDto[];
+  onClickItem?: () => void;
+}) => {
+  return (
+    <div onClick={onClickItem}>
+      <Space direction={direction === 'horizontal' ? 'horizontal' : 'vertical'} className={'item-access'}>
+        <div className={classNames('icon-item', { 'active-item-access': active })}>
+          <Badge
+            count={notifications.filter(item => _.isNil(item.readAt)).length}
+            overflowCount={9}
+            offset={[notifications?.length < 10 ? 0 : 5, 8]}
+            color="var(--color-primary)"
+          >
+            <img src={icon} />
+          </Badge>
         </div>
         <span className="text-item">{text}</span>
       </Space>
@@ -317,8 +353,13 @@ const SidebarShortcut = () => {
               key="home"
               onClickItem={() => handleIconClick('/')}
             />
-            <ItemAccess
-              icon={'/images/ico-notifications.svg'}
+            <ItemAccessNotification
+              notifications={notifications}
+              icon={
+                currentPathName === '/notifications'
+                  ? '/images/ico-notifications-active.svg'
+                  : '/images/ico-notifications.svg'
+              }
               text={intl.get('general.notifications')}
               active={currentPathName === '/notifications'}
               key="notifications"

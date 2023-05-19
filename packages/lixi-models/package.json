@@ -86,6 +86,7 @@
     ]
   },
   "dependencies": {
+    "@liaoliaots/nestjs-redis": "^9.0.5",
     "@nestjs/mapped-types": "^1.2.0",
     "class-validator": "^0.14.0",
     "prisma-graphql-type-decimal": "^2.0.6",

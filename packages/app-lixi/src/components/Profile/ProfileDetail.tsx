@@ -29,7 +29,7 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
-import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
+import { OrderDirection, PostOrderField } from '@generated/types.generated';
 import styled from 'styled-components';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
