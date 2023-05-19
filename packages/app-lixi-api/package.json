@@ -39,6 +39,7 @@
     "@fastify/multipart": "7.4.0",
     "@fastify/static": "^6.8.0",
     "@fastify/swagger": "^8.3.0",
+    "@liaoliaots/nestjs-redis": "^9.0.5",
     "@nestjs-modules/mailer": "^1.8.1",
     "@nestjs/bullmq": "^1.0.0",
     "@nestjs/common": "^9.2.1",
