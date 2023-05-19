@@ -34,6 +34,13 @@ export const ServiceWorkerProvider = ({ children }) => {
             dispatch(subscribeSelectedAccount({ interactive: false, clientAppId: process.env.WEBPUSH_CLIENT_APP_ID }))
           }
         }
+
+        // Turn of the push notification config if there's no subscription
+        reg.pushManager.getSubscription().then(subscription => {
+          if (subscription == null) {
+            turnOffWebPushNotification();
+          }
+        });
       });
     }
   }, []);

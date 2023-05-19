@@ -33,8 +33,6 @@ const usePushNotification = (props: { registration: ServiceWorkerRegistration })
           const permission = getPlatformPermissionState();
           let allowPushNotification = webPushNotifConfig.allowPushNotification;
           if (permission !== 'granted' && webPushNotifConfig.allowPushNotification === true) {
-            // unsubscribeAllWalletsFromPushNotification();
-
             // if the permission is not granted, we should not allow push notification
             // reset the allowPushNotification value to false
             allowPushNotification = false;

@@ -1,6 +1,6 @@
 import { SendNotificationJobData } from '@bcpros/lixi-models';
 import { Processor, WorkerHost } from '@nestjs/bullmq';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { NOTIFICATION_OUTBOUND_QUEUE } from './notification.constants';
@@ -9,6 +9,9 @@ import { NotificationGateway } from './notification.gateway';
 @Injectable()
 @Processor(NOTIFICATION_OUTBOUND_QUEUE)
 export class NotificationOutboundProcessor extends WorkerHost {
+
+  private logger: Logger = new Logger(NotificationOutboundProcessor.name);
+
   constructor(private prisma: PrismaService, private notificationGateway: NotificationGateway) {
     super();
   }
@@ -19,8 +22,13 @@ export class NotificationOutboundProcessor extends WorkerHost {
    * @returns The process is success or not
    */
   public async process(job: Job<SendNotificationJobData, boolean, string>): Promise<boolean> {
-    const { room, notification } = job.data;
-    this.notificationGateway.sendNotification(room, notification);
+    try {
+      const { room, notification } = job.data;
+      this.notificationGateway.sendNotification(room, notification);
+    } catch (error) {
+      this.logger.error(error);
+      return false;
+    }
     return true;
   }
 }

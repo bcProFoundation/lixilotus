@@ -263,8 +263,7 @@ if (process.env.ANALYZE === 'true') {
 }
 
 const withPWA = require('next-pwa')({
-	dest: 'public',
-	register: true
+	dest: 'public'
 });
 
 config = withPWA(config);

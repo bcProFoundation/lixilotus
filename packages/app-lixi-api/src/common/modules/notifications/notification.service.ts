@@ -14,6 +14,8 @@ import { template } from 'src/utils/stringTemplate';
 import { VError } from 'verror';
 import { NOTIFICATION_OUTBOUND_QUEUE, WEBPUSH_NOTIFICATION_QUEUE } from './notification.constants';
 import { NotificationGateway } from './notification.gateway';
+import { PushSubscription } from 'web-push';
+import { WebpushNotificationJobData } from './webpush-notification.process';
 
 @Injectable()
 export class NotificationService {
@@ -95,8 +97,31 @@ export class NotificationService {
     // means that there're no devices currently online which associates to the address
     // then we send the webpush notification
     if (rooms.length == 0) {
-      // const 
-      // await this.webpushQueue.add('send-webpush-notification', )
+      // Find the associated addresses
+      const subscribers = await this.prisma.webpushSubscriber.findMany({
+        where: {
+          address: recipientAccount.address
+        }
+      });
+
+      _.map(subscribers, async subscriber => {
+        const pushSubscription: PushSubscription = {
+          endpoint: subscriber.endpoint,
+          keys: {
+            p256dh: subscriber.p256dh,
+            auth: subscriber.auth
+          }
+        };
+
+        const webpushJobData: WebpushNotificationJobData = {
+          pushSubObj: pushSubscription,
+          address: subscriber.address,
+          notification: { ...notif }
+        };
+
+        await this.webpushQueue.add('send-webpush-notification', webpushJobData);
+      });
+
     } else {
       // User currently online, we send in-app notification
       // Dispatch the notification

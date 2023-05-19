@@ -33,7 +33,7 @@
   ],
   "include": [
     "src/**/*",
-    "../redux-store/src/store/webpush/constants.ts"
+    "src/@types/service-workder.d.ts"
   ],
   "exclude": [
     "node_modules"

@@ -170,8 +170,6 @@ function* subscribeSelectedAccountFailureSaga(action: PayloadAction<{ interactiv
 
 function* unsubscribeAllSuccessSaga(action: PayloadAction<{ interactive: boolean }>) {
   yield put(hideLoading(unsubscribeAll.type));
-  const { turnOffWebPushNotification } = callConfig.call.serviceWorkerContext;
-  yield call(turnOffWebPushNotification);
 }
 
 function* unsubscribeAllFailureSaga(action: PayloadAction<{ interactive: boolean }>) {
