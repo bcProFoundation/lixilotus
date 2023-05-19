@@ -49,4 +49,6 @@ export const getFilterPostsProfile = createSelector(
   (state: SettingsState) => state.filterPostsProfile
 );
 
-export const getDeviceId = createSelector(getWebPushNotifConfig, (state: WebPushNotifConfig) => (state && state.deviceId) ? state.deviceId : undefined);
+export const getDeviceId = createSelector(getWebPushNotifConfig, (state: WebPushNotifConfig) =>
+  state && state.deviceId ? state.deviceId : undefined
+);
