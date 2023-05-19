@@ -24,7 +24,7 @@ import {
 import makeBlockie from 'ethereum-blockies-base64';
 import React, { useEffect, useRef, useState } from 'react';
 import { Virtuoso } from 'react-virtuoso';
-import { OrderDirection, PostOrderField, Token } from 'src/generated/types.generated';
+import { OrderDirection, PostOrderField, Token } from '@generated/types.generated';
 import styled from 'styled-components';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import UpVoteSvg from '@assets/icons/upVotePurple.svg';

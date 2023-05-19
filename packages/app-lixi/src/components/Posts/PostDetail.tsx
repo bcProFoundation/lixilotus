@@ -67,7 +67,7 @@ import {
 } from 'react-share';
 import { Virtuoso } from 'react-virtuoso';
 import { RWebShare } from 'react-web-share';
-import { CommentOrderField, CreateCommentInput, OrderDirection } from 'src/generated/types.generated';
+import { CommentOrderField, CreateCommentInput, OrderDirection } from '@generated/types.generated';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import styled, { keyframes } from 'styled-components';
 import CommentListItem, { CommentItem } from './CommentListItem';

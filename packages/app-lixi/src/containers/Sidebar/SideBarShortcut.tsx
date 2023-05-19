@@ -16,7 +16,7 @@ import { fetchNotifications } from '@store/notification/actions';
 import { AvatarUser } from '@components/Common/AvatarUser';
 import _ from 'lodash';
 import { setGraphqlRequestLoading } from '@store/account/actions';
-import { OrderDirection, PostOrderField } from 'src/generated/types.generated';
+import { OrderDirection, PostOrderField } from '@generated/types.generated';
 import { getFilterPostsHome } from '@store/settings/selectors';
 import { api as postApi, useLazyPostQuery } from '@store/post/posts.api';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
