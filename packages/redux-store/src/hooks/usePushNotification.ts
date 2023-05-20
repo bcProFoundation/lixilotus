@@ -30,8 +30,8 @@ const usePushNotification = (props: { registration: ServiceWorkerRegistration })
           );
         } else {
           const permission = getPlatformPermissionState();
-          let allowPushNotification = webPushNotifConfig.allowPushNotification;
-          if (permission !== 'granted' && webPushNotifConfig.allowPushNotification === true) {
+          let allowPushNotification = webPushNotifConfig?.allowPushNotification ?? false;
+          if (permission !== 'granted' && webPushNotifConfig?.allowPushNotification === true) {
             // if the permission is not granted, we should not allow push notification
             // reset the allowPushNotification value to false
             allowPushNotification = false;
@@ -40,7 +40,7 @@ const usePushNotification = (props: { registration: ServiceWorkerRegistration })
             saveWebPushNotifConfig({
               allowPushNotification: allowPushNotification,
               // generate new deviceId if it is not available
-              deviceId: webPushNotifConfig.deviceId ?? uuidv4()
+              deviceId: webPushNotifConfig?.deviceId ?? uuidv4()
             })
           );
         }
@@ -53,9 +53,9 @@ const usePushNotification = (props: { registration: ServiceWorkerRegistration })
       selectedAccount &&
       registration &&
       webPushNotifConfig &&
-      webPushNotifConfig.allowPushNotification &&
+      webPushNotifConfig?.allowPushNotification &&
       getPlatformPermissionState() == 'granted' &&
-      webPushNotifConfig.deviceId
+      webPushNotifConfig?.deviceId
     ) {
       // unsubscribe webpush for all by device id
       // then subscribe with the current active account

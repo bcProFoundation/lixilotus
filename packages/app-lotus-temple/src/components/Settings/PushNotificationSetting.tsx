@@ -145,7 +145,7 @@ const PushNotificationSetting = () => {
             size="small"
             checkedChildren={<CheckOutlined />}
             unCheckedChildren={<CloseOutlined />}
-            checked={webPushNotifConfig.allowPushNotification}
+            checked={webPushNotifConfig?.allowPushNotification ?? false}
             onChange={handleNotificationToggle}
           />
         ) : (
