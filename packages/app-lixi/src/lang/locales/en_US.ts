@@ -98,7 +98,7 @@ export default {
   'general.customBurn': 'Custom burn',
   'general.burnForType': 'Burn For Type',
   'general.failed': 'Failed',
-  'general.minBurnt': 'Min XPI Level',
+  'general.minBurnt': 'Level',
   'general.showMore': 'Show more',
   'general.showLess': 'Show less',
   'general.topAccounts': 'Top Accounts',
