@@ -578,7 +578,7 @@ export default {
   'category.healthAndFitness': 'Sức khỏe và Thể hình',
   'category.travelAndEvents': 'Du lịch và Sự kiện',
   'category.other': 'Khác',
-  'category.cryptoCurrencies': 'Tiền điện tử',
+  'category.cryptoCurrencies': 'Tiền mã hóa',
 
   /* 19. Follow*/
   'general.follow': 'Theo dõi',
