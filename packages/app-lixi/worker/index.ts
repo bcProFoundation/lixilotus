@@ -23,21 +23,26 @@ const getFocusedWindow = async () => {
 
 // Push Notification Event Handling
 self.addEventListener('push', (event) => {
-  console.log(event);
-  const notification = event.data.json();
-  const { message, url } = notification;
-  let options = {
-    body: message,
-    icon: '/logo192.png',
-    tag: "push-notification-tag",
-    silent: false,
-    data: {
-      url: `${process.env.NEXT_PUBLIC_LIXI_URL}${url}`,
-    }
-  };
-  event.waitUntil(
-    registration.showNotification('Notification', options)
-  )
+  const promiseChain = getFocusedWindow()
+    .then(async (focusedWindow) => {
+      const notification = event.data.json();
+      const { message, url } = notification;
+      const options = {
+        body: message,
+        icon: '/logo192.png',
+        tag: "push-notification-tag",
+        silent: false,
+        data: {
+          url: `${process.env.NEXT_PUBLIC_LIXI_URL}${url}`,
+        }
+      };
+
+      if (!focusedWindow) {
+        registration.showNotification('Notification', options);
+      }
+    })
+
+  event.waitUntil(promiseChain);
 })
 
 self.addEventListener('notificationclick', function (event) {
