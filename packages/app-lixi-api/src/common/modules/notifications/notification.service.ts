@@ -28,7 +28,7 @@ export class NotificationService {
     @InjectQueue(WEBPUSH_NOTIFICATION_QUEUE) private webpushQueue: Queue,
     @InjectRedis() private readonly redis: Redis,
     @I18n() private i18n: I18nService
-  ) {}
+  ) { }
 
   async saveAndDispatchNotification(notification: NotificationDto) {
     if (!notification.recipientId) {
@@ -93,45 +93,42 @@ export class NotificationService {
       return `device:${deviceId}`;
     });
 
-    // If that paticular user not online
-    // means that there're no devices currently online which associates to the address
-    // then we send the webpush notification
-    if (rooms.length == 0) {
-      // Find the associated addresses
-      const subscribers = await this.prisma.webpushSubscriber.findMany({
-        where: {
-          address: recipientAccount.address
+    // We send both webpush and webocket notification
+    // If the window is focused then we not show the webpush notification
+    // Find the associated addresses
+    const subscribers = await this.prisma.webpushSubscriber.findMany({
+      where: {
+        address: recipientAccount.address
+      }
+    });
+
+    _.map(subscribers, async subscriber => {
+      const pushSubscription: PushSubscription = {
+        endpoint: subscriber.endpoint,
+        keys: {
+          p256dh: subscriber.p256dh,
+          auth: subscriber.auth
         }
-      });
+      };
 
-      _.map(subscribers, async subscriber => {
-        const pushSubscription: PushSubscription = {
-          endpoint: subscriber.endpoint,
-          keys: {
-            p256dh: subscriber.p256dh,
-            auth: subscriber.auth
-          }
-        };
+      const webpushJobData: WebpushNotificationJobData = {
+        pushSubObj: pushSubscription,
+        address: subscriber.address,
+        notification: { ...notif }
+      };
 
-        const webpushJobData: WebpushNotificationJobData = {
-          pushSubObj: pushSubscription,
-          address: subscriber.address,
-          notification: { ...notif }
-        };
+      await this.webpushQueue.add('send-webpush-notification', webpushJobData);
+    });
 
-        await this.webpushQueue.add('send-webpush-notification', webpushJobData);
-      });
-    } else {
-      // User currently online, we send in-app notification
-      // Dispatch the notification
-      _.map(rooms, async room => {
-        const sendNotifJobData: SendNotificationJobData = {
-          room,
-          notification: { ...notif } as NotificationDto
-        };
-        await this.notificationOutboundQueue.add('send-notification', sendNotifJobData);
-      });
-    }
+    // User currently online, we send in-app notification
+    // Dispatch the notification
+    _.map(rooms, async room => {
+      const sendNotifJobData: SendNotificationJobData = {
+        room,
+        notification: { ...notif } as NotificationDto
+      };
+      await this.notificationOutboundQueue.add('send-notification', sendNotifJobData);
+    });
   }
 
   async calcTip(post: any, recipient: Account, burn: BurnCommand) {
