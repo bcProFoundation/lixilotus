@@ -568,7 +568,7 @@ export default {
   'category.entertainment': 'Sự giải trí',
   'category.moviesAndAnimation': 'Phim và Hoạt hình',
   'category.historyAndFacts': 'Lịch sử và sự kiện',
-  'category.liveStyle': 'Cách sống',
+  'category.lifeStyle': 'Phong cách sống',
   'category.natural': 'Thiên nhiên',
   'category.newsAndPolitics': 'Thời sự và Chính trị',
   'category.peopleAndNations': 'Con người và Quốc gia',
@@ -578,6 +578,7 @@ export default {
   'category.healthAndFitness': 'Sức khỏe và Thể hình',
   'category.travelAndEvents': 'Du lịch và Sự kiện',
   'category.other': 'Khác',
+  'category.cryptoCurrencies': 'Tiền điện tử',
 
   /* 19. Follow*/
   'general.follow': 'Theo dõi',

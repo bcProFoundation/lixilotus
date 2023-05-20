@@ -98,7 +98,7 @@ export default {
   'general.customBurn': 'Custom burn',
   'general.burnForType': 'Burn For Type',
   'general.failed': 'Failed',
-  'general.minBurnt': 'Min XPI burnt:',
+  'general.minBurnt': 'Level',
   'general.showMore': 'Show more',
   'general.showLess': 'Show less',
   'general.topAccounts': 'Top Accounts',
@@ -569,7 +569,7 @@ export default {
   'category.entertainment': 'Entertainment',
   'category.moviesAndAnimation': 'Movies And Animation',
   'category.historyAndFacts': 'History And Facts',
-  'category.liveStyle': 'Live Style',
+  'category.lifeStyle': 'Life Style',
   'category.natural': 'Natural',
   'category.newsAndPolitics': 'News And Politics',
   'category.peopleAndNations': 'People And Nations',
@@ -579,6 +579,7 @@ export default {
   'category.healthAndFitness': 'Health And Fitness',
   'category.travelAndEvents': 'Travel And Events',
   'category.other': 'Other',
+  'category.cryptoCurrencies': 'Crypto Currencies',
 
   /* 19. Follow*/
   'general.follow': 'Follow',
