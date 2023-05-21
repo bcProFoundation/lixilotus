@@ -11,7 +11,7 @@ import { VError } from 'verror';
 export class WebpushController {
   private logger: Logger = new Logger(WebpushController.name);
 
-  constructor(private prisma: PrismaService, @I18n() private i18n: I18nService, @Inject('xpijs') private XPI: BCHJS) {}
+  constructor(private prisma: PrismaService, @I18n() private i18n: I18nService, @Inject('xpijs') private XPI: BCHJS) { }
 
   @Post('subscribe')
   async subscribe(@Body() command: WebpushSubscribeCommand): Promise<any> {
@@ -64,10 +64,11 @@ export class WebpushController {
 
         return createdSubscribers.count;
       } catch (err) {
+        this.logger.error(err);
         if (err instanceof VError) {
           throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
         } else {
-          const unableToCreateSubscriber = await this.i18n.t('notification.messages.unableToSubscribe');
+          const unableToCreateSubscriber = await this.i18n.t('webpush.unableToSubscribe');
           const error = new VError.WError(err as Error, unableToCreateSubscriber);
           throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -99,8 +100,8 @@ export class WebpushController {
               address: isUnsubscribedAll
                 ? undefined
                 : {
-                    in: addresses
-                  }
+                  in: addresses
+                }
             }
           ]
         }
@@ -108,10 +109,11 @@ export class WebpushController {
 
       return count;
     } catch (err) {
+      this.logger.error(err);
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
       } else {
-        const unableToCreateSubscriber = await this.i18n.t('notification.messages.unableToUnsubscribe');
+        const unableToCreateSubscriber = await this.i18n.t('webpush.unableToUnsubscribe');
         const error = new VError.WError(err as Error, unableToCreateSubscriber);
         throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
       }
