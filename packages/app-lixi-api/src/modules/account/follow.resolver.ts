@@ -36,7 +36,7 @@ export class FollowResolver {
     private prisma: PrismaService,
     private readonly notificationService: NotificationService,
     @I18n() private i18n: I18nService
-  ) { }
+  ) {}
 
   @Subscription(() => FollowAccount)
   followAccountCreated() {
@@ -299,7 +299,9 @@ export class FollowResolver {
       const recipient = await this.prisma.account.findFirst({
         where: {
           page: {
-            id: pageId
+            every: {
+              id: pageId
+            }
           }
         },
         include: {
@@ -320,7 +322,7 @@ export class FollowResolver {
         url: '/profile/' + account.address,
         additionalData: {
           senderName: account.name,
-          pageName: recipient.page?.name
+          pageName: recipient.page
         }
       };
       const jobData = {

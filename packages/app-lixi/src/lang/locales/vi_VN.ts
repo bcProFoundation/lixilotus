@@ -472,7 +472,7 @@ export default {
   'page.unableUpdatePage': 'Không thể sửa trang.',
   'page.selectAccountFirst': 'Hãy chọn một tài khoản trước khi tạo trang',
   'page.xpiHasBurned': 'XPI đã được đốt',
-  'page.noXpiHasBurned': 'Chưa ai đốt trang này!',
+  'page.noXpiHasBurned': 'Chưa ai đốt cho trang này!',
   'category.foodAndDrink': 'Đồ ăn và thức uống',
 
   /* 14.Country */
@@ -515,6 +515,9 @@ export default {
   'post.unableToBurn': 'Không thể đốt cho bài viết.',
   'post.burning': 'Đang đốt cho bài viết',
   'post.doneBurning': 'Đốt thành công',
+  'post.page': 'Trang',
+  'post.token': 'Token',
+  'post.public': 'Công khai',
 
   /* 16.Token */
   'token.importToken': 'Thêm token',

@@ -50,7 +50,7 @@ export interface AccountDto {
   address: string;
   balance?: number;
   language?: string;
-  page?: Nullable<Page>;
+  page?: Nullable<Page[]>;
 }
 
 export interface RegisterViaEmailNoVerifiedCommand {

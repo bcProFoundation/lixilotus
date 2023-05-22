@@ -437,7 +437,7 @@ export default {
   /* 13.Page */
   'page.createNewPage': 'Create new page',
   'page.createPage': 'Create page',
-  'page.yourPage': 'Your page',
+  'page.yourPage': 'Your pages',
   'page.discover': 'Discover',
   'page.createYourPage': 'Create your page',
   'page.editPage': 'Edit profile',
@@ -472,14 +472,14 @@ export default {
   'page.unableCreatePage': 'Unable to create page.',
   'page.unableUpdatePage': 'Unable to update the page.',
   'page.xpiHasBurned': 'XPI has been burned',
-  'page.noXpiHasBurned': 'No one has burned this page!',
+  'page.noXpiHasBurned': 'No one has burned for this page!',
   'page.selectAccountFirst': 'Please Select an account first before creating page',
 
   /* 14.Country */
   'country.unablegetCountries': 'Unable to get countries',
   'country.unablegetStates': 'Unable to get states',
 
-  /* 15.Page */
+  /* 15.Post */
   'general.allPost': 'All',
   'general.followsPost': 'Follows',
   'post.createNewPage': 'Create new post',
@@ -516,6 +516,9 @@ export default {
   'post.unableToBurn': 'Unable to burn for the post',
   'post.burning': 'Burning post',
   'post.doneBurning': 'Done burning post!',
+  'post.page': 'Page',
+  'post.token': 'Token',
+  'post.public': 'Public',
 
   /* 16.Token */
   'token.importToken': 'Import token',

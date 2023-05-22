@@ -168,7 +168,7 @@ export const BurnModal = ({ id, burnForType }: BurnModalProps) => {
 
           tipToAddresses = [
             {
-              address: post.page ? post.pageAccount.address : post.postAccount.address,
+              address: post.postAccount.address,
               amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
             }
           ];

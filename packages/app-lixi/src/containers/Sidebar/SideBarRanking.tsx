@@ -453,7 +453,7 @@ const SidebarRanking = () => {
                       <h4 className="distance" key={`${item.id}-${item.address}`}>
                         <ShortcutItemAccess
                           burnValue={item.totalBurned}
-                          icon={item?.page ? item?.page?.avatar : ''}
+                          icon={''}
                           text={item.name}
                           href={`/profile/${item.address}`}
                         />

@@ -205,7 +205,7 @@ export class ClaimController {
           }
         });
 
-        const page = await this.prisma.page.findUnique({
+        const page = await this.prisma.page.findFirst({
           where: {
             pageAccountId: _.toSafeInteger(lixi?.accountId)
           }

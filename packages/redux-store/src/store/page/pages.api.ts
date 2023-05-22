@@ -18,6 +18,21 @@ const enhancedApi = api.enhanceEndpoints({
         currentCacheData.allPages.totalCount = responseData.allPages.totalCount;
       }
     },
+    PagesByUserId: {
+      providesTags: ['Page'],
+      serializeQueryArgs({ queryArgs }) {
+        if (queryArgs) {
+          const { orderBy, id, ...otherArgs } = queryArgs;
+          return { orderBy, id };
+        }
+        return { queryArgs };
+      },
+      merge(currentCacheData, responseData) {
+        currentCacheData.allPagesByUserId.edges.push(...responseData.allPagesByUserId.edges);
+        currentCacheData.allPagesByUserId.pageInfo = responseData.allPagesByUserId.pageInfo;
+        currentCacheData.allPagesByUserId.totalCount = responseData.allPagesByUserId.totalCount;
+      }
+    },
     Page: {
       providesTags: ['Page']
     },
@@ -38,5 +53,7 @@ export const {
   usePagesQuery,
   useLazyPagesQuery,
   useCreatePageMutation,
+  useLazyPagesByUserIdQuery,
+  usePagesByUserIdQuery,
   useUpdatePageMutation
 } = enhancedApi;

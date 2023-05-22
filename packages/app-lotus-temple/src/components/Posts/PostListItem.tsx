@@ -311,14 +311,6 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
       return 'Anonymous';
     }
 
-    if (post.page) {
-      if (post?.postAccount?.id == post.pageAccount?.id) {
-        return post?.page?.name;
-      } else {
-        return post?.postAccount?.name;
-      }
-    }
-
     return post?.postAccount?.name;
   };
 
