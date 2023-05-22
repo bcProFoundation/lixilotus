@@ -11,7 +11,7 @@ import {
   getFilterPostsProfile,
   getFilterPostsToken
 } from '@store/settings/selectors';
-import { DownOutlined, MinusOutlined, PlusOutlined, UpOutlined } from '@ant-design/icons';
+import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 
 const FilterStyle = styled.div`
   display: flex;

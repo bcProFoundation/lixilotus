@@ -2,9 +2,7 @@ import BCHJS from '@bcpros/xpi-js';
 import { WalletPathAddressInfo, WalletState } from '@store/wallet';
 import BigNumber from 'bignumber.js';
 import { Utxo } from 'chronik-client';
-
 import { currency } from '../components/Common/Ticker';
-
 import { createSharedKey, decrypt, encrypt } from './encryption';
 
 export type TxInputObj = {
@@ -572,4 +570,21 @@ export const decryptOpReturnMsg = async (opReturnMsgHex: string, privateKeyWIF: 
       error
     };
   }
+};
+
+export const getAddressesOfWallet = wallet => {
+  const addresses = [];
+  if (wallet) {
+    if (wallet.Path10605 && wallet.Path10605.xAddress) {
+      addresses.push(wallet.Path10605.xAddress);
+    }
+    if (wallet.Path1899 && wallet.Path1899.xAddress) {
+      addresses.push(wallet.Path1899.xAddress);
+    }
+    if (wallet.Path899 && wallet.Path899.xAddress) {
+      addresses.push(wallet.Path899.xAddress);
+    }
+  }
+
+  return addresses;
 };

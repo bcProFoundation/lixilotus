@@ -75,6 +75,7 @@ export const returnGetUtxosChronikPromise = (
   return new Promise((resolve, reject) => {
     getUtxosSingleHashChronik(chronik, hash160AndAddressObj.hash160).then(
       result => {
+        if (!result) reject();
         for (let i = 0; i < result.length; i += 1) {
           const thisUtxo = result[i];
           (thisUtxo as any).address = hash160AndAddressObj.address;
@@ -97,6 +98,8 @@ export const getUtxosChronik = async (
       Construct an array of promises for each address
       Note: Chronik requires the hash160 of an address for this request
   */
+  if (!chronik || !hash160sMappedToAddresses) return [];
+
   const chronikUtxoPromises: Array<Promise<Array<Utxo & { address: string }>>> = [];
   for (let i = 0; i < hash160sMappedToAddresses.length; i += 1) {
     const thisPromise = returnGetUtxosChronikPromise(chronik, hash160sMappedToAddresses[i]);

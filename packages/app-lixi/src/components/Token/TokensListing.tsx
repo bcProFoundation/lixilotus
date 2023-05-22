@@ -46,7 +46,7 @@ import BurnSvg from '@assets/icons/burn.svg';
 import UpVoteSvg from '@assets/icons/upVotePurple.svg';
 import { Counter } from '@components/Common/Counter';
 import { openModal } from '@store/modal/actions';
-import { CreateTokenInput, OrderDirection, TokenEdge, TokenOrderField } from 'src/generated/types.generated';
+import { CreateTokenInput, OrderDirection, TokenEdge, TokenOrderField } from '@generated/types.generated';
 import { useCreateTokenMutation } from '@store/token/tokens.generated';
 import { push } from 'connected-next-router';
 import InfoCardUser from '@components/Common/InfoCardUser';
@@ -251,6 +251,12 @@ const TokensListing = () => {
   };
 
   const columns: ColumnsType<TokenEdge> = [
+    {
+      title: '#',
+      dataIndex: 'serial',
+      key: 'serial',
+      render: (_, { node: record }, index) => index + 1
+    },
     {
       key: 'image',
       className: 'token-img',

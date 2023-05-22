@@ -128,8 +128,6 @@ const ButtonSend = styled.div`
   }
 `;
 
-const urlFiatRate = 'https://aws-dev.abcpay.cash/bws/api/v3/fiatrates/xpi';
-
 const WalletInfoComponent: React.FC = () => {
   const isServer = () => typeof window === 'undefined';
   const router = useRouter();

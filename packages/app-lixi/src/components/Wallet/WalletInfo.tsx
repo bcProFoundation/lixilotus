@@ -1,6 +1,8 @@
 import LockOutlined, { EditOutlined, SendOutlined } from '@ant-design/icons';
 import intl from 'react-intl-universal';
 import BalanceHeader from '@bcpros/lixi-components/components/Common/BalanceHeader';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { message } from 'antd';
 import QRCode, { FormattedWalletAddress } from '@bcpros/lixi-components/components/Common/QRCode';
 import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
 import WalletLabel from '@bcpros/lixi-components/components/Common/WalletLabel';
@@ -128,8 +130,6 @@ const ButtonSend = styled.div`
   }
 `;
 
-const urlFiatRate = 'https://aws-dev.abcpay.cash/bws/api/v3/fiatrates/xpi';
-
 const WalletInfoComponent: React.FC = () => {
   const isServer = () => typeof window === 'undefined';
   const router = useRouter();
@@ -146,17 +146,6 @@ const WalletInfoComponent: React.FC = () => {
   const selectedAccount = useAppSelector(getSelectedAccount);
   const selectedWalletPath = useAppSelector(getSelectedWalletPath);
 
-  const decimalFormatBalance = balance => {
-    if (Number(balance) < 10) {
-      return Number(Number(balance).toFixed(Math.round(1 / Number(balance)).toString().length + 2)).toLocaleString(
-        'en-GB'
-      );
-    } else {
-      return Number(Number(balance).toFixed(Math.round(1 / Number(balance)).toString().length + 1)).toLocaleString(
-        'en-GB'
-      );
-    }
-  };
   const showPopulatedRenameAccountModal = (account: Account) => {
     const command: RenameAccountCommand = {
       id: account.id,
@@ -192,6 +181,10 @@ const WalletInfoComponent: React.FC = () => {
     dispatch(importAccount(formData.mnemonic));
   }
 
+  const handleOnCopy = () => {
+    message.info(intl.get('lixi.addressCopied'));
+  };
+
   return (
     <>
       <CardContainer>
@@ -222,7 +215,14 @@ const WalletInfoComponent: React.FC = () => {
             <SendOutlined />
             {intl.get('general.send')}
           </ButtonSend>
-          <FormattedWalletAddress address={selectedWalletPath?.xAddress} isAccountPage={true}></FormattedWalletAddress>
+          <CopyToClipboard text={selectedAccount.address} onCopy={handleOnCopy}>
+            <span>
+              <FormattedWalletAddress
+                address={selectedWalletPath?.xAddress}
+                isAccountPage={true}
+              ></FormattedWalletAddress>
+            </span>
+          </CopyToClipboard>
         </AddressWalletBar>
       </CardContainer>
 

@@ -3,13 +3,16 @@ import { WalletContextValue } from '@context/index';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { xpiReceivedNotificationWebSocket } from '@store/notification/actions';
 import {
+  activateWallet,
   getAllWalletPaths,
+  getSelectedWalletPath,
   getWaletRefreshInterval,
   getWalletHasUpdated,
   getWalletState,
   getWalletStatus,
   getWalletUtxos,
   setWalletHasUpdated,
+  setWalletPaths,
   setWalletRefreshInterval,
   WalletPathAddressInfo,
   WalletState,
@@ -31,6 +34,8 @@ import { useEffect, useState } from 'react';
 // @ts-ignore
 import useInterval from './useInterval';
 import useXPI from './useXPI';
+import { getAllAccounts } from '@store/account';
+import { Account } from '@bcpros/lixi-models';
 
 const chronik = new ChronikClient('https://chronik.be.cash/xpi');
 const websocketConnectedRefreshInterval = 10000;
@@ -48,43 +53,15 @@ const useWallet = () => {
   const { getXPI } = useXPI();
   const [XPI, setXPI] = useState<BCHJS>(getXPI(apiIndex));
 
+  const accounts = useAppSelector(getAllAccounts);
   const walletState = useAppSelector(getWalletState);
   const walletRefreshInterval = useAppSelector(getWaletRefreshInterval);
   const walletHasUpdated = useAppSelector(getWalletHasUpdated);
   const allWalletPaths = useAppSelector(getAllWalletPaths);
+  const selectedWalletPath = useAppSelector(getSelectedWalletPath);
   const walletUtxos = useAppSelector(getWalletUtxos);
   const dispatch = useAppDispatch();
   const walletStatus = useAppSelector(getWalletStatus);
-
-  // If you catch API errors, call this function
-  const tryNextAPI = () => {
-    let currentApiIndex = apiIndex;
-    // How many APIs do you have?
-    const apiString = process.env.NEXT_PUBLIC_XPI_APIS;
-
-    const apiArray = apiString.split(',');
-
-    console.log(`You have ${apiArray.length} APIs to choose from`);
-    console.log(`Current selection: ${apiIndex}`);
-    // If only one, exit
-    if (apiArray.length === 0) {
-      console.log(`There are no backup APIs, you are stuck with this error`);
-      return;
-    } else if (currentApiIndex < apiArray.length - 1) {
-      currentApiIndex += 1;
-      console.log(`Incrementing API index from ${apiIndex} to ${currentApiIndex}`);
-    } else {
-      // Otherwise use the first option again
-      console.log(`Retrying first API index`);
-      currentApiIndex = 0;
-    }
-    //return setApiIndex(currentApiIndex);
-    console.log(`Setting Api Index to ${currentApiIndex}`);
-    setApiIndex(currentApiIndex);
-    return setXPI(getXPI(currentApiIndex));
-    // If you have more than one, use the next one
-    // If you are at the "end" of the array, use the first one
-  };
 
   const getWalletPathDetails = async (mnemonic: string, paths: string[]): Promise<WalletPathAddressInfo[]> => {
     const NETWORK = process.env.NEXT_PUBLIC_NETWORK;
@@ -143,6 +120,34 @@ const useWallet = () => {
     } catch (err) {
       console.log(err);
       return false;
+    }
+  };
+
+  const syncAccountsToWallets = async (accounts: Account[], walletPaths: WalletPathAddressInfo[]) => {
+    const accountsNotInWallets = _.filter(accounts, (account: Account) => {
+      return !_.some(walletPaths, (walletPath: WalletPathAddressInfo) => {
+        return walletPath.xAddress === account.address;
+      });
+    });
+    const walletsAlreadySync = _.filter(walletPaths, (walletPath: WalletPathAddressInfo) => {
+      return _.some(accounts, (account: Account) => {
+        return walletPath.xAddress === account.address;
+      });
+    });
+
+    // There is an mismatch between accounts and wallets
+    if (accountsNotInWallets.length > 0 || walletsAlreadySync.length !== accounts.length) {
+      // Then calculate the wallets and dispatch action to save the wallet paths to redux
+      const derivedWalletPathsPromises: Array<Promise<WalletPathAddressInfo[]>> = _.map(
+        accountsNotInWallets,
+        account => {
+          return getWalletPathDetails(account.mnemonic, [walletState.selectedWalletPath]);
+        }
+      );
+      // Calculate the wallet not synced yet
+      const walletsPathToSync = (await Promise.all(derivedWalletPathsPromises)).flat();
+
+      dispatch(setWalletPaths([...walletsAlreadySync, ...walletsPathToSync]));
     }
   };
 
@@ -218,6 +223,7 @@ const useWallet = () => {
   const initializeWebsocket = async (wallet: WalletState) => {
     console.log(`Initializing websocket connection for wallet ${wallet}`);
 
+    // @todo: previously we have one wallet, now we have multiple
     const hash160Array = getHashArrayFromWallet(wallet);
     if (!wallet || !hash160Array) {
       return setChronikWebsocket(null);
@@ -288,19 +294,16 @@ const useWallet = () => {
     }
 
     // Unsubscribe to any active subscriptions
-    console.log(`previousWebsocketSubscriptions`, previousWebsocketSubscriptions);
     if (previousWebsocketSubscriptions.length > 0) {
       for (let i = 0; i < previousWebsocketSubscriptions.length; i += 1) {
         const unsubHash160 = previousWebsocketSubscriptions[i].scriptPayload;
         ws.unsubscribe('p2pkh', unsubHash160);
-        console.log(`ws.unsubscribe('p2pkh', ${unsubHash160})`);
       }
     }
 
     // Subscribe to addresses of current wallet
     for (let i = 0; i < hash160Array.length; i += 1) {
       ws.subscribe('p2pkh', hash160Array[i]);
-      console.log(`ws.subscribe('p2pkh', ${hash160Array[i]})`);
     }
 
     // Put connected websocket in state
@@ -318,20 +321,12 @@ const useWallet = () => {
         return;
       }
 
-      const hash160AndAddressObjArray: Hash160AndAddress[] = allWalletPaths.map(item => {
+      const hash160AndAddressObjArray: Hash160AndAddress[] = [selectedWalletPath].map(item => {
         return {
           address: item.xAddress,
           hash160: item.hash160
         };
       });
-
-      // Check that server is live
-      try {
-        await XPI.Blockchain.getBlockCount();
-      } catch (err) {
-        console.log(`Error in BCH.Blockchain.getBlockCount, the full node is likely down`, err);
-        throw new Error(`Node unavailable`);
-      }
 
       const chronikUtxos = await getUtxosChronik(chronik, hash160AndAddressObjArray);
 
@@ -373,7 +368,6 @@ const useWallet = () => {
       //console.timeEnd("update");
       // Try another endpoint
       console.log(`Trying next API...`);
-      // tryNextAPI();
     }
   };
 
@@ -395,8 +389,13 @@ const useWallet = () => {
   useEffect(() => {
     (async () => {
       await initializeWebsocket(walletState);
+      dispatch(activateWallet(walletState.mnemonic));
     })();
   }, [walletState.mnemonic]);
+
+  useEffect(() => {
+    syncAccountsToWallets(accounts, allWalletPaths);
+  }, []);
 
   return {
     XPI,

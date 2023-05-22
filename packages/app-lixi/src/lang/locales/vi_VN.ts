@@ -343,6 +343,7 @@ export default {
   'settings.languages': 'Ngôn ngữ',
   'settings.general': 'Thiết lập chung',
   'settings.lockApp': 'Khóa ứng dụng',
+  'settings.notifications': 'Thông báo',
   'settings.notSupported': 'Không hỗ trợ',
   'settings.backupAccount': 'Sao lưu tài khoản của bạn',
   'settings.manageAccounts': 'Quản lý tài khoản',
@@ -360,8 +361,21 @@ export default {
   'settings.deleteAccountConfirm': 'Nhập "delete {account}" để xác nhận',
   'settings.deleteAccountConfirmMessage': 'Bạn có chắc muốn xóa tài khoản "{account}"?',
   'settings.yourConfirmationPhraseMustExact': 'Bạn phải nhập chính xác cụm từ xác nhận',
-  en: 'Tiếng Anh',
-  vi: 'Tiếng Việt',
+  'settings.en': 'Tiếng Anh',
+  'settings.vi': 'Tiếng Việt',
+  'settings.allowNotification': 'Cho phép thông báo cho',
+  'settings.forBrowser': 'trình duyệt trên thiết bị của bạn',
+  'settings.thenAllowNotification': 'Sau đó cho phép thông báo cho',
+  'settings.lixilotusOnBrower': 'lixilotus.com trên trình duyệt của bạn',
+  'settings.enableNotification': 'Bật thông báo',
+  'settings.grantPermisson': 'Bạn sẽ được nhắc cấp quyền cho thông báo, Vui lòng nhấp vào "Cho phép"',
+  'settings.ok': 'OK',
+  'settings.permisionError': 'Lỗi - Không có quyền truy cập',
+  'settings.blockedDevice': 'Bị khóa bởi thiết bị của bạn',
+  'settings.gotIt': 'Tôi biết rồi!',
+  'settings.howEnableNotification': 'Làm thế nào để bật thông báo',
+  'settings.deviceSupport': 'Tính năng này hoạt động tốt nhất với Chrome hoặc Brave trên thiết bị Android',
+  'settings.twoStepEnableNotification': '2 bước để bật thông báo',
 
   /* 06.Countries */
   'country.all': 'Tất cả Quốc gia',
@@ -582,7 +596,12 @@ export default {
   'category.travelAndEvents': 'Du lịch và Sự kiện',
   'category.other': 'Khác',
 
-  /* 19. Follow*/
+  /* 19. Webpush */
+  'webpush.unableToSubscribe': 'Không thể đăng ký.',
+  'webpush.unableToUnsubscribe': 'Không thể hủy đăng ký.',
+  'webpush.serviceWorkerNotReady': 'Service worker không sẵn sàng.',
+
+  /* 20. Follow*/
   'general.follow': 'Theo dõi',
   'general.followBack': 'Theo dõi lại',
   'general.unfollow': 'Bỏ theo dõi',

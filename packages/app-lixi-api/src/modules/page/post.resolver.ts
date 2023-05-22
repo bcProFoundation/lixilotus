@@ -715,11 +715,10 @@ export class PostResolver {
         }
       };
       const jobData = {
-        room: recipient.mnemonicHash,
         notification: createNotif
       };
       createNotif.senderId !== createNotif.recipientId &&
-        (await this.notificationService.saveAndDispatchNotification(jobData.room, jobData.notification));
+        (await this.notificationService.saveAndDispatchNotification(jobData.notification));
     }
 
     return createdPost;

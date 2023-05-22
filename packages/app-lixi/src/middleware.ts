@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { getIronSession } from 'iron-session/edge';
-import { sessionOptions } from './models/session';
+import { sessionOptions } from './shared/models/session';
 
 function shouldExclude(request: NextRequest) {
   const path = request.nextUrl.pathname;

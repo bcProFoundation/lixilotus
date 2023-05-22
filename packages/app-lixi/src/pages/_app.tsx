@@ -1,20 +1,24 @@
-import '../styles/style.less';
 import 'antd/dist/reset.css';
+import '../styles/style.less';
 // import '../styles/globals.css';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 
 import MainLayout from '@components/Layout/MainLayout';
 
-import { AuthenticationProvider, WalletProvider, AuthorizationProvider, callConfig } from '@context/index';
-import { ConnectedRouter } from 'connected-next-router';
-import { wrapper } from '@store/store';
-import OutsideCallConsumer, { createCaller } from 'react-outside-call';
-import { Spin } from 'antd';
 import SplashScreen from '@components/Common/SplashScreen';
+import {
+  AuthenticationProvider,
+  AuthorizationProvider,
+  ServiceWorkerProvider,
+  WalletProvider,
+  callConfig
+} from '@context/index';
+import { wrapper } from '@store/store';
 import { ConfigProvider } from 'antd';
+import { ConnectedRouter } from 'connected-next-router';
+import OutsideCallConsumer from 'react-outside-call';
 import lightTheme from 'src/styles/themes/lightTheme';
 
 const PersistGateServer = (props: any) => {
@@ -37,31 +41,33 @@ const LixiApp = ({ Component, ...rest }) => {
 
   return (
     <Provider store={store}>
-      <WalletProvider>
-        <AuthenticationProvider>
-          <AuthorizationProvider>
-            <OutsideCallConsumer config={callConfig}>
-              <Layout className="lixi-app-layout">
-                <Head>
-                  <title>LixiLotus</title>
-                  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-                  <link
-                    rel="stylesheet"
-                    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-                  />
-                </Head>
-                <ConnectedRouter>
-                  <PersistGate persistor={store.__persistor} loading={<SplashScreen />}>
-                    <ConfigProvider theme={lightTheme}>
-                      <Component {...props.pageProps} />
-                    </ConfigProvider>
-                  </PersistGate>
-                </ConnectedRouter>
-              </Layout>
-            </OutsideCallConsumer>
-          </AuthorizationProvider>
-        </AuthenticationProvider>
-      </WalletProvider>
+      <PersistGate persistor={store.__persistor} loading={<SplashScreen />}>
+        <ServiceWorkerProvider>
+          <WalletProvider>
+            <AuthenticationProvider>
+              <AuthorizationProvider>
+                <OutsideCallConsumer config={callConfig}>
+                  <Layout className="lixi-app-layout">
+                    <Head>
+                      <title>LixiLotus</title>
+                      <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+                      <link
+                        rel="stylesheet"
+                        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+                      />
+                    </Head>
+                    <ConnectedRouter>
+                      <ConfigProvider theme={lightTheme}>
+                        <Component {...props.pageProps} />
+                      </ConfigProvider>
+                    </ConnectedRouter>
+                  </Layout>
+                </OutsideCallConsumer>
+              </AuthorizationProvider>
+            </AuthenticationProvider>
+          </WalletProvider>
+        </ServiceWorkerProvider>
+      </PersistGate>
     </Provider>
   );
 };

@@ -30,7 +30,7 @@ import useDidMountEffect from '@hooks/useDidMountEffect ';
 import { fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods';
 import BigNumber from 'bignumber.js';
 import { getSelectedAccount } from '@store/account/selectors';
-import { CommentOrderField, OrderDirection } from 'src/generated/types.generated';
+import { CommentOrderField, OrderDirection } from '@generated/types.generated';
 import { BurnData, PostItem } from '@components/Posts/PostDetail';
 import { CommentItem } from '@components/Posts/CommentListItem';
 import { TokenItem } from '@components/Token/TokensFeed';
@@ -106,7 +106,7 @@ const RadioStyle = styled(Radio.Group)`
   }
 `;
 
-const DefaultXpiBurnValues = [1, 8, 50, 100, 200, 500, 1000];
+const DefaultXpiBurnValues = [1, 10, 50, 100, 200, 500, 1000];
 
 type BurnForItem = PostItem | CommentItem | TokenItem;
 interface BurnModalProps {
@@ -220,6 +220,8 @@ export const BurnModal = ({ id, burnForType }: BurnModalProps) => {
           break;
       }
 
+      tipToAddresses = tipToAddresses.filter(item => item.address != selectedAccount.address);
+
       const burnCommand: BurnQueueCommand = {
         defaultFee: currency.defaultFee,
         burnType,
@@ -228,6 +230,7 @@ export const BurnModal = ({ id, burnForType }: BurnModalProps) => {
         burnForId: id,
         tokenId: tokenId,
         burnValue,
+        tipToAddresses: tipToAddresses,
         queryParams: queryParams,
         postQueryTag: tag,
         pageId: pageId,
@@ -236,7 +239,7 @@ export const BurnModal = ({ id, burnForType }: BurnModalProps) => {
 
       dispatch(addBurnQueue(burnCommand));
       dispatch(addBurnTransaction(burnCommand));
-      // dispatch(closeModal());
+      dispatch(closeModal());
     } catch (e) {
       const errorMessage = e.message || intl.get('post.unableToBurn');
       dispatch(

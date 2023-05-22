@@ -31,8 +31,9 @@ const pubSub = new PubSub();
 @Resolver(() => FollowAccount)
 @UseFilters(GqlHttpExceptionFilter)
 export class FollowResolver {
+  private logger: Logger = new Logger(FollowResolver.name);
+
   constructor(
-    private logger: Logger,
     private prisma: PrismaService,
     private readonly notificationService: NotificationService,
     @I18n() private i18n: I18nService
@@ -190,12 +191,10 @@ export class FollowResolver {
           senderName: account.name
         }
       };
-      const jobData = {
-        room: recipient.mnemonicHash,
-        notification: createNotif
-      };
-      createNotif.senderId !== createNotif.recipientId &&
-        (await this.notificationService.saveAndDispatchNotification(jobData.room, jobData.notification));
+
+      if (createNotif.senderId !== createNotif.recipientId) {
+        await this.notificationService.saveAndDispatchNotification(createNotif);
+      }
 
       pubSub.publish('followAccountCreated', { followAccountCreated: createdFollowAccount });
       return createdFollowAccount;
@@ -325,12 +324,9 @@ export class FollowResolver {
           pageName: recipient.page
         }
       };
-      const jobData = {
-        room: recipient.mnemonicHash,
-        notification: createNotif
-      };
+
       createNotif.senderId !== createNotif.recipientId &&
-        (await this.notificationService.saveAndDispatchNotification(jobData.room, jobData.notification));
+        (await this.notificationService.saveAndDispatchNotification(createNotif));
 
       pubSub.publish('followPageCreated', { followPageCreated: createdFollowPage });
       return createdFollowPage;

@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import localforage from 'localforage';
 import { currency } from '@components/Common/Ticker';
 import { convertBase64ToArrayBuffer, convertArrayBufferToBase64 } from '@utils/convertArrBuffBase64';
 import _ from 'lodash';
@@ -52,9 +51,7 @@ const useDeviceAuthentication = () => {
         })
       );
     } catch (err) {
-      console.error(
-        'Error is localforange.setItem("authenticatonConfig") in saveAuthenticationConfigToLocalStorage() in useWebAuthentication()'
-      );
+      console.error('Could not save authentication config');
       throw err;
     }
   };

@@ -1,7 +1,7 @@
 import { FilterBurnCommand } from '@bcpros/lixi-models/src/lib/filter';
 import { createAction } from '@reduxjs/toolkit';
 
-import { WebAuthnConfig } from './model';
+import { WebAuthnConfig, WebPushNotifConfig } from './model';
 
 export const toggleCollapsedSideNav = createAction<boolean>('settings/toggleCollapsedSideNav');
 export const updateLocale = createAction<string>('settings/updateLocale');
@@ -11,3 +11,4 @@ export const loadLocaleSuccess = createAction<string>('settings/loadLocaleSucces
 export const loadLocaleFailure = createAction<string>('settings/loadLocaleFailure');
 export const saveWebAuthnConfig = createAction<WebAuthnConfig>('settings/saveWebAuthnConfig');
 export const saveBurnFilter = createAction<FilterBurnCommand>('settings/saveBurnFilter');
+export const saveWebPushNotifConfig = createAction<WebPushNotifConfig>('settings/saveWebPushNotifConfig');

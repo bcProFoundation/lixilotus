@@ -1,9 +1,8 @@
 // import { CashReceivedNotificationIcon } from '@bcpros/lixi-components/components/Common/CustomIcons';
-import { AccountDto as Account, NotificationDto as Notification, PaginationResult } from '@bcpros/lixi-models';
+import { NotificationDto as Notification, SocketUser } from '@bcpros/lixi-models';
 import { currency } from '@components/Common/Ticker';
 import { all, call, cancelled, fork, put, select, take, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
-import { getSelectedAccount } from '@store/account/selectors';
 import { notification } from 'antd';
 import { ArgsProps } from 'antd/lib/notification/interface';
 import Paragraph from 'antd/lib/typography/Paragraph';
@@ -37,6 +36,8 @@ import {
   serverOn,
   startChannel,
   stopChannel,
+  userOffline,
+  userOnline,
   xpiReceivedNotificationWebSocket
 } from './actions';
 import notificationApi from './api';
@@ -266,10 +267,6 @@ function reconnect(): Promise<Socket> {
   });
 }
 
-function subscribe(account: Account) {
-  socket.emit('subscribe', account.mnemonicHash);
-}
-
 function createSocketChannel(socket: Socket) {
   return eventChannel(emit => {
     const handler = (data: Notification) => {
@@ -285,8 +282,6 @@ function createSocketChannel(socket: Socket) {
 function* listenConnectSaga() {
   while (true) {
     yield call(reconnect);
-    const account: Account = yield call(waitFor, getSelectedAccount);
-    yield call(subscribe, account);
     yield put(serverOn());
   }
 }
@@ -294,7 +289,7 @@ function* listenConnectSaga() {
 function* listenDisconnectSaga() {
   while (true) {
     yield call(disconnect);
-    yield put(serverOn());
+    yield put(serverOff());
   }
 }
 
@@ -312,9 +307,6 @@ function* listenServerSaga() {
     const socketChannel = yield call(createSocketChannel, socket);
     yield fork(listenDisconnectSaga);
     yield fork(listenConnectSaga);
-
-    const account: Account = yield call(waitFor, getSelectedAccount);
-    yield call(subscribe, account);
     yield put(serverOn());
 
     while (true) {
@@ -342,13 +334,23 @@ function* startStopChannel() {
 
 function* receiveNotificationSaga(action: PayloadAction<Notification>) {
   try {
-    const { notificationTypeId, additionalData } = action.payload;
+    const { message, notificationTypeId, additionalData } = action.payload;
     if (notificationTypeId == NOTIFICATION_TYPES.CREATE_SUB_LIXIES) {
       const { id } = additionalData as any;
       yield put(refreshLixiSilent(id));
     } else if (notificationTypeId == NOTIFICATION_TYPES.EXPORT_SUB_LIXIES) {
       const { parentId, mnemonicHash, fileName } = additionalData as any;
       yield put(downloadExportedLixi({ lixiId: parentId, mnemonicHash, fileName }));
+    }
+
+    if (message) {
+      yield put(
+        showToast('info', {
+          message: 'Info',
+          description: message,
+          duration: 5
+        })
+      );
     }
   } catch (error) {
     console.log('error', error.message);
@@ -388,12 +390,30 @@ function* xpiReceivedNotificationWebSocketSaga(action: PayloadAction<string>) {
   notification.success(config);
 }
 
+function* userOnlineSaga(action: PayloadAction<SocketUser>) {
+  const { payload } = action;
+  socket.emit('user_online', payload);
+}
+
+function* userOfflineSaga(action: PayloadAction<SocketUser>) {
+  const { payload } = action;
+  socket.emit('user_offline', payload);
+}
+
 function* watchSendXpiNotificationSaga() {
   yield takeLatest(sendXpiNotification.type, sendXpiNotificationSaga);
 }
 
 function* watchXpiReceivedNotificationWebSocketSaga() {
   yield takeLatest(xpiReceivedNotificationWebSocket.type, xpiReceivedNotificationWebSocketSaga);
+}
+
+function* watchUserOnline() {
+  yield takeLatest(userOnline.type, userOnlineSaga);
+}
+
+function* watchUserOffline() {
+  yield takeLatest(userOffline.type, userOfflineSaga);
 }
 
 export default function* notificationSaga() {
@@ -429,7 +449,9 @@ export default function* notificationSaga() {
       fork(watchReadAllNotificationsSuccess),
       fork(watchReadAllNotificationsFailure),
       fork(watchSendXpiNotificationSaga),
-      fork(watchXpiReceivedNotificationWebSocketSaga)
+      fork(watchXpiReceivedNotificationWebSocketSaga),
+      fork(watchUserOnline),
+      fork(watchUserOffline)
     ]);
   }
 }

@@ -16,7 +16,7 @@ function* activateWalletSaga(action: PayloadAction<string>) {
       activateWalletSuccess({
         walletPaths,
         mnemonic,
-        selectPath: defaultPath
+        selectPath: walletPaths[0].xAddress
       })
     );
   } catch (err) {
