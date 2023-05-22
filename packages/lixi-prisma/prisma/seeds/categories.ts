@@ -97,7 +97,7 @@ export const categories = [
   },
   {
     id: 25,
-    name: 'liveStyle'
+    name: 'lifeStyle'
   },
   {
     id: 26,
@@ -134,5 +134,9 @@ export const categories = [
   {
     id: 34,
     name: 'other'
+  },
+  {
+    id: 35,
+    name: 'cryptoCurrencies'
   }
 ]
