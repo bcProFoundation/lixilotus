@@ -249,8 +249,14 @@ const TokensListing = () => {
       placement: 'top'
     });
   };
-
+  let s = 0;
   const columns: ColumnsType<TokenEdge> = [
+    {
+      title: '#',
+      dataIndex: 'serial',
+      key: 'serial',
+      render: (_, { node: record }, index) => index + 1
+    },
     {
       key: 'image',
       className: 'token-img',
