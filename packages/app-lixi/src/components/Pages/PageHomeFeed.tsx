@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useInfinitePagesQuery } from '@store/page/useInfinitePagesQuery';
+import { useInfinitePagesByUserIdQuery } from '@store/page/useInfinitePagesByUserIdQuery';
 import { Button, Skeleton } from 'antd';
 import SearchBox from '@components/Common/SearchBox';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
@@ -14,6 +15,7 @@ import { getAllCategories } from '@store/category/selectors';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { getCategories } from '@store/category/actions';
 import { OrderDirection, PageOrderField } from '@generated/types.generated';
+import { usePagesByUserIdQuery } from '../../../../redux-store/src/store/page/pages.generated';
 
 const StyledPageFeed = styled.div`
   margin: 1rem auto;
@@ -145,7 +147,7 @@ const ListCard = styled.div`
 
 const StyledCardPage = styled.div`
   cursor: pointer;
-  max-width: 290px;
+  max-width: 264px;
   .cover-img {
     width: 100%;
     height: 150px;
@@ -216,7 +218,7 @@ const StyledCardPage = styled.div`
 
 const ListContainer = styled.div`
   display: grid !important;
-  grid-template-columns: auto auto auto auto !important;
+  grid-template-columns: auto auto auto !important;
   grid-gap: 10px !important;
   @media (max-width: 768px) {
     grid-template-columns: auto auto !important;
@@ -265,11 +267,10 @@ const CardPageItem = ({ item, onClickItem }: { item?: CardPageItem; onClickItem?
 
 const PageHome = () => {
   const selectedAccountId = useAppSelector(getSelectedAccountId);
-  const [selectedPage, setSelectedPage] = useState<any>();
-  const [listsPage, setListsPage] = useState<any>([]);
   const dispatch = useAppDispatch();
   const categories = useAppSelector(getAllCategories);
   const refPagesListing = useRef<HTMLDivElement | null>(null);
+  const currentUserPages = usePagesByUserIdQuery({ id: selectedAccountId }).currentData;
 
   useEffect(() => {
     dispatch(getCategories());
@@ -281,13 +282,18 @@ const PageHome = () => {
     },
     false
   );
-
-  useEffect(() => {
-    setListsPage(data);
-    // get page by account
-    const page = data.find(page => page.pageAccountId === selectedAccountId);
-    setSelectedPage(page || null);
-  }, [data]);
+  const {
+    data: userPage,
+    fetchNext: userPageFetchNext,
+    hasNext: userPageHasNext,
+    isFetching: usePageIsFetching
+  } = useInfinitePagesByUserIdQuery(
+    {
+      first: 10,
+      id: selectedAccountId
+    },
+    false
+  );
 
   const getCategoryName = (item: number) => {
     const categoryLang = (categories.length > 0 && categories.find(category => category.id == item).name) ?? 'art';
@@ -310,6 +316,14 @@ const PageHome = () => {
     dispatch(push(`/page/${id}`));
   };
 
+  const loadMoreUserPages = () => {
+    if (userPageHasNext && !usePageIsFetching) {
+      userPageFetchNext();
+    } else if (userPageHasNext) {
+      userPageFetchNext();
+    }
+  };
+
   const loadMoreItems = () => {
     if (hasNext && !isFetching) {
       fetchNext();
@@ -326,20 +340,7 @@ const PageHome = () => {
     }, 700);
   };
 
-  const Footer = () => {
-    return (
-      <div
-        style={{
-          padding: '1rem 2rem 2rem 2rem',
-          textAlign: 'center'
-        }}
-      >
-        {isFetchingNext ? <Skeleton avatar active /> : "It's so empty here..."}
-      </div>
-    );
-  };
-
-  const createPageBtn = () => {
+  const onCreatePage = () => {
     dispatch(openModal('CreatePageModal', { account: selectedAccountId }));
   };
 
@@ -347,53 +348,56 @@ const PageHome = () => {
     <>
       <StyledPageFeed ref={refPagesListing} onScroll={e => triggerSrollbar(e)}>
         <YourPageContainer>
-          <h2>{intl.get('page.yourPage')}</h2>
-          {!selectedPage && (
-            <BlankPage>
-              <img src="/images/page-blank.svg" alt="" />
-              <div>
-                <p className="sub-page">{intl.get('text.createPage')} </p>
-                <Button type="primary" className="outline-btn" onClick={createPageBtn}>
-                  {intl.get('page.createYourPage')}
-                </Button>
-              </div>
-            </BlankPage>
-          )}
-          {selectedPage && (
-            <ListCard>
-              <CardPageItem item={mapPageItem(selectedPage)} onClickItem={id => routerPageDetail(id)} />
-            </ListCard>
-          )}
+          <BlankPage>
+            <picture>
+              <img src="/images/page-blank.svg" alt="page-blank-placeholder" />
+            </picture>
+            <div>
+              <p className="sub-page">{intl.get('text.createPage')} </p>
+              <Button type="primary" className="outline-btn" onClick={onCreatePage}>
+                {intl.get('page.createYourPage')}
+              </Button>
+            </div>
+          </BlankPage>
+          <h2>{currentUserPages && currentUserPages.allPagesByUserId.edges.length > 0 && intl.get('page.yourPage')}</h2>
+          <ListCard>
+            <InfiniteScroll
+              dataLength={userPage.length}
+              next={loadMoreUserPages}
+              hasMore={userPageHasNext}
+              loader={<Skeleton avatar active />}
+              scrollableTarget="scrollableDiv"
+            >
+              {userPage.map((item, index) => {
+                return (
+                  <React.Fragment key={index}>
+                    <CardPageItem key={item.id} item={mapPageItem(item)} onClickItem={routerPageDetail} />
+                  </React.Fragment>
+                );
+              })}
+            </InfiniteScroll>
+          </ListCard>
         </YourPageContainer>
         <PagesContainer>
           <h2>{intl.get('page.discover')}</h2>
           <ListCard>
-            {listsPage && listsPage.length > 0 && (
-              <>
-                <React.Fragment>
-                  <InfiniteScroll
-                    dataLength={data.length}
-                    next={loadMoreItems}
-                    hasMore={hasNext}
-                    loader={<Skeleton avatar active />}
-                    endMessage={
-                      <p style={{ textAlign: 'center' }}>
-                        <b>{"It's so empty here..."}</b>
-                      </p>
-                    }
-                    scrollableTarget="scrollableDiv"
-                  >
-                    {data.map((item, index) => {
-                      return (
-                        <React.Fragment key={index}>
-                          <CardPageItem item={mapPageItem(item)} onClickItem={id => routerPageDetail(id)} />
-                        </React.Fragment>
-                      );
-                    })}
-                  </InfiniteScroll>
-                </React.Fragment>
-              </>
-            )}
+            <React.Fragment>
+              <InfiniteScroll
+                dataLength={data.length}
+                next={loadMoreItems}
+                hasMore={hasNext}
+                loader={<Skeleton avatar active />}
+                scrollableTarget="scrollableDiv"
+              >
+                {data.map((item, index) => {
+                  return (
+                    <React.Fragment key={index}>
+                      <CardPageItem item={mapPageItem(item)} onClickItem={id => routerPageDetail(id)} />
+                    </React.Fragment>
+                  );
+                })}
+              </InfiniteScroll>
+            </React.Fragment>
           </ListCard>
         </PagesContainer>
       </StyledPageFeed>

@@ -297,12 +297,14 @@ export class FollowResolver {
 
       const recipient = await this.prisma.account.findFirst({
         where: {
-          page: {
-            id: pageId
+          pages: {
+            every: {
+              id: pageId
+            }
           }
         },
         include: {
-          page: true
+          pages: true
         }
       });
 
@@ -319,7 +321,7 @@ export class FollowResolver {
         url: '/profile/' + account.address,
         additionalData: {
           senderName: account.name,
-          pageName: recipient.page?.name
+          pageName: recipient.pages
         }
       };
 

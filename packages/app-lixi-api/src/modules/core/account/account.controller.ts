@@ -51,14 +51,19 @@ export class AccountController {
   ) {}
 
   @Get(':id')
-  async getAccount(@Param('id') id: string, @I18n() i18n: I18nContext): Promise<AccountDto> {
+  async getAccount(@Param('id') id: string, @I18n() i18n: I18nContext) {
     try {
       const account = await this.prisma.account.findUnique({
         where: {
           id: _.toSafeInteger(id)
         },
         include: {
-          page: true
+          pages: {
+            select: {
+              id: true,
+              name: true
+            }
+          }
         }
       });
       if (!account) {
@@ -71,8 +76,8 @@ export class AccountController {
       const result = {
         ...account,
         balance: balance,
-        page: account.page
-      } as AccountDto;
+        page: account.pages
+      };
 
       return result;
     } catch (err: unknown) {
@@ -94,7 +99,7 @@ export class AccountController {
           address: address
         },
         include: {
-          page: true,
+          pages: true,
           uploadDetail: true
         }
       });

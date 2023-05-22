@@ -18,7 +18,7 @@ type Account {
   mnemonic: String
   mnemonicHash: String
   name: String!
-  page: Page
+  pages: [Page!]
   publicKey: String
   secret: String
 
@@ -292,15 +292,18 @@ type Page {
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
   description: String!
+  encryptedMnemonic: String
   followersCount: Int
   id: ID!
   lotusBurnDown: Float!
   lotusBurnScore: Float!
   lotusBurnUp: Float!
   name: String!
+  pageAccount: Account!
   pageAccountId: Int!
   parent: Page
   parentId: String
+  salt: String
   stateId: String
   title: String
 
@@ -355,8 +358,6 @@ type Post {
   lotusBurnScore: Float!
   lotusBurnUp: Float!
   page: Page
-  pageAccount: Account
-  pageAccountId: Int
   pageId: String
   postAccount: Account!
   postAccountId: Int!
@@ -417,6 +418,7 @@ type Query {
   allFollowingsByFollower(after: String, before: String, first: Int, followerAccountId: Int, last: Int, minBurnFilter: Int, orderBy: FollowAccountOrder, skip: Int): FollowAccountConnection!
   allOrphanPosts(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PostOrder, query: String, skip: Int): PostConnection!
   allPages(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PageOrder, query: String, skip: Int): PageConnection!
+  allPagesByUserId(after: String, before: String, first: Int, id: Int, last: Int, minBurnFilter: Int, orderBy: PageOrder, skip: Int): PageConnection!
   allPosts(accountId: Int, after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
   allPostsByPageId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
   allPostsBySearch(

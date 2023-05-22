@@ -11,6 +11,7 @@ export class Page {
   @Field(() => Number)
   pageAccountId: number;
 
+  @Field(() => Account)
   pageAccount: Account;
 
   @Field(() => String)
@@ -74,4 +75,10 @@ export class Page {
 
   @Field(() => Number, { nullable: true })
   followersCount?: number;
+
+  @Field(() => String, { nullable: true })
+  encryptedMnemonic?: string;
+
+  @Field(() => String, { nullable: true })
+  salt?: string;
 }

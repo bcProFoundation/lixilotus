@@ -1,4 +1,4 @@
-import { PlusCircleOutlined, GlobalOutlined } from '@ant-design/icons';
+import { PlusCircleOutlined, GlobalOutlined, DollarOutlined, ShopOutlined } from '@ant-design/icons';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
 import { getPostCoverUploads, getSelectedAccount } from '@store/account/selectors';
 import { api as postApi, useCreatePostMutation } from '@store/post/posts.api';
@@ -271,6 +271,28 @@ const CreatePostCard = (props: CreatePostCardProp) => {
     }
   };
 
+  const getCreatePostLocation = () => {
+    if (pathname.includes('/token')) {
+      return (
+        <React.Fragment>
+          {intl.get('post.token')} <DollarOutlined />
+        </React.Fragment>
+      );
+    } else if (pathname.includes('/page')) {
+      return (
+        <React.Fragment>
+          {intl.get('post.page')} <ShopOutlined />
+        </React.Fragment>
+      );
+    } else {
+      return (
+        <React.Fragment>
+          {intl.get('post.public')} <GlobalOutlined />
+        </React.Fragment>
+      );
+    }
+  };
+
   return (
     <>
       <DesktopCreatePost onClick={() => setEnableEditor(!enableEditor)}>
@@ -297,20 +319,16 @@ const CreatePostCard = (props: CreatePostCardProp) => {
           footer={null}
           onCancel={() => setEnableEditor(false)}
         >
-          <>
-            <UserCreate>
-              <div className="user-create-post">
-                <img src="/images/xpi.svg" alt="" />
-                <div className="user-info">
-                  <p className="title-user">{selectedAccount?.name}</p>
-                  <Button className="btn-select">
-                    Public <GlobalOutlined />
-                  </Button>
-                </div>
+          <UserCreate>
+            <div className="user-create-post">
+              <img src="/images/xpi.svg" alt="" />
+              <div className="user-info">
+                <p className="title-user">{selectedAccount?.name}</p>
+                <Button className="btn-select">{getCreatePostLocation()}</Button>
               </div>
-              <EditorLexical onSubmit={value => handleCreateNewPost(value)} loading={isLoadingCreatePost} />
-            </UserCreate>
-          </>
+            </div>
+            <EditorLexical onSubmit={value => handleCreateNewPost(value)} loading={isLoadingCreatePost} />
+          </UserCreate>
         </Modal>
       </WrapEditor>
     </>

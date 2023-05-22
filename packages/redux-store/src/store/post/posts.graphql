@@ -215,11 +215,6 @@ fragment PostFields on Post {
     id
     name
   }
-  pageAccount {
-    address
-    id
-    name
-  }
   page {
     avatar
     name
@@ -255,11 +250,6 @@ fragment PostMeiliFields on Post {
     }
   }
   postAccount {
-    address
-    id
-    name
-  }
-  pageAccount {
     address
     id
     name

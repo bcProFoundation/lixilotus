@@ -44,6 +44,7 @@ export type PageQuery = {
     followersCount?: number | null;
     createdAt: any;
     updatedAt: any;
+    pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
   };
 };
 
@@ -87,6 +88,60 @@ export type PagesQuery = {
         followersCount?: number | null;
         createdAt: any;
         updatedAt: any;
+        pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+      };
+    }> | null;
+    pageInfo: {
+      __typename?: 'PageInfo';
+      endCursor?: string | null;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: string | null;
+    };
+  };
+};
+
+export type PagesByUserIdQueryVariables = Types.Exact<{
+  after?: Types.InputMaybe<Types.Scalars['String']>;
+  before?: Types.InputMaybe<Types.Scalars['String']>;
+  first?: Types.InputMaybe<Types.Scalars['Int']>;
+  last?: Types.InputMaybe<Types.Scalars['Int']>;
+  orderBy?: Types.InputMaybe<Types.PageOrder>;
+  id?: Types.InputMaybe<Types.Scalars['Int']>;
+  skip?: Types.InputMaybe<Types.Scalars['Int']>;
+}>;
+
+export type PagesByUserIdQuery = {
+  __typename?: 'Query';
+  allPagesByUserId: {
+    __typename?: 'PageConnection';
+    totalCount?: number | null;
+    edges?: Array<{
+      __typename?: 'PageEdge';
+      cursor: string;
+      node: {
+        __typename?: 'Page';
+        id: string;
+        pageAccountId: number;
+        name: string;
+        title?: string | null;
+        categoryId?: string | null;
+        description: string;
+        avatar?: string | null;
+        cover?: string | null;
+        parentId?: string | null;
+        countryId?: string | null;
+        stateId?: string | null;
+        address?: string | null;
+        website?: string | null;
+        lotusBurnUp: number;
+        lotusBurnDown: number;
+        lotusBurnScore: number;
+        totalBurnForPage?: number | null;
+        followersCount?: number | null;
+        createdAt: any;
+        updatedAt: any;
+        pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
       };
     }> | null;
     pageInfo: {
@@ -121,6 +176,7 @@ export type PageFieldsFragment = {
   followersCount?: number | null;
   createdAt: any;
   updatedAt: any;
+  pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
 };
 
 export type CreatePageMutationVariables = Types.Exact<{
@@ -151,6 +207,7 @@ export type CreatePageMutation = {
     followersCount?: number | null;
     createdAt: any;
     updatedAt: any;
+    pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
   };
 };
 
@@ -182,6 +239,7 @@ export type UpdatePageMutation = {
     followersCount?: number | null;
     createdAt: any;
     updatedAt: any;
+    pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
   };
 };
 
@@ -189,6 +247,11 @@ export const PageFieldsFragmentDoc = `
     fragment PageFields on Page {
   id
   pageAccountId
+  pageAccount {
+    id
+    name
+    address
+  }
   name
   title
   categoryId
@@ -241,6 +304,31 @@ export const PagesDocument = `
 }
     ${PageFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
+export const PagesByUserIdDocument = `
+    query PagesByUserId($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PageOrder, $id: Int, $skip: Int) {
+  allPagesByUserId(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    id: $id
+    skip: $skip
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...PageFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+    ${PageFieldsFragmentDoc}
+${PageInfoFieldsFragmentDoc}`;
 export const CreatePageDocument = `
     mutation createPage($input: CreatePageInput!) {
   createPage(data: $input) {
@@ -264,6 +352,9 @@ const injectedRtkApi = api.injectEndpoints({
     Pages: build.query<PagesQuery, PagesQueryVariables | void>({
       query: variables => ({ document: PagesDocument, variables })
     }),
+    PagesByUserId: build.query<PagesByUserIdQuery, PagesByUserIdQueryVariables | void>({
+      query: variables => ({ document: PagesByUserIdDocument, variables })
+    }),
     createPage: build.mutation<CreatePageMutation, CreatePageMutationVariables>({
       query: variables => ({ document: CreatePageDocument, variables })
     }),
@@ -279,6 +370,8 @@ export const {
   useLazyPageQuery,
   usePagesQuery,
   useLazyPagesQuery,
+  usePagesByUserIdQuery,
+  useLazyPagesByUserIdQuery,
   useCreatePageMutation,
   useUpdatePageMutation
 } = injectedRtkApi;

@@ -8,7 +8,7 @@ import {
   UpdatePageInput
 } from '@bcpros/lixi-models';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
-import { HttpException, HttpStatus, Logger, UseFilters, UseGuards } from '@nestjs/common';
+import { HttpException, HttpStatus, Logger, UseFilters, UseGuards, Inject } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
 import { PrismaService } from '../prisma/prisma.service';
@@ -18,13 +18,17 @@ import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
 import { I18n, I18nService } from 'nestjs-i18n';
 import VError from 'verror';
 import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
+import BCHJS from '@bcpros/xpi-js';
+import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase58Str, hashMnemonic } from '../../utils/encryptionMethods';
 
 const pubSub = new PubSub();
 
 @Resolver(() => Page)
 @UseFilters(GqlHttpExceptionFilter)
 export class PageResolver {
-  constructor(private logger: Logger, private prisma: PrismaService, @I18n() private i18n: I18nService) {}
+  private logger: Logger = new Logger(this.constructor.name);
+
+  constructor(private prisma: PrismaService, @I18n() private i18n: I18nService, @Inject('xpijs') private XPI: BCHJS) {}
 
   @Subscription(() => Page)
   pageCreated() {
@@ -35,7 +39,10 @@ export class PageResolver {
   @UseGuards(GqlJwtAuthGuard)
   async page(@PageAccountEntity() account: Account, @Args('id', { type: () => String }) id: string) {
     const page = await this.prisma.page.findUnique({
-      where: { id: id }
+      where: { id: id },
+      include: {
+        pageAccount: true
+      }
     });
 
     // TODO: Shorten query
@@ -88,48 +95,36 @@ export class PageResolver {
     return result;
   }
 
-  @ResolveField('avatar', () => String)
-  async avatar(@Parent() page: Page) {
-    const uploadDetail = await this.prisma.page
-      .findUnique({
-        where: {
-          id: page.id
-        }
-      })
-      .avatar({
-        include: {
-          upload: true
-        }
-      });
-
-    if (_.isNil(uploadDetail)) return null;
-
-    const { upload } = uploadDetail;
-    const url = upload.bucket ? `${process.env.AWS_ENDPOINT}/${upload.bucket}/${upload.sha}` : upload.url;
-
-    return url;
-  }
-
-  @ResolveField('cover', () => String)
-  async cover(@Parent() page: Page) {
-    const uploadDetail = await this.prisma.page
-      .findUnique({
-        where: {
-          id: page.id
-        }
-      })
-      .cover({
-        include: {
-          upload: true
-        }
-      });
-
-    if (_.isNil(uploadDetail)) return null;
-
-    const { upload } = uploadDetail;
-    const url = upload.bucket ? `${process.env.AWS_ENDPOINT}/${upload.bucket}/${upload.sha}` : upload.url;
-
-    return url;
+  @Query(() => PageConnection)
+  async allPagesByUserId(
+    @Args() { after, before, first, last }: PaginationArgs,
+    @Args({ name: 'id', type: () => Number, nullable: true })
+    id: number,
+    @Args({
+      name: 'orderBy',
+      type: () => PageOrder,
+      nullable: true
+    })
+    orderBy: PageOrder
+  ) {
+    const result = await findManyCursorConnection(
+      async args =>
+        this.prisma.page.findMany({
+          where: {
+            pageAccountId: id
+          },
+          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+          ...args
+        }),
+      () =>
+        this.prisma.page.count({
+          where: {
+            pageAccountId: _.toSafeInteger(id)
+          }
+        }),
+      { first, last, before, after }
+    );
+    return result;
   }
 
   @UseGuards(GqlJwtAuthGuard)
@@ -141,6 +136,12 @@ export class PageResolver {
       throw new HttpException(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    const lang = 'english';
+    const Bip39128BitMnemonic = this.XPI.Mnemonic.generate(128, this.XPI.Mnemonic.wordLists()[lang]);
+    const salt = generateRandomBase58Str(10);
+
+    const encryptedMnemonic: string = await aesGcmEncrypt(Bip39128BitMnemonic, salt + process.env.MNEMONIC_SECRET);
+
     const createdPage = await this.prisma.page.create({
       data: {
         ..._.omit(data, ['categoryId']),
@@ -149,7 +150,9 @@ export class PageResolver {
           connect: {
             id: Number(data.categoryId)
           }
-        }
+        },
+        salt: salt,
+        encryptedMnemonic: encryptedMnemonic
       }
     });
 
@@ -215,5 +218,60 @@ export class PageResolver {
 
     pubSub.publish('pageUpdated', { pageUpdated: updatedPage });
     return updatedPage;
+  }
+
+  @ResolveField('avatar', () => String)
+  async avatar(@Parent() page: Page) {
+    const uploadDetail = await this.prisma.page
+      .findUnique({
+        where: {
+          id: page.id
+        }
+      })
+      .avatar({
+        include: {
+          upload: true
+        }
+      });
+
+    if (_.isNil(uploadDetail)) return null;
+
+    const { upload } = uploadDetail;
+    const url = upload.bucket ? `${process.env.AWS_ENDPOINT}/${upload.bucket}/${upload.sha}` : upload.url;
+
+    return url;
+  }
+
+  @ResolveField('cover', () => String)
+  async cover(@Parent() page: Page) {
+    const uploadDetail = await this.prisma.page
+      .findUnique({
+        where: {
+          id: page.id
+        }
+      })
+      .cover({
+        include: {
+          upload: true
+        }
+      });
+
+    if (_.isNil(uploadDetail)) return null;
+
+    const { upload } = uploadDetail;
+    const url = upload.bucket ? `${process.env.AWS_ENDPOINT}/${upload.bucket}/${upload.sha}` : upload.url;
+
+    return url;
+  }
+
+  @ResolveField('pageAccount', () => Account)
+  async pageAccount(@Parent() page: Page) {
+    const pageAccount = this.prisma.account.findFirst({
+      where: {
+        id: page.pageAccountId
+      }
+    });
+
+    return pageAccount;
   }
 }

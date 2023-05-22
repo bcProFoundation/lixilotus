@@ -32,7 +32,7 @@ export type Account = {
   mnemonic?: Maybe<Scalars['String']>;
   mnemonicHash?: Maybe<Scalars['String']>;
   name: Scalars['String'];
-  page?: Maybe<Page>;
+  pages?: Maybe<Array<Page>>;
   publicKey?: Maybe<Scalars['String']>;
   secret?: Maybe<Scalars['String']>;
   /** Identifies the date and time when the object was last updated. */
@@ -366,15 +366,18 @@ export type Page = {
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
   description: Scalars['String'];
+  encryptedMnemonic?: Maybe<Scalars['String']>;
   followersCount?: Maybe<Scalars['Int']>;
   id: Scalars['ID'];
   lotusBurnDown: Scalars['Float'];
   lotusBurnScore: Scalars['Float'];
   lotusBurnUp: Scalars['Float'];
   name: Scalars['String'];
+  pageAccount: Account;
   pageAccountId: Scalars['Int'];
   parent?: Maybe<Page>;
   parentId?: Maybe<Scalars['String']>;
+  salt?: Maybe<Scalars['String']>;
   stateId?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   /** The sum of burn amount for every post on page */
@@ -430,8 +433,6 @@ export type Post = {
   lotusBurnScore: Scalars['Float'];
   lotusBurnUp: Scalars['Float'];
   page?: Maybe<Page>;
-  pageAccount?: Maybe<Account>;
-  pageAccountId?: Maybe<Scalars['Int']>;
   pageId?: Maybe<Scalars['String']>;
   postAccount: Account;
   postAccountId: Scalars['Int'];
@@ -497,6 +498,7 @@ export type Query = {
   allFollowingsByFollower: FollowAccountConnection;
   allOrphanPosts: PostConnection;
   allPages: PageConnection;
+  allPagesByUserId: PageConnection;
   allPosts: PostConnection;
   allPostsByPageId: PostConnection;
   allPostsBySearch: PostResponse;
@@ -576,6 +578,17 @@ export type QueryAllPagesArgs = {
   minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<PageOrder>;
   query?: InputMaybe<Scalars['String']>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryAllPagesByUserIdArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  id?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<PageOrder>;
   skip?: InputMaybe<Scalars['Int']>;
 };
 
