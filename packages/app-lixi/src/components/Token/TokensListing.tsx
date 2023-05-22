@@ -249,7 +249,7 @@ const TokensListing = () => {
       placement: 'top'
     });
   };
-  let s = 0;
+
   const columns: ColumnsType<TokenEdge> = [
     {
       title: '#',
