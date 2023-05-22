@@ -195,7 +195,7 @@ model Account {
   publicKey          String              @default("") @map("public_key")
   email              String?             @unique
   uploadDetail       UploadDetail[]
-  page               Page[]
+  pages              Page[]
   posts              Post[]
   comments           Comment[]
   Worship            Worship[]

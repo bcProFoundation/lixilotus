@@ -58,7 +58,7 @@ export class AccountController {
           id: _.toSafeInteger(id)
         },
         include: {
-          page: {
+          pages: {
             select: {
               id: true,
               name: true
@@ -76,7 +76,7 @@ export class AccountController {
       const result = {
         ...account,
         balance: balance,
-        page: account.page
+        page: account.pages
       };
 
       return result;
@@ -99,7 +99,7 @@ export class AccountController {
           address: address
         },
         include: {
-          page: true,
+          pages: true,
           uploadDetail: true
         }
       });

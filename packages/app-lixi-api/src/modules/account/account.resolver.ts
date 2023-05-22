@@ -44,7 +44,7 @@ export class AccountResolver {
           address: address
         },
         include: {
-          page: true,
+          pages: true,
           uploadDetail: true
         }
       });

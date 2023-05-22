@@ -48,7 +48,7 @@ export class Account {
   language?: string;
 
   @Field(() => [Page], { nullable: true })
-  page?: [Page];
+  pages?: [Page];
 
   @Field(() => Number, { nullable: true })
   followersCount?: number;

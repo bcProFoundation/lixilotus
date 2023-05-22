@@ -32,7 +32,7 @@ export type Account = {
   mnemonic?: Maybe<Scalars['String']>;
   mnemonicHash?: Maybe<Scalars['String']>;
   name: Scalars['String'];
-  page?: Maybe<Array<Page>>;
+  pages?: Maybe<Array<Page>>;
   publicKey?: Maybe<Scalars['String']>;
   secret?: Maybe<Scalars['String']>;
   /** Identifies the date and time when the object was last updated. */

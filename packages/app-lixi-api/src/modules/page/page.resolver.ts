@@ -26,12 +26,9 @@ const pubSub = new PubSub();
 @Resolver(() => Page)
 @UseFilters(GqlHttpExceptionFilter)
 export class PageResolver {
-  constructor(
-    private logger: Logger,
-    private prisma: PrismaService,
-    @I18n() private i18n: I18nService,
-    @Inject('xpijs') private XPI: BCHJS
-  ) {}
+  private logger: Logger = new Logger(this.constructor.name);
+
+  constructor(private prisma: PrismaService, @I18n() private i18n: I18nService, @Inject('xpijs') private XPI: BCHJS) {}
 
   @Subscription(() => Page)
   pageCreated() {
