@@ -1,17 +1,21 @@
+import { Account } from '@bcpros/lixi-models';
 import { getSelectedAccount } from '@store/account';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { saveWebPushNotifConfig } from '@store/settings/actions';
-import { getWebPushNotifConfig } from '@store/settings/selectors';
-import { subscribeSelectedAccount, unsubscribeAll } from '@store/webpush';
+import { getDeviceId, getWebPushNotifConfig } from '@store/settings/selectors';
+import { subscribeSelectedAccount, unsubscribeAll, unsubscribeByAddresses } from '@store/webpush';
 import { getPlatformPermissionState } from '@utils/pushNotification';
 import { useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
+import usePrevious from './usePrevious';
 
 const usePushNotification = (props: { registration: ServiceWorkerRegistration }) => {
   const { registration } = props;
   const dispatch = useAppDispatch();
   const webPushNotifConfig = useAppSelector(getWebPushNotifConfig);
   const selectedAccount = useAppSelector(getSelectedAccount);
+  const previousSelectedAccount: Account = usePrevious(selectedAccount);
+  const deviceId = useAppSelector(getDeviceId);
 
   // run only once
   useEffect(() => {
@@ -58,14 +62,18 @@ const usePushNotification = (props: { registration: ServiceWorkerRegistration })
       webPushNotifConfig?.deviceId
     ) {
       // unsubscribe webpush for all by device id
+      // with the previous account
+      if (previousSelectedAccount && previousSelectedAccount.address != selectedAccount.address) {
+        dispatch(
+          unsubscribeByAddresses({
+            addresses: [previousSelectedAccount.address],
+            modifySetting: false,
+            clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID
+          })
+        );
+      }
+
       // then subscribe with the current active account
-      dispatch(
-        unsubscribeAll({
-          interactive: false,
-          modifySetting: false,
-          clientAppId: process.env.NEXT_PUBLIC_WEBPUSH_CLIENT_APP_ID
-        })
-      );
       dispatch(
         subscribeSelectedAccount({
           interactive: false,
@@ -74,7 +82,7 @@ const usePushNotification = (props: { registration: ServiceWorkerRegistration })
         })
       );
     }
-  }, [selectedAccount, registration]);
+  }, [selectedAccount, registration, deviceId]);
 
   return {
     turnOffWebPushNotification: () => {

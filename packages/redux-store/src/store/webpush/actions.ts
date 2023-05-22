@@ -1,3 +1,4 @@
+import { Account } from '@bcpros/lixi-models';
 import { createAction } from '@reduxjs/toolkit';
 
 export const subscribeSelectedAccount = createAction<{
@@ -27,5 +28,5 @@ export const unsubscribeAllFailure = createAction<{ interactive: boolean; modify
 export const unsubscribeByAddresses = createAction<{
   addresses: string[];
   clientAppId: string;
-  moidfySetting: boolean;
+  modifySetting: boolean;
 }>('webpush/unsubscribeByAddresses');
