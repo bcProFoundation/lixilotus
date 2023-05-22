@@ -1,15 +1,38 @@
 import { PrismaClient } from '@prisma/client';
 import { MeiliSearch } from 'meilisearch';
-import { aesGcmEncrypt, generateRandomBase58Str } from '../../../src/utils/encryptionMethods';
+import crypto from 'crypto';
 import BCHJS from '@bcpros/xpi-js';
 
 require('dotenv').config();
 
 const prisma = new PrismaClient();
-const meiliClient = new MeiliSearch({
-  host: process.env.MEILISEARCH_HOST!,
-  apiKey: process.env.MEILISEARCH_MASTER_KEY
-});
+
+function generateRandomBase58Str(length: number): string {
+  const base = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'.split('');
+  const array = new Uint8Array(crypto.randomBytes(length));
+  let str = '';
+  for (var i = 0; i < array.length; i++) {
+    str += base[array[i] % base.length];
+  }
+  return str;
+}
+
+async function aesGcmEncrypt(plaintext: string, password: string): Promise<string> {
+  const pwUtf8 = new TextEncoder().encode(password); // encode password as UTF-8
+  const pwHash = await crypto.createHash('sha256').update(pwUtf8).digest(); // hash the password
+
+  const iv = crypto.randomBytes(12);
+  const key = pwHash;
+
+  const ptUint8 = new TextEncoder().encode(plaintext);
+  const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
+
+  const encryptedBuffer = cipher.update(ptUint8);
+  cipher.final();
+
+  const encryptedResult = Buffer.concat([iv, encryptedBuffer, cipher.getAuthTag()]);
+  return encryptedResult.toString('base64');
+}
 
 async function main() {
   console.log(`Creating new seed and salt for exsiting pages`);
