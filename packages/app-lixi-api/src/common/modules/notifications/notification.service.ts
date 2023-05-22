@@ -28,7 +28,7 @@ export class NotificationService {
     @InjectQueue(WEBPUSH_NOTIFICATION_QUEUE) private webpushQueue: Queue,
     @InjectRedis() private readonly redis: Redis,
     @I18n() private i18n: I18nService
-  ) { }
+  ) {}
 
   async saveAndDispatchNotification(notification: NotificationDto) {
     if (!notification.recipientId) {

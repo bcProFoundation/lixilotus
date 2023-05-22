@@ -11,7 +11,7 @@ import { VError } from 'verror';
 export class WebpushController {
   private logger: Logger = new Logger(WebpushController.name);
 
-  constructor(private prisma: PrismaService, @I18n() private i18n: I18nService, @Inject('xpijs') private XPI: BCHJS) { }
+  constructor(private prisma: PrismaService, @I18n() private i18n: I18nService, @Inject('xpijs') private XPI: BCHJS) {}
 
   @Post('subscribe')
   async subscribe(@Body() command: WebpushSubscribeCommand): Promise<any> {
@@ -37,6 +37,10 @@ export class WebpushController {
             return existedSubscriber.accountId === subscriber.accountId;
           });
         });
+
+        if (newSubscribers.length == 0) {
+          return 0;
+        }
 
         // Verify the new subscribers
         const verifiedSubscribers = _.filter(newSubscribers, subscriber => {
@@ -100,8 +104,8 @@ export class WebpushController {
               address: isUnsubscribedAll
                 ? undefined
                 : {
-                  in: addresses
-                }
+                    in: addresses
+                  }
             }
           ]
         }
