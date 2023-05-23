@@ -15,6 +15,7 @@ import { RWebShare } from 'react-web-share';
 import { Button, message, Popover } from 'antd';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
+import { stripHtml } from 'string-strip-html';
 
 type SocialSharePanelProps = {
   className?: string;
@@ -23,6 +24,8 @@ type SocialSharePanelProps = {
 
 type ShareSocialProps = {
   slug: any;
+  content?: string;
+  postAccountName?: string;
   isMobile?: boolean;
 };
 
@@ -98,7 +101,7 @@ const ShareButton = styled.span`
 `;
 
 export const ShareSocialButton = (props: ShareSocialProps) => {
-  const { slug, isMobile } = props;
+  const { slug, isMobile, content, postAccountName } = props;
   const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
   const shareUrl = `${baseUrl}post/${slug}`;
 
@@ -113,7 +116,7 @@ export const ShareSocialButton = (props: ShareSocialProps) => {
   const ShareSocialButton = (
     <RWebShare
       data={{
-        text: intl.get('post.titleShared'),
+        text: content ? `${postAccountName} at LixiLotus: "${stripHtml(content).result.substring(0, 50)}..."` : '',
         url: shareUrl,
         title: 'LixiLotus'
       }}
