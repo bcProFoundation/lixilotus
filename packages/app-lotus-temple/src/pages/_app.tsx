@@ -14,6 +14,7 @@ import { ConfigProvider } from 'antd';
 import { ConnectedRouter } from 'connected-next-router';
 import OutsideCallConsumer from 'react-outside-call';
 import lightTheme from 'src/styles/themes/lightTheme';
+import { DefaultSeo } from 'next-seo';
 
 const PersistGateServer = (props: any) => {
   return props.children;
@@ -51,6 +52,19 @@ const LixiApp = ({ Component, ...rest }) => {
                 <ConnectedRouter>
                   <PersistGate persistor={store.__persistor} loading={<SplashScreen />}>
                     <ConfigProvider theme={lightTheme}>
+                      <DefaultSeo
+                        openGraph={{
+                          type: 'website',
+                          locale: 'en_IE',
+                          url: process.env.NEXT_PUBLIC_LIXI_URL,
+                          siteName: 'LixiLotus'
+                        }}
+                        twitter={{
+                          handle: '@handle',
+                          site: '@site',
+                          cardType: 'summary_large_image'
+                        }}
+                      />
                       <Component {...props.pageProps} />
                     </ConfigProvider>
                   </PersistGate>

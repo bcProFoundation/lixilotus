@@ -7,38 +7,50 @@ import { END } from 'redux-saga';
 import { getSelectorsByUserAgent } from 'react-device-detect';
 import { usePostQuery } from '@store/post/posts.generated';
 import MainLayout from '@components/Layout/MainLayout';
+import { PrismaClient } from '@bcpros/lixi-prisma';
+import { stripHtml } from 'string-strip-html';
 
 const PostDetailPage = props => {
-  const { postId, isMobile } = props;
-  const canonicalUrl = process.env.NEXT_PUBLIC_LIXI_URL + `posts/${postId}`;
+  const { postId, isMobile, postAsString } = props;
+  const post = JSON.parse(postAsString);
+  const canonicalUrl = process.env.NEXT_PUBLIC_LIXI_URL + `post/${postId}`;
 
   const postQuery = usePostQuery({ id: postId });
 
   return (
-    <>
-      {postQuery && postQuery.isSuccess && (
-        <>
-          <NextSeo
-            title="Lixi Program"
-            description="The lixi program send you a small gift ."
-            canonical={canonicalUrl}
-            openGraph={{
-              url: canonicalUrl,
-              title: 'LixiLotus',
-              description: postQuery.data.post.content ?? 'LixiLotus allow you to giveaway your Lotus effortlessly',
-              images: [{ url: '' }],
-              site_name: 'LixiLotus'
-            }}
-            twitter={{
-              handle: '@handle',
-              site: '@site',
-              cardType: 'summary_large_image'
-            }}
-          />
-          <PostDetail post={postQuery.data.post} isMobile={isMobile} />
-        </>
-      )}
-    </>
+    <React.Fragment>
+      <NextSeo
+        title="Lixi Program"
+        description="The lixi program send you a small gift ."
+        canonical={canonicalUrl}
+        openGraph={{
+          url: canonicalUrl,
+          title: 'LixiLotus',
+          description: post.content
+            ? `${post.postAccount.name} at LixiLotus: "${stripHtml(post.content).result}"`
+            : 'LixiLotus allow you to giveaway your Lotus effortlessly',
+          images: [
+            {
+              url: `${process.env.NEXT_PUBLIC_LIXI_URL}images/lixilotus-logo.svg`,
+              width: 800,
+              height: 600,
+              alt: 'Lotus Logo',
+              type: 'image/jpeg'
+            }
+          ],
+          site_name: `Posted by ${post.postAccount.name}`
+        }}
+        twitter={{
+          handle: '@lixilotus',
+          site: '@lixilotus',
+          cardType: 'summary_large_image'
+        }}
+        facebook={{
+          appId: '264679442628200'
+        }}
+      />
+      {postQuery && postQuery.isSuccess && <PostDetail post={postQuery.data.post} isMobile={isMobile} />}
+    </React.Fragment>
   );
 };
 
@@ -46,6 +58,7 @@ export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) 
   const { req } = context;
   const userAgent = req ? req.headers['user-agent'] : navigator.userAgent;
   const { isMobile } = getSelectorsByUserAgent(userAgent);
+  const prisma = new PrismaClient();
 
   store.dispatch(END);
   await (store as SagaStore).__sagaTask.toPromise();
@@ -53,8 +66,24 @@ export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) 
   const slug: string = _.isArray(context.params.slug) ? context.params.slug[0] : context.params.slug;
   const postId: string = slug;
 
+  const result = await prisma.post.findUnique({
+    where: {
+      id: postId
+    },
+    include: {
+      postAccount: {
+        select: {
+          name: true
+        }
+      }
+    }
+  });
+
+  const postAsString = JSON.stringify(result);
+
   return {
     props: {
+      postAsString,
       postId,
       isMobile
     }
