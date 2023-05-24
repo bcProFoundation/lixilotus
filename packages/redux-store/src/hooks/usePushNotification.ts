@@ -1,10 +1,11 @@
 import { Account } from '@bcpros/lixi-models';
 import { getSelectedAccount } from '@store/account';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { saveWebPushNotifConfig } from '@store/settings/actions';
+import { saveAllowPushNotification, saveWebPushNotifConfig } from '@store/settings/actions';
 import { getDeviceId, getWebPushNotifConfig } from '@store/settings/selectors';
-import { subscribeSelectedAccount, unsubscribeAll, unsubscribeByAddresses } from '@store/webpush';
+import { subscribeSelectedAccount, unsubscribeByAddresses } from '@store/webpush';
 import { getPlatformPermissionState } from '@utils/pushNotification';
+import * as _ from 'lodash';
 import { useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import usePrevious from './usePrevious';
@@ -40,12 +41,14 @@ const usePushNotification = (props: { registration: ServiceWorkerRegistration })
             // reset the allowPushNotification value to false
             allowPushNotification = false;
           }
+          const deviceId = _.isNil(webPushNotifConfig.deviceId) ? uuidv4() : webPushNotifConfig.deviceId;
+          const newConfig = {
+            allowPushNotification: allowPushNotification,
+            // generate new deviceId if it is not available
+            deviceId: deviceId
+          };
           dispatch(
-            saveWebPushNotifConfig({
-              allowPushNotification: allowPushNotification,
-              // generate new deviceId if it is not available
-              deviceId: webPushNotifConfig?.deviceId ?? uuidv4()
-            })
+            saveWebPushNotifConfig(newConfig)
           );
         }
       }
@@ -87,18 +90,12 @@ const usePushNotification = (props: { registration: ServiceWorkerRegistration })
   return {
     turnOffWebPushNotification: () => {
       dispatch(
-        saveWebPushNotifConfig({
-          ...webPushNotifConfig,
-          allowPushNotification: false
-        })
+        saveAllowPushNotification(false)
       );
     },
     turnOnWebPushNotification: () => {
       dispatch(
-        saveWebPushNotifConfig({
-          ...webPushNotifConfig,
-          allowPushNotification: true
-        })
+        saveAllowPushNotification(true)
       );
     }
   };

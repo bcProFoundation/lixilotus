@@ -2,6 +2,7 @@ import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import { createReducer } from '@reduxjs/toolkit';
 
 import {
+  saveAllowPushNotification,
   saveBurnFilter,
   saveWebAuthnConfig,
   saveWebPushNotifConfig,
@@ -42,6 +43,9 @@ export const settingsReducer = createReducer(initialState, builder => {
     })
     .addCase(saveWebPushNotifConfig, (state, action) => {
       state.webPushNotifConfig = action.payload;
+    })
+    .addCase(saveAllowPushNotification, (state, action) => {
+      state.webPushNotifConfig.allowPushNotification = action.payload;
     })
     .addCase(saveBurnFilter, (state, action) => {
       const { filterForType, filterValue } = action.payload;

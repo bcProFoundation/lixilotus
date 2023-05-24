@@ -2,7 +2,7 @@ import iconLixi from '@assets/notification_icon_lixi_192x192_96dpi.png';
 
 // To disable all workbox logging during development, you can set self.__WB_DISABLE_DEV_LOGS to true
 // https://developers.google.com/web/tools/workbox/guides/configure-workbox#disable_logging
-self.__WB_DISABLE_DEV_LOGS = false;
+self.__WB_DISABLE_DEV_LOGS = true;
 
 self.addEventListener('pushsubscriptionchange', (event) => {
   // HOW TO TEST THIS?

@@ -4,7 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import compression from '@fastify/compress';
 import { fastifyCookie } from '@fastify/cookie';
 import fastifyHelmet from '@fastify/helmet';
-import fastifyCsrf from '@fastify/csrf-protection';
+import fastifyCsrf, { FastifyCsrfProtectionOptions } from '@fastify/csrf-protection';
 import { AppModule } from './app.module';
 import { RedisIoAdapter } from './common/adapters/redis-io.adapter';
 import { PrismaService } from './modules/prisma/prisma.service';
@@ -12,6 +12,7 @@ import 'winston-daily-rotate-file';
 import loggerConfig from './logger.config';
 import { join } from 'path';
 import { contentParser } from 'fastify-multer';
+import { FastifyHelmetOptions } from '@fastify/helmet';
 
 const allowedOrigins = [
   process.env.SENDLOTUS_URL,
@@ -49,16 +50,16 @@ async function bootstrap() {
   process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'local'
     ? app.enableCors()
     : app.enableCors({
-        credentials: true,
-        origin: function (origin, callback) {
-          if (!origin) return callback(null, true);
-          if (allowedOrigins.indexOf(origin) === -1) {
-            const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-            return callback(new Error(msg), false);
-          }
-          return callback(null, true);
+      credentials: true,
+      origin: function (origin, callback) {
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+          const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+          return callback(new Error(msg), false);
         }
-      });
+        return callback(null, true);
+      }
+    });
 
   // Prisma
   const prismaService: PrismaService = app.get(PrismaService);
@@ -88,8 +89,8 @@ async function bootstrap() {
         imgSrc: [`'self'`, 'data:', 'validator.swagger.io'],
         scriptSrc: [`'self'`, `https: 'unsafe-inline'`]
       }
-    }
-  });
+    },
+  } as FastifyHelmetOptions);
 
   await app.register(fastifyCookie, {
     secret: process.env.COOKIE_SECRET ?? 'my-secret'
@@ -98,9 +99,9 @@ async function bootstrap() {
   app.register(fastifyCsrf, {
     cookieOpts: {
       signed: true,
-      httpOnly: true
+      httpOnly: true,
     }
-  });
+  } as FastifyCsrfProtectionOptions);
 
   app.register(compression);
 
