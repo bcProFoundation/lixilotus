@@ -385,8 +385,6 @@ const Home = () => {
           <StyledSegmented
             block
             options={segmentedOptions}
-            onResize={undefined}
-            onResizeCapture={undefined}
             defaultValue={'specialDay'}
             onChange={onSegmentedChange}
           />
