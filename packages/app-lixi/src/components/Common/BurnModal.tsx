@@ -383,18 +383,13 @@ export const BurnModal = ({ id, burnForType, isPage }: BurnModalProps) => {
         {burnForType == BurnForType.Token
           ? null
           : isPage
-          ? intl.get('burn.sendXpi') +
-            feePage +
-            ' XPI' +
-            intl.get('burn.owner', {
-              name: getName(BurnForType.Page)
-            })
-          : intl.get('burn.sendXpi') +
-            feeAccount +
-            ' XPI' +
-            intl.get('burn.owner', {
-              name: getName(BurnForType.Account)
-            })}
+            ? intl.get('burn.sendXpi') + feePage + ' XPI' + intl.get('burn.owner', {
+                name: getName(BurnForType.Page)
+              })
+            : intl.get('burn.sendXpi') + feeAccount + ' XPI' + intl.get('burn.owner', {
+                name: getName(BurnForType.Account)
+              })
+        }
       </p>
     </Modal>
   );
