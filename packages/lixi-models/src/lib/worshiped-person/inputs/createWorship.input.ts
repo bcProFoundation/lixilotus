@@ -1,5 +1,5 @@
 import { Field, Float, InputType } from '@nestjs/graphql';
-import { Prisma } from '@prisma/client';
+import { Decimal } from '@prisma/client/runtime/binary';
 import { Transform, Type } from 'class-transformer';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 import { GraphQLDecimal, transformToDecimal } from 'prisma-graphql-type-decimal';
@@ -26,11 +26,11 @@ export class CreateWorshipInput {
   @Type(() => Object)
   @IsOptional()
   @Transform(transformToDecimal)
-  latitude?: Prisma.Decimal;
+  latitude?: Decimal;
 
   @Field(() => GraphQLDecimal, { nullable: true })
   @IsOptional()
   @Type(() => Object)
   @Transform(transformToDecimal)
-  longitude?: Prisma.Decimal;
+  longitude?: Decimal;
 }
