@@ -112,9 +112,10 @@ type BurnForItem = PostItem | CommentItem | TokenItem;
 interface BurnModalProps {
   id?: string;
   burnForType: BurnForType;
+  isPage?: boolean;
 }
 
-export const BurnModal = ({ id, burnForType }: BurnModalProps) => {
+export const BurnModal = ({ id, burnForType, isPage }: BurnModalProps) => {
   const {
     formState: { errors },
     control
@@ -127,6 +128,8 @@ export const BurnModal = ({ id, burnForType }: BurnModalProps) => {
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const [selectedAmount, setSelectedAmount] = useState(1);
+  const feeAccount = selectedAmount * 0.08;
+  const feePage = selectedAmount * 0.04;
   const burnQueue = useAppSelector(getBurnQueue);
   const failQueue = useAppSelector(getFailQueue);
   const walletStatus = useAppSelector(getWalletStatus);
@@ -195,6 +198,7 @@ export const BurnModal = ({ id, burnForType }: BurnModalProps) => {
           tokenId = post.token?.id;
           userId = post.postAccount.id;
           break;
+
         case BurnForType.Comment:
           const comment = commentQuery.comment as CommentItem;
           id = comment.id;
@@ -218,7 +222,15 @@ export const BurnModal = ({ id, burnForType }: BurnModalProps) => {
           tokenId = token.tokenId;
           id = token.id;
           break;
-      }
+
+          case BurnForType.Account:
+            isPage = true;
+            break;
+      
+          case BurnForType.Page:
+            isPage = true;
+            break;
+          }
 
       tipToAddresses = tipToAddresses.filter(item => item.address != selectedAccount.address);
 
@@ -261,6 +273,10 @@ export const BurnModal = ({ id, burnForType }: BurnModalProps) => {
         return tokenQuery && tokenQuery.token.ticker;
       case BurnForType.Comment:
         return intl.get('burn.comment');
+      case BurnForType.Page:
+        return intl.get('burn.page');
+      case BurnForType.Account:
+        return intl.get('burn.account');
       default:
         return intl.get('burn.post');
     }
@@ -370,6 +386,19 @@ export const BurnModal = ({ id, burnForType }: BurnModalProps) => {
         </p>
       </Form>
       <p className="amount-burn">{intl.get('burn.youBurning') + selectedAmount + ' XPI'}</p>
+     
+      <p className="amount-burn">{ burnForType == BurnForType.Token 
+        ? null
+        : (isPage
+          ? intl.get('burn.sendXpi') + feePage + ' XPI' + intl.get('burn.owner', {
+                    name: getName(BurnForType.Page)
+                  })
+          : intl.get('burn.sendXpi') + feeAccount + ' XPI' + intl.get('burn.owner', {
+                    name: getName(BurnForType.Account)
+                  })
+          )
+      }
+      </p>
     </Modal>
   );
 };
