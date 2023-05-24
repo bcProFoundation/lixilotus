@@ -222,15 +222,7 @@ export const BurnModal = ({ id, burnForType, isPage }: BurnModalProps) => {
           tokenId = token.tokenId;
           id = token.id;
           break;
-
-          case BurnForType.Account:
-            isPage = true;
-            break;
-      
-          case BurnForType.Page:
-            isPage = true;
-            break;
-          }
+      }
 
       tipToAddresses = tipToAddresses.filter(item => item.address != selectedAccount.address);
 
@@ -386,18 +378,23 @@ export const BurnModal = ({ id, burnForType, isPage }: BurnModalProps) => {
         </p>
       </Form>
       <p className="amount-burn">{intl.get('burn.youBurning') + selectedAmount + ' XPI'}</p>
-     
-      <p className="amount-burn">{ burnForType == BurnForType.Token 
-        ? null
-        : (isPage
-          ? intl.get('burn.sendXpi') + feePage + ' XPI' + intl.get('burn.owner', {
-                    name: getName(BurnForType.Page)
-                  })
-          : intl.get('burn.sendXpi') + feeAccount + ' XPI' + intl.get('burn.owner', {
-                    name: getName(BurnForType.Account)
-                  })
-          )
-      }
+
+      <p className="amount-burn">
+        {burnForType == BurnForType.Token
+          ? null
+          : isPage
+          ? intl.get('burn.sendXpi') +
+            feePage +
+            ' XPI' +
+            intl.get('burn.owner', {
+              name: getName(BurnForType.Page)
+            })
+          : intl.get('burn.sendXpi') +
+            feeAccount +
+            ' XPI' +
+            intl.get('burn.owner', {
+              name: getName(BurnForType.Account)
+            })}
       </p>
     </Modal>
   );
