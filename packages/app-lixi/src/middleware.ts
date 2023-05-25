@@ -10,8 +10,7 @@ function shouldExclude(request: NextRequest) {
     path.startsWith('/_api') || //  exclude all API routes
     path.startsWith('/static') || // exclude static files
     path.includes('.') || // exclude all files in the public folder
-    path.startsWith('/claimed') ||
-    path.startsWith('/post')
+    path.startsWith('/claimed')
   );
 }
 

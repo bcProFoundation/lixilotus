@@ -399,7 +399,9 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   };
 
   const openBurnModal = (dataItem: PostItem) => {
-    dispatch(openModal('BurnModal', { burnForType: BurnForType.Post, id: dataItem.id, isPage: dataItem.page? true : false}));
+    dispatch(
+      openModal('BurnModal', { burnForType: BurnForType.Post, id: dataItem.id, isPage: dataItem.page ? true : false })
+    );
   };
 
   const handleBurn = async (isUpVote: boolean, burnData: BurnData) => {

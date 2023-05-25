@@ -99,11 +99,11 @@ const EmojiPickerPlugin: React.FC<any> = () => {
     () =>
       emojis != null
         ? emojis.map(
-          ({ emoji, aliases, tags }) =>
-            new EmojiOption(aliases[0], emoji, {
-              keywords: [...aliases, ...tags]
-            })
-        )
+            ({ emoji, aliases, tags }) =>
+              new EmojiOption(aliases[0], emoji, {
+                keywords: [...aliases, ...tags]
+              })
+          )
         : [],
     [emojis]
   );
@@ -158,33 +158,33 @@ const EmojiPickerPlugin: React.FC<any> = () => {
 
         return anchorElementRef.current && options.length
           ? ReactDOM.createPortal(
-            <StyledEmojiList
-              className="typeahead-popover emoji-menu"
-              bordered
-              size="small"
-              dataSource={options}
-              renderItem={(option: EmojiOption, index) => (
-                <StyledEmojiListItem
-                  onClick={() => {
-                    setHighlightedIndex(index);
-                    selectOptionAndCleanUp(option);
-                  }}
-                  onMouseEnter={() => {
-                    setHighlightedIndex(index);
-                  }}
-                  style={{ backgroundColor: selectedIndex === index ? '#eee' : null }}
-                >
-                  <EmojiMenuItem
-                    index={index}
-                    key={option.key}
-                    isSelected={selectedIndex === index}
-                    option={option}
-                  />
-                </StyledEmojiListItem>
-              )}
-            ></StyledEmojiList>,
-            anchorElementRef.current
-          )
+              <StyledEmojiList
+                className="typeahead-popover emoji-menu"
+                bordered
+                size="small"
+                dataSource={options}
+                renderItem={(option: EmojiOption, index) => (
+                  <StyledEmojiListItem
+                    onClick={() => {
+                      setHighlightedIndex(index);
+                      selectOptionAndCleanUp(option);
+                    }}
+                    onMouseEnter={() => {
+                      setHighlightedIndex(index);
+                    }}
+                    style={{ backgroundColor: selectedIndex === index ? '#eee' : null }}
+                  >
+                    <EmojiMenuItem
+                      index={index}
+                      key={option.key}
+                      isSelected={selectedIndex === index}
+                      option={option}
+                    />
+                  </StyledEmojiListItem>
+                )}
+              ></StyledEmojiList>,
+              anchorElementRef.current
+            )
           : null;
       }}
     />
