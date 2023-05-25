@@ -37,7 +37,6 @@ const Footer = ({ notifications }: { notifications?: any }) => {
               src={currentPathName == '/' ? '/images/ico-home-active.svg' : '/images/ico-home.svg'}
               alt=""
             />
-            {intl.get('general.home')}
           </NavButton>
         </Link>
         <Link href="/page/feed" passHref>
@@ -47,7 +46,6 @@ const Footer = ({ notifications }: { notifications?: any }) => {
               src={currentPathName.includes('/page/feed') ? '/images/ico-page-active.svg' : '/images/ico-page.svg'}
               alt=""
             />
-            {intl.get('general.page')}
           </NavButton>
         </Link>
         <Link href="/token/listing" passHref>
@@ -59,7 +57,6 @@ const Footer = ({ notifications }: { notifications?: any }) => {
               }
               alt=""
             />
-            {intl.get('general.tokens')}
           </NavButton>
         </Link>
         <Link href="/notifications" passHref>
@@ -80,7 +77,6 @@ const Footer = ({ notifications }: { notifications?: any }) => {
                 alt=""
               />
             </Badge>
-            {intl.get('general.notifications')}
           </NavButton>
         </Link>
       </StyledFooter>
