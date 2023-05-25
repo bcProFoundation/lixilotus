@@ -1,5 +1,4 @@
 import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
-import { Decimal } from '@prisma/client/runtime';
 import { Transform, Type } from 'class-transformer';
 import { IsOptional } from 'class-validator';
 import { GraphQLDecimal, transformToDecimal } from 'prisma-graphql-type-decimal';
@@ -8,6 +7,7 @@ import { Account } from '../account';
 import { Temple } from '../temple';
 
 import { WorshipedPerson } from './worshipedPerson.model';
+import { Decimal } from '@prisma/client/runtime/binary';
 
 @ObjectType()
 export class Worship {

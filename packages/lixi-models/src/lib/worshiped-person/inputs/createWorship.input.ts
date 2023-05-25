@@ -1,5 +1,5 @@
 import { Field, Float, InputType } from '@nestjs/graphql';
-import { Decimal } from '@prisma/client/runtime';
+import { Decimal } from '@prisma/client/runtime/binary';
 import { Transform, Type } from 'class-transformer';
 import { IsNotEmpty, IsOptional } from 'class-validator';
 import { GraphQLDecimal, transformToDecimal } from 'prisma-graphql-type-decimal';

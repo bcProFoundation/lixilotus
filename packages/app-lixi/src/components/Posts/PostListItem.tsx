@@ -349,9 +349,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
             onClickIcon={e => handlePostClick(e)}
           />
         </GroupIconText>
-        <div>
-          <ShareSocialButton slug={post.id} />
-        </div>
+        <ShareSocialButton slug={post.id} content={post.content} postAccountName={post.postAccount.name} />
       </ActionBar>
       {isCollapseComment && (
         <div

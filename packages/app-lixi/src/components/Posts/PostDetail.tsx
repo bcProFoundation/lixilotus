@@ -655,15 +655,17 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
             </div>
             <div className="reaction-func">
               <div>
-                <img
-                  src="/images/ico-comments.svg"
-                  alt=""
-                  onClick={() => setFocus('comment', { shouldSelect: true })}
-                />
+                <picture>
+                  <img
+                    src="/images/ico-comments.svg"
+                    alt=""
+                    onClick={() => setFocus('comment', { shouldSelect: true })}
+                  />
+                </picture>
                 <span>{totalCount}</span>&nbsp;
               </div>
               <div>
-                <ShareSocialButton slug={post.id} />
+                <ShareSocialButton slug={post.id} content={post.content} postAccountName={post.postAccount.name} />
               </div>
             </div>
           </div>

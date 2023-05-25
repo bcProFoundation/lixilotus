@@ -65,7 +65,7 @@ async function main() {
     categories.map(translation => {
       return prisma.category.upsert({
         where: { id: translation.id },
-        update: {},
+        update: { ...translation },
         create: { ...translation }
       });
     })

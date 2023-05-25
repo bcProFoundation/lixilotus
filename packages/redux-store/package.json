@@ -34,7 +34,7 @@
     "node": ">=10"
   },
   "peerDependencies": {
-    "@prisma/client": ">=3.9",
+    "@prisma/client": ">=4.13.0",
     "graphql": ">=16"
   },
   "devDependencies": {

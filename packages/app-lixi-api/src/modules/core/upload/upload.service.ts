@@ -4,21 +4,24 @@ import { hexSha256 } from 'src/utils/encryptionMethods';
 
 @Injectable()
 export class UploadService {
-  constructor(@InjectS3() private readonly s3: S3) {}
+  constructor(@InjectS3() private readonly s3: S3) { }
 
   async uploadS3(file: Buffer, mimetype: string, bucket?: string) {
     const sha = await hexSha256(file);
 
+    const Bucket = bucket!;
+    const Key = sha;
+
     const params = {
-      Bucket: bucket!,
-      Key: sha,
+      Bucket,
+      Key,
       Body: file,
       ACL: 'public-read',
       ContentType: mimetype,
       ContentDisposition: 'inline'
     };
 
-    const { Key, Bucket } = await this.s3.upload(params).promise();
+    const result = await this.s3.putObject(params);
 
     return {
       Key,
