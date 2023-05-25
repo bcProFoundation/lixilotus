@@ -16,6 +16,9 @@ import styled from 'styled-components';
 import { closeModal } from '@store/modal/actions';
 import { CreateForm } from '@components/Lixi/CreateLixiFormModal';
 import { getAllCategories } from '@store/category/selectors';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { fromSmallestDenomination } from '@utils/cashMethods';
+import { currency } from '@components/Common/Ticker';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -39,118 +42,49 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
   const categories = useAppSelector(getAllCategories);
   const countries = useAppSelector(getAllCountries);
   const states = useAppSelector(getAllStates);
+  const createPostFee = [0, 1, 10, 100, 1000];
+  const createCommentFee = [0, fromSmallestDenomination(currency.dustSats), 1, 10, 100];
 
-  // New page name
-  const [newPageName, setNewPageName] = useState('');
-  const [newPageNameIsValid, setNewPageNameIsValid] = useState(true);
-
-  // New page category
-  const [newPageCategory, setNewPageCategory] = useState('');
-  const [newPageCategoryIsValid, setNewPageCategoryIsValid] = useState(true);
-
-  // New page title
-  const [newPageTitle, setNewPageTitle] = useState('');
-  const [newPageTitleIsValid, setNewPageTitleIsValid] = useState(true);
-
-  // New page handle id
-  const [newPageHandleId, setNewPageHandleId] = useState('');
-  const [newPageHandleIdIsValid, setNewPageHandleIdIsValid] = useState(true);
-
-  // New page parent id
-  const [newPageParentId, setNewPageParentId] = useState('');
-  const [newPageParentIdIsValid, setNewPageParentIdIsValid] = useState(true);
-
-  // New page description
-  const [newPageDescription, setNewPageDescription] = useState('');
-  const [newPageDescriptionIsValid, setNewPageDescriptionIsValid] = useState(true);
-
-  // New page website
-  const [newPageWebsite, setNewPageWebsite] = useState('');
-  const [newPageWebsiteIsValid, setNewPageWebsiteIsValid] = useState(true);
-
-  // New page country
-  const [newPageCountry, setNewPageCountry] = useState('');
-  const [newPageCountryIsValid, setNewPageCountryIsValid] = useState(true);
-
-  // New page state
-  const [newPageState, setNewPageState] = useState('');
-  const [newPageStateIsValid, setNewPageStateIsValid] = useState(true);
-
-  // New page address
-  const [newPageAddress, setNewPageAddress] = useState('');
-  const [newPageAddressIsValid, setNewPageAddressIsValid] = useState(true);
+  const {
+    handleSubmit,
+    formState: { errors },
+    control
+  } = useForm({
+    defaultValues: {
+      id: page.id,
+      name: page.name,
+      categoryId: page.category.id,
+      categoryName: page.category.name,
+      description: page.description,
+      website: page.website,
+      countryId: page.countryId,
+      stateId: page.stateId,
+      address: page.address,
+      createPostFee: page.createPostFee,
+      createCommentFee: page.createCommentFee
+    }
+  });
 
   const [componentDisabled, setComponentDisabled] = useState<boolean>(true);
   const onFormLayoutChange = ({ disabled }: { disabled: boolean }) => {
     setComponentDisabled(disabled);
   };
 
-  const handleNewPageNameInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setNewPageName(value);
-    setNewPageNameIsValid(true);
-  };
-
-  const handleChangeCategory = (value: string) => {
-    setNewPageCategory(value);
-    if (value && !isEmpty(value)) {
-      setNewPageCategoryIsValid(true);
-    }
-  };
-
-  const handleNewPageTitleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setNewPageTitle(value);
-    setNewPageTitleIsValid(true);
-  };
-
-  const handleNewPageDescriptionInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const { value } = e.target;
-    setNewPageDescription(value);
-    setNewPageDescriptionIsValid(true);
-  };
-
-  const handleNewPageWebsiteInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setNewPageWebsite(value);
-    setNewPageWebsiteIsValid(true);
-  };
-
-  const handleChangeCountry = (value: string) => {
-    setNewPageCountry(value);
-    if (value && !isEmpty(value)) {
-      setNewPageCountryIsValid(true);
-    }
-    dispatch(getStates(value));
-  };
-
-  const handleChangeState = (value: string) => {
-    setNewPageState(value);
-    if (value && !isEmpty(value)) {
-      setNewPageStateIsValid(true);
-    }
-  };
-
-  const handleNewPageAddressInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setNewPageAddress(value);
-    setNewPageAddressIsValid(true);
-  };
-
-  const handleOnEditPage = async () => {
-    const updatePageInput: UpdatePageInput = {
-      id: page.id,
-      name: _.isEmpty(newPageName) ? page.name : newPageName,
-      categoryId: _.isEmpty(newPageCategory) ? page.categoryId : newPageCategory,
-      title: _.isEmpty(newPageTitle) ? page?.title : newPageTitle,
-      description: _.isEmpty(newPageDescription) ? page?.description : newPageDescription,
-      website: _.isEmpty(newPageWebsite) ? page?.website : newPageWebsite,
-      countryId: _.isEmpty(newPageCountry) ? page?.countryId : newPageCountry,
-      stateId: _.isEmpty(newPageState) ? page?.stateId : newPageState,
-      address: _.isEmpty(newPageAddress) ? page?.address : newPageAddress
-    };
-
+  const onSubmit: SubmitHandler<UpdatePageInput> = async data => {
     try {
+      const updatePageInput: UpdatePageInput = _.omit(
+        {
+          ...data,
+          id: page.id,
+          categoryId: String(data.categoryId),
+          countryId: data.countryId ? String(data.countryId) : undefined,
+          stateId: data.countryId ? String(data.stateId) : undefined,
+          createPostFee: String(data.createPostFee),
+          createCommentFee: String(data.createCommentFee)
+        },
+        'categoryName'
+      );
+
       const pageUpdated = await updatePageTrigger({ input: updatePageInput }).unwrap();
       dispatch(
         showToast('success', {
@@ -161,7 +95,6 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
       );
       dispatch(setPage({ ...pageUpdated.updatePage }));
       dispatch(closeModal());
-      location.reload();
     } catch (error) {
       const message = errorOnUpdate?.message ?? intl.get('page.unableUpdatePage');
 
@@ -203,61 +136,54 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
               label={intl.get('page.name')}
               rules={[{ required: true, message: intl.get('page.inputName') }]}
             >
-              <Input defaultValue={page.name} onChange={e => handleNewPageNameInput(e)} />
+              <Controller
+                name="name"
+                control={control}
+                rules={{
+                  required: {
+                    value: true,
+                    message: intl.get('page.inputName')
+                  },
+                  pattern: {
+                    value: /.+/,
+                    message: intl.get('page.inputNamePattern')
+                  }
+                }}
+                render={({ field: { onChange, onBlur, value } }) => (
+                  <Input value={value} onChange={onChange} onBlur={onBlur} />
+                )}
+              />
+              <p style={{ display: errors.name ? 'flex' : 'none', color: 'var(--color-danger)' }}>
+                {errors.name && errors.name.message}
+              </p>
             </Form.Item>
 
             <Form.Item
               name="category"
               label={intl.get('page.category')}
-              rules={[{ required: true, message: intl.get('page.selectCategory') }]}
+              rules={[
+                {
+                  required: true,
+                  message: intl.get('page.selectCategory')
+                }
+              ]}
             >
-              <Select
-                className="select-after edit-page"
-                showSearch
-                defaultValue={page.categoryId}
-                onChange={handleChangeCategory}
-                placeholder={intl.get('page.category')}
-                optionFilterProp="children"
-                filterOption={(input, option) =>
-                  (option!.children as unknown as string).toLocaleLowerCase().includes(input)
-                }
-                filterSort={(optionA, optionB) =>
-                  (optionA!.children as unknown as string)
-                    .toLowerCase()
-                    .localeCompare((optionB!.children as unknown as string).toLowerCase())
-                }
-                style={{ width: '99%', textAlign: 'start' }}
-              >
-                {categories.map(pageCategory => (
-                  <Option key={pageCategory.id}>{intl.get('category.' + pageCategory.name)}</Option>
-                ))}
-              </Select>
-            </Form.Item>
-
-            <Form.Item name="title" label={intl.get('page.title')}>
-              <Input defaultValue={page.title} onChange={e => handleNewPageTitleInput(e)} />
-            </Form.Item>
-
-            <Form.Item label={intl.get('page.description')}>
-              <TextArea defaultValue={page.description} onChange={e => handleNewPageDescriptionInput(e)} rows={4} />
-            </Form.Item>
-          </CreateForm>
-
-          {/* Column 2 */}
-          <CreateForm className="form-child edit-page" layout="vertical">
-            <Form.Item name="website" label={intl.get('page.website')}>
-              <Input defaultValue={page.website} onChange={e => handleNewPageWebsiteInput(e)} />
-            </Form.Item>
-
-            <Form.Item name="address" label={intl.get('page.countryName') + '/ ' + intl.get('page.stateName')}>
-              <Row>
-                <Col span={12}>
+              <Controller
+                name="categoryId"
+                control={control}
+                rules={{
+                  required: {
+                    value: true,
+                    message: intl.get('page.selectCategory')
+                  }
+                }}
+                render={({ field: { onChange, onBlur, value }, formState: { isSubmitting } }) => (
                   <Select
                     className="select-after edit-page"
                     showSearch
-                    defaultValue={page.countryId}
-                    onChange={handleChangeCountry}
-                    placeholder={intl.get('page.country')}
+                    onChange={onChange}
+                    onBlur={onBlur}
+                    placeholder={intl.get('page.category')}
                     optionFilterProp="children"
                     filterOption={(input, option) =>
                       (option!.children as unknown as string).toLocaleLowerCase().includes(input)
@@ -268,46 +194,181 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
                         .localeCompare((optionB!.children as unknown as string).toLowerCase())
                     }
                     style={{ width: '99%', textAlign: 'start' }}
+                    defaultValue={intl.get('category.' + page.category.name)}
+                    disabled={isSubmitting}
                   >
-                    {countries.map(country => (
-                      <Option key={country.id}>{country.name}</Option>
+                    {categories.map(pageCategory => (
+                      <Option key={pageCategory.id} value={pageCategory.id}>
+                        {intl.get('category.' + pageCategory.name)}
+                      </Option>
                     ))}
                   </Select>
+                )}
+              />
+              <p style={{ display: errors.categoryId ? 'flex' : 'none', color: 'var(--color-danger)' }}>
+                {errors.categoryId && errors.categoryId.message}
+              </p>
+            </Form.Item>
+
+            {/* <Form.Item name="title" label={intl.get('page.title')}>
+              <Input defaultValue={page.title} onChange={e => handleNewPageTitleInput(e)} />
+            </Form.Item> */}
+
+            <Form.Item label={intl.get('page.description')}>
+              <Controller
+                name="description"
+                control={control}
+                render={({ field: { onChange, value } }) => <TextArea value={value} onChange={onChange} rows={5} />}
+              />
+            </Form.Item>
+          </CreateForm>
+
+          {/* Column 2 */}
+          <CreateForm className="form-child edit-page" layout="vertical">
+            <Form.Item name="website" label={intl.get('page.website')}>
+              <Controller
+                name="website"
+                control={control}
+                render={({ field: { onChange, value } }) => <Input value={value} onChange={onChange} />}
+              />
+            </Form.Item>
+
+            <Form.Item name="country-state" label={intl.get('page.countryName') + '/ ' + intl.get('page.stateName')}>
+              <Row>
+                <Col span={12}>
+                  <Controller
+                    name="countryId"
+                    control={control}
+                    render={({ field: { onChange, value } }) => (
+                      <Select
+                        className="select-after edit-page"
+                        showSearch
+                        value={value}
+                        onChange={onChange}
+                        placeholder={intl.get('page.country')}
+                        optionFilterProp="children"
+                        filterOption={(input, option) =>
+                          (option!.children as unknown as string).toLocaleLowerCase().includes(input)
+                        }
+                        filterSort={(optionA, optionB) =>
+                          (optionA!.children as unknown as string)
+                            .toLowerCase()
+                            .localeCompare((optionB!.children as unknown as string).toLowerCase())
+                        }
+                        style={{ width: '99%', textAlign: 'start' }}
+                      >
+                        {countries.map(country => (
+                          <Option key={country.id} value={country.id}>
+                            {country.name}
+                          </Option>
+                        ))}
+                      </Select>
+                    )}
+                  />
                 </Col>
                 <Col span={12}>
-                  <Select
-                    className="select-after edit-page"
-                    showSearch
-                    defaultValue={page.stateId}
-                    onChange={handleChangeState}
-                    placeholder={intl.get('page.state')}
-                    optionFilterProp="children"
-                    filterOption={(input, option) =>
-                      (option!.children as unknown as string).toLowerCase().includes(input.toLowerCase())
-                    }
-                    filterSort={(optionA, optionB) =>
-                      (optionA!.children as unknown as string)
-                        .toLowerCase()
-                        .localeCompare((optionB!.children as unknown as string).toLowerCase())
-                    }
-                    style={{ width: '99%', textAlign: 'end' }}
-                  >
-                    {states.map(state => (
-                      <Option key={state.id}>{state.name}</Option>
-                    ))}
-                  </Select>
+                  <Controller
+                    name="stateId"
+                    control={control}
+                    render={({ field: { onChange, value } }) => (
+                      <Select
+                        className="select-after edit-page"
+                        showSearch
+                        value={value}
+                        onChange={onChange}
+                        placeholder={intl.get('page.state')}
+                        optionFilterProp="children"
+                        filterOption={(input, option) =>
+                          (option!.children as unknown as string).toLowerCase().includes(input.toLowerCase())
+                        }
+                        filterSort={(optionA, optionB) =>
+                          (optionA!.children as unknown as string)
+                            .toLowerCase()
+                            .localeCompare((optionB!.children as unknown as string).toLowerCase())
+                        }
+                        style={{ width: '99%', textAlign: 'end' }}
+                      >
+                        {states.map(state => (
+                          <Option key={state.id}>{state.name}</Option>
+                        ))}
+                      </Select>
+                    )}
+                  />
                 </Col>
               </Row>
             </Form.Item>
 
             <Form.Item name="address" label={intl.get('page.address')}>
-              <Input defaultValue={page.address} onChange={e => handleNewPageAddressInput(e)} />
+              <Controller
+                name="address"
+                control={control}
+                render={({ field: { onChange, value } }) => <Input value={value} onChange={onChange} />}
+              />
+            </Form.Item>
+
+            <Form.Item name="country-state" label={intl.get('page.countryName') + '/ ' + intl.get('page.stateName')}>
+              <Row>
+                <Col span={12}>
+                  <Controller
+                    name="createPostFee"
+                    control={control}
+                    rules={{
+                      required: {
+                        value: true,
+                        message: intl.get('page.selectCategory')
+                      }
+                    }}
+                    render={({ field: { onChange, value }, formState: { isSubmitting } }) => (
+                      <Select
+                        className="select-after edit-page"
+                        value={`${value} ${currency.ticker}`}
+                        onChange={onChange}
+                        placeholder={intl.get('page.state')}
+                        defaultValue={`${page.createPostFee} ${currency.ticker}`}
+                        disabled={isSubmitting}
+                        style={{ width: '99%', textAlign: 'end' }}
+                      >
+                        {createPostFee.map(fee => (
+                          <Option key={fee}>{`${fee} ${currency.ticker}`}</Option>
+                        ))}
+                      </Select>
+                    )}
+                  />
+                </Col>
+                <Col span={12}>
+                  <Controller
+                    name="createCommentFee"
+                    control={control}
+                    rules={{
+                      required: {
+                        value: true,
+                        message: intl.get('page.selectCategory')
+                      }
+                    }}
+                    render={({ field: { onChange, value }, formState: { isSubmitting } }) => (
+                      <Select
+                        className="select-after edit-page"
+                        value={`${value} ${currency.ticker}`}
+                        onChange={onChange}
+                        placeholder={intl.get('page.state')}
+                        defaultValue={`${page.createCommentFee} ${currency.ticker}`}
+                        disabled={isSubmitting}
+                        style={{ width: '99%', textAlign: 'end' }}
+                      >
+                        {createCommentFee.map(fee => (
+                          <Option key={fee}>{`${fee} ${currency.ticker}`}</Option>
+                        ))}
+                      </Select>
+                    )}
+                  />
+                </Col>
+              </Row>
             </Form.Item>
           </CreateForm>
         </CreateForm>
 
         <div style={{ textAlign: 'end', marginRight: '10px' }}>
-          <Button type="primary" htmlType="submit" onClick={handleOnEditPage}>
+          <Button type="primary" htmlType="submit" onClick={handleSubmit(onSubmit)}>
             {intl.get('page.editPage')}
           </Button>
         </div>

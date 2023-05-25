@@ -131,6 +131,8 @@ model Page {
   lotusBurnUp       Float         @default(0.0) @map("lotus_burn_up")
   lotusBurnDown     Float         @default(0.0) @map("lotus_burn_down")
   lotusBurnScore    Float         @default(0.0) @map("lotus_burn_score")
+  createPostFee     String        @default("1.0") @map("create_post_fee")
+  createCommentFee  String        @default("0.00055") @map("create_comment_fee")
   posts             Post[]
   followers         FollowPage[]
   encryptedMnemonic String?       @map("encrypted_mnemonic")

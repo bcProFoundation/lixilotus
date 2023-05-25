@@ -31,6 +31,16 @@ type AccountEdge {
   node: Account!
 }
 
+type Category {
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  id: ID!
+  name: String!
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
+}
+
 type City {
   country: Country!
   id: ID!
@@ -285,9 +295,12 @@ enum OrderDirection {
 type Page {
   address: String
   avatar: String
-  categoryId: String
+  category: Category!
+  categoryId: String!
   countryId: String
   cover: String
+  createCommentFee: Float!
+  createPostFee: Float!
 
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
@@ -610,6 +623,8 @@ input UpdatePageInput {
   categoryId: String
   countryId: String
   cover: String
+  createCommentFee: String!
+  createPostFee: String!
   description: String
   id: ID!
   name: String

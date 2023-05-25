@@ -45,6 +45,16 @@ export type AccountEdge = {
   node: Account;
 };
 
+export type Category = {
+  __typename?: 'Category';
+  /** Identifies the date and time when the object was created. */
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  /** Identifies the date and time when the object was last updated. */
+  updatedAt: Scalars['DateTime'];
+};
+
 export type City = {
   __typename?: 'City';
   country: Country;
@@ -360,9 +370,12 @@ export type Page = {
   __typename?: 'Page';
   address?: Maybe<Scalars['String']>;
   avatar?: Maybe<Scalars['String']>;
-  categoryId?: Maybe<Scalars['String']>;
+  category: Category;
+  categoryId: Scalars['String'];
   countryId?: Maybe<Scalars['String']>;
   cover?: Maybe<Scalars['String']>;
+  createCommentFee: Scalars['Float'];
+  createPostFee: Scalars['Float'];
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
   description: Scalars['String'];
@@ -913,6 +926,8 @@ export type UpdatePageInput = {
   categoryId?: InputMaybe<Scalars['String']>;
   countryId?: InputMaybe<Scalars['String']>;
   cover?: InputMaybe<Scalars['String']>;
+  createCommentFee: Scalars['String'];
+  createPostFee: Scalars['String'];
   description?: InputMaybe<Scalars['String']>;
   id: Scalars['ID'];
   name?: InputMaybe<Scalars['String']>;

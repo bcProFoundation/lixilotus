@@ -571,7 +571,8 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
             </div>
             <div className="title-profile">
               <h2>{pageDetailData.name}</h2>
-              <p>{pageDetailData.title}</p>
+              <p>{intl.get('category.' + pageDetailData.category.name)}</p>
+              {console.log('pageDetailData: ', pageDetailData)}
             </div>
             {/* TODO: implement in the future */}
             {selectedAccountId == pageDetailData?.pageAccountId && (

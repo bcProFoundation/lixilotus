@@ -168,7 +168,7 @@ export class AccountController {
       });
 
       const result = _.compact(accounts).map(data => _.omit({ ...data }, 'publicAddress'));
-      return result;
+      return result ?? [];
     } catch (err: unknown) {
       if (err instanceof VError) {
         throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);

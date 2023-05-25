@@ -3,6 +3,7 @@ import {
   PaginationArgs,
   PageOrder,
   PageConnection,
+  Category,
   CreatePageInput,
   Account,
   UpdatePageInput
@@ -41,7 +42,8 @@ export class PageResolver {
     const page = await this.prisma.page.findUnique({
       where: { id: id },
       include: {
-        pageAccount: true
+        pageAccount: true,
+        category: true
       }
     });
 
@@ -273,5 +275,16 @@ export class PageResolver {
     });
 
     return pageAccount;
+  }
+
+  @ResolveField('category', () => Category)
+  async category(@Parent() page: Page) {
+    const category = this.prisma.category.findFirst({
+      where: {
+        id: _.toSafeInteger(page.categoryId)
+      }
+    });
+
+    return category;
   }
 }

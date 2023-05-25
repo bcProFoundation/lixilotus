@@ -72,6 +72,10 @@ fragment PageFields on Page {
   name
   title
   categoryId
+  category {
+    id
+    name
+  }
   description
   avatar
   cover
@@ -85,6 +89,8 @@ fragment PageFields on Page {
   lotusBurnScore
   totalBurnForPage
   followersCount
+  createPostFee
+  createCommentFee
   createdAt
   updatedAt
 }
