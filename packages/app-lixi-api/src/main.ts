@@ -50,16 +50,16 @@ async function bootstrap() {
   process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'local'
     ? app.enableCors()
     : app.enableCors({
-      credentials: true,
-      origin: function (origin, callback) {
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) === -1) {
-          const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-          return callback(new Error(msg), false);
+        credentials: true,
+        origin: function (origin, callback) {
+          if (!origin) return callback(null, true);
+          if (allowedOrigins.indexOf(origin) === -1) {
+            const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+            return callback(new Error(msg), false);
+          }
+          return callback(null, true);
         }
-        return callback(null, true);
-      }
-    });
+      });
 
   // Prisma
   const prismaService: PrismaService = app.get(PrismaService);
@@ -89,7 +89,7 @@ async function bootstrap() {
         imgSrc: [`'self'`, 'data:', 'validator.swagger.io'],
         scriptSrc: [`'self'`, `https: 'unsafe-inline'`]
       }
-    },
+    }
   } as FastifyHelmetOptions);
 
   await app.register(fastifyCookie, {
@@ -99,7 +99,7 @@ async function bootstrap() {
   app.register(fastifyCsrf, {
     cookieOpts: {
       signed: true,
-      httpOnly: true,
+      httpOnly: true
     }
   } as FastifyCsrfProtectionOptions);
 

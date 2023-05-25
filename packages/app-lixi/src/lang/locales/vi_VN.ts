@@ -42,8 +42,8 @@ export default {
   'burn.page': 'trang',
   'burn.account': 'tài khoản',
   'burn.doneBurning': 'Đốt thành công!',
-  'burn.sendXpi' : 'Bạn sẽ gửi ',
-  'burn.owner' : ' tới chủ {name} ',
+  'burn.sendXpi': 'Bạn sẽ gửi ',
+  'burn.owner': ' tới chủ {name} ',
 
   /* 01.General */
   'general.tokens': 'Tokens',

@@ -382,12 +382,7 @@ const Home = () => {
       key: 'home',
       children: (
         <React.Fragment>
-          <StyledSegmented
-            block
-            options={segmentedOptions}
-            defaultValue={'specialDay'}
-            onChange={onSegmentedChange}
-          />
+          <StyledSegmented block options={segmentedOptions} defaultValue={'specialDay'} onChange={onSegmentedChange} />
           {/* Ngày đặc biệt đã đến */}
           <StyledHeaderContainer>
             <StyledHeader>
