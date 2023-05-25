@@ -268,7 +268,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
   };
 
   const openBurnModal = (e: React.MouseEvent<HTMLElement>, dataItem: PostItem) => {
-    dispatch(openModal('BurnModal', { burnForType: BurnForType.Post, id: dataItem.id }));
+    dispatch(openModal('BurnModal', { burnForType: BurnForType.Post, id: dataItem.id, isPage: dataItem.page? true : false}));
   };
 
   return (

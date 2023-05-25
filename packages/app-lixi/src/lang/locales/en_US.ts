@@ -40,7 +40,11 @@ export default {
   'burn.post': 'post',
   'burn.comment': 'comment',
   'burn.token': 'token',
+  'burn.page': 'page',
+  'burn.account': 'account',
   'burn.doneBurning': 'Burning completed!',
+  'burn.sendXpi' : 'You will send ',
+  'burn.owner' : ' to {name} owner',
 
   /* 01.General */
   'general.tokens': 'Tokens',
