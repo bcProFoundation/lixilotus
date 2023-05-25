@@ -40,14 +40,14 @@ const Footer = ({ notifications }: { notifications?: any }) => {
             {intl.get('general.home')}
           </NavButton>
         </Link>
-        <Link href="/wallet" passHref>
-          <NavButton active={currentPathName.includes('/wallet')}>
+        <Link href="/page/feed" passHref>
+          <NavButton active={currentPathName.includes('/page/feed')}>
             <img
               className="ico-img"
-              src={currentPathName.includes('/wallet') ? '/images/ico-account-active.svg' : '/images/ico-account.svg'}
+              src={currentPathName.includes('/page/feed') ? '/images/ico-page-active.svg' : '/images/ico-page.svg'}
               alt=""
             />
-            {intl.get('general.accounts')}
+            {intl.get('general.page')}
           </NavButton>
         </Link>
         <Link href="/token/listing" passHref>

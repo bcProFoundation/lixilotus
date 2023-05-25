@@ -104,11 +104,11 @@ const SidebarContent = ({ className }: SidebarContentProps) => {
             direction={'horizontal'}
           />
           <ItemAccess
-            icon={'/images/ico-page.svg'}
-            text={intl.get('general.page')}
+            icon={'/images/ico-account.svg'}
+            text={intl.get('general.accounts')}
             active={false}
-            key="page"
-            onClickItem={() => handleIconClick('/page/feed')}
+            key="account"
+            onClickItem={() => handleIconClick('/wallet')}
             direction={'horizontal'}
           />
           <ItemAccess
