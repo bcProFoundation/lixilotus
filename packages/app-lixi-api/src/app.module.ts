@@ -130,7 +130,8 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
           secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
           endpoint: process.env.AWS_ENDPOINT,
           s3ForcePathStyle: true,
-          signatureVersion: 'v4'
+          signatureVersion: 'v4',
+          region: 'us-west-001'
         }
       })
     })
