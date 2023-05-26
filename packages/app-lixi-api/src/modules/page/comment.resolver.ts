@@ -50,7 +50,9 @@ export class CommentResolver {
   }
 
   @Query(() => CommentConnection)
+  @UseGuards(GqlJwtAuthGuard)
   async allCommentsToPostId(
+    @PostAccountEntity() account: Account,
     @Args() { after, before, first, last }: PaginationArgs,
     @Args({ name: 'id', type: () => String, nullable: true })
     id: string,
@@ -66,13 +68,22 @@ export class CommentResolver {
         this.prisma.comment.findMany({
           include: { commentAccount: true },
           where: {
-            AND: [
+            OR: [
               {
-                commentToId: id
+                AND: [
+                  {
+                    commentToId: id
+                  },
+                  {
+                    lotusBurnScore: {
+                      gte: 0
+                    }
+                  }
+                ]
               },
               {
-                lotusBurnScore: {
-                  gte: 0
+                commentAccount: {
+                  id: account.id
                 }
               }
             ]
@@ -83,13 +94,22 @@ export class CommentResolver {
       () =>
         this.prisma.comment.count({
           where: {
-            AND: [
+            OR: [
               {
-                commentToId: id
+                AND: [
+                  {
+                    commentToId: id
+                  },
+                  {
+                    lotusBurnScore: {
+                      gte: 0
+                    }
+                  }
+                ]
               },
               {
-                lotusBurnScore: {
-                  gte: 0
+                commentAccount: {
+                  id: account.id
                 }
               }
             ]
