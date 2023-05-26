@@ -130,6 +130,7 @@ const StyledHeader = styled.div`
   .filter-bar {
     display: flex;
     justify-content: space-between;
+    padding-bottom: 1rem;
   }
 `;
 
