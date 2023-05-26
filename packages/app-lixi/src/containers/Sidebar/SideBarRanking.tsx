@@ -54,7 +54,7 @@ export const ShortcutItemAccess = ({
 
 const RankingSideBar = styled(Sider)`
   margin-top: 1rem;
-  height: 100vh;
+  height: 130vh;
   overflow: auto;
   flex: auto !important;
   background: var(--bg-color-light-theme) !important;
