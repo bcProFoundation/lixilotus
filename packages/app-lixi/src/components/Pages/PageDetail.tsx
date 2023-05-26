@@ -153,9 +153,6 @@ const ProfileCardHeader = styled.div`
           margin-bottom: 4px;
         }
       }
-      @media (max-width: 426px) {
-        display: none;
-      }
     }
     @media (max-width: 768px) {
       flex-direction: column;
