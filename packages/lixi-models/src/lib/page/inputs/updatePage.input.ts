@@ -42,9 +42,9 @@ export class UpdatePageInput {
   @Field(() => String, { nullable: true })
   address?: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   createPostFee: string;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   createCommentFee: string;
 }

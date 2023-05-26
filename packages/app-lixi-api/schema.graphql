@@ -626,8 +626,8 @@ input UpdatePageInput {
   categoryId: String
   countryId: String
   cover: String
-  createCommentFee: String!
-  createPostFee: String!
+  createCommentFee: String
+  createPostFee: String
   description: String
   id: ID!
   name: String

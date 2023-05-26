@@ -929,8 +929,8 @@ export type UpdatePageInput = {
   categoryId?: InputMaybe<Scalars['String']>;
   countryId?: InputMaybe<Scalars['String']>;
   cover?: InputMaybe<Scalars['String']>;
-  createCommentFee: Scalars['String'];
-  createPostFee: Scalars['String'];
+  createCommentFee?: InputMaybe<Scalars['String']>;
+  createPostFee?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
   id: Scalars['ID'];
   name?: InputMaybe<Scalars['String']>;
