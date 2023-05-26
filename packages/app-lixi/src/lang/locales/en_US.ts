@@ -108,6 +108,7 @@ export default {
   'general.topAccounts': 'Top Accounts',
   'general.topPages': 'Top Pages',
   'general.burned': 'Burned',
+  'general.fee': 'Fee: ',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
@@ -484,6 +485,8 @@ export default {
   'page.state': 'Search to select state',
   'page.address': 'Address',
   'page.inputAddress': 'Please input address',
+  'page.createPostFee': 'Create post fee',
+  'page.createCommentFee': 'Create comment fee',
   'page.couldNotpostPage': 'Could not create page',
   'page.createPageSuccessful': 'Create page successful',
   'page.unableCreatePageServer': 'Unable to create page on server',
@@ -567,6 +570,8 @@ export default {
   'comment.unableCreateComment': 'Unable to create comment',
   'comment.unableToBurn': 'Unable to burn for the comment',
   'comment.writeComment': 'Write a comment...',
+  'comment.writeCommentFee': 'Write a free comment on this page...',
+  'comment.writeCommentXpi': '{commentFee} to comment on this page...',
 
   /* 18. Category */
   'category.art': 'Art',

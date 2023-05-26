@@ -42,6 +42,9 @@ import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
 import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
 import { NotificationLevel } from '@bcpros/lixi-prisma';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
+import BCHJS from '@bcpros/xpi-js';
+import { ChronikClient } from 'chronik-client';
+import { InjectChronikClient } from 'src/common/modules/chronik/chronik.decorators';
 
 const pubSub = new PubSub();
 
@@ -55,6 +58,8 @@ export class PostResolver {
     private prisma: PrismaService,
     private meiliService: MeiliService,
     private readonly notificationService: NotificationService,
+    @Inject('xpijs') private XPI: BCHJS,
+    @InjectChronikClient('xpi') private chronik: ChronikClient,
     @I18n() private i18n: I18nService
   ) {}
 
@@ -633,53 +638,74 @@ export class PostResolver {
         }
       }
     };
-    const createdPost = await this.prisma.post.create({
-      ...postToSave,
-      include: {
-        page: {
-          select: {
-            id: true,
-            address: true,
-            name: true
-          }
-        },
-        token: {
-          select: {
-            id: true,
-            name: true
-          }
-        },
-        postAccount: {
-          select: {
-            id: true,
-            name: true,
-            address: true
+
+    let tipValue: any;
+    if (data.txHex) {
+      const txData = await this.XPI.RawTransactions.decodeRawTransaction(data.txHex);
+      tipValue = txData['vout'][0].value;
+      if (Number(tipValue) < 0) {
+        throw new Error('Syntax error. Number cannot be less than or equal to 0');
+      }
+    }
+
+    const savedPost = await this.prisma.$transaction(async prisma => {
+      const createdPost = await prisma.post.create({
+        ...postToSave,
+        include: {
+          page: {
+            select: {
+              id: true,
+              address: true,
+              name: true
+            }
+          },
+          token: {
+            select: {
+              id: true,
+              name: true
+            }
+          },
+          postAccount: {
+            select: {
+              id: true,
+              name: true,
+              address: true
+            }
           }
         }
+      });
+
+      const indexedPost = {
+        id: createdPost.id,
+        content: pureContent,
+        postAccountName: createdPost.postAccount.name,
+        createdAt: createdPost.createdAt,
+        updatedAt: createdPost.updatedAt,
+        page: {
+          id: createdPost.page?.id,
+          name: createdPost.page?.name
+        },
+        token: {
+          id: createdPost.token?.id,
+          name: createdPost.token?.name
+        }
+      };
+      await this.meiliService.add(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`, indexedPost, createdPost.id);
+
+      if (data.txHex) {
+        const broadcastResponse = await this.chronik.broadcastTx(data.txHex);
+        if (!broadcastResponse) {
+          throw new Error('Empty chronik broadcast response');
+        }
       }
+
+      return createdPost;
     });
 
-    const indexedPost = {
-      id: createdPost.id,
-      content: pureContent,
-      postAccountName: createdPost.postAccount.name,
-      createdAt: createdPost.createdAt,
-      updatedAt: createdPost.updatedAt,
-      page: {
-        id: createdPost.page?.id,
-        name: createdPost.page?.name
-      },
-      token: {
-        id: createdPost.token?.id,
-        name: createdPost.token?.name
-      }
-    };
+    pubSub.publish('postCreated', { postCreated: savedPost });
 
-    await this.meiliService.add(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`, indexedPost, createdPost.id);
-
-    pubSub.publish('postCreated', { postCreated: createdPost });
-
-    if (pageId) {
+    // Notification
+    if (pageId && savedPost) {
       const page = await this.prisma.page.findFirst({
         where: {
           id: pageId
@@ -703,15 +729,15 @@ export class PostResolver {
       }
 
       const createNotif = {
-        senderId: createdPost.postAccountId,
+        senderId: account.id,
         recipientId: Number(page?.pageAccountId),
         notificationTypeId: NOTIFICATION_TYPES.POST_ON_PAGE,
         level: NotificationLevel.INFO,
-        url: '/post/' + createdPost.id,
+        url: `/post/' + ${savedPost.id}`,
         additionalData: {
-          senderName: createdPost.postAccount.name,
-          senderAddress: createdPost.postAccount.address,
-          pageName: createdPost.page?.name
+          senderName: account.name,
+          senderAddress: account.address,
+          pageName: savedPost?.page?.name
         }
       };
       const jobData = {
@@ -721,7 +747,7 @@ export class PostResolver {
         (await this.notificationService.saveAndDispatchNotification(jobData.notification));
     }
 
-    return createdPost;
+    return savedPost;
   }
 
   @UseGuards(GqlJwtAuthGuard)

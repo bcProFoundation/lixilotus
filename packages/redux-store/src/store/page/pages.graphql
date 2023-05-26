@@ -81,7 +81,9 @@ fragment PageFields on Page {
   cover
   parentId
   countryId
+  countryName
   stateId
+  stateName
   address
   website
   lotusBurnUp

@@ -136,6 +136,7 @@ input CreatePostInput {
   pageId: String
   pureContent: String!
   tokenPrimaryId: String
+  txHex: String
   uploadCovers: [String!]
 }
 
@@ -298,9 +299,10 @@ type Page {
   category: Category!
   categoryId: String!
   countryId: String
+  countryName: String
   cover: String
-  createCommentFee: Float!
-  createPostFee: Float!
+  createCommentFee: String!
+  createPostFee: String!
 
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
@@ -318,6 +320,7 @@ type Page {
   parentId: String
   salt: String
   stateId: String
+  stateName: String
   title: String
 
   """The sum of burn amount for every post on page"""

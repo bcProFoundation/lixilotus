@@ -545,6 +545,30 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
         }
       }
 
+      if (selectedAccount.id != parseInt(post.page.pageAccount.id) && post.page.createCommentFee != '0') {
+        try {
+          const fundingWif = getUtxoWif(slpBalancesAndUtxos.nonSlpUtxos[0], walletPaths);
+          tipHex = await sendXpi(
+            XPI,
+            chronik,
+            walletPaths,
+            slpBalancesAndUtxos.nonSlpUtxos,
+            currency.defaultFee,
+            '',
+            false, // indicate send mode is one to one
+            null,
+            post.page.pageAccount.address,
+            post.page.createCommentFee,
+            isEncryptedOptionalOpReturnMsg,
+            fundingWif,
+            true
+          );
+        } catch (e) {
+          const message = e.message || e.error || JSON.stringify(e);
+          dispatch(sendXPIFailure(message));
+        }
+      }
+
       const createCommentInput: CreateCommentInput = {
         commentText: text,
         commentToId: post.id,
@@ -608,6 +632,16 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     ({ photo }) => <Image src={photo?.src} width={photo?.width} height={photo?.height} />,
     []
   );
+
+  const showTextComment = () => {
+    if (post.page) {
+      return post.page.createCommentFee != '0'
+        ? intl.get('comment.writeCommentXpi', { commentFee: `${post.page.createCommentFee} ${currency.ticker}` })
+        : intl.get('comment.writeCommentFee');
+    } else {
+      return intl.get('comment.writeComment');
+    }
+  };
 
   useDidMountEffectNotification();
 
@@ -722,13 +756,14 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
                   onChange={onChange}
                   onBlur={onBlur}
                   value={value}
-                  placeholder={intl.get('comment.writeComment')}
+                  placeholder={showTextComment()}
                   enterButton="Comment"
                   size="large"
                   suffix={<DashOutlined />}
                   onSearch={handleCreateNewComment}
                   loading={isLoadingCreateComment}
                 />
+                {console.log('post: ', post)}
               </AutoComplete>
             )}
           />

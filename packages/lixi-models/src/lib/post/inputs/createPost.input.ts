@@ -24,4 +24,8 @@ export class CreatePostInput {
   @Field(() => [String], { nullable: true })
   @IsOptional()
   uploadCovers: [string];
+
+  @IsOptional()
+  @Field(() => String, { nullable: true })
+  txHex?: Nullable<string>;
 }

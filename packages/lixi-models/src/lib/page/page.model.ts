@@ -75,7 +75,13 @@ export class Page {
   countryId?: string;
 
   @Field(() => String, { nullable: true })
+  countryName?: string;
+
+  @Field(() => String, { nullable: true })
   stateId?: string;
+
+  @Field(() => String, { nullable: true })
+  stateName?: string;
 
   @Field(() => Number, { nullable: true })
   followersCount?: number;

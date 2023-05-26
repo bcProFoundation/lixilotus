@@ -34,7 +34,9 @@ export type PageQuery = {
     cover?: string | null;
     parentId?: string | null;
     countryId?: string | null;
+    countryName?: string | null;
     stateId?: string | null;
+    stateName?: string | null;
     address?: string | null;
     website?: string | null;
     lotusBurnUp: number;
@@ -42,8 +44,8 @@ export type PageQuery = {
     lotusBurnScore: number;
     totalBurnForPage?: number | null;
     followersCount?: number | null;
-    createPostFee: number;
-    createCommentFee: number;
+    createPostFee: string;
+    createCommentFee: string;
     createdAt: any;
     updatedAt: any;
     pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
@@ -81,7 +83,9 @@ export type PagesQuery = {
         cover?: string | null;
         parentId?: string | null;
         countryId?: string | null;
+        countryName?: string | null;
         stateId?: string | null;
+        stateName?: string | null;
         address?: string | null;
         website?: string | null;
         lotusBurnUp: number;
@@ -89,8 +93,8 @@ export type PagesQuery = {
         lotusBurnScore: number;
         totalBurnForPage?: number | null;
         followersCount?: number | null;
-        createPostFee: number;
-        createCommentFee: number;
+        createPostFee: string;
+        createCommentFee: string;
         createdAt: any;
         updatedAt: any;
         pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
@@ -137,7 +141,9 @@ export type PagesByUserIdQuery = {
         cover?: string | null;
         parentId?: string | null;
         countryId?: string | null;
+        countryName?: string | null;
         stateId?: string | null;
+        stateName?: string | null;
         address?: string | null;
         website?: string | null;
         lotusBurnUp: number;
@@ -145,8 +151,8 @@ export type PagesByUserIdQuery = {
         lotusBurnScore: number;
         totalBurnForPage?: number | null;
         followersCount?: number | null;
-        createPostFee: number;
-        createCommentFee: number;
+        createPostFee: string;
+        createCommentFee: string;
         createdAt: any;
         updatedAt: any;
         pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
@@ -175,7 +181,9 @@ export type PageFieldsFragment = {
   cover?: string | null;
   parentId?: string | null;
   countryId?: string | null;
+  countryName?: string | null;
   stateId?: string | null;
+  stateName?: string | null;
   address?: string | null;
   website?: string | null;
   lotusBurnUp: number;
@@ -183,8 +191,8 @@ export type PageFieldsFragment = {
   lotusBurnScore: number;
   totalBurnForPage?: number | null;
   followersCount?: number | null;
-  createPostFee: number;
-  createCommentFee: number;
+  createPostFee: string;
+  createCommentFee: string;
   createdAt: any;
   updatedAt: any;
   pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
@@ -209,7 +217,9 @@ export type CreatePageMutation = {
     cover?: string | null;
     parentId?: string | null;
     countryId?: string | null;
+    countryName?: string | null;
     stateId?: string | null;
+    stateName?: string | null;
     address?: string | null;
     website?: string | null;
     lotusBurnUp: number;
@@ -217,8 +227,8 @@ export type CreatePageMutation = {
     lotusBurnScore: number;
     totalBurnForPage?: number | null;
     followersCount?: number | null;
-    createPostFee: number;
-    createCommentFee: number;
+    createPostFee: string;
+    createCommentFee: string;
     createdAt: any;
     updatedAt: any;
     pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
@@ -244,7 +254,9 @@ export type UpdatePageMutation = {
     cover?: string | null;
     parentId?: string | null;
     countryId?: string | null;
+    countryName?: string | null;
     stateId?: string | null;
+    stateName?: string | null;
     address?: string | null;
     website?: string | null;
     lotusBurnUp: number;
@@ -252,8 +264,8 @@ export type UpdatePageMutation = {
     lotusBurnScore: number;
     totalBurnForPage?: number | null;
     followersCount?: number | null;
-    createPostFee: number;
-    createCommentFee: number;
+    createPostFee: string;
+    createCommentFee: string;
     createdAt: any;
     updatedAt: any;
     pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
@@ -282,7 +294,9 @@ export const PageFieldsFragmentDoc = `
   cover
   parentId
   countryId
+  countryName
   stateId
+  stateName
   address
   website
   lotusBurnUp

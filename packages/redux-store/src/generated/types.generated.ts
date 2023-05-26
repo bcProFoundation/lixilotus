@@ -153,6 +153,7 @@ export type CreatePostInput = {
   pageId?: InputMaybe<Scalars['String']>;
   pureContent: Scalars['String'];
   tokenPrimaryId?: InputMaybe<Scalars['String']>;
+  txHex?: InputMaybe<Scalars['String']>;
   uploadCovers?: InputMaybe<Array<Scalars['String']>>;
 };
 
@@ -373,9 +374,10 @@ export type Page = {
   category: Category;
   categoryId: Scalars['String'];
   countryId?: Maybe<Scalars['String']>;
+  countryName?: Maybe<Scalars['String']>;
   cover?: Maybe<Scalars['String']>;
-  createCommentFee: Scalars['Float'];
-  createPostFee: Scalars['Float'];
+  createCommentFee: Scalars['String'];
+  createPostFee: Scalars['String'];
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
   description: Scalars['String'];
@@ -392,6 +394,7 @@ export type Page = {
   parentId?: Maybe<Scalars['String']>;
   salt?: Maybe<Scalars['String']>;
   stateId?: Maybe<Scalars['String']>;
+  stateName?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   /** The sum of burn amount for every post on page */
   totalBurnForPage?: Maybe<Scalars['Float']>;

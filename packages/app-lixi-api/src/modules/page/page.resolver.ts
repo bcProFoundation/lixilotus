@@ -43,7 +43,9 @@ export class PageResolver {
       where: { id: id },
       include: {
         pageAccount: true,
-        category: true
+        category: true,
+        country: true,
+        state: true
       }
     });
 
@@ -54,7 +56,9 @@ export class PageResolver {
 
     const result = {
       ...page,
-      followersCount: followersCount
+      followersCount: followersCount,
+      countryName: page?.country?.name ?? undefined,
+      stateName: page?.state?.name ?? undefined
     };
 
     return result;

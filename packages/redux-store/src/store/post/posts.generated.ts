@@ -48,7 +48,14 @@ export type PostQuery = {
       };
     }> | null;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
-    page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+    page?: {
+      __typename?: 'Page';
+      avatar?: string | null;
+      name: string;
+      id: string;
+      createCommentFee: string;
+      pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+    } | null;
     token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
   };
 };
@@ -98,7 +105,14 @@ export type PostsQuery = {
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
-        page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+        page?: {
+          __typename?: 'Page';
+          avatar?: string | null;
+          name: string;
+          id: string;
+          createCommentFee: string;
+          pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+        } | null;
         token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
       };
     }> | null;
@@ -157,7 +171,14 @@ export type OrphanPostsQuery = {
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
-        page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+        page?: {
+          __typename?: 'Page';
+          avatar?: string | null;
+          name: string;
+          id: string;
+          createCommentFee: string;
+          pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+        } | null;
         token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
       };
     }> | null;
@@ -216,7 +237,14 @@ export type PostsByPageIdQuery = {
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
-        page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+        page?: {
+          __typename?: 'Page';
+          avatar?: string | null;
+          name: string;
+          id: string;
+          createCommentFee: string;
+          pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+        } | null;
         token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
       };
     }> | null;
@@ -275,7 +303,14 @@ export type PostsByUserIdQuery = {
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
-        page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+        page?: {
+          __typename?: 'Page';
+          avatar?: string | null;
+          name: string;
+          id: string;
+          createCommentFee: string;
+          pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+        } | null;
         token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
       };
     }> | null;
@@ -334,7 +369,14 @@ export type PostsByTokenIdQuery = {
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
-        page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+        page?: {
+          __typename?: 'Page';
+          avatar?: string | null;
+          name: string;
+          id: string;
+          createCommentFee: string;
+          pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+        } | null;
         token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
       };
     }> | null;
@@ -390,7 +432,14 @@ export type PostsBySearchQuery = {
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
-        page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+        page?: {
+          __typename?: 'Page';
+          avatar?: string | null;
+          name: string;
+          id: string;
+          createCommentFee: string;
+          pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+        } | null;
       } | null;
     }> | null;
     pageInfo?: {
@@ -429,7 +478,14 @@ export type PostFieldsFragment = {
     };
   }> | null;
   postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
-  page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+  page?: {
+    __typename?: 'Page';
+    avatar?: string | null;
+    name: string;
+    id: string;
+    createCommentFee: string;
+    pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+  } | null;
   token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
 };
 
@@ -459,7 +515,14 @@ export type PostMeiliFieldsFragment = {
     };
   }> | null;
   postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
-  page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+  page?: {
+    __typename?: 'Page';
+    avatar?: string | null;
+    name: string;
+    id: string;
+    createCommentFee: string;
+    pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+  } | null;
 };
 
 export type CreatePostMutationVariables = Types.Exact<{
@@ -494,7 +557,14 @@ export type CreatePostMutation = {
       };
     }> | null;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
-    page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+    page?: {
+      __typename?: 'Page';
+      avatar?: string | null;
+      name: string;
+      id: string;
+      createCommentFee: string;
+      pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+    } | null;
     token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
   };
 };
@@ -531,7 +601,14 @@ export type UpdatePostMutation = {
       };
     }> | null;
     postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
-    page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+    page?: {
+      __typename?: 'Page';
+      avatar?: string | null;
+      name: string;
+      id: string;
+      createCommentFee: string;
+      pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+    } | null;
     token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
   };
 };
@@ -562,6 +639,12 @@ export const PostFieldsFragmentDoc = `
     avatar
     name
     id
+    createCommentFee
+    pageAccount {
+      id
+      name
+      address
+    }
   }
   token {
     id
@@ -602,6 +685,12 @@ export const PostMeiliFieldsFragmentDoc = `
     avatar
     name
     id
+    createCommentFee
+    pageAccount {
+      id
+      name
+      address
+    }
   }
   lotusBurnUp
   lotusBurnDown

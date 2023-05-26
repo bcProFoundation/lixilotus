@@ -720,7 +720,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                   <SearchBox />
                   <FilterBurnt filterForType={FilterType.PostsPage} />
                 </div>
-                <CreatePostCard pageId={page.id} />
+                <CreatePostCard page={page} />
                 <Timeline>
                   {data.length == 0 && (
                     <div className="blank-timeline">

@@ -58,7 +58,9 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
       description: page.description,
       website: page.website,
       countryId: page.countryId,
+      countryName: page?.countryName,
       stateId: page.stateId,
+      stateName: page?.stateName,
       address: page.address,
       createPostFee: page.createPostFee,
       createCommentFee: page.createCommentFee
@@ -77,12 +79,14 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
           ...data,
           id: page.id,
           categoryId: String(data.categoryId),
-          countryId: data.countryId ? String(data.countryId) : undefined,
-          stateId: data.countryId ? String(data.stateId) : undefined,
+          countryId: !_.isNil(data.countryId) ? String(data.countryId) : null,
+          stateId: !_.isNil(data.stateId) ? String(data.stateId) : null,
           createPostFee: String(data.createPostFee),
           createCommentFee: String(data.createCommentFee)
         },
-        'categoryName'
+        'categoryName',
+        'countryName',
+        'stateName'
       );
 
       const pageUpdated = await updatePageTrigger({ input: updatePageInput }).unwrap();
@@ -243,7 +247,7 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
                       <Select
                         className="select-after edit-page"
                         showSearch
-                        value={value}
+                        defaultValue={page.countryName}
                         onChange={onChange}
                         placeholder={intl.get('page.country')}
                         optionFilterProp="children"
@@ -306,7 +310,10 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
               />
             </Form.Item>
 
-            <Form.Item name="country-state" label={intl.get('page.countryName') + '/ ' + intl.get('page.stateName')}>
+            <Form.Item
+              name="post-comment-fee"
+              label={intl.get('page.createPostFee') + '/ ' + intl.get('page.createCommentFee')}
+            >
               <Row>
                 <Col span={12}>
                   <Controller
