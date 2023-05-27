@@ -101,7 +101,7 @@ export default {
   'general.customBurn': 'Tùy chọn đốt',
   'general.burnForType': 'Đốt cho loại',
   'general.failed': 'Thất bại',
-  'general.minBurnt': 'XPI tối thiểu đã đốt:',
+  'general.level': 'Cấp độ',
   'general.showMore': 'Xem thêm',
   'general.showLess': 'Xem ít',
   'general.topAccounts': 'Xếp hạng tài khoản đã đốt',
