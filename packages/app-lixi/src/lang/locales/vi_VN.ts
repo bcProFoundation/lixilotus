@@ -101,7 +101,7 @@ export default {
   'general.customBurn': 'Tùy chọn đốt',
   'general.burnForType': 'Đốt cho loại',
   'general.failed': 'Thất bại',
-  'general.minBurnt': 'XPI tối thiểu đã đốt:',
+  'general.level': 'Cấp độ',
   'general.showMore': 'Xem thêm',
   'general.showLess': 'Xem ít',
   'general.topAccounts': 'Xếp hạng tài khoản đã đốt',
@@ -598,7 +598,7 @@ export default {
   'category.moviesAndAnimation': 'Phim và Hoạt hình',
   'category.historyAndFacts': 'Lịch sử và sự kiện',
   'category.lifeStyle': 'Phong cách sống',
-  'category.natural': 'Thiên nhiên',
+  'category.nature': 'Thiên nhiên',
   'category.newsAndPolitics': 'Thời sự và Chính trị',
   'category.peopleAndNations': 'Con người và Quốc gia',
   'category.petsAndAnimals': 'Vật nuôi',
@@ -608,6 +608,10 @@ export default {
   'category.travelAndEvents': 'Du lịch và Sự kiện',
   'category.other': 'Khác',
   'category.cryptoCurrencies': 'Tiền mã hóa',
+  'category.realEstate': 'Bất động sản',
+  'category.agriculture': 'Nông nghiệp',
+  'category.permaculture': 'Thủy sản',
+  'category.humanitarian': 'Tính nhân đạo',
 
   /* 19. Webpush */
   'webpush.unableToSubscribe': 'Không thể đăng ký.',

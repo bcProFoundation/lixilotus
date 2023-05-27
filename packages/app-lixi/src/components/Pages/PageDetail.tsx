@@ -153,9 +153,6 @@ const ProfileCardHeader = styled.div`
           margin-bottom: 4px;
         }
       }
-      @media (max-width: 426px) {
-        display: none;
-      }
     }
     @media (max-width: 768px) {
       flex-direction: column;
@@ -594,7 +591,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
             )}
             {/* Follow */}
             {selectedAccountId != pageDetailData?.pageAccountId && (
-              <div className="action-profile">
+              <div>
                 <Button onClick={isFollowed ? handleUnfollowPage : handleFollowPage}>
                   {isFollowed ? intl.get('general.unfollow') : intl.get('general.follow')}
                 </Button>
@@ -768,19 +765,19 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                   <div className="about-content">
                     <SubAbout
                       dataItem={pageDetailData?.description}
-                      onClickIcon={() => {}}
+                      onClickIcon={() => { }}
                       icon={InfoCircleOutlined}
                       text={pageDetailData?.description}
                     />
                     <SubAbout
                       dataItem={pageDetailData?.address}
-                      onClickIcon={() => {}}
+                      onClickIcon={() => { }}
                       icon={CompassOutlined}
                       text={pageDetailData?.address}
                     />
                     <SubAbout
                       dataItem={pageDetailData?.website}
-                      onClickIcon={() => {}}
+                      onClickIcon={() => { }}
                       icon={HomeOutlined}
                       text={pageDetailData?.website}
                     />

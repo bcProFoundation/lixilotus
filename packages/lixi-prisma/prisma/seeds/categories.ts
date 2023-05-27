@@ -101,7 +101,7 @@ export const categories = [
   },
   {
     id: 26,
-    name: 'natural'
+    name: 'nature'
   },
   {
     id: 27,
@@ -138,5 +138,21 @@ export const categories = [
   {
     id: 35,
     name: 'cryptoCurrencies'
+  },
+  {
+    id: 36,
+    name: 'realEstate'
+  },
+  {
+    id: 37,
+    name: 'agriculture'
+  },
+  {
+    id: 38,
+    name: 'permaculture'
+  },
+  {
+    id: 39,
+    name: 'humanitarian'
   }
 ]

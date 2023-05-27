@@ -102,7 +102,7 @@ export default {
   'general.customBurn': 'Custom burn',
   'general.burnForType': 'Burn For Type',
   'general.failed': 'Failed',
-  'general.minBurnt': 'Level',
+  'general.level': 'Level',
   'general.showMore': 'Show more',
   'general.showLess': 'Show less',
   'general.topAccounts': 'Top Accounts',
@@ -599,7 +599,7 @@ export default {
   'category.moviesAndAnimation': 'Movies And Animation',
   'category.historyAndFacts': 'History And Facts',
   'category.lifeStyle': 'Life Style',
-  'category.natural': 'Natural',
+  'category.nature': 'Nature',
   'category.newsAndPolitics': 'News And Politics',
   'category.peopleAndNations': 'People And Nations',
   'category.petsAndAnimals': 'Pets And Animals',
@@ -609,6 +609,10 @@ export default {
   'category.travelAndEvents': 'Travel And Events',
   'category.other': 'Other',
   'category.cryptoCurrencies': 'Crypto Currencies',
+  'category.realEstate': 'Real Estate',
+  'category.agriculture': 'Agriculture',
+  'category.permaculture': 'Permaculture',
+  'category.humanitarian': 'Humanitarian',
 
   /* 19. Webpush */
   'webpush.unableToSubscribe': 'Unable to subscriber.',
