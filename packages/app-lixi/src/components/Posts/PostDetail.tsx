@@ -545,27 +545,29 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
         }
       }
 
-      if (selectedAccount.id != parseInt(post.page.pageAccount.id) && post.page.createCommentFee != '0') {
-        try {
-          const fundingWif = getUtxoWif(slpBalancesAndUtxos.nonSlpUtxos[0], walletPaths);
-          tipHex = await sendXpi(
-            XPI,
-            chronik,
-            walletPaths,
-            slpBalancesAndUtxos.nonSlpUtxos,
-            currency.defaultFee,
-            '',
-            false, // indicate send mode is one to one
-            null,
-            post.page.pageAccount.address,
-            post.page.createCommentFee,
-            isEncryptedOptionalOpReturnMsg,
-            fundingWif,
-            true
-          );
-        } catch (e) {
-          const message = e.message || e.error || JSON.stringify(e);
-          dispatch(sendXPIFailure(message));
+      if (post.page) {
+        if (selectedAccount.id != parseInt(post.page.pageAccount.id) && post.page.createCommentFee != '0') {
+          try {
+            const fundingWif = getUtxoWif(slpBalancesAndUtxos.nonSlpUtxos[0], walletPaths);
+            tipHex = await sendXpi(
+              XPI,
+              chronik,
+              walletPaths,
+              slpBalancesAndUtxos.nonSlpUtxos,
+              currency.defaultFee,
+              '',
+              false, // indicate send mode is one to one
+              null,
+              post.page.pageAccount.address,
+              post.page.createCommentFee,
+              isEncryptedOptionalOpReturnMsg,
+              fundingWif,
+              true
+            );
+          } catch (e) {
+            const message = e.message || e.error || JSON.stringify(e);
+            dispatch(sendXPIFailure(message));
+          }
         }
       }
 
