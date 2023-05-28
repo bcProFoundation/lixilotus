@@ -613,12 +613,13 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
                   {userDetailData?.address.slice(6, 11) + '...' + userDetailData?.address.slice(-5)}
                 </p>
               </div>
-              {userDetailData.id != selectedAccount.id && (
-                <Button id="follow-button" onClick={isFollowed ? () => handleUnfollow() : () => handleFollow()}>
-                  {isFollowed ? intl.get('general.unfollow') : intl.get('general.follow')}
-                </Button>
-              )}
             </div>
+            {/* Follow */}
+            {userDetailData.id != selectedAccount.id && (
+              <Button id="follow-button" onClick={isFollowed ? () => handleUnfollow() : () => handleFollow()}>
+                {isFollowed ? intl.get('general.unfollow') : intl.get('general.follow')}
+              </Button>
+            )}
 
             {/* TODO: implement in the future */}
             {/* {selectedAccountId == userDetailData.id && (

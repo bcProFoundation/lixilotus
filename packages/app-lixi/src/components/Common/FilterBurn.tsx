@@ -102,7 +102,7 @@ export const FilterBurnt = (props: FilterBurntProps) => {
 
   return (
     <FilterStyle>
-      <p>{intl.get('general.minBurnt')} &nbsp;</p>
+      <p>{intl.get('general.level')} &nbsp;</p>
       <Input.Group>
         <Button
           className="down-value"

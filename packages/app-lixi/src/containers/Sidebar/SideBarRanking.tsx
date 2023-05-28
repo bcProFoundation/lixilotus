@@ -444,42 +444,43 @@ const SidebarRanking = () => {
       {(router?.pathname == '/wallet' || router?.pathname == '/') && (
         <div className="right-bar">
           <div className="container-right-bar your-shortcuts">
-            <StyledTabs type="card">
-              <Tabs.TabPane tab={<UserOutlined />} key="people">
-                <div className="content">
-                  <h3>{intl.get('general.topAccounts')}</h3>
-                  {leaderboard.map((item, index) => {
-                    return (
-                      <h4 className="distance" key={`${item.id}-${item.address}`}>
-                        <ShortcutItemAccess
-                          burnValue={item.totalBurned}
-                          icon={''}
-                          text={item.name}
-                          href={`/profile/${item.address}`}
-                        />
-                      </h4>
-                    );
-                  })}
-                </div>
-              </Tabs.TabPane>
-              <Tabs.TabPane tab={<ShopOutlined />} key="page">
-                <div className="content">
-                  <h3>{intl.get('general.topPages')}</h3>
-                  {topPagesData.map((item, index) => {
-                    return (
-                      <h4 className="distance" key={`${item.id}`}>
-                        <ShortcutItemAccess
-                          burnValue={item.totalBurnForPage}
-                          icon={item.avatar ? item.avatar : item.name}
-                          text={item.name}
-                          href={`/page/${item.id}`}
-                        />
-                      </h4>
-                    );
-                  })}
-                </div>
-              </Tabs.TabPane>
-            </StyledTabs>
+            <div className="content">
+              <h3>{intl.get('general.topPages')}</h3>
+              {topPagesData.slice(0, 5).map((item, index) => {
+                return (
+                  <h4 className="distance" key={`${item.id}`}>
+                    <ShortcutItemAccess
+                      burnValue={item.totalBurnForPage}
+                      icon={item.avatar ? item.avatar : item.name}
+                      text={item.name}
+                      href={`/page/${item.id}`}
+                    />
+                  </h4>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {(router?.pathname == '/wallet' || router?.pathname == '/') && (
+        <div className="right-bar">
+          <div className="container-right-bar your-shortcuts">
+            <div className="content">
+              <h3>{intl.get('general.topAccounts')}</h3>
+              {leaderboard.map((item, index) => {
+                return (
+                  <h4 className="distance" key={`${item.id}-${item.address}`}>
+                    <ShortcutItemAccess
+                      burnValue={item.totalBurned}
+                      icon={''}
+                      text={item.name}
+                      href={`/profile/${item.address}`}
+                    />
+                  </h4>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}

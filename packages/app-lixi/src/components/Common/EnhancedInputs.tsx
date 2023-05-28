@@ -73,9 +73,7 @@ export const LanguageSelectDropdown = selectProps => {
   for (var key in AppLocale) {
     const languageMenuOption: LanguageMenuOption = {
       value: key,
-      label: intl.formatMessage({
-        id: key
-      })
+      label: intl.get('settings.' + key)
     };
     languageMenuOptions.push(languageMenuOption);
   }
