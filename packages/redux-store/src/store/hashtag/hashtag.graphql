@@ -1,0 +1,47 @@
+fragment HashtagFields on Hashtag {
+  id
+  content
+  postHashtags {
+    postId
+  }
+  lotusBurnUp
+  lotusBurnDown
+  lotusBurnScore
+  createdAt
+  updatedAt
+}
+
+query Hashtag($id: String!) {
+  hashtag(id: $id) {
+    ...HashtagFields
+  }
+}
+
+query Hashtags($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: HashtagOrder, $skip: Int) {
+  allHashtag(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, skip: $skip) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...HashtagFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+
+query HashtagBySearch($after: String, $before: String, $first: Int, $last: Int, $query: String) {
+  allHashtagBySearch(after: $after, before: $before, first: $first, last: $last, query: $query) {
+    edges {
+      cursor
+      node {
+        ...HashtagFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}

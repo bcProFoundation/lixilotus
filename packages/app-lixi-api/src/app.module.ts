@@ -27,6 +27,7 @@ import { TokenModule } from './modules/token/token.module';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { AccountModule } from './modules/account/account.module';
 import { BullModule } from '@nestjs/bullmq';
+import { HashtagModule } from './modules/hashtag/hashtag.module';
 
 //enabled serving multiple static for fastify
 type FastifyServeStaticModuleOptions = ServeStaticModuleOptions & {
@@ -123,6 +124,7 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
     TokenModule,
     WorshipModule,
     TempleModule,
+    HashtagModule,
     S3Module.forRootAsync({
       useFactory: () => ({
         config: {

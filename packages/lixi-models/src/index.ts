@@ -19,5 +19,6 @@ export * from './lib/burn';
 export * from './lib/geo-location';
 export * from './lib/worshiped-person';
 export * from './lib/temple';
+export * from './lib/hashtag';
 export * from './lib/category';
 export * from './lib/follow';

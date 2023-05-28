@@ -33,7 +33,7 @@ import { Args, Int, Mutation, Parent, Query, ResolveField, Resolver, Subscriptio
 import { MeiliService } from './meili.service';
 import { GqlJwtAuthGuard, GqlJwtAuthGuardByPass } from '../auth/guards/gql-jwtauth.guard';
 import { PrismaService } from '../prisma/prisma.service';
-import { POSTS } from './constants/meili.constants';
+import { HASHTAG, POSTS } from './constants/meili.constants';
 import ConnectionArgs, { getPagingParameters } from '../../common/custom-graphql-relay/connection.args';
 import { connectionFromArraySlice } from '../../common/custom-graphql-relay/arrayConnection';
 import PostResponse from 'src/common/post.response';
@@ -42,6 +42,7 @@ import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
 import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
 import { NotificationLevel } from '@bcpros/lixi-prisma';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
+import { extractHashtagFromText } from 'src/utils/extractHashtagFromText';
 
 const pubSub = new PubSub();
 
@@ -587,6 +588,49 @@ export class PostResolver {
     return result;
   }
 
+  @Query(() => PostConnection)
+  @UseGuards(GqlJwtAuthGuardByPass)
+  async allPostsByHashtag(
+    @PostAccountEntity() account: Account,
+    @Args() { after, before, first, last, minBurnFilter }: PaginationArgs,
+    @Args({ name: 'id', type: () => String, nullable: true })
+    hashtagId: string,
+    @Args({
+      name: 'orderBy',
+      type: () => PostOrder,
+      nullable: true
+    })
+    orderBy: PostOrder
+  ) {
+    const result = await findManyCursorConnection(
+      args =>
+        this.prisma.post.findMany({
+          include: { postAccount: true, comments: true, postHashtags: true },
+          where: {
+            postHashtags: {
+              some: {
+                hashtagId: hashtagId
+              }
+            }
+          },
+          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+          ...args
+        }),
+      () =>
+        this.prisma.post.count({
+          where: {
+            postHashtags: {
+              some: {
+                hashtagId: hashtagId
+              }
+            }
+          }
+        }),
+      { first, last, before, after }
+    );
+    return result;
+  }
+
   @UseGuards(GqlJwtAuthGuard)
   @Mutation(() => Post)
   async createPost(@PostAccountEntity() account: Account, @Args('data') data: CreatePostInput) {
@@ -659,6 +703,43 @@ export class PostResolver {
       }
     });
 
+    //Hashtag
+    const hashtag = extractHashtagFromText(pureContent, false);
+    //Check for duplicate
+    let createdHashtag = null;
+
+    //Will comeback for multiple hashtag
+    //Must support multiple hashtag
+    if (!_.isNil(hashtag)) {
+      createdHashtag = await this.prisma.hashtag.create({
+        data: {
+          content: (hashtag as string).substring(1)
+        }
+      });
+
+      await this.prisma.postHashtag.create({
+        data: {
+          hashtag: {
+            connect: {
+              id: createdHashtag.id
+            }
+          },
+          post: {
+            connect: {
+              id: createdPost.id
+            }
+          }
+        }
+      });
+
+      const indexedHashtag = {
+        id: createdHashtag.id,
+        content: createdHashtag.content
+      };
+
+      await this.meiliService.add(`${process.env.MEILISEARCH_BUCKET}_${HASHTAG}`, indexedHashtag, createdHashtag.id);
+    }
+
     const indexedPost = {
       id: createdPost.id,
       content: pureContent,
@@ -672,7 +753,8 @@ export class PostResolver {
       token: {
         id: createdPost.token?.id,
         name: createdPost.token?.name
-      }
+      },
+      hashtag: hashtag // use map here to create array of hashtag. To suppport multiple hashtag
     };
 
     await this.meiliService.add(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`, indexedPost, createdPost.id);

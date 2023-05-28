@@ -2,6 +2,7 @@ import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
 import { IsOptional } from 'class-validator';
 
 import { Account } from '../account';
+import { PostHashtag } from '../hashtag/postHashtag.model';
 import { Page } from '../page';
 import { Token } from '../token';
 import { UploadDetail } from '../upload';
@@ -57,4 +58,7 @@ export class Post {
 
   @Field(() => Number, { nullable: true })
   totalComments?: number;
+
+  @Field(() => [PostHashtag], { nullable: true })
+  postHashtags?: [PostHashtag];
 }

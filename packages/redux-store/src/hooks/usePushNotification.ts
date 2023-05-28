@@ -47,9 +47,7 @@ const usePushNotification = (props: { registration: ServiceWorkerRegistration })
             // generate new deviceId if it is not available
             deviceId: deviceId
           };
-          dispatch(
-            saveWebPushNotifConfig(newConfig)
-          );
+          dispatch(saveWebPushNotifConfig(newConfig));
         }
       }
     })();
@@ -89,14 +87,10 @@ const usePushNotification = (props: { registration: ServiceWorkerRegistration })
 
   return {
     turnOffWebPushNotification: () => {
-      dispatch(
-        saveAllowPushNotification(false)
-      );
+      dispatch(saveAllowPushNotification(false));
     },
     turnOnWebPushNotification: () => {
-      dispatch(
-        saveAllowPushNotification(true)
-      );
+      dispatch(saveAllowPushNotification(true));
     }
   };
 };
