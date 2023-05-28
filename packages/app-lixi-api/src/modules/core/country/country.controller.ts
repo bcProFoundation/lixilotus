@@ -1,6 +1,5 @@
-import { Country, State } from '@bcpros/lixi-models';
-import { Controller, Get, Headers, HttpException, HttpStatus, Param, Query } from '@nestjs/common';
-import { Body } from '@nestjs/common/decorators';
+import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
+import { Controller, Get, Headers, HttpException, HttpStatus, Param, Query, UseInterceptors } from '@nestjs/common';
 import geoip from 'geoip-country';
 import * as _ from 'lodash';
 import { I18n, I18nContext } from 'nestjs-i18n';
@@ -12,6 +11,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 export class CountryController {
   constructor(private prisma: PrismaService) {}
 
+  @CacheTTL(600000)
   @Get()
   async getCountries(@I18n() i18n: I18nContext): Promise<any> {
     try {
@@ -24,6 +24,8 @@ export class CountryController {
     }
   }
 
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(600000)
   @Get(':id/states')
   async getStates(@Param('id') id: number | string, @I18n() i18n: I18nContext): Promise<any> {
     try {
@@ -46,6 +48,8 @@ export class CountryController {
     }
   }
 
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(600000)
   @Get(':id/cities')
   async getCities(
     @Query('countryId') countryId: number,
