@@ -1,32 +1,34 @@
+import { RedisClientOptions, RedisModule } from '@liaoliaots/nestjs-redis';
+import { BullModule } from '@nestjs/bullmq';
+import { CacheModule } from '@nestjs/cache-manager';
 import { Logger, Module, OnApplicationShutdown } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_FILTER } from '@nestjs/core';
 import { GraphQLModule } from '@nestjs/graphql';
 import { MercuriusDriver, MercuriusDriverConfig } from '@nestjs/mercurius';
 import { ServeStaticModule, ServeStaticModuleOptions } from '@nestjs/serve-static';
-import { MeiliSearchModule } from 'nestjs-meilisearch';
+import { redisStore } from 'cache-manager-ioredis-yet';
 import { FastifyRequest } from 'fastify';
-import { AcceptLanguageResolver, HeaderResolver, I18nModule } from 'nestjs-i18n';
-import path, { join } from 'path';
+import { GraphQLError, GraphQLFormattedError } from 'graphql';
 import IORedis from 'ioredis';
 import * as _ from 'lodash';
+import { AcceptLanguageResolver, HeaderResolver, I18nModule } from 'nestjs-i18n';
+import { MeiliSearchModule } from 'nestjs-meilisearch';
+import { S3Module } from 'nestjs-s3';
+import path, { join } from 'path';
 import { NotificationModule } from './common/modules/notifications/notification.module';
 import { GraphqlConfig } from './config/config.interface';
 import configuration from './config/configuration';
+import { HttpExceptionFilter } from './middlewares/exception.filter';
+import { AccountModule } from './modules/account/account.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CoreModule } from './modules/core/core.module';
 import { PageModule } from './modules/page/page.module';
-import { WorshipModule } from './modules/worship/worship.module';
-import { TempleModule } from './modules/temple/temple.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
-import { WalletModule } from './modules/wallet/wallet.module';
-import { GraphQLError, GraphQLFormattedError } from 'graphql';
-import { APP_FILTER } from '@nestjs/core';
-import { HttpExceptionFilter } from './middlewares/exception.filter';
-import { S3Module } from 'nestjs-s3';
+import { TempleModule } from './modules/temple/temple.module';
 import { TokenModule } from './modules/token/token.module';
-import { RedisModule } from '@liaoliaots/nestjs-redis';
-import { AccountModule } from './modules/account/account.module';
-import { BullModule } from '@nestjs/bullmq';
+import { WalletModule } from './modules/wallet/wallet.module';
+import { WorshipModule } from './modules/worship/worship.module';
 
 //enabled serving multiple static for fastify
 type FastifyServeStaticModuleOptions = ServeStaticModuleOptions & {
@@ -48,6 +50,17 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
     ConfigModule.forRoot({
       isGlobal: true,
       load: [configuration]
+    }),
+    CacheModule.registerAsync<RedisClientOptions>({
+      isGlobal: true,
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        return {
+          store: redisStore,
+          host: config.get<string>('REDIS_HOST') ? config.get<string>('REDIS_HOST') : 'redis-lixi',
+          port: config.get<string>('REDIS_PORT') ? _.toSafeInteger(config.get<string>('REDIS_PORT')) : 6379
+        };
+      }
     }),
     BullModule.forRootAsync({
       inject: [ConfigService],
