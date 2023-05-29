@@ -35,7 +35,7 @@ export class CommentResolver {
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS,
     private readonly notificationService: NotificationService
-  ) {}
+  ) { }
 
   @Subscription(() => Comment)
   commentCreated() {
@@ -82,9 +82,14 @@ export class CommentResolver {
                 ]
               },
               {
-                commentAccount: {
-                  id: account.id
-                }
+                AND: [
+                  { commentToId: id },
+                  {
+                    commentAccount: {
+                      id: account?.id ?? null
+                    }
+                  }
+                ]
               }
             ]
           },
@@ -108,9 +113,14 @@ export class CommentResolver {
                 ]
               },
               {
-                commentAccount: {
-                  id: account.id
-                }
+                AND: [
+                  { commentToId: id },
+                  {
+                    commentAccount: {
+                      id: account?.id ?? null
+                    }
+                  }
+                ]
               }
             ]
           }
