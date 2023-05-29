@@ -86,7 +86,7 @@ export class CommentResolver {
                   { commentToId: id },
                   {
                     commentAccount: {
-                      id: account.id
+                      id: account?.id ?? null
                     }
                   }
                 ]
@@ -117,7 +117,7 @@ export class CommentResolver {
                   { commentToId: id },
                   {
                     commentAccount: {
-                      id: account.id
+                      id: account?.id ?? null
                     }
                   }
                 ]
