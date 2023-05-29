@@ -1,12 +1,8 @@
-export const extractHashtagFromText = (text: string, multiple?: boolean) => {
+export const extractHashtagFromText = (text: string) => {
   const hashtagRegex = /#(\w+)/g;
   const hashtags = text.match(hashtagRegex);
 
   if (!hashtags || hashtags.length === 0) return null;
 
-  if (multiple) {
-    return hashtags;
-  } else {
-    return hashtags[0];
-  }
+  return hashtags;
 };

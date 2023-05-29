@@ -391,6 +391,64 @@ export type PostsBySearchQuery = {
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
         page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+        token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
+      } | null;
+    }> | null;
+    pageInfo?: {
+      __typename?: 'PostMeiliPageInfo';
+      endCursor?: string | null;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: string | null;
+    } | null;
+  };
+};
+
+export type PostsBySearchWithHashtagQueryVariables = Types.Exact<{
+  after?: Types.InputMaybe<Types.Scalars['String']>;
+  before?: Types.InputMaybe<Types.Scalars['String']>;
+  first?: Types.InputMaybe<Types.Scalars['Int']>;
+  last?: Types.InputMaybe<Types.Scalars['Int']>;
+  query?: Types.InputMaybe<Types.Scalars['String']>;
+  minBurnFilter?: Types.InputMaybe<Types.Scalars['Int']>;
+  hashtag?: Types.InputMaybe<Types.Scalars['String']>;
+}>;
+
+export type PostsBySearchWithHashtagQuery = {
+  __typename?: 'Query';
+  allPostsBySearchWithHashtag: {
+    __typename?: 'PostResponse';
+    edges?: Array<{
+      __typename?: 'PostMeiliEdge';
+      cursor?: string | null;
+      node?: {
+        __typename?: 'Post';
+        id: string;
+        content: string;
+        lotusBurnUp: number;
+        lotusBurnDown: number;
+        lotusBurnScore: number;
+        totalComments: number;
+        createdAt: any;
+        updatedAt: any;
+        uploads?: Array<{
+          __typename?: 'UploadDetail';
+          id: string;
+          upload: {
+            __typename?: 'Upload';
+            id: string;
+            sha: string;
+            bucket?: string | null;
+            width?: string | null;
+            height?: string | null;
+            sha800?: string | null;
+            sha320?: string | null;
+            sha40?: string | null;
+          };
+        }> | null;
+        postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+        page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+        token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
       } | null;
     }> | null;
     pageInfo?: {
@@ -460,6 +518,7 @@ export type PostMeiliFieldsFragment = {
   }> | null;
   postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
   page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+  token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
 };
 
 export type CreatePostMutationVariables = Types.Exact<{
@@ -602,6 +661,11 @@ export const PostMeiliFieldsFragmentDoc = `
     avatar
     name
     id
+  }
+  token {
+    id
+    name
+    tokenId
   }
   lotusBurnUp
   lotusBurnDown
@@ -771,6 +835,30 @@ export const PostsBySearchDocument = `
 }
     ${PostMeiliFieldsFragmentDoc}
 ${PostMeiliPageInfoFieldsFragmentDoc}`;
+export const PostsBySearchWithHashtagDocument = `
+    query PostsBySearchWithHashtag($after: String, $before: String, $first: Int, $last: Int, $query: String, $minBurnFilter: Int, $hashtag: String) {
+  allPostsBySearchWithHashtag(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    query: $query
+    minBurnFilter: $minBurnFilter
+    hashtag: $hashtag
+  ) {
+    edges {
+      cursor
+      node {
+        ...PostMeiliFields
+      }
+    }
+    pageInfo {
+      ...PostMeiliPageInfoFields
+    }
+  }
+}
+    ${PostMeiliFieldsFragmentDoc}
+${PostMeiliPageInfoFieldsFragmentDoc}`;
 export const CreatePostDocument = `
     mutation createPost($input: CreatePostInput!) {
   createPost(data: $input) {
@@ -809,6 +897,11 @@ const injectedRtkApi = api.injectEndpoints({
     PostsBySearch: build.query<PostsBySearchQuery, PostsBySearchQueryVariables | void>({
       query: variables => ({ document: PostsBySearchDocument, variables })
     }),
+    PostsBySearchWithHashtag: build.query<PostsBySearchWithHashtagQuery, PostsBySearchWithHashtagQueryVariables | void>(
+      {
+        query: variables => ({ document: PostsBySearchWithHashtagDocument, variables })
+      }
+    ),
     createPost: build.mutation<CreatePostMutation, CreatePostMutationVariables>({
       query: variables => ({ document: CreatePostDocument, variables })
     }),
@@ -834,6 +927,8 @@ export const {
   useLazyPostsByTokenIdQuery,
   usePostsBySearchQuery,
   useLazyPostsBySearchQuery,
+  usePostsBySearchWithHashtagQuery,
+  useLazyPostsBySearchWithHashtagQuery,
   useCreatePostMutation,
   useUpdatePostMutation
 } = injectedRtkApi;

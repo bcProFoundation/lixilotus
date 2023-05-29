@@ -2,7 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Document, EnqueuedTask, MeiliSearch } from 'meilisearch';
 import { I18n, I18nService } from 'nestjs-i18n';
 import { InjectMeiliSearch } from 'nestjs-meilisearch';
-import { PERSON, POSTS, TEMPLE } from './constants/meili.constants';
+import { HASHTAG, PERSON, POSTS, TEMPLE } from './constants/meili.constants';
 
 @Injectable()
 export class MeiliService implements OnModuleInit {
@@ -14,7 +14,7 @@ export class MeiliService implements OnModuleInit {
     await this.meiliSearch.index(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`).updateSettings({
       searchableAttributes: ['content', 'postAccountName', 'hashtag'],
       displayedAttributes: ['*'],
-      filterableAttributes: ['hashtag']
+      filterableAttributes: ['hashtag.content', 'page', 'token']
     });
     await this.meiliSearch.index(`${process.env.MEILISEARCH_BUCKET}_${PERSON}`).updateSettings({
       searchableAttributes: ['name', 'achievement'],
@@ -22,6 +22,10 @@ export class MeiliService implements OnModuleInit {
     });
     await this.meiliSearch.index(`${process.env.MEILISEARCH_BUCKET}_${TEMPLE}`).updateSettings({
       searchableAttributes: ['name', 'president', 'alias', 'religion'],
+      displayedAttributes: ['*']
+    });
+    await this.meiliSearch.index(`${process.env.MEILISEARCH_BUCKET}_${HASHTAG}`).updateSettings({
+      searchableAttributes: ['content'],
       displayedAttributes: ['*']
     });
   }

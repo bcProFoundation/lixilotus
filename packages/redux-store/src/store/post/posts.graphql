@@ -194,6 +194,36 @@ query PostsBySearch($after: String, $before: String, $first: Int, $last: Int, $q
   }
 }
 
+query PostsBySearchWithHashtag(
+  $after: String
+  $before: String
+  $first: Int
+  $last: Int
+  $query: String
+  $minBurnFilter: Int
+  $hashtag: String
+) {
+  allPostsBySearchWithHashtag(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    query: $query
+    minBurnFilter: $minBurnFilter
+    hashtag: $hashtag
+  ) {
+    edges {
+      cursor
+      node {
+        ...PostMeiliFields
+      }
+    }
+    pageInfo {
+      ...PostMeiliPageInfoFields
+    }
+  }
+}
+
 fragment PostFields on Post {
   id
   content
@@ -258,6 +288,11 @@ fragment PostMeiliFields on Post {
     avatar
     name
     id
+  }
+  token {
+    id
+    name
+    tokenId
   }
   lotusBurnUp
   lotusBurnDown

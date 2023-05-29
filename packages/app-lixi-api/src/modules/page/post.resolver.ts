@@ -43,6 +43,7 @@ import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notificatio
 import { NotificationLevel } from '@bcpros/lixi-prisma';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
 import { extractHashtagFromText } from 'src/utils/extractHashtagFromText';
+import { HashtagService } from '../hashtag/hashtag.service';
 
 const pubSub = new PubSub();
 
@@ -56,6 +57,7 @@ export class PostResolver {
     private prisma: PrismaService,
     private meiliService: MeiliService,
     private readonly notificationService: NotificationService,
+    private hashtagService: HashtagService,
     @I18n() private i18n: I18nService
   ) {}
 
@@ -420,6 +422,45 @@ export class PostResolver {
     });
   }
 
+  @Query(() => PostResponse, { name: 'allPostsBySearchWithHashtag' })
+  async allPostsBySearchWithHashtag(
+    @Args() args: ConnectionArgs,
+    @Args({ name: 'query', type: () => String, nullable: true })
+    @Args({ name: 'hashtag', type: () => String, nullable: true })
+    @Args({ name: 'minBurnFilter', type: () => Int, nullable: true })
+    query: string,
+    hashtag: string
+  ): Promise<PostResponse> {
+    const { limit, offset } = getPagingParameters(args);
+
+    const count = await this.hashtagService.searchByQueryEstimatedTotalHits(
+      `${process.env.MEILISEARCH_BUCKET}_${POSTS}`,
+      query,
+      hashtag
+    );
+
+    const posts = await this.hashtagService.searchByQueryHits(
+      `${process.env.MEILISEARCH_BUCKET}_${POSTS}`,
+      query,
+      hashtag,
+      offset!,
+      limit!
+    );
+
+    const postsId = _.map(posts, 'id');
+
+    const searchPosts = await this.prisma.post.findMany({
+      where: {
+        id: { in: postsId }
+      }
+    });
+
+    return connectionFromArraySlice(searchPosts, args, {
+      arrayLength: count || 0,
+      sliceStart: offset || 0
+    });
+  }
+
   @Query(() => PostConnection)
   @UseGuards(GqlJwtAuthGuard)
   async allPostsByTokenId(
@@ -704,41 +745,11 @@ export class PostResolver {
     });
 
     //Hashtag
-    const hashtag = extractHashtagFromText(pureContent, false);
-    //Check for duplicate
-    let createdHashtag = null;
-
-    //Will comeback for multiple hashtag
-    //Must support multiple hashtag
-    if (!_.isNil(hashtag)) {
-      createdHashtag = await this.prisma.hashtag.create({
-        data: {
-          content: (hashtag as string).substring(1)
-        }
-      });
-
-      await this.prisma.postHashtag.create({
-        data: {
-          hashtag: {
-            connect: {
-              id: createdHashtag.id
-            }
-          },
-          post: {
-            connect: {
-              id: createdPost.id
-            }
-          }
-        }
-      });
-
-      const indexedHashtag = {
-        id: createdHashtag.id,
-        content: createdHashtag.content
-      };
-
-      await this.meiliService.add(`${process.env.MEILISEARCH_BUCKET}_${HASHTAG}`, indexedHashtag, createdHashtag.id);
-    }
+    const hashtags = await this.hashtagService.extractAndSave(
+      `${process.env.MEILISEARCH_BUCKET}_${HASHTAG}`,
+      pureContent,
+      createdPost.id
+    );
 
     const indexedPost = {
       id: createdPost.id,
@@ -754,7 +765,7 @@ export class PostResolver {
         id: createdPost.token?.id,
         name: createdPost.token?.name
       },
-      hashtag: hashtag // use map here to create array of hashtag. To suppport multiple hashtag
+      hashtag: hashtags
     };
 
     await this.meiliService.add(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`, indexedPost, createdPost.id);

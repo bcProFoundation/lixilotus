@@ -47,6 +47,7 @@ import { getFilterPostsHome } from '@store/settings/selectors';
 import { getLeaderboard } from '@store/account/actions';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 import axiosClient from '@utils/axiosClient';
+import TagInputField from '@components/Common/TagInputField';
 
 const { Panel } = Collapse;
 const antIcon = <LoadingOutlined style={{ fontSize: 20 }} spin />;
@@ -314,6 +315,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     return (
       <StyledHeader>
         <SearchBox searchPost={searchPost} value={searchValue} />
+        <TagInputField />
         <CreatePostCard />
         <div className="filter-bar">
           <Menu
