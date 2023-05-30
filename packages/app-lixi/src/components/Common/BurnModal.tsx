@@ -379,7 +379,7 @@ export const BurnModal = ({ id, burnForType, isPage }: BurnModalProps) => {
       </Form>
       <p className="amount-burn">{intl.get('burn.youBurning') + selectedAmount + ' XPI'}</p>
 
-      <p className="amount-burn">
+      <p className="fee-burn">
         {burnForType == BurnForType.Token
           ? null
           : isPage
@@ -396,7 +396,7 @@ export const BurnModal = ({ id, burnForType, isPage }: BurnModalProps) => {
               name: getName(BurnForType.Account)
             })}
       </p>
-      <p className="amount-burn">{intl.get('burn.feeMiner')}</p>
+      <p className="fee-burn">{intl.get('burn.feeMiner')}</p>
     </Modal>
   );
 };
