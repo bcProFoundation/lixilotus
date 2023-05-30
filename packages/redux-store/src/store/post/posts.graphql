@@ -224,6 +224,38 @@ query PostsBySearchWithHashtag(
   }
 }
 
+query PostsBySearchWithHashtagAtPage(
+  $after: String
+  $before: String
+  $first: Int
+  $last: Int
+  $query: String
+  $minBurnFilter: Int
+  $hashtags: [String!]
+  $pageId: String
+) {
+  allPostsBySearchWithHashtagAtPage(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    query: $query
+    minBurnFilter: $minBurnFilter
+    hashtags: $hashtags
+    pageId: $pageId
+  ) {
+    edges {
+      cursor
+      node {
+        ...PostMeiliFields
+      }
+    }
+    pageInfo {
+      ...PostMeiliPageInfoFields
+    }
+  }
+}
+
 fragment PostFields on Post {
   id
   content

@@ -10,6 +10,7 @@ import PageDetailLayout from '@components/Layout/PageDetailLayout';
 import ProfileDetail from '@components/Profile/ProfileDetail';
 import { usePageQuery } from '@store/page/pages.generated';
 import { useCheckIsFollowedPageQuery } from '@store/follow/follows.api';
+import MainLayout from '@components/Layout/MainLayout';
 
 const PageDetailPage = props => {
   const { pageId, isMobile } = props;
@@ -74,6 +75,6 @@ export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) 
   };
 });
 
-PageDetailPage.Layout = ({ children }) => <PageDetailLayout children={children} />;
+PageDetailPage.Layout = ({ children }) => <MainLayout children={children} />;
 
 export default PageDetailPage;

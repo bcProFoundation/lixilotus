@@ -259,7 +259,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const QueryHeader = () => {
     return (
       <div>
-        <SearchBox searchPost={searchPost} value={searchValue} />
+        <SearchBox searchPost={searchPost} searchValue={searchValue} />
         <h1 style={{ textAlign: 'left', fontSize: '20px', margin: '1rem' }}>
           {intl.get('general.searchResults', { text: searchValue })}
         </h1>
@@ -314,8 +314,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const Header = () => {
     return (
       <StyledHeader>
-        <SearchBox searchPost={searchPost} value={searchValue} />
-        <TagInputField />
+        <SearchBox searchPost={searchPost} searchValue={searchValue} />
         <CreatePostCard />
         <div className="filter-bar">
           <Menu

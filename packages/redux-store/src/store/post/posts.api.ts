@@ -69,6 +69,23 @@ const enhancedApi = api.enhanceEndpoints({
         currentCacheData.allPostsBySearchWithHashtag.pageInfo = responseData.allPostsBySearchWithHashtag.pageInfo;
       }
     },
+    PostsBySearchWithHashtagAtPage: {
+      providesTags: (result, error, arg) => ['Post'],
+      serializeQueryArgs({ queryArgs }) {
+        if (queryArgs) {
+          const { query, minBurnFilter, hashtags, pageId, ...otherArgs } = queryArgs;
+          return { query, minBurnFilter, hashtags, pageId };
+        }
+        return { queryArgs };
+      },
+      merge(currentCacheData, responseData) {
+        currentCacheData.allPostsBySearchWithHashtagAtPage.edges.push(
+          ...responseData.allPostsBySearchWithHashtagAtPage.edges
+        );
+        currentCacheData.allPostsBySearchWithHashtagAtPage.pageInfo =
+          responseData.allPostsBySearchWithHashtagAtPage.pageInfo;
+      }
+    },
     PostsByPageId: {
       providesTags: (result, error, arg) => ['Post'],
       serializeQueryArgs({ queryArgs }) {
@@ -144,6 +161,8 @@ export const {
   useLazyPostsBySearchQuery,
   usePostsBySearchWithHashtagQuery,
   useLazyPostsBySearchWithHashtagQuery,
+  usePostsBySearchWithHashtagAtPageQuery,
+  useLazyPostsBySearchWithHashtagAtPageQuery,
   useCreatePostMutation,
   useUpdatePostMutation
 } = enhancedApi;

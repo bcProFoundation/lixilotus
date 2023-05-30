@@ -7,7 +7,7 @@ import {
   InfoCircleOutlined
 } from '@ant-design/icons';
 import CreatePostCard from '@components/Common/CreatePostCard';
-import SearchBox from '@components/Common/SearchBox';
+import SearchBox, { SearchType } from '@components/Common/SearchBox';
 import PostListItem from '@components/Posts/PostListItem';
 import { getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
@@ -37,6 +37,8 @@ import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 import { CreateFollowPageInput, DeleteFollowPageInput } from '@generated/types.generated';
 import { useCreateFollowPageMutation, useDeleteFollowPageMutation } from '@store/follow/follows.api';
+import { useInfinitePostsBySearchQueryWithHashtagAtPage } from '@store/post/useInfinitePostsBySearchQueryWithHashtagAtPage';
+import { usePostsBySearchWithHashtagAtPageQuery } from '@store/post/posts.generated';
 
 type PageDetailProps = {
   page: any;
@@ -373,6 +375,8 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
   const failQueue = useAppSelector(getFailQueue);
   const filterValue = useAppSelector(getFilterPostsPage);
   const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
+  const [searchValue, setSearchValue] = useState<string | null>(null);
+  const [hashtags, setHashtags] = useState([]);
 
   const [
     createFollowPageTrigger,
@@ -415,38 +419,6 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
     },
     false
   );
-
-  useEffect(() => {
-    // fetchListFriend();
-  }, []);
-
-  useEffect(() => {
-    // fetchListPicture();
-  }, []);
-
-  const fetchListFriend = () => {
-    return axios
-      .get('https://picsum.photos/v2/list?page=1&limit=10', {
-        headers: {
-          'Access-Control-Allow-Origin': '*'
-        }
-      })
-      .then(response => {
-        setListsFriend(response.data);
-      });
-  };
-
-  const fetchListPicture = () => {
-    return axios
-      .get('https://picsum.photos/v2/list?page=2&limit=20', {
-        headers: {
-          'Access-Control-Allow-Origin': '*'
-        }
-      })
-      .then(response => {
-        setListsPicture(response.data);
-      });
-  };
 
   const loadMoreItems = () => {
     if (hasNext && !isFetching) {
@@ -547,8 +519,49 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
     await deleteFollowPageTrigger({ input: deleteFollowPageInput });
   };
 
+  const searchPost = (value: string, hashtagsValue: string[]) => {
+    setSearchValue(value);
+    setHashtags([...hashtagsValue]);
+  };
+
+  //#region QueryVirtuoso
+  const { queryData, fetchNextQuery, hasNextQuery, isQueryFetching, isFetchingQueryNext, isQueryLoading } =
+    useInfinitePostsBySearchQueryWithHashtagAtPage(
+      {
+        first: 20,
+        minBurnFilter: filterValue,
+        query: searchValue,
+        hashtags: hashtags,
+        pageId: page.id
+      },
+      false
+    );
+
+  const loadMoreQueryItems = () => {
+    if (hasNextQuery && !isQueryFetching) {
+      fetchNextQuery();
+    } else if (hasNextQuery) {
+      fetchNextQuery();
+    }
+  };
+
+  const QueryFooter = () => {
+    if (isQueryLoading) return null;
+    return (
+      <div
+        style={{
+          padding: '1rem 2rem 2rem 2rem',
+          textAlign: 'center'
+        }}
+      >
+        {isFetchingQueryNext ? <Skeleton avatar active /> : "It's so empty here..."}
+      </div>
+    );
+  };
+  //#endregion
+
   return (
-    <>
+    <React.Fragment>
       <StyledContainerProfileDetail>
         <ProfileCardHeader>
           <div className="container-img">
@@ -713,7 +726,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
               </LegacyProfile> */}
               <ContentTimeline>
                 <div className="search-bar">
-                  <SearchBox />
+                  <SearchBox searchPost={searchPost} searchValue={searchValue} hashtags={hashtags} />
                   <FilterBurnt filterForType={FilterType.PostsPage} />
                 </div>
                 <CreatePostCard pageId={page.id} />
@@ -724,26 +737,52 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                       <p>Become a first person post on the page...</p>
                     </div>
                   )}
-
                   <React.Fragment>
-                    <InfiniteScroll
-                      dataLength={data.length}
-                      next={loadMoreItems}
-                      hasMore={hasNext}
-                      loader={<Skeleton avatar active />}
-                      endMessage={
-                        <p style={{ textAlign: 'center' }}>
-                          <b>{data.length > 0 ? 'end reached' : ''}</b>
-                        </p>
-                      }
-                      scrollableTarget="scrollableDiv"
-                    >
-                      {data.map((item, index) => {
-                        return (
-                          <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />
-                        );
-                      })}
-                    </InfiniteScroll>
+                    {!searchValue && hashtags.length === 0 ? (
+                      <InfiniteScroll
+                        dataLength={data.length}
+                        next={loadMoreItems}
+                        hasMore={hasNext}
+                        loader={<Skeleton avatar active />}
+                        endMessage={
+                          <p style={{ textAlign: 'center' }}>
+                            <b>{data.length > 0 ? 'end reached' : ''}</b>
+                          </p>
+                        }
+                        scrollableTarget="scrollableDiv"
+                      >
+                        {data.map((item, index) => {
+                          return (
+                            <PostListItem
+                              index={index}
+                              item={item}
+                              key={item.id}
+                              handleBurnForPost={handleBurnForPost}
+                            />
+                          );
+                        })}
+                      </InfiniteScroll>
+                    ) : (
+                      <InfiniteScroll
+                        dataLength={queryData.length}
+                        next={loadMoreQueryItems}
+                        hasMore={hasNextQuery}
+                        loader={<Skeleton avatar active />}
+                        endMessage={<QueryFooter />}
+                        scrollableTarget="scrollableDiv"
+                      >
+                        {queryData.map((item, index) => {
+                          return (
+                            <PostListItem
+                              index={index}
+                              item={item}
+                              key={item.id}
+                              handleBurnForPost={handleBurnForPost}
+                            />
+                          );
+                        })}
+                      </InfiniteScroll>
+                    )}
                   </React.Fragment>
                 </Timeline>
               </ContentTimeline>
@@ -795,7 +834,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
           </StyledMenu>
         </ProfileContentContainer>
       </StyledContainerProfileDetail>
-    </>
+    </React.Fragment>
   );
 };
 

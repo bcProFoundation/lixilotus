@@ -371,7 +371,6 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
 
       <CreatePostCard tokenPrimaryId={tokenDetailData.id} refetch={() => refetch()} />
       <SearchBar>
-        <SearchBox />
         <FilterBurnt filterForType={FilterType.PostsToken} />
       </SearchBar>
 

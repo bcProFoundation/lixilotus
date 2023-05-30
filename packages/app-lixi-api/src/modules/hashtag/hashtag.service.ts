@@ -34,6 +34,8 @@ export class HashtagService {
       //We search using meilisearch so its ok to loop here
       const result: SearchResponse = await this.meiliSearch.index(index).search(hashtag);
 
+      console.log(result);
+
       if (result.hits.length === 0) {
         //If there the hashtag hasnt exist
         //Create new hashtag at database
@@ -103,6 +105,19 @@ export class HashtagService {
     return indexedHashtags;
   }
 
+  private filterQueryBuilder(hashtags: string[]): string {
+    if (hashtags.length === 0) return '';
+    const filters: string[] = [];
+
+    for (const hashtag of hashtags) {
+      filters.push(`hashtag.content = "${hashtag}"`);
+    }
+
+    const filtersQuery = filters.join(' AND ');
+
+    return filtersQuery + ' AND ';
+  }
+
   public async searchByQueryEstimatedTotalHits(index: string, query: string, hashtag: string) {
     return (await this.meiliSearch.index(index).search(query, { filter: `hashtag.content = "${hashtag}"` }))
       .estimatedTotalHits;
@@ -115,6 +130,35 @@ export class HashtagService {
         offset: offset,
         limit: limit,
         filter: `hashtag.content = "${hashtag}"`
+      })
+      .then(res => {
+        return res.hits;
+      });
+    return hits;
+  }
+
+  public async searchByQueryEstimatedTotalHitsAtPage(index: string, query: string, hashtags: string[], pageId: string) {
+    return (
+      await this.meiliSearch
+        .index(index)
+        .search(query, { filter: `${this.filterQueryBuilder(hashtags)}page.id = "${pageId}"` })
+    ).estimatedTotalHits;
+  }
+
+  public async searchByQueryHitsAtPage(
+    index: string,
+    query: string,
+    hashtags: string[],
+    pageId: string,
+    offset: number,
+    limit: number
+  ) {
+    const hits = await this.meiliSearch
+      .index(index)
+      .search(query, {
+        offset: offset,
+        limit: limit,
+        filter: `${this.filterQueryBuilder(hashtags)}page.id = "${pageId}"`
       })
       .then(res => {
         return res.hits;

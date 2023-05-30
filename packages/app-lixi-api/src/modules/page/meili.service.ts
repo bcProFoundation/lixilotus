@@ -14,7 +14,8 @@ export class MeiliService implements OnModuleInit {
     await this.meiliSearch.index(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`).updateSettings({
       searchableAttributes: ['content', 'postAccountName', 'hashtag'],
       displayedAttributes: ['*'],
-      filterableAttributes: ['hashtag.content', 'page', 'token']
+      filterableAttributes: ['hashtag.content', 'page.id', 'token.id'],
+      rankingRules: ['']
     });
     await this.meiliSearch.index(`${process.env.MEILISEARCH_BUCKET}_${PERSON}`).updateSettings({
       searchableAttributes: ['name', 'achievement'],

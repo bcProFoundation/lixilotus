@@ -560,6 +560,7 @@ export type Query = {
   allPostsByPageId: PostConnection;
   allPostsBySearch: PostResponse;
   allPostsBySearchWithHashtag: PostResponse;
+  allPostsBySearchWithHashtagAtPage: PostResponse;
   allPostsByTokenId: PostConnection;
   allPostsByUserId: PostConnection;
   allTemple: TempleConnection;
@@ -718,6 +719,17 @@ export type QueryAllPostsBySearchWithHashtagArgs = {
   hashtag?: InputMaybe<Scalars['String']>;
   last?: InputMaybe<Scalars['Int']>;
   minBurnFilter?: InputMaybe<Scalars['Int']>;
+  query?: InputMaybe<Scalars['String']>;
+};
+
+export type QueryAllPostsBySearchWithHashtagAtPageArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  hashtags?: InputMaybe<Array<Scalars['String']>>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  pageId?: InputMaybe<Scalars['String']>;
   query?: InputMaybe<Scalars['String']>;
 };
 
