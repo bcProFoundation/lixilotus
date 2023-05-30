@@ -398,6 +398,7 @@ export const BurnModal = ({ id, burnForType, isPage }: BurnModalProps) => {
               name: getName(BurnForType.Account)
             })}
       </p>
+      <p className="amount-burn">{intl.get('burn.feeMiner')}</p>
     </Modal>
   );
 };
