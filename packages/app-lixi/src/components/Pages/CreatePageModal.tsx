@@ -172,7 +172,7 @@ export const CreatePageModal: React.FC<CreatePageModalProps> = ({ accountId, dis
               <Input defaultValue={newPageName} onChange={e => handleNewPageNameInput(e)} />
               <TextCustom>{intl.get('text.createPageName')}</TextCustom>
             </Form.Item>
-
+            
             <Form.Item
               name="category"
               label={intl.get('page.category')}
@@ -185,7 +185,7 @@ export const CreatePageModal: React.FC<CreatePageModalProps> = ({ accountId, dis
                 placeholder={intl.get('page.category')}
                 optionFilterProp="children"
                 filterOption={(input, option) =>
-                  (option!.children as unknown as string).toLocaleLowerCase().includes(input)
+                  (option!.children as unknown as string).toLocaleLowerCase().includes(input.toLowerCase())
                 }
                 filterSort={(optionA, optionB) =>
                   (optionA!.children as unknown as string)
