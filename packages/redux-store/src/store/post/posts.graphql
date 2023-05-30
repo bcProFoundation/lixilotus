@@ -219,6 +219,11 @@ fragment PostFields on Post {
     avatar
     name
     id
+    pageAccount {
+      id
+      name
+      address
+    }
   }
   token {
     id
@@ -258,6 +263,11 @@ fragment PostMeiliFields on Post {
     avatar
     name
     id
+    pageAccount {
+      id
+      name
+      address
+    }
   }
   lotusBurnUp
   lotusBurnDown

@@ -66,7 +66,8 @@ export class PostResolver {
   @Query(() => Post)
   async post(@Args('id', { type: () => String }) id: string) {
     return this.prisma.post.findUnique({
-      where: { id: id }
+      where: { id: id },
+      include: { page: true }
     });
   }
 

@@ -48,6 +48,24 @@ fragment CommentFields on Comment {
   }
   commentByPublicKey
   commentToId
+  commentTo {
+    id
+    postAccount {
+      address
+      id
+      name
+    }
+    page {
+      avatar
+      name
+      id
+      pageAccount {
+        id
+        name
+        address
+      }
+    }
+  }
   lotusBurnUp
   lotusBurnDown
   lotusBurnScore

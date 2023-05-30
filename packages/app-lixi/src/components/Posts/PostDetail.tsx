@@ -408,12 +408,6 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     try {
       const burnValue = '1';
       const { data, burnForType } = burnData;
-      if (
-        slpBalancesAndUtxos.nonSlpUtxos.length == 0 ||
-        fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis) < parseInt(burnValue)
-      ) {
-        throw new Error(intl.get('account.insufficientFunds'));
-      }
       if (failQueue.length > 0) dispatch(clearFailQueue());
       const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
       const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
@@ -423,31 +417,29 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       const burnForId = data.id;
       let queryParams;
 
-      let tipToAddresses: { address: string; amount: string }[] = [
-        {
-          address: post.postAccount.address,
-          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
-        }
-      ];
+      let tipToAddresses: { address: string; amount: string }[] = [];
 
       switch (burnForType) {
         case BurnForType.Post:
           const post = data as PostItem;
-          if (burnType === BurnType.Up && selectedAccount.address !== post.postAccount.address) {
-            tipToAddresses.push({
-              address: post.postAccount.address,
-              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
-            });
-          }
+          tipToAddresses.push({
+            address: post.page ? post.page.pageAccount.address : post.postAccount.address,
+            amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(post.page ? 0.04 : 0.08))
+              .valueOf()
+              .toString()
+          });
           break;
         case BurnForType.Comment:
           const comment = data as CommentItem;
-          if (burnType === BurnType.Up && selectedAccount.address != comment?.commentAccount?.address) {
-            tipToAddresses.push({
-              address: comment?.commentAccount?.address,
-              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
-            });
-          }
+          const pageAddress = comment.commentTo.page ? comment.commentTo.page.pageAccount.address : undefined;
+          const postAddress = comment.commentTo.postAccount.address;
+          tipToAddresses.push({
+            address: pageAddress ?? postAddress,
+            amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(comment.commentTo.page ? 0.04 : 0.08))
+              .valueOf()
+              .toString()
+          });
+
           queryParams = {
             id: comment.commentToId,
             orderBy: {
@@ -459,6 +451,15 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       }
 
       tipToAddresses = tipToAddresses.filter(item => item.address != selectedAccount.address);
+      const totalTip = fromSmallestDenomination(
+        tipToAddresses.reduce((total, item) => total + parseFloat(item.amount), 0)
+      );
+      if (
+        slpBalancesAndUtxos.nonSlpUtxos.length == 0 ||
+        fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis) < parseInt(burnValue) + totalTip
+      ) {
+        throw new Error(intl.get('account.insufficientFunds'));
+      }
 
       const burnCommand: BurnQueueCommand = {
         defaultFee: currency.defaultFee,
