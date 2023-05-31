@@ -307,7 +307,7 @@ export class FollowResolver {
         url: '/profile/' + account.address,
         additionalData: {
           senderName: account.name,
-          pageName: recipient.pages
+          pageName: recipient.pages.find(page => page.id == pageId)?.name ?? undefined
         }
       };
 

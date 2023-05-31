@@ -185,7 +185,7 @@ export const CreatePageModal: React.FC<CreatePageModalProps> = ({ accountId, dis
                 placeholder={intl.get('page.category')}
                 optionFilterProp="children"
                 filterOption={(input, option) =>
-                  (option!.children as unknown as string).toLocaleLowerCase().includes(input)
+                  (option!.children as unknown as string).toLocaleLowerCase().includes(input.toLowerCase())
                 }
                 filterSort={(optionA, optionB) =>
                   (optionA!.children as unknown as string)

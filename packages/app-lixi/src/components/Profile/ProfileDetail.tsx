@@ -490,12 +490,6 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
   const handleBurnForPost = async (isUpVote: boolean, post: any) => {
     try {
       const burnValue = '1';
-      if (
-        slpBalancesAndUtxos.nonSlpUtxos.length == 0 ||
-        fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis) < parseInt(burnValue)
-      ) {
-        throw new Error(intl.get('account.insufficientFunds'));
-      }
       if (failQueue.length > 0) dispatch(clearFailQueue());
       const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
       const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
@@ -506,18 +500,20 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
       let tipToAddresses: { address: string; amount: string }[] = [
         {
           address: userDetailData.address,
-          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.08)).valueOf().toString()
         }
       ];
 
-      if (burnType === BurnType.Up && userDetailData.address !== post.postAccount.address) {
-        tipToAddresses.push({
-          address: post.postAccount.address,
-          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
-        });
-      }
-
       tipToAddresses = tipToAddresses.filter(item => item.address != userDetailData.address);
+      const totalTip = fromSmallestDenomination(
+        tipToAddresses.reduce((total, item) => total + parseFloat(item.amount), 0)
+      );
+      if (
+        slpBalancesAndUtxos.nonSlpUtxos.length == 0 ||
+        fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis) < parseInt(burnValue) + totalTip
+      ) {
+        throw new Error(intl.get('account.insufficientFunds'));
+      }
 
       const burnCommand: BurnQueueCommand = {
         defaultFee: currency.defaultFee,

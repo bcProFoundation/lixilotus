@@ -66,7 +66,7 @@ export class CommentResolver {
     const result = await findManyCursorConnection(
       args =>
         this.prisma.comment.findMany({
-          include: { commentAccount: true },
+          include: { commentAccount: true, commentTo: true },
           where: {
             OR: [
               {

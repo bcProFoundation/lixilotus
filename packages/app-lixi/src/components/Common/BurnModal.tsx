@@ -142,7 +142,7 @@ export const BurnModal = ({ id, burnForType, isPage }: BurnModalProps) => {
   const handleBurn = async (isUpVote: boolean) => {
     try {
       let queryParams;
-      let tipToAddresses: { address: string; amount: string }[];
+      let tipToAddresses: { address: string; amount: string }[] = [];
       let tag;
       let pageId;
       let tokenId;
@@ -151,12 +151,6 @@ export const BurnModal = ({ id, burnForType, isPage }: BurnModalProps) => {
       const burnValue = _.isNil(control._formValues.burnedValue)
         ? DefaultXpiBurnValues[0]
         : control._formValues.burnedValue;
-      if (
-        slpBalancesAndUtxos.nonSlpUtxos.length == 0 ||
-        fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis) < parseInt(burnValue)
-      ) {
-        throw new Error(intl.get('account.insufficientFunds'));
-      }
       if (failQueue.length > 0) dispatch(clearFailQueue());
       const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
       const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
@@ -169,27 +163,22 @@ export const BurnModal = ({ id, burnForType, isPage }: BurnModalProps) => {
           const post = postQuery.post as PostItem;
           id = post.id;
 
-          tipToAddresses = [
-            {
-              address: post.postAccount.address,
-              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
-            }
-          ];
-          if (burnType === BurnType.Up && selectedAccount.address !== post.postAccount.address) {
-            tipToAddresses.push({
-              address: post.postAccount.address,
-              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
-            });
-          }
-
           if (_.isNil(post.page) && _.isNil(post.token)) {
             if (pathName.includes('/profile/')) {
               tag = PostsQueryTag.PostsByUserId;
             } else {
               tag = PostsQueryTag.Post;
             }
+            tipToAddresses.push({
+              address: post.postAccount.address,
+              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.08)).valueOf().toString()
+            });
           } else if (post.page) {
             tag = PostsQueryTag.PostsByPageId;
+            tipToAddresses.push({
+              address: post.page.pageAccount.address,
+              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
+            });
           } else if (post.token) {
             tag = PostsQueryTag.PostsByTokenId;
           }
@@ -202,12 +191,16 @@ export const BurnModal = ({ id, burnForType, isPage }: BurnModalProps) => {
         case BurnForType.Comment:
           const comment = commentQuery.comment as CommentItem;
           id = comment.id;
-          if (burnType === BurnType.Up && selectedAccount.address != comment?.commentAccount?.address) {
-            tipToAddresses.push({
-              address: comment?.commentAccount?.address,
-              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
-            });
-          }
+
+          const pageAddress = comment.commentTo.page.pageAccount.address;
+          const postAddress = comment.commentTo.postAccount.address;
+          tipToAddresses.push({
+            address: pageAddress ?? postAddress,
+            amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(comment.commentTo.page ? 0.04 : 0.08))
+              .valueOf()
+              .toString()
+          });
+
           queryParams = {
             id: comment.commentToId,
             orderBy: {
@@ -225,6 +218,15 @@ export const BurnModal = ({ id, burnForType, isPage }: BurnModalProps) => {
       }
 
       tipToAddresses = tipToAddresses.filter(item => item.address != selectedAccount.address);
+      const totalTip = fromSmallestDenomination(
+        tipToAddresses.reduce((total, item) => total + parseFloat(item.amount), 0)
+      );
+      if (
+        slpBalancesAndUtxos.nonSlpUtxos.length == 0 ||
+        fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis) < parseInt(burnValue) + totalTip
+      ) {
+        throw new Error(intl.get('account.insufficientFunds'));
+      }
 
       const burnCommand: BurnQueueCommand = {
         defaultFee: currency.defaultFee,
@@ -379,7 +381,7 @@ export const BurnModal = ({ id, burnForType, isPage }: BurnModalProps) => {
       </Form>
       <p className="amount-burn">{intl.get('burn.youBurning') + selectedAmount + ' XPI'}</p>
 
-      <p className="amount-burn">
+      <p className="fee-burn">
         {burnForType == BurnForType.Token
           ? null
           : isPage
@@ -396,6 +398,7 @@ export const BurnModal = ({ id, burnForType, isPage }: BurnModalProps) => {
               name: getName(BurnForType.Account)
             })}
       </p>
+      <p className="fee-burn">{intl.get('burn.feeMiner')}</p>
     </Modal>
   );
 };
