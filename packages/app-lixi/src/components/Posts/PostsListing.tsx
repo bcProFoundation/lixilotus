@@ -180,6 +180,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const filterValue = useAppSelector(getFilterPostsHome);
   const leaderboard = useAppSelector(getLeaderBoard);
   const graphqlRequestLoading = useAppSelector(getGraphqlRequestStatus);
+  const [hashtags, setHashtags] = useState([]);
 
   useEffect(() => dispatch(getLeaderboard()), []);
 
@@ -233,6 +234,10 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     setIsModalVisible(false);
   };
 
+  const onDeleteHashtag = (hashtagsValue: string[]) => {
+    setHashtags([...hashtagsValue]);
+  };
+
   //#region QueryVirtuoso
   const { queryData, fetchNextQuery, hasNextQuery, isQueryFetching, isFetchingQueryNext, isQueryLoading } =
     useInfinitePostsBySearchQuery(
@@ -259,7 +264,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const QueryHeader = () => {
     return (
       <div>
-        <SearchBox searchPost={searchPost} searchValue={searchValue} />
+        <SearchBox searchPost={searchPost} searchValue={searchValue} onDeleteHashtag={onDeleteHashtag} />
         <h1 style={{ textAlign: 'left', fontSize: '20px', margin: '1rem' }}>
           {intl.get('general.searchResults', { text: searchValue })}
         </h1>
@@ -314,7 +319,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const Header = () => {
     return (
       <StyledHeader>
-        <SearchBox searchPost={searchPost} searchValue={searchValue} />
+        <SearchBox searchPost={searchPost} searchValue={searchValue} onDeleteHashtag={onDeleteHashtag} />
         <CreatePostCard />
         <div className="filter-bar">
           <Menu

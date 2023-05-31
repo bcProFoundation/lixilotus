@@ -148,8 +148,8 @@ const ProfileCardHeader = styled.div`
       }
     }
     .action-profile {
+      display: flex;
       @media (max-width: 1001px) {
-        max-width: 160px;
         text-align: center;
         button {
           margin-bottom: 4px;
@@ -283,10 +283,14 @@ const FriendBox = styled.div`
 `;
 
 const ContentTimeline = styled.div`
-  width: 100%;
   .search-bar {
-    display: flex;
-    gap: 1rem;
+    display: grid;
+    grid-template-columns: 75% 25%;
+
+    @media (max-width: 650px) {
+      display: flex;
+      flex-direction: column-reverse;
+    }
   }
 `;
 
@@ -524,12 +528,16 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
     setHashtags([...hashtagsValue]);
   };
 
+  const onDeleteHashtag = (hashtagsValue: string[]) => {
+    setHashtags([...hashtagsValue]);
+  };
+
   //#region QueryVirtuoso
-  const { queryData, fetchNextQuery, hasNextQuery, isQueryFetching, isFetchingQueryNext, isQueryLoading } =
+  const { queryData, fetchNextQuery, hasNextQuery, isQueryFetching, isFetchingQueryNext, isQueryLoading, noMoreQuery } =
     useInfinitePostsBySearchQueryWithHashtagAtPage(
       {
         first: 20,
-        minBurnFilter: filterValue,
+        minBurnFilter: filterValue ?? 1,
         query: searchValue,
         hashtags: hashtags,
         pageId: page.id
@@ -538,12 +546,14 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
     );
 
   const loadMoreQueryItems = () => {
-    if (hasNextQuery && !isQueryFetching) {
+    if (hasNextQuery && !isQueryFetching && !noMoreQuery) {
       fetchNextQuery();
-    } else if (hasNextQuery) {
+    } else if (hasNextQuery && !noMoreQuery) {
       fetchNextQuery();
     }
   };
+
+  console.log(searchValue, hashtags.length);
 
   const QueryFooter = () => {
     if (isQueryLoading) return null;
@@ -726,10 +736,15 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
               </LegacyProfile> */}
               <ContentTimeline>
                 <div className="search-bar">
-                  <SearchBox searchPost={searchPost} searchValue={searchValue} hashtags={hashtags} />
+                  <SearchBox
+                    searchPost={searchPost}
+                    searchValue={searchValue}
+                    hashtags={hashtags}
+                    onDeleteHashtag={onDeleteHashtag}
+                  />
                   <FilterBurnt filterForType={FilterType.PostsPage} />
                 </div>
-                <CreatePostCard pageId={page.id} />
+                {!searchValue && hashtags.length === 0 && <CreatePostCard pageId={page.id} />}
                 <Timeline>
                   {data.length == 0 && (
                     <div className="blank-timeline">
@@ -766,7 +781,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                       <InfiniteScroll
                         dataLength={queryData.length}
                         next={loadMoreQueryItems}
-                        hasMore={hasNextQuery}
+                        hasMore={hasNextQuery && !noMoreQuery}
                         loader={<Skeleton avatar active />}
                         endMessage={<QueryFooter />}
                         scrollableTarget="scrollableDiv"
@@ -794,7 +809,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                   {pageDetailData && !pageDetailData.description && (
                     <div className="blank-about">
                       <img src="/images/about-blank.svg" alt="" />
-                      <p>Let people know more about you (description, hobbies, address...</p>
+                      <p>Let people know more about you description, hobbies, address...</p>
                       <Button type="primary" className="outline-btn">
                         Update info
                       </Button>

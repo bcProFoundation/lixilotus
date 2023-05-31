@@ -32,9 +32,7 @@ export class HashtagService {
     let indexedHashtags = [];
     const promises = hashtags.map(async (hashtag: string) => {
       //We search using meilisearch so its ok to loop here
-      const result: SearchResponse = await this.meiliSearch.index(index).search(hashtag);
-
-      console.log(result);
+      const result: SearchResponse = await this.meiliSearch.index(index).search(hashtag.substring(1));
 
       if (result.hits.length === 0) {
         //If there the hashtag hasnt exist
@@ -110,7 +108,7 @@ export class HashtagService {
     const filters: string[] = [];
 
     for (const hashtag of hashtags) {
-      filters.push(`hashtag.content = "${hashtag}"`);
+      filters.push(`hashtag.content = "${hashtag.substring(1)}"`); //remove the "hashtag" from string
     }
 
     const filtersQuery = filters.join(' AND ');

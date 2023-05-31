@@ -464,6 +464,7 @@ export class PostResolver {
   @Query(() => PostResponse, { name: 'allPostsBySearchWithHashtagAtPage' })
   async allPostsBySearchWithHashtagAtPage(
     @Args({ name: 'minBurnFilter', type: () => Int, nullable: true })
+    minBurnFilter: number,
     @Args()
     args: ConnectionArgs,
     @Args({ name: 'query', type: () => String, nullable: true })
@@ -478,6 +479,7 @@ export class PostResolver {
     console.log(hashtags);
     console.log(query);
     console.log(pageId);
+    console.log(minBurnFilter);
 
     const count = await this.hashtagService.searchByQueryEstimatedTotalHitsAtPage(
       `${process.env.MEILISEARCH_BUCKET}_${POSTS}`,
@@ -499,7 +501,16 @@ export class PostResolver {
 
     const searchPosts = await this.prisma.post.findMany({
       where: {
-        id: { in: postsId }
+        AND: [
+          {
+            id: { in: postsId }
+          },
+          {
+            lotusBurnScore: {
+              gte: minBurnFilter ?? 0
+            }
+          }
+        ]
       }
     });
 

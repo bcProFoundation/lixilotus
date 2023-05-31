@@ -14,8 +14,7 @@ export class MeiliService implements OnModuleInit {
     await this.meiliSearch.index(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`).updateSettings({
       searchableAttributes: ['content', 'postAccountName', 'hashtag'],
       displayedAttributes: ['*'],
-      filterableAttributes: ['hashtag.content', 'page.id', 'token.id'],
-      rankingRules: ['']
+      filterableAttributes: ['hashtag.content', 'page.id', 'token.id']
     });
     await this.meiliSearch.index(`${process.env.MEILISEARCH_BUCKET}_${PERSON}`).updateSettings({
       searchableAttributes: ['name', 'achievement'],
@@ -27,7 +26,11 @@ export class MeiliService implements OnModuleInit {
     });
     await this.meiliSearch.index(`${process.env.MEILISEARCH_BUCKET}_${HASHTAG}`).updateSettings({
       searchableAttributes: ['content'],
-      displayedAttributes: ['*']
+      displayedAttributes: ['*'],
+      rankingRules: ['exactness', 'attribute', 'proximity', 'words', 'typo', 'sort'],
+      typoTolerance: {
+        enabled: false
+      }
     });
   }
 

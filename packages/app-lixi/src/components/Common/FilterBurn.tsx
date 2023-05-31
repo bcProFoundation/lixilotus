@@ -15,8 +15,9 @@ import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 
 const FilterStyle = styled.div`
   display: flex;
-  align-items: baseline;
-  align-self: center;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 5px;
   p {
     margin: 0px;
     font-style: normal;
@@ -31,7 +32,7 @@ const FilterStyle = styled.div`
   .ant-input-group {
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     gap: 10px;
 
