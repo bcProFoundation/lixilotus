@@ -308,7 +308,7 @@ export class PostResolver {
     orderBy: PostOrder
   ) {
     let result;
-    const page = await this.prisma.page.findUnique({
+    const page = await this.prisma.page.findFirst({
       where: {
         id: id
       }

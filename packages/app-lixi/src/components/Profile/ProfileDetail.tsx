@@ -1,56 +1,35 @@
-import intl from 'react-intl-universal';
-import BigNumber from 'bignumber.js';
-import {
-  CameraOutlined,
-  CompassOutlined,
-  EditOutlined,
-  HomeOutlined,
-  InfoCircleOutlined,
-  UserOutlined
-} from '@ant-design/icons';
-import CreatePostCard from '@components/Common/CreatePostCard';
+import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
+import { PostsQueryTag } from '@bcpros/lixi-models/constants';
+import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
+import { FilterType } from '@bcpros/lixi-models/lib/filter';
+import { FilterBurnt } from '@components/Common/FilterBurn';
 import SearchBox from '@components/Common/SearchBox';
 import PostListItem from '@components/Posts/PostListItem';
-import { showToast } from '@store/toast/actions';
 import {
-  addBurnQueue,
-  addBurnTransaction,
-  getBurnQueue,
-  getFailQueue,
-  getLatestBurnForPost,
-  clearFailQueue
-} from '@store/burn';
+  CreateFollowAccountInput,
+  DeleteFollowAccountInput,
+  OrderDirection,
+  PostOrderField
+} from '@generated/types.generated';
+import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
+import { setTransactionReady } from '@store/account/actions';
 import { getSelectedAccount } from '@store/account/selectors';
+import { addBurnQueue, addBurnTransaction, clearFailQueue, getFailQueue } from '@store/burn';
+import { useCreateFollowAccountMutation, useDeleteFollowAccountMutation } from '@store/follow/follows.api';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
 import { useInfinitePostsByUserIdQuery } from '@store/post/useInfinitePostsByUserIdQuery';
-import { Button, Space, Tabs, Skeleton } from 'antd';
+import { getFilterPostsProfile } from '@store/settings/selectors';
+import { showToast } from '@store/toast/actions';
+import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
+import { fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods';
+import { Button, Skeleton, Space, Tabs } from 'antd';
 import axios from 'axios';
+import BigNumber from 'bignumber.js';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
-import { Virtuoso } from 'react-virtuoso';
-import { OrderDirection, PostOrderField } from '@generated/types.generated';
-import styled from 'styled-components';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
-import { PostsQueryTag } from '@bcpros/lixi-models/constants';
-import { fromSmallestDenomination } from '@utils/cashMethods';
-import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
-import { fromXpiToSatoshis } from '@utils/cashMethods';
-import { FilterBurnt } from '@components/Common/FilterBurn';
-import { FilterType } from '@bcpros/lixi-models/lib/filter';
-import { getFilterPostsHome, getFilterPostsProfile } from '@store/settings/selectors';
-import { selectAccount, setTransactionReady } from '@store/account/actions';
-import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
-import {
-  api as followsApi,
-  useCheckIsFollowedAccountQuery,
-  useCreateFollowAccountMutation,
-  useDeleteFollowAccountMutation
-} from '@store/follow/follows.api';
-import { CreateFollowAccountInput, DeleteFollowAccountInput } from '@generated/types.generated';
-import { api as accountApi, useGetAccountByAddressQuery } from '@store/account/accounts.api';
-import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
+import intl from 'react-intl-universal';
+import styled from 'styled-components';
 
 type UserDetailProps = {
   user: any;
