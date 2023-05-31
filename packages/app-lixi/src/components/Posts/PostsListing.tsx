@@ -442,13 +442,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         slpBalancesAndUtxos.nonSlpUtxos.length == 0 ||
         fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis) < parseInt(burnValue) + totalTip
       ) {
-        console.log(
-          'check: ',
-          slpBalancesAndUtxos.nonSlpUtxos.length,
-          fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis),
-          parseInt(burnValue),
-          totalTip
-        );
         throw new Error(intl.get('account.insufficientFunds'));
       }
 
