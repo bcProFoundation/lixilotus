@@ -474,8 +474,8 @@ type Query {
   ): WorshipedPersonConnection!
   allWorshipedPersonByUserId(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: WorshipedPersonOrder, skip: Int): WorshipedPersonConnection!
   allWorshipedPersonSpecialDate(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: WorshipedPersonOrder, skip: Int): WorshipedPersonConnection!
-  checkIsFollowedAccount(address: String!): FollowAccount!
-  checkIsFollowedPage(pageId: String!): FollowPage!
+  checkIfFollowAccount(followingAccountId: Int!): Boolean!
+  checkIfFollowPage(pageId: String!): Boolean!
   comment(id: String!): Comment!
   getAccountByAddress(address: String!): Account!
   page(id: String!): Page!

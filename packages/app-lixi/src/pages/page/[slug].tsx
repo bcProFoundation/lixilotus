@@ -1,15 +1,12 @@
+import PageDetailLayout from '@components/Layout/PageDetailLayout';
 import PageDetail from '@components/Pages/PageDetail';
+import { useCheckIfFollowPageQuery } from '@store/follow/follows.api';
+import { usePageQuery } from '@store/page/pages.generated';
 import { SagaStore, wrapper } from '@store/store';
 import _ from 'lodash';
-import pageApi from '@store/page/api';
 import { NextSeo } from 'next-seo';
-import React from 'react';
-import { END } from 'redux-saga';
 import { getSelectorsByUserAgent } from 'react-device-detect';
-import PageDetailLayout from '@components/Layout/PageDetailLayout';
-import ProfileDetail from '@components/Profile/ProfileDetail';
-import { usePageQuery } from '@store/page/pages.generated';
-import { useCheckIsFollowedPageQuery } from '@store/follow/follows.api';
+import { END } from 'redux-saga';
 
 const PageDetailPage = props => {
   const { pageId, isMobile } = props;
@@ -18,13 +15,13 @@ const PageDetailPage = props => {
   let checkIsFollowed;
 
   const { currentData: currentDataPageQuery, isSuccess: isSuccessPageQuery } = usePageQuery({ id: pageId });
-  const { currentData: currentDataCheckIsFollowed, isSuccess: isSuccessCheckIsFollowed } = useCheckIsFollowedPageQuery({
+  const { currentData: currentDataCheckIsFollowed, isSuccess: isSuccessCheckIsFollowed } = useCheckIfFollowPageQuery({
     pageId: pageId
   });
 
   if (isSuccessPageQuery && isSuccessCheckIsFollowed) {
     currentPage = currentDataPageQuery.page;
-    checkIsFollowed = currentDataCheckIsFollowed.checkIsFollowedPage.isFollowed;
+    checkIsFollowed = currentDataCheckIsFollowed.checkIfFollowPage;
   }
 
   return (

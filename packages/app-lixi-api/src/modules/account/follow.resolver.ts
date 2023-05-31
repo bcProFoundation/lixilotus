@@ -12,7 +12,7 @@ import {
 } from '@bcpros/lixi-models';
 import { PrismaService } from '../prisma/prisma.service';
 import { HttpException, HttpStatus, Injectable, Logger, UseFilters, UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
+import { Args, Int, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
 import { I18n, I18nService } from 'nestjs-i18n';
 import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
@@ -20,11 +20,14 @@ import { AccountEntity } from 'src/decorators/account.decorator';
 import VError from 'verror';
 import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
 import _ from 'lodash';
+import { InjectRedis } from '@liaoliaots/nestjs-redis';
+import { Redis } from 'ioredis';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
 import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
 import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
 import { NotificationLevel } from '@bcpros/lixi-prisma';
+import { FollowCacheService } from './follow-cache.service';
 
 const pubSub = new PubSub();
 
@@ -34,9 +37,11 @@ export class FollowResolver {
   private logger: Logger = new Logger(FollowResolver.name);
 
   constructor(
-    private prisma: PrismaService,
+    private readonly followCacheService: FollowCacheService,
+    private readonly prisma: PrismaService,
     private readonly notificationService: NotificationService,
-    @I18n() private i18n: I18nService
+    @I18n() private readonly i18n: I18nService,
+    @InjectRedis() private readonly redis: Redis
   ) {}
 
   @Subscription(() => FollowAccount)
@@ -44,35 +49,17 @@ export class FollowResolver {
     return pubSub.asyncIterator('followAccountCreated');
   }
 
-  // Follow Account
-  @Query(() => FollowAccount)
+  @Query(() => Boolean)
   @UseGuards(GqlJwtAuthGuard)
-  async checkIsFollowedAccount(
-    @PageAccountEntity() account: Account,
-    @Args('address', { type: () => String }) address: string
+  async checkIfFollowAccount(
+    @AccountEntity() account: Account,
+    @Args('followingAccountId', { type: () => Int }) followingAccountId: number
   ) {
-    const accountQuery = await this.prisma.account.findFirst({
-      where: { address: address }
-    });
-
-    if (!account || !accountQuery) {
-      const couldNotFindAccount = await this.i18n.t('page.messages.couldNotFindAccount');
-      throw new VError.WError(couldNotFindAccount);
+    if (!account) {
+      return false;
     }
 
-    const existData = await this.prisma.followAccount.findFirst({
-      where: {
-        followingAccountId: accountQuery.id,
-        followerAccountId: account.id
-      }
-    });
-
-    const result = {
-      ...existData,
-      isFollowed: existData ? true : false
-    };
-
-    return result;
+    return await this.followCacheService.checkIfAccountFollowAccount(account.id, followingAccountId);
   }
 
   @Query(() => FollowAccountConnection)
@@ -170,6 +157,13 @@ export class FollowResolver {
         data: { ...data }
       });
 
+      // Save to cache
+      await this.followCacheService.createFollowAccount(
+        followerAccountId,
+        followingAccountId,
+        createdFollowAccount.createdAt
+      );
+
       const recipient = await this.prisma.account.findFirst({
         where: {
           id: _.toSafeInteger(followingAccountId)
@@ -228,6 +222,8 @@ export class FollowResolver {
         }
       });
 
+      await this.followCacheService.removeFollowAccount(followerAccountId, followingAccountId);
+
       pubSub.publish('followAccountDeleted', { followAccountDeleted: deletedFollowAccount });
       return deletedFollowAccount ? true : false;
     } catch (err) {
@@ -237,31 +233,18 @@ export class FollowResolver {
     }
   }
 
-  // Follow Page
-  @Query(() => FollowPage)
+  @Query(() => Boolean)
   @UseGuards(GqlJwtAuthGuard)
-  async checkIsFollowedPage(
+  async checkIfFollowPage(
     @PageAccountEntity() account: Account,
     @Args('pageId', { type: () => String }) pageId: string
   ) {
     if (!account) {
-      const couldNotFindAccount = await this.i18n.t('page.messages.couldNotFindAccount');
-      throw new VError.WError(couldNotFindAccount);
+      return false;
     }
 
-    const existData = await this.prisma.followPage.findFirst({
-      where: {
-        pageId: pageId,
-        accountId: account.id
-      }
-    });
-
-    const result = {
-      ...existData,
-      isFollowed: existData ? true : false
-    };
-
-    return result;
+    // We need to find out if the account follow the page or not
+    return await this.followCacheService.checkIfAccountFollowPage(account.id, pageId);
   }
 
   @UseGuards(GqlJwtAuthGuard)
@@ -294,6 +277,9 @@ export class FollowResolver {
       const createdFollowPage = await this.prisma.followPage.create({
         data: { ...data }
       });
+
+      // Save to cache
+      await this.followCacheService.createFollowPage(accountId, pageId, createdFollowPage.createdAt);
 
       const recipient = await this.prisma.account.findFirst({
         where: {
@@ -359,6 +345,8 @@ export class FollowResolver {
           pageId: pageId
         }
       });
+
+      await this.followCacheService.removeFollowPage(accountId, pageId);
 
       pubSub.publish('followPageDeleted', { followPageDeleted: deletedFollowPage });
       return deletedFollowPage ? true : false;
