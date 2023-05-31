@@ -45,7 +45,7 @@ export default {
   'burn.doneBurning': 'Burning completed!',
   'burn.sendXpi': 'You will send ',
   'burn.owner': ' to {name} owner',
-  'burn.feeMiner': 'Miners\' fees excluded',
+  'burn.feeMiner': "Miners' fees excluded",
 
   /* 01.General */
   'general.tokens': 'Tokens',

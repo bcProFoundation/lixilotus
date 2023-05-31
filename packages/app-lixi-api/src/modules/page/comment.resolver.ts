@@ -35,7 +35,7 @@ export class CommentResolver {
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS,
     private readonly notificationService: NotificationService
-  ) { }
+  ) {}
 
   @Subscription(() => Comment)
   commentCreated() {
@@ -66,7 +66,7 @@ export class CommentResolver {
     const result = await findManyCursorConnection(
       args =>
         this.prisma.comment.findMany({
-          include: { commentAccount: true },
+          include: { commentAccount: true, commentTo: true },
           where: {
             OR: [
               {

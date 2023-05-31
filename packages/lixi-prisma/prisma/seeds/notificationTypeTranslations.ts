@@ -100,37 +100,37 @@ export const notificationTypeTranslations = [
     isDefault: false,
     template: '{{senderName}} đã tặng cho bạn {{xpiGive}} XPI.'
   },
-  // burn
+  // burn-comment-on-postAccount
   {
     id: 15,
     notificationTypeId: 8,
     language: 'en',
     isDefault: true,
-    template: '{{senderName}} {{burnType}} {{xpiBurn}} XPI on your {{burnForType}}.'
+    template: '{{senderName}} {{burnType}} {{xpiBurn}} XPI for comment on your post. You received {{xpiFee}} XPI fee.'
   },
   {
     id: 16,
     notificationTypeId: 8,
     language: 'vi',
     isDefault: false,
-    template: '{{senderName}} {{burnType}} {{xpiBurn}} XPI cho {{burnForType}} của bạn.'
+    template: '{{senderName}} {{burnType}} {{xpiBurn}} XPI cho bình luận trong bài viết của bạn. Bạn được nhận {{xpiFee}} XPI tiền phí.'
   },
-  // burn-tip
+  // burn-account-fee
   {
     id: 17,
     notificationTypeId: 9,
     language: 'en',
     isDefault: true,
-    template: '{{senderName}} {{burnType}} {{xpiBurn}} XPI on your {{burnForType}}.  You received {{xpiTip}} XPI.'
+    template: '{{senderName}} {{burnType}} {{xpiBurn}} XPI on your post.  You received {{xpiFee}} XPI fee.'
   },
   {
     id: 18,
     notificationTypeId: 9,
     language: 'vi',
     isDefault: false,
-    template: '{{senderName}} {{burnType}} {{xpiBurn}} XPI cho {{burnForType}} của bạn. Bạn được nhận {{xpiTip}} XPI.'
+    template: '{{senderName}} {{burnType}} {{xpiBurn}} XPI cho bài viết của bạn. Bạn được nhận {{xpiFee}} XPI tiền phí.'
   },
-  // burn-fee
+  // burn-page-fee
   {
     id: 19,
     notificationTypeId: 10,

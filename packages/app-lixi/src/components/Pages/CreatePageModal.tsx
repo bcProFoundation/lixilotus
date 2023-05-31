@@ -172,7 +172,7 @@ export const CreatePageModal: React.FC<CreatePageModalProps> = ({ accountId, dis
               <Input defaultValue={newPageName} onChange={e => handleNewPageNameInput(e)} />
               <TextCustom>{intl.get('text.createPageName')}</TextCustom>
             </Form.Item>
-            
+
             <Form.Item
               name="category"
               label={intl.get('page.category')}
