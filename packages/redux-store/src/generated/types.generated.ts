@@ -716,7 +716,7 @@ export type QueryAllPostsBySearchWithHashtagArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
-  hashtag?: InputMaybe<Scalars['String']>;
+  hashtags?: InputMaybe<Array<Scalars['String']>>;
   last?: InputMaybe<Scalars['Int']>;
   minBurnFilter?: InputMaybe<Scalars['Int']>;
   query?: InputMaybe<Scalars['String']>;

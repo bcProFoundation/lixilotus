@@ -38,7 +38,6 @@ import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotific
 import { CreateFollowPageInput, DeleteFollowPageInput } from '@generated/types.generated';
 import { useCreateFollowPageMutation, useDeleteFollowPageMutation } from '@store/follow/follows.api';
 import { useInfinitePostsBySearchQueryWithHashtagAtPage } from '@store/post/useInfinitePostsBySearchQueryWithHashtagAtPage';
-import { usePostsBySearchWithHashtagAtPageQuery } from '@store/post/posts.generated';
 
 type PageDetailProps = {
   page: any;
@@ -568,7 +567,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
   };
   //#endregion
 
-  const showPost = () => {
+  const showPosts = () => {
     return (
       <React.Fragment>
         {!searchValue && hashtags.length === 0 ? (
@@ -788,7 +787,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                       <p>Become a first person post on the page...</p>
                     </div>
                   )}
-                  {isQueryFetching ? <Skeleton avatar active /> : showPost()}
+                  {showPosts()}
                 </Timeline>
               </ContentTimeline>
             </Tabs.TabPane>

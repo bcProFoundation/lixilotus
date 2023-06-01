@@ -424,25 +424,27 @@ export class PostResolver {
 
   @Query(() => PostResponse, { name: 'allPostsBySearchWithHashtag' })
   async allPostsBySearchWithHashtag(
-    @Args() args: ConnectionArgs,
-    @Args({ name: 'query', type: () => String, nullable: true })
-    @Args({ name: 'hashtag', type: () => String, nullable: true })
     @Args({ name: 'minBurnFilter', type: () => Int, nullable: true })
+    minBurnFilter: number,
+    @Args()
+    args: ConnectionArgs,
+    @Args({ name: 'query', type: () => String, nullable: true })
     query: string,
-    hashtag: string
+    @Args({ name: 'hashtags', type: () => [String], nullable: true })
+    hashtags: string[]
   ): Promise<PostResponse> {
     const { limit, offset } = getPagingParameters(args);
 
     const count = await this.hashtagService.searchByQueryEstimatedTotalHits(
       `${process.env.MEILISEARCH_BUCKET}_${POSTS}`,
       query,
-      hashtag
+      hashtags
     );
 
     const posts = await this.hashtagService.searchByQueryHits(
       `${process.env.MEILISEARCH_BUCKET}_${POSTS}`,
       query,
-      hashtag,
+      hashtags,
       offset!,
       limit!
     );
@@ -451,7 +453,16 @@ export class PostResolver {
 
     const searchPosts = await this.prisma.post.findMany({
       where: {
-        id: { in: postsId }
+        AND: [
+          {
+            id: { in: postsId }
+          },
+          {
+            lotusBurnScore: {
+              gte: minBurnFilter ?? 0
+            }
+          }
+        ]
       }
     });
 

@@ -1,4 +1,3 @@
-import QRCode from '@bcpros/lixi-components/components/Common/QRCode';
 import CreatePostCard from '@components/Common/CreatePostCard';
 import {
   getGraphqlRequestStatus,
@@ -6,10 +5,7 @@ import {
   getSelectedAccount,
   getSelectedAccountId
 } from '@store/account/selectors';
-import { useInfinitePostsBySearchQuery } from '@store/post/useInfinitePostsBySearchQuery';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
-import { useInfiniteOrphanPostsQuery } from '@store/post/useInfiniteOrphanPostsQuery';
-import { useInfinitePostsByPageIdQuery } from '@store/post/useInfinitePostsByPageIdQuery';
 import { WalletContext } from '@context/index';
 import {
   addBurnQueue,
@@ -46,8 +42,7 @@ import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import { getFilterPostsHome } from '@store/settings/selectors';
 import { getLeaderboard } from '@store/account/actions';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
-import axiosClient from '@utils/axiosClient';
-import TagInputField from '@components/Common/TagInputField';
+import { useInfinitePostsBySearchQueryWithHashtag } from '@store/post/useInfinitePostsBySearchQueryWithHashtag';
 
 const { Panel } = Collapse;
 const antIcon = <LoadingOutlined style={{ fontSize: 20 }} spin />;
@@ -163,13 +158,9 @@ const menuItems = [
 const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingProps) => {
   const dispatch = useAppDispatch();
   const selectedAccountId = useAppSelector(getSelectedAccountId);
-  const [isShowQrCode, setIsShowQrCode] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchValue, setSearchValue] = useState<string | null>(null);
   const refPostsListing = useRef<HTMLDivElement | null>(null);
   const [tab, setTab] = useState<any>('all');
-  const [queryPostTrigger, queryPostResult] = useLazyPostQuery();
   const selectedAccount = useAppSelector(getSelectedAccount);
   const latestBurnForPost = useAppSelector(getLatestBurnForPost);
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
@@ -188,27 +179,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     setTab(e.key);
   };
 
-  const {
-    data: orphanData,
-    totalCount: orphanTotalCount,
-    fetchNext: orphanFetchNext,
-    hasNext: orphanHasNext,
-    isFetching: orphanIsFetching,
-    isFetchingNext: orphanIsFetchingNext,
-    refetch: orphanRefetch
-  } = useInfiniteOrphanPostsQuery(
-    {
-      first: 20,
-      minBurnFilter: filterValue ?? 1,
-      accountId: selectedAccountId ?? null,
-      orderBy: {
-        direction: OrderDirection.Desc,
-        field: PostOrderField.UpdatedAt
-      }
-    },
-    false
-  );
-
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsQuery(
     {
       first: 20,
@@ -222,29 +192,14 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     false
   );
 
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
-
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
-  const onDeleteHashtag = (hashtagsValue: string[]) => {
-    setHashtags([...hashtagsValue]);
-  };
-
   //#region QueryVirtuoso
   const { queryData, fetchNextQuery, hasNextQuery, isQueryFetching, isFetchingQueryNext, isQueryLoading } =
-    useInfinitePostsBySearchQuery(
+    useInfinitePostsBySearchQueryWithHashtag(
       {
         first: 20,
-        minBurnFilter: filterValue,
-        query: searchValue
+        minBurnFilter: filterValue ?? 1,
+        query: searchValue,
+        hashtags: hashtags
       },
       false
     );
@@ -257,19 +212,15 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     }
   };
 
-  const searchPost = value => {
+  const searchPost = (value: string, hashtagsValue: string[]) => {
     setSearchValue(value);
+    setHashtags([...hashtagsValue]);
   };
 
-  const QueryHeader = () => {
-    return (
-      <div>
-        <SearchBox searchPost={searchPost} searchValue={searchValue} onDeleteHashtag={onDeleteHashtag} />
-        <h1 style={{ textAlign: 'left', fontSize: '20px', margin: '1rem' }}>
-          {intl.get('general.searchResults', { text: searchValue })}
-        </h1>
-      </div>
-    );
+  console.log('hashtags', hashtags);
+
+  const onDeleteHashtag = (hashtagsValue: string[]) => {
+    setHashtags([...hashtagsValue]);
   };
 
   const QueryFooter = () => {
@@ -289,21 +240,10 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
 
   //#region Normal Virtuoso
   const loadMoreItems = () => {
-    switch (tab) {
-      case 'top':
-        if (orphanHasNext && !orphanIsFetching) {
-          orphanFetchNext();
-        } else if (orphanHasNext) {
-          orphanFetchNext();
-        }
-        return;
-      case 'all':
-        if (hasNext && !isFetching) {
-          fetchNext();
-        } else if (hasNext) {
-          fetchNext();
-        }
-        return;
+    if (hasNext && !isFetching) {
+      fetchNext();
+    } else if (hasNext) {
+      fetchNext();
     }
   };
 
@@ -315,12 +255,13 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     }, 700);
   };
 
-  //TODO: Data not consistent when change tab
   const Header = () => {
     return (
       <StyledHeader>
-        <SearchBox searchPost={searchPost} searchValue={searchValue} onDeleteHashtag={onDeleteHashtag} />
-        <CreatePostCard />
+        {!searchValue && hashtags.length === 0 && <CreatePostCard />}
+        <h1 style={{ textAlign: 'left', fontSize: '20px', margin: '1rem' }}>
+          {searchValue && intl.get('general.searchResults', { text: searchValue })}
+        </h1>
         <div className="filter-bar">
           <Menu
             className="menu-post-listing"
@@ -351,7 +292,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
           textAlign: 'center'
         }}
       >
-        {isFetchingNext || orphanIsFetchingNext ? <Skeleton avatar active /> : "It's so empty here..."}
+        {isFetchingNext ? <Skeleton avatar active /> : "It's so empty here..."}
       </div>
     );
   };
@@ -364,49 +305,41 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   }, [data]);
 
   const showPosts = () => {
-    switch (tab) {
-      case 'top':
-        return (
-          <Virtuoso
-            id="list-virtuoso"
-            onScroll={e => triggerSrollbar(e)}
-            style={{ height: '100vh', paddingBottom: '2rem' }}
-            data={orphanData}
-            endReached={loadMoreItems}
-            overscan={3000}
-            itemContent={(index, item) => {
-              return <PostListItem index={index} item={item} />;
-            }}
-            components={{ Header, Footer }}
-          />
-        );
-      case 'all':
-        return (
-          <React.Fragment>
-            <Header />
-            {graphqlRequestLoading ? (
-              <Skeleton avatar active />
-            ) : (
-              <InfiniteScroll
-                dataLength={data.length}
-                next={loadMoreItems}
-                hasMore={hasNext}
-                loader={<Skeleton avatar active />}
-                endMessage={
-                  <p style={{ textAlign: 'center' }}>
-                    <b>{"It's so empty here..."}</b>
-                  </p>
-                }
-                scrollableTarget="scrollableDiv"
-              >
-                {data.map((item, index) => {
-                  return <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />;
-                })}
-              </InfiniteScroll>
-            )}
-          </React.Fragment>
-        );
-    }
+    return (
+      <React.Fragment>
+        {!searchValue && hashtags.length === 0 ? (
+          <InfiniteScroll
+            dataLength={data.length}
+            next={loadMoreItems}
+            hasMore={hasNext}
+            loader={<Skeleton avatar active />}
+            endMessage={
+              <p style={{ textAlign: 'center' }}>
+                <b>{data.length > 0 ? 'end reached' : ''}</b>
+              </p>
+            }
+            scrollableTarget="scrollableDiv"
+          >
+            {data.map((item, index) => {
+              return <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />;
+            })}
+          </InfiniteScroll>
+        ) : (
+          <InfiniteScroll
+            dataLength={queryData.length}
+            next={loadMoreQueryItems}
+            hasMore={hasNextQuery}
+            loader={<Skeleton avatar active />}
+            endMessage={<QueryFooter />}
+            scrollableTarget="scrollableDiv"
+          >
+            {queryData.map((item, index) => {
+              return <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />;
+            })}
+          </InfiniteScroll>
+        )}
+      </React.Fragment>
+    );
   };
 
   useDidMountEffectNotification();
@@ -482,29 +415,15 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
 
   return (
     <StyledPostsListing>
-      {!searchValue ? (
-        showPosts()
-      ) : (
-        <React.Fragment>
-          <QueryHeader />
-          <InfiniteScroll
-            dataLength={queryData.length}
-            next={loadMoreQueryItems}
-            hasMore={hasNextQuery}
-            loader={<Skeleton avatar active />}
-            endMessage={
-              <p style={{ textAlign: 'center' }}>
-                <b>{"It's so empty here..."}</b>
-              </p>
-            }
-            scrollableTarget="scrollableDiv"
-          >
-            {queryData.map((item, index) => {
-              return <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />;
-            })}
-          </InfiniteScroll>
-        </React.Fragment>
-      )}
+      <SearchBox
+        searchPost={searchPost}
+        searchValue={searchValue}
+        hashtags={hashtags}
+        onDeleteHashtag={onDeleteHashtag}
+      />
+      <Header />
+
+      {showPosts()}
     </StyledPostsListing>
   );
 };

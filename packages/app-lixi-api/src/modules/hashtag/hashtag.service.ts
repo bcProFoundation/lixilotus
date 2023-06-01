@@ -103,7 +103,7 @@ export class HashtagService {
     return indexedHashtags;
   }
 
-  private filterQueryBuilder(hashtags: string[]): string {
+  private filterQueryBuilder(hashtags: string[], searchContext: boolean): string {
     if (hashtags.length === 0) return '';
     const filters: string[] = [];
 
@@ -113,21 +113,26 @@ export class HashtagService {
 
     const filtersQuery = filters.join(' AND ');
 
-    return filtersQuery + ' AND ';
+    if (searchContext) {
+      return filtersQuery + ' AND ';
+    } else {
+      return filtersQuery;
+    }
   }
 
-  public async searchByQueryEstimatedTotalHits(index: string, query: string, hashtag: string) {
-    return (await this.meiliSearch.index(index).search(query, { filter: `hashtag.content = "${hashtag}"` }))
-      .estimatedTotalHits;
+  public async searchByQueryEstimatedTotalHits(index: string, query: string, hashtags: string[]) {
+    return (
+      await this.meiliSearch.index(index).search(query, { filter: `${this.filterQueryBuilder(hashtags, false)}` })
+    ).estimatedTotalHits;
   }
 
-  public async searchByQueryHits(index: string, query: string, hashtag: string, offset: number, limit: number) {
+  public async searchByQueryHits(index: string, query: string, hashtags: string[], offset: number, limit: number) {
     const hits = await this.meiliSearch
       .index(index)
       .search(query, {
         offset: offset,
         limit: limit,
-        filter: `hashtag.content = "${hashtag}"`
+        filter: `${this.filterQueryBuilder(hashtags, false)}`
       })
       .then(res => {
         return res.hits;
@@ -139,7 +144,7 @@ export class HashtagService {
     return (
       await this.meiliSearch
         .index(index)
-        .search(query, { filter: `${this.filterQueryBuilder(hashtags)}page.id = "${pageId}"` })
+        .search(query, { filter: `${this.filterQueryBuilder(hashtags, true)}page.id = "${pageId}"` })
     ).estimatedTotalHits;
   }
 
@@ -156,7 +161,7 @@ export class HashtagService {
       .search(query, {
         offset: offset,
         limit: limit,
-        filter: `${this.filterQueryBuilder(hashtags)}page.id = "${pageId}"`
+        filter: `${this.filterQueryBuilder(hashtags, true)}page.id = "${pageId}"`
       })
       .then(res => {
         return res.hits;

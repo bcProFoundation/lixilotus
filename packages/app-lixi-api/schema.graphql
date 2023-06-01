@@ -514,7 +514,7 @@ type Query {
 
     """Paginate first"""
     first: Int
-    hashtag: String
+    hashtags: [String!]
 
     """Paginate last"""
     last: Int

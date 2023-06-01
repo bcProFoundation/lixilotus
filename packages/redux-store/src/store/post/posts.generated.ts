@@ -470,7 +470,7 @@ export type PostsBySearchWithHashtagQueryVariables = Types.Exact<{
   last?: Types.InputMaybe<Types.Scalars['Int']>;
   query?: Types.InputMaybe<Types.Scalars['String']>;
   minBurnFilter?: Types.InputMaybe<Types.Scalars['Int']>;
-  hashtag?: Types.InputMaybe<Types.Scalars['String']>;
+  hashtags?: Types.InputMaybe<Array<Types.Scalars['String']> | Types.Scalars['String']>;
 }>;
 
 export type PostsBySearchWithHashtagQuery = {
@@ -979,7 +979,7 @@ export const PostsBySearchDocument = `
     ${PostMeiliFieldsFragmentDoc}
 ${PostMeiliPageInfoFieldsFragmentDoc}`;
 export const PostsBySearchWithHashtagDocument = `
-    query PostsBySearchWithHashtag($after: String, $before: String, $first: Int, $last: Int, $query: String, $minBurnFilter: Int, $hashtag: String) {
+    query PostsBySearchWithHashtag($after: String, $before: String, $first: Int, $last: Int, $query: String, $minBurnFilter: Int, $hashtags: [String!]) {
   allPostsBySearchWithHashtag(
     after: $after
     before: $before
@@ -987,7 +987,7 @@ export const PostsBySearchWithHashtagDocument = `
     last: $last
     query: $query
     minBurnFilter: $minBurnFilter
-    hashtag: $hashtag
+    hashtags: $hashtags
   ) {
     edges {
       cursor

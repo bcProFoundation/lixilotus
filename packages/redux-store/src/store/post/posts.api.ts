@@ -59,8 +59,8 @@ const enhancedApi = api.enhanceEndpoints({
       providesTags: (result, error, arg) => ['Post'],
       serializeQueryArgs({ queryArgs }) {
         if (queryArgs) {
-          const { query, minBurnFilter, hashtag, ...otherArgs } = queryArgs;
-          return { query, minBurnFilter, hashtag };
+          const { query, minBurnFilter, hashtags, ...otherArgs } = queryArgs;
+          return { query, minBurnFilter, hashtags };
         }
         return { queryArgs };
       },
@@ -153,6 +153,7 @@ const enhancedApi = api.enhanceEndpoints({
         currentCacheData.allPostsByHashtagId.totalCount = responseData.allPostsByHashtagId.totalCount;
       }
     },
+
     createPost: {},
     updatePost: {}
   }

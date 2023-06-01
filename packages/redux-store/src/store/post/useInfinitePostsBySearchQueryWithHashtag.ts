@@ -18,7 +18,7 @@ const { selectAll, selectEntities, selectIds, selectTotal } = postsAdapter.getSe
 
 interface PostListParams extends PaginationArgs {
   query: string;
-  hashtag: string;
+  hashtags: string[];
 }
 
 export function useInfinitePostsBySearchQueryWithHashtag(
@@ -93,6 +93,9 @@ export function useInfinitePostsBySearchQueryWithHashtag(
     isErrorQueryNext: nextResult?.isError,
     isFetchingQueryNext: nextResult?.isFetching,
     hasNextQuery: baseResult.data?.allPostsBySearchWithHashtag?.pageInfo?.endCursor !== null,
+    noMoreQuery:
+      baseResult.data?.allPostsBySearchWithHashtag?.pageInfo?.endCursor === null ||
+      baseResult.data?.allPostsBySearchWithHashtag?.pageInfo?.hasNextPage === false,
     fetchNextQuery,
     refetchQuery
   };

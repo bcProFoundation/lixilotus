@@ -3,7 +3,6 @@ import { Input, Tag } from 'antd';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
-import TagInputField from './TagInputField';
 
 export type SearchType = {
   value: string | null;
