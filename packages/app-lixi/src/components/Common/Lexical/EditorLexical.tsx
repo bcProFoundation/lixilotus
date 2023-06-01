@@ -83,6 +83,12 @@ const StyledEditorLexical = styled.div`
     display: flex;
     align-items: center;
     justify-content: start;
+
+    .ant-btn-icon {
+      .anticon-twitter {
+        font-size: 26px;
+      }
+    }
   }
 
   .EditorLexical_submit {
