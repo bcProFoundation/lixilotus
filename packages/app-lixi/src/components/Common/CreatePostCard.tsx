@@ -1,3 +1,5 @@
+import useXPI from '@hooks/useXPI';
+import { WalletContext } from '@context/walletProvider';
 import { PlusCircleOutlined, GlobalOutlined, DollarOutlined, ShopOutlined } from '@ant-design/icons';
 import { PatchCollection } from '@reduxjs/toolkit/dist/query/core/buildThunks';
 import { getPostCoverUploads, getSelectedAccount } from '@store/account/selectors';
@@ -20,6 +22,10 @@ import { getEditorCache } from '@store/account/selectors';
 import { deleteEditorTextFromCache } from '@store/account/actions';
 import { getFilterPostsHome, getFilterPostsPage, getFilterPostsToken } from '@store/settings/selectors';
 import router from 'next/router';
+import { Page } from '@bcpros/lixi-models';
+import { currency } from './Ticker';
+import { getUtxoWif } from '@utils/cashMethods';
+import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
 
 type ErrorType = 'unsupported' | 'invalid';
 
@@ -103,6 +109,10 @@ const UserCreate = styled.div`
         letter-spacing: 0.15px;
         color: var(--text-color-on-background);
       }
+      .location-fee {
+        display: flex;
+        align-items: baseline;
+      }
       .btn-select {
         background: var(--boder-item-light);
         border-radius: 8px;
@@ -120,12 +130,23 @@ const UserCreate = styled.div`
           }
         }
       }
+      .post-fee {
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 20px;
+        letter-spacing: 0.25px;
+        color: #4e444b;
+        padding-left: 5px;
+        &.anticon {
+          font-size: 10px;
+        }
+      }
     }
   }
 `;
 
 type CreatePostCardProp = {
-  pageId?: string;
+  page?: Page;
   tokenPrimaryId?: string;
   userId?: string;
   refetch?: () => void;
@@ -136,12 +157,18 @@ const CreatePostCard = (props: CreatePostCardProp) => {
   const pathname = router.pathname ?? '';
   const [enableEditor, setEnableEditor] = useState(false);
   const postCoverUploads = useAppSelector(getPostCoverUploads);
-  const { pageId, tokenPrimaryId } = props;
+  const { page, tokenPrimaryId } = props;
+  const pageId = page ? page.id : undefined;
   const selectedAccount = useAppSelector(getSelectedAccount);
   const editorCache = useAppSelector(getEditorCache);
   const filterHome = useAppSelector(getFilterPostsHome);
   const filterPage = useAppSelector(getFilterPostsPage);
   const filterToken = useAppSelector(getFilterPostsToken);
+  const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
+  const walletPaths = useAppSelector(getAllWalletPaths);
+  const Wallet = React.useContext(WalletContext);
+  const { XPI, chronik } = Wallet;
+  const { sendXpi } = useXPI();
 
   const [
     createPostTrigger,
@@ -209,10 +236,30 @@ const CreatePostCard = (props: CreatePostCardProp) => {
       return;
     }
 
+    let createFeeHex;
     if (pathname.includes('/token')) {
       filterValue = filterToken;
     } else if (pathname.includes('/page')) {
       filterValue = filterPage;
+
+      if (selectedAccount.id != page.pageAccountId) {
+        const fundingWif = getUtxoWif(slpBalancesAndUtxos.nonSlpUtxos[0], walletPaths);
+        createFeeHex = await sendXpi(
+          XPI,
+          chronik,
+          walletPaths,
+          slpBalancesAndUtxos.nonSlpUtxos,
+          currency.defaultFee,
+          '',
+          false, // indicate send mode is one to one
+          null,
+          page.pageAccount.address,
+          page.createPostFee,
+          true,
+          fundingWif,
+          true
+        );
+      }
     } else {
       filterValue = filterHome;
     }
@@ -222,7 +269,8 @@ const CreatePostCard = (props: CreatePostCardProp) => {
       htmlContent: htmlContent,
       pureContent: pureContent,
       pageId: pageId || undefined,
-      tokenPrimaryId: tokenPrimaryId || undefined
+      tokenPrimaryId: tokenPrimaryId || undefined,
+      createFeeHex: createFeeHex
     };
 
     const params = {
@@ -324,7 +372,12 @@ const CreatePostCard = (props: CreatePostCardProp) => {
               <img src="/images/xpi.svg" alt="" />
               <div className="user-info">
                 <p className="title-user">{selectedAccount?.name}</p>
-                <Button className="btn-select">{getCreatePostLocation()}</Button>
+                <div className="location-fee">
+                  <Button className="btn-select">{getCreatePostLocation()}</Button>
+                  {page && page.createPostFee && selectedAccount.id != page.pageAccountId && (
+                    <p className="post-fee">{`${intl.get('general.fee')} ${page.createPostFee} ${currency.ticker}`}</p>
+                  )}
+                </div>
               </div>
             </div>
             <EditorLexical onSubmit={value => handleCreateNewPost(value)} loading={isLoadingCreatePost} />

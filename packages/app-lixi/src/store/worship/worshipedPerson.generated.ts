@@ -63,7 +63,12 @@ export type WorshipFieldsFragment = {
   createdAt: any;
   updatedAt: any;
   account: { __typename?: 'Account'; id: string; name: string; address: string };
-  worshipedPerson: { __typename?: 'WorshipedPerson'; id: string; name: string; totalWorshipAmount?: number | null };
+  worshipedPerson?: {
+    __typename?: 'WorshipedPerson';
+    id: string;
+    name: string;
+    totalWorshipAmount?: number | null;
+  } | null;
 };
 
 export type WorshipedPersonQueryVariables = Types.Exact<{
@@ -129,7 +134,12 @@ export type WorshipQuery = {
     createdAt: any;
     updatedAt: any;
     account: { __typename?: 'Account'; id: string; name: string; address: string };
-    worshipedPerson: { __typename?: 'WorshipedPerson'; id: string; name: string; totalWorshipAmount?: number | null };
+    worshipedPerson?: {
+      __typename?: 'WorshipedPerson';
+      id: string;
+      name: string;
+      totalWorshipAmount?: number | null;
+    } | null;
   };
 };
 
@@ -427,12 +437,12 @@ export type AllWorshipedByPersonIdQuery = {
         createdAt: any;
         updatedAt: any;
         account: { __typename?: 'Account'; id: string; name: string; address: string };
-        worshipedPerson: {
+        worshipedPerson?: {
           __typename?: 'WorshipedPerson';
           id: string;
           name: string;
           totalWorshipAmount?: number | null;
-        };
+        } | null;
       };
     }> | null;
     pageInfo: {
@@ -472,12 +482,12 @@ export type AllWorshipQuery = {
         createdAt: any;
         updatedAt: any;
         account: { __typename?: 'Account'; id: string; name: string; address: string };
-        worshipedPerson: {
+        worshipedPerson?: {
           __typename?: 'WorshipedPerson';
           id: string;
           name: string;
           totalWorshipAmount?: number | null;
-        };
+        } | null;
       };
     }> | null;
     pageInfo: {
@@ -553,7 +563,12 @@ export type CreateWorshipMutation = {
     createdAt: any;
     updatedAt: any;
     account: { __typename?: 'Account'; id: string; name: string; address: string };
-    worshipedPerson: { __typename?: 'WorshipedPerson'; id: string; name: string; totalWorshipAmount?: number | null };
+    worshipedPerson?: {
+      __typename?: 'WorshipedPerson';
+      id: string;
+      name: string;
+      totalWorshipAmount?: number | null;
+    } | null;
   };
 };
 

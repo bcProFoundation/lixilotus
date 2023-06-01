@@ -131,6 +131,8 @@ model Page {
   lotusBurnUp       Float         @default(0.0) @map("lotus_burn_up")
   lotusBurnDown     Float         @default(0.0) @map("lotus_burn_down")
   lotusBurnScore    Float         @default(0.0) @map("lotus_burn_score")
+  createPostFee     String        @default("1.0") @map("create_post_fee")
+  createCommentFee  String        @default("0.00055") @map("create_comment_fee")
   posts             Post[]
   followers         FollowPage[]
   encryptedMnemonic String?       @map("encrypted_mnemonic")
@@ -155,6 +157,8 @@ model Post {
   lotusBurnDown  Float          @default(0.0) @map("lotus_burn_down")
   lotusBurnScore Float          @default(0.0) @map("lotus_burn_score")
   comments       Comment[]
+  createFee      Float?         @map("create_fee")
+  txid           String?
 
   @@map("post")
 }
@@ -173,6 +177,8 @@ model Comment {
   lotusBurnDown      Float    @default(0.0) @map("lotus_burn_down")
   lotusBurnScore     Float    @default(0.0) @map("lotus_burn_score")
   giveTip            GiveTip?
+  createFee          Float?   @map("create_fee")
+  txid               String?
 
   @@index([commentAccountId], map: "index_comment_on_account")
   @@index([commentByPublicKey], map: "index_comment_by_public_key")

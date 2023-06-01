@@ -21,3 +21,4 @@ export * from './lib/worshiped-person';
 export * from './lib/temple';
 export * from './lib/category';
 export * from './lib/follow';
+export * from './lib/pageCategory';

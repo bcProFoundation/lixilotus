@@ -517,6 +517,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
 
     if (text !== '' || !_.isNil(text)) {
       let tipHex;
+      let createFeeHex;
       if (text.trim().toLowerCase().split(' ')[0] === '/give') {
         try {
           if (!isNumeric(text.trim().split(' ')[1])) {
@@ -546,10 +547,37 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
         }
       }
 
+      if (post.page) {
+        if (selectedAccount.id != parseInt(post.page.pageAccount.id) && post.page.createCommentFee != '0') {
+          try {
+            const fundingWif = getUtxoWif(slpBalancesAndUtxos.nonSlpUtxos[0], walletPaths);
+            createFeeHex = await sendXpi(
+              XPI,
+              chronik,
+              walletPaths,
+              slpBalancesAndUtxos.nonSlpUtxos,
+              currency.defaultFee,
+              '',
+              false, // indicate send mode is one to one
+              null,
+              post.page.pageAccount.address,
+              post.page.createCommentFee,
+              isEncryptedOptionalOpReturnMsg,
+              fundingWif,
+              true
+            );
+          } catch (e) {
+            const message = e.message || e.error || JSON.stringify(e);
+            dispatch(sendXPIFailure(message));
+          }
+        }
+      }
+
       const createCommentInput: CreateCommentInput = {
         commentText: text,
         commentToId: post.id,
-        tipHex: tipHex
+        tipHex: tipHex,
+        createFeeHex: createFeeHex
       };
 
       const params = {
@@ -609,6 +637,16 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     ({ photo }) => <Image src={photo?.src} width={photo?.width} height={photo?.height} />,
     []
   );
+
+  const showTextComment = () => {
+    if (post.page) {
+      return post.page.createCommentFee != '0'
+        ? intl.get('comment.writeCommentXpi', { commentFee: `${post.page.createCommentFee} ${currency.ticker}` })
+        : intl.get('comment.writeCommentFree');
+    } else {
+      return intl.get('comment.writeComment');
+    }
+  };
 
   useDidMountEffectNotification();
 
@@ -723,7 +761,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
                   onChange={onChange}
                   onBlur={onBlur}
                   value={value}
-                  placeholder={intl.get('comment.writeComment')}
+                  placeholder={showTextComment()}
                   enterButton="Comment"
                   size="large"
                   suffix={<DashOutlined />}
