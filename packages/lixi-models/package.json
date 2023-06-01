@@ -89,6 +89,7 @@
     "@liaoliaots/nestjs-redis": "^9.0.5",
     "@nestjs/mapped-types": "^1.2.0",
     "class-validator": "^0.14.0",
+    "moment": "^2.29.4",
     "prisma-graphql-type-decimal": "^2.0.6",
     "ts-morph": "^17.0.1"
   }
