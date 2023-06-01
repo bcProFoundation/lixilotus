@@ -170,7 +170,12 @@ export class CommentResolver {
       }
 
       const savedComment = await this.prisma.$transaction(async prisma => {
-        const createdComment = await prisma.comment.create(commentToSave);
+        const createdComment = await prisma.comment.create({
+          ...commentToSave,
+          include: {
+            commentTo: true
+          }
+        });
 
         if (tipHex) {
           const broadcastResponse = await this.chronik.broadcastTx(tipHex);
