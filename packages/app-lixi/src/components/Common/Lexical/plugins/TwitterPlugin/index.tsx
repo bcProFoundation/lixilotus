@@ -18,7 +18,7 @@ import { $createTweetNode, TweetNode } from '../../nodes/TweetNode';
 
 const TwitterButton = styled(Button)`
   span {
-    font-size: 30px;
+    font-size: 26px !important;
     color: #4e444b;
   }
 `;
