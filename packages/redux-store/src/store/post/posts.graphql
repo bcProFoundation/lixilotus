@@ -140,6 +140,39 @@ query PostsByUserId(
   }
 }
 
+query PostsByHashtagId(
+  $after: String
+  $before: String
+  $first: Int = 20
+  $last: Int
+  $orderBy: PostOrder
+  $id: String
+  $skip: Int
+  $minBurnFilter: Int
+) {
+  allPostsByHashtagId(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    id: $id
+    skip: $skip
+    minBurnFilter: $minBurnFilter
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...PostFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+
 query PostsByTokenId(
   $after: String
   $before: String

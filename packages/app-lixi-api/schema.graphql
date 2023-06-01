@@ -488,7 +488,7 @@ type Query {
   allPages(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PageOrder, query: String, skip: Int): PageConnection!
   allPagesByUserId(after: String, before: String, first: Int, id: Int, last: Int, minBurnFilter: Int, orderBy: PageOrder, skip: Int): PageConnection!
   allPosts(accountId: Int, after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
-  allPostsByHashtag(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
+  allPostsByHashtagId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
   allPostsByPageId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
   allPostsBySearch(
     """Paginate after opaque cursor"""
@@ -580,7 +580,7 @@ type Query {
   checkIsFollowedPage(pageId: String!): FollowPage!
   comment(id: String!): Comment!
   getAccountByAddress(address: String!): Account!
-  hashtag(id: String!): Hashtag!
+  hashtag(content: String!): Hashtag!
   page(id: String!): Page!
   post(id: String!): Post!
   temple(id: String!): Temple!

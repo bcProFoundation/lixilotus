@@ -1,9 +1,6 @@
 fragment HashtagFields on Hashtag {
   id
   content
-  postHashtags {
-    postId
-  }
   lotusBurnUp
   lotusBurnDown
   lotusBurnScore
@@ -11,8 +8,8 @@ fragment HashtagFields on Hashtag {
   updatedAt
 }
 
-query Hashtag($id: String!) {
-  hashtag(id: $id) {
+query Hashtag($content: String!) {
+  hashtag(content: $content) {
     ...HashtagFields
   }
 }

@@ -289,6 +289,65 @@ export type PostsByUserIdQuery = {
   };
 };
 
+export type PostsByHashtagIdQueryVariables = Types.Exact<{
+  after?: Types.InputMaybe<Types.Scalars['String']>;
+  before?: Types.InputMaybe<Types.Scalars['String']>;
+  first?: Types.InputMaybe<Types.Scalars['Int']>;
+  last?: Types.InputMaybe<Types.Scalars['Int']>;
+  orderBy?: Types.InputMaybe<Types.PostOrder>;
+  id?: Types.InputMaybe<Types.Scalars['String']>;
+  skip?: Types.InputMaybe<Types.Scalars['Int']>;
+  minBurnFilter?: Types.InputMaybe<Types.Scalars['Int']>;
+}>;
+
+export type PostsByHashtagIdQuery = {
+  __typename?: 'Query';
+  allPostsByHashtagId: {
+    __typename?: 'PostConnection';
+    totalCount?: number | null;
+    edges?: Array<{
+      __typename?: 'PostEdge';
+      cursor: string;
+      node: {
+        __typename?: 'Post';
+        id: string;
+        content: string;
+        lotusBurnUp: number;
+        lotusBurnDown: number;
+        lotusBurnScore: number;
+        totalComments: number;
+        createdAt: any;
+        updatedAt: any;
+        uploads?: Array<{
+          __typename?: 'UploadDetail';
+          id: string;
+          upload: {
+            __typename?: 'Upload';
+            id: string;
+            sha: string;
+            bucket?: string | null;
+            width?: string | null;
+            height?: string | null;
+            sha800?: string | null;
+            sha320?: string | null;
+            sha40?: string | null;
+          };
+        }> | null;
+        postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+        page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+        token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
+      };
+    }> | null;
+    pageInfo: {
+      __typename?: 'PageInfo';
+      endCursor?: string | null;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: string | null;
+    };
+  };
+};
+
 export type PostsByTokenIdQueryVariables = Types.Exact<{
   after?: Types.InputMaybe<Types.Scalars['String']>;
   before?: Types.InputMaybe<Types.Scalars['String']>;
@@ -844,6 +903,32 @@ export const PostsByUserIdDocument = `
 }
     ${PostFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
+export const PostsByHashtagIdDocument = `
+    query PostsByHashtagId($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $id: String, $skip: Int, $minBurnFilter: Int) {
+  allPostsByHashtagId(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    id: $id
+    skip: $skip
+    minBurnFilter: $minBurnFilter
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...PostFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+    ${PostFieldsFragmentDoc}
+${PageInfoFieldsFragmentDoc}`;
 export const PostsByTokenIdDocument = `
     query PostsByTokenId($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PostOrder, $id: String, $skip: Int, $minBurnFilter: Int) {
   allPostsByTokenId(
@@ -974,6 +1059,9 @@ const injectedRtkApi = api.injectEndpoints({
     PostsByUserId: build.query<PostsByUserIdQuery, PostsByUserIdQueryVariables | void>({
       query: variables => ({ document: PostsByUserIdDocument, variables })
     }),
+    PostsByHashtagId: build.query<PostsByHashtagIdQuery, PostsByHashtagIdQueryVariables | void>({
+      query: variables => ({ document: PostsByHashtagIdDocument, variables })
+    }),
     PostsByTokenId: build.query<PostsByTokenIdQuery, PostsByTokenIdQueryVariables | void>({
       query: variables => ({ document: PostsByTokenIdDocument, variables })
     }),
@@ -1012,6 +1100,8 @@ export const {
   useLazyPostsByPageIdQuery,
   usePostsByUserIdQuery,
   useLazyPostsByUserIdQuery,
+  usePostsByHashtagIdQuery,
+  useLazyPostsByHashtagIdQuery,
   usePostsByTokenIdQuery,
   useLazyPostsByTokenIdQuery,
   usePostsBySearchQuery,

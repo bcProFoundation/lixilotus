@@ -19,7 +19,6 @@ type SearchProps = {
 
 const Container = styled.div`
   display: flex;
-  max-width: 610px;
   margin-bottom: 5px;
   @media (max-width: 576px) {
     flex-direction: column;
@@ -177,15 +176,9 @@ const SearchBox = (props: SearchProps) => {
           <CloseCircleOutlined style={{ fontSize: '18px', color: '#7342cc' }} onClick={() => onDeleteText()} />
         )}
       </SearchBoxContainer>
-      <MobileTagContainer>
+      <MobileTagContainer style={{ margin: tags.length > 0 ? '10px' : '0px' }}>
         {tags.map(tag => (
-          <StyledTag
-            closable
-            onClose={() => handleTagClose(tag)}
-            key={tag}
-            color="magenta"
-            style={{ margin: tags.length > 0 ? '10px' : '0px' }}
-          >
+          <StyledTag closable onClose={() => handleTagClose(tag)} key={tag} color="magenta">
             {tag}
           </StyledTag>
         ))}

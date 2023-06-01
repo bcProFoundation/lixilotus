@@ -26,12 +26,11 @@ export class HashtagResolver {
   }
 
   @Query(() => Hashtag)
-  async hashtag(@Args('id', { type: () => String }) id: string) {
+  async hashtag(@Args('content', { type: () => String }) content: string) {
+    const hashtag: any = await this.meiliService.searchHashtag(`${process.env.MEILISEARCH_BUCKET}_${HASHTAG}`, content);
+
     const result = await this.prisma.hashtag.findUnique({
-      where: { id: id },
-      include: {
-        postHashtags: true
-      }
+      where: { id: hashtag[0].id }
     });
 
     return result;
@@ -83,15 +82,5 @@ export class HashtagResolver {
       arrayLength: count || 0,
       sliceStart: offset || 0
     });
-  }
-
-  @ResolveField()
-  async postHashtags(@Parent() hashtag: Hashtag) {
-    const postHashtags = this.prisma.postHashtag.findFirst({
-      where: {
-        hashtagId: hashtag.id
-      }
-    });
-    return postHashtags;
   }
 }

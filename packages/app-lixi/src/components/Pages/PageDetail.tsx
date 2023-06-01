@@ -553,8 +553,6 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
     }
   };
 
-  console.log(searchValue, hashtags.length);
-
   const QueryFooter = () => {
     if (isQueryLoading) return null;
     return (
@@ -569,6 +567,44 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
     );
   };
   //#endregion
+
+  const showPost = () => {
+    return (
+      <React.Fragment>
+        {!searchValue && hashtags.length === 0 ? (
+          <InfiniteScroll
+            dataLength={data.length}
+            next={loadMoreItems}
+            hasMore={hasNext}
+            loader={<Skeleton avatar active />}
+            endMessage={
+              <p style={{ textAlign: 'center' }}>
+                <b>{data.length > 0 ? 'end reached' : ''}</b>
+              </p>
+            }
+            scrollableTarget="scrollableDiv"
+          >
+            {data.map((item, index) => {
+              return <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />;
+            })}
+          </InfiniteScroll>
+        ) : (
+          <InfiniteScroll
+            dataLength={queryData.length}
+            next={loadMoreQueryItems}
+            hasMore={hasNextQuery && !noMoreQuery}
+            loader={<Skeleton avatar active />}
+            endMessage={<QueryFooter />}
+            scrollableTarget="scrollableDiv"
+          >
+            {queryData.map((item, index) => {
+              return <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />;
+            })}
+          </InfiniteScroll>
+        )}
+      </React.Fragment>
+    );
+  };
 
   return (
     <React.Fragment>
@@ -752,53 +788,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                       <p>Become a first person post on the page...</p>
                     </div>
                   )}
-                  <React.Fragment>
-                    {!searchValue && hashtags.length === 0 ? (
-                      <InfiniteScroll
-                        dataLength={data.length}
-                        next={loadMoreItems}
-                        hasMore={hasNext}
-                        loader={<Skeleton avatar active />}
-                        endMessage={
-                          <p style={{ textAlign: 'center' }}>
-                            <b>{data.length > 0 ? 'end reached' : ''}</b>
-                          </p>
-                        }
-                        scrollableTarget="scrollableDiv"
-                      >
-                        {data.map((item, index) => {
-                          return (
-                            <PostListItem
-                              index={index}
-                              item={item}
-                              key={item.id}
-                              handleBurnForPost={handleBurnForPost}
-                            />
-                          );
-                        })}
-                      </InfiniteScroll>
-                    ) : (
-                      <InfiniteScroll
-                        dataLength={queryData.length}
-                        next={loadMoreQueryItems}
-                        hasMore={hasNextQuery && !noMoreQuery}
-                        loader={<Skeleton avatar active />}
-                        endMessage={<QueryFooter />}
-                        scrollableTarget="scrollableDiv"
-                      >
-                        {queryData.map((item, index) => {
-                          return (
-                            <PostListItem
-                              index={index}
-                              item={item}
-                              key={item.id}
-                              handleBurnForPost={handleBurnForPost}
-                            />
-                          );
-                        })}
-                      </InfiniteScroll>
-                    )}
-                  </React.Fragment>
+                  {isQueryFetching ? <Skeleton avatar active /> : showPost()}
                 </Timeline>
               </ContentTimeline>
             </Tabs.TabPane>

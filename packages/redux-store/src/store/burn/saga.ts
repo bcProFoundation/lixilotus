@@ -249,6 +249,36 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
     })
   );
 
+  console.log('hashtagId', command.hashtagId);
+
+  yield put(
+    postApi.util.updateQueryData(
+      'PostsByHashtagId',
+      { ...params, id: command.hashtagId, minBurnFilter: command.minBurnFilter },
+      draft => {
+        const postToUpdateIndex = draft.allPostsByHashtagId.edges.findIndex(item => item.node.id === command.burnForId);
+        const postToUpdate = draft.allPostsByHashtagId.edges[postToUpdateIndex];
+        if (postToUpdateIndex >= 0) {
+          let lotusBurnUp = postToUpdate?.node?.lotusBurnUp ?? 0;
+          let lotusBurnDown = postToUpdate?.node?.lotusBurnDown ?? 0;
+          if (command.burnType == BurnType.Up) {
+            lotusBurnUp = lotusBurnUp + burnValue;
+          } else {
+            lotusBurnDown = lotusBurnDown + burnValue;
+          }
+          const lotusBurnScore = lotusBurnUp - lotusBurnDown;
+          draft.allPostsByHashtagId.edges[postToUpdateIndex].node.lotusBurnUp = lotusBurnUp;
+          draft.allPostsByHashtagId.edges[postToUpdateIndex].node.lotusBurnDown = lotusBurnDown;
+          draft.allPostsByHashtagId.edges[postToUpdateIndex].node.lotusBurnScore = lotusBurnScore;
+          if (lotusBurnScore < 0) {
+            draft.allPostsByHashtagId.edges.splice(postToUpdateIndex, 1);
+            draft.allPostsByHashtagId.totalCount = draft.allPostsByHashtagId.totalCount - 1;
+          }
+        }
+      }
+    )
+  );
+
   switch (command.postQueryTag) {
     case PostsQueryTag.PostsByPageId:
       return yield put(

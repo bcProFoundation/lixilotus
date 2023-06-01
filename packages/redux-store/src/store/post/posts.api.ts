@@ -137,6 +137,22 @@ const enhancedApi = api.enhanceEndpoints({
     Post: {
       providesTags: (result, error, arg) => ['Post']
     },
+    PostsByHashtagId: {
+      providesTags: (result, error, arg) => ['Post'],
+      serializeQueryArgs({ queryArgs }) {
+        if (queryArgs) {
+          const { orderBy, id, minBurnFilter, ...otherArgs } = queryArgs;
+          return { orderBy, id, minBurnFilter };
+        }
+        return { queryArgs };
+      },
+
+      merge(currentCacheData, responseData) {
+        currentCacheData.allPostsByHashtagId.edges.push(...responseData.allPostsByHashtagId.edges);
+        currentCacheData.allPostsByHashtagId.pageInfo = responseData.allPostsByHashtagId.pageInfo;
+        currentCacheData.allPostsByHashtagId.totalCount = responseData.allPostsByHashtagId.totalCount;
+      }
+    },
     createPost: {},
     updatePost: {}
   }
@@ -163,6 +179,8 @@ export const {
   useLazyPostsBySearchWithHashtagQuery,
   usePostsBySearchWithHashtagAtPageQuery,
   useLazyPostsBySearchWithHashtagAtPageQuery,
+  useLazyPostsByHashtagIdQuery,
+  usePostsByHashtagIdQuery,
   useCreatePostMutation,
   useUpdatePostMutation
 } = enhancedApi;

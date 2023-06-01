@@ -556,7 +556,7 @@ export type Query = {
   allPages: PageConnection;
   allPagesByUserId: PageConnection;
   allPosts: PostConnection;
-  allPostsByHashtag: PostConnection;
+  allPostsByHashtagId: PostConnection;
   allPostsByPageId: PostConnection;
   allPostsBySearch: PostResponse;
   allPostsBySearchWithHashtag: PostResponse;
@@ -681,7 +681,7 @@ export type QueryAllPostsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
-export type QueryAllPostsByHashtagArgs = {
+export type QueryAllPostsByHashtagIdArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
@@ -871,7 +871,7 @@ export type QueryGetAccountByAddressArgs = {
 };
 
 export type QueryHashtagArgs = {
-  id: Scalars['String'];
+  content: Scalars['String'];
 };
 
 export type QueryPageArgs = {

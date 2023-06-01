@@ -476,11 +476,6 @@ export class PostResolver {
   ) {
     const { limit, offset } = getPagingParameters(args);
 
-    console.log(hashtags);
-    console.log(query);
-    console.log(pageId);
-    console.log(minBurnFilter);
-
     const count = await this.hashtagService.searchByQueryEstimatedTotalHitsAtPage(
       `${process.env.MEILISEARCH_BUCKET}_${POSTS}`,
       query,
@@ -690,7 +685,7 @@ export class PostResolver {
 
   @Query(() => PostConnection)
   @UseGuards(GqlJwtAuthGuardByPass)
-  async allPostsByHashtag(
+  async allPostsByHashtagId(
     @PostAccountEntity() account: Account,
     @Args() { after, before, first, last, minBurnFilter }: PaginationArgs,
     @Args({ name: 'id', type: () => String, nullable: true })

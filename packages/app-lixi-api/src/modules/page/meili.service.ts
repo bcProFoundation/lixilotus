@@ -66,6 +66,21 @@ export class MeiliService implements OnModuleInit {
     return await this.meiliSearch.index(index).deleteDocument(documentId);
   }
 
+  /**
+   * Delete document at the specify index
+   * @param index The specific index
+   * @param content The hashtag content you want to search
+   */
+  public async searchHashtag(index: string, content: string) {
+    const hits = await this.meiliSearch
+      .index(index)
+      .search(content)
+      .then(res => {
+        return res.hits;
+      });
+    return hits;
+  }
+
   public async searchByQueryHits(index: string, query: string, offset: number, limit: number) {
     const hits = await this.meiliSearch
       .index(index)
