@@ -432,7 +432,15 @@ export type PostsBySearchQuery = {
           };
         }> | null;
         postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
-        page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+        page?: {
+          __typename?: 'Page';
+          avatar?: string | null;
+          name: string;
+          id: string;
+          createCommentFee: string;
+          pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+        } | null;
+        token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
       } | null;
     }> | null;
     pageInfo?: {
@@ -508,7 +516,15 @@ export type PostMeiliFieldsFragment = {
     };
   }> | null;
   postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
-  page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+  page?: {
+    __typename?: 'Page';
+    avatar?: string | null;
+    name: string;
+    id: string;
+    createCommentFee: string;
+    pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+  } | null;
+  token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
 };
 
 export type CreatePostMutationVariables = Types.Exact<{
@@ -671,6 +687,17 @@ export const PostMeiliFieldsFragmentDoc = `
     avatar
     name
     id
+    createCommentFee
+    pageAccount {
+      id
+      name
+      address
+    }
+  }
+  token {
+    id
+    name
+    tokenId
   }
   lotusBurnUp
   lotusBurnDown
