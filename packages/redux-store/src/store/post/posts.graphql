@@ -264,6 +264,17 @@ fragment PostMeiliFields on Post {
     avatar
     name
     id
+    createCommentFee
+    pageAccount {
+      id
+      name
+      address
+    }
+  }
+  token {
+    id
+    name
+    tokenId
   }
   lotusBurnUp
   lotusBurnDown
