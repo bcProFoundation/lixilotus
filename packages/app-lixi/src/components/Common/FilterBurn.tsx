@@ -110,8 +110,13 @@ export const FilterBurnt = (props: FilterBurntProps) => {
           onClick={() => handleUpDownBtn(false)}
           disabled={valueForType === 0}
         />
-        <Input disabled value={valueForType <= 1000 ? valueForType : 1000} />
-        <Button className="up-value" icon={<PlusOutlined />} onClick={() => handleUpDownBtn(true)} />
+        <Input disabled value={valueForType} />
+        <Button 
+          className="up-value"
+          icon={<PlusOutlined />} 
+          onClick={() => handleUpDownBtn(true)} 
+          disabled={valueForType === 1000}
+        />
       </Input.Group>
     </FilterStyle>
   );
