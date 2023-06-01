@@ -27,5 +27,5 @@ export class CreatePostInput {
 
   @IsOptional()
   @Field(() => String, { nullable: true })
-  txHex?: Nullable<string>;
+  createFeeHex?: Nullable<string>;
 }

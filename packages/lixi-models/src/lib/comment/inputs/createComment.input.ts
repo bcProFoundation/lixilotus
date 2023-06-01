@@ -15,5 +15,9 @@ export class CreateCommentInput {
 
   @IsOptional()
   @Field(() => String, { nullable: true })
+  createFeeHex?: Nullable<string>;
+
+  @IsOptional()
+  @Field(() => String, { nullable: true })
   tipHex?: Nullable<string>;
 }

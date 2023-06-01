@@ -236,7 +236,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
       return;
     }
 
-    let txHex;
+    let createFeeHex;
     if (pathname.includes('/token')) {
       filterValue = filterToken;
     } else if (pathname.includes('/page')) {
@@ -244,7 +244,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
 
       if (selectedAccount.id != page.pageAccountId) {
         const fundingWif = getUtxoWif(slpBalancesAndUtxos.nonSlpUtxos[0], walletPaths);
-        txHex = await sendXpi(
+        createFeeHex = await sendXpi(
           XPI,
           chronik,
           walletPaths,
@@ -270,7 +270,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
       pureContent: pureContent,
       pageId: pageId || undefined,
       tokenPrimaryId: tokenPrimaryId || undefined,
-      txHex: txHex
+      createFeeHex: createFeeHex
     };
 
     const params = {

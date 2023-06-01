@@ -128,6 +128,7 @@ export type CreateCommentInput = {
   commentByPublicKey?: InputMaybe<Scalars['String']>;
   commentText: Scalars['String'];
   commentToId: Scalars['String'];
+  createFeeHex?: InputMaybe<Scalars['String']>;
   tipHex?: InputMaybe<Scalars['String']>;
 };
 
@@ -148,12 +149,12 @@ export type CreatePageInput = {
 };
 
 export type CreatePostInput = {
+  createFeeHex?: InputMaybe<Scalars['String']>;
   htmlContent: Scalars['String'];
   pageAccountId?: InputMaybe<Scalars['Int']>;
   pageId?: InputMaybe<Scalars['String']>;
   pureContent: Scalars['String'];
   tokenPrimaryId?: InputMaybe<Scalars['String']>;
-  txHex?: InputMaybe<Scalars['String']>;
   uploadCovers?: InputMaybe<Array<Scalars['String']>>;
 };
 

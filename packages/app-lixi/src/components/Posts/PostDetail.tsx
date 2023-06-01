@@ -517,6 +517,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
 
     if (text !== '' || !_.isNil(text)) {
       let tipHex;
+      let createFeeHex;
       if (text.trim().toLowerCase().split(' ')[0] === '/give') {
         try {
           if (!isNumeric(text.trim().split(' ')[1])) {
@@ -550,7 +551,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
         if (selectedAccount.id != parseInt(post.page.pageAccount.id) && post.page.createCommentFee != '0') {
           try {
             const fundingWif = getUtxoWif(slpBalancesAndUtxos.nonSlpUtxos[0], walletPaths);
-            tipHex = await sendXpi(
+            createFeeHex = await sendXpi(
               XPI,
               chronik,
               walletPaths,
@@ -575,7 +576,8 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       const createCommentInput: CreateCommentInput = {
         commentText: text,
         commentToId: post.id,
-        tipHex: tipHex
+        tipHex: tipHex,
+        createFeeHex: createFeeHex
       };
 
       const params = {
@@ -640,7 +642,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     if (post.page) {
       return post.page.createCommentFee != '0'
         ? intl.get('comment.writeCommentXpi', { commentFee: `${post.page.createCommentFee} ${currency.ticker}` })
-        : intl.get('comment.writeCommentFee');
+        : intl.get('comment.writeCommentFree');
     } else {
       return intl.get('comment.writeComment');
     }
@@ -766,7 +768,6 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
                   onSearch={handleCreateNewComment}
                   loading={isLoadingCreateComment}
                 />
-                {console.log('post: ', post)}
               </AutoComplete>
             )}
           />

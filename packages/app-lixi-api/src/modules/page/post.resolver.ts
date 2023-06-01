@@ -618,40 +618,51 @@ export class PostResolver {
     uploadDetailIds = await Promise.all(promises);
 
     const postToSave = {
-      data: {
-        content: htmlContent,
-        postAccount: { connect: { id: account.id } },
-        uploadedCovers: {
-          connect:
-            uploadDetailIds.length > 0
-              ? uploadDetailIds.map((uploadDetail: any) => {
-                  return {
-                    id: uploadDetail
-                  };
-                })
-              : undefined
-        },
-        page: {
-          connect: pageId ? { id: pageId } : undefined
-        },
-        token: {
-          connect: tokenPrimaryId ? { id: tokenPrimaryId } : undefined
-        }
+      content: htmlContent,
+      postAccount: { connect: { id: account.id } },
+      uploadedCovers: {
+        connect:
+          uploadDetailIds.length > 0
+            ? uploadDetailIds.map((uploadDetail: any) => {
+                return {
+                  id: uploadDetail
+                };
+              })
+            : undefined
+      },
+      page: {
+        connect: pageId ? { id: pageId } : undefined
+      },
+      token: {
+        connect: tokenPrimaryId ? { id: tokenPrimaryId } : undefined
       }
     };
 
-    let tipValue: any;
-    if (data.txHex) {
-      const txData = await this.XPI.RawTransactions.decodeRawTransaction(data.txHex);
-      tipValue = txData['vout'][0].value;
-      if (Number(tipValue) < 0) {
+    let createFee: any;
+    if (data.createFeeHex) {
+      const txData = await this.XPI.RawTransactions.decodeRawTransaction(data.createFeeHex);
+      createFee = txData['vout'][0].value;
+      if (Number(createFee) < 0) {
         throw new Error('Syntax error. Number cannot be less than or equal to 0');
       }
     }
 
     const savedPost = await this.prisma.$transaction(async prisma => {
+      let txid: string | undefined;
+      if (data.createFeeHex) {
+        const broadcastResponse = await this.chronik.broadcastTx(data.createFeeHex);
+        if (!broadcastResponse) {
+          throw new Error('Empty chronik broadcast response');
+        }
+        txid = broadcastResponse.txid;
+      }
+
       const createdPost = await prisma.post.create({
-        ...postToSave,
+        data: {
+          ...postToSave,
+          txid: txid,
+          createFee: createFee
+        },
         include: {
           page: {
             select: {
@@ -692,13 +703,6 @@ export class PostResolver {
         }
       };
       await this.meiliService.add(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`, indexedPost, createdPost.id);
-
-      if (data.txHex) {
-        const broadcastResponse = await this.chronik.broadcastTx(data.txHex);
-        if (!broadcastResponse) {
-          throw new Error('Empty chronik broadcast response');
-        }
-      }
 
       return createdPost;
     });

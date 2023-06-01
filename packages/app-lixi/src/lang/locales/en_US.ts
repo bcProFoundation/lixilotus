@@ -571,7 +571,7 @@ export default {
   'comment.unableCreateComment': 'Unable to create comment',
   'comment.unableToBurn': 'Unable to burn for the comment',
   'comment.writeComment': 'Write a comment...',
-  'comment.writeCommentFee': 'Write a free comment on this page...',
+  'comment.writeCommentFree': 'Write a free comment on this page...',
   'comment.writeCommentXpi': '{commentFee} to comment on this page...',
 
   /* 18. Category */

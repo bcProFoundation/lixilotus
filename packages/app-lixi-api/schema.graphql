@@ -111,6 +111,7 @@ input CreateCommentInput {
   commentByPublicKey: String
   commentText: String!
   commentToId: String!
+  createFeeHex: String
   tipHex: String
 }
 
@@ -131,12 +132,12 @@ input CreatePageInput {
 }
 
 input CreatePostInput {
+  createFeeHex: String
   htmlContent: String!
   pageAccountId: Int
   pageId: String
   pureContent: String!
   tokenPrimaryId: String
-  txHex: String
   uploadCovers: [String!]
 }
 
