@@ -35,7 +35,7 @@ export class CommentResolver {
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS,
     private readonly notificationService: NotificationService
-  ) {}
+  ) { }
 
   @Subscription(() => Comment)
   commentCreated() {
@@ -178,8 +178,8 @@ export class CommentResolver {
 
       const savedComment = await this.prisma.$transaction(async prisma => {
         let txid: string | undefined;
-        if (data.createFeeHex) {
-          const broadcastResponse = await this.chronik.broadcastTx(data.createFeeHex);
+        if (createFeeHex) {
+          const broadcastResponse = await this.chronik.broadcastTx(createFeeHex);
           if (!broadcastResponse) {
             throw new Error('Empty chronik broadcast response');
           }
@@ -191,6 +191,9 @@ export class CommentResolver {
             ...commentToSave,
             txid: txid,
             createFee: createFee
+          },
+          include: {
+            commentTo: true
           }
         });
 

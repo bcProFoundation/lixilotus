@@ -105,7 +105,7 @@ export default {
   'general.level': 'Cấp độ',
   'general.showMore': 'Xem thêm',
   'general.showLess': 'Xem ít',
-  'general.topAccounts': 'Xếp hạng tài khoản đã đốt',
+  'general.topAccounts': 'Xếp hạng tài khoản',
   'general.topPages': 'Xếo hạng trang',
   'general.burned': 'Đã đốt',
   'general.fee': 'Phí: ',
