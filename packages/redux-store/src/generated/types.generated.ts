@@ -530,8 +530,8 @@ export type Query = {
   allWorshipedPersonBySearch: WorshipedPersonConnection;
   allWorshipedPersonByUserId: WorshipedPersonConnection;
   allWorshipedPersonSpecialDate: WorshipedPersonConnection;
-  checkIsFollowedAccount: FollowAccount;
-  checkIsFollowedPage: FollowPage;
+  checkIfFollowAccount: Scalars['Boolean'];
+  checkIfFollowPage: Scalars['Boolean'];
   comment: Comment;
   getAccountByAddress: Account;
   page: Page;
@@ -760,11 +760,11 @@ export type QueryAllWorshipedPersonSpecialDateArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
-export type QueryCheckIsFollowedAccountArgs = {
-  address: Scalars['String'];
+export type QueryCheckIfFollowAccountArgs = {
+  followingAccountId: Scalars['Int'];
 };
 
-export type QueryCheckIsFollowedPageArgs = {
+export type QueryCheckIfFollowPageArgs = {
   pageId: Scalars['String'];
 };
 

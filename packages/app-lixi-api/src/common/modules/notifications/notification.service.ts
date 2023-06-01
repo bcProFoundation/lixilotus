@@ -131,18 +131,8 @@ export class NotificationService {
     });
   }
 
-  async calcTip(post: any, recipient: Account, burn: BurnCommand) {
-    const isUpBurn = burn.burnType === BurnType.Up;
+  async calcFee(post: any, burn: BurnCommand) {
     const burnValue = Number(burn.burnValue);
-
-    if (!post.page) {
-      return isUpBurn ? burnValue * 0.08 : burnValue * 0.04;
-    }
-
-    if (post.page.pageAccountId === recipient.id) {
-      return isUpBurn ? burnValue * 0.08 : burnValue * 0.04;
-    }
-
-    return isUpBurn ? burnValue * 0.04 : 0;
+    return post.page ? burnValue * 0.04 : burnValue * 0.08;
   }
 }

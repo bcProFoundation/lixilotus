@@ -44,6 +44,7 @@ export default {
   'burn.doneBurning': 'Đốt thành công!',
   'burn.sendXpi': 'Bạn sẽ gửi ',
   'burn.owner': ' tới chủ {name} ',
+  'burn.feeMiner': 'Không bao gồm phí của thợ đào',
 
   /* 01.General */
   'general.tokens': 'Tokens',
