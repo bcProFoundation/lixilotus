@@ -48,7 +48,7 @@ export default {
 
   /* 01.General */
   'general.tokens': 'Tokens',
-  'general.home': 'Nhà',
+  'general.home': 'Trang chủ',
   'general.accounts': 'Tài khoản',
   'general.lixi': 'Quản lý lì xì',
   'general.claim': 'Nhận Lì xì',
