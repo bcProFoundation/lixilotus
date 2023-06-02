@@ -738,7 +738,7 @@ export class PostResolver {
         recipientId: Number(page?.pageAccountId),
         notificationTypeId: NOTIFICATION_TYPES.POST_ON_PAGE,
         level: NotificationLevel.INFO,
-        url: `/post/' + ${savedPost.id}`,
+        url: `/post/${savedPost.id}`,
         additionalData: {
           senderName: account.name,
           senderAddress: account.address,
