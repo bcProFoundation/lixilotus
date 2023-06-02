@@ -57,6 +57,7 @@ export class PageResolver {
 
     const result = {
       ...page,
+      categoryId: page?.categoryId ?? DEFAULT_CATEGORY,
       followersCount: followersCount,
       countryName: page?.country?.name ?? undefined,
       stateName: page?.state?.name ?? undefined
