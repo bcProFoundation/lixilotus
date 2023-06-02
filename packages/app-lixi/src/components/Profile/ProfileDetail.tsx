@@ -38,6 +38,9 @@ type UserDetailProps = {
 };
 
 const StyledContainerProfileDetail = styled.div`
+  margin: 1rem auto;
+  width: 100%;
+  max-width: 816px;
   background: var(--bg-color-light-theme);
   border-radius: 20px;
   padding-bottom: 3rem;
