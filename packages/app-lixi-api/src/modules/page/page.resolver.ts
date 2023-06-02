@@ -80,7 +80,8 @@ export class PageResolver {
       async args => {
         const pages = await this.prisma.page.findMany({
           include: {
-            posts: true
+            posts: true,
+            category: true
           },
           orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
           ...args
@@ -89,7 +90,8 @@ export class PageResolver {
         const output = pages
           .map(page => ({
             ...page,
-            totalBurnForPage: page.posts.reduce((a, b) => a + b.lotusBurnScore, 0)
+            totalBurnForPage: page.posts.reduce((a, b) => a + b.lotusBurnScore, 0),
+            categoryId: page.categoryId ?? 34
           }))
           .sort((a, b) => a.lotusBurnScore - b.lotusBurnScore);
 
@@ -114,14 +116,26 @@ export class PageResolver {
     orderBy: PageOrder
   ) {
     const result = await findManyCursorConnection(
-      async args =>
-        this.prisma.page.findMany({
+      async args => {
+        const pages = await this.prisma.page.findMany({
           where: {
             pageAccountId: id
           },
+          include: {
+            posts: true
+          },
           orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
           ...args
-        }),
+        });
+
+        const output = pages.map(page => ({
+          ...page,
+          categoryId: page?.categoryId ?? 34,
+          totalBurnForPage: page.posts.reduce((a, b) => a + b.lotusBurnScore, 0)
+        }));
+
+        return output;
+      },
       () =>
         this.prisma.page.count({
           where: {
