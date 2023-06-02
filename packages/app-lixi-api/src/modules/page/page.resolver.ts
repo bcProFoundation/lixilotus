@@ -30,7 +30,7 @@ const pubSub = new PubSub();
 export class PageResolver {
   private logger: Logger = new Logger(this.constructor.name);
 
-  constructor(private prisma: PrismaService, @I18n() private i18n: I18nService, @Inject('xpijs') private XPI: BCHJS) { }
+  constructor(private prisma: PrismaService, @I18n() private i18n: I18nService, @Inject('xpijs') private XPI: BCHJS) {}
 
   @Subscription(() => Page)
   pageCreated() {
@@ -191,18 +191,18 @@ export class PageResolver {
 
     const uploadAvatarDetail = data.avatar
       ? await this.prisma.uploadDetail.findFirst({
-        where: {
-          uploadId: data.avatar
-        }
-      })
+          where: {
+            uploadId: data.avatar
+          }
+        })
       : undefined;
 
     const uploadCoverDetail = data.cover
       ? await this.prisma.uploadDetail.findFirst({
-        where: {
-          uploadId: data.cover
-        }
-      })
+          where: {
+            uploadId: data.cover
+          }
+        })
       : undefined;
 
     const updatedPage = await this.prisma.page.update({
@@ -216,22 +216,22 @@ export class PageResolver {
         category: {
           connect: data.categoryId
             ? {
-              id: Number(data.categoryId)
-            }
+                id: Number(data.categoryId)
+              }
             : undefined
         },
         country: {
           connect: data.countryId
             ? {
-              id: Number(data.countryId)
-            }
+                id: Number(data.countryId)
+              }
             : undefined
         },
         state: {
           connect: data.stateId
             ? {
-              id: Number(data.stateId)
-            }
+                id: Number(data.stateId)
+              }
             : undefined
         }
       }
