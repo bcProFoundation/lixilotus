@@ -50,6 +50,17 @@ import axiosClient from '@utils/axiosClient';
 
 const { Panel } = Collapse;
 const antIcon = <LoadingOutlined style={{ fontSize: 20 }} spin />;
+export const OPTION_BURN_VALUE = {
+  LIKE: '1',
+  DISLIKE: '1',
+  LOVE: '10'
+};
+
+export const OPTION_BURN_TYPE = {
+  LIKE: 'LIKE',
+  DISLIKE: 'DISLIKE',
+  LOVE: 'LOVE'
+};
 
 type PostsListingProps = {
   className?: string;
@@ -404,10 +415,9 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   };
 
   useDidMountEffectNotification();
-
-  const handleBurnForPost = async (isUpVote: boolean, post: any) => {
+  const handleBurnForPost = async (isUpVote: boolean, post: any, optionBurn?: string) => {
     try {
-      const burnValue = '1';
+      const burnValue = OPTION_BURN_VALUE[optionBurn];
       if (failQueue.length > 0) dispatch(clearFailQueue());
       const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
       const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();

@@ -92,11 +92,16 @@ const ShareButton = styled.span`
   display: flex;
   align-items: center;
   color: rgba(30, 26, 29, 0.6);
+  padding: 8px;
+  border-radius: 12px;
+  &:hover {
+    background: #faf1fa;
+  }
   svg {
     width: 25px;
     height: 25px;
     margin-right: 4px;
-    color: #23aec8;
+    color: var(--color-primary);
   }
 `;
 

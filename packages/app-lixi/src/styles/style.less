@@ -540,7 +540,6 @@ code {
 
   .ant-form-item-control {
     .ant-form-item-control-input-content {
-
       input,
       textarea {
         padding: 9px 1rem;
@@ -626,9 +625,6 @@ code {
             top: 5px;
             left: 10px;
           }
-
-
-
 
           &:hover {
             background: #fff;
@@ -821,7 +817,7 @@ code {
     }
   }
 
-  .ant-popover-arrow>.ant-popover-arrow-content::before {
+  .ant-popover-arrow > .ant-popover-arrow-content::before {
     background: var(--color-primary);
   }
 
@@ -879,5 +875,36 @@ code {
 .ant-select-auto-complete {
   .ant-select-item-option-content {
     text-align: start;
+  }
+}
+
+.popover-custom-hint {
+  .ant-popover-inner {
+    animation: opacityHint 0.3s;
+  }
+
+  .ant-popover-inner {
+    padding: 2px 4px;
+    box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.12);
+    background: rgba(30, 26, 29, 0.8);
+    border-radius: 16px;
+  }
+
+  .ant-popover-inner-content {
+    display: flex;
+  }
+
+  @keyframes opacityHint {
+    0% {
+      opacity: 0;
+    }
+
+    95% {
+      opacity: 0;
+    }
+
+    100% {
+      opacity: 1;
+    }
   }
 }

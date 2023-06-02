@@ -1,17 +1,6 @@
-import {
-  DashOutlined,
-  DislikeFilled,
-  DislikeOutlined,
-  FireTwoTone,
-  LeftOutlined,
-  LikeFilled,
-  LikeOutlined,
-  LinkOutlined,
-  ShareAltOutlined,
-  UpOutlined
-} from '@ant-design/icons';
+import { DashOutlined, LeftOutlined } from '@ant-design/icons';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
-import { BurnCommand, BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
+import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { AvatarUser } from '@components/Common/AvatarUser';
 import { Counter } from '@components/Common/Counter';
 import InfoCardUser from '@components/Common/InfoCardUser';
@@ -29,60 +18,31 @@ import { sendXPIFailure } from '@store/send/actions';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
 import { formatBalance, fromSmallestDenomination, fromXpiToSatoshis, getUtxoWif } from '@utils/cashMethods';
-import {
-  Avatar,
-  Button,
-  Image,
-  Input,
-  message,
-  notification,
-  Popover,
-  Skeleton,
-  Space,
-  Tooltip,
-  AutoComplete
-} from 'antd';
-import { Header } from 'antd/lib/layout/layout';
+import { Image, Input, Skeleton, Space, AutoComplete } from 'antd';
 import BigNumber from 'bignumber.js';
-import { ChronikClient } from 'chronik-client';
 import _, { debounce, isNil } from 'lodash';
 import moment from 'moment';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import intl from 'react-intl-universal';
-import {
-  FacebookIcon,
-  FacebookMessengerIcon,
-  FacebookMessengerShareButton,
-  FacebookShareButton,
-  TelegramIcon,
-  TelegramShareButton,
-  TwitterIcon,
-  TwitterShareButton,
-  WhatsappIcon,
-  WhatsappShareButton
-} from 'react-share';
-import { Virtuoso } from 'react-virtuoso';
-import { RWebShare } from 'react-web-share';
 import { CommentOrderField, CreateCommentInput, OrderDirection } from '@generated/types.generated';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import CommentListItem, { CommentItem } from './CommentListItem';
 import { useForm, Controller } from 'react-hook-form';
 import { openModal } from '@store/modal/actions';
 import { EditPostModalProps } from './EditPostModalPopup';
 import { ShareSocialButton } from '@components/Common/ShareSocialButton';
 import Gallery from 'react-photo-gallery';
-import { setTransactionNotReady, setTransactionReady } from '@store/account/actions';
-import { getTransactionStatus } from '@store/account/selectors';
-import useDidMountEffect from '@hooks/useDidMountEffect ';
 import { getBurnQueue, getFailQueue } from '@store/burn';
 import { TokenItem } from '@components/Token/TokensFeed';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 import { getFilterPostsHome } from '@store/settings/selectors';
+import Reaction from '@components/Common/Reaction';
+import { OPTION_BURN_VALUE } from './PostsListing';
+import { GroupIconText, IconNoneHover } from './PostListItem';
 
 export type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 export type BurnData = {
@@ -126,32 +86,6 @@ const StyledBurnIcon = styled.img`
     }
   }
 `;
-
-export const IconBurn = ({
-  icon,
-  burnValue,
-  dataItem,
-  imgUrl,
-  classStyle,
-  onClickIcon
-}: {
-  icon?: React.FC;
-  burnValue?: number;
-  dataItem: any;
-  imgUrl?: string;
-  classStyle?: string;
-  onClickIcon: (e: any) => void;
-}) => (
-  <Space onClick={onClickIcon} size={5} style={{ alignItems: 'end', marginRight: '1rem' }}>
-    {icon && React.createElement(icon)}
-    {imgUrl && (
-      <picture>
-        <StyledBurnIcon className={classStyle} alt="burnIcon" src={imgUrl} />
-      </picture>
-    )}
-    {burnValue && <Counter num={burnValue ?? 0} />}
-  </Space>
-);
 
 export const IconComment = ({
   icon,
@@ -232,16 +166,25 @@ const CommentInputContainer = styled.div`
   }
 `;
 
-const PostCardDetail = styled.div`
+const ActionBar = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 0 1rem;
-  .info-post {
+  border: 1px solid #c5c5c5;
+  padding: 4px 0;
+  border-left: 0;
+  border-right: 0;
+  .ant-space {
+    gap: 4px !important;
+  }
+  .reaction-func {
+    color: rgba(30, 26, 29, 0.6);
+    cursor: pointer;
     display: flex;
+    gap: 1rem;
     img {
-      width: 35px;
-      height: 35px;
-      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      margin-right: 4px;
     }
   }
 `;
@@ -296,29 +239,6 @@ const StyledContainerPostDetail = styled.div`
     margin-bottom: 1rem;
     border-color: #c5c5c5;
   }
-  .reaction-container {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.5rem;
-    border: 1px solid #c5c5c5;
-    border-left: 0;
-    border-right: 0;
-    .ant-space {
-      gap: 4px !important;
-    }
-    .reaction-func {
-      color: rgba(30, 26, 29, 0.6);
-      cursor: pointer;
-      display: flex;
-      gap: 1rem;
-      img {
-        width: 28px;
-        height: 28px;
-        margin-right: 4px;
-      }
-    }
-  }
-
   .comment-item-meta {
     margin-bottom: 0.5rem;
     .ant-list-item-meta-avatar {
@@ -334,13 +254,10 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const dispatch = useAppDispatch();
   const { control, getValues, setValue, setFocus } = useForm();
   const router = useRouter();
-  const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
-  const refCommentsListing = useRef<HTMLDivElement | null>(null);
   const Wallet = React.useContext(WalletContext);
   const { XPI, chronik } = Wallet;
   const { createBurnTransaction, sendXpi } = useXPI();
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
-  const transactionStatus = useAppSelector(getTransactionStatus);
   const burnQueue = useAppSelector(getBurnQueue);
   const failQueue = useAppSelector(getFailQueue);
   const walletPaths = useAppSelector(getAllWalletPaths);
@@ -390,23 +307,15 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     { isLoading: isLoadingCreateComment, isSuccess: isSuccessCreateComment, isError: isErrorCreateComment }
   ] = useCreateCommentMutation();
 
-  const upVotePost = (dataItem: PostItem) => {
-    handleBurn(true, { data: dataItem, burnForType: BurnForType.Post });
+  const handleBurnForPost = async (isUpVote: boolean, post: any, optionBurn?: string) => {
+    isUpVote
+      ? handleBurn(true, { data: post, burnForType: BurnForType.Post }, optionBurn)
+      : handleBurn(false, { data: post, burnForType: BurnForType.Post }, optionBurn);
   };
 
-  const downVotePost = (dataItem: PostItem) => {
-    handleBurn(false, { data: dataItem, burnForType: BurnForType.Post });
-  };
-
-  const openBurnModal = (dataItem: PostItem) => {
-    dispatch(
-      openModal('BurnModal', { burnForType: BurnForType.Post, id: dataItem.id, isPage: dataItem.page ? true : false })
-    );
-  };
-
-  const handleBurn = async (isUpVote: boolean, burnData: BurnData) => {
+  const handleBurn = async (isUpVote: boolean, burnData: BurnData, optionBurn?: string) => {
     try {
-      const burnValue = '1';
+      const burnValue = optionBurn ? OPTION_BURN_VALUE[optionBurn] : '1';
       const { data, burnForType } = burnData;
       if (failQueue.length > 0) dispatch(clearFailQueue());
       const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
@@ -677,39 +586,20 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
               <Gallery photos={imagesList} renderImage={imageRenderer} />
             </div>
           )}
-          <div className="reaction-container">
-            <div className="reaction-ico">
-              <IconBurn
-                imgUrl="/images/ico-burn-up.svg"
-                key={`list-vertical-upvote-o-${post.id}`}
-                dataItem={post}
-                onClickIcon={() => upVotePost(post)}
+          <ActionBar>
+            <GroupIconText>
+              <Reaction post={post} handleBurnForPost={handleBurnForPost} />
+              <IconNoneHover
+                value={formatBalance(totalCount ?? 0)}
+                imgUrl="/images/ico-comments.svg"
+                key={`list-vertical-comment-o-${post.id}`}
+                classStyle="custom-comment"
+                onClickIcon={e => setFocus('comment', { shouldSelect: true })}
               />
-              <IconBurn
-                burnValue={formatBalance(post?.lotusBurnScore ?? 0)}
-                imgUrl="/images/custom-burn.svg"
-                key={`list-vertical-downvote-o-${post.id}`}
-                dataItem={post}
-                classStyle="custom-burn"
-                onClickIcon={() => openBurnModal(post)}
-              />
-            </div>
-            <div className="reaction-func">
-              <div>
-                <picture>
-                  <img
-                    src="/images/ico-comments.svg"
-                    alt=""
-                    onClick={() => setFocus('comment', { shouldSelect: true })}
-                  />
-                </picture>
-                <span>{totalCount}</span>&nbsp;
-              </div>
-              <div>
-                <ShareSocialButton slug={post.id} content={post.content} postAccountName={post.postAccount.name} />
-              </div>
-            </div>
-          </div>
+            </GroupIconText>
+
+            <ShareSocialButton slug={post.id} content={post.content} postAccountName={post.postAccount.name} />
+          </ActionBar>
         </PostContentDetail>
 
         <CommentContainer>
@@ -717,7 +607,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
             dataLength={data.length}
             next={loadMoreComments}
             hasMore={hasNext}
-            loader={<Skeleton avatar active />}
+            loader={<Skeleton style={{ marginTop: '1rem' }} avatar active />}
             scrollableTarget="scrollableDiv"
           >
             {data.map((item, index) => {

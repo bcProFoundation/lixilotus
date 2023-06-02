@@ -34,6 +34,7 @@ export const GridDiv = styled.div`
 
 type CounterProps = {
   num: number;
+  isShowXPI?: boolean;
 };
 
 export const Counter = (props: CounterProps) => {
@@ -53,7 +54,7 @@ export const Counter = (props: CounterProps) => {
     <GridDiv className="grid">
       <div className="count">
         <span style={{ fontSize: '13px' }} className={animationCounter}>
-          {count}
+          {count} {props.isShowXPI ? 'XPI' : ''}
         </span>
       </div>
     </GridDiv>
