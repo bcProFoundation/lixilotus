@@ -10,6 +10,9 @@ export class Hashtag {
   @Field(() => String)
   content: string;
 
+  @Field(() => String)
+  normalizedContent: string;
+
   @Field(() => [PostHashtag], { nullable: true })
   postHashtags?: [PostHashtag];
 

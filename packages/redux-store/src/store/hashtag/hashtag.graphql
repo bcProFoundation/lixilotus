@@ -1,6 +1,7 @@
 fragment HashtagFields on Hashtag {
   id
   content
+  normalizedContent
   lotusBurnUp
   lotusBurnDown
   lotusBurnScore

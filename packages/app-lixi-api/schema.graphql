@@ -258,6 +258,7 @@ type Hashtag {
   lotusBurnDown: Float!
   lotusBurnScore: Float!
   lotusBurnUp: Float!
+  normalizedContent: String!
   postHashtags: [PostHashtag!]
 
   """Identifies the date and time when the object was last updated."""
@@ -537,6 +538,23 @@ type Query {
     minBurnFilter: Int
     pageId: String
     query: String
+  ): PostResponse!
+  allPostsBySearchWithHashtagAtToken(
+    """Paginate after opaque cursor"""
+    after: String
+
+    """Paginate before opaque cursor"""
+    before: String
+
+    """Paginate first"""
+    first: Int
+    hashtags: [String!]
+
+    """Paginate last"""
+    last: Int
+    minBurnFilter: Int
+    query: String
+    tokenId: String
   ): PostResponse!
   allPostsByTokenId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
   allPostsByUserId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!

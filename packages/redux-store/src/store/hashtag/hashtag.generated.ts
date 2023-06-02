@@ -20,6 +20,7 @@ export type HashtagFieldsFragment = {
   __typename?: 'Hashtag';
   id: string;
   content: string;
+  normalizedContent: string;
   lotusBurnUp: number;
   lotusBurnDown: number;
   lotusBurnScore: number;
@@ -37,6 +38,7 @@ export type HashtagQuery = {
     __typename?: 'Hashtag';
     id: string;
     content: string;
+    normalizedContent: string;
     lotusBurnUp: number;
     lotusBurnDown: number;
     lotusBurnScore: number;
@@ -66,6 +68,7 @@ export type HashtagsQuery = {
         __typename?: 'Hashtag';
         id: string;
         content: string;
+        normalizedContent: string;
         lotusBurnUp: number;
         lotusBurnDown: number;
         lotusBurnScore: number;
@@ -102,6 +105,7 @@ export type HashtagBySearchQuery = {
         __typename?: 'Hashtag';
         id: string;
         content: string;
+        normalizedContent: string;
         lotusBurnUp: number;
         lotusBurnDown: number;
         lotusBurnScore: number;
@@ -123,6 +127,7 @@ export const HashtagFieldsFragmentDoc = `
     fragment HashtagFields on Hashtag {
   id
   content
+  normalizedContent
   lotusBurnUp
   lotusBurnDown
   lotusBurnScore

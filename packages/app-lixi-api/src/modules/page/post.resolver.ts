@@ -526,6 +526,60 @@ export class PostResolver {
     });
   }
 
+  @Query(() => PostResponse, { name: 'allPostsBySearchWithHashtagAtToken' })
+  async allPostsBySearchWithHashtagAtToken(
+    @Args({ name: 'minBurnFilter', type: () => Int, nullable: true })
+    minBurnFilter: number,
+    @Args()
+    args: ConnectionArgs,
+    @Args({ name: 'query', type: () => String, nullable: true })
+    query: string,
+    @Args({ name: 'hashtags', type: () => [String], nullable: true })
+    hashtags: string[],
+    @Args({ name: 'tokenId', type: () => String, nullable: true })
+    tokenId: string
+  ) {
+    const { limit, offset } = getPagingParameters(args);
+
+    const count = await this.hashtagService.searchByQueryEstimatedTotalHitsAtToken(
+      `${process.env.MEILISEARCH_BUCKET}_${POSTS}`,
+      query,
+      hashtags,
+      tokenId
+    );
+
+    const posts = await this.hashtagService.searchByQueryHitsAtToken(
+      `${process.env.MEILISEARCH_BUCKET}_${POSTS}`,
+      query,
+      hashtags,
+      tokenId,
+      offset!,
+      limit!
+    );
+
+    const postsId = _.map(posts, 'id');
+
+    const searchPosts = await this.prisma.post.findMany({
+      where: {
+        AND: [
+          {
+            id: { in: postsId }
+          },
+          {
+            lotusBurnScore: {
+              gte: minBurnFilter ?? 0
+            }
+          }
+        ]
+      }
+    });
+
+    return connectionFromArraySlice(searchPosts, args, {
+      arrayLength: count || 0,
+      sliceStart: offset || 0
+    });
+  }
+
   @Query(() => PostConnection)
   @UseGuards(GqlJwtAuthGuard)
   async allPostsByTokenId(

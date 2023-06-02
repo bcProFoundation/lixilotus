@@ -269,6 +269,7 @@ export type Hashtag = {
   lotusBurnDown: Scalars['Float'];
   lotusBurnScore: Scalars['Float'];
   lotusBurnUp: Scalars['Float'];
+  normalizedContent: Scalars['String'];
   postHashtags?: Maybe<Array<PostHashtag>>;
   /** Identifies the date and time when the object was last updated. */
   updatedAt?: Maybe<Scalars['DateTime']>;
@@ -561,6 +562,7 @@ export type Query = {
   allPostsBySearch: PostResponse;
   allPostsBySearchWithHashtag: PostResponse;
   allPostsBySearchWithHashtagAtPage: PostResponse;
+  allPostsBySearchWithHashtagAtToken: PostResponse;
   allPostsByTokenId: PostConnection;
   allPostsByUserId: PostConnection;
   allTemple: TempleConnection;
@@ -731,6 +733,17 @@ export type QueryAllPostsBySearchWithHashtagAtPageArgs = {
   minBurnFilter?: InputMaybe<Scalars['Int']>;
   pageId?: InputMaybe<Scalars['String']>;
   query?: InputMaybe<Scalars['String']>;
+};
+
+export type QueryAllPostsBySearchWithHashtagAtTokenArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  hashtags?: InputMaybe<Array<Scalars['String']>>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  query?: InputMaybe<Scalars['String']>;
+  tokenId?: InputMaybe<Scalars['String']>;
 };
 
 export type QueryAllPostsByTokenIdArgs = {

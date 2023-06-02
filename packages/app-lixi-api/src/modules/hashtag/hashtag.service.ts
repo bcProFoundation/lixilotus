@@ -32,14 +32,16 @@ export class HashtagService {
     let indexedHashtags = [];
     const promises = hashtags.map(async (hashtag: string) => {
       //We search using meilisearch so its ok to loop here
-      const result: SearchResponse = await this.meiliSearch.index(index).search(hashtag.substring(1));
+      const hashtagUppercase = hashtag.substring(1).toUpperCase();
+      const result: SearchResponse = await this.meiliSearch.index(index).search(hashtagUppercase);
 
       if (result.hits.length === 0) {
         //If there the hashtag hasnt exist
         //Create new hashtag at database
         const createdHashtag = await this.prisma.hashtag.create({
           data: {
-            content: hashtag.substring(1)
+            content: hashtagUppercase,
+            normalizedContent: hashtag.substring(1).toLowerCase()
           }
         });
 
@@ -62,7 +64,7 @@ export class HashtagService {
         //Index and save in meilisearch
         const hashtagToIndexed = {
           id: createdHashtag.id,
-          content: createdHashtag.content
+          content: hashtagUppercase
         };
 
         await this.meiliSearch
@@ -108,7 +110,7 @@ export class HashtagService {
     const filters: string[] = [];
 
     for (const hashtag of hashtags) {
-      filters.push(`hashtag.content = "${hashtag.substring(1)}"`); //remove the "hashtag" from string
+      filters.push(`hashtag.content = "${hashtag.substring(1).toUpperCase()}"`); //remove the "hashtag" from string
     }
 
     const filtersQuery = filters.join(' AND ');
@@ -162,6 +164,40 @@ export class HashtagService {
         offset: offset,
         limit: limit,
         filter: `${this.filterQueryBuilder(hashtags, true)}page.id = "${pageId}"`
+      })
+      .then(res => {
+        return res.hits;
+      });
+    return hits;
+  }
+
+  public async searchByQueryEstimatedTotalHitsAtToken(
+    index: string,
+    query: string,
+    hashtags: string[],
+    tokenId: string
+  ) {
+    return (
+      await this.meiliSearch
+        .index(index)
+        .search(query, { filter: `${this.filterQueryBuilder(hashtags, true)}token.id = "${tokenId}"` })
+    ).estimatedTotalHits;
+  }
+
+  public async searchByQueryHitsAtToken(
+    index: string,
+    query: string,
+    hashtags: string[],
+    tokenId: string,
+    offset: number,
+    limit: number
+  ) {
+    const hits = await this.meiliSearch
+      .index(index)
+      .search(query, {
+        offset: offset,
+        limit: limit,
+        filter: `${this.filterQueryBuilder(hashtags, true)}token.id = "${tokenId}"`
       })
       .then(res => {
         return res.hits;

@@ -578,6 +578,64 @@ export type PostsBySearchWithHashtagAtPageQuery = {
   };
 };
 
+export type PostsBySearchWithHashtagAtTokenQueryVariables = Types.Exact<{
+  after?: Types.InputMaybe<Types.Scalars['String']>;
+  before?: Types.InputMaybe<Types.Scalars['String']>;
+  first?: Types.InputMaybe<Types.Scalars['Int']>;
+  last?: Types.InputMaybe<Types.Scalars['Int']>;
+  query?: Types.InputMaybe<Types.Scalars['String']>;
+  minBurnFilter?: Types.InputMaybe<Types.Scalars['Int']>;
+  hashtags?: Types.InputMaybe<Array<Types.Scalars['String']> | Types.Scalars['String']>;
+  tokenId?: Types.InputMaybe<Types.Scalars['String']>;
+}>;
+
+export type PostsBySearchWithHashtagAtTokenQuery = {
+  __typename?: 'Query';
+  allPostsBySearchWithHashtagAtToken: {
+    __typename?: 'PostResponse';
+    edges?: Array<{
+      __typename?: 'PostMeiliEdge';
+      cursor?: string | null;
+      node?: {
+        __typename?: 'Post';
+        id: string;
+        content: string;
+        lotusBurnUp: number;
+        lotusBurnDown: number;
+        lotusBurnScore: number;
+        totalComments: number;
+        createdAt: any;
+        updatedAt: any;
+        uploads?: Array<{
+          __typename?: 'UploadDetail';
+          id: string;
+          upload: {
+            __typename?: 'Upload';
+            id: string;
+            sha: string;
+            bucket?: string | null;
+            width?: string | null;
+            height?: string | null;
+            sha800?: string | null;
+            sha320?: string | null;
+            sha40?: string | null;
+          };
+        }> | null;
+        postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+        page?: { __typename?: 'Page'; avatar?: string | null; name: string; id: string } | null;
+        token?: { __typename?: 'Token'; id: string; name: string; tokenId: string } | null;
+      } | null;
+    }> | null;
+    pageInfo?: {
+      __typename?: 'PostMeiliPageInfo';
+      endCursor?: string | null;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: string | null;
+    } | null;
+  };
+};
+
 export type PostFieldsFragment = {
   __typename?: 'Post';
   id: string;
@@ -1027,6 +1085,31 @@ export const PostsBySearchWithHashtagAtPageDocument = `
 }
     ${PostMeiliFieldsFragmentDoc}
 ${PostMeiliPageInfoFieldsFragmentDoc}`;
+export const PostsBySearchWithHashtagAtTokenDocument = `
+    query PostsBySearchWithHashtagAtToken($after: String, $before: String, $first: Int, $last: Int, $query: String, $minBurnFilter: Int, $hashtags: [String!], $tokenId: String) {
+  allPostsBySearchWithHashtagAtToken(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    query: $query
+    minBurnFilter: $minBurnFilter
+    hashtags: $hashtags
+    tokenId: $tokenId
+  ) {
+    edges {
+      cursor
+      node {
+        ...PostMeiliFields
+      }
+    }
+    pageInfo {
+      ...PostMeiliPageInfoFields
+    }
+  }
+}
+    ${PostMeiliFieldsFragmentDoc}
+${PostMeiliPageInfoFieldsFragmentDoc}`;
 export const CreatePostDocument = `
     mutation createPost($input: CreatePostInput!) {
   createPost(data: $input) {
@@ -1079,6 +1162,12 @@ const injectedRtkApi = api.injectEndpoints({
     >({
       query: variables => ({ document: PostsBySearchWithHashtagAtPageDocument, variables })
     }),
+    PostsBySearchWithHashtagAtToken: build.query<
+      PostsBySearchWithHashtagAtTokenQuery,
+      PostsBySearchWithHashtagAtTokenQueryVariables | void
+    >({
+      query: variables => ({ document: PostsBySearchWithHashtagAtTokenDocument, variables })
+    }),
     createPost: build.mutation<CreatePostMutation, CreatePostMutationVariables>({
       query: variables => ({ document: CreatePostDocument, variables })
     }),
@@ -1110,6 +1199,8 @@ export const {
   useLazyPostsBySearchWithHashtagQuery,
   usePostsBySearchWithHashtagAtPageQuery,
   useLazyPostsBySearchWithHashtagAtPageQuery,
+  usePostsBySearchWithHashtagAtTokenQuery,
+  useLazyPostsBySearchWithHashtagAtTokenQuery,
   useCreatePostMutation,
   useUpdatePostMutation
 } = injectedRtkApi;

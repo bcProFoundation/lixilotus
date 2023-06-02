@@ -713,14 +713,15 @@ model PostHashtag {
 }
 
 model Hashtag {
-  id             String        @id @default(cuid())
-  content        String        @unique
-  postHashtags   PostHashtag[]
-  lotusBurnUp    Float         @default(0.0) @map("lotus_burn_up")
-  lotusBurnDown  Float         @default(0.0) @map("lotus_burn_down")
-  lotusBurnScore Float         @default(0.0) @map("lotus_burn_score")
-  createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt      DateTime      @default(now()) @map("updated_at") @db.Timestamptz
+  id                String        @id @default(cuid())
+  content           String        @unique
+  normalizedContent String        @unique
+  postHashtags      PostHashtag[]
+  lotusBurnUp       Float         @default(0.0) @map("lotus_burn_up")
+  lotusBurnDown     Float         @default(0.0) @map("lotus_burn_down")
+  lotusBurnScore    Float         @default(0.0) @map("lotus_burn_score")
+  createdAt         DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime      @default(now()) @map("updated_at") @db.Timestamptz
 
   @@index(content)
   @@map("hashtag")
