@@ -31,6 +31,16 @@ type AccountEdge {
   node: Account!
 }
 
+type Category {
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  id: ID!
+  name: String!
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
+}
+
 type City {
   country: Country!
   id: ID!
@@ -101,6 +111,7 @@ input CreateCommentInput {
   commentByPublicKey: String
   commentText: String!
   commentToId: String!
+  createFeeHex: String
   tipHex: String
 }
 
@@ -121,6 +132,7 @@ input CreatePageInput {
 }
 
 input CreatePostInput {
+  createFeeHex: String
   htmlContent: String!
   pageAccountId: Int
   pageId: String
@@ -325,9 +337,13 @@ enum OrderDirection {
 type Page {
   address: String
   avatar: String
-  categoryId: String
+  category: Category!
+  categoryId: String!
   countryId: String
+  countryName: String
   cover: String
+  createCommentFee: String!
+  createPostFee: String!
 
   """Identifies the date and time when the object was created."""
   createdAt: DateTime!
@@ -345,6 +361,7 @@ type Page {
   parentId: String
   salt: String
   stateId: String
+  stateName: String
   title: String
 
   """The sum of burn amount for every post on page"""
@@ -594,8 +611,8 @@ type Query {
   ): WorshipedPersonConnection!
   allWorshipedPersonByUserId(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: WorshipedPersonOrder, skip: Int): WorshipedPersonConnection!
   allWorshipedPersonSpecialDate(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: WorshipedPersonOrder, skip: Int): WorshipedPersonConnection!
-  checkIsFollowedAccount(address: String!): FollowAccount!
-  checkIsFollowedPage(pageId: String!): FollowPage!
+  checkIfFollowAccount(followingAccountId: Int!): Boolean!
+  checkIfFollowPage(pageId: String!): Boolean!
   comment(id: String!): Comment!
   getAccountByAddress(address: String!): Account!
   hashtag(content: String!): Hashtag!
@@ -732,6 +749,8 @@ input UpdatePageInput {
   categoryId: String
   countryId: String
   cover: String
+  createCommentFee: String
+  createPostFee: String
   description: String
   id: ID!
   name: String

@@ -44,6 +44,9 @@ import { NotificationLevel } from '@bcpros/lixi-prisma';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
 import { extractHashtagFromText } from 'src/utils/extractHashtagFromText';
 import { HashtagService } from '../hashtag/hashtag.service';
+import BCHJS from '@bcpros/xpi-js';
+import { ChronikClient } from 'chronik-client';
+import { InjectChronikClient } from 'src/common/modules/chronik/chronik.decorators';
 
 const pubSub = new PubSub();
 
@@ -58,6 +61,8 @@ export class PostResolver {
     private meiliService: MeiliService,
     private readonly notificationService: NotificationService,
     private hashtagService: HashtagService,
+    @Inject('xpijs') private XPI: BCHJS,
+    @InjectChronikClient('xpi') private chronik: ChronikClient,
     @I18n() private i18n: I18nService
   ) {}
 
@@ -69,7 +74,8 @@ export class PostResolver {
   @Query(() => Post)
   async post(@Args('id', { type: () => String }) id: string) {
     return this.prisma.post.findUnique({
-      where: { id: id }
+      where: { id: id },
+      include: { page: true }
     });
   }
 
@@ -310,7 +316,7 @@ export class PostResolver {
     orderBy: PostOrder
   ) {
     let result;
-    const page = await this.prisma.page.findUnique({
+    const page = await this.prisma.page.findFirst({
       where: {
         id: id
       }
@@ -816,82 +822,108 @@ export class PostResolver {
     uploadDetailIds = await Promise.all(promises);
 
     const postToSave = {
-      data: {
-        content: htmlContent,
-        postAccount: { connect: { id: account.id } },
-        uploadedCovers: {
-          connect:
-            uploadDetailIds.length > 0
-              ? uploadDetailIds.map((uploadDetail: any) => {
-                  return {
-                    id: uploadDetail
-                  };
-                })
-              : undefined
-        },
-        page: {
-          connect: pageId ? { id: pageId } : undefined
-        },
-        token: {
-          connect: tokenPrimaryId ? { id: tokenPrimaryId } : undefined
-        }
+      content: htmlContent,
+      postAccount: { connect: { id: account.id } },
+      uploadedCovers: {
+        connect:
+          uploadDetailIds.length > 0
+            ? uploadDetailIds.map((uploadDetail: any) => {
+                return {
+                  id: uploadDetail
+                };
+              })
+            : undefined
+      },
+      page: {
+        connect: pageId ? { id: pageId } : undefined
+      },
+      token: {
+        connect: tokenPrimaryId ? { id: tokenPrimaryId } : undefined
       }
     };
-    const createdPost = await this.prisma.post.create({
-      ...postToSave,
-      include: {
-        page: {
-          select: {
-            id: true,
-            address: true,
-            name: true
-          }
+
+    let createFee: any;
+    if (data.createFeeHex) {
+      const txData = await this.XPI.RawTransactions.decodeRawTransaction(data.createFeeHex);
+      createFee = txData['vout'][0].value;
+      if (Number(createFee) < 0) {
+        throw new Error('Syntax error. Number cannot be less than or equal to 0');
+      }
+    }
+
+    const savedPost = await this.prisma.$transaction(async prisma => {
+      let txid: string | undefined;
+      if (data.createFeeHex) {
+        const broadcastResponse = await this.chronik.broadcastTx(data.createFeeHex);
+        if (!broadcastResponse) {
+          throw new Error('Empty chronik broadcast response');
+        }
+        txid = broadcastResponse.txid;
+      }
+
+      const createdPost = await prisma.post.create({
+        data: {
+          ...postToSave,
+          txid: txid,
+          createFee: createFee
         },
-        token: {
-          select: {
-            id: true,
-            name: true
-          }
-        },
-        postAccount: {
-          select: {
-            id: true,
-            name: true,
-            address: true
+        include: {
+          page: {
+            select: {
+              id: true,
+              address: true,
+              name: true
+            }
+          },
+          token: {
+            select: {
+              id: true,
+              name: true
+            }
+          },
+          postAccount: {
+            select: {
+              id: true,
+              name: true,
+              address: true
+            }
           }
         }
-      }
+      });
+
+      return createdPost;
     });
 
     //Hashtag
     const hashtags = await this.hashtagService.extractAndSave(
       `${process.env.MEILISEARCH_BUCKET}_${HASHTAG}`,
       pureContent,
-      createdPost.id
+      savedPost.id
     );
 
     const indexedPost = {
-      id: createdPost.id,
+      id: savedPost.id,
       content: pureContent,
-      postAccountName: createdPost.postAccount.name,
-      createdAt: createdPost.createdAt,
-      updatedAt: createdPost.updatedAt,
+      postAccountName: savedPost.postAccount.name,
+      createdAt: savedPost.createdAt,
+      updatedAt: savedPost.updatedAt,
       page: {
-        id: createdPost.page?.id,
-        name: createdPost.page?.name
+        id: savedPost.page?.id,
+        name: savedPost.page?.name
       },
       token: {
-        id: createdPost.token?.id,
-        name: createdPost.token?.name
+        id: savedPost.token?.id,
+        name: savedPost.token?.name
       },
       hashtag: hashtags
     };
 
-    await this.meiliService.add(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`, indexedPost, createdPost.id);
+    await this.meiliService.add(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`, indexedPost, savedPost.id);
 
-    pubSub.publish('postCreated', { postCreated: createdPost });
+    pubSub.publish('postCreated', { postCreated: savedPost });
 
-    if (pageId) {
+    // Notification
+    if (pageId && savedPost) {
       const page = await this.prisma.page.findFirst({
         where: {
           id: pageId
@@ -915,15 +947,15 @@ export class PostResolver {
       }
 
       const createNotif = {
-        senderId: createdPost.postAccountId,
+        senderId: account.id,
         recipientId: Number(page?.pageAccountId),
         notificationTypeId: NOTIFICATION_TYPES.POST_ON_PAGE,
         level: NotificationLevel.INFO,
-        url: '/post/' + createdPost.id,
+        url: `/post/${savedPost.id}`,
         additionalData: {
-          senderName: createdPost.postAccount.name,
-          senderAddress: createdPost.postAccount.address,
-          pageName: createdPost.page?.name
+          senderName: account.name,
+          senderAddress: account.address,
+          pageName: savedPost?.page?.name
         }
       };
       const jobData = {
@@ -933,7 +965,7 @@ export class PostResolver {
         (await this.notificationService.saveAndDispatchNotification(jobData.notification));
     }
 
-    return createdPost;
+    return savedPost;
   }
 
   @UseGuards(GqlJwtAuthGuard)

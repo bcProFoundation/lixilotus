@@ -72,12 +72,18 @@ fragment PageFields on Page {
   name
   title
   categoryId
+  category {
+    id
+    name
+  }
   description
   avatar
   cover
   parentId
   countryId
+  countryName
   stateId
+  stateName
   address
   website
   lotusBurnUp
@@ -85,6 +91,8 @@ fragment PageFields on Page {
   lotusBurnScore
   totalBurnForPage
   followersCount
+  createPostFee
+  createCommentFee
   createdAt
   updatedAt
 }

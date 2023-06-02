@@ -34,6 +34,18 @@ export type CommentQuery = {
     createdAt: any;
     updatedAt: any;
     commentAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+    commentTo: {
+      __typename?: 'Post';
+      id: string;
+      postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+      page?: {
+        __typename?: 'Page';
+        avatar?: string | null;
+        name: string;
+        id: string;
+        pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+      } | null;
+    };
   };
 };
 
@@ -67,6 +79,18 @@ export type CommentsToPostIdQuery = {
         createdAt: any;
         updatedAt: any;
         commentAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+        commentTo: {
+          __typename?: 'Post';
+          id: string;
+          postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+          page?: {
+            __typename?: 'Page';
+            avatar?: string | null;
+            name: string;
+            id: string;
+            pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+          } | null;
+        };
       };
     }> | null;
     pageInfo: {
@@ -91,6 +115,18 @@ export type CommentFieldsFragment = {
   createdAt: any;
   updatedAt: any;
   commentAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+  commentTo: {
+    __typename?: 'Post';
+    id: string;
+    postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+    page?: {
+      __typename?: 'Page';
+      avatar?: string | null;
+      name: string;
+      id: string;
+      pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+    } | null;
+  };
 };
 
 export type CreateCommentMutationVariables = Types.Exact<{
@@ -111,6 +147,18 @@ export type CreateCommentMutation = {
     createdAt: any;
     updatedAt: any;
     commentAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+    commentTo: {
+      __typename?: 'Post';
+      id: string;
+      postAccount: { __typename?: 'Account'; address: string; id: string; name: string };
+      page?: {
+        __typename?: 'Page';
+        avatar?: string | null;
+        name: string;
+        id: string;
+        pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
+      } | null;
+    };
   };
 };
 
@@ -125,6 +173,24 @@ export const CommentFieldsFragmentDoc = `
   }
   commentByPublicKey
   commentToId
+  commentTo {
+    id
+    postAccount {
+      address
+      id
+      name
+    }
+    page {
+      avatar
+      name
+      id
+      pageAccount {
+        id
+        name
+        address
+      }
+    }
+  }
   lotusBurnUp
   lotusBurnDown
   lotusBurnScore

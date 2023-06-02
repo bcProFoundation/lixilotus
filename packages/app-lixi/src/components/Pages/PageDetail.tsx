@@ -1,43 +1,39 @@
-import {
-  CameraOutlined,
-  CompassOutlined,
-  EditOutlined,
-  FireTwoTone,
-  HomeOutlined,
-  InfoCircleOutlined
-} from '@ant-design/icons';
+import { CameraOutlined, CompassOutlined, EditOutlined, HomeOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { PostsQueryTag } from '@bcpros/lixi-models/constants';
+import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
+import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import CreatePostCard from '@components/Common/CreatePostCard';
 import SearchBox, { SearchType } from '@components/Common/SearchBox';
+import { FilterBurnt } from '@components/Common/FilterBurn';
+import { currency } from '@components/Common/Ticker';
 import PostListItem from '@components/Posts/PostListItem';
+import {
+  CreateFollowPageInput,
+  DeleteFollowPageInput,
+  OrderDirection,
+  PostOrderField
+} from '@generated/types.generated';
+import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
+import { setTransactionReady } from '@store/account/actions';
 import { getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
+import { addBurnQueue, addBurnTransaction, clearFailQueue, getFailQueue } from '@store/burn';
+import { useCreateFollowPageMutation, useDeleteFollowPageMutation } from '@store/follow/follows.api';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { openModal } from '@store/modal/actions';
 import { useInfinitePostsByPageIdQuery } from '@store/post/useInfinitePostsByPageIdQuery';
-import intl from 'react-intl-universal';
-import { Button, Space, Tabs, Skeleton, notification } from 'antd';
+import { getFilterPostsPage } from '@store/settings/selectors';
+import { showToast } from '@store/toast/actions';
+import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
+import { fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods';
+import { Button, Skeleton, Space, Tabs } from 'antd';
 import axios from 'axios';
+import BigNumber from 'bignumber.js';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
-import { Virtuoso } from 'react-virtuoso';
-import { OrderDirection, PostOrderField } from '@generated/types.generated';
-import styled from 'styled-components';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { BurnForType, BurnType, BurnQueueCommand } from '@bcpros/lixi-models/lib/burn';
-import { fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods';
-import { PostsQueryTag } from '@bcpros/lixi-models/constants';
-import { currency } from '@components/Common/Ticker';
-import { addBurnQueue, addBurnTransaction, getBurnQueue, getFailQueue, clearFailQueue } from '@store/burn';
-import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
-import BigNumber from 'bignumber.js';
-import { showToast } from '@store/toast/actions';
-import { setTransactionReady } from '@store/account/actions';
-import { getFilterPostsPage } from '@store/settings/selectors';
-import { FilterBurnt } from '@components/Common/FilterBurn';
-import { FilterType } from '@bcpros/lixi-models/lib/filter';
-import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
-import { CreateFollowPageInput, DeleteFollowPageInput } from '@generated/types.generated';
-import { useCreateFollowPageMutation, useDeleteFollowPageMutation } from '@store/follow/follows.api';
 import { useInfinitePostsBySearchQueryWithHashtagAtPage } from '@store/post/useInfinitePostsBySearchQueryWithHashtagAtPage';
+import intl from 'react-intl-universal';
+import styled from 'styled-components';
 
 type PageDetailProps = {
   page: any;
@@ -364,16 +360,11 @@ const SubAbout = ({
 const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
   const dispatch = useAppDispatch();
   const selectedAccount = useAppSelector(getSelectedAccount);
-  const baseUrl = process.env.NEXT_PUBLIC_LIXI_URL;
-  const router = useRouter();
   const selectedAccountId = useAppSelector(getSelectedAccountId);
   const [pageDetailData, setPageDetailData] = useState<any>(page);
   const [isFollowed, setIsFollowed] = useState<boolean>(checkIsFollowed);
-  const [listsFriend, setListsFriend] = useState<any>([]);
-  const [listsPicture, setListsPicture] = useState<any>([]);
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
-  const burnQueue = useAppSelector(getBurnQueue);
   const walletStatus = useAppSelector(getWalletStatus);
   const failQueue = useAppSelector(getFailQueue);
   const filterValue = useAppSelector(getFilterPostsPage);
@@ -449,12 +440,6 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
   const handleBurnForPost = async (isUpVote: boolean, post: any) => {
     try {
       const burnValue = '1';
-      if (
-        slpBalancesAndUtxos.nonSlpUtxos.length == 0 ||
-        fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis) < parseInt(burnValue)
-      ) {
-        throw new Error(intl.get('account.insufficientFunds'));
-      }
       if (failQueue.length > 0) dispatch(clearFailQueue());
       const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
       const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
@@ -464,19 +449,21 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
       const burnForId = post.id;
       let tipToAddresses: { address: string; amount: string }[] = [
         {
-          address: post.postAccount.address,
+          address: page.pageAccount.address,
           amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
         }
       ];
 
-      if (burnType === BurnType.Up && selectedAccount.address !== post.postAccount.address) {
-        tipToAddresses.push({
-          address: post.postAccount.address,
-          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
-        });
-      }
-
       tipToAddresses = tipToAddresses.filter(item => item.address != selectedAccount.address);
+      const totalTip = fromSmallestDenomination(
+        tipToAddresses.reduce((total, item) => total + parseFloat(item.amount), 0)
+      );
+      if (
+        slpBalancesAndUtxos.nonSlpUtxos.length == 0 ||
+        fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis) < parseInt(burnValue) + totalTip
+      ) {
+        throw new Error(intl.get('account.insufficientFunds'));
+      }
 
       const burnCommand: BurnQueueCommand = {
         defaultFee: currency.defaultFee,
@@ -626,7 +613,8 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
             </div>
             <div className="title-profile">
               <h2>{pageDetailData.name}</h2>
-              <p>{pageDetailData.title}</p>
+              <p>{intl.get('category.' + pageDetailData.category.name)}</p>
+              {console.log('pageDetailData: ', pageDetailData)}
             </div>
             {/* TODO: implement in the future */}
             {selectedAccountId == pageDetailData?.pageAccountId && (
@@ -779,7 +767,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                   />
                   <FilterBurnt filterForType={FilterType.PostsPage} />
                 </div>
-                {!searchValue && hashtags.length === 0 && <CreatePostCard pageId={page.id} />}
+                {!searchValue && hashtags.length === 0 && <CreatePostCard page={page.id} />}
                 <Timeline>
                   {data.length == 0 && (
                     <div className="blank-timeline">

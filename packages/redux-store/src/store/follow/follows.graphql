@@ -1,7 +1,5 @@
-query checkIsFollowedAccount($address: String!) {
-  checkIsFollowedAccount(address: $address) {
-    isFollowed
-  }
+query checkIfFollowAccount($followingAccountId: Int!) {
+  checkIfFollowAccount(followingAccountId: $followingAccountId)
 }
 
 query allFollowersByFollowing(
@@ -79,11 +77,8 @@ mutation deleteFollowAccount($input: DeleteFollowAccountInput!) {
 
 
 
-# FollowPage
-query checkIsFollowedPage($pageId: String!) {
-  checkIsFollowedPage(pageId: $pageId) {
-    isFollowed
-  }
+query checkIfFollowPage($pageId: String!) {
+  checkIfFollowPage(pageId: $pageId)
 }
 
 fragment FollowPageFields on FollowPage {

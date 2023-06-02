@@ -2,6 +2,7 @@ import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
 import { IsOptional } from 'class-validator';
 
 import { Account } from '../account';
+import { Category } from '../category/';
 
 @ObjectType()
 export class Page {
@@ -17,8 +18,11 @@ export class Page {
   @Field(() => String)
   name: string;
 
-  @Field(() => String, { nullable: true })
+  @Field(() => String)
   categoryId: string;
+
+  @Field(() => Category)
+  category: Category;
 
   @Field(() => String, { nullable: true })
   title: string;
@@ -71,7 +75,13 @@ export class Page {
   countryId?: string;
 
   @Field(() => String, { nullable: true })
+  countryName?: string;
+
+  @Field(() => String, { nullable: true })
   stateId?: string;
+
+  @Field(() => String, { nullable: true })
+  stateName?: string;
 
   @Field(() => Number, { nullable: true })
   followersCount?: number;
@@ -81,4 +91,10 @@ export class Page {
 
   @Field(() => String, { nullable: true })
   salt?: string;
+
+  @Field(() => String)
+  createPostFee: string;
+
+  @Field(() => String)
+  createCommentFee: string;
 }

@@ -408,12 +408,6 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     try {
       const burnValue = '1';
       const { data, burnForType } = burnData;
-      if (
-        slpBalancesAndUtxos.nonSlpUtxos.length == 0 ||
-        fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis) < parseInt(burnValue)
-      ) {
-        throw new Error(intl.get('account.insufficientFunds'));
-      }
       if (failQueue.length > 0) dispatch(clearFailQueue());
       const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
       const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
@@ -423,31 +417,29 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       const burnForId = data.id;
       let queryParams;
 
-      let tipToAddresses: { address: string; amount: string }[] = [
-        {
-          address: post.postAccount.address,
-          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
-        }
-      ];
+      let tipToAddresses: { address: string; amount: string }[] = [];
 
       switch (burnForType) {
         case BurnForType.Post:
           const post = data as PostItem;
-          if (burnType === BurnType.Up && selectedAccount.address !== post.postAccount.address) {
-            tipToAddresses.push({
-              address: post.postAccount.address,
-              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
-            });
-          }
+          tipToAddresses.push({
+            address: post.page ? post.page.pageAccount.address : post.postAccount.address,
+            amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(post.page ? 0.04 : 0.08))
+              .valueOf()
+              .toString()
+          });
           break;
         case BurnForType.Comment:
           const comment = data as CommentItem;
-          if (burnType === BurnType.Up && selectedAccount.address != comment?.commentAccount?.address) {
-            tipToAddresses.push({
-              address: comment?.commentAccount?.address,
-              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
-            });
-          }
+          const pageAddress = comment.commentTo.page ? comment.commentTo.page.pageAccount.address : undefined;
+          const postAddress = comment.commentTo.postAccount.address;
+          tipToAddresses.push({
+            address: pageAddress ?? postAddress,
+            amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(comment.commentTo.page ? 0.04 : 0.08))
+              .valueOf()
+              .toString()
+          });
+
           queryParams = {
             id: comment.commentToId,
             orderBy: {
@@ -459,6 +451,15 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
       }
 
       tipToAddresses = tipToAddresses.filter(item => item.address != selectedAccount.address);
+      const totalTip = fromSmallestDenomination(
+        tipToAddresses.reduce((total, item) => total + parseFloat(item.amount), 0)
+      );
+      if (
+        slpBalancesAndUtxos.nonSlpUtxos.length == 0 ||
+        fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis) < parseInt(burnValue) + totalTip
+      ) {
+        throw new Error(intl.get('account.insufficientFunds'));
+      }
 
       const burnCommand: BurnQueueCommand = {
         defaultFee: currency.defaultFee,
@@ -516,6 +517,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
 
     if (text !== '' || !_.isNil(text)) {
       let tipHex;
+      let createFeeHex;
       if (text.trim().toLowerCase().split(' ')[0] === '/give') {
         try {
           if (!isNumeric(text.trim().split(' ')[1])) {
@@ -545,10 +547,37 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
         }
       }
 
+      if (post.page) {
+        if (selectedAccount.id != parseInt(post.page.pageAccount.id) && post.page.createCommentFee != '0') {
+          try {
+            const fundingWif = getUtxoWif(slpBalancesAndUtxos.nonSlpUtxos[0], walletPaths);
+            createFeeHex = await sendXpi(
+              XPI,
+              chronik,
+              walletPaths,
+              slpBalancesAndUtxos.nonSlpUtxos,
+              currency.defaultFee,
+              '',
+              false, // indicate send mode is one to one
+              null,
+              post.page.pageAccount.address,
+              post.page.createCommentFee,
+              isEncryptedOptionalOpReturnMsg,
+              fundingWif,
+              true
+            );
+          } catch (e) {
+            const message = e.message || e.error || JSON.stringify(e);
+            dispatch(sendXPIFailure(message));
+          }
+        }
+      }
+
       const createCommentInput: CreateCommentInput = {
         commentText: text,
         commentToId: post.id,
-        tipHex: tipHex
+        tipHex: tipHex,
+        createFeeHex: createFeeHex
       };
 
       const params = {
@@ -608,6 +637,16 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     ({ photo }) => <Image src={photo?.src} width={photo?.width} height={photo?.height} />,
     []
   );
+
+  const showTextComment = () => {
+    if (post.page) {
+      return post.page.createCommentFee != '0'
+        ? intl.get('comment.writeCommentXpi', { commentFee: `${post.page.createCommentFee} ${currency.ticker}` })
+        : intl.get('comment.writeCommentFree');
+    } else {
+      return intl.get('comment.writeComment');
+    }
+  };
 
   useDidMountEffectNotification();
 
@@ -722,7 +761,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
                   onChange={onChange}
                   onBlur={onBlur}
                   value={value}
-                  placeholder={intl.get('comment.writeComment')}
+                  placeholder={showTextComment()}
                   enterButton="Comment"
                   size="large"
                   suffix={<DashOutlined />}

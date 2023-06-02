@@ -44,10 +44,11 @@ export default {
   'burn.doneBurning': 'Đốt thành công!',
   'burn.sendXpi': 'Bạn sẽ gửi ',
   'burn.owner': ' tới chủ {name} ',
+  'burn.feeMiner': 'Chưa tính phí thợ đào',
 
   /* 01.General */
   'general.tokens': 'Tokens',
-  'general.home': 'Nhà',
+  'general.home': 'Trang chủ',
   'general.accounts': 'Tài khoản',
   'general.lixi': 'Quản lý lì xì',
   'general.claim': 'Nhận Lì xì',
@@ -104,9 +105,11 @@ export default {
   'general.level': 'Cấp độ',
   'general.showMore': 'Xem thêm',
   'general.showLess': 'Xem ít',
-  'general.topAccounts': 'Xếp hạng tài khoản đã đốt',
+  'general.topAccounts': 'Xếp hạng tài khoản',
   'general.topPages': 'Xếo hạng trang',
   'general.burned': 'Đã đốt',
+  'general.fee': 'Phí: ',
+
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',
   'account.mnemonic': 'mnemonic (cụm từ bảo mật)',
@@ -462,7 +465,9 @@ export default {
   'page.updatePage': 'Cập nhật thông tin của trang',
   'page.name': 'Tên',
   'page.inputName': 'Vui lòng nhập tên',
+  'page.inputNamePattern': 'Tên phải chứa ít nhất 6 kí tự',
   'page.category': 'Danh mục',
+  'page.selectCategory': 'Vui lòng chọn danh mục',
   'page.title': 'Tiêu đề',
   'page.titleShared': 'Please input title',
   'page.inputTitle': 'Vui lòng nhập tiêu đề',
@@ -480,6 +485,8 @@ export default {
   'page.state': 'Tìm kiếm tỉnh thành',
   'page.address': 'Địa chỉ',
   'page.inputAddress': 'Vui lòng nhập địa chỉ',
+  'page.createPostFee': 'Phí viết bài',
+  'page.createCommentFee': 'Phí bình luận',
   'page.couldNotpostPage': 'Tạo trang không thành công',
   'page.createPageSuccessful': 'Trang đã tạo thành công',
   'page.updatePageSuccessful': 'Trang đã được cập nhật thành công',
@@ -563,6 +570,8 @@ export default {
   'comment.unableCreateComment': 'Không thể tạo bình luận',
   'comment.unableToBurn': 'Không thể đốt cho bình luận',
   'comment.writeComment': 'Viết bình luận...',
+  'comment.writeCommentFree': 'Viết bình luận miễn phí trên trang này...',
+  'comment.writeCommentXpi': '{commentFee} để bình luận trên trang này...',
 
   /* 18. Category */
   'category.art': 'Mỹ thuật',

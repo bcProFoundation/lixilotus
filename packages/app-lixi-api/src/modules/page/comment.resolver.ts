@@ -35,7 +35,7 @@ export class CommentResolver {
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS,
     private readonly notificationService: NotificationService
-  ) { }
+  ) {}
 
   @Subscription(() => Comment)
   commentCreated() {
@@ -66,7 +66,7 @@ export class CommentResolver {
     const result = await findManyCursorConnection(
       args =>
         this.prisma.comment.findMany({
-          include: { commentAccount: true },
+          include: { commentAccount: true, commentTo: true },
           where: {
             OR: [
               {
@@ -139,15 +139,13 @@ export class CommentResolver {
         throw new Error(couldNotFindAccount);
       }
 
-      const { commentText, commentToId, tipHex } = data;
+      const { commentText, commentToId, tipHex, createFeeHex } = data;
 
       const commentToSave = {
-        data: {
-          commentText: commentText,
-          commentAccount: { connect: { id: account.id } },
-          commentTo: {
-            connect: { id: commentToId }
-          }
+        commentText: commentText,
+        commentAccount: { connect: { id: account.id } },
+        commentTo: {
+          connect: { id: commentToId }
         }
       };
 
@@ -160,6 +158,15 @@ export class CommentResolver {
         }
       });
 
+      let createFee: any;
+      if (createFeeHex) {
+        const txData = await this.XPI.RawTransactions.decodeRawTransaction(data.createFeeHex);
+        createFee = txData['vout'][0].value;
+        if (Number(createFee) < 0) {
+          throw new Error('Syntax error. Number cannot be less than or equal to 0');
+        }
+      }
+
       let tipValue: any;
       if (tipHex) {
         const txData = await this.XPI.RawTransactions.decodeRawTransaction(tipHex);
@@ -170,7 +177,25 @@ export class CommentResolver {
       }
 
       const savedComment = await this.prisma.$transaction(async prisma => {
-        const createdComment = await prisma.comment.create(commentToSave);
+        let txid: string | undefined;
+        if (createFeeHex) {
+          const broadcastResponse = await this.chronik.broadcastTx(createFeeHex);
+          if (!broadcastResponse) {
+            throw new Error('Empty chronik broadcast response');
+          }
+          txid = broadcastResponse.txid;
+        }
+
+        const createdComment = await prisma.comment.create({
+          data: {
+            ...commentToSave,
+            txid: txid,
+            createFee: createFee
+          },
+          include: {
+            commentTo: true
+          }
+        });
 
         if (tipHex) {
           const broadcastResponse = await this.chronik.broadcastTx(tipHex);

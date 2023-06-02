@@ -1,29 +1,29 @@
-import { SagaStore, wrapper } from '@store/store';
-import _ from 'lodash';
-import accountApi from '@store/account/api';
-import { NextSeo } from 'next-seo';
-import React from 'react';
-import { END } from 'redux-saga';
-import { getSelectorsByUserAgent } from 'react-device-detect';
+import { PrismaClient } from '@bcpros/lixi-prisma';
 import PageDetailLayout from '@components/Layout/PageDetailLayout';
 import ProfileDetail from '@components/Profile/ProfileDetail';
 import { useGetAccountByAddressQuery } from '@store/account/accounts.api';
-import { useCheckIsFollowedAccountQuery } from '@store/follow/follows.api';
+import { useCheckIfFollowAccountQuery } from '@store/follow/follows.api';
+import { SagaStore, wrapper } from '@store/store';
+import _ from 'lodash';
+import { NextSeo } from 'next-seo';
+import { getSelectorsByUserAgent } from 'react-device-detect';
+import { END } from 'redux-saga';
 
 const ProfileDetailPage = props => {
-  const { userAddress, isMobile } = props;
+  const { userAddress, isMobile, accountAsString } = props;
+  const account = JSON.parse(accountAsString);
   const { currentData: currentDataGetAccount, isSuccess: isSuccessGetAccount } = useGetAccountByAddressQuery({
     address: userAddress
   });
-  const { currentData: currentIsFollowedData, isSuccess: isSuccessCheckFollowed } = useCheckIsFollowedAccountQuery({
-    address: userAddress
+  const { currentData: currentIsFollowedData, isSuccess: isSuccessCheckFollowed } = useCheckIfFollowAccountQuery({
+    followingAccountId: account.id
   });
 
   let user;
-  let checkIsFollowed;
+  let isFollowed;
   if (isSuccessGetAccount && isSuccessCheckFollowed) {
     user = currentDataGetAccount.getAccountByAddress;
-    checkIsFollowed = currentIsFollowedData.checkIsFollowedAccount.isFollowed;
+    isFollowed = currentIsFollowedData.checkIfFollowAccount;
   }
   const canonicalUrl = process.env.NEXT_PUBLIC_LIXI_URL + `profile/${userAddress}`;
 
@@ -47,7 +47,7 @@ const ProfileDetailPage = props => {
               cardType: 'summary_large_image'
             }}
           />
-          <ProfileDetail user={user} isMobile={isMobile} checkIsFollowed={checkIsFollowed} />
+          <ProfileDetail user={user} isMobile={isMobile} checkIsFollowed={isFollowed} />
         </>
       )}
     </>
@@ -58,6 +58,7 @@ export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) 
   const { req } = context;
   const userAgent = req ? req.headers['user-agent'] : navigator.userAgent;
   const { isMobile } = getSelectorsByUserAgent(userAgent);
+  const prisma = new PrismaClient();
 
   store.dispatch(END);
   await (store as SagaStore).__sagaTask.toPromise();
@@ -65,8 +66,17 @@ export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) 
   const slug: string = _.isArray(context.params.slug) ? context.params.slug[0] : context.params.slug;
   const userAddress: string = slug;
 
+  const result = await prisma.account.findFirst({
+    where: {
+      address: userAddress
+    }
+  });
+
+  const accountAsString = JSON.stringify(result);
+
   return {
     props: {
+      accountAsString,
       userAddress,
       isMobile
     }

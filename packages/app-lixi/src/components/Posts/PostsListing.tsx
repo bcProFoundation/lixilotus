@@ -33,7 +33,7 @@ import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@sto
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { currency } from '@components/Common/Ticker';
-import { fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods';
+import { fromSmallestDenomination, fromXpiToSatoshis, toSmallestDenomination } from '@utils/cashMethods';
 import BigNumber from 'bignumber.js';
 import { showToast } from '@store/toast/actions';
 import { Spin } from 'antd';
@@ -126,7 +126,7 @@ const StyledHeader = styled.div`
   .filter-bar {
     display: flex;
     justify-content: space-between;
-    padding-bottom: 1rem;
+    margin-botton: 1rem;
   }
 `;
 
@@ -347,12 +347,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const handleBurnForPost = async (isUpVote: boolean, post: any) => {
     try {
       const burnValue = '1';
-      if (
-        slpBalancesAndUtxos.nonSlpUtxos.length == 0 ||
-        fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis) < parseInt(burnValue)
-      ) {
-        throw new Error(intl.get('account.insufficientFunds'));
-      }
       if (failQueue.length > 0) dispatch(clearFailQueue());
       const fundingFirstUtxo = slpBalancesAndUtxos.nonSlpUtxos[0];
       const currentWalletPath = walletPaths.filter(acc => acc.xAddress === fundingFirstUtxo.address).pop();
@@ -360,30 +354,34 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       const burnType = isUpVote ? BurnType.Up : BurnType.Down;
       const burnedBy = hash160;
       const burnForId = post.id;
-      let tipToAddresses: { address: string; amount: string }[] = [
-        {
-          address: post.postAccount.address,
-          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
-        }
-      ];
-
-      if (burnType === BurnType.Up && selectedAccount.address !== post.postAccount.address) {
-        tipToAddresses.push({
-          address: post.postAccount.address,
-          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
-        });
-      }
-
-      tipToAddresses = tipToAddresses.filter(item => item.address != selectedAccount.address);
-
+      let tipToAddresses: { address: string; amount: string }[] = [];
       let tag: string;
 
       if (_.isNil(post.page) && _.isNil(post.token)) {
         tag = PostsQueryTag.Posts;
+        tipToAddresses.push({
+          address: post.postAccount.address,
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.08)).valueOf().toString()
+        });
       } else if (post.page) {
         tag = PostsQueryTag.PostsByPageId;
+        tipToAddresses.push({
+          address: post.page.pageAccount.address,
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
+        });
       } else if (post.token) {
         tag = PostsQueryTag.PostsByTokenId;
+      }
+
+      tipToAddresses = tipToAddresses.filter(item => item.address != selectedAccount.address);
+      const totalTip = fromSmallestDenomination(
+        tipToAddresses.reduce((total, item) => total + parseFloat(item.amount), 0)
+      );
+      if (
+        slpBalancesAndUtxos.nonSlpUtxos.length == 0 ||
+        fromSmallestDenomination(walletStatus.balances.totalBalanceInSatoshis) < parseInt(burnValue) + totalTip
+      ) {
+        throw new Error(intl.get('account.insufficientFunds'));
       }
 
       const burnCommand: BurnQueueCommand = {

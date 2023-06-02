@@ -256,7 +256,11 @@ export class BurnController {
           where: { id: postId },
           include: {
             postAccount: true,
-            page: true
+            page: {
+              include: {
+                pageAccount: true
+              }
+            }
           }
         });
 
@@ -282,16 +286,18 @@ export class BurnController {
           Object.keys(BurnForType)[typeValuesArr.indexOf(command.burnForType as unknown as BurnForType)];
 
         // BurnValue + tip + fee
-        let tip = Number(command.burnValue) * 0.04;
         let fee = Number(command.burnValue) * 0.04;
 
         // create Notifications Burn
-        const calcTip = await this.notificationService.calcTip(post, recipientPostAccount, command);
+        const calcFee = await this.notificationService.calcFee(post, command);
         const createNotifBurnAndTip = {
           senderId: sender.id,
-          recipientId:
-            command.burnForType == BurnForType.Comment ? commentAccount?.id : (post?.postAccountId as number),
-          notificationTypeId: calcTip != 0 ? NOTIFICATION_TYPES.RECEIVE_BURN_TIP : NOTIFICATION_TYPES.BURN,
+          recipientId: post.page ? post.page.pageAccountId : (post?.postAccountId as number),
+          notificationTypeId: post.page
+            ? NOTIFICATION_TYPES.RECEIVE_BURN_PAGE
+            : command.burnForType == BurnForType.Comment
+            ? NOTIFICATION_TYPES.RECEIVE_BURN_COMMENT_ACCOUNT
+            : NOTIFICATION_TYPES.RECEIVE_BURN_ACCOUNT,
           level: NotificationLevel.INFO,
           url:
             command.burnForType == BurnForType.Comment
@@ -300,50 +306,16 @@ export class BurnController {
           additionalData: {
             senderName: sender.name,
             senderAddress: sender.address,
+            pageName: post.page && post.page.name,
             burnType: command.burnType == BurnType.Up ? 'upvoted' : 'downvoted',
             burnForType: burnForTypeString.toLowerCase(),
             xpiBurn: command.burnValue,
-            xpiTip: calcTip
+            xpiFee: calcFee
           }
         };
 
         createNotifBurnAndTip.senderId !== createNotifBurnAndTip.recipientId &&
           (await this.notificationService.saveAndDispatchNotification(createNotifBurnAndTip));
-        // create Notifications Fee
-        let recipientPageAccount;
-        if (post?.pageId && post.page?.pageAccountId != recipientPostAccount.id) {
-          const page = await this.prisma.page.findFirst({
-            where: {
-              id: post.pageId
-            }
-          });
-
-          recipientPageAccount = await this.prisma.account.findFirst({
-            where: {
-              id: _.toSafeInteger(page?.pageAccountId)
-            }
-          });
-
-          const createNotifBurnFee = {
-            senderId: sender.id,
-            recipientId: post?.pageId ? (post.page?.pageAccountId as number) : post?.postAccountId,
-            notificationTypeId: NOTIFICATION_TYPES.RECEIVE_BURN_FEE,
-            level: NotificationLevel.INFO,
-            url: '/post/' + post?.id,
-            additionalData: {
-              senderName: sender.name,
-              senderAddress: sender.address,
-              pageName: post?.page?.name,
-              burnType: command.burnType == BurnType.Up ? 'upvoted' : 'downvoted',
-              BurnForType: burnForTypeString,
-              xpiBurn: command.burnValue,
-              xpiFee: fee
-            }
-          };
-
-          createNotifBurnFee.recipientId !== recipientPageAccount?.id &&
-            (await this.notificationService.saveAndDispatchNotification(createNotifBurnFee));
-        }
       }
 
       const result: Burn = {

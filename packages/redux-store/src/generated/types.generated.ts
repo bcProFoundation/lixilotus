@@ -45,6 +45,16 @@ export type AccountEdge = {
   node: Account;
 };
 
+export type Category = {
+  __typename?: 'Category';
+  /** Identifies the date and time when the object was created. */
+  createdAt: Scalars['DateTime'];
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  /** Identifies the date and time when the object was last updated. */
+  updatedAt: Scalars['DateTime'];
+};
+
 export type City = {
   __typename?: 'City';
   country: Country;
@@ -118,6 +128,7 @@ export type CreateCommentInput = {
   commentByPublicKey?: InputMaybe<Scalars['String']>;
   commentText: Scalars['String'];
   commentToId: Scalars['String'];
+  createFeeHex?: InputMaybe<Scalars['String']>;
   tipHex?: InputMaybe<Scalars['String']>;
 };
 
@@ -138,6 +149,7 @@ export type CreatePageInput = {
 };
 
 export type CreatePostInput = {
+  createFeeHex?: InputMaybe<Scalars['String']>;
   htmlContent: Scalars['String'];
   pageAccountId?: InputMaybe<Scalars['Int']>;
   pageId?: InputMaybe<Scalars['String']>;
@@ -401,9 +413,13 @@ export type Page = {
   __typename?: 'Page';
   address?: Maybe<Scalars['String']>;
   avatar?: Maybe<Scalars['String']>;
-  categoryId?: Maybe<Scalars['String']>;
+  category: Category;
+  categoryId: Scalars['String'];
   countryId?: Maybe<Scalars['String']>;
+  countryName?: Maybe<Scalars['String']>;
   cover?: Maybe<Scalars['String']>;
+  createCommentFee: Scalars['String'];
+  createPostFee: Scalars['String'];
   /** Identifies the date and time when the object was created. */
   createdAt: Scalars['DateTime'];
   description: Scalars['String'];
@@ -420,6 +436,7 @@ export type Page = {
   parentId?: Maybe<Scalars['String']>;
   salt?: Maybe<Scalars['String']>;
   stateId?: Maybe<Scalars['String']>;
+  stateName?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   /** The sum of burn amount for every post on page */
   totalBurnForPage?: Maybe<Scalars['Float']>;
@@ -575,8 +592,8 @@ export type Query = {
   allWorshipedPersonBySearch: WorshipedPersonConnection;
   allWorshipedPersonByUserId: WorshipedPersonConnection;
   allWorshipedPersonSpecialDate: WorshipedPersonConnection;
-  checkIsFollowedAccount: FollowAccount;
-  checkIsFollowedPage: FollowPage;
+  checkIfFollowAccount: Scalars['Boolean'];
+  checkIfFollowPage: Scalars['Boolean'];
   comment: Comment;
   getAccountByAddress: Account;
   hashtag: Hashtag;
@@ -867,11 +884,11 @@ export type QueryAllWorshipedPersonSpecialDateArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
-export type QueryCheckIsFollowedAccountArgs = {
-  address: Scalars['String'];
+export type QueryCheckIfFollowAccountArgs = {
+  followingAccountId: Scalars['Int'];
 };
 
-export type QueryCheckIsFollowedPageArgs = {
+export type QueryCheckIfFollowPageArgs = {
   pageId: Scalars['String'];
 };
 
@@ -1041,6 +1058,8 @@ export type UpdatePageInput = {
   categoryId?: InputMaybe<Scalars['String']>;
   countryId?: InputMaybe<Scalars['String']>;
   cover?: InputMaybe<Scalars['String']>;
+  createCommentFee?: InputMaybe<Scalars['String']>;
+  createPostFee?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
   id: Scalars['ID'];
   name?: InputMaybe<Scalars['String']>;

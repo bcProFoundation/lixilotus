@@ -303,21 +303,6 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
       const burnType = isUpVote ? BurnType.Up : BurnType.Down;
       const burnedBy = hash160;
       const burnForId = post.id;
-      let tipToAddresses: { address: string; amount: string }[] = [
-        {
-          address: post.postAccount.address,
-          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
-        }
-      ];
-
-      if (burnType === BurnType.Up && selectedAccount.address !== post.postAccount.address) {
-        tipToAddresses.push({
-          address: post.postAccount.address,
-          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
-        });
-      }
-
-      tipToAddresses = tipToAddresses.filter(item => item.address != selectedAccount.address);
 
       const burnCommand: BurnQueueCommand = {
         defaultFee: currency.defaultFee,
@@ -326,7 +311,6 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
         burnedBy,
         burnForId,
         burnValue,
-        tipToAddresses: tipToAddresses,
         postQueryTag: PostsQueryTag.PostsByTokenId,
         tokenId: post.token?.id,
         minBurnFilter: filterValue

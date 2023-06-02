@@ -3,6 +3,7 @@ import {
   PaginationArgs,
   PageOrder,
   PageConnection,
+  Category,
   CreatePageInput,
   Account,
   UpdatePageInput
@@ -38,10 +39,13 @@ export class PageResolver {
   @Query(() => Page)
   @UseGuards(GqlJwtAuthGuard)
   async page(@PageAccountEntity() account: Account, @Args('id', { type: () => String }) id: string) {
-    const page = await this.prisma.page.findUnique({
+    const page = await this.prisma.page.findFirst({
       where: { id: id },
       include: {
-        pageAccount: true
+        pageAccount: true,
+        category: true,
+        country: true,
+        state: true
       }
     });
 
@@ -52,7 +56,9 @@ export class PageResolver {
 
     const result = {
       ...page,
-      followersCount: followersCount
+      followersCount: followersCount,
+      countryName: page?.country?.name ?? undefined,
+      stateName: page?.state?.name ?? undefined
     };
 
     return result;
@@ -273,5 +279,16 @@ export class PageResolver {
     });
 
     return pageAccount;
+  }
+
+  @ResolveField('category', () => Category)
+  async category(@Parent() page: Page) {
+    const category = this.prisma.category.findFirst({
+      where: {
+        id: _.toSafeInteger(page.categoryId)
+      }
+    });
+
+    return category;
   }
 }
