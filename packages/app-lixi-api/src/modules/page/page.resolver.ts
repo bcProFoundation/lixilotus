@@ -92,7 +92,7 @@ export class PageResolver {
           .map(page => ({
             ...page,
             totalBurnForPage: page.posts.reduce((a, b) => a + b.lotusBurnScore, 0),
-            categoryId: page.categoryId ?? 34
+            categoryId: page?.categoryId ?? DEFAULT_CATEGORY
           }))
           .sort((a, b) => a.lotusBurnScore - b.lotusBurnScore);
 
