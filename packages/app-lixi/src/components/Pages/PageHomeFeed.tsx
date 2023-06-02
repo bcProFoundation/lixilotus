@@ -16,6 +16,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { getCategories } from '@store/category/actions';
 import { OrderDirection, PageOrderField } from '@generated/types.generated';
 import { usePagesByUserIdQuery } from '../../../../redux-store/src/store/page/pages.generated';
+import { DEFAULT_CATEGORY } from '@bcpros/lixi-models/constants/category';
 
 const StyledPageFeed = styled.div`
   margin: 1rem auto;
@@ -307,7 +308,7 @@ const PageHome = () => {
       avatar: pageItem?.avatar,
       cover: pageItem?.cover,
       totalBurnForPage: pageItem?.totalBurnForPage,
-      category: pageItem.categoryId ? getCategoryName(pageItem.categoryId) : 'Food & Drink'
+      category: pageItem.categoryId ? getCategoryName(pageItem.categoryId) : getCategoryName(DEFAULT_CATEGORY)
     };
     return newItemObj;
   };

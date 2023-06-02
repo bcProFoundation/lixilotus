@@ -242,7 +242,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
     } else if (pathname.includes('/page')) {
       filterValue = filterPage;
 
-      if (selectedAccount.id != page.pageAccountId) {
+      if (selectedAccount.id != page.pageAccountId && parseFloat(page.createPostFee) != 0) {
         const fundingWif = getUtxoWif(slpBalancesAndUtxos.nonSlpUtxos[0], walletPaths);
         createFeeHex = await sendXpi(
           XPI,

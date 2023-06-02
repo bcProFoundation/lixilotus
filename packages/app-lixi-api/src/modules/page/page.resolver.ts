@@ -6,7 +6,8 @@ import {
   Category,
   CreatePageInput,
   Account,
-  UpdatePageInput
+  UpdatePageInput,
+  DEFAULT_CATEGORY
 } from '@bcpros/lixi-models';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
 import { HttpException, HttpStatus, Logger, UseFilters, UseGuards, Inject } from '@nestjs/common';
@@ -56,6 +57,7 @@ export class PageResolver {
 
     const result = {
       ...page,
+      categoryId: page?.categoryId ?? DEFAULT_CATEGORY,
       followersCount: followersCount,
       countryName: page?.country?.name ?? undefined,
       stateName: page?.state?.name ?? undefined
@@ -89,7 +91,8 @@ export class PageResolver {
         const output = pages
           .map(page => ({
             ...page,
-            totalBurnForPage: page.posts.reduce((a, b) => a + b.lotusBurnScore, 0)
+            totalBurnForPage: page.posts.reduce((a, b) => a + b.lotusBurnScore, 0),
+            categoryId: page?.categoryId ?? DEFAULT_CATEGORY
           }))
           .sort((a, b) => a.lotusBurnScore - b.lotusBurnScore);
 
@@ -114,14 +117,26 @@ export class PageResolver {
     orderBy: PageOrder
   ) {
     const result = await findManyCursorConnection(
-      async args =>
-        this.prisma.page.findMany({
+      async args => {
+        const pages = await this.prisma.page.findMany({
           where: {
             pageAccountId: id
           },
+          include: {
+            posts: true
+          },
           orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
           ...args
-        }),
+        });
+
+        const output = pages.map(page => ({
+          ...page,
+          categoryId: page?.categoryId ?? DEFAULT_CATEGORY,
+          totalBurnForPage: page.posts.reduce((a, b) => a + b.lotusBurnScore, 0)
+        }));
+
+        return output;
+      },
       () =>
         this.prisma.page.count({
           where: {
@@ -154,7 +169,7 @@ export class PageResolver {
         pageAccount: { connect: { id: account.id } },
         category: {
           connect: {
-            id: Number(data.categoryId)
+            id: Number(data.categoryId) ?? DEFAULT_CATEGORY
           }
         },
         salt: salt,
