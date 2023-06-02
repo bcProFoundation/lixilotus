@@ -18,11 +18,6 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
           model: 'NotificationType',
           action: 'findFirst',
           ttl: 300
-        },
-        {
-          model: 'Page',
-          action: 'findFirst',
-          ttl: 30
         }
       ]
     });
