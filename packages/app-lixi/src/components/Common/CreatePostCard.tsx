@@ -26,6 +26,7 @@ import { Page } from '@bcpros/lixi-models';
 import { currency } from './Ticker';
 import { getUtxoWif } from '@utils/cashMethods';
 import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
+import { PageItem } from '@components/Pages/PageDetail';
 
 type ErrorType = 'unsupported' | 'invalid';
 
@@ -146,7 +147,7 @@ const UserCreate = styled.div`
 `;
 
 type CreatePostCardProp = {
-  page?: Page;
+  page?: PageItem;
   tokenPrimaryId?: string;
   userId?: string;
   refetch?: () => void;
