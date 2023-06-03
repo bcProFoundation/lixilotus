@@ -249,8 +249,6 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
     })
   );
 
-  console.log('hashtagId', command.hashtagId);
-
   yield put(
     postApi.util.updateQueryData(
       'PostsByHashtagId',

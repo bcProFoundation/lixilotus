@@ -217,8 +217,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     setHashtags([...hashtagsValue]);
   };
 
-  console.log('hashtags', hashtags);
-
   const onDeleteHashtag = (hashtagsValue: string[]) => {
     setHashtags([...hashtagsValue]);
   };

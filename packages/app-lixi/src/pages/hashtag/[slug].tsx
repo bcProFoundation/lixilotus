@@ -18,8 +18,6 @@ const HashtagPage = props => {
 
   const hashtagQuery = useHashtagQuery({ content: hashtagContent });
 
-  console.log(hashtagQuery.error);
-
   return (
     <React.Fragment>
       <NextSeo

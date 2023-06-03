@@ -38,27 +38,31 @@ export class HashtagService {
       if (result.hits.length === 0) {
         //If there the hashtag hasnt exist
         //Create new hashtag at database
-        const createdHashtag = await this.prisma.hashtag.create({
-          data: {
-            content: hashtagUppercase,
-            normalizedContent: hashtag.substring(1).toLowerCase()
-          }
-        });
+        const createdHashtag = await this.prisma.$transaction(async prisma => {
+          const result = await prisma.hashtag.create({
+            data: {
+              content: hashtagUppercase,
+              normalizedContent: hashtag.substring(1).toLowerCase()
+            }
+          });
 
-        //Connet to postHashtag
-        await this.prisma.postHashtag.create({
-          data: {
-            hashtag: {
-              connect: {
-                id: createdHashtag.id
-              }
-            },
-            post: {
-              connect: {
-                id: postId
+          //Connet to postHashtag
+          await prisma.postHashtag.create({
+            data: {
+              hashtag: {
+                connect: {
+                  id: result.id
+                }
+              },
+              post: {
+                connect: {
+                  id: postId
+                }
               }
             }
-          }
+          });
+
+          return result;
         });
 
         //Index and save in meilisearch
