@@ -4,10 +4,11 @@ import { useAppDispatch } from '@store/hooks';
 import { Space, Popover } from 'antd';
 import { openModal } from '@store/modal/actions';
 import React, { useEffect, useState } from 'react';
-import useWindowDimensions from '../../../../redux-store/src/hooks/useWindowDimensions';
+import useWindowDimensions from '@hooks/useWindowDimensions';
 import { OPTION_BURN_TYPE, OPTION_BURN_VALUE } from '@components/Posts/PostsListing';
 import { formatBalance } from 'src/utils/cashMethods';
 import { Counter } from './Counter';
+import { PostItem } from '@components/Posts/PostDetail';
 
 const SpaceIconBurnHover = styled(Space)`
   min-height: 38px;
@@ -117,7 +118,7 @@ const SpaceContentBurn = styled(Space)`
 `;
 
 type ReactionProps = {
-  post: any;
+  post: PostItem;
   handleBurnForPost?: (isUpVote: boolean, post: any, optionBurn?: string) => Promise<void>;
 };
 

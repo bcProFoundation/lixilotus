@@ -250,6 +250,32 @@ const StyledContainerPostDetail = styled.div`
   }
 `;
 
+export const IconBurn = ({
+  icon,
+  burnValue,
+  dataItem,
+  imgUrl,
+  classStyle,
+  onClickIcon
+}: {
+  icon?: React.FC;
+  burnValue?: number;
+  dataItem: any;
+  imgUrl?: string;
+  classStyle?: string;
+  onClickIcon: (e: any) => void;
+}) => (
+  <Space onClick={onClickIcon} size={5} style={{ alignItems: 'end', marginRight: '1rem' }}>
+    {icon && React.createElement(icon)}
+    {imgUrl && (
+      <picture>
+        <StyledBurnIcon className={classStyle} alt="burnIcon" src={imgUrl} />
+      </picture>
+    )}
+    {burnValue && <Counter num={burnValue ?? 0} />}
+  </Space>
+);
+
 const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const dispatch = useAppDispatch();
   const { control, getValues, setValue, setFocus } = useForm();
