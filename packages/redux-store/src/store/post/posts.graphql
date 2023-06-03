@@ -140,6 +140,39 @@ query PostsByUserId(
   }
 }
 
+query PostsByHashtagId(
+  $after: String
+  $before: String
+  $first: Int = 20
+  $last: Int
+  $orderBy: PostOrder
+  $id: String
+  $skip: Int
+  $minBurnFilter: Int
+) {
+  allPostsByHashtagId(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    orderBy: $orderBy
+    id: $id
+    skip: $skip
+    minBurnFilter: $minBurnFilter
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...PostFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+
 query PostsByTokenId(
   $after: String
   $before: String
@@ -181,6 +214,100 @@ query PostsBySearch($after: String, $before: String, $first: Int, $last: Int, $q
     last: $last
     query: $query
     minBurnFilter: $minBurnFilter
+  ) {
+    edges {
+      cursor
+      node {
+        ...PostMeiliFields
+      }
+    }
+    pageInfo {
+      ...PostMeiliPageInfoFields
+    }
+  }
+}
+
+query PostsBySearchWithHashtag(
+  $after: String
+  $before: String
+  $first: Int
+  $last: Int
+  $query: String
+  $minBurnFilter: Int
+  $hashtags: [String!]
+) {
+  allPostsBySearchWithHashtag(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    query: $query
+    minBurnFilter: $minBurnFilter
+    hashtags: $hashtags
+  ) {
+    edges {
+      cursor
+      node {
+        ...PostMeiliFields
+      }
+    }
+    pageInfo {
+      ...PostMeiliPageInfoFields
+    }
+  }
+}
+
+query PostsBySearchWithHashtagAtPage(
+  $after: String
+  $before: String
+  $first: Int
+  $last: Int
+  $query: String
+  $minBurnFilter: Int
+  $hashtags: [String!]
+  $pageId: String
+) {
+  allPostsBySearchWithHashtagAtPage(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    query: $query
+    minBurnFilter: $minBurnFilter
+    hashtags: $hashtags
+    pageId: $pageId
+  ) {
+    edges {
+      cursor
+      node {
+        ...PostMeiliFields
+      }
+    }
+    pageInfo {
+      ...PostMeiliPageInfoFields
+    }
+  }
+}
+
+query PostsBySearchWithHashtagAtToken(
+  $after: String
+  $before: String
+  $first: Int
+  $last: Int
+  $query: String
+  $minBurnFilter: Int
+  $hashtags: [String!]
+  $tokenId: String
+) {
+  allPostsBySearchWithHashtagAtToken(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    query: $query
+    minBurnFilter: $minBurnFilter
+    hashtags: $hashtags
+    tokenId: $tokenId
   ) {
     edges {
       cursor
@@ -270,6 +397,11 @@ fragment PostMeiliFields on Post {
       name
       address
     }
+  }
+  token {
+    id
+    name
+    tokenId
   }
   token {
     id

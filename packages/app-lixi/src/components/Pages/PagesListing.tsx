@@ -85,7 +85,6 @@ const PagesListing: React.FC<PagesListingProps> = ({ className }: PagesListingPr
 
   return (
     <div className={className}>
-      <SearchBox></SearchBox>
       <CreatePostCard></CreatePostCard>
       <Menu
         style={{

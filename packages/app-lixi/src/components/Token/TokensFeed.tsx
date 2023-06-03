@@ -49,6 +49,7 @@ import { getSelectedAccountId } from '@store/account/selectors';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 import Ticker from '@bcpros/lixi-components/src/atoms/Ticker';
 import { LikeOutlined } from '@ant-design/icons';
+import { useInfinitePostsBySearchQueryWithHashtagAtToken } from '@store/post/useInfinitePostsBySearchQueryWithHashtagAtToken';
 
 export type TokenItem = TokenQuery['token'];
 
@@ -83,6 +84,7 @@ const StyledTokensFeed = styled.div`
 const BannerTicker = styled.div`
   padding: 2rem;
   background-image: url(/images/xec-home-bg.svg);
+  margin-bottom: 10px;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -182,8 +184,13 @@ const BannerTicker = styled.div`
 `;
 
 const SearchBar = styled.div`
-  display: flex;
-  gap: 1rem;
+  display: grid;
+  grid-template-columns: 75% 25%;
+
+  @media (max-width: 650px) {
+    display: flex;
+    flex-direction: column-reverse;
+  }
 `;
 
 type TokenProps = {
@@ -203,6 +210,8 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
   const selectedAccountId = useAppSelector(getSelectedAccountId);
   const filterValue = useAppSelector(getFilterPostsToken);
   const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
+  const [searchValue, setSearchValue] = useState<string | null>(null);
+  const [hashtags, setHashtags] = useState([]);
 
   let options = ['Withdraw', 'Rename', 'Export'];
 
@@ -225,6 +234,26 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
       fetchNext();
     } else if (hasNext) {
       fetchNext();
+    }
+  };
+
+  const { queryData, fetchNextQuery, hasNextQuery, isQueryFetching, isFetchingQueryNext, isQueryLoading, noMoreQuery } =
+    useInfinitePostsBySearchQueryWithHashtagAtToken(
+      {
+        first: 20,
+        minBurnFilter: filterValue ?? 1,
+        query: searchValue,
+        hashtags: hashtags,
+        tokenId: token.id
+      },
+      false
+    );
+
+  const loadMoreQueryItems = () => {
+    if (hasNextQuery && !isQueryFetching && !noMoreQuery) {
+      fetchNextQuery();
+    } else if (hasNextQuery && !noMoreQuery) {
+      fetchNextQuery();
     }
   };
 
@@ -300,6 +329,57 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
     }
   };
 
+  const showPosts = () => {
+    return (
+      <React.Fragment>
+        {!searchValue && hashtags.length === 0 ? (
+          <InfiniteScroll
+            dataLength={data.length}
+            next={loadMoreItems}
+            hasMore={hasNext}
+            loader={<Skeleton avatar active />}
+            endMessage={
+              <p style={{ textAlign: 'center' }}>
+                <b>{data.length > 0 ? 'end reached' : ''}</b>
+              </p>
+            }
+            scrollableTarget="scrollableDiv"
+          >
+            {data.map((item, index) => {
+              return <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />;
+            })}
+          </InfiniteScroll>
+        ) : (
+          <InfiniteScroll
+            dataLength={queryData.length}
+            next={loadMoreQueryItems}
+            hasMore={hasNextQuery && !noMoreQuery}
+            loader={<Skeleton avatar active />}
+            endMessage={
+              <p style={{ textAlign: 'center' }}>
+                <b>{data.length > 0 ? 'end reached' : ''}</b>
+              </p>
+            }
+            scrollableTarget="scrollableDiv"
+          >
+            {queryData.map((item, index) => {
+              return <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />;
+            })}
+          </InfiniteScroll>
+        )}
+      </React.Fragment>
+    );
+  };
+
+  const searchPost = (value: string, hashtagsValue: string[]) => {
+    setSearchValue(value);
+    setHashtags([...hashtagsValue]);
+  };
+
+  const onDeleteHashtag = (hashtagsValue: string[]) => {
+    setHashtags([...hashtagsValue]);
+  };
+
   return (
     <StyledTokensFeed>
       <BannerTicker>
@@ -353,33 +433,20 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
         </div>
       </BannerTicker>
 
-      <CreatePostCard tokenPrimaryId={tokenDetailData.id} refetch={() => refetch()} />
       <SearchBar>
-        <SearchBox />
+        <SearchBox
+          searchPost={searchPost}
+          searchValue={searchValue}
+          hashtags={hashtags}
+          onDeleteHashtag={onDeleteHashtag}
+        />
         <FilterBurnt filterForType={FilterType.PostsToken} />
       </SearchBar>
-
+      {!searchValue && hashtags.length === 0 && <CreatePostCard tokenPrimaryId={tokenDetailData.id} />}
       <div className="content">
         <Tabs defaultActiveKey="1">
           <Tabs.TabPane tab="Top discussions" key="1">
-            <React.Fragment>
-              <InfiniteScroll
-                dataLength={data.length}
-                next={loadMoreItems}
-                hasMore={hasNext}
-                loader={<Skeleton avatar active />}
-                endMessage={
-                  <p style={{ textAlign: 'center' }}>
-                    <p>{data.length > 0 ? 'end reached' : "It's so empty here..."}</p>
-                  </p>
-                }
-                scrollableTarget="scrollableDiv"
-              >
-                {data.map((item, index) => {
-                  return <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />;
-                })}
-              </InfiniteScroll>
-            </React.Fragment>
+            <React.Fragment>{showPosts()}</React.Fragment>
             {/* <div className={'listing'} style={{ height: '100vh' }}>
               <Virtuoso
                 className={'listing'}

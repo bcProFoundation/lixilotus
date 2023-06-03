@@ -2,7 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Document, EnqueuedTask, MeiliSearch } from 'meilisearch';
 import { I18n, I18nService } from 'nestjs-i18n';
 import { InjectMeiliSearch } from 'nestjs-meilisearch';
-import { PERSON, POSTS, TEMPLE } from './constants/meili.constants';
+import { HASHTAG, PERSON, POSTS, TEMPLE } from './constants/meili.constants';
 
 @Injectable()
 export class MeiliService implements OnModuleInit {
@@ -12,8 +12,9 @@ export class MeiliService implements OnModuleInit {
 
   async onModuleInit() {
     await this.meiliSearch.index(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`).updateSettings({
-      searchableAttributes: ['content', 'postAccountName'],
-      displayedAttributes: ['*']
+      searchableAttributes: ['content', 'postAccountName', 'hashtag'],
+      displayedAttributes: ['*'],
+      filterableAttributes: ['hashtag.content', 'page.id', 'token.id']
     });
     await this.meiliSearch.index(`${process.env.MEILISEARCH_BUCKET}_${PERSON}`).updateSettings({
       searchableAttributes: ['name', 'achievement'],
@@ -22,6 +23,14 @@ export class MeiliService implements OnModuleInit {
     await this.meiliSearch.index(`${process.env.MEILISEARCH_BUCKET}_${TEMPLE}`).updateSettings({
       searchableAttributes: ['name', 'president', 'alias', 'religion'],
       displayedAttributes: ['*']
+    });
+    await this.meiliSearch.index(`${process.env.MEILISEARCH_BUCKET}_${HASHTAG}`).updateSettings({
+      searchableAttributes: ['content'],
+      displayedAttributes: ['*'],
+      rankingRules: ['exactness', 'attribute', 'proximity', 'words', 'typo', 'sort'],
+      typoTolerance: {
+        enabled: false
+      }
     });
   }
 
@@ -55,6 +64,21 @@ export class MeiliService implements OnModuleInit {
    */
   public async delete(index: string, documentId: string): Promise<EnqueuedTask> {
     return await this.meiliSearch.index(index).deleteDocument(documentId);
+  }
+
+  /**
+   * Delete document at the specify index
+   * @param index The specific index
+   * @param content The hashtag content you want to search
+   */
+  public async searchHashtag(index: string, content: string) {
+    const hits = await this.meiliSearch
+      .index(index)
+      .search(content)
+      .then(res => {
+        return res.hits;
+      });
+    return hits;
   }
 
   public async searchByQueryHits(index: string, query: string, offset: number, limit: number) {

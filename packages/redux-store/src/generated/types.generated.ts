@@ -272,6 +272,47 @@ export type FollowPageEdge = {
   node: FollowPage;
 };
 
+export type Hashtag = {
+  __typename?: 'Hashtag';
+  content: Scalars['String'];
+  /** Identifies the date and time when the object was created. */
+  createdAt?: Maybe<Scalars['DateTime']>;
+  id: Scalars['ID'];
+  lotusBurnDown: Scalars['Float'];
+  lotusBurnScore: Scalars['Float'];
+  lotusBurnUp: Scalars['Float'];
+  normalizedContent: Scalars['String'];
+  postHashtags?: Maybe<Array<PostHashtag>>;
+  /** Identifies the date and time when the object was last updated. */
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type HashtagConnection = {
+  __typename?: 'HashtagConnection';
+  edges?: Maybe<Array<HashtagEdge>>;
+  pageInfo: PageInfo;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
+export type HashtagEdge = {
+  __typename?: 'HashtagEdge';
+  cursor: Scalars['String'];
+  node: Hashtag;
+};
+
+export type HashtagOrder = {
+  direction: OrderDirection;
+  field: HashtagOrderField;
+};
+
+/** Properties by which hashtag connections can be ordered. */
+export enum HashtagOrderField {
+  CreatedAt = 'createdAt',
+  Id = 'id',
+  LotusBurnScore = 'lotusBurnScore',
+  UpdatedAt = 'updatedAt'
+}
+
 export type ImportAccountInput = {
   language?: InputMaybe<Scalars['String']>;
   mnemonic: Scalars['String'];
@@ -453,6 +494,7 @@ export type Post = {
   pageId?: Maybe<Scalars['String']>;
   postAccount: Account;
   postAccountId: Scalars['Int'];
+  postHashtags?: Maybe<Array<PostHashtag>>;
   token?: Maybe<Token>;
   tokenId?: Maybe<Scalars['String']>;
   totalComments: Scalars['Int'];
@@ -472,6 +514,19 @@ export type PostEdge = {
   __typename?: 'PostEdge';
   cursor: Scalars['String'];
   node: Post;
+};
+
+export type PostHashtag = {
+  __typename?: 'PostHashtag';
+  /** Identifies the date and time when the object was created. */
+  createdAt?: Maybe<Scalars['DateTime']>;
+  hashtag: Hashtag;
+  hashtagId: Scalars['String'];
+  id: Scalars['ID'];
+  post?: Maybe<Post>;
+  postId?: Maybe<Scalars['String']>;
+  /** Identifies the date and time when the object was last updated. */
+  updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
 export type PostMeiliEdge = {
@@ -513,12 +568,18 @@ export type Query = {
   allCommentsToPostId: CommentConnection;
   allFollowersByFollowing: FollowAccountConnection;
   allFollowingsByFollower: FollowAccountConnection;
+  allHashtag: HashtagConnection;
+  allHashtagBySearch: HashtagConnection;
   allOrphanPosts: PostConnection;
   allPages: PageConnection;
   allPagesByUserId: PageConnection;
   allPosts: PostConnection;
+  allPostsByHashtagId: PostConnection;
   allPostsByPageId: PostConnection;
   allPostsBySearch: PostResponse;
+  allPostsBySearchWithHashtag: PostResponse;
+  allPostsBySearchWithHashtagAtPage: PostResponse;
+  allPostsBySearchWithHashtagAtToken: PostResponse;
   allPostsByTokenId: PostConnection;
   allPostsByUserId: PostConnection;
   allTemple: TempleConnection;
@@ -535,6 +596,7 @@ export type Query = {
   checkIfFollowPage: Scalars['Boolean'];
   comment: Comment;
   getAccountByAddress: Account;
+  hashtag: Hashtag;
   page: Page;
   post: Post;
   temple: Temple;
@@ -574,6 +636,24 @@ export type QueryAllFollowingsByFollowerArgs = {
   minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<FollowAccountOrder>;
   skip?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryAllHashtagArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<HashtagOrder>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryAllHashtagBySearchArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  query?: InputMaybe<Scalars['String']>;
 };
 
 export type QueryAllOrphanPostsArgs = {
@@ -620,6 +700,17 @@ export type QueryAllPostsArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
+export type QueryAllPostsByHashtagIdArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  id?: InputMaybe<Scalars['String']>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<PostOrder>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
 export type QueryAllPostsByPageIdArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
@@ -638,6 +729,38 @@ export type QueryAllPostsBySearchArgs = {
   last?: InputMaybe<Scalars['Int']>;
   minBurnFilter?: InputMaybe<Scalars['Int']>;
   query?: InputMaybe<Scalars['String']>;
+};
+
+export type QueryAllPostsBySearchWithHashtagArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  hashtags?: InputMaybe<Array<Scalars['String']>>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  query?: InputMaybe<Scalars['String']>;
+};
+
+export type QueryAllPostsBySearchWithHashtagAtPageArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  hashtags?: InputMaybe<Array<Scalars['String']>>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  pageId?: InputMaybe<Scalars['String']>;
+  query?: InputMaybe<Scalars['String']>;
+};
+
+export type QueryAllPostsBySearchWithHashtagAtTokenArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  hashtags?: InputMaybe<Array<Scalars['String']>>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  query?: InputMaybe<Scalars['String']>;
+  tokenId?: InputMaybe<Scalars['String']>;
 };
 
 export type QueryAllPostsByTokenIdArgs = {
@@ -777,6 +900,10 @@ export type QueryGetAccountByAddressArgs = {
   address: Scalars['String'];
 };
 
+export type QueryHashtagArgs = {
+  content: Scalars['String'];
+};
+
 export type QueryPageArgs = {
   id: Scalars['String'];
 };
@@ -814,6 +941,7 @@ export type Subscription = {
   accountCreated: Account;
   commentCreated: Comment;
   followAccountCreated: FollowAccount;
+  hashtagCreated: Hashtag;
   pageCreated: Page;
   postCreated: Post;
   templeCreated: Temple;

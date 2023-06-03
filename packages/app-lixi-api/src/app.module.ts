@@ -27,6 +27,7 @@ import { PageModule } from './modules/page/page.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { TempleModule } from './modules/temple/temple.module';
 import { TokenModule } from './modules/token/token.module';
+import { HashtagModule } from './modules/hashtag/hashtag.module';
 import { WalletModule } from './modules/wallet/wallet.module';
 import { WorshipModule } from './modules/worship/worship.module';
 
@@ -136,6 +137,7 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
     TokenModule,
     WorshipModule,
     TempleModule,
+    HashtagModule,
     S3Module.forRootAsync({
       useFactory: () => ({
         config: {

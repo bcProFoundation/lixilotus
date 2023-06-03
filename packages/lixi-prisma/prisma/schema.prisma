@@ -157,6 +157,7 @@ model Post {
   lotusBurnDown  Float          @default(0.0) @map("lotus_burn_down")
   lotusBurnScore Float          @default(0.0) @map("lotus_burn_score")
   comments       Comment[]
+  postHashtags   PostHashtag[]
   createFee      Float?         @map("create_fee")
   txid           String?
 
@@ -703,4 +704,31 @@ model FollowPage {
   @@index(accountId)
   @@index(pageId)
   @@map("follow_page")
+}
+
+model PostHashtag {
+  id        String   @id @default(cuid())
+  hashtag   Hashtag  @relation(fields: [hashtagId], references: [id])
+  hashtagId String
+  post      Post?    @relation(fields: [postId], references: [id])
+  postId    String?
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@map("post_hashtag")
+}
+
+model Hashtag {
+  id                String        @id @default(cuid())
+  content           String        @unique
+  normalizedContent String        @unique
+  postHashtags      PostHashtag[]
+  lotusBurnUp       Float         @default(0.0) @map("lotus_burn_up")
+  lotusBurnDown     Float         @default(0.0) @map("lotus_burn_down")
+  lotusBurnScore    Float         @default(0.0) @map("lotus_burn_score")
+  createdAt         DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt         DateTime      @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@index(content)
+  @@map("hashtag")
 }

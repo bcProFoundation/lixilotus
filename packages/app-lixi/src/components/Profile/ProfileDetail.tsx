@@ -729,7 +729,6 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
               </LegacyProfile> */}
               <ContentTimeline>
                 <div className="search-bar">
-                  <SearchBox />
                   <FilterBurnt filterForType={FilterType.PostsProfile} />
                 </div>
 

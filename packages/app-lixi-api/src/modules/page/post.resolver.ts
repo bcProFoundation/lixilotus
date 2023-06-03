@@ -33,7 +33,7 @@ import { Args, Int, Mutation, Parent, Query, ResolveField, Resolver, Subscriptio
 import { MeiliService } from './meili.service';
 import { GqlJwtAuthGuard, GqlJwtAuthGuardByPass } from '../auth/guards/gql-jwtauth.guard';
 import { PrismaService } from '../prisma/prisma.service';
-import { POSTS } from './constants/meili.constants';
+import { HASHTAG, POSTS } from './constants/meili.constants';
 import ConnectionArgs, { getPagingParameters } from '../../common/custom-graphql-relay/connection.args';
 import { connectionFromArraySlice } from '../../common/custom-graphql-relay/arrayConnection';
 import PostResponse from 'src/common/post.response';
@@ -42,6 +42,8 @@ import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
 import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
 import { NotificationLevel } from '@bcpros/lixi-prisma';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
+import { extractHashtagFromText } from 'src/utils/extractHashtagFromText';
+import { HashtagService } from '../hashtag/hashtag.service';
 import BCHJS from '@bcpros/xpi-js';
 import { ChronikClient } from 'chronik-client';
 import { InjectChronikClient } from 'src/common/modules/chronik/chronik.decorators';
@@ -58,6 +60,7 @@ export class PostResolver {
     private prisma: PrismaService,
     private meiliService: MeiliService,
     private readonly notificationService: NotificationService,
+    private hashtagService: HashtagService,
     @Inject('xpijs') private XPI: BCHJS,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @I18n() private i18n: I18nService
@@ -425,6 +428,164 @@ export class PostResolver {
     });
   }
 
+  @Query(() => PostResponse, { name: 'allPostsBySearchWithHashtag' })
+  async allPostsBySearchWithHashtag(
+    @Args({ name: 'minBurnFilter', type: () => Int, nullable: true })
+    minBurnFilter: number,
+    @Args()
+    args: ConnectionArgs,
+    @Args({ name: 'query', type: () => String, nullable: true })
+    query: string,
+    @Args({ name: 'hashtags', type: () => [String], nullable: true })
+    hashtags: string[]
+  ): Promise<PostResponse> {
+    const { limit, offset } = getPagingParameters(args);
+
+    const count = await this.hashtagService.searchByQueryEstimatedTotalHits(
+      `${process.env.MEILISEARCH_BUCKET}_${POSTS}`,
+      query,
+      hashtags
+    );
+
+    const posts = await this.hashtagService.searchByQueryHits(
+      `${process.env.MEILISEARCH_BUCKET}_${POSTS}`,
+      query,
+      hashtags,
+      offset!,
+      limit!
+    );
+
+    const postsId = _.map(posts, 'id');
+
+    const searchPosts = await this.prisma.post.findMany({
+      where: {
+        AND: [
+          {
+            id: { in: postsId }
+          },
+          {
+            lotusBurnScore: {
+              gte: minBurnFilter ?? 0
+            }
+          }
+        ]
+      }
+    });
+
+    return connectionFromArraySlice(searchPosts, args, {
+      arrayLength: count || 0,
+      sliceStart: offset || 0
+    });
+  }
+
+  @Query(() => PostResponse, { name: 'allPostsBySearchWithHashtagAtPage' })
+  async allPostsBySearchWithHashtagAtPage(
+    @Args({ name: 'minBurnFilter', type: () => Int, nullable: true })
+    minBurnFilter: number,
+    @Args()
+    args: ConnectionArgs,
+    @Args({ name: 'query', type: () => String, nullable: true })
+    query: string,
+    @Args({ name: 'hashtags', type: () => [String], nullable: true })
+    hashtags: string[],
+    @Args({ name: 'pageId', type: () => String, nullable: true })
+    pageId: string
+  ) {
+    const { limit, offset } = getPagingParameters(args);
+
+    const count = await this.hashtagService.searchByQueryEstimatedTotalHitsAtPage(
+      `${process.env.MEILISEARCH_BUCKET}_${POSTS}`,
+      query,
+      hashtags,
+      pageId
+    );
+
+    const posts = await this.hashtagService.searchByQueryHitsAtPage(
+      `${process.env.MEILISEARCH_BUCKET}_${POSTS}`,
+      query,
+      hashtags,
+      pageId,
+      offset!,
+      limit!
+    );
+
+    const postsId = _.map(posts, 'id');
+
+    const searchPosts = await this.prisma.post.findMany({
+      where: {
+        AND: [
+          {
+            id: { in: postsId }
+          },
+          {
+            lotusBurnScore: {
+              gte: minBurnFilter ?? 0
+            }
+          }
+        ]
+      }
+    });
+
+    return connectionFromArraySlice(searchPosts, args, {
+      arrayLength: count || 0,
+      sliceStart: offset || 0
+    });
+  }
+
+  @Query(() => PostResponse, { name: 'allPostsBySearchWithHashtagAtToken' })
+  async allPostsBySearchWithHashtagAtToken(
+    @Args({ name: 'minBurnFilter', type: () => Int, nullable: true })
+    minBurnFilter: number,
+    @Args()
+    args: ConnectionArgs,
+    @Args({ name: 'query', type: () => String, nullable: true })
+    query: string,
+    @Args({ name: 'hashtags', type: () => [String], nullable: true })
+    hashtags: string[],
+    @Args({ name: 'tokenId', type: () => String, nullable: true })
+    tokenId: string
+  ) {
+    const { limit, offset } = getPagingParameters(args);
+
+    const count = await this.hashtagService.searchByQueryEstimatedTotalHitsAtToken(
+      `${process.env.MEILISEARCH_BUCKET}_${POSTS}`,
+      query,
+      hashtags,
+      tokenId
+    );
+
+    const posts = await this.hashtagService.searchByQueryHitsAtToken(
+      `${process.env.MEILISEARCH_BUCKET}_${POSTS}`,
+      query,
+      hashtags,
+      tokenId,
+      offset!,
+      limit!
+    );
+
+    const postsId = _.map(posts, 'id');
+
+    const searchPosts = await this.prisma.post.findMany({
+      where: {
+        AND: [
+          {
+            id: { in: postsId }
+          },
+          {
+            lotusBurnScore: {
+              gte: minBurnFilter ?? 0
+            }
+          }
+        ]
+      }
+    });
+
+    return connectionFromArraySlice(searchPosts, args, {
+      arrayLength: count || 0,
+      sliceStart: offset || 0
+    });
+  }
+
   @Query(() => PostConnection)
   @UseGuards(GqlJwtAuthGuard)
   async allPostsByTokenId(
@@ -593,6 +754,49 @@ export class PostResolver {
     return result;
   }
 
+  @Query(() => PostConnection)
+  @UseGuards(GqlJwtAuthGuardByPass)
+  async allPostsByHashtagId(
+    @PostAccountEntity() account: Account,
+    @Args() { after, before, first, last, minBurnFilter }: PaginationArgs,
+    @Args({ name: 'id', type: () => String, nullable: true })
+    hashtagId: string,
+    @Args({
+      name: 'orderBy',
+      type: () => PostOrder,
+      nullable: true
+    })
+    orderBy: PostOrder
+  ) {
+    const result = await findManyCursorConnection(
+      args =>
+        this.prisma.post.findMany({
+          include: { postAccount: true, comments: true, postHashtags: true },
+          where: {
+            postHashtags: {
+              some: {
+                hashtagId: hashtagId
+              }
+            }
+          },
+          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+          ...args
+        }),
+      () =>
+        this.prisma.post.count({
+          where: {
+            postHashtags: {
+              some: {
+                hashtagId: hashtagId
+              }
+            }
+          }
+        }),
+      { first, last, before, after }
+    );
+    return result;
+  }
+
   @UseGuards(GqlJwtAuthGuard)
   @Mutation(() => Post)
   async createPost(@PostAccountEntity() account: Account, @Args('data') data: CreatePostInput) {
@@ -687,25 +891,34 @@ export class PostResolver {
         }
       });
 
-      const indexedPost = {
-        id: createdPost.id,
-        content: pureContent,
-        postAccountName: createdPost.postAccount.name,
-        createdAt: createdPost.createdAt,
-        updatedAt: createdPost.updatedAt,
-        page: {
-          id: createdPost.page?.id,
-          name: createdPost.page?.name
-        },
-        token: {
-          id: createdPost.token?.id,
-          name: createdPost.token?.name
-        }
-      };
-      await this.meiliService.add(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`, indexedPost, createdPost.id);
-
       return createdPost;
     });
+
+    //Hashtag
+    const hashtags = await this.hashtagService.extractAndSave(
+      `${process.env.MEILISEARCH_BUCKET}_${HASHTAG}`,
+      pureContent,
+      savedPost.id
+    );
+
+    const indexedPost = {
+      id: savedPost.id,
+      content: pureContent,
+      postAccountName: savedPost.postAccount.name,
+      createdAt: savedPost.createdAt,
+      updatedAt: savedPost.updatedAt,
+      page: {
+        id: savedPost.page?.id,
+        name: savedPost.page?.name
+      },
+      token: {
+        id: savedPost.token?.id,
+        name: savedPost.token?.name
+      },
+      hashtag: hashtags
+    };
+
+    await this.meiliService.add(`${process.env.MEILISEARCH_BUCKET}_${POSTS}`, indexedPost, savedPost.id);
 
     pubSub.publish('postCreated', { postCreated: savedPost });
 

@@ -6,6 +6,7 @@ import { SagaStore, wrapper } from '@store/store';
 import _ from 'lodash';
 import { NextSeo } from 'next-seo';
 import { getSelectorsByUserAgent } from 'react-device-detect';
+import MainLayout from '@components/Layout/MainLayout';
 import { END } from 'redux-saga';
 
 const PageDetailPage = props => {
@@ -71,6 +72,6 @@ export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) 
   };
 });
 
-PageDetailPage.Layout = ({ children }) => <PageDetailLayout children={children} />;
+PageDetailPage.Layout = ({ children }) => <MainLayout children={children} />;
 
 export default PageDetailPage;

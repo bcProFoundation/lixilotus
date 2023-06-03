@@ -65,6 +65,8 @@ export class BurnQueueCommand {
 
   userId?: string;
 
+  hashtagId?: string;
+
   tipToAddresses?: { address: string; amount: string }[];
   // Params to patch rtk query data
   queryParams?: any;

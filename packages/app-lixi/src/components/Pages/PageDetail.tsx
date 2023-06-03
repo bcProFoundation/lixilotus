@@ -3,8 +3,8 @@ import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
 import CreatePostCard from '@components/Common/CreatePostCard';
+import SearchBox, { SearchType } from '@components/Common/SearchBox';
 import { FilterBurnt } from '@components/Common/FilterBurn';
-import SearchBox from '@components/Common/SearchBox';
 import { currency } from '@components/Common/Ticker';
 import PostListItem from '@components/Posts/PostListItem';
 import {
@@ -31,6 +31,7 @@ import BigNumber from 'bignumber.js';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { useInfinitePostsBySearchQueryWithHashtagAtPage } from '@store/post/useInfinitePostsBySearchQueryWithHashtagAtPage';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
 
@@ -142,8 +143,8 @@ const ProfileCardHeader = styled.div`
       }
     }
     .action-profile {
+      display: flex;
       @media (max-width: 1001px) {
-        max-width: 160px;
         text-align: center;
         button {
           margin-bottom: 4px;
@@ -277,10 +278,14 @@ const FriendBox = styled.div`
 `;
 
 const ContentTimeline = styled.div`
-  width: 100%;
   .search-bar {
-    display: flex;
-    gap: 1rem;
+    display: grid;
+    grid-template-columns: 75% 25%;
+
+    @media (max-width: 650px) {
+      display: flex;
+      flex-direction: column-reverse;
+    }
   }
 `;
 
@@ -364,6 +369,8 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
   const failQueue = useAppSelector(getFailQueue);
   const filterValue = useAppSelector(getFilterPostsPage);
   const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
+  const [searchValue, setSearchValue] = useState<string | null>(null);
+  const [hashtags, setHashtags] = useState([]);
 
   const [
     createFollowPageTrigger,
@@ -502,8 +509,91 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
     await deleteFollowPageTrigger({ input: deleteFollowPageInput });
   };
 
+  const searchPost = (value: string, hashtagsValue: string[]) => {
+    setSearchValue(value);
+    setHashtags([...hashtagsValue]);
+  };
+
+  const onDeleteHashtag = (hashtagsValue: string[]) => {
+    setHashtags([...hashtagsValue]);
+  };
+
+  //#region QueryVirtuoso
+  const { queryData, fetchNextQuery, hasNextQuery, isQueryFetching, isFetchingQueryNext, isQueryLoading, noMoreQuery } =
+    useInfinitePostsBySearchQueryWithHashtagAtPage(
+      {
+        first: 20,
+        minBurnFilter: filterValue ?? 1,
+        query: searchValue,
+        hashtags: hashtags,
+        pageId: page.id
+      },
+      false
+    );
+
+  const loadMoreQueryItems = () => {
+    if (hasNextQuery && !isQueryFetching && !noMoreQuery) {
+      fetchNextQuery();
+    } else if (hasNextQuery && !noMoreQuery) {
+      fetchNextQuery();
+    }
+  };
+
+  const QueryFooter = () => {
+    if (isQueryLoading) return null;
+    return (
+      <div
+        style={{
+          padding: '1rem 2rem 2rem 2rem',
+          textAlign: 'center'
+        }}
+      >
+        {isFetchingQueryNext ? <Skeleton avatar active /> : "It's so empty here..."}
+      </div>
+    );
+  };
+  //#endregion
+
+  const showPosts = () => {
+    return (
+      <React.Fragment>
+        {!searchValue && hashtags.length === 0 ? (
+          <InfiniteScroll
+            dataLength={data.length}
+            next={loadMoreItems}
+            hasMore={hasNext}
+            loader={<Skeleton avatar active />}
+            endMessage={
+              <p style={{ textAlign: 'center' }}>
+                <b>{data.length > 0 ? 'end reached' : ''}</b>
+              </p>
+            }
+            scrollableTarget="scrollableDiv"
+          >
+            {data.map((item, index) => {
+              return <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />;
+            })}
+          </InfiniteScroll>
+        ) : (
+          <InfiniteScroll
+            dataLength={queryData.length}
+            next={loadMoreQueryItems}
+            hasMore={hasNextQuery && !noMoreQuery}
+            loader={<Skeleton avatar active />}
+            endMessage={<QueryFooter />}
+            scrollableTarget="scrollableDiv"
+          >
+            {queryData.map((item, index) => {
+              return <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />;
+            })}
+          </InfiniteScroll>
+        )}
+      </React.Fragment>
+    );
+  };
+
   return (
-    <>
+    <React.Fragment>
       <StyledContainerProfileDetail>
         <ProfileCardHeader>
           <div className="container-img">
@@ -669,10 +759,15 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
               </LegacyProfile> */}
               <ContentTimeline>
                 <div className="search-bar">
-                  <SearchBox />
+                  <SearchBox
+                    searchPost={searchPost}
+                    searchValue={searchValue}
+                    hashtags={hashtags}
+                    onDeleteHashtag={onDeleteHashtag}
+                  />
                   <FilterBurnt filterForType={FilterType.PostsPage} />
                 </div>
-                <CreatePostCard page={page} />
+                {!searchValue && hashtags.length === 0 && <CreatePostCard page={page.id} />}
                 <Timeline>
                   {data.length == 0 && (
                     <div className="blank-timeline">
@@ -680,27 +775,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                       <p>Become a first person post on the page...</p>
                     </div>
                   )}
-
-                  <React.Fragment>
-                    <InfiniteScroll
-                      dataLength={data.length}
-                      next={loadMoreItems}
-                      hasMore={hasNext}
-                      loader={<Skeleton avatar active />}
-                      endMessage={
-                        <p style={{ textAlign: 'center' }}>
-                          <b>{data.length > 0 ? 'end reached' : ''}</b>
-                        </p>
-                      }
-                      scrollableTarget="scrollableDiv"
-                    >
-                      {data.map((item, index) => {
-                        return (
-                          <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />
-                        );
-                      })}
-                    </InfiniteScroll>
-                  </React.Fragment>
+                  {showPosts()}
                 </Timeline>
               </ContentTimeline>
             </Tabs.TabPane>
@@ -711,7 +786,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                   {pageDetailData && !pageDetailData.description && (
                     <div className="blank-about">
                       <img src="/images/about-blank.svg" alt="" />
-                      <p>Let people know more about you (description, hobbies, address...</p>
+                      <p>Let people know more about you description, hobbies, address...</p>
                       <Button type="primary" className="outline-btn">
                         Update info
                       </Button>
@@ -751,7 +826,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
           </StyledMenu>
         </ProfileContentContainer>
       </StyledContainerProfileDetail>
-    </>
+    </React.Fragment>
   );
 };
 

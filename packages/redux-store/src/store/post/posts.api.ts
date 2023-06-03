@@ -55,6 +55,54 @@ const enhancedApi = api.enhanceEndpoints({
         currentCacheData.allPostsBySearch.pageInfo = responseData.allPostsBySearch.pageInfo;
       }
     },
+    PostsBySearchWithHashtag: {
+      providesTags: (result, error, arg) => ['Post'],
+      serializeQueryArgs({ queryArgs }) {
+        if (queryArgs) {
+          const { query, minBurnFilter, hashtags, ...otherArgs } = queryArgs;
+          return { query, minBurnFilter, hashtags };
+        }
+        return { queryArgs };
+      },
+      merge(currentCacheData, responseData) {
+        currentCacheData.allPostsBySearchWithHashtag.edges.push(...responseData.allPostsBySearchWithHashtag.edges);
+        currentCacheData.allPostsBySearchWithHashtag.pageInfo = responseData.allPostsBySearchWithHashtag.pageInfo;
+      }
+    },
+    PostsBySearchWithHashtagAtPage: {
+      providesTags: (result, error, arg) => ['Post'],
+      serializeQueryArgs({ queryArgs }) {
+        if (queryArgs) {
+          const { query, minBurnFilter, hashtags, pageId, ...otherArgs } = queryArgs;
+          return { query, minBurnFilter, hashtags, pageId };
+        }
+        return { queryArgs };
+      },
+      merge(currentCacheData, responseData) {
+        currentCacheData.allPostsBySearchWithHashtagAtPage.edges.push(
+          ...responseData.allPostsBySearchWithHashtagAtPage.edges
+        );
+        currentCacheData.allPostsBySearchWithHashtagAtPage.pageInfo =
+          responseData.allPostsBySearchWithHashtagAtPage.pageInfo;
+      }
+    },
+    PostsBySearchWithHashtagAtToken: {
+      providesTags: (result, error, arg) => ['Post'],
+      serializeQueryArgs({ queryArgs }) {
+        if (queryArgs) {
+          const { query, minBurnFilter, hashtags, tokenId, ...otherArgs } = queryArgs;
+          return { query, minBurnFilter, hashtags, tokenId };
+        }
+        return { queryArgs };
+      },
+      merge(currentCacheData, responseData) {
+        currentCacheData.allPostsBySearchWithHashtagAtToken.edges.push(
+          ...responseData.allPostsBySearchWithHashtagAtToken.edges
+        );
+        currentCacheData.allPostsBySearchWithHashtagAtToken.pageInfo =
+          responseData.allPostsBySearchWithHashtagAtToken.pageInfo;
+      }
+    },
     PostsByPageId: {
       providesTags: (result, error, arg) => ['Post'],
       serializeQueryArgs({ queryArgs }) {
@@ -106,6 +154,23 @@ const enhancedApi = api.enhanceEndpoints({
     Post: {
       providesTags: (result, error, arg) => ['Post']
     },
+    PostsByHashtagId: {
+      providesTags: (result, error, arg) => ['Post'],
+      serializeQueryArgs({ queryArgs }) {
+        if (queryArgs) {
+          const { orderBy, id, minBurnFilter, ...otherArgs } = queryArgs;
+          return { orderBy, id, minBurnFilter };
+        }
+        return { queryArgs };
+      },
+
+      merge(currentCacheData, responseData) {
+        currentCacheData.allPostsByHashtagId.edges.push(...responseData.allPostsByHashtagId.edges);
+        currentCacheData.allPostsByHashtagId.pageInfo = responseData.allPostsByHashtagId.pageInfo;
+        currentCacheData.allPostsByHashtagId.totalCount = responseData.allPostsByHashtagId.totalCount;
+      }
+    },
+
     createPost: {},
     updatePost: {}
   }
@@ -126,6 +191,16 @@ export const {
   useLazyPostsByTokenIdQuery,
   usePostsByUserIdQuery,
   useLazyPostsByUserIdQuery,
+  usePostsBySearchQuery,
+  useLazyPostsBySearchQuery,
+  usePostsBySearchWithHashtagQuery,
+  useLazyPostsBySearchWithHashtagQuery,
+  usePostsBySearchWithHashtagAtPageQuery,
+  useLazyPostsBySearchWithHashtagAtPageQuery,
+  useLazyPostsByHashtagIdQuery,
+  usePostsByHashtagIdQuery,
+  useLazyPostsBySearchWithHashtagAtTokenQuery,
+  usePostsBySearchWithHashtagAtTokenQuery,
   useCreatePostMutation,
   useUpdatePostMutation
 } = enhancedApi;

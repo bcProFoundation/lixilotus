@@ -12,9 +12,10 @@ import { NotificationService } from 'src/common/modules/notifications/notificati
 import { BullModule } from '@nestjs/bullmq';
 import { NOTIFICATION_OUTBOUND_QUEUE } from 'src/common/modules/notifications/notification.constants';
 import { NotificationGateway } from 'src/common/modules/notifications/notification.gateway';
+import { HashtagModule } from '../hashtag/hashtag.module';
 
 @Module({
-  imports: [AuthModule, NotificationModule],
+  imports: [AuthModule, NotificationModule, HashtagModule],
   providers: [
     PageResolver,
     Logger,
@@ -22,7 +23,8 @@ import { NotificationGateway } from 'src/common/modules/notifications/notificati
     MeiliService,
     CommentResolver,
     NotificationService,
-    NotificationGateway
+    NotificationGateway,
+    HashtagModule
   ],
   exports: [MeiliService, NotificationService, NotificationGateway]
 })

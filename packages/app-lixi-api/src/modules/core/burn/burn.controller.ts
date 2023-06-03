@@ -102,6 +102,15 @@ export class BurnController {
             }
           });
 
+          const postHashtags = await this.prisma.postHashtag.findMany({
+            where: {
+              postId: post!.id
+            },
+            include: {
+              hashtag: true
+            }
+          });
+
           let lotusBurnUp = post?.lotusBurnUp ?? 0;
           let lotusBurnDown = post?.lotusBurnDown ?? 0;
           const xpiValue = value;
@@ -123,6 +132,32 @@ export class BurnController {
               lotusBurnScore
             }
           });
+
+          if (postHashtags.length > 0) {
+            await this.prisma.$transaction(
+              postHashtags.map(postHashtag => {
+                let hashtagLotusBurnUp = postHashtag.hashtag.lotusBurnUp ?? 0;
+                let hashtagLotusBurnDown = postHashtag.hashtag.lotusBurnDown ?? 0;
+
+                if (command.burnType == BurnType.Up) {
+                  hashtagLotusBurnUp = hashtagLotusBurnUp + xpiValue;
+                } else {
+                  hashtagLotusBurnDown = hashtagLotusBurnDown + xpiValue;
+                }
+                const hashTagLotusBurnScore = hashtagLotusBurnUp - hashtagLotusBurnDown;
+                return this.prisma.hashtag.update({
+                  where: {
+                    id: postHashtag?.hashtag.id
+                  },
+                  data: {
+                    lotusBurnUp: hashtagLotusBurnUp,
+                    lotusBurnDown: hashtagLotusBurnDown,
+                    lotusBurnScore: hashTagLotusBurnScore
+                  }
+                });
+              })
+            );
+          }
         } else if (command.burnForType === BurnForType.Token) {
           const token = await this.prisma.token.findFirst({
             where: {
