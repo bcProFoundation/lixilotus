@@ -34,9 +34,12 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { useInfinitePostsBySearchQueryWithHashtagAtPage } from '@store/post/useInfinitePostsBySearchQueryWithHashtagAtPage';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
+import { PageQuery } from '@store/page/pages.generated';
+
+export type PageItem = PageQuery['page'];
 
 type PageDetailProps = {
-  page: any;
+  page: PageItem;
   isMobile: boolean;
   checkIsFollowed: boolean;
 };
@@ -767,7 +770,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                   />
                   <FilterBurnt filterForType={FilterType.PostsPage} />
                 </div>
-                {!searchValue && hashtags.length === 0 && <CreatePostCard page={page.id} />}
+                {!searchValue && hashtags.length === 0 && <CreatePostCard page={page} />}
                 <Timeline>
                   {data.length == 0 && (
                     <div className="blank-timeline">
