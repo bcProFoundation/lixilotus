@@ -1,13 +1,12 @@
-import { BurnForType } from '@bcpros/lixi-models/lib/burn';
 import CommentComponent, { CommentItem } from '@components/Common/Comment';
 import InfoCardUser from '@components/Common/InfoCardUser';
 import { ShareSocialButton } from '@components/Common/ShareSocialButton';
 import { openModal } from '@store/modal/actions';
 import { PostsQuery } from '@store/post/posts.generated';
 import { formatBalance } from '@utils/cashMethods';
-import { List, Button } from 'antd';
+import { List, Button, Space } from 'antd';
 import { PlusCircleOutlined } from '@ant-design/icons';
-import _ from 'lodash';
+import _, { truncate } from 'lodash';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import intl from 'react-intl-universal';
@@ -17,8 +16,9 @@ import { EditPostModalProps } from './EditPostModalPopup';
 import Gallery from 'react-photo-gallery';
 import useWindowDimensions from '@hooks/useWindowDimensions';
 import { ReadMoreMore } from 'read-more-more';
-import { IconBurn, IconComment } from './PostDetail';
 import { formatRelativeTime } from '@utils/formatting';
+import { Counter } from '@components/Common/Counter';
+import Reaction from '@components/Common/Reaction';
 
 export const CommentList = ({ comments }: { comments: CommentItem[] }) => (
   <List
@@ -28,6 +28,20 @@ export const CommentList = ({ comments }: { comments: CommentItem[] }) => (
     renderItem={postComment => <CommentComponent data={postComment} />}
   />
 );
+
+const SpaceIconNoneHover = styled(Space)`
+  min-height: 38px;
+  padding: 8px;
+  img {
+    transition: all 0.2s ease-in-out;
+    width: 28px;
+    height: 28px;
+  }
+
+  &:hover {
+    background: #faf1fa;
+  }
+`;
 
 const CardContainer = styled.div`
   display: flex;
@@ -132,7 +146,7 @@ const ActionBar = styled.div`
   justify-content: space-between;
   align-items: center;
   align-self: center;
-  padding: 1rem 0;
+  padding: 8px 0;
   width: 96%;
   border-top: 1px solid #efeeef;
   button {
@@ -142,15 +156,13 @@ const ActionBar = styled.div`
 `;
 
 export const GroupIconText = styled.div`
-  &.num-react {
-    padding: 1rem 0;
-    border: none;
-    text-align: left;
-  }
+  align-items: center;
+  display: flex;
   .ant-space {
-    margin-right: 2rem;
+    cursor: pointer;
+    margin-right: 1rem;
     align-items: end;
-    gap: 0 !important;
+    border-radius: 12px;
     cursor: pointer;
     @media (max-width: 960px) {
       margin-right: 1rem;
@@ -182,24 +194,40 @@ const PostListItemContainer = styled(List.Item)`
   transition: 0.5s;
 `;
 
+export const IconNoneHover = ({
+  value,
+  imgUrl,
+  classStyle,
+  onClickIcon
+}: {
+  value?: number;
+  imgUrl?: string;
+  classStyle?: string;
+  onClickIcon: (e: any) => void;
+}) => (
+  <SpaceIconNoneHover onClick={onClickIcon} size={5}>
+    {imgUrl && (
+      <picture>
+        <img className={classStyle} alt="burnIcon" src={imgUrl} />
+      </picture>
+    )}
+    {value && <Counter num={value ?? 0} />}
+  </SpaceIconNoneHover>
+);
+
 type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 
 type PostListItemProps = {
   index: number;
   item: PostItem;
   searchValue?: string;
-  handleBurnForPost?: (isUpVote: boolean, post: any) => Promise<void>;
+  handleBurnForPost?: (isUpVote: boolean, post: any, optionBurn?: string) => Promise<void>;
 };
 
 const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListItemProps) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const post: PostItem = item;
-  const [isCollapseComment, setIsCollapseComment] = useState(false);
-  const [comments, setComments] = useState<CommentItem[]>([]);
-  const [submitting, setSubmitting] = useState(false);
-  const [value, setValue] = useState('');
-  const [showMore, setShowMore] = useState(false);
   const [showMoreImage, setShowMoreImage] = useState(true);
   const [imagesList, setImagesList] = useState([]);
   const ref = useRef<HTMLDivElement | null>(null);
@@ -244,12 +272,6 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
     }
   };
 
-  const upVotePost = (e: React.MouseEvent<HTMLElement>, dataItem: PostItem) => {
-    e.preventDefault();
-    e.stopPropagation();
-    handleBurnForPost(true, dataItem);
-  };
-
   const showUsername = () => {
     if (_.isNil(post.postAccount)) {
       return 'Anonymous';
@@ -265,12 +287,6 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
       postId: post.id
     };
     dispatch(openModal('EditPostModalPopup', editPostProps));
-  };
-
-  const openBurnModal = (e: React.MouseEvent<HTMLElement>, dataItem: PostItem) => {
-    dispatch(
-      openModal('BurnModal', { burnForType: BurnForType.Post, id: dataItem.id, isPage: dataItem.page ? true : false })
-    );
   };
 
   return (
@@ -329,39 +345,18 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
       </CardContainer>
       <ActionBar>
         <GroupIconText>
-          <IconBurn
-            imgUrl="/images/ico-burn-up.svg"
-            key={`list-vertical-upvote-o-${item.id}`}
-            dataItem={item}
-            onClickIcon={e => upVotePost(e, item)}
-          />
-          <IconBurn
-            burnValue={formatBalance(post?.lotusBurnScore ?? 0)}
-            imgUrl="/images/custom-burn.svg"
-            key={`list-vertical-downvote-o-${item.id}`}
-            dataItem={item}
-            classStyle="custom-burn"
-            onClickIcon={e => openBurnModal(e, item)}
-          />
-          <IconComment
-            totalComments={formatBalance(post?.totalComments ?? 0)}
+          <Reaction post={post} handleBurnForPost={handleBurnForPost} />
+          <IconNoneHover
+            value={formatBalance(post?.totalComments ?? 0)}
             imgUrl="/images/ico-comments.svg"
             key={`list-vertical-comment-o-${item.id}`}
-            dataItem={item}
+            classStyle="custom-comment"
             onClickIcon={e => handlePostClick(e)}
           />
         </GroupIconText>
+
         <ShareSocialButton slug={post.id} content={post.content} postAccountName={post.postAccount.name} />
       </ActionBar>
-      {isCollapseComment && (
-        <div
-        // style={{ width: '100%', textAlign: 'left' }}
-        // avatar={<Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />}
-        // content={<Editor submitting={submitting} />}
-        />
-      )}
-
-      {isCollapseComment && comments.length > 0 && <CommentList comments={comments} />}
     </PostListItemContainer>
   );
 };
