@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useInfinitePagesQuery } from '@store/page/useInfinitePagesQuery';
+import { useInfinitePagesByFollowerIdQuery } from '@store/page/useInfinitePagesByFollowerIdQuery';
 import { useInfinitePagesByUserIdQuery } from '@store/page/useInfinitePagesByUserIdQuery';
 import { Button, Skeleton } from 'antd';
 import SearchBox from '@components/Common/SearchBox';
@@ -256,11 +257,13 @@ const CardPageItem = ({ item, onClickItem }: { item?: CardPageItem; onClickItem?
       <div className="title-profile">
         <h3 className="page-name">{item.name}</h3>
         <p className="page-category">{item.category}</p>
-        <p className="sub-text">
-          {item.totalBurnForPage > 0
-            ? `${item.totalBurnForPage} ${intl.get('page.xpiHasBurned')}`
-            : intl.get('page.noXpiHasBurned')}
-        </p>
+        {item.totalBurnForPage && (
+          <p className="sub-text">
+            {item.totalBurnForPage > 0
+              ? `${item.totalBurnForPage} ${intl.get('page.xpiHasBurned')}`
+              : intl.get('page.noXpiHasBurned')}
+          </p>
+        )}
       </div>
     </div>
   </StyledCardPage>
@@ -283,12 +286,26 @@ const PageHome = () => {
     },
     false
   );
+
   const {
     data: userPage,
     fetchNext: userPageFetchNext,
     hasNext: userPageHasNext,
     isFetching: usePageIsFetching
   } = useInfinitePagesByUserIdQuery(
+    {
+      first: 10,
+      id: selectedAccountId
+    },
+    false
+  );
+
+  const {
+    data: pageFollowings,
+    fetchNext: pageFollowingsFetchNext,
+    hasNext: pageFollowingsHasNext,
+    isFetching: pageFollowingsIsFetching
+  } = useInfinitePagesByFollowerIdQuery(
     {
       first: 10,
       id: selectedAccountId
@@ -322,6 +339,14 @@ const PageHome = () => {
       userPageFetchNext();
     } else if (userPageHasNext) {
       userPageFetchNext();
+    }
+  };
+
+  const loadMorePageFollowings = () => {
+    if (pageFollowingsHasNext && !pageFollowingsIsFetching) {
+      pageFollowingsFetchNext();
+    } else if (pageFollowingsHasNext) {
+      pageFollowingsFetchNext();
     }
   };
 
@@ -379,6 +404,32 @@ const PageHome = () => {
             </InfiniteScroll>
           </ListCard>
         </YourPageContainer>
+
+        {/* Page Followings */}
+        <PagesContainer>
+          <h2>{pageFollowings.length > 0 && intl.get('general.youFollow')}</h2>
+          <ListCard>
+            <React.Fragment>
+              <InfiniteScroll
+                dataLength={pageFollowings.length}
+                next={loadMorePageFollowings}
+                hasMore={pageFollowingsHasNext}
+                loader={<Skeleton avatar active />}
+                scrollableTarget="scrollableDiv"
+              >
+                {pageFollowings.map((item, index) => {
+                  return (
+                    <React.Fragment key={index}>
+                      <CardPageItem item={mapPageItem(item)} onClickItem={id => routerPageDetail(id)} />
+                    </React.Fragment>
+                  );
+                })}
+              </InfiniteScroll>
+            </React.Fragment>
+          </ListCard>
+        </PagesContainer>
+
+        {/* Discover */}
         <PagesContainer>
           <h2>{intl.get('page.discover')}</h2>
           <ListCard>

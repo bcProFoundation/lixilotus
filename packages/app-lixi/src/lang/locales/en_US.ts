@@ -629,5 +629,8 @@ export default {
   'general.youFollow': 'You Follow',
   'general.followingPages': 'Following Pages',
   'follow.followSuccess': 'Follow successful',
-  'follow.followFailure': 'Follow failure'
+  'follow.followFailure': 'Follow failure',
+  'follow.noFollowers': 'No one is following you yet!',
+  'follow.noFollowings': "You haven't followed anyone yet!",
+  'follow.noFollowingPages': "You haven't followed any pages yet!"
 };

@@ -8,7 +8,12 @@ import {
   FollowAccountConnection,
   FollowAccountOrder,
   FollowPage,
-  PaginationArgs
+  PaginationArgs,
+  DEFAULT_CATEGORY,
+  PageConnection,
+  PageOrder,
+  AccountOrder,
+  AccountConnection
 } from '@bcpros/lixi-models';
 import { NotificationLevel } from '@bcpros/lixi-prisma';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
@@ -64,27 +69,34 @@ export class FollowResolver {
     return await this.followCacheService.checkIfAccountFollowAccount(account.id, followingAccountId);
   }
 
-  @Query(() => FollowAccountConnection)
+  @Query(() => AccountConnection)
+  @UseGuards(GqlJwtAuthGuard)
   async allFollowingsByFollower(
+    @AccountEntity() account: Account,
     @Args() { after, before, first, last }: PaginationArgs,
     @Args({ name: 'followerAccountId', type: () => Number, nullable: true })
     followerAccountId: number,
     @Args({
       name: 'orderBy',
-      type: () => FollowAccountOrder,
+      type: () => AccountOrder,
       nullable: true
     })
-    orderBy: FollowAccountOrder
+    orderBy: AccountOrder
   ) {
     const result = await findManyCursorConnection(
       paginationArgs =>
-        this.prisma.followAccount.findMany({
-          where: {
-            followerAccountId: followerAccountId
-          },
-          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
-          ...paginationArgs
-        }),
+        this.prisma.followAccount
+          .findMany({
+            where: {
+              followerAccountId: followerAccountId
+            },
+            include: {
+              followingAccount: true
+            },
+            orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+            ...paginationArgs
+          })
+          .then(followings => followings.map(following => following.followingAccount)),
       () =>
         this.prisma.followAccount.count({
           where: {
@@ -96,27 +108,34 @@ export class FollowResolver {
     return result;
   }
 
-  @Query(() => FollowAccountConnection)
+  @Query(() => AccountConnection)
+  @UseGuards(GqlJwtAuthGuard)
   async allFollowersByFollowing(
+    @AccountEntity() account: Account,
     @Args() { after, before, first, last }: PaginationArgs,
     @Args({ name: 'followingAccountId', type: () => Number, nullable: true })
     followingAccountId: number,
     @Args({
       name: 'orderBy',
-      type: () => FollowAccountOrder,
+      type: () => AccountOrder,
       nullable: true
     })
-    orderBy: FollowAccountOrder
+    orderBy: AccountOrder
   ) {
     const result = await findManyCursorConnection(
       paginationArgs =>
-        this.prisma.followAccount.findMany({
-          where: {
-            followingAccountId: followingAccountId
-          },
-          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
-          ...paginationArgs
-        }),
+        this.prisma.followAccount
+          .findMany({
+            where: {
+              followingAccountId: followingAccountId
+            },
+            include: {
+              followerAccount: true
+            },
+            orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+            ...paginationArgs
+          })
+          .then(followers => followers.map(follower => follower.followerAccount)),
       () =>
         this.prisma.followAccount.count({
           where: {
@@ -247,6 +266,51 @@ export class FollowResolver {
 
     // We need to find out if the account follow the page or not
     return await this.followCacheService.checkIfAccountFollowPage(account.id, pageId);
+  }
+
+  @Query(() => PageConnection)
+  @UseGuards(GqlJwtAuthGuard)
+  async allPagesByFollowing(
+    @AccountEntity() account: Account,
+    @Args() { after, before, first, last }: PaginationArgs,
+    @Args({
+      name: 'orderBy',
+      type: () => PageOrder,
+      nullable: true
+    })
+    orderBy: PageOrder
+  ) {
+    if (!account) {
+      const accountNotExist = await this.i18n.t('account.messages.accountNotExist');
+      throw Error(accountNotExist);
+    }
+
+    const result = await findManyCursorConnection(
+      paginationArgs => {
+        const pageFollowings = this.prisma.followPage
+          .findMany({
+            where: {
+              accountId: account.id
+            },
+            include: {
+              page: true
+            },
+            orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+            ...paginationArgs
+          })
+          .then(followings => followings.map(following => following.page));
+
+        return pageFollowings;
+      },
+      () =>
+        this.prisma.followPage.count({
+          where: {
+            accountId: account.id
+          }
+        }),
+      { first, last, before, after }
+    );
+    return result;
   }
 
   @UseGuards(GqlJwtAuthGuard)
