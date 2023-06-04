@@ -2,6 +2,7 @@ import { Burn, BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models';
 import { NotificationLevel } from '@bcpros/lixi-prisma';
 import BCHJS from '@bcpros/xpi-js';
 import { Body, Controller, HttpException, HttpStatus, Inject, Logger, Post } from '@nestjs/common';
+import { SkipThrottle } from '@nestjs/throttler';
 import { ChronikClient } from 'chronik-client';
 import _ from 'lodash';
 import { I18n, I18nService } from 'nestjs-i18n';
@@ -12,6 +13,7 @@ import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { parseBurnOutput } from 'src/utils/opReturnBurn';
 import { VError } from 'verror';
 
+@SkipThrottle()
 @Controller('burn')
 export class BurnController {
   private logger: Logger = new Logger(BurnController.name);

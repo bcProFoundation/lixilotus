@@ -10,27 +10,29 @@ import {
   FollowPage,
   PaginationArgs
 } from '@bcpros/lixi-models';
-import { PrismaService } from '../prisma/prisma.service';
-import { HttpException, HttpStatus, Injectable, Logger, UseFilters, UseGuards } from '@nestjs/common';
-import { Args, Int, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
-import { PubSub } from 'graphql-subscriptions';
-import { I18n, I18nService } from 'nestjs-i18n';
-import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
-import { AccountEntity } from 'src/decorators/account.decorator';
-import VError from 'verror';
-import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
-import _ from 'lodash';
-import { InjectRedis } from '@liaoliaots/nestjs-redis';
-import { Redis } from 'ioredis';
+import { NotificationLevel } from '@bcpros/lixi-prisma';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
-import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
+import { InjectRedis } from '@liaoliaots/nestjs-redis';
+import { HttpException, HttpStatus, Logger, UseFilters, UseGuards } from '@nestjs/common';
+import { Args, Int, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
+import { SkipThrottle } from '@nestjs/throttler';
+import { PubSub } from 'graphql-subscriptions';
+import { Redis } from 'ioredis';
+import _ from 'lodash';
+import { I18n, I18nService } from 'nestjs-i18n';
 import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
-import { NotificationLevel } from '@bcpros/lixi-prisma';
+import { AccountEntity } from 'src/decorators/account.decorator';
+import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
+import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
+import VError from 'verror';
+import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
+import { PrismaService } from '../prisma/prisma.service';
 import { FollowCacheService } from './follow-cache.service';
 
 const pubSub = new PubSub();
 
+@SkipThrottle()
 @Resolver(() => FollowAccount)
 @UseFilters(GqlHttpExceptionFilter)
 export class FollowResolver {

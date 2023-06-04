@@ -1,20 +1,21 @@
-import { Token, PaginationArgs, TokenOrder, TokenConnection, CreateTokenInput } from '@bcpros/lixi-models';
+import { CreateTokenInput, PaginationArgs, Token, TokenConnection, TokenOrder } from '@bcpros/lixi-models';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
-import { Body, HttpException, HttpStatus, Logger, UseFilters, UseGuards } from '@nestjs/common';
-import { Args, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
-import { PubSub } from 'graphql-subscriptions';
-import * as _ from 'lodash';
-import { I18n, I18nContext, I18nService } from 'nestjs-i18n';
-import VError from 'verror';
-import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
-import { PrismaService } from '../prisma/prisma.service';
-import { GqlJwtAuthGuard } from 'src/modules/auth/guards/gql-jwtauth.guard';
-import moment from 'moment';
-import { InjectChronikClient } from 'src/common/modules/chronik/chronik.decorators';
+import { HttpException, HttpStatus, Logger, UseFilters, UseGuards } from '@nestjs/common';
+import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
+import { SkipThrottle } from '@nestjs/throttler';
 import { ChronikClient } from 'chronik-client';
+import { PubSub } from 'graphql-subscriptions';
+import moment from 'moment';
+import { I18n, I18nContext, I18nService } from 'nestjs-i18n';
+import { InjectChronikClient } from 'src/common/modules/chronik/chronik.decorators';
+import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
+import { GqlJwtAuthGuard } from 'src/modules/auth/guards/gql-jwtauth.guard';
+import VError from 'verror';
+import { PrismaService } from '../prisma/prisma.service';
 
 const pubSub = new PubSub();
 
+@SkipThrottle()
 @Resolver(() => Token)
 @UseFilters(GqlHttpExceptionFilter)
 export class TokenResolver {

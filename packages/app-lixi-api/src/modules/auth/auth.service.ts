@@ -1,13 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Account } from '@prisma/client';
-import { decodeToken, TokenSigner, TokenVerifier } from 'jsontokens';
+import { TokenSigner, TokenVerifier, decodeToken } from 'jsontokens';
 import { I18n, I18nService } from 'nestjs-i18n';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { VError } from 'verror';
 // import * as wif from 'wif';
 import { hashMnemonic } from '../../utils/encryptionMethods';
 import { WalletService } from '../wallet/wallet.service';
-import axios from 'axios';
 const wif = require('wif');
 
 @Injectable()

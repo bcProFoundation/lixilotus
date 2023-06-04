@@ -1,10 +1,11 @@
 import { PageCategory } from '@bcpros/lixi-models';
+import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 import { Controller, Get, HttpException, HttpStatus, UseInterceptors } from '@nestjs/common';
-import * as _ from 'lodash';
+import { SkipThrottle } from '@nestjs/throttler';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { PrismaService } from '../../prisma/prisma.service';
-import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 
+@SkipThrottle()
 @Controller('categories')
 export class CategoryController {
   constructor(private prisma: PrismaService) {}

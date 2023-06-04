@@ -6,25 +6,27 @@ import {
   CreateCommentInput,
   PaginationArgs
 } from '@bcpros/lixi-models';
+import { NotificationLevel } from '@bcpros/lixi-prisma';
 import BCHJS from '@bcpros/xpi-js';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
 import { HttpException, HttpStatus, Inject, Logger, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
+import { SkipThrottle } from '@nestjs/throttler';
 import { ChronikClient } from 'chronik-client';
 import { PubSub } from 'graphql-subscriptions';
 import _ from 'lodash';
 import { I18n, I18nService } from 'nestjs-i18n';
 import { InjectChronikClient } from 'src/common/modules/chronik/chronik.decorators';
+import { NotificationService } from 'src/common/modules/notifications/notification.service';
 import { PostAccountEntity } from 'src/decorators/postAccount.decorator';
 import VError from 'verror';
+import { NOTIFICATION_TYPES } from '../../common/modules/notifications/notification.constants';
 import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
 import { PrismaService } from '../prisma/prisma.service';
-import { Notification, NotificationLevel } from '@bcpros/lixi-prisma';
-import { NOTIFICATION_TYPES } from '../../common/modules/notifications/notification.constants';
-import { NotificationService } from 'src/common/modules/notifications/notification.service';
 
 const pubSub = new PubSub();
 
+@SkipThrottle()
 @Resolver(() => Comment)
 export class CommentResolver {
   private logger: Logger = new Logger(this.constructor.name);

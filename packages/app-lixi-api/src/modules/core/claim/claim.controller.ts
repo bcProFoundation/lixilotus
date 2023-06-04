@@ -14,6 +14,7 @@ import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import BCHJS from '@bcpros/xpi-js';
 import { Body, Controller, Get, Headers, HttpException, HttpStatus, Inject, Logger, Param, Post } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { SkipThrottle } from '@nestjs/throttler';
 import axios from 'axios';
 import BigNumber from 'bignumber.js';
 import geoip from 'geoip-country';
@@ -31,6 +32,7 @@ const PRIVATE_KEY = 'AIzaSyCFY2D4NRLjDTpJfk0jjJNADalSceqC4qs';
 const SITE_KEY = '6Lc1rGwdAAAAABrD2AxMVIj4p_7ZlFKdE5xCFOrb';
 const PROJECT_ID = 'lixilotus';
 
+@SkipThrottle()
 @Controller('claims')
 export class ClaimController {
   private logger: Logger = new Logger(ClaimController.name);

@@ -33,7 +33,9 @@ import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
 import { UploadService } from './upload.service';
 import _ from 'lodash';
 import { PostAccountEntity } from 'src/decorators/postAccount.decorator';
+import { SkipThrottle } from '@nestjs/throttler';
 
+@SkipThrottle()
 @Controller('uploads')
 export class UploadFilesController {
   constructor(private prisma: PrismaService, private uploadService: UploadService) {}

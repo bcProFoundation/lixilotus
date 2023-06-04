@@ -1,18 +1,20 @@
 import { Hashtag, HashtagConnection, HashtagOrder, PaginationArgs } from '@bcpros/lixi-models';
-import { Logger, UseFilters } from '@nestjs/common';
-import { Args, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
-import { PubSub } from 'graphql-subscriptions';
-import { PrismaService } from '../prisma/prisma.service';
-import { I18n, I18nService } from 'nestjs-i18n';
-import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
-import { MeiliService } from '../page/meili.service';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
-import ConnectionArgs, { getPagingParameters } from 'src/common/custom-graphql-relay/connection.args';
-import { HASHTAG } from '../page/constants/meili.constants';
+import { Logger, UseFilters } from '@nestjs/common';
+import { Args, Query, Resolver, Subscription } from '@nestjs/graphql';
+import { SkipThrottle } from '@nestjs/throttler';
+import { PubSub } from 'graphql-subscriptions';
+import { I18n, I18nService } from 'nestjs-i18n';
 import { connectionFromArraySlice } from 'src/common/custom-graphql-relay/arrayConnection';
+import ConnectionArgs, { getPagingParameters } from 'src/common/custom-graphql-relay/connection.args';
+import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
+import { HASHTAG } from '../page/constants/meili.constants';
+import { MeiliService } from '../page/meili.service';
+import { PrismaService } from '../prisma/prisma.service';
 
 const pubSub = new PubSub();
 
+@SkipThrottle()
 @Resolver(() => Hashtag)
 @UseFilters(GqlHttpExceptionFilter)
 export class HashtagResolver {

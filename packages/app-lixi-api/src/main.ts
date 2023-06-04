@@ -25,7 +25,9 @@ const allowedOrigins = [
 async function bootstrap() {
   const POST_LIMIT = 1024 * 100; /* Max POST 100 kb */
 
-  const fastifyAdapter = new FastifyAdapter();
+  const fastifyAdapter = new FastifyAdapter({
+    trustProxy: true
+  });
   fastifyAdapter
     .getInstance()
     .addContentTypeParser('application/json', { bodyLimit: 10048576 }, (_request, _payload, done) => {

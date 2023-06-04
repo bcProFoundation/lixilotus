@@ -1,20 +1,22 @@
 import { Account, AccountDto, CreateAccountInput, ImportAccountInput } from '@bcpros/lixi-models';
-import { PrismaService } from '../prisma/prisma.service';
-import { Body, HttpException, HttpStatus, Inject, Logger, Param, UseFilters, UseGuards } from '@nestjs/common';
-import { Args, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
-import { PubSub } from 'graphql-subscriptions';
-import { I18n, I18nContext, I18nService } from 'nestjs-i18n';
-import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
-import _ from 'lodash';
-import VError from 'verror';
-import { WalletService } from '../wallet/wallet.service';
-import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase58Str, hashMnemonic } from 'src/utils/encryptionMethods';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
-import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
+import { HttpException, HttpStatus, Inject, Logger, UseFilters, UseGuards } from '@nestjs/common';
+import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
+import { SkipThrottle } from '@nestjs/throttler';
+import { PubSub } from 'graphql-subscriptions';
+import _ from 'lodash';
+import { I18n, I18nContext, I18nService } from 'nestjs-i18n';
 import { AccountEntity } from 'src/decorators/account.decorator';
+import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
+import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase58Str, hashMnemonic } from 'src/utils/encryptionMethods';
+import VError from 'verror';
+import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
+import { PrismaService } from '../prisma/prisma.service';
+import { WalletService } from '../wallet/wallet.service';
 
 const pubSub = new PubSub();
 
+@SkipThrottle()
 @Resolver(() => Account)
 @UseFilters(GqlHttpExceptionFilter)
 export class AccountResolver {
