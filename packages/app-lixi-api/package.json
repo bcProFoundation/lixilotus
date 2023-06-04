@@ -56,6 +56,7 @@
     "@nestjs/platform-socket.io": "^9.2.1",
     "@nestjs/serve-static": "^3.0.0",
     "@nestjs/swagger": "^6.1.4",
+    "@nestjs/throttler": "^4.0.0",
     "@nestjs/websockets": "^9.2.1",
     "@socket.io/redis-adapter": "^8.0.1",
     "@types/passport-jwt": "^3.0.8",

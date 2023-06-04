@@ -36,11 +36,19 @@ import {
   UseGuards,
   UseInterceptors
 } from '@nestjs/common';
+import { SkipThrottle } from '@nestjs/throttler';
 import { Claim as ClaimDb, Lixi } from '@prisma/client';
 import { Queue } from 'bullmq';
+import { FastifyReply, FastifyRequest } from 'fastify';
+import { createReadStream } from 'fs';
 import * as _ from 'lodash';
+import moment from 'moment';
+import { I18n, I18nContext } from 'nestjs-i18n';
+import { join } from 'path';
 import { PaginationParams } from 'src/common/models/paginationParams';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
+import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
+import { JwtAuthGuard } from 'src/modules/auth/guards/jwtauth.guard';
 import {
   EXPORT_SUB_LIXIES_QUEUE,
   LIXI_JOB_NAMES,
@@ -51,15 +59,8 @@ import { WalletService } from 'src/modules/wallet/wallet.service';
 import { aesGcmDecrypt, base58ToNumber, numberToBase58 } from 'src/utils/encryptionMethods';
 import { VError } from 'verror';
 import { PrismaService } from '../../prisma/prisma.service';
-import { I18n, I18nContext } from 'nestjs-i18n';
-import { createReadStream } from 'fs';
-import { join } from 'path';
-import { JwtAuthGuard } from 'src/modules/auth/guards/jwtauth.guard';
-import { FastifyRequest, FastifyReply } from 'fastify';
-import moment from 'moment';
-import { extname } from 'path';
-import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
 
+@SkipThrottle()
 @Controller('lixies')
 @UseInterceptors(ClassSerializerInterceptor)
 @Injectable()

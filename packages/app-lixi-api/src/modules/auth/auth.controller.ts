@@ -1,9 +1,11 @@
 import { Body, Controller, Get, HttpException, HttpStatus, Post, Request, Res, UseGuards } from '@nestjs/common';
+import { SkipThrottle } from '@nestjs/throttler';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import VError from 'verror';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwtauth.guard';
 
+@SkipThrottle()
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}

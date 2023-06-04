@@ -1,52 +1,39 @@
+import {
+  Account,
+  CreatePostInput,
+  Page,
+  PaginationArgs,
+  Post,
+  PostConnection,
+  PostOrder,
+  Token,
+  UpdatePostInput
+} from '@bcpros/lixi-models';
+import { NotificationLevel } from '@bcpros/lixi-prisma';
+import BCHJS from '@bcpros/xpi-js';
+import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
+import { Inject, Injectable, Logger, UseFilters, UseGuards } from '@nestjs/common';
+import { Args, Int, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
+import { SkipThrottle, Throttle } from '@nestjs/throttler';
+import { ChronikClient } from 'chronik-client';
 import { PubSub } from 'graphql-subscriptions';
 import * as _ from 'lodash';
-import { InjectMeiliSearch } from 'nestjs-meilisearch';
-import { MeiliSearch } from 'meilisearch';
 import { I18n, I18nService } from 'nestjs-i18n';
+import { InjectChronikClient } from 'src/common/modules/chronik/chronik.decorators';
+import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
+import { NotificationService } from 'src/common/modules/notifications/notification.service';
+import PostResponse from 'src/common/post.response';
 import { PostAccountEntity } from 'src/decorators/postAccount.decorator';
+import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
 import VError from 'verror';
-import {
-  Post,
-  PaginationArgs,
-  PostOrder,
-  PostConnection,
-  CreatePostInput,
-  UpdatePostInput,
-  Account,
-  Page,
-  Token,
-  Upload
-} from '@bcpros/lixi-models';
-import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
-import {
-  ExecutionContext,
-  HttpException,
-  HttpStatus,
-  Inject,
-  Injectable,
-  Logger,
-  Request,
-  UseGuards,
-  UseFilters
-} from '@nestjs/common';
-import { Args, Int, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
-import { MeiliService } from './meili.service';
+import { connectionFromArraySlice } from '../../common/custom-graphql-relay/arrayConnection';
+import ConnectionArgs, { getPagingParameters } from '../../common/custom-graphql-relay/connection.args';
 import { GqlJwtAuthGuard, GqlJwtAuthGuardByPass } from '../auth/guards/gql-jwtauth.guard';
+import { HashtagService } from '../hashtag/hashtag.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { HASHTAG, POSTS } from './constants/meili.constants';
-import ConnectionArgs, { getPagingParameters } from '../../common/custom-graphql-relay/connection.args';
-import { connectionFromArraySlice } from '../../common/custom-graphql-relay/arrayConnection';
-import PostResponse from 'src/common/post.response';
-import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
-import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
-import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
-import { NotificationLevel } from '@bcpros/lixi-prisma';
-import { NotificationService } from 'src/common/modules/notifications/notification.service';
-import { extractHashtagFromText } from 'src/utils/extractHashtagFromText';
-import { HashtagService } from '../hashtag/hashtag.service';
-import BCHJS from '@bcpros/xpi-js';
-import { ChronikClient } from 'chronik-client';
-import { InjectChronikClient } from 'src/common/modules/chronik/chronik.decorators';
+import { MeiliService } from './meili.service';
+import { GqlThrottlerGuard } from '../auth/guards/gql-throttler.guard';
 
 const pubSub = new PubSub();
 
@@ -71,6 +58,7 @@ export class PostResolver {
     return pubSub.asyncIterator('postCreated');
   }
 
+  @SkipThrottle()
   @Query(() => Post)
   async post(@Args('id', { type: () => String }) id: string) {
     return this.prisma.post.findUnique({
@@ -79,6 +67,7 @@ export class PostResolver {
     });
   }
 
+  @SkipThrottle()
   @Query(() => PostConnection)
   @UseGuards(GqlJwtAuthGuardByPass)
   async allPosts(
@@ -227,6 +216,7 @@ export class PostResolver {
     return result;
   }
 
+  @SkipThrottle()
   @Query(() => PostConnection)
   @UseGuards(GqlJwtAuthGuardByPass)
   async allOrphanPosts(
@@ -301,6 +291,7 @@ export class PostResolver {
     return result;
   }
 
+  @SkipThrottle()
   @Query(() => PostConnection)
   @UseGuards(GqlJwtAuthGuard)
   async allPostsByPageId(
@@ -393,6 +384,7 @@ export class PostResolver {
     return result;
   }
 
+  @SkipThrottle()
   @Query(() => PostResponse, { name: 'allPostsBySearch' })
   async allPostsBySearch(
     @Args() args: ConnectionArgs,
@@ -428,6 +420,7 @@ export class PostResolver {
     });
   }
 
+  @SkipThrottle()
   @Query(() => PostResponse, { name: 'allPostsBySearchWithHashtag' })
   async allPostsBySearchWithHashtag(
     @Args({ name: 'minBurnFilter', type: () => Int, nullable: true })
@@ -478,6 +471,7 @@ export class PostResolver {
     });
   }
 
+  @SkipThrottle()
   @Query(() => PostResponse, { name: 'allPostsBySearchWithHashtagAtPage' })
   async allPostsBySearchWithHashtagAtPage(
     @Args({ name: 'minBurnFilter', type: () => Int, nullable: true })
@@ -532,6 +526,7 @@ export class PostResolver {
     });
   }
 
+  @SkipThrottle()
   @Query(() => PostResponse, { name: 'allPostsBySearchWithHashtagAtToken' })
   async allPostsBySearchWithHashtagAtToken(
     @Args({ name: 'minBurnFilter', type: () => Int, nullable: true })
@@ -586,6 +581,7 @@ export class PostResolver {
     });
   }
 
+  @SkipThrottle()
   @Query(() => PostConnection)
   @UseGuards(GqlJwtAuthGuard)
   async allPostsByTokenId(
@@ -653,6 +649,7 @@ export class PostResolver {
     return result;
   }
 
+  @SkipThrottle()
   @Query(() => PostConnection)
   @UseGuards(GqlJwtAuthGuard)
   async allPostsByUserId(
@@ -754,6 +751,7 @@ export class PostResolver {
     return result;
   }
 
+  @SkipThrottle()
   @Query(() => PostConnection)
   @UseGuards(GqlJwtAuthGuardByPass)
   async allPostsByHashtagId(
@@ -797,6 +795,8 @@ export class PostResolver {
     return result;
   }
 
+  @Throttle(2, 1)
+  @UseGuards(GqlThrottlerGuard)
   @UseGuards(GqlJwtAuthGuard)
   @Mutation(() => Post)
   async createPost(@PostAccountEntity() account: Account, @Args('data') data: CreatePostInput) {
@@ -968,6 +968,7 @@ export class PostResolver {
     return savedPost;
   }
 
+  @SkipThrottle()
   @UseGuards(GqlJwtAuthGuard)
   @Mutation(() => Post)
   async updatePost(@PostAccountEntity() account: Account, @Args('data') data: UpdatePostInput) {

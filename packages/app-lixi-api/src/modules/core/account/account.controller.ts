@@ -1,3 +1,14 @@
+import {
+  Account,
+  AccountDto,
+  CreateAccountCommand,
+  DeleteAccountCommand,
+  ImportAccountCommand,
+  Lixi,
+  NotificationDto,
+  PatchAccountCommand,
+  fromSmallestDenomination
+} from '@bcpros/lixi-models';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import {
   Body,
@@ -15,32 +26,22 @@ import {
   Request,
   UseGuards
 } from '@nestjs/common';
-import { Account as AccountDb, Lixi as LixiDb } from '@prisma/client';
+import { Account as AccountDb } from '@prisma/client';
 import { FastifyRequest } from 'fastify';
-import {
-  ImportAccountCommand,
-  AccountDto,
-  CreateAccountCommand,
-  DeleteAccountCommand,
-  Lixi,
-  NotificationDto,
-  PatchAccountCommand,
-  Account,
-  fromSmallestDenomination
-} from '@bcpros/lixi-models';
 
+import BCHJS from '@bcpros/xpi-js';
+import { SkipThrottle } from '@nestjs/throttler';
 import * as _ from 'lodash';
+import { toSafeInteger } from 'lodash';
 import { I18n, I18nContext } from 'nestjs-i18n';
+import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
 import { JwtAuthGuard } from 'src/modules/auth/guards/jwtauth.guard';
-import { JWTOAuth2Guard } from 'src/modules/auth/guards/jwt-oauth2.guard';
 import { VError } from 'verror';
 import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase58Str, hashMnemonic } from '../../../utils/encryptionMethods';
 import { PrismaService } from '../../prisma/prisma.service';
 import { WalletService } from '../../wallet/wallet.service';
-import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
-import BCHJS from '@bcpros/xpi-js';
-import { toSafeInteger } from 'lodash';
 
+@SkipThrottle()
 @Controller('accounts')
 export class AccountController {
   constructor(

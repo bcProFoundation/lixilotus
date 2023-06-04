@@ -1,5 +1,6 @@
 import { CacheInterceptor, CacheTTL } from '@nestjs/cache-manager';
 import { Controller, Get, Headers, HttpException, HttpStatus, Param, Query, UseInterceptors } from '@nestjs/common';
+import { SkipThrottle } from '@nestjs/throttler';
 import geoip from 'geoip-country';
 import * as _ from 'lodash';
 import { I18n, I18nContext } from 'nestjs-i18n';
@@ -7,6 +8,7 @@ import { ReqSocket } from 'src/decorators/req.socket.decorator';
 import { VError } from 'verror';
 import { PrismaService } from '../../prisma/prisma.service';
 
+@SkipThrottle()
 @Controller('countries')
 export class CountryController {
   constructor(private prisma: PrismaService) {}

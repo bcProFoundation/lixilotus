@@ -1,17 +1,18 @@
+import { TokenDto } from '@bcpros/lixi-models';
 import MinimalBCHWallet from '@bcpros/minimal-xpi-slp-wallet';
 import { Body, Controller, Get, HttpException, HttpStatus, Inject, Param, Post } from '@nestjs/common';
-import { TokenDto } from '@bcpros/lixi-models';
 
-import * as _ from 'lodash';
+import { SkipThrottle } from '@nestjs/throttler';
+import { Token as TokenDb } from '@prisma/client';
+import { ChronikClient } from 'chronik-client';
+import moment from 'moment';
 import { I18n, I18nContext } from 'nestjs-i18n';
+import { InjectChronikClient } from 'src/common/modules/chronik/chronik.decorators';
 import { VError } from 'verror';
 import { PrismaService } from '../../prisma/prisma.service';
 import { WalletService } from '../../wallet/wallet.service';
-import { Token as TokenDb } from '@prisma/client';
-import { InjectChronikClient } from 'src/common/modules/chronik/chronik.decorators';
-import { ChronikClient } from 'chronik-client';
-import moment from 'moment';
 
+@SkipThrottle()
 @Controller('tokens')
 export class TokenController {
   constructor(

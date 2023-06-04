@@ -1,36 +1,36 @@
 import {
-  WorshipedPerson,
-  Worship,
-  PaginationArgs,
-  WorshipedPersonConnection,
-  WorshipedPersonOrder,
   Account,
-  CreateWorshipedPersonInput,
   CreateWorshipInput,
-  WorshipOrder,
+  CreateWorshipedPersonInput,
+  PaginationArgs,
+  Worship,
   WorshipConnection,
-  TempleOrder
+  WorshipOrder,
+  WorshipedPerson,
+  WorshipedPersonConnection,
+  WorshipedPersonOrder
 } from '@bcpros/lixi-models';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
-import { HttpException, HttpStatus, Logger, UseFilters, UseGuards } from '@nestjs/common';
+import { Logger, UseFilters, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
+import { SkipThrottle } from '@nestjs/throttler';
 import { PubSub } from 'graphql-subscriptions';
-import { PrismaService } from '../prisma/prisma.service';
 import * as _ from 'lodash';
-import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
-import { AccountEntity } from 'src/decorators/account.decorator';
-import { I18n, I18nService } from 'nestjs-i18n';
-import VError from 'verror';
-import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
 import moment from 'moment';
-import { WorshipGateway } from './worship.gateway';
-import ConnectionArgs, { getPagingParameters } from '../../common/custom-graphql-relay/connection.args';
-import { MeiliService } from '../page/meili.service';
-import { PERSON } from '../page/constants/meili.constants';
+import { I18n, I18nService } from 'nestjs-i18n';
 import { connectionFromArraySlice } from 'src/common/custom-graphql-relay/arrayConnection';
+import { AccountEntity } from 'src/decorators/account.decorator';
+import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
+import ConnectionArgs, { getPagingParameters } from '../../common/custom-graphql-relay/connection.args';
+import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
+import { PERSON } from '../page/constants/meili.constants';
+import { MeiliService } from '../page/meili.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { WorshipGateway } from './worship.gateway';
 
 const pubSub = new PubSub();
 
+@SkipThrottle()
 @Resolver(() => WorshipedPerson)
 @UseFilters(GqlHttpExceptionFilter)
 export class WorshipResolver {

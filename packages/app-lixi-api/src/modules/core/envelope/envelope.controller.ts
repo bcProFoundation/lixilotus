@@ -4,7 +4,9 @@ import { Envelope } from '@bcpros/lixi-models';
 import { VError } from 'verror';
 import { PrismaService } from '../../prisma/prisma.service';
 import { I18n, I18nContext } from 'nestjs-i18n';
+import { SkipThrottle } from '@nestjs/throttler';
 
+@SkipThrottle()
 @Controller('envelopes')
 export class EnvelopeController {
   constructor(private prisma: PrismaService) {}

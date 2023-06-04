@@ -1,30 +1,32 @@
 import {
-  Page,
-  PaginationArgs,
-  PageOrder,
-  PageConnection,
+  Account,
   Category,
   CreatePageInput,
-  Account,
+  Page,
+  PageConnection,
+  PageOrder,
+  PaginationArgs,
   UpdatePageInput,
   DEFAULT_CATEGORY
 } from '@bcpros/lixi-models';
-import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
-import { HttpException, HttpStatus, Logger, UseFilters, UseGuards, Inject } from '@nestjs/common';
-import { Args, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
-import { PubSub } from 'graphql-subscriptions';
-import { PrismaService } from '../prisma/prisma.service';
-import * as _ from 'lodash';
-import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
-import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
-import { I18n, I18nService } from 'nestjs-i18n';
-import VError from 'verror';
-import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
 import BCHJS from '@bcpros/xpi-js';
-import { aesGcmDecrypt, aesGcmEncrypt, generateRandomBase58Str, hashMnemonic } from '../../utils/encryptionMethods';
+import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
+import { HttpException, HttpStatus, Inject, Logger, UseFilters, UseGuards } from '@nestjs/common';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver, Subscription } from '@nestjs/graphql';
+import { SkipThrottle } from '@nestjs/throttler';
+import { PubSub } from 'graphql-subscriptions';
+import * as _ from 'lodash';
+import { I18n, I18nService } from 'nestjs-i18n';
+import { PageAccountEntity } from 'src/decorators/pageAccount.decorator';
+import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
+import VError from 'verror';
+import { aesGcmEncrypt, generateRandomBase58Str } from '../../utils/encryptionMethods';
+import { GqlJwtAuthGuard } from '../auth/guards/gql-jwtauth.guard';
+import { PrismaService } from '../prisma/prisma.service';
 
 const pubSub = new PubSub();
 
+@SkipThrottle()
 @Resolver(() => Page)
 @UseFilters(GqlHttpExceptionFilter)
 export class PageResolver {

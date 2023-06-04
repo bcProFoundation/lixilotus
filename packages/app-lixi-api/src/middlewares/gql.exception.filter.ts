@@ -11,8 +11,8 @@ export class GqlHttpExceptionFilter implements GqlExceptionFilter {
 
   async catch(exception: any, host: ArgumentsHost): Promise<any> {
     const ctx = GqlArgumentsHost.create(host);
-    const request = ctx.getArgByIndex(3);
-    const response = ctx.getArgByIndex(2);
+    const request = (ctx as any).req;
+    const response = (ctx as any).reply;
     let error = exception.response ?? exception;
 
     const statusCode = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
