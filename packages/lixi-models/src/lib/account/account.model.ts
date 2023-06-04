@@ -1,4 +1,5 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { GraphQLDateTime } from 'graphql-scalars';
 
 import { Page } from '../page';
 
@@ -28,12 +29,12 @@ export class Account {
   @Field(() => String, { nullable: true })
   publicKey?: string;
 
-  @Field(() => Date, {
+  @Field(() => GraphQLDateTime, {
     description: 'Identifies the date and time when the object was created.'
   })
   createdAt?: Date;
 
-  @Field(() => Date, {
+  @Field(() => GraphQLDateTime, {
     description: 'Identifies the date and time when the object was last updated.'
   })
   updatedAt?: Date;

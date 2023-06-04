@@ -7417,7 +7417,7 @@
     hoist-non-react-statics "^3.3.0"
     redux "^4.0.0"
 
-"@types/react@*", "@types/react@17.0.2", "@types/react@<18.0.0", "@types/react@^17":
+"@types/react@*", "@types/react@17.0.2", "@types/react@<18.0.0":
   version "17.0.60"
   resolved "https://registry.npmjs.org/@types/react/-/react-17.0.60.tgz#a4a97dcdbebad76612c188fc06440e4995fd8ad2"
   integrity sha512-pCH7bqWIfzHs3D+PDs3O/COCQJka+Kcw3RnO9rFA2zalqoXg7cNjJDh6mZ7oRtY1wmY4LVwDdAbA1F7Z8tv3BQ==
@@ -14961,6 +14961,13 @@ graphql-request@^6.0.0:
   dependencies:
     "@graphql-typed-document-node/core" "^3.2.0"
     cross-fetch "^3.1.5"
+
+graphql-scalars@^1.22.1:
+  version "1.22.1"
+  resolved "https://registry.npmjs.org/graphql-scalars/-/graphql-scalars-1.22.1.tgz#e50087ff94357eb2e932f56da76ba137e9f9212b"
+  integrity sha512-PurWR2/a78EpYapRyPttBDfjIdsSg7q5or6cTaaGyZSV/VDh3o/6m6/BIpvGKGvmE3sY94UrLOZaCHskF5MuiA==
+  dependencies:
+    tslib "^2.5.0"
 
 graphql-subscriptions@^2.0.0:
   version "2.0.0"

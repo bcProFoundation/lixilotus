@@ -1,5 +1,6 @@
 import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
 import { IsOptional } from 'class-validator';
+import { GraphQLDateTime } from 'graphql-scalars';
 
 import { Account } from '../account';
 import { Category } from '../category/';
@@ -61,12 +62,12 @@ export class Page {
   @Field(() => Float, { nullable: true, description: 'The sum of burn amount for every post on page' })
   totalBurnForPage?: number;
 
-  @Field(() => Date, {
+  @Field(() => GraphQLDateTime, {
     description: 'Identifies the date and time when the object was created.'
   })
   createdAt: Date;
 
-  @Field(() => Date, {
+  @Field(() => GraphQLDateTime, {
     description: 'Identifies the date and time when the object was last updated.'
   })
   updatedAt: Date;
