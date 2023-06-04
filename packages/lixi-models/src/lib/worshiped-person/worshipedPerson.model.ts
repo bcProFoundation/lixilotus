@@ -1,5 +1,6 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { IsOptional } from 'class-validator';
+import { GraphQLDateTime } from 'graphql-scalars';
 
 import { City } from '../geo-location/city.model';
 import { Country } from '../geo-location/country.model';
@@ -65,11 +66,11 @@ export class WorshipedPerson {
   @IsOptional()
   wikiDataId?: string;
 
-  @Field(() => Date, { nullable: true })
+  @Field(() => GraphQLDateTime, { nullable: true })
   @IsOptional()
   dateOfBirth?: Date;
 
-  @Field(() => Date, { nullable: true })
+  @Field(() => GraphQLDateTime, { nullable: true })
   @IsOptional()
   dateOfDeath?: Date;
 
@@ -85,13 +86,13 @@ export class WorshipedPerson {
   @IsOptional()
   city?: City;
 
-  @Field(() => Date, {
+  @Field(() => GraphQLDateTime, {
     description: 'Identifies the date and time when the object was created.',
     nullable: true
   })
   createdAt?: Date;
 
-  @Field(() => Date, {
+  @Field(() => GraphQLDateTime, {
     description: 'Identifies the date and time when the object was last updated.',
     nullable: true
   })

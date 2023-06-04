@@ -1,5 +1,6 @@
 import { Field } from '@nestjs/graphql';
 import { IsNotEmpty, IsOptional } from 'class-validator';
+import { GraphQLDateTime } from 'graphql-scalars';
 
 export class WebpushSubscriberCommand {
   @Field(() => Number)
@@ -14,7 +15,7 @@ export class WebpushSubscriberCommand {
   @IsNotEmpty()
   legacyAddress: string;
 
-  @Field(() => Date, { nullable: true })
+  @Field(() => GraphQLDateTime, { nullable: true })
   @IsOptional()
   expirationTime?: Date;
 

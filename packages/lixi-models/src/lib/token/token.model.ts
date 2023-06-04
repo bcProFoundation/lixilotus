@@ -1,5 +1,6 @@
 import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
 import { IsOptional } from 'class-validator';
+import { GraphQLDateTime } from 'graphql-scalars';
 
 @ObjectType()
 export class Token {
@@ -45,12 +46,12 @@ export class Token {
   @Field(() => String, { nullable: true })
   initialTokenQuantity: string;
 
-  @Field(() => Date, {
+  @Field(() => GraphQLDateTime, {
     description: 'Identifies the date and time when the object was created.'
   })
   createdDate: Date;
 
-  @Field(() => Date, {
+  @Field(() => GraphQLDateTime, {
     description: 'Identifies the date and time when the object was last comments.',
     nullable: true
   })

@@ -1,5 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { IsNotEmpty, IsOptional } from 'class-validator';
+import { GraphQLDateTime } from 'graphql-scalars';
 
 @InputType()
 export class CreateTempleInput {
@@ -43,7 +44,7 @@ export class CreateTempleInput {
   @IsOptional()
   website?: string;
 
-  @Field(() => Date, { nullable: true })
+  @Field(() => GraphQLDateTime, { nullable: true })
   @IsOptional()
   dateOfCompleted?: Date;
 

@@ -1,4 +1,5 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { GraphQLDateTime } from 'graphql-scalars';
 
 import { Account } from '../account';
 
@@ -39,15 +40,15 @@ export class WebpushSubscriber {
   @Field(() => Number)
   address: string;
 
-  @Field(() => Date, { nullable: true })
+  @Field(() => GraphQLDateTime, { nullable: true })
   expirationTime?: Date;
 
-  @Field(() => Date, {
+  @Field(() => GraphQLDateTime, {
     description: 'Identifies the date and time when the object was created.'
   })
   createdAt: Date;
 
-  @Field(() => Date, {
+  @Field(() => GraphQLDateTime, {
     description: 'Identifies the date and time when the object was last updated.'
   })
   updatedAt: Date;

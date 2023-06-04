@@ -1,5 +1,6 @@
 import { Field, Float, ID, ObjectType } from '@nestjs/graphql';
 import { IsOptional } from 'class-validator';
+import { GraphQLDateTime } from 'graphql-scalars';
 
 import { Account } from '../account';
 import { PostHashtag } from '../hashtag/postHashtag.model';
@@ -46,12 +47,12 @@ export class Post {
   @Field(() => Float)
   lotusBurnScore: number;
 
-  @Field(() => Date, {
+  @Field(() => GraphQLDateTime, {
     description: 'Identifies the date and time when the object was created.'
   })
   createdAt: Date;
 
-  @Field(() => Date, {
+  @Field(() => GraphQLDateTime, {
     description: 'Identifies the date and time when the object was last updated.'
   })
   updatedAt: Date;

@@ -1,5 +1,6 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { IsOptional } from 'class-validator';
+import { GraphQLDateTime } from 'graphql-scalars';
 
 import { Account } from '../account';
 import { City } from '../geo-location/city.model';
@@ -55,7 +56,7 @@ export class Temple {
   @Field(() => Boolean)
   verified: boolean;
 
-  @Field(() => Date, { nullable: true })
+  @Field(() => GraphQLDateTime, { nullable: true })
   @IsOptional()
   dateOfCompleted?: Date;
 
@@ -75,13 +76,13 @@ export class Temple {
   @IsOptional()
   city?: City;
 
-  @Field(() => Date, {
+  @Field(() => GraphQLDateTime, {
     description: 'Identifies the date and time when the object was created.',
     nullable: true
   })
   createdAt?: Date;
 
-  @Field(() => Date, {
+  @Field(() => GraphQLDateTime, {
     description: 'Identifies the date and time when the object was last updated.',
     nullable: true
   })
