@@ -26,9 +26,29 @@ type Account {
   updatedAt: DateTime!
 }
 
+type AccountConnection {
+  edges: [AccountEdge!]
+  pageInfo: PageInfo!
+  totalCount: Int
+}
+
 type AccountEdge {
   cursor: String!
   node: Account!
+}
+
+input AccountOrder {
+  direction: OrderDirection!
+  field: AccountOrderField!
+}
+
+"""Properties by which account connections can be ordered."""
+enum AccountOrderField {
+  address
+  createdAt
+  id
+  name
+  updatedAt
 }
 
 type Category {
@@ -216,29 +236,9 @@ type FollowAccount {
   updatedAt: DateTime!
 }
 
-type FollowAccountConnection {
-  edges: [FollowAccountEdge!]
-  pageInfo: PageInfo!
-  totalCount: Int
-}
-
 type FollowAccountEdge {
   cursor: String!
   node: FollowAccount!
-}
-
-input FollowAccountOrder {
-  direction: OrderDirection!
-  field: FollowAccountOrderField!
-}
-
-"""Properties by which follow account connections can be ordered."""
-enum FollowAccountOrderField {
-  createdAt
-  followerAccountId
-  followingAccountId
-  id
-  updatedAt
 }
 
 type FollowPage {
@@ -485,8 +485,8 @@ type PostResponse {
 
 type Query {
   allCommentsToPostId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: CommentOrder, skip: Int): CommentConnection!
-  allFollowersByFollowing(after: String, before: String, first: Int, followingAccountId: Int, last: Int, minBurnFilter: Int, orderBy: FollowAccountOrder, skip: Int): FollowAccountConnection!
-  allFollowingsByFollower(after: String, before: String, first: Int, followerAccountId: Int, last: Int, minBurnFilter: Int, orderBy: FollowAccountOrder, skip: Int): FollowAccountConnection!
+  allFollowersByFollowing(after: String, before: String, first: Int, followingAccountId: Int, last: Int, minBurnFilter: Int, orderBy: AccountOrder, skip: Int): AccountConnection!
+  allFollowingsByFollower(after: String, before: String, first: Int, followerAccountId: Int, last: Int, minBurnFilter: Int, orderBy: AccountOrder, skip: Int): AccountConnection!
   allHashtag(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: HashtagOrder, skip: Int): HashtagConnection!
   allHashtagBySearch(
     """Paginate after opaque cursor"""
@@ -504,6 +504,7 @@ type Query {
   ): HashtagConnection!
   allOrphanPosts(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PostOrder, query: String, skip: Int): PostConnection!
   allPages(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PageOrder, query: String, skip: Int): PageConnection!
+  allPagesByFollower(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PageOrder, skip: Int): PageConnection!
   allPagesByUserId(after: String, before: String, first: Int, id: Int, last: Int, minBurnFilter: Int, orderBy: PageOrder, skip: Int): PageConnection!
   allPosts(accountId: Int, after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
   allPostsByHashtagId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!

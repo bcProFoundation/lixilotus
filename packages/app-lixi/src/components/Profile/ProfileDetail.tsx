@@ -30,6 +30,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
+import { openModal } from '@store/modal/actions';
+import { Follow } from '@bcpros/lixi-models/lib/follow/follow.model';
 
 type UserDetailProps = {
   user: any;
@@ -171,8 +173,8 @@ const ProfileCardHeader = styled.div`
       margin-bottom: 0;
       text-transform: capitalize;
     }
-    p {
-      margin: 5px 10px;
+    Button {
+      margin: 0px 5px;
     }
   }
 `;
@@ -565,6 +567,10 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
     await deleteFollowAccountTrigger({ input: deleteFollowAccountInput });
   };
 
+  const openFollowModal = (type: Follow) => {
+    dispatch(openModal('FollowModal', { accountId: selectedAccount.id, type: type }));
+  };
+
   return (
     <>
       <StyledContainerProfileDetail>
@@ -620,9 +626,15 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
           </div>
           {selectedAccount.id == userDetailData.id && (
             <div className="description-profile">
-              <p>{`${userDetailData.followersCount} ${intl.get('general.followers')}`}</p>
-              <p>{`${userDetailData.followingsCount} ${intl.get('general.youFollow')}`}</p>
-              <p>{`${userDetailData.followingPagesCount} ${intl.get('general.followingPages')}`}</p>
+              <Button onClick={() => openFollowModal(Follow.Followers)}>{`${userDetailData.followersCount} ${intl.get(
+                'general.followers'
+              )}`}</Button>
+              <Button onClick={() => openFollowModal(Follow.Followees)}>{`${userDetailData.followingsCount} ${intl.get(
+                'general.youFollow'
+              )}`}</Button>
+              <Button onClick={() => openFollowModal(Follow.FollowingPages)}>{`${
+                userDetailData.followingPagesCount
+              } ${intl.get('general.followingPages')}`}</Button>
             </div>
           )}
         </ProfileCardHeader>
