@@ -1,8 +1,8 @@
 import { PaginationArgs } from '@bcpros/lixi-models';
 import { createEntityAdapter } from '@reduxjs/toolkit';
 import { useAppDispatch } from '@store/hooks';
-import { useLazyPagesByUserIdQuery, usePagesByUserIdQuery, PageQuery } from '@store/page/pages.generated';
-import { useAllPagesByFollowingQuery, useLazyAllPagesByFollowingQuery } from '@store/follow/follows.generated';
+import { PageQuery } from '@store/page/pages.generated';
+import { useAllPagesByFollowerQuery, useLazyAllPagesByFollowerQuery } from '@store/follow/follows.generated';
 import _ from 'lodash';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { PageOrder } from '@generated/types.generated';
@@ -23,9 +23,9 @@ export function useInfinitePagesByFollowerIdQuery(
   params: PageListByIdParams,
   fetchAll = false // if `true`: auto do next fetches to get all notes at once
 ) {
-  const baseResult = useAllPagesByFollowingQuery(params);
+  const baseResult = useAllPagesByFollowerQuery(params);
 
-  const [trigger, nextResult] = useLazyAllPagesByFollowingQuery();
+  const [trigger, nextResult] = useLazyAllPagesByFollowerQuery();
   const [combinedData, setCombinedData] = useState(pagesAdapter.getInitialState({}));
 
   const isBaseReady = useRef(false);
