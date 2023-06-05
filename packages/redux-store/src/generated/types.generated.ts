@@ -572,7 +572,7 @@ export type Query = {
   allHashtagBySearch: HashtagConnection;
   allOrphanPosts: PostConnection;
   allPages: PageConnection;
-  allPagesByFollowing: PageConnection;
+  allPagesByFollower: PageConnection;
   allPagesByUserId: PageConnection;
   allPosts: PostConnection;
   allPostsByHashtagId: PostConnection;
@@ -679,7 +679,7 @@ export type QueryAllPagesArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
-export type QueryAllPagesByFollowingArgs = {
+export type QueryAllPagesByFollowerArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;

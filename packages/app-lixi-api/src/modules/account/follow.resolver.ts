@@ -270,7 +270,7 @@ export class FollowResolver {
 
   @Query(() => PageConnection)
   @UseGuards(GqlJwtAuthGuard)
-  async allPagesByFollowing(
+  async allPagesByFollower(
     @AccountEntity() account: Account,
     @Args() { after, before, first, last }: PaginationArgs,
     @Args({

@@ -41,14 +41,14 @@ export function useInfinitePagesByFollowerIdQuery(
 
   // Base result
   useEffect(() => {
-    next.current = baseResult.data?.allPagesByFollowing?.pageInfo?.endCursor;
-    if (baseResult?.data?.allPagesByFollowing) {
+    next.current = baseResult.data?.allPagesByFollower?.pageInfo?.endCursor;
+    if (baseResult?.data?.allPagesByFollower) {
       isBaseReady.current = true;
 
-      const baseResultParse = baseResult.data.allPagesByFollowing.edges.map(item => item.node);
+      const baseResultParse = baseResult.data.allPagesByFollower.edges.map(item => item.node);
       const adapterSetAll = pagesAdapter.setAll(
         combinedData,
-        baseResult.data.allPagesByFollowing.edges.map(item => item.node)
+        baseResult.data.allPagesByFollower.edges.map(item => item.node)
       );
 
       setCombinedData(adapterSetAll);
@@ -82,7 +82,7 @@ export function useInfinitePagesByFollowerIdQuery(
 
   return {
     data: data ?? [],
-    totalCount: baseResult?.data?.allPagesByFollowing?.totalCount ?? 0,
+    totalCount: baseResult?.data?.allPagesByFollower?.totalCount ?? 0,
     error: baseResult?.error,
     isError: baseResult?.isError,
     isLoading: baseResult?.isLoading,
@@ -90,7 +90,7 @@ export function useInfinitePagesByFollowerIdQuery(
     errorNext: nextResult?.error,
     isErrorNext: nextResult?.isError,
     isFetchingNext: nextResult?.isFetching,
-    hasNext: baseResult.data?.allPagesByFollowing?.pageInfo?.endCursor !== null,
+    hasNext: baseResult.data?.allPagesByFollower?.pageInfo?.endCursor !== null,
     fetchNext,
     refetch
   };

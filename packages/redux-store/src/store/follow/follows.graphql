@@ -81,7 +81,7 @@ query checkIfFollowPage($pageId: String!) {
   checkIfFollowPage(pageId: $pageId)
 }
 
-query allPagesByFollowing(
+query allPagesByFollower(
   $after: String
   $before: String
   $first: Int = 20
@@ -89,7 +89,7 @@ query allPagesByFollowing(
   $orderBy: PageOrder
   $skip: Int
 ) {
-  allPagesByFollowing(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, skip: $skip) {
+  allPagesByFollower(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, skip: $skip) {
     totalCount
     edges {
       cursor
