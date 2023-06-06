@@ -151,6 +151,9 @@ type CreatePostCardProp = {
   tokenPrimaryId?: string;
   userId?: string;
   refetch?: () => void;
+  hashtags?: string[];
+  hashtagId?: string;
+  query?: string;
 };
 
 const CreatePostCard = (props: CreatePostCardProp) => {
@@ -158,7 +161,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
   const pathname = router.pathname ?? '';
   const [enableEditor, setEnableEditor] = useState(false);
   const postCoverUploads = useAppSelector(getPostCoverUploads);
-  const { page, tokenPrimaryId } = props;
+  const { page, tokenPrimaryId, hashtagId, hashtags, query } = props;
   const pageId = page ? page.id : undefined;
   const selectedAccount = useAppSelector(getSelectedAccount);
   const editorCache = useAppSelector(getEditorCache);
@@ -182,7 +185,8 @@ const CreatePostCard = (props: CreatePostCardProp) => {
     filterValue: number,
     result: CreatePostMutation,
     pageId?: string,
-    tokenPrimaryId?: string
+    tokenPrimaryId?: string,
+    hashtagId?: string
   ) => {
     dispatch(
       postApi.util.updateQueryData('Posts', { ...params, minBurnFilter: filterValue }, draft => {
@@ -195,8 +199,52 @@ const CreatePostCard = (props: CreatePostCardProp) => {
         draft.allPosts.totalCount = draft.allPosts.totalCount + 1;
       })
     );
+    dispatch(
+      postApi.util.updateQueryData(
+        'PostsByHashtagId',
+        { ...params, minBurnFilter: filterValue, id: hashtagId },
+        draft => {
+          draft.allPostsByHashtagId.edges.unshift({
+            cursor: result.createPost.id,
+            node: {
+              ...result.createPost
+            }
+          });
+          draft.allPostsByHashtagId.totalCount = draft.allPostsByHashtagId.totalCount + 1;
+        }
+      )
+    );
+    dispatch(
+      postApi.util.updateQueryData(
+        'PostsBySearchWithHashtag',
+        { ...params, minBurnFilter: filterValue, query: query, hashtags: hashtags },
+        draft => {
+          console.log('draft: ', draft);
+          draft.allPostsBySearchWithHashtag.edges.unshift({
+            cursor: result.createPost.id,
+            node: {
+              ...result.createPost
+            }
+          });
+        }
+      )
+    );
     switch (tag) {
       case 'PostsByPageId':
+        dispatch(
+          postApi.util.updateQueryData(
+            'PostsBySearchWithHashtagAtPage',
+            { ...params, minBurnFilter: filterValue, query: query, hashtags: hashtags, pageId: pageId },
+            draft => {
+              draft.allPostsBySearchWithHashtagAtPage.edges.unshift({
+                cursor: result.createPost.id,
+                node: {
+                  ...result.createPost
+                }
+              });
+            }
+          )
+        );
         return dispatch(
           postApi.util.updateQueryData(
             'PostsByPageId',
@@ -213,6 +261,20 @@ const CreatePostCard = (props: CreatePostCardProp) => {
           )
         );
       case 'PostsByTokenId':
+        dispatch(
+          postApi.util.updateQueryData(
+            'PostsBySearchWithHashtagAtToken',
+            { ...params, minBurnFilter: filterValue, query: query, hashtags: hashtags, tokenId: tokenPrimaryId },
+            draft => {
+              draft.allPostsBySearchWithHashtagAtToken.edges.unshift({
+                cursor: result.createPost.id,
+                node: {
+                  ...result.createPost
+                }
+              });
+            }
+          )
+        );
         return dispatch(
           postApi.util.updateQueryData(
             'PostsByTokenId',
@@ -293,7 +355,7 @@ const CreatePostCard = (props: CreatePostCardProp) => {
         tag = PostsQueryTag.PostsByTokenId;
       }
 
-      patches = updatePost(tag, params, filterValue, result, pageId, tokenPrimaryId);
+      patches = updatePost(tag, params, filterValue, result, pageId, tokenPrimaryId, hashtagId);
       dispatch(
         showToast('success', {
           message: 'Success',
@@ -343,11 +405,15 @@ const CreatePostCard = (props: CreatePostCardProp) => {
   };
 
   return (
-    <>
+    <React.Fragment>
       <DesktopCreatePost onClick={() => setEnableEditor(!enableEditor)}>
         <div className="avatar">
           <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
-          <Input bordered={false} placeholder="What's on your mind?" value="" />
+          <Input
+            bordered={false}
+            placeholder={hashtags && hashtags.length > 0 ? hashtags.join(' ') : `What's on your mind?`}
+            value=""
+          />
         </div>
         <div className="btn-create">
           <PlusCircleOutlined />
@@ -381,11 +447,15 @@ const CreatePostCard = (props: CreatePostCardProp) => {
                 </div>
               </div>
             </div>
-            <EditorLexical onSubmit={value => handleCreateNewPost(value)} loading={isLoadingCreatePost} />
+            <EditorLexical
+              onSubmit={value => handleCreateNewPost(value)}
+              loading={isLoadingCreatePost}
+              hashtags={hashtags}
+            />
           </UserCreate>
         </Modal>
       </WrapEditor>
-    </>
+    </React.Fragment>
   );
 };
 

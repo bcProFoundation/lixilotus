@@ -154,17 +154,6 @@ const StyledCollapse = styled(Collapse)`
 const StyledNotificationContent = styled.div`
   font-size: 14px;
 `;
-const menuItems = [
-  { label: intl.get('general.allPost'), key: 'all' }
-  // {
-  //   label: 'Follows',
-  //   key: 'follows'
-  // },
-  // {
-  //   label: 'Hot discussion',
-  //   key: 'hotDiscussion'
-  // }
-];
 
 const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingProps) => {
   const dispatch = useAppDispatch();
@@ -183,6 +172,8 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const leaderboard = useAppSelector(getLeaderBoard);
   const graphqlRequestLoading = useAppSelector(getGraphqlRequestStatus);
   const [hashtags, setHashtags] = useState([]);
+
+  const menuItems = [{ label: intl.get('general.allPost'), key: 'all' }];
 
   useEffect(() => dispatch(getLeaderboard()), []);
 
@@ -267,7 +258,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const Header = () => {
     return (
       <StyledHeader>
-        {!searchValue && hashtags.length === 0 && <CreatePostCard />}
+        <CreatePostCard hashtags={hashtags} query={searchValue} />
         <h1 style={{ textAlign: 'left', fontSize: '20px', margin: '1rem' }}>
           {searchValue && intl.get('general.searchResults', { text: searchValue })}
         </h1>

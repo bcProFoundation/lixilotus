@@ -35,6 +35,7 @@ export type EditorLexicalProps = {
   isEditMode?: boolean;
   onSubmit?: (value) => void;
   loading?: boolean;
+  hashtags?: string[];
 };
 
 const StyledEditorLexical = styled.div`
@@ -106,7 +107,7 @@ const StyledEditorLexical = styled.div`
 `;
 
 const EditorLexical = (props: EditorLexicalProps) => {
-  const { initialContent, onSubmit, isEditMode, loading } = props;
+  const { initialContent, onSubmit, isEditMode, loading, hashtags } = props;
   const [floatingAnchorElem, setFloatingAnchorElem] = useState<HTMLDivElement | null>(null);
   const postCoverUploads = useAppSelector(getPostCoverUploads);
   const imagesList = postCoverUploads.map(img => {
@@ -130,8 +131,20 @@ const EditorLexical = (props: EditorLexicalProps) => {
   const Placeholder = () => {
     return <div className="EditorLexical_placeholder">What do you think?...</div>;
   };
+
+  const setInitialContent = (hashtags: string[], initialContent: string, isEditMode: boolean) => {
+    if (isEditMode) {
+      return initialContent;
+    }
+
+    if (hashtags.length > 0) {
+      return hashtags.join(' ');
+    }
+
+    return '';
+  };
   return (
-    <>
+    <React.Fragment>
       <StyledEditorLexical>
         <LexicalComposer initialConfig={editorConfig}>
           <div className="EditorLexical_container">
@@ -160,7 +173,7 @@ const EditorLexical = (props: EditorLexicalProps) => {
             <LinkPlugin />
             <HashtagPlugin />
             <AutoEmbedPlugin />
-            <MyCustomAutoFocusPlugin initialContent={isEditMode ? initialContent : ''} />
+            <MyCustomAutoFocusPlugin initialContent={setInitialContent(hashtags, initialContent, isEditMode)} />
             {floatingAnchorElem && (
               <>
                 <FloatingLinkEditorPlugin anchorElem={floatingAnchorElem} />
@@ -186,7 +199,7 @@ const EditorLexical = (props: EditorLexicalProps) => {
           <CustomButtonSubmitPlugin onSubmit={value => onSubmit(value)} loading={loading} isEditMode={isEditMode} />
         </LexicalComposer>
       </StyledEditorLexical>
-    </>
+    </React.Fragment>
   );
 };
 
