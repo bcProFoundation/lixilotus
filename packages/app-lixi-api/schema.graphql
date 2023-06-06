@@ -359,6 +359,7 @@ type Page {
   pageAccountId: Int!
   parent: Page
   parentId: String
+  rank: Int!
   salt: String
   stateId: String
   stateName: String
@@ -366,6 +367,9 @@ type Page {
 
   """The sum of burn amount for every post on page"""
   totalBurnForPage: Float
+  totalPostsBurnDown: Float!
+  totalPostsBurnScore: Float!
+  totalPostsBurnUp: Float!
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
@@ -401,6 +405,7 @@ enum PageOrderField {
   id
   lotusBurnScore
   name
+  rank
   title
   updatedAt
 }

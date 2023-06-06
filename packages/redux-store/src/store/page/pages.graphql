@@ -95,6 +95,10 @@ fragment PageFields on Page {
   createCommentFee
   createdAt
   updatedAt
+  totalPostsBurnUp
+  totalPostsBurnDown
+  totalPostsBurnScore
+  rank
 }
 
 mutation createPage($input: CreatePageInput!) {

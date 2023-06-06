@@ -279,7 +279,11 @@ const PageHome = () => {
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePagesQuery(
     {
-      first: 10
+      first: 10,
+      orderBy: {
+        direction: OrderDirection.Asc,
+        field: PageOrderField.Rank
+      }
     },
     false
   );

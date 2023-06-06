@@ -48,6 +48,10 @@ export type PageQuery = {
     createCommentFee: string;
     createdAt: any;
     updatedAt: any;
+    totalPostsBurnUp: number;
+    totalPostsBurnDown: number;
+    totalPostsBurnScore: number;
+    rank: number;
     pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
     category: { __typename?: 'Category'; id: string; name: string };
   };
@@ -97,6 +101,10 @@ export type PagesQuery = {
         createCommentFee: string;
         createdAt: any;
         updatedAt: any;
+        totalPostsBurnUp: number;
+        totalPostsBurnDown: number;
+        totalPostsBurnScore: number;
+        rank: number;
         pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         category: { __typename?: 'Category'; id: string; name: string };
       };
@@ -155,6 +163,10 @@ export type PagesByUserIdQuery = {
         createCommentFee: string;
         createdAt: any;
         updatedAt: any;
+        totalPostsBurnUp: number;
+        totalPostsBurnDown: number;
+        totalPostsBurnScore: number;
+        rank: number;
         pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         category: { __typename?: 'Category'; id: string; name: string };
       };
@@ -195,6 +207,10 @@ export type PageFieldsFragment = {
   createCommentFee: string;
   createdAt: any;
   updatedAt: any;
+  totalPostsBurnUp: number;
+  totalPostsBurnDown: number;
+  totalPostsBurnScore: number;
+  rank: number;
   pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
   category: { __typename?: 'Category'; id: string; name: string };
 };
@@ -231,6 +247,10 @@ export type CreatePageMutation = {
     createCommentFee: string;
     createdAt: any;
     updatedAt: any;
+    totalPostsBurnUp: number;
+    totalPostsBurnDown: number;
+    totalPostsBurnScore: number;
+    rank: number;
     pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
     category: { __typename?: 'Category'; id: string; name: string };
   };
@@ -268,6 +288,10 @@ export type UpdatePageMutation = {
     createCommentFee: string;
     createdAt: any;
     updatedAt: any;
+    totalPostsBurnUp: number;
+    totalPostsBurnDown: number;
+    totalPostsBurnScore: number;
+    rank: number;
     pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
     category: { __typename?: 'Category'; id: string; name: string };
   };
@@ -308,6 +332,10 @@ export const PageFieldsFragmentDoc = `
   createCommentFee
   createdAt
   updatedAt
+  totalPostsBurnUp
+  totalPostsBurnDown
+  totalPostsBurnScore
+  rank
 }
     `;
 export const PageDocument = `

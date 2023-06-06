@@ -434,12 +434,16 @@ export type Page = {
   pageAccountId: Scalars['Int'];
   parent?: Maybe<Page>;
   parentId?: Maybe<Scalars['String']>;
+  rank: Scalars['Int'];
   salt?: Maybe<Scalars['String']>;
   stateId?: Maybe<Scalars['String']>;
   stateName?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   /** The sum of burn amount for every post on page */
   totalBurnForPage?: Maybe<Scalars['Float']>;
+  totalPostsBurnDown: Scalars['Float'];
+  totalPostsBurnScore: Scalars['Float'];
+  totalPostsBurnUp: Scalars['Float'];
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
   website?: Maybe<Scalars['String']>;
@@ -477,6 +481,7 @@ export enum PageOrderField {
   Id = 'id',
   LotusBurnScore = 'lotusBurnScore',
   Name = 'name',
+  Rank = 'rank',
   Title = 'title',
   UpdatedAt = 'updatedAt'
 }

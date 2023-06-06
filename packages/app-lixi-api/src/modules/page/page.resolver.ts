@@ -59,8 +59,9 @@ export class PageResolver {
 
     const result = {
       ...page,
-      categoryId: page?.categoryId ?? DEFAULT_CATEGORY,
       followersCount: followersCount,
+      totalBurnForPage: page ? page.lotusBurnScore + page.totalPostsBurnScore : 0,
+      categoryId: page?.categoryId ?? DEFAULT_CATEGORY,
       countryName: page?.country?.name ?? undefined,
       stateName: page?.state?.name ?? undefined
     };
@@ -82,23 +83,35 @@ export class PageResolver {
   ) {
     const result = await findManyCursorConnection(
       async args => {
-        const pages = await this.prisma.page.findMany({
-          include: {
-            posts: true
-          },
-          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
-          ...args
-        });
+        const pages = await this.prisma.page
+          .findMany({
+            orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+            ...args
+          })
+          .then(pages =>
+            pages
+              .map(page => ({
+                ...page,
+                totalBurnForPage: page.lotusBurnScore + page.totalPostsBurnScore ?? 0,
+                categoryId: page?.categoryId ?? DEFAULT_CATEGORY
+              }))
+              .sort((a, b) => b.totalBurnForPage - a.totalBurnForPage)
+              .map((page, index) => ({
+                ...page,
+                rank: index + 1
+              }))
+          );
 
-        const output = pages
-          .map(page => ({
-            ...page,
-            totalBurnForPage: page.posts.reduce((a, b) => a + b.lotusBurnScore, 0),
-            categoryId: page?.categoryId ?? DEFAULT_CATEGORY
-          }))
-          .sort((a, b) => a.lotusBurnScore - b.lotusBurnScore);
+        await Promise.all(
+          pages.map(async page => {
+            await this.prisma.page.update({
+              where: { id: page.id },
+              data: { rank: page.rank }
+            });
+          })
+        );
 
-        return output;
+        return pages;
       },
       () => this.prisma.page.count(),
       { first, last, before, after }
@@ -124,9 +137,6 @@ export class PageResolver {
           where: {
             pageAccountId: id
           },
-          include: {
-            posts: true
-          },
           orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
           ...args
         });
@@ -134,7 +144,7 @@ export class PageResolver {
         const output = pages.map(page => ({
           ...page,
           categoryId: page?.categoryId ?? DEFAULT_CATEGORY,
-          totalBurnForPage: page.posts.reduce((a, b) => a + b.lotusBurnScore, 0)
+          totalBurnForPage: page.lotusBurnScore + page.totalPostsBurnScore ?? 0
         }));
 
         return output;
@@ -165,6 +175,17 @@ export class PageResolver {
 
     const encryptedMnemonic: string = await aesGcmEncrypt(Bip39128BitMnemonic, salt + process.env.MNEMONIC_SECRET);
 
+    const latestRanking = await this.prisma.page.findFirst({
+      orderBy: {
+        id: 'desc'
+      }
+    });
+
+    let rankIndex = 1;
+    if (latestRanking) {
+      rankIndex = latestRanking.rank + 1;
+    }
+
     const createdPage = await this.prisma.page.create({
       data: {
         ..._.omit(data, ['categoryId']),
@@ -175,7 +196,8 @@ export class PageResolver {
           }
         },
         salt: salt,
-        encryptedMnemonic: encryptedMnemonic
+        encryptedMnemonic: encryptedMnemonic,
+        rank: rankIndex
       }
     });
 
