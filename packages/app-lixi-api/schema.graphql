@@ -366,6 +366,9 @@ type Page {
 
   """The sum of burn amount for every post on page"""
   totalBurnForPage: Float
+  totalPostsBurnDown: Float!
+  totalPostsBurnScore: Float!
+  totalPostsBurnUp: Float!
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
@@ -402,6 +405,7 @@ enum PageOrderField {
   lotusBurnScore
   name
   title
+  totalPostsBurnScore
   updatedAt
 }
 
