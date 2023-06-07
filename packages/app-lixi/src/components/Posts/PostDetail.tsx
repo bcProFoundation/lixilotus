@@ -609,7 +609,9 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           <div className="description-post">{ReactHtmlParser(post.content)}</div>
           {post.uploads.length != 0 && (
             <div className="images-post">
-              <Gallery photos={imagesList} renderImage={imageRenderer} />
+              <Image.PreviewGroup>
+                <Gallery photos={imagesList} renderImage={imageRenderer} />
+              </Image.PreviewGroup>
             </div>
           )}
           <ActionBar>
