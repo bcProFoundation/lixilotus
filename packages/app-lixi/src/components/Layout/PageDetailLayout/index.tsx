@@ -54,7 +54,7 @@ export const AppContainer = styled.div`
       gap: 0 !important;
     }
   }
- 
+
   .ant-layout.ant-layout-has-sider {
     gap: 2rem;
     justify-content: center;
