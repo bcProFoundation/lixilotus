@@ -1127,7 +1127,7 @@ export const CreateLixiFormModal: React.FC<CreateLixiFormModalProps> = ({
             <Form.Item label={intl.get('account.country')}>
               <CountrySelectDropdown
                 countries={countries}
-                defaultValue={newCountryLixi ? newCountryLixi : intl.get('account.allCountry')}
+                defaultValue={newCountryLixi ? newCountryLixi : intl.get('account.lo')}
                 handleChangeCountry={handleChangeCountry}
               />
             </Form.Item>
