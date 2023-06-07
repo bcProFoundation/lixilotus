@@ -65,6 +65,7 @@
     "redux-persist-indexeddb-storage": "^1.0.4",
     "redux-saga": "^1.2.2",
     "sanitize-html": "^2.8.1",
+    "html-react-parser": "4.0.0",
     "socket.io-client": "^4.5.4",
     "styled-components": "^5.3.6",
     "ua-parser-js": "^1.0.33",

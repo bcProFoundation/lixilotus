@@ -20,6 +20,7 @@ import intl from 'react-intl-universal';
 import { currency } from '@components/Common/Ticker';
 import _ from 'lodash';
 import { getFilterPostsHome } from '@store/settings';
+import CreatePostCard from '@components/Common/CreatePostCard';
 
 type HashtagItem = HashtagQuery['hashtag'];
 
@@ -50,6 +51,7 @@ const Hashtag = ({ hashtag, isMobile }: HashtagProps) => {
   const failQueue = useAppSelector(getFailQueue);
   const selectedAccount = useAppSelector(getSelectedAccount);
   const filterValue = useAppSelector(getFilterPostsHome);
+  const hashtags: string[] = [`#${hashtag.content}`];
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } =
     useInfinitePostsByHashtagIdQuery(
@@ -148,6 +150,7 @@ const Hashtag = ({ hashtag, isMobile }: HashtagProps) => {
   return (
     <StyledContainer>
       <StyledHeader>{`#${hashtag.content}`}</StyledHeader>
+      <CreatePostCard hashtags={hashtags} hashtagId={hashtag.id} />
       <InfiniteScroll
         dataLength={data.length}
         next={loadMoreItems}

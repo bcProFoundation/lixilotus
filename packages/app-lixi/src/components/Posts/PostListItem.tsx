@@ -15,10 +15,11 @@ import styled from 'styled-components';
 import { EditPostModalProps } from './EditPostModalPopup';
 import Gallery from 'react-photo-gallery';
 import useWindowDimensions from '@hooks/useWindowDimensions';
-import { ReadMoreMore } from 'read-more-more';
 import { formatRelativeTime } from '@utils/formatting';
 import { Counter } from '@components/Common/Counter';
 import Reaction from '@components/Common/Reaction';
+import parse from 'html-react-parser';
+import PostContent from './PostContent';
 
 export const CommentList = ({ comments }: { comments: CommentItem[] }) => (
   <List
@@ -265,7 +266,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
   if (!post) return null;
 
   const handlePostClick = e => {
-    if (e.target.className === 'read-more-more-module_btn__33IaH') {
+    if (e.target.className === 'read-more-more-module_btn__33IaH' || e.target.className === 'hashtag-link') {
       e.stopPropagation();
     } else {
       router.push(`/post/${post.id}`);
@@ -310,17 +311,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
         <Content onClick={e => handlePostClick(e)}>
           <div className="description-post">
             <div className="read-more">
-              <ReadMoreMore
-                id="readMore"
-                linesToShow={5}
-                parseHtml
-                text={post?.content}
-                checkFor={500}
-                transDuration={0}
-                readMoreText={intl.get('general.showMore')}
-                readLessText={intl.get('general.showLess')}
-                btnStyles={{ color: 'var(--color-primary)' }}
-              />
+              <PostContent postContent={post?.content} />
             </div>
           </div>
           {item.uploads.length != 0 && !showMoreImage && (
