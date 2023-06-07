@@ -442,7 +442,7 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
         />
         <FilterBurnt filterForType={FilterType.PostsToken} />
       </SearchBar>
-      {!searchValue && hashtags.length === 0 && <CreatePostCard tokenPrimaryId={tokenDetailData.id} />}
+      <CreatePostCard hashtags={hashtags} tokenPrimaryId={tokenDetailData.id} query={searchValue} />
       <div className="content">
         <Tabs defaultActiveKey="1">
           <Tabs.TabPane tab="Top discussions" key="1">

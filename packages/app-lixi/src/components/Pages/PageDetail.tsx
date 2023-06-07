@@ -617,7 +617,6 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
             <div className="title-profile">
               <h2>{pageDetailData.name}</h2>
               <p>{intl.get('category.' + pageDetailData.category.name)}</p>
-              {console.log('pageDetailData: ', pageDetailData)}
             </div>
             {/* TODO: implement in the future */}
             {selectedAccountId == pageDetailData?.pageAccountId && (
@@ -770,7 +769,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                   />
                   <FilterBurnt filterForType={FilterType.PostsPage} />
                 </div>
-                {!searchValue && hashtags.length === 0 && <CreatePostCard page={page} />}
+                <CreatePostCard page={page} hashtags={hashtags} query={searchValue} />
                 <Timeline>
                   {data.length == 0 && (
                     <div className="blank-timeline">

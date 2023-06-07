@@ -25,7 +25,7 @@ const MyCustomAutoFocusPlugin: React.FC<any> = props => {
       // Insert them at a selection.
       $insertNodes(nodes);
     });
-  }, []);
+  }, [props.initialContent]);
 
   useEffect(() => {
     // Focus the editor when the effect fires!
