@@ -33,9 +33,13 @@ export class HashtagService {
     const promises = hashtags.map(async (hashtag: string) => {
       //We search using meilisearch so its ok to loop here
       const hashtagUppercase = hashtag.substring(1).toUpperCase();
-      const result: SearchResponse = await this.meiliSearch.index(index).search(hashtagUppercase);
+      const result = await this.prisma.hashtag.findUnique({
+        where: {
+          content: hashtagUppercase
+        }
+      });
 
-      if (result.hits.length === 0) {
+      if (result === null) {
         //If there the hashtag hasnt exist
         //Create new hashtag at database
         const createdHashtag = await this.prisma.$transaction(async prisma => {
@@ -78,7 +82,7 @@ export class HashtagService {
         return hashtagToIndexed;
       } else {
         //If there the hashtag has existed
-        const hashtag = result.hits[0];
+        const hashtag = result;
 
         await this.prisma.postHashtag.create({
           data: {

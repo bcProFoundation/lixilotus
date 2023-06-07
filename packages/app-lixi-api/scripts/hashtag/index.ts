@@ -99,6 +99,10 @@ async function main() {
           content: existingHashtag.content
         };
 
+        await meiliClient
+          .index(`${process.env.MEILISEARCH_BUCKET}_hashtag`)
+          .addDocuments([{ ...hashtagToIndexed, primaryId: existingHashtag.id }], { primaryKey: 'primaryId' });
+
         indexedHashtags.push(hashtagToIndexed);
       }
     }
