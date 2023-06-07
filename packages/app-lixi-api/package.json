@@ -78,6 +78,7 @@
     "file-system": "^2.2.2",
     "geoip-country": "^4.1.42",
     "graphql": "^16.6.0",
+    "graphql-scalars": "^1.22.1",
     "graphql-subscriptions": "^2.0.0",
     "ioredis": "^5.3.0",
     "json2csv": "^5.0.7",

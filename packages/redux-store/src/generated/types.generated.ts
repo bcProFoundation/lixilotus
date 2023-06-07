@@ -39,11 +39,32 @@ export type Account = {
   updatedAt: Scalars['DateTime'];
 };
 
+export type AccountConnection = {
+  __typename?: 'AccountConnection';
+  edges?: Maybe<Array<AccountEdge>>;
+  pageInfo: PageInfo;
+  totalCount?: Maybe<Scalars['Int']>;
+};
+
 export type AccountEdge = {
   __typename?: 'AccountEdge';
   cursor: Scalars['String'];
   node: Account;
 };
+
+export type AccountOrder = {
+  direction: OrderDirection;
+  field: AccountOrderField;
+};
+
+/** Properties by which account connections can be ordered. */
+export enum AccountOrderField {
+  Address = 'address',
+  CreatedAt = 'createdAt',
+  Id = 'id',
+  Name = 'name',
+  UpdatedAt = 'updatedAt'
+}
 
 export type Category = {
   __typename?: 'Category';
@@ -225,32 +246,11 @@ export type FollowAccount = {
   updatedAt: Scalars['DateTime'];
 };
 
-export type FollowAccountConnection = {
-  __typename?: 'FollowAccountConnection';
-  edges?: Maybe<Array<FollowAccountEdge>>;
-  pageInfo: PageInfo;
-  totalCount?: Maybe<Scalars['Int']>;
-};
-
 export type FollowAccountEdge = {
   __typename?: 'FollowAccountEdge';
   cursor: Scalars['String'];
   node: FollowAccount;
 };
-
-export type FollowAccountOrder = {
-  direction: OrderDirection;
-  field: FollowAccountOrderField;
-};
-
-/** Properties by which follow account connections can be ordered. */
-export enum FollowAccountOrderField {
-  CreatedAt = 'createdAt',
-  FollowerAccountId = 'followerAccountId',
-  FollowingAccountId = 'followingAccountId',
-  Id = 'id',
-  UpdatedAt = 'updatedAt'
-}
 
 export type FollowPage = {
   __typename?: 'FollowPage';
@@ -570,12 +570,13 @@ export type PostResponse = {
 export type Query = {
   __typename?: 'Query';
   allCommentsToPostId: CommentConnection;
-  allFollowersByFollowing: FollowAccountConnection;
-  allFollowingsByFollower: FollowAccountConnection;
+  allFollowersByFollowing: AccountConnection;
+  allFollowingsByFollower: AccountConnection;
   allHashtag: HashtagConnection;
   allHashtagBySearch: HashtagConnection;
   allOrphanPosts: PostConnection;
   allPages: PageConnection;
+  allPagesByFollower: PageConnection;
   allPagesByUserId: PageConnection;
   allPosts: PostConnection;
   allPostsByHashtagId: PostConnection;
@@ -627,7 +628,7 @@ export type QueryAllFollowersByFollowingArgs = {
   followingAccountId?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   minBurnFilter?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<FollowAccountOrder>;
+  orderBy?: InputMaybe<AccountOrder>;
   skip?: InputMaybe<Scalars['Int']>;
 };
 
@@ -638,7 +639,7 @@ export type QueryAllFollowingsByFollowerArgs = {
   followerAccountId?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   minBurnFilter?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<FollowAccountOrder>;
+  orderBy?: InputMaybe<AccountOrder>;
   skip?: InputMaybe<Scalars['Int']>;
 };
 
@@ -679,6 +680,16 @@ export type QueryAllPagesArgs = {
   minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<Array<PageOrder>>;
   query?: InputMaybe<Scalars['String']>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
+export type QueryAllPagesByFollowerArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<PageOrder>;
   skip?: InputMaybe<Scalars['Int']>;
 };
 

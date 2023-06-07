@@ -628,5 +628,8 @@ export default {
   'general.youFollow': 'Bạn theo dõi',
   'general.followingPages': 'Trang đang theo dõi',
   'follow.followSuccess': 'Theo dõi thành công',
-  'follow.followFailure': 'Theo dõi không thành công'
+  'follow.followFailure': 'Theo dõi không thành công',
+  'follow.noFollowers': 'Chưa có ai theo dõi bạn!',
+  'follow.noFollowings': 'Bạn chưa ai theo dõi!',
+  'follow.noFollowingPages': 'Bạn chưa theo dõi trang nào!'
 };

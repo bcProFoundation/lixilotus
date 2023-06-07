@@ -14,6 +14,7 @@ import { UploadAvatarCoverModal } from './uploadImageModal';
 import { BurnModal } from './BurnModal';
 import { ConfigProvider } from 'antd';
 import lightTheme from 'src/styles/themes/lightTheme';
+import { FollowModal } from './FollowModal';
 
 const modalComponentLookupTable = {
   CreateLixiConfirmationModal,
@@ -26,7 +27,8 @@ const modalComponentLookupTable = {
   CreatePageModal,
   EditPageModal,
   UploadAvatarCoverModal,
-  BurnModal
+  BurnModal,
+  FollowModal
 };
 
 const ModalManager = () => {
