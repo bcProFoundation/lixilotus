@@ -390,6 +390,7 @@ export default {
   'country.us': 'United States',
   'country.id': 'Indonesia',
   'country.ph': 'Philippines',
+  'country.lo': 'Lotusia',
 
   /* 07.Onboarding */
   'onboarding.dontForgetBackup': 'Đừng quên sao lưu tài khoản của bạn',
@@ -613,6 +614,7 @@ export default {
   'category.agriculture': 'Nông nghiệp',
   'category.permaculture': 'Thủy sản',
   'category.humanitarian': 'Tính nhân đạo',
+  'category.hospitality': 'Khách sạn - Dịch vụ',
 
   /* 19. Webpush */
   'webpush.unableToSubscribe': 'Không thể đăng ký.',
