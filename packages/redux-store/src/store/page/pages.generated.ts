@@ -48,6 +48,9 @@ export type PageQuery = {
     createCommentFee: string;
     createdAt: any;
     updatedAt: any;
+    totalPostsBurnUp: number;
+    totalPostsBurnDown: number;
+    totalPostsBurnScore: number;
     pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
     category: { __typename?: 'Category'; id: string; name: string };
   };
@@ -58,7 +61,7 @@ export type PagesQueryVariables = Types.Exact<{
   before?: Types.InputMaybe<Types.Scalars['String']>;
   first?: Types.InputMaybe<Types.Scalars['Int']>;
   last?: Types.InputMaybe<Types.Scalars['Int']>;
-  orderBy?: Types.InputMaybe<Types.PageOrder>;
+  orderBy?: Types.InputMaybe<Array<Types.PageOrder> | Types.PageOrder>;
   query?: Types.InputMaybe<Types.Scalars['String']>;
   skip?: Types.InputMaybe<Types.Scalars['Int']>;
 }>;
@@ -97,6 +100,9 @@ export type PagesQuery = {
         createCommentFee: string;
         createdAt: any;
         updatedAt: any;
+        totalPostsBurnUp: number;
+        totalPostsBurnDown: number;
+        totalPostsBurnScore: number;
         pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         category: { __typename?: 'Category'; id: string; name: string };
       };
@@ -155,6 +161,9 @@ export type PagesByUserIdQuery = {
         createCommentFee: string;
         createdAt: any;
         updatedAt: any;
+        totalPostsBurnUp: number;
+        totalPostsBurnDown: number;
+        totalPostsBurnScore: number;
         pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         category: { __typename?: 'Category'; id: string; name: string };
       };
@@ -195,6 +204,9 @@ export type PageFieldsFragment = {
   createCommentFee: string;
   createdAt: any;
   updatedAt: any;
+  totalPostsBurnUp: number;
+  totalPostsBurnDown: number;
+  totalPostsBurnScore: number;
   pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
   category: { __typename?: 'Category'; id: string; name: string };
 };
@@ -231,6 +243,9 @@ export type CreatePageMutation = {
     createCommentFee: string;
     createdAt: any;
     updatedAt: any;
+    totalPostsBurnUp: number;
+    totalPostsBurnDown: number;
+    totalPostsBurnScore: number;
     pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
     category: { __typename?: 'Category'; id: string; name: string };
   };
@@ -268,6 +283,9 @@ export type UpdatePageMutation = {
     createCommentFee: string;
     createdAt: any;
     updatedAt: any;
+    totalPostsBurnUp: number;
+    totalPostsBurnDown: number;
+    totalPostsBurnScore: number;
     pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
     category: { __typename?: 'Category'; id: string; name: string };
   };
@@ -308,6 +326,9 @@ export const PageFieldsFragmentDoc = `
   createCommentFee
   createdAt
   updatedAt
+  totalPostsBurnUp
+  totalPostsBurnDown
+  totalPostsBurnScore
 }
     `;
 export const PageDocument = `
@@ -318,7 +339,7 @@ export const PageDocument = `
 }
     ${PageFieldsFragmentDoc}`;
 export const PagesDocument = `
-    query Pages($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: PageOrder, $query: String, $skip: Int) {
+    query Pages($after: String, $before: String, $first: Int = 20, $last: Int, $orderBy: [PageOrder!], $query: String, $skip: Int) {
   allPages(
     after: $after
     before: $before

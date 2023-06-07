@@ -101,6 +101,9 @@ export class BurnController {
           const post = await this.prisma.post.findFirst({
             where: {
               id: command.burnForId
+            },
+            include: {
+              page: true
             }
           });
 
@@ -134,6 +137,31 @@ export class BurnController {
               lotusBurnScore
             }
           });
+
+          if (post && post.page) {
+            await this.prisma.$transaction(async prisma => {
+              let totalPostsBurnUp = post?.page?.totalPostsBurnUp ?? 0;
+              let totalPostsBurnDown = post?.page?.totalPostsBurnDown ?? 0;
+
+              if (command.burnType == BurnType.Up) {
+                totalPostsBurnUp = totalPostsBurnUp + xpiValue;
+              } else {
+                totalPostsBurnDown = totalPostsBurnDown + xpiValue;
+              }
+              const totalPostsBurnScore = totalPostsBurnUp - totalPostsBurnDown;
+
+              await prisma.page.update({
+                where: {
+                  id: post.pageId as string
+                },
+                data: {
+                  totalPostsBurnUp,
+                  totalPostsBurnDown,
+                  totalPostsBurnScore
+                }
+              });
+            });
+          }
 
           if (postHashtags.length > 0) {
             await this.prisma.$transaction(

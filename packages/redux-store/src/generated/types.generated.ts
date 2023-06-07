@@ -440,6 +440,9 @@ export type Page = {
   title?: Maybe<Scalars['String']>;
   /** The sum of burn amount for every post on page */
   totalBurnForPage?: Maybe<Scalars['Float']>;
+  totalPostsBurnDown: Scalars['Float'];
+  totalPostsBurnScore: Scalars['Float'];
+  totalPostsBurnUp: Scalars['Float'];
   /** Identifies the date and time when the object was last updated. */
   updatedAt: Scalars['DateTime'];
   website?: Maybe<Scalars['String']>;
@@ -478,6 +481,7 @@ export enum PageOrderField {
   LotusBurnScore = 'lotusBurnScore',
   Name = 'name',
   Title = 'title',
+  TotalPostsBurnScore = 'totalPostsBurnScore',
   UpdatedAt = 'updatedAt'
 }
 
@@ -674,7 +678,7 @@ export type QueryAllPagesArgs = {
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   minBurnFilter?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<PageOrder>;
+  orderBy?: InputMaybe<Array<PageOrder>>;
   query?: InputMaybe<Scalars['String']>;
   skip?: InputMaybe<Scalars['Int']>;
 };

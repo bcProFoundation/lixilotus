@@ -12,7 +12,7 @@ query Pages(
   $before: String
   $first: Int = 20
   $last: Int
-  $orderBy: PageOrder
+  $orderBy: [PageOrder!]
   $query: String
   $skip: Int
 ) {
@@ -95,6 +95,9 @@ fragment PageFields on Page {
   createCommentFee
   createdAt
   updatedAt
+  totalPostsBurnUp
+  totalPostsBurnDown
+  totalPostsBurnScore
 }
 
 mutation createPage($input: CreatePageInput!) {
