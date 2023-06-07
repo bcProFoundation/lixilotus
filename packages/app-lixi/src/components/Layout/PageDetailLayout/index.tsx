@@ -47,12 +47,20 @@ export const AppContainer = styled.div`
   @media (max-width: 960px) {
     padding: 0 4px;
   }
+
+  @media (max-width: 1150px) and (min-width: 768px) {
+    .ant-space {
+      flex-direction: column;
+      gap: 0 !important;
+    }
+  }
+ 
   .ant-layout.ant-layout-has-sider {
-    gap: 10rem;
+    gap: 2rem;
     justify-content: center;
   }
   .main-section-layout {
-    padding-right: 188px;
+    padding-right: 2rem;
     max-width: 100%;
     margin-top: 8px;
     height: 100vh;
@@ -64,6 +72,14 @@ export const AppContainer = styled.div`
       flex: auto;
       min-height: 0;
       margin-top: 17px;
+
+      .ant-table-content {
+        overflow: visible !important;
+        table {
+          table-layout: fixed !important;
+          width: 100% !important;
+        }
+      }
     }
   }
 `;
