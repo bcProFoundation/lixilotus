@@ -40,4 +40,4 @@ const PostContent = ({ postContent }) => {
   );
 };
 
-export default PostContent;
+export default React.memo(PostContent);

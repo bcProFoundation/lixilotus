@@ -151,8 +151,8 @@ type CreatePostCardProp = {
   tokenPrimaryId?: string;
   userId?: string;
   refetch?: () => void;
-  hashtags?: string[];
-  hashtagId?: string;
+  hashtags?: string[]; //Multiple hashtag for search function
+  hashtagId?: string; // hashtagId here for the url /hashtag/{hashtag}
   query?: string;
 };
 
@@ -219,7 +219,6 @@ const CreatePostCard = (props: CreatePostCardProp) => {
         'PostsBySearchWithHashtag',
         { ...params, minBurnFilter: filterValue, query: query, hashtags: hashtags },
         draft => {
-          console.log('draft: ', draft);
           draft.allPostsBySearchWithHashtag.edges.unshift({
             cursor: result.createPost.id,
             node: {

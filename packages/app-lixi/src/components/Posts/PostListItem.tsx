@@ -290,23 +290,6 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
     dispatch(openModal('EditPostModalPopup', editPostProps));
   };
 
-  const content = parse(post?.content, {
-    replace: (domNode: any) => {
-      if (domNode.attribs && domNode.attribs.class === 'EditorLexical_hashtag') {
-        const hashtag: string = domNode.children[0].data;
-        return (
-          <a
-            href={`${process.env.NEXT_PUBLIC_LIXI_URL}/hashtag/${hashtag.substring(1)}`} // Replace example.com with your desired URL
-            rel="noopener noreferrer"
-            className="hashtag-link"
-          >
-            {domNode.children.map(child => child.data)}
-          </a>
-        );
-      }
-    }
-  });
-
   return (
     <PostListItemContainer key={post.id} ref={ref}>
       <CardContainer>
