@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import _ from 'lodash';
+import * as _ from 'lodash';
 require('dotenv').config();
 
 const prisma = new PrismaClient();
