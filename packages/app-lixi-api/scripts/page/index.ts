@@ -27,11 +27,6 @@ async function main() {
         totalBurnForPage
       }
     })
-    .sort((a, b) => b.totalBurnForPage - a.totalBurnForPage)
-    .map((page, index) => ({
-      ...page,
-      rank: index + 1
-    }));
 
   await prisma.$transaction(async prisma => {
     updatedPages.map(page => {

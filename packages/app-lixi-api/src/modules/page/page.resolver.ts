@@ -76,16 +76,16 @@ export class PageResolver {
     query: string,
     @Args({
       name: 'orderBy',
-      type: () => PageOrder,
+      type: () => [PageOrder!],
       nullable: true
     })
-    orderBy: PageOrder
+    orderBy: PageOrder[]
   ) {
     const result = await findManyCursorConnection(
       async args => {
         const pages = await this.prisma.page
           .findMany({
-            orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+            orderBy: orderBy ? orderBy.map(item => ({ [item.field]: item.direction })) : undefined,
             ...args
           })
           .then(pages =>
@@ -96,20 +96,7 @@ export class PageResolver {
                 categoryId: page?.categoryId ?? DEFAULT_CATEGORY
               }))
               .sort((a, b) => b.totalBurnForPage - a.totalBurnForPage)
-              .map((page, index) => ({
-                ...page,
-                rank: index + 1
-              }))
           );
-
-        await Promise.all(
-          pages.map(async page => {
-            await this.prisma.page.update({
-              where: { id: page.id },
-              data: { rank: page.rank }
-            });
-          })
-        );
 
         return pages;
       },
@@ -175,17 +162,6 @@ export class PageResolver {
 
     const encryptedMnemonic: string = await aesGcmEncrypt(Bip39128BitMnemonic, salt + process.env.MNEMONIC_SECRET);
 
-    const latestRanking = await this.prisma.page.findFirst({
-      orderBy: {
-        id: 'desc'
-      }
-    });
-
-    let rankIndex = 1;
-    if (latestRanking) {
-      rankIndex = latestRanking.rank + 1;
-    }
-
     const createdPage = await this.prisma.page.create({
       data: {
         ..._.omit(data, ['categoryId']),
@@ -196,8 +172,7 @@ export class PageResolver {
           }
         },
         salt: salt,
-        encryptedMnemonic: encryptedMnemonic,
-        rank: rankIndex
+        encryptedMnemonic: encryptedMnemonic
       }
     });
 

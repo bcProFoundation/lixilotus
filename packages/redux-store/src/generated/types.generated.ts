@@ -434,7 +434,6 @@ export type Page = {
   pageAccountId: Scalars['Int'];
   parent?: Maybe<Page>;
   parentId?: Maybe<Scalars['String']>;
-  rank: Scalars['Int'];
   salt?: Maybe<Scalars['String']>;
   stateId?: Maybe<Scalars['String']>;
   stateName?: Maybe<Scalars['String']>;
@@ -481,8 +480,8 @@ export enum PageOrderField {
   Id = 'id',
   LotusBurnScore = 'lotusBurnScore',
   Name = 'name',
-  Rank = 'rank',
   Title = 'title',
+  TotalPostsBurnScore = 'totalPostsBurnScore',
   UpdatedAt = 'updatedAt'
 }
 
@@ -678,7 +677,7 @@ export type QueryAllPagesArgs = {
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   minBurnFilter?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<PageOrder>;
+  orderBy?: InputMaybe<Array<PageOrder>>;
   query?: InputMaybe<Scalars['String']>;
   skip?: InputMaybe<Scalars['Int']>;
 };

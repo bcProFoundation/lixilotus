@@ -9,7 +9,7 @@ export enum PageOrderField {
   name = 'name',
   title = 'title',
   lotusBurnScore = 'lotusBurnScore',
-  rank = 'rank'
+  totalPostsBurnScore = 'totalPostsBurnScore'
 }
 
 registerEnumType(PageOrderField, {

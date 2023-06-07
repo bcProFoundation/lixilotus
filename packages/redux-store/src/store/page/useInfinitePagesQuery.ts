@@ -14,7 +14,7 @@ const pagesAdapter = createEntityAdapter<PageQuery['page']>({
 const { selectAll } = pagesAdapter.getSelectors();
 
 export interface PageParams extends PaginationArgs {
-  orderBy?: PageOrder;
+  orderBy?: PageOrder[];
 }
 
 export function useInfinitePagesQuery(

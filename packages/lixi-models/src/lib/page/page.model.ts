@@ -107,7 +107,4 @@ export class Page {
 
   @Field(() => Float)
   totalPostsBurnScore: number;
-
-  @Field(() => Number)
-  rank: number;
 }

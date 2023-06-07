@@ -140,7 +140,6 @@ model Page {
   totalPostsBurnUp    Float         @default(0.0) @map("total_posts_burn_up")
   totalPostsBurnDown  Float         @default(0.0) @map("total_posts_burn_down")
   totalPostsBurnScore Float         @default(0.0) @map("total_posts_burn_score")
-  rank                Int           @default(0) @map("rank")
 
   @@map("page")
 }

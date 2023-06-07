@@ -18,6 +18,7 @@ import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { useInfinitePagesQuery } from '@store/page/useInfinitePagesQuery';
+import { OrderDirection, PageOrderField } from '@generated/types.generated';
 import { AvatarUser } from '@components/Common/AvatarUser';
 import CollapsePanel from 'antd/es/collapse/CollapsePanel';
 import { Content } from 'antd/es/layout/layout';
@@ -334,7 +335,17 @@ const SidebarRanking = () => {
 
   const { data: topPagesData } = useInfinitePagesQuery(
     {
-      first: 5
+      first: 5,
+      orderBy: [
+        {
+          direction: OrderDirection.Desc,
+          field: PageOrderField.LotusBurnScore
+        },
+        {
+          direction: OrderDirection.Desc,
+          field: PageOrderField.TotalPostsBurnScore
+        }
+      ]
     },
     false
   );
