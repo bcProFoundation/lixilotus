@@ -228,6 +228,7 @@ const ListContainer = styled.div`
 `;
 
 type CardPageItem = {
+  index?: number;
   id?: any;
   name?: string;
   category?: string;
@@ -255,15 +256,15 @@ const CardPageItem = ({ item, onClickItem }: { item?: CardPageItem; onClickItem?
         </picture>
       </div>
       <div className="title-profile">
-        <h3 className="page-name">{item.name}</h3>
+        <h3 className="page-name">
+          {item.index ? '#' + item.index : ''} {item.name}
+        </h3>
         <p className="page-category">{item.category}</p>
-        {item.totalBurnForPage && (
-          <p className="sub-text">
-            {item.totalBurnForPage > 0
-              ? `${item.totalBurnForPage} ${intl.get('page.xpiHasBurned')}`
-              : intl.get('page.noXpiHasBurned')}
-          </p>
-        )}
+        <p className="sub-text">
+          {item.totalBurnForPage > 0
+            ? `${item.totalBurnForPage} ${intl.get('page.xpiHasBurned')}`
+            : intl.get('page.noXpiHasBurned')}
+        </p>
       </div>
     </div>
   </StyledCardPage>
@@ -282,7 +283,17 @@ const PageHome = () => {
 
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePagesQuery(
     {
-      first: 10
+      first: 10,
+      orderBy: [
+        {
+          direction: OrderDirection.Desc,
+          field: PageOrderField.LotusBurnScore
+        },
+        {
+          direction: OrderDirection.Desc,
+          field: PageOrderField.TotalPostsBurnScore
+        }
+      ]
     },
     false
   );
@@ -318,8 +329,9 @@ const PageHome = () => {
     return intl.get('category.' + categoryLang);
   };
 
-  const mapPageItem = pageItem => {
+  const mapPageItem = (pageItem, index?: number) => {
     let newItemObj: CardPageItem = {
+      index: index + 1,
       id: pageItem?.id,
       name: pageItem?.name,
       avatar: pageItem?.avatar,
@@ -444,7 +456,7 @@ const PageHome = () => {
                 {data.map((item, index) => {
                   return (
                     <React.Fragment key={index}>
-                      <CardPageItem item={mapPageItem(item)} onClickItem={id => routerPageDetail(id)} />
+                      <CardPageItem item={mapPageItem(item, index)} onClickItem={id => routerPageDetail(id)} />
                     </React.Fragment>
                   );
                 })}

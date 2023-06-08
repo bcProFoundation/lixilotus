@@ -98,4 +98,13 @@ export class Page {
 
   @Field(() => String)
   createCommentFee: string;
+
+  @Field(() => Float)
+  totalPostsBurnUp: number;
+
+  @Field(() => Float)
+  totalPostsBurnDown: number;
+
+  @Field(() => Float)
+  totalPostsBurnScore: number;
 }

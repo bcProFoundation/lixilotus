@@ -329,6 +329,29 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
     }
   };
 
+  const searchPost = (value: string, hashtagsValue?: string[]) => {
+    setSearchValue(value);
+
+    if (hashtagsValue && hashtagsValue.length > 0) setHashtags([...hashtagsValue]);
+  };
+
+  const onDeleteQuery = () => {
+    setSearchValue(null);
+    setHashtags([]);
+  };
+
+  const onDeleteHashtag = (hashtagsValue: string[]) => {
+    setHashtags([...hashtagsValue]);
+  };
+
+  const addHashtag = hashtag => {
+    if (!hashtags.includes(hashtag)) {
+      setHashtags(prevHashtag => {
+        return [...prevHashtag, hashtag];
+      });
+    }
+  };
+
   const showPosts = () => {
     return (
       <React.Fragment>
@@ -346,7 +369,15 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
             scrollableTarget="scrollableDiv"
           >
             {data.map((item, index) => {
-              return <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />;
+              return (
+                <PostListItem
+                  index={index}
+                  item={item}
+                  key={item.id}
+                  handleBurnForPost={handleBurnForPost}
+                  addHashtag={addHashtag}
+                />
+              );
             })}
           </InfiniteScroll>
         ) : (
@@ -363,21 +394,20 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
             scrollableTarget="scrollableDiv"
           >
             {queryData.map((item, index) => {
-              return <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />;
+              return (
+                <PostListItem
+                  index={index}
+                  item={item}
+                  key={item.id}
+                  addHashtag={addHashtag}
+                  handleBurnForPost={handleBurnForPost}
+                />
+              );
             })}
           </InfiniteScroll>
         )}
       </React.Fragment>
     );
-  };
-
-  const searchPost = (value: string, hashtagsValue: string[]) => {
-    setSearchValue(value);
-    setHashtags([...hashtagsValue]);
-  };
-
-  const onDeleteHashtag = (hashtagsValue: string[]) => {
-    setHashtags([...hashtagsValue]);
   };
 
   return (
@@ -439,10 +469,11 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
           searchValue={searchValue}
           hashtags={hashtags}
           onDeleteHashtag={onDeleteHashtag}
+          onDeleteQuery={onDeleteQuery}
         />
         <FilterBurnt filterForType={FilterType.PostsToken} />
       </SearchBar>
-      {!searchValue && hashtags.length === 0 && <CreatePostCard tokenPrimaryId={tokenDetailData.id} />}
+      <CreatePostCard hashtags={hashtags} tokenPrimaryId={tokenDetailData.id} query={searchValue} />
       <div className="content">
         <Tabs defaultActiveKey="1">
           <Tabs.TabPane tab="Top discussions" key="1">

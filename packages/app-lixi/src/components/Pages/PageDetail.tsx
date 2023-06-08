@@ -512,9 +512,15 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
     await deleteFollowPageTrigger({ input: deleteFollowPageInput });
   };
 
-  const searchPost = (value: string, hashtagsValue: string[]) => {
+  const searchPost = (value: string, hashtagsValue?: string[]) => {
     setSearchValue(value);
-    setHashtags([...hashtagsValue]);
+
+    if (hashtagsValue && hashtagsValue.length > 0) setHashtags([...hashtagsValue]);
+  };
+
+  const onDeleteQuery = () => {
+    setSearchValue(null);
+    setHashtags([]);
   };
 
   const onDeleteHashtag = (hashtagsValue: string[]) => {
@@ -556,6 +562,13 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
     );
   };
   //#endregion
+  const addHashtag = hashtag => {
+    if (!hashtags.includes(hashtag)) {
+      setHashtags(prevHashtag => {
+        return [...prevHashtag, hashtag];
+      });
+    }
+  };
 
   const showPosts = () => {
     return (
@@ -574,7 +587,15 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
             scrollableTarget="scrollableDiv"
           >
             {data.map((item, index) => {
-              return <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />;
+              return (
+                <PostListItem
+                  index={index}
+                  item={item}
+                  key={item.id}
+                  handleBurnForPost={handleBurnForPost}
+                  addHashtag={addHashtag}
+                />
+              );
             })}
           </InfiniteScroll>
         ) : (
@@ -587,7 +608,15 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
             scrollableTarget="scrollableDiv"
           >
             {queryData.map((item, index) => {
-              return <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />;
+              return (
+                <PostListItem
+                  index={index}
+                  item={item}
+                  key={item.id}
+                  handleBurnForPost={handleBurnForPost}
+                  addHashtag={addHashtag}
+                />
+              );
             })}
           </InfiniteScroll>
         )}
@@ -617,7 +646,6 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
             <div className="title-profile">
               <h2>{pageDetailData.name}</h2>
               <p>{intl.get('category.' + pageDetailData.category.name)}</p>
-              {console.log('pageDetailData: ', pageDetailData)}
             </div>
             {/* TODO: implement in the future */}
             {selectedAccountId == pageDetailData?.pageAccountId && (
@@ -767,10 +795,11 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                     searchValue={searchValue}
                     hashtags={hashtags}
                     onDeleteHashtag={onDeleteHashtag}
+                    onDeleteQuery={onDeleteQuery}
                   />
                   <FilterBurnt filterForType={FilterType.PostsPage} />
                 </div>
-                {!searchValue && hashtags.length === 0 && <CreatePostCard page={page} />}
+                <CreatePostCard page={page} hashtags={hashtags} query={searchValue} />
                 <Timeline>
                   {data.length == 0 && (
                     <div className="blank-timeline">

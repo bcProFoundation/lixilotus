@@ -17,6 +17,7 @@ const StyledFooter = styled.div`
   justify-content: space-around;
   display: none;
   z-index: 9999;
+  max-height: 60px;
   @media (max-width: 968px) {
     display: flex;
     left: 0;

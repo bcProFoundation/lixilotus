@@ -151,7 +151,7 @@ export class UploadFilesController {
         const buffer = file.buffer;
         const numbers = [800, 320, 40];
         const shaArray = numbers.map(async item => {
-          const shaThumbnailBuffer = await sharp(file.buffer).resize({ width: item }).png().toBuffer();
+          const shaThumbnailBuffer = await sharp(file.buffer).resize({ width: item }).withMetadata().png().toBuffer();
           const { Key } = await this.uploadService.uploadS3(shaThumbnailBuffer, fileExtension, bucket);
           return Key;
         });

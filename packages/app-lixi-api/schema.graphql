@@ -366,6 +366,9 @@ type Page {
 
   """The sum of burn amount for every post on page"""
   totalBurnForPage: Float
+  totalPostsBurnDown: Float!
+  totalPostsBurnScore: Float!
+  totalPostsBurnUp: Float!
 
   """Identifies the date and time when the object was last updated."""
   updatedAt: DateTime!
@@ -402,6 +405,7 @@ enum PageOrderField {
   lotusBurnScore
   name
   title
+  totalPostsBurnScore
   updatedAt
 }
 
@@ -503,7 +507,7 @@ type Query {
     query: String
   ): HashtagConnection!
   allOrphanPosts(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PostOrder, query: String, skip: Int): PostConnection!
-  allPages(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PageOrder, query: String, skip: Int): PageConnection!
+  allPages(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: [PageOrder!], query: String, skip: Int): PageConnection!
   allPagesByFollower(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PageOrder, skip: Int): PageConnection!
   allPagesByUserId(after: String, before: String, first: Int, id: Int, last: Int, minBurnFilter: Int, orderBy: PageOrder, skip: Int): PageConnection!
   allPosts(accountId: Int, after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!

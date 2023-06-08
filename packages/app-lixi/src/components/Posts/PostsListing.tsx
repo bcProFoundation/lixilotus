@@ -154,17 +154,6 @@ const StyledCollapse = styled(Collapse)`
 const StyledNotificationContent = styled.div`
   font-size: 14px;
 `;
-const menuItems = [
-  { label: intl.get('general.allPost'), key: 'all' }
-  // {
-  //   label: 'Follows',
-  //   key: 'follows'
-  // },
-  // {
-  //   label: 'Hot discussion',
-  //   key: 'hotDiscussion'
-  // }
-];
 
 const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingProps) => {
   const dispatch = useAppDispatch();
@@ -183,6 +172,8 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const leaderboard = useAppSelector(getLeaderBoard);
   const graphqlRequestLoading = useAppSelector(getGraphqlRequestStatus);
   const [hashtags, setHashtags] = useState([]);
+
+  const menuItems = [{ label: intl.get('general.allPost'), key: 'all' }];
 
   useEffect(() => dispatch(getLeaderboard()), []);
 
@@ -223,15 +214,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     }
   };
 
-  const searchPost = (value: string, hashtagsValue: string[]) => {
-    setSearchValue(value);
-    setHashtags([...hashtagsValue]);
-  };
-
-  const onDeleteHashtag = (hashtagsValue: string[]) => {
-    setHashtags([...hashtagsValue]);
-  };
-
   const QueryFooter = () => {
     if (isQueryLoading) return null;
     return (
@@ -267,7 +249,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const Header = () => {
     return (
       <StyledHeader>
-        {!searchValue && hashtags.length === 0 && <CreatePostCard />}
+        <CreatePostCard hashtags={hashtags} query={searchValue} />
         <h1 style={{ textAlign: 'left', fontSize: '20px', margin: '1rem' }}>
           {searchValue && intl.get('general.searchResults', { text: searchValue })}
         </h1>
@@ -313,6 +295,29 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     }
   }, [data]);
 
+  const addHashtag = hashtag => {
+    if (!hashtags.includes(hashtag)) {
+      setHashtags(prevHashtag => {
+        return [...prevHashtag, hashtag];
+      });
+    }
+  };
+
+  const searchPost = (value: string, hashtagsValue?: string[]) => {
+    setSearchValue(value);
+
+    if (hashtagsValue && hashtagsValue.length > 0) setHashtags([...hashtagsValue]);
+  };
+
+  const onDeleteQuery = () => {
+    setSearchValue(null);
+    setHashtags([]);
+  };
+
+  const onDeleteHashtag = (hashtagsValue: string[]) => {
+    setHashtags([...hashtagsValue]);
+  };
+
   const showPosts = () => {
     return (
       <React.Fragment>
@@ -330,7 +335,15 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
             scrollableTarget="scrollableDiv"
           >
             {data.map((item, index) => {
-              return <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />;
+              return (
+                <PostListItem
+                  index={index}
+                  item={item}
+                  key={item.id}
+                  handleBurnForPost={handleBurnForPost}
+                  addHashtag={addHashtag}
+                />
+              );
             })}
           </InfiniteScroll>
         ) : (
@@ -343,7 +356,15 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
             scrollableTarget="scrollableDiv"
           >
             {queryData.map((item, index) => {
-              return <PostListItem index={index} item={item} key={item.id} handleBurnForPost={handleBurnForPost} />;
+              return (
+                <PostListItem
+                  index={index}
+                  item={item}
+                  key={item.id}
+                  handleBurnForPost={handleBurnForPost}
+                  addHashtag={addHashtag}
+                />
+              );
             })}
           </InfiniteScroll>
         )}
@@ -426,6 +447,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         searchValue={searchValue}
         hashtags={hashtags}
         onDeleteHashtag={onDeleteHashtag}
+        onDeleteQuery={onDeleteQuery}
       />
       <Header />
 

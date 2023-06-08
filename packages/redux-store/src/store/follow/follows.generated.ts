@@ -200,6 +200,9 @@ export type AllPagesByFollowerQuery = {
         createCommentFee: string;
         createdAt: any;
         updatedAt: any;
+        totalPostsBurnUp: number;
+        totalPostsBurnDown: number;
+        totalPostsBurnScore: number;
         pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         category: { __typename?: 'Category'; id: string; name: string };
       };
