@@ -1,6 +1,6 @@
 import { SearchOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { Input, Tag } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 
@@ -14,6 +14,7 @@ type SearchProps = {
   searchPost: (value: any, hashtags?: string[]) => void;
   hashtags?: string[];
   onDeleteHashtag: (hashtags?: string[]) => void;
+  onDeleteQuery?: () => void;
 };
 
 const Container = styled.div`
@@ -95,6 +96,12 @@ const SearchBox = (props: SearchProps) => {
     props.onDeleteHashtag(updatedTags);
   };
 
+  useEffect(() => {
+    if (props.hashtags.length > 0) {
+      setTags([...props.hashtags]);
+    }
+  }, [props.hashtags]);
+
   const onPressKeydown = e => {
     const { value } = e.target;
     //Automatic remove the last tag when press backspace
@@ -141,6 +148,12 @@ const SearchBox = (props: SearchProps) => {
     props.searchPost(null, []);
   };
 
+  const onDeleteQuery = () => {
+    setValue('search', '');
+    setTags([]);
+    props.onDeleteQuery();
+  };
+
   return (
     <Container>
       <SearchBoxContainer>
@@ -172,7 +185,7 @@ const SearchBox = (props: SearchProps) => {
           )}
         />
         {(getValues('search') || tags.length > 0) && (
-          <CloseCircleOutlined style={{ fontSize: '18px', color: '#7342cc' }} onClick={() => onDeleteText()} />
+          <CloseCircleOutlined style={{ fontSize: '18px', color: '#7342cc' }} onClick={() => onDeleteQuery()} />
         )}
       </SearchBoxContainer>
       <MobileTagContainer style={{ margin: tags.length > 0 ? '10px' : '0px' }}>

@@ -26,7 +26,9 @@ export function useInfinitePostsBySearchQueryWithHashtag(
   fetchAll = false // if `true`: auto do next fetches to get all notes at once
 ) {
   const dispatch = useAppDispatch();
-  const baseResult = usePostsBySearchWithHashtagQuery(params, { skip: params.query === null });
+  const baseResult = usePostsBySearchWithHashtagQuery(params, {
+    skip: params.query === null && params.hashtags.length === 0
+  });
 
   const [trigger, nextResult, lastPromiseInfo] = useLazyPostsBySearchWithHashtagQuery();
   const [combinedData, setCombinedData] = useState(postsAdapter.getInitialState({}));
