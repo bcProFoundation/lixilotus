@@ -422,7 +422,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
     }
   ] = useDeleteFollowAccountMutation();
 
-  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByUserIdQuery(
+  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch, isLoading } = useInfinitePostsByUserIdQuery(
     {
       first: 10,
       minBurnFilter: filterValue ?? 1,
@@ -740,10 +740,11 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
                 </FriendBox>
               </LegacyProfile> */}
               <ContentTimeline>
+                {isLoading && <Skeleton avatar active />}
+
                 <div className="search-bar">
                   <FilterBurnt filterForType={FilterType.PostsProfile} />
                 </div>
-
                 <Timeline>
                   {data.length == 0 && (
                     <div className="blank-timeline">
@@ -756,7 +757,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
                     <InfiniteScroll
                       dataLength={data.length}
                       next={loadMoreItems}
-                      hasMore={hasNext}
+                      hasMore={isLoading}
                       loader={<Skeleton avatar active />}
                       endMessage={
                         <p style={{ textAlign: 'center' }}>
