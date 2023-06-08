@@ -595,7 +595,7 @@ type Query {
     last: Int
     query: String
   ): TempleConnection!
-  allTokens(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: TokenOrder, query: String, skip: Int): TokenConnection!
+  allTokens(orderBy: TokenOrder): TokenConnection!
   allWorship(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: WorshipOrder, skip: Int): WorshipConnection!
   allWorshipedByPersonId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: WorshipOrder, skip: Int): WorshipConnection!
   allWorshipedByTempleId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: WorshipOrder, skip: Int): WorshipConnection!
@@ -712,6 +712,7 @@ type Token {
   lotusBurnScore: Float!
   lotusBurnUp: Float!
   name: String!
+  rank: Int
   ticker: String!
   tokenDocumentUrl: String
   tokenId: String!

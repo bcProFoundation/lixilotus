@@ -330,6 +330,7 @@ export class LixiService {
     }
 
     const flowProducer = new FlowProducer({
+      prefix: 'lixilotus:',
       connection: new IORedis({
         maxRetriesPerRequest: null,
         enableReadyCheck: false,

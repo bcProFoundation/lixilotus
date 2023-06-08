@@ -8,17 +8,11 @@ query Token($tokenId: String!) {
 }
 
 query Tokens(
-  $after: String
-  $before: String
-  $first: Int = 20
-  $last: Int
   $orderBy: TokenOrder
-  $skip: Int
 ) {
-  allTokens(after: $after, before: $before, first: $first, last: $last, orderBy: $orderBy, skip: $skip) {
+  allTokens(orderBy: $orderBy) {
     totalCount
     edges {
-      cursor
       node {
         ...TokenFields
       }

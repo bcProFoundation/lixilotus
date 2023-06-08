@@ -1,55 +1,36 @@
-import { CopyOutlined, DownOutlined, FireOutlined, FireTwoTone } from '@ant-design/icons';
-import CreatePostCard from '@components/Common/CreatePostCard';
-import SearchBox from '@components/Common/SearchBox';
-import { currency } from '@components/Common/Ticker';
-import PostListItem from '@components/Posts/PostListItem';
-import { useAppDispatch, useAppSelector } from '@store/hooks';
-import { useInfinitePostsByTokenIdQuery } from '@store/post/useInfinitePostsByTokenIdQuery';
-import { getSelectedToken, getToken } from '@store/token';
-import { useTokenQuery } from '@store/token/tokens.api';
-import { formatBalance, fromSmallestDenomination, fromXpiToSatoshis } from '@utils/cashMethods';
-import {
-  Button,
-  Dropdown,
-  Image,
-  Menu,
-  MenuProps,
-  message,
-  notification,
-  Skeleton,
-  Space,
-  Tabs,
-  TimePicker
-} from 'antd';
-import makeBlockie from 'ethereum-blockies-base64';
-import React, { useEffect, useRef, useState } from 'react';
-import { Virtuoso } from 'react-virtuoso';
-import { OrderDirection, PostOrderField, Token } from '@generated/types.generated';
-import styled from 'styled-components';
-import InfiniteScroll from 'react-infinite-scroll-component';
+import { CopyOutlined, LikeOutlined } from '@ant-design/icons';
 import UpVoteSvg from '@assets/icons/upVotePurple.svg';
-import { InfoSubCard } from '@components/Lixi';
-import moment from 'moment';
-import intl from 'react-intl-universal';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { IconBurn } from '@components/Posts/PostDetail';
-import BigNumber from 'bignumber.js';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
-import { getSelectedAccount } from '@store/account/selectors';
-import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
-import { addBurnQueue, addBurnTransaction, getBurnQueue, getFailQueue, clearFailQueue } from '@store/burn';
+import { FilterType } from '@bcpros/lixi-models/lib/filter';
+import CreatePostCard from '@components/Common/CreatePostCard';
+import { FilterBurnt } from '@components/Common/FilterBurn';
+import SearchBox from '@components/Common/SearchBox';
+import { currency } from '@components/Common/Ticker';
+import { InfoSubCard } from '@components/Lixi';
+import { IconBurn } from '@components/Posts/PostDetail';
+import PostListItem from '@components/Posts/PostListItem';
+import { OrderDirection, PostOrderField } from '@generated/types.generated';
+import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 import { setTransactionReady } from '@store/account/actions';
+import { getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
+import { addBurnQueue, addBurnTransaction, clearFailQueue, getBurnQueue, getFailQueue } from '@store/burn';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { useInfinitePostsBySearchQueryWithHashtagAtToken } from '@store/post/useInfinitePostsBySearchQueryWithHashtagAtToken';
+import { useInfinitePostsByTokenIdQuery } from '@store/post/useInfinitePostsByTokenIdQuery';
+import { getFilterPostsToken } from '@store/settings/selectors';
 import { showToast } from '@store/toast/actions';
 import { TokenQuery } from '@store/token/tokens.generated';
-import { getFilterPostsToken } from '@store/settings/selectors';
-import { FilterType } from '@bcpros/lixi-models/lib/filter';
-import { FilterBurnt } from '@components/Common/FilterBurn';
-import { getSelectedAccountId } from '@store/account/selectors';
-import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
-import Ticker from '@bcpros/lixi-components/src/atoms/Ticker';
-import { LikeOutlined } from '@ant-design/icons';
-import { useInfinitePostsBySearchQueryWithHashtagAtToken } from '@store/post/useInfinitePostsBySearchQueryWithHashtagAtToken';
+import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
+import { formatBalance, fromSmallestDenomination } from '@utils/cashMethods';
+import { Image, Menu, MenuProps, Skeleton, Tabs, message, notification } from 'antd';
+import makeBlockie from 'ethereum-blockies-base64';
+import moment from 'moment';
+import React, { useEffect, useRef, useState } from 'react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import intl from 'react-intl-universal';
+import styled from 'styled-components';
 
 export type TokenItem = TokenQuery['token'];
 
@@ -255,11 +236,6 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
     } else if (hasNextQuery && !noMoreQuery) {
       fetchNextQuery();
     }
-  };
-
-  const handleMenuClick: MenuProps['onClick'] = e => {
-    message.info('Click on menu item.');
-    console.log('click', e);
   };
 
   const handleOnCopy = (id: string) => {

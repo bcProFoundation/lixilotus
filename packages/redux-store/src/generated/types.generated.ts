@@ -819,14 +819,7 @@ export type QueryAllTempleBySearchArgs = {
 };
 
 export type QueryAllTokensArgs = {
-  after?: InputMaybe<Scalars['String']>;
-  before?: InputMaybe<Scalars['String']>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-  minBurnFilter?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<TokenOrder>;
-  query?: InputMaybe<Scalars['String']>;
-  skip?: InputMaybe<Scalars['Int']>;
 };
 
 export type QueryAllWorshipArgs = {
@@ -1029,6 +1022,7 @@ export type Token = {
   lotusBurnScore: Scalars['Float'];
   lotusBurnUp: Scalars['Float'];
   name: Scalars['String'];
+  rank?: Maybe<Scalars['Int']>;
   ticker: Scalars['String'];
   tokenDocumentUrl?: Maybe<Scalars['String']>;
   tokenId: Scalars['String'];

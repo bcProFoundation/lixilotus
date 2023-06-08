@@ -1,13 +1,16 @@
-import { CreateTokenInput, PaginationArgs, Token, TokenConnection, TokenOrder } from '@bcpros/lixi-models';
-import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
+import { CreateTokenInput, Token, TokenConnection, TokenOrder } from '@bcpros/lixi-models';
+import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import { HttpException, HttpStatus, Logger, UseFilters, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { SkipThrottle } from '@nestjs/throttler';
 import { ChronikClient } from 'chronik-client';
 import { PubSub } from 'graphql-subscriptions';
+import { Redis } from 'ioredis';
 import moment from 'moment';
 import { I18n, I18nContext, I18nService } from 'nestjs-i18n';
+import { connectionFromArraySlice } from 'src/common/custom-graphql-relay/arrayConnection';
 import { InjectChronikClient } from 'src/common/modules/chronik/chronik.decorators';
+import SortedItemRepository from 'src/common/redis/sorted-repository';
 import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
 import { GqlJwtAuthGuard } from 'src/modules/auth/guards/gql-jwtauth.guard';
 import VError from 'verror';
@@ -19,10 +22,12 @@ const pubSub = new PubSub();
 @Resolver(() => Token)
 @UseFilters(GqlHttpExceptionFilter)
 export class TokenResolver {
+  private logger: Logger = new Logger(this.constructor.name);
+
   constructor(
-    private logger: Logger,
-    private prisma: PrismaService,
-    @I18n() private i18n: I18nService,
+    private readonly prisma: PrismaService,
+    @InjectRedis() private readonly redis: Redis,
+    @I18n() private readonly i18n: I18nService,
     @InjectChronikClient('xec') private chronik: ChronikClient
   ) {}
 
@@ -44,9 +49,6 @@ export class TokenResolver {
 
   @Query(() => TokenConnection)
   async allTokens(
-    @Args() { after, before, first, last }: PaginationArgs,
-    @Args({ name: 'query', type: () => String, nullable: true })
-    query: string,
     @Args({
       name: 'orderBy',
       type: () => TokenOrder,
@@ -54,32 +56,32 @@ export class TokenResolver {
     })
     orderBy: TokenOrder
   ) {
-    const result = await findManyCursorConnection(
-      paginationArgs =>
-        this.prisma.token.findMany({
-          where: {
-            OR: !query
-              ? undefined
-              : {
-                  name: { contains: query || '' }
-                }
-          },
-          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
-          ...paginationArgs
-        }),
-      () =>
-        this.prisma.token.count({
-          where: {
-            OR: !query
-              ? undefined
-              : {
-                  name: { contains: query || '' }
-                }
-          }
-        }),
-      { first, last, before, after }
+    const keyPrefix = `tokens:list`;
+    const hashPrefix = `tokens:items-data`;
+    const tokenRepository = new SortedItemRepository<Token>(keyPrefix, hashPrefix, this.redis);
+
+    const keyExist = await this.redis.exists(keyPrefix);
+
+    if (!keyExist) {
+      // caching the token1s
+      const tokens = await this.prisma.token.findMany({
+        orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined
+      });
+      const scores = tokens.map(token => token.lotusBurnScore);
+      await tokenRepository.setItems(tokens, scores);
+      await this.redis.expire(keyPrefix, 3600);
+    }
+
+    const result = await tokenRepository.getAll();
+
+    return connectionFromArraySlice(
+      result,
+      {},
+      {
+        arrayLength: result.length,
+        sliceStart: 0
+      }
     );
-    return result;
   }
 
   @UseGuards(GqlJwtAuthGuard)
@@ -88,35 +90,36 @@ export class TokenResolver {
     const { tokenId } = data;
     if (tokenId) {
       try {
-        const tokenExist = await this.prisma.token.findUnique({
-          where: {
-            tokenId: tokenId
-          }
-        });
+        const keyPrefix = `tokens:list`;
+        const hashPrefix = `tokens:items-data`;
+        const tokenRepository = new SortedItemRepository<Token>(keyPrefix, hashPrefix, this.redis);
+        let token = await tokenRepository.getById(tokenId);
 
-        if (tokenExist) {
+        if (token) {
           throw new VError('Token already exist');
         }
 
-        const token = await this.chronik.token(tokenId);
+        const tokenInfo = await this.chronik.token(tokenId);
 
         const tokenToInsert = {
           tokenId: tokenId,
-          name: token?.slpTxData?.genesisInfo?.tokenName,
-          ticker: token?.slpTxData?.genesisInfo?.tokenTicker,
-          decimals: token?.slpTxData?.genesisInfo?.decimals,
-          initialTokenQuantity: token?.initialTokenQuantity,
-          tokenType: token?.slpTxData?.slpMeta?.tokenType,
-          tokenDocumentUrl: token?.slpTxData?.genesisInfo?.tokenDocumentUrl,
-          totalBurned: token?.tokenStats?.totalBurned,
-          totalMinted: token?.tokenStats?.totalMinted,
-          createdDate: moment(token?.block?.timestamp, 'X').toDate(),
+          name: tokenInfo?.slpTxData?.genesisInfo?.tokenName,
+          ticker: tokenInfo?.slpTxData?.genesisInfo?.tokenTicker,
+          decimals: tokenInfo?.slpTxData?.genesisInfo?.decimals,
+          initialTokenQuantity: tokenInfo?.initialTokenQuantity,
+          tokenType: tokenInfo?.slpTxData?.slpMeta?.tokenType,
+          tokenDocumentUrl: tokenInfo?.slpTxData?.genesisInfo?.tokenDocumentUrl,
+          totalBurned: tokenInfo?.tokenStats?.totalBurned,
+          totalMinted: tokenInfo?.tokenStats?.totalMinted,
+          createdDate: moment(tokenInfo?.block?.timestamp, 'X').toDate(),
           comments: moment().toDate()
         };
 
         const createdToken = await this.prisma.token.create({
           data: tokenToInsert
         });
+
+        tokenRepository.set(createdToken, createdToken.lotusBurnScore);
 
         const resultApi = { ...createdToken };
 
