@@ -123,6 +123,8 @@ export const serveStaticModule_images: FastifyServeStaticModuleOptions = {
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         config: {
+          keyPrefix: 'lixilotus:',
+          enableAutoPipelining: true,
           host: config.get<string>('REDIS_HOST') ? config.get<string>('REDIS_HOST') : 'redis-lixi',
           port: config.get<string>('REDIS_PORT') ? _.toSafeInteger(config.get<string>('REDIS_PORT')) : 6379
         }

@@ -1,4 +1,3 @@
-import { TokenDto } from '@bcpros/lixi-models';
 import { all, fork, put, takeLatest } from '@redux-saga/core/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 import * as _ from 'lodash';
@@ -19,7 +18,7 @@ import {
   postTokenFailure,
   postTokenSuccess
 } from './action';
-import TokenApi from './api';
+// import TokenApi from './api';
 
 const call: any = Effects.call;
 /**
@@ -27,24 +26,24 @@ const call: any = Effects.call;
  * @param action The data to needed generate a Token
  */
 
-function* postTokenSaga(action: PayloadAction<string>) {
-  try {
-    const tokenId = action.payload;
+// function* postTokenSaga(action: PayloadAction<string>) {
+//   try {
+//     const tokenId = action.payload;
 
-    yield put(showLoading(postToken.type));
+//     yield put(showLoading(postToken.type));
 
-    const data: TokenDto = yield call(TokenApi.post, tokenId);
+//     const data = yield call(TokenApi.post, tokenId);
 
-    if (_.isNil(data) || _.isNil(data.id)) {
-      throw new Error('Unable Create Token');
-    }
+//     if (_.isNil(data) || _.isNil(data.id)) {
+//       throw new Error('Unable Create Token');
+//     }
 
-    yield put(postTokenSuccess(data));
-  } catch (err) {
-    const message = (err as Error).message ?? intl.get('token.couldNotpostToken');
-    yield put(postTokenFailure(message));
-  }
-}
+//     yield put(postTokenSuccess(data));
+//   } catch (err) {
+//     const message = (err as Error).message ?? intl.get('token.couldNotpostToken');
+//     yield put(postTokenFailure(message));
+//   }
+// }
 
 function* postTokenSuccessSaga(action: PayloadAction<any>) {
   try {
@@ -78,16 +77,16 @@ function* postTokenFailureSaga(action: PayloadAction<string>) {
   yield put(hideLoading(postToken.type));
 }
 
-function* getTokenSaga(action: PayloadAction<string>) {
-  try {
-    const id = action.payload;
-    const data = yield call(TokenApi.getTokenById, id);
-    yield put(getTokenSuccess(data));
-  } catch (err) {
-    const message = (err as Error).message ?? intl.get('token.unableSelect');
-    yield put(getTokenFailure(message));
-  }
-}
+// function* getTokenSaga(action: PayloadAction<string>) {
+//   try {
+//     const id = action.payload;
+//     const data = yield call(TokenApi.getTokenById, id);
+//     yield put(getTokenSuccess(data));
+//   } catch (err) {
+//     const message = (err as Error).message ?? intl.get('token.unableSelect');
+//     yield put(getTokenFailure(message));
+//   }
+// }
 
 function* getTokenSuccessSaga(action: PayloadAction<string>) {
   try {
@@ -117,22 +116,22 @@ function* getTokenFailureSaga(action: PayloadAction<string>) {
   yield put(hideLoading(getToken.type));
 }
 
-function* fetchAllTokensSaga() {
-  try {
-    yield put(showLoading(fetchAllTokens.type));
+// function* fetchAllTokensSaga() {
+//   try {
+//     yield put(showLoading(fetchAllTokens.type));
 
-    const data: any = yield call(TokenApi.getAllTokens);
+//     const data: any = yield call(TokenApi.getAllTokens);
 
-    if (_.isNil(data)) {
-      throw new Error(intl.get('token.couldNotFindToken'));
-    }
+//     if (_.isNil(data)) {
+//       throw new Error(intl.get('token.couldNotFindToken'));
+//     }
 
-    yield put(fetchAllTokensSuccess(data));
-  } catch (err) {
-    const message = (err as Error).message ?? intl.get('token.couldNotpostToken');
-    yield put(fetchAllTokensFailure(message));
-  }
-}
+//     yield put(fetchAllTokensSuccess(data));
+//   } catch (err) {
+//     const message = (err as Error).message ?? intl.get('token.couldNotpostToken');
+//     yield put(fetchAllTokensFailure(message));
+//   }
+// }
 
 function* fetchAllTokensSuccessSaga(action: any) {
   yield put(hideLoading(fetchAllTokens.type));
@@ -142,9 +141,9 @@ function* fetchAllTokensFailureSaga(action: any) {
   yield put(hideLoading(fetchAllTokens.type));
 }
 
-function* watchPostToken() {
-  yield takeLatest(postToken.type, postTokenSaga);
-}
+// function* watchPostToken() {
+//   yield takeLatest(postToken.type, postTokenSaga);
+// }
 
 function* watchPostTokenSuccess() {
   yield takeLatest(postTokenSuccess.type, postTokenSuccessSaga);
@@ -154,9 +153,9 @@ function* watchPostTokenFailure() {
   yield takeLatest(postTokenFailure.type, postTokenFailureSaga);
 }
 
-function* watchFetchAllTokens() {
-  yield takeLatest(fetchAllTokens.type, fetchAllTokensSaga);
-}
+// function* watchFetchAllTokens() {
+//   yield takeLatest(fetchAllTokens.type, fetchAllTokensSaga);
+// }
 
 function* watchFetchAllTokensSuccess() {
   yield takeLatest(fetchAllTokensSuccess.type, fetchAllTokensSuccessSaga);
@@ -166,9 +165,9 @@ function* watchFetchAllTokensFailure() {
   yield takeLatest(fetchAllTokensFailure.type, fetchAllTokensFailureSaga);
 }
 
-function* watchGetToken() {
-  yield takeLatest(getToken.type, getTokenSaga);
-}
+// function* watchGetToken() {
+//   yield takeLatest(getToken.type, getTokenSaga);
+// }
 
 function* watchGetTokenSuccess() {
   yield takeLatest(getTokenSuccess.type, getTokenSuccessSaga);
@@ -180,13 +179,13 @@ function* watchGetTokenFailure() {
 
 export default function* tokenSaga() {
   yield all([
-    fork(watchPostToken),
+    // fork(watchPostToken),
     fork(watchPostTokenFailure),
     fork(watchPostTokenSuccess),
-    fork(watchFetchAllTokens),
+    // fork(watchFetchAllTokens),
     fork(watchFetchAllTokensSuccess),
     fork(watchFetchAllTokensFailure),
-    fork(watchGetToken),
+    // fork(watchGetToken),
     fork(watchGetTokenSuccess),
     fork(watchGetTokenFailure)
   ]);

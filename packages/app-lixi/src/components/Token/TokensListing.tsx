@@ -1,37 +1,38 @@
-import Icon, {
-  CopyOutlined,
-  FilterOutlined,
-  FireOutlined,
-  FireTwoTone,
-  LeftOutlined,
-  RightOutlined,
-  SearchOutlined,
-  SyncOutlined
-} from '@ant-design/icons';
-import { Token } from '@bcpros/lixi-models';
-import { BurnCommand, BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
+import { CopyOutlined, FilterOutlined, RightOutlined, SearchOutlined, SyncOutlined } from '@ant-design/icons';
+import BurnSvg from '@assets/icons/burn.svg';
+import UpVoteSvg from '@assets/icons/upVotePurple.svg';
+import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
+import { Counter } from '@components/Common/Counter';
+import InfoCardUser from '@components/Common/InfoCardUser';
 import { currency } from '@components/Common/Ticker';
-import { NavBarHeader, PathDirection } from '@components/Layout/MainLayout';
+import { InfoSubCard } from '@components/Lixi';
+import { IconBurn } from '@components/Posts/PostDetail';
 import { WalletContext } from '@context/walletProvider';
+import { CreateTokenInput, OrderDirection, TokenEdge, TokenOrderField } from '@generated/types.generated';
 import useXPI from '@hooks/useXPI';
+import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
+import { setTransactionReady } from '@store/account/actions';
 import {
   addBurnQueue,
   addBurnTransaction,
-  burnForUpDownVote,
+  clearFailQueue,
   getBurnQueue,
   getFailQueue,
-  getLatestBurnForToken,
-  clearFailQueue
+  getLatestBurnForToken
 } from '@store/burn';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { openModal } from '@store/modal/actions';
 import { showToast } from '@store/toast/actions';
-import { burnForToken, burnForTokenSucceses, fetchAllTokens, postToken, selectToken, selectTokens } from '@store/token';
+import { useTokensQuery } from '@store/token/tokens.api';
+import { useCreateTokenMutation } from '@store/token/tokens.generated';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
 import { formatBalance, fromSmallestDenomination } from '@utils/cashMethods';
-import { Button, Form, Image, Input, InputRef, message, Modal, notification, Space, Table, Tooltip } from 'antd';
+import { Button, Form, Image, Input, InputRef, Modal, Space, Table, Tooltip, notification } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { ColumnType } from 'antd/lib/table';
 import { FilterConfirmProps } from 'antd/lib/table/interface';
+import { push } from 'connected-next-router';
+import makeBlockie from 'ethereum-blockies-base64';
 import moment from 'moment';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -41,21 +42,6 @@ import Highlighter from 'react-highlight-words';
 import { Controller, useForm } from 'react-hook-form';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
-import makeBlockie from 'ethereum-blockies-base64';
-import BurnSvg from '@assets/icons/burn.svg';
-import UpVoteSvg from '@assets/icons/upVotePurple.svg';
-import { Counter } from '@components/Common/Counter';
-import { openModal } from '@store/modal/actions';
-import { CreateTokenInput, OrderDirection, TokenEdge, TokenOrderField } from '@generated/types.generated';
-import { useCreateTokenMutation } from '@store/token/tokens.generated';
-import { push } from 'connected-next-router';
-import InfoCardUser from '@components/Common/InfoCardUser';
-import { InfoSubCard } from '@components/Lixi';
-import { IconBurn } from '@components/Posts/PostDetail';
-import { setTransactionReady } from '@store/account/actions';
-import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
-import { useTokensQuery } from '@store/token/tokens.api';
-import Tokens from '@bcpros/minimal-xpi-slp-wallet/types/lib/tokens';
 import { TokenItem } from './TokensFeed';
 
 const StyledTokensListing = styled.div`
@@ -316,9 +302,9 @@ const TokensListing = () => {
     {
       title: intl.get('label.burnXPI'),
       key: 'lotusBurn',
-      sorter: ({ node: a }, { node: b }) => a.lotusBurnUp + a.lotusBurnDown - (b.lotusBurnUp + b.lotusBurnDown),
+      sorter: ({ node: a }, { node: b }) => a.lotusBurnScore - b.lotusBurnScore,
       defaultSortOrder: 'descend',
-      render: (_, { node: record }) => <Counter num={formatBalance(record.lotusBurnUp + record.lotusBurnDown)} />
+      render: (_, { node: record }) => <Counter num={formatBalance(record.lotusBurnScore)} />
     },
     {
       title: intl.get('label.comment'),
@@ -368,11 +354,6 @@ const TokensListing = () => {
   const handleReset = (clearFilters: () => void) => {
     clearFilters();
     setSearchText('');
-  };
-
-  const handleInputTokenId = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    setValueInput(value);
   };
 
   const handleNavigateToken = token => {

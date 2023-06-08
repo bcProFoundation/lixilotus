@@ -56,4 +56,7 @@ export class Token {
     nullable: true
   })
   comments?: Date;
+
+  @Field(() => Number, { nullable: true })
+  rank?: number;
 }

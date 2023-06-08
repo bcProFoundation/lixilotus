@@ -26,6 +26,7 @@ import {
         inject: [ConfigService],
         useFactory: (config: ConfigService) => {
           return {
+            prefix: 'lixilotus',
             name: NOTIFICATION_OUTBOUND_QUEUE,
             connection: new IORedis({
               maxRetriesPerRequest: null,
@@ -41,6 +42,7 @@ import {
         inject: [ConfigService],
         useFactory: (config: ConfigService) => {
           return {
+            prefix: 'lixilotus',
             name: WEBPUSH_NOTIFICATION_QUEUE,
             connection: new IORedis({
               maxRetriesPerRequest: null,
@@ -56,6 +58,7 @@ import {
         inject: [ConfigService],
         useFactory: (config: ConfigService) => {
           return {
+            prefix: 'lixilotus',
             name: CREATE_SUB_LIXIES_QUEUE,
             connection: new IORedis({
               maxRetriesPerRequest: null,
@@ -71,6 +74,7 @@ import {
         inject: [ConfigService],
         useFactory: (config: ConfigService) => {
           return {
+            prefix: 'lixilotus:',
             name: EXPORT_SUB_LIXIES_QUEUE,
             connection: new IORedis({
               maxRetriesPerRequest: null,
@@ -86,6 +90,7 @@ import {
         inject: [ConfigService],
         useFactory: (config: ConfigService) => {
           return {
+            prefix: 'lixilotus:',
             name: WITHDRAW_SUB_LIXIES_QUEUE,
             connection: new IORedis({
               maxRetriesPerRequest: null,

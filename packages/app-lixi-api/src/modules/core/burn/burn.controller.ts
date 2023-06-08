@@ -1,14 +1,17 @@
 import { Burn, BurnCommand, BurnForType, BurnType } from '@bcpros/lixi-models';
-import { NotificationLevel } from '@bcpros/lixi-prisma';
+import { NotificationLevel, Token } from '@bcpros/lixi-prisma';
 import BCHJS from '@bcpros/xpi-js';
+import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import { Body, Controller, HttpException, HttpStatus, Inject, Logger, Post } from '@nestjs/common';
 import { SkipThrottle } from '@nestjs/throttler';
 import { ChronikClient } from 'chronik-client';
+import { Redis } from 'ioredis';
 import _ from 'lodash';
 import { I18n, I18nService } from 'nestjs-i18n';
 import { InjectChronikClient } from 'src/common/modules/chronik/chronik.decorators';
 import { NOTIFICATION_TYPES } from 'src/common/modules/notifications/notification.constants';
 import { NotificationService } from 'src/common/modules/notifications/notification.service';
+import SortedItemRepository from 'src/common/redis/sorted-repository';
 import { PrismaService } from 'src/modules/prisma/prisma.service';
 import { parseBurnOutput } from 'src/utils/opReturnBurn';
 import { VError } from 'verror';
@@ -20,6 +23,7 @@ export class BurnController {
   constructor(
     private prisma: PrismaService,
     private readonly notificationService: NotificationService,
+    @InjectRedis() private readonly redis: Redis,
     @I18n() private i18n: I18nService,
     @InjectChronikClient('xpi') private chronik: ChronikClient,
     @Inject('xpijs') private XPI: BCHJS
@@ -206,7 +210,7 @@ export class BurnController {
           }
           const lotusBurnScore = lotusBurnUp - lotusBurnDown;
 
-          await this.prisma.token.update({
+          const updatedToken = await this.prisma.token.update({
             where: {
               id: command.burnForId
             },
@@ -216,6 +220,12 @@ export class BurnController {
               lotusBurnScore
             }
           });
+
+          // Update the cache for the token:
+          const keyPrefix = `tokens:list`;
+          const hashPrefix = `tokens:items-data`;
+          const tokenRepository = new SortedItemRepository<Token>(keyPrefix, hashPrefix, this.redis);
+          await tokenRepository.set(updatedToken, lotusBurnScore);
         } else if (command.burnForType === BurnForType.Comment) {
           const comment = await this.prisma.comment.findFirst({
             where: {
