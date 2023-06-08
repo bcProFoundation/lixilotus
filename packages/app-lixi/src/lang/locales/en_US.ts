@@ -148,7 +148,6 @@ export default {
   'account.enterLixiBalance': 'Enter balance for your lixi',
   'account.lixiMessage': 'Enter the lixi message',
   'account.allCountry': 'All of country',
-  'account.lo': 'Lotusia',
   'account.advance': 'Advance',
   'account.amount': 'Amount',
   'account.singleCode': 'Single code',
@@ -393,7 +392,6 @@ export default {
   'country.us': 'United States',
   'country.id': 'Indonesia',
   'country.ph': 'Philippines',
-  'country.lo': 'Lotusia',
 
   /* 07.Onboarding */
   'onboarding.dontForgetBackup': "Don't forget to back up your account",
@@ -484,6 +482,7 @@ export default {
   'page.description': 'Description',
   'page.countryName': 'Country',
   'page.country': 'Search to select country',
+  'page.lo': 'Lotusia',
   'page.stateName': 'State',
   'page.state': 'Search to select state',
   'page.address': 'Address',

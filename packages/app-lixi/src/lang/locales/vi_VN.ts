@@ -390,7 +390,6 @@ export default {
   'country.us': 'United States',
   'country.id': 'Indonesia',
   'country.ph': 'Philippines',
-  'country.lo': 'Lotusia',
 
   /* 07.Onboarding */
   'onboarding.dontForgetBackup': 'Đừng quên sao lưu tài khoản của bạn',

@@ -7,7 +7,9 @@ import {
   PageOrder,
   PaginationArgs,
   UpdatePageInput,
-  DEFAULT_CATEGORY
+  DEFAULT_CATEGORY,
+  DEFAULT_COUNTRY,
+  Country
 } from '@bcpros/lixi-models';
 import BCHJS from '@bcpros/xpi-js';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
@@ -171,6 +173,11 @@ export class PageResolver {
             id: Number(data.categoryId) ?? DEFAULT_CATEGORY
           }
         },
+        country: {
+          connect: {
+            id: DEFAULT_COUNTRY
+          }
+        },
         salt: salt,
         encryptedMnemonic: encryptedMnemonic
       }
@@ -304,5 +311,16 @@ export class PageResolver {
     });
 
     return category;
+  }
+
+  @ResolveField('country', () => Country)
+  async country(@Parent() page: Page) {
+    const country = this.prisma.country.findFirst({
+      where: {
+        id: _.toSafeInteger(page.countryId)
+      }
+    });
+
+    return country;
   }
 }

@@ -1,9 +1,5 @@
 export const countries = [
   {
-    id: 'lo',
-    name: 'Lotusia'
-  },
-  {
     id: 'all',
     name: 'All of country'
   },
