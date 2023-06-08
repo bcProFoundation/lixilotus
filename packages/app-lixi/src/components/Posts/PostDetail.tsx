@@ -43,6 +43,8 @@ import { getFilterPostsHome } from '@store/settings/selectors';
 import Reaction from '@components/Common/Reaction';
 import { OPTION_BURN_VALUE } from './PostsListing';
 import { GroupIconText, IconNoneHover } from './PostListItem';
+import parse from 'html-react-parser';
+import ReactDomServer from 'react-dom/server';
 
 export type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 export type BurnData = {
@@ -585,6 +587,36 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
 
   useDidMountEffectNotification();
 
+  const handleHashtagClick = e => {
+    if (e.target.className === 'hashtag-link') {
+      if (post.page) {
+        router.push(`/page/${post.page.id}`);
+      } else if (post.token) {
+        router.push(`/token/${post.token.tokenId}`);
+      } else {
+        router.push(`/hashtag/${e.target.id.substring(1)}`);
+      }
+    }
+  };
+
+  const content: any = parse(post.content, {
+    replace: (domNode: any) => {
+      if (domNode.attribs && domNode.attribs.class === 'EditorLexical_hashtag') {
+        const hashtag: string = domNode.children[0].data;
+        return (
+          <span
+            rel="noopener noreferrer"
+            className="hashtag-link"
+            id={`${hashtag}`}
+            style={{ color: 'var(--color-primary)' }}
+          >
+            {domNode.children.map(child => child.data)}
+          </span>
+        );
+      }
+    }
+  });
+
   return (
     <>
       <StyledContainerPostDetail>
@@ -606,7 +638,9 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           postEdited={post.createdAt !== post.updatedAt}
         ></InfoCardUser>
         <PostContentDetail>
-          <div className="description-post">{ReactHtmlParser(post.content)}</div>
+          <div className="description-post" onClick={e => handleHashtagClick(e)}>
+            {ReactHtmlParser(ReactDomServer.renderToStaticMarkup(content))}
+          </div>
           {post.uploads.length != 0 && (
             <div className="images-post">
               <Image.PreviewGroup>

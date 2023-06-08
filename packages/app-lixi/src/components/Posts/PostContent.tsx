@@ -10,14 +10,14 @@ const PostContent = ({ postContent }) => {
       if (domNode.attribs && domNode.attribs.class === 'EditorLexical_hashtag') {
         const hashtag: string = domNode.children[0].data;
         return (
-          <a
-            href={`${process.env.NEXT_PUBLIC_LIXI_URL}hashtag/${hashtag.substring(1)}`}
+          <span
             rel="noopener noreferrer"
             className="hashtag-link"
+            id={`${hashtag}`}
             style={{ color: 'var(--color-primary)' }}
           >
             {domNode.children.map(child => child.data)}
-          </a>
+          </span>
         );
       }
     }

@@ -1,3 +1,4 @@
+import ReactDomServer from 'react-dom/server';
 import CommentComponent, { CommentItem } from '@components/Common/Comment';
 import InfoCardUser from '@components/Common/InfoCardUser';
 import { ShareSocialButton } from '@components/Common/ShareSocialButton';
@@ -19,6 +20,7 @@ import { formatRelativeTime } from '@utils/formatting';
 import { Counter } from '@components/Common/Counter';
 import Reaction from '@components/Common/Reaction';
 import parse from 'html-react-parser';
+import { ReadMoreMore } from 'read-more-more';
 import PostContent from './PostContent';
 
 export const CommentList = ({ comments }: { comments: CommentItem[] }) => (
@@ -223,9 +225,10 @@ type PostListItemProps = {
   item: PostItem;
   searchValue?: string;
   handleBurnForPost?: (isUpVote: boolean, post: any, optionBurn?: string) => Promise<void>;
+  addHashtag?: (hashtag: string) => any;
 };
 
-const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListItemProps) => {
+const PostListItem = ({ index, item, searchValue, handleBurnForPost, addHashtag }: PostListItemProps) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const post: PostItem = item;
@@ -266,7 +269,12 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
   if (!post) return null;
 
   const handlePostClick = e => {
-    if (e.target.className === 'read-more-more-module_btn__33IaH' || e.target.className === 'hashtag-link') {
+    if (e.target.className === 'hashtag-link') {
+      e.stopPropagation();
+      addHashtag(e.target.id);
+      return;
+    }
+    if (e.target.className === 'read-more-more-module_btn__33IaH') {
       e.stopPropagation();
     } else {
       router.push(`/post/${post.id}`);
@@ -310,9 +318,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost }: PostListI
         </CardHeader>
         <Content onClick={e => handlePostClick(e)}>
           <div className="description-post">
-            <div className="read-more">
-              <PostContent postContent={post?.content} />
-            </div>
+            <PostContent postContent={post.content} />
           </div>
           {item.uploads.length != 0 && !showMoreImage && (
             <div className="images-post">
