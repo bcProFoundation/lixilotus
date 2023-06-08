@@ -422,18 +422,19 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
     }
   ] = useDeleteFollowAccountMutation();
 
-  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch, isLoading } = useInfinitePostsByUserIdQuery(
-    {
-      first: 10,
-      minBurnFilter: filterValue ?? 1,
-      orderBy: {
-        direction: OrderDirection.Desc,
-        field: PostOrderField.UpdatedAt
+  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch, isLoading } =
+    useInfinitePostsByUserIdQuery(
+      {
+        first: 10,
+        minBurnFilter: filterValue ?? 1,
+        orderBy: {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.UpdatedAt
+        },
+        id: user.id.toString()
       },
-      id: user.id.toString()
-    },
-    false
-  );
+      false
+    );
 
   useEffect(() => {
     // fetchListFriend();
@@ -757,7 +758,7 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
                     <InfiniteScroll
                       dataLength={data.length}
                       next={loadMoreItems}
-                      hasMore={isLoading}
+                      hasMore={hasNext}
                       loader={<Skeleton avatar active />}
                       endMessage={
                         <p style={{ textAlign: 'center' }}>
