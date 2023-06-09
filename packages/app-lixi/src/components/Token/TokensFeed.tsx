@@ -26,6 +26,7 @@ import { formatBalance, fromSmallestDenomination } from '@utils/cashMethods';
 import { Image, Menu, MenuProps, Skeleton, Tabs, message, notification } from 'antd';
 import makeBlockie from 'ethereum-blockies-base64';
 import moment from 'moment';
+import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -181,6 +182,7 @@ type TokenProps = {
 
 const TokensFeed = ({ token, isMobile }: TokenProps) => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const [tokenDetailData, setTokenDetailData] = useState<any>(token);
   const selectedAccount = useAppSelector(getSelectedAccount);
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
@@ -245,6 +247,12 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
       placement: 'top'
     });
   };
+
+  useEffect(() => {
+    if (router.query.hashtag) {
+      addHashtag(`#${router.query.hashtag}`);
+    }
+  }, []);
 
   const menus = options.map(option => <Menu.Item key={option}>{option}</Menu.Item>);
 

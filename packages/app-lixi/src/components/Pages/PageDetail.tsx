@@ -362,6 +362,7 @@ const SubAbout = ({
 
 const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const selectedAccount = useAppSelector(getSelectedAccount);
   const selectedAccountId = useAppSelector(getSelectedAccountId);
   const [pageDetailData, setPageDetailData] = useState<any>(page);
@@ -374,6 +375,12 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
   const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
   const [searchValue, setSearchValue] = useState<string | null>(null);
   const [hashtags, setHashtags] = useState([]);
+
+  useEffect(() => {
+    if (router.query.hashtag) {
+      addHashtag(`#${router.query.hashtag}`);
+    }
+  }, []);
 
   const [
     createFollowPageTrigger,
