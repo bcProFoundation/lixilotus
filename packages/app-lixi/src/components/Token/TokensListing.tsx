@@ -140,12 +140,12 @@ const TokensListing = () => {
   const failQueue = useAppSelector(getFailQueue);
   const walletStatus = useAppSelector(getWalletStatus);
   const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
-  const tokens = useTokensQuery({
+  const { currentData: tokens, isLoading } = useTokensQuery({
     orderBy: {
       direction: OrderDirection.Desc,
       field: TokenOrderField.CreatedDate
     }
-  }).currentData;
+  });
 
   const [
     createTokenTrigger,
@@ -466,6 +466,7 @@ const TokensListing = () => {
       </StyledNavBarHeader>
       <StyledTokensListing>
         <Table
+          loading={isLoading}
           className="table-tokens"
           columns={columns}
           scroll={{ x: true }}
