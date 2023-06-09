@@ -14,7 +14,12 @@ const MyCustomAutoFocusPlugin: React.FC<any> = props => {
     editor.update(() => {
       // In the browser you can use the native DOMParser API to parse the HTML string.
       const parser = new DOMParser();
-      const dom = parser.parseFromString(`<span>${props.initialContent}</span>&nbsp<br>`, 'text/html');
+      let dom;
+      if (props.initialContent) {
+        dom = parser.parseFromString(`<span>${props.initialContent}</span>&nbsp<br>`, 'text/html');
+      } else {
+        dom = parser.parseFromString(props.initialContent, 'text/html');
+      }
 
       // Once you have the DOM instance it's easy to generate LexicalNodes.
       const nodes = $generateNodesFromDOM(editor, dom);
