@@ -422,18 +422,19 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
     }
   ] = useDeleteFollowAccountMutation();
 
-  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsByUserIdQuery(
-    {
-      first: 10,
-      minBurnFilter: filterValue ?? 1,
-      orderBy: {
-        direction: OrderDirection.Desc,
-        field: PostOrderField.UpdatedAt
+  const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch, isLoading } =
+    useInfinitePostsByUserIdQuery(
+      {
+        first: 10,
+        minBurnFilter: filterValue ?? 1,
+        orderBy: {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.UpdatedAt
+        },
+        id: user.id.toString()
       },
-      id: user.id.toString()
-    },
-    false
-  );
+      false
+    );
 
   useEffect(() => {
     // fetchListFriend();
@@ -740,10 +741,11 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
                 </FriendBox>
               </LegacyProfile> */}
               <ContentTimeline>
+                {isLoading && <Skeleton avatar active />}
+
                 <div className="search-bar">
                   <FilterBurnt filterForType={FilterType.PostsProfile} />
                 </div>
-
                 <Timeline>
                   {data.length == 0 && (
                     <div className="blank-timeline">
