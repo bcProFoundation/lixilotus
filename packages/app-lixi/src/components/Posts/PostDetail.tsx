@@ -590,9 +590,9 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const handleHashtagClick = e => {
     if (e.target.className === 'hashtag-link') {
       if (post.page) {
-        router.push(`/page/${post.page.id}`);
+        router.push(`/page/${post.page.id}?hashtag=${e.target.id.substring(1)}`);
       } else if (post.token) {
-        router.push(`/token/${post.token.tokenId}`);
+        router.push(`/token/${post.token.tokenId}?hashtag=${e.target.id.substring(1)}`);
       } else {
         router.push(`/hashtag/${e.target.id.substring(1)}`);
       }
@@ -608,7 +608,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
             rel="noopener noreferrer"
             className="hashtag-link"
             id={`${hashtag}`}
-            style={{ color: 'var(--color-primary)' }}
+            style={{ color: 'var(--color-primary)', cursor: 'pointer' }}
           >
             {domNode.children.map(child => child.data)}
           </span>
