@@ -1,7 +1,7 @@
 import { PaginationArgs } from '@bcpros/lixi-models';
 import { createEntityAdapter } from '@reduxjs/toolkit';
 import { useAppDispatch } from '@store/hooks';
-import { useLazyPostsByHashtagIdQuery, usePostsByHashtagIdQuery } from '@store/post/posts.generated';
+import { useLazyPostsByHashtagIdQuery, usePostsByHashtagIdQuery } from '@store/post/posts.api';
 import _ from 'lodash';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Post, PostOrder } from '@generated/types.generated';

@@ -277,6 +277,8 @@ function* updatePostBurnValue(action: PayloadAction<BurnQueueCommand>) {
     )
   );
 
+  //TODO: There are no optimistic burn update for query post by hashtag, We need to pass query and hashtags
+  // in order to update. Need better way to handle rather than passing arg
   switch (command.postQueryTag) {
     case PostsQueryTag.PostsByPageId:
       return yield put(
