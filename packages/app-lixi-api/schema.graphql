@@ -542,6 +542,7 @@ type Query {
     """Paginate last"""
     last: Int
     minBurnFilter: Int
+    orderBy: PostOrder
     query: String
   ): PostResponse!
   allPostsBySearchWithHashtagAtPage(
@@ -558,6 +559,7 @@ type Query {
     """Paginate last"""
     last: Int
     minBurnFilter: Int
+    orderBy: PostOrder
     pageId: String
     query: String
   ): PostResponse!
@@ -575,6 +577,7 @@ type Query {
     """Paginate last"""
     last: Int
     minBurnFilter: Int
+    orderBy: PostOrder
     query: String
     tokenId: String
   ): PostResponse!

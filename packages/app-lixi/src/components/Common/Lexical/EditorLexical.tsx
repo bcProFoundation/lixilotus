@@ -173,7 +173,10 @@ const EditorLexical = (props: EditorLexicalProps) => {
             <LinkPlugin />
             <HashtagPlugin />
             <AutoEmbedPlugin />
-            <MyCustomAutoFocusPlugin initialContent={setInitialContent(hashtags, initialContent, isEditMode)} />
+            <MyCustomAutoFocusPlugin
+              initialContent={setInitialContent(hashtags, initialContent, isEditMode)}
+              hashtags={hashtags}
+            />
             {floatingAnchorElem && (
               <>
                 <FloatingLinkEditorPlugin anchorElem={floatingAnchorElem} />

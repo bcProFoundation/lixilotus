@@ -4,7 +4,7 @@ import { useAppDispatch } from '@store/hooks';
 import {
   useLazyPostsBySearchWithHashtagAtPageQuery,
   usePostsBySearchWithHashtagAtPageQuery
-} from '@store/post/posts.generated';
+} from '@store/post/posts.api';
 import _ from 'lodash';
 import { useMemo } from 'react';
 import { useEffect, useRef, useState } from 'react';
@@ -23,6 +23,7 @@ interface PostListParams extends PaginationArgs {
   query: string;
   hashtags: string[];
   pageId: string;
+  orderBy?: PostOrder;
 }
 
 export function useInfinitePostsBySearchQueryWithHashtagAtPage(
