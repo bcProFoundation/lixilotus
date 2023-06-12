@@ -7,7 +7,7 @@ import {
   PageOrder,
   PaginationArgs,
   UpdatePageInput,
-  DEFAULT_CATEGORY,
+  DEFAULT_CATEGORY
 } from '@bcpros/lixi-models';
 import BCHJS from '@bcpros/xpi-js';
 import { findManyCursorConnection } from '@devoxa/prisma-relay-cursor-connection';
