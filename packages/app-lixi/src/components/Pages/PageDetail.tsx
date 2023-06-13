@@ -1,4 +1,11 @@
-import { CameraOutlined, CompassOutlined, EditOutlined, HomeOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import {
+  CameraOutlined,
+  CompassOutlined,
+  EditOutlined,
+  HomeOutlined,
+  InfoCircleOutlined,
+  FireOutlined
+} from '@ant-design/icons';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
 import { FilterType } from '@bcpros/lixi-models/lib/filter';
@@ -160,6 +167,23 @@ const ProfileCardHeader = styled.div`
       padding-right: 0;
     }
   }
+
+  .description-profile {
+    width: 100%;
+    background: #fff;
+    padding-left: calc(0px + 48px);
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    @media (max-width: 768px) {
+      margin-left: 0;
+      text-align: center;
+    }
+    h2 {
+      font-weight: 600;
+      margin-bottom: 0;
+      text-transform: capitalize;
+    }
 `;
 
 const ProfileContentContainer = styled.div`
@@ -316,7 +340,7 @@ const Timeline = styled.div`
 `;
 
 const StyledSpace = styled(Space)`
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   .ant-space-item {
     height: fit-content;
     .anticon {
@@ -331,7 +355,7 @@ const StyledMenu = styled(Tabs)`
   .ant-tabs-nav {
     border-bottom-right-radius: 20px;
     border-bottom-left-radius: 20px;
-    padding: 1rem 24px;
+    padding: 0.5rem 24px;
     border: 1px solid var(--boder-item-light);
     background: white;
     &:before {
@@ -645,6 +669,27 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
               </div>
             )}
           </div>
+          <div className="description-profile">
+            {pageDetailData.description && <p><InfoCircleOutlined/> {pageDetailData.description}</p>}
+
+            {(pageDetailData.address || pageDetailData.stateName || pageDetailData.countryName) && <p><HomeOutlined/> {[pageDetailData.address, pageDetailData.stateName, pageDetailData.countryName]
+                .filter(Boolean)
+                .join(', ')}</p>}
+
+            {pageDetailData.website && <p><CompassOutlined/> 
+                {<a href={pageDetailData.website}> {pageDetailData.website}</a>}
+              </p>}
+
+            <p> <FireOutlined/> {pageDetailData?.totalBurnForPage > 0
+              ? `${pageDetailData?.totalBurnForPage} ${intl.get('page.xpiHasBurned')}`
+              : intl.get('page.noXpiHasBurned')}
+            </p>
+            {/* {selectedAccountId == pageDetailData?.pageAccountId && (
+              <Button type="primary" className="outline-btn" onClick={navigateEditPage}>
+                Edit your profile
+              </Button>
+            )} */}
+          </div>
         </ProfileCardHeader>
         <ProfileContentContainer>
           <StyledMenu defaultActiveKey="post">
@@ -781,47 +826,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                 </Timeline>
               </ContentTimeline>
             </Tabs.TabPane>
-            <Tabs.TabPane tab="About" key="about">
-              <LegacyProfile>
-                <AboutBox>
-                  <h3>About</h3>
-                  {pageDetailData && !pageDetailData.description && (
-                    <div className="blank-about">
-                      <img src="/images/about-blank.svg" alt="" />
-                      <p>Let people know more about you description, hobbies, address...</p>
-                      <Button type="primary" className="outline-btn">
-                        Update info
-                      </Button>
-                    </div>
-                  )}
-                  <div className="about-content">
-                    <SubAbout
-                      dataItem={pageDetailData?.description}
-                      onClickIcon={() => {}}
-                      icon={InfoCircleOutlined}
-                      text={pageDetailData?.description}
-                    />
-                    <SubAbout
-                      dataItem={pageDetailData?.address}
-                      onClickIcon={() => {}}
-                      icon={CompassOutlined}
-                      text={pageDetailData?.address}
-                    />
-                    <SubAbout
-                      dataItem={pageDetailData?.website}
-                      onClickIcon={() => {}}
-                      icon={HomeOutlined}
-                      text={pageDetailData?.website}
-                    />
-                    {/* {selectedAccountId == pageDetailData?.pageAccountId && (
-                      <Button type="primary" className="outline-btn" onClick={navigateEditPage}>
-                        Edit your profile
-                      </Button>
-                    )} */}
-                  </div>
-                </AboutBox>
-              </LegacyProfile>
-            </Tabs.TabPane>
+
             {/* TODO: implement in the future */}
             {/* <Tabs.TabPane tab="Friend" key="friend"></Tabs.TabPane>
             <Tabs.TabPane tab="Picture" key="picture"></Tabs.TabPane> */}

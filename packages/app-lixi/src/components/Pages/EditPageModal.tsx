@@ -222,7 +222,7 @@ export const EditPageModal: React.FC<EditPageModalProps> = ({ page, disabled }: 
               <Controller
                 name="description"
                 control={control}
-                render={({ field: { onChange, value } }) => <TextArea value={value} onChange={onChange} rows={5} />}
+                render={({ field: { onChange, value } }) => <TextArea maxLength={160} value={value} onChange={onChange} rows={5} />}
               />
             </Form.Item>
           </CreateForm>
