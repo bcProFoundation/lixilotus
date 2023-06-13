@@ -543,6 +543,7 @@ export default {
   'post.page': 'Trang',
   'post.token': 'Token',
   'post.public': 'Công khai',
+  'post.post': 'Bài viết',
 
   /* 16.Token */
   'token.importToken': 'Thêm token',
