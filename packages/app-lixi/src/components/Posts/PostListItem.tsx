@@ -279,6 +279,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addHashtag 
     if (e.target.className === 'read-more-more-module_btn__33IaH') {
       e.stopPropagation();
     } else {
+      sessionStorage.setItem('postIdSelected', post.id);
       router.push(`/post/${post.id}`);
     }
   };
@@ -301,7 +302,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, addHashtag 
   };
 
   return (
-    <PostListItemContainer key={post.id} ref={ref}>
+    <PostListItemContainer id={post.id} key={post.id} ref={ref}>
       <CardContainer>
         <CardHeader>
           <InfoCardUser

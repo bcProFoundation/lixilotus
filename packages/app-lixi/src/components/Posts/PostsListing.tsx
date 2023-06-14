@@ -299,6 +299,20 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     }
   }, [data]);
 
+  useEffect(() => {
+    if (!!data) {
+      const item_value = sessionStorage.getItem('postIdSelected');
+      const element = document.getElementById(item_value);
+      if (element) {
+        _.delay(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+          element.classList.add('active-post');
+          sessionStorage.removeItem('postIdSelected');
+        }, 100);
+      }
+    }
+  }, [data]);
+
   const addHashtag = hashtag => {
     if (!hashtags.includes(hashtag)) {
       setHashtags(prevHashtag => {
