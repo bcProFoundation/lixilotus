@@ -1,7 +1,7 @@
 import { PaginationArgs } from '@bcpros/lixi-models';
 import { createEntityAdapter } from '@reduxjs/toolkit';
 import { useAppDispatch } from '@store/hooks';
-import { useLazyPostsBySearchWithHashtagQuery, usePostsBySearchWithHashtagQuery } from '@store/post/posts.generated';
+import { useLazyPostsBySearchWithHashtagQuery, usePostsBySearchWithHashtagQuery } from '@store/post/posts.api';
 import _ from 'lodash';
 import { useMemo } from 'react';
 import { useEffect, useRef, useState } from 'react';
@@ -19,6 +19,7 @@ const { selectAll, selectEntities, selectIds, selectTotal } = postsAdapter.getSe
 interface PostListParams extends PaginationArgs {
   query: string;
   hashtags: string[];
+  orderBy?: PostOrder;
 }
 
 export function useInfinitePostsBySearchQueryWithHashtag(

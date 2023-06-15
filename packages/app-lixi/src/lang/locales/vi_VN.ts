@@ -613,6 +613,7 @@ export default {
   'category.agriculture': 'Nông nghiệp',
   'category.permaculture': 'Thủy sản',
   'category.humanitarian': 'Tính nhân đạo',
+  'category.hospitality': 'Khách sạn - Dịch vụ',
 
   /* 19. Webpush */
   'webpush.unableToSubscribe': 'Không thể đăng ký.',

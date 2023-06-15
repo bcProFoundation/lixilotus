@@ -201,7 +201,11 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         first: 20,
         minBurnFilter: filterValue ?? 1,
         query: searchValue,
-        hashtags: hashtags
+        hashtags: hashtags,
+        orderBy: {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.UpdatedAt
+        }
       },
       false
     );

@@ -542,7 +542,11 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
         minBurnFilter: filterValue ?? 1,
         query: searchValue,
         hashtags: hashtags,
-        pageId: page.id
+        pageId: page.id,
+        orderBy: {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.UpdatedAt
+        }
       },
       false
     );

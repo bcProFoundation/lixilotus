@@ -753,6 +753,7 @@ export type QueryAllPostsBySearchWithHashtagArgs = {
   hashtags?: InputMaybe<Array<Scalars['String']>>;
   last?: InputMaybe<Scalars['Int']>;
   minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<PostOrder>;
   query?: InputMaybe<Scalars['String']>;
 };
 
@@ -763,6 +764,7 @@ export type QueryAllPostsBySearchWithHashtagAtPageArgs = {
   hashtags?: InputMaybe<Array<Scalars['String']>>;
   last?: InputMaybe<Scalars['Int']>;
   minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<PostOrder>;
   pageId?: InputMaybe<Scalars['String']>;
   query?: InputMaybe<Scalars['String']>;
 };
@@ -774,6 +776,7 @@ export type QueryAllPostsBySearchWithHashtagAtTokenArgs = {
   hashtags?: InputMaybe<Array<Scalars['String']>>;
   last?: InputMaybe<Scalars['Int']>;
   minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<PostOrder>;
   query?: InputMaybe<Scalars['String']>;
   tokenId?: InputMaybe<Scalars['String']>;
 };

@@ -482,6 +482,7 @@ export default {
   'page.description': 'Description',
   'page.countryName': 'Country',
   'page.country': 'Search to select country',
+  'page.lo': 'Lotusia',
   'page.stateName': 'State',
   'page.state': 'Search to select state',
   'page.address': 'Address',
@@ -614,6 +615,7 @@ export default {
   'category.agriculture': 'Agriculture',
   'category.permaculture': 'Permaculture',
   'category.humanitarian': 'Humanitarian',
+  'category.hospitality': 'Hospitality',
 
   /* 19. Webpush */
   'webpush.unableToSubscribe': 'Unable to subscriber.',

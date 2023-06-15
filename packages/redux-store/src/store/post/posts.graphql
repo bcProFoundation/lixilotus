@@ -233,6 +233,7 @@ query PostsBySearchWithHashtag(
   $first: Int
   $last: Int
   $query: String
+  $orderBy: PostOrder
   $minBurnFilter: Int
   $hashtags: [String!]
 ) {
@@ -242,6 +243,7 @@ query PostsBySearchWithHashtag(
     first: $first
     last: $last
     query: $query
+    orderBy: $orderBy
     minBurnFilter: $minBurnFilter
     hashtags: $hashtags
   ) {
@@ -263,6 +265,7 @@ query PostsBySearchWithHashtagAtPage(
   $first: Int
   $last: Int
   $query: String
+  $orderBy: PostOrder
   $minBurnFilter: Int
   $hashtags: [String!]
   $pageId: String
@@ -273,6 +276,7 @@ query PostsBySearchWithHashtagAtPage(
     first: $first
     last: $last
     query: $query
+    orderBy: $orderBy
     minBurnFilter: $minBurnFilter
     hashtags: $hashtags
     pageId: $pageId
@@ -295,6 +299,7 @@ query PostsBySearchWithHashtagAtToken(
   $first: Int
   $last: Int
   $query: String
+  $orderBy: PostOrder
   $minBurnFilter: Int
   $hashtags: [String!]
   $tokenId: String
@@ -305,6 +310,7 @@ query PostsBySearchWithHashtagAtToken(
     first: $first
     last: $last
     query: $query
+    orderBy: $orderBy
     minBurnFilter: $minBurnFilter
     hashtags: $hashtags
     tokenId: $tokenId

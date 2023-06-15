@@ -227,7 +227,11 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
         minBurnFilter: filterValue ?? 1,
         query: searchValue,
         hashtags: hashtags,
-        tokenId: token.id
+        tokenId: token.id,
+        orderBy: {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.UpdatedAt
+        }
       },
       false
     );
