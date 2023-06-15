@@ -168,15 +168,16 @@ export class BurnController {
           }
 
           if (postHashtags.length > 0) {
+            const hashtagBurnValue = xpiValue / postHashtags.length;
             await this.prisma.$transaction(
               postHashtags.map(postHashtag => {
                 let hashtagLotusBurnUp = postHashtag.hashtag.lotusBurnUp ?? 0;
                 let hashtagLotusBurnDown = postHashtag.hashtag.lotusBurnDown ?? 0;
 
                 if (command.burnType == BurnType.Up) {
-                  hashtagLotusBurnUp = hashtagLotusBurnUp + xpiValue;
+                  hashtagLotusBurnUp = hashtagLotusBurnUp + hashtagBurnValue;
                 } else {
-                  hashtagLotusBurnDown = hashtagLotusBurnDown + xpiValue;
+                  hashtagLotusBurnDown = hashtagLotusBurnDown + hashtagBurnValue;
                 }
                 const hashTagLotusBurnScore = hashtagLotusBurnUp - hashtagLotusBurnDown;
                 return this.prisma.hashtag.update({

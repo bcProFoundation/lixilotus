@@ -8,10 +8,10 @@ export interface TempleApiState extends EntityState<HashtagQuery['hashtag']> {
 }
 
 const enhancedApi = api.enhanceEndpoints({
-  addTagTypes: ['Temple'],
+  addTagTypes: ['Hashtag'],
   endpoints: {
     Hashtags: {
-      providesTags: (result, error, arg) => ['Temple'],
+      providesTags: (result, error, arg) => ['Hashtag'],
       serializeQueryArgs({ queryArgs }) {
         if (queryArgs) {
           const { orderBy, ...otherArgs } = queryArgs;
@@ -26,10 +26,10 @@ const enhancedApi = api.enhanceEndpoints({
       }
     },
     Hashtag: {
-      providesTags: (result, error, arg) => ['Temple']
+      providesTags: (result, error, arg) => ['Hashtag']
     },
     HashtagBySearch: {
-      providesTags: (result, error, arg) => ['Temple'],
+      providesTags: (result, error, arg) => ['Hashtag'],
       serializeQueryArgs({ queryArgs }) {
         if (queryArgs) {
           const { query, ...otherArgs } = queryArgs;
@@ -41,6 +41,36 @@ const enhancedApi = api.enhanceEndpoints({
         currentCacheData.allHashtagBySearch.edges.push(...responseData.allHashtagBySearch.edges);
         currentCacheData.allHashtagBySearch.pageInfo = responseData.allHashtagBySearch.pageInfo;
       }
+    },
+    HashtagsByPage: {
+      providesTags: (result, error, arg) => ['Hashtag'],
+      serializeQueryArgs({ queryArgs }) {
+        if (queryArgs) {
+          const { orderBy, id, ...otherArgs } = queryArgs;
+          return { orderBy, id };
+        }
+        return { queryArgs };
+      },
+      merge(currentCacheData, responseData) {
+        currentCacheData.allHashtagByPage.edges.push(...responseData.allHashtagByPage.edges);
+        currentCacheData.allHashtagByPage.pageInfo = responseData.allHashtagByPage.pageInfo;
+        currentCacheData.allHashtagByPage.totalCount = responseData.allHashtagByPage.totalCount;
+      }
+    },
+    HashtagsByToken: {
+      providesTags: (result, error, arg) => ['Hashtag'],
+      serializeQueryArgs({ queryArgs }) {
+        if (queryArgs) {
+          const { orderBy, id, ...otherArgs } = queryArgs;
+          return { orderBy, id };
+        }
+        return { queryArgs };
+      },
+      merge(currentCacheData, responseData) {
+        currentCacheData.allHashtagByToken.edges.push(...responseData.allHashtagByToken.edges);
+        currentCacheData.allHashtagByToken.pageInfo = responseData.allHashtagByToken.pageInfo;
+        currentCacheData.allHashtagByToken.totalCount = responseData.allHashtagByToken.totalCount;
+      }
     }
   }
 });
@@ -51,7 +81,11 @@ export const {
   useHashtagBySearchQuery,
   useHashtagQuery,
   useHashtagsQuery,
+  useHashtagsByPageQuery,
+  useLazyHashtagsByPageQuery,
   useLazyHashtagBySearchQuery,
+  useHashtagsByTokenQuery,
+  useLazyHashtagsByTokenQuery,
   useLazyHashtagQuery,
   useLazyHashtagsQuery
 } = enhancedApi;

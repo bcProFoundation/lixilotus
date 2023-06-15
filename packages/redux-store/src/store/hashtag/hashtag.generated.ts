@@ -86,6 +86,86 @@ export type HashtagsQuery = {
   };
 };
 
+export type HashtagsByPageQueryVariables = Types.Exact<{
+  after?: Types.InputMaybe<Types.Scalars['String']>;
+  before?: Types.InputMaybe<Types.Scalars['String']>;
+  first?: Types.InputMaybe<Types.Scalars['Int']>;
+  last?: Types.InputMaybe<Types.Scalars['Int']>;
+  id?: Types.InputMaybe<Types.Scalars['String']>;
+  orderBy?: Types.InputMaybe<Types.HashtagOrder>;
+  skip?: Types.InputMaybe<Types.Scalars['Int']>;
+}>;
+
+export type HashtagsByPageQuery = {
+  __typename?: 'Query';
+  allHashtagByPage: {
+    __typename?: 'HashtagConnection';
+    totalCount?: number | null;
+    edges?: Array<{
+      __typename?: 'HashtagEdge';
+      cursor: string;
+      node: {
+        __typename?: 'Hashtag';
+        id: string;
+        content: string;
+        normalizedContent: string;
+        lotusBurnUp: number;
+        lotusBurnDown: number;
+        lotusBurnScore: number;
+        createdAt?: any | null;
+        updatedAt?: any | null;
+      };
+    }> | null;
+    pageInfo: {
+      __typename?: 'PageInfo';
+      endCursor?: string | null;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: string | null;
+    };
+  };
+};
+
+export type HashtagsByTokenQueryVariables = Types.Exact<{
+  after?: Types.InputMaybe<Types.Scalars['String']>;
+  before?: Types.InputMaybe<Types.Scalars['String']>;
+  first?: Types.InputMaybe<Types.Scalars['Int']>;
+  last?: Types.InputMaybe<Types.Scalars['Int']>;
+  id?: Types.InputMaybe<Types.Scalars['String']>;
+  orderBy?: Types.InputMaybe<Types.HashtagOrder>;
+  skip?: Types.InputMaybe<Types.Scalars['Int']>;
+}>;
+
+export type HashtagsByTokenQuery = {
+  __typename?: 'Query';
+  allHashtagByToken: {
+    __typename?: 'HashtagConnection';
+    totalCount?: number | null;
+    edges?: Array<{
+      __typename?: 'HashtagEdge';
+      cursor: string;
+      node: {
+        __typename?: 'Hashtag';
+        id: string;
+        content: string;
+        normalizedContent: string;
+        lotusBurnUp: number;
+        lotusBurnDown: number;
+        lotusBurnScore: number;
+        createdAt?: any | null;
+        updatedAt?: any | null;
+      };
+    }> | null;
+    pageInfo: {
+      __typename?: 'PageInfo';
+      endCursor?: string | null;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: string | null;
+    };
+  };
+};
+
 export type HashtagBySearchQueryVariables = Types.Exact<{
   after?: Types.InputMaybe<Types.Scalars['String']>;
   before?: Types.InputMaybe<Types.Scalars['String']>;
@@ -166,6 +246,56 @@ export const HashtagsDocument = `
 }
     ${HashtagFieldsFragmentDoc}
 ${PageInfoFieldsFragmentDoc}`;
+export const HashtagsByPageDocument = `
+    query HashtagsByPage($after: String, $before: String, $first: Int = 20, $last: Int, $id: String, $orderBy: HashtagOrder, $skip: Int) {
+  allHashtagByPage(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    id: $id
+    orderBy: $orderBy
+    skip: $skip
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...HashtagFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+    ${HashtagFieldsFragmentDoc}
+${PageInfoFieldsFragmentDoc}`;
+export const HashtagsByTokenDocument = `
+    query HashtagsByToken($after: String, $before: String, $first: Int = 20, $last: Int, $id: String, $orderBy: HashtagOrder, $skip: Int) {
+  allHashtagByToken(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    id: $id
+    orderBy: $orderBy
+    skip: $skip
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...HashtagFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+    ${HashtagFieldsFragmentDoc}
+${PageInfoFieldsFragmentDoc}`;
 export const HashtagBySearchDocument = `
     query HashtagBySearch($after: String, $before: String, $first: Int, $last: Int, $query: String) {
   allHashtagBySearch(
@@ -197,6 +327,12 @@ const injectedRtkApi = api.injectEndpoints({
     Hashtags: build.query<HashtagsQuery, HashtagsQueryVariables | void>({
       query: variables => ({ document: HashtagsDocument, variables })
     }),
+    HashtagsByPage: build.query<HashtagsByPageQuery, HashtagsByPageQueryVariables | void>({
+      query: variables => ({ document: HashtagsByPageDocument, variables })
+    }),
+    HashtagsByToken: build.query<HashtagsByTokenQuery, HashtagsByTokenQueryVariables | void>({
+      query: variables => ({ document: HashtagsByTokenDocument, variables })
+    }),
     HashtagBySearch: build.query<HashtagBySearchQuery, HashtagBySearchQueryVariables | void>({
       query: variables => ({ document: HashtagBySearchDocument, variables })
     })
@@ -209,6 +345,10 @@ export const {
   useLazyHashtagQuery,
   useHashtagsQuery,
   useLazyHashtagsQuery,
+  useHashtagsByPageQuery,
+  useLazyHashtagsByPageQuery,
+  useHashtagsByTokenQuery,
+  useLazyHashtagsByTokenQuery,
   useHashtagBySearchQuery,
   useLazyHashtagBySearchQuery
 } = injectedRtkApi;

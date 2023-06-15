@@ -110,6 +110,7 @@ export default {
   'general.topPages': 'Top Pages',
   'general.burned': 'Burned',
   'general.fee': 'Fee: ',
+  'general.suggested': 'Suggested: ',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
