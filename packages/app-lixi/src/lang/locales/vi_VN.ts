@@ -109,6 +109,7 @@ export default {
   'general.topPages': 'Xếo hạng trang',
   'general.burned': 'Đã đốt',
   'general.fee': 'Phí: ',
+  'general.createPost': 'Bạn đang nghĩ gì vậy?...',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',
@@ -543,6 +544,10 @@ export default {
   'post.page': 'Trang',
   'post.token': 'Token',
   'post.public': 'Công khai',
+  'post.singleReposted': '{repostName} đã đăng lại',
+  'post.multiReposted': '{repostName} người khác đã đăng lại',
+  'post.repostSuccessful': 'Đăng lại bài viết thành công',
+  'post.repostFailure': 'Không thể đăng lại bài viết',
 
   /* 16.Token */
   'token.importToken': 'Thêm token',

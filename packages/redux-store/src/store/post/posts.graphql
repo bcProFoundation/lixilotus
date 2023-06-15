@@ -13,7 +13,7 @@ query Posts(
   $before: String
   $first: Int = 20
   $last: Int
-  $orderBy: PostOrder
+  $orderBy: [PostOrder!]
   $skip: Int
   $accountId: Int
   $minBurnFilter: Int
@@ -79,7 +79,7 @@ query PostsByPageId(
   $before: String
   $first: Int = 20
   $last: Int
-  $orderBy: PostOrder
+  $orderBy: [PostOrder!]
   $id: String
   $skip: Int
   $minBurnFilter: Int
@@ -358,6 +358,14 @@ fragment PostFields on Post {
     name
     tokenId
   }
+  repost {
+    accountId
+    account {
+      id
+      name
+      address
+    }
+  }
   lotusBurnUp
   lotusBurnDown
   lotusBurnScore
@@ -403,10 +411,13 @@ fragment PostMeiliFields on Post {
     name
     tokenId
   }
-  token {
-    id
-    name
-    tokenId
+  repost {
+    accountId
+    account {
+      id
+      name
+      address
+    }
   }
   lotusBurnUp
   lotusBurnDown
@@ -426,4 +437,8 @@ mutation updatePost($input: UpdatePostInput!) {
   updatePost(data: $input) {
     ...PostFields
   }
+}
+
+mutation repost($input: RepostInput!) {
+  repost(data: $input)
 }

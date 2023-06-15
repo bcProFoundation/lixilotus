@@ -11,7 +11,8 @@ import {
   CreateFollowPageInput,
   DeleteFollowPageInput,
   OrderDirection,
-  PostOrderField
+  PostOrderField,
+  RepostInput
 } from '@generated/types.generated';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 import { setTransactionReady } from '@store/account/actions';
@@ -35,6 +36,7 @@ import { useInfinitePostsBySearchQueryWithHashtagAtPage } from '@store/post/useI
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import { PageQuery } from '@store/page/pages.generated';
+import { useRepostMutation } from '@store/post/posts.api';
 
 export type PageItem = PageQuery['page'];
 
@@ -408,10 +410,16 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
       first: 10,
       minBurnFilter: filterValue ?? 1,
       accountId: selectedAccountId ?? undefined,
-      orderBy: {
-        direction: OrderDirection.Desc,
-        field: PostOrderField.UpdatedAt
-      },
+      orderBy: [
+        {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.UpdatedRepostAt
+        },
+        {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.UpdatedAt
+        }
+      ],
       id: page.id
     },
     false
@@ -570,6 +578,36 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
     }
   };
 
+  const [repostTrigger, { isLoading: isLoadingRepost, isSuccess: isSuccessRepost, isError: isErrorRepost }] =
+    useRepostMutation();
+
+  const handleRepost = async (post: any) => {
+    const repostInput: RepostInput = {
+      accountId: selectedAccountId,
+      postId: post.id
+    };
+
+    try {
+      await repostTrigger({ input: repostInput });
+      isSuccessRepost &&
+        dispatch(
+          showToast('success', {
+            message: 'Success',
+            description: intl.get('post.repostSuccessful'),
+            duration: 5
+          })
+        );
+    } catch (error) {
+      dispatch(
+        showToast('error', {
+          message: 'Error',
+          description: intl.get('post.repostFailure'),
+          duration: 5
+        })
+      );
+    }
+  };
+
   const showPosts = () => {
     return (
       <React.Fragment>
@@ -593,6 +631,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                   item={item}
                   key={item.id}
                   handleBurnForPost={handleBurnForPost}
+                  repost={handleRepost}
                   addHashtag={addHashtag}
                 />
               );
@@ -614,6 +653,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                   item={item}
                   key={item.id}
                   handleBurnForPost={handleBurnForPost}
+                  repost={handleRepost}
                   addHashtag={addHashtag}
                 />
               );

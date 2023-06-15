@@ -7,6 +7,7 @@ export enum PostOrderField {
   lotusBurnScore = 'lotusBurnScore',
   createdAt = 'createdAt',
   updatedAt = 'updatedAt',
+  updatedRepostAt = 'updatedRepostAt',
   content = 'content'
 }
 

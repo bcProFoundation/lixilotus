@@ -145,24 +145,26 @@ model Page {
 }
 
 model Post {
-  id             String         @id @default(cuid())
-  postAccount    Account        @relation(fields: [postAccountId], references: [id])
-  postAccountId  Int            @map("post_account_id")
-  page           Page?          @relation(fields: [pageId], references: [id])
-  pageId         String?        @map("page_id")
-  token          Token?         @relation(fields: [tokenId], references: [id])
-  tokenId        String?        @map("token_id")
-  content        String         @default("")
-  createdAt      DateTime       @default(now()) @map("created_at") @db.Timestamptz
-  updatedAt      DateTime       @default(now()) @map("updated_at") @db.Timestamptz
-  uploadedCovers UploadDetail[] @relation("PostCover")
-  lotusBurnUp    Float          @default(0.0) @map("lotus_burn_up")
-  lotusBurnDown  Float          @default(0.0) @map("lotus_burn_down")
-  lotusBurnScore Float          @default(0.0) @map("lotus_burn_score")
-  comments       Comment[]
-  postHashtags   PostHashtag[]
-  createFee      Float?         @map("create_fee")
-  txid           String?
+  id              String         @id @default(cuid())
+  postAccount     Account        @relation(fields: [postAccountId], references: [id])
+  postAccountId   Int            @map("post_account_id")
+  page            Page?          @relation(fields: [pageId], references: [id])
+  pageId          String?        @map("page_id")
+  token           Token?         @relation(fields: [tokenId], references: [id])
+  tokenId         String?        @map("token_id")
+  content         String         @default("")
+  createdAt       DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime       @default(now()) @map("updated_at") @db.Timestamptz
+  uploadedCovers  UploadDetail[] @relation("PostCover")
+  lotusBurnUp     Float          @default(0.0) @map("lotus_burn_up")
+  lotusBurnDown   Float          @default(0.0) @map("lotus_burn_down")
+  lotusBurnScore  Float          @default(0.0) @map("lotus_burn_score")
+  comments        Comment[]
+  postHashtags    PostHashtag[]
+  createFee       Float?         @map("create_fee")
+  txid            String?
+  repost          Repost[]
+  updatedRepostAt DateTime       @default(now()) @map("updated_repost_at") @db.Timestamptz
 
   @@map("post")
 }
@@ -214,6 +216,7 @@ model Account {
   followings         FollowAccount[]     @relation("followingAccount")
   followingPages     FollowPage[]
   webpushSubscribers WebpushSubscriber[]
+  repost             Repost[]
 
   @@index([mnemonicHash], type: Hash)
   @@map("account")
@@ -734,4 +737,18 @@ model Hashtag {
 
   @@index(content)
   @@map("hashtag")
+}
+
+model Repost {
+  id        String   @id @default(cuid())
+  account   Account  @relation(fields: [accountId], references: [id])
+  accountId Int      @map("account_id")
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    String   @map("post_id")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@index(accountId)
+  @@index(postId)
+  @@map("repost")
 }

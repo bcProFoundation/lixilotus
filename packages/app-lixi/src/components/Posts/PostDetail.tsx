@@ -13,7 +13,7 @@ import { getSelectedAccount } from '@store/account/selectors';
 import { addBurnQueue, addBurnTransaction, burnForUpDownVote, createTxHex, clearFailQueue } from '@store/burn/actions';
 import { api as commentsApi, useCreateCommentMutation } from '@store/comment/comments.api';
 import { useInfiniteCommentsToPostIdQuery } from '@store/comment/useInfiniteCommentsToPostIdQuery';
-import { PostsQuery } from '@store/post/posts.generated';
+import { PostsQuery, useRepostMutation } from '@store/post/posts.generated';
 import { sendXPIFailure } from '@store/send/actions';
 import { showToast } from '@store/toast/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
@@ -27,7 +27,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactHtmlParser from 'react-html-parser';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import intl from 'react-intl-universal';
-import { CommentOrderField, CreateCommentInput, OrderDirection } from '@generated/types.generated';
+import { CommentOrderField, CreateCommentInput, OrderDirection, RepostInput } from '@generated/types.generated';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import styled from 'styled-components';
 import CommentListItem, { CommentItem } from './CommentListItem';
@@ -45,6 +45,7 @@ import { OPTION_BURN_VALUE } from './PostsListing';
 import { GroupIconText, IconNoneHover } from './PostListItem';
 import parse from 'html-react-parser';
 import ReactDomServer from 'react-dom/server';
+import ActionPostBar from '@components/Common/ActionPostBar';
 
 export type PostItem = PostsQuery['allPosts']['edges'][0]['node'];
 export type BurnData = {
@@ -295,6 +296,9 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
   const walletStatus = useAppSelector(getWalletStatus);
   const [open, setOpen] = useState(false);
   const filterValue = useAppSelector(getFilterPostsHome);
+
+  const [repostTrigger, { isLoading: isLoadingRepost, isSuccess: isSuccessRepost, isError: isErrorRepost }] =
+    useRepostMutation();
 
   const dataSource = [
     {
@@ -617,6 +621,33 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
     }
   });
 
+  const handleRepost = async (post: any) => {
+    const repostInput: RepostInput = {
+      accountId: selectedAccount.id,
+      postId: post.id
+    };
+
+    try {
+      await repostTrigger({ input: repostInput });
+      isSuccessRepost &&
+        dispatch(
+          showToast('success', {
+            message: 'Success',
+            description: intl.get('post.repostSuccessful'),
+            duration: 5
+          })
+        );
+    } catch (error) {
+      dispatch(
+        showToast('error', {
+          message: 'Error',
+          description: intl.get('post.repostFailure'),
+          duration: 5
+        })
+      );
+    }
+  };
+
   return (
     <>
       <StyledContainerPostDetail>
@@ -648,20 +679,12 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
               </Image.PreviewGroup>
             </div>
           )}
-          <ActionBar>
-            <GroupIconText>
-              <Reaction post={post} handleBurnForPost={handleBurnForPost} />
-              <IconNoneHover
-                value={formatBalance(totalCount ?? 0)}
-                imgUrl="/images/ico-comments.svg"
-                key={`list-vertical-comment-o-${post.id}`}
-                classStyle="custom-comment"
-                onClickIcon={e => setFocus('comment', { shouldSelect: true })}
-              />
-            </GroupIconText>
-
-            <ShareSocialButton slug={post.id} content={post.content} postAccountName={post.postAccount.name} />
-          </ActionBar>
+          <ActionPostBar
+            post={post}
+            handleBurnForPost={handleBurnForPost}
+            handleRepost={handleRepost}
+            onClickIconComment={e => setFocus('comment', { shouldSelect: true })}
+          />
         </PostContentDetail>
 
         <CommentContainer>

@@ -322,6 +322,7 @@ type Mutation {
   deleteFollowAccount(data: DeleteFollowAccountInput!): Boolean!
   deleteFollowPage(data: DeleteFollowPageInput!): Boolean!
   importAccount(data: ImportAccountInput!): Account!
+  repost(data: RepostInput!): Boolean!
   updatePage(data: UpdatePageInput!): Page!
   updatePost(data: UpdatePostInput!): Post!
 }
@@ -423,6 +424,7 @@ type Post {
   postAccount: Account!
   postAccountId: Int!
   postHashtags: [PostHashtag!]
+  repost: [Repost!]
   token: Token
   tokenId: String
   totalComments: Int!
@@ -480,6 +482,7 @@ enum PostOrderField {
   id
   lotusBurnScore
   updatedAt
+  updatedRepostAt
 }
 
 type PostResponse {
@@ -510,9 +513,26 @@ type Query {
   allPages(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: [PageOrder!], query: String, skip: Int): PageConnection!
   allPagesByFollower(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PageOrder, skip: Int): PageConnection!
   allPagesByUserId(after: String, before: String, first: Int, id: Int, last: Int, minBurnFilter: Int, orderBy: PageOrder, skip: Int): PageConnection!
-  allPosts(accountId: Int, after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
+  allPosts(
+    accountId: Int
+
+    """Paginate after opaque cursor"""
+    after: String
+
+    """Paginate before opaque cursor"""
+    before: String
+
+    """Paginate first"""
+    first: Int
+
+    """Paginate last"""
+    last: Int
+    minBurnFilter: Int
+    orderBy: [PostOrder!]
+    skip: Int
+  ): PostConnection!
   allPostsByHashtagId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
-  allPostsByPageId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: PostOrder, skip: Int): PostConnection!
+  allPostsByPageId(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: [PostOrder!], skip: Int): PostConnection!
   allPostsBySearch(
     """Paginate after opaque cursor"""
     after: String
@@ -627,6 +647,25 @@ type Query {
   token(tokenId: String!): Token!
   worship(id: String!): Worship!
   worshipedPerson(id: String!): WorshipedPerson!
+}
+
+type Repost {
+  account: Account
+  accountId: Int
+
+  """Identifies the date and time when the object was created."""
+  createdAt: DateTime!
+  id: ID
+  post: Post
+  postId: String
+
+  """Identifies the date and time when the object was last updated."""
+  updatedAt: DateTime!
+}
+
+input RepostInput {
+  accountId: Int!
+  postId: String!
 }
 
 type State {

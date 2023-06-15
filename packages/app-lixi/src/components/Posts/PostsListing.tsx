@@ -15,7 +15,7 @@ import {
   getLatestBurnForPost,
   clearFailQueue
 } from '@store/burn';
-import { api as postApi, useLazyPostQuery } from '@store/post/posts.api';
+import { api as postApi, useLazyPostQuery, useRepostMutation } from '@store/post/posts.api';
 import { Menu, MenuProps, Modal, notification, Skeleton, Tabs, Collapse, Space, Select, Button } from 'antd';
 import _ from 'lodash';
 import React, { useRef, useState, useEffect } from 'react';
@@ -43,6 +43,7 @@ import { getFilterPostsHome } from '@store/settings/selectors';
 import { getLeaderboard } from '@store/account/actions';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 import { useInfinitePostsBySearchQueryWithHashtag } from '@store/post/useInfinitePostsBySearchQueryWithHashtag';
+import { RepostInput } from '@bcpros/lixi-models';
 
 const { Panel } = Collapse;
 const antIcon = <LoadingOutlined style={{ fontSize: 20 }} spin />;
@@ -181,15 +182,20 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     setTab(e.key);
   };
 
+  const [repostTrigger, { isLoading: isLoadingRepost, isSuccess: isSuccessRepost, isError: isErrorRepost }] =
+    useRepostMutation();
+
   const { data, totalCount, fetchNext, hasNext, isFetching, isFetchingNext, refetch } = useInfinitePostsQuery(
     {
       first: 20,
       minBurnFilter: filterValue,
       accountId: selectedAccountId ?? null,
-      orderBy: {
-        direction: OrderDirection.Desc,
-        field: PostOrderField.UpdatedAt
-      }
+      orderBy: [
+        {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.UpdatedAt
+        }
+      ]
     },
     false
   );
@@ -341,6 +347,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
                   item={item}
                   key={item.id}
                   handleBurnForPost={handleBurnForPost}
+                  repost={handleRepost}
                   addHashtag={addHashtag}
                 />
               );
@@ -362,6 +369,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
                   item={item}
                   key={item.id}
                   handleBurnForPost={handleBurnForPost}
+                  repost={handleRepost}
                   addHashtag={addHashtag}
                 />
               );
@@ -435,6 +443,33 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         showToast('error', {
           message: errorMessage,
           duration: 3
+        })
+      );
+    }
+  };
+
+  const handleRepost = async (post: any) => {
+    const repostInput: RepostInput = {
+      accountId: selectedAccountId,
+      postId: post.id
+    };
+
+    try {
+      await repostTrigger({ input: repostInput });
+      isSuccessRepost &&
+        dispatch(
+          showToast('success', {
+            message: 'Success',
+            description: intl.get('post.repostSuccessful'),
+            duration: 5
+          })
+        );
+    } catch (error) {
+      dispatch(
+        showToast('error', {
+          message: 'Error',
+          description: intl.get('post.repostFailure'),
+          duration: 5
         })
       );
     }

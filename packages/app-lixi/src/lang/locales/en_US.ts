@@ -110,6 +110,7 @@ export default {
   'general.topPages': 'Top Pages',
   'general.burned': 'Burned',
   'general.fee': 'Fee: ',
+  'general.createPost': 'What do you think?...',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
@@ -544,6 +545,10 @@ export default {
   'post.page': 'Page',
   'post.token': 'Token',
   'post.public': 'Public',
+  'post.singleReposted': '{repostName} has reposted',
+  'post.multiReposted': '{repostName} other has reposted',
+  'post.repostSuccessful': 'Repost successful',
+  'post.repostFailure': 'Unable to repost',
 
   /* 16.Token */
   'token.importToken': 'Import token',
