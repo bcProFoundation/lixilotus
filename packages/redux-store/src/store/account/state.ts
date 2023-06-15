@@ -17,4 +17,21 @@ export interface AccountsState extends EntityState<Account> {
   transactionReady: boolean;
   graphqlRequestLoading: boolean;
   recentVisitedPeople: WorshipedPerson[];
+  recentHashtagAtHome: string[];
+  recentHashtagAtPages:
+    | [
+        {
+          id: string | null;
+          hashtags: string[];
+        }
+      ]
+    | [];
+  recentHashtagAtToken:
+    | [
+        {
+          id: string | null;
+          hashtags: string[];
+        }
+      ]
+    | [];
 }
