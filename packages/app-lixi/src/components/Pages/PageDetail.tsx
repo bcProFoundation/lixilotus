@@ -17,7 +17,7 @@ import {
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 import {
   addRecentHashtagAtPages,
-  deleteRecentHashtagAtPages,
+  clearRecentHashtagAtPages,
   removeRecentHashtagAtPages,
   setTransactionReady
 } from '@store/account/actions';

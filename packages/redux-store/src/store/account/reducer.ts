@@ -24,13 +24,13 @@ import {
   addRecentVisitedPerson,
   addRecentHashtagAtHome,
   removeRecentHashtagAtHome,
-  deleteRecentHashtagAtHome,
+  clearRecentHashtagAtHome,
   addRecentHashtagAtPages,
   removeRecentHashtagAtPages,
-  deleteRecentHashtagAtPages,
+  clearRecentHashtagAtPages,
   addRecentHashtagAtToken,
   removeRecentHashtagAtToken,
-  deleteRecentHashtagAtToken
+  clearRecentHashtagAtToken
 } from './actions';
 import { AccountsState } from './state';
 
@@ -54,6 +54,7 @@ const initialState: AccountsState = accountsAdapter.getInitialState({
 });
 
 const numberOfRecentHashtags = 3;
+const numberOfItemsSaved = 10;
 
 export const accountReducer = createReducer(initialState, builder => {
   builder
@@ -178,7 +179,7 @@ export const accountReducer = createReducer(initialState, builder => {
         state.recentHashtagAtHome.splice(hashtagExistedIndex, 1);
       }
     })
-    .addCase(deleteRecentHashtagAtHome, (state, action) => {
+    .addCase(clearRecentHashtagAtHome, (state, action) => {
       state.recentHashtagAtHome.length = 0;
     })
     .addCase(addRecentHashtagAtPages, (state, action) => {
@@ -200,6 +201,9 @@ export const accountReducer = createReducer(initialState, builder => {
           id: id,
           hashtags: [hashtag.toUpperCase()]
         };
+        if (state.recentHashtagAtPages.length >= numberOfItemsSaved) {
+          state.recentHashtagAtPages.shift();
+        }
         state.recentHashtagAtPages.push(recent as never);
       }
     })
@@ -215,7 +219,7 @@ export const accountReducer = createReducer(initialState, builder => {
         }
       }
     })
-    .addCase(deleteRecentHashtagAtPages, (state, action) => {
+    .addCase(clearRecentHashtagAtPages, (state, action) => {
       const { id } = action.payload;
       const pageExisted = state.recentHashtagAtPages.find((page: any) => page.id === id);
 
@@ -242,6 +246,9 @@ export const accountReducer = createReducer(initialState, builder => {
           id: id,
           hashtags: [hashtag.toUpperCase()]
         };
+        if (state.recentHashtagAtToken.length >= numberOfItemsSaved) {
+          state.recentHashtagAtToken.shift();
+        }
         state.recentHashtagAtToken.push(recent as never);
       }
     })
@@ -257,7 +264,7 @@ export const accountReducer = createReducer(initialState, builder => {
         }
       }
     })
-    .addCase(deleteRecentHashtagAtToken, (state, action) => {
+    .addCase(clearRecentHashtagAtToken, (state, action) => {
       const { id } = action.payload;
       const tokenExisted = state.recentHashtagAtToken.find((page: any) => page.id === id);
 
