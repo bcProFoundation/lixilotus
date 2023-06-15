@@ -65,6 +65,8 @@ const LixiApp = ({ Component, ...rest }) => {
       <Head>
         <title>LixiLotus</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+        {/*This is for sharing on telegram. If didnt work remove next commit*/}
+        <meta name="twitter:image:src" content={defaultImage} />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
       </Head>
       <NextSeo
@@ -72,14 +74,15 @@ const LixiApp = ({ Component, ...rest }) => {
         description="The lixi program send you a small gift ."
         canonical={canonicalUrl}
         openGraph={{
+          type: 'website',
           url: canonicalUrl,
           title: 'LixiLotus',
           description: description,
           images: [
             {
               url: defaultImage,
-              width: 800,
-              height: 600,
+              width: 1200,
+              height: 630,
               alt: 'Lotus Logo',
               type: 'image/jpeg'
             }

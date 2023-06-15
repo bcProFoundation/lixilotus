@@ -7,12 +7,12 @@
   <br>
 </p>
 
-**Infrastructure to build wallet and give away applications for [Lotus](https://givelotus.org) coin.**
+**Infrastructure to build an attention economy based on [Lotus](https://givelotus.org).**
 
 ## Applications
 
 - [LixiLotus Api](packages/app-lixi-api) - A backend api provide the logic for lixi give away and lixilotus love programs
-- [LixiLotus Wallet](packages/app-lixi) - A Lotus wallet combine with a dashboard to manage give away programs
+- [LixiLotus Web](packages/app-lixi) - A social network software built on blockchain for attention enonomy based on community moderation without inteference of bots and platforms.
 - [SendLotus](packages/app-sendlotus) - A Lotus wallet
 
 ## Libraries

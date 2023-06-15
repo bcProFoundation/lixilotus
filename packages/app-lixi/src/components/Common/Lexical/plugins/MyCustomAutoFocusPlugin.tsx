@@ -7,14 +7,19 @@ import { $generateNodesFromDOM } from '@lexical/html';
 // highly composable. Furthermore, you can lazy load plugins if
 // desired, so you don't pay the cost for plugins until you
 // actually use them.
-const MyCustomAutoFocusPlugin: React.FC<any> = props => {
+const MyCustomAutoFocusPlugin: React.FC<any> = ({ hashtags, initialContent }) => {
   const [editor] = useLexicalComposerContext();
 
   useEffect(() => {
     editor.update(() => {
       // In the browser you can use the native DOMParser API to parse the HTML string.
       const parser = new DOMParser();
-      const dom = parser.parseFromString(`<span>${props.initialContent}</span>&nbsp<br>`, 'text/html');
+      let dom;
+      if (hashtags && hashtags.length > 0) {
+        dom = parser.parseFromString(`<span>${initialContent}</span><br/><pre/>`, 'text/html');
+      } else {
+        dom = parser.parseFromString(initialContent, 'text/html');
+      }
 
       // Once you have the DOM instance it's easy to generate LexicalNodes.
       const nodes = $generateNodesFromDOM(editor, dom);
@@ -25,7 +30,7 @@ const MyCustomAutoFocusPlugin: React.FC<any> = props => {
       // Insert them at a selection.
       $insertNodes(nodes);
     });
-  }, [props.initialContent]);
+  }, [initialContent]);
 
   useEffect(() => {
     // Focus the editor when the effect fires!

@@ -10,13 +10,19 @@ import PostListItem from '@components/Posts/PostListItem';
 import {
   CreateFollowPageInput,
   DeleteFollowPageInput,
+  HashtagOrderField,
   OrderDirection,
   PostOrderField,
   RepostInput
 } from '@generated/types.generated';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
-import { setTransactionReady } from '@store/account/actions';
-import { getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
+import {
+  addRecentHashtagAtPages,
+  clearRecentHashtagAtPages,
+  removeRecentHashtagAtPages,
+  setTransactionReady
+} from '@store/account/actions';
+import { getRecentHashtagAtPages, getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
 import { addBurnQueue, addBurnTransaction, clearFailQueue, getFailQueue } from '@store/burn';
 import { useCreateFollowPageMutation, useDeleteFollowPageMutation } from '@store/follow/follows.api';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
@@ -33,10 +39,12 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useInfinitePostsBySearchQueryWithHashtagAtPage } from '@store/post/useInfinitePostsBySearchQueryWithHashtagAtPage';
+import { useInfiniteHashtagByPageQuery } from '@store/hashtag/useInfiniteHashtagByPageQuery';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
 import { PageQuery } from '@store/page/pages.generated';
 import { useRepostMutation } from '@store/post/posts.api';
+import _ from 'lodash';
 
 export type PageItem = PageQuery['page'];
 
@@ -364,6 +372,7 @@ const SubAbout = ({
 
 const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const selectedAccount = useAppSelector(getSelectedAccount);
   const selectedAccountId = useAppSelector(getSelectedAccountId);
   const [pageDetailData, setPageDetailData] = useState<any>(page);
@@ -374,8 +383,16 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
   const failQueue = useAppSelector(getFailQueue);
   const filterValue = useAppSelector(getFilterPostsPage);
   const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
+  const recentTagAtPages = useAppSelector(getRecentHashtagAtPages);
   const [searchValue, setSearchValue] = useState<string | null>(null);
   const [hashtags, setHashtags] = useState([]);
+  const [suggestedHashtag, setSuggestedTags] = useState([]);
+
+  useEffect(() => {
+    if (router.query.hashtag) {
+      addHashtag(`#${router.query.hashtag}`);
+    }
+  }, []);
 
   const [
     createFollowPageTrigger,
@@ -424,6 +441,29 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
     },
     false
   );
+
+  const { data: hashtagData } = useInfiniteHashtagByPageQuery(
+    {
+      first: 3,
+      orderBy: {
+        direction: OrderDirection.Desc,
+        field: HashtagOrderField.LotusBurnScore
+      },
+      id: page.id
+    },
+    false
+  );
+
+  useEffect(() => {
+    const pageId = page.id;
+    const topHashtags = _.map(hashtagData, 'content');
+    const pageRecentHashtag = recentTagAtPages.find((page: any) => page.id === pageId);
+    const recentHashtags: string[] = pageRecentHashtag?.hashtags || [];
+
+    const combinedHashtags = [...topHashtags, ...recentHashtags.filter(tag => !topHashtags.includes(tag))];
+
+    setSuggestedTags(combinedHashtags);
+  }, [recentTagAtPages, hashtagData]);
 
   const loadMoreItems = () => {
     if (hasNext && !isFetching) {
@@ -524,6 +564,10 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
     setSearchValue(value);
 
     if (hashtagsValue && hashtagsValue.length > 0) setHashtags([...hashtagsValue]);
+
+    hashtagsValue.map(hashtag => {
+      dispatch(addRecentHashtagAtPages({ id: page.id, hashtag: hashtag.substring(1) }));
+    });
   };
 
   const onDeleteQuery = () => {
@@ -543,7 +587,11 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
         minBurnFilter: filterValue ?? 1,
         query: searchValue,
         hashtags: hashtags,
-        pageId: page.id
+        pageId: page.id,
+        orderBy: {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.UpdatedAt
+        }
       },
       false
     );
@@ -836,6 +884,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                     hashtags={hashtags}
                     onDeleteHashtag={onDeleteHashtag}
                     onDeleteQuery={onDeleteQuery}
+                    suggestedHashtag={suggestedHashtag}
                   />
                   <FilterBurnt filterForType={FilterType.PostsPage} />
                 </div>

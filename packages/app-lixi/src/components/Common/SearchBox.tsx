@@ -3,6 +3,7 @@ import { Input, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
+import intl from 'react-intl-universal';
 
 export type SearchType = {
   value: string | null;
@@ -15,11 +16,13 @@ type SearchProps = {
   hashtags?: string[];
   onDeleteHashtag: (hashtags?: string[]) => void;
   onDeleteQuery?: () => void;
+  suggestedHashtag?: string[];
 };
 
 const Container = styled.div`
   display: flex;
   margin-bottom: 5px;
+  flex-direction: column;
   @media (max-width: 576px) {
     flex-direction: column;
   }
@@ -60,6 +63,11 @@ const TagContainer = styled.div`
   }
 `;
 
+const SuggestedTagContainer = styled.div`
+  display: flex;
+  gap: 5px;
+`;
+
 const MobileTagContainer = styled.div`
   @media (min-width: 576px) {
     display: none;
@@ -82,6 +90,8 @@ const StyledTag = styled(Tag)`
 
 const SearchBox = (props: SearchProps) => {
   const [tags, setTags] = useState([]);
+  const [suggestedTags, setSuggestedTags] = useState(props.suggestedHashtag);
+
   const numberOfTags = 3;
 
   const { control, getValues, setValue } = useForm({
@@ -101,6 +111,12 @@ const SearchBox = (props: SearchProps) => {
       setTags([...props.hashtags]);
     }
   }, [props.hashtags]);
+
+  useEffect(() => {
+    if (props.suggestedHashtag && props.suggestedHashtag.length > 0) {
+      setSuggestedTags([...props.suggestedHashtag]);
+    }
+  }, [props.suggestedHashtag]);
 
   const onPressKeydown = e => {
     const { value } = e.target;
@@ -142,10 +158,12 @@ const SearchBox = (props: SearchProps) => {
     }
   };
 
-  const onDeleteText = () => {
-    setValue('search', '');
-    setTags([]);
-    props.searchPost(null, []);
+  const onClickSuggestedTag = (e: React.MouseEvent<HTMLElement>) => {
+    const newTag: string = e.currentTarget.innerText;
+    setTags(prevTag => {
+      return [...prevTag, newTag];
+    });
+    props.searchPost('', [...tags, newTag]);
   };
 
   const onDeleteQuery = () => {
@@ -156,13 +174,29 @@ const SearchBox = (props: SearchProps) => {
 
   return (
     <Container>
+      {suggestedTags && suggestedTags.length > 0 && (
+        <SuggestedTagContainer>
+          <div style={{ fontSize: '15px', marginBottom: '0px' }}>{intl.get('general.suggested')}</div>
+          {suggestedTags.map(tag => (
+            <StyledTag
+              onClose={() => handleTagClose(tag)}
+              key={tag}
+              color="geekblue"
+              onClick={onClickSuggestedTag}
+              style={{ cursor: 'pointer' }}
+            >
+              {`#${tag}`}
+            </StyledTag>
+          ))}
+        </SuggestedTagContainer>
+      )}
       <SearchBoxContainer>
         <div className="btn-search">
           <SearchOutlined />
         </div>
         <TagContainer>
           {tags.slice(0, numberOfTags).map(tag => (
-            <StyledTag closable onClose={() => handleTagClose(tag)} key={tag} color="magenta">
+            <StyledTag closable onClose={() => handleTagClose(tag)} key={tag} color="green">
               {tag}
             </StyledTag>
           ))}

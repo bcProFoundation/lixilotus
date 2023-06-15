@@ -565,6 +565,7 @@ export type PostsBySearchWithHashtagQueryVariables = Types.Exact<{
   first?: Types.InputMaybe<Types.Scalars['Int']>;
   last?: Types.InputMaybe<Types.Scalars['Int']>;
   query?: Types.InputMaybe<Types.Scalars['String']>;
+  orderBy?: Types.InputMaybe<Types.PostOrder>;
   minBurnFilter?: Types.InputMaybe<Types.Scalars['Int']>;
   hashtags?: Types.InputMaybe<Array<Types.Scalars['String']> | Types.Scalars['String']>;
 }>;
@@ -634,6 +635,7 @@ export type PostsBySearchWithHashtagAtPageQueryVariables = Types.Exact<{
   first?: Types.InputMaybe<Types.Scalars['Int']>;
   last?: Types.InputMaybe<Types.Scalars['Int']>;
   query?: Types.InputMaybe<Types.Scalars['String']>;
+  orderBy?: Types.InputMaybe<Types.PostOrder>;
   minBurnFilter?: Types.InputMaybe<Types.Scalars['Int']>;
   hashtags?: Types.InputMaybe<Array<Types.Scalars['String']> | Types.Scalars['String']>;
   pageId?: Types.InputMaybe<Types.Scalars['String']>;
@@ -704,6 +706,7 @@ export type PostsBySearchWithHashtagAtTokenQueryVariables = Types.Exact<{
   first?: Types.InputMaybe<Types.Scalars['Int']>;
   last?: Types.InputMaybe<Types.Scalars['Int']>;
   query?: Types.InputMaybe<Types.Scalars['String']>;
+  orderBy?: Types.InputMaybe<Types.PostOrder>;
   minBurnFilter?: Types.InputMaybe<Types.Scalars['Int']>;
   hashtags?: Types.InputMaybe<Array<Types.Scalars['String']> | Types.Scalars['String']>;
   tokenId?: Types.InputMaybe<Types.Scalars['String']>;
@@ -1251,13 +1254,14 @@ export const PostsBySearchDocument = `
     ${PostMeiliFieldsFragmentDoc}
 ${PostMeiliPageInfoFieldsFragmentDoc}`;
 export const PostsBySearchWithHashtagDocument = `
-    query PostsBySearchWithHashtag($after: String, $before: String, $first: Int, $last: Int, $query: String, $minBurnFilter: Int, $hashtags: [String!]) {
+    query PostsBySearchWithHashtag($after: String, $before: String, $first: Int, $last: Int, $query: String, $orderBy: PostOrder, $minBurnFilter: Int, $hashtags: [String!]) {
   allPostsBySearchWithHashtag(
     after: $after
     before: $before
     first: $first
     last: $last
     query: $query
+    orderBy: $orderBy
     minBurnFilter: $minBurnFilter
     hashtags: $hashtags
   ) {
@@ -1275,13 +1279,14 @@ export const PostsBySearchWithHashtagDocument = `
     ${PostMeiliFieldsFragmentDoc}
 ${PostMeiliPageInfoFieldsFragmentDoc}`;
 export const PostsBySearchWithHashtagAtPageDocument = `
-    query PostsBySearchWithHashtagAtPage($after: String, $before: String, $first: Int, $last: Int, $query: String, $minBurnFilter: Int, $hashtags: [String!], $pageId: String) {
+    query PostsBySearchWithHashtagAtPage($after: String, $before: String, $first: Int, $last: Int, $query: String, $orderBy: PostOrder, $minBurnFilter: Int, $hashtags: [String!], $pageId: String) {
   allPostsBySearchWithHashtagAtPage(
     after: $after
     before: $before
     first: $first
     last: $last
     query: $query
+    orderBy: $orderBy
     minBurnFilter: $minBurnFilter
     hashtags: $hashtags
     pageId: $pageId
@@ -1300,13 +1305,14 @@ export const PostsBySearchWithHashtagAtPageDocument = `
     ${PostMeiliFieldsFragmentDoc}
 ${PostMeiliPageInfoFieldsFragmentDoc}`;
 export const PostsBySearchWithHashtagAtTokenDocument = `
-    query PostsBySearchWithHashtagAtToken($after: String, $before: String, $first: Int, $last: Int, $query: String, $minBurnFilter: Int, $hashtags: [String!], $tokenId: String) {
+    query PostsBySearchWithHashtagAtToken($after: String, $before: String, $first: Int, $last: Int, $query: String, $orderBy: PostOrder, $minBurnFilter: Int, $hashtags: [String!], $tokenId: String) {
   allPostsBySearchWithHashtagAtToken(
     after: $after
     before: $before
     first: $first
     last: $last
     query: $query
+    orderBy: $orderBy
     minBurnFilter: $minBurnFilter
     hashtags: $hashtags
     tokenId: $tokenId

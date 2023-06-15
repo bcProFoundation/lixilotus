@@ -445,7 +445,13 @@ export class PostResolver {
     @Args({ name: 'query', type: () => String, nullable: true })
     query: string,
     @Args({ name: 'hashtags', type: () => [String], nullable: true })
-    hashtags: string[]
+    hashtags: string[],
+    @Args({
+      name: 'orderBy',
+      type: () => PostOrder,
+      nullable: true
+    })
+    orderBy: PostOrder
   ): Promise<PostResponse> {
     const { limit, offset } = getPagingParameters(args);
 
@@ -477,7 +483,8 @@ export class PostResolver {
             }
           }
         ]
-      }
+      },
+      orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined
     });
 
     return connectionFromArraySlice(searchPosts, args, {
@@ -498,7 +505,13 @@ export class PostResolver {
     @Args({ name: 'hashtags', type: () => [String], nullable: true })
     hashtags: string[],
     @Args({ name: 'pageId', type: () => String, nullable: true })
-    pageId: string
+    pageId: string,
+    @Args({
+      name: 'orderBy',
+      type: () => PostOrder,
+      nullable: true
+    })
+    orderBy: PostOrder
   ) {
     const { limit, offset } = getPagingParameters(args);
 
@@ -532,7 +545,8 @@ export class PostResolver {
             }
           }
         ]
-      }
+      },
+      orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined
     });
 
     return connectionFromArraySlice(searchPosts, args, {
@@ -553,7 +567,13 @@ export class PostResolver {
     @Args({ name: 'hashtags', type: () => [String], nullable: true })
     hashtags: string[],
     @Args({ name: 'tokenId', type: () => String, nullable: true })
-    tokenId: string
+    tokenId: string,
+    @Args({
+      name: 'orderBy',
+      type: () => PostOrder,
+      nullable: true
+    })
+    orderBy: PostOrder
   ) {
     const { limit, offset } = getPagingParameters(args);
 
@@ -587,7 +607,8 @@ export class PostResolver {
             }
           }
         ]
-      }
+      },
+      orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined
     });
 
     return connectionFromArraySlice(searchPosts, args, {

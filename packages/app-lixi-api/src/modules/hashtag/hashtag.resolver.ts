@@ -11,6 +11,7 @@ import { GqlHttpExceptionFilter } from 'src/middlewares/gql.exception.filter';
 import { HASHTAG } from '../page/constants/meili.constants';
 import { MeiliService } from '../page/meili.service';
 import { PrismaService } from '../prisma/prisma.service';
+import _ from 'lodash';
 
 const pubSub = new PubSub();
 
@@ -55,6 +56,108 @@ export class HashtagResolver {
           ...args
         }),
       () => this.prisma.temple.count({}),
+      { first, last, before, after }
+    );
+    return result;
+  }
+
+  @Query(() => HashtagConnection)
+  async allHashtagByPage(
+    @Args() { after, before, first, last }: PaginationArgs,
+    @Args({ name: 'id', type: () => String, nullable: true })
+    id: string,
+    @Args({
+      name: 'orderBy',
+      type: () => HashtagOrder,
+      nullable: true
+    })
+    orderBy: HashtagOrder
+  ) {
+    const postsHashtag = await this.prisma.postHashtag.groupBy({
+      by: ['postId'],
+      where: {
+        post: {
+          pageId: id
+        }
+      }
+    });
+
+    const postsId: any = _.map(postsHashtag, 'postId');
+
+    const result = await findManyCursorConnection(
+      args =>
+        this.prisma.hashtag.findMany({
+          where: {
+            postHashtags: {
+              some: {
+                postId: { in: postsId }
+              }
+            }
+          },
+          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+          ...args
+        }),
+      () =>
+        this.prisma.hashtag.count({
+          where: {
+            postHashtags: {
+              some: {
+                postId: { in: postsId }
+              }
+            }
+          }
+        }),
+      { first, last, before, after }
+    );
+    return result;
+  }
+
+  @Query(() => HashtagConnection)
+  async allHashtagByToken(
+    @Args() { after, before, first, last }: PaginationArgs,
+    @Args({ name: 'id', type: () => String, nullable: true })
+    id: string,
+    @Args({
+      name: 'orderBy',
+      type: () => HashtagOrder,
+      nullable: true
+    })
+    orderBy: HashtagOrder
+  ) {
+    const postsHashtag = await this.prisma.postHashtag.groupBy({
+      by: ['postId'],
+      where: {
+        post: {
+          tokenId: id
+        }
+      }
+    });
+
+    const postsId: any = _.map(postsHashtag, 'postId');
+
+    const result = await findManyCursorConnection(
+      args =>
+        this.prisma.hashtag.findMany({
+          where: {
+            postHashtags: {
+              some: {
+                postId: { in: postsId }
+              }
+            }
+          },
+          orderBy: orderBy ? { [orderBy.field]: orderBy.direction } : undefined,
+          ...args
+        }),
+      () =>
+        this.prisma.hashtag.count({
+          where: {
+            postHashtags: {
+              some: {
+                postId: { in: postsId }
+              }
+            }
+          }
+        }),
       { first, last, before, after }
     );
     return result;

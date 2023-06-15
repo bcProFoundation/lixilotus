@@ -2,6 +2,7 @@ import CreatePostCard from '@components/Common/CreatePostCard';
 import {
   getGraphqlRequestStatus,
   getLeaderBoard,
+  getRecentHashtagAtHome,
   getSelectedAccount,
   getSelectedAccountId
 } from '@store/account/selectors';
@@ -28,7 +29,7 @@ import intl from 'react-intl-universal';
 import { FireTwoTone, LoadingOutlined } from '@ant-design/icons';
 import PostListItem from './PostListItem';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { setGraphqlRequestDone, setTransactionReady } from '@store/account/actions';
+import { setGraphqlRequestDone, setTransactionReady, addRecentHashtagAtHome } from '@store/account/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
@@ -172,7 +173,9 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const filterValue = useAppSelector(getFilterPostsHome);
   const leaderboard = useAppSelector(getLeaderBoard);
   const graphqlRequestLoading = useAppSelector(getGraphqlRequestStatus);
+  const recentTagAtHome = useAppSelector(getRecentHashtagAtHome);
   const [hashtags, setHashtags] = useState([]);
+  const [suggestedHashtag, setSuggestedTags] = useState([]);
 
   const menuItems = [{ label: intl.get('general.allPost'), key: 'all' }];
 
@@ -207,7 +210,11 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         first: 20,
         minBurnFilter: filterValue ?? 1,
         query: searchValue,
-        hashtags: hashtags
+        hashtags: hashtags,
+        orderBy: {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.UpdatedAt
+        }
       },
       false
     );
@@ -219,6 +226,10 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       fetchNextQuery();
     }
   };
+
+  useEffect(() => {
+    setSuggestedTags(recentTagAtHome);
+  }, [recentTagAtHome]);
 
   const QueryFooter = () => {
     if (isQueryLoading) return null;
@@ -313,6 +324,10 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     setSearchValue(value);
 
     if (hashtagsValue && hashtagsValue.length > 0) setHashtags([...hashtagsValue]);
+
+    hashtagsValue.map(hashtag => {
+      dispatch(addRecentHashtagAtHome(hashtag.substring(1)));
+    });
   };
 
   const onDeleteQuery = () => {
@@ -483,10 +498,11 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         hashtags={hashtags}
         onDeleteHashtag={onDeleteHashtag}
         onDeleteQuery={onDeleteQuery}
+        suggestedHashtag={suggestedHashtag}
       />
       <Header />
 
-      {showPosts()}
+      {graphqlRequestLoading ? <Skeleton avatar active /> : showPosts()}
     </StyledPostsListing>
   );
 };

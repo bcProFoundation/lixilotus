@@ -154,5 +154,9 @@ export const categories = [
   {
     id: 39,
     name: 'humanitarian'
+  },
+  {
+    id: 40,
+    name: 'hospitality'
   }
 ]

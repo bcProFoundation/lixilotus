@@ -10,10 +10,10 @@ import { currency } from '@components/Common/Ticker';
 import { InfoSubCard } from '@components/Lixi';
 import { IconBurn } from '@components/Posts/PostDetail';
 import PostListItem from '@components/Posts/PostListItem';
-import { OrderDirection, PostOrderField } from '@generated/types.generated';
+import { HashtagOrderField, OrderDirection, PostOrderField } from '@generated/types.generated';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
-import { setTransactionReady } from '@store/account/actions';
-import { getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
+import { setTransactionReady, addRecentHashtagAtToken } from '@store/account/actions';
+import { getRecentHashtagAtToken, getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
 import { addBurnQueue, addBurnTransaction, clearFailQueue, getBurnQueue, getFailQueue } from '@store/burn';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { useInfinitePostsBySearchQueryWithHashtagAtToken } from '@store/post/useInfinitePostsBySearchQueryWithHashtagAtToken';
@@ -26,11 +26,14 @@ import { formatBalance, fromSmallestDenomination } from '@utils/cashMethods';
 import { Image, Menu, MenuProps, Skeleton, Tabs, message, notification } from 'antd';
 import makeBlockie from 'ethereum-blockies-base64';
 import moment from 'moment';
+import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import intl from 'react-intl-universal';
 import styled from 'styled-components';
+import _ from 'lodash';
+import { useInfiniteHashtagByTokenQuery } from '@store/hashtag/useInfiniteHashtagByTokenQuery';
 
 export type TokenItem = TokenQuery['token'];
 
@@ -181,6 +184,7 @@ type TokenProps = {
 
 const TokensFeed = ({ token, isMobile }: TokenProps) => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const [tokenDetailData, setTokenDetailData] = useState<any>(token);
   const selectedAccount = useAppSelector(getSelectedAccount);
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
@@ -191,8 +195,10 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
   const selectedAccountId = useAppSelector(getSelectedAccountId);
   const filterValue = useAppSelector(getFilterPostsToken);
   const slpBalancesAndUtxosRef = useRef(slpBalancesAndUtxos);
+  const recentTagAtToken = useAppSelector(getRecentHashtagAtToken);
   const [searchValue, setSearchValue] = useState<string | null>(null);
   const [hashtags, setHashtags] = useState([]);
+  const [suggestedHashtag, setSuggestedTags] = useState([]);
 
   let options = ['Withdraw', 'Rename', 'Export'];
 
@@ -210,6 +216,29 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
     false
   );
 
+  const { data: hashtagData } = useInfiniteHashtagByTokenQuery(
+    {
+      first: 3,
+      orderBy: {
+        direction: OrderDirection.Desc,
+        field: HashtagOrderField.LotusBurnScore
+      },
+      id: token.id
+    },
+    false
+  );
+
+  useEffect(() => {
+    const tokenId = token.id;
+    const topHashtags = _.map(hashtagData, 'content');
+    const tokenRecentHashtag = recentTagAtToken.find((page: any) => page.id === tokenId);
+    const recentHashtags: string[] = tokenRecentHashtag?.hashtags || [];
+
+    const combinedHashtags = [...topHashtags, ...recentHashtags.filter(tag => !topHashtags.includes(tag))];
+
+    setSuggestedTags(combinedHashtags);
+  }, [recentTagAtToken, hashtagData]);
+
   const loadMoreItems = () => {
     if (hasNext && !isFetching) {
       fetchNext();
@@ -225,7 +254,11 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
         minBurnFilter: filterValue ?? 1,
         query: searchValue,
         hashtags: hashtags,
-        tokenId: token.id
+        tokenId: token.id,
+        orderBy: {
+          direction: OrderDirection.Desc,
+          field: PostOrderField.UpdatedAt
+        }
       },
       false
     );
@@ -245,6 +278,12 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
       placement: 'top'
     });
   };
+
+  useEffect(() => {
+    if (router.query.hashtag) {
+      addHashtag(`#${router.query.hashtag}`);
+    }
+  }, []);
 
   const menus = options.map(option => <Menu.Item key={option}>{option}</Menu.Item>);
 
@@ -309,6 +348,10 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
     setSearchValue(value);
 
     if (hashtagsValue && hashtagsValue.length > 0) setHashtags([...hashtagsValue]);
+
+    hashtagsValue.map(hashtag => {
+      dispatch(addRecentHashtagAtToken({ id: token.id, hashtag: hashtag.substring(1) }));
+    });
   };
 
   const onDeleteQuery = () => {
@@ -446,6 +489,7 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
           hashtags={hashtags}
           onDeleteHashtag={onDeleteHashtag}
           onDeleteQuery={onDeleteQuery}
+          suggestedHashtag={suggestedHashtag}
         />
         <FilterBurnt filterForType={FilterType.PostsToken} />
       </SearchBar>

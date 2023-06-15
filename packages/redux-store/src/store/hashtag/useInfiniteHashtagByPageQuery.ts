@@ -1,33 +1,31 @@
 import { PaginationArgs } from '@bcpros/lixi-models';
-import { createEntityAdapter } from '@reduxjs/toolkit';
-import { useAppDispatch } from '@store/hooks';
-import { useLazyPostsByHashtagIdQuery, usePostsByHashtagIdQuery } from '@store/post/posts.api';
+import { useLazyHashtagsByPageQuery, useHashtagsByPageQuery } from '@store/hashtag/hashtag.api';
+import { useEffect, useRef, useState, useMemo } from 'react';
+import { HashtagOrder } from '@generated/types.generated';
 import _ from 'lodash';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { Post, PostOrder } from '@generated/types.generated';
+import { createEntityAdapter } from '@reduxjs/toolkit';
+import { HashtagQuery } from './hashtag.generated';
 
-import { PostQuery } from './posts.generated';
-
-const postsAdapter = createEntityAdapter<PostQuery['post']>({
-  selectId: post => post.id,
+const hashtagAdapter = createEntityAdapter<HashtagQuery['hashtag']>({
+  selectId: hashtag => hashtag.id,
   sortComparer: (a, b) => b.createdAt - a.createdAt
 });
 
-const { selectAll, selectEntities, selectIds, selectTotal } = postsAdapter.getSelectors();
+const { selectAll, selectEntities, selectIds, selectTotal } = hashtagAdapter.getSelectors();
 
-interface PostListByIdParams extends PaginationArgs {
-  orderBy?: PostOrder;
-  id?: string;
+export interface HashtagListParams extends PaginationArgs {
+  orderBy?: HashtagOrder;
+  id: string;
 }
 
-export function useInfinitePostsByHashtagIdQuery(
-  params: PostListByIdParams,
-  fetchAll = false // if `true`: auto do next fetches to get all notes at once
+export function useInfiniteHashtagByPageQuery(
+  params: HashtagListParams,
+  fetchAll: boolean = false // if `true`: auto do next fetches to get all notes at once
 ) {
-  const baseResult = usePostsByHashtagIdQuery(params);
+  const baseResult = useHashtagsByPageQuery(params, { skip: _.isNil(params.id) });
 
-  const [trigger, nextResult] = useLazyPostsByHashtagIdQuery();
-  const [combinedData, setCombinedData] = useState(postsAdapter.getInitialState({}));
+  const [trigger, nextResult] = useLazyHashtagsByPageQuery();
+  const [combinedData, setCombinedData] = useState(hashtagAdapter.getInitialState({}));
 
   const isBaseReady = useRef(false);
   const isNextDone = useRef(true);
@@ -42,14 +40,14 @@ export function useInfinitePostsByHashtagIdQuery(
 
   // Base result
   useEffect(() => {
-    next.current = baseResult.data?.allPostsByHashtagId?.pageInfo?.endCursor;
-    if (baseResult?.data?.allPostsByHashtagId) {
+    next.current = baseResult.data?.allHashtagByPage?.pageInfo?.endCursor;
+    if (baseResult?.data?.allHashtagByPage) {
       isBaseReady.current = true;
 
-      const baseResultParse = baseResult.data.allPostsByHashtagId.edges.map(item => item.node);
-      const adapterSetAll = postsAdapter.setAll(
+      const baseResultParse = baseResult.data.allHashtagByPage.edges.map(item => item.node);
+      const adapterSetAll = hashtagAdapter.setAll(
         combinedData,
-        baseResult.data.allPostsByHashtagId.edges.map(item => item.node)
+        baseResult.data.allHashtagByPage.edges.map(item => item.node)
       );
 
       setCombinedData(adapterSetAll);
@@ -83,7 +81,7 @@ export function useInfinitePostsByHashtagIdQuery(
 
   return {
     data: data ?? [],
-    totalCount: baseResult?.data?.allPostsByHashtagId?.totalCount ?? 0,
+    totalCount: baseResult?.data?.allHashtagByPage?.totalCount ?? 0,
     error: baseResult?.error,
     isError: baseResult?.isError,
     isLoading: baseResult?.isLoading,
@@ -91,7 +89,7 @@ export function useInfinitePostsByHashtagIdQuery(
     errorNext: nextResult?.error,
     isErrorNext: nextResult?.isError,
     isFetchingNext: nextResult?.isFetching,
-    hasNext: baseResult.data?.allPostsByHashtagId?.pageInfo?.endCursor !== null,
+    hasNext: baseResult.data?.allHashtagByPage?.pageInfo?.endCursor !== null,
     fetchNext,
     refetch
   };
