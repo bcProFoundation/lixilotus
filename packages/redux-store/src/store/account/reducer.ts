@@ -21,7 +21,16 @@ import {
   setGraphqlRequestLoading,
   setGraphqlRequestDone,
   setUpload,
-  addRecentVisitedPerson
+  addRecentVisitedPerson,
+  addRecentHashtagAtHome,
+  removeRecentHashtagAtHome,
+  clearRecentHashtagAtHome,
+  addRecentHashtagAtPages,
+  removeRecentHashtagAtPages,
+  clearRecentHashtagAtPages,
+  addRecentHashtagAtToken,
+  removeRecentHashtagAtToken,
+  clearRecentHashtagAtToken
 } from './actions';
 import { AccountsState } from './state';
 
@@ -38,8 +47,14 @@ const initialState: AccountsState = accountsAdapter.getInitialState({
   leaderBoard: [],
   transactionReady: true,
   graphqlRequestLoading: false,
-  recentVisitedPeople: []
+  recentVisitedPeople: [],
+  recentHashtagAtHome: [],
+  recentHashtagAtPages: [],
+  recentHashtagAtToken: []
 });
+
+const numberOfRecentHashtags = 3;
+const numberOfItemsSaved = 10;
 
 export const accountReducer = createReducer(initialState, builder => {
   builder
@@ -144,6 +159,118 @@ export const accountReducer = createReducer(initialState, builder => {
       }
 
       state.recentVisitedPeople.unshift(person);
+    })
+    .addCase(addRecentHashtagAtHome, (state, action) => {
+      const hashtag = action.payload;
+      const hashtagExistedIndex = state.recentHashtagAtHome.findIndex(h => h.toLowerCase() === hashtag.toLowerCase());
+      if (hashtagExistedIndex !== -1) {
+        state.recentHashtagAtHome.splice(hashtagExistedIndex, 1);
+      } else if (state.recentHashtagAtHome.length === numberOfRecentHashtags) {
+        state.recentHashtagAtHome.pop();
+      }
+
+      state.recentHashtagAtHome.unshift(hashtag.toUpperCase());
+    })
+    .addCase(removeRecentHashtagAtHome, (state, action) => {
+      const hashtag = action.payload;
+      const hashtagExistedIndex = state.recentHashtagAtHome.findIndex(h => h.toLowerCase() === hashtag.toLowerCase());
+
+      if (hashtagExistedIndex !== -1) {
+        state.recentHashtagAtHome.splice(hashtagExistedIndex, 1);
+      }
+    })
+    .addCase(clearRecentHashtagAtHome, (state, action) => {
+      state.recentHashtagAtHome.length = 0;
+    })
+    .addCase(addRecentHashtagAtPages, (state, action) => {
+      const { id, hashtag } = action.payload;
+      const pageExisted = state.recentHashtagAtPages.find((page: any) => page.id === id);
+
+      if (pageExisted) {
+        const hashtagExistedIndex = pageExisted.hashtags.findIndex(h => h.toLowerCase() === hashtag.toLowerCase());
+
+        if (hashtagExistedIndex !== -1) {
+          pageExisted.hashtags.splice(hashtagExistedIndex, 1);
+        } else if (pageExisted.hashtags.length === numberOfRecentHashtags) {
+          pageExisted.hashtags.pop();
+        }
+
+        pageExisted.hashtags.unshift(hashtag.toUpperCase());
+      } else {
+        const recent = {
+          id: id,
+          hashtags: [hashtag.toUpperCase()]
+        };
+        if (state.recentHashtagAtPages.length >= numberOfItemsSaved) {
+          state.recentHashtagAtPages.shift();
+        }
+        state.recentHashtagAtPages.push(recent as never);
+      }
+    })
+    .addCase(removeRecentHashtagAtPages, (state, action) => {
+      const { id, hashtag } = action.payload;
+      const pageExisted = state.recentHashtagAtPages.find((page: any) => page.id === id);
+
+      if (pageExisted) {
+        const hashtagExistedIndex = pageExisted.hashtags.findIndex(h => h.toLowerCase() === hashtag.toLowerCase());
+
+        if (hashtagExistedIndex !== -1) {
+          pageExisted.hashtags.splice(hashtagExistedIndex, 1);
+        }
+      }
+    })
+    .addCase(clearRecentHashtagAtPages, (state, action) => {
+      const { id } = action.payload;
+      const pageExisted = state.recentHashtagAtPages.find((page: any) => page.id === id);
+
+      if (pageExisted) {
+        pageExisted.hashtags.length = 0;
+      }
+    })
+    .addCase(addRecentHashtagAtToken, (state, action) => {
+      const { id, hashtag } = action.payload;
+      const tokenExisted = state.recentHashtagAtToken.find((page: any) => page.id === id);
+
+      if (tokenExisted) {
+        const hashtagExistedIndex = tokenExisted.hashtags.findIndex(h => h.toLowerCase() === hashtag.toLowerCase());
+
+        if (hashtagExistedIndex !== -1) {
+          tokenExisted.hashtags.splice(hashtagExistedIndex, 1);
+        } else if (tokenExisted.hashtags.length === numberOfRecentHashtags) {
+          tokenExisted.hashtags.pop();
+        }
+
+        tokenExisted.hashtags.unshift(hashtag.toUpperCase());
+      } else {
+        const recent = {
+          id: id,
+          hashtags: [hashtag.toUpperCase()]
+        };
+        if (state.recentHashtagAtToken.length >= numberOfItemsSaved) {
+          state.recentHashtagAtToken.shift();
+        }
+        state.recentHashtagAtToken.push(recent as never);
+      }
+    })
+    .addCase(removeRecentHashtagAtToken, (state, action) => {
+      const { id, hashtag } = action.payload;
+      const tokenExisted = state.recentHashtagAtToken.find((page: any) => page.id === id);
+
+      if (tokenExisted) {
+        const hashtagExistedIndex = tokenExisted.hashtags.findIndex(h => h.toLowerCase() === hashtag.toLowerCase());
+
+        if (hashtagExistedIndex !== -1) {
+          tokenExisted.hashtags.splice(hashtagExistedIndex, 1);
+        }
+      }
+    })
+    .addCase(clearRecentHashtagAtToken, (state, action) => {
+      const { id } = action.payload;
+      const tokenExisted = state.recentHashtagAtToken.find((page: any) => page.id === id);
+
+      if (tokenExisted) {
+        tokenExisted.hashtags.length = 0;
+      }
     })
     .addCase(setGraphqlRequestLoading, (state, action) => {
       state.graphqlRequestLoading = true;

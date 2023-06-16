@@ -492,6 +492,7 @@ type Query {
   allFollowersByFollowing(after: String, before: String, first: Int, followingAccountId: Int, last: Int, minBurnFilter: Int, orderBy: AccountOrder, skip: Int): AccountConnection!
   allFollowingsByFollower(after: String, before: String, first: Int, followerAccountId: Int, last: Int, minBurnFilter: Int, orderBy: AccountOrder, skip: Int): AccountConnection!
   allHashtag(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: HashtagOrder, skip: Int): HashtagConnection!
+  allHashtagByPage(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: HashtagOrder, skip: Int): HashtagConnection!
   allHashtagBySearch(
     """Paginate after opaque cursor"""
     after: String
@@ -506,6 +507,7 @@ type Query {
     last: Int
     query: String
   ): HashtagConnection!
+  allHashtagByToken(after: String, before: String, first: Int, id: String, last: Int, minBurnFilter: Int, orderBy: HashtagOrder, skip: Int): HashtagConnection!
   allOrphanPosts(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PostOrder, query: String, skip: Int): PostConnection!
   allPages(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: [PageOrder!], query: String, skip: Int): PageConnection!
   allPagesByFollower(after: String, before: String, first: Int, last: Int, minBurnFilter: Int, orderBy: PageOrder, skip: Int): PageConnection!

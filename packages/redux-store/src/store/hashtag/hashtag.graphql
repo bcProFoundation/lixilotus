@@ -30,6 +30,68 @@ query Hashtags($after: String, $before: String, $first: Int = 20, $last: Int, $o
   }
 }
 
+query HashtagsByPage(
+  $after: String
+  $before: String
+  $first: Int = 20
+  $last: Int
+  $id: String
+  $orderBy: HashtagOrder
+  $skip: Int
+) {
+  allHashtagByPage(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    id: $id
+    orderBy: $orderBy
+    skip: $skip
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...HashtagFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+
+query HashtagsByToken(
+  $after: String
+  $before: String
+  $first: Int = 20
+  $last: Int
+  $id: String
+  $orderBy: HashtagOrder
+  $skip: Int
+) {
+  allHashtagByToken(
+    after: $after
+    before: $before
+    first: $first
+    last: $last
+    id: $id
+    orderBy: $orderBy
+    skip: $skip
+  ) {
+    totalCount
+    edges {
+      cursor
+      node {
+        ...HashtagFields
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}
+
 query HashtagBySearch($after: String, $before: String, $first: Int, $last: Int, $query: String) {
   allHashtagBySearch(after: $after, before: $before, first: $first, last: $last, query: $query) {
     edges {

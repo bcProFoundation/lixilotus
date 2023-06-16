@@ -67,3 +67,18 @@ export const getRecentVisitedPeople = createSelector(
   (state: RootState) => state.accounts,
   (accounts: AccountsState) => accounts.recentVisitedPeople
 );
+
+export const getRecentHashtagAtHome = createSelector(
+  (state: RootState) => state.accounts,
+  (accounts: AccountsState) => accounts.recentHashtagAtHome
+);
+
+export const getRecentHashtagAtPages = createSelector(
+  (state: RootState) => state.accounts,
+  (accounts: AccountsState) => accounts.recentHashtagAtPages
+);
+
+export const getRecentHashtagAtToken = createSelector(
+  (state: RootState) => state.accounts,
+  (accounts: AccountsState) => accounts.recentHashtagAtToken
+);
