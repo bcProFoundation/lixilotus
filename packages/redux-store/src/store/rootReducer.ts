@@ -21,10 +21,7 @@ import { errorReducer } from './error/reducer';
 import { lixiReducer } from './lixi/reducer';
 import { LixiesState } from './lixi/state';
 import { loadingReducer } from './loading/reducer';
-import {
-  localAccountsAdapter,
-  localUserAccountReducer,
-} from './localAccount/reducer';
+import { localAccountsAdapter, localUserAccountReducer } from './localAccount/reducer';
 import { LocalUserAccountsState } from './localAccount/state';
 import { modalReducer } from './modal/reducer';
 import { notificationReducer } from './notification/reducer';
@@ -42,16 +39,16 @@ import { walletStateReducer } from './wallet/reducer';
 import { api as worshipedPersonApi } from './worship/worshipedPerson.api';
 
 const migration = {
-  0: (state) => {
+  0: state => {
     return {
       ...state,
       burn: {
         ...state.burn,
         burnQueue: [],
-        failQueue: [],
-      },
+        failQueue: []
+      }
     };
-  },
+  }
 };
 
 const persistConfig = {
@@ -59,29 +56,18 @@ const persistConfig = {
   key: 'root',
   version: 0,
   storage: storage('lixi-indexeddb'),
-  blacklist: [
-    'accounts',
-    'router',
-    'modal',
-    'wallet',
-    'api',
-    'root',
-    'posts',
-    'pages',
-    'burn',
-    'loading',
-  ],
-  migrate: createMigrate(migration, { debug: false }),
+  blacklist: ['accounts', 'router', 'modal', 'wallet', 'api', 'root', 'posts', 'pages', 'burn', 'loading'],
+  migrate: createMigrate(migration, { debug: false })
 };
 
 const walletPersistConfig = {
   key: 'wallet',
-  storage: storage('lixi-indexeddb'),
+  storage: storage('lixi-indexeddb')
 };
 
 const localAccountPersistConfig: PersistConfig<LocalUserAccountsState> = {
   key: 'localAccounts',
-  storage: storage('lixi-indexeddb'),
+  storage: storage('lixi-indexeddb')
 };
 
 const accountPersistConfig: PersistConfig<AccountsState> = {
@@ -94,49 +80,49 @@ const accountPersistConfig: PersistConfig<AccountsState> = {
     'postCoverUploads',
     'leaderBoard',
     'graphqlRequestLoading',
-    'productImageUploads',
+    'productImageUploads'
   ],
-  timeout: 0,
+  timeout: 0
 };
 const postPersistConfig: PersistConfig<PostState> = {
   key: 'posts',
   storage: storage('lixi-indexeddb'),
-  blacklist: ['selectedId'],
+  blacklist: ['selectedId']
 };
 const lixiPersistConfig: PersistConfig<LixiesState> = {
   key: 'lixies',
-  storage: storage('lixi-indexeddb'),
+  storage: storage('lixi-indexeddb')
 };
 
 const claimsPersistConfig: PersistConfig<ClaimsState> = {
   key: 'claims',
-  storage: storage('lixi-indexeddb'),
+  storage: storage('lixi-indexeddb')
 };
 
 const shopPersistConfig: PersistConfig<PageState> = {
   key: 'pages',
-  storage: storage('lixi-indexeddb'),
+  storage: storage('lixi-indexeddb')
 };
 
 const settingsPersistConfig: PersistConfig<SettingsState> = {
   key: 'settings',
   storage: storage('lixi-indexeddb'),
-  whitelist: ['locale'],
+  whitelist: ['locale']
 };
 
 const countryPersistConfig: PersistConfig<CountriesState> = {
   key: 'countries',
-  storage: storage('lixi-indexeddb'),
+  storage: storage('lixi-indexeddb')
 };
 
 const statePersistConfig: PersistConfig<StatesState> = {
   key: 'states',
-  storage: storage('lixi-indexeddb'),
+  storage: storage('lixi-indexeddb')
 };
 
 const categoryPersistConfig: PersistConfig<CategoriesState> = {
   key: 'categories',
-  storage: storage('lixi-indexeddb'),
+  storage: storage('lixi-indexeddb')
 };
 
 export const serverReducer = combineReducers({
@@ -162,17 +148,14 @@ export const serverReducer = combineReducers({
   burn: burnReducer,
   // This is use for useReduxEffect
   // Should be always at the end
-  action: actionReducer,
+  action: actionReducer
 });
 
 export const appReducer = combineReducers({
   router: routerReducer,
   wallet: persistReducer(walletPersistConfig, walletStateReducer),
   accounts: persistReducer(accountPersistConfig, accountReducer),
-  localAccounts: persistReducer(
-    localAccountPersistConfig,
-    localUserAccountReducer
-  ),
+  localAccounts: persistReducer(localAccountPersistConfig, localUserAccountReducer),
   posts: persistReducer(postPersistConfig, postReducer),
   lixies: persistReducer(lixiPersistConfig, lixiReducer),
   claims: persistReducer(claimsPersistConfig, claimReducer),
@@ -195,14 +178,14 @@ export const appReducer = combineReducers({
   [worshipedPersonApi.reducerPath]: worshipedPersonApi.reducer,
   // This is use for useReduxEffect
   // Should be always at the end
-  action: actionReducer,
+  action: actionReducer
 });
 
 const reducer = (state, action: AnyAction) => {
   if (action.type === HYDRATE) {
     // const { api: _ignore_and_let_RTK_handle_this, router, ...hydrate } = action.payload;
     const nextState = {
-      ...state, // use previous state
+      ...state // use previous state
       // ...action.payload, // apply delta from hydration
       // ...hydrate
     };
