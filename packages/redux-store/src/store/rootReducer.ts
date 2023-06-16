@@ -79,11 +79,16 @@ const accountPersistConfig: PersistConfig<AccountsState> = {
     'pageAvatarUpload',
     'postCoverUploads',
     'leaderBoard',
-    'graphqlRequestLoading'
+    'graphqlRequestLoading',
+    'productImageUploads'
   ],
   timeout: 0
 };
-
+const postPersistConfig: PersistConfig<PostState> = {
+  key: 'posts',
+  storage: storage('lixi-indexeddb'),
+  blacklist: ['selectedId']
+};
 const lixiPersistConfig: PersistConfig<LixiesState> = {
   key: 'lixies',
   storage: storage('lixi-indexeddb')
@@ -125,6 +130,7 @@ export const serverReducer = combineReducers({
   wallet: walletStateReducer,
   accounts: accountReducer,
   localAccounts: localUserAccountReducer,
+  posts: postReducer,
   lixies: lixiReducer,
   claims: claimReducer,
   envelopes: envelopeReducer,
@@ -150,6 +156,7 @@ export const appReducer = combineReducers({
   wallet: persistReducer(walletPersistConfig, walletStateReducer),
   accounts: persistReducer(accountPersistConfig, accountReducer),
   localAccounts: persistReducer(localAccountPersistConfig, localUserAccountReducer),
+  posts: persistReducer(postPersistConfig, postReducer),
   lixies: persistReducer(lixiPersistConfig, lixiReducer),
   claims: persistReducer(claimsPersistConfig, claimReducer),
   settings: persistReducer(settingsPersistConfig, settingsReducer),

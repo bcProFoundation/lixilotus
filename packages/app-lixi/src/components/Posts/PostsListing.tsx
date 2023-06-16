@@ -44,6 +44,8 @@ import { getFilterPostsHome } from '@store/settings/selectors';
 import { getLeaderboard } from '@store/account/actions';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 import { useInfinitePostsBySearchQueryWithHashtag } from '@store/post/useInfinitePostsBySearchQueryWithHashtag';
+import { setSelectedPost } from '@store/post/actions';
+import { getSelectedPostId } from '@store/post/selectors';
 
 const { Panel } = Collapse;
 const antIcon = <LoadingOutlined style={{ fontSize: 20 }} spin />;
@@ -173,13 +175,14 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const leaderboard = useAppSelector(getLeaderBoard);
   const graphqlRequestLoading = useAppSelector(getGraphqlRequestStatus);
   const recentTagAtHome = useAppSelector(getRecentHashtagAtHome);
+  const postIdSelected = useAppSelector(getSelectedPostId);
   const [hashtags, setHashtags] = useState([]);
   const [suggestedHashtag, setSuggestedTags] = useState([]);
 
   const menuItems = [{ label: intl.get('general.allPost'), key: 'all' }];
 
   useEffect(() => dispatch(getLeaderboard()), []);
-
+  const refs = useRef([]);
   const onClickMenu: MenuProps['onClick'] = e => {
     setTab(e.key);
   };
@@ -196,7 +199,16 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     },
     false
   );
-
+  useEffect(() => {
+    if (refs.current[postIdSelected]) {
+      const heightPost = refs.current[postIdSelected].clientHeight;
+      _.delay(() => {
+        refs.current[postIdSelected].firstChild.classList.add('active-post');
+        refs.current[postIdSelected].scrollIntoView();
+      }, 100);
+      dispatch(setSelectedPost(''));
+    }
+  }, [data]);
   //#region QueryVirtuoso
   const { queryData, fetchNextQuery, hasNextQuery, isQueryFetching, isFetchingQueryNext, isQueryLoading } =
     useInfinitePostsBySearchQueryWithHashtag(
@@ -351,13 +363,20 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
           >
             {data.map((item, index) => {
               return (
-                <PostListItem
-                  index={index}
-                  item={item}
+                <div
                   key={item.id}
-                  handleBurnForPost={handleBurnForPost}
-                  addHashtag={addHashtag}
-                />
+                  ref={element => {
+                    refs.current[item.id] = element;
+                  }}
+                >
+                  <PostListItem
+                    index={index}
+                    item={item}
+                    key={item.id}
+                    handleBurnForPost={handleBurnForPost}
+                    addHashtag={addHashtag}
+                  />
+                </div>
               );
             })}
           </InfiniteScroll>

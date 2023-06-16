@@ -23,7 +23,8 @@ import {
   postPostFailure,
   postPostSuccess,
   setPost,
-  setPostsByAccountId
+  setPostsByAccountId,
+  setSelectedPost
 } from './actions';
 import postApi from './api';
 
@@ -262,6 +263,7 @@ function* watchFetchAllPostsFailure() {
 function* watchGetPost() {
   yield takeLatest(getPost.type, getPostSaga);
 }
+
 function* watchGetPostFailure() {
   yield takeLatest(getPostFailure.type, getPostFailureSaga);
 }
