@@ -182,12 +182,8 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   );
 
   useEffect(() => {
-    if (searchDataPost?.searchValue) {
-      setSearchValuePosts(searchDataPost.searchValue);
-    }
-    if (searchDataPost?.hashtags) {
-      setHashtagsPosts(searchDataPost.hashtags);
-    }
+    searchDataPost?.searchValue ? setSearchValuePosts(searchDataPost.searchValue) : setSearchValuePosts('');
+    searchDataPost?.hashtags ? setHashtagsPosts(searchDataPost.hashtags) : setHashtagsPosts([]);
   }, [searchDataPost]);
 
   //#region QueryVirtuoso
@@ -439,7 +435,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         onDeleteHashtag={onDeleteHashtag}
         onDeleteQuery={onDeleteQuery}
         suggestedHashtag={suggestedHashtag}
-        searchType="searchPosts"
+        searchType="posts"
       />
       <Header />
 

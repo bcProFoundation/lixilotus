@@ -244,13 +244,13 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   const SearchBoxType = () => {
     switch (pathDirection[1]) {
       case '':
-        return 'searchPosts';
+        return 'posts';
       case 'page':
-        return 'searchPage';
+        return 'page';
       case 'token':
-        return 'searchToken';
+        return 'token';
       default:
-        return 'searchPosts';
+        return 'posts';
     }
   };
 

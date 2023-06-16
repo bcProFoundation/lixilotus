@@ -406,12 +406,8 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
   }, []);
 
   useEffect(() => {
-    if (searchDataPage?.searchValue) {
-      setSearchValuePage(searchDataPage.searchValue);
-    }
-    if (searchDataPage?.hashtags) {
-      setHashtagsPage(searchDataPage.hashtags);
-    }
+    searchDataPage?.searchValue ? setSearchValuePage(searchDataPage.searchValue) : setSearchValuePage('');
+    searchDataPage?.hashtags ? setHashtagsPage(searchDataPage.hashtags) : setHashtagsPage([]);
   }, [searchDataPage]);
 
   const [
@@ -867,7 +863,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                     onDeleteHashtag={onDeleteHashtag}
                     onDeleteQuery={onDeleteQuery}
                     suggestedHashtag={suggestedHashtag}
-                    searchType="searchPage"
+                    searchType="page"
                   />
                   {/* <FilterBurnt filterForType={FilterType.PostsPage} /> */}
                 </div>

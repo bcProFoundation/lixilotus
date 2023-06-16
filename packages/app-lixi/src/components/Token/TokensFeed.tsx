@@ -238,12 +238,8 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
     setSuggestedTags(combinedHashtags);
   }, [recentTagAtToken, hashtagData]);
   useEffect(() => {
-    if (searchDataToken?.searchValue) {
-      setSearchValueToken(searchDataToken.searchValue);
-    }
-    if (searchDataToken?.hashtags) {
-      setHashtagsToken(searchDataToken.hashtags);
-    }
+    searchDataToken?.searchValue ? setSearchValueToken(searchDataToken.searchValue) : setSearchValueToken('');
+    searchDataToken?.hashtags ? setHashtagsToken(searchDataToken.hashtags) : setHashtagsToken([]);
   }, [searchDataToken]);
 
   const loadMoreItems = () => {
@@ -497,7 +493,7 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
           onDeleteHashtag={onDeleteHashtag}
           onDeleteQuery={onDeleteQuery}
           suggestedHashtag={suggestedHashtag}
-          searchType="searchToken"
+          searchType="token"
         />
       </SearchBar>
       <CreatePostCard hashtags={hashtagsToken} tokenPrimaryId={tokenDetailData.id} query={searchValueToken} />
