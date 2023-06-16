@@ -16,7 +16,7 @@ const MyCustomAutoFocusPlugin: React.FC<any> = ({ hashtags, initialContent }) =>
       const parser = new DOMParser();
       let dom;
       if (hashtags && hashtags.length > 0) {
-        dom = parser.parseFromString(`<span>${initialContent}</span><br/><pre/>`, 'text/html');
+        dom = parser.parseFromString(`<span>${initialContent}</span>&nbsp<pre/>`, 'text/html');
       } else {
         dom = parser.parseFromString(initialContent, 'text/html');
       }

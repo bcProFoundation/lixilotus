@@ -500,7 +500,7 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
           searchType="searchToken"
         />
       </SearchBar>
-      <CreatePostCard hashtags={hashtags} tokenPrimaryId={tokenDetailData.id} query={searchValue} />
+      <CreatePostCard hashtags={hashtagsToken} tokenPrimaryId={tokenDetailData.id} query={searchValueToken} />
       <div className="content">
         <Tabs defaultActiveKey="1">
           <Tabs.TabPane tab="Top discussions" key="1">

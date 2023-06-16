@@ -871,7 +871,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                   />
                   {/* <FilterBurnt filterForType={FilterType.PostsPage} /> */}
                 </div>
-                <CreatePostCard page={page} hashtags={hashtags} query={searchValue} />
+                <CreatePostCard page={page} hashtags={hashtagsPage} query={searchValuePage} />
                 <Timeline>
                   {data.length == 0 && (
                     <div className="blank-timeline">

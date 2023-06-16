@@ -253,9 +253,9 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const Header = () => {
     return (
       <StyledHeader>
-        <CreatePostCard hashtags={hashtags} query={searchValue} />
+        <CreatePostCard hashtags={hashtagsPosts} query={searchValuePosts} />
         <h1 style={{ textAlign: 'left', fontSize: '20px', margin: '1rem' }}>
-          {searchValue && intl.get('general.searchResults', { text: searchValue })}
+          {searchValuePosts && intl.get('general.searchResults', { text: searchValuePosts })}
         </h1>
       </StyledHeader>
     );
