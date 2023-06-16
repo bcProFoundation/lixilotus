@@ -204,8 +204,8 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       const heightPost = refs.current[postIdSelected].clientHeight;
       _.delay(() => {
         refs.current[postIdSelected].firstChild.classList.add('active-post');
-        refs.current[postIdSelected].scrollIntoView();
-      }, 100);
+        refs.current[postIdSelected].scrollIntoView({ behaviour: 'smooth' });
+      }, 500);
       dispatch(setSelectedPost(''));
     }
   }, [data]);
