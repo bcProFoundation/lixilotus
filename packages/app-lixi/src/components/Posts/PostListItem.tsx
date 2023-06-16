@@ -5,11 +5,11 @@ import { ShareSocialButton } from '@components/Common/ShareSocialButton';
 import { openModal } from '@store/modal/actions';
 import { PostsQuery } from '@store/post/posts.generated';
 import { formatBalance } from '@utils/cashMethods';
-import { List, Button, Space } from 'antd';
-import { PlusCircleOutlined } from '@ant-design/icons';
+import { List, Button, Space, Image, Carousel } from 'antd';
+import { PlusCircleOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
 import _, { truncate } from 'lodash';
 import { useRouter } from 'next/router';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import intl from 'react-intl-universal';
 import { useAppDispatch } from '@store/hooks';
 import styled from 'styled-components';
@@ -19,8 +19,6 @@ import useWindowDimensions from '@hooks/useWindowDimensions';
 import { formatRelativeTime } from '@utils/formatting';
 import { Counter } from '@components/Common/Counter';
 import Reaction from '@components/Common/Reaction';
-import parse from 'html-react-parser';
-import { ReadMoreMore } from 'read-more-more';
 import PostContent from './PostContent';
 
 export const CommentList = ({ comments }: { comments: CommentItem[] }) => (
@@ -84,6 +82,13 @@ const Content = styled.div`
         max-height: 500px;
       }
     }
+    p {
+      font-size: 14px;
+      line-height: 22px;
+    }
+    .read-more-more-module_btn__33IaH {
+      font-size: 14px;
+    }
     @media (max-width: 960px) {
       div {
         &[data-lexical-decorator='true'] > div > div {
@@ -127,14 +132,13 @@ const Content = styled.div`
   .images-post {
     cursor: pointer;
     width: 100%;
-    padding: 1rem;
     margin: 1rem 0;
-    background: var(--bg-color-light-theme);
     transition: 0.5s ease;
     img {
       max-width: 100%;
       max-height: 45vh;
       object-fit: cover;
+      border-radius: var(--border-radius-primary);
     }
     &:hover {
       opacity: 0.9;
@@ -154,7 +158,7 @@ const ActionBar = styled.div`
   border-top: 1px solid #efeeef;
   button {
     margin-right: 1rem;
-    border-radius: 20px;
+    border-radius: var(--border-radius-primary);
   }
 `;
 
@@ -185,12 +189,13 @@ const PostListItemContainer = styled(List.Item)`
   display: flex;
   flex-direction: column;
   height: fit-content !important;
-  margin: 2px 2px 1rem 2px;
-  border-radius: 24px;
+  margin-bottom: 1rem;
+  box-shadow: 1rem 1rem 2.5rem 0 rgb(0 0 0 / 5%);
+  border-radius: var(--border-radius-primary);
   background: white;
   padding: 0;
   border: none;
-  border: 1px solid var(--boder-item-light);
+  border: 1px solid var(--border-item-light);
   &:hover {
     background: rgb(252, 252, 252);
   }

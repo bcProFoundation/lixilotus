@@ -18,7 +18,7 @@ import { addBurnQueue, addBurnTransaction, clearFailQueue, getBurnQueue, getFail
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { useInfinitePostsBySearchQueryWithHashtagAtToken } from '@store/post/useInfinitePostsBySearchQueryWithHashtagAtToken';
 import { useInfinitePostsByTokenIdQuery } from '@store/post/useInfinitePostsByTokenIdQuery';
-import { getFilterPostsToken } from '@store/settings/selectors';
+import { getFilterPostsToken, getSearchToken } from '@store/settings/selectors';
 import { showToast } from '@store/toast/actions';
 import { TokenQuery } from '@store/token/tokens.generated';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
@@ -72,8 +72,8 @@ const BannerTicker = styled.div`
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  border: 1px solid var(--boder-item-light);
-  border-radius: 24px;
+  border: 1px solid var(--border-item-light);
+  border-radius: var(--border-radius-primary);
   .banner-detail {
     display: flex;
     gap: 2rem;
@@ -168,12 +168,8 @@ const BannerTicker = styled.div`
 `;
 
 const SearchBar = styled.div`
-  display: grid;
-  grid-template-columns: 75% 25%;
-
-  @media (max-width: 650px) {
-    display: flex;
-    flex-direction: column-reverse;
+  @media (min-width: 960px) {
+    display: none;
   }
 `;
 
@@ -199,6 +195,9 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
   const [searchValue, setSearchValue] = useState<string | null>(null);
   const [hashtags, setHashtags] = useState([]);
   const [suggestedHashtag, setSuggestedTags] = useState([]);
+  const [searchValueToken, setSearchValueToken] = useState<string | null>(null);
+  const [hashtagsToken, setHashtagsToken] = useState([]);
+  const searchDataToken = useAppSelector(getSearchToken);
 
   let options = ['Withdraw', 'Rename', 'Export'];
 
@@ -238,6 +237,14 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
 
     setSuggestedTags(combinedHashtags);
   }, [recentTagAtToken, hashtagData]);
+  useEffect(() => {
+    if (searchDataToken?.searchValue) {
+      setSearchValueToken(searchDataToken.searchValue);
+    }
+    if (searchDataToken?.hashtags) {
+      setHashtagsToken(searchDataToken.hashtags);
+    }
+  }, [searchDataToken]);
 
   const loadMoreItems = () => {
     if (hasNext && !isFetching) {
@@ -252,8 +259,8 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
       {
         first: 20,
         minBurnFilter: filterValue ?? 1,
-        query: searchValue,
-        hashtags: hashtags,
+        query: searchValueToken,
+        hashtags: hashtagsToken,
         tokenId: token.id,
         orderBy: {
           direction: OrderDirection.Desc,
@@ -374,7 +381,7 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
   const showPosts = () => {
     return (
       <React.Fragment>
-        {!searchValue && hashtags.length === 0 ? (
+        {!searchValueToken && hashtagsToken.length === 0 ? (
           <InfiniteScroll
             dataLength={data.length}
             next={loadMoreItems}
@@ -490,8 +497,8 @@ const TokensFeed = ({ token, isMobile }: TokenProps) => {
           onDeleteHashtag={onDeleteHashtag}
           onDeleteQuery={onDeleteQuery}
           suggestedHashtag={suggestedHashtag}
+          searchType="searchToken"
         />
-        <FilterBurnt filterForType={FilterType.PostsToken} />
       </SearchBar>
       <CreatePostCard hashtags={hashtags} tokenPrimaryId={tokenDetailData.id} query={searchValue} />
       <div className="content">

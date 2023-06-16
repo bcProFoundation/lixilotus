@@ -7,18 +7,15 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { Logged } from './SideBarRanking';
 import axiosClient from '@utils/axiosClient';
 import intl from 'react-intl-universal';
 import { getAllNotifications } from '@store/notification/selectors';
-import NotificationPopup from '@components/NotificationPopup';
 import { fetchNotifications } from '@store/notification/actions';
-import { AvatarUser } from '@components/Common/AvatarUser';
 import _ from 'lodash';
 import { setGraphqlRequestLoading } from '@store/account/actions';
 import { OrderDirection, PostOrderField } from '@generated/types.generated';
-import { getFilterPostsHome } from '@store/settings/selectors';
-import { api as postApi, useLazyPostQuery } from '@store/post/posts.api';
+import { getFilterPostsHome, getNavCollapsed } from '@store/settings/selectors';
+import { api as postApi } from '@store/post/posts.api';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
 import { push } from 'connected-next-router';
 
@@ -33,19 +30,19 @@ export const ItemAccess = ({
   onClickItem
 }: {
   icon: string;
-  text: string;
+  text?: string;
   href?: string;
   active: boolean;
   direction?: string;
   onClickItem?: () => void;
 }) => {
   return (
-    <div onClick={onClickItem}>
+    <div className={active ? 'active-item-access' : ''} onClick={onClickItem}>
       <Space direction={direction === 'horizontal' ? 'horizontal' : 'vertical'} className={'item-access'}>
-        <div className={classNames('icon-item', { 'active-item-access': active })}>
+        <div className={classNames('icon-item')}>
           <img src={icon} />
         </div>
-        <span className="text-item">{text}</span>
+        {text && <span className="text-item">{text}</span>}
       </Space>
     </div>
   );
@@ -69,9 +66,9 @@ export const ItemAccessNotification = ({
   onClickItem?: () => void;
 }) => {
   return (
-    <div onClick={onClickItem}>
+    <div className={active ? 'active-item-access' : ''} onClick={onClickItem}>
       <Space direction={direction === 'horizontal' ? 'horizontal' : 'vertical'} className={'item-access'}>
-        <div className={classNames('icon-item', { 'active-item-access': active })}>
+        <div className={classNames('icon-item')}>
           <Badge
             count={notifications.filter(item => _.isNil(item.readAt)).length}
             overflowCount={9}
@@ -111,12 +108,20 @@ export const ContainerAccess = styled.div`
   flex-direction: column;
   justify-content: space-between;
   height: 100vh;
-  background: linear-gradient(0deg, rgba(158, 42, 156, 0.08), rgba(158, 42, 156, 0.08)), #fffbff;
-  border-right: 1px solid #f4e3f4;
+  background: #fff;
   .item-access {
-    margin-bottom: 2rem;
     cursor: pointer;
-    gap: 0 !important;
+    gap: 8px !important;
+    &:hover {
+      .text-item {
+        color: var(--color-primary);
+      }
+      .icon-item {
+        img {
+          filter: var(--filter-color-primary);
+        }
+      }
+    }
     @media (max-height: 768px) {
       margin-bottom: 1rem;
     }
@@ -132,27 +137,18 @@ export const ContainerAccess = styled.div`
     }
     .icon-item {
       padding: 6px;
-      @media (max-height: 610px) {
-        padding: 10px;
-        img {
-          width: 20px;
-          height: 20px;
-        }
+      img {
+        filter: invert(24%) sepia(10%) saturate(603%) hue-rotate(266deg) brightness(95%) contrast(82%);
+        width: 25px;
+        height: 25px;
       }
       @media (max-height: 530px) {
         padding: 8px;
       }
-      &.active-item-access {
-        max-width: 50px;
-        margin: auto;
-        background: #ffd7f6;
-        border-radius: 8px;
-      }
     }
     .text-item {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 400;
-      letter-spacing: 0.5px;
       color: #4e444b;
       @media (max-height: 610px) {
         font-size: 12px;
@@ -163,14 +159,39 @@ export const ContainerAccess = styled.div`
     }
   }
   .wrapper {
-    padding: 0;
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: linear-gradient(0deg, rgba(158, 42, 156, 0.08), rgba(158, 42, 156, 0.08)), #fffbff;
-    @media (min-width: 768px) and (max-width: 1000px) {
-      padding: 0 1rem 1rem 1rem !important;
+    background: #fff;
+    .social-menu,
+    .social-feature {
+      width: 100%;
+      text-align: left;
+      padding: 1rem;
+
+      h3 {
+        margin-bottom: 1rem;
+      }
+
+      div:not(.ant-space-item) {
+        margin-bottom: 1rem;
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+
+      .active-item-access {
+        background: var(--bg-color-light-theme);
+        padding: 2px 0;
+        border-radius: var(--border-radius-primary);
+        img {
+          filter: var(--filter-color-primary);
+        }
+        .text-item {
+          color: var(--color-primary);
+        }
+      }
     }
   }
 `;
@@ -178,7 +199,7 @@ export const ContainerAccess = styled.div`
 const StyledLogo = styled.div`
   margin: 2rem 0;
   cursor: pointer;
-  background: linear-gradient(0deg, rgba(158, 42, 156, 0.08), rgba(158, 42, 156, 0.08)), #fffbff;
+  background: #fff;
   @media (max-height: 768px) {
     margin: 0.8rem 0;
   }
@@ -192,6 +213,9 @@ const ShortcutSideBar = styled(Sider)`
   flex: none !important;
   overflow: auto;
   background: var(--bg-color-light-theme);
+  box-shadow: 0 0 30px rgb(80 181 255 / 5%);
+  min-width: 220px !important;
+  max-width: 220px !important;
   &::-webkit-scrollbar {
     width: 5px;
   }
@@ -208,16 +232,20 @@ const ShortcutSideBar = styled(Sider)`
       border-radius: 100px;
     }
   }
+
   @media (max-width: 960px) {
     display: none;
   }
-  @media (min-width: 960px) and (max-width: 1400px) {
-    min-width: 220px !important;
-    max-width: 220px !important;
-  }
-  @media (min-width: 1400px) {
-    min-width: 250px !important;
-    max-width: 250px !important;
+
+  &.minimize-short-cut {
+    min-width: 70px !important;
+    max-width: 70px !important;
+    .text-item {
+      display: none;
+    }
+    h3 {
+      text-align: center;
+    }
   }
 `;
 
@@ -249,6 +277,7 @@ const SidebarShortcut = () => {
   const savedAccounts: Account[] = useAppSelector(getAllAccounts);
   const [isCollapse, setIsCollapse] = useState(false);
   const [showMore, setShowMore] = useState(false);
+  const navCollapsed = useAppSelector(getNavCollapsed);
   const router = useRouter();
   const currentPathName = router.pathname ?? '';
   const notifications = useAppSelector(getAllNotifications);
@@ -292,25 +321,6 @@ const SidebarShortcut = () => {
     }, 700);
   };
 
-  const content = (
-    <div className="popover-content-more">
-      <ItemAccess
-        icon={'images/ico-lixi.svg'}
-        text={intl.get('general.lixi')}
-        active={currentPathName === '/lixi'}
-        key="lixi"
-        href={'/lixi'}
-      />
-      <ItemAccess
-        icon={'images/ico-setting.svg'}
-        text={intl.get('general.settings')}
-        active={currentPathName === '/settings'}
-        key="settings"
-        href={'/settings'}
-      />
-    </div>
-  );
-
   const { refetch } = useInfinitePostsQuery(
     {
       first: 20,
@@ -333,113 +343,152 @@ const SidebarShortcut = () => {
       dispatch(push(newPath));
     }
   };
+  const classNameShortCut = () => {
+    let className = '';
+    if (!navCollapsed) {
+      className = '';
+    } else {
+      className = 'minimize-short-cut';
+    }
+    return className;
+  };
 
   return (
     <>
-      <ShortcutSideBar id="short-cut-sidebar" ref={refSidebarShortcut} onScroll={e => triggerSrollbar(e)}>
+      <ShortcutSideBar
+        className={classNameShortCut()}
+        id="short-cut-sidebar"
+        ref={refSidebarShortcut}
+        onScroll={e => triggerSrollbar(e)}
+      >
         <ContainerAccess>
           <div className="wrapper">
-            <StyledLogo>
-              <div onClick={e => handleIconClick('/')}>
-                <picture>
-                  <img width="137px" height="56px" src="/images/lixilotus-logo.svg" alt="lixilotus" />
-                </picture>
-              </div>
-            </StyledLogo>
-            <ItemAccess
-              icon={'/images/ico-home.svg'}
-              text={intl.get('general.home')}
-              active={currentPathName === '/' || currentPathName.includes('/post')}
-              key="home"
-              onClickItem={() => handleIconClick('/')}
-            />
-            <ItemAccessNotification
-              notifications={notifications}
-              icon={
-                currentPathName === '/notifications'
-                  ? '/images/ico-notifications-active.svg'
-                  : '/images/ico-notifications.svg'
-              }
-              text={intl.get('general.notifications')}
-              active={currentPathName === '/notifications'}
-              key="notifications"
-              onClickItem={() => handleIconClick('/notifications')}
-            />
-            <ItemAccess
-              icon={'/images/ico-page.svg'}
-              text={intl.get('general.page')}
-              active={currentPathName.includes('/page')}
-              key="page-feed"
-              onClickItem={() => handleIconClick('/page/feed')}
-            />
-            <ItemAccess
-              icon={'/images/ico-tokens.svg'}
-              text={intl.get('general.tokens')}
-              active={currentPathName.includes('/token')}
-              key="tokens-feed"
-              onClickItem={() => handleIconClick('/token/listing')}
-            />
-            <ItemAccess
-              icon={'/images/ico-account.svg'}
-              text={intl.get('general.accounts')}
-              active={currentPathName === '/wallet'}
-              key="wallet-lotus"
-              onClickItem={() => handleIconClick('/wallet')}
-            />
-            <ItemAccess
-              icon={'/images/ico-lixi.svg'}
-              text={intl.get('general.lixi')}
-              active={currentPathName.includes('/lixi')}
-              key="lixi"
-              onClickItem={() => handleIconClick('/lixi')}
-            />
-            <ItemAccess
-              icon={'/images/ico-setting.svg'}
-              text={intl.get('general.settings')}
-              active={currentPathName === '/settings'}
-              key="settings"
-              onClickItem={() => handleIconClick('/settings')}
-            />
-            {/* TODO: show more shortcut  */}
-            {/* {showMore && (
+            {!navCollapsed && (
               <>
-                <ItemAccess
-                  icon={'images/ico-lixi.svg'}
-                  text={intl.get('general.lixi')}
-                  active={selectedKey === '/lixi'}
-                  key="lixi"
-                  href={'/lixi'}
-                />
-                <ItemAccess
-                  icon={'images/ico-setting.svg'}
-                  text={intl.get('general.settings')}
-                  active={selectedKey === '/settings'}
-                  key="settings"
-                  href={'/settings'}
-                />
+                <div className="social-menu">
+                  <h3>Socical</h3>
+                  <ItemAccess
+                    icon={'/images/ico-newfeeds.svg'}
+                    text={intl.get('general.newsfeed')}
+                    active={currentPathName === '/' || currentPathName.includes('/post')}
+                    direction="horizontal"
+                    key="home"
+                    onClickItem={() => handleIconClick('/')}
+                  />
+                  <ItemAccess
+                    icon={'/images/ico-page.svg'}
+                    text={intl.get('general.page')}
+                    active={currentPathName.includes('/page')}
+                    direction="horizontal"
+                    key="page-feed"
+                    onClickItem={() => handleIconClick('/page/feed')}
+                  />
+                  <ItemAccess
+                    icon={'/images/ico-notifications.svg'}
+                    text={intl.get('general.notifications')}
+                    active={currentPathName === '/notifications'}
+                    direction="horizontal"
+                    key="notifications"
+                    onClickItem={() => handleIconClick('/notifications')}
+                  />
+                </div>
+                <div className="social-feature">
+                  <h3>Feature</h3>
+                  <ItemAccess
+                    icon={'/images/ico-tokens.svg'}
+                    text={intl.get('general.tokens')}
+                    active={currentPathName.includes('/token')}
+                    direction="horizontal"
+                    key="tokens-feed"
+                    onClickItem={() => handleIconClick('/token/listing')}
+                  />
+                  <ItemAccess
+                    icon={'/images/ico-account.svg'}
+                    text={intl.get('general.accounts')}
+                    active={currentPathName === '/wallet'}
+                    direction="horizontal"
+                    key="wallet-lotus"
+                    onClickItem={() => handleIconClick('/wallet')}
+                  />
+                  <ItemAccess
+                    icon={'/images/ico-lixi.svg'}
+                    text={intl.get('general.lixi')}
+                    active={currentPathName.includes('/lixi')}
+                    direction="horizontal"
+                    key="lixi"
+                    onClickItem={() => handleIconClick('/lixi')}
+                  />
+                  <ItemAccess
+                    icon={'/images/ico-setting.svg'}
+                    text={intl.get('general.settings')}
+                    active={currentPathName === '/settings'}
+                    direction="horizontal"
+                    key="settings"
+                    onClickItem={() => handleIconClick('/settings')}
+                  />
+                </div>
               </>
             )}
-            {!showMore && (
+            {navCollapsed && (
               <>
-                <Popover overlayClassName="popover-more" placement="top" title={null} content={content} trigger="click">
-                  <Button type="text">
-                    <ItemAccess
-                      icon={'images/ico-more.svg'}
-                      text={intl.get('general.more')}
-                      active={selectedKey === '/more'}
-                      key="more"
-                      href={'/settings'}
-                    />
-                  </Button>
-                </Popover>
+                <div className="social-menu">
+                  <h3>-</h3>
+                  <ItemAccess
+                    icon={'/images/ico-newfeeds.svg'}
+                    active={currentPathName === '/' || currentPathName.includes('/post')}
+                    direction="horizontal"
+                    key="home"
+                    onClickItem={() => handleIconClick('/')}
+                  />
+                  <ItemAccess
+                    icon={'/images/ico-page.svg'}
+                    active={currentPathName.includes('/page')}
+                    direction="horizontal"
+                    key="page-feed"
+                    onClickItem={() => handleIconClick('/page/feed')}
+                  />
+                  <ItemAccess
+                    icon={'/images/ico-notifications.svg'}
+                    active={currentPathName === '/notifications'}
+                    direction="horizontal"
+                    key="notifications"
+                    onClickItem={() => handleIconClick('/notifications')}
+                  />
+                </div>
+                <div className="social-feature">
+                  <h3>-</h3>
+                  <ItemAccess
+                    icon={'/images/ico-tokens.svg'}
+                    active={currentPathName.includes('/token')}
+                    direction="horizontal"
+                    key="tokens-feed"
+                    onClickItem={() => handleIconClick('/token/listing')}
+                  />
+                  <ItemAccess
+                    icon={'/images/ico-account.svg'}
+                    active={currentPathName === '/wallet'}
+                    direction="horizontal"
+                    key="wallet-lotus"
+                    onClickItem={() => handleIconClick('/wallet')}
+                  />
+                  <ItemAccess
+                    icon={'/images/ico-lixi.svg'}
+                    active={currentPathName.includes('/lixi')}
+                    direction="horizontal"
+                    key="lixi"
+                    onClickItem={() => handleIconClick('/lixi')}
+                  />
+                  <ItemAccess
+                    icon={'/images/ico-setting.svg'}
+                    active={currentPathName === '/settings'}
+                    direction="horizontal"
+                    key="settings"
+                    onClickItem={() => handleIconClick('/settings')}
+                  />
+                </div>
               </>
-            )} */}
+            )}
           </div>
-          <UserControl>
-            <div style={{ cursor: 'pointer' }} onClick={() => router.push(`/profile/${selectedAccount?.address}`)}>
-              <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
-            </div>
-          </UserControl>
         </ContainerAccess>
       </ShortcutSideBar>
     </>

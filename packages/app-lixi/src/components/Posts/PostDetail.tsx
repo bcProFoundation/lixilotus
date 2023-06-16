@@ -227,7 +227,7 @@ const StyledContainerPostDetail = styled.div`
   margin: 1rem auto;
   width: 100%;
   max-width: 816px;
-  border-radius: 5px;
+  border-radius: var(--border-radius-primary);
   background: white;
   padding: 0rem 1rem 1rem 1rem;
   margin-top: 1rem;

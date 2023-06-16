@@ -99,7 +99,7 @@ const DetailLixiContainer = styled.div`
       height: 100%;
       background: #ffffff;
       border: 1px solid rgba(128, 116, 124, 0.12);
-      border-radius: 24px;
+      border-radius: var(--border-radius-primary);
       padding: 2rem;
       .card-lixi {
         display: flex;
@@ -156,7 +156,7 @@ const DetailLixiContainer = styled.div`
         justify-content: space-between;
         background: #ffffff;
         border: 1px solid rgba(128, 116, 124, 0.12);
-        border-radius: 24px;
+        border-radius: var(--border-radius-primary);
         padding: 1rem;
       }
       @media screen and (max-width: 960px) {
@@ -176,7 +176,7 @@ const DetailLixiContainer = styled.div`
       height: 100%;
       background: #ffffff;
       border: 1px solid rgba(128, 116, 124, 0.12);
-      border-radius: 24px;
+      border-radius: var(--border-radius-primary);
       display: flex;
       gap: 2rem;
       align-items: center;
@@ -230,7 +230,7 @@ const LabelHeader = styled.h4`
 const BlankClaim = styled.div`
   background: #ffffff;
   border: 1px solid rgba(128, 116, 124, 0.12);
-  border-radius: 24px;
+  border-radius: var(--border-radius-primary);
   padding: 2rem;
 `;
 

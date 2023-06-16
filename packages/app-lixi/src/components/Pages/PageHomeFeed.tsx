@@ -1,15 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useInfinitePagesQuery } from '@store/page/useInfinitePagesQuery';
 import { useInfinitePagesByFollowerIdQuery } from '@store/page/useInfinitePagesByFollowerIdQuery';
 import { useInfinitePagesByUserIdQuery } from '@store/page/useInfinitePagesByUserIdQuery';
 import { Button, Skeleton } from 'antd';
-import SearchBox from '@components/Common/SearchBox';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { getSelectedAccountId } from '@store/account/selectors';
-import Link from 'next/link';
 import { push } from 'connected-next-router';
-import { Virtuoso } from 'react-virtuoso';
 import { openModal } from '@store/modal/actions';
 import intl from 'react-intl-universal';
 import { getAllCategories } from '@store/category/selectors';
@@ -24,8 +21,9 @@ const StyledPageFeed = styled.div`
   width: 100%;
   max-width: 816px;
   h2 {
-    text-align: left;
+    font-size: 20px;
     margin-bottom: 1rem;
+    text-align: left;
   }
   .ant-btn {
     display: flex;
@@ -54,42 +52,14 @@ const StyledPageFeed = styled.div`
   }
 `;
 
-const ToolboxBar = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  div:not(.btn-search) {
-    padding: 8px;
-    flex-grow: 1;
-  }
-  .anticon {
-    font-size: 18px;
-  }
-  .ant-btn {
-    margin-left: 1rem;
-    height: 35px;
-    padding: 0 8px;
-  }
-  @media (max-width: 768px) {
-    grid-template-columns: auto;
-    .ant-btn {
-      width: 50%;
-      margin: auto;
-      margin-top: 1rem;
-    }
-  }
-`;
-
 const BlankPage = styled.div`
 display: flex;
 background: #FFFFFF;
-border: 1px solid var(--boder-item-light);
-border-radius: 24px;
+border: 1px solid var(--border-item-light);
+border-radius: var(--border-radius-primary);
 padding: 2rem 3rem;
+margin-bottom: 1rem;
 
-img {
-    border-radius: 20%;
-}
 div {
     justify-content: center;
     align-items: center;
@@ -106,7 +76,6 @@ div {
 `;
 
 const PagesContainer = styled.div`
-  margin-top: 1rem;
   h2 {
     font-size: 22px;
   }
@@ -114,12 +83,9 @@ const PagesContainer = styled.div`
 
 const YourPageContainer = styled.div`
   margin-top: 1rem;
-  h2 {
-    font-size: 22px;
-  }
   .sub-page {
     font-weight: 400;
-    font-size: 14px;
+    font-size: 13px;
     letter-spacing: 0.5px;
     color: rgba(30, 26, 29, 0.6);
   }
@@ -149,13 +115,18 @@ const ListCard = styled.div`
 
 const StyledCardPage = styled.div`
   cursor: pointer;
-  max-width: 264px;
+  &:hover {
+    opacity: 0.95;
+    .page-name {
+      color: var(--color-primary) !important;
+    }
+  }
   .cover-img {
     width: 100%;
-    height: 150px;
+    height: 100px;
     object-fit: cover;
-    border-top-right-radius: 20px;
-    border-top-left-radius: 20px;
+    border-top-right-radius: var(--border-radius-item);
+    border-top-left-radius: var(--border-radius-item);
     @media (max-width: 768px) {
       width: 185px;
       height: 75px;
@@ -171,9 +142,9 @@ const StyledCardPage = styled.div`
     flex-direction: column;
     align-items: center;
     padding-right: 0;
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
-    border: 1px solid var(--boder-item-light);
+    border-bottom-left-radius: var(--border-radius-item);
+    border-bottom-right-radius: var(--border-radius-item);
+    border: 1px solid var(--border-item-light);
     .wrapper-avatar {
       left: auto;
       top: -35px;
@@ -215,15 +186,6 @@ const StyledCardPage = styled.div`
         margin: 0;
       }
     }
-  }
-`;
-
-const ListContainer = styled.div`
-  display: grid !important;
-  grid-template-columns: auto auto auto !important;
-  grid-gap: 10px !important;
-  @media (max-width: 768px) {
-    grid-template-columns: auto auto !important;
   }
 `;
 
@@ -386,7 +348,7 @@ const PageHome = () => {
     <>
       <StyledPageFeed ref={refPagesListing} onScroll={e => triggerSrollbar(e)}>
         <YourPageContainer>
-          <BlankPage>
+          <BlankPage className="card">
             <picture>
               <img src="/images/page-blank.svg" alt="page-blank-placeholder" />
             </picture>
@@ -397,49 +359,59 @@ const PageHome = () => {
               </Button>
             </div>
           </BlankPage>
-          <h2>{currentUserPages && currentUserPages.allPagesByUserId.edges.length > 0 && intl.get('page.yourPage')}</h2>
-          <ListCard>
-            <InfiniteScroll
-              dataLength={userPage.length}
-              next={loadMoreUserPages}
-              hasMore={userPageHasNext}
-              loader={<Skeleton avatar active />}
-              scrollableTarget="scrollableDiv"
-            >
-              {userPage.map((item, index) => {
-                return (
-                  <React.Fragment key={index}>
-                    <CardPageItem key={item.id} item={mapPageItem(item)} onClickItem={routerPageDetail} />
-                  </React.Fragment>
-                );
-              })}
-            </InfiniteScroll>
-          </ListCard>
+          {currentUserPages && currentUserPages.allPagesByUserId.edges.length > 0 && (
+            <>
+              <h2>{intl.get('page.yourPage')}</h2>
+              <ListCard>
+                <React.Fragment>
+                  <InfiniteScroll
+                    dataLength={userPage.length}
+                    next={loadMoreUserPages}
+                    hasMore={userPageHasNext}
+                    loader={<Skeleton avatar active />}
+                    scrollableTarget="scrollableDiv"
+                  >
+                    {userPage.map((item, index) => {
+                      return (
+                        <React.Fragment key={index}>
+                          <CardPageItem key={item.id} item={mapPageItem(item)} onClickItem={routerPageDetail} />
+                        </React.Fragment>
+                      );
+                    })}
+                  </InfiniteScroll>
+                </React.Fragment>
+              </ListCard>
+            </>
+          )}
         </YourPageContainer>
 
         {/* Page Followings */}
-        <PagesContainer>
-          <h2>{pageFollowings.length > 0 && intl.get('general.youFollow')}</h2>
-          <ListCard>
-            <React.Fragment>
-              <InfiniteScroll
-                dataLength={pageFollowings.length}
-                next={loadMorePageFollowings}
-                hasMore={pageFollowingsHasNext}
-                loader={<Skeleton avatar active />}
-                scrollableTarget="scrollableDiv"
-              >
-                {pageFollowings.map((item, index) => {
-                  return (
-                    <React.Fragment key={index}>
-                      <CardPageItem item={mapPageItem(item)} onClickItem={id => routerPageDetail(id)} />
-                    </React.Fragment>
-                  );
-                })}
-              </InfiniteScroll>
-            </React.Fragment>
-          </ListCard>
-        </PagesContainer>
+        {pageFollowings.length > 0 && (
+          <>
+            <PagesContainer>
+              <h2>{intl.get('general.youFollow')}</h2>
+              <ListCard>
+                <React.Fragment>
+                  <InfiniteScroll
+                    dataLength={pageFollowings.length}
+                    next={loadMorePageFollowings}
+                    hasMore={pageFollowingsHasNext}
+                    loader={<Skeleton avatar active />}
+                    scrollableTarget="scrollableDiv"
+                  >
+                    {pageFollowings.map((item, index) => {
+                      return (
+                        <React.Fragment key={index}>
+                          <CardPageItem item={mapPageItem(item)} onClickItem={id => routerPageDetail(id)} />
+                        </React.Fragment>
+                      );
+                    })}
+                  </InfiniteScroll>
+                </React.Fragment>
+              </ListCard>
+            </PagesContainer>
+          </>
+        )}
 
         {/* Discover */}
         <PagesContainer>

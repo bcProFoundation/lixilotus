@@ -48,7 +48,7 @@ const RegisterPackBtn = styled(Button)`
 `;
 
 const StyledSearchLixi = styled(Input)`
-  border-radius: 5px;
+  border-radius: var(--border-radius-primary);
   @media (max-width: 768px) {
     width: 100%;
   }
@@ -59,7 +59,7 @@ const StyledButton = styled(Button)`
   height: 32px;
   background: white;
   border-color: black;
-  border-radius: 5px;
+  border-radius: var(--border-radius-primary);
 `;
 
 const StyledFilterModal = styled(Modal)`
@@ -112,7 +112,7 @@ const StyledFilterModal = styled(Modal)`
       font-size: 17px;
       display: flex;
       align-items: center;
-      border-radius: 20px;
+      border-radius: var(--border-radius-primary);
     }
   }
 `;

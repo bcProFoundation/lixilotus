@@ -4,13 +4,15 @@ import { createReducer } from '@reduxjs/toolkit';
 import {
   saveAllowPushNotification,
   saveBurnFilter,
+  saveSearchBox,
   saveWebAuthnConfig,
   saveWebPushNotifConfig,
   setInitIntlStatus,
   toggleCollapsedSideNav,
-  updateLocale
+  updateLocale,
 } from './actions';
 import { SettingsState } from './state';
+// import { SearchBoxType } from '@bcpros/lixi-models/src/lib/search';
 
 const initialState: SettingsState = {
   navCollapsed: true,
@@ -19,15 +21,27 @@ const initialState: SettingsState = {
   webAuthnConfig: null,
   webPushNotifConfig: {
     allowPushNotification: false,
-    deviceId: null
+    deviceId: null,
   },
   filterPostsHome: 10,
   filterPostsPage: 10,
   filterPostsToken: 1,
-  filterPostsProfile: 1
+  filterPostsProfile: 1,
+  searchPosts: {
+    searchValue: '',
+    hashtags: [],
+  },
+  searchPage: {
+    searchValue: '',
+    hashtags: [],
+  },
+  searchToken: {
+    searchValue: '',
+    hashtags: [],
+  },
 };
 
-export const settingsReducer = createReducer(initialState, builder => {
+export const settingsReducer = createReducer(initialState, (builder) => {
   builder
     .addCase(toggleCollapsedSideNav, (state, action) => {
       state.navCollapsed = action.payload;
@@ -61,6 +75,20 @@ export const settingsReducer = createReducer(initialState, builder => {
           break;
         case FilterType.PostsProfile:
           state.filterPostsProfile = filterValue;
+          break;
+      }
+    })
+    .addCase(saveSearchBox, (state, action) => {
+      const { searchType, searchValue } = action.payload;
+      switch (searchType) {
+        case 'searchPosts':
+          state.searchPosts = searchValue;
+          break;
+        case 'searchPage':
+          state.searchPage = searchValue;
+          break;
+        case 'searchToken':
+          state.searchToken = searchValue;
           break;
       }
     });

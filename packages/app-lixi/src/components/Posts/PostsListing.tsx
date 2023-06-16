@@ -7,7 +7,6 @@ import {
   getSelectedAccountId
 } from '@store/account/selectors';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
-import { WalletContext } from '@context/index';
 import {
   addBurnQueue,
   addBurnTransaction,
@@ -16,8 +15,7 @@ import {
   getLatestBurnForPost,
   clearFailQueue
 } from '@store/burn';
-import { api as postApi, useLazyPostQuery } from '@store/post/posts.api';
-import { Menu, MenuProps, Modal, notification, Skeleton, Tabs, Collapse, Space, Select, Button } from 'antd';
+import { MenuProps, Skeleton } from 'antd';
 import _ from 'lodash';
 import React, { useRef, useState, useEffect } from 'react';
 import { Virtuoso } from 'react-virtuoso';
@@ -26,7 +24,6 @@ import { useAppDispatch, useAppSelector } from '@store/hooks';
 import styled from 'styled-components';
 import SearchBox from '../Common/SearchBox';
 import intl from 'react-intl-universal';
-import { FireTwoTone, LoadingOutlined } from '@ant-design/icons';
 import PostListItem from './PostListItem';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { setGraphqlRequestDone, setTransactionReady, addRecentHashtagAtHome } from '@store/account/actions';
@@ -37,16 +34,11 @@ import { currency } from '@components/Common/Ticker';
 import { fromSmallestDenomination, fromXpiToSatoshis, toSmallestDenomination } from '@utils/cashMethods';
 import BigNumber from 'bignumber.js';
 import { showToast } from '@store/toast/actions';
-import { Spin } from 'antd';
-import { FilterBurnt } from '@components/Common/FilterBurn';
-import { FilterType } from '@bcpros/lixi-models/lib/filter';
-import { getFilterPostsHome } from '@store/settings/selectors';
+import { getFilterPostsHome, getSearchPosts } from '@store/settings/selectors';
 import { getLeaderboard } from '@store/account/actions';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 import { useInfinitePostsBySearchQueryWithHashtag } from '@store/post/useInfinitePostsBySearchQueryWithHashtag';
 
-const { Panel } = Collapse;
-const antIcon = <LoadingOutlined style={{ fontSize: 20 }} spin />;
 export const OPTION_BURN_VALUE = {
   LIKE: '1',
   DISLIKE: '1',
@@ -66,7 +58,7 @@ type PostsListingProps = {
 const StyledPostsListing = styled.div`
   margin: 1rem auto;
   width: 100%;
-  max-width: 816px;
+  max-width: 700px;
   &::-webkit-scrollbar {
     width: 5px;
   }
@@ -112,8 +104,11 @@ const StyledPostsListing = styled.div`
       opacity: 1;
     }
   }
-  @media (max-width: 960px) {
-    padding-bottom: 9rem;
+
+  @media (min-width: 960px) {
+    .search-container {
+      display: none !important;
+    }
   }
 `;
 
@@ -142,20 +137,6 @@ const StyledHeader = styled.div`
   }
 `;
 
-const StyledCollapse = styled(Collapse)`
-  .ant-collapse-header {
-    font-size: 16px;
-    padding: 0px 0px 5px 0px !important;
-  }
-  .ant-collapse-content-box {
-    padding: 5px 0px 5px 0px !important;
-  }
-`;
-
-const StyledNotificationContent = styled.div`
-  font-size: 14px;
-`;
-
 const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingProps) => {
   const dispatch = useAppDispatch();
   const selectedAccountId = useAppSelector(getSelectedAccountId);
@@ -175,6 +156,9 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const recentTagAtHome = useAppSelector(getRecentHashtagAtHome);
   const [hashtags, setHashtags] = useState([]);
   const [suggestedHashtag, setSuggestedTags] = useState([]);
+  const [searchValuePosts, setSearchValuePosts] = useState<string | null>(null);
+  const [hashtagsPosts, setHashtagsPosts] = useState([]);
+  const searchDataPost = useAppSelector(getSearchPosts);
 
   const menuItems = [{ label: intl.get('general.allPost'), key: 'all' }];
 
@@ -197,14 +181,23 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     false
   );
 
+  useEffect(() => {
+    if (searchDataPost?.searchValue) {
+      setSearchValuePosts(searchDataPost.searchValue);
+    }
+    if (searchDataPost?.hashtags) {
+      setHashtagsPosts(searchDataPost.hashtags);
+    }
+  }, [searchDataPost]);
+
   //#region QueryVirtuoso
   const { queryData, fetchNextQuery, hasNextQuery, isQueryFetching, isFetchingQueryNext, isQueryLoading } =
     useInfinitePostsBySearchQueryWithHashtag(
       {
         first: 20,
         minBurnFilter: filterValue ?? 1,
-        query: searchValue,
-        hashtags: hashtags,
+        query: searchValuePosts,
+        hashtags: hashtagsPosts,
         orderBy: {
           direction: OrderDirection.Desc,
           field: PostOrderField.UpdatedAt
@@ -264,24 +257,6 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         <h1 style={{ textAlign: 'left', fontSize: '20px', margin: '1rem' }}>
           {searchValue && intl.get('general.searchResults', { text: searchValue })}
         </h1>
-        <div className="filter-bar">
-          <Menu
-            className="menu-post-listing"
-            style={{
-              border: 'none',
-              position: 'relative',
-              marginBottom: '1rem',
-              background: 'var(--bg-color-light-theme)'
-            }}
-            mode="horizontal"
-            defaultSelectedKeys={['all']}
-            selectedKeys={tab}
-            onClick={onClickMenu}
-            items={menuItems}
-          ></Menu>
-
-          <FilterBurnt filterForType={FilterType.PostsHome} />
-        </div>
       </StyledHeader>
     );
   };
@@ -336,7 +311,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const showPosts = () => {
     return (
       <React.Fragment>
-        {!searchValue && hashtags.length === 0 ? (
+        {!searchValuePosts && hashtagsPosts.length === 0 ? (
           <InfiniteScroll
             dataLength={data.length}
             next={loadMoreItems}
@@ -464,6 +439,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         onDeleteHashtag={onDeleteHashtag}
         onDeleteQuery={onDeleteQuery}
         suggestedHashtag={suggestedHashtag}
+        searchType="searchPosts"
       />
       <Header />
 

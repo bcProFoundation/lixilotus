@@ -29,14 +29,13 @@ const CardContainer = styled.div`
   display: flex;
   background: url(../images/bg-xpi.svg) no-repeat;
   background-size: cover !important;
-  border-radius: 24px;
+  background-position: center;
+  border-radius: var(--border-radius-primary);
   padding: 2rem 2rem 3rem 2rem;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   @media (max-width: 768px) {
     padding: 2rem;
-    border-bottom-left-radius: 24px;
-    border-bottom-right-radius: 24px;
   }
 `;
 
@@ -85,13 +84,12 @@ const StyledQRCode = styled.div`
   text-align: right;
   opacity: 0.7;
   #borderedQRCode {
+    border-radius: var(--boder-radius-primay);
     @media (max-width: 768px) {
-      border-radius: 18px;
       width: 60px;
       height: 60px;
     }
     @media (min-width: 768px) {
-      border-radius: 18px;
       width: 90px;
       height: 90px;
     }
@@ -123,7 +121,6 @@ const ButtonSend = styled.div`
   margin-right: 1rem;
   font-size: 14px;
   color: #edeff0;
-  font-weight: bold;
   .anticon {
     margin-right: 4px;
     font-size: 14px;

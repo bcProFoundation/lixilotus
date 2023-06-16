@@ -1,9 +1,11 @@
 import { SearchOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { Input, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
+import { useAppDispatch } from '@store/hooks';
 import styled from 'styled-components';
 import { useForm, Controller, SubmitHandler } from 'react-hook-form';
 import intl from 'react-intl-universal';
+import { saveSearchBox } from '../../../../redux-store/src/store/settings';
 
 export type SearchType = {
   value: string | null;
@@ -17,12 +19,13 @@ type SearchProps = {
   onDeleteHashtag: (hashtags?: string[]) => void;
   onDeleteQuery?: () => void;
   suggestedHashtag?: string[];
+  searchType?: string;
 };
 
 const Container = styled.div`
   display: flex;
   margin-bottom: 5px;
-  flex-direction: column;
+  flex: 1;
   @media (max-width: 576px) {
     flex-direction: column;
   }
@@ -31,28 +34,30 @@ const Container = styled.div`
 const SearchBoxContainer = styled.div`
   display: flex;
   flex-grow: 1;
+  border: 1px solid #f1f1f1;
+  height: 40px;
+  background: var(--bg-color-light-theme);
   justify-content: space-between;
-  padding: 8px 1rem !important;
+  flex-direction: row-reverse;
+  padding: 0 8px !important;
   margin: 2px;
-  background: #fff;
-  border-radius: 20px;
+  border-radius: var(--border-radius-primary);
   align-items: center;
-  border: 1px solid var(--boder-item-light);
+  border: 1px solid #f1f1f1;
   .btn-search {
     display: flex;
     margin-right: 5px;
     .anticon {
-      font-size: 18px;
-      color: #4e444b;
+      font-size: 16px;
+      color: var(--color-primary);
     }
   }
   input {
-    font-size: 14px;
-    line-height: 24px;
+    font-size: 11px;
     letter-spacing: 0.5px;
   }
-  @media (max-width: 968px) {
-    padding: 8px 1rem !important;
+  @media (max-width: 960px) {
+    background: #fff;
   }
 `;
 
@@ -93,6 +98,7 @@ const SearchBox = (props: SearchProps) => {
   const [suggestedTags, setSuggestedTags] = useState(props.suggestedHashtag);
 
   const numberOfTags = 3;
+  const dispatch = useAppDispatch();
 
   const { control, getValues, setValue } = useForm({
     defaultValues: {
@@ -134,6 +140,30 @@ const SearchBox = (props: SearchProps) => {
     }
   };
 
+  const setSearchType = () => {
+    switch (props?.searchType) {
+      case 'posts':
+        return 'searchPosts';
+      case 'page':
+        return 'searchPage';
+      case 'token':
+        return 'searchToken';
+      default:
+        return 'searchPosts';
+    }
+  };
+
+  const saveSearchData = (value, hashtags) => {
+    const searchData = {
+      searchType: setSearchType(),
+      searchValue: {
+        searchValue: value,
+        hashtags: hashtags
+      }
+    };
+    dispatch(saveSearchBox(searchData));
+  };
+
   const onPressEnter = e => {
     const { value } = e.target;
     if (value !== '') {
@@ -155,6 +185,7 @@ const SearchBox = (props: SearchProps) => {
 
       props.searchPost(normalTexts, [...tags, ...newTags]);
       setValue('search', normalTexts);
+      saveSearchData(getValues('search'), [...tags, ...newTags]);
     }
   };
 
@@ -170,10 +201,11 @@ const SearchBox = (props: SearchProps) => {
     setValue('search', '');
     setTags([]);
     props.onDeleteQuery();
+    saveSearchData('', []);
   };
 
   return (
-    <Container>
+    <Container className="search-container">
       {suggestedTags && suggestedTags.length > 0 && (
         <SuggestedTagContainer>
           <div style={{ fontSize: '15px', marginBottom: '0px' }}>{intl.get('general.suggested')}</div>

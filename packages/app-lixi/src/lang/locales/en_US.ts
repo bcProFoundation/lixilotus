@@ -48,6 +48,7 @@ export default {
   'burn.feeMiner': "Miners' fees excluded",
 
   /* 01.General */
+  'general.newsfeed': 'Newsfeed',
   'general.tokens': 'Tokens',
   'general.home': 'Home',
   'general.accounts': 'Accounts',

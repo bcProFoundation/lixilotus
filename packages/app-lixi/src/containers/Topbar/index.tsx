@@ -1,19 +1,28 @@
-import React, { useEffect } from 'react';
-import { BellTwoTone, MenuOutlined, SearchOutlined } from '@ant-design/icons';
-import { Space, Badge, Button } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { FilterOutlined, BellOutlined, HomeOutlined, UserSwitchOutlined } from '@ant-design/icons';
+import { Space, Badge, Button, Popover } from 'antd';
 import { useAppDispatch, useAppSelector } from '@store/hooks';
 import { toggleCollapsedSideNav } from '@store/settings/actions';
 import { getFilterPostsHome, getNavCollapsed } from '@store/settings/selectors';
 import { Header } from 'antd/lib/layout/layout';
 import styled from 'styled-components';
-import { getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
+import { getAllAccounts, getSelectedAccount, getSelectedAccountId } from '@store/account/selectors';
 import { fetchNotifications, startChannel, stopChannel } from '@store/notification/actions';
 import { useRouter } from 'next/router';
 import { AvatarUser } from '@components/Common/AvatarUser';
 import { useInfinitePostsQuery } from '@store/post/useInfinitePostsQuery';
 import { OrderDirection, PostOrderField } from '@generated/types.generated';
 import { api as postApi } from '@store/post/posts.api';
-import { setGraphqlRequestLoading } from '@store/account/actions';
+import { selectAccount, setGraphqlRequestLoading } from '@store/account/actions';
+import SearchBox from '@components/Common/SearchBox';
+import { FilterBurnt } from '@components/Common/FilterBurn';
+import { FilterType } from '@bcpros/lixi-models/lib/filter';
+import { getAllNotifications } from '@store/notification/selectors';
+import NotificationPopup from '@components/NotificationPopup';
+import { Account } from '@bcpros/lixi-models';
+import * as _ from 'lodash';
+import { fromSmallestDenomination } from 'src/utils/cashMethods';
+import { push } from 'connected-next-router';
 
 export type TopbarProps = {
   className?: string;
@@ -23,16 +32,120 @@ const PathDirection = styled.div`
   display: flex;
   gap: 1rem;
   align-items: center;
+  @media (max-width: 960px) {
+    gap: 0;
+  }
   h3 {
     text-transform: capitalize;
-
     font-weight: 400;
     font-size: 28px;
     line-height: 40px;
     color: #1e1a1d;
     margin: 0;
   }
+
+  .menu-mobile {
+    display: none;
+    margin-left: 6px;
+    @media (max-width: 960px) {
+      display: block;
+    }
+  }
+
+  .checkbox {
+    position: absolute;
+    display: block;
+    height: 32px;
+    width: 32px;
+    z-index: 5;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .hamburger-lines {
+    display: block;
+    height: 20px;
+    width: 26px;
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .menu-hamburger {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    margin-left: 1rem;
+    @media (max-width: 960px) {
+      display: none;
+    }
+  }
+
+  .hamburger-lines .line {
+    display: block;
+    height: 2px;
+    width: 100%;
+    border-radius: 10px;
+    background: #0e2431;
+  }
+
+  .hamburger-lines .line1 {
+    transform-origin: 0% 0%;
+    transition: transform 0.4s ease-in-out;
+  }
+
+  .hamburger-lines .line2 {
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .hamburger-lines .line3 {
+    transform-origin: 0% 100%;
+    transition: transform 0.4s ease-in-out;
+  }
+
+  input[type='checkbox']:checked ~ .hamburger-lines .line1 {
+    transform: rotate(45deg);
+  }
+
+  input[type='checkbox']:checked ~ .hamburger-lines .line2 {
+    transform: scaleY(0);
+  }
+
+  input[type='checkbox']:checked ~ .hamburger-lines .line3 {
+    transform: rotate(-45deg);
+  }
 `;
+
+const AccountBox = styled.div`
+  .sub-account {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1rem;
+    cursor: pointer;
+    &:hover {
+      .name {
+        color: var(--color-primary);
+      }
+    }
+    .sub-account-info {
+      flex: 1;
+      p {
+        margin: 0;
+        &.name {
+          font-size: 14px;
+          font-weight: 500;
+        }
+        &.address {
+          font-size: 12px;
+        }
+      }
+    }
+  }
+`;
+
+const PopoverStyled = styled.div``;
 
 // eslint-disable-next-line react/display-name
 const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallback<HTMLElement>) => {
@@ -44,6 +157,11 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
   const pathDirection = currentPathName.split('/', 2);
   const filterValue = useAppSelector(getFilterPostsHome);
   const selectedAccountId = useAppSelector(getSelectedAccountId);
+  const notifications = useAppSelector(getAllNotifications);
+  const [searchValue, setSearchValue] = useState<string | null>(null);
+  const [hashtags, setHashtags] = useState([]);
+  const [otherAccounts, setOtherAccounts] = useState<Account[]>([]);
+  const savedAccounts: Account[] = useAppSelector(getAllAccounts);
 
   useEffect(() => {
     if (selectedAccount) {
@@ -55,6 +173,10 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
       );
     }
   }, []);
+
+  useEffect(() => {
+    setOtherAccounts(_.filter(savedAccounts, acc => acc && acc.id !== selectedAccount?.id));
+  }, [savedAccounts]);
 
   useEffect(() => {
     dispatch(startChannel());
@@ -88,59 +210,250 @@ const Topbar = React.forwardRef(({ className }: TopbarProps, ref: React.RefCallb
     }
   };
 
+  const searchPost = (value: string, hashtagsValue?: string[]) => {
+    setSearchValue(value);
+
+    if (hashtagsValue && hashtagsValue.length > 0) setHashtags([...hashtagsValue]);
+  };
+
+  const onDeleteQuery = () => {
+    setSearchValue(null);
+    setHashtags([]);
+  };
+
+  const onDeleteHashtag = (hashtagsValue: string[]) => {
+    setHashtags([...hashtagsValue]);
+  };
+
+  const filterType = () => {
+    switch (pathDirection[1]) {
+      case '':
+        return FilterType.PostsHome;
+      case 'page':
+        return FilterType.PostsPage;
+      case 'profile':
+        return FilterType.PostsProfile;
+      case 'token':
+        return FilterType.PostsToken;
+
+      default:
+        return FilterType.PostsHome;
+    }
+  };
+
+  const SearchBoxType = () => {
+    switch (pathDirection[1]) {
+      case '':
+        return 'searchPosts';
+      case 'page':
+        return 'searchPage';
+      case 'token':
+        return 'searchToken';
+      default:
+        return 'searchPosts';
+    }
+  };
+
+  const contentNotification = <PopoverStyled>{NotificationPopup(notifications, selectedAccount)}</PopoverStyled>;
+
+  const contentFilterBurn = (
+    <PopoverStyled>
+      <FilterBurnt filterForType={filterType()} />
+    </PopoverStyled>
+  );
+
+  const contentSelectAccount = (
+    <AccountBox>
+      <h3>Switch accounts</h3>
+      {otherAccounts &&
+        otherAccounts.map((acc, index) => {
+          return (
+            <div className="sub-account" key={index}>
+              <div className="sub-account-info">
+                <p className="name">{acc?.name}</p>
+                <p className="address">~{fromSmallestDenomination(acc?.balance).toFixed(2)} XPI</p>
+              </div>
+              <Button
+                type="primary"
+                className="outline-btn"
+                icon={<UserSwitchOutlined />}
+                onClick={() => {
+                  dispatch(selectAccount(acc.id));
+                }}
+              ></Button>
+            </div>
+          );
+        })}
+    </AccountBox>
+  );
+
   return (
-    <Header ref={ref} className={className}>
+    <Header style={{ boxShadow: '0 10px 30px rgb(0 0 0 / 5%)' }} ref={ref} className={className}>
       <PathDirection>
-        <img src="/images/ico-menu.svg" alt="" onClick={handleMenuClick} />
+        <img className="menu-mobile" src="/images/ico-menu.svg" alt="" onClick={handleMenuClick} />
         {currentPathName == '/' && (
           <picture>
-            <img width="98px" src="/images/lixilotus-logo.svg" alt="lixilotus-logo" onClick={() => handleLogoClick()} />
+            <img
+              height={'64px'}
+              src="/images/lixilotus-logo.svg"
+              alt="lixilotus-logo"
+              onClick={() => handleLogoClick()}
+            />
           </picture>
         )}
+        <div onClick={handleMenuClick} className="menu-hamburger">
+          <input className="checkbox" type="checkbox" name="" id="" />
+          <div className="hamburger-lines">
+            <span className="line line1"></span>
+            <span className="line line2"></span>
+            <span className="line line3"></span>
+          </div>
+        </div>
         {pathDirection[1] != '' && <h3>{pathDirection[1]}</h3>}
       </PathDirection>
-      <Space direction="horizontal" size={15}>
-        {/* <Button type="text" icon={<SearchOutlined style={{ fontSize: '18px', color: '4E444B' }} />}></Button> */}
-        <div style={{ cursor: 'pointer' }} onClick={() => router.push(`/profile/${selectedAccount?.address}`)}>
-          <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
+      <div className="filter-bar">
+        <SearchBox
+          searchPost={searchPost}
+          searchValue={searchValue}
+          hashtags={hashtags}
+          onDeleteHashtag={onDeleteHashtag}
+          onDeleteQuery={onDeleteQuery}
+          searchType={SearchBoxType()}
+        />
+      </div>
+      <SpaceStyled direction="horizontal" size={15}>
+        <div className="action-bar-header">
+          <Button
+            onClick={() => dispatch(push('/'))}
+            className="home-btn animate__animated animate__heartBeat"
+            type="text"
+            icon={<HomeOutlined />}
+          />
+          <Popover className="filter-btn" arrow={false} content={contentFilterBurn} placement="bottom">
+            <Button className="animate__animated animate__heartBeat" type="text" icon={<FilterOutlined />} />
+          </Popover>
+          <Popover className="nofication-btn" arrow={false} content={contentNotification} placement="bottom">
+            <Badge
+              count={notifications.filter(item => _.isNil(item.readAt)).length}
+              overflowCount={9}
+              offset={[notifications?.length < 10 ? 0 : 5, 8]}
+              color="var(--color-primary)"
+            >
+              <Button className="animate__animated animate__heartBeat" type="text" icon={<BellOutlined />} />
+            </Badge>
+          </Popover>
         </div>
-      </Space>
+        <div className="account-bar">
+          <Popover arrow={false} content={contentSelectAccount} placement="bottom">
+            <AvatarUser name={selectedAccount?.name} isMarginRight={false} />
+            <p className="account-info">
+              <span className="account-name">{selectedAccount?.name}</span>
+              <span className="account-balance">
+                ~ {fromSmallestDenomination(selectedAccount?.balance).toFixed(2)} <span className="unit">XPI</span>
+              </span>
+            </p>
+          </Popover>
+        </div>
+      </SpaceStyled>
     </Header>
   );
 });
 
-const StyledTopbar = styled(Topbar)`
-  display: flex;
-  background: transparent !important;
-  padding-inline: 0px !important;
-  align-items: center;
-  justify-content: space-between !important;
-  width: 100%;
-  padding: 10px 0 15px;
-  justify-content: space-between;
-  background: ${props => props.theme.wallet.background};
-  a {
-    color: ${props => props.theme.wallet.text.secondary};
+const SpaceStyled = styled(Space)`
+  justify-self: end;
+  .ant-space-item {
+    div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  }
+  .anticon {
+    font-size: 20px;
+    color: var(--color-primary);
+  }
+  .account-bar {
+    cursor: pointer;
+    padding-right: 1rem;
+    &:hover {
+      .account-name {
+        color: var(--color-primary);
+      }
+      .account-balance {
+        color: #000 !important;
+      }
+    }
 
-    :hover {
-      color: ${props => props.theme.primary};
+    & > span {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .account-info {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      span {
+        line-height: initial;
+        &.account-name {
+          font-size: 13px;
+          font-weight: 500;
+        }
+        &.account-balance {
+          font-size: 12px;
+          color: #a9a8a9;
+          .unit {
+            font-size: 9px;
+            font-weight: 600;
+            color: var(--color-primary);
+          }
+        }
+      }
+    }
+
+    @media (max-width: 960px) {
+      padding-right: 8px;
+      .account-info {
+        display: none !important;
+      }
+    }
+  }
+`;
+
+const StyledTopbar = styled(Topbar)`
+  background: #fff;
+  display: grid;
+  padding: 0;
+  grid-template-columns: auto auto auto;
+  max-height: 64px;
+
+  .filter-bar {
+    display: flex;
+    align-items: center;
+  }
+  .action-bar-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    .anticon {
+      font-size: 20px;
     }
   }
 
   @media (max-width: 960px) {
-    a {
-      font-size: 12px;
+    grid-template-columns: auto auto;
+    .action-bar-header {
+      .nofication-btn,
+      .home-btn {
+        display: none !important;
+      }
     }
-    padding: 20px 0 20px;
-  }
-
-  @media (min-width: 960px) {
-    display: none;
-    padding: 1rem 2rem;
-    position: fixed;
-    z-index: 999;
-    .collapse-menu {
-      display: none;
+    .filter-bar {
+      display: none !important;
     }
   }
 `;

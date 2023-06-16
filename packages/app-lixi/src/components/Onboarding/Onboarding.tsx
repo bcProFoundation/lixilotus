@@ -41,7 +41,7 @@ export const WelcomeLink = styled.a`
 export const Onboarding = styled.div`
   padding: 10px 30px 20px 30px;
   background: #fff;
-  border-radius: 20px;
+  border-radius: var(--border-radius-primary);
 `;
 
 const OnboardingComponent: React.FC = () => {

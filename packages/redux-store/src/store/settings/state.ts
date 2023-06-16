@@ -1,4 +1,4 @@
-import { WebAuthnConfig, WebPushNotifConfig } from './model';
+import { SearchConfig, WebAuthnConfig, WebPushNotifConfig } from './model';
 
 export interface SettingsState {
   navCollapsed: boolean;
@@ -10,4 +10,7 @@ export interface SettingsState {
   filterPostsPage: number;
   filterPostsToken: number;
   filterPostsProfile: number;
+  searchPosts: SearchConfig;
+  searchPage: SearchConfig;
+  searchToken: SearchConfig;
 }

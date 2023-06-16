@@ -50,7 +50,7 @@ const UpDownButton = styled(Button)`
   font-size: 14px;
   width: 49%;
   height: 40px;
-  border-radius: 16px !important;
+  border-radius: var(--border-radius-primary) !important;
   justify-content: center;
 
   &.upVote {
@@ -79,7 +79,7 @@ const RadioStyle = styled(Radio.Group)`
   .ant-radio-button-wrapper {
     width: 48px;
     height: 48px;
-    border-radius: 8px !important;
+    border-radius: var(--border-radius-primary) !important;
     display: flex;
     align-items: center;
     justify-content: center;

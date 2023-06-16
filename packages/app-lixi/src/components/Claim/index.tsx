@@ -31,14 +31,15 @@ type ClaimFormData = {
 
 const RedeemCodeBox = styled.div`
   background: #fff;
-  padding: 2rem 2rem 3rem 2rem;
+  padding: 1rem;
   @media (max-width: 768px) {
     padding: 2rem 0 3rem 0;
   }
   .title-redeem-code {
     font-size: 14px;
-    color: #333333;
     font-weight: 600;
+    color: #333333;
+    margin-bottom: 1rem;
   }
   .ant-input-affix-wrapper {
     border-top-left-radius: 8px;
@@ -61,7 +62,7 @@ const RedeemCodeBox = styled.div`
   }
   button {
     padding: 8px 0;
-    border-radius: 8px;
+    border-radius: var(--border-radius-primary);
     margin-bottom: 0;
   }
 `;

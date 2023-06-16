@@ -44,7 +44,7 @@ const StyledContainerProfileDetail = styled.div`
   width: 100%;
   max-width: 816px;
   background: var(--bg-color-light-theme);
-  border-radius: 20px;
+  border-radius: var(--border-radius-primary);
   padding-bottom: 3rem;
   .reaction-container {
     display: flex;
@@ -73,9 +73,9 @@ const StyledContainerProfileDetail = styled.div`
 const ProfileCardHeader = styled.div`
   .cover-img {
     width: 100%;
-    height: 350px;
-    border-top-right-radius: 20px;
-    border-top-left-radius: 20px;
+    height: 200px;
+    border-top-right-radius: var(--border-radius-item);
+    border-top-left-radius: var(--border-radius-item);
     @media (max-width: 768px) {
       border-radius: 0;
       height: 200px;
@@ -196,9 +196,9 @@ const LegacyProfile = styled.div`
 
 const AboutBox = styled.div`
   background: #ffffff;
-  border-radius: 24px;
+  border-radius: var(--border-radius-primary);
   margin-bottom: 1rem;
-  border: 1px solid var(--boder-item-light);
+  border: 1px solid var(--border-item-light);
   padding: 24px;
   h3 {
     text-align: left;
@@ -216,9 +216,9 @@ const AboutBox = styled.div`
 
 const PictureBox = styled.div`
   background: #ffffff;
-  border-radius: 24px;
+  border-radius: var(--border-radius-primary);
   margin-bottom: 1rem;
-  border: 1px solid var(--boder-item-light);
+  border: 1px solid var(--border-item-light);
   padding: 24px;
   h3 {
     text-align: left;
@@ -248,10 +248,10 @@ const PictureBox = styled.div`
 
 const FriendBox = styled.div`
   background: #ffffff;
-  border-radius: 24px;
+  border-radius: var(--border-radius-primary);
   margin-bottom: 1rem;
   padding: 24px;
-  border: 1px solid var(--boder-item-light);
+  border: 1px solid var(--border-item-light);
   h3 {
     text-align: left;
   }
@@ -306,7 +306,7 @@ const ContentTimeline = styled.div`
 `;
 
 const Timeline = styled.div`
-  border-radius: 24px;
+  border-radius: var(--border-radius-primary);
   width: 100%;
   margin-right: 1rem;
   margin-bottom: 1rem;
@@ -314,13 +314,14 @@ const Timeline = styled.div`
   .blank-timeline {
     background: #ffffff;
     border: 1px solid rgba(128, 116, 124, 0.12);
-    border-radius: 24px;
+    border-radius: var(--border-radius-primary);
     padding: 1rem 0;
+    margin-top: 1rem;
     img {
-      max-width: 650px;
-      max-height: 650px;
+      max-height: 45vh;
       @media (max-width: 426px) {
         max-width: 100%;
+        max-height: 45vh;
       }
     }
     p {
@@ -345,7 +346,7 @@ const StyledMenu = styled(Tabs)`
     border-bottom-right-radius: 20px;
     border-bottom-left-radius: 20px;
     padding: 1rem 24px;
-    border: 1px solid var(--boder-item-light);
+    border: 1px solid var(--border-item-light);
     background: white;
   }
   .ant-tabs-tabpane {
@@ -741,11 +742,10 @@ const ProfileDetail = ({ user, checkIsFollowed, isMobile }: UserDetailProps) => 
                 </FriendBox>
               </LegacyProfile> */}
               <ContentTimeline>
-                {isLoading && <Skeleton avatar active />}
-
-                <div className="search-bar">
+                {/* <div className="search-bar">
                   <FilterBurnt filterForType={FilterType.PostsProfile} />
-                </div>
+                </div> */}
+
                 <Timeline>
                   {data.length == 0 && (
                     <div className="blank-timeline">

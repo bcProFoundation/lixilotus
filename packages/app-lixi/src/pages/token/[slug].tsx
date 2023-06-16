@@ -7,6 +7,7 @@ import { getSelectorsByUserAgent } from 'react-device-detect';
 import { END } from 'redux-saga';
 import _ from 'lodash';
 import { useTokenQuery } from '@store/token/tokens.generated';
+import MainLayout from '@components/Layout/MainLayout';
 
 const TokenDetailPage = props => {
   const { tokenId, isMobile } = props;
@@ -62,6 +63,6 @@ export const getServerSideProps = wrapper.getServerSideProps((store: SagaStore) 
   };
 });
 
-TokenDetailPage.Layout = ({ children }) => <PageDetailLayout children={children} />;
+TokenDetailPage.Layout = ({ children }) => <MainLayout children={children} />;
 
 export default TokenDetailPage;

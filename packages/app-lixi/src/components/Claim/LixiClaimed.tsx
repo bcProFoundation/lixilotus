@@ -203,7 +203,7 @@ const LixiClaimed = ({ className, claim, isMobile, lixi }: LixiClaimProps) => {
 
 const Container = styled(LixiClaimed)`
   background: #ffffff;
-  border-radius: 24px;
+  border-radius: var(--border-radius-primary);
   padding: 2rem;
   margin-bottom: 2rem;
   .ant-modal,
