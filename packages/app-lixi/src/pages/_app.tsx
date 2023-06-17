@@ -70,7 +70,7 @@ const LixiApp = ({ Component, ...rest }) => {
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
       </Head>
       <NextSeo
-        title="Lixi Program"
+        title="LixiLotus"
         description="The lixi program send you a small gift ."
         canonical={canonicalUrl}
         openGraph={{
