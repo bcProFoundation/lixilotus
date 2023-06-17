@@ -544,6 +544,7 @@ export default {
   'post.page': 'Trang',
   'post.token': 'Token',
   'post.public': 'Công khai',
+  'post.on': 'trên',
 
   /* 16.Token */
   'token.importToken': 'Thêm token',

@@ -32,7 +32,7 @@ const ProfileDetailPage = props => {
       {isSuccessGetAccount && isSuccessCheckFollowed && (
         <>
           <NextSeo
-            title="Lixi Program"
+            title={user.name}
             description="The lixi program send you a small gift ."
             canonical={canonicalUrl}
             openGraph={{

@@ -546,6 +546,7 @@ export default {
   'post.page': 'Page',
   'post.token': 'Token',
   'post.public': 'Public',
+  'post.on': 'on',
 
   /* 16.Token */
   'token.importToken': 'Import token',
