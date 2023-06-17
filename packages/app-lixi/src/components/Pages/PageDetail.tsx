@@ -171,7 +171,7 @@ const ProfileCardHeader = styled.div`
   .description-profile {
     width: 100%;
     background: #fff;
-    padding-left: calc(0px + 48px);
+    padding: 0 calc(0px + 48px);
     text-align: left;
     display: flex;
     flex-direction: column;
