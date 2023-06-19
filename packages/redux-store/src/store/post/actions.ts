@@ -5,7 +5,7 @@ import { Post } from '@generated/types.generated';
 export const fetchAllPosts = createAction('posts/fetchAllPosts');
 export const fetchAllPostsSuccess = createAction<any>('posts/fetchAllPostsSuccess');
 export const fetchAllPostsFailure = createAction<any>('posts/fetchAllPostsFailure');
-export const setSelectedPost = createAction<string>('posts/getSelectedId');
+export const setSelectedPost = createAction<string>('posts/setSelectedPost');
 export const setPostsByAccountId = createAction<any>('posts/setPostsByAccountId');
 export const getPostsByAccountId = createAction<any>('posts/getPostsAccountId');
 export const postPost = createAction<CreatePostCommand>('posts/postPost');

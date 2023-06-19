@@ -573,7 +573,9 @@ export type Query = {
   allFollowersByFollowing: AccountConnection;
   allFollowingsByFollower: AccountConnection;
   allHashtag: HashtagConnection;
+  allHashtagByPage: HashtagConnection;
   allHashtagBySearch: HashtagConnection;
+  allHashtagByToken: HashtagConnection;
   allOrphanPosts: PostConnection;
   allPages: PageConnection;
   allPagesByFollower: PageConnection;
@@ -653,12 +655,34 @@ export type QueryAllHashtagArgs = {
   skip?: InputMaybe<Scalars['Int']>;
 };
 
+export type QueryAllHashtagByPageArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  id?: InputMaybe<Scalars['String']>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<HashtagOrder>;
+  skip?: InputMaybe<Scalars['Int']>;
+};
+
 export type QueryAllHashtagBySearchArgs = {
   after?: InputMaybe<Scalars['String']>;
   before?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   query?: InputMaybe<Scalars['String']>;
+};
+
+export type QueryAllHashtagByTokenArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  id?: InputMaybe<Scalars['String']>;
+  last?: InputMaybe<Scalars['Int']>;
+  minBurnFilter?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<HashtagOrder>;
+  skip?: InputMaybe<Scalars['Int']>;
 };
 
 export type QueryAllOrphanPostsArgs = {

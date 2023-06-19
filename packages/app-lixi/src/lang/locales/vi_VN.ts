@@ -106,9 +106,10 @@ export default {
   'general.showMore': 'Xem thêm',
   'general.showLess': 'Xem ít',
   'general.topAccounts': 'Xếp hạng tài khoản',
-  'general.topPages': 'Xếo hạng trang',
+  'general.topPages': 'Xếp hạng trang',
   'general.burned': 'Đã đốt',
   'general.fee': 'Phí: ',
+  'general.suggested': 'Đề xuất: ',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Bạn cần nhập đúng cụm từ bảo mật',
@@ -543,6 +544,7 @@ export default {
   'post.page': 'Trang',
   'post.token': 'Token',
   'post.public': 'Công khai',
+  'post.on': 'trên',
 
   /* 16.Token */
   'token.importToken': 'Thêm token',

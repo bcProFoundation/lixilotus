@@ -75,3 +75,16 @@ export const setGraphqlRequestLoading = createAction('account/setGraphqlRequestL
 export const setGraphqlRequestDone = createAction('account/setGraphqlRequestDone');
 export const addRecentVisitedPerson = createAction<WorshipedPerson>('account/addRecentVisitedPerson');
 export const clearRecentVisitedPeople = createAction('account/clearRecentVisitedPeople');
+export const addRecentHashtagAtHome = createAction<string>('account/addRecentHashtagAtHome');
+export const removeRecentHashtagAtHome = createAction<string>('account/removeRecentHashtagAtHome');
+export const clearRecentHashtagAtHome = createAction('account/clearRecentHashtagAtHome');
+export const addRecentHashtagAtPages = createAction<{ id: string; hashtag: string }>('account/addRecentHashtagAtPages');
+export const removeRecentHashtagAtPages = createAction<{ id: string; hashtag: string }>(
+  'account/removeRecentHashtagAtPages'
+);
+export const clearRecentHashtagAtPages = createAction<{ id: string }>('account/clearRecentHashtagAtPages');
+export const addRecentHashtagAtToken = createAction<{ id: string; hashtag: string }>('account/addRecentHashtagAtToken');
+export const removeRecentHashtagAtToken = createAction<{ id: string; hashtag: string }>(
+  'account/removeRecentHashtagAtToken'
+);
+export const clearRecentHashtagAtToken = createAction<{ id: string }>('account/clearRecentHashtagAtToken');

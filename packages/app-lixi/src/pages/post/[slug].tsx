@@ -9,6 +9,7 @@ import { usePostQuery } from '@store/post/posts.generated';
 import MainLayout from '@components/Layout/MainLayout';
 import { PrismaClient } from '@bcpros/lixi-prisma';
 import { stripHtml } from 'string-strip-html';
+import intl from 'react-intl-universal';
 
 const PostDetailPage = props => {
   const { postId, isMobile, postAsString } = props;
@@ -17,10 +18,14 @@ const PostDetailPage = props => {
 
   const postQuery = usePostQuery({ id: postId });
 
+  const document = new DOMParser().parseFromString(post.content, 'text/html');
+  const paragraphElement = document.querySelector('.EditorLexical_paragraph');
+  const paragraphText = paragraphElement?.textContent;
+
   return (
     <React.Fragment>
       <NextSeo
-        title="Lixi Program"
+        title= {`${post.postAccount.name} ${intl.get('post.on')} LixiLotus: "${paragraphText}"`}
         description="The lixi program send you a small gift ."
         canonical={canonicalUrl}
         openGraph={{

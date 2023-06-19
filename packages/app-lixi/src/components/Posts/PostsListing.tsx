@@ -2,6 +2,7 @@ import CreatePostCard from '@components/Common/CreatePostCard';
 import {
   getGraphqlRequestStatus,
   getLeaderBoard,
+  getRecentHashtagAtHome,
   getSelectedAccount,
   getSelectedAccountId
 } from '@store/account/selectors';
@@ -28,7 +29,7 @@ import intl from 'react-intl-universal';
 import { FireTwoTone, LoadingOutlined } from '@ant-design/icons';
 import PostListItem from './PostListItem';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { setGraphqlRequestDone, setTransactionReady } from '@store/account/actions';
+import { setGraphqlRequestDone, setTransactionReady, addRecentHashtagAtHome } from '@store/account/actions';
 import { getAllWalletPaths, getSlpBalancesAndUtxos, getWalletStatus } from '@store/wallet';
 import { PostsQueryTag } from '@bcpros/lixi-models/constants';
 import { BurnForType, BurnQueueCommand, BurnType } from '@bcpros/lixi-models/lib/burn';
@@ -43,6 +44,8 @@ import { getFilterPostsHome } from '@store/settings/selectors';
 import { getLeaderboard } from '@store/account/actions';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 import { useInfinitePostsBySearchQueryWithHashtag } from '@store/post/useInfinitePostsBySearchQueryWithHashtag';
+import { setSelectedPost } from '@store/post/actions';
+import { getSelectedPostId } from '@store/post/selectors';
 
 const { Panel } = Collapse;
 const antIcon = <LoadingOutlined style={{ fontSize: 20 }} spin />;
@@ -171,12 +174,15 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const filterValue = useAppSelector(getFilterPostsHome);
   const leaderboard = useAppSelector(getLeaderBoard);
   const graphqlRequestLoading = useAppSelector(getGraphqlRequestStatus);
+  const recentTagAtHome = useAppSelector(getRecentHashtagAtHome);
+  const postIdSelected = useAppSelector(getSelectedPostId);
   const [hashtags, setHashtags] = useState([]);
+  const [suggestedHashtag, setSuggestedTags] = useState([]);
 
   const menuItems = [{ label: intl.get('general.allPost'), key: 'all' }];
 
   useEffect(() => dispatch(getLeaderboard()), []);
-
+  const refs = useRef([]);
   const onClickMenu: MenuProps['onClick'] = e => {
     setTab(e.key);
   };
@@ -193,7 +199,16 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     },
     false
   );
-
+  useEffect(() => {
+    if (refs.current[postIdSelected]) {
+      const heightPost = refs.current[postIdSelected].clientHeight;
+      _.delay(() => {
+        refs.current[postIdSelected].firstChild.classList.add('active-post');
+        refs.current[postIdSelected].scrollIntoView({ behaviour: 'smooth' });
+      }, 500);
+      dispatch(setSelectedPost(''));
+    }
+  }, [data]);
   //#region QueryVirtuoso
   const { queryData, fetchNextQuery, hasNextQuery, isQueryFetching, isFetchingQueryNext, isQueryLoading } =
     useInfinitePostsBySearchQueryWithHashtag(
@@ -217,6 +232,10 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
       fetchNextQuery();
     }
   };
+
+  useEffect(() => {
+    setSuggestedTags(recentTagAtHome);
+  }, [recentTagAtHome]);
 
   const QueryFooter = () => {
     if (isQueryLoading) return null;
@@ -311,6 +330,10 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     setSearchValue(value);
 
     if (hashtagsValue && hashtagsValue.length > 0) setHashtags([...hashtagsValue]);
+
+    hashtagsValue.map(hashtag => {
+      dispatch(addRecentHashtagAtHome(hashtag.substring(1)));
+    });
   };
 
   const onDeleteQuery = () => {
@@ -340,13 +363,20 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
           >
             {data.map((item, index) => {
               return (
-                <PostListItem
-                  index={index}
-                  item={item}
+                <div
                   key={item.id}
-                  handleBurnForPost={handleBurnForPost}
-                  addHashtag={addHashtag}
-                />
+                  ref={element => {
+                    refs.current[item.id] = element;
+                  }}
+                >
+                  <PostListItem
+                    index={index}
+                    item={item}
+                    key={item.id}
+                    handleBurnForPost={handleBurnForPost}
+                    addHashtag={addHashtag}
+                  />
+                </div>
               );
             })}
           </InfiniteScroll>
@@ -452,10 +482,11 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         hashtags={hashtags}
         onDeleteHashtag={onDeleteHashtag}
         onDeleteQuery={onDeleteQuery}
+        suggestedHashtag={suggestedHashtag}
       />
       <Header />
 
-      {showPosts()}
+      {graphqlRequestLoading ? <Skeleton avatar active /> : showPosts()}
     </StyledPostsListing>
   );
 };
