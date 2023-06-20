@@ -550,6 +550,7 @@ export default {
   'post.multiReposted': '{repostName} người khác đã đăng lại',
   'post.repostSuccessful': 'Đăng lại bài viết thành công',
   'post.repostFailure': 'Không thể đăng lại bài viết',
+  'post.on': 'trên',
 
   /* 16.Token */
   'token.importToken': 'Thêm token',

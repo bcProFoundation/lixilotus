@@ -552,6 +552,7 @@ export default {
   'post.multiReposted': '{repostName} other has reposted',
   'post.repostSuccessful': 'Repost successful',
   'post.repostFailure': 'Unable to repost',
+  'post.on': 'on',
 
   /* 16.Token */
   'token.importToken': 'Import token',
