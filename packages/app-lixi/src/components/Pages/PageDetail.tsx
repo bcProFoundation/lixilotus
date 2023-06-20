@@ -774,11 +774,6 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                 ? `${pageDetailData?.totalBurnForPage} ${intl.get('page.xpiHasBurned')}`
                 : intl.get('page.noXpiHasBurned')}
             </p>
-            {/* {selectedAccountId == pageDetailData?.pageAccountId && (
-              <Button type="primary" className="outline-btn" onClick={navigateEditPage}>
-                Edit your profile
-              </Button>
-            )} */}
           </div>
         </ProfileCardHeader>
         <ProfileContentContainer>
