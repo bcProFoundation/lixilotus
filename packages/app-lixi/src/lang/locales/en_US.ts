@@ -547,6 +547,7 @@ export default {
   'post.token': 'Token',
   'post.public': 'Public',
   'post.on': 'on',
+  'post.insufficientFeeCreatePost': 'You need Lotus to perform this action.',
 
   /* 16.Token */
   'token.importToken': 'Import token',
