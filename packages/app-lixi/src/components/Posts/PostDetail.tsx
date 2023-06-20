@@ -619,7 +619,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
         <NavBarHeader onClick={() => router.back()}>
           <LeftOutlined />
           <PathDirection>
-            <h2>Post</h2>
+            <h2>{intl.get('post.postTitle')}</h2>
           </PathDirection>
         </NavBarHeader>
         <InfoCardUser

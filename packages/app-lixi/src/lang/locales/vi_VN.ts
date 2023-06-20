@@ -545,6 +545,8 @@ export default {
   'post.token': 'Token',
   'post.public': 'Công khai',
   'post.on': 'trên',
+  'post.insufficientFeeCreatePost': 'Bạn cần Lotus để thực hiện hành động này.',
+  'post.postTitle' : 'Bài viết',
 
   /* 16.Token */
   'token.importToken': 'Thêm token',
