@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { PostItem } from '@components/Posts/PostDetail';
 import { GroupIconText, IconNoneHover, SpaceIconNoneHover } from '@components/Posts/PostListItem';
 import styled from 'styled-components';
@@ -18,12 +18,16 @@ import useXPI from '@hooks/useXPI';
 import { RepostInput } from '@generated/types.generated';
 import { useRepostMutation } from '@store/post/posts.api';
 import { showToast } from '@store/toast/actions';
+import { useRouter } from 'next/router';
 
 const ActionBar = styled.div`
   display: flex;
   justify-content: space-between;
   border-top: 1px solid #c5c5c5;
   padding: 0px 0.5rem;
+  &.border-bottom {
+    border-bottom: 1px solid #c5c5c5;
+  }
   .ant-space {
     gap: 4px !important;
   }
@@ -52,8 +56,15 @@ const ActionPostBar = ({ post, handleBurnForPost, onClickIconComment }: ActionPo
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const Wallet = React.useContext(WalletContext);
+  const router = useRouter();
+  const selectedKey = router.pathname ?? '';
+  const [borderBottom, setBorderBottom] = useState<Boolean>(false);
   const { XPI, chronik } = Wallet;
   const { sendXpi } = useXPI();
+
+  useEffect(() => {
+    selectedKey.includes('post') ? setBorderBottom(true) : setBorderBottom(false);
+  }, [selectedKey])
 
   const [repostTrigger, { isLoading: isLoadingRepost, isSuccess: isSuccessRepost, isError: isErrorRepost }] =
     useRepostMutation();
@@ -113,7 +124,7 @@ const ActionPostBar = ({ post, handleBurnForPost, onClickIconComment }: ActionPo
   };
 
   return (
-    <ActionBar>
+    <ActionBar className={borderBottom ? 'border-bottom' : ''}>
       <GroupIconText>
         <Reaction post={post} handleBurnForPost={handleBurnForPost} />
         <IconNoneHover
