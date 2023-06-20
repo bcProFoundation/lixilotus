@@ -671,6 +671,7 @@ type Repost {
 input RepostInput {
   accountId: Int!
   postId: String!
+  txHex: String
 }
 
 type State {

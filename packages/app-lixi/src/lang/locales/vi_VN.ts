@@ -489,6 +489,7 @@ export default {
   'page.inputAddress': 'Vui lòng nhập địa chỉ',
   'page.createPostFee': 'Phí viết bài',
   'page.createCommentFee': 'Phí bình luận',
+  'page.repostFee': 'Phí đăng lại',
   'page.couldNotpostPage': 'Tạo trang không thành công',
   'page.createPageSuccessful': 'Trang đã tạo thành công',
   'page.updatePageSuccessful': 'Trang đã được cập nhật thành công',

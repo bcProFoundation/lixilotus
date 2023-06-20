@@ -240,11 +240,10 @@ type PostListItemProps = {
   item: PostItem;
   searchValue?: string;
   handleBurnForPost?: (isUpVote: boolean, post: any, optionBurn?: string) => Promise<void>;
-  repost?: (post: any) => Promise<void>;
   addHashtag?: (hashtag: string) => any;
 };
 
-const PostListItem = ({ index, item, searchValue, handleBurnForPost, repost, addHashtag }: PostListItemProps) => {
+const PostListItem = ({ index, item, searchValue, handleBurnForPost, addHashtag }: PostListItemProps) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const post: PostItem = item;
@@ -382,12 +381,7 @@ const PostListItem = ({ index, item, searchValue, handleBurnForPost, repost, add
           )}
         </Content>
       </CardContainer>
-      <ActionPostBar
-        post={post}
-        handleBurnForPost={handleBurnForPost}
-        handleRepost={repost}
-        onClickIconComment={e => handlePostClick(e)}
-      />
+      <ActionPostBar post={post} handleBurnForPost={handleBurnForPost} onClickIconComment={e => handlePostClick(e)} />
     </PostListItemContainer>
   );
 };

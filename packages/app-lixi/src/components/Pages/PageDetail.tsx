@@ -626,36 +626,6 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
     }
   };
 
-  const [repostTrigger, { isLoading: isLoadingRepost, isSuccess: isSuccessRepost, isError: isErrorRepost }] =
-    useRepostMutation();
-
-  const handleRepost = async (post: any) => {
-    const repostInput: RepostInput = {
-      accountId: selectedAccountId,
-      postId: post.id
-    };
-
-    try {
-      await repostTrigger({ input: repostInput });
-      isSuccessRepost &&
-        dispatch(
-          showToast('success', {
-            message: 'Success',
-            description: intl.get('post.repostSuccessful'),
-            duration: 5
-          })
-        );
-    } catch (error) {
-      dispatch(
-        showToast('error', {
-          message: 'Error',
-          description: intl.get('post.repostFailure'),
-          duration: 5
-        })
-      );
-    }
-  };
-
   const showPosts = () => {
     return (
       <React.Fragment>
@@ -679,7 +649,6 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                   item={item}
                   key={item.id}
                   handleBurnForPost={handleBurnForPost}
-                  repost={handleRepost}
                   addHashtag={addHashtag}
                 />
               );
@@ -701,7 +670,6 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
                   item={item}
                   key={item.id}
                   handleBurnForPost={handleBurnForPost}
-                  repost={handleRepost}
                   addHashtag={addHashtag}
                 />
               );

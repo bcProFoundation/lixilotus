@@ -10,4 +10,8 @@ export class RepostInput {
   @Field(() => String)
   @IsNotEmpty()
   postId: string;
+
+  @Field(() => String, { nullable: true })
+  @IsNotEmpty()
+  txHex?: Nullable<string>;
 }

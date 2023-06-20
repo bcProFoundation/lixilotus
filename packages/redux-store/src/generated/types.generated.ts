@@ -986,6 +986,7 @@ export type Repost = {
 export type RepostInput = {
   accountId: Scalars['Int'];
   postId: Scalars['String'];
+  txHex?: InputMaybe<Scalars['String']>;
 };
 
 export type State = {

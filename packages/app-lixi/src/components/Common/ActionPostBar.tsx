@@ -1,3 +1,4 @@
+import React from 'react';
 import { PostItem } from '@components/Posts/PostDetail';
 import { GroupIconText, IconNoneHover, SpaceIconNoneHover } from '@components/Posts/PostListItem';
 import styled from 'styled-components';
@@ -5,7 +6,18 @@ import Reaction from './Reaction';
 import { formatBalance } from 'src/utils/cashMethods';
 import { ShareSocialButton } from './ShareSocialButton';
 import { RetweetOutlined } from '@ant-design/icons';
-import { Space } from 'antd';
+import { Space, Tooltip } from 'antd';
+import { currency } from '@bcpros/lixi-components/components/Common/Ticker';
+import intl from 'react-intl-universal';
+import { useAppDispatch, useAppSelector } from '@store/hooks';
+import { getSelectedAccount } from '@store/account';
+import { getAllWalletPaths, getSlpBalancesAndUtxos } from '@store/wallet';
+import { getUtxoWif } from '@utils/cashMethods';
+import { WalletContext } from '@context/walletProvider';
+import useXPI from '@hooks/useXPI';
+import { RepostInput } from '@generated/types.generated';
+import { useRepostMutation } from '@store/post/posts.api';
+import { showToast } from '@store/toast/actions';
 
 const ActionBar = styled.div`
   display: flex;
@@ -31,11 +43,75 @@ const ActionBar = styled.div`
 type ActionPostBarProps = {
   post: PostItem;
   handleBurnForPost?: (isUpVote: boolean, post: any, optionBurn?: string) => Promise<void>;
-  handleRepost?: (post: any) => Promise<void>;
   onClickIconComment?: (e) => void;
 };
 
-const ActionPostBar = ({ post, handleBurnForPost, handleRepost, onClickIconComment }: ActionPostBarProps) => {
+const ActionPostBar = ({ post, handleBurnForPost, onClickIconComment }: ActionPostBarProps) => {
+  const dispatch = useAppDispatch();
+  const selectedAccount = useAppSelector(getSelectedAccount);
+  const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
+  const walletPaths = useAppSelector(getAllWalletPaths);
+  const Wallet = React.useContext(WalletContext);
+  const { XPI, chronik } = Wallet;
+  const { sendXpi } = useXPI();
+
+  const [repostTrigger, { isLoading: isLoadingRepost, isSuccess: isSuccessRepost, isError: isErrorRepost }] =
+    useRepostMutation();
+
+  const handleRepost = async (post: PostItem) => {
+    console.log('repost: ', post);
+    try {
+      let txHex;
+
+      if (selectedAccount.id != Number(post.page.pageAccount.id) && parseFloat(post.page.createPostFee) != 0) {
+        const fundingWif = getUtxoWif(slpBalancesAndUtxos.nonSlpUtxos[0], walletPaths);
+        txHex = await sendXpi(
+          XPI,
+          chronik,
+          walletPaths,
+          slpBalancesAndUtxos.nonSlpUtxos,
+          currency.defaultFee,
+          '',
+          false, // indicate send mode is one to one
+          null,
+          post.page.pageAccount.address,
+          post.page.createPostFee,
+          true,
+          fundingWif,
+          true
+        );
+      }
+
+      const repostInput: RepostInput = {
+        accountId: selectedAccount.id,
+        postId: post.id,
+        txHex: txHex
+      };
+
+      await repostTrigger({ input: repostInput });
+      isSuccessRepost &&
+        dispatch(
+          showToast('success', {
+            message: 'Success',
+            description: intl.get('post.repostSuccessful'),
+            duration: 5
+          })
+        );
+    } catch (e) {
+      let message = e.message || e.error || JSON.stringify(e);
+      if (isErrorRepost) {
+        message = intl.get('post.repostFailure');
+      }
+      dispatch(
+        showToast('error', {
+          message: 'Error',
+          description: message,
+          duration: 5
+        })
+      );
+    }
+  };
+
   return (
     <ActionBar>
       <GroupIconText>
@@ -50,9 +126,11 @@ const ActionPostBar = ({ post, handleBurnForPost, handleRepost, onClickIconComme
 
         {/* Currently only apply repost to posts in the page */}
         {post.page && (
-          <Space className="repost" size={5} onClick={() => handleRepost(post)}>
-            <RetweetOutlined />
-          </Space>
+          <Tooltip title={`${intl.get('page.repostFee')}: ${post.page.createPostFee} ${currency.ticker}`}>
+            <Space className="repost" size={5} onClick={() => handleRepost(post)}>
+              <RetweetOutlined />
+            </Space>
+          </Tooltip>
         )}
       </GroupIconText>
 

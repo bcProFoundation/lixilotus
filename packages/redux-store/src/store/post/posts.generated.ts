@@ -53,6 +53,7 @@ export type PostQuery = {
       avatar?: string | null;
       name: string;
       id: string;
+      createPostFee: string;
       createCommentFee: string;
       pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
     } | null;
@@ -115,6 +116,7 @@ export type PostsQuery = {
           avatar?: string | null;
           name: string;
           id: string;
+          createPostFee: string;
           createCommentFee: string;
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
@@ -186,6 +188,7 @@ export type OrphanPostsQuery = {
           avatar?: string | null;
           name: string;
           id: string;
+          createPostFee: string;
           createCommentFee: string;
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
@@ -257,6 +260,7 @@ export type PostsByPageIdQuery = {
           avatar?: string | null;
           name: string;
           id: string;
+          createPostFee: string;
           createCommentFee: string;
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
@@ -328,6 +332,7 @@ export type PostsByUserIdQuery = {
           avatar?: string | null;
           name: string;
           id: string;
+          createPostFee: string;
           createCommentFee: string;
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
@@ -399,6 +404,7 @@ export type PostsByHashtagIdQuery = {
           avatar?: string | null;
           name: string;
           id: string;
+          createPostFee: string;
           createCommentFee: string;
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
@@ -470,6 +476,7 @@ export type PostsByTokenIdQuery = {
           avatar?: string | null;
           name: string;
           id: string;
+          createPostFee: string;
           createCommentFee: string;
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
@@ -538,6 +545,7 @@ export type PostsBySearchQuery = {
           avatar?: string | null;
           name: string;
           id: string;
+          createPostFee: string;
           createCommentFee: string;
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
@@ -608,6 +616,7 @@ export type PostsBySearchWithHashtagQuery = {
           avatar?: string | null;
           name: string;
           id: string;
+          createPostFee: string;
           createCommentFee: string;
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
@@ -679,6 +688,7 @@ export type PostsBySearchWithHashtagAtPageQuery = {
           avatar?: string | null;
           name: string;
           id: string;
+          createPostFee: string;
           createCommentFee: string;
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
@@ -750,6 +760,7 @@ export type PostsBySearchWithHashtagAtTokenQuery = {
           avatar?: string | null;
           name: string;
           id: string;
+          createPostFee: string;
           createCommentFee: string;
           pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
         } | null;
@@ -802,6 +813,7 @@ export type PostFieldsFragment = {
     avatar?: string | null;
     name: string;
     id: string;
+    createPostFee: string;
     createCommentFee: string;
     pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
   } | null;
@@ -844,6 +856,7 @@ export type PostMeiliFieldsFragment = {
     avatar?: string | null;
     name: string;
     id: string;
+    createPostFee: string;
     createCommentFee: string;
     pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
   } | null;
@@ -892,6 +905,7 @@ export type CreatePostMutation = {
       avatar?: string | null;
       name: string;
       id: string;
+      createPostFee: string;
       createCommentFee: string;
       pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
     } | null;
@@ -941,6 +955,7 @@ export type UpdatePostMutation = {
       avatar?: string | null;
       name: string;
       id: string;
+      createPostFee: string;
       createCommentFee: string;
       pageAccount: { __typename?: 'Account'; id: string; name: string; address: string };
     } | null;
@@ -985,6 +1000,7 @@ export const PostFieldsFragmentDoc = `
     avatar
     name
     id
+    createPostFee
     createCommentFee
     pageAccount {
       id
@@ -1039,6 +1055,7 @@ export const PostMeiliFieldsFragmentDoc = `
     avatar
     name
     id
+    createPostFee
     createCommentFee
     pageAccount {
       id

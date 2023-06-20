@@ -352,6 +352,7 @@ fragment PostFields on Post {
     avatar
     name
     id
+    createPostFee
     createCommentFee
     pageAccount {
       id
@@ -405,6 +406,7 @@ fragment PostMeiliFields on Post {
     avatar
     name
     id
+    createPostFee
     createCommentFee
     pageAccount {
       id
@@ -446,5 +448,5 @@ mutation updatePost($input: UpdatePostInput!) {
 }
 
 mutation repost($input: RepostInput!) {
-  repost(data: $input)
+  repost(data: $input) 
 }

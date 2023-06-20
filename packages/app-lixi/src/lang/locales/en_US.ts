@@ -491,6 +491,7 @@ export default {
   'page.inputAddress': 'Please input address',
   'page.createPostFee': 'Create post fee',
   'page.createCommentFee': 'Create comment fee',
+  'page.repostFee': 'Repost fee',
   'page.couldNotpostPage': 'Could not create page',
   'page.createPageSuccessful': 'Create page successful',
   'page.unableCreatePageServer': 'Unable to create page on server',

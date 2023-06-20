@@ -745,10 +745,10 @@ model Repost {
   accountId Int      @map("account_id")
   post      Post     @relation(fields: [postId], references: [id])
   postId    String   @map("post_id")
+  txid      String?
+  repostFee Float?   @default(0) @map("repost_fee")
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
 
-  @@index(accountId)
-  @@index(postId)
   @@map("repost")
 }

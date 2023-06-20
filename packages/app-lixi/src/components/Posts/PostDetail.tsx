@@ -682,7 +682,6 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           <ActionPostBar
             post={post}
             handleBurnForPost={handleBurnForPost}
-            handleRepost={handleRepost}
             onClickIconComment={e => setFocus('comment', { shouldSelect: true })}
           />
         </PostContentDetail>

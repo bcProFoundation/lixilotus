@@ -1075,19 +1075,37 @@ export class PostResolver {
       throw new Error(noPermission);
     }
 
-    const post = await this.prisma.post.update({
-      where: { id: data.postId },
-      data: {
-        updatedRepostAt: new Date(),
-        repost: {
-          create: {
-            accountId: data.accountId
-          }
-        }
+    let repostFee: any;
+    if (data.txHex) {
+      const txData = await this.XPI.RawTransactions.decodeRawTransaction(data.txHex);
+      repostFee = txData['vout'][0].value;
+      if (Number(repostFee) <= 0) {
+        throw new Error('Syntax error. Number cannot be less than or equal to 0');
       }
+    }
+
+    const reposted = await this.prisma.$transaction(async prisma => {
+      let txid = null;
+      if (data.txHex) {
+        const broadcastResponse = await this.chronik.broadcastTx(data.txHex).catch(async err => {
+          throw new Error('Empty chronik broadcast response');
+        });
+        txid = broadcastResponse.txid;
+      }
+
+      const createRepost = await prisma.repost.create({
+        data: {
+          accountId: account.id,
+          postId: data.postId,
+          repostFee: repostFee,
+          txid: txid
+        }
+      });
+
+      return createRepost;
     });
 
-    return post ? true : false;
+    return reposted ? true : false;
   }
 
   @ResolveField('postAccount', () => Account)
