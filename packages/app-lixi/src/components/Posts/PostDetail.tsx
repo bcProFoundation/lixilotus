@@ -361,9 +361,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           const post = data as PostItem;
           tipToAddresses.push({
             address: post.page ? post.page.pageAccount.address : post.postAccount.address,
-            amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(post.page ? 0.04 : 0.08))
-              .valueOf()
-              .toString()
+            amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(currency.burnFee)).valueOf().toString()
           });
           break;
         case BurnForType.Comment:
@@ -372,9 +370,7 @@ const PostDetail = ({ post, isMobile }: PostDetailProps) => {
           const postAddress = comment.commentTo.postAccount.address;
           tipToAddresses.push({
             address: pageAddress ?? postAddress,
-            amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(comment.commentTo.page ? 0.04 : 0.08))
-              .valueOf()
-              .toString()
+            amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(currency.burnFee)).valueOf().toString()
           });
 
           queryParams = {
