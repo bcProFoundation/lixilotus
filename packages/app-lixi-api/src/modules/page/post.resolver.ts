@@ -985,7 +985,25 @@ export class PostResolver {
       createNotif.senderId !== createNotif.recipientId &&
         (await this.notificationService.saveAndDispatchNotification(jobData.notification));
     }
-
+    const followingAccounts = await this.prisma.followAccount.findMany({
+      where: { followingAccountId: account.id },
+      select: { followerAccountId: true }
+    });
+    console.log(account.id);
+    // const listFollowerAccountId = followingAccounts.map(item => item.followerAccountId);
+    // console.log('listFollowerAccountId', listFollowerAccountId);
+    // const followerAccountDetails = await this.prisma.account.findMany({
+    //   where: { id: { in: listFollowerAccountId } },
+    //   select: { address: true }
+    // });
+    // console.log('followerAccountDetails', followerAccountDetails);
+    // const addressFollowerAccountDetails = followerAccountDetails.map(item => item.address);
+    // get list address
+    const createNotiNewPost = {
+      recipientAddresses: ['lotus_16PSJJenhgYL4sr2QpEA8Hz6eLYyCScJchQMAjMLe']
+    };
+    console.log(createNotiNewPost.recipientAddresses);
+    await this.notificationService.saveAnddDispathNotificationNewPost(createNotiNewPost);
     return savedPost;
   }
 

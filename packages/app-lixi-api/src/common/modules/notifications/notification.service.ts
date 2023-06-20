@@ -131,6 +131,32 @@ export class NotificationService {
     });
   }
 
+  async saveAnddDispathNotificationNewPost(notification: any) {
+    let listDeviceIdOfAllRecipients: string[] = [];
+    let listRecipientAddress: string[] = notification.recipientAddresses;
+    console.log('listRecipientAddress', listRecipientAddress);
+    const promiseList: Promise<any>[] = [];
+    listRecipientAddress.forEach(async address => {
+      promiseList.push(this.redis.smembers(`online:user:${address}`));
+    });
+    const allListDeviceIds = await Promise.all(promiseList);
+    listDeviceIdOfAllRecipients = allListDeviceIds;
+    // The rooms are the list of devices
+    // Each room is a device
+    const rooms = listDeviceIdOfAllRecipients.map(deviceId => {
+      return `device:${deviceId}`;
+    });
+    // User currently online, we send in-app notification
+    // Dispatch the notification
+    _.map(rooms, async room => {
+      const sendNotifJobData: SendNotificationJobData = {
+        room,
+        notification: { notificationTypeId: 14 } as NotificationDto
+      };
+      await this.notificationOutboundQueue.add('send-notification', sendNotifJobData);
+    });
+  }
+
   async calcFee(post: any, burn: BurnCommand) {
     const burnValue = Number(burn.burnValue);
     return post.page ? burnValue * 0.04 : burnValue * 0.08;

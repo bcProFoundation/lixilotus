@@ -44,8 +44,8 @@ import { getFilterPostsHome } from '@store/settings/selectors';
 import { getLeaderboard } from '@store/account/actions';
 import useDidMountEffectNotification from '@local-hooks/useDidMountEffectNotification';
 import { useInfinitePostsBySearchQueryWithHashtag } from '@store/post/useInfinitePostsBySearchQueryWithHashtag';
-import { setSelectedPost } from '@store/post/actions';
-import { getSelectedPostId } from '@store/post/selectors';
+import { setNewPostAvailable, setSelectedPost } from '@store/post/actions';
+import { getNewPostAvailable, getSelectedPostId } from '@store/post/selectors';
 
 const { Panel } = Collapse;
 const antIcon = <LoadingOutlined style={{ fontSize: 20 }} spin />;
@@ -159,11 +159,13 @@ const StyledNotificationContent = styled.div`
 `;
 
 const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingProps) => {
+  const [count, setCount] = useState(0);
   const dispatch = useAppDispatch();
   const selectedAccountId = useAppSelector(getSelectedAccountId);
   const [searchValue, setSearchValue] = useState<string | null>(null);
   const refPostsListing = useRef<HTMLDivElement | null>(null);
   const [tab, setTab] = useState<any>('all');
+  const [showNewPost, setShowNewPost] = useState<boolean>(false);
   const selectedAccount = useAppSelector(getSelectedAccount);
   const latestBurnForPost = useAppSelector(getLatestBurnForPost);
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
@@ -176,6 +178,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const graphqlRequestLoading = useAppSelector(getGraphqlRequestStatus);
   const recentTagAtHome = useAppSelector(getRecentHashtagAtHome);
   const postIdSelected = useAppSelector(getSelectedPostId);
+  const newPostAvailable = useAppSelector(getNewPostAvailable);
   const [hashtags, setHashtags] = useState([]);
   const [suggestedHashtag, setSuggestedTags] = useState([]);
 
@@ -251,6 +254,19 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
     );
   };
   //#endregion
+  useEffect(() => {
+    if (!!newPostAvailable) {
+      setShowNewPost(true);
+      setCount(count + 1);
+    }
+  }, [newPostAvailable]);
+
+  useEffect(() => {
+    if (!showNewPost && count > 0) {
+      setShowNewPost(false);
+      dispatch(setNewPostAvailable(false));
+    }
+  }, [showNewPost]);
 
   //#region Normal Virtuoso
   const loadMoreItems = () => {
@@ -272,6 +288,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
   const Header = () => {
     return (
       <StyledHeader>
+        {!!showNewPost && <button onClick={() => setShowNewPost(false)}>New post</button>}
         <CreatePostCard hashtags={hashtags} query={searchValue} />
         <h1 style={{ textAlign: 'left', fontSize: '20px', margin: '1rem' }}>
           {searchValue && intl.get('general.searchResults', { text: searchValue })}

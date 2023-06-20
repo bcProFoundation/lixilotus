@@ -251,6 +251,7 @@ const SidebarShortcut = () => {
   const [showMore, setShowMore] = useState(false);
   const router = useRouter();
   const currentPathName = router.pathname ?? '';
+  const [notificationsSelected, setNotificationsSelected] = useState([]);
   const notifications = useAppSelector(getAllNotifications);
   const filterValue = useAppSelector(getFilterPostsHome);
   const selectedAccountId = useAppSelector(getSelectedAccountId);
@@ -283,6 +284,11 @@ const SidebarShortcut = () => {
       );
     }
   }, []);
+
+  useEffect(() => {
+    console.log('notifications', notifications);
+    setNotificationsSelected(notifications.filter(s => !!s && !!s.notificationTypeId && s.notificationTypeId !== 14));
+  }, [notifications]);
 
   const triggerSrollbar = e => {
     const sidebarShortcutNode = refSidebarShortcut.current;
@@ -354,7 +360,7 @@ const SidebarShortcut = () => {
               onClickItem={() => handleIconClick('/')}
             />
             <ItemAccessNotification
-              notifications={notifications}
+              notifications={notificationsSelected}
               icon={
                 currentPathName === '/notifications'
                   ? '/images/ico-notifications-active.svg'

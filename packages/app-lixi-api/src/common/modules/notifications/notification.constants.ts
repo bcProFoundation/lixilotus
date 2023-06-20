@@ -14,7 +14,8 @@ export const NOTIFICATION_TYPES = {
   // GET XPI:
   GET_XPI: 11,
   FOLLOW_ACCOUNT: 12,
-  FOLLOW_PAGE: 13
+  FOLLOW_PAGE: 13,
+  NEW_POST: 14
 };
 
 export const WEBPUSH_CLIENT_APP_IDS = {
