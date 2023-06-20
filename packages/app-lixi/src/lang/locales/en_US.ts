@@ -110,6 +110,7 @@ export default {
   'general.topPages': 'Top Pages',
   'general.burned': 'Burned',
   'general.fee': 'Fee: ',
+  'general.suggested': 'Suggested: ',
 
   /* 02.Account */
   'account.mnemonicRequired': 'Valid mnemonic seed phrase required',
@@ -482,6 +483,7 @@ export default {
   'page.description': 'Description',
   'page.countryName': 'Country',
   'page.country': 'Search to select country',
+  'page.lo': 'Lotusia',
   'page.stateName': 'State',
   'page.state': 'Search to select state',
   'page.address': 'Address',
@@ -544,7 +546,8 @@ export default {
   'post.page': 'Page',
   'post.token': 'Token',
   'post.public': 'Public',
-  'post.post': 'Post',
+  'post.on': 'on',
+  'post.postTitle': 'Post',
 
   /* 16.Token */
   'token.importToken': 'Import token',
@@ -615,6 +618,7 @@ export default {
   'category.agriculture': 'Agriculture',
   'category.permaculture': 'Permaculture',
   'category.humanitarian': 'Humanitarian',
+  'category.hospitality': 'Hospitality',
 
   /* 19. Webpush */
   'webpush.unableToSubscribe': 'Unable to subscriber.',
