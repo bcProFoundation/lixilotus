@@ -128,7 +128,7 @@ export const BurnModal = ({ id, burnForType, isPage }: BurnModalProps) => {
   const slpBalancesAndUtxos = useAppSelector(getSlpBalancesAndUtxos);
   const walletPaths = useAppSelector(getAllWalletPaths);
   const [selectedAmount, setSelectedAmount] = useState(1);
-  const feeAccount = selectedAmount * 0.08;
+  const feeAccount = selectedAmount * 0.04;
   const feePage = selectedAmount * 0.04;
   const burnQueue = useAppSelector(getBurnQueue);
   const failQueue = useAppSelector(getFailQueue);
@@ -171,7 +171,7 @@ export const BurnModal = ({ id, burnForType, isPage }: BurnModalProps) => {
             }
             tipToAddresses.push({
               address: post.postAccount.address,
-              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.08)).valueOf().toString()
+              amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
             });
           } else if (post.page) {
             tag = PostsQueryTag.PostsByPageId;
@@ -196,7 +196,7 @@ export const BurnModal = ({ id, burnForType, isPage }: BurnModalProps) => {
           const postAddress = comment.commentTo.postAccount.address;
           tipToAddresses.push({
             address: pageAddress ?? postAddress,
-            amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(comment.commentTo.page ? 0.04 : 0.08))
+            amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04))
               .valueOf()
               .toString()
           });

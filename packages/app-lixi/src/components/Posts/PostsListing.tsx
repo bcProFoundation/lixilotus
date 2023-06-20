@@ -424,7 +424,7 @@ const PostsListing: React.FC<PostsListingProps> = ({ className }: PostsListingPr
         tag = PostsQueryTag.Posts;
         tipToAddresses.push({
           address: post.postAccount.address,
-          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.08)).valueOf().toString()
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
         });
       } else if (post.page) {
         tag = PostsQueryTag.PostsByPageId;
