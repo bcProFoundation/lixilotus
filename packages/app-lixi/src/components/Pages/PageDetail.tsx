@@ -493,7 +493,7 @@ const PageDetail = ({ page, checkIsFollowed, isMobile }: PageDetailProps) => {
       let tipToAddresses: { address: string; amount: string }[] = [
         {
           address: page.pageAccount.address,
-          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(0.04)).valueOf().toString()
+          amount: fromXpiToSatoshis(new BigNumber(burnValue).multipliedBy(currency.burnFee)).valueOf().toString()
         }
       ];
 
