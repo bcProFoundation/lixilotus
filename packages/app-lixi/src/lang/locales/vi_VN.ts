@@ -551,6 +551,8 @@ export default {
   'post.repostSuccessful': 'Đăng lại bài viết thành công',
   'post.repostFailure': 'Không thể đăng lại bài viết',
   'post.on': 'trên',
+  'post.insufficientFeeCreatePost': 'Bạn cần Lotus để thực hiện hành động này.',
+  'post.postTitle' : 'Bài viết',
 
   /* 16.Token */
   'token.importToken': 'Thêm token',

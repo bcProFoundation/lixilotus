@@ -22,13 +22,13 @@ const ClaimPage = props => {
   return (
     <>
       <NextSeo
-        title="Lixi Program"
+        title="LixiLotus"
         description="The lixi program send you a small gift ."
         canonical={canonicalUrl}
         openGraph={{
           url: canonicalUrl,
           title: 'LixiLotus',
-          description: claim.message ?? 'LixiLotus allow you to giveaway your Lotus effortlessly',
+          description: claim.message ?? 'Change your attention change the world!',
           images: [{ url: imageUrl }],
           site_name: 'LixiLotus'
         }}

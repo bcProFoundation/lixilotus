@@ -293,56 +293,61 @@ const CreatePostCard = (props: CreatePostCardProp) => {
   };
 
   const handleCreateNewPost = async ({ htmlContent, pureContent }) => {
-    let filterValue: number;
-    if (pureContent === '' || _.isNil(pureContent)) {
-      return;
-    }
-
-    let createFeeHex;
-    if (pathname.includes('/token')) {
-      filterValue = filterToken;
-    } else if (pathname.includes('/page')) {
-      filterValue = filterPage;
-
-      if (selectedAccount.id != page.pageAccountId && parseFloat(page.createPostFee) != 0) {
-        const fundingWif = getUtxoWif(slpBalancesAndUtxos.nonSlpUtxos[0], walletPaths);
-        createFeeHex = await sendXpi(
-          XPI,
-          chronik,
-          walletPaths,
-          slpBalancesAndUtxos.nonSlpUtxos,
-          currency.defaultFee,
-          '',
-          false, // indicate send mode is one to one
-          null,
-          page.pageAccount.address,
-          page.createPostFee,
-          true,
-          fundingWif,
-          true
-        );
-      }
-    } else {
-      filterValue = filterHome;
-    }
-
-    const createPostInput: CreatePostInput = {
-      uploadCovers: postCoverUploads.map(upload => upload.id),
-      htmlContent: htmlContent,
-      pureContent: pureContent,
-      pageId: pageId || undefined,
-      tokenPrimaryId: tokenPrimaryId || undefined,
-      createFeeHex: createFeeHex
-    };
-
+    let patches: PatchCollection;
     const params = {
       orderBy: {
         direction: OrderDirection.Desc,
         field: PostOrderField.UpdatedAt
       }
     };
-    let patches: PatchCollection;
+
     try {
+      let filterValue: number;
+      if (pureContent === '' || _.isNil(pureContent)) {
+        return;
+      }
+
+      let createFeeHex;
+      if (pathname.includes('/token')) {
+        filterValue = filterToken;
+      } else if (pathname.includes('/page')) {
+        filterValue = filterPage;
+
+        try {
+          if (selectedAccount.id != page.pageAccountId && parseFloat(page.createPostFee) != 0) {
+            const fundingWif = getUtxoWif(slpBalancesAndUtxos.nonSlpUtxos[0], walletPaths);
+            createFeeHex = await sendXpi(
+              XPI,
+              chronik,
+              walletPaths,
+              slpBalancesAndUtxos.nonSlpUtxos,
+              currency.defaultFee,
+              '',
+              false, // indicate send mode is one to one
+              null,
+              page.pageAccount.address,
+              page.createPostFee,
+              true,
+              fundingWif,
+              true
+            );
+          }
+        } catch (error) {
+          throw new Error(intl.get('post.insufficientFeeCreatePost'));
+        }
+      } else {
+        filterValue = filterHome;
+      }
+
+      const createPostInput: CreatePostInput = {
+        uploadCovers: postCoverUploads.map(upload => upload.id),
+        htmlContent: htmlContent,
+        pureContent: pureContent,
+        pageId: pageId || undefined,
+        tokenPrimaryId: tokenPrimaryId || undefined,
+        createFeeHex: createFeeHex
+      };
+
       const result = await createPostTrigger({ input: createPostInput }).unwrap();
       let tag: string;
 
@@ -367,7 +372,12 @@ const CreatePostCard = (props: CreatePostCardProp) => {
       dispatch(removeAllUpload());
       dispatch(deleteEditorTextFromCache());
     } catch (error) {
-      const message = intl.get('post.unableCreatePostServer');
+      let message;
+      if (error.message === intl.get('post.insufficientFeeCreatePost')) {
+        message = error.message;
+      } else {
+        message = intl.get('post.unableCreatePostServer');
+      }
       if (patches) {
         dispatch(postApi.util.patchQueryData('Posts', params, patches.inversePatches));
       }
